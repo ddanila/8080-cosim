@@ -72,7 +72,20 @@ module juku_top (
     eprom_8k U_D20 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
     eprom_8k U_D21 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
     eprom_8k U_D22 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    ram_64k  U_RAM (.A(BA), .D(DB), .we_n(memw_n), .oe_n(ram_sel_n));
+
+    // DRAM: К565РУ5 64Kx1 array, one byte-bank bit-sliced D60..D67 (8 of the 20 chips;
+    // 2nd bank + video plane TODO). Address is MULTIPLEXED (MA) by the address-mux
+    // subsystem (boundary); RAS/CAS from RAM control (boundary).
+    wire [7:0] MA;                 // muxed row/col address  (from address mux)
+    wire ras_n, cas_n;             // (from RAM control / refresh)
+    dram_64kx1 U_D60 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
+    dram_64kx1 U_D61 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]));
+    dram_64kx1 U_D62 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]));
+    dram_64kx1 U_D63 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]));
+    dram_64kx1 U_D64 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]));
+    dram_64kx1 U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
+    dram_64kx1 U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
+    dram_64kx1 U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

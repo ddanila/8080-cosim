@@ -92,9 +92,11 @@ module eprom_8k (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n)
     assign d = 8'bz;   // TODO: $readmemh; drive d when selected
 endmodule
 
-// ---- DRAM array abstraction (К565РУ5 64Kx1 x20, from D60) ----
-module ram_64k (input wire [15:0] A, inout wire [7:0] D, input wire we_n, oe_n);
-    assign D = 8'bz;   // abstract; real = bit-sliced РУ5 array + RAS/CAS/mux/refresh
+// ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
+module dram_64kx1 (input wire [7:0] ma,            // multiplexed row/col address
+                   input wire ras_n, cas_n, we_n, di,
+                   output wire do_);
+    assign do_ = 1'bz;   // behavioral 64Kx1 array TODO
 endmodule
 
 // ---- peripheral shells ----

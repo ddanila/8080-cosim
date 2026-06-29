@@ -1,10 +1,11 @@
 {
   "_legend": {
     "scan": "traced off the scan",
-    "assumed": "bus bit-order/select straight or untraced",
+    "assumed": "bus/select straight or untraced",
+    "boundary": "crosses into another (un-modeled) subsystem",
     "placeholder": "abstracted/not sourced"
   },
-  "_note": "CPU core + memory subsystem. Decode mechanism (D6 PROM, D7 gate, PROM_EN) is scan; the buffered-bus + EPROM/DRAM bus wiring + chip-selects are assumed-straight (not individually traced). DRAM is an abstraction of the 20x \u041a565\u0420\u04235 bit-sliced array.",
+  "_note": "CPU core + memory. \u0420\u04235 DRAM now bit-sliced (D60-D67, one byte-bank; 2nd bank+video plane TODO). Muxed address (MA)+RAS/CAS are boundary to the address-mux/refresh subsystem (Sheet 2).",
   "chips": [
     {
       "ref": "D1",
@@ -79,7 +80,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "scan (routed A-pins via per-instance pinmap; B-side TODO)"
+        "pins": "scan(routed A-pins via instance pinmap)"
       }
     },
     {
@@ -107,7 +108,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "placeholder(real TBD)",
+        "refdes": "placeholder",
         "pins": "scan(lo straight)"
       }
     },
@@ -170,7 +171,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "inputs+outputs=scan"
+        "pins": "scan"
       }
     },
     {
@@ -217,7 +218,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -251,7 +252,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -285,7 +286,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -319,7 +320,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -353,7 +354,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -387,7 +388,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -421,7 +422,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
@@ -455,45 +456,200 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D15-D22)",
+        "refdes": "scan(D15-22)",
         "pins": "datasheet(2764);data=assumed"
       }
     },
     {
-      "ref": "DRAM",
-      "type": "DRAM",
+      "ref": "D60",
+      "type": "RU5",
       "pins": {
-        "1": "A0",
-        "2": "A1",
-        "3": "A2",
-        "4": "A3",
-        "5": "A4",
-        "6": "A5",
-        "7": "A6",
-        "8": "A7",
-        "9": "A8",
-        "10": "A9",
-        "11": "A10",
-        "12": "A11",
-        "13": "A12",
-        "14": "A13",
-        "15": "A14",
-        "16": "A15",
-        "17": "D0",
-        "18": "D1",
-        "19": "D2",
-        "20": "D3",
-        "21": "D4",
-        "22": "D5",
-        "23": "D6",
-        "24": "D7",
-        "25": "WE_N",
-        "26": "OE_N"
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
       },
       "prov": {
-        "type": "scan(\u041a565\u0420\u04235 array)",
-        "refdes": "placeholder(abstracted; real=20x \u0420\u04235 from D60)",
-        "pins": "placeholder"
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D61",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D62",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D63",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D64",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D65",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D66",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
+      }
+    },
+    {
+      "ref": "D67",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan(array D60+)",
+        "pins": "scan(\u0420\u04235 pinout traced)"
       }
     }
   ],
@@ -887,10 +1043,6 @@
         [
           "D22",
           "10"
-        ],
-        [
-          "DRAM",
-          "1"
         ]
       ]
     },
@@ -932,10 +1084,6 @@
         [
           "D22",
           "9"
-        ],
-        [
-          "DRAM",
-          "2"
         ]
       ]
     },
@@ -977,10 +1125,6 @@
         [
           "D22",
           "8"
-        ],
-        [
-          "DRAM",
-          "3"
         ]
       ]
     },
@@ -1022,10 +1166,6 @@
         [
           "D22",
           "7"
-        ],
-        [
-          "DRAM",
-          "4"
         ]
       ]
     },
@@ -1067,10 +1207,6 @@
         [
           "D22",
           "6"
-        ],
-        [
-          "DRAM",
-          "5"
         ]
       ]
     },
@@ -1112,10 +1248,6 @@
         [
           "D22",
           "5"
-        ],
-        [
-          "DRAM",
-          "6"
         ]
       ]
     },
@@ -1157,10 +1289,6 @@
         [
           "D22",
           "4"
-        ],
-        [
-          "DRAM",
-          "7"
         ]
       ]
     },
@@ -1202,10 +1330,6 @@
         [
           "D22",
           "3"
-        ],
-        [
-          "DRAM",
-          "8"
         ]
       ]
     },
@@ -1251,10 +1375,6 @@
         [
           "D22",
           "25"
-        ],
-        [
-          "DRAM",
-          "9"
         ]
       ]
     },
@@ -1300,10 +1420,6 @@
         [
           "D22",
           "24"
-        ],
-        [
-          "DRAM",
-          "10"
         ]
       ]
     },
@@ -1349,10 +1465,6 @@
         [
           "D22",
           "21"
-        ],
-        [
-          "DRAM",
-          "11"
         ]
       ]
     },
@@ -1398,10 +1510,6 @@
         [
           "D22",
           "23"
-        ],
-        [
-          "DRAM",
-          "12"
         ]
       ]
     },
@@ -1447,10 +1555,6 @@
         [
           "D22",
           "2"
-        ],
-        [
-          "DRAM",
-          "13"
         ]
       ]
     },
@@ -1464,10 +1568,6 @@
         [
           "D6",
           "7"
-        ],
-        [
-          "DRAM",
-          "14"
         ]
       ]
     },
@@ -1481,10 +1581,6 @@
         [
           "D6",
           "6"
-        ],
-        [
-          "DRAM",
-          "15"
         ]
       ]
     },
@@ -1498,10 +1594,6 @@
         [
           "D6",
           "5"
-        ],
-        [
-          "DRAM",
-          "16"
         ]
       ]
     },
@@ -1545,8 +1637,12 @@
           "11"
         ],
         [
-          "DRAM",
-          "17"
+          "D60",
+          "2"
+        ],
+        [
+          "D60",
+          "14"
         ]
       ]
     },
@@ -1590,8 +1686,12 @@
           "12"
         ],
         [
-          "DRAM",
-          "18"
+          "D61",
+          "2"
+        ],
+        [
+          "D61",
+          "14"
         ]
       ]
     },
@@ -1635,8 +1735,12 @@
           "13"
         ],
         [
-          "DRAM",
-          "19"
+          "D62",
+          "2"
+        ],
+        [
+          "D62",
+          "14"
         ]
       ]
     },
@@ -1680,8 +1784,12 @@
           "15"
         ],
         [
-          "DRAM",
-          "20"
+          "D63",
+          "2"
+        ],
+        [
+          "D63",
+          "14"
         ]
       ]
     },
@@ -1725,8 +1833,12 @@
           "16"
         ],
         [
-          "DRAM",
-          "21"
+          "D64",
+          "2"
+        ],
+        [
+          "D64",
+          "14"
         ]
       ]
     },
@@ -1770,8 +1882,12 @@
           "17"
         ],
         [
-          "DRAM",
-          "22"
+          "D65",
+          "2"
+        ],
+        [
+          "D65",
+          "14"
         ]
       ]
     },
@@ -1815,8 +1931,12 @@
           "18"
         ],
         [
-          "DRAM",
-          "23"
+          "D66",
+          "2"
+        ],
+        [
+          "D66",
+          "14"
         ]
       ]
     },
@@ -1860,8 +1980,12 @@
           "19"
         ],
         [
-          "DRAM",
-          "24"
+          "D67",
+          "2"
+        ],
+        [
+          "D67",
+          "14"
         ]
       ]
     },
@@ -1947,19 +2071,6 @@
         ]
       ]
     },
-    "RAM_SEL": {
-      "src": "assumed",
-      "nodes": [
-        [
-          "D6",
-          "11"
-        ],
-        [
-          "DRAM",
-          "26"
-        ]
-      ]
-    },
     "PROM_EN": {
       "src": "scan",
       "nodes": [
@@ -1994,8 +2105,406 @@
           "26"
         ],
         [
-          "DRAM",
-          "25"
+          "D60",
+          "3"
+        ],
+        [
+          "D61",
+          "3"
+        ],
+        [
+          "D62",
+          "3"
+        ],
+        [
+          "D63",
+          "3"
+        ],
+        [
+          "D64",
+          "3"
+        ],
+        [
+          "D65",
+          "3"
+        ],
+        [
+          "D66",
+          "3"
+        ],
+        [
+          "D67",
+          "3"
+        ]
+      ]
+    },
+    "MA0": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "6"
+        ],
+        [
+          "D61",
+          "6"
+        ],
+        [
+          "D62",
+          "6"
+        ],
+        [
+          "D63",
+          "6"
+        ],
+        [
+          "D64",
+          "6"
+        ],
+        [
+          "D65",
+          "6"
+        ],
+        [
+          "D66",
+          "6"
+        ],
+        [
+          "D67",
+          "6"
+        ]
+      ]
+    },
+    "MA1": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "12"
+        ],
+        [
+          "D61",
+          "12"
+        ],
+        [
+          "D62",
+          "12"
+        ],
+        [
+          "D63",
+          "12"
+        ],
+        [
+          "D64",
+          "12"
+        ],
+        [
+          "D65",
+          "12"
+        ],
+        [
+          "D66",
+          "12"
+        ],
+        [
+          "D67",
+          "12"
+        ]
+      ]
+    },
+    "MA2": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "13"
+        ],
+        [
+          "D61",
+          "13"
+        ],
+        [
+          "D62",
+          "13"
+        ],
+        [
+          "D63",
+          "13"
+        ],
+        [
+          "D64",
+          "13"
+        ],
+        [
+          "D65",
+          "13"
+        ],
+        [
+          "D66",
+          "13"
+        ],
+        [
+          "D67",
+          "13"
+        ]
+      ]
+    },
+    "MA3": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "5"
+        ],
+        [
+          "D61",
+          "5"
+        ],
+        [
+          "D62",
+          "5"
+        ],
+        [
+          "D63",
+          "5"
+        ],
+        [
+          "D64",
+          "5"
+        ],
+        [
+          "D65",
+          "5"
+        ],
+        [
+          "D66",
+          "5"
+        ],
+        [
+          "D67",
+          "5"
+        ]
+      ]
+    },
+    "MA4": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "10"
+        ],
+        [
+          "D61",
+          "10"
+        ],
+        [
+          "D62",
+          "10"
+        ],
+        [
+          "D63",
+          "10"
+        ],
+        [
+          "D64",
+          "10"
+        ],
+        [
+          "D65",
+          "10"
+        ],
+        [
+          "D66",
+          "10"
+        ],
+        [
+          "D67",
+          "10"
+        ]
+      ]
+    },
+    "MA5": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "7"
+        ],
+        [
+          "D61",
+          "7"
+        ],
+        [
+          "D62",
+          "7"
+        ],
+        [
+          "D63",
+          "7"
+        ],
+        [
+          "D64",
+          "7"
+        ],
+        [
+          "D65",
+          "7"
+        ],
+        [
+          "D66",
+          "7"
+        ],
+        [
+          "D67",
+          "7"
+        ]
+      ]
+    },
+    "MA6": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "11"
+        ],
+        [
+          "D61",
+          "11"
+        ],
+        [
+          "D62",
+          "11"
+        ],
+        [
+          "D63",
+          "11"
+        ],
+        [
+          "D64",
+          "11"
+        ],
+        [
+          "D65",
+          "11"
+        ],
+        [
+          "D66",
+          "11"
+        ],
+        [
+          "D67",
+          "11"
+        ]
+      ]
+    },
+    "MA7": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "9"
+        ],
+        [
+          "D61",
+          "9"
+        ],
+        [
+          "D62",
+          "9"
+        ],
+        [
+          "D63",
+          "9"
+        ],
+        [
+          "D64",
+          "9"
+        ],
+        [
+          "D65",
+          "9"
+        ],
+        [
+          "D66",
+          "9"
+        ],
+        [
+          "D67",
+          "9"
+        ]
+      ]
+    },
+    "RAS": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "4"
+        ],
+        [
+          "D61",
+          "4"
+        ],
+        [
+          "D62",
+          "4"
+        ],
+        [
+          "D63",
+          "4"
+        ],
+        [
+          "D64",
+          "4"
+        ],
+        [
+          "D65",
+          "4"
+        ],
+        [
+          "D66",
+          "4"
+        ],
+        [
+          "D67",
+          "4"
+        ]
+      ]
+    },
+    "CAS": {
+      "src": "boundary",
+      "nodes": [
+        [
+          "D60",
+          "15"
+        ],
+        [
+          "D61",
+          "15"
+        ],
+        [
+          "D62",
+          "15"
+        ],
+        [
+          "D63",
+          "15"
+        ],
+        [
+          "D64",
+          "15"
+        ],
+        [
+          "D65",
+          "15"
+        ],
+        [
+          "D66",
+          "15"
+        ],
+        [
+          "D67",
+          "15"
         ]
       ]
     }

@@ -13,6 +13,7 @@ LEGEND = {
     "convention": "standard 8080-system wiring assumed from general knowledge, NOT yet traced on the scan",
     "assumed":    "simplifying assumption (bus bit-order / byte-split) pending a scan trace",
     "placeholder":"provisional pin numbers/refdes, not yet sourced",
+    "boundary":   "chip pins traced, but the net's other end is an un-modeled subsystem",
 }
 
 b = json.load(open(sys.argv[1]))
