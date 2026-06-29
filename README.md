@@ -36,7 +36,17 @@ it, not the other way round. No bidirectional sync.
 
 ## Status
 
-Scaffolding only. Nothing built yet.
+LVS pipeline **proven end-to-end on real tooling** (KiCad 10 + Yosys):
+a generated KiCad schematic → `kicad-cli` netlist → `sync/lvs.py` → structural HDL
+reports `IN SYNC` (and localizes faults on a miswired variant). Currently a 3-chip
+subset (CPU/ROM/PPI0); next is extending to all 13 chips.
+
+- ✅ `docs/hardware-map.md` — authoritative map (memory/banking/IO/video) from MAME
+- ✅ `cosim/` — traced 8080 (boots real init; parked at the AT-keyboard handshake)
+- ✅ `hdl/` — structural top (13 chips) → Yosys netlist
+- ✅ `sync/` — connectivity LVS checker (KiCad ↔ HDL), CI-ready
+- ✅ `kicad/` — schematic generator from a board spec; real `kicad-cli` round-trip
+- ⏳ extend LVS to all 13 chips; swap in real Juku schematics when available
 
 ## Layout
 
