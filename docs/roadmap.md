@@ -33,6 +33,10 @@ the climbing scan fraction. Rough order by leverage:
   (R21-R28 pack); chip-selects = CS4/CS5/CS6/CS7 + OE<-ROE (cross-sheet). `BA8-12`
   flipped to `scan`. Provenance **31 -> 36/99**. DB data nets pending 8238/РУ5;
   CS4-7 decode pending cross-sheet trace.
+- **A2 done** — 8238 data pins -> standard 8228 datasheet; РУ5 bit-order confirmed
+  on scan (D60->DB0, D61->DB1, ...). Data bus `DB0-7` flipped to `scan`. Provenance
+  **36 -> 44/99**. Remaining memory item: EPROM chip-selects CS4-7 are cross-sheet
+  (fold into the decoder trace, A4).
 - *Note:* provenance is per-net (weakest link), so a net flips to `scan` only when
   ALL its endpoints are traced — progress is lumpy (later steps flip nets in batches).
   A per-endpoint provenance refinement would make the grind more measurable.

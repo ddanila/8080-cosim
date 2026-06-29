@@ -78,9 +78,13 @@ verified; the bus wiring is the harden-later target.
   lines); **data** D0–D7 ↔ DB straight. ⇒ `BA8–12` flipped to **scan**. [scan]
 - **Chip-selects = CS4 / CS5 / CS6 / CS7** (4 lines, cross-sheet `(2)(3)` — from the
   memory decoder, not a single ROM line); **OE ← ROE** (from D6). [scan]
-- Still pending: the **DB data nets** stay `assumed` until the 8238 data pins (placeholder)
-  and РУ5 data (by-index) are traced; and the exact CS4–7 decode + populated-EPROM
-  count need the cross-sheet decoder trace.
+- **8238 (D5) data pins → standard 8228 datasheet** (D0=15…D7=11; DB0=14…DB7=12);
+  control already matched the scan. CPU-side `DC` + system `DB` nets now grounded.
+- **РУ5 bit-order confirmed on scan**: D60→DB0, D61→DB1, … (read the `DØ/DB1/DB2`
+  labels on the DO pins) — bit-sliced, one chip per DB bit. ⇒ **`DB0–7` flipped to scan.**
+- **A2 done** (memory address+data buses): provenance **36 → 44/99**.
+- *Remaining (cross-sheet, folds into the decoder trace A4):* the EPROM **chip-selects
+  CS4/CS5/CS6/CS7** come from a decoder on another sheet — `ROM_SEL`/`ROE` stay `assumed`.
 
 ## TODO (next passes)
 1. Trace D6 (РТ4) input lines: which buffered address bits + the Port C mode bit.
