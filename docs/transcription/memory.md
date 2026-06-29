@@ -72,6 +72,16 @@ PROM in/out, D7→PROM_EN), **29/57 assumed** (buffered-bus bit-order, EPROM/DRA
 bus + chip-selects not individually traced; DRAM abstracted). The structure is
 verified; the bus wiring is the harden-later target.
 
+## A2 hardening — EPROM bus (scan)
+- EPROM array (D15, D17, …) = **2764-class** (A0–A12, D0–D7, CS=20, OE=22). [scan]
+- **Address** A0–A12 ← buffered bus straight (series pack **R21–R28 1K** on the low
+  lines); **data** D0–D7 ↔ DB straight. ⇒ `BA8–12` flipped to **scan**. [scan]
+- **Chip-selects = CS4 / CS5 / CS6 / CS7** (4 lines, cross-sheet `(2)(3)` — from the
+  memory decoder, not a single ROM line); **OE ← ROE** (from D6). [scan]
+- Still pending: the **DB data nets** stay `assumed` until the 8238 data pins (placeholder)
+  and РУ5 data (by-index) are traced; and the exact CS4–7 decode + populated-EPROM
+  count need the cross-sheet decoder trace.
+
 ## TODO (next passes)
 1. Trace D6 (РТ4) input lines: which buffered address bits + the Port C mode bit.
 2. Identify ROM/EPROM refdes + their CS/OE ← ROM/ROE; data → DB bus.

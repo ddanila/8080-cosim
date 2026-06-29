@@ -29,6 +29,10 @@ the climbing scan fraction. Rough order by leverage:
   D4 B-pins BA8←19, BA9←18, BA10←12, BA11←13, BA12←16, BA13←15, BA14←14, BA15←17.
   BA13–15 (buffer+decode only) → `scan`; BA8–12 stay `assumed` (EPROM taps = A2).
   Provenance **28 → 31/99**.
+- **A2 (partial)** — EPROM array = 2764-class; address/data straight bus taps
+  (R21-R28 pack); chip-selects = CS4/CS5/CS6/CS7 + OE<-ROE (cross-sheet). `BA8-12`
+  flipped to `scan`. Provenance **31 -> 36/99**. DB data nets pending 8238/РУ5;
+  CS4-7 decode pending cross-sheet trace.
 - *Note:* provenance is per-net (weakest link), so a net flips to `scan` only when
   ALL its endpoints are traced — progress is lumpy (later steps flip nets in batches).
   A per-endpoint provenance refinement would make the grind more measurable.
