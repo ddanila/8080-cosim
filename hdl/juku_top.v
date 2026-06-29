@@ -67,19 +67,16 @@ module juku_top (
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
     // ============ memory chips on the buffered buses ============
-    // EPROM array D15..D22 (8x 8Kx8): addr BA[12:0], data DB, OE<-ROE, CS<-decode [CS detail TBD]
+    // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS).
+    // Model the populated pair; the other 6 sockets are unpopulated (Phase-B PCB detail).
     eprom_8k U_D15 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
     eprom_8k U_D16 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D17 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D18 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D19 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D20 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D21 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D22 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
 
-    // DRAM: К565РУ5 64Kx1 array, one byte-bank bit-sliced D60..D67 (8 of the 20 chips;
-    // 2nd bank + video plane TODO). Address is MULTIPLEXED (MA) by the address-mux
-    // subsystem (boundary); RAS/CAS from RAM control (boundary).
+    // DRAM: К565РУ5 64Kx1 array. 32 sockets on the board (4 banks x 8), only 8 POPULATED
+    // = one byte-bank bit-sliced D60..D67 = the real 64KB RAM. The other 24 sockets are
+    // bank-expansion (up to 256KB), unpopulated. There is NO separate video plane -- the
+    // video reads this same bank via the КП14 µP/video mux. Address is MULTIPLEXED (MA);
+    // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see docs/transcription/dram-video-timing.md).
     wire [7:0] MA;                 // muxed row/col address  (from address mux)
     wire ras_n, cas_n;             // (from RAM control / refresh)
     dram_64kx1 U_D60 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
@@ -90,22 +87,7 @@ module juku_top (
     dram_64kx1 U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
     dram_64kx1 U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
     dram_64kx1 U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
-
-    // full 20-chip РУ5 array: bank-1 (D68-D75, on DB) + video plane (D76-D79, on VD).
-    // (bank/video organization assumed; all share the muxed MA + RAS/CAS)
-    wire [3:0] VD;   // video-plane data out (to video readout, boundary)
-    dram_64kx1 U_D68 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
-    dram_64kx1 U_D69 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]));
-    dram_64kx1 U_D70 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]));
-    dram_64kx1 U_D71 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]));
-    dram_64kx1 U_D72 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]));
-    dram_64kx1 U_D73 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
-    dram_64kx1 U_D74 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
-    dram_64kx1 U_D75 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
-    dram_64kx1 U_D76 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[0]), .do_(VD[0]));
-    dram_64kx1 U_D77 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[1]), .do_(VD[1]));
-    dram_64kx1 U_D78 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[2]), .do_(VD[2]));
-    dram_64kx1 U_D79 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[3]), .do_(VD[3]));
+    // (D68-D91 = the other 3 banks' sockets, unpopulated -- added in Phase B for the PCB.)
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
     // sel/en + counter preset are the assumed parts; chips D44-D50/D53 are scan-verified.

@@ -96,7 +96,11 @@ Physical ground-truth (owner + archive), now in the model provenance + `transcri
 - Cluster #1 (DRAM/video timing) traced from the scan: D53 ИД7 RAS/CAS decoder pinned,
   ИЕ7→КП14→РУ5 MA video address, 8253→video sync, clock subsystem. See `dram-video-timing.md`.
 
-Our 52-chip model is now provenance-correct but still **~42 chips short of the real 76**
-(unmodeled glue: bus transceivers 3×ВА86+4×ВА87+170-series, video chain ИР16/АГ3/counters,
-the РЕ3, misc gates). Converging to 76 (+ reducing over-modeled memory to the populated set)
-is the next structural pass — and feeds Phase B directly.
+The model is now an **honest 34-chip baseline** (was 52; removed 18 invented chips — 6
+unpopulated EPROM sockets + 12 unpopulated/phantom-video RU5; dropped the 4 phantom VD
+video-plane nets → 95 nets, 82 scan + 9 prom + 4 boundary). Every chip now corresponds to
+a real *populated* part. It's still **~42 chips short of the real 76** — the unmodeled
+glue: bus transceivers (3×ВА86+4×ВА87+170-series), the video chain (ИР16/АГ3/counters),
+the 2 РЕ3, and misc gates. **Converging to 76 is now purely additive** (trace each cluster
+from the archive schematic + placement drawing → add with scan provenance) — the next
+structural sub-passes, which also produce the full Phase-B BOM.
