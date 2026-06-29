@@ -74,13 +74,27 @@ module mem_decode (
     assign ram_we_n = ~(~rom_sel & ~memw_n);   // writes under ROM overlay are dropped
 endmodule
 
-// ---- memory ----
-module rom_16k (input wire [13:0] A, inout wire [7:0] D, input wire oe_n);
-    assign D = 8'bz; // TODO: $readmemh(ekta43) and drive D when ~oe_n
+// ---- memory map decoder: К556РТ4 256x4 bipolar PROM (D6) ----
+// decodes high address byte A8..A15 -> ROM/RAM/REV/ROE selects (contents from the
+// emulator-recovered map). Enabled by V (from the D7 gate = mode/strobe).
+module decode_prom (input wire [15:8] a, input wire v_en_n,
+                    output wire rom_n, ram_n, rev, roe_n);
+    assign {rom_n, ram_n, rev, roe_n} = 4'b1111;   // stub; truth-table = PROM contents
 endmodule
 
+// ---- ЛА3 NAND gate section (D7) gating the PROM enable ----
+module la3_gate (input wire a, b, output wire y);
+    assign y = ~(a & b);
+endmodule
+
+// ---- EPROM 8Kx8 (К573РФ4-class, D15..D22) ----
+module eprom_8k (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
+    assign d = 8'bz;   // TODO: $readmemh; drive d when selected
+endmodule
+
+// ---- DRAM array abstraction (К565РУ5 64Kx1 x20, from D60) ----
 module ram_64k (input wire [15:0] A, inout wire [7:0] D, input wire we_n, oe_n);
-    assign D = 8'bz; // TODO: behavioral 64Kx8 (board = 20x dram_64kx1)
+    assign D = 8'bz;   // abstract; real = bit-sliced РУ5 array + RAS/CAS/mux/refresh
 endmodule
 
 // ---- peripheral shells ----

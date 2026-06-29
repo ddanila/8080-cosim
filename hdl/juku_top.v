@@ -32,7 +32,7 @@ module juku_top (
     // ---- chip selects + memory enables ----
     wire        cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n;
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
-    wire        rom_oe_n, ram_we_n, ram_oe_n;
+    wire        rom_sel_n, ram_sel_n, rev, roe_n, prom_en_n;
     wire [1:0]  mem_mode;
 
     // ============ CPU core (the discrete chips) ============
@@ -57,12 +57,22 @@ module juku_top (
         .cs_ppi1_n(cs_ppi1_n), .cs_pit0_n(cs_pit0_n), .cs_pit1_n(cs_pit1_n),
         .cs_pit2_n(cs_pit2_n), .cs_fdc_n(cs_fdc_n));
 
-    mem_decode U_MEMDEC (.A(BA), .memr_n(memr_n), .memw_n(memw_n), .mode(mem_mode),
-        .rom_oe_n(rom_oe_n), .ram_oe_n(ram_oe_n), .ram_we_n(ram_we_n));
+    // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
+    la3_gate    U_D7     (.a(memr_n), .b(mem_mode[0]), .y(prom_en_n));   // mode/strobe -> PROM enable [assumed]
+    decode_prom U_DECODE (.a(BA[15:8]), .v_en_n(prom_en_n),
+                          .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
-    // ============ memory (on the buffered buses) ============
-    rom_16k U_ROM (.A(BA[13:0]), .D(DB), .oe_n(rom_oe_n));
-    ram_64k U_RAM (.A(BA), .D(DB), .we_n(ram_we_n), .oe_n(ram_oe_n));
+    // ============ memory chips on the buffered buses ============
+    // EPROM array D15..D22 (8x 8Kx8): addr BA[12:0], data DB, OE<-ROE, CS<-decode [CS detail TBD]
+    eprom_8k U_D15 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D16 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D17 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D18 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D19 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D20 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D21 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k U_D22 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    ram_64k  U_RAM (.A(BA), .D(DB), .we_n(memw_n), .oe_n(ram_sel_n));
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

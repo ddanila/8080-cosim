@@ -52,6 +52,17 @@ behind MAME's behavioral 4-mode `memory_view`. D7 (ЛА3) has ≥2 NAND sections
 (pins 12,13→11 drives the PROM enable; 9,10→8 another). Exact mode-bit cross-sheet
 route from the 8255 Port C still to trace [?].
 
+## Modeled in HDL + LVS-green (option A outcome)
+`hdl/juku_top.v` now instantiates the memory chips: **decode_prom (D6)**,
+**la3_gate (D7)**, **8× eprom_8k (D15–D22)**, **ram_64k (DRAM, abstracting the
+РУ5 array)**, wired to the buffered BA bus / system DB bus / decode selects.
+Board spec + map extended to match → **LVS IN SYNC, 15 chips / 57 nets**.
+
+Provenance: **28/57 scan-grounded** (CPU-core internals + decode mechanism: D6
+PROM in/out, D7→PROM_EN), **29/57 assumed** (buffered-bus bit-order, EPROM/DRAM
+bus + chip-selects not individually traced; DRAM abstracted). The structure is
+verified; the bus wiring is the harden-later target.
+
 ## TODO (next passes)
 1. Trace D6 (РТ4) input lines: which buffered address bits + the Port C mode bit.
 2. Identify ROM/EPROM refdes + their CS/OE ← ROM/ROE; data → DB bus.
