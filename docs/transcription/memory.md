@@ -33,8 +33,11 @@ Socketed chips (Sheet 1 note): **D2, D6, D8, D15…D22**. [scan]
   A0=10, A1=9, A2=8, A3=7, A4=6, A5=5, A6=4, A7=3, A8=25, A9=24, A10=21, A11=23,
   A12=2; **CS=20, OE=22**; D0–D7. Address ← buffered bus, data → DB, CS ← decode
   selects, OE ← ROE. R21–R28 (1k) bus pack. [scan]
-- **RAM**: К565РУ5 DRAM array (20×, Sheet 2) — addressed via the μP/video address
-  mux, selected by RAM/REV; RAS/CAS/WE + refresh logic. [scan, to transcribe]
+- **RAM**: К565РУ5 (64K×1 DRAM) array, **refdes from D60** (Sheet 2). [scan]
+  One chip per data bit; multiplexed address A0–A7 = pins 6,12,13,5,10,7,11,9;
+  **RAS=R, CAS=15, WE=3, DIN=2, DOUT=14**. Shared RAS/CAS/WE + multiplexed
+  address (μP-vs-video mux) across the array; per-chip DOUT/DIN = one bus bit.
+  20 chips ⇒ bank/video split (exact bit↔chip↔bank mapping to trace).
 
 ## Banking mechanism — summary (scan)
 ```
