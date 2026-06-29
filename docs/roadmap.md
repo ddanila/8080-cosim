@@ -87,10 +87,16 @@ cores (Verilog die-replica vs C superzazu) produce the same framebuffer. Running
 must be latched on a `clk` edge *inside* the sync window, not at `posedge sync`
 (sync and D update on the same f2 edge → a posedge-sync read gets the stale bus).
 
-Next steps: (3) decompose the monolithic behavioral "system" into the actual chip
-instances (ROM, RAM, decode PROMs D2/D6 with emulator-recovered contents, 8255 for
-banking) wired per the netlist; (4) drive that through the structural top so the
-*verified wiring* carries the boot; (5) keep cross-validating vs cosim + MAME.
+**Step 3a DONE:** the memory subsystem is now **discrete chip modules on a shared
+tri-state bus** (`hdl/sim/juku_chips_tb.v`), not a monolith: `mem_decode_prom` (D6
+К556РТ4, the recovered map as a truth table), `eprom` (ekta37), `dram` (К565РУ5),
+and an `io_block` whose 8255#0 Port-C register drives the banking mode → D6. The boot
+flows CPU → D6 decode → ROM/RAM drive the bus. **Byte-identical to cosim at 6000
+video writes** (full-banner / banking-path validation running).
+
+Next steps: (3b) turn the I/O `io_block` into D2-decoded peripheral chips (8255/8253/
+8259/8251); (4) drive it through the structural top so the *verified wiring* carries
+the boot; (5) keep cross-validating vs cosim + MAME.
 LVS stays green (device internals don't change the top netlist).
 
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral
