@@ -92,6 +92,26 @@ module eprom_8k (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n)
     assign d = 8'bz;   // TODO: $readmemh; drive d when selected
 endmodule
 
+// ===== clock subsystem (discrete; replaces the non-existent 8224) =====
+module ln1_osc   (input wire xin, output wire osc);                  // D59 ЛН1 crystal oscillator
+    assign osc = 1'bz; endmodule
+module clk_phase (input wire osc, output wire phi1, phi2, phi2ttl);  // D35 ЛН5 phase generator
+    assign {phi1, phi2, phi2ttl} = 3'bz; endmodule
+module stb_gen   (input wire osc, output wire stb);                  // D38 ЛА1 status strobe
+    assign stb = 1'bz; endmodule
+
+// ===== I/O chip-select decoder: К555ИД7 (74138) =====
+module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
+    assign y_n = 8'hFF; endmodule
+
+// ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====
+module ie7_ctr   (input wire clk, load_n, input wire [3:0] d, output wire [3:0] q, output wire co); // D44-47 ИЕ7
+    assign q = 4'bz; assign co = 1'bz; endmodule
+module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y);  // D48-50 КП14 quad 2:1
+    assign y = 4'bz; endmodule
+module rascas_dec (input wire a, b, c, input wire g, output wire [3:0] y_n);  // D53 ИД7 RAS/CAS/bank
+    assign y_n = 4'bz; endmodule
+
 // ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
 module dram_64kx1 (input wire [7:0] ma,            // multiplexed row/col address
                    input wire ras_n, cas_n, we_n, di,

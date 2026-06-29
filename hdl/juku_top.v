@@ -41,7 +41,11 @@ module juku_top (
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
 
-    // (no 8224 instance — clock/reset/ready/ststb arrive from the discrete subsystem above)
+    // ---- discrete clock subsystem (D59 osc -> D35 phase / D38 strobe) ----
+    wire osc_clk;
+    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
+    clk_phase U_D35 (.osc(osc_clk), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
+    stb_gen   U_D38 (.osc(osc_clk), .stb(ststb_n));
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),
@@ -51,10 +55,11 @@ module juku_top (
     buf_8286  U_BUFL (.Ain(A[7:0]),  .Aout(BA[7:0]),  .oe_n(buf_oe_n), .t(buf_t));
     buf_8286  U_BUFH (.Ain(A[15:8]), .Aout(BA[15:8]), .oe_n(buf_oe_n), .t(buf_t));
 
-    // ============ I/O chip-select decode ============
-    // Real board uses a К555ИД7 (74138) -- refdes/wiring not yet traced, so the
-    // chip-selects are boundary nets here (driven by that decoder when modeled).
-    // (no io_decode instance)
+    // ============ I/O chip-select decode: К555ИД7 (74138) ============
+    // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
+    // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
+    io_dec138 U_DID7 (.a(BA[2]), .b(BA[3]), .c(BA[4]), .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
+        .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
     la3_gate    U_D7     (.a(memr_n), .b(mem_mode[0]), .y(prom_en_n));   // mode/strobe -> PROM enable [assumed]
@@ -85,6 +90,33 @@ module juku_top (
     dram_64kx1 U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
     dram_64kx1 U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
     dram_64kx1 U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
+
+    // full 20-chip РУ5 array: bank-1 (D68-D75, on DB) + video plane (D76-D79, on VD).
+    // (bank/video organization assumed; all share the muxed MA + RAS/CAS)
+    wire [3:0] VD;   // video-plane data out (to video readout, boundary)
+    dram_64kx1 U_D68 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
+    dram_64kx1 U_D69 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]));
+    dram_64kx1 U_D70 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]));
+    dram_64kx1 U_D71 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]));
+    dram_64kx1 U_D72 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]));
+    dram_64kx1 U_D73 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
+    dram_64kx1 U_D74 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
+    dram_64kx1 U_D75 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
+    dram_64kx1 U_D76 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[0]), .do_(VD[0]));
+    dram_64kx1 U_D77 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[1]), .do_(VD[1]));
+    dram_64kx1 U_D78 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[2]), .do_(VD[2]));
+    dram_64kx1 U_D79 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(VD[3]), .do_(VD[3]));
+
+    // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
+    // sel/en + counter preset are the assumed parts; chips D44-D50/D53 are scan-verified.
+    wire [3:0] vctr_lo, vctr_hi; wire co0, co1, co2; wire [1:0] rc_nc;
+    ie7_ctr  U_D44 (.clk(phi2ttl), .load_n(1'b1), .d(4'b0), .q(vctr_lo), .co(co0));
+    ie7_ctr  U_D45 (.clk(co0),     .load_n(1'b1), .d(4'b0), .q(vctr_hi), .co(co1));
+    ie7_ctr  U_D46 (.clk(co1),     .load_n(1'b1), .d(4'b0), .q(),        .co(co2));
+    ie7_ctr  U_D47 (.clk(co2),     .load_n(1'b1), .d(4'b0), .q(),        .co());
+    kp14_mux U_D48 (.a(BA[3:0]), .b(vctr_lo), .sel(1'b0), .en_n(1'b0), .y(MA[3:0]));
+    kp14_mux U_D49 (.a(BA[7:4]), .b(vctr_hi), .sel(1'b0), .en_n(1'b0), .y(MA[7:4]));
+    rascas_dec U_D53 (.a(BA[8]), .b(BA[9]), .c(1'b0), .g(1'b1), .y_n({rc_nc, cas_n, ras_n}));
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

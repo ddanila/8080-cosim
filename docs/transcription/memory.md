@@ -39,6 +39,15 @@ Socketed chips (Sheet 1 note): **D2, D6, D8, D15…D22**. [scan]
   address (μP-vs-video mux) across the array; per-chip DOUT/DIN = one bus bit.
   20 chips ⇒ bank/video split (exact bit↔chip↔bank mapping to trace).
 
+## Boundaries closed (full model)
+- **Full 20-chip РУ5 array** modeled: bank0 D60–67 + bank1 D68–75 (on DB) + video
+  plane D76–79 (on VD). Bank/video org assumed; all share the muxed MA + RAS/CAS.
+- **Address mux closed**: D48/D49 (КП14) drive MA; D53 (ИД7) drives RAS/CAS;
+  video counters D44–47 (ИЕ7) feed the mux. No more MA/RAS/CAS boundary.
+- **Clock** (D59/D35/D38) → CPU Φ1/Φ2 + 8238 STSTB; **I/O decoder** (ИД7 DID7) →
+  all I/O chip-selects. New chips scan-identified; their pinouts/decode wiring are
+  placeholder/assumed (provenance-tagged). Full board: **52 chips, 99 nets, IN SYNC.**
+
 ## Banking mechanism — summary (scan)
 ```
 A8..A15 ──► D6 (К556РТ4 PROM) ──► ROM / RAM / REV / ROE selects
