@@ -26,6 +26,11 @@ fp-info-cache
 *.lst
 *.tmp.hex
 
+# cosim artifacts
+cosim/trace
+vram_*.bin
+*.png
+
 # Python
 __pycache__/
 *.pyc
