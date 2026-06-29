@@ -16,13 +16,9 @@ module cpu_8080 (
     assign {dbin, wr_n, sync, hlda, inte, wait_o} = 6'b011000;
 endmodule
 
-// ---- i8224 clock generator (КР580ГФ24) ----
-module clk_8224 (
-    input  wire osc, resin, rdyin, sync,
-    output wire phi1, phi2, phi2ttl, reset, ready, ststb_n
-);
-    assign {phi1, phi2, phi2ttl, reset, ready, ststb_n} = 6'b0;
-endmodule
+// NOTE: no clk_8224 module — this board generates the clock discretely
+// (crystal + ЛН1 oscillator D59 + phase gates D33/D35/D36/D38). To be modeled
+// as its own clock subsystem; the CPU core treats Φ1/Φ2/RESET/READY as boundary nets.
 
 // ---- i8238 system controller (КР580ВК38) ----
 module sysctl_8238 (

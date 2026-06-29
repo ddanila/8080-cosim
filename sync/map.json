@@ -3,8 +3,7 @@
     "D1": "U_CPU",
     "D4": "U_BUFH",
     "D7": "U_BUFL",
-    "D5": "U_SYS",
-    "D90": "U_CLK"
+    "D5": "U_SYS"
   },
   "pinmaps": {
     "kicad": {
@@ -93,18 +92,6 @@
         "16": "DB5",
         "18": "DB6",
         "20": "DB7"
-      },
-      "CLK8224": {
-        "1": "RESIN",
-        "2": "RDYIN",
-        "3": "OSC",
-        "4": "SYNC",
-        "5": "PHI1",
-        "6": "PHI2",
-        "7": "PHI2TTL",
-        "8": "RESET",
-        "9": "READY",
-        "10": "STSTB_N"
       }
     }
   }

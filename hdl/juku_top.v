@@ -15,10 +15,11 @@ module juku_top (
     wire [7:0]  D;          // CPU data/status (mux) <-> 8238
     wire        dbin, wr_n, sync, hlda, inte, wait_o;
 
-    // ---- clock / reset ----
+    // ---- clock / reset domain (boundary to a DISCRETE subsystem) ----
+    // The real board has NO 8224: clock = crystal Z1 + D59 (ЛН1) oscillator +
+    // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
+    // READY from D30, STSTB(8238) from D13. Driven by that subsystem, not modeled here.
     wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;
-    wire        resin = ~reset_n;
-    wire        rdyin = 1'b1;
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
     wire [15:0] BA;         // buffered address bus
@@ -40,9 +41,7 @@ module juku_top (
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
 
-    clk_8224  U_CLK (.osc(clk), .resin(resin), .rdyin(rdyin), .sync(sync),
-                     .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl),
-                     .reset(reset_sys), .ready(ready), .ststb_n(ststb_n));
+    // (no 8224 instance — clock/reset/ready/ststb arrive from the discrete subsystem above)
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),

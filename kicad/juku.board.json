@@ -2,9 +2,30 @@
   "_legend": {
     "scan": "traced off the scan",
     "datasheet": "standard datasheet pin",
-    "convention": "8080-system standard, not yet scan-traced",
-    "assumed": "bus bit-order/byte-split assumed",
-    "convention-WRONG:scan-says-D13": "modeled per convention but scan shows a different source -- needs remodel"
+    "boundary": "crosses into another subsystem; checked when that subsystem is transcribed"
+  },
+  "_note": "CPU core = D1(8080)+D4(8286 high)+D7(8286 low)+D5(8238). All 27 internal nets scan-traced.",
+  "_boundary_to_clock_subsystem": {
+    "note": "NO 8224 on this board. CPU \u03a61/\u03a62<-D35(\u041b\u041d5), RESET<-D13, READY<-D30, SYNC->status logic, 8238 STSTB<-D13. Discrete osc D59+gates D33/D35/D36/D38 (Sheet2). Transcribe as its own subsystem.",
+    "drivers": {
+      "PHI1": "D35",
+      "PHI2": "D35",
+      "STB": "D38",
+      "RESET": "D13",
+      "READY": "D30",
+      "STSTB_8238": "D13"
+    }
+  },
+  "_traced_D4_highbyte_Apins": {
+    "A8": 8,
+    "A9": 7,
+    "A10": 1,
+    "A11": 2,
+    "A12": 5,
+    "A13": 4,
+    "A14": 3,
+    "A15": 6,
+    "note": "physical 8286 A-pins (routed, not straight); needs per-instance pinmap + B-side trace for PCB fidelity"
   },
   "chips": [
     {
@@ -147,27 +168,6 @@
         "type": "scan",
         "refdes": "scan",
         "pins": "control=scan;data=placeholder"
-      }
-    },
-    {
-      "ref": "D90",
-      "type": "CLK8224",
-      "pins": {
-        "1": "RESIN",
-        "2": "RDYIN",
-        "3": "OSC",
-        "4": "SYNC",
-        "5": "PHI1",
-        "6": "PHI2",
-        "7": "PHI2TTL",
-        "8": "RESET",
-        "9": "READY",
-        "10": "STSTB_N"
-      },
-      "prov": {
-        "type": "convention",
-        "refdes": "placeholder",
-        "pins": "placeholder"
       }
     }
   ],
@@ -522,96 +522,6 @@
           "2"
         ]
       ]
-    },
-    "STSTB": {
-      "src": "convention-WRONG:scan-says-D13",
-      "nodes": [
-        [
-          "D90",
-          "10"
-        ],
-        [
-          "D5",
-          "1"
-        ]
-      ]
-    },
-    "PHI1": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "22"
-        ],
-        [
-          "D90",
-          "5"
-        ]
-      ]
-    },
-    "PHI2": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "15"
-        ],
-        [
-          "D90",
-          "6"
-        ]
-      ]
-    },
-    "READY": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "23"
-        ],
-        [
-          "D90",
-          "9"
-        ]
-      ]
-    },
-    "RESET": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "12"
-        ],
-        [
-          "D90",
-          "8"
-        ]
-      ]
-    },
-    "SYNC": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "19"
-        ],
-        [
-          "D90",
-          "4"
-        ]
-      ]
     }
-  },
-  "_note": "CPU core. D4=HIGH-byte addr buffer (A-pins routed, traced), D7=LOW-byte (straight). 8286 buffer A-pin numbers differ per instance (routing); a per-instance pinmap is needed for exact PCB pins (logical connectivity CPU A_k<->BA_k is preserved).",
-  "_traced_D4_highbyte_Apins": {
-    "A8": 8,
-    "A9": 7,
-    "A10": 1,
-    "A11": 2,
-    "A12": 5,
-    "A13": 4,
-    "A14": 3,
-    "A15": 6,
-    "note": "physical 8286 A-pin each CPU high-addr bit connects to (routed, not straight). Bit identity preserved end-to-end; needs per-instance pinmap + B-side trace to make the netlist pin-faithful."
   }
 }
