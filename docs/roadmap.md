@@ -76,10 +76,21 @@ netlist is fabrication-faithful except those inherently-off-schematic / intricat
 **Step 1 DONE:** vendored **vm80a** (die-accurate КР580ВМ80А, CC-BY 3.0) in `hdl/vendor/`;
 smoke test (`hdl/sim/vm80a_smoke_tb.v`) runs a trivial program through the real 8080
 bus protocol in iverilog -> store lands correctly (PASS). We now have a real 8080 core.
-Next steps: (2) drop vm80a into the `cpu_8080` slot; (3) give the boot-critical chips
-behavior -- ROM(ekta37), RAM, decode PROMs D2/D6 with emulator-recovered contents,
-8255 for banking; (4) simulate the structural top -> banner in VRAM; (5) cross-validate
-vs cosim + MAME. LVS stays green (device internals don't change the top netlist).
+**Step 2 DONE:** the die-accurate vm80a **boots the real Juku BIOS (ekta37)** in
+iverilog (`hdl/sim/juku_sim_tb.v`). The "system" is a behavioral memory/banking/I-O
+model mirroring cosim (4-mode overlay, Port-C banking, IN=output-latch), driven
+through the real 8080 status-byte bus protocol. **Cross-validated: the VRAM is
+byte-for-byte IDENTICAL to cosim** after 6000 video writes — two independent CPU
+cores (Verilog die-replica vs C superzazu) produce the same framebuffer. Running
+`+maxvram=43000` draws the full boot banner. Key bug found+fixed: the status byte
+must be latched on a `clk` edge *inside* the sync window, not at `posedge sync`
+(sync and D update on the same f2 edge → a posedge-sync read gets the stale bus).
+
+Next steps: (3) decompose the monolithic behavioral "system" into the actual chip
+instances (ROM, RAM, decode PROMs D2/D6 with emulator-recovered contents, 8255 for
+banking) wired per the netlist; (4) drive that through the structural top so the
+*verified wiring* carries the boot; (5) keep cross-validating vs cosim + MAME.
+LVS stays green (device internals don't change the top netlist).
 
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral
   models (8080 core + ROM/RAM with content + 8255/8253/8259/…), or bind the `cosim/`

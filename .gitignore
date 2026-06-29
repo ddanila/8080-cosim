@@ -25,6 +25,8 @@ fp-info-cache
 # ROM build intermediates
 *.lst
 *.tmp.hex
+hdl/sim/*.hex
+
 
 # cosim artifacts
 cosim/trace
