@@ -65,7 +65,25 @@ byte split between D4 and its sibling) needs careful per-wire tracing on the sca
 the slow part. For an *independent* LVS check the wire order must be read from the
 scan (not assumed), else the check is circular.
 
-## Next
-1. Source the 8238 (D5) pinout (scan).
-2. Trace the address byte-split + bit order (D4 vs sibling) from the scan.
-3. Build `kicad/juku.board.json` CPU-core block; generate; LVS vs refined HDL.
+## Status: CPU-core block built + LVS-green — but mostly NOT scan-traced yet
+`kicad/juku.board.json` holds the CPU core (D1 8080, D4/D7 8286, D5 8238, D90 8224)
+→ `kicad-cli` netlist → **LVS vs refined HDL = IN SYNC (33 nets)**. Every net and
+chip carries a **provenance tag**; run `python3 sync/provenance.py kicad/juku.board.json`.
+
+**Honest provenance right now:** scan/datasheet-grounded nets = **0/33**.
+- `scan`-grounded: chip *identities* (D1=8080, D4=8286, D5=8238) and D1/D4 *pinouts*.
+- `assumed` (24 nets): address + data **bus bit-order / byte-split** (straight-through, NOT traced).
+- `convention` (9 nets): clock/control wiring (8224↔CPU, CPU↔8238) — **8224 on Sheet 2 not even read yet**; pure 8080-system convention.
+
+So the *structure* is right but the *wires* are inference, not the scan. LVS only
+proves the schematic-model matches the HDL-model — both currently encode the same
+assumptions, so this is a consistency check, not yet an independent verification.
+
+## Harden-against-scan list (turn `assumed`/`convention` → `scan`)
+1. Trace address byte-split (D4 vs D7) + exact bit order on the scan.
+2. Trace data-bus bit pairing CPU↔8238.
+3. Read 8238 (D5) real pinout + the CPU→8238 control wiring.
+4. Read Sheet 2: 8224 refdes/pinout + its Φ1/Φ2/RESET/READY/STSTB wiring.
+
+## Next subsystem
+Memory: ROM/EPROM array, РУ5 DRAM array, address decode + 4-mode bank logic.

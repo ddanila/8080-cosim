@@ -70,7 +70,8 @@ def main():
         px, py = pos[c["ref"]]
         out.append(instance(c["ref"], c["type"], px, py, n)); n += 1
 
-    for net, nodes in spec["nets"].items():
+    for net, entry in spec["nets"].items():
+        nodes = entry["nodes"] if isinstance(entry, dict) else entry  # tagged or bare
         for ref, pin in nodes:
             t = ctype[ref]
             if pin not in pin_index[t]:

@@ -1,0 +1,606 @@
+{
+  "_legend": {
+    "scan": "off the scan",
+    "datasheet": "standard datasheet pin",
+    "convention": "8080-system standard, not yet scan-traced",
+    "assumed": "bus bit-order/byte-split assumed",
+    "placeholder": "provisional, not sourced"
+  },
+  "_note": "CPU-core subsystem. Provenance per net ('src') and per chip ('prov'). Only chip identities + D1/D4 pinouts are scan/datasheet-grounded; the clock and bus bit-order are convention/assumed pending scan tracing.",
+  "chips": [
+    {
+      "ref": "D1",
+      "type": "CPU8080",
+      "pins": {
+        "25": "A0",
+        "26": "A1",
+        "27": "A2",
+        "29": "A3",
+        "30": "A4",
+        "31": "A5",
+        "32": "A6",
+        "33": "A7",
+        "34": "A8",
+        "35": "A9",
+        "1": "A10",
+        "40": "A11",
+        "37": "A12",
+        "38": "A13",
+        "39": "A14",
+        "36": "A15",
+        "10": "D0",
+        "9": "D1",
+        "8": "D2",
+        "7": "D3",
+        "3": "D4",
+        "4": "D5",
+        "5": "D6",
+        "6": "D7",
+        "22": "PHI1",
+        "15": "PHI2",
+        "23": "READY",
+        "12": "RESET",
+        "19": "SYNC",
+        "17": "DBIN",
+        "18": "WR_N",
+        "21": "HLDA",
+        "14": "INTR",
+        "16": "INTE",
+        "24": "WAIT_O",
+        "13": "HOLD"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet"
+      }
+    },
+    {
+      "ref": "D4",
+      "type": "BUF8286",
+      "pins": {
+        "1": "AIN0",
+        "2": "AIN1",
+        "3": "AIN2",
+        "4": "AIN3",
+        "5": "AIN4",
+        "6": "AIN5",
+        "7": "AIN6",
+        "8": "AIN7",
+        "9": "OE_N",
+        "11": "T",
+        "12": "AOUT0",
+        "13": "AOUT1",
+        "14": "AOUT2",
+        "15": "AOUT3",
+        "16": "AOUT4",
+        "17": "AOUT5",
+        "18": "AOUT6",
+        "19": "AOUT7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet"
+      }
+    },
+    {
+      "ref": "D7",
+      "type": "BUF8286",
+      "pins": {
+        "1": "AIN0",
+        "2": "AIN1",
+        "3": "AIN2",
+        "4": "AIN3",
+        "5": "AIN4",
+        "6": "AIN5",
+        "7": "AIN6",
+        "8": "AIN7",
+        "9": "OE_N",
+        "11": "T",
+        "12": "AOUT0",
+        "13": "AOUT1",
+        "14": "AOUT2",
+        "15": "AOUT3",
+        "16": "AOUT4",
+        "17": "AOUT5",
+        "18": "AOUT6",
+        "19": "AOUT7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "assumed",
+        "pins": "datasheet"
+      }
+    },
+    {
+      "ref": "D5",
+      "type": "SYS8238",
+      "pins": {
+        "1": "D0",
+        "2": "D1",
+        "3": "D2",
+        "4": "D3",
+        "5": "D4",
+        "6": "D5",
+        "7": "D6",
+        "8": "D7",
+        "9": "DB0",
+        "10": "DB1",
+        "11": "DB2",
+        "12": "DB3",
+        "13": "DB4",
+        "14": "DB5",
+        "15": "DB6",
+        "16": "DB7",
+        "17": "DBIN",
+        "18": "WR_N",
+        "19": "HLDA",
+        "20": "STSTB_N",
+        "21": "BUSEN_N",
+        "22": "MEMR_N",
+        "23": "MEMW_N",
+        "24": "IORD_N",
+        "25": "IOWR_N",
+        "26": "INTA_N"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D90",
+      "type": "CLK8224",
+      "pins": {
+        "1": "RESIN",
+        "2": "RDYIN",
+        "3": "OSC",
+        "4": "SYNC",
+        "5": "PHI1",
+        "6": "PHI2",
+        "7": "PHI2TTL",
+        "8": "RESET",
+        "9": "READY",
+        "10": "STSTB_N"
+      },
+      "prov": {
+        "type": "convention",
+        "refdes": "placeholder",
+        "pins": "placeholder"
+      }
+    }
+  ],
+  "nets": {
+    "A0": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "25"
+        ],
+        [
+          "D4",
+          "1"
+        ]
+      ]
+    },
+    "A1": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "26"
+        ],
+        [
+          "D4",
+          "2"
+        ]
+      ]
+    },
+    "A2": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "27"
+        ],
+        [
+          "D4",
+          "3"
+        ]
+      ]
+    },
+    "A3": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "29"
+        ],
+        [
+          "D4",
+          "4"
+        ]
+      ]
+    },
+    "A4": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "30"
+        ],
+        [
+          "D4",
+          "5"
+        ]
+      ]
+    },
+    "A5": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "31"
+        ],
+        [
+          "D4",
+          "6"
+        ]
+      ]
+    },
+    "A6": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "32"
+        ],
+        [
+          "D4",
+          "7"
+        ]
+      ]
+    },
+    "A7": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "33"
+        ],
+        [
+          "D4",
+          "8"
+        ]
+      ]
+    },
+    "A8": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "34"
+        ],
+        [
+          "D7",
+          "1"
+        ]
+      ]
+    },
+    "A9": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "35"
+        ],
+        [
+          "D7",
+          "2"
+        ]
+      ]
+    },
+    "A10": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "1"
+        ],
+        [
+          "D7",
+          "3"
+        ]
+      ]
+    },
+    "A11": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "40"
+        ],
+        [
+          "D7",
+          "4"
+        ]
+      ]
+    },
+    "A12": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "37"
+        ],
+        [
+          "D7",
+          "5"
+        ]
+      ]
+    },
+    "A13": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "38"
+        ],
+        [
+          "D7",
+          "6"
+        ]
+      ]
+    },
+    "A14": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "39"
+        ],
+        [
+          "D7",
+          "7"
+        ]
+      ]
+    },
+    "A15": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "36"
+        ],
+        [
+          "D7",
+          "8"
+        ]
+      ]
+    },
+    "D0": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "10"
+        ],
+        [
+          "D5",
+          "1"
+        ]
+      ]
+    },
+    "D1": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "9"
+        ],
+        [
+          "D5",
+          "2"
+        ]
+      ]
+    },
+    "D2": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "8"
+        ],
+        [
+          "D5",
+          "3"
+        ]
+      ]
+    },
+    "D3": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "7"
+        ],
+        [
+          "D5",
+          "4"
+        ]
+      ]
+    },
+    "D4": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "3"
+        ],
+        [
+          "D5",
+          "5"
+        ]
+      ]
+    },
+    "D5": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "4"
+        ],
+        [
+          "D5",
+          "6"
+        ]
+      ]
+    },
+    "D6": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "5"
+        ],
+        [
+          "D5",
+          "7"
+        ]
+      ]
+    },
+    "D7": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "6"
+        ],
+        [
+          "D5",
+          "8"
+        ]
+      ]
+    },
+    "PHI1": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "22"
+        ],
+        [
+          "D90",
+          "5"
+        ]
+      ]
+    },
+    "PHI2": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "15"
+        ],
+        [
+          "D90",
+          "6"
+        ]
+      ]
+    },
+    "READY": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "23"
+        ],
+        [
+          "D90",
+          "9"
+        ]
+      ]
+    },
+    "RESET": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "12"
+        ],
+        [
+          "D90",
+          "8"
+        ]
+      ]
+    },
+    "SYNC": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "19"
+        ],
+        [
+          "D90",
+          "4"
+        ]
+      ]
+    },
+    "DBIN": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "17"
+        ],
+        [
+          "D5",
+          "17"
+        ]
+      ]
+    },
+    "WR": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "18"
+        ],
+        [
+          "D5",
+          "18"
+        ]
+      ]
+    },
+    "HLDA": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D1",
+          "21"
+        ],
+        [
+          "D5",
+          "19"
+        ]
+      ]
+    },
+    "STSTB": {
+      "src": "convention",
+      "nodes": [
+        [
+          "D90",
+          "10"
+        ],
+        [
+          "D5",
+          "20"
+        ]
+      ]
+    }
+  }
+}
