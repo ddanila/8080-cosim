@@ -1,0 +1,36 @@
+# Build / sim artifacts
+obj_dir/
+*.o
+*.a
+*.out
+*.vcd
+*.fst
+*.json.bak
+
+# Verilator/Yosys generated
+V*.cpp
+V*.h
+*.mk
+
+# KiCad backups & autosave
+*-bak
+*.bak
+*.kicad_pcb-bak
+*.kicad_sch-bak
+_autosave-*
+fp-info-cache
+*.lck
+*.000
+
+# ROM build intermediates
+*.lst
+*.tmp.hex
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
