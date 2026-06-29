@@ -39,6 +39,15 @@ Socketed chips (Sheet 1 note): **D2, D6, D8, D15…D22**. [scan]
   address (μP-vs-video mux) across the array; per-chip DOUT/DIN = one bus bit.
   20 chips ⇒ bank/video split (exact bit↔chip↔bank mapping to trace).
 
+## A5 hardening — address mux + video counters (scan)
+- **КП14 muxes D48/D49**: A-inputs = μP address (BA), B-inputs = video counters,
+  Q-outputs → РУ5 muxed address (MA); select via the E13 strap. [scan]
+- **ИЕ7 counters D44–D46** cascade (CO chain) → mux B-inputs (video address). [scan]
+- Flipped to `scan` (bit-parallel per КП14/ИЕ7 datasheet): **BA0–7** (μP-addr → mux),
+  **MA0–7** (mux → РУ5), **VCTRLO/HI**, **CO0–2**. Provenance **47 → 74/99**.
+- Remaining DRAM piece: **RAS/CAS** (reported D53 ИД7 + R49–R52, not personally
+  confirmed) + the РУ5 RAS/CAS-gating/refresh — intricate DRAM-controller timing.
+
 ## Boundaries closed (full model)
 - **Full 20-chip РУ5 array** modeled: bank0 D60–67 + bank1 D68–75 (on DB) + video
   plane D76–79 (on VD). Bank/video org assumed; all share the muxed MA + RAS/CAS.

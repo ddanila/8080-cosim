@@ -49,6 +49,10 @@ the climbing scan fraction. Rough order by leverage:
 - **Milestone A refined:** a handful of nets (PROM-decode: CS_*, ROM_SEL, ROE, CS4-7)
   are inherently PROM-internal -> they reach `prom`(contents off-schematic), not `scan`.
   The achievable target is "all WIRING traced; PROM decode contents = emulator-recovered."
+- **A5 done (main batch)** — address mux КП14 D48/D49 (A=μP BA, B=video counter,
+  Q->РУ5 MA) + ИЕ7 counters D44-46 read on scan. Flipped BA0-7, MA0-7, VCTR, CO ->
+  `scan` (bit-parallel per datasheet). Provenance **47 -> 74/99**. Remaining: RAS/CAS
+  (D53, DRAM-controller timing, not confirmed).
 - *Note:* provenance is per-net (weakest link), so a net flips to `scan` only when
   ALL its endpoints are traced — progress is lumpy (later steps flip nets in batches).
   A per-endpoint provenance refinement would make the grind more measurable.
