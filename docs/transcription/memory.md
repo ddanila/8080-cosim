@@ -7,11 +7,14 @@ MAME abstracts banking as a 4-mode `memory_view` selected by 8255#0 Port C. The
 **real board decodes the map with a bipolar PROM**:
 
 - **D6 = К556РТ4** (256×4 bipolar PROM), the address-map / bank decoder. [scan]
-  - Inputs A0–A7 = pins 5,6,7,4,3,2,1,15 ← buffered address (and very likely the
-    8255 Port C mode bit) — **exact input lines TODO** [?].
+  - **Inputs = the high address byte A8–A15** (traced): [scan]
+    PROM A0(pin5)←A15, A1(6)←A14, A2(7)←A13, A3(4)←A12, A4(3)←A11,
+    A5(2)←A10, A6(1)←A9, A7(15)←A8. ⇒ map decoded at **256-byte page** resolution.
   - Outputs: **ROM** = D0/pin12, **RAM** = D1/pin11, **REV** = D2/pin10,
-    **ROE** = D3/pin9 (ROM output enable). Chip enables V1=13, V2=14. [scan]
-  - Pull-ups R11, R12 (1k) on the ROM/RAM select lines. [scan]
+    **ROE** = D3/pin9 (ROM output enable). Pull-ups R11, R12 (1k) on ROM/RAM. [scan]
+  - Enables **V1=13, V2=14** — all 8 data inputs are address, so the **bank/mode
+    must enter via V1/V2** (likely the 8255 Port C mode bit). Trace V1/V2 next [?].
+    This is how RAM-under-ROM banking is selected: mode gates the decode PROM.
 - The map *truth table* lives in the **PROM contents** — NOT on the schematic.
   That's why the effective map (ROM@0x0000 in mode 0, RAM-under-ROM, etc.) had to
   be recovered from the **emulator trace / MAME**, and they agree. The schematic
