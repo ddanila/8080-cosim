@@ -34,6 +34,13 @@ GUI in the loop, so the whole thing can be driven by an LLM.
 KiCad stays the single source of truth — we **generate/verify** the HDL side from
 it, not the other way round. No bidirectional sync.
 
+## North star
+Long-term, the two tracks **converge on the schematic as the single source of truth**
+— one schematic-rooted model that is simultaneously the PCB netlist, the LVS-checked
+structure, and a **runnable digital twin** (run emulation *on the digital schematic*),
+with the `cosim/` software emulator + MAME as validation oracles. See
+[`docs/vision.md`](docs/vision.md).
+
 ## Status
 
 LVS pipeline **proven end-to-end on real tooling** (KiCad 10 + Yosys):
