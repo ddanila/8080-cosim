@@ -80,7 +80,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "scan"
+        "pins": "scan(high-byte A-pins traced; B-pins TODO)"
       }
     },
     {
@@ -109,7 +109,7 @@
       "prov": {
         "type": "scan",
         "refdes": "assumed",
-        "pins": "datasheet"
+        "pins": "low-byte A-pins straight 1-8 (scan)"
       }
     },
     {
@@ -180,7 +180,7 @@
           "25"
         ],
         [
-          "D4",
+          "D7",
           "1"
         ]
       ]
@@ -193,7 +193,7 @@
           "26"
         ],
         [
-          "D4",
+          "D7",
           "2"
         ]
       ]
@@ -206,7 +206,7 @@
           "27"
         ],
         [
-          "D4",
+          "D7",
           "3"
         ]
       ]
@@ -219,7 +219,7 @@
           "29"
         ],
         [
-          "D4",
+          "D7",
           "4"
         ]
       ]
@@ -232,7 +232,7 @@
           "30"
         ],
         [
-          "D4",
+          "D7",
           "5"
         ]
       ]
@@ -245,7 +245,7 @@
           "31"
         ],
         [
-          "D4",
+          "D7",
           "6"
         ]
       ]
@@ -258,7 +258,7 @@
           "32"
         ],
         [
-          "D4",
+          "D7",
           "7"
         ]
       ]
@@ -271,111 +271,111 @@
           "33"
         ],
         [
-          "D4",
+          "D7",
           "8"
         ]
       ]
     },
     "A8": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "34"
         ],
         [
-          "D7",
+          "D4",
           "1"
         ]
       ]
     },
     "A9": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "35"
         ],
         [
-          "D7",
+          "D4",
           "2"
         ]
       ]
     },
     "A10": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "1"
         ],
         [
-          "D7",
+          "D4",
           "3"
         ]
       ]
     },
     "A11": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "40"
         ],
         [
-          "D7",
+          "D4",
           "4"
         ]
       ]
     },
     "A12": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "37"
         ],
         [
-          "D7",
+          "D4",
           "5"
         ]
       ]
     },
     "A13": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "38"
         ],
         [
-          "D7",
+          "D4",
           "6"
         ]
       ]
     },
     "A14": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "39"
         ],
         [
-          "D7",
+          "D4",
           "7"
         ]
       ]
     },
     "A15": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
           "36"
         ],
         [
-          "D7",
+          "D4",
           "8"
         ]
       ]
@@ -601,5 +601,17 @@
         ]
       ]
     }
+  },
+  "_note": "CPU core. D4=HIGH-byte addr buffer (A-pins routed, traced), D7=LOW-byte (straight). 8286 buffer A-pin numbers differ per instance (routing); a per-instance pinmap is needed for exact PCB pins (logical connectivity CPU A_k<->BA_k is preserved).",
+  "_traced_D4_highbyte_Apins": {
+    "A8": 8,
+    "A9": 7,
+    "A10": 1,
+    "A11": 2,
+    "A12": 5,
+    "A13": 4,
+    "A14": 3,
+    "A15": 6,
+    "note": "physical 8286 A-pin each CPU high-addr bit connects to (routed, not straight). Bit identity preserved end-to-end; needs per-instance pinmap + B-side trace to make the netlist pin-faithful."
   }
 }

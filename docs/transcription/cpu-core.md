@@ -93,10 +93,20 @@ CORRECTION found by tracing: **D5 STSTB (pin1) is driven by D13 (ТМ2), NOT the
 8224** — our HDL/convention models 8224→8238; that net is tagged
 `convention-WRONG:scan-says-D13` and must be remodeled (add D13).
 
-STILL TODO (assumed/convention):
-1. Address HIGH byte (A8–A15 → D7): byte-split + bit order — top buffer reads messier.
-2. Sheet 2: 8224 refdes/pinout + Φ1/Φ2/RESET/READY wiring (currently `convention`).
-3. Model D13 (ТМ2) and re-route STSTB; finalize D5 data pin numbers.
+- **Address HIGH byte traced**: it's **D4** that buffers A8–A15 (correcting the
+  earlier D4=low guess); **D7** buffers the low byte. The 8286 A-pins are assigned
+  for **PCB routing, not address order** — traced physical pins of D4:
+  A8→8, A9→7, A10→1, A11→2, A12→5, A13→4, A14→3, A15→6 (recorded in
+  `_traced_D4_highbyte_Apins`). Bit identity is preserved end-to-end, so LVS stays
+  at the logical level (CPU A_k ↔ BA_k) and is green.
+
+**Status: 27/33 nets scan-grounded, IN SYNC.** Remaining 6 = the 5 clock nets
+(Φ1/Φ2/READY/RESET/SYNC) + STSTB.
+
+STILL TODO:
+1. **Sheet 2**: read the 8224 (refdes/pinout + Φ1/Φ2/RESET/READY wiring) → flips the 5 `convention` nets.
+2. Model **D13 (ТМ2)** and re-route STSTB (D5 pin1 ← D13, not 8224).
+3. **PCB fidelity (later)**: per-instance 8286 pinmaps for the routed A/B pins; finalize D5 data pin numbers; B-side address routing.
 
 ## Next subsystem
 Memory: ROM/EPROM array, РУ5 DRAM array, address decode + 4-mode bank logic.
