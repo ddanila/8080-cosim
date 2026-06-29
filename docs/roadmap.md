@@ -104,22 +104,25 @@ to cosim at 6000 writes (full-banner validation running). Now the whole boot-cri
 datapath — CPU, both decode PROMs, ROM/RAM, all I/O chips — is discrete instances on
 the modeled bus.
 
-**Step 4 IN PROGRESS:** `hdl/sim/juku_struct_tb.v` is a behavioral realization of the
-structural top (`hdl/juku_top.v`) wired instance-for-instance: vm80a CPU → 8286 buffers
-(BA) → 74138 I/O decode → peripherals, with the CPU ↔ 8238 ↔ DB system bus. The
-un-traced memory-addressing subsystem (DRAM RAS/CAS row/col + μP/video mux + EPROM CS +
-1-bit banking gate) stays a behavioral black box (`mem_subsystem`) on the real DB bus —
-inventing that wiring would violate "scan = source of truth".
-- **Works:** the boot INIT runs correctly through the verified datapath — the first ~91
-  opcode fetches match cosim's PC trace exactly, every memory-read byte on the bus is
-  verified correct, and the 8238 strobes + 74138 decode + Port-C banking wiring all work.
-- **Remaining:** vm80a's internal register-load capture is one phase off on this
-  multi-hop bus (A→buf→mem→8238→D) — it reads the right operand bytes onto `pin_din`
-  but doesn't commit them (e.g. LXI H), so the full boot doesn't complete. Aligning the
-  read-data valid window to vm80a's f2-capture phase is the remaining work. (The FULL
-  byte-identical boot is already proven at chip granularity in step 3.)
+**Step 4 DONE:** `hdl/sim/juku_struct_tb.v` is a behavioral realization of the structural
+top (`hdl/juku_top.v`) wired instance-for-instance — vm80a CPU → 8286 buffers (BA) →
+74138 I/O decode → peripherals, with the CPU ↔ **8238** ↔ DB system bus — and it **boots
+byte-identical to cosim** (verified at 6000 video writes). The un-traced memory-addressing
+subsystem (DRAM RAS/CAS row/col + μP/video mux + EPROM CS + 1-bit banking gate) stays a
+behavioral black box (`mem_subsystem`) on the real DB bus, since inventing that wiring
+would violate "scan = source of truth".
 
-Next: (4-cont) crack the bus-capture timing; (5) keep cross-validating vs cosim + MAME.
+**The one real bug + its fix (analysis, not trial-and-error):** the boot derailed in a
+tight delay loop. Root cause = the 8080/КР580ВМ80А **data-setup-stability spec** (datasheet
+`tOS1` setup-during-φ1 + `tOS2` setup-to-φ2, both must hold across DBIN). vm80a captures
+the bus at a fixed phase instant, so a *combinational* read drive still settling on the
+multi-hop bus (A→buf→mem→8238→D) violates the spec and corrupts the capture. Fix =
+**sample-and-hold** the read byte when the read strobe asserts and hold it stable through
+DBIN — exactly what vm80a's own testbench (`tb80a.v`) does. NOT a Soviet-vs-Intel quirk:
+same core, same flat-bus result (step 3); only the structural bus's settling differed.
+
+Next: (5) keep cross-validating vs cosim + MAME; optional: functionalize the assumed
+memory-addressing nets (DRAM mux/banking) to replace the black box with real chips.
 LVS stays green (device internals don't change the top netlist).
 
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral

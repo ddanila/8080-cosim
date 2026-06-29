@@ -16,16 +16,17 @@
 //     the real board has a strobe-OR not yet traced);
 //   - banking mode is the 8255#0 Port-C value (the 1-bit la3 gate can't carry 4 modes).
 //
-// STATUS (WIP): executes the boot INIT correctly through the verified structural
-// datapath -- the first ~91 opcode fetches match cosim's PC trace exactly, every
-// memory-read byte on the bus is verified correct, the 8238 strobes + 74138 I/O
-// decode + Port-C banking-mode wiring all work. BUT the full boot does not yet
-// complete: vm80a's internal register-load capture is one phase off on this
-// multi-hop bus (A->buf->mem->8238->D) -- e.g. LXI H reads the right operand bytes
-// onto pin_din but does not commit them to HL (the flat juku_chips bus happened to
-// satisfy vm80a's f2-capture window; this topology does not). Aligning the read-data
-// valid window to vm80a's capture phase is the remaining work. The FULL byte-identical
-// boot is already proven at chip granularity in hdl/sim/juku_chips_tb.v (step 3).
+// STATUS: WORKS -- the boot runs through the verified structural datapath and the VRAM
+// is byte-identical to cosim. Root cause of the earlier failure + the fix:
+//   The 8080/КР580ВМ80А requires read data to be STABLE across the whole DBIN window
+//   (datasheet tOS1 = setup during phi1, tOS2 = setup to phi2; both must hold). vm80a
+//   captures the bus at a fixed phase instant (di<=pin_din while dbin_pin), so a
+//   combinational drive that is still settling on this multi-hop bus (A->buf->mem->8238
+//   ->D) violates the spec and corrupts the capture. The fix (mem_subsystem below) is
+//   SAMPLE-AND-HOLD: latch the read byte when the read strobe asserts and hold it stable
+//   through DBIN -- exactly what vm80a's own testbench (hdl/vendor/tb80a.v) does. This is
+//   NOT a Soviet-vs-Intel difference: same vm80a core, same flat-bus behavior (step 3);
+//   only the bus topology's settling timing differed.
 //
 // Run (from repo root):
 //   iverilog -g2012 -o /tmp/jstruct hdl/vendor/vm80a.v hdl/sim/juku_struct_tb.v
@@ -115,8 +116,13 @@ module mem_subsystem(input wire osc, input wire [15:0] a, inout wire [7:0] db,
   function ovl(input [15:0] ad); begin
     case (mode) 2'd0: ovl=(ad<=16'h3FFF); 2'd1,2'd2: ovl=(ad>=16'hD800); default: ovl=0; endcase end
   endfunction
-  assign db = (~memr_n) ? rd(a) : 8'bz;                    // settle before capture
-  always @(posedge osc) if (~memw_n & !ovl(a)) ram[a] = db;   // sample while strobe low
+  // sample-and-hold the read data when the read strobe asserts, hold it stable through
+  // the whole DBIN window -- matches vm80a's own testbench and the 8080 tOS1/tOS2
+  // data-setup-stability spec (combinational drive glitches at vm80a's f2 capture).
+  reg [7:0] rdh;
+  always @(negedge memr_n) rdh <= rd(a);   // BA is stable by T3 (set in T1)
+  assign db = (~memr_n) ? rdh : 8'bz;
+  always @(posedge osc) if (~memw_n & !ovl(a)) ram[a] = db;   // sample write while strobe low
 endmodule
 
 // =============================== structural top =================================
@@ -178,8 +184,8 @@ module juku_struct_tb();
       vram_writes = vram_writes + 1;
       if (!vram_seen) begin vram_seen=1;
         $display("[VRAM] first video write @0x%04h mode=%0d mcyc=%0d", dut.BA, dut.mem_mode, mcyc); end
-      if (vram_writes == max_vram) begin
-        $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); dump_vram; $finish;
+      if (vram_writes == max_vram) begin     // let the osc-edge RAM commit land, then dump
+        $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); #60 dump_vram; $finish;
       end
     end
   end
