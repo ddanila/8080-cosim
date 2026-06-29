@@ -3,19 +3,44 @@
 // with behavioral models (or a vendored 8080 core) for simulation.
 `default_nettype none
 
-// ---- CPU + bus control (i8080 + 8228/8224-equivalent) ----
+// ---- bare i8080A CPU (КР580ВМ80) ----
 module cpu_8080 (
-    input  wire        clk, reset_n,
+    input  wire        phi1, phi2, ready, reset, hold, intr,
     output wire [15:0] A,
-    inout  wire [7:0]  D,
-    output wire        memr_n, memw_n, ior_n, iow_n,
-    input  wire        intr,
-    output wire        inta_n
+    inout  wire [7:0]  D,        // multiplexed data + status byte
+    output wire        dbin, wr_n, sync, hlda, inte, wait_o
 );
-    // TODO: vendor an open Verilog 8080 core + 8228 status decode here.
+    // TODO: vendor an open Verilog 8080 core.
     assign A = 16'b0;
     assign D = 8'bz;
-    assign {memr_n, memw_n, ior_n, iow_n, inta_n} = 5'b11111;
+    assign {dbin, wr_n, sync, hlda, inte, wait_o} = 6'b011000;
+endmodule
+
+// ---- i8224 clock generator (КР580ГФ24) ----
+module clk_8224 (
+    input  wire osc, resin, rdyin, sync,
+    output wire phi1, phi2, phi2ttl, reset, ready, ststb_n
+);
+    assign {phi1, phi2, phi2ttl, reset, ready, ststb_n} = 6'b0;
+endmodule
+
+// ---- i8238 system controller (КР580ВК38) ----
+module sysctl_8238 (
+    inout  wire [7:0] D,         // CPU data/status side
+    inout  wire [7:0] DB,        // buffered system data bus side
+    input  wire       dbin, wr_n, hlda, ststb_n, busen_n,
+    output wire       memr_n, memw_n, iord_n, iowr_n, inta_n
+);
+    assign D = 8'bz; assign DB = 8'bz;
+    assign {memr_n, memw_n, iord_n, iowr_n, inta_n} = 5'b11111;
+endmodule
+
+// ---- i8286 octal bus transceiver (КР580ВА86), used as address buffer ----
+module buf_8286 (
+    inout wire [7:0] Ain, Aout,
+    input wire       oe_n, t
+);
+    assign Ain = 8'bz; assign Aout = 8'bz;
 endmodule
 
 // ---- I/O port decoder (board glue: 74xx138-style) ----

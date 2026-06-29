@@ -1,8 +1,8 @@
 {
   "instances": {
-    "U1": "U_CPU",
     "U2": "U_ROM",
-    "U3": "U_PPI0"
+    "U3": "U_PPI0",
+    "U4": "U_PPI1"
   },
   "pinmaps": {
     "kicad": {
