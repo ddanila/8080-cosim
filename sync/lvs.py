@@ -19,7 +19,7 @@ import netlist_from_yosys, netlist_from_kicad
 def canon_hdl_pin(p):                 # ior_n->IOR_N ; portc_lo->PORTC_LO
     return p.replace("[", "").replace("]", "").upper()
 
-def hdl_pin(t, p, i, w):              # bus bit -> name+index (A,i=3 -> A3); scalar -> name
+def hdl_pin(inst, t, p, i, w):        # bus bit -> name+index (A,i=3 -> A3); scalar -> name
     base = canon_hdl_pin(p)
     return base + (str(i) if w > 1 else "")
 
@@ -37,7 +37,7 @@ def nets_of(side_insts, inst_map, pin_of):
             for i, n in enumerate(nets):
                 if n.startswith("const:"):
                     continue
-                lp = pin_of(info["type"], pin, i, w)
+                lp = pin_of(inst, info["type"], pin, i, w)
                 if lp is None:
                     continue
                 net2eps.setdefault(n, set()).add(f"{canon_inst}.{lp}")
@@ -59,8 +59,13 @@ def main():
     hdl_nets = nets_of(hdl, hdl_imap, hdl_pin)
 
     # KiCad: refdes -> hdl instance; pin number -> logical name via pinmap.
+    # Per-instance overrides (pinmaps.kicad_instance[refdes]) win over type-level
+    # (pinmaps.kicad[type]) -- needed where chips of one type wire pins differently
+    # for PCB routing (e.g. the two 8286 address buffers).
     kpm = mp["pinmaps"]["kicad"]
-    kic_nets = nets_of(kic, mp["instances"], lambda t, p, i, w: kpm.get(t, {}).get(p))
+    kinst = mp["pinmaps"].get("kicad_instance", {})
+    kic_nets = nets_of(kic, mp["instances"],
+                       lambda inst, t, p, i, w: kinst.get(inst, {}).get(p) or kpm.get(t, {}).get(p))
 
     matched   = hdl_nets & kic_nets
     only_hdl  = hdl_nets - kic_nets
