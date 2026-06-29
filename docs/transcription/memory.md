@@ -25,11 +25,16 @@ MAME abstracts banking as a 4-mode `memory_view` selected by 8255#0 Port C. The
 - Implication: the 8255 Port C "mode" is an **input to this PROM** (combined with
   address), not a direct view-switch. Reconciles with MAME's behavioral result.
 
-## Other memory chips (to transcribe)
-- **ROM/EPROM**: array in sockets (Sheet 1 note: "D2,D6,D8,D15…D22 installed in
-  sockets"); EPROM array D17–D22 with A0–A12, D0–D7, CS, OE. [scan, refdes [?]]
-- **RAM**: К565РУ5 DRAM array (20×) — addressed/selected via RAM/REV signals +
-  the РУ5 RAS/CAS/refresh logic. [scan]
+## Memory chip inventory
+Socketed chips (Sheet 1 note): **D2, D6, D8, D15…D22**. [scan]
+- **D6** = К556РТ4 decode PROM (above).
+- **D2, D8** = ROM/EPROM (socketed) — types/role TBD [?].
+- **D15–D22** = EPROM array, **8K×8 (К573РФ4-class, 2764 pinout)** [scan]:
+  A0=10, A1=9, A2=8, A3=7, A4=6, A5=5, A6=4, A7=3, A8=25, A9=24, A10=21, A11=23,
+  A12=2; **CS=20, OE=22**; D0–D7. Address ← buffered bus, data → DB, CS ← decode
+  selects, OE ← ROE. R21–R28 (1k) bus pack. [scan]
+- **RAM**: К565РУ5 DRAM array (20×, Sheet 2) — addressed via the μP/video address
+  mux, selected by RAM/REV; RAS/CAS/WE + refresh logic. [scan, to transcribe]
 
 ## Banking mechanism — summary (scan)
 ```
