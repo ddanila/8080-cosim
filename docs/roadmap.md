@@ -72,7 +72,15 @@ netlist is fabrication-faithful except those inherently-off-schematic / intricat
   author a proper graphical KiCad schematic (symbols + routed wires).
 - **Milestone B:** a KiCad project with footprints + a DRC-clean PCB layout.
 
-## Phase C — Merge the tracks  ⟶ *the schematic runs (north-star)*
+## Phase C — Merge the tracks  ⟶ *the schematic runs (north-star)*  [STARTED]
+**Step 1 DONE:** vendored **vm80a** (die-accurate КР580ВМ80А, CC-BY 3.0) in `hdl/vendor/`;
+smoke test (`hdl/sim/vm80a_smoke_tb.v`) runs a trivial program through the real 8080
+bus protocol in iverilog -> store lands correctly (PASS). We now have a real 8080 core.
+Next steps: (2) drop vm80a into the `cpu_8080` slot; (3) give the boot-critical chips
+behavior -- ROM(ekta37), RAM, decode PROMs D2/D6 with emulator-recovered contents,
+8255 for banking; (4) simulate the structural top -> banner in VRAM; (5) cross-validate
+vs cosim + MAME. LVS stays green (device internals don't change the top netlist).
+
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral
   models (8080 core + ROM/RAM with content + 8255/8253/8259/…), or bind the `cosim/`
   behavioral models onto the netlist chips.
