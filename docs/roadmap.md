@@ -95,10 +95,19 @@ flows CPU → D6 decode → ROM/RAM drive the bus. **Byte-identical to cosim thr
 full boot banner** (42623 writes) — the banking path Port C → io_block.mode → D6 →
 ROM/RAM is exercised across every mode 0↔1 font-render and stays pixel-perfect.
 
-Next steps: (3b) turn the I/O `io_block` into D2-decoded peripheral chips (8255/8253/
-8259/8251); (4) drive it through the structural top so the *verified wiring* carries
-the boot; (5) keep cross-validating vs cosim + MAME.
-LVS stays green (device internals don't change the top netlist).
+**Step 3b DONE:** the I/O is now a second decode PROM + separate peripheral chips, not
+a latched block: `io_decode_prom` (D2 К556РТ4) routes the port to one of 8 chip-selects
+(0x00 PIC, 0x04 PPI0, 0x08 USART, 0x0C PPI1, 0x10/14/18 PIT0-2, 0x1C FDC = MAME io_map),
+and each peripheral (`ppi8255_bank` D26 + 7× `latched_periph`) sits on the shared bus.
+Peripherals use cosim's IN=last-OUT latch model, so byte-identity holds. Byte-identical
+to cosim at 6000 writes (full-banner validation running). Now the whole boot-critical
+datapath — CPU, both decode PROMs, ROM/RAM, all I/O chips — is discrete instances on
+the modeled bus.
+
+Next steps: (4) drive these chips through the **structural top** (`hdl/juku_top.v`) so
+the *LVS-verified wiring* carries the boot, not the testbench's hand-wiring; (5) keep
+cross-validating vs cosim + MAME. LVS stays green (device internals don't change the
+top netlist).
 
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral
   models (8080 core + ROM/RAM with content + 8255/8253/8259/…), or bind the `cosim/`

@@ -1,9 +1,10 @@
 // Phase C, step 3: run the boot on DISCRETE CHIP INSTANCES wired on a shared bus,
 // not a monolithic behavioral memory. This is the merge taking its real form -- the
 // memory map is decoded by an actual decode-PROM module (D6 РТ4), ROM and RAM are
-// separate modules that drive/latch the shared data bus, and the banking mode comes
-// from a Port-C register (8255#0 D26). I/O stays a latched block (mirrors cosim) for
-// now; step 3b turns it into D2-decoded peripheral chips.
+// separate modules that drive/latch the shared data bus, the banking mode comes from
+// the 8255#0 (D26) Port-C register, and the I/O ports are routed by a second decode
+// PROM (D2 РТ4) to eight separate peripheral chips (PIC/PPI×2/PIT×3/USART/FDC) on the
+// shared bus. Peripherals use cosim's latch model (IN = last OUT) -> byte-identical.
 //
 // Decomposition vs juku_sim_tb.v (monolithic): same vm80a, same cross-validation
 // target. The PROM-decode *contents* are the emulator-recovered map (expressed as the
@@ -53,18 +54,37 @@ module dram(input [15:0] a, input [7:0] din, input we, input oe, inout [7:0] d);
   endtask
 endmodule
 
-// --- Latched I/O block (mirrors cosim: IN returns last OUT) + 8255#0 Port-C banking. -
-module io_block(input [7:0] port, input [7:0] din, input iord, input iowr,
-                inout [7:0] d, output reg [1:0] mode);
-  reg [7:0] latch [0:255];
-  reg [7:0] portc; reg [2:0] pb;
-  integer i; initial begin for (i=0;i<256;i=i+1) latch[i]=8'h00; portc=0; mode=0; end
-  assign d = iord ? latch[port] : 8'hzz;
-  always @(posedge iowr) begin
-    latch[port] = din;
-    if (port == 8'h06) begin portc = din; mode = din[1:0]; end          // Port C direct
-    else if (port == 8'h07) begin                                        // 8255 control
-      if (din[7]) begin portc = 0; mode = 0; end                         // mode-set cmd
+// --- D2 К556РТ4 I/O-decode PROM: port -> one of 8 chip-selects (4-port blocks).
+//     Contents = the recovered I/O map (0x00 PIC, 0x04 PPI0, 0x08 USART, 0x0C PPI1,
+//     0x10/0x14/0x18 PIT0-2, 0x1C FDC) -- matches MAME io_map / hardware-map.md. ------
+module io_decode_prom(input [7:0] port, output reg [7:0] cs);
+  always @(*) begin
+    cs = 8'b0;
+    if (port[7:5] == 3'b000) cs[port[4:2]] = 1'b1;   // ports 0x00..0x1F -> block port[4:2]
+  end
+endmodule
+
+// --- Generic peripheral: 4 register ports, IN returns last OUT (cosim's latch model).
+//     Models 8259/8251/8255#1/8253x3/FDC behaviorally-equivalent for the boot. --------
+module latched_periph(input [1:0] rs, input cs, input [7:0] din,
+                      input iord, input iowr, inout [7:0] d);
+  reg [7:0] regs [0:3];
+  integer i; initial for (i=0;i<4;i=i+1) regs[i]=8'h00;
+  assign d = (cs & iord) ? regs[rs] : 8'hzz;
+  always @(posedge iowr) if (cs) regs[rs] = din;
+endmodule
+
+// --- 8255#0 (D26): like latched_periph + Port C (rs=2) / control (rs=3) drive banking.
+module ppi8255_bank(input [1:0] rs, input cs, input [7:0] din,
+                    input iord, input iowr, inout [7:0] d, output reg [1:0] mode);
+  reg [7:0] regs [0:3]; reg [7:0] portc; reg [2:0] pb;
+  integer i; initial begin for (i=0;i<4;i=i+1) regs[i]=8'h00; portc=0; mode=0; end
+  assign d = (cs & iord) ? regs[rs] : 8'hzz;
+  always @(posedge iowr) if (cs) begin
+    regs[rs] = din;
+    if (rs == 2'd2) begin portc = din; mode = din[1:0]; end              // Port C (0x06)
+    else if (rs == 2'd3) begin                                            // control (0x07)
+      if (din[7]) begin portc = 0; mode = 0; end                          // mode-set cmd
       else begin pb = (din>>1)&3'd7; if (din[0]) portc[pb]=1; else portc[pb]=0; mode=portc[1:0]; end
     end
   end
@@ -108,7 +128,18 @@ module juku_chips_tb();
   wire ram_oe = mem_rd & ram_sel;
   eprom     EP (.idx(rom_idx), .oe(rom_oe), .d(d));
   dram      RU (.a(a), .din(d), .we(ram_we), .oe(ram_oe), .d(d));
-  io_block  D26(.port(a[7:0]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d), .mode(mode));
+
+  // I/O: D2 decode PROM -> per-chip selects; each peripheral on the shared bus.
+  wire [7:0] iocs;
+  io_decode_prom D2 (.port(a[7:0]), .cs(iocs));
+  ppi8255_bank   D26(.rs(a[1:0]), .cs(iocs[1]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d), .mode(mode)); // 0x04 +banking
+  latched_periph D10(.rs(a[1:0]), .cs(iocs[0]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x00 PIC 8259
+  latched_periph D11(.rs(a[1:0]), .cs(iocs[2]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x08 USART 8251
+  latched_periph D27(.rs(a[1:0]), .cs(iocs[3]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x0C PPI1 8255
+  latched_periph D54(.rs(a[1:0]), .cs(iocs[4]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x10 PIT0 8253
+  latched_periph D55(.rs(a[1:0]), .cs(iocs[5]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x14 PIT1 8253
+  latched_periph D57(.rs(a[1:0]), .cs(iocs[6]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x18 PIT2 8253
+  latched_periph FDC(.rs(a[1:0]), .cs(iocs[7]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x1C WD1793
 
   // write pulses (data valid at /WR); decode memory-vs-I/O and overlay-drop in the TB
   always @(negedge wr_n) begin
