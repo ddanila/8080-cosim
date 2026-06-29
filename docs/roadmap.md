@@ -41,9 +41,13 @@ the climbing scan fraction. Rough order by leverage:
 
 ---
 
-## Sequencing choice
-- **Harden-first (A → B/C):** make the structure trustworthy before it runs — cleanest,
-  but slower to a "it runs on the schematic" demo.
-- **Merge-sooner (C in parallel):** attach behavior to the *current* structure to get a
-  runnable digital twin quickly, hardening the wiring in parallel. Faster wow, but the
-  twin runs on partly-assumed wiring until A catches up.
+## Sequencing — DECIDED: harden-first (A → B/C)
+Make the structure trustworthy *before* giving it behavior, so when the schematic
+finally runs (Phase C) it runs on verified truth, not assumptions — consistent with
+the project's "scan = source of truth" discipline. Phase C waits until Phase A is
+substantially done.
+
+**Immediate next step: A1 — trace the 8286 address-buffer B-side outputs → `BA`**
+(then A2 memory bus, A3 clock, A4 ИД7, A5 mux/DRAM, A6 peripheral pins). Each:
+read the scan → flip the net's provenance `assumed → scan` → re-run LVS (stays green)
+→ watch `provenance.py` climb toward 99/99.
