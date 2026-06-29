@@ -1156,7 +1156,7 @@
       }
     },
     {
-      "ref": "DID7",
+      "ref": "D2",
       "type": "IO_DEC138",
       "pins": {
         "1": "A",
@@ -1175,9 +1175,9 @@
         "15": "Y_N7"
       },
       "prov": {
-        "type": "scan(power table)",
-        "refdes": "placeholder(un-isolated)",
-        "pins": "placeholder"
+        "type": "scan(\u0420\u04224 PROM, like D6)",
+        "refdes": "scan(D2)",
+        "pins": "decode in PROM contents = the known I/O map (off-schematic)"
       }
     },
     {
@@ -1872,7 +1872,7 @@
           "4"
         ],
         [
-          "DID7",
+          "D2",
           "1"
         ]
       ]
@@ -1921,7 +1921,7 @@
           "5"
         ],
         [
-          "DID7",
+          "D2",
           "2"
         ]
       ]
@@ -1970,7 +1970,7 @@
           "2"
         ],
         [
-          "DID7",
+          "D2",
           "3"
         ]
       ]
@@ -3319,7 +3319,7 @@
           "25"
         ],
         [
-          "DID7",
+          "D2",
           "5"
         ],
         [
@@ -3360,7 +3360,7 @@
           "27"
         ],
         [
-          "DID7",
+          "D2",
           "6"
         ],
         [
@@ -3522,7 +3522,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "7"
         ],
         [
@@ -3535,7 +3535,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "9"
         ],
         [
@@ -3548,7 +3548,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "10"
         ],
         [
@@ -3561,7 +3561,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "11"
         ],
         [
@@ -3574,7 +3574,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "12"
         ],
         [
@@ -3587,7 +3587,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "13"
         ],
         [
@@ -3600,7 +3600,7 @@
       "src": "assumed",
       "nodes": [
         [
-          "DID7",
+          "D2",
           "14"
         ],
         [
