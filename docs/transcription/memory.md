@@ -102,3 +102,24 @@ verified; the bus wiring is the harden-later target.
    μP ADDRESS"), RAS/CAS, WE ← RAM/MWR.
 4. Model the decode PROM in HDL (as a chip with its select outputs) + LVS;
    keep the PROM *contents* sourced from the emulator-derived map.
+
+## Physical board ground-truth (from the owner + the juku3000 archive)
+Confirmed against the **real PCB** + the `juku3000` documentation archive (full ES101
+schematic set, assembly/placement drawing ДГШ5.109.006 СБ, component list ДГШ3.031.006 ВП,
+286-page service manual):
+- **ROM: 8 sockets on the board, 2 populated** — **2× M2764** (8K×8) = the 16 KB BIOS.
+  (Our model's 8 EPROM = the 8 sockets; only D15/D16-equivalent are populated.)
+- **RAM: 32 sockets (4 banks × 8), 8 populated** — **8× К565РУ5Г** = one 64K×8 bank = the
+  real 64 KB. The other 24 are bank-expansion sockets (→ up to 256 KB), unsoldered.
+- **There is NO separate video-RAM plane.** The earlier "video plane D76–D79" was an
+  assumption — video reads the *same* 64 KB bank via the КП14 µP/video mux. (Model's
+  D68–D79 are unpopulated sockets, not a plane.)
+- **Four decode/timing PROMs total:** **2× К556РТ4** (memory decode D6 + I/O decode D2,
+  contents = the recovered map) **+ 2× К155РЕ3** (DRAM/video *timing*-state PROMs,
+  drawing ДГШ5.106.009). The РЕ3 are pure hardware timing — MAME omits them and our twin
+  boots byte-identical without them; their bits are **pending a PROM dump / the programming
+  drawing** (deferred, drop-in when available). See `dram-video-timing.md`.
+- **Implication:** the functional model should converge to the *populated* set (2 ROM +
+  8 RAM, one bank); the 8/32 sockets + expansion are a Phase-B (PCB) layout fact. A
+  deliberate restructure (reduce over-modeled memory, add the ~42 still-unmodeled glue/
+  bus/video chips toward the real 76) is the next structural pass.

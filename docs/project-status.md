@@ -77,3 +77,26 @@ The full Juku ROM set is vendored in `roms/` (SHA-1s match MAME; abandonware —
 `kicad-cli` at `/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli`;
 `yosys` + `iverilog` via Homebrew. LVS pipeline: `sync/check.sh` (KiCad-free `--board`
 fallback path used in CI).
+
+## Reference archive + physical ground-truth (2026-06)
+`~/fun/juku3000` (fork of **infoaed/juku3000**) is the definitive Juku archive: full ES101
+schematic set (processor module = `ДГШ5.109.006`, motherboard/assembly drawing, keyboard,
+PSU), the **assembly/placement drawing** (refdes→position — gold for Phase B), component
+list (ДГШ3.031.006 ВП), drawing index, a **286-page Russian service manual**, ROMs, source.
+
+Physical ground-truth (owner + archive), now in the model provenance + `transcription/memory.md`:
+- **76 chips total, all on the mainboard** (= the processor-module board ДГШ5.109.006).
+- **ROM:** 8 sockets, **2 populated** (M2764, 16 KB). **RAM:** 32 sockets, **8 populated**
+  (К565РУ5Г = one 64 KB bank); the rest are expansion. **No separate video plane** (video
+  shares the bank via the КП14 mux) — corrects an earlier assumption.
+- **4 decode/timing PROMs:** 2× К556РТ4 (memory + I/O decode, recovered map) + **2× К155РЕ3
+  (DRAM/video timing-state, drawing ДГШ5.106.009)**. The РЕ3 are pure hardware timing —
+  MAME omits them, twin boots byte-identical without them; bits **pending a PROM dump**
+  (drop-in later; РЕ3=32×8≈74188/82S23, РТ4=256×4≈82S129 — universal programmer reads both).
+- Cluster #1 (DRAM/video timing) traced from the scan: D53 ИД7 RAS/CAS decoder pinned,
+  ИЕ7→КП14→РУ5 MA video address, 8253→video sync, clock subsystem. See `dram-video-timing.md`.
+
+Our 52-chip model is now provenance-correct but still **~42 chips short of the real 76**
+(unmodeled glue: bus transceivers 3×ВА86+4×ВА87+170-series, video chain ИР16/АГ3/counters,
+the РЕ3, misc gates). Converging to 76 (+ reducing over-modeled memory to the populated set)
+is the next structural pass — and feeds Phase B directly.
