@@ -1,0 +1,22 @@
+name: LVS (KiCad <-> HDL connectivity)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lvs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Yosys + KiCad CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yosys
+          sudo add-apt-repository --yes ppa:kicad/kicad-9.0-releases || true
+          sudo apt-get update
+          sudo apt-get install -y kicad || sudo apt-get install -y kicad-cli || true
+
+      - name: Run LVS check
+        run: sh sync/check.sh
