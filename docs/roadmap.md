@@ -104,10 +104,23 @@ to cosim at 6000 writes (full-banner validation running). Now the whole boot-cri
 datapath — CPU, both decode PROMs, ROM/RAM, all I/O chips — is discrete instances on
 the modeled bus.
 
-Next steps: (4) drive these chips through the **structural top** (`hdl/juku_top.v`) so
-the *LVS-verified wiring* carries the boot, not the testbench's hand-wiring; (5) keep
-cross-validating vs cosim + MAME. LVS stays green (device internals don't change the
-top netlist).
+**Step 4 IN PROGRESS:** `hdl/sim/juku_struct_tb.v` is a behavioral realization of the
+structural top (`hdl/juku_top.v`) wired instance-for-instance: vm80a CPU → 8286 buffers
+(BA) → 74138 I/O decode → peripherals, with the CPU ↔ 8238 ↔ DB system bus. The
+un-traced memory-addressing subsystem (DRAM RAS/CAS row/col + μP/video mux + EPROM CS +
+1-bit banking gate) stays a behavioral black box (`mem_subsystem`) on the real DB bus —
+inventing that wiring would violate "scan = source of truth".
+- **Works:** the boot INIT runs correctly through the verified datapath — the first ~91
+  opcode fetches match cosim's PC trace exactly, every memory-read byte on the bus is
+  verified correct, and the 8238 strobes + 74138 decode + Port-C banking wiring all work.
+- **Remaining:** vm80a's internal register-load capture is one phase off on this
+  multi-hop bus (A→buf→mem→8238→D) — it reads the right operand bytes onto `pin_din`
+  but doesn't commit them (e.g. LXI H), so the full boot doesn't complete. Aligning the
+  read-data valid window to vm80a's f2-capture phase is the remaining work. (The FULL
+  byte-identical boot is already proven at chip granularity in step 3.)
+
+Next: (4-cont) crack the bus-capture timing; (5) keep cross-validating vs cosim + MAME.
+LVS stays green (device internals don't change the top netlist).
 
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral
   models (8080 core + ROM/RAM with content + 8255/8253/8259/…), or bind the `cosim/`
