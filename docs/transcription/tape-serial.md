@@ -3,12 +3,12 @@
 Source: background agent sweep. **ALL to-verify** — and note the reliability caveat
 below. These are *leads* (what exists + plausible roles), not verified truth.
 
-## ⚠️ Reliability caveat — agents conflict on refdes
-The video-sweep and tape-sweep agents **disagree on refdes assignments**:
-- **D44**: tape says 8251 USART; video says ИЕ7 counter.
-- **D55**: tape says 8255 PPI; video says 8253 timer.
-Refdes are unique per board, so at least one agent misread each. **Do not treat any
-agent refdes/pin as truth until re-read on the scan.** The scan is the only authority.
+## ⚠️ RESOLVED — this agent misread the refdes (see io.md)
+Scan-verified truth: **8251 USART = D11**, **8255 PPI = D26/D27**, **8259 = D10**,
+**8253 timers = D54/D55/D57**. So this agent's "D44 = USART" and "D55 = PPI" are
+**WRONG** (D44 = ИЕ7 counter, D55 = 8253 timer). The agent's *roles/dataflow* below
+are useful leads, but **ignore its refdes** — trust `io.md` for the I/O chips. The
+non-conflicting parts (СА3 tape comparator D106, baud-gen ИМ1/ИЕ11/ИР9) still to-verify.
 
 ## Components (agent-reported, to-verify)
 | refdes? | marking | role |
