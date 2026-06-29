@@ -34,6 +34,14 @@ Power table lists a **К555ИД7 (74138)** generating the I/O chip-selects from 
 address (+5V=16, GND=8); RD/WR come from the 8238 (D5) I/ORD(25)/I/OWR(27). The
 ИД7's refdes + A2:A0/enable wiring not yet isolated [to-trace].
 
-## Next
-Give the existing HDL I/O shells (U_PPI0/1, U_SIO0, U_PIT0/1/2, U_PIC) their **real
-refdes** (D26/D27, D11, D54/D55/D57, D10) + pinouts, wire data/addr/CS/RD-WR, and LVS.
+## Integrated + LVS-green ✅
+The HDL I/O shells now carry their **real refdes** (D26/D27→PPI, D11→USART,
+D54/D55/D57→PIT, D10→PIC) + verified pinouts, wired on the data bus (DB), buffered
+address (BA[1:0]), and the **I/O strobes IORD/IOWR** (from the 8238). The **banking
+mode link** is modeled: D26 (8255#0) Port C bit0 → D7 (ЛА3) → PROM enable. Plus the
+interrupt path (8259 INT→CPU, 8238 INTA→8259) and reset distribution.
+Full board: **29 chips / 72 nets, LVS IN SYNC.**
+
+Boundary (not yet modeled): the **ИД7 I/O chip-select decoder** (refdes/wiring
+un-traced) — so per-chip CS are boundary nets; and the timer/USART **clocks**
+(from the divider/baud chain). The clk-disconnect surfaced these honestly.

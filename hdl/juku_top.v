@@ -51,11 +51,10 @@ module juku_top (
     buf_8286  U_BUFL (.Ain(A[7:0]),  .Aout(BA[7:0]),  .oe_n(buf_oe_n), .t(buf_t));
     buf_8286  U_BUFH (.Ain(A[15:8]), .Aout(BA[15:8]), .oe_n(buf_oe_n), .t(buf_t));
 
-    // ============ decode glue (board 74xx/PROM) ============
-    io_decode U_IODEC (.A(BA[7:0]), .ior_n(iord_n), .iow_n(iowr_n),
-        .cs_pic_n(cs_pic_n), .cs_ppi0_n(cs_ppi0_n), .cs_sio0_n(cs_sio0_n),
-        .cs_ppi1_n(cs_ppi1_n), .cs_pit0_n(cs_pit0_n), .cs_pit1_n(cs_pit1_n),
-        .cs_pit2_n(cs_pit2_n), .cs_fdc_n(cs_fdc_n));
+    // ============ I/O chip-select decode ============
+    // Real board uses a К555ИД7 (74138) -- refdes/wiring not yet traced, so the
+    // chip-selects are boundary nets here (driven by that decoder when modeled).
+    // (no io_decode instance)
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
     la3_gate    U_D7     (.a(memr_n), .b(mem_mode[0]), .y(prom_en_n));   // mode/strobe -> PROM enable [assumed]
@@ -92,11 +91,11 @@ module juku_top (
                       .reset(reset_sys), .portc_lo(mem_mode));
     ppi_8255  U_PPI1 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .reset(reset_sys), .portc_lo());
-    pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(phi2ttl));
-    pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(phi2ttl));
-    pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(phi2ttl));
-    usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(phi2ttl));
-    fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk(phi2ttl));
+    pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
+    pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
+    pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
+    usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
+    fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .intr(intr), .inta_n(inta_n));
 

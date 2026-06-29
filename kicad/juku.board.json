@@ -1,11 +1,11 @@
 {
   "_legend": {
-    "scan": "traced off the scan",
+    "scan": "traced off scan",
     "assumed": "bus/select straight or untraced",
-    "boundary": "crosses into another (un-modeled) subsystem",
-    "placeholder": "abstracted/not sourced"
+    "boundary": "chip pins traced, far end un-modeled",
+    "placeholder": "abstracted"
   },
-  "_note": "CPU core + memory. \u0420\u04235 DRAM now bit-sliced (D60-D67, one byte-bank; 2nd bank+video plane TODO). Muxed address (MA)+RAS/CAS are boundary to the address-mux/refresh subsystem (Sheet 2).",
+  "_note": "CPU core + memory + I/O. I/O chips (D26/D27 8255, D11 8251, D54/55/57 8253, D10 8259) verified refdes+pinouts; on data/addr/I-O-strobe buses. Banking mode link D26 PortC->D7 modeled. I/O chip-selects + decoder (\u0418\u04147) are boundary (refdes/wiring un-traced).",
   "chips": [
     {
       "ref": "D1",
@@ -80,7 +80,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "scan(routed A-pins via instance pinmap)"
+        "pins": "scan(routed)"
       }
     },
     {
@@ -109,7 +109,7 @@
       "prov": {
         "type": "scan",
         "refdes": "placeholder",
-        "pins": "scan(lo straight)"
+        "pins": "scan"
       }
     },
     {
@@ -146,7 +146,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "control=scan;data=placeholder"
+        "pins": "ctrl=scan;data=placeholder"
       }
     },
     {
@@ -185,7 +185,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "gate=scan;inputs=assumed"
+        "pins": "gate=scan"
       }
     },
     {
@@ -218,8 +218,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -252,8 +252,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -286,8 +286,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -320,8 +320,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -354,8 +354,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -388,8 +388,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -422,8 +422,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -456,8 +456,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(D15-22)",
-        "pins": "datasheet(2764);data=assumed"
+        "refdes": "scan",
+        "pins": "datasheet"
       }
     },
     {
@@ -480,8 +480,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -504,8 +504,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -528,8 +528,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -552,8 +552,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -576,8 +576,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -600,8 +600,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -624,8 +624,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
       }
     },
     {
@@ -648,8 +648,182 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "scan(array D60+)",
-        "pins": "scan(\u0420\u04235 pinout traced)"
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D26",
+      "type": "PPI8255",
+      "pins": {
+        "9": "A0",
+        "8": "A1",
+        "5": "RD_N",
+        "36": "WR_N",
+        "6": "CS_N",
+        "35": "RESET",
+        "14": "PORTC_LO0",
+        "15": "PORTC_LO1",
+        "34": "D0",
+        "33": "D1",
+        "32": "D2",
+        "31": "D3",
+        "30": "D4",
+        "29": "D5",
+        "28": "D6",
+        "27": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
+      }
+    },
+    {
+      "ref": "D27",
+      "type": "PPI8255",
+      "pins": {
+        "9": "A0",
+        "8": "A1",
+        "5": "RD_N",
+        "36": "WR_N",
+        "6": "CS_N",
+        "35": "RESET",
+        "14": "PORTC_LO0",
+        "15": "PORTC_LO1",
+        "34": "D0",
+        "33": "D1",
+        "32": "D2",
+        "31": "D3",
+        "30": "D4",
+        "29": "D5",
+        "28": "D6",
+        "27": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
+      }
+    },
+    {
+      "ref": "D11",
+      "type": "USART8251",
+      "pins": {
+        "12": "A",
+        "11": "CS_N",
+        "13": "RD_N",
+        "10": "WR_N",
+        "27": "D0",
+        "28": "D1",
+        "1": "D2",
+        "2": "D3",
+        "5": "D4",
+        "6": "D5",
+        "7": "D6",
+        "8": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
+      }
+    },
+    {
+      "ref": "D54",
+      "type": "PIT8253",
+      "pins": {
+        "19": "A0",
+        "20": "A1",
+        "21": "CS_N",
+        "22": "RD_N",
+        "23": "WR_N",
+        "8": "D0",
+        "7": "D1",
+        "6": "D2",
+        "5": "D3",
+        "4": "D4",
+        "3": "D5",
+        "2": "D6",
+        "1": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
+      }
+    },
+    {
+      "ref": "D55",
+      "type": "PIT8253",
+      "pins": {
+        "19": "A0",
+        "20": "A1",
+        "21": "CS_N",
+        "22": "RD_N",
+        "23": "WR_N",
+        "8": "D0",
+        "7": "D1",
+        "6": "D2",
+        "5": "D3",
+        "4": "D4",
+        "3": "D5",
+        "2": "D6",
+        "1": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
+      }
+    },
+    {
+      "ref": "D57",
+      "type": "PIT8253",
+      "pins": {
+        "19": "A0",
+        "20": "A1",
+        "21": "CS_N",
+        "22": "RD_N",
+        "23": "WR_N",
+        "8": "D0",
+        "7": "D1",
+        "6": "D2",
+        "5": "D3",
+        "4": "D4",
+        "3": "D5",
+        "2": "D6",
+        "1": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
+      }
+    },
+    {
+      "ref": "D10",
+      "type": "PIC8259",
+      "pins": {
+        "27": "A",
+        "1": "CS_N",
+        "3": "RD_N",
+        "2": "WR_N",
+        "11": "D0",
+        "10": "D1",
+        "9": "D2",
+        "8": "D3",
+        "7": "D4",
+        "6": "D5",
+        "5": "D6",
+        "4": "D7",
+        "17": "INTR",
+        "26": "INTA_N"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified(I/O)"
       }
     }
   ],
@@ -1043,6 +1217,34 @@
         [
           "D22",
           "10"
+        ],
+        [
+          "D26",
+          "9"
+        ],
+        [
+          "D27",
+          "9"
+        ],
+        [
+          "D54",
+          "19"
+        ],
+        [
+          "D55",
+          "19"
+        ],
+        [
+          "D57",
+          "19"
+        ],
+        [
+          "D11",
+          "12"
+        ],
+        [
+          "D10",
+          "27"
         ]
       ]
     },
@@ -1084,6 +1286,26 @@
         [
           "D22",
           "9"
+        ],
+        [
+          "D26",
+          "8"
+        ],
+        [
+          "D27",
+          "8"
+        ],
+        [
+          "D54",
+          "20"
+        ],
+        [
+          "D55",
+          "20"
+        ],
+        [
+          "D57",
+          "20"
         ]
       ]
     },
@@ -1643,6 +1865,34 @@
         [
           "D60",
           "14"
+        ],
+        [
+          "D26",
+          "34"
+        ],
+        [
+          "D27",
+          "34"
+        ],
+        [
+          "D11",
+          "27"
+        ],
+        [
+          "D54",
+          "8"
+        ],
+        [
+          "D55",
+          "8"
+        ],
+        [
+          "D57",
+          "8"
+        ],
+        [
+          "D10",
+          "11"
         ]
       ]
     },
@@ -1692,6 +1942,34 @@
         [
           "D61",
           "14"
+        ],
+        [
+          "D26",
+          "33"
+        ],
+        [
+          "D27",
+          "33"
+        ],
+        [
+          "D11",
+          "28"
+        ],
+        [
+          "D54",
+          "7"
+        ],
+        [
+          "D55",
+          "7"
+        ],
+        [
+          "D57",
+          "7"
+        ],
+        [
+          "D10",
+          "10"
         ]
       ]
     },
@@ -1741,6 +2019,34 @@
         [
           "D62",
           "14"
+        ],
+        [
+          "D26",
+          "32"
+        ],
+        [
+          "D27",
+          "32"
+        ],
+        [
+          "D11",
+          "1"
+        ],
+        [
+          "D54",
+          "6"
+        ],
+        [
+          "D55",
+          "6"
+        ],
+        [
+          "D57",
+          "6"
+        ],
+        [
+          "D10",
+          "9"
         ]
       ]
     },
@@ -1790,6 +2096,34 @@
         [
           "D63",
           "14"
+        ],
+        [
+          "D26",
+          "31"
+        ],
+        [
+          "D27",
+          "31"
+        ],
+        [
+          "D11",
+          "2"
+        ],
+        [
+          "D54",
+          "5"
+        ],
+        [
+          "D55",
+          "5"
+        ],
+        [
+          "D57",
+          "5"
+        ],
+        [
+          "D10",
+          "8"
         ]
       ]
     },
@@ -1839,6 +2173,34 @@
         [
           "D64",
           "14"
+        ],
+        [
+          "D26",
+          "30"
+        ],
+        [
+          "D27",
+          "30"
+        ],
+        [
+          "D11",
+          "5"
+        ],
+        [
+          "D54",
+          "4"
+        ],
+        [
+          "D55",
+          "4"
+        ],
+        [
+          "D57",
+          "4"
+        ],
+        [
+          "D10",
+          "7"
         ]
       ]
     },
@@ -1888,6 +2250,34 @@
         [
           "D65",
           "14"
+        ],
+        [
+          "D26",
+          "29"
+        ],
+        [
+          "D27",
+          "29"
+        ],
+        [
+          "D11",
+          "6"
+        ],
+        [
+          "D54",
+          "3"
+        ],
+        [
+          "D55",
+          "3"
+        ],
+        [
+          "D57",
+          "3"
+        ],
+        [
+          "D10",
+          "6"
         ]
       ]
     },
@@ -1937,6 +2327,34 @@
         [
           "D66",
           "14"
+        ],
+        [
+          "D26",
+          "28"
+        ],
+        [
+          "D27",
+          "28"
+        ],
+        [
+          "D11",
+          "7"
+        ],
+        [
+          "D54",
+          "2"
+        ],
+        [
+          "D55",
+          "2"
+        ],
+        [
+          "D57",
+          "2"
+        ],
+        [
+          "D10",
+          "5"
         ]
       ]
     },
@@ -1986,6 +2404,34 @@
         [
           "D67",
           "14"
+        ],
+        [
+          "D26",
+          "27"
+        ],
+        [
+          "D27",
+          "27"
+        ],
+        [
+          "D11",
+          "8"
+        ],
+        [
+          "D54",
+          "1"
+        ],
+        [
+          "D55",
+          "1"
+        ],
+        [
+          "D57",
+          "1"
+        ],
+        [
+          "D10",
+          "4"
         ]
       ]
     },
@@ -2135,6 +2581,93 @@
         [
           "D67",
           "3"
+        ]
+      ]
+    },
+    "IORD": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D5",
+          "25"
+        ],
+        [
+          "D26",
+          "5"
+        ],
+        [
+          "D27",
+          "5"
+        ],
+        [
+          "D11",
+          "13"
+        ],
+        [
+          "D54",
+          "22"
+        ],
+        [
+          "D55",
+          "22"
+        ],
+        [
+          "D57",
+          "22"
+        ],
+        [
+          "D10",
+          "3"
+        ]
+      ]
+    },
+    "IOWR": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D5",
+          "27"
+        ],
+        [
+          "D26",
+          "36"
+        ],
+        [
+          "D27",
+          "36"
+        ],
+        [
+          "D11",
+          "10"
+        ],
+        [
+          "D54",
+          "23"
+        ],
+        [
+          "D55",
+          "23"
+        ],
+        [
+          "D57",
+          "23"
+        ],
+        [
+          "D10",
+          "2"
+        ]
+      ]
+    },
+    "MEM_MODE0": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D26",
+          "14"
+        ],
+        [
+          "D7",
+          "13"
         ]
       ]
     },
@@ -2505,6 +3038,49 @@
         [
           "D67",
           "15"
+        ]
+      ]
+    },
+    "INTR": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D10",
+          "17"
+        ],
+        [
+          "D1",
+          "14"
+        ]
+      ]
+    },
+    "INTA": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D5",
+          "23"
+        ],
+        [
+          "D10",
+          "26"
+        ]
+      ]
+    },
+    "RESET": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "12"
+        ],
+        [
+          "D26",
+          "35"
+        ],
+        [
+          "D27",
+          "35"
         ]
       ]
     }
