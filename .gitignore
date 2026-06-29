@@ -43,3 +43,6 @@ venv/
 # generated netlists
 hdl/*.json
 *.net.xml
+
+# but DO keep schematic source renders
+!ref/schematics/*.png
