@@ -1131,28 +1131,28 @@
       "ref": "D35",
       "type": "CLK_PHASE",
       "pins": {
-        "1": "OSC",
-        "2": "PHI1",
-        "3": "PHI2",
-        "4": "PHI2TTL"
+        "10": "PHI1",
+        "12": "PHI2",
+        "11": "OSC",
+        "13": "PHI2TTL"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "placeholder"
+        "pins": "\u041b\u041d5 outputs \u03a61=10/\u03a62=12 read on scan"
       }
     },
     {
       "ref": "D38",
       "type": "STB_GEN",
       "pins": {
-        "1": "OSC",
-        "2": "STB"
+        "8": "STB",
+        "9": "OSC"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "placeholder"
+        "pins": "\u041b\u04101 STB=pin8 read on scan"
       }
     },
     {
@@ -3458,20 +3458,20 @@
         ],
         [
           "D35",
-          "1"
+          "11"
         ],
         [
           "D38",
-          "1"
+          "9"
         ]
       ]
     },
     "PHI1": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D35",
-          "2"
+          "10"
         ],
         [
           "D1",
@@ -3480,11 +3480,11 @@
       ]
     },
     "PHI2": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D35",
-          "3"
+          "12"
         ],
         [
           "D1",
@@ -3497,7 +3497,7 @@
       "nodes": [
         [
           "D35",
-          "4"
+          "13"
         ],
         [
           "D44",
@@ -3506,11 +3506,11 @@
       ]
     },
     "STSTB": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D38",
-          "2"
+          "8"
         ],
         [
           "D5",

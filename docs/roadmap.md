@@ -37,6 +37,10 @@ the climbing scan fraction. Rough order by leverage:
   on scan (D60->DB0, D61->DB1, ...). Data bus `DB0-7` flipped to `scan`. Provenance
   **36 -> 44/99**. Remaining memory item: EPROM chip-selects CS4-7 are cross-sheet
   (fold into the decoder trace, A4).
+- **A3 (outputs done)** — clock Φ1<-D35(ЛН5) pin10, Φ2<-D35 pin12, STB<-D38(ЛА1)
+  pin8 (read on scan) -> CPU Φ1/Φ2 + 8238 STSTB. `PHI1/PHI2/STSTB` -> `scan`.
+  Provenance **44 -> 47/99**. Oscillator (D59) internals + ФRTTL + RESET/READY
+  (Sheet-1 D13/D30) remain structural.
 - *Note:* provenance is per-net (weakest link), so a net flips to `scan` only when
   ALL its endpoints are traced — progress is lumpy (later steps flip nets in batches).
   A per-endpoint provenance refinement would make the grind more measurable.
