@@ -1,12 +1,11 @@
 {
   "_legend": {
-    "scan": "off the scan",
+    "scan": "traced off the scan",
     "datasheet": "standard datasheet pin",
     "convention": "8080-system standard, not yet scan-traced",
     "assumed": "bus bit-order/byte-split assumed",
-    "placeholder": "provisional, not sourced"
+    "convention-WRONG:scan-says-D13": "modeled per convention but scan shows a different source -- needs remodel"
   },
-  "_note": "CPU-core subsystem. Provenance per net ('src') and per chip ('prov'). Only chip identities + D1/D4 pinouts are scan/datasheet-grounded; the clock and bus bit-order are convention/assumed pending scan tracing.",
   "chips": [
     {
       "ref": "D1",
@@ -52,7 +51,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "datasheet"
+        "pins": "scan"
       }
     },
     {
@@ -81,7 +80,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "datasheet"
+        "pins": "scan"
       }
     },
     {
@@ -117,37 +116,37 @@
       "ref": "D5",
       "type": "SYS8238",
       "pins": {
-        "1": "D0",
-        "2": "D1",
-        "3": "D2",
-        "4": "D3",
-        "5": "D4",
-        "6": "D5",
-        "7": "D6",
-        "8": "D7",
-        "9": "DB0",
-        "10": "DB1",
-        "11": "DB2",
+        "1": "STSTB_N",
+        "2": "HLDA",
+        "3": "WR_N",
+        "4": "DBIN",
+        "22": "BUSEN_N",
+        "23": "INTA_N",
+        "24": "MEMR_N",
+        "25": "IORD_N",
+        "26": "MEMW_N",
+        "27": "IOWR_N",
+        "5": "D0",
+        "7": "D1",
+        "9": "D2",
+        "11": "D3",
+        "13": "D4",
+        "15": "D5",
+        "17": "D6",
+        "19": "D7",
+        "6": "DB0",
+        "8": "DB1",
+        "10": "DB2",
         "12": "DB3",
-        "13": "DB4",
-        "14": "DB5",
-        "15": "DB6",
-        "16": "DB7",
-        "17": "DBIN",
-        "18": "WR_N",
-        "19": "HLDA",
-        "20": "STSTB_N",
-        "21": "BUSEN_N",
-        "22": "MEMR_N",
-        "23": "MEMW_N",
-        "24": "IORD_N",
-        "25": "IOWR_N",
-        "26": "INTA_N"
+        "14": "DB4",
+        "16": "DB5",
+        "18": "DB6",
+        "20": "DB7"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "placeholder"
+        "pins": "control=scan;data=placeholder"
       }
     },
     {
@@ -174,7 +173,7 @@
   ],
   "nets": {
     "A0": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -187,7 +186,7 @@
       ]
     },
     "A1": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -200,7 +199,7 @@
       ]
     },
     "A2": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -213,7 +212,7 @@
       ]
     },
     "A3": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -226,7 +225,7 @@
       ]
     },
     "A4": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -239,7 +238,7 @@
       ]
     },
     "A5": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -252,7 +251,7 @@
       ]
     },
     "A6": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -265,7 +264,7 @@
       ]
     },
     "A7": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -382,7 +381,7 @@
       ]
     },
     "D0": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -390,12 +389,12 @@
         ],
         [
           "D5",
-          "1"
+          "5"
         ]
       ]
     },
     "D1": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -403,12 +402,12 @@
         ],
         [
           "D5",
-          "2"
+          "7"
         ]
       ]
     },
     "D2": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -416,12 +415,12 @@
         ],
         [
           "D5",
-          "3"
+          "9"
         ]
       ]
     },
     "D3": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -429,12 +428,12 @@
         ],
         [
           "D5",
-          "4"
+          "11"
         ]
       ]
     },
     "D4": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -442,12 +441,12 @@
         ],
         [
           "D5",
-          "5"
+          "13"
         ]
       ]
     },
     "D5": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -455,12 +454,12 @@
         ],
         [
           "D5",
-          "6"
+          "15"
         ]
       ]
     },
     "D6": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -468,12 +467,12 @@
         ],
         [
           "D5",
-          "7"
+          "17"
         ]
       ]
     },
     "D7": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -481,7 +480,59 @@
         ],
         [
           "D5",
-          "8"
+          "19"
+        ]
+      ]
+    },
+    "DBIN": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "17"
+        ],
+        [
+          "D5",
+          "4"
+        ]
+      ]
+    },
+    "WR": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "18"
+        ],
+        [
+          "D5",
+          "3"
+        ]
+      ]
+    },
+    "HLDA": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "21"
+        ],
+        [
+          "D5",
+          "2"
+        ]
+      ]
+    },
+    "STSTB": {
+      "src": "convention-WRONG:scan-says-D13",
+      "nodes": [
+        [
+          "D90",
+          "10"
+        ],
+        [
+          "D5",
+          "1"
         ]
       ]
     },
@@ -547,58 +598,6 @@
         [
           "D90",
           "4"
-        ]
-      ]
-    },
-    "DBIN": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "17"
-        ],
-        [
-          "D5",
-          "17"
-        ]
-      ]
-    },
-    "WR": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "18"
-        ],
-        [
-          "D5",
-          "18"
-        ]
-      ]
-    },
-    "HLDA": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D1",
-          "21"
-        ],
-        [
-          "D5",
-          "19"
-        ]
-      ]
-    },
-    "STSTB": {
-      "src": "convention",
-      "nodes": [
-        [
-          "D90",
-          "10"
-        ],
-        [
-          "D5",
-          "20"
         ]
       ]
     }

@@ -79,11 +79,24 @@ So the *structure* is right but the *wires* are inference, not the scan. LVS onl
 proves the schematic-model matches the HDL-model — both currently encode the same
 assumptions, so this is a consistency check, not yet an independent verification.
 
-## Harden-against-scan list (turn `assumed`/`convention` → `scan`)
-1. Trace address byte-split (D4 vs D7) + exact bit order on the scan.
-2. Trace data-bus bit pairing CPU↔8238.
-3. Read 8238 (D5) real pinout + the CPU→8238 control wiring.
-4. Read Sheet 2: 8224 refdes/pinout + its Φ1/Φ2/RESET/READY/STSTB wiring.
+## Hardening progress — 19/33 nets now scan-traced
+DONE (flipped to `scan`):
+- **Address low byte**: CPU A0–A7 → D4 (8286) pins 1–8, **straight** (col-3 pin
+  numbers on the scan read 1,2,3,4,5,6,7,8). 8286: A=1–8, OE=9, T=11, B=12–19.
+- **Data bus**: CPU D0–D7 → D5 (8238), straight connectivity traced.
+- **8238 (D5) control pinout** read off the scan, matches standard 8228:
+  STSTB=1, HLDA=2, WR=3, DBIN=4, BUSEN=22, INTA=23, MEMR=24, IORD=25, MEMW=26, IOWR=27.
+  (D5 *data* pin numbers still placeholder — interleaved D/DB, hard to read; connectivity is straight.)
+- **Control into 8238**: DBIN (CPU17→D5.4), WR (CPU18→D5.3), HLDA (CPU21→D5.2).
+
+CORRECTION found by tracing: **D5 STSTB (pin1) is driven by D13 (ТМ2), NOT the
+8224** — our HDL/convention models 8224→8238; that net is tagged
+`convention-WRONG:scan-says-D13` and must be remodeled (add D13).
+
+STILL TODO (assumed/convention):
+1. Address HIGH byte (A8–A15 → D7): byte-split + bit order — top buffer reads messier.
+2. Sheet 2: 8224 refdes/pinout + Φ1/Φ2/RESET/READY wiring (currently `convention`).
+3. Model D13 (ТМ2) and re-route STSTB; finalize D5 data pin numbers.
 
 ## Next subsystem
 Memory: ROM/EPROM array, РУ5 DRAM array, address decode + 4-mode bank logic.
