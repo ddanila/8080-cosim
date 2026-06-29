@@ -82,7 +82,8 @@ model mirroring cosim (4-mode overlay, Port-C banking, IN=output-latch), driven
 through the real 8080 status-byte bus protocol. **Cross-validated: the VRAM is
 byte-for-byte IDENTICAL to cosim** after 6000 video writes — two independent CPU
 cores (Verilog die-replica vs C superzazu) produce the same framebuffer. Running
-`+maxvram=43000` draws the full boot banner. Key bug found+fixed: the status byte
+`+maxvram=43000` draws the **full boot banner** (`docs/boot-banner-ekta37-hdl.png`)
+-- 42623 video writes, byte-for-byte identical to cosim's complete framebuffer. Key bug found+fixed: the status byte
 must be latched on a `clk` edge *inside* the sync window, not at `posedge sync`
 (sync and D update on the same f2 edge → a posedge-sync read gets the stale bus).
 
