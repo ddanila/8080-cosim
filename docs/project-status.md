@@ -56,6 +56,23 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **`cell` is a reserved word in Icarus Verilog** (Verilog-AMS/config). Don't name a
   reg/memory `cell` — it errors with a cryptic "Syntax error in variable list".
 
+## Firmware / ROMs
+The full Juku ROM set is vendored in `roms/` (SHA-1s match MAME; abandonware — see
+`roms/README.md`). Two matter for us:
+- **ekta37** — EktaSoft BIOS, **polled**: clears the screen and draws its banner inline
+  (no interrupts), so it renders in cosim and is the **boot we cross-validate**.
+- **jmon33** — the **default** Juku Monitor v3.3 (MAME `ROM_BIOS(0)`), **interrupt-driven**:
+  inits the same hardware, enables interrupts, then waits on an ISR-set RAM flag (e.g.
+  `0xD704`) and shows nothing under cosim (no interrupts modeled). **jmon33 is the natural
+  target for the interactive-emulation track** — booting it to a live prompt requires
+  modeling the frame interrupt (8259 → INT/INTA → RST) + keyboard input via the 8255.
+
+## CI guards
+- **LVS** (`sync/check.sh`) — KiCad↔HDL connectivity stays in sync.
+- **Boot regression** (`sync/boot_check.sh`) — every HDL sim level (juku_sim/chips/struct)
+  must boot the real ekta37 **byte-identical to cosim**, bounded to 6000 video writes
+  (~30s, not the slow full banner). Protects the merge from silent breakage.
+
 ## Toolchain
 `kicad-cli` at `/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli`;
 `yosys` + `iverilog` via Homebrew. LVS pipeline: `sync/check.sh` (KiCad-free `--board`

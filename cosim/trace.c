@@ -74,11 +74,13 @@ static uint8_t rb(void* u, uint16_t a) {
   return ram[a];
 }
 
+static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + optional stop limit
 static void wb(void* u, uint16_t a, uint8_t v) {
   (void)u; unsigned idx = 0;
   if (overlay(a, &idx)) return;    // write under ROM/expcart overlay -> dropped
   ram[a] = v;
   wpage[a >> 8]++;
+  if (a >= VRAM_BASE) g_vw++;      // for CI: stop+dump after N video writes (match HDL)
 }
 
 static uint8_t pin(void* u, uint8_t p) {
@@ -117,6 +119,7 @@ static uint8_t sum_block(const uint8_t* r) {   // block-1 checksum (0x000B..0x07
 int main(int argc, char** argv) {
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
+  g_vw_limit            = argc > 3 ? strtoul(argv[3], 0, 0) : 0UL;   // 0 = no video-write limit
 
   FILE* f = fopen(rom_path, "rb");
   if (!f) { perror(rom_path); return 1; }
@@ -143,7 +146,7 @@ int main(int argc, char** argv) {
   static uint32_t pchist[MEM_SIZE];
 
   int chk_logs = 0;
-  while (cpu.cyc < max_cyc && !cpu.halted) {
+  while (cpu.cyc < max_cyc && !cpu.halted && !(g_vw_limit && g_vw >= g_vw_limit)) {
     pchist[cpu.pc]++;
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",

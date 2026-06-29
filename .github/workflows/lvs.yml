@@ -1,4 +1,4 @@
-name: LVS (KiCad <-> HDL connectivity)
+name: CI (LVS + boot regression)
 
 on:
   push:
@@ -20,3 +20,19 @@ jobs:
 
       - name: Run LVS check
         run: sh sync/check.sh
+
+  boot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # iverilog runs the vm80a-based HDL sims; gcc builds the cosim oracle.
+      # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL
+      # sim levels, bounded to 6000 video writes (~30s, never the slow full banner),
+      # and asserts every level is byte-for-byte identical to cosim -- i.e. the merge
+      # (the schematic structure executing the firmware) cannot silently regress.
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+
+      - name: Run boot regression check
+        run: ./sync/boot_check.sh

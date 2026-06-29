@@ -120,7 +120,11 @@ endmodule
 
 // EPROM array (ekta37): real ROM chip on the DB bus; sample-and-hold read (8080 tOS1/2).
 module eprom_b(input wire [13:0] idx, input wire sel, rd_n, inout wire [7:0] db);
-  reg [7:0] rom [0:16383]; initial $readmemh("hdl/sim/ekta37.hex", rom);
+  reg [7:0] rom [0:16383]; reg [1023:0] romfile;
+  initial begin
+    if (!$value$plusargs("rom=%s", romfile)) romfile = "hdl/sim/ekta37.hex";
+    $readmemh(romfile, rom);
+  end
   reg [7:0] held;
   always @(negedge rd_n) if (sel) held <= rom[idx];      // latch when read strobe asserts
   assign db = (sel & ~rd_n) ? held : 8'bz;
