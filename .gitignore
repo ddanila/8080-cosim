@@ -42,3 +42,4 @@ venv/
 
 # generated netlists
 hdl/*.json
+*.net.xml
