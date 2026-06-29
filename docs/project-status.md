@@ -50,6 +50,11 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **ROMs are kept out of git** (copyright + size). `cosim` reads the `.bin` from an
   external path; `hdl/sim/ekta37.hex` is ROM-derived and **gitignored** (generate
   locally — see the `juku_sim_tb.v` header).
+- **Structural-sim read data must be sample-and-held** (latch at the read strobe, hold
+  through DBIN) — a combinational drive on the multi-hop bus violates the 8080 `tOS1`/
+  `tOS2` data-setup-stability spec and corrupts vm80a's fixed-phase capture.
+- **`cell` is a reserved word in Icarus Verilog** (Verilog-AMS/config). Don't name a
+  reg/memory `cell` — it errors with a cryptic "Syntax error in variable list".
 
 ## Toolchain
 `kicad-cli` at `/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli`;
