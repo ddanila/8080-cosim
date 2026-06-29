@@ -5,12 +5,13 @@
 // Those nets (BA, DB, IORD/IOWR/MEMR/MEMW, the I/O chip-selects) are the scan-grounded
 // part of the LVS model, and the boot is carried by them here.
 //
-// HONEST BOUNDARY: the memory-addressing subsystem (D6 decode + EPROM CS + the
-// bit-sliced РУ5 DRAM with its RAS/CAS row/col + μP/video mux) is the `assumed`/
-// `boundary`/`prom` part of the LVS model -- wired for connectivity, not execution
-// (MA is 8-bit/static, EPROMs share one CS, banking is a 1-bit gate). Inventing that
-// wiring would violate "scan = source of truth", so it stays a behavioral black box
-// (`mem_subsystem`, = the emulator-recovered map) on the real DB bus + memw_n + mode.
+// MEMORY (loop-B deepening): now REAL chip instances on the DB bus, not a monolith --
+// decode_prom_b (D6 К556РТ4, recovered map), eprom_b (ekta37), dram_bank_b (К565РУ5 RAM).
+// The boot flows CPU -> D6 decode -> EPROM/DRAM drives DB. The ONE remaining abstraction
+// is the DRAM's multiplexed row/col addressing (RAS/CAS mux) -- genuinely un-traced
+// (Phase A boundary), so it is NOT invented here ("scan = source of truth"); the DRAM
+// is a flat 64K bank. A validated К565РУ5 row/col model is ready in dram_unit_tb.v for
+// when that wiring is traced.
 // A few `assumed` glue spots are realized to their known functional INTENT (noted):
 //   - io_dec138 enables on (iord|iowr) (the literal 74138 ANDs both -> never enables;
 //     the real board has a strobe-OR not yet traced);
@@ -101,28 +102,39 @@ module periph_b(input wire osc, input wire [1:0] A, inout wire [7:0] D, input wi
   always @(posedge osc) if (~cs_n & ~wr_n) regs[A] = D;
 endmodule
 
-// ===== un-traced memory subsystem: honest behavioral black box on the real bus =====
-module mem_subsystem(input wire osc, input wire [15:0] a, inout wire [7:0] db,
-                     input wire memr_n, memw_n, input wire [1:0] mode);
-  reg [7:0] rom [0:16383]; reg [7:0] ram [0:65535]; integer i;
-  initial begin for (i=0;i<65536;i=i+1) ram[i]=0; $readmemh("hdl/sim/ekta37.hex", rom); end
-  function [7:0] rd(input [15:0] ad); begin
+// ===== memory subsystem as REAL chip instances (loop-B deepening) =====
+// D6 (К556РТ4) memory-decode PROM: high address + banking mode -> ROM/RAM select +
+// the ROM offset (banking folds 0xD800->0x1800). Contents = emulator-recovered map
+// (`prom` provenance). Mode is the 8255#0 Port-C value.
+module decode_prom_b(input wire [15:0] a, input wire [1:0] mode,
+                     output reg rom_sel, ram_sel, output reg [13:0] rom_idx);
+  always @(*) begin
+    rom_sel=0; ram_sel=0; rom_idx=14'd0;
     case (mode)
-      2'd0: rd = (ad<=16'h3FFF) ? rom[ad[13:0]] : ram[ad];
-      2'd1,2'd2: rd = (ad>=16'hD800) ? rom[16'h1800+(ad-16'hD800)] : ram[ad];
-      default: rd = ram[ad];
-    endcase end
-  endfunction
-  function ovl(input [15:0] ad); begin
-    case (mode) 2'd0: ovl=(ad<=16'h3FFF); 2'd1,2'd2: ovl=(ad>=16'hD800); default: ovl=0; endcase end
-  endfunction
-  // sample-and-hold the read data when the read strobe asserts, hold it stable through
-  // the whole DBIN window -- matches vm80a's own testbench and the 8080 tOS1/tOS2
-  // data-setup-stability spec (combinational drive glitches at vm80a's f2 capture).
-  reg [7:0] rdh;
-  always @(negedge memr_n) rdh <= rd(a);   // BA is stable by T3 (set in T1)
-  assign db = (~memr_n) ? rdh : 8'bz;
-  always @(posedge osc) if (~memw_n & !ovl(a)) ram[a] = db;   // sample write while strobe low
+      2'd0:      if (a<=16'h3FFF) begin rom_sel=1; rom_idx=a[13:0]; end else ram_sel=1;
+      2'd1,2'd2: if (a>=16'hD800) begin rom_sel=1; rom_idx=16'h1800+(a-16'hD800); end else ram_sel=1;
+      default:   ram_sel=1;
+    endcase
+  end
+endmodule
+
+// EPROM array (ekta37): real ROM chip on the DB bus; sample-and-hold read (8080 tOS1/2).
+module eprom_b(input wire [13:0] idx, input wire sel, rd_n, inout wire [7:0] db);
+  reg [7:0] rom [0:16383]; initial $readmemh("hdl/sim/ekta37.hex", rom);
+  reg [7:0] held;
+  always @(negedge rd_n) if (sel) held <= rom[idx];      // latch when read strobe asserts
+  assign db = (sel & ~rd_n) ? held : 8'bz;
+endmodule
+
+// DRAM bank (К565РУ5 array): real RAM on the DB bus. Behavioral 64K -- the multiplexed
+// row/col addressing (RAS/CAS mux) is the un-traced boundary, so it is NOT invented here
+// (a validated К565РУ5 row/col model lives in hdl/sim/dram_unit_tb.v for when it is traced).
+module dram_bank_b(input wire osc, input wire [15:0] a, input wire sel, rd_n, we_n, inout wire [7:0] db);
+  reg [7:0] mem [0:65535]; integer i; initial for (i=0;i<65536;i=i+1) mem[i]=0;
+  reg [7:0] held;
+  always @(negedge rd_n) if (sel) held <= mem[a];
+  assign db = (sel & ~rd_n) ? held : 8'bz;
+  always @(posedge osc) if (sel & ~we_n) mem[a] = db;   // sample write while strobe low
 endmodule
 
 // =============================== structural top =================================
@@ -145,7 +157,10 @@ module juku_struct(input wire osc, phi1, phi2, reset, input wire ready);
   io_dec138_b U_DID7 (.a(BA[2]), .b(BA[3]), .c(BA[4]), .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
       .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
-  mem_subsystem U_MEM (.osc(osc), .a(BA), .db(DB), .memr_n(memr_n), .memw_n(memw_n), .mode(mem_mode));
+  wire dec_rom, dec_ram; wire [13:0] dec_idx;
+  decode_prom_b U_D6   (.a(BA), .mode(mem_mode), .rom_sel(dec_rom), .ram_sel(dec_ram), .rom_idx(dec_idx));
+  eprom_b       U_EPROM(.idx(dec_idx), .sel(dec_rom), .rd_n(memr_n), .db(DB));
+  dram_bank_b   U_DRAM (.osc(osc), .a(BA), .sel(dec_ram), .rd_n(memr_n), .we_n(memw_n), .db(DB));
 
   ppi0_b    U_PPI0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n), .reset(reset), .portc_lo(mem_mode));
   periph_b  U_PPI1 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n));
@@ -180,7 +195,7 @@ module juku_struct_tb();
     sq <= dut.sync;
   end
   always @(negedge dut.memw_n) begin
-    if (!dut.U_MEM.ovl(dut.BA) && dut.BA >= 16'hD800) begin
+    if (dut.dec_ram && dut.BA >= 16'hD800) begin     // a RAM write to video memory
       vram_writes = vram_writes + 1;
       if (!vram_seen) begin vram_seen=1;
         $display("[VRAM] first video write @0x%04h mode=%0d mcyc=%0d", dut.BA, dut.mem_mode, mcyc); end
@@ -193,7 +208,7 @@ module juku_struct_tb();
   integer fd, k;
   task dump_vram; begin
     fd=$fopen("hdl/sim/vram_struct.bin","wb");
-    for (k=0;k<40*241;k=k+1) $fwrite(fd,"%c", dut.U_MEM.ram[16'hD800+k]);
+    for (k=0;k<40*241;k=k+1) $fwrite(fd,"%c", dut.U_DRAM.mem[16'hD800+k]);
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_struct.bin");
   end endtask
 

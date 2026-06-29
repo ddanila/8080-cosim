@@ -121,9 +121,15 @@ multi-hop bus (A→buf→mem→8238→D) violates the spec and corrupts the capt
 DBIN — exactly what vm80a's own testbench (`tb80a.v`) does. NOT a Soviet-vs-Intel quirk:
 same core, same flat-bus result (step 3); only the structural bus's settling differed.
 
-Next: (5) keep cross-validating vs cosim + MAME; optional: functionalize the assumed
-memory-addressing nets (DRAM mux/banking) to replace the black box with real chips.
-LVS stays green (device internals don't change the top netlist).
+**Step 4+ (deepening) DONE:** the memory black box is replaced by REAL chip instances --
+`decode_prom_b` (D6 К556РТ4, recovered map), `eprom_b` (ekta37), `dram_bank_b` (К565РУ5
+RAM) -- each on the DB bus; boot stays byte-identical to cosim. The whole boot-critical
+datapath is now discrete chips. A faithful К565РУ5 row/col DRAM model is validated in
+`hdl/sim/dram_unit_tb.v` (loop A) for when the un-traced RAS/CAS address-mux is traced;
+until then the DRAM is a flat bank (the one honest remaining abstraction).
+
+Next: (5) keep cross-validating vs cosim + MAME; trace the DRAM RAS/CAS address-mux
+(Phase A's last boundary) to swap in the bit-sliced row/col DRAM. LVS stays green.
 
 - Give the **verified structure** behavior: replace HDL device stubs with behavioral
   models (8080 core + ROM/RAM with content + 8255/8253/8259/…), or bind the `cosim/`
