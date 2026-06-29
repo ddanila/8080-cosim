@@ -14,6 +14,8 @@ LEGEND = {
     "assumed":    "simplifying assumption (bus bit-order / byte-split) pending a scan trace",
     "placeholder":"provisional pin numbers/refdes, not yet sourced",
     "boundary":   "chip pins traced, but the net's other end is an un-modeled subsystem",
+    "prom":       "PROM-decode net: decode chip identified (D2/D6 РТ4), but the decode "
+                  "table is in off-schematic PROM contents (= the emulator-recovered map)",
 }
 
 b = json.load(open(sys.argv[1]))
@@ -30,6 +32,8 @@ for c in b["chips"]:
     p = c.get("prov", {})
     print(f"  {c['ref']:5} {c['type']:9}  type={p.get('type','?')}, refdes={p.get('refdes','?')}, pins={p.get('pins','?')}")
 scan = nc.get("scan",0)+nc.get("datasheet",0)
+prom = nc.get("prom",0)
 total = sum(nc.values())
-print(f"\nscan/datasheet-grounded nets: {scan}/{total}; "
-      f"assumed/convention: {total-scan}/{total}  <-- harden these against the scan")
+rest = total - scan - prom
+print(f"\nscan/datasheet-grounded: {scan}/{total};  prom (off-schematic contents): {prom};  "
+      f"remaining (assumed/boundary): {rest}")

@@ -3115,7 +3115,7 @@
       ]
     },
     "ROM_SEL": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D6",
@@ -3156,7 +3156,7 @@
       ]
     },
     "ROE": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D6",
@@ -3210,7 +3210,7 @@
       ]
     },
     "MEMR": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D5",
@@ -3223,7 +3223,7 @@
       ]
     },
     "MEMW": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D5",
@@ -3312,7 +3312,7 @@
       ]
     },
     "IORD": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D5",
@@ -3353,7 +3353,7 @@
       ]
     },
     "IOWR": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D5",
@@ -3394,7 +3394,7 @@
       ]
     },
     "MEM_MODE0": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D26",
@@ -3407,7 +3407,7 @@
       ]
     },
     "INTR": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D10",
@@ -3420,7 +3420,7 @@
       ]
     },
     "INTA": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D5",
@@ -3433,7 +3433,7 @@
       ]
     },
     "RESET": {
-      "src": "assumed",
+      "src": "scan",
       "nodes": [
         [
           "D1",
@@ -3519,7 +3519,7 @@
       ]
     },
     "CS_D10": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",
@@ -3532,7 +3532,7 @@
       ]
     },
     "CS_D26": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",
@@ -3545,7 +3545,7 @@
       ]
     },
     "CS_D11": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",
@@ -3558,7 +3558,7 @@
       ]
     },
     "CS_D27": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",
@@ -3571,7 +3571,7 @@
       ]
     },
     "CS_D54": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",
@@ -3584,7 +3584,7 @@
       ]
     },
     "CS_D55": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",
@@ -3597,7 +3597,7 @@
       ]
     },
     "CS_D57": {
-      "src": "assumed",
+      "src": "prom",
       "nodes": [
         [
           "D2",

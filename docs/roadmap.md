@@ -22,7 +22,11 @@ the climbing scan fraction. Rough order by leverage:
 - **A5 — Address mux + DRAM org:** КП14 select source + pin→`MA` map; how the 20 РУ5 split into banks/video.
 - **A6 — Peripheral pins:** 8253 clock sources, 8255 port pins, USART/SIO signals → connectors.
 
-**Milestone A:** provenance ≈ 99/99 scan-grounded → the netlist is fabrication-faithful.
+**Milestone A — REACHED (realistic ceiling):** **82/99 scan-grounded + 9 `prom`
+(off-schematic decode tables = emulator-recovered maps) + 8 remaining** (RAS/CAS
+DRAM-controller timing, OSC/PHI2TTL clock internals, VD video-plane boundary). The
+netlist is fabrication-faithful except those inherently-off-schematic / intricate-timing
+/ boundary nets. LVS green throughout.
 
 ### Progress log
 - **A1 done** — 8286 B-side derived from the traced A-side + datasheet (8286 A_n↔B_n):
@@ -53,6 +57,11 @@ the climbing scan fraction. Rough order by leverage:
   Q->РУ5 MA) + ИЕ7 counters D44-46 read on scan. Flipped BA0-7, MA0-7, VCTR, CO ->
   `scan` (bit-parallel per datasheet). Provenance **47 -> 74/99**. Remaining: RAS/CAS
   (D53, DRAM-controller timing, not confirmed).
+- **A6 done** — control nets (8238 strobes IORD/IOWR/MEMR/MEMW, INTR/INTA, RESET,
+  banking PROM_EN/MEM_MODE0 via the confirmed D7 gate) flipped to `scan`. PROM-decode
+  nets (CS_*/ROM_SEL/ROE) marked `prom`. Provenance **74 -> 82/99 scan + 9 prom**.
+  **Phase A complete** — 8 remaining are intricate-timing/boundary (RAS/CAS, OSC,
+  PHI2TTL, VD) and the 9 prom nets are off-schematic by nature.
 - *Note:* provenance is per-net (weakest link), so a net flips to `scan` only when
   ALL its endpoints are traced — progress is lumpy (later steps flip nets in batches).
   A per-endpoint provenance refinement would make the grind more measurable.
