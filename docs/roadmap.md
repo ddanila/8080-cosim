@@ -24,6 +24,15 @@ the climbing scan fraction. Rough order by leverage:
 
 **Milestone A:** provenance ≈ 99/99 scan-grounded → the netlist is fabrication-faithful.
 
+### Progress log
+- **A1 done** — 8286 B-side derived from the traced A-side + datasheet (8286 A_n↔B_n):
+  D4 B-pins BA8←19, BA9←18, BA10←12, BA11←13, BA12←16, BA13←15, BA14←14, BA15←17.
+  BA13–15 (buffer+decode only) → `scan`; BA8–12 stay `assumed` (EPROM taps = A2).
+  Provenance **28 → 31/99**.
+- *Note:* provenance is per-net (weakest link), so a net flips to `scan` only when
+  ALL its endpoints are traced — progress is lumpy (later steps flip nets in batches).
+  A per-endpoint provenance refinement would make the grind more measurable.
+
 ## Phase B — Real PCB artifact  ⟶ *fabricable board*
 - Swap in the **real Juku schematics** when available (parsers unchanged; only pin maps).
 - Either keep the generated net-label schematic and go netlist→footprints→layout, or
