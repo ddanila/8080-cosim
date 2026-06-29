@@ -31,6 +31,19 @@ MAME abstracts banking as a 4-mode `memory_view` selected by 8255#0 Port C. The
 - **RAM**: К565РУ5 DRAM array (20×) — addressed/selected via RAM/REV signals +
   the РУ5 RAS/CAS/refresh logic. [scan]
 
+## Banking mechanism — summary (scan)
+```
+A8..A15 ──► D6 (К556РТ4 PROM) ──► ROM / RAM / REV / ROE selects
+                  ▲ V1,V2 (enable)
+                  │
+        D7 (ЛА3 gate) ◄── 8238 (D5) control outputs (MRD/MWR/IORD region) + mode line
+```
+So RAM-under-ROM banking is **PROM-decode gated by D7**, combining the 256-byte
+page decode with read/write strobes (and the mode). This is the real mechanism
+behind MAME's behavioral 4-mode `memory_view`. D7 (ЛА3) has ≥2 NAND sections
+(pins 12,13→11 drives the PROM enable; 9,10→8 another). Exact mode-bit cross-sheet
+route from the 8255 Port C still to trace [?].
+
 ## TODO (next passes)
 1. Trace D6 (РТ4) input lines: which buffered address bits + the Port C mode bit.
 2. Identify ROM/EPROM refdes + their CS/OE ← ROM/ROE; data → DB bus.
