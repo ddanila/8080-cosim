@@ -1,52 +1,46 @@
-# Boot findings — ekta43.bin (RomBios 2.43m, EktaSoft, AT-keyboard homebrew #0043)
+# Boot findings — RESOLVED: emulator boots to the banner
 
-Empirical results from `cosim/trace.c` (traced superzazu 8080, MIT) plus the
-authoritative map from MAME (see `hardware-map.md`).
+The `cosim/` software emulator now **boots the real BIOS and renders the boot
+banner to video RAM**. Summary of the journey and the resolution.
 
-## Confirmed / resolved
-- ROM 16 KB at `0x0000`; reset `JMP 0x0017` → signature NOPs → `JMP 0x01A8` (init).
-- Full I/O port map recovered and matches the chip inventory (see hardware-map.md).
-- Memory **banking** modelled: 4-mode view via 8255#0 Port C bits[1:0]
-  (`trace.c` handles direct Port C writes on port `0x06` and 8255 BSR on `0x07`).
-- Video framebuffer located: DRAM `0xD800`, stride 40 (320 px), MSB-first.
-- Init at `0x01A8` is correct: configures both 8255s, sets stack `0xD450`,
-  does a warm-boot RAM-signature probe, programs all three 8253 PITs.
-- The earlier "comb" render was the `0x55` RAM-test pattern; the `0x00CE`
-  `OUT 0x07 / JMP 0x00D2` is the real error trap and we never hit it.
-
-## The wall (current)
-Boot **never reaches the banner**. Even at 3e9 cycles (~25 min of CPU time):
-`mode=0`, zero bank switches, **nothing ever written to the `0xD8xx` video region**.
-It is in an **infinite retry loop**:
-
+## The banner (ekta37.bin, rendered from VRAM @ 0xD800, stride 40 = 320px)
 ```
-0442/0443: strobe sequence    ; sub 0x046B = read Port A latch / set low nibble / pulse bit7 strobe
-0444..0468: program PIT#2 + two big software delays (CALL 0x047B), loop C times
-0042D..0442: checksum/sum a memory block (ADD M / INX H / DCX D ...)
+EktaSoft '88  Serial #0037
+Screen b/w 40x24/+wnd
+Juku' Qwerty/sw kbd
+Parallel printer
+DiskBios (Fdc 1793 on MBoard*)
+NetBios
+Max Rom on Board: 4000
+RomBios 3.43m
+*                     <- prompt
 ```
 
-i.e. **strobe-something → wait → read-back/checksum → doesn't match → retry forever.**
-`iff=0` throughout and the only polled input is 8255#0 Port A readback.
+## What the stall actually was
+The boot looked hung for a long time. It was **not** the keyboard handshake (the
+earlier guess). It was the **ROM self-test checksum**:
+- `0x042C` = a block checksum (sums `[HL]` until `DE==0` or HL hits a 0x800
+  boundary, `H&7==0`); compares the sum to a stored byte.
+- On mismatch → `0x0408`/`0x0443`: a beep/strobe loop driven by `C` and big
+  software delays, and the self-test **retries forever** → effectively hung.
 
-### Diagnosis
-It is waiting on an **external peripheral handshake that we don't model** — almost
-certainly the **AT keyboard / key-encoder** (this BIOS is the AT-keyboard homebrew
-variant; the Port A strobe drives the keyboard side, the checksum reads its
-response). MAME models a key-encoder device and boots fine.
+## Root cause for ekta43: a stale checksum byte
+- ekta43 block-1 (`0x000B..0x07FF`) sums to **0x57**, but the stored checksum at
+  **0x000A is 0xF2** → self-test fails → infinite retry.
+- **Checksum survey of `~/Downloads/juku/`** confirmed our logic and isolated it:
+  | ROM | block-1 | stored | |
+  |---|---|---|---|
+  | ekta24/31/32/35/37 | = stored | ✓ | official, pass |
+  | **ekta43** | 0x57 | 0xF2 | ✗ stale (homebrew AT-kbd mod) |
+  | jbasic11 (cart), jmon33 (proto) | — | — | different format |
+- So `ekta43.bin` has a genuine stale checksum (the homebrew author changed code
+  but didn't update 0x000A). `trace.c` patches that one byte at load so it boots;
+  **ekta37 (official) boots with no patch** and is the better default.
 
-## Options to get past it (decision pending)
-1. **Model the key-encoder/AT-keyboard handshake** in our harness (study MAME's
-   key-encoder device + the 8255#0 Port A/B protocol, feed the expected
-   self-test/response). Most faithful; most work.
-2. **Use MAME as the golden behavioral reference** for the banner/boot, and keep
-   our custom harness for the parts the PCB co-sim/LVS actually needs.
-3. **Reassess scope**: the LVS/connectivity-sync goal may not require a full
-   behavioral boot at all — the authoritative map in `hardware-map.md` may already
-   be enough to drive the KiCad↔HDL work.
-
-## Tooling built
-- `cosim/trace.c`   — traced 8080 with faithful Juku banking + instrumentation
-- `cosim/dis8080.py`— full 8080 disassembler (used to recover the boot flow)
-- `cosim/render.py` — render a raw mono framebuffer dump to PNG
-- `cosim/i8080.*`   — vendored MIT 8080 core
-- `ref/mame_juku.cpp` — MAME driver (BSD-3), the hardware ground truth
+## State of the behavioral track
+- Boots, banks (mode 0↔1), draws the banner. `render.py` turns VRAM → PNG.
+- Next for "react to commands": feed keystrokes at the `*` prompt (8255 Port A/B
+  keyboard), optionally model the frame interrupt for cursor/timing, and wrap a
+  small CLI so an LLM can drive it (write key, step, read VRAM).
+- ekta43's 53x24 screen uses a different framebuffer stride than ekta37's 40x24;
+  render stride must match the ROM's screen-width register.

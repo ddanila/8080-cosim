@@ -10,7 +10,14 @@
 //        mode 3:         all RAM
 //   - video reads DRAM at 0xD800, stride = WIDTH/8 = 40 bytes/line (320x241 mono)
 //
-// All IN ports return 0x00 (no key / not ready). Interrupts are NOT modelled yet.
+// IN ports return the 8255 output latch (no key). Interrupts not modelled.
+//
+// STATUS: boots the real BIOS and draws the banner to VRAM. The long-standing
+// stall was the ROM self-test checksum loop (0x042C/0x0443), NOT the keyboard.
+//   - ekta37.bin (official) boots cleanly -> banner (render vram.bin at stride 40).
+//   - ekta43.bin (homebrew AT-kbd) has a STALE block-1 checksum (0x000A=0xF2 but
+//     bytes 0x000B..0x07FF sum to 0x57); patched at load so it boots too. All 5
+//     official ekta ROMs pass block-1; only ekta43 fails (confirms our checksum).
 //
 // Build: cc -O2 -o trace trace.c i8080.c
 // Run:   ./trace /path/to/ekta43.bin [max_cycles]
@@ -103,6 +110,10 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   }
 }
 
+static uint8_t sum_block(const uint8_t* r) {   // block-1 checksum (0x000B..0x07FF)
+  unsigned s = 0; for (int i = 0x0B; i < 0x800; i++) s += r[i]; return s & 0xFF;
+}
+
 int main(int argc, char** argv) {
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
@@ -112,6 +123,14 @@ int main(int argc, char** argv) {
   size_t n = fread(rom, 1, ROM_SIZE, f);
   fclose(f);
   fprintf(stderr, "loaded %zu bytes of ROM from %s\n", n, rom_path);
+
+  // ekta43.bin (homebrew AT-kbd mod) has a STALE block-1 checksum: bytes
+  // 0x000B..0x07FF sum to 0x57 but the stored checksum at 0x000A is 0xF2, so the
+  // ROM self-test fails and retries forever. Patch the stored byte to boot.
+  if (rom[0x0A] == 0xF2 && (sum_block(rom) == 0x57)) {
+    rom[0x0A] = 0x57;
+    fprintf(stderr, "[PATCH] ekta43 block-1 checksum 0x000A: 0xF2 -> 0x57 (stale homebrew checksum)\n");
+  }
 
   i8080 cpu;
   i8080_init(&cpu);
@@ -123,8 +142,15 @@ int main(int argc, char** argv) {
   unsigned long last_write_total = 0, writes_total, idle_cyc = 0;
   static uint32_t pchist[MEM_SIZE];
 
+  int chk_logs = 0;
   while (cpu.cyc < max_cyc && !cpu.halted) {
     pchist[cpu.pc]++;
+    if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
+      fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",
+              (cpu.h<<8)|cpu.l, (cpu.d<<8)|cpu.e, mode);
+    if (cpu.pc == 0x03E6 && chk_logs++ < 12)           // compare: A=stored, B=computed
+      fprintf(stderr, "[CHK] cmp computed=%02X stored=%02X %s\n",
+              cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
     i8080_step(&cpu);
     if ((cpu.cyc & 0xFFFFF) == 0) {
       writes_total = 0;
