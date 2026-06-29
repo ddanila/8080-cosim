@@ -101,11 +101,11 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "scan(high-byte A-pins traced; B-pins TODO)"
+        "pins": "scan(high-byte A-pins traced)"
       }
     },
     {
-      "ref": "D7",
+      "ref": "DLB",
       "type": "BUF8286",
       "pins": {
         "1": "AIN0",
@@ -129,8 +129,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "assumed",
-        "pins": "low-byte A-pins straight 1-8 (scan)"
+        "refdes": "placeholder(D7 taken by \u041b\u04103; real low-buf refdes TBD)",
+        "pins": "low-byte straight 1-8 (scan)"
       }
     },
     {
@@ -180,7 +180,7 @@
           "25"
         ],
         [
-          "D7",
+          "DLB",
           "1"
         ]
       ]
@@ -193,7 +193,7 @@
           "26"
         ],
         [
-          "D7",
+          "DLB",
           "2"
         ]
       ]
@@ -206,7 +206,7 @@
           "27"
         ],
         [
-          "D7",
+          "DLB",
           "3"
         ]
       ]
@@ -219,7 +219,7 @@
           "29"
         ],
         [
-          "D7",
+          "DLB",
           "4"
         ]
       ]
@@ -232,7 +232,7 @@
           "30"
         ],
         [
-          "D7",
+          "DLB",
           "5"
         ]
       ]
@@ -245,7 +245,7 @@
           "31"
         ],
         [
-          "D7",
+          "DLB",
           "6"
         ]
       ]
@@ -258,7 +258,7 @@
           "32"
         ],
         [
-          "D7",
+          "DLB",
           "7"
         ]
       ]
@@ -271,7 +271,7 @@
           "33"
         ],
         [
-          "D7",
+          "DLB",
           "8"
         ]
       ]

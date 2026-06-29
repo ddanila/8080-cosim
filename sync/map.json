@@ -2,7 +2,7 @@
   "instances": {
     "D1": "U_CPU",
     "D4": "U_BUFH",
-    "D7": "U_BUFL",
+    "DLB": "U_BUFL",
     "D5": "U_SYS"
   },
   "pinmaps": {
