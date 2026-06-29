@@ -91,8 +91,9 @@ must be latched on a `clk` edge *inside* the sync window, not at `posedge sync`
 tri-state bus** (`hdl/sim/juku_chips_tb.v`), not a monolith: `mem_decode_prom` (D6
 К556РТ4, the recovered map as a truth table), `eprom` (ekta37), `dram` (К565РУ5),
 and an `io_block` whose 8255#0 Port-C register drives the banking mode → D6. The boot
-flows CPU → D6 decode → ROM/RAM drive the bus. **Byte-identical to cosim at 6000
-video writes** (full-banner / banking-path validation running).
+flows CPU → D6 decode → ROM/RAM drive the bus. **Byte-identical to cosim through the
+full boot banner** (42623 writes) — the banking path Port C → io_block.mode → D6 →
+ROM/RAM is exercised across every mode 0↔1 font-render and stays pixel-perfect.
 
 Next steps: (3b) turn the I/O `io_block` into D2-decoded peripheral chips (8255/8253/
 8259/8251); (4) drive it through the structural top so the *verified wiring* carries
