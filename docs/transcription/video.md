@@ -31,8 +31,8 @@ NOT an 8224. Confirms the earlier finding; the 8224 stays removed from the model
   the VIDEO net. Plausible but to-verify.
 - Output: VIDEO → connector X601 (pin 3); RF/HF output via VT1 (KT972) → X701.
 
-## To verify next (against scan)
-1. Confirm D44–D47 counter chain + LOAD/preset.
-2. Confirm address mux D48–D52 select + which address bits → MA.
-3. Confirm D53 role (bank select vs RAS/CAS) — then wire the РУ5 MA/RAS/CAS.
-4. Confirm the serial video readout path (D33/D37 gating).
+## VERIFIED on scan ✅
+- D44–D47 = ИЕ7 counters (marked СТ16/ИЕ7) — video address counter chain. ✓
+- D48, D49 (+D50) = КП14 muxes (МХ) — video-vs-μP address select. ✓
+- Clock = discrete Z1 + D58/D59 (ЛН1) oscillator (no 8224). ✓
+Still to confirm: D53 exact role (bank vs RAS/CAS) before wiring РУ5 MA/RAS/CAS.

@@ -33,7 +33,12 @@ non-conflicting parts (СА3 tape comparator D106, baud-gen ИМ1/ИЕ11/ИР9) 
   DTR=311, TTL SOUT=303, PULL UP=301 (out via АП2 buffers).
 - **Baud gen**: ИМ1 adder (divisor) → ИЕ11 counter (clk SYNC B.R.) → ИР9 dividers → BAUD RATE → USART TxC/RxC. TAPE RUN=408 gates it.
 
-## To verify (against scan) — resolve conflicts FIRST
-1. **D44 and D55 true identities** (counter vs USART; timer vs PPI) — re-read refdes on scan.
-2. The 8251 refdes + pinout, the СА3 (D106) input network, the baud-gen chain.
-3. Connector pin assignments (X2/X3/X4, 2xx/3xx/4xx/5xx).
+## VERIFIED on scan ✅
+- **D106 = К554СА3** tape-input comparator (W/W/E pins 3/4/2; R86 1М8 hysteresis;
+  DATA IN=504, 503); input net C16/R82/R84 confirmed. ✓
+- **TWO 8251 USARTs**: **D11** (I/O subsystem, verified earlier) **and D23** (Sheet 3,
+  the RS-232 serial one: RES=21, CLK=20, RxC=25, TxD=19, RTS=23, DTR=24, TxRDY=15,
+  RxRDY=14, DSR=22, SD=16). Matches MAME's two SIO devices. (The agent's "8251=D44"
+  was wrong; the real USARTs are D11 and D23.) ✓
+- CNTR CHECK → 407 via ЛН2 (D94), R78 20k. ✓
+Baud-gen chain (ИМ1/ИЕ11/ИР9) roles plausible; exact divisor wiring still to-trace.
