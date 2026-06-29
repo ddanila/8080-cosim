@@ -17,9 +17,12 @@ Control (read on scan, matches datasheet) [T][D]:
 `Φ1`=22, `Φ2`=15, `RESET`=12, `HOLD`=13, `INT`=14, `INTE`=16, `DBIN`=17,
 `/WR`=18, `SYNC`=19, `HLDA`=21, `READY`=23, `WAIT`=24; power `+5V`=20, `GND`=2, `-5V`=11. [D]
 
-Data bus [D] pins: D0=10, D1=9, D2=8, D3=7, D4=3, D5=4, D6=5, D7=6.
-Address bus [D]: A0..A9 = 25..34; A10..A15 on the high pins (1,40,36–39) — **finalize
-from the datasheet PDF, the scan's small numbers are ambiguous** [?].
+Data bus [D]: D0=10, D1=9, D2=8, D3=7, D4=3, D5=4, D6=5, D7=6.
+Address bus [D] (verified, Wikipedia Intel 8080 — note +12V at pin 28 splits the run):
+A0=25, A1=26, A2=27, A3=29, A4=30, A5=31, A6=32, A7=33, A8=34, A9=35,
+A10=1, A11=40, A12=37, A13=38, A14=39, A15=36.
+Power: +5V=20, +12V=28, -5V=11, GND=2.
+(Earlier scan-read high-address numbers were wrong — datasheet is authoritative for a standard part.)
 
 ## Topology [T]
 - **Data path:** CPU `D0..D7` ↔ D5 (БК38) data pins ↔ system data bus `DB0..DB7`
