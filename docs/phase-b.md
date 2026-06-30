@@ -200,3 +200,14 @@ region-level guess (x 102..235, pitch 19) shifted ~25 mm too far left at the D67
 precisely: **D67=127, D66=144, D65=159, D64=175, D63=191, D62=207, D61=223, D60=238** (~16 mm
 pitch). Now the array left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes beneath
 it, as the drawing shows. VALIDATION: PASS, overlaps=0.
+
+## Top rows verified: transceiver row + ROM sockets corrected
+Continuing the verification pass into the top of the board (early region-level guesses):
+- **Transceiver row** read off the drawing: y59 (was y42), x D25=23/D23=55/D24=86/D29=113
+  (were 28/68/122/158 -- too far right).
+- **ROM sockets** D15/D16: y86 (was y105), x 22/43 with the real ~21 mm pitch (was 28/60, pitch 32).
+- **Deferred to a coordinated top+I/O untangle** (mutually entangled, like the lower-left was):
+  D27 (wide PPI, real ~162,57), D11 (USART, real ~201,86 -- collides with the misplaced D55), and
+  the **I/O block D54/D55/D57/D26**, which the drawing actually puts on the RIGHT side (e.g. D57
+  ~299,238), NOT the top. Reading + placing those together is the next tick.
+VALIDATION: PASS, overlaps=0.

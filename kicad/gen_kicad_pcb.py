@@ -48,10 +48,13 @@ PLACE = {
     # NOTE: KiCad DIP footprints stand VERTICAL at rot 0 (pins down both sides). So rot 90 =
     # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
     # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
-    'D25':(28,42,90), 'D23':(68,42,90), 'D24':(122,42,90), 'D29':(158,42,90), 'D27':(255,42,90),
+    # transceiver row read precisely off the drawing: y59, x 23/55/86/113 (was y42, too far right).
+    # D27 (wide PPI) left at its old spot -- it + D11 + the I/O block (really on the right, not the
+    # top) are mutually entangled; coordinated top+I/O untangle next tick.
+    'D25':(23,59,90), 'D23':(55,59,90), 'D24':(86,59,90), 'D29':(113,59,90), 'D27':(255,42,90),
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
     # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
-    'D15':(28,105,0), 'D16':(60,105,0), 'D11':(150,105,0),
+    'D15':(22,86,0), 'D16':(43,86,0), 'D11':(150,105,0),   # ROM sockets read off drawing: y86, ~21mm pitch (D11 pending untangle)
     # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
     # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
     # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
