@@ -49,20 +49,20 @@ PLACE = {
     # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
     # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
     # transceiver row read precisely off the drawing: y59, x 23/55/86/113 (was y42, too far right).
-    # D27 (wide PPI) left at its old spot -- it + D11 + the I/O block (really on the right, not the
-    # top) are mutually entangled; coordinated top+I/O untangle next tick.
-    'D25':(23,59,90), 'D23':(55,59,90), 'D24':(86,59,90), 'D29':(113,59,90), 'D27':(255,42,90),
+    # D27 (wide PPI 8255) sits at the right end of this top band @ (162,57).
+    'D25':(23,59,90), 'D23':(55,59,90), 'D24':(86,59,90), 'D29':(113,59,90), 'D27':(162,57,90),
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
     # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
-    'D15':(22,86,0), 'D16':(43,86,0), 'D11':(150,105,0),   # ROM sockets read off drawing: y86, ~21mm pitch (D11 pending untangle)
+    'D15':(22,86,0), 'D16':(43,86,0), 'D11':(201,86,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
     # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
     # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
     # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
     'D67':(127,158,0),'D66':(144,158,0),'D65':(159,158,0),'D64':(175,158,0),
     'D63':(191,158,0),'D62':(207,158,0),'D61':(223,158,0),'D60':(238,158,0),
-    # I/O block (horizontal), fills the open upper-centre/right below the connectors
-    'D57':(160,64,90),'D54':(210,64,90),'D26':(255,64,90),
-    'D55':(200,86,90),
+    # I/O block (PIT 8253 + PPI 8255) -- the drawing puts these on the RIGHT/bottom-right, NOT the
+    # top: PITs D57/D55/D54 stack down the right edge (x~292, pulled in from the ~296 read to fit
+    # the 310 cut), and PPI D26 sits bottom-right just left of D54. (Was a fictional top I/O row.)
+    'D57':(292,230,90),'D55':(292,252,90),'D54':(292,276,90),'D26':(245,276,90),
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
     'D1':(35,176,0),'D4':(57,158,0),'D2':(83,158,0),

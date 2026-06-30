@@ -211,3 +211,14 @@ Continuing the verification pass into the top of the board (early region-level g
   the **I/O block D54/D55/D57/D26**, which the drawing actually puts on the RIGHT side (e.g. D57
   ~299,238), NOT the top. Reading + placing those together is the next tick.
 VALIDATION: PASS, overlaps=0.
+
+## Top + I/O untangle (mirrors the lower-left untangle)
+Read the entangled top/I/O chips off the drawing and placed them together (no collisions):
+- **D27** (PPI 8255) → right end of the top band @ (162,57); **D11** (USART) → right of the ROM
+  sockets @ (201,86).
+- **I/O block** moved from the fictional top row to the RIGHT/bottom-right where the drawing has
+  it: PITs **D57 (292,230) / D55 (292,252) / D54 (292,276)** stack down the right edge (read ~296,
+  pulled to 292 to fit the 310 cut), **D26** (PPI) bottom-right @ (245,276).
+This closes the placement sweep: every modeled chip is now at a drawing-read position. The only
+known fudge is the right-edge x (D54/55/56/57 read a few mm past 310 -> pulled in; the board's
+right edge may truly extend slightly past 310). VALIDATION: PASS, overlaps=0.
