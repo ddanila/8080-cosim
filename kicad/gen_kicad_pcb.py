@@ -86,12 +86,12 @@ def main():
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp
         n_pads += fp.GetPadCount()
-        if typ in MARK:                       # show refdes + case marking big on the silkscreen
-            for fld, dy in ((fp.Reference(), -32.0), (fp.Value(), 32.0)):
+        if typ in MARK:                       # refdes + case marking on the silkscreen, beside the chip
+            for fld, oy in ((fp.Reference(), -7.0), (fp.Value(), 7.0)):
                 fld.SetVisible(True); fld.SetLayer(pcbnew.F_SilkS)
-                fld.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(5), pcbnew.FromMM(5)))
-                fld.SetTextThickness(pcbnew.FromMM(0.8))
-                fld.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y+dy)))
+                fld.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(4), pcbnew.FromMM(4)))
+                fld.SetTextThickness(pcbnew.FromMM(0.7))
+                fld.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x+30), pcbnew.FromMM(y+oy)))
 
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
@@ -128,8 +128,12 @@ def main():
 
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
+    # use the GOST CAD font for silkscreen text so the Cyrillic case markings render fully
+    # (KiCad's built-in stroke font drops В/М glyphs). The face is resolved from ~/Library/Fonts.
+    txt = open(out, encoding="utf-8").read().replace('(font', '(font (face "GOST CAD KK")')
+    open(out, "w", encoding="utf-8").write(txt)
     print(f"wrote {out}: {len(placed)} footprints, {board.GetNetCount()} nets, "
-          f"{assigned} pad-net assignments, board {BW:.0f}x{BH:.0f} mm")
+          f"{assigned} pad-net assignments, board {BW:.0f}x{BH:.0f} mm (GOST silkscreen font)")
 
 if __name__ == "__main__":
     main()

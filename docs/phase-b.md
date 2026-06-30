@@ -99,3 +99,7 @@ cluster, replacing the earlier region-level guesses.
   refdes + the case marking (КР580ВМ80А) above/below it (via a per-type MARK map). Rendered top
   view for visual check against the assembly drawing. (Cyrillic renders partially in KiCad's
   stroke font — В/М glyphs drop; refdes + position are the verification target.)
+- **GOST silkscreen font + D1 label fix.** KiCad's stroke font drops Cyrillic В/М, so inject
+  `(face "GOST CAD KK")` into the silkscreen text in the generated .kicad_pcb (the TTF resolves
+  from ~/Library/Fonts) — the case marking КР580ВМ80А now renders fully. Repositioned D1's
+  refdes + marking to sit right beside the CPU (was floating above it near the ROM row).
