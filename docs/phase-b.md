@@ -94,3 +94,8 @@ cluster, replacing the earlier region-level guesses.
   vertical sockets at y≈158 (descending refdes L→R: D64@x159 … D60@x235, ~19 mm pitch; D65-67
   continue left), center-right — correcting my earlier far-right guess. Moved the video row up
   to y≈130 to clear it.
+- **Single-chip sanity check — D1 (CPU).** Identified D1 = CPU8080 (КР580ВМ80А, DIP-40);
+  grid-read its center at drawing-mm ≈ (35,176), vertical; placed it; added a silkscreen "D1"
+  refdes + the case marking (КР580ВМ80А) above/below it (via a per-type MARK map). Rendered top
+  view for visual check against the assembly drawing. (Cyrillic renders partially in KiCad's
+  stroke font — В/М glyphs drop; refdes + position are the verification target.)

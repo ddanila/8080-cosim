@@ -25,6 +25,9 @@ def dip_for(n):                       # smallest standard DIP that holds n pins
         if n <= s: return f"DIP-{s}_W{'15.24' if s>=24 else '7.62'}mm"
     return "DIP-40_W15.24mm"
 
+# real case marking (printed on the chip) per type -> shown as the silkscreen Value text
+MARK = {'CPU8080':'КР580ВМ80А'}      # 8080A clone; extend per type as each chip is verified
+
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
 # ~310x195 mm board. The top-edge connectors + transceiver row + ROM row + DRAM array are
 # positioned per the real layout; logic clusters sit in their drawing regions. Tuple =
@@ -44,8 +47,9 @@ PLACE = {
     # I/O block (horizontal), fills the open upper-centre/right below the connectors
     'D57':(160,64,90),'D54':(210,64,90),'D26':(255,64,90),
     'D55':(200,86,90),
-    # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there)
-    'D1':(40,200,0),
+    # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
+    # Exact verified-frame read: center ≈ (35,176), vertical.
+    'D1':(35,176,0),
     # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1)
     'D44':(70,130,90),'D45':(89,130,90),'D46':(108,130,90),'D47':(127,130,90),
     'D48':(146,130,90),'D49':(165,130,90),'D53':(184,130,90),'D56':(203,130,90),'D103':(228,130,90),
@@ -77,11 +81,17 @@ def main():
         fpname = FP.get(typ) or dip_for(maxpin[ref])
         fp = pcbnew.FootprintLoad(DIP_LIB, fpname)
         if fp is None: raise RuntimeError(f"no footprint {fpname} for {ref}")
-        fp.SetReference(ref); fp.SetValue(typ)
+        fp.SetReference(ref); fp.SetValue(MARK.get(typ, typ))
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp
         n_pads += fp.GetPadCount()
+        if typ in MARK:                       # show refdes + case marking big on the silkscreen
+            for fld, dy in ((fp.Reference(), -32.0), (fp.Value(), 32.0)):
+                fld.SetVisible(True); fld.SetLayer(pcbnew.F_SilkS)
+                fld.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(5), pcbnew.FromMM(5)))
+                fld.SetTextThickness(pcbnew.FromMM(0.8))
+                fld.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y+dy)))
 
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
