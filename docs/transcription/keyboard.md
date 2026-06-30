@@ -71,3 +71,19 @@ reacts to typed commands** (the original north-star). Valid `*`-monitor commands
 archive): `A` mini-assembler, `B` ROM BASIC, `T` boot OS (→ `D`/`N`/`T`). Boot guard still
 PASS (keyboard env-opt-in). Remaining polish: multi-ROM load (jbasic11) so `B` launches
 BASIC; optionally port the keyboard to the HDL (vm80a) sim.
+
+## PORTED TO THE HDL TWIN — interactive structural model ✅
+The keyboard + interrupts now run on the die-accurate structural twin (`juku_struct_tb.v`),
+not just cosim. Two new real-chip behaviors, both opt-in via plusargs (boot guard untouched):
+- **`intr_ctl_b`** (the 8259): snoops the ICW/OCW from the PIC port writes, drives vm80a's
+  real `pin_int` on the frame tick, and injects the MCS-80 **3-byte CALL vector**
+  `{0xCD, lo, hi}` onto DB during vm80a's INTA reads (PC frozen, 3 reads — confirmed in
+  `intr_unit_tb.v`). Vector `= ICW2<<8 | (ICW1&0xE0) | (IR5<<2) = 0xFED4`, matching cosim.
+- **`ppi0_b`** keyboard: Port A write = column select, Port B read = 74148 code + GS + SHIFT.
+
+Run: `vvp jstruct +frameirq=80000 +keyat=42000 +kcol=4 +kbit=3 +kshift=1 +maxvram=88000`
+→ boots the banner, fires **548 frame interrupts** (all injecting 0xFED4 correctly), accepts
+the typed `'T'`, and renders **`System from <D>isk, <N>et ?`** with the cursor — **identical
+to the cosim reaction** (`docs/boot-ekta37-T-command-hdl.png`). So the north-star is met on
+BOTH tracks: the C emulator AND the structural (schematic-derived, LVS-verified) digital twin
+boot the real BIOS and react to typed commands, with a real die taking real interrupts.
