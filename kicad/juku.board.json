@@ -859,6 +859,45 @@
     "pins": "scan",
     "note": "ИД7/74138 RAS/CAS decode: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-52(100R) -> R53-56(5.1k) -> array RAS/CAS/bank [sheet2 scan]"
    }
+  },
+  {
+   "ref": "D56",
+   "type": "AG3_ONESHOT",
+   "pins": {
+    "1": "A_N",
+    "2": "B",
+    "3": "CLR_N",
+    "4": "Q_N",
+    "13": "Q"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "scan",
+    "pins": "datasheet"
+   }
+  },
+  {
+   "ref": "D103",
+   "type": "IE10_CTR",
+   "pins": {
+    "1": "CLR_N",
+    "2": "CLK",
+    "3": "D0",
+    "4": "D1",
+    "5": "D2",
+    "6": "D3",
+    "9": "LOAD_N",
+    "11": "Q3",
+    "12": "Q2",
+    "13": "Q1",
+    "14": "Q0",
+    "15": "CO"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "scan",
+    "pins": "datasheet"
+   }
   }
  ],
  "nets": {
@@ -2966,6 +3005,18 @@
     [
      "D47",
      "1"
+    ]
+   ]
+  },
+  "DOTCLK16M": {
+   "nodes": [
+    [
+     "D56",
+     "13"
+    ],
+    [
+     "D103",
+     "2"
     ]
    ]
   }

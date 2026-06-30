@@ -100,6 +100,11 @@ module juku_top (
     kp14_mux U_D49 (.a(BA[7:4]), .b(vctr_hi), .sel(1'b0), .en_n(1'b0), .y(MA[7:4]));
     rascas_dec U_D53 (.a(BA[8]), .b(BA[9]), .c(1'b0), .g(1'b1), .y_n({rc_nc, cas_n, ras_n}));
 
+    // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
+    wire dotclk_16m;
+    ag3_oneshot U_D56  (.a_n(1'b1), .b(1'b1), .clr_n(1'b1), .q(dotclk_16m), .q_n());
+    ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(1'b1), .d(4'b0), .q(), .co());
+
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .reset(reset_sys), .portc_lo(mem_mode));

@@ -111,6 +111,12 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
     assign y = 4'bz; endmodule
 module rascas_dec (input wire a, b, c, input wire g, output wire [3:0] y_n);  // D53 ИД7 RAS/CAS/bank
     assign y_n = 4'bz; endmodule
+// ---- video dot-clock chain (scan: docs/transcription/dram-video-timing.md, sheet-2 BR) ----
+module ag3_oneshot (input wire a_n, b, clr_n, output wire q, q_n);  // D56 АГ3 (74123) RC -> 16 MHz
+    assign q = 1'bz; assign q_n = 1'bz; endmodule
+module ie10_ctr (input wire clk, clr_n, load_n, input wire [3:0] d,  // D103 ИЕ10 (СТ16): /N -> 1.23 MHz
+                 output wire [3:0] q, output wire co);
+    assign q = 4'bz; assign co = 1'bz; endmodule
 
 // ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
 module dram_64kx1 (input wire [7:0] ma,            // multiplexed row/col address

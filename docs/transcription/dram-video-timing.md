@@ -68,3 +68,23 @@ Traced the video data/timing path beyond cluster #1:
 So the video subsystem = video-address counters (ИЕ7) → mux (КП14) → РУ5 → [ИР16 serialize
 @16MHz] → ЛП5+B-SYNC combine → VT2 → ВИДЕО; sync from the 8253 (cluster #1). Structurally
 mapped; LVS-instance adds for ИР16/АГ3/ИЕ10/D34 are the next (slow, per-chip-wiring) step.
+
+## Video-output stage — confident refdes/type reads (toward-76 cluster #1)  [scan]
+High-res crops of sheet-2 bottom-right (`ДГШ5.109.006 ЭЗ`, "Модуль процессора") nailed the
+dot-clock + output chips (corrects earlier guesses — the divider is **D103**, not D102, and
+**D34 = ЛП5 XOR**, not a clock chip):
+- **D56 (АГ3 = 74123 dual one-shot):** two RC monostables, **R47 40K** + **R58 33K** + caps
+  (C 560p / C8) → the **16 MHz** dot clock (label read at D56's output). [scan]
+- **D103 (ИЕ10 = СТ16 counter):** clocked by 16 MHz, C/D/LD/R + CO → **1.23 MHz** char/pixel
+  clock (label read at the CO net). The dot→char divider. [scan]
+- **D34 (ЛП5 = К531ЛП5, XOR "=1"):** pins 12/13→11, combines the pixel stream with **S SYNC**
+  (blanking) → the video-mix net. The "combine" stage. [scan]
+- **D33 (ЛН1 = К531ЛН1 inverter):** gate "1", pins 1/2 — clock/logic inversion near D34. [scan]
+- **Output analog:** **VT2 (КТ315)** transistor + **VD3 (КС147Б, 4.7 V zener)** + R64/R65 430
+  + R66 1k → the **ВИДЕО** connector (pins 3–6). [scan]
+- A small on-sheet BOM block confirms К565РУ5/РУ6 (DRAM, qty incl. populated 9-ish), К581РУ4,
+  К531 ИД7/КП14, ЛА12, ИР82 counts — cross-checks the gap map.
+
+Still open in this cluster: the **ИР16 pixel shift-register** (the actual framebuffer→serial
+PISO) — its load/shift nets need one more crop (it sits between the РУ5 data-out latch and
+D34). With D56/D103/D33/D34 now pinned, the dot-clock pair is the cleanest LVS add.
