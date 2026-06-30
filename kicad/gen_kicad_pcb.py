@@ -63,7 +63,7 @@ PLACE = {
     # I/O block (PIT 8253 + PPI 8255) -- the drawing puts these on the RIGHT/bottom-right, NOT the
     # top: PITs D57/D55/D54 stack down the right edge (x~292, pulled in from the ~296 read to fit
     # the 310 cut), and PPI D26 sits bottom-right just left of D54. (Was a fictional top I/O row.)
-    'D57':(292,230,90),'D55':(292,252,90),'D54':(292,276,90),'D26':(245,276,90),
+    'D57':(292,230,90),'D55':(292,252,90),'D54':(292,276,90),'D26':(245,272,90),   # D26 up 4mm to clear the X9 connector
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
     'D1':(35,176,0),'D4':(57,158,0),'D2':(83,158,0),
@@ -75,7 +75,7 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(244,225,0),'D103':(294,200,0),'D56':(305,200,0),
+    'D53':(247,225,0),'D103':(294,200,0),'D56':(305,200,0),   # D53 +3mm right to clear the DRAM right column
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
@@ -86,7 +86,7 @@ PLACE = {
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
-    'D36':(244,200,0),'D33':(277,200,0),'D35':(263,221,0),   # D35 nudged up 4mm to clear D7
+    'D36':(247,200,0),'D33':(277,200,0),'D35':(263,221,0),   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(112,281,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
@@ -192,6 +192,7 @@ def main():
     # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future
     # LVS work (bom-toward-76); this just shows the two prominent connectors so the top matches.
     outline_chips = []                        # placement-only chip outlines (D-refs), for the count report
+    outline_boxes = []                        # (x0,y0,x1,y1,label) for the outline-overlap guard
     def silk_box(x0, y0, x1, y1, label):
         r = pcbnew.PCB_SHAPE(board); r.SetShape(pcbnew.SHAPE_T_RECT)
         r.SetLayer(pcbnew.F_SilkS); r.SetWidth(pcbnew.FromMM(0.2))
@@ -202,6 +203,7 @@ def main():
         t.SetTextThickness(pcbnew.FromMM(0.5))
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM((x0+x1)/2.0), pcbnew.FromMM((y0+y1)/2.0)))
         board.Add(t)
+        outline_boxes.append((x0, y0, x1, y1, label))
         if label[1:2].isdigit(): outline_chips.append(label)   # count D-chips (skip X1/X2/X9 connectors)
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
     silk_box(222, 283, 273, 288, "X9")   # bottom connector (read mm222..273, pins 58..45)
@@ -251,7 +253,7 @@ def main():
     silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
-    silk_box(240, 150, 262, 160, 'D41'); silk_box(255, 190, 267, 210, 'D37'); silk_box(300, 166, 310, 186, 'D34')
+    silk_box(245, 151, 259, 159, 'D41'); silk_box(255, 190, 267, 210, 'D37'); silk_box(300, 166, 310, 186, 'D34')
     # bus transceiver row (К170АП2/УП2 + ВА86/ВА87, not net-modeled) -- the top band at y59, left
     # of the PPI D27. Read off the drawing; placement-only outlines (fixes the row that PLACE silently dropped).
     for x0, x1, ref in [(14, 32, 'D25'), (43, 67, 'D23'), (74, 98, 'D24'), (104, 122, 'D29')]:
@@ -273,6 +275,24 @@ def main():
     print(f"  chip positions: {len(placed)} net-modeled + {len(outline_chips)} placement outlines "
           f"= {n_pos} / ~101 BOM ICs ({100*n_pos//101}%)")
     if dups: print(f"  WARNING: {len(dups)} duplicate refdes placed twice -> {dups}")
+    # outline-overlap guard: the silk placement outlines aren't footprints, so validate_placement.py
+    # (which checks footprints) can't catch outline collisions. Check them here.
+    def hit(a, b):     # rect intersection (boxes given x0<x1, y0<y1)
+        return a[0] < b[2] and a[2] > b[0] and a[1] < b[3] and a[3] > b[1]
+    T = pcbnew.ToMM
+    fp_boxes = []      # modeled-footprint bboxes (pads/graphics, no text) in mm
+    for ref, fp in placed.items():
+        b = fp.GetBoundingBox(False, False)
+        fp_boxes.append((T(b.GetLeft()), T(b.GetTop()), T(b.GetRight()), T(b.GetBottom()), ref))
+    ov = []
+    for i in range(len(outline_boxes)):           # outline vs outline
+        for j in range(i+1, len(outline_boxes)):
+            if hit(outline_boxes[i], outline_boxes[j]):
+                ov.append(f"{outline_boxes[i][4]}~{outline_boxes[j][4]}")
+    for ob in outline_boxes:                       # outline vs modeled footprint
+        for fb in fp_boxes:
+            if hit(ob, fb): ov.append(f"{ob[4]}~{fb[4]}")
+    print(f"  outline-overlap check: {'PASS' if not ov else 'FAIL -> ' + ', '.join(ov)}")
 
 if __name__ == "__main__":
     main()

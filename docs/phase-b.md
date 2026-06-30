@@ -427,3 +427,12 @@ authoritative). 105 ≈ the ~101 BOM total within faint-scan reading error — b
 has ~100 chips, refuting "76". This makes completeness visible on every generate and catches the
 double-placement class of bug (cf. the transceiver-row gap found earlier). Board geometry
 unchanged — previews identical.
+
+## Comprehensive overlap guard added — found & fixed 6 real collisions
+Extended the generator's check to compare placement outlines against the modeled footprints too
+(not just outline-vs-outline). It immediately caught **6 collisions** the footprint-only validator
+couldn't see: the DRAM array's right column (D60/D68/D76/D84 @ x238) was clipping the clock
+cluster's left chips (D36/D53 @ x244, D41), and X9 clipped D26 — the spacing was ~2-3mm too tight.
+Fixed: D36/D53 → x247, D26 → y272 (off X9), D41 outline narrowed/shifted. Now **outline-overlap
+check: PASS** and **VALIDATION: PASS**. The build now self-checks both footprint and outline
+collisions every run.
