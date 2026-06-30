@@ -33,10 +33,10 @@ PLACE = {
     # NOTE: KiCad DIP footprints stand VERTICAL at rot 0 (pins down both sides). So rot 90 =
     # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
     # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
-    'D25':(34,40,90), 'D23':(66,40,90), 'D24':(150,40,90), 'D29':(184,40,90), 'D27':(255,40,90),
-    # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 sits
-    # at the right end of this row in the drawing (vertical, like the sockets).
-    'D15':(26,82,0), 'D16':(49,82,0), 'D11':(120,82,0),
+    'D25':(28,42,90), 'D23':(68,42,90), 'D24':(122,42,90), 'D29':(158,42,90), 'D27':(255,42,90),
+    # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
+    # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
+    'D15':(28,105,0), 'D16':(60,105,0), 'D11':(150,105,0),
     # DRAM bank: the populated К565РУ5 (vertical 16-pin) sit in the array on the RIGHT side of
     # the board (per emaplaat: rows of D50/D67/D66/D64/D63… on the right), not centre-left.
     'D60':(232,114,0),'D61':(252,114,0),'D62':(272,114,0),'D63':(292,114,0),

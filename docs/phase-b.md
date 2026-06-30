@@ -81,3 +81,7 @@ board = 310 x 193 mm
 A labeled 20 mm grid on this frame aligns with the board outline + chip rows
 (`docs/assembly-grid-frame.png`). Per-chip coordinates are now read off this grid, cluster by
 cluster, replacing the earlier region-level guesses.
+- **First exact-frame coords: ROM row + transceiver x.** Using the verified frame, read the
+  ROM sockets at y≈105 (D15≈x28, D16≈x60, ~32 mm pitch) and the transceiver row x positions
+  (D25≈28, D23≈68, D24≈122, D29≈158); applied them (D11/USART on the ROM row at y105). These
+  replace the earlier region-level guesses for the top clusters.
