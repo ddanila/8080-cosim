@@ -64,3 +64,20 @@ black DIP packages, gold pads — the LVS-verified netlist as a physical board.
   re-tidied the remaining I/O (D57/D54/D26 + D10/D55).
 - **PIC (D10) → bottom logic row.** The drawing has D10 (8259) in the bottom-centre row with
   D5/D6/D7 (not up in the I/O block); moved it to the right end of that row.
+
+## VERIFIED coordinate frame (unblocks exact placement)
+Both arrowheads of the "310" dimension are now located: left ≈ original-px **1740** (board
+left edge), right ≈ **6240** → 4500 px for 310 mm → **px/mm ≈ 14.52** (the earlier 9.35 was
+wrong — the board is drawn at ~2:1). Board top edge ≈ y **990**; chips at y≈3100-3900 then fall
+correctly in the lower area → board ≈ **310 × 193 mm**.
+
+Frame (for `…emaplaat.pdf` rendered at 200 dpi → 9554×6976):
+```
+board top-left (orig px) = (1740, 990)
+px/mm = 14.52            # same on x and y (drawing is unstretched)
+mm_x = (orig_px_x - 1740) / 14.52 ;  mm_y = (orig_px_y - 990) / 14.52
+board = 310 x 193 mm
+```
+A labeled 20 mm grid on this frame aligns with the board outline + chip rows
+(`docs/assembly-grid-frame.png`). Per-chip coordinates are now read off this grid, cluster by
+cluster, replacing the earlier region-level guesses.
