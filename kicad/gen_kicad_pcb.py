@@ -30,25 +30,27 @@ def dip_for(n):                       # smallest standard DIP that holds n pins
 # positioned per the real layout; logic clusters sit in their drawing regions. Tuple =
 # (x_mm, y_mm, rotation_deg). rot 90 = vertical DIP (as drawn for ROM/DRAM).
 PLACE = {
-    # transceiver/driver row, just below the X1/X2 edge connectors (top edge)
-    'D25':(25,30,0), 'D23':(58,30,0), 'D24':(98,30,0), 'D29':(131,30,0), 'D27':(195,32,0),
-    # ROM row (vertical 28-pin sockets, D15/D16 populated; D17-D22 empty)
-    'D15':(20,62,90), 'D16':(38,62,90),
+    # NOTE: KiCad DIP footprints stand VERTICAL at rot 0 (pins down both sides). So rot 90 =
+    # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
+    # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
+    'D25':(34,40,90), 'D23':(66,40,90), 'D24':(150,40,90), 'D29':(184,40,90), 'D27':(255,40,90),
+    # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty)
+    'D15':(26,82,0), 'D16':(49,82,0),
     # DRAM bank (one row of 8 populated К565РУ5, vertical 16-pin)
-    'D60':(35,108,90),'D61':(49,108,90),'D62':(63,108,90),'D63':(77,108,90),
-    'D64':(91,108,90),'D65':(105,108,90),'D66':(119,108,90),'D67':(133,108,90),
-    # video address/dot-clock chain (row beneath the array)
-    'D44':(35,140,0),'D45':(60,140,0),'D46':(85,140,0),'D47':(110,140,0),
-    'D48':(135,140,0),'D49':(158,140,0),'D53':(181,140,0),'D56':(35,160,0),'D103':(60,160,0),
-    # CPU + bus + decode cluster (lower-left)
-    'D1':(45,182,0),'D4':(95,160,0),'DLB':(95,176,0),'D5':(130,168,0),'D6':(165,160,0),
-    'D2':(165,176,0),'D7':(190,160,0),
-    # I/O block (right side)
-    'D26':(235,62,0),'D11':(235,100,0),'D54':(212,132,0),'D55':(245,132,0),'D57':(278,132,0),
-    'D10':(250,160,0),
-    # clock subsystem (bottom strip)
-    'D59':(95,190,0),'D35':(118,190,0),'D38':(138,190,0),'D40':(158,190,0),
-    'D33':(178,190,0),'D36':(198,190,0),'D39':(215,190,0),
+    'D60':(30,122,0),'D61':(46,122,0),'D62':(62,122,0),'D63':(78,122,0),
+    'D64':(94,122,0),'D65':(110,122,0),'D66':(126,122,0),'D67':(142,122,0),
+    # I/O block (horizontal), fills the open upper-centre/right below the connectors
+    'D57':(160,64,90),'D54':(210,64,90),'D11':(255,64,90),
+    'D10':(160,86,90),'D55':(210,86,90),'D26':(255,86,90),
+    # video address + dot-clock chain (horizontal row beneath the array)
+    'D44':(30,152,90),'D45':(53,152,90),'D46':(76,152,90),'D47':(99,152,90),
+    'D48':(122,152,90),'D49':(145,152,90),'D53':(168,152,90),'D56':(191,152,90),'D103':(214,152,90),
+    # CPU + bus + decode (horizontal, bottom-centre row)
+    'D1':(50,172,90),'D5':(114,172,90),'D6':(154,172,90),'D2':(178,172,90),
+    'D4':(204,172,90),'DLB':(232,172,90),'D7':(260,172,90),
+    # clock subsystem (horizontal, bottom strip)
+    'D59':(30,190,90),'D35':(50,190,90),'D38':(68,190,90),'D40':(86,190,90),
+    'D33':(106,190,90),'D36':(124,190,90),'D39':(142,190,90),
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
