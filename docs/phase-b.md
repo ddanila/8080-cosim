@@ -453,3 +453,10 @@ result directly visible — same ROM bank top-left, DRAM array filling the centr
 cluster, clock/I/O clusters, and connectors in the same arrangement. (The model side is the F.Fab
 silk render; the drawing additionally shows passives/traces not in the chip-level model.) This is
 the visual culmination of the placement work: a faithful chip layout at the correct ~101-chip count.
+
+## Comparison artifact made readable (black-on-white model side)
+The first comparison's model side was too faint (light F.Fab yellow). Fixed by recoloring the SVG
+strokes/fills to black before rasterizing (`sed 's/stroke:#hex/.../'` then rsvg) — thresholding
+failed because the yellow is too close to white. `docs/comparison.png` now shows both sides at the
+same 310×266 aspect, model crisp in black: the structural match (X1/X2, ROM bank, transceiver row,
+PPI, DRAM array, CPU/clock/I-O clusters, bottom row, X9) is clearly legible side-by-side.
