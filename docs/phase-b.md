@@ -279,3 +279,11 @@ the full pin/net connector model is future LVS work (`bom-toward-76.md` cluster 
 board now matches the original's look (big connectors over the ROM/transceiver rows). The other
 top-right connectors + the X6/X7 video jacks (on the right overhang) are not yet added.
 VALIDATION: PASS, overlaps=0.
+
+## Bottom connector X9 added (silk annotation)
+Read the bottom edge: **X9** (the mounted bottom connector, pins 58..45) spans mm≈222..273; the
+bottom-LEFT card-edge bus contacts (62..59) are at mm≈8..37. Added X9 as a silk box at the bottom
+edge (balances X1/X2 at the top). Deferred (need bottom-outline work / are board card-edge
+fingers, not mounted parts): the bottom-left card-edge bus contacts, the X6/X7 video jacks
+(top-right, on the right overhang past mm310), and the true non-rectangular outline (right/bottom
+jack overhangs). VALIDATION: PASS, overlaps=0.

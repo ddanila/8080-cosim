@@ -201,6 +201,7 @@ def main():
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM((x0+x1)/2.0), pcbnew.FromMM((y0+y1)/2.0)))
         board.Add(t)
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
+    silk_box(222, 283, 273, 288, "X9")   # bottom connector (read mm222..273, pins 58..45)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()
