@@ -410,3 +410,11 @@ PIT/PPI I/O column; right-side serial/tape/baud block; bottom row + X9; corner m
 - **Next phase is no longer placement** but **net-tracing**: promoting the 62 placement outlines
   into full LVS-modeled chips by tracing their pins from the schematic (the bom-toward-76 grind),
   which advances the runnable digital twin rather than just the picture.
+
+## Chip-count correction: ~101 ICs (not 76); placement matches
+Summed the BOM line-item quantities (ДГШ3.031.006 pp.3-4): **101 ICs** (40 memory + 61 non-memory).
+The PCB placement reached **102 positions** — matching within ±1. So the real board has ~101 chips,
+and the long-standing "76" target was a significant undercount (likely a subset). Updated
+`bom-toward-76.md` with the correction. This means the placement layout is genuinely ~complete vs
+the real chip count, not 26 short of it. (A few specific refdes — D14/D31/D100/D104 — remain
+unresolved and may be offset by minor refdes mismatches, but the scale is right.)

@@ -1,9 +1,16 @@
-# BOM gap map — toward the real 76-chip board
+# BOM gap map — toward the real ~101-chip board
 
-The authoritative chip count is **76** (owner ground-truth + the component spec
-`ДГШ3.031.006 ВП`, `~/fun/juku3000/docs/…nimekiri komponendid.pdf`, IC list on pp.3–4).
-The LVS model (`hdl/juku_top.v` + `kicad/juku.board.json` + `sync/map.json`) currently has
-**34**. This doc reconciles the gap and orders the remaining work.
+> **COUNT CORRECTION (was "76").** Summing the BOM line-item quantities (Всего column) on
+> `ДГШ3.031.006` pp.3–4 gives **101 ICs** (page 3 = 37, page 4 = 64), of which **40 are memory**
+> (565РУ3Г ×32 + К573РФ5 ×8) and **61 non-memory**. The PCB placement independently reached
+> **102 positions** (matching within ±1 of the faint scan). So the real board carries **~101
+> chips, not 76** — the earlier "76" looks like a subset (perhaps excluding the 32-chip DRAM array,
+> or the analog К554СА3 / К170 drivers). Worth reconciling with the owner, but the BOM math is
+> objective. The phrase "toward 76" below is retained only for history.
+
+The component spec is `ДГШ3.031.006 ВП` (`~/fun/juku3000/docs/…nimekiri komponendid.pdf`, IC list
+on pp.3–4). The LVS model (`hdl/juku_top.v` + `kicad/juku.board.json` + `sync/map.json`) currently
+net-models **40**; the PCB additionally shows **62 placement-only outlines** (102 positions total).
 
 **Why each addition is real work:** the component list gives type+count *totals*, but a chip
 only enters LVS once its **pin-level nets** are traced from the schematic (processor module
