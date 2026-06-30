@@ -78,6 +78,39 @@ static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + opti
 // --- minimal 8259 PIC (MCS-80/CALL mode) for the frame interrupt (ports 0x00/0x01) ---
 static uint8_t pic_icw1 = 0, pic_icw2 = 0, pic_mask = 0xFF;  // mask: 1=masked
 static int     pic_expect_icw2 = 0;
+
+// --- keyboard (opt-in via env JUKU_KEYS): matrix scan via 8255 PortA(col)/PortB(74148) ---
+// char -> (column 0-15, bit 0-7); from MAME juku COL.0..14. Uppercase via SHIFT.
+static const struct { char c; uint8_t col, bit; } KMAP[] = {
+  {'a',5,5},{'b',4,1},{'c',6,1},{'d',6,5},{'e',6,3},{'f',2,5},{'g',4,5},{'h',0,5},
+  {'i',14,3},{'j',7,5},{'k',14,5},{'l',13,5},{'m',7,1},{'n',0,1},{'o',13,3},{'p',12,3},
+  {'q',5,3},{'r',2,3},{'s',1,5},{'t',4,3},{'u',7,3},{'v',2,1},{'w',1,3},{'x',1,1},
+  {'y',0,3},{'z',5,1},
+  {'0',12,4},{'1',5,4},{'2',1,4},{'3',6,4},{'4',2,4},{'5',4,4},{'6',0,4},{'7',7,4},{'8',14,4},{'9',13,4},
+  {' ',11,2},{'\r',8,5},{'\n',8,5},
+  {'.',13,1},{',',14,1},{'/',12,1},{';',11,1},{'-',11,4},{':',10,5},
+};
+static const char* kbd_str = 0;     // keystrokes to "type" (0/empty = keyboard off)
+static int   kbd_pos = 0, kbd_phase = 0;
+static uint8_t kbd_col = 0;         // last column selected (8255 Port A write)
+#define KBD_HOLD 3
+#define KBD_GAP  3
+
+// Port B (0x05) value the BIOS reads: 74148-encode the pressed key in the selected column.
+static uint8_t kbd_portb(void) {
+  if (g_vw < 42000) return 0x01;   // wait until the banner is drawn before "typing"
+  if (!kbd_str || !kbd_str[kbd_pos] || kbd_phase >= KBD_HOLD) return 0x01;  // no key: GS inactive (bit0=1)
+  char c = kbd_str[kbd_pos]; int shift = 0;
+  if (c >= 'A' && c <= 'Z') { c += 32; shift = 1; }
+  int col = -1, bit = -1;
+  for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
+    if (KMAP[i].c == c) { col = KMAP[i].col; bit = KMAP[i].bit; break; }
+  if (col < 0 || col != kbd_col) return 0x01;          // key not in the column being scanned
+  uint8_t code = (uint8_t)((~bit) & 7);                // 74148 A2-A0 (active-low/inverted)
+  uint8_t pb = (code << 1);                            // GS active (bit0=0) => key present
+  if (shift) pb |= 0x40;                               // SHIFT via SPECIAL (polarity TBD)
+  return pb;
+}
 static void wb(void* u, uint16_t a, uint8_t v) {
   (void)u; unsigned idx = 0;
   if (overlay(a, &idx)) return;    // write under ROM/expcart overlay -> dropped
@@ -90,6 +123,7 @@ static uint8_t pin(void* u, uint8_t p) {
   (void)u;
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
   in_count[p]++;
+  if (p == 0x05 && kbd_str && kbd_str[0]) return kbd_portb();   // 8255 Port B = keyboard 74148
   return out_last[p];              // mimic 8255 output-latch readback; 0 if never written
 }
 
@@ -98,6 +132,8 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
   out_count[p]++;
   out_last[p] = v;
+
+  if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
 
   // 8259 PIC programming (port 0x00 = A0=0, port 0x01 = A0=1)
   if (p == 0x00) { if (v & 0x10) { pic_icw1 = v; pic_expect_icw2 = 1; } }   // ICW1
@@ -132,6 +168,7 @@ int main(int argc, char** argv) {
   g_vw_limit            = argc > 3 ? strtoul(argv[3], 0, 0) : 0UL;   // 0 = no video-write limit
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
   unsigned long next_frame = frame_cyc;
+  kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
 
   FILE* f = fopen(rom_path, "rb");
   if (!f) { perror(rom_path); return 1; }
@@ -176,6 +213,10 @@ int main(int argc, char** argv) {
         wb(0, (uint16_t)(cpu.sp - 1), cpu.pc >> 8);  // CALL: push PC, jump to vector
         wb(0, (uint16_t)(cpu.sp - 2), cpu.pc & 0xFF);
         cpu.sp -= 2; cpu.iff = 0; cpu.pc = vec;
+      }
+      // advance the typed-keystroke state once per frame (HOLD pressed, GAP released)
+      if (kbd_str && kbd_str[kbd_pos] && g_vw >= 42000) {
+        if (++kbd_phase >= KBD_HOLD + KBD_GAP) { kbd_phase = 0; kbd_pos++; }
       }
     }
     if ((cpu.cyc & 0xFFFFF) == 0) {

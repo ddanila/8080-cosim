@@ -32,3 +32,25 @@ interrupt needed for ekta37 input.
 This is a self-contained, well-defined build (MAME has the complete matrix + encoder); the
 only RE step is confirming the exact Port-bit roles in the scan loop. Opt-in (like the
 frame interrupt) so the byte-identical boot guard is untouched.
+
+## IMPLEMENTED (cosim, opt-in) — the twin reacts to typed input ✅
+`cosim/trace.c`: keyboard matrix (KMAP, MAME COL.0-14) + 74148 encoder + a keystroke
+queue, driven by **env `JUKU_KEYS`** (+ the frame interrupt on). Protocol confirmed:
+- 8255 **Port A (0x04) write low-nibble = column select**; **Port B (0x05) read =
+  {SHIFT bits6-7, 74148 code bits1-3, GS bit0}** for the selected column.
+- The keyboard is scanned **in the frame ISR**, so it needs the frame interrupt
+  (`argv[4]`); keys are "typed" only after the banner is drawn (g_vw gate).
+- Opt-in: with `JUKU_KEYS` unset, Port B returns the latch (byte-identical boot guard
+  still PASS).
+
+**Result:** running `JUKU_KEYS=... trace ekta37.bin 30000000 0 40000` → ekta37 **receives
+and processes the keystrokes** (responds `?` = unknown-command + a fresh `*` prompt). The
+keys are delivered with the correct per-key columns + consistent 74148 encoding; ekta37's
+monitor doesn't echo and replies `?` to invalid commands. **This is the original
+"run and react to typed commands" goal, demonstrated.** Evidence:
+`docs/boot-ekta37-keyboard-react.png`.
+
+**Refinements (next):** confirm a *valid* EktaSoft `*`-monitor command (from the archive
+docs) to get a meaningful (non-`?`) response + visible echo; verify the 74148 code / GS /
+SHIFT polarity against an echoing command (the path works; the exact char mapping may need
+a polarity tweak). Then optionally port the keyboard model to the HDL (vm80a) sim.
