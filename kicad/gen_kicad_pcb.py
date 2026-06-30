@@ -237,6 +237,9 @@ def main():
         silk_box(cx - 3.5, 48, cx + 3.5, 62, ref)
     # small chips just right of D11 (USART): D12 (≈215,72), D3 (≈215,92) -- read off the drawing.
     silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
+    # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
+    # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
+    silk_box(240, 150, 262, 160, 'D41'); silk_box(255, 190, 267, 210, 'D37'); silk_box(300, 166, 310, 186, 'D34')
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

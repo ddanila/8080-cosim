@@ -334,3 +334,9 @@ Added the two small chips just right of D11 (USART) as placement outlines: **D12
 (≈215,92)**. The board now covers all functional regions; remaining are a handful of small,
 tightly-packed top-right interface chips (D100/D104/D106/D28/D14/D32/D94) whose scan labels are
 hard to localise precisely. VALIDATION: PASS, overlaps=0.
+
+## Clock cluster fill: D41/D37/D34
+Added three more clock/divider-cluster chips as placement outlines (read off the drawing): **D41**
+(≈251,155, paired with D40), **D37** (≈261,200, between D36/D33), **D34** (≈305,176, right edge).
+The clock/divider/video-timing cluster is now densely populated like the original. Remaining are
+the few packed top-right interface chips (D100/D104/D106/D28/D14/D32/D94/B92). VALIDATION: PASS.
