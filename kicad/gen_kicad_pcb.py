@@ -43,15 +43,17 @@ PLACE = {
     # I/O block (horizontal), fills the open upper-centre/right below the connectors
     'D57':(160,64,90),'D54':(210,64,90),'D11':(255,64,90),
     'D10':(160,86,90),'D55':(210,86,90),'D26':(255,86,90),
-    # video address + dot-clock chain (horizontal row beneath the array)
-    'D44':(30,152,90),'D45':(53,152,90),'D46':(76,152,90),'D47':(99,152,90),
-    'D48':(122,152,90),'D49':(145,152,90),'D53':(168,152,90),'D56':(191,152,90),'D103':(214,152,90),
-    # CPU + bus + decode (horizontal, bottom-centre row)
-    'D1':(50,172,90),'D5':(114,172,90),'D6':(154,172,90),'D2':(178,172,90),
-    'D4':(204,172,90),'DLB':(232,172,90),'D7':(260,172,90),
-    # clock subsystem (horizontal, bottom strip)
-    'D59':(30,190,90),'D35':(50,190,90),'D38':(68,190,90),'D40':(86,190,90),
-    'D33':(106,190,90),'D36':(124,190,90),'D39':(142,190,90),
+    # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there)
+    'D1':(40,162,0),
+    # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1)
+    'D44':(70,152,90),'D45':(89,152,90),'D46':(108,152,90),'D47':(127,152,90),
+    'D48':(146,152,90),'D49':(165,152,90),'D53':(184,152,90),'D56':(203,152,90),'D103':(205,134,90),
+    # bus + decode (horizontal, bottom-centre row)
+    'D5':(108,176,90),'D6':(148,176,90),'D2':(172,176,90),
+    'D4':(198,176,90),'DLB':(226,176,90),'D7':(254,176,90),
+    # clock subsystem (horizontal, bottom strip; shifted right of D1)
+    'D59':(70,192,90),'D35':(89,192,90),'D38':(108,192,90),'D40':(127,192,90),
+    'D33':(146,192,90),'D36':(164,192,90),'D39':(182,192,90),
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 

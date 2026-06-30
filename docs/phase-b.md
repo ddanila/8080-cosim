@@ -56,3 +56,6 @@ black DIP packages, gold pads — the LVS-verified netlist as a physical board.
   board's RIGHT side (2 rows of 4), matching `emaplaat.pdf` where the РУ5 array sits on the
   right (rows of D50/D67/D66/D64/D63… / D75/D74/D73…). ROM sockets remain vertical on the left.
   (Exact pixel coordinates still pending a reliable frame; this fixes the cluster *region*.)
+- **CPU (D1) → vertical, lower-left.** The drawing shows D1 (and D4/D2/D107) standing
+  vertically in the lower-left; reoriented D1 to a vertical DIP-40 there and shifted the
+  video + clock rows right to clear it. DRAM (right) and ROM (left) unchanged.
