@@ -321,3 +321,10 @@ labels in the scan -> needs careful per-chip reads, deferred. VALIDATION: PASS, 
 Added the lower-left chips as placement outlines: **D107** (≈52,185, below D4 -> completes the CPU
 cluster D1/D4/D2/D107) and the lower-left corner **D52** (≈59,218) and **D30** (≈29,213). The CPU
 cluster + lower-left corner now match the original. VALIDATION: PASS, overlaps=0.
+
+## Baud-rate chain added (D102/D101/D99)
+Added the readable part of the right-side baud-rate chain as placement outlines: **D102 (≈257,54),
+D101 (≈265,54), D99 (≈273,54)** — a row right of D93 (per tape-serial.md: ИЕ11/ИМ1/ИР9). The board
+now shows chips in every functional region of the original. Remaining: D100 (2nd ИР9) + the rest
+of the packed top-right interface cluster (D104/D106/D28/D12/D3/D14/D32/D94/D95...) which need
+careful individual reads. VALIDATION: PASS, overlaps=0.

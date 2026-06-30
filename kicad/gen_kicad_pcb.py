@@ -231,6 +231,10 @@ def main():
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
     silk_box(46, 174, 58, 196, 'D107'); silk_box(53, 207, 65, 229, 'D52'); silk_box(23, 203, 35, 225, 'D30')
+    # baud-rate chain (tape-serial.md: D102=ИЕ11, D101=ИМ1, D99=ИР9) -- the readable row @ y≈54,
+    # right of D93. (D100=2nd ИР9 + the rest of the packed cluster still need careful reads.)
+    for cx, ref in [(257, 'D102'), (265, 'D101'), (273, 'D99')]:
+        silk_box(cx - 3.5, 48, cx + 3.5, 62, ref)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()
