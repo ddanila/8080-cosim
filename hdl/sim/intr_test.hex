@@ -1,0 +1,24 @@
+// Synthetic interrupt-validation ROM for intr_unit_tb.v (hand-assembled 8080).
+// Sets up an 8259 (CALL-mode), enables interrupts, spins; the IR5 vector is 0x0014
+// (ICW1=0x16 interval-4 A7-5=0, ICW2=0x00 -> 5<<2 = 0x14). The ISR writes a marker
+// 0x55 to 0xD800 (VRAM) and returns. Success = mem[0xD800]==0x55 (the ISR ran via a
+// real pin_int + INTA 3-byte CALL fetch). $readmemh loads byte-per-address from 0x0000.
+//
+//   0000 LXI SP,8000 | program 8259 ICW1/ICW2/OCW1 | EI | JMP $ (spin)
+//   0014 ISR: PUSH PSW; MVI A,55; STA D800; POP PSW; EI; RET
+31 00 80
+3E 16
+D3 00
+3E 00
+D3 01
+3E DF
+D3 01
+FB
+C3 10 00
+00
+F5
+3E 55
+32 00 D8
+F1
+FB
+C9
