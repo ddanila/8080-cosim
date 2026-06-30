@@ -50,3 +50,9 @@ kicad-cli pcb render --side top --quality high --floor --width 1700 --height 115
 ```
 Previews: `docs/pcb-3d-preview.png` (isometric), `docs/pcb-top-preview.png` (top). Green board,
 black DIP packages, gold pads — the LVS-verified netlist as a physical board.
+
+## Placement refinement log
+- **DRAM bank → right side.** Moved the populated К565РУ5 (D60-67) from centre-left to the
+  board's RIGHT side (2 rows of 4), matching `emaplaat.pdf` where the РУ5 array sits on the
+  right (rows of D50/D67/D66/D64/D63… / D75/D74/D73…). ROM sockets remain vertical on the left.
+  (Exact pixel coordinates still pending a reliable frame; this fixes the cluster *region*.)
