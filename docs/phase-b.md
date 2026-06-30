@@ -153,3 +153,17 @@ cluster, replacing the earlier region-level guesses.
 - D59 (osc) still approximate (bottom row) — the drawing puts it bottom-centre by the transformer.
 - Reminder: the КР580ВМ80А case marking is on F.SilkS, visible in the **flat** preview; the **3D
   top** render hides it under the package body. Use the flat view to check markings.
+
+## Lower-left untangle: bus band ↔ array left columns (read off the drawing)
+The bottom half had two clusters in SWAPPED bands. Read both off the drawing via the frame and
+put them right (one coherent pass; VALIDATION: PASS, overlaps=0):
+- **Bus interface band** → its real horizontal row in the gap between the ROM row and the DRAM
+  array (was a fictional bottom-centre row): D5 (8238) @ (35,136) far left, D6 @ (68,136),
+  DLB(=D8) @ (93,136), D7 @ (143,136), wide D10 (8259) @ (189,136). All horizontal (rot 90).
+  (Moved to y136 so the wide DIP-28s clear the ROM bottom; ROM↔array gap is tight.)
+- **Video counters (ИЕ7) + DRAM addr muxes (КП14)** → the LEFT columns of the DRAM array, two
+  sub-rows: D46(84,217)/D44(97,217)/D48(111,217) over D47(85,242)/D45(98,242)/D49(112,242),
+  vertical. (Were a fictional row up in the bus band; now in the array where the drawing shows.)
+- Still to refine: D53/D56/D103 (video-output chain, some out by the clock cluster) and D59 (osc).
+- **Previews:** both `pcb-flat-preview.png` (silkscreen, markings) and `pcb-top-preview.png` (3D)
+  are now regenerated every iteration (owner request — track progress in parallel).

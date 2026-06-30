@@ -50,15 +50,18 @@ PLACE = {
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
     'D1':(35,176,0),'D4':(57,158,0),'D2':(83,158,0),
-    # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1).
-    # PITCH = 26 mm: rot-90 (horizontal) DIP-16 bodies are ~22 mm long, so 19 mm pitch made them
-    # overlap (validate_placement caught it). 26 mm clears. (Region still approximate vs the
-    # reference — D48/D49 muxes actually sit at the DRAM-array left edge; relocate next pass.)
-    'D44':(70,132,90),'D45':(96,132,90),'D46':(122,132,90),'D47':(148,132,90),
-    'D48':(174,132,90),'D49':(200,132,90),'D53':(226,132,90),'D56':(252,132,90),'D103':(278,132,90),
-    # bus + decode (horizontal, bottom-centre row)
-    'D5':(108,238,90),'D6':(148,238,90),
-    'DLB':(226,238,90),'D7':(254,238,90),'D10':(288,238,90),
+    # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
+    # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
+    # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
+    'D46':(84,217,0),'D44':(97,217,0),'D48':(111,217,0),
+    'D47':(85,242,0),'D45':(98,242,0),'D49':(112,242,0),
+    # video-output chain (RAS/CAS decode D53, one-shot D56, IE10 D103) -- still in the old band;
+    # refine to exact coords next pass (some sit out by the clock cluster on the right).
+    'D53':(226,132,90),'D56':(252,132,90),'D103':(278,132,90),
+    # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
+    # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
+    # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
+    'D5':(35,136,90),'D6':(68,136,90),'DLB':(93,136,90),'D7':(143,136,90),'D10':(189,136,90),
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
