@@ -48,14 +48,14 @@ PLACE = {
     'D57':(160,64,90),'D54':(210,64,90),'D26':(255,64,90),
     'D55':(200,86,90),
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
-    # Exact verified-frame read: center ≈ (35,176), vertical.
-    'D1':(35,176,0),
+    # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
+    'D1':(35,176,0),'D4':(57,158,0),'D2':(83,158,0),
     # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1)
     'D44':(70,130,90),'D45':(89,130,90),'D46':(108,130,90),'D47':(127,130,90),
     'D48':(146,130,90),'D49':(165,130,90),'D53':(184,130,90),'D56':(203,130,90),'D103':(228,130,90),
     # bus + decode (horizontal, bottom-centre row)
-    'D5':(108,238,90),'D6':(148,238,90),'D2':(172,238,90),
-    'D4':(198,238,90),'DLB':(226,238,90),'D7':(254,238,90),'D10':(288,238,90),
+    'D5':(108,238,90),'D6':(148,238,90),
+    'DLB':(226,238,90),'D7':(254,238,90),'D10':(288,238,90),
     # clock subsystem (horizontal, bottom strip; shifted right of D1)
     'D59':(70,250,90),'D35':(89,250,90),'D38':(108,250,90),'D40':(127,250,90),
     'D33':(146,250,90),'D36':(164,250,90),'D39':(182,250,90),
@@ -86,12 +86,19 @@ def main():
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp
         n_pads += fp.GetPadCount()
-        if typ in MARK:                       # refdes + case marking on the silkscreen, beside the chip
-            for fld, oy in ((fp.Reference(), -7.0), (fp.Value(), 7.0)):
-                fld.SetVisible(True); fld.SetLayer(pcbnew.F_SilkS)
-                fld.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(4), pcbnew.FromMM(4)))
-                fld.SetTextThickness(pcbnew.FromMM(0.7))
-                fld.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x+30), pcbnew.FromMM(y+oy)))
+        if typ in MARK:                       # refdes at the top-narrow end; marking on-body, along the chip
+            hh = pcbnew.ToMM(fp.GetBoundingBox(False, False).GetHeight()) / 2.0   # half chip height (no text)
+            r = fp.Reference(); v = fp.Value()
+            r.SetVisible(True); r.SetLayer(pcbnew.F_SilkS)
+            r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(4), pcbnew.FromMM(4)))
+            r.SetTextThickness(pcbnew.FromMM(0.7))
+            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 4)))   # above the top narrow end
+            v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
+            v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3.2), pcbnew.FromMM(3.2)))
+            v.SetTextThickness(pcbnew.FromMM(0.45))
+            v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))            # on the chip body
+            try: v.SetTextAngle(pcbnew.EDA_ANGLE(90, pcbnew.DEGREES_T))                   # rotate 90 (along the chip)
+            except Exception: v.SetTextAngle(900)
 
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
@@ -114,11 +121,12 @@ def main():
             pad = fp.FindPadByNumber(str(pin))
             if pad: pad.SetNet(ni); assigned += 1
 
-    # board outline (Edge.Cuts) = the PCB cut. WIDTH = 310 mm (drawing dimension, confirmed by
-    # owner). HEIGHT ≈ 260 mm (owner measured ~260 on the drawing; sanity-check vs another drawing
-    # pending). px/mm scale (14.52) derives from the 310 width, so it's valid. <-- UPDATE BH/BW
-    # with the exact owner-measured PCB size when confirmed.
-    BW, BH = 310.0, 260.0
+    # board outline (Edge.Cuts) = the PCB cut. WIDTH = 310 mm (drawing dimension, confirmed).
+    # HEIGHT ≈ 300 mm: I measured the board top edge (≈y990) to the bottom edge-connector edge
+    # (≈y5367) = (5367-990)/14.52 ≈ 301 mm — much taller than my earlier 260 (that short height
+    # was pushing chips down in the render). Owner measured ~260-279 (chip-area core?) — reconcile.
+    # <-- UPDATE BH/BW with the exact owner-measured PCB size when confirmed.
+    BW, BH = 310.0, 300.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))

@@ -103,3 +103,16 @@ cluster, replacing the earlier region-level guesses.
   `(face "GOST CAD KK")` into the silkscreen text in the generated .kicad_pcb (the TTF resolves
   from ~/Library/Fonts) — the case marking КР580ВМ80А now renders fully. Repositioned D1's
   refdes + marking to sit right beside the CPU (was floating above it near the ROM row).
+
+## Frame fix + validation (D1 sanity check, round 2)
+- **Bug found + fixed: board HEIGHT was 260, actually ~300.** Measured the board top edge
+  (≈y990) to the bottom edge-connector edge (≈y5367) → ~301 mm. The short 260 was pushing
+  chips down in the render (D1 looked ~68% down; true ≈59%). Set BW/BH = 310×300 (pending the
+  owner's exact reconcile — owner measured ~260-279, perhaps the chip-area core).
+- **Validation test added: `kicad/validate_placement.py`.** Projects every placed footprint
+  from the .kicad_pcb back onto the assembly drawing via the frame (px/mm=14.52, origin
+  1740,990) and overlays a crosshair + refdes — each should land on its real chip. Confirmed
+  D1's crosshair lands on the real D1 (the read is correct). Output: `docs/placement-validation.png`.
+- **D1 label:** refdes at the top-narrow end; case marking КР580ВМ80А on the chip body,
+  rotated 90° (along the chip), in the GOST font. (Visible in the 2D silkscreen view; a 3D
+  render hides on-body silkscreen under the package.)
