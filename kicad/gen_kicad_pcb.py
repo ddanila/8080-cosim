@@ -52,10 +52,11 @@ PLACE = {
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
     # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
     'D15':(28,105,0), 'D16':(60,105,0), 'D11':(150,105,0),
-    # DRAM bank: the populated К565РУ5 (vertical 16-pin) sit in the array on the RIGHT side of
-    # the board (per emaplaat: rows of D50/D67/D66/D64/D63… on the right), not centre-left.
-    'D67':(102,158,0),'D66':(121,158,0),'D65':(140,158,0),'D64':(159,158,0),
-    'D63':(178,158,0),'D62':(197,158,0),'D61':(216,158,0),'D60':(235,158,0),
+    # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
+    # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
+    # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
+    'D67':(127,158,0),'D66':(144,158,0),'D65':(159,158,0),'D64':(175,158,0),
+    'D63':(191,158,0),'D62':(207,158,0),'D61':(223,158,0),'D60':(238,158,0),
     # I/O block (horizontal), fills the open upper-centre/right below the connectors
     'D57':(160,64,90),'D54':(210,64,90),'D26':(255,64,90),
     'D55':(200,86,90),

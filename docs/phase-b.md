@@ -193,3 +193,10 @@ The earlier 279 was the OUTER envelope including the video-jack overhang, not th
 - Marking text angle now follows the package (vertical chip → text along Y; horizontal → along X).
 - **D59 (osc)** read off the drawing and placed: horizontal, bottom-centre by the transformer Z
   @ (112,281). No chips remain on the fallback grid. VALIDATION: PASS, overlaps=0.
+
+## DRAM row corrected (verification pass against the drawing)
+Verified placements against the drawing via the overlay; the DRAM top row (D67..D60) was an early
+region-level guess (x 102..235, pitch 19) shifted ~25 mm too far left at the D67 end. Read it
+precisely: **D67=127, D66=144, D65=159, D64=175, D63=191, D62=207, D61=223, D60=238** (~16 mm
+pitch). Now the array left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes beneath
+it, as the drawing shows. VALIDATION: PASS, overlaps=0.
