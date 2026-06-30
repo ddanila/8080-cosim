@@ -97,18 +97,24 @@ static uint8_t kbd_col = 0;         // last column selected (8255 Port A write)
 #define KBD_GAP  3
 
 // Port B (0x05) value the BIOS reads: 74148-encode the pressed key in the selected column.
+// Port B value: SHIFT bits 6/7 (active-LOW: 1=released) are GLOBAL (reflect the held key's
+// shift regardless of column); the 74148 code (b1-3) + GS (b0, active-low) are per-column.
+#define KBD_NONE 0xCF              // no key: code=7, GS released (b0=1), SHIFT released (b6/7=1)
 static uint8_t kbd_portb(void) {
-  if (g_vw < 42000) return 0x01;   // wait until the banner is drawn before "typing"
-  if (!kbd_str || !kbd_str[kbd_pos] || kbd_phase >= KBD_HOLD) return 0x01;  // no key: GS inactive (bit0=1)
-  char c = kbd_str[kbd_pos]; int shift = 0;
-  if (c >= 'A' && c <= 'Z') { c += 32; shift = 1; }
-  int col = -1, bit = -1;
-  for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
-    if (KMAP[i].c == c) { col = KMAP[i].col; bit = KMAP[i].bit; break; }
-  if (col < 0 || col != kbd_col) return 0x01;          // key not in the column being scanned
-  uint8_t code = (uint8_t)((~bit) & 7);                // 74148 A2-A0 (active-low/inverted)
-  uint8_t pb = (code << 1);                            // GS active (bit0=0) => key present
-  if (shift) pb |= 0x40;                               // SHIFT via SPECIAL (polarity TBD)
+  if (g_vw < 42000) return KBD_NONE;                   // wait until the banner is drawn
+  char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < KBD_HOLD) ? kbd_str[kbd_pos] : 0;
+  int shift = 0, col = -1, bit = -1;
+  if (c) {
+    char lc = c; if (c >= 'A' && c <= 'Z') { lc = (char)(c + 32); shift = 1; }
+    for (unsigned i = 0; i < sizeof(KMAP)/sizeof(KMAP[0]); i++)
+      if (KMAP[i].c == lc) { col = KMAP[i].col; bit = KMAP[i].bit; break; }
+  }
+  uint8_t pb = 0xC0;                                   // SHIFT bits released (active-low high)
+  if (shift) pb &= (uint8_t)~0x40;                     // SHIFT1 held = bit6 low (active-low)
+  if (c && col == kbd_col)
+    pb |= (uint8_t)(((~bit) & 7) << 1);                // 74148 code in b1-3, GS active (b0=0)
+  else
+    pb |= 0x0F;                                        // no key here: code=7 + GS released (b0=1)
   return pb;
 }
 static void wb(void* u, uint16_t a, uint8_t v) {

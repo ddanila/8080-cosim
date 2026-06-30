@@ -54,3 +54,20 @@ monitor doesn't echo and replies `?` to invalid commands. **This is the original
 docs) to get a meaningful (non-`?`) response + visible echo; verify the 74148 code / GS /
 SHIFT polarity against an echoing command (the path works; the exact char mapping may need
 a polarity tweak). Then optionally port the keyboard model to the HDL (vm80a) sim.
+
+## WORKING — valid command, real reaction ✅ (SHIFT polarity fixed)
+The earlier `?` was a **SHIFT-polarity bug**: the SPECIAL bits (6/7) are active-LOW
+(1=released, 0=pressed) and were set backwards, flipping every case (uppercase↔lowercase,
+digits↔symbols). Fixed: Port B SHIFT bits default high, cleared when shift is held; the
+74148 code is per-column. Now the keyboard decodes **correctly**:
+- `JUKU_KEYS="B"` → ekta37 echoes **`*B`** (BASIC is a separate ROM `jbasic11.bin`, not
+  loaded in our single 16 KB ekta37, so it returns to the prompt).
+- `JUKU_KEYS="T"` → the **OS-boot loader runs and prompts `System from <D>isk, <N>et ?`** —
+  a real, meaningful reaction to a valid monitor command. Evidence:
+  `docs/boot-ekta37-T-command.png`.
+
+So end-to-end: **die-accurate 8080 → real BIOS on the LVS-verified structure → banner →
+reacts to typed commands** (the original north-star). Valid `*`-monitor commands (from the
+archive): `A` mini-assembler, `B` ROM BASIC, `T` boot OS (→ `D`/`N`/`T`). Boot guard still
+PASS (keyboard env-opt-in). Remaining polish: multi-ROM load (jbasic11) so `B` launches
+BASIC; optionally port the keyboard to the HDL (vm80a) sim.
