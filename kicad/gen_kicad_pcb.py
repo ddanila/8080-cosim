@@ -217,6 +217,11 @@ def main():
                      (242, ['D91','D90','D89','D88','D87','D86','D85','D84'])]:
         for cx, ref in zip(DRAM_COLS, refs):
             silk_box(cx - 4, ry - 10, cx + 4, ry + 10, ref)
+    # more toward-76 positions as placement-only outlines (not net-traced): the bottom row
+    # D42/D43/D58 (alongside D59) and the DRAM-array left column D50/D51.
+    for cx, ref in [(142, 'D42'), (170, 'D43'), (197, 'D58')]:
+        silk_box(cx - 10, 277, cx + 10, 285, ref)              # bottom row, horizontal
+    silk_box(108, 148, 116, 168, 'D50'); silk_box(108, 180, 116, 200, 'D51')   # array col0, vertical
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

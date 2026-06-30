@@ -303,3 +303,10 @@ ROM bank (8) + DRAM (32) outlines, the board shows ~70 of the 76 chip positions 
 30 placement outlines). VALIDATION: PASS, overlaps=0 (the placement outlines are silk, so the
 footprint-overlap check is unaffected; minor cosmetic silk/footprint touches at the array's right
 edge by the clock cluster).
+
+## Bottom row + DRAM array left column added (placement outlines)
+Added more toward-76 positions as placement-only silk outlines (read off the drawing): the bottom
+row **D42/D43/D58** (≈x142/170/197, y281, alongside D59) and the DRAM-array left column **D50/D51**
+(≈x112, y158/190). Completes the bottom row and the array's left edge. The board now shows the
+left/centre chip count; the RIGHT-side serial/tape/baud section (D92-D107: К561ИЕ11/ИМ1/ИР9 baud
+chain, ВН59, etc.) is the main remaining group of positions. VALIDATION: PASS, overlaps=0.
