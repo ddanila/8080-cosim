@@ -237,3 +237,14 @@ right edge may truly extend slightly past 310). VALIDATION: PASS, overlaps=0.
   overhang). The far-right chips (D54/55/56/57) were pulled in a few mm to fit. **To lock this:
   measure on the real board the distance from a left-column chip (e.g. D15) to a right-column chip
   (e.g. D57), or chip-to-right-edge** -- that calibrates px/mm independently of the reference dim.
+
+## Tentative markings pinned from the repo's own tracing
+The two markings flagged tentative (D40/D35) + D6 are now grounded in the scan/trace docs, and the
+guesses were wrong:
+- **D40** (CT16 divider): `clock-subsystem.md` calls it ИЕ7 (74161-class); the BOM's lone fast
+  **К531ИЕ7** fits (the ×4 К555ИЕ7 are the video counters). My К561ИЕ11 guess was actually D102's
+  part (baud-rate counter, per `tape-serial.md`) — not this chip.
+- **D35** (clock phase, Φ1/Φ2 gen): `clock-subsystem.md` identifies it as **ЛН5** (→ К531ЛН5),
+  not the ТМ2 flip-flop I'd guessed.
+- **D6** (decode PROM): `memory.md` records it as **КР556РТ4** [scan], not К155РЕ3.
+Every chip marking is now BOM- or scan/trace-grounded. VALIDATION: PASS.

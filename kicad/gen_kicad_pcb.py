@@ -36,8 +36,8 @@ MARK = {
     'IO_DEC138':'К555ИД7',  'RASCAS_DEC':'К531ИД7',  'IE7_CTR':'К555ИЕ7',
     'KP14_MUX':'К531КП14',  'LA1_GATE':'К531ЛА1',    'LA3_GATE':'К555ЛА3',
     'LA12_GATE':'К531ЛА12', 'LN1_INV':'К531ЛН1',     'LN1_OSC':'К531ЛН1',
-    'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'К155РЕ3',
-    'CT16_CTR':'К561ИЕ11',  'CLK_PHASE':'КМ555ТМ2',          # (tentative: D40, D35)
+    'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'КР556РТ4',
+    'CT16_CTR':'К531ИЕ7',   'CLK_PHASE':'К531ЛН5',           # pinned via repo tracing (clock-subsystem.md / memory.md)
 }
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
