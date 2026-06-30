@@ -34,15 +34,16 @@ PLACE = {
     # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
     # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
     'D25':(34,40,90), 'D23':(66,40,90), 'D24':(150,40,90), 'D29':(184,40,90), 'D27':(255,40,90),
-    # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty)
-    'D15':(26,82,0), 'D16':(49,82,0),
+    # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 sits
+    # at the right end of this row in the drawing (vertical, like the sockets).
+    'D15':(26,82,0), 'D16':(49,82,0), 'D11':(120,82,0),
     # DRAM bank: the populated К565РУ5 (vertical 16-pin) sit in the array on the RIGHT side of
     # the board (per emaplaat: rows of D50/D67/D66/D64/D63… on the right), not centre-left.
     'D60':(232,114,0),'D61':(252,114,0),'D62':(272,114,0),'D63':(292,114,0),
     'D64':(232,140,0),'D65':(252,140,0),'D66':(272,140,0),'D67':(292,140,0),
     # I/O block (horizontal), fills the open upper-centre/right below the connectors
-    'D57':(160,64,90),'D54':(210,64,90),'D11':(255,64,90),
-    'D10':(160,86,90),'D55':(210,86,90),'D26':(255,86,90),
+    'D57':(160,64,90),'D54':(210,64,90),'D26':(255,64,90),
+    'D10':(185,86,90),'D55':(230,86,90),
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there)
     'D1':(40,162,0),
     # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1)

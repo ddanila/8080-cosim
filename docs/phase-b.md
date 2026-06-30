@@ -59,3 +59,6 @@ black DIP packages, gold pads — the LVS-verified netlist as a physical board.
 - **CPU (D1) → vertical, lower-left.** The drawing shows D1 (and D4/D2/D107) standing
   vertically in the lower-left; reoriented D1 to a vertical DIP-40 there and shifted the
   video + clock rows right to clear it. DRAM (right) and ROM (left) unchanged.
+- **USART (D11) → ROM-socket row, vertical.** The drawing places D11 at the right end of the
+  ROM-socket row as a vertical chip (like the sockets); moved it there from the I/O block and
+  re-tidied the remaining I/O (D57/D54/D26 + D10/D55).
