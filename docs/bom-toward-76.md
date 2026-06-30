@@ -1,12 +1,14 @@
 # BOM gap map — toward the real ~101-chip board
 
-> **COUNT CORRECTION (was "76").** Summing the BOM line-item quantities (Всего column) on
-> `ДГШ3.031.006` pp.3–4 gives **101 ICs** (page 3 = 37, page 4 = 64), of which **40 are memory**
-> (565РУ3Г ×32 + К573РФ5 ×8) and **61 non-memory**. The PCB placement independently reached
-> **102 positions** (matching within ±1 of the faint scan). So the real board carries **~101
-> chips, not 76** — the earlier "76" looks like a subset (perhaps excluding the 32-chip DRAM array,
-> or the analog К554СА3 / К170 drivers). Worth reconciling with the owner, but the BOM math is
-> objective. The phrase "toward 76" below is retained only for history.
+> **TWO COUNTS, both correct (reconciled).** Summing the BOM line-item quantities (Всего column)
+> on `ДГШ3.031.006` pp.3–4 gives **~101 socket positions** (page 3 = 37, page 4 = 64; 40 memory +
+> 61 non-memory), and the PCB placement independently reached **102 positions** (±1 of the faint
+> scan). But the owner's **76** is the **populated**-chip count: per `project-status.md`, only
+> **8 of 32 RAM sockets** (one 64 KB К565РУ5 bank) and **2 of 8 EPROM sockets** are populated; the
+> other ~26 are **unpopulated expansion sockets**. So **~101 = the max/all-sockets board; 76 = the
+> as-shipped populated board** (101 − ~25 empty expansion ≈ 76). The PCB layout shows all socket
+> *positions* (max config); the populated subset is what the digital twin models. Not a
+> contradiction — just two different things being counted.
 
 The component spec is `ДГШ3.031.006 ВП` (`~/fun/juku3000/docs/…nimekiri komponendid.pdf`, IC list
 on pp.3–4). The LVS model (`hdl/juku_top.v` + `kicad/juku.board.json` + `sync/map.json`) currently
