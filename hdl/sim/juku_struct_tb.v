@@ -77,22 +77,68 @@ module io_dec138_b(input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
   assign y_n = en ? ~(8'b1 << sel) : 8'hFF;
 endmodule
 
-// 8255#0 (D26): latched ports + Port C -> banking mode (portc_lo).
+// 8255#0 (D26): latched ports + Port C -> banking mode (portc_lo) + the KEYBOARD.
 // Writes are sampled on `osc` while wr_n is low (data settled on DB) -- NOT on the
 // wr_n edge: the 8238 gates DB onto the bus with wr_n, so an edge-latch reads stale DB.
+//
+// Keyboard (opt-in via kbd_en, so the boot guard stays byte-identical):
+//   Port A (A==0) WRITE low-nibble = the column the BIOS selects to scan;
+//   Port B (A==1) READ = {SHIFT b7-6 active-LOW, 74148 code b3-1, GS b0 active-LOW}.
+// The "typed" key is presented externally as (kcol,kbit,shift,pressed) from the TB.
 module ppi0_b(input wire osc, input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
-              output reg [1:0] portc_lo);
+              output reg [1:0] portc_lo,
+              input wire kbd_en, kbd_pressed, kbd_shift, input wire [3:0] kcol, input wire [2:0] kbit);
   reg [7:0] regs [0:3]; reg [7:0] portc; reg [2:0] pb; integer i;
+  reg [3:0] kbd_col_sel = 0;                 // last column the BIOS wrote to Port A
   initial begin for (i=0;i<4;i=i+1) regs[i]=0; portc=0; portc_lo=0; end
-  assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+
+  // 74148 encode of the held key in the BIOS-selected column (mirrors cosim kbd_portb):
+  wire held    = kbd_en & kbd_pressed;
+  wire kactive = held & (kbd_col_sel == kcol);
+  wire [7:0] kbd_portb = {1'b1, ~(held & kbd_shift), 2'b00,        // b7=1, b6=SHIFT(active-low), b5-4=0
+                          kactive ? {((~kbit) & 3'h7), 1'b0}        // key: code b3-1, GS b0=0
+                                  : 4'hF};                          // no key here: code=7, GS=1
+
+  assign D = (~cs_n & ~rd_n) ? ((kbd_en & A == 2'd1) ? kbd_portb : regs[A]) : 8'bz;
   always @(posedge osc) if (~cs_n & ~wr_n) begin
     regs[A] = D;
+    if (A == 2'd0) kbd_col_sel <= D[3:0];    // Port A write = keyboard column select
     if (A == 2'd2) begin portc = D; portc_lo = D[1:0]; end
     else if (A == 2'd3) begin
       if (D[7]) begin portc = 0; portc_lo = 0; end
       else begin pb=(D>>1)&3'd7; if (D[0]) portc[pb]=1; else portc[pb]=0; portc_lo=portc[1:0]; end
     end
   end
+endmodule
+
+// 8259 (D-?) interrupt generation for the twin: snoop the 8259 ICW/OCW from the PIC port
+// writes, drive pin_int on the external frame tick (the 8253 VER-RTR -> IR5, a boundary
+// here), and inject the MCS-80 3-byte CALL vector {0xCD, lo, hi} onto DB during the INTA
+// reads. Opt-in: with frame_tick never pulsing, intr stays 0 and DB is never driven (boot
+// byte-identical). Vector = ICW2<<8 | (ICW1 & 0xE0) | (IR5<<2), validated in intr_unit_tb.v.
+module intr_ctl_b(input wire osc, dbin, inta_n, iowr_n, cs_pic_n, a0, frame_tick,
+                  inout wire [7:0] DB, output wire intr);
+  reg [7:0] icw1=0, icw2=0, mask=8'hFF; reg expect_icw2=0;
+  always @(posedge osc) if (~cs_pic_n & ~iowr_n) begin           // snoop 8259 programming
+    if (~a0) begin if (DB[4]) begin icw1<=DB; expect_icw2<=1; end end          // ICW1
+    else if (expect_icw2) begin icw2<=DB; expect_icw2<=0; end                  // ICW2 (vector hi)
+    else mask<=DB;                                                             // OCW1 (mask)
+  end
+  wire [15:0] vaddr = {icw2, 8'h00} | {8'h00, (icw1 & 8'hE0)} | 16'h0014;       // IR5<<2 = 0x14
+
+  reg pending=0, ft_q=0, inq=0; integer inta_idx=0;
+  always @(posedge osc) begin
+    ft_q <= frame_tick;
+    if (frame_tick & ~ft_q & ~mask[5]) pending <= 1;            // rising frame tick, IR5 unmasked
+    if (~inta_n & ~inq) inq <= 1;                                // entering an INTA read
+    if ( inta_n &  inq) begin inq <= 0;                          // leaving an INTA read
+      if (inta_idx >= 2) begin inta_idx <= 0; pending <= 0; end  // 3-byte CALL consumed
+      else inta_idx <= inta_idx + 1;
+    end
+  end
+  assign intr = pending;
+  wire [7:0] ivec = (inta_idx == 0) ? 8'hCD : (inta_idx == 1) ? vaddr[7:0] : vaddr[15:8];
+  assign DB = ~inta_n ? ivec : 8'bz;                             // inject vector during INTA reads
 endmodule
 
 // Generic latched peripheral (PPI1/PIT/USART/PIC/FDC): IN = last OUT (cosim model).
@@ -143,7 +189,9 @@ endmodule
 
 // =============================== structural top =================================
 // Wiring mirrors hdl/juku_top.v (verified datapath); memory replaced by the black box.
-module juku_struct(input wire osc, phi1, phi2, reset, input wire ready);
+module juku_struct(input wire osc, phi1, phi2, reset, input wire ready,
+                   input wire frame_tick, kbd_en, kbd_pressed, kbd_shift,   // external stimulus
+                   input wire [3:0] kbd_kcol, input wire [2:0] kbd_kbit);
   wire [15:0] A, BA; tri1 [7:0] D, DB;     // tri1: pull-up like the real open bus (avoids z/x poisoning vm80a's capture)
   wire dbin, wr_n, sync, hlda, inte, wait_o, intr;
   wire memr_n, memw_n, iord_n, iowr_n, inta_n;
@@ -166,7 +214,8 @@ module juku_struct(input wire osc, phi1, phi2, reset, input wire ready);
   eprom_b       U_EPROM(.idx(dec_idx), .sel(dec_rom), .rd_n(memr_n), .db(DB));
   dram_bank_b   U_DRAM (.osc(osc), .a(BA), .sel(dec_ram), .rd_n(memr_n), .we_n(memw_n), .db(DB));
 
-  ppi0_b    U_PPI0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n), .reset(reset), .portc_lo(mem_mode));
+  ppi0_b    U_PPI0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n), .reset(reset), .portc_lo(mem_mode),
+                    .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift), .kcol(kbd_kcol), .kbit(kbd_kbit));
   periph_b  U_PPI1 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n));
   periph_b  U_PIT0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n));
   periph_b  U_PIT1 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n));
@@ -174,13 +223,22 @@ module juku_struct(input wire osc, phi1, phi2, reset, input wire ready);
   periph_b  U_SIO0 (.osc(osc), .A({1'b0,BA[0]}), .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n));
   periph_b  U_FDC  (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n));
   periph_b  U_PIC  (.osc(osc), .A({1'b0,BA[0]}), .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n));
-  assign intr = 1'b0;
+  intr_ctl_b U_INTR (.osc(osc), .dbin(dbin), .inta_n(inta_n), .iowr_n(iowr_n), .cs_pic_n(cs_pic_n),
+                     .a0(BA[0]), .frame_tick(frame_tick), .DB(DB), .intr(intr));
 endmodule
 
 // ================================ testbench =====================================
 module juku_struct_tb();
   reg osc=0, phi1=0, phi2=0, reset=1, ready=1;
   integer mcyc=0, vram_writes=0, max_vram=6000; reg vram_seen=0;
+
+  // interactivity stimulus (all opt-in: default off => byte-identical boot guard)
+  reg frame_tick=0, kbd_en=0, kbd_pressed=0, kbd_shift=0;
+  reg [3:0] kbd_kcol=0; reg [2:0] kbd_kbit=0;
+  integer frameirq=0;                 // frame-interrupt period in osc cycles (0=off)
+  integer keyat=0, khold=900000, kgap=300000;   // press the key after `keyat` video writes
+  integer kcolp=0, kbitp=0, kshiftp=0;
+  integer osc_n=0, key_t=-1;
 
   // clock + 2-phase (osc = fast sampling clock; phi1/phi2 = phases) -- clock subsystem
   // is a documented boundary, driven here.
@@ -190,7 +248,20 @@ module juku_struct_tb();
     phi2=0;
   end
 
-  juku_struct dut(.osc(osc), .phi1(phi1), .phi2(phi2), .reset(reset), .ready(ready));
+  juku_struct dut(.osc(osc), .phi1(phi1), .phi2(phi2), .reset(reset), .ready(ready),
+                  .frame_tick(frame_tick), .kbd_en(kbd_en), .kbd_pressed(kbd_pressed),
+                  .kbd_shift(kbd_shift), .kbd_kcol(kbd_kcol), .kbd_kbit(kbd_kbit));
+
+  // frame-interrupt tick: a 1-osc-cycle pulse every `frameirq` osc cycles (models the
+  // 8253 VER-RTR -> 8259 IR5). Keyboard: press the configured key once the banner is drawn
+  // (vram_writes >= keyat), hold for `khold` osc cycles, then release so the BIOS sees an edge.
+  always @(posedge osc) begin
+    osc_n <= osc_n + 1;
+    frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq-1));
+    if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) key_t <= 0;   // arm on banner
+    else if (key_t >= 0) key_t <= key_t + 1;
+    kbd_pressed <= (key_t >= 0 && key_t < khold);                                 // hold then release
+  end
 
   // count machine cycles by observing the structural sync net
   reg sq=0;
@@ -209,6 +280,15 @@ module juku_struct_tb();
     end
   end
 
+  // INTA probe: announce each interrupt-acknowledge read + the vector byte injected
+  reg inta_q=0;
+  always @(posedge osc) begin
+    if (~dut.inta_n & ~inta_q)
+      $display("[INTA] t=%0t idx=%0d ivec=0x%02h vaddr=0x%04h mcyc=%0d",
+        $time, dut.U_INTR.inta_idx, dut.U_INTR.ivec, dut.U_INTR.vaddr, mcyc);
+    inta_q <= ~dut.inta_n;
+  end
+
   integer fd, k;
   task dump_vram; begin
     fd=$fopen("hdl/sim/vram_struct.bin","wb");
@@ -218,6 +298,13 @@ module juku_struct_tb();
 
   initial begin
     if ($value$plusargs("maxvram=%d", max_vram)) ;
+    if ($value$plusargs("frameirq=%d", frameirq)) ;       // 0=off (boot-identical)
+    if ($value$plusargs("keyat=%d",  keyat))  ;           // press key after N video writes
+    if ($value$plusargs("kcol=%d",   kcolp))  ;           // pre-decoded key column 0-15
+    if ($value$plusargs("kbit=%d",   kbitp))  ;           // pre-decoded key row bit 0-7
+    if ($value$plusargs("kshift=%d", kshiftp)) ;          // 1 = SHIFT held (uppercase)
+    if ($value$plusargs("khold=%d",  khold))  ;
+    if (keyat != 0) begin kbd_en=1; kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
     reset=1; #2000 reset=0;
   end
   initial begin #1000000000;

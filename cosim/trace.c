@@ -214,6 +214,10 @@ int main(int argc, char** argv) {
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;
       if (cpu.iff && !(pic_mask & 0x20)) {           // IFF set + IR5 unmasked
+        static int irq_n = 0;
+        if (irq_n++ < 3) fprintf(stderr, "[IRQ] taken #%d g_vw=%lu cyc=%lu pc=%04X icw1=%02X icw2=%02X mask=%02X vec=%04X\n",
+            irq_n, g_vw, cpu.cyc, cpu.pc, pic_icw1, pic_icw2, pic_mask,
+            ((uint16_t)pic_icw2<<8)|(pic_icw1&0xE0)|(5u<<2));
         uint16_t vec = ((uint16_t)pic_icw2 << 8) | (pic_icw1 & 0xE0) | (5u << 2);
         if (cpu.halted) cpu.halted = 0;              // interrupt wakes a HLT
         wb(0, (uint16_t)(cpu.sp - 1), cpu.pc >> 8);  // CALL: push PC, jump to vector
