@@ -75,6 +75,9 @@ static uint8_t rb(void* u, uint16_t a) {
 }
 
 static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + optional stop limit
+// --- minimal 8259 PIC (MCS-80/CALL mode) for the frame interrupt (ports 0x00/0x01) ---
+static uint8_t pic_icw1 = 0, pic_icw2 = 0, pic_mask = 0xFF;  // mask: 1=masked
+static int     pic_expect_icw2 = 0;
 static void wb(void* u, uint16_t a, uint8_t v) {
   (void)u; unsigned idx = 0;
   if (overlay(a, &idx)) return;    // write under ROM/expcart overlay -> dropped
@@ -95,6 +98,13 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
   out_count[p]++;
   out_last[p] = v;
+
+  // 8259 PIC programming (port 0x00 = A0=0, port 0x01 = A0=1)
+  if (p == 0x00) { if (v & 0x10) { pic_icw1 = v; pic_expect_icw2 = 1; } }   // ICW1
+  else if (p == 0x01) {
+    if (pic_expect_icw2) { pic_icw2 = v; pic_expect_icw2 = 0; }             // ICW2 (vector hi)
+    else pic_mask = v;                                                       // OCW1 (mask)
+  }
 
   // 8255#0 Port C controls the memory view (ports 0x04..0x07)
   if (p == 0x06) {                 // direct write to Port C
@@ -120,6 +130,8 @@ int main(int argc, char** argv) {
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
   g_vw_limit            = argc > 3 ? strtoul(argv[3], 0, 0) : 0UL;   // 0 = no video-write limit
+  unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
+  unsigned long next_frame = frame_cyc;
 
   FILE* f = fopen(rom_path, "rb");
   if (!f) { perror(rom_path); return 1; }
@@ -146,7 +158,7 @@ int main(int argc, char** argv) {
   static uint32_t pchist[MEM_SIZE];
 
   int chk_logs = 0;
-  while (cpu.cyc < max_cyc && !cpu.halted && !(g_vw_limit && g_vw >= g_vw_limit)) {
+  while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) && !(g_vw_limit && g_vw >= g_vw_limit)) {
     pchist[cpu.pc]++;
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",
@@ -155,6 +167,17 @@ int main(int argc, char** argv) {
       fprintf(stderr, "[CHK] cmp computed=%02X stored=%02X %s\n",
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
     i8080_step(&cpu);
+    // --- frame interrupt: 8253 VER-RTR -> 8259 IR5 -> CPU (MCS-80 CALL to the ICW vector) ---
+    if (frame_cyc && cpu.cyc >= next_frame) {
+      next_frame += frame_cyc;
+      if (cpu.iff && !(pic_mask & 0x20)) {           // IFF set + IR5 unmasked
+        uint16_t vec = ((uint16_t)pic_icw2 << 8) | (pic_icw1 & 0xE0) | (5u << 2);
+        if (cpu.halted) cpu.halted = 0;              // interrupt wakes a HLT
+        wb(0, (uint16_t)(cpu.sp - 1), cpu.pc >> 8);  // CALL: push PC, jump to vector
+        wb(0, (uint16_t)(cpu.sp - 2), cpu.pc & 0xFF);
+        cpu.sp -= 2; cpu.iff = 0; cpu.pc = vec;
+      }
+    }
     if ((cpu.cyc & 0xFFFFF) == 0) {
       writes_total = 0;
       for (int i = 0; i < 256; i++) writes_total += wpage[i];
