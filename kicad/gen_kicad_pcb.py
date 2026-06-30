@@ -174,6 +174,18 @@ def main():
         s.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(x1), pcbnew.FromMM(y1)))
         s.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(x2), pcbnew.FromMM(y2))); board.Add(s)
     for a in [(BX0,BY0,BX1,BY0),(BX1,BY0,BX1,BY1),(BX1,BY1,BX0,BY1),(BX0,BY1,BX0,BY0)]: edge(*a)
+
+    # mounting holes (mechanical -- no nets, LVS-clean): drilled Ø3.5 holes read off the drawing.
+    # The drawing's corner ⊕ targets sit at TL≈(7,30), BL≈(5,289) on the MAIN board, and at the
+    # RIGHT at ≈(319,290)/X6-jack≈323 -- i.e. on the jack overhang PAST the 310 cut (so excluded
+    # from this 310×266 rectangle). This also CONFIRMS the frame: px/mm 14.52 is right and 310 is
+    # the main width; the right-side jacks/tabs overhang past it (like the bottom video-jack gives 279).
+    def mhole(hx, hy, d=3.5):
+        h = pcbnew.PCB_SHAPE(board); h.SetShape(pcbnew.SHAPE_T_CIRCLE)
+        h.SetLayer(pcbnew.Edge_Cuts); h.SetWidth(pcbnew.FromMM(0.15))
+        h.SetCenter(pcbnew.VECTOR2I(pcbnew.FromMM(hx), pcbnew.FromMM(hy)))
+        h.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(hx + d/2.0), pcbnew.FromMM(hy))); board.Add(h)
+    mhole(7, 30); mhole(6, 283)        # TL, BL (read 5,289 -> inset to stay within the 288 bottom)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

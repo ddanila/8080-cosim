@@ -260,3 +260,14 @@ Remaining "more like original" work is now categorically different from per-chip
 - **Right-edge width:** still pending a physical-board measurement to lock px/mm (see prior note).
 - **Toward 76 chips:** tracing the remaining ~36 chips (per `bom-toward-76.md`) -- a schematic
   tracing effort, not placement.
+
+## Mounting holes added + right-edge width RESOLVED
+Surveyed the drawing's corner ⊕ mounting-hole targets: **TL≈(7,30), BL≈(5,289)** on the main
+board; **BR≈(319,290)** and the **X6 video jack ≈323** on the RIGHT, *past* the x=310 line.
+- **Resolves the open right-edge question:** px/mm 14.52 is correct and 310 IS the main PCB width
+  — the right-side video jacks (X6/X7) and their mounting tabs **overhang past 310**, exactly like
+  the bottom video-jack overhang gives the 279 "outer" height. No frame error; the far-right chips
+  (D54–57, x≈292) sit correctly on the main board.
+- **Added the two left-side mounting holes** (Ø3.5 Edge.Cuts cutouts) that fall on the 310×266
+  main board: TL (7,30), BL (6,283). The right-side holes live on the jack overhang not modeled by
+  this rectangular outline (a future board-shape refinement). VALIDATION: PASS.
