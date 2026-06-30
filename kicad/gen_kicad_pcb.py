@@ -48,9 +48,10 @@ PLACE = {
     # NOTE: KiCad DIP footprints stand VERTICAL at rot 0 (pins down both sides). So rot 90 =
     # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
     # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
-    # transceiver row read precisely off the drawing: y59, x 23/55/86/113 (was y42, too far right).
-    # D27 (wide PPI 8255) sits at the right end of this top band @ (162,57).
-    'D25':(23,59,90), 'D23':(55,59,90), 'D24':(86,59,90), 'D29':(113,59,90), 'D27':(162,57,90),
+    # D27 (wide PPI 8255) sits at the right end of the top transceiver band @ (162,57). The bus
+    # transceivers D25/D23/D24/D29 in this row are NOT net-modeled (not in board.json) -> they're
+    # placement outlines below, not PLACE entries (PLACE entries for non-board.json refs no-op).
+    'D27':(162,57,90),
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
     # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
     'D15':(22,86,0), 'D16':(43,86,0), 'D11':(201,86,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
@@ -240,6 +241,10 @@ def main():
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     silk_box(240, 150, 262, 160, 'D41'); silk_box(255, 190, 267, 210, 'D37'); silk_box(300, 166, 310, 186, 'D34')
+    # bus transceiver row (К170АП2/УП2 + ВА86/ВА87, not net-modeled) -- the top band at y59, left
+    # of the PPI D27. Read off the drawing; placement-only outlines (fixes the row that PLACE silently dropped).
+    for x0, x1, ref in [(14, 32, 'D25'), (43, 67, 'D23'), (74, 98, 'D24'), (104, 122, 'D29')]:
+        silk_box(x0, 54, x1, 64, ref)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

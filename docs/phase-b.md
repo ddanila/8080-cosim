@@ -348,3 +348,12 @@ gave chip positions that conflict with the wider crop by ~15 mm (e.g. D95/D98 re
 y40 row), and the remaining chips there (D100/D104/D106/D28/D14/D32 + the "B92" marking of unclear
 class) can't be localised confidently from this scan. Further top-right refinement needs a
 higher-res scan or the physical board. VALIDATION: PASS, overlaps=0.
+
+## Count reconciliation found a bug: transceiver row was silently dropped
+A placed-position count (40 modeled + 52 outlines = 92 distinct, no duplicates) revealed that
+**D25/D23/D24/D29** (the bus transceiver row) were PLACE-dict entries but NOT in board.json — and
+the placement loop only iterates board.json refs, so those four NEVER rendered (the whole
+transceiver row was missing from every preview). Fixed: removed the phantom PLACE entries and
+added D25/D23/D24/D29 as placement outlines in the top band (y59, left of the PPI D27), where the
+drawing shows them. The top now reads X1/X2 -> transceiver row -> ROM bank like the original.
+Lesson: PLACE entries for refs absent from board.json silently no-op. VALIDATION: PASS, overlaps=0.
