@@ -144,12 +144,11 @@ def main():
     # board outline (Edge.Cuts) in the read frame (origin = 310-dim left arrow @ orig-px
     # (1740,990), px/mm 14.52). FRAME BUG fixed: the board TOP edge is ~22 mm BELOW that dim line
     # (the width dimension sits in the top margin) -- I'd been treating the dim line as the top,
-    # which pushed every chip's %-position down. PCB edges: left 0, right 310, top 22, bottom 301
-    # PCB = 310 x 260 mm (owner-confirmed). The 279 I'd measured is the OUTER envelope (the
-    # video jack X8 extends ~19 mm below the PCB) -- NOT the PCB cut. So bottom = top(22)+260 =
-    # 282 (the jack lives at mm 282..301, beyond the board). Chips read in the same frame sit
-    # correctly relative to the top. <-- refine top with the owner's reference if D1 isn't centred.
-    BX0, BY0, BX1, BY1 = 0.0, 22.0, 310.0, 282.0
+    # which pushed every chip's %-position down.
+    # PCB = 310 x 266 mm (owner MEASURED the real board). So edges: left 0, right 310, top 22,
+    # bottom = top(22)+266 = 288. (The 279 measured earlier was the OUTER envelope incl. the video
+    # jack X8 overhang -- not the PCB cut.) Chips read in the same frame sit correctly vs the top.
+    BX0, BY0, BX1, BY1 = 0.0, 22.0, 310.0, 288.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))

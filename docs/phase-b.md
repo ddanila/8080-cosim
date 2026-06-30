@@ -175,3 +175,8 @@ D39; AG3 one-shot **D56 (305,200)** far right (raw read landed on the 310 edge -
 to keep the DIP on-board; the right board edge may actually extend a touch past 310). All
 vertical. VALIDATION: PASS, overlaps=0. The old y132 band is now purely the bus row.
 Remaining approximate: D59 (oscillator, bottom-centre by the transformer).
+
+## Board height corrected to 310 × 266 mm (owner measured the real PCB)
+Owner measured the physical board: **310 × 266 mm** (was estimating 260). Edge.Cuts bottom moved
+22+260=282 → 22+266=**288**. D1 now reads 58% down (was 59%) — closer still to the reference.
+The earlier 279 was the OUTER envelope including the video-jack overhang, not the PCB cut.
