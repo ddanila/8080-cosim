@@ -45,16 +45,16 @@ PLACE = {
     'D57':(160,64,90),'D54':(210,64,90),'D26':(255,64,90),
     'D55':(200,86,90),
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there)
-    'D1':(40,162,0),
+    'D1':(40,200,0),
     # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1)
-    'D44':(70,152,90),'D45':(89,152,90),'D46':(108,152,90),'D47':(127,152,90),
-    'D48':(146,152,90),'D49':(165,152,90),'D53':(184,152,90),'D56':(203,152,90),'D103':(205,134,90),
+    'D44':(70,166,90),'D45':(89,166,90),'D46':(108,166,90),'D47':(127,166,90),
+    'D48':(146,166,90),'D49':(165,166,90),'D53':(184,166,90),'D56':(203,166,90),'D103':(205,148,90),
     # bus + decode (horizontal, bottom-centre row)
-    'D5':(108,176,90),'D6':(148,176,90),'D2':(172,176,90),
-    'D4':(198,176,90),'DLB':(226,176,90),'D7':(254,176,90),'D10':(288,176,90),
+    'D5':(108,238,90),'D6':(148,238,90),'D2':(172,238,90),
+    'D4':(198,238,90),'DLB':(226,238,90),'D7':(254,238,90),'D10':(288,238,90),
     # clock subsystem (horizontal, bottom strip; shifted right of D1)
-    'D59':(70,192,90),'D35':(89,192,90),'D38':(108,192,90),'D40':(127,192,90),
-    'D33':(146,192,90),'D36':(164,192,90),'D39':(182,192,90),
+    'D59':(70,250,90),'D35':(89,250,90),'D38':(108,250,90),'D40':(127,250,90),
+    'D33':(146,250,90),'D36':(164,250,90),'D39':(182,250,90),
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
@@ -104,8 +104,11 @@ def main():
             pad = fp.FindPadByNumber(str(pin))
             if pad: pad.SetNet(ni); assigned += 1
 
-    # board outline (Edge.Cuts) = the real ES101 board, 310 x 195 mm landscape
-    BW, BH = 312.0, 198.0
+    # board outline (Edge.Cuts) = the PCB cut. WIDTH = 310 mm (drawing dimension, confirmed by
+    # owner). HEIGHT ≈ 260 mm (owner measured ~260 on the drawing; sanity-check vs another drawing
+    # pending). px/mm scale (14.52) derives from the 310 width, so it's valid. <-- UPDATE BH/BW
+    # with the exact owner-measured PCB size when confirmed.
+    BW, BH = 310.0, 260.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))

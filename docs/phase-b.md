@@ -85,3 +85,8 @@ cluster, replacing the earlier region-level guesses.
   ROM sockets at y≈105 (D15≈x28, D16≈x60, ~32 mm pitch) and the transceiver row x positions
   (D25≈28, D23≈68, D24≈122, D29≈158); applied them (D11/USART on the ROM row at y105). These
   replace the earlier region-level guesses for the top clusters.
+- **Board size corrected to 310 × 260 mm.** Width 310 is the drawing dimension (confirmed by
+  owner; the px/mm=14.52 scale derives from it). The earlier 193mm HEIGHT was wrong — owner
+  measured ~260 on the drawing (~270-279 incl. the VIDEO connector overhang; sanity-check vs
+  another drawing pending). Spread the lower clusters (CPU/bus/clock) down into the taller board.
+  BW/BH are a clearly-marked parameter to update with the exact measured size.
