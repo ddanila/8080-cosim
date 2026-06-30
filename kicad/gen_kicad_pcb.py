@@ -202,6 +202,12 @@ def main():
         board.Add(t)
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
     silk_box(222, 283, 273, 288, "X9")   # bottom connector (read mm222..273, pins 58..45)
+    # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
+    # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the
+    # 8-EPROM bank visually (same row y86, ~21 mm pitch). Not in board.json -> LVS unaffected.
+    for i, ref in enumerate(['D17', 'D18', 'D19', 'D20', 'D21', 'D22']):
+        cx = 64 + i*21
+        silk_box(cx - 7.6, 66, cx + 7.6, 106, ref)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

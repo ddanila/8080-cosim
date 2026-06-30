@@ -287,3 +287,10 @@ edge (balances X1/X2 at the top). Deferred (need bottom-outline work / are board
 fingers, not mounted parts): the bottom-left card-edge bus contacts, the X6/X7 video jacks
 (top-right, on the right overhang past mm310), and the true non-rectangular outline (right/bottom
 jack overhangs). VALIDATION: PASS, overlaps=0.
+
+## ROM bank completed to 8 EPROMs (D15-D22)
+The BOM lists **К573РФ5 ×8** (8 EPROMs, ДГШ5.106.040-047) -> the ROM row is D15-D22, not just the
+2 modeled. Added D17-D22 as **placement-only silk outlines** in the row (y86, ~21 mm pitch) so the
+8-socket EPROM bank matches the original. D15/D16 stay the net-modeled chips (shown with the
+К573РФ5 marking); D17-D22 carry only a refdes (no marking) to flag they're not yet net-traced
+(toward-76). Not in board.json -> LVS unaffected. VALIDATION: PASS.
