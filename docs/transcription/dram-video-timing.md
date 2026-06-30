@@ -50,3 +50,21 @@ More detailed than the earlier "D59/D35/D38" sketch.
   Their role (video/DRAM-timing state? char-gen?) is the headline open item. **[?]**
 - **Exact RAS/CAS timing nets** (АГ3 one-shot outputs → D53 G1, R/C constants) — partial.
 - **Row/col select** for the РУ5 16→8 addressing — to pin from the timing block.
+
+## Video readout + dot-clock chain (sheet 2 bottom-right) — toward-76 video cluster
+Traced the video data/timing path beyond cluster #1:
+- **Dot clock:** **16 MHz** generated via **АГ3 one-shot D56** (74123, with R59 33k / C8 15n);
+  divided by **ИЕ10 counter D102** (СТ16) → **1.23 MHz** char/pixel clock. [scan]
+- **Address mux:** a 4th КП14 **D51** (+ strap E14) joins D48/D49/D50 in the µP/video
+  address muxing → РУ5 MA. [scan]
+- **Video output stage:** **ЛП5 D34** (XOR) combines the pixel stream with **B SYNC**
+  (blanking) → **VT2 (КТ315 transistor)** → the **ВИДЕО** connector. [scan]
+- **DRAM extent confirmed:** the РУ5 array runs **D60–D91** = 32 sockets (4 banks), of
+  which 8 (D60–D67) are populated — validates the memory reduction. [scan]
+- **Still to pin:** the **ИР16 pixel shift-register(s)** (PISO serializer: load the
+  framebuffer byte, shift out at the 16 MHz dot clock into the ЛП5 combine) — located the
+  output + the clock, the serializer itself needs one more crop to nail its load/shift nets.
+
+So the video subsystem = video-address counters (ИЕ7) → mux (КП14) → РУ5 → [ИР16 serialize
+@16MHz] → ЛП5+B-SYNC combine → VT2 → ВИДЕО; sync from the 8253 (cluster #1). Structurally
+mapped; LVS-instance adds for ИР16/АГ3/ИЕ10/D34 are the next (slow, per-chip-wiring) step.
