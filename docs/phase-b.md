@@ -180,3 +180,16 @@ Remaining approximate: D59 (oscillator, bottom-centre by the transformer).
 Owner measured the physical board: **310 × 266 mm** (was estimating 260). Edge.Cuts bottom moved
 22+260=282 → 22+266=**288**. D1 now reads 58% down (was 59%) — closer still to the reference.
 The earlier 279 was the OUTER envelope including the video-jack overhang, not the PCB cut.
+
+## All chips marked from the authoritative BOM + D59 placed
+- **Every chip now carries its real Soviet case marking** (on-body, along the package axis) and
+  refdes, not just D1. Markings read from the component list ДГШ3.031.006 (`nimekiri
+  komponendid.pdf`, pp.3-4): CPU **КР580ИК80А** (the BOM designation; = ВМ80А), 8238 **КР580ВК38**,
+  8251 **КР580ВВ51А**, 8255 **КР580ВВ55А**, 8253 **КР580ВИ53**, 8259 **КР580ВН59**, ВА86; memory:
+  DRAM **565РУ3Г** (the array is РУ3, not РУ5 as the type name suggested), EPROM **К573РФ5**;
+  logic: К555ИД7 / К531ИД7, К555ИЕ7 (×4, matches BOM exactly), К531КП14, К531ЛА1, К555ЛА3,
+  К531ЛА12, К531ЛН1, КМ555АГ3, К555ИЕ10, К155РЕ3. D40→К561ИЕ11 and D35→КМ555ТМ2 are TENTATIVE
+  (the BOM gives counts, not a refdes→part map; pin via the schematic later).
+- Marking text angle now follows the package (vertical chip → text along Y; horizontal → along X).
+- **D59 (osc)** read off the drawing and placed: horizontal, bottom-centre by the transformer Z
+  @ (112,281). No chips remain on the fallback grid. VALIDATION: PASS, overlaps=0.

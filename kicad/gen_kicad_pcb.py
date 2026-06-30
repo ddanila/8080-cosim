@@ -25,8 +25,20 @@ def dip_for(n):                       # smallest standard DIP that holds n pins
         if n <= s: return f"DIP-{s}_W{'15.24' if s>=24 else '7.62'}mm"
     return "DIP-40_W15.24mm"
 
-# real case marking (printed on the chip) per type -> shown as the silkscreen Value text
-MARK = {'CPU8080':'КР580ВМ80А'}      # 8080A clone; extend per type as each chip is verified
+# real Soviet case marking (printed on the chip) per type -> silkscreen Value text. Taken from
+# the authoritative component list ДГШ3.031.006 (juku3000 "nimekiri komponendid.pdf", pp.3-4).
+# The МПК580 set + memory are exact; the few marked (tentative) need the schematic to pin the
+# exact refdes<->part (the BOM gives counts, not refdes mapping).
+MARK = {
+    'CPU8080':'КР580ИК80А', 'SYS8238':'КР580ВК38',  'USART8251':'КР580ВВ51А',
+    'PPI8255':'КР580ВВ55А', 'PIT8253':'КР580ВИ53',  'PIC8259':'КР580ВН59',
+    'BUF8286':'КР580ВА86',  'RU5':'565РУ3Г',         'EPROM8K':'К573РФ5',
+    'IO_DEC138':'К555ИД7',  'RASCAS_DEC':'К531ИД7',  'IE7_CTR':'К555ИЕ7',
+    'KP14_MUX':'К531КП14',  'LA1_GATE':'К531ЛА1',    'LA3_GATE':'К555ЛА3',
+    'LA12_GATE':'К531ЛА12', 'LN1_INV':'К531ЛН1',     'LN1_OSC':'К531ЛН1',
+    'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'К155РЕ3',
+    'CT16_CTR':'К561ИЕ11',  'CLK_PHASE':'КМ555ТМ2',          # (tentative: D40, D35)
+}
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
 # ~310x195 mm board. The top-edge connectors + transceiver row + ROM row + DRAM array are
@@ -70,7 +82,7 @@ PLACE = {
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
     'D36':(244,200,0),'D33':(277,200,0),'D35':(263,221,0),   # D35 nudged up 4mm to clear D7
-    'D59':(70,255,90),
+    'D59':(112,281,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
@@ -103,22 +115,25 @@ def main():
         # Re-place so the body CENTRE lands on (x,y), which is what the drawing coords mean.
         c = fp.GetBoundingBox(False, False).GetCenter()
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - c.x, 2*pcbnew.FromMM(y) - c.y))
-        if typ in MARK:                       # refdes at the top-narrow end; marking on-body, along the chip
-            hh = pcbnew.ToMM(fp.GetBoundingBox(False, False).GetHeight()) / 2.0   # half chip height (no text)
-            CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
-            r = fp.Reference(); v = fp.Value()
-            r.SetVisible(True); r.SetLayer(pcbnew.F_SilkS)
-            r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(4), pcbnew.FromMM(4)))
-            r.SetTextThickness(pcbnew.FromMM(0.7))
-            r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
-            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 3)))   # just above the top narrow end
-            v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
-            v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3.0), pcbnew.FromMM(3.0)))
-            v.SetTextThickness(pcbnew.FromMM(0.4))
-            v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)                             # centred on the body
-            try: v.SetTextAngle(pcbnew.EDA_ANGLE(90, pcbnew.DEGREES_T))                   # rotate 90 (along the chip)
-            except Exception: v.SetTextAngle(900)
-            v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))            # on the chip body centre
+        # EVERY chip gets its real case marking centred on the body (along the chip's long axis)
+        # + its refdes just past the top-narrow end. Marking text angle follows the package: a
+        # vertical chip (rot 0) reads along Y (90); a horizontal chip (rot 90) reads along X (0).
+        hh = pcbnew.ToMM(fp.GetBoundingBox(False, False).GetHeight()) / 2.0   # half chip height (no text)
+        CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
+        mang = 90 if rot % 180 == 0 else 0
+        r = fp.Reference(); v = fp.Value()
+        r.SetVisible(True); r.SetLayer(pcbnew.F_SilkS)
+        r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3), pcbnew.FromMM(3)))
+        r.SetTextThickness(pcbnew.FromMM(0.5))
+        r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
+        r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 2.5)))     # just above the top narrow end
+        v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
+        v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.4), pcbnew.FromMM(2.4)))            # fits the small DIP-14/16
+        v.SetTextThickness(pcbnew.FromMM(0.35))
+        v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)                                # centred on the body
+        try: v.SetTextAngle(pcbnew.EDA_ANGLE(mang, pcbnew.DEGREES_T))                     # along the chip
+        except Exception: v.SetTextAngle(mang * 10)
+        v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))                # on the chip body centre
 
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
