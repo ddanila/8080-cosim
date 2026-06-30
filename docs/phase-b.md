@@ -126,3 +126,20 @@ cluster, replacing the earlier region-level guesses.
 - **D1 labels:** refdes just above the top-narrow end; case marking КР580ВМ80А centred on the
   body, rotated 90° (GOST). D1 currently reads at ~59% down — pending the owner's reference to
   confirm exact centering.
+
+## Anchor bug fixed (owner spotted it) + overlap-checking validation
+- **Bug: footprint anchor is pin 1 (a CORNER), not the body centre.** `fp.SetPosition(x,y)` was
+  putting the chip's *corner* at the drawing coord, so every chip sat half-its-size down/right.
+  For D1 the real centre was at (42.6, **200**) mm = 68% down — not the intended (35,176)=59%.
+  This is exactly the residual "still off" the owner saw. **Fix** (`gen_kicad_pcb.py`): after
+  placing + rotating, read the bbox centre `c` and re-place at `2*(x,y) - c` so the body CENTRE
+  lands on the drawing coord. Verified: D1 centre now = (35.0, 176.0) mm exactly.
+- **validate_placement.py upgraded to a pass/fail test:** prints each chip's mm + %-position,
+  flags out-of-bounds, and **detects overlapping footprints** (bbox intersection). It also now
+  projects the body CENTRE (not the corner anchor) back onto the drawing. First run caught **8
+  overlaps** (rot-90 horizontal DIPs packed at ~19 mm pitch but ~22 mm long). Widened the
+  video/mux + clock rows to 26 mm pitch → **VALIDATION: PASS, overlaps=0**.
+- **D1 confirmed against the owner's full assembly reference (7.102.100):** far-left, vertical,
+  ~59% down — matches. The frame (origin 1740,990; px/mm 14.52; PCB 310×260) is validated.
+- **Still approximate (next passes):** the clock cluster belongs on the right-centre (near
+  D40/D41/D34), and D48/D49 muxes at the DRAM-array left edge — relocate to exact reference coords.

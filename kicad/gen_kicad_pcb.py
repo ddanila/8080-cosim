@@ -50,15 +50,20 @@ PLACE = {
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
     'D1':(35,176,0),'D4':(57,158,0),'D2':(83,158,0),
-    # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1)
-    'D44':(70,130,90),'D45':(89,130,90),'D46':(108,130,90),'D47':(127,130,90),
-    'D48':(146,130,90),'D49':(165,130,90),'D53':(184,130,90),'D56':(203,130,90),'D103':(228,130,90),
+    # video address + dot-clock chain (horizontal row beneath the array; shifted right of D1).
+    # PITCH = 26 mm: rot-90 (horizontal) DIP-16 bodies are ~22 mm long, so 19 mm pitch made them
+    # overlap (validate_placement caught it). 26 mm clears. (Region still approximate vs the
+    # reference — D48/D49 muxes actually sit at the DRAM-array left edge; relocate next pass.)
+    'D44':(70,132,90),'D45':(96,132,90),'D46':(122,132,90),'D47':(148,132,90),
+    'D48':(174,132,90),'D49':(200,132,90),'D53':(226,132,90),'D56':(252,132,90),'D103':(278,132,90),
     # bus + decode (horizontal, bottom-centre row)
     'D5':(108,238,90),'D6':(148,238,90),
     'DLB':(226,238,90),'D7':(254,238,90),'D10':(288,238,90),
-    # clock subsystem (horizontal, bottom strip; shifted right of D1)
-    'D59':(70,250,90),'D35':(89,250,90),'D38':(108,250,90),'D40':(127,250,90),
-    'D33':(146,250,90),'D36':(164,250,90),'D39':(182,250,90),
+    # clock subsystem (horizontal, bottom strip; PITCH 26 mm to clear the rot-90 overlaps).
+    # NOTE the reference puts this cluster on the RIGHT-CENTRE (near D40/D41/D34), not a bottom
+    # row -- relocate to exact coords in a later pass; this pass only removes the collisions.
+    'D59':(70,255,90),'D35':(96,255,90),'D38':(122,255,90),'D40':(148,255,90),
+    'D33':(174,255,90),'D36':(200,255,90),'D39':(226,255,90),
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
@@ -86,6 +91,11 @@ def main():
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp
         n_pads += fp.GetPadCount()
+        # KiCad's footprint ANCHOR sits at pin 1 (a CORNER), not the body centre -- so the
+        # SetPosition above placed the corner at (x,y), shifting the chip half-its-size down/right.
+        # Re-place so the body CENTRE lands on (x,y), which is what the drawing coords mean.
+        c = fp.GetBoundingBox(False, False).GetCenter()
+        fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - c.x, 2*pcbnew.FromMM(y) - c.y))
         if typ in MARK:                       # refdes at the top-narrow end; marking on-body, along the chip
             hh = pcbnew.ToMM(fp.GetBoundingBox(False, False).GetHeight()) / 2.0   # half chip height (no text)
             CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER

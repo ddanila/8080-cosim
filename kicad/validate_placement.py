@@ -19,7 +19,7 @@ def main():
     board = pcbnew.LoadBoard("kicad/juku.kicad_pcb")
     pts = []
     for fp in board.GetFootprints():
-        p = fp.GetPosition()
+        p = fp.GetBoundingBox(False, False).GetCenter()   # body CENTRE (anchor is a corner)
         ox = TLx + pcbnew.ToMM(p.x) * PXMM
         oy = TLy + pcbnew.ToMM(p.y) * PXMM
         pts.append((fp.GetReference(), ox, oy,
@@ -28,6 +28,26 @@ def main():
     bb = board.GetBoardEdgesBoundingBox()
     bx0 = TLx + pcbnew.ToMM(bb.GetLeft())*PXMM;  by0 = TLy + pcbnew.ToMM(bb.GetTop())*PXMM
     bx1 = TLx + pcbnew.ToMM(bb.GetRight())*PXMM; by1 = TLy + pcbnew.ToMM(bb.GetBottom())*PXMM
+
+    # --- text report: each chip's mm + %-position, bounds + overlap checks (a pass/fail test) ---
+    BL, BT = pcbnew.ToMM(bb.GetLeft()), pcbnew.ToMM(bb.GetTop())
+    BR, BBm = pcbnew.ToMM(bb.GetRight()), pcbnew.ToMM(bb.GetBottom())
+    fps = list(board.GetFootprints()); oob = []
+    print(f"{'ref':5} {'type':11} {'mm(x,y)':>12} {'%(x,y)':>11}  in")
+    for fp in sorted(fps, key=lambda f: f.GetReference()):
+        p = fp.GetBoundingBox(False, False).GetCenter(); mx, my = pcbnew.ToMM(p.x), pcbnew.ToMM(p.y)
+        px, py = (mx-BL)/(BR-BL)*100, (my-BT)/(BBm-BT)*100
+        inb = BL <= mx <= BR and BT <= my <= BBm
+        if not inb: oob.append(fp.GetReference())
+        print(f"{fp.GetReference():5} {fp.GetValue()[:11]:11} ({mx:4.0f},{my:4.0f}) ({px:4.0f}%,{py:4.0f}%)  {'ok' if inb else 'OUT'}")
+    ov = []
+    for i in range(len(fps)):
+        for j in range(i+1, len(fps)):
+            if fps[i].GetBoundingBox(False, False).Intersects(fps[j].GetBoundingBox(False, False)):
+                ov.append((fps[i].GetReference(), fps[j].GetReference()))
+    print(f"\nboard {BR-BL:.0f}x{BBm-BT:.0f} mm ; {len(fps)} chips ; out-of-bounds={oob or 'none'} ; overlaps={len(ov)}")
+    if ov: print("  overlapping pairs:", ov[:12])
+    print("VALIDATION:", "PASS" if not oob and not ov else "FAIL")
 
     cross = []
     for ref, ox, oy, mx, my in pts:
