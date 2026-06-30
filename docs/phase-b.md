@@ -445,3 +445,11 @@ footprints. This immediately exposed a count bug: the generator's outline counte
 `label[:1]=='D'`. Now consistent everywhere: **40 net-modeled + 62 outlines = 102 positions =
 ~101 BOM ICs (100%)**. `docs/placement-validation.png` regenerated with all 102 crosshairs.
 VALIDATION: PASS.
+
+## Side-by-side comparison artifact (capstone)
+Built `docs/comparison.png`: the assembly drawing (left, cropped to the 310×266 board) next to the
+generated PCB model (right, all 102 chip positions), scaled to match. It makes the "like original"
+result directly visible — same ROM bank top-left, DRAM array filling the centre, bus band, CPU
+cluster, clock/I/O clusters, and connectors in the same arrangement. (The model side is the F.Fab
+silk render; the drawing additionally shows passives/traces not in the chip-level model.) This is
+the visual culmination of the placement work: a faithful chip layout at the correct ~101-chip count.
