@@ -204,7 +204,7 @@ def main():
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM((x0+x1)/2.0), pcbnew.FromMM((y0+y1)/2.0)))
         board.Add(t)
         outline_boxes.append((x0, y0, x1, y1, label))
-        if label[1:2].isdigit(): outline_chips.append(label)   # count D-chips (skip X1/X2/X9 connectors)
+        if label[:1] == 'D': outline_chips.append(label)       # count D-chips only (X1/X2/X9 are connectors)
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
     silk_box(222, 283, 273, 288, "X9")   # bottom connector (read mm222..273, pins 58..45)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't

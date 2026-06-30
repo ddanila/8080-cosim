@@ -24,6 +24,15 @@ def main():
         oy = TLy + pcbnew.ToMM(p.y) * PXMM
         pts.append((fp.GetReference(), ox, oy,
                     pcbnew.ToMM(p.x), pcbnew.ToMM(p.y)))
+    n_fp = len(pts)
+    # ALSO project the placement-outline labels (board-level silk D-text), so the overlay verifies
+    # all ~105 positions against the drawing, not just the 40 net-modeled footprints.
+    for d in board.GetDrawings():
+        if isinstance(d, pcbnew.PCB_TEXT) and d.GetText()[:1] == 'D' and d.GetText()[1:2].isdigit():
+            p = d.GetPosition()
+            ox = TLx + pcbnew.ToMM(p.x) * PXMM; oy = TLy + pcbnew.ToMM(p.y) * PXMM
+            pts.append((d.GetText(), ox, oy, pcbnew.ToMM(p.x), pcbnew.ToMM(p.y)))
+    print(f"projecting {n_fp} footprints + {len(pts)-n_fp} outline labels = {len(pts)} positions")
     # board outline projected (mm 0..BW, 0..BH) — read BW/BH from the edge-cuts bbox
     bb = board.GetBoardEdgesBoundingBox()
     bx0 = TLx + pcbnew.ToMM(bb.GetLeft())*PXMM;  by0 = TLy + pcbnew.ToMM(bb.GetTop())*PXMM

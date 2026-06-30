@@ -436,3 +436,12 @@ cluster's left chips (D36/D53 @ x244, D41), and X9 clipped D26 — the spacing w
 Fixed: D36/D53 → x247, D26 → y272 (off X9), D41 outline narrowed/shifted. Now **outline-overlap
 check: PASS** and **VALIDATION: PASS**. The build now self-checks both footprint and outline
 collisions every run.
+
+## Overlay extended to all positions + count bug fixed
+Extended `validate_placement.py` to project the placement-outline labels (board-level silk D-text)
+too, so the overlay now verifies **all 102 positions** against the drawing, not just the 40 modeled
+footprints. This immediately exposed a count bug: the generator's outline counter used
+`label[1:2].isdigit()`, which wrongly counted X1/X2/X9 (digits '1'/'2'/'9') as chips — fixed to
+`label[:1]=='D'`. Now consistent everywhere: **40 net-modeled + 62 outlines = 102 positions =
+~101 BOM ICs (100%)**. `docs/placement-validation.png` regenerated with all 102 crosshairs.
+VALIDATION: PASS.
