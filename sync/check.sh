@@ -18,10 +18,11 @@ echo "==> board spec -> KiCad schematic"
 python3 kicad/gen_kicad_sch.py kicad/juku.board.json kicad/juku.kicad_sch
 
 echo "==> HDL -> netlist (yosys)"
-# `proc` converts always-blocks (now that device bodies have real logic, e.g. the 8238 status
-# latch) into netlist cells so write_json succeeds. Hierarchy is kept (instances stay), so the
-# instance-level connectivity the LVS compares is unchanged.
-yosys -q -p "read_verilog hdl/devices.v hdl/juku_top.v; hierarchy -top juku_top; proc; write_json hdl/juku_top.json"
+# LVS compares CONNECTIVITY, not chip internals. Read devices.v as a -lib (blackbox: ports only),
+# so yosys keeps the chips as cells and doesn't try to resolve their now-functional tri-state
+# bodies (which its "limited tri-state support" mis-merges). juku_top is pure structure (instances
+# + wires) -> the instance/pin connectivity the LVS needs is preserved exactly.
+yosys -q -p "read_verilog -lib hdl/devices.v; read_verilog hdl/juku_top.v; hierarchy -top juku_top; write_json hdl/juku_top.json"
 
 if [ -n "$KCLI" ] && "$KCLI" sch export netlist --format kicadxml -o kicad/juku.net.xml kicad/juku.kicad_sch 2>/dev/null; then
   echo "==> LVS (real KiCad round-trip via $KCLI)"

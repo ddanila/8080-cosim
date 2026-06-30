@@ -80,8 +80,8 @@ module juku_top (
     // ============ memory chips on the buffered buses ============
     // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS).
     // Model the populated pair; the other 6 sockets are unpopulated (Phase-B PCB detail).
-    eprom_8k U_D15 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
-    eprom_8k U_D16 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(roe_n));
+    eprom_8k #(.HALF(0)) U_D15 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(memr_n));  // low 8K
+    eprom_8k #(.HALF(1)) U_D16 (.a(BA[12:0]), .d(DB), .cs_n(rev),       .oe_n(memr_n));  // high 8K (CE=rev)
 
     // DRAM: К565РУ5 64Kx1 array. 32 sockets on the board (4 banks x 8), only 8 POPULATED
     // = one byte-bank bit-sliced D60..D67 = the real 64KB RAM. The other 24 sockets are

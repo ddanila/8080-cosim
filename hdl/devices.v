@@ -99,7 +99,16 @@ endmodule
 // emulator-recovered map). Enabled by V (from the D7 gate = mode/strobe).
 module decode_prom (input wire [15:8] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
-    assign {rom_n, ram_n, rev, roe_n} = 4'b1111;   // stub; truth-table = PROM contents
+    // Merge step (memory): recovered banking map realized for the ekta37 boot. ROM occupies
+    // 0x0000-0x3FFF, split between the two populated 2764s by A13: D15 = low 8K (0x0000-0x1FFF),
+    // D16 = high 8K (0x2000-0x3FFF). RAM is everything outside ROM. (`rev` is repurposed as the
+    // high-EPROM chip-select. Full 4-mode banking needs the mode wired through -- a boundary; this
+    // is the mode-0 reset overlay, which is what ekta37 boots in.)
+    wire rom_region = (a <= 8'h3F);
+    assign rom_n = ~(rom_region & ~a[13]);   // D15 CE (low 8K)
+    assign rev   = ~(rom_region &  a[13]);   // D16 CE (high 8K)
+    assign ram_n = ~(~rom_region);           // RAM select (outside ROM)
+    assign roe_n = ~rom_region;              // ROM output enable (region); read strobe is MEMR at the EPROM
 endmodule
 
 // ---- ЛА3 NAND gate section (D7) gating the PROM enable ----
@@ -107,9 +116,22 @@ module la3_gate (input wire a, b, output wire y);
     assign y = ~(a & b);
 endmodule
 
-// ---- EPROM 8Kx8 (К573РФ4-class, D15..D22) ----
-module eprom_8k (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
-    assign d = 8'bz;   // TODO: $readmemh; drive d when selected
+// ---- EPROM 8Kx8 (2764-class, D15/D16 populated) ----
+// The 16KB ekta37 BIOS spans D15 (low 8K, HALF=0) + D16 (high 8K, HALF=1), each with its own CE
+// from the decode PROM. oe_n is the read strobe (MEMR). Sample-and-hold: latch the byte at the
+// read strobe and hold it through DBIN (8080 tOS1/tOS2 -- a combinational multi-hop drive corrupts
+// vm80a's fixed-phase capture; see project-status gotchas).
+module eprom_8k #(parameter HALF = 0) (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
+    reg [7:0] rom [0:16383]; reg [1023:0] f;
+`ifndef YOSYS
+    initial begin    // sim-only ROM load; yosys (LVS) defines YOSYS and skips this (body = memory for connectivity)
+        if (!$value$plusargs("rom=%s", f)) f = "hdl/sim/ekta37.hex";
+        $readmemh(f, rom);
+    end
+`endif
+    reg [7:0] held;
+    always @(negedge oe_n) if (~cs_n) held <= rom[{HALF[0], a}];   // latch at the read strobe
+    assign d = (~cs_n & ~oe_n) ? held : 8'bz;
 endmodule
 
 // ===== clock subsystem (discrete; replaces the non-existent 8224) =====
