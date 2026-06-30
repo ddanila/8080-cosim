@@ -245,6 +245,7 @@ def main():
     # of the PPI D27. Read off the drawing; placement-only outlines (fixes the row that PLACE silently dropped).
     for x0, x1, ref in [(14, 32, 'D25'), (43, 67, 'D23'), (74, 98, 'D24'), (104, 122, 'D29')]:
         silk_box(x0, 54, x1, 64, ref)
+    silk_box(112, 132, 132, 140, 'D9')   # bus band: D9 fills the gap between DLB(=D8) and D7 (≈122,136)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

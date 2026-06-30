@@ -357,3 +357,10 @@ transceiver row was missing from every preview). Fixed: removed the phantom PLAC
 added D25/D23/D24/D29 as placement outlines in the top band (y59, left of the PPI D27), where the
 drawing shows them. The top now reads X1/X2 -> transceiver row -> ROM bank like the original.
 Lesson: PLACE entries for refs absent from board.json silently no-op. VALIDATION: PASS, overlaps=0.
+
+## D9 added to the bus band
+Filled the bus-band gap with **D9** (≈122,136), between DLB(=D8) and D7 — the drawing's bus row is
+D5/D6/D8/D9/D7/D10. Now ~93 chip positions are shown across the board. The genuinely-remaining
+unplaced D-numbers are the scan-limited top-right corner chips (D14/D28/D31/D32/D100/D104/D106) and
+a couple of lower-left chips (D13/D105) that need careful reads; some of those numbers may not be
+ICs at all. VALIDATION: PASS, overlaps=0.
