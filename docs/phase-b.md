@@ -248,3 +248,15 @@ guesses were wrong:
   not the ТМ2 flip-flop I'd guessed.
 - **D6** (decode PROM): `memory.md` records it as **КР556РТ4** [scan], not К155РЕ3.
 Every chip marking is now BOM- or scan/trace-grounded. VALIDATION: PASS.
+
+## Placement-vs-drawing overlay committed; remaining work categorized
+With the placement sweep complete + verified, committed the verification overlay
+`docs/placement-validation.png` (every placed chip's centre projected back onto the real assembly
+drawing as a red crosshair + refdes) as the persistent "like original" comparison artifact.
+Remaining "more like original" work is now categorically different from per-chip placement:
+- **Board features (mechanical, LVS-safe):** corner mounting holes + the X1/X2 edge connectors and
+  I/O jacks. Mounting-hole reads need clean per-corner crops (the low-res edge strips weren't
+  legible) -- deferred until done precisely rather than guessed.
+- **Right-edge width:** still pending a physical-board measurement to lock px/mm (see prior note).
+- **Toward 76 chips:** tracing the remaining ~36 chips (per `bom-toward-76.md`) -- a schematic
+  tracing effort, not placement.
