@@ -116,3 +116,13 @@ cluster, replacing the earlier region-level guesses.
 - **D1 label:** refdes at the top-narrow end; case marking КР580ВМ80А on the chip body,
   rotated 90° (along the chip), in the GOST font. (Visible in the 2D silkscreen view; a 3D
   render hides on-body silkscreen under the package.)
+
+## Dimensions confirmed + flat compare view
+- **PCB = 310 × 260 mm** (owner-confirmed). The 279 is the OUTER envelope — the video jack X8
+  extends ~19 mm below the PCB; not the board cut. Edge.Cuts set to 310×260 (top mm22..bottom 282).
+- **Flat compare view** (`docs/pcb-flat-preview.png`): rendered with **no 3D chip bodies** —
+  component outlines + silkscreen (refdes + markings) + Edge.Cuts, trimmed to the PCB — so it can
+  be laid next to the assembly drawing directly. Use `validate_placement.py` for the overlay.
+- **D1 labels:** refdes just above the top-narrow end; case marking КР580ВМ80А centred on the
+  body, rotated 90° (GOST). D1 currently reads at ~59% down — pending the owner's reference to
+  confirm exact centering.

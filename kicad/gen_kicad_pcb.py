@@ -88,17 +88,20 @@ def main():
         n_pads += fp.GetPadCount()
         if typ in MARK:                       # refdes at the top-narrow end; marking on-body, along the chip
             hh = pcbnew.ToMM(fp.GetBoundingBox(False, False).GetHeight()) / 2.0   # half chip height (no text)
+            CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
             r = fp.Reference(); v = fp.Value()
             r.SetVisible(True); r.SetLayer(pcbnew.F_SilkS)
             r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(4), pcbnew.FromMM(4)))
             r.SetTextThickness(pcbnew.FromMM(0.7))
-            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 4)))   # above the top narrow end
+            r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
+            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 3)))   # just above the top narrow end
             v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
-            v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3.2), pcbnew.FromMM(3.2)))
-            v.SetTextThickness(pcbnew.FromMM(0.45))
-            v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))            # on the chip body
+            v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3.0), pcbnew.FromMM(3.0)))
+            v.SetTextThickness(pcbnew.FromMM(0.4))
+            v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)                             # centred on the body
             try: v.SetTextAngle(pcbnew.EDA_ANGLE(90, pcbnew.DEGREES_T))                   # rotate 90 (along the chip)
             except Exception: v.SetTextAngle(900)
+            v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))            # on the chip body centre
 
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
@@ -121,18 +124,22 @@ def main():
             pad = fp.FindPadByNumber(str(pin))
             if pad: pad.SetNet(ni); assigned += 1
 
-    # board outline (Edge.Cuts) = the PCB cut. WIDTH = 310 mm (drawing dimension, confirmed).
-    # HEIGHT ≈ 300 mm: I measured the board top edge (≈y990) to the bottom edge-connector edge
-    # (≈y5367) = (5367-990)/14.52 ≈ 301 mm — much taller than my earlier 260 (that short height
-    # was pushing chips down in the render). Owner measured ~260-279 (chip-area core?) — reconcile.
-    # <-- UPDATE BH/BW with the exact owner-measured PCB size when confirmed.
-    BW, BH = 310.0, 300.0
+    # board outline (Edge.Cuts) in the read frame (origin = 310-dim left arrow @ orig-px
+    # (1740,990), px/mm 14.52). FRAME BUG fixed: the board TOP edge is ~22 mm BELOW that dim line
+    # (the width dimension sits in the top margin) -- I'd been treating the dim line as the top,
+    # which pushed every chip's %-position down. PCB edges: left 0, right 310, top 22, bottom 301
+    # PCB = 310 x 260 mm (owner-confirmed). The 279 I'd measured is the OUTER envelope (the
+    # video jack X8 extends ~19 mm below the PCB) -- NOT the PCB cut. So bottom = top(22)+260 =
+    # 282 (the jack lives at mm 282..301, beyond the board). Chips read in the same frame sit
+    # correctly relative to the top. <-- refine top with the owner's reference if D1 isn't centred.
+    BX0, BY0, BX1, BY1 = 0.0, 22.0, 310.0, 282.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))
         s.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(x1), pcbnew.FromMM(y1)))
         s.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(x2), pcbnew.FromMM(y2))); board.Add(s)
-    for a in [(5,5,5+BW,5),(5+BW,5,5+BW,5+BH),(5+BW,5+BH,5,5+BH),(5,5+BH,5,5)]: edge(*a)
+    for a in [(BX0,BY0,BX1,BY0),(BX1,BY0,BX1,BY1),(BX1,BY1,BX0,BY1),(BX0,BY1,BX0,BY0)]: edge(*a)
+    BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
