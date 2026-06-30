@@ -294,3 +294,12 @@ The BOM lists **К573РФ5 ×8** (8 EPROMs, ДГШ5.106.040-047) -> the ROM row 
 8-socket EPROM bank matches the original. D15/D16 stay the net-modeled chips (shown with the
 К573РФ5 marking); D17-D22 carry only a refdes (no marking) to flag they're not yet net-traced
 (toward-76). Not in board.json -> LVS unaffected. VALIDATION: PASS.
+
+## DRAM array completed to 32 chips (D60-D91, 4×8 grid)
+The BOM has **565РУ3Г ×32** -> the DRAM array is D60-D91 in a 4×8 grid. Row 1 (D60-67 @ y158) is
+net-modeled; added the other 3 rows (D68-D91, 24 chips @ y≈190/217/242, same 8 columns x127-238)
+as placement-only silk outlines. The array now fills the board centre like the original. With the
+ROM bank (8) + DRAM (32) outlines, the board shows ~70 of the 76 chip positions (modeled 40 +
+30 placement outlines). VALIDATION: PASS, overlaps=0 (the placement outlines are silk, so the
+footprint-overlap check is unaffected; minor cosmetic silk/footprint touches at the array's right
+edge by the clock cluster).

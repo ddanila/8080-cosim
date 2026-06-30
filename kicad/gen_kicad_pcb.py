@@ -208,6 +208,15 @@ def main():
     for i, ref in enumerate(['D17', 'D18', 'D19', 'D20', 'D21', 'D22']):
         cx = 64 + i*21
         silk_box(cx - 7.6, 66, cx + 7.6, 106, ref)
+    # DRAM array is 565РУ3Г ×32 (BOM) -> D60-D91 in a 4×8 grid. Row 1 (D60-67 @ y158) is net-
+    # modeled; add the other 3 rows (D68-D91, 24 chips) as placement-only silk outlines so the
+    # full array shows (same 8 columns; rows read at y≈190/217/242). Not in board.json -> LVS clean.
+    DRAM_COLS = [127, 144, 159, 175, 191, 207, 223, 238]
+    for ry, refs in [(190, ['D75','D74','D73','D72','D71','D70','D69','D68']),
+                     (217, ['D83','D82','D81','D80','D79','D78','D77','D76']),
+                     (242, ['D91','D90','D89','D88','D87','D86','D85','D84'])]:
+        for cx, ref in zip(DRAM_COLS, refs):
+            silk_box(cx - 4, ry - 10, cx + 4, ry + 10, ref)
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()
