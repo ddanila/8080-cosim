@@ -228,6 +228,9 @@ def main():
     silk_box(239, 53, 253, 75, 'D93')
     for cx, ref in [(245, 'D97'), (254, 'D95'), (268, 'D98'), (278, 'D96')]:
         silk_box(cx - 4, 34, cx + 4, 46, ref)                 # top-edge row, small vertical
+    # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
+    # corner (D52, D30). Read off the drawing; placement-only outlines.
+    silk_box(46, 174, 58, 196, 'D107'); silk_box(53, 207, 65, 229, 'D52'); silk_box(23, 203, 35, 225, 'D30')
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

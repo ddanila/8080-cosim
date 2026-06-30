@@ -316,3 +316,8 @@ Began filling the right-side serial/tape/video block (toward-76) with the clearl
 as placement outlines: **D93** (big, ≈246,64) + the top-edge row **D97/D95/D98/D96** (≈y40, x245-278).
 The denser middle cluster there (D99/D100/D101/D102/D104/D106/D28/D12/D3 ...) has tilted/packed
 labels in the scan -> needs careful per-chip reads, deferred. VALIDATION: PASS, overlaps=0.
+
+## Lower-left completed: D107 (CPU cluster) + D52/D30
+Added the lower-left chips as placement outlines: **D107** (≈52,185, below D4 -> completes the CPU
+cluster D1/D4/D2/D107) and the lower-left corner **D52** (≈59,218) and **D30** (≈29,213). The CPU
+cluster + lower-left corner now match the original. VALIDATION: PASS, overlaps=0.
