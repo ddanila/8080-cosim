@@ -53,7 +53,13 @@ subset (CPU/ROM/PPI0); next is extending to all 13 chips.
 - ✅ `hdl/` — structural top (13 chips) → Yosys netlist
 - ✅ `sync/` — connectivity LVS checker (KiCad ↔ HDL), CI-ready
 - ✅ `kicad/` — schematic generator from a board spec; real `kicad-cli` round-trip
-- ⏳ extend LVS to all 13 chips; swap in real Juku schematics when available
+- ✅ **PCB placement** — the full **Juku ES101** board laid out from its assembly drawing
+  (`juku3000 emaplaat.pdf`): **102 chip positions** (40 LVS-net-modeled + 62 placement-only
+  outlines) at frame-accurate coordinates, **310×266 mm**, collision-checked (footprints + outlines)
+  and projected back onto the drawing. The component spec (`ДГШ3.031.006`) sums to **~101 ICs** (not
+  the "76" once assumed). See [`docs/comparison.png`](docs/comparison.png) (drawing vs model,
+  side-by-side) and [`docs/phase-b.md`](docs/phase-b.md).
+- ⏳ extend LVS to all chips; net-trace the placement outlines; swap in real Juku schematics
 
 ## Layout
 
