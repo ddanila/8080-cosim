@@ -665,15 +665,18 @@
   },
   {
    "ref": "D38",
-   "type": "STB_GEN",
+   "type": "LA1_GATE",
    "pins": {
-    "8": "STB",
-    "9": "OSC"
+    "8": "Y",
+    "9": "I0",
+    "10": "I3",
+    "12": "I1",
+    "13": "I2"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ЛА1 STB=pin8 read on scan"
+    "pins": "scan"
    }
   },
   {
@@ -897,6 +900,72 @@
     "type": "scan",
     "refdes": "scan",
     "pins": "datasheet"
+   }
+  },
+  {
+   "ref": "D40",
+   "type": "CT16_CTR",
+   "pins": {
+    "1": "R_N",
+    "2": "CLK",
+    "3": "D0",
+    "4": "D1",
+    "5": "D2",
+    "6": "D3",
+    "7": "EP",
+    "9": "PE_N",
+    "10": "ET",
+    "11": "Q3",
+    "12": "Q2",
+    "13": "Q1",
+    "14": "Q0",
+    "15": "CO"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "scan",
+    "pins": "scan"
+   }
+  },
+  {
+   "ref": "D39",
+   "type": "LA3_GATE",
+   "pins": {
+    "12": "A",
+    "13": "B",
+    "11": "Y"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "scan",
+    "pins": "scan~"
+   }
+  },
+  {
+   "ref": "D33",
+   "type": "LN1_INV",
+   "pins": {
+    "2": "A",
+    "8": "Y"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "scan",
+    "pins": "scan"
+   }
+  },
+  {
+   "ref": "D36",
+   "type": "LA12_GATE",
+   "pins": {
+    "4": "B",
+    "5": "A",
+    "6": "Y"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "scan",
+    "pins": "scan"
    }
   }
  ],
@@ -2296,21 +2365,17 @@
    ]
   },
   "OSC": {
-   "src": "assumed",
    "nodes": [
     [
      "D59",
      "2"
     ],
     [
-     "D35",
-     "11"
-    ],
-    [
-     "D38",
-     "9"
+     "D40",
+     "2"
     ]
-   ]
+   ],
+   "src": "scan"
   },
   "PHI1": {
    "src": "scan",
@@ -3019,6 +3084,58 @@
      "2"
     ]
    ]
+  },
+  "D40QA": {
+   "nodes": [
+    [
+     "D40",
+     "14"
+    ],
+    [
+     "D39",
+     "13"
+    ]
+   ],
+   "src": "scan"
+  },
+  "D39Y": {
+   "nodes": [
+    [
+     "D39",
+     "11"
+    ],
+    [
+     "D38",
+     "13"
+    ]
+   ],
+   "src": "assumed"
+  },
+  "CLKG_D33": {
+   "nodes": [
+    [
+     "D33",
+     "8"
+    ],
+    [
+     "D38",
+     "9"
+    ]
+   ],
+   "src": "scan"
+  },
+  "CLKG_D36": {
+   "nodes": [
+    [
+     "D36",
+     "6"
+    ],
+    [
+     "D35",
+     "11"
+    ]
+   ],
+   "src": "scan"
   }
  }
 }

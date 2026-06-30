@@ -97,8 +97,17 @@ module ln1_osc   (input wire xin, output wire osc);                  // D59 ЛН
     assign osc = 1'bz; endmodule
 module clk_phase (input wire osc, output wire phi1, phi2, phi2ttl);  // D35 ЛН5 phase generator
     assign {phi1, phi2, phi2ttl} = 3'bz; endmodule
-module stb_gen   (input wire osc, output wire stb);                  // D38 ЛА1 status strobe
+module stb_gen   (input wire osc, output wire stb);                  // D38 (legacy stub, unused)
     assign stb = 1'bz; endmodule
+// clock divider + gate mesh (scan: docs/transcription/clock-subsystem.md). Z1 -> D59 osc ->
+// D40 divider -> D33/D39/D36 gates -> D38 (ЛА1) = STB and D35 (ЛН5) = Φ1/Φ2.
+module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40 СТ16 (74161-class)
+                  output wire [3:0] q, output wire co);
+    assign q = 4'bz; assign co = 1'bz; endmodule
+module ln1_inv   (input wire a, output wire y); assign y = 1'bz; endmodule   // D33 ЛН1 inverter gate
+module la12_gate (input wire a, b, output wire y); assign y = 1'bz; endmodule // D36 ЛА12 NAND gate
+module la1_gate  (input wire i0, i1, i2, i3, output wire y);                  // D38 ЛА1 4-input NAND
+    assign y = 1'bz; endmodule
 
 // ===== I/O chip-select decoder: К555ИД7 (74138) =====
 module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);

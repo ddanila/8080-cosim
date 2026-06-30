@@ -21,23 +21,22 @@ D38 (ЛА1) → STB,  and → D35 (ЛН5) → Φ1 / Φ2`. PST CLK (reset clock) 
 same mesh (top net). Confirmed output nets: **D38.8 → STB**, **D35.10 → Φ1** (via R37),
 **D35 → Φ2** (via R36), **D36.6 → D35.11**, **D33.8 → D38.9**.
 
-## Key finding: the current LVS model SIMPLIFIES the clock
-`hdl/juku_top.v` ties **D35.11 and D38.9 directly to the OSC net** (the gate mesh collapsed
-to a single oscillator node). The real circuit interposes the **D40 divider + D33/D39/D36
-gate mesh** between OSC and the Φ/STB generators. The model is *functionally* fine for the
-twin (the sim drives the clock as a boundary anyway) and LVS-green, but it is not the
-faithful connectivity.
+## LVS re-wire DONE — model de-simplified (36 → 40 chips, IN SYNC)
+The model previously tied **D35.11/D38.9 straight to OSC**, collapsing the gate mesh. The
+faithful chain is now wired into the LVS model (`hdl/juku_top.v` + `devices.v` + board.json
++ map.json), green at 40 chips / 100 nets, 86/100 scan-grounded:
 
-## Why no LVS chip-count add yet (honest)
-A faithful add must re-wire the mesh as a unit — partially re-routing D35.11/D38.9 off OSC
-would leave OSC with <2 nodes (no dangling-net support) unless D40's clock is simultaneously
-placed on OSC. Two residuals block a clean, non-invented re-wire:
-1. **D40's exact pinout/type** — outputs at 11-14 + T/P enables read like a 74161-class
-   synchronous counter, but the label reads "ИЕ7" (74193); which clock pin OSC drives needs
-   disambiguation (datasheet cross-ref + one more crop).
-2. **Gate-input routing** — which D40 Q-output feeds which of D33/D39/D36 inputs is only
-   partially legible.
+- **OSC** re-routed: `D59.2 → D40.2` (the divider's clock) — no longer feeds D35/D38 directly.
+- **D40 (СТ16, 74161-class)** added: clock = pin 2; Q outputs 14/13/12/11; pin 1 = R, 7/10 =
+  enables, 9 = load. `D40.14 (Q0) → D39.13`.
+- **D39 (ЛА3)** added: `D40.14 → D39.13`; `D39.11 → D38.13`.
+- **D33 (ЛН1)** added: `D33.8 → D38.9` (re-sources D38's former OSC input).
+- **D36 (ЛА12)** added: `D36.6 → D35.11` (re-sources D35's former OSC input).
+- **D38** upgraded from the `stb_gen` stub to a proper **ЛА1 4-input NAND** (`la1_gate`):
+  inputs 9/12/13/10 → output 8 = STB.
 
-So this pass is a complete **identification + output-topology** trace (major understanding
-gain, chips pinned for the gap map); the LVS re-wire is the next focused step once (1)+(2)
-are resolved. No wiring invented.
+Provenance: OSC / D40QA / CLKG_D33 / CLKG_D36 = **scan** (read directly); **D39Y** (D39.11→
+D38.13) = **assumed** (the D39→D38 link is read, the exact D38 input pin is inferred from
+routing). Deferred (left unconnected, documented): D33/D36 gate *inputs*, D40 data/enable
+pins, D38 inputs 12/10 — these feed back from the divider/mesh and need finer crops; they are
+honestly un-netted rather than invented.

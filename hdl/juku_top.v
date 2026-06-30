@@ -41,11 +41,17 @@ module juku_top (
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
 
-    // ---- discrete clock subsystem (D59 osc -> D35 phase / D38 strobe) ----
-    wire osc_clk;
+    // ---- discrete clock subsystem (faithful mesh; docs/transcription/clock-subsystem.md) ----
+    // Z1 -> D59 (ЛН1 osc) -> OSC -> D40 (СТ16 divider) -> gate mesh D33(ЛН1)/D39(ЛА3)/D36(ЛА12)
+    // -> D38 (ЛА1) = STB, and -> D35 (ЛН5) = Φ1/Φ2. Replaces the former OSC-collapsed simplification.
+    wire osc_clk, clkg_d33, clkg_d36, d39_y; wire [3:0] d40_q;
     ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
-    clk_phase U_D35 (.osc(osc_clk), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
-    stb_gen   U_D38 (.osc(osc_clk), .stb(ststb_n));
+    ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
+    la3_gate  U_D39 (.a(1'b1), .b(d40_q[0]), .y(d39_y));   // pin13(B)<-D40 QA(14); pin11(Y)->D38.13
+    ln1_inv   U_D33 (.a(1'b1), .y(clkg_d33));              // pin8(Y)->D38.9     [input pin2 deferred]
+    la12_gate U_D36 (.a(1'b1), .b(1'b1), .y(clkg_d36));    // pin6(Y)->D35.11    [inputs 5/4 deferred]
+    clk_phase U_D35 (.osc(clkg_d36), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(1'b1), .i2(d39_y), .i3(1'b1), .y(ststb_n));
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),
