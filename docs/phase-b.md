@@ -62,3 +62,5 @@ black DIP packages, gold pads — the LVS-verified netlist as a physical board.
 - **USART (D11) → ROM-socket row, vertical.** The drawing places D11 at the right end of the
   ROM-socket row as a vertical chip (like the sockets); moved it there from the I/O block and
   re-tidied the remaining I/O (D57/D54/D26 + D10/D55).
+- **PIC (D10) → bottom logic row.** The drawing has D10 (8259) in the bottom-centre row with
+  D5/D6/D7 (not up in the I/O block); moved it to the right end of that row.
