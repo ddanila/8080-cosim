@@ -418,3 +418,12 @@ and the long-standing "76" target was a significant undercount (likely a subset)
 `bom-toward-76.md` with the correction. This means the placement layout is genuinely ~complete vs
 the real chip count, not 26 short of it. (A few specific refdes — D14/D31/D100/D104 — remain
 unresolved and may be offset by minor refdes mismatches, but the scale is right.)
+
+## Generator now reports chip-position count + guards duplicates
+Added a build-time report to `gen_kicad_pcb.py`: it prints "N net-modeled + M placement outlines
+= total / ~101 BOM ICs" and warns on any duplicate refdes. Current build: **40 + 65 = 105
+positions, no duplicates** (the earlier regex-based "62 outlines / 102" undercounted; 65/105 is
+authoritative). 105 ≈ the ~101 BOM total within faint-scan reading error — both confirm the board
+has ~100 chips, refuting "76". This makes completeness visible on every generate and catches the
+double-placement class of bug (cf. the transceiver-row gap found earlier). Board geometry
+unchanged — previews identical.

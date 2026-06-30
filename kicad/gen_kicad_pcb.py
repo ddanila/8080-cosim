@@ -191,6 +191,7 @@ def main():
     # top-edge expansion connectors X1/X2 -- non-electrical SILK OUTLINE annotations (read off the
     # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future
     # LVS work (bom-toward-76); this just shows the two prominent connectors so the top matches.
+    outline_chips = []                        # placement-only chip outlines (D-refs), for the count report
     def silk_box(x0, y0, x1, y1, label):
         r = pcbnew.PCB_SHAPE(board); r.SetShape(pcbnew.SHAPE_T_RECT)
         r.SetLayer(pcbnew.F_SilkS); r.SetWidth(pcbnew.FromMM(0.2))
@@ -201,6 +202,7 @@ def main():
         t.SetTextThickness(pcbnew.FromMM(0.5))
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM((x0+x1)/2.0), pcbnew.FromMM((y0+y1)/2.0)))
         board.Add(t)
+        if label[1:2].isdigit(): outline_chips.append(label)   # count D-chips (skip X1/X2/X9 connectors)
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
     silk_box(222, 283, 273, 288, "X9")   # bottom connector (read mm222..273, pins 58..45)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
@@ -263,8 +265,14 @@ def main():
     # (KiCad's built-in stroke font drops В/М glyphs). The face is resolved from ~/Library/Fonts.
     txt = open(out, encoding="utf-8").read().replace('(font', '(font (face "GOST CAD KK")')
     open(out, "w", encoding="utf-8").write(txt)
+    n_pos = len(placed) + len(outline_chips)
+    allrefs = list(placed) + outline_chips
+    dups = sorted({r for r in allrefs if allrefs.count(r) > 1})
     print(f"wrote {out}: {len(placed)} footprints, {board.GetNetCount()} nets, "
           f"{assigned} pad-net assignments, board {BW:.0f}x{BH:.0f} mm (GOST silkscreen font)")
+    print(f"  chip positions: {len(placed)} net-modeled + {len(outline_chips)} placement outlines "
+          f"= {n_pos} / ~101 BOM ICs ({100*n_pos//101}%)")
+    if dups: print(f"  WARNING: {len(dups)} duplicate refdes placed twice -> {dups}")
 
 if __name__ == "__main__":
     main()
