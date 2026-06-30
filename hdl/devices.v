@@ -178,9 +178,13 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
 // D53 ИД7 -- realized as the DRAM RAS/CAS strobe generator (the РЕ3/АГ3 timing it really comes from
 // is un-modeled -> boundary). Repurposed inputs: a = RAM-select (ram_n, active-low), b = Φ1, c = Φ2.
 // RAS asserts on Φ1 of a RAM access (latches the row), CAS on Φ2 (latches the col). y_n[0]=ras_n, [1]=cas_n.
+// ИД7 RAS/CAS decoder. g = decoder enable: only a real memory cycle pulses RAS/CAS, so an
+// INTA / I/O cycle whose address happens to fall in the RAM region does NOT make the DRAM
+// drive the bus (which would corrupt the 8259's injected interrupt vector). Normal read/write
+// cycles keep g=1, so the boot timing is unchanged.
 module rascas_dec (input wire a, b, c, input wire g, output wire [3:0] y_n);
-    assign y_n[0] = ~(~a & b);     // ras_n
-    assign y_n[1] = ~(~a & c);     // cas_n
+    assign y_n[0] = ~(g & ~a & b);     // ras_n
+    assign y_n[1] = ~(g & ~a & c);     // cas_n
     assign y_n[3:2] = 2'b11; endmodule
 // ---- video dot-clock chain (scan: docs/transcription/dram-video-timing.md, sheet-2 BR) ----
 module ag3_oneshot (input wire a_n, b, clr_n, output wire q, q_n);  // D56 АГ3 (74123) RC -> 16 MHz
@@ -263,6 +267,38 @@ module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n,
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
-    assign intr = 1'b0;     // no interrupts for the polled ekta37 boot
+    assign intr = 1'bz;     // INT pin driven by the intr_ctl sim adjunct (below); z so it can
+endmodule                   // -- with frame ticks off, intr_ctl drives 0 => boot byte-identical
+
+// Sim-only behavioral ADJUNCT to the 8259 (D10) -- NOT a separate chip (it carries no
+// refdes, so the LVS skips it as an unmapped instance; see sync/lvs.py). vm80a is a real
+// die: to interrupt it we must drive pin_int and feed the 8259's CALL-mode vector over the
+// bus during the INTA machine cycles -- behavior the register-stub pic_8259 can't express.
+// Snoops the 8259 ICW/OCW from the PIC port writes, raises INT on the external frame tick
+// (8253 VER-RTR -> IR5, a boundary), and injects {0xCD, lo, hi} on the INTA reads.
+// Opt-in: with frame_tick never pulsing, intr stays 0 and DB is never driven (byte-identical).
+module intr_ctl (input wire osc, dbin, inta_n, iowr_n, cs_pic_n, a0, frame_tick,
+                 inout wire [7:0] DB, output wire intr);
+    reg [7:0] icw1=0, icw2=0, mask=8'hFF; reg expect_icw2=0;
+    always @(posedge osc) if (~cs_pic_n & ~iowr_n) begin           // snoop 8259 programming
+        if (~a0) begin if (DB[4]) begin icw1<=DB; expect_icw2<=1; end end          // ICW1
+        else if (expect_icw2) begin icw2<=DB; expect_icw2<=0; end                  // ICW2 (vector hi)
+        else mask<=DB;                                                             // OCW1 (mask)
+    end
+    wire [15:0] vaddr = {icw2, 8'h00} | {8'h00, (icw1 & 8'hE0)} | 16'h0014;         // IR5<<2 = 0x14
+
+    reg pending=0, ft_q=0, inq=0; integer inta_idx=0;
+    always @(posedge osc) begin
+        ft_q <= frame_tick;
+        if (frame_tick & ~ft_q & ~mask[5]) pending <= 1;            // rising frame tick, IR5 unmasked
+        if (~inta_n & ~inq) inq <= 1;                                // entering an INTA read
+        if ( inta_n &  inq) begin inq <= 0;                          // leaving an INTA read
+            if (inta_idx >= 2) begin inta_idx <= 0; pending <= 0; end  // 3-byte CALL consumed
+            else inta_idx <= inta_idx + 1;
+        end
+    end
+    assign intr = pending;
+    wire [7:0] ivec = (inta_idx == 0) ? 8'hCD : (inta_idx == 1) ? vaddr[7:0] : vaddr[15:8];
+    assign DB = ~inta_n ? ivec : 8'bz;                              // inject vector during INTA reads
 endmodule
 `default_nettype wire

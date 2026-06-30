@@ -15,7 +15,9 @@ module juku_top (
     // osc -- the LVS drops these 1-endpoint nets. A typed key = (kbd_kcol,kbd_kbit,kbd_shift).
     input  wire kbd_en, kbd_pressed, kbd_shift,
     input  wire [3:0] kbd_kcol,
-    input  wire [2:0] kbd_kbit
+    input  wire [2:0] kbd_kbit,
+    input  wire frame_tick      // SIM-ONLY: 8253 VER-RTR -> 8259 IR5 frame interrupt (a boundary).
+                                // Drives the U_INTR adjunct (unmapped -> LVS-invisible).
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
@@ -128,7 +130,8 @@ module juku_top (
     kp14_mux U_D48 (.a(BA[3:0]), .b(BA[11:8]),  .sel(phi1), .en_n(1'b0), .y(MA[3:0]));
     kp14_mux U_D49 (.a(BA[7:4]), .b(BA[15:12]), .sel(phi1), .en_n(1'b0), .y(MA[7:4]));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
-    rascas_dec U_D53 (.a(ram_sel_n), .b(phi1), .c(phi2), .g(1'b1), .y_n({rc_nc, cas_n, ras_n}));
+    wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
+    rascas_dec U_D53 (.a(ram_sel_n), .b(phi1), .c(phi2), .g(mem_active), .y_n({rc_nc, cas_n, ras_n}));
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;
@@ -150,6 +153,10 @@ module juku_top (
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .intr(intr), .inta_n(inta_n));
+    // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
+    // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
+    intr_ctl  U_INTR (.osc(osc), .dbin(dbin), .inta_n(inta_n), .iowr_n(iowr_n),
+                      .cs_pic_n(cs_pic_n), .a0(BA[0]), .frame_tick(frame_tick), .DB(DB), .intr(intr));
 
 endmodule
 `default_nettype wire
