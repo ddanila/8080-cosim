@@ -364,3 +364,9 @@ D5/D6/D8/D9/D7/D10. Now ~93 chip positions are shown across the board. The genui
 unplaced D-numbers are the scan-limited top-right corner chips (D14/D28/D31/D32/D100/D104/D106) and
 a couple of lower-left chips (D13/D105) that need careful reads; some of those numbers may not be
 ICs at all. VALIDATION: PASS, overlaps=0.
+
+## Lower-left corner corrected + D13/D105 added
+A focused crop of the lower-left corner showed D30/D13/D105 form a **horizontal column** at x≈30
+(D30 ≈y205, D13 ≈y223, D105 ≈y240) with D52 vertical at x≈59,≈y237. Corrected D30's orientation
+(was placed vertical) and D52's y, and added the missing D13/D105. The lower-left now matches the
+drawing. VALIDATION: PASS, overlaps=0.

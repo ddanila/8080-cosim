@@ -231,7 +231,12 @@ def main():
         silk_box(cx - 3.5, 34, cx + 3.5, 46, ref)             # top-edge row, small vertical (D94 fills the gap)
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
-    silk_box(46, 174, 58, 196, 'D107'); silk_box(53, 207, 65, 229, 'D52'); silk_box(23, 203, 35, 225, 'D30')
+    silk_box(46, 174, 58, 196, 'D107')                        # CPU cluster, below D4
+    # lower-left corner (read off the drawing): D30/D13/D105 = a horizontal column at x≈30; D52
+    # vertical at x≈59. (Corrects earlier D30 orientation + D52 y, and adds D13/D105.)
+    for y0, ref in [(203, 'D30'), (219, 'D13'), (236, 'D105')]:
+        silk_box(20, y0, 40, y0 + 8, ref)
+    silk_box(53, 226, 65, 248, 'D52')
     # baud-rate chain (tape-serial.md: D102=ИЕ11, D101=ИМ1, D99=ИР9) -- the readable row @ y≈54,
     # right of D93. (D100=2nd ИР9 + the rest of the packed cluster still need careful reads.)
     for cx, ref in [(257, 'D102'), (265, 'D101'), (273, 'D99')]:
