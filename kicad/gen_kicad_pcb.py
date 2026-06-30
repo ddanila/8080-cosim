@@ -59,11 +59,14 @@ PLACE = {
     # bus + decode (horizontal, bottom-centre row)
     'D5':(108,238,90),'D6':(148,238,90),
     'DLB':(226,238,90),'D7':(254,238,90),'D10':(288,238,90),
-    # clock subsystem (horizontal, bottom strip; PITCH 26 mm to clear the rot-90 overlaps).
-    # NOTE the reference puts this cluster on the RIGHT-CENTRE (near D40/D41/D34), not a bottom
-    # row -- relocate to exact coords in a later pass; this pass only removes the collisions.
-    'D59':(70,255,90),'D35':(96,255,90),'D38':(122,255,90),'D40':(148,255,90),
-    'D33':(174,255,90),'D36':(200,255,90),'D39':(226,255,90),
+    # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
+    # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
+    # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
+    # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
+    # puts it bottom-centre by the transformer -- read it next pass).
+    'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
+    'D36':(244,200,0),'D33':(277,200,0),'D35':(263,221,0),   # D35 nudged up 4mm to clear D7
+    'D59':(70,255,90),
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 

@@ -143,3 +143,13 @@ cluster, replacing the earlier region-level guesses.
   ~59% down — matches. The frame (origin 1740,990; px/mm 14.52; PCB 310×260) is validated.
 - **Still approximate (next passes):** the clock cluster belongs on the right-centre (near
   D40/D41/D34), and D48/D49 muxes at the DRAM-array left edge — relocate to exact reference coords.
+
+## Clock cluster relocated to its real region (read off the drawing)
+- Read the clock/divider/gate mesh off the assembly drawing via the validated frame and moved it
+  from the fictional bottom-left row to its **real right-centre region** (right of the DRAM array,
+  near D40/D41/D34): D40 (СТ16) @ (277,155) horizontal; D38 (ЛА1) @ (251,176); D39 (ЛА3) @
+  (294,176); D36 (ЛА12) @ (244,200); D33 (ЛН1) @ (277,200); D35 @ (263,221, nudged up 4 mm to
+  clear D7). All vertical except D40. **VALIDATION: PASS, overlaps=0.**
+- D59 (osc) still approximate (bottom row) — the drawing puts it bottom-centre by the transformer.
+- Reminder: the КР580ВМ80А case marking is on F.SilkS, visible in the **flat** preview; the **3D
+  top** render hides it under the package body. Use the flat view to check markings.
