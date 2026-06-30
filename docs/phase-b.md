@@ -38,3 +38,15 @@ the real layout.
 The north-star is one schematic-rooted model that is simultaneously the runnable digital twin,
 the LVS-checked structure, and the PCB. Phase B closes the last leg: the same `board.json` that
 boots the BIOS (cosim/HDL) and passes LVS now also lays out as a board.
+
+## 3D / preview renders
+`kicad-cli pcb render` produces true 3D images (the DIP footprints carry 3D models). Point it
+at KiCad's bundled 3D-model dir so component bodies resolve:
+```
+M3D=".../KiCad.app/Contents/SharedSupport/3dmodels"
+kicad-cli pcb render --side top --quality high --floor --width 1700 --height 1150 \
+  -D KICAD9_3DMODEL_DIR="$M3D" -D KICAD10_3DMODEL_DIR="$M3D" -o docs/pcb-top-preview.png kicad/juku.kicad_pcb
+# isometric: add  --perspective --rotate "-30,0,-25"
+```
+Previews: `docs/pcb-3d-preview.png` (isometric), `docs/pcb-top-preview.png` (top). Green board,
+black DIP packages, gold pads — the LVS-verified netlist as a physical board.
