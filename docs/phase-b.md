@@ -328,3 +328,9 @@ D101 (≈265,54), D99 (≈273,54)** — a row right of D93 (per tape-serial.md: 
 now shows chips in every functional region of the original. Remaining: D100 (2nd ИР9) + the rest
 of the packed top-right interface cluster (D104/D106/D28/D12/D3/D14/D32/D94/D95...) which need
 careful individual reads. VALIDATION: PASS, overlaps=0.
+
+## D3/D12 added (right of D11)
+Added the two small chips just right of D11 (USART) as placement outlines: **D12 (≈215,72), D3
+(≈215,92)**. The board now covers all functional regions; remaining are a handful of small,
+tightly-packed top-right interface chips (D100/D104/D106/D28/D14/D32/D94) whose scan labels are
+hard to localise precisely. VALIDATION: PASS, overlaps=0.

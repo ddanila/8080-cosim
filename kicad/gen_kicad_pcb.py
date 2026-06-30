@@ -235,6 +235,8 @@ def main():
     # right of D93. (D100=2nd ИР9 + the rest of the packed cluster still need careful reads.)
     for cx, ref in [(257, 'D102'), (265, 'D101'), (273, 'D99')]:
         silk_box(cx - 3.5, 48, cx + 3.5, 62, ref)
+    # small chips just right of D11 (USART): D12 (≈215,72), D3 (≈215,92) -- read off the drawing.
+    silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()
