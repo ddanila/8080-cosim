@@ -59,7 +59,8 @@ schematic*), with `cosim/` + MAME as validation oracles.
     (sync pulses) — the clocking path runs through the real `juku_top` structure. (Added a `timescale`
     to `devices.v` so the phase delays are ns.) Remaining boot blockers: **STSTB** (the 8238 needs a
     SYNC-qualified strobe to latch status — D13/D38 path, an assumed-wiring sub-step) and **memory**
-    (EPROM/decode/DRAM bodies). Then peripherals + a boot harness.
+    (EPROM/decode/DRAM bodies). Then peripherals + a boot harness. 
+  - *STSTB sub-step landed:* the 8238 needs a SYNC-qualified strobe to latch the CPU status byte. Realized it: D38 (ЛА1) now outputs `ststb_n = ~sync` (its deferred inputs set so clkg_d33/d39_y don't gate; SYNC fed into one input [assumed]). Added the **SYNC net** (D1.19→D38.12, src=`assumed`) to board.json so it matches; **LVS IN SYNC 101/101** (provenance now 86 scan + 9 prom + 6 assumed/boundary). Probe: STSTB strobes, the 8238 latches status, and **MEMR asserts on the first fetch** — vm80a runs one machine cycle then stalls only because **memory still returns z** (blocker #2). So STSTB is done; **memory (EPROM/decode/DRAM bodies) is the last thing between here and a boot**.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

@@ -49,11 +49,14 @@ module juku_top (
     wire osc_clk, clkg_d33, clkg_d36, d39_y; wire [3:0] d40_q;
     ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
-    la3_gate  U_D39 (.a(1'b1), .b(d40_q[0]), .y(d39_y));   // pin13(B)<-D40 QA(14); pin11(Y)->D38.13
-    ln1_inv   U_D33 (.a(1'b1), .y(clkg_d33));              // pin8(Y)->D38.9     [input pin2 deferred]
+    la3_gate  U_D39 (.a(1'b0), .b(d40_q[0]), .y(d39_y));   // pin13(B)<-D40 QA(14); deferred pin -> 0 so d39_y=1 (un-gates D38)
+    ln1_inv   U_D33 (.a(1'b0), .y(clkg_d33));              // pin8(Y)->D38.9; deferred pin2 -> 0 so clkg_d33=1 (un-gates D38)
     la12_gate U_D36 (.a(1'b1), .b(1'b1), .y(clkg_d36));    // pin6(Y)->D35.11    [inputs 5/4 deferred]
     clk_phase U_D35 (.osc(clkg_d36), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
-    la1_gate  U_D38 (.i0(clkg_d33), .i1(1'b1), .i2(d39_y), .i3(1'b1), .y(ststb_n));
+    // STSTB = SYNC-qualified strobe: the discrete clock subsystem makes STSTB from SYNC (exact gate
+    // un-traced -> feed SYNC into one of D38's deferred inputs [assumed]). With clkg_d33=d39_y=1 and
+    // i3=1, ststb_n = ~sync -> the 8238 latches the status byte at SYNC's rising edge (T1 start).
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(1'b1), .y(ststb_n));
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),
