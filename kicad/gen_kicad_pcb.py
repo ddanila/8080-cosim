@@ -186,6 +186,21 @@ def main():
         h.SetCenter(pcbnew.VECTOR2I(pcbnew.FromMM(hx), pcbnew.FromMM(hy)))
         h.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(hx + d/2.0), pcbnew.FromMM(hy))); board.Add(h)
     mhole(7, 30); mhole(6, 283)        # TL, BL (read 5,289 -> inset to stay within the 288 bottom)
+
+    # top-edge expansion connectors X1/X2 -- non-electrical SILK OUTLINE annotations (read off the
+    # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future
+    # LVS work (bom-toward-76); this just shows the two prominent connectors so the top matches.
+    def silk_box(x0, y0, x1, y1, label):
+        r = pcbnew.PCB_SHAPE(board); r.SetShape(pcbnew.SHAPE_T_RECT)
+        r.SetLayer(pcbnew.F_SilkS); r.SetWidth(pcbnew.FromMM(0.2))
+        r.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(x0), pcbnew.FromMM(y0)))
+        r.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(x1), pcbnew.FromMM(y1))); board.Add(r)
+        t = pcbnew.PCB_TEXT(board); t.SetText(label); t.SetLayer(pcbnew.F_SilkS)
+        t.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3), pcbnew.FromMM(3)))
+        t.SetTextThickness(pcbnew.FromMM(0.5))
+        t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM((x0+x1)/2.0), pcbnew.FromMM((y0+y1)/2.0)))
+        board.Add(t)
+    silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()

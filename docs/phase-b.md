@@ -271,3 +271,11 @@ board; **BR≈(319,290)** and the **X6 video jack ≈323** on the RIGHT, *past* 
 - **Added the two left-side mounting holes** (Ø3.5 Edge.Cuts cutouts) that fall on the 310×266
   main board: TL (7,30), BL (6,283). The right-side holes live on the jack overhang not modeled by
   this rectangular outline (a future board-shape refinement). VALIDATION: PASS.
+
+## Top edge connectors X1/X2 added (silk annotations)
+Added the two prominent top-edge expansion connectors as non-electrical silk OUTLINE annotations
+(read off the drawing): **X1 mm15..107, X2 mm118..177** at the top edge. They're placeholders --
+the full pin/net connector model is future LVS work (`bom-toward-76.md` cluster 4). The top of the
+board now matches the original's look (big connectors over the ROM/transceiver rows). The other
+top-right connectors + the X6/X7 video jacks (on the right overhang) are not yet added.
+VALIDATION: PASS, overlaps=0.
