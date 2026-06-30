@@ -167,3 +167,11 @@ put them right (one coherent pass; VALIDATION: PASS, overlaps=0):
 - Still to refine: D53/D56/D103 (video-output chain, some out by the clock cluster) and D59 (osc).
 - **Previews:** both `pcb-flat-preview.png` (silkscreen, markings) and `pcb-top-preview.png` (3D)
   are now regenerated every iteration (owner request — track progress in parallel).
+
+## Video-output chain relocated to the right-centre
+Read D53/D103/D56 off the drawing (they cluster with the clock chips on the right, not the old
+horizontal band): RAS/CAS decode **D53 (244,225)** below D36; IE10 ctr **D103 (294,200)** below
+D39; AG3 one-shot **D56 (305,200)** far right (raw read landed on the 310 edge -> pulled in 5 mm
+to keep the DIP on-board; the right board edge may actually extend a touch past 310). All
+vertical. VALIDATION: PASS, overlaps=0. The old y132 band is now purely the bus row.
+Remaining approximate: D59 (oscillator, bottom-centre by the transformer).

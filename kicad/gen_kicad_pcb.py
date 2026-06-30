@@ -55,9 +55,10 @@ PLACE = {
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
     'D46':(84,217,0),'D44':(97,217,0),'D48':(111,217,0),
     'D47':(85,242,0),'D45':(98,242,0),'D49':(112,242,0),
-    # video-output chain (RAS/CAS decode D53, one-shot D56, IE10 D103) -- still in the old band;
-    # refine to exact coords next pass (some sit out by the clock cluster on the right).
-    'D53':(226,132,90),'D56':(252,132,90),'D103':(278,132,90),
+    # video-output chain -- relocated to the right-centre with the clock cluster (read off the
+    # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
+    # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
+    'D53':(244,225,0),'D103':(294,200,0),'D56':(305,200,0),
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
