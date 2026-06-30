@@ -390,3 +390,8 @@ D32 (the last few packed interface chips). VALIDATION: PASS, overlaps=0.
 Added **D106** (≈307,108) — the chip at the right edge just below the baud chain, read from the
 same tight crop. Remaining unplaced: D100, D104, D14, D31, D32 (a few scattered packed chips, each
 needing its own tight crop). VALIDATION: PASS, overlaps=0.
+
+## D32 added (top band)
+Added **D32** (≈213,46) — a vertical chip in the top band, left of D28, read from a tight crop.
+Remaining unplaced: D14, D31, D100, D104 (not visible in the regions cropped so far; likely small
+chips needing their own tight crops, or possibly not all ICs). VALIDATION: PASS, overlaps=0.
