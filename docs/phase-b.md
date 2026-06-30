@@ -370,3 +370,11 @@ A focused crop of the lower-left corner showed D30/D13/D105 form a **horizontal 
 (D30 ≈y205, D13 ≈y223, D105 ≈y240) with D52 vertical at x≈59,≈y237. Corrected D30's orientation
 (was placed vertical) and D52's y, and added the missing D13/D105. The lower-left now matches the
 drawing. VALIDATION: PASS, overlaps=0.
+
+## Top-right corrected from a reliable tight crop (+D28)
+A tight (1.375×) crop of the top band resolved the conflicting reads: it's a clean row at **y≈55,
+pitch 16**: D28(229)/D97(245)/D95(261)/D94(277)/D98(293)/D96(307), with **D28** previously
+unplaced. Corrected the row (was placed at y40/cramped from a lower-res crop), moved **D93** down
+to ROM-row level (≈248,86) where top_rows showed it, and **removed the baud chain** (D99-D102 —
+their y54 placement overlapped this row and was wrong; defer to a careful re-read). The top-right
+is now self-consistent. VALIDATION: PASS, overlaps=0.

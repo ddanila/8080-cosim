@@ -226,9 +226,11 @@ def main():
     # right-side serial/tape/video block (toward-76) -- the clearly-separated chips as placement
     # outlines: D93 (big, ~246,64) + the top-edge row D97/D95/D98/D96 (~y40). The denser middle
     # cluster (D99/D100/D101/D102/D104/D106/D28/D12/D3...) has tilted/packed labels -> deferred.
-    silk_box(239, 53, 253, 75, 'D93')
-    for cx, ref in [(245, 'D97'), (254, 'D95'), (261, 'D94'), (268, 'D98'), (278, 'D96')]:
-        silk_box(cx - 3.5, 34, cx + 3.5, 46, ref)             # top-edge row, small vertical (D94 fills the gap)
+    silk_box(240, 76, 256, 96, 'D93')                         # ROM-row level, right of D11 (per top_rows)
+    # top band row @ y≈55 (reliable tight-crop read: pitch 16, incl. D28). Corrects an earlier
+    # y40/cramped placement of this row that came from a lower-res crop.
+    for cx, ref in [(229, 'D28'), (245, 'D97'), (261, 'D95'), (277, 'D94'), (293, 'D98'), (307, 'D96')]:
+        silk_box(cx - 5, 42, cx + 5, 68, ref)
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
     silk_box(46, 174, 58, 196, 'D107')                        # CPU cluster, below D4
@@ -237,10 +239,9 @@ def main():
     for y0, ref in [(203, 'D30'), (219, 'D13'), (236, 'D105')]:
         silk_box(20, y0, 40, y0 + 8, ref)
     silk_box(53, 226, 65, 248, 'D52')
-    # baud-rate chain (tape-serial.md: D102=ИЕ11, D101=ИМ1, D99=ИР9) -- the readable row @ y≈54,
-    # right of D93. (D100=2nd ИР9 + the rest of the packed cluster still need careful reads.)
-    for cx, ref in [(257, 'D102'), (265, 'D101'), (273, 'D99')]:
-        silk_box(cx - 3.5, 48, cx + 3.5, 62, ref)
+    # NOTE: the baud-rate chain (D99/D100/D101/D102) was earlier placed @ y54 from a lower-res crop,
+    # but the reliable tight crop shows the y55 row is D28/D97/D95/D94/D98/D96 -- those baud
+    # positions were wrong (overlapping that row), so removed pending a careful re-read.
     # small chips just right of D11 (USART): D12 (≈215,72), D3 (≈215,92) -- read off the drawing.
     silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
