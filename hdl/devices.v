@@ -1,6 +1,6 @@
-// Device module SHELLS for juku_top.v.
-// Port lists are the contract LVS cares about; bodies are stubs to be replaced
-// with behavioral models (or a vendored 8080 core) for simulation.
+// Device modules for juku_top.v. Port lists are the LVS contract; bodies are being
+// functionalized (merge steps 1-3) so the LVS-checked juku_top.v itself boots.
+`timescale 1ns/100ps
 `default_nettype none
 
 // ---- i8080A CPU (КР580ВМ80А): vm80a die-replica core ----
@@ -115,8 +115,17 @@ endmodule
 // ===== clock subsystem (discrete; replaces the non-existent 8224) =====
 module ln1_osc   (input wire xin, output wire osc);                  // D59 ЛН1 crystal oscillator
     assign osc = 1'bz; endmodule
-module clk_phase (input wire osc, output wire phi1, phi2, phi2ttl);  // D35 ЛН5 phase generator
-    assign {phi1, phi2, phi2ttl} = 3'bz; endmodule
+// D35 ЛН5 phase generator. Merge step 3: the discrete clock mesh feeding `osc` is an un-traced
+// boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
+// INTENT here -- a non-overlapping Φ1/Φ2. This is a sim clock: it only sets the simulated VALUE;
+// the D35->CPU net wiring (what LVS compares) is unchanged, so LVS stays IN SYNC.
+module clk_phase (input wire osc, output reg phi1, phi2, phi2ttl);
+    initial begin phi1 = 0; phi2 = 0; phi2ttl = 0; end
+    always begin
+        phi1 = 1;               #20;  phi1 = 0;              #5;   // Φ1 high, dead time
+        phi2 = 1; phi2ttl = 1;  #20;  phi2 = 0; phi2ttl = 0; #5;   // Φ2 high, dead time
+    end
+endmodule
 module stb_gen   (input wire osc, output wire stb);                  // D38 (legacy stub, unused)
     assign stb = 1'bz; endmodule
 // clock divider + gate mesh (scan: docs/transcription/clock-subsystem.md). Z1 -> D59 osc ->

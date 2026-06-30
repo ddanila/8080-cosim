@@ -52,6 +52,14 @@ schematic*), with `cosim/` + MAME as validation oracles.
     **Boot is now gated on the clock subsystem** (functional Φ1/Φ2 + STSTB) — the next step: the
     discrete clock mesh (D59/D40/D33/D36/D38/D35) is still stubbed, and its gate inputs are a
     documented un-traced boundary. Then memory (EPROM/decode/DRAM), peripherals, and a boot harness.
+  - *Step-3 landed:* `clk_phase` (D35) now generates a live non-overlapping **Φ1/Φ2** (a sim clock
+    realized to functional intent — the mesh feeding it is the un-traced boundary). KEY trick: it
+    sets only the simulated VALUE; the D35→CPU net *wiring* (what LVS compares) is unchanged, so LVS
+    stays **IN SYNC** (100/100). Probe (`juku_top` + vm80a): Φ1/Φ2 toggle and **vm80a starts cycling**
+    (sync pulses) — the clocking path runs through the real `juku_top` structure. (Added a `timescale`
+    to `devices.v` so the phase delays are ns.) Remaining boot blockers: **STSTB** (the 8238 needs a
+    SYNC-qualified strobe to latch status — D13/D38 path, an assumed-wiring sub-step) and **memory**
+    (EPROM/decode/DRAM bodies). Then peripherals + a boot harness.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge
