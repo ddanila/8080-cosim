@@ -226,8 +226,8 @@ def main():
     # outlines: D93 (big, ~246,64) + the top-edge row D97/D95/D98/D96 (~y40). The denser middle
     # cluster (D99/D100/D101/D102/D104/D106/D28/D12/D3...) has tilted/packed labels -> deferred.
     silk_box(239, 53, 253, 75, 'D93')
-    for cx, ref in [(245, 'D97'), (254, 'D95'), (268, 'D98'), (278, 'D96')]:
-        silk_box(cx - 4, 34, cx + 4, 46, ref)                 # top-edge row, small vertical
+    for cx, ref in [(245, 'D97'), (254, 'D95'), (261, 'D94'), (268, 'D98'), (278, 'D96')]:
+        silk_box(cx - 3.5, 34, cx + 3.5, 46, ref)             # top-edge row, small vertical (D94 fills the gap)
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
     silk_box(46, 174, 58, 196, 'D107'); silk_box(53, 207, 65, 229, 'D52'); silk_box(23, 203, 35, 225, 'D30')

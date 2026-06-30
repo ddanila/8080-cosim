@@ -340,3 +340,11 @@ Added three more clock/divider-cluster chips as placement outlines (read off the
 (≈251,155, paired with D40), **D37** (≈261,200, between D36/D33), **D34** (≈305,176, right edge).
 The clock/divider/video-timing cluster is now densely populated like the original. Remaining are
 the few packed top-right interface chips (D100/D104/D106/D28/D14/D32/D94/B92). VALIDATION: PASS.
+
+## Top-edge row completed (D94) — placement reaching the scan's reading limit
+Added **D94** (≈261,40) to fill the gap in the top-edge row (D97/D95/D94/D98/D96). NOTE: the dense
+top-right corner is now at the limit of reliable scan-reading — a zoomed re-crop of that corner
+gave chip positions that conflict with the wider crop by ~15 mm (e.g. D95/D98 read at y57 vs the
+y40 row), and the remaining chips there (D100/D104/D106/D28/D14/D32 + the "B92" marking of unclear
+class) can't be localised confidently from this scan. Further top-right refinement needs a
+higher-res scan or the physical board. VALIDATION: PASS, overlaps=0.
