@@ -25,16 +25,32 @@ def dip_for(n):                       # smallest standard DIP that holds n pins
         if n <= s: return f"DIP-{s}_W{'15.24' if s>=24 else '7.62'}mm"
     return "DIP-40_W15.24mm"
 
-# functional-group layout (mirrors the real board's clusters; refine vs assembly drawing later)
-GROUPS = [
-    ('ROM',     ['D15','D16']),
-    ('DRAM',    ['D60','D61','D62','D63','D64','D65','D66','D67']),
-    ('CPU/bus', ['D1','D4','DLB','D5','D6','D7']),
-    ('I/O',     ['D26','D27','D11','D54','D55','D57','D10','D2']),
-    ('clock',   ['D59','D35','D38','D40','D33','D36','D39']),
-    ('video',   ['D44','D45','D46','D47','D48','D49','D53','D56','D103']),
-]
-X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # mm
+# Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
+# ~310x195 mm board. The top-edge connectors + transceiver row + ROM row + DRAM array are
+# positioned per the real layout; logic clusters sit in their drawing regions. Tuple =
+# (x_mm, y_mm, rotation_deg). rot 90 = vertical DIP (as drawn for ROM/DRAM).
+PLACE = {
+    # transceiver/driver row, just below the X1/X2 edge connectors (top edge)
+    'D25':(25,30,0), 'D23':(58,30,0), 'D24':(98,30,0), 'D29':(131,30,0), 'D27':(195,32,0),
+    # ROM row (vertical 28-pin sockets, D15/D16 populated; D17-D22 empty)
+    'D15':(20,62,90), 'D16':(38,62,90),
+    # DRAM bank (one row of 8 populated К565РУ5, vertical 16-pin)
+    'D60':(35,108,90),'D61':(49,108,90),'D62':(63,108,90),'D63':(77,108,90),
+    'D64':(91,108,90),'D65':(105,108,90),'D66':(119,108,90),'D67':(133,108,90),
+    # video address/dot-clock chain (row beneath the array)
+    'D44':(35,140,0),'D45':(60,140,0),'D46':(85,140,0),'D47':(110,140,0),
+    'D48':(135,140,0),'D49':(158,140,0),'D53':(181,140,0),'D56':(35,160,0),'D103':(60,160,0),
+    # CPU + bus + decode cluster (lower-left)
+    'D1':(45,182,0),'D4':(95,160,0),'DLB':(95,176,0),'D5':(130,168,0),'D6':(165,160,0),
+    'D2':(165,176,0),'D7':(190,160,0),
+    # I/O block (right side)
+    'D26':(235,62,0),'D11':(235,100,0),'D54':(212,132,0),'D55':(245,132,0),'D57':(278,132,0),
+    'D10':(250,160,0),
+    # clock subsystem (bottom strip)
+    'D59':(95,190,0),'D35':(118,190,0),'D38':(138,190,0),'D40':(158,190,0),
+    'D33':(178,190,0),'D36':(198,190,0),'D39':(215,190,0),
+}
+X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
     spec = json.load(open(sys.argv[1])); out = sys.argv[2]
@@ -49,7 +65,7 @@ def main():
     board = pcbnew.BOARD()
     placed, n_pads = {}, 0
 
-    def add_chip(ref, x, y):
+    def add_chip(ref, x, y, rot=0):
         nonlocal n_pads
         c = chips[ref]; typ = c['type']
         fpname = FP.get(typ) or dip_for(maxpin[ref])
@@ -57,23 +73,19 @@ def main():
         if fp is None: raise RuntimeError(f"no footprint {fpname} for {ref}")
         fp.SetReference(ref); fp.SetValue(typ)
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+        if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp
         n_pads += fp.GetPadCount()
 
-    # place grouped chips row-by-row
-    used = set(); row = 0
-    for gname, refs in GROUPS:
-        col = 0
-        for ref in refs:
-            if ref in chips:
-                add_chip(ref, X0 + col*DX, Y0 + row*DY); used.add(ref); col += 1
-                if col == 8: col = 0; row += 1     # wrap wide groups
-        row += 1
-    # any ungrouped chips -> a trailing 'misc' row
+    # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
+    row = 0
+    for ref in chips:
+        if ref in PLACE:
+            x, y, rot = PLACE[ref]; add_chip(ref, x, y, rot)
     col = 0
     for ref in sorted(chips):
-        if ref not in used:
-            add_chip(ref, X0 + col*DX, Y0 + row*DY); col += 1
+        if ref not in PLACE:
+            add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
             if col == 8: col = 0; row += 1
 
     # nets: create a NETINFO per net name, assign to each (ref,pin) pad
@@ -86,19 +98,19 @@ def main():
             pad = fp.FindPadByNumber(str(pin))
             if pad: pad.SetNet(ni); assigned += 1
 
-    # board outline (Edge.Cuts rectangle), sized to the placement
-    maxx = X0 + 8*DX + 30; maxy = Y0 + (row+1)*DY + 10
+    # board outline (Edge.Cuts) = the real ES101 board, 310 x 195 mm landscape
+    BW, BH = 312.0, 198.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))
         s.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(x1), pcbnew.FromMM(y1)))
         s.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(x2), pcbnew.FromMM(y2))); board.Add(s)
-    for a in [(10,10,maxx,10),(maxx,10,maxx,maxy),(maxx,maxy,10,maxy),(10,maxy,10,10)]: edge(*a)
+    for a in [(5,5,5+BW,5),(5+BW,5,5+BW,5+BH),(5+BW,5+BH,5,5+BH),(5,5+BH,5,5)]: edge(*a)
 
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
     print(f"wrote {out}: {len(placed)} footprints, {board.GetNetCount()} nets, "
-          f"{assigned} pad-net assignments, board {maxx-10:.0f}x{maxy-10:.0f} mm")
+          f"{assigned} pad-net assignments, board {BW:.0f}x{BH:.0f} mm")
 
 if __name__ == "__main__":
     main()
