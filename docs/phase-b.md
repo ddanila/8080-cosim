@@ -385,3 +385,8 @@ not the y54 I first guessed — **D102(269), D101(285), D99(301)** (ИЕ11/ИМ1
 Re-added at the correct positions (resolving the deferred item from last tick). The whole
 top-right is now reconstructed from reliable tight crops. Remaining: D100, D104, D106, D14, D31,
 D32 (the last few packed interface chips). VALIDATION: PASS, overlaps=0.
+
+## D106 added (right edge)
+Added **D106** (≈307,108) — the chip at the right edge just below the baud chain, read from the
+same tight crop. Remaining unplaced: D100, D104, D14, D31, D32 (a few scattered packed chips, each
+needing its own tight crop). VALIDATION: PASS, overlaps=0.

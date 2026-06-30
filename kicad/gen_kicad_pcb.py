@@ -243,6 +243,7 @@ def main():
     # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
     for cx, ref in [(269, 'D102'), (285, 'D101'), (301, 'D99')]:
         silk_box(cx - 5, 72, cx + 5, 92, ref)
+    silk_box(302, 98, 310, 118, 'D106')   # right-edge chip below the baud chain (≈307,108)
     # small chips just right of D11 (USART): D12 (≈215,72), D3 (≈215,92) -- read off the drawing.
     silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
