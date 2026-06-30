@@ -310,3 +310,9 @@ row **D42/D43/D58** (≈x142/170/197, y281, alongside D59) and the DRAM-array le
 (≈x112, y158/190). Completes the bottom row and the array's left edge. The board now shows the
 left/centre chip count; the RIGHT-side serial/tape/baud section (D92-D107: К561ИЕ11/ИМ1/ИР9 baud
 chain, ВН59, etc.) is the main remaining group of positions. VALIDATION: PASS, overlaps=0.
+
+## Right-side block started: D93 + top-edge row (placement outlines)
+Began filling the right-side serial/tape/video block (toward-76) with the clearly-separated chips
+as placement outlines: **D93** (big, ≈246,64) + the top-edge row **D97/D95/D98/D96** (≈y40, x245-278).
+The denser middle cluster there (D99/D100/D101/D102/D104/D106/D28/D12/D3 ...) has tilted/packed
+labels in the scan -> needs careful per-chip reads, deferred. VALIDATION: PASS, overlaps=0.

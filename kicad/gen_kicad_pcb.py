@@ -222,6 +222,12 @@ def main():
     for cx, ref in [(142, 'D42'), (170, 'D43'), (197, 'D58')]:
         silk_box(cx - 10, 277, cx + 10, 285, ref)              # bottom row, horizontal
     silk_box(108, 148, 116, 168, 'D50'); silk_box(108, 180, 116, 200, 'D51')   # array col0, vertical
+    # right-side serial/tape/video block (toward-76) -- the clearly-separated chips as placement
+    # outlines: D93 (big, ~246,64) + the top-edge row D97/D95/D98/D96 (~y40). The denser middle
+    # cluster (D99/D100/D101/D102/D104/D106/D28/D12/D3...) has tilted/packed labels -> deferred.
+    silk_box(239, 53, 253, 75, 'D93')
+    for cx, ref in [(245, 'D97'), (254, 'D95'), (268, 'D98'), (278, 'D96')]:
+        silk_box(cx - 4, 34, cx + 4, 46, ref)                 # top-edge row, small vertical
     BW, BH = BX1-BX0, BY1-BY0
 
     board.BuildListOfNets()
