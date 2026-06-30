@@ -9,8 +9,13 @@
 module juku_top (
     input  wire clk,        // board oscillator (crystal Z1 -> D59), feeds the clock subsystem
     input  wire reset_n,
-    input  wire osc         // SIM-ONLY: vm80a die-replica sampling clock (not a real КР580ВМ80А
+    input  wire osc,        // SIM-ONLY: vm80a die-replica sampling clock (not a real КР580ВМ80А
                             // pin). Wired only to U_CPU below, so the LVS (>=2-endpoint nets) drops it.
+    // SIM-ONLY keyboard stimulus (opt-in via kbd_en). Wired only to U_PPI0 below, so -- like
+    // osc -- the LVS drops these 1-endpoint nets. A typed key = (kbd_kcol,kbd_kbit,kbd_shift).
+    input  wire kbd_en, kbd_pressed, kbd_shift,
+    input  wire [3:0] kbd_kcol,
+    input  wire [2:0] kbd_kbit
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
@@ -132,9 +137,12 @@ module juku_top (
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
-                      .reset(reset_sys), .portc_lo(mem_mode));
+                      .reset(reset_sys), .portc_lo(mem_mode),
+                      .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
+                      .kcol(kbd_kcol), .kbit(kbd_kbit));
     ppi_8255  U_PPI1 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n),
-                      .reset(reset_sys), .portc_lo());
+                      .reset(reset_sys), .portc_lo(),
+                      .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kcol(4'b0), .kbit(3'b0));
     pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());

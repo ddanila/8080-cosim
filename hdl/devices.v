@@ -210,12 +210,34 @@ endmodule
 // Peripherals: behavioral IN = last-OUT (the model that boots ekta37 in juku_struct). Write latches
 // the addressed register while the I/O write strobe is active (DB is held stable by the 8238 then);
 // read drives the last value back. PPI0 Port C low = the banking mode.
+// 8255 PPI: latched ports + Port C low -> banking mode (portc_lo), incl. the BSR (bit
+// set/reset) control writes (A==3). PPI0 (D26) also carries the KEYBOARD: Port A write
+// low-nibble = the column the BIOS scans; Port B read = the 74148-encoded held key
+// {SHIFT b7-6 active-LOW, code b3-1, GS b0 active-LOW}. The key is presented as sim-only
+// stimulus (kbd_*, opt-in via kbd_en so a kbd-off boot stays byte-identical); PPI1 ties it off.
 module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
-                 output wire [1:0] portc_lo);
-    reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
-    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
-    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
-    assign portc_lo = regs[2][1:0];
+                 output reg [1:0] portc_lo,
+                 input wire kbd_en, kbd_pressed, kbd_shift,
+                 input wire [3:0] kcol, input wire [2:0] kbit);
+    reg [7:0] regs [0:3]; reg [7:0] portc; reg [2:0] pb; integer i;
+    reg [3:0] kbd_col_sel = 0;                  // last column the BIOS wrote to Port A
+    initial begin for (i=0;i<4;i=i+1) regs[i]=0; portc=0; portc_lo=0; end
+
+    wire held    = kbd_en & kbd_pressed;
+    wire kactive = held & (kbd_col_sel == kcol);
+    wire [7:0] kbd_portb = {1'b1, ~(held & kbd_shift), 2'b00,
+                            kactive ? {((~kbit) & 3'h7), 1'b0} : 4'hF};
+
+    assign D = (~cs_n & ~rd_n) ? ((kbd_en & A == 2'd1) ? kbd_portb : regs[A]) : 8'bz;
+    always @(*) if (~cs_n & ~wr_n) begin
+        regs[A] = D;
+        if (A == 2'd0) kbd_col_sel = D[3:0];    // Port A write = keyboard column select
+        if (A == 2'd2) begin portc = D; portc_lo = D[1:0]; end
+        else if (A == 2'd3) begin               // BSR: set/reset one Port C bit
+            if (D[7]) begin portc = 0; portc_lo = 0; end
+            else begin pb=(D>>1)&3'd7; if (D[0]) portc[pb]=1; else portc[pb]=0; portc_lo=portc[1:0]; end
+        end
+    end
 endmodule
 
 module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);

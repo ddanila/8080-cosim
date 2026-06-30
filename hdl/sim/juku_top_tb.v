@@ -21,7 +21,15 @@ module juku_top_tb();
   integer vram_writes=0, max_vram=6000, mcyc=0;
   reg vram_seen=0, sq=0;
 
-  juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc));
+  // keyboard stimulus (opt-in: keyat=0 => kbd off => boot byte-identical). Press the
+  // configured key once the banner is drawn (vram_writes >= keyat), hold for khold osc
+  // cycles, then release so the BIOS sees a clean edge. kcol/kbit/kshift = the decoded key.
+  reg kbd_en=0, kbd_pressed=0, kbd_shift=0; reg [3:0] kbd_kcol=0; reg [2:0] kbd_kbit=0;
+  integer keyat=0, khold=900000, key_t=-1, kcolp=0, kbitp=0, kshiftp=0;
+
+  juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
+               .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
+               .kbd_kcol(kbd_kcol), .kbd_kbit(kbd_kbit));
 
   // reset + ready (discrete subsystems = boundary, driven here)
   initial begin force dut.ready=1'b1; force dut.reset_sys=1; #2000 force dut.reset_sys=0; end
@@ -34,10 +42,13 @@ module juku_top_tb();
     force dut.phi2=0;
   end
 
-  // count machine cycles off the structural SYNC net
+  // count machine cycles off the structural SYNC net; drive the keyboard press window
   always @(posedge osc) begin
     if (dut.sync && !sq) mcyc <= mcyc+1;
     sq <= dut.sync;
+    if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) key_t <= 0;  // arm on banner
+    else if (key_t >= 0) key_t <= key_t + 1;
+    kbd_pressed <= (key_t >= 0 && key_t < khold);                               // hold then release
   end
 
   // count video writes (RAM write to >=0xD800); dump the framebuffer at the bound
@@ -66,6 +77,12 @@ module juku_top_tb();
 
   initial begin
     if ($value$plusargs("maxvram=%d", max_vram)) ;
+    if ($value$plusargs("keyat=%d",  keyat))  ;          // press key after N video writes
+    if ($value$plusargs("kcol=%d",   kcolp))  ;          // decoded key column 0-15
+    if ($value$plusargs("kbit=%d",   kbitp))  ;          // decoded key row bit 0-7
+    if ($value$plusargs("kshift=%d", kshiftp)) ;         // 1 = SHIFT held (uppercase)
+    if ($value$plusargs("khold=%d",  khold))  ;
+    if (keyat != 0) begin kbd_en=1; kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
   end
   initial begin #400000000;       // time cap (the bit-sliced DRAM makes this sim heavy)
     $display("[SIM] time cap mcyc=%0d vram_writes=%0d", mcyc, vram_writes); dump_vram; $finish;
