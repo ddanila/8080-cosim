@@ -132,8 +132,8 @@ def main():
         r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
         r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 2.5)))     # just above the top narrow end
         v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
-        v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.4), pcbnew.FromMM(2.4)))            # fits the small DIP-14/16
-        v.SetTextThickness(pcbnew.FromMM(0.35))
+        v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.7), pcbnew.FromMM(2.7)))            # readable, still fits DIP-14/16
+        v.SetTextThickness(pcbnew.FromMM(0.45))
         v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)                                # centred on the body
         try: v.SetTextAngle(pcbnew.EDA_ANGLE(mang, pcbnew.DEGREES_T))                     # along the chip
         except Exception: v.SetTextAngle(mang * 10)

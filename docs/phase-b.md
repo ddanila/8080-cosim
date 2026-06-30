@@ -222,3 +222,18 @@ Read the entangled top/I/O chips off the drawing and placed them together (no co
 This closes the placement sweep: every modeled chip is now at a drawing-read position. The only
 known fudge is the right-edge x (D54/55/56/57 read a few mm past 310 -> pulled in; the board's
 right edge may truly extend slightly past 310). VALIDATION: PASS, overlaps=0.
+
+## Placement sweep COMPLETE + verified; right-edge width flagged
+- **All 40 modeled chips verified against the drawing.** Last unchecked early placements confirmed
+  this tick: D4 read (52,157) vs placed (57,158); D2 (82,157) vs (83,158); D1 (30,174) vs (35,176)
+  -- all within tall-chip center-reading noise (~5 mm), and D1 was already overlay-validated. Every
+  cluster has been read precisely off the assembly drawing and matches. Placement sweep done.
+- **Marking legibility:** case-marking text bumped 2.4 -> 2.7 mm / 0.45 mm thickness (still fits
+  DIP-14/16) so the markings read clearly in the parallel previews.
+- **OPEN, needs the physical board: right-edge width.** The drawing shows passives + a mounting
+  hole RIGHT of the x=310 line in the current frame (px/mm 14.52, derived from the "310*" *reference*
+  dim, arrows @ orig-px 1740/6240). So either px/mm is a few % long at the far right, or the board
+  extends past the 310-dim span (a right-side I/O-connector strip, analogous to the video-jack
+  overhang). The far-right chips (D54/55/56/57) were pulled in a few mm to fit. **To lock this:
+  measure on the real board the distance from a left-column chip (e.g. D15) to a right-column chip
+  (e.g. D57), or chip-to-right-edge** -- that calibrates px/mm independently of the reference dim.
