@@ -395,3 +395,18 @@ needing its own tight crop). VALIDATION: PASS, overlaps=0.
 Added **D32** (≈213,46) — a vertical chip in the top band, left of D28, read from a tight crop.
 Remaining unplaced: D14, D31, D100, D104 (not visible in the regions cropped so far; likely small
 chips needing their own tight crops, or possibly not all ICs). VALIDATION: PASS, overlaps=0.
+
+## Placement layout COMPLETE (milestone)
+Final count reconciliation: **102 distinct chip positions, no duplicates** — 40 LVS-net-modeled
+chips + 62 placement-only silk outlines. The board now faithfully reproduces the ES101 layout in
+every region (top connectors X1/X2 + transceiver row + 8-EPROM ROM bank; bus band; 32-chip DRAM
+array with its mux/counter/buffer columns; CPU cluster D1/D4/D2/D107; clock+video-timing cluster;
+PIT/PPI I/O column; right-side serial/tape/baud block; bottom row + X9; corner mounting holes).
+- **Method that worked for dense areas:** when wide-crop reads conflicted, a magnified per-region
+  crop settled the true positions and caught earlier errors (top band, baud chain).
+- **Not placed** (genuinely unresolvable from this 200-dpi scan): D14, D31, D100, D104 — not found
+  in any cropped region; need a higher-res scan or the physical board. D8 is covered by the DLB
+  position; D92 ("B92") is of unclear component class.
+- **Next phase is no longer placement** but **net-tracing**: promoting the 62 placement outlines
+  into full LVS-modeled chips by tracing their pins from the schematic (the bom-toward-76 grind),
+  which advances the runnable digital twin rather than just the picture.
