@@ -239,9 +239,10 @@ def main():
     for y0, ref in [(203, 'D30'), (219, 'D13'), (236, 'D105')]:
         silk_box(20, y0, 40, y0 + 8, ref)
     silk_box(53, 226, 65, 248, 'D52')
-    # NOTE: the baud-rate chain (D99/D100/D101/D102) was earlier placed @ y54 from a lower-res crop,
-    # but the reliable tight crop shows the y55 row is D28/D97/D95/D94/D98/D96 -- those baud
-    # positions were wrong (overlapping that row), so removed pending a careful re-read.
+    # baud-rate chain re-read from a tight crop: a row at y≈82 (BELOW the y55 band, not the y54 I
+    # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
+    for cx, ref in [(269, 'D102'), (285, 'D101'), (301, 'D99')]:
+        silk_box(cx - 5, 72, cx + 5, 92, ref)
     # small chips just right of D11 (USART): D12 (≈215,72), D3 (≈215,92) -- read off the drawing.
     silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),

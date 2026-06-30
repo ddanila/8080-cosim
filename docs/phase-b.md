@@ -378,3 +378,10 @@ unplaced. Corrected the row (was placed at y40/cramped from a lower-res crop), m
 to ROM-row level (≈248,86) where top_rows showed it, and **removed the baud chain** (D99-D102 —
 their y54 placement overlapped this row and was wrong; defer to a careful re-read). The top-right
 is now self-consistent. VALIDATION: PASS, overlaps=0.
+
+## Baud-rate chain placed correctly (y≈82, from a tight crop)
+Re-read the baud-rate chain with a magnified crop: it's a row at **y≈82** (below the y55 band),
+not the y54 I first guessed — **D102(269), D101(285), D99(301)** (ИЕ11/ИМ1/ИР9 per tape-serial.md).
+Re-added at the correct positions (resolving the deferred item from last tick). The whole
+top-right is now reconstructed from reliable tight crops. Remaining: D100, D104, D106, D14, D31,
+D32 (the last few packed interface chips). VALIDATION: PASS, overlaps=0.
