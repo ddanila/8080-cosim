@@ -1,0 +1,40 @@
+# Phase B — PCB from the LVS-verified netlist
+
+Phase B turns the schematic-rooted, LVS-verified connectivity into a physical board. The
+bridge already exists (`kicad/juku.board.json` is both the LVS source *and* the PCB source),
+so the PCB and the digital twin stay provably the same circuit.
+
+## Pipeline (established)
+`kicad/gen_kicad_pcb.py` (run with KiCad's bundled python, which has the `pcbnew` API so the
+file is always format-valid):
+```
+$KICAD/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 \
+    kicad/gen_kicad_pcb.py kicad/juku.board.json kicad/juku.kicad_pcb
+```
+It loads a real DIP footprint per chip (by package: 8080/8255 → DIP-40, 2764/8238/8251/8259
+→ DIP-28, 8253 → DIP-24, 8286 → DIP-20, РУ5/74-series → DIP-16, gates → DIP-14), assigns
+every net to its pads, lays the chips out by functional group, and draws a board outline.
+
+## Current outcome ✅
+A valid `kicad/juku.kicad_pcb`: **40 footprints, 100 nets, 417 pad-net assignments**, loads in
+KiCad 10 and `kicad-cli` (renders via `kicad-cli pcb export svg/pdf`). The full ratsnest is
+present — every LVS net is a real PCB connection. This is the first time the model is a
+*board*, not just a netlist. Placement is a rough functional-grouped grid (portrait); not yet
+the real layout.
+
+## Roadmap (outcomes Phase B can still provide)
+1. **Placement refinement** — position chips per the assembly drawing
+   (`juku3000/docs/…emaplaat.pdf`: ROM row top, DRAM array centre, edge connector left) so the
+   board matches the real ES101 layout (and becomes landscape).
+2. **Bus/backplane + connector** — model the expansion connector X1/X2 (a real component), then
+   add the located transceivers D23/D24/D25/D29 (`bus-interface.md`) — this *needs* the PCB
+   context (the connector), so it belongs here, and pushes the chip count toward 76.
+3. **Routing** — autoroute (freerouting) or manual → copper traces; then DRC clean.
+4. **Fab outputs** — Gerbers, drill, BOM, pick-and-place, 3D render (`kicad-cli`).
+5. **Footprint fidelity** — swap generic DIPs for the exact Soviet packages where they differ
+   (e.g. К565РУ5, the К170 drivers, the edge connector).
+
+## Why this matters
+The north-star is one schematic-rooted model that is simultaneously the runnable digital twin,
+the LVS-checked structure, and the PCB. Phase B closes the last leg: the same `board.json` that
+boots the BIOS (cosim/HDL) and passes LVS now also lays out as a board.
