@@ -43,8 +43,15 @@ schematic*), with `cosim/` + MAME as validation oracles.
     The merge = functionalize `devices.v` so the **LVS-checked `juku_top.v` itself boots** ekta37
     byte-identical to cosim (then retire the `_b` duplicate). **Step-1 landed:** the combinational
     glue (8286 buffer, 74138 I/O decode, clock gates ЛН1/ЛА12/ЛА1) is now functional in `devices.v`;
-    `juku_top` elaborates and **LVS stays IN SYNC** (100/100). Next: CPU(vm80a)/8238 datapath +
-    osc routing, then memory, peripherals, and a `juku_top` boot harness.
+    `juku_top` elaborates and **LVS stays IN SYNC** (100/100). **Step-2 landed:** `cpu_8080` now
+    wraps the **vm80a die-replica** (real core) and `sysctl_8238` is functional (status latch on
+    STSTB → MEMR/MEMW/IORD/IOWR/INTA strobes + D↔DB bridge). The vm80a sampling `osc` is a sim-only
+    `juku_top` input wired to nothing else, so LVS drops it (1-endpoint net); vm80a is blackboxed in
+    the LVS yosys read (sim compiles `vm80a.v` for the boot). Added `proc` to the LVS yosys cmd so
+    `write_json` handles the new register logic. LVS still **IN SYNC** (100/100); sim elaborates.
+    **Boot is now gated on the clock subsystem** (functional Φ1/Φ2 + STSTB) — the next step: the
+    discrete clock mesh (D59/D40/D33/D36/D38/D35) is still stubbed, and its gate inputs are a
+    documented un-traced boundary. Then memory (EPROM/decode/DRAM), peripherals, and a boot harness.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

@@ -3,17 +3,24 @@
 // with behavioral models (or a vendored 8080 core) for simulation.
 `default_nettype none
 
-// ---- bare i8080A CPU (КР580ВМ80) ----
+// ---- i8080A CPU (КР580ВМ80А): vm80a die-replica core ----
+// Merge step 2: real core (was a stub). `osc` is the die-replica's high-speed sampling clock --
+// a SIM artifact, NOT a pin on the real КР580ВМ80А (which derives timing from Φ1/Φ2 internally).
+// In juku_top it is wired to a sim-only top input that connects to nothing else, so the LVS
+// (which only compares nets with >=2 mapped-chip endpoints) drops it -- no spurious board net.
+// vm80a is undefined in the LVS yosys read (devices.v + juku_top.v only) -> harmlessly blackboxed;
+// the simulator compiles hdl/vendor/vm80a.v for the real boot.
 module cpu_8080 (
+    input  wire        osc,
     input  wire        phi1, phi2, ready, reset, hold, intr,
     output wire [15:0] A,
     inout  wire [7:0]  D,        // multiplexed data + status byte
     output wire        dbin, wr_n, sync, hlda, inte, wait_o
 );
-    // TODO: vendor an open Verilog 8080 core.
-    assign A = 16'b0;
-    assign D = 8'bz;
-    assign {dbin, wr_n, sync, hlda, inte, wait_o} = 6'b011000;
+    vm80a u (.pin_clk(osc), .pin_f1(phi1), .pin_f2(phi2), .pin_reset(reset),
+             .pin_a(A), .pin_d(D), .pin_hold(hold), .pin_hlda(hlda), .pin_ready(ready),
+             .pin_wait(wait_o), .pin_int(intr), .pin_inte(inte), .pin_sync(sync),
+             .pin_dbin(dbin), .pin_wr_n(wr_n));
 endmodule
 
 // NOTE: no clk_8224 module — this board generates the clock discretely
@@ -27,8 +34,18 @@ module sysctl_8238 (
     input  wire       dbin, wr_n, hlda, ststb_n, busen_n,
     output wire       memr_n, memw_n, iord_n, iowr_n, inta_n
 );
-    assign D = 8'bz; assign DB = 8'bz;
-    assign {memr_n, memw_n, iord_n, iowr_n, inta_n} = 5'b11111;
+    // Merge step 2: real 8238 (was a stub). Latch the CPU status byte on STSTB, derive the four
+    // command strobes from the status bits + DBIN/WR, and bridge D <-> DB (gated by BUSEN).
+    // Status bits: [7]=MEMR? no -> [6]=INP, [4]=OUT, [0]=INTA, MEMR = read & !INP & !INTA.
+    reg [7:0] status = 0;
+    always @(negedge ststb_n) status <= D;            // STSTB strobe latches the status byte
+    assign memr_n = ~(dbin  & ~status[6] & ~status[0]);
+    assign iord_n = ~(dbin  &  status[6]);            // INP
+    assign memw_n = ~(~wr_n & ~status[4]);            // memory write (not OUT)
+    assign iowr_n = ~(~wr_n &  status[4]);            // OUT
+    assign inta_n = ~(dbin  &  status[0]);            // INTA
+    assign D  = (dbin  & ~busen_n) ? DB : 8'bz;       // read:  system bus -> CPU
+    assign DB = (~wr_n & ~busen_n) ? D  : 8'bz;       // write: CPU -> system bus
 endmodule
 
 // ---- i8286 octal bus transceiver (КР580ВА86), used as address buffer ----

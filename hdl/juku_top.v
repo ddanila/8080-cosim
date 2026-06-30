@@ -7,8 +7,10 @@
 `default_nettype none
 
 module juku_top (
-    input  wire clk,        // board oscillator feeding the 8224
-    input  wire reset_n
+    input  wire clk,        // board oscillator (crystal Z1 -> D59), feeds the clock subsystem
+    input  wire reset_n,
+    input  wire osc         // SIM-ONLY: vm80a die-replica sampling clock (not a real КР580ВМ80А
+                            // pin). Wired only to U_CPU below, so the LVS (>=2-endpoint nets) drops it.
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
@@ -36,7 +38,7 @@ module juku_top (
     wire [1:0]  mem_mode;
 
     // ============ CPU core (the discrete chips) ============
-    cpu_8080  U_CPU (.phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
+    cpu_8080  U_CPU (.osc(osc), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
                      .hold(1'b0), .intr(intr), .A(A), .D(D),
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
