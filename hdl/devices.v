@@ -171,10 +171,17 @@ endmodule
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====
 module ie7_ctr   (input wire clk, load_n, input wire [3:0] d, output wire [3:0] q, output wire co); // D44-47 ИЕ7
     assign q = 4'bz; assign co = 1'bz; endmodule
-module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y);  // D48-50 КП14 quad 2:1
-    assign y = 4'bz; endmodule
-module rascas_dec (input wire a, b, c, input wire g, output wire [3:0] y_n);  // D53 ИД7 RAS/CAS/bank
-    assign y_n = 4'bz; endmodule
+// D48/D49 КП14 quad 2:1 mux: y = sel ? b : a (en_n low = enabled). For DRAM addressing, sel picks
+// the ROW half (b) vs COL half (a) of the CPU address onto the 8-bit muxed bus MA.
+module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y);
+    assign y = en_n ? 4'bz : (sel ? b : a); endmodule
+// D53 ИД7 -- realized as the DRAM RAS/CAS strobe generator (the РЕ3/АГ3 timing it really comes from
+// is un-modeled -> boundary). Repurposed inputs: a = RAM-select (ram_n, active-low), b = Φ1, c = Φ2.
+// RAS asserts on Φ1 of a RAM access (latches the row), CAS on Φ2 (latches the col). y_n[0]=ras_n, [1]=cas_n.
+module rascas_dec (input wire a, b, c, input wire g, output wire [3:0] y_n);
+    assign y_n[0] = ~(~a & b);     // ras_n
+    assign y_n[1] = ~(~a & c);     // cas_n
+    assign y_n[3:2] = 2'b11; endmodule
 // ---- video dot-clock chain (scan: docs/transcription/dram-video-timing.md, sheet-2 BR) ----
 module ag3_oneshot (input wire a_n, b, clr_n, output wire q, q_n);  // D56 АГ3 (74123) RC -> 16 MHz
     assign q = 1'bz; assign q_n = 1'bz; endmodule
@@ -183,32 +190,57 @@ module ie10_ctr (input wire clk, clr_n, load_n, input wire [3:0] d,  // D103 И�
     assign q = 4'bz; assign co = 1'bz; endmodule
 
 // ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
-module dram_64kx1 (input wire [7:0] ma,            // multiplexed row/col address
+// К565РУ5 64Kx1 DRAM (one chip = one data bit). Multiplexed addressing: latch the ROW from MA on
+// RAS, the COL from MA on CAS -> 16-bit cell address. Read is sample-held on CAS and driven onto DB
+// for the duration of the access (we_n high = read); write commits on CAS when we_n low.
+module dram_64kx1 (input wire [7:0] ma,
                    input wire ras_n, cas_n, we_n, di,
                    output wire do_);
-    assign do_ = 1'bz;   // behavioral 64Kx1 array TODO
+    reg [7:0] row; reg mem [0:65535]; reg held; integer i;
+    initial begin held = 0; for (i = 0; i < 65536; i = i+1) mem[i] = 0; end
+    always @(negedge ras_n) row <= ma;                       // latch row
+    always @(negedge cas_n) begin
+        if (~we_n) mem[{row, ma}] <= di;                     // write
+        else       held          <= mem[{row, ma}];          // read: sample-hold
+    end
+    assign do_ = (we_n & (~ras_n | ~cas_n)) ? held : 1'bz;   // drive on read, through the access
 endmodule
 
 // ---- peripheral shells ----
+// Peripherals: behavioral IN = last-OUT (the model that boots ekta37 in juku_struct). Write latches
+// the addressed register while the I/O write strobe is active (DB is held stable by the 8238 then);
+// read drives the last value back. PPI0 Port C low = the banking mode.
 module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
                  output wire [1:0] portc_lo);
-    assign D = 8'bz; assign portc_lo = 2'b00;
+    reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
+    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
+    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+    assign portc_lo = regs[2][1:0];
 endmodule
 
 module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
-    assign D = 8'bz;
+    reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
+    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
+    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
 module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
-    assign D = 8'bz;
+    reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
+    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
+    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
 module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
-    assign D = 8'bz;
+    reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
+    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
+    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
 module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n,
                  output wire intr, input wire inta_n);
-    assign D = 8'bz; assign intr = 1'b0;
+    reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
+    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
+    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+    assign intr = 1'b0;     // no interrupts for the polled ekta37 boot
 endmodule
 `default_nettype wire

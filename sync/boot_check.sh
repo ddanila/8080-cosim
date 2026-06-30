@@ -23,13 +23,17 @@ echo "== cosim reference: real ekta37 boot @ $WRITES video writes =="
 cp cosim/vram.bin "$TMP/ref_ekta37.bin"
 
 echo "== HDL sims must match cosim @ $WRITES writes =="
-for tb in juku_sim_tb juku_chips_tb juku_struct_tb; do
+# juku_top_tb drives the REAL LVS-checked netlist (juku_top.v + devices.v); the others are
+# self-contained levels. A green juku_top boot = the one model is PCB netlist + LVS structure
+# + runnable twin, all at once. (It is heavier -- bit-sliced DRAM -- so a touch slower.)
+for tb in juku_sim_tb juku_chips_tb juku_struct_tb juku_top_tb; do
   case $tb in
-    juku_sim_tb)    dump=vram_hdl.bin ;;
-    juku_chips_tb)  dump=vram_chips.bin ;;
-    juku_struct_tb) dump=vram_struct.bin ;;
+    juku_sim_tb)    dump=vram_hdl.bin;    src="hdl/sim/$tb.v" ;;
+    juku_chips_tb)  dump=vram_chips.bin;  src="hdl/sim/$tb.v" ;;
+    juku_struct_tb) dump=vram_struct.bin; src="hdl/sim/$tb.v" ;;
+    juku_top_tb)    dump=vram_top.bin;    src="hdl/devices.v hdl/juku_top.v hdl/sim/$tb.v" ;;
   esac
-  iverilog -g2012 -o "$TMP/$tb" hdl/vendor/vm80a.v "hdl/sim/$tb.v"
+  iverilog -g2012 -o "$TMP/$tb" hdl/vendor/vm80a.v $src
   vvp "$TMP/$tb" +maxvram=$WRITES >/dev/null 2>&1
   if cmp -s "$TMP/ref_ekta37.bin" "hdl/sim/$dump"; then echo "  PASS  $tb == cosim"
   else echo "  FAIL  $tb differs from cosim"; fail=1; fi

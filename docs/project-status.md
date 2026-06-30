@@ -62,6 +62,26 @@ schematic*), with `cosim/` + MAME as validation oracles.
     (EPROM/decode/DRAM bodies). Then peripherals + a boot harness. 
   - *STSTB sub-step landed:* the 8238 needs a SYNC-qualified strobe to latch the CPU status byte. Realized it: D38 (ЛА1) now outputs `ststb_n = ~sync` (its deferred inputs set so clkg_d33/d39_y don't gate; SYNC fed into one input [assumed]). Added the **SYNC net** (D1.19→D38.12, src=`assumed`) to board.json so it matches; **LVS IN SYNC 101/101** (provenance now 86 scan + 9 prom + 6 assumed/boundary). Probe: STSTB strobes, the 8238 latches status, and **MEMR asserts on the first fetch** — vm80a runs one machine cycle then stalls only because **memory still returns z** (blocker #2). So STSTB is done; **memory (EPROM/decode/DRAM bodies) is the last thing between here and a boot**. 
   - *Memory part 1 (EPROM+decode) landed — vm80a EXECUTES the real BIOS through `juku_top`.* `decode_prom` (D6) realizes the recovered mode-0 map (ROM 0x0000-0x3FFF, split D15 low 8K / D16 high 8K by A13, RAM elsewhere); `eprom_8k` loads ekta37 with sample-and-hold reads. Rewired the EPROM split: D16's CE = the decode's `rev` output (new **REV** net, src=`assumed`), both OE = **MEMR** (read strobe; 2764 convention). Also: LVS yosys now reads `devices.v` as a **`-lib` blackbox** (connectivity only) so it doesn't mis-resolve the now-functional tri-state buses; `$readmemh` guarded by `` `ifndef YOSYS ``. **LVS IN SYNC 101/101** (86 scan + 9 prom + 7 assumed/boundary). Probe: vm80a fetches `C3 17 00` @0x0000 → **JMPs to 0x0017** → executes 100 instructions sustained (114 machine cycles) — real control flow on the LVS-checked netlist. Remaining for a full boot: **DRAM** (RAM + the 0xD800 video writes) — the bit-sliced РУ5 array + its multiplexed MA/RAS/CAS addressing (the deepest boundary). Then a boot harness + the byte-identical-to-cosim guard.
+  - **★ Memory part 2 (DRAM) + peripherals landed — `juku_top` BOOTS ekta37 BYTE-IDENTICAL TO
+    COSIM. The merge's north-star is reached.** The LVS-checked structural netlist *itself* is
+    now a runnable digital twin: one model = PCB netlist + LVS structure + emulation, all at once.
+    - `dram_64kx1` (8× bit-sliced К565РУ5, D60–67): row latch on RAS, col on CAS, sample-held
+      read driven during the access; `kp14_mux` (D48/49) multiplexes BA[15:8]/BA[7:0] onto MA by
+      Φ1; `rascas_dec` (D53 ИД7) makes RAS=~(RAMsel&Φ1), CAS=~(RAMsel&Φ2). board.json reconciled
+      (the row-address taps + Φ→sel/D53 + a RAM_SEL net, tagged assumed/boundary); the video
+      counters go dangling (video *readout* path is the remaining un-modeled boundary).
+    - Peripherals (8255×2, 8253×3, 8251, 8259, 1793) functionalized as IN=last-OUT (the model
+      that boots ekta37 in juku_struct); PPI0 Port C low → banking mode.
+    - **THE decisive sim-fidelity fix:** the data buses must be `tri1` (pull-up, like the real
+      open bus) — as plain `wire` they float to z/x and *poison the die-accurate vm80a's internal
+      capture*, so register ops/flags compute wrong (every conditional loop exited after 1 pass;
+      the BIOS RAM-test then hung at its error handler). With `tri1` the RAM test passes (2000+11520
+      iters) and the full boot is byte-identical. yosys has no `tri1`, so it's `` `ifdef YOSYS ``-guarded
+      to a plain wire (connectivity is unchanged → LVS untouched). Also: the harness must drive the
+      precise non-overlapping Φ1/Φ2 + mid-phase `osc` lockstep the replica needs (clock mesh = boundary).
+    - **LVS IN SYNC** (86 scan + 9 prom + 8 assumed/boundary). `hdl/sim/juku_top_tb.v` is the boot
+      harness; **`sync/boot_check.sh` now guards `juku_top` too** (== cosim @ 6000 writes, sha1
+      `f9163d30…`). Remaining: retire the duplicate `_b` bodies (Step 5); model the video readout chain.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

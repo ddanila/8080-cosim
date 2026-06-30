@@ -31,7 +31,12 @@ hdl/sim/*.hex
 # cosim artifacts
 cosim/trace
 vram_*.bin
+/vram.bin
 *.png
+
+# KiCad GUI/local files (the board model is juku.board.json + the generated .kicad_sch)
+kicad/*.kicad_pro
+kicad/*.kicad_prl
 
 # Python
 __pycache__/

@@ -14,7 +14,14 @@ module juku_top (
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
-    wire [7:0]  D;          // CPU data/status (mux) <-> 8238
+    // CPU data/status (mux) <-> 8238. tri1 (pull-up like the real open bus) so the idle
+    // bus floats to 0xFF, not z/x -- z/x poisons the die-accurate vm80a's internal capture.
+    // yosys's frontend has no tri1; it only needs connectivity, so it reads a plain wire.
+`ifdef YOSYS
+    wire [7:0]  D;
+`else
+    tri1 [7:0]  D;
+`endif
     wire        dbin, wr_n, sync, hlda, inte, wait_o;
 
     // ---- clock / reset domain (boundary to a DISCRETE subsystem) ----
@@ -25,7 +32,11 @@ module juku_top (
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
     wire [15:0] BA;         // buffered address bus
-    wire [7:0]  DB;         // buffered system data bus
+`ifdef YOSYS
+    wire [7:0]  DB;         // buffered system data bus (see D above re: tri1 vs wire)
+`else
+    tri1 [7:0]  DB;
+`endif
     wire        memr_n, memw_n, iord_n, iowr_n, inta_n;
     wire        intr;
     wire        busen_n = 1'b0;       // bus always enabled
@@ -107,9 +118,12 @@ module juku_top (
     ie7_ctr  U_D45 (.clk(co0),     .load_n(1'b1), .d(4'b0), .q(vctr_hi), .co(co1));
     ie7_ctr  U_D46 (.clk(co1),     .load_n(1'b1), .d(4'b0), .q(),        .co(co2));
     ie7_ctr  U_D47 (.clk(co2),     .load_n(1'b1), .d(4'b0), .q(),        .co());
-    kp14_mux U_D48 (.a(BA[3:0]), .b(vctr_lo), .sel(1'b0), .en_n(1'b0), .y(MA[3:0]));
-    kp14_mux U_D49 (.a(BA[7:4]), .b(vctr_hi), .sel(1'b0), .en_n(1'b0), .y(MA[7:4]));
-    rascas_dec U_D53 (.a(BA[8]), .b(BA[9]), .c(1'b0), .g(1'b1), .y_n({rc_nc, cas_n, ras_n}));
+    // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
+    // CAS. (CPU row/col realized; the video path through this mux is the un-modeled boundary.)
+    kp14_mux U_D48 (.a(BA[3:0]), .b(BA[11:8]),  .sel(phi1), .en_n(1'b0), .y(MA[3:0]));
+    kp14_mux U_D49 (.a(BA[7:4]), .b(BA[15:12]), .sel(phi1), .en_n(1'b0), .y(MA[7:4]));
+    // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
+    rascas_dec U_D53 (.a(ram_sel_n), .b(phi1), .c(phi2), .g(1'b1), .y_n({rc_nc, cas_n, ras_n}));
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;
