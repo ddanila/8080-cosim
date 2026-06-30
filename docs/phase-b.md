@@ -90,3 +90,7 @@ cluster, replacing the earlier region-level guesses.
   measured ~260 on the drawing (~270-279 incl. the VIDEO connector overhang; sanity-check vs
   another drawing pending). Spread the lower clusters (CPU/bus/clock) down into the taller board.
   BW/BH are a clearly-marked parameter to update with the exact measured size.
+- **DRAM bank → exact read row.** Grid-read the populated К565РУ5 as a horizontal row of
+  vertical sockets at y≈158 (descending refdes L→R: D64@x159 … D60@x235, ~19 mm pitch; D65-67
+  continue left), center-right — correcting my earlier far-right guess. Moved the video row up
+  to y≈130 to clear it.
