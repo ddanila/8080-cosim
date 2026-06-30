@@ -37,6 +37,14 @@ schematic*), with `cosim/` + MAME as validation oracles.
     `docs/boot-banner-ekta37-hdl.png`). The sim's memory/banking/I-O is behavioral
     (mirrors cosim); *step 3* decomposes it into actual chip instances wired per the
     LVS netlist.
+  - *Step 4 (STARTED) — unify the two copies into one runnable LVS model.* Today `juku_top.v`
+    (the LVS netlist) instantiates the **`devices.v` STUBS** (drive `z`/const → can't boot), while
+    `juku_struct_tb.v` is a **separate parallel copy** with functional `_b` bodies that does boot.
+    The merge = functionalize `devices.v` so the **LVS-checked `juku_top.v` itself boots** ekta37
+    byte-identical to cosim (then retire the `_b` duplicate). **Step-1 landed:** the combinational
+    glue (8286 buffer, 74138 I/O decode, clock gates ЛН1/ЛА12/ЛА1) is now functional in `devices.v`;
+    `juku_top` elaborates and **LVS stays IN SYNC** (100/100). Next: CPU(vm80a)/8238 datapath +
+    osc routing, then memory, peripherals, and a `juku_top` boot harness.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

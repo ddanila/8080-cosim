@@ -32,11 +32,14 @@ module sysctl_8238 (
 endmodule
 
 // ---- i8286 octal bus transceiver (КР580ВА86), used as address buffer ----
+// Functional (merge step 1): t selects direction, oe_n enables. As an address buffer the board
+// wires t=1, oe_n=0 (CPU A -> buffered BA), so Aout follows Ain. (Ain side undriven: CPU drives it.)
 module buf_8286 (
     inout wire [7:0] Ain, Aout,
     input wire       oe_n, t
 );
-    assign Ain = 8'bz; assign Aout = 8'bz;
+    assign Aout = (~oe_n &  t) ? Ain : 8'bz;
+    assign Ain  = (~oe_n & ~t) ? Aout : 8'bz;
 endmodule
 
 // ---- I/O port decoder (board glue: 74xx138-style) ----
@@ -104,14 +107,18 @@ module stb_gen   (input wire osc, output wire stb);                  // D38 (leg
 module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40 СТ16 (74161-class)
                   output wire [3:0] q, output wire co);
     assign q = 4'bz; assign co = 1'bz; endmodule
-module ln1_inv   (input wire a, output wire y); assign y = 1'bz; endmodule   // D33 ЛН1 inverter gate
-module la12_gate (input wire a, b, output wire y); assign y = 1'bz; endmodule // D36 ЛА12 NAND gate
+module ln1_inv   (input wire a, output wire y); assign y = ~a; endmodule      // D33 ЛН1 inverter gate
+module la12_gate (input wire a, b, output wire y); assign y = ~(a & b); endmodule // D36 ЛА12 NAND gate
 module la1_gate  (input wire i0, i1, i2, i3, output wire y);                  // D38 ЛА1 4-input NAND
-    assign y = 1'bz; endmodule
+    assign y = ~(i0 & i1 & i2 & i3); endmodule
 
 // ===== I/O chip-select decoder: К555ИД7 (74138) =====
+// Functional (merge step 1): standard 1-of-8 active-low decode, enabled by g1 & !(g2a_n|g2b_n).
+// On the board g2a_n/g2b_n = iord_n/iowr_n (enable on either strobe = the documented strobe-OR intent).
 module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
-    assign y_n = 8'hFF; endmodule
+    wire en = g1 & ~(g2a_n & g2b_n);
+    assign y_n = en ? ~(8'b1 << {c, b, a}) : 8'hFF;
+endmodule
 
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====
 module ie7_ctr   (input wire clk, load_n, input wire [3:0] d, output wire [3:0] q, output wire co); // D44-47 ИЕ7
