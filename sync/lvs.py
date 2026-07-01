@@ -16,6 +16,14 @@
 import sys, json, argparse
 import netlist_from_yosys, netlist_from_kicad, netlist_from_board
 
+# Sim-only stimulus pins: artifacts of the runnable model (the die-replica's sampling
+# clock, the keyboard/interrupt stimulus) that have NO counterpart on the real chips, so
+# they are never in the board netlist. Dropped from the comparison BY NAME -- an explicit,
+# documented contract. NOTE: this exempts only these named pins; any *other* pin absent
+# from the pinmap is still compared (and thus still flags an incomplete pinmap) -- so the
+# check is not weakened, only made honest about the sim scaffolding.
+SIM_ONLY = {"SCLK", "KBD_EN", "KBD_PRESSED", "KBD_SHIFT", "KCOL", "KBIT", "FRAME_TICK"}
+
 def canon_hdl_pin(p):                 # ior_n->IOR_N ; portc_lo->PORTC_LO
     return p.replace("[", "").replace("]", "").upper()
 
@@ -39,6 +47,8 @@ def nets_of(side_insts, inst_map, pin_of):
                     continue
                 lp = pin_of(inst, info["type"], pin, i, w)
                 if lp is None:
+                    continue
+                if lp.rstrip("0123456789") in SIM_ONLY:   # sim-only stimulus pin (osc/kbd/frame): not a real net
                     continue
                 net2eps.setdefault(n, set()).add(f"{canon_inst}.{lp}")
     return {frozenset(eps) for eps in net2eps.values() if len(eps) >= 2}

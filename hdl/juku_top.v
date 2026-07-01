@@ -56,7 +56,7 @@ module juku_top (
     wire [1:0]  mem_mode;
 
     // ============ CPU core (the discrete chips) ============
-    cpu_8080  U_CPU (.osc(osc), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
+    cpu_8080  U_CPU (.sclk(osc), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
                      .hold(1'b0), .intr(intr), .A(A), .D(D),
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
@@ -108,14 +108,14 @@ module juku_top (
     // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see docs/transcription/dram-video-timing.md).
     wire [7:0] MA;                 // muxed row/col address  (from address mux)
     wire ras_n, cas_n;             // (from RAM control / refresh)
-    dram_64kx1 U_D60 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
-    dram_64kx1 U_D61 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]));
-    dram_64kx1 U_D62 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]));
-    dram_64kx1 U_D63 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]));
-    dram_64kx1 U_D64 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]));
-    dram_64kx1 U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
-    dram_64kx1 U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
-    dram_64kx1 U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
+    dram_64kx1 U_D60 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
+    dram_64kx1 U_D61 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]));
+    dram_64kx1 U_D62 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]));
+    dram_64kx1 U_D63 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]));
+    dram_64kx1 U_D64 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]));
+    dram_64kx1 U_D65 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
+    dram_64kx1 U_D66 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
+    dram_64kx1 U_D67 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
     // (D68-D91 = the other 3 banks' sockets, unpopulated -- added in Phase B for the PCB.)
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----

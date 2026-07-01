@@ -11,13 +11,15 @@
 // vm80a is undefined in the LVS yosys read (devices.v + juku_top.v only) -> harmlessly blackboxed;
 // the simulator compiles hdl/vendor/vm80a.v for the real boot.
 module cpu_8080 (
-    input  wire        osc,
+    input  wire        sclk,       // SIM-ONLY die-replica sampling clock (distinct name from the
+                                   // real crystal oscillator D59.OSC, so the LVS allowlist can drop
+                                   // this without touching the real OSC net)
     input  wire        phi1, phi2, ready, reset, hold, intr,
     output wire [15:0] A,
     inout  wire [7:0]  D,        // multiplexed data + status byte
     output wire        dbin, wr_n, sync, hlda, inte, wait_o
 );
-    vm80a u (.pin_clk(osc), .pin_f1(phi1), .pin_f2(phi2), .pin_reset(reset),
+    vm80a u (.pin_clk(sclk), .pin_f1(phi1), .pin_f2(phi2), .pin_reset(reset),
              .pin_a(A), .pin_d(D), .pin_hold(hold), .pin_hlda(hlda), .pin_ready(ready),
              .pin_wait(wait_o), .pin_int(intr), .pin_inte(inte), .pin_sync(sync),
              .pin_dbin(dbin), .pin_wr_n(wr_n));
@@ -202,16 +204,21 @@ module ie10_ctr (input wire clk, clr_n, load_n, input wire [3:0] d,  // D103 И�
 // К565РУ5 64Kx1 DRAM (one chip = one data bit). Multiplexed addressing: latch the ROW from MA on
 // RAS, the COL from MA on CAS -> 16-bit cell address. Read is sample-held on CAS and driven onto DB
 // for the duration of the access (we_n high = read); write commits on CAS when we_n low.
-module dram_64kx1 (input wire [7:0] ma,
+module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling clock (see write below)
+                   input wire [7:0] ma,
                    input wire ras_n, cas_n, we_n, di,
                    output wire do_);
     reg [7:0] row; reg mem [0:65535]; reg held; integer i;
     initial begin held = 0; for (i = 0; i < 65536; i = i+1) mem[i] = 0; end
-    always @(negedge ras_n) row <= ma;                       // latch row
-    always @(negedge cas_n) begin
-        if (~we_n) mem[{row, ma}] <= di;                     // write
-        else       held          <= mem[{row, ma}];          // read: sample-hold
-    end
+    always @(negedge ras_n) row <= ma;                       // latch row (ma = row byte during Φ1)
+    // WRITE sampled on osc (the die-replica's master sampling clock) while CAS & WE are both low
+    // (ma = col byte during Φ2). Latching on the CAS *edge* dropped writes whose data-valid window
+    // didn't line up with Φ2 (the DB settled on a different phase), storing the stale bus -- a silent
+    // corruption both guards missed (RAM test checks only 0xD300; VRAM guard only 0xD800+). Sampling
+    // on osc catches the settled data on whatever phase it lands, exactly as juku_struct does. osc is
+    // a SIM artifact (not a real РУ5 pin); the LVS drops it via the sim-only allowlist (sync/lvs.py).
+    always @(posedge sclk) if (~cas_n & ~we_n) mem[{row, ma}] = di;
+    always @(negedge cas_n) if (we_n) held <= mem[{row, ma}]; // read: sample-and-hold (ma = col at CAS-fall)
     assign do_ = (we_n & (~ras_n | ~cas_n)) ? held : 1'bz;   // drive on read, through the access
 endmodule
 
