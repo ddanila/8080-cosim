@@ -82,3 +82,11 @@ anchors the connector-side nets so LVS's no-1-node-net rule is satisfied. First 
 **Queued (Stages 3b-4):** the LOW address byte (-ADR0..-ADR7, a *separate* ВА87 above D23 — refdes not
 yet read), D25 (control → -INHIB/-CCLCK/-IO/M/…), plus the К170АП2/УП2 backplane drivers — each grows
 `expansion_conn` and adds the transceiver the same way.
+
+## ВА86/87 pinout corrected to the scan (2026-07)
+A higher-res crop of the transceiver column showed the **real ВА86/87 B-side pin order is descending**:
+bit 0 = pin 19, bit 7 = pin 12 (e.g. -ADR0/-DAT0 land on pin 19). The A-side is pins 1-8 (ascending),
+OE=9, T=11. D29/D24/D23 were first added with a uniform bit→pin-(12+i) convention (internally
+consistent, LVS-green, signal connectivity correct) and are now retyped to a shared **`VABUS`** pinmap
+with the scan-accurate descending B-side, so board.json faithfully reflects the schematic. (D4 the
+address *buffer* keeps its own BUF8286 pinmap — its BA-bit↔pin net mapping was already scan-traced.)
