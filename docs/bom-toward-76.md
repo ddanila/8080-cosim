@@ -78,3 +78,21 @@ D29 (ВА86: 8 bus commands), and D58 (ИР82 DRAM write-data latch). All tie in
 Net: the structurally-meaningful chips (everything that ties into a checked bus/strobe/data net) are in.
 What remains is boundary drivers (serial X3), unpopulated sockets, V3-PROM-gated video timing, and glue —
 none of which add *checked* structure to the LVS.
+
+## Outline-conversion loop findings (2026-07) — mechanical wins done, rest is coupled
+The autonomous conversion loop converted the **mechanical** outlines (memory sockets: 24 DRAM D68-D91
++ 6 ROM D17-D22 = 30 chips, 48->78 net-modeled footprints). Then it hit the remaining functional
+chips, which are NOT clean footprint adds — each is coupled to a deferred subsystem:
+- **D13/D30 (reset/ready):** D13 drives D5 STSTB (cpu-core.md), conflicting with the clock-mesh's
+  `ststb_n=~sync` (D38). Boot-critical STSTB-source reconciliation needed first.
+- **D50/D51/D52 (КП14 muxes):** the µP-vs-video address arbitration — converting them faithfully
+  means replacing our D48/49 *row/col* simplification with the real µP/video mux, which is **V3 /
+  РЕ3-gated** (dram-video-timing.md).
+- **D34 (ЛП5):** the analog node-"A" video combine (boundary).
+- **Serial block (D3/D12/D32 К170 + X3, D93-D106):** deepest boundary (serial-connector drivers,
+  USART-stub inputs) — needs the X3 connector + serial-cluster modeling.
+- **D9, D107, D41:** need schematic location + per-chip tracing (the locating bottleneck).
+**Conclusion:** the outlines split cleanly into (a) mechanical socket-parallels [DONE] and (b) coupled
+functional chips that each need a *deliberate, often owner-guided* pass (like the D29/D58 traces that
+succeeded with owner pin-reads) — not an autonomous grind, which just defers. 78/102 positions are
+net-modeled; the remaining 24 are the coupled set above.
