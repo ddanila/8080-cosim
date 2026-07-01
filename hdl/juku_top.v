@@ -140,6 +140,14 @@ module juku_top (
     // Model the populated pair; the other 6 sockets are unpopulated (Phase-B PCB detail).
     eprom_8k #(.HALF(0)) U_D15 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(memr_n));  // low 8K
     eprom_8k #(.HALF(1)) U_D16 (.a(BA[12:0]), .d(DB), .cs_n(rev),       .oe_n(memr_n));  // high 8K (CE=rev)
+    // D17-D22 = the 6 UNPOPULATED ROM sockets: wired to the shared address/data + OE, passive (no chip
+    // -> boot-safe). Per-socket CS from the ROM bank decode (not traced -> tied deselected = gap).
+    eprom_socket U_D17 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
+    eprom_socket U_D18 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
+    eprom_socket U_D19 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
+    eprom_socket U_D20 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
+    eprom_socket U_D21 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
+    eprom_socket U_D22 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
 
     // DRAM: К565РУ5 64Kx1 array. 32 sockets on the board (4 banks x 8), only 8 POPULATED
     // = one byte-bank bit-sliced D60..D67 = the real 64KB RAM. The other 24 sockets are

@@ -99,6 +99,8 @@ PLACE = {
 _DCOLS = [127, 144, 159, 175, 191, 207, 223, 238]
 for _ry, _refs in [(190, range(75, 67, -1)), (217, range(83, 75, -1)), (242, range(91, 83, -1))]:
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
+# unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
+for _i, _r in enumerate(range(17, 23)): PLACE[f'D{_r}'] = (64 + _i*21, 86, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -224,9 +226,7 @@ def main():
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
     # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the
     # 8-EPROM bank visually (same row y86, ~21 mm pitch). Not in board.json -> LVS unaffected.
-    for i, ref in enumerate(['D17', 'D18', 'D19', 'D20', 'D21', 'D22']):
-        cx = 64 + i*21
-        silk_box(cx - 7.6, 66, cx + 7.6, 106, ref)
+    # (ROM sockets D17-D22 are now net-modeled footprints -- see PLACE -- not silk outlines.)
     # DRAM array is 565РУ3Г ×32 (BOM) -> D60-D91 in a 4×8 grid. Row 1 (D60-67 @ y158) is net-
     # modeled; add the other 3 rows (D68-D91, 24 chips) as placement-only silk outlines so the
     # full array shows (same 8 columns; rows read at y≈190/217/242). Not in board.json -> LVS clean.

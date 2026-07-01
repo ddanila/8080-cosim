@@ -167,6 +167,13 @@ endmodule
 // from the decode PROM. oe_n is the read strobe (MEMR). Sample-and-hold: latch the byte at the
 // read strobe and hold it through DBIN (8080 tOS1/tOS2 -- a combinational multi-hop drive corrupts
 // vm80a's fixed-phase capture; see project-status gotchas).
+// EPROM socket, UNPOPULATED (6 of the 8 ROM sockets: only D15/D16 hold the 16KB BIOS). Wired to the
+// shared address/data + OE buses; no chip installed -> passive footprint (never drives DB) -> boot-safe.
+// Per-socket CS comes from the ROM bank decode (not yet traced -> CS left as a documented gap). Same
+// EPROM8K pinmap as the populated pair.
+module eprom_socket (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
+endmodule
+
 module eprom_8k #(parameter HALF = 0) (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
     reg [7:0] rom [0:16383]; reg [1023:0] f;
 `ifndef YOSYS
