@@ -126,3 +126,14 @@ LVS: **49 instances / 139 matched nets, IN SYNC**; D58 checked on both `DB` (in)
 - **К170АП2 ×2 = D14, D32** (sheet 3, bottom-rightish) — backplane line drivers.
 - **К170УП2 ×1 = D104** (sheet 3, left-bottom) — backplane receiver.
 These are the physical-edge line drivers (deepest boundary); wiring queued behind D58.
+
+## К170АП2/УП2 are the SERIAL-PORT line drivers (correction, 2026-07)
+Located (owner): **D14, D32, D3 = К170АП2** are NOT backplane drivers — they're the **serial-port
+line drivers** buffering the ВВ51 USART's outputs to connector **X3**:
+- **D14** → SOUT (X3.29/net 308); **D32** → RTS (X3.30/310) + DTP/DTR (X3.51/311);
+- **D3** → TTL SOUT (X3.23/303); D12 (ЛА18/ЛА55) → OC SOUT (X3.32/312); R18/R30/R101 = level/pull shaping.
+- **D104 = К170УП2** = the serial line *receiver* (SIN, from X3).
+So the "К170АП2 by X2" note was wrong — they sit by **X3 (serial)**, part of the USART I/O subsystem, not
+the expansion/backplane bus. They're deepest-boundary: connector-side → X3, internal side ← the ВВ51
+(D11) TxD/RTS/DTR + the serial glue (D3/D12). Adding them faithfully = modeling the serial output stage
+(drivers → X3, inputs ← USART) — a distinct small cluster with boundary value, separate from Phase-B proper.
