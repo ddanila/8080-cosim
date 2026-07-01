@@ -123,3 +123,20 @@ searching the bottom-right output stage; the serializers are top-right, by the �
   РУ5 array data-out -> **D42/D43 (ИР16) serialize @ dot clock** -> **D37 (ЛА3)** -> **D34 (ЛП5) XOR sync**
   -> VT2 -> ВИДЕО.  Refdes + pinout are scan-clean; the remaining detail for the LVS add is the exact
   РУ5-DO -> ИР16-input bit mapping (and whether an ИР82/ВА82 latch sits between) — a focused pass.
+
+## Video-output combine = an ANALOG resistor-summing node "A" (not a digital gate)  [scan, owner+trace]
+Refined the output routing (owner reading + crops):
+- **D42 / D43 (ИР16)** serial outputs (pin 10) feed the common node **"A"** through resistors
+  (R38 1k …) and also drive **D35 (ЛН5, dual inverter: 5→6, 3→4)**, whose output ties to "A" via
+  R39 (12k). **D43 pin 1 (DS) is tied to GROUND** (⊥); **pin 8 = G** (a control input, NOT ground).
+- **"A" is a COMMON named net** — the **analog video-mix summing node**. Multiple sources tie into it
+  through different-value resistors (R38 1k, R39 12k, R61 12k near D34…), building the composite-video
+  level. It's drawn as `→ A` arrows all over the sheet; they're one node.
+- **"A" → D34 (ЛП5) leg 13**; D34's other leg (12) = sync; D34 out → **SIG** → VT2 → ВИДЕО.
+- So the output is a **resistor-summed analog mix** (pixel from D42/D43 + inverted/sync from D35 →
+  node A → D34 → SIG), NOT a clean digital combine (corrects the earlier "D37 ЛА3" guess for the mix).
+- **LVS-add implication:** the *digital* connectivity is addable (D42/D43 parallel-in ← РУ5 data,
+  CK ← dot clock; D35; D34 legs), but node "A" + its summing resistors are the **analog output
+  boundary** (like VT2). The exact byte→8-pixel serialization scheme across the two 4-bit ИР16 +
+  the analog sum isn't fully pinned, so the runnable sim keeps the abstracted 8-bit serializer while
+  the LVS gets the real chips wired per this trace.
