@@ -61,6 +61,21 @@ module buf_8286 (
     assign Ain  = (~oe_n & ~t) ? Aout : 8'bz;
 endmodule
 
+// ВА86 modeled ONE-WAY (internal -> connector) for the backplane transceivers: the expansion cards
+// don't drive back in the digital twin, so the A-side stays a pure INPUT and never drives the internal
+// strobe/bus nets (boot-safe -- unlike the inout buf_8286, whose z-assign taps those nets). LVS
+// connectivity is identical to a full ВА86 (same AIN/AOUT/OE_N/T pins).
+module va86_out (input wire [7:0] Ain, input wire oe_n, t, output wire [7:0] Aout);
+    assign Aout = (~oe_n & t) ? Ain : 8'bz;
+endmodule
+
+// Expansion backplane connector (Multibus-style card slots). A BOUNDARY component: its far side is
+// the off-board cards, so it carries no logic -- it exists so the transceiver->connector nets have a
+// 2nd endpoint (LVS forbids 1-node nets). Stage-1 pins = the D29 bus-command signals; grows as more
+// backplane transceivers (D23 addr, D24 data, D25 control) are wired. See docs/transcription/bus-interface.md.
+module expansion_conn (inout wire mrc_n, mwc_n, iorc_n, iowc_n);
+endmodule
+
 // ---- I/O port decoder (board glue: 74xx138-style) ----
 module io_decode (
     input  wire [7:0] A,

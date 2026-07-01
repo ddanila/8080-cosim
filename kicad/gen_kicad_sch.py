@@ -52,7 +52,10 @@ def main():
     for c in chips:
         t = c["type"]
         if t not in type_pins:
-            order = sorted(c["pins"].items(), key=lambda kv: int(kv[0]))
+            # sort numeric pins by value; alphanumeric pins (e.g. connector edge-codes "104C")
+            # sort after, lexically -- keeps a stable order without requiring integer pin names.
+            order = sorted(c["pins"].items(),
+                           key=lambda kv: (0, int(kv[0]), "") if kv[0].isdigit() else (1, 0, kv[0]))
             type_pins[t] = order
             pin_index[t] = {num: k for k, (num, _) in enumerate(order)}
 

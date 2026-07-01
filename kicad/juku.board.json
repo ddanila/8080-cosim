@@ -1023,6 +1023,50 @@
         "refdes": "scan",
         "pins": "gate=scan"
       }
+    },
+    {
+      "ref": "D29",
+      "type": "BUF8286",
+      "pins": {
+        "1": "AIN0",
+        "2": "AIN1",
+        "3": "AIN2",
+        "4": "AIN3",
+        "5": "AIN4",
+        "6": "AIN5",
+        "7": "AIN6",
+        "8": "AIN7",
+        "9": "OE_N",
+        "11": "T",
+        "12": "AOUT0",
+        "13": "AOUT1",
+        "14": "AOUT2",
+        "15": "AOUT3",
+        "16": "AOUT4",
+        "17": "AOUT5",
+        "18": "AOUT6",
+        "19": "AOUT7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "ВА86 (datasheet pinout, as D4); signals=scan"
+      }
+    },
+    {
+      "ref": "X1",
+      "type": "EXPANSION_CONN",
+      "pins": {
+        "104C": "MRC_N",
+        "104B": "MWC_N",
+        "106C": "IORC_N",
+        "105B": "IOWC_N"
+      },
+      "prov": {
+        "type": "boundary",
+        "refdes": "assumed",
+        "pins": "Multibus edge-pin codes from scan"
+      }
     }
   ],
   "nets": {
@@ -2286,6 +2330,10 @@
         [
           "D16",
           "22"
+        ],
+        [
+          "D29",
+          "1"
         ]
       ]
     },
@@ -2327,6 +2375,10 @@
         [
           "D67",
           "3"
+        ],
+        [
+          "D29",
+          "2"
         ]
       ]
     },
@@ -2367,6 +2419,10 @@
         ],
         [
           "D10",
+          "3"
+        ],
+        [
+          "D29",
           "3"
         ]
       ]
@@ -2409,6 +2465,10 @@
         [
           "D10",
           "2"
+        ],
+        [
+          "D29",
+          "4"
         ]
       ]
     },
@@ -3342,6 +3402,58 @@
         [
           "D36",
           "4"
+        ]
+      ]
+    },
+    "MRC_N": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D29",
+          "12"
+        ],
+        [
+          "X1",
+          "104C"
+        ]
+      ]
+    },
+    "MWC_N": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D29",
+          "13"
+        ],
+        [
+          "X1",
+          "104B"
+        ]
+      ]
+    },
+    "IORC_N": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D29",
+          "14"
+        ],
+        [
+          "X1",
+          "106C"
+        ]
+      ]
+    },
+    "IOWC_N": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D29",
+          "15"
+        ],
+        [
+          "X1",
+          "105B"
         ]
       ]
     }

@@ -101,6 +101,17 @@ module juku_top (
     buf_8286  U_BUFL (.Ain(A[7:0]),  .Aout(BA[7:0]),  .oe_n(buf_oe_n), .t(buf_t));
     buf_8286  U_BUFH (.Ain(A[15:8]), .Aout(BA[15:8]), .oe_n(buf_oe_n), .t(buf_t));
 
+    // ============ expansion/backplane interface (Phase B, sheet 1 -- bus-interface.md) ============
+    // D29 (ВА86) buffers the internal bus-command strobes out to the Multibus-style expansion
+    // connector. t=1/oe=0 -> A-side reads memr_n/memw_n/iord_n/iowr_n as high-Z (never drives them
+    // back -> boot-safe); B-side drives the connector command pins -MRC/-MWC/-IORC/-IOWC. A-side
+    // spare inputs (real -IO/M / -AMWC sources) not yet modeled -> tied inactive (boundary).
+    wire mrc_n, mwc_n, iorc_n, iowc_n; wire [3:0] d29_aout_hi;
+    wire [3:0] d29_ain_hi = 4'b1111;   // A-side spare inputs (unmodeled -IO/M / -AMWC sources) inactive
+    va86_out U_D29 (.Ain({d29_ain_hi, iowr_n, iord_n, memw_n, memr_n}),
+                    .Aout({d29_aout_hi, iowc_n, iorc_n, mwc_n, mrc_n}), .oe_n(1'b0), .t(1'b1));
+    expansion_conn U_X1 (.mrc_n(mrc_n), .mwc_n(mwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n));
+
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])

@@ -47,3 +47,21 @@ The internal side joins the already-modeled `BA`/`DB`/strobe nets cleanly, but t
 component(s)** (anchoring all -ADRx/-DATx/control nets at 2 nodes), then wire 16+8+control
 bits per transceiver. That is a large, mechanical per-bit pass whose natural home is **Phase B**
 (it *is* the PCB/expansion BOM). Cluster is now located + identified; the wiring is queued.
+
+## Phase-B STAGE 1 DONE (2026-07) — connector modeled + D29 control transceiver
+The expansion connector is now a component (`expansion_conn`, refdes **X1**) — a boundary part that
+anchors the connector-side nets so LVS's no-1-node-net rule is satisfied. First transceiver wired:
+- **D29 (ВА86)** — traced on sheet 1 (PDF p.3, mid-right). A-side reads the internal command strobes
+  **-MRD/-MWR/-IORD/-IOWR** (= `memr_n`/`memw_n`/`iord_n`/`iowr_n`, already-mapped nets → now
+  D29 is a *checked* member of each); B-side drives the Multibus connector command pins
+  **-MRC (104C), -MWC (104B), -IORC (106C), -IOWC (105B)** (edge-pin codes read off the scan).
+- Modeled with **`va86_out`** (a one-way ВА86: internal→connector). The die-accurate boot needs the
+  A-side to never drive the strobe nets; the full inout `buf_8286` z-taps them and corrupted the
+  synthetic-ROM datapath test (the ekta37 boot survived it, the synthetic ROM caught it). One-way =
+  boot-safe + identical LVS connectivity. A-side spare inputs (real -IO/M / -AMWC sources) not yet
+  modeled → tied inactive (boundary).
+- Guards: LVS **45 instances / 103 matched nets, IN SYNC**; boot_check all byte-identical.
+
+**Queued (Stages 2-3):** D24 (data ↔ `DB`, 8 bits), D23 (address ↔ `BA`, 16 bits), D25 (control), plus
+the К170АП2/УП2 backplane drivers — each grows `expansion_conn` with its connector pins and adds the
+transceiver the same way.
