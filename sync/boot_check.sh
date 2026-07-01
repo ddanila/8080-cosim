@@ -44,6 +44,14 @@ iverilog -g2012 -o "$TMP/clock_mesh_tb" hdl/vendor/vm80a.v hdl/devices.v hdl/sim
 if vvp "$TMP/clock_mesh_tb" 2>/dev/null | grep -q "\[mesh\] PASS"; then echo "  PASS  clock_mesh_tb (divider + SYNC-qualified strobe)"
 else echo "  FAIL  clock_mesh_tb"; fail=1; fi
 
+echo "== self-clocking boot: CPU runs on the mesh divider alone (-DSELF_CLOCK) =="
+# No forced Φ1/Φ2, no external osc -- juku_top self-generates the clock from the running D40 divider.
+# Must still boot ekta37 byte-identical to the cosim reference.
+iverilog -g2012 -DSELF_CLOCK -o "$TMP/selfclk" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_selfclk_tb.v 2>/dev/null
+vvp "$TMP/selfclk" +maxvram=$WRITES >/dev/null 2>&1
+if cmp -s "$TMP/ref_ekta37.bin" hdl/sim/vram_selfclk.bin; then echo "  PASS  juku_selfclk_tb == cosim (CPU booted on self-generated mesh clock)"
+else echo "  FAIL  juku_selfclk_tb differs from cosim"; fail=1; fi
+
 echo "== synthetic-ROM datapath check (self-contained, HLT-bounded) =="
 ( cd cosim && "$TMP/trace" ../tests/regress.bin 1000000 >/dev/null 2>&1 )   # halts after 256 writes
 cp cosim/vram.bin "$TMP/ref_regress.bin"

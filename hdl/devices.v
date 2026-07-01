@@ -149,12 +149,13 @@ endmodule
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
 // INTENT here -- a non-overlapping Φ1/Φ2. This is a sim clock: it only sets the simulated VALUE;
 // the D35->CPU net wiring (what LVS compares) is unchanged, so LVS stays IN SYNC.
-module clk_phase (input wire osc, output reg phi1, phi2, phi2ttl);
-    initial begin phi1 = 0; phi2 = 0; phi2ttl = 0; end
-    always begin
-        phi1 = 1;               #20;  phi1 = 0;              #5;   // Φ1 high, dead time
-        phi2 = 1; phi2ttl = 1;  #20;  phi2 = 0; phi2ttl = 0; #5;   // Φ2 high, dead time
-    end
+module clk_phase (input wire osc, input wire phsel, output reg phi1, phi2, phi2ttl);
+    // osc = clkg_d36 (D36.6 -> D35.11, the LVS-visible mesh input). phsel = a clean divider phase bit
+    // (d40_q[1], sim-only): the real D35 ЛН5 shapes Φ1/Φ2 by inverting the mesh output through RC
+    // (R37/R36 360Ω + the CPU clock caps) -- an analog waveform not derivable from the netlist. So for
+    // the SELF-CLOCKING sim we lock a valid non-overlapping two-phase to the divider phase directly.
+    // Forced-clock boot tbs override phi1/phi2, so this body only takes effect in self-clocking mode.
+    always @* begin phi1 = ~phsel; phi2 = phsel; phi2ttl = phsel; end
 endmodule
 module stb_gen   (input wire osc, output wire stb);                  // D38 (legacy stub, unused)
     assign stb = 1'bz; endmodule

@@ -23,7 +23,8 @@ import netlist_from_yosys, netlist_from_kicad, netlist_from_board
 # from the pinmap is still compared (and thus still flags an incomplete pinmap) -- so the
 # check is not weakened, only made honest about the sim scaffolding.
 SIM_ONLY = {"SCLK", "KBD_EN", "KBD_PRESSED", "KBD_SHIFT", "KCOL", "KBIT", "FRAME_TICK",
-            "VA", "VQ"}   # VA/VQ = the sim-only 2nd (video) read port on the РУ5 (arbitration = V3)
+            "VA", "VQ",   # VA/VQ = the sim-only 2nd (video) read port on the РУ5 (arbitration = V3)
+            "PHSEL"}      # PHSEL = sim-only divider phase bit into D35 (self-clocking waveform lock)
 
 def canon_hdl_pin(p):                 # ior_n->IOR_N ; portc_lo->PORTC_LO
     return p.replace("[", "").replace("]", "").upper()

@@ -39,6 +39,7 @@ module juku_top (
     // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
     // READY from D30, STSTB(8238) from D13. Driven by that subsystem, not modeled here.
     wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;
+    wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
     wire [15:0] BA;         // buffered address bus
@@ -59,7 +60,7 @@ module juku_top (
     wire [1:0]  mem_mode;
 
     // ============ CPU core (the discrete chips) ============
-    cpu_8080  U_CPU (.sclk(osc), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
+    cpu_8080  U_CPU (.sclk(sclk_i), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
                      .hold(1'b0), .intr(intr), .A(A), .D(D),
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
@@ -76,7 +77,15 @@ module juku_top (
     la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]
     ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6));  // pin8->D38.9; pin5<-D40.Q2, pin6->D36.4
     la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36));  // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
-    clk_phase U_D35 (.osc(clkg_d36), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
+    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
+    // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
+    // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
+    // reproduces the boot-tb's waveform (osc posedge mid-phase, one per phase) but self-generated.
+`ifdef SELF_CLOCK
+    assign sclk_i = d40_q[0];
+`else
+    assign sclk_i = osc;
+`endif
     // STSTB = SYNC-qualified strobe: the discrete clock subsystem makes STSTB from SYNC (exact gate
     // un-traced -> feed SYNC into one of D38's deferred inputs [assumed]). With clkg_d33=d39_y=1 and
     // i3=1, ststb_n = ~sync -> the 8238 latches the status byte at SYNC's rising edge (T1 start).
@@ -118,14 +127,14 @@ module juku_top (
     wire ras_n, cas_n;             // (from RAM control / refresh)
     wire [15:0] vid_addr;          // video raster address into the framebuffer (РУ5 2nd port)
     wire [7:0]  vbyte;             // framebuffer byte at vid_addr (from the 8 РУ5 video reads)
-    dram_64kx1 U_D60 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
-    dram_64kx1 U_D61 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]), .va(vid_addr), .vq(vbyte[1]));
-    dram_64kx1 U_D62 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]), .va(vid_addr), .vq(vbyte[2]));
-    dram_64kx1 U_D63 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]), .va(vid_addr), .vq(vbyte[3]));
-    dram_64kx1 U_D64 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]), .va(vid_addr), .vq(vbyte[4]));
-    dram_64kx1 U_D65 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]), .va(vid_addr), .vq(vbyte[5]));
-    dram_64kx1 U_D66 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]), .va(vid_addr), .vq(vbyte[6]));
-    dram_64kx1 U_D67 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]), .va(vid_addr), .vq(vbyte[7]));
+    dram_64kx1 U_D60 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
+    dram_64kx1 U_D61 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]), .va(vid_addr), .vq(vbyte[1]));
+    dram_64kx1 U_D62 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]), .va(vid_addr), .vq(vbyte[2]));
+    dram_64kx1 U_D63 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]), .va(vid_addr), .vq(vbyte[3]));
+    dram_64kx1 U_D64 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]), .va(vid_addr), .vq(vbyte[4]));
+    dram_64kx1 U_D65 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]), .va(vid_addr), .vq(vbyte[5]));
+    dram_64kx1 U_D66 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]), .va(vid_addr), .vq(vbyte[6]));
+    dram_64kx1 U_D67 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]), .va(vid_addr), .vq(vbyte[7]));
     // (D68-D91 = the other 3 banks' sockets, unpopulated -- added in Phase B for the PCB.)
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
@@ -191,7 +200,7 @@ module juku_top (
                       .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
-    intr_ctl  U_INTR (.osc(osc), .dbin(dbin), .inta_n(inta_n), .iowr_n(iowr_n),
+    intr_ctl  U_INTR (.osc(sclk_i), .dbin(dbin), .inta_n(inta_n), .iowr_n(iowr_n),
                       .cs_pic_n(cs_pic_n), .a0(BA[0]), .frame_tick(frame_tick), .DB(DB), .intr(intr));
 
 endmodule
