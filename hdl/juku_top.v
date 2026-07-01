@@ -155,12 +155,14 @@ module juku_top (
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
                     .d(vbyte), .so(vpixel));                            // abstracted serializer (runnable)
     lp5_xor U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // composite video out (runnable)
-    // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. CK joins the
-    // dot-clock net (checkable); DS tied to GND; Q -> node "A" (analog mix = boundary until V3).
+    // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. Parallel data
+    // reads the REAL system data bus DB (the bit-sliced РУ5 drives the byte there during a video
+    // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =
+    // boundary). The video-read SLOT timing (КП14 µP/video arbitration + РЕ3/АГ3) stays a boundary.
     wire d42_q, d43_q;
-    ir16 U_D42 (.d(vbyte[7]), .c(vbyte[6]), .b(vbyte[5]), .a(vbyte[4]),
+    ir16 U_D42 (.d(DB[7]), .c(DB[6]), .b(DB[5]), .a(DB[4]),
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d42_q));
-    ir16 U_D43 (.d(vbyte[3]), .c(vbyte[2]), .b(vbyte[1]), .a(vbyte[0]),
+    ir16 U_D43 (.d(DB[3]), .c(DB[2]), .b(DB[1]), .a(DB[0]),
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
 
     // ============ peripherals (on the buffered buses) ============
