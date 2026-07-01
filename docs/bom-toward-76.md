@@ -38,7 +38,7 @@ CPU (D1) · 8238 (D5) · 2× ВА86 addr buf (D4/DLB) · D6 decode-PROM · D7 ga
 | 1 | **Video output chain** | КП14 mux D50/D51 (×2), ИЕ10 ctr D102, АГ3 one-shots D56 + (×2–3, 74123), ИР16/ИР6 pixel shift-reg (×1–2), ЛП5/ЛП2 XOR combine, VT2 (КТ315) | `dram-video-timing.md` (mostly traced; ИР16 load/shift needs 1 crop) | **twin** — makes it serialize/emit real video |
 | 2 | **Clock subsystem** | ✅ **DONE** — D40 (СТ16), D33 (ЛН1), D39 (ЛА3), D36 (ЛА12) added; D38 upgraded to ЛА1; OSC re-routed through the divider+gate mesh (de-simplified). `clock-subsystem.md` | **scan** (4 nets) + 1 assumed | twin fidelity (gate inputs/data pins deferred) |
 | 3 | **DRAM RAS/CAS addressing** | wire the validated К565РУ5 row/col model (`dram_unit_tb.v`) + the 16→8 row/col mux + АГ3 RAS/CAS strobe timing into the twin | partial — row/col split + АГ3 RC un-traced (needs crops) | **twin** — removes the last behavioral abstraction |
-| 4 | **Bus / backplane** | **LOCATED** (sheet 1 right edge): D23 (addr→-ADR0-F), D24 (data→-DAT0-7), D25/D29 (control→-MRD/-PWR/-IORC/...), each T/E; types К170АП2/УП2 + ВА86/ВА87 | `bus-interface.md` (refdes pinned; per-bit wiring + connector model = Phase-B batch) | PCB BOM / expansion (needs connector X1/X2 modeled; no 1-node nets) |
+| 4 | **Bus / backplane (Phase-B)** | ✅ **DONE** — expansion connector X1 + D23 (addr-lo), D24 (addr-hi), D25 (data), D29 (8 bus commands) all ВА86/87 → -ADR/-DAT/commands; + **D58 (ИР82) DRAM write-data latch**. `bus-interface.md` | **scan** (owner-confirmed refdes + edge-codes) | expansion bus interface + DRAM write path — **49 mapped instances, IN SYNC, boot byte-identical** |
 | 5 | **Decode / timing PROMs** | 2× К155РЕ3 (timing-state; contents need dump) + extra К556РТ4 (I/O decode) | connectivity traceable now; contents deferred | fidelity + PCB |
 | 6 | **Keyboard encoder** | 74148 priority encoder (col → 3-bit code + GS) | `keyboard.md` (behavior known; schematic pins TODO) | twin (currently modeled behaviorally in ppi0_b) |
 | 7 | **Misc gates** | remaining К531/К555/К561 ЛА/ЛН/ЛИ/ТМ/ТЛ2 glue | per-sheet as encountered | completeness |
@@ -51,3 +51,30 @@ the scan is faint; each is pinned exactly during its tracing pass.
 Clusters **1–3** harden the *runnable twin* (video out, real clock, real DRAM addressing) —
 highest fidelity payoff. Clusters **4–5** feed the *PCB/BOM* (Phase B). Cluster 6–7 are
 opportunistic. Recommend grinding 1 → 2 → 3, each as its own traced LVS-green commit.
+
+## Phase-B status (2026-07): expansion bus DONE — deferred items documented
+**Done (49 mapped instances, LVS IN SYNC, boot byte-identical):** the expansion-bus interface +
+DRAM write path — connector X1, transceivers D23/D24/D25 (ВА87: addr-lo/addr-hi/data → -ADR/-DAT),
+D29 (ВА86: 8 bus commands), and D58 (ИР82 DRAM write-data latch). All tie into real mapped buses
+(`BA`/`DB`/strobes/РУ5 DIN) so they're LVS-*checked*, not just boundary anchors.
+
+**Deferred (documented, not modeled) — these are the "missed" chips and why:**
+1. **Serial-port I/O drivers (К170АП2 D14/D32/D3, К170УП2 D104 + connector X3).** Turned out to be a
+   *separate subsystem* (serial, not backplane): they buffer the ВВ51 USART TxD/RTS/DTR/SIN to X3, with
+   level-shaping glue D12 (ЛА18/ЛА55) + R18/R30/R101. **Deepest boundary + near-zero LVS value** (X3
+   connector out, USART-stub in). Adding them = a distinct serial-I/O cluster (X3 + 4 К170s + glue +
+   fleshing the USART serial outputs). Located + traced (see bus-interface.md); wiring deliberately skipped.
+2. **D58 STB/OE control.** D58 is modelled transparent; its STB (pin 11, ≈ a net shared with D42.A —
+   uncertain read) and OE (pin 9 ← D37.6, the ЛА3 section 4,5→6 not yet modelled) are left as boundary
+   constants. Doesn't affect the boot (transparent latch) or the checked data-bus connectivity.
+3. **Unpopulated РУ5 banks (D68–D91).** 3 of the 4 DRAM banks' sockets are unpopulated on the real
+   board; only bank 0 (D60–D67) is modelled. Pure PCB-BOM completeness.
+4. **Video/DRAM arbitration (V3): КП14 muxes D50/D51, node-"A" analog mix (D34 ЛП5, D35 ЛН5 video
+   sections), РЕ3 timing PROMs (×2).** All gated on the un-dumped К155РЕ3 slot-timing PROM — see
+   dram-video-timing.md / clock-subsystem.md. Parked, needs a physical PROM read.
+5. **Misc glue gates + keyboard 74148.** Scattered К5xx gates (completeness only); the 74148 keyboard
+   encoder is almost certainly on the keyboard *module*, not this processor board.
+
+Net: the structurally-meaningful chips (everything that ties into a checked bus/strobe/data net) are in.
+What remains is boundary drivers (serial X3), unpopulated sockets, V3-PROM-gated video timing, and glue —
+none of which add *checked* structure to the LVS.
