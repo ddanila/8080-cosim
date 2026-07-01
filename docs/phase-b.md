@@ -15,6 +15,9 @@ It loads a real DIP footprint per chip (by package: 8080/8255 → DIP-40, 2764/8
 → DIP-28, 8253 → DIP-24, 8286 → DIP-20, РУ5/74-series → DIP-16, gates → DIP-14), assigns
 every net to its pads, lays the chips out by functional group, and draws a board outline.
 
+> **Footprint-orientation gotcha:** KiCad DIP footprints stand **VERTICAL at rot0** (pins down
+> both long sides) — so a package meant to sit horizontally on the board needs **rot90**.
+
 ## Current outcome ✅
 A valid `kicad/juku.kicad_pcb`: **40 footprints, 100 nets, 417 pad-net assignments**, loads in
 KiCad 10 and `kicad-cli` (renders via `kicad-cli pcb export svg/pdf`). The full ratsnest is

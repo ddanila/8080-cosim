@@ -108,6 +108,26 @@ schematic*), with `cosim/` + MAME as validation oracles.
       crystal-osc pins); `lvs.py` gains an explicit `SIM_ONLY` allowlist (drops those pins by name,
       still flags any other unmapped pin — verified). **LVS IN SYNC (94).** Remaining: video readout chain.
 
+## Interactive-emulation track (the original "react to commands" goal — MET)
+- **Frame interrupt (opt-in):** cosim (`cosim/trace.c`, argv[4]=period-in-cycles, 0=off →
+  boot-identical) + the HDL `intr_ctl` adjunct model the MAME wiring (8253 VER-RTR → 8259 IR5
+  → CPU, MCS-80 3-byte `CALL` vector). jmon33's ICW=0x56/0xFF → IR5 vector **0xFF54**; ekta37's
+  → **0xFED4**. Injected onto DB during the exact 3 INTA reads (PC frozen).
+- **jmon33** (Monitor v3.3, MAME `ROM_BIOS(0)`) is **interrupt+input-driven** (dispatches its ISR
+  through a RAM vector, needs keyboard/serial) — does NOT self-paint, so it's not the easy target.
+- **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
+  **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
+- **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
+  **Port B(0x05) read = {SHIFT b7-6 active-LOW, 74148 code b3-1, GS b0 active-LOW}**. In cosim it's
+  driven by env `JUKU_KEYS`; in HDL by plusargs `+keyat/+kcol/+kbit/+kshift`. (Watch the SHIFT
+  polarity — the 8255 SPECIAL bits 6/7 are active-LOW.)
+- **North-star MET on both tracks:** die-accurate 8080 → real BIOS on the LVS-verified structure →
+  banner → **reacts to typed commands**. `'T'` → the OS-boot loader `System from <D>isk, <N>et ?`;
+  `'B'` → ROM BASIC (separate `jbasic11.bin`, not loaded → returns); `'A'` → mini-assembler
+  (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
+  (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Remaining polish: multi-ROM so `'B'`
+  launches BASIC. Evidence: `docs/boot-ekta37-T-command*.png`.
+
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge
   *inside* the sync window, NOT at `posedge sync` — `sync` and the data bus update on
@@ -123,6 +143,22 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **Structural-sim read data must be sample-and-held** (latch at the read strobe, hold
   through DBIN) — a combinational drive on the multi-hop bus violates the 8080 `tOS1`/
   `tOS2` data-setup-stability spec and corrupts vm80a's fixed-phase capture.
+- **The data buses (D/DB) must be `tri1`** (pull-up, like the real open bus), not plain
+  `wire`. As `wire` the idle bus floats to z/x and **poisons the die-accurate vm80a's
+  internal capture** → register ops/flags compute wrong (symptom: every conditional loop
+  exits after 1 pass; the BIOS RAM-test hangs at its error handler). yosys has no `tri1`
+  → `` `ifdef YOSYS ``-guard it to `wire` (connectivity identical, LVS untouched).
+- **The boot harness drives the Φ1/Φ2 + `sclk` lockstep the replica needs:** non-overlapping
+  Φ1 then Φ2, with the fast sampling clock rising in the **middle of each active phase**.
+- **DRAM writes must be sampled on the `sclk` master clock while CAS & WE are low, NOT on
+  the CAS edge.** DB isn't settled at CAS-fall (8238 bridge timing), so an edge-capture
+  stores the *stale bus* on some writes — a silent corruption invisible to LVS (connectivity)
+  and boot_check (samples only 0xD300 + 0xD800+). The **co-sim diff** (`sync/cosim_check.sh`)
+  is what catches this class; it found the 0xD441 dropped write.
+- **The sim sampling clock is named `sclk`, not `osc`,** on cpu_8080/dram — so it can't
+  collide with the real crystal-oscillator pins (D59/D35 `.OSC`). `sync/lvs.py` drops the
+  sim-only pins via an explicit `SIM_ONLY` allowlist (SCLK/KBD_*/KCOL/KBIT/FRAME_TICK) — by
+  name, so any *other* unmapped pin is still flagged (the check is not weakened).
 - **`cell` is a reserved word in Icarus Verilog** (Verilog-AMS/config). Don't name a
   reg/memory `cell` — it errors with a cryptic "Syntax error in variable list".
 

@@ -21,6 +21,10 @@ toward-76 is a per-cluster *tracing* grind (each like `docs/transcription/dram-v
 not a transcription of the BOM. PROM **contents** (РЕ3/РТ4) still need a dump, but their
 **connectivity** can be added now (LVS checks wiring, not bits).
 
+**Tracing tip:** the `ref/schematics/*.png` scans are only 150dpi — often too faint to read pin
+numbers. Render the juku3000 processor-module PDF at **400dpi** and sharpen (`magick -sharpen 0x1`);
+far more legible. That's how the clock subsystem (`docs/transcription/clock-subsystem.md`) was pinned.
+
 ## Modeled today (34) — the booting, interactive core
 CPU (D1) · 8238 (D5) · 2× ВА86 addr buf (D4/DLB) · D6 decode-PROM · D7 gate · 2× EPROM
 (D15/D16) · 8× РУ5 DRAM (D60–67) · 2× 8255 (D26/D27) · 8251 (D11) · 3× 8253 (D54/55/57) ·
