@@ -79,6 +79,13 @@ endmodule
 // the off-board cards, so it carries no logic -- it exists so the transceiver->connector nets have a
 // 2nd endpoint (LVS forbids 1-node nets). Stage-1 pins = the D29 bus-command signals; grows as more
 // backplane transceivers (D23 addr, D24 data, D25 control) are wired. See docs/transcription/bus-interface.md.
+// К565РУ5 socket, UNPOPULATED (banks 1-3 of the 4-bank DRAM array). The sockets ARE on the board and
+// wired (shared MA/RAS/WE + per-bit DIN/DOUT, per-bank CAS), but no chip is installed -> modelled as a
+// passive footprint: pins on the buses, NO logic (never drives DB/WD) -> boot-safe. Same RU5 pinmap as
+// the populated bank 0. (Bank select / per-bank CAS decode is not yet traced -> CAS nets are assumed.)
+module ru5_socket (input wire [7:0] ma, input wire ras_n, cas_n, we_n, di, inout wire do_);
+endmodule
+
 // К580ИР82 (8282) octal latch. Here (D58) it's the DRAM WRITE-DATA latch: it latches the system data
 // bus and drives the РУ5 DIN bus, holding the write data stable across the CAS/WE window -- the real
 // reason the DRAM captures a settled value (our sim compensated by sampling writes on the master clock;

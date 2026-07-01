@@ -94,6 +94,11 @@ PLACE = {
     'D42':(142,281,90),'D43':(170,281,90),'D58':(197,281,90),
     'D37':(261,200,0),   # ЛА3 D42-serial inverter (net-modeled this session), between D36/D33
 }
+# unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
+# array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.
+_DCOLS = [127, 144, 159, 175, 191, 207, 223, 238]
+for _ry, _refs in [(190, range(75, 67, -1)), (217, range(83, 75, -1)), (242, range(91, 83, -1))]:
+    for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -225,12 +230,7 @@ def main():
     # DRAM array is 565РУ3Г ×32 (BOM) -> D60-D91 in a 4×8 grid. Row 1 (D60-67 @ y158) is net-
     # modeled; add the other 3 rows (D68-D91, 24 chips) as placement-only silk outlines so the
     # full array shows (same 8 columns; rows read at y≈190/217/242). Not in board.json -> LVS clean.
-    DRAM_COLS = [127, 144, 159, 175, 191, 207, 223, 238]
-    for ry, refs in [(190, ['D75','D74','D73','D72','D71','D70','D69','D68']),
-                     (217, ['D83','D82','D81','D80','D79','D78','D77','D76']),
-                     (242, ['D91','D90','D89','D88','D87','D86','D85','D84'])]:
-        for cx, ref in zip(DRAM_COLS, refs):
-            silk_box(cx - 4, ry - 10, cx + 4, ry + 10, ref)
+    # (DRAM banks 1-3 D68-D91 are now net-modeled footprints -- see PLACE -- not silk outlines.)
     # DRAM-array left column D50/D51 (still placement-only). (D42/D43/D58 are now net-modeled
     # footprints -- see PLACE -- so they're no longer silk outlines here.)
     silk_box(108, 148, 116, 168, 'D50'); silk_box(108, 180, 116, 200, 'D51')   # array col0, vertical
