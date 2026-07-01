@@ -114,11 +114,13 @@ Not an address latch (earlier guess) — it's an **octal data latch in the DRAM 
   pins** (e.g. net 38 → a РУ5 "D1") **and** to the output data **D0..D7 (→sheet 1 / connector)**.
 - **STB ≈ pin 11** → net "5" (reported as also the A input of D42 ИР16 — surprising, needs confirm).
 - **DE/OE = pin 9** ← **D37.6** (ЛА3 section 4,5→6 output; D37 also inverts D42.Q on 12,13→11).
-**Why not wired yet:** D58 *drives* the data bus the РУ5 array reads, so it's boot-critical (unlike the
-read-only transceivers). Before wiring, one thing must be nailed: **is the Q-side bus (nets 31–38) the
-same system data bus `DB` that D60–D67 read, or a separate data bus?** If it IS `DB`, D58 sits inline
-(DB→D58→RAM) and must be modelled transparent to keep the boot bit-identical + avoid a multi-driver
-conflict; if separate, it drives a boundary bus (safe). The STB↔D42.A read also wants a second look.
+**WIRED (2026-07)** as the **DRAM write-data latch** (architectural read, owner-confirmed direction):
+`РУ5 DIN ← D58.Q ← D58 ← DB`. Inputs D1-D8 (pins 1-8) ← `DB`; outputs Q1-Q8 (pins 19-12) → a dedicated
+write-data bus (`WD0..7`) → the РУ5 **DIN** pins (pin 2). РУ5 **DOUT** (pin 14) stays on `DB` (read path).
+Modelled TRANSPARENT (`ir82_latch`, q=d) so the RAM sees the same write data → **boot byte-identical**;
+the real latch holds it stable across CAS/WE (the hardware reason our sim could master-clock-sample writes).
+STB (pin 11) + OE (pin 9 ← D37.6 ЛА3) = boundary for now (the STB↔D42.A read was uncertain; deferred).
+LVS: **49 instances / 139 matched nets, IN SYNC**; D58 checked on both `DB` (in) and the РУ5 DIN (out).
 
 ## К170 backplane drivers — LOCATED (owner, 2026-07)
 - **К170АП2 ×2 = D14, D32** (sheet 3, bottom-rightish) — backplane line drivers.

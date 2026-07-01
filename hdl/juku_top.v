@@ -150,14 +150,19 @@ module juku_top (
     wire ras_n, cas_n;             // (from RAM control / refresh)
     wire [15:0] vid_addr;          // video raster address into the framebuffer (РУ5 2nd port)
     wire [7:0]  vbyte;             // framebuffer byte at vid_addr (from the 8 РУ5 video reads)
-    dram_64kx1 U_D60 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
-    dram_64kx1 U_D61 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]), .va(vid_addr), .vq(vbyte[1]));
-    dram_64kx1 U_D62 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]), .va(vid_addr), .vq(vbyte[2]));
-    dram_64kx1 U_D63 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]), .va(vid_addr), .vq(vbyte[3]));
-    dram_64kx1 U_D64 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]), .va(vid_addr), .vq(vbyte[4]));
-    dram_64kx1 U_D65 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]), .va(vid_addr), .vq(vbyte[5]));
-    dram_64kx1 U_D66 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]), .va(vid_addr), .vq(vbyte[6]));
-    dram_64kx1 U_D67 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]), .va(vid_addr), .vq(vbyte[7]));
+    // D58 (К580ИР82) = DRAM write-data latch: latches DB and drives the РУ5 DIN bus (write_data),
+    // holding write data stable across CAS/WE. Modeled transparent (write_data = DB) -> boot identical.
+    // РУ5 DIN <- write_data (via D58); РУ5 DOUT stays on DB (read path). STB/OE = boundary for now.
+    wire [7:0] write_data;
+    ir82_latch U_D58 (.d(DB), .stb(1'b0), .oe_n(1'b0), .q(write_data));
+    dram_64kx1 U_D60 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
+    dram_64kx1 U_D61 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[1]), .do_(DB[1]), .va(vid_addr), .vq(vbyte[1]));
+    dram_64kx1 U_D62 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[2]), .do_(DB[2]), .va(vid_addr), .vq(vbyte[2]));
+    dram_64kx1 U_D63 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[3]), .do_(DB[3]), .va(vid_addr), .vq(vbyte[3]));
+    dram_64kx1 U_D64 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[4]), .do_(DB[4]), .va(vid_addr), .vq(vbyte[4]));
+    dram_64kx1 U_D65 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[5]), .do_(DB[5]), .va(vid_addr), .vq(vbyte[5]));
+    dram_64kx1 U_D66 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[6]), .do_(DB[6]), .va(vid_addr), .vq(vbyte[6]));
+    dram_64kx1 U_D67 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[7]), .do_(DB[7]), .va(vid_addr), .vq(vbyte[7]));
     // (D68-D91 = the other 3 banks' sockets, unpopulated -- added in Phase B for the PCB.)
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----

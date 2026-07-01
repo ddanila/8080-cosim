@@ -79,6 +79,15 @@ endmodule
 // the off-board cards, so it carries no logic -- it exists so the transceiver->connector nets have a
 // 2nd endpoint (LVS forbids 1-node nets). Stage-1 pins = the D29 bus-command signals; grows as more
 // backplane transceivers (D23 addr, D24 data, D25 control) are wired. See docs/transcription/bus-interface.md.
+// К580ИР82 (8282) octal latch. Here (D58) it's the DRAM WRITE-DATA latch: it latches the system data
+// bus and drives the РУ5 DIN bus, holding the write data stable across the CAS/WE window -- the real
+// reason the DRAM captures a settled value (our sim compensated by sampling writes on the master clock;
+// D58 is the chip that does it in hardware). Modeled TRANSPARENT (q=d) so the RAM sees the same write
+// data -> byte-identical boot; STB/OE are wired for LVS connectivity only.
+module ir82_latch (input wire [7:0] d, input wire stb, oe_n, output wire [7:0] q);
+    assign q = d;
+endmodule
+
 module expansion_conn (inout wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n,
                        inout wire [7:0] dat,
                        inout wire [7:0] adr_lo, inout wire [7:0] adr_hi);  // adr_lo[i]=-ADRi, adr_hi[i]=-ADR(8+i)
