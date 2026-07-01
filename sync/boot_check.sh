@@ -23,14 +23,14 @@ echo "== cosim reference: real ekta37 boot @ $WRITES video writes =="
 cp cosim/vram.bin "$TMP/ref_ekta37.bin"
 
 echo "== HDL sims must match cosim @ $WRITES writes =="
-# juku_top_tb drives the REAL LVS-checked netlist (juku_top.v + devices.v); the others are
-# self-contained levels. A green juku_top boot = the one model is PCB netlist + LVS structure
-# + runnable twin, all at once. (It is heavier -- bit-sliced DRAM -- so a touch slower.)
-for tb in juku_sim_tb juku_chips_tb juku_struct_tb juku_top_tb; do
+# juku_top_tb drives the REAL LVS-checked netlist (juku_top.v + devices.v) -- it is THE model,
+# and boots ekta37 bit-identically (proven deeper by sync/cosim_check.sh). juku_sim/chips are the
+# earlier monolithic/chip-decomposed levels kept as stepping stones. (juku_struct is no longer a
+# boot level here -- it now serves as the cosim_check oracle; hdl/sim/juku_struct.v.)
+for tb in juku_sim_tb juku_chips_tb juku_top_tb; do
   case $tb in
     juku_sim_tb)    dump=vram_hdl.bin;    src="hdl/sim/$tb.v" ;;
     juku_chips_tb)  dump=vram_chips.bin;  src="hdl/sim/$tb.v" ;;
-    juku_struct_tb) dump=vram_struct.bin; src="hdl/sim/$tb.v" ;;
     juku_top_tb)    dump=vram_top.bin;    src="hdl/devices.v hdl/juku_top.v hdl/sim/$tb.v" ;;
   esac
   iverilog -g2012 -o "$TMP/$tb" hdl/vendor/vm80a.v $src
@@ -42,8 +42,8 @@ done
 echo "== synthetic-ROM datapath check (self-contained, HLT-bounded) =="
 ( cd cosim && "$TMP/trace" ../tests/regress.bin 1000000 >/dev/null 2>&1 )   # halts after 256 writes
 cp cosim/vram.bin "$TMP/ref_regress.bin"
-vvp "$TMP/juku_struct_tb" +rom=tests/regress.hex +maxvram=256 >/dev/null 2>&1
-if cmp -s "$TMP/ref_regress.bin" hdl/sim/vram_struct.bin; then echo "  PASS  synthetic ROM: HDL == cosim"
+vvp "$TMP/juku_top_tb" +rom=tests/regress.hex +maxvram=256 >/dev/null 2>&1
+if cmp -s "$TMP/ref_regress.bin" hdl/sim/vram_top.bin; then echo "  PASS  synthetic ROM: HDL == cosim"
 else echo "  FAIL  synthetic ROM: HDL differs from cosim"; fail=1; fi
 
 if [ "$fail" = 0 ]; then echo "BOOT-CHECK: PASS (merge intact)"; else echo "BOOT-CHECK: FAIL"; exit 1; fi

@@ -73,8 +73,10 @@ PASS (keyboard env-opt-in). Remaining polish: multi-ROM load (jbasic11) so `B` l
 BASIC; optionally port the keyboard to the HDL (vm80a) sim.
 
 ## PORTED TO THE HDL TWIN — interactive structural model ✅
-The keyboard + interrupts now run on the die-accurate structural twin (`juku_struct_tb.v`),
-not just cosim. Two new real-chip behaviors, both opt-in via plusargs (boot guard untouched):
+The keyboard + interrupts now run on the die-accurate structural model. First proven on the
+behavioral copy, then **ported onto the LVS-checked `juku_top.v` itself** (`hdl/devices.v`:
+`ppi_8255` keyboard + `intr_ctl` adjunct), which reacts to a typed `'T'` → `System from <D>isk`.
+Two real-chip behaviors, both opt-in via plusargs (boot guard untouched):
 - **`intr_ctl_b`** (the 8259): snoops the ICW/OCW from the PIC port writes, drives vm80a's
   real `pin_int` on the frame tick, and injects the MCS-80 **3-byte CALL vector**
   `{0xCD, lo, hi}` onto DB during vm80a's INTA reads (PC frozen, 3 reads — confirmed in

@@ -104,13 +104,13 @@ to cosim at 6000 writes (full-banner validation running). Now the whole boot-cri
 datapath — CPU, both decode PROMs, ROM/RAM, all I/O chips — is discrete instances on
 the modeled bus.
 
-**Step 4 DONE:** `hdl/sim/juku_struct_tb.v` is a behavioral realization of the structural
-top (`hdl/juku_top.v`) wired instance-for-instance — vm80a CPU → 8286 buffers (BA) →
-74138 I/O decode → peripherals, with the CPU ↔ **8238** ↔ DB system bus — and it **boots
-byte-identical to cosim** (verified at 6000 video writes). The un-traced memory-addressing
-subsystem (DRAM RAS/CAS row/col + μP/video mux + EPROM CS + 1-bit banking gate) stays a
-behavioral black box (`mem_subsystem`) on the real DB bus, since inventing that wiring
-would violate "scan = source of truth".
+**Step 4 DONE — and now SUPERSEDED by the merge.** `juku_struct` was a behavioral realization of
+the structural top, wired instance-for-instance (vm80a CPU → 8286 buffers → 74138 I/O decode →
+peripherals, CPU ↔ **8238** ↔ DB). But **`juku_top.v` ITSELF now boots ekta37 bit-identically**
+— keyboard, interrupts, full banner, interactive `'T'` response — with the memory subsystem
+realized as real chip instances (EPROM/decode-PROM/bit-sliced РУ5 DRAM). So `juku_struct` is
+retired from its "parallel twin" role to a **behavioral reference ORACLE** (`hdl/sim/juku_struct.v`)
+for `sync/cosim_check.sh`, which locksteps it against `juku_top` as a value-level equivalence guard.
 
 **The one real bug + its fix (analysis, not trial-and-error):** the boot derailed in a
 tight delay loop. Root cause = the 8080/КР580ВМ80А **data-setup-stability spec** (datasheet

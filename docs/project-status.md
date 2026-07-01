@@ -82,6 +82,31 @@ schematic*), with `cosim/` + MAME as validation oracles.
     - **LVS IN SYNC** (86 scan + 9 prom + 8 assumed/boundary). `hdl/sim/juku_top_tb.v` is the boot
       harness; **`sync/boot_check.sh` now guards `juku_top` too** (== cosim @ 6000 writes, sha1
       `f9163d30…`). Remaining: retire the duplicate `_b` bodies (Step 5); model the video readout chain.
+  - **★★ CONSOLIDATION COMPLETE — one model, fully interactive, + a new value-level guard.**
+    - **Correction to the earlier claim:** the "byte-identical boot" (6000 writes) only ever covered
+      the **RAM-test fill** (all mode-0). The real banner needs banking mode-switching, which the
+      mode-0-only decode ignored → `juku_top` diverged the instant the banner drawing began. Fixed
+      `decode_prom` to honor the mode via `v_en_n` (D7 ЛА3 fed by PPI0 Port C bit 0): mode-0 ROM
+      overlay ↔ mode-1 high-ROM fold. Now `juku_top` runs the full banner path.
+    - **Keyboard + interrupts ported onto `juku_top`** (were only in the `_b` copy): `ppi_8255` gains
+      the 74148 keyboard + Port-C/BSR; a sim-only `intr_ctl` adjunct drives INT + injects the 0xFED4
+      CALL vector on INTA. Sim stimulus (kbd/frame) are 1-endpoint nets the LVS drops.
+    - **THE bug — DRAM write hazard:** the bit-sliced РУ5 captured writes on the CAS-falling edge,
+      but DB isn't settled there, so occasional writes stored the stale bus (silent — the RAM test
+      checks only 0xD300, the VRAM guard only 0xD800+). Symptom: banner ran but text never reached
+      video RAM. **Found with a co-sim diff** (juku_top vs the juku_struct oracle, lockstepped, first
+      divergent read = a write to 0xD441 storing 0x00 not 0x4A). Fix: sample the DRAM write on the
+      **osc master clock** while CAS & WE low (like juku_struct). Result: **co-sim runs 9.3M reads with
+      ZERO divergence — juku_top ≡ juku_struct bit-identically** through boot + full banner + idle loop.
+      `juku_top` renders the banner AND reacts to a typed **'T'** → `System from <D>isk, <N>et ?` + cursor
+      (`docs/boot-ekta37-T-command-juku_top.png`). **`juku_top` fully replaces `juku_struct`.**
+    - **`juku_struct` repurposed → reference ORACLE** (`hdl/sim/juku_struct.v`); the `_b` testbench
+      retired. **New guard `sync/cosim_check.sh`** locksteps the two models and fails on the first
+      divergent read — a **value-level** check stronger than LVS (connectivity) or boot_check (sampled
+      RAM). It's what caught the 0xD441 bug. `boot_check.sh` drops the redundant `juku_struct_tb` level.
+    - Sim-only sampling clock renamed `osc`→`sclk` on cpu_8080/dram (avoids colliding with the real
+      crystal-osc pins); `lvs.py` gains an explicit `SIM_ONLY` allowlist (drops those pins by name,
+      still flags any other unmapped pin — verified). **LVS IN SYNC (94).** Remaining: video readout chain.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge
@@ -112,11 +137,15 @@ The full Juku ROM set is vendored in `roms/` (SHA-1s match MAME; abandonware —
   target for the interactive-emulation track** — booting it to a live prompt requires
   modeling the frame interrupt (8259 → INT/INTA → RST) + keyboard input via the 8255.
 
-## CI guards
-- **LVS** (`sync/check.sh`) — KiCad↔HDL connectivity stays in sync.
-- **Boot regression** (`sync/boot_check.sh`) — every HDL sim level (juku_sim/chips/struct)
-  must boot the real ekta37 **byte-identical to cosim**, bounded to 6000 video writes
-  (~30s, not the slow full banner). Protects the merge from silent breakage.
+## CI guards (three layers, increasing strength)
+- **LVS** (`sync/check.sh`) — KiCad↔HDL **connectivity** stays in sync (does not check values).
+- **Boot regression** (`sync/boot_check.sh`) — HDL sim levels (juku_sim/chips/**top**) boot the real
+  ekta37 **byte-identical to cosim**, bounded to 6000 video writes (~fast). Samples only the framebuffer
+  (0xD800+) + the RAM-test byte (0xD300) — so a write bug elsewhere is invisible to it.
+- **Co-sim diff** (`sync/cosim_check.sh`) — **value-level**: locksteps `juku_top` (structural) against
+  `juku_struct` (behavioral oracle, `hdl/sim/juku_struct.v`) on one clock+ROM and fails on the first
+  divergent read. Catches datapath value bugs the other two miss (found the DRAM 0xD441 write bug).
+  Slower (two DUTs) → thorough/nightly, not every commit. `WINDOW=<ns>` bounds the run.
 
 ## Toolchain
 `kicad-cli` at `/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli`;

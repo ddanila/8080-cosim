@@ -1,3 +1,14 @@
+// juku_struct: a behavioral REFERENCE ORACLE for cross-checking the real structural top
+// (hdl/juku_top.v). It mirrors juku_top's verified datapath instance-for-instance with
+// behavioral `_b` chip bodies (flat 64K RAM, osc-sampled writes, etc.), so it is a second,
+// independently-written model of the same machine. sync/cosim_check.sh locksteps the two on
+// one clock+ROM and flags the first divergent read -- a VALUE-level check stronger than LVS
+// (connectivity only) or boot_check (samples just 0xD300 + 0xD800+). This is exactly how the
+// DRAM CAS-timing write bug (0xD441) was found. NOT a boot level itself; juku_top is THE model.
+//
+// (Was hdl/sim/juku_struct_tb.v -- the parallel "runnable twin" -- until juku_top itself booted
+// ekta37 bit-identically; its testbench + boot-guard role were retired, this oracle kept.)
+
 // Phase C, step 4: boot through a behavioral realization of the STRUCTURAL TOP.
 // This module mirrors hdl/juku_top.v's verified datapath instance-for-instance:
 //   cpu_8080 -> buf_8286 (BA) -> io_dec138 (I/O CS) ; cpu <-> sysctl_8238 <-> DB ;
@@ -227,88 +238,4 @@ module juku_struct(input wire osc, phi1, phi2, reset, input wire ready,
                      .a0(BA[0]), .frame_tick(frame_tick), .DB(DB), .intr(intr));
 endmodule
 
-// ================================ testbench =====================================
-module juku_struct_tb();
-  reg osc=0, phi1=0, phi2=0, reset=1, ready=1;
-  integer mcyc=0, vram_writes=0, max_vram=6000; reg vram_seen=0;
-
-  // interactivity stimulus (all opt-in: default off => byte-identical boot guard)
-  reg frame_tick=0, kbd_en=0, kbd_pressed=0, kbd_shift=0;
-  reg [3:0] kbd_kcol=0; reg [2:0] kbd_kbit=0;
-  integer frameirq=0;                 // frame-interrupt period in osc cycles (0=off)
-  integer keyat=0, khold=900000, kgap=300000;   // press the key after `keyat` video writes
-  integer kcolp=0, kbitp=0, kshiftp=0;
-  integer osc_n=0, key_t=-1;
-
-  // clock + 2-phase (osc = fast sampling clock; phi1/phi2 = phases) -- clock subsystem
-  // is a documented boundary, driven here.
-  initial forever begin
-    phi1=1; osc=0; #10; osc=1; #10;
-    phi1=0; phi2=1; osc=0; #10; osc=1; #10;
-    phi2=0;
-  end
-
-  juku_struct dut(.osc(osc), .phi1(phi1), .phi2(phi2), .reset(reset), .ready(ready),
-                  .frame_tick(frame_tick), .kbd_en(kbd_en), .kbd_pressed(kbd_pressed),
-                  .kbd_shift(kbd_shift), .kbd_kcol(kbd_kcol), .kbd_kbit(kbd_kbit));
-
-  // frame-interrupt tick: a 1-osc-cycle pulse every `frameirq` osc cycles (models the
-  // 8253 VER-RTR -> 8259 IR5). Keyboard: press the configured key once the banner is drawn
-  // (vram_writes >= keyat), hold for `khold` osc cycles, then release so the BIOS sees an edge.
-  always @(posedge osc) begin
-    osc_n <= osc_n + 1;
-    frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq-1));
-    if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) key_t <= 0;   // arm on banner
-    else if (key_t >= 0) key_t <= key_t + 1;
-    kbd_pressed <= (key_t >= 0 && key_t < khold);                                 // hold then release
-  end
-
-  // count machine cycles by observing the structural sync net
-  reg sq=0;
-  always @(posedge osc) begin
-    if (dut.sync && !sq) mcyc <= mcyc+1;
-    sq <= dut.sync;
-  end
-  always @(negedge dut.memw_n) begin
-    if (dut.dec_ram && dut.BA >= 16'hD800) begin     // a RAM write to video memory
-      vram_writes = vram_writes + 1;
-      if (!vram_seen) begin vram_seen=1;
-        $display("[VRAM] first video write @0x%04h mode=%0d mcyc=%0d", dut.BA, dut.mem_mode, mcyc); end
-      if (vram_writes == max_vram) begin     // let the osc-edge RAM commit land, then dump
-        $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); #60 dump_vram; $finish;
-      end
-    end
-  end
-
-  // INTA probe: announce each interrupt-acknowledge read + the vector byte injected
-  reg inta_q=0;
-  always @(posedge osc) begin
-    if (~dut.inta_n & ~inta_q)
-      $display("[INTA] t=%0t idx=%0d ivec=0x%02h vaddr=0x%04h mcyc=%0d",
-        $time, dut.U_INTR.inta_idx, dut.U_INTR.ivec, dut.U_INTR.vaddr, mcyc);
-    inta_q <= ~dut.inta_n;
-  end
-
-  integer fd, k;
-  task dump_vram; begin
-    fd=$fopen("hdl/sim/vram_struct.bin","wb");
-    for (k=0;k<40*241;k=k+1) $fwrite(fd,"%c", dut.U_DRAM.mem[16'hD800+k]);
-    $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_struct.bin");
-  end endtask
-
-  initial begin
-    if ($value$plusargs("maxvram=%d", max_vram)) ;
-    if ($value$plusargs("frameirq=%d", frameirq)) ;       // 0=off (boot-identical)
-    if ($value$plusargs("keyat=%d",  keyat))  ;           // press key after N video writes
-    if ($value$plusargs("kcol=%d",   kcolp))  ;           // pre-decoded key column 0-15
-    if ($value$plusargs("kbit=%d",   kbitp))  ;           // pre-decoded key row bit 0-7
-    if ($value$plusargs("kshift=%d", kshiftp)) ;          // 1 = SHIFT held (uppercase)
-    if ($value$plusargs("khold=%d",  khold))  ;
-    if (keyat != 0) begin kbd_en=1; kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
-    reset=1; #2000 reset=0;
-  end
-  initial begin #1000000000;
-    $display("[SIM] time cap mcyc=%0d vram_writes=%0d", mcyc, vram_writes); dump_vram; $finish;
-  end
-endmodule
 `default_nettype wire
