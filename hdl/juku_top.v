@@ -164,6 +164,10 @@ module juku_top (
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d42_q));
     ir16 U_D43 (.d(DB[3]), .c(DB[2]), .b(DB[1]), .a(DB[0]),
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
+    // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
+    // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
+    wire d37_out;
+    la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out));
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

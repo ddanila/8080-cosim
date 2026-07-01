@@ -116,9 +116,12 @@ searching the bottom-right output stage; the serializers are top-right, by the �
   Drawn as an `RG` parallel-load box + the `ИР16` shift box. Pinout (both):
   - parallel data in: **D=pin5, C=pin4, B=pin3, A=pin2**  (fed from the РУ5 array data-out side)
   - **LD=pin6** (parallel load), **G=pin8** (enable), **CK=pin9** (clock), **DS=pin1** (serial in)
-  - **serial out = pin10** -> D37
-- **D37 (ЛА3):** pins **12/13 <- the two ИР16 (pin-10) outputs**, **11 =** combined serial pixel stream
-  -> feeds the D34 (ЛП5) sync combine at the output stage (bottom-right).
+  - **serial out = pin10**
+- **D37 (ЛА3, re-cropped 2026-07):** pins **12 & 13 are TIED TOGETHER and driven by D42.Q (pin 10)**
+  — so D37 is an **inverter of D42's serial stream**; output **pin 11** enters the node-"A" analog mix
+  (via R38 1k). (D43's pin-10 routes separately to D35/node A — D37 does *not* combine both ИР16.)
+  **Added to the LVS netlist** (`la3_gate U_D37`, input ← D42.Q): promotes D42's serial output from a
+  dangling pin into a checked net {D42.10, D37.12, D37.13}. Output pin 11 = analog boundary (dropped).
 - So the full readout chain is now fully identified:
   РУ5 array data-out -> **D42/D43 (ИР16) serialize @ dot clock** -> **D37 (ЛА3)** -> **D34 (ЛП5) XOR sync**
   -> VT2 -> ВИДЕО.  Refdes + pinout are scan-clean; the remaining detail for the LVS add is the exact

@@ -1,3273 +1,3304 @@
 {
- "_legend": {
-  "scan": "traced off scan",
-  "assumed": "chip identified+connected; internal/pin wiring not individually traced",
-  "boundary": "chip pins present, far end un-modeled",
-  "placeholder": "abstracted"
- },
- "_note": "Full processor module model (FDC skipped). 20-chip РУ5 array (D60-79: bank0 D60-67 + bank1 D68-75 on DB, video plane D76-79 on VD). All boundaries closed.",
- "chips": [
-  {
-   "ref": "D1",
-   "type": "CPU8080",
-   "pins": {
-    "25": "A0",
-    "26": "A1",
-    "27": "A2",
-    "29": "A3",
-    "30": "A4",
-    "31": "A5",
-    "32": "A6",
-    "33": "A7",
-    "34": "A8",
-    "35": "A9",
-    "1": "A10",
-    "40": "A11",
-    "37": "A12",
-    "38": "A13",
-    "39": "A14",
-    "36": "A15",
-    "10": "D0",
-    "9": "D1",
-    "8": "D2",
-    "7": "D3",
-    "3": "D4",
-    "4": "D5",
-    "5": "D6",
-    "6": "D7",
-    "22": "PHI1",
-    "15": "PHI2",
-    "23": "READY",
-    "12": "RESET",
-    "19": "SYNC",
-    "17": "DBIN",
-    "18": "WR_N",
-    "21": "HLDA",
-    "14": "INTR",
-    "16": "INTE",
-    "24": "WAIT_O",
-    "13": "HOLD"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
+  "_legend": {
+    "scan": "traced off scan",
+    "assumed": "chip identified+connected; internal/pin wiring not individually traced",
+    "boundary": "chip pins present, far end un-modeled",
+    "placeholder": "abstracted"
   },
-  {
-   "ref": "D4",
-   "type": "BUF8286",
-   "pins": {
-    "1": "AIN0",
-    "2": "AIN1",
-    "3": "AIN2",
-    "4": "AIN3",
-    "5": "AIN4",
-    "6": "AIN5",
-    "7": "AIN6",
-    "8": "AIN7",
-    "9": "OE_N",
-    "11": "T",
-    "12": "AOUT0",
-    "13": "AOUT1",
-    "14": "AOUT2",
-    "15": "AOUT3",
-    "16": "AOUT4",
-    "17": "AOUT5",
-    "18": "AOUT6",
-    "19": "AOUT7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan(routed)"
-   }
-  },
-  {
-   "ref": "DLB",
-   "type": "BUF8286",
-   "pins": {
-    "1": "AIN0",
-    "2": "AIN1",
-    "3": "AIN2",
-    "4": "AIN3",
-    "5": "AIN4",
-    "6": "AIN5",
-    "7": "AIN6",
-    "8": "AIN7",
-    "9": "OE_N",
-    "11": "T",
-    "12": "AOUT0",
-    "13": "AOUT1",
-    "14": "AOUT2",
-    "15": "AOUT3",
-    "16": "AOUT4",
-    "17": "AOUT5",
-    "18": "AOUT6",
-    "19": "AOUT7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "placeholder",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D5",
-   "type": "SYS8238",
-   "pins": {
-    "1": "STSTB_N",
-    "2": "HLDA",
-    "3": "WR_N",
-    "4": "DBIN",
-    "22": "BUSEN_N",
-    "23": "INTA_N",
-    "24": "MEMR_N",
-    "25": "IORD_N",
-    "26": "MEMW_N",
-    "27": "IOWR_N",
-    "15": "D0",
-    "14": "DB0",
-    "17": "D1",
-    "16": "DB1",
-    "19": "D2",
-    "18": "DB2",
-    "21": "D3",
-    "20": "DB3",
-    "5": "D4",
-    "6": "DB4",
-    "7": "D5",
-    "8": "DB5",
-    "9": "D6",
-    "10": "DB6",
-    "11": "D7",
-    "12": "DB7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "datasheet(8228); control cross-checked on scan"
-   }
-  },
-  {
-   "ref": "D6",
-   "type": "DEC_PROM",
-   "pins": {
-    "15": "A0",
-    "1": "A1",
-    "2": "A2",
-    "3": "A3",
-    "4": "A4",
-    "7": "A5",
-    "6": "A6",
-    "5": "A7",
-    "13": "V_EN_N",
-    "14": "V_EN_N",
-    "12": "ROM_N",
-    "11": "RAM_N",
-    "10": "REV",
-    "9": "ROE_N"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D7",
-   "type": "LA3_GATE",
-   "pins": {
-    "12": "A",
-    "13": "B",
-    "11": "Y"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "gate=scan"
-   }
-  },
-  {
-   "ref": "D15",
-   "type": "EPROM8K",
-   "pins": {
-    "10": "A0",
-    "9": "A1",
-    "8": "A2",
-    "7": "A3",
-    "6": "A4",
-    "5": "A5",
-    "4": "A6",
-    "3": "A7",
-    "25": "A8",
-    "24": "A9",
-    "21": "A10",
-    "23": "A11",
-    "2": "A12",
-    "11": "D0",
-    "12": "D1",
-    "13": "D2",
-    "15": "D3",
-    "16": "D4",
-    "17": "D5",
-    "18": "D6",
-    "19": "D7",
-    "20": "CS_N",
-    "22": "OE_N"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "datasheet",
-    "board": "POPULATED (M2764 EPROM); 8 ROM sockets on board, 2 populated [physical]"
-   }
-  },
-  {
-   "ref": "D16",
-   "type": "EPROM8K",
-   "pins": {
-    "10": "A0",
-    "9": "A1",
-    "8": "A2",
-    "7": "A3",
-    "6": "A4",
-    "5": "A5",
-    "4": "A6",
-    "3": "A7",
-    "25": "A8",
-    "24": "A9",
-    "21": "A10",
-    "23": "A11",
-    "2": "A12",
-    "11": "D0",
-    "12": "D1",
-    "13": "D2",
-    "15": "D3",
-    "16": "D4",
-    "17": "D5",
-    "18": "D6",
-    "19": "D7",
-    "20": "CS_N",
-    "22": "OE_N"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "datasheet",
-    "board": "POPULATED (M2764 EPROM); 8 ROM sockets on board, 2 populated [physical]"
-   }
-  },
-  {
-   "ref": "D60",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D61",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D62",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D63",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D64",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D65",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D66",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D67",
-   "type": "RU5",
-   "pins": {
-    "6": "MA0",
-    "12": "MA1",
-    "13": "MA2",
-    "5": "MA3",
-    "10": "MA4",
-    "7": "MA5",
-    "11": "MA6",
-    "9": "MA7",
-    "4": "RAS_N",
-    "15": "CAS_N",
-    "3": "WE_N",
-    "2": "DI",
-    "14": "DO_"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
-   }
-  },
-  {
-   "ref": "D26",
-   "type": "PPI8255",
-   "pins": {
-    "9": "A0",
-    "8": "A1",
-    "5": "RD_N",
-    "36": "WR_N",
-    "6": "CS_N",
-    "35": "RESET",
-    "14": "PORTC_LO0",
-    "15": "PORTC_LO1",
-    "34": "D0",
-    "33": "D1",
-    "32": "D2",
-    "31": "D3",
-    "30": "D4",
-    "29": "D5",
-    "28": "D6",
-    "27": "D7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified"
-   }
-  },
-  {
-   "ref": "D27",
-   "type": "PPI8255",
-   "pins": {
-    "9": "A0",
-    "8": "A1",
-    "5": "RD_N",
-    "36": "WR_N",
-    "6": "CS_N",
-    "35": "RESET",
-    "14": "PORTC_LO0",
-    "15": "PORTC_LO1",
-    "34": "D0",
-    "33": "D1",
-    "32": "D2",
-    "31": "D3",
-    "30": "D4",
-    "29": "D5",
-    "28": "D6",
-    "27": "D7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified"
-   }
-  },
-  {
-   "ref": "D11",
-   "type": "USART8251",
-   "pins": {
-    "12": "A",
-    "11": "CS_N",
-    "13": "RD_N",
-    "10": "WR_N",
-    "27": "D0",
-    "28": "D1",
-    "1": "D2",
-    "2": "D3",
-    "5": "D4",
-    "6": "D5",
-    "7": "D6",
-    "8": "D7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified"
-   }
-  },
-  {
-   "ref": "D54",
-   "type": "PIT8253",
-   "pins": {
-    "19": "A0",
-    "20": "A1",
-    "21": "CS_N",
-    "22": "RD_N",
-    "23": "WR_N",
-    "8": "D0",
-    "7": "D1",
-    "6": "D2",
-    "5": "D3",
-    "4": "D4",
-    "3": "D5",
-    "2": "D6",
-    "1": "D7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified",
-    "note": "8253 outputs generate VIDEO SYNC (1MHz/HOR RTR/H.SYNC/VER RTR/VER.SYNC); CPU programs via ports 0x10-0x1B [sheet2 scan]"
-   }
-  },
-  {
-   "ref": "D55",
-   "type": "PIT8253",
-   "pins": {
-    "19": "A0",
-    "20": "A1",
-    "21": "CS_N",
-    "22": "RD_N",
-    "23": "WR_N",
-    "8": "D0",
-    "7": "D1",
-    "6": "D2",
-    "5": "D3",
-    "4": "D4",
-    "3": "D5",
-    "2": "D6",
-    "1": "D7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified",
-    "note": "8253 outputs generate VIDEO SYNC (1MHz/HOR RTR/H.SYNC/VER RTR/VER.SYNC); CPU programs via ports 0x10-0x1B [sheet2 scan]"
-   }
-  },
-  {
-   "ref": "D57",
-   "type": "PIT8253",
-   "pins": {
-    "19": "A0",
-    "20": "A1",
-    "21": "CS_N",
-    "22": "RD_N",
-    "23": "WR_N",
-    "8": "D0",
-    "7": "D1",
-    "6": "D2",
-    "5": "D3",
-    "4": "D4",
-    "3": "D5",
-    "2": "D6",
-    "1": "D7"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified",
-    "note": "8253 outputs generate VIDEO SYNC (1MHz/HOR RTR/H.SYNC/VER RTR/VER.SYNC); CPU programs via ports 0x10-0x1B [sheet2 scan]"
-   }
-  },
-  {
-   "ref": "D10",
-   "type": "PIC8259",
-   "pins": {
-    "27": "A",
-    "1": "CS_N",
-    "3": "RD_N",
-    "2": "WR_N",
-    "11": "D0",
-    "10": "D1",
-    "9": "D2",
-    "8": "D3",
-    "7": "D4",
-    "6": "D5",
-    "5": "D6",
-    "4": "D7",
-    "17": "INTR",
-    "26": "INTA_N"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "verified"
-   }
-  },
-  {
-   "ref": "D59",
-   "type": "LN1_OSC",
-   "pins": {
-    "1": "XIN",
-    "2": "OSC"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D35",
-   "type": "CLK_PHASE",
-   "pins": {
-    "10": "PHI1",
-    "12": "PHI2",
-    "11": "OSC",
-    "13": "PHI2TTL"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "ЛН5 outputs Φ1=10/Φ2=12 read on scan"
-   }
-  },
-  {
-   "ref": "D38",
-   "type": "LA1_GATE",
-   "pins": {
-    "8": "Y",
-    "9": "I0",
-    "10": "I3",
-    "12": "I1",
-    "13": "I2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D2",
-   "type": "IO_DEC138",
-   "pins": {
-    "1": "A",
-    "2": "B",
-    "3": "C",
-    "4": "G1",
-    "5": "G2A_N",
-    "6": "G2B_N",
-    "7": "Y_N0",
-    "9": "Y_N1",
-    "10": "Y_N2",
-    "11": "Y_N3",
-    "12": "Y_N4",
-    "13": "Y_N5",
-    "14": "Y_N6",
-    "15": "Y_N7"
-   },
-   "prov": {
-    "type": "scan(РТ4 PROM, like D6)",
-    "refdes": "scan(D2)",
-    "pins": "decode in PROM contents = the known I/O map (off-schematic)",
-    "note": "РТ4 I/O decode; the 2x К155РЕ3 timing-state PROMs (ДГШ5.106.009) are also on this board (DRAM/video timing) -- pins/contents pending PROM dump"
-   }
-  },
-  {
-   "ref": "D44",
-   "type": "IE7_CTR",
-   "pins": {
-    "1": "CLK",
-    "2": "LOAD_N",
-    "3": "D0",
-    "4": "D1",
-    "5": "D2",
-    "6": "D3",
-    "7": "Q0",
-    "8": "Q1",
-    "9": "Q2",
-    "10": "Q3",
-    "11": "CO"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D45",
-   "type": "IE7_CTR",
-   "pins": {
-    "1": "CLK",
-    "2": "LOAD_N",
-    "3": "D0",
-    "4": "D1",
-    "5": "D2",
-    "6": "D3",
-    "7": "Q0",
-    "8": "Q1",
-    "9": "Q2",
-    "10": "Q3",
-    "11": "CO"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D46",
-   "type": "IE7_CTR",
-   "pins": {
-    "1": "CLK",
-    "2": "LOAD_N",
-    "3": "D0",
-    "4": "D1",
-    "5": "D2",
-    "6": "D3",
-    "7": "Q0",
-    "8": "Q1",
-    "9": "Q2",
-    "10": "Q3",
-    "11": "CO"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D47",
-   "type": "IE7_CTR",
-   "pins": {
-    "1": "CLK",
-    "2": "LOAD_N",
-    "3": "D0",
-    "4": "D1",
-    "5": "D2",
-    "6": "D3",
-    "7": "Q0",
-    "8": "Q1",
-    "9": "Q2",
-    "10": "Q3",
-    "11": "CO"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D48",
-   "type": "KP14_MUX",
-   "pins": {
-    "1": "SEL",
-    "15": "EN_N",
-    "2": "A0",
-    "3": "A1",
-    "4": "A2",
-    "5": "A3",
-    "6": "B0",
-    "7": "B1",
-    "8": "B2",
-    "9": "B3",
-    "10": "Y0",
-    "11": "Y1",
-    "12": "Y2",
-    "13": "Y3"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D49",
-   "type": "KP14_MUX",
-   "pins": {
-    "1": "SEL",
-    "15": "EN_N",
-    "2": "A0",
-    "3": "A1",
-    "4": "A2",
-    "5": "A3",
-    "6": "B0",
-    "7": "B1",
-    "8": "B2",
-    "9": "B3",
-    "10": "Y0",
-    "11": "Y1",
-    "12": "Y2",
-    "13": "Y3"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "placeholder"
-   }
-  },
-  {
-   "ref": "D53",
-   "type": "RASCAS_DEC",
-   "pins": {
-    "1": "A",
-    "2": "B",
-    "3": "C",
-    "4": "G",
-    "5": "Y_N0",
-    "6": "Y_N1",
-    "7": "Y_N2",
-    "9": "Y_N3"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan",
-    "note": "ИД7/74138 RAS/CAS decode: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-52(100R) -> R53-56(5.1k) -> array RAS/CAS/bank [sheet2 scan]"
-   }
-  },
-  {
-   "ref": "D56",
-   "type": "AG3_ONESHOT",
-   "pins": {
-    "1": "A_N",
-    "2": "B",
-    "3": "CLR_N",
-    "4": "Q_N",
-    "13": "Q"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "datasheet"
-   }
-  },
-  {
-   "ref": "D103",
-   "type": "IE10_CTR",
-   "pins": {
-    "1": "CLR_N",
-    "2": "CLK",
-    "3": "D0",
-    "4": "D1",
-    "5": "D2",
-    "6": "D3",
-    "9": "LOAD_N",
-    "11": "Q3",
-    "12": "Q2",
-    "13": "Q1",
-    "14": "Q0",
-    "15": "CO"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "datasheet"
-   }
-  },
-  {
-   "ref": "D40",
-   "type": "CT16_CTR",
-   "pins": {
-    "1": "R_N",
-    "2": "CLK",
-    "3": "D0",
-    "4": "D1",
-    "5": "D2",
-    "6": "D3",
-    "7": "EP",
-    "9": "PE_N",
-    "10": "ET",
-    "11": "Q3",
-    "12": "Q2",
-    "13": "Q1",
-    "14": "Q0",
-    "15": "CO"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D39",
-   "type": "LA3_GATE",
-   "pins": {
-    "12": "A",
-    "13": "B",
-    "11": "Y"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan~"
-   }
-  },
-  {
-   "ref": "D33",
-   "type": "LN1_INV",
-   "pins": {
-    "2": "A",
-    "8": "Y"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D36",
-   "type": "LA12_GATE",
-   "pins": {
-    "4": "B",
-    "5": "A",
-    "6": "Y"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D42",
-   "type": "IR16",
-   "pins": {
-    "2": "A",
-    "3": "B",
-    "4": "C",
-    "5": "D",
-    "6": "LD",
-    "8": "G",
-    "9": "CK",
-    "1": "DS",
-    "10": "Q"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
-  },
-  {
-   "ref": "D43",
-   "type": "IR16",
-   "pins": {
-    "2": "A",
-    "3": "B",
-    "4": "C",
-    "5": "D",
-    "6": "LD",
-    "8": "G",
-    "9": "CK",
-    "1": "DS",
-    "10": "Q"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan"
-   }
+  "_note": "Full processor module model (FDC skipped). 20-chip РУ5 array (D60-79: bank0 D60-67 + bank1 D68-75 on DB, video plane D76-79 on VD). All boundaries closed.",
+  "chips": [
+    {
+      "ref": "D1",
+      "type": "CPU8080",
+      "pins": {
+        "25": "A0",
+        "26": "A1",
+        "27": "A2",
+        "29": "A3",
+        "30": "A4",
+        "31": "A5",
+        "32": "A6",
+        "33": "A7",
+        "34": "A8",
+        "35": "A9",
+        "1": "A10",
+        "40": "A11",
+        "37": "A12",
+        "38": "A13",
+        "39": "A14",
+        "36": "A15",
+        "10": "D0",
+        "9": "D1",
+        "8": "D2",
+        "7": "D3",
+        "3": "D4",
+        "4": "D5",
+        "5": "D6",
+        "6": "D7",
+        "22": "PHI1",
+        "15": "PHI2",
+        "23": "READY",
+        "12": "RESET",
+        "19": "SYNC",
+        "17": "DBIN",
+        "18": "WR_N",
+        "21": "HLDA",
+        "14": "INTR",
+        "16": "INTE",
+        "24": "WAIT_O",
+        "13": "HOLD"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D4",
+      "type": "BUF8286",
+      "pins": {
+        "1": "AIN0",
+        "2": "AIN1",
+        "3": "AIN2",
+        "4": "AIN3",
+        "5": "AIN4",
+        "6": "AIN5",
+        "7": "AIN6",
+        "8": "AIN7",
+        "9": "OE_N",
+        "11": "T",
+        "12": "AOUT0",
+        "13": "AOUT1",
+        "14": "AOUT2",
+        "15": "AOUT3",
+        "16": "AOUT4",
+        "17": "AOUT5",
+        "18": "AOUT6",
+        "19": "AOUT7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan(routed)"
+      }
+    },
+    {
+      "ref": "DLB",
+      "type": "BUF8286",
+      "pins": {
+        "1": "AIN0",
+        "2": "AIN1",
+        "3": "AIN2",
+        "4": "AIN3",
+        "5": "AIN4",
+        "6": "AIN5",
+        "7": "AIN6",
+        "8": "AIN7",
+        "9": "OE_N",
+        "11": "T",
+        "12": "AOUT0",
+        "13": "AOUT1",
+        "14": "AOUT2",
+        "15": "AOUT3",
+        "16": "AOUT4",
+        "17": "AOUT5",
+        "18": "AOUT6",
+        "19": "AOUT7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "placeholder",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D5",
+      "type": "SYS8238",
+      "pins": {
+        "1": "STSTB_N",
+        "2": "HLDA",
+        "3": "WR_N",
+        "4": "DBIN",
+        "22": "BUSEN_N",
+        "23": "INTA_N",
+        "24": "MEMR_N",
+        "25": "IORD_N",
+        "26": "MEMW_N",
+        "27": "IOWR_N",
+        "15": "D0",
+        "14": "DB0",
+        "17": "D1",
+        "16": "DB1",
+        "19": "D2",
+        "18": "DB2",
+        "21": "D3",
+        "20": "DB3",
+        "5": "D4",
+        "6": "DB4",
+        "7": "D5",
+        "8": "DB5",
+        "9": "D6",
+        "10": "DB6",
+        "11": "D7",
+        "12": "DB7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet(8228); control cross-checked on scan"
+      }
+    },
+    {
+      "ref": "D6",
+      "type": "DEC_PROM",
+      "pins": {
+        "15": "A0",
+        "1": "A1",
+        "2": "A2",
+        "3": "A3",
+        "4": "A4",
+        "7": "A5",
+        "6": "A6",
+        "5": "A7",
+        "13": "V_EN_N",
+        "14": "V_EN_N",
+        "12": "ROM_N",
+        "11": "RAM_N",
+        "10": "REV",
+        "9": "ROE_N"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D7",
+      "type": "LA3_GATE",
+      "pins": {
+        "12": "A",
+        "13": "B",
+        "11": "Y"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "gate=scan"
+      }
+    },
+    {
+      "ref": "D15",
+      "type": "EPROM8K",
+      "pins": {
+        "10": "A0",
+        "9": "A1",
+        "8": "A2",
+        "7": "A3",
+        "6": "A4",
+        "5": "A5",
+        "4": "A6",
+        "3": "A7",
+        "25": "A8",
+        "24": "A9",
+        "21": "A10",
+        "23": "A11",
+        "2": "A12",
+        "11": "D0",
+        "12": "D1",
+        "13": "D2",
+        "15": "D3",
+        "16": "D4",
+        "17": "D5",
+        "18": "D6",
+        "19": "D7",
+        "20": "CS_N",
+        "22": "OE_N"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet",
+        "board": "POPULATED (M2764 EPROM); 8 ROM sockets on board, 2 populated [physical]"
+      }
+    },
+    {
+      "ref": "D16",
+      "type": "EPROM8K",
+      "pins": {
+        "10": "A0",
+        "9": "A1",
+        "8": "A2",
+        "7": "A3",
+        "6": "A4",
+        "5": "A5",
+        "4": "A6",
+        "3": "A7",
+        "25": "A8",
+        "24": "A9",
+        "21": "A10",
+        "23": "A11",
+        "2": "A12",
+        "11": "D0",
+        "12": "D1",
+        "13": "D2",
+        "15": "D3",
+        "16": "D4",
+        "17": "D5",
+        "18": "D6",
+        "19": "D7",
+        "20": "CS_N",
+        "22": "OE_N"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet",
+        "board": "POPULATED (M2764 EPROM); 8 ROM sockets on board, 2 populated [physical]"
+      }
+    },
+    {
+      "ref": "D60",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D61",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D62",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D63",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D64",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D65",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D66",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D67",
+      "type": "RU5",
+      "pins": {
+        "6": "MA0",
+        "12": "MA1",
+        "13": "MA2",
+        "5": "MA3",
+        "10": "MA4",
+        "7": "MA5",
+        "11": "MA6",
+        "9": "MA7",
+        "4": "RAS_N",
+        "15": "CAS_N",
+        "3": "WE_N",
+        "2": "DI",
+        "14": "DO_"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+      }
+    },
+    {
+      "ref": "D26",
+      "type": "PPI8255",
+      "pins": {
+        "9": "A0",
+        "8": "A1",
+        "5": "RD_N",
+        "36": "WR_N",
+        "6": "CS_N",
+        "35": "RESET",
+        "14": "PORTC_LO0",
+        "15": "PORTC_LO1",
+        "34": "D0",
+        "33": "D1",
+        "32": "D2",
+        "31": "D3",
+        "30": "D4",
+        "29": "D5",
+        "28": "D6",
+        "27": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified"
+      }
+    },
+    {
+      "ref": "D27",
+      "type": "PPI8255",
+      "pins": {
+        "9": "A0",
+        "8": "A1",
+        "5": "RD_N",
+        "36": "WR_N",
+        "6": "CS_N",
+        "35": "RESET",
+        "14": "PORTC_LO0",
+        "15": "PORTC_LO1",
+        "34": "D0",
+        "33": "D1",
+        "32": "D2",
+        "31": "D3",
+        "30": "D4",
+        "29": "D5",
+        "28": "D6",
+        "27": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified"
+      }
+    },
+    {
+      "ref": "D11",
+      "type": "USART8251",
+      "pins": {
+        "12": "A",
+        "11": "CS_N",
+        "13": "RD_N",
+        "10": "WR_N",
+        "27": "D0",
+        "28": "D1",
+        "1": "D2",
+        "2": "D3",
+        "5": "D4",
+        "6": "D5",
+        "7": "D6",
+        "8": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified"
+      }
+    },
+    {
+      "ref": "D54",
+      "type": "PIT8253",
+      "pins": {
+        "19": "A0",
+        "20": "A1",
+        "21": "CS_N",
+        "22": "RD_N",
+        "23": "WR_N",
+        "8": "D0",
+        "7": "D1",
+        "6": "D2",
+        "5": "D3",
+        "4": "D4",
+        "3": "D5",
+        "2": "D6",
+        "1": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified",
+        "note": "8253 outputs generate VIDEO SYNC (1MHz/HOR RTR/H.SYNC/VER RTR/VER.SYNC); CPU programs via ports 0x10-0x1B [sheet2 scan]"
+      }
+    },
+    {
+      "ref": "D55",
+      "type": "PIT8253",
+      "pins": {
+        "19": "A0",
+        "20": "A1",
+        "21": "CS_N",
+        "22": "RD_N",
+        "23": "WR_N",
+        "8": "D0",
+        "7": "D1",
+        "6": "D2",
+        "5": "D3",
+        "4": "D4",
+        "3": "D5",
+        "2": "D6",
+        "1": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified",
+        "note": "8253 outputs generate VIDEO SYNC (1MHz/HOR RTR/H.SYNC/VER RTR/VER.SYNC); CPU programs via ports 0x10-0x1B [sheet2 scan]"
+      }
+    },
+    {
+      "ref": "D57",
+      "type": "PIT8253",
+      "pins": {
+        "19": "A0",
+        "20": "A1",
+        "21": "CS_N",
+        "22": "RD_N",
+        "23": "WR_N",
+        "8": "D0",
+        "7": "D1",
+        "6": "D2",
+        "5": "D3",
+        "4": "D4",
+        "3": "D5",
+        "2": "D6",
+        "1": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified",
+        "note": "8253 outputs generate VIDEO SYNC (1MHz/HOR RTR/H.SYNC/VER RTR/VER.SYNC); CPU programs via ports 0x10-0x1B [sheet2 scan]"
+      }
+    },
+    {
+      "ref": "D10",
+      "type": "PIC8259",
+      "pins": {
+        "27": "A",
+        "1": "CS_N",
+        "3": "RD_N",
+        "2": "WR_N",
+        "11": "D0",
+        "10": "D1",
+        "9": "D2",
+        "8": "D3",
+        "7": "D4",
+        "6": "D5",
+        "5": "D6",
+        "4": "D7",
+        "17": "INTR",
+        "26": "INTA_N"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "verified"
+      }
+    },
+    {
+      "ref": "D59",
+      "type": "LN1_OSC",
+      "pins": {
+        "1": "XIN",
+        "2": "OSC"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D35",
+      "type": "CLK_PHASE",
+      "pins": {
+        "10": "PHI1",
+        "12": "PHI2",
+        "11": "OSC",
+        "13": "PHI2TTL"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "ЛН5 outputs Φ1=10/Φ2=12 read on scan"
+      }
+    },
+    {
+      "ref": "D38",
+      "type": "LA1_GATE",
+      "pins": {
+        "8": "Y",
+        "9": "I0",
+        "10": "I3",
+        "12": "I1",
+        "13": "I2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D2",
+      "type": "IO_DEC138",
+      "pins": {
+        "1": "A",
+        "2": "B",
+        "3": "C",
+        "4": "G1",
+        "5": "G2A_N",
+        "6": "G2B_N",
+        "7": "Y_N0",
+        "9": "Y_N1",
+        "10": "Y_N2",
+        "11": "Y_N3",
+        "12": "Y_N4",
+        "13": "Y_N5",
+        "14": "Y_N6",
+        "15": "Y_N7"
+      },
+      "prov": {
+        "type": "scan(РТ4 PROM, like D6)",
+        "refdes": "scan(D2)",
+        "pins": "decode in PROM contents = the known I/O map (off-schematic)",
+        "note": "РТ4 I/O decode; the 2x К155РЕ3 timing-state PROMs (ДГШ5.106.009) are also on this board (DRAM/video timing) -- pins/contents pending PROM dump"
+      }
+    },
+    {
+      "ref": "D44",
+      "type": "IE7_CTR",
+      "pins": {
+        "1": "CLK",
+        "2": "LOAD_N",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "Q0",
+        "8": "Q1",
+        "9": "Q2",
+        "10": "Q3",
+        "11": "CO"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D45",
+      "type": "IE7_CTR",
+      "pins": {
+        "1": "CLK",
+        "2": "LOAD_N",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "Q0",
+        "8": "Q1",
+        "9": "Q2",
+        "10": "Q3",
+        "11": "CO"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D46",
+      "type": "IE7_CTR",
+      "pins": {
+        "1": "CLK",
+        "2": "LOAD_N",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "Q0",
+        "8": "Q1",
+        "9": "Q2",
+        "10": "Q3",
+        "11": "CO"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D47",
+      "type": "IE7_CTR",
+      "pins": {
+        "1": "CLK",
+        "2": "LOAD_N",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "Q0",
+        "8": "Q1",
+        "9": "Q2",
+        "10": "Q3",
+        "11": "CO"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D48",
+      "type": "KP14_MUX",
+      "pins": {
+        "1": "SEL",
+        "15": "EN_N",
+        "2": "A0",
+        "3": "A1",
+        "4": "A2",
+        "5": "A3",
+        "6": "B0",
+        "7": "B1",
+        "8": "B2",
+        "9": "B3",
+        "10": "Y0",
+        "11": "Y1",
+        "12": "Y2",
+        "13": "Y3"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D49",
+      "type": "KP14_MUX",
+      "pins": {
+        "1": "SEL",
+        "15": "EN_N",
+        "2": "A0",
+        "3": "A1",
+        "4": "A2",
+        "5": "A3",
+        "6": "B0",
+        "7": "B1",
+        "8": "B2",
+        "9": "B3",
+        "10": "Y0",
+        "11": "Y1",
+        "12": "Y2",
+        "13": "Y3"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "placeholder"
+      }
+    },
+    {
+      "ref": "D53",
+      "type": "RASCAS_DEC",
+      "pins": {
+        "1": "A",
+        "2": "B",
+        "3": "C",
+        "4": "G",
+        "5": "Y_N0",
+        "6": "Y_N1",
+        "7": "Y_N2",
+        "9": "Y_N3"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan",
+        "note": "ИД7/74138 RAS/CAS decode: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-52(100R) -> R53-56(5.1k) -> array RAS/CAS/bank [sheet2 scan]"
+      }
+    },
+    {
+      "ref": "D56",
+      "type": "AG3_ONESHOT",
+      "pins": {
+        "1": "A_N",
+        "2": "B",
+        "3": "CLR_N",
+        "4": "Q_N",
+        "13": "Q"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet"
+      }
+    },
+    {
+      "ref": "D103",
+      "type": "IE10_CTR",
+      "pins": {
+        "1": "CLR_N",
+        "2": "CLK",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "9": "LOAD_N",
+        "11": "Q3",
+        "12": "Q2",
+        "13": "Q1",
+        "14": "Q0",
+        "15": "CO"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "datasheet"
+      }
+    },
+    {
+      "ref": "D40",
+      "type": "CT16_CTR",
+      "pins": {
+        "1": "R_N",
+        "2": "CLK",
+        "3": "D0",
+        "4": "D1",
+        "5": "D2",
+        "6": "D3",
+        "7": "EP",
+        "9": "PE_N",
+        "10": "ET",
+        "11": "Q3",
+        "12": "Q2",
+        "13": "Q1",
+        "14": "Q0",
+        "15": "CO"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D39",
+      "type": "LA3_GATE",
+      "pins": {
+        "12": "A",
+        "13": "B",
+        "11": "Y"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan~"
+      }
+    },
+    {
+      "ref": "D33",
+      "type": "LN1_INV",
+      "pins": {
+        "2": "A",
+        "8": "Y"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D36",
+      "type": "LA12_GATE",
+      "pins": {
+        "4": "B",
+        "5": "A",
+        "6": "Y"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D42",
+      "type": "IR16",
+      "pins": {
+        "2": "A",
+        "3": "B",
+        "4": "C",
+        "5": "D",
+        "6": "LD",
+        "8": "G",
+        "9": "CK",
+        "1": "DS",
+        "10": "Q"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D43",
+      "type": "IR16",
+      "pins": {
+        "2": "A",
+        "3": "B",
+        "4": "C",
+        "5": "D",
+        "6": "LD",
+        "8": "G",
+        "9": "CK",
+        "1": "DS",
+        "10": "Q"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan"
+      }
+    },
+    {
+      "ref": "D37",
+      "type": "LA3_GATE",
+      "pins": {
+        "12": "A",
+        "13": "B",
+        "11": "Y"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "gate=scan"
+      }
+    }
+  ],
+  "nets": {
+    "A0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "25"
+        ],
+        [
+          "DLB",
+          "1"
+        ]
+      ]
+    },
+    "A1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "26"
+        ],
+        [
+          "DLB",
+          "2"
+        ]
+      ]
+    },
+    "A2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "27"
+        ],
+        [
+          "DLB",
+          "3"
+        ]
+      ]
+    },
+    "A3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "29"
+        ],
+        [
+          "DLB",
+          "4"
+        ]
+      ]
+    },
+    "A4": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "30"
+        ],
+        [
+          "DLB",
+          "5"
+        ]
+      ]
+    },
+    "A5": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "31"
+        ],
+        [
+          "DLB",
+          "6"
+        ]
+      ]
+    },
+    "A6": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "32"
+        ],
+        [
+          "DLB",
+          "7"
+        ]
+      ]
+    },
+    "A7": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "33"
+        ],
+        [
+          "DLB",
+          "8"
+        ]
+      ]
+    },
+    "A8": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "34"
+        ],
+        [
+          "D4",
+          "8"
+        ]
+      ]
+    },
+    "A9": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "35"
+        ],
+        [
+          "D4",
+          "7"
+        ]
+      ]
+    },
+    "A10": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "1"
+        ],
+        [
+          "D4",
+          "1"
+        ]
+      ]
+    },
+    "A11": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "40"
+        ],
+        [
+          "D4",
+          "2"
+        ]
+      ]
+    },
+    "A12": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "37"
+        ],
+        [
+          "D4",
+          "5"
+        ]
+      ]
+    },
+    "A13": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "38"
+        ],
+        [
+          "D4",
+          "4"
+        ]
+      ]
+    },
+    "A14": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "39"
+        ],
+        [
+          "D4",
+          "3"
+        ]
+      ]
+    },
+    "A15": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "36"
+        ],
+        [
+          "D4",
+          "6"
+        ]
+      ]
+    },
+    "DC0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "10"
+        ],
+        [
+          "D5",
+          "15"
+        ]
+      ]
+    },
+    "DC1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "9"
+        ],
+        [
+          "D5",
+          "17"
+        ]
+      ]
+    },
+    "DC2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "8"
+        ],
+        [
+          "D5",
+          "19"
+        ]
+      ]
+    },
+    "DC3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "7"
+        ],
+        [
+          "D5",
+          "21"
+        ]
+      ]
+    },
+    "DC4": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "3"
+        ],
+        [
+          "D5",
+          "5"
+        ]
+      ]
+    },
+    "DC5": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "4"
+        ],
+        [
+          "D5",
+          "7"
+        ]
+      ]
+    },
+    "DC6": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "5"
+        ],
+        [
+          "D5",
+          "9"
+        ]
+      ]
+    },
+    "DC7": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "6"
+        ],
+        [
+          "D5",
+          "11"
+        ]
+      ]
+    },
+    "DBIN": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "17"
+        ],
+        [
+          "D5",
+          "4"
+        ]
+      ]
+    },
+    "WR": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "18"
+        ],
+        [
+          "D5",
+          "3"
+        ]
+      ]
+    },
+    "HLDA": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "21"
+        ],
+        [
+          "D5",
+          "2"
+        ]
+      ]
+    },
+    "BA0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "12"
+        ],
+        [
+          "D15",
+          "10"
+        ],
+        [
+          "D16",
+          "10"
+        ],
+        [
+          "D48",
+          "2"
+        ],
+        [
+          "D26",
+          "9"
+        ],
+        [
+          "D27",
+          "9"
+        ],
+        [
+          "D54",
+          "19"
+        ],
+        [
+          "D55",
+          "19"
+        ],
+        [
+          "D57",
+          "19"
+        ],
+        [
+          "D11",
+          "12"
+        ],
+        [
+          "D10",
+          "27"
+        ]
+      ]
+    },
+    "BA1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "13"
+        ],
+        [
+          "D15",
+          "9"
+        ],
+        [
+          "D16",
+          "9"
+        ],
+        [
+          "D48",
+          "3"
+        ],
+        [
+          "D26",
+          "8"
+        ],
+        [
+          "D27",
+          "8"
+        ],
+        [
+          "D54",
+          "20"
+        ],
+        [
+          "D55",
+          "20"
+        ],
+        [
+          "D57",
+          "20"
+        ]
+      ]
+    },
+    "BA2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "14"
+        ],
+        [
+          "D15",
+          "8"
+        ],
+        [
+          "D16",
+          "8"
+        ],
+        [
+          "D48",
+          "4"
+        ],
+        [
+          "D2",
+          "1"
+        ]
+      ]
+    },
+    "BA3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "15"
+        ],
+        [
+          "D15",
+          "7"
+        ],
+        [
+          "D16",
+          "7"
+        ],
+        [
+          "D48",
+          "5"
+        ],
+        [
+          "D2",
+          "2"
+        ]
+      ]
+    },
+    "BA4": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "16"
+        ],
+        [
+          "D15",
+          "6"
+        ],
+        [
+          "D16",
+          "6"
+        ],
+        [
+          "D49",
+          "2"
+        ],
+        [
+          "D2",
+          "3"
+        ]
+      ]
+    },
+    "BA5": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "17"
+        ],
+        [
+          "D15",
+          "5"
+        ],
+        [
+          "D16",
+          "5"
+        ],
+        [
+          "D49",
+          "3"
+        ]
+      ]
+    },
+    "BA6": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "18"
+        ],
+        [
+          "D15",
+          "4"
+        ],
+        [
+          "D16",
+          "4"
+        ],
+        [
+          "D49",
+          "4"
+        ]
+      ]
+    },
+    "BA7": {
+      "src": "scan",
+      "nodes": [
+        [
+          "DLB",
+          "19"
+        ],
+        [
+          "D15",
+          "3"
+        ],
+        [
+          "D16",
+          "3"
+        ],
+        [
+          "D49",
+          "5"
+        ]
+      ]
+    },
+    "BA8": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "19"
+        ],
+        [
+          "D6",
+          "15"
+        ],
+        [
+          "D15",
+          "25"
+        ],
+        [
+          "D16",
+          "25"
+        ],
+        [
+          "D48",
+          "6"
+        ]
+      ]
+    },
+    "BA9": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "18"
+        ],
+        [
+          "D6",
+          "1"
+        ],
+        [
+          "D15",
+          "24"
+        ],
+        [
+          "D16",
+          "24"
+        ],
+        [
+          "D48",
+          "7"
+        ]
+      ]
+    },
+    "BA10": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "12"
+        ],
+        [
+          "D6",
+          "2"
+        ],
+        [
+          "D15",
+          "21"
+        ],
+        [
+          "D16",
+          "21"
+        ],
+        [
+          "D48",
+          "8"
+        ]
+      ]
+    },
+    "BA11": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "13"
+        ],
+        [
+          "D6",
+          "3"
+        ],
+        [
+          "D15",
+          "23"
+        ],
+        [
+          "D16",
+          "23"
+        ],
+        [
+          "D48",
+          "9"
+        ]
+      ]
+    },
+    "BA12": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "16"
+        ],
+        [
+          "D6",
+          "4"
+        ],
+        [
+          "D15",
+          "2"
+        ],
+        [
+          "D16",
+          "2"
+        ],
+        [
+          "D49",
+          "6"
+        ]
+      ]
+    },
+    "BA13": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "15"
+        ],
+        [
+          "D6",
+          "7"
+        ],
+        [
+          "D49",
+          "7"
+        ]
+      ]
+    },
+    "BA14": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "14"
+        ],
+        [
+          "D6",
+          "6"
+        ],
+        [
+          "D49",
+          "8"
+        ]
+      ]
+    },
+    "BA15": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D4",
+          "17"
+        ],
+        [
+          "D6",
+          "5"
+        ],
+        [
+          "D49",
+          "9"
+        ]
+      ]
+    },
+    "DB0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "14"
+        ],
+        [
+          "D15",
+          "11"
+        ],
+        [
+          "D16",
+          "11"
+        ],
+        [
+          "D60",
+          "2"
+        ],
+        [
+          "D60",
+          "14"
+        ],
+        [
+          "D26",
+          "34"
+        ],
+        [
+          "D27",
+          "34"
+        ],
+        [
+          "D11",
+          "27"
+        ],
+        [
+          "D54",
+          "8"
+        ],
+        [
+          "D55",
+          "8"
+        ],
+        [
+          "D57",
+          "8"
+        ],
+        [
+          "D10",
+          "11"
+        ],
+        [
+          "D43",
+          "2"
+        ]
+      ]
+    },
+    "DB1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "16"
+        ],
+        [
+          "D15",
+          "12"
+        ],
+        [
+          "D16",
+          "12"
+        ],
+        [
+          "D61",
+          "2"
+        ],
+        [
+          "D61",
+          "14"
+        ],
+        [
+          "D26",
+          "33"
+        ],
+        [
+          "D27",
+          "33"
+        ],
+        [
+          "D11",
+          "28"
+        ],
+        [
+          "D54",
+          "7"
+        ],
+        [
+          "D55",
+          "7"
+        ],
+        [
+          "D57",
+          "7"
+        ],
+        [
+          "D10",
+          "10"
+        ],
+        [
+          "D43",
+          "3"
+        ]
+      ]
+    },
+    "DB2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "18"
+        ],
+        [
+          "D15",
+          "13"
+        ],
+        [
+          "D16",
+          "13"
+        ],
+        [
+          "D62",
+          "2"
+        ],
+        [
+          "D62",
+          "14"
+        ],
+        [
+          "D26",
+          "32"
+        ],
+        [
+          "D27",
+          "32"
+        ],
+        [
+          "D11",
+          "1"
+        ],
+        [
+          "D54",
+          "6"
+        ],
+        [
+          "D55",
+          "6"
+        ],
+        [
+          "D57",
+          "6"
+        ],
+        [
+          "D10",
+          "9"
+        ],
+        [
+          "D43",
+          "4"
+        ]
+      ]
+    },
+    "DB3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "20"
+        ],
+        [
+          "D15",
+          "15"
+        ],
+        [
+          "D16",
+          "15"
+        ],
+        [
+          "D63",
+          "2"
+        ],
+        [
+          "D63",
+          "14"
+        ],
+        [
+          "D26",
+          "31"
+        ],
+        [
+          "D27",
+          "31"
+        ],
+        [
+          "D11",
+          "2"
+        ],
+        [
+          "D54",
+          "5"
+        ],
+        [
+          "D55",
+          "5"
+        ],
+        [
+          "D57",
+          "5"
+        ],
+        [
+          "D10",
+          "8"
+        ],
+        [
+          "D43",
+          "5"
+        ]
+      ]
+    },
+    "DB4": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "6"
+        ],
+        [
+          "D15",
+          "16"
+        ],
+        [
+          "D16",
+          "16"
+        ],
+        [
+          "D64",
+          "2"
+        ],
+        [
+          "D64",
+          "14"
+        ],
+        [
+          "D26",
+          "30"
+        ],
+        [
+          "D27",
+          "30"
+        ],
+        [
+          "D11",
+          "5"
+        ],
+        [
+          "D54",
+          "4"
+        ],
+        [
+          "D55",
+          "4"
+        ],
+        [
+          "D57",
+          "4"
+        ],
+        [
+          "D10",
+          "7"
+        ],
+        [
+          "D42",
+          "2"
+        ]
+      ]
+    },
+    "DB5": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "8"
+        ],
+        [
+          "D15",
+          "17"
+        ],
+        [
+          "D16",
+          "17"
+        ],
+        [
+          "D65",
+          "2"
+        ],
+        [
+          "D65",
+          "14"
+        ],
+        [
+          "D26",
+          "29"
+        ],
+        [
+          "D27",
+          "29"
+        ],
+        [
+          "D11",
+          "6"
+        ],
+        [
+          "D54",
+          "3"
+        ],
+        [
+          "D55",
+          "3"
+        ],
+        [
+          "D57",
+          "3"
+        ],
+        [
+          "D10",
+          "6"
+        ],
+        [
+          "D42",
+          "3"
+        ]
+      ]
+    },
+    "DB6": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "10"
+        ],
+        [
+          "D15",
+          "18"
+        ],
+        [
+          "D16",
+          "18"
+        ],
+        [
+          "D66",
+          "2"
+        ],
+        [
+          "D66",
+          "14"
+        ],
+        [
+          "D26",
+          "28"
+        ],
+        [
+          "D27",
+          "28"
+        ],
+        [
+          "D11",
+          "7"
+        ],
+        [
+          "D54",
+          "2"
+        ],
+        [
+          "D55",
+          "2"
+        ],
+        [
+          "D57",
+          "2"
+        ],
+        [
+          "D10",
+          "5"
+        ],
+        [
+          "D42",
+          "4"
+        ]
+      ]
+    },
+    "DB7": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "12"
+        ],
+        [
+          "D15",
+          "19"
+        ],
+        [
+          "D16",
+          "19"
+        ],
+        [
+          "D67",
+          "2"
+        ],
+        [
+          "D67",
+          "14"
+        ],
+        [
+          "D26",
+          "27"
+        ],
+        [
+          "D27",
+          "27"
+        ],
+        [
+          "D11",
+          "8"
+        ],
+        [
+          "D54",
+          "1"
+        ],
+        [
+          "D55",
+          "1"
+        ],
+        [
+          "D57",
+          "1"
+        ],
+        [
+          "D10",
+          "4"
+        ],
+        [
+          "D42",
+          "5"
+        ]
+      ]
+    },
+    "ROM_SEL": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D6",
+          "12"
+        ],
+        [
+          "D15",
+          "20"
+        ]
+      ]
+    },
+    "ROE": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D6",
+          "9"
+        ]
+      ]
+    },
+    "PROM_EN": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D7",
+          "11"
+        ],
+        [
+          "D6",
+          "14"
+        ]
+      ]
+    },
+    "MEMR": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "24"
+        ],
+        [
+          "D15",
+          "22"
+        ],
+        [
+          "D16",
+          "22"
+        ]
+      ]
+    },
+    "MEMW": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "26"
+        ],
+        [
+          "D60",
+          "3"
+        ],
+        [
+          "D61",
+          "3"
+        ],
+        [
+          "D62",
+          "3"
+        ],
+        [
+          "D63",
+          "3"
+        ],
+        [
+          "D64",
+          "3"
+        ],
+        [
+          "D65",
+          "3"
+        ],
+        [
+          "D66",
+          "3"
+        ],
+        [
+          "D67",
+          "3"
+        ]
+      ]
+    },
+    "IORD": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "25"
+        ],
+        [
+          "D2",
+          "5"
+        ],
+        [
+          "D26",
+          "5"
+        ],
+        [
+          "D27",
+          "5"
+        ],
+        [
+          "D11",
+          "13"
+        ],
+        [
+          "D54",
+          "22"
+        ],
+        [
+          "D55",
+          "22"
+        ],
+        [
+          "D57",
+          "22"
+        ],
+        [
+          "D10",
+          "3"
+        ]
+      ]
+    },
+    "IOWR": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "27"
+        ],
+        [
+          "D2",
+          "6"
+        ],
+        [
+          "D26",
+          "36"
+        ],
+        [
+          "D27",
+          "36"
+        ],
+        [
+          "D11",
+          "10"
+        ],
+        [
+          "D54",
+          "23"
+        ],
+        [
+          "D55",
+          "23"
+        ],
+        [
+          "D57",
+          "23"
+        ],
+        [
+          "D10",
+          "2"
+        ]
+      ]
+    },
+    "MEM_MODE0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D26",
+          "14"
+        ],
+        [
+          "D7",
+          "13"
+        ]
+      ]
+    },
+    "INTR": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D10",
+          "17"
+        ],
+        [
+          "D1",
+          "14"
+        ]
+      ]
+    },
+    "INTA": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D5",
+          "23"
+        ],
+        [
+          "D10",
+          "26"
+        ]
+      ]
+    },
+    "RESET": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D1",
+          "12"
+        ],
+        [
+          "D26",
+          "35"
+        ],
+        [
+          "D27",
+          "35"
+        ]
+      ]
+    },
+    "OSC": {
+      "nodes": [
+        [
+          "D59",
+          "2"
+        ],
+        [
+          "D40",
+          "2"
+        ]
+      ],
+      "src": "scan"
+    },
+    "PHI1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D35",
+          "10"
+        ],
+        [
+          "D1",
+          "22"
+        ],
+        [
+          "D48",
+          "1"
+        ],
+        [
+          "D49",
+          "1"
+        ],
+        [
+          "D53",
+          "2"
+        ]
+      ]
+    },
+    "PHI2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D35",
+          "12"
+        ],
+        [
+          "D1",
+          "15"
+        ],
+        [
+          "D53",
+          "3"
+        ]
+      ]
+    },
+    "PHI2TTL": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D35",
+          "13"
+        ],
+        [
+          "D44",
+          "1"
+        ]
+      ]
+    },
+    "STSTB": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D38",
+          "8"
+        ],
+        [
+          "D5",
+          "1"
+        ]
+      ]
+    },
+    "CS_D10": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "7"
+        ],
+        [
+          "D10",
+          "1"
+        ]
+      ]
+    },
+    "CS_D26": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "9"
+        ],
+        [
+          "D26",
+          "6"
+        ]
+      ]
+    },
+    "CS_D11": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "10"
+        ],
+        [
+          "D11",
+          "11"
+        ]
+      ]
+    },
+    "CS_D27": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "11"
+        ],
+        [
+          "D27",
+          "6"
+        ]
+      ]
+    },
+    "CS_D54": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "12"
+        ],
+        [
+          "D54",
+          "21"
+        ]
+      ]
+    },
+    "CS_D55": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "13"
+        ],
+        [
+          "D55",
+          "21"
+        ]
+      ]
+    },
+    "CS_D57": {
+      "src": "prom",
+      "nodes": [
+        [
+          "D2",
+          "14"
+        ],
+        [
+          "D57",
+          "21"
+        ]
+      ]
+    },
+    "MA0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D48",
+          "10"
+        ],
+        [
+          "D60",
+          "6"
+        ],
+        [
+          "D61",
+          "6"
+        ],
+        [
+          "D62",
+          "6"
+        ],
+        [
+          "D63",
+          "6"
+        ],
+        [
+          "D64",
+          "6"
+        ],
+        [
+          "D65",
+          "6"
+        ],
+        [
+          "D66",
+          "6"
+        ],
+        [
+          "D67",
+          "6"
+        ]
+      ]
+    },
+    "MA1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D48",
+          "11"
+        ],
+        [
+          "D60",
+          "12"
+        ],
+        [
+          "D61",
+          "12"
+        ],
+        [
+          "D62",
+          "12"
+        ],
+        [
+          "D63",
+          "12"
+        ],
+        [
+          "D64",
+          "12"
+        ],
+        [
+          "D65",
+          "12"
+        ],
+        [
+          "D66",
+          "12"
+        ],
+        [
+          "D67",
+          "12"
+        ]
+      ]
+    },
+    "MA2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D48",
+          "12"
+        ],
+        [
+          "D60",
+          "13"
+        ],
+        [
+          "D61",
+          "13"
+        ],
+        [
+          "D62",
+          "13"
+        ],
+        [
+          "D63",
+          "13"
+        ],
+        [
+          "D64",
+          "13"
+        ],
+        [
+          "D65",
+          "13"
+        ],
+        [
+          "D66",
+          "13"
+        ],
+        [
+          "D67",
+          "13"
+        ]
+      ]
+    },
+    "MA3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D48",
+          "13"
+        ],
+        [
+          "D60",
+          "5"
+        ],
+        [
+          "D61",
+          "5"
+        ],
+        [
+          "D62",
+          "5"
+        ],
+        [
+          "D63",
+          "5"
+        ],
+        [
+          "D64",
+          "5"
+        ],
+        [
+          "D65",
+          "5"
+        ],
+        [
+          "D66",
+          "5"
+        ],
+        [
+          "D67",
+          "5"
+        ]
+      ]
+    },
+    "MA4": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D49",
+          "10"
+        ],
+        [
+          "D60",
+          "10"
+        ],
+        [
+          "D61",
+          "10"
+        ],
+        [
+          "D62",
+          "10"
+        ],
+        [
+          "D63",
+          "10"
+        ],
+        [
+          "D64",
+          "10"
+        ],
+        [
+          "D65",
+          "10"
+        ],
+        [
+          "D66",
+          "10"
+        ],
+        [
+          "D67",
+          "10"
+        ]
+      ]
+    },
+    "MA5": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D49",
+          "11"
+        ],
+        [
+          "D60",
+          "7"
+        ],
+        [
+          "D61",
+          "7"
+        ],
+        [
+          "D62",
+          "7"
+        ],
+        [
+          "D63",
+          "7"
+        ],
+        [
+          "D64",
+          "7"
+        ],
+        [
+          "D65",
+          "7"
+        ],
+        [
+          "D66",
+          "7"
+        ],
+        [
+          "D67",
+          "7"
+        ]
+      ]
+    },
+    "MA6": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D49",
+          "12"
+        ],
+        [
+          "D60",
+          "11"
+        ],
+        [
+          "D61",
+          "11"
+        ],
+        [
+          "D62",
+          "11"
+        ],
+        [
+          "D63",
+          "11"
+        ],
+        [
+          "D64",
+          "11"
+        ],
+        [
+          "D65",
+          "11"
+        ],
+        [
+          "D66",
+          "11"
+        ],
+        [
+          "D67",
+          "11"
+        ]
+      ]
+    },
+    "MA7": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D49",
+          "13"
+        ],
+        [
+          "D60",
+          "9"
+        ],
+        [
+          "D61",
+          "9"
+        ],
+        [
+          "D62",
+          "9"
+        ],
+        [
+          "D63",
+          "9"
+        ],
+        [
+          "D64",
+          "9"
+        ],
+        [
+          "D65",
+          "9"
+        ],
+        [
+          "D66",
+          "9"
+        ],
+        [
+          "D67",
+          "9"
+        ]
+      ]
+    },
+    "RAS": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D53",
+          "5"
+        ],
+        [
+          "D60",
+          "4"
+        ],
+        [
+          "D61",
+          "4"
+        ],
+        [
+          "D62",
+          "4"
+        ],
+        [
+          "D63",
+          "4"
+        ],
+        [
+          "D64",
+          "4"
+        ],
+        [
+          "D65",
+          "4"
+        ],
+        [
+          "D66",
+          "4"
+        ],
+        [
+          "D67",
+          "4"
+        ]
+      ]
+    },
+    "CAS": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D53",
+          "6"
+        ],
+        [
+          "D60",
+          "15"
+        ],
+        [
+          "D61",
+          "15"
+        ],
+        [
+          "D62",
+          "15"
+        ],
+        [
+          "D63",
+          "15"
+        ],
+        [
+          "D64",
+          "15"
+        ],
+        [
+          "D65",
+          "15"
+        ],
+        [
+          "D66",
+          "15"
+        ],
+        [
+          "D67",
+          "15"
+        ]
+      ]
+    },
+    "VCTRLO0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D44",
+          "7"
+        ]
+      ]
+    },
+    "VCTRLO1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D44",
+          "8"
+        ]
+      ]
+    },
+    "VCTRLO2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D44",
+          "9"
+        ]
+      ]
+    },
+    "VCTRLO3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D44",
+          "10"
+        ]
+      ]
+    },
+    "VCTRHI0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D45",
+          "7"
+        ]
+      ]
+    },
+    "VCTRHI1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D45",
+          "8"
+        ]
+      ]
+    },
+    "VCTRHI2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D45",
+          "9"
+        ]
+      ]
+    },
+    "VCTRHI3": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D45",
+          "10"
+        ]
+      ]
+    },
+    "CO0": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D44",
+          "11"
+        ],
+        [
+          "D45",
+          "1"
+        ]
+      ]
+    },
+    "CO1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D45",
+          "11"
+        ],
+        [
+          "D46",
+          "1"
+        ]
+      ]
+    },
+    "CO2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D46",
+          "11"
+        ],
+        [
+          "D47",
+          "1"
+        ]
+      ]
+    },
+    "DOTCLK16M": {
+      "nodes": [
+        [
+          "D56",
+          "13"
+        ],
+        [
+          "D103",
+          "2"
+        ],
+        [
+          "D42",
+          "9"
+        ],
+        [
+          "D43",
+          "9"
+        ]
+      ]
+    },
+    "D40QA": {
+      "nodes": [
+        [
+          "D40",
+          "14"
+        ],
+        [
+          "D39",
+          "13"
+        ]
+      ],
+      "src": "scan"
+    },
+    "D39Y": {
+      "nodes": [
+        [
+          "D39",
+          "11"
+        ],
+        [
+          "D38",
+          "13"
+        ]
+      ],
+      "src": "assumed"
+    },
+    "CLKG_D33": {
+      "nodes": [
+        [
+          "D33",
+          "8"
+        ],
+        [
+          "D38",
+          "9"
+        ]
+      ],
+      "src": "scan"
+    },
+    "CLKG_D36": {
+      "nodes": [
+        [
+          "D36",
+          "6"
+        ],
+        [
+          "D35",
+          "11"
+        ]
+      ],
+      "src": "scan"
+    },
+    "SYNC": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D1",
+          "19"
+        ],
+        [
+          "D38",
+          "12"
+        ]
+      ]
+    },
+    "REV": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D6",
+          "10"
+        ],
+        [
+          "D16",
+          "20"
+        ]
+      ]
+    },
+    "RAM_SEL": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D6",
+          "11"
+        ],
+        [
+          "D53",
+          "1"
+        ]
+      ]
+    },
+    "VID_LD": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D42",
+          "6"
+        ],
+        [
+          "D43",
+          "6"
+        ]
+      ]
+    },
+    "VID_D42Q": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D42",
+          "10"
+        ],
+        [
+          "D37",
+          "12"
+        ],
+        [
+          "D37",
+          "13"
+        ]
+      ]
+    }
   }
- ],
- "nets": {
-  "A0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "25"
-    ],
-    [
-     "DLB",
-     "1"
-    ]
-   ]
-  },
-  "A1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "26"
-    ],
-    [
-     "DLB",
-     "2"
-    ]
-   ]
-  },
-  "A2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "27"
-    ],
-    [
-     "DLB",
-     "3"
-    ]
-   ]
-  },
-  "A3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "29"
-    ],
-    [
-     "DLB",
-     "4"
-    ]
-   ]
-  },
-  "A4": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "30"
-    ],
-    [
-     "DLB",
-     "5"
-    ]
-   ]
-  },
-  "A5": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "31"
-    ],
-    [
-     "DLB",
-     "6"
-    ]
-   ]
-  },
-  "A6": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "32"
-    ],
-    [
-     "DLB",
-     "7"
-    ]
-   ]
-  },
-  "A7": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "33"
-    ],
-    [
-     "DLB",
-     "8"
-    ]
-   ]
-  },
-  "A8": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "34"
-    ],
-    [
-     "D4",
-     "8"
-    ]
-   ]
-  },
-  "A9": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "35"
-    ],
-    [
-     "D4",
-     "7"
-    ]
-   ]
-  },
-  "A10": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "1"
-    ],
-    [
-     "D4",
-     "1"
-    ]
-   ]
-  },
-  "A11": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "40"
-    ],
-    [
-     "D4",
-     "2"
-    ]
-   ]
-  },
-  "A12": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "37"
-    ],
-    [
-     "D4",
-     "5"
-    ]
-   ]
-  },
-  "A13": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "38"
-    ],
-    [
-     "D4",
-     "4"
-    ]
-   ]
-  },
-  "A14": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "39"
-    ],
-    [
-     "D4",
-     "3"
-    ]
-   ]
-  },
-  "A15": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "36"
-    ],
-    [
-     "D4",
-     "6"
-    ]
-   ]
-  },
-  "DC0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "10"
-    ],
-    [
-     "D5",
-     "15"
-    ]
-   ]
-  },
-  "DC1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "9"
-    ],
-    [
-     "D5",
-     "17"
-    ]
-   ]
-  },
-  "DC2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "8"
-    ],
-    [
-     "D5",
-     "19"
-    ]
-   ]
-  },
-  "DC3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "7"
-    ],
-    [
-     "D5",
-     "21"
-    ]
-   ]
-  },
-  "DC4": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "3"
-    ],
-    [
-     "D5",
-     "5"
-    ]
-   ]
-  },
-  "DC5": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "4"
-    ],
-    [
-     "D5",
-     "7"
-    ]
-   ]
-  },
-  "DC6": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "5"
-    ],
-    [
-     "D5",
-     "9"
-    ]
-   ]
-  },
-  "DC7": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "6"
-    ],
-    [
-     "D5",
-     "11"
-    ]
-   ]
-  },
-  "DBIN": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "17"
-    ],
-    [
-     "D5",
-     "4"
-    ]
-   ]
-  },
-  "WR": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "18"
-    ],
-    [
-     "D5",
-     "3"
-    ]
-   ]
-  },
-  "HLDA": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "21"
-    ],
-    [
-     "D5",
-     "2"
-    ]
-   ]
-  },
-  "BA0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "12"
-    ],
-    [
-     "D15",
-     "10"
-    ],
-    [
-     "D16",
-     "10"
-    ],
-    [
-     "D48",
-     "2"
-    ],
-    [
-     "D26",
-     "9"
-    ],
-    [
-     "D27",
-     "9"
-    ],
-    [
-     "D54",
-     "19"
-    ],
-    [
-     "D55",
-     "19"
-    ],
-    [
-     "D57",
-     "19"
-    ],
-    [
-     "D11",
-     "12"
-    ],
-    [
-     "D10",
-     "27"
-    ]
-   ]
-  },
-  "BA1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "13"
-    ],
-    [
-     "D15",
-     "9"
-    ],
-    [
-     "D16",
-     "9"
-    ],
-    [
-     "D48",
-     "3"
-    ],
-    [
-     "D26",
-     "8"
-    ],
-    [
-     "D27",
-     "8"
-    ],
-    [
-     "D54",
-     "20"
-    ],
-    [
-     "D55",
-     "20"
-    ],
-    [
-     "D57",
-     "20"
-    ]
-   ]
-  },
-  "BA2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "14"
-    ],
-    [
-     "D15",
-     "8"
-    ],
-    [
-     "D16",
-     "8"
-    ],
-    [
-     "D48",
-     "4"
-    ],
-    [
-     "D2",
-     "1"
-    ]
-   ]
-  },
-  "BA3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "15"
-    ],
-    [
-     "D15",
-     "7"
-    ],
-    [
-     "D16",
-     "7"
-    ],
-    [
-     "D48",
-     "5"
-    ],
-    [
-     "D2",
-     "2"
-    ]
-   ]
-  },
-  "BA4": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "16"
-    ],
-    [
-     "D15",
-     "6"
-    ],
-    [
-     "D16",
-     "6"
-    ],
-    [
-     "D49",
-     "2"
-    ],
-    [
-     "D2",
-     "3"
-    ]
-   ]
-  },
-  "BA5": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "17"
-    ],
-    [
-     "D15",
-     "5"
-    ],
-    [
-     "D16",
-     "5"
-    ],
-    [
-     "D49",
-     "3"
-    ]
-   ]
-  },
-  "BA6": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "18"
-    ],
-    [
-     "D15",
-     "4"
-    ],
-    [
-     "D16",
-     "4"
-    ],
-    [
-     "D49",
-     "4"
-    ]
-   ]
-  },
-  "BA7": {
-   "src": "scan",
-   "nodes": [
-    [
-     "DLB",
-     "19"
-    ],
-    [
-     "D15",
-     "3"
-    ],
-    [
-     "D16",
-     "3"
-    ],
-    [
-     "D49",
-     "5"
-    ]
-   ]
-  },
-  "BA8": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "19"
-    ],
-    [
-     "D6",
-     "15"
-    ],
-    [
-     "D15",
-     "25"
-    ],
-    [
-     "D16",
-     "25"
-    ],
-    [
-     "D48",
-     "6"
-    ]
-   ]
-  },
-  "BA9": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "18"
-    ],
-    [
-     "D6",
-     "1"
-    ],
-    [
-     "D15",
-     "24"
-    ],
-    [
-     "D16",
-     "24"
-    ],
-    [
-     "D48",
-     "7"
-    ]
-   ]
-  },
-  "BA10": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "12"
-    ],
-    [
-     "D6",
-     "2"
-    ],
-    [
-     "D15",
-     "21"
-    ],
-    [
-     "D16",
-     "21"
-    ],
-    [
-     "D48",
-     "8"
-    ]
-   ]
-  },
-  "BA11": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "13"
-    ],
-    [
-     "D6",
-     "3"
-    ],
-    [
-     "D15",
-     "23"
-    ],
-    [
-     "D16",
-     "23"
-    ],
-    [
-     "D48",
-     "9"
-    ]
-   ]
-  },
-  "BA12": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "16"
-    ],
-    [
-     "D6",
-     "4"
-    ],
-    [
-     "D15",
-     "2"
-    ],
-    [
-     "D16",
-     "2"
-    ],
-    [
-     "D49",
-     "6"
-    ]
-   ]
-  },
-  "BA13": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "15"
-    ],
-    [
-     "D6",
-     "7"
-    ],
-    [
-     "D49",
-     "7"
-    ]
-   ]
-  },
-  "BA14": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "14"
-    ],
-    [
-     "D6",
-     "6"
-    ],
-    [
-     "D49",
-     "8"
-    ]
-   ]
-  },
-  "BA15": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D4",
-     "17"
-    ],
-    [
-     "D6",
-     "5"
-    ],
-    [
-     "D49",
-     "9"
-    ]
-   ]
-  },
-  "DB0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "14"
-    ],
-    [
-     "D15",
-     "11"
-    ],
-    [
-     "D16",
-     "11"
-    ],
-    [
-     "D60",
-     "2"
-    ],
-    [
-     "D60",
-     "14"
-    ],
-    [
-     "D26",
-     "34"
-    ],
-    [
-     "D27",
-     "34"
-    ],
-    [
-     "D11",
-     "27"
-    ],
-    [
-     "D54",
-     "8"
-    ],
-    [
-     "D55",
-     "8"
-    ],
-    [
-     "D57",
-     "8"
-    ],
-    [
-     "D10",
-     "11"
-    ],
-    [
-     "D43",
-     "2"
-    ]
-   ]
-  },
-  "DB1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "16"
-    ],
-    [
-     "D15",
-     "12"
-    ],
-    [
-     "D16",
-     "12"
-    ],
-    [
-     "D61",
-     "2"
-    ],
-    [
-     "D61",
-     "14"
-    ],
-    [
-     "D26",
-     "33"
-    ],
-    [
-     "D27",
-     "33"
-    ],
-    [
-     "D11",
-     "28"
-    ],
-    [
-     "D54",
-     "7"
-    ],
-    [
-     "D55",
-     "7"
-    ],
-    [
-     "D57",
-     "7"
-    ],
-    [
-     "D10",
-     "10"
-    ],
-    [
-     "D43",
-     "3"
-    ]
-   ]
-  },
-  "DB2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "18"
-    ],
-    [
-     "D15",
-     "13"
-    ],
-    [
-     "D16",
-     "13"
-    ],
-    [
-     "D62",
-     "2"
-    ],
-    [
-     "D62",
-     "14"
-    ],
-    [
-     "D26",
-     "32"
-    ],
-    [
-     "D27",
-     "32"
-    ],
-    [
-     "D11",
-     "1"
-    ],
-    [
-     "D54",
-     "6"
-    ],
-    [
-     "D55",
-     "6"
-    ],
-    [
-     "D57",
-     "6"
-    ],
-    [
-     "D10",
-     "9"
-    ],
-    [
-     "D43",
-     "4"
-    ]
-   ]
-  },
-  "DB3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "20"
-    ],
-    [
-     "D15",
-     "15"
-    ],
-    [
-     "D16",
-     "15"
-    ],
-    [
-     "D63",
-     "2"
-    ],
-    [
-     "D63",
-     "14"
-    ],
-    [
-     "D26",
-     "31"
-    ],
-    [
-     "D27",
-     "31"
-    ],
-    [
-     "D11",
-     "2"
-    ],
-    [
-     "D54",
-     "5"
-    ],
-    [
-     "D55",
-     "5"
-    ],
-    [
-     "D57",
-     "5"
-    ],
-    [
-     "D10",
-     "8"
-    ],
-    [
-     "D43",
-     "5"
-    ]
-   ]
-  },
-  "DB4": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "6"
-    ],
-    [
-     "D15",
-     "16"
-    ],
-    [
-     "D16",
-     "16"
-    ],
-    [
-     "D64",
-     "2"
-    ],
-    [
-     "D64",
-     "14"
-    ],
-    [
-     "D26",
-     "30"
-    ],
-    [
-     "D27",
-     "30"
-    ],
-    [
-     "D11",
-     "5"
-    ],
-    [
-     "D54",
-     "4"
-    ],
-    [
-     "D55",
-     "4"
-    ],
-    [
-     "D57",
-     "4"
-    ],
-    [
-     "D10",
-     "7"
-    ],
-    [
-     "D42",
-     "2"
-    ]
-   ]
-  },
-  "DB5": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "8"
-    ],
-    [
-     "D15",
-     "17"
-    ],
-    [
-     "D16",
-     "17"
-    ],
-    [
-     "D65",
-     "2"
-    ],
-    [
-     "D65",
-     "14"
-    ],
-    [
-     "D26",
-     "29"
-    ],
-    [
-     "D27",
-     "29"
-    ],
-    [
-     "D11",
-     "6"
-    ],
-    [
-     "D54",
-     "3"
-    ],
-    [
-     "D55",
-     "3"
-    ],
-    [
-     "D57",
-     "3"
-    ],
-    [
-     "D10",
-     "6"
-    ],
-    [
-     "D42",
-     "3"
-    ]
-   ]
-  },
-  "DB6": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "10"
-    ],
-    [
-     "D15",
-     "18"
-    ],
-    [
-     "D16",
-     "18"
-    ],
-    [
-     "D66",
-     "2"
-    ],
-    [
-     "D66",
-     "14"
-    ],
-    [
-     "D26",
-     "28"
-    ],
-    [
-     "D27",
-     "28"
-    ],
-    [
-     "D11",
-     "7"
-    ],
-    [
-     "D54",
-     "2"
-    ],
-    [
-     "D55",
-     "2"
-    ],
-    [
-     "D57",
-     "2"
-    ],
-    [
-     "D10",
-     "5"
-    ],
-    [
-     "D42",
-     "4"
-    ]
-   ]
-  },
-  "DB7": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "12"
-    ],
-    [
-     "D15",
-     "19"
-    ],
-    [
-     "D16",
-     "19"
-    ],
-    [
-     "D67",
-     "2"
-    ],
-    [
-     "D67",
-     "14"
-    ],
-    [
-     "D26",
-     "27"
-    ],
-    [
-     "D27",
-     "27"
-    ],
-    [
-     "D11",
-     "8"
-    ],
-    [
-     "D54",
-     "1"
-    ],
-    [
-     "D55",
-     "1"
-    ],
-    [
-     "D57",
-     "1"
-    ],
-    [
-     "D10",
-     "4"
-    ],
-    [
-     "D42",
-     "5"
-    ]
-   ]
-  },
-  "ROM_SEL": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D6",
-     "12"
-    ],
-    [
-     "D15",
-     "20"
-    ]
-   ]
-  },
-  "ROE": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D6",
-     "9"
-    ]
-   ]
-  },
-  "PROM_EN": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D7",
-     "11"
-    ],
-    [
-     "D6",
-     "14"
-    ]
-   ]
-  },
-  "MEMR": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "24"
-    ],
-    [
-     "D15",
-     "22"
-    ],
-    [
-     "D16",
-     "22"
-    ]
-   ]
-  },
-  "MEMW": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "26"
-    ],
-    [
-     "D60",
-     "3"
-    ],
-    [
-     "D61",
-     "3"
-    ],
-    [
-     "D62",
-     "3"
-    ],
-    [
-     "D63",
-     "3"
-    ],
-    [
-     "D64",
-     "3"
-    ],
-    [
-     "D65",
-     "3"
-    ],
-    [
-     "D66",
-     "3"
-    ],
-    [
-     "D67",
-     "3"
-    ]
-   ]
-  },
-  "IORD": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "25"
-    ],
-    [
-     "D2",
-     "5"
-    ],
-    [
-     "D26",
-     "5"
-    ],
-    [
-     "D27",
-     "5"
-    ],
-    [
-     "D11",
-     "13"
-    ],
-    [
-     "D54",
-     "22"
-    ],
-    [
-     "D55",
-     "22"
-    ],
-    [
-     "D57",
-     "22"
-    ],
-    [
-     "D10",
-     "3"
-    ]
-   ]
-  },
-  "IOWR": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "27"
-    ],
-    [
-     "D2",
-     "6"
-    ],
-    [
-     "D26",
-     "36"
-    ],
-    [
-     "D27",
-     "36"
-    ],
-    [
-     "D11",
-     "10"
-    ],
-    [
-     "D54",
-     "23"
-    ],
-    [
-     "D55",
-     "23"
-    ],
-    [
-     "D57",
-     "23"
-    ],
-    [
-     "D10",
-     "2"
-    ]
-   ]
-  },
-  "MEM_MODE0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D26",
-     "14"
-    ],
-    [
-     "D7",
-     "13"
-    ]
-   ]
-  },
-  "INTR": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D10",
-     "17"
-    ],
-    [
-     "D1",
-     "14"
-    ]
-   ]
-  },
-  "INTA": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D5",
-     "23"
-    ],
-    [
-     "D10",
-     "26"
-    ]
-   ]
-  },
-  "RESET": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D1",
-     "12"
-    ],
-    [
-     "D26",
-     "35"
-    ],
-    [
-     "D27",
-     "35"
-    ]
-   ]
-  },
-  "OSC": {
-   "nodes": [
-    [
-     "D59",
-     "2"
-    ],
-    [
-     "D40",
-     "2"
-    ]
-   ],
-   "src": "scan"
-  },
-  "PHI1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D35",
-     "10"
-    ],
-    [
-     "D1",
-     "22"
-    ],
-    [
-     "D48",
-     "1"
-    ],
-    [
-     "D49",
-     "1"
-    ],
-    [
-     "D53",
-     "2"
-    ]
-   ]
-  },
-  "PHI2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D35",
-     "12"
-    ],
-    [
-     "D1",
-     "15"
-    ],
-    [
-     "D53",
-     "3"
-    ]
-   ]
-  },
-  "PHI2TTL": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D35",
-     "13"
-    ],
-    [
-     "D44",
-     "1"
-    ]
-   ]
-  },
-  "STSTB": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D38",
-     "8"
-    ],
-    [
-     "D5",
-     "1"
-    ]
-   ]
-  },
-  "CS_D10": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "7"
-    ],
-    [
-     "D10",
-     "1"
-    ]
-   ]
-  },
-  "CS_D26": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "9"
-    ],
-    [
-     "D26",
-     "6"
-    ]
-   ]
-  },
-  "CS_D11": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "10"
-    ],
-    [
-     "D11",
-     "11"
-    ]
-   ]
-  },
-  "CS_D27": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "11"
-    ],
-    [
-     "D27",
-     "6"
-    ]
-   ]
-  },
-  "CS_D54": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "12"
-    ],
-    [
-     "D54",
-     "21"
-    ]
-   ]
-  },
-  "CS_D55": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "13"
-    ],
-    [
-     "D55",
-     "21"
-    ]
-   ]
-  },
-  "CS_D57": {
-   "src": "prom",
-   "nodes": [
-    [
-     "D2",
-     "14"
-    ],
-    [
-     "D57",
-     "21"
-    ]
-   ]
-  },
-  "MA0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D48",
-     "10"
-    ],
-    [
-     "D60",
-     "6"
-    ],
-    [
-     "D61",
-     "6"
-    ],
-    [
-     "D62",
-     "6"
-    ],
-    [
-     "D63",
-     "6"
-    ],
-    [
-     "D64",
-     "6"
-    ],
-    [
-     "D65",
-     "6"
-    ],
-    [
-     "D66",
-     "6"
-    ],
-    [
-     "D67",
-     "6"
-    ]
-   ]
-  },
-  "MA1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D48",
-     "11"
-    ],
-    [
-     "D60",
-     "12"
-    ],
-    [
-     "D61",
-     "12"
-    ],
-    [
-     "D62",
-     "12"
-    ],
-    [
-     "D63",
-     "12"
-    ],
-    [
-     "D64",
-     "12"
-    ],
-    [
-     "D65",
-     "12"
-    ],
-    [
-     "D66",
-     "12"
-    ],
-    [
-     "D67",
-     "12"
-    ]
-   ]
-  },
-  "MA2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D48",
-     "12"
-    ],
-    [
-     "D60",
-     "13"
-    ],
-    [
-     "D61",
-     "13"
-    ],
-    [
-     "D62",
-     "13"
-    ],
-    [
-     "D63",
-     "13"
-    ],
-    [
-     "D64",
-     "13"
-    ],
-    [
-     "D65",
-     "13"
-    ],
-    [
-     "D66",
-     "13"
-    ],
-    [
-     "D67",
-     "13"
-    ]
-   ]
-  },
-  "MA3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D48",
-     "13"
-    ],
-    [
-     "D60",
-     "5"
-    ],
-    [
-     "D61",
-     "5"
-    ],
-    [
-     "D62",
-     "5"
-    ],
-    [
-     "D63",
-     "5"
-    ],
-    [
-     "D64",
-     "5"
-    ],
-    [
-     "D65",
-     "5"
-    ],
-    [
-     "D66",
-     "5"
-    ],
-    [
-     "D67",
-     "5"
-    ]
-   ]
-  },
-  "MA4": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D49",
-     "10"
-    ],
-    [
-     "D60",
-     "10"
-    ],
-    [
-     "D61",
-     "10"
-    ],
-    [
-     "D62",
-     "10"
-    ],
-    [
-     "D63",
-     "10"
-    ],
-    [
-     "D64",
-     "10"
-    ],
-    [
-     "D65",
-     "10"
-    ],
-    [
-     "D66",
-     "10"
-    ],
-    [
-     "D67",
-     "10"
-    ]
-   ]
-  },
-  "MA5": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D49",
-     "11"
-    ],
-    [
-     "D60",
-     "7"
-    ],
-    [
-     "D61",
-     "7"
-    ],
-    [
-     "D62",
-     "7"
-    ],
-    [
-     "D63",
-     "7"
-    ],
-    [
-     "D64",
-     "7"
-    ],
-    [
-     "D65",
-     "7"
-    ],
-    [
-     "D66",
-     "7"
-    ],
-    [
-     "D67",
-     "7"
-    ]
-   ]
-  },
-  "MA6": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D49",
-     "12"
-    ],
-    [
-     "D60",
-     "11"
-    ],
-    [
-     "D61",
-     "11"
-    ],
-    [
-     "D62",
-     "11"
-    ],
-    [
-     "D63",
-     "11"
-    ],
-    [
-     "D64",
-     "11"
-    ],
-    [
-     "D65",
-     "11"
-    ],
-    [
-     "D66",
-     "11"
-    ],
-    [
-     "D67",
-     "11"
-    ]
-   ]
-  },
-  "MA7": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D49",
-     "13"
-    ],
-    [
-     "D60",
-     "9"
-    ],
-    [
-     "D61",
-     "9"
-    ],
-    [
-     "D62",
-     "9"
-    ],
-    [
-     "D63",
-     "9"
-    ],
-    [
-     "D64",
-     "9"
-    ],
-    [
-     "D65",
-     "9"
-    ],
-    [
-     "D66",
-     "9"
-    ],
-    [
-     "D67",
-     "9"
-    ]
-   ]
-  },
-  "RAS": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D53",
-     "5"
-    ],
-    [
-     "D60",
-     "4"
-    ],
-    [
-     "D61",
-     "4"
-    ],
-    [
-     "D62",
-     "4"
-    ],
-    [
-     "D63",
-     "4"
-    ],
-    [
-     "D64",
-     "4"
-    ],
-    [
-     "D65",
-     "4"
-    ],
-    [
-     "D66",
-     "4"
-    ],
-    [
-     "D67",
-     "4"
-    ]
-   ]
-  },
-  "CAS": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D53",
-     "6"
-    ],
-    [
-     "D60",
-     "15"
-    ],
-    [
-     "D61",
-     "15"
-    ],
-    [
-     "D62",
-     "15"
-    ],
-    [
-     "D63",
-     "15"
-    ],
-    [
-     "D64",
-     "15"
-    ],
-    [
-     "D65",
-     "15"
-    ],
-    [
-     "D66",
-     "15"
-    ],
-    [
-     "D67",
-     "15"
-    ]
-   ]
-  },
-  "VCTRLO0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D44",
-     "7"
-    ]
-   ]
-  },
-  "VCTRLO1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D44",
-     "8"
-    ]
-   ]
-  },
-  "VCTRLO2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D44",
-     "9"
-    ]
-   ]
-  },
-  "VCTRLO3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D44",
-     "10"
-    ]
-   ]
-  },
-  "VCTRHI0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D45",
-     "7"
-    ]
-   ]
-  },
-  "VCTRHI1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D45",
-     "8"
-    ]
-   ]
-  },
-  "VCTRHI2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D45",
-     "9"
-    ]
-   ]
-  },
-  "VCTRHI3": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D45",
-     "10"
-    ]
-   ]
-  },
-  "CO0": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D44",
-     "11"
-    ],
-    [
-     "D45",
-     "1"
-    ]
-   ]
-  },
-  "CO1": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D45",
-     "11"
-    ],
-    [
-     "D46",
-     "1"
-    ]
-   ]
-  },
-  "CO2": {
-   "src": "scan",
-   "nodes": [
-    [
-     "D46",
-     "11"
-    ],
-    [
-     "D47",
-     "1"
-    ]
-   ]
-  },
-  "DOTCLK16M": {
-   "nodes": [
-    [
-     "D56",
-     "13"
-    ],
-    [
-     "D103",
-     "2"
-    ],
-    [
-     "D42",
-     "9"
-    ],
-    [
-     "D43",
-     "9"
-    ]
-   ]
-  },
-  "D40QA": {
-   "nodes": [
-    [
-     "D40",
-     "14"
-    ],
-    [
-     "D39",
-     "13"
-    ]
-   ],
-   "src": "scan"
-  },
-  "D39Y": {
-   "nodes": [
-    [
-     "D39",
-     "11"
-    ],
-    [
-     "D38",
-     "13"
-    ]
-   ],
-   "src": "assumed"
-  },
-  "CLKG_D33": {
-   "nodes": [
-    [
-     "D33",
-     "8"
-    ],
-    [
-     "D38",
-     "9"
-    ]
-   ],
-   "src": "scan"
-  },
-  "CLKG_D36": {
-   "nodes": [
-    [
-     "D36",
-     "6"
-    ],
-    [
-     "D35",
-     "11"
-    ]
-   ],
-   "src": "scan"
-  },
-  "SYNC": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D1",
-     "19"
-    ],
-    [
-     "D38",
-     "12"
-    ]
-   ]
-  },
-  "REV": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D6",
-     "10"
-    ],
-    [
-     "D16",
-     "20"
-    ]
-   ]
-  },
-  "RAM_SEL": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D6",
-     "11"
-    ],
-    [
-     "D53",
-     "1"
-    ]
-   ]
-  },
-  "VID_LD": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D42",
-     "6"
-    ],
-    [
-     "D43",
-     "6"
-    ]
-   ]
-  }
- }
 }
