@@ -110,7 +110,11 @@ module juku_top (
     wire [3:0] d29_ain_hi = 4'b1111;   // A-side spare inputs (unmodeled -IO/M / -AMWC sources) inactive
     va86_out U_D29 (.Ain({d29_ain_hi, iowr_n, iord_n, memw_n, memr_n}),
                     .Aout({d29_aout_hi, iowc_n, iorc_n, mwc_n, mrc_n}), .oe_n(1'b0), .t(1'b1));
-    expansion_conn U_X1 (.mrc_n(mrc_n), .mwc_n(mwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n));
+    // D24 (ВА87) buffers the system data bus DB out to the connector data pins -DAT0..-DAT7
+    // (inverting). One-way: A-side reads DB (never drives it -> boot-safe); B-side drives the connector.
+    wire [7:0] dat;
+    va87_out U_D24 (.Ain(DB), .Aout(dat), .oe_n(1'b0), .t(1'b1));
+    expansion_conn U_X1 (.mrc_n(mrc_n), .mwc_n(mwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n), .dat(dat));
 
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.

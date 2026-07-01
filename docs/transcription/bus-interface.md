@@ -62,6 +62,14 @@ anchors the connector-side nets so LVS's no-1-node-net rule is satisfied. First 
   modeled → tied inactive (boundary).
 - Guards: LVS **45 instances / 103 matched nets, IN SYNC**; boot_check all byte-identical.
 
-**Queued (Stages 2-3):** D24 (data ↔ `DB`, 8 bits), D23 (address ↔ `BA`, 16 bits), D25 (control), plus
-the К170АП2/УП2 backplane drivers — each grows `expansion_conn` with its connector pins and adds the
-transceiver the same way.
+## Phase-B STAGE 2 DONE (2026-07) — D24 data transceiver
+- **D24 (ВА87)** — traced on sheet 1 (right strip, between D23 and D25). A-side reads the system data
+  bus **DB0..DB7** (now D24 is a checked member of each `DB{i}` net); B-side drives the connector data
+  pins **-DAT0..-DAT7** (edge-codes 132C/132B/131C/131B/130C/130B/129C/129B). ВА87 = the *inverting*
+  octal, modeled `va87_out` (one-way, `Aout = ~Ain`); inversion is a boundary detail (off-board), so it
+  changes neither the boot nor LVS net membership. `expansion_conn` (X1) grew a `dat[7:0]` port.
+- Guards: LVS **46 instances / 111 matched nets, IN SYNC**; boot_check all byte-identical.
+
+**Queued (Stages 3-4):** D23 (address ↔ `BA`, 16 bits → -ADR0..-ADRF), D25 (control → -INHIB/-CCLCK/
+-IO/M/…), plus the К170АП2/УП2 backplane drivers — each grows `expansion_conn` and adds the transceiver
+the same way.
