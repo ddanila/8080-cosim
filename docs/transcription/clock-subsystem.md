@@ -40,3 +40,33 @@ D38.13) = **assumed** (the D39→D38 link is read, the exact D38 input pin is in
 routing). Deferred (left unconnected, documented): D33/D36 gate *inputs*, D40 data/enable
 pins, D38 inputs 12/10 — these feed back from the divider/mesh and need finer crops; they are
 honestly un-netted rather than invented.
+
+## Mesh feedback nets TRACED (2026-07, high-res re-crop) — but LVS-DEFERRED [scan]
+Definitive reads from a 400-dpi crop of the D40→gate fan-out (upgrading the "need finer crops"
+note above — these are no longer un-traced, only un-*added*):
+- **D40 pin 14 (QA) → D39 pin 13**  — already modeled (net `D40QA`).
+- **D40 pin 13 (QB) → D39 pin 12**  — the deferred D39 input (`la3_gate.a`, tied `1'b0`).
+- **D40 pin 12 (QC) → D33 pin 5**   — D33's *second* ЛН1 section (5→6), unmodeled.
+**Why still deferred from LVS (a hard boundary, not laziness):**
+1. **Abstract-clock coupling.** The runnable model synthesises the status strobe as
+   `ststb_n = ~sync` (D38), which *requires* `d39_y = 1` and `clkg_d33 = 1` (constants). Wiring
+   D39.12 ← QB (or D33.5 ← QC) makes `d39_y`/the D33 section toggle → `ststb_n` stops being
+   `~sync` → the byte-identical boot breaks. These pins were tied to constants for exactly this
+   reason. Faithful wiring needs a **cycle-accurate clock-mesh sim** (a distinct effort), not the
+   abstract clock. Until then the *connectivity is known* but can't live in the LVS netlist
+   (HDL const nets are skipped, so a board-only net would show as only-in-KiCad = mismatch).
+2. **Multi-section models.** D33.5→6 is a *different* ЛН1 section than the modeled D33.9→8;
+   adding it needs a hex-inverter model (6 sections) as `U_D33`, not the single-section `ln1_inv`.
+
+## D35 video-mix sections (5→6, 3→4) — boundary, not addable [scan]
+D35 is one physical ЛН5; its clock sections are modeled as `clk_phase` (pins 10/12/11/13, in LVS).
+Its *video* sections (5→6, 3→4) feed the analog node-"A" summing mix (R38/R39) — see
+dram-video-timing.md. Both walls apply: `clk_phase` doesn't expose those pins (needs the hex model),
+and their outputs are the **analog node-A boundary** (dropped by LVS). Left as boundary.
+
+## Grind status
+D37 (ЛА3, D42-serial inverter) was the last gate addable *without* disturbing the runnable model
+(its input was a genuinely dangling pin, D42.Q). The remaining sheet-2 glue is either analog-boundary
+(node A) or abstract-clock-coupled (the mesh above) — so the misc-gates grind is **exhausted** for
+chips coupled to the runnable model. Further LVS growth now needs either a faithful clock-mesh sim
+or the Phase-B connector / РЕ3 dump (both bigger, separate efforts).
