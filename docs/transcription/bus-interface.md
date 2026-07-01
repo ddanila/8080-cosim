@@ -106,3 +106,21 @@ Owner read the transceiver refdes/signals off the schematic, correcting the earl
 - Guards: LVS **48 instances / 131 matched nets, IN SYNC**; boot_check all byte-identical.
 
 **Remaining:** К170АП2/УП2 backplane line drivers + К580ИР82 address latch.
+
+## D58 (К580ИР82) — data-bus latch, LOCATED sheet 2 right-middle (owner trace, 2026-07)
+Not an address latch (earlier guess) — it's an **octal data latch in the DRAM data path**:
+- **Inputs D1–D8 = pins 1–8** ← a data bus (nets labelled 1..8).
+- **Outputs Q1–Q8 = pins 19..12** → a data bus (nets labelled 31..38) that fans to the **РУ5 RAM data
+  pins** (e.g. net 38 → a РУ5 "D1") **and** to the output data **D0..D7 (→sheet 1 / connector)**.
+- **STB ≈ pin 11** → net "5" (reported as also the A input of D42 ИР16 — surprising, needs confirm).
+- **DE/OE = pin 9** ← **D37.6** (ЛА3 section 4,5→6 output; D37 also inverts D42.Q on 12,13→11).
+**Why not wired yet:** D58 *drives* the data bus the РУ5 array reads, so it's boot-critical (unlike the
+read-only transceivers). Before wiring, one thing must be nailed: **is the Q-side bus (nets 31–38) the
+same system data bus `DB` that D60–D67 read, or a separate data bus?** If it IS `DB`, D58 sits inline
+(DB→D58→RAM) and must be modelled transparent to keep the boot bit-identical + avoid a multi-driver
+conflict; if separate, it drives a boundary bus (safe). The STB↔D42.A read also wants a second look.
+
+## К170 backplane drivers — LOCATED (owner, 2026-07)
+- **К170АП2 ×2 = D14, D32** (sheet 3, bottom-rightish) — backplane line drivers.
+- **К170УП2 ×1 = D104** (sheet 3, left-bottom) — backplane receiver.
+These are the physical-edge line drivers (deepest boundary); wiring queued behind D58.
