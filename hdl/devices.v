@@ -176,8 +176,15 @@ module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
 endmodule
 
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====
-module ie7_ctr   (input wire clk, load_n, input wire [3:0] d, output wire [3:0] q, output wire co); // D44-47 ИЕ7
-    assign q = 4'bz; assign co = 1'bz; endmodule
+// D44-47 ИЕ7 (К155ИЕ7 = 74193-class): 4-bit binary up-counter. Cascades via CO (carry-out
+// pulses at terminal count 0xF) to form the video raster address. Functional for the video
+// readout (was a connectivity stub); LVS reads this -lib so the body doesn't matter to it.
+module ie7_ctr   (input wire clk, load_n, input wire [3:0] d, output wire [3:0] q, output wire co);
+    reg [3:0] cnt = 0;
+    always @(posedge clk) if (~load_n) cnt <= d; else cnt <= cnt + 4'd1;
+    assign q  = cnt;
+    assign co = (cnt == 4'hF);           // terminal-count carry (feeds the next stage's clk)
+endmodule
 // D48/D49 КП14 quad 2:1 mux: y = sel ? b : a (en_n low = enabled). For DRAM addressing, sel picks
 // the ROW half (b) vs COL half (a) of the CPU address onto the 8-bit muxed bus MA.
 module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0] y);
@@ -199,6 +206,20 @@ module ag3_oneshot (input wire a_n, b, clr_n, output wire q, q_n);  // D56 АГ3
 module ie10_ctr (input wire clk, clr_n, load_n, input wire [3:0] d,  // D103 ИЕ10 (СТ16): /N -> 1.23 MHz
                  output wire [3:0] q, output wire co);
     assign q = 4'bz; assign co = 1'bz; endmodule
+
+// ---- ИР16 (К155ИР16 = 74166-class): 8-bit parallel-in / serial-out shift register (PISO) ----
+// The video pixel serializer. shl_n low = parallel-LOAD the framebuffer byte; high = SHIFT one bit
+// per clk (MSB first) into the ЛП5 combine. clk_inh freezes it; clr_n clears. This is the piece that
+// turns a framebuffer byte into the 8-pixel dot stream at the 16 MHz dot clock.
+module ir16_sr (input wire clk, clk_inh, shl_n, clr_n, si, input wire [7:0] d, output wire so);
+    reg [7:0] q = 0;
+    always @(posedge clk) if (~clr_n) q <= 8'b0;
+                          else if (~clk_inh) q <= ~shl_n ? d : {q[6:0], si};  // load, else shift-left
+    assign so = q[7];                     // serial out = MSB (first pixel of the byte)
+endmodule
+
+// ---- ЛП5 (К531ЛП5, XOR "=1"): D34 video-output combine (pixel stream XOR sync/blanking) ----
+module lp5_xor (input wire a, b, output wire y); assign y = a ^ b; endmodule
 
 // ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
 // К565РУ5 64Kx1 DRAM (one chip = one data bit). Multiplexed addressing: latch the ROW from MA on
