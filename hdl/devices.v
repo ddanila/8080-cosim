@@ -172,9 +172,9 @@ module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40
     assign q  = cnt;
     assign co = et & (&cnt);
 endmodule
-module ln1_dual  (input wire i2, i5, output wire o8, o6);   // D33 ЛН1: the two used inverter sections
-    assign o8 = ~i2;    // section -> pin 8  = clkg_d33 -> D38.9
-    assign o6 = ~i5;    // section pin 5 -> pin 6  (pin 5 <- D40.Q2, traced 2026-07)
+module ln1_dual  (input wire i9, i5, output wire o8, o6);   // D33 ЛН1: the two used inverter sections
+    assign o8 = ~i9;    // section pin 9 -> pin 8  = clkg_d33 -> D38.9  (pin 9 <- C6/R46 osc RC = boundary)
+    assign o6 = ~i5;    // section pin 5 -> pin 6  = D36.4  (pin 5 <- D40.Q2, traced 2026-07)
 endmodule
 module la12_gate (input wire a, b, output wire y); assign y = ~(a & b); endmodule // D36 ЛА12 NAND gate
 module la1_gate  (input wire i0, i1, i2, i3, output wire y);                  // D38 ЛА1 4-input NAND

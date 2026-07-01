@@ -44,8 +44,14 @@ honestly un-netted rather than invented.
 ## Mesh feedback nets TRACED (2026-07, high-res re-crop) — now ADDED to LVS [scan]
 Definitive reads from a 400-dpi crop of the D40→gate fan-out:
 - **D40 pin 14 (QA=Q0) → D39 pin 13**  — modeled (net `D40QA`).
-- **D40 pin 13 (QB=Q1) → D39 pin 12**  — ADDED (net `D40Q1_D39`); `la3_gate.a` ← `d40_q[1]`.
-- **D40 pin 12 (QC=Q2) → D33 pin 5**   — ADDED (net `D40Q2_D33`); D33's 2nd ЛН1 section (5→6).
+- **D40 pin 13 (QB=Q1) → D39 pin 12 = D36 pin 5**  — ADDED (net `D40Q1_D39`, 3 nodes); Q1 fans to
+  D39.12 (`la3_gate.a`) and D36.5 (`la12_gate.a`).
+- **D40 pin 12 (QC=Q2) → D33 pin 5**   — ADDED (net `D40Q2_D33`); D33's 2nd ЛН1 section (pin 5→6).
+- **D33 pin 6 → D36 pin 4**            — ADDED (net `D33_6_D36`); D33 section output → `la12_gate.b`.
+- **D36 pin 6 → D35 pin 11**           — modeled (net `CLKG_D36`); the ЛА12 output feeds the ЛН5 phase gen.
+The full mesh loop D40 → {D39, D33} → D36 → D35 is now in the LVS netlist (owner-confirmed trace).
+D33's top-section input is **pin 9** (from the C6/R46 oscillator RC — a boundary), corrected from the
+earlier approximate pin-2.
 
 **Resolved (was: "LVS-deferred, abstract-clock coupling").** These were blocked because wiring
 them made `d39_y` toggle → broke the `ststb_n = ~sync` abstraction. Two changes unblocked them:
@@ -58,9 +64,10 @@ them made `d39_y` toggle → broke the `ststb_n = ~sync` abstraction. Two change
    divider (all 16 states) + D39 feedback still yields a **valid SYNC-qualified `ststb_n`** (it
    narrows, doesn't vanish). So the mesh is faithful *and* the boot is preserved.
 
-**Still open:** D36 (ЛА12) inputs 5/4 and D33's pin-9 section input were not confidently readable
-at this scan resolution (left deferred). Full CPU-on-mesh-clock (dropping the boot-tb's forced
-Φ1/Φ2 and self-generating the two-phase + sub-cycle sampling) is a further step — see below.
+**Still open:** D33's pin-9 section input is the oscillator RC (C6/R46) — an analog boundary, tied to
+a constant in the model. D38's inputs 10/12 (the STB gate's other legs) are not yet fully traced.
+Full CPU-on-mesh-clock (dropping the boot-tb's forced Φ1/Φ2 and self-generating the two-phase +
+sub-cycle sampling) is a further step — see below.
 
 ## D35 video-mix sections (5→6, 3→4) — boundary, not addable [scan]
 D35 is one physical ЛН5; its clock sections are modeled as `clk_phase` (pins 10/12/11/13, in LVS).

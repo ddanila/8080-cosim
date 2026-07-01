@@ -74,8 +74,8 @@ module juku_top (
     ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
     la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]
-    ln1_dual  U_D33 (.i2(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6));  // pin8->D38.9; pin5<-D40.Q2(12) [traced]
-    la12_gate U_D36 (.a(1'b1), .b(1'b1), .y(clkg_d36));    // pin6(Y)->D35.11    [inputs 5/4 deferred]
+    ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6));  // pin8->D38.9; pin5<-D40.Q2, pin6->D36.4
+    la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36));  // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
     clk_phase U_D35 (.osc(clkg_d36), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
     // STSTB = SYNC-qualified strobe: the discrete clock subsystem makes STSTB from SYNC (exact gate
     // un-traced -> feed SYNC into one of D38's deferred inputs [assumed]). With clkg_d33=d39_y=1 and
