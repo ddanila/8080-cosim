@@ -145,16 +145,23 @@ module juku_top (
 
     // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
-    // serializes each byte at the dot clock through the ИР16, and XORs the pixel stream with sync in
-    // the ЛП5 (D34) -> the composite video signal a display sees. Driven by the sim `dotclk`.
-    // ИР16/ЛП5 refdes+pins are un-traced (schematic crop pending) -> UNMAPPED, so the LVS skips them
-    // for now (adding them to the netlist is a toward-76 tracing task). The µP/video КП14 arbitration
-    // on the shared РУ5 is the V3 boundary; here the video read uses the РУ5's non-contending 2nd port.
+    // serializes each byte at the dot clock through the ИР16, and drives the composite video the
+    // display sees. Driven by the sim `dotclk`. The RUNNABLE demo uses the abstracted 8-bit ir16_sr
+    // (U_IR16) -> lp5_xor (U_D34V); the REAL chips D42/D43 (ИР16) are instantiated below for the LVS
+    // structure (traced sheet-2 top-right, docs/transcription/dram-video-timing.md). The 2x4-bit +
+    // analog node-"A" byte->pixel scheme + the КП14 µP/video arbitration are the V3/boundary items.
     wire vpixel, vshl_n;
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
-                    .d(vbyte), .so(vpixel));                                     // ИР16 pixel serializer
-    lp5_xor U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));   // ЛП5 D34: pixel XOR sync (0 -> pass-through)
+                    .d(vbyte), .so(vpixel));                            // abstracted serializer (runnable)
+    lp5_xor U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // composite video out (runnable)
+    // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. CK joins the
+    // dot-clock net (checkable); DS tied to GND; Q -> node "A" (analog mix = boundary until V3).
+    wire d42_q, d43_q;
+    ir16 U_D42 (.d(vbyte[7]), .c(vbyte[6]), .b(vbyte[5]), .a(vbyte[4]),
+                .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d42_q));
+    ir16 U_D43 (.d(vbyte[3]), .c(vbyte[2]), .b(vbyte[1]), .a(vbyte[0]),
+                .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

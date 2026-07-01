@@ -221,6 +221,18 @@ endmodule
 // ---- ЛП5 (К531ЛП5, XOR "=1"): D34 video-output combine (pixel stream XOR sync/blanking) ----
 module lp5_xor (input wire a, b, output wire y); assign y = a ^ b; endmodule
 
+// ---- ИР16 (К155ИР16): 4-bit parallel-load shift register — the video PIXEL SERIALIZERS D42/D43 ----
+// Traced (owner + sheet-2 top-right): D=pin5,C=pin4,B=pin3,A=pin2 parallel data in; LD=pin6 load;
+// G=pin8 control; CK=pin9 clock; DS=pin1 serial in (grounded); Q=pin10 serial out -> node "A"
+// (the analog video-mix summing node) -> D34. Two of these (D42 high nibble, D43 low nibble) form the
+// 8-bit serializer. Connectivity for LVS (the runnable video demo uses the abstracted ir16_sr; the
+// exact 2x4-bit + analog-sum byte->pixel scheme is the documented boundary — see dram-video-timing.md).
+module ir16 (input wire a, b, c, d, ld, g, ck, ds, output wire q);
+    reg [3:0] r = 0;
+    always @(posedge ck) if (~ld) r <= {d, c, b, a}; else r <= {r[2:0], ds};
+    assign q = r[3];
+endmodule
+
 // ---- video raster scanner (the ИЕ7 counter chain + timing, as one behavioral block) ----
 // Scans the 40x241 framebuffer at 0xD800, emitting the byte address and the ИР16 load/shift
 // control (LOAD at pixel 0 of each char byte, SHIFT for the other 7). Sim-functional; kept in a
