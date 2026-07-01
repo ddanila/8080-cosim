@@ -88,6 +88,11 @@ PLACE = {
     'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
     'D36':(247,200,0),'D33':(277,200,0),'D35':(263,221,0),   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(112,281,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
+    # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
+    # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
+    'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
+    'D42':(142,281,90),'D43':(170,281,90),'D58':(197,281,90),
+    'D37':(261,200,0),   # ЛА3 D42-serial inverter (net-modeled this session), between D36/D33
 }
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
@@ -95,11 +100,12 @@ def main():
     spec = json.load(open(sys.argv[1])); out = sys.argv[2]
     chips = {c['ref']: c for c in spec['chips']}
 
-    # max pin number actually used per chip (pins dict + net nodes) -> footprint must cover it
-    maxpin = {r: max([int(p) for p in c['pins']] or [0]) for r, c in chips.items()}
+    # max pin number actually used per chip (pins dict + net nodes) -> footprint must cover it.
+    # Skip non-numeric pins (connector edge-codes like "104C") -- connectors aren't DIP-placed.
+    maxpin = {r: max([int(p) for p in c['pins'] if str(p).isdigit()] or [0]) for r, c in chips.items()}
     for net in spec['nets'].values():
         for ref, pin in (net['nodes'] if isinstance(net, dict) else net):
-            if ref in maxpin: maxpin[ref] = max(maxpin[ref], int(pin))
+            if ref in maxpin and str(pin).isdigit(): maxpin[ref] = max(maxpin[ref], int(pin))
 
     board = pcbnew.BOARD()
     placed, n_pads = {}, 0
@@ -140,16 +146,19 @@ def main():
         except Exception: v.SetTextAngle(mang * 10)
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))                # on the chip body centre
 
+    # connectors are silk outlines, not DIP footprints -> never placed as chips
+    CONN = {'EXPANSION_CONN'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
+        if chips[ref]['type'] in CONN: continue
         if ref in PLACE:
             x, y, rot = PLACE[ref]; add_chip(ref, x, y, rot)
     col = 0
     for ref in sorted(chips):
-        if ref not in PLACE:
-            add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
-            if col == 8: col = 0; row += 1
+        if chips[ref]['type'] in CONN or ref in PLACE: continue
+        add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
+        if col == 8: col = 0; row += 1
 
     # nets: create a NETINFO per net name, assign to each (ref,pin) pad
     assigned = 0
@@ -222,10 +231,8 @@ def main():
                      (242, ['D91','D90','D89','D88','D87','D86','D85','D84'])]:
         for cx, ref in zip(DRAM_COLS, refs):
             silk_box(cx - 4, ry - 10, cx + 4, ry + 10, ref)
-    # more toward-76 positions as placement-only outlines (not net-traced): the bottom row
-    # D42/D43/D58 (alongside D59) and the DRAM-array left column D50/D51.
-    for cx, ref in [(142, 'D42'), (170, 'D43'), (197, 'D58')]:
-        silk_box(cx - 10, 277, cx + 10, 285, ref)              # bottom row, horizontal
+    # DRAM-array left column D50/D51 (still placement-only). (D42/D43/D58 are now net-modeled
+    # footprints -- see PLACE -- so they're no longer silk outlines here.)
     silk_box(108, 148, 116, 168, 'D50'); silk_box(108, 180, 116, 200, 'D51')   # array col0, vertical
     # right-side serial/tape/video block (toward-76) -- the clearly-separated chips as placement
     # outlines: D93 (big, ~246,64) + the top-edge row D97/D95/D98/D96 (~y40). The denser middle
@@ -253,11 +260,8 @@ def main():
     silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
-    silk_box(245, 151, 259, 159, 'D41'); silk_box(255, 190, 267, 210, 'D37'); silk_box(300, 166, 310, 186, 'D34')
-    # bus transceiver row (К170АП2/УП2 + ВА86/ВА87, not net-modeled) -- the top band at y59, left
-    # of the PPI D27. Read off the drawing; placement-only outlines (fixes the row that PLACE silently dropped).
-    for x0, x1, ref in [(14, 32, 'D25'), (43, 67, 'D23'), (74, 98, 'D24'), (104, 122, 'D29')]:
-        silk_box(x0, 54, x1, 64, ref)
+    silk_box(245, 151, 259, 159, 'D41'); silk_box(300, 166, 310, 186, 'D34')   # (D37 now a net-modeled footprint -- see PLACE)
+    # (D25/D23/D24/D29 bus transceivers are now net-modeled footprints -- see PLACE -- not outlines.)
     silk_box(112, 132, 132, 140, 'D9')   # bus band: D9 fills the gap between DLB(=D8) and D7 (≈122,136)
     BW, BH = BX1-BX0, BY1-BY0
 
