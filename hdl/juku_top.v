@@ -16,8 +16,11 @@ module juku_top (
     input  wire kbd_en, kbd_pressed, kbd_shift,
     input  wire [3:0] kbd_kcol,
     input  wire [2:0] kbd_kbit,
-    input  wire frame_tick      // SIM-ONLY: 8253 VER-RTR -> 8259 IR5 frame interrupt (a boundary).
+    input  wire frame_tick,     // SIM-ONLY: 8253 VER-RTR -> 8259 IR5 frame interrupt (a boundary).
                                 // Drives the U_INTR adjunct (unmapped -> LVS-invisible).
+    input  wire dotclk,         // SIM-ONLY video dot clock (real: D56 АГ3 16MHz -> D103 ИЕ10). Drives
+                                // the video-output stage below (unmapped chips -> LVS-invisible).
+    output wire vid_out         // composite video out (pixel stream from the framebuffer)
 );
     // ---- CPU-local buses (between 8080 and its buffers/controller) ----
     wire [15:0] A;          // CPU address out -> 8286 buffers
@@ -108,14 +111,16 @@ module juku_top (
     // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see docs/transcription/dram-video-timing.md).
     wire [7:0] MA;                 // muxed row/col address  (from address mux)
     wire ras_n, cas_n;             // (from RAM control / refresh)
-    dram_64kx1 U_D60 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]));
-    dram_64kx1 U_D61 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]));
-    dram_64kx1 U_D62 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]));
-    dram_64kx1 U_D63 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]));
-    dram_64kx1 U_D64 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]));
-    dram_64kx1 U_D65 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]));
-    dram_64kx1 U_D66 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]));
-    dram_64kx1 U_D67 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]));
+    wire [15:0] vid_addr;          // video raster address into the framebuffer (РУ5 2nd port)
+    wire [7:0]  vbyte;             // framebuffer byte at vid_addr (from the 8 РУ5 video reads)
+    dram_64kx1 U_D60 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
+    dram_64kx1 U_D61 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(DB[1]), .va(vid_addr), .vq(vbyte[1]));
+    dram_64kx1 U_D62 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(DB[2]), .va(vid_addr), .vq(vbyte[2]));
+    dram_64kx1 U_D63 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(DB[3]), .va(vid_addr), .vq(vbyte[3]));
+    dram_64kx1 U_D64 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(DB[4]), .va(vid_addr), .vq(vbyte[4]));
+    dram_64kx1 U_D65 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(DB[5]), .va(vid_addr), .vq(vbyte[5]));
+    dram_64kx1 U_D66 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(DB[6]), .va(vid_addr), .vq(vbyte[6]));
+    dram_64kx1 U_D67 (.sclk(osc), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(DB[7]), .va(vid_addr), .vq(vbyte[7]));
     // (D68-D91 = the other 3 banks' sockets, unpopulated -- added in Phase B for the PCB.)
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
@@ -137,6 +142,19 @@ module juku_top (
     wire dotclk_16m;
     ag3_oneshot U_D56  (.a_n(1'b1), .b(1'b1), .clr_n(1'b1), .q(dotclk_16m), .q_n());
     ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(1'b1), .d(4'b0), .q(), .co());
+
+    // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
+    // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
+    // serializes each byte at the dot clock through the ИР16, and XORs the pixel stream with sync in
+    // the ЛП5 (D34) -> the composite video signal a display sees. Driven by the sim `dotclk`.
+    // ИР16/ЛП5 refdes+pins are un-traced (schematic crop pending) -> UNMAPPED, so the LVS skips them
+    // for now (adding them to the netlist is a toward-76 tracing task). The µP/video КП14 arbitration
+    // on the shared РУ5 is the V3 boundary; here the video read uses the РУ5's non-contending 2nd port.
+    wire vpixel, vshl_n;
+    video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
+    ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
+                    .d(vbyte), .so(vpixel));                                     // ИР16 pixel serializer
+    lp5_xor U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));   // ЛП5 D34: pixel XOR sync (0 -> pass-through)
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

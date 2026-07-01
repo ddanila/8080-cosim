@@ -221,6 +221,22 @@ endmodule
 // ---- ЛП5 (К531ЛП5, XOR "=1"): D34 video-output combine (pixel stream XOR sync/blanking) ----
 module lp5_xor (input wire a, b, output wire y); assign y = a ^ b; endmodule
 
+// ---- video raster scanner (the ИЕ7 counter chain + timing, as one behavioral block) ----
+// Scans the 40x241 framebuffer at 0xD800, emitting the byte address and the ИР16 load/shift
+// control (LOAD at pixel 0 of each char byte, SHIFT for the other 7). Sim-functional; kept in a
+// module so juku_top stays purely structural (no processes -> the LVS yosys JSON backend is happy).
+module video_raster (input wire dotclk, output wire [15:0] vid_addr, output wire shl_n);
+    reg [15:0] vraster = 16'hD800; reg [2:0] vpix = 0;
+    always @(posedge dotclk) begin
+        if (vpix == 3'd7) begin
+            vpix    <= 0;
+            vraster <= (vraster == 16'hD800 + 16'd9639) ? 16'hD800 : vraster + 1'b1;
+        end else vpix <= vpix + 1'b1;
+    end
+    assign vid_addr = vraster;
+    assign shl_n    = (vpix != 3'd0);
+endmodule
+
 // ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
 // К565РУ5 64Kx1 DRAM (one chip = one data bit). Multiplexed addressing: latch the ROW from MA on
 // RAS, the COL from MA on CAS -> 16-bit cell address. Read is sample-held on CAS and driven onto DB
@@ -228,9 +244,14 @@ module lp5_xor (input wire a, b, output wire y); assign y = a ^ b; endmodule
 module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling clock (see write below)
                    input wire [7:0] ma,
                    input wire ras_n, cas_n, we_n, di,
-                   output wire do_);
+                   output wire do_,
+                   input wire [15:0] va, output wire vq);   // SIM-ONLY 2nd read port for video readout
     reg [7:0] row; reg mem [0:65535]; reg held; integer i;
     initial begin held = 0; for (i = 0; i < 65536; i = i+1) mem[i] = 0; end
+    // Video read port: the real РУ5 time-multiplexes ONE data pin between CPU and video (КП14
+    // arbitration = V3 boundary); in sim a read doesn't contend, so we expose the framebuffer
+    // bit at `va` directly. `va`/`vq` are sim artifacts (not real pins) -> LVS allowlist drops them.
+    assign vq = mem[va];
     always @(negedge ras_n) row <= ma;                       // latch row (ma = row byte during Φ1)
     // WRITE sampled on osc (the die-replica's master sampling clock) while CAS & WE are both low
     // (ma = col byte during Φ2). Latching on the CAS *edge* dropped writes whose data-valid window
