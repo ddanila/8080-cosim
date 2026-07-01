@@ -41,22 +41,26 @@ routing). Deferred (left unconnected, documented): D33/D36 gate *inputs*, D40 da
 pins, D38 inputs 12/10 — these feed back from the divider/mesh and need finer crops; they are
 honestly un-netted rather than invented.
 
-## Mesh feedback nets TRACED (2026-07, high-res re-crop) — but LVS-DEFERRED [scan]
-Definitive reads from a 400-dpi crop of the D40→gate fan-out (upgrading the "need finer crops"
-note above — these are no longer un-traced, only un-*added*):
-- **D40 pin 14 (QA) → D39 pin 13**  — already modeled (net `D40QA`).
-- **D40 pin 13 (QB) → D39 pin 12**  — the deferred D39 input (`la3_gate.a`, tied `1'b0`).
-- **D40 pin 12 (QC) → D33 pin 5**   — D33's *second* ЛН1 section (5→6), unmodeled.
-**Why still deferred from LVS (a hard boundary, not laziness):**
-1. **Abstract-clock coupling.** The runnable model synthesises the status strobe as
-   `ststb_n = ~sync` (D38), which *requires* `d39_y = 1` and `clkg_d33 = 1` (constants). Wiring
-   D39.12 ← QB (or D33.5 ← QC) makes `d39_y`/the D33 section toggle → `ststb_n` stops being
-   `~sync` → the byte-identical boot breaks. These pins were tied to constants for exactly this
-   reason. Faithful wiring needs a **cycle-accurate clock-mesh sim** (a distinct effort), not the
-   abstract clock. Until then the *connectivity is known* but can't live in the LVS netlist
-   (HDL const nets are skipped, so a board-only net would show as only-in-KiCad = mismatch).
-2. **Multi-section models.** D33.5→6 is a *different* ЛН1 section than the modeled D33.9→8;
-   adding it needs a hex-inverter model (6 sections) as `U_D33`, not the single-section `ln1_inv`.
+## Mesh feedback nets TRACED (2026-07, high-res re-crop) — now ADDED to LVS [scan]
+Definitive reads from a 400-dpi crop of the D40→gate fan-out:
+- **D40 pin 14 (QA=Q0) → D39 pin 13**  — modeled (net `D40QA`).
+- **D40 pin 13 (QB=Q1) → D39 pin 12**  — ADDED (net `D40Q1_D39`); `la3_gate.a` ← `d40_q[1]`.
+- **D40 pin 12 (QC=Q2) → D33 pin 5**   — ADDED (net `D40Q2_D33`); D33's 2nd ЛН1 section (5→6).
+
+**Resolved (was: "LVS-deferred, abstract-clock coupling").** These were blocked because wiring
+them made `d39_y` toggle → broke the `ststb_n = ~sync` abstraction. Two changes unblocked them:
+1. **Functional mesh chips.** `ln1_osc` (D59), `ct16_ctr` (D40) and a dual-section `ln1_dual`
+   (D33) are now real (were z-stubs / single-section). LVS still reads them as `-lib` blackboxes,
+   so only the *ports/nets* matter to the check; the bodies are sim-only.
+2. **Frozen-divider boot / running-divider proof.** The boot-tb ties `D59.xin = 0`, so the divider
+   sits at 0 → `d39_y = clkg_d33 = 1` → `ststb_n = ~sync` **unchanged → boot stays byte-identical**.
+   A separate `hdl/sim/clock_mesh_tb.v` drives the crystal with a real clock and proves the running
+   divider (all 16 states) + D39 feedback still yields a **valid SYNC-qualified `ststb_n`** (it
+   narrows, doesn't vanish). So the mesh is faithful *and* the boot is preserved.
+
+**Still open:** D36 (ЛА12) inputs 5/4 and D33's pin-9 section input were not confidently readable
+at this scan resolution (left deferred). Full CPU-on-mesh-clock (dropping the boot-tb's forced
+Φ1/Φ2 and self-generating the two-phase + sub-cycle sampling) is a further step — see below.
 
 ## D35 video-mix sections (5→6, 3→4) — boundary, not addable [scan]
 D35 is one physical ЛН5; its clock sections are modeled as `clk_phase` (pins 10/12/11/13, in LVS).

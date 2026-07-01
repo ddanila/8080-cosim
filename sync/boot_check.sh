@@ -39,6 +39,11 @@ for tb in juku_sim_tb juku_chips_tb juku_top_tb; do
   else echo "  FAIL  $tb differs from cosim"; fail=1; fi
 done
 
+echo "== clock-mesh unit test (running divider self-clocks) =="
+iverilog -g2012 -o "$TMP/clock_mesh_tb" hdl/vendor/vm80a.v hdl/devices.v hdl/sim/clock_mesh_tb.v 2>/dev/null
+if vvp "$TMP/clock_mesh_tb" 2>/dev/null | grep -q "\[mesh\] PASS"; then echo "  PASS  clock_mesh_tb (divider + SYNC-qualified strobe)"
+else echo "  FAIL  clock_mesh_tb"; fail=1; fi
+
 echo "== synthetic-ROM datapath check (self-contained, HLT-bounded) =="
 ( cd cosim && "$TMP/trace" ../tests/regress.bin 1000000 >/dev/null 2>&1 )   # halts after 256 writes
 cp cosim/vram.bin "$TMP/ref_regress.bin"
