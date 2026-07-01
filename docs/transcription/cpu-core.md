@@ -117,3 +117,17 @@ NEXT subsystems:
 
 ## Next subsystem
 Memory: ROM/EPROM array, РУ5 DRAM array, address decode + 4-mode bank logic.
+
+## Outline→footprint conversion status (2026-07, loop)
+Converting the reset/ready glue to net-modeled footprints hit a **boot-critical discrepancy** to
+resolve first:
+- **D13 (ТМ2)** per this doc drives **D5 STSTB (pin 1)** — but the current LVS model synthesises the
+  status strobe in the clock mesh as **`ststb_n = ~sync` via D38 (ЛА1)**. Both can't be the STSTB
+  source. Wiring D13→STSTB (faithful) would fight/replace D38 and risks the byte-identical boot, so
+  D13's conversion needs a **deliberate STSTB-source reconciliation pass** (trace D13's clock/D
+  inputs, confirm whether D38 is really a different gate, re-home ststb_n), NOT a blind footprint add.
+- **D30 (ready)** + D13's reset output land on `ready`/`reset_sys`, which the boot-tb **forces**
+  (boundary) — so those *can* be added footprint-safely, but locating their exact pins needs the
+  CPU-sheet crops (D1/D13/D30 sit together; Φ1/Φ2 arrive from Sheet-2, so the CPU block is elsewhere).
+**Loop policy:** defer D13 (STSTB reconciliation) for a focused pass; continue with boot-safe
+functional chips (D50/D51 muxes, D9, D41/D34) and the serial block, which don't touch the strobe path.
