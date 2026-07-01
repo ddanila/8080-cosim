@@ -66,12 +66,15 @@ module juku_top (
 
     // ---- discrete clock subsystem (faithful mesh; docs/transcription/clock-subsystem.md) ----
     // Z1 -> D59 (ЛН1 osc) -> OSC -> D40 (СТ16 divider) -> gate mesh D33(ЛН1)/D39(ЛА3)/D36(ЛА12)
-    // -> D38 (ЛА1) = STB, and -> D35 (ЛН5) = Φ1/Φ2. Replaces the former OSC-collapsed simplification.
-    wire osc_clk, clkg_d33, clkg_d36, d39_y; wire [3:0] d40_q;
+    // -> D38 (ЛА1) = STB, and -> D35 (ЛН5) = Φ1/Φ2. D59/D40/D33/D39 are now FUNCTIONAL (not stubs)
+    // and the divider->gate feedback nets D40.Q1->D39.12, D40.Q2->D33.5 are wired per the 2026-07
+    // re-crop trace (see clock-mesh_tb for the running-divider proof). The boot-tb ties D59.xin=0 so
+    // the divider is frozen at 0 -> d39_y=clkg_d33=1 -> ststb_n=~sync, i.e. boot stays byte-identical.
+    wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6; wire [3:0] d40_q;
     ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
-    la3_gate  U_D39 (.a(1'b0), .b(d40_q[0]), .y(d39_y));   // pin13(B)<-D40 QA(14); deferred pin -> 0 so d39_y=1 (un-gates D38)
-    ln1_inv   U_D33 (.a(1'b0), .y(clkg_d33));              // pin8(Y)->D38.9; deferred pin2 -> 0 so clkg_d33=1 (un-gates D38)
+    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]
+    ln1_dual  U_D33 (.i2(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6));  // pin8->D38.9; pin5<-D40.Q2(12) [traced]
     la12_gate U_D36 (.a(1'b1), .b(1'b1), .y(clkg_d36));    // pin6(Y)->D35.11    [inputs 5/4 deferred]
     clk_phase U_D35 (.osc(clkg_d36), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
     // STSTB = SYNC-qualified strobe: the discrete clock subsystem makes STSTB from SYNC (exact gate

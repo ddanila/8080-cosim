@@ -143,7 +143,8 @@ endmodule
 
 // ===== clock subsystem (discrete; replaces the non-existent 8224) =====
 module ln1_osc   (input wire xin, output wire osc);                  // D59 ЛН1 crystal oscillator
-    assign osc = 1'bz; endmodule
+    assign osc = xin;   // functional: the ЛН1 osc's output tracks its drive (crystal loop abstracted)
+endmodule
 // D35 ЛН5 phase generator. Merge step 3: the discrete clock mesh feeding `osc` is an un-traced
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
 // INTENT here -- a non-overlapping Φ1/Φ2. This is a sim clock: it only sets the simulated VALUE;
@@ -161,8 +162,20 @@ module stb_gen   (input wire osc, output wire stb);                  // D38 (leg
 // D40 divider -> D33/D39/D36 gates -> D38 (ЛА1) = STB and D35 (ЛН5) = Φ1/Φ2.
 module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40 СТ16 (74161-class)
                   output wire [3:0] q, output wire co);
-    assign q = 4'bz; assign co = 1'bz; endmodule
-module ln1_inv   (input wire a, output wire y); assign y = ~a; endmodule      // D33 ЛН1 inverter gate
+    // Functional 4-bit synchronous counter (was a z-stub). Read as -lib blackbox for LVS, so the
+    // body is sim-only. Frozen at 0 when clk is static (the boot-tb ties D59.xin=0 -> osc_clk=0).
+    reg [3:0] cnt = 4'b0;
+    always @(posedge clk or negedge r_n)
+        if      (!r_n)     cnt <= 4'b0;
+        else if (!pe_n)    cnt <= d;
+        else if (ep & et)  cnt <= cnt + 1'b1;
+    assign q  = cnt;
+    assign co = et & (&cnt);
+endmodule
+module ln1_dual  (input wire i2, i5, output wire o8, o6);   // D33 ЛН1: the two used inverter sections
+    assign o8 = ~i2;    // section -> pin 8  = clkg_d33 -> D38.9
+    assign o6 = ~i5;    // section pin 5 -> pin 6  (pin 5 <- D40.Q2, traced 2026-07)
+endmodule
 module la12_gate (input wire a, b, output wire y); assign y = ~(a & b); endmodule // D36 ЛА12 NAND gate
 module la1_gate  (input wire i0, i1, i2, i3, output wire y);                  // D38 ЛА1 4-input NAND
     assign y = ~(i0 & i1 & i2 & i3); endmodule
