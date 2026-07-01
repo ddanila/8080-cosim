@@ -91,7 +91,7 @@ module juku_top (
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    la3_gate    U_D7     (.a(memr_n), .b(mem_mode[0]), .y(prom_en_n));   // mode/strobe -> PROM enable [assumed]
+    la3_gate    U_D7     (.a(1'b1), .b(mem_mode[0]), .y(prom_en_n));     // ЛА3 as inverter: prom_en_n = ~(Port-C mode bit) [assumed]
     decode_prom U_DECODE (.a(BA[15:8]), .v_en_n(prom_en_n),
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 

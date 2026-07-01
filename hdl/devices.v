@@ -104,7 +104,12 @@ module decode_prom (input wire [15:8] a, input wire v_en_n,
     // D16 = high 8K (0x2000-0x3FFF). RAM is everything outside ROM. (`rev` is repurposed as the
     // high-EPROM chip-select. Full 4-mode banking needs the mode wired through -- a boundary; this
     // is the mode-0 reset overlay, which is what ekta37 boots in.)
-    wire rom_region = (a <= 8'h3F);
+    // Banking mode from v_en_n (D7 output, fed by 8255#0 Port C bit 0):
+    //   mode 0 (v_en_n=1, reset overlay): ROM at 0x0000-0x3FFF.
+    //   mode 1 (v_en_n=0): ROM folds up to 0xD800-0xFFFF (the EPROM's BA[12:0] wiring yields the
+    //   0x1800+ offset automatically), RAM below. ekta37 toggles this to run high ROM routines
+    //   while keeping video RAM (0xD800+) writable in mode 0 -- needed to draw the banner + beyond.
+    wire rom_region = v_en_n ? (a <= 8'h3F) : (a >= 8'hD8);
     assign rom_n = ~(rom_region & ~a[13]);   // D15 CE (low 8K)
     assign rev   = ~(rom_region &  a[13]);   // D16 CE (high 8K)
     assign ram_n = ~(~rom_region);           // RAM select (outside ROM)
