@@ -114,7 +114,11 @@ module juku_top (
     // (inverting). One-way: A-side reads DB (never drives it -> boot-safe); B-side drives the connector.
     wire [7:0] dat;
     va87_out U_D24 (.Ain(DB), .Aout(dat), .oe_n(1'b0), .t(1'b1));
-    expansion_conn U_X1 (.mrc_n(mrc_n), .mwc_n(mwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n), .dat(dat));
+    // D23 (ВА87) buffers the buffered high address byte BA[15:8] out to connector -ADR8..-ADRF.
+    wire [7:0] adr_hi;              // adr_hi[i] -> connector -ADR(8+i)
+    va87_out U_D23 (.Ain(BA[15:8]), .Aout(adr_hi), .oe_n(1'b0), .t(1'b1));
+    expansion_conn U_X1 (.mrc_n(mrc_n), .mwc_n(mwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
+                         .dat(dat), .adr_hi(adr_hi));
 
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.

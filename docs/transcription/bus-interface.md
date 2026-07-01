@@ -70,6 +70,15 @@ anchors the connector-side nets so LVS's no-1-node-net rule is satisfied. First 
   changes neither the boot nor LVS net membership. `expansion_conn` (X1) grew a `dat[7:0]` port.
 - Guards: LVS **46 instances / 111 matched nets, IN SYNC**; boot_check all byte-identical.
 
-**Queued (Stages 3-4):** D23 (address ↔ `BA`, 16 bits → -ADR0..-ADRF), D25 (control → -INHIB/-CCLCK/
--IO/M/…), plus the К170АП2/УП2 backplane drivers — each grows `expansion_conn` and adds the transceiver
-the same way.
+## Phase-B STAGE 3 DONE (2026-07) — D23 address transceiver (high byte)
+- **D23 (ВА87)** — traced on sheet 1 (right strip, above D24). A-side reads the buffered high address
+  **BA8..BA15** (now D23 is a checked member of each `BA{n}` net); B-side drives connector address pins
+  **-ADR8..-ADRF** (edge-codes 120C/120B/119C/119B/118C/118B/117C/117B). `expansion_conn` (X1) grew an
+  `adr_hi[7:0]` port (adr_hi[i] = -ADR(8+i)).
+- Note: bus ports must be declared **`[7:0]`** (0-based) — yosys enumerates bus bits from 0, so a
+  `[15:8]` connector port canonicalises to ADR_HI0..7 not 8..15 (LVS mismatch until fixed).
+- Guards: LVS **47 instances / 119 matched nets, IN SYNC**; boot_check all byte-identical.
+
+**Queued (Stages 3b-4):** the LOW address byte (-ADR0..-ADR7, a *separate* ВА87 above D23 — refdes not
+yet read), D25 (control → -INHIB/-CCLCK/-IO/M/…), plus the К170АП2/УП2 backplane drivers — each grows
+`expansion_conn` and adds the transceiver the same way.
