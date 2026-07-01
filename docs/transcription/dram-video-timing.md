@@ -108,3 +108,18 @@ therefore D34's *pixel* input net) can't be added to LVS without inventing a ref
 violates "scan = source of truth". So the video-output stage stays **functional-but-unmapped** in
 `juku_top` (arc V2, working: it emits the banner) and its **LVS add is blocked pending a
 higher-resolution scan** of the serializer region (or a physical-board read / another sheet).
+
+## ИР16 pixel serializer LOCATED — D42 + D43 (sheet-2 TOP-right)  [scan, clean]
+(Pointer from the owner: page-2 top-right corner, "traces are very clean" — and they are. I had been
+searching the bottom-right output stage; the serializers are top-right, by the РУ5 array data-out.)
+- **D42, D43 — both ИР16** (two 4-bit shift registers = the 8-bit pixel serializer, byte -> 8 pixels).
+  Drawn as an `RG` parallel-load box + the `ИР16` shift box. Pinout (both):
+  - parallel data in: **D=pin5, C=pin4, B=pin3, A=pin2**  (fed from the РУ5 array data-out side)
+  - **LD=pin6** (parallel load), **G=pin8** (enable), **CK=pin9** (clock), **DS=pin1** (serial in)
+  - **serial out = pin10** -> D37
+- **D37 (ЛА3):** pins **12/13 <- the two ИР16 (pin-10) outputs**, **11 =** combined serial pixel stream
+  -> feeds the D34 (ЛП5) sync combine at the output stage (bottom-right).
+- So the full readout chain is now fully identified:
+  РУ5 array data-out -> **D42/D43 (ИР16) serialize @ dot clock** -> **D37 (ЛА3)** -> **D34 (ЛП5) XOR sync**
+  -> VT2 -> ВИДЕО.  Refdes + pinout are scan-clean; the remaining detail for the LVS add is the exact
+  РУ5-DO -> ИР16-input bit mapping (and whether an ИР82/ВА82 latch sits between) — a focused pass.
