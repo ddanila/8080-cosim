@@ -90,3 +90,19 @@ OE=9, T=11. D29/D24/D23 were first added with a uniform bit→pin-(12+i) convent
 consistent, LVS-green, signal connectivity correct) and are now retyped to a shared **`VABUS`** pinmap
 with the scan-accurate descending B-side, so board.json faithfully reflects the schematic. (D4 the
 address *buffer* keeps its own BUF8286 pinmap — its BA-bit↔pin net mapping was already scan-traced.)
+
+## Refdes corrected + full command transceiver (2026-07, owner-confirmed)
+Owner read the transceiver refdes/signals off the schematic, correcting the earlier stage notes:
+- **D23 = -ADR0..-ADR7** (addr LOW, BA[7:0]), **D24 = -ADR8..-ADRF** (addr HIGH, BA[15:8]),
+  **D25 = -DAT0..-DAT7** (data, DB). (Earlier I had D23=addr-hi, D24=data — reshuffled: my D23→D24,
+  D24→D25, and added the addr-low byte as the real D23.)
+- **D29 (ВА86) = the full 8-signal bus-command transceiver** (not 4): B0..B7 =
+  **-INHIB(106B), -CCLCK(111C), -IO/M(109B), -MWC(104B), -MRC(104C), -AMWC(102B), -IORC(106C), -IOWC(105B)**.
+  A-side reads the 4 known strobes (memw→-MWC, memr→-MRC, iord→-IORC, iowr→-IOWC); the other 4 sources
+  (-INHIB/-CCLCK/-IO/M/-AMWC) aren't modelled → tied inactive (boundary).
+- **Inversion:** all connector signals are active-low (the `-` prefix) **except CCLCK** (active-high).
+  Captured by the transceiver type: ВА87 (D23/D24/D25) *invert* → -ADR/-DAT are `~BA`/`~DB`; ВА86 (D29)
+  is non-inverting → the active-low commands pass straight through; CCLCK (active-high) likewise.
+- Guards: LVS **48 instances / 131 matched nets, IN SYNC**; boot_check all byte-identical.
+
+**Remaining:** К170АП2/УП2 backplane line drivers + К580ИР82 address latch.

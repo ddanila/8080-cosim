@@ -102,23 +102,27 @@ module juku_top (
     buf_8286  U_BUFH (.Ain(A[15:8]), .Aout(BA[15:8]), .oe_n(buf_oe_n), .t(buf_t));
 
     // ============ expansion/backplane interface (Phase B, sheet 1 -- bus-interface.md) ============
-    // D29 (ВА86) buffers the internal bus-command strobes out to the Multibus-style expansion
-    // connector. t=1/oe=0 -> A-side reads memr_n/memw_n/iord_n/iowr_n as high-Z (never drives them
-    // back -> boot-safe); B-side drives the connector command pins -MRC/-MWC/-IORC/-IOWC. A-side
-    // spare inputs (real -IO/M / -AMWC sources) not yet modeled -> tied inactive (boundary).
-    wire mrc_n, mwc_n, iorc_n, iowc_n; wire [3:0] d29_aout_hi;
-    wire [3:0] d29_ain_hi = 4'b1111;   // A-side spare inputs (unmodeled -IO/M / -AMWC sources) inactive
-    va86_out U_D29 (.Ain({d29_ain_hi, iowr_n, iord_n, memw_n, memr_n}),
-                    .Aout({d29_aout_hi, iowc_n, iorc_n, mwc_n, mrc_n}), .oe_n(1'b0), .t(1'b1));
-    // D24 (ВА87) buffers the system data bus DB out to the connector data pins -DAT0..-DAT7
-    // (inverting). One-way: A-side reads DB (never drives it -> boot-safe); B-side drives the connector.
-    wire [7:0] dat;
-    va87_out U_D24 (.Ain(DB), .Aout(dat), .oe_n(1'b0), .t(1'b1));
-    // D23 (ВА87) buffers the buffered high address byte BA[15:8] out to connector -ADR8..-ADRF.
-    wire [7:0] adr_hi;              // adr_hi[i] -> connector -ADR(8+i)
-    va87_out U_D23 (.Ain(BA[15:8]), .Aout(adr_hi), .oe_n(1'b0), .t(1'b1));
-    expansion_conn U_X1 (.mrc_n(mrc_n), .mwc_n(mwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
-                         .dat(dat), .adr_hi(adr_hi));
+    // D29 (ВА86) = the full bus-command transceiver, 8 signals (B0..B7 per owner's scan read):
+    //   B0 -INHIB, B1 -CCLCK, B2 -IO/M, B3 -MWC, B4 -MRC, B5 -AMWC, B6 -IORC, B7 -IOWC.
+    // A-side reads the internal strobes for the 4 known commands (memw->-MWC, memr->-MRC,
+    // iord->-IORC, iowr->-IOWC); the other 4 sources (-INHIB/-CCLCK/-IO/M/-AMWC) aren't modelled
+    // here -> tied inactive (boundary). One-way (never drives the strobe nets -> boot-safe).
+    wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n;
+    va86_out U_D29 (.Ain ({iowr_n, iord_n, 1'b1,   memr_n, memw_n, 1'b1,  1'b1,    1'b1}),
+                    .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
+                    .oe_n(1'b0), .t(1'b1));
+    // Address/data backplane transceivers (ВА87, one-way A->B; refdes confirmed by owner from scan):
+    //   D23 = addr LOW  (BA[7:0]  -> -ADR0..-ADR7)
+    //   D24 = addr HIGH (BA[15:8] -> -ADR8..-ADRF)
+    //   D25 = data      (DB       -> -DAT0..-DAT7)
+    // A-side reads the buffered bus (never drives it -> boot-safe); B-side drives the connector.
+    wire [7:0] adr_lo, adr_hi, dat;
+    va87_out U_D23 (.Ain(BA[7:0]),  .Aout(adr_lo), .oe_n(1'b0), .t(1'b1));
+    va87_out U_D24 (.Ain(BA[15:8]), .Aout(adr_hi), .oe_n(1'b0), .t(1'b1));
+    va87_out U_D25 (.Ain(DB),       .Aout(dat),    .oe_n(1'b0), .t(1'b1));
+    expansion_conn U_X1 (.inhib_n(inhib_n), .cclck(cclck), .iom_n(iom_n), .mwc_n(mwc_n),
+                         .mrc_n(mrc_n), .amwc_n(amwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
+                         .dat(dat), .adr_lo(adr_lo), .adr_hi(adr_hi));
 
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.

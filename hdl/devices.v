@@ -79,8 +79,9 @@ endmodule
 // the off-board cards, so it carries no logic -- it exists so the transceiver->connector nets have a
 // 2nd endpoint (LVS forbids 1-node nets). Stage-1 pins = the D29 bus-command signals; grows as more
 // backplane transceivers (D23 addr, D24 data, D25 control) are wired. See docs/transcription/bus-interface.md.
-module expansion_conn (inout wire mrc_n, mwc_n, iorc_n, iowc_n,
-                       inout wire [7:0] dat, inout wire [7:0] adr_hi);   // adr_hi[i] = -ADR(8+i)
+module expansion_conn (inout wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n,
+                       inout wire [7:0] dat,
+                       inout wire [7:0] adr_lo, inout wire [7:0] adr_hi);  // adr_lo[i]=-ADRi, adr_hi[i]=-ADR(8+i)
 endmodule
 
 // ---- I/O port decoder (board glue: 74xx138-style) ----

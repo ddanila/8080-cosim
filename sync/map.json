@@ -46,7 +46,8 @@
     "D29": "U_D29",
     "X1": "U_X1",
     "D24": "U_D24",
-    "D23": "U_D23"
+    "D23": "U_D23",
+    "D25": "U_D25"
   },
   "pinmaps": {
     "kicad": {
@@ -419,7 +420,19 @@
         "118C": "ADR_HI4",
         "118B": "ADR_HI5",
         "117C": "ADR_HI6",
-        "117B": "ADR_HI7"
+        "117B": "ADR_HI7",
+        "124C": "ADR_LO0",
+        "124B": "ADR_LO1",
+        "123C": "ADR_LO2",
+        "123B": "ADR_LO3",
+        "122C": "ADR_LO4",
+        "122B": "ADR_LO5",
+        "121C": "ADR_LO6",
+        "121B": "ADR_LO7",
+        "106B": "INHIB_N",
+        "111C": "CCLCK",
+        "109B": "IOM_N",
+        "102B": "AMWC_N"
       },
       "VA87": {
         "1": "AIN0",
