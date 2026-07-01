@@ -140,3 +140,19 @@ Refined the output routing (owner reading + crops):
   boundary** (like VT2). The exact byte→8-pixel serialization scheme across the two 4-bit ИР16 +
   the analog sum isn't fully pinned, so the runnable sim keeps the abstracted 8-bit serializer while
   the LVS gets the real chips wired per this trace.
+
+## Video arc status (2026-07): V1/V2 done, V3 PARKED (РЕ3-gated)
+- **V1** — ИР16 serializer modeled + proven (framebuffer → serial pixel stream → banner). Done.
+- **V2** — the video-output stage wired into juku_top (emits composite video) AND the ИР16
+  serializers **D42/D43 added to the LVS netlist**, fully wired to real checked nets: data ← DB
+  (the РУ5 byte), CK ← DOTCLK16M, LD ← VID_LD. Done. (D34 ЛП5, D35 dual-use ЛН5, node-"A" analog
+  mix all traced.)
+- **V3 (faithful video-read slot timing) — PARKED, blocked on a physical PROM read.** The µP-vs-video
+  arbitration + the *slot schedule* (WHEN video steals a bus cycle) is set by the **К155РЕ3 timing
+  PROM (+ АГ3 one-shots)**, and the **РЕ3 contents are un-dumped** (MAME omits them; the twin boots
+  byte-identical without them). So the exact slot timing is **not derivable from the schematic** —
+  it needs a РЕ3 dump (universal programmer / MCU sweep; РЕ3 ≈ 32×8 ≈ 74188/82S23). A functional-intent
+  schedule is possible but would be an *assumed* timing on the boot-critical DRAM path, so per
+  "scan = source of truth" V3 waits for the dump. Everything up to the slot timing is modeled;
+  when the РЕ3 is dumped, V3 = reclaim the КП14 arbitration (D48–51) + drive the video RAS/CAS from
+  the dumped schedule, replacing today's sim va/vq read + abstracted ir16_sr. See project-status.md.
