@@ -64,10 +64,14 @@ them made `d39_y` toggle → broke the `ststb_n = ~sync` abstraction. Two change
    divider (all 16 states) + D39 feedback still yields a **valid SYNC-qualified `ststb_n`** (it
    narrows, doesn't vanish). So the mesh is faithful *and* the boot is preserved.
 
+**D38 (ЛА1) STB gate — fully traced (2026-07, owner):** pin 9 ← D33.8 (clkg_d33), pin 12 ← **SYNC**,
+pin 10 ← **D39.11** (d39_y, net `D39Y` — corrected from the earlier pin-13 assumption), pin 13 tied
+high (the 4th NAND leg). So `ststb_n = ~(clkg_d33 & sync & d39_y)` — a SYNC-qualified strobe, and the
+`D39Y` net now lands on D38.10.
+
 **Still open:** D33's pin-9 section input is the oscillator RC (C6/R46) — an analog boundary, tied to
-a constant in the model. D38's inputs 10/12 (the STB gate's other legs) are not yet fully traced.
-Full CPU-on-mesh-clock (dropping the boot-tb's forced Φ1/Φ2 and self-generating the two-phase +
-sub-cycle sampling) is a further step — see below.
+a constant in the model. Full CPU-on-mesh-clock (dropping the boot-tb's forced Φ1/Φ2 and
+self-generating the two-phase + sub-cycle sampling) is a further step — see below.
 
 ## D35 video-mix sections (5→6, 3→4) — boundary, not addable [scan]
 D35 is one physical ЛН5; its clock sections are modeled as `clk_phase` (pins 10/12/11/13, in LVS).

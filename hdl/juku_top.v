@@ -80,7 +80,9 @@ module juku_top (
     // STSTB = SYNC-qualified strobe: the discrete clock subsystem makes STSTB from SYNC (exact gate
     // un-traced -> feed SYNC into one of D38's deferred inputs [assumed]). With clkg_d33=d39_y=1 and
     // i3=1, ststb_n = ~sync -> the 8238 latches the status byte at SYNC's rising edge (T1 start).
-    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(1'b1), .y(ststb_n));
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(1'b1), .i3(d39_y), .y(ststb_n));
+    // D38 (ЛА1) STB gate [traced 2026-07]: pin9<-D33.8(clkg_d33), pin12<-SYNC, pin10<-D39.11(d39_y),
+    // pin13 tied high (4th NAND leg). ststb_n = ~(clkg_d33 & sync & d39_y) -- SYNC-qualified strobe.
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),

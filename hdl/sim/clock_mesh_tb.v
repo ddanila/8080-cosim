@@ -25,7 +25,7 @@ module clock_mesh_tb;
                    .q(d40_q), .co());
   la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y));            // pin12<-Q1, pin13<-Q0
   ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6));
-  la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(1'b1), .y(ststb_n));
+  la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(1'b1), .i3(d39_y), .y(ststb_n));  // pin10<-d39_y, pin13 tied hi
 
   always #5 clk = ~clk;        // 10 ns crystal period -> divider runs
 
