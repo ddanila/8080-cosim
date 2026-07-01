@@ -88,3 +88,23 @@ dot-clock + output chips (corrects earlier guesses — the divider is **D103**, 
 Still open in this cluster: the **ИР16 pixel shift-register** (the actual framebuffer→serial
 PISO) — its load/shift nets need one more crop (it sits between the РУ5 data-out latch and
 D34). With D56/D103/D33/D34 now pinned, the dot-clock pair is the cleanest LVS add.
+
+## V2-LVS tracing pass (sheet-2 rendered at 400dpi) — output stage confirmed, ИР16 still elusive
+Rendered sheet 2 of `ref/schematics/juku_es101_processor_module.pdf` (= juku3000 processor-module
+PDF) at 400dpi (13706×9500) and searched the whole video-output region in high-res crops. **Confirmed
+(refines earlier reads):**
+- **D56 (АГ3):** one-shot — B(1), R(3, via R61 12k), C(14, cap C8), Q̄(4) → the 16 MHz dot clock.
+- **D103 (СТ16 = ИЕ10):** CK(2) ← 16 MHz; A/B/C/D preset (pins 3-6), LD(9), P(7)/T(10); out pin 11
+  → **1.23 MHz** char clock (pin 13). The dot→char divider.
+- **D34 (ЛП5, XOR):** two gates — 9/10→8 (one input = **B SYNC**) and 12/13→11 (one input = **S/G**).
+  Combines the pixel stream with sync → the video mix → VT2.
+- **D57 (ВИ53 = 8253):** the raster **sync generator** — outputs labelled 1.23M / SHEC R / BAUD R.
+- **D50/D51/D52 (КП14):** the µP-vs-video **address** mux; **D53 (ИД7)** the RAS/CAS decode (R-packs).
+
+**Still NOT locatable: the ИР16 pixel serializer.** Searched the output/left/middle bands at 400dpi;
+no DIP-16 with the PISO signature (8 parallel-in + serial-out + shift/load) is clearly labelled in
+the video path. This matches the original "needs one more crop" flag. **Consequence:** the ИР16 (and
+therefore D34's *pixel* input net) can't be added to LVS without inventing a refdes/pinout — which
+violates "scan = source of truth". So the video-output stage stays **functional-but-unmapped** in
+`juku_top` (arc V2, working: it emits the banner) and its **LVS add is blocked pending a
+higher-resolution scan** of the serializer region (or a physical-board read / another sheet).
