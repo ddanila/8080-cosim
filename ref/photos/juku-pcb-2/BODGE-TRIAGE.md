@@ -344,3 +344,20 @@ Photo 7 full-res at the harness junction (the big verdigris'd lash, board ~(245,
   D95/D94/D98 or D102/D101; etch "18" near (285,40). One clean zoom of the (272,70) chip decides.
 - Route v18: 1151/1151, 0 unconnected, 0 electrical DRC (PHI1 healed by the re-route; v15's
   finishing-pass experiment on an already-routed DSN did NOT complete the link — full re-route did).
+
+## Iteration 33 — D94/D95 zone is ONE horizontal К155ЛП11; E13 = RESET-switch wire landing
+Clean zoom of the (272,70) mystery chip (photo 6, the one behind photo-1's video cable):
+- **К155ЛП11 8904, HORIZONTAL, spanning ~(258-276, 64-70)** — one chip, not the "vertical trio"
+  members I split it into (the black cable bisected it in photo-1; the earlier ЛП1/ЛН3/ЛН5 partial
+  reads were all of THIS die). It covers BOTH the D95(263) and D94(277) box centers → the drawing's
+  two vertical outlines there are wrong; one of {D94,D95} is this ЛП11 (refdes pending an etch
+  read), the other lives elsewhere in the band. Boxes left as-is until pinned.
+- **E13: solder cone at the ЛП11's bottom-right pin (~274.5, 71.6)** — the white wire descending
+  from the RESET/ОТК bracket switch (seen rounding the corner notch in the d98d96 crop) lands here.
+  Bottom-right pin of a label-upright horizontal DIP-16 = **pin 8 = GND**... OR the joint is on the
+  adjacent via. **Etched net number "18" sits right beside it** — first direct etch-number-at-
+  endpoint since the net-11 Rosetta hit. Net 18's schematic name is unmapped so far (RESET's etched
+  number is a prime candidate — the wire IS the panel switch's drop). Classification: **legit
+  wiring** (panel-mounted S1 must reach the PCB by wire), pin-level confirmed.
+- Net-18 lookup is the next Rosetta target: read the solder-side etch run from this via, or find
+  "18" on the schematic sheet-1 reset network (R3/C21/S1).
