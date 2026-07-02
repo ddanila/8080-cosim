@@ -400,3 +400,18 @@ be singled out from this shot. Open question it raises: if H1-A's via sits on on
 (power) traces, H1 is a clock-phase SHIELD/ground wire rather than a signal bridge — which would
 downgrade H1 from "class b ECO" to "legit wiring". Resolution: overlay-v3 local anchors on this
 corner, or beeper E15↔GND / E15↔E3(net-11).
+
+## Iteration 36 — E15 coordinate RETRACTION + photo-201933909 tilt calibration
+Anchor recalibration of photo 201933909 (using model-validated D10/ВН59 and D27/ВВ55А positions)
+shows the frame is HEAVILY tilted: constant-px/mm mapping breaks across it. Consequences:
+- The socketed РТ4А near the wire run maps to **x≈86 = D2's model slot ✓** (so the MODEL's CPU
+  cluster is fine — it was my photo mm-mapping that was off, not PLACE).
+- **E15's "(9,111)" is RETRACTED**: depending on where the scale is trusted, the H1-A via lands
+  anywhere in x 9-56, y 111-173 (board-edge zone vs CPU-cluster corner — materially different
+  stories: X1-expansion tap vs CPU-area signal). The SEMANTIC read stands: shiny solder joint on a
+  via, wire exits right past the D2 socket + 1К0 pair toward ВН59. Position needs overlay-v3 local
+  anchors or the left-half straight-on photo (photo 4) before the beeper sheet is printed.
+- Lesson (add to method rules): **absolute mm from tilted frames only via ≥2 model-validated chip
+  anchors bracketing the target**; single-anchor + global px/mm is what produced the bad (9,111).
+- Bonus reads from the corridor crop: К555ЛА1 (label-down, 89xx) right of the РЕ3 #2 socket — an
+  un-modeled type sighting; another КР531КП14 8808 below it (series-mix census grows).
