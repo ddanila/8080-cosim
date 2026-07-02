@@ -40,7 +40,7 @@ _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158
         (35,124,0),(23.5,176,90),(189,124,0),(212.5,86,90),(245,260,0),(162,44,0),
         (214,272,0),(271,252,0),(271,238,0),
         (55,51,0),(113,51,0),(68,127,0),(143,127,0),(97,203,0),(84,203,0),(111,203,0),
-        (277,147,0),(259,176,90),(274,221,90),(142,273,0),(197,273,0),(207,54,90),(228,103,90),
+        (277,147,0),(259,176,90),(274,221,90),(142,267.5,0),(197,267.5,0),(207,54,90),(228,103,90),   # C66/C67 up with the bottom row (was y=273, overlapped the moved D42/D58)
         (199,190,90),(199,217,90),(199,242,90)]
 for _i, _xy in enumerate(_DEC): PASSIVE_PLACE[f'C{35+_i}'] = _xy
 
@@ -115,7 +115,7 @@ PLACE = {
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
+    'D40':(277,155,90),'D38':(251,176,0),'D39':(280,176,0),   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D36':(253,200,180),'D33':(277,200,180),'D35':(266,221,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(112,275,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
@@ -317,12 +317,14 @@ def main():
     UNTRACED = {
         'D28':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #1, socketed [photo]
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
-        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    296, 176, 0),  # video XOR [schematic+photo; 305->296: photo shows ~13 mm edge margin]
+        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    294, 176, 0),  # video XOR [photo: right of D39, right pins ~12 mm off the edge]
         'D50':  ('DIP-16_W7.62mm', 'К555КП14',   112, 158, 0),  # video addr mux [drawing]
         'D51':  ('DIP-16_W7.62mm', 'К555КП14',   112, 190, 0),  # video addr mux [drawing]
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
         'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
         'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    296, 82, 0),   # tape shifter [sheet 3 + baud-row box; 301->296: match right-column edge margin]
+        'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [emaplaat label + owner's decapped chip]; likely the real Φ1/Φ2 phase generator core
+        'D106': ('DIP-14_W7.62mm', 'К155АГ3',    297, 108, 180),# one-shot [photo 8901, label-down]; 2nd АГ3 at ~(270,105) + КП12 x2 at ~(245,105)/(257,89) await refdes
         'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
@@ -440,16 +442,15 @@ def main():
     # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
     for cx, ref in [(269, 'D102'), (285, 'D101')]:   # (D99 -> footprint)
         silk_box(cx - 5, 72, cx + 5, 92, ref)
-    silk_box(294, 98, 302, 118, 'D106')   # right-edge chip below the baud chain (pulled off the edge to match real margin)
+    # (D106 -> untraced К155АГ3 footprint, photo-confirmed)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
     silk_box(182, 22.5, 210, 30, "X3")   # serial edge connector, right of X2 (emaplaat)
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     silk_box(245, 151, 259, 159, 'D41')   # (D34/D37 -> footprints)
-    silk_box(265, 166, 275, 186, 'D92')   # К555ЛЕ4 quad NOR (emaplaat label + owner's decapped chip);
-                                          # likely the REAL Φ1/Φ2 phase generator core (cross-coupled
-                                          # NORs) -- nets to trace, then net-model
+    # (D92 -> untraced К555ЛЕ4 footprint; likely the REAL Φ1/Φ2 phase generator core (cross-coupled
+    # NORs) -- nets to trace, then net-model)
     # (D25/D23/D24/D29 bus transceivers are now net-modeled footprints -- see PLACE -- not outlines.)
     silk_box(112, 132, 132, 140, 'D9')   # bus band: D9 fills the gap between DLB(=D8) and D7 (≈122,136)
     BW, BH = BX1-BX0, BY1-BY0
