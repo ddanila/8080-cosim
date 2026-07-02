@@ -170,3 +170,10 @@ Second physical board, revision **7.102.158** (vs #1's 7.102.100 — explains it
 2. **X2 = СНП59-30** (short blue, "СНП51-30-25 8903"); X1 = СНП59-96Р ✓ — connector set complete.
 3. Front bracket: **RESET pushbutton (S1)** + **VIDEO BNC** + DB-style tape/serial connector.
 4. This board: one ЛЕ4 missing, electrolytics cut (use board-#1 photo for caps). DRAM bank unpopulated.
+
+## GERBER DRY-RUN (2026-07) — the fab package exports clean
+`kicad/export_fab.sh` → 7 gerber layers (F/B copper, F/B mask, F/B silk, edge) + excellon drill from
+the routed board. Sanity: ~1600 drill hits across sensible tool sizes (0.8 PTH pads / 0.3 vias / 3.5
+mounting). The deliverable pipeline is proven end-to-end; remaining before a REAL order: the parked
+power-trace widening, X2/X9 connector pads (nets untraced), bodge-ECO incorporation (triage ongoing),
+and a final DFM review against the original's thick-power-trace style.

@@ -34,6 +34,7 @@ _autosave-*
 # ROM build intermediates
 # Verilator/Yosys generated
 cosim/trace
+fab/
 fp-info-cache
 hdl/*.json
 hdl/sim/*.hex
