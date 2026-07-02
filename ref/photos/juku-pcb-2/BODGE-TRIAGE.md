@@ -167,3 +167,13 @@ fit ✓; but the schematic's "D3: 11→10" section CANNOT be an 8-pin АП2 → 
 inverter, pins 11/10; TTL SOUT = ~TxD; the schematic symbol was ЛН2 misread as АП2). Model fixed:
 ap2_drv → true DIP-8 dual (phantom sections dropped), D3 → ln2_inv (CMOS: VCC=14/GND=7 power fix),
 DIP-8 footprints mapped. LVS 86 IN SYNC, boot byte-identical, board regenerates clean.
+
+## Iteration 15 — orientation correction: D37/D33 are notch-DOWN; H3 feeds D37 gate-1 INPUTS
+Max-zoom of D37 (КР1533ЛА3 8906) + D33 (КР531ЛН1 8901): **both mounted notch-DOWN** → the
+bottom-right pin = pin 1, not pin 8. Corrects iteration 4: **H3's two wires solder at D37's spare
+gate-1 INPUT pins (1 and the pad by 2)** — the ECO injects signals INTO the unused gate; the gate's
+output (pin 3) leaves on existing copper (trace it on the solder-side photo to find what the ECO
+drives). Same class-(b) conclusion, cleaner mechanism.
+**New fidelity item: CHIP ORIENTATION PASS** — the real board mixes notch-up/notch-down mounting;
+our footprints assume notch-up everywhere. The emaplaat outlines carry the key marks (semicircles) →
+read per-chip orientation and set footprint rotations accordingly (matters for real assembly).
