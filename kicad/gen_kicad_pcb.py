@@ -108,8 +108,8 @@ PLACE = {
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
     'D53':(253,225,0),'D103':(291,200,0),
-    'D56':(268,124,90),   # АГ3 RELOCATED to the ВГ93 quadrant row-4 middle (owner's layout; the drawn
-                          # (302,200) spot shows ИЕ10+ЛУ? on the photo, not АГ3 -- drawing wrong here)
+    'D56':(302,200,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
+                          # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
@@ -330,7 +330,9 @@ def main():
         'D9':   ('DIP-16_W7.62mm', 'К555ИД7',    122, 136, 90), # 3-to-8 decoder, bus band between D8 and D7 [owner-identified]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # quad NAND, lower-left column below D30/D13 [owner-identified]
         'D41':  ('DIP-16_W7.62mm', 'К555ИР16',   255, 155, 270),# shift register, paired with D40 [owner ID + photo 8902 DIP-16 label-down; x=255 clears the D60 DRAM column]
-        'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    302, 200, 0),  # tape shifter RELOCATED: owner's quadrant rows exclude ИР9 at (296,82); the un-IDed 'К5xx/1068' chip at the old D56 slot is the best ИР9 candidate [verify]
+        # (D99/К561ИР9 REMOVED from the board: both location candidates refuted -- (296,82) excluded
+        # by the owner's quadrant rows, (302,200) turned out to be D56's АГ3. The sheet-3 ИР9 exists
+        # somewhere (tape-serial.md) but goes back on only when physically located.)
         'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [emaplaat label + owner's decapped chip]; likely the real Φ1/Φ2 phase generator core
         # --- ВГ93 quadrant, owner's authoritative 4-row layout (iter 39). Refdes PROVISIONAL
         # (nearest drawing-box match; the drawing's layout differs here -- etch reads will settle):
@@ -346,6 +348,7 @@ def main():
         # row 4 (y122, horiz, below D93's pin field):
         'D100': ('DIP-16_W7.62mm', 'К555КП12',   243, 124, 90),# mux #2 [photo 8812]
         'AG3B': ('DIP-14_W7.62mm', 'К155АГ3',    295, 124, 90),# one-shot [photo 8901, label-down]; refdes UNKNOWN -- was provisionally 'D106', but scan-verified D106 = К554СА3 tape comparator (tape-serial.md) owns that number
+        'AG3C': ('DIP-14_W7.62mm', 'К155АГ3',    268, 124, 90),# row-4 middle АГ3 (owner's layout); refdes unknown -- NOT D56 (that one is at its drawn (302,200) spot, photo-confirmed)
         'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():

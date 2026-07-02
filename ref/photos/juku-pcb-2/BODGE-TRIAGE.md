@@ -540,3 +540,17 @@ Knock-on questions now open:
 Also this pass: D56 silk mark -> К155АГ3 (board-#2 series, D7 precedent); locked PHI1 escape added
 for D35.10 (the router's recurring casualty); a longer locked PHI1 west-spine was tried and
 REVERTED (shorted on the 2nd DRAM row -- blind hand corridors don't survive this board's density).
+
+## Iteration 44 — the "1068" Rosetta flip: D56 was right where the drawing put it
+Max-zoom of the (302,200) chip (photo 7): **К155АГ3 8901, label-down** — and the old
+"К555ЛУ?/1068" read of that spot was THIS label upside down ("1068" = "8901" rotated 180°).
+Consequences, all applied:
+- **D56 restored to its drawn (302,200)** — the iteration-39 relocation is reverted; the drawing
+  was right here, my upside-down read was the error. (Add to method rules: a date-code that reads
+  "10xx" is almost certainly "8x01" flipped — Soviet date codes are 8yww/9yww.)
+- The quadrant row-4 middle АГ3 (owner's layout) is a **third refdes-unknown АГ3** -> footprint
+  'AG3C' at (268,124), joining 'AG3B' (295,124).
+- **D99/К561ИР9 comes OFF the board**: both location candidates are now refuted ((296,82) excluded
+  by the owner's rows; (302,200) is D56's АГ3). The sheet-3 ИР9 goes back on when physically
+  located — likely wherever the К554СА3/D106 tape corner actually is.
+Board stays at 160 footprints (-D99 +AG3C).
