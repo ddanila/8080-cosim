@@ -78,3 +78,17 @@ Tight crop (photo 2, D35/D57 region):
   the exact circuit our sim treats as the `frame_tick` boundary.**
 Remaining for H3: the far (left) ends across the РУ5 row; wire #2's destination; D37.9/10 (the spare
 section's INPUTS) sources.
+
+## Iteration 5 — CPU cluster read: D2 is really a РТ4 PROM; D13/D30 confirmed
+Photo 10 (CPU area):
+- **2× КР556РТ4А 8810, both socketed, beside the CPU** → **D2 (our io_dec138/74138 model) is REALLY
+  the second К556РТ4 PROM** (BOM said РТ4 ×2 all along). The I/O decode is PROM-based → **contents
+  dumpable** (like D6/РЕ3). Functional equivalence holds for the boot, but the real part + pinout
+  needs a deliberate re-trace pass. MARK fixed via MARK_REF.
+- **К155РЕ3 8904 socketed in the CPU cluster** (left of the РТ4 pair) — position located.
+- **К555ТЛ2 8810 + КМ555ТМ2 8905** right of the CPU = **D13 (ТЛ2, the STSTB source) and D30 (ТМ2,
+  ready) confirmed in silicon** — validates the STSTB reconciliation.
+- D1 (ВМ80А 8902), D5 (ВК38 8905), 2× ВА86 8901 (D4+DLB, mounted horizontally SIDE-BY-SIDE above the
+  CPU — our PLACE has D4 vertical; placement nuance to fix), К555КП14 8904 + К555ИЕ7 ×3 8908 groups ✓.
+- Wires here: singles at the РЕ3 socket + РТ4 pin areas; the 3-wire harness (H2?) runs down between
+  КП14 and ТМ2/ТЛ2 toward the crystal corner. Endpoint pin-reads = next.

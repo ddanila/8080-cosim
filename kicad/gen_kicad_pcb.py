@@ -66,7 +66,8 @@ MARK = {
     'UP2':'К170УП2',        'LA18':'К155ЛА18',
 }
 MARK_REF = {'D29':'КР580ВА86',   # the ВА86 among the VABUS transceivers (D23-25 = ВА87)
-            'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3'}   # real series per board-#2 photos (D7 stays К555)
+            'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos (D7 stays К555)
+            'D2':'КР556РТ4А'}   # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
 # ~310x195 mm board. The top-edge connectors + transceiver row + ROM row + DRAM array are
