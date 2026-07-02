@@ -246,3 +246,11 @@ All four touchpoints live in the clock/timing circuit. Most plausible story: the
 a timing qualification — e.g. the FRAME INT (or a DRAM refresh/slot strobe) needed gating against a
 mesh phase that the etched revision lacked: signal(s) → D37 spare NAND (E1/E2 in) → pin 3 out →
 via etch to the frame-int/STB region (E7/posts). The РЕ3 dump + continuity pairs decide.
+
+## Iteration 23 — orientation sweep: the big blocks are key-UP (no change needed)
+Emaplaat key-mark reads: **DRAM array rows = notch-UP** (row-2 semicircles clearly at top; array
+uniform), **ROM sockets D15-D22 = key-UP** (socket key bars at the top edge). So the 40 memory
+positions match our existing notch-up footprints ✓. Confirmed exceptions so far: D36/D37/D33
+notch-DOWN (fixed), D38 dot-UP, D92 up. Bonus: the drawing places the decoupling caps BETWEEN the
+DRAM rows — matching our chip-adjacent cap placement. Remaining sweep: the logic rows + bus band
+(~35 chips), mechanical per-crop reads when needed.
