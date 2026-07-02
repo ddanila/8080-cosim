@@ -575,3 +575,17 @@ cap was the silent run-killer all along) routes the corrected board FULLY CLEAN 
 0 unconnected, 0 electrical DRC)**. Lessons pinned: (1) no hand pre-routes except straight
 long-segment escapes; (2) check ~/tmp freerouting.json for GUI-persisted caps; (3) fork 'custom'
 branch (rebased on master) carries the combine guard + patience tuning for future experiments.
+
+## Iteration 46 — X3/X4 looms visually classified LEGIT; СА3 hunt round 1 negative; LVS+boot green
+- **X3 (serial) and X4 (DB-26HD) wire looms read end-to-end**: ~8 and ~10 white wires respectively,
+  each descending from the connector body straight onto the pad row beneath it — textbook
+  panel-connector pigtails, CLASS (c) LEGIT WIRING. Together with E13 (RESET switch drop) and the
+  BNC video braid, the entire top-bracket wire population is now accounted for as legit — the ECO
+  set stays confined to the clock/timing harnesses (H1/H3 + the cut H2).
+- Serial cluster placement re-confirmed in passing: D104 УП2 8923, D14/D32 АП2 8810 ×2, D11 ВВ51А,
+  D28 РЕ3 socketed, D97 ВА87 8804, and the 33К serial-shaping resistor (E5's landmark) ✓.
+- **К554СА3 (the real D106) hunt, round 1: NEGATIVE in the top corridor** (X3→corner swept at
+  full res). Next candidates: the X9 bottom-edge zone (if tape I/O enters there) and the strip
+  under the black video cable. ИР9 (D99) likely cohabits with it.
+- **LVS: IN SYNC (86 mapped); boot_check: PASS (all 6 guards)** — re-verified after the v33 board
+  state; no netlist change in iterations 39-46, invariants hold.
