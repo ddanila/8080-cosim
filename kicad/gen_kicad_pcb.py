@@ -38,7 +38,11 @@ MARK = {
     'LA12_GATE':'К531ЛА12', 'LN1_INV':'К531ЛН1',     'LN1_OSC':'К531ЛН1',
     'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'КР556РТ4',
     'CT16_CTR':'К531ИЕ7',   'CLK_PHASE':'К531ЛН5',           # pinned via repo tracing (clock-subsystem.md / memory.md)
+    'VABUS':'КР580ВА87',    'IR82':'КР580ИР82',      'IR16':'К155ИР16',
+    'TL2':'К155ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
+    'UP2':'К170УП2',        'LA18':'К155ЛА18',
 }
+MARK_REF = {'D29':'КР580ВА86'}   # D29 is the ВА86 among the VABUS transceivers (D23-25 = ВА87)
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
 # ~310x195 mm board. The top-edge connectors + transceiver row + ROM row + DRAM array are
@@ -102,11 +106,10 @@ for _ry, _refs in [(190, range(75, 67, -1)), (217, range(83, 75, -1)), (242, ran
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 # unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
 for _i, _r in enumerate(range(17, 23)): PLACE[f'D{_r}'] = (64 + _i*21, 86, 0)
-# serial-port cluster (net-modeled): К170АП2 drivers + ЛА18 + УП2. Placed in the clear band between
-# the DRAM array (ends y242) and the bottom row (y277) -- APPROXIMATE positions (the crowded real
-# serial area still holds un-modeled outlines D28/D93/...; refine when those are placed).
-for _i, _r in enumerate(['D32', 'D12', 'D3', 'D14', 'D104']):
-    PLACE[_r] = (140 + _i*25, 258, 90)
+# serial-port cluster (net-modeled): REAL positions read off the emaplaat (relative to the D11
+# anchor): D104/D32/D14 = the column under the X3 serial connector; D12/D3 right of D11.
+PLACE['D104'] = (198, 54, 0); PLACE['D32'] = (215, 34, 0); PLACE['D14'] = (215, 54, 0)
+PLACE['D12']  = (220, 80, 0); PLACE['D3']  = (220, 103, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -139,25 +142,54 @@ def main():
         # Re-place so the body CENTRE lands on (x,y), which is what the drawing coords mean.
         c = fp.GetBoundingBox(False, False).GetCenter()
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - c.x, 2*pcbnew.FromMM(y) - c.y))
-        # EVERY chip gets its real case marking centred on the body (along the chip's long axis)
-        # + its refdes just past the top-narrow end. Marking text angle follows the package: a
-        # vertical chip (rot 0) reads along Y (90); a horizontal chip (rot 90) reads along X (0).
-        hh = pcbnew.ToMM(fp.GetBoundingBox(False, False).GetHeight()) / 2.0   # half chip height (no text)
+        # Silkscreen per chip (owner spec): (1) a clear pin-1 KEY dot, (2) the refdes at the KEY
+        # end so orientation is readable, (3) the real case marking INSIDE the body, written along
+        # the chip's long axis. KiCad rotates footprints CCW: at rot 0 (vertical DIP) pin 1 / the
+        # notch is at the TOP; at rot 90 (horizontal) the notch lands at the LEFT.
+        bb = fp.GetBoundingBox(False, False)
+        hh = pcbnew.ToMM(bb.GetHeight()) / 2.0    # half height (long axis for rot 0)
+        hw = pcbnew.ToMM(bb.GetWidth())  / 2.0
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
-        mang = 90 if rot % 180 == 0 else 0
-        r = fp.Reference(); v = fp.Value()
+        vert = (rot % 180 == 0)
+        # (1) key dot: a filled silk circle just outside pin 1 (top-left at rot 0 -> to its left;
+        # bottom-left at rot 90 -> below it)
+        p1 = fp.FindPadByNumber('1')
+        if p1 is not None:
+            pp = p1.GetPosition()
+            dx, dy = (-1.9, 0) if vert else (0, 1.9)
+            dot = pcbnew.PCB_SHAPE(board); dot.SetShape(pcbnew.SHAPE_T_CIRCLE)
+            dot.SetLayer(pcbnew.F_SilkS); dot.SetFilled(True); dot.SetWidth(0)
+            cxy = pcbnew.VECTOR2I(pp.x + pcbnew.FromMM(dx), pp.y + pcbnew.FromMM(dy))
+            dot.SetCenter(cxy)
+            dot.SetEnd(pcbnew.VECTOR2I(cxy.x + pcbnew.FromMM(0.45), cxy.y))
+            board.Add(dot)
+        # (2) refdes at the key end: above the top for vertical chips, left of the left end for
+        # horizontal ones -- always adjacent to where the key/notch is.
+        r = fp.Reference()
         r.SetVisible(True); r.SetLayer(pcbnew.F_SilkS)
-        r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(3), pcbnew.FromMM(3)))
-        r.SetTextThickness(pcbnew.FromMM(0.5))
+        r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.4), pcbnew.FromMM(2.4)))
+        r.SetTextThickness(pcbnew.FromMM(0.4))
         r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
-        r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 2.5)))     # just above the top narrow end
+        if vert:
+            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 2.2)))
+        else:
+            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x - hw - 3.5), pcbnew.FromMM(y)))
+        # (3) marking inside the body, along the long axis, sized to FIT the body
+        v = fp.Value()
+        mark = MARK_REF.get(ref) or MARK.get(typ, typ)
+        v.SetText(mark)
+        body_len = 2*hh if vert else 2*hw          # long-axis length
+        body_wid = 2*hw if vert else 2*hh
+        ts = min(2.7, body_wid * 0.42, (body_len - 2.0) / (0.95 * max(len(mark), 1)))
+        ts = max(ts, 1.0)
         v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
-        v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.7), pcbnew.FromMM(2.7)))            # readable, still fits DIP-14/16
-        v.SetTextThickness(pcbnew.FromMM(0.45))
-        v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)                                # centred on the body
-        try: v.SetTextAngle(pcbnew.EDA_ANGLE(mang, pcbnew.DEGREES_T))                     # along the chip
+        v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(ts), pcbnew.FromMM(ts)))
+        v.SetTextThickness(pcbnew.FromMM(max(0.15, ts * 0.16)))
+        v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)
+        mang = 90 if vert else 0
+        try: v.SetTextAngle(pcbnew.EDA_ANGLE(mang, pcbnew.DEGREES_T))
         except Exception: v.SetTextAngle(mang * 10)
-        v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))                # on the chip body centre
+        v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
 
     # connectors are silk outlines, not DIP footprints -> never placed as chips
     CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN'}
@@ -262,8 +294,8 @@ def main():
         silk_box(cx - 5, 72, cx + 5, 92, ref)
     silk_box(302, 98, 310, 118, 'D106')   # right-edge chip below the baud chain (≈307,108)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
-    silk_box(95, 253, 120, 264, "X3") 
-    silk_box(55, 278, 90, 286, "X8")   # power connector (+5/GND/+12/-12; pins 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
+    silk_box(182, 22.5, 210, 30, "X3")   # serial edge connector, right of X2 (emaplaat)
+    silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     silk_box(245, 151, 259, 159, 'D41'); silk_box(300, 166, 310, 186, 'D34')   # (D37 now a net-modeled footprint -- see PLACE)
