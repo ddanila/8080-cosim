@@ -394,10 +394,16 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
     assign txd = 1'b1; assign rts = 1'b1; assign dtr = 1'b1;
 endmodule
 
-// К170АП2 serial line driver (RS-232-ish). Sections (per owner scan img): 3->6, 2->7, 9->8, 11->10.
-// One-way buffers (never drive the USART side) -> boot-safe. Used by D14 (SOUT), D32 (RTS/DTP), D3 (TTL SOUT).
-module ap2_drv (input wire i2, i3, i9, i11, output wire o6, o7, o8, o10);
-    assign o6 = i3; assign o7 = i2; assign o8 = i9; assign o10 = i11;
+// К170АП2 serial line driver -- DIP-8 DUAL (board photo pin-count; power 8/5/4 per the power table
+// fits 8-pin). Sections: 3->6, 2->7 (owner scan img). One-way (never drives the USART side).
+// Used by D14 (SOUT) and D32 (RTS/DTP). [D3 turned out to be К561ЛН2, not АП2 -- see ln2_inv.]
+module ap2_drv (input wire i2, i3, output wire o6, o7);
+    assign o6 = i3; assign o7 = i2;
+endmodule
+// К561ЛН2 hex inverter (CMOS), D3: section 11->10 makes TTL SOUT = ~TxD (the schematic section I
+// first misread as an АП2 -- АП2 is 8-pin, so pins 11/10 could only be the ЛН2).
+module ln2_inv (input wire a, output wire y);
+    assign y = ~a;
 endmodule
 // К155ЛА55/ЛА18 open-collector NAND (D12): -> OC SOUT.
 module la18_oc (input wire i1, i2, output wire o3);

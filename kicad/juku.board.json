@@ -2023,17 +2023,13 @@
       "pins": {
         "2": "I2",
         "3": "I3",
-        "9": "I9",
-        "11": "I11",
         "6": "O6",
-        "7": "O7",
-        "8": "O8",
-        "10": "O10"
+        "7": "O7"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "serial driver (owner img #2)"
+        "pins": "АП2 DIP-8 dual (board photo pin-count; sections 3->6, 2->7 owner scan)"
       }
     },
     {
@@ -2042,36 +2038,26 @@
       "pins": {
         "2": "I2",
         "3": "I3",
-        "9": "I9",
-        "11": "I11",
         "6": "O6",
-        "7": "O7",
-        "8": "O8",
-        "10": "O10"
+        "7": "O7"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "serial driver (owner img #2)"
+        "pins": "АП2 DIP-8 dual (board photo pin-count; sections 3->6, 2->7 owner scan)"
       }
     },
     {
       "ref": "D3",
-      "type": "AP2",
+      "type": "LN2",
       "pins": {
-        "2": "I2",
-        "3": "I3",
-        "9": "I9",
-        "11": "I11",
-        "6": "O6",
-        "7": "O7",
-        "8": "O8",
-        "10": "O10"
+        "11": "A",
+        "10": "Y"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "serial driver (owner img #2)"
+        "pins": "К561ЛН2 sec 11->10 (АП2 is 8-pin -> the 11/10 section is the ЛН2)"
       }
     },
     {
@@ -7794,10 +7780,6 @@
           "4"
         ],
         [
-          "D3",
-          "4"
-        ],
-        [
           "D58",
           "10"
         ],
@@ -8248,6 +8230,10 @@
         [
           "C72",
           "2"
+        ],
+        [
+          "D3",
+          "7"
         ]
       ]
     },
@@ -8842,6 +8828,10 @@
         [
           "C72",
           "1"
+        ],
+        [
+          "D3",
+          "14"
         ]
       ]
     },
@@ -8859,10 +8849,6 @@
         ],
         [
           "D32",
-          "8"
-        ],
-        [
-          "D3",
           "8"
         ],
         [
@@ -8885,10 +8871,6 @@
         ],
         [
           "D32",
-          "5"
-        ],
-        [
-          "D3",
           "5"
         ],
         [

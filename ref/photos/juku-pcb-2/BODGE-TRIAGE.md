@@ -159,3 +159,11 @@ schematic (img #2). A second long wire runs right toward ВГ93 (D93) — endpoi
 lacing between shots). The efficient close-out is OWNER MULTIMETER CONTINUITY between the cataloged
 points (~15 checks: each endpoint against the other five). Photos got us from "30 mystery wires" to
 "6 numbered test points" — the last hop is a beeper session.
+
+## Iteration 14 — АП2 = DIP-8 (definitive) → D3 is К561ЛН2, model corrected
+Max-zoom pin count: **К170АП2 = DIP-8** (4 pins/side, both chips), **К170УП2 = DIP-14**. This cracks
+a misID chain: the power table's АП2 pins (8/5/4) fit 8-pin ✓; D14/D32's traced sections (3→6, 2→7)
+fit ✓; but the schematic's "D3: 11→10" section CANNOT be an 8-pin АП2 → **D3 = К561ЛН2** (14-pin hex
+inverter, pins 11/10; TTL SOUT = ~TxD; the schematic symbol was ЛН2 misread as АП2). Model fixed:
+ap2_drv → true DIP-8 dual (phantom sections dropped), D3 → ln2_inv (CMOS: VCC=14/GND=7 power fix),
+DIP-8 footprints mapped. LVS 86 IN SYNC, boot byte-identical, board regenerates clean.
