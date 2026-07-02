@@ -177,3 +177,11 @@ drives). Same class-(b) conclusion, cleaner mechanism.
 **New fidelity item: CHIP ORIENTATION PASS** — the real board mixes notch-up/notch-down mounting;
 our footprints assume notch-up everywhere. The emaplaat outlines carry the key marks (semicircles) →
 read per-chip orientation and set footprint rotations accordingly (matters for real assembly).
+
+## Iteration 16 — solder side carries etched numbers too; registration overlay needed
+The solder-side crop at the (mirrored) clock cluster shows etched digits ("1 2", "7 14", "9", "10",
+"12") — pin-1/power-pin assembly aids + net numbers on the copper side as well. Following D37 pin 3's
+etch (the H3-ECO output) is feasible BUT identifying the right pad pattern in the mirrored view needs
+registration better than ±10mm. **Next tool: an overlay** — mirror+scale our board render onto the
+solder photo (anchors: the corner mounting hole, the DRAM-field edge, the thick power buses). That
+also doubles as the first step toward photo-guided routing comparison. Parked as the next interleave.
