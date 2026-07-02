@@ -319,3 +319,13 @@ Photo 7 full-res at the harness junction (the big verdigris'd lash, board ~(245,
 - The photo-6 "lower wire" (iter 29) merges into THIS harness at the lash → H3 and the serial/FDC
   band wires are one laced tree; only per-endpoint continuity separates the circuits. Beeper list
   now E1-E12.
+
+## Iteration 31 — owner IDs: D9 = К555ИД7; D7's real series is КР1533ЛА3
+- **D9 = К555ИД7** (owner) → untraced DIP-16 footprint at the bus-band slot (122,136). Note the
+  architectural hint: D2's schematic role is the IO decoder (74138-class) but the physical D2 is a
+  socketed РТ4 PROM — a SECOND ИД7 right in the bus band is a strong candidate for where the real
+  138-style decode lives. When D9's nets get traced, compare against our IO_DEC138 model netlist.
+- **D7 = КР1533ЛА3 on the real board** (owner), not К555ЛА3 as assumed. Logic + pinout identical
+  (ALS vs LS: faster edges, ~1/3 the power); electrically drop-in for the recreation, so only the
+  silk MARK changes. Pattern now: ALL three ЛА3s outside the CPU cluster (D7/D37/D39) are 1533 on
+  board #2 — consistent with a late-80s production run preferring ALS.

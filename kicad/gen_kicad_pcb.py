@@ -67,7 +67,8 @@ MARK = {
     'UP2':'К170УП2',        'LA18':'К155ЛА18',    'LN2':'К561ЛН2',
 }
 MARK_REF = {'D29':'КР580ВА86',   # the ВА86 among the VABUS transceivers (D23-25 = ВА87)
-            'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos (D7 stays К555)
+            'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos
+            'D7':'КР1533ЛА3',   # owner-read off the real board (was assumed К555; ALS vs LS -- same logic/pinout, marking only)
             'D2':'КР556РТ4А'}   # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
@@ -322,6 +323,8 @@ def main():
         'D51':  ('DIP-16_W7.62mm', 'К555КП14',   112, 190, 0),  # video addr mux [drawing]
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
         'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
+        'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 2nd bus buffer, stacked below D4 [photo 201940304: ВА86 x2 8901; user-confirmed same-as-neighbor]
+        'D9':   ('DIP-16_W7.62mm', 'К555ИД7',    122, 136, 90), # 3-to-8 decoder, bus band between D8 and D7 [owner-identified]
         'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    296, 82, 0),   # tape shifter [sheet 3 + baud-row box; 301->296: match right-column edge margin]
         'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [emaplaat label + owner's decapped chip]; likely the real Φ1/Φ2 phase generator core
         'D106': ('DIP-14_W7.62mm', 'К155АГ3',    297, 108, 180),# one-shot [photo 8901, label-down]; 2nd АГ3 at ~(270,105) + КП12 x2 at ~(245,105)/(257,89) await refdes
@@ -432,7 +435,7 @@ def main():
         silk_box(cx - 5, 42, cx + 5, 68, ref)
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
-    silk_box(46, 174, 58, 196, 'D107')                        # CPU cluster, below D4
+    # (D107 -> untraced КР580ВА86 footprint, the 2nd of the photo's stacked ВА86 pair)
     # lower-left corner (read off the drawing): D30/D13/D105 = a horizontal column at x≈30; D52
     # vertical at x≈59. (Corrects earlier D30 orientation + D52 y, and adds D13/D105.)
     for y0, ref in [(236, 'D105')]:   # (D13/D30 now footprints)
@@ -452,7 +455,7 @@ def main():
     # (D92 -> untraced К555ЛЕ4 footprint; likely the REAL Φ1/Φ2 phase generator core (cross-coupled
     # NORs) -- nets to trace, then net-model)
     # (D25/D23/D24/D29 bus transceivers are now net-modeled footprints -- see PLACE -- not outlines.)
-    silk_box(112, 132, 132, 140, 'D9')   # bus band: D9 fills the gap between DLB(=D8) and D7 (≈122,136)
+    # (D9 -> untraced К555ИД7 footprint, owner-identified)
     BW, BH = BX1-BX0, BY1-BY0
 
     # ---- pre-routed escapes for the 4 X1 links freerouting deterministically fails on ----
