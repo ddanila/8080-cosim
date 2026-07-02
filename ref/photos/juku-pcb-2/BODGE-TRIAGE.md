@@ -114,3 +114,10 @@ Photo 7 full-res (АГ3/video corner):
   diodes, 1k/47Ω resistor network, coax braid+center landing, etch mark "Е". Real parts for the
   video-output passives (our node-A/VT2 backlog).
 - Nearby: К555КП12 8812 (again — the un-modeled mux pair), К155АГ3 ×2 8901, КР531ИЕ17 8902.
+
+## Iteration 9 — method recalibration: glue lash points ≠ endpoints
+Full-res of the suspected "41" endpoint (right of ВН59/D10): it's an **adhesive lace point** (brown
+glue blob over vias, verdigris around it) — the H1 wires pass THROUGH and continue left toward the
+bus band. The low-res "endpoint at 41" was a misread of this lash. **Rule: only shiny solder cones
+on pads/vias count as endpoints; brown blobs are glue lacing.** This shrinks the true-endpoint count
+substantially (many harness "stops" are lash points). H1-endpoint-A hunt continues left of ВН59.
