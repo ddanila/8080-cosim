@@ -515,3 +515,12 @@ the transcription's "(pin 12 → R36 360 → pin 14)" — pin 14 is +5V, so:
 ЛА18/ЛН2 queue status: D12 (ЛА18) section 1/2→3 drives S_OC→X3.32; D3 (ЛН2) 11→10 drives
 S_TTL→X3.23; both already net-modeled and LVS-green — the "connectivity" item is CLOSED at the
 modeled-section level (spare sections of both remain unmapped, as on the schematic).
+
+## Iteration 42 — silk audit of the rebuilt quadrant; D56 mark -> К155АГ3
+Render-level silk audit of the ВГ93 quadrant: key notches, along-body marks and key-adjacent
+refdes all render correctly for the 10 new/moved footprints (D95/D94/D102/D101/D98/D96/D100/D56/
+D106 + relocated D99). One authenticity fix: **D56's silk mark КМ555АГ3 (BOM) -> К155АГ3** (both
+row-4 АГ3s on board #2 are К155 8901; real board wins per the D7 precedent). Netlist untouched;
+v22 route re-imported clean (0 unconnected / 0 electrical DRC). Silk-polish queue item: the
+quadrant portion is CLOSED; remaining silk work is the mixed-series КП14 pinning (which of
+D48-D51 carries the К555 part) — blocked on an etch/date-code read.

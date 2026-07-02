@@ -69,6 +69,7 @@ MARK = {
 MARK_REF = {'D29':'КР580ВА86',   # the ВА86 among the VABUS transceivers (D23-25 = ВА87)
             'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos
             'D7':'КР1533ЛА3',   # owner-read off the real board (was assumed К555; ALS vs LS -- same logic/pinout, marking only)
+            'D56':'К155АГ3',    # board-#2 row-4 АГ3s are К155 8901 (BOM said КМ555АГ3; real board wins, D7 precedent)
             'D2':'КР556РТ4А'}   # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
