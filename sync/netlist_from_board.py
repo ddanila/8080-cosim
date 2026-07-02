@@ -12,6 +12,10 @@ def load(path):
     b = json.load(open(path))
     insts = {c["ref"]: {"type": c["type"], "pins": {}} for c in b["chips"]}
     for name, entry in b["nets"].items():
+        # power-distribution nets ("power": true) are PCB-only: the HDL models have no
+        # power pins (Verilog), so they're excluded from the LVS connectivity compare.
+        if isinstance(entry, dict) and entry.get("power"):
+            continue
         nodes = entry["nodes"] if isinstance(entry, dict) else entry
         for ref, pin in nodes:
             insts.setdefault(ref, {"type": "?", "pins": {}})

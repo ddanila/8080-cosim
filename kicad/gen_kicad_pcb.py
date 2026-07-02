@@ -160,7 +160,7 @@ def main():
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))                # on the chip body centre
 
     # connectors are silk outlines, not DIP footprints -> never placed as chips
-    CONN = {'EXPANSION_CONN', 'SERIAL_CONN'}
+    CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -262,7 +262,8 @@ def main():
         silk_box(cx - 5, 72, cx + 5, 92, ref)
     silk_box(302, 98, 310, 118, 'D106')   # right-edge chip below the baud chain (≈307,108)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
-    silk_box(95, 253, 120, 264, "X3")      # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
+    silk_box(95, 253, 120, 264, "X3") 
+    silk_box(55, 278, 90, 286, "X8")   # power connector (+5/GND/+12/-12; pins 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     silk_box(245, 151, 259, 159, 'D41'); silk_box(300, 166, 310, 186, 'D34')   # (D37 now a net-modeled footprint -- see PLACE)

@@ -123,3 +123,19 @@ shorts, learned the hard way). Validation en route also caught **2 real placemen
 (RAM_SEL/MA1: clock column D36/D53 overlapped the bank-1..3 DRAM footprints) — fixed in the generator.
 **What fab still needs (in order): power nets (GND/+5/+12/-5 — the big one), real connector footprints
 (X1/X2/X3/X9 are silk), passives (R/C), then gerbers.**
+
+## POWER DISTRIBUTION netted (2026-07) — from the schematic's own power table
+Transcribed the sheet-1 power table («Подключение питания к выводам ИС») + X8 power connector
+(**61=+5В/802, 62=Земля/801, 60=+12В/803, 59=-12В/808** — definitive re-crop) and netted power for
+all 84 chips: **GND=85, +5V=106, +12V=5, -12V=4 pads**. Details:
+- **Rails are +5/+12/-12/GND** (no -5В row!): the 8080's pin-11 -5V is **board-derived from -12**
+  (R19 470 + VD network, visible at X8) → `M5V_DERIVED` net = {D1.11} until passives land.
+- **ROM sockets strap pins 1,26,27,28 to +5** (2764 VPP/NC/PGM high = read mode) — period detail.
+- **АП2 serial drivers are ±12V parts** (+12=8, -12=5, GND=4); УП2: +5=15, GND=8; ЛА18: 8/4.
+- **ИР16 = 74295-class DIP-14** (the table's «остальные ИС» 14/7 + owner's pin-8=G read → OC pin!).
+- **8253s (24/12), РУ5 (8/16), DIP-16 74xx (16/8)**: datasheet (the table is silent on them).
+- **D5 (8228) data pins fixed to the real datasheet interleave** (D0=19/DB0=18 … D7=8/DB7=7): its 10
+  control pins were already scan-matched to the datasheet, validating the layout; frees pin 14=GND /
+  28=VCC. (Was a documented straight-interleave placeholder.)
+- Power nets carry `"power": true` → **excluded from LVS** (HDL has no power pins); filters in
+  `netlist_from_board.py` + `gen_kicad_sch.py`. LVS unchanged: 86 instances IN SYNC; boot byte-identical.

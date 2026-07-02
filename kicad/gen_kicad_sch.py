@@ -74,6 +74,8 @@ def main():
         out.append(instance(c["ref"], c["type"], px, py, n)); n += 1
 
     for net, entry in spec["nets"].items():
+        if isinstance(entry, dict) and entry.get("power"):
+            continue          # power nets are PCB-only (no power pins in the HDL/LVS compare)
         nodes = entry["nodes"] if isinstance(entry, dict) else entry  # tagged or bare
         for ref, pin in nodes:
             t = ctype[ref]
