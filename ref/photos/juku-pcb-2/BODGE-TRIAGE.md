@@ -465,3 +465,37 @@ row 4 drops below it, y=124, matching the h1a_run КП12 read at ~(242,120)):
 - **The un-modeled К555КП12 pair is now PLACED (D98/D100)** — queue item closed at placement level
   (nets still untraced).
 - Board: **0 placement outlines remain** — all 160 positions are real footprints.
+
+## Iteration 40 — BEEPER SESSION SHEET v2 (supersedes the E1-E8 sheet above)
+All 18 endpoints consolidated; coordinates are component-side board-frame mm (X1 top-left).
+Confidence: ● solid solder cone read · ◐ medium (dull joint / tinned end) · ✗ retracted/cut.
+| # | Point | Where (mm) | Landmark / note |
+|---|-------|-----------|------------------|
+| E1 ● | D37 spare-gate input pin 1 | (268,208) | КР1533ЛА3 8906, notch-DOWN, bottom-right |
+| E2 ● | pad beside E1 (pin 2 side) | (268,206) | same chip |
+| E3 ● | via etched "11" = CLKG_D36 | ~(263,145) | the Rosetta via |
+| E4 ● | X1/X2-gap top-edge pad | ~(112,27) | near etch "17" |
+| E5 ● | 33К pad at D11 | ~(212,95) | serial shaping by ВВ51А |
+| E6→E10 | (superseded by E10) | — | iter 12's "toward ВГ93" resolved |
+| E7 ● | via right of D38 pins 3-5 | (256,174) | frame-int corner |
+| E8 ◐ | pad lower-left of D38 | (247,180) | stripped wire end |
+| E9 ◐ | cone NW of КП12/D98 | ~(240,101) | white lacing wire (likely legit video/socket) |
+| E10 ◐ | via SW of ВГ93 pin-20 corner | ~(235,116) | DULL oxidized joint; wire from E5 direction |
+| E11 ● | via above D36 (mesh channel) | ~(249,185) | harness riser from the big lash |
+| E12 ◐ | D36 bottom-left pin (=pin 7 GND?) | ~(250,207) | green flux; harness GROUND stitch? |
+| E13 ● | ЛП11/D95 bottom-right pin zone | ~(274,72) | RESET-switch wire landing; etch "18" beside |
+| E14 ◐ | tinned end on via, D38-D40 gap | ~(266,172) | rest of H2 is CUT (✗ ends at (249,172)/(249,186)) |
+| E15 ◐ | via below D5/ВК38 bottom row | ~(40,143) | H1-A (bracketed-anchor position) |
+| E16 ● | D35 pin-14 corner drop #1 | ~(268,213) | Φ2 output corner (К155ЛН5) |
+| E17 ● | D35 pin-14 corner drop #2 | ~(270,214) | second drop, adjacent via |
+| E18 ● | cone on via etched "2" SE of D35 | ~(272,222) | net "2" = Φ2? (Rosetta hypothesis) |
+**Priority pairs (expected story, ~25 touches):**
+1. E16/E17 ↔ E1/E2 — Φ2 into the spare NAND inputs (the core ECO claim)
+2. D37 pin 3 (268,205) ↔ E7 — spare-gate output into the frame-int corner
+3. E15 ↔ E3 — the H1 board-length bridge; then E15 ↔ D5 pins (which ВК38 signal?)
+4. E12 ↔ GND, E15 ↔ GND — shield-vs-signal disambiguation
+5. E18 ↔ D35.14/E16 — net-2 = Φ2 confirmation
+6. E13 ↔ S1/RESET network (R3/C21 zone ~(23-67,214)) — legit-wiring confirmation
+7. E5 ↔ E10 — the serial/FDC band wire (legit wiring hypothesis)
+Every confirmed pair = one complete wire → diff vs board.json → absorb / add `[photo-traced ECO]`
+behind LVS / mark legit. РЕ3/РТ4/2764 dumps (docs/prom-dump-procedure.md) close the rest.
