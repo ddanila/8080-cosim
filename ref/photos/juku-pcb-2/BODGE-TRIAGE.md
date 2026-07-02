@@ -44,3 +44,14 @@ D35** (phase generator — real chip series К155, not К531 as our silk says �
 ИР82 top pins = D58 ✓. **Two factory test-pin posts marked "1"/"2" near D35 = Φ1/Φ2 clock test
 points** (with a 5К1 R between); below: VT (dark flat-pack) + grey "В 8Р2" diode + R network = the
 tape/video shaping stage (VT1/VD area of our passives backlog).
+
+## Iteration 2 — the clock mesh photographed chip-by-chip (photo 2, upper crop)
+Row-for-row match with our PLACE map: y=200 row = **КС531ЛА12(D36) | КР1533ЛА3(D37) | КР531ЛН1
+8901(D33) | К555ИЕ10 57(D103)**; y=176 row = **КР531ЛА1 8702(D38)** + **КР1533ЛА3 8906(D39)**.
+**The decapped ЛЕ4 sits BETWEEN D38 and D39** — a position empty in our model (the emaplaat had an
+unreadable refdes label right there → that label is the ЛЕ4's refdes; next: re-crop the emaplaat at
+(~265-290, 168-185) to read it). **Implication:** ЛЕ4 = quad NOR; cross-coupled NORs are the
+canonical 8080 Φ1/Φ2 generator → the real phase generator likely includes this ЛЕ4, in exactly the
+mesh region we abstracted (clk_phase). The РЕ3 dump + this chip's tracing = the full real clock.
+Real-series corrections: D37/D39 are КР1533ЛА3 (1533, not 555). H3's lower wires terminate around
+D37's bottom / D33's lower pins — exact pin numbers still need a tighter crop (next).
