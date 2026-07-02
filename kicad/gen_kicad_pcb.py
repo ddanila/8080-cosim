@@ -117,11 +117,12 @@ PLACE = {
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
     'D36':(253,200,180),'D33':(277,200,180),'D35':(266,221,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
-    'D59':(112,281,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
+    'D59':(112,275,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
+                          # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
     'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
-    'D42':(142,281,90),'D43':(170,281,90),'D58':(197,281,90),
+    'D42':(142,275,90),'D43':(170,275,90),'D58':(197,275,90),
     'D37':(265,200,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
     'D13':(30,223,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }
@@ -316,12 +317,12 @@ def main():
     UNTRACED = {
         'D28':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #1, socketed [photo]
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
-        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    305, 176, 0),  # video XOR [schematic+photo]
+        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    296, 176, 0),  # video XOR [schematic+photo; 305->296: photo shows ~13 mm edge margin]
         'D50':  ('DIP-16_W7.62mm', 'К555КП14',   112, 158, 0),  # video addr mux [drawing]
         'D51':  ('DIP-16_W7.62mm', 'К555КП14',   112, 190, 0),  # video addr mux [drawing]
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
         'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
-        'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    301, 82, 0),   # tape shifter [sheet 3 + baud-row box]
+        'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    296, 82, 0),   # tape shifter [sheet 3 + baud-row box; 301->296: match right-column edge margin]
         'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
@@ -439,7 +440,7 @@ def main():
     # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
     for cx, ref in [(269, 'D102'), (285, 'D101')]:   # (D99 -> footprint)
         silk_box(cx - 5, 72, cx + 5, 92, ref)
-    silk_box(302, 98, 310, 118, 'D106')   # right-edge chip below the baud chain (≈307,108)
+    silk_box(294, 98, 302, 118, 'D106')   # right-edge chip below the baud chain (pulled off the edge to match real margin)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
     silk_box(182, 22.5, 210, 30, "X3")   # serial edge connector, right of X2 (emaplaat)
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
@@ -466,12 +467,16 @@ def main():
             t = pcbnew.PCB_TRACK(board)
             t.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(x1), pcbnew.FromMM(y1)))
             t.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(x2), pcbnew.FromMM(y2)))
-            t.SetLayer(lay); t.SetWidth(pcbnew.FromMM(0.25)); t.SetNet(net); board.Add(t)
+            t.SetLayer(lay); t.SetWidth(pcbnew.FromMM(0.25)); t.SetNet(net)
+            t.SetLocked(True)   # -> DSN "(type protect)" so freerouting keeps the escape
+            board.Add(t)
     def _via(net_name, x, y):
         net = board.FindNet(net_name)
         if net is None: return
         v = pcbnew.PCB_VIA(board); v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
-        v.SetWidth(pcbnew.FromMM(0.6)); v.SetDrill(pcbnew.FromMM(0.3)); v.SetNet(net); board.Add(v)
+        v.SetWidth(pcbnew.FromMM(0.6)); v.SetDrill(pcbnew.FromMM(0.3)); v.SetNet(net)
+        v.SetLocked(True)
+        board.Add(v)
     B, F = pcbnew.B_Cu, pcbnew.F_Cu
     # ADRF: D24.12 (94.89,55.19) -> X1.117B (62.25,27)
     _wire('ADRF_N', [(94.89,55.19),(94.89,33.0),(61.0,33.0),(61.0,28.25),(62.25,28.25),(62.25,27.0)],
@@ -487,13 +492,14 @@ def main():
     # ADRC: D24.15 (87.27,55.19) -> X1.118C (64.75,29.5)
     _wire('ADRC_N', [(87.27,55.19),(87.27,35.4),(64.75,35.4),(64.75,29.5)], [B, F, B])
     _via('ADRC_N', 87.27,35.4); _via('ADRC_N', 64.75,35.4)
-    # DB5/DB6: deterministic router casualties after the D36/D37/D33 rotations (freerouting v2 is
-    # seed-deterministic). Laid on the empty board through the bottom band + the D43 pad lanes:
-    # DB5: D58.6 (198.27,284.81) -> D89.14 (162.81,238.19)  [lane x=166.19 between D43 pads]
-    _wire('DB5', [(198.27,284.81),(198.27,287.0),(166.19,287.0),(166.19,238.19),(162.81,238.19)],
-          [B, B, B, B])
-    # DB6: D58.7 (200.81,284.81) -> D42.4 (142.0,284.81)   [F.Cu bottom band y=286.4]
-    _wire('DB6', [(200.81,284.81),(200.81,286.4),(142.0,286.4),(142.0,284.81)], [F, F, F])
+    # DB5/DB6 pre-route bars REMOVED (were: D58.6->D89.14 / D58.7->D42.4 via the y~286-287 band).
+    # Two reasons: (a) freerouting crashes on them (PolylineTrace.combine infinite recursion) and
+    # poisons its SES echo of them ((type protect) wires that make pcbnew.ImportSpecctraSES return
+    # False -- strip those blocks from the SES and the import succeeds); (b) the bottom chip row
+    # moved up to y=275 to match the real board's ~11 mm edge margin, which opens the very routing
+    # channel below the row that the original board uses -- the router gets a fair shot now. If the
+    # links still fail deterministically, re-add bars with updated pad coords and use the
+    # strip-protect-wires + re-inject flow (see finalize_route.py notes).
 
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
