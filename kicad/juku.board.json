@@ -2132,6 +2132,716 @@
         "refdes": "scan",
         "pins": "61=+5В(802) 62=Земля(801) 60=+12В(803) 59=-12В(808)"
       }
+    },
+    {
+      "ref": "R19",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: R19 470 at X8/-12 area; -5V dropper"
+      },
+      "value": "470"
+    },
+    {
+      "ref": "VD5",
+      "type": "D_DIODE",
+      "pins": {
+        "1": "K",
+        "2": "A"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: VD5 by R19; zener clamp to GND [assumed orientation]"
+      },
+      "value": "КС147"
+    },
+    {
+      "ref": "C31",
+      "type": "C_ELEC",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: bulk cap +5/GND at X8"
+      }
+    },
+    {
+      "ref": "C32",
+      "type": "C_ELEC",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan area: bulk cap [assumed rail -12/GND]"
+      }
+    },
+    {
+      "ref": "C33",
+      "type": "C_ELEC",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: bulk cap +12/GND at X8"
+      }
+    },
+    {
+      "ref": "R3",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: reset RC"
+      },
+      "value": "100"
+    },
+    {
+      "ref": "R4",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: reset RC"
+      },
+      "value": "100"
+    },
+    {
+      "ref": "R20",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: reset pull"
+      },
+      "value": "1,5к"
+    },
+    {
+      "ref": "C1",
+      "type": "C_ELEC",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: reset RC"
+      },
+      "value": "47,0"
+    },
+    {
+      "ref": "C21",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: reset RC"
+      },
+      "value": "24"
+    },
+    {
+      "ref": "S1",
+      "type": "SW",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: reset switch S1"
+      }
+    },
+    {
+      "ref": "R38",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: serial-pixel leg into node A"
+      },
+      "value": "1к"
+    },
+    {
+      "ref": "R39",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "scan: ЛН5 leg into node A"
+      },
+      "value": "12к"
+    },
+    {
+      "ref": "C35",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D60 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C36",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D61 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C37",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D62 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C38",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D63 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C39",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D64 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C40",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D65 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C41",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D66 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C42",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D67 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C43",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D15 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C44",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D17 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C45",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D19 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C46",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D21 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C47",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D5 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C48",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D1 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C49",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D10 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C50",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D11 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C51",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D26 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C52",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D27 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C53",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D54 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C54",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D55 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C55",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D57 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C56",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D23 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C57",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D29 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C58",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D6 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C59",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D7 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C60",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D44 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C61",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D46 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C62",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D48 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C63",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D40 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C64",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D38 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C65",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D35 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C66",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D42 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C67",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D58 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C68",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D14 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C69",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D3 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C70",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D71 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C71",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D79 [assumed]"
+      },
+      "value": "0,047"
+    },
+    {
+      "ref": "C72",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "BOM C35-C72 decoupling; position by D87 [assumed]"
+      },
+      "value": "0,047"
     }
   ],
   "nets": {
@@ -7358,6 +8068,186 @@
         [
           "D103",
           "8"
+        ],
+        [
+          "VD5",
+          "1"
+        ],
+        [
+          "C31",
+          "2"
+        ],
+        [
+          "C32",
+          "2"
+        ],
+        [
+          "C33",
+          "2"
+        ],
+        [
+          "C1",
+          "2"
+        ],
+        [
+          "C21",
+          "2"
+        ],
+        [
+          "S1",
+          "2"
+        ],
+        [
+          "C35",
+          "2"
+        ],
+        [
+          "C36",
+          "2"
+        ],
+        [
+          "C37",
+          "2"
+        ],
+        [
+          "C38",
+          "2"
+        ],
+        [
+          "C39",
+          "2"
+        ],
+        [
+          "C40",
+          "2"
+        ],
+        [
+          "C41",
+          "2"
+        ],
+        [
+          "C42",
+          "2"
+        ],
+        [
+          "C43",
+          "2"
+        ],
+        [
+          "C44",
+          "2"
+        ],
+        [
+          "C45",
+          "2"
+        ],
+        [
+          "C46",
+          "2"
+        ],
+        [
+          "C47",
+          "2"
+        ],
+        [
+          "C48",
+          "2"
+        ],
+        [
+          "C49",
+          "2"
+        ],
+        [
+          "C50",
+          "2"
+        ],
+        [
+          "C51",
+          "2"
+        ],
+        [
+          "C52",
+          "2"
+        ],
+        [
+          "C53",
+          "2"
+        ],
+        [
+          "C54",
+          "2"
+        ],
+        [
+          "C55",
+          "2"
+        ],
+        [
+          "C56",
+          "2"
+        ],
+        [
+          "C57",
+          "2"
+        ],
+        [
+          "C58",
+          "2"
+        ],
+        [
+          "C59",
+          "2"
+        ],
+        [
+          "C60",
+          "2"
+        ],
+        [
+          "C61",
+          "2"
+        ],
+        [
+          "C62",
+          "2"
+        ],
+        [
+          "C63",
+          "2"
+        ],
+        [
+          "C64",
+          "2"
+        ],
+        [
+          "C65",
+          "2"
+        ],
+        [
+          "C66",
+          "2"
+        ],
+        [
+          "C67",
+          "2"
+        ],
+        [
+          "C68",
+          "2"
+        ],
+        [
+          "C69",
+          "2"
+        ],
+        [
+          "C70",
+          "2"
+        ],
+        [
+          "C71",
+          "2"
+        ],
+        [
+          "C72",
+          "2"
         ]
       ]
     },
@@ -7788,6 +8678,170 @@
         [
           "D103",
           "16"
+        ],
+        [
+          "C31",
+          "1"
+        ],
+        [
+          "R3",
+          "1"
+        ],
+        [
+          "R20",
+          "2"
+        ],
+        [
+          "C35",
+          "1"
+        ],
+        [
+          "C36",
+          "1"
+        ],
+        [
+          "C37",
+          "1"
+        ],
+        [
+          "C38",
+          "1"
+        ],
+        [
+          "C39",
+          "1"
+        ],
+        [
+          "C40",
+          "1"
+        ],
+        [
+          "C41",
+          "1"
+        ],
+        [
+          "C42",
+          "1"
+        ],
+        [
+          "C43",
+          "1"
+        ],
+        [
+          "C44",
+          "1"
+        ],
+        [
+          "C45",
+          "1"
+        ],
+        [
+          "C46",
+          "1"
+        ],
+        [
+          "C47",
+          "1"
+        ],
+        [
+          "C48",
+          "1"
+        ],
+        [
+          "C49",
+          "1"
+        ],
+        [
+          "C50",
+          "1"
+        ],
+        [
+          "C51",
+          "1"
+        ],
+        [
+          "C52",
+          "1"
+        ],
+        [
+          "C53",
+          "1"
+        ],
+        [
+          "C54",
+          "1"
+        ],
+        [
+          "C55",
+          "1"
+        ],
+        [
+          "C56",
+          "1"
+        ],
+        [
+          "C57",
+          "1"
+        ],
+        [
+          "C58",
+          "1"
+        ],
+        [
+          "C59",
+          "1"
+        ],
+        [
+          "C60",
+          "1"
+        ],
+        [
+          "C61",
+          "1"
+        ],
+        [
+          "C62",
+          "1"
+        ],
+        [
+          "C63",
+          "1"
+        ],
+        [
+          "C64",
+          "1"
+        ],
+        [
+          "C65",
+          "1"
+        ],
+        [
+          "C66",
+          "1"
+        ],
+        [
+          "C67",
+          "1"
+        ],
+        [
+          "C68",
+          "1"
+        ],
+        [
+          "C69",
+          "1"
+        ],
+        [
+          "C70",
+          "1"
+        ],
+        [
+          "C71",
+          "1"
+        ],
+        [
+          "C72",
+          "1"
         ]
       ]
     },
@@ -7814,6 +8868,10 @@
         [
           "X8",
           "60"
+        ],
+        [
+          "C33",
+          "1"
         ]
       ]
     },
@@ -7836,6 +8894,14 @@
         [
           "X8",
           "59"
+        ],
+        [
+          "R19",
+          "1"
+        ],
+        [
+          "C32",
+          "1"
         ]
       ]
     },
@@ -7846,9 +8912,101 @@
         [
           "D1",
           "11"
+        ],
+        [
+          "R19",
+          "2"
+        ],
+        [
+          "VD5",
+          "2"
         ]
       ],
-      "_note": "8080 pin 11 -5V, derived on-board from -12V (R19 470 + VD; passives TODO) - 1-node until then"
+      "_note": "-5V for D1.11 derived from -12V: R19 dropper + VD5 zener [scan parts, assumed topology]"
+    },
+    "RES_RC": {
+      "src": "scan",
+      "nodes": [
+        [
+          "R3",
+          "2"
+        ],
+        [
+          "C1",
+          "1"
+        ],
+        [
+          "R4",
+          "1"
+        ],
+        [
+          "S1",
+          "1"
+        ]
+      ],
+      "_note": "reset RC node [node split assumed]"
+    },
+    "RESIN": {
+      "src": "scan",
+      "nodes": [
+        [
+          "R4",
+          "2"
+        ],
+        [
+          "C21",
+          "1"
+        ],
+        [
+          "R20",
+          "1"
+        ],
+        [
+          "D13",
+          "5"
+        ]
+      ]
+    },
+    "VID_MIX1": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D37",
+          "11"
+        ],
+        [
+          "R38",
+          "1"
+        ]
+      ]
+    },
+    "VID_MIX2": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D35",
+          "4"
+        ],
+        [
+          "R39",
+          "1"
+        ]
+      ],
+      "_note": "D35 video section pin (not in CLK_PHASE pinmap -> LVS-invisible by design)"
+    },
+    "NODE_A": {
+      "src": "scan",
+      "nodes": [
+        [
+          "R38",
+          "2"
+        ],
+        [
+          "R39",
+          "2"
+        ]
+      ],
+      "_note": "analog video summing node A; D34.13 + R61/R90/R91/VT1 join when D34/video stage is modeled"
     }
   }
 }

@@ -20,6 +20,29 @@ FP = {
     'SYS8238':'DIP-28_W15.24mm', 'EPROM8K':'DIP-28_W15.24mm', 'USART8251':'DIP-28_W15.24mm',
     'PIC8259':'DIP-28_W15.24mm', 'PIT8253':'DIP-24_W15.24mm', 'BUF8286':'DIP-20_W7.62mm',
 }
+SHARED = "/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/SharedSupport/footprints/"
+PASSIVE_FP = {
+    'R_AXIAL': ('Resistor_THT.pretty',  'R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal'),
+    'C_KM':    ('Capacitor_THT.pretty', 'C_Disc_D4.7mm_W2.5mm_P5.00mm'),
+    'C_ELEC':  ('Capacitor_THT.pretty', 'CP_Radial_D5.0mm_P2.00mm'),
+    'D_DIODE': ('Diode_THT.pretty',     'D_DO-35_SOD27_P7.62mm_Horizontal'),
+    'SW':      ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),
+}
+# traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
+PASSIVE_PLACE = {
+    'R19':(100,273,90),'VD5':(96,272,90),'C31':(78,272.5,0),'C32':(84,272.5,0),'C33':(90,272.5,0),
+    'R3':(23,214,0),'R4':(34,214,0),'R20':(45,214,0),'C21':(53.5,214,0),'C1':(60,214,0),'S1':(67,214,0),
+    'R38':(245,204,90),'R39':(245,217,90),
+}
+_DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
+        (22,109,0),(64,109,0),(106,109,0),(148,109,0),
+        (35,124,0),(23.5,176,90),(189,124,0),(212.5,86,90),(245,260,0),(162,44,0),
+        (214,272,0),(271,252,0),(271,238,0),
+        (55,51,0),(113,51,0),(68,127,0),(143,127,0),(97,203,0),(84,203,0),(111,203,0),
+        (277,147,0),(259,176,90),(274,221,90),(142,273,0),(197,273,0),(207,54,90),(228,103,90),
+        (199,190,90),(199,217,90),(199,242,90)]
+for _i, _xy in enumerate(_DEC): PASSIVE_PLACE[f'C{35+_i}'] = _xy
+
 def dip_for(n):                       # smallest standard DIP that holds n pins
     for s in (14,16,18,20,24,28,40):
         if n <= s: return f"DIP-{s}_W{'15.24' if s>=24 else '7.62'}mm"
@@ -126,6 +149,30 @@ def main():
     board = pcbnew.BOARD()
     placed, n_pads = {}, 0
 
+    def add_passive(ref, x, y, rot=0):
+        nonlocal n_pads
+        c = chips[ref]; typ = c['type']
+        lib, fpn = PASSIVE_FP[typ]
+        fp = pcbnew.FootprintLoad(SHARED + lib, fpn)
+        if fp is None: raise RuntimeError(f"no passive footprint {fpn} for {ref}")
+        fp.SetReference(ref); fp.SetValue(c.get('value', ''))
+        fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+        if rot: fp.SetOrientationDegrees(rot)
+        board.Add(fp); placed[ref] = fp; n_pads += fp.GetPadCount()
+        ctr = fp.GetBoundingBox(False, False).GetCenter()          # re-center on (x,y)
+        fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
+        CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
+        show_val = not (typ == 'C_KM' and ref.startswith('C') and c.get('value') == '0,047')
+        for t, sz, dy in ((fp.Reference(), 1.1, -2.6), (fp.Value(), 0.9, 2.4)):
+            t.SetVisible(t is fp.Reference() or show_val)
+            t.SetLayer(pcbnew.F_SilkS)
+            t.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(sz), pcbnew.FromMM(sz)))
+            t.SetTextThickness(pcbnew.FromMM(0.2))
+            t.SetHorizJustify(CTR_H); t.SetVertJustify(CTR_V)
+            try: t.SetTextAngle(pcbnew.EDA_ANGLE(0, pcbnew.DEGREES_T))
+            except Exception: t.SetTextAngle(0)
+            t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y + dy)))
+
     def add_chip(ref, x, y, rot=0):
         nonlocal n_pads
         c = chips[ref]; typ = c['type']
@@ -196,12 +243,17 @@ def main():
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
-        if chips[ref]['type'] in CONN: continue
+        t = chips[ref]['type']
+        if t in CONN: continue
+        if t in PASSIVE_FP:
+            if ref in PASSIVE_PLACE:
+                x, y, rot = PASSIVE_PLACE[ref]; add_passive(ref, x, y, rot)
+            continue
         if ref in PLACE:
             x, y, rot = PLACE[ref]; add_chip(ref, x, y, rot)
     col = 0
     for ref in sorted(chips):
-        if chips[ref]['type'] in CONN or ref in PLACE: continue
+        if chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP or ref in PLACE: continue
         add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
         if col == 8: col = 0; row += 1
 

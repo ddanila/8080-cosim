@@ -153,3 +153,20 @@ Routing: 4 D24→X1 links (-ADRC..F, cols 117/118) failed deterministically acro
 escapes** laid on the empty board (collision-free by construction) in the generator; the router works
 around them. +1 GND link hand-laid (D43.7→D42.7, empty B.Cu band, no vias). Final:
 **1052/1052 connections, 0 electrical DRC violations** (silk cosmetics + lib-footprint nits remain).
+
+## PASSIVES Stage 1 (2026-07) — 51 components netted + routed
+Parallel/tap networks (LVS-invisible by the ≥2-mapped-endpoint rule — series parts in LVS nets like
+R36/R37 in Φ1/Φ2 are DEFERRED, they'd split checked nets):
+- **-5V derivation**: R19 470 (-12→) + VD5 zener → completes M5V_DERIVED to D1.11 [scan parts]
+- **Reset network**: R3/R4/R20/C1/C21 + S1 (the front-bracket RESET button, per owner photo) → D13.5
+- **Bulk caps** C31-C33 at X8; **video-mix** R38/R39 into NODE_A (R61/R90/R91/VT1/VD4 defer to D34 stage)
+- **Decoupling C35-C72** (38, BOM count) on P5V/GND, chip-adjacent positions [assumed]
+Full board now: **138 net-modeled footprints, 1152 connections, routed 100%, 0 electrical DRC**.
+
+## Owner photos of BOARD #2 (ref/photos/juku-pcb-2/, git-lfs) — MAJOR finds
+Second physical board, revision **7.102.158** (vs #1's 7.102.100 — explains its heavier ECO lacing):
+1. **К155РЕ3 (8904) IS SOCKETED** (blue socket, top-center) → **the V3-gating timing PROM can be
+   dumped!** Also **2× КР556РТ4А socketed** (mid-left) → decode-PROM contents dumpable.
+2. **X2 = СНП59-30** (short blue, "СНП51-30-25 8903"); X1 = СНП59-96Р ✓ — connector set complete.
+3. Front bracket: **RESET pushbutton (S1)** + **VIDEO BNC** + DB-style tape/serial connector.
+4. This board: one ЛЕ4 missing, electrolytics cut (use board-#1 photo for caps). DRAM bank unpopulated.
