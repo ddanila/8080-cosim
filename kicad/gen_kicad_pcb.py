@@ -32,17 +32,17 @@ PASSIVE_FP = {
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
-    'R19':(100,273,90),'VD5':(96,272,90),'C31':(78,272.5,0),'C32':(84,272.5,0),'C33':(90,272.5,0),
+    'R19':(60,272,90),'VD5':(55,271,90),'C31':(86,257,0),'C32':(92,257,0),'C33':(98,257,0),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
     'R3':(23,214,0),'R4':(34,214,0),'R20':(45,214,0),'C21':(53.5,214,0),'C1':(60,214,0),'S1':(67,214,0),
     'R38':(245,204,90),'R39':(245,217,90),
-    'Z1':(71,263,90),    # РК-171 crystal, D59/caps corner [photo: 'Д1' stamp]; pulled left -- the HC49 stand-in footprint is wider than the РК-171 can
+    'Z1':(78,271,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
         (35,124,0),(23.5,176,90),(189,124,0),(212.5,86,90),(245,260,0),(162,44,0),
         (214,272,0),(271,252,0),(271,238,0),
         (55,51,0),(113,51,0),(68,127,0),(143,127,0),(97,203,0),(84,203,0),(111,203,0),
-        (277,147,0),(259,176,90),(274,221,90),(142,267.5,0),(197,267.5,0),(207,54,90),(228,103,90),   # C66/C67 up with the bottom row (was y=273, overlapped the moved D42/D58)
+        (277,147,0),(259,176,90),(274,221,90),(142,261.5,0),(197,261.5,0),(207,54,90),(228,103,90),   # C66/C67 up with the bottom row (was y=273, overlapped the moved D42/D58)
         (199,190,90),(199,217,90),(199,242,90)]
 for _i, _xy in enumerate(_DEC): PASSIVE_PLACE[f'C{35+_i}'] = _xy
 
@@ -123,12 +123,12 @@ PLACE = {
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(277,155,90),'D38':(251,176,0),'D39':(280,176,0),   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D36':(253,200,180),'D33':(277,200,180),'D35':(266,221,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
-    'D59':(112,275,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
+    'D59':(105.5,267.5,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
     'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
-    'D42':(142,275,90),'D43':(170,275,90),'D58':(197,275,90),
+    'D42':(142,269,90),'D43':(170,269,90),'D58':(197,269,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
     'D37':(265,200,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
     'D13':(30,223,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }

@@ -628,3 +628,19 @@ delivered more than Z1's spot:
   is fatter than the РК-171 can and collided with the assumed grid at the photo-true spot).
 - Route v40: 1151/1151, 0 unconnected, 0 electrical DRC (the Z1 insertions cost three lottery
   rolls: BA0/MA7+ADRB/DB2+ADR1 came up short on v37-v39; v40 clean).
+
+## Iteration 50 — photo-1 Y-SCALE bug found (9.50 not 9.87); corner re-laid, bottom row -6mm
+Root-cause of the recurring photo-1 y-drift: **the y-scale is 9.50 px/mm (board spans 2528 px over
+266 mm), not the 9.87 px/mm x-scale** I'd been using for both axes. Every photo-1-derived y was
+inflated by ~4% (growing toward the bottom edge; the earlier "top-region compression" story was
+this same bug seen from the other end). Method rule: measure y EDGE-RELATIVE with the local scale,
+or use 9.50 globally; x keeps 9.87.
+Fixes applied (edge-relative, straight-on corner crop):
+- **Corner cluster re-laid to photo-true spots**: Z1 crystal (78,271) — where the assumed C31-33
+  grid used to squat; D59/ЛН1 (105.5,267.5) (was (112,275), 7 mm off); C31-33 -> (86-98, 257);
+  R19/VD5 -> the left-edge cluster (60/55, ~272). The trimmer (8811 disc) still needs a footprint.
+- **Bottom row -6 mm**: D42/D43/D58 y=269 (pads at 265.2/272.8, ~15 mm body-to-edge — matches the
+  photo margin better than the earlier 275), C66/C67 follow at 261.5.
+- NOT touched: D26/D54/PIT stack (drawing-derived, not photo-1-derived; their earlier photo
+  "confirmations" used the buggy scale and are hereby demoted to unverified).
+Route v41: 1151/1151, 0 unconnected, 0 electrical DRC, first roll.
