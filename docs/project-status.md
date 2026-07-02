@@ -214,3 +214,26 @@ glue: bus transceivers (3×ВА86+4×ВА87+170-series), the video chain (ИР16
 the 2 РЕ3, and misc gates. **Converging to 76 is now purely additive** (trace each cluster
 from the archive schematic + placement drawing → add with scan provenance) — the next
 structural sub-passes, which also produce the full Phase-B BOM.
+
+## PCB track status (2026-07-03) — Phase B substantially complete
+The physical-board recreation caught up with (and fed back into) the netlist track:
+- **Board fully placed and routed**: 162 real footprints, **0 placement outlines left** — every
+  BOM IC + connectors (X1 СНП59-96 / X2 / X3 / X8 / X9) + passives stage 1 + Z1 РК-171 crystal +
+  CT1 trimmer. 2-layer (authenticity call), 310×266 mm, 0.25 mm clearance, **1151/1151 connections,
+  0 unconnected, 0 electrical DRC**; power nets widened to ≤1.0 mm (geometric method,
+  `kicad/widen_power_v2.py`). Gerbers + drill export clean (`kicad/export_fab.sh`).
+- **Placement is photo-verified** against the owner's board-#2 photos (22, git-lfs), with two
+  systematic calibration bugs found and fixed along the way (photo-1 y-scale 9.50 vs 9.87 px/mm;
+  the "10xx = 8x01 upside-down" date-code rule). The ВГ93 quadrant follows the owner's
+  authoritative 4-row layout; its refdes are provisional pending etch reads (incl. AG3B/AG3C).
+- **Bodge-wire triage complete at photo level** (`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`, 53
+  iterations): the top-bracket looms (X3/X4/BNC/RESET) classified LEGIT; the ECO set is confined
+  to the clock/timing harnesses — story: **Φ2 tap (E18, etched net "2") → D37 spare NAND (E1/E2)
+  → frame-int/STB corner (E7)**, plus H1 = net-11 (CLKG_D36) ↔ ВК38 zone (E15), H2 = cut
+  (reverted patch?). 18 endpoints cataloged; **beeper session sheet v2** (7 priority pairs) is the
+  closing step — owner-gated, as are the РЕ3/РТ4/2764 dumps and 3 eyeball IDs (row-3 "АП3"=СА3?,
+  quadrant etch refdes, the X9-corner TO-126 transistor).
+- **freerouting toolchain hardened**: PolylineTrace.combine infinite recursion root-caused and
+  fixed on the fork's `custom` branch (ddanila/freerouting, rebased on master); the silent
+  GUI-persisted `max_passes=20` cap and the hand-pre-route livelock class are documented in the
+  triage log. Renders auto-refresh on commit (`.githooks/pre-commit` → `renders/`).
