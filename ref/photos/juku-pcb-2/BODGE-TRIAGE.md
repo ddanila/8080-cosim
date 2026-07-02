@@ -269,3 +269,22 @@ Full-board photo right edge: **К53-series tantalum/oxide cans: 47µF/6.3V (+22�
 0.22µ?/...)** — these are the "cut caps" survivors on board #2's edge; values feed the passives
 ledger for stage 2 (bulk/rail caps beyond C31-C33). Baud-row chip ID attempt missed (photo-1 frame
 calibration off — the baud row needs a re-crop next pass).
+
+## Iteration 28 — right-side region mapped: КП12 ×2 LOCATED, D106=К155АГ3, 4-row grid
+The re-crop (native +2650+620 / +1080, the "baud row" calibration fix) resolves the whole
+right-side glue region into four chip rows (model-frame mm, ±4):
+- **y≈70**: К555ИЕ7 (~x257, 8908), ?555ЛН5? (~x273, behind the video cable), КМ555ТМ2 (~x285, 8905)
+- **y≈89**: **К555КП12 (~x253, 8912)** + two chips hidden behind the cable (~x274, ~x285)
+- **y≈105**: **К555КП12 #2 (~x245)**, К155АГ3 (~x270, 8901), **К155АГ3 = D106 (~x297, 8901,
+  label-down)** — lands exactly in the D106 outline → converted to an untraced footprint (rot 180)
+- **y≈127**: КР531/К555ИЕ17 (~x256) — CT16 counter territory
+So: both un-modeled **К555КП12 muxes are now physically located** (nets still untraced); a SECOND
+АГ3 exists at ~(270,105) — candidates for its refdes: D100 (TBD in this exact region) or a
+D56 relocation (D56=АГ3 is net-modeled at (302,200), but the photo shows ИЕ10+ЛУ? there, not АГ3 —
+suspicious, needs the drawing re-read before touching a net-modeled chip). D101/D102 outlines
+(y=82) sit between photo rows 70/89 — held as outlines until an etch-refdes read pins them.
+**New endpoint E9**: a white lacing wire crosses the y≈89 КП12 and terminates at a solder cone
+~(240.5, 101.4) just NW of it — log for the multimeter session (likely legit video/socket lacing,
+but it now has a coordinates entry).
+Board-frame note: photo x reads ~4 mm left of model coords on the right half (perspective);
+y-rows 55/70/89/105/127 vs model boxes 55/82/108 — the 82-row assignment was the earlier miss.
