@@ -499,3 +499,19 @@ Confidence: ● solid solder cone read · ◐ medium (dull joint / tinned end) �
 7. E5 ↔ E10 — the serial/FDC band wire (legit wiring hypothesis)
 Every confirmed pair = one complete wire → diff vs board.json → absorb / add `[photo-traced ECO]`
 behind LVS / mark legit. РЕ3/РТ4/2764 dumps (docs/prom-dump-procedure.md) close the rest.
+
+## Iteration 41 — CORRECTION: D35.14 is VCC, not Φ2; the Φ2 tap is E18 (net-2 via)
+Cross-check against board.json (LVS-verified, the source of truth) while closing the ЛА18/ЛН2
+queue item: **D35 pins are Φ1=10, Φ2=12, OSC=11, Φ2TTL=13, GND=7, VCC=14**. Iteration 38 misread
+the transcription's "(pin 12 → R36 360 → pin 14)" — pin 14 is +5V, so:
+- **E16/E17 (drops at D35's pin-14 corner) are most likely +5V pickups** (ECO pull-up/supply
+  stitches), not phase taps. Beep them against P5V first.
+- **E18 (cone on via etched "2", ~(272,222)) becomes the Φ2 tap candidate** — and geometry backs
+  it: the Φ2 copper (D35.12 → D53.3 at (253,225)) passes exactly through that zone, and "2" as
+  Φ2's schematic net number fits the low-numbered CPU-cluster nets (net 11 = CLKG_D36 precedent).
+- Revised priority pair #1: **E18 ↔ E1/E2** (Φ2 into the spare NAND); E16/E17 ↔ P5V as check #0.
+- The transcription line in clock-subsystem.md ("→ pin 7"/"→ pin 14") is ambiguous shorthand —
+  flagged for a re-read; board.json remains authoritative (Φ1/Φ2 nets verified by LVS + boot).
+ЛА18/ЛН2 queue status: D12 (ЛА18) section 1/2→3 drives S_OC→X3.32; D3 (ЛН2) 11→10 drives
+S_TTL→X3.23; both already net-modeled and LVS-green — the "connectivity" item is CLOSED at the
+modeled-section level (spare sections of both remain unmapped, as on the schematic).
