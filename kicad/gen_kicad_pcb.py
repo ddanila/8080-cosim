@@ -325,6 +325,8 @@ def main():
         'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
         'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 2nd bus buffer, stacked below D4 [photo 201940304: ВА86 x2 8901; user-confirmed same-as-neighbor]
         'D9':   ('DIP-16_W7.62mm', 'К555ИД7',    122, 136, 90), # 3-to-8 decoder, bus band between D8 and D7 [owner-identified]
+        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # quad NAND, lower-left column below D30/D13 [owner-identified]
+        'D41':  ('DIP-16_W7.62mm', 'К555ИР16',   255, 155, 270),# shift register, paired with D40 [owner ID + photo 8902 DIP-16 label-down; x=255 clears the D60 DRAM column]
         'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    296, 82, 0),   # tape shifter [sheet 3 + baud-row box; 301->296: match right-column edge margin]
         'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [emaplaat label + owner's decapped chip]; likely the real Φ1/Φ2 phase generator core
         'D106': ('DIP-14_W7.62mm', 'К155АГ3',    297, 108, 180),# one-shot [photo 8901, label-down]; 2nd АГ3 at ~(270,105) + КП12 x2 at ~(245,105)/(257,89) await refdes
@@ -431,15 +433,18 @@ def main():
     # (converted to untraced footprints)
     # top band row @ y≈55 (reliable tight-crop read: pitch 16, incl. D28). Corrects an earlier
     # y40/cramped placement of this row that came from a lower-res crop.
-    for cx, ref in [(263, 'D95'), (277, 'D94'), (293, 'D98'), (307, 'D96')]:   # (D28/D97 -> footprints; D95 nudged +2)
+    for cx, ref in [(263, 'D95'), (277, 'D94')]:   # (D28/D97 -> footprints; D95 nudged +2)
         silk_box(cx - 5, 42, cx + 5, 68, ref)
+    # D98/D96: HORIZONTAL per the real photo (owner call -- drawing showed them vertical; the
+    # photo's top-right corner there is the bracket notch, so vertical boxes can't fit anyway).
+    # Exact centers pending a clean corner crop; D96 pulled left of the 310 edge.
+    silk_box(283, 51, 303, 59, 'D98')
+    silk_box(288, 61, 308, 69, 'D96')
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
     # (D107 -> untraced КР580ВА86 footprint, the 2nd of the photo's stacked ВА86 pair)
     # lower-left corner (read off the drawing): D30/D13/D105 = a horizontal column at x≈30; D52
-    # vertical at x≈59. (Corrects earlier D30 orientation + D52 y, and adds D13/D105.)
-    for y0, ref in [(236, 'D105')]:   # (D13/D30 now footprints)
-        silk_box(20, y0, 40, y0 + 8, ref)
+    # vertical at x≈59. (D13/D30/D105 all -> footprints now.)
     # (D52 -> untraced footprint)
     # baud-rate chain re-read from a tight crop: a row at y≈82 (BELOW the y55 band, not the y54 I
     # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
@@ -451,7 +456,7 @@ def main():
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
-    silk_box(245, 151, 259, 159, 'D41')   # (D34/D37 -> footprints)
+    # (D41 -> untraced К555ИР16 footprint, owner-identified; D34/D37 -> footprints)
     # (D92 -> untraced К555ЛЕ4 footprint; likely the REAL Φ1/Φ2 phase generator core (cross-coupled
     # NORs) -- nets to trace, then net-model)
     # (D25/D23/D24/D29 bus transceivers are now net-modeled footprints -- see PLACE -- not outlines.)

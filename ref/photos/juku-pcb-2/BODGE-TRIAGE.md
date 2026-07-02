@@ -329,3 +329,18 @@ Photo 7 full-res at the harness junction (the big verdigris'd lash, board ~(245,
   (ALS vs LS: faster edges, ~1/3 the power); electrically drop-in for the recreation, so only the
   silk MARK changes. Pattern now: ALL three ЛА3s outside the CPU cluster (D7/D37/D39) are 1533 on
   board #2 — consistent with a late-80s production run preferring ALS.
+
+## Iteration 32 — owner ID batch: D105/D41 converted; D98/D96 flipped horizontal
+- **D105 = К155ЛА3** (owner) → untraced footprint at (30,240), lower-left column.
+- **D41 = К555ИР16** (owner; photo confirms 8902, DIP-16, label-down) → untraced footprint at
+  (255,155) next to D40 — matches the survey's earlier "К555ИР16 8902 in the clock corner" sighting.
+  First placement (252) clashed with D60's DRAM pads; 255 clears it.
+- **D98/D96 orientation: HORIZONTAL per the real photo** (owner call). Bonus finding from the corner
+  crops: the top-right corner at (290+, <50) is the bracket NOTCH (RESET/ОТК switch sits in it), so
+  the drawing-derived vertical boxes at y42-68 physically can't be right. Exact centers still need a
+  clean corner crop; boxes provisionally at (293,55)/(298,65).
+- Top-band reality check (photo 6, reliable frame): D28 РЕ3 (225,56) ✓, D97 ВА87 8804 (247,52) ✓,
+  vertical trio at x≈258/272/285 y≈57-80 (ИЕ7 / ЛН3-or-ЛП1 / ТМ2 reads) — candidates for
+  D95/D94/D98 or D102/D101; etch "18" near (285,40). One clean zoom of the (272,70) chip decides.
+- Route v18: 1151/1151, 0 unconnected, 0 electrical DRC (PHI1 healed by the re-route; v15's
+  finishing-pass experiment on an already-routed DSN did NOT complete the link — full re-route did).
