@@ -135,3 +135,11 @@ Photo 6 (top-center bracket zone):
   КМ53 47µ/6.3V electrolytic (survivor).
 - H1's left run rises toward ВВ51А/УП2 — candidate solder cone left of ВВ51А (one more crop to
   confirm as H1-endpoint-A).
+
+## Iteration 11 — ЛА18 = DIP-8 confirmed; H1-A continues below frame
+- **К155ЛА18 8801 = DIP-8** (clear view) — consistent with the power table (8/4) and our D12 model.
+- **АП2 pinout question**: the АП2 body looks compact (8-pin-ish) but the schematic explicitly uses
+  pin 11 for D3's section → keeping DIP-14; verify from a better angle later. (Our АП2 section pins
+  are marked [assumed] already.)
+- **РЕ3 #1 appears loosely seated** in its blue socket — trivial to pull for dumping.
+- H1-A: the wire rounds ЛА18 and exits the frame bottom — endpoint one crop lower (next).
