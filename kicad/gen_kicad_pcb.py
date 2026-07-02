@@ -338,17 +338,17 @@ def main():
         # (nearest drawing-box match; the drawing's layout differs here -- etch reads will settle):
         # row 1 (y52, horiz): D28 РЕ3 ✓, D97 ВА87 ✓, then:
         'D95':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90), # hex buffer [iter-33 zoom: 8904, horizontal]
-        # row 2 (y70, vertical):
-        'D94':  ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 70, 0),  # counter [photo 8908]
-        'D102': ('DIP-14_W7.62mm', 'К155ЛН3',    272, 70, 0),  # hex inv [owner: ЛН3; matches iter-10 К155ЛН3 sighting]
-        'D101': ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 70, 0),  # dual D-FF [photo 8905; owner wrote ТМ3 -- ТМ2 per label]
-        # row 3 (y89, horiz):
-        'D98':  ('DIP-16_W7.62mm', 'К555КП12',   268, 89, 90), # mux #1 [photo 8812]
-        'D96':  ('DIP-14_W7.62mm', 'К155АГ3',    288.5, 89, 90), # [owner: "АП3", behind cable -- АГ3 assumed, verify]
-        # row 4 (y122, horiz, below D93's pin field):
-        'D100': ('DIP-16_W7.62mm', 'К555КП12',   243, 124, 90),# mux #2 [photo 8812]
-        'AG3B': ('DIP-14_W7.62mm', 'К155АГ3',    295, 124, 90),# one-shot [photo 8901, label-down]; refdes UNKNOWN -- was provisionally 'D106', but scan-verified D106 = К554СА3 tape comparator (tape-serial.md) owns that number
-        'AG3C': ('DIP-14_W7.62mm', 'К155АГ3',    268, 124, 90),# row-4 middle АГ3 (owner's layout); refdes unknown -- NOT D56 (that one is at its drawn (302,200) spot, photo-confirmed)
+        # row 2 (y96, vertical; photo-6 grounded -- photo-1's top-region compression had put the whole ladder ~25 mm too high):
+        'D94':  ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 96, 0),  # counter [photo 8908]
+        'D102': ('DIP-14_W7.62mm', 'К155ЛН3',    272, 96, 0),  # hex inv [owner: ЛН3; matches iter-10 К155ЛН3 sighting]
+        'D101': ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 96, 0),  # dual D-FF [photo 8905; owner wrote ТМ3 -- ТМ2 per label]
+        # row 3 (y115, horiz):
+        'D98':  ('DIP-16_W7.62mm', 'К555КП12',   268, 115, 90), # mux #1 [photo 8812]
+        'D96':  ('DIP-14_W7.62mm', 'К155АГ3',    288.5, 115, 90), # [owner: "АП3", behind cable -- АГ3 assumed, verify]
+        # row 4 (y132, horiz, below D93's pin field):
+        'D100': ('DIP-16_W7.62mm', 'К555КП12',   242, 131, 90),# mux #2 [photo 8812]
+        'AG3B': ('DIP-14_W7.62mm', 'К155АГ3',    295.5, 132, 90),# one-shot [photo 8901, label-down]; refdes UNKNOWN -- was provisionally 'D106', but scan-verified D106 = К554СА3 tape comparator (tape-serial.md) owns that number
+        'AG3C': ('DIP-14_W7.62mm', 'К155АГ3',    268, 132, 90),# row-4 middle АГ3 (owner's layout); refdes unknown -- NOT D56 (that one is at its drawn (302,200) spot, photo-confirmed)
         'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():

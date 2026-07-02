@@ -589,3 +589,15 @@ branch (rebased on master) carries the combine guard + patience tuning for futur
   under the black video cable. ИР9 (D99) likely cohabits with it.
 - **LVS: IN SYNC (86 mapped); boot_check: PASS (all 6 guards)** — re-verified after the v33 board
   state; no netlist change in iterations 39-46, invariants hold.
+
+## Iteration 47 — quadrant y-ladder corrected +25 mm (photo-6 grounded); v36 route clean
+Row-3 hunt crop delivered a calibration catch instead: **К155ЛН3 8904 + КМ555ТМ2 8905 sit at
+y≈90-103** (photo 6, scale verified against D28 and D93's pin field), not y≈70 — photo-1's
+top-region compression had the whole quadrant ladder ~25 mm too high. The rows now sit BESIDE
+ВГ93, which also matches the owner's "chips around ВГ93" description better. Re-laddered:
+row 2 (D94/D102/D101) y=96 · row 3 (D98/D96) y=115 · row 4 (D100/AG3C/AG3B) y=131-132.
+ЛП11 (D95, y≈67) was direct-measured and stays. Route v36: 1151/1151, 0 unconnected, 0 electrical
+DRC (BA1 was the new ladder's lottery net for two rolls; a D100 nudge cleared it).
+СА3 hunt round 2: the row-3 "АП3" (cable-hidden, DIP-8-sized) is now the PRIME К554СА3 candidate —
+"АП3" isn't a real part and the tape comparator belongs in exactly this corner. Needs one clean
+read past the cable (owner eyeball or a different-angle shot).
