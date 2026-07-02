@@ -304,3 +304,18 @@ Photo 6 full-res, the wire-run band between ВН59 (D10) and ВГ93 (D93):
 - **D107 resolved = КР580ВА86** (converted to an untraced footprint at (57,185)): the angled CPU
   photo (201940304) shows TWO stacked ВА86 8901 — D4 is one, and the D107 outline sits exactly
   below D4. Credit: owner's "same bus one as one next to it" nudge.
+
+## Iteration 30 — H3 junction crop: D36/D37/D53 placement triple-confirmed; endpoints E11/E12
+Photo 7 full-res at the harness junction (the big verdigris'd lash, board ~(245,195)):
+- **Placement triple-check ✓**: КС531ЛА12 8905 = D36, КР1533ЛА3 8906 = D37 (right of it),
+  К531ИД7 8906 = D53 (below) — all three exactly at PLACE's (253,200)/(265,200)/(253,225).
+- **E11: solder-cone via at ~(249,185)** — a harness wire rises from the lash and terminates on a
+  via in the mesh channel ABOVE D36 (between the D40/D41 divider row and D36). No etch digits
+  legible at this angle; a solder-side read may give the net number (Rosetta method).
+- **E12 (candidate, low-med confidence): joint at D36's bottom-left pin** — green flux residue +
+  metallic blob at the ЛА12's bottom-left pin (= pin 7 = GND given the row's notch-DOWN mounting).
+  If real, likely a harness GROUND stitch, which would fit an ECO carrying a clock-quality signal
+  (twisted/grounded return). Verify by beeper (E12 ↔ GND).
+- The photo-6 "lower wire" (iter 29) merges into THIS harness at the lash → H3 and the serial/FDC
+  band wires are one laced tree; only per-endpoint continuity separates the circuits. Beeper list
+  now E1-E12.
