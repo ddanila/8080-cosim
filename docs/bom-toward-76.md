@@ -110,3 +110,16 @@ PCB placement is *approximate* (parked in the clear band below the DRAM array �
 still holds un-modeled outlines D28/D93/... to place later).
 Guards: LVS **86 instances / 152 matched nets, IN SYNC**; boot_check all byte-identical. PCB: **84
 net-modeled footprints + 20 outlines = 104/~101 positions**.
+
+## ROUTABILITY VALIDATED (2026-07) — the board routes, DRC-clean
+The generated 84-footprint board **fully routes**: freerouting v2.2.4 (Specctra DSN via pcbnew →
+`.ses` import) auto-routed **819/820 connections in 72 s** (3603 tracks + 85 vias, 2 layers); the one
+router-resistant link (MA4 through the congested DRAM-array channel — deterministic plateau across
+runs) was **hand-routed** (a 2-via detour dodging the socket pad columns, PHI1, and the row-4 pad
+row). Final board `kicad/juku_routed.kicad_pcb`: **0 unconnected, 0 electrical DRC violations**
+(remaining 32 = silkscreen cosmetics). Copper-to-edge rule set to 0.3 mm (standard fab capability;
+freerouting hugs the outline and KiCad's 0.5 default flags it — moving routed copper blindly creates
+shorts, learned the hard way). Validation en route also caught **2 real placement shorts**
+(RAM_SEL/MA1: clock column D36/D53 overlapped the bank-1..3 DRAM footprints) — fixed in the generator.
+**What fab still needs (in order): power nets (GND/+5/+12/-5 — the big one), real connector footprints
+(X1/X2/X3/X9 are silk), passives (R/C), then gerbers.**
