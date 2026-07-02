@@ -263,3 +263,9 @@ address path (which of D48-D51 has the К555 one = TBD; marks left as-is until p
 a possible КР531ЛИ1(?) 8809 (a type we don't model), РЕ3 #2 + РТ4 ×2 socketed (again), and the
 **РК-171 8903 crystal + trimmer at the D59 corner** ("Д1" ink stamp, "05-9-6(1)") — Z1's physical
 spot for the future crystal footprint (passives stage 2).
+
+## Iteration 27 — right-edge electrolytic values read (passives ledger)
+Full-board photo right edge: **К53-series tantalum/oxide cans: 47µF/6.3V (+22µF/16V nearby, К53-18В
+0.22µ?/...)** — these are the "cut caps" survivors on board #2's edge; values feed the passives
+ledger for stage 2 (bulk/rail caps beyond C31-C33). Baud-row chip ID attempt missed (photo-1 frame
+calibration off — the baud row needs a re-crop next pass).
