@@ -63,3 +63,18 @@ NOR at ~(270,176), inside the clock mesh** — cross-coupled NORs being the cano
 generator, D92 is the prime suspect for the REAL Φ1/Φ2 circuit our clk_phase abstracts. Added as a
 placement outline; its nets are the top tracing target (photos + РЕ3 dump together = the full real
 clock). Chip count: the populated board has ≥105 ICs (D92 + КП12×2 join the ~101 estimate).
+
+## Iteration 4 — H3 endpoints pin-read: D37 pin 8 (spare section) + the FRAME INT corner
+Tight crop (photo 2, D35/D57 region):
+- **H3 wire #1 solders at D37 pin 8** — the OUTPUT of D37's spare ЛА3 section (pins 8/9/10 are
+  unconnected in our netlist!). Classic factory-ECO pattern: route the fix through an unused gate.
+  → H3 is **class (b): post-schematic ECO**, and its logic likely runs THROUGH D37's second section.
+- **H3 wire #2** solders at the adjacent pad; its trace runs down the long vertical toward the
+  test-post area.
+- **Test posts "1"/"2" correction:** they sit on the **FRAME INT path** — D35 pin 8 → post → **R60
+  5К1 (5.1k)** → toward D57 (ВИ53) — matching the schematic's "FRAME INT (1)" + R60 5,1к read
+  (dram-video-timing.md), NOT Φ1/Φ2 as guessed in iteration 1. The VT + VD network below = the
+  frame/video pulse shaping. **The factory ECO cluster is tuning the frame-interrupt/video timing —
+  the exact circuit our sim treats as the `frame_tick` boundary.**
+Remaining for H3: the far (left) ends across the РУ5 row; wire #2's destination; D37.9/10 (the spare
+section's INPUTS) sources.
