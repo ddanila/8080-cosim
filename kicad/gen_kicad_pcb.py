@@ -75,7 +75,7 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(247,225,0),'D103':(294,200,0),'D56':(305,200,0),   # D53 +3mm right to clear the DRAM right column
+    'D53':(253,225,0),'D103':(291,200,0),'D56':(302,200,0),   # D53 +3mm right to clear the DRAM right column
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
@@ -86,13 +86,13 @@ PLACE = {
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
-    'D36':(247,200,0),'D33':(277,200,0),'D35':(263,221,0),   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
+    'D36':(253,200,0),'D33':(277,200,0),'D35':(266,221,0),   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(112,281,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
     'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
     'D42':(142,281,90),'D43':(170,281,90),'D58':(197,281,90),
-    'D37':(261,200,0),   # ЛА3 D42-serial inverter (net-modeled this session), between D36/D33
+    'D37':(265,200,0),   # ЛА3 D42-serial inverter (net-modeled this session), between D36/D33
     'D13':(30,223,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their

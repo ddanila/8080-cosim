@@ -1,55 +1,47 @@
-# Build / sim artifacts
-obj_dir/
-*.o
+
+__pycache__/
+_autosave-*
+!ref/schematics/*.png
+.DS_Store
+.venv/
+*-bak
+*.000
 *.a
-*.out
-*.vcd
+*.bak
 *.fst
 *.json.bak
-
-# Verilator/Yosys generated
-V*.cpp
-V*.h
-*.mk
-
-# KiCad backups & autosave
-*-bak
-*.bak
 *.kicad_pcb-bak
 *.kicad_sch-bak
-_autosave-*
-fp-info-cache
 *.lck
-*.000
-
-# ROM build intermediates
 *.lst
-*.tmp.hex
-hdl/sim/*.hex
-
-
-# cosim artifacts
-cosim/trace
-vram_*.bin
-/vram.bin
-*.png
-
-# KiCad GUI/local files (the board model is juku.board.json + the generated .kicad_sch)
-kicad/*.kicad_pro
-kicad/*.kicad_prl
-
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
-
-# OS
-.DS_Store
-
-# generated netlists
-hdl/*.json
+*.mk
 *.net.xml
-
+*.o
+*.out
+*.png
+*.pyc
+*.tmp.hex
+*.vcd
+/vram.bin
+# Build / sim artifacts
 # but DO keep schematic source renders
-!ref/schematics/*.png
+# cosim artifacts
+# generated netlists
+# KiCad backups & autosave
+# KiCad GUI/local files (the board model is juku.board.json + the generated .kicad_sch)
+# OS
+# Python
+# ROM build intermediates
+# Verilator/Yosys generated
+cosim/trace
+fp-info-cache
+hdl/*.json
+hdl/sim/*.hex
+juku-drc.rpt
+kicad/*.kicad_prl
+kicad/*.kicad_pro
+obj_dir/
+V*.cpp
+V*.h
+venv/
+vram_*.bin
