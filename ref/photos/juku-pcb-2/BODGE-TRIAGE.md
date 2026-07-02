@@ -644,3 +644,16 @@ Fixes applied (edge-relative, straight-on corner crop):
 - NOT touched: D26/D54/PIT stack (drawing-derived, not photo-1-derived; their earlier photo
   "confirmations" used the buggy scale and are hereby demoted to unverified).
 Route v41: 1151/1151, 0 unconnected, 0 electrical DRC, first roll.
+
+## Iteration 51 — bottom-right stack re-measured on the fixed scale; v46 clean
+Edge-relative re-measure of the D26/PIT corner (photo-1, 9.50 y-scale):
+- **ВИ53 stack pitch 24 mm CONFIRMS the model exactly**; absolute y was ~7-8 mm inflated (same
+  scale-bug family). **D57/D55/D54 -> y 223/245/269, D26 -> (245,265)** — their old positions'
+  photo "confirmations" had used the buggy scale, now genuinely re-verified.
+- C51 (D26's decoupling cap) took four pockets to re-home — the channel above a horizontal DIP-40
+  is too narrow for a disc cap — final spot: (240,278.5), below D26 in the X9 gap.
+- Route v46: 1151/1151, 0 unconnected, 0 electrical DRC. (Lottery casualties along the way:
+  ADRA/MEMR/DOTCLK16M each came up short once on v42-v45 rolls; DOTCLK16M twice — watch it.)
+Un-modeled sighting from the audit crop: a small TO-126-style transistor (КТ815-class?) at
+~(250,240) by the D26 corner — the video/beeper driver VT candidates live elsewhere, so this one
+needs an ID pass; added to the passives-stage-2 list.
