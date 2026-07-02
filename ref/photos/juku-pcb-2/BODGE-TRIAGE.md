@@ -185,3 +185,11 @@ etch (the H3-ECO output) is feasible BUT identifying the right pad pattern in th
 registration better than ±10mm. **Next tool: an overlay** — mirror+scale our board render onto the
 solder photo (anchors: the corner mounting hole, the DRAM-field edge, the thick power buses). That
 also doubles as the first step toward photo-guided routing comparison. Parked as the next interleave.
+
+## Iteration 17 — overlay tool built; first render-vs-real-copper comparison
+`kicad/overlay_photo.py`: mirrors our B.Cu render and affine-warps it onto the solder photo via 3
+board-corner anchors (v2 anchors: 585,299 / 3758,295 / 594,3020 for PXL_..202031273). Registration
+~2-5mm center (perspective residual at edges — local anchors per region when pin-level work needs it).
+First findings from the comparison: the REAL board's solder side favors HORIZONTAL runs where our
+freerouting chose vertical (opposite layer discipline!) — relevant if we ever do photo-guided routing;
+pad-grid alignment is good enough for region navigation (D37 pad hunt now feasible with a local anchor).
