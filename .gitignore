@@ -2,6 +2,7 @@
 __pycache__/
 _autosave-*
 !ref/schematics/*.png
+!renders/*.png
 .DS_Store
 .venv/
 *-bak
