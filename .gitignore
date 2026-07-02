@@ -24,7 +24,6 @@ _autosave-*
 *.vcd
 /vram.bin
 # Build / sim artifacts
-# but DO keep schematic source renders
 # cosim artifacts
 # generated netlists
 # KiCad backups & autosave
