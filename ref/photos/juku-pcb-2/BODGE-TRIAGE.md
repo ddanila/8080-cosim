@@ -193,3 +193,12 @@ board-corner anchors (v2 anchors: 585,299 / 3758,295 / 594,3020 for PXL_..202031
 First findings from the comparison: the REAL board's solder side favors HORIZONTAL runs where our
 freerouting chose vertical (opposite layer discipline!) — relevant if we ever do photo-guided routing;
 pad-grid alignment is good enough for region navigation (D37 pad hunt now feasible with a local anchor).
+
+## Iteration 18 — solder-side etch digits located in the clock zone; local anchors defined
+Affine-computed crop at D37's mirrored position found the zone's etched assembly digits: a "14 7"
+pair (power pins of a DIP-14 ≈ board (248,188) → D38 or D36) and a "1 2" pair (pin-1 mark ≈ board
+(254,214) → D36 or D53). Local registration residual ≈10mm (y) in this zone — too coarse to name
+D37's pin-3 pad honestly. **Overlay v3 plan: use these etch-digit marks as LOCAL anchors** (once
+their chips are pinned by one cross-check), giving ~1mm local registration for the pin-level trace.
+Alternative close-out remains the owner's continuity check. Also re-confirmed: real solder side =
+long horizontal bus runs (flipped discipline vs our route).
