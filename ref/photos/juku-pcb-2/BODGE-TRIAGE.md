@@ -33,3 +33,14 @@ D42/D43 family ✓ · 2× К555КП12 8812 near ВН59 = un-modeled (serial/tape
 Full-res crops (photos are 4000×3000) around each solder joint; wire-color/lacing continuity across
 photos; cross-check against board #1 (rev 7.102.100, lighter ECO set) to split revision-specific
 from universal. Owner multimeter continuity beats photos where wires vanish under lacing.
+
+## Iteration 1 — H3 endpoint read at the ИД7 cluster (full-res crop, photo 2)
+**Correction:** H3's wires do NOT solder to КР531ИД7 (D53) — they pass OVER it; the 4 visible wires
+terminate at solder points on the chip ABOVE (the КР531ЛН1 = D33 region; its pin numbers are outside
+this crop → next crop target). H3 is starting to look like a **clock-mesh ECO set** (D33/D53/D35
+territory), consistent with fixes in the RAS/CAS-phase circuit.
+**Region lock (this crop = our D53/D35/D57/D58 cluster):** КР531ИД7 8906 = D53 ✓; **К155ЛН5 8904 =
+D35** (phase generator — real chip series К155, not К531 as our silk says → mark fix) ✓; ВИ53 = D57 ✓;
+ИР82 top pins = D58 ✓. **Two factory test-pin posts marked "1"/"2" near D35 = Φ1/Φ2 clock test
+points** (with a 5К1 R between); below: VT (dark flat-pack) + grey "В 8Р2" diode + R network = the
+tape/video shaping stage (VT1/VD area of our passives backlog).
