@@ -29,14 +29,14 @@ n = 0
 for t in b.GetTracks():
     if t.GetClass() != 'PCB_TRACK' or t.GetNetCode() not in power_codes:
         continue
-    if t.GetWidth() <= pcbnew.FromMM(0.26):
+    if t.GetWidth() <= pcbnew.FromMM(0.21):
         continue
     s, e = t.GetStart(), t.GetEnd()
     x1, y1 = pcbnew.ToMM(s.x), pcbnew.ToMM(s.y)
     x2, y2 = pcbnew.ToMM(e.x), pcbnew.ToMM(e.y)
     for (cx, cy) in coords:
         if pt_seg(cx, cy, x1, y1, x2, y2) < 2.0:
-            t.SetWidth(pcbnew.FromMM(0.25))
+            t.SetWidth(pcbnew.FromMM(0.2))   # back to freerouting's native width
             n += 1
             break
 pcbnew.SaveBoard(BOARD, b)

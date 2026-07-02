@@ -175,7 +175,9 @@ def main():
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
         show_val = not (typ == 'C_KM' and ref.startswith('C') and c.get('value') == '0,047')
-        for t, sz, dy in ((fp.Reference(), 1.1, -2.6), (fp.Value(), 0.9, 2.4)):
+        flip = (int(round(x)) // 6) % 2 == 1   # stagger labels in dense passive rows (silk polish)
+        for t, sz, dy in ((fp.Reference(), 1.1, 2.6 if flip else -2.6),
+                          (fp.Value(), 0.9, -2.4 if flip else 2.4)):
             t.SetVisible(t is fp.Reference() or show_val)
             t.SetLayer(pcbnew.F_SilkS)
             t.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(sz), pcbnew.FromMM(sz)))
@@ -438,7 +440,7 @@ def main():
         outline_boxes.append((x0, y0, x1, y1, label))
         if label[:1] == 'D': outline_chips.append(label)       # count D-chips only (X1/X2/X9 are connectors)
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
-    silk_box(222, 283, 273, 288, "X9")   # bottom connector (read mm222..273, pins 58..45)
+    silk_box(222, 283, 273, 287.6, "X9")   # bottom connector (read mm222..273, pins 58..45; box held 0.4 off the edge cut for silk-edge DRC)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
     # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the
     # 8-EPROM bank visually (same row y86, ~21 mm pitch). Not in board.json -> LVS unaffected.

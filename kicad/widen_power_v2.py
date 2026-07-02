@@ -14,7 +14,7 @@ BOARD = sys.argv[1]
 POWER = {'GND', 'P5V', 'P12V', 'M12V', 'M5V_DERIVED'}
 MIN_CLEAR = pcbnew.FromMM(0.26)     # a hair over the 0.25 rule for numeric safety
 W_MAX = pcbnew.FromMM(1.0)
-W_MIN = pcbnew.FromMM(0.25)
+W_MIN = pcbnew.FromMM(0.20)   # freerouting's native routed width
 GAIN_MIN = pcbnew.FromMM(0.10)      # don't bother widening by less than this
 
 b = pcbnew.LoadBoard(BOARD)

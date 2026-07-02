@@ -678,3 +678,13 @@ the other's OLD width (repair pass catches it); (2) RECT pin-1 pad corners excee
 circumscribed max(w,h)/2 radius (use the diagonal); (3) freerouting emits 0.2 mm NECKDOWNS near
 tight pads -- a repair that "narrows to 0.25" can actually widen those (re-neck to 0.2).
 The DRC-count-broken widen_power.py (parked since the first attempt) is deleted.
+
+## Iteration 54 — gerber dry-run + status snapshot + silk polish + width-model fix
+- Gerbers/drill export clean on the final board; docs/project-status.md got a dated PCB-track
+  snapshot (Phase B substantially complete).
+- Silk polish: passive labels stagger in dense rows; the X9 silk box pulled 0.4 mm off the edge
+  cut (silk_edge_clearance resolved).
+- Width-model correction: freerouting's native routed width is **0.2 mm** (not 0.25) — the earlier
+  "neckdown" story was a misread of that. widen_power_v2/narrow_at_violations now use 0.2 as the
+  floor/repair target; rebuilt pipeline: 602/865 power segments widened, one repair pass,
+  **0 unconnected, 0 electrical DRC**.
