@@ -2828,6 +2828,20 @@
         "pins": "BOM C35-C72 decoupling; position by D87 [assumed]"
       },
       "value": "0,047"
+    },
+    {
+      "ref": "Z1",
+      "type": "XTAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "photo",
+        "refdes": "photo",
+        "pins": "РК-171 8903 metal-can crystal + trimmer at the D59 corner (board-#2 photos, 'Д1' ink stamp); drives D59/ЛН1 osc -- nets SIM_ONLY, not wired here"
+      },
+      "value": "РК-171"
     }
   ],
   "nets": {

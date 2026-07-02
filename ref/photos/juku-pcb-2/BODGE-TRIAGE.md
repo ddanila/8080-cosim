@@ -601,3 +601,15 @@ DRC (BA1 was the new ladder's lottery net for two rolls; a D100 nudge cleared it
 СА3 hunt round 2: the row-3 "АП3" (cable-hidden, DIP-8-sized) is now the PRIME К554СА3 candidate —
 "АП3" isn't a real part and the tape comparator belongs in exactly this corner. Needs one clean
 read past the cable (owner eyeball or a different-angle shot).
+
+## Iteration 48 — Z1 crystal footprint added (passives stage 2 opener); photo sweep complete
+- **Z1 = РК-171 crystal** (8903, "Д1" ink stamp) added to board.json + the board at (103,262), the
+  D59-corner spot located in iteration 26 and re-confirmed by the angled corner shot
+  (PXL_202052986). Footprint: HC49-U horizontal (closest stock shape to the flat РК-171 can);
+  nets stay SIM_ONLY (crystal drives D59/ЛН1 — LVS re-verified IN SYNC after the board.json add).
+  The trimmer next to it is the remaining stage-2 passive for this corner.
+- **Photo inventory now fully swept** (all 22 files opened at least once): the remaining
+  unexplored ones turned out to be X1/X2 connector angles, two solder-side corner shots and the
+  crystal-corner angle. None sees behind the video cable → the СА3/"АП3" confirmation and the
+  quadrant etch-refdes reads are formally OWNER-GATED (eyeball or new photos).
+- v37 route (with Z1 as obstacle) running at commit time; board commit follows its completion.

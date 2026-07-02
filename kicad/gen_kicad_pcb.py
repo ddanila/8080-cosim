@@ -28,12 +28,14 @@ PASSIVE_FP = {
     'C_ELEC':  ('Capacitor_THT.pretty', 'CP_Radial_D5.0mm_P2.00mm'),
     'D_DIODE': ('Diode_THT.pretty',     'D_DO-35_SOD27_P7.62mm_Horizontal'),
     'SW':      ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),
+    'XTAL':    ('Crystal.pretty',       'Crystal_HC49-U_Horizontal'),   # РК-171 flat can, lying -- closest stock footprint
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
     'R19':(100,273,90),'VD5':(96,272,90),'C31':(78,272.5,0),'C32':(84,272.5,0),'C33':(90,272.5,0),
     'R3':(23,214,0),'R4':(34,214,0),'R20':(45,214,0),'C21':(53.5,214,0),'C1':(60,214,0),'S1':(67,214,0),
     'R38':(245,204,90),'R39':(245,217,90),
+    'Z1':(103,262,90),   # РК-171 crystal at the D59 corner [photo: 'Д1' stamp, next to the trimmer]
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
