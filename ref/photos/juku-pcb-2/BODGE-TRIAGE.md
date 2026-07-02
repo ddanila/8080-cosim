@@ -613,3 +613,18 @@ read past the cable (owner eyeball or a different-angle shot).
   crystal-corner angle. None sees behind the video cable → the СА3/"АП3" confirmation and the
   quadrant etch-refdes reads are formally OWNER-GATED (eyeball or new photos).
 - v37 route (with Z1 as obstacle) running at commit time; board commit follows its completion.
+
+## Iteration 49 — corner photo mined: КП14 series pinned to the D48/D49 cluster; v40 clean
+The crystal-corner photo (202052986, board-rotated 180 — '05-9-6'/'7.102.158' read inverted)
+delivered more than Z1's spot:
+- **The lone К555КП14 (8904) sits in the D48/D49 cluster** next to the ИЕ7 pair — so D50/D51 are
+  КР531КП14 (marks corrected; they had inherited К555 from an old assumption). Which of D48/D49
+  is the К555 unit still needs one more read (both marks stay КР531 with a comment until then).
+  Iteration-26's series-mix census is now positionally anchored.
+- The corner's REAL passive arrangement is visible (РК-171 + wire strap, trimmer 8811, МУЗ?
+  resistor, КД522 glass diode, green КМ cap, electrolytic pair) and differs from our assumed
+  chip-adjacent passive grid (VD5/R19/C31-33 at y~272) — **corner passive re-layout queued** as
+  its own iteration with proper photo anchors. Z1 parked at (71,263) until then (the HC49 stand-in
+  is fatter than the РК-171 can and collided with the assumed grid at the photo-true spot).
+- Route v40: 1151/1151, 0 unconnected, 0 electrical DRC (the Z1 insertions cost three lottery
+  rolls: BA0/MA7+ADRB/DB2+ADR1 came up short on v37-v39; v40 clean).

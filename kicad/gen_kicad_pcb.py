@@ -35,7 +35,7 @@ PASSIVE_PLACE = {
     'R19':(100,273,90),'VD5':(96,272,90),'C31':(78,272.5,0),'C32':(84,272.5,0),'C33':(90,272.5,0),
     'R3':(23,214,0),'R4':(34,214,0),'R20':(45,214,0),'C21':(53.5,214,0),'C1':(60,214,0),'S1':(67,214,0),
     'R38':(245,204,90),'R39':(245,217,90),
-    'Z1':(103,262,90),   # РК-171 crystal at the D59 corner [photo: 'Д1' stamp, next to the trimmer]
+    'Z1':(71,263,90),    # РК-171 crystal, D59/caps corner [photo: 'Д1' stamp]; pulled left -- the HC49 stand-in footprint is wider than the РК-171 can
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
@@ -324,8 +324,8 @@ def main():
         'D28':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #1, socketed [photo]
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
         'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    294, 176, 0),  # video XOR [photo: right of D39, right pins ~12 mm off the edge]
-        'D50':  ('DIP-16_W7.62mm', 'К555КП14',   112, 158, 0),  # video addr mux [drawing]
-        'D51':  ('DIP-16_W7.62mm', 'К555КП14',   112, 190, 0),  # video addr mux [drawing]
+        'D50':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 158, 0),  # video addr mux [drawing; series per corner photo: the lone К555КП14 8904 lives in the D48/D49 cluster, so D50/D51 are КР531]
+        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux [drawing]
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
         'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
         'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 2nd bus buffer, stacked below D4 [photo 201940304: ВА86 x2 8901; user-confirmed same-as-neighbor]
