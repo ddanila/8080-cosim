@@ -1,8 +1,6 @@
 
 __pycache__/
 _autosave-*
-!ref/schematics/*.png
-!renders/*.png
 .DS_Store
 .venv/
 *-bak
@@ -46,3 +44,6 @@ V*.cpp
 V*.h
 venv/
 vram_*.bin
+# negations LAST (last match wins; do not sort this file blindly)
+!ref/schematics/*.png
+!renders/*.png
