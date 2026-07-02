@@ -121,3 +121,17 @@ glue blob over vias, verdigris around it) — the H1 wires pass THROUGH and cont
 bus band. The low-res "endpoint at 41" was a misread of this lash. **Rule: only shiny solder cones
 on pads/vias count as endpoints; brown blobs are glue lacing.** This shrinks the true-endpoint count
 substantially (many harness "stops" are lash points). H1-endpoint-A hunt continues left of ВН59.
+
+## Iteration 10 — serial/FDC corner: D93=ВГ93 confirmed, РЕ3 #1 located, serial placement validated
+Photo 6 (top-center bracket zone):
+- **КР1818ВГ93 8905 = D93 confirmed** (WD1793-clone FDC; refdes matches ВГ93; position matches our
+  outline). Above it a **5th ВА87 (8804)** = the FDC bus buffer (likely D97). The FDD subsystem is
+  real on-board silicon (our fdc_1793 stub's physical counterpart).
+- **К155РЕ3 8904 #1 in its blue socket** at this corner (D28-position candidate); the CPU-cluster
+  РЕ3 (iter 5) is #2 — matching the BOM's РЕ3 ×2, both socketed/dumpable.
+- **Serial cluster placement VALIDATED**: К170АП2 ×2 (8810) + К170УП2 (8923) + КР580ВВ51А (8906)
+  arranged exactly per our PLACE (D32/D14/D104/D11). Bracket hardware: СР-50 BNC + RESET switch.
+- More un-modeled glue cataloged: К561ЛН2 8904, К155ЛА18 8801, К555КП12 ×2 8812, К155ЛН3(?) 8904,
+  КМ53 47µ/6.3V electrolytic (survivor).
+- H1's left run rises toward ВВ51А/УП2 — candidate solder cone left of ВВ51А (one more crop to
+  confirm as H1-endpoint-A).
