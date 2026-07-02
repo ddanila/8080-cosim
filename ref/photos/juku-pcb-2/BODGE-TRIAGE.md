@@ -391,3 +391,12 @@ Photo 201933909 (mid-board frame x 0-170) full-res at the left edge:
   coincidental neighbors.
 - Beeper list: E1-E15. АП2 queue item note: pinout verification CLOSED back in iter 14 (DIP-8
   definitive) — removing it from the standing queue.
+
+### Iteration 35b — solder-side check at (9,111): power-rail neighborhood, via ID pending
+The solder side around H1-A's zone (mirrored crop at the left edge) shows the **edge power-rail
+strip** (wide tinned run along the board edge) with several solder-wicked power traces teeing into
+it, plus normal signal traces ending in vias. At ±5mm registration the specific (9,111) via can't
+be singled out from this shot. Open question it raises: if H1-A's via sits on one of the TINNED
+(power) traces, H1 is a clock-phase SHIELD/ground wire rather than a signal bridge — which would
+downgrade H1 from "class b ECO" to "legit wiring". Resolution: overlay-v3 local anchors on this
+corner, or beeper E15↔GND / E15↔E3(net-11).
