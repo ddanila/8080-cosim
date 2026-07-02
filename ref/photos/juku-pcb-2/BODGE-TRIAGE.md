@@ -288,3 +288,19 @@ suspicious, needs the drawing re-read before touching a net-modeled chip). D101/
 but it now has a coordinates entry).
 Board-frame note: photo x reads ~4 mm left of model coords on the right half (perspective);
 y-rows 55/70/89/105/127 vs model boxes 55/82/108 — the 82-row assignment was the earlier miss.
+
+## Iteration 29 — endpoint 6 RESOLVED at ВГ93's corner via; D107 = 2nd ВА86 (user call)
+Photo 6 full-res, the wire-run band between ВН59 (D10) and ВГ93 (D93):
+- **Endpoint E10 (= the pending "endpoint 6")**: the long wire from the D11 33К-pad zone runs right
+  and terminates on a via at **~(235, 116) mm, just SW of ВГ93's bottom-left pin corner** — the
+  joint is a DULL/oxidized solder blob (matte gray), not a shiny cone; medium confidence, flag for
+  the beeper list. No etch number visible at the via. A wire into the FDC corner + a wire into the
+  serial shaping (E5) smells like the H1 harness is SERIAL/FDC plumbing (class c: legit wiring),
+  not a clock ECO — unlike H3.
+- The **К555КП12 pair (both 8812)** shows again right in this band (~x 235-253, y 110-125),
+  cross-checking iteration 28's position fix.
+- The lower wire of the band passes a brown GLUE LASH (verdigris, center) and bends south around
+  the КП12 — off-frame; its endpoint is on the next crop down (bottom-right quadrant).
+- **D107 resolved = КР580ВА86** (converted to an untraced footprint at (57,185)): the angled CPU
+  photo (201940304) shows TWO stacked ВА86 8901 — D4 is one, and the D107 outline sits exactly
+  below D4. Credit: owner's "same bus one as one next to it" nudge.
