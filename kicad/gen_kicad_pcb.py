@@ -310,6 +310,47 @@ def main():
     x8_pads = {str(59 + i): (76.0 + i * 4.0, 282.0) for i in range(6)}
     make_conn('X8', 86, 282, x8_pads)
 
+    # ---- UNTRACED footprints: photo/BOM-identified chips whose NETS aren't traced yet ----
+    # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).
+    # Confident IDs only; the rest stay silk outlines until identified.
+    UNTRACED = {
+        'D28':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #1, socketed [photo]
+        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
+        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    305, 176, 0),  # video XOR [schematic+photo]
+        'D50':  ('DIP-16_W7.62mm', 'К555КП14',   112, 158, 0),  # video addr mux [drawing]
+        'D51':  ('DIP-16_W7.62mm', 'К555КП14',   112, 190, 0),  # video addr mux [drawing]
+        'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
+        'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
+        'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    301, 82, 0),   # tape shifter [sheet 3 + baud-row box]
+    }
+    for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
+        fp = pcbnew.FootprintLoad(DIP_LIB, fpn)
+        if fp is None: raise RuntimeError(f"no fp {fpn}")
+        fp.SetReference(ref); fp.SetValue(mark)
+        fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+        if rot: fp.SetOrientationDegrees(rot)
+        board.Add(fp); placed[ref] = fp
+        ctr = fp.GetBoundingBox(False, False).GetCenter()
+        fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
+        bb = fp.GetBoundingBox(False, False)
+        hh, hw = pcbnew.ToMM(bb.GetHeight())/2.0, pcbnew.ToMM(bb.GetWidth())/2.0
+        CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
+        vert = (rot % 180 == 0)
+        r = fp.Reference(); r.SetVisible(True); r.SetLayer(pcbnew.F_SilkS)
+        r.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.4), pcbnew.FromMM(2.4)))
+        r.SetTextThickness(pcbnew.FromMM(0.4)); r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
+        r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x if vert else x - hw - 3.5),
+                                      pcbnew.FromMM(y - hh - 2.2 if vert else y)))
+        v = fp.Value(); v.SetVisible(True); v.SetLayer(pcbnew.F_SilkS)
+        body_len = 2*hh if vert else 2*hw; body_wid = 2*hw if vert else 2*hh
+        ts = max(1.0, min(2.7, body_wid*0.42, (body_len-2.0)/(0.95*max(len(mark),1))))
+        v.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(ts), pcbnew.FromMM(ts)))
+        v.SetTextThickness(pcbnew.FromMM(max(0.15, ts*0.16)))
+        v.SetHorizJustify(CTR_H); v.SetVertJustify(CTR_V)
+        try: v.SetTextAngle(pcbnew.EDA_ANGLE(90 if vert else 0, pcbnew.DEGREES_T))
+        except Exception: v.SetTextAngle((90 if vert else 0)*10)
+        v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+
     # nets: create a NETINFO per net name, assign to each (ref,pin) pad
     assigned = 0
     for name, e in spec['nets'].items():
@@ -376,26 +417,26 @@ def main():
     # (DRAM banks 1-3 D68-D91 are now net-modeled footprints -- see PLACE -- not silk outlines.)
     # DRAM-array left column D50/D51 (still placement-only). (D42/D43/D58 are now net-modeled
     # footprints -- see PLACE -- so they're no longer silk outlines here.)
-    silk_box(108, 148, 116, 168, 'D50'); silk_box(108, 180, 116, 200, 'D51')   # array col0, vertical
+    # (converted to untraced footprints)
     # right-side serial/tape/video block (toward-76) -- the clearly-separated chips as placement
     # outlines: D93 (big, ~246,64) + the top-edge row D97/D95/D98/D96 (~y40). The denser middle
     # cluster (D99/D100/D101/D102/D104/D106/D28/D12/D3...) has tilted/packed labels -> deferred.
-    silk_box(240, 76, 256, 96, 'D93')                         # ROM-row level, right of D11 (per top_rows)
+    # (converted to untraced footprints)
     # top band row @ y≈55 (reliable tight-crop read: pitch 16, incl. D28). Corrects an earlier
     # y40/cramped placement of this row that came from a lower-res crop.
-    for cx, ref in [(229, 'D28'), (245, 'D97'), (261, 'D95'), (277, 'D94'), (293, 'D98'), (307, 'D96')]:
+    for cx, ref in [(263, 'D95'), (277, 'D94'), (293, 'D98'), (307, 'D96')]:   # (D28/D97 -> footprints; D95 nudged +2)
         silk_box(cx - 5, 42, cx + 5, 68, ref)
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
     silk_box(46, 174, 58, 196, 'D107')                        # CPU cluster, below D4
     # lower-left corner (read off the drawing): D30/D13/D105 = a horizontal column at x≈30; D52
     # vertical at x≈59. (Corrects earlier D30 orientation + D52 y, and adds D13/D105.)
-    for y0, ref in [(203, 'D30'), (236, 'D105')]:   # (D13 now a net-modeled footprint -- see PLACE)
+    for y0, ref in [(236, 'D105')]:   # (D13/D30 now footprints)
         silk_box(20, y0, 40, y0 + 8, ref)
     silk_box(53, 226, 65, 248, 'D52')
     # baud-rate chain re-read from a tight crop: a row at y≈82 (BELOW the y55 band, not the y54 I
     # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
-    for cx, ref in [(269, 'D102'), (285, 'D101'), (301, 'D99')]:
+    for cx, ref in [(269, 'D102'), (285, 'D101')]:   # (D99 -> footprint)
         silk_box(cx - 5, 72, cx + 5, 92, ref)
     silk_box(302, 98, 310, 118, 'D106')   # right-edge chip below the baud chain (≈307,108)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
@@ -403,7 +444,7 @@ def main():
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
-    silk_box(245, 151, 259, 159, 'D41'); silk_box(300, 166, 310, 186, 'D34')   # (D37 now a net-modeled footprint -- see PLACE)
+    silk_box(245, 151, 259, 159, 'D41')   # (D34/D37 -> footprints)
     silk_box(265, 166, 275, 186, 'D92')   # К555ЛЕ4 quad NOR (emaplaat label + owner's decapped chip);
                                           # likely the REAL Φ1/Φ2 phase generator core (cross-coupled
                                           # NORs) -- nets to trace, then net-model
