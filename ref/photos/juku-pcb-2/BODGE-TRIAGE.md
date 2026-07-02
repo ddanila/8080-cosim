@@ -101,3 +101,16 @@ cycle stalls on a self-inconsistent DRC count (the script claims violations on a
 clean); isolation confirmed the committed board is clean and pcbnew round-trips safely. Parked as
 kicad/widen_power.py (WIP header documents the state); the right fix is geometric pre-checking
 (nearest-copper distance) instead of DRC round-trips. Board left untouched (restored from git).
+
+## Iteration 8 — ROSETTA STONE: etched via numbers = schematic net numbers; H1 lands on net 11
+Photo 7 full-res (АГ3/video corner):
+- **H1 endpoint B solders to the via etched "11"** — and the board's etched numbers are the
+  SCHEMATIC's net numbers (net 11 = D36.6 → D35.11 = **CLKG_D36**, the clock-phase-generator input,
+  per clock-subsystem.md). H1 patches directly into the clock-phase path. Its other end sits near
+  etch "41" → read that number next; if H1 = net41↔net11, the ECO bridges two schematic nets (class
+  b, a real circuit delta). **Method upgrade: every numbered-via endpoint can be identified by
+  READING THE NUMBER — no pin-guessing.**
+- **The composite-video output stage in the flesh**: VT2 = **КТ315Г** (yellow, 8901), КД glass
+  diodes, 1k/47Ω resistor network, coax braid+center landing, etch mark "Е". Real parts for the
+  video-output passives (our node-A/VT2 backlog).
+- Nearby: К555КП12 8812 (again — the un-modeled mux pair), К155АГ3 ×2 8901, КР531ИЕ17 8902.
