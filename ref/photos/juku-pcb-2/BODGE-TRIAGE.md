@@ -427,3 +427,22 @@ strobe/timing qualification ECO at the system controller (STSTB-class fix), far 
 the retracted "X1-edge tap". Class (b) post-schematic ECO, pending: which D5 pin/via exactly
 (solder-side or beeper E15↔D5.x), and whether the 1К0 pair beside the run is in-circuit.
 Beeper priorities now: E15↔D5 pins, E15↔E3(net-11), E12↔GND, E1/E2 (D37 inputs) ↔ everything.
+
+## Iteration 38 — D37's spare-gate SOURCES found: Φ2 taps at D35 pin 14; the ECO story closes
+Component-side full-res at D35 (К155ЛН5 8904, **vertical notch-UP ✓** — model orientation correct;
+the solder-side "horizontal DIP-16" inference from the previous crop was anchor-less misregistration,
+discard it):
+- **E16/E17: TWO wire drops solder at D35's pin-14 corner (~(268,213)/(270,214))** — and per
+  docs/transcription/clock-subsystem.md, **D35 pin 14 is the Φ2 output** (pin 12 → R36 360Ω → 14).
+  The H3 harness taps the CPU's Φ2 clock phase right at the phase generator.
+- **E18: solder cone on a via etched "2", SE of D35 (~(272,222))** — Rosetta hypothesis: net "2" =
+  the Φ2 net itself (Φ1/Φ2 as schematic nets 1/2; net 11 = CLKG_D36 already proven). If so, E18 is
+  a second Φ2-family tap point.
+- Solder side of this zone shows several BULBOUS hand-soldered cones (non-factory profile) — the
+  ECO's through-joints seen from the back; exact pad IDs deferred (needs bracketed anchors).
+- **ECO narrative now closes end-to-end**: Φ2 tapped at D35.14 (E16/E17, possibly + net-2 via E18)
+  → D37 spare NAND gate-1 inputs (E1/E2 at pins 1/2, iter 15) → gate output pin 3 → existing copper
+  toward the frame-int/STB corner (E7, iter 4) — i.e., a **Φ2-qualified strobe/interrupt fix**:
+  class (b) post-schematic ECO. Remaining to prove: beeper E16↔E1 (or E2), and D37.3's copper
+  destination (solder-side trace with proper anchors).
+No netlist change (the ECO is documented, not yet incorporated); LVS/boot untouched.
