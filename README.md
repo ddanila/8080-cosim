@@ -4,6 +4,19 @@ Experiment: model an Intel 8080–based computer as **both** a physical PCB and 
 runnable digital simulation, and keep the two models provably in sync — without a
 GUI in the loop, so the whole thing can be driven by an LLM.
 
+## Board previews
+
+The recreated ДГШ5.109.006 processor board (auto-routed 2-layer, 310×266 mm), regenerated
+from `kicad/juku_routed.kicad_pcb` by `kicad/render_views.sh`. A repo pre-commit hook
+(`.githooks/pre-commit`; enable once with `git config core.hooksPath .githooks`) refreshes
+these whenever the routed board is committed, so they never go stale.
+
+| 3D | 2D |
+|---|---|
+| ![3D top](renders/board_3d_top.png) | ![component side](renders/board_2d_front.png) |
+| ![3D perspective](renders/board_3d_persp.png) | ![solder side](renders/board_2d_back.png) |
+
+
 ## Goal
 
 1. **PCB** — schematic + board for an 8080 system (CPU + ROM + RAM + glue +
