@@ -375,3 +375,19 @@ Photo 7 full-res at D38 (КР531ЛА1 8702, dot-UP ✓ matches the model orienta
 - H2's classification shifts from "ECO drop into the clock gate" toward **(possibly reverted)
   patch** — the surviving H2 conductor path needs its OTHER end (left run across the bus band, per
   iteration 9) read before any netlist action. No model change.
+
+## Iteration 35 — H1-A RESOLVED: left-edge via at (9,111); the H1 bridge is board-length
+Photo 201933909 (mid-board frame x 0-170) full-res at the left edge:
+- **E15 = H1-A: shiny solder joint on a via at ~(9, 111)** — left edge, below the D15 ROM socket,
+  on a VERTICAL etched trace. The wire leaves right, passes a **1К0 resistor pair** at the D2 (РТ4А
+  8810 socketed ✓) corner, and continues toward ВН59/the bus band = precisely the iteration-9
+  trail ("H1 continues left of ВН59"). CPU-cluster placement double-check: D4 = КР580ВА86 8901
+  vertical ✓ next to the socket.
+- **H1 now reads end-to-end: net-11 via (CLKG_D36, clock-phase) ↔ left-edge via (9,111)** — a
+  board-length bridge. The (9,111) vertical trace heads toward the X1 expansion-edge zone; if the
+  solder-side read confirms it reaches an X1 pad, the ECO exports/imports a clock phase on the
+  expansion bus (diagnostic clock injection? external sync?). Next Rosetta: the via's etch number
+  on the solder side; also whether the 1К0 pair is IN the wire's circuit (series terminator?) or
+  coincidental neighbors.
+- Beeper list: E1-E15. АП2 queue item note: pinout verification CLOSED back in iter 14 (DIP-8
+  definitive) — removing it from the standing queue.
