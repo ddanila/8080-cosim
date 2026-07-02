@@ -415,3 +415,15 @@ shows the frame is HEAVILY tilted: constant-px/mm mapping breaks across it. Cons
   anchors bracketing the target**; single-anchor + global px/mm is what produced the bad (9,111).
 - Bonus reads from the corridor crop: К555ЛА1 (label-down, 89xx) right of the РЕ3 #2 socket — an
   un-modeled type sighting; another КР531КП14 8808 below it (series-mix census grows).
+
+## Iteration 37 — E15 recovered by bracketing: ~(40,143), right below D5/ВК38
+Applying iteration-36's own method rule: the two РТ4А sockets in frame are model-known anchors
+(D6 = horizontal РТ4 at (68,136); D2 = vertical РТ4 at (83,158) — labels' orientation
+disambiguates them, and this also explains the "РТ4 ×2" as D6+D2, both DEC_PROM/КР556РТ4 class).
+Local px/mm comes out x=15.1 / y=23.5 (the tilt is real), and the H1-A via lands at
+**E15 ≈ (40, 143) — 3 mm below the bottom pin row of D5 (КР580ВК38 system controller)**.
+Revised H1 hypothesis: **net-11 (CLKG_D36 clock phase) wired to the ВК38 pin zone** — a
+strobe/timing qualification ECO at the system controller (STSTB-class fix), far more coherent than
+the retracted "X1-edge tap". Class (b) post-schematic ECO, pending: which D5 pin/via exactly
+(solder-side or beeper E15↔D5.x), and whether the 1К0 pair beside the run is in-circuit.
+Beeper priorities now: E15↔D5 pins, E15↔E3(net-11), E12↔GND, E1/E2 (D37 inputs) ↔ everything.
