@@ -524,3 +524,19 @@ row-4 АГ3s on board #2 are К155 8901; real board wins per the D7 precedent). 
 v22 route re-imported clean (0 unconnected / 0 electrical DRC). Silk-polish queue item: the
 quadrant portion is CLOSED; remaining silk work is the mixed-series КП14 pinning (which of
 D48-D51 carries the К555 part) — blocked on an etch/date-code read.
+
+## Iteration 43 — D106 refdes collision found and fixed: the row-4 АГ3 is NOT D106
+Cross-checking the quadrant's provisional refdes against the transcriptions surfaced a hard
+conflict: **tape-serial.md has D106 = К554СА3 tape-input comparator, VERIFIED at net level on the
+scan** (W/W/E pins 3/4/2, R86 1М8 hysteresis, DATA IN net). So the schematic's D106 is taken, and
+the row-4-right АГ3's provisional "D106" tag (inherited from my own early drawing misread of this
+area) is wrong. Fix: footprint renamed to the explicitly-non-refdes **'AG3B'** (same convention as
+CT16_CTR/DLB for refdes-unknown chips) until an etch read gives its true number.
+Knock-on questions now open:
+- WHERE is the physical К554СА3? Candidate: the un-IDed "К5xx…/1068" chip at (302,200) — the slot
+  I just gave to D99/ИР9. A СА3-vs-ИР9 re-read of that chip is queued (it decides both refdes).
+- The other quadrant refdes (D94/D95/D96/D98/D100/D101/D102) came from the same tape-serial agent
+  table that was explicitly marked "ignore its refdes" — they stay PROVISIONAL, weight lowered.
+Also this pass: D56 silk mark -> К155АГ3 (board-#2 series, D7 precedent); locked PHI1 escape added
+for D35.10 (the router's recurring casualty); a longer locked PHI1 west-spine was tried and
+REVERTED (shorted on the 2nd DRAM row -- blind hand corridors don't survive this board's density).

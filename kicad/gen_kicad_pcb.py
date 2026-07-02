@@ -345,7 +345,7 @@ def main():
         'D96':  ('DIP-14_W7.62mm', 'К155АГ3',    288.5, 89, 90), # [owner: "АП3", behind cable -- АГ3 assumed, verify]
         # row 4 (y122, horiz, below D93's pin field):
         'D100': ('DIP-16_W7.62mm', 'К555КП12',   243, 124, 90),# mux #2 [photo 8812]
-        'D106': ('DIP-14_W7.62mm', 'К155АГ3',    295, 124, 90),# one-shot [photo 8901, label-down] (D56 = row-4 middle, see PLACE)
+        'AG3B': ('DIP-14_W7.62mm', 'К155АГ3',    295, 124, 90),# one-shot [photo 8901, label-down]; refdes UNKNOWN -- was provisionally 'D106', but scan-verified D106 = К554СА3 tape comparator (tape-serial.md) owns that number
         'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
@@ -513,6 +513,11 @@ def main():
     # ADRC: D24.15 (87.27,55.19) -> X1.118C (64.75,29.5)
     _wire('ADRC_N', [(87.27,55.19),(87.27,35.4),(64.75,35.4),(64.75,29.5)], [B, F, B])
     _via('ADRC_N', 87.27,35.4); _via('ADRC_N', 64.75,35.4)
+    # PHI1 escape + spine -- the router's recurring casualty (v15/v24: D35.10 leg; v25: the long
+    # west haul -- a locked west corridor was tried and SHORTED on the 2nd DRAM row (D87.2), so
+    # only the short escape stays; the long haul is the router's job). All F.Cu, no vias.
+    _wire('PHI1', [(269.81,223.54),(271.5,223.54),(271.5,235.5),(247.0,235.5),(247.0,219.92),
+                   (249.19,219.92)], [F, F, F, F, F])
     # DB5/DB6 pre-route bars REMOVED (were: D58.6->D89.14 / D58.7->D42.4 via the y~286-287 band).
     # Two reasons: (a) freerouting crashes on them (PolylineTrace.combine infinite recursion) and
     # poisons its SES echo of them ((type protect) wires that make pcbnew.ImportSpecctraSES return
