@@ -397,6 +397,9 @@ def main():
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     silk_box(245, 151, 259, 159, 'D41'); silk_box(300, 166, 310, 186, 'D34')   # (D37 now a net-modeled footprint -- see PLACE)
+    silk_box(265, 166, 275, 186, 'D92')   # К155ЛЕ4 quad NOR (emaplaat label + owner's decapped chip);
+                                          # likely the REAL Φ1/Φ2 phase generator core (cross-coupled
+                                          # NORs) -- nets to trace, then net-model
     # (D25/D23/D24/D29 bus transceivers are now net-modeled footprints -- see PLACE -- not outlines.)
     silk_box(112, 132, 132, 140, 'D9')   # bus band: D9 fills the gap between DLB(=D8) and D7 (≈122,136)
     BW, BH = BX1-BX0, BY1-BY0

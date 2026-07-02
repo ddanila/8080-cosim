@@ -55,3 +55,11 @@ canonical 8080 Φ1/Φ2 generator → the real phase generator likely includes th
 mesh region we abstracted (clk_phase). The РЕ3 dump + this chip's tracing = the full real clock.
 Real-series corrections: D37/D39 are КР1533ЛА3 (1533, not 555). H3's lower wires terminate around
 D37's bottom / D33's lower pins — exact pin numbers still need a tighter crop (next).
+
+## Iteration 3 — the decapped chip is D92 (К155ЛЕ4), a chip absent from our model
+The emaplaat label between D38/D39 reads **D92** clearly (crop ema_clkclu). Our DRAM banks end at
+D91 → D92 is a real, separate refdes we never had (outlines jumped D91→D93). **D92 = К155ЛЕ4 quad
+NOR at ~(270,176), inside the clock mesh** — cross-coupled NORs being the canonical 8080 two-phase
+generator, D92 is the prime suspect for the REAL Φ1/Φ2 circuit our clk_phase abstracts. Added as a
+placement outline; its nets are the top tracing target (photos + РЕ3 dump together = the full real
+clock). Chip count: the populated board has ≥105 ICs (D92 + КП12×2 join the ~101 estimate).
