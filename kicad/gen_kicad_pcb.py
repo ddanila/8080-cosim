@@ -322,6 +322,7 @@ def main():
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
         'D97':  ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
         'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    301, 82, 0),   # tape shifter [sheet 3 + baud-row box]
+        'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)
@@ -433,7 +434,7 @@ def main():
     # vertical at x≈59. (Corrects earlier D30 orientation + D52 y, and adds D13/D105.)
     for y0, ref in [(236, 'D105')]:   # (D13/D30 now footprints)
         silk_box(20, y0, 40, y0 + 8, ref)
-    silk_box(53, 226, 65, 248, 'D52')
+    # (D52 -> untraced footprint)
     # baud-rate chain re-read from a tight crop: a row at y≈82 (BELOW the y55 band, not the y54 I
     # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
     for cx, ref in [(269, 'D102'), (285, 'D101')]:   # (D99 -> footprint)

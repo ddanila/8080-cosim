@@ -254,3 +254,12 @@ positions match our existing notch-up footprints ✓. Confirmed exceptions so fa
 notch-DOWN (fixed), D38 dot-UP, D92 up. Bonus: the drawing places the decoupling caps BETWEEN the
 DRAM rows — matching our chip-adjacent cap placement. Remaining sweep: the logic rows + bus band
 (~35 chips), mechanical per-crop reads when needed.
+
+## Iteration 26 — CPU-cluster reverse angle: D52=К155ЛА3; КП14 series mix; РК-171 position
+Photo 4 (right-edge frame = board x 0-165): **D52 = К155ЛА3 8905** (the ТМ2/ТЛ2/ЛА3 trio matches
+D30/D13/D52's drawing positions) → converted to an untraced footprint. **The КП14 population is
+mixed-series: КР531КП14 ×3 (8808/8809) + К555КП14 ×1 (8904)** — the S-series sits in the video/DRAM
+address path (which of D48-D51 has the К555 one = TBD; marks left as-is until pinned). Also visible:
+a possible КР531ЛИ1(?) 8809 (a type we don't model), РЕ3 #2 + РТ4 ×2 socketed (again), and the
+**РК-171 8903 crystal + trimmer at the D59 corner** ("Д1" ink stamp, "05-9-6(1)") — Z1's physical
+spot for the future crystal footprint (passives stage 2).
