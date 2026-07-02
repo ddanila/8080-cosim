@@ -554,3 +554,24 @@ Consequences, all applied:
   by the owner's rows; (302,200) is D56's АГ3). The sheet-3 ИР9 goes back on when physically
   located — likely wherever the К554СА3/D106 tape corner actually is.
 Board stays at 160 footprints (-D99 +AG3C).
+
+## Iteration 45 — freerouting hang root-caused and FIXED (custom build from the owner's fork)
+The v27/v28 "0% CPU forever" runs were NOT GUI hangs: the log tail shows the same
+**PolylineTrace.combine() infinite recursion** that killed v10 — this time triggered by the PHI1
+escape pre-route. The recursion has no progress guarantee: degenerate/overlapping geometry keeps
+combine_at_start/end succeeding, the worker dies by StackOverflowError, and CLI mode then polls
+the never-completing job at 0% CPU. (Confusion resolved: the GUI window the owner saw came from a
+--help probe launched without --gui.enabled=false — my mistake, unrelated to the hangs.)
+Fix: patched combine() into a bounded iterative loop (10k cap + warning) in the owner's fork —
+branch `fix-polylinetrace-combine-recursion` at github.com/ddanila/freerouting (build needed
+settings.gradle foojay 0.8.0 -> 1.0.0 for Gradle 9.5). The patched executableJar routes the
+same DSN at full CPU where stock 2.2.4 died before pass 1. Candidate for an upstream PR.
+Addendum (the full saga, for the record): the combine fix STOPS the crash but the degenerate
+geometry then LIVELOCKS the 2.2.4 engine (the caller re-invokes combine forever; 49k warnings, 0
+passes) — and the fork-master engine, which doesn't livelock, converges 8-unrouted on this board
+(weaker router than the 2.2.4 release). Root cause of the degeneracy was OUR PHI1 hand-escape
+pre-route; removing it fixed everything: **stock 2.2.4 + mp200 (the persisted GUI max_passes=20
+cap was the silent run-killer all along) routes the corrected board FULLY CLEAN (v33: 1151/1151,
+0 unconnected, 0 electrical DRC)**. Lessons pinned: (1) no hand pre-routes except straight
+long-segment escapes; (2) check ~/tmp freerouting.json for GUI-persisted caps; (3) fork 'custom'
+branch (rebased on master) carries the combine guard + patience tuning for future experiments.

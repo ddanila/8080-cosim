@@ -516,11 +516,10 @@ def main():
     # ADRC: D24.15 (87.27,55.19) -> X1.118C (64.75,29.5)
     _wire('ADRC_N', [(87.27,55.19),(87.27,35.4),(64.75,35.4),(64.75,29.5)], [B, F, B])
     _via('ADRC_N', 87.27,35.4); _via('ADRC_N', 64.75,35.4)
-    # PHI1 escape + spine -- the router's recurring casualty (v15/v24: D35.10 leg; v25: the long
-    # west haul -- a locked west corridor was tried and SHORTED on the 2nd DRAM row (D87.2), so
-    # only the short escape stays; the long haul is the router's job). All F.Cu, no vias.
-    _wire('PHI1', [(269.81,223.54),(271.5,223.54),(271.5,235.5),(247.0,235.5),(247.0,219.92),
-                   (249.19,219.92)], [F, F, F, F, F])
+    # PHI1 escape REMOVED: hand-placed locked wires here create degenerate trace geometry that
+    # livelocks freerouting's PolylineTrace.combine (bounded-guard build churns forever, stock
+    # build stack-overflows). The ADR pre-routes are fine; PHI1's occasional single-link miss is
+    # cheaper to fix by a placement nudge + re-roll than by poisoning the DSN.
     # DB5/DB6 pre-route bars REMOVED (were: D58.6->D89.14 / D58.7->D42.4 via the y~286-287 band).
     # Two reasons: (a) freerouting crashes on them (PolylineTrace.combine infinite recursion) and
     # poisons its SES echo of them ((type protect) wires that make pcbnew.ImportSpecctraSES return
