@@ -106,7 +106,9 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(253,225,0),'D103':(291,200,0),'D56':(302,200,0),   # D53 +3mm right to clear the DRAM right column
+    'D53':(253,225,0),'D103':(291,200,0),
+    'D56':(268,124,90),   # АГ3 RELOCATED to the ВГ93 quadrant row-4 middle (owner's layout; the drawn
+                          # (302,200) spot shows ИЕ10+ЛУ? on the photo, not АГ3 -- drawing wrong here)
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
@@ -327,9 +329,22 @@ def main():
         'D9':   ('DIP-16_W7.62mm', 'К555ИД7',    122, 136, 90), # 3-to-8 decoder, bus band between D8 and D7 [owner-identified]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # quad NAND, lower-left column below D30/D13 [owner-identified]
         'D41':  ('DIP-16_W7.62mm', 'К555ИР16',   255, 155, 270),# shift register, paired with D40 [owner ID + photo 8902 DIP-16 label-down; x=255 clears the D60 DRAM column]
-        'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    296, 82, 0),   # tape shifter [sheet 3 + baud-row box; 301->296: match right-column edge margin]
+        'D99':  ('DIP-16_W7.62mm', 'К561ИР9',    302, 200, 0),  # tape shifter RELOCATED: owner's quadrant rows exclude ИР9 at (296,82); the un-IDed 'К5xx/1068' chip at the old D56 slot is the best ИР9 candidate [verify]
         'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [emaplaat label + owner's decapped chip]; likely the real Φ1/Φ2 phase generator core
-        'D106': ('DIP-14_W7.62mm', 'К155АГ3',    297, 108, 180),# one-shot [photo 8901, label-down]; 2nd АГ3 at ~(270,105) + КП12 x2 at ~(245,105)/(257,89) await refdes
+        # --- ВГ93 quadrant, owner's authoritative 4-row layout (iter 39). Refdes PROVISIONAL
+        # (nearest drawing-box match; the drawing's layout differs here -- etch reads will settle):
+        # row 1 (y52, horiz): D28 РЕ3 ✓, D97 ВА87 ✓, then:
+        'D95':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90), # hex buffer [iter-33 zoom: 8904, horizontal]
+        # row 2 (y70, vertical):
+        'D94':  ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 70, 0),  # counter [photo 8908]
+        'D102': ('DIP-14_W7.62mm', 'К155ЛН3',    272, 70, 0),  # hex inv [owner: ЛН3; matches iter-10 К155ЛН3 sighting]
+        'D101': ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 70, 0),  # dual D-FF [photo 8905; owner wrote ТМ3 -- ТМ2 per label]
+        # row 3 (y89, horiz):
+        'D98':  ('DIP-16_W7.62mm', 'К555КП12',   268, 89, 90), # mux #1 [photo 8812]
+        'D96':  ('DIP-14_W7.62mm', 'К155АГ3',    288.5, 89, 90), # [owner: "АП3", behind cable -- АГ3 assumed, verify]
+        # row 4 (y122, horiz, below D93's pin field):
+        'D100': ('DIP-16_W7.62mm', 'К555КП12',   243, 124, 90),# mux #2 [photo 8812]
+        'D106': ('DIP-14_W7.62mm', 'К155АГ3',    295, 124, 90),# one-shot [photo 8901, label-down] (D56 = row-4 middle, see PLACE)
         'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
@@ -433,13 +448,8 @@ def main():
     # (converted to untraced footprints)
     # top band row @ y≈55 (reliable tight-crop read: pitch 16, incl. D28). Corrects an earlier
     # y40/cramped placement of this row that came from a lower-res crop.
-    for cx, ref in [(263, 'D95'), (277, 'D94')]:   # (D28/D97 -> footprints; D95 nudged +2)
-        silk_box(cx - 5, 42, cx + 5, 68, ref)
-    # D98/D96: HORIZONTAL per the real photo (owner call -- drawing showed them vertical; the
-    # photo's top-right corner there is the bracket notch, so vertical boxes can't fit anyway).
-    # Exact centers pending a clean corner crop; D96 pulled left of the 310 edge.
-    silk_box(283, 51, 303, 59, 'D98')
-    silk_box(288, 61, 308, 69, 'D96')
+    # (D95/D94/D98/D96 -> untraced footprints in the ВГ93-quadrant 4-row layout; the old top-band
+    # box positions were a drawing misread of this area -- see UNTRACED.)
     # lower-left chips (toward-76): completes the CPU cluster (D107 below D4) + the lower-left
     # corner (D52, D30). Read off the drawing; placement-only outlines.
     # (D107 -> untraced КР580ВА86 footprint, the 2nd of the photo's stacked ВА86 pair)
@@ -447,9 +457,10 @@ def main():
     # vertical at x≈59. (D13/D30/D105 all -> footprints now.)
     # (D52 -> untraced footprint)
     # baud-rate chain re-read from a tight crop: a row at y≈82 (BELOW the y55 band, not the y54 I
-    # first guessed): D102(269), D101(285), D99(301). (tape-serial.md: ИЕ11/ИМ1/ИР9; D100 still TBD.)
-    for cx, ref in [(269, 'D102'), (285, 'D101')]:   # (D99 -> footprint)
-        silk_box(cx - 5, 72, cx + 5, 92, ref)
+    # (D101/D102/D100 -> untraced footprints in the ВГ93-quadrant rows; the earlier "baud row y82"
+    # boxes were part of the same drawing misread. NOTE: tape-serial.md predicted ИЕ11/ИМ1/ИР9 for
+    # the baud chain -- the real quadrant has ИЕ7/ЛН3/ТМ2, so either the chain lives elsewhere or
+    # the sheet-3 read needs revisiting; D99=ИР9 (296,82) kept but now suspect.)
     # (D106 -> untraced К155АГ3 footprint, photo-confirmed)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
     silk_box(182, 22.5, 210, 30, "X3")   # serial edge connector, right of X2 (emaplaat)

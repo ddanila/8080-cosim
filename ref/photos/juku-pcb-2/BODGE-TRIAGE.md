@@ -446,3 +446,22 @@ discard it):
   class (b) post-schematic ECO. Remaining to prove: beeper E16↔E1 (or E2), and D37.3's copper
   destination (solder-side trace with proper anchors).
 No netlist change (the ECO is documented, not yet incorporated); LVS/boot untouched.
+
+## Iteration 39 — ВГ93 quadrant rebuilt per owner's layout; ZERO placeholders left
+Owner supplied the authoritative 4-row layout around D93/ВГ93 (connectors up, L-to-R, T-to-B):
+row 1 horiz: РЕ3, ВА87, ЛП11 · row 2 vert: ИЕ7, ЛН3, ТМ3[ТМ2 per label] · row 3 horiz: КП12,
+АП3[АГ3 assumed — behind cable, VERIFY] · row 4 horiz: КП12, АГ3, АГ3. Implemented, reconciled
+with the per-chip crops + D93's own footprint envelope (rows 3 starts right of D93's pin field;
+row 4 drops below it, y=124, matching the h1a_run КП12 read at ~(242,120)):
+- D28=РЕ3 ✓, D97=ВА87 ✓ (already placed) · **D95=ЛП11 (268,52)** · **D94=ИЕ7 (262,70)** ·
+  **D102=ЛН3 (272,70)** · **D101=ТМ2 (284,70)** · **D98=КП12#1 (268,89)** · **D96=АГ3? (288.5,89)**
+  · **D100=КП12#2 (243,124)** · **D56 RELOCATED (302,200)→(268,124)** (photo shows ИЕ10+ЛУ? at the
+  drawn spot, not АГ3) · D106=АГ3 (295,124).
+- **All refdes PROVISIONAL** (nearest drawing-box; owner warns the drawing's layout differs here).
+  Etch reads settle them. Types/positions/orientations are photo-grade.
+- **D99 (К561ИР9) relocated (296,82)→(302,200)**: the quadrant rows exclude ИР9; the un-IDed
+  "К5xx…/1068" chip at the old D56 slot is the best ИР9 candidate [verify]. tape-serial.md's
+  ИЕ11/ИМ1/ИР9 baud-chain prediction did NOT materialize in this quadrant — sheet-3 re-read queued.
+- **The un-modeled К555КП12 pair is now PLACED (D98/D100)** — queue item closed at placement level
+  (nets still untraced).
+- Board: **0 placement outlines remain** — all 160 positions are real footprints.
