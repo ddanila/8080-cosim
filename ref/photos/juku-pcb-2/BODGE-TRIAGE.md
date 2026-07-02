@@ -202,3 +202,13 @@ D37's pin-3 pad honestly. **Overlay v3 plan: use these etch-digit marks as LOCAL
 their chips are pinned by one cross-check), giving ~1mm local registration for the pin-level trace.
 Alternative close-out remains the owner's continuity check. Also re-confirmed: real solder side =
 long horizontal bus runs (flipped discipline vs our route).
+
+## Iteration 20 — tape/serial cluster physical IDs (the D94-D102 outline zone)
+Consolidating photo 6/7 reads: the un-modeled outline zone right of D93 (board ~x 225-310, y 40-120)
+physically contains: **К555КП12 ×2 (8812)** (dual 4:1 muxes — tape/serial data steering), **К155АГ3
+×2 (8901)** *in addition to* the video D56 (so the BOM's АГ3 ×2-3 = D56 + this tape pair — tape pulse
+shaping one-shots), КР580ВА87 (8804) = the FDC bus buffer (D97 candidate), К561ЛН2/К155ЛА18 CMOS/OC
+glue, К555ИЕ7 ×3 (8908) more counters, ИР9/ИЕ11/ИМ1 (from the earlier sheet-3 reads) = the tape
+(МАГ) modem chain. **This whole cluster = the sheet-3 tape subsystem** — its schematic tracing is a
+self-contained future pass (the sheet-3 regions we surveyed: ИР9 shifters D89/D99/D100, ИЕ11 baud
+counter D108, ЛА7 glue D206/D400 ... plus these). Not boot-relevant (tape I/O), pure completeness.
