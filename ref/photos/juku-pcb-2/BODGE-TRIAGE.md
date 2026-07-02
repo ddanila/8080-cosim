@@ -667,3 +667,14 @@ needs an ID pass; added to the passives-stage-2 list.
   hypothesis: the TAPE motor/relay driver transistor from sheet 3 (X9 = tape I/O). Needs an owner
   ID (marking faces away from all cameras). Not modeled until then.
 - Route v48: 1151/1151, 0 unconnected, 0 electrical DRC. Board now 162 footprints.
+
+## Iteration 53 — power traces widened (geometric method); parked widen_power.py retired
+**~570 power-net segments (GND/P5V/P12V/M12V/M5V_DERIVED) widened up to 1.0 mm** via the geometric
+nearest-foreign-copper method (kicad/widen_power_v2.py) + a targeted DRC-driven repair pass
+(narrow_at_violations.py). Final: 0 unconnected, 0 electrical DRC. Matches the original board's
+thick power runs (the real solder side shows wide tinned rails).
+Gotchas found & handled: (1) mutual widening -- neighbouring power tracks each measured against
+the other's OLD width (repair pass catches it); (2) RECT pin-1 pad corners exceed the
+circumscribed max(w,h)/2 radius (use the diagonal); (3) freerouting emits 0.2 mm NECKDOWNS near
+tight pads -- a repair that "narrows to 0.25" can actually widen those (re-neck to 0.2).
+The DRC-count-broken widen_power.py (parked since the first attempt) is deleted.
