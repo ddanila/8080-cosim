@@ -116,13 +116,13 @@ PLACE = {
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(277,155,90),'D38':(251,176,0),'D39':(294,176,0),
-    'D36':(253,200,0),'D33':(277,200,0),'D35':(266,221,0),   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
+    'D36':(253,200,180),'D33':(277,200,180),'D35':(266,221,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(112,281,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
     'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
     'D42':(142,281,90),'D43':(170,281,90),'D58':(197,281,90),
-    'D37':(265,200,0),   # ЛА3 D42-serial inverter (net-modeled this session), between D36/D33
+    'D37':(265,200,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
     'D13':(30,223,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
@@ -206,7 +206,10 @@ def main():
         p1 = fp.FindPadByNumber('1')
         if p1 is not None:
             pp = p1.GetPosition()
-            dx, dy = (-1.9, 0) if vert else (0, 1.9)
+            # outward offset from pin 1 by rotation: 0=top-left(-x) 90=bottom-left(+y)
+            # 180=bottom-right(+x) 270=top-right(-y)
+            q = rot % 360
+            dx, dy = {0:(-1.9,0), 90:(0,1.9), 180:(1.9,0), 270:(0,-1.9)}.get(q, (-1.9,0))
             dot = pcbnew.PCB_SHAPE(board); dot.SetShape(pcbnew.SHAPE_T_CIRCLE)
             dot.SetLayer(pcbnew.F_SilkS); dot.SetFilled(True); dot.SetWidth(0)
             cxy = pcbnew.VECTOR2I(pp.x + pcbnew.FromMM(dx), pp.y + pcbnew.FromMM(dy))
@@ -221,9 +224,11 @@ def main():
         r.SetTextThickness(pcbnew.FromMM(0.4))
         r.SetHorizJustify(CTR_H); r.SetVertJustify(CTR_V)
         if vert:
-            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y - hh - 2.2)))
+            ry = y + hh + 2.2 if (rot % 360) == 180 else y - hh - 2.2   # refdes at the KEY end
+            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(ry)))
         else:
-            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x - hw - 3.5), pcbnew.FromMM(y)))
+            rx = x + hw + 3.5 if (rot % 360) == 270 else x - hw - 3.5
+            r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(rx), pcbnew.FromMM(y)))
         # (3) marking inside the body, along the long axis, sized to FIT the body
         v = fp.Value()
         mark = MARK_REF.get(ref) or MARK.get(typ, typ)
