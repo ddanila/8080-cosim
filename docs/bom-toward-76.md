@@ -139,3 +139,17 @@ all 84 chips: **GND=85, +5V=106, +12V=5, -12V=4 pads**. Details:
   28=VCC. (Was a documented straight-interleave placeholder.)
 - Power nets carry `"power": true` → **excluded from LVS** (HDL has no power pins); filters in
   `netlist_from_board.py` + `gen_kicad_sch.py`. LVS unchanged: 86 instances IN SYNC; boot byte-identical.
+
+## CONNECTORS real (2026-07) — X1 (СНП59-96) / X3 / X8 get pads; board fully routed
+Owner's board photo gave the real connector types (**СНП59-96 Р-20-2-В**, **СНП59-30-23-В**), and X1's
+edge codes decode as **32 columns × rows A/B/C = 96 = СНП59-96** (2.5 mm grid, DIN41612-style).
+Generated parametric PTH footprints (Ø1.6/0.8): X1 full 96-pad grid (pad names = the schematic edge
+codes), X3 serial (traced codes, provisional 2×8), X8 power (59-64) — power now terminates in
+connector copper. X2/X9 stay outlines until their nets (PPI ports / keyboard) are traced. Geometry
+provisional pending edge photos. Gotchas: hand-built footprints need real FPIDs (empty FPID → anonymous
+DSN components → SES import fails); freerouting discards imported wiring (not fixed), but SES-import
+puts the router copper ON TOP of the board's pre-routes → they coexist.
+Routing: 4 D24→X1 links (-ADRC..F, cols 117/118) failed deterministically across runs → **pre-routed
+escapes** laid on the empty board (collision-free by construction) in the generator; the router works
+around them. +1 GND link hand-laid (D43.7→D42.7, empty B.Cu band, no vias). Final:
+**1052/1052 connections, 0 electrical DRC violations** (silk cosmetics + lib-footprint nits remain).

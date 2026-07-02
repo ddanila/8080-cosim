@@ -205,6 +205,51 @@ def main():
         add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
         if col == 8: col = 0; row += 1
 
+    # ---- real connector footprints (owner photo: СНП59-96 Р-20-2-В / СНП59-30-23-В) ----
+    # Built parametrically: 2.5 mm grid PTH pads (Ø1.6/drill 0.8), pad names = the schematic edge
+    # codes, so the existing net loop wires them. X1 = СНП59-96 (32 cols x rows A/B/C -- codes
+    # 1<col><row>, our traced nets use rows B/C); X3 = serial (codes 23..51, 2x8 provisional);
+    # X8 = power (codes 59..64, 1x6 provisional). X2/X9 stay silk outlines until their nets
+    # (PPI ports / keyboard) are traced. Geometry provisional until the owner's edge photos.
+    def make_conn(ref, cx, cy, pads_xy):        # pads_xy: {name: (x_mm, y_mm) absolute}
+        fp = pcbnew.FOOTPRINT(board)
+        # unique FPID per connector: an empty FPID makes the Specctra DSN emit anonymous
+        # component defs ('""', '::1'), which breaks the SES import round-trip.
+        fp.SetFPID(pcbnew.LIB_ID("juku", f"CONN_{ref}"))
+        fp.SetReference(ref); fp.SetValue('')
+        fp.Reference().SetVisible(False)
+        fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(cx), pcbnew.FromMM(cy)))
+        for name, (px, py) in pads_xy.items():
+            pad = pcbnew.PAD(fp)
+            pad.SetAttribute(pcbnew.PAD_ATTRIB_PTH)
+            pad.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
+            pad.SetSize(pcbnew.VECTOR2I(pcbnew.FromMM(1.6), pcbnew.FromMM(1.6)))
+            pad.SetDrillSize(pcbnew.VECTOR2I(pcbnew.FromMM(0.8), pcbnew.FromMM(0.8)))
+            pad.SetLayerSet(pcbnew.PAD.PTHMask())
+            pad.SetNumber(name)
+            pad.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(px), pcbnew.FromMM(py)))
+            fp.Add(pad)
+        board.Add(fp)
+        placed[ref] = fp
+        return fp
+    # X1: СНП59-96, 32 columns (101..132) x rows A/B/C, grid centered in the mm15-107 silk span
+    x1_pads = {}
+    for col in range(1, 33):
+        px = 22.25 + (col - 1) * 2.5            # 32 cols * 2.5 = 77.5mm, centered at x=61
+        for ri, row in enumerate('ABC'):
+            x1_pads[f'1{col:02d}{row}'] = (px, 24.5 + ri * 2.5)
+    make_conn('X1', 61, 27.5, x1_pads)
+    # X3: serial edge connector (traced codes 23,29,30,32,33,51 among 2 rows; provisional 2x8 grid)
+    x3_codes = [['23','29','30','32','33','51','35','37'], ['24','26','28','31','34','36','38','40']]
+    x3_pads = {}
+    for ri, rowcodes in enumerate(x3_codes):
+        for ci, code in enumerate(rowcodes):
+            x3_pads[code] = (187.0 + ci * 2.5, 24.5 + ri * 2.5)
+    make_conn('X3', 196, 25.75, x3_pads)
+    # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
+    x8_pads = {str(59 + i): (76.0 + i * 4.0, 282.0) for i in range(6)}
+    make_conn('X8', 86, 282, x8_pads)
+
     # nets: create a NETINFO per net name, assign to each (ref,pin) pad
     assigned = 0
     for name, e in spec['nets'].items():
@@ -303,6 +348,41 @@ def main():
     silk_box(112, 132, 132, 140, 'D9')   # bus band: D9 fills the gap between DLB(=D8) and D7 (≈122,136)
     BW, BH = BX1-BX0, BY1-BY0
 
+    # ---- pre-routed escapes for the 4 X1 links freerouting deterministically fails on ----
+    # D24 (addr-hi ВА87) pins 12-15 -> X1 cols 117/118 rows B/C (-ADRF/E/D/C). The corner under
+    # X1's 96-pad field is too congested for the autorouter (same 4 unrouted across runs/seeds), so
+    # these are laid on the EMPTY board (collision-free by construction: B.Cu verticals, F.Cu
+    # collector rows y=33..35.4, between-column lane entries) and exported as existing wiring --
+    # the router routes the other ~1048 around them.
+    def _wire(net_name, pts, layers):
+        net = board.FindNet(net_name)
+        if net is None: return
+        for (x1, y1), (x2, y2), lay in zip(pts, pts[1:], layers):
+            t = pcbnew.PCB_TRACK(board)
+            t.SetStart(pcbnew.VECTOR2I(pcbnew.FromMM(x1), pcbnew.FromMM(y1)))
+            t.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(x2), pcbnew.FromMM(y2)))
+            t.SetLayer(lay); t.SetWidth(pcbnew.FromMM(0.25)); t.SetNet(net); board.Add(t)
+    def _via(net_name, x, y):
+        net = board.FindNet(net_name)
+        if net is None: return
+        v = pcbnew.PCB_VIA(board); v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+        v.SetWidth(pcbnew.FromMM(0.6)); v.SetDrill(pcbnew.FromMM(0.3)); v.SetNet(net); board.Add(v)
+    B, F = pcbnew.B_Cu, pcbnew.F_Cu
+    # ADRF: D24.12 (94.89,55.19) -> X1.117B (62.25,27)
+    _wire('ADRF_N', [(94.89,55.19),(94.89,33.0),(61.0,33.0),(61.0,28.25),(62.25,28.25),(62.25,27.0)],
+          [B, F, B, B, B])
+    _via('ADRF_N', 94.89,33.0); _via('ADRF_N', 61.0,33.0)
+    # ADRE: D24.13 (92.35,55.19) -> X1.117C (62.25,29.5)
+    _wire('ADRE_N', [(92.35,55.19),(92.35,33.8),(62.25,33.8),(62.25,29.5)], [B, F, B])
+    _via('ADRE_N', 92.35,33.8); _via('ADRE_N', 62.25,33.8)
+    # ADRD: D24.14 (89.81,55.19) -> X1.118B (64.75,27)
+    _wire('ADRD_N', [(89.81,55.19),(89.81,34.6),(66.0,34.6),(66.0,28.25),(64.75,28.25),(64.75,27.0)],
+          [B, F, B, B, B])
+    _via('ADRD_N', 89.81,34.6); _via('ADRD_N', 66.0,34.6)
+    # ADRC: D24.15 (87.27,55.19) -> X1.118C (64.75,29.5)
+    _wire('ADRC_N', [(87.27,55.19),(87.27,35.4),(64.75,35.4),(64.75,29.5)], [B, F, B])
+    _via('ADRC_N', 87.27,35.4); _via('ADRC_N', 64.75,35.4)
+
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
     # use the GOST CAD font for silkscreen text so the Cyrillic case markings render fully
@@ -333,6 +413,8 @@ def main():
                 ov.append(f"{outline_boxes[i][4]}~{outline_boxes[j][4]}")
     for ob in outline_boxes:                       # outline vs modeled footprint
         for fb in fp_boxes:
+            if ob[4] == fb[4]:
+                continue                           # a connector's label box over its OWN footprint
             if hit(ob, fb): ov.append(f"{ob[4]}~{fb[4]}")
     print(f"  outline-overlap check: {'PASS' if not ov else 'FAIL -> ' + ', '.join(ov)}")
 
