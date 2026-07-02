@@ -361,3 +361,17 @@ Clean zoom of the (272,70) mystery chip (photo 6, the one behind photo-1's video
   wiring** (panel-mounted S1 must reach the PCB by wire), pin-level confirmed.
 - Net-18 lookup is the next Rosetta target: read the solder-side etch run from this via, or find
   "18" on the schematic sheet-1 reset network (R3/C21/S1).
+
+## Iteration 34 — H2 correction: the wires at D38 are CUT ends, not solder drops
+Photo 7 full-res at D38 (КР531ЛА1 8702, dot-UP ✓ matches the model orientation):
+- The earlier low-res claim "H2 drop solders at КР531ЛА1 pin" is WRONG at pin level: the two white
+  wires near D38 are **dangling CUT ends** — bare snipped conductor hovering over open board at
+  **~(249,172)** and **~(249,186)**, no pad/via beneath the tips. A third end at **~(266,172)**
+  (between D38 and the D40/D41 divider pair) does look tinned and sits AT a via — possible real
+  endpoint E14 (medium confidence).
+- Implication: part of the H2 harness was **snipped** at some point (board decommissioning, or an
+  ECO that was UNDONE by cutting rather than unsoldering — same treatment as the desoldered ЛЕ4?).
+  The cut ends cannot be beeped to anything; the multimeter list stays E1-E14 with E14 flagged.
+- H2's classification shifts from "ECO drop into the clock gate" toward **(possibly reverted)
+  patch** — the surviving H2 conductor path needs its OTHER end (left run across the bus band, per
+  iteration 9) read before any netlist action. No model change.
