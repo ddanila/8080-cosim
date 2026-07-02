@@ -212,3 +212,13 @@ glue, К555ИЕ7 ×3 (8908) more counters, ИР9/ИЕ11/ИМ1 (from the earlier 
 (МАГ) modem chain. **This whole cluster = the sheet-3 tape subsystem** — its schematic tracing is a
 self-contained future pass (the sheet-3 regions we surveyed: ИР9 shifters D89/D99/D100, ИЕ11 baud
 counter D108, ЛА7 glue D206/D400 ... plus these). Not boot-relevant (tape I/O), pure completeness.
+
+## Iteration 21 — H2 endpoint at D38 (the STB gate); D38 mounts dot-UP
+Pin-level crop (photo 7): **D38 = КР531ЛА1 8702** with an H2 wire soldered into the via immediately
+right of its pin column (pins 3-5 zone) + a second wire ending at a pad lower-left. The ECO set now
+touches: D37's spare gate (H3), net 11/CLKG_D36 (H1), the frame-int corner, and D38's STB region
+(H2) — **every ECO lands in the clock/timing circuit**. D38's pin-1 DOT is at its TOP (dot-up),
+unlike notch-down D36/D37/D33 → orientation truly per-chip (sweep required). The 330R/910R pair
+right of D38 = the D35-area video divider (R35 330 + 910) from the schematic.
+Endpoint catalog grows to 8 solid points. DB5/DB6 router casualties pre-routed in the generator
+(deterministic freerouting confirmed: identical results across "re-rolls").

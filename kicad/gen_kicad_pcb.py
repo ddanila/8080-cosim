@@ -445,6 +445,13 @@ def main():
     # ADRC: D24.15 (87.27,55.19) -> X1.118C (64.75,29.5)
     _wire('ADRC_N', [(87.27,55.19),(87.27,35.4),(64.75,35.4),(64.75,29.5)], [B, F, B])
     _via('ADRC_N', 87.27,35.4); _via('ADRC_N', 64.75,35.4)
+    # DB5/DB6: deterministic router casualties after the D36/D37/D33 rotations (freerouting v2 is
+    # seed-deterministic). Laid on the empty board through the bottom band + the D43 pad lanes:
+    # DB5: D58.6 (198.27,284.81) -> D89.14 (162.81,238.19)  [lane x=166.19 between D43 pads]
+    _wire('DB5', [(198.27,284.81),(198.27,287.0),(166.19,287.0),(166.19,238.19),(162.81,238.19)],
+          [B, B, B, B])
+    # DB6: D58.7 (200.81,284.81) -> D42.4 (142.0,284.81)   [F.Cu bottom band y=286.4]
+    _wire('DB6', [(200.81,284.81),(200.81,286.4),(142.0,286.4),(142.0,284.81)], [F, F, F])
 
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
