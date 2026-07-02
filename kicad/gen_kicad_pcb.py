@@ -102,6 +102,11 @@ for _ry, _refs in [(190, range(75, 67, -1)), (217, range(83, 75, -1)), (242, ran
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 # unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
 for _i, _r in enumerate(range(17, 23)): PLACE[f'D{_r}'] = (64 + _i*21, 86, 0)
+# serial-port cluster (net-modeled): К170АП2 drivers + ЛА18 + УП2. Placed in the clear band between
+# the DRAM array (ends y242) and the bottom row (y277) -- APPROXIMATE positions (the crowded real
+# serial area still holds un-modeled outlines D28/D93/...; refine when those are placed).
+for _i, _r in enumerate(['D32', 'D12', 'D3', 'D14', 'D104']):
+    PLACE[_r] = (140 + _i*25, 258, 90)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -155,7 +160,7 @@ def main():
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))                # on the chip body centre
 
     # connectors are silk outlines, not DIP footprints -> never placed as chips
-    CONN = {'EXPANSION_CONN'}
+    CONN = {'EXPANSION_CONN', 'SERIAL_CONN'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -256,9 +261,8 @@ def main():
     for cx, ref in [(269, 'D102'), (285, 'D101'), (301, 'D99')]:
         silk_box(cx - 5, 72, cx + 5, 92, ref)
     silk_box(302, 98, 310, 118, 'D106')   # right-edge chip below the baud chain (≈307,108)
-    silk_box(208, 38, 218, 54, 'D32')      # top band, left of D28 (≈213,46)
-    # small chips just right of D11 (USART): D12 (≈215,72), D3 (≈215,92) -- read off the drawing.
-    silk_box(210, 64, 220, 80, 'D12'); silk_box(210, 84, 220, 100, 'D3')
+    # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
+    silk_box(95, 253, 120, 264, "X3")      # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     silk_box(245, 151, 259, 159, 'D41'); silk_box(300, 166, 310, 186, 'D34')   # (D37 now a net-modeled footprint -- see PLACE)

@@ -96,3 +96,17 @@ chips, which are NOT clean footprint adds — each is coupled to a deferred subs
 functional chips that each need a *deliberate, often owner-guided* pass (like the D29/D58 traces that
 succeeded with owner pin-reads) — not an autonomous grind, which just defers. 78/102 positions are
 net-modeled; the remaining 24 are the coupled set above.
+
+## Serial cluster converted (2026-07) — D14/D32/D3/D12/D104 + X3
+Added the serial-port driver cluster as net-modeled footprints (owner scan img #2):
+- **D14/D32/D3 (К170АП2)** buffer the USART serial side to **X3**: D14→SOUT, D32→RTS/DTP, D3→TTL SOUT.
+- **D12 (ЛА18 OC-NAND)** → OC SOUT; **D104 (К170УП2)** = SIN receiver → USART RxD.
+- The **USART (D11 8251)** now exposes TxD/RTS/DTR/RxD (idle stubs, off the CPU bus → boot-safe); TxD
+  fans to the SOUT/TTL/OC drivers (same data, different levels).
+**Honest caveats (boundary cluster, low LVS value):** the USART serial engine is a stub (idle outputs),
+so the driver *inputs* are consistent-but-not-exercised; the АП2/УП2 pinouts + X3 SIN edge-code are
+partly *assumed* (owner img gave the section/output pins + X3 signal codes, not full datasheet pinouts);
+PCB placement is *approximate* (parked in the clear band below the DRAM array — the real serial area
+still holds un-modeled outlines D28/D93/... to place later).
+Guards: LVS **86 instances / 152 matched nets, IN SYNC**; boot_check all byte-identical. PCB: **84
+net-modeled footprints + 20 outlines = 104/~101 positions**.

@@ -261,7 +261,19 @@ module juku_top (
     pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
-    usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
+    wire ser_txd, ser_rts, ser_dtr, ser_rxd;
+    usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxd(ser_rxd));
+    // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
+    // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
+    // D3=TTL SOUT, D12=OC SOUT, D104=SIN receiver. TxD fans to the SOUT/TTL/OC drivers (same data, diff levels).
+    wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin, d14_a, d3_a;
+    ap2_drv U_D14 (.i3(ser_txd), .i2(1'b1),    .i9(1'b1), .i11(1'b1),    .o6(s_sout), .o7(),      .o8(d14_a), .o10());
+    ap2_drv U_D32 (.i3(ser_rts), .i2(ser_dtr), .i9(1'b1), .i11(1'b1),    .o6(s_rts),  .o7(s_dtp), .o8(),      .o10());
+    ap2_drv U_D3  (.i3(1'b1),    .i2(1'b1),    .i9(1'b1), .i11(ser_txd), .o6(),       .o7(),      .o8(d3_a),  .o10(s_ttl));
+    la18_oc U_D12 (.i1(ser_txd), .i2(1'b1), .o3(s_oc));
+    up2_rcv U_D104(.a(s_sin), .y(ser_rxd));
+    serial_conn U_X3 (.sout(s_sout), .rts(s_rts), .dtp(s_dtp), .ttl_sout(s_ttl), .oc_sout(s_oc), .sin(s_sin));
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk());
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .intr(intr), .inta_n(inta_n));

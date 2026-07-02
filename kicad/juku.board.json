@@ -527,7 +527,11 @@
         "5": "D4",
         "6": "D5",
         "7": "D6",
-        "8": "D7"
+        "8": "D7",
+        "19": "TXD",
+        "23": "RTS",
+        "24": "DTR",
+        "3": "RXD"
       },
       "prov": {
         "type": "scan",
@@ -2011,6 +2015,107 @@
         "type": "scan",
         "refdes": "scan",
         "pins": "ТЛ2: secA=RESIN Schmitt->RES, secB=STSTB->D5.STB (cpu-core.md)"
+      }
+    },
+    {
+      "ref": "D14",
+      "type": "AP2",
+      "pins": {
+        "2": "I2",
+        "3": "I3",
+        "9": "I9",
+        "11": "I11",
+        "6": "O6",
+        "7": "O7",
+        "8": "O8",
+        "10": "O10"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "serial driver (owner img #2)"
+      }
+    },
+    {
+      "ref": "D32",
+      "type": "AP2",
+      "pins": {
+        "2": "I2",
+        "3": "I3",
+        "9": "I9",
+        "11": "I11",
+        "6": "O6",
+        "7": "O7",
+        "8": "O8",
+        "10": "O10"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "serial driver (owner img #2)"
+      }
+    },
+    {
+      "ref": "D3",
+      "type": "AP2",
+      "pins": {
+        "2": "I2",
+        "3": "I3",
+        "9": "I9",
+        "11": "I11",
+        "6": "O6",
+        "7": "O7",
+        "8": "O8",
+        "10": "O10"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "serial driver (owner img #2)"
+      }
+    },
+    {
+      "ref": "D12",
+      "type": "LA18",
+      "pins": {
+        "1": "I1",
+        "2": "I2",
+        "3": "O3"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "serial driver (owner img #2)"
+      }
+    },
+    {
+      "ref": "D104",
+      "type": "UP2",
+      "pins": {
+        "1": "A",
+        "2": "Y"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "serial driver (owner img #2)"
+      }
+    },
+    {
+      "ref": "X3",
+      "type": "SERIAL_CONN",
+      "pins": {
+        "29": "SOUT",
+        "30": "RTS",
+        "51": "DTP",
+        "23": "TTL_SOUT",
+        "32": "OC_SOUT",
+        "33": "SIN"
+      },
+      "prov": {
+        "type": "boundary",
+        "refdes": "assumed",
+        "pins": "RS-232 connector (SIN code assumed)"
       }
     }
   ],
@@ -6754,6 +6859,144 @@
         [
           "D91",
           "15"
+        ]
+      ]
+    },
+    "SER_TXD": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D11",
+          "19"
+        ],
+        [
+          "D14",
+          "3"
+        ],
+        [
+          "D3",
+          "11"
+        ],
+        [
+          "D12",
+          "1"
+        ]
+      ]
+    },
+    "SER_RTS": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D11",
+          "23"
+        ],
+        [
+          "D32",
+          "3"
+        ]
+      ]
+    },
+    "SER_DTR": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D11",
+          "24"
+        ],
+        [
+          "D32",
+          "2"
+        ]
+      ]
+    },
+    "SER_RXD": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D11",
+          "3"
+        ],
+        [
+          "D104",
+          "2"
+        ]
+      ]
+    },
+    "S_SOUT": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D14",
+          "6"
+        ],
+        [
+          "X3",
+          "29"
+        ]
+      ]
+    },
+    "S_RTS": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D32",
+          "6"
+        ],
+        [
+          "X3",
+          "30"
+        ]
+      ]
+    },
+    "S_DTP": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D32",
+          "7"
+        ],
+        [
+          "X3",
+          "51"
+        ]
+      ]
+    },
+    "S_TTL": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D3",
+          "10"
+        ],
+        [
+          "X3",
+          "23"
+        ]
+      ]
+    },
+    "S_OC": {
+      "src": "scan",
+      "nodes": [
+        [
+          "D12",
+          "3"
+        ],
+        [
+          "X3",
+          "32"
+        ]
+      ]
+    },
+    "S_SIN": {
+      "src": "scan",
+      "nodes": [
+        [
+          "X3",
+          "33"
+        ],
+        [
+          "D104",
+          "1"
         ]
       ]
     }

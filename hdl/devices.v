@@ -384,10 +384,32 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
-module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
+module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
+                   output wire txd, rts, dtr, input wire rxd);
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+    // serial-side outputs (off the CPU bus -> boot-safe). Stub-idle (mark/deasserted); the drivers
+    // (D14/D32/D3/D12) buffer these to the X3 serial connector. Full serial engine is a boundary.
+    assign txd = 1'b1; assign rts = 1'b1; assign dtr = 1'b1;
+endmodule
+
+// К170АП2 serial line driver (RS-232-ish). Sections (per owner scan img): 3->6, 2->7, 9->8, 11->10.
+// One-way buffers (never drive the USART side) -> boot-safe. Used by D14 (SOUT), D32 (RTS/DTP), D3 (TTL SOUT).
+module ap2_drv (input wire i2, i3, i9, i11, output wire o6, o7, o8, o10);
+    assign o6 = i3; assign o7 = i2; assign o8 = i9; assign o10 = i11;
+endmodule
+// К155ЛА55/ЛА18 open-collector NAND (D12): -> OC SOUT.
+module la18_oc (input wire i1, i2, output wire o3);
+    assign o3 = ~(i1 & i2);
+endmodule
+// К170УП2 serial line receiver (D104): X3 SIN -> USART RxD. One-way buffer.
+module up2_rcv (input wire a, output wire y);
+    assign y = a;
+endmodule
+// Serial port connector X3 (RS-232). BOUNDARY component (off-board cable) -- anchors the driver->X3
+// nets. Pins = the traced X3 signal codes (owner scan img #2).
+module serial_conn (inout wire sout, rts, dtp, ttl_sout, oc_sout, sin);
 endmodule
 
 module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
