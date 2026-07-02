@@ -143,3 +143,19 @@ Photo 6 (top-center bracket zone):
   are marked [assumed] already.)
 - **РЕ3 #1 appears loosely seated** in its blue socket — trivial to pull for dumping.
 - H1-A: the wire rounds ЛА18 and exits the frame bottom — endpoint one crop lower (next).
+
+## Iteration 12 — endpoint at the D11 serial-shaping network; endpoint-pairing caveat
+Photo 6, below ЛА18/К561ЛН2: a wire from the УП2/АП2 direction **solders at the pad of the 33К
+serial-level resistor beside ВВ51А (D11)** — the R18/R30-class serial output shaping from the
+schematic (img #2). A second long wire runs right toward ВГ93 (D93) — endpoint off-frame.
+**Endpoint catalog now (solid solder joints):**
+1. D37 pin 8 (spare ЛА3 section output) [iter 4]
+2. adjacent pad, trace toward the frame-int test posts [iter 4]
+3. etched-net-11 via = CLKG_D36 [iter 8]
+4. X1/X2-gap top-edge pad [iter 6]
+5. 33К serial-shaping pad at D11 [iter 12]
+6. (toward D93/ВГ93 — off-frame, pending)
+**Caveat:** pairing endpoints into complete wires is at the photo-precision limit (runs vanish under
+lacing between shots). The efficient close-out is OWNER MULTIMETER CONTINUITY between the cataloged
+points (~15 checks: each endpoint against the other five). Photos got us from "30 mystery wires" to
+"6 numbered test points" — the last hop is a beeper session.
