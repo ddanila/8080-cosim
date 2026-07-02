@@ -657,3 +657,13 @@ Edge-relative re-measure of the D26/PIT corner (photo-1, 9.50 y-scale):
 Un-modeled sighting from the audit crop: a small TO-126-style transistor (КТ815-class?) at
 ~(250,240) by the D26 corner — the video/beeper driver VT candidates live elsewhere, so this one
 needs an ID pass; added to the passives-stage-2 list.
+
+## Iteration 52 — trimmer footprint on the board; mystery transistor = tape-driver hypothesis
+- **CT1 trimmer (КТ4-23-class, '8811' disc)** added at (64,261), left of the crystal per the corner
+  photos — disc-D7.5 stand-in (stock KiCad has no trimmer lib); ref 'CT1' is a placeholder until
+  the schematic yields the real designator. board.json + LVS: IN SYNC (netless part).
+- **The (250,240) mystery component read at max zoom**: flat TO-126-class plastic package with a
+  heatsink hole and 3 formed leads, no legible marking, sitting between the ВИ53s just above X9 —
+  hypothesis: the TAPE motor/relay driver transistor from sheet 3 (X9 = tape I/O). Needs an owner
+  ID (marking faces away from all cameras). Not modeled until then.
+- Route v48: 1151/1151, 0 unconnected, 0 electrical DRC. Board now 162 footprints.

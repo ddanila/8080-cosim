@@ -2842,6 +2842,20 @@
         "pins": "РК-171 8903 metal-can crystal + trimmer at the D59 corner (board-#2 photos, 'Д1' ink stamp); drives D59/ЛН1 osc -- nets SIM_ONLY, not wired here"
       },
       "value": "РК-171"
+    },
+    {
+      "ref": "CT1",
+      "type": "C_TRIM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "prov": {
+        "type": "photo",
+        "refdes": "photo",
+        "pins": "trimmer cap (8811 disc, КТ4-23-class) beside the РК-171 crystal (corner photos); osc tuning network; real schematic ref unknown -> CT1 placeholder"
+      },
+      "value": "КТ4-23"
     }
   ],
   "nets": {
