@@ -222,3 +222,27 @@ unlike notch-down D36/D37/D33 → orientation truly per-chip (sweep required). T
 right of D38 = the D35-area video divider (R35 330 + 910) from the schematic.
 Endpoint catalog grows to 8 solid points. DB5/DB6 router casualties pre-routed in the generator
 (deterministic freerouting confirmed: identical results across "re-rolls").
+
+## THE MULTIMETER SESSION SHEET (closes the triage — ~20 min with a beeper)
+The 8 cataloged solder endpoints, with board-frame coordinates (component side, X1 top-left):
+| # | Point | Where (mm) | Landmark |
+|---|-------|-----------|----------|
+| E1 | D37 gate-1 input (pin 1) | (268, 208) | КР1533ЛА3 8906, notch-down, bottom-right pin |
+| E2 | pad beside E1 (pin-2 side) | (268, 206) | same chip, next pad |
+| E3 | via etched "11" = net CLKG_D36 | ~(263, 145)? | right of К555КП12 pair, etched digit 11 |
+| E4 | X1/X2-gap top-edge pad | ~(112, 27) | between the blue connectors, near etch "17" |
+| E5 | 33К pad at D11's right | ~(212, 95) | serial-shaping resistor by ВВ51А |
+| E6 | wire toward D93/ВГ93 | off-frame right of E5 | follow the long wire from E5's photo |
+| E7 | via right of D38 pins 3-5 | (256, 174) | КР531ЛА1 8702, dot-up, right column |
+| E8 | pad lower-left of D38 | (247, 180) | same photo, stripped wire end |
+Also: the frame-int test posts "1"/"2" at D35 (≈(262,228)) and D37 pin 3 (the spare gate's output,
+(268, 205) third-from-bottom right) — probe these against E1-E8 too.
+**Protocol:** continuity-beep each Ex against every other + against D37.3 + posts 1/2 (~40 quick
+touches). Record pairs → each confirmed pair = one complete ECO wire → I diff against board.json
+and either absorb (already-in-netlist) or add as `[photo-traced ECO]` + reroute.
+
+## ECO hypothesis (to test with the dump + beeper)
+All four touchpoints live in the clock/timing circuit. Most plausible story: the factory re-derived
+a timing qualification — e.g. the FRAME INT (or a DRAM refresh/slot strobe) needed gating against a
+mesh phase that the etched revision lacked: signal(s) → D37 spare NAND (E1/E2 in) → pin 3 out →
+via etch to the frame-int/STB region (E7/posts). The РЕ3 dump + continuity pairs decide.
