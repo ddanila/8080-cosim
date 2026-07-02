@@ -86,12 +86,16 @@ module juku_top (
 `else
     assign sclk_i = osc;
 `endif
-    // STSTB = SYNC-qualified strobe: the discrete clock subsystem makes STSTB from SYNC (exact gate
-    // un-traced -> feed SYNC into one of D38's deferred inputs [assumed]). With clkg_d33=d39_y=1 and
-    // i3=1, ststb_n = ~sync -> the 8238 latches the status byte at SYNC's rising edge (T1 start).
-    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(1'b1), .i3(d39_y), .y(ststb_n));
-    // D38 (ЛА1) STB gate [traced 2026-07]: pin9<-D33.8(clkg_d33), pin12<-SYNC, pin10<-D39.11(d39_y),
-    // pin13 tied high (4th NAND leg). ststb_n = ~(clkg_d33 & sync & d39_y) -- SYNC-qualified strobe.
+    // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
+    // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
+    wire stb_d38;
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(1'b1), .i2(1'b1), .i3(d39_y), .y(stb_d38));
+    // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
+    // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
+    // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
+    wire d13_res;
+    tl2_dual  U_D13 (.i1(1'b1), .i2(1'b1), .i4(1'b1), .i5(1'b1), .o6(d13_res),
+                     .i9(sync), .i10(1'b1), .i12(1'b1), .i13(1'b1), .o8(ststb_n));
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),

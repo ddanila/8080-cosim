@@ -129,5 +129,9 @@ resolve first:
 - **D30 (ready)** + D13's reset output land on `ready`/`reset_sys`, which the boot-tb **forces**
   (boundary) — so those *can* be added footprint-safely, but locating their exact pins needs the
   CPU-sheet crops (D1/D13/D30 sit together; Φ1/Φ2 arrive from Sheet-2, so the CPU block is elsewhere).
-**Loop policy:** defer D13 (STSTB reconciliation) for a focused pass; continue with boot-safe
-functional chips (D50/D51 muxes, D9, D41/D34) and the serial block, which don't touch the strobe path.
+**RESOLVED (2026-07):** STSTB reconciliation DONE. D13 (ТЛ2 dual Schmitt NAND) is now the modeled
+8238 status-strobe source: section B `ststb_n = ~sync` -> D5 STB(pin1); section A = RESIN Schmitt ->
+RES (boundary). D38 (ЛА1) re-homed to a clock-mesh strobe (no SYNC input, output = boundary stb_d38).
+SYNC now routes to D13, not D38 -- matching the scan (`convention-WRONG:scan-says-D13` net corrected).
+Modeled ~sync (Φ-gating tied high) so the boot stays **byte-identical** (all 6 guards green). D13 is a
+net-modeled footprint. LVS 80 mapped instances, IN SYNC.

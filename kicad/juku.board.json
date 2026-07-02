@@ -1991,6 +1991,27 @@
         "refdes": "scan",
         "pins": "unpopulated ROM socket [CS decode not traced]"
       }
+    },
+    {
+      "ref": "D13",
+      "type": "TL2",
+      "pins": {
+        "1": "I1",
+        "2": "I2",
+        "4": "I4",
+        "5": "I5",
+        "6": "O6",
+        "9": "I9",
+        "10": "I10",
+        "12": "I12",
+        "13": "I13",
+        "8": "O8"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "ТЛ2: secA=RESIN Schmitt->RES, secB=STSTB->D5.STB (cpu-core.md)"
+      }
     }
   ],
   "nets": {
@@ -4340,7 +4361,7 @@
       "src": "scan",
       "nodes": [
         [
-          "D38",
+          "D13",
           "8"
         ],
         [
@@ -5905,8 +5926,8 @@
           "19"
         ],
         [
-          "D38",
-          "12"
+          "D13",
+          "9"
         ]
       ]
     },

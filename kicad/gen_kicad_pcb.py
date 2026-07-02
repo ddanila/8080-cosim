@@ -93,6 +93,7 @@ PLACE = {
     'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
     'D42':(142,281,90),'D43':(170,281,90),'D58':(197,281,90),
     'D37':(261,200,0),   # ЛА3 D42-serial inverter (net-modeled this session), between D36/D33
+    'D13':(30,223,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
 # array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.
@@ -247,7 +248,7 @@ def main():
     silk_box(46, 174, 58, 196, 'D107')                        # CPU cluster, below D4
     # lower-left corner (read off the drawing): D30/D13/D105 = a horizontal column at x≈30; D52
     # vertical at x≈59. (Corrects earlier D30 orientation + D52 y, and adds D13/D105.)
-    for y0, ref in [(203, 'D30'), (219, 'D13'), (236, 'D105')]:
+    for y0, ref in [(203, 'D30'), (236, 'D105')]:   # (D13 now a net-modeled footprint -- see PLACE)
         silk_box(20, y0, 40, y0 + 8, ref)
     silk_box(53, 226, 65, 248, 'D52')
     # baud-rate chain re-read from a tight crop: a row at y≈82 (BELOW the y55 band, not the y54 I

@@ -224,6 +224,14 @@ module ln1_dual  (input wire i9, i5, output wire o8, o6);   // D33 ЛН1: the tw
     assign o6 = ~i5;    // section pin 5 -> pin 6  = D36.4  (pin 5 <- D40.Q2, traced 2026-07)
 endmodule
 module la12_gate (input wire a, b, output wire y); assign y = ~(a & b); endmodule // D36 ЛА12 NAND gate
+// К155ТЛ2 dual 4-input Schmitt NAND. D13 (Sheet-1 CPU core): section A = RESIN Schmitt -> RES (reset,
+// boundary); section B = the DISCRETE 8238 status-strobe generator -- the board has no 8224, so STSTB
+// = ~(SYNC & Φ...) is made here and drives D5 STB (pin 1). Per cpu-core.md the real D5.STSTB source is
+// D13, NOT the clock-mesh D38. Modelled ~sync (the Φ-gating tied high) so the boot stays byte-identical.
+module tl2_dual (input wire i1, i2, i4, i5, i9, i10, i12, i13, output wire o6, o8);
+    assign o6 = ~(i1 & i2 & i4 & i5);      // section A -> RES (RESIN on i5; boundary)
+    assign o8 = ~(i9 & i10 & i12 & i13);   // section B -> STSTB (SYNC on i9; = ~sync)
+endmodule
 module la1_gate  (input wire i0, i1, i2, i3, output wire y);                  // D38 ЛА1 4-input NAND
     assign y = ~(i0 & i1 & i2 & i3); endmodule
 
