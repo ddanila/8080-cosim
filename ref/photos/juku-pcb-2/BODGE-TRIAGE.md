@@ -92,3 +92,12 @@ Photo 10 (CPU area):
   CPU — our PLACE has D4 vertical; placement nuance to fix), К555КП14 8904 + К555ИЕ7 ×3 8908 groups ✓.
 - Wires here: singles at the РЕ3 socket + РТ4 pin areas; the 3-wire harness (H2?) runs down between
   КП14 and ТМ2/ТЛ2 toward the crystal corner. Endpoint pin-reads = next.
+
+## Iteration 6 — X1/X2-gap wire noted; power-widening interleave PARKED (WIP)
+Photo 202047595 turned out to be the X1/X2 mounting closeup (not the crystal corner): one ECO single
+solders to a top-edge pad in the X1-X2 gap (near the etched "17" / penned "11") — endpoint cataloged.
+Interleave attempt (power-trace widening to match the original's thick runs): the widen→DRC→narrow
+cycle stalls on a self-inconsistent DRC count (the script claims violations on a board that greps
+clean); isolation confirmed the committed board is clean and pcbnew round-trips safely. Parked as
+kicad/widen_power.py (WIP header documents the state); the right fix is geometric pre-checking
+(nearest-copper distance) instead of DRC round-trips. Board left untouched (restored from git).
