@@ -223,7 +223,15 @@ module juku_top (
     kp14_mux U_D49 (.a(BA[7:4]), .b(BA[15:12]), .sel(phi1), .en_n(1'b0), .y(MA[7:4]));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
-    rascas_dec U_D53 (.a(ram_sel_n), .b(phi1), .c(phi2), .g(mem_active), .y_n({rc_nc, cas_n, ras_n}));
+    // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties
+    // them to Φ1/Φ2 -- the traced/boot config), C grounded, G1 = RAM_SEL. mem_active stays as the
+    // sim-only qualifier (SACTIVE).
+    wire [3:0] d52_y; wire e2_com, e3_com;
+    kp14_mux  U_D52 (.a(4'b0), .b(4'b0), .sel(1'b0), .en_n(1'b1), .y(d52_y));   // video/µP addr mux [ins deferred]
+    jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
+    jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
+    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(ram_sel_n), .sactive(mem_active),
+                      .y_n({ras_n, cas_n, rc_nc}));
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;

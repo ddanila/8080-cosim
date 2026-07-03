@@ -24,7 +24,8 @@ import netlist_from_yosys, netlist_from_kicad, netlist_from_board
 # check is not weakened, only made honest about the sim scaffolding.
 SIM_ONLY = {"SCLK", "KBD_EN", "KBD_PRESSED", "KBD_SHIFT", "KCOL", "KBIT", "FRAME_TICK",
             "VA", "VQ",   # VA/VQ = the sim-only 2nd (video) read port on the РУ5 (arbitration = V3)
-            "PHSEL"}      # PHSEL = sim-only divider phase bit into D35 (self-clocking waveform lock)
+            "PHSEL",      # PHSEL = sim-only divider phase bit into D35 (self-clocking waveform lock)
+            "SACTIVE"}    # SACTIVE = sim-only mem_active qualifier into D53 (structural inputs now per sheet-2)
 
 def canon_hdl_pin(p):                 # ior_n->IOR_N ; portc_lo->PORTC_LO
     return p.replace("[", "").replace("]", "").upper()

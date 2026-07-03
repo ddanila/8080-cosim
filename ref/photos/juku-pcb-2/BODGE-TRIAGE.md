@@ -826,3 +826,20 @@ The purchased-parts list for ДГШ5.109.006, extracted and cross-checked agains
   extracted in full (ADR 117-124, DAT 129-132, control 102-111 B/C) — solder "102" = AMWC corridor.
 - Route v56: 1156/1156, 0 unconnected, 0 electrical DRC (PHI1/PHI2TTL/MA7/ADRB each lost one roll
   in v54/v55 — the KP12A nudge cleared it).
+
+## Iteration 63 — cheap fixes + the D53/D52/E2/E3 netlist session (LVS 161, boot PASS)
+Corrections 1-2 (re-zooms): **D97 = ONE К561ТВ1** (sections .1/.2 -- my 'D87' was a misread;
+D88 = the one ТМ2 likewise) ✓ BOM count holds. **D99+D100 = TWO ИР9** unambiguous on the sheet --
+the BOM's 'x1' is a BOM error (schematic wins). **MX = D52 definitively** (КП14 label crisp);
+КП14 = 74S258-class (Y=4/7/9/12) -- which exposed that the model's KP14_MUX pinmap was wrong
+(Y on 10-13). D48/D49 net pins renumbered to the real pinout.
+Netlist session (3+4):
+- **D53 reconciled to sheet-2**: real 74S138 pinout (A/B/C=1/2/3, G1=6, V0-V3=15/14/13/12);
+  A/B now fed by the **E2/E3 configuration jumpers** selecting between the **D52 КП14 mux**
+  (video/µP address) and Φ1/Φ2 (the traced/boot 2-3 position -- jumper3 model passes Φ, so the
+  boot stays byte-identical); C grounded; G1=RAM_SEL; RAS = V3(12) [wire 11], CAS = V2(13)
+  [assumed]; R49-R52 100Ω are LVS-invisible series parts (ledger). mem_active became the SACTIVE
+  sim-only qualifier (SIM_ONLY allowlist).
+- **D52/E2/E3 net-modeled and placed** (D52 at (238,225) beside D53; E2/E3 pin-header jumper
+  footprints at (247,237)/(247,241)). Board: 165 footprints, 181 nets.
+- **LVS IN SYNC (161 matched, was 157); BOOT-CHECK PASS.** Route v57 in flight.
