@@ -231,3 +231,23 @@ NEXT SESSION = SHEET-2 RAIL-CODE REGISTRY: bundle-aware crops of each vertical r
 (source pin, dest pins) table BEFORE any rewiring. Then one consistent commit: D42/D43
 input rewire (+BSEL removal), D50/D51 A/B mapping, S3+R40-45+E13/E14 components, G-enable
 source, MA pin-order fix with va-path treatment.
+FINDING 24 -- SHEET-2 RAIL-CODE REGISTRY (session 2) + ARCHITECTURE RESOLVED:
+TWO vertical bundles co-run with same code numbers: (a) BA rails (codes 1-16 = A0-A15),
+(b) video-counter bundle (codes 1-16 local: D44->1-4, D45->5-8, D46->9-12, D47->13-16).
+MUX TABLE (code|pin, from reg_* crops):
+  D48 (CPU): A1-A4 <- BA {1|2, 2|14, 3|11, 4|5}; B1-B4 <- BA {10|3, 14|13, 12|10, 11|6}
+  D49 (CPU): A <- BA {5..8}; B <- BA {13|3, 15|13, 16|10, 9|6}
+  D50 (vid): A1-A4 <- VA {1,2(extrap), 3|11, 4|5}; B <- VA {10|3, 14|13, 12|10, 11|6}
+  D51 (vid): A <- VA {5|2, 6|14, 7|5, 8|11}; B <- VA {13|3, 15|13, 16|6(?), 9|10(?)}
+  => COLUMN SCRAMBLE IDENTICAL on both pairs: col bits order {*9,*13,*11,*10 | *12,*14,*15,*8}.
+  Behaviorally neutral (same cell mapping CPU & video) -- THE safe recipe for the pin-accurate
+  rewire: apply drawn A/B/Y orders to ALL FOUR muxes at once + route the HDL video fetch
+  through the same mapping (or permute dram va indexing equally). Earlier boot failure =
+  one-sided permutation, now explained.
+E13 = 4 posts: 1-3 jumpered, 2->node A(+5), 4->GND; post1 <- code 8 zone (VA7/BA7 strap --
+32/64K video size?). D51.S <- separate post (E14 zone), D50.S <- wire 10 (D41.QA).
+D42 ins <- VA {8,7,6,5} = D45.QD-QA; D43 ins <- VA {4,3,2,1} = D44.QD-QA (video-state latches).
+STILL OPEN: G-enable sources for each pair (video-cycle alternation), D47 preset codes 3-6
+namespace (S3 vs VA), D48/D49 S source, D44 C1 clock source chain.
+NEXT: implement the one-commit rewire: BSEL removal + D42/D43 <- counters; S3+R40-45+E13/E14
+components; all-four-mux pin-accurate A/B/Y + va-path treatment; then G/CK/LD sources.
