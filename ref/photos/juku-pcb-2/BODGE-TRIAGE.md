@@ -937,3 +937,13 @@ the revised РЕ3 set. Content = one-cold active-low select sequences over the 0
 sim-only until the D8/D9 coupling is verified. LVS IN SYNC, BOOT-CHECK PASS.
 Board: v63-v66 rolls at 1-4 unrouted (density edge); v67 running on the new
 **2.2.4+combine-fix+40-pass-patience** build (local-2.2.4-fix branch + patience cherry-pick).
+
+## Iteration 69 — v68 CLEAN with the official refdes + live firmware; E2/E3 placement settled
+The routing squeeze after the .009 renames traced to the D52_Yx 2-node nets hauling across the
+clock zone -- E2/E3 moved beside D52 (224,239)/(224,247) (the Φ nets are multi-drop and route
+freely from anywhere). **Route v68: 1170/1170, 0 unconnected, 0 electrical DRC.** The
+2.2.4+combine-fix+40-pass-patience jar was built en route (freerouting-2.2.4-patient.jar,
+local-2.2.4-fix branch) -- kept as the fallback router; the placement fix made it unnecessary here.
+BOARD STATE at the milestone: 166 footprints (official .009 refdes throughout), 189 nets, LVS IN
+SYNC (167 matched), BOOT-CHECK PASS, .117 firmware live in D8's re3_prom, both РЕ3 tables + the
+official BOM archived in-repo.
