@@ -88,3 +88,13 @@ FINDING 7 (crops s1_d9sel + s1_d8zone): DEFINITIVE partial reads of the decode c
   CS_D54/55/57 nets -- while the R21-28 rails belong to the parallel EPROM column. The 7-rail
   bundle feeding D10.CS etc = D9 outs Y0-Y3+ after all. Our board D9 IO-CS nets likely OK.
   Remaining: confirm D9's E/V1/V2 gating (IORD/IOWR qualified how?) + the src-13 chip.
+FINDING 8 -- D27 = X2 PARALLEL PORT, complete (crops s1_d26b/s1_d27c/s1_x2pc):
+PA0-7 (pins 4,3,2,1,40,39,38,37) -> X2 codes 208,206,201,202,204,203,205,207 (PA1/PA5 digit
+pair uncertain: both read ~206; 203 assigned to PA5 by elimination)
+PB0-7 (18..25) -> 221,223,225,226,224,222,220,218
+PC0-7 (14,15,16,17,13,12,11,10) -> 213,215,217,219,211,212,209,210
+IMPLEMENTED: X2 connector + 24 nets; ppi_8255 grew a real pc[7:0] port (portc_lo retired);
+mem_mode now = D26 pc[1:0]. LVS IN SYNC (169 core + 45 connector-boundary), boot PASS.
+Remaining sheet-1 threads: D26 B4 row destination (contrdat pair), D6 RAM/REV/ROE net
+destinations, D8 РЕ3 output side (bank selects -> sheet 2), wires 17/18 reset chain zone,
+D9 E/V1/V2 gating source.

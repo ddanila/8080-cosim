@@ -279,14 +279,16 @@ module juku_top (
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries
+    wire [7:0] ppi0_pc;                // D26 Port C: bits 1:0 = memory mode, 2-6 = floppy ctl
+    assign mem_mode = ppi0_pc[1:0];
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .pa(kbd_pa), .pb(8'hFF),
-                      .reset(reset_sys), .portc_lo(mem_mode),
+                      .reset(reset_sys), .pc(ppi0_pc),
                       .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
                       .kcol(kbd_kcol), .kbit(kbd_kbit));
     ppi_8255  U_PPI1 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .pa(), .pb(8'hFF),
-                      .reset(reset_sys), .portc_lo(),
+                      .reset(reset_sys), .pc(),
                       .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kcol(4'b0), .kbit(3'b0));
     // PIT cascade per MAME (docs/mame-interface-map.md): D54 horiz -> D55 vert -> FRAME INT.
     // 1 MHz = D40 QD (the same /16 tap that feeds the D37 latch chain, net LATCH_B); 2 MHz =
