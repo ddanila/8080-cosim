@@ -35,3 +35,8 @@ whether an ИД7 section or РТ4/РЕ3 output drives the peripheral CS pins). A
 BOM-x1 К555ИД7 mean sheet's ROM decoder = board D9, and IO selects come from elsewhere
 (D8 РЕ3 .117? second half of something?). NEXT CROPS: D10 CS origin (trace left from D10.1);
 D6 V1/V2 enable source; then D26/X9 codes harvest (2880,1800)-(3510,2880).
+CHECK (crop s1_d10cs.png): D10 ВН59 IR pin row verified = our netting (25:IR7 24:IR6 23:IR5
+22:IR4 18:IR0 19:IR1 21:IR3 20:IR2), D0-D7=11..4 ✓, D11 below w/ CS=11 ✓. D10.CS(pin 1) row is
+just ABOVE this crop -- next crop (1450,2100)-(2050,2350) to catch the CS pin + trace the select
+rail left to its source chip (candidates: D105/D103 gate pair at display~(300-330,745) =
+orig ~(900-990,2235)). IO-select source still UNRESOLVED.
