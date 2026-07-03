@@ -40,3 +40,8 @@ CHECK (crop s1_d10cs.png): D10 ВН59 IR pin row verified = our netting (25:IR7 
 just ABOVE this crop -- next crop (1450,2100)-(2050,2350) to catch the CS pin + trace the select
 rail left to its source chip (candidates: D105/D103 gate pair at display~(300-330,745) =
 orig ~(900-990,2235)). IO-select source still UNRESOLVED.
+FINDING 3 (crop s1_cssrc.png): D10.CS(1) is fed from a horizontal rail out of a TOP-LEFT
+bundle of ~7 select rails (the peripheral CS bus). Left neighbor: **D105 К155ЛА3 (&) output
+pin 6** joins this zone (IO-select qualifier gate?). D10.INT(17) exits right on its own rail.
+The select-bus origin is ABOVE: next crop (1200,1700)-(2050,2100) to find the decoder that
+sources the 7 CS rails (candidate: D2 РТ4 V1/V2/V3 second decode, or ИД7 second use).
