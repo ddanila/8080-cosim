@@ -34,12 +34,12 @@ PASSIVE_FP = {
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
-    'R19':(44.4,235.3,90),'VD5':(49.4,246,90),'C31':(23,242.5,90),'C32':(23,249.5,90),'C33':(24.5,258.5,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
-    'R3':(12,215.4,0),'R4':(16.9,223.8,90),'R20':(51.9,208.9,0),'C21':(51.7,220.5,0),'C1':(18.4,209.5,0),'S1':(63.5,197.9,0),
-    'R38':(121.4,263.5,90),'R39':(235,201.6,0),
-    'Z1':(79.4,258,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
-    'C73':(58,256,0),
-    'E2':(217.5,234,0),'E3':(217.5,227.5,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
+    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(51.7,205.9,0),'C1':(18.4,194.8,0),'S1':(63.5,183.2,0),
+    'R38':(121.4,249.1,90),'R39':(235,186.9,0),
+    'Z1':(79.4,243.5,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
+    'C73':(58,241.5,0),
+    'E2':(217.5,219.4,0),'E3':(217.5,212.9,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
@@ -140,14 +140,14 @@ PLACE = {
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
 # array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.
 _DCOLS = [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4]
-for _ry, _refs in [(173, range(75, 67, -1)), (198, range(83, 75, -1)), (223, range(91, 83, -1))]:
+for _ry, _refs in [(158.2, range(75, 67, -1)), (183.3, range(83, 75, -1)), (208.4, range(91, 83, -1))]:
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 # unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
-for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLACE[f'D{_i}'] = (_x, 98.5, 0)
+for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLACE[f'D{_i}'] = (_x, 83.4, 0)
 # serial-port cluster (net-modeled): REAL positions read off the emaplaat (relative to the D11
 # anchor): D104/D32/D14 = the column under the X3 serial connector; D12/D3 right of D11.
-PLACE['D104'] = (184.9, 75.2, 0); PLACE['D32'] = (198.9, 63.6, 0); PLACE['D14'] = (198.9, 73.9, 0)
-PLACE['D12']  = (206.3, 96, 0); PLACE['D3']  = (205.8, 111.5, 0)
+PLACE['D104'] = (184.9, 60.0, 0); PLACE['D32'] = (198.9, 48.3, 0); PLACE['D14'] = (198.9, 58.7, 0)
+PLACE['D12']  = (206.3, 80.9, 0); PLACE['D3']  = (205.8, 96.4, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -311,18 +311,18 @@ def main():
     for col in range(1, 33):
         px = 22.25 + (col - 1) * 2.5            # 32 cols * 2.5 = 77.5mm, centered at x=61
         for ri, row in enumerate('ABC'):
-            x1_pads[f'1{col:02d}{row}'] = (px, 22.0 + ri * 2.5)
-    make_conn('X1', 61, 24.5, x1_pads)
+            x1_pads[f'1{col:02d}{row}'] = (px, 6.6 + ri * 2.5)
+    make_conn('X1', 61, 9.1, x1_pads)
     # X3: serial edge connector (traced codes 23,29,30,32,33,51 among 2 rows; provisional 2x8 grid)
     x3_codes = [['23','29','30','32','33','51','35','37'], ['24','26','28','31','34','36','38','40']]
     x3_pads = {}
     for ri, rowcodes in enumerate(x3_codes):
         for ci, code in enumerate(rowcodes):
-            x3_pads[code] = (184.0 + ci * 2.5, 22.0 + ri * 2.5)
-    make_conn('X3', 193, 23.25, x3_pads)
+            x3_pads[code] = (184.0 + ci * 2.5, 6.6 + ri * 2.5)
+    make_conn('X3', 193, 7.85, x3_pads)
     # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
-    x8_pads = {str(59 + i): (34.0 - i * 5.0, 267.0) for i in range(6)}   # 62..59 read left->right on the drawing
-    make_conn('X8', 24, 267, x8_pads)
+    x8_pads = {str(59 + i): (34.0 - i * 5.0, 252.6) for i in range(6)}   # 62..59 read left->right on the drawing
+    make_conn('X8', 24, 252.6, x8_pads)
 
     # ---- UNTRACED footprints: photo/BOM-identified chips whose NETS aren't traced yet ----
     # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).
@@ -332,12 +332,12 @@ def main():
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
         'D94':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 33, 0),   # РЕ3 #2, socketed [photo]; progr. .092 -> rev .113/.117
-        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 191.5, 90),  # [emaplaat]  # ready ТМ2 [photo]
-        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    297.5, 158.1, 0),  # [emaplaat]  # video XOR [photo]
-        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  106.2, 173, 0),  # row-2 mux [emaplaat]  # video addr mux
+        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 176.8, 90),  # [emaplaat]  # ready ТМ2 [photo]
+        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    297.5, 143.2, 0),  # [emaplaat]  # video XOR [photo]
+        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  106.2, 158.2, 0),  # row-2 mux [emaplaat]  # video addr mux
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 70, 0),   # FDC [official in .009]
         'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 30, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
-        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 219.8, 90),  # below D13 [emaplaat]  # [.009 official]
+        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 205.2, 90),  # below D13 [emaplaat]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]
         'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 74, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]
@@ -394,7 +394,7 @@ def main():
     # PCB = 310 x 266 mm (owner MEASURED the real board). So edges: left 0, right 310, top 22,
     # bottom = top(22)+266 = 288. (The 279 measured earlier was the OUTER envelope incl. the video
     # jack X8 overhang -- not the PCB cut.) Chips read in the same frame sit correctly vs the top.
-    BX0, BY0, BX1, BY1 = 0.0, 0.0, 310.0, 279.0
+    BX0, BY0, BX1, BY1 = 0.0, 0.0, 310.0, 266.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))
@@ -412,9 +412,9 @@ def main():
         h.SetLayer(pcbnew.Edge_Cuts); h.SetWidth(pcbnew.FromMM(0.15))
         h.SetCenter(pcbnew.VECTOR2I(pcbnew.FromMM(hx), pcbnew.FromMM(hy)))
         h.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(hx + d/2.0), pcbnew.FromMM(hy))); board.Add(h)
-    mhole(10.2, 28); mhole(114.4, 28.7)   # top pair flanking X1 [emaplaat]
-    mhole(10.1, 150.5); mhole(300.3, 153) # mid-left / mid-right [emaplaat]
-    mhole(104, 265.8); mhole(199, 265.6)  # bottom pair [emaplaat]
+    mhole(10.2, 12.6); mhole(114.4, 13.3)  # top pair flanking X1 [emaplaat]
+    mhole(10.1, 135.6); mhole(300.3, 138.1) # mid-left / mid-right [emaplaat]
+    mhole(104, 251.4); mhole(199, 251.2)   # bottom pair [emaplaat]
 
     # top-edge expansion connectors X1/X2 -- non-electrical SILK OUTLINE annotations (read off the
     # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future

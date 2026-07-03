@@ -175,3 +175,9 @@ wire posts (sel): 12L(47.7,200.4) 11(148.2,127.1)<->(262.2,128.4) 2(99.2,223.5)<
   3(98.4,213.4)<->(280.4,130.6) 4(98.4,206.4)<->(284.6,127.5) 7/14(251,189.2) 20(199,90.8)
 FDC quadrant (owner truth, unchanged): D93 D94 D100 D98 D106 D28 D96 D95 D97 D101 D99 D102
 notch pass pending: ROM row notch-DOWN, DRAM notch-UP per drawing
+
+## FRAME CORRECTION (owner: PCB = 310 x 266, 100% confident; "279*" = envelope incl.
+connector overhang). True mapping: y_pcb = y_harvest*1.0042 - 15.54 (PCB top edge sits
+15.5mm below the drawing's envelope-top line; X1/X2/X3 bodies overhang the top cut,
+X8/X9 overhang the bottom). All APPLY-table y values are in the OLD harvest frame --
+subtract per the formula. gen_kicad_pcb.py already carries the corrected values.
