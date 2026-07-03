@@ -93,7 +93,7 @@
     (via "Via[0-1]_600:300_um")
     (rule
       (width 200)
-      (clearance 250.1)
+      (clearance 200.1)
       (clearance 50 (type smd_smd))
     )
   )
@@ -2225,7 +2225,7 @@
       )
       (rule
         (width 200)
-        (clearance 250.1)
+        (clearance 200.1)
       )
     )
   )

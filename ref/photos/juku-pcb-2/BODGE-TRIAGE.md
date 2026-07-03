@@ -1045,3 +1045,17 @@ LVS/boot untouched (placement only). Route v77 rolling on the new floorplan.
 Pending: notch-orientation pass (ROM row notch-DOWN, DRAM notch-UP per drawing); decap C35-C72
 re-seat onto the drawing's cap rows; D51-row (row-2) refdes D50/D51/D48/D49 mux nets for rows
 2-4 remain unmodeled (sockets only).
+
+## Iteration 74 — ROUTING PAUSED until netlist freeze (owner decision); notch audit banked
+Route economics on the true-density floorplan: ~14 min/pass, 1-2 h to converge, and any
+netlist/placement change discards the result. v78 (0.25mm clearance) and v79 (0.2mm) both
+showed slow monotone convergence (419->175 by pass 5; 340->243 by pass 2) -- the board DOES
+route, just slowly, which itself corroborates why the factory used the numbered wires as a
+3rd layer. Decision: no more route rolls until the netlist is FINAL; then one route campaign
+(notch flips + decap rows + all pending placement edits batched in).
+Banked for that campaign: the notch-orientation audit (docs/emaplaat-harvest.md) -- ~40 flips
+(ROM row + bottom-band verticals notch-down, DRAM row3 faces the cap channel, horizontals
+mostly notch-right), ~25 confirmed keeps.
+Netlist-freeze gap list: FDC quadrant nets (biggest), X2/X9 connector nets, DRAM bank CAS
+decode, wire-12 driver + D98 reset chain, D8->D9 coupling (retire SA/SB/SC sim pins),
+sheet-1 keyboard zone, X4/X5 pinouts.
