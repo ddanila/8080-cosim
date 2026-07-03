@@ -50,3 +50,12 @@ wire 19 (MEMW, ВК38-26<->ЛА3-2) drawn here ✓; D35 ЛН5 sect 1->2 = "-WAIT
 E8-1 (WAIT config jumper! new). Select-bus origin NOT in this crop -- the 7 rails come from
 higher: next crop the D2 РТ4 zone (690,1770)-(1260,2340) and the area directly above
 (1200,1200)-(2050,1700). Rails labeled 6/5 pass through vertically.
+FINDING 4 (crop s1_csbus2.png, orig (1200,1200)-(2050,1700)): D5 (ВК38) strobe fan-out with
+WIRE NUMBERS: INTA(23)->wire5, I/DRD(25)->wire4, I/OWR(27)->wire3, MRD(24)->wire1, MWR(26)->wire2
+(long DASHED run right = монтажный провод convention on this sheet!). This decodes the numbered
+timing wires 1-5 = MRD/MWR/IOWR/IORD/INTA. => D38 sect-2 LOAD-chain inputs ("timing wires
+4/2/1/15" boundaries in HDL) are now identifiable: IORD, MWR, MRD + wire15.
+Gates: D7 ЛА3 sect (9,10 -> 8) out joins rail 8/7 zone; D105 ЛА3 sect (1,2 -> 3) with in-2 fed
+from D13 ТЛ2 out-4 node, in-1 from the MWR row; D105 sect (12,13 tied -> 11) = inverter off
+wire-1 (MRD). Rails "7"/"8" here relate to beeper wires 7/8 (ВМ80-22<->ЛН5-10, ВК38-1<->ЛА1-8).
+NEXT: D2 РТ4 V1/V2/V3 decode zone crop (690,1770)-(1260,2340) for the 7-rail IO CS bus source.
