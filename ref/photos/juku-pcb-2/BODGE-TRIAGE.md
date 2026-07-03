@@ -804,3 +804,25 @@ into the processor module — the РЕ3/РТ4/ROM programming set; dump procedur
 - **Configuration-jumper family**: E2/E3 (D53 A/B source select), E13 (4-position, video addr
   zone), E10 (sheet 3) — physical solder links, to be footprinted in a future pass.
 - D44-D47 ИЕ7 + D48/D49 КП14 schematic pinouts confirm the model's video-address chain wiring ✓.
+
+## Iteration 62 — BOM (ДГШ3.031.006 ВП) fully mined; IO decoder refdes CORRECTED (D2 -> D9)
+The purchased-parts list for ДГШ5.109.006, extracted and cross-checked against the model:
+- **Near-total count verification**: КР580: ИК80А=1, ИР82=1, ВА86=3 (D4/D29/D107 ✓), ВИ53=3,
+  ВК38=1, ВН59=1, **ВВ51А=2** (D11 + the tape USART ✓), ВВ55А=2; К555: ИЕ7=4, ИЕ10=1, **ИР16=3**
+  (D41/D42/D43 ✓), ЛА3=3 (D7/D37/D39), ЛЕ4=1, ЛП5=1, ТЛ2=1, ТМ2=1; К531: ИД7=1, ИЕ17=1,
+  **КП14=4** + **К555КП14=1** (the 5th mux = the D53-select MX — series mix EXPLAINED);
+  К170 АП2=2/УП2=1; К561 tape cluster ЛН2=2 (D3+D94 ✓), ЛА7=1, ЛП2=1, ТМ2=1, ИЕ11=1, ИМ1=1,
+  ТВ1=1 (!), ИР9=1 (!) — the last two conflict with my two-refdes sheet-3 reads, flagged;
+  565РУ3Г=32 (full population was the spec; board #2 carries 8); К554СА3=1.
+- **Programmed-chip drawings decoded**: К573РФ5 ×8 = ДГШ5.106.040-.047 (one per ROM socket!),
+  КР556РТ4 ×2 = .037/.038, К155РЕ3 ×1 = .039. **The original module had ONE РЕ3, ONE АГ3, THREE
+  ВА87** — the board's extra РЕ3/АГ3×2/ВА87×2 are '87 FDC-revision parts, closing those puzzles.
+- **Model correction: the IO decoder (К555ИД7, BOM x1) is D9, not D2** — physical D2 is the 2nd
+  РТ4 PROM (drawing .038, socketed by the CPU ✓ photo). All 14 decoder nets renamed D2->D9 in
+  board.json/map; D9's footprint is now the netlisted decoder at the bus-band spot (122,136);
+  D2 stays as the untraced РТ4 socket at (83,158). **LVS IN SYNC (157), BOOT-CHECK PASS.**
+- Solder-side digit harvest round 1: second "18" etch at comp ~(277,56) — net 18 runs vertically
+  through the ЛП11 zone (PIT clock-link family); E15/ВК38 zone shows no digits. Sheet-1 X1 table
+  extracted in full (ADR 117-124, DAT 129-132, control 102-111 B/C) — solder "102" = AMWC corridor.
+- Route v56: 1156/1156, 0 unconnected, 0 electrical DRC (PHI1/PHI2TTL/MA7/ADRB each lost one roll
+  in v54/v55 — the KP12A nudge cleared it).
