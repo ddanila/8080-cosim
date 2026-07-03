@@ -107,3 +107,13 @@ rail (post 13) matches beeper wire 13 = D13.1 <-> D92.1 (W13 net already correct
 the RC on D13.1. D9.V3 <- rail 6. LVS IN SYNC, boot PASS.
 Round-2 remaining: D6 V1/V2 enable source, D8 РЕ3 output destinations (sheet 2), D26 B4 row,
 wires 17/18 reset switch chain, D9 E/V1/V2 exact gating (E<-top rail, V3<-rail 6).
+FINDING 10 (crop s1_d8out): D8 РЕ3 outputs D0-D7 (pins 1,2,3,4,5,6,7,9) each carry an
+R21-R28 1K pullup to node-A (+5V rail) -- the R-pack beside D8 = its OUTPUT pullups (earlier
+"EPROM CS pullups" attribution superseded; physical placement (79-98,104-112) beside D8 ✓).
+The 8 outputs head to a consumer with input pins 5,6,7,8,1,2,3,4 (per-row dest labels).
+HYPOTHESIS: the ИР16 latch pair D42/D43 (74-series parallel inputs live on pins 4-7) = the
+bank-select LATCH chain (D37 LATCH gates + RAM SEL family). VERIFY next: follow the vertical
+bus from (2330,620) down; crop (2300,620)-(2700,1100). Right edge of crop = D10's pin ladder
+(rail-code | pin table) for reference.
+D10 dest-pin table fragment (rail->pin): 13->2? 17->23, 11->21, 10->24, 9->25, 8->3, 7->4,
+6->5, 5->6, 4->7, 3->8, 2->9, 1->10 [record; decode later].
