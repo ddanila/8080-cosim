@@ -781,3 +781,12 @@ Sheet-2 PIT column (D54/D55 ВИ53 timers), channels read in full:
   (collisions exist: "7" = 1MHz on sheet 2 vs Φ1's sheet-1 ref) — the etched-number Rosetta holds
   net-by-net but needs a dedicated cross-reference table pass (nets 11/18/41/102 status: 41=SYNC
   solid, 2=VER RTR strong, 11=CLKG_D36 iter-8 proof stands, 18/102 open).
+
+## Iteration 60 — drawing index read: the quadrant glue has NO schematic; 11 PROM drawings found
+The ДГШ 3.031.006 ВС drawing index settles the КП12 hunt: the machine's drawing tree contains NO
+FDC module, and the title block shows revision ДГШ003-87 — our Э3 scans are the pre-revision
+originals while board 7.102.158 is the '87+ FDC-integrated build. **The ВГ93-quadrant TTL glue
+(КП12 ×2, АГ3 ×2-3, ЛП11, ИЕ7/ЛН3/ТМ2) therefore has no schematic in the archive** — placement is
+photo-done; nets are formally owner-gated (beeper/etch). Program step 2 closes at maximum
+desk-reachable depth. Bonus: **eleven programmed-chip drawings (ДГШ 5.106.037-.047)** documented
+into the processor module — the РЕ3/РТ4/ROM programming set; dump procedure updated with the refs.

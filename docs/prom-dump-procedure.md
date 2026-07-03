@@ -54,3 +54,13 @@ Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-
 3. **РТ4 D2 → real I/O decode**: replaces the `io_dec138` functional stand-in (D2's real part is a
    РТ4 per the board photos).
 4. **M2764 ×2**: validates (or forks) our ekta37 ROM image against this physical board.
+
+## Drawing cross-reference (found 2026-07-03, drawing index ДГШ 3.031.006 ВС)
+The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 … 5.106.047**, each
+"куда входит: ДГШ 5.109.006" (the processor module). These are the factory programming documents
+for the module's custom-content chips (РЕ3 ×2, РТ4 ×2 + likely the M2764 images and the '87-revision
+FDC-era additions). When the dumps are made, label each with its best-guess drawing number; if the
+paper drawings ever surface, they're the ground truth to diff against.
+Note: the index title block carries change "ДГШ003-87" — the archive's Э3 schematic sheets are the
+PRE-revision originals; board 7.102.158's FDC glue (the ВГ93 quadrant TTL) has no schematic in the
+archive, so its netlist comes only from the physical board (beeper/etch tracing).
