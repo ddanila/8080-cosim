@@ -329,6 +329,9 @@ def main():
     # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
     x8_pads = {str(59 + i): (34.0 - i * 5.0, 252.6) for i in range(6)}   # 62..59 read left->right on the drawing
     make_conn('X8', 24, 252.6, x8_pads)
+    # X9: keyboard connector, pins 1-14 (sheet-1 codes 901-914), bottom edge [emaplaat x~208]
+    x9_pads = {str(i + 1): (192.0 + i * 2.5, 262.0) for i in range(14)}
+    make_conn('X9', 208, 262, x9_pads)
 
     # ---- UNTRACED footprints: photo/BOM-identified chips whose NETS aren't traced yet ----
     # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).

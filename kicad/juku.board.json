@@ -480,12 +480,27 @@
         "30": "D4",
         "29": "D5",
         "28": "D6",
-        "27": "D7"
+        "27": "D7",
+        "4": "PA0",
+        "3": "PA1",
+        "2": "PA2",
+        "1": "PA3",
+        "40": "PA4",
+        "38": "PA6",
+        "37": "PA7",
+        "18": "PB0",
+        "19": "PB1",
+        "20": "PB2",
+        "21": "PB3",
+        "22": "PB4",
+        "23": "PB5",
+        "24": "PB6",
+        "25": "PB7"
       },
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "verified; WIRE 1 (beeper): pin 23 (PB5) -> X9 pin 9 (tape connector, drawing points 3-4)"
+        "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58)"
       }
     },
     {
@@ -3088,6 +3103,31 @@
         "type": "wire",
         "refdes": "BOM .009",
         "pins": "К555ЛЕ4 triple 3-NOR; pin 13 -> D7.1 [WIRE 11], pin 1 - D13.1 [WIRE 13]; rest untraced (Φ1/Φ2 gen candidate)"
+      }
+    },
+    {
+      "ref": "X9",
+      "type": "KBD_CONN",
+      "pins": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8",
+        "9": "P9",
+        "10": "P10",
+        "11": "P11",
+        "12": "P12",
+        "13": "P13",
+        "14": "P14"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "sheet-1 X9 codes 901-914",
+        "pins": "scan"
       }
     }
   ],
@@ -9690,6 +9730,174 @@
           "9"
         ]
       ]
+    },
+    "KBD_K2": {
+      "src": "scan sheet-1 (p58)",
+      "nodes": [
+        [
+          "D26",
+          "21"
+        ],
+        [
+          "X9",
+          "1"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_K0": {
+      "src": "scan sheet-1 (p57)",
+      "nodes": [
+        [
+          "D26",
+          "19"
+        ],
+        [
+          "X9",
+          "2"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_K1": {
+      "src": "scan sheet-1 (p56)",
+      "nodes": [
+        [
+          "D26",
+          "20"
+        ],
+        [
+          "X9",
+          "3"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_FK": {
+      "src": "scan sheet-1 (p55)",
+      "nodes": [
+        [
+          "D26",
+          "18"
+        ],
+        [
+          "X9",
+          "4"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_SHIFT": {
+      "src": "scan sheet-1 (p52)",
+      "nodes": [
+        [
+          "D26",
+          "24"
+        ],
+        [
+          "X9",
+          "7"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_CTRL": {
+      "src": "scan sheet-1 (p51)",
+      "nodes": [
+        [
+          "D26",
+          "25"
+        ],
+        [
+          "X9",
+          "8"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_CONTRDAT": {
+      "src": "scan sheet-1 (p50 OWNER-MEASURED)",
+      "nodes": [
+        [
+          "D26",
+          "23"
+        ],
+        [
+          "X9",
+          "9"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_STB": {
+      "src": "scan sheet-1 (p49)",
+      "nodes": [
+        [
+          "D26",
+          "37"
+        ],
+        [
+          "X9",
+          "10"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_SC0": {
+      "src": "scan sheet-1 (p48)",
+      "nodes": [
+        [
+          "D26",
+          "4"
+        ],
+        [
+          "X9",
+          "11"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_SC1": {
+      "src": "scan sheet-1 (p47)",
+      "nodes": [
+        [
+          "D26",
+          "3"
+        ],
+        [
+          "X9",
+          "12"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_SC2": {
+      "src": "scan sheet-1 (p46)",
+      "nodes": [
+        [
+          "D26",
+          "2"
+        ],
+        [
+          "X9",
+          "13"
+        ]
+      ],
+      "wire_link": true
+    },
+    "KBD_SC3": {
+      "src": "scan sheet-1 (p45)",
+      "nodes": [
+        [
+          "D26",
+          "1"
+        ],
+        [
+          "X9",
+          "14"
+        ]
+      ],
+      "wire_link": true
     }
   }
 }

@@ -394,12 +394,15 @@ endmodule
 // stimulus (kbd_*, opt-in via kbd_en so a kbd-off boot stays byte-identical); PPI1 ties it off.
 module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
                  output reg [1:0] portc_lo,
+                 output wire [7:0] pa,      // physical Port A pins (kbd scan SC0-3, AUDC, PREN, STB)
+                 input wire [7:0] pb,       // physical Port B pins (kbd data; unused by the sim path)
                  input wire kbd_en, kbd_pressed, kbd_shift,
                  input wire [3:0] kcol, input wire [2:0] kbit);
-    reg [7:0] regs [0:3]; reg [7:0] portc; reg [2:0] pb; integer i;
+    reg [7:0] regs [0:3]; reg [7:0] portc; reg [2:0] bsr_bit; integer i;
     reg [3:0] kbd_col_sel = 0;                  // last column the BIOS wrote to Port A
     initial begin for (i=0;i<4;i=i+1) regs[i]=0; portc=0; portc_lo=0; end
 
+    assign pa = regs[0];               // Port A latch drives the pins (mode-0 output)
     wire held    = kbd_en & kbd_pressed;
     wire kactive = held & (kbd_col_sel == kcol);
     wire [7:0] kbd_portb = {1'b1, ~(held & kbd_shift), 2'b00,
@@ -412,7 +415,7 @@ module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         if (A == 2'd2) begin portc = D; portc_lo = D[1:0]; end
         else if (A == 2'd3) begin               // BSR: set/reset one Port C bit
             if (D[7]) begin portc = 0; portc_lo = 0; end
-            else begin pb=(D>>1)&3'd7; if (D[0]) portc[pb]=1; else portc[pb]=0; portc_lo=portc[1:0]; end
+            else begin bsr_bit=(D>>1)&3'd7; if (D[0]) portc[bsr_bit]=1; else portc[bsr_bit]=0; portc_lo=portc[1:0]; end
         end
     end
 endmodule
