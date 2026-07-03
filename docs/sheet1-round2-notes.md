@@ -217,3 +217,17 @@ MAME order), Y7(7) -> CS7 (sheet 3, tape-USART / FDC on .009). Fixed in pins dic
 7 nets; LVS IN SYNC, boot PASS (logical order unchanged -- this was PHYSICAL-pin-only, i.e.
 exactly the class of bug only the PCB copper would have suffered).
 Y3(12) -> dest "4" = CS_D27 route [check]; CS7 free pin = D9.7 for the FDC scaffold.
+FINDING 23 (crops s2_d44in + s2_d46 + s2_muxin re-read) -- LABEL CONVENTION: refdes sits at
+the symbol BOTTOM (R row). Corrected counter output code map: D44 -> codes 1-4, D45 -> 5-8,
+D46 -> 9-12, D47 -> 13-16 (CO cascades D44->D45->D46->D47). CONSEQUENCE: D42 ИР16 ins
+(codes 8,7,6,5) = D45.QD-QA; D43 ins (codes 4,3,2,1) = D44.QD-QA -- the ИР16 pair latches
+the VIDEO COUNTER state (char/line position), NOT D8's bank byte. The sheet-1-derived
+BSEL0-7 nets are near-certainly WRONG (cross-sheet code coincidence); D8's real consumers
+are sheet-1-local (RAM/ROM gate zone). D44 details: parallel ins A/B/C/D GROUNDED (preset
+0); LD <- D34 ЛП5 XOR out(8); B1 <- node A; C1 <- rail from above. D47 ins <- codes 3,4,5,6
+(mixed D44/D45 taps?) or an S3-bundle collision -- unresolved.
+NEXT SESSION = SHEET-2 RAIL-CODE REGISTRY: bundle-aware crops of each vertical rail group
+(counter->mux column, S3 column, ИР16 column, E13/E14 junctions), building a code ->
+(source pin, dest pins) table BEFORE any rewiring. Then one consistent commit: D42/D43
+input rewire (+BSEL removal), D50/D51 A/B mapping, S3+R40-45+E13/E14 components, G-enable
+source, MA pin-order fix with va-path treatment.
