@@ -180,7 +180,10 @@
       "pins": {
         "12": "A",
         "13": "B",
-        "11": "Y"
+        "11": "Y",
+        "1": "A2",
+        "2": "B2",
+        "3": "Y2"
       },
       "prov": {
         "type": "scan",
@@ -482,7 +485,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "verified"
+        "pins": "verified; WIRE 1 (beeper): pin 23 (PB5) -> X9 pin 9 (tape connector, drawing points 3-4)"
       }
     },
     {
@@ -2042,7 +2045,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "ТЛ2: secA=RESIN Schmitt->RES, secB=STSTB->D5.STB (cpu-core.md)"
+        "pins": "ТЛ2: secA=RESIN Schmitt->RES, secB=STSTB->D5.STB (cpu-core.md); WIRE 12 (beeper): pin 2 wired to D37.4; WIRE 13: pin 1 wired to D92.1"
       }
     },
     {
@@ -3008,6 +3011,54 @@
         "type": "scan",
         "refdes": "scan",
         "pins": "sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.037 [dump pending]; drawing = .037 per the official .009 BOM"
+      }
+    },
+    {
+      "ref": "D50",
+      "type": "KP14_MUX",
+      "pins": {
+        "1": "SEL",
+        "15": "EN_N",
+        "2": "A0",
+        "5": "A1",
+        "11": "A2",
+        "14": "A3",
+        "3": "B0",
+        "6": "B1",
+        "10": "B2",
+        "13": "B3",
+        "4": "Y0",
+        "7": "Y1",
+        "9": "Y2",
+        "12": "Y3"
+      },
+      "prov": {
+        "type": "wire",
+        "refdes": "BOM .009",
+        "pins": "КР531КП14 video-addr mux; SEL(1) <- D41.QA [WIRE 10, beeper]; rest untraced"
+      }
+    },
+    {
+      "ref": "D92",
+      "type": "LE4",
+      "pins": {
+        "1": "A1",
+        "2": "B1",
+        "13": "C1",
+        "12": "Y1",
+        "3": "A2",
+        "4": "B2",
+        "5": "C2",
+        "6": "Y2",
+        "9": "A3",
+        "10": "B3",
+        "11": "C3",
+        "8": "Y3"
+      },
+      "prov": {
+        "type": "wire",
+        "refdes": "BOM .009",
+        "pins": "К555ЛЕ4 triple 3-NOR; pin 13 -> D7.1 [WIRE 11], pin 1 - D13.1 [WIRE 13]; rest untraced (Φ1/Φ2 gen candidate)"
       }
     }
   ],
@@ -5181,8 +5232,14 @@
         [
           "D91",
           "3"
+        ],
+        [
+          "D7",
+          "2"
         ]
-      ]
+      ],
+      "note": "WIRE 19 (beeper): D5.26 -> D7.2 physical wire",
+      "wire_link": true
     },
     "IORD": {
       "src": "scan",
@@ -5366,7 +5423,9 @@
           "E2",
           "3"
         ]
-      ]
+      ],
+      "note": "WIRE 7 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch",
+      "wire_link": true
     },
     "PHI2": {
       "src": "scan",
@@ -5383,7 +5442,9 @@
           "E3",
           "3"
         ]
-      ]
+      ],
+      "note": "WIRE 14 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch",
+      "wire_link": true
     },
     "PHI2TTL": {
       "src": "assumed",
@@ -5399,17 +5460,19 @@
       ]
     },
     "STSTB": {
-      "src": "scan",
+      "src": "wire",
       "nodes": [
         [
-          "D13",
+          "D38",
           "8"
         ],
         [
           "D5",
           "1"
         ]
-      ]
+      ],
+      "note": "WIRE 8 (beeper): D38.8 -> D5.1; the D13-secB stand-in retired",
+      "wire_link": true
     },
     "CS_D10": {
       "src": "prom",
@@ -6960,17 +7023,19 @@
       "src": "scan"
     },
     "SYNC": {
-      "src": "assumed",
+      "src": "wire",
       "nodes": [
         [
           "D1",
           "19"
         ],
         [
-          "D13",
-          "9"
+          "D38",
+          "12"
         ]
-      ]
+      ],
+      "note": "WIRE 9 (beeper 2026-07-03): physical wire link D1.19 -> D38.12",
+      "wire_link": true
     },
     "REV": {
       "src": "assumed",
@@ -9439,6 +9504,58 @@
           "24"
         ]
       ]
+    },
+    "W10_QA_SEL": {
+      "src": "wire",
+      "nodes": [
+        [
+          "D41",
+          "13"
+        ],
+        [
+          "D50",
+          "1"
+        ]
+      ],
+      "note": "WIRE 10 (beeper): D41.QA -> D50.SEL (video/µP mux select from the ИР16 chain)"
+    },
+    "W11_D7_D92": {
+      "src": "wire",
+      "nodes": [
+        [
+          "D7",
+          "1"
+        ],
+        [
+          "D92",
+          "13"
+        ]
+      ],
+      "note": "WIRE 11 (beeper): D7.1 <- D92.13 (ЛЕ4 NOR); H1-endpoint-B etch '11' = this wire's solder point"
+    },
+    "W13_D13_D92": {
+      "src": "wire",
+      "nodes": [
+        [
+          "D13",
+          "1"
+        ],
+        [
+          "D92",
+          "1"
+        ]
+      ],
+      "note": "WIRE 13 (beeper): D13.1 - D92.1"
+    },
+    "W12_D13_D37": {
+      "src": "wire",
+      "nodes": [
+        [
+          "D37",
+          "4"
+        ]
+      ],
+      "note": "WIRE 12 (beeper): D13.2 - D37.4 (recorded single-ended: joining two mapped INPUTS needs the wire's driver, unknown; D13.2 in prov)"
     }
   }
 }

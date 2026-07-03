@@ -962,3 +962,29 @@ The step-back task #1 (firmware -> address-map reverse engineering) closed in on
 - Route v70: **1172/1172, 0 unconnected, 0 electrical DRC.**
 The remaining structural-decode flip (retiring the sim-only selects) needs only the D8->D9
 coupling confirmation — one beeper pair or the D94 socket dump.
+
+## Iteration 71 — THE BEEPER SESSION (owner, 12 wires) — THE GRAND RESOLUTION
+The owner measured the harness pin-to-pin. **The "bodge wires" are the factory's documented
+wire-link set** — the schematic's numbered wires are физические монтажные провода (clock phases
+and timing run as wires, not etch). Left-Right pairs = board ground truth:
+| # | link | wire № | verdict |
+|---|---|---|---|
+| 1 | D26.23(PB5) - X9.9 | — | tape connector line [prov note] |
+| 2 | D13.2 - D37.4 | 12 | D37 sect-3 B-input source (net W12, single-ended until the driver is known) |
+| 3 | D1.22 - D35.10 | 7 | **Φ1 is a WIRE** (net flagged wire_link) |
+| 4 | D1.15 - D35.12 | 14 | **Φ2 is a WIRE** |
+| 5 | D1.19 - D38.12 | 9 | **SYNC -> D38.I1** — the model's assumed SYNC rewired D13.9 -> D38.12 [wire-grade] |
+| 6 | D13.1 - D92.1 | 13 | net W13 (D92's first nets) |
+| 7 | D41.13(QA) - D50.1(SEL) | 10 | **the ИР16 chain drives the video/µP mux select** (net W10; D50 promoted to a chip) |
+| 8 | D5.26(MEMW) - D7.2 | 19 | MEMW into D7 sect-2 (net + HDL) |
+| 9 | D7.1 - D92.13 | 11 | net W11; **the H1 'etch-11' via = this wire's solder post** |
+| 10 | D5.1(STSTB) - D38.8 | 8 | **STSTB = D38.8 direct** — D13-secB stand-in retired (identical boot function: ~SYNC) |
+| 11 | D3.10 - X3.3 | 20 | S_TTL confirmed; X3 pin = 3 |
+| 12 | D98.7 - ? (via 220Ω) | 17/18 | reset-switch wires; E13 classification confirmed |
+**Consequences**: the H1/H2/H3 "ECO" classification RESOLVES to class (c) — documented factory
+wiring; etched digits = wire solder-post labels. Model: SYNC/STSTB topologies corrected
+(wire-grade provenance, boot byte-identical), Φ1/Φ2/MEMW/SYNC/STSTB flagged `wire_link` (a
+faithful repro would use wire posts, not etch — DESIGN DECISION pending), D50/D92 promoted to
+net-carrying chips, D7 sect-2 modeled. **LVS IN SYNC (167), BOOT-CHECK PASS.**
+Board: v75 **1176/1176, 0 unconnected, 0 electrical DRC** (D103 PLACE-entry regression caught and
+fixed en route — a string-edit had glued it into a comment).

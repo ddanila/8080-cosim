@@ -39,7 +39,7 @@ PASSIVE_PLACE = {
     'R38':(245,204,90),'R39':(245,217,90),
     'Z1':(78,271,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'C73':(64.5,261,0),
-    'E2':(224,240,0),'E3':(224,248,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'E2':(224,241,0),'E3':(224,249,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
@@ -113,7 +113,7 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(253,225,0),'D52':(234,225,0),'D103':(291,200,0),   # D52 = 5th КП14 beside D53 (sheet-2 MX)
+    'D53':(253,225,0),'D52':(234,224.5,0),'D50':(112,158,0),'D92':(270,176,0),'D103':(291,200,0),   # D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
     'D56':(302,200,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
@@ -333,13 +333,11 @@ def main():
         'D94':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #2, socketed [photo]; progr. .092 -> rev .113/.117
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
         'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    294, 176, 0),  # video XOR [photo]
-        'D50':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 158, 0),  # video addr mux [.009: D48-D51 all КР531]
         'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [official in .009]
         'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
         'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 3rd ВА86 [.009 official]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # [.009 official]
-        'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [.009 official; owner's decap]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90),  # row 1 [.009: D98=ЛП11 ✓]
         'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 96, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]

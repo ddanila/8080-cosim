@@ -38,7 +38,7 @@ module juku_top (
     // The real board has NO 8224: clock = crystal Z1 + D59 (ЛН1) oscillator +
     // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
     // READY from D30, STSTB(8238) from D13. Driven by that subsystem, not modeled here.
-    wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;
+    wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;   // ststb_n = D38.8 [WIRE 8]
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
@@ -96,14 +96,18 @@ module juku_top (
     // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
     // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
     wire stb_d38;
-    la1_gate  U_D38 (.i0(clkg_d33), .i1(1'b1), .i2(1'b1), .i3(d39_y), .y(stb_d38),
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(1'b1), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9, beeper-confirmed]
                      .i4(1'b1), .i5(1'b1), .i6(1'b1), .i7(1'b1), .y2(load_pre));  // sect2 (5,4,2,1->6) = LOAD; ins <- timing wires 4/2/1/15 [boundary]
     // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
     wire d13_res;
+    // D13 secB returns to SPARE: the beeper (wires 8/9) shows STSTB = D38.8 -> D5.1 directly and
+    // SYNC -> D38.12; the old D13-mediated stand-in was [assumed]. Functionally identical at boot
+    // (frozen divider -> D38 NAND = ~SYNC).
     tl2_dual  U_D13 (.i1(1'b1), .i2(1'b1), .i4(1'b1), .i5(1'b1), .o6(d13_res),
-                     .i9(sync), .i10(1'b1), .i12(1'b1), .i13(1'b1), .o8(ststb_n));
+                     .i9(1'b1), .i10(1'b1), .i12(1'b1), .i13(1'b1), .o8());
+    assign ststb_n = stb_d38;
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
                        .ststb_n(ststb_n), .busen_n(busen_n),
@@ -146,7 +150,8 @@ module juku_top (
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    la3_gate    U_D7     (.a(1'b1), .b(mem_mode[0]), .y(prom_en_n));     // ЛА3 as inverter: prom_en_n = ~(Port-C mode bit) [assumed]
+    la3_gate    U_D7     (.a(1'b1), .b(mem_mode[0]), .y(prom_en_n),     // ЛА3 as inverter: prom_en_n = ~(Port-C mode bit) [assumed]
+                          .a2(1'b1), .b2(memw_n), .y2());   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
     decode_prom U_DECODE (.a(BA[15:8]), .v_en_n(prom_en_n),
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
