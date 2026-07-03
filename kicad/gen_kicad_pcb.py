@@ -348,7 +348,6 @@ def main():
         'D101': ('DIP-16_W7.62mm', 'К555КП12',   242, 131, 90), # row 4: КП12 #2 [.009: D101]
         'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   268, 132, 90), # row 4 middle [pool, ASSUMED]
         'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   295.5, 132, 90),# row 4 right [pool, ASSUMED]
-        'LA3B': ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # trio ЛА3 sighting; .009 has only ONE К155ЛА3 (=D105) -- this position vs (30,240) needs one eyeball
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)

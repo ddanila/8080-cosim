@@ -988,3 +988,27 @@ faithful repro would use wire posts, not etch — DESIGN DECISION pending), D50/
 net-carrying chips, D7 sect-2 modeled. **LVS IN SYNC (167), BOOT-CHECK PASS.**
 Board: v75 **1176/1176, 0 unconnected, 0 electrical DRC** (D103 PLACE-entry regression caught and
 fixed en route — a string-edit had glued it into a comment).
+
+## Iteration 72 — board-vs-BOM audit CLEAN; populated bank -> D84-91; DLB=D107; LA3B deleted
+Mechanical diff of the official ДГШ5.109.009 ПЭЗ (82 chips) against the board: **0 missing,
+0 type mismatches**; the only extras are D60-D83 = the 24 empty РУ5 socket positions (the ПЭЗ
+lists populated parts only; owner confirms one bank stuffed). Resolutions from the audit:
+- **DLB placeholder = D107** (the 3rd ВА86 = U_BUFL, low-byte address buffer). The .009 ПЭЗ has
+  exactly three ВА86 (D4/D29/D107) and we net exactly three. Moved from the fictional bus-band
+  slot (93,136) to (57,185) directly below D4 — the emaplaat itself prints D107 there, matching
+  the owner's earlier photo ID ("same bus one as one next to it").
+- **Populated DRAM bank = D84-D91 (bottom array row)** per the .009 ПЭЗ; emaplaat row refdes
+  cross-read confirms rows top->bottom = D67..D60 / D75..D68 / D83..D76 / D91..D84 (muxes
+  D50/D51/D48/D49 heading the rows; bottom-left crop shows D91/D90/D89 start the bottom row).
+  Board #1 (rev 7.102.100) had the TOP row stuffed instead — per-revision factory choice; our
+  target .158/.009 gets the bottom row. Swap = net CAS -> D84-91.15 (CAS3 -> CAS0 floating on
+  D60-67), HDL dram_64kx1/ru5_socket role swap, tb hierarchical refs U_D6x.mem -> U_D8x.mem.
+  LVS IN SYNC · BOOT-CHECK PASS (byte-identical) after both changes.
+- **LA3B deleted**: the emaplaat bottom-left band shows ONE К155ЛА3 = D105, horizontal directly
+  below D13 at ≈(30,240) — the existing D105 entry was right; LA3B (59,237) was a double-sighting.
+- **NEW finds from the emaplaat bottom-left crop (queued, next iteration = band harvest + v77):**
+  D52 (К555КП14) is actually VERTICAL at ≈(60.5,237) — NOT (234,224.5); the E2/E3 (+E4/E5!)
+  jumper posts sit at ≈(44-60, 248-253); C31/C32/C33 = a vertical stack at x≈24 (not the y=257
+  row); the D59/D42 horizontal pair sits right of Z/C73. The whole bottom-left band needs the
+  calibrated emaplaat re-read before route v77.
+Route v76 (CAS-to-bottom-row + D107 move) running.
