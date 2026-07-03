@@ -73,8 +73,8 @@ module juku_top_tb();
     fd=$fopen("hdl/sim/vram_top.bin","wb");
     for (k=0;k<40*241;k=k+1) begin
       a = 16'hD800 + k;
-      b = {dut.U_D67.mem[a], dut.U_D66.mem[a], dut.U_D65.mem[a], dut.U_D64.mem[a],
-           dut.U_D63.mem[a], dut.U_D62.mem[a], dut.U_D61.mem[a], dut.U_D60.mem[a]};
+      b = {dut.U_D91.mem[a], dut.U_D90.mem[a], dut.U_D89.mem[a], dut.U_D88.mem[a],
+           dut.U_D87.mem[a], dut.U_D86.mem[a], dut.U_D85.mem[a], dut.U_D84.mem[a]};
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");

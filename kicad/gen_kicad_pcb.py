@@ -117,9 +117,10 @@ PLACE = {
     'D56':(302,200,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
-    # and the DRAM array -- D5 (8238) far left, then D6 / DLB(=D8) / D7, and the wide D10 (8259).
+    # and the DRAM array -- D5 (8238) far left, then D6 / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
-    'D5':(35,136,90),'D6':(68,136,90),'DLB':(93,136,90),'D7':(143,136,90),'D10':(189,136,90),
+    'D5':(35,136,90),'D6':(68,136,90),'D7':(143,136,90),'D10':(189,136,90),
+    'D107':(57,185,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
@@ -336,7 +337,6 @@ def main():
         'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [official in .009]
         'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
-        'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 3rd ВА86 [.009 official]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90),  # row 1 [.009: D98=ЛП11 ✓]

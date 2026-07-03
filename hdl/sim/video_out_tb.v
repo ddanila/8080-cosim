@@ -19,10 +19,10 @@ module video_out_tb;
   initial begin
     $readmemh("hdl/sim/vram_top.hex", fb);
     for (k=0;k<40*241;k=k+1) begin
-      dut.U_D60.mem[16'hD800+k]=fb[k][0]; dut.U_D61.mem[16'hD800+k]=fb[k][1];
-      dut.U_D62.mem[16'hD800+k]=fb[k][2]; dut.U_D63.mem[16'hD800+k]=fb[k][3];
-      dut.U_D64.mem[16'hD800+k]=fb[k][4]; dut.U_D65.mem[16'hD800+k]=fb[k][5];
-      dut.U_D66.mem[16'hD800+k]=fb[k][6]; dut.U_D67.mem[16'hD800+k]=fb[k][7];
+      dut.U_D84.mem[16'hD800+k]=fb[k][0]; dut.U_D85.mem[16'hD800+k]=fb[k][1];
+      dut.U_D86.mem[16'hD800+k]=fb[k][2]; dut.U_D87.mem[16'hD800+k]=fb[k][3];
+      dut.U_D88.mem[16'hD800+k]=fb[k][4]; dut.U_D89.mem[16'hD800+k]=fb[k][5];
+      dut.U_D90.mem[16'hD800+k]=fb[k][6]; dut.U_D91.mem[16'hD800+k]=fb[k][7];
     end
   end
   always #10 dotclk = ~dotclk;

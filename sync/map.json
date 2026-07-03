@@ -2,7 +2,7 @@
   "instances": {
     "D1": "U_CPU",
     "D4": "U_BUFH",
-    "DLB": "U_BUFL",
+    "D107": "U_BUFL",
     "D5": "U_SYS",
     "D6": "U_DECODE",
     "D7": "U_D7",
