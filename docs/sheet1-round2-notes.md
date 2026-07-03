@@ -117,3 +117,14 @@ bus from (2330,620) down; crop (2300,620)-(2700,1100). Right edge of crop = D10'
 (rail-code | pin table) for reference.
 D10 dest-pin table fragment (rail->pin): 13->2? 17->23, 11->21, 10->24, 9->25, 8->3, 7->4,
 6->5, 5->6, 4->7, 3->8, 2->9, 1->10 [record; decode later].
+FINDING 10b (crop s1_d8bus): the "dest table" right of D8 = D15 EPROM ADDRESS LADDER
+(rail 13->A12 pin2, 17->A11 p23, 11->A10 p21, 10->A9 p24, 9->A8 p25, 8->A7 p3, 7->A6 p4,
+6->A5 p5, 5->A4 p6, 4->A3 p7, 3->A2 p8, 2->A1 p9, 1->A0 p10). CONFIRMS rail-code system:
+rail N = A(N-1), board-wide. EPROM symbol has A0-A12 + CS=20/OE=22 = 8K part (2764-class,
+DIP-28) ✓ our EPROM8K model. NOTE the A11 rail code is 17 (not 12!) at the EPROM -- the
+address rail codes 1-16 map A0-A15 but 17 appears for A11 here: RE-VERIFY the D9-select rail
+codes 11/12/13 against this table (11->A10 ✓, 12->A11? but EPROM shows 17->A11 -- the code
+12 = A11 assignment from finding 7 needs one confirming crop; A10/A11/A12 vs possible
+A10/A12/A13 shifts the port-mirror mapping).
+D8 consumer re-read: D8.D0-D7 -> consumer pins 1-8 consecutive = ВА86/87 A-side profile
+(bank-select byte buffered) -- candidate D29/ВА87 spare half or sheet-2 buffer. Unresolved.
