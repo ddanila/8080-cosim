@@ -98,3 +98,12 @@ mem_mode now = D26 pc[1:0]. LVS IN SYNC (169 core + 45 connector-boundary), boot
 Remaining sheet-1 threads: D26 B4 row destination (contrdat pair), D6 RAM/REV/ROE net
 destinations, D8 РЕ3 output side (bank selects -> sheet 2), wires 17/18 reset chain zone,
 D9 E/V1/V2 gating source.
+FINDING 9 -- WIRE 12 RESOLVED (crop s1_d9en2 + ТЛ2=74LS13 pinout): "RAM OUT EN" = a sheet-2
+RAM-control rail; wire 12 distributes it to TWO LOADS on sheet 1: D13.2 (ТЛ2 sect-A input) and
+D37.4 (ЛА3 B3 input) -- both ends of the owner's measured wire are inputs; the driver lives on
+sheet 2 (RAM SEL / -RAM OUT EN family, posts 12/13 drawn). Net renamed W12_D13_D37 ->
+RAM_OUT_EN {D13.2, D37.4} wire_link. HDL: shared undriven boundary wire. Related: "-RAM OUT EN"
+rail (post 13) matches beeper wire 13 = D13.1 <-> D92.1 (W13 net already correct); R13/R14 1K =
+the RC on D13.1. D9.V3 <- rail 6. LVS IN SYNC, boot PASS.
+Round-2 remaining: D6 V1/V2 enable source, D8 РЕ3 output destinations (sheet 2), D26 B4 row,
+wires 17/18 reset switch chain, D9 E/V1/V2 exact gating (E<-top rail, V3<-rail 6).

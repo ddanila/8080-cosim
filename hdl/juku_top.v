@@ -102,10 +102,11 @@ module juku_top (
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
     wire d13_res;
+    wire ram_out_en;                  // sheet-2 RAM-control rail [WIRE 12]; loads = D13.2 + D37.4; driver on sheet 2 (undriven boundary)
     // D13 secB returns to SPARE: the beeper (wires 8/9) shows STSTB = D38.8 -> D5.1 directly and
     // SYNC -> D38.12; the old D13-mediated stand-in was [assumed]. Functionally identical at boot
     // (frozen divider -> D38 NAND = ~SYNC).
-    tl2_dual  U_D13 (.i1(1'b1), .i2(1'b1), .i4(1'b1), .i5(1'b1), .o6(d13_res),
+    tl2_dual  U_D13 (.i1(1'b1), .i2(ram_out_en), .i4(1'b1), .i5(1'b1), .o6(d13_res),
                      .i9(1'b1), .i10(1'b1), .i12(1'b1), .i13(1'b1), .o8());
     assign ststb_n = stb_d38;
 
@@ -275,7 +276,7 @@ module juku_top (
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
-                    .a3(d33_o4), .b3(1'b1), .y3());  // sect2: LATCH gate; sect3: 5<-~MRD (4 unread, 6 dangling)
+                    .a3(d33_o4), .b3(ram_out_en), .y3());  // sect2: LATCH gate; sect3: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 dangling
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries

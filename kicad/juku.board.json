@@ -9662,16 +9662,6 @@
       ],
       "note": "WIRE 13 (beeper): D13.1 - D92.1"
     },
-    "W12_D13_D37": {
-      "src": "wire",
-      "nodes": [
-        [
-          "D37",
-          "4"
-        ]
-      ],
-      "note": "WIRE 12 (beeper): D13.2 - D37.4 (recorded single-ended: joining two mapped INPUTS needs the wire's driver, unknown; D13.2 in prov)"
-    },
     "PIT_HCHAIN": {
       "src": "mame",
       "nodes": [
@@ -10240,6 +10230,20 @@
           "210"
         ]
       ]
+    },
+    "RAM_OUT_EN": {
+      "src": "scan sheet-1 + beeper wire 12",
+      "nodes": [
+        [
+          "D13",
+          "2"
+        ],
+        [
+          "D37",
+          "4"
+        ]
+      ],
+      "wire_link": true
     }
   }
 }
