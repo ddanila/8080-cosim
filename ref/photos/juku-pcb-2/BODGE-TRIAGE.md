@@ -1012,3 +1012,36 @@ lists populated parts only; owner confirms one bank stuffed). Resolutions from t
   row); the D59/D42 horizontal pair sits right of Z/C73. The whole bottom-left band needs the
   calibrated emaplaat re-read before route v77.
 Route v76 (CAS-to-bottom-row + D107 move) running.
+
+## Iteration 73 — emaplaat FULL-BOARD re-layout (true frame: 310x279, DRAM pitch 11.25)
+Systematic tile-by-tile harvest of the 7.102.100 assembly drawing (emaplaat-1.png, ~11.87 px/mm
+square scan; full table in docs/emaplaat-harvest.md). Root finding: the plan-view board outline
+is px (1260..4930, 749..4082) = **310 x 279 mm** -- the side-profile dimension literally reads
+"279*". The old "310x266 + top edge at y=22" frame (14.52 px/mm, different scan) had absorbed
+two errors that cancelled only locally.  Consequences applied:
+- **Board outline now 310x279** (was 310x266 with chips at y>266 sticking past the old cut).
+- **DRAM array compacted to its real geometry**: columns x=119.6..198.4 (pitch 11.25 mm -- the
+  photo-derived 16 mm pitch was a scale artifact; board #2's own photo shows the empty DRAM
+  field spanning 115-197 mm, corroborating the drawing), rows y=148/173/198/223 (pitch 25).
+- **Clock/video cluster moved into x 210-300 of the same band** (D38/D92/D39/D34 row y~157,
+  D36/D37/D33/D103/D56 row y~180, D40/D41 y~141, D53/D35 y~205) -- it sits right of the DRAM,
+  not below it.
+- CPU cluster: D1 (32,157), D4/D107 stacked (51,142/168), D2 (79,142), bus band D5/D6/D8/D9/D7/D10
+  at y 114-118 (D8=РЕ3 window pager between D6 and D9 -- resolves the old DLB-area confusion).
+- Bottom band: D13/D105 (32,205/220), D52 vertical (58,222) [the beeper's 5th КП14 -- NOT at
+  (234,224)], S1 (63.5,198) [drawing labels it S3], D46/D44/D48 + D47/D45/D49 mux/ctr grid at
+  x 81/93/106 y 198/223, D42/D43/D58 (136/160/183, 259), D59 (107,257), Z+C73+C31-33 corner.
+- PIT stack D57/D55/D54 at x=274.9 y 207/229/251 h; D26 (232,251) h; E2/E3 (217.5, 234/227.5).
+- Serial cluster D11 (188,103), D104 (185,75), D32/D14 (199, 64/74), D12/D3 (206, 96/111).
+- X1 pads y 22-27; X3 x~184-202; **X8 at (24,267)** pads 62/61/60/59 left->right; X9 (keyboard)
+  identified hanging off the bottom edge at x~208 (unmodeled, next).
+- Mounting holes: (10,28) (114,29) (10,150) (300,153) (104,266) (199,266).
+- FDC quadrant (D28,D93-D102,D106): kept owner/photo positions (frame-shifted y-22); the
+  drawing's own layout there differs (recorded in the harvest doc for reference).
+- Wire posts localized on the drawing: 11 spans (148,127)<->(262,128) [D7.1<->D92.13 ✓ our net],
+  12 at (48,200) by D13 [ТЛ2] ✓, 2/3/4 left ends at x~99 (DRAM edge) with right ends in the
+  clock/FDC band, 7/14 at (251,189), 20 at (199,91) [Х3 serial zone ✓ beeper table].
+LVS/boot untouched (placement only). Route v77 rolling on the new floorplan.
+Pending: notch-orientation pass (ROM row notch-DOWN, DRAM notch-UP per drawing); decap C35-C72
+re-seat onto the drawing's cap rows; D51-row (row-2) refdes D50/D51/D48/D49 mux nets for rows
+2-4 remain unmodeled (sockets only).
