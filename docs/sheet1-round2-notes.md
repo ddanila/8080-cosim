@@ -45,3 +45,8 @@ bundle of ~7 select rails (the peripheral CS bus). Left neighbor: **D105 К155Л
 pin 6** joins this zone (IO-select qualifier gate?). D10.INT(17) exits right on its own rail.
 The select-bus origin is ABOVE: next crop (1200,1700)-(2050,2100) to find the decoder that
 sources the 7 CS rails (candidate: D2 РТ4 V1/V2/V3 second decode, or ИД7 second use).
+SIDE FINDS (crop s1_csbus.png, orig (1200,1650)-(2050,2100)): wire-post "WR 19 (2)" = beeper
+wire 19 (MEMW, ВК38-26<->ЛА3-2) drawn here ✓; D35 ЛН5 sect 1->2 = "-WAIT" -> jumper post
+E8-1 (WAIT config jumper! new). Select-bus origin NOT in this crop -- the 7 rails come from
+higher: next crop the D2 РТ4 zone (690,1770)-(1260,2340) and the area directly above
+(1200,1200)-(2050,1700). Rails labeled 6/5 pass through vertically.
