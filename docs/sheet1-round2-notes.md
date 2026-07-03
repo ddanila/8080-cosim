@@ -146,3 +146,9 @@ NEXT sheet-2 targets: S3 DIP-switch bank (53.1-53.6) + R40-R46 pullups zone (vid
 config); D42/D43 ИР16 zone top-right (bank-select latches, D8-consumer candidate); PIT
 TIMER blocks pin-verify vs MAME cascade; DRAM DO/DI bus vs D58 direction; power-pin table
 bottom-left (per-type VCC/GND pins for LVS power nets).
+FINDING 14 -- D8 CONSUMER = D42/D43 ИР16 BANK-SELECT LATCHES (crop s2_ir16), hypothesis
+CONFIRMED: D8.D0-D3 -> rails 5,6,7,8 -> D42.A-D (pins 2-5); D8.D4-D7 -> rails 1,2,3,4 ->
+D43.A-D; D43.QD(10) -> D42.DS(1) cascade; D42.QD(10) -> D37 pins 12+13 (tied) -> 11 ->
+R38 1k -> node A (exactly our modeled D37 sect-1). Old DB/video-shift wiring of D42/D43
+was [assumed] -- superseded; 10 nets rewired (8x BSEL + D42_Q + D43_DS). CK(9)/LD(6)/G(8)
+sources still to trace (kept on DOTCLK16M/VID_LD nets meanwhile). LVS IN SYNC, boot PASS.

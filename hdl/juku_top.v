@@ -272,9 +272,12 @@ module juku_top (
     // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =
     // boundary). The video-read SLOT timing (КП14 µP/video arbitration + РЕ3/АГ3) stays a boundary.
     wire d42_q, d43_q;
-    ir16 U_D42 (.d(DB[7]), .c(DB[6]), .b(DB[5]), .a(DB[4]),
-                .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d42_q));
-    ir16 U_D43 (.d(DB[3]), .c(DB[2]), .b(DB[1]), .a(DB[0]),
+    // D42/D43 = the РЕ3 BANK-SELECT latches (sheet-2): parallel ins <- D8 outputs (rails 1-8,
+    // R21-28 pullups), D43.Q -> D42.DS cascade. The old DB/video-shift wiring was [assumed]
+    // and is superseded. CK/LD sources kept as modeled (nets DOTCLK16M/VID_LD) pending re-trace.
+    ir16 U_D42 (.d(d8_d[3]), .c(d8_d[2]), .b(d8_d[1]), .a(d8_d[0]),
+                .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(d43_q), .q(d42_q));
+    ir16 U_D43 (.d(d8_d[7]), .c(d8_d[6]), .b(d8_d[5]), .a(d8_d[4]),
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
