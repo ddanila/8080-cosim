@@ -71,3 +71,20 @@ RD=5 WR=36 RES=35 D0-7=34..27 ✓ (matches board.json). Port rows (pin, signal, 
  A3=1 SC3 p45 ->914 | A4=40 AUDC ->(2) | A6=38 PREN ->(3) | A7=37 STB p49 ->910
 X9 codes 90x/91x = X9 pins 1-14. Posts 45-58 = numbered wire links (keyboard bundle).
 MAME cross-check: SC=column select, K0-2=key code, FK=pressed/valid, all ✓.
+FINDING 7 (crops s1_d9sel + s1_d8zone): DEFINITIVE partial reads of the decode cluster:
+- D9 selects: pin1 <- src-pin 11, pin2 <- src 12, pin3 <- src 13 (labels certain).
+  D6.11 = net "RAM"; D6.12 = net "ROM" (also -> R11/R12 1K pullups -> D8.E pin 15).
+  So D9.1<-RAM(D6.11), D9.2<-ROM(D6.12) plausible; src 13 = third select, candidate ИР16
+  QA=13 (mode-latch bit from D26 PC0/PC1 -> D42/D43?). NOT D8 outputs -> the D8_D0/D1/D2
+  board nets stay WRONG and should become: D6_RAM {D6.11, D9.1}, D6_ROM {D6.12, D9.2,
+  D8.15, R11, R12}, MODE13 {?.13, D9.3}.
+- D8 РЕ3 address inputs: A0=10<-src12, A1=11<-src13, A2=12<-src14, A3=13<-src15, A4=14<-src16.
+  Source = a buffer with outs 12-16 (ВА87 B-outs = 12..19 -> would be BA8-BA12, NOT our
+  modeled BA11-15!). VERIFY next: crop left of the vertical rail to ID the buffer chip +
+  its input side. If A0-A4 = BA8-12, re-decode .117 (window pager interpretation may shift
+  by 3 bits; boot unaffected -- sim uses mem_mode view).
+- REINTERPRETATION of finding 2: the CS4(2)/CS5(2)/CS6(2)/CS7(3) cross-sheet rails are most
+  likely IO selects Y4-Y7 -> D54/D55/D57(sheet2)/FDC-or-tape(sheet3) -- matching our existing
+  CS_D54/55/57 nets -- while the R21-28 rails belong to the parallel EPROM column. The 7-rail
+  bundle feeding D10.CS etc = D9 outs Y0-Y3+ after all. Our board D9 IO-CS nets likely OK.
+  Remaining: confirm D9's E/V1/V2 gating (IORD/IOWR qualified how?) + the src-13 chip.
