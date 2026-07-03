@@ -765,3 +765,19 @@ bodge wires actually feed into pins 1/2, the model diff is a one-net edit.
   **D36's two extra ЛА12 sections** ((12,13->11)->R57 20?; (10,9->8)<-D33 11->10 section).
 - Board regen (net names shifted 172->177 after the D41 work) + route v53: 1156/1156,
   0 unconnected, 0 electrical DRC, power widened.
+
+## Iteration 59 — PIT channel map: etch "2" = VER RTR; the ECO story tightens to the frame int
+Sheet-2 PIT column (D54/D55 ВИ53 timers), channels read in full:
+- **D54**: CLK0=9/G0=11/OUT0=10 -> **1MHz (line ref 7)**; CLK1=15/G1=14/OUT1=13 -> **HOR RTR
+  (ref 1)**; CLK2=18/G2=16/OUT2=17 -> H.SYNC DSL.
+- **D55**: OUT1 -> **VER RTR (ref 2)**; OUT2 -> VERT.SYNC.DEL; CLK1 <- ref 16.
+- **E18 reassigned (2nd revision): the etched "2" via = VER RTR** — the vertical-retrace/frame
+  signal. Combined with E7 (frame-int corner) and the D37 LATCH-gate section, the ECO now reads:
+  **frame-interrupt qualification built from VER RTR-family timing through D37's gate** — the
+  iteration-8 hypothesis with real signal names. Beeper pair #1 update: E18 ↔ D55.13 (OUT1).
+- РУ5 pin wiring on the sheet matches dram_64kx1 exactly (A0-A7=6/12/13/5/10/7/11/9, RAS=4,
+  CAS=15, W=3, DI=2, DO=14) ✓.
+- **Numbering caveat logged**: the schematic's edge numbers are per-sheet-boundary line refs
+  (collisions exist: "7" = 1MHz on sheet 2 vs Φ1's sheet-1 ref) — the etched-number Rosetta holds
+  net-by-net but needs a dedicated cross-reference table pass (nets 11/18/41/102 status: 41=SYNC
+  solid, 2=VER RTR strong, 11=CLKG_D36 iter-8 proof stands, 18/102 open).
