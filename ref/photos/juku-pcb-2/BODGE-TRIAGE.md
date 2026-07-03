@@ -708,3 +708,27 @@ Reading the sheet-1/2 scans directly (ref/schematics/) — the "manual-work-free
 - Route v50 (with C73): 1151/1151, 0 unconnected, 0 electrical DRC, power re-widened (580 seg).
 Next desk steps: sheet-2 wire-number sweep for "2", "18", "41" (closes E13/E18/H1-lash IDs), and
 the D37.3 solder-side copper trace with bracketed anchors.
+
+## Iteration 56 — SHEET-3 MINED: tape cluster decoded; quadrant refdes wave; D37-LATCH reframe
+Full sheet-3 (tape/serial) + more sheet-2 reading — the biggest single desk haul yet:
+- **The drawing's D94-D108 are the К561 CMOS TAPE cluster, not the quadrant's TTL chips**:
+  D94=К561ЛН2, D95=К561ЛП2, D96=К561ЛА7, D97=К561ТВ1 (dual JK), D88=К561ТМ2, **D99+D100=К561ИР9
+  (the missing ИР9s — there are TWO)**, D101=К561ИМ1 (SM adder), **D106=К554СА3 ✓** (schematic
+  confirms the scan verdict), **D108=К561ИЕ11** (refdes run past 107!). Passives: R79 10к/C20
+  0,022/C22 1,0/R80 1к (REC.DATA), R87 3к/R88 12к/R89 130к/R100 10к, R102 270 (SYNC out).
+- **Wire numbers**: 40=TAPE RUN (→408), **41=SYNC (D12/ЛА18 output via R102, →501)** — the H1
+  lash-zone "41" etch is the SYNC net; 42=REC.DATA (→502), 43/44=DATA IN pair (→503/504). Sheet-2:
+  **Z1 = 16 MHz** (master net labeled; Z1 value set), 1,23 MHz out of D103/ИЕ10.
+- **Board renames applied** (all provably-wrong provisional refs -> type placeholders): D94→IE7X,
+  D95→LP11, D96→AG3D, D97→VA87E, D98→KP12A, D100→KP12B, D101→TM2X, D102→LN3X. The physical tape
+  cluster (К561 chips) is UNPLACED on our board — its real location is probably the serial corner
+  (the К561ЛН2/К155ЛА18 sightings) — a future placement pass.
+- **D37 REFRAME**: sheet-2 shows D37 pins 1/2→3 driving **LATCH** (via D33/ЛН1 13→12), fed from
+  the D41/ИР16 chain — the "spare gate" isn't spare. The H3 wires at D37.1/2 may RE-IMPLEMENT the
+  schematic's own LATCH-source nets (etch fault or revision delta) — class (a)/(c) candidate, not
+  a new-logic ECO. Beeper pair #1 should now test E1/E2 ↔ D41 outputs (12/13) FIRST.
+- Also confirmed from the schematic: D41=ИР16 ✓ (owner ID), D34=ЛП5 → video SYNC ✓, D47=ИЕ7 with
+  an S3.1-S3.6 DIP-switch bank, D38 second section → LOAD, D53 Y-outs through R49-R56 100Ω,
+  VT2 КТ315 + VD3 КС147 video mixer (R62-R71, C9/C13).
+- Route v51 (renamed board): 1151/1151, **2-unrouted router score is the locked-ADR echo count**,
+  0 unconnected, 0 electrical DRC after widen+repair. LVS IN SYNC.

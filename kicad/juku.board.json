@@ -2839,9 +2839,9 @@
       "prov": {
         "type": "photo",
         "refdes": "photo",
-        "pins": "РК-171 8903 metal-can crystal + trimmer at the D59 corner (board-#2 photos, 'Д1' ink stamp); drives D59/ЛН1 osc -- nets SIM_ONLY, not wired here"
+        "pins": "РК-171 8903 metal-can crystal + trimmer at the D59 corner (board-#2 photos, 'Д1' ink stamp); drives D59/ЛН1 osc -- nets SIM_ONLY, not wired here; 16 MHz per sheet-2 master-clock net"
       },
-      "value": "РК-171"
+      "value": "16 МГц"
     },
     {
       "ref": "C73",
