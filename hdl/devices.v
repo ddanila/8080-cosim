@@ -417,13 +417,18 @@ module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end
 endmodule
 
-module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
+module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
+                 input wire clk0, gate0, clk1, gate1, clk2, gate2,
+                 output wire out0, out1, out2);
     reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+    // counters not modeled (boundary stub): outputs idle low. The MAME-derived cascade
+    // (docs/mame-interface-map.md) is wired at the top level for the PCB netlist.
+    assign out0 = 1'b0; assign out1 = 1'b0; assign out2 = 1'b0;
 endmodule
 
-module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
+module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk, rxc, txc,
                    output wire txd, rts, dtr, input wire rxd);
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;
@@ -466,7 +471,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
-module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)
+module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6, ir5,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)
                  output wire intr, input wire inta_n);
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;

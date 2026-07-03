@@ -285,11 +285,28 @@ module juku_top (
     ppi_8255  U_PPI1 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .reset(reset_sys), .portc_lo(),
                       .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kcol(4'b0), .kbit(3'b0));
-    pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
-    pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
-    pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk());
+    // PIT cascade per MAME (docs/mame-interface-map.md): D54 horiz -> D55 vert -> FRAME INT.
+    // 1 MHz = D40 QD (the same /16 tap that feeds the D37 latch chain, net LATCH_B); 2 MHz =
+    // D40 QC; 1.23 MHz (D57 baud clk0) = D103 /13 [boundary, undriven].
+    wire clk1m = d40_q[3];
+    wire clk2m = d40_q[2];
+    wire clk123m;
+    wire pit_hchain, pit_hsync_dsl, pit_vchain, frame_int, pit_baud, pit_sound;
+    pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+                      .clk0(clk1m), .gate0(1'b1), .clk1(clk1m), .gate1(pit_hchain),
+                      .clk2(clk1m), .gate2(pit_hchain),
+                      .out0(pit_hchain), .out1(), .out2(pit_hsync_dsl));
+    pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+                      .clk0(pit_hchain), .gate0(1'b1), .clk1(pit_hsync_dsl), .gate1(pit_vchain),
+                      .clk2(pit_hsync_dsl), .gate2(pit_vchain),
+                      .out0(pit_vchain), .out1(frame_int), .out2());
+    pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+                      .clk0(clk123m), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
+                      .clk2(frame_int), .gate2(1'b1),
+                      .out0(pit_baud), .out1(pit_sound), .out2());
     wire ser_txd, ser_rts, ser_dtr, ser_rxd;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+                      .rxc(pit_baud), .txc(pit_baud),
                       .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxd(ser_rxd));
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
@@ -305,7 +322,7 @@ module juku_top (
     up2_rcv U_D104(.a(s_sin), .y(ser_rxd));
     serial_conn U_X3 (.sout(s_sout), .rts(s_rts), .dtp(s_dtp), .ttl_sout(s_ttl), .oc_sout(s_oc), .sin(s_sin));
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk());
-    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n), .ir7(ir7_sig), .ir6(ir6_sig),
+    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n), .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int),
                       .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
