@@ -167,3 +167,9 @@ FINDING 16 -- PIT PIN-VERIFY CLEAN (crop s2_pit1): D54 ВИ53 drawn pins = exact
 pinout used for the MAME cascade nets (CS21 A0/A1=19/20 RD22 WR23 D0-7=8..1, CLK/G/OUT =
 9/11/10, 15/14/13, 18/16/17). Data ins <- rails 31-38 = DB codes (third confirmation).
 All 7 cascade nets + PIT bus pins now factory-drawing-verified.
+FINDING 17 -- LATCH/LOAD CHAIN FACTORY-VERIFIED (crop s2_latch): D41 ИР16 QA(13) -> wire-post
+10 rail [= beeper W10_QA_SEL {D41.13, D50.1} ✓]; QB(12) -> D37.1 (sect-2 in, = .a2(d41_qb) ✓);
+D37 sect2 out(3) -> D33.13 [= LATCH_PRE ✓]; D38 ЛА1 sect2 (ins pins 5,4,2,1 <- timing wires
+{15?,IORD(4),MWR(2),MRD(1)}) out(6) -> D59.13 [= LOAD_PRE ✓]. D41.G(8) <- node-A pullup rail;
+D41.CK(9)/DS(1) sources partially visible (left rails, IDs pending); D41 A-D ins <- rails
+2,3,4,5(?) pending. Four nets verified, zero corrections needed in this zone.
