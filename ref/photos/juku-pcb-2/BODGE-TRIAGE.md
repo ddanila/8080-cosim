@@ -864,3 +864,20 @@ Sheet-1 interrupt/arb zone (item 6, first pass):
 Board cycle: E2/E3 re-placed twice (v57 stagnated 18-unrouted in the RAS/CAS channel; v58's
 spacing overlapped pads) — final at (276,231)/(276,242); D52 at (234,225).
 **Route v59: 1163/1163, 0 unconnected, 0 electrical DRC.**
+
+## Iteration 65 — РЕ3 FOUND ON SHEET 1: it's D8, the IO-decode state PROM feeding D9
+Answering "what's left before scanning the РЕ3 programming tables":
+- **D8 = К155РЕ3** (sheet-1 decode zone): A0-A3 in, E(15) enable, D1-D7 out -> **D9/ИД7's select
+  inputs**; D9's decoded outputs (0-7 = pins 15/14/13/12/11/10/9/7) = **CS4-CS7 chip-selects**
+  (with R21-R28 1к pulls). So the original module's РЕ3 (programming drawing ДГШ5.106.039) is the
+  **IO-decode state PROM** -- NOT DRAM/video timing as earlier assumed. (The board's second РЕ3,
+  D28, is the '87 FDC-revision part -- ITS role/wiring is board-only.)
+- Also captured in the same crop: **D6/РТ4's full symbol** (A0-A7, V1/V2, outputs D0-D3 =
+  ROM(12)/RAM(11)/REV(10)/ROE(9) ✓ matches the model's DEC_PROM + REV net), D13/ТЛ2 section ->
+  RAM OUT EN + RAM SEL + -RAM OUT EN nets, R11-R14 1к, R17 200, C99 160.
+- The Э3 sheets contain NO РЕ3 in the clock/DRAM region -- the numbered timing wires (1-18) come
+  from the PIT channels + mesh, closing that question.
+**Prep queue before the РЕ3 tables arrive**: net-model D8 (re3_prom instance + D8->D9 coupling +
+CS nets rewire) and D2 (arbitration PROM, sheet-1 wiring in iter 64) -- then both scanned tables
+(.038/.039) drop into ready instances like the РТ4 maps did. D28's dump remains valuable
+separately (FDC-rev timing).
