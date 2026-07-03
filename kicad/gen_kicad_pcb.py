@@ -354,7 +354,7 @@ def main():
         'KP12B':('DIP-16_W7.62mm', 'К555КП12',   242, 131, 90),# mux #2 [photo 8812]
         'AG3B': ('DIP-14_W7.62mm', 'К155АГ3',    295.5, 132, 90),# one-shot [photo 8901, label-down]; refdes UNKNOWN -- was provisionally 'D106', but scan-verified D106 = К554СА3 tape comparator (tape-serial.md) owns that number
         'AG3C': ('DIP-14_W7.62mm', 'К155АГ3',    268, 132, 90),# row-4 middle АГ3 (owner's layout); refdes unknown -- NOT D56 (that one is at its drawn (302,200) spot, photo-confirmed)
-        'D52':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]
+        'LA3B':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]  # refdes unknown: schematic D52 = КП14 (video/µP addr mux at D53); the trio ЛА3 = D105
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)

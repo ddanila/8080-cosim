@@ -749,3 +749,19 @@ schematic-mining program, and it's exactly the ECO-adjacent circuit):
 - Route v52: **1156/1156** connections, 0 unconnected, 0 electrical DRC, power re-widened.
 The ECO's D37 gate now exists in copper: when the beeper (or further tracing) resolves what the
 bodge wires actually feed into pins 1/2, the model diff is a one-net edit.
+
+## Iteration 58 — sheet-2 MX zone: D52 = the 5th КП14; E2/E3 jumpers; D53's real feed topology
+- **Schematic D52 = КП14 (MX)** — a FIFTH КП14: selects VIDEO ADDRESS vs µP ADDRESS onto D53/ИД7's
+  A/B select inputs, **through configuration jumpers E2/E3** (1-2 vs 2-3 positions — board-variant
+  timing config!). My untraced "D52"=К155ЛА3 (the lower-left trio read) is disproven -> renamed
+  'LA3B'; the trio's ЛА3 is D105 (owner's ID, consistent). The physical 5th КП14's location is
+  open (candidate: the (59,237) chip itself — К555КП14 8904 was read in this cluster).
+- **D53's real input topology differs from the model**: schematic feeds A/B from the D52 mux via
+  E2/E3, C grounded(?), G-enables from RAM SEL; outputs V0-V3 through **R49-R52 100Ω** with
+  **R53-R56 5,1к pulls**, then off-region as numbered wires (11-14 family — numbering overlaps the
+  Φ wires' 7/14 reads, flagged for re-read; the tape 40-44 family is distinct). The HDL rascas_dec
+  (a=ram_sel_n, b=phi1, c=phi2) is functional-intent — RECONCILIATION TODO logged.
+- **D92/ЛЕ4's three NOR sections read** ((1,2,13->12), (3,4,5->6), (9,10,11->8) pattern) and
+  **D36's two extra ЛА12 sections** ((12,13->11)->R57 20?; (10,9->8)<-D33 11->10 section).
+- Board regen (net names shifted 172->177 after the D41 work) + route v53: 1156/1156,
+  0 unconnected, 0 electrical DRC, power widened.
