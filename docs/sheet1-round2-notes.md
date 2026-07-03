@@ -190,3 +190,12 @@ PIN-ORDER CAUTION: sheet draws Y->MA as pins 4,12,9,7 per mux; model keeps consi
 the line order can only be corrected together with the mux INPUT rail read (A/B pin ->
 BA/counter rails) and a va-path treatment. QUEUED: full mux-tree input read (D44-D47
 counters -> D50/D51 A ins; S3 -> B ins; D48/D49 A/B <- BA rails).
+FINDING 20 (crop s2_muxin): D44/D45 ИЕ7 = 74193 EXACT (A,B,C,D ins=15,1,10,9; LD=11; R=14;
+UP=5; DOWN=4<-node A; outs QA-QD=3,2,6,7; CO=12 -> next.UP(5) cascade). Counter outputs ->
+video-address rails (5,6,7,8 then 9,10,11,12...) -> D50/D51 A-inputs. E13 = 4-post jumper,
+post-4 grounded (video config). D46/D47 below continue the chain.
+CAUTION -- RAIL-NUMBER TANGLE: sheet-2 rails 5-8 here (counter outs) vs finding-14's D42
+input rails 8,7,6,5 (attributed to D8 bank byte from the SHEET-1 read). Wire numbers may be
+sheet-local; the D8->D42/D43 BSEL nets could actually be counter->D42 connections (or vice
+versa). RESOLVE by reading the E13 junction zone + the vertical rail bundle between D44-47,
+D42/43, and the D50/D51 inputs before trusting BSEL0-7. (Nets left as-is, flagged.)
