@@ -59,3 +59,15 @@ Gates: D7 ЛА3 sect (9,10 -> 8) out joins rail 8/7 zone; D105 ЛА3 sect (1,2 -
 from D13 ТЛ2 out-4 node, in-1 from the MWR row; D105 sect (12,13 tied -> 11) = inverter off
 wire-1 (MRD). Rails "7"/"8" here relate to beeper wires 7/8 (ВМ80-22<->ЛН5-10, ВК38-1<->ЛА1-8).
 NEXT: D2 РТ4 V1/V2/V3 decode zone crop (690,1770)-(1260,2340) for the 7-rail IO CS bus source.
+FINDING 5 (crop s1_d2rt4.png): D2 РТ4 = A0-A7 on 5,6,7,4,3,2,1,15 (same as D6); V1(13)/V2(14)
+tied to GND (always enabled); only output drawn in this zone = D0 (pin 12) heading up-right.
+More D105 ЛА3 sections here: (9,10->8) -> (4,5->..) chain; net arrow "H". IO CS source NOT at
+D2 either -> read it off the D26/D10 CS pins directly (peripheral column crops).
+FINDING 6 -- X9 KEYBOARD INTERFACE COMPLETE (crop s1_d26a.png): D26 ВВ55А:
+RD=5 WR=36 RES=35 D0-7=34..27 ✓ (matches board.json). Port rows (pin, signal, wire-post, X9 code):
+ B0=18 FK   p55 ->904 | B1=19 K0 p57 ->902 | B2=20 K1 p56 ->903 | B3=21 K2 p58 ->901
+ B4=22 ->(cut, ?905/906) | B5=23 CONTRDAT p50 ->909 [OWNER-MEASURED ✓] | B6=24 SHIFT p52 ->907
+ B7=25 CTRL p51 ->908 | A0=4 SC0 p48 ->911 | A1=3 SC1 p47 ->912 | A2=2 SC2 p46 ->913
+ A3=1 SC3 p45 ->914 | A4=40 AUDC ->(2) | A6=38 PREN ->(3) | A7=37 STB p49 ->910
+X9 codes 90x/91x = X9 pins 1-14. Posts 45-58 = numbered wire links (keyboard bundle).
+MAME cross-check: SC=column select, K0-2=key code, FK=pressed/valid, all ✓.
