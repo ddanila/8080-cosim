@@ -42,6 +42,8 @@ PASSIVE_PLACE = {
     'Z1':(79.4,243.5,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
+    'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
+    'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
     'E2':(217.5,219.4,0),'E3':(217.5,212.9,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)

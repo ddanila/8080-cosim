@@ -253,10 +253,15 @@ module juku_top (
     // 21-28). A/B ins <- video counters + S3 config [unread boundaries]; G enables alternate
     // with D48/D49 on the video cycle [source unread] -- held disabled here (z), so the CPU
     // pair keeps driving MA and boot stays identical. SEL <- D41.QA [WIRE 10, beeper ✓].
+`ifdef YOSYS
+    wire vid_mux_g_n;                 // E14 strap -> D50/D51 G (video-cycle enable; boundary)
+`else
+    tri1 vid_mux_g_n;                 // undriven boundary; tri1 = E14's +5 strap default (video pair disabled)
+`endif
     kp14_mux U_D50 (.a({VA[1], VA[2], VA[3], VA[0]}), .b({VA[13], VA[11], VA[10], VA[9]}),
-                    .sel(d41_qa), .en_n(1'b1), .y({MA[1], MA[2], MA[3], MA[0]}));
+                    .sel(d41_qa), .en_n(vid_mux_g_n), .y({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D51 (.a({VA[5], VA[6], VA[7], VA[4]}), .b({VA[14], VA[15], VA[8], VA[12]}),
-                    .sel(1'b0), .en_n(1'b1), .y({MA[5], MA[6], MA[7], MA[4]}));
+                    .sel(1'b0), .en_n(vid_mux_g_n), .y({MA[5], MA[6], MA[7], MA[4]}));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
     // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties

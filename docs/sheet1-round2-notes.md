@@ -263,3 +263,16 @@ FINDING 25 -- THE BIG REWIRE EXECUTED (one atomic commit):
 - 189 matched nets; 248 total; boot PASS all 6 stages.
 Positions: S3 (63.5,182.4) [emaplaat S3 box -- NOTE: S1 reset button had squatted this spot;
 S1 needs its real bracket-edge position next]; E13 (104,188); R40-45 row approx.
+FINDING 26 -- SOURCE CHASES (crops s2_d44clk, s2_sg2):
+- D44.UP <- long rail "4" from the top-left oscillator/divider zone (mesh tap; exact emitter
+  queued). D34 ЛП5 + C5 560pF beside it = the LD-pulse RC generator.
+- E14 (4 posts, at D51): 2=+5, 4=GND, post3 -> D50/D51 G (tied) = THE VIDEO-MUX ENABLE STRAP.
+  Netted VID_MUX_G {E14.3, D50.15, D51.15}; HDL tri1 boundary (strap-default disabled) --
+  boot stays identical while the real jumper is now first-class.
+- E1 (posts at DRAM edge): 1=+5(node A), 2=MA rail 28 (MA7) = the 32K/64K DRAM-size strap.
+  P5V += E1.1; MA7 += E1.2.
+- R54/R55/R56/R58 5.1k pullups -> rail "E" (DRAM DO bus pullups?); sheet-1 arrivals bundle
+  at bottom: -CS4, A8, A9... (CS4 route confirmed).
+- STILL OPEN: D48/D49.S exact source (kept phi1 [assumed]), D48/D49.G rail source, rail-4
+  emitter, E13.1 connection, D45/D46 preset rows, E14.1.
+190 matched nets; 176 footprints; boot PASS.
