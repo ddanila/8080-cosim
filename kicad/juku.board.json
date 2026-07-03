@@ -2985,7 +2985,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "sheet-1: РЕ3 D8 = IO-decode state PROM; A0-A4=10-14, E=15, D0-D7=1-7,9 through R21-R28 1к pulls; contents = ДГШ5.106.039 [dump pending]; official .009: D8 = РЕ3 .039 ✓"
+        "pins": "D8 = К155РЕ3, the 0x4000-0xBFFF window decoder (DECODED from firmware .117 + the RomBios P-command window doc): A0-A4 = BA11-BA15 [firmware-derived], D3..D0 = active-low 8K bank selects (4000/6000/8000/A000), D4-D7 asserted across the window; feeds D9 (EPROM pair CS + CS4-7). Table .117 live in re3_prom."
       }
     },
     {
@@ -3529,10 +3529,6 @@
           "11"
         ],
         [
-          "D8",
-          "10"
-        ],
-        [
           "D23",
           "3"
         ],
@@ -3582,10 +3578,6 @@
           "14"
         ],
         [
-          "D8",
-          "11"
-        ],
-        [
           "D23",
           "4"
         ],
@@ -3633,10 +3625,6 @@
         [
           "D49",
           "2"
-        ],
-        [
-          "D8",
-          "12"
         ],
         [
           "D23",
@@ -4024,6 +4012,10 @@
         [
           "D22",
           "23"
+        ],
+        [
+          "D8",
+          "10"
         ]
       ]
     },
@@ -4077,6 +4069,10 @@
         [
           "D22",
           "2"
+        ],
+        [
+          "D8",
+          "11"
         ]
       ]
     },
@@ -4098,6 +4094,10 @@
         [
           "D24",
           "6"
+        ],
+        [
+          "D8",
+          "12"
         ]
       ]
     },
@@ -4119,6 +4119,10 @@
         [
           "D24",
           "7"
+        ],
+        [
+          "D8",
+          "13"
         ]
       ]
     },
@@ -4140,6 +4144,10 @@
         [
           "D24",
           "8"
+        ],
+        [
+          "D8",
+          "14"
         ]
       ]
     },

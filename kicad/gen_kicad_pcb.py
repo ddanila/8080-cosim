@@ -39,7 +39,7 @@ PASSIVE_PLACE = {
     'R38':(245,204,90),'R39':(245,217,90),
     'Z1':(78,271,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'C73':(64.5,261,0),
-    'E2':(224,239,0),'E3':(224,247,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'E2':(224,240,0),'E3':(224,248,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),

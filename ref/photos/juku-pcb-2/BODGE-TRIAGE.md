@@ -947,3 +947,18 @@ local-2.2.4-fix branch) -- kept as the fallback router; the placement fix made i
 BOARD STATE at the milestone: 166 footprints (official .009 refdes throughout), 189 nets, LVS IN
 SYNC (167 matched), BOOT-CHECK PASS, .117 firmware live in D8's re3_prom, both РЕ3 tables + the
 official BOM archived in-repo.
+
+## Iteration 70 — FIRMWARE DECODED: D8 = the 4000-BFFF window pager (docs/re3-decode.md)
+The step-back task #1 (firmware -> address-map reverse engineering) closed in one shot:
+- **.117 (D8): A4..A0 = BA15..BA11** — the table is a decoder over the machine's documented
+  external-memory window (RomBios `P XX`, 4000...BFFF): four active-low **8K bank selects**
+  (D3=4000-5FFF, D2=6000-7FFF, D1=8000-9FFF, D0=A000-BFFF) + a window-active group on D4-D7.
+  Downstream D9 turns bank state into the 8 EPROM socket selects (4 pairs) and CS4-7 — which is
+  why there are 8 per-socket ROM programming drawings.
+- **.113 (D94): a 2K-granular decode of A000-BFFF** (the FDC-era fine window: FDC buffer/EKDOS
+  region candidate).
+- Model updated: D8.A0-A4 rewired BA2-4 [wrong guess] -> **BA11-BA15** [firmware-derived, now
+  'scan'-grade]; full analysis in **docs/re3-decode.md**. LVS IN SYNC (167), BOOT-CHECK PASS.
+- Route v70: **1172/1172, 0 unconnected, 0 electrical DRC.**
+The remaining structural-decode flip (retiring the sim-only selects) needs only the D8->D9
+coupling confirmation — one beeper pair or the D94 socket dump.
