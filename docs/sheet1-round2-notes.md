@@ -25,3 +25,13 @@ SAME decoder or a second decode stage. Next crops: D9 outputs' destinations (rig
 (2340,540)-(2800,960)); D6 V1/V2 enable source (pins 13,14 <- wires from left).
 Then: rewire board.json (D8_Dx -> D6_Dx nets), flip io_dec138/rom decode HDL accordingly,
 LVS+boot, commit. Then D26/X9 harvest (codes crop (2880,1800)-(3510,2880)).
+FINDING 2 (crop s1_d9out.png): sheet-1 D9/ИД7 outputs = the 8 EPROM SOCKET SELECTS:
+locals -> D15-D18 CS(pin 20; OE 22 tied to CS on D15) via R21-R28 1K pullups (the 8x pack we
+placed at (79-98,104-112) -- physical corroboration), CS4(2) CS5(2) CS6(2) CS7(3) cross-sheet
+for D19-D22. => our board.json CS_D10/CS_D26/CS_D11/CS_D27/CS_D54/CS_D55/CS_D57 nets on
+D9.7-14 are POSSIBLY MISATTRIBUTED (that's 7 more outputs than the chip has left). To find:
+the real IO-select decode source (D10.CS wire origin; check mid-left D105/D103 gate zone and
+whether an ИД7 section or РТ4/РЕ3 output drives the peripheral CS pins). Also verify: does
+BOM-x1 К555ИД7 mean sheet's ROM decoder = board D9, and IO selects come from elsewhere
+(D8 РЕ3 .117? second half of something?). NEXT CROPS: D10 CS origin (trace left from D10.1);
+D6 V1/V2 enable source; then D26/X9 codes harvest (2880,1800)-(3510,2880).
