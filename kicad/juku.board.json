@@ -2844,7 +2844,7 @@
       "value": "РК-171"
     },
     {
-      "ref": "CT1",
+      "ref": "C73",
       "type": "C_TRIM",
       "pins": {
         "1": "P1",
@@ -2853,9 +2853,9 @@
       "prov": {
         "type": "photo",
         "refdes": "photo",
-        "pins": "trimmer cap (8811 disc, КТ4-23-class) beside the РК-171 crystal (corner photos); osc tuning network; real schematic ref unknown -> CT1 placeholder"
+        "pins": "C73 4/20 pF trimmer (sheet-2 schematic: Z1+C73+R32 oscillator group; '8811' disc in the corner photos); osc tuning"
       },
-      "value": "КТ4-23"
+      "value": "4/20"
     }
   ],
   "nets": {

@@ -37,7 +37,7 @@ PASSIVE_PLACE = {
     'R3':(23,214,0),'R4':(34,214,0),'R20':(45,214,0),'C21':(53.5,214,0),'C1':(60,214,0),'S1':(67,214,0),
     'R38':(245,204,90),'R39':(245,217,90),
     'Z1':(78,271,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
-    'CT1':(64,261,0),    # trimmer (8811) left of the crystal per the corner photos; ref placeholder until the schematic pins it
+    'C73':(64.5,261,0),    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),

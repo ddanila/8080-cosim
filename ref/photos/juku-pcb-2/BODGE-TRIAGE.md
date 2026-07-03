@@ -688,3 +688,23 @@ The DRC-count-broken widen_power.py (parked since the first attempt) is deleted.
   "neckdown" story was a misread of that. widen_power_v2/narrow_at_violations now use 0.2 as the
   floor/repair target; rebuilt pipeline: 602/865 power segments widened, one repair pass,
   **0 unconnected, 0 electrical DRC**.
+
+## Iteration 55 — SCHEMATIC DESK SESSION (no probing needed): wire numbers decoded; E18 revised
+Reading the sheet-1/2 scans directly (ref/schematics/) — the "manual-work-free" pass:
+- **The inter-sheet WIRE numbers are the etched numbers' source**: Φ1 = wire 7 (D35.10 → R37 360),
+  **Φ2 = wire 14** (D35.12 → R36 360), both "(1)" cross-refs to sheet 1 (CPU 22/15). The
+  solder-side "14"/"7" digits near the clock zone (dismissed in iter-38 as power-pin aids) are the
+  Φ nets' OWN etched labels. **Iteration-41's "etched 2 = Φ2" is REFUTED** — E18's net-2 identity
+  is open again (candidate: a numbered mesh wire on sheet 2 — cross-reference next). Three-digit
+  etches (102 etc.) = the X1 edge-pin family (101В INIT, 103С RESIN, 107В BLOCK…), so solder-side
+  "102" near D37 marks a net to X1.102B (= AMWC per the connector map!).
+- **The clock-corner passive set fully designated from sheet 2**: trimmer = **C73 4/20 pF**
+  (CT1 placeholder renamed, board.json + generator updated, LVS IN SYNC), R32 1,2к (Z1 group),
+  R37/R36 360 (Φ output series — the long-deferred "R36/R37" item now has values+topology),
+  R35 330 / C29 56 / R40 910 (phase RC), R34 13к, R46 200, C6, R31 820.
+- **D38 confirmed ЛА1** (4-input NAND, ins 9/12/13/10 → out 8 = /STB) — matches the model; sheet-1
+  RESET network confirmed matching the model (S1 → R3/R2/VD1/C1/R4/C21/R20 → ТЛ2 D13 → CPU.12,
+  -RESIN at X1.103C).
+- Route v50 (with C73): 1151/1151, 0 unconnected, 0 electrical DRC, power re-widened (580 seg).
+Next desk steps: sheet-2 wire-number sweep for "2", "18", "41" (closes E13/E18/H1-lash IDs), and
+the D37.3 solder-side copper trace with bracketed anchors.
