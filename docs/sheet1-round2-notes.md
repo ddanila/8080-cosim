@@ -251,3 +251,15 @@ STILL OPEN: G-enable sources for each pair (video-cycle alternation), D47 preset
 namespace (S3 vs VA), D48/D49 S source, D44 C1 clock source chain.
 NEXT: implement the one-commit rewire: BSEL removal + D42/D43 <- counters; S3+R40-45+E13/E14
 components; all-four-mux pin-accurate A/B/Y + va-path treatment; then G/CK/LD sources.
+FINDING 25 -- THE BIG REWIRE EXECUTED (one atomic commit):
+- BSEL0-7 killed; D42/D43 <- VA bus (D45/D44 nibbles) per registry.
+- ИЕ7 re-pinned to real 74193 (old invented pinout had D44.8/D48.10/D49.10 supply collisions).
+- VA0-15 nets: counters -> ИР16 latches + D50/D51 mux A/B per drawn code|pin tables.
+- All four muxes pin-accurate: drawn A/B input orders + Y->MA (4,12,9,7) on both pairs;
+  CPU col map: MA{0..7} = BA{9,13,11,10,12,14,15,8}; video identical (symmetric).
+- va-treatment: dram_64kx1 un-permutes the raw row byte internally (row_lin) -- mem[] stays
+  CPU-linear, tbs + video port untouched. BOOT byte-identical THROUGH the real scrambled path.
+- S3(DIP-6)+R40-45+E13 as real components; S3.3-6 -> D47 presets; E13 strap 1-3, 2=+5, 4=GND.
+- 189 matched nets; 248 total; boot PASS all 6 stages.
+Positions: S3 (63.5,182.4) [emaplaat S3 box -- NOTE: S1 reset button had squatted this spot;
+S1 needs its real bracket-edge position next]; E13 (104,188); R40-45 row approx.

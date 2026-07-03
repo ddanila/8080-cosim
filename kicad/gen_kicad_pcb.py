@@ -31,6 +31,8 @@ PASSIVE_FP = {
     'JUMPER3': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),   # Е-family config links
     'XTAL':    ('Crystal.pretty',       'Crystal_HC49-U_Horizontal'),   # РК-171 flat can, lying -- closest stock footprint
     'C_TRIM':  ('Capacitor_THT.pretty', 'C_Disc_D7.5mm_W4.4mm_P5.00mm'), # КТ4-23 trimmer stand-in (no trimmer lib in stock KiCad)
+    'SW_DIP6': ('Button_Switch_THT.pretty', 'SW_DIP_SPSTx06_Slide_9.78x12.34mm_W7.62mm_P2.54mm'),  # S3 video-config bank
+    'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -141,7 +143,10 @@ PLACE = {
     'D25':(29.8,53.4,90),'D23':(54.6,53.4,90),'D24':(81.6,53.4,90),'D29':(108.5,53.4,90),
     'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183,259.5,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
     'D37':(241.7,181,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
-    'D13':(31.9,205.3,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
+    'D13':(31.9,205.3,90),
+    'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
+    'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
+    'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
 # array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.

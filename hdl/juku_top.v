@@ -232,24 +232,31 @@ module juku_top (
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
     // sel/en + counter preset are the assumed parts; chips D44-D50/D53 are scan-verified.
-    wire [3:0] vctr_lo, vctr_hi; wire co0, co1, co2; wire [1:0] rc_nc;
-    ie7_ctr  U_D44 (.clk(phi2ttl), .load_n(1'b1), .d(4'b0), .q(vctr_lo), .co(co0));
-    ie7_ctr  U_D45 (.clk(co0),     .load_n(1'b1), .d(4'b0), .q(vctr_hi), .co(co1));
-    ie7_ctr  U_D46 (.clk(co1),     .load_n(1'b1), .d(4'b0), .q(),        .co(co2));
-    ie7_ctr  U_D47 (.clk(co2),     .load_n(1'b1), .d(4'b0), .q(),        .co());
+    // Video-address counter chain (sheet-2 verified 74193s): VA[15:0], CO->UP cascade.
+    // Presets: D44 grounded [drawn]; D47 <- S3 config switches [drawn]; D45/D46 [unread].
+    // LD sources (D34 XOR chain) + CLR rail = boundaries.
+    wire [15:0] VA; wire co0, co1, co2; wire [1:0] rc_nc;
+    ie7_ctr  U_D44 (.up(phi2ttl), .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());
+    ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
+    ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[11:8]),  .co(co2), .bo());
+    ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[15:12]), .co(), .bo());
     // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
     // CAS. (CPU row/col realized; the video path through this mux is the un-modeled boundary.)
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
     // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
     // sides at once or the video-va path desyncs). Queued in round-2 notes.
-    kp14_mux U_D48 (.a(BA[3:0]), .b(BA[11:8]),  .sel(phi1), .en_n(1'b0), .y(MA[3:0]));
-    kp14_mux U_D49 (.a(BA[7:4]), .b(BA[15:12]), .sel(phi1), .en_n(1'b0), .y(MA[7:4]));
+    kp14_mux U_D48 (.a({BA[1], BA[2], BA[3], BA[0]}), .b({BA[13], BA[11], BA[10], BA[9]}),
+                    .sel(phi1), .en_n(1'b0), .y({MA[1], MA[2], MA[3], MA[0]}));
+    kp14_mux U_D49 (.a({BA[5], BA[6], BA[7], BA[4]}), .b({BA[14], BA[15], BA[8], BA[12]}),
+                    .sel(phi1), .en_n(1'b0), .y({MA[5], MA[6], MA[7], MA[4]}));
     // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
     // 21-28). A/B ins <- video counters + S3 config [unread boundaries]; G enables alternate
     // with D48/D49 on the video cycle [source unread] -- held disabled here (z), so the CPU
     // pair keeps driving MA and boot stays identical. SEL <- D41.QA [WIRE 10, beeper ✓].
-    kp14_mux U_D50 (.a(4'b0), .b(4'b0), .sel(d41_qa), .en_n(1'b1), .y(MA[3:0]));
-    kp14_mux U_D51 (.a(4'b0), .b(4'b0), .sel(1'b0),   .en_n(1'b1), .y(MA[7:4]));
+    kp14_mux U_D50 (.a({VA[1], VA[2], VA[3], VA[0]}), .b({VA[13], VA[11], VA[10], VA[9]}),
+                    .sel(d41_qa), .en_n(1'b1), .y({MA[1], MA[2], MA[3], MA[0]}));
+    kp14_mux U_D51 (.a({VA[5], VA[6], VA[7], VA[4]}), .b({VA[14], VA[15], VA[8], VA[12]}),
+                    .sel(1'b0), .en_n(1'b1), .y({MA[5], MA[6], MA[7], MA[4]}));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
     // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties
@@ -287,9 +294,11 @@ module juku_top (
     // D42/D43 = the РЕ3 BANK-SELECT latches (sheet-2): parallel ins <- D8 outputs (rails 1-8,
     // R21-28 pullups), D43.Q -> D42.DS cascade. The old DB/video-shift wiring was [assumed]
     // and is superseded. CK/LD sources kept as modeled (nets DOTCLK16M/VID_LD) pending re-trace.
-    ir16 U_D42 (.d(d8_d[3]), .c(d8_d[2]), .b(d8_d[1]), .a(d8_d[0]),
+    // D42/D43 = VIDEO-STATE latches (sheet-2 registry): parallel ins <- the counter VA bus
+    // (D45/D44 nibbles), not the D8 bank byte (that was a cross-sheet code coincidence).
+    ir16 U_D42 (.d(VA[7]), .c(VA[6]), .b(VA[5]), .a(VA[4]),
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(d43_q), .q(d42_q));
-    ir16 U_D43 (.d(d8_d[7]), .c(d8_d[6]), .b(d8_d[5]), .a(d8_d[4]),
+    ir16 U_D43 (.d(VA[3]), .c(VA[2]), .b(VA[1]), .a(VA[0]),
                 .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.

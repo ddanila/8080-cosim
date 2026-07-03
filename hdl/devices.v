@@ -281,11 +281,13 @@ endmodule
 // D44-47 ИЕ7 (К155ИЕ7 = 74193-class): 4-bit binary up-counter. Cascades via CO (carry-out
 // pulses at terminal count 0xF) to form the video raster address. Functional for the video
 // readout (was a connectivity stub); LVS reads this -lib so the body doesn't matter to it.
-module ie7_ctr   (input wire clk, load_n, input wire [3:0] d, output wire [3:0] q, output wire co);
+module ie7_ctr   (input wire up, down, load_n, clr, input wire [3:0] d,
+                  output wire [3:0] q, output wire co, bo);   // real 74193/ИЕ7 pin set (sheet-2)
     reg [3:0] cnt = 0;
-    always @(posedge clk) if (~load_n) cnt <= d; else cnt <= cnt + 4'd1;
+    always @(posedge up) if (~load_n) cnt <= d; else cnt <= cnt + 4'd1;   // down-count unused (DOWN idles high)
     assign q  = cnt;
-    assign co = (cnt == 4'hF);           // terminal-count carry (feeds the next stage's clk)
+    assign co = (cnt == 4'hF);           // terminal-count carry (feeds the next stage's UP)
+    assign bo = 1'b1;                    // borrow idle (no down-counting modeled)
 endmodule
 // D48/D49 КП14 quad 2:1 mux: y = sel ? b : a (en_n low = enabled). For DRAM addressing, sel picks
 // the ROW half (b) vs COL half (a) of the CPU address onto the 8-bit muxed bus MA.
@@ -375,15 +377,19 @@ module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling
     // arbitration = V3 boundary); in sim a read doesn't contend, so we expose the framebuffer
     // bit at `va` directly. `va`/`vq` are sim artifacts (not real pins) -> LVS allowlist drops them.
     assign vq = mem[va];
-    always @(negedge ras_n) row <= ma;                       // latch row (ma = row byte during Φ1)
+    // The drawn D48-D51 mux tables scramble BA[15:8] onto the row-phase MA lines (finding 24;
+    // identical scramble on CPU + video pairs -> behaviorally neutral). Normalize here so mem[]
+    // stays CPU-linear (tbs + the va video port index it directly): un-permute the raw row byte.
+    wire [7:0] row_lin = {row[6], row[5], row[1], row[4], row[2], row[3], row[0], row[7]};
+    always @(negedge ras_n) row <= ma;                       // latch row (ma = scrambled hi byte during Φ1)
     // WRITE sampled on osc (the die-replica's master sampling clock) while CAS & WE are both low
     // (ma = col byte during Φ2). Latching on the CAS *edge* dropped writes whose data-valid window
     // didn't line up with Φ2 (the DB settled on a different phase), storing the stale bus -- a silent
     // corruption both guards missed (RAM test checks only 0xD300; VRAM guard only 0xD800+). Sampling
     // on osc catches the settled data on whatever phase it lands, exactly as juku_struct does. osc is
     // a SIM artifact (not a real РУ5 pin); the LVS drops it via the sim-only allowlist (sync/lvs.py).
-    always @(posedge sclk) if (~cas_n & ~we_n) mem[{row, ma}] = di;
-    always @(negedge cas_n) if (we_n) held <= mem[{row, ma}]; // read: sample-and-hold (ma = col at CAS-fall)
+    always @(posedge sclk) if (~cas_n & ~we_n) mem[{row_lin, ma}] = di;
+    always @(negedge cas_n) if (we_n) held <= mem[{row_lin, ma}]; // read: sample-and-hold (ma = col at CAS-fall)
     assign do_ = (we_n & (~ras_n | ~cas_n)) ? held : 1'bz;   // drive on read, through the access
 endmodule
 
