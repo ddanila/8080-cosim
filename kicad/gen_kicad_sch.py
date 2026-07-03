@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Generate a KiCad 10 schematic (.kicad_sch) from a board spec JSON.
+# Generate a KiCad schematic (.kicad_sch) from a board spec JSON.
 # Connectivity only -- no nice layout: each chip's pins sit on a horizontal row,
 # each connected pin gets a stub wire + a net label; same label name => same net.
 # This is a starting point you can re-arrange in the KiCad GUI; it exports the
@@ -66,7 +66,12 @@ def main():
     pos = {c["ref"]: (50, 40 + i * 40) for i, c in enumerate(chips)}
     ctype = {c["ref"]: c["type"] for c in chips}
 
-    out = ['(kicad_sch (version 20250610) (generator "eeschema") (generator_version "9.99")',
+    # Keep the generated schematic on the KiCad 9 stable file format. Newer KiCad can
+    # load older schematics, while KiCad 9 rejects KiCad 10/nightly version tags.
+    out = ['(kicad_sch',
+           '\t(version 20250114)',
+           '\t(generator "eeschema")',
+           '\t(generator_version "9.0")',
            f'\t(uuid "{uid(1)}") (paper "A3")', '\t(lib_symbols']
     out += [lib_symbol(t, type_pins[t]) for t in type_pins]
     out += ['\t)']

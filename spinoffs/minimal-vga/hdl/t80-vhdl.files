@@ -1,0 +1,6 @@
+../external/T80/T80_Pack.vhd
+../external/T80/T80_ALU.vhd
+../external/T80/T80_MCode.vhd
+../external/T80/T80_Reg.vhd
+../external/T80/T80.vhd
+../external/T80/T80se.vhd

@@ -35,6 +35,7 @@ cosim/trace
 fab/
 fp-info-cache
 hdl/*.json
+spinoffs/*/hdl/*.json
 hdl/sim/*.hex
 juku-drc.rpt
 kicad/*.kicad_prl
