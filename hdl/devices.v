@@ -158,8 +158,9 @@ module decode_prom (input wire [15:8] a, input wire v_en_n,
 endmodule
 
 // ---- ЛА3 NAND gate section (D7) gating the PROM enable ----
-module la3_gate (input wire a, b, output wire y);
+module la3_gate (input wire a, b, a2, b2, output wire y, y2);   // 2 of the 4 ЛА3 NAND sections
     assign y = ~(a & b);
+    assign y2 = ~(a2 & b2);   // second section (D37: 1,2->3 LATCH gate; D39: 9,10->8), sheet-2
 endmodule
 
 // ---- EPROM 8Kx8 (2764-class, D15/D16 populated) ----
@@ -188,8 +189,10 @@ module eprom_8k #(parameter HALF = 0) (input wire [12:0] a, inout wire [7:0] d, 
 endmodule
 
 // ===== clock subsystem (discrete; replaces the non-existent 8224) =====
-module ln1_osc   (input wire xin, output wire osc);                  // D59 ЛН1 crystal oscillator
+module ln1_osc   (input wire xin, input wire i13, i11, output wire osc, o12, o10);   // D59 ЛН1 crystal oscillator + LOAD/LATCH buffer sections (sheet-2)
     assign osc = xin;   // functional: the ЛН1 osc's output tracks its drive (crystal loop abstracted)
+    assign o12 = ~i13;  // section 13->12 = LOAD   (D38.6 -> D59.13, sheet-2)
+    assign o10 = ~i11;  // section 11->10 = D39.8 -> D59.11 chain (sheet-2)
 endmodule
 // D35 ЛН5 phase generator. Merge step 3: the discrete clock mesh feeding `osc` is an un-traced
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
@@ -219,9 +222,10 @@ module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40
     assign q  = cnt;
     assign co = et & (&cnt);
 endmodule
-module ln1_dual  (input wire i9, i5, output wire o8, o6);   // D33 ЛН1: the two used inverter sections
+module ln1_dual  (input wire i9, i5, i13, output wire o8, o6, o12);   // D33 ЛН1: used inverter sections
     assign o8 = ~i9;    // section pin 9 -> pin 8  = clkg_d33 -> D38.9  (pin 9 <- C6/R46 osc RC = boundary)
     assign o6 = ~i5;    // section pin 5 -> pin 6  = D36.4  (pin 5 <- D40.Q2, traced 2026-07)
+    assign o12 = ~i13;  // section 13->12 = LATCH  (D37.3 -> D33.13, sheet-2)
 endmodule
 module la12_gate (input wire a, b, output wire y); assign y = ~(a & b); endmodule // D36 ЛА12 NAND gate
 // К155ТЛ2 dual 4-input Schmitt NAND. D13 (Sheet-1 CPU core): section A = RESIN Schmitt -> RES (reset,
@@ -232,8 +236,10 @@ module tl2_dual (input wire i1, i2, i4, i5, i9, i10, i12, i13, output wire o6, o
     assign o6 = ~(i1 & i2 & i4 & i5);      // section A -> RES (RESIN on i5; boundary)
     assign o8 = ~(i9 & i10 & i12 & i13);   // section B -> STSTB (SYNC on i9; = ~sync)
 endmodule
-module la1_gate  (input wire i0, i1, i2, i3, output wire y);                  // D38 ЛА1 4-input NAND
-    assign y = ~(i0 & i1 & i2 & i3); endmodule
+module la1_gate  (input wire i0, i1, i2, i3, i4, i5, i6, i7, output wire y, y2);   // both ЛА1 sections
+    assign y = ~(i0 & i1 & i2 & i3);
+    assign y2 = ~(i4 & i5 & i6 & i7);   // D38 second section (5,4,2,1 -> 6) = LOAD gate, sheet-2
+endmodule
 
 // ===== I/O chip-select decoder: К555ИД7 (74138) =====
 // Functional (merge step 1): standard 1-of-8 active-low decode, enabled by g1 & !(g2a_n|g2b_n).
@@ -295,10 +301,12 @@ module lp5_xor (input wire a, b, output wire y); assign y = a ^ b; endmodule
 // (the analog video-mix summing node) -> D34. Two of these (D42 high nibble, D43 low nibble) form the
 // 8-bit serializer. Connectivity for LVS (the runnable video demo uses the abstracted ir16_sr; the
 // exact 2x4-bit + analog-sum byte->pixel scheme is the documented boundary — see dram-video-timing.md).
-module ir16 (input wire a, b, c, d, ld, g, ck, ds, output wire q);
+module ir16 (input wire a, b, c, d, ld, g, ck, ds, output wire q, output wire qa, qb);
     reg [3:0] r = 0;
     always @(posedge ck) if (~ld) r <= {d, c, b, a}; else r <= {r[2:0], ds};
     assign q = r[3];
+    assign qa = r[0];   // pin 13 (QA) -- D41 (sheet-2 LATCH chain) taps the parallel outputs
+    assign qb = r[1];   // pin 12 (QB)
 endmodule
 
 // ---- video raster scanner (the ИЕ7 counter chain + timing, as one behavioral block) ----

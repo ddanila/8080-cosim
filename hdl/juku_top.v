@@ -72,10 +72,15 @@ module juku_top (
     // re-crop trace (see clock-mesh_tb for the running-divider proof). The boot-tb ties D59.xin=0 so
     // the divider is frozen at 0 -> d39_y=clkg_d33=1 -> ststb_n=~sync, i.e. boot stays byte-identical.
     wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6; wire [3:0] d40_q;
-    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
+    // sheet-2 LATCH/LOAD chain (D41 ИР16 -> D37 gate2 -> D33 inv; D38 gate2 -> D59 inv). Inputs of
+    // D41/D38-2/D39-2 are deferred boundaries (numbered timing wires 1/2/4/15 + РЕ3 states).
+    wire d41_qa, d41_qb, d37_latch_pre, latch_sig, d39_o8, load_pre;
+    ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(1'b1), .g(1'b1), .ck(1'b0),
+                     .ds(1'b0), .qa(d41_qa), .qb(d41_qb));
+    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .i11(d39_o8));
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
-    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]
-    ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6));  // pin8->D38.9; pin5<-D40.Q2, pin6->D36.4
+    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(1'b1), .b2(1'b1), .y2(d39_o8));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]; sect2 9,10->8 -> D59.11 (sheet-2, ins deferred)
+    ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6), .i13(d37_latch_pre), .o12(latch_sig));  // + 13->12 = LATCH (sheet-2)
     la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36));  // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
@@ -89,7 +94,8 @@ module juku_top (
     // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
     // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
     wire stb_d38;
-    la1_gate  U_D38 (.i0(clkg_d33), .i1(1'b1), .i2(1'b1), .i3(d39_y), .y(stb_d38));
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(1'b1), .i2(1'b1), .i3(d39_y), .y(stb_d38),
+                     .i4(1'b1), .i5(1'b1), .i6(1'b1), .i7(1'b1), .y2(load_pre));  // sect2 (5,4,2,1->6) = LOAD; ins <- timing wires 4/2/1/15 [boundary]
     // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
@@ -248,7 +254,7 @@ module juku_top (
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;
-    la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out));
+    la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre));  // sect2: 1<-D41.QB(12), 2<-D40.Q3(11) -> 3 (sheet-2 LATCH gate)
 
     // ============ peripherals (on the buffered buses) ============
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),

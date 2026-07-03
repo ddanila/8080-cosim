@@ -47,17 +47,20 @@ def main():
     spec = json.load(open(sys.argv[1]))
     chips = spec["chips"]
 
-    # pin order per type (sorted by numeric pin number) + index lookup
-    type_pins, pin_index = {}, {}
+    # pin order per type (sorted by numeric pin number) + index lookup. The symbol takes the
+    # UNION of pins across all chips of the type -- instances of one type may wire different
+    # sections (e.g. D37 vs D7, both LA3_GATE: D37 also uses the 1/2->3 LATCH section).
+    type_union = {}
     for c in chips:
-        t = c["type"]
-        if t not in type_pins:
-            # sort numeric pins by value; alphanumeric pins (e.g. connector edge-codes "104C")
-            # sort after, lexically -- keeps a stable order without requiring integer pin names.
-            order = sorted(c["pins"].items(),
-                           key=lambda kv: (0, int(kv[0]), "") if kv[0].isdigit() else (1, 0, kv[0]))
-            type_pins[t] = order
-            pin_index[t] = {num: k for k, (num, _) in enumerate(order)}
+        type_union.setdefault(c["type"], {}).update(c["pins"])
+    type_pins, pin_index = {}, {}
+    for t, pins in type_union.items():
+        # sort numeric pins by value; alphanumeric pins (e.g. connector edge-codes "104C")
+        # sort after, lexically -- keeps a stable order without requiring integer pin names.
+        order = sorted(pins.items(),
+                       key=lambda kv: (0, int(kv[0]), "") if kv[0].isdigit() else (1, 0, kv[0]))
+        type_pins[t] = order
+        pin_index[t] = {num: k for k, (num, _) in enumerate(order)}
 
     # place chips at (50, 40 + i*40); pins extend right from px
     pos = {c["ref"]: (50, 40 + i * 40) for i, c in enumerate(chips)}

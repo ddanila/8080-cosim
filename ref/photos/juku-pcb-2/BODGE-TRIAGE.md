@@ -732,3 +732,20 @@ Full sheet-3 (tape/serial) + more sheet-2 reading — the biggest single desk ha
   VT2 КТ315 + VD3 КС147 video mixer (R62-R71, C9/C13).
 - Route v51 (renamed board): 1151/1151, **2-unrouted router score is the locked-ADR echo count**,
   0 unconnected, 0 electrical DRC after widen+repair. LVS IN SYNC.
+
+## Iteration 57 — D41 + the LATCH/LOAD chain NET-MODELED (netlist grows: 157 matched, 1156 conns)
+The sheet-2 LATCH/LOAD chain is now in the LVS model (the first netlist growth of the
+schematic-mining program, and it's exactly the ECO-adjacent circuit):
+- **D41 (К555ИР16) net-modeled** (was an untraced footprint): outputs QB(12)/QA(13); parallel
+  inputs from the numbered timing-wire bus [boundary]. Instance U_D41, moved into PLACE.
+- **New nets (src=scan, sheet-2)**: LATCH_A (D41.12→D37.1), LATCH_B (D40.11/Q3→D37.2),
+  LATCH_PRE (D37.3→D33.13), D39_O8 (D39.8→D59.11), LOAD_PRE (D38.6→D59.13). Second sections added
+  to la3_gate (D37: 1,2→3; D39: 9,10→8), la1_gate (D38: 5,4,2,1→6), inverter sections to
+  ln1_dual (D33: 13→12 = LATCH) and ln1_osc (D59: 13→12 = LOAD, 11→10).
+- **Tooling fix en route**: gen_kicad_sch.py built each type's symbol from the FIRST chip of the
+  type, silently dropping per-instance extra pins (D37 vs D7) — symbols now take the pin UNION.
+- **LVS IN SYNC (157 matched, was 153); BOOT-CHECK PASS (all 6 guards)** — the added sections have
+  deferred constant inputs, so the boot stays byte-identical.
+- Route v52: **1156/1156** connections, 0 unconnected, 0 electrical DRC, power re-widened.
+The ECO's D37 gate now exists in copper: when the beeper (or further tracing) resolves what the
+bodge wires actually feed into pins 1/2, the model diff is a one-net edit.

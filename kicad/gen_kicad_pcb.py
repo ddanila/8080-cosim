@@ -123,7 +123,7 @@ PLACE = {
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(277,155,90),'D38':(251,176,0),'D39':(280,176,0),   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
+    'D40':(277,155,90),'D41':(255,155,270),'D38':(251,176,0),'D39':(280,176,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D36':(253,200,180),'D33':(277,200,180),'D35':(266,221,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(105.5,267.5,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
@@ -335,7 +335,6 @@ def main():
         'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 2nd bus buffer, stacked below D4 [photo 201940304: ВА86 x2 8901; user-confirmed same-as-neighbor]
         'D9':   ('DIP-16_W7.62mm', 'К555ИД7',    122, 136, 90), # 3-to-8 decoder, bus band between D8 and D7 [owner-identified]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # quad NAND, lower-left column below D30/D13 [owner-identified]
-        'D41':  ('DIP-16_W7.62mm', 'К555ИР16',   255, 155, 270),# shift register, paired with D40 [owner ID + photo 8902 DIP-16 label-down; x=255 clears the D60 DRAM column]
         # (D99/К561ИР9 REMOVED from the board: both location candidates refuted -- (296,82) excluded
         # by the owner's quadrant rows, (302,200) turned out to be D56's АГ3. The sheet-3 ИР9 exists
         # somewhere (tape-serial.md) but goes back on only when physically located.)
