@@ -777,19 +777,19 @@
         "4": "G1",
         "5": "G2A_N",
         "6": "G2B_N",
-        "7": "Y_N0",
-        "9": "Y_N1",
-        "10": "Y_N2",
-        "11": "Y_N3",
-        "12": "Y_N4",
-        "13": "Y_N5",
-        "14": "Y_N6",
-        "15": "Y_N7"
+        "15": "Y_N0",
+        "14": "Y_N1",
+        "13": "Y_N2",
+        "12": "Y_N3",
+        "11": "Y_N4",
+        "10": "Y_N5",
+        "9": "Y_N6",
+        "7": "Y_N7"
       },
       "prov": {
         "type": "scan(РТ4 PROM, like D6)",
         "refdes": "BOM ДГШ3.031.006 ВП: К555ИД7 x1 = the IO decoder; physical D2 is a КР556РТ4 PROM (progr. drawing ДГШ5.106.038, photo: socketed). Decoder refdes = D9 (owner-confirmed К555ИД7 on the board).",
-        "pins": "scan; selects A/B/C = A10/A11/A12 rails (sheet-1, rail-code table)",
+        "pins": "scan; Y pin order corrected (74138 descends: Y0=15..Y7=7) per sheet-1 output-row read",
         "note": "РТ4 I/O decode; the 2x К155РЕ3 timing-state PROMs (ДГШ5.106.009) are also on this board (DRAM/video timing) -- pins/contents pending PROM dump"
       }
     },
@@ -5610,7 +5610,7 @@
       "nodes": [
         [
           "D9",
-          "7"
+          "15"
         ],
         [
           "D10",
@@ -5623,7 +5623,7 @@
       "nodes": [
         [
           "D9",
-          "9"
+          "14"
         ],
         [
           "D26",
@@ -5636,7 +5636,7 @@
       "nodes": [
         [
           "D9",
-          "10"
+          "13"
         ],
         [
           "D11",
@@ -5649,7 +5649,7 @@
       "nodes": [
         [
           "D9",
-          "11"
+          "12"
         ],
         [
           "D27",
@@ -5662,7 +5662,7 @@
       "nodes": [
         [
           "D9",
-          "12"
+          "11"
         ],
         [
           "D54",
@@ -5675,7 +5675,7 @@
       "nodes": [
         [
           "D9",
-          "13"
+          "10"
         ],
         [
           "D55",
@@ -5688,7 +5688,7 @@
       "nodes": [
         [
           "D9",
-          "14"
+          "9"
         ],
         [
           "D57",

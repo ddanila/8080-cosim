@@ -207,3 +207,13 @@ D105 ЛА3? -- would touch the D9-CS attribution!). RESOLVE NEXT SESSION: cross-
 sheet-1's D9 Y-output row codes (s1_d9en2) + D105 outputs vs these arrival codes; also
 D55/D57 CS rows for the pattern. Until then CS_D5x nets stay as-is.
 Also pending: E13 junction re-crop (missed left), D46/D47 rows, power-pin table.
+
+## LARGE GRIND A: video subsystem completion (2026-07-04)
+FINDING 22 -- NOTATION CRACKED + D9 Y-PIN REVERSAL BUG FIXED (crop x_d9outs): the per-row
+number pairs at chip outputs = "Y-index | pin". 74138 Y pins DESCEND (Y0=15..Y7=7); our D9
+pins dict had them ASCENDING (7=Y0..15=Y7) -- every IO CS net sat on the wrong physical pin,
+reversed as a block. Sheet: Y4(11) Y5(10) Y6(9) -> CS4/CS5/CS6 (sheet 2 = the three PITs ✓
+MAME order), Y7(7) -> CS7 (sheet 3, tape-USART / FDC on .009). Fixed in pins dict + map +
+7 nets; LVS IN SYNC, boot PASS (logical order unchanged -- this was PHYSICAL-pin-only, i.e.
+exactly the class of bug only the PCB copper would have suffered).
+Y3(12) -> dest "4" = CS_D27 route [check]; CS7 free pin = D9.7 for the FDC scaffold.
