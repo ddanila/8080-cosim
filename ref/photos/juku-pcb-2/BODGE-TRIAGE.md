@@ -843,3 +843,24 @@ Netlist session (3+4):
 - **D52/E2/E3 net-modeled and placed** (D52 at (238,225) beside D53; E2/E3 pin-header jumper
   footprints at (247,237)/(247,241)). Board: 165 footprints, 181 nets.
 - **LVS IN SYNC (161 matched, was 157); BOOT-CHECK PASS.** Route v57 in flight.
+
+## Iteration 64 — RF modulator + D37 sect-3 + interrupt cluster read; v59 clean (1163 conns)
+Video-output extraction (sheet-2 bottom-right):
+- **The dashed box = an RF MODULATOR**: VT3 КТ315 + VT4 КТ325, L1 coil, a SECOND trimmer (1/5 pF,
+  C12 2,2 beside it), C9/C10/C14 0,047, C15 3,3, R71-R77 (33/4,7к/430/1к/300/100/5,1к) → **HF out
+  = wire 5 → pin 701 (X7 RF antenna out)**; **VIDEO = wire 3 → pin 601 (X6)**; 602/702 = GND.
+  All values into the passives ledger; X6/X7 join the connector map.
+- **D37's THIRD section is used** (5,4→6): pin 5 ← ~MRD via a new D33 inverter section (3→4).
+  Net-modeled ([scan], pin 4/output 6 unread → deferred): la3_gate/ln1_dual extended,
+  MEMR net += D33.3, new net D33_O4. **LVS IN SYNC (162 matched); BOOT-CHECK PASS.**
+Sheet-1 interrupt/arb zone (item 6, first pass):
+- **D2/РТ4's full wiring is ON SHEET 1**: A0-A7 ← VIDEO CYCLE(2), -XACK(106C), -WREQ(107C) w/
+  R7/R8 2к pulls + more; V1/V2 grounded; DO = pin 12 → **D2 = the bus-arbitration/wait-state
+  PROM** — net-modelable next session (its content = drawing ДГШ5.106.038 → the dump!).
+- **D105's two ЛА3 sections drawn** ((9,10→8), (4,5→6)) — D105 is ORIGINAL (BOM К155ЛА3 ×1 ✓).
+- **Interrupt path**: -INT7(113B)/-INT6(113C) ← R9/R10 2к ← D3/ЛН2 sections (13→12, 1→2) with
+  **S4.1/S4.2 switches**; sources listed: FRAME(2)/TAPE(3)/Rx(3)/Tx(3) — the FRAME INT arrives
+  from sheet 2 = the ECO's target corner, now with its full sheet-1 receive side.
+Board cycle: E2/E3 re-placed twice (v57 stagnated 18-unrouted in the RAS/CAS channel; v58's
+spacing overlapped pads) — final at (276,231)/(276,242); D52 at (234,225).
+**Route v59: 1163/1163, 0 unconnected, 0 electrical DRC.**

@@ -39,7 +39,7 @@ PASSIVE_PLACE = {
     'R38':(245,204,90),'R39':(245,217,90),
     'Z1':(78,271,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'C73':(64.5,261,0),
-    'E2':(247,237,0),'E3':(247,241,0),   # config jumpers by D53 (sheet-2)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'E2':(276,231,0),'E3':(276,242,0),   # config jumpers east of D35 (moved out of the RAS/CAS fan-out channel -- v57 stagnated)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
@@ -113,7 +113,7 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(253,225,0),'D52':(238,225,0),'D103':(291,200,0),   # D52 = 5th КП14 beside D53 (sheet-2 MX)
+    'D53':(253,225,0),'D52':(234,225,0),'D103':(291,200,0),   # D52 = 5th КП14 beside D53 (sheet-2 MX)
     'D56':(302,200,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
