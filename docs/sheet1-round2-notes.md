@@ -163,3 +163,7 @@ BOOT NOTE: the flipped datapath boots the REAL ekta37 ROM byte-identical through
 read path (DRAM DO -> ИР82 -> DB gated by D37) -- deepest datapath validation yet.
 LVS IN SYNC. Remaining nearby: rails 31-38 driver side (which ВА87 pushes DB toward DI
 during writes -- likely none needed, DI pins are plain loads), D58.STB source (rail 5).
+FINDING 16 -- PIT PIN-VERIFY CLEAN (crop s2_pit1): D54 ВИ53 drawn pins = exactly the 8253
+pinout used for the MAME cascade nets (CS21 A0/A1=19/20 RD22 WR23 D0-7=8..1, CLK/G/OUT =
+9/11/10, 15/14/13, 18/16/17). Data ins <- rails 31-38 = DB codes (third confirmation).
+All 7 cascade nets + PIT bus pins now factory-drawing-verified.
