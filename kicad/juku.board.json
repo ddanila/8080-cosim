@@ -767,7 +767,7 @@
       "prov": {
         "type": "scan(РТ4 PROM, like D6)",
         "refdes": "BOM ДГШ3.031.006 ВП: К555ИД7 x1 = the IO decoder; physical D2 is a КР556РТ4 PROM (progr. drawing ДГШ5.106.038, photo: socketed). Decoder refdes = D9 (owner-confirmed К555ИД7 on the board).",
-        "pins": "decode in PROM contents = the known I/O map (off-schematic)",
+        "pins": "scan; selects A/B/C = A10/A11/A12 rails (sheet-1, rail-code table)",
         "note": "РТ4 I/O decode; the 2x К155РЕ3 timing-state PROMs (ДГШ5.106.009) are also on this board (DRAM/video timing) -- pins/contents pending PROM dump"
       }
     },
@@ -4079,6 +4079,10 @@
         [
           "D22",
           "21"
+        ],
+        [
+          "D9",
+          "1"
         ]
       ]
     },
@@ -4136,6 +4140,10 @@
         [
           "D8",
           "10"
+        ],
+        [
+          "D9",
+          "2"
         ]
       ]
     },
@@ -4193,6 +4201,10 @@
         [
           "D8",
           "11"
+        ],
+        [
+          "D9",
+          "3"
         ]
       ]
     },
@@ -9496,45 +9508,6 @@
         [
           "D37",
           "5"
-        ]
-      ]
-    },
-    "D8_D0": {
-      "src": "assumed",
-      "nodes": [
-        [
-          "D8",
-          "1"
-        ],
-        [
-          "D9",
-          "1"
-        ]
-      ]
-    },
-    "D8_D1": {
-      "src": "assumed",
-      "nodes": [
-        [
-          "D8",
-          "2"
-        ],
-        [
-          "D9",
-          "2"
-        ]
-      ]
-    },
-    "D8_D2": {
-      "src": "assumed",
-      "nodes": [
-        [
-          "D8",
-          "3"
-        ],
-        [
-          "D9",
-          "3"
         ]
       ]
     },

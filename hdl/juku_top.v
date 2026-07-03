@@ -145,8 +145,8 @@ module juku_top (
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
     wire [7:0] d8_d;
     re3_prom  U_D8   (.a(BA[15:11]), .e_n(1'b0), .d(d8_d));   // A4..A0 = BA15..BA11 -- DERIVED from firmware .117: the 4000-BFFF window pager (see docs/re3-decode.md)
-    io_dec138 U_DID7 (.a(d8_d[0]), .b(d8_d[1]), .c(d8_d[2]),
-                      .sa(BA[2]), .sb(BA[3]), .sc(BA[4]), .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
+    io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
+                      .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============

@@ -250,9 +250,11 @@ endmodule
 // table is dumped, the FUNCTIONAL decode uses the sim-only sa/sb/sc (the pre-restructure BA-based
 // selects) so the boot stays byte-identical. When the dump lands: re3_prom gets the table and the
 // decode switches to a/b/c.
-module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, input wire sa, sb, sc, output wire [7:0] y_n);
+module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
+    // selects = A10/A11/A12 rails (sheet-1 rail-code table) = IO port bits 2-4 via the 8080's
+    // A15-8 port mirror -- the REAL decode path (sim-only sa/sb/sc retired 2026-07).
     wire en = g1 & ~(g2a_n & g2b_n);
-    assign y_n = en ? ~(8'b1 << {sc, sb, sa}) : 8'hFF;
+    assign y_n = en ? ~(8'b1 << {c, b, a}) : 8'hFF;
 endmodule
 // D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the IO-decode state PROM.
 // Contents pending the owner's dump/table scan -- outputs inert 0 until then (D9 decodes from
