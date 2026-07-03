@@ -199,3 +199,11 @@ input rails 8,7,6,5 (attributed to D8 bank byte from the SHEET-1 read). Wire num
 sheet-local; the D8->D42/D43 BSEL nets could actually be counter->D42 connections (or vice
 versa). RESOLVE by reading the E13 junction zone + the vertical rail bundle between D44-47,
 D42/43, and the D50/D51 inputs before trusting BSEL0-7. (Nets left as-is, flagged.)
+FINDING 21 (crop s2_e13 -- landed on PIT column): D54 control rows: CS(21)<-"6", A0(19)<-"2",
+A1(20)<-"3", RD(22)<-"4", WR(23)<-"5"; DB rails 31-38 again ✓. The small per-row numbers fit
+NEITHER the global wire table (1-5=MRD/MWR/IOWR/IORD/INTA: RD<-4=IORD ✓ but WR<-5=INTA ✗)
+NOR the rail-code system (A0<-rail2=A1 ✗). Possible source-pin convention (CS <- pin 6 of
+D105 ЛА3? -- would touch the D9-CS attribution!). RESOLVE NEXT SESSION: cross-reference
+sheet-1's D9 Y-output row codes (s1_d9en2) + D105 outputs vs these arrival codes; also
+D55/D57 CS rows for the pattern. Until then CS_D5x nets stay as-is.
+Also pending: E13 junction re-crop (missed left), D46/D47 rows, power-pin table.
