@@ -180,3 +180,13 @@ CONFLICT TO RESOLVE: D50 Q1-Q4 -> MA rails 21-24, D51 Q1-Q4 -> MA rails 25-28 (D
 drivers!) -- our model has D48/D49 driving MA. Verify D48/D49's drawn role (CPU/video addr
 first stage?) before rewiring the mux tree. S3 needs a real component (DIP-6 + R40-R45) in
 board.json once the mux input mapping is read precisely.
+FINDING 19 (crop s2_d48) -- MA BUS IS SHARED TRI-STATE: D48/D49 (CPU addr) AND D50/D51
+(video addr) all drive MA rails 21-28; КП14=74S258 tri-states via G. D50/D51 promoted to
+netted chips on the MA nets (HDL: disabled-enable boundaries; boot identical); W10 now
+LVS-covered (U_D50.SEL <- U_D41.QA). D48/D49 G tied pairwise; G sources = the video-cycle
+alternation [unread].
+PIN-ORDER CAUTION: sheet draws Y->MA as pins 4,12,9,7 per mux; model keeps consistent
+4,7,9,12 on BOTH pairs. A permutation experiment broke boot via the va-path asymmetry --
+the line order can only be corrected together with the mux INPUT rail read (A/B pin ->
+BA/counter rails) and a va-path treatment. QUEUED: full mux-tree input read (D44-D47
+counters -> D50/D51 A ins; S3 -> B ins; D48/D49 A/B <- BA rails).

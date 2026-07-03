@@ -239,8 +239,17 @@ module juku_top (
     ie7_ctr  U_D47 (.clk(co2),     .load_n(1'b1), .d(4'b0), .q(),        .co());
     // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
     // CAS. (CPU row/col realized; the video path through this mux is the un-modeled boundary.)
+    // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
+    // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
+    // sides at once or the video-va path desyncs). Queued in round-2 notes.
     kp14_mux U_D48 (.a(BA[3:0]), .b(BA[11:8]),  .sel(phi1), .en_n(1'b0), .y(MA[3:0]));
     kp14_mux U_D49 (.a(BA[7:4]), .b(BA[15:12]), .sel(phi1), .en_n(1'b0), .y(MA[7:4]));
+    // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
+    // 21-28). A/B ins <- video counters + S3 config [unread boundaries]; G enables alternate
+    // with D48/D49 on the video cycle [source unread] -- held disabled here (z), so the CPU
+    // pair keeps driving MA and boot stays identical. SEL <- D41.QA [WIRE 10, beeper ✓].
+    kp14_mux U_D50 (.a(4'b0), .b(4'b0), .sel(d41_qa), .en_n(1'b1), .y(MA[3:0]));
+    kp14_mux U_D51 (.a(4'b0), .b(4'b0), .sel(1'b0),   .en_n(1'b1), .y(MA[7:4]));
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
     // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties
