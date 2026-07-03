@@ -257,8 +257,20 @@ endmodule
 // D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the IO-decode state PROM.
 // Contents pending the owner's dump/table scan -- outputs inert 0 until then (D9 decodes from
 // the sim-only selects meanwhile).
-module re3_prom (input wire [4:0] a, input wire e_n, output wire [7:0] d);
-    assign d = 8'h00;
+module re3_prom (input wire [4:0] a, input wire e_n, output reg [7:0] d);
+    // FACTORY CONTENT (owner's scan 2026-07): table ДГШ 5.106.117 (rev of .039, D8 assumed --
+    // see ref/firmware/README.md; the sibling .113 belongs to D94). Low nibble = one-cold
+    // active-low selects stepping across the 08h-17h window; FF elsewhere.
+    always @* begin
+        if (e_n)              d = 8'hFF;
+        else case (a[4:2])
+            3'b010:           d = 8'h07;   // 08-0B
+            3'b011:           d = 8'h0B;   // 0C-0F
+            3'b100:           d = 8'h0D;   // 10-13
+            3'b101:           d = 8'h0E;   // 14-17
+            default:          d = 8'hFF;
+        endcase
+    end
 endmodule
 
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====

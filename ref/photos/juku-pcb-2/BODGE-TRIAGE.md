@@ -911,3 +911,29 @@ The ВН59/D10 IR table read + modeled (sheet-1):
 The FRAME INT chain is now modeled at BOTH ends (D55/VER RTR source family -> ECO gate D37 -> ...
 -> D10.23/IR5) with only the ECO's own copper as the remaining gap — exactly what the beeper
 session closes.
+
+## Iteration 68 — THE OFFICIAL .009 BOM + РЕ3 FIRMWARE LANDED (owner's scans)
+The two most valuable documents of the campaign arrived:
+**1. ДГШ5.109.009 ПЭЗ** — the official per-refdes BOM of the FDC-revision module (годен с
+15.08.88). Resolutions, wholesale:
+- **The К561 tape subsystem is GONE from .009** (no ЛА7/ЛП2/ТВ1/ИР9/ИМ1/ИЕ11/СА3) — the FDC
+  replaced it; sheet-3's D94-D108 refdes were re-used for the FDC-era parts. Board 7.102.158 = .009.
+- **Quadrant refdes now OFFICIAL**: D95+D101 = К555КП12 (the pair!), D97/D99/D102 = КМ555АГ3 ×3,
+  D98 = К155ЛП11, D96 = КМ555ТМ2, **D106 = К555ИЕ7** (not СА3), D100 = КР580ВА87 (5th),
+  **D28 = К155ЛН3** (the old "D28=РЕ3" was wrong), **D94 = К155РЕ3 #2** (progr. .092),
+  D107 = КР580ВА86 ✓, D105 = К155ЛА3 ✓, D92 = К555ЛЕ4 ✓, D93 = КР1818ВГ93 ✓ OFFICIAL.
+  All placeholder footprints renamed (AG3B/C/D, KP12A/B, LP11, VA87E, IE7X, LN3X, TM2X retired);
+  АГ3 pool position-mapping D97/D99/D102 [assumed]. En route: found+fixed 3 duplicate dict keys
+  that were silently dropping footprints.
+- **D9 = К555ИД7 officially** (the D2->D9 decoder fix CONFIRMED); D2 = РТ4 .037, D6 = .038
+  (drawing pair was swapped in the iter-62 note -- prov corrected); D8 = РЕ3 .039 ✓;
+  D52 = К555КП14 ✓ (the model's 5th mux confirmed); D41-43 = ИР16 ×3 ✓.
+- **DRAM = D84-D91** (not D60-67) — populated-bank renumber queued (touches ~40 nets, next session).
+- **D15-D22 РФ5 with per-socket programming drawings** .087/.041/.042/.043/.088/.089/.090/.091.
+**2. К155РЕ3 firmware** — programming tables ДГШ 5.106.113 (изм.2 1990) & .117 (изм.1 1989),
+the revised РЕ3 set. Content = one-cold active-low select sequences over the 08-17h window
+(.117: 4-address dwell; .113: single-shot at 14-17h). Transcribed to ref/firmware/*.hex; the
+**.117 table is LIVE in re3_prom (D8)** [role-assumed; .113 -> D94]; functional decode stays
+sim-only until the D8/D9 coupling is verified. LVS IN SYNC, BOOT-CHECK PASS.
+Board: v63-v66 rolls at 1-4 unrouted (density edge); v67 running on the new
+**2.2.4+combine-fix+40-pass-patience** build (local-2.2.4-fix branch + patience cherry-pick).

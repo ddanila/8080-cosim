@@ -104,7 +104,7 @@ PLACE = {
     'D57':(292,223,90),'D55':(292,245,90),'D54':(292,269,90),'D26':(245,265,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
-    'D1':(35,176,0),'D4':(57,158,0),'D2':(83.5,158,0),'D8':(66,122,90),'D9':(122,136,90),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
+    'D1':(35,176,0),'D4':(57,158,0),'D2':(83.5,158,0),'D8':(66.5,122,90),'D9':(122.5,136,90),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -327,35 +327,30 @@ def main():
     # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).
     # Confident IDs only; the rest stay silk outlines until identified.
     UNTRACED = {
-        'D28':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #1, socketed [photo]
+        # Refdes per the OFFICIAL ДГШ5.109.009 ПЭЗ (owner's scan, 2026-07) -- the FDC-revision
+        # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
+        # schematic exists for the .009 additions).
+        'D94':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #2, socketed [photo]; progr. .092 -> rev .113/.117
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
-        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    294, 176, 0),  # video XOR [photo: right of D39, right pins ~12 mm off the edge]
-        'D50':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 158, 0),  # video addr mux [drawing; series per corner photo: the lone К555КП14 8904 lives in the D48/D49 cluster, so D50/D51 are КР531]
-        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux [drawing]
-        'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
-        'VA87E':('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
-        'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 2nd bus buffer, stacked below D4 [photo 201940304: ВА86 x2 8901; user-confirmed same-as-neighbor]
-        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # quad NAND, lower-left column below D30/D13 [owner-identified]
-        # (D99/К561ИР9 REMOVED from the board: both location candidates refuted -- (296,82) excluded
-        # by the owner's quadrant rows, (302,200) turned out to be D56's АГ3. The sheet-3 ИР9 exists
-        # somewhere (tape-serial.md) but goes back on only when physically located.)
-        'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [emaplaat label + owner's decapped chip]; likely the real Φ1/Φ2 phase generator core
-        # --- ВГ93 quadrant, owner's authoritative 4-row layout (iter 39). Refdes PROVISIONAL
-        # (nearest drawing-box match; the drawing's layout differs here -- etch reads will settle):
-        # row 1 (y52, horiz): D28 РЕ3 ✓, D97 ВА87 ✓, then:
-        'LP11': ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90), # hex buffer [iter-33 zoom: 8904, horizontal]
-        # row 2 (y96, vertical; photo-6 grounded -- photo-1's top-region compression had put the whole ladder ~25 mm too high):
-        'D94':  ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 96, 0),  # counter [photo 8908]
-        'D102': ('DIP-14_W7.62mm', 'К155ЛН3',    272, 96, 0),  # hex inv [owner: ЛН3; matches iter-10 К155ЛН3 sighting]
-        'D101': ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 96, 0),  # dual D-FF [photo 8905; owner wrote ТМ3 -- ТМ2 per label]
-        # row 3 (y115, horiz):
-        'D98':  ('DIP-16_W7.62mm', 'К555КП12',   268, 115, 90), # mux #1 [photo 8812]
-        'D96':  ('DIP-14_W7.62mm', 'К155АГ3',    288.5, 115, 90), # [owner: "АП3", behind cable -- АГ3 assumed, verify]
-        # row 4 (y132, horiz, below D93's pin field):
-        'KP12B':('DIP-16_W7.62mm', 'К555КП12',   242, 131, 90),# mux #2 [photo 8812]
-        'AG3B': ('DIP-14_W7.62mm', 'К155АГ3',    295.5, 132, 90),# one-shot [photo 8901, label-down]; refdes UNKNOWN -- was provisionally 'D106', but scan-verified D106 = К554СА3 tape comparator (tape-serial.md) owns that number
-        'AG3C': ('DIP-14_W7.62mm', 'К155АГ3',    268, 132, 90),# row-4 middle АГ3 (owner's layout); refdes unknown -- NOT D56 (that one is at its drawn (302,200) spot, photo-confirmed)
-        'LA3B':  ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # the ТМ2-ТЛ2-ЛА3 trio [photo]  # refdes unknown: schematic D52 = КП14 (video/µP addr mux at D53); the trio ЛА3 = D105
+        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    294, 176, 0),  # video XOR [photo]
+        'D50':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 158, 0),  # video addr mux [.009: D48-D51 all КР531]
+        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux
+        'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [official in .009]
+        'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
+        'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 3rd ВА86 [.009 official]
+        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # [.009 official]
+        'D92':  ('DIP-14_W7.62mm', 'К555ЛЕ4',    270, 176, 0),  # quad NOR [.009 official; owner's decap]
+        # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
+        'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90),  # row 1 [.009: D98=ЛП11 ✓]
+        'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 96, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]
+        'D28':  ('DIP-14_W7.62mm', 'К155ЛН3',    272, 96, 0),   # row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread]
+        'D96':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 96, 0),   # row 2 [.009: D96=ТМ2]
+        'D95':  ('DIP-16_W7.62mm', 'К555КП12',   268, 115, 90), # row 3: КП12 #1 [.009: D95]
+        'D97':  ('DIP-14_W7.62mm', 'КМ555АГ3',   288.5, 115, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
+        'D101': ('DIP-16_W7.62mm', 'К555КП12',   242, 131, 90), # row 4: КП12 #2 [.009: D101]
+        'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   268, 132, 90), # row 4 middle [pool, ASSUMED]
+        'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   295.5, 132, 90),# row 4 right [pool, ASSUMED]
+        'LA3B': ('DIP-14_W7.62mm', 'К155ЛА3',    59, 237, 0),   # trio ЛА3 sighting; .009 has only ONE К155ЛА3 (=D105) -- this position vs (30,240) needs one eyeball
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)

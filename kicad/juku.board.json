@@ -171,7 +171,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "scan"
+        "pins": "scan; progr. drawing = ДГШ5.106.038 (official .009 BOM; the .037/.038 pair was swapped in iter 62's note)"
       }
     },
     {
@@ -2985,7 +2985,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "sheet-1: РЕ3 D8 = IO-decode state PROM; A0-A4=10-14, E=15, D0-D7=1-7,9 through R21-R28 1к pulls; contents = ДГШ5.106.039 [dump pending]"
+        "pins": "sheet-1: РЕ3 D8 = IO-decode state PROM; A0-A4=10-14, E=15, D0-D7=1-7,9 through R21-R28 1к pulls; contents = ДГШ5.106.039 [dump pending]; official .009: D8 = РЕ3 .039 ✓"
       }
     },
     {
@@ -3007,7 +3007,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.038 [dump pending]"
+        "pins": "sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.037 [dump pending]; drawing = .037 per the official .009 BOM"
       }
     }
   ],
