@@ -10244,6 +10244,19 @@
         ]
       ],
       "wire_link": true
+    },
+    "RAM_RD_OE": {
+      "src": "scan sheet-2 (D37 sect-3 out -> D58 OE rail; rail continuity assumed)",
+      "nodes": [
+        [
+          "D37",
+          "6"
+        ],
+        [
+          "D58",
+          "9"
+        ]
+      ]
     }
   }
 }

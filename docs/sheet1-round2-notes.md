@@ -128,3 +128,21 @@ codes 11/12/13 against this table (11->A10 ✓, 12->A11? but EPROM shows 17->A11
 A10/A12/A13 shifts the port-mirror mapping).
 D8 consumer re-read: D8.D0-D7 -> consumer pins 1-8 consecutive = ВА86/87 A-side profile
 (bank-select byte buffered) -- candidate D29/ВА87 spare half or sheet-2 buffer. Unresolved.
+
+## SHEET 2 (round 2 continued)
+FINDING 11 -- RAM OUT EN driver chain CONFIRMED on sheet 2 (crop s2_ramouten): -MRD(1) ->
+D33 ЛН1 3->4 -> D37.5; RAM OUT EN(1) -> D37.4; D37 sect(4,5->6). EXACTLY our HDL model
+(.i3(memr_n)->o4; .a3/.b3). Triple agreement: beeper + sheet-1 + sheet-2.
+FINDING 12 -- D37.6 -> D58.9 (ИР82 OE) [rail continuity assumed]: net RAM_RD_OE added.
+POLARITY INSIGHT: OE active during READS -> D58 = RAM READ-data latch (РУ5 DO -> DB), not
+the write latch as modeled; role revision queued (direction flip touches DRAM datapath).
+D58 sheet pins verified: D1-8=1..8, Q=12..19, STB=11<-rail5, OE=9<-rail8 ✓ our dict.
+FINDING 13 -- audio output driver (crop s2_d37dest): rail 10 (SOUND, PIT D57.OUT1) -> R90 2k
+-> VD4 -> R91 1k + VT1 КТ972 (darlington), emitter R48 -> speaker; AVDC(=AUDC, D26.PA4) level
+input at right edge; matches emaplaat VT1/R90/R91/VD4/R48 cluster at (245-252,220-246) ✓
+and MAME speaker chain ✓. Wire posts 1/2 nearby = speaker feed pair? (beeper wires 1/2 zone).
+Sheet-2 rails at D58: STB<-rail5, OE<-rail8, audio<-rail10 (vertical bundle x~4340-4380).
+NEXT sheet-2 targets: S3 DIP-switch bank (53.1-53.6) + R40-R46 pullups zone (video mode
+config); D42/D43 ИР16 zone top-right (bank-select latches, D8-consumer candidate); PIT
+TIMER blocks pin-verify vs MAME cascade; DRAM DO/DI bus vs D58 direction; power-pin table
+bottom-left (per-type VCC/GND pins for LVS power nets).

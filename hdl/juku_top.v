@@ -102,6 +102,7 @@ module juku_top (
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
     wire d13_res;
+    wire d37_y3;                      // D37 sect-3 out -> D58.OE (RAM-read gate, sheet-2)
     wire ram_out_en;                  // sheet-2 RAM-control rail [WIRE 12]; loads = D13.2 + D37.4; driver on sheet 2 (undriven boundary)
     // D13 secB returns to SPARE: the beeper (wires 8/9) shows STSTB = D38.8 -> D5.1 directly and
     // SYNC -> D38.12; the old D13-mediated stand-in was [assumed]. Functionally identical at boot
@@ -183,7 +184,10 @@ module juku_top (
     // holding write data stable across CAS/WE. Modeled transparent (write_data = DB) -> boot identical.
     // РУ5 DIN <- write_data (via D58); РУ5 DOUT stays on DB (read path). STB/OE = boundary for now.
     wire [7:0] write_data;
-    ir82_latch U_D58 (.d(DB), .stb(1'b0), .oe_n(1'b0), .q(write_data));
+    // OE = D37 sect-3 (active during READS per sheet-2) -- suggests D58 is the RAM READ-data
+    // latch, not the write latch as modeled; role revision queued. Stub stays transparent
+    // (q=d ignores stb/oe), so this hookup is connectivity-only and boot-identical.
+    ir82_latch U_D58 (.d(DB), .stb(1'b0), .oe_n(d37_y3), .q(write_data));
     // Populated bank = D84-D91 (bottom array row) per the official ДГШ5.109.009 ПЭЗ; board #1
     // (rev 7.102.100) had the TOP row (D60-67) stuffed instead -- a per-revision factory choice.
     dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
@@ -276,7 +280,7 @@ module juku_top (
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
-                    .a3(d33_o4), .b3(ram_out_en), .y3());  // sect2: LATCH gate; sect3: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 dangling
+                    .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3));  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries

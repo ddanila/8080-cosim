@@ -3967,4 +3967,8 @@
 	(label "RAM_OUT_EN" (at 52.54 3197.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 57.62 1720) (xy 57.62 1717.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000001422"))
 	(label "RAM_OUT_EN" (at 57.62 1717.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
+	(wire (pts (xy 62.7 1720) (xy 62.7 1717.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000001423"))
+	(label "RAM_RD_OE" (at 62.7 1717.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
+	(wire (pts (xy 70.32 1960) (xy 70.32 1957.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000001424"))
+	(label "RAM_RD_OE" (at 70.32 1957.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 )
