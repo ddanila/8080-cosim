@@ -45,7 +45,7 @@ _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
         (35,124,0),(23.5,176,90),(189,124,0),(212.5,86,90),(240,278.5,0),(162,44,0),   # C51 below D26, X9 gap (the only pocket that fits a disc cap)
         (214,272,0),(271,252,0),(271,238,0),
-        (55,51,0),(113,51,0),(68,127,0),(143,127,0),(97,203,0),(84,203,0),(111,203,0),
+        (55,51,0),(113,51,0),(50,121,0),(143,127,0),(97,203,0),(84,203,0),(111,203,0),   # C58-slot moved west (D8 landed at its old spot)
         (277,147,0),(259,176,90),(274,221,90),(142,261.5,0),(197,261.5,0),(207,54,90),(228,103,90),   # C66/C67 up with the bottom row (was y=273, overlapped the moved D42/D58)
         (199,190,90),(199,217,90),(199,242,90)]
 for _i, _xy in enumerate(_DEC): PASSIVE_PLACE[f'C{35+_i}'] = _xy
@@ -104,7 +104,7 @@ PLACE = {
     'D57':(292,223,90),'D55':(292,245,90),'D54':(292,269,90),'D26':(245,265,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
-    'D1':(35,176,0),'D4':(57,158,0),'D9':(122,136,90),   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
+    'D1':(35,176,0),'D4':(57,158,0),'D2':(83.5,158,0),'D8':(66,122,90),'D9':(122,136,90),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -334,7 +334,6 @@ def main():
         'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux [drawing]
         'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [photo; DIP-40 length needs y=92]
         'VA87E':('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # FDC bus buffer [drawing top band]
-        'D2':   ('DIP-16_W7.62mm', 'КР556РТ4А',  83.5, 158, 0),   # 2nd РТ4 PROM socket (progr. drawing ДГШ5.106.038; photo: socketed, CPU cluster)
         'D107': ('DIP-20_W7.62mm', 'КР580ВА86',  57, 185, 0),   # 2nd bus buffer, stacked below D4 [photo 201940304: ВА86 x2 8901; user-confirmed same-as-neighbor]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # quad NAND, lower-left column below D30/D13 [owner-identified]
         # (D99/К561ИР9 REMOVED from the board: both location candidates refuted -- (296,82) excluded

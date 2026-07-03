@@ -881,3 +881,17 @@ Answering "what's left before scanning the РЕ3 programming tables":
 CS nets rewire) and D2 (arbitration PROM, sheet-1 wiring in iter 64) -- then both scanned tables
 (.038/.039) drop into ready instances like the РТ4 maps did. D28's dump remains valuable
 separately (FDC-rev timing).
+
+## Iteration 66 — D8/РЕ3 + D2/РТ4 net-modeled: the board is READY for the programming tables
+The dig-in session before the owner scans the РЕ3 tables:
+- **D8 (К155РЕ3) net-modeled and placed** at the CPU-cluster socket zone (66,122): full pinout
+  from sheet 1 (A0-A4=10-14, E=15, D0-D7=1-7,9). Its structural role: **the IO-decode state PROM
+  feeding D9/ИД7's selects** — nets D8_D0-D2 -> D9.1/2/3 [assumed column-mapping], the old
+  BA2/3/4 select rails moved to D8's address inputs [assumed]. The FUNCTIONAL decode stays on
+  sim-only selects (SA/SB/SC) until the .039 table lands — re3_prom outputs inert 0 meanwhile —
+  so the boot is byte-identical. **When the table is scanned: paste it into re3_prom, flip D9's
+  decode to the structural a/b/c, re-run boot_check — one-file change.**
+- **D2 (КР556РТ4А) net-modeled** (pin table from sheet 1: A0-A7=5/6/7/4/3/2/1/15, V1/V2=13/14,
+  DO=12; the bus-arbitration/wait PROM; nets deferred until the .038 table + destination read).
+- LVS IN SYNC (**165 matched**); BOOT-CHECK PASS; route v61: **1166/1166, 0 unconnected,
+  0 electrical DRC** (C58 re-homed off D5's pin row en route). Board: 166 footprints, 185 nets.

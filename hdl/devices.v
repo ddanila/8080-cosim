@@ -246,9 +246,19 @@ endmodule
 // ===== I/O chip-select decoder: К555ИД7 (74138) =====
 // Functional (merge step 1): standard 1-of-8 active-low decode, enabled by g1 & !(g2a_n|g2b_n).
 // On the board g2a_n/g2b_n = iord_n/iowr_n (enable on either strobe = the documented strobe-OR intent).
-module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
+// D9 ИД7. Structural selects a/b/c come from the D8 РЕ3 state PROM (sheet-1); until the .039
+// table is dumped, the FUNCTIONAL decode uses the sim-only sa/sb/sc (the pre-restructure BA-based
+// selects) so the boot stays byte-identical. When the dump lands: re3_prom gets the table and the
+// decode switches to a/b/c.
+module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, input wire sa, sb, sc, output wire [7:0] y_n);
     wire en = g1 & ~(g2a_n & g2b_n);
-    assign y_n = en ? ~(8'b1 << {c, b, a}) : 8'hFF;
+    assign y_n = en ? ~(8'b1 << {sc, sb, sa}) : 8'hFF;
+endmodule
+// D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the IO-decode state PROM.
+// Contents pending the owner's dump/table scan -- outputs inert 0 until then (D9 decodes from
+// the sim-only selects meanwhile).
+module re3_prom (input wire [4:0] a, input wire e_n, output wire [7:0] d);
+    assign d = 8'h00;
 endmodule
 
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====

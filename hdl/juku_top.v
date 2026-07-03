@@ -139,7 +139,10 @@ module juku_top (
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
-    io_dec138 U_DID7 (.a(BA[2]), .b(BA[3]), .c(BA[4]), .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
+    wire [7:0] d8_d;
+    re3_prom  U_D8   (.a({2'b00, BA[4], BA[3], BA[2]}), .e_n(1'b0), .d(d8_d));   // A0-A2 <- old select rails [assumed]; A3/A4/E deferred
+    io_dec138 U_DID7 (.a(d8_d[0]), .b(d8_d[1]), .c(d8_d[2]),
+                      .sa(BA[2]), .sb(BA[3]), .sc(BA[4]), .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============

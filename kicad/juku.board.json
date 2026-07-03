@@ -2952,6 +2952,53 @@
         "refdes": "scan",
         "pins": "configuration jumper (sheet-2): 1<-D52 mux, 3<-Φ phase, 2->D53; traced/boot position = 2-3"
       }
+    },
+    {
+      "ref": "D8",
+      "type": "RE3_PROM",
+      "pins": {
+        "10": "A0",
+        "11": "A1",
+        "12": "A2",
+        "13": "A3",
+        "14": "A4",
+        "15": "E_N",
+        "1": "D0",
+        "2": "D1",
+        "3": "D2",
+        "4": "D3",
+        "5": "D4",
+        "6": "D5",
+        "7": "D6",
+        "9": "D7"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "sheet-1: РЕ3 D8 = IO-decode state PROM; A0-A4=10-14, E=15, D0-D7=1-7,9 through R21-R28 1к pulls; contents = ДГШ5.106.039 [dump pending]"
+      }
+    },
+    {
+      "ref": "D2",
+      "type": "DEC_PROM",
+      "pins": {
+        "5": "A0",
+        "6": "A1",
+        "7": "A2",
+        "4": "A3",
+        "3": "A4",
+        "2": "A5",
+        "1": "A6",
+        "15": "A7",
+        "13": "V1",
+        "14": "V2",
+        "12": "D0"
+      },
+      "prov": {
+        "type": "scan",
+        "refdes": "scan",
+        "pins": "sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.038 [dump pending]"
+      }
     }
   ],
   "nets": {
@@ -3472,8 +3519,8 @@
           "11"
         ],
         [
-          "D9",
-          "1"
+          "D8",
+          "10"
         ],
         [
           "D23",
@@ -3525,8 +3572,8 @@
           "14"
         ],
         [
-          "D9",
-          "2"
+          "D8",
+          "11"
         ],
         [
           "D23",
@@ -3578,8 +3625,8 @@
           "2"
         ],
         [
-          "D9",
-          "3"
+          "D8",
+          "12"
         ],
         [
           "D23",
@@ -9249,6 +9296,45 @@
         [
           "D37",
           "5"
+        ]
+      ]
+    },
+    "D8_D0": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D8",
+          "1"
+        ],
+        [
+          "D9",
+          "1"
+        ]
+      ]
+    },
+    "D8_D1": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D8",
+          "2"
+        ],
+        [
+          "D9",
+          "2"
+        ]
+      ]
+    },
+    "D8_D2": {
+      "src": "assumed",
+      "nodes": [
+        [
+          "D8",
+          "3"
+        ],
+        [
+          "D9",
+          "3"
         ]
       ]
     }
