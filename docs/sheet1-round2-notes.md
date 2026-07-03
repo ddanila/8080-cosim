@@ -152,3 +152,14 @@ D43.A-D; D43.QD(10) -> D42.DS(1) cascade; D42.QD(10) -> D37 pins 12+13 (tied) ->
 R38 1k -> node A (exactly our modeled D37 sect-1). Old DB/video-shift wiring of D42/D43
 was [assumed] -- superseded; 10 nets rewired (8x BSEL + D42_Q + D43_DS). CK(9)/LD(6)/G(8)
 sources still to trace (kept on DOTCLK16M/VID_LD nets meanwhile). LVS IN SYNC, boot PASS.
+FINDING 15 -- DRAM DATAPATH FLIPPED (crop s2_d60 + overview wire table): the model had D58
+REVERSED. Sheet-2 truth: РУ5 DI pins sit DIRECTLY on DB (DI rails 31-38 = the DB0-7
+inter-sheet wire codes); РУ5 DO pins (14) form a separate read bus (rails 1-8) into D58
+ИР82 D-ins; D58.Q -> DB, OE-gated by the D37 read strobe (RAM_RD_OE). Implemented: 8x RDO
+nets (DO bus + D58.D), DI pins + D58.Q merged into DB nets, WD0-7 nets retired; ir82_latch
+now OE-gates its Q (z when disabled); ram_out_en rail = tri1 (its R-pullup). D60 block also
+pin-verifies MA rails 21-28, R=rail11, C=15, W=16, DI=31.
+BOOT NOTE: the flipped datapath boots the REAL ekta37 ROM byte-identical through the real
+read path (DRAM DO -> ИР82 -> DB gated by D37) -- deepest datapath validation yet.
+LVS IN SYNC. Remaining nearby: rails 31-38 driver side (which ВА87 pushes DB toward DI
+during writes -- likely none needed, DI pins are plain loads), D58.STB source (rail 5).

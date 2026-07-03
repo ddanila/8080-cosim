@@ -92,7 +92,9 @@ endmodule
 // D58 is the chip that does it in hardware). Modeled TRANSPARENT (q=d) so the RAM sees the same write
 // data -> byte-identical boot; STB/OE are wired for LVS connectivity only.
 module ir82_latch (input wire [7:0] d, input wire stb, oe_n, output wire [7:0] q);
-    assign q = d;
+    // RAM READ-data latch (sheet-2): D <- РУ5 DO bus, Q -> DB, OE = D37 read strobe.
+    // Latch function still transparent (stb boundary); OE gating is real.
+    assign q = oe_n ? 8'hzz : d;
 endmodule
 
 module expansion_conn (inout wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n,

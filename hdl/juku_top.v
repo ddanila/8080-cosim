@@ -103,7 +103,11 @@ module juku_top (
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
     wire d13_res;
     wire d37_y3;                      // D37 sect-3 out -> D58.OE (RAM-read gate, sheet-2)
-    wire ram_out_en;                  // sheet-2 RAM-control rail [WIRE 12]; loads = D13.2 + D37.4; driver on sheet 2 (undriven boundary)
+`ifdef YOSYS
+    wire ram_out_en;                  // sheet-2 RAM-control rail [WIRE 12]; loads = D13.2 + D37.4
+`else
+    tri1 ram_out_en;                  // undriven boundary; tri1 = the rail's pullup (idle high)
+`endif
     // D13 secB returns to SPARE: the beeper (wires 8/9) shows STSTB = D38.8 -> D5.1 directly and
     // SYNC -> D38.12; the old D13-mediated stand-in was [assumed]. Functionally identical at boot
     // (frozen divider -> D38 NAND = ~SYNC).
@@ -180,52 +184,51 @@ module juku_top (
     wire ras_n, cas_n;             // (from RAM control / refresh)
     wire [15:0] vid_addr;          // video raster address into the framebuffer (РУ5 2nd port)
     wire [7:0]  vbyte;             // framebuffer byte at vid_addr (from the 8 РУ5 video reads)
-    // D58 (К580ИР82) = DRAM write-data latch: latches DB and drives the РУ5 DIN bus (write_data),
-    // holding write data stable across CAS/WE. Modeled transparent (write_data = DB) -> boot identical.
-    // РУ5 DIN <- write_data (via D58); РУ5 DOUT stays on DB (read path). STB/OE = boundary for now.
-    wire [7:0] write_data;
-    // OE = D37 sect-3 (active during READS per sheet-2) -- suggests D58 is the RAM READ-data
-    // latch, not the write latch as modeled; role revision queued. Stub stays transparent
-    // (q=d ignores stb/oe), so this hookup is connectivity-only and boot-identical.
-    ir82_latch U_D58 (.d(DB), .stb(1'b0), .oe_n(d37_y3), .q(write_data));
+    // DRAM datapath (sheet-2 confirmed): WRITE = DB -> РУ5 DI directly (DI rails 31-38 are the
+    // DB inter-sheet codes); READ = РУ5 DO bus (rails 1-8) -> D58 ИР82 latch -> DB, OE-gated by
+    // the D37 read strobe. (The earlier write-latch reading of D58 was reversed.)
+        // D58 = RAM READ-data latch (sheet-2 confirmed): РУ5 DO bus (rails 1-8) -> D -> Q -> DB,
+    // OE = D37 sect-3 read strobe. Writes go DB -> РУ5 DI directly (rails 31-38 = DB codes).
+    wire [7:0] rdo;                    // РУ5 DO read bus
+    ir82_latch U_D58 (.d(rdo), .stb(1'b0), .oe_n(d37_y3), .q(DB));
     // Populated bank = D84-D91 (bottom array row) per the official ДГШ5.109.009 ПЭЗ; board #1
     // (rev 7.102.100) had the TOP row (D60-67) stuffed instead -- a per-revision factory choice.
-    dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[0]), .do_(DB[0]), .va(vid_addr), .vq(vbyte[0]));
-    dram_64kx1 U_D85 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[1]), .do_(DB[1]), .va(vid_addr), .vq(vbyte[1]));
-    dram_64kx1 U_D86 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[2]), .do_(DB[2]), .va(vid_addr), .vq(vbyte[2]));
-    dram_64kx1 U_D87 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[3]), .do_(DB[3]), .va(vid_addr), .vq(vbyte[3]));
-    dram_64kx1 U_D88 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[4]), .do_(DB[4]), .va(vid_addr), .vq(vbyte[4]));
-    dram_64kx1 U_D89 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[5]), .do_(DB[5]), .va(vid_addr), .vq(vbyte[5]));
-    dram_64kx1 U_D90 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[6]), .do_(DB[6]), .va(vid_addr), .vq(vbyte[6]));
-    dram_64kx1 U_D91 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(write_data[7]), .do_(DB[7]), .va(vid_addr), .vq(vbyte[7]));
+    dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]), .va(vid_addr), .vq(vbyte[0]));
+    dram_64kx1 U_D85 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]), .va(vid_addr), .vq(vbyte[1]));
+    dram_64kx1 U_D86 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]), .va(vid_addr), .vq(vbyte[2]));
+    dram_64kx1 U_D87 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]), .va(vid_addr), .vq(vbyte[3]));
+    dram_64kx1 U_D88 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]), .va(vid_addr), .vq(vbyte[4]));
+    dram_64kx1 U_D89 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]), .va(vid_addr), .vq(vbyte[5]));
+    dram_64kx1 U_D90 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]), .va(vid_addr), .vq(vbyte[6]));
+    dram_64kx1 U_D91 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]), .va(vid_addr), .vq(vbyte[7]));
     // ---- unpopulated DRAM rows 0-2 (D60-D83): sockets wired to the shared MA/RAS/WE + per-bit
     // DIN/DOUT buses, per-row CAS. Passive (no chip installed) -> boot-safe. Bank-select CAS
     // decode not yet traced [assumed]. Completes the 4x8 РУ5 array for the PCB.
     wire cas0, cas1, cas2;
-    ru5_socket U_D60 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[0]), .do_(DB[0]));
-    ru5_socket U_D61 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[1]), .do_(DB[1]));
-    ru5_socket U_D62 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[2]), .do_(DB[2]));
-    ru5_socket U_D63 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[3]), .do_(DB[3]));
-    ru5_socket U_D64 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[4]), .do_(DB[4]));
-    ru5_socket U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[5]), .do_(DB[5]));
-    ru5_socket U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[6]), .do_(DB[6]));
-    ru5_socket U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(write_data[7]), .do_(DB[7]));
-    ru5_socket U_D68 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[0]), .do_(DB[0]));
-    ru5_socket U_D69 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[1]), .do_(DB[1]));
-    ru5_socket U_D70 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[2]), .do_(DB[2]));
-    ru5_socket U_D71 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[3]), .do_(DB[3]));
-    ru5_socket U_D72 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[4]), .do_(DB[4]));
-    ru5_socket U_D73 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[5]), .do_(DB[5]));
-    ru5_socket U_D74 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[6]), .do_(DB[6]));
-    ru5_socket U_D75 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(write_data[7]), .do_(DB[7]));
-    ru5_socket U_D76 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[0]), .do_(DB[0]));
-    ru5_socket U_D77 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[1]), .do_(DB[1]));
-    ru5_socket U_D78 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[2]), .do_(DB[2]));
-    ru5_socket U_D79 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[3]), .do_(DB[3]));
-    ru5_socket U_D80 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[4]), .do_(DB[4]));
-    ru5_socket U_D81 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[5]), .do_(DB[5]));
-    ru5_socket U_D82 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[6]), .do_(DB[6]));
-    ru5_socket U_D83 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(write_data[7]), .do_(DB[7]));
+    ru5_socket U_D60 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]));
+    ru5_socket U_D61 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]));
+    ru5_socket U_D62 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]));
+    ru5_socket U_D63 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]));
+    ru5_socket U_D64 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]));
+    ru5_socket U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]));
+    ru5_socket U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]));
+    ru5_socket U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]));
+    ru5_socket U_D68 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]));
+    ru5_socket U_D69 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]));
+    ru5_socket U_D70 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]));
+    ru5_socket U_D71 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]));
+    ru5_socket U_D72 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]));
+    ru5_socket U_D73 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]));
+    ru5_socket U_D74 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]));
+    ru5_socket U_D75 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]));
+    ru5_socket U_D76 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]));
+    ru5_socket U_D77 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]));
+    ru5_socket U_D78 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]));
+    ru5_socket U_D79 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]));
+    ru5_socket U_D80 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]));
+    ru5_socket U_D81 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]));
+    ru5_socket U_D82 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]));
+    ru5_socket U_D83 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]));
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
     // sel/en + counter preset are the assumed parts; chips D44-D50/D53 are scan-verified.
