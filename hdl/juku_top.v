@@ -290,12 +290,15 @@ module juku_top (
     wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin;
     ap2_drv U_D14 (.i3(ser_txd), .i2(1'b1),    .o6(s_sout), .o7());
     ap2_drv U_D32 (.i3(ser_rts), .i2(ser_dtr), .o6(s_rts),  .o7(s_dtp));
-    ln2_inv U_D3  (.a(ser_txd), .y(s_ttl));                 // К561ЛН2 sec 11->10: TTL SOUT = ~TxD
+    wire int7_raw, int6_raw, ir7_sig, ir6_sig;
+    assign int7_raw = 1'b1; assign int6_raw = 1'b1;   // X1 expansion -INT7/-INT6 [boundary: idle high]
+    ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
+                   .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_sig));  // sec 11->10: TTL SOUT = ~TxD; + INT6/INT7 inverters (sheet-1)
     la18_oc U_D12 (.i1(ser_txd), .i2(1'b1), .o3(s_oc));
     up2_rcv U_D104(.a(s_sin), .y(ser_rxd));
     serial_conn U_X3 (.sout(s_sout), .rts(s_rts), .dtp(s_dtp), .ttl_sout(s_ttl), .oc_sout(s_oc), .sin(s_sin));
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk());
-    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
+    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n), .ir7(ir7_sig), .ir6(ir6_sig),
                       .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.

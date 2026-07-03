@@ -429,7 +429,10 @@ module ap2_drv (input wire i2, i3, output wire o6, o7);
 endmodule
 // К561ЛН2 hex inverter (CMOS), D3: section 11->10 makes TTL SOUT = ~TxD (the schematic section I
 // first misread as an АП2 -- АП2 is 8-pin, so pins 11/10 could only be the ЛН2).
-module ln2_inv (input wire a, output wire y);
+module ln2_inv (input wire a, i13, i1, output wire y, o12, o2);   // D3 К561ЛН2: 3 used sections
+    assign o12 = ~i13;   // 13->12: -INT7 (X1.113B) -> IR7 (D10.25), via S4 [series switch, unmodeled]
+    assign o2  = ~i1;    // 1->2:   -INT6 (X1.113C) -> IR6 (D10.24), via S4
+// original section:
     assign y = ~a;
 endmodule
 // К155ЛА55/ЛА18 open-collector NAND (D12): -> OC SOUT.
@@ -451,7 +454,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
-module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n,
+module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)
                  output wire intr, input wire inta_n);
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;

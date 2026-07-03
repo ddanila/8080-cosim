@@ -895,3 +895,19 @@ The dig-in session before the owner scans the РЕ3 tables:
   DO=12; the bus-arbitration/wait PROM; nets deferred until the .038 table + destination read).
 - LVS IN SYNC (**165 matched**); BOOT-CHECK PASS; route v61: **1166/1166, 0 unconnected,
   0 electrical DRC** (C58 re-homed off D5's pin row en route). Board: 166 footprints, 185 nets.
+
+## Iteration 67 — interrupt receive path modeled: FRAME INT lands at IR5; v62 clean (1170 conns)
+The ВН59/D10 IR table read + modeled (sheet-1):
+- **IR5(23) <- FRAME INT (2)** — the ECO's target net now has its named destination pin;
+  IR4(22) <- TAPE RUN INT (3, = D95's ЛП2 section on sheet 3); IR0(18)/IR1(19) <- the TAPE
+  USART's RxRDY/TxRDY (sheet-3 cross-refs); **IR7(25)/IR6(24) <- X1 -INT7(113B)/-INT6(113C)
+  through D3's two extra ЛН2 sections** (13->12, 1->2; S4 series switches noted, unmodeled);
+  IR3(21)/IR2(20) sources partially read — deferred.
+- **D10's D0-D7 (pins 11-4) wired onto the DB bus** (were never in the netlist).
+- D11 extras captured: RES=21, C=20, TxC=9, RxC=25 <- BAUD RATE rail (for the tape/baud pass).
+- New nets: INT7_RAW/IR7/INT6_RAW/IR6 + 8 DB memberships. ln2_inv -> 3 sections; pic_8259 gets
+  structural ir7/ir6. **LVS IN SYNC (167 matched); BOOT-CHECK PASS.**
+- Route v62: **1170/1170, 0 unconnected, 0 electrical DRC.** Board: 166 footprints, 189 nets.
+The FRAME INT chain is now modeled at BOTH ends (D55/VER RTR source family -> ECO gate D37 -> ...
+-> D10.23/IR5) with only the ECO's own copper as the remaining gap — exactly what the beeper
+session closes.
