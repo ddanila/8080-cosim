@@ -173,3 +173,10 @@ D37 sect2 out(3) -> D33.13 [= LATCH_PRE ✓]; D38 ЛА1 sect2 (ins pins 5,4,2,1 
 {15?,IORD(4),MWR(2),MRD(1)}) out(6) -> D59.13 [= LOAD_PRE ✓]. D41.G(8) <- node-A pullup rail;
 D41.CK(9)/DS(1) sources partially visible (left rails, IDs pending); D41 A-D ins <- rails
 2,3,4,5(?) pending. Four nets verified, zero corrections needed in this zone.
+FINDING 18 (crops s2_s3 + s2_s3dest): S3 = 6x DIP to GND, outs via R40-R45 13k pullups ->
+the КП14 mux B-inputs (static video-address config component, NOT counter presets). D50/D51
+КП14 pin-verified = our 74S258 map (A=2,14,5,11; B=3,13,10,6; S=1<-wire10 ✓; G=15; Q=4,12,9,7).
+CONFLICT TO RESOLVE: D50 Q1-Q4 -> MA rails 21-24, D51 Q1-Q4 -> MA rails 25-28 (DIRECT MA
+drivers!) -- our model has D48/D49 driving MA. Verify D48/D49's drawn role (CPU/video addr
+first stage?) before rewiring the mux tree. S3 needs a real component (DIP-6 + R40-R45) in
+board.json once the mux input mapping is read precisely.
