@@ -790,3 +790,17 @@ originals while board 7.102.158 is the '87+ FDC-integrated build. **The ВГ93-q
 photo-done; nets are formally owner-gated (beeper/etch). Program step 2 closes at maximum
 desk-reachable depth. Bonus: **eleven programmed-chip drawings (ДГШ 5.106.037-.047)** documented
 into the processor module — the РЕ3/РТ4/ROM programming set; dump procedure updated with the refs.
+
+## Iteration 61 — WIRE-NUMBER TABLE assembled; manual = software volume; jumper family found
+- The 286-page "part 3" manual is the SOFTWARE volume (RomBios/EKDOS/NETOS/compilers + DIAGNOSTICS
+  docs; useful for the emulation track) — NO revised schematics, so the FDC-glue verdict of
+  iteration 60 stands.
+- **Etch↔schematic wire-number map (the Rosetta table, from the sheet-2 column sweep)**:
+  1=HOR RTR · 2=VER RTR · 7=1MHz · 11-14=D53/ИД7 strobe family (via R49-52 100Ω) ·
+  15-18=PIT/mesh links · **21-28=MA bus (D48/D49 КП14 outputs -> РУ5 address)** ·
+  **31-38=DB data bus** · 40-44=tape (40=TAPE RUN, 41=SYNC, 42=REC.DATA, 43/44=DATA IN) ·
+  5xx=X3/X4/X5 connector pins · 1xxB/C=X1 edge pins. Solder-side digit sweeps can now be READ
+  against this table directly.
+- **Configuration-jumper family**: E2/E3 (D53 A/B source select), E13 (4-position, video addr
+  zone), E10 (sheet 3) — physical solder links, to be footprinted in a future pass.
+- D44-D47 ИЕ7 + D48/D49 КП14 schematic pinouts confirm the model's video-address chain wiring ✓.
