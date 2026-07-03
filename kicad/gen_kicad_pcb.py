@@ -34,12 +34,12 @@ PASSIVE_FP = {
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
-    'R19':(60,272,90),'VD5':(55,271,90),'C31':(86,257,0),'C32':(92,257,0),'C33':(98,257,0),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
-    'R3':(23,214,0),'R4':(34,214,0),'R20':(45,214,0),'C21':(53.5,214,0),'C1':(60,214,0),'S1':(67,214,0),
-    'R38':(245,204,90),'R39':(245,217,90),
-    'Z1':(78,271,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
-    'C73':(64.5,261,0),
-    'E2':(224,241,0),'E3':(224,249,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'R19':(44.4,235.3,90),'VD5':(49.4,246,90),'C31':(23,242.5,90),'C32':(23,249.5,90),'C33':(24.5,258.5,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
+    'R3':(12,215.4,0),'R4':(16.9,223.8,90),'R20':(51.9,208.9,0),'C21':(51.7,220.5,0),'C1':(18.4,209.5,0),'S1':(63.5,197.9,0),
+    'R38':(121.4,263.5,90),'R39':(235,201.6,0),
+    'Z1':(79.4,258,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
+    'C73':(58,256,0),
+    'E2':(217.5,234,0),'E3':(217.5,227.5,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = [(238,171,0),(231,158,90),(215,158,90),(199,158,90),(183,158,90),(167,158,90),(152,158,90),(135,158,90),
         (22,109,0),(64,109,0),(106,109,0),(148,109,0),
@@ -92,62 +92,62 @@ PLACE = {
     'D27':(162,57,90),
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
     # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
-    'D15':(22,86,0), 'D16':(43,86,0), 'D11':(201,86,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
+    'D15':(22.9,98.5,0), 'D16':(42.3,98.5,0), 'D11':(188,102.8,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
     # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
     # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
     # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
-    'D67':(127,158,0),'D66':(144,158,0),'D65':(159,158,0),'D64':(175,158,0),
-    'D63':(191,158,0),'D62':(207,158,0),'D61':(223,158,0),'D60':(238,158,0),
+    'D67':(119.6,148,0),'D66':(130.9,148,0),'D65':(142.3,148,0),'D64':(153.7,148,0),
+    'D63':(164.7,148,0),'D62':(176.1,148,0),'D61':(187.1,148,0),'D60':(198.4,148,0),
     # I/O block (PIT 8253 + PPI 8255) -- the drawing puts these on the RIGHT/bottom-right, NOT the
     # top: PITs D57/D55/D54 stack down the right edge (x~292, pulled in from the ~296 read to fit
     # the 310 cut), and PPI D26 sits bottom-right just left of D54. (Was a fictional top I/O row.)
-    'D57':(292,223,90),'D55':(292,245,90),'D54':(292,269,90),'D26':(245,265,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
+    'D57':(274.9,206.6,90),'D55':(274.9,229.2,90),'D54':(274.7,251,90),'D26':(232,251,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
-    'D1':(35,176,0),'D4':(57,158,0),'D2':(83.5,158,0),'D8':(66.5,122,90),'D9':(122.5,136,90),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
+    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(78.7,142.5,0),'D8':(88.3,117.5,90),'D9':(113.2,118,90),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
-    'D46':(84,217,0),'D44':(97,217,0),'D48':(111,217,0),
-    'D47':(85,242,0),'D45':(98,242,0),'D49':(112,242,0),
+    'D46':(80.7,198.5,0),'D44':(93.3,198.5,0),'D48':(105.6,198.5,0),
+    'D47':(80.7,223,0),'D45':(93.3,223,0),'D49':(105.6,223,0),
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(253,225,0),'D52':(234,224.5,0),'D50':(112,158,0),'D92':(270,176,0),'D103':(291,200,0),   # D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
-    'D56':(302,200,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
+    'D53':(227.8,204.9,0),'D52':(58.3,221.5,0),'D50':(106.2,148,0),'D92':(260,159.2,0),'D103':(274.2,181.8,0),   # D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
+    'D56':(287.8,180,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
-    'D5':(35,136,90),'D6':(68,136,90),'D7':(143,136,90),'D10':(189,136,90),
-    'D107':(57,185,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
+    'D5':(31.2,114.1,90),'D6':(63.8,117.5,90),'D7':(137.2,118,90),'D10':(178.9,116.7,90),
+    'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(277,155,90),'D41':(255,155,270),'D38':(251,176,0),'D39':(280,176,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
-    'D36':(253,200,180),'D33':(277,200,180),'D35':(266,221,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
-    'D59':(105.5,267.5,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
+    'D40':(258,140.9,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
+    'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(245.1,204.1,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
+    'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
-    'D25':(23,59,90),'D23':(55,59,90),'D24':(86,59,90),'D29':(113,59,90),
-    'D42':(142,269,90),'D43':(170,269,90),'D58':(197,269,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
-    'D37':(265,200,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
-    'D13':(30,223,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
+    'D25':(29.8,53.4,90),'D23':(54.6,53.4,90),'D24':(81.6,53.4,90),'D29':(108.5,53.4,90),
+    'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183,259.5,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
+    'D37':(241.7,181,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
+    'D13':(31.9,205.3,90),   # ТЛ2 reset + 8238-STSTB source (net-modeled), lower-left CPU cluster
 }
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
 # array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.
-_DCOLS = [127, 144, 159, 175, 191, 207, 223, 238]
-for _ry, _refs in [(190, range(75, 67, -1)), (217, range(83, 75, -1)), (242, range(91, 83, -1))]:
+_DCOLS = [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4]
+for _ry, _refs in [(173, range(75, 67, -1)), (198, range(83, 75, -1)), (223, range(91, 83, -1))]:
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 # unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
-for _i, _r in enumerate(range(17, 23)): PLACE[f'D{_r}'] = (64 + _i*21, 86, 0)
+for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLACE[f'D{_i}'] = (_x, 98.5, 0)
 # serial-port cluster (net-modeled): REAL positions read off the emaplaat (relative to the D11
 # anchor): D104/D32/D14 = the column under the X3 serial connector; D12/D3 right of D11.
-PLACE['D104'] = (198, 54, 0); PLACE['D32'] = (215, 34, 0); PLACE['D14'] = (215, 54, 0)
-PLACE['D12']  = (220, 80, 0); PLACE['D3']  = (220, 103, 0)
+PLACE['D104'] = (184.9, 75.2, 0); PLACE['D32'] = (198.9, 63.6, 0); PLACE['D14'] = (198.9, 73.9, 0)
+PLACE['D12']  = (206.3, 96, 0); PLACE['D3']  = (205.8, 111.5, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -311,18 +311,18 @@ def main():
     for col in range(1, 33):
         px = 22.25 + (col - 1) * 2.5            # 32 cols * 2.5 = 77.5mm, centered at x=61
         for ri, row in enumerate('ABC'):
-            x1_pads[f'1{col:02d}{row}'] = (px, 24.5 + ri * 2.5)
-    make_conn('X1', 61, 27.5, x1_pads)
+            x1_pads[f'1{col:02d}{row}'] = (px, 22.0 + ri * 2.5)
+    make_conn('X1', 61, 24.5, x1_pads)
     # X3: serial edge connector (traced codes 23,29,30,32,33,51 among 2 rows; provisional 2x8 grid)
     x3_codes = [['23','29','30','32','33','51','35','37'], ['24','26','28','31','34','36','38','40']]
     x3_pads = {}
     for ri, rowcodes in enumerate(x3_codes):
         for ci, code in enumerate(rowcodes):
-            x3_pads[code] = (187.0 + ci * 2.5, 24.5 + ri * 2.5)
-    make_conn('X3', 196, 25.75, x3_pads)
+            x3_pads[code] = (184.0 + ci * 2.5, 22.0 + ri * 2.5)
+    make_conn('X3', 193, 23.25, x3_pads)
     # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
-    x8_pads = {str(59 + i): (76.0 + i * 4.0, 282.0) for i in range(6)}
-    make_conn('X8', 86, 282, x8_pads)
+    x8_pads = {str(59 + i): (34.0 - i * 5.0, 267.0) for i in range(6)}   # 62..59 read left->right on the drawing
+    make_conn('X8', 24, 267, x8_pads)
 
     # ---- UNTRACED footprints: photo/BOM-identified chips whose NETS aren't traced yet ----
     # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).
@@ -331,23 +331,23 @@ def main():
         # Refdes per the OFFICIAL ДГШ5.109.009 ПЭЗ (owner's scan, 2026-07) -- the FDC-revision
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
-        'D94':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 55, 0),   # РЕ3 #2, socketed [photo]; progr. .092 -> rev .113/.117
-        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   30, 207, 90),  # ready ТМ2 [photo]
-        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    294, 176, 0),  # video XOR [photo]
-        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  112, 190, 0),  # video addr mux
-        'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 92, 0),   # FDC [official in .009]
-        'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 52, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
-        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    30, 240, 90),  # [.009 official]
+        'D94':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 33, 0),   # РЕ3 #2, socketed [photo]; progr. .092 -> rev .113/.117
+        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 191.5, 90),  # [emaplaat]  # ready ТМ2 [photo]
+        'D34':  ('DIP-14_W7.62mm', 'К555ЛП5',    297.5, 158.1, 0),  # [emaplaat]  # video XOR [photo]
+        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  106.2, 173, 0),  # row-2 mux [emaplaat]  # video addr mux
+        'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 70, 0),   # FDC [official in .009]
+        'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 30, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
+        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 219.8, 90),  # below D13 [emaplaat]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
-        'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 52, 90),  # row 1 [.009: D98=ЛП11 ✓]
-        'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 96, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]
-        'D28':  ('DIP-14_W7.62mm', 'К155ЛН3',    272, 96, 0),   # row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread]
-        'D96':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 96, 0),   # row 2 [.009: D96=ТМ2]
-        'D95':  ('DIP-16_W7.62mm', 'К555КП12',   268, 115, 90), # row 3: КП12 #1 [.009: D95]
-        'D97':  ('DIP-14_W7.62mm', 'КМ555АГ3',   288.5, 115, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
-        'D101': ('DIP-16_W7.62mm', 'К555КП12',   242, 131, 90), # row 4: КП12 #2 [.009: D101]
-        'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   268, 132, 90), # row 4 middle [pool, ASSUMED]
-        'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   295.5, 132, 90),# row 4 right [pool, ASSUMED]
+        'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]
+        'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 74, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]
+        'D28':  ('DIP-14_W7.62mm', 'К155ЛН3',    272, 74, 0),   # row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread]
+        'D96':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 74, 0),   # row 2 [.009: D96=ТМ2]
+        'D95':  ('DIP-16_W7.62mm', 'К555КП12',   268, 93, 90), # row 3: КП12 #1 [.009: D95]
+        'D97':  ('DIP-14_W7.62mm', 'КМ555АГ3',   288.5, 93, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
+        'D101': ('DIP-16_W7.62mm', 'К555КП12',   242, 109, 90), # row 4: КП12 #2 [.009: D101]
+        'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   268, 110, 90), # row 4 middle [pool, ASSUMED]
+        'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   295.5, 110, 90),# row 4 right [pool, ASSUMED]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)
@@ -394,7 +394,7 @@ def main():
     # PCB = 310 x 266 mm (owner MEASURED the real board). So edges: left 0, right 310, top 22,
     # bottom = top(22)+266 = 288. (The 279 measured earlier was the OUTER envelope incl. the video
     # jack X8 overhang -- not the PCB cut.) Chips read in the same frame sit correctly vs the top.
-    BX0, BY0, BX1, BY1 = 0.0, 22.0, 310.0, 288.0
+    BX0, BY0, BX1, BY1 = 0.0, 0.0, 310.0, 279.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)
         s.SetLayer(pcbnew.Edge_Cuts); s.SetWidth(pcbnew.FromMM(0.15))
@@ -412,7 +412,9 @@ def main():
         h.SetLayer(pcbnew.Edge_Cuts); h.SetWidth(pcbnew.FromMM(0.15))
         h.SetCenter(pcbnew.VECTOR2I(pcbnew.FromMM(hx), pcbnew.FromMM(hy)))
         h.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(hx + d/2.0), pcbnew.FromMM(hy))); board.Add(h)
-    mhole(7, 30); mhole(6, 283)        # TL, BL (read 5,289 -> inset to stay within the 288 bottom)
+    mhole(10.2, 28); mhole(114.4, 28.7)   # top pair flanking X1 [emaplaat]
+    mhole(10.1, 150.5); mhole(300.3, 153) # mid-left / mid-right [emaplaat]
+    mhole(104, 265.8); mhole(199, 265.6)  # bottom pair [emaplaat]
 
     # top-edge expansion connectors X1/X2 -- non-electrical SILK OUTLINE annotations (read off the
     # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future
