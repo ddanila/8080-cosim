@@ -155,3 +155,18 @@ Remaining register pages 2-4,10-11 (caps cont., ferrites, misc) = final pass [qu
   bit permutations) in a scratch branch and run boot_check with the real .117 content — the
   cosim decides which reading is physical. Also line-follow codes 2,3,4,6,7,8 to the
   remaining sockets (D16-D22) to complete the map before/with the experiment.
+
+## РЕ3 BLOCKER RESOLVED (local Д1 tables + web research)
+1. **The hex files ARE the factory programming tables verbatim** (ДГШ5.106.113Д1 page read:
+   matches re3_dgsh5.106.113.hex byte-for-byte) — no dump-polarity/artifact escape hatch.
+2. **К155РЕ3 fact (chipinfo.ru): unprogrammed = ALL ZEROS; burning fuses writes 1s.**
+   => FF rows = deliberately fully-burned "deselect" rows (outputs HIGH = CS inactive);
+   window rows 07/0B/0D/0E = burn only the 1s: one-cold in D3..D0 = active-low selects for
+   the FOUR BASIC-bank sockets: **D3(code 8)=4000, D2(7)=6000, D1(6)=8000, D0(5)=A000**;
+   D4-D7 left unburned (=0/LOW in window rows) => **CANNOT be wired to ROM CEs** (would
+   multi-select/fight) — their code rails 1-4 go elsewhere or n.c. [line-follow to verify].
+3. => the "code-1 -> D15.CS" reading was a passing-rail mis-association (2nd such catch);
+   **D15/D16 stay on D6 ROM/REV** — consistent with the factory data AND the working boot.
+4. Residual: line-follow codes 5/6/7/8 to pin the physical socket order (which of D17-D22 =
+   which bank); optional empirical referee = boot_check with candidate wirings.
+5. Community: zx-pk.ru thread 27298 (Juku E5101) found — mine for owner measurements [queued].
