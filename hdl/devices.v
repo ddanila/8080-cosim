@@ -229,12 +229,13 @@ module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40
     assign q  = cnt;
     assign co = et & (&cnt);
 endmodule
-module ln1_dual  (input wire i9, i5, i13, i3, i11, output wire o8, o6, o12, o4, o10);   // D33 ЛН1: used inverter sections
+module ln1_dual  (input wire i9, i5, i13, i3, i11, i1, output wire o8, o6, o12, o4, o10, o2);   // D33 ЛН1: used inverter sections
     assign o8 = ~i9;    // section pin 9 -> pin 8  = clkg_d33 -> D38.9  (pin 9 <- C6/R46 osc RC = boundary)
     assign o6 = ~i5;    // section pin 5 -> pin 6  = D36.4  (pin 5 <- D40.Q2, traced 2026-07)
     assign o12 = ~i13;  // section 13->12 = LATCH  (D37.3 -> D33.13, sheet-2)
     assign o4  = ~i3;   // section 3->4: -MRD -> D37.5 (RF/video-mix qualifier, sheet-2 bottom)
     assign o10 = ~i11;  // section 11->10: D36.3 -> D36.10 CAS strobe-chain delay leg (bite-2)
+    assign o2  = ~i1;   // section 1->2: D103.CO -> LD reload loop (the /13 preset divider, traced s2_d103)
 endmodule
 // D36 ЛА12 (7437 quad buffer NAND, high drive). Section 4,5->6 = clock mesh (traced 2026-07); bite-2
 // added: 1,2->3 (pin1 taps rail 15 = CAS, pin2 <- rail 17) -> D33.11; 9,10->8 (-> rail 16); 12,13->11

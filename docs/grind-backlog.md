@@ -459,3 +459,9 @@ arrival -> R90. D58 rows also read: STB=11, D7/D8 data rows ✓ ИР82 pinout co
 Crop s2_spkr_edge: AVDC = R91 -> "(1)" cross-sheet export (sheet-1 arrival = one text hunt);
 SPKR = R48 -> wire post 1, post 2 = GND return (the SB posts flanking R60 at 252.7/205.2 and
 252.7/199.9) -- speaker unit solders to posts directly. Both srcs upgraded.
+
+## Loop iteration: the /13 divider fully netted (CLK_123M closed)
+Crop s2_d103: **1.23MHz rail = D103.QD (pin 11)** -> tag 13 -> D57.CLK2; **CO (15) -> D33
+sect 1->2 -> LD_N (9)** = the preset-reload loop (C/D preset inputs tied at the stub) —
+16MHz/13 = 1.2308MHz ✓. Nets CLK_123M {D103.11, D57.18}, D103_CO, D103_LD added; ln1_dual
+gained the 1->2 section; U_D103 q/co/load wired. LVS 317 IN SYNC.

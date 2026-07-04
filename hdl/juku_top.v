@@ -58,6 +58,7 @@ module juku_top (
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
     wire        rom_sel_n, ram_sel_n, rev, roe_n;
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
+    wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
     wire [1:0]  mem_mode;
     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block). Array read:
     // R is PER BANK (rails 11/12/13/14 <- the D53 Y ladder), C (rail 15) + W (rail 16) are shared.
@@ -99,6 +100,7 @@ module juku_top (
                      .a4(d39_memcyc), .b4(d92_noacc), .y4(vid_cpu_sel));                         // 4,5->6 -> D52.1
     wire d33_o4, d36_y2, d33_o10;
     ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6), .i13(d37_latch_pre), .o12(latch_sig),
+                     .i1(d103_co), .o2(d103_ld),   // sect 1->2: D103 CO -> LD reload (the /13 divider loop, traced)
                      .i3(memr_n), .o4(d33_o4),  // + 13->12 = LATCH; 3->4 = ~MRD -> D37.5 (sheet-2)
                      .i11(d36_y2), .o10(d33_o10));  // 11->10 = CAS strobe-chain delay leg (bite-2)
     // D36 bite-2 sections: pin 1 TAPS the CAS rail (input); 12,13 (tied) = the CAS-driver NAND input
@@ -347,7 +349,7 @@ module juku_top (
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;
     ag3_oneshot U_D56  (.a_n(1'b1), .b(1'b1), .clr_n(1'b1), .q(), .q_n(dotclk_16m));  // 16MHz leg = Q_N pin 4 (bite-3)
-    ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(1'b1), .d(4'b0), .q(), .co());
+    ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
 
     // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
@@ -420,10 +422,9 @@ module juku_top (
                       .clk0(pit_hchain), .gate0(1'b1), .clk1(pit_hsync_dsl), .gate1(pit_vchain),
                       .clk2(pit_hsync_dsl), .gate2(pit_vchain),
                       .out0(pit_vchain), .out1(frame_int), .out2());
-    wire pit2_clk2;   // 1.23M rail (traced: tag 13 <- D103/D33 divider); rail source un-netted -> boundary
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk123m), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
-                      .clk2(pit2_clk2), .gate2(1'b1),   // traced: CLK2 <- 1.23M (was frame_int [mame-assumed])
+                      .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK2 <- 1.23M = D103.QD (crop s2_d103)
                       .out0(pit_baud), .out1(pit_sound), .out2());   // OUT1 = SOUND -> R90 -> VT1 beeper (traced)
     wire ser_txd, ser_rts, ser_dtr, ser_rxd;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),

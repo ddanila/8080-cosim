@@ -1067,7 +1067,9 @@
     "3": "I3",
     "4": "O4",
     "11": "I11",
-    "10": "O10"
+    "10": "O10",
+    "1": "I1",
+    "2": "O2"
    },
    "prov": {
     "type": "scan",
@@ -12981,8 +12983,12 @@
    ]
   },
   "CLK_123M": {
-   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.CLK2 (pin 18) <- rail labeled 1.23M, bundle tag 13 (= D103 ИЕ10 /13 divider via D33; rail source pass queued)",
+   "src": "traced sheet-2 300dpi (crop s2_d103): D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK2 (pin 18)",
    "nodes": [
+    [
+     "D103",
+     "11"
+    ],
     [
      "D57",
      "18"
@@ -13093,6 +13099,32 @@
     [
      "D54",
      "18"
+    ]
+   ]
+  },
+  "D103_CO": {
+   "src": "traced sheet-2 300dpi (crop s2_d103): D103.CO (15) -> D33 sect 1->2",
+   "nodes": [
+    [
+     "D103",
+     "15"
+    ],
+    [
+     "D33",
+     "1"
+    ]
+   ]
+  },
+  "D103_LD": {
+   "src": "traced sheet-2 300dpi (crop s2_d103): D33.2 -> D103.LD_N (9) reload loop = the /13 preset divider (C/D presets tied)",
+   "nodes": [
+    [
+     "D33",
+     "2"
+    ],
+    [
+     "D103",
+     "9"
     ]
    ]
   }
