@@ -77,7 +77,8 @@ module juku_top (
     wire d41_qa, d41_qb, d37_latch_pre, latch_sig, d39_o8, load_pre;
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(1'b1), .g(1'b1), .ck(1'b0),
                      .ds(1'b0), .qa(d41_qa), .qb(d41_qb));
-    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .i11(d39_o8));
+    wire pst_clk;
+    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .i11(d39_o8), .i3(osc_clk), .o4(pst_clk));   // ring sect 3->4 = PST CLK
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
     la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(1'b1), .b2(1'b1), .y2(d39_o8));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]; sect2 9,10->8 -> D59.11 (sheet-2, ins deferred)
     wire d33_o4;
@@ -236,7 +237,7 @@ module juku_top (
     // Presets: D44 grounded [drawn]; D47 <- S3 config switches [drawn]; D45/D46 [unread].
     // LD sources (D34 XOR chain) + CLR rail = boundaries.
     wire [15:0] VA; wire co0, co1, co2; wire [1:0] rc_nc;
-    ie7_ctr  U_D44 (.up(phi2ttl), .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());
+    ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
     ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
     ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[11:8]),  .co(co2), .bo());
     ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[15:12]), .co(), .bo());
