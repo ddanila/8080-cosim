@@ -449,3 +449,8 @@ Crop s2_d37_d58: "(1) RAM OUT EN." arrives from sheet 1 -> D37.4 ✓ (net RAM_OU
 D58.OE [pin landing = one crop, 95%]. RAM_RD_OE upgraded scan->traced. Remaining #14:
 SPKR/AVDC/CLK_123M far ends, D56 sect-1 trigger, DOTCLK16M bend, C99 plate, D6 V1/V2,
 mode tag-3, buffer E-gates, LOAD_PRE, PIT0_CLK1M rail source.
+
+## Loop iteration: RAM_RD_OE landing confirmed
+Crop s2_d58_oe: the D37.6 riser corners east into D58.OE (pin 9) — RAM_RD_OE fully traced
+(was the "rail continuity assumed" item). Same frame re-validates the beeper SOUND tag-10
+arrival -> R90. D58 rows also read: STB=11, D7/D8 data rows ✓ ИР82 pinout consistent.
