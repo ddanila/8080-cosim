@@ -289,3 +289,16 @@ S3_1/S3_2 -> D46 presets [likely; D46 preset rows still unread].
 REMAINING LOOSE ENDS (for the freeze review): D48/D49.S exact rail; D46 preset rows;
 E14.1/E13.1 rail IDs; D34 sect-1 inputs (4,5); D42/D43 CK/LD (still DOTCLK16M/VID_LD
 [assumed]); R54-58 rail-E pullup zone; counter R (reset) rail source.
+LEFTOVER SESSION (post-grind-C):
+- D94 got its REAL .113 content (hex rows 0x14-17 = 07/0B/0D/0E, 2K one-cold over A000-BFFF).
+- ppi0_pc declaration-order boot break fixed (the grind-C commit was transiently red).
+- D53 zone read (crops c1_d53/c1_d53b): selects A<-E2.2, B<-E3.2 ✓ (beeper nets confirmed),
+  C+G2 grounded (netted), G1<-above-rail, G3<-left-rail [queued]. Outputs Y0-Y3 -> R49-52
+  (100R series) -> strobe rails {14,13,12,11} -> R53-56 5.1k pullups -> rail E.
+  **RAS = Y3 -> rail 11 ✓ (our net verified). CAS CORRECTION: DRAM C <- rail 15 which is NOT
+  a D53 output -- bank-gated CAS from the D92 ЛЕ4 NOR zone [next read]. CAS/CAS0-2 provenance
+  downgraded accordingly.**
+- D52 (5th КП14) verified: G grounded (always on), S <- В/А long rail, outs -> E2/E3 ✓.
+- R49-R56 added as placed netless parts (series/pullup chain; nets pending).
+ASSUMED CENSUS AT FREEZE-REVIEW START: 16 nets (list in git; 5 clock-mesh, 4 CAS-family,
+2 FDC-IRQ, REV/RAM_SEL pair, M5V, PIT_BAUD, RAM_RD_OE-continuity).
