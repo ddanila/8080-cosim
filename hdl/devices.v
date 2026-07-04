@@ -316,13 +316,18 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
 // drive the bus (which would corrupt the 8259's injected interrupt vector). Normal read/write
 // cycles keep g=1, so the boot timing is unchanged.
 // D53 ИД7 (74S138-class). Structural inputs per sheet-2: A(1)<-E2 jumper, B(2)<-E3 jumper,
-// C(3)=GND, G1(6)<-RAM_SEL; outputs Y0-Y3 = pins 15/14/13/12 (V0-V3, through R49-R52 100R on the
-// real board -- resistors are LVS-invisible, netlist keeps D53 direct). In the traced/boot jumper
-// position (2-3) a=Φ1, b=Φ2. `sactive` = sim-only mem_active qualifier (SIM_ONLY pin).
-module rascas_dec (input wire a, b, c, input wire g, input wire sactive, output wire [3:0] y_n);
-    assign y_n[3] = ~(sactive & ~g & a);   // ras_n = V3/pin12 -> R52 -> wire 11 -> РУ5 R
-    assign y_n[2] = ~(sactive & ~g & b);   // cas_n = V2/pin13 [assumed] -> R51
-    assign y_n[1:0] = 2'b11; endmodule
+// C(3)=GND, G2(5)=GND, G1/G3 feeds pending; outputs Y0-Y3 = pins 15/14/13/12, each through its
+// R49-R52 100R series (net_boundary in juku_top) onto the PER-BANK RAS rails 14/13/12/11 (array
+// read: R is per bank, C/W shared). The behavioral RAS strobe is emitted on Y0 -- the populated
+// bank D84-91 hangs on rail 14 <- Y0. `sactive` = sim-only mem_active qualifier; `cas_sim` =
+// SIM-ONLY leg carrying the CAS scaffold to the rail-15 net_boundary (the real driver is D36.11;
+// both are in lvs.py's SIM_ONLY contract). In the traced/boot jumper position (2-3) a=Φ1, b=Φ2.
+module rascas_dec (input wire a, b, c, input wire g, input wire sactive, output wire [3:0] y_n,
+                   output wire cas_sim);
+    assign y_n[0]   = ~(sactive & ~g & a);   // behavioral RAS -> rail 14 (populated bank D84-91)
+    assign y_n[3:1] = 3'b111;                // expansion-bank RAS rails (sockets empty)
+    assign cas_sim  = ~(sactive & ~g & b);   // sim CAS scaffold -> rail 15 boundary
+endmodule
 // Configuration jumper (Е2/Е3/Е10/Е13 family): 3 pads, position 1-2 or 2-3. Functional model =
 // the 2-3 position (the traced/boot configuration): common follows p3.
 module jumper3 (input wire p1, p3, output wire p2); assign p2 = p3; endmodule

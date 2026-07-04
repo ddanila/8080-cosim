@@ -5690,143 +5690,15 @@
    ]
   },
   "MEMW": {
-   "src": "scan; bite-2: \"-MWR\" label (wire 19 open-circle) -> D92.4 write-strobe NOR",
+   "src": "scan; array read: DRAM W pins moved to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps",
    "nodes": [
     [
      "D5",
      "26"
     ],
     [
-     "D60",
-     "3"
-    ],
-    [
-     "D61",
-     "3"
-    ],
-    [
-     "D62",
-     "3"
-    ],
-    [
-     "D63",
-     "3"
-    ],
-    [
-     "D64",
-     "3"
-    ],
-    [
-     "D65",
-     "3"
-    ],
-    [
-     "D66",
-     "3"
-    ],
-    [
-     "D67",
-     "3"
-    ],
-    [
      "D29",
      "4"
-    ],
-    [
-     "D68",
-     "3"
-    ],
-    [
-     "D69",
-     "3"
-    ],
-    [
-     "D70",
-     "3"
-    ],
-    [
-     "D71",
-     "3"
-    ],
-    [
-     "D72",
-     "3"
-    ],
-    [
-     "D73",
-     "3"
-    ],
-    [
-     "D74",
-     "3"
-    ],
-    [
-     "D75",
-     "3"
-    ],
-    [
-     "D76",
-     "3"
-    ],
-    [
-     "D77",
-     "3"
-    ],
-    [
-     "D78",
-     "3"
-    ],
-    [
-     "D79",
-     "3"
-    ],
-    [
-     "D80",
-     "3"
-    ],
-    [
-     "D81",
-     "3"
-    ],
-    [
-     "D82",
-     "3"
-    ],
-    [
-     "D83",
-     "3"
-    ],
-    [
-     "D84",
-     "3"
-    ],
-    [
-     "D85",
-     "3"
-    ],
-    [
-     "D86",
-     "3"
-    ],
-    [
-     "D87",
-     "3"
-    ],
-    [
-     "D88",
-     "3"
-    ],
-    [
-     "D89",
-     "3"
-    ],
-    [
-     "D90",
-     "3"
-    ],
-    [
-     "D91",
-     "3"
     ],
     [
      "D7",
@@ -7305,7 +7177,7 @@
    ]
   },
   "RAS": {
-   "src": "traced sheet-2: rail 11 = R52.2 (<- D53.Y3) + R56 5.1k pullup -> E; all 32 DRAM R pins",
+   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 11 = bank-0 RAS <- R52 <- D53.Y3",
    "nodes": [
     [
      "D60",
@@ -7340,102 +7212,6 @@
      "4"
     ],
     [
-     "D68",
-     "4"
-    ],
-    [
-     "D69",
-     "4"
-    ],
-    [
-     "D70",
-     "4"
-    ],
-    [
-     "D71",
-     "4"
-    ],
-    [
-     "D72",
-     "4"
-    ],
-    [
-     "D73",
-     "4"
-    ],
-    [
-     "D74",
-     "4"
-    ],
-    [
-     "D75",
-     "4"
-    ],
-    [
-     "D76",
-     "4"
-    ],
-    [
-     "D77",
-     "4"
-    ],
-    [
-     "D78",
-     "4"
-    ],
-    [
-     "D79",
-     "4"
-    ],
-    [
-     "D80",
-     "4"
-    ],
-    [
-     "D81",
-     "4"
-    ],
-    [
-     "D82",
-     "4"
-    ],
-    [
-     "D83",
-     "4"
-    ],
-    [
-     "D84",
-     "4"
-    ],
-    [
-     "D85",
-     "4"
-    ],
-    [
-     "D86",
-     "4"
-    ],
-    [
-     "D87",
-     "4"
-    ],
-    [
-     "D88",
-     "4"
-    ],
-    [
-     "D89",
-     "4"
-    ],
-    [
-     "D90",
-     "4"
-    ],
-    [
-     "D91",
-     "4"
-    ],
-    [
      "R52",
      "2"
     ],
@@ -7446,8 +7222,104 @@
    ]
   },
   "CAS": {
-   "src": "traced sheet-2 (bite-2): CAS rail 15 = D36.11 (LA12/7437 sect 12,13->11) -> R57 -> rail 15; R58 5.1k pullup -> rail E; taps: populated-bank DRAM C (D84-91), D36.1 strobe-chain feedback, video-cycle branch to grid (2,3). D53.Y2 -> R51 -> rail 12 (expansion), NOT CAS",
+   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, video-cycle branch (2,3). Former assumed nets CAS0/1/2 dissolved (no per-bank CAS exists)",
    "nodes": [
+    [
+     "D60",
+     "15"
+    ],
+    [
+     "D61",
+     "15"
+    ],
+    [
+     "D62",
+     "15"
+    ],
+    [
+     "D63",
+     "15"
+    ],
+    [
+     "D64",
+     "15"
+    ],
+    [
+     "D65",
+     "15"
+    ],
+    [
+     "D66",
+     "15"
+    ],
+    [
+     "D67",
+     "15"
+    ],
+    [
+     "D68",
+     "15"
+    ],
+    [
+     "D69",
+     "15"
+    ],
+    [
+     "D70",
+     "15"
+    ],
+    [
+     "D71",
+     "15"
+    ],
+    [
+     "D72",
+     "15"
+    ],
+    [
+     "D73",
+     "15"
+    ],
+    [
+     "D74",
+     "15"
+    ],
+    [
+     "D75",
+     "15"
+    ],
+    [
+     "D76",
+     "15"
+    ],
+    [
+     "D77",
+     "15"
+    ],
+    [
+     "D78",
+     "15"
+    ],
+    [
+     "D79",
+     "15"
+    ],
+    [
+     "D80",
+     "15"
+    ],
+    [
+     "D81",
+     "15"
+    ],
+    [
+     "D82",
+     "15"
+    ],
+    [
+     "D83",
+     "15"
+    ],
     [
      "D84",
      "15"
@@ -7551,7 +7423,8 @@
      "D43",
      "9"
     ]
-   ]
+   ],
+   "src": "D56/D103 end assumed; D42.9/D43.9 CK taps = ctrl-rail 3 (array read)"
   },
   "D40QA": {
    "nodes": [
@@ -7643,19 +7516,6 @@
     [
      "D92",
      "5"
-    ]
-   ]
-  },
-  "VID_LD": {
-   "src": "assumed",
-   "nodes": [
-    [
-     "D42",
-     "6"
-    ],
-    [
-     "D43",
-     "6"
     ]
    ]
   },
@@ -8119,117 +7979,6 @@
     [
      "X1",
      "102B"
-    ]
-   ]
-  },
-  "CAS1": {
-   "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
-   "nodes": [
-    [
-     "D68",
-     "15"
-    ],
-    [
-     "D69",
-     "15"
-    ],
-    [
-     "D70",
-     "15"
-    ],
-    [
-     "D71",
-     "15"
-    ],
-    [
-     "D72",
-     "15"
-    ],
-    [
-     "D73",
-     "15"
-    ],
-    [
-     "D74",
-     "15"
-    ],
-    [
-     "D75",
-     "15"
-    ]
-   ]
-  },
-  "CAS2": {
-   "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
-   "nodes": [
-    [
-     "D76",
-     "15"
-    ],
-    [
-     "D77",
-     "15"
-    ],
-    [
-     "D78",
-     "15"
-    ],
-    [
-     "D79",
-     "15"
-    ],
-    [
-     "D80",
-     "15"
-    ],
-    [
-     "D81",
-     "15"
-    ],
-    [
-     "D82",
-     "15"
-    ],
-    [
-     "D83",
-     "15"
-    ]
-   ]
-  },
-  "CAS0": {
-   "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
-   "nodes": [
-    [
-     "D60",
-     "15"
-    ],
-    [
-     "D61",
-     "15"
-    ],
-    [
-     "D62",
-     "15"
-    ],
-    [
-     "D63",
-     "15"
-    ],
-    [
-     "D64",
-     "15"
-    ],
-    [
-     "D65",
-     "15"
-    ],
-    [
-     "D66",
-     "15"
-    ],
-    [
-     "D67",
-     "15"
     ]
    ]
   },
@@ -9883,7 +9632,7 @@
    ]
   },
   "LOAD_PRE": {
-   "src": "scan",
+   "src": "scan; + array read: rail 6 = load strobe: D38.6 -> D59.13 (-> inverted \"LOAD\" -> D46/D47 LD) and D42/D43 LD (former assumed net VID_LD, resolved)",
    "nodes": [
     [
      "D38",
@@ -9892,6 +9641,14 @@
     [
      "D59",
      "13"
+    ],
+    [
+     "D42",
+     "6"
+    ],
+    [
+     "D43",
+     "6"
     ]
    ]
   },
@@ -10681,7 +10438,7 @@
    ]
   },
   "RDO0": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D43 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D60",
@@ -10702,11 +10459,15 @@
     [
      "D58",
      "1"
+    ],
+    [
+     "D43",
+     "2"
     ]
    ]
   },
   "RDO1": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D43 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D61",
@@ -10727,11 +10488,15 @@
     [
      "D58",
      "2"
+    ],
+    [
+     "D43",
+     "3"
     ]
    ]
   },
   "RDO2": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D43 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D62",
@@ -10752,11 +10517,15 @@
     [
      "D58",
      "3"
+    ],
+    [
+     "D43",
+     "4"
     ]
    ]
   },
   "RDO3": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D43 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D63",
@@ -10777,11 +10546,15 @@
     [
      "D58",
      "4"
+    ],
+    [
+     "D43",
+     "5"
     ]
    ]
   },
   "RDO4": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D42 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D64",
@@ -10802,11 +10575,15 @@
     [
      "D58",
      "5"
+    ],
+    [
+     "D42",
+     "2"
     ]
    ]
   },
   "RDO5": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D42 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D65",
@@ -10827,11 +10604,15 @@
     [
      "D58",
      "6"
+    ],
+    [
+     "D42",
+     "3"
     ]
    ]
   },
   "RDO6": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D42 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D66",
@@ -10852,11 +10633,15 @@
     [
      "D58",
      "7"
+    ],
+    [
+     "D42",
+     "4"
     ]
    ]
   },
   "RDO7": {
-   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins)",
+   "src": "scan sheet-2 (РУ5 DO rails 1-8 -> D58 D-ins); + D42 pixel-shifter tap (array read)",
    "nodes": [
     [
      "D67",
@@ -10877,19 +10662,19 @@
     [
      "D58",
      "8"
+    ],
+    [
+     "D42",
+     "5"
     ]
    ]
   },
   "VA0": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D43 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D44",
      "3"
-    ],
-    [
-     "D43",
-     "2"
     ],
     [
      "D50",
@@ -10898,15 +10683,11 @@
    ]
   },
   "VA1": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D43 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D44",
      "2"
-    ],
-    [
-     "D43",
-     "3"
     ],
     [
      "D50",
@@ -10915,15 +10696,11 @@
    ]
   },
   "VA2": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D43 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D44",
      "6"
-    ],
-    [
-     "D43",
-     "4"
     ],
     [
      "D50",
@@ -10932,15 +10709,11 @@
    ]
   },
   "VA3": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D43 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D44",
      "7"
-    ],
-    [
-     "D43",
-     "5"
     ],
     [
      "D50",
@@ -10949,15 +10722,11 @@
    ]
   },
   "VA4": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D42 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D45",
      "3"
-    ],
-    [
-     "D42",
-     "2"
     ],
     [
      "D51",
@@ -10966,15 +10735,11 @@
    ]
   },
   "VA5": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D42 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D45",
      "2"
-    ],
-    [
-     "D42",
-     "3"
     ],
     [
      "D51",
@@ -10983,15 +10748,11 @@
    ]
   },
   "VA6": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D42 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D45",
      "6"
-    ],
-    [
-     "D42",
-     "4"
     ],
     [
      "D51",
@@ -11000,15 +10761,11 @@
    ]
   },
   "VA7": {
-   "src": "scan sheet-2 (registry, finding 24)",
+   "src": "scan sheet-2 (registry, finding 24); D42 tap removed (array read: that code = DO rail)",
    "nodes": [
     [
      "D45",
      "7"
-    ],
-    [
-     "D42",
-     "5"
     ],
     [
      "D51",
@@ -11645,7 +11402,7 @@
    ]
   },
   "RAIL14": {
-   "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); expansion-bank CAS strobe rail; bank-column taps pending array read",
+   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); = bank-3 RAS <- D53.Y0 ladder",
    "nodes": [
     [
      "R49",
@@ -11654,11 +11411,43 @@
     [
      "R53",
      "1"
+    ],
+    [
+     "D84",
+     "4"
+    ],
+    [
+     "D85",
+     "4"
+    ],
+    [
+     "D86",
+     "4"
+    ],
+    [
+     "D87",
+     "4"
+    ],
+    [
+     "D88",
+     "4"
+    ],
+    [
+     "D89",
+     "4"
+    ],
+    [
+     "D90",
+     "4"
+    ],
+    [
+     "D91",
+     "4"
     ]
    ]
   },
   "RAIL13": {
-   "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); expansion-bank CAS strobe rail; bank-column taps pending array read",
+   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); = bank-2 RAS <- D53.Y1 ladder",
    "nodes": [
     [
      "R50",
@@ -11667,11 +11456,43 @@
     [
      "R54",
      "1"
+    ],
+    [
+     "D76",
+     "4"
+    ],
+    [
+     "D77",
+     "4"
+    ],
+    [
+     "D78",
+     "4"
+    ],
+    [
+     "D79",
+     "4"
+    ],
+    [
+     "D80",
+     "4"
+    ],
+    [
+     "D81",
+     "4"
+    ],
+    [
+     "D82",
+     "4"
+    ],
+    [
+     "D83",
+     "4"
     ]
    ]
   },
   "RAIL12": {
-   "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); expansion-bank CAS strobe rail; bank-column taps pending array read",
+   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); = bank-1 RAS <- D53.Y2 ladder",
    "nodes": [
     [
      "R51",
@@ -11680,6 +11501,38 @@
     [
      "R55",
      "1"
+    ],
+    [
+     "D68",
+     "4"
+    ],
+    [
+     "D69",
+     "4"
+    ],
+    [
+     "D70",
+     "4"
+    ],
+    [
+     "D71",
+     "4"
+    ],
+    [
+     "D72",
+     "4"
+    ],
+    [
+     "D73",
+     "4"
+    ],
+    [
+     "D74",
+     "4"
+    ],
+    [
+     "D75",
+     "4"
     ]
    ]
   },
@@ -11718,6 +11571,143 @@
     [
      "D47",
      "11"
+    ]
+   ]
+  },
+  "W_RAIL16": {
+   "src": "traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reproduce the RC/delay chain, so we_n = MEMW through a net_boundary (boot-identical); copper follows this net",
+   "nodes": [
+    [
+     "D60",
+     "3"
+    ],
+    [
+     "D61",
+     "3"
+    ],
+    [
+     "D62",
+     "3"
+    ],
+    [
+     "D63",
+     "3"
+    ],
+    [
+     "D64",
+     "3"
+    ],
+    [
+     "D65",
+     "3"
+    ],
+    [
+     "D66",
+     "3"
+    ],
+    [
+     "D67",
+     "3"
+    ],
+    [
+     "D68",
+     "3"
+    ],
+    [
+     "D69",
+     "3"
+    ],
+    [
+     "D70",
+     "3"
+    ],
+    [
+     "D71",
+     "3"
+    ],
+    [
+     "D72",
+     "3"
+    ],
+    [
+     "D73",
+     "3"
+    ],
+    [
+     "D74",
+     "3"
+    ],
+    [
+     "D75",
+     "3"
+    ],
+    [
+     "D76",
+     "3"
+    ],
+    [
+     "D77",
+     "3"
+    ],
+    [
+     "D78",
+     "3"
+    ],
+    [
+     "D79",
+     "3"
+    ],
+    [
+     "D80",
+     "3"
+    ],
+    [
+     "D81",
+     "3"
+    ],
+    [
+     "D82",
+     "3"
+    ],
+    [
+     "D83",
+     "3"
+    ],
+    [
+     "D84",
+     "3"
+    ],
+    [
+     "D85",
+     "3"
+    ],
+    [
+     "D86",
+     "3"
+    ],
+    [
+     "D87",
+     "3"
+    ],
+    [
+     "D88",
+     "3"
+    ],
+    [
+     "D89",
+     "3"
+    ],
+    [
+     "D90",
+     "3"
+    ],
+    [
+     "D91",
+     "3"
+    ],
+    [
+     "D36",
+     "8"
     ]
    ]
   }

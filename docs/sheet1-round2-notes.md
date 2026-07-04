@@ -353,3 +353,25 @@ ASSUMED CENSUS after bite 2: RAM_SEL, CAS resolved; CAS0-2 upgraded to partially
   (sources = rails 14/13/12 via Y0-2, only the rail->bank-column assignment pending).
 OWNER-TERRITORY items added: rail-15 continuity at the array; rail 14/13/12 -> bank columns;
   D53 G1+G3 feeds; D36.9 + D36.12/13 sources; rail 16 dests; rails 1/4/17 + gate-T; "A" line.
+
+ARRAY READ (crops arr_topleft/topright/seam/col1_locator) == the DRAM array pin-code system,
+read directly. The rail map that falls out:
+  rails 21-28 = MA0-7 (muxed address, A0-A7 pins 6/12/13/5/10/7/11/9 ✓ our MA nets)
+  rails 31-38 = DI (= DB inter-sheet codes ✓), rails 1-8 = DO (RDO bus ✓)
+  rail 11 = bank-0 RAS (D60-67) <- R52 <- D53.Y3      rail 12 = bank-1 RAS (D68-75) <- R51 <- Y2
+  rail 13 = bank-2 RAS (D76-83) <- R50 <- Y1          rail 14 = bank-3 RAS (D84-91) <- R49 <- Y0
+  rail 15 = CAS, SHARED by all 32 C pins              rail 16 = W, SHARED by all 32 W pins
+**STRUCTURE INVERTED vs all prior guesses: R is per-bank (bank select by RAS decode via the D53
+ladder), C and W are common. Former assumed nets CAS0/1/2 DISSOLVED -- they never existed.
+The populated bank D84-91 = rail 14 = D53.Y0 (sim scaffold re-homed; boot byte-identical).**
+W rail (16) driver = D36.8 (strobe-chain write leg; D36.9 qualifier line pending). MEMW no
+longer touches the DRAMs directly -- it keeps the CPU-side strobe + D7.2/D92.4 taps; sim
+carries we_n = MEMW through a net_boundary (documented in W_RAIL16 src; D36 pin 8 pinmap-omitted).
+D42/D43 = PIXEL SHIFT REGISTERS (3rd, geometry-anchored reading of the zone): parallel ins =
+DO rails (D42=RDO7-4, D43=RDO3-0; D67.DO enters D42.D directly on the sheet), D43.Q->D42.DS ✓,
+CK = ctrl-rail 3 (dot clock; DOTCLK16M taps confirmed), LD = ctrl-rail 6 = D38.6 -> D59.13
+(LOAD_PRE; ex-assumed VID_LD net RESOLVED and merged), G <- ctrl-rail 8 [pending],
+Q -> D37 inverter -> analog video mix. Finding-24's VA-tap reading = the reused-code trap.
+ASSUMED CENSUS after array read: RESOLVED this session: RAM_SEL, CAS, CAS0/1/2 (dissolved),
+VID_LD, RAS (fully traced per-bank). Remaining: PHI2TTL, D39Y, DOTCLK16M (D56/D103 end),
+REV, M5V_DERIVED, PIT_BAUD, RAM_RD_OE (continuity), FDC_INTRQ, FDC_DRQ.

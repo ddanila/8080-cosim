@@ -58,7 +58,10 @@ module juku_top (
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
     wire        rom_sel_n, ram_sel_n, rev, roe_n, prom_en_n;
     wire [1:0]  mem_mode;
-    wire        ras_n, cas_n;     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block)
+    // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block). Array read:
+    // R is PER BANK (rails 11/12/13/14 <- the D53 Y ladder), C (rail 15) + W (rail 16) are shared.
+    wire        cas_n;
+    wire        ras0_n, ras1_n, ras2_n, ras3_n;   // bank 0-3 RAS; populated bank D84-91 = ras3_n (rail 14 <- D53.Y0)
 
     // ============ CPU core (the discrete chips) ============
     cpu_8080  U_CPU (.sclk(sclk_i), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
@@ -207,6 +210,12 @@ module juku_top (
     // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see docs/transcription/dram-video-timing.md).
     wire [7:0] MA;                 // muxed row/col address  (from address mux)
     // (ras_n/cas_n declared with the chip-select wires up top: the D36 CAS-rail tap needs them early)
+    // W rail (rail 16): every DRAM W pin hangs on rail 16, driven by D36.8 (the strobe-chain write
+    // leg -- array read). The sim cannot reproduce that RC/delay chain, so behaviorally the write
+    // strobe stays MEMW through a net_boundary (boot-identical); D36 pin 8 is omitted from the LVS
+    // pinmap accordingly (documented in W_RAIL16's src note -- the copper follows the real net).
+    wire dram_we_n;
+    net_boundary U_W16LNK (.a(memw_n), .b(dram_we_n));
     wire [15:0] vid_addr;          // video raster address into the framebuffer (РУ5 2nd port)
     wire [7:0]  vbyte;             // framebuffer byte at vid_addr (from the 8 РУ5 video reads)
     // DRAM datapath (sheet-2 confirmed): WRITE = DB -> РУ5 DI directly (DI rails 31-38 are the
@@ -218,49 +227,48 @@ module juku_top (
     ir82_latch U_D58 (.d(rdo), .stb(1'b0), .oe_n(d37_y3), .q(DB));
     // Populated bank = D84-D91 (bottom array row) per the official ДГШ5.109.009 ПЭЗ; board #1
     // (rev 7.102.100) had the TOP row (D60-67) stuffed instead -- a per-revision factory choice.
-    dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]), .va(vid_addr), .vq(vbyte[0]));
-    dram_64kx1 U_D85 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]), .va(vid_addr), .vq(vbyte[1]));
-    dram_64kx1 U_D86 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]), .va(vid_addr), .vq(vbyte[2]));
-    dram_64kx1 U_D87 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]), .va(vid_addr), .vq(vbyte[3]));
-    dram_64kx1 U_D88 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]), .va(vid_addr), .vq(vbyte[4]));
-    dram_64kx1 U_D89 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]), .va(vid_addr), .vq(vbyte[5]));
-    dram_64kx1 U_D90 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]), .va(vid_addr), .vq(vbyte[6]));
-    dram_64kx1 U_D91 (.sclk(sclk_i), .ma(MA), .ras_n(ras_n), .cas_n(cas_n), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]), .va(vid_addr), .vq(vbyte[7]));
+    dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]), .va(vid_addr), .vq(vbyte[0]));
+    dram_64kx1 U_D85 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]), .va(vid_addr), .vq(vbyte[1]));
+    dram_64kx1 U_D86 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]), .va(vid_addr), .vq(vbyte[2]));
+    dram_64kx1 U_D87 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[3]), .do_(rdo[3]), .va(vid_addr), .vq(vbyte[3]));
+    dram_64kx1 U_D88 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[4]), .do_(rdo[4]), .va(vid_addr), .vq(vbyte[4]));
+    dram_64kx1 U_D89 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]), .va(vid_addr), .vq(vbyte[5]));
+    dram_64kx1 U_D90 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]), .va(vid_addr), .vq(vbyte[6]));
+    dram_64kx1 U_D91 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]), .va(vid_addr), .vq(vbyte[7]));
     // ---- unpopulated DRAM rows 0-2 (D60-D83): sockets wired to the shared MA/RAS/WE + per-bit
     // DIN/DOUT buses, per-row CAS. Passive (no chip installed) -> boot-safe. Bank-select CAS
     // decode not yet traced [assumed]. Completes the 4x8 РУ5 array for the PCB.
-    wire cas0, cas1, cas2;
-    ru5_socket U_D60 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]));
-    ru5_socket U_D61 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]));
-    ru5_socket U_D62 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]));
-    ru5_socket U_D63 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]));
-    ru5_socket U_D64 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]));
-    ru5_socket U_D65 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]));
-    ru5_socket U_D66 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]));
-    ru5_socket U_D67 (.ma(MA), .ras_n(ras_n), .cas_n(cas0), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]));
-    ru5_socket U_D68 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]));
-    ru5_socket U_D69 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]));
-    ru5_socket U_D70 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]));
-    ru5_socket U_D71 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]));
-    ru5_socket U_D72 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]));
-    ru5_socket U_D73 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]));
-    ru5_socket U_D74 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]));
-    ru5_socket U_D75 (.ma(MA), .ras_n(ras_n), .cas_n(cas1), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]));
-    ru5_socket U_D76 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[0]), .do_(rdo[0]));
-    ru5_socket U_D77 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[1]), .do_(rdo[1]));
-    ru5_socket U_D78 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[2]), .do_(rdo[2]));
-    ru5_socket U_D79 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[3]), .do_(rdo[3]));
-    ru5_socket U_D80 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[4]), .do_(rdo[4]));
-    ru5_socket U_D81 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[5]), .do_(rdo[5]));
-    ru5_socket U_D82 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[6]), .do_(rdo[6]));
-    ru5_socket U_D83 (.ma(MA), .ras_n(ras_n), .cas_n(cas2), .we_n(memw_n), .di(DB[7]), .do_(rdo[7]));
+    ru5_socket U_D60 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]));
+    ru5_socket U_D61 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]));
+    ru5_socket U_D62 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]));
+    ru5_socket U_D63 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[3]), .do_(rdo[3]));
+    ru5_socket U_D64 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[4]), .do_(rdo[4]));
+    ru5_socket U_D65 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]));
+    ru5_socket U_D66 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]));
+    ru5_socket U_D67 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]));
+    ru5_socket U_D68 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]));
+    ru5_socket U_D69 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]));
+    ru5_socket U_D70 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]));
+    ru5_socket U_D71 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[3]), .do_(rdo[3]));
+    ru5_socket U_D72 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[4]), .do_(rdo[4]));
+    ru5_socket U_D73 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]));
+    ru5_socket U_D74 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]));
+    ru5_socket U_D75 (.ma(MA), .ras_n(ras1_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]));
+    ru5_socket U_D76 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]));
+    ru5_socket U_D77 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]));
+    ru5_socket U_D78 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]));
+    ru5_socket U_D79 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[3]), .do_(rdo[3]));
+    ru5_socket U_D80 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[4]), .do_(rdo[4]));
+    ru5_socket U_D81 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]));
+    ru5_socket U_D82 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]));
+    ru5_socket U_D83 (.ma(MA), .ras_n(ras2_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]));
 
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
     // sel/en + counter preset are the assumed parts; chips D44-D50/D53 are scan-verified.
     // Video-address counter chain (sheet-2 verified 74193s): VA[15:0], CO->UP cascade.
     // Presets: D44 grounded [drawn]; D47 <- S3 config switches [drawn]; D45/D46 [unread].
     // LD sources (D34 XOR chain) + CLR rail = boundaries.
-    wire [15:0] VA; wire co0, co1, co2; wire [1:0] rc_nc;
+    wire [15:0] VA; wire co0, co1, co2;
     wire ctr_ld_n;                     // D34 XOR-RC-XOR pulse (LD of D44/D45)
 `ifdef YOSYS
     wire d34_b2;
@@ -314,20 +322,25 @@ module juku_top (
     // codes 8,9 (BA7/BA8) vs VIDEO ADDRESS codes 8,9 (VA7/VA8), select <- D39.6, G grounded;
     // D53.G3's drawn feed = a long west line [pending] -> net_boundary keeps the sim's RAM-decode
     // enable (boot unchanged) while LVS reflects the unknown wiring. Y0-Y3 leave through the
-    // R49-R52 100R series ladder (rails 14/13/12/11): only Y3 -> rail 11 = RAS reaches the DRAMs;
-    // rails 14/13/12 are expansion-bank strobes. The REAL CAS (rail 15) driver is D36.11 -> R57
-    // (see the mesh block); cas_n here is the behavioral scaffold on the sim side of that boundary.
+    // R49-R52 100R series ladder to the PER-BANK RAS rails (array read): Y0->rail 14 = bank 3
+    // (D84-91, the populated bank), Y1->rail 13 = bank 2, Y2->rail 12 = bank 1, Y3->rail 11 =
+    // bank 0. C (rail 15) and W (rail 16) are shared across banks; the real CAS driver is
+    // D36.11 -> R57 (mesh block) -- cas_n here is the sim scaffold behind that boundary, carried
+    // on the SIM-ONLY cas_sim leg (same LVS contract as SACTIVE).
     wire [3:0] d52_y; wire e2_com, e3_com;
-    wire d53_g_in, d53_y3, d53_y2;
+    wire d53_g_in; wire [3:0] d53_y; wire d53_cas_sim;
     kp14_mux  U_D52 (.a({2'b00, BA[8], BA[7]}), .b({2'b00, VA[8], VA[7]}),
                      .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
     net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));   // G3 drawn feed [pending]
     rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(d53_g_in), .sactive(mem_active),
-                      .y_n({d53_y3, d53_y2, rc_nc}));
-    net_boundary U_R52LNK (.a(d53_y3), .b(ras_n));   // R52 100R series -> rail 11 (RAS)
-    net_boundary U_R57LNK (.a(d53_y2), .b(cas_n));   // sim scaffold; real rail-15 driver = D36.11 -> R57
+                      .y_n(d53_y), .cas_sim(d53_cas_sim));
+    net_boundary U_R49LNK (.a(d53_y[0]), .b(ras3_n));   // Y0 -> R49 -> rail 14 (bank 3, POPULATED)
+    net_boundary U_R50LNK (.a(d53_y[1]), .b(ras2_n));   // Y1 -> R50 -> rail 13 (bank 2 sockets)
+    net_boundary U_R51LNK (.a(d53_y[2]), .b(ras1_n));   // Y2 -> R51 -> rail 12 (bank 1 sockets)
+    net_boundary U_R52LNK (.a(d53_y[3]), .b(ras0_n));   // Y3 -> R52 -> rail 11 (bank 0 sockets)
+    net_boundary U_R57LNK (.a(d53_cas_sim), .b(cas_n)); // sim CAS scaffold -> rail 15
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;
@@ -351,15 +364,16 @@ module juku_top (
     // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =
     // boundary). The video-read SLOT timing (КП14 µP/video arbitration + РЕ3/АГ3) stays a boundary.
     wire d42_q, d43_q;
-    // D42/D43 = the РЕ3 BANK-SELECT latches (sheet-2): parallel ins <- D8 outputs (rails 1-8,
-    // R21-28 pullups), D43.Q -> D42.DS cascade. The old DB/video-shift wiring was [assumed]
-    // and is superseded. CK/LD sources kept as modeled (nets DOTCLK16M/VID_LD) pending re-trace.
-    // D42/D43 = VIDEO-STATE latches (sheet-2 registry): parallel ins <- the counter VA bus
-    // (D45/D44 nibbles), not the D8 bank byte (that was a cross-sheet code coincidence).
-    ir16 U_D42 (.d(VA[7]), .c(VA[6]), .b(VA[5]), .a(VA[4]),
-                .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(d43_q), .q(d42_q));
-    ir16 U_D43 (.d(VA[3]), .c(VA[2]), .b(VA[1]), .a(VA[0]),
-                .ld(vshl_n), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
+    // D42/D43 = the PIXEL SHIFT REGISTERS (array read, 3rd and geometry-anchored reading of this
+    // zone -- supersedes both the "bank-select latch" and "VA-state latch" [finding-24 registry]
+    // interpretations, which both fell into the reused-code trap): parallel ins = the РУ5 DO rails
+    // 1-8 (D67.DO enters D42.D directly on the sheet), D43.Q -> D42.DS cascade, CK = ctrl-rail 3
+    // (dot clock), LD = ctrl-rail 6 = D38.6 -> also D59.13 (the load strobe; ex-VID_LD net).
+    // G <- ctrl-rail 8 [pending]. Q -> D37 inverter -> analog video mix.
+    ir16 U_D42 (.d(rdo[7]), .c(rdo[6]), .b(rdo[5]), .a(rdo[4]),
+                .ld(load_pre), .g(1'b1), .ck(dotclk_16m), .ds(d43_q), .q(d42_q));
+    ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
+                .ld(load_pre), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;

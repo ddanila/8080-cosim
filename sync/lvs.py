@@ -25,7 +25,10 @@ import netlist_from_yosys, netlist_from_kicad, netlist_from_board
 SIM_ONLY = {"SCLK", "KBD_EN", "KBD_PRESSED", "KBD_SHIFT", "KCOL", "KBIT", "FRAME_TICK",
             "VA", "VQ",   # VA/VQ = the sim-only 2nd (video) read port on the РУ5 (arbitration = V3)
             "PHSEL",      # PHSEL = sim-only divider phase bit into D35 (self-clocking waveform lock)
-            "SACTIVE"}   # SACTIVE = sim-only mem_active qualifier into D53 (structural inputs now per sheet-2)
+            "SACTIVE",   # SACTIVE = sim-only mem_active qualifier into D53 (structural inputs now per sheet-2)
+            "CAS_SIM"}   # CAS_SIM = sim-only CAS scaffold leg out of D53 -> rail-15 net_boundary
+                         # (the real rail-15 driver is D36.11 -> R57; the sim cannot reproduce that
+                         # RC/delay chain, so the behavioral strobe rides this documented sim pin)
             # SA/SB/SC RETIRED 2026-07: D9 decodes from the real A10-A12 rails (sheet-1)
 
 def canon_hdl_pin(p):                 # ior_n->IOR_N ; portc_lo->PORTC_LO
