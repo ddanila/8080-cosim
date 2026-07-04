@@ -237,8 +237,15 @@ module juku_top (
     // Presets: D44 grounded [drawn]; D47 <- S3 config switches [drawn]; D45/D46 [unread].
     // LD sources (D34 XOR chain) + CLR rail = boundaries.
     wire [15:0] VA; wire co0, co1, co2; wire [1:0] rc_nc;
-    ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
-    ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
+    wire ctr_ld_n;                     // D34 XOR-RC-XOR pulse (LD of D44/D45)
+`ifdef YOSYS
+    wire d34_b2;
+`else
+    tri0 d34_b2;                       // RC node (C5) boundary: idle low -> ctr_ld_n = 1 (counting)
+`endif
+    lp5_xor U_D34 (.a1(1'b0), .b1(1'b0), .y1(), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n));
+    ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
+    ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
     ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[11:8]),  .co(co2), .bo());
     ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[15:12]), .co(), .bo());
     // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
@@ -296,7 +303,7 @@ module juku_top (
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
                     .d(vbyte), .so(vpixel));                            // abstracted serializer (runnable)
-    lp5_xor U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // composite video out (runnable)
+    lp5_xor1 U_D34V (.a(vpixel), .b(1'b0), .y(vid_out));                 // composite video out (runnable)
     // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. Parallel data
     // reads the REAL system data bus DB (the bit-sliced РУ5 drives the byte there during a video
     // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =

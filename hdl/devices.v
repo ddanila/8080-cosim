@@ -331,7 +331,7 @@ module ir16_sr (input wire clk, clk_inh, shl_n, clr_n, si, input wire [7:0] d, o
 endmodule
 
 // ---- ЛП5 (К531ЛП5, XOR "=1"): D34 video-output combine (pixel stream XOR sync/blanking) ----
-module lp5_xor (input wire a, b, output wire y); assign y = a ^ b; endmodule
+module lp5_xor1 (input wire a, b, output wire y); assign y = a ^ b; endmodule  // sim video-out adjunct section
 
 // ---- ИР16 (К155ИР16): 4-bit parallel-load shift register — the video PIXEL SERIALIZERS D42/D43 ----
 // Traced (owner + sheet-2 top-right): D=pin5,C=pin4,B=pin3,A=pin2 parallel data in; LD=pin6 load;
@@ -526,3 +526,10 @@ module intr_ctl (input wire osc, dbin, inta_n, iowr_n, cs_pic_n, a0, frame_tick,
     assign DB = ~inta_n ? ivec : 8'bz;                              // inject vector during INTA reads
 endmodule
 `default_nettype wire
+
+// D34 К555ЛП5 (XOR): sect (4,5->6) -> C5 560pF RC -> sect (1,2->8) = the video-counter LD
+// pulse generator (sheet-2). Pin 1 = +5 (node A) -> y2 = ~b2; b2 <- the RC (boundary).
+module lp5_xor (input wire a1, b1, a2, b2, output wire y1, y2);
+    assign y1 = a1 ^ b1;
+    assign y2 = a2 ^ b2;
+endmodule

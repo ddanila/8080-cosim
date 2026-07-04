@@ -276,3 +276,16 @@ FINDING 26 -- SOURCE CHASES (crops s2_d44clk, s2_sg2):
 - STILL OPEN: D48/D49.S exact source (kept phi1 [assumed]), D48/D49.G rail source, rail-4
   emitter, E13.1 connection, D45/D46 preset rows, E14.1.
 190 matched nets; 176 footprints; boot PASS.
+GRIND-A CLOSEOUT SLICES (2026-07-04):
+SLICE 1 ✓ D44.UP <- PST CLK = D59 ring section 3->4 (buffered crystal osc out). The "rail 4"
+label = source-pin-4 convention. OSC net += D59.3; new PST_CLK net; ln1_osc grew i3/o4.
+SLICE 2 ✓ E13 = CPU-mux G strap (at D48; posts: 1-3 strapped, 2=+5, 4=GND, 3 -> D48/D49.G).
+Net CPU_MUX_G; HDL tri0 boundary (strap-enabled default). Symmetric with E14 (video pair).
+D48/D49.S feed = a vertical at x~2050 from below [phi1 semantics; exact rail queued].
+SLICE 3 ✓ D44+D45 preset nibbles GROUNDED (drawn); LD shared rail = D34 ЛП5 XOR-RC-XOR
+pulse gen (D34.1=+5, C5 560pF RC). D34 promoted to netted chip (LP5_XOR); net CTR_LD
+{D34.8, D44.11, D45.11}; counters now LOAD via the real D34 path (tri0 RC boundary).
+S3_1/S3_2 -> D46 presets [likely; D46 preset rows still unread].
+REMAINING LOOSE ENDS (for the freeze review): D48/D49.S exact rail; D46 preset rows;
+E14.1/E13.1 rail IDs; D34 sect-1 inputs (4,5); D42/D43 CK/LD (still DOTCLK16M/VID_LD
+[assumed]); R54-58 rail-E pullup zone; counter R (reset) rail source.
