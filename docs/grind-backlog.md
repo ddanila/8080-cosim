@@ -130,3 +130,14 @@ Remaining register pages 2-4,10-11 (caps cont., ferrites, misc) = final pass [qu
   the D8-output -> socket map; then net ROM_CS17..22 + rewire eprom_socket .cs_n in HDL.
 - .117 window values 07/0B/0D/0E = one-cold in bits 3..0 with upper nibble 0 — the bit ->
   drawn-D-number order also needs that read (dump bit order vs D1-D7 labels).
+
+## ROM-socket decode pass 2 (crop d8_rail_codes) — correction
+- D15's left side read precisely: address rows coded 1-10 = BA0-BA9 (standard code convention);
+  **the earlier "code-1 rail at D15.CS" was a MIS-ASSOCIATION with the A0 row** (and the
+  "codes 3/5/7" at D17/D19/D21 CS were likely their A2/A4/A6 row codes). No D9.Y0 conflict --
+  that ambiguity is void. R21-28 1k -> "A" (+5V) pullup arrow confirmed drawn.
+- D15.CS (pin 20, wire circle) <- the un-coded horizontal from the D6-ROM-line direction ✓
+  consistent with the current HDL (cs_n = rom_sel_n); D15.DE (22, dot) <- from below-left.
+- REMAINING: the per-socket CS pairing = follow the SEVEN un-coded horizontals from D8's
+  outputs (pins 2-9) east to the socket CS pins -- pure line-following, one careful session;
+  then net ROM_CS17..22 and rewire eprom_socket .cs_n in HDL (boot-inert, sockets empty).
