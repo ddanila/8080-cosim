@@ -1,0 +1,23 @@
+Group,Designators,Factory action,Preferred CPN,Status,Notes
+DIP-14 sockets,U22 U23 U25,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-16 sockets,U10-U17 U20 U21 U31 U41,Mount sockets only,C2326,Verify at order,BOOMELE square-hole DIP-16 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-20 sockets,U3 U4,Mount sockets only,C2328,Verify at order,BOOMELE square-hole DIP-20 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-24 wide sockets,U5 U24,Mount sockets only,C72120,Verify at order,CONNFLY square-hole DIP-24 2.54mm 15.24mm socket; do not factory-populate ICs
+DIP-28 wide socket,U2,Mount sockets only,C72121,Verify at order,CONNFLY square-hole DIP-28 2.54mm 15.24mm socket; do not factory-populate IC
+DIP-40 sockets,U1 U30,Mount sockets only,C2332,Verify at order,BOOMELE square-hole DIP-40 2.54mm 15.24mm socket; do not factory-populate ICs
+Decoupling capacitors,C1-C25,Populate 100nF capacitors,,Order-time lookup,Prefer 5.00mm THT ceramic matching footprint
+Bulk capacitor,C50,Populate 47uF capacitor,,Order-time lookup,Verify voltage rating and radial pitch
+Diagnostic LEDs,D2-D7,Populate 3mm LEDs,,Order-time lookup,Choose visible colors for PWR PWR_OK CLK RESET M1 RFSH
+Diagnostic LED resistors,R24-R29,Populate 2.2k resistors,,Order-time lookup,Axial DIN0207 footprint
+VGA resistors,R1-R3,Populate 470R resistors,,Order-time lookup,Axial DIN0207 footprint
+Pullups,R4-R14,Populate 10k resistors,,Order-time lookup,Axial DIN0207 footprint
+Keyboard series resistors,R16-R23,Populate 220R resistors,,Order-time lookup,Axial DIN0207 footprint
+Configuration link,R15,Populate 0R link,,Order-time lookup,Axial DIN0207 or jumper-compatible
+Keyboard header,J30,Populate 1x15 2.54mm pin header,,Order-time lookup,Inline bring-up header; no power pins
+Debug headers,J90-J93,Populate 2.54mm pin headers,,Order-time lookup,Logic analyzer and power debug
+Power input,J1 J2,Populate headers/connectors,,Order-time lookup,Confirm ATX adapter strategy before order
+VGA output,J40,Populate header/connector,,Order-time lookup,Confirm HD-15 versus simple header before order
+Fuse,F1,Populate resettable fuse,,Order-time lookup,Verify hold current against expected +5V load
+TVS,D1,Populate 5V TVS clamp,,Order-time lookup,Verify standoff/clamp and footprint
+Oscillator,U50,Populate 5V oscillator or socket,,Order-time lookup,Bring-up target should support <=4MHz CPU clock
+Reset supervisor,U51,Populate reset supervisor,,Order-time lookup,Verify TO-92 pinout against chosen part

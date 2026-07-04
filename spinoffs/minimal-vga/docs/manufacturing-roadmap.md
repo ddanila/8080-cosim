@@ -40,19 +40,22 @@ Status: core target exists with partial real pin binding.
   active by default, and 8255 column outputs reach the keyboard connector
   through series resistors.
 - Rev A decisions now target a real socketed DIP Z80, 27C256-class ROM,
-  western 4164-compatible DRAM, onboard TTL640x480-derived VGA timing,
+  western 4164-compatible DRAM, a TTL640x480 bring-up timing header,
   western-only logic, GAL/PAL-style programmable decode/timing, and factory
   assembly of sockets/passives where practical.
 
 Remaining work:
 
-- Freeze GAL equations and header/connector pinouts.
+- GAL equations and pinouts are frozen for Rev A bring-up in
+  `rev-a-gal-equations.md`.
 - Bind the generated schematic to final KiCad library symbols instead of
   generated local symbols.
 - Keyboard board connector is frozen for Rev A as a 1x15 inline 2.54 mm header;
   the external adapter wiring to the original keyboard remains owner-side
   bring-up work.
-- Replace the current TTL640x480 header placeholder with onboard timing logic.
+- U40 is frozen as a TTL640x480 bring-up/timing header for Rev A. Full onboard
+  expansion of the TTL640x480 logic is deferred to the next PCB spin after the
+  CPU/DRAM/refresh path is proven.
 
 ### Gate 3: Physical PCB Route Baseline
 
@@ -103,9 +106,6 @@ placeholders.
 
 Open production blockers:
 
-- Replace the VGA timing placeholder with the actual onboard TTL640x480-derived
-  logic, or explicitly mark the placeholder header as the Rev A bring-up target.
-- Freeze GAL/PAL equations and pinouts for decode and DRAM timing.
 - Pick final ATX/VGA/debug connector footprints.
 - Assign orderable JLCPCB/LCSC CPNs for factory-populated sockets, passives,
   connectors, protection parts, oscillator/reset, and the diagnostic LEDs.

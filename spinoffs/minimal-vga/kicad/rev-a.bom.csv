@@ -11,7 +11,7 @@ U24,1,DRAM timing sequencer,GAL22V10-class,DIP-24,Socketed,NOS/owner-supplied,TB
 U25,1,DRAM control gates,74HCT00/02/08/32,DIP,Socketed,Factory socket plus sourced IC,TBD,Placeholder for split gates
 U30,1,PPI,82C55 / 8255-compatible,DIP-40,Socketed,NOS/owner-supplied,TBD,Keyboard column/control
 U31,1,Priority encoder,74HCT148,DIP-16,Socketed,Factory socket plus sourced IC,TBD,Keyboard row encoder
-U40,1,VGA timing,TTL640x480-derived onboard logic,TBD,Factory/Socketed,TBD,TBD,Current PCB still has placeholder; replace with onboard logic before order
+U40,1,VGA timing,TTL640x480 bring-up timing header,2.54mm header,Factory preferred,JLCPCB/LCSC,TBD,Rev A uses a timing/header interface; full onboard TTL640x480 expansion is deferred to the next PCB spin
 U41,1,Pixel shift/latch,74HCT165/166/595-class,DIP,Socketed,Factory socket plus sourced IC,TBD,Framebuffer byte-to-pixel path TBD
 U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Factory preferred,JLCPCB/LCSC,TBD,Feeds Rev A CLK net
 U51,1,Reset supervisor,MCP130-class 5V supervisor,TO-92,Factory preferred,JLCPCB/LCSC,TBD,Drives RESET_N; verify pinout before order

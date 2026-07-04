@@ -10,7 +10,7 @@ physical target.
 
 Current routed baseline: KiCad reports zero error-level DRC violations and zero
 unconnected items. `export_fab.sh` exports Gerbers, Excellon drill, fabrication
-notes, the engineering BOM, and draft JLCPCB assembly files.
+notes, the engineering BOM, review PDFs, and draft JLCPCB assembly files.
 
 Factory assembly scope: populate sockets, passives, connectors, protection
 parts, oscillator/reset, and diagnostic LEDs where practical. Do not include
@@ -56,6 +56,7 @@ PCB fabrication:
 - Edge.Cuts outline.
 - Fabrication notes with layer stack.
 - Schematic PDF for review.
+- Front/back assembly PDFs for orientation review.
 
 Factory assembly:
 
@@ -66,6 +67,8 @@ Factory assembly:
   physical PCB.
 - Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
 - Assembly readiness report: `assembly/assembly-readiness.md`.
+- Position file: `assembly/rev-a-position.csv`.
+- Order-time CPN checklist: `assembly/rev-a-jlcpcb-cpn-checklist.csv`.
 - Assembly drawings.
 - DNP list.
 - Polarity/orientation notes.
@@ -87,6 +90,8 @@ Factory assembly:
   for debug artifacts with `MINIMAL_VGA_ALLOW_DRC_EXPORT=1`.
 - `export_fab.sh` emits the generated JLCPCB BOM/CPL pair only after the DRC
   gate, so a real order package cannot silently use a stale position file.
+- `export_fab.sh` also emits `review/rev-a-physical-schematic.pdf`,
+  `review/rev-a-assembly-front.pdf`, and `review/rev-a-assembly-back.pdf`.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
 - Visual inspection of Gerbers in an independent viewer.
@@ -100,6 +105,8 @@ Factory assembly:
 - Confirm reset supervisor pinout and oscillator package before ordering.
 - Review autorouted trace geometry, via count, power widths, and return paths.
 - Decide whether to restore GND/+5V pours after routing cleanup.
+- Program U5/U24 from `../docs/rev-a-gal-equations.md` or update that file
+  before ordering if the equations change.
 
 ## JLCPCB Assembly File Policy
 
