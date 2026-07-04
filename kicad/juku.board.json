@@ -7397,7 +7397,7 @@
       ]
     },
     "CAS": {
-      "src": "assumed -- SHEET-2 CONTRADICTS: D53.Y2 -> rail 12, DRAM C <- rail 15 (bank-gated CAS via D92 ЛЕ4 zone, unread). Rewire pending.",
+      "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
       "nodes": [
         [
           "D53",
@@ -8066,7 +8066,7 @@
       ]
     },
     "CAS1": {
-      "src": "assumed (bank gating = D92 ЛЕ4 NOR zone, sheet-2, unread)",
+      "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
       "nodes": [
         [
           "D68",
@@ -8103,7 +8103,7 @@
       ]
     },
     "CAS2": {
-      "src": "assumed (bank gating = D92 ЛЕ4 NOR zone, sheet-2, unread)",
+      "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
       "nodes": [
         [
           "D76",
@@ -8140,7 +8140,7 @@
       ]
     },
     "CAS0": {
-      "src": "assumed (bank gating = D92 ЛЕ4 NOR zone, sheet-2, unread)",
+      "src": "partially traced: CAS drivers = D92 ЛЕ4 x3 (outs 12,8,6) + D39 sect [sheet-2 crop b1_le4]; strobe NOR bank-select (mode-latch bits, MAME mode[3] consistent); out->bank-row mapping pending one read",
       "nodes": [
         [
           "D60",

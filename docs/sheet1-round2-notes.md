@@ -302,3 +302,10 @@ LEFTOVER SESSION (post-grind-C):
 - R49-R56 added as placed netless parts (series/pullup chain; nets pending).
 ASSUMED CENSUS AT FREEZE-REVIEW START: 16 nets (list in git; 5 clock-mesh, 4 CAS-family,
 2 FDC-IRQ, REV/RAM_SEL pair, M5V, PIT_BAUD, RAM_RD_OE-continuity).
+BITE 1 (crop b1_le4): CAS BANK-GATING STRUCTURE READ: D92 ЛЕ4 = 3x 3-in NOR, outs 12/8/6,
+input codes sect1{2,13,1} sect2{11,10,9} sect3{3,4,5}; + D39 sect(4,5->6) = the 4th gate ->
+four bank-CAS drivers = NOR(cas strobe rail, bank select). Bank selects almost certainly the
+mem-mode latch bits (MAME mode[3]=fall-through-RAM ✓ semantics). REMAINING for full rewire:
+the out->bank-row (CAS0-3) assignment + rail-15 continuity + the bank-select rail IDs --
+ONE more read session (crop right/below of b1_le4 where outs 12/8/6 travel to the array).
+Bites 2 (RAM SEL arrival) and 3 (mesh details) untouched -- queued.
