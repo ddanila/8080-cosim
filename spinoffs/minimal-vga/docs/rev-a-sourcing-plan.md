@@ -13,6 +13,12 @@ practical, while keeping vintage or programmable ICs socketed.
   reliable JLCPCB/LCSC source exists at order time.
 - Keep the BOM explicit about `Factory`, `Socketed`, `Manual`, and `NOS`
   responsibilities.
+- Generate the JLCPCB upload BOM/CPL from the PCB with
+  `spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py`; do not upload the
+  engineering BOM directly.
+- In the generated JLCPCB BOM, socketed `U*` designators mean "mount this
+  socket here". The matching `post-assembly-insertion.csv` file records which
+  owner-supplied IC goes into each socket after factory assembly.
 
 ## JLCPCB/LCSC Work Items
 
@@ -79,3 +85,9 @@ Source links to re-check before ordering:
   https://jlcpcb.com/parts/2nd/Connectors/IC__Transistor_Socket_2943
 - JLCPCB PCB assembly FAQ:
   https://jlcpcb.com/help/article/pcb-assembly-faqs
+- JLCPCB BOM file guide:
+  https://jlcpcb.com/help/article/bill-of-materials-for-pcb-assembly
+- JLCPCB BOM/CPL preparation advice:
+  https://jlcpcb.com/help/article/advice-for-bom-and-cpl-files-preparation
+- JLCPCB KiCad BOM/CPL export guide:
+  https://jlcpcb.com/help/article/how-to-generate-the-bom-and-centroid-file-from-kicad

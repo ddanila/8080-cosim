@@ -66,6 +66,10 @@ Status: 4-layer placement/ratsnest scaffold, not routed.
   fabrication exporter is allowed to run.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
+- `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
+  generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
+  It also writes an assembly-readiness report that counts missing LCSC part
+  numbers and unresolved TBD sourcing rows.
 - Current generated placement has zero error-level DRC violations after filling
   the power zones; the readiness report still shows signal ratsnest
   connections.
@@ -80,6 +84,8 @@ Remaining work:
   settled.
 - Refine mechanical constraints and mounting holes.
 - Route the board.
+- Assign concrete JLCPCB/LCSC CPNs for factory-mounted sockets, passives,
+  connectors, oscillator/reset, and protection parts.
 
 ### Gate 4: Fabrication Candidate
 
@@ -94,9 +100,13 @@ Required before ordering:
 - Routed PCB has no unrouted nets.
 - Gerbers and Excellon drill files export cleanly.
 - Gerbers are visually inspected in an independent viewer.
-- BOM uses orderable parts or clearly marks manual/socketed/DNP items.
+- Engineering BOM uses orderable parts or clearly marks manual/socketed/DNP
+  items.
+- JLCPCB draft BOM and CPL have identical designator sets.
 - JLCPCB/LCSC candidate SKUs are assigned for factory-mounted sockets,
   passives, connectors, power/protection, oscillator, and reset parts.
+- Post-assembly insertion list names every socketed IC that should be installed
+  after factory socket assembly.
 
 ### Gate 5: Factory Assembly Order Package
 
@@ -111,8 +121,9 @@ PCB fabrication package:
 
 Factory assembly package:
 
-- BOM with manufacturer part numbers and JLCPCB/LCSC candidate part numbers.
-- CPL/position file.
+- JLCPCB BOM generated from the board, with manufacturer part numbers and
+  JLCPCB/LCSC candidate part numbers.
+- JLCPCB CPL/position file generated from the same board.
 - Assembly drawings.
 - DNP list.
 - Polarity and socket orientation notes.

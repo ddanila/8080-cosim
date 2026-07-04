@@ -25,10 +25,14 @@ if [ "${MINIMAL_VGA_ALLOW_DRC_EXPORT:-0}" != "1" ]; then
 fi
 
 mkdir -p "$OUT/gerbers" "$OUT/drill"
+python3 spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
+  "$BOARD" \
+  spinoffs/minimal-vga/kicad/rev-a.bom.csv \
+  "$OUT/assembly"
 "$KCLI" pcb export gerbers \
   --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
   -o "$OUT/gerbers/" "$BOARD"
 "$KCLI" pcb export drill --format excellon --drill-origin absolute -o "$OUT/drill/" "$BOARD"
-cp spinoffs/minimal-vga/kicad/rev-a.bom.csv "$OUT/"
+cp spinoffs/minimal-vga/kicad/rev-a.bom.csv "$OUT/rev-a.engineering-bom.csv"
 cp spinoffs/minimal-vga/kicad/fab-notes.md "$OUT/"
 echo "Exported fab package to $OUT"

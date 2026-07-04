@@ -51,8 +51,13 @@ PCB fabrication:
 
 Factory assembly:
 
-- BOM with orderable MPNs and JLCPCB/LCSC candidate part numbers.
-- CPL / position file.
+- Engineering BOM: `rev-a.engineering-bom.csv` in the final fab export.
+- JLCPCB upload BOM: `assembly/jlcpcb-bom-draft.csv`, generated from the
+  physical PCB and engineering BOM.
+- JLCPCB upload CPL: `assembly/jlcpcb-cpl-draft.csv`, generated from the same
+  physical PCB.
+- Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
+- Assembly readiness report: `assembly/assembly-readiness.md`.
 - Assembly drawings.
 - DNP list.
 - Polarity/orientation notes.
@@ -64,11 +69,14 @@ Factory assembly:
 
 - `spinoffs/minimal-vga/sim/check.sh`
 - `spinoffs/minimal-vga/sync/check.sh`
+- `spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py`
 - KiCad ERC.
 - KiCad DRC.
 - Zero unrouted nets.
 - `export_fab.sh` blocks export unless KiCad DRC exits cleanly. Override only
   for debug artifacts with `MINIMAL_VGA_ALLOW_DRC_EXPORT=1`.
+- `export_fab.sh` emits the generated JLCPCB BOM/CPL pair only after the DRC
+  gate, so a real order package cannot silently use a stale position file.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
 - Visual inspection of Gerbers in an independent viewer.
@@ -80,3 +88,17 @@ Factory assembly:
 - Confirm ATX connector pinout, F1 current rating, D1 TVS rating, and PS_ON
   behavior against the target supply.
 - Confirm reset supervisor pinout and oscillator package before ordering.
+
+## JLCPCB Assembly File Policy
+
+Do not upload `rev-a.bom.csv` directly as the factory BOM. That file is the
+engineering BOM and keeps design intent such as "Z80 CPU" at `U1`.
+
+The generated JLCPCB BOM instead treats socketed DIP footprints as sockets to
+be factory-mounted at the `U*` designators. The matching post-assembly list
+then records which owner-supplied IC should be inserted into each socket after
+the board comes back from assembly.
+
+The generated BOM and CPL must have the same designator set. This follows
+JLCPCB's current BOM/CPL guidance and is checked by
+`export_jlcpcb_assembly.py`.
