@@ -433,3 +433,12 @@ stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.
   wire 3 flag (280.3,115.9) -- both at R73's trimmer circle (the drawn diagonal wire crosses
   it); wire 11 endpoint arrow (263.1,113.3). Wire-table sweep continues [remaining bands].
 - PCB regen: 237 footprints, outline-overlap PASS.
+
+## Task #14: PIT cascade (the last mame-src cluster) TRACED
+D54/D55 row reads (crops s2_d54/s2_d55): the drawn cascade matches the MAME-derived wiring
+EXACTLY -- PIT_HCHAIN (D54.OUT0 -> D54.G1+G2 + D55.CLK0), PIT_HSYNC_DSL (D54.OUT2 "H.SYNC
+DSL" -> D55.CLK1+CLK2), PIT_VCHAIN (D55.OUT0 -> D55.G1+G2): all three upgraded mame->traced.
+FRAME_INT's drawn name = "VER RTR" (D55.OUT1). G0 gates -> +5V (netted). NEW: PIT0_CLK1M
+{D54.9,15,18} <- rail labeled 1MHz [source east unread; 16M/16 tap candidate]. D54.OUT1 =
+"HOR RTR" export ✓. Remaining #14 residue: RAM_RD_OE crop, SPKR/AVDC/CLK_123M far ends,
+D56 sect-1 trigger, DOTCLK16M bend, C99 plate, D6 V1/V2, mode tag-3, buffer E-gates, LOAD_PRE.

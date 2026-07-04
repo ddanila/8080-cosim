@@ -9499,6 +9499,14 @@
     [
      "X9",
      "6"
+    ],
+    [
+     "D54",
+     "11"
+    ],
+    [
+     "D55",
+     "11"
     ]
    ]
   },
@@ -9912,7 +9920,7 @@
    "note": "WIRE 11 (beeper): D7.1 <- D92.13 (ЛЕ4 NOR); H1-endpoint-B etch '11' = this wire's solder point"
   },
   "PIT_HCHAIN": {
-   "src": "mame",
+   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9)",
    "nodes": [
     [
      "D54",
@@ -9933,7 +9941,7 @@
    ]
   },
   "PIT_HSYNC_DSL": {
-   "src": "mame",
+   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT2(17) \"H.SYNC DSL\" -> D55.CLK1(15)+CLK2(18) tied pair",
    "nodes": [
     [
      "D54",
@@ -9950,7 +9958,7 @@
    ]
   },
   "PIT_VCHAIN": {
-   "src": "mame",
+   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D55.OUT0(10) -> D55.G1(14)+G2(16)",
    "nodes": [
     [
      "D55",
@@ -9967,7 +9975,7 @@
    ]
   },
   "FRAME_INT": {
-   "src": "mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7)",
+   "src": "mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name \"VER RTR\" (D55.OUT1 export, crop s2_d55)",
    "nodes": [
     [
      "D55",
@@ -13068,6 +13076,23 @@
     [
      "C8",
      "2"
+    ]
+   ]
+  },
+  "PIT0_CLK1M": {
+   "src": "traced sheet-2 (crop s2_d54): rail labeled 1MHz -> D54 CLK0(9)+CLK1(15)+CLK2(18); rail source east [unread — 16M/16 divider tap candidate]",
+   "nodes": [
+    [
+     "D54",
+     "9"
+    ],
+    [
+     "D54",
+     "15"
+    ],
+    [
+     "D54",
+     "18"
     ]
    ]
   }
