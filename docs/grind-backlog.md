@@ -76,3 +76,12 @@ PHI2TTL sheet-1 pin, "14" tap on the 16MHz rail.
   VT1 (250.5,218.9) + VD4 + R90/R91 (beeper/reset cluster), R48, R60, C92 (29.9,215.0),
   C93 (22.5,240), C94 (analog zone), C96/C98 (mesh zone), D105 (~35,190), D107?, X5 socket.
 - C34 not yet located on the СБ [queued]; XL1 = the coax mount pad near VT zone [queued].
+
+## Census pass 1 — МЛТ-0.125 resistors (ВП лист 5, ДГШ5.109.006 column)
+33R x1 (R72 ✓) | 75R x4 (**candidates R49-R52 — see flag**) | 100R x3 (**FLAG: we model 5x100:
+R49-52+R77; either R49-52 = 75R and the r49_rails "100" glyph reads are wrong, or the .009
+differs — re-crop the ladder values + check photos**) | 200R x2 | 270R x1 | 300R x1 (R76 ✓)
+| 330R x1 (R35 ✓) | 430R x2 (R65+R74 ✓✓) | 620R x1 | 820R x1 | 910R x1 (R106 ✓) | 1k x20
+(pullup fleet ✓) | 1.2k x1 (R32 ✓) | 1.5k x1 | 2k x12. NB: no 360R on this page — the HDL
+"R36/R37 360" phase pullups need a value re-read [flag]. Remaining ВП pages (2-4, 6-11:
+caps cont., >2.4k resistors, diodes/transistors/L/switches) = census pass 2.
