@@ -160,10 +160,11 @@ module decode_prom (input wire [15:8] a, input wire v_en_n,
 endmodule
 
 // ---- ЛА3 NAND gate section (D7) gating the PROM enable ----
-module la3_gate (input wire a, b, a2, b2, a3, b3, output wire y, y2, y3);   // 3 of the 4 ЛА3 sections
+module la3_gate (input wire a, b, a2, b2, a3, b3, a4, b4, output wire y, y2, y3, y4);   // the 4 ЛА3 sections
     assign y = ~(a & b);
     assign y2 = ~(a2 & b2);   // second section (D37: 1,2->3 LATCH gate; D39: 9,10->8), sheet-2
-    assign y3 = ~(a3 & b3);   // third section (D37: 5,4->6; pin5 <- ~MRD via D33.3->4), sheet-2
+    assign y3 = ~(a3 & b3);   // third section (D37: 5,4->6; D39: 1,2->3 mem-cycle gate), sheet-2
+    assign y4 = ~(a4 & b4);   // fourth section (D39: 4,5->6 -> D52 B/A video/µP address select), sheet-2
 endmodule
 
 // ---- EPROM 8Kx8 (2764-class, D15/D16 populated) ----
@@ -226,13 +227,26 @@ module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40
     assign q  = cnt;
     assign co = et & (&cnt);
 endmodule
-module ln1_dual  (input wire i9, i5, i13, i3, output wire o8, o6, o12, o4);   // D33 ЛН1: used inverter sections
+module ln1_dual  (input wire i9, i5, i13, i3, i11, output wire o8, o6, o12, o4, o10);   // D33 ЛН1: used inverter sections
     assign o8 = ~i9;    // section pin 9 -> pin 8  = clkg_d33 -> D38.9  (pin 9 <- C6/R46 osc RC = boundary)
     assign o6 = ~i5;    // section pin 5 -> pin 6  = D36.4  (pin 5 <- D40.Q2, traced 2026-07)
     assign o12 = ~i13;  // section 13->12 = LATCH  (D37.3 -> D33.13, sheet-2)
     assign o4  = ~i3;   // section 3->4: -MRD -> D37.5 (RF/video-mix qualifier, sheet-2 bottom)
+    assign o10 = ~i11;  // section 11->10: D36.3 -> D36.10 CAS strobe-chain delay leg (bite-2)
 endmodule
-module la12_gate (input wire a, b, output wire y); assign y = ~(a & b); endmodule // D36 ЛА12 NAND gate
+// D36 ЛА12 (7437 quad buffer NAND, high drive). Section 4,5->6 = clock mesh (traced 2026-07); bite-2
+// added: 1,2->3 (pin1 taps rail 15 = CAS, pin2 <- rail 17) -> D33.11; 9,10->8 (-> rail 16); 12,13->11
+// (inputs tied) -> R57 -> rail 15 = the populated-bank CAS driver.
+module la12_gate (input wire a, b, a2, b2, a3, b3, a4, b4, output wire y, y2, y3, y4);
+    assign y  = ~(a & b);
+    assign y2 = ~(a2 & b2);
+    assign y3 = ~(a3 & b3);
+    assign y4 = ~(a4 & b4);
+endmodule
+// Net-boundary link: a series resistor or an unresolved-source junction on the real board. Passes
+// the simulated value through unchanged, but as a -lib blackbox cell it keeps the two sides SEPARATE
+// NETS for LVS -- the board netlist has the series part / unknown feed there, the sim does not.
+module net_boundary (input wire a, output wire b); assign b = a; endmodule
 // К155ТЛ2 dual 4-input Schmitt NAND. D13 (Sheet-1 CPU core): section A = RESIN Schmitt -> RES (reset,
 // boundary); section B = the DISCRETE 8238 status-strobe generator -- the board has no 8224, so STSTB
 // = ~(SYNC & Φ...) is made here and drives D5 STB (pin 1). Per cpu-core.md the real D5.STSTB source is

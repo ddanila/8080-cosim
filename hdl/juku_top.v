@@ -58,6 +58,7 @@ module juku_top (
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
     wire        rom_sel_n, ram_sel_n, rev, roe_n, prom_en_n;
     wire [1:0]  mem_mode;
+    wire        ras_n, cas_n;     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block)
 
     // ============ CPU core (the discrete chips) ============
     cpu_8080  U_CPU (.sclk(sclk_i), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
@@ -80,11 +81,34 @@ module juku_top (
     wire pst_clk;
     ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .i11(d39_o8), .i3(osc_clk), .o4(pst_clk));   // ring sect 3->4 = PST CLK
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
-    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(1'b1), .b2(1'b1), .y2(d39_o8));  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]; sect2 9,10->8 -> D59.11 (sheet-2, ins deferred)
-    wire d33_o4;
+    // D39 sections 3+4 (bite-2): NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4; then NAND(out3,
+    // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the
+    // rail-1/rail-4 fanouts are pending; D92 is unmapped, so tri1 defaults keep the leg inert in sim.
+`ifdef YOSYS
+    wire d92_gate_t, d92_noacc;
+`else
+    tri1 d92_gate_t, d92_noacc;
+`endif
+    wire d39_memcyc, vid_cpu_sel;
+    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(1'b1), .b2(1'b1), .y2(d39_o8),  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]; sect2 9,10->8 -> D59.11 (sheet-2, ins deferred)
+                     .a3(d92_gate_t), .b3(1'b1), .y3(d39_memcyc),                                // 1,2->3; pin2 <- rail 1 [pending]
+                     .a4(d39_memcyc), .b4(d92_noacc), .y4(vid_cpu_sel));                         // 4,5->6 -> D52.1
+    wire d33_o4, d36_y2, d33_o10;
     ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6), .i13(d37_latch_pre), .o12(latch_sig),
-                     .i3(memr_n), .o4(d33_o4));  // + 13->12 = LATCH; 3->4 = ~MRD -> D37.5 (sheet-2)
-    la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36));  // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
+                     .i3(memr_n), .o4(d33_o4),  // + 13->12 = LATCH; 3->4 = ~MRD -> D37.5 (sheet-2)
+                     .i11(d36_y2), .o10(d33_o10));  // 11->10 = CAS strobe-chain delay leg (bite-2)
+    // D36 bite-2 sections: pin 1 TAPS the CAS rail (input); 12,13 (tied) = the CAS-driver NAND input
+    // [west source pending]; its out 11 -> R57 -> rail 15 sits on the BOARD side of the R57 net
+    // boundary, so cas_n itself stays driven by the sim scaffold in the DRAM block (boot unchanged).
+`ifdef YOSYS
+    wire d36_cas_in;
+`else
+    tri1 d36_cas_in;
+`endif
+    la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36),   // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
+                     .a2(cas_n), .b2(1'b1), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 [pending]
+                     .a3(1'b1), .b3(d33_o10), .y3(),           // 9,10->8 -> rail 16 [dests pending]; pin 9 [pending]
+                     .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
@@ -182,7 +206,7 @@ module juku_top (
     // video reads this same bank via the КП14 µP/video mux. Address is MULTIPLEXED (MA);
     // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see docs/transcription/dram-video-timing.md).
     wire [7:0] MA;                 // muxed row/col address  (from address mux)
-    wire ras_n, cas_n;             // (from RAM control / refresh)
+    // (ras_n/cas_n declared with the chip-select wires up top: the D36 CAS-rail tap needs them early)
     wire [15:0] vid_addr;          // video raster address into the framebuffer (РУ5 2nd port)
     wire [7:0]  vbyte;             // framebuffer byte at vid_addr (from the 8 РУ5 video reads)
     // DRAM datapath (sheet-2 confirmed): WRITE = DB -> РУ5 DI directly (DI rails 31-38 are the
@@ -246,8 +270,16 @@ module juku_top (
     lp5_xor U_D34 (.a1(1'b0), .b1(1'b0), .y1(), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n));
     ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
     ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
-    ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[11:8]),  .co(co2), .bo());
-    ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(1'b1), .clr(1'b0), .d(4'b0), .q(VA[15:12]), .co(), .bo());
+    // D46/D47 share one LD vertical (bite-2); its driver = the D59.12 "LOAD" inverter [likely,
+    // path not continuously traced] -> tri1 boundary (1 = not loading, boot-identical to the old
+    // 1'b1 ties). Presets: S3.1-2 -> D46 C/D, S3.3-6 -> D47 A-D (board nets; sim presets stay 0).
+`ifdef YOSYS
+    wire vid_hi_ld_n;
+`else
+    tri1 vid_hi_ld_n;
+`endif
+    ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(4'b0), .q(VA[11:8]),  .co(co2), .bo());
+    ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(4'b0), .q(VA[15:12]), .co(), .bo());
     // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
     // CAS. (CPU row/col realized; the video path through this mux is the un-modeled boundary.)
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
@@ -278,14 +310,24 @@ module juku_top (
     // RAS/CAS strobes: RAM-select (ram_sel_n) gated by Φ1 (RAS) / Φ2 (CAS). [assumed timing]
     wire mem_active = ~(memr_n & memw_n);   // a memory read or write is in progress
     // D53 per sheet-2: A/B from the D52 КП14 mux via the E2/E3 config jumpers (2-3 position ties
-    // them to Φ1/Φ2 -- the traced/boot config), C grounded, G1 = RAM_SEL. mem_active stays as the
-    // sim-only qualifier (SACTIVE).
+    // them to Φ1/Φ2 -- the traced/boot config), C + G2 grounded. Bite-2: D52 ins = µP ADDRESS
+    // codes 8,9 (BA7/BA8) vs VIDEO ADDRESS codes 8,9 (VA7/VA8), select <- D39.6, G grounded;
+    // D53.G3's drawn feed = a long west line [pending] -> net_boundary keeps the sim's RAM-decode
+    // enable (boot unchanged) while LVS reflects the unknown wiring. Y0-Y3 leave through the
+    // R49-R52 100R series ladder (rails 14/13/12/11): only Y3 -> rail 11 = RAS reaches the DRAMs;
+    // rails 14/13/12 are expansion-bank strobes. The REAL CAS (rail 15) driver is D36.11 -> R57
+    // (see the mesh block); cas_n here is the behavioral scaffold on the sim side of that boundary.
     wire [3:0] d52_y; wire e2_com, e3_com;
-    kp14_mux  U_D52 (.a(4'b0), .b(4'b0), .sel(1'b0), .en_n(1'b1), .y(d52_y));   // video/µP addr mux [ins deferred]
+    wire d53_g_in, d53_y3, d53_y2;
+    kp14_mux  U_D52 (.a({2'b00, BA[8], BA[7]}), .b({2'b00, VA[8], VA[7]}),
+                     .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
-    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(ram_sel_n), .sactive(mem_active),
-                      .y_n({ras_n, cas_n, rc_nc}));
+    net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));   // G3 drawn feed [pending]
+    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(d53_g_in), .sactive(mem_active),
+                      .y_n({d53_y3, d53_y2, rc_nc}));
+    net_boundary U_R52LNK (.a(d53_y3), .b(ras_n));   // R52 100R series -> rail 11 (RAS)
+    net_boundary U_R57LNK (.a(d53_y2), .b(cas_n));   // sim scaffold; real rail-15 driver = D36.11 -> R57
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;

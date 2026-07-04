@@ -46,6 +46,7 @@ PASSIVE_PLACE = {
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     'R49':(204.1,181.7,0),'R50':(204.1,186,0),'R51':(204.1,190.3,0),'R52':(204.1,194.6,0),   # 100R strobe series [sheet-2; emaplaat x204 column]
     'R53':(204.1,199,0),'R54':(204.1,203.3,0),'R55':(204.1,207.6,0),'R56':(204.1,211.9,0),   # 5.1k strobe pullups -> rail E
+    'R57':(204.1,216.2,0),'R58':(204.1,220.5,0),   # R57 = CAS rail-15 series (<- D36.11), R58 = rail-15 5.1k pullup -> E [bite-2; same column, position approx]
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
     'E2':(217.5,219.4,0),'E3':(217.5,212.9,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)

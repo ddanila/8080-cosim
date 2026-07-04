@@ -309,3 +309,47 @@ mem-mode latch bits (MAME mode[3]=fall-through-RAM ✓ semantics). REMAINING for
 the out->bank-row (CAS0-3) assignment + rail-15 continuity + the bank-select rail IDs --
 ONE more read session (crop right/below of b1_le4 where outs 12/8/6 travel to the array).
 Bites 2 (RAM SEL arrival) and 3 (mesh details) untouched -- queued.
+
+BITE 2 (crops b2_*: ramsel_wide, d92_left/right3x, above_d39, d39out3_4x, d52_zoom/feeds,
+d53g_zoom, r49_rails, rails1516_up, chain_west, ramsel_junction, g1_trace, d46_presets)
+== the D92/D39/D52/D53 RAM-strobe cluster, read end-to-end. SUPERSEDES the bite-1 guess:
+D92's outputs do NOT drive bank CAS rails -- they stay inside the cluster.
+
+D92 ЛЕ4 (7427 3x 3-NOR) = CPU-RAM-access detector, cross-coupled:
+  sect A (2,13,1 -> 12): 13 <- "-MRD" (wire 11 ✓ = our W11_D7_D92), 1 <- "-RAM OUT EN"
+    (wire 13 ✓ = W13_D13_D92), 2 <- gate-T. out12 -> own pin 11.        [read strobe NOR]
+  sect C (3,4,5 -> 6): 4 <- "-MWR" (wire 19 junction; = MEMW net), 5 <- "-RAM SEL"
+    (<- D6.11 RAM_N per the "(1)" sheet-1 label), 3 <- gate-T. out6 -> own pins 9+10 (tied).
+  sect B (11,10,9 -> 8) = NOR(read, write) = "no CPU RAM access" -> D39.5.
+  gate-T = D92.2 = D92.3 = D39.1 common vertical, continues NE at ~(715,1885) [pending].
+D39 sect3 (1,2->3): 2 <- rail 1 [pending]; out3 -> rail 4 [fanout pending] AND own pin 4.
+D39 sect4 (4,5->6): NAND(sect3, D92.8) -> long dogleg (y1973, x717 down, y2322) -> D52.1 B/A.
+D52 КП14 #5: A1/A2 <- µP ADDRESS bundle codes 8,9 = BA7/BA8; B1/B2 <- VIDEO ADDRESS bundle
+  codes 8,9 = VA7/VA8 (bundle labels read literally on the sheet); G(15) grounded;
+  Q1->E2.1, Q2->E3.1 ✓. => D53 A/B = address bit 7/8 of whichever side owns the cycle.
+D53 ИД7: G2 grounded ✓, G1 <- line from NW [pending], G3 <- long west line [pending -- was
+  wrongly assumed = RAM_SEL; detached]. Y0-Y3 -> R49-52 (100R) -> rails 14/13/12/11, each
+  with R53-56 5.1k pullup -> rail E. Rail 11 = RAS ✓ (all 32 R pins). Rails 14/13/12 =
+  expansion-bank CAS strobes [bank-column taps pending array read].
+**CAS RESOLVED (populated bank): rail 15 = D36.11 (ЛА12 = 7437 buffer NAND, ins 12=13 tied,
+  west source line pending) -> R57 (series) -> rail 15; R58 5.1k pullup -> rail E; taps:
+  DRAM C (D84-91), D36.1 (strobe-chain feedback), "VIDEO CYCLE" branch to grid (2,3).**
+Strobe chain: D36(2,1->3) ins: 2<-rail 17, 1<-rail 15(=CAS feedback); out3 -> D33.11 ->
+  D33.10 -> D36.10; D36(10,9->8): 9 [pending], out8 -> rail 16 [dests pending; WE-shape?].
+Rail E identity RESOLVED: E = the strobe-termination 5.1k pullup rail (R53-58 common).
+D46/D47: common LD vertical (netted VID_HI_LD); driver = D59 sect 13->12 output labeled
+  "LOAD" [likely, path not continuously traced]. D46.R + D47.R grounded ✓ (.clr ties ✓).
+  D46 presets: code 2 -> pin 9 (D) [read], code 1 -> pin 10 (C) [row-adjacency assumed]
+  = S3.2/S3.1 -> the D46 pair, completing the S3 -> D46/D47 preset picture.
+  D47.DOWN (pin 4) <- arrow labeled "A" (off-region; D46.DOWN presumably same) [pending].
+NETTED: RAM_SEL={D6.11,D92.5}; MEMW+=D92.4; D92_RD_NOR/D92_WR_NOR/D92_NOACC/D39_MEMCYC/
+  D92_GATE_T/VID_CPU_SEL; D52 ins on BA7/BA8/VA7/VA8 + GND; CAS rewired (D53.13 out;
+  D36.1/R57/R58 in) + CAS_PRE/D36_CAS_IN/D36_D33/D33_D36; RAS through real R52 (+R56);
+  D53 Y-ladder + RAIL14/13/12 + RAIL_E; S3_1/S3_2 += D46 presets; VID_HI_LD.
+  HDL: la3_gate 4th section, la12_gate 4 sections, ln1_dual 11->10, net_boundary cell
+  (series-R / unresolved-feed LVS separator), D52 real ins (inert: E2/E3 are 2-3), D53.g
+  behind boundary. LVS 209 nets IN SYNC; boot 6/6 (pending this run).
+ASSUMED CENSUS after bite 2: RAM_SEL, CAS resolved; CAS0-2 upgraded to partially traced
+  (sources = rails 14/13/12 via Y0-2, only the rail->bank-column assignment pending).
+OWNER-TERRITORY items added: rail-15 continuity at the array; rail 14/13/12 -> bank columns;
+  D53 G1+G3 feeds; D36.9 + D36.12/13 sources; rail 16 dests; rails 1/4/17 + gate-T; "A" line.
