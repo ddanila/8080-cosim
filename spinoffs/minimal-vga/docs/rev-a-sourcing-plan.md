@@ -65,12 +65,12 @@ Immediate SKU targets:
 
 Source these separately unless a current assembly-library option is confirmed:
 
-- Z80 DIP-40 CPU: western Z84C0008/Z84C0020 or compatible real Z80.
+- Z80 DIP-40 CPU: ordered `Z0840004PSC`, 4 MHz, owner-supplied insertion after
+  socket assembly.
 - ROM: 27C256-class DIP-28 EPROM; 28C256-compatible EEPROM remains useful for
   development if pin-compatible in the programmed address range.
-- DRAM: western 4164-compatible 64K x 1 DIP-16, 150 ns or faster. Initial search
-  targets include common 4164 family markings such as 4164-15, KM4164B,
-  TMS4164, MCM6665, HYB4164, and equivalent 5V-only parts.
+- DRAM: ordered Samsung `KM4164B-10`, western 4164-compatible 64K x 1 DIP-16,
+  100 ns, +5V-only, owner-supplied insertion after socket assembly.
 - PPI: 82C55/8255-compatible DIP-40.
 - GAL/PAL: GAL22V10-class DIP-24 devices and a programming workflow.
 

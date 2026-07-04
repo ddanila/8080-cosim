@@ -8,7 +8,7 @@ western parts, and enough test headers to debug DRAM timing.
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| U1 | CPU | Z84C0008/Z84C0020 or western Z80-compatible | DIP-40 | Real socketed Z80 for Rev A. |
+| U1 | CPU | Z0840004PSC | DIP-40 | Owner-ordered 4 MHz Z80; factory mounts socket only. |
 | U2 | ROM | 27C256-class EPROM, 28C256-compatible where possible | DIP-28 | 32 KiB ROM target for recovered firmware. |
 | U3 | CPU bus/data buffer | 74HCT245 | DIP-20 | Optional if direct bus loading is acceptable; keep footprint in Rev A. |
 | U4 | Address latch/buffer | 74HCT573 or 74HCT244 | DIP-20 | Exact need depends on final timing. |
@@ -18,7 +18,7 @@ western parts, and enough test headers to debug DRAM timing.
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| U10-U17 | 64K x 1 DRAM bits D0-D7 | Western 4164-compatible, 150 ns or faster | DIP-16 | NOS sourcing target; direct analogue for K565RU5-style testing. |
+| U10-U17 | 64K x 1 DRAM bits D0-D7 | KM4164B-10 | DIP-16 | Owner-ordered Samsung 4164-compatible 100 ns DRAM; factory mounts sockets only. |
 | U20-U21 | Row/column address mux | 74HCT157/257-class | DIP-16 | CPU/video/refresh address selection. |
 | U22 | Refresh/video counter low | 74HCT393/4040/161-class | DIP | Exact topology still open. |
 | U23 | Refresh/video counter high | 74HCT393/4040/161-class | DIP | Exact topology still open. |
@@ -31,7 +31,7 @@ western parts, and enough test headers to debug DRAM timing.
 |---|---|---|---|---|
 | U30 | PPI | 82C55 / 8255-compatible | DIP-40 | Column select and keyboard control. |
 | U31 | Row priority encoder | 74HCT148 | DIP-16 | Mirrors Juku/MAME keyboard decode model. |
-| J30 | Keyboard connector | Original matrix connector target | TH | Preserve 8255/74148 PCB-side behavior; PS/2 adapter is later optional work. |
+| J30 | Keyboard connector | 1x15 2.54 mm inline header | TH | Bring-up wiring point for original keyboard: 8 columns plus 7 rows, no keyboard power pins. |
 | R7-R14 | Keyboard row pullups | 10k | TH | Pull active-low row inputs high. |
 | R15 | Keyboard encoder enable | 0 ohm link | TH | Ties 74148 enable active by default. |
 | R16-R23 | Keyboard column conditioning | 220 ohm | TH | Series resistors between 8255 outputs and connector. |
@@ -55,6 +55,8 @@ western parts, and enough test headers to debug DRAM timing.
 | U50 | Clock oscillator | canned oscillator | DIP-14/half-can | CPU clock and/or divided timing source. |
 | U51 | Reset supervisor | MCP130-class or RC+Schmitt | TO-92/SOT/DIP | Prefer deterministic reset. |
 | J90-J93 | Logic analyzer/debug headers | 2.54 mm headers | TH | Address/data/RAS/CAS/WE/sync/power debug. |
+| D2-D7 | Diagnostic LEDs | 3 mm LEDs | TH | +5V, PWR_OK, CLK, RESET_N, M1_N, and RFSH_N bring-up indicators. |
+| R24-R29 | Diagnostic LED resistors | 2.2k | TH | Conservative current limit to reduce logic loading. |
 | C* | Decoupling | 100 nF ceramic | TH/SMD | One per IC, close to socket power pins. |
 
 ## Current Modeling Status

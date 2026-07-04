@@ -1,10 +1,10 @@
 Designator,Qty,Value,Candidate MPN,Package,Assembly,Sourcing,JLCPCB/LCSC CPN,Notes
-U1,1,Z80 CPU,Z84C0008PEG/Z84C0020PEG or equivalent,DIP-40,Socketed,NOS/owner-supplied,TBD,Real DIP Z80 for Rev A
+U1,1,Z80 CPU,Z0840004PSC,DIP-40,Socketed,Owner-supplied,TBD,Owner inserts ordered 4 MHz DIP Z80 after factory socket assembly
 U2,1,32K EPROM,27C256-class,DIP-28,Socketed,NOS/owner-supplied,TBD,32 KiB firmware ROM; 28C256-compatible development part acceptable if pin-compatible
 U3,1,Octal bus transceiver,74HCT245,DIP-20,Socketed,Factory socket plus sourced IC,TBD,Western HCT/TTL-compatible part only
 U4,1,Octal latch/buffer,74HCT573 or 74HCT244,DIP-20,Socketed,Factory socket plus sourced IC,TBD,Address/control buffering TBD
 U5,1,Address/control decode,GAL22V10-class,DIP-24,Socketed,NOS/owner-supplied,TBD,Programmable decode matching original-style policy
-U10-U17,8,64Kx1 DRAM,4164-compatible 150ns or faster,DIP-16,Socketed,NOS/owner-supplied,TBD,Western 4164-compatible +5V DRAM
+U10-U17,8,64Kx1 DRAM,KM4164B-10,DIP-16,Socketed,Owner-supplied,TBD,Owner inserts ordered Samsung 4164-compatible 100 ns +5V DRAM after factory socket assembly
 U20-U21,2,Quad 2:1 mux,74HCT157/74HCT257,DIP-16,Socketed,Factory socket plus sourced IC,TBD,DRAM row/column source mux
 U22-U23,2,Counter,74HCT393/74HCT4040/74HCT161,DIP,Socketed,Factory socket plus sourced IC,TBD,Refresh/video address counters TBD
 U24,1,DRAM timing sequencer,GAL22V10-class,DIP-24,Socketed,NOS/owner-supplied,TBD,RAS/CAS/WE timing equations TBD
@@ -18,7 +18,7 @@ U51,1,Reset supervisor,MCP130-class 5V supervisor,TO-92,Factory preferred,JLCPCB
 Sockets,25,DIP sockets,Machine-pin or square-hole sockets,Mixed THT,Factory preferred,JLCPCB/LCSC,TBD,DIP-40/28/24/20/16/14 socket set for socketed ICs
 J1,1,ATX power input,ATX 20/24-pin or adapter header,TH,Factory preferred,JLCPCB/LCSC,TBD,+5V first; expose control/debug rails as needed
 J2,1,ATX PS_ON jumper,2.54mm 1x02 header,TH,Factory preferred,JLCPCB/LCSC,TBD,Short to request ATX supply on
-J30,1,Keyboard connector,Original matrix connector target,TH,Factory preferred,TBD,TBD,Pinout/mechanics must match intended keyboard
+J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Inline bring-up header for original keyboard wiring: 8 columns plus 7 rows; no keyboard power pins
 J40,1,VGA connector,HD-15 or header,TH,Factory preferred,JLCPCB/LCSC,TBD,Add RGB resistor network
 J90-J92,3,Logic analyzer header,2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Address/data/DRAM/video/debug
 J93,1,Power debug header,2.54mm 1x04 header,TH,Factory preferred,JLCPCB/LCSC,TBD,VCC/GND/PWR_OK/5VSB bring-up pins

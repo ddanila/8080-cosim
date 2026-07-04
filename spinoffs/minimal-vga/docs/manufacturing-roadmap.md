@@ -49,7 +49,9 @@ Remaining work:
 - Freeze GAL equations and header/connector pinouts.
 - Bind the generated schematic to final KiCad library symbols instead of
   generated local symbols.
-- Confirm the original keyboard connector pinout and mechanical connector.
+- Keyboard board connector is frozen for Rev A as a 1x15 inline 2.54 mm header;
+  the external adapter wiring to the original keyboard remains owner-side
+  bring-up work.
 - Replace the current TTL640x480 header placeholder with onboard timing logic.
 
 ### Gate 3: Physical PCB Route Baseline
@@ -80,7 +82,7 @@ Status: routed FreeRouting baseline.
 
 Remaining work:
 
-- Re-run after GAL/header pinouts and the final keyboard connector are frozen.
+- Re-run after GAL/header pinouts are frozen.
 - Choose final connector footprints.
 - Review whether production Rev A should restore GND/+5V copper pours after the
   route is stable. The first autoroute with placeholder planes produced split
@@ -104,7 +106,6 @@ Open production blockers:
 - Replace the VGA timing placeholder with the actual onboard TTL640x480-derived
   logic, or explicitly mark the placeholder header as the Rev A bring-up target.
 - Freeze GAL/PAL equations and pinouts for decode and DRAM timing.
-- Freeze keyboard connector mechanics and pinout.
 - Pick final ATX/VGA/debug connector footprints.
 - Assign orderable JLCPCB/LCSC CPNs for factory-populated sockets, passives,
   connectors, protection parts, oscillator/reset, and the diagnostic LEDs.
