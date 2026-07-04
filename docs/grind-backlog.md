@@ -85,3 +85,16 @@ differs — re-crop the ladder values + check photos**) | 200R x2 | 270R x1 | 30
 (pullup fleet ✓) | 1.2k x1 (R32 ✓) | 1.5k x1 | 2k x12. NB: no 360R on this page — the HDL
 "R36/R37 360" phase pullups need a value re-read [flag]. Remaining ВП pages (2-4, 6-11:
 caps cont., >2.4k resistors, diodes/transistors/L/switches) = census pass 2.
+
+## Census pass 2 (ВП листы 5-7) + ladder flag resolution
+- R49-52 re-read at 5x: unambiguous "100" x4 on the Э3 -> the Э3 and the ВП (100R x3, 75R x4)
+  CONTRADICT each other. OWNER ITEM: measure the RAS-ladder series R's (75 vs 100).
+- **R73 = СП3-22б-0.125 4.7k TRIMMER x1 ✓** (matches the СБ special mount + the drawn arrow);
+  footprint switched to a trimpot stand-in.
+- **VD3 + VD5 = КС147Г x2 ✓** (both zeners, as modeled); **КД522А x2 = VD1/VD4** (reset/beeper
+  diodes; census additions pending wiring).
+- **МЛТ-0.25-360R x2 = R36/R37 ✓** (phase pullups vindicated, 0.25W series); 0.25W also: 470R
+  x1 (R19 ✓), 8.2R x1 [locate], 120R x1, 360R x2.
+- MLT-0.125 (.006 column) cont.: 3k x3, 4.7k x1, **5.1k x9** (7 identified: R53-56,R58,R64,
+  R71 -> 2 gaps), 10k x2, **12k x12** (R61 + 11 [gaps!]), 20k x4 (R47 +3), 33k x4 (R59 +3),
+  130k x1, 1.8M x1 (osc bias). Pages 8-11 (VT/L/switches/connectors) = pass 3.

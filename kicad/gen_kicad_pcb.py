@@ -31,6 +31,7 @@ PASSIVE_FP = {
     'JUMPER3': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),   # Е-family config links
     'XTAL':    ('Crystal.pretty',       'Crystal_HC49-U_Horizontal'),   # РК-171 flat can, lying -- closest stock footprint
     'C_TRIM':  ('Capacitor_THT.pretty', 'C_Disc_D7.5mm_W4.4mm_P5.00mm'), # КТ4-23 trimmer stand-in (no trimmer lib in stock KiCad)
+    'R_TRIM':  ('Potentiometer_THT.pretty', 'Potentiometer_Piher_PT-10-V10_Vertical'),  # R73 = СП3-22б 4.7k (ВП лист 7) stand-in
     'SW_DIP6': ('Button_Switch_THT.pretty', 'SW_DIP_SPSTx06_Slide_9.78x17.42mm_W7.62mm_P2.54mm'),  # S3 video-config bank
     'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
     'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
