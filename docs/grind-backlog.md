@@ -108,3 +108,11 @@ speaker = 0.05ГД2 in ДГШ5.884.001 (external unit). Module decode: 087.009 =
 КУ202/КД105 rows), 104.015 = keyboard (20x ВМ16-4 key blocks), 884.001 = speaker.
 (Earlier "087.009 keyboard" guesses in pass-1 notes -> PSU.) Pages 9-11 = pass 4 (caps
 cont/connectors/sockets); L1 not yet found in the register [locate].
+
+## Census pass 4 (ВП лист 9) — connectors/sockets for .109.006
+Панель РС-28-8 x8 = ALL EIGHT ROM sockets (D15-D22, 28-pin ✓); **Розетка СР50-73ФВ x2 =
+X6/X7 coax ✓✓**; РГ1Н-1-1/-3/-4 x3 = DIN sockets (X5 + 2 [identify; tape-era?]); МРН14-1
+розетка x1 = X9 keyboard (14 contacts ✓ our pad row; вилка on the keyboard side ✓).
+**FLAG: Резонатор РК170ББ-14ГС-16000к-В = the crystal Z1 is 16 MHz** — reconcile the clock
+story (D56 "16MHz astable" vs crystal-sourced 16MHz; D59/D40 divider chain frequencies).
+Remaining register pages 2-4,10-11 (caps cont., ferrites, misc) = final pass [queued].
