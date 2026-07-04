@@ -58,6 +58,8 @@ PASSIVE_PLACE = {
     'R67':(287,112,90),'R68':(290.5,112,90),'R69':(294,112,90),'R70':(287,120,90),'R71':(290.5,120,90),
     'C9':(275,95,0),'C10':(276,112,90),'C12':(285,95,0),'C13':(279.5,112,90),'C15':(297.5,99,90),
     'R76':(272,125,0),'R77':(276,128,0),'L1':(282,128,0),
+    'VT1':(250.5,218.9,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
+    'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
     'X6':(288,6,0),     # RF socket (СБ top edge, поз.18 ring; contact 701/702)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]

@@ -98,3 +98,13 @@ caps cont., >2.4k resistors, diodes/transistors/L/switches) = census pass 2.
 - MLT-0.125 (.006 column) cont.: 3k x3, 4.7k x1, **5.1k x9** (7 identified: R53-56,R58,R64,
   R71 -> 2 gaps), 10k x2, **12k x12** (R61 + 11 [gaps!]), 20k x4 (R47 +3), 33k x4 (R59 +3),
   130k x1, 1.8M x1 (osc bias). Pages 8-11 (VT/L/switches/connectors) = pass 3.
+
+## Census pass 3 (ВП лист 8) — semiconductors/misc for .109.006
+**VT1 = КТ972А x1** (Darlington beeper driver; part+place added, wiring pending);
+**VT2/VT3 = КТ315Г x2 ✓; VT4 = КТ325ВМ x1 ✓** (transistor census complete and consistent).
+S1 = кнопка КМ1-1 ✓; microswitches ВДМ1-2 + ВДМ1-6 (S4 added at СБ spot + a second switch
+[locate]); **Панель ОНП-НИ-6-16 x3 = three DIP-16 sockets** (РЕ3 PROMs D6/D8 socketed + 1);
+speaker = 0.05ГД2 in ДГШ5.884.001 (external unit). Module decode: 087.009 = PSU (КТ828/
+КУ202/КД105 rows), 104.015 = keyboard (20x ВМ16-4 key blocks), 884.001 = speaker.
+(Earlier "087.009 keyboard" guesses in pass-1 notes -> PSU.) Pages 9-11 = pass 4 (caps
+cont/connectors/sockets); L1 not yet found in the register [locate].
