@@ -3991,6 +3991,46 @@
     "1": "P1",
     "2": "P2"
    }
+  },
+  {
+   "ref": "R11",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R12",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R13",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R14",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R60",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
   }
  ],
  "nets": {
@@ -5978,7 +6018,7 @@
    ]
   },
   "ROM_SEL": {
-   "src": "traced sheet-1 (romdec_above: \"12 ROM\" junction rail runs right into D8 pin 15 E_N, R11 1k pullup). D6.ROM_N = ROM-region enable for the D8 pager, NOT a chip CE (D15.20 detached: CS traced to D8.D4)",
+   "src": "traced sheet-1 (romdec_above: \"12 ROM\" junction rail runs right into D8 pin 15 E_N, R11 1k pullup). D6.ROM_N = ROM-region enable for the D8 pager, NOT a chip CE (D15.20 detached: CS traced to D8.D4); +R11 1k pullup (romdec_above)",
    "nodes": [
     [
      "D6",
@@ -5987,11 +6027,15 @@
     [
      "D8",
      "15"
+    ],
+    [
+     "R11",
+     "2"
     ]
    ]
   },
   "ROE": {
-   "src": "traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail (real РТ4 column = dump to confirm)",
+   "src": "traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail (real РТ4 column = dump to confirm); +R14 1k pullup (v3_junction; pairing order assumed)",
    "nodes": [
     [
      "D6",
@@ -6004,6 +6048,10 @@
     [
      "D92",
      "1"
+    ],
+    [
+     "R14",
+     "2"
     ]
    ]
   },
@@ -7898,7 +7946,7 @@
    "wire_link": true
   },
   "REV": {
-   "src": "traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked",
+   "src": "traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked; +R13 1k pullup (v3_junction; R13/R14 pairing order assumed)",
    "nodes": [
     [
      "D6",
@@ -7911,11 +7959,15 @@
     [
      "D9",
      "5"
+    ],
+    [
+     "R13",
+     "2"
     ]
    ]
   },
   "RAM_SEL": {
-   "src": "scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 \"(1)\" label). D53.6/G3 detached: its drawn feed = long west line [pending]",
+   "src": "scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 \"(1)\" label). D53.6/G3 detached: its drawn feed = long west line [pending]; +R12 1k pullup (scan note + R11/R12 pair zone)",
    "nodes": [
     [
      "D6",
@@ -7924,6 +7976,10 @@
     [
      "D92",
      "5"
+    ],
+    [
+     "R12",
+     "2"
     ]
    ]
   },
@@ -9361,6 +9417,26 @@
     [
      "R59",
      "2"
+    ],
+    [
+     "R11",
+     "1"
+    ],
+    [
+     "R12",
+     "1"
+    ],
+    [
+     "R13",
+     "1"
+    ],
+    [
+     "R14",
+     "1"
+    ],
+    [
+     "R60",
+     "2"
     ]
    ]
   },
@@ -9813,7 +9889,7 @@
    ]
   },
   "FRAME_INT": {
-   "src": "mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs)",
+   "src": "mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7)",
    "nodes": [
     [
      "D55",
@@ -9822,6 +9898,10 @@
     [
      "D10",
      "23"
+    ],
+    [
+     "R60",
+     "1"
     ]
    ]
   },

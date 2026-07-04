@@ -72,7 +72,7 @@ PASSIVE_PLACE = {
     'R67':(287,112,90),'R68':(290.5,112,90),'R69':(294,112,90),'R70':(287,120,90),'R71':(290.5,120,90),
     'C9':(275,95,0),'C10':(276,112,90),'C12':(285,95,0),'C13':(279.5,112,90),'C15':(297.5,99,90),
     'R76':(272,125,0),'R77':(276,128,0),'L1':(282,128,0),
-    'VT1':(250.5,218.9,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
+    'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
     'X6':(288,6,0),     # RF socket (СБ top edge, поз.18 ring; contact 701/702)
@@ -84,8 +84,9 @@ PASSIVE_PLACE = {
     'C73':(58,241.5,0),
     'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
     'R17':(125.5,118.0,90),'C99':(128.8,118.0,90),   # D9.G1 RC deglitch (200R+160pF), decode cluster between D9 and D7 [approx, SB spot pending]
-    'R90':(243.0,213.0,0),'VD4':(247.0,209.0,0),'R91':(252.0,209.0,0),'R48':(255.5,213.0,0),   # beeper cluster around VT1 (250.5,218.9) [approx, SB wire posts 1/2 flank R60 nearby]
+    'R90':(251.6,216.1,90),'VD4':(254.1,216.1,90),'R91':(256.4,216.1,90),'R48':(245.1,207.4,0),'R60':(253.9,202.7,0),   # beeper cluster SB-true (crop sb_beeper); R60 = FRAME INT pullup between wire posts 2/1
     'R47':(283.5,171.5,0),'C7':(288.5,171.5,0),'R59':(293.5,171.5,0),'C8':(283.5,189.0,0),'R61':(293.5,189.0,0),   # D56 AG3 one-shot RCs + CLR pullup, around D56 (287.8,180) [approx]
+    'R11':(75.0,108.0,0),'R12':(79.5,108.0,0),'R13':(75.0,128.0,0),'R14':(79.5,128.0,0),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C35':(119.6,124.3,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),

@@ -376,3 +376,23 @@ stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.
 - **Second-ЛН5 hunt result**: no ЛН5 symbol on sheets 2/3 beyond D35; sheet-3's TTL table
   entry reads К155ЛП8. The ВП "ЛН5 x2" row needs one re-crop (nk-02) -- possible glyph
   confusion [queued in #13 cycle].
+
+## #13 cycle, part 1 (census closure + pullups + SB-true beeper spots)
+- **ЛН5 question CLOSED**: ВП page 2 re-read (typed, unambiguous): К155ЛА3 x1, К155ЛА18 x1,
+  **К155ЛН5 x2** — and NO ЛП8 anywhere in the ВП => sheet-3's handwritten table entry I read
+  as "ЛП8" is ЛН5. **ЛН5 #2 = a sheet-3 tape-zone chip** (OC recorder-line drivers); the .009
+  revision replaces that zone with the FDC, so it is likely NOT populated on our board — the
+  .009 twin BOM stays as-is. Page-2 bonus: cap rows match pass-5 exactly (bypass 0.22x16 +
+  0.47x17, both КТ4-21Б trimmers x1, the К53 tantalum set, КР140УД1208 = PSU, К155ИВ1 = kbd).
+- **R11-R14 1k pullups netted** on the four D6 OC rails: R11->ROM_SEL, R12->RAM_SEL,
+  R13->REV, R14->ROE (R13/R14 pairing order assumed — labels flank the twin verticals);
+  all far ends -> P5V. Parts + approx spots added.
+- **R60 5.1k = FRAME_INT pullup** netted (+P5V); SB-true spot (253.9, 202.7) between wire
+  posts 2/1 (post positions re-validated the SB calibration to <0.5mm).
+- **Beeper cluster SB-true placements** (crop sb_beeper): VT1 body (247.8,213.8) [old spot
+  was the label text], R48 (245.1,207.4), R90/VD4/R91 vertical row at y=216.1
+  (x = 251.6/254.1/256.4). PCB regen: 237 footprints, outline-overlap PASS.
+- CARRY-OVER to next cycle: the systematic СБ wire-endpoint table, per-position bypass map,
+  X1 pin-out table, DOTCLK16M bend re-read, D56 sect-1 trigger hop, AVDC/SPKR far ends,
+  CLK_123M rail netting, C99 far plate, D6 V1/V2 feed, mode tag-3, D25 T/E gates,
+  SB-true spots for R17/C99 + D56 RC group + R11-R14.
