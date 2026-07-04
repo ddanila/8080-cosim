@@ -414,3 +414,22 @@ stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.
   uniform; electrically irrelevant for the netlist.
 - **СБ wire-endpoint table: carried** -- the one true desk leftover (a full session of
   systematic поз.-callout sweeping; wires 3/4/5/6/11 done previously).
+
+## #8 + #10 leftovers session (SB-true sweep, part 1)
+- **Analog corner SB-true** (crop sb_analog): C12 trimmer (254.6,95.6), C11 (264.9,92.0),
+  C14 (272.2,102.3), C15 (253.8,104.0), R72/R74/R75/R85/R65/C94 exact; VT2/VT3/VT4/R73/VD3
+  refined (<3mm deltas). **D40 = (258.0,125.6)** (was 140.9 -- clock/video corner sits higher).
+- **Decode cluster SB-true** (crop sb_decode): **D8 (89.5,102.4) HORIZONTAL, D9 (114.0,103.0)
+  HORIZONTAL, D2 (78.9,126.1)** -- the old photo-derived spots were ~15mm south + wrong
+  rotation (the known y-drift, now resolved: the misassociation was in the photo pass, the
+  SB formula is consistent -- beeper-post cross-check <0.5mm). R17 (111.4,116.1) + C99
+  (105.1,119.8) SB-true; C35/C54 = decap column anchors (119.4/130.5, 119.8).
+- **CONSEQUENCE: the photographed top-center socketed РЕ3 (~225,43 mm, 8904) is NOT D8**
+  (D8 lives at 89,102). It is a separate socketed РЕ3 that the .006 СБ does not place =
+  almost certainly the **.009-added D94** (.092 program per ПЭЗ). If its dump matches .113,
+  the owner's tables snap into place as D94's (and the "V3-gating" survey guess referred to
+  this chip). Owner: dump BOTH РЕ3 sockets (top-center = D94 candidate, decode-cluster = D8).
+- **Factory-wire callouts spotted while sweeping**: wire 4 endpoint x-mark (285.0,112.2),
+  wire 3 flag (280.3,115.9) -- both at R73's trimmer circle (the drawn diagonal wire crosses
+  it); wire 11 endpoint arrow (263.1,113.3). Wire-table sweep continues [remaining bands].
+- PCB regen: 237 footprints, outline-overlap PASS.

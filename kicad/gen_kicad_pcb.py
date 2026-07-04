@@ -66,11 +66,11 @@ PASSIVE_PLACE = {
     'E4':(42.9,226.5,0),'E5':(50.5,226.1,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
     # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
     # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
-    'VT4':(265.0,98.4,0),'R73':(281.9,102.7,0),'VT3':(294.6,105.6,0),'VT2':(280.5,124.8,0),'VD3':(298.6,118.2,90),
-    'R72':(292,99,0),'R74':(289.5,104,90),'R75':(263,106.5,0),'C14':(262,95,0),'C11':(272.5,102,90),
-    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(263,122,90),'R66':(266.5,122,90),
+    'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.0,119.6,90),
+    'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(264.9,92.0,0),'R85':(274.7,87.4,0),'C94':(284.4,119.6,90),
+    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(266.5,122,90),
     'R67':(287,112,90),'R68':(290.5,112,90),'R69':(294,112,90),'R70':(287,120,90),'R71':(290.5,120,90),
-    'C9':(275,95,0),'C10':(276,112,90),'C12':(285,95,0),'C13':(279.5,112,90),'C15':(297.5,99,90),
+    'C9':(275,95,0),'C10':(276,112,90),'C12':(254.6,95.6,0),'C13':(279.5,112,90),'C15':(253.8,104.0,0),
     'R76':(272,125,0),'R77':(276,128,0),'L1':(282,128,0),
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)
@@ -83,10 +83,10 @@ PASSIVE_PLACE = {
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
     'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
-    'R17':(125.5,118.0,90),'C99':(128.8,118.0,90),   # D9.G1 RC deglitch (200R+160pF), decode cluster between D9 and D7 [approx, SB spot pending]
+    'R17':(111.4,116.1,90),'C99':(105.1,119.8,0),   # D9.G1 RC deglitch -- SB-true spots (crop sb_decode)
     'R90':(251.6,216.1,90),'VD4':(254.1,216.1,90),'R91':(256.4,216.1,90),'R48':(245.1,207.4,0),'R60':(253.9,202.7,0),   # beeper cluster SB-true (crop sb_beeper); R60 = FRAME INT pullup between wire posts 2/1
     'R47':(283.5,171.5,0),'C7':(288.5,171.5,0),'R59':(293.5,171.5,0),'C8':(283.5,189.0,0),'R61':(293.5,189.0,0),   # D56 AG3 one-shot RCs + CLR pullup, around D56 (287.8,180) [approx]
-    'R11':(75.0,108.0,0),'R12':(79.5,108.0,0),'R13':(75.0,128.0,0),'R14':(79.5,128.0,0),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
+    'R11':(70.0,108.0,90),'R12':(73.5,108.0,90),'R13':(84.5,122.0,90),'R14':(88.0,122.0,90),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C35':(119.6,124.3,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),
@@ -181,7 +181,7 @@ PLACE = {
     'D57':(274.9,206.6,90),'D55':(274.9,229.2,90),'D54':(274.7,251,90),'D26':(232,251,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
-    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(78.7,142.5,0),'D8':(88.3,117.5,90),'D9':(113.2,118,90),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
+    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(78.9,126.1,90),'D8':(89.5,102.4,0),'D9':(114.0,103.0,0),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -203,7 +203,7 @@ PLACE = {
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(258,140.9,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
+    'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     'D93':(248,70,0),'D94':(228,33,0),'D100':(245,30,0),   # FDC trio promoted to netted [grind C]
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(245.1,204.1,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
