@@ -12,6 +12,11 @@ Current routed baseline: KiCad reports zero error-level DRC violations and zero
 unconnected items. `export_fab.sh` exports Gerbers, Excellon drill, fabrication
 notes, the engineering BOM, and draft JLCPCB assembly files.
 
+Factory assembly scope: populate sockets, passives, connectors, protection
+parts, oscillator/reset, and diagnostic LEDs where practical. Do not include
+Z80, ROM, DRAM, 8255, GAL/PAL, or other socketed ICs as factory-populated IC
+parts; insert those manually after the assembled board is received.
+
 ## Intended Rev A Fabrication Defaults
 
 - 4-layer PCB.
@@ -34,6 +39,8 @@ notes, the engineering BOM, and draft JLCPCB assembly files.
   `../../../fonts/gost-type-b-italic.ttf`.
 - Assembly: factory assembly target for passives, sockets, connectors, and
   protection parts where practical; owner-supplied IC insertion where needed.
+- Diagnostics: first-pass LED bank for +5V, PWR_OK, CLK, RESET_N, M1_N
+  instruction fetch, and RFSH_N refresh activity.
 
 ## Files Needed Before Ordering
 
@@ -103,6 +110,10 @@ The generated JLCPCB BOM instead treats socketed DIP footprints as sockets to
 be factory-mounted at the `U*` designators. The matching post-assembly list
 then records which owner-supplied IC should be inserted into each socket after
 the board comes back from assembly.
+
+Socket BOM rows intentionally omit the IC manufacturer part number. For
+example, `U1` in the JLCPCB BOM means "DIP-40 socket at U1", while the Z80 CPU
+itself appears only in `post-assembly-insertion.csv`.
 
 The generated BOM and CPL must have the same designator set. This follows
 JLCPCB's current BOM/CPL guidance and is checked by

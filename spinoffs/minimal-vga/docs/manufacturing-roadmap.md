@@ -89,6 +89,7 @@ Remaining work:
 - Human-review and clean up the autorouted trace geometry before ordering.
 - Assign concrete JLCPCB/LCSC CPNs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts.
+- Confirm diagnostic LED colors and brightness/loading after part selection.
 
 ### Gate 4: Fabrication Candidate
 
@@ -97,6 +98,20 @@ Status: partially reached.
 The routed PCB passes KiCad DRC and exports Gerbers/drills. This is still not a
 buy-ready design because several electrical/mechanical decisions remain
 placeholders.
+
+Open production blockers:
+
+- Replace the VGA timing placeholder with the actual onboard TTL640x480-derived
+  logic, or explicitly mark the placeholder header as the Rev A bring-up target.
+- Freeze GAL/PAL equations and pinouts for decode and DRAM timing.
+- Freeze keyboard connector mechanics and pinout.
+- Pick final ATX/VGA/debug connector footprints.
+- Assign orderable JLCPCB/LCSC CPNs for factory-populated sockets, passives,
+  connectors, protection parts, oscillator/reset, and the diagnostic LEDs.
+- Review autorouted traces, power widths, via count, and return paths.
+- Decide whether GND/+5V pours return after manual cleanup.
+- Produce schematic PDF and assembly drawings.
+- Do final Gerber inspection in an independent viewer.
 
 Required before ordering:
 

@@ -91,6 +91,36 @@ def mpn(source):
     return "" if candidate.upper() == "TBD" else candidate
 
 
+def assembly_mpn(fp, source):
+    ref = fp.GetReference().upper()
+    if ref.startswith("U") and is_socket_footprint(fp):
+        return ""
+    return mpn(source)
+
+
+def assembly_notes(fp, source):
+    ref = fp.GetReference().upper()
+    notes = source.get("Notes", "")
+    if ref.startswith("U") and is_socket_footprint(fp):
+        device = source.get("Value") or fp.GetValue()
+        return f"Factory mounts socket only; owner inserts {device} after assembly. {notes}".strip()
+    return notes
+
+
+def assembly_owner(fp, source):
+    ref = fp.GetReference().upper()
+    if ref.startswith("U") and is_socket_footprint(fp):
+        return "Factory socket"
+    return source.get("Assembly", "")
+
+
+def assembly_sourcing(fp, source):
+    ref = fp.GetReference().upper()
+    if ref.startswith("U") and is_socket_footprint(fp):
+        return "JLCPCB/LCSC socket"
+    return source.get("Sourcing", "")
+
+
 def board_footprints(board):
     return sorted(board.Footprints(), key=lambda fp: natural_key(fp.GetReference().upper()))
 
@@ -114,10 +144,10 @@ def build_rows(board, engineering_bom):
             str(comment),
             str(fp_name),
             str(lcsc_part(source)),
-            str(mpn(source)),
-            str(source.get("Assembly", "")),
-            str(source.get("Sourcing", "")),
-            str(source.get("Notes", "")),
+            str(assembly_mpn(fp, source)),
+            str(assembly_owner(fp, source)),
+            str(assembly_sourcing(fp, source)),
+            str(assembly_notes(fp, source)),
         )
         bom_groups[key].append(ref)
 

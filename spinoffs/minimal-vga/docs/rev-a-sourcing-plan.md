@@ -11,6 +11,9 @@ practical, while keeping vintage or programmable ICs socketed.
 - Prefer factory-installed DIP sockets over factory-installed vintage ICs.
 - Treat vintage/NOS ICs as owner-supplied post-assembly insertion unless a
   reliable JLCPCB/LCSC source exists at order time.
+- For the assembly BOM, do not include Z80, ROM, DRAM, 8255, GAL/PAL, or other
+  socketed ICs as factory-populated IC parts. Include sockets only; insert the
+  ICs manually later.
 - Keep the BOM explicit about `Factory`, `Socketed`, `Manual`, and `NOS`
   responsibilities.
 - Generate the JLCPCB upload BOM/CPL from the PCB with
@@ -43,6 +46,8 @@ Immediate SKU targets:
   - 220 ohm keyboard column series resistors.
   - 10k pullups.
   - 0 ohm configuration link.
+  - 2.2k diagnostic LED resistors.
+  - 3 mm diagnostic LEDs.
 - Protection and power:
   - +5V resettable PTC fuse.
   - +5V TVS clamp.

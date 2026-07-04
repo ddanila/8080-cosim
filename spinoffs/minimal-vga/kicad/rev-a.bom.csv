@@ -29,5 +29,7 @@ R4-R6,3,Pullup resistor,10k,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Osci
 R7-R14,8,Keyboard row pullup,10k,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Pull active-low 74148 row inputs high
 R15,1,Keyboard encoder enable link,0 ohm,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Ties 74148 EI_N active by default
 R16-R23,8,Keyboard column series resistor,220 ohm,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Between 8255 column outputs and keyboard connector
+R24-R29,6,Diagnostic LED resistor,2.2k,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Current limit for Rev A diagnostic LEDs
+D2-D7,6,Diagnostic LED,3mm LED,THT LED,Factory preferred,JLCPCB/LCSC,TBD,+5V PWR_OK CLK RESET_N M1_N and RFSH_N indicators
 C1-C25,25,Decoupling capacitor,100nF ceramic,THT disc,Factory preferred,JLCPCB/LCSC,TBD,One per socketed active IC/module
 C50,1,Bulk capacitor,47uF radial,THT radial,Factory preferred,JLCPCB/LCSC,TBD,+5V local bulk reservoir

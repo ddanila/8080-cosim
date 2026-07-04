@@ -12,6 +12,8 @@ REQUIRED_REFS = {
     "F1", "D1", "R6", "J2", "J93",
     "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15",
     "R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23",
+    "D2", "D3", "D4", "D5", "D6", "D7",
+    "R24", "R25", "R26", "R27", "R28", "R29",
 }
 
 REQUIRED_NETS = {
@@ -24,6 +26,8 @@ REQUIRED_NETS = {
     "VGA_R", "VGA_G", "VGA_B", "OSC_OE_N", "VCC", "GND",
     "VCC_RAW", "VCC_STBY", "PS_ON_N", "PWR_OK",
     "KBD_COL0_DRV", "KBD_COL7_DRV",
+    "LED_PWR_A", "LED_PWR_OK_A", "LED_CLK_A",
+    "LED_RESET_A", "LED_M1_A", "LED_RFSH_A",
 }
 
 REQUIRED_PIN_BINDINGS = {
@@ -163,6 +167,24 @@ def main():
         errors.append("R15.1: not connected to KBD_EN_N")
     if ["R15", "2"] not in nodes(nets["GND"]):
         errors.append("R15.2: not connected to GND")
+
+    diagnostic_leds = (
+        ("D2", "R24", "VCC", "LED_PWR_A", "GND", None),
+        ("D3", "R25", "PWR_OK", "LED_PWR_OK_A", "GND", "GND"),
+        ("D4", "R26", "CLK", "LED_CLK_A", "GND", "GND"),
+        ("D5", "R27", "RESET_N", "LED_RESET_A", "GND", "GND"),
+        ("D6", "R28", "VCC", "LED_M1_A", "M1_N", None),
+        ("D7", "R29", "VCC", "LED_RFSH_A", "RFSH_N", None),
+    )
+    for led, resistor, source, led_anode, led_cathode, _ in diagnostic_leds:
+        if [resistor, "1"] not in nodes(nets[source]):
+            errors.append(f"{resistor}.1: diagnostic LED source not connected to {source}")
+        if [resistor, "2"] not in nodes(nets[led_anode]):
+            errors.append(f"{resistor}.2: not connected to {led_anode}")
+        if [led, "2"] not in nodes(nets[led_anode]):
+            errors.append(f"{led}.2: not connected to {led_anode}")
+        if [led, "1"] not in nodes(nets[led_cathode]):
+            errors.append(f"{led}.1: not connected to {led_cathode}")
 
     if errors:
         print("Rev A physical spec check: FAIL")
