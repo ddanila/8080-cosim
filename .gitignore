@@ -36,6 +36,9 @@ fab/
 fp-info-cache
 hdl/*.json
 spinoffs/*/hdl/*.json
+spinoffs/*/*_tb
+spinoffs/*/kicad/*.kicad_prl
+spinoffs/*/kicad/*.kicad_pro
 hdl/sim/*.hex
 juku-drc.rpt
 kicad/*.kicad_prl

@@ -3,7 +3,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
+trap 'rm -rf "$tmp"; rm -f z80_minimal_tb' EXIT
 
 while IFS= read -r f; do
   ghdl -a --workdir="$tmp" --std=08 -fsynopsys "$f"

@@ -117,6 +117,23 @@ The simplest first simulation target is not a perfect video card. It is:
 - `external/` - notes for third-party design sources, not vendored by default.
 - `sync/` - spin-off LVS checks.
 
+Early manufacturing planning files live in `kicad/`:
+
+- `../docs/manufacturing-roadmap.md` - gates from behavioral proof to order
+  package.
+- `rev-a-physical.board.json` - first physical chip-level schematic target.
+- `rev-a-physical.kicad_sch` - generated schematic from that physical target.
+- `rev-a-physical.kicad_pcb` - generated placement/ratsnest PCB scaffold.
+- `check_rev_a_physical.sh` - validates/generates the physical target.
+- `check_rev_a_pcb.sh` - validates/generates the PCB scaffold with stock KiCad
+  footprints and the intended 4-layer copper stack.
+- `check_rev_a_pcb.py` - PCB scaffold invariant checks.
+- `report_rev_a_fab_readiness.sh` - non-gating DRC/unconnected summary for the
+  current PCB scaffold.
+- `rev-a.bom.csv` - initial physical BOM skeleton.
+- `fab-notes.md` - fabrication assumptions and pre-order checklist.
+- `export_fab.sh` - Gerber/drill exporter stub, enabled once a routed PCB exists.
+
 The selected Z80 HDL core is the `external/T80` git submodule. See
 `external/Z80-core.md` and `hdl/README.md`.
 

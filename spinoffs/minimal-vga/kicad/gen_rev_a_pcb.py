@@ -1,0 +1,241 @@
+#!/usr/bin/env python3
+import json
+import os
+import sys
+
+import pcbnew
+
+
+ROOT = "/usr/share/kicad/footprints"
+BOARD_WIDTH_MM = 285
+BOARD_HEIGHT_MM = 285
+ZONE_INSET_MM = 3
+
+FP_BY_TYPE = {
+    "Z80_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm_Socket"),
+    "PPI_82C55_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm_Socket"),
+    "ROM_28C256_DIP28": ("Package_DIP.pretty", "DIP-28_W15.24mm_Socket"),
+    "GAL22V10_DIP24_DECODE": ("Package_DIP.pretty", "DIP-24_W15.24mm_Socket"),
+    "GAL22V10_DIP24_DRAMSEQ": ("Package_DIP.pretty", "DIP-24_W15.24mm_Socket"),
+    "74HCT245_DIP20": ("Package_DIP.pretty", "DIP-20_W7.62mm_Socket"),
+    "74HCT573_DIP20": ("Package_DIP.pretty", "DIP-20_W7.62mm_Socket"),
+    "DRAM4164_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT157_DIP16_ADDRMUX": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT148_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT166_DIP16_PIXSHIFT": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT393_DIP14_REFRESH_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "74HCT393_DIP14_VIDEO_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "74HCT00_DIP14_DRAMGATE": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "TTL640X480_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x05_P2.54mm_Vertical"),
+    "DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x05_P2.54mm_Vertical"),
+    "ATX_POWER_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x04_P2.54mm_Vertical"),
+    "KEYBOARD_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x09_P2.54mm_Vertical"),
+    "VGA_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x06_P2.54mm_Vertical"),
+    "OSC_DIP14": ("Oscillator.pretty", "Oscillator_DIP-14"),
+    "RESET_SUPERVISOR_TO92": ("Package_TO_SOT_THT.pretty", "TO-92_Inline"),
+    "R_THT": ("Resistor_THT.pretty", "R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"),
+    "C_DECOUPLE_THT": ("Capacitor_THT.pretty", "C_Disc_D4.7mm_W2.5mm_P5.00mm"),
+    "C_BULK_THT": ("Capacitor_THT.pretty", "CP_Radial_D5.0mm_P2.00mm"),
+    "FUSE_THT": ("Fuse.pretty", "Fuse_Bourns_MF-RG300"),
+    "D_TVS_THT": ("Diode_THT.pretty", "D_DO-35_SOD27_P7.62mm_Horizontal"),
+    "PS_ON_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Vertical"),
+    "POWER_DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x04_P2.54mm_Vertical"),
+}
+
+PLACE = {
+    "J1": (20, 25, 90),
+    "U1": (55, 45, 0),
+    "U2": (100, 45, 0),
+    "U3": (140, 45, 90),
+    "U4": (170, 45, 90),
+    "U5": (210, 45, 0),
+    "U20": (75, 95, 90),
+    "U21": (105, 95, 90),
+    "U22": (135, 95, 90),
+    "U23": (160, 95, 90),
+    "U24": (195, 95, 0),
+    "U25": (225, 95, 90),
+    "U10": (45, 145, 0),
+    "U11": (65, 145, 0),
+    "U12": (85, 145, 0),
+    "U13": (105, 145, 0),
+    "U14": (125, 145, 0),
+    "U15": (145, 145, 0),
+    "U16": (165, 145, 0),
+    "U17": (185, 145, 0),
+    "U30": (55, 205, 0),
+    "U31": (100, 205, 90),
+    "J30": (145, 210, 90),
+    "U40": (215, 160, 90),
+    "U41": (220, 195, 90),
+    "J40": (260, 185, 90),
+    "J90": (40, 260, 90),
+    "J91": (80, 260, 90),
+    "J92": (120, 260, 90),
+    "U50": (250, 45, 0),
+    "U51": (245, 70, 0),
+    "R1": (238, 168, 0),
+    "R2": (238, 176, 0),
+    "R3": (238, 184, 0),
+    "R4": (250, 58, 0),
+    "R5": (245, 82, 0),
+    "R6": (30, 58, 0),
+    "R7": (128, 190, 0),
+    "R8": (128, 196, 0),
+    "R9": (128, 202, 0),
+    "R10": (128, 208, 0),
+    "R11": (128, 214, 0),
+    "R12": (128, 220, 0),
+    "R13": (128, 226, 0),
+    "R14": (128, 232, 0),
+    "R15": (104, 242, 0),
+    "R16": (118, 190, 0),
+    "R17": (118, 196, 0),
+    "R18": (118, 202, 0),
+    "R19": (118, 208, 0),
+    "R20": (118, 214, 0),
+    "R21": (118, 220, 0),
+    "R22": (118, 226, 0),
+    "R23": (118, 232, 0),
+    "C50": (28, 42, 0),
+    "F1": (25, 32, 0),
+    "D1": (35, 48, 90),
+    "J2": (20, 58, 90),
+    "J93": (60, 260, 90),
+}
+
+DECOUPLE_NEAR = {
+    "U1": (70, 22, 0), "U2": (115, 22, 0), "U3": (130, 58, 90),
+    "U4": (160, 58, 90), "U5": (225, 22, 0), "U10": (45, 124, 0),
+    "U11": (65, 124, 0), "U12": (85, 124, 0), "U13": (105, 124, 0),
+    "U14": (125, 124, 0), "U15": (145, 124, 0), "U16": (165, 124, 0),
+    "U17": (185, 124, 0), "U20": (70, 108, 90), "U21": (100, 108, 90),
+    "U22": (135, 108, 90), "U23": (160, 108, 90), "U24": (210, 108, 0),
+    "U25": (225, 108, 90), "U30": (70, 182, 0), "U31": (100, 220, 90),
+    "U40": (215, 145, 90), "U41": (220, 210, 90), "U50": (266, 45, 0),
+    "U51": (258, 70, 0),
+}
+
+for idx, owner in enumerate(DECOUPLE_NEAR, start=1):
+    PLACE[f"C{idx}"] = DECOUPLE_NEAR[owner]
+
+
+def mm(value):
+    return pcbnew.FromMM(value)
+
+
+def load_footprint(typ):
+    lib, name = FP_BY_TYPE[typ]
+    path = os.path.join(ROOT, lib)
+    fp = pcbnew.FootprintLoad(path, name)
+    if fp is None:
+        raise RuntimeError(f"missing footprint {lib}/{name}")
+    return fp
+
+
+def center_footprint(fp, x, y):
+    fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
+    box = fp.GetBoundingBox(False, False)
+    center = box.GetCenter()
+    fp.SetPosition(pcbnew.VECTOR2I(2 * mm(x) - center.x, 2 * mm(y) - center.y))
+
+
+def add_outline(board, width, height):
+    def edge(x1, y1, x2, y2):
+        shape = pcbnew.PCB_SHAPE(board)
+        shape.SetShape(pcbnew.SHAPE_T_SEGMENT)
+        shape.SetLayer(pcbnew.Edge_Cuts)
+        shape.SetWidth(mm(0.15))
+        shape.SetStart(pcbnew.VECTOR2I(mm(x1), mm(y1)))
+        shape.SetEnd(pcbnew.VECTOR2I(mm(x2), mm(y2)))
+        board.Add(shape)
+
+    edge(0, 0, width, 0)
+    edge(width, 0, width, height)
+    edge(width, height, 0, height)
+    edge(0, height, 0, 0)
+
+
+def add_mounting_hole(board, x, y):
+    hole = pcbnew.PCB_SHAPE(board)
+    hole.SetShape(pcbnew.SHAPE_T_CIRCLE)
+    hole.SetLayer(pcbnew.Edge_Cuts)
+    hole.SetWidth(mm(0.15))
+    hole.SetCenter(pcbnew.VECTOR2I(mm(x), mm(y)))
+    hole.SetEnd(pcbnew.VECTOR2I(mm(x + 1.6), mm(y)))
+    board.Add(hole)
+
+
+def add_power_zone(board, net, layer, name):
+    zone = pcbnew.ZONE(board)
+    zone.SetLayer(layer)
+    zone.SetNet(net)
+    zone.SetZoneName(name)
+    for x, y in (
+        (ZONE_INSET_MM, ZONE_INSET_MM),
+        (BOARD_WIDTH_MM - ZONE_INSET_MM, ZONE_INSET_MM),
+        (BOARD_WIDTH_MM - ZONE_INSET_MM, BOARD_HEIGHT_MM - ZONE_INSET_MM),
+        (ZONE_INSET_MM, BOARD_HEIGHT_MM - ZONE_INSET_MM),
+    ):
+        zone.AppendCorner(pcbnew.VECTOR2I(mm(x), mm(y)), -1)
+    board.Add(zone)
+
+
+def main():
+    board_json = sys.argv[1] if len(sys.argv) > 1 else "spinoffs/minimal-vga/kicad/rev-a-physical.board.json"
+    out = sys.argv[2] if len(sys.argv) > 2 else "spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb"
+    spec = json.load(open(board_json))
+
+    board = pcbnew.BOARD()
+    board.SetCopperLayerCount(4)
+    board.GetDesignSettings().SetCopperLayerCount(4)
+    placed = {}
+    nets = {}
+    assigned = 0
+
+    for chip in spec["chips"]:
+        ref = chip["ref"]
+        typ = chip["type"]
+        if typ not in FP_BY_TYPE:
+            raise RuntimeError(f"no footprint mapping for {typ}")
+        fp = load_footprint(typ)
+        fp.SetReference(ref)
+        fp.SetValue(chip.get("value", typ))
+        x, y, rot = PLACE.get(ref, (30 + len(placed) % 8 * 28, 30 + len(placed) // 8 * 35, 0))
+        if rot:
+            fp.SetOrientationDegrees(rot)
+        board.Add(fp)
+        center_footprint(fp, x, y)
+        placed[ref] = fp
+
+    for net_name, entry in spec["nets"].items():
+        net = pcbnew.NETINFO_ITEM(board, net_name)
+        board.Add(net)
+        nets[net_name] = net
+        node_list = entry["nodes"] if isinstance(entry, dict) else entry
+        for ref, pin in node_list:
+            fp = placed.get(ref)
+            if fp is None:
+                continue
+            pad = fp.FindPadByNumber(str(pin))
+            if pad is None:
+                raise RuntimeError(f"{ref}.{pin} has no pad on {fp.GetFPID().Format()}")
+            pad.SetNet(net)
+            assigned += 1
+
+    add_power_zone(board, nets["GND"], pcbnew.In1_Cu, "Rev A GND plane placeholder")
+    add_power_zone(board, nets["VCC"], pcbnew.In2_Cu, "Rev A VCC plane placeholder")
+
+    add_outline(board, BOARD_WIDTH_MM, BOARD_HEIGHT_MM)
+    for x, y in ((8, 8), (277, 8), (8, 277), (277, 277)):
+        add_mounting_hole(board, x, y)
+
+    pcbnew.SaveBoard(out, board)
+    board = pcbnew.LoadBoard(out)
+    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+    pcbnew.SaveBoard(out, board)
+    print(f"wrote {out}: {len(placed)} footprints, {board.GetNetCount()} nets, {assigned} pad-net assignments")
+
+
+if __name__ == "__main__":
+    main()

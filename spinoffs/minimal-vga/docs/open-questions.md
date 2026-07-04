@@ -21,3 +21,9 @@ answered before ordering hardware.
 7. Logic-family policy:
    - Prefer HCT/ACT western parts for +5V TTL compatibility, or preserve Soviet
      part footprints where practical?
+8. Rev A programmable logic policy:
+   - Use GAL/PAL parts for the first DRAM timing/decode iteration, or force all
+     glue into discrete 74HCT from the start?
+9. Board assembly policy:
+   - Bare PCB and manual assembly first, or design Rev A for factory assembly of
+     passives/sockets?

@@ -15,6 +15,15 @@ spinoffs/minimal-vga/sim/check_t80_smoke.sh
 echo "== minimal-vga spin-off: schematic/HDL LVS =="
 spinoffs/minimal-vga/sync/check.sh
 
+echo "== minimal-vga spin-off: Rev A physical schematic target =="
+spinoffs/minimal-vga/kicad/check_rev_a_physical.sh
+
+echo "== minimal-vga spin-off: Rev A PCB scaffold =="
+spinoffs/minimal-vga/kicad/check_rev_a_pcb.sh
+
+echo "== minimal-vga spin-off: Rev A fabrication readiness report =="
+spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.sh
+
 echo "== minimal-vga spin-off: DRAM row/column unit =="
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/../../.."
+
+BOARD="${1:-spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb}"
+OUT="${2:-fab/minimal-vga}"
+KCLI="${KICAD_CLI:-kicad-cli}"
+
+if [ ! -f "$BOARD" ]; then
+  echo "No routed PCB yet: $BOARD" >&2
+  echo "Create the Rev A .kicad_pcb before exporting fab files." >&2
+  exit 2
+fi
+
+if [ "${MINIMAL_VGA_ALLOW_DRC_EXPORT:-0}" != "1" ]; then
+  mkdir -p "$OUT"
+  if ! "$KCLI" pcb drc --severity-error --exit-code-violations \
+      --output "$OUT/drc-report.txt" "$BOARD" >/dev/null; then
+    echo "KiCad DRC failed for $BOARD; fab export blocked." >&2
+    echo "Report: $OUT/drc-report.txt" >&2
+    echo "Set MINIMAL_VGA_ALLOW_DRC_EXPORT=1 only for debug exports." >&2
+    exit 3
+  fi
+fi
+
+mkdir -p "$OUT/gerbers" "$OUT/drill"
+"$KCLI" pcb export gerbers \
+  --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
+  -o "$OUT/gerbers/" "$BOARD"
+"$KCLI" pcb export drill --format excellon --drill-origin absolute -o "$OUT/drill/" "$BOARD"
+cp spinoffs/minimal-vga/kicad/rev-a.bom.csv "$OUT/"
+cp spinoffs/minimal-vga/kicad/fab-notes.md "$OUT/"
+echo "Exported fab package to $OUT"
