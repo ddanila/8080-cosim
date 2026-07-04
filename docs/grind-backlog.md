@@ -141,3 +141,17 @@ Remaining register pages 2-4,10-11 (caps cont., ferrites, misc) = final pass [qu
 - REMAINING: the per-socket CS pairing = follow the SEVEN un-coded horizontals from D8's
   outputs (pins 2-9) east to the socket CS pins -- pure line-following, one careful session;
   then net ROM_CS17..22 and rewire eprom_socket .cs_n in HDL (boot-inert, sockets empty).
+
+## ROM-socket decode pass 3 (crop romcs_leg1) — the D8 output-code set + a real puzzle
+- **D8 outputs have their OWN code rails**: D1(pin2)->code 6, D2(3)->7, D3(4)->8, D4(5)->1,
+  D5(6)->2, D6(7)->3, D7(9)->4 [D0(1)->5 presumed, cut off]. Same numerals 1-4 as D9's
+  Y-codes = the two-set reuse, now both sides read.
+- **The "1"-labeled horizontal runs into D15.CS** (drawn, unambiguous). D9.Y0=CS_PIC can't be
+  it -> drawn evidence says **D15.CS <- D8.D4 (pin 5)**.
+- **PUZZLE (blocks rewiring)**: .117 dump rows 0x00-0x07 = FF would then never select the
+  BIOS socket -> boot impossible. Candidates: dump bit-order/polarity vs drawn D-numbering
+  (РЕ3 OC fuse semantics), row addressing offset, or a third line-set.
+- **NEXT-SESSION EXPERIMENT (empirical resolution)**: wire U_D15.cs_n = d8_d[4] (and try the
+  bit permutations) in a scratch branch and run boot_check with the real .117 content — the
+  cosim decides which reading is physical. Also line-follow codes 2,3,4,6,7,8 to the
+  remaining sockets (D16-D22) to complete the map before/with the experiment.
