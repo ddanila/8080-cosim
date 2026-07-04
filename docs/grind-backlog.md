@@ -193,3 +193,35 @@ SAFE ONLY WHILE EMPTY, which is exactly how the board ships [feed read queued; t
   IC census continues pages 3-4 [queued].
 - zx-pk thread 27298 mined: collector-oriented (ROM dump requests, museum contacts) — no
   hardware measurements; arvutimuuseum.ee = contact for dumps/disks. Low priority.
+
+## ROM-socket decode FINAL: all eight CEs are D8 rails; BIOS pair = D15/D16 positions
+Crops d17_cs/d18_cs/romfeed_top/romdec_above/trunk_vert/tee_zone/pivot_pixel/cs_de_full:
+- **The D8-output group line** (heavy vertical at x~2346, R21-R28 1k pullup ladder on top,
+  E6/E7 jumpers in the +5V feed): entry tags **D4->1, D5->2, D6->3, D7->4, D0->5, D1->6,
+  D2->7, D3->8**; tag-taps land on the socket CS risers: **D15<-1, D16<-2, D17<-3, D18<-4**
+  (D19-D22 <- 5-8 as already netted, connectivity unchanged ✓). The pivotal T-junction and
+  the "1"-tap into "20 o CS" verified at 7x; DE (22) is a separate vertical from below.
+- **D9 (ИД7) io-decode identity SURVIVES**: its own group line (x~2312, tags 1-4 on Y0-Y3)
+  descends to the io zone; Y4-Y7 are the named exports **CS4(2), CS5(2), CS6(2), CS7(3)** --
+  CS7 to sheet 3 matches the existing CS_FDC net (io 1C -> ВГ93). Pass-2's "un-coded
+  horizontal from D6-ROM" was the mis-read (it followed the DE feed), pass-3 was right.
+- **D8.E_N <- D6.ROM_N** (the "12 ROM" junction rail + R11 1k) => D6 answers WHEN (mode-aware
+  region via A5-A7 = mode bits, A0-A4 = BA15-BA11), D8 answers WHICH CHIP. Chip-internal
+  BA12..BA0 auto-offsets the high map (CPU D800 ≡ chip 1800) -- no extra logic needed.
+- **Consequence: neither factory РЕ3 table can be our D8's content.** Both .113 and .117
+  leave D4-D7 unburned (OC = permanently asserted): fine only for a BIOS-less expansion-cart
+  config. Our board boots from the BIOS pair sitting in the two leftmost field positions
+  (photo board #2: 2x ST M2764AF1; six positions beyond are empty holes) = D15/D16 per the
+  СБ row order. **Predicted D8 dump** (banked in hdl re3_prom, derived from MAME modes):
+  rows 00-03=EF, 04-07=DF, 08-0B=F7, 0C-0F=FB, 10-13=FD, 14-17=FE, 18-1A=FF, 1B=EF,
+  1C-1F=DF. Dump the socketed chip to confirm [OWNER, high value].
+- Netlist: ROM_SEL rewired {D6.12, D8.15}; REV detached from D16.20 (destination = new chase);
+  +4 nets ROM_CS_D15/D16 (D8.5/6) + ROM_CS_EXP17/18 (D8.7/9). HDL: U_D8.e_n <- rom_sel_n,
+  content = predicted table; U_D15/16.cs_n <- d8_d[4]/[5]; U_D17/18 <- d8_d[6]/[7];
+  decode_prom.rom_n re-semanticized to region enable (equivalence by construction).
+  **LVS 217 IN SYNC.**
+- NEW CHASES OPENED: (a) REV true destination; (b) D9 input feeds -- drawn selects = trunk
+  tags 11/12/13 (BA10-12 as netted ✓) but enables are pins 4+5 BRIDGED <- one line + pin 6
+  <- another (scan has IORD->5, IOWR->6, pin 4 n.c. -- pinmap 4:G1 also contradicts the real
+  74138 4:G2A_N/5:G2B_N/6:G1); (c) DE rail source (drawn vertical from below: MEMR per
+  pass-1 vs ROE per old scan note -- follow it down).

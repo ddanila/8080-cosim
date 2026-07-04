@@ -178,7 +178,7 @@ module juku_top (
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
     wire [7:0] d8_d;
-    re3_prom  U_D8   (.a(BA[15:11]), .e_n(1'b0), .d(d8_d));   // A4..A0 = BA15..BA11 -- DERIVED from firmware .117: the 4000-BFFF window pager (see docs/re3-decode.md)
+    re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));   // A4..A0 = BA15..BA11; E_N <- D6.ROM_N (traced: the "12 ROM" rail into pin 15). Pager for ALL 8 sockets (see docs/re3-decode.md)
     io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
                       .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
@@ -190,14 +190,14 @@ module juku_top (
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
     // ============ memory chips on the buffered buses ============
-    // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS).
-    // Model the populated pair; the other 6 sockets are unpopulated (Phase-B PCB detail).
-    eprom_8k #(.HALF(0)) U_D15 (.a(BA[12:0]), .d(DB), .cs_n(rom_sel_n), .oe_n(memr_n));  // low 8K
-    eprom_8k #(.HALF(1)) U_D16 (.a(BA[12:0]), .d(DB), .cs_n(rev),       .oe_n(memr_n));  // high 8K (CE=rev)
-    // D17-D22 = the 6 UNPOPULATED ROM sockets: wired to the shared address/data + OE, passive (no chip
-    // -> boot-safe). Per-socket CS from the ROM bank decode (not traced -> tied deselected = gap).
-    eprom_socket U_D17 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));  // expansion pair: CS likely D8.D4/D5 (stock .117 never deselects them in-window -> only safe EMPTY) [unread]
-    eprom_socket U_D18 (.a(BA[12:0]), .d(DB), .cs_n(1'b1), .oe_n(memr_n));
+    // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS in the
+    // leftmost field positions = D15/D16). ALL EIGHT CEs come from the D8 РЕ3 pager (traced
+    // 2026-07: group-line tags 1..8 = D8.D4,D5,D6,D7,D0,D1,D2,D3 -> D15..D22 CS risers).
+    eprom_8k #(.HALF(0)) U_D15 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[4]), .oe_n(memr_n));  // BIOS low 8K (tag 1)
+    eprom_8k #(.HALF(1)) U_D16 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[5]), .oe_n(memr_n));  // BIOS high 8K (tag 2)
+    // D17-D22 = the 6 UNPOPULATED sockets: shared address/data + OE, passive (no chip -> boot-safe).
+    eprom_socket U_D17 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[6]), .oe_n(memr_n));  // expansion (tag 3; no factory РЕ3 program selects it)
+    eprom_socket U_D18 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[7]), .oe_n(memr_n));  // expansion (tag 4)
     eprom_socket U_D19 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[0]), .oe_n(memr_n));  // A000-BFFF bank (.117 one-cold D0; traced CS riser code 5)
     eprom_socket U_D20 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[1]), .oe_n(memr_n));  // 8000-9FFF bank (code 6)
     eprom_socket U_D21 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[2]), .oe_n(memr_n));  // 6000-7FFF bank (code 7)

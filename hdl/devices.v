@@ -153,8 +153,8 @@ module decode_prom (input wire [15:8] a, input wire v_en_n,
     //   0x1800+ offset automatically), RAM below. ekta37 toggles this to run high ROM routines
     //   while keeping video RAM (0xD800+) writable in mode 0 -- needed to draw the banner + beyond.
     wire rom_region = v_en_n ? (a <= 8'h3F) : (a >= 8'hD8);
-    assign rom_n = ~(rom_region & ~a[13]);   // D15 CE (low 8K)
-    assign rev   = ~(rom_region &  a[13]);   // D16 CE (high 8K)
+    assign rom_n = ~rom_region;              // ROM-region enable -> D8.E_N (traced); the РЕ3 pager splits per-chip
+    assign rev   = ~(rom_region &  a[13]);   // D6.10 "REV" -- destination un-traced (detached from D16.CE 2026-07)
     assign ram_n = ~(~rom_region);           // RAM select (outside ROM)
     assign roe_n = ~rom_region;              // ROM output enable (region); read strobe is MEMR at the EPROM
 endmodule
@@ -273,21 +273,28 @@ module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
     wire en = g1 & ~(g2a_n & g2b_n);
     assign y_n = en ? ~(8'b1 << {c, b, a}) : 8'hFF;
 endmodule
-// D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the IO-decode state PROM.
-// Contents pending the owner's dump/table scan -- outputs inert 0 until then (D9 decodes from
-// the sim-only selects meanwhile).
+// D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the ROM-socket pager.
+// Traced sheet-1: ALL EIGHT socket CEs hang on D8 via the R21-R28 group line (tags D4..D7 ->
+// D15..D18, D0..D3 -> D19..D22), and E_N <- D6.ROM_N (mode-aware "some ROM responds" region).
 module re3_prom (input wire [4:0] a, input wire e_n, output reg [7:0] d);
-    // FACTORY CONTENT (owner's scan 2026-07): table ДГШ 5.106.117 (rev of .039, D8 assumed --
-    // see ref/firmware/README.md; the sibling .113 belongs to D94). Low nibble = one-cold
-    // active-low selects stepping across the 08h-17h window; FF elsewhere.
+    // PREDICTED CONTENT for the board's D8 (dump the socketed chip to confirm -- owner item).
+    // The factory .117 table (ref/firmware) CANNOT be this chip's content on a BIOS-populated
+    // board: it leaves D4-D7 unburned (= permanently asserted, OC pulling low) -- that table
+    // fits only a BIOS-less expansion-cart config. Our board boots from D15/D16, so its РЕ3
+    // must burn the upper nibble everywhere and add the BIOS selects; window rows keep .117's
+    // one-cold walk with the upper nibble completed to 1s. Derived from the MAME-verified modes.
     always @* begin
         if (e_n)              d = 8'hFF;
-        else case (a[4:2])
-            3'b010:           d = 8'h07;   // 08-0B
-            3'b011:           d = 8'h0B;   // 0C-0F
-            3'b100:           d = 8'h0D;   // 10-13
-            3'b101:           d = 8'h0E;   // 14-17
-            default:          d = 8'hFF;
+        else casez (a)
+            5'b000??:         d = 8'hEF;   // 00-03: D4 -> D15 (BIOS low 8K, 0000-1FFF)
+            5'b001??:         d = 8'hDF;   // 04-07: D5 -> D16 (BIOS high 8K, 2000-3FFF)
+            5'b010??:         d = 8'hF7;   // 08-0B: D3 -> D22 (4000-5FFF window bank)
+            5'b011??:         d = 8'hFB;   // 0C-0F: D2 -> D21 (6000-7FFF)
+            5'b100??:         d = 8'hFD;   // 10-13: D1 -> D20 (8000-9FFF)
+            5'b101??:         d = 8'hFE;   // 14-17: D0 -> D19 (A000-BFFF)
+            5'h1B:            d = 8'hEF;   // D800-DFFF -> D15 top 2K (chip A12..A0 = BA12..BA0 auto-offsets)
+            5'b111??:         d = 8'hDF;   // 1C-1F: E000-FFFF -> D16
+            default:          d = 8'hFF;   // 18-1A: C000-D7FF never ROM
         endcase
     end
 endmodule

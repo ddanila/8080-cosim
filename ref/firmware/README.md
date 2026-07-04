@@ -8,3 +8,12 @@ Content semantics: low nibble is ONE-COLD (0111/1011/1101/1110) — four active-
 .117 steps them with 4-address dwell across the 08-17h window; .113 fires each once at 14-17h.
 Assignment D8↔.117 / D94↔.113 is ASSUMED (role-based) until verified against the chips' own
 socket positions — the physical dumps will settle it.
+
+**2026-07 tracing update: NEITHER table can be our board's D8.** Sheet-1 tracing shows all
+eight ROM-socket CEs hang on D8 (tags D4..D7→D15..D18, D0..D3→D19..D22, E̅←D6.ROM̅), and the
+board boots from a BIOS pair populated in D15/D16 — but both tables leave D4-D7 unburned
+(К155РЕ3 unprogrammed = 0 = OC asserted), i.e. they fit only a BIOS-less expansion-cart
+configuration. Predicted content of our D8 (derived from the MAME-verified mode map; see
+`hdl/devices.v` re3_prom): rows 00-03=`EF`, 04-07=`DF`, 08-0B=`F7`, 0C-0F=`FB`, 10-13=`FD`,
+14-17=`FE`, 18-1A=`FF`, 1B=`EF`, 1C-1F=`DF`. Dumping the socketed chip confirms or refutes
+this in one shot — highest-value owner action.

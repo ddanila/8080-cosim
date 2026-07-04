@@ -5900,15 +5900,15 @@
    ]
   },
   "ROM_SEL": {
-   "src": "prom",
+   "src": "traced sheet-1 (romdec_above: \"12 ROM\" junction rail runs right into D8 pin 15 E_N, R11 1k pullup). D6.ROM_N = ROM-region enable for the D8 pager, NOT a chip CE (D15.20 detached: CS traced to D8.D4)",
    "nodes": [
     [
      "D6",
      "12"
     ],
     [
-     "D15",
-     "20"
+     "D8",
+     "15"
     ]
    ]
   },
@@ -7812,15 +7812,11 @@
    "wire_link": true
   },
   "REV": {
-   "src": "half-traced (bites 3-4): D6.10 = drawn \"REV\" OC line (1k pullup), drops to y~680 and runs east into the ROM-socket CS/OE region (ROM gating, NOT video); exact pin unresolved -- D15.CS shows a code-1 rail + wire junction, D16.20 end still assumed. Owner-territory candidate",
+   "src": "D6.10 = drawn \"REV\" OC line (1k pullup); D16.20 DETACHED (D16.CS traced to D8.D5, crop band_bot/cs_de_full). REV true destination un-traced [chase queued]",
    "nodes": [
     [
      "D6",
      "10"
-    ],
-    [
-     "D16",
-     "20"
     ]
    ]
   },
@@ -12566,6 +12562,58 @@
     ],
     [
      "D22",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_D15": {
+   "src": "traced sheet-1 (crops band_top/trunk_vert/tee_zone/pivot_pixel/cs_de_full: D8 outputs enter the R21-R28 group line with tags D4->1 D5->2 D6->3 D7->4 D0->5 D1->6 D2->7 D3->8; tag-taps land on the socket CS risers). BIOS pair = leftmost two field positions (photo board #2) = D15/D16 per SB row. tag 1 = D8.D4 -> D15.CS; BIOS low 8K position (predicted D8 rows 00-03,1B)",
+   "nodes": [
+    [
+     "D8",
+     "5"
+    ],
+    [
+     "D15",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_D16": {
+   "src": "traced sheet-1 (crops band_top/trunk_vert/tee_zone/pivot_pixel/cs_de_full: D8 outputs enter the R21-R28 group line with tags D4->1 D5->2 D6->3 D7->4 D0->5 D1->6 D2->7 D3->8; tag-taps land on the socket CS risers). BIOS pair = leftmost two field positions (photo board #2) = D15/D16 per SB row. tag 2 = D8.D5 -> D16.CS; BIOS high 8K position (predicted D8 rows 04-07,1C-1F)",
+   "nodes": [
+    [
+     "D8",
+     "6"
+    ],
+    [
+     "D16",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_EXP17": {
+   "src": "traced sheet-1 (crops band_top/trunk_vert/tee_zone/pivot_pixel/cs_de_full: D8 outputs enter the R21-R28 group line with tags D4->1 D5->2 D6->3 D7->4 D0->5 D1->6 D2->7 D3->8; tag-taps land on the socket CS risers). BIOS pair = leftmost two field positions (photo board #2) = D15/D16 per SB row. tag 3 = D8.D6 -> D17.CS; expansion position (no factory program selects it)",
+   "nodes": [
+    [
+     "D8",
+     "7"
+    ],
+    [
+     "D17",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_EXP18": {
+   "src": "traced sheet-1 (crops band_top/trunk_vert/tee_zone/pivot_pixel/cs_de_full: D8 outputs enter the R21-R28 group line with tags D4->1 D5->2 D6->3 D7->4 D0->5 D1->6 D2->7 D3->8; tag-taps land on the socket CS risers). BIOS pair = leftmost two field positions (photo board #2) = D15/D16 per SB row. tag 4 = D8.D7 -> D18.CS; expansion position (no factory program selects it)",
+   "nodes": [
+    [
+     "D8",
+     "9"
+    ],
+    [
+     "D18",
      "20"
     ]
    ]
