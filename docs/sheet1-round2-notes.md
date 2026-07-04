@@ -375,3 +375,33 @@ Q -> D37 inverter -> analog video mix. Finding-24's VA-tap reading = the reused-
 ASSUMED CENSUS after array read: RESOLVED this session: RAM_SEL, CAS, CAS0/1/2 (dissolved),
 VID_LD, RAS (fully traced per-bank). Remaining: PHI2TTL, D39Y, DOTCLK16M (D56/D103 end),
 REV, M5V_DERIVED, PIT_BAUD, RAM_RD_OE (continuity), FDC_INTRQ, FDC_DRQ.
+
+BITE 3 (crops b3_*): clock-mesh + PIT + power-corner reads.
+- **PHI2TTL RESOLVED**: gate-T = Ф2TTL! The D35 pin-13 node (R35 330 + C29 56p + R106 910 RC
+  shaper; passives not yet placed) = the "Ф2TTL" rail at y~1296 -> D39.1 + D92.2/3 (the D92
+  strobe NORs are Φ2-gated) + "(1)" exit to sheet 1 [sheet-1 pin = D13 zone, pending].
+  D35 sect 13->12 = the OC MOS-level Φ2 driver (out 12 = Ф2, code 14, R36 360 pullup, ->(1)).
+- **D39Y RESOLVED**: drawn D39.11 -> D38.10+13 (tied NAND ins; d39_d38 + gatet_up2 agree).
+- **DOTCLK16M half-resolved**: D56 АГ3 = 16MHz astable (2 one-shots cross-coupled, R47 20k/C7
+  560p + R59 33k/C8 15n); output leg = sect-1 Q_N (pin 4; pin 13 was a MAME guess, not drawn);
+  16MHz rail -> D103.2 CK confirmed. D42/43 CK taps already confirmed (array read).
+- **Rail "A" = +5V** (power corner "A <- +5V"): D46/D47 DOWN pins, D57 G1/G2 (PIT gates), and
+  R61 12k -> D56.3 CLR are all +5 ties. VID_CTR_DOWN dissolved into P5V; HDL 1'b1 ties correct.
+- **PIT_BAUD upgraded**: D57.OUT0 -> "BAUD R." labeled line -> pin 9 = D11 TxC (drawn);
+  D11.25 RxC fork [assumed at UART end]. Other named PIT lines: SOUND(->10), SYNC B.(->12),
+  1.23M(->13), 2M(->8) -- destinations queued. D55.OUT2 -> "VERT.SYNC.DE..." ✓ cascade story.
+- **POWER-LETTER SYSTEM (power corner, QUEUED REWORK)**: A=+5V, B=+12V, D=-5V(from connector),
+  E4 jumper: +12(B)/+5(A) -> rail G="+12/5V" -> array VDD; E5 jumper: -5V(D) -> rail H -> array
+  VBB; E = array ground rail (one-point strap to GND); C35-53 = G<->E bypass group, C54-72 =
+  E<->H group, C34 = H<->F. **= the РУ3(16K,+12/-5/+5) vs РУ5(64K,+5) POPULATION OPTION** --
+  explains 4 banks, E2/E3 strobe-source jumpers, and means array power pins + C35-72 caps must
+  be re-netted through E4/E5 (currently plain P5V/GND) before routing. M5V_DERIVED: -5V arrives
+  from the connector here; the D1/R19/VD5 sheet-1 derivation guess needs its own read.
+- REV: not reached this session (needs the sheet-1 D6 zone read) -- next on the table.
+ASSUMED CENSUS after bite 3: resolved PHI2TTL, D39Y, VID_LD(+array), PIT_BAUD; DOTCLK16M now
+half-traced (D56.4 read-90%). Remaining: DOTCLK16M(residual), REV, M5V_DERIVED, RAM_RD_OE
+(continuity), FDC_INTRQ, FDC_DRQ + the queued power-rail rework.
+- REV (bite-3 tail, crop b3_rev_zone): D6 РТ4 outputs drawn+labeled: D0(12)="ROM", D1(11)="RAM"
+  (= -RAM SEL ✓ closes the D92.5 story from the source side), D2(10)="REV", D3(9)="ROE (2)";
+  all OC with 1k pullups (R11..). REV line heads east toward gate rows 12/13 [dest pending];
+  D16.20 end still assumed. ROE crosses to sheet 2.

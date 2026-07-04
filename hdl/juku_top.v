@@ -88,13 +88,13 @@ module juku_top (
     // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the
     // rail-1/rail-4 fanouts are pending; D92 is unmapped, so tri1 defaults keep the leg inert in sim.
 `ifdef YOSYS
-    wire d92_gate_t, d92_noacc;
+    wire d92_noacc;
 `else
-    tri1 d92_gate_t, d92_noacc;
+    tri1 d92_noacc;
 `endif
     wire d39_memcyc, vid_cpu_sel;
     la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(1'b1), .b2(1'b1), .y2(d39_o8),  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]; sect2 9,10->8 -> D59.11 (sheet-2, ins deferred)
-                     .a3(d92_gate_t), .b3(1'b1), .y3(d39_memcyc),                                // 1,2->3; pin2 <- rail 1 [pending]
+                     .a3(phi2ttl), .b3(1'b1), .y3(d39_memcyc),                                   // 1,2->3: pin1 <- Ф2TTL (bite-3; = ex gate-T), pin2 <- rail 1 [pending]
                      .a4(d39_memcyc), .b4(d92_noacc), .y4(vid_cpu_sel));                         // 4,5->6 -> D52.1
     wire d33_o4, d36_y2, d33_o10;
     ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6), .i13(d37_latch_pre), .o12(latch_sig),
@@ -124,7 +124,7 @@ module juku_top (
     // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
     // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
     wire stb_d38;
-    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(1'b1), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9, beeper-confirmed]
+    la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9]; pins 13+10 tied <- D39.11 (bite-3, ex-assumed D39Y)
                      .i4(1'b1), .i5(1'b1), .i6(1'b1), .i7(1'b1), .y2(load_pre));  // sect2 (5,4,2,1->6) = LOAD; ins <- timing wires 4/2/1/15 [boundary]
     // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
@@ -282,7 +282,7 @@ module juku_top (
     // path not continuously traced] -> tri1 boundary (1 = not loading, boot-identical to the old
     // 1'b1 ties). Presets: S3.1-2 -> D46 C/D, S3.3-6 -> D47 A-D (board nets; sim presets stay 0).
 `ifdef YOSYS
-    wire vid_hi_ld_n;
+    wire vid_hi_ld_n;   // DOWN pins tie to rail "A" = +5V (bite-3) -> plain 1'b1 constants
 `else
     tri1 vid_hi_ld_n;
 `endif
@@ -344,7 +344,7 @@ module juku_top (
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;
-    ag3_oneshot U_D56  (.a_n(1'b1), .b(1'b1), .clr_n(1'b1), .q(dotclk_16m), .q_n());
+    ag3_oneshot U_D56  (.a_n(1'b1), .b(1'b1), .clr_n(1'b1), .q(), .q_n(dotclk_16m));  // 16MHz leg = Q_N pin 4 (bite-3)
     ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(1'b1), .d(4'b0), .q(), .co());
 
     // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine

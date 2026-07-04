@@ -5930,11 +5930,23 @@
    "wire_link": true
   },
   "PHI2TTL": {
-   "src": "assumed",
+   "src": "scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the \"Ф2TTL\" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + \"(1)\" exit to sheet 1 [sheet-1 pin pending]",
    "nodes": [
     [
      "D35",
      "13"
+    ],
+    [
+     "D39",
+     "1"
+    ],
+    [
+     "D92",
+     "2"
+    ],
+    [
+     "D92",
+     "3"
     ]
    ]
   },
@@ -7409,7 +7421,7 @@
    "nodes": [
     [
      "D56",
-     "13"
+     "4"
     ],
     [
      "D103",
@@ -7424,7 +7436,7 @@
      "9"
     ]
    ],
-   "src": "D56/D103 end assumed; D42.9/D43.9 CK taps = ctrl-rail 3 (array read)"
+   "src": "scan sheet-2 (bite-3 mesh crops b3_*): 16MHz astable = D56 two one-shots cross-coupled (R47/C7, R59/C8); output leg = sect-1 Q_N pin 4 (pin 13 not drawn); -> D103.2 (CK, confirmed) + D42.9/D43.9 ctrl-rail-3 taps"
   },
   "D40QA": {
    "nodes": [
@@ -7448,9 +7460,13 @@
     [
      "D38",
      "10"
+    ],
+    [
+     "D38",
+     "13"
     ]
    ],
-   "src": "assumed"
+   "src": "scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); ex-assumed, now traced"
   },
   "CLKG_D33": {
    "nodes": [
@@ -7494,7 +7510,7 @@
    "wire_link": true
   },
   "REV": {
-   "src": "assumed",
+   "src": "half-traced (bite-3, crop b3_rev_zone): D6.10 = the drawn \"REV\" line (РТ4 OC out, 1k pullup row R11-R13), heads east toward gate input rows 12/13 [dest pending]; D16.20 CE end still assumed",
    "nodes": [
     [
      "D6",
@@ -9409,6 +9425,22 @@
     [
      "D100",
      "20"
+    ],
+    [
+     "D46",
+     "4"
+    ],
+    [
+     "D47",
+     "4"
+    ],
+    [
+     "D57",
+     "14"
+    ],
+    [
+     "D57",
+     "16"
     ]
    ]
   },
@@ -9884,7 +9916,7 @@
    ]
   },
   "PIT_BAUD": {
-   "src": "mame-assumed",
+   "src": "traced sheet-2 (bite-3): D57.OUT0 -> line labeled \"BAUD R.\" -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail \"A\" = +5V (power corner)",
    "nodes": [
     [
      "D57",
@@ -11264,23 +11296,6 @@
     [
      "D39",
      "4"
-    ]
-   ]
-  },
-  "D92_GATE_T": {
-   "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); common gate line, continues NE at ~(715,1885) [source pending]",
-   "nodes": [
-    [
-     "D39",
-     "1"
-    ],
-    [
-     "D92",
-     "2"
-    ],
-    [
-     "D92",
-     "3"
     ]
    ]
   },
