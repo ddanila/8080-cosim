@@ -275,8 +275,9 @@ def main():
             pad.SetNet(net)
             assigned += 1
 
-    add_power_zone(board, nets["GND"], pcbnew.In1_Cu, "Rev A GND plane placeholder")
-    add_power_zone(board, nets["VCC"], pcbnew.In2_Cu, "Rev A VCC plane placeholder")
+    if os.environ.get("MINIMAL_VGA_NO_ZONES", "0") != "1":
+        add_power_zone(board, nets["GND"], pcbnew.In1_Cu, "Rev A GND plane placeholder")
+        add_power_zone(board, nets["VCC"], pcbnew.In2_Cu, "Rev A VCC plane placeholder")
 
     add_outline(board, BOARD_WIDTH_MM, BOARD_HEIGHT_MM)
     for x, y in ((8, 8), (277, 8), (8, 277), (277, 277)):
@@ -286,7 +287,8 @@ def main():
 
     pcbnew.SaveBoard(out, board)
     board = pcbnew.LoadBoard(out)
-    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+    if board.Zones():
+        pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(out, board)
     patch_silk_font_faces(out)
     board = pcbnew.LoadBoard(out)

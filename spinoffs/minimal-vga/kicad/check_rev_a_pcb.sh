@@ -7,7 +7,11 @@ BOARD_JSON="spinoffs/minimal-vga/kicad/rev-a-physical.board.json"
 PCB="spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb"
 
 python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py "$BOARD_JSON"
-python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
+if [ "${MINIMAL_VGA_REGENERATE_PCB:-0}" = "1" ] || [ ! -f "$PCB" ]; then
+  python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
+else
+  echo "using existing Rev A PCB: $PCB"
+fi
 python3 spinoffs/minimal-vga/kicad/check_rev_a_pcb.py "$PCB"
 python3 spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
   "$PCB" \

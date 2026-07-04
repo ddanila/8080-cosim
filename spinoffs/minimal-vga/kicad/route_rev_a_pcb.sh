@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/../../.."
+
+BOARD_JSON="${BOARD_JSON:-spinoffs/minimal-vga/kicad/rev-a-physical.board.json}"
+PCB="${PCB:-spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb}"
+OUT="${OUT:-fab/minimal-vga/routing}"
+DSN="$OUT/minimal-vga-rev-a-noplanes.dsn"
+SES="$OUT/minimal-vga-rev-a-noplanes.ses"
+DRC_JSON="$OUT/minimal-vga-rev-a-routed-drc.json"
+JAVA_BIN="${JAVA_BIN:-.tools/jre25/bin/java}"
+FREEROUTING_JAR="${FREEROUTING_JAR:-.tools/freerouting/freerouting-2.2.4.jar}"
+PASSES="${PASSES:-30}"
+THREADS="${THREADS:-4}"
+
+if [ ! -x "$JAVA_BIN" ]; then
+  if command -v java >/dev/null 2>&1; then
+    JAVA_BIN="$(command -v java)"
+  else
+    echo "No Java runtime found." >&2
+    echo "Install Java 25+ or set JAVA_BIN to a compatible runtime." >&2
+    exit 2
+  fi
+fi
+
+if [ ! -f "$FREEROUTING_JAR" ]; then
+  echo "FreeRouting jar not found: $FREEROUTING_JAR" >&2
+  echo "Download FreeRouting 2.2.4+ or set FREEROUTING_JAR." >&2
+  exit 2
+fi
+
+mkdir -p "$OUT" .tools/freerouting-user
+
+python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py "$BOARD_JSON"
+MINIMAL_VGA_NO_ZONES=1 python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
+
+python3 - "$PCB" "$DSN" <<'PY'
+import sys
+import pcbnew
+
+board = pcbnew.LoadBoard(sys.argv[1])
+if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
+    raise SystemExit(f"failed to export DSN: {sys.argv[2]}")
+print(f"wrote DSN: {sys.argv[2]}")
+PY
+
+"$JAVA_BIN" -jar "$FREEROUTING_JAR" \
+  -de "$DSN" \
+  -do "$SES" \
+  -mp "$PASSES" \
+  -mt "$THREADS" \
+  -da \
+  --gui.enabled=false \
+  --user_data_path=.tools/freerouting-user \
+  --logging.file.location=.tools/freerouting-user \
+  --logging.console.level=INFO
+
+python3 - "$PCB" "$SES" <<'PY'
+import sys
+import pcbnew
+
+board = pcbnew.LoadBoard(sys.argv[1])
+if not pcbnew.ImportSpecctraSES(board, sys.argv[2]):
+    raise SystemExit(f"failed to import SES: {sys.argv[2]}")
+pcbnew.SaveBoard(sys.argv[1], board)
+print(f"imported SES into {sys.argv[1]}")
+PY
+
+kicad-cli pcb drc --severity-error --format json --output "$DRC_JSON" "$PCB" >/dev/null
+python3 - "$DRC_JSON" <<'PY'
+import json
+import sys
+from collections import Counter
+
+data = json.load(open(sys.argv[1]))
+violations = data.get("violations", [])
+unconnected = data.get("unconnected_items", [])
+print(f"Routed DRC: {len(violations)} violations, {len(unconnected)} unconnected items")
+for typ, count in Counter(item.get("type", "unknown") for item in violations).most_common():
+    print(f"  {typ}: {count}")
+if violations or unconnected:
+    raise SystemExit(3)
+PY

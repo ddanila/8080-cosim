@@ -1,30 +1,31 @@
 # Fabrication notes
 
-Status: **not ready for manufacture**.
+Status: **routed fabrication-output baseline; not buy-ready yet**.
 
 The current default KiCad file is a connectivity/LVS scaffold generated from
 `minimal-vga.board.json`. `rev-a-physical.board.json` and
 `rev-a-physical.kicad_pcb` are the first physical chip/footprint targets. The
-PCB scaffold is generated as a 4-layer board, but it is still not a routed
-production PCB file.
+current committed PCB is a FreeRouting-routed baseline generated from the Rev A
+physical target.
 
-Current generated-placement baseline: KiCad reports zero error-level DRC
-violations after filling the generated `GND` and `VCC` zones. The board is
-still blocked from fab export until routing removes the remaining unconnected
-ratsnest items.
+Current routed baseline: KiCad reports zero error-level DRC violations and zero
+unconnected items. `export_fab.sh` exports Gerbers, Excellon drill, fabrication
+notes, the engineering BOM, and draft JLCPCB assembly files.
 
 ## Intended Rev A Fabrication Defaults
 
 - 4-layer PCB.
 - Layer proposal:
   - L1: components and signals.
-  - L2: solid GND.
-  - L3: +5V plane/islands and signals.
+  - L2: signals / future GND pour candidate.
+  - L3: signals / future +5V pour candidate.
   - L4: signals.
 - Current generator guard: `check_rev_a_pcb.py` requires `F.Cu`, `In1.Cu`,
   `In2.Cu`, and `B.Cu`.
-- Current generated placeholders: filled `GND` zone on `In1.Cu` and filled
-  `VCC` zone on `In2.Cu`. These still need routing review before ordering.
+- Current route baseline: `route_rev_a_pcb.sh` uses `MINIMAL_VGA_NO_ZONES=1`
+  and routes power explicitly. The earlier placeholder `GND`/`VCC` planes made
+  FreeRouting/KiCad produce split VCC islands, so production pours should be
+  reintroduced only after a focused power-plane review.
 - Board thickness: 1.6 mm unless mechanical constraints change.
 - Copper: 1 oz default.
 - Soldermask: any.
@@ -69,6 +70,8 @@ Factory assembly:
 
 - `spinoffs/minimal-vga/sim/check.sh`
 - `spinoffs/minimal-vga/sync/check.sh`
+- `spinoffs/minimal-vga/kicad/route_rev_a_pcb.sh` when regenerating the routed
+  baseline.
 - `spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py`
 - KiCad ERC.
 - KiCad DRC.
@@ -88,6 +91,8 @@ Factory assembly:
 - Confirm ATX connector pinout, F1 current rating, D1 TVS rating, and PS_ON
   behavior against the target supply.
 - Confirm reset supervisor pinout and oscillator package before ordering.
+- Review autorouted trace geometry, via count, power widths, and return paths.
+- Decide whether to restore GND/+5V pours after routing cleanup.
 
 ## JLCPCB Assembly File Policy
 

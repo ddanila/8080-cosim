@@ -52,16 +52,19 @@ Remaining work:
 - Confirm the original keyboard connector pinout and mechanical connector.
 - Replace the current TTL640x480 header placeholder with onboard timing logic.
 
-### Gate 3: Physical PCB Scaffold
+### Gate 3: Physical PCB Route Baseline
 
-Status: 4-layer placement/ratsnest scaffold, not routed.
+Status: routed FreeRouting baseline.
 
 - `gen_rev_a_pcb.py` generates `rev-a-physical.kicad_pcb` with stock KiCad
   footprints.
 - The generator emits the intended Rev A copper stack: `F.Cu`, `In1.Cu`,
   `In2.Cu`, and `B.Cu`.
-- The generator adds and fills inner-layer placeholders for `GND` on `In1.Cu`
-  and `VCC` on `In2.Cu`.
+- The generator can add filled inner-layer placeholders for `GND` on `In1.Cu`
+  and `VCC` on `In2.Cu`; the current routed baseline was generated with
+  `MINIMAL_VGA_NO_ZONES=1` and has explicit routed power instead.
+- `route_rev_a_pcb.sh` regenerates a no-plane routing baseline, exports
+  Specctra DSN, runs FreeRouting, imports the SES result, and checks KiCad DRC.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
@@ -70,26 +73,30 @@ Status: 4-layer placement/ratsnest scaffold, not routed.
   generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
   It also writes an assembly-readiness report that counts missing LCSC part
   numbers and unresolved TBD sourcing rows.
-- Current generated placement has zero error-level DRC violations after filling
-  the power zones; the readiness report still shows signal ratsnest
-  connections.
-- The PCB scaffold is useful for footprint availability, board sizing, connector
-  placement, and routing feasibility.
+- Current routed baseline has zero KiCad error-level DRC violations and zero
+  unconnected items.
+- `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
+  BOM, and draft JLCPCB assembly files from the routed board.
 
 Remaining work:
 
 - Re-run after GAL/header pinouts and the final keyboard connector are frozen.
 - Choose final connector footprints.
-- Review production GND and +5V copper zones after routing constraints are
-  settled.
+- Review whether production Rev A should restore GND/+5V copper pours after the
+  route is stable. The first autoroute with placeholder planes produced split
+  VCC islands, so the committed route uses traces only for power connectivity.
 - Refine mechanical constraints and mounting holes.
-- Route the board.
+- Human-review and clean up the autorouted trace geometry before ordering.
 - Assign concrete JLCPCB/LCSC CPNs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts.
 
 ### Gate 4: Fabrication Candidate
 
-Status: not reached.
+Status: partially reached.
+
+The routed PCB passes KiCad DRC and exports Gerbers/drills. This is still not a
+buy-ready design because several electrical/mechanical decisions remain
+placeholders.
 
 Required before ordering:
 

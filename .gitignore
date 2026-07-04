@@ -3,6 +3,7 @@ __pycache__/
 _autosave-*
 .DS_Store
 .venv/
+.tools/
 *-bak
 *.000
 *.a

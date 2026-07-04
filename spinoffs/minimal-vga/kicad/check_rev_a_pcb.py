@@ -36,6 +36,7 @@ def main():
     footprint_count = sum(1 for _ in board.Footprints())
     if footprint_count < 80:
         fail(f"expected physical Rev A footprints, found only {footprint_count}")
+    track_count = sum(1 for _ in board.GetTracks())
 
     zones = {}
     for zone in board.Zones():
@@ -47,19 +48,24 @@ def main():
             zone.IsFilled(),
             zone.HasFilledPolysForLayer(layer),
         )
-    for zone_name, (layer, net) in EXPECTED_ZONES.items():
-        if zone_name not in zones:
-            fail(f"missing zone: {zone_name}")
-        actual_layer, actual_net, corner_count, is_filled, has_fill = zones[zone_name]
-        if (actual_layer, actual_net) != (layer, net):
-            fail(
-                f"{zone_name} expected on {layer}/{net}, "
-                f"found {actual_layer}/{actual_net}"
-            )
-        if corner_count < 4:
-            fail(f"{zone_name} has incomplete outline ({corner_count} corners)")
-        if not is_filled or not has_fill:
-            fail(f"{zone_name} is not filled")
+    if track_count == 0:
+        for zone_name, (layer, net) in EXPECTED_ZONES.items():
+            if zone_name not in zones:
+                fail(f"missing zone: {zone_name}")
+            actual_layer, actual_net, corner_count, is_filled, has_fill = zones[zone_name]
+            if (actual_layer, actual_net) != (layer, net):
+                fail(
+                    f"{zone_name} expected on {layer}/{net}, "
+                    f"found {actual_layer}/{actual_net}"
+                )
+            if corner_count < 4:
+                fail(f"{zone_name} has incomplete outline ({corner_count} corners)")
+            if not is_filled or not has_fill:
+                fail(f"{zone_name} is not filled")
+    elif zones:
+        missing = sorted(set(EXPECTED_ZONES) - set(zones))
+        if missing:
+            fail(f"routed board has partial placeholder zones; missing: {', '.join(missing)}")
 
     pcb_text = open(path, encoding="utf-8").read()
     for label in EXPECTED_SILK_LABELS:
@@ -72,7 +78,7 @@ def main():
         "Rev A PCB check: PASS "
         f"({copper_count} copper layers: {', '.join(EXPECTED_COPPER_LAYERS)}, "
         f"{footprint_count} footprints, {board.GetNetCount()} nets, "
-        f"{len(EXPECTED_ZONES)} power zones)"
+        f"{track_count} tracks, {len(zones)} power zones)"
     )
 
 

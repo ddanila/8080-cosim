@@ -64,14 +64,19 @@ def build_report(board, drc):
         lines.extend(["", "## Top Unconnected Nets", ""])
         for net, count in unconnected_nets.most_common(12):
             lines.append(f"- `{net}`: {count}")
-    lines.extend([
-        "",
-        "## Manufacturing Gate",
-        "",
-        "Gerber export remains blocked until KiCad DRC has zero error-level "
-        "violations and zero unconnected items.",
-        "",
-    ])
+    lines.extend(["", "## Manufacturing Gate", ""])
+    if status == "READY":
+        lines.append(
+            "KiCad DRC has zero error-level violations and zero unconnected "
+            "items, so the fabrication exporter may emit Gerbers and drill "
+            "files. Human review and sourcing gates still apply before order."
+        )
+    else:
+        lines.append(
+            "Gerber export remains blocked until KiCad DRC has zero error-level "
+            "violations and zero unconnected items."
+        )
+    lines.append("")
     return "\n".join(lines)
 
 
