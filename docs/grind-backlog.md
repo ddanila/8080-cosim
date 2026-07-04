@@ -305,3 +305,19 @@ Crops d9_inputs/d9_v3_follow/v3_junction/r17_west/d7_feed_origins/rc_stack:
 - Beeper cluster (VT1/VD4/R48/R60/R90/R91): NOT on sheet 1 -- the SOUND path lives on sheet 2
   (PIT -> shaper -> VT1 Darlington -> edge contact -> ДГШ5.884.001 speaker unit) [queued:
   sheet-2 read].
+
+## РЕ3-dump tension sharpened (owner: dumps held correct)
+Owner position: the .113/.117 tables ARE the correct РЕ3 contents. Accepting that as a
+constraint and re-verifying the trunk at 8x (crop trunk_dots: all eight D8 rows enter the
+group line; taps at all eight CS risers hold):
+- .117 selects NOTHING at 0000-3FFF (rows 00-07 = FF) and gangs D4-D7 across the whole
+  window -- invariant under any row/bit permutation. So with .117 in D8, NO field socket can
+  host the BIOS, and D15-D18 are empty parallel-expansion positions.
+- The weak link is then the ASSUMPTION "board #2's two M2764s = the BIOS pair in D15/D16":
+  board #2 is a donor (DRAM stripped, caps cut); parked chips prove little. If those EPROMs
+  are not the BIOS, everything reconciles -- except WHERE the 16K monitor lives becomes the
+  new open question (MAME needs it at 0000; no other 28-pin positions seen on the board).
+- HDL note: re3_prom keeps the boot-working reconstructed table for the sim (a select at
+  0000 is required to boot at all); it is the piece the physical checks will overwrite.
+DECIDERS (one measurement each): (1) dump board #2's two EPROMs (monitor vs BASIC vs other);
+(2) continuity D8.5 (D4) <-> leftmost-socket pin 20; (3) dump the РЕ3 seated in D8.
