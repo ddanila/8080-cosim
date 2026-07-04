@@ -324,6 +324,16 @@ module juku_top (
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3));  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]
 
+    // ============ FDC quadrant scaffold (.009): ВГ93 + РЕ3 .113 + ВА87 bus buffer ============
+    // Bus side traced (CS7/sheet-3 delta + MAME 1C-1F + WD1793 datasheet); support logic
+    // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. Stubs are inert.
+    wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
+    vg93_fdc   U_D93  (.cs_n(cs_fdc_n), .re_n(iord_n), .we_n(iowr_n), .a0(BA[0]), .a1(BA[1]),
+                       .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
+                       .drq(fdc_drq), .intrq(fdc_intrq));
+    buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1));
+    re3_prom_113 U_D94 (.a(BA[15:11]), .e_n(1'b0), .d());
+
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries
     wire [7:0] ppi0_pc;                // D26 Port C: bits 1:0 = memory mode, 2-6 = floppy ctl
@@ -374,7 +384,7 @@ module juku_top (
     up2_rcv U_D104(.a(s_sin), .y(ser_rxd));
     serial_conn U_X3 (.sout(s_sout), .rts(s_rts), .dtp(s_dtp), .ttl_sout(s_ttl), .oc_sout(s_oc), .sin(s_sin));
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n), .clk());
-    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n), .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int),
+    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n), .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir1(fdc_drq), .ir0(fdc_intrq),
                       .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.

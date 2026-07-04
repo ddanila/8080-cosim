@@ -141,6 +141,7 @@ PLACE = {
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(258,140.9,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
+    'D93':(248,70,0),'D94':(228,33,0),'D100':(245,30,0),   # FDC trio promoted to netted [grind C]
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(245.1,204.1,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
@@ -355,11 +356,8 @@ def main():
         # Refdes per the OFFICIAL ДГШ5.109.009 ПЭЗ (owner's scan, 2026-07) -- the FDC-revision
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
-        'D94':  ('DIP-16_W7.62mm', 'К155РЕ3',    228, 33, 0),   # РЕ3 #2, socketed [photo]; progr. .092 -> rev .113/.117
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 176.8, 90),  # [emaplaat]  # ready ТМ2 [photo]
         'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  106.2, 158.2, 0),  # row-2 mux [emaplaat]  # video addr mux
-        'D93':  ('DIP-40_W15.24mm','КР1818ВГ93', 248, 70, 0),   # FDC [official in .009]
-        'D100': ('DIP-20_W7.62mm', 'КР580ВА87',  245, 30, 0),   # 5th ВА87 = FDC bus buffer [.009 official]
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 205.2, 90),  # below D13 [emaplaat]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]

@@ -486,7 +486,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
 endmodule
 
-module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6, ir5,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)
+module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6, ir5, ir1, ir0,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)
                  output wire intr, input wire inta_n);
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;
@@ -532,4 +532,23 @@ endmodule
 module lp5_xor (input wire a1, b1, a2, b2, output wire y1, y2);
     assign y1 = a1 ^ b1;
     assign y2 = a2 ^ b2;
+endmodule
+
+// ---- КР1818ВГ93 (WD1793 clone) D93: bus-side scaffold. INERT stub: never drives DAL/IRQ
+// (boot must stay byte-identical to the pre-FDC cosim; the controller function is a boundary
+// until the owner session verifies the quadrant wiring). Connectivity is the deliverable.
+module vg93_fdc (input wire cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
+                 inout wire [7:0] dal, output wire drq, intrq);
+    assign dal = 8'hzz; assign drq = 1'b0; assign intrq = 1'b0;
+endmodule
+
+// КР580ВА87 (8287, inverting 8286) D100: FDC bus buffer. Non-driving stub (see vg93_fdc).
+module buf_8287 (input wire [7:0] a, inout wire [7:0] b, input wire oe_n, t);
+    assign b = 8'hzz;
+endmodule
+
+// D94 К155РЕ3 #2, table ДГШ5.106.113: 2K-granular selects over A000-BFFF (FDC-era fine
+// decode; docs/re3-decode.md). Outputs inert pending the exact hex row values.
+module re3_prom_113 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
+    assign d = 8'hFF;
 endmodule
