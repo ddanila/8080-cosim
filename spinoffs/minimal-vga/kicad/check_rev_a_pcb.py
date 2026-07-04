@@ -6,6 +6,7 @@ import pcbnew
 
 EXPECTED_COPPER_LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
 EXPECTED_SILK_FONT_FACE = "GOST type B italic"
+MIN_EDGE_CLEARANCE_MM = 14
 EXPECTED_SILK_LABELS = (
     "MINIMAL VGA JUKU REV A",
     "Z80 + 4164 DRAM REFRESH TESTBED",
@@ -37,6 +38,29 @@ def main():
     if footprint_count < 80:
         fail(f"expected physical Rev A footprints, found only {footprint_count}")
     track_count = sum(1 for _ in board.GetTracks())
+
+    edge_violations = []
+    for fp in board.Footprints():
+        box = fp.GetBoundingBox(False, False)
+        left = pcbnew.ToMM(box.GetLeft())
+        top = pcbnew.ToMM(box.GetTop())
+        right = pcbnew.ToMM(box.GetRight())
+        bottom = pcbnew.ToMM(box.GetBottom())
+        margin = min(left, top, 285 - right, 285 - bottom)
+        if margin < MIN_EDGE_CLEARANCE_MM:
+            edge_violations.append(f"{fp.GetReference()}={margin:.1f}mm")
+    if edge_violations:
+        fail(
+            f"footprints too close to board edge "
+            f"(<{MIN_EDGE_CLEARANCE_MM}mm): {', '.join(edge_violations)}"
+        )
+
+    duplicate_value_refs = []
+    for fp in board.Footprints():
+        if fp.GetReference() == fp.GetValue():
+            duplicate_value_refs.append(fp.GetReference())
+    if duplicate_value_refs:
+        fail(f"footprint values duplicate refdes: {', '.join(sorted(duplicate_value_refs))}")
 
     zones = {}
     for zone in board.Zones():

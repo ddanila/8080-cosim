@@ -10,11 +10,38 @@ ROOT = "/usr/share/kicad/footprints"
 BOARD_WIDTH_MM = 285
 BOARD_HEIGHT_MM = 285
 ZONE_INSET_MM = 3
+EDGE_CLEARANCE_MM = 14
 SILK_FONT_FACE = "GOST type B italic"
 SILK_LABELS = {
-    "MINIMAL VGA JUKU REV A": (18, 12, 0, pcbnew.F_SilkS),
-    "Z80 + 4164 DRAM REFRESH TESTBED": (18, 18, 0, pcbnew.F_SilkS),
-    "GOST SILK FONT: TYPE B ITALIC": (18, 274, 0, pcbnew.B_SilkS),
+    "MINIMAL VGA JUKU REV A": (25, 72, 0, pcbnew.F_SilkS),
+    "Z80 + 4164 DRAM REFRESH TESTBED": (25, 78, 0, pcbnew.F_SilkS),
+    "GOST SILK FONT: TYPE B ITALIC": (22, 260, 0, pcbnew.B_SilkS),
+}
+
+SILK_VALUE_BY_TYPE = {
+    "Z80_DIP40": "Z80",
+    "PPI_82C55_DIP40": "82C55",
+    "ROM_28C256_DIP28": "27C256",
+    "GAL22V10_DIP24_DECODE": "GAL22V10 DEC",
+    "GAL22V10_DIP24_DRAMSEQ": "GAL22V10 DRAM",
+    "74HCT245_DIP20": "74HCT245",
+    "74HCT573_DIP20": "74HCT573",
+    "DRAM4164_DIP16": "KM4164B",
+    "74HCT157_DIP16_ADDRMUX": "74HCT157",
+    "74HCT148_DIP16": "74HCT148",
+    "74HCT166_DIP16_PIXSHIFT": "74HCT166",
+    "74HCT393_DIP14_REFRESH_LOW": "74HCT393 REF",
+    "74HCT393_DIP14_VIDEO_LOW": "74HCT393 VID",
+    "74HCT00_DIP14_DRAMGATE": "74HCT00",
+    "TTL640X480_HEADER": "TTL640x480",
+    "DEBUG_HEADER": "DEBUG",
+    "ATX_POWER_HEADER": "ATX +5V",
+    "KEYBOARD_HEADER": "JUKU KBD",
+    "VGA_HEADER": "VGA",
+    "OSC_DIP14": "CLK OSC",
+    "RESET_SUPERVISOR_TO92": "RESET",
+    "PS_ON_HEADER": "PS_ON",
+    "POWER_DEBUG_HEADER": "PWR DBG",
 }
 
 FP_BY_TYPE = {
@@ -104,18 +131,18 @@ PLACE = {
     "R21": (118, 220, 0),
     "R22": (118, 226, 0),
     "R23": (118, 232, 0),
-    "D2": (222, 236, 0),
-    "D3": (232, 236, 0),
-    "D4": (242, 236, 0),
-    "D5": (252, 236, 0),
-    "D6": (262, 236, 0),
-    "D7": (272, 236, 0),
-    "R24": (222, 246, 0),
-    "R25": (232, 246, 0),
-    "R26": (242, 246, 0),
-    "R27": (252, 246, 0),
-    "R28": (262, 246, 0),
-    "R29": (272, 246, 0),
+    "D2": (212, 236, 0),
+    "D3": (222, 236, 0),
+    "D4": (232, 236, 0),
+    "D5": (242, 236, 0),
+    "D6": (252, 236, 0),
+    "D7": (262, 236, 0),
+    "R24": (212, 246, 0),
+    "R25": (222, 246, 0),
+    "R26": (232, 246, 0),
+    "R27": (242, 246, 0),
+    "R28": (252, 246, 0),
+    "R29": (262, 246, 0),
     "C50": (28, 42, 0),
     "F1": (25, 32, 0),
     "D1": (35, 48, 90),
@@ -157,6 +184,59 @@ def center_footprint(fp, x, y):
     box = fp.GetBoundingBox(False, False)
     center = box.GetCenter()
     fp.SetPosition(pcbnew.VECTOR2I(2 * mm(x) - center.x, 2 * mm(y) - center.y))
+
+
+def style_field(field, text, x, y, angle, size=1.4):
+    field.SetText(text)
+    field.SetVisible(True)
+    field.SetLayer(pcbnew.F_SilkS)
+    field.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
+    field.SetTextAngleDegrees(angle)
+    field.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size)))
+    field.SetTextThickness(mm(0.16))
+    field.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+    field.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
+    field.SetKeepUpright(True)
+    field.SetItalic(False)
+
+
+def value_for_chip(chip):
+    if chip["type"] in SILK_VALUE_BY_TYPE:
+        return SILK_VALUE_BY_TYPE[chip["type"]]
+    if chip.get("value"):
+        return chip["value"]
+    return chip["type"]
+
+
+def place_silk_fields(fp, chip, x, y, rot):
+    box = fp.GetBoundingBox(False, False)
+    left = pcbnew.ToMM(box.GetLeft())
+    top = pcbnew.ToMM(box.GetTop())
+    right = pcbnew.ToMM(box.GetRight())
+    bottom = pcbnew.ToMM(box.GetBottom())
+    cx = (left + right) / 2
+    cy = (top + bottom) / 2
+    ref = chip["ref"]
+    value = value_for_chip(chip)
+    angle = 90 if rot % 180 else 0
+
+    if rot % 180:
+        ref_x = left - 2.0
+        ref_y = top + 2.0
+    else:
+        ref_x = cx
+        ref_y = top - 2.2
+
+    style_field(fp.Reference(), ref, ref_x, ref_y, 0, size=1.15)
+    show_chip_value = (
+        ref.startswith("U")
+        and "DIP" in chip["type"]
+        and chip["type"] not in {"OSC_DIP14"}
+    )
+    if show_chip_value:
+        style_field(fp.Value(), value, cx, cy, angle, size=1.35)
+    else:
+        fp.Value().SetVisible(False)
 
 
 def add_outline(board, width, height):
@@ -271,6 +351,7 @@ def main():
             fp.SetOrientationDegrees(rot)
         board.Add(fp)
         center_footprint(fp, x, y)
+        place_silk_fields(fp, chip, x, y, rot)
         placed[ref] = fp
 
     for net_name, entry in spec["nets"].items():
