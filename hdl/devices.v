@@ -138,25 +138,27 @@ module mem_decode (
 endmodule
 
 // ---- memory map decoder: К556РТ4 256x4 bipolar PROM (D6) ----
-// decodes high address byte A8..A15 -> ROM/RAM/REV/ROE selects (contents from the
-// emulator-recovered map). Enabled by V (from the D7 gate = mode/strobe).
+// Traced (crop bios_hunt1): address inputs = BA15..BA11 on pins 5,6,7,4,3 PLUS the mode bundle
+// on pins 2,1,15 (tags 1,2,3 <- PPI Port C bits) -- the banking mode enters the PROM as ADDRESS,
+// not through the V enable. V1/V2 (13,14) feed unread; modeled always-enabled (v_en_n ignored).
+// Columns (traced): D0/12 = ROM_N -> D8.E_N pager enable; D1/11 = RAM_N -> sheet 2;
+// D2/10 = REV -> D9 io-decode G2A/G2B region enable; D3/9 = "-RAMOUTEN" -> D13 Schmitt.
+// The real .106.037/.038 truth table needs a РТ4 dump; columns below are the MAME-verified
+// behavioral reconstruction (byte-identical boot).
 module decode_prom (input wire [15:8] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
-    // Merge step (memory): recovered banking map realized for the ekta37 boot. ROM occupies
-    // 0x0000-0x3FFF, split between the two populated 2764s by A13: D15 = low 8K (0x0000-0x1FFF),
-    // D16 = high 8K (0x2000-0x3FFF). RAM is everything outside ROM. (`rev` is repurposed as the
-    // high-EPROM chip-select. Full 4-mode banking needs the mode wired through -- a boundary; this
-    // is the mode-0 reset overlay, which is what ekta37 boots in.)
-    // Banking mode from v_en_n (D7 output, fed by 8255#0 Port C bit 0):
-    //   mode 0 (v_en_n=1, reset overlay): ROM at 0x0000-0x3FFF.
-    //   mode 1 (v_en_n=0): ROM folds up to 0xD800-0xFFFF (the EPROM's BA[12:0] wiring yields the
-    //   0x1800+ offset automatically), RAM below. ekta37 toggles this to run high ROM routines
-    //   while keeping video RAM (0xD800+) writable in mode 0 -- needed to draw the banner + beyond.
-    wire rom_region = v_en_n ? (a <= 8'h3F) : (a >= 8'hD8);
+    // a[15:11] = BA15..BA11; a[10] = mode bit 0 (PC0), a[9] = mode bit 1 (PC1), a[8] = tag-3 (0).
+    //   mode 0 (a[10]=0, reset overlay): ROM at 0x0000-0x3FFF.
+    //   mode 1 (a[10]=1): ROM folds up to 0xD800-0xFFFF (the EPROM's BA[12:0] wiring yields the
+    //   0x1800+ offset automatically), RAM below.
+    wire rom_region = ~a[10] ? (a[15:13] == 3'b000) : (a[15:11] >= 5'b11011);
     assign rom_n = ~rom_region;              // ROM-region enable -> D8.E_N (traced); the РЕ3 pager splits per-chip
-    assign rev   = ~(rom_region &  a[13]);   // D6.10 "REV" -- destination un-traced (detached from D16.CE 2026-07)
+    assign rev   = ~(a[15:13] == 3'b000);    // io region qualifier -> D9.G2A/G2B: low for ports 00-1F (port mirror
+                                             // on A8-15); mode-independent so io works in every map [reconstructed]
     assign ram_n = ~(~rom_region);           // RAM select (outside ROM)
-    assign roe_n = ~rom_region;              // ROM output enable (region); read strobe is MEMR at the EPROM
+    assign roe_n = 1'b0;                     // "-RAMOUTEN" column: modeled permissive (RAM out always allowed) =
+                                             // the boot-verified behavior of the old undriven tri1 rail. Real
+                                             // region shape needs the РТ4 dump [reconstructed]
 endmodule
 
 // ---- ЛА3 NAND gate section (D7) gating the PROM enable ----
@@ -247,13 +249,17 @@ endmodule
 // the simulated value through unchanged, but as a -lib blackbox cell it keeps the two sides SEPARATE
 // NETS for LVS -- the board netlist has the series part / unknown feed there, the sim does not.
 module net_boundary (input wire a, output wire b); assign b = a; endmodule
-// К155ТЛ2 dual 4-input Schmitt NAND. D13 (Sheet-1 CPU core): section A = RESIN Schmitt -> RES (reset,
-// boundary); section B = the DISCRETE 8238 status-strobe generator -- the board has no 8224, so STSTB
-// = ~(SYNC & Φ...) is made here and drives D5 STB (pin 1). Per cpu-core.md the real D5.STSTB source is
-// D13, NOT the clock-mesh D38. Modelled ~sync (the Φ-gating tied high) so the boot stays byte-identical.
-module tl2_dual (input wire i1, i2, i4, i5, i9, i10, i12, i13, output wire o6, o8);
-    assign o6 = ~(i1 & i2 & i4 & i5);      // section A -> RES (RESIN on i5; boundary)
-    assign o8 = ~(i9 & i10 & i12 & i13);   // section B -> STSTB (SYNC on i9; = ~sync)
+// К555ТЛ2 hex Schmitt INVERTER (74LS14; census ВП p.3 x1 + drawn D13 symbol: 1-in/1-out with
+// inversion = hex-inverter sections, NOT the earlier dual-4-NAND ТЛ1-shaped stand-in).
+// D13 (Sheet-1): section 1->2 = the RAMOUTEN driver (in <- D6.9 "-RAMOUTEN" rail, out -> sheet-2
+// D37.4, export "(2)" code 12); section 5->6 = RESIN Schmitt -> RES (boundary).
+module tl2_hex (input wire i1, i3, i5, i9, i11, i13, output wire o2, o4, o6, o8, o10, o12);
+    assign o2  = ~i1;
+    assign o4  = ~i3;
+    assign o6  = ~i5;
+    assign o8  = ~i9;
+    assign o10 = ~i11;
+    assign o12 = ~i13;
 endmodule
 module la1_gate  (input wire i0, i1, i2, i3, i4, i5, i6, i7, output wire y, y2);   // both ЛА1 sections
     assign y = ~(i0 & i1 & i2 & i3);
@@ -270,7 +276,9 @@ endmodule
 module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
     // selects = A10/A11/A12 rails (sheet-1 rail-code table) = IO port bits 2-4 via the 8080's
     // A15-8 port mirror -- the REAL decode path (sim-only sa/sb/sc retired 2026-07).
-    wire en = g1 & ~(g2a_n & g2b_n);
+    // REAL 74138 enable (traced 2026-07): G1 <- RC-deglitched strobe-NAND (D7.11 via R17/C99),
+    // G2A_N+G2B_N <- REV region rail. en = G1 & !G2A & !G2B -- the genuine chip equation.
+    wire en = g1 & ~g2a_n & ~g2b_n;
     assign y_n = en ? ~(8'b1 << {c, b, a}) : 8'hFF;
 endmodule
 // D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the ROM-socket pager.

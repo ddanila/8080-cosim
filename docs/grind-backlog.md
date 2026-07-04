@@ -259,3 +259,26 @@ no read qualification, so OE must bring the read strobe -- during CPU writes int
 region an OE without MEMR would make the EPROMs fight the write data on the buffered bus.
 **OE = common MEMR stands** (pass-1 ✓, netlist unchanged); the old scan note "OE <- ROE"
 is retired. REV destination + D9 input feeds remain open chases.
+
+## IO-decode cluster FINAL (chases "REV destination" + "D9 inputs" closed together)
+Crops d9_inputs/d9_v3_follow/v3_junction/r17_west/d7_feed_origins/rc_stack:
+- **REV (D6.10, rail code 2) -> D9 pins 4+5 bridged** (G2A_N+G2B_N) = the io-decoder's REGION
+  enable. Reconstructed column: low for BA13-15=000 (ports 00-1F via the 8080 A8-15 port
+  mirror), mode-independent. Ports >=20 are genuinely blocked on this board (MAME's 0x80
+  mouse must live on the expansion bus).
+- **D9.G1 (V3, pin 6) <- R17 200R + C99 160pF <- D7.11**, the ЛА3 section 12,13->11 wired as
+  a strobe-NAND on IORD/IOWR (either strobe -> high; 12/13 order assumed): an RC-deglitched
+  "io cycle active" enable. The old scan's D9 enables (IORD->5/IOWR->6) and MEM_MODE0->D7.13
+  are refuted-assumed; the scan's PROM_EN link D7.11->D6.14 likewise (D6's V1/V2 feed = open
+  chase; modeled always-enabled).
+- **D6's pins 2,1,15 are the MODE BUNDLE (tags 1,2,3 <- PPI Port C), not BA10/BA9/BA8** --
+  the banking mode enters the РТ4 as ADDRESS bits. Nets MEM_MODE0/1 rewired (tag<->PC-bit
+  order assumed; tag 3 source unread). decode_prom now takes mode via a[10:8]; the old
+  v_en_n mode hack retired (equivalence by construction).
+- **Rail 3 (D6.9) is named "-RAM OUT EN"** (not "ROM output enable"): -> D13.1 (К555ТЛ2 hex
+  Schmitt inverter -- symbol + census; the dual-4-NAND ТЛ1-shaped model retired) -> D13.2 =
+  RAMOUTEN -> sheet-2 D37.4 (export "(2)" code 12). Factory wire W13 (D13.1<->D92.1) merged
+  into the ROE net. RAMOUTEN column modeled permissive (= old tri1 behavior) pending РТ4 dump.
+- R13/R14 1k = pullups for the REV/-RAMOUTEN OC rails (R11/R12 cover ROM/RAM) [pullup nets
+  not yet added]. C99's far plate destination unread [chase]. R17/C99 added to board + PCB
+  (approx spot, СБ pending). **LVS 219 IN SYNC.**

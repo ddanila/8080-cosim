@@ -83,6 +83,7 @@ PASSIVE_PLACE = {
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
     'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'R17':(125.5,118.0,90),'C99':(128.8,118.0,90),   # D9.G1 RC deglitch (200R+160pF), decode cluster between D9 and D7 [approx, SB spot pending]
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C35':(119.6,124.3,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),

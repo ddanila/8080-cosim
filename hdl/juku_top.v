@@ -56,7 +56,8 @@ module juku_top (
     // ---- chip selects + memory enables ----
     wire        cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n;
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
-    wire        rom_sel_n, ram_sel_n, rev, roe_n, prom_en_n;
+    wire        rom_sel_n, ram_sel_n, rev, roe_n;
+    wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
     wire [1:0]  mem_mode;
     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block). Array read:
     // R is PER BANK (rails 11/12/13/14 <- the D53 Y ladder), C (rail 15) + W (rail 16) are shared.
@@ -131,16 +132,14 @@ module juku_top (
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
     wire d13_res;
     wire d37_y3;                      // D37 sect-3 out -> D58.OE (RAM-read gate, sheet-2)
-`ifdef YOSYS
-    wire ram_out_en;                  // sheet-2 RAM-control rail [WIRE 12]; loads = D13.2 + D37.4
-`else
-    tri1 ram_out_en;                  // undriven boundary; tri1 = the rail's pullup (idle high)
-`endif
-    // D13 secB returns to SPARE: the beeper (wires 8/9) shows STSTB = D38.8 -> D5.1 directly and
-    // SYNC -> D38.12; the old D13-mediated stand-in was [assumed]. Functionally identical at boot
-    // (frozen divider -> D38 NAND = ~SYNC).
-    tl2_dual  U_D13 (.i1(1'b1), .i2(ram_out_en), .i4(1'b1), .i5(1'b1), .o6(d13_res),
-                     .i9(1'b1), .i10(1'b1), .i12(1'b1), .i13(1'b1), .o8());
+    wire ram_out_en;                  // RAMOUTEN rail: DRIVEN by D13.2 (traced); load = D37.4 (sheet 2)
+    // D13 = К555ТЛ2 hex Schmitt inverter (traced + census). Section 1->2 = the RAMOUTEN driver:
+    // in <- D6.9 "-RAMOUTEN" (roe_n, modeled permissive-low => ram_out_en stays 1 = the old tri1
+    // boot-verified value). Section 5->6 = RESIN Schmitt -> RES (boundary). Old dual-4-NAND
+    // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
+    tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(),
+                     .i5(1'b1), .o6(d13_res), .i9(1'b1), .o8(),
+                     .i11(1'b1), .o10(), .i13(1'b1), .o12());
     assign ststb_n = stb_d38;
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
@@ -179,14 +178,16 @@ module juku_top (
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
     wire [7:0] d8_d;
     re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));   // A4..A0 = BA15..BA11; E_N <- D6.ROM_N (traced: the "12 ROM" rail into pin 15). Pager for ALL 8 sockets (see docs/re3-decode.md)
+    net_boundary U_R17LNK (.a(io_strobe_h), .b(d9_g1_w));   // R17 200R (+C99 160pF deglitch) in series [traced]
     io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
-                      .g1(1'b1), .g2a_n(iord_n), .g2b_n(iowr_n),
+                      .g1(d9_g1_w), .g2a_n(rev), .g2b_n(rev),   // traced: G1 <- RC'd D7.11 strobe-NAND; G2A+G2B bridged <- REV
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    la3_gate    U_D7     (.a(1'b1), .b(mem_mode[0]), .y(prom_en_n),     // ЛА3 as inverter: prom_en_n = ~(Port-C mode bit) [assumed]
+    la3_gate    U_D7     (.a(iowr_n), .b(iord_n), .y(io_strobe_h),     // traced: sect 12,13->11 = strobe-NAND (high on either io strobe) -> R17 -> D9.G1; 12/13 order assumed
                           .a2(1'b1), .b2(memw_n), .y2());   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
-    decode_prom U_DECODE (.a(BA[15:8]), .v_en_n(prom_en_n),
+    decode_prom U_DECODE (.a({BA[15:11], mem_mode[0], mem_mode[1], 1'b0}),   // traced: mode enters as PROM address (pins 2,1,15 <- bundle tags 1,2,3); tag 3 source unread -> 0
+                          .v_en_n(1'b0),                                     // V1/V2 feed unread; modeled always-enabled (old D7.11 link refuted)
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
     // ============ memory chips on the buffered buses ============

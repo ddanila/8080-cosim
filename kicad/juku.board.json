@@ -776,9 +776,9 @@
     "1": "A",
     "2": "B",
     "3": "C",
-    "4": "G1",
-    "5": "G2A_N",
-    "6": "G2B_N",
+    "4": "G2A_N",
+    "5": "G2B_N",
+    "6": "G1",
     "15": "Y_N0",
     "14": "Y_N1",
     "13": "Y_N2",
@@ -2131,15 +2131,17 @@
    "type": "TL2",
    "pins": {
     "1": "I1",
-    "2": "I2",
-    "4": "I4",
+    "2": "O2",
+    "3": "I3",
+    "4": "O4",
     "5": "I5",
     "6": "O6",
     "9": "I9",
-    "10": "I10",
-    "12": "I12",
+    "8": "O8",
+    "11": "I11",
+    "10": "O10",
     "13": "I13",
-    "8": "O8"
+    "12": "O12"
    },
    "prov": {
     "type": "scan",
@@ -3901,6 +3903,22 @@
     "1": "P1",
     "2": "P2"
    }
+  },
+  {
+   "ref": "R17",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C99",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
   }
  ],
  "nets": {
@@ -4708,15 +4726,11 @@
    ]
   },
   "BA8": {
-   "src": "scan",
+   "src": "scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1)",
    "nodes": [
     [
      "D4",
      "19"
-    ],
-    [
-     "D6",
-     "15"
     ],
     [
      "D15",
@@ -4765,15 +4779,11 @@
    ]
   },
   "BA9": {
-   "src": "scan",
+   "src": "scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1)",
    "nodes": [
     [
      "D4",
      "18"
-    ],
-    [
-     "D6",
-     "1"
     ],
     [
      "D15",
@@ -4818,15 +4828,11 @@
    ]
   },
   "BA10": {
-   "src": "scan",
+   "src": "scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1)",
    "nodes": [
     [
      "D4",
      "12"
-    ],
-    [
-     "D6",
-     "2"
     ],
     [
      "D15",
@@ -5913,24 +5919,32 @@
    ]
   },
   "ROE": {
-   "src": "prom",
+   "src": "traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail (real РТ4 column = dump to confirm)",
    "nodes": [
     [
      "D6",
      "9"
+    ],
+    [
+     "D13",
+     "1"
+    ],
+    [
+     "D92",
+     "1"
     ]
    ]
   },
   "PROM_EN": {
-   "src": "scan",
+   "src": "traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed unread [chase]; D6 modeled always-enabled",
    "nodes": [
     [
      "D7",
      "11"
     ],
     [
-     "D6",
-     "14"
+     "R17",
+     "2"
     ]
    ]
   },
@@ -6011,15 +6025,11 @@
    "wire_link": true
   },
   "IORD": {
-   "src": "scan",
+   "src": "scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed)",
    "nodes": [
     [
      "D5",
      "25"
-    ],
-    [
-     "D9",
-     "5"
     ],
     [
      "D26",
@@ -6056,19 +6066,19 @@
     [
      "D93",
      "4"
+    ],
+    [
+     "D7",
+     "13"
     ]
    ]
   },
   "IOWR": {
-   "src": "scan",
+   "src": "scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed)",
    "nodes": [
     [
      "D5",
      "27"
-    ],
-    [
-     "D9",
-     "6"
     ],
     [
      "D26",
@@ -6105,19 +6115,23 @@
     [
      "D93",
      "2"
+    ],
+    [
+     "D7",
+     "12"
     ]
    ]
   },
   "MEM_MODE0": {
-   "src": "scan",
+   "src": "traced sheet-1 (bios_hunt1: D6.A5/pin2 <- mode-bundle tag 1) + scan (PPI PC0 = D26.14); tag<->PC-bit order assumed. D7.13 endpoint removed (that pin = IORD strobe input)",
    "nodes": [
     [
      "D26",
      "14"
     ],
     [
-     "D7",
-     "13"
+     "D6",
+     "2"
     ]
    ]
   },
@@ -7812,11 +7826,19 @@
    "wire_link": true
   },
   "REV": {
-   "src": "D6.10 = drawn \"REV\" OC line (1k pullup); D16.20 DETACHED (D16.CS traced to D8.D5, crop band_bot/cs_de_full). REV true destination un-traced [chase queued]",
+   "src": "traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked",
    "nodes": [
     [
      "D6",
      "10"
+    ],
+    [
+     "D9",
+     "4"
+    ],
+    [
+     "D9",
+     "5"
     ]
    ]
   },
@@ -9647,20 +9669,6 @@
    ],
    "note": "WIRE 11 (beeper): D7.1 <- D92.13 (ЛЕ4 NOR); H1-endpoint-B etch '11' = this wire's solder point"
   },
-  "W13_D13_D92": {
-   "src": "wire",
-   "nodes": [
-    [
-     "D13",
-     "1"
-    ],
-    [
-     "D92",
-     "1"
-    ]
-   ],
-   "note": "WIRE 13 (beeper): D13.1 - D92.1"
-  },
   "PIT_HCHAIN": {
    "src": "mame",
    "nodes": [
@@ -10231,7 +10239,7 @@
    ]
   },
   "RAM_OUT_EN": {
-   "src": "scan sheet-1 + beeper wire 12",
+   "src": "traced sheet-1: D13.2 = ТЛ2 inverter OUTPUT (= ~D6.9) driving RAMOUTEN, exported \"(2)\" code 12 -> sheet-2 D37.4; beeper wire 12 corroborates",
    "nodes": [
     [
      "D13",
@@ -12615,6 +12623,36 @@
     [
      "D18",
      "20"
+    ]
+   ]
+  },
+  "V3_RC": {
+   "src": "traced sheet-1 (rc_stack 6x: R17 top + C99 left plate + the D9.6 vertical share one junction; rail-3 crosses above WITHOUT a dot). RC-deglitched io-strobe -> D9.G1. C99.2 far end unread [chase]",
+   "nodes": [
+    [
+     "R17",
+     "1"
+    ],
+    [
+     "C99",
+     "1"
+    ],
+    [
+     "D9",
+     "6"
+    ]
+   ]
+  },
+  "MEM_MODE1": {
+   "src": "traced sheet-1 (bios_hunt1: D6.A6/pin1 <- mode-bundle tag 2); source PPI PC1 = D26.15 [order assumed]. Tag 3 -> D6.15 left un-netted (source unread; PC2 guess)",
+   "nodes": [
+    [
+     "D26",
+     "15"
+    ],
+    [
+     "D6",
+     "1"
     ]
    ]
   }
