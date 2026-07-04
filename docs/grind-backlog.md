@@ -225,3 +225,28 @@ Crops d17_cs/d18_cs/romfeed_top/romdec_above/trunk_vert/tee_zone/pivot_pixel/cs_
   <- another (scan has IORD->5, IOWR->6, pin 4 n.c. -- pinmap 4:G1 also contradicts the real
   74138 4:G2A_N/5:G2B_N/6:G1); (c) DE rail source (drawn vertical from below: MEMR per
   pass-1 vs ROE per old scan note -- follow it down).
+
+## Census pass 6 (ВП листы 3-4: the IC pages)
+For ДГШ5.109.006 (column "на изделие"):
+- **К573РФ5 (2Kx8) x8, programming docs ДГШ5.106.040...047** = the .006-era ROM field:
+  all EIGHT sockets populated with 2716-class chips, one factory program each (16K total).
+  Our .009 board replaces this with 2764-class sockets + 2x M2764 BIOS (photo) -- and our Э3
+  sheets draw the 28-pin pinout (A12 on pin 2), i.e. the sheets ARE the .009-side revision.
+- **565РУ3Г x32** (16Kx1, 4 banks x 8 = 64K) -- confirms the E4/E5 power-jumper decode
+  (+12/-5 for РУ3) as the .006 shipping config; .009 = 8x РУ5 instead.
+- **К155РЕ3 x1** (-> programmed part .106.039 = D8). D94 (.092) is NOT in the .006 ВП --
+  it arrives with the .009 FDC revision. And the scanned tables .113/.117 carry перв. примен.
+  **.106.103** (neither .039 nor .092) => they document a THIRD config's chips; reinforces
+  today's conclusion that neither table is our D8's content.
+- **К561 CMOS cluster x9: ИЕ11, ИМ1, ИР9, ЛА7, ЛН2 x2, ЛП2, ТМ2, ТВ1** -- none modeled;
+  almost certainly the sheet-3 tape/serial subsystem [flag: model gap, low priority for
+  the .009 twin since the tape section was superseded by FDC].
+- КР580 set: ИК80А x1 (D1), ИР82 x1, **ВА86 x3, ВА87 x3**, **ВИ53 x3** (3 PITs = MAME ✓),
+  ВК38 x1, ВН59 x1 (D10), **ВВ51А x2** (2 USARTs = MAME ✓), ВВ55А x2 (D26/D27) [cross-check
+  our BOM counts vs ВА86/ВА87 x3+x3].
+- К531: ИД7 x1 (D53 ✓), ИЕ17 x1 (D40 ✓ photo), КП14 x4, ЛА1 x1 (photo ✓), ЛА12 x1, ЛН1 x2;
+  К555: ИД7 x1 (**= D9 only -- no second 555ИД7, consistent with the ROM-decode finding**),
+  АГ3 x1, ИЕ7 x4 (D44-47 ✓), ИЕ10 x1, ИР16 x3, КП14 x1 (+531 x4 = 5 muxes total), ЛА3 x3,
+  ЛЕ4 x1 (the decapped one), ЛП5 x1, ТЛ2 x1, ТМ2 x1; К554СА3А x1; КР556РТ4 x2
+  (**programming docs .106.037/.038 = D2/D6** ✓).
+- Resistors section begins: МЛТ-0,125 20Ом 5% x1 [pages 5+ = passives, already passed 1-5].
