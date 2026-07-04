@@ -180,3 +180,16 @@ BAS2->D20, BAS3->D19 [by file order, verify vs labels/photos]. D17/D18 = the exp
 pair: CS likely D8.D4/D5 (codes 1/2) which stock .117 holds LOW throughout the window --
 SAFE ONLY WHILE EMPTY, which is exactly how the board ships [feed read queued; the "code
 1 -> D15.CS" mis-association fully explained]. LVS 214 IN SYNC.
+
+## Census pass 5 (ВП лист 2) + boot verification
+- Boot 6/6 byte-identical with the ROM window CS wiring in (empirically inert ✓ as designed).
+- C12 = КТ-1 2.2pF ✓, C15 = КТ-1 3.3pF ✓, C73 = КТ4-21Б 4/20pF ✓; **КТ4-21Б-1/5pF trimmer
+  x1 = the "1/5" glyph in the RF can (was mis-attached to L1 turns) — refdes to locate,
+  likely the tank trimmer; L1 note corrected.**
+- Bypass fleet is MIXED: 0.15µF x20 + 0.22µF x16 + 0.47µF x17 (our C35-C72 modeled uniform;
+  per-position values = census pass 6 vs СБ/photos).
+- Tantalums (.006): 10µF x1, 47µF x2, 1µF x2, 22µF x2 (C31-33/C9x family values).
+- К155-series page: ЛА3 x1, ЛА18 x1, **ЛН5 x2 (a SECOND ЛН5 exists — locate; D35 + ?)**;
+  IC census continues pages 3-4 [queued].
+- zx-pk thread 27298 mined: collector-oriented (ROM dump requests, museum contacts) — no
+  hardware measurements; arvutimuuseum.ee = contact for dumps/disks. Low priority.
