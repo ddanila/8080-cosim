@@ -116,3 +116,17 @@ X6/X7 coax ✓✓**; РГ1Н-1-1/-3/-4 x3 = DIN sockets (X5 + 2 [identify; tape-
 **FLAG: Резонатор РК170ББ-14ГС-16000к-В = the crystal Z1 is 16 MHz** — reconcile the clock
 story (D56 "16MHz astable" vs crystal-sourced 16MHz; D59/D40 divider chain frequencies).
 Remaining register pages 2-4,10-11 (caps cont., ferrites, misc) = final pass [queued].
+
+## ROM-socket decode pass 1 (crops rom_cs_zone, d8_outs + .117 content)
+- .117 rows 0x00-0x07 = FF -> the D8 pager NEVER selects in 0000-3FFF: D15/D16 BIOS CE story
+  (D6 ROM/REV) SURVIVES; the pager drives only the 4000-BFFF window sockets.
+- D8 (РЕ3) output pins mapped: D1..D7 = pins 2,3,4,5,6,7,9 (D0 = pin 1, not drawn/unused);
+  every output = an open-circle WIRE junction (the R21-28 1k pullup rail zone).
+- ROM CS reads: **D17.CS <- code-3 rail [edge], D19.CS <- code-5, D21.CS <- code-7**; evens
+  presumed 4/6/8 [adjacent, unread]. OE pins all on common MEMR ✓ (already netted).
+- AMBIGUITY BLOCKING THE NETS: two code sets in the zone — D9's Y0-Y3 = codes 1-4 (io-decode)
+  vs the D8-output rails; D15.CS "code 1 + wire circle" could be either set. Need ONE careful
+  read of the code labels ON the D8-output/R21-28 rails (between D8 and the sockets) to pin
+  the D8-output -> socket map; then net ROM_CS17..22 + rewire eprom_socket .cs_n in HDL.
+- .117 window values 07/0B/0D/0E = one-cold in bits 3..0 with upper nibble 0 — the bit ->
+  drawn-D-number order also needs that read (dump bit order vs D1-D7 labels).
