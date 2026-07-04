@@ -218,7 +218,9 @@ def place_silk_fields(fp, chip, x, y, rot):
     cy = (top + bottom) / 2
     ref = chip["ref"]
     value = value_for_chip(chip)
-    angle = 90 if rot % 180 else 0
+    # Refdes sits on the keyed short side; chip value follows the DIP long axis.
+    ref_angle = 90 if rot % 180 else 0
+    value_angle = 0 if rot % 180 else 90
 
     if rot % 180:
         ref_x = left - 2.0
@@ -227,14 +229,14 @@ def place_silk_fields(fp, chip, x, y, rot):
         ref_x = cx
         ref_y = top - 2.2
 
-    style_field(fp.Reference(), ref, ref_x, ref_y, 0, size=1.15)
+    style_field(fp.Reference(), ref, ref_x, ref_y, ref_angle, size=1.15)
     show_chip_value = (
         ref.startswith("U")
         and "DIP" in chip["type"]
         and chip["type"] not in {"OSC_DIP14"}
     )
     if show_chip_value:
-        style_field(fp.Value(), value, cx, cy, angle, size=1.35)
+        style_field(fp.Value(), value, cx, cy, value_angle, size=1.35)
     else:
         fp.Value().SetVisible(False)
 

@@ -2543,7 +2543,7 @@
 		(descr "Through hole straight pin header, 2x04, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x04 2.54mm double row")
 		(property "Reference" "J1"
-			(at 2.345 -3.795 0)
+			(at 2.345 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "721bc2a1-166e-466b-99ad-607533e61d20")
 			(effects
@@ -3808,7 +3808,7 @@
 		(descr "Through hole straight pin header, 1x06, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x06 2.54mm single row")
 		(property "Reference" "J40"
-			(at -0.205 -3.795 0)
+			(at -0.205 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "b454108d-36d8-41ab-b2c8-3ceffdb86755")
 			(effects
@@ -4061,7 +4061,7 @@
 		(descr "14-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U23"
-			(at 7.165 -3.615 0)
+			(at 7.165 -3.615 90)
 			(layer "F.SilkS")
 			(uuid "6e46dd85-bb90-42b7-891a-5e8e263a07d4")
 			(effects
@@ -4072,7 +4072,7 @@
 			)
 		)
 		(property "Value" "74HCT393 VID"
-			(at 3.81 7.615 90)
+			(at 3.81 7.615 0)
 			(layer "F.SilkS")
 			(uuid "68e5866e-5103-432c-b623-fa347286f6aa")
 			(effects
@@ -4794,7 +4794,7 @@
 		(descr "Through hole straight pin header, 2x05, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x05 2.54mm double row")
 		(property "Reference" "J90"
-			(at 2.345 -3.795 0)
+			(at 2.345 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "59c40144-a829-4392-a67c-f15f32f2cdcf")
 			(effects
@@ -5103,7 +5103,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C3"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "2fb9c4f2-30e8-4b31-9352-677e9c0c8d29")
 			(effects
@@ -5281,7 +5281,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C14"
-			(at 4.075 -3.525001 0)
+			(at 4.075 -3.525001 90)
 			(layer "F.SilkS")
 			(uuid "749c2fc8-ff23-48b0-bd96-8479d0ea9493")
 			(effects
@@ -5657,7 +5657,7 @@
 		(descr "Through hole straight pin header, 1x04, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x04 2.54mm single row")
 		(property "Reference" "J93"
-			(at -0.204999 -3.795 0)
+			(at -0.204999 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "acfa9bf2-05ea-4877-805a-227843d01c87")
 			(effects
@@ -5892,7 +5892,7 @@
 		(descr "Diode, DO-35_SOD27 series, Axial, Horizontal, pin pitch=7.62mm, length*diameter=4*2mm^2, http://www.diodes.com/_files/packages/DO-35.pdf")
 		(tags "Diode DO-35_SOD27 series Axial Horizontal pin pitch 7.62mm  length 4mm diameter 2mm")
 		(property "Reference" "D1"
-			(at 6.695 -3.275 0)
+			(at 6.695 -3.275 90)
 			(layer "F.SilkS")
 			(uuid "9ee8e75c-2c8a-4823-88b5-3becea82cd1c")
 			(effects
@@ -6333,7 +6333,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "69d4e1ee-5c5e-430f-87cc-384de03e21f0")
 			(effects
@@ -6687,7 +6687,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C23"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "6eca4cf7-b339-4833-9425-f32044dceb73")
 			(effects
@@ -7272,7 +7272,7 @@
 			)
 		)
 		(property "Value" "GAL22V10 DEC"
-			(at 7.62 13.975 0)
+			(at 7.62 13.975 90)
 			(layer "F.SilkS")
 			(uuid "a6f18dea-2f89-4a1f-8685-c76dcff780c3")
 			(effects
@@ -8242,7 +8242,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "e285c6e3-6be4-4c31-b128-0d84791a2083")
 			(effects
@@ -8774,7 +8774,7 @@
 		(descr "14-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U25"
-			(at 7.165 -3.615 0)
+			(at 7.165 -3.615 90)
 			(layer "F.SilkS")
 			(uuid "dd72f73e-4b52-49ba-9cbc-331b12ca066b")
 			(effects
@@ -8785,7 +8785,7 @@
 			)
 		)
 		(property "Value" "74HCT00"
-			(at 3.81 7.615 90)
+			(at 3.81 7.615 0)
 			(layer "F.SilkS")
 			(uuid "d6610efe-4b10-4a5d-93ee-5f0b82854077")
 			(effects
@@ -9121,7 +9121,7 @@
 			)
 		)
 		(property "Value" "Z80"
-			(at 7.62 24.125 0)
+			(at 7.62 24.125 90)
 			(layer "F.SilkS")
 			(uuid "364b8d65-3988-459e-8856-9f03bf417ad5")
 			(effects
@@ -10101,7 +10101,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "b5e7b049-f137-4a6f-8ed5-55dddce1c218")
 			(effects
@@ -10851,7 +10851,7 @@
 		(descr "Through hole straight pin header, 2x05, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x05 2.54mm double row")
 		(property "Reference" "J91"
-			(at 2.345 -3.795 0)
+			(at 2.345 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "a61d1918-6b7e-400c-8f48-a86b1c73c973")
 			(effects
@@ -11358,7 +11358,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C19"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "0c4d2384-d0d9-425c-a6a1-e650a5842c01")
 			(effects
@@ -11912,7 +11912,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C16"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "7ae4fc18-969d-4d32-8e5f-f939161ed571")
 			(effects
@@ -12090,7 +12090,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C17"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "7ee34226-e7b3-4297-a476-b65d88345526")
 			(effects
@@ -12268,7 +12268,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C21"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "876fa064-b278-4136-a5de-c31806133afa")
 			(effects
@@ -12446,7 +12446,7 @@
 		(descr "16-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U21"
-			(at 7.165 -3.605 0)
+			(at 7.165 -3.605 90)
 			(layer "F.SilkS")
 			(uuid "15617c35-6ce8-4c2a-9a2b-3b687efd3874")
 			(effects
@@ -12457,7 +12457,7 @@
 			)
 		)
 		(property "Value" "74HCT157"
-			(at 3.81 8.89 90)
+			(at 3.81 8.89 0)
 			(layer "F.SilkS")
 			(uuid "909e3f1d-f668-451b-8615-05e544b530a0")
 			(effects
@@ -12990,7 +12990,7 @@
 		(descr "14-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U22"
-			(at 7.165 -3.615 0)
+			(at 7.165 -3.615 90)
 			(layer "F.SilkS")
 			(uuid "e29fd545-fd0b-45cc-b888-e98d932be697")
 			(effects
@@ -13001,7 +13001,7 @@
 			)
 		)
 		(property "Value" "74HCT393 REF"
-			(at 3.81 7.615 90)
+			(at 3.81 7.615 0)
 			(layer "F.SilkS")
 			(uuid "2085fa7e-dfcf-45cb-abb2-6e9c1b94ca92")
 			(effects
@@ -13535,7 +13535,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C4"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "f7f4e7ef-fc7d-48b9-ac86-f571574b163a")
 			(effects
@@ -13713,7 +13713,7 @@
 		(descr "16-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U20"
-			(at 7.165 -3.605001 0)
+			(at 7.165 -3.605001 90)
 			(layer "F.SilkS")
 			(uuid "d8665a2d-6cfd-4635-9e06-b901073d21b8")
 			(effects
@@ -13724,7 +13724,7 @@
 			)
 		)
 		(property "Value" "74HCT157"
-			(at 3.81 8.89 90)
+			(at 3.81 8.89 0)
 			(layer "F.SilkS")
 			(uuid "7ad1a7f3-8554-49db-b2db-47c182eb31e0")
 			(effects
@@ -14079,7 +14079,7 @@
 		(descr "Through hole straight pin header, 1x02, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x02 2.54mm single row")
 		(property "Reference" "J2"
-			(at -0.205 -3.795 0)
+			(at -0.205 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "8e5b47d6-2d77-4da4-b29d-088a4a6773cd")
 			(effects
@@ -14307,7 +14307,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "0fa7da30-326f-43eb-8069-382766025033")
 			(effects
@@ -14672,7 +14672,7 @@
 			)
 		)
 		(property "Value" "GAL22V10 DRAM"
-			(at 7.62 13.975 0)
+			(at 7.62 13.975 90)
 			(layer "F.SilkS")
 			(uuid "6da17b2a-7546-45d0-8ff2-45aac5a5752a")
 			(effects
@@ -15090,7 +15090,7 @@
 		(descr "Through hole straight pin header, 2x05, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x05 2.54mm double row")
 		(property "Reference" "U40"
-			(at 2.345 -3.795 0)
+			(at 2.345 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "6b562ea0-ac17-4119-b9f9-b1be40d7a0d0")
 			(effects
@@ -15399,7 +15399,7 @@
 		(descr "Through hole straight pin header, 1x15, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x15 2.54mm single row")
 		(property "Reference" "J30"
-			(at -0.205 -3.805 0)
+			(at -0.205 -3.805 90)
 			(layer "F.SilkS")
 			(uuid "a927e4f0-c858-4deb-bb56-1902d26ebdbc")
 			(effects
@@ -16120,7 +16120,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "4cd63143-9b3c-4950-8084-17da4de40028")
 			(effects
@@ -16663,7 +16663,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "a0838e3f-ff22-4ed7-b7fe-2ffa5107afbd")
 			(effects
@@ -19006,7 +19006,7 @@
 			)
 		)
 		(property "Value" "27C256"
-			(at 7.62 16.51 0)
+			(at 7.62 16.51 90)
 			(layer "F.SilkS")
 			(uuid "566b16ed-a0bf-42b3-8008-2a25f41b4ee3")
 			(effects
@@ -20220,7 +20220,7 @@
 		(descr "20-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U3"
-			(at 7.165 -3.605 0)
+			(at 7.165 -3.605 90)
 			(layer "F.SilkS")
 			(uuid "e0121f32-c5ad-4203-8b25-04fef23e29ae")
 			(effects
@@ -20231,7 +20231,7 @@
 			)
 		)
 		(property "Value" "74HCT245"
-			(at 3.81 11.43 90)
+			(at 3.81 11.43 0)
 			(layer "F.SilkS")
 			(uuid "eefa1584-5221-4478-8633-d5b36ebcf88c")
 			(effects
@@ -20614,7 +20614,7 @@
 		(descr "16-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U41"
-			(at 7.165 -3.605 0)
+			(at 7.165 -3.605 90)
 			(layer "F.SilkS")
 			(uuid "8ad046e1-2ea2-4a83-ad4d-1c42dc150d6c")
 			(effects
@@ -20625,7 +20625,7 @@
 			)
 		)
 		(property "Value" "74HCT166"
-			(at 3.81 8.89 90)
+			(at 3.81 8.89 0)
 			(layer "F.SilkS")
 			(uuid "e1a0ce74-ff31-4f7a-945f-4b18a51b925d")
 			(effects
@@ -21181,7 +21181,7 @@
 		(descr "Through hole straight pin header, 2x05, 2.54mm pitch, double rows")
 		(tags "Through hole pin header THT 2x05 2.54mm double row")
 		(property "Reference" "J92"
-			(at 2.345 -3.795 0)
+			(at 2.345 -3.795 90)
 			(layer "F.SilkS")
 			(uuid "3570a3ce-2992-4549-8bf7-6465e494ee61")
 			(effects
@@ -21490,7 +21490,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C22"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "31b328be-fef7-4d55-a1b0-a33a600161fb")
 			(effects
@@ -21679,7 +21679,7 @@
 			)
 		)
 		(property "Value" "82C55"
-			(at 7.62 24.125 0)
+			(at 7.62 24.125 90)
 			(layer "F.SilkS")
 			(uuid "43fd0ecc-299c-4308-9bf8-6d72b962c867")
 			(effects
@@ -22827,7 +22827,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "125d3418-04ca-4506-9f28-7b603dd12f91")
 			(effects
@@ -23359,7 +23359,7 @@
 		(descr "C, Disc series, Radial, pin pitch=5.00mm, diameter*width=4.7*2.5mm^2, Capacitor, http://www.vishay.com/docs/45233/krseries.pdf")
 		(tags "C Disc series Radial pin pitch 5.00mm diameter 4.7mm width 2.5mm Capacitor")
 		(property "Reference" "C15"
-			(at 4.075 -3.525 0)
+			(at 4.075 -3.525 90)
 			(layer "F.SilkS")
 			(uuid "c21fcf1a-2161-4e3c-b640-86726f6fd46f")
 			(effects
@@ -23735,7 +23735,7 @@
 		(descr "16-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U31"
-			(at 7.165 -3.605 0)
+			(at 7.165 -3.605 90)
 			(layer "F.SilkS")
 			(uuid "03853858-604c-482e-8360-8dbd8bd267ef")
 			(effects
@@ -23746,7 +23746,7 @@
 			)
 		)
 		(property "Value" "74HCT148"
-			(at 3.81 8.89 90)
+			(at 3.81 8.89 0)
 			(layer "F.SilkS")
 			(uuid "854a1dbd-785e-4c22-a36f-ac4c53bdeea6")
 			(effects
@@ -24100,7 +24100,7 @@
 		(descr "20-lead though-hole mounted DIP package, row spacing 7.62mm (300 mils), Socket")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil Socket")
 		(property "Reference" "U4"
-			(at 7.165 -3.605 0)
+			(at 7.165 -3.605 90)
 			(layer "F.SilkS")
 			(uuid "4f477221-0508-47c7-a751-fab4b15cc636")
 			(effects
@@ -24111,7 +24111,7 @@
 			)
 		)
 		(property "Value" "74HCT573"
-			(at 3.81 11.43 90)
+			(at 3.81 11.43 0)
 			(layer "F.SilkS")
 			(uuid "47983629-9504-4afc-ae7e-f2b1db5e0f37")
 			(effects
@@ -24693,7 +24693,7 @@
 			)
 		)
 		(property "Value" "KM4164B"
-			(at 3.81 8.89 0)
+			(at 3.81 8.89 90)
 			(layer "F.SilkS")
 			(uuid "1e6d52fe-b516-449b-87d9-5768f59e96fa")
 			(effects
