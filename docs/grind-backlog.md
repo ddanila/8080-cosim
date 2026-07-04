@@ -282,3 +282,26 @@ Crops d9_inputs/d9_v3_follow/v3_junction/r17_west/d7_feed_origins/rc_stack:
 - R13/R14 1k = pullups for the REV/-RAMOUTEN OC rails (R11/R12 cover ROM/RAM) [pullup nets
   not yet added]. C99's far plate destination unread [chase]. R17/C99 added to board + PCB
   (approx spot, СБ pending). **LVS 219 IN SYNC.**
+
+## 16 MHz reconciliation (analytical) + sheet-1 identity + bus corner
+- **Z1 = РК170ББ-14ГС-16000к = 16 MHz is THE frequency reference** (photo: РК-171 8903).
+  CPU: OSC -> D40 ИЕ7, QC = /8 = 2.0 MHz Φ1/Φ2 ✓ (divider ratios consistent only with 16M).
+  D56 = the module's ONLY АГ3 (census x1) = 74LS123-class one-shot pair -- it cannot be an
+  independent stable "16MHz astable"; read as a pulse-shaper/duty-controller retriggered off
+  the crystal rail in the dot-clock path (DOTCLK16M = D56.4 -> D42/D43 ИР16 + D103). Its
+  trigger-input feed = one sheet-2 crop [queued]. "2M" labeled line = OSC/8 ✓; "1.23M" ~ 16M/13
+  [check the exact divisor when the PIT lines get read].
+- **Title block read (s1_bottomband): our schematic IS ДГШ5.109.006 Э3 "Модуль процессора",
+  лист 1 из 3**, doc stamp 1167; note "Микросхемы D2,D6,D8,D15...D22 устанавливаются в
+  панелях" ✓ = exactly the socketed set. So the .006 Э3 already draws the 28-pin/2764-class
+  sockets -- the РФ5-х8 census row is the CONFIG of the .006 build, not a different PCB;
+  earlier "sheets are .009-side" note softened accordingly.
+- **Sheet-1 right side = the expansion-bus corner: D23/D24/D25 (ВА87 x3 ✓ census) buffer
+  BA/DB onto X1 as a Multibus-style set**: -ADR0..F (contacts 122C-117B), -DAT0..7 (132C-129B),
+  -INHIB 106B, CCLCK 111C, -IO/M 109B?, -MWC 104B, -MRC 104C, -AMWC 102B, -IORC/-IOWC --
+  MAME's "mouse at port 0x80 = Multibus expansion" comment now grounded in copper. D7's other
+  ЛА3 sections gate the D25 T/E enables [pin reads queued]. X1 pin-out table = a future
+  systematic read for the connector nets.
+- Beeper cluster (VT1/VD4/R48/R60/R90/R91): NOT on sheet 1 -- the SOUND path lives on sheet 2
+  (PIT -> shaper -> VT1 Darlington -> edge contact -> ДГШ5.884.001 speaker unit) [queued:
+  sheet-2 read].
