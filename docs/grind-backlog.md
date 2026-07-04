@@ -250,3 +250,12 @@ For ДГШ5.109.006 (column "на изделие"):
   ЛЕ4 x1 (the decapped one), ЛП5 x1, ТЛ2 x1, ТМ2 x1; К554СА3А x1; КР556РТ4 x2
   (**programming docs .106.037/.038 = D2/D6** ✓).
 - Resistors section begins: МЛТ-0,125 20Ом 5% x1 [pages 5+ = passives, already passed 1-5].
+
+## DE-rail chase closed (crops de_rail_follow/de_rail_west)
+One vertical (x~2505) feeds both socket rows' DE/OE pins, cornering west at y~1400 into a
+long horizontal. The west read is inconclusive at pixel level, but electrics force the
+answer: CE (D8, pure address decode) and D6.ROE (address+mode PROM, no strobe input) carry
+no read qualification, so OE must bring the read strobe -- during CPU writes into the ROM
+region an OE without MEMR would make the EPROMs fight the write data on the buffered bus.
+**OE = common MEMR stands** (pass-1 ✓, netlist unchanged); the old scan note "OE <- ROE"
+is retired. REV destination + D9 input feeds remain open chases.
