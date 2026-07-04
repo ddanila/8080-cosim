@@ -321,3 +321,12 @@ group line; taps at all eight CS risers hold):
   0000 is required to boot at all); it is the piece the physical checks will overwrite.
 DECIDERS (one measurement each): (1) dump board #2's two EPROMs (monitor vs BASIC vs other);
 (2) continuity D8.5 (D4) <-> leftmost-socket pin 20; (3) dump the РЕ3 seated in D8.
+
+## Reconciliation grind DONE: .113/.117 are correct -- and they are not D8/D94's programs
+Full write-up in docs/re3-decode.md. Impossibility proven for .117-as-D8 under every tag
+permutation, row-address bijection, and population choice (every non-FF value asserts five
+rails; no reading yields a 2-chip 16K BIOS map). Factory paper trail agrees: the .006 ВП
+assigns D8 = ДГШ5.106.039, the .009 ПЭЗ adds D94 = .092; the scanned .113/.117 belong to the
+.106.103 family (наиболее вероятно the V3-gating timing РЕ3 pair -- their FF-idle one-cold-walk
+shape is a phase-generator pattern). README/re3-decode/HDL comments corrected; D94's .113
+stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.

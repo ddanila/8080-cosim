@@ -285,12 +285,11 @@ endmodule
 // Traced sheet-1: ALL EIGHT socket CEs hang on D8 via the R21-R28 group line (tags D4..D7 ->
 // D15..D18, D0..D3 -> D19..D22), and E_N <- D6.ROM_N (mode-aware "some ROM responds" region).
 module re3_prom (input wire [4:0] a, input wire e_n, output reg [7:0] d);
-    // PREDICTED CONTENT for the board's D8 (dump the socketed chip to confirm -- owner item).
-    // The factory .117 table (ref/firmware) CANNOT be this chip's content on a BIOS-populated
-    // board: it leaves D4-D7 unburned (= permanently asserted, OC pulling low) -- that table
-    // fits only a BIOS-less expansion-cart config. Our board boots from D15/D16, so its РЕ3
-    // must burn the upper nibble everywhere and add the BIOS selects; window rows keep .117's
-    // one-cold walk with the upper nibble completed to 1s. Derived from the MAME-verified modes.
+    // PREDICTED CONTENT for the board's D8 = programmed part ДГШ5.106.039 per the factory ВП/ПЭЗ
+    // (UNDUMPED -- owner item). The scanned .113/.117 tables belong to the .106.103 family (likely
+    // the V3-gating timing РЕ3 pair): proven unable to boot any config from D8 for every tag
+    // permutation / addressing / population -- see docs/re3-decode.md reconciliation grind.
+    // This table is the MAME-verified behavioral reconstruction of .039 (byte-identical boot).
     always @* begin
         if (e_n)              d = 8'hFF;
         else casez (a)
@@ -588,16 +587,9 @@ endmodule
 // D94 К155РЕ3 #2, table ДГШ5.106.113: 2K-granular selects over A000-BFFF (FDC-era fine
 // decode; docs/re3-decode.md). Outputs inert pending the exact hex row values.
 module re3_prom_113 (input wire [4:0] a, input wire e_n, output reg [7:0] d);
-    // FACTORY CONTENT (ref/firmware/re3_dgsh5.106.113.hex): 2K-granular one-cold selects
-    // over A000-BFFF (rows 0x14-0x17 = 07/0B/0D/0E), FF elsewhere.
-    always @* begin
-        if (e_n) d = 8'hFF;
-        else case (a)
-            5'h14: d = 8'h07;   // A000-A7FF
-            5'h15: d = 8'h0B;   // A800-AFFF
-            5'h16: d = 8'h0D;   // B000-B7FF
-            5'h17: d = 8'h0E;   // B800-BFFF
-            default: d = 8'hFF;
-        endcase
-    end
+    // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
+    // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
+    // D94 (docs/re3-decode.md reconciliation grind). Outputs modeled inactive (all HIGH =
+    // OC off + pullups); D94's outputs are un-netted anyway, so this is boot-inert.
+    always @* d = 8'hFF;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule
