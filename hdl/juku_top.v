@@ -333,8 +333,9 @@ module juku_top (
                      .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
-    net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));   // G3 drawn feed [pending]
-    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(d53_g_in), .sactive(mem_active),
+    net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));   // -> ram_en_sim (SIM-ONLY DRAM-enable semantics)
+    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(vid_cpu_sel), .g2a_n(phi2ttl),
+                      .sactive(mem_active), .ram_en_sim(d53_g_in),
                       .y_n(d53_y), .cas_sim(d53_cas_sim));
     net_boundary U_R49LNK (.a(d53_y[0]), .b(ras3_n));   // Y0 -> R49 -> rail 14 (bank 3, POPULATED)
     net_boundary U_R50LNK (.a(d53_y[1]), .b(ras2_n));   // Y1 -> R50 -> rail 13 (bank 2 sockets)

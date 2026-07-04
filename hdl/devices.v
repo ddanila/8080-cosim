@@ -322,11 +322,15 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
 // bank D84-91 hangs on rail 14 <- Y0. `sactive` = sim-only mem_active qualifier; `cas_sim` =
 // SIM-ONLY leg carrying the CAS scaffold to the rail-15 net_boundary (the real driver is D36.11;
 // both are in lvs.py's SIM_ONLY contract). In the traced/boot jumper position (2-3) a=Φ1, b=Φ2.
-module rascas_dec (input wire a, b, c, input wire g, input wire sactive, output wire [3:0] y_n,
-                   output wire cas_sim);
-    assign y_n[0]   = ~(sactive & ~g & a);   // behavioral RAS -> rail 14 (populated bank D84-91)
-    assign y_n[3:1] = 3'b111;                // expansion-bank RAS rails (sockets empty)
-    assign cas_sim  = ~(sactive & ~g & b);   // sim CAS scaffold -> rail 15 boundary
+// Real G wiring (chase c4_g3_src): G1(6) <- VID_CPU_SEL (memory-cycle qualifier), G2A_N(4) <-
+// Ф2TTL (strobe window), G2B_N(5) = GND. The sim cannot reproduce that timing (frozen mesh), so
+// g/g2a_n are connectivity-only here and the DRAM-enable semantics ride ram_en_sim -- a SIM-ONLY
+// leg (lvs.py contract, like SACTIVE/CAS_SIM) fed from the RAM decode through a net_boundary.
+module rascas_dec (input wire a, b, c, input wire g, g2a_n, input wire sactive, ram_en_sim,
+                   output wire [3:0] y_n, output wire cas_sim);
+    assign y_n[0]   = ~(sactive & ~ram_en_sim & a);   // behavioral RAS -> rail 14 (populated bank D84-91)
+    assign y_n[3:1] = 3'b111;                         // expansion-bank RAS rails (sockets empty)
+    assign cas_sim  = ~(sactive & ~ram_en_sim & b);   // sim CAS scaffold -> rail 15 boundary
 endmodule
 // Configuration jumper (Е2/Е3/Е10/Е13 family): 3 pads, position 1-2 or 2-3. Functional model =
 // the 2-3 position (the traced/boot configuration): common follows p3.

@@ -26,7 +26,8 @@ SIM_ONLY = {"SCLK", "KBD_EN", "KBD_PRESSED", "KBD_SHIFT", "KCOL", "KBIT", "FRAME
             "VA", "VQ",   # VA/VQ = the sim-only 2nd (video) read port on the РУ5 (arbitration = V3)
             "PHSEL",      # PHSEL = sim-only divider phase bit into D35 (self-clocking waveform lock)
             "SACTIVE",   # SACTIVE = sim-only mem_active qualifier into D53 (structural inputs now per sheet-2)
-            "CAS_SIM"}   # CAS_SIM = sim-only CAS scaffold leg out of D53 -> rail-15 net_boundary
+            "CAS_SIM",   # (see above)
+            "RAM_EN_SIM"}  # RAM_EN_SIM = sim-only DRAM-enable into D53 (real G1/G2A = VID_CPU_SEL/Ф2TTL, timing un-modeled)   # CAS_SIM = sim-only CAS scaffold leg out of D53 -> rail-15 net_boundary
                          # (the real rail-15 driver is D36.11 -> R57; the sim cannot reproduce that
                          # RC/delay chain, so the behavioral strobe rides this documented sim pin)
             # SA/SB/SC RETIRED 2026-07: D9 decodes from the real A10-A12 rails (sheet-1)

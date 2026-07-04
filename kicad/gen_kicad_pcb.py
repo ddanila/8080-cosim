@@ -33,6 +33,7 @@ PASSIVE_FP = {
     'C_TRIM':  ('Capacitor_THT.pretty', 'C_Disc_D7.5mm_W4.4mm_P5.00mm'), # КТ4-23 trimmer stand-in (no trimmer lib in stock KiCad)
     'SW_DIP6': ('Button_Switch_THT.pretty', 'SW_DIP_SPSTx06_Slide_9.78x17.42mm_W7.62mm_P2.54mm'),  # S3 video-config bank
     'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
+    'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -43,6 +44,7 @@ PASSIVE_PLACE = {
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
+    'E4':(38,247,0),'E5':(38,242,0),'C34':(47,242,0),   # array power option jumpers + H<->F cap [power corner; position approx near X8 power entry]
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     'R49':(204.1,181.7,0),'R50':(204.1,186,0),'R51':(204.1,190.3,0),'R52':(204.1,194.6,0),   # 100R strobe series [sheet-2; emaplaat x204 column]
     'R53':(204.1,199,0),'R54':(204.1,203.3,0),'R55':(204.1,207.6,0),'R56':(204.1,211.9,0),   # 5.1k strobe pullups -> rail E

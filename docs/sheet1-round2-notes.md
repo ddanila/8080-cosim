@@ -405,3 +405,24 @@ half-traced (D56.4 read-90%). Remaining: DOTCLK16M(residual), REV, M5V_DERIVED, 
   (= -RAM SEL ✓ closes the D92.5 story from the source side), D2(10)="REV", D3(9)="ROE (2)";
   all OC with 1k pullups (R11..). REV line heads east toward gate rows 12/13 [dest pending];
   D16.20 end still assumed. ROE crosses to sheet 2.
+
+CHASE SESSION (items 1-4; crops c4_*):
+1. ARRAY POWER REWORK LANDED: RAIL_G {E4.2 + DRAM pin-8 x32 + C35-53.1} (+12/5V option),
+   RAIL_E grew {DRAM pin-16 x32 + cap commons} (array ground, one-point GND strap = net-tie
+   at layout, deferred), RAIL_H {E5.2 + DRAM pin-1 x32 + C54-72.2 + C34.1} (-5V VBB option);
+   E4(3-pad)/E5(2-pad)/C34 added + placed near X8 power entry [positions approx]. E1 (MA7 vs
+   +5 on pin 9) was already correctly netted -- the РУ3/РУ5 option is now fully modeled.
+2. REV: drops S at x~1848 to y~680, runs E into the ROM-socket CS/OE region (= ROM gating,
+   NOT video). Exact pin unresolved (D15.CS shows a code-1 rail + open-circle wire junction;
+   D15.DE fed from a west line at REV's y). D16.20 still assumed. OWNER-TERRITORY candidate.
+   Bonus reads: D9 Y0-3 -> coded rails 1-4, Y4-7 -> "CS4(2)/CS5(2)/CS6(2)/CS7(3)" labeled
+   exits ✓; D8 A-rows coded 12-15; D8.E(15) fed via an open-circle WIRE junction [owner item].
+3. M5V RESOLVED (traced): X8 has NO -5V pin; M12V -> R19 470R -> "-5B" node, VD5 zener to
+   GND (drawn exactly as netted); feeds CPU VBB D1.11 + rail D -> E5 -> array VBB option.
+4. D52 codes RE-CONFIRMED at 5x: 8 and 9 (not 15/16) -> BA7/8 vs VA7/8 stands.
+   **D53 G-FEEDS RESOLVED (crop c4_g3_src, exact y-matches): G1(6, active-high) <- D39.6 =
+   VID_CPU_SEL (memory-cycle qualifier); G2A_N(4) <- Ф2TTL (strobe window); G2B_N(5)=GND ✓.**
+   HDL: real G pins wired for connectivity; DRAM-enable semantics moved to SIM-ONLY
+   ram_en_sim leg (lvs.py contract, like SACTIVE/CAS_SIM) -- boot byte-identical.
+   Still queued: D36.9 + D36.12/13 west sources, rail-16 fanout check, PIT line dests
+   (SOUND->pin10 / SYNC B.->pin12 / 2M->pin8 / 1.23M->pin13 far ends).
