@@ -41,3 +41,25 @@
 REV final pin, RAM_RD_OE continuity, FDC_INTRQ/DRQ, D8.E/D103.LD/D47.LD wire junctions,
 rail-15/E-strap continuities, PIT "SOUND" source pin, D36.12/13 driver (one hop),
 PHI2TTL sheet-1 pin, "14" tap on the 16MHz rail.
+
+## СБ grind session 1 (2026-07-04) — banked
+- **Calibration**: СБ 200-DPI render: board edges L=1670 R=6581 T=1242 B=5457 px -> 15.84
+  px/mm (310.0 x 266.1 ✓). mm = (px-left|top)/15.84.
+- **REVISION CAVEAT (important)**: this СБ = board 7.102.100 = the ДГШ5.109.006 TAPE revision.
+  Our board = 7.102.158 (.009 FDC). Central/left/power zones shared; the top-right quadrant
+  (D93-D106, R78-R92, C16-C22, E10, S4, X5) is TAPE-era there — verify our FDC quadrant
+  against the PHOTOS, not this СБ.
+- **X4 -> X6/X7 applied**: X7 = video socket (x~258.5, top edge, contacts 601/602), X6 = RF
+  socket (x~288, top edge, поз.18 ring, 701/702). X5 = third top socket (tape-era DIN?) — not
+  netted. XL1 = likely the filled coax/mount pad in the VT zone [pending].
+- **Analog cluster re-based to the real zone (mid-right x260-300 y95-125)**: VT4 (265.0,98.4),
+  R73 trimmer w/ special mount (281.9,102.7), VT3 (294.6,105.6), VT2 (280.5,124.8), VD3
+  (298.6,118.2) read precisely; R62-77/C9-15/L1 grid moved into the zone (improved approx —
+  exact spots need a СБ detail read + photo check).
+- **Factory wires CONFIRMED DRAWN on the СБ**: diagonals with end-number labels — wires 5, 6
+  (X6/X7 area -> S4 zone), wires 3, 4 (RF/VT zone, one crossing R73's mount circle), wire 11
+  span matches the harvest. The photo "bodge" wires (H1-H3, BODGE-TRIAGE.md) are therefore
+  FACTORY wiring items with поз. numbers (166-182 range) — full endpoint table = next СБ pass.
+- **Parts register page 1 (caps) spot-checks**: 0.047µF x3 ✓ (C9/C11/C14), 56pF x4 (C29,C13+2
+  [find]), 560pF x2 ✓ (C7+1), 0.15µF x20 (bypass fleet), 24pF П33 x1 (C73 zone), 910пФ/220пФ/
+  150пФ/160пФ singles [locate]. Full census = next pass (pages 2-11: R/D/VT/L).

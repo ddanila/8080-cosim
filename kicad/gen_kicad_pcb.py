@@ -36,7 +36,8 @@ PASSIVE_FP = {
     'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
     'Q_TO92':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315/КТ325 (flat KT-13 pkg; TO-92 stand-in)
     'L_RADIAL':('Inductor_THT.pretty', 'L_Radial_D7.0mm_P3.00mm'),             # L1 RF coil (tunable core; stand-in)
-    'VIDEO_RF_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # video/RF contacts 601/602/701/702 [socket type pending photos]
+    'VIDEO_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X7 video socket stand-in (601/602)
+    'RF_CONN':    ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X6 RF socket stand-in (701/702)
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -48,13 +49,16 @@ PASSIVE_PLACE = {
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
     'E4':(38,247,0),'E5':(38,242,0),'C34':(47,242,0),   # array power option jumpers + H<->F cap [power corner; position approx near X8 power entry]
-    # ---- analog video/RF/sound corner (sheet-2 bottom-right; positions approx, refine vs photos) ----
-    'R62':(263,236,0),'R63':(263,240,0),'R64':(263,244,0),'R65':(263,248,0),'R66':(263,252,0),'R67':(263,256,0),
-    'R68':(274,236,0),'R69':(274,240,0),'R70':(274,244,0),'R71':(274,248,0),'R72':(274,252,0),'R73':(274,256,0),
-    'R74':(285,236,0),'R75':(285,240,0),'R76':(285,244,0),'R77':(285,248,0),
-    'C9':(285,252,0),'C10':(285,256,0),'C11':(293,236,0),'C12':(293,240,0),'C13':(293,244,0),'C14':(293,248,0),'C15':(293,252,0),
-    'VT2':(299,236,0),'VT3':(299,241,0),'VT4':(299,246,0),'VD3':(293,256,90),'L1':(299,252,0),
-    'X4':(303,258,0),   # video/RF out (601/602/701/702)
+    # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
+    # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
+    'VT4':(265.0,98.4,0),'R73':(281.9,102.7,0),'VT3':(294.6,105.6,0),'VT2':(280.5,124.8,0),'VD3':(298.6,118.2,90),
+    'R72':(292,99,0),'R74':(289.5,104,90),'R75':(263,106.5,0),'C14':(262,95,0),'C11':(272.5,102,90),
+    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(263,122,90),'R66':(266.5,122,90),
+    'R67':(287,112,90),'R68':(290.5,112,90),'R69':(294,112,90),'R70':(287,120,90),'R71':(290.5,120,90),
+    'C9':(275,95,0),'C10':(276,112,90),'C12':(285,95,0),'C13':(279.5,112,90),'C15':(297.5,99,90),
+    'R76':(272,125,0),'R77':(276,128,0),'L1':(282,128,0),
+    'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
+    'X6':(288,6,0),     # RF socket (СБ top edge, поз.18 ring; contact 701/702)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     'R49':(204.1,181.7,0),'R50':(204.1,186,0),'R51':(204.1,190.3,0),'R52':(204.1,194.6,0),   # 100R strobe series [sheet-2; emaplaat x204 column]
     'R53':(204.1,199,0),'R54':(204.1,203.3,0),'R55':(204.1,207.6,0),'R56':(204.1,211.9,0),   # 5.1k strobe pullups -> rail E

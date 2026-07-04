@@ -3869,13 +3869,19 @@
    }
   },
   {
-   "ref": "X4",
-   "type": "VIDEO_RF_CONN",
+   "ref": "X7",
+   "type": "VIDEO_CONN",
    "pins": {
-    "3": "VIDEO",
-    "4": "GND1",
-    "5": "HF",
-    "6": "GND2"
+    "1": "VIDEO",
+    "2": "GND"
+   }
+  },
+  {
+   "ref": "X6",
+   "type": "RF_CONN",
+   "pins": {
+    "1": "HF",
+    "2": "GND"
    }
   }
  ],
@@ -8815,12 +8821,12 @@
      "2"
     ],
     [
-     "X4",
-     "4"
+     "X7",
+     "2"
     ],
     [
-     "X4",
-     "6"
+     "X6",
+     "2"
     ]
    ]
   },
@@ -12293,7 +12299,7 @@
    ]
   },
   "VIDEO_OUT": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601",
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible)",
    "nodes": [
     [
      "VT2",
@@ -12304,8 +12310,8 @@
      "1"
     ],
     [
-     "X4",
-     "3"
+     "X7",
+     "1"
     ]
    ]
   },
@@ -12457,7 +12463,7 @@
    ]
   },
   "HF_OUT": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701",
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible)",
    "nodes": [
     [
      "R76",
@@ -12468,8 +12474,8 @@
      "1"
     ],
     [
-     "X4",
-     "5"
+     "X6",
+     "1"
     ]
    ]
   },
