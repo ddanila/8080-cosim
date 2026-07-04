@@ -396,3 +396,21 @@ stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.
   X1 pin-out table, DOTCLK16M bend re-read, D56 sect-1 trigger hop, AVDC/SPKR far ends,
   CLK_123M rail netting, C99 far plate, D6 V1/V2 feed, mode tag-3, D25 T/E gates,
   SB-true spots for R17/C99 + D56 RC group + R11-R14.
+
+## #13 part 2: the three methodical reads (X1 verified / bypass blocked / wires carried)
+- **X1 pin-out table: DONE as a verification pass.** The 300dpi sheet-1 re-read matches the
+  existing scan netting LINE FOR LINE (ADR0-F_N -> 124C..117B, DAT0-7_N -> 132C..129B,
+  MRC/MWC/IORC/IOWC/AMWC/INHIB/CCLCK/IOM contacts, D23/D24/D25/D29 pin numbers) -- 34 nets
+  upgrade from scan-assumed to traced-verified. NEW data netted: the power-contact map:
+  +5V -> X1 101A/102A/103A + 107A/108A/108B/108C, X2 227/229/230, X9 5/6 (also drawn:
+  X3 307/308, X4 408 -- skipped, X3 pin-scheme mismatch [note]); +12V -> X1 131A/132A;
+  -12V -> X1 110A/111A. The -5V generator (M12V -> R19 470R + VD5 zener) was already traced.
+  D29 confirmed as the 4th buffer (ВА86, control set). LVS 314 IN SYNC.
+- **Bypass per-position map: BLOCKED with evidence.** The Э3 draws the decaps as per-rail
+  GROUPS (C35...C53 rail G, C54...C72 rail E, C74...C91 + C94...C98 rail A) with no values;
+  the СБ shows positions only; the ВП gives totals (0.15x20 / 0.22x16 / 0.47x17). Group
+  sizes (19/19/18+5) do not align 1:1 with value counts -> per-position values need the СБ
+  спецификация page or macro photos of the discs [OWNER/materials item]. Modeling stays
+  uniform; electrically irrelevant for the netlist.
+- **СБ wire-endpoint table: carried** -- the one true desk leftover (a full session of
+  systematic поз.-callout sweeping; wires 3/4/5/6/11 done previously).
