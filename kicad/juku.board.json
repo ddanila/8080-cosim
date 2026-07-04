@@ -3338,7 +3338,7 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "sheet-2 E13 video strap (1-3 jumpered, 2=+5, 4=GND)",
+        "refdes": "sheet-2 E13: CPU-mux G strap at D48 (1-3 strapped, 2=+5, 4=GND)",
         "pins": "scan"
       }
     },
@@ -10805,19 +10805,6 @@
         ]
       ]
     },
-    "E13_STRAP": {
-      "src": "scan sheet-2 (posts 1-3 jumpered)",
-      "nodes": [
-        [
-          "E13",
-          "1"
-        ],
-        [
-          "E13",
-          "3"
-        ]
-      ]
-    },
     "VID_MUX_G": {
       "src": "scan sheet-2 (E14 post 3 -> D50/D51 G)",
       "nodes": [
@@ -10845,6 +10832,27 @@
         [
           "D44",
           "5"
+        ]
+      ]
+    },
+    "CPU_MUX_G": {
+      "src": "scan sheet-2 (E13 post 3 -> D48/D49 G; strap 1-3)",
+      "nodes": [
+        [
+          "E13",
+          "3"
+        ],
+        [
+          "D48",
+          "15"
+        ],
+        [
+          "D49",
+          "15"
+        ],
+        [
+          "E13",
+          "1"
         ]
       ]
     }

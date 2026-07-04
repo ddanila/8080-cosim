@@ -246,10 +246,15 @@ module juku_top (
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
     // 4,7,9,12 order until the mux INPUT rails are read (a line-swap must be applied to both
     // sides at once or the video-va path desyncs). Queued in round-2 notes.
+`ifdef YOSYS
+    wire cpu_mux_g_n;                 // E13 strap -> D48/D49 G (posts: 1=rail, 2=+5, 4=GND)
+`else
+    tri0 cpu_mux_g_n;                 // undriven boundary; tri0 = strap-enabled default (CPU pair drives MA)
+`endif
     kp14_mux U_D48 (.a({BA[1], BA[2], BA[3], BA[0]}), .b({BA[13], BA[11], BA[10], BA[9]}),
-                    .sel(phi1), .en_n(1'b0), .y({MA[1], MA[2], MA[3], MA[0]}));
+                    .sel(phi1), .en_n(cpu_mux_g_n), .y({MA[1], MA[2], MA[3], MA[0]}));
     kp14_mux U_D49 (.a({BA[5], BA[6], BA[7], BA[4]}), .b({BA[14], BA[15], BA[8], BA[12]}),
-                    .sel(phi1), .en_n(1'b0), .y({MA[5], MA[6], MA[7], MA[4]}));
+                    .sel(phi1), .en_n(cpu_mux_g_n), .y({MA[5], MA[6], MA[7], MA[4]}));
     // D50/D51 = the VIDEO-address mux pair on the SAME tri-state MA bus (sheet-2: Q -> rails
     // 21-28). A/B ins <- video counters + S3 config [unread boundaries]; G enables alternate
     // with D48/D49 on the video cycle [source unread] -- held disabled here (z), so the CPU
