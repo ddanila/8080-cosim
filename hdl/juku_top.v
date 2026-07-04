@@ -327,6 +327,8 @@ module juku_top (
     // ============ FDC quadrant scaffold (.009): ВГ93 + РЕ3 .113 + ВА87 bus buffer ============
     // Bus side traced (CS7/sheet-3 delta + MAME 1C-1F + WD1793 datasheet); support logic
     // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. Stubs are inert.
+    wire [7:0] ppi0_pc;                // D26 Port C: bits 1:0 = memory mode, 2-6 = floppy ctl
+    assign mem_mode = ppi0_pc[1:0];
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
     vg93_fdc   U_D93  (.cs_n(cs_fdc_n), .re_n(iord_n), .we_n(iowr_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
@@ -336,8 +338,6 @@ module juku_top (
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries
-    wire [7:0] ppi0_pc;                // D26 Port C: bits 1:0 = memory mode, 2-6 = floppy ctl
-    assign mem_mode = ppi0_pc[1:0];
     ppi_8255  U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .pa(kbd_pa), .pb(8'hFF),
                       .reset(reset_sys), .pc(ppi0_pc),

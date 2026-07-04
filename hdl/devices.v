@@ -549,6 +549,17 @@ endmodule
 
 // D94 К155РЕ3 #2, table ДГШ5.106.113: 2K-granular selects over A000-BFFF (FDC-era fine
 // decode; docs/re3-decode.md). Outputs inert pending the exact hex row values.
-module re3_prom_113 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
-    assign d = 8'hFF;
+module re3_prom_113 (input wire [4:0] a, input wire e_n, output reg [7:0] d);
+    // FACTORY CONTENT (ref/firmware/re3_dgsh5.106.113.hex): 2K-granular one-cold selects
+    // over A000-BFFF (rows 0x14-0x17 = 07/0B/0D/0E), FF elsewhere.
+    always @* begin
+        if (e_n) d = 8'hFF;
+        else case (a)
+            5'h14: d = 8'h07;   // A000-A7FF
+            5'h15: d = 8'h0B;   // A800-AFFF
+            5'h16: d = 8'h0D;   // B000-B7FF
+            5'h17: d = 8'h0E;   // B800-BFFF
+            default: d = 8'hFF;
+        endcase
+    end
 endmodule
