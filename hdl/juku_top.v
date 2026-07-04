@@ -420,10 +420,11 @@ module juku_top (
                       .clk0(pit_hchain), .gate0(1'b1), .clk1(pit_hsync_dsl), .gate1(pit_vchain),
                       .clk2(pit_hsync_dsl), .gate2(pit_vchain),
                       .out0(pit_vchain), .out1(frame_int), .out2());
+    wire pit2_clk2;   // 1.23M rail (traced: tag 13 <- D103/D33 divider); rail source un-netted -> boundary
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk123m), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
-                      .clk2(frame_int), .gate2(1'b1),
-                      .out0(pit_baud), .out1(pit_sound), .out2());
+                      .clk2(pit2_clk2), .gate2(1'b1),   // traced: CLK2 <- 1.23M (was frame_int [mame-assumed])
+                      .out0(pit_baud), .out1(pit_sound), .out2());   // OUT1 = SOUND -> R90 -> VT1 beeper (traced)
     wire ser_txd, ser_rts, ser_dtr, ser_rxd;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .rxc(pit_baud), .txc(pit_baud),

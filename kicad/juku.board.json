@@ -3798,7 +3798,7 @@
   },
   {
    "ref": "C12",
-   "type": "C_KM",
+   "type": "C_TRIM",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3915,6 +3915,38 @@
   {
    "ref": "C99",
    "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "VD4",
+   "type": "D_DIODE",
+   "pins": {
+    "1": "K",
+    "2": "A"
+   }
+  },
+  {
+   "ref": "R48",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R90",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R91",
+   "type": "R_AXIAL",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -9273,6 +9305,10 @@
     [
      "R72",
      "1"
+    ],
+    [
+     "VT1",
+     "3"
     ]
    ]
   },
@@ -9725,7 +9761,7 @@
    ]
   },
   "FRAME_INT": {
-   "src": "mame",
+   "src": "mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs)",
    "nodes": [
     [
      "D55",
@@ -9734,10 +9770,6 @@
     [
      "D10",
      "23"
-    ],
-    [
-     "D57",
-     "18"
     ]
    ]
   },
@@ -12653,6 +12685,98 @@
     [
      "D6",
      "1"
+    ]
+   ]
+  },
+  "SOUND": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.OUT1 (pin 13) -> bundle tag 10 -> R90 2k (beeper drive)",
+   "nodes": [
+    [
+     "D57",
+     "13"
+    ],
+    [
+     "R90",
+     "1"
+    ]
+   ]
+  },
+  "SND_BASE": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): R90 -> VT1 KT972 base node; VD4 anode clamp",
+   "nodes": [
+    [
+     "R90",
+     "2"
+    ],
+    [
+     "VD4",
+     "2"
+    ],
+    [
+     "VT1",
+     "2"
+    ]
+   ]
+  },
+  "SND_CLAMP": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): VD4 cathode -> R91 1k -> AVDC rail",
+   "nodes": [
+    [
+     "VD4",
+     "1"
+    ],
+    [
+     "R91",
+     "1"
+    ]
+   ]
+  },
+  "AVDC": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): R91 -> rail labeled AVDC, destination unread [chase]",
+   "nodes": [
+    [
+     "R91",
+     "2"
+    ]
+   ]
+  },
+  "SND_OUT": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): VT1 emitter-follower out -> R48 8.2R -> speaker line",
+   "nodes": [
+    [
+     "VT1",
+     "1"
+    ],
+    [
+     "R48",
+     "1"
+    ]
+   ]
+  },
+  "SPKR": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): R48 -> speaker edge contact (number unread) -> ДГШ5.884.001 unit",
+   "nodes": [
+    [
+     "R48",
+     "2"
+    ]
+   ]
+  },
+  "CLK_123M": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.CLK2 (pin 18) <- rail labeled 1.23M, bundle tag 13 (= D103 ИЕ10 /13 divider via D33; rail source pass queued)",
+   "nodes": [
+    [
+     "D57",
+     "18"
+    ]
+   ]
+  },
+  "SYNC_B": {
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.OUT2 (pin 17) -> line labeled SYNC B., bundle tag 12 (destination pass queued)",
+   "nodes": [
+    [
+     "D57",
+     "17"
     ]
    ]
   }

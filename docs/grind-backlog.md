@@ -330,3 +330,28 @@ assigns D8 = ДГШ5.106.039, the .009 ПЭЗ adds D94 = .092; the scanned .113/
 .106.103 family (наиболее вероятно the V3-gating timing РЕ3 pair -- their FF-idle one-cold-walk
 shape is a phase-generator pattern). README/re3-decode/HDL comments corrected; D94's .113
 stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.
+
+## Sheet-2 read batch (300dpi render; crops s2_*)
+- **No РЕ3 exists on sheet 2.** The board's three DIP-16 sockets = D2/D6/D8 -> the photographed
+  "V3-gating timing PROM" (8904) IS D8 itself; the .113/.117 (.103-family) home is off-module
+  (keyboard/peripheral candidate). Yesterday's "V3-РЕ3" candidate retracted.
+- **Beeper cluster TRACED + netted**: SOUND = D57.OUT1 (pin 13) -> bundle tag 10 -> R90 2k ->
+  VT1 КТ972 base (VD4 + R91 1k clamp to the AVDC rail); emitter-follower (C -> +5V rail A),
+  E -> R48 8.2Ом -> speaker edge contact -> ДГШ5.884.001. R60 is NOT beeper: it is the
+  FRAME INT 5.1k pullup (right-edge export to sheet 1). AVDC/SPKR far ends queued.
+- **PIT2 (D57) rows read**: CLK1 <- "2M" rail tag 8 = D40.Q2 (CONFIRMS the existing
+  D40Q2_D33 net); CLK2 <- "1.23M" tag 13 (FRAME_INT endpoint was mame-assumed -> detached;
+  net CLK_123M added); G1/G2 -> +5V ✓ (matched existing); OUT0 -> "BAUD R." tag 9 ✓
+  (existing PIT_BAUD); OUT2 -> "SYNC B." tag 12 (new net, destination queued).
+- **1.23M mechanism closed**: D103 (ИЕ10) divides the 16M crystal rail by 13 (CO -> D33
+  inverter -> rail) = 1.2308 MHz — the "1.23M" label exactly.
+- **D56 story corrected**: two LONG one-shots (R47 20k/C7 560pF ~5us; R59 33k/C8 15nF
+  ~220us), R61 12k = CLR pullup. It CANNOT be a "16MHz astable" — the 16MHz label belongs
+  to the passing crystal rail. DOTCLK16M's "D56.4 source" attribution now suspect
+  [re-read queued]; D56 trigger feeds queued (likely H-timing one-shots).
+- **C12 = КТ4-21Б-1/5pF trimmer** in the L1 RF tank (type fixed); census pass-5 off-by-one:
+  the 2.2pF КТ-1 is C11. C15 3.3pF ✓ unchanged.
+- ЛН5 tally sheet-2: D35 covers clock pair + right-side export drivers (PDF/FRAME INT/
+  SYNC B.R via R39 12k/R60 5.1k) = one chip suffices; **second К155ЛН5 must be sheet 3**.
+- Bonus: D58 = ИР82 RAM->bus latch ✓; array chip previously glimpsed as "D94" is D91 ✓;
+  E1 strap = D51.Q4 -> MA7 (tag 28) ✓; VIDEO -> contacts 601/602, HF -> 701/702.

@@ -84,6 +84,7 @@ PASSIVE_PLACE = {
     'C73':(58,241.5,0),
     'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
     'R17':(125.5,118.0,90),'C99':(128.8,118.0,90),   # D9.G1 RC deglitch (200R+160pF), decode cluster between D9 and D7 [approx, SB spot pending]
+    'R90':(243.0,213.0,0),'VD4':(247.0,209.0,0),'R91':(252.0,209.0,0),'R48':(255.5,213.0,0),   # beeper cluster around VT1 (250.5,218.9) [approx, SB wire posts 1/2 flank R60 nearby]
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C35':(119.6,124.3,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),
