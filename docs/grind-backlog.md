@@ -355,3 +355,24 @@ stand-in retired (outputs inert pending .092 dump). LVS 219 IN SYNC, boot 6/6.
   SYNC B.R via R39 12k/R60 5.1k) = one chip suffices; **second К155ЛН5 must be sheet 3**.
 - Bonus: D58 = ИР82 RAM->bus latch ✓; array chip previously glimpsed as "D94" is D91 ✓;
   E1 strap = D51.Q4 -> MA7 (tag 28) ✓; VIDEO -> contacts 601/602, HF -> 701/702.
+
+## #12 leftovers session (sheet-2 finishers + sheet-3 recon)
+- **SYNC_B destination traced**: D57.OUT2 ("SYNC B.", tag 12) wraps around into D56 section-2
+  trigger A (pin 10) -> the PIT-timed ~5us one-shot = sync/blank pulse shaper. Net updated
+  {D57.17, D56.10}. D56 section-2 B (pin 9) and section-1 B (pin 1) on tied stubs [level
+  assumed high]; **R61 12k = CLR_N pullup** (pin 3 solid; pin 11 joins the same row
+  [probable]); RC parts netted: R47 20k + C7 560pF (pins 7/6), R59 33k + C8 15nF (15/14),
+  Rext far ends -> +5V per АГ3 canon. Section-1 trigger A (pin 2) <- vertical from the
+  D54/D55 sync-chain zone [one hop unread]. LVS 314 IN SYNC, boot 6/6.
+- **Sheet-3 recon (tape subsystem, .006)**: the К561 CMOS cluster census gap CLOSES here --
+  the sheet's own IC table lists К561 ТМ2/ЛА7/ЛП2/ЛН2/ИР9/ТВ1/ИМ1/ИЕ11 + К554СА3 + КР580ВВ51.
+  Drawn refdes: **D93 = tape ВВ51** (второй USART), **D94 = К561ЛН2** (hex inverter, sections
+  D94.1-6), D95 ЛП2, D96 ЛА7, D97 ТВ1, D98 ТМ2 x2, D99/D100 ИР9, D101 ИМ1, D102 ИЕ11,
+  D106 СА3; tape lines -> contacts 501/502/503/504/407/408 (SYNC/REC.DATA/DATA IN/CNTR
+  CHECK/TAPE RUN), TAPE RUN INT -> (1). The .009 FDC revision REUSES D93/D94 refdes for
+  ВГ93/РЕ3 -- our model's D93=ВГ93/D94=РЕ3(.092) stays correct for our .158 board; the
+  drawn .006 sheet 3 is the tape-variant reference [its full netting = out of scope for
+  the .009 twin; bank as reference].
+- **Second-ЛН5 hunt result**: no ЛН5 symbol on sheets 2/3 beyond D35; sheet-3's TTL table
+  entry reads К155ЛП8. The ВП "ЛН5 x2" row needs one re-crop (nk-02) -- possible glyph
+  confusion [queued in #13 cycle].

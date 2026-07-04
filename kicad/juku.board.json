@@ -3951,6 +3951,46 @@
     "1": "P1",
     "2": "P2"
    }
+  },
+  {
+   "ref": "R61",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R47",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R59",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C7",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C8",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
   }
  ],
  "nets": {
@@ -9309,6 +9349,18 @@
     [
      "VT1",
      "3"
+    ],
+    [
+     "R61",
+     "1"
+    ],
+    [
+     "R47",
+     "2"
+    ],
+    [
+     "R59",
+     "2"
     ]
    ]
   },
@@ -12772,11 +12824,92 @@
    ]
   },
   "SYNC_B": {
-   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.OUT2 (pin 17) -> line labeled SYNC B., bundle tag 12 (destination pass queued)",
+   "src": "traced sheet-2 (crops s2_d57_outs/s2_d56_north: OUT2 line labeled \"SYNC B.\" tag 12 wraps east-down-west into D56 section-2 trigger A pin 10) -- the PIT-timed ~5us sync/blank one-shot",
    "nodes": [
     [
      "D57",
      "17"
+    ],
+    [
+     "D56",
+     "10"
+    ]
+   ]
+  },
+  "D56_CLR": {
+   "src": "traced sheet-2 (crops s2_d56/s2_d56_pin2): R61 12k pullup (from +5V) -> D56 section-1 CLR_N pin 3; the section-2 CLR_N pin 11 vertical joins the same row [join read at low zoom -- probable, marked]",
+   "nodes": [
+    [
+     "R61",
+     "2"
+    ],
+    [
+     "D56",
+     "3"
+    ],
+    [
+     "D56",
+     "11"
+    ]
+   ]
+  },
+  "D56_RC2": {
+   "src": "traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: RC pin 7 = R47 20k + C7 560pF",
+   "nodes": [
+    [
+     "D56",
+     "7"
+    ],
+    [
+     "R47",
+     "1"
+    ],
+    [
+     "C7",
+     "1"
+    ]
+   ]
+  },
+  "D56_C2": {
+   "src": "traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: C pin 6 = C7 far plate",
+   "nodes": [
+    [
+     "D56",
+     "6"
+    ],
+    [
+     "C7",
+     "2"
+    ]
+   ]
+  },
+  "D56_RC1": {
+   "src": "traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: RC pin 15 = R59 33k + C8 15nF",
+   "nodes": [
+    [
+     "D56",
+     "15"
+    ],
+    [
+     "R59",
+     "1"
+    ],
+    [
+     "C8",
+     "1"
+    ]
+   ]
+  },
+  "D56_C1": {
+   "src": "traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: C pin 14 = C8 far plate",
+   "nodes": [
+    [
+     "D56",
+     "14"
+    ],
+    [
+     "C8",
+     "2"
     ]
    ]
   }
