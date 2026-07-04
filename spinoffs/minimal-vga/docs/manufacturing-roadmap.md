@@ -1,7 +1,7 @@
 # Manufacturing roadmap
 
-Goal: get the minimal VGA spin-off from verified behavior to a bare PCB order
-package without losing the simulator/LVS safety net.
+Goal: get the minimal VGA spin-off from verified behavior to a factory-assembly
+order package without losing the simulator/LVS safety net.
 
 ## Gates
 
@@ -39,14 +39,18 @@ Status: core target exists with partial real pin binding.
 - Keyboard row inputs have explicit pullups, the 74148 enable input is tied
   active by default, and 8255 column outputs reach the keyboard connector
   through series resistors.
+- Rev A decisions now target a real socketed DIP Z80, 27C256-class ROM,
+  western 4164-compatible DRAM, onboard TTL640x480-derived VGA timing,
+  western-only logic, GAL/PAL-style programmable decode/timing, and factory
+  assembly of sockets/passives where practical.
 
 Remaining work:
 
 - Freeze GAL equations and header/connector pinouts.
 - Bind the generated schematic to final KiCad library symbols instead of
   generated local symbols.
-- Confirm the final keyboard connector pinout against the intended keyboard
-  module.
+- Confirm the original keyboard connector pinout and mechanical connector.
+- Replace the current TTL640x480 header placeholder with onboard timing logic.
 
 ### Gate 3: Physical PCB Scaffold
 
@@ -91,23 +95,26 @@ Required before ordering:
 - Gerbers and Excellon drill files export cleanly.
 - Gerbers are visually inspected in an independent viewer.
 - BOM uses orderable parts or clearly marks manual/socketed/DNP items.
+- JLCPCB/LCSC candidate SKUs are assigned for factory-mounted sockets,
+  passives, connectors, power/protection, oscillator, and reset parts.
 
-### Gate 5: Order Package
+### Gate 5: Factory Assembly Order Package
 
 Status: not reached.
 
-Bare PCB package:
+PCB fabrication package:
 
 - Gerbers.
 - Excellon drill files.
 - Fabrication notes.
 - Schematic PDF.
-- BOM for manual assembly planning.
 
-Factory assembly package, if later wanted:
+Factory assembly package:
 
-- BOM with manufacturer part numbers.
+- BOM with manufacturer part numbers and JLCPCB/LCSC candidate part numbers.
 - CPL/position file.
 - Assembly drawings.
 - DNP list.
 - Polarity and socket orientation notes.
+- Notes for owner-supplied post-assembly insertion of Z80, ROM, DRAM, 8255, and
+  GAL/PAL devices if they are not factory-sourced.

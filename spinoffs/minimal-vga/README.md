@@ -21,11 +21,13 @@ Included:
 - Original-style DRAM address multiplexing, refresh, RAS/CAS, and write timing.
 - Original-style keyboard matrix decode path: 8255 PPI column select plus 74148
   row encoder semantics.
-- VGA output using the TTL640x480 sync/blanking design as the display timing
-  target.
+- VGA output using onboard TTL640x480-derived sync/blanking logic as the display
+  timing target.
 - ATX connector power entry, plus any local rail generation required by the
   original chips.
-- Socketed ICs.
+- Socketed western ICs, with a real DIP Z80 for Rev A.
+- Factory assembly target for passives, sockets, connectors, and protection
+  parts where practical.
 - Multi-layer PCB allowed. The board is not constrained to the original 2-layer
   mechanical reproduction.
 
@@ -69,6 +71,14 @@ Design rule: the DRAM subsystem must not depend on Z80 `RFSH` for normal
 operation. `RFSH` may be observed or exposed for diagnostics, but the point of
 this spin-off is to test the original-style DRAM refresh/timing path.
 
+Rev A physical policy:
+
+- CPU: real socketed DIP Z80.
+- ROM: 27C256-class DIP-28 ROM footprint.
+- DRAM: western 4164-compatible DIP-16 parts, 150 ns or faster initial target.
+- Logic: western +5V TTL-compatible parts only; use GAL/PAL-style programmable
+  logic for the first decode/timing iteration.
+
 ## Power
 
 ATX is a useful input connector, but do not assume it directly supplies every
@@ -93,12 +103,14 @@ Design assumption for this spin-off:
 
 ## VGA Strategy
 
-TTL640x480 is treated as the external VGA timing block:
+TTL640x480 is treated as the onboard VGA timing block:
 
 - It provides 640x480 sync/blanking timing.
 - The Juku memory/display side remains the source of character/framebuffer data.
 - The bridge design must define how Juku video memory is sampled into a VGA-safe
   pixel/character stream without breaking CPU DRAM access or refresh.
+- A header may remain for diagnostics, but the Rev A goal is not a daughterboard
+  video timing dependency.
 
 The simplest first simulation target is not a perfect video card. It is:
 
@@ -121,6 +133,7 @@ Early manufacturing planning files live in `kicad/`:
 
 - `../docs/manufacturing-roadmap.md` - gates from behavioral proof to order
   package.
+- `../docs/rev-a-sourcing-plan.md` - JLCPCB/factory-assembly sourcing plan.
 - `rev-a-physical.board.json` - first physical chip-level schematic target.
 - `rev-a-physical.kicad_sch` - generated schematic from that physical target.
 - `rev-a-physical.kicad_pcb` - generated placement/ratsnest PCB scaffold.
@@ -133,6 +146,9 @@ Early manufacturing planning files live in `kicad/`:
 - `rev-a.bom.csv` - initial physical BOM skeleton.
 - `fab-notes.md` - fabrication assumptions and pre-order checklist.
 - `export_fab.sh` - Gerber/drill exporter stub, enabled once a routed PCB exists.
+
+Generated Rev A silkscreen labels use the project-local GOST type B italic font
+from `../../fonts/gost-type-b-italic.ttf`.
 
 The selected Z80 HDL core is the `external/T80` git submodule. See
 `external/Z80-core.md` and `hdl/README.md`.

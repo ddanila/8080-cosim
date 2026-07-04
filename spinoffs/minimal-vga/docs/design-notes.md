@@ -30,7 +30,8 @@ Core:
   - option 2: adapter that translates Z80 cycles into the original-style Juku
     memory/IO strobes.
 - ROM: use `../../roms/ekta37.bin` first; allow multi-ROM mapping later.
-- RAM: one 64K x 8 DRAM bank from eight K565RU5-class 64K x 1 chips.
+- RAM: one 64K x 8 DRAM bank from eight western 4164-compatible 64K x 1
+  chips.
 - Decode: memory decode PROM behavior from the main project.
 
 Keyboard:
@@ -42,14 +43,14 @@ Keyboard:
 Video:
 
 - Preserve Juku DRAM/video arbitration where needed for firmware compatibility.
-- Use TTL640x480 for VGA sync/blanking.
+- Use onboard TTL640x480-derived logic for VGA sync/blanking.
 - Define a small interface between Juku video data and the VGA timing block:
   `pixel_on`, `hsync`, `vsync`, `blank`, and optional RGB resistor DAC lines.
 
 Power:
 
 - ATX connector as input.
-- Local `-5V` generation for the CPU if needed.
+- Rev A active logic is +5V-only with a real DIP Z80 CPU.
 - Multi-layer power/ground planes allowed.
 
 ## Simulation plan
@@ -95,10 +96,8 @@ The `mem_io_request` side should describe intent, not Z80 pins:
 That makes option 2 a replacement of `cpu_bus_adapter`, not a rewrite of the
 DRAM or video subsystem.
 
-## Open decisions
+## Remaining Decisions
 
-- Whether the first physical board should use original Soviet chips only, or
-  allow pin-compatible western equivalents for bring-up.
 - Whether T80 `T80se` bus timing is close enough for the first boot target
   before the adapter is hardened.
 - Whether to keep the original 8253/PIC frame interrupt path if the chosen ROM
@@ -108,3 +107,12 @@ DRAM or video subsystem.
 - Exact ATX power sequencing and `PS_ON#` handling.
 - How much of the original timing PROM behavior must be physically reproduced
   versus collapsed into equivalent TTL/PROM logic.
+
+Resolved Rev A policy:
+
+- Use western parts only for the spin-off.
+- Use a real socketed DIP Z80, 27C256-class ROM, western 4164-compatible DRAM,
+  and GAL/PAL-style programmable logic for the first physical decode/timing
+  iteration.
+- Target factory assembly of passives, sockets, connectors, and protection
+  parts where practical.

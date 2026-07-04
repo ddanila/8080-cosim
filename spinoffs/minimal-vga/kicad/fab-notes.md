@@ -28,12 +28,15 @@ ratsnest items.
 - Board thickness: 1.6 mm unless mechanical constraints change.
 - Copper: 1 oz default.
 - Soldermask: any.
-- Silkscreen: both sides useful for debug.
-- Assembly: bare PCB first; manual socketed assembly.
+- Silkscreen: both sides useful for debug. Generated board-owned silkscreen
+  labels use the project-local `GOST type B italic` font face from
+  `../../../fonts/gost-type-b-italic.ttf`.
+- Assembly: factory assembly target for passives, sockets, connectors, and
+  protection parts where practical; owner-supplied IC insertion where needed.
 
 ## Files Needed Before Ordering
 
-Bare PCB:
+PCB fabrication:
 
 - Routed `.kicad_pcb`.
 - Final KiCad schematic using real library symbols and finalized GAL/header
@@ -46,13 +49,16 @@ Bare PCB:
 - Fabrication notes with layer stack.
 - Schematic PDF for review.
 
-Optional assembly:
+Factory assembly:
 
-- BOM with orderable MPNs.
+- BOM with orderable MPNs and JLCPCB/LCSC candidate part numbers.
 - CPL / position file.
 - Assembly drawings.
 - DNP list.
 - Polarity/orientation notes.
+- Socket orientation notes for every socketed DIP device.
+- Owner-supplied/post-assembly insertion notes for Z80, ROM, DRAM, 8255, and
+  GAL/PAL devices if those parts are not factory-sourced.
 
 ## Pre-Order Checks
 
@@ -67,6 +73,10 @@ Optional assembly:
   `fab/minimal-vga/fab-readiness.md`.
 - Visual inspection of Gerbers in an independent viewer.
 - Confirm all socket footprints match actual sockets and IC widths.
+- Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,
+  connectors, oscillator/reset, and protection parts immediately before order.
+- Confirm whether the selected factory assembly process will mount the intended
+  through-hole sockets/connectors or requires those parts to be left manual.
 - Confirm ATX connector pinout, F1 current rating, D1 TVS rating, and PS_ON
   behavior against the target supply.
 - Confirm reset supervisor pinout and oscillator package before ordering.

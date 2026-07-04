@@ -5,6 +5,12 @@ import pcbnew
 
 
 EXPECTED_COPPER_LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
+EXPECTED_SILK_FONT_FACE = "GOST type B italic"
+EXPECTED_SILK_LABELS = (
+    "MINIMAL VGA JUKU REV A",
+    "Z80 + 4164 DRAM REFRESH TESTBED",
+    "GOST SILK FONT: TYPE B ITALIC",
+)
 EXPECTED_ZONES = {
     "Rev A GND plane placeholder": ("In1.Cu", "GND"),
     "Rev A VCC plane placeholder": ("In2.Cu", "VCC"),
@@ -54,6 +60,13 @@ def main():
             fail(f"{zone_name} has incomplete outline ({corner_count} corners)")
         if not is_filled or not has_fill:
             fail(f"{zone_name} is not filled")
+
+    pcb_text = open(path, encoding="utf-8").read()
+    for label in EXPECTED_SILK_LABELS:
+        if f'(gr_text "{label}"' not in pcb_text:
+            fail(f"missing silkscreen label: {label}")
+    if pcb_text.count(f'(face "{EXPECTED_SILK_FONT_FACE}")') < len(EXPECTED_SILK_LABELS):
+        fail(f"missing GOST silkscreen font face: {EXPECTED_SILK_FONT_FACE}")
 
     print(
         "Rev A PCB check: PASS "

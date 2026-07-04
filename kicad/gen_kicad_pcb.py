@@ -9,10 +9,24 @@
 # Run (KiCad python):
 #   $KICAD/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 \
 #       kicad/gen_kicad_pcb.py kicad/juku.board.json kicad/juku.kicad_pcb
-import sys, json, pcbnew
+import os, sys, json, pcbnew
 
-DIP_LIB = ("/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/"
-           "SharedSupport/footprints/Package_DIP.pretty")
+SILK_FONT_FACE = "GOST type B italic"
+
+def footprint_root():
+    candidates = [
+        os.environ.get("KICAD_FOOTPRINT_DIR"),
+        "/usr/share/kicad/footprints",
+        ("/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/"
+         "SharedSupport/footprints"),
+    ]
+    for path in candidates:
+        if path and os.path.isdir(path):
+            return path
+    raise RuntimeError("KiCad footprint directory not found; set KICAD_FOOTPRINT_DIR")
+
+FOOTPRINT_ROOT = footprint_root()
+DIP_LIB = os.path.join(FOOTPRINT_ROOT, "Package_DIP.pretty")
 
 # chip type -> DIP footprint (real package widths; 600-mil for >=24-pin MSI)
 FP = {
@@ -21,7 +35,7 @@ FP = {
     'PIC8259':'DIP-28_W15.24mm', 'PIT8253':'DIP-24_W15.24mm', 'BUF8286':'DIP-20_W7.62mm',
     'AP2':'DIP-8_W7.62mm', 'LA18':'DIP-8_W7.62mm',   # DIP-8 confirmed by board photos
 }
-SHARED = "/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/SharedSupport/footprints/"
+SHARED = FOOTPRINT_ROOT + "/"
 PASSIVE_FP = {
     'R_AXIAL': ('Resistor_THT.pretty',  'R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal'),
     'C_KM':    ('Capacitor_THT.pretty', 'C_Disc_D4.7mm_W2.5mm_P5.00mm'),
@@ -112,6 +126,30 @@ MARK_REF = {'D29':'КР580ВА86',   # the ВА86 among the VABUS transceivers (
             'D7':'КР1533ЛА3',   # owner-read off the real board (was assumed К555; ALS vs LS -- same logic/pinout, marking only)
             'D56':'К155АГ3',    # board-#2 row-4 АГ3s are К155 8901 (BOM said КМ555АГ3; real board wins, D7 precedent)
             'D2':'КР556РТ4А'}   # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
+
+BOARD_SILK_NOTES = [
+    ("8080 HEART", 32, 134, 0),
+    ("BOOT ROM FIELD", 93, 72, 0),
+    ("DRAM MEMORY FIELD", 160, 132, 0),
+    ("VIDEO TIMING", 96, 188, 0),
+    ("CLOCK MILL", 256, 127, 0),
+    ("FDC OUTPOST", 270, 18, 0),
+    ("SERIAL / TAPE", 201, 37, 0),
+    ("KEYBOARD SCANNER", 222, 246, 0),
+    ("POWER EDGE", 58, 248, 0),
+    ("EXPANSION BUS", 62, 36, 0),
+]
+
+def patch_text_fonts(path):
+    lines = open(path, encoding="utf-8").read().splitlines()
+    patched = []
+    for line in lines:
+        patched.append(line)
+        if line.strip() == "(font":
+            indent = line[:len(line) - len(line.lstrip())] + "\t"
+            patched.append(f'{indent}(face "{SILK_FONT_FACE}")')
+            patched.append(f"{indent}(italic yes)")
+    open(path, "w", encoding="utf-8").write("\n".join(patched) + "\n")
 
 # Placement read from the ES101 assembly drawing (juku3000 emaplaat.pdf): landscape
 # ~310x195 mm board. The top-edge connectors + transceiver row + ROM row + DRAM array are
@@ -216,9 +254,9 @@ def main():
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER
         show_val = not (typ == 'C_KM' and ref.startswith('C') and c.get('value') == '0,047')
         flip = (int(round(x)) // 6) % 2 == 1   # stagger labels in dense passive rows (silk polish)
-        for t, sz, dy in ((fp.Reference(), 1.1, 2.6 if flip else -2.6),
-                          (fp.Value(), 0.9, -2.4 if flip else 2.4)):
-            t.SetVisible(t is fp.Reference() or show_val)
+        for t, visible, sz, dy in ((fp.Reference(), True, 1.1, 2.6 if flip else -2.6),
+                                   (fp.Value(), show_val, 0.9, -2.4 if flip else 2.4)):
+            t.SetVisible(visible)
             t.SetLayer(pcbnew.F_SilkS)
             t.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(sz), pcbnew.FromMM(sz)))
             t.SetTextThickness(pcbnew.FromMM(0.2))
@@ -476,6 +514,17 @@ def main():
         board.Add(t)
         outline_boxes.append((x0, y0, x1, y1, label))
         if label[:1] == 'D': outline_chips.append(label)       # count D-chips only (X1/X2/X9 are connectors)
+
+    def silk_note(label, x, y, rot=0):
+        t = pcbnew.PCB_TEXT(board); t.SetText(label); t.SetLayer(pcbnew.F_SilkS)
+        t.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(2.0), pcbnew.FromMM(2.0)))
+        t.SetTextThickness(pcbnew.FromMM(0.25))
+        t.SetItalic(True)
+        try: t.SetTextAngle(pcbnew.EDA_ANGLE(rot, pcbnew.DEGREES_T))
+        except Exception: t.SetTextAngle(rot * 10)
+        t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+        board.Add(t)
+
     silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
     silk_box(222, 283, 273, 287.6, "X9")   # bottom connector (read mm222..273, pins 58..45; box held 0.4 off the edge cut for silk-edge DRC)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
@@ -512,6 +561,8 @@ def main():
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
     silk_box(182, 22.5, 210, 30, "X3")   # serial edge connector, right of X2 (emaplaat)
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
+    for label, x, y, rot in BOARD_SILK_NOTES:
+        silk_note(label, x, y, rot)
     # clock/divider cluster fill (read off the drawing): D41 (≈251,155, paired with D40, horizontal),
     # D37 (≈261,200, between D36/D33), D34 (≈305,176, right edge).
     # (D41 -> untraced К555ИР16 footprint, owner-identified; D34/D37 -> footprints)
@@ -574,10 +625,12 @@ def main():
 
     board.BuildListOfNets()
     pcbnew.SaveBoard(out, board)
-    # use the GOST CAD font for silkscreen text so the Cyrillic case markings render fully
-    # (KiCad's built-in stroke font drops В/М glyphs). The face is resolved from ~/Library/Fonts.
-    txt = open(out, encoding="utf-8").read().replace('(font', '(font (face "GOST CAD KK")')
-    open(out, "w", encoding="utf-8").write(txt)
+    # Use the project-local GOST italic font for silkscreen text so Cyrillic chip
+    # markings render fully and assembly labels share one house style.
+    patch_text_fonts(out)
+    board = pcbnew.LoadBoard(out)
+    board.EmbedFonts()
+    pcbnew.SaveBoard(out, board)
     n_pos = len(placed) + len(outline_chips)
     allrefs = list(placed) + outline_chips
     dups = sorted({r for r in allrefs if allrefs.count(r) > 1})

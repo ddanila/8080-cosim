@@ -1,32 +1,33 @@
-Designator,Qty,Value,Candidate MPN,Package,Assembly,Notes
-U1,1,Z80 CPU,Z84C0008PEG or equivalent,DIP-40,Socketed,+5V Z80-compatible CPU
-U2,1,32K ROM/EEPROM,AT28C256-15PU or 27C256-compatible,DIP-28,Socketed,Firmware socket; exact part open
-U3,1,Octal bus transceiver,74HCT245,DIP-20,Socketed,Optional CPU data bus buffer
-U4,1,Octal latch/buffer,74HCT573 or 74HCT244,DIP-20,Socketed,Address/control buffering TBD
-U5,1,Address/control decode,GAL16V8/GAL22V10 or 74HCT glue,DIP,Socketed,Rev A iteration-friendly decode
-U10-U17,8,64Kx1 DRAM,4164-compatible 150ns or faster,DIP-16,Socketed,K565RU5 analogue; +5V DRAM
-U20-U21,2,Quad 2:1 mux,74HCT157/74HCT257,DIP-16,Socketed,DRAM row/column source mux
-U22-U23,2,Counter,74HCT393/74HCT4040/74HCT161,DIP,Socketed,Refresh/video address counters TBD
-U24,1,DRAM timing sequencer,GAL16V8/GAL22V10 or PROM+TTL,DIP,Socketed,RAS/CAS/WE timing equations TBD
-U25,1,DRAM control gates,74HCT00/02/08/32,DIP,Socketed,Placeholder for split gates
-U30,1,PPI,82C55 / 8255-compatible,DIP-40,Socketed,Keyboard column/control
-U31,1,Priority encoder,74HCT148,DIP-16,Socketed,Keyboard row encoder
-U40,1,VGA timing,TTL640x480-derived block or header,TBD,Socketed/Header,Integration option open
-U41,1,Pixel shift/latch,74HCT165/166/595-class,DIP,Socketed,Framebuffer byte-to-pixel path TBD
-U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Socketed/Manual,Feeds Rev A CLK net
-U51,1,Reset supervisor,MCP130-class 5V supervisor,TO-92,Manual,Drives RESET_N
-J1,1,ATX power input,ATX 20/24-pin or adapter header,TH,Manual,+5V first; expose other rails only if needed
-J2,1,ATX PS_ON jumper,2.54mm 1x02 header,TH,Manual,Short to request ATX supply on
-J30,1,Keyboard connector,TBD,TH,Manual,Pinout open
-J40,1,VGA connector,HD-15 or header,TH,Manual,Add RGB resistor network
-J90-J92,3,Logic analyzer header,2.54mm pin header,TH,Manual,Address/data/DRAM/video/debug
-J93,1,Power debug header,2.54mm 1x04 header,TH,Manual,VCC/GND/PWR_OK/5VSB bring-up pins
-F1,1,+5V resettable fuse,PTC resettable fuse,THT,Manual,ATX +5V enters VCC_RAW and feeds VCC through F1
-D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Manual,Clamp fused VCC to GND near power entry
-R1-R3,3,VGA series resistor,470 ohm,DIN0207 axial,Manual,PIXEL to VGA RGB placeholder network
-R4-R6,3,Pullup resistor,10k,DIN0207 axial,Manual,Oscillator enable reset and PS_ON pullups
-R7-R14,8,Keyboard row pullup,10k,DIN0207 axial,Manual,Pull active-low 74148 row inputs high
-R15,1,Keyboard encoder enable link,0 ohm,DIN0207 axial,Manual,Ties 74148 EI_N active by default
-R16-R23,8,Keyboard column series resistor,220 ohm,DIN0207 axial,Manual,Between 8255 column outputs and keyboard connector
-C1-C25,25,Decoupling capacitor,100nF ceramic,THT disc,Manual/Factory,One per socketed active IC/module
-C50,1,Bulk capacitor,47uF radial,THT radial,Manual,+5V local bulk reservoir
+Designator,Qty,Value,Candidate MPN,Package,Assembly,Sourcing,JLCPCB/LCSC CPN,Notes
+U1,1,Z80 CPU,Z84C0008PEG/Z84C0020PEG or equivalent,DIP-40,Socketed,NOS/owner-supplied,TBD,Real DIP Z80 for Rev A
+U2,1,32K EPROM,27C256-class,DIP-28,Socketed,NOS/owner-supplied,TBD,32 KiB firmware ROM; 28C256-compatible development part acceptable if pin-compatible
+U3,1,Octal bus transceiver,74HCT245,DIP-20,Socketed,Factory socket plus sourced IC,TBD,Western HCT/TTL-compatible part only
+U4,1,Octal latch/buffer,74HCT573 or 74HCT244,DIP-20,Socketed,Factory socket plus sourced IC,TBD,Address/control buffering TBD
+U5,1,Address/control decode,GAL22V10-class,DIP-24,Socketed,NOS/owner-supplied,TBD,Programmable decode matching original-style policy
+U10-U17,8,64Kx1 DRAM,4164-compatible 150ns or faster,DIP-16,Socketed,NOS/owner-supplied,TBD,Western 4164-compatible +5V DRAM
+U20-U21,2,Quad 2:1 mux,74HCT157/74HCT257,DIP-16,Socketed,Factory socket plus sourced IC,TBD,DRAM row/column source mux
+U22-U23,2,Counter,74HCT393/74HCT4040/74HCT161,DIP,Socketed,Factory socket plus sourced IC,TBD,Refresh/video address counters TBD
+U24,1,DRAM timing sequencer,GAL22V10-class,DIP-24,Socketed,NOS/owner-supplied,TBD,RAS/CAS/WE timing equations TBD
+U25,1,DRAM control gates,74HCT00/02/08/32,DIP,Socketed,Factory socket plus sourced IC,TBD,Placeholder for split gates
+U30,1,PPI,82C55 / 8255-compatible,DIP-40,Socketed,NOS/owner-supplied,TBD,Keyboard column/control
+U31,1,Priority encoder,74HCT148,DIP-16,Socketed,Factory socket plus sourced IC,TBD,Keyboard row encoder
+U40,1,VGA timing,TTL640x480-derived onboard logic,TBD,Factory/Socketed,TBD,TBD,Current PCB still has placeholder; replace with onboard logic before order
+U41,1,Pixel shift/latch,74HCT165/166/595-class,DIP,Socketed,Factory socket plus sourced IC,TBD,Framebuffer byte-to-pixel path TBD
+U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Factory preferred,JLCPCB/LCSC,TBD,Feeds Rev A CLK net
+U51,1,Reset supervisor,MCP130-class 5V supervisor,TO-92,Factory preferred,JLCPCB/LCSC,TBD,Drives RESET_N; verify pinout before order
+Sockets,25,DIP sockets,Machine-pin or square-hole sockets,Mixed THT,Factory preferred,JLCPCB/LCSC,TBD,DIP-40/28/24/20/16/14 socket set for socketed ICs
+J1,1,ATX power input,ATX 20/24-pin or adapter header,TH,Factory preferred,JLCPCB/LCSC,TBD,+5V first; expose control/debug rails as needed
+J2,1,ATX PS_ON jumper,2.54mm 1x02 header,TH,Factory preferred,JLCPCB/LCSC,TBD,Short to request ATX supply on
+J30,1,Keyboard connector,Original matrix connector target,TH,Factory preferred,TBD,TBD,Pinout/mechanics must match intended keyboard
+J40,1,VGA connector,HD-15 or header,TH,Factory preferred,JLCPCB/LCSC,TBD,Add RGB resistor network
+J90-J92,3,Logic analyzer header,2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Address/data/DRAM/video/debug
+J93,1,Power debug header,2.54mm 1x04 header,TH,Factory preferred,JLCPCB/LCSC,TBD,VCC/GND/PWR_OK/5VSB bring-up pins
+F1,1,+5V resettable fuse,PTC resettable fuse,THT,Factory preferred,JLCPCB/LCSC,TBD,ATX +5V enters VCC_RAW and feeds VCC through F1
+D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Factory preferred,JLCPCB/LCSC,TBD,Clamp fused VCC to GND near power entry
+R1-R3,3,VGA series resistor,470 ohm,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,PIXEL to VGA RGB placeholder network
+R4-R6,3,Pullup resistor,10k,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Oscillator enable reset and PS_ON pullups
+R7-R14,8,Keyboard row pullup,10k,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Pull active-low 74148 row inputs high
+R15,1,Keyboard encoder enable link,0 ohm,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Ties 74148 EI_N active by default
+R16-R23,8,Keyboard column series resistor,220 ohm,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Between 8255 column outputs and keyboard connector
+C1-C25,25,Decoupling capacitor,100nF ceramic,THT disc,Factory preferred,JLCPCB/LCSC,TBD,One per socketed active IC/module
+C50,1,Bulk capacitor,47uF radial,THT radial,Factory preferred,JLCPCB/LCSC,TBD,+5V local bulk reservoir

@@ -126,6 +126,19 @@ cluster, replacing the earlier region-level guesses.
 - **Flat compare view** (`docs/pcb-flat-preview.png`): rendered with **no 3D chip bodies** —
   component outlines + silkscreen (refdes + markings) + Edge.Cuts, trimmed to the PCB — so it can
   be laid next to the assembly drawing directly. Use `validate_placement.py` for the overlay.
+
+## Silkscreen Policy
+
+Generated Juku PCB silkscreen is assembly-oriented:
+
+- D/C/R/VD-style component references are visible on `F.SilkS`.
+- DIP chips carry their case marking/value text inside the package body.
+- Pin-1 orientation is marked with the generated key dot.
+- Board-owned subsystem notes label major regions such as ROM, DRAM, clock,
+  video, keyboard, power, and expansion bus areas.
+- Generated text uses the project-local GOST type B italic font asset where
+  KiCad can resolve it. The checker `kicad/check_silkscreen.py` verifies the
+  visible-refdes, chip-marking, subsystem-note, and font-face invariants.
 - **D1 labels:** refdes just above the top-narrow end; case marking КР580ВМ80А centred on the
   body, rotated 90° (GOST). D1 currently reads at ~59% down — pending the owner's reference to
   confirm exact centering.

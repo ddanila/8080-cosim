@@ -8,11 +8,11 @@
 #   orig_px = (1740 + mm_x*14.52, 990 + mm_y*14.52)
 #
 # Run (KiCad python): $KICAD/.../python3 kicad/validate_placement.py <ema2-1.png> <out.png>
-import sys, subprocess, pcbnew
+import os, shutil, sys, subprocess, pcbnew
 
 TLx, TLy, PXMM = 1740.0, 990.0, 14.52
-MAGICK = "/opt/homebrew/bin/magick"
-GOST = "/Users/danila.sukharev/fun/8080-cosim/fonts/gost.ttf"
+MAGICK = shutil.which("magick") or "/opt/homebrew/bin/magick"
+GOST = os.path.abspath("fonts/gost.ttf")
 
 def main():
     drawing, out = sys.argv[1], sys.argv[2]
