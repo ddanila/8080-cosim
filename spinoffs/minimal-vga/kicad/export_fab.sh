@@ -5,7 +5,7 @@ cd "$(dirname "$0")/../../.."
 
 BOARD="${1:-spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb}"
 OUT="${2:-fab/minimal-vga}"
-KCLI="${KICAD_CLI:-kicad-cli}"
+KCLI="$("scripts/find-kicad-cli.sh")"
 
 if [ ! -f "$BOARD" ]; then
   echo "No routed PCB yet: $BOARD" >&2
@@ -34,7 +34,7 @@ python3 spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
   --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
   -o "$OUT/gerbers/" "$BOARD"
 "$KCLI" pcb export drill --format excellon --drill-origin absolute -o "$OUT/drill/" "$BOARD"
-kicad-cli sch export pdf \
+"$KCLI" sch export pdf \
   --black-and-white \
   --output "$OUT/review/rev-a-physical-schematic.pdf" \
   spinoffs/minimal-vga/kicad/rev-a-physical.kicad_sch

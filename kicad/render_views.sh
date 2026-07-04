@@ -3,7 +3,8 @@
 # Run after any change to kicad/juku_routed.kicad_pcb (the pre-commit hook in
 # .githooks/ does this automatically when the board is staged).
 set -e
-KCLI="/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+cd "$(dirname "$0")/.."
+KCLI="$(scripts/find-kicad-cli.sh)"
 BOARD="${1:-kicad/juku_routed.kicad_pcb}"
 mkdir -p renders
 for side in front back; do

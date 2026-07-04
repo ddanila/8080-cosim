@@ -92,6 +92,8 @@ Factory assembly:
   gate, so a real order package cannot silently use a stale position file.
 - `export_fab.sh` also emits `review/rev-a-physical-schematic.pdf`,
   `review/rev-a-assembly-front.pdf`, and `review/rev-a-assembly-back.pdf`.
+- `render_previews.sh` emits top-view PNG previews:
+  `review/rev-a-top-bare.png` and `review/rev-a-top-populated.png`.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
 - Visual inspection of Gerbers in an independent viewer.
