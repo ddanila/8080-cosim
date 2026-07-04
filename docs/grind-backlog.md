@@ -454,3 +454,8 @@ mode tag-3, buffer E-gates, LOAD_PRE, PIT0_CLK1M rail source.
 Crop s2_d58_oe: the D37.6 riser corners east into D58.OE (pin 9) — RAM_RD_OE fully traced
 (was the "rail continuity assumed" item). Same frame re-validates the beeper SOUND tag-10
 arrival -> R90. D58 rows also read: STB=11, D7/D8 data rows ✓ ИР82 pinout consistent.
+
+## Loop iteration: SPKR + AVDC far ends closed
+Crop s2_spkr_edge: AVDC = R91 -> "(1)" cross-sheet export (sheet-1 arrival = one text hunt);
+SPKR = R48 -> wire post 1, post 2 = GND return (the SB posts flanking R60 at 252.7/205.2 and
+252.7/199.9) -- speaker unit solders to posts directly. Both srcs upgraded.

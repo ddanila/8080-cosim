@@ -12950,7 +12950,7 @@
    ]
   },
   "AVDC": {
-   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): R91 -> rail labeled AVDC, destination unread [chase]",
+   "src": "traced sheet-2 (crop s2_spkr_edge): R91 -> rail labeled AVDC -> \"(1)\" export to sheet 1 (sheet-1 arrival = one text-hunt; likely the tape/AV DC bias at the serial-driver corner)",
    "nodes": [
     [
      "R91",
@@ -12972,7 +12972,7 @@
    ]
   },
   "SPKR": {
-   "src": "traced sheet-2 (crops s2_d57_outs/s2_beeper): R48 -> speaker edge contact (number unread) -> ДГШ5.884.001 unit",
+   "src": "traced sheet-2 (crop s2_spkr_edge): R48 -> WIRE POST 1 (SB spot 252.7,205.2); post 2 (252.7,199.9) = GND return -- the ДГШ5.884.001 speaker unit solders to posts, no connector",
    "nodes": [
     [
      "R48",
