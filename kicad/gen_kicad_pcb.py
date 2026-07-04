@@ -48,7 +48,7 @@ PASSIVE_PLACE = {
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
-    'E4':(38,247,0),'E5':(38,242,0),'C34':(47,242,0),   # array power option jumpers + H<->F cap [power corner; position approx near X8 power entry]
+    'E4':(42.9,226.5,0),'E5':(50.5,226.1,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
     # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
     # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
     'VT4':(265.0,98.4,0),'R73':(281.9,102.7,0),'VT3':(294.6,105.6,0),'VT2':(280.5,124.8,0),'VD3':(298.6,118.2,90),
@@ -65,7 +65,7 @@ PASSIVE_PLACE = {
     'R57':(204.1,216.2,0),'R58':(204.1,220.5,0),   # R57 = CAS rail-15 series (<- D36.11), R58 = rail-15 5.1k pullup -> E [bite-2; same column, position approx]
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
-    'E2':(217.5,219.4,0),'E3':(217.5,212.9,0),   # config jumpers beside D52 (the 2-node D52_Yx nets kept failing the cross-zone haul; Φ nets are multi-drop and route freely)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C35':(119.6,124.3,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),

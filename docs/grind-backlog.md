@@ -63,3 +63,16 @@ PHI2TTL sheet-1 pin, "14" tap on the 16MHz rail.
 - **Parts register page 1 (caps) spot-checks**: 0.047µF x3 ✓ (C9/C11/C14), 56pF x4 (C29,C13+2
   [find]), 560pF x2 ✓ (C7+1), 0.15µF x20 (bypass fleet), 24pF П33 x1 (C73 zone), 910пФ/220пФ/
   150пФ/160пФ singles [locate]. Full census = next pass (pages 2-11: R/D/VT/L).
+
+## СБ grind session 2 — power corner + posts
+- Shared-zone AUTHORITY CONFIRMED: R19 (44.5,220.2 vs ours 44.4,220.7), VD5, C73 (58.3,241.4
+  vs 58,241.5), Z, X8 (x~24, pins 62/61/60/59), R4 -- all match photo-derived spots ≤1.5mm.
+  The .100 СБ is authoritative for shared zones of the .158.
+- FIXED from СБ: E4 (42.9,226.5), E5 (50.5,226.1) [were 38,247/38,242]; E2 (61.6,215.5),
+  E3 (54.6,215.5) [were mis-entered at x 217.5 -- D52 itself was already right at 58.3].
+- Wire posts read: "2" = (252.7,199.9), "1" = (252.7,205.2) with ⊗ symbols, flanking R60.
+  Harvest y's (219.9/227.6) differ ~20mm -- re-derive the harvest y-formula against СБ [queued].
+- NEW parts seen on СБ, absent from board.json (census additions pending wiring reads):
+  VT1 (250.5,218.9) + VD4 + R90/R91 (beeper/reset cluster), R48, R60, C92 (29.9,215.0),
+  C93 (22.5,240), C94 (analog zone), C96/C98 (mesh zone), D105 (~35,190), D107?, X5 socket.
+- C34 not yet located on the СБ [queued]; XL1 = the coax mount pad near VT zone [queued].
