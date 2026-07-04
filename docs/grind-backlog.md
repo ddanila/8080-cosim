@@ -170,3 +170,13 @@ Remaining register pages 2-4,10-11 (caps cont., ferrites, misc) = final pass [qu
 4. Residual: line-follow codes 5/6/7/8 to pin the physical socket order (which of D17-D22 =
    which bank); optional empirical referee = boot_check with candidate wirings.
 5. Community: zx-pk.ru thread 27298 (Juku E5101) found — mine for owner measurements [queued].
+
+## ROM-socket decode COMPLETE (window map netted)
+Riser-label reads (romcs_band/band2): **D19.CS <- code 5 (D8.D0) = A000; D20 <- 6 (D1) =
+8000; D21 <- 7 (D2) = 6000; D22 <- 8 (D3) = 4000** -> nets ROM_CS_{4000,6000,8000,A000}
+added, eprom_socket .cs_n wired (boot-inert, sockets empty in sim). Socket rows: top =
+D15,D17,D19,D21; bottom = D16,D18,D20,D22. BAS0-3 dumps map: BAS0->D22(4000), BAS1->D21,
+BAS2->D20, BAS3->D19 [by file order, verify vs labels/photos]. D17/D18 = the expansion
+pair: CS likely D8.D4/D5 (codes 1/2) which stock .117 holds LOW throughout the window --
+SAFE ONLY WHILE EMPTY, which is exactly how the board ships [feed read queued; the "code
+1 -> D15.CS" mis-association fully explained]. LVS 214 IN SYNC.

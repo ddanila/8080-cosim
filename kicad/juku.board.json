@@ -12517,6 +12517,58 @@
      "2"
     ]
    ]
+  },
+  "ROM_CS_A000": {
+   "src": "traced sheet-1 (crops romcs_band/band2: code label ON the CS riser) + factory .117 table semantics; code 5 = D8.D0 -> D19.CS",
+   "nodes": [
+    [
+     "D8",
+     "1"
+    ],
+    [
+     "D19",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_8000": {
+   "src": "traced sheet-1 (crops romcs_band/band2: code label ON the CS riser) + factory .117 table semantics; code 6 = D8.D1 -> D20.CS",
+   "nodes": [
+    [
+     "D8",
+     "2"
+    ],
+    [
+     "D20",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_6000": {
+   "src": "traced sheet-1 (crops romcs_band/band2: code label ON the CS riser) + factory .117 table semantics; code 7 = D8.D2 -> D21.CS",
+   "nodes": [
+    [
+     "D8",
+     "3"
+    ],
+    [
+     "D21",
+     "20"
+    ]
+   ]
+  },
+  "ROM_CS_4000": {
+   "src": "traced sheet-1 (crops romcs_band/band2: code label ON the CS riser) + factory .117 table semantics; code 8 = D8.D3 -> D22.CS",
+   "nodes": [
+    [
+     "D8",
+     "4"
+    ],
+    [
+     "D22",
+     "20"
+    ]
+   ]
   }
  }
 }
