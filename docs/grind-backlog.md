@@ -442,3 +442,10 @@ FRAME_INT's drawn name = "VER RTR" (D55.OUT1). G0 gates -> +5V (netted). NEW: PI
 {D54.9,15,18} <- rail labeled 1MHz [source east unread; 16M/16 tap candidate]. D54.OUT1 =
 "HOR RTR" export ✓. Remaining #14 residue: RAM_RD_OE crop, SPKR/AVDC/CLK_123M far ends,
 D56 sect-1 trigger, DOTCLK16M bend, C99 plate, D6 V1/V2, mode tag-3, buffer E-gates, LOAD_PRE.
+
+## #14 continued: RAM_RD_OE chain traced
+Crop s2_d37_d58: "(1) RAM OUT EN." arrives from sheet 1 -> D37.4 ✓ (net RAM_OUT_EN exact);
+"(1) -MRD" -> D33 sect 3->4 -> D37.5 ✓ (HDL wiring exact); D37.6 riser ascends toward
+D58.OE [pin landing = one crop, 95%]. RAM_RD_OE upgraded scan->traced. Remaining #14:
+SPKR/AVDC/CLK_123M far ends, D56 sect-1 trigger, DOTCLK16M bend, C99 plate, D6 V1/V2,
+mode tag-3, buffer E-gates, LOAD_PRE, PIT0_CLK1M rail source.
