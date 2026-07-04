@@ -110,7 +110,7 @@ module juku_top (
 `endif
     la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36),   // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
                      .a2(cas_n), .b2(1'b1), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 [pending]
-                     .a3(1'b1), .b3(d33_o10), .y3(),           // 9,10->8 -> rail 16 [dests pending]; pin 9 [pending]
+                     .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU

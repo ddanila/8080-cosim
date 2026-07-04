@@ -426,3 +426,31 @@ CHASE SESSION (items 1-4; crops c4_*):
    ram_en_sim leg (lvs.py contract, like SACTIVE/CAS_SIM) -- boot byte-identical.
    Still queued: D36.9 + D36.12/13 west sources, rail-16 fanout check, PIT line dests
    (SOUND->pin10 / SYNC B.->pin12 / 2M->pin8 / 1.23M->pin13 far ends).
+
+GRIND SESSION items 1-6 (crops an_*, t6_*, t7_*):
+1. ANALOG CORNER NETTED (was the last un-netted subsystem): D34 ЛП5 = SYNC (9,10->8) + SIG
+   (12,13->11) XOR outs -> R62/R63 -> VT2 emitter-follower = composite VIDEO -> X4.3 (contact
+   601); SOUND -> R66 1k -> VD3 КС147 clamp -> R67 -> R68 -> VT3 base (+R69<-SIG, R70/R71
+   bias, C13); VT3/VT4 RF modulator can (R72 33 supply, R73 4.7k adj, R74/R75, C9-C15, L1
+   tunable 1/5-turn tap) -> R76 300 -> HF -> X4.5 (contact 701), R77 100 load. 28 parts +
+   14 nets + placements added [positions/joints approx -- refine vs photos]. X4 = video/RF
+   connector (socket type pending). CTR_LD SECTION SLIP FIXED: LP5 sect(1,2->3) -> D34.3
+   (pin 8 = the SYNC out; old pinmap had impossible 1,2->8). PIT "SOUND" source pin pending.
+   Re-confirmed drawn: RAM_OUT_EN -> D37.4, -MRD -> D33.3->4 -> D37.5, D37.6 -> D58.OE dir.
+2. D36.9 <- "(1) WR" = MEMW (y-match) -> the W-strobe = NAND(WR, CAS-delay) -> rail 16 ✓
+   closes the write-chain logic. D36.12/13 driver = a mesh-bundle vertical from the D40
+   divider zone (crosses Ф2TTL without a dot; one hop from closure) [pending]. D38 sect-2
+   ins = unlabeled long rails [boundary]; D41 parallel ins off-crop [boundary]. Bonus: W10
+   (D41.13 -> wire 10 -> D50.1) drawn-confirmed. D103.11 = 1.23MHz divider out; D103.CO ->
+   D33.1->2 (all six D33 sections now accounted); D103.LD <- wire junction [owner item].
+3-5. S3_1 code-1 glyph READ (adjacency confirmed); D56.4 -> 16MHz bend CONFIRMED (DOTCLK16M
+   fully traced; one "14" far-end tap unidentified); PHI2TTL sheet-1 arrival pin NOT chased
+   (label hunt on sheet 1 = poor ROI) -> owner/queued.
+6. WIRE CROSS-CHECK (emaplaat harvest vs schematic reads): confirmed both-ways: 9 (SYNC),
+   10 (QA->D50.sel ✓ drawn), 11 (-MRD ✓ drawn), 12 (RAM OUT EN), 13 (-RAM OUT EN -> D92 ✓
+   drawn), 19 (-MWR junction ✓ drawn), 8 (STSTB). Schematic-side wire junctions NOT yet in
+   the harvest: D15.CS open-circle ("1"-coded rail), D8.E, D103.LD, D47.LD -- these are the
+   3rd-layer wires the owner should verify. Wires 14+7, 2, 1 posts harvested at the right
+   edge (251,195-228) -- endpoints not yet schematic-matched [queued].
+ASSUMED CENSUS after this session: REV (dest), RAM_RD_OE (continuity), FDC_INTRQ, FDC_DRQ
++ soft items (SOUND source pin, D36.12/13 driver, "14" tap, D38/D41 ins, PIT line far ends).

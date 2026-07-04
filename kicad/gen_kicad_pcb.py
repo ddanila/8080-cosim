@@ -34,6 +34,9 @@ PASSIVE_FP = {
     'SW_DIP6': ('Button_Switch_THT.pretty', 'SW_DIP_SPSTx06_Slide_9.78x17.42mm_W7.62mm_P2.54mm'),  # S3 video-config bank
     'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
     'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
+    'Q_TO92':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315/КТ325 (flat KT-13 pkg; TO-92 stand-in)
+    'L_RADIAL':('Inductor_THT.pretty', 'L_Radial_D7.0mm_P3.00mm'),             # L1 RF coil (tunable core; stand-in)
+    'VIDEO_RF_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # video/RF contacts 601/602/701/702 [socket type pending photos]
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -45,6 +48,13 @@ PASSIVE_PLACE = {
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
     'E4':(38,247,0),'E5':(38,242,0),'C34':(47,242,0),   # array power option jumpers + H<->F cap [power corner; position approx near X8 power entry]
+    # ---- analog video/RF/sound corner (sheet-2 bottom-right; positions approx, refine vs photos) ----
+    'R62':(263,236,0),'R63':(263,240,0),'R64':(263,244,0),'R65':(263,248,0),'R66':(263,252,0),'R67':(263,256,0),
+    'R68':(274,236,0),'R69':(274,240,0),'R70':(274,244,0),'R71':(274,248,0),'R72':(274,252,0),'R73':(274,256,0),
+    'R74':(285,236,0),'R75':(285,240,0),'R76':(285,244,0),'R77':(285,248,0),
+    'C9':(285,252,0),'C10':(285,256,0),'C11':(293,236,0),'C12':(293,240,0),'C13':(293,244,0),'C14':(293,248,0),'C15':(293,252,0),
+    'VT2':(299,236,0),'VT3':(299,241,0),'VT4':(299,246,0),'VD3':(293,256,90),'L1':(299,252,0),
+    'X4':(303,258,0),   # video/RF out (601/602/701/702)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     'R49':(204.1,181.7,0),'R50':(204.1,186,0),'R51':(204.1,190.3,0),'R52':(204.1,194.6,0),   # 100R strobe series [sheet-2; emaplaat x204 column]
     'R53':(204.1,199,0),'R54':(204.1,203.3,0),'R55':(204.1,207.6,0),'R56':(204.1,211.9,0),   # 5.1k strobe pullups -> rail E

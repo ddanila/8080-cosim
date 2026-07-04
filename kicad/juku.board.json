@@ -3399,7 +3399,13 @@
     "6": "Y1",
     "1": "A2",
     "2": "B2",
-    "8": "Y2"
+    "8": "Y3",
+    "3": "Y2",
+    "9": "A3",
+    "10": "B3",
+    "12": "A4",
+    "13": "B4",
+    "11": "Y4"
    },
    "prov": {
     "type": "scan",
@@ -3633,6 +3639,243 @@
    "pins": {
     "1": "P1",
     "2": "P2"
+   }
+  },
+  {
+   "ref": "R62",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R63",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R64",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R65",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R66",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R67",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R68",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R69",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R70",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R71",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R72",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R73",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R74",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R75",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R76",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "R77",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C9",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C10",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C11",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C12",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C13",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C14",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "C15",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "VT2",
+   "type": "Q_TO92",
+   "pins": {
+    "1": "E",
+    "2": "B",
+    "3": "C"
+   }
+  },
+  {
+   "ref": "VT3",
+   "type": "Q_TO92",
+   "pins": {
+    "1": "E",
+    "2": "B",
+    "3": "C"
+   }
+  },
+  {
+   "ref": "VT4",
+   "type": "Q_TO92",
+   "pins": {
+    "1": "E",
+    "2": "B",
+    "3": "C"
+   }
+  },
+  {
+   "ref": "VD3",
+   "type": "D_DIODE",
+   "pins": {
+    "1": "K",
+    "2": "A"
+   }
+  },
+  {
+   "ref": "L1",
+   "type": "L_RADIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   }
+  },
+  {
+   "ref": "X4",
+   "type": "VIDEO_RF_CONN",
+   "pins": {
+    "3": "VIDEO",
+    "4": "GND1",
+    "5": "HF",
+    "6": "GND2"
    }
   }
  ],
@@ -5717,7 +5960,7 @@
    ]
   },
   "MEMW": {
-   "src": "scan; array read: DRAM W pins moved to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps",
+   "src": "scan; array read: DRAM W pins moved to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps; + D36.9 write-qualifier into the W-strobe NAND (t6: \"(1) WR\" line y-match)",
    "nodes": [
     [
      "D5",
@@ -5734,6 +5977,10 @@
     [
      "D92",
      "4"
+    ],
+    [
+     "D36",
+     "9"
     ]
    ],
    "note": "WIRE 19 (beeper): D5.26 -> D7.2 physical wire",
@@ -7467,7 +7714,7 @@
      "9"
     ]
    ],
-   "src": "scan sheet-2 (bite-3 mesh crops b3_*): 16MHz astable = D56 two one-shots cross-coupled (R47/C7, R59/C8); output leg = sect-1 Q_N pin 4 (pin 13 not drawn); -> D103.2 (CK, confirmed) + D42.9/D43.9 ctrl-rail-3 taps"
+   "src": "traced sheet-2 (bite-3 + t7_d56_bend): D56 16MHz astable, out = sect-1 Q_N pin 4, drawn bend onto the 16MHz rail -> D103.2 CK + D42.9/D43.9 (ctrl-rail 3); one unidentified \"14\" far-end tap remains"
   },
   "D40QA": {
    "nodes": [
@@ -8522,6 +8769,58 @@
     [
      "C34",
      "2"
+    ],
+    [
+     "R64",
+     "2"
+    ],
+    [
+     "R65",
+     "2"
+    ],
+    [
+     "VD3",
+     "1"
+    ],
+    [
+     "R71",
+     "2"
+    ],
+    [
+     "R74",
+     "2"
+    ],
+    [
+     "R75",
+     "2"
+    ],
+    [
+     "R77",
+     "2"
+    ],
+    [
+     "C13",
+     "2"
+    ],
+    [
+     "C14",
+     "2"
+    ],
+    [
+     "C9",
+     "1"
+    ],
+    [
+     "L1",
+     "2"
+    ],
+    [
+     "X4",
+     "4"
+    ],
+    [
+     "X4",
+     "6"
     ]
    ]
   },
@@ -8920,6 +9219,18 @@
     [
      "E4",
      "3"
+    ],
+    [
+     "VT2",
+     "3"
+    ],
+    [
+     "R70",
+     "1"
+    ],
+    [
+     "R72",
+     "1"
     ]
    ]
   },
@@ -10405,7 +10716,7 @@
    ]
   },
   "S3_1": {
-   "src": "scan sheet-2 (S3 config; 3-6 -> D47 presets); bite-2: code 1 -> D46.10 (preset C) [assumed by row-adjacency, code glyph cut off]",
+   "src": "scan sheet-2 (S3 config); t7: code-1 glyph read at D46.10 (C preset) -- adjacency assumption CONFIRMED",
    "nodes": [
     [
      "S3",
@@ -10558,11 +10869,11 @@
    ]
   },
   "CTR_LD": {
-   "src": "scan sheet-2 (D34.8 -> D44/D45 LD, shared rail)",
+   "src": "scan sheet-2 (D34 sect 1,2->3 -> D44/D45 LD; pin-8 attribution was a section slip -- pin 8 = SYNC out, analog-corner read)",
    "nodes": [
     [
      "D34",
-     "8"
+     "3"
     ],
     [
      "D44",
@@ -11927,6 +12238,259 @@
     [
      "C34",
      "1"
+    ]
+   ]
+  },
+  "D34_SYNC": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out",
+   "nodes": [
+    [
+     "D34",
+     "8"
+    ],
+    [
+     "R62",
+     "1"
+    ]
+   ]
+  },
+  "D34_SIG": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out",
+   "nodes": [
+    [
+     "D34",
+     "11"
+    ],
+    [
+     "R63",
+     "1"
+    ],
+    [
+     "R69",
+     "1"
+    ]
+   ]
+  },
+  "VT2_BASE": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible",
+   "nodes": [
+    [
+     "R62",
+     "2"
+    ],
+    [
+     "R63",
+     "2"
+    ],
+    [
+     "R64",
+     "1"
+    ],
+    [
+     "VT2",
+     "2"
+    ]
+   ]
+  },
+  "VIDEO_OUT": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601",
+   "nodes": [
+    [
+     "VT2",
+     "1"
+    ],
+    [
+     "R65",
+     "1"
+    ],
+    [
+     "X4",
+     "3"
+    ]
+   ]
+  },
+  "SOUND_CLAMP": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R66.1 <- the \"SOUND\" PIT line [source pin pending]; VD3 KC147 clamp",
+   "nodes": [
+    [
+     "R66",
+     "2"
+    ],
+    [
+     "VD3",
+     "2"
+    ],
+    [
+     "R67",
+     "1"
+    ]
+   ]
+  },
+  "SND_MIX": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible",
+   "nodes": [
+    [
+     "R67",
+     "2"
+    ],
+    [
+     "R68",
+     "1"
+    ]
+   ]
+  },
+  "VT3_BASE": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout",
+   "nodes": [
+    [
+     "R68",
+     "2"
+    ],
+    [
+     "R69",
+     "2"
+    ],
+    [
+     "R70",
+     "2"
+    ],
+    [
+     "R71",
+     "1"
+    ],
+    [
+     "C13",
+     "1"
+    ],
+    [
+     "VT3",
+     "2"
+    ]
+   ]
+  },
+  "RF_RAIL": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed",
+   "nodes": [
+    [
+     "VT3",
+     "3"
+    ],
+    [
+     "C9",
+     "2"
+    ],
+    [
+     "R72",
+     "2"
+    ],
+    [
+     "C10",
+     "1"
+    ],
+    [
+     "R73",
+     "1"
+    ],
+    [
+     "C11",
+     "1"
+    ]
+   ]
+  },
+  "VT3_E": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible",
+   "nodes": [
+    [
+     "VT3",
+     "1"
+    ],
+    [
+     "R74",
+     "1"
+    ]
+   ]
+  },
+  "VT4_B": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable",
+   "nodes": [
+    [
+     "R73",
+     "2"
+    ],
+    [
+     "VT4",
+     "2"
+    ],
+    [
+     "C10",
+     "2"
+    ]
+   ]
+  },
+  "RF_TANK": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; L1 tap simplification (1/5 turns, tap -> R76)",
+   "nodes": [
+    [
+     "VT4",
+     "3"
+    ],
+    [
+     "C11",
+     "2"
+    ],
+    [
+     "C12",
+     "1"
+    ],
+    [
+     "L1",
+     "1"
+    ],
+    [
+     "R76",
+     "1"
+    ],
+    [
+     "C15",
+     "1"
+    ]
+   ]
+  },
+  "HF_OUT": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701",
+   "nodes": [
+    [
+     "R76",
+     "2"
+    ],
+    [
+     "R77",
+     "1"
+    ],
+    [
+     "X4",
+     "5"
+    ]
+   ]
+  },
+  "VT4_E": {
+   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout",
+   "nodes": [
+    [
+     "VT4",
+     "1"
+    ],
+    [
+     "R75",
+     "1"
+    ],
+    [
+     "C14",
+     "1"
+    ],
+    [
+     "C15",
+     "2"
     ]
    ]
   }
