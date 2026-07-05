@@ -5096,4 +5096,8 @@
 	(label "MEM_MODE2" (at 85.56 677.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 83.02000000000001 200) (xy 83.02000000000001 197.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000001762"))
 	(label "MEM_MODE2" (at 83.02000000000001 197.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
+	(wire (pts (xy 62.7 240) (xy 62.7 237.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000001763"))
+	(label "D25_T" (at 62.7 237.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
+	(wire (pts (xy 72.86 1920) (xy 72.86 1917.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000001764"))
+	(label "D25_T" (at 72.86 1917.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 )

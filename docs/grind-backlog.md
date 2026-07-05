@@ -517,3 +517,10 @@ or a control wire sharing the channel does not resolve at this scan's quality.
 Crop s1_egates1: both address buffers drawn with T (11) <- "A" +5V arrow and E (9) <- GND
 symbol directly — permanently enabled, no gate drivers. Netted (power rails, LVS-exempt).
 D25 (data buffer) E-gate = next crop (must be gated for bus turnaround).
+
+## Loop iteration: D25/D29 enables read; D25.T gated by D7 sect3
+Crop s1_egates2: D25 (data ВА87) E (9) -> GND like D23/D24; **T (11) <- D7 ЛА3 section
+(pins 5,4 -> 6)** = the bus-turnaround control (section inputs = next hop west, unread).
+D29's T <- +5V arrow visible (E row cut off — assume GND like siblings [next crop if needed]).
+Netted D25_T {D7.6, D25.11} + GND += D25.9; HDL sect3 wired (inputs tied so y3=1 = transmit,
+preserving the old fixed-T boot behavior). LVS IN SYNC, boot 6/6.

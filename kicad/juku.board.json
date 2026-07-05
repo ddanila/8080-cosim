@@ -183,7 +183,10 @@
     "11": "Y",
     "1": "A2",
     "2": "B2",
-    "3": "Y2"
+    "3": "Y2",
+    "4": "A3",
+    "5": "B3",
+    "6": "Y3"
    },
    "prov": {
     "type": "scan",
@@ -9007,6 +9010,10 @@
     [
      "D24",
      "9"
+    ],
+    [
+     "D25",
+     "9"
     ]
    ]
   },
@@ -13159,6 +13166,19 @@
     [
      "D6",
      "15"
+    ]
+   ]
+  },
+  "D25_T": {
+   "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",
+   "nodes": [
+    [
+     "D7",
+     "6"
+    ],
+    [
+     "D25",
+     "11"
     ]
    ]
   }

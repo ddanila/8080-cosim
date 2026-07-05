@@ -171,7 +171,8 @@ module juku_top (
     wire [7:0] adr_lo, adr_hi, dat;
     va87_out U_D23 (.Ain(BA[7:0]),  .Aout(adr_lo), .oe_n(1'b0), .t(1'b1));
     va87_out U_D24 (.Ain(BA[15:8]), .Aout(adr_hi), .oe_n(1'b0), .t(1'b1));
-    va87_out U_D25 (.Ain(DB),       .Aout(dat),    .oe_n(1'b0), .t(1'b1));
+    wire d25_t_w;   // data-bus turnaround: D7 ЛА3 sect (5,4->6) -> D25.T (traced s1_egates2); inputs unread -> held transmit
+    va87_out U_D25 (.Ain(DB),       .Aout(dat),    .oe_n(1'b0), .t(d25_t_w));
     expansion_conn U_X1 (.inhib_n(inhib_n), .cclck(cclck), .iom_n(iom_n), .mwc_n(mwc_n),
                          .mrc_n(mrc_n), .amwc_n(amwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
                          .dat(dat), .adr_lo(adr_lo), .adr_hi(adr_hi));
@@ -188,7 +189,8 @@ module juku_top (
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
     la3_gate    U_D7     (.a(iowr_n), .b(iord_n), .y(io_strobe_h),     // traced: sect 12,13->11 = strobe-NAND (high on either io strobe) -> R17 -> D9.G1; 12/13 order assumed
-                          .a2(1'b1), .b2(memw_n), .y2());   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
+                          .a2(1'b1), .b2(memw_n), .y2(),   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
+                          .a3(1'b0), .b3(1'b0), .y3(d25_t_w));   // sect3 (5,4->6) -> D25.T; inputs unread -> tied so y3=1 = transmit (old fixed-T behavior)
     decode_prom U_DECODE (.a({BA[15:11], mem_mode[0], mem_mode[1], ppi0_pc[2]}),   // traced: mode enters as PROM address (pins 2,1,15 <- tags 1,2,3; tag3->pin15 read s1_d6_ven2, PC2 source assumed)
                           .v_en_n(1'b0),                                     // V1/V2 feed unread; modeled always-enabled (old D7.11 link refuted)
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
