@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 REQUIRED_ARTIFACTS = [
+    "source-model-readiness.md",
     "behavioral-readiness.md",
     "erc-readiness.md",
     "fab-readiness.md",
@@ -106,6 +107,7 @@ def has_ready_line(text, label):
 
 
 def machine_gate_summary(out_dir):
+    source_model = read_text(out_dir / "source-model-readiness.md")
     behavioral = read_text(out_dir / "behavioral-readiness.md")
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
@@ -118,6 +120,17 @@ def machine_gate_summary(out_dir):
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
+        (
+            "Physical source model",
+            has_ready_line(source_model, "READY")
+            and "- Required refs missing: 0" in source_model
+            and "- Required nets missing: 0" in source_model
+            and "- Required pin-binding failures: 0" in source_model
+            and "- Unknown net endpoints: 0" in source_model
+            and "- Multi-net pin conflicts: 0" in source_model
+            and "- No-connect conflicts: 0" in source_model,
+            "`source-model-readiness.md` records Rev A ref/net/pin-binding and no-connect policy before schematic export.",
+        ),
         (
             "Behavioral simulation/LVS",
             has_ready_line(behavioral, "READY")

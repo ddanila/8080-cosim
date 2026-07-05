@@ -127,6 +127,10 @@ Factory assembly:
 - `render_placement_preview.sh` emits a fast unrouted placement/silkscreen
   review from the generator:
   `review/vjuga-placement-top.svg` and `review/vjuga-placement-top.png`.
+- `report_rev_a_source_model.py` writes
+  `fab/minimal-vga/source-model-readiness.md`, recording the Rev A physical
+  source-model ref/net/pin-binding coverage and explicit no-connect policy
+  before schematic export.
 - `report_rev_a_behavioral_readiness.py` writes
   `fab/minimal-vga/behavioral-readiness.md`, running the spin-off simulator
   entry point and recording the ROM/cosim boot oracle, T80 smoke test,

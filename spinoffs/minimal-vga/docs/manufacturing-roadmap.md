@@ -98,6 +98,10 @@ Status: routed FreeRouting baseline.
   70% of available RAM to reduce whole-machine OOM risk during experiments.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
+- `report_rev_a_source_model.py` produces
+  `fab/minimal-vga/source-model-readiness.md`, recording the Rev A physical
+  source-model ref/net/pin-binding coverage and explicit no-connect policy
+  before schematic export.
 - `report_rev_a_erc_readiness.sh` records the current KiCad ERC status for the
   physical schematic and exits nonzero if error-level ERC findings return. The
   Rev A source model now has explicit no-connect policy for unused pins; the
@@ -144,6 +148,8 @@ Status: routed FreeRouting baseline.
 - Current behavioral readiness passes the spin-off simulator entry point:
   ROM/cosim boot oracle, T80 smoke test, logical schematic/HDL LVS, physical
   target checks, PCB scaffold check, DRC summary, and DRAM row/column unit.
+- Current source-model readiness passes the Rev A required ref/net/pin-binding
+  policy and records 38 explicit no-connect pins.
 - Current routing-geometry report has zero hard geometry failures. It records
   the explicit no-zone baseline and flags 0.20 mm routed power traces for human
   review before ordering.
