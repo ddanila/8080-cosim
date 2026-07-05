@@ -8,7 +8,7 @@ jobs:
   lvs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Yosys for the HDL netlist. KiCad is intentionally NOT installed: the
       # schematic is generated deterministically from the board spec, so check.sh
@@ -24,7 +24,7 @@ jobs:
   boot:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # iverilog runs the vm80a-based HDL sims; gcc builds the cosim oracle.
       # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL
