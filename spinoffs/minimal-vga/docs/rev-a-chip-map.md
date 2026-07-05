@@ -37,9 +37,9 @@ western parts, and enough test headers to debug DRAM timing.
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| U40 | VGA timing block | TTL640x480 bring-up timing header | 2.54 mm header | Rev A proves CPU/DRAM/refresh/video handoff first; full onboard TTL VGA expansion is deferred. |
-| U41 | Pixel latch/serializer | 74HCT165/166/595-class | DIP | Exact byte-to-pixel path still open. |
-| J40 | VGA output | 1x06 2.54 mm header | TH | RGB after series resistors plus HSYNC/VSYNC/GND; HD-15 adapter is external for Rev A. |
+| U40 | VGA timing block | TTL640x480 bring-up timing header | 2x6 2.54 mm header | Rev A proves CPU/DRAM/refresh/video handoff first; exports PIXCLK, sync, blanking, video request/ack, and pixel-load timing. Full onboard TTL VGA expansion is deferred. |
+| U41 | Pixel latch/serializer | 74HCT165/166/595-class | DIP | Byte-to-pixel path driven by U40 timing signals for Rev A bring-up. |
+| J40 | VGA output/debug | 1x7 2.54 mm header | TH | RGB after series resistors plus HSYNC/VSYNC/GND and BLANK_N; HD-15 adapter is external for Rev A. |
 
 ## Power, Clock, Reset, Debug
 

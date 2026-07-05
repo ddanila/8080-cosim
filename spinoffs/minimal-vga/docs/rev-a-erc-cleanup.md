@@ -11,9 +11,9 @@ spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.sh
 
 Current result:
 
-- 14 KiCad ERC error-level findings.
-- 12 `pin_not_connected` findings.
-- 2 `label_dangling` findings.
+- 0 KiCad ERC error-level findings.
+- 0 `pin_not_connected` findings.
+- 0 `label_dangling` findings.
 - Previous power-net noise is gone; the remaining list is now useful for Rev A
   schematic cleanup.
 
@@ -21,10 +21,7 @@ Current result:
 
 These are likely real electrical issues, not paperwork:
 
-- `U41` pixel serializer `PIX_LOAD_N` needs to connect to the selected
-  TTL640x480/timing-header boundary or be removed from Rev A.
-- Dangling video label `BLANK_N` needs to connect to the selected
-  TTL640x480/timing-header boundary or be removed from Rev A.
+- None currently. Re-run the ERC readiness report after schematic changes.
 
 ## Intentional No-Connect Candidates
 
@@ -48,10 +45,8 @@ bring-up/debug policy is confirmed:
 These findings mean the schematic is still carrying Rev A placeholders or
 unfrozen glue logic. Do not silence them blindly:
 
-- `U30` 8255: unused `PB*` and upper `PC*` pins should be assigned to keyboard
-  behavior, diagnostic expansion, or explicit NC policy.
-- `U41` pixel serializer and the `PIX*` labels are still coupled to the
-  unfinished video bridge decision.
+- None currently. Keep this section for future topology changes that should not
+  be silenced blindly.
 
 ## Resolved In Source Model
 
@@ -77,6 +72,12 @@ unfrozen glue logic. Do not silence them blindly:
   `U25` DRAM glue gates are removed from the Rev A physical source model and
   factory assembly rows. Rev A now routes the direct data bus and GAL-only
   decode/timing contract unless later verification proves extra glue is needed.
+- `U30` Port B and upper Port C are explicit no-connects for Rev A. Port A
+  drives the eight keyboard columns through series resistors; lower Port C is
+  reserved for keyboard/status behavior.
+- `U41.PIX_LOAD_N` is driven from the expanded `U40` TTL640x480 timing header,
+  and `BLANK_N` is exported on `J40` as a bring-up/debug signal. The timing
+  boundary is now visible instead of being hidden behind one-node labels.
 
 ## Gate
 

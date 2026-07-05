@@ -8,7 +8,7 @@ U22-U23,2,Counter,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mo
 U24,1,DRAM timing sequencer,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socket,C72120,Factory mounts DIP-24 W15.24mm socket only; owner inserts GAL22V10-class timing part after assembly
 U30,1,PPI,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts 82C55/8255-compatible PPI after assembly
 U31,1,Priority encoder,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install 74HCT148 after assembly
-U40,1,VGA timing,2x5 2.54mm pin header,2.54mm header,Manual,Owner-supplied/manual,,Rev A uses a timing/header interface; install manually until exact 2x5 vertical header CPN and factory assembly handling are confirmed
+U40,1,VGA timing,2x6 2.54mm pin header,2.54mm header,Manual,Owner-supplied/manual,,Rev A uses a timing/header interface including PIX_LOAD_N and BLANK_N handoff; install manually until exact 2x6 vertical header CPN and factory assembly handling are confirmed
 U41,1,Pixel shift/latch,DIP-16 socket,DIP,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install framebuffer shift/latch part after assembly
 U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Manual,Owner-supplied/manual,,Feeds Rev A CLK net; install manually until a DIP-14 5V oscillator candidate or PCB change to SMD oscillator is selected
 U51,1,Reset supervisor,MCP130-460DI/TO or MCP130-475DI/TO,TO-92,Factory preferred,JLCPCB/LCSC,C621481,Microchip MCP130 TO-92 candidate; verify D-bondout pinout against KiCad TO-92 footprint before order
@@ -16,7 +16,7 @@ Sockets,22,DIP sockets,See per-U socket rows,Mixed THT,Informational,Derived fro
 J1,1,+5V screw/header input,WJ2EDGR-5.08-02P-14-00A,THT,Factory preferred,JLCPCB/LCSC,C8383,Feeds VCC_RAW before F1; KiCad footprint is 5.00mm but candidate is common 5.08mm right-angle terminal header; verify footprint before order
 J3,1,USB-C 5V power input,TYPE-C-31-M-17,SMD/THT shell,Factory preferred,JLCPCB/LCSC,C283540,HRO 6-pin power-only USB-C input in parallel with J1 before F1; CC pulldowns on R30/R31
 J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Inline bring-up header for original keyboard wiring: 8 columns plus 7 rows; install manually until exact vertical header CPN and factory handling are confirmed
-J40,1,VGA bring-up output,1x06 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Rev A uses simple RGB/HSYNC/VSYNC/GND header; install manually until exact vertical header CPN and factory handling are confirmed
+J40,1,VGA bring-up output,1x07 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Rev A uses RGB/HSYNC/VSYNC/GND plus BLANK_N bring-up/debug header; install manually until exact vertical header CPN and factory handling are confirmed
 J90-J92,3,Logic analyzer header,2x5 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Address/data/DRAM/video/debug; install manually until exact 2x5 vertical header CPN and factory handling are confirmed
 J93,1,Power debug header,1x04 2.54mm pin header,TH,Manual,Owner-supplied/manual,,VCC/GND/PWR_OK/VCC_RAW bring-up pins; install manually until exact vertical header CPN and factory handling are confirmed
 F1,1,+5V resettable fuse,RXEF300-class radial PTC 3A hold / 6A trip,THT,Factory preferred,JLCPCB/LCSC,C14397,J1/J3 feed VCC_RAW and then fused VCC through F1; verify lead spacing and final +5V load against KiCad footprint before order

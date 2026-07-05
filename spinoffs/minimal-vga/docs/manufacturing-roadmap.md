@@ -94,9 +94,9 @@ Status: routed FreeRouting baseline.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
 - `report_rev_a_erc_readiness.sh` records the current KiCad ERC status for the
-  physical schematic. It is non-gating until generated unused pins and
-  intentional no-connects are explicitly resolved; the current cleanup list is
-  tracked in `rev-a-erc-cleanup.md`.
+  physical schematic. The Rev A source model now has explicit no-connect policy
+  for unused pins and the report is expected to remain clean before ordering;
+  the cleanup history is tracked in `rev-a-erc-cleanup.md`.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
 - `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
@@ -111,7 +111,7 @@ Status: routed FreeRouting baseline.
   unconnected items after the Rev A source-model ERC cleanup and a clean
   no-seed FreeRouting run.
 - Current physical source/routed PCB counts: 95 schematic refs, 116 source
-  nets, 95 PCB footprints, 117 KiCad PCB nets, and 2083 routed tracks. The PCB
+  nets, 95 PCB footprints, 117 KiCad PCB nets, and 2067 routed tracks. The PCB
   net count includes KiCad-generated net bookkeeping beyond the source-model
   named nets.
 - Current draft JLCPCB export: 22 factory BOM rows, 83 CPL placements, 19
@@ -150,9 +150,9 @@ netlist enough that routing churn is unlikely.
 
 Open production blockers:
 
-- Fix or explicitly mark remaining schematic ERC findings; the current report
-  is generated as `fab/minimal-vga/erc-readiness.md`, with the cleanup plan in
-  `rev-a-erc-cleanup.md`.
+- Keep schematic ERC clean after any further source-model changes and complete
+  human schematic review; the current report is generated as
+  `fab/minimal-vga/erc-readiness.md`.
 - Decide whether the Rev A manual rows (`C50`, `D1`, `J30`, `J40`, `J90-J93`,
   `R6`, `R15`, `U40`, and `U50`) stay owner-installed or get factory CPNs /
   footprint changes before ordering.

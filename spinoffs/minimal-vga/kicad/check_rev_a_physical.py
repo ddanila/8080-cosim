@@ -22,7 +22,7 @@ REQUIRED_NETS = {
     "ROM_CE_N", "MEM_RD_N", "MEM_WR_N", "IO_RD_N", "IO_WR_N", "PPI_CS_N",
     "DRAM_A0", "DRAM_A7", "RAS_N", "CAS_N", "DRAM_WE_N", "REFRESH_TICK",
     "KBD_COL0", "KBD_ROW0_N", "KBD_GS_N",
-    "VIDEO_REQ", "VIDEO_ACK", "HSYNC_N", "VSYNC_N", "PIXEL",
+    "VIDEO_REQ", "VIDEO_ACK", "HSYNC_N", "VSYNC_N", "BLANK_N", "PIX_LOAD_N", "PIXEL",
     "VGA_R", "VGA_G", "VGA_B", "OSC_OE_N", "VCC", "GND",
     "VCC_RAW", "PWR_OK", "USB_CC1", "USB_CC2",
     "KBD_COL0_DRV", "KBD_COL7_DRV",
@@ -121,6 +121,15 @@ def main():
             errors.append(f"{ref}.2: not connected to {net}")
         if ["J40", pin] not in nodes(nets[net]):
             errors.append(f"J40.{pin}: not connected to {net}")
+    for net, endpoint in (
+        ("BLANK_N", ["U40", "5"]),
+        ("BLANK_N", ["J40", "7"]),
+        ("PIX_LOAD_N", ["U40", "11"]),
+        ("PIX_LOAD_N", ["U41", "15"]),
+        ("GND", ["U40", "12"]),
+    ):
+        if endpoint not in nodes(nets[net]):
+            errors.append(f"{endpoint[0]}.{endpoint[1]}: not connected to {net}")
 
     if ["J1", "1"] in nodes(nets["VCC"]):
         errors.append("J1.1: ATX +5V must enter VCC through F1, not directly")

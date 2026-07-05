@@ -62,6 +62,8 @@ to factory assembly and assign/verify an orderable CPN before export.
 - `J1` is the 2-pin +5V/GND input before the fuse.
 - `J3` is an optional power-only USB-C input before the fuse. It is in parallel
   with `J1`; use one input source at a time during bring-up.
-- `J40` is the Rev A VGA bring-up/header output.
-- `U40` is the TTL640x480 timing/header interface for Rev A, not the final
-  onboard TTL VGA implementation.
+- `J40` is the Rev A VGA bring-up/debug output: RGB, HSYNC, VSYNC, GND, and
+  BLANK_N.
+- `U40` is the TTL640x480 timing/header interface for Rev A, including the
+  pixel-load timing handoff to `U41`; it is not the final onboard TTL VGA
+  implementation.

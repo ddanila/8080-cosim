@@ -57,7 +57,7 @@ Immediate SKU targets:
   - 5V oscillator.
   - 5V reset supervisor with verified pinout.
 - Connectors:
-  - 1x06 VGA bring-up header; HD-15 adapter is external for Rev A.
+  - 1x7 VGA bring-up/debug header; HD-15 adapter is external for Rev A.
   - Original-keyboard-compatible connector once the pinout/mechanics are locked.
   - Logic analyzer/debug headers.
 

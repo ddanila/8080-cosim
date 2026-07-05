@@ -26,9 +26,9 @@ before ordering hardware.
      add-on if needed.
 5. VGA:
    - For Rev A, use the TTL640x480-derived timing/header interface and export
-     RGB/HSYNC/VSYNC/GND on a simple 1x06 VGA bring-up header. Full onboard
-     TTL640x480 logic expansion is deferred until the CPU/DRAM/refresh path is
-     proven.
+     RGB/HSYNC/VSYNC/GND plus BLANK_N on a simple 1x7 VGA bring-up/debug
+     header. Full onboard TTL640x480 logic expansion is deferred until the
+     CPU/DRAM/refresh path is proven.
 6. Manufacturing and assembly:
    - Aim Rev A at factory assembly, including passives and sockets where the
      assembler can source and mount them. Vintage/programmable ICs may still be

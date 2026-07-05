@@ -16,9 +16,9 @@ Configuration link,R15,Manual install 0R link,,Manual for Rev A draft,Need exact
 USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,C433473,Candidate assigned,TyoHM RN 1/8W 5K1 F T/B A1 is electrically fine but smaller than DIN0207; prefer footprint review before order
 Keyboard header,J30,Manual install 1x15 2.54mm pin header,,Manual for Rev A draft,Inline bring-up header; exact vertical header CPN still needed before factory assembly
 Debug headers,J90-J93,Manual install 2.54mm pin headers,,Manual for Rev A draft,Need exact 2x5 and 1x4 vertical header CPNs before factory assembly
-VGA timing header,U40,Manual install 2x5 2.54mm pin header,,Manual for Rev A draft,Rev A TTL640x480 timing interface; exact 2x5 vertical header CPN still needed before factory assembly
+VGA timing header,U40,Manual install 2x6 2.54mm pin header,,Manual for Rev A draft,Rev A TTL640x480 timing interface; exact 2x6 vertical header CPN still needed before factory assembly
 Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A; J3 HRO TYPE-C-31-M-17; verify J1 5.00/5.08mm footprint fit
-VGA output,J40,Manual install 1x06 2.54mm pin header,,Manual for Rev A draft,Rev A VGA exits as bring-up header; exact vertical header CPN still needed before factory assembly
+VGA output,J40,Manual install 1x07 2.54mm pin header,,Manual for Rev A draft,Rev A VGA exits as bring-up/debug header with BLANK_N; exact vertical header CPN still needed before factory assembly
 Fuse,F1,Populate resettable fuse,C14397,Candidate assigned,RXEF300-class radial PTC; 3A hold / 6A trip; verify lead spacing against expected +5V load
 TVS,D1,Manual install 5V TVS clamp,,Manual/footprint open,No clean DO-35 5V TVS candidate found; consider DO-15 or SMA footprint change for factory assembly
 Oscillator,U50,Manual install 5V oscillator,,Manual/footprint open,Need DIP-14 5V oscillator candidate or PCB change to SMD oscillator before factory assembly
