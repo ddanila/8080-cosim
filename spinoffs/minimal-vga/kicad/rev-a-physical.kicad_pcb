@@ -5387,12 +5387,12 @@
 		(descr "terminal block MaiXu MX126-5.0-02P, 2 pins, pitch 5mm, size 10.5x7.8mm, drill diameter 1.3mm, pad diameter 2.8mm, https://www.lcsc.com/datasheet/lcsc_datasheet_2309150913_MAX-MX126-5-0-03P-GN01-Cu-S-A_C5188435.pdf, script-generated using https://gitlab.com/kicad/libraries/kicad-footprint-generator/-/tree/master/scripts/TerminalBlock_MaiXu")
 		(tags "THT terminal block MaiXu MX126-5.0-02P pitch 5mm size 10.5x7.8mm drill 1.3mm pad 2.8mm")
 		(property "Reference" "J1"
-			(at 9.825 0.0325 0)
+			(at 8.925 0.0325 0)
 			(layer "F.SilkS")
 			(uuid "24a7058e-d480-429d-8ef8-c010edaa3475")
 			(effects
 				(font
-					(size 0.8 0.8)
+					(size 1.15 1.15)
 					(thickness 0.16)
 				)
 			)
@@ -15216,7 +15216,7 @@
 		(descr "PTC Resettable Fuse, Ihold = 3.0A, Itrip=5.1A, http://www.bourns.com/docs/Product-Datasheets/mfrg.pdf")
 		(tags "ptc resettable fuse polyfuse THT")
 		(property "Reference" "F1"
-			(at 2.55 -2.975 0)
+			(at 2.55 -2.075 0)
 			(layer "F.SilkS")
 			(uuid "732d2d9f-24b5-4b59-96fd-45a4c6826fbd")
 			(effects

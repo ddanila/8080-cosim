@@ -277,7 +277,7 @@ def place_silk_fields(fp, chip, x, y, rot):
     if non_dip_assembly_part:
         if ref == "J1":
             fp.Value().SetVisible(False)
-            style_field(fp.Reference(), ref, cx, top - 1.8, 0, size=0.8)
+            style_field(fp.Reference(), ref, cx, top - 0.9, 0, size=1.15)
             return
 
         value_angle = 90 if rot % 180 else 0
@@ -300,6 +300,8 @@ def place_silk_fields(fp, chip, x, y, rot):
             ref_angle = 0
         if ref[0] == "R" and rot % 180 == 0:
             ref_y = top - 1.4
+        if ref[0] == "F":
+            ref_y = top - 0.9
         if ref[0] == "C":
             ref_y = bottom + 1.3
         if ref[0] == "D" and chip["type"] == "LED_THT":
