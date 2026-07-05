@@ -131,6 +131,11 @@ The generated `assembly/manual-row-readiness.md` report is the current machine
 gate for this list: it passes only when all six expected manual rows are present
 and no unclassified manual/non-factory rows have appeared.
 
+The generated `assembly/cpn-consistency.md` report cross-checks every
+factory-mounted designator in the JLCPCB BOM against this sourcing plan's
+engineering BOM CPNs and `rev-a-jlcpcb-cpn-checklist.csv`. It catches local CPN
+drift, while order-time stock and package drawing review still remain mandatory.
+
 ## External/NOS Work Items
 
 Source these separately unless a current assembly-library option is confirmed:

@@ -112,6 +112,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/assembly/manual-row-readiness.md`, checking that every
   manual/non-factory row is in the expected Rev A policy table and has an
   explicit disposition.
+- `report_rev_a_cpn_consistency.py` produces
+  `fab/minimal-vga/assembly/cpn-consistency.md`, checking factory-mounted CPNs
+  across the generated JLCPCB BOM, the engineering BOM, and the sourcing
+  checklist.
 - `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
   generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
   It also writes an assembly-readiness report that counts missing LCSC part

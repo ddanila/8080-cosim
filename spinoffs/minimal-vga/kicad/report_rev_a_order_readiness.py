@@ -24,6 +24,7 @@ REQUIRED_ARTIFACTS = [
     "assembly/socket-fit-readiness.md",
     "assembly/mechanical-fit-readiness.md",
     "assembly/manual-row-readiness.md",
+    "assembly/cpn-consistency.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
     "assembly/manual-assembly.csv",
@@ -109,6 +110,7 @@ def machine_gate_summary(out_dir):
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
     manual_rows_report = read_text(out_dir / "assembly" / "manual-row-readiness.md")
+    cpn_consistency = read_text(out_dir / "assembly" / "cpn-consistency.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
@@ -161,6 +163,15 @@ def machine_gate_summary(out_dir):
             and "- Unknown manual rows: 0" in manual_rows_report
             and "- Missing expected manual rows: 0" in manual_rows_report,
             "`assembly/manual-row-readiness.md` records explicit dispositions for every manual/non-factory row.",
+        ),
+        (
+            "CPN consistency",
+            (
+                has_ready_line(cpn_consistency, "READY")
+                or has_ready_line(cpn_consistency, "REVIEW REQUIRED")
+            )
+            and "- CPN consistency failures: 0" in cpn_consistency,
+            "`assembly/cpn-consistency.md` cross-checks generated BOM CPNs against the engineering BOM and sourcing checklist.",
         ),
         (
             "Upload package",

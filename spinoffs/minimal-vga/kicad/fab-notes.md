@@ -141,6 +141,9 @@ Factory assembly:
   `fab/minimal-vga/assembly/manual-row-readiness.md`, recording the explicit
   disposition for every row excluded from factory assembly and failing if a new
   unclassified manual row appears.
+- `report_rev_a_cpn_consistency.py` writes
+  `fab/minimal-vga/assembly/cpn-consistency.md`, cross-checking the generated
+  JLCPCB BOM CPNs against the engineering BOM and CPN checklist.
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.
