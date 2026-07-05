@@ -5,11 +5,29 @@ before upload.
 
 ## Factory Assembly Intent
 
-- Factory should mount sockets, passives, headers/connectors, oscillator/reset,
-  protection parts, and diagnostic LEDs where practical.
+- Factory should mount the rows present in the generated JLCPCB BOM/CPL:
+  sockets, assigned passives, selected connectors/protection/reset parts, and
+  diagnostic LEDs where practical.
+- Rows marked `Manual`, `DNP`, or `Do not populate` in the engineering BOM are
+  deliberately excluded from the factory BOM/CPL and written to
+  `manual-assembly.csv`.
 - Do not factory-populate the socketed ICs themselves: Z80, ROM, DRAM, 8255,
   GAL/PAL, and 74xx logic ICs are owner/post-assembly insertion items unless
   the BOM is explicitly changed.
+
+## Manual / Non-Factory Placements
+
+Review `manual-assembly.csv` before ordering. Rev A currently expects manual
+installation or later CPN/footprint resolution for:
+
+- `C50` bulk capacitor.
+- `D1` +5V TVS clamp.
+- `J30`, `J40`, `J90`-`J93`, and `U40` bring-up/debug headers.
+- `R6` PWR_OK link and `R15` keyboard encoder enable link.
+- `U50` clock oscillator.
+
+If any of these should be factory-mounted, change the engineering BOM row back
+to factory assembly and assign/verify an orderable CPN before export.
 
 ## Socket Orientation
 

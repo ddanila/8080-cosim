@@ -69,13 +69,15 @@ Factory assembly:
   physical PCB and engineering BOM.
 - JLCPCB upload CPL: `assembly/jlcpcb-cpl-draft.csv`, generated from the same
   physical PCB.
+- Manual assembly list: `assembly/manual-assembly.csv`, generated from rows
+  marked `Manual`, `DNP`, or `Do not populate` in the engineering BOM.
 - Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
 - Assembly readiness report: `assembly/assembly-readiness.md`.
 - Position file: `assembly/rev-a-position.csv`.
 - Order-time CPN checklist: `assembly/rev-a-jlcpcb-cpn-checklist.csv`.
 - Assembly/orientation notes: `assembly/rev-a-assembly-orientation-notes.md`.
 - Assembly drawings.
-- DNP list.
+- Manual/DNP list.
 - Polarity/orientation notes.
 - Socket orientation notes for every socketed DIP device.
 - Owner-supplied/post-assembly insertion notes for Z80, ROM, DRAM, 8255, and

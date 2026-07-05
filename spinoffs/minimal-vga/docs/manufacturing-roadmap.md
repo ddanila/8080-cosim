@@ -180,8 +180,9 @@ Factory assembly package:
 - JLCPCB BOM generated from the board, with manufacturer part numbers and
   JLCPCB/LCSC candidate part numbers.
 - JLCPCB CPL/position file generated from the same board.
+- Manual assembly CSV for rows kept out of the factory BOM/CPL.
 - Assembly drawings.
-- DNP list.
+- Manual/DNP list.
 - Polarity and socket orientation notes.
 - Notes for owner-supplied post-assembly insertion of Z80, ROM, DRAM, 8255, and
   GAL/PAL devices if they are not factory-sourced.
