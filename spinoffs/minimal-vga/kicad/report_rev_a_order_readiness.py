@@ -7,6 +7,7 @@ from pathlib import Path
 REQUIRED_ARTIFACTS = [
     "erc-readiness.md",
     "fab-readiness.md",
+    "routing-geometry-readiness.md",
     "fab-notes.md",
     "rev-a.engineering-bom.csv",
     "gerbers/rev-a-physical-F_Cu.gtl",
@@ -106,6 +107,7 @@ def has_ready_line(text, label):
 def machine_gate_summary(out_dir):
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
+    routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
@@ -125,6 +127,15 @@ def machine_gate_summary(out_dir):
             and "- DRC violations: 0" in fab
             and "- Unconnected items: 0" in fab,
             "`fab-readiness.md` reports zero DRC violations and zero unconnected items.",
+        ),
+        (
+            "Routing geometry summary",
+            (
+                has_ready_line(routing_geometry, "READY")
+                or has_ready_line(routing_geometry, "REVIEW REQUIRED")
+            )
+            and "- Hard geometry failures: 0" in routing_geometry,
+            "`routing-geometry-readiness.md` records track widths, via count, power routing, and zone policy.",
         ),
         (
             "JLCPCB assembly draft",

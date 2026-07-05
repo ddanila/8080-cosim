@@ -129,6 +129,10 @@ Factory assembly:
   `review/vjuga-placement-top.svg` and `review/vjuga-placement-top.png`.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
+- `report_rev_a_routing_geometry.py` writes
+  `fab/minimal-vga/routing-geometry-readiness.md`, summarizing track widths,
+  vias, power-net routing, and zone policy. It catches hard geometry
+  regressions while keeping power-width and return-path review explicit.
 - `report_rev_a_erc_readiness.sh` writes the current schematic ERC summary to
   `fab/minimal-vga/erc-readiness.md`. ERC should remain clean before ordering;
   human schematic review still applies. The cleanup history is tracked in

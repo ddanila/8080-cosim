@@ -104,6 +104,10 @@ Status: routed FreeRouting baseline.
   cleanup history is tracked in `rev-a-erc-cleanup.md`.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
+- `report_rev_a_routing_geometry.py` produces
+  `fab/minimal-vga/routing-geometry-readiness.md`, recording track widths, via
+  sizes/counts, power-net route statistics, and whether power planes/zones are
+  present.
 - `report_rev_a_order_readiness.py` produces
   `fab/minimal-vga/order-readiness.md`, which combines the ERC, DRC, assembly,
   upload package, artifact, manual-row, and post-assembly-insertion checks with
@@ -132,6 +136,9 @@ Status: routed FreeRouting baseline.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
   unconnected items after the Rev A source-model ERC cleanup and a clean
   no-seed FreeRouting run.
+- Current routing-geometry report has zero hard geometry failures. It records
+  the explicit no-zone baseline and flags 0.20 mm routed power traces for human
+  review before ordering.
 - Current physical source/routed PCB counts: 95 schematic refs, 116 source
   nets, 95 PCB footprints, 117 KiCad PCB nets, and 2067 routed tracks. The PCB
   net count includes KiCad-generated net bookkeeping beyond the source-model
