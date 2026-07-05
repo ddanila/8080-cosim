@@ -5,12 +5,11 @@ import pcbnew
 
 
 EXPECTED_COPPER_LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
-EXPECTED_SILK_FONT_FACE = "GOST CAD KK"
 MIN_EDGE_CLEARANCE_MM = 14
 EXPECTED_SILK_LABELS = (
     "VJUGA REV A",
     "Z80 + 4164 DRAM REFRESH TESTBED",
-    "GOST SILK FONT: STRAIGHT",
+    "DEFAULT STROKE SILK",
 )
 EXPECTED_ZONES = {
     "Rev A GND plane placeholder": ("In1.Cu", "GND"),
@@ -91,12 +90,26 @@ def main():
         if missing:
             fail(f"routed board has partial placeholder zones; missing: {', '.join(missing)}")
 
-    pcb_text = open(path, encoding="utf-8").read()
     for label in EXPECTED_SILK_LABELS:
-        if f'(gr_text "{label}"' not in pcb_text:
+        matches = [
+            text
+            for drawing in board.Drawings()
+            if (text := pcbnew.Cast_to_PCB_TEXT(drawing))
+            if (
+                text.GetText() == label
+                and text.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)
+            )
+        ]
+        if not matches:
             fail(f"missing silkscreen label: {label}")
-    if pcb_text.count(f'(face "{EXPECTED_SILK_FONT_FACE}")') < len(EXPECTED_SILK_LABELS):
-        fail(f"missing GOST silkscreen font face: {EXPECTED_SILK_FONT_FACE}")
+        for text in matches:
+            if text.IsItalic():
+                fail(f"silkscreen label is italic: {label}")
+            if text.GetFontName():
+                fail(
+                    f"silkscreen label uses custom font '{text.GetFontName()}'; "
+                    f"expected default footprint text style: {label}"
+                )
 
     print(
         "Rev A PCB check: PASS "

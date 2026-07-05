@@ -149,8 +149,8 @@ Early manufacturing planning files live in `kicad/`:
 - `fab-notes.md` - fabrication assumptions and pre-order checklist.
 - `export_fab.sh` - Gerber/drill exporter stub, enabled once a routed PCB exists.
 
-Generated Rev A silkscreen labels use the project-local straight GOST font from
-`../../fonts/gost.ttf`.
+Generated Rev A board-owned silkscreen labels use the same default KiCad stroke
+text style as the footprint reference/value labels.
 
 The selected Z80 HDL core is the `external/T80` git submodule. See
 `external/Z80-core.md` and `hdl/README.md`.

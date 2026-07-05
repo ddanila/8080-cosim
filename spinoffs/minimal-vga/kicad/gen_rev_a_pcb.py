@@ -11,7 +11,6 @@ BOARD_WIDTH_MM = 285
 BOARD_HEIGHT_MM = 285
 ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 14
-SILK_FONT_FACE = "GOST CAD KK"
 SILK_LABELS = {
     "VJUGA REV A": (25, 76, 0, pcbnew.F_SilkS),
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
@@ -24,7 +23,7 @@ SILK_LABELS = {
     "VGA OUT": (260, 198, 0, pcbnew.F_SilkS),
     "DIAGNOSTIC LEDS": (236, 260, 0, pcbnew.F_SilkS),
     "DEBUG HEADERS": (32, 274, 0, pcbnew.F_SilkS),
-    "GOST SILK FONT: STRAIGHT": (22, 260, 0, pcbnew.B_SilkS),
+    "DEFAULT STROKE SILK": (22, 260, 0, pcbnew.B_SilkS),
 }
 
 SILK_VALUE_BY_REF = {
@@ -50,10 +49,12 @@ SILK_VALUE_BY_REF = {
 }
 
 POWER_INPUT_PIN_LABELS = (
-    ("5V IN", 13.5, 24.75),
-    ("+5V", 28.5, 27.25),
-    ("GND", 28.8, 22.25),
+    ("5V IN", 15.6, 24.75),
+    ("+5V", 27.7, 27.25),
+    ("GND", 27.7, 22.25),
 )
+POWER_INPUT_PIN_LABEL_SIZE_MM = 1.1
+POWER_INPUT_PIN_LABEL_THICKNESS_MM = 0.16
 
 SILK_VALUE_BY_TYPE = {
     "Z80_DIP40": "Z80",
@@ -389,46 +390,15 @@ def add_small_silk_label(board, text, x, y, angle=0, layer=pcbnew.F_SilkS):
     label.SetText(text)
     label.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
     label.SetTextAngleDegrees(angle)
-    label.SetTextSize(pcbnew.VECTOR2I(mm(0.8), mm(0.8)))
-    label.SetTextThickness(mm(0.14))
+    label.SetTextSize(
+        pcbnew.VECTOR2I(
+            mm(POWER_INPUT_PIN_LABEL_SIZE_MM),
+            mm(POWER_INPUT_PIN_LABEL_SIZE_MM),
+        )
+    )
+    label.SetTextThickness(mm(POWER_INPUT_PIN_LABEL_THICKNESS_MM))
     label.SetItalic(False)
     board.Add(label)
-
-
-def patch_silk_font_faces(path):
-    content = open(path, encoding="utf-8").read().splitlines()
-    labels = set(SILK_LABELS)
-    labels.update(label for label, _x, _y in POWER_INPUT_PIN_LABELS)
-    patched = []
-    active_label = None
-    in_font = False
-    face_added = False
-
-    for line in content:
-        stripped = line.strip()
-        if stripped.startswith("(gr_text "):
-            active_label = None
-            for label in labels:
-                if stripped == f'(gr_text "{label}"':
-                    active_label = label
-                    break
-        if active_label and stripped == "(font":
-            in_font = True
-            face_added = False
-            patched.append(line)
-            patched.append(f'\t\t\t\t(face "{SILK_FONT_FACE}")')
-            face_added = True
-            continue
-        if in_font and stripped == ")":
-            in_font = False
-            if not face_added:
-                patched.append(f'\t\t\t\t(face "{SILK_FONT_FACE}")')
-        if active_label and stripped == ")":
-            active_label = None
-        patched.append(line)
-
-    open(path, "w", encoding="utf-8").write("\n".join(patched) + "\n")
-
 
 def main():
     board_json = sys.argv[1] if len(sys.argv) > 1 else "spinoffs/minimal-vga/kicad/rev-a-physical.board.json"
@@ -490,7 +460,6 @@ def main():
     if board.Zones():
         pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(out, board)
-    patch_silk_font_faces(out)
     board = pcbnew.LoadBoard(out)
     board.EmbedFonts()
     pcbnew.SaveBoard(out, board)

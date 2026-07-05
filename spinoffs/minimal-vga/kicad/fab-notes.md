@@ -39,8 +39,8 @@ parts; insert those manually after the assembled board is received.
 - Copper: 1 oz default.
 - Soldermask: any.
 - Silkscreen: both sides useful for debug. Generated board-owned silkscreen
-  labels use the project-local straight GOST font face from
-  `../../../fonts/gost.ttf`.
+  labels use the same default KiCad stroke text style as footprint
+  reference/value labels.
 - Assembly: factory assembly target for passives, sockets, connectors, and
   protection parts where practical; owner-supplied IC insertion where needed.
 - Diagnostics: first-pass LED bank for +5V, PWR_OK, CLK, RESET_N, M1_N
