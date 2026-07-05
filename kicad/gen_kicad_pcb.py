@@ -74,7 +74,7 @@ PASSIVE_PLACE = {
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(293.8,126.2,90),
     'R67':(288.3,116.9,90),'R68':(291.0,116.9,90),'R69':(293.8,116.9,90),'R70':(288.3,126.2,90),'R71':(291.0,126.2,90),
     'C9':(275,95,0),'C10':(276,112,90),'C12':(254.6,95.6,0),'C13':(279.5,112,90),'C15':(253.8,104.0,0),
-    'R76':(272,125,0),'R77':(276,128,0),'L1':(282,128,0),
+    'R76':(272,125,0),'R77':(276,128,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
@@ -178,8 +178,8 @@ PLACE = {
     # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
     # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
     # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
-    'D67':(119.6,148,0),'D66':(130.9,148,0),'D65':(142.3,148,0),'D64':(153.7,148,0),
-    'D63':(164.7,148,0),'D62':(176.1,148,0),'D61':(187.1,148,0),'D60':(198.4,148,0),
+    'D67':(119.6,133.1,0),'D66':(130.9,133.1,0),'D65':(142.3,133.1,0),'D64':(153.7,133.1,0),
+    'D63':(164.7,133.1,0),'D62':(176.1,133.1,0),'D61':(187.1,133.1,0),'D60':(198.4,133.1,0),   # bank0 at 133.1: the emaplaat decap zigzag (C35 124.3 above it, C36 145.6 below) brackets the row; the old y148 read collided with the zigzag
     # I/O block (PIT 8253 + PPI 8255) -- the drawing puts these on the RIGHT/bottom-right, NOT the
     # top: PITs D57/D55/D54 stack down the right edge (x~292, pulled in from the ~296 read to fit
     # the 310 cut), and PPI D26 sits bottom-right just left of D54. (Was a fictional top I/O row.)
@@ -195,7 +195,7 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(227.8,204.9,0),'D52':(58.3,221.5,0),'D50':(106.2,148,0),'D92':(260,159.2,0),'D103':(274.2,181.8,0),   # D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
+    'D53':(227.8,204.9,0),'D52':(58.3,221.5,0),'D50':(106.2,133.1,0),'D51':(106.2,158.2,0),'D92':(260,159.2,0),'D103':(274.2,181.8,0),   # D51 = row-2 mux, left DRAM column (emaplaat); D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
     'D56':(287.8,180,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
@@ -211,7 +211,7 @@ PLACE = {
     'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     'D93':(248,70,0),'D94':(228,33,0),'D100':(245,30,0),   # FDC trio promoted to netted [grind C]
-    'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(245.1,204.1,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
+    'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(245.1,195.0,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
@@ -224,6 +224,8 @@ PLACE = {
 # unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
 # array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.
 _DCOLS = [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4]
+# rows re-anchored to bank-0's precise y=148 (the old ladder started at 158.2 = bank-0's PRE-re-base
+# y; leaving banks 1-3 unshifted overlapped bank 0 with bank 1 -> 192 pad shorts, route-blocking)
 for _ry, _refs in [(158.2, range(75, 67, -1)), (183.3, range(83, 75, -1)), (208.4, range(91, 83, -1))]:
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 # unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
@@ -425,9 +427,9 @@ def main():
         # Refdes per the OFFICIAL ДГШ5.109.009 ПЭЗ (owner's scan, 2026-07) -- the FDC-revision
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
-        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 176.8, 90),  # [emaplaat]  # ready ТМ2 [photo]
+        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 189.5, 90),  # [emaplaat]  # ready ТМ2 [photo; 176.8 sat inside D1's DIP-40 body]
         # D51 removed: promoted to a net-modeled chip (KP14_MUX in board.json) -- keeping it here duplicated the refdes (DSN killer)
-        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 205.2, 90),  # below D13 [emaplaat]  # [.009 official]
+        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 215.5, 90),  # below D13 [emaplaat; was stacked ON D13 at 205.2]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]
         'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 74, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]

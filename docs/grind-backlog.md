@@ -659,3 +659,25 @@ Reminder from the triage log: the GUI persists max_passes (was silently capped a
 the setting before the run. Fork jar: /Users/danila.sukharev/fun/freerouting/build/libs/
 freerouting-current-executable.jar (custom branch, PolylineTrace.combine fix; needs JDK 25:
 ~/.gradle/jdks/eclipse_adoptium-25-aarch64-os_x.2/jdk-25.0.3+9/Contents/Home/bin/java).
+
+## Route campaign iteration 2: the plateau explained — placement collision repair (WIP)
+The GUI route plateaued (1548→518→337→264→228→218; deltas collapsing) because the SOURCE board
+carries real pad-level conflicts that the generator's silk-outline check never saw. kicad-cli DRC
+of the unrouted board: 196 shorting pads / 121 courtyard overlaps / 116 hole-to-hole at start.
+Root causes found and fixed so far (385 -> 306 hard violations):
+- **DRAM ladder**: bank-0's "precise y148 read" contradicted the emaplaat decap zigzag (C35-C38
+  at 124.3/145.6/170.7/195.8 bracket rows at 133.1/158.2/183.3/208.4 exactly). Rows now
+  emaplaat-consistent: bank0 -> 133.1, banks 1-3 back at 158.2/183.3/208.4; D50/D51 mux column
+  follows (133.1/158.2). [My first fix — shifting banks 1-3 down — was WRONG and is reverted.]
+- **D103 PLACE regression #2**: the D51-restore edit glued 'D103' into a comment (same failure
+  mode as iter-71's regression) -> D103 fell to the fallback grid at (30,215) on top of D105.
+  Restored. LESSON: the PLACE dict's inline-comment style makes string edits dangerous.
+- D105 was stacked ON D13 (both ~(31.9,205)); D105 -> (31.9,215.5). D30 sat inside D1's DIP-40
+  body; -> (32.9,189.5). D35 overlapped R48's СБ-true spot ("clear D7" note was stale); ->
+  (245.1,195.0). L1 -> the СБ circle part (298.9,129.2), clearing VT2.
+- Remaining hard-conflict clusters (306): logic row D6/D7/D10 sits 2.6-3.9mm too low into the
+  x-row decap band (y124.3) and now bank0; D19<->D9, D15/D16<->D5 (the lower-left ROM/D5 cluster
+  needs proper СБ y re-reads — D5's СБ box reads y92-106, D15/16 sockets ~y53-89, vs model 98-117);
+  D104<->D27, D52<->E2/E3, D58<->X9, D2<->D6, R77<->VT2. Repair continues next iteration.
+**The GUI route of the stale DSN cannot reach 0 — recommend stopping it until the board is
+DRC-hard-clean, then re-exporting the DSN and relaunching.**
