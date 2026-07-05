@@ -81,11 +81,11 @@ module juku_top (
     wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6; wire [3:0] d40_q;
     // sheet-2 LATCH/LOAD chain (D41 ИР16 -> D37 gate2 -> D33 inv; D38 gate2 -> D59 inv). Inputs of
     // D41/D38-2/D39-2 are deferred boundaries (numbered timing wires 1/2/4/15 + РЕ3 states).
-    wire d41_qa, d41_qb, d37_latch_pre, latch_sig, d39_o8, load_pre;
+    wire d41_qa, d41_qb, d37_latch_pre, latch_sig, d39_o8, load_pre, load_vid;
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(1'b1), .g(1'b1), .ck(1'b0),
                      .ds(1'b0), .qa(d41_qa), .qb(d41_qb));
     wire pst_clk;
-    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .i11(d39_o8), .i3(osc_clk), .o4(pst_clk));   // ring sect 3->4 = PST CLK
+    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8), .i3(osc_clk), .o4(pst_clk));   // ring sect 3->4 = PST CLK; 13->12 = LOAD rail 6
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
     // D39 sections 3+4 (bite-2): NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4; then NAND(out3,
     // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the
@@ -379,12 +379,13 @@ module juku_top (
     // zone -- supersedes both the "bank-select latch" and "VA-state latch" [finding-24 registry]
     // interpretations, which both fell into the reused-code trap): parallel ins = the РУ5 DO rails
     // 1-8 (D67.DO enters D42.D directly on the sheet), D43.Q -> D42.DS cascade, CK = ctrl-rail 3
-    // (dot clock), LD = ctrl-rail 6 = D38.6 -> also D59.13 (the load strobe; ex-VID_LD net).
+    // (dot clock), LD = ctrl-rail 6 = D59.12 (the INVERTED load strobe: D38.6 -> D59.13, and
+    // 13->12 feeds rail 6 -- one-inversion correction of the earlier array read; net LOAD_VID).
     // G <- ctrl-rail 8 [pending]. Q -> D37 inverter -> analog video mix.
     ir16 U_D42 (.d(rdo[7]), .c(rdo[6]), .b(rdo[5]), .a(rdo[4]),
-                .ld(load_pre), .g(1'b1), .ck(xtal16m_w), .ds(d43_q), .q(d42_q));
+                .ld(load_vid), .g(1'b1), .ck(xtal16m_w), .ds(d43_q), .q(d42_q));
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
-                .ld(load_pre), .g(1'b1), .ck(xtal16m_w), .ds(1'b0), .q(d43_q));
+                .ld(load_vid), .g(1'b1), .ck(xtal16m_w), .ds(1'b0), .q(d43_q));
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;

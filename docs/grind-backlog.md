@@ -524,3 +524,26 @@ Crop s1_egates2: D25 (data ВА87) E (9) -> GND like D23/D24; **T (11) <- D7 Л�
 D29's T <- +5V arrow visible (E row cut off — assume GND like siblings [next crop if needed]).
 Netted D25_T {D7.6, D25.11} + GND += D25.9; HDL sect3 wired (inputs tied so y3=1 = transmit,
 preserving the old fixed-T boot behavior). LVS IN SYNC, boot 6/6.
+
+## Loop iteration: LOAD_PRE confirm -> one-inversion CORRECTION (net LOAD_VID split)
+Full pixel-trace of the load-strobe chain (crops s2_shifter_ld, s2_d38_load, s2_load_tag2,
+s2_d42ld_tag + programmatic line scans):
+- **Source confirmed**: D38 ЛА1 sect2 (ins 5,4,2,1 -> out 6) -> D59.13 direct wire; D59 ЛН1
+  sect 13->12 output carries the handwritten label **"LOAD"**.
+- **LOAD routing traced end-to-end**: D59.12 -> east y3640 -> up x2371 -> west y~3412 ->
+  enters the LEFT-EDGE bundle (x~688) as **rail 6** (neighbors: rail 5 above, rail 4 below).
+- **Shifter side re-read (tag|pin)**: D42/D43 left column has TWO bundles — inner (data,
+  tags 7/6/5 -> pins 4/3/2 = C/B/A) and OUTER control bundle: **LD = tag 6 (pin 6), G = tag 8
+  (pin 8), CK = tag 3 (pin 9), DS = tag 1 (pin 1)**. The numbers read as "tags" in the first
+  crop were PIN numbers; the true tags sit at the bundle exits.
+- => rail 6 is fed by **D59.12 (post-inverter)**, not D38.6. The earlier array read put
+  D42.6/D43.6 one inversion early. **Correction**: LOAD_PRE = {D38.6, D59.13} (traced);
+  new net **LOAD_VID = {D59.12, D42.6, D43.6}** (traced); HDL U_D42/U_D43 .ld moved to
+  D59's o12. LVS IN SYNC (227 nets), boot check pending this iteration.
+- Side reads banked: the y3232 westbound line (x2977 riser, D37.10 junction dot at x1805,
+  bottom corner east at y3949) is a SEPARATE unnamed signal — candidate for the G/ctrl-rail-8
+  or CK chase later. D59 sect 11->10 output heads west at y~3277 [consumer unread].
+- **VID_HI_LD still driverless**: D46.11/D47.11 common vertical (x~3318) spans exactly
+  D46.LD..D47.LD (y 1165..2902); its top dead-ends in the D44/D45 box gap (candidate join to
+  the D44-bottom bus horizontal at y~1150, print gap ~9px — unresolvable at this scan).
+  Driver stays "likely D59.12" (engineering read: all-counter reload), NOT netted.

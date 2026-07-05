@@ -9771,7 +9771,7 @@
    ]
   },
   "LOAD_PRE": {
-   "src": "scan; + array read: rail 6 = load strobe: D38.6 -> D59.13 (-> inverted \"LOAD\" -> D46/D47 LD) and D42/D43 LD (former assumed net VID_LD, resolved)",
+   "src": "scan; traced (loop, crops s2_d38_load/s2_load_tag2/s2_d42ld_tag): D38 sect2 (5,4,2,1->6) -> D59.13 direct wire; D59.12 = inverted \"LOAD\" enters left bundle as rail 6 -> D42/D43 LD moved to net LOAD_VID (one-inversion correction of the earlier array read)",
    "nodes": [
     [
      "D38",
@@ -9780,6 +9780,15 @@
     [
      "D59",
      "13"
+    ]
+   ]
+  },
+  "LOAD_VID": {
+   "src": "traced (loop): D59.12 \"LOAD\" label -> east y3640 -> up x2371 -> west y3412 -> left bundle x688 tag 6; shifter side: outer control bundle tag 6 -> D42.6/D43.6 (ИР16 LD/PE, tag|pin read s2_d42ld_tag: LD=tag6, G=tag8, CK=tag3, DS=tag1)",
+   "nodes": [
+    [
+     "D59",
+     "12"
     ],
     [
      "D42",
