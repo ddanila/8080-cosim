@@ -472,3 +472,10 @@ down-leg feeds BOTH A-triggers -- pin 10 (sect-2 5us shaper) and pin 2 (sect-1 ~
 retriggerable one-shot = missing-pulse detector deriving V-scale timing from the H-rate
 train). SYNC_B net += D56.2. D56's trigger story is now complete: SYNC B. in, R61 CLR
 pullup, R47/C7 + R59/C8 timing, Q/Q_N outputs [destinations = DOTCLK16M bend re-read, next].
+
+## Loop iteration: DOTCLK16M split (bend re-read)
+Crop s2_dotclk_bend: D56.Q_N (pin 4) corners SOUTH at x~6074 (destination = chase); the
+"16MHz" rail is a SEPARATE horizontal entering a bundle with TAG 14 -> it (not D56) clocks
+D103 + the ИР16 shifters. Old DOTCLK16M net split into XTAL16M {D103.2, D42.9, D43.9}
+(= OSC continuation, merge pending one tag read) + D56_QN {D56.4} (single, chase). The
+"D56 16MHz astable" story is now fully retired at net level too.

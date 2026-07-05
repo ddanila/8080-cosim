@@ -7878,27 +7878,6 @@
     ]
    ]
   },
-  "DOTCLK16M": {
-   "nodes": [
-    [
-     "D56",
-     "4"
-    ],
-    [
-     "D103",
-     "2"
-    ],
-    [
-     "D42",
-     "9"
-    ],
-    [
-     "D43",
-     "9"
-    ]
-   ],
-   "src": "traced sheet-2 (bite-3 + t7_d56_bend): D56 16MHz astable, out = sect-1 Q_N pin 4, drawn bend onto the 16MHz rail -> D103.2 CK + D42.9/D43.9 (ctrl-rail 3); one unidentified \"14\" far-end tap remains"
-  },
   "D40QA": {
    "nodes": [
     [
@@ -13138,6 +13117,32 @@
     [
      "D103",
      "9"
+    ]
+   ]
+  },
+  "XTAL16M": {
+   "src": "traced sheet-2 (crop s2_dotclk_bend): the 16MHz crystal rail (bundle tag 14) is a SEPARATE net from D56.Q_N; it clocks D103 + the ИР16 shifters. Likely = the OSC net continuation (D59) — merge pending one tag read at the D42/D43 feed rows",
+   "nodes": [
+    [
+     "D103",
+     "2"
+    ],
+    [
+     "D42",
+     "9"
+    ],
+    [
+     "D43",
+     "9"
+    ]
+   ]
+  },
+  "D56_QN": {
+   "src": "traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old \"16MHz astable source\" attribution retired",
+   "nodes": [
+    [
+     "D56",
+     "4"
     ]
    ]
   }

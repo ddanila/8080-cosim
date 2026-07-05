@@ -347,12 +347,12 @@ module juku_top (
     net_boundary U_R57LNK (.a(d53_cas_sim), .b(cas_n)); // sim CAS scaffold -> rail 15
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
-    wire dotclk_16m;
+    wire xtal16m_w;   // the 16MHz crystal rail, bundle tag 14 (traced s2_dotclk_bend); OSC-merge pending
     wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
     wire d56_clr_w = 1'b1;   // shared CLR rail = R61 12k pullup (traced); idle high
     ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
-                        .q(), .q_n(dotclk_16m), .q2(), .q2_n());  // 16MHz-leg attribution = re-read queued
-    ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
+                        .q(), .q_n(), .q2(), .q2_n());  // Q_N destination = south vertical [chase]; old 16MHz attribution retired
+    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
 
     // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
@@ -378,9 +378,9 @@ module juku_top (
     // (dot clock), LD = ctrl-rail 6 = D38.6 -> also D59.13 (the load strobe; ex-VID_LD net).
     // G <- ctrl-rail 8 [pending]. Q -> D37 inverter -> analog video mix.
     ir16 U_D42 (.d(rdo[7]), .c(rdo[6]), .b(rdo[5]), .a(rdo[4]),
-                .ld(load_pre), .g(1'b1), .ck(dotclk_16m), .ds(d43_q), .q(d42_q));
+                .ld(load_pre), .g(1'b1), .ck(xtal16m_w), .ds(d43_q), .q(d42_q));
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
-                .ld(load_pre), .g(1'b1), .ck(dotclk_16m), .ds(1'b0), .q(d43_q));
+                .ld(load_pre), .g(1'b1), .ck(xtal16m_w), .ds(1'b0), .q(d43_q));
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;
