@@ -345,7 +345,7 @@ def main():
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
 
     # connectors are silk outlines, not DIP footprints -> never placed as chips
-    CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN'}
+    CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN', 'PAR_CONN', 'KBD_CONN'}  # PAR/KBD: X2/X9 are made by make_conn -- placing them here too duplicates the refdes and silently kills the Specctra DSN export
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -426,7 +426,7 @@ def main():
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
         'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 176.8, 90),  # [emaplaat]  # ready ТМ2 [photo]
-        'D51':  ('DIP-16_W7.62mm', 'КР531КП14',  106.2, 158.2, 0),  # row-2 mux [emaplaat]  # video addr mux
+        # D51 removed: promoted to a net-modeled chip (KP14_MUX in board.json) -- keeping it here duplicated the refdes (DSN killer)
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 205.2, 90),  # below D13 [emaplaat]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]

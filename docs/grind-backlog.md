@@ -631,3 +631,14 @@ IC census for the ДГШ5.109.006 column (лист 3-4), all counts vs our model
   **втулки БА.226.341-03 ×8 + -04 ×2 = the поз.174 standoffs**.
 - Bypass per-position map stays BLOCKED on materials (СБ draws groups only; values are a mixed
   0.15/0.22/0.47µF fleet per pass 5). ВП document fully read: листы 1-11 all processed.
+
+## Route campaign iteration 1: DSN-export regression root-caused (duplicate refdes)
+The regenerated board silently failed pcbnew.ExportSpecctraDSN (returns False, no diagnostics;
+juku_routed v75 exported fine -> generator regression). Peeling bisect (remove-and-retry over
+footprints) isolated THREE duplicated references: **D51** (net-modeled KP14 + stale UNTRACED
+entry), **X2/X9** (make_conn connectors + overflow-grid DIP ghosts: their board.json types
+PAR_CONN/KBD_CONN were missing from the generator's CONN skip-set). The Specctra exporter dies
+on duplicate component refs. Fixes: CONN += {PAR_CONN, KBD_CONN}; UNTRACED D51 entry removed.
+Board now: 237 footprints, 0 dup refs, DSN exports (143KB). Also: fonts/gost-type-b-italic.ttf
+installed to ~/Library/Fonts (user request) — KiCad no longer substitutes Verdana Italic.
+Freerouting fork (ddanila/freerouting, custom branch) re-cloned + jar rebuilt; route run started.
