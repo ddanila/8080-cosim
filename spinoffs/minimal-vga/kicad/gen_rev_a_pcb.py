@@ -11,24 +11,24 @@ BOARD_WIDTH_MM = 285
 BOARD_HEIGHT_MM = 285
 ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 14
-SILK_FONT_FACE = "GOST type B italic"
+SILK_FONT_FACE = "GOST CAD KK"
 SILK_LABELS = {
     "VJUGA REV A": (25, 76, 0, pcbnew.F_SilkS),
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
-    "POWER": (21, 15, 0, pcbnew.F_SilkS),
-    "CPU": (42, 17, 0, pcbnew.F_SilkS),
-    "ROM": (91, 17, 0, pcbnew.F_SilkS),
-    "DRAM REFRESH + TIMING": (66, 78, 0, pcbnew.F_SilkS),
-    "DRAM BANK": (35, 122, 0, pcbnew.F_SilkS),
-    "KEYBOARD MATRIX": (116, 181, 0, pcbnew.F_SilkS),
-    "VGA OUT": (235, 154, 0, pcbnew.F_SilkS),
-    "DIAGNOSTIC LEDS": (208, 224, 0, pcbnew.F_SilkS),
+    "POWER": (22, 33, 0, pcbnew.F_SilkS),
+    "CPU": (55, 75.5, 0, pcbnew.F_SilkS),
+    "ROM": (100, 75.5, 0, pcbnew.F_SilkS),
+    "DRAM REFRESH + TIMING": (150, 116, 0, pcbnew.F_SilkS),
+    "DRAM BANK": (115, 166, 0, pcbnew.F_SilkS),
+    "KEYBOARD MATRIX": (116, 247, 0, pcbnew.F_SilkS),
+    "VGA OUT": (260, 198, 0, pcbnew.F_SilkS),
+    "DIAGNOSTIC LEDS": (236, 260, 0, pcbnew.F_SilkS),
     "DEBUG HEADERS": (32, 274, 0, pcbnew.F_SilkS),
-    "GOST SILK FONT: TYPE B ITALIC": (22, 260, 0, pcbnew.B_SilkS),
+    "GOST SILK FONT: STRAIGHT": (22, 260, 0, pcbnew.B_SilkS),
 }
 
 SILK_VALUE_BY_REF = {
-    "J1": "5V IN",
+    "J1": "5V",
     "J3": "USB-C 5V",
     "J30": "JUKU KBD",
     "J40": "VGA RGB",
@@ -48,6 +48,12 @@ SILK_VALUE_BY_REF = {
     "D7": "RFSH",
     "F1": "PTC",
 }
+
+POWER_INPUT_PIN_LABELS = (
+    ("5V IN", 13.5, 24.75),
+    ("+5V", 28.5, 27.25),
+    ("GND", 28.8, 22.25),
+)
 
 SILK_VALUE_BY_TYPE = {
     "Z80_DIP40": "Z80",
@@ -268,6 +274,11 @@ def place_silk_fields(fp, chip, x, y, rot):
     }
 
     if non_dip_assembly_part:
+        if ref == "J1":
+            fp.Value().SetVisible(False)
+            style_field(fp.Reference(), ref, cx, top - 1.8, 0, size=0.8)
+            return
+
         value_angle = 90 if rot % 180 else 0
         ref_angle = value_angle
         if ref[0] == "D" and chip["type"] == "LED_THT":
@@ -368,13 +379,26 @@ def add_silk_label(board, text, x, y, angle, layer):
     label.SetTextAngleDegrees(angle)
     label.SetTextSize(pcbnew.VECTOR2I(mm(2.0), mm(2.0)))
     label.SetTextThickness(mm(0.2))
-    label.SetItalic(True)
+    label.SetItalic(False)
+    board.Add(label)
+
+
+def add_small_silk_label(board, text, x, y, angle=0, layer=pcbnew.F_SilkS):
+    label = pcbnew.PCB_TEXT(board)
+    label.SetLayer(layer)
+    label.SetText(text)
+    label.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
+    label.SetTextAngleDegrees(angle)
+    label.SetTextSize(pcbnew.VECTOR2I(mm(0.8), mm(0.8)))
+    label.SetTextThickness(mm(0.14))
+    label.SetItalic(False)
     board.Add(label)
 
 
 def patch_silk_font_faces(path):
     content = open(path, encoding="utf-8").read().splitlines()
     labels = set(SILK_LABELS)
+    labels.update(label for label, _x, _y in POWER_INPUT_PIN_LABELS)
     patched = []
     active_label = None
     in_font = False
@@ -458,6 +482,8 @@ def main():
         add_mounting_hole(board, x, y)
     for label, (x, y, angle, layer) in SILK_LABELS.items():
         add_silk_label(board, label, x, y, angle, layer)
+    for label, x, y in POWER_INPUT_PIN_LABELS:
+        add_small_silk_label(board, label, x, y)
 
     pcbnew.SaveBoard(out, board)
     board = pcbnew.LoadBoard(out)
