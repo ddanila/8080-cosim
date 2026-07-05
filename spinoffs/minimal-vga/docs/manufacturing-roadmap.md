@@ -89,7 +89,8 @@ Status: routed FreeRouting baseline.
   fabrication exporter is allowed to run.
 - `report_rev_a_erc_readiness.sh` records the current KiCad ERC status for the
   physical schematic. It is non-gating until generated unused pins and
-  intentional no-connects are explicitly resolved.
+  intentional no-connects are explicitly resolved; the current cleanup list is
+  tracked in `rev-a-erc-cleanup.md`.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
 - `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
@@ -138,7 +139,8 @@ netlist enough that routing churn is unlikely.
 Open production blockers:
 
 - Fix or explicitly mark remaining schematic ERC findings; the current report
-  is generated as `fab/minimal-vga/erc-readiness.md`.
+  is generated as `fab/minimal-vga/erc-readiness.md`, with the cleanup plan in
+  `rev-a-erc-cleanup.md`.
 - Decide whether the Rev A manual rows (`C50`, `D1`, `J30`, `J40`, `J90-J93`,
   `R6`, `R15`, `U40`, and `U50`) stay owner-installed or get factory CPNs /
   footprint changes before ordering.

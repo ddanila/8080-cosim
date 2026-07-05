@@ -110,7 +110,8 @@ Factory assembly:
 - `report_rev_a_erc_readiness.sh` writes the current schematic ERC summary to
   `fab/minimal-vga/erc-readiness.md`. It is report-only for now because the
   generated schematic still needs explicit unused-pin/no-connect cleanup before
-  ERC can become a hard export gate.
+  ERC can become a hard export gate. The current cleanup plan is tracked in
+  `../docs/rev-a-erc-cleanup.md`.
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.

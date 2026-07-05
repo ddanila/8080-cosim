@@ -134,6 +134,8 @@ Early manufacturing planning files live in `kicad/`:
 - `../docs/manufacturing-roadmap.md` - gates from behavioral proof to order
   package.
 - `../docs/rev-a-sourcing-plan.md` - JLCPCB/factory-assembly sourcing plan.
+- `../docs/rev-a-erc-cleanup.md` - current schematic ERC blocker
+  classification.
 - `rev-a-physical.board.json` - first physical chip-level schematic target.
 - `rev-a-physical.kicad_sch` - generated schematic from that physical target.
 - `rev-a-physical.kicad_pcb` - generated placement/ratsnest PCB scaffold.
