@@ -494,3 +494,12 @@ beep on the physical board settles it in seconds [owner, low priority].
   cleanly and corners up toward tag boxes ("12"?/"9") heading further west -- candidate
   source = D2 (the second РТ4) outputs = a two-level PROM decode cascade [one crop short;
   chase queued]. Bonus: D4 buffer EN = tied stub, T -> GND arrow (crop s1_d6_ven).
+
+## Loop iteration: D6 input rows triple-confirmed; V-feed narrowed
+Crop s1_ven_corner (300dpi @3.2x): D4's B-side = BA8-BA11 entering the BA bundle with tags
+9/10/11/12 (tag N = BA(N-1) convention re-verified); drawn "12|...|3" row = BA11 -> D6.3 ✓
+(net already had it); mode rows "1->2, 2->1, 3->15" all drawn ✓✓ (MEM_MODE0/1/2 confirmed).
+**D6.V1/V2 feed**: the west line runs from a long vertical at sheet x~2664 (300dpi), crossing
+the mode bundle cleanly, east to the V-bracket junction. The vertical's top terminus
+(~2664, 1280-1300) = next crop; an address bit is electrically implausible for a РТ4 CS —
+expect a control rail or a D4-row tee [one crop to close].
