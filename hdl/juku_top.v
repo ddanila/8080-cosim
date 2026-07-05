@@ -59,6 +59,7 @@ module juku_top (
     wire        rom_sel_n, ram_sel_n, rev, roe_n;
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
     wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
+    wire [7:0]  ppi0_pc;               // D26 Port C (declared early: consumed by U_DECODE a[8] + FDC)
     wire [1:0]  mem_mode;
     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block). Array read:
     // R is PER BANK (rails 11/12/13/14 <- the D53 Y ladder), C (rail 15) + W (rail 16) are shared.
@@ -188,7 +189,7 @@ module juku_top (
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
     la3_gate    U_D7     (.a(iowr_n), .b(iord_n), .y(io_strobe_h),     // traced: sect 12,13->11 = strobe-NAND (high on either io strobe) -> R17 -> D9.G1; 12/13 order assumed
                           .a2(1'b1), .b2(memw_n), .y2());   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
-    decode_prom U_DECODE (.a({BA[15:11], mem_mode[0], mem_mode[1], 1'b0}),   // traced: mode enters as PROM address (pins 2,1,15 <- bundle tags 1,2,3); tag 3 source unread -> 0
+    decode_prom U_DECODE (.a({BA[15:11], mem_mode[0], mem_mode[1], ppi0_pc[2]}),   // traced: mode enters as PROM address (pins 2,1,15 <- tags 1,2,3; tag3->pin15 read s1_d6_ven2, PC2 source assumed)
                           .v_en_n(1'b0),                                     // V1/V2 feed unread; modeled always-enabled (old D7.11 link refuted)
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
@@ -391,7 +392,6 @@ module juku_top (
     // ============ FDC quadrant scaffold (.009): ВГ93 + РЕ3 .113 + ВА87 bus buffer ============
     // Bus side traced (CS7/sheet-3 delta + MAME 1C-1F + WD1793 datasheet); support logic
     // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. Stubs are inert.
-    wire [7:0] ppi0_pc;                // D26 Port C: bits 1:0 = memory mode, 2-6 = floppy ctl
     assign mem_mode = ppi0_pc[1:0];
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
     vg93_fdc   U_D93  (.cs_n(cs_fdc_n), .re_n(iord_n), .we_n(iowr_n), .a0(BA[0]), .a1(BA[1]),

@@ -485,3 +485,12 @@ Crop s1_c99_east (300dpi): C99 160pF east lead ends at an ambiguous junction str
 (~sheet 4335, 2120-2500 at 300dpi) — the print breaks up; candidates = GND return (electrically
 standard for the deglitch) vs the RAMOUTEN export line. Netted to GND [flagged]; a continuity
 beep on the physical board settles it in seconds [owner, low priority].
+
+## Loop iteration: D6 V-feed hunt + mode tag-3
+- **Mode-bundle tag 3 -> D6.15 read directly** (crop s1_d6_ven2 row "3|15|A7") -> net
+  MEM_MODE2 {D26.16, D6.15} added (PC-bit order assumed, same level as MODE0/1); HDL a[8]
+  now = ppi0_pc[2] (declaration hoisted; formulas ignore a[8] -> behavior unchanged).
+- **D6.V1/V2 feed**: bracket (13+14 bridged) fed by a west line that CROSSES the mode bundle
+  cleanly and corners up toward tag boxes ("12"?/"9") heading further west -- candidate
+  source = D2 (the second РТ4) outputs = a two-level PROM decode cascade [one crop short;
+  chase queued]. Bonus: D4 buffer EN = tied stub, T -> GND arrow (crop s1_d6_ven).

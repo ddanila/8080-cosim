@@ -13132,6 +13132,19 @@
      "4"
     ]
    ]
+  },
+  "MEM_MODE2": {
+   "src": "traced sheet-1 300dpi (crop s1_d6_ven2: row \"3|15\" = mode-bundle tag 3 -> D6.15/A7) + source PPI PC2 = D26.16 [tag<->PC-bit order assumed, same level as MODE0/1]",
+   "nodes": [
+    [
+     "D26",
+     "16"
+    ],
+    [
+     "D6",
+     "15"
+    ]
+   ]
   }
  }
 }
