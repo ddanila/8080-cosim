@@ -218,13 +218,27 @@ def place_silk_fields(fp, chip, x, y, rot):
     cy = (top + bottom) / 2
     ref = chip["ref"]
     value = value_for_chip(chip)
+    passive_ref = ref[0] in {"R", "C", "D", "F"} or chip["type"] in {
+        "PS_ON_HEADER",
+        "POWER_DEBUG_HEADER",
+        "DEBUG_HEADER",
+        "ATX_POWER_HEADER",
+        "KEYBOARD_HEADER",
+        "VGA_HEADER",
+    }
+
+    if passive_ref:
+        style_field(fp.Reference(), ref, cx, cy, 90 if rot % 180 else 0, size=0.95)
+        fp.Value().SetVisible(False)
+        return
+
     # Refdes sits on the keyed short side; chip value follows the DIP long axis.
     ref_angle = 90 if rot % 180 else 0
     value_angle = 0 if rot % 180 else 90
 
     if rot % 180:
         ref_x = left - 2.0
-        ref_y = top + 2.0
+        ref_y = cy
     else:
         ref_x = cx
         ref_y = top - 2.2

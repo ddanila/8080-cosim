@@ -61,5 +61,6 @@ python3 spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
   "$BOARD"
 cp spinoffs/minimal-vga/kicad/rev-a.bom.csv "$OUT/rev-a.engineering-bom.csv"
 cp spinoffs/minimal-vga/kicad/rev-a-jlcpcb-cpn-checklist.csv "$OUT/assembly/"
+cp spinoffs/minimal-vga/kicad/rev-a-assembly-orientation-notes.md "$OUT/assembly/"
 cp spinoffs/minimal-vga/kicad/fab-notes.md "$OUT/"
 echo "Exported fab package to $OUT"

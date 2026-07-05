@@ -69,6 +69,7 @@ Factory assembly:
 - Assembly readiness report: `assembly/assembly-readiness.md`.
 - Position file: `assembly/rev-a-position.csv`.
 - Order-time CPN checklist: `assembly/rev-a-jlcpcb-cpn-checklist.csv`.
+- Assembly/orientation notes: `assembly/rev-a-assembly-orientation-notes.md`.
 - Assembly drawings.
 - DNP list.
 - Polarity/orientation notes.

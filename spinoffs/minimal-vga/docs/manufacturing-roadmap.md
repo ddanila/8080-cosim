@@ -85,7 +85,6 @@ Status: routed FreeRouting baseline.
 
 Remaining work:
 
-- Re-run after GAL/header pinouts are frozen.
 - Choose final connector footprints.
 - Review whether production Rev A should restore GND/+5V copper pours after the
   route is stable. The first autoroute with placeholder planes produced split
@@ -98,11 +97,12 @@ Remaining work:
 
 ### Gate 4: Fabrication Candidate
 
-Status: partially reached.
+Status: fabrication-output candidate.
 
-The routed PCB passes KiCad DRC and exports Gerbers/drills. This is still not a
-buy-ready design because several electrical/mechanical decisions remain
-placeholders.
+The routed PCB passes KiCad DRC and exports Gerbers/drills, schematic PDF,
+assembly PDFs, position data, and draft JLCPCB BOM/CPL files. This is still not
+a buy-ready design because sourcing, connector, and manual layout review gates
+remain open.
 
 Open production blockers:
 
@@ -111,8 +111,11 @@ Open production blockers:
   connectors, protection parts, oscillator/reset, and the diagnostic LEDs.
 - Review autorouted traces, power widths, via count, and return paths.
 - Decide whether GND/+5V pours return after manual cleanup.
-- Produce schematic PDF and assembly drawings.
 - Do final Gerber inspection in an independent viewer.
+- Confirm all socket footprints match the exact socket widths selected for
+  factory assembly.
+- Confirm whether JLCPCB will assemble the chosen through-hole sockets and
+  connectors, or whether some must move to manual insertion.
 
 Required before ordering:
 
@@ -133,7 +136,7 @@ Required before ordering:
 
 ### Gate 5: Factory Assembly Order Package
 
-Status: not reached.
+Status: draft package generated; not order-ready.
 
 PCB fabrication package:
 
@@ -152,3 +155,14 @@ Factory assembly package:
 - Polarity and socket orientation notes.
 - Notes for owner-supplied post-assembly insertion of Z80, ROM, DRAM, 8255, and
   GAL/PAL devices if they are not factory-sourced.
+
+Remaining order-package work:
+
+- Replace every `TBD` factory-populated CPN with an orderable JLCPCB/LCSC part
+  selected immediately before upload.
+- Verify factory assembly availability for selected through-hole sockets,
+  headers, oscillator, reset supervisor, fuse, and TVS.
+- Add explicit socket/polarity/orientation notes to the assembly package.
+- Inspect Gerbers in an independent viewer and record the review result.
+- Decide whether to order bare PCB first or accept factory assembly risk for
+  Rev A sockets/passives/connectors.
