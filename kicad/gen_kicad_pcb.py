@@ -57,13 +57,13 @@ PASSIVE_FP = {
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
-    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(51.7,205.9,0),'C1':(18.4,194.8,0),'S1':(63.5,183.2,0),
-    'R38':(121.4,249.1,90),'R39':(235,186.9,0),
+    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),'S1':(63.5,183.2,0),
+    'R38':(121.4,249.1,90),'R39':(230.5,192.5,0),
     'Z1':(79.4,243.5,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
-    'E4':(42.9,226.5,0),'E5':(50.5,226.1,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
+    'E4':(39.9,226.5,0),'E5':(50.5,224.0,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
     # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
     # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
     'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.0,119.6,90),
@@ -71,10 +71,10 @@ PASSIVE_PLACE = {
     # R6x grid: slot positions СБ-true (crops sb_analog2/sb_r6x_right: trio y116.9 at x288.3/291.0/293.8,
     # trio y126.2 same x, singles ~(297.5,117.5)/(299.4,120.4)); refdes-to-slot within the grid is APPROX —
     # the rotated labels sit at the scan's resolution floor (blocked: needs macro photo / owner read)
-    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(293.8,126.2,90),
-    'R67':(288.3,116.9,90),'R68':(291.0,116.9,90),'R69':(293.8,116.9,90),'R70':(288.3,126.2,90),'R71':(291.0,126.2,90),
-    'C9':(275,95,0),'C10':(276,112,90),'C12':(254.6,95.6,0),'C13':(279.5,112,90),'C15':(253.8,104.0,0),
-    'R76':(272,125,0),'R77':(276,128,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
+    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(293.8,127.2,90),
+    'R67':(288.3,116.4,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
+    'C9':(275,95,0),'C10':(283.5,112,90),'C12':(254.6,95.6,0),'C13':(249.5,99.0,90),'C15':(253.8,104.0,0),
+    'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
@@ -85,23 +85,23 @@ PASSIVE_PLACE = {
     'R57':(204.1,216.2,0),'R58':(204.1,220.5,0),   # R57 = CAS rail-15 series (<- D36.11), R58 = rail-15 5.1k pullup -> E [bite-2; same column, position approx]
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
-    'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
-    'R17':(111.4,116.1,90),'C99':(105.1,119.8,0),   # D9.G1 RC deglitch -- SB-true spots (crop sb_decode)
+    'E2':(65.5,215.5,0),'E3':(49.5,215.5,0),   # beside D52's body (x52-62), not inside it   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'R17':(111.4,119.0,90),'C99':(105.1,119.8,0),   # D9.G1 RC deglitch -- SB-true spots (crop sb_decode)
     'R90':(251.6,216.1,90),'VD4':(254.1,216.1,90),'R91':(256.4,216.1,90),'R48':(245.1,207.4,0),'R60':(253.9,202.7,0),   # beeper cluster SB-true (crop sb_beeper); R60 = FRAME INT pullup between wire posts 2/1
     # D56 AG3 RCs СБ-true (crops sb_d56rc/sb_westpair): R59+C8 pair WEST of D56 (between D103 and D56),
     # C7+R47 pair EAST of D56; R61 not found on the СБ in the checked zones [stays approx]
-    'R47':(296.5,166.8,90),'C7':(294.1,166.6,90),'R59':(279.1,174.0,90),'C8':(281.6,171.7,90),'R61':(293.5,189.0,0),
-    'R11':(70.0,108.0,90),'R12':(73.5,108.0,90),'R13':(84.5,122.0,90),'R14':(88.0,122.0,90),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
+    'R47':(296.5,166.8,90),'C7':(294.1,166.6,90),'R59':(280.1,174.0,90),'C8':(280.1,184.5,90),'R61':(293.5,189.0,0),
+    'R11':(70.0,101.0,90),'R12':(73.5,101.0,90),'R13':(84.5,122.0,90),'R14':(88.0,122.0,90),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
-    'C35':(119.6,124.3,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),
-    'C54':(130.9,124.3,0),'C55':(130.9,145.6,0),'C56':(130.9,170.7,0),'C57':(130.9,195.8,0),
-    'C39':(142.3,124.3,0),'C40':(142.3,145.6,0),'C41':(142.3,170.7,0),'C42':(142.3,195.8,0),
-    'C58':(153.7,124.3,0),'C59':(153.7,145.6,0),'C60':(153.7,170.7,0),'C61':(153.7,195.8,0),
-    'C43':(164.7,124.3,0),'C44':(164.7,145.6,0),'C45':(164.7,170.7,0),'C46':(164.7,195.8,0),
-    'C62':(176.1,124.3,0),'C63':(176.1,145.6,0),'C64':(176.1,170.7,0),'C65':(176.1,195.8,0),
-    'C47':(187.1,124.3,0),'C48':(187.1,145.6,0),'C49':(187.1,170.7,0),'C50':(187.1,195.8,0),
-    'C66':(198.4,124.3,0),'C67':(198.4,145.6,0),'C68':(198.4,170.7,0),'C69':(198.4,195.8,0),
+    'C35':(119.6,120.9,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),
+    'C54':(130.9,120.9,0),'C55':(130.9,145.6,0),'C56':(130.9,170.7,0),'C57':(130.9,195.8,0),
+    'C39':(142.3,120.9,0),'C40':(142.3,145.6,0),'C41':(142.3,170.7,0),'C42':(142.3,195.8,0),
+    'C58':(153.7,120.9,0),'C59':(153.7,145.6,0),'C60':(153.7,170.7,0),'C61':(153.7,195.8,0),
+    'C43':(164.7,120.9,0),'C44':(164.7,145.6,0),'C45':(164.7,170.7,0),'C46':(164.7,195.8,0),
+    'C62':(176.1,120.9,0),'C63':(176.1,145.6,0),'C64':(176.1,170.7,0),'C65':(176.1,195.8,0),
+    'C47':(187.1,120.9,0),'C48':(187.1,145.6,0),'C49':(187.1,170.7,0),'C50':(187.1,195.8,0),
+    'C66':(198.4,120.9,0),'C67':(198.4,145.6,0),'C68':(198.4,170.7,0),'C69':(194.5,195.8,0),
     # non-field decaps (bus band / I/O / clock zones)
     'C51':(240,255,0),'C52':(162,40,0),'C53':(214,252,0),
     'C70':(216,150,0),'C71':(216,175,0),'C72':(216,200,0),
@@ -171,10 +171,10 @@ PLACE = {
     # D27 (wide PPI 8255) sits at the right end of the top transceiver band @ (162,57). The bus
     # transceivers D25/D23/D24/D29 in this row are NOT net-modeled (not in board.json) -> they're
     # placement outlines below, not PLACE entries (PLACE entries for non-board.json refs no-op).
-    'D27':(162,57,90),
+    'D27':(151.7,35.7,90),
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
     # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
-    'D15':(22.9,98.5,0), 'D16':(42.3,98.5,0), 'D11':(188,102.8,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
+    'D15':(23.5,70.8,0), 'D16':(42.3,70.8,0), 'D11':(185.5,65.7,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
     # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
     # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
     # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
@@ -195,13 +195,15 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(227.8,204.9,0),'D52':(58.3,221.5,0),'D50':(106.2,133.1,0),'D51':(106.2,158.2,0),'D92':(260,159.2,0),'D103':(274.2,181.8,0),   # D51 = row-2 mux, left DRAM column (emaplaat); D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
+    'D53':(227.8,204.9,0),'D52':(57.2,211.6,0),'D50':(106.2,133.1,0),'D51':(106.2,158.2,0),'D92':(260,159.2,0),'D103':(273.0,181.8,0),   # D51 = row-2 mux, left DRAM column (emaplaat); D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
     'D56':(287.8,180,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
-    'D5':(31.2,114.1,90),'D6':(63.8,117.5,90),'D7':(137.2,118,90),'D10':(178.9,116.7,90),
+    # D5 at its СБ box (y92-106; old 114.1 clipped the ROM sockets); D6/D7/D10 row at y114.1
+    # (old 116.7-118 dips clipped the x-decap band at 124.3 and bank0 at 133.1)
+    'D5':(31.2,99.2,90),'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),'D10':(178.9,101.3,90),
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
@@ -211,13 +213,14 @@ PLACE = {
     'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     'D93':(248,70,0),'D94':(228,33,0),'D100':(245,30,0),   # FDC trio promoted to netted [grind C]
-    'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(245.1,195.0,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
+    'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
-    'D25':(29.8,53.4,90),'D23':(54.6,53.4,90),'D24':(81.6,53.4,90),'D29':(108.5,53.4,90),
-    'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183,259.5,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
+    # buffer row at СБ y37.1 (sb_left_0: D25/D23 boxes y34.7-39.5; the old 53.4 sat on the ROM sockets)
+    'D25':(29.8,37.1,90),'D23':(54.6,37.1,90),'D24':(81.6,37.1,90),'D29':(108.5,37.1,90),
+    'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183.0,243.1,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
     'D37':(241.7,181,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
     'D13':(31.9,205.3,90),
 }
@@ -229,10 +232,13 @@ _DCOLS = [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4]
 for _ry, _refs in [(158.2, range(75, 67, -1)), (183.3, range(83, 75, -1)), (208.4, range(91, 83, -1))]:
     for _cx, _r in zip(_DCOLS, _refs): PLACE[f'D{_r}'] = (_cx, _ry, 0)
 # unpopulated ROM sockets D17-D22 (now net-modeled) -> footprints in the ROM row (y86, ~21mm pitch)
-for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLACE[f'D{_i}'] = (_x, 83.4, 0)
+for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLACE[f'D{_i}'] = (_x, 70.8, 0)   # СБ: all 8 sockets one row at y~70.8 (old 83.4 clipped D9/D5)
 # serial-port cluster (net-modeled): REAL positions read off the emaplaat (relative to the D11
 # anchor): D104/D32/D14 = the column under the X3 serial connector; D12/D3 right of D11.
-PLACE['D104'] = (184.9, 60.0, 0); PLACE['D32'] = (198.9, 48.3, 0); PLACE['D14'] = (198.9, 58.7, 0)
+# serial column right of СБ-true D11 (D11 pins span x~177-194; D12 begins x~201):
+# D104 tucked above the column, D32/D14 at their emaplaat slots
+PLACE['D104'] = (199.5, 30.5, 0)
+PLACE['D32'] = (198.9, 48.3, 0); PLACE['D14'] = (198.9, 58.7, 0)
 PLACE['D12']  = (206.3, 80.9, 0); PLACE['D3']  = (205.8, 96.4, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
@@ -436,10 +442,10 @@ def main():
         'D28':  ('DIP-14_W7.62mm', 'К155ЛН3',    272, 74, 0),   # row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread]
         'D96':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 74, 0),   # row 2 [.009: D96=ТМ2]
         'D95':  ('DIP-16_W7.62mm', 'К555КП12',   268, 93, 90), # row 3: КП12 #1 [.009: D95]
-        'D97':  ('DIP-14_W7.62mm', 'КМ555АГ3',   288.5, 93, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
-        'D101': ('DIP-16_W7.62mm', 'К555КП12',   242, 109, 90), # row 4: КП12 #2 [.009: D101]
-        'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   268, 110, 90), # row 4 middle [pool, ASSUMED]
-        'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   295.5, 110, 90),# row 4 right [pool, ASSUMED]
+        'D97':  ('DIP-14_W7.62mm', 'КМ555АГ3',   228, 88, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
+        'D101': ('DIP-16_W7.62mm', 'К555КП12',   230, 109, 90), # row 4: КП12 #2 [.009: D101]
+        'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   251.5, 110, 90), # row 4 middle [pool, ASSUMED]
+        'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   270.8, 111.8, 90),# row 4 right [pool, ASSUMED]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)
@@ -536,7 +542,7 @@ def main():
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         board.Add(t)
 
-    silk_box(15, 23, 107, 33, "X1"); silk_box(118, 23, 177, 33, "X2")
+    silk_box(15, 13, 107, 21, "X1"); silk_box(118, 13, 177, 21, "X2")   # bodies end ~y15-20; old y23-33 boxes overlapped the СБ-true buffer/D27 rows
     silk_box(222, 283, 273, 287.6, "X9")   # bottom connector (read mm222..273, pins 58..45; box held 0.4 off the edge cut for silk-edge DRC)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
     # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the
@@ -570,7 +576,7 @@ def main():
     # the sheet-3 read needs revisiting; D99=ИР9 (296,82) kept but now suspect.)
     # (D106 -> untraced К155АГ3 footprint, photo-confirmed)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
-    silk_box(182, 22.5, 210, 30, "X3")   # serial edge connector, right of X2 (emaplaat)
+    silk_box(182, 12, 210, 20, "X3")   # serial edge connector, right of X2 (emaplaat)
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     for label, x, y, rot in BOARD_SILK_NOTES:
         silk_note(label, x, y, rot)
@@ -607,20 +613,12 @@ def main():
         v.SetLocked(True)
         board.Add(v)
     B, F = pcbnew.B_Cu, pcbnew.F_Cu
-    # ADRF: D24.12 (94.89,55.19) -> X1.117B (62.25,27)
-    _wire('ADRF_N', [(94.89,55.19),(94.89,33.0),(61.0,33.0),(61.0,28.25),(62.25,28.25),(62.25,27.0)],
-          [B, F, B, B, B])
-    _via('ADRF_N', 94.89,33.0); _via('ADRF_N', 61.0,33.0)
-    # ADRE: D24.13 (92.35,55.19) -> X1.117C (62.25,29.5)
-    _wire('ADRE_N', [(92.35,55.19),(92.35,33.8),(62.25,33.8),(62.25,29.5)], [B, F, B])
-    _via('ADRE_N', 92.35,33.8); _via('ADRE_N', 62.25,33.8)
-    # ADRD: D24.14 (89.81,55.19) -> X1.118B (64.75,27)
-    _wire('ADRD_N', [(89.81,55.19),(89.81,34.6),(66.0,34.6),(66.0,28.25),(64.75,28.25),(64.75,27.0)],
-          [B, F, B, B, B])
-    _via('ADRD_N', 89.81,34.6); _via('ADRD_N', 66.0,34.6)
-    # ADRC: D24.15 (87.27,55.19) -> X1.118C (64.75,29.5)
-    _wire('ADRC_N', [(87.27,55.19),(87.27,35.4),(64.75,35.4),(64.75,29.5)], [B, F, B])
-    _via('ADRC_N', 87.27,35.4); _via('ADRC_N', 64.75,35.4)
+    # ADR escapes REMOVED (route campaign v76): the hardcoded bars used the OLD buffer-row pad
+    # coords (D24 pads y55.19; collector rows y33-35.4) -- after the СБ-true buffer-row move to
+    # y37.1 they shorted into the moved pads. The corner geometry changed entirely (D24 is now
+    # ~16mm closer to X1), so per the original strategy note: give the router a fair shot first,
+    # and only re-add bars with UPDATED pad coords if the links fail deterministically again.
+    # (helpers _wire/_via kept above for that case)
     # PHI1 escape REMOVED: hand-placed locked wires here create degenerate trace geometry that
     # livelocks freerouting's PolylineTrace.combine (bounded-guard build churns forever, stock
     # build stack-overflows). The ADR pre-routes are fine; PHI1's occasional single-link miss is

@@ -681,3 +681,26 @@ Root causes found and fixed so far (385 -> 306 hard violations):
   D104<->D27, D52<->E2/E3, D58<->X9, D2<->D6, R77<->VT2. Repair continues next iteration.
 **The GUI route of the stale DSN cannot reach 0 — recommend stopping it until the board is
 DRC-hard-clean, then re-exporting the DSN and relaunching.**
+
+## Route campaign iteration 3: COPPER-CLEAN — placement collision repair COMPLETE
+DRC-driven repair finished: **0 shorting / 0 clearance / 0 hole-to-hole** on the unrouted board
+(from 196/146/116 at discovery). The fix list beyond iteration 2:
+- Lower-left cluster solved by СБ re-reads: ALL EIGHT ROM sockets are ONE row at y70.8 (D15
+  23.5 / D16 42.3 / D17-22 62.9..162.5); D5 -> its СБ box (31.2,99.2); buffer row D25/D23/D24/D29
+  -> СБ y37.1; X1/X2 silk boxes shrunk to the real body zone (y13-21).
+- **D11 was 37mm off**: СБ crop puts it VERTICAL at (185.5,65.7) — the model spot (188,102.8)
+  was actually D10's true place; D10 -> (178.9,101.3) horizontal per its СБ box. D104 -> (199.5,
+  30.5) (its emaplaat spot sat on D11's body). Serial column D32/D14 unchanged.
+- D7 -> (137.8,110.0); the above-bank0 decap row 124.3 -> 120.9 (stand-in DIP-16 courtyard 20.8mm
+  vs real ~19.5 socket); АГ3/КП12 pool (ASSUMED positions) relocated clear of the СБ-true analog
+  corner: D101 (230,109), D99 (251.5,110), D102 (270.8,111.8), D97 (228,88); C10 (283.5,112),
+  C13 (249.5,99); R6x trio pinch opened (116.4/127.2); ~12 passive nudges (R39/R77/E4/R17/C69/
+  R11/R12/C21/E5/C8 -> (280.1,184.5)).
+- **Stale X1 ADR escape bars REMOVED**: hardcoded pre-routes used the old buffer-row pad coords
+  and shorted into the moved pads; per the original strategy note the router gets a fair shot at
+  the new (much less congested) corner first.
+- Residual DRC = cosmetics only: silk 398, text_thickness 75, pth_inside_courtyard 71, courtyard
+  touches 55 (sub-mm, real-board-tight clusters), copper_edge 4 (X-connector pads; the 0.3mm
+  fab rule is applied at finalize). LVS IN SYNC. Fresh DSN exported; GUI relaunched on it.
+- **Comment-swallow bug bit 3x more this session** (D103 again, D6/D7/D10, D32/D14): NEVER
+  append an inline comment mid-line in the PLACE dict — comments go on their own lines.
