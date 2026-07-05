@@ -70,6 +70,14 @@ Status: routed FreeRouting baseline.
   `MINIMAL_VGA_NO_ZONES=1` and has explicit routed power instead.
 - `route_rev_a_pcb.sh` regenerates a no-plane routing baseline, exports
   Specctra DSN, runs FreeRouting, imports the SES result, and checks KiCad DRC.
+- Freerouting caveats carried over from the main juku board (2026-07):
+  (a) v2.x **headless/CLI jobs skip the board-specific parameter optimizations**
+  that GUI runs apply (upstream discussion #508) — this small board converges
+  headless anyway, but if a rerun stagnates, route through the GUI;
+  (b) **duplicate footprint references make `ExportSpecctraDSN` fail silently**
+  (returns False, no diagnostics) — the script now pre-checks and fails loudly;
+  (c) the script prefers the local fork jar (ddanila/freerouting `custom`:
+  PolylineTrace.combine recursion fix + stagnation tuning) when built.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary

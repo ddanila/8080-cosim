@@ -10,6 +10,14 @@ DSN="$OUT/minimal-vga-rev-a-noplanes.dsn"
 SES="$OUT/minimal-vga-rev-a-noplanes.ses"
 DRC_JSON="$OUT/minimal-vga-rev-a-routed-drc.json"
 JAVA_BIN="${JAVA_BIN:-.tools/jre25/bin/java}"
+# Prefer the local fork jar when built (ddanila/freerouting `custom`: PolylineTrace.combine
+# recursion fix + dense-board stagnation tuning). NOTE (upstream discussion #508): freerouting
+# v2.x headless/CLI jobs SKIP board-specific parameter optimizations that GUI runs apply — small
+# boards route fine headless (this one does), but if a rerun stagnates, route via the GUI.
+FORK_JAR="/Users/danila.sukharev/fun/freerouting/build/libs/freerouting-current-executable.jar"
+if [ -z "${FREEROUTING_JAR:-}" ] && [ -f "$FORK_JAR" ]; then
+  FREEROUTING_JAR="$FORK_JAR"
+fi
 FREEROUTING_JAR="${FREEROUTING_JAR:-.tools/freerouting/freerouting-2.2.4.jar}"
 PASSES="${PASSES:-30}"
 THREADS="${THREADS:-4}"
@@ -44,6 +52,13 @@ import sys
 import pcbnew
 
 board = pcbnew.LoadBoard(sys.argv[1])
+# Duplicate references make ExportSpecctraDSN return False with NO diagnostics (learned on the
+# main juku board: ghost X2/X9/D51 twins). Fail loudly with the list instead.
+from collections import Counter
+refs = Counter(f.GetReference() for f in board.GetFootprints())
+dups = sorted(r for r, c in refs.items() if c > 1)
+if dups:
+    raise SystemExit(f"duplicate footprint references (would silently break DSN export): {dups}")
 if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
     raise SystemExit(f"failed to export DSN: {sys.argv[2]}")
 print(f"wrote DSN: {sys.argv[2]}")
