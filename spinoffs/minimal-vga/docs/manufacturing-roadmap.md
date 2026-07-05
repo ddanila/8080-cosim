@@ -93,8 +93,10 @@ Status: routed FreeRouting baseline.
   current candidate CPNs for many passives, USB-C, J1, reset, fuse, decouplers,
   and LEDs. The generated assembly readiness report is down to 10 missing CPN
   rows.
-- Current routed baseline has zero KiCad error-level DRC violations and zero
-  unconnected items.
+- Current routed baseline has zero KiCad error-level DRC violations and two
+  unconnected items after the decoupler-placement normalization:
+  net `D1` between `U3.3` and the routed data-bus segment near `U2`, and
+  `BUS_DIR` between `U3.1` and `U5.21`.
 - `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
   BOM, and draft JLCPCB assembly files from the routed board.
 
@@ -112,15 +114,17 @@ Remaining work:
 
 ### Gate 4: Fabrication Candidate
 
-Status: fabrication-output candidate.
+Status: blocked by final route cleanup.
 
-The routed PCB passes KiCad DRC and exports Gerbers/drills, schematic PDF,
-assembly PDFs, position data, and draft JLCPCB BOM/CPL files. This is still not
-a buy-ready design because sourcing, connector, and manual layout review gates
-remain open.
+The PCB has no KiCad error-level DRC violations, but the routed baseline still
+has two unconnected items. Keep the fabrication export scripts available, but do
+not treat the current board as buy-ready until the remaining net `D1` and BUS_DIR
+routes are closed and the export scripts are rerun from that clean board.
 
 Open production blockers:
 
+- Close the remaining routed-board unconnected items: net `D1` between `U3.3` and
+  the data-bus route near `U2`, and `BUS_DIR` between `U3.1` and `U5.21`.
 - Assign the remaining generated JLCPCB/LCSC CPNs for C50, D1, J30, J40,
   J90-J93, R6, R15, U40, and U50.
 - Re-check assigned candidate CPNs immediately before order and confirm

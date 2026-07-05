@@ -19,6 +19,10 @@ They are intended to keep later edits visually tidy and electrically defensible.
 - Every IC gets one local 100 nF capacitor.
 - The capacitor should sit beside the IC power-pin end, close enough that it
   visually reads as belonging to that IC.
+- Long vertical DIP packages place the local capacitor on the right side of the
+  package, vertical, aligned near the relevant power-pin Y coordinate.
+- Horizontal DIP packages place the local capacitor above the package,
+  horizontal, aligned near the relevant VCC pin X coordinate.
 - For this through-hole 4-layer board, the current generated placement targets
   about 5-10 mm from the nearest VCC/GND pin. This is a practical compromise
   between socket access, silkscreen readability, and routing clearance.
