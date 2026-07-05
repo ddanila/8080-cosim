@@ -349,7 +349,8 @@ module juku_top (
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire xtal16m_w;   // the 16MHz crystal rail, bundle tag 14 (traced s2_dotclk_bend); OSC-merge pending
     wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
-    wire d56_clr_w = 1'b1;   // shared CLR rail = R61 12k pullup (traced); idle high
+    wire d56_clr_w;   // shared CLR rail = R61 12k pullup (traced); boundary-driven so yosys keeps the net
+    net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
     ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
                         .q(), .q_n(), .q2(), .q2_n());  // Q_N destination = south vertical [chase]; old 16MHz attribution retired
     ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
