@@ -23,6 +23,7 @@ REQUIRED_ARTIFACTS = [
     "assembly/assembly-readiness.md",
     "assembly/socket-fit-readiness.md",
     "assembly/mechanical-fit-readiness.md",
+    "assembly/manual-row-readiness.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
     "assembly/manual-assembly.csv",
@@ -107,6 +108,7 @@ def machine_gate_summary(out_dir):
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
+    manual_rows_report = read_text(out_dir / "assembly" / "manual-row-readiness.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
@@ -149,6 +151,16 @@ def machine_gate_summary(out_dir):
             )
             and "- Mechanical fit failures: 0" in mechanical_fit,
             "`assembly/mechanical-fit-readiness.md` reports no hard mechanical mismatches; review rows still need human sign-off.",
+        ),
+        (
+            "Manual row dispositions",
+            (
+                has_ready_line(manual_rows_report, "READY")
+                or has_ready_line(manual_rows_report, "REVIEW REQUIRED")
+            )
+            and "- Unknown manual rows: 0" in manual_rows_report
+            and "- Missing expected manual rows: 0" in manual_rows_report,
+            "`assembly/manual-row-readiness.md` records explicit dispositions for every manual/non-factory row.",
         ),
         (
             "Upload package",

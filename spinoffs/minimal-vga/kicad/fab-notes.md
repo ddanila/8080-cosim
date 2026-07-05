@@ -137,6 +137,10 @@ Factory assembly:
   `fab/minimal-vga/order-readiness.md`, combining ERC, DRC, assembly, upload
   package, artifact, manual-row, and post-assembly-insertion status with the
   remaining human sign-off checklist.
+- `report_rev_a_manual_rows.py` writes
+  `fab/minimal-vga/assembly/manual-row-readiness.md`, recording the explicit
+  disposition for every row excluded from factory assembly and failing if a new
+  unclassified manual row appears.
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.
@@ -149,8 +153,10 @@ Factory assembly:
   connectors, oscillator/reset, and protection parts immediately before order.
 - The Rev A draft package deliberately leaves `D1`, `J30`, `R6`, `R15`, `U50`,
   and `U51` as manual/non-factory placements until their CPNs or footprint
-  changes are selected. `C50`, `J40`, `J90`-`J93`, and `U40` have factory
-  candidates but still need order-time fit and assembly-process review.
+  changes are selected. The generated manual-row readiness report gates that
+  this exact set is known and classified. `C50`, `J40`, `J90`-`J93`, and `U40`
+  have factory candidates but still need order-time fit and assembly-process
+  review.
 - Confirm whether the selected factory assembly process will mount the intended
   through-hole sockets/connectors or requires those parts to be left manual.
 - Confirm J1 terminal/header and J3 USB-C footprints against the exact selected

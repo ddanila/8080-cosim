@@ -127,6 +127,10 @@ Rows deliberately left manual in the Rev A draft assembly package:
   JLCPCB/LCSC `MCP130-460DI/TO` part is D-bondout. The current board expects an
   F-bondout MCP130 or equivalent `1=VSS, 2=RST, 3=VDD` supervisor.
 
+The generated `assembly/manual-row-readiness.md` report is the current machine
+gate for this list: it passes only when all six expected manual rows are present
+and no unclassified manual/non-factory rows have appeared.
+
 ## External/NOS Work Items
 
 Source these separately unless a current assembly-library option is confirmed:

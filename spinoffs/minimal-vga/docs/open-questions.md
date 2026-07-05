@@ -52,7 +52,9 @@ before ordering hardware.
 
 1. JLCPCB assembly BOM:
    - Remaining missing generated BOM CPN rows are D1, J30, R6, R15, U50, and
-     U51.
+     U51. The generated manual-row readiness report now classifies these as the
+     deliberate Rev A manual/non-factory set and fails if additional
+     unclassified rows appear.
    - Socket CPNs, common resistor CPNs, USB-C, J1 terminal candidate, reset
      supervisor candidate, decouplers, LEDs, and fuse candidate are assigned in
      `../kicad/rev-a.bom.csv` and `../kicad/rev-a-jlcpcb-cpn-checklist.csv`.

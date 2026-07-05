@@ -108,6 +108,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/order-readiness.md`, which combines the ERC, DRC, assembly,
   upload package, artifact, manual-row, and post-assembly-insertion checks with
   the remaining human sign-off items.
+- `report_rev_a_manual_rows.py` produces
+  `fab/minimal-vga/assembly/manual-row-readiness.md`, checking that every
+  manual/non-factory row is in the expected Rev A policy table and has an
+  explicit disposition.
 - `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
   generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
   It also writes an assembly-readiness report that counts missing LCSC part
@@ -176,7 +180,8 @@ Open production blockers:
   `fab/minimal-vga/erc-readiness.md`.
 - Decide whether the remaining Rev A manual rows (`D1`, `J30`, `R6`, `R15`,
   `U50`, and `U51`) stay owner-installed or get factory CPNs /
-  footprint changes before ordering.
+  footprint changes before ordering. The generated manual-row readiness report
+  now verifies that this exact manual set is deliberate and classified.
 - Re-check assigned candidate CPNs immediately before order and confirm
   footprint fit for the mechanically sensitive rows: J1 and R30-R31. F1 now has
   a footprint-matched Bourns MF-RG300-class candidate, but still needs final
