@@ -50,6 +50,9 @@ KICAD_CLI="$KCLI" python3 spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_routing_geometry.py \
   "$BOARD" \
   "$OUT" >/dev/null
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_mounting_holes.py \
+  "$BOARD" \
+  "$OUT" >/dev/null
 
 mkdir -p "$OUT/gerbers" "$OUT/drill"
 mkdir -p "$OUT/assembly" "$OUT/review"

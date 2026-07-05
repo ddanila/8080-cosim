@@ -11,6 +11,7 @@ REQUIRED_ARTIFACTS = [
     "erc-readiness.md",
     "fab-readiness.md",
     "routing-geometry-readiness.md",
+    "mounting-hole-readiness.md",
     "fab-package-integrity.md",
     "fab-notes.md",
     "rev-a.engineering-bom.csv",
@@ -116,6 +117,7 @@ def machine_gate_summary(out_dir):
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
+    mounting_holes = read_text(out_dir / "mounting-hole-readiness.md")
     fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
@@ -172,6 +174,14 @@ def machine_gate_summary(out_dir):
             )
             and "- Hard geometry failures: 0" in routing_geometry,
             "`routing-geometry-readiness.md` records track widths, via count, power routing, and zone policy.",
+        ),
+        (
+            "Mounting-hole geometry",
+            has_ready_line(mounting_holes, "READY")
+            and "- Expected mounting holes: 4" in mounting_holes
+            and "- Detected mounting holes: 4" in mounting_holes
+            and "- Mounting-hole failures: 0" in mounting_holes,
+            "`mounting-hole-readiness.md` verifies the Rev A corner mounting-hole count, diameter, edge web, and local clearance.",
         ),
         (
             "Fabrication package integrity",

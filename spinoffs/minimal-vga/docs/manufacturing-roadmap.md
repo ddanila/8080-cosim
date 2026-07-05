@@ -121,6 +121,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/routing-geometry-readiness.md`, recording track widths, via
   sizes/counts, power-net route statistics, and whether power planes/zones are
   present.
+- `report_rev_a_mounting_holes.py` produces
+  `fab/minimal-vga/mounting-hole-readiness.md`, checking the generated Rev A
+  3.2 mm corner mounting holes for count, diameter, edge web, footprint
+  clearance, and routed-track clearance.
 - `report_rev_a_fab_package_integrity.py` produces
   `fab/minimal-vga/fab-package-integrity.md`, verifying the upload Gerber/drill
   ZIP member list, deterministic ZIP metadata, source-file format markers, and
@@ -194,7 +198,8 @@ Remaining work:
 - Review whether production Rev A should restore GND/+5V copper pours after the
   route is stable. The first autoroute with placeholder planes produced split
   VCC islands, so the committed route uses traces only for power connectivity.
-- Refine mechanical constraints and mounting holes.
+- Keep mechanical constraints and mounting holes machine-checked; enclosure and
+  standoff decisions remain outside Rev A until a physical case target exists.
 - Human-review and clean up the autorouted trace geometry before ordering.
 - Review component placement against `rev-a-placement-rules.md` after any
   schematic/netlist change that moves CPU, ROM, DRAM, keyboard, VGA, or power

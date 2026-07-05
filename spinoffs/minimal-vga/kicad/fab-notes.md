@@ -146,6 +146,10 @@ Factory assembly:
   `fab/minimal-vga/routing-geometry-readiness.md`, summarizing track widths,
   vias, power-net routing, and zone policy. It catches hard geometry
   regressions while keeping power-width and return-path review explicit.
+- `report_rev_a_mounting_holes.py` writes
+  `fab/minimal-vga/mounting-hole-readiness.md`, checking the generated Rev A
+  corner mounting holes, 3.2 mm diameter, edge web, footprint clearance, and
+  routed-track clearance before Gerber packaging.
 - `report_rev_a_fab_package_integrity.py` writes
   `fab/minimal-vga/fab-package-integrity.md`, verifying the Gerber/drill ZIP
   member list, deterministic ZIP metadata, source-file format markers, and
