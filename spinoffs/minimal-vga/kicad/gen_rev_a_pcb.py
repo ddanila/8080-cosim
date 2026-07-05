@@ -16,6 +16,7 @@ SILK_LABELS = {
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
     "POWER": (22, 32.7, 0, pcbnew.F_SilkS),
     "FUSE": (24, 42.0, 0, pcbnew.F_SilkS),
+    "PTC": (18.9, 38.0, 90, pcbnew.F_SilkS),
     "CPU": (55, 75.5, 0, pcbnew.F_SilkS),
     "ROM": (100, 75.5, 0, pcbnew.F_SilkS),
     "DRAM REFRESH + TIMING": (150, 116, 0, pcbnew.F_SilkS),
@@ -46,7 +47,7 @@ SILK_VALUE_BY_REF = {
     "D5": "RESET",
     "D6": "M1",
     "D7": "RFSH",
-    "F1": "PTC 3A",
+    "F1": "3A",
 }
 
 POWER_INPUT_PIN_LABELS = (
