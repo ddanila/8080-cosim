@@ -15,7 +15,38 @@ SILK_FONT_FACE = "GOST type B italic"
 SILK_LABELS = {
     "MINIMAL VGA JUKU REV A": (25, 76, 0, pcbnew.F_SilkS),
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
+    "POWER": (21, 15, 0, pcbnew.F_SilkS),
+    "CPU": (42, 17, 0, pcbnew.F_SilkS),
+    "ROM": (91, 17, 0, pcbnew.F_SilkS),
+    "DRAM REFRESH + TIMING": (66, 78, 0, pcbnew.F_SilkS),
+    "DRAM BANK": (35, 122, 0, pcbnew.F_SilkS),
+    "KEYBOARD MATRIX": (116, 181, 0, pcbnew.F_SilkS),
+    "VGA OUT": (235, 154, 0, pcbnew.F_SilkS),
+    "DIAGNOSTIC LEDS": (208, 224, 0, pcbnew.F_SilkS),
+    "DEBUG HEADERS": (32, 274, 0, pcbnew.F_SilkS),
     "GOST SILK FONT: TYPE B ITALIC": (22, 260, 0, pcbnew.B_SilkS),
+}
+
+SILK_VALUE_BY_REF = {
+    "J1": "5V IN",
+    "J3": "USB-C 5V",
+    "J30": "JUKU KBD",
+    "J40": "VGA RGB",
+    "J90": "A0-A7 CLK",
+    "J91": "D0-D7 RST",
+    "J92": "DRAM/VIDEO",
+    "J93": "PWR DBG",
+    "U40": "TTL640x480",
+    "U50": "CLK OSC",
+    "U51": "RESET",
+    "D1": "5V TVS",
+    "D2": "PWR",
+    "D3": "PWR OK",
+    "D4": "CLK",
+    "D5": "RESET",
+    "D6": "M1",
+    "D7": "RFSH",
+    "F1": "PTC",
 }
 
 SILK_VALUE_BY_TYPE = {
@@ -205,6 +236,8 @@ def style_field(field, text, x, y, angle, size=1.4):
 
 
 def value_for_chip(chip):
+    if chip["ref"] in SILK_VALUE_BY_REF:
+        return SILK_VALUE_BY_REF[chip["ref"]]
     if chip["type"] in SILK_VALUE_BY_TYPE:
         return SILK_VALUE_BY_TYPE[chip["type"]]
     if chip.get("value"):
@@ -222,18 +255,45 @@ def place_silk_fields(fp, chip, x, y, rot):
     cy = (top + bottom) / 2
     ref = chip["ref"]
     value = value_for_chip(chip)
-    passive_ref = ref[0] in {"R", "C", "D", "F"} or chip["type"] in {
+    non_dip_assembly_part = ref[0] in {"R", "C", "D", "F", "J"} or chip["type"] in {
         "POWER_DEBUG_HEADER",
         "DEBUG_HEADER",
         "POWER_INPUT_TERMINAL",
         "USB_C_POWER_HRO",
         "KEYBOARD_HEADER",
         "VGA_HEADER",
+        "TTL640X480_HEADER",
+        "OSC_DIP14",
+        "RESET_SUPERVISOR_TO92",
     }
 
-    if passive_ref:
-        style_field(fp.Reference(), ref, cx, cy, 90 if rot % 180 else 0, size=0.95)
-        fp.Value().SetVisible(False)
+    if non_dip_assembly_part:
+        value_angle = 90 if rot % 180 else 0
+        ref_angle = value_angle
+        if ref[0] == "D" and chip["type"] == "LED_THT":
+            value_angle = 90
+            ref_angle = 90
+        value_size = 0.85 if len(value) > 6 else 0.95
+        if len(value) > 9:
+            value_size = 0.72
+        style_field(fp.Value(), value, cx, cy, value_angle, size=value_size)
+
+        if rot % 180:
+            ref_x = cx
+            ref_y = top - 1.8
+            ref_angle = 0
+        else:
+            ref_x = cx
+            ref_y = top - 1.8
+            ref_angle = 0
+        if ref[0] == "R" and rot % 180 == 0:
+            ref_y = top - 1.4
+        if ref[0] == "C":
+            ref_y = bottom + 1.3
+        if ref[0] == "D" and chip["type"] == "LED_THT":
+            ref_x = cx
+            ref_y = bottom + 1.3
+        style_field(fp.Reference(), ref, ref_x, ref_y, ref_angle, size=0.8)
         return
 
     # Refdes sits on the keyed short side; chip value follows the DIP long axis.
