@@ -84,5 +84,6 @@ cp spinoffs/minimal-vga/kicad/rev-a.bom.csv "$OUT/rev-a.engineering-bom.csv"
 cp spinoffs/minimal-vga/kicad/rev-a-jlcpcb-cpn-checklist.csv "$OUT/assembly/"
 cp spinoffs/minimal-vga/kicad/rev-a-assembly-orientation-notes.md "$OUT/assembly/"
 cp spinoffs/minimal-vga/kicad/fab-notes.md "$OUT/"
+python3 spinoffs/minimal-vga/kicad/package_rev_a_upload.py "$OUT" >/dev/null
 python3 spinoffs/minimal-vga/kicad/report_rev_a_order_readiness.py "$OUT" >/dev/null
 echo "Exported fab package to $OUT"

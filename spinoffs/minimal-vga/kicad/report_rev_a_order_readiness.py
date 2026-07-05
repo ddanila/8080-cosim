@@ -32,6 +32,15 @@ REQUIRED_ARTIFACTS = [
     "review/rev-a-physical-schematic.pdf",
     "review/rev-a-assembly-front.pdf",
     "review/rev-a-assembly-back.pdf",
+    "upload/vjuga-rev-a-gerbers-drill.zip",
+    "upload/vjuga-rev-a-jlcpcb-bom.csv",
+    "upload/vjuga-rev-a-jlcpcb-cpl.csv",
+    "upload/vjuga-rev-a-manual-assembly.csv",
+    "upload/vjuga-rev-a-post-assembly-insertion.csv",
+    "upload/vjuga-rev-a-assembly-notes.md",
+    "upload/README-upload.md",
+    "upload/SHA256SUMS.txt",
+    "upload/package-manifest.md",
 ]
 
 OPTIONAL_REVIEW_ARTIFACTS = [
@@ -95,6 +104,7 @@ def machine_gate_summary(out_dir):
     fab = read_text(out_dir / "fab-readiness.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
+    upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
         (
@@ -127,6 +137,14 @@ def machine_gate_summary(out_dir):
             has_ready_line(socket_fit, "READY")
             and "- Socket fit failures: 0" in socket_fit,
             "`assembly/socket-fit-readiness.md` confirms socket pin counts and widths.",
+        ),
+        (
+            "Upload package",
+            "# VJUGA Rev A upload package manifest" in upload_manifest
+            and "- JLCPCB BOM rows:" in upload_manifest
+            and "- JLCPCB CPL placements:" in upload_manifest
+            and "`upload/vjuga-rev-a-gerbers-drill.zip`" in upload_manifest,
+            "`upload/package-manifest.md` records the Gerber ZIP, BOM/CPL, notes, and checksums.",
         ),
     ]
     return gates

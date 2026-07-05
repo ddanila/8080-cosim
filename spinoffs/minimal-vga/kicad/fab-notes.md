@@ -65,6 +65,8 @@ PCB fabrication:
   and passives are frozen.
 - Gerber set.
 - Excellon drill files.
+- JLCPCB upload fabrication archive:
+  `upload/vjuga-rev-a-gerbers-drill.zip`.
 - Edge.Cuts outline.
 - Fabrication notes with layer stack.
 - Schematic PDF for review.
@@ -77,6 +79,9 @@ Factory assembly:
   physical PCB and engineering BOM.
 - JLCPCB upload CPL: `assembly/jlcpcb-cpl-draft.csv`, generated from the same
   physical PCB.
+- Upload-directory BOM/CPL copies:
+  `upload/vjuga-rev-a-jlcpcb-bom.csv` and
+  `upload/vjuga-rev-a-jlcpcb-cpl.csv`.
 - Manual assembly list: `assembly/manual-assembly.csv`, generated from rows
   marked `Manual`, `DNP`, or `Do not populate` in the engineering BOM.
 - Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
@@ -84,6 +89,8 @@ Factory assembly:
 - Socket-fit readiness report: `assembly/socket-fit-readiness.md`.
 - Schematic ERC readiness report: `erc-readiness.md`.
 - Order readiness report: `order-readiness.md`.
+- Upload package manifest: `upload/package-manifest.md`.
+- Upload package checksum list: `upload/SHA256SUMS.txt`.
 - Position file: `assembly/rev-a-position.csv`.
 - Order-time CPN checklist: `assembly/rev-a-jlcpcb-cpn-checklist.csv`.
 - Assembly/orientation notes: `assembly/rev-a-assembly-orientation-notes.md`.
@@ -110,6 +117,9 @@ Factory assembly:
 - `export_fab.sh` emits the generated JLCPCB BOM/CPL pair only after the ERC
   and DRC gates, so a real order package cannot silently use a stale schematic
   or position file.
+- `export_fab.sh` rebuilds `upload/` on every run with a deterministic
+  Gerber/drill ZIP, upload-named BOM/CPL CSV copies, upload notes, SHA256
+  checksums, and a package manifest.
 - `export_fab.sh` also emits `review/rev-a-physical-schematic.pdf`,
   `review/rev-a-assembly-front.pdf`, and `review/rev-a-assembly-back.pdf`.
 - `render_previews.sh` emits top-view PNG previews:
@@ -124,9 +134,9 @@ Factory assembly:
   human schematic review still applies. The cleanup history is tracked in
   `../docs/rev-a-erc-cleanup.md`.
 - `report_rev_a_order_readiness.py` writes
-  `fab/minimal-vga/order-readiness.md`, combining ERC, DRC, assembly, artifact,
-  manual-row, and post-assembly-insertion status with the remaining human
-  sign-off checklist.
+  `fab/minimal-vga/order-readiness.md`, combining ERC, DRC, assembly, upload
+  package, artifact, manual-row, and post-assembly-insertion status with the
+  remaining human sign-off checklist.
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.
