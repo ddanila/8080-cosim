@@ -5383,7 +5383,7 @@
 	(footprint "TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
 		(layer "F.Cu")
 		(uuid "533a5c79-dd03-4688-a30c-948226188164")
-		(at 21.9675 27.25 90)
+		(at 21.9675 27.85 90)
 		(descr "terminal block MaiXu MX126-5.0-02P, 2 pins, pitch 5mm, size 10.5x7.8mm, drill diameter 1.3mm, pad diameter 2.8mm, https://www.lcsc.com/datasheet/lcsc_datasheet_2309150913_MAX-MX126-5-0-03P-GN01-Cu-S-A_C5188435.pdf, script-generated using https://gitlab.com/kicad/libraries/kicad-footprint-generator/-/tree/master/scripts/TerminalBlock_MaiXu")
 		(tags "THT terminal block MaiXu MX126-5.0-02P pitch 5mm size 10.5x7.8mm drill 1.3mm pad 2.8mm")
 		(property "Reference" "J1"
@@ -25812,7 +25812,7 @@
 		(uuid "7ae56f95-d788-40ba-9151-c9d286bb41fd")
 	)
 	(gr_text "5V IN"
-		(at 15.6 24.75 0)
+		(at 16.1 25.35 90)
 		(layer "F.SilkS")
 		(uuid "53c4c42c-c756-4482-99cd-6b56ee2ffd71")
 		(effects
@@ -25823,7 +25823,7 @@
 		)
 	)
 	(gr_text "GND"
-		(at 27.7 22.25 0)
+		(at 27.85 22.85 90)
 		(layer "F.SilkS")
 		(uuid "0068a3fb-066a-4c58-894e-fd74b6d117f1")
 		(effects
@@ -25834,7 +25834,7 @@
 		)
 	)
 	(gr_text "+5V"
-		(at 27.7 27.25 0)
+		(at 27.85 27.85 90)
 		(layer "F.SilkS")
 		(uuid "411fe8c9-e961-465a-af3a-da9da9598e34")
 		(effects
@@ -25845,7 +25845,7 @@
 		)
 	)
 	(gr_text "POWER"
-		(at 22 33 0)
+		(at 22 32.7 0)
 		(layer "F.SilkS")
 		(uuid "dcce358c-b64e-463c-9a90-fdb346fd2f90")
 		(effects
@@ -27697,7 +27697,7 @@
 		(uuid "3f740954-6391-4039-a431-90cee82cc608")
 	)
 	(segment
-		(start 21.9675 22.25)
+		(start 21.9675 22.85)
 		(end 29.0449 29.3274)
 		(width 0.2)
 		(layer "In1.Cu")
@@ -43194,7 +43194,7 @@
 	)
 	(segment
 		(start 21.45 27.7675)
-		(end 21.9675 27.25)
+		(end 21.9675 27.85)
 		(width 0.2)
 		(layer "In1.Cu")
 		(net 103)

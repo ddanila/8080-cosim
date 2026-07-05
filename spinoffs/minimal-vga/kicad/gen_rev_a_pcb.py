@@ -14,7 +14,7 @@ EDGE_CLEARANCE_MM = 14
 SILK_LABELS = {
     "VJUGA REV A": (25, 76, 0, pcbnew.F_SilkS),
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
-    "POWER": (22, 33, 0, pcbnew.F_SilkS),
+    "POWER": (22, 32.7, 0, pcbnew.F_SilkS),
     "CPU": (55, 75.5, 0, pcbnew.F_SilkS),
     "ROM": (100, 75.5, 0, pcbnew.F_SilkS),
     "DRAM REFRESH + TIMING": (150, 116, 0, pcbnew.F_SilkS),
@@ -49,9 +49,9 @@ SILK_VALUE_BY_REF = {
 }
 
 POWER_INPUT_PIN_LABELS = (
-    ("5V IN", 15.6, 24.75),
-    ("+5V", 27.7, 27.25),
-    ("GND", 27.7, 22.25),
+    ("5V IN", 16.1, 25.35, 90),
+    ("+5V", 27.85, 27.85, 90),
+    ("GND", 27.85, 22.85, 90),
 )
 POWER_INPUT_PIN_LABEL_SIZE_MM = 1.1
 POWER_INPUT_PIN_LABEL_THICKNESS_MM = 0.16
@@ -117,7 +117,7 @@ FP_BY_TYPE = {
 }
 
 PLACE = {
-    "J1": (22, 25, 90),
+    "J1": (22, 25.6, 90),
     "J3": (24, 100, 0),
     "U1": (55, 45, 0),
     "U2": (100, 45, 0),
@@ -452,8 +452,8 @@ def main():
         add_mounting_hole(board, x, y)
     for label, (x, y, angle, layer) in SILK_LABELS.items():
         add_silk_label(board, label, x, y, angle, layer)
-    for label, x, y in POWER_INPUT_PIN_LABELS:
-        add_small_silk_label(board, label, x, y)
+    for label, x, y, angle in POWER_INPUT_PIN_LABELS:
+        add_small_silk_label(board, label, x, y, angle)
 
     pcbnew.SaveBoard(out, board)
     board = pcbnew.LoadBoard(out)
