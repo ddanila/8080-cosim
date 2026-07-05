@@ -8995,6 +8995,10 @@
     [
      "X6",
      "2"
+    ],
+    [
+     "C99",
+     "2"
     ]
    ]
   },
@@ -12867,7 +12871,7 @@
    ]
   },
   "V3_RC": {
-   "src": "traced sheet-1 (rc_stack 6x: R17 top + C99 left plate + the D9.6 vertical share one junction; rail-3 crosses above WITHOUT a dot). RC-deglitched io-strobe -> D9.G1. C99.2 far end unread [chase]",
+   "src": "traced sheet-1 (rc_stack 6x: R17 top + C99 left plate + the D9.6 vertical share one junction; rail-3 crosses above WITHOUT a dot). RC-deglitched io-strobe -> D9.G1. C99.2 -> GND [electrically-implied deglitch return; drawn far end ambiguous at (4335,2120-2500)/300dpi, crop s1_c99_east — flagged]",
    "nodes": [
     [
      "R17",

@@ -479,3 +479,9 @@ Crop s2_dotclk_bend: D56.Q_N (pin 4) corners SOUTH at x~6074 (destination = chas
 D103 + the ИР16 shifters. Old DOTCLK16M net split into XTAL16M {D103.2, D42.9, D43.9}
 (= OSC continuation, merge pending one tag read) + D56_QN {D56.4} (single, chase). The
 "D56 16MHz astable" story is now fully retired at net level too.
+
+## Loop iteration: C99 far plate
+Crop s1_c99_east (300dpi): C99 160pF east lead ends at an ambiguous junction structure
+(~sheet 4335, 2120-2500 at 300dpi) — the print breaks up; candidates = GND return (electrically
+standard for the deglitch) vs the RAMOUTEN export line. Netted to GND [flagged]; a continuity
+beep on the physical board settles it in seconds [owner, low priority].
