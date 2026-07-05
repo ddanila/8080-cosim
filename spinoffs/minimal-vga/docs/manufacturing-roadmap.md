@@ -102,6 +102,11 @@ Status: routed FreeRouting baseline.
   physical schematic and exits nonzero if error-level ERC findings return. The
   Rev A source model now has explicit no-connect policy for unused pins; the
   cleanup history is tracked in `rev-a-erc-cleanup.md`.
+- `report_rev_a_behavioral_readiness.py` produces
+  `fab/minimal-vga/behavioral-readiness.md`, running the spin-off simulator
+  entry point and recording the ROM/cosim boot oracle, T80 smoke test,
+  schematic/HDL LVS, physical checks, PCB scaffold, DRC summary, and DRAM unit
+  test markers.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
 - `report_rev_a_routing_geometry.py` produces
@@ -136,6 +141,9 @@ Status: routed FreeRouting baseline.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
   unconnected items after the Rev A source-model ERC cleanup and a clean
   no-seed FreeRouting run.
+- Current behavioral readiness passes the spin-off simulator entry point:
+  ROM/cosim boot oracle, T80 smoke test, logical schematic/HDL LVS, physical
+  target checks, PCB scaffold check, DRC summary, and DRAM row/column unit.
 - Current routing-geometry report has zero hard geometry failures. It records
   the explicit no-zone baseline and flags 0.20 mm routed power traces for human
   review before ordering.

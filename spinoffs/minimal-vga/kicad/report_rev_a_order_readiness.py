@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 REQUIRED_ARTIFACTS = [
+    "behavioral-readiness.md",
     "erc-readiness.md",
     "fab-readiness.md",
     "routing-geometry-readiness.md",
@@ -105,6 +106,7 @@ def has_ready_line(text, label):
 
 
 def machine_gate_summary(out_dir):
+    behavioral = read_text(out_dir / "behavioral-readiness.md")
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
@@ -116,6 +118,13 @@ def machine_gate_summary(out_dir):
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
+        (
+            "Behavioral simulation/LVS",
+            has_ready_line(behavioral, "READY")
+            and "- Exit code: 0" in behavioral
+            and "- Expected markers missing: 0" in behavioral,
+            "`behavioral-readiness.md` records the ROM/cosim boot oracle, T80 smoke test, LVS, physical checks, PCB scaffold, DRC summary, and DRAM unit test.",
+        ),
         (
             "KiCad ERC",
             has_ready_line(erc, "READY") and "- ERC violations: 0" in erc,

@@ -1,6 +1,8 @@
 # Simulation
 
-`check.sh` is the spin-off entry point.
+`check.sh` is the spin-off entry point. `../kicad/report_rev_a_behavioral_readiness.py`
+runs it and records the expected pass markers into
+`fab/minimal-vga/behavioral-readiness.md` for the order package.
 
 For now it runs:
 
