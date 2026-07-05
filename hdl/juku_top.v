@@ -348,7 +348,10 @@ module juku_top (
 
     // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     wire dotclk_16m;
-    ag3_oneshot U_D56  (.a_n(1'b1), .b(1'b1), .clr_n(1'b1), .q(), .q_n(dotclk_16m));  // 16MHz leg = Q_N pin 4 (bite-3)
+    wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
+    wire d56_clr_w = 1'b1;   // shared CLR rail = R61 12k pullup (traced); idle high
+    ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
+                        .q(), .q_n(dotclk_16m), .q2(), .q2_n());  // 16MHz-leg attribution = re-read queued
     ie10_ctr    U_D103 (.clk(dotclk_16m), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
 
     // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
@@ -425,7 +428,7 @@ module juku_top (
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk123m), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK2 <- 1.23M = D103.QD (crop s2_d103)
-                      .out0(pit_baud), .out1(pit_sound), .out2());   // OUT1 = SOUND -> R90 -> VT1 beeper (traced)
+                      .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
     wire ser_txd, ser_rts, ser_dtr, ser_rxd;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .rxc(pit_baud), .txc(pit_baud),

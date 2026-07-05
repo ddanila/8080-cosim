@@ -975,7 +975,16 @@
     "2": "B",
     "3": "CLR_N",
     "4": "Q_N",
-    "13": "Q"
+    "13": "Q",
+    "9": "A2_N",
+    "10": "B2",
+    "11": "CLR2_N",
+    "5": "Q2",
+    "12": "Q2_N",
+    "7": "RC2",
+    "6": "C2",
+    "15": "RC1",
+    "14": "C1"
    },
    "prov": {
     "type": "scan",
@@ -12996,7 +13005,7 @@
    ]
   },
   "SYNC_B": {
-   "src": "traced sheet-2 (crops s2_d57_outs/s2_d56_north: OUT2 line labeled \"SYNC B.\" tag 12 wraps east-down-west into D56 section-2 trigger A pin 10) -- the PIT-timed ~5us sync/blank one-shot",
+   "src": "traced sheet-2 300dpi (crops s2_d57_outs/s2_d56_north/s2_a_rows/s2_pin2_corner): D57.OUT2 \"SYNC B.\" tag 12 wraps east-down-west; the down-leg at x~5174 tees into BOTH D56 A-triggers: pin 10 (sect-2, ~5us pulse shaper) and pin 2 (sect-1, ~220us retriggerable = missing-pulse/V-sync detector)",
    "nodes": [
     [
      "D57",
@@ -13005,6 +13014,10 @@
     [
      "D56",
      "10"
+    ],
+    [
+     "D56",
+     "2"
     ]
    ]
   },

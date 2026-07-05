@@ -465,3 +465,10 @@ Crop s2_d103: **1.23MHz rail = D103.QD (pin 11)** -> tag 13 -> D57.CLK2; **CO (1
 sect 1->2 -> LD_N (9)** = the preset-reload loop (C/D preset inputs tied at the stub) —
 16MHz/13 = 1.2308MHz ✓. Nets CLK_123M {D103.11, D57.18}, D103_CO, D103_LD added; ln1_dual
 gained the 1->2 section; U_D103 q/co/load wired. LVS 317 IN SYNC.
+
+## Loop iteration: D56 section-1 trigger = SYNC B. (shared feed)
+Triangulated (crops s2_a_rows/s2_pin2_corner + earlier s2_d56_north): the SYNC B. wrap's
+down-leg feeds BOTH A-triggers -- pin 10 (sect-2 5us shaper) and pin 2 (sect-1 ~220us
+retriggerable one-shot = missing-pulse detector deriving V-scale timing from the H-rate
+train). SYNC_B net += D56.2. D56's trigger story is now complete: SYNC B. in, R61 CLR
+pullup, R47/C7 + R59/C8 timing, Q/Q_N outputs [destinations = DOTCLK16M bend re-read, next].
