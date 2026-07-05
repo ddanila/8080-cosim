@@ -177,7 +177,9 @@ Open production blockers:
   `R6`, `R15`, `U40`, and `U50`) stay owner-installed or get factory CPNs /
   footprint changes before ordering.
 - Re-check assigned candidate CPNs immediately before order and confirm
-  footprint fit for the mechanically sensitive rows: J1, F1, U51, and R30-R31.
+  footprint fit for the mechanically sensitive rows: J1, U51, and R30-R31.
+  F1 now has a footprint-matched Bourns MF-RG300-class candidate, but still
+  needs final load/current review before upload.
 - Review autorouted traces, power widths, via count, and return paths.
 - Decide whether GND/+5V pours return after manual cleanup.
 - Do final Gerber inspection in an independent viewer.

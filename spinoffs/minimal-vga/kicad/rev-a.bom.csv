@@ -19,7 +19,7 @@ J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Manual,Owner-supplied/manual,
 J40,1,VGA bring-up output,1x07 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Rev A uses RGB/HSYNC/VSYNC/GND plus BLANK_N bring-up/debug header; install manually until exact vertical header CPN and factory handling are confirmed
 J90-J92,3,Logic analyzer header,2x5 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Address/data/DRAM/video/debug; install manually until exact 2x5 vertical header CPN and factory handling are confirmed
 J93,1,Power debug header,1x04 2.54mm pin header,TH,Manual,Owner-supplied/manual,,VCC/GND/PWR_OK/VCC_RAW bring-up pins; install manually until exact vertical header CPN and factory handling are confirmed
-F1,1,+5V resettable fuse,RXEF300-class radial PTC 3A hold / 6A trip,THT,Factory preferred,JLCPCB/LCSC,C14397,J1/J3 feed VCC_RAW and then fused VCC through F1; verify lead spacing and final +5V load against KiCad footprint before order
+F1,1,+5V resettable fuse,Bourns MF-RG300-0-14 radial PTC 3A hold,THT,Factory preferred,JLCPCB/LCSC,C3761779,J1/J3 feed VCC_RAW and then fused VCC through F1; footprint is Bourns MF-RG300 with 5.1mm lead spacing; verify final +5V load and order-time stock before order
 D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Manual,Owner-supplied/manual,,Clamp fused VCC to GND near power entry; install manually or change footprint to DO-15/SMA before requiring factory TVS assembly
 R1-R3,3,VGA series resistor,CR1/4W-470R-5%-class,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C2896817,PIXEL to VGA RGB placeholder network; D2.7xL6.2mm candidate should be checked against DIN0207 footprint
 R4-R5,2,Pullup resistor,RN1/4W10KFT/BA1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410695,Oscillator enable and reset pullups

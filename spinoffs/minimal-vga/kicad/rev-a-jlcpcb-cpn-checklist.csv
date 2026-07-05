@@ -19,7 +19,7 @@ Debug headers,J90-J93,Manual install 2.54mm pin headers,,Manual for Rev A draft,
 VGA timing header,U40,Manual install 2x6 2.54mm pin header,,Manual for Rev A draft,Rev A TTL640x480 timing interface; exact 2x6 vertical header CPN still needed before factory assembly
 Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A; J3 HRO TYPE-C-31-M-17; verify J1 5.00/5.08mm footprint fit
 VGA output,J40,Manual install 1x07 2.54mm pin header,,Manual for Rev A draft,Rev A VGA exits as bring-up/debug header with BLANK_N; exact vertical header CPN still needed before factory assembly
-Fuse,F1,Populate resettable fuse,C14397,Candidate assigned,RXEF300-class radial PTC; 3A hold / 6A trip; verify lead spacing against expected +5V load
+Fuse,F1,Populate resettable fuse,C3761779,Candidate assigned,Bourns MF-RG300-0-14 radial PTC; 3A hold; footprint lead spacing matches current 5.1mm Bourns MF-RG300 footprint; verify expected +5V load and order-time stock
 TVS,D1,Manual install 5V TVS clamp,,Manual/footprint open,No clean DO-35 5V TVS candidate found; consider DO-15 or SMA footprint change for factory assembly
 Oscillator,U50,Manual install 5V oscillator,,Manual/footprint open,Need DIP-14 5V oscillator candidate or PCB change to SMD oscillator before factory assembly
 Reset supervisor,U51,Populate reset supervisor,C621481,Candidate assigned,Microchip MCP130-460DI/TO TO-92 candidate; verify D-bondout pinout against footprint

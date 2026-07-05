@@ -57,8 +57,9 @@ before ordering hardware.
      supervisor candidate, decouplers, LEDs, and fuse candidate are assigned in
      `../kicad/rev-a.bom.csv` and `../kicad/rev-a-jlcpcb-cpn-checklist.csv`.
    - Several assigned rows still need footprint confirmation immediately before
-     upload, especially J1 5.00/5.08 mm pitch, F1 lead spacing, U51 TO-92
-     pinout, and the mechanically smaller 5.1k CC pulldown resistor candidate.
+     upload, especially J1 5.00/5.08 mm pitch, U51 TO-92 pinout, and the
+     mechanically smaller 5.1k CC pulldown resistor candidate. F1 now uses a
+     Bourns MF-RG300-class candidate that matches the current footprint pitch.
 2. TTL640x480 physical integration:
    - Deferred from Rev A. Do not block this manufacturing slice on full onboard
      VGA logic unless the Rev A scope changes.

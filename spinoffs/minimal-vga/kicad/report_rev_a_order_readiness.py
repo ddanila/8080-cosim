@@ -22,6 +22,7 @@ REQUIRED_ARTIFACTS = [
     "drill/rev-a-physical.drl",
     "assembly/assembly-readiness.md",
     "assembly/socket-fit-readiness.md",
+    "assembly/mechanical-fit-readiness.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
     "assembly/manual-assembly.csv",
@@ -56,6 +57,7 @@ HUMAN_GATES = [
     "Trace geometry, via count, power width, and return-path review on the autorouted baseline.",
     "Decision on whether to restore GND/+5V pours before ordering.",
     "Socket/header footprint fit check against the exact purchased sockets and connectors.",
+    "Mechanical-fit review for J1, U51, R30, and R31 before factory population.",
     "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
     "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
     "Manual-row decisions for bulk capacitance, TVS protection, debug headers, oscillator, and configuration links.",
@@ -104,6 +106,7 @@ def machine_gate_summary(out_dir):
     fab = read_text(out_dir / "fab-readiness.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
+    mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
@@ -137,6 +140,15 @@ def machine_gate_summary(out_dir):
             has_ready_line(socket_fit, "READY")
             and "- Socket fit failures: 0" in socket_fit,
             "`assembly/socket-fit-readiness.md` confirms socket pin counts and widths.",
+        ),
+        (
+            "Mechanical fit report",
+            (
+                has_ready_line(mechanical_fit, "READY")
+                or has_ready_line(mechanical_fit, "REVIEW REQUIRED")
+            )
+            and "- Mechanical fit failures: 0" in mechanical_fit,
+            "`assembly/mechanical-fit-readiness.md` reports no hard mechanical mismatches; review rows still need human sign-off.",
         ),
         (
             "Upload package",

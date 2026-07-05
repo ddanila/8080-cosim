@@ -36,10 +36,11 @@ frozen.
 ## Fuse Choice
 
 Rev A currently uses `F1` as a resettable PTC fuse between `VCC_RAW` and `VCC`.
-The assigned candidate is Littelfuse `RXEF300` / JLCPCB `C14397`.
+The assigned candidate is Bourns `MF-RG300-0-14` / JLCPCB `C3761779`, matching
+the current Bourns MF-RG300 5.1 mm lead-spacing footprint.
 
 - Hold current: 3 A at 20 C.
-- Trip current: 6 A at 20 C.
+- Trip current: approximately 2x hold current per the MF-RG series datasheet.
 - Role on Rev A: gross short / wiring fault protection, not precise load
   limiting.
 
