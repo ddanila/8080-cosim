@@ -10,13 +10,15 @@ Bulk capacitor,C50,Populate 47uF capacitor,,Order-time lookup,Verify voltage rat
 Diagnostic LEDs,D2-D7,Populate 3mm LEDs,,Order-time lookup,Choose visible colors for PWR PWR_OK CLK RESET M1 RFSH
 Diagnostic LED resistors,R24-R29,Populate 2.2k resistors,,Order-time lookup,Axial DIN0207 footprint
 VGA resistors,R1-R3,Populate 470R resistors,,Order-time lookup,Axial DIN0207 footprint
-Pullups,R4-R14,Populate 10k resistors,,Order-time lookup,Axial DIN0207 footprint
+Pullups,R4-R5 R7-R14,Populate 10k resistors,,Order-time lookup,Axial DIN0207 footprint
+PWR_OK link,R6,Populate 0R resistor/link,,Order-time lookup,Axial DIN0207 footprint
 Keyboard series resistors,R16-R23,Populate 220R resistors,,Order-time lookup,Axial DIN0207 footprint
 Configuration link,R15,Populate 0R link,,Order-time lookup,Axial DIN0207 or jumper-compatible
+USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,,Order-time lookup,Axial DIN0207 footprint
 Keyboard header,J30,Populate 1x15 2.54mm pin header,,Order-time lookup,Inline bring-up header; no power pins
 Debug headers,J90-J93,Populate 2.54mm pin headers,,Order-time lookup,Logic analyzer and power debug
-Power input,J1 J2,Populate headers/connectors,,Order-time lookup,Confirm ATX adapter strategy before order
-VGA output,J40,Populate header/connector,,Order-time lookup,Confirm HD-15 versus simple header before order
+Power input,J1 J3,Populate 5V terminal and USB-C power connector,,Order-time lookup,J1 is 2-pin 5.00mm terminal/header; J3 is HRO TYPE-C-31-M-17-compatible power-only USB-C
+VGA output,J40,Populate 1x06 2.54mm pin header,,Order-time lookup,Rev A VGA exits as bring-up header; HD-15 adapter is external
 Fuse,F1,Populate resettable fuse,,Order-time lookup,Verify hold current against expected +5V load
 TVS,D1,Populate 5V TVS clamp,,Order-time lookup,Verify standoff/clamp and footprint
 Oscillator,U50,Populate 5V oscillator or socket,,Order-time lookup,Bring-up target should support <=4MHz CPU clock

@@ -103,8 +103,8 @@ Factory assembly:
   connectors, oscillator/reset, and protection parts immediately before order.
 - Confirm whether the selected factory assembly process will mount the intended
   through-hole sockets/connectors or requires those parts to be left manual.
-- Confirm ATX connector pinout, F1 current rating, D1 TVS rating, and PS_ON
-  behavior against the target supply.
+- Confirm J1 terminal/header and J3 USB-C footprints against the exact selected
+  parts; verify F1 current rating and D1 TVS rating against the target supply.
 - Confirm reset supervisor pinout and oscillator package before ordering.
 - Review autorouted trace geometry, via count, power widths, and return paths.
 - Decide whether to restore GND/+5V pours after routing cleanup.

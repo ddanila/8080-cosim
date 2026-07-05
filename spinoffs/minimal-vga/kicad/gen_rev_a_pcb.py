@@ -13,8 +13,8 @@ ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 14
 SILK_FONT_FACE = "GOST type B italic"
 SILK_LABELS = {
-    "MINIMAL VGA JUKU REV A": (25, 72, 0, pcbnew.F_SilkS),
-    "Z80 + 4164 DRAM REFRESH TESTBED": (25, 78, 0, pcbnew.F_SilkS),
+    "MINIMAL VGA JUKU REV A": (25, 76, 0, pcbnew.F_SilkS),
+    "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
     "GOST SILK FONT: TYPE B ITALIC": (22, 260, 0, pcbnew.B_SilkS),
 }
 
@@ -35,7 +35,8 @@ SILK_VALUE_BY_TYPE = {
     "74HCT00_DIP14_DRAMGATE": "74HCT00",
     "TTL640X480_HEADER": "TTL640x480",
     "DEBUG_HEADER": "DEBUG",
-    "ATX_POWER_HEADER": "ATX +5V",
+    "POWER_INPUT_TERMINAL": "5V IN",
+    "USB_C_POWER_HRO": "USB-C 5V",
     "KEYBOARD_HEADER": "JUKU KBD",
     "VGA_HEADER": "VGA",
     "OSC_DIP14": "CLK OSC",
@@ -61,7 +62,8 @@ FP_BY_TYPE = {
     "74HCT00_DIP14_DRAMGATE": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
     "TTL640X480_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x05_P2.54mm_Vertical"),
     "DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x05_P2.54mm_Vertical"),
-    "ATX_POWER_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x04_P2.54mm_Vertical"),
+    "POWER_INPUT_TERMINAL": ("TerminalBlock.pretty", "TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"),
+    "USB_C_POWER_HRO": ("Connector_USB.pretty", "USB_C_Receptacle_HRO_TYPE-C-31-M-17"),
     "KEYBOARD_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x15_P2.54mm_Vertical"),
     "VGA_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x06_P2.54mm_Vertical"),
     "OSC_DIP14": ("Oscillator.pretty", "Oscillator_DIP-14"),
@@ -77,7 +79,8 @@ FP_BY_TYPE = {
 }
 
 PLACE = {
-    "J1": (20, 25, 90),
+    "J1": (22, 25, 90),
+    "J3": (24, 100, 0),
     "U1": (55, 45, 0),
     "U2": (100, 45, 0),
     "U3": (140, 45, 90),
@@ -113,7 +116,9 @@ PLACE = {
     "R3": (238, 184, 0),
     "R4": (250, 58, 0),
     "R5": (245, 82, 0),
-    "R6": (30, 58, 0),
+    "R6": (36, 70, 0),
+    "R30": (42, 92, 0),
+    "R31": (42, 100, 0),
     "R7": (128, 190, 0),
     "R8": (128, 196, 0),
     "R9": (128, 202, 0),
@@ -143,10 +148,9 @@ PLACE = {
     "R27": (242, 246, 0),
     "R28": (252, 246, 0),
     "R29": (262, 246, 0),
-    "C50": (28, 42, 0),
-    "F1": (25, 32, 0),
-    "D1": (35, 48, 90),
-    "J2": (20, 58, 90),
+    "C50": (28, 48, 0),
+    "F1": (24, 38, 0),
+    "D1": (38, 56, 90),
     "J93": (60, 260, 90),
 }
 
@@ -219,10 +223,10 @@ def place_silk_fields(fp, chip, x, y, rot):
     ref = chip["ref"]
     value = value_for_chip(chip)
     passive_ref = ref[0] in {"R", "C", "D", "F"} or chip["type"] in {
-        "PS_ON_HEADER",
         "POWER_DEBUG_HEADER",
         "DEBUG_HEADER",
-        "ATX_POWER_HEADER",
+        "POWER_INPUT_TERMINAL",
+        "USB_C_POWER_HRO",
         "KEYBOARD_HEADER",
         "VGA_HEADER",
     }

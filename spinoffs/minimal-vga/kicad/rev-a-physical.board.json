@@ -4,10 +4,11 @@
     "Core CPU, ROM, DRAM, 8255, and 74xx socket pins are bound to real DIP pin numbers where local KiCad symbols provide authoritative mappings.",
     "GAL/header pins remain design-assigned until equations and connector pinouts are frozen.",
     "Rev A now includes first-pass oscillator, reset, decoupling, bulk capacitance, and VGA series resistor parts.",
-    "ATX +5V enters as VCC_RAW, passes through F1 to VCC, and has a local TVS clamp plus PS_ON control/debug pins.",
     "Keyboard rows have explicit 10k pullups, the 74148 enable is tied active through R15, and PPI column outputs reach J30 through 220 ohm series resistors.",
     "Rev A includes a first-pass diagnostic LED bank for +5V, PWR_OK, CLK, RESET_N, M1_N instruction fetch, and RFSH_N refresh activity.",
-    "J30 is a 1x15 inline original-keyboard bring-up header: 8 column wires plus 7 row wires; no keyboard power pins are exported on Rev A."
+    "J30 is a 1x15 inline original-keyboard bring-up header: 8 column wires plus 7 row wires; no keyboard power pins are exported on Rev A.",
+    "Rev A power input is simple +5V: J1 screw/header input and J3 USB-C VBUS feed VCC_RAW in parallel before F1; fused VCC powers the board.",
+    "USB-C power-only input uses 5.1k Rd resistors on CC1/CC2 so ordinary USB-C supplies provide 5V."
   ],
   "chips": [
     {
@@ -590,17 +591,44 @@
     },
     {
       "ref": "J1",
-      "type": "ATX_POWER_HEADER",
+      "type": "POWER_INPUT_TERMINAL",
       "pins": {
-        "1": "VCC",
-        "2": "GND",
-        "3": "PS_ON_N",
-        "4": "PWR_OK",
-        "5": "VCC_STBY",
-        "6": "P12V",
-        "7": "N12V",
-        "8": "GND"
-      }
+        "1": "VCC_RAW",
+        "2": "GND"
+      },
+      "value": "5V_IN"
+    },
+    {
+      "ref": "J3",
+      "type": "USB_C_POWER_HRO",
+      "pins": {
+        "A5": "USB_CC1",
+        "B5": "USB_CC2",
+        "A9": "VCC_RAW",
+        "B9": "VCC_RAW",
+        "A12": "GND",
+        "B12": "GND",
+        "S1": "GND"
+      },
+      "value": "USB-C 5V"
+    },
+    {
+      "ref": "R30",
+      "type": "R_THT",
+      "pins": {
+        "1": "USB_CC1",
+        "2": "GND"
+      },
+      "value": "5k1"
+    },
+    {
+      "ref": "R31",
+      "type": "R_THT",
+      "pins": {
+        "1": "USB_CC2",
+        "2": "GND"
+      },
+      "value": "5k1"
     },
     {
       "ref": "J30",
@@ -1005,19 +1033,10 @@
       "ref": "R6",
       "type": "R_THT",
       "pins": {
-        "1": "VCC_STBY",
-        "2": "PS_ON_N"
+        "1": "VCC",
+        "2": "PWR_OK"
       },
-      "value": "10k"
-    },
-    {
-      "ref": "J2",
-      "type": "PS_ON_HEADER",
-      "pins": {
-        "1": "PS_ON_N",
-        "2": "GND"
-      },
-      "value": "PS_ON"
+      "value": "0R"
     },
     {
       "ref": "J93",
@@ -1026,7 +1045,7 @@
         "1": "VCC",
         "2": "GND",
         "3": "PWR_OK",
-        "4": "VCC_STBY"
+        "4": "VCC_RAW"
       },
       "value": "PWR_DBG"
     },
@@ -1517,10 +1536,6 @@
           "1"
         ],
         [
-          "J93",
-          "1"
-        ],
-        [
           "R7",
           "1"
         ],
@@ -1562,6 +1577,14 @@
         ],
         [
           "R29",
+          "1"
+        ],
+        [
+          "R6",
+          "1"
+        ],
+        [
+          "J93",
           "1"
         ]
       ]
@@ -1659,14 +1682,6 @@
         ],
         [
           "U41",
-          "8"
-        ],
-        [
-          "J1",
-          "8"
-        ],
-        [
-          "J1",
           "8"
         ],
         [
@@ -1802,14 +1817,6 @@
           "2"
         ],
         [
-          "J2",
-          "2"
-        ],
-        [
-          "J93",
-          "2"
-        ],
-        [
           "R15",
           "2"
         ],
@@ -1828,6 +1835,34 @@
         [
           "D5",
           "1"
+        ],
+        [
+          "J1",
+          "2"
+        ],
+        [
+          "J3",
+          "A12"
+        ],
+        [
+          "J3",
+          "B12"
+        ],
+        [
+          "J3",
+          "S1"
+        ],
+        [
+          "R30",
+          "2"
+        ],
+        [
+          "R31",
+          "2"
+        ],
+        [
+          "J93",
+          "2"
         ]
       ]
     },
@@ -3497,67 +3532,18 @@
         "17"
       ]
     ],
-    "P12V": {
-      "power": true,
-      "nodes": [
-        [
-          "J1",
-          "6"
-        ]
-      ]
-    },
-    "N12V": {
-      "power": true,
-      "nodes": [
-        [
-          "J1",
-          "7"
-        ]
-      ]
-    },
-    "VCC_STBY": {
-      "power": true,
-      "nodes": [
-        [
-          "J1",
-          "5"
-        ],
-        [
-          "R6",
-          "1"
-        ],
-        [
-          "J93",
-          "4"
-        ]
-      ]
-    },
-    "PS_ON_N": [
+    "PWR_OK": [
       [
-        "J1",
-        "3"
+        "R25",
+        "1"
       ],
       [
         "R6",
         "2"
       ],
       [
-        "J2",
-        "1"
-      ]
-    ],
-    "PWR_OK": [
-      [
-        "J1",
-        "4"
-      ],
-      [
         "J93",
         "3"
-      ],
-      [
-        "R25",
-        "1"
       ]
     ],
     "OSC_OE_N": [
@@ -3604,12 +3590,24 @@
       "power": true,
       "nodes": [
         [
+          "F1",
+          "1"
+        ],
+        [
           "J1",
           "1"
         ],
         [
-          "F1",
-          "1"
+          "J3",
+          "A9"
+        ],
+        [
+          "J3",
+          "B9"
+        ],
+        [
+          "J93",
+          "4"
         ]
       ]
     },
@@ -3751,6 +3749,26 @@
       [
         "R29",
         "2"
+      ]
+    ],
+    "USB_CC1": [
+      [
+        "J3",
+        "A5"
+      ],
+      [
+        "R30",
+        "1"
+      ]
+    ],
+    "USB_CC2": [
+      [
+        "J3",
+        "B5"
+      ],
+      [
+        "R31",
+        "1"
       ]
     ]
   }

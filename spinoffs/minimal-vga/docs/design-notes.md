@@ -49,7 +49,7 @@ Video:
 
 Power:
 
-- ATX connector as input.
+- Simple +5V input via 2-pin terminal/header and optional power-only USB-C.
 - Rev A active logic is +5V-only with a real DIP Z80 CPU.
 - Multi-layer power/ground planes allowed.
 
@@ -104,7 +104,7 @@ DRAM or video subsystem.
   command path needs it for keyboard scanning.
 - Whether VGA should read directly from shared DRAM or from a shadow/latch stage
   populated by original-style video reads.
-- Exact ATX power sequencing and `PS_ON#` handling.
+- Exact USB-C/terminal input part selection and current budget.
 - How much of the original timing PROM behavior must be physically reproduced
   versus collapsed into equivalent TTL/PROM logic.
 

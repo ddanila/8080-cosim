@@ -51,13 +51,14 @@ Immediate SKU targets:
 - Protection and power:
   - +5V resettable PTC fuse.
   - +5V TVS clamp.
-  - ATX power connector or adapter header.
-  - PS_ON jumper/header and power debug header.
+  - 2-pin +5V/GND terminal/header.
+  - Power-only USB-C receptacle with 5.1k CC pulldowns.
+  - Power debug header.
 - Clock/reset:
   - 5V oscillator.
   - 5V reset supervisor with verified pinout.
 - Connectors:
-  - VGA connector or header.
+  - 1x06 VGA bring-up header; HD-15 adapter is external for Rev A.
   - Original-keyboard-compatible connector once the pinout/mechanics are locked.
   - Logic analyzer/debug headers.
 

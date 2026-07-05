@@ -33,9 +33,9 @@ Status: core target exists with partial real pin binding.
 - First-pass oscillator, reset supervisor, pullups, VGA series resistors, bulk
   capacitance, and per-IC decoupling capacitors are explicit schematic/PCB
   parts.
-- ATX +5V now enters as `VCC_RAW`, passes through resettable fuse `F1` to
-  `VCC`, and has a local TVS clamp plus PS_ON jumper/pullup and power debug
-  header.
+- Rev A +5V can enter through a 2-pin terminal/header or power-only USB-C.
+  Both feed `VCC_RAW`, which passes through resettable fuse `F1` to `VCC`;
+  local TVS protection and a power debug header remain explicit.
 - Keyboard row inputs have explicit pullups, the 74148 enable input is tied
   active by default, and 8255 column outputs reach the keyboard connector
   through series resistors.
@@ -106,7 +106,8 @@ remain open.
 
 Open production blockers:
 
-- Pick final ATX/VGA/debug connector footprints.
+- Pick final orderable JLCPCB/LCSC SKUs for the chosen power, VGA, and debug
+  connector footprints.
 - Assign orderable JLCPCB/LCSC CPNs for factory-populated sockets, passives,
   connectors, protection parts, oscillator/reset, and the diagnostic LEDs.
 - Review autorouted traces, power widths, via count, and return paths.

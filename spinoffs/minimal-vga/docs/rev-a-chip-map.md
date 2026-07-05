@@ -40,21 +40,22 @@ western parts, and enough test headers to debug DRAM timing.
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| U40 | VGA timing block | Onboard TTL640x480-derived logic | Mixed | Header is debug-only; Rev A target is PCB-integrated VGA timing. |
+| U40 | VGA timing block | TTL640x480 bring-up timing header | 2.54 mm header | Rev A proves CPU/DRAM/refresh/video handoff first; full onboard TTL VGA expansion is deferred. |
 | U41 | Pixel latch/serializer | 74HCT165/166/595-class | DIP | Exact byte-to-pixel path still open. |
-| J40 | VGA connector | HD-15 or pin header | TH | Include resistor DAC network near connector. |
+| J40 | VGA output | 1x06 2.54 mm header | TH | RGB after series resistors plus HSYNC/VSYNC/GND; HD-15 adapter is external for Rev A. |
 
 ## Power, Clock, Reset, Debug
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| J1 | ATX power input | ATX 20/24-pin or adapter header | TH | Rev A uses +5V for active logic; expose control/debug rails as needed. |
-| F1 | +5V input fuse | resettable PTC fuse | TH | ATX +5V enters as VCC_RAW and feeds VCC through F1. |
+| J1 | +5V input | 2-pin 5.00 mm terminal/header | TH | Feeds VCC_RAW before F1; alternate input to USB-C. |
+| J3 | USB-C +5V input | HRO TYPE-C-31-M-17-compatible receptacle | SMD/THT shell | Power-only USB-C input in parallel with J1 before F1. |
+| R30-R31 | USB-C CC pulldowns | 5.1k | TH | Rd pulldowns from CC1/CC2 to GND for 5V sink behavior. |
+| F1 | +5V input fuse | resettable PTC fuse | TH | VCC_RAW from J1/J3 feeds fused VCC through F1. |
 | D1 | +5V clamp | TVS diode | TH | Fused VCC clamp near power entry. |
-| J2 | ATX enable | 2-pin jumper/header | TH | Short PS_ON_N to GND to request supply on. |
 | U50 | Clock oscillator | canned oscillator | DIP-14/half-can | CPU clock and/or divided timing source. |
 | U51 | Reset supervisor | MCP130-class or RC+Schmitt | TO-92/SOT/DIP | Prefer deterministic reset. |
-| J90-J93 | Logic analyzer/debug headers | 2.54 mm headers | TH | Address/data/RAS/CAS/WE/sync/power debug. |
+| J90-J93 | Logic analyzer/debug headers | 2.54 mm headers | TH | Address/data/RAS/CAS/WE/sync/power debug; J93 exposes VCC/GND/PWR_OK/VCC_RAW. |
 | D2-D7 | Diagnostic LEDs | 3 mm LEDs | TH | +5V, PWR_OK, CLK, RESET_N, M1_N, and RFSH_N bring-up indicators. |
 | R24-R29 | Diagnostic LED resistors | 2.2k | TH | Conservative current limit to reduce logic loading. |
 | C* | Decoupling | 100 nF ceramic | TH/SMD | One per IC, close to socket power pins. |

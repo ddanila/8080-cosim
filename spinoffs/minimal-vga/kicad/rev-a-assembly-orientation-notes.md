@@ -41,6 +41,9 @@ before upload.
 
 - `J30` is the 1x15 original-keyboard wiring header; no keyboard power pins are
   present.
+- `J1` is the 2-pin +5V/GND input before the fuse.
+- `J3` is an optional power-only USB-C input before the fuse. It is in parallel
+  with `J1`; use one input source at a time during bring-up.
 - `J40` is the Rev A VGA bring-up/header output.
 - `U40` is the TTL640x480 timing/header interface for Rev A, not the final
   onboard TTL VGA implementation.
