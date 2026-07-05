@@ -51,11 +51,12 @@ before ordering hardware.
 ## Still Open Before Ordering
 
 1. JLCPCB assembly BOM:
-   - Remaining missing generated BOM CPN rows are C50, D1, J30, J40,
-     J90-J93, R6, R15, U40, U50, and U51.
+   - Remaining missing generated BOM CPN rows are D1, J30, R6, R15, U40, U50,
+     and U51.
    - Socket CPNs, common resistor CPNs, USB-C, J1 terminal candidate, reset
      supervisor candidate, decouplers, LEDs, and fuse candidate are assigned in
      `../kicad/rev-a.bom.csv` and `../kicad/rev-a-jlcpcb-cpn-checklist.csv`.
+     C50, J40, J90-J93 now also have factory assembly candidates.
    - Several assigned rows still need footprint confirmation immediately before
      upload, especially J1 5.00/5.08 mm pitch and the mechanically smaller
      5.1k CC pulldown resistor candidate. F1 now uses a Bourns

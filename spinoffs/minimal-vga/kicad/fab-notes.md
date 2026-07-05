@@ -147,15 +147,17 @@ Factory assembly:
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts immediately before order.
-- The Rev A draft package deliberately leaves `C50`, `D1`, `J30`, `J40`,
-  `J90-J93`, `R6`, `R15`, `U40`, and `U50` as manual/non-factory placements
-  until their CPNs or footprint changes are selected.
+- The Rev A draft package deliberately leaves `D1`, `J30`, `R6`, `R15`, `U40`,
+  `U50`, and `U51` as manual/non-factory placements until their CPNs or
+  footprint changes are selected. `C50`, `J40`, and `J90`-`J93` have factory
+  candidates but still need order-time fit and assembly-process review.
 - Confirm whether the selected factory assembly process will mount the intended
   through-hole sockets/connectors or requires those parts to be left manual.
 - Confirm J1 terminal/header and J3 USB-C footprints against the exact selected
   parts; verify F1 current rating/lead spacing and D1 TVS rating/footprint
   against the target supply.
-- Confirm reset supervisor pinout and oscillator package before ordering.
+- Confirm reset supervisor source/package and oscillator package before
+  ordering.
 - Review autorouted trace geometry, via count, power widths, and return paths.
 - Decide whether to restore GND/+5V pours after routing cleanup.
 - Program U5/U24 from `../docs/rev-a-gal-equations.md` or update that file

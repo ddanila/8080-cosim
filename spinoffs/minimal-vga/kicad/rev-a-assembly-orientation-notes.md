@@ -20,11 +20,11 @@ before upload.
 Review `manual-assembly.csv` before ordering. Rev A currently expects manual
 installation or later CPN/footprint resolution for:
 
-- `C50` bulk capacitor.
 - `D1` +5V TVS clamp.
-- `J30`, `J40`, `J90`-`J93`, and `U40` bring-up/debug headers.
+- `J30` and `U40` bring-up/debug headers.
 - `R6` PWR_OK link and `R15` keyboard encoder enable link.
 - `U50` clock oscillator.
+- `U51` reset supervisor.
 
 If any of these should be factory-mounted, change the engineering BOM row back
 to factory assembly and assign/verify an orderable CPN before export.
@@ -53,7 +53,7 @@ to factory assembly and assign/verify an orderable CPN before export.
 - `D2`-`D7` diagnostic LEDs must be installed with polarity matching the LED
   footprint.
 - `C50` bulk electrolytic polarity and lead pitch must be checked against the
-  selected part.
+  selected factory candidate.
 
 ## Connector Notes
 
@@ -64,6 +64,8 @@ to factory assembly and assign/verify an orderable CPN before export.
   with `J1`; use one input source at a time during bring-up.
 - `J40` is the Rev A VGA bring-up/debug output: RGB, HSYNC, VSYNC, GND, and
   BLANK_N.
+- `J40` and `J90`-`J93` have factory header candidates, but order-time review
+  must confirm wave-solder fixture handling.
 - `U40` is the TTL640x480 timing/header interface for Rev A, including the
   pixel-load timing handoff to `U41`; it is not the final onboard TTL VGA
   implementation.

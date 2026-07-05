@@ -89,6 +89,8 @@ final JLC/LCSC stock and footprint check.
     current DIN0207 footprint.
   - 3 mm red diagnostic LED baseline: EVERLIGHT `204-10SURD/S530-A3`,
     `C99772`.
+  - 47 uF bulk capacitor candidate: AISHI `ERG1EM470D11OT`, `C724688`;
+    47 uF, 25 V, D5xL11 mm, 2 mm pin spacing.
 - Protection/reset:
   - Resettable fuse candidate: Bourns `MF-RG300-0-14`, `C3761779`; 3 A hold.
     This matches the current 5.1 mm Bourns MF-RG300 footprint; verify final
@@ -97,16 +99,23 @@ final JLC/LCSC stock and footprint check.
     `MCP130-475FI/TO`; manual install for Rev A unless a JLCPCB/LCSC
     F-bondout CPN is found. The previous `MCP130-460DI/TO` / `C621481`
     candidate is D-bondout and does not match the current footprint net order.
+- Headers/connectors:
+  - VGA 1x7 header candidate: JLCPCB Assembly
+    `PinHeader_1x07_P2.54mm_Vertical`, `C9900031531`.
+  - Logic-analyzer 2x5 header candidate: JLCPCB Assembly
+    `PinHeader_2x05_P2.54mm_Vertical`, `C9900010269`.
+  - Power-debug 1x4 header candidate: JLCPCB Assembly `HDR-1X4`,
+    `C9900257430`. Verify exact 2.54 mm footprint fit at order time.
+  - These are wave-solder assembly-library candidates and may require a
+    fixture; confirm JLCPCB handling before upload.
 
 Rows deliberately left manual in the Rev A draft assembly package:
 
-- `C50`: exact 47 uF radial part for `CP_Radial_D5.0mm_P2.00mm` still needs
-  order-time selection or a footprint change.
 - `D1`: 5 V TVS for current DO-35/SOD27 footprint. Available 5 V candidates
   are easier in DO-15 or SMA, so this likely needs a footprint decision before
   factory assembly.
-- `J30`, `J40`, `J90-J93`, `U40`: exact 2.54 mm vertical header CPNs still
-  need selection. These are safe to hand-install for Rev A bring-up.
+- `J30`, `U40`: exact 2.54 mm vertical header CPNs still need selection. These
+  are safe to hand-install for Rev A bring-up.
 - `R6`, `R15`: exact axial 0 ohm jumpers still need selection. These can be
   hand-installed for Rev A if no factory 0R axial part is chosen.
 - `U50`: DIP-14 5 V oscillator, or a deliberate PCB change to a common SMD
