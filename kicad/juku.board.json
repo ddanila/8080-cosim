@@ -9693,7 +9693,7 @@
    ]
   },
   "LATCH_B": {
-   "src": "scan+mame",
+   "src": "scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending)",
    "nodes": [
     [
      "D40",
@@ -13074,23 +13074,6 @@
     [
      "C8",
      "2"
-    ]
-   ]
-  },
-  "PIT0_CLK1M": {
-   "src": "traced sheet-2 (crop s2_d54): rail labeled 1MHz -> D54 CLK0(9)+CLK1(15)+CLK2(18); rail source east [unread — 16M/16 divider tap candidate]",
-   "nodes": [
-    [
-     "D54",
-     "9"
-    ],
-    [
-     "D54",
-     "15"
-    ],
-    [
-     "D54",
-     "18"
     ]
    ]
   },
