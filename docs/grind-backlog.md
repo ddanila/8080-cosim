@@ -503,3 +503,12 @@ Crop s1_ven_corner (300dpi @3.2x): D4's B-side = BA8-BA11 entering the BA bundle
 the mode bundle cleanly, east to the V-bracket junction. The vertical's top terminus
 (~2664, 1280-1300) = next crop; an address bit is electrically implausible for a РТ4 CS —
 expect a control rail or a D4-row tee [one crop to close].
+
+## Loop iteration: D6 V1/V2 feed — BLOCKED (print quality), documented
+Five crops triangulated: the V-bracket feed runs west from (3028,1620)/300dpi, crosses the
+mode bundle cleanly, corners up at x~2664 = the channel of the BA9-13 sub-bundle trunk
+(D4's high-nibble B-rows enter it with tags 10-14, double tag boxes = bundle-to-bundle
+pass-through). Whether the V-feed is a sub-bundle member (electrically odd for a РТ4 CS)
+or a control wire sharing the channel does not resolve at this scan's quality.
+=> BLOCKED-on-materials: paper original or board continuity (D6 pins 13/14 <-> candidates)
+[owner]. Model keeps D6 always-enabled (boot-verified equivalent). Item (a) closed.
