@@ -33,10 +33,16 @@ parts; insert those manually after the assembled board is received.
   reintroduced only after a focused power-plane review.
 - The routing script defaults to a clean no-seed FreeRouting run
   (`SEED_ROUTES=0`) using the repo submodule fork jar from
-  `external/freerouting` when it has been built. Earlier deterministic seed
-  routes remain available for debug with `SEED_ROUTES=1`, but the current Rev A
-  netlist routes cleanly without them and avoids carrying stale hand routes
-  across topology changes.
+  `external/freerouting` when it has been built. It defaults to
+  `FREEROUTING_ALGORITHM=freerouting-router-v19`, using the custom fork's
+  headless legacy-router selection as the current workaround for upstream v2.x
+  routing-quality regressions. Set `FREEROUTING_ALGORITHM=freerouting-router`
+  only for comparison runs. Earlier deterministic seed routes remain available
+  for debug with `SEED_ROUTES=1`, but the current Rev A netlist routes cleanly
+  without them and avoids carrying stale hand routes across topology changes.
+- `JAVA_HEAP=auto` is the default for routing and maps to about 70% of available
+  RAM (`-Xmx...`) on Linux/macOS. Set `JAVA_HEAP`, for example `JAVA_HEAP=8g`,
+  to override this for controlled experiments.
 - Board thickness: 1.6 mm unless mechanical constraints change.
 - Copper: 1 oz default.
 - Soldermask: any.

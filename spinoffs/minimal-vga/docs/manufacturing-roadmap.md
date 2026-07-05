@@ -77,20 +77,25 @@ Status: routed FreeRouting baseline.
   The current default is `SEED_ROUTES=0`; deterministic route seeds are opt-in
   debug aids only. The preferred router is the `external/freerouting` submodule
   on the `custom` branch, built as
-  `external/freerouting/build/libs/freerouting-current-executable.jar`.
+  `external/freerouting/build/libs/freerouting-current-executable.jar`. Route
+  regeneration defaults to `FREEROUTING_ALGORITHM=freerouting-router-v19` as the
+  current workaround for upstream v2.x routing-quality regressions; set
+  `FREEROUTING_ALGORITHM=freerouting-router` only for comparison runs.
 - Freerouting caveats carried over from the main juku board (2026-07):
   (a) stock v2.x headless/CLI routing has had board-specific settings gaps
   (upstream discussion #508); the repo submodule fork's `custom` branch applies
-  board-specific optimizations in the headless load/scheduler path and is the
-  preferred router for VJUGA;
+  board-specific optimizations in the headless load/scheduler path, honours the
+  v1.9 router selection in headless mode, and is the preferred router for VJUGA;
   (b) **duplicate footprint references make `ExportSpecctraDSN` fail silently**
   (returns False, no diagnostics) — the script now pre-checks and fails loudly;
   (c) the script prefers the repo submodule fork jar (ddanila/freerouting
   `custom`: PolylineTrace.combine recursion fix, headless settings application,
-  and stagnation tuning) when built;
+  headless v1.9 router selection, and stagnation tuning) when built;
   (d) wrappers use `scripts/find-kicad-python.sh` so the KiCad `pcbnew` module
   is loaded from a compatible interpreter even when Homebrew or another Python
-  appears first in `PATH`.
+  appears first in `PATH`;
+  (e) the routing wrapper defaults `JAVA_HEAP=auto`, which sets `-Xmx` to about
+  70% of available RAM to reduce whole-machine OOM risk during experiments.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
 - `report_rev_a_erc_readiness.sh` records the current KiCad ERC status for the
