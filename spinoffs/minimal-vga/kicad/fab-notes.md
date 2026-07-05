@@ -101,10 +101,13 @@ Factory assembly:
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts immediately before order.
+- Current generated assembly readiness still has 10 missing CPN rows: `C50`,
+  `D1`, `J30`, `J40`, `J90-J93`, `R6`, `R15`, `U40`, and `U50`.
 - Confirm whether the selected factory assembly process will mount the intended
   through-hole sockets/connectors or requires those parts to be left manual.
 - Confirm J1 terminal/header and J3 USB-C footprints against the exact selected
-  parts; verify F1 current rating and D1 TVS rating against the target supply.
+  parts; verify F1 current rating/lead spacing and D1 TVS rating/footprint
+  against the target supply.
 - Confirm reset supervisor pinout and oscillator package before ordering.
 - Review autorouted trace geometry, via count, power widths, and return paths.
 - Decide whether to restore GND/+5V pours after routing cleanup.

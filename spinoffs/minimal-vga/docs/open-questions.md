@@ -25,9 +25,10 @@ before ordering hardware.
      the original keyboard later. A PS/2 or AT keyboard adapter can be a later
      add-on if needed.
 5. VGA:
-   - Integrate the TTL640x480-derived VGA timing logic onto the PCB. A header
-     may remain only as a debug/integration aid, not as the intended Rev A video
-     implementation.
+   - For Rev A, use the TTL640x480-derived timing/header interface and export
+     RGB/HSYNC/VSYNC/GND on a simple 1x06 VGA bring-up header. Full onboard
+     TTL640x480 logic expansion is deferred until the CPU/DRAM/refresh path is
+     proven.
 6. Manufacturing and assembly:
    - Aim Rev A at factory assembly, including passives and sockets where the
      assembler can source and mount them. Vintage/programmable ICs may still be
@@ -49,12 +50,18 @@ before ordering hardware.
 
 ## Still Open Before Ordering
 
-1. TTL640x480 physical integration:
-   - Convert the current VGA timing placeholder into actual onboard logic and
-     update the schematic/PCB/BOM.
-2. JLCPCB assembly BOM:
-   - Assign JLCPCB/LCSC part numbers for sockets, passives, connectors, fuse,
-     TVS, reset supervisor, oscillator, and any factory-mounted logic.
+1. JLCPCB assembly BOM:
+   - Remaining missing generated BOM CPN rows are C50, D1, J30, J40,
+     J90-J93, R6, R15, U40, and U50.
+   - Socket CPNs, common resistor CPNs, USB-C, J1 terminal candidate, reset
+     supervisor candidate, decouplers, LEDs, and fuse candidate are assigned in
+     `../kicad/rev-a.bom.csv` and `../kicad/rev-a-jlcpcb-cpn-checklist.csv`.
+   - Several assigned rows still need footprint confirmation immediately before
+     upload, especially J1 5.00/5.08 mm pitch, F1 lead spacing, U51 TO-92
+     pinout, and the mechanically smaller 5.1k CC pulldown resistor candidate.
+2. TTL640x480 physical integration:
+   - Deferred from Rev A. Do not block this manufacturing slice on full onboard
+     VGA logic unless the Rev A scope changes.
 3. GAL equations:
    - Freeze decode and DRAM timing equations, then bind GAL pinouts to the
      schematic and PCB.

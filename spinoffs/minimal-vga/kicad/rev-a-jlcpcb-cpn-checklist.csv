@@ -5,21 +5,21 @@ DIP-20 sockets,U3 U4,Mount sockets only,C2328,Verify at order,BOOMELE square-hol
 DIP-24 wide sockets,U5 U24,Mount sockets only,C72120,Verify at order,CONNFLY square-hole DIP-24 2.54mm 15.24mm socket; do not factory-populate ICs
 DIP-28 wide socket,U2,Mount sockets only,C72121,Verify at order,CONNFLY square-hole DIP-28 2.54mm 15.24mm socket; do not factory-populate IC
 DIP-40 sockets,U1 U30,Mount sockets only,C2332,Verify at order,BOOMELE square-hole DIP-40 2.54mm 15.24mm socket; do not factory-populate ICs
-Decoupling capacitors,C1-C25,Populate 100nF capacitors,,Order-time lookup,Prefer 5.00mm THT ceramic matching footprint
-Bulk capacitor,C50,Populate 47uF capacitor,,Order-time lookup,Verify voltage rating and radial pitch
-Diagnostic LEDs,D2-D7,Populate 3mm LEDs,,Order-time lookup,Choose visible colors for PWR PWR_OK CLK RESET M1 RFSH
-Diagnostic LED resistors,R24-R29,Populate 2.2k resistors,,Order-time lookup,Axial DIN0207 footprint
-VGA resistors,R1-R3,Populate 470R resistors,,Order-time lookup,Axial DIN0207 footprint
-Pullups,R4-R5 R7-R14,Populate 10k resistors,,Order-time lookup,Axial DIN0207 footprint
-PWR_OK link,R6,Populate 0R resistor/link,,Order-time lookup,Axial DIN0207 footprint
-Keyboard series resistors,R16-R23,Populate 220R resistors,,Order-time lookup,Axial DIN0207 footprint
-Configuration link,R15,Populate 0R link,,Order-time lookup,Axial DIN0207 or jumper-compatible
-USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,,Order-time lookup,Axial DIN0207 footprint
-Keyboard header,J30,Populate 1x15 2.54mm pin header,,Order-time lookup,Inline bring-up header; no power pins
-Debug headers,J90-J93,Populate 2.54mm pin headers,,Order-time lookup,Logic analyzer and power debug
-Power input,J1 J3,Populate 5V terminal and USB-C power connector,,Order-time lookup,J1 is 2-pin 5.00mm terminal/header; J3 is HRO TYPE-C-31-M-17-compatible power-only USB-C
-VGA output,J40,Populate 1x06 2.54mm pin header,,Order-time lookup,Rev A VGA exits as bring-up header; HD-15 adapter is external
-Fuse,F1,Populate resettable fuse,,Order-time lookup,Verify hold current against expected +5V load
-TVS,D1,Populate 5V TVS clamp,,Order-time lookup,Verify standoff/clamp and footprint
-Oscillator,U50,Populate 5V oscillator or socket,,Order-time lookup,Bring-up target should support <=4MHz CPU clock
-Reset supervisor,U51,Populate reset supervisor,,Order-time lookup,Verify TO-92 pinout against chosen part
+Decoupling capacitors,C1-C25,Populate 100nF capacitors,C2896070,Candidate assigned,SHM DCS104Z26Y5VF6BL5A0 100nF 50V Y5V P=5mm THT ceramic; verify stock before order
+Bulk capacitor,C50,Populate 47uF capacitor,,Footprint/CPN open,Need 47uF radial matching D5.0mm P2.00mm or a footprint change
+Diagnostic LEDs,D2-D7,Populate 3mm LEDs,C99772,Candidate assigned,EVERLIGHT 204-10SURD/S530-A3 red 3mm THT baseline; colors can change later
+Diagnostic LED resistors,R24-R29,Populate 2.2k resistors,C3454390,Candidate assigned,YAGEO MFR-25FBF52-2K2 D2.4xL6.3mm; verify against DIN0207 footprint
+VGA resistors,R1-R3,Populate 470R resistors,C2896817,Candidate assigned,VO CR1/4W-470R class D2.7xL6.2mm; verify against DIN0207 footprint
+Pullups,R4-R5 R7-R14,Populate 10k resistors,C410695,Candidate assigned,TyoHM RN1/4W10KFT/BA1 D2.4xL6.4mm
+PWR_OK link,R6,Populate 0R resistor/link,,CPN open,Need exact axial 0R jumper matching DIN0207 footprint
+Keyboard series resistors,R16-R23,Populate 220R resistors,C410657,Candidate assigned,TyoHM RN 1/4W 220R F T/B A1 D2.4xL6.4mm
+Configuration link,R15,Populate 0R link,,CPN open,Need exact axial 0R jumper matching DIN0207 footprint
+USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,C433473,Candidate assigned,TyoHM RN 1/8W 5K1 F T/B A1 is electrically fine but smaller than DIN0207; prefer footprint review before order
+Keyboard header,J30,Populate 1x15 2.54mm pin header,,CPN open,Inline bring-up header; exact vertical header CPN still needed
+Debug headers,J90-J93,Populate 2.54mm pin headers,,CPN open,Need exact 2x5 and 1x4 vertical header CPNs
+Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A; J3 HRO TYPE-C-31-M-17; verify J1 5.00/5.08mm footprint fit
+VGA output,J40,Populate 1x06 2.54mm pin header,,CPN open,Rev A VGA exits as bring-up header; exact vertical header CPN still needed
+Fuse,F1,Populate resettable fuse,C14397,Candidate assigned,RXEF300-class radial PTC; verify hold current and lead spacing against expected +5V load
+TVS,D1,Populate 5V TVS clamp,,Footprint/CPN open,No clean DO-35 5V TVS candidate found; consider DO-15 or SMA footprint change for factory assembly
+Oscillator,U50,Populate 5V oscillator or socket,,Footprint/CPN open,Need DIP-14 5V oscillator candidate or PCB change to SMD oscillator
+Reset supervisor,U51,Populate reset supervisor,C621481,Candidate assigned,Microchip MCP130-460DI/TO TO-92 candidate; verify D-bondout pinout against footprint

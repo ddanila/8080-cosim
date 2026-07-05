@@ -49,6 +49,12 @@ def load_engineering_bom(path):
     by_ref = {}
     with open(path, newline="", encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
+            if None in row:
+                extras = ", ".join(row[None])
+                raise SystemExit(
+                    f"malformed engineering BOM row for {row.get('Designator', '<unknown>')}: "
+                    f"extra CSV fields {extras!r}"
+                )
             designators = expand_designators(row["Designator"])
             for ref in designators:
                 if ref in by_ref:

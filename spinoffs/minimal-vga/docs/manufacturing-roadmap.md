@@ -78,6 +78,10 @@ Status: routed FreeRouting baseline.
   generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
   It also writes an assembly-readiness report that counts missing LCSC part
   numbers and unresolved TBD sourcing rows.
+- The engineering BOM now carries socket CPNs for socketed `U*` footprints and
+  current candidate CPNs for many passives, USB-C, J1, reset, fuse, decouplers,
+  and LEDs. The generated assembly readiness report is down to 10 missing CPN
+  rows.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
   unconnected items.
 - `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
@@ -106,10 +110,10 @@ remain open.
 
 Open production blockers:
 
-- Pick final orderable JLCPCB/LCSC SKUs for the chosen power, VGA, and debug
-  connector footprints.
-- Assign orderable JLCPCB/LCSC CPNs for factory-populated sockets, passives,
-  connectors, protection parts, oscillator/reset, and the diagnostic LEDs.
+- Assign the remaining generated JLCPCB/LCSC CPNs for C50, D1, J30, J40,
+  J90-J93, R6, R15, U40, and U50.
+- Re-check assigned candidate CPNs immediately before order and confirm
+  footprint fit for the mechanically sensitive rows: J1, F1, U51, and R30-R31.
 - Review autorouted traces, power widths, via count, and return paths.
 - Decide whether GND/+5V pours return after manual cleanup.
 - Do final Gerber inspection in an independent viewer.
@@ -130,8 +134,8 @@ Required before ordering:
 - Engineering BOM uses orderable parts or clearly marks manual/socketed/DNP
   items.
 - JLCPCB draft BOM and CPL have identical designator sets.
-- JLCPCB/LCSC candidate SKUs are assigned for factory-mounted sockets,
-  passives, connectors, power/protection, oscillator, and reset parts.
+- JLCPCB/LCSC candidate SKUs are assigned for every factory-mounted row, or
+  rows without CPNs are deliberately marked manual/DNP before upload.
 - Post-assembly insertion list names every socketed IC that should be installed
   after factory socket assembly.
 
@@ -159,8 +163,8 @@ Factory assembly package:
 
 Remaining order-package work:
 
-- Replace every `TBD` factory-populated CPN with an orderable JLCPCB/LCSC part
-  selected immediately before upload.
+- Replace every missing factory-populated CPN with an orderable JLCPCB/LCSC
+  part selected immediately before upload, or mark that row manual/DNP.
 - Verify factory assembly availability for selected through-hole sockets,
   headers, oscillator, reset supervisor, fuse, and TVS.
 - Add explicit socket/polarity/orientation notes to the assembly package.
