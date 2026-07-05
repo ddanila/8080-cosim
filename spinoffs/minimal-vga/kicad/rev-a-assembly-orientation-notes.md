@@ -21,7 +21,7 @@ Review `manual-assembly.csv` before ordering. Rev A currently expects manual
 installation or later CPN/footprint resolution for:
 
 - `D1` +5V TVS clamp.
-- `J30` and `U40` bring-up/debug headers.
+- `J30` keyboard bring-up header.
 - `R6` PWR_OK link and `R15` keyboard encoder enable link.
 - `U50` clock oscillator.
 - `U51` reset supervisor.
@@ -68,4 +68,5 @@ to factory assembly and assign/verify an orderable CPN before export.
   must confirm wave-solder fixture handling.
 - `U40` is the TTL640x480 timing/header interface for Rev A, including the
   pixel-load timing handoff to `U41`; it is not the final onboard TTL VGA
-  implementation.
+  implementation. It has a factory header candidate, but order-time review must
+  confirm wave-solder fixture handling.

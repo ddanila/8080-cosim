@@ -106,6 +106,8 @@ final JLC/LCSC stock and footprint check.
     `PinHeader_2x05_P2.54mm_Vertical`, `C9900010269`.
   - Power-debug 1x4 header candidate: JLCPCB Assembly `HDR-1X4`,
     `C9900257430`. Verify exact 2.54 mm footprint fit at order time.
+  - VGA timing 2x6 header candidate: HanElectricity `2541WV-2x06P`,
+    `C5383107`; straight 2x6, 2.54 mm pitch.
   - These are wave-solder assembly-library candidates and may require a
     fixture; confirm JLCPCB handling before upload.
 
@@ -114,8 +116,8 @@ Rows deliberately left manual in the Rev A draft assembly package:
 - `D1`: 5 V TVS for current DO-35/SOD27 footprint. Available 5 V candidates
   are easier in DO-15 or SMA, so this likely needs a footprint decision before
   factory assembly.
-- `J30`, `U40`: exact 2.54 mm vertical header CPNs still need selection. These
-  are safe to hand-install for Rev A bring-up.
+- `J30`: exact 1x15 2.54 mm vertical header CPN still needs selection. This is
+  safe to hand-install for Rev A bring-up.
 - `R6`, `R15`: exact axial 0 ohm jumpers still need selection. These can be
   hand-installed for Rev A if no factory 0R axial part is chosen.
 - `U50`: DIP-14 5 V oscillator, or a deliberate PCB change to a common SMD

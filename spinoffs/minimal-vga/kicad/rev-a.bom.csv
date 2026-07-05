@@ -8,7 +8,7 @@ U22-U23,2,Counter,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mo
 U24,1,DRAM timing sequencer,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socket,C72120,Factory mounts DIP-24 W15.24mm socket only; owner inserts GAL22V10-class timing part after assembly
 U30,1,PPI,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts 82C55/8255-compatible PPI after assembly
 U31,1,Priority encoder,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install 74HCT148 after assembly
-U40,1,VGA timing,2x6 2.54mm pin header,2.54mm header,Manual,Owner-supplied/manual,,Rev A uses a timing/header interface including PIX_LOAD_N and BLANK_N handoff; install manually until exact 2x6 vertical header CPN and factory assembly handling are confirmed
+U40,1,VGA timing,HanElectricity 2541WV-2x06P,PinHeader_2x06_P2.54mm_Vertical,Factory preferred,JLCPCB/LCSC,C5383107,Rev A uses a timing/header interface including PIX_LOAD_N and BLANK_N handoff; 2x6 straight 2.54mm wave-solder header candidate; verify fixture handling at order time
 U41,1,Pixel shift/latch,DIP-16 socket,DIP,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install framebuffer shift/latch part after assembly
 U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Manual,Owner-supplied/manual,,Feeds Rev A CLK net; install manually until a DIP-14 5V oscillator candidate or PCB change to SMD oscillator is selected
 U51,1,Reset supervisor,MCP130-460FI/TO or MCP130-475FI/TO,TO-92,Manual,Owner-supplied/manual,,Microchip MCP130 TO-92 F-bondout candidate; current footprint/net order is 1=VSS 2=RST 3=VDD; do not substitute the LCSC MCP130-460DI/TO D-bondout part without rewiring U51

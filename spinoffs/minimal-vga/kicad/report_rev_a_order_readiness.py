@@ -60,7 +60,7 @@ HUMAN_GATES = [
     "Mechanical-fit review for J1, R30, and R31 before factory population.",
     "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
     "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
-    "Manual-row decisions for TVS protection, keyboard/timing headers, oscillator, reset supervisor, and configuration links.",
+    "Manual-row decisions for TVS protection, keyboard header, oscillator, reset supervisor, and configuration links.",
 ]
 
 

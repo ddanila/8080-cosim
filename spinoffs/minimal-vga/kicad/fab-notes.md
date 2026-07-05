@@ -147,9 +147,9 @@ Factory assembly:
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts immediately before order.
-- The Rev A draft package deliberately leaves `D1`, `J30`, `R6`, `R15`, `U40`,
-  `U50`, and `U51` as manual/non-factory placements until their CPNs or
-  footprint changes are selected. `C50`, `J40`, and `J90`-`J93` have factory
+- The Rev A draft package deliberately leaves `D1`, `J30`, `R6`, `R15`, `U50`,
+  and `U51` as manual/non-factory placements until their CPNs or footprint
+  changes are selected. `C50`, `J40`, `J90`-`J93`, and `U40` have factory
   candidates but still need order-time fit and assembly-process review.
 - Confirm whether the selected factory assembly process will mount the intended
   through-hole sockets/connectors or requires those parts to be left manual.

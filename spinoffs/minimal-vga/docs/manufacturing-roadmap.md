@@ -119,7 +119,7 @@ Status: routed FreeRouting baseline.
 - The engineering BOM now carries socket CPNs for socketed `U*` footprints and
   current candidate CPNs for many passives, USB-C, J1, fuse, decouplers, bulk
   capacitance, debug headers, and LEDs. The generated assembly readiness report
-  now has zero missing LCSC part numbers in the factory BOM/CPL subset, with 7
+  now has zero missing LCSC part numbers in the factory BOM/CPL subset, with 6
   deliberate manual rows.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
   unconnected items after the Rev A source-model ERC cleanup and a clean
@@ -128,8 +128,8 @@ Status: routed FreeRouting baseline.
   nets, 95 PCB footprints, 117 KiCad PCB nets, and 2067 routed tracks. The PCB
   net count includes KiCad-generated net bookkeeping beyond the source-model
   named nets.
-- Current draft JLCPCB export: 25 factory BOM rows, 88 CPL placements, 19
-  post-assembly socketed IC insertions, and 7 deliberate manual placements.
+- Current draft JLCPCB export: 26 factory BOM rows, 89 CPL placements, 19
+  post-assembly socketed IC insertions, and 6 deliberate manual placements.
 - `export_fab.sh` now gates on both ERC and DRC before exporting Gerbers,
   Excellon drill, fab notes, engineering BOM, and draft JLCPCB assembly files
   from the routed board. It also rebuilds `fab/minimal-vga/upload/` with a
@@ -175,7 +175,7 @@ Open production blockers:
   human schematic review; the current report is generated as
   `fab/minimal-vga/erc-readiness.md`.
 - Decide whether the remaining Rev A manual rows (`D1`, `J30`, `R6`, `R15`,
-  `U40`, `U50`, and `U51`) stay owner-installed or get factory CPNs /
+  `U50`, and `U51`) stay owner-installed or get factory CPNs /
   footprint changes before ordering.
 - Re-check assigned candidate CPNs immediately before order and confirm
   footprint fit for the mechanically sensitive rows: J1 and R30-R31. F1 now has
