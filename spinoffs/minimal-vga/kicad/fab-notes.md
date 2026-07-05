@@ -31,10 +31,12 @@ parts; insert those manually after the assembled board is received.
   and routes power explicitly. The earlier placeholder `GND`/`VCC` planes made
   FreeRouting/KiCad produce split VCC islands, so production pours should be
   reintroduced only after a focused power-plane review.
-- The routing script seeds a few known-hard connections before FreeRouting:
-  `RESET_N`, `MEM_WR_N`, and `KBD_COL6_DRV`. These are ordinary board traces
-  exported in the DSN so FreeRouting routes around them instead of repeatedly
-  leaving them as final unrouted items.
+- The routing script defaults to a clean no-seed FreeRouting run
+  (`SEED_ROUTES=0`) using the repo submodule fork jar from
+  `external/freerouting` when it has been built. Earlier deterministic seed
+  routes remain available for debug with `SEED_ROUTES=1`, but the current Rev A
+  netlist routes cleanly without them and avoids carrying stale hand routes
+  across topology changes.
 - Board thickness: 1.6 mm unless mechanical constraints change.
 - Copper: 1 oz default.
 - Soldermask: any.

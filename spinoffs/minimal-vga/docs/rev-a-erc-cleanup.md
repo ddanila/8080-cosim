@@ -11,9 +11,9 @@ spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.sh
 
 Current result:
 
-- 93 KiCad ERC error-level findings.
-- 88 `pin_not_connected` findings.
-- 5 `label_dangling` findings.
+- 82 KiCad ERC error-level findings.
+- 80 `pin_not_connected` findings.
+- 2 `label_dangling` findings.
 - Previous power-net noise is gone; the remaining list is now useful for Rev A
   schematic cleanup.
 
@@ -21,15 +21,10 @@ Current result:
 
 These are likely real electrical issues, not paperwork:
 
-- `U1` Z80 active-low inputs: `INT_N`, `NMI_N`, and `BUSRQ_N` must not float.
-  Add pullups or explicit fixed ties if Rev A does not use interrupts or bus
-  request.
-- `U30` 8255 `RESET` should connect to the board `RESET_N` policy through the
-  correct polarity path.
-- `U41` pixel serializer inputs `SER` and `INH` need defined levels if the
-  serializer stays in Rev A.
-- Dangling video labels `PIXCLK`, `BLANK_N`, and `PIX_LOAD_N` need to connect
-  to the selected TTL640x480/timing-header boundary or be removed from Rev A.
+- `U41` pixel serializer `PIX_LOAD_N` needs to connect to the selected
+  TTL640x480/timing-header boundary or be removed from Rev A.
+- Dangling video label `BLANK_N` needs to connect to the selected
+  TTL640x480/timing-header boundary or be removed from Rev A.
 - `U24` DRAM sequencer pins that represent required timing signals
   (`RAM_CE_N`, `REFRESH_Q0`-`REFRESH_Q3`, `DRAM_OE_N`) must match the final GAL
   equations and board wiring.
@@ -46,7 +41,7 @@ bring-up/debug policy is confirmed:
   marking it NC.
 - `U31` 74148 `EO_N` if the keyboard encoder is not cascaded.
 - Unused `74HCT393` counter outputs on `U22`/`U23`; unused clear/clock inputs
-  still need defined levels, not NC.
+  are now tied inactive where they are not part of the current topology.
 
 ## Topology Still Too Open
 
@@ -63,6 +58,17 @@ unfrozen glue logic. Do not silence them blindly:
   behavior, diagnostic expansion, or explicit NC policy.
 - `U41` pixel serializer and the `PIX*` labels are still coupled to the
   unfinished video bridge decision.
+
+## Resolved In Source Model
+
+- `U1` Z80 `INT_N`, `NMI_N`, and `BUSRQ_N` are tied inactive through the `VCC`
+  net for Rev A.
+- `U30` 8255 `RESET` is connected to the board reset net.
+- `U41` pixel serializer `SER` and `INH` are tied inactive through `GND`.
+- `U41` pixel clock now comes from the `PIXCLK` net instead of the board `CLK`
+  net.
+- Unused `U22`/`U23` counter clock/clear inputs are tied inactive through
+  `GND`.
 
 ## Gate
 

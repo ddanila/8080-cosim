@@ -1,3 +1,7 @@
 [submodule "spinoffs/minimal-vga/external/T80"]
 	path = spinoffs/minimal-vga/external/T80
 	url = https://github.com/mist-devel/T80.git
+[submodule "external/freerouting"]
+	path = external/freerouting
+	url = https://github.com/ddanila/freerouting.git
+	branch = custom

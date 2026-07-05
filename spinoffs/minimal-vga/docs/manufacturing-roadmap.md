@@ -74,14 +74,20 @@ Status: routed FreeRouting baseline.
   `MINIMAL_VGA_NO_ZONES=1` and has explicit routed power instead.
 - `route_rev_a_pcb.sh` regenerates a no-plane routing baseline, exports
   Specctra DSN, runs FreeRouting, imports the SES result, and checks KiCad DRC.
+  The current default is `SEED_ROUTES=0`; deterministic route seeds are opt-in
+  debug aids only. The preferred router is the `external/freerouting` submodule
+  on the `custom` branch, built as
+  `external/freerouting/build/libs/freerouting-current-executable.jar`.
 - Freerouting caveats carried over from the main juku board (2026-07):
-  (a) v2.x **headless/CLI jobs skip the board-specific parameter optimizations**
-  that GUI runs apply (upstream discussion #508) — this small board converges
-  headless anyway, but if a rerun stagnates, route through the GUI;
+  (a) stock v2.x headless/CLI routing has had board-specific settings gaps
+  (upstream discussion #508); the repo submodule fork's `custom` branch applies
+  board-specific optimizations in the headless load/scheduler path and is the
+  preferred router for VJUGA;
   (b) **duplicate footprint references make `ExportSpecctraDSN` fail silently**
   (returns False, no diagnostics) — the script now pre-checks and fails loudly;
-  (c) the script prefers the local fork jar (ddanila/freerouting `custom`:
-  PolylineTrace.combine recursion fix + stagnation tuning) when built;
+  (c) the script prefers the repo submodule fork jar (ddanila/freerouting
+  `custom`: PolylineTrace.combine recursion fix, headless settings application,
+  and stagnation tuning) when built;
   (d) wrappers use `scripts/find-kicad-python.sh` so the KiCad `pcbnew` module
   is loaded from a compatible interpreter even when Homebrew or another Python
   appears first in `PATH`.
@@ -102,8 +108,8 @@ Status: routed FreeRouting baseline.
   and LEDs. The generated assembly readiness report now has zero missing LCSC
   part numbers in the factory BOM/CPL subset, with 12 deliberate manual rows.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
-  unconnected items after adding deterministic seed routes for net `D1` and
-  `BUS_DIR`.
+  unconnected items after the Rev A source-model ERC cleanup and a clean
+  no-seed FreeRouting run.
 - `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
   BOM, and draft JLCPCB assembly files from the routed board.
 
