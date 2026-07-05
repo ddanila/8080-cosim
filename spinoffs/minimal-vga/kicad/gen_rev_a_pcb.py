@@ -16,7 +16,6 @@ SILK_LABELS = {
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
     "POWER": (22, 32.7, 0, pcbnew.F_SilkS),
     "FUSE": (24, 42.0, 0, pcbnew.F_SilkS),
-    "PTC": (18.9, 38.0, 90, pcbnew.F_SilkS),
     "CPU": (55, 75.5, 0, pcbnew.F_SilkS),
     "ROM": (100, 75.5, 0, pcbnew.F_SilkS),
     "DRAM REFRESH + TIMING": (150, 116, 0, pcbnew.F_SilkS),
@@ -54,6 +53,7 @@ POWER_INPUT_PIN_LABELS = (
     ("5V IN", 16.1, 25.35, 90),
     ("+5V", 27.85, 27.85, 90),
     ("GND", 27.85, 22.85, 90),
+    ("PTC", 18.9, 38.0, 90),
 )
 POWER_INPUT_PIN_LABEL_SIZE_MM = 1.1
 POWER_INPUT_PIN_LABEL_THICKNESS_MM = 0.16

@@ -25822,6 +25822,17 @@
 			)
 		)
 	)
+	(gr_text "PTC"
+		(at 18.9 38 90)
+		(layer "F.SilkS")
+		(uuid "f129a929-b2ce-4755-9b2a-18c9393b51b6")
+		(effects
+			(font
+				(size 1.1 1.1)
+				(thickness 0.16)
+			)
+		)
+	)
 	(gr_text "GND"
 		(at 27.85 22.85 90)
 		(layer "F.SilkS")
@@ -25969,17 +25980,6 @@
 		(at 260 198 0)
 		(layer "F.SilkS")
 		(uuid "d1d6172d-5386-448e-9a37-8cd338306851")
-		(effects
-			(font
-				(size 2 2)
-				(thickness 0.2)
-			)
-		)
-	)
-	(gr_text "PTC"
-		(at 18.9 38 90)
-		(layer "F.SilkS")
-		(uuid "f129a929-b2ce-4755-9b2a-18c9393b51b6")
 		(effects
 			(font
 				(size 2 2)
