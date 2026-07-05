@@ -96,10 +96,12 @@ Factory assembly:
 - KiCad ERC.
 - KiCad DRC.
 - Zero unrouted nets.
-- `export_fab.sh` blocks export unless KiCad DRC exits cleanly. Override only
-  for debug artifacts with `MINIMAL_VGA_ALLOW_DRC_EXPORT=1`.
-- `export_fab.sh` emits the generated JLCPCB BOM/CPL pair only after the DRC
-  gate, so a real order package cannot silently use a stale position file.
+- `export_fab.sh` blocks export unless KiCad ERC and DRC exit cleanly.
+  Override only for debug artifacts with `MINIMAL_VGA_ALLOW_ERC_EXPORT=1` or
+  `MINIMAL_VGA_ALLOW_DRC_EXPORT=1`.
+- `export_fab.sh` emits the generated JLCPCB BOM/CPL pair only after the ERC
+  and DRC gates, so a real order package cannot silently use a stale schematic
+  or position file.
 - `export_fab.sh` also emits `review/rev-a-physical-schematic.pdf`,
   `review/rev-a-assembly-front.pdf`, and `review/rev-a-assembly-back.pdf`.
 - `render_previews.sh` emits top-view PNG previews:

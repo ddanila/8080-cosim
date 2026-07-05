@@ -14,8 +14,20 @@ if [ ! -f "$BOARD" ]; then
   exit 2
 fi
 
+mkdir -p "$OUT"
+
+if [ "${MINIMAL_VGA_ALLOW_ERC_EXPORT:-0}" != "1" ]; then
+  if ! KICAD_CLI="$KCLI" python3 spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.py \
+      spinoffs/minimal-vga/kicad/rev-a-physical.kicad_sch \
+      "$OUT" >/dev/null; then
+    echo "KiCad ERC failed for spinoffs/minimal-vga/kicad/rev-a-physical.kicad_sch; fab export blocked." >&2
+    echo "Report: $OUT/erc-readiness.md" >&2
+    echo "Set MINIMAL_VGA_ALLOW_ERC_EXPORT=1 only for debug exports." >&2
+    exit 4
+  fi
+fi
+
 if [ "${MINIMAL_VGA_ALLOW_DRC_EXPORT:-0}" != "1" ]; then
-  mkdir -p "$OUT"
   if ! "$KCLI" pcb drc --severity-error --exit-code-violations \
       --output "$OUT/drc-report.txt" "$BOARD" >/dev/null; then
     echo "KiCad DRC failed for $BOARD; fab export blocked." >&2
@@ -31,9 +43,6 @@ mkdir -p "$OUT/assembly" "$OUT/review"
   "$BOARD" \
   spinoffs/minimal-vga/kicad/rev-a.bom.csv \
   "$OUT/assembly"
-KICAD_CLI="$KCLI" python3 spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.py \
-  spinoffs/minimal-vga/kicad/rev-a-physical.kicad_sch \
-  "$OUT" >/dev/null
 "$KCLI" pcb export gerbers \
   --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
   -o "$OUT/gerbers/" "$BOARD"

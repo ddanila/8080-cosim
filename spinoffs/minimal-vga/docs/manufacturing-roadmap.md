@@ -94,9 +94,9 @@ Status: routed FreeRouting baseline.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
 - `report_rev_a_erc_readiness.sh` records the current KiCad ERC status for the
-  physical schematic. The Rev A source model now has explicit no-connect policy
-  for unused pins and the report is expected to remain clean before ordering;
-  the cleanup history is tracked in `rev-a-erc-cleanup.md`.
+  physical schematic and exits nonzero if error-level ERC findings return. The
+  Rev A source model now has explicit no-connect policy for unused pins; the
+  cleanup history is tracked in `rev-a-erc-cleanup.md`.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
 - `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
@@ -116,8 +116,9 @@ Status: routed FreeRouting baseline.
   named nets.
 - Current draft JLCPCB export: 22 factory BOM rows, 83 CPL placements, 19
   post-assembly socketed IC insertions, and 12 deliberate manual placements.
-- `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
-  BOM, and draft JLCPCB assembly files from the routed board.
+- `export_fab.sh` now gates on both ERC and DRC before exporting Gerbers,
+  Excellon drill, fab notes, engineering BOM, and draft JLCPCB assembly files
+  from the routed board.
 
 Remaining work:
 

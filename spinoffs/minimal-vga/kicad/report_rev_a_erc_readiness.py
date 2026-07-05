@@ -122,7 +122,10 @@ def main():
     report_path.write_text(report + "\n")
     print(report)
     print(f"Wrote {report_path}")
+    if all_violations(erc):
+        return 3
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
