@@ -512,3 +512,8 @@ pass-through). Whether the V-feed is a sub-bundle member (electrically odd for a
 or a control wire sharing the channel does not resolve at this scan's quality.
 => BLOCKED-on-materials: paper original or board continuity (D6 pins 13/14 <-> candidates)
 [owner]. Model keeps D6 always-enabled (boot-verified equivalent). Item (a) closed.
+
+## Loop iteration: D23/D24 E-gates read — hard-enabled
+Crop s1_egates1: both address buffers drawn with T (11) <- "A" +5V arrow and E (9) <- GND
+symbol directly — permanently enabled, no gate drivers. Netted (power rails, LVS-exempt).
+D25 (data buffer) E-gate = next crop (must be gated for bus turnaround).
