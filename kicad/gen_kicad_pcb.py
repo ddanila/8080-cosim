@@ -68,8 +68,11 @@ PASSIVE_PLACE = {
     # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
     'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.0,119.6,90),
     'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(264.9,92.0,0),'R85':(274.7,87.4,0),'C94':(284.4,119.6,90),
-    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(266.5,122,90),
-    'R67':(287,112,90),'R68':(290.5,112,90),'R69':(294,112,90),'R70':(287,120,90),'R71':(290.5,120,90),
+    # R6x grid: slot positions СБ-true (crops sb_analog2/sb_r6x_right: trio y116.9 at x288.3/291.0/293.8,
+    # trio y126.2 same x, singles ~(297.5,117.5)/(299.4,120.4)); refdes-to-slot within the grid is APPROX —
+    # the rotated labels sit at the scan's resolution floor (blocked: needs macro photo / owner read)
+    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(293.8,126.2,90),
+    'R67':(288.3,116.9,90),'R68':(291.0,116.9,90),'R69':(293.8,116.9,90),'R70':(288.3,126.2,90),'R71':(291.0,126.2,90),
     'C9':(275,95,0),'C10':(276,112,90),'C12':(254.6,95.6,0),'C13':(279.5,112,90),'C15':(253.8,104.0,0),
     'R76':(272,125,0),'R77':(276,128,0),'L1':(282,128,0),
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
@@ -85,7 +88,9 @@ PASSIVE_PLACE = {
     'E2':(61.6,215.5,0),'E3':(54.6,215.5,0),   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
     'R17':(111.4,116.1,90),'C99':(105.1,119.8,0),   # D9.G1 RC deglitch -- SB-true spots (crop sb_decode)
     'R90':(251.6,216.1,90),'VD4':(254.1,216.1,90),'R91':(256.4,216.1,90),'R48':(245.1,207.4,0),'R60':(253.9,202.7,0),   # beeper cluster SB-true (crop sb_beeper); R60 = FRAME INT pullup between wire posts 2/1
-    'R47':(283.5,171.5,0),'C7':(288.5,171.5,0),'R59':(293.5,171.5,0),'C8':(283.5,189.0,0),'R61':(293.5,189.0,0),   # D56 AG3 one-shot RCs + CLR pullup, around D56 (287.8,180) [approx]
+    # D56 AG3 RCs СБ-true (crops sb_d56rc/sb_westpair): R59+C8 pair WEST of D56 (between D103 and D56),
+    # C7+R47 pair EAST of D56; R61 not found on the СБ in the checked zones [stays approx]
+    'R47':(296.5,166.8,90),'C7':(294.1,166.6,90),'R59':(279.1,174.0,90),'C8':(281.6,171.7,90),'R61':(293.5,189.0,0),
     'R11':(70.0,108.0,90),'R12':(73.5,108.0,90),'R13':(84.5,122.0,90),'R14':(88.0,122.0,90),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)

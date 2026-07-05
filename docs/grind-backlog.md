@@ -573,3 +573,34 @@ banked in BODGE-TRIAGE.md (final section). Hardware поз. table: connector/mou
 174 = edge standoffs). СБ notes: 2.5mm grid, mounting variants (exclusions = R73/C12/C98
 specials + socketed D2/D6/D8/D15-D22), scale 2:1. No board.json changes needed (harvest
 already netted) -> LVS untouched.
+
+## Loop iteration: #8 placement finishers -> task #8 CLOSED (with documented blocks)
+СБ reads applied to gen_kicad_pcb.py (regen 237 footprints, outline-overlap PASS):
+- **D56 RC group СБ-true** (crops sb_d56rc/sb_westpair, labels read at 4.2x): R59 (279.1,174.0) +
+  C8 (281.6,171.7) pair WEST of D56 (between D103 and D56); C7 (294.1,166.6) + R47 (296.5,166.8)
+  pair EAST of D56 — the old approx had the pairs nearly mirrored. R61: NOT drawn in the checked
+  zones [blocked; stays approx].
+- **R6x grid slots СБ-true**: trio (288.3/291.0/293.8, 116.9), trio (same x, 126.2), singles
+  ~(297.5,117.5)/(299.4,120.4), circle part (298.9,129.2) [L1 candidate]. Refdes-to-slot WITHIN
+  the grid is blocked — rotated labels are at the scan's resolution floor [owner macro photo item].
+  R67-R71+R66 moved onto real slots (assignment approx); R62/R63/R64 + C9/C10/C13 unchanged
+  (their drawn slots not identifiable at this resolution).
+- **Analog-corner re-verification**: R85/C11/VT4/R73/R72/C14/R75/R74/VT3/C94/VT2/D40 all within
+  ~0.5mm of placed spots ✓; wire 3/4 end flags confirmed AT R73's trimmer circle; **C18 discovered
+  at (298.4,87.7)** — not yet a modeled part [task #11 census item].
+- **C34: not drawn in the power corner** (C31/C32/C93/C33 only) [stays approx]; Z1 drawn box
+  (69-87, ~242.5) brackets the placed photo-true spot (79.4,243.5) ✓ kept.
+
+## LOOP FINAL SUMMARY (desk-grind leftovers, tasks #14/#10/#8)
+- **#14 sheet reads**: LOAD_PRE one-inversion CORRECTION (rail 6 = D59.12 inverted LOAD -> new net
+  LOAD_VID {D59.12, D42.6, D43.6}; LOAD_PRE = {D38.6, D59.13}); AVDC arrival FOUND = "AUDC" =
+  D26.40 (PPI0 PA4) -> beeper clamp is PPI-gated; D29 T/E netted (+5V/GND); D2 РТ4 V1/V2 = GND;
+  socketed-set note confirmed on both Э3 and СБ. LVS IN SYNC throughout, boot 6/6 byte-identical.
+- **#10 СБ поз. sweep**: COMPLETE — every drawn wire (3-20) maps 1:1 to the owner's measured
+  harvest; no undocumented wires; hardware поз. table banked (BODGE-TRIAGE.md final section);
+  СБ notes: 2.5mm grid, mounting variants, scale 2:1.
+- **#8 placements**: D56-RC + R6x-slot СБ-true applied; regen PASS.
+- **Blocked-on-owner residue** (for the next hardware session): dump BOTH РЕ3 sockets (D8 decode
+  cluster + D94 top-center), D2/D6 РТ4 dumps, board-2 EPROM pair, R6x-grid refdes macro photo,
+  R61 spot, bypass disc values, D6 V1/V2 continuity, FDC INTRQ/DRQ.
+Next desk campaign: routing run + power widening + DRC + gerbers.
