@@ -61,6 +61,9 @@ mkdir -p "$OUT/assembly" "$OUT/review"
   "$BOARD" \
   spinoffs/minimal-vga/kicad/rev-a.bom.csv \
   "$OUT" >/dev/null
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_socket_insertion_policy.py \
+  "$BOARD" \
+  "$OUT" >/dev/null
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_mechanical_fit.py \
   "$BOARD" \
   "$OUT" >/dev/null

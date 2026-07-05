@@ -27,6 +27,7 @@ REQUIRED_ARTIFACTS = [
     "drill/rev-a-physical.drl",
     "assembly/assembly-readiness.md",
     "assembly/socket-fit-readiness.md",
+    "assembly/socket-insertion-policy.md",
     "assembly/mechanical-fit-readiness.md",
     "assembly/manual-row-readiness.md",
     "assembly/cpn-consistency.md",
@@ -118,6 +119,7 @@ def machine_gate_summary(out_dir):
     fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
+    socket_insertion = read_text(out_dir / "assembly" / "socket-insertion-policy.md")
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
     manual_rows_report = read_text(out_dir / "assembly" / "manual-row-readiness.md")
     cpn_consistency = read_text(out_dir / "assembly" / "cpn-consistency.md")
@@ -196,6 +198,13 @@ def machine_gate_summary(out_dir):
             has_ready_line(socket_fit, "READY")
             and "- Socket fit failures: 0" in socket_fit,
             "`assembly/socket-fit-readiness.md` confirms socket pin counts and widths.",
+        ),
+        (
+            "Socket insertion policy",
+            has_ready_line(socket_insertion, "READY")
+            and "- Socketed IC footprints: 19" in socket_insertion
+            and "- Policy failures: 0" in socket_insertion,
+            "`assembly/socket-insertion-policy.md` confirms factory socket mounting and owner-supplied IC post-assembly insertion policy.",
         ),
         (
             "Mechanical fit report",

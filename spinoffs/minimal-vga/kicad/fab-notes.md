@@ -171,6 +171,10 @@ Factory assembly:
 - `report_rev_a_socket_fit.py` checks every socketed `U*` footprint against the
   engineering BOM's expected DIP pin count and socket width before the order
   readiness report is emitted.
+- `report_rev_a_socket_insertion_policy.py` writes
+  `fab/minimal-vga/assembly/socket-insertion-policy.md`, verifying that
+  socketed `U*` rows are factory socket placements, not IC placements, and that
+  every owner-supplied IC appears in the post-assembly insertion list.
 - Visual inspection of Gerbers in an independent viewer.
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,

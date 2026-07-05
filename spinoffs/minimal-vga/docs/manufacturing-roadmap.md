@@ -145,6 +145,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/assembly/socket-fit-readiness.md`, checking each socketed
   `U*` footprint against the engineering BOM's expected DIP pin count and socket
   width.
+- `report_rev_a_socket_insertion_policy.py` writes
+  `fab/minimal-vga/assembly/socket-insertion-policy.md`, confirming that the
+  factory assembly BOM/CPL mounts sockets for socketed `U*` rows while the
+  owner-supplied ICs stay in the post-assembly insertion list.
 - The engineering BOM now carries socket CPNs for socketed `U*` footprints and
   current candidate CPNs for many passives, USB-C, J1, fuse, decouplers, bulk
   capacitance, debug headers, and LEDs. The generated assembly readiness report
@@ -174,6 +178,9 @@ Status: routed FreeRouting baseline.
   bookkeeping beyond the source-model named nets.
 - Current draft JLCPCB export: 26 factory BOM rows, 89 CPL placements, 19
   post-assembly socketed IC insertions, and 6 deliberate manual placements.
+- Current socket insertion policy passes: 19 socketed IC footprints are present
+  as factory socket rows in the BOM/CPL and as owner-supplied ICs in the
+  post-assembly insertion list.
 - `export_fab.sh` now gates on both ERC and DRC before exporting Gerbers,
   Excellon drill, fab notes, engineering BOM, and draft JLCPCB assembly files
   from the routed board. It also rebuilds `fab/minimal-vga/upload/` with a
