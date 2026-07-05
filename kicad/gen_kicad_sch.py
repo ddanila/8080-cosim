@@ -9,8 +9,10 @@
 #   { "chips": [ {"ref":"U1","type":"CPU8080","pins":{"1":"A0", ...}}, ... ],
 #     "nets":  { "A0": [["U1","1"],["U2","1"]], ... } }
 #
-# Usage: gen_kicad_sch.py <board.json> <out.kicad_sch>
-import sys, json
+# Usage: gen_kicad_sch.py [--include-power] <board.json> <out.kicad_sch>
+import argparse
+import json
+import sys
 
 GRID, STUB = 2.54, 2.54
 
@@ -44,7 +46,17 @@ def label(t, x, y):
     return f'\t(label "{t}" (at {x} {y} 0) (effects (font (size 1.27 1.27)) (justify left bottom)))'
 
 def main():
-    spec = json.load(open(sys.argv[1]))
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--include-power",
+        action="store_true",
+        help="emit board-spec nets tagged as power instead of skipping them for LVS",
+    )
+    parser.add_argument("board_json")
+    parser.add_argument("out_sch")
+    args = parser.parse_args()
+
+    spec = json.load(open(args.board_json))
     chips = spec["chips"]
 
     # pin order per type (sorted by numeric pin number) + index lookup. The symbol takes the
@@ -82,7 +94,7 @@ def main():
         out.append(instance(c["ref"], c["type"], px, py, n)); n += 1
 
     for net, entry in spec["nets"].items():
-        if isinstance(entry, dict) and entry.get("power"):
+        if isinstance(entry, dict) and entry.get("power") and not args.include_power:
             continue          # power nets are PCB-only (no power pins in the HDL/LVS compare)
         nodes = entry["nodes"] if isinstance(entry, dict) else entry  # tagged or bare
         for ref, pin in nodes:
@@ -94,8 +106,8 @@ def main():
             out.append(wire(x, py, x, py - STUB, n)); n += 1
             out.append(label(net, x, py - STUB))
     out.append(')')
-    open(sys.argv[2], "w").write("\n".join(out) + "\n")
-    print(f"wrote {sys.argv[2]}: {len(chips)} chips, {len(spec['nets'])} nets")
+    open(args.out_sch, "w").write("\n".join(out) + "\n")
+    print(f"wrote {args.out_sch}: {len(chips)} chips, {len(spec['nets'])} nets")
 
 if __name__ == "__main__":
     main()

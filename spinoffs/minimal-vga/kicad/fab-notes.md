@@ -73,6 +73,7 @@ Factory assembly:
   marked `Manual`, `DNP`, or `Do not populate` in the engineering BOM.
 - Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
 - Assembly readiness report: `assembly/assembly-readiness.md`.
+- Schematic ERC readiness report: `erc-readiness.md`.
 - Position file: `assembly/rev-a-position.csv`.
 - Order-time CPN checklist: `assembly/rev-a-jlcpcb-cpn-checklist.csv`.
 - Assembly/orientation notes: `assembly/rev-a-assembly-orientation-notes.md`.
@@ -106,6 +107,10 @@ Factory assembly:
   `review/vjuga-placement-top.svg` and `review/vjuga-placement-top.png`.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
+- `report_rev_a_erc_readiness.sh` writes the current schematic ERC summary to
+  `fab/minimal-vga/erc-readiness.md`. It is report-only for now because the
+  generated schematic still needs explicit unused-pin/no-connect cleanup before
+  ERC can become a hard export gate.
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.

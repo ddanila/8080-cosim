@@ -31,6 +31,9 @@ mkdir -p "$OUT/assembly" "$OUT/review"
   "$BOARD" \
   spinoffs/minimal-vga/kicad/rev-a.bom.csv \
   "$OUT/assembly"
+KICAD_CLI="$KCLI" python3 spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.py \
+  spinoffs/minimal-vga/kicad/rev-a-physical.kicad_sch \
+  "$OUT" >/dev/null
 "$KCLI" pcb export gerbers \
   --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
   -o "$OUT/gerbers/" "$BOARD"

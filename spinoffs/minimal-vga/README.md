@@ -141,6 +141,8 @@ Early manufacturing planning files live in `kicad/`:
 - `check_rev_a_pcb.sh` - validates/generates the PCB scaffold with stock KiCad
   footprints and the intended 4-layer copper stack.
 - `check_rev_a_pcb.py` - PCB scaffold invariant checks.
+- `report_rev_a_erc_readiness.sh` - non-gating ERC summary for the current Rev
+  A physical schematic.
 - `render_placement_preview.sh` - fast placement/silkscreen preview from the
   generator without running FreeRouting or touching the routed PCB.
 - `report_rev_a_fab_readiness.sh` - non-gating DRC/unconnected summary for the
