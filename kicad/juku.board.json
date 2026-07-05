@@ -9014,6 +9014,10 @@
     [
      "D25",
      "9"
+    ],
+    [
+     "D29",
+     "9"
     ]
    ]
   },
@@ -9523,6 +9527,10 @@
     ],
     [
      "D24",
+     "11"
+    ],
+    [
+     "D29",
      "11"
     ]
    ]
@@ -12976,11 +12984,15 @@
    ]
   },
   "AVDC": {
-   "src": "traced sheet-2 (crop s2_spkr_edge): R91 -> rail labeled AVDC -> \"(1)\" export to sheet 1 (sheet-1 arrival = one text-hunt; likely the tape/AV DC bias at the serial-driver corner)",
+   "src": "traced both ends: sheet-2 R91 -> rail -> \"(1)\" export (crop s2_spkr_edge); sheet-1 arrival found (crop s1_avdc_band6): label reads AUDC = D26 ВВ55 pin 40 (PA4), port-A row between SC0-SC3 (PA0-3) and PREN/STB (PA6/7); no edge arrow on that row -> cross-sheet only. The 'AVDC' on sheet 2 is the same handwritten label (U/V ambiguity)",
    "nodes": [
     [
      "R91",
      "2"
+    ],
+    [
+     "D26",
+     "40"
     ]
    ]
   },

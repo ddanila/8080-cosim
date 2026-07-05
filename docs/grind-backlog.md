@@ -547,3 +547,20 @@ s2_d42ld_tag + programmatic line scans):
   D46.LD..D47.LD (y 1165..2902); its top dead-ends in the D44/D45 box gap (candidate join to
   the D44-bottom bus horizontal at y~1150, print gap ~9px — unresolvable at this scan).
   Driver stays "likely D59.12" (engineering read: all-counter reload), NOT netted.
+
+## Loop iteration: AVDC arrival found (= AUDC, D26 PA4) + D29 T/E closed -> task #14 COMPLETE
+- **AVDC sheet-1 arrival FOUND** (crop s1_avdc_band6, PPI zone x3200-6800/y3800-5300): the
+  D26 ВВ55 port-A column reads PA0-3 = SC0-SC3 (-> edge 45-48), **PA4 (pin 40) = "AUDC"** with
+  NO edge arrow (cross-sheet only), PA6 = PREN, PA7 = STB (->49). Sheet-2's "AVDC" is the same
+  handwritten label (U/V ambiguity). Net AVDC += D26.40 — the beeper clamp (VD4/R91) is gated
+  by PPI0 port A bit 4. LVS-safe (1 mapped endpoint, R91 passive).
+- **D29 T/E rows confirmed** (crop s1_d29_te): T (pin 11) <- "A" arrow = +5V; E (pin 9) ->
+  drawn GND symbol. Netted D29.9->GND, D29.11->P5V (power, LVS-exempt). Matches HDL
+  U_D29 (.oe_n(0), .t(1)) already in place.
+- Bottom-band sweep side-catches: **D2 РТ4 V1(13)+V2(14) both drawn to GND** (crop
+  s1_avdc_band5) — D2's enable feed closed (D6's V1/V2 remains the blocked print-quality item);
+  sheet-1 note "микросхемы D2,D6,D8,D15...D22 устанавливаются в панелях" (socketed) — matches
+  the socket plan; PB0 exports normally (18 -> 221); FRAME INT (2) / TAPE RUN INT (3) /
+  RxRDY (3) / TxRDY (3) arrivals -> D10 ВН59 IR rows confirmed.
+- **Task #14 status: all items done or blocked-on-owner.** Blocked residue (owner/materials):
+  D6 V1/V2 feed (print), FDC INTRQ/DRQ, bypass values, C99 far plate, D8/D94 РЕ3 dumps.
