@@ -38,7 +38,8 @@ Status: core target exists with partial real pin binding.
   local TVS protection and a power debug header remain explicit.
 - The first-pass +5V planning budget is documented in `rev-a-power-budget.md`.
 - The Rev A placement style and decoupler placement rules are documented in
-  `rev-a-placement-rules.md`.
+  `rev-a-placement-rules.md`; treat those rules as the placement review gate
+  before spending time on production copper cleanup.
 - Keyboard row inputs have explicit pullups, the 74148 enable input is tied
   active by default, and 8255 column outputs reach the keyboard connector
   through series resistors.
@@ -110,6 +111,9 @@ Remaining work:
   VCC islands, so the committed route uses traces only for power connectivity.
 - Refine mechanical constraints and mounting holes.
 - Human-review and clean up the autorouted trace geometry before ordering.
+- Review component placement against `rev-a-placement-rules.md` after any
+  schematic/netlist change that moves CPU, ROM, DRAM, keyboard, VGA, or power
+  ownership boundaries.
 - Assign concrete JLCPCB/LCSC CPNs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts.
 - Confirm diagnostic LED colors and brightness/loading after part selection.
