@@ -36,6 +36,7 @@ Status: core target exists with partial real pin binding.
 - Rev A +5V can enter through a 2-pin terminal/header or power-only USB-C.
   Both feed `VCC_RAW`, which passes through resettable fuse `F1` to `VCC`;
   local TVS protection and a power debug header remain explicit.
+- The first-pass +5V planning budget is documented in `rev-a-power-budget.md`.
 - Keyboard row inputs have explicit pullups, the 74148 enable input is tied
   active by default, and 8255 column outputs reach the keyboard connector
   through series resistors.

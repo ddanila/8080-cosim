@@ -22,7 +22,7 @@ J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC
 J40,1,VGA bring-up output,1x06 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Rev A uses simple RGB/HSYNC/VSYNC/GND header; exact vertical header CPN still needs order-time selection
 J90-J92,3,Logic analyzer header,2x5 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Address/data/DRAM/video/debug; exact vertical header CPN still needs order-time selection
 J93,1,Power debug header,1x04 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,VCC/GND/PWR_OK/VCC_RAW bring-up pins; exact vertical header CPN still needs order-time selection
-F1,1,+5V resettable fuse,RXEF300-class radial PTC,THT,Factory preferred,JLCPCB/LCSC,C14397,J1/J3 feed VCC_RAW and then fused VCC through F1; verify current rating/lead spacing against load and KiCad footprint before order
+F1,1,+5V resettable fuse,RXEF300-class radial PTC 3A hold / 6A trip,THT,Factory preferred,JLCPCB/LCSC,C14397,J1/J3 feed VCC_RAW and then fused VCC through F1; verify lead spacing and final +5V load against KiCad footprint before order
 D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Factory preferred,JLCPCB/LCSC,TBD,Clamp fused VCC to GND near power entry; no clean JLC DO-35 5V TVS candidate found yet; consider changing footprint to DO-15 or SMA if factory assembly is required
 R1-R3,3,VGA series resistor,CR1/4W-470R-5%-class,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C2896817,PIXEL to VGA RGB placeholder network; D2.7xL6.2mm candidate should be checked against DIN0207 footprint
 R4-R5,2,Pullup resistor,RN1/4W10KFT/BA1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410695,Oscillator enable and reset pullups

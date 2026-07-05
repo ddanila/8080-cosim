@@ -19,7 +19,7 @@ Keyboard header,J30,Populate 1x15 2.54mm pin header,,CPN open,Inline bring-up he
 Debug headers,J90-J93,Populate 2.54mm pin headers,,CPN open,Need exact 2x5 and 1x4 vertical header CPNs
 Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A; J3 HRO TYPE-C-31-M-17; verify J1 5.00/5.08mm footprint fit
 VGA output,J40,Populate 1x06 2.54mm pin header,,CPN open,Rev A VGA exits as bring-up header; exact vertical header CPN still needed
-Fuse,F1,Populate resettable fuse,C14397,Candidate assigned,RXEF300-class radial PTC; verify hold current and lead spacing against expected +5V load
+Fuse,F1,Populate resettable fuse,C14397,Candidate assigned,RXEF300-class radial PTC; 3A hold / 6A trip; verify lead spacing against expected +5V load
 TVS,D1,Populate 5V TVS clamp,,Footprint/CPN open,No clean DO-35 5V TVS candidate found; consider DO-15 or SMA footprint change for factory assembly
 Oscillator,U50,Populate 5V oscillator or socket,,Footprint/CPN open,Need DIP-14 5V oscillator candidate or PCB change to SMD oscillator
 Reset supervisor,U51,Populate reset supervisor,C621481,Candidate assigned,Microchip MCP130-460DI/TO TO-92 candidate; verify D-bondout pinout against footprint

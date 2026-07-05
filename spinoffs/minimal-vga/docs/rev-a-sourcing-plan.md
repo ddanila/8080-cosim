@@ -91,8 +91,8 @@ final JLC/LCSC stock and footprint check.
   - 3 mm red diagnostic LED baseline: EVERLIGHT `204-10SURD/S530-A3`,
     `C99772`.
 - Protection/reset:
-  - Resettable fuse candidate: Littelfuse `RXEF300`, `C14397`; verify hold
-    current and lead spacing before order.
+  - Resettable fuse candidate: Littelfuse `RXEF300`, `C14397`; 3 A hold,
+    6 A trip. Verify lead spacing and final +5V load before order.
   - Reset supervisor candidate: Microchip `MCP130-460DI/TO`, `C621481`;
     verify TO-92 D-bondout pin order against the KiCad footprint before order.
 

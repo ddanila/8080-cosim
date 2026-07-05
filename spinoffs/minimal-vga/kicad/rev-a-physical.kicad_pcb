@@ -15226,7 +15226,7 @@
 				)
 			)
 		)
-		(property "Value" "PTC"
+		(property "Value" "PTC 3A"
 			(at 2.55 0.6 0)
 			(layer "F.SilkS")
 			(uuid "745d57d7-0de6-4921-8852-ddeb73d19019")
@@ -25848,6 +25848,17 @@
 		(at 22 32.7 0)
 		(layer "F.SilkS")
 		(uuid "dcce358c-b64e-463c-9a90-fdb346fd2f90")
+		(effects
+			(font
+				(size 2 2)
+				(thickness 0.2)
+			)
+		)
+	)
+	(gr_text "FUSE"
+		(at 24 42 0)
+		(layer "F.SilkS")
+		(uuid "0e39f591-2ff0-4bd6-bf42-9ed052dc8731")
 		(effects
 			(font
 				(size 2 2)
