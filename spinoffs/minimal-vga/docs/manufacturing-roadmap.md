@@ -99,6 +99,10 @@ Status: routed FreeRouting baseline.
   cleanup history is tracked in `rev-a-erc-cleanup.md`.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
   in `fab/minimal-vga/fab-readiness.md`.
+- `report_rev_a_order_readiness.py` produces
+  `fab/minimal-vga/order-readiness.md`, which combines the ERC, DRC, assembly,
+  artifact, manual-row, and post-assembly-insertion checks with the remaining
+  human sign-off items.
 - `export_jlcpcb_assembly.py` produces a draft JLCPCB BOM/CPL pair from the
   generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
   It also writes an assembly-readiness report that counts missing LCSC part
@@ -118,7 +122,7 @@ Status: routed FreeRouting baseline.
   post-assembly socketed IC insertions, and 12 deliberate manual placements.
 - `export_fab.sh` now gates on both ERC and DRC before exporting Gerbers,
   Excellon drill, fab notes, engineering BOM, and draft JLCPCB assembly files
-  from the routed board.
+  from the routed board, then emits `order-readiness.md` for the upload review.
 
 Remaining work:
 
@@ -141,8 +145,9 @@ Status: fabrication-output candidate.
 
 The routed PCB passes KiCad DRC with zero unconnected items, and `export_fab.sh`
 exports Gerbers/drills, schematic PDF, assembly PDFs, position data, and draft
-JLCPCB BOM/CPL files. This is still not a buy-ready design because sourcing,
-connector, and manual layout review gates remain open.
+JLCPCB BOM/CPL files. `fab/minimal-vga/order-readiness.md` now summarizes the
+machine gates and the remaining human sign-offs. This is still not a buy-ready
+design because sourcing, connector, and manual layout review gates remain open.
 
 Treat this route as a physical manufacturability smoke test, not logical proof
 that VJUGA boots or that the DRAM/refresh/video handoff is correct. Production

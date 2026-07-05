@@ -37,6 +37,10 @@ if [ "${MINIMAL_VGA_ALLOW_DRC_EXPORT:-0}" != "1" ]; then
   fi
 fi
 
+KICAD_CLI="$KCLI" python3 spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.py \
+  "$BOARD" \
+  "$OUT" >/dev/null
+
 mkdir -p "$OUT/gerbers" "$OUT/drill"
 mkdir -p "$OUT/assembly" "$OUT/review"
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
@@ -76,4 +80,5 @@ cp spinoffs/minimal-vga/kicad/rev-a.bom.csv "$OUT/rev-a.engineering-bom.csv"
 cp spinoffs/minimal-vga/kicad/rev-a-jlcpcb-cpn-checklist.csv "$OUT/assembly/"
 cp spinoffs/minimal-vga/kicad/rev-a-assembly-orientation-notes.md "$OUT/assembly/"
 cp spinoffs/minimal-vga/kicad/fab-notes.md "$OUT/"
+python3 spinoffs/minimal-vga/kicad/report_rev_a_order_readiness.py "$OUT" >/dev/null
 echo "Exported fab package to $OUT"

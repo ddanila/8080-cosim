@@ -76,6 +76,7 @@ Factory assembly:
 - Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
 - Assembly readiness report: `assembly/assembly-readiness.md`.
 - Schematic ERC readiness report: `erc-readiness.md`.
+- Order readiness report: `order-readiness.md`.
 - Position file: `assembly/rev-a-position.csv`.
 - Order-time CPN checklist: `assembly/rev-a-jlcpcb-cpn-checklist.csv`.
 - Assembly/orientation notes: `assembly/rev-a-assembly-orientation-notes.md`.
@@ -115,6 +116,10 @@ Factory assembly:
   `fab/minimal-vga/erc-readiness.md`. ERC should remain clean before ordering;
   human schematic review still applies. The cleanup history is tracked in
   `../docs/rev-a-erc-cleanup.md`.
+- `report_rev_a_order_readiness.py` writes
+  `fab/minimal-vga/order-readiness.md`, combining ERC, DRC, assembly, artifact,
+  manual-row, and post-assembly-insertion status with the remaining human
+  sign-off checklist.
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.

@@ -149,9 +149,12 @@ Early manufacturing planning files live in `kicad/`:
   generator without running FreeRouting or touching the routed PCB.
 - `report_rev_a_fab_readiness.sh` - non-gating DRC/unconnected summary for the
   current PCB scaffold.
+- `report_rev_a_order_readiness.py` - generated order checklist combining
+  machine gates with remaining human review gates.
 - `rev-a.bom.csv` - initial physical BOM skeleton.
 - `fab-notes.md` - fabrication assumptions and pre-order checklist.
-- `export_fab.sh` - Gerber/drill exporter stub, enabled once a routed PCB exists.
+- `export_fab.sh` - ERC/DRC-gated Gerber, drill, review PDF, BOM/CPL, and
+  readiness-report exporter.
 
 Generated Rev A board-owned silkscreen labels use the same default KiCad stroke
 text style as the footprint reference/value labels.
