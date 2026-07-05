@@ -11,8 +11,8 @@ spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.sh
 
 Current result:
 
-- 61 KiCad ERC error-level findings.
-- 59 `pin_not_connected` findings.
+- 52 KiCad ERC error-level findings.
+- 50 `pin_not_connected` findings.
 - 2 `label_dangling` findings.
 - Previous power-net noise is gone; the remaining list is now useful for Rev A
   schematic cleanup.
@@ -25,8 +25,6 @@ These are likely real electrical issues, not paperwork:
   TTL640x480/timing-header boundary or be removed from Rev A.
 - Dangling video label `BLANK_N` needs to connect to the selected
   TTL640x480/timing-header boundary or be removed from Rev A.
-- `U24` DRAM sequencer pins that represent required timing signals
-  (`DRAM_OE_N`) must match the final GAL equations and board wiring.
 
 ## Intentional No-Connect Candidates
 
@@ -40,8 +38,8 @@ bring-up/debug policy is confirmed:
   marking it NC.
 - `U31` 74148 `EO_N` is explicitly marked NC because the keyboard encoder is
   not cascaded in Rev A.
-- Unused `74HCT393` counter outputs on `U22`/`U23`; unused clear/clock inputs
-  are now tied inactive where they are not part of the current topology.
+- Unused `74HCT393` counter outputs on `U22`; unused clear/clock inputs are
+  now tied inactive where they are not part of the current topology.
 
 ## Topology Still Too Open
 
@@ -74,6 +72,11 @@ unfrozen glue logic. Do not silence them blindly:
   outputs.
 - Intentional no-connect markers are generated for Z80 `HALT_N`/`BUSACK_N`,
   DRAM pin 1, GAL spare outputs, and non-cascaded `U31.EO_N`.
+- `U23` high refresh/video counter outputs are explicitly marked NC because
+  they are not consumed by the current Rev A timing model.
+- `U24.DRAM_OE_N` is explicitly marked NC for Rev A. The selected 4164-class
+  DRAM devices do not have an OE input; read output control is handled by the
+  DRAM timing path, and this GAL output remains a reserved timing/debug signal.
 
 ## Gate
 
