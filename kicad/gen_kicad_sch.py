@@ -45,6 +45,9 @@ def wire(x1, y1, x2, y2, n):
 def label(t, x, y):
     return f'\t(label "{t}" (at {x} {y} 0) (effects (font (size 1.27 1.27)) (justify left bottom)))'
 
+def no_connect(x, y, n):
+    return f'\t(no_connect (at {x} {y}) (uuid "{uid(n)}"))'
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -105,6 +108,13 @@ def main():
             x = px + pin_index[t][pin] * GRID
             out.append(wire(x, py, x, py - STUB, n)); n += 1
             out.append(label(net, x, py - STUB))
+    for ref, pin in spec.get("no_connects", []):
+        t = ctype[ref]
+        if pin not in pin_index[t]:
+            continue
+        px, py = pos[ref]
+        x = px + pin_index[t][pin] * GRID
+        out.append(no_connect(x, py, n)); n += 1
     out.append(')')
     open(args.out_sch, "w").write("\n".join(out) + "\n")
     print(f"wrote {args.out_sch}: {len(chips)} chips, {len(spec['nets'])} nets")

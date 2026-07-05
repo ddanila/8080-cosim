@@ -11,8 +11,8 @@ spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.sh
 
 Current result:
 
-- 82 KiCad ERC error-level findings.
-- 80 `pin_not_connected` findings.
+- 61 KiCad ERC error-level findings.
+- 59 `pin_not_connected` findings.
 - 2 `label_dangling` findings.
 - Previous power-net noise is gone; the remaining list is now useful for Rev A
   schematic cleanup.
@@ -26,8 +26,7 @@ These are likely real electrical issues, not paperwork:
 - Dangling video label `BLANK_N` needs to connect to the selected
   TTL640x480/timing-header boundary or be removed from Rev A.
 - `U24` DRAM sequencer pins that represent required timing signals
-  (`RAM_CE_N`, `REFRESH_Q0`-`REFRESH_Q3`, `DRAM_OE_N`) must match the final GAL
-  equations and board wiring.
+  (`DRAM_OE_N`) must match the final GAL equations and board wiring.
 
 ## Intentional No-Connect Candidates
 
@@ -39,7 +38,8 @@ bring-up/debug policy is confirmed:
 - `U10`-`U17` DRAM pin 1. Common 4164-class DRAM documentation marks pin 1 as
   no-connect for compatibility; confirm against the actual KM4164B lot before
   marking it NC.
-- `U31` 74148 `EO_N` if the keyboard encoder is not cascaded.
+- `U31` 74148 `EO_N` is explicitly marked NC because the keyboard encoder is
+  not cascaded in Rev A.
 - Unused `74HCT393` counter outputs on `U22`/`U23`; unused clear/clock inputs
   are now tied inactive where they are not part of the current topology.
 
@@ -69,6 +69,11 @@ unfrozen glue logic. Do not silence them blindly:
   net.
 - Unused `U22`/`U23` counter clock/clear inputs are tied inactive through
   `GND`.
+- `U5.RAM_CE_N` is connected to `U24.RAM_CE_N`.
+- `U24.REFRESH_Q0`-`U24.REFRESH_Q3` are connected to the low refresh counter
+  outputs.
+- Intentional no-connect markers are generated for Z80 `HALT_N`/`BUSACK_N`,
+  DRAM pin 1, GAL spare outputs, and non-cascaded `U31.EO_N`.
 
 ## Gate
 
