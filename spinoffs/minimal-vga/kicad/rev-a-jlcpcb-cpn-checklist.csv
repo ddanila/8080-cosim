@@ -22,4 +22,4 @@ VGA output,J40,Manual install 1x07 2.54mm pin header,,Manual for Rev A draft,Rev
 Fuse,F1,Populate resettable fuse,C3761779,Candidate assigned,Bourns MF-RG300-0-14 radial PTC; 3A hold; footprint lead spacing matches current 5.1mm Bourns MF-RG300 footprint; verify expected +5V load and order-time stock
 TVS,D1,Manual install 5V TVS clamp,,Manual/footprint open,No clean DO-35 5V TVS candidate found; consider DO-15 or SMA footprint change for factory assembly
 Oscillator,U50,Manual install 5V oscillator,,Manual/footprint open,Need DIP-14 5V oscillator candidate or PCB change to SMD oscillator before factory assembly
-Reset supervisor,U51,Populate reset supervisor,C621481,Candidate assigned,Microchip MCP130-460DI/TO TO-92 candidate; verify D-bondout pinout against footprint
+Reset supervisor,U51,Manual install reset supervisor,,Manual for Rev A draft,Use Microchip MCP130-460FI/TO or MCP130-475FI/TO F-bondout; current U51 net order is 1=VSS 2=RST 3=VDD; LCSC C621481 MCP130-460DI/TO is D-bondout and must not be factory-populated on this footprint

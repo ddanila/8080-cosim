@@ -123,17 +123,21 @@ def build_rows(board):
         pitch = pitch_between(pads)
         net_order = ", ".join(f"{row['pad']}={row['net']}" for row in pads)
         measured = f"pin pitch {fmt_mm(pitch[2]) if pitch else 'unknown'}; net order {net_order}"
+        expected_u51_order = {"1": "GND", "2": "RESET_N", "3": "VCC"}
+        actual_u51_order = {row["pad"]: row["net"] for row in pads}
+        u51_matches_f_bondout = all(actual_u51_order.get(pin) == net for pin, net in expected_u51_order.items())
+        if not u51_matches_f_bondout:
+            failures.append("U51: board net order does not match MCP130 F-bondout expectation 1=VSS, 2=RST, 3=VDD.")
         rows.append(
             make_row(
                 "U51",
                 u51,
-                "REVIEW",
-                "MCP130-460DI/TO or MCP130-475DI/TO TO-92 candidate",
+                "PASS" if u51_matches_f_bondout else "FAIL",
+                "MCP130-460FI/TO or MCP130-475FI/TO F-bondout: pin 1=VSS, pin 2=RST, pin 3=VDD",
                 measured,
-                "The TO-92 mechanics match 1.27 mm pitch, but the exact Microchip D-bondout pin order must be confirmed before factory population.",
+                "The current board matches the F-bondout order. Do not factory-populate MCP130-460DI/TO or another D-bondout part on this footprint.",
             )
         )
-        reviews.append("U51: confirm MCP130 TO-92 D-bondout pin order against board net order before factory population.")
     else:
         rows.append(make_row("U51", None, "FAIL", "TO-92 reset supervisor footprint", "missing", "Footprint not found."))
         failures.append("U51 footprint missing.")

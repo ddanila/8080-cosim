@@ -57,7 +57,7 @@ HUMAN_GATES = [
     "Trace geometry, via count, power width, and return-path review on the autorouted baseline.",
     "Decision on whether to restore GND/+5V pours before ordering.",
     "Socket/header footprint fit check against the exact purchased sockets and connectors.",
-    "Mechanical-fit review for J1, U51, R30, and R31 before factory population.",
+    "Mechanical-fit review for J1, R30, and R31 before factory population.",
     "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
     "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
     "Manual-row decisions for bulk capacitance, TVS protection, debug headers, oscillator, and configuration links.",

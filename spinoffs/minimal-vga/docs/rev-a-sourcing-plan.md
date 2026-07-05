@@ -55,7 +55,8 @@ Immediate SKU targets:
   - Power debug header.
 - Clock/reset:
   - 5V oscillator.
-  - 5V reset supervisor with verified pinout.
+  - 5V reset supervisor with verified pinout. Rev A currently expects an
+    MCP130 `F` TO-92 bondout or an equivalent `1=VSS, 2=RST, 3=VDD` part.
 - Connectors:
   - 1x7 VGA bring-up/debug header; HD-15 adapter is external for Rev A.
   - Original-keyboard-compatible connector once the pinout/mechanics are locked.
@@ -92,8 +93,10 @@ final JLC/LCSC stock and footprint check.
   - Resettable fuse candidate: Bourns `MF-RG300-0-14`, `C3761779`; 3 A hold.
     This matches the current 5.1 mm Bourns MF-RG300 footprint; verify final
     +5V load and order-time stock before order.
-  - Reset supervisor candidate: Microchip `MCP130-460DI/TO`, `C621481`;
-    verify TO-92 D-bondout pin order against the KiCad footprint before order.
+  - Reset supervisor candidate: Microchip `MCP130-460FI/TO` or
+    `MCP130-475FI/TO`; manual install for Rev A unless a JLCPCB/LCSC
+    F-bondout CPN is found. The previous `MCP130-460DI/TO` / `C621481`
+    candidate is D-bondout and does not match the current footprint net order.
 
 Rows deliberately left manual in the Rev A draft assembly package:
 
@@ -109,6 +112,9 @@ Rows deliberately left manual in the Rev A draft assembly package:
 - `U50`: DIP-14 5 V oscillator, or a deliberate PCB change to a common SMD
   oscillator footprint. Manual oscillator install is acceptable for Rev A
   bring-up.
+- `U51`: reset supervisor is now manual for Rev A because the currently found
+  JLCPCB/LCSC `MCP130-460DI/TO` part is D-bondout. The current board expects an
+  F-bondout MCP130 or equivalent `1=VSS, 2=RST, 3=VDD` supervisor.
 
 ## External/NOS Work Items
 
