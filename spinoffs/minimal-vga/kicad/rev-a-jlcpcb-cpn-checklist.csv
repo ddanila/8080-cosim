@@ -1,11 +1,10 @@
 Group,Designators,Factory action,Preferred CPN,Status,Notes
-DIP-14 sockets,U22 U23 U25,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-14 sockets,U22 U23,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs
 DIP-16 sockets,U10-U17 U20 U21 U31 U41,Mount sockets only,C2326,Verify at order,BOOMELE square-hole DIP-16 2.54mm 7.62mm socket; do not factory-populate ICs
-DIP-20 sockets,U3 U4,Mount sockets only,C2328,Verify at order,BOOMELE square-hole DIP-20 2.54mm 7.62mm socket; do not factory-populate ICs
 DIP-24 wide sockets,U5 U24,Mount sockets only,C72120,Verify at order,CONNFLY square-hole DIP-24 2.54mm 15.24mm socket; do not factory-populate ICs
 DIP-28 wide socket,U2,Mount sockets only,C72121,Verify at order,CONNFLY square-hole DIP-28 2.54mm 15.24mm socket; do not factory-populate IC
 DIP-40 sockets,U1 U30,Mount sockets only,C2332,Verify at order,BOOMELE square-hole DIP-40 2.54mm 15.24mm socket; do not factory-populate ICs
-Decoupling capacitors,C1-C25,Populate 100nF capacitors,C2896070,Candidate assigned,SHM DCS104Z26Y5VF6BL5A0 100nF 50V Y5V P=5mm THT ceramic; verify stock before order
+Decoupling capacitors,C1-C25,Populate 100nF capacitors,C2896070,Candidate assigned,SHM DCS104Z26Y5VF6BL5A0 100nF 50V Y5V P=5mm THT ceramic; includes spare local bypass pads after optional glue deferral; verify stock before order
 Bulk capacitor,C50,Manual install 47uF capacitor,,Manual for Rev A draft,Need 47uF radial matching D5.0mm P2.00mm or a footprint change before factory assembly
 Diagnostic LEDs,D2-D7,Populate 3mm LEDs,C99772,Candidate assigned,EVERLIGHT 204-10SURD/S530-A3 red 3mm THT baseline; colors can change later
 Diagnostic LED resistors,R24-R29,Populate 2.2k resistors,C3454390,Candidate assigned,YAGEO MFR-25FBF52-2K2 D2.4xL6.3mm; verify against DIN0207 footprint

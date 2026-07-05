@@ -11,8 +11,8 @@ spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.sh
 
 Current result:
 
-- 52 KiCad ERC error-level findings.
-- 50 `pin_not_connected` findings.
+- 14 KiCad ERC error-level findings.
+- 12 `pin_not_connected` findings.
 - 2 `label_dangling` findings.
 - Previous power-net noise is gone; the remaining list is now useful for Rev A
   schematic cleanup.
@@ -40,18 +40,14 @@ bring-up/debug policy is confirmed:
   not cascaded in Rev A.
 - Unused `74HCT393` counter outputs on `U22`; unused clear/clock inputs are
   now tied inactive where they are not part of the current topology.
+- `U5` bus-buffer control outputs are explicitly marked NC because the optional
+  data-bus buffer is deferred from the Rev A baseline.
 
 ## Topology Still Too Open
 
 These findings mean the schematic is still carrying Rev A placeholders or
 unfrozen glue logic. Do not silence them blindly:
 
-- `U3` `74HCT245`: the B-side bus pins are unconnected while the buffer policy
-  is still optional.
-- `U4` `74HCT573`: the entire latch/buffer body is unconnected; either wire the
-  address/data latch role or remove the footprint from Rev A.
-- `U25` `74HCT00`: all NAND gates are currently unused; split/replace it after
-  the DRAM equations settle.
 - `U30` 8255: unused `PB*` and upper `PC*` pins should be assigned to keyboard
   behavior, diagnostic expansion, or explicit NC policy.
 - `U41` pixel serializer and the `PIX*` labels are still coupled to the
@@ -77,6 +73,10 @@ unfrozen glue logic. Do not silence them blindly:
 - `U24.DRAM_OE_N` is explicitly marked NC for Rev A. The selected 4164-class
   DRAM devices do not have an OE input; read output control is handled by the
   DRAM timing path, and this GAL output remains a reserved timing/debug signal.
+- Optional placeholder sockets `U3` data-bus buffer, `U4` latch/buffer, and
+  `U25` DRAM glue gates are removed from the Rev A physical source model and
+  factory assembly rows. Rev A now routes the direct data bus and GAL-only
+  decode/timing contract unless later verification proves extra glue is needed.
 
 ## Gate
 

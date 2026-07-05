@@ -36,7 +36,6 @@ Immediate SKU targets:
   - DIP-40 wide for Z80/8255.
   - DIP-28 wide for 27C256 ROM.
   - DIP-24 wide for GAL22V10 devices.
-  - DIP-20 narrow for 74HCT245/573.
   - DIP-16 narrow for 4164 DRAM, 74HCT157/148/166.
   - DIP-14 narrow for 74HCT393/00 and oscillator footprint if socketed.
 - Passives:
@@ -70,7 +69,6 @@ final JLC/LCSC stock and footprint check.
 - DIP sockets:
   - DIP-14 narrow: `C2325`.
   - DIP-16 narrow: `C2326`.
-  - DIP-20 narrow: `C2328`.
   - DIP-24 wide: `C72120`.
   - DIP-28 wide: `C72121`.
   - DIP-40 wide: `C2332`.

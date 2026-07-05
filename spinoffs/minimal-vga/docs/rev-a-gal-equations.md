@@ -31,8 +31,8 @@ Pinout:
 | 17 | MEM_WR_N | output |
 | 18 | IO_RD_N | output |
 | 19 | IO_WR_N | output |
-| 20 | BUS_OE_N | output |
-| 21 | BUS_DIR | output |
+| 20 | RESERVED_BUS_OE_N | output / Rev A NC |
+| 21 | RESERVED_BUS_DIR | output / Rev A NC |
 | 22 | WAIT_N | output |
 | 23 | SPARE_N | output |
 | 24 | VCC | power |
@@ -58,8 +58,8 @@ PPI_SEL     = IO_CYCLE & /A7 & /A6 & /A5 & /A4
 /IO_RD_N    = IO_CYCLE & READ_CYCLE
 /IO_WR_N    = IO_CYCLE & WRITE_CYCLE
 
-BUS_DIR     = READ_CYCLE
-/BUS_OE_N   = READ_CYCLE # WRITE_CYCLE
+RESERVED_BUS_DIR  = 1
+RESERVED_BUS_OE_N = 1
 WAIT_N      = 1
 SPARE_N     = 1
 ```
@@ -71,6 +71,9 @@ Notes:
   I/O map is frozen.
 - `WAIT_N` is held inactive for first bring-up. If DRAM timing needs wait-state
   insertion, move it into U24 or revise this decode GAL.
+- Pins 20 and 21 are reserved for a possible future data-bus buffer. The Rev A
+  board routes the direct Z80 data bus, so these GAL outputs are explicitly
+  no-connect in the physical schematic and should be programmed inactive.
 
 ## U24 DRAM Timing Sequencer GAL22V10
 
@@ -138,4 +141,3 @@ Notes:
   `KM4164B-10` datasheet after the first board is powered.
 - The board exposes DRAM/debug headers specifically so these equations can be
   adjusted without changing PCB copper.
-

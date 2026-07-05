@@ -1,21 +1,18 @@
 Designator,Qty,Value,Candidate MPN,Package,Assembly,Sourcing,JLCPCB/LCSC CPN,Notes
 U1,1,Z80 CPU,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts ordered 4 MHz DIP Z80 after assembly
 U2,1,32K EPROM,DIP-28 wide socket,DIP-28,Socketed,JLCPCB/LCSC socket,C72121,Factory mounts DIP-28 W15.24mm socket only; owner inserts 27C256/28C256-class ROM after assembly
-U3,1,Octal bus transceiver,DIP-20 socket,DIP-20,Socketed,JLCPCB/LCSC socket,C2328,Factory mounts DIP-20 W7.62mm socket only; install western 74HCT245 after assembly
-U4,1,Octal latch/buffer,DIP-20 socket,DIP-20,Socketed,JLCPCB/LCSC socket,C2328,Factory mounts DIP-20 W7.62mm socket only; install 74HCT573/244-class part after assembly
 U5,1,Address/control decode,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socket,C72120,Factory mounts DIP-24 W15.24mm socket only; owner inserts GAL22V10-class decode part after assembly
 U10-U17,8,64Kx1 DRAM,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; owner inserts ordered Samsung KM4164B-10 DRAM after assembly
 U20-U21,2,Quad 2:1 mux,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; install 74HCT157/257-class parts after assembly
 U22-U23,2,Counter,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm sockets only; install refresh/video counters after assembly
 U24,1,DRAM timing sequencer,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socket,C72120,Factory mounts DIP-24 W15.24mm socket only; owner inserts GAL22V10-class timing part after assembly
-U25,1,DRAM control gates,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm socket only; install 74HCT00/02/08/32-class part after assembly
 U30,1,PPI,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts 82C55/8255-compatible PPI after assembly
 U31,1,Priority encoder,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install 74HCT148 after assembly
 U40,1,VGA timing,2x5 2.54mm pin header,2.54mm header,Manual,Owner-supplied/manual,,Rev A uses a timing/header interface; install manually until exact 2x5 vertical header CPN and factory assembly handling are confirmed
 U41,1,Pixel shift/latch,DIP-16 socket,DIP,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install framebuffer shift/latch part after assembly
 U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Manual,Owner-supplied/manual,,Feeds Rev A CLK net; install manually until a DIP-14 5V oscillator candidate or PCB change to SMD oscillator is selected
 U51,1,Reset supervisor,MCP130-460DI/TO or MCP130-475DI/TO,TO-92,Factory preferred,JLCPCB/LCSC,C621481,Microchip MCP130 TO-92 candidate; verify D-bondout pinout against KiCad TO-92 footprint before order
-Sockets,25,DIP sockets,See per-U socket rows,Mixed THT,Informational,Derived from U* footprints,,Socket CPNs are assigned on the actual U1/U2/etc rows used by the generated JLCPCB BOM
+Sockets,22,DIP sockets,See per-U socket rows,Mixed THT,Informational,Derived from U* footprints,,Socket CPNs are assigned on the actual U1/U2/etc rows used by the generated JLCPCB BOM
 J1,1,+5V screw/header input,WJ2EDGR-5.08-02P-14-00A,THT,Factory preferred,JLCPCB/LCSC,C8383,Feeds VCC_RAW before F1; KiCad footprint is 5.00mm but candidate is common 5.08mm right-angle terminal header; verify footprint before order
 J3,1,USB-C 5V power input,TYPE-C-31-M-17,SMD/THT shell,Factory preferred,JLCPCB/LCSC,C283540,HRO 6-pin power-only USB-C input in parallel with J1 before F1; CC pulldowns on R30/R31
 J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Inline bring-up header for original keyboard wiring: 8 columns plus 7 rows; install manually until exact vertical header CPN and factory handling are confirmed
@@ -33,5 +30,5 @@ R16-R23,8,Keyboard column series resistor,RN 1/4W 220R F T/B A1,DIN0207 axial,Fa
 R24-R29,6,Diagnostic LED resistor,MFR-25FBF52-2K2,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C3454390,Current limit for Rev A diagnostic LEDs; D2.4xL6.3mm candidate should be checked against DIN0207 footprint
 R30-R31,2,USB-C CC pulldown,RN 1/8W 5K1 F T/B A1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C433473,USB-C Rd pulldowns from CC1/CC2 to GND for 5V sink mode; 1/8W D1.7xL3.5mm candidate is electrically fine but mechanically smaller than DIN0207 footprint
 D2-D7,6,Diagnostic LED,204-10SURD/S530-A3,THT LED,Factory preferred,JLCPCB/LCSC,C99772,+5V PWR_OK CLK RESET_N M1_N and RFSH_N indicators; red 3mm LED baseline; colors can be varied later if desired
-C1-C25,25,Decoupling capacitor,DCS104Z26Y5VF6BL5A0,THT disc,Factory preferred,JLCPCB/LCSC,C2896070,100nF 50V Y5V P=5mm ceramic decoupler; one per socketed active IC/module
+C1-C25,25,Decoupling capacitor,DCS104Z26Y5VF6BL5A0,THT disc,Factory preferred,JLCPCB/LCSC,C2896070,100nF 50V Y5V P=5mm ceramic decoupler; one per socketed active IC/module plus spare local bypass pads after optional glue deferral
 C50,1,Bulk capacitor,47uF radial,THT radial,Manual,Owner-supplied/manual,,+5V local bulk reservoir; install manually until exact 47uF radial D5.0mm P2.00mm CPN or footprint change is selected

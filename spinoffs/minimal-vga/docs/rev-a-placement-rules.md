@@ -42,9 +42,10 @@ breaking a higher item.
 
 ## VJUGA Block Rules
 
-- CPU/ROM/bus glue should stay close enough that `A*`, `D*`, `MREQ_N`, `RD_N`,
-  `WR_N`, `BUS_DIR`, and `BUS_OE_N` do not need long detours through unrelated
-  blocks.
+- CPU/ROM/decode should stay close enough that `A*`, `D*`, `MREQ_N`, `RD_N`,
+  `WR_N`, and the GAL decode outputs do not need long detours through
+  unrelated blocks. Rev A routes the direct Z80 data bus; optional bus-buffer
+  glue is deferred unless verification proves it is needed.
 - DRAM timing glue should sit between CPU/ROM glue and the DRAM bank, so
   `RAS_N`, `CAS_N`, `DRAM_WE_N`, address mux control, refresh, and video
   arbitration nets have short paths into the memory row.

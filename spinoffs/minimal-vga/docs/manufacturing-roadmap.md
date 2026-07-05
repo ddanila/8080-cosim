@@ -110,6 +110,12 @@ Status: routed FreeRouting baseline.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
   unconnected items after the Rev A source-model ERC cleanup and a clean
   no-seed FreeRouting run.
+- Current physical source/routed PCB counts: 95 schematic refs, 116 source
+  nets, 95 PCB footprints, 117 KiCad PCB nets, and 2083 routed tracks. The PCB
+  net count includes KiCad-generated net bookkeeping beyond the source-model
+  named nets.
+- Current draft JLCPCB export: 22 factory BOM rows, 83 CPL placements, 19
+  post-assembly socketed IC insertions, and 12 deliberate manual placements.
 - `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
   BOM, and draft JLCPCB assembly files from the routed board.
 

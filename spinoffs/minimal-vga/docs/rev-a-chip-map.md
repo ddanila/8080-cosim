@@ -10,8 +10,6 @@ western parts, and enough test headers to debug DRAM timing.
 |---|---|---|---|---|
 | U1 | CPU | Z0840004PSC | DIP-40 | Owner-ordered 4 MHz Z80; factory mounts socket only. |
 | U2 | ROM | 27C256-class EPROM, 28C256-compatible where possible | DIP-28 | 32 KiB ROM target for recovered firmware. |
-| U3 | CPU bus/data buffer | 74HCT245 | DIP-20 | Optional if direct bus loading is acceptable; keep footprint in Rev A. |
-| U4 | Address latch/buffer | 74HCT573 or 74HCT244 | DIP-20 | Exact need depends on final timing. |
 | U5 | Decode glue | GAL22V10-class programmable logic | DIP-24 | Use GAL/PAL-style logic for Rev A iteration. |
 
 ## DRAM And Arbitration
@@ -23,7 +21,6 @@ western parts, and enough test headers to debug DRAM timing.
 | U22 | Refresh/video counter low | 74HCT393/4040/161-class | DIP | Exact topology still open. |
 | U23 | Refresh/video counter high | 74HCT393/4040/161-class | DIP | Exact topology still open. |
 | U24 | RAS/CAS/WE sequencer | GAL22V10-class programmable logic | DIP-24 | GAL/PAL-style timing logic for first Rev A. |
-| U25 | DRAM control gates | 74HCT00/02/08/32 as needed | DIP | Split once equations settle. |
 
 ## Keyboard
 
@@ -70,6 +67,10 @@ western parts, and enough test headers to debug DRAM timing.
 - The Rev A physical spec now uses real DIP pin numbers for Z80, 28C256, 4164,
   8255, and the selected 74xx support sockets. GAL and header pins are still
   design-assigned until equations and connector pinouts are frozen.
+- The optional CPU bus buffer, address latch/buffer, and extra DRAM control
+  gates are not populated in the Rev A baseline. The current board routes the
+  direct Z80 data bus and GAL-based decode/timing contract; add those sockets
+  back only if simulator or hardware bring-up proves they are needed.
 - Rev A should use western parts only; Soviet-part footprints are not preserved
   as a constraint for this spin-off.
 - Factory assembly is the intended manufacturing target, with sockets/passives
