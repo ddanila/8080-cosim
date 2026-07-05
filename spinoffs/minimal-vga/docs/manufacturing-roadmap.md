@@ -112,6 +112,10 @@ Status: routed FreeRouting baseline.
   generated PCB plus engineering BOM and rejects BOM/CPL designator mismatches.
   It also writes an assembly-readiness report that counts missing LCSC part
   numbers and unresolved TBD sourcing rows.
+- `report_rev_a_socket_fit.py` writes
+  `fab/minimal-vga/assembly/socket-fit-readiness.md`, checking each socketed
+  `U*` footprint against the engineering BOM's expected DIP pin count and socket
+  width.
 - The engineering BOM now carries socket CPNs for socketed `U*` footprints and
   current candidate CPNs for many passives, USB-C, J1, reset, fuse, decouplers,
   and LEDs. The generated assembly readiness report now has zero missing LCSC
@@ -173,7 +177,9 @@ Open production blockers:
 - Decide whether GND/+5V pours return after manual cleanup.
 - Do final Gerber inspection in an independent viewer.
 - Confirm all socket footprints match the exact socket widths selected for
-  factory assembly.
+  factory assembly; the generated socket-fit report covers BOM/PCB pin-count
+  and width consistency, but the exact purchased socket drawings still need
+  order-time review.
 - Confirm whether JLCPCB will assemble the chosen through-hole sockets and
   connectors, or whether some must move to manual insertion.
 
@@ -193,6 +199,7 @@ Required before ordering:
   rows without CPNs are deliberately marked manual/DNP before upload.
 - Post-assembly insertion list names every socketed IC that should be installed
   after factory socket assembly.
+- Socket-fit readiness report passes for every socketed `U*` footprint.
 
 ### Gate 5: Factory Assembly Order Package
 

@@ -81,6 +81,7 @@ Factory assembly:
   marked `Manual`, `DNP`, or `Do not populate` in the engineering BOM.
 - Post-assembly insertion list: `assembly/post-assembly-insertion.csv`.
 - Assembly readiness report: `assembly/assembly-readiness.md`.
+- Socket-fit readiness report: `assembly/socket-fit-readiness.md`.
 - Schematic ERC readiness report: `erc-readiness.md`.
 - Order readiness report: `order-readiness.md`.
 - Position file: `assembly/rev-a-position.csv`.
@@ -129,6 +130,9 @@ Factory assembly:
 - `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
   `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
   `assembly/manual-assembly.csv`.
+- `report_rev_a_socket_fit.py` checks every socketed `U*` footprint against the
+  engineering BOM's expected DIP pin count and socket width before the order
+  readiness report is emitted.
 - Visual inspection of Gerbers in an independent viewer.
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,

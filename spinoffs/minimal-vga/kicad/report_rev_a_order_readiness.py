@@ -21,6 +21,7 @@ REQUIRED_ARTIFACTS = [
     "gerbers/rev-a-physical-job.gbrjob",
     "drill/rev-a-physical.drl",
     "assembly/assembly-readiness.md",
+    "assembly/socket-fit-readiness.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
     "assembly/manual-assembly.csv",
@@ -93,6 +94,7 @@ def machine_gate_summary(out_dir):
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
+    socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
 
     gates = [
         (
@@ -119,6 +121,12 @@ def machine_gate_summary(out_dir):
                 or "- BOM rows with TBD sourcing/notes: 0" in assembly
             ),
             "`assembly/assembly-readiness.md` reports a coherent BOM/CPL draft.",
+        ),
+        (
+            "Socket footprint fit",
+            has_ready_line(socket_fit, "READY")
+            and "- Socket fit failures: 0" in socket_fit,
+            "`assembly/socket-fit-readiness.md` confirms socket pin counts and widths.",
         ),
     ]
     return gates
