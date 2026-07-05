@@ -22,6 +22,7 @@ FREEROUTING_JAR="${FREEROUTING_JAR:-.tools/freerouting/freerouting-2.2.4.jar}"
 PASSES="${PASSES:-30}"
 THREADS="${THREADS:-4}"
 SEED_ROUTES="${SEED_ROUTES:-1}"
+JAVA_HEAP="${JAVA_HEAP:-}"
 
 if [ ! -x "$JAVA_BIN" ]; then
   if command -v java >/dev/null 2>&1; then
@@ -64,7 +65,12 @@ if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
 print(f"wrote DSN: {sys.argv[2]}")
 PY
 
-"$JAVA_BIN" -jar "$FREEROUTING_JAR" \
+JAVA_ARGS=()
+if [ -n "$JAVA_HEAP" ]; then
+  JAVA_ARGS+=("-Xmx$JAVA_HEAP")
+fi
+
+"$JAVA_BIN" "${JAVA_ARGS[@]}" -jar "$FREEROUTING_JAR" \
   -de "$DSN" \
   -do "$SES" \
   -mp "$PASSES" \
