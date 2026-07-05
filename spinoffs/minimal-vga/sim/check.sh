@@ -6,25 +6,25 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../../.."
 
-echo "== minimal-vga spin-off: existing boot oracle =="
+echo "== VJUGA spin-off: existing boot oracle =="
 sync/boot_check.sh
 
-echo "== minimal-vga spin-off: T80 smoke test =="
+echo "== VJUGA spin-off: T80 smoke test =="
 spinoffs/minimal-vga/sim/check_t80_smoke.sh
 
-echo "== minimal-vga spin-off: schematic/HDL LVS =="
+echo "== VJUGA spin-off: schematic/HDL LVS =="
 spinoffs/minimal-vga/sync/check.sh
 
-echo "== minimal-vga spin-off: Rev A physical schematic target =="
+echo "== VJUGA spin-off: Rev A physical schematic target =="
 spinoffs/minimal-vga/kicad/check_rev_a_physical.sh
 
-echo "== minimal-vga spin-off: Rev A PCB scaffold =="
+echo "== VJUGA spin-off: Rev A PCB scaffold =="
 spinoffs/minimal-vga/kicad/check_rev_a_pcb.sh
 
-echo "== minimal-vga spin-off: Rev A fabrication readiness report =="
+echo "== VJUGA spin-off: Rev A fabrication readiness report =="
 spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.sh
 
-echo "== minimal-vga spin-off: DRAM row/column unit =="
+echo "== VJUGA spin-off: DRAM row/column unit =="
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 iverilog -g2012 -o "$tmp/dram_unit_tb" hdl/sim/dram_unit_tb.v

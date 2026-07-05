@@ -99,6 +99,9 @@ Factory assembly:
   `review/rev-a-assembly-front.pdf`, and `review/rev-a-assembly-back.pdf`.
 - `render_previews.sh` emits top-view PNG previews:
   `review/rev-a-top-bare.png` and `review/rev-a-top-populated.png`.
+- `render_placement_preview.sh` emits a fast unrouted placement/silkscreen
+  review from the generator:
+  `review/vjuga-placement-top.svg` and `review/vjuga-placement-top.png`.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
 - Visual inspection of Gerbers in an independent viewer.

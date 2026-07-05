@@ -269,7 +269,7 @@ def validate_designator_match(bom_rows, cpl_rows):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Export draft JLCPCB BOM/CPL files for the minimal VGA Rev A board.")
+    parser = argparse.ArgumentParser(description="Export draft JLCPCB BOM/CPL files for the VJUGA Rev A board.")
     parser.add_argument("board", nargs="?", default="spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb")
     parser.add_argument("engineering_bom", nargs="?", default="spinoffs/minimal-vga/kicad/rev-a.bom.csv")
     parser.add_argument("out_dir", nargs="?", default="fab/minimal-vga/assembly")

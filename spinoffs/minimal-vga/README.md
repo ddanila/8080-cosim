@@ -1,4 +1,4 @@
-# Minimal VGA Juku spin-off
+# VJUGA spin-off
 
 This spin-off is a correctness-first Juku-compatible motherboard experiment:
 keep the original CPU, ROM, RAM, DRAM refresh/timing, and keyboard decode
@@ -141,6 +141,8 @@ Early manufacturing planning files live in `kicad/`:
 - `check_rev_a_pcb.sh` - validates/generates the PCB scaffold with stock KiCad
   footprints and the intended 4-layer copper stack.
 - `check_rev_a_pcb.py` - PCB scaffold invariant checks.
+- `render_placement_preview.sh` - fast placement/silkscreen preview from the
+  generator without running FreeRouting or touching the routed PCB.
 - `report_rev_a_fab_readiness.sh` - non-gating DRC/unconnected summary for the
   current PCB scaffold.
 - `rev-a.bom.csv` - initial physical BOM skeleton.

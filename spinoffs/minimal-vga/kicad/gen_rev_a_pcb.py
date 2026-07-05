@@ -13,7 +13,7 @@ ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 14
 SILK_FONT_FACE = "GOST type B italic"
 SILK_LABELS = {
-    "MINIMAL VGA JUKU REV A": (25, 76, 0, pcbnew.F_SilkS),
+    "VJUGA REV A": (25, 76, 0, pcbnew.F_SilkS),
     "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
     "POWER": (21, 15, 0, pcbnew.F_SilkS),
     "CPU": (42, 17, 0, pcbnew.F_SilkS),

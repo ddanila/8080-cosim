@@ -1,6 +1,6 @@
 # Manufacturing roadmap
 
-Goal: get the minimal VGA spin-off from verified behavior to a factory-assembly
+Goal: get the VJUGA spin-off from verified behavior to a factory-assembly
 order package without losing the simulator/LVS safety net.
 
 ## Gates

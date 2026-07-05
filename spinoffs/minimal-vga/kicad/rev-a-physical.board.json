@@ -1,6 +1,6 @@
 {
   "notes": [
-    "Rev A physical schematic target for the minimal VGA spin-off.",
+    "Rev A physical schematic target for the VJUGA spin-off.",
     "Core CPU, ROM, DRAM, 8255, and 74xx socket pins are bound to real DIP pin numbers where local KiCad symbols provide authoritative mappings.",
     "GAL/header pins remain design-assigned until equations and connector pinouts are frozen.",
     "Rev A now includes first-pass oscillator, reset, decoupling, bulk capacitance, and VGA series resistor parts.",
