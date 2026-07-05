@@ -13,6 +13,7 @@ JAVA_BIN="${JAVA_BIN:-.tools/jre25/bin/java}"
 FREEROUTING_JAR="${FREEROUTING_JAR:-.tools/freerouting/freerouting-2.2.4.jar}"
 PASSES="${PASSES:-30}"
 THREADS="${THREADS:-4}"
+SEED_ROUTES="${SEED_ROUTES:-1}"
 
 if [ ! -x "$JAVA_BIN" ]; then
   if command -v java >/dev/null 2>&1; then
@@ -34,6 +35,9 @@ mkdir -p "$OUT" .tools/freerouting-user
 
 python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py "$BOARD_JSON"
 MINIMAL_VGA_NO_ZONES=1 python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
+if [ "$SEED_ROUTES" = "1" ]; then
+  python3 spinoffs/minimal-vga/kicad/seed_rev_a_routes.py "$PCB"
+fi
 
 python3 - "$PCB" "$DSN" <<'PY'
 import sys
