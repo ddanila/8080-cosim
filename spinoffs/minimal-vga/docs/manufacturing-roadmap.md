@@ -95,8 +95,8 @@ Status: routed FreeRouting baseline.
   numbers and unresolved TBD sourcing rows.
 - The engineering BOM now carries socket CPNs for socketed `U*` footprints and
   current candidate CPNs for many passives, USB-C, J1, reset, fuse, decouplers,
-  and LEDs. The generated assembly readiness report is down to 10 missing CPN
-  rows.
+  and LEDs. The generated assembly readiness report now has zero missing LCSC
+  part numbers in the factory BOM/CPL subset, with 12 deliberate manual rows.
 - Current routed baseline has zero KiCad error-level DRC violations and zero
   unconnected items after adding deterministic seed routes for net `D1` and
   `BUS_DIR`.
@@ -134,8 +134,9 @@ netlist enough that routing churn is unlikely.
 
 Open production blockers:
 
-- Assign the remaining generated JLCPCB/LCSC CPNs for C50, D1, J30, J40,
-  J90-J93, R6, R15, U40, and U50.
+- Decide whether the Rev A manual rows (`C50`, `D1`, `J30`, `J40`, `J90-J93`,
+  `R6`, `R15`, `U40`, and `U50`) stay owner-installed or get factory CPNs /
+  footprint changes before ordering.
 - Re-check assigned candidate CPNs immediately before order and confirm
   footprint fit for the mechanically sensitive rows: J1, F1, U51, and R30-R31.
 - Review autorouted traces, power widths, via count, and return paths.
@@ -158,7 +159,7 @@ Required before ordering:
 - Engineering BOM uses orderable parts or clearly marks manual/socketed/DNP
   items.
 - JLCPCB draft BOM and CPL have identical designator sets.
-- JLCPCB/LCSC candidate SKUs are assigned for every factory-mounted row, or
+- JLCPCB/LCSC candidate SKUs are assigned for every factory-mounted row, and
   rows without CPNs are deliberately marked manual/DNP before upload.
 - Post-assembly insertion list names every socketed IC that should be installed
   after factory socket assembly.
@@ -187,8 +188,8 @@ Factory assembly package:
 
 Remaining order-package work:
 
-- Replace every missing factory-populated CPN with an orderable JLCPCB/LCSC
-  part selected immediately before upload, or mark that row manual/DNP.
+- Keep every missing CPN row out of the factory BOM/CPL unless an orderable
+  JLCPCB/LCSC part is selected immediately before upload.
 - Verify factory assembly availability for selected through-hole sockets,
   headers, oscillator, reset supervisor, fuse, and TVS.
 - Add explicit socket/polarity/orientation notes to the assembly package.

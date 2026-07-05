@@ -104,12 +104,16 @@ Factory assembly:
   `review/vjuga-placement-top.svg` and `review/vjuga-placement-top.png`.
 - `report_rev_a_fab_readiness.sh` writes the current DRC/unconnected summary to
   `fab/minimal-vga/fab-readiness.md`.
+- `export_jlcpcb_assembly.py` excludes engineering BOM rows marked `Manual`,
+  `DNP`, or `Do not populate` from the factory BOM/CPL and writes them to
+  `assembly/manual-assembly.csv`.
 - Visual inspection of Gerbers in an independent viewer.
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts immediately before order.
-- Current generated assembly readiness still has 10 missing CPN rows: `C50`,
-  `D1`, `J30`, `J40`, `J90-J93`, `R6`, `R15`, `U40`, and `U50`.
+- The Rev A draft package deliberately leaves `C50`, `D1`, `J30`, `J40`,
+  `J90-J93`, `R6`, `R15`, `U40`, and `U50` as manual/non-factory placements
+  until their CPNs or footprint changes are selected.
 - Confirm whether the selected factory assembly process will mount the intended
   through-hole sockets/connectors or requires those parts to be left manual.
 - Confirm J1 terminal/header and J3 USB-C footprints against the exact selected

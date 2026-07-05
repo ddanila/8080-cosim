@@ -96,15 +96,20 @@ final JLC/LCSC stock and footprint check.
   - Reset supervisor candidate: Microchip `MCP130-460DI/TO`, `C621481`;
     verify TO-92 D-bondout pin order against the KiCad footprint before order.
 
-Remaining generated BOM rows without assigned CPNs:
+Rows deliberately left manual in the Rev A draft assembly package:
 
-- `C50`: exact 47 uF radial part for `CP_Radial_D5.0mm_P2.00mm`.
+- `C50`: exact 47 uF radial part for `CP_Radial_D5.0mm_P2.00mm` still needs
+  order-time selection or a footprint change.
 - `D1`: 5 V TVS for current DO-35/SOD27 footprint. Available 5 V candidates
-  are easier in DO-15 or SMA, so this likely needs a footprint decision.
-- `J30`, `J40`, `J90-J93`, `U40`: exact 2.54 mm vertical header CPNs.
-- `R6`, `R15`: exact axial 0 ohm jumpers.
+  are easier in DO-15 or SMA, so this likely needs a footprint decision before
+  factory assembly.
+- `J30`, `J40`, `J90-J93`, `U40`: exact 2.54 mm vertical header CPNs still
+  need selection. These are safe to hand-install for Rev A bring-up.
+- `R6`, `R15`: exact axial 0 ohm jumpers still need selection. These can be
+  hand-installed for Rev A if no factory 0R axial part is chosen.
 - `U50`: DIP-14 5 V oscillator, or a deliberate PCB change to a common SMD
-  oscillator footprint.
+  oscillator footprint. Manual oscillator install is acceptable for Rev A
+  bring-up.
 
 ## External/NOS Work Items
 

@@ -11,27 +11,27 @@ U24,1,DRAM timing sequencer,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socke
 U25,1,DRAM control gates,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm socket only; install 74HCT00/02/08/32-class part after assembly
 U30,1,PPI,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts 82C55/8255-compatible PPI after assembly
 U31,1,Priority encoder,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install 74HCT148 after assembly
-U40,1,VGA timing,2x5 2.54mm pin header,2.54mm header,Factory preferred,JLCPCB/LCSC,TBD,Rev A uses a timing/header interface; exact 2x5 vertical header CPN still needs order-time selection
+U40,1,VGA timing,2x5 2.54mm pin header,2.54mm header,Manual,Owner-supplied/manual,,Rev A uses a timing/header interface; install manually until exact 2x5 vertical header CPN and factory assembly handling are confirmed
 U41,1,Pixel shift/latch,DIP-16 socket,DIP,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm socket only; install framebuffer shift/latch part after assembly
-U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Factory preferred,JLCPCB/LCSC,TBD,Feeds Rev A CLK net; keep DIP-14 package unless PCB is changed to SMD oscillator
+U50,1,Clock oscillator,5V DIP oscillator,DIP-14,Manual,Owner-supplied/manual,,Feeds Rev A CLK net; install manually until a DIP-14 5V oscillator candidate or PCB change to SMD oscillator is selected
 U51,1,Reset supervisor,MCP130-460DI/TO or MCP130-475DI/TO,TO-92,Factory preferred,JLCPCB/LCSC,C621481,Microchip MCP130 TO-92 candidate; verify D-bondout pinout against KiCad TO-92 footprint before order
 Sockets,25,DIP sockets,See per-U socket rows,Mixed THT,Informational,Derived from U* footprints,,Socket CPNs are assigned on the actual U1/U2/etc rows used by the generated JLCPCB BOM
 J1,1,+5V screw/header input,WJ2EDGR-5.08-02P-14-00A,THT,Factory preferred,JLCPCB/LCSC,C8383,Feeds VCC_RAW before F1; KiCad footprint is 5.00mm but candidate is common 5.08mm right-angle terminal header; verify footprint before order
 J3,1,USB-C 5V power input,TYPE-C-31-M-17,SMD/THT shell,Factory preferred,JLCPCB/LCSC,C283540,HRO 6-pin power-only USB-C input in parallel with J1 before F1; CC pulldowns on R30/R31
-J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Inline bring-up header for original keyboard wiring: 8 columns plus 7 rows; exact vertical header CPN still needs order-time selection
-J40,1,VGA bring-up output,1x06 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Rev A uses simple RGB/HSYNC/VSYNC/GND header; exact vertical header CPN still needs order-time selection
-J90-J92,3,Logic analyzer header,2x5 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,Address/data/DRAM/video/debug; exact vertical header CPN still needs order-time selection
-J93,1,Power debug header,1x04 2.54mm pin header,TH,Factory preferred,JLCPCB/LCSC,TBD,VCC/GND/PWR_OK/VCC_RAW bring-up pins; exact vertical header CPN still needs order-time selection
+J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Inline bring-up header for original keyboard wiring: 8 columns plus 7 rows; install manually until exact vertical header CPN and factory handling are confirmed
+J40,1,VGA bring-up output,1x06 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Rev A uses simple RGB/HSYNC/VSYNC/GND header; install manually until exact vertical header CPN and factory handling are confirmed
+J90-J92,3,Logic analyzer header,2x5 2.54mm pin header,TH,Manual,Owner-supplied/manual,,Address/data/DRAM/video/debug; install manually until exact 2x5 vertical header CPN and factory handling are confirmed
+J93,1,Power debug header,1x04 2.54mm pin header,TH,Manual,Owner-supplied/manual,,VCC/GND/PWR_OK/VCC_RAW bring-up pins; install manually until exact vertical header CPN and factory handling are confirmed
 F1,1,+5V resettable fuse,RXEF300-class radial PTC 3A hold / 6A trip,THT,Factory preferred,JLCPCB/LCSC,C14397,J1/J3 feed VCC_RAW and then fused VCC through F1; verify lead spacing and final +5V load against KiCad footprint before order
-D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Factory preferred,JLCPCB/LCSC,TBD,Clamp fused VCC to GND near power entry; no clean JLC DO-35 5V TVS candidate found yet; consider changing footprint to DO-15 or SMA if factory assembly is required
+D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Manual,Owner-supplied/manual,,Clamp fused VCC to GND near power entry; install manually or change footprint to DO-15/SMA before requiring factory TVS assembly
 R1-R3,3,VGA series resistor,CR1/4W-470R-5%-class,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C2896817,PIXEL to VGA RGB placeholder network; D2.7xL6.2mm candidate should be checked against DIN0207 footprint
 R4-R5,2,Pullup resistor,RN1/4W10KFT/BA1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410695,Oscillator enable and reset pullups
-R6,1,PWR_OK link,0 ohm axial jumper,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Ties PWR_OK indicator/debug net to fused VCC for simple 5V input; exact axial 0R jumper CPN still needed
+R6,1,PWR_OK link,0 ohm axial jumper,DIN0207 axial,Manual,Owner-supplied/manual,,Ties PWR_OK indicator/debug net to fused VCC for simple 5V input; install jumper manually unless an axial 0R factory CPN is selected
 R7-R14,8,Keyboard row pullup,RN1/4W10KFT/BA1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410695,Pull active-low 74148 row inputs high
-R15,1,Keyboard encoder enable link,0 ohm axial jumper,DIN0207 axial,Factory preferred,JLCPCB/LCSC,TBD,Ties 74148 EI_N active by default; exact axial 0R jumper CPN still needed
+R15,1,Keyboard encoder enable link,0 ohm axial jumper,DIN0207 axial,Manual,Owner-supplied/manual,,Ties 74148 EI_N active by default; install jumper manually unless an axial 0R factory CPN is selected
 R16-R23,8,Keyboard column series resistor,RN 1/4W 220R F T/B A1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410657,Between 8255 column outputs and keyboard connector
 R24-R29,6,Diagnostic LED resistor,MFR-25FBF52-2K2,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C3454390,Current limit for Rev A diagnostic LEDs; D2.4xL6.3mm candidate should be checked against DIN0207 footprint
 R30-R31,2,USB-C CC pulldown,RN 1/8W 5K1 F T/B A1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C433473,USB-C Rd pulldowns from CC1/CC2 to GND for 5V sink mode; 1/8W D1.7xL3.5mm candidate is electrically fine but mechanically smaller than DIN0207 footprint
 D2-D7,6,Diagnostic LED,204-10SURD/S530-A3,THT LED,Factory preferred,JLCPCB/LCSC,C99772,+5V PWR_OK CLK RESET_N M1_N and RFSH_N indicators; red 3mm LED baseline; colors can be varied later if desired
 C1-C25,25,Decoupling capacitor,DCS104Z26Y5VF6BL5A0,THT disc,Factory preferred,JLCPCB/LCSC,C2896070,100nF 50V Y5V P=5mm ceramic decoupler; one per socketed active IC/module
-C50,1,Bulk capacitor,47uF radial,THT radial,Factory preferred,JLCPCB/LCSC,TBD,+5V local bulk reservoir; exact 47uF radial with D5.0mm P2.00mm footprint still needs selection or footprint change
+C50,1,Bulk capacitor,47uF radial,THT radial,Manual,Owner-supplied/manual,,+5V local bulk reservoir; install manually until exact 47uF radial D5.0mm P2.00mm CPN or footprint change is selected

@@ -127,6 +127,17 @@ def assembly_sourcing(fp, source):
     return source.get("Sourcing", "")
 
 
+def assembly_policy(source):
+    return (source.get("Assembly") or "").strip().lower()
+
+
+def is_factory_row(fp, source):
+    ref = fp.GetReference().upper()
+    if ref.startswith("U") and is_socket_footprint(fp):
+        return True
+    return assembly_policy(source) not in {"manual", "dnp", "do not populate"}
+
+
 def board_footprints(board):
     return sorted(board.Footprints(), key=lambda fp: natural_key(fp.GetReference().upper()))
 
@@ -135,6 +146,7 @@ def build_rows(board, engineering_bom):
     bom_groups = defaultdict(list)
     cpl_rows = []
     post_assembly_rows = []
+    manual_assembly_rows = []
     missing_engineering_rows = []
 
     for fp in board_footprints(board):
@@ -146,6 +158,19 @@ def build_rows(board, engineering_bom):
 
         fp_name = footprint_name(fp)
         comment = assembly_comment(fp, source)
+        if not is_factory_row(fp, source):
+            manual_assembly_rows.append(
+                {
+                    "Designator": ref,
+                    "Value": source.get("Value") or fp.GetValue(),
+                    "Footprint": fp_name,
+                    "Action": source.get("Assembly") or "Manual",
+                    "Sourcing": source.get("Sourcing", ""),
+                    "Notes": source.get("Notes", ""),
+                }
+            )
+            continue
+
         key = (
             str(comment),
             str(fp_name),
@@ -198,7 +223,7 @@ def build_rows(board, engineering_bom):
                 }
             )
 
-    return bom_rows, cpl_rows, post_assembly_rows, missing_engineering_rows
+    return bom_rows, cpl_rows, post_assembly_rows, manual_assembly_rows, missing_engineering_rows
 
 
 def write_csv(path, fieldnames, rows):
@@ -208,7 +233,7 @@ def write_csv(path, fieldnames, rows):
         writer.writerows(rows)
 
 
-def write_readiness(path, bom_rows, cpl_rows, post_assembly_rows):
+def write_readiness(path, bom_rows, cpl_rows, post_assembly_rows, manual_assembly_rows):
     missing_lcsc = [row for row in bom_rows if not row["LCSC Part #"]]
     tbd_sourcing = [
         row for row in bom_rows
@@ -225,16 +250,36 @@ def write_readiness(path, bom_rows, cpl_rows, post_assembly_rows):
         f"- BOM rows: {len(bom_rows)}",
         f"- CPL placements: {len(cpl_rows)}",
         f"- Post-assembly socket insertions: {len(post_assembly_rows)}",
+        f"- Manual/non-factory placements: {len(manual_assembly_rows)}",
         f"- BOM rows missing LCSC part numbers: {len(missing_lcsc)}",
         f"- BOM rows with TBD sourcing/notes: {len(tbd_sourcing)}",
         "",
         "## Gate",
         "",
-        "The JLCPCB BOM/CPL designators match, but the assembly package is not "
-        "ready to upload until factory-mounted rows have orderable LCSC part "
-        "numbers and the remaining TBD connector/VGA choices are resolved.",
-        "",
     ]
+    if status == "READY":
+        lines.extend(
+            [
+                "The factory BOM/CPL designators match, every factory-mounted row has an "
+                "LCSC part number, and unresolved rows are deliberately listed as manual "
+                "or non-factory placements. Re-check JLCPCB stock and review manual rows "
+                "immediately before upload.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "The JLCPCB BOM/CPL designators match, but the assembly package is not "
+                "ready to upload until factory-mounted rows have orderable LCSC part "
+                "numbers and the remaining TBD connector/VGA choices are resolved or "
+                "marked manual/DNP.",
+            ]
+        )
+    lines.extend(
+        [
+        "",
+        ]
+    )
     if missing_lcsc:
         lines.extend(["## Missing LCSC Part Numbers", ""])
         for row in missing_lcsc:
@@ -244,6 +289,11 @@ def write_readiness(path, bom_rows, cpl_rows, post_assembly_rows):
         lines.extend(["## TBD Rows", ""])
         for row in tbd_sourcing:
             lines.append(f"- `{row['Designator']}`: {row['Comment']}")
+        lines.append("")
+    if manual_assembly_rows:
+        lines.extend(["## Manual / Non-Factory Placements", ""])
+        for row in manual_assembly_rows:
+            lines.append(f"- `{row['Designator']}`: {row['Value']} ({row['Footprint']})")
         lines.append("")
     path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -277,7 +327,7 @@ def main():
 
     board = pcbnew.LoadBoard(args.board)
     engineering_bom = load_engineering_bom(args.engineering_bom)
-    bom_rows, cpl_rows, post_assembly_rows, missing_engineering_rows = build_rows(board, engineering_bom)
+    bom_rows, cpl_rows, post_assembly_rows, manual_assembly_rows, missing_engineering_rows = build_rows(board, engineering_bom)
     validate_designator_match(bom_rows, cpl_rows)
 
     out_dir = Path(args.out_dir)
@@ -297,7 +347,12 @@ def main():
         ("Designator", "Device", "Socket", "Action", "Notes"),
         post_assembly_rows,
     )
-    write_readiness(out_dir / "assembly-readiness.md", bom_rows, cpl_rows, post_assembly_rows)
+    write_csv(
+        out_dir / "manual-assembly.csv",
+        ("Designator", "Value", "Footprint", "Action", "Sourcing", "Notes"),
+        manual_assembly_rows,
+    )
+    write_readiness(out_dir / "assembly-readiness.md", bom_rows, cpl_rows, post_assembly_rows, manual_assembly_rows)
 
     if missing_engineering_rows:
         raise SystemExit("footprints missing engineering BOM rows: " + ", ".join(missing_engineering_rows))
@@ -305,7 +360,8 @@ def main():
     print(
         f"JLCPCB draft assembly export: PASS "
         f"({len(bom_rows)} BOM rows, {len(cpl_rows)} CPL placements, "
-        f"{len(post_assembly_rows)} post-assembly insertions)"
+        f"{len(post_assembly_rows)} post-assembly insertions, "
+        f"{len(manual_assembly_rows)} manual placements)"
     )
     print(f"Wrote {out_dir}")
 
