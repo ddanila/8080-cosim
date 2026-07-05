@@ -147,6 +147,12 @@ fi
   --logging.file.location=.tools/freerouting-user \
   --logging.console.level=INFO
 
+if [ ! -s "$SES" ]; then
+  echo "FreeRouting did not write a non-empty SES file: $SES" >&2
+  echo "Rebuild the custom fork jar and verify headless v1.9 output serialization." >&2
+  exit 3
+fi
+
 "$KICAD_PYTHON" - "$PCB" "$SES" <<'PY'
 import sys
 import pcbnew

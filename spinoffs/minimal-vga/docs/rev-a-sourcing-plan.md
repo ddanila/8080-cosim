@@ -76,8 +76,8 @@ final JLC/LCSC stock and footprint check.
 - Power/connectors:
   - USB-C power-only receptacle: HRO `TYPE-C-31-M-17`, JLC/LCSC `C283540`.
   - +5V terminal candidate: KANGNEX `WJ2EDGR-5.08-02P-14-00A`, `C8383`.
-    The PCB footprint is nominally 5.00 mm, so verify 5.08 mm fit before
-    upload.
+    The PCB now uses a 5.08 mm terminal footprint; verify the exact vendor
+    drawing and assembly availability before upload.
 - Passives and indicators:
   - 100 nF P=5 mm ceramic decoupler: SHM `DCS104Z26Y5VF6BL5A0`, `C2896070`.
   - 10k axial pullup: TyoHM `RN1/4W10KFT/BA1`, `C410695`.
@@ -85,8 +85,8 @@ final JLC/LCSC stock and footprint check.
   - 470 ohm VGA resistor candidate: VO `CR1/4W-470R` class, `C2896817`.
   - 2.2k LED resistor candidate: YAGEO `MFR-25FBF52-2K2`, `C3454390`.
   - 5.1k USB-C CC pulldown candidate: TyoHM `RN 1/8W 5K1 F T/B A1`,
-    `C433473`. This is electrically fine but mechanically smaller than the
-    current DIN0207 footprint.
+    `C433473`. The PCB now uses DIN0204 L3.6mm/D1.6mm footprints for this
+    1/8 W D1.7xL3.5mm candidate.
   - 3 mm red diagnostic LED baseline: EVERLIGHT `204-10SURD/S530-A3`,
     `C99772`.
   - 47 uF bulk capacitor candidate: AISHI `ERG1EM470D11OT`, `C724688`;

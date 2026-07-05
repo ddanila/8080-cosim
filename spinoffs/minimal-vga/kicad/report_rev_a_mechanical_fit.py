@@ -80,17 +80,22 @@ def build_rows(board):
         if pitch:
             dx, dy, dist = pitch
             measured = f"pad spacing {fmt_mm(dist)} (dx {fmt_mm(dx)}, dy {fmt_mm(dy)}); drill {fmt_mm(pads[0]['drill'])}"
+        fp_name = footprint_name(j1)
+        j1_pitch_ok = pitch and abs(pitch[2] - 5.08) <= 0.05
+        j1_footprint_ok = "P5.08mm" in fp_name
+        status = "PASS" if j1_pitch_ok and j1_footprint_ok else "REVIEW"
         rows.append(
             make_row(
                 "J1",
                 j1,
-                "REVIEW",
-                "KANGNEX WJ2EDGR-5.08-02P-14-00A, 5.08 mm pitch",
+                status,
+                "KANGNEX WJ2EDGR-5.08-02P-14-00A / C8383, 5.08 mm pitch",
                 measured,
-                "PCB footprint is nominally 5.00 mm. Difference from the 5.08 mm candidate is small, but confirm the terminal drawing and factory THT tolerance before upload.",
+                "PCB now uses a 5.08 mm terminal footprint for the 5.08 mm candidate; still confirm exact vendor drawing and assembly availability at order time.",
             )
         )
-        reviews.append("J1: confirm 5.08 mm terminal fit in the nominal 5.00 mm footprint.")
+        if status != "PASS":
+            reviews.append("J1: confirm 5.08 mm terminal fit against the selected footprint.")
     else:
         rows.append(make_row("J1", None, "FAIL", "+5V terminal footprint", "missing", "Footprint not found."))
         failures.append("J1 footprint missing.")
@@ -151,17 +156,22 @@ def build_rows(board):
             if pitch:
                 dx, dy, dist = pitch
                 measured = f"pad spacing {fmt_mm(dist)} (dx {fmt_mm(dx)}, dy {fmt_mm(dy)}); drill {fmt_mm(pads[0]['drill'])}"
+            fp_name = footprint_name(fp)
+            r_pitch_ok = pitch and abs(pitch[2] - 5.08) <= 0.05
+            r_body_ok = "DIN0204" in fp_name and "L3.6mm_D1.6mm" in fp_name
+            status = "PASS" if r_pitch_ok and r_body_ok else "REVIEW"
             rows.append(
                 make_row(
                     ref,
                     fp,
-                    "REVIEW",
-                    "TyoHM RN 1/8W 5K1 F T/B A1 / C433473, electrically correct but smaller than DIN0207",
+                    status,
+                    "TyoHM RN 1/8W 5K1 F T/B A1 / C433473, D1.7 x L3.5 mm body",
                     measured,
-                    "The smaller 1/8 W body should fit electrically, but placement/lead forming should be checked if factory-installed.",
+                    "PCB uses a DIN0204 3.6 x 1.6 mm footprint, matching the selected 1/8 W CC pulldown class more closely than DIN0207.",
                 )
             )
-            reviews.append(f"{ref}: confirm smaller 1/8 W axial body handling on the larger DIN0207 footprint.")
+            if status != "PASS":
+                reviews.append(f"{ref}: confirm 1/8 W axial body handling against the selected footprint.")
         else:
             rows.append(make_row(ref, None, "FAIL", "USB-C CC pulldown footprint", "missing", "Footprint not found."))
             failures.append(f"{ref} footprint missing.")

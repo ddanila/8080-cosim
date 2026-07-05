@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 
@@ -28,6 +29,17 @@ def contains(path, *needles):
         return False
     text = path.read_text()
     return all(needle in text for needle in needles)
+
+
+def jar_entry_contains(jar, entry, *needles):
+    if not jar.exists():
+        return False
+    try:
+        with zipfile.ZipFile(jar) as archive:
+            data = archive.read(entry)
+    except Exception:
+        return False
+    return all(needle.encode() in data for needle in needles)
 
 
 def row(values):
@@ -70,6 +82,16 @@ def build_report(out_dir):
         ),
         "`RoutingJobSchedulerActionThread` selects `BatchAutorouterV19` for `freerouting-router-v19`.",
     ))
+    checks.append((
+        "Built jar contains v1.9 scheduler path",
+        jar_entry_contains(
+            jar,
+            "app/freerouting/management/RoutingJobSchedulerActionThread.class",
+            "freerouting-router-v19",
+            "BatchAutorouterV19",
+        ),
+        "The built executable jar contains the headless v1.9 scheduler selection, guarding against stale local jars.",
+    ))
 
     headless_test = FREEROUTING / "src" / "test" / "java" / "app" / "freerouting" / "interactive" / "HeadlessRoutingTest.java"
     checks.append((
@@ -78,8 +100,9 @@ def build_report(out_dir):
             headless_test,
             "headlessRouting_usesV19RouterWhenSelected",
             "Starting V1.9 router",
+            "job.output.size > 0",
         ),
-        "`HeadlessRoutingTest` guards the #508 workaround path.",
+        "`HeadlessRoutingTest` guards the #508 workaround path and non-empty SES output.",
     ))
 
     checks.append((

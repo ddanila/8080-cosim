@@ -13,11 +13,11 @@ Pullups,R4-R5 R7-R14,Populate 10k resistors,C410695,Candidate assigned,TyoHM RN1
 PWR_OK link,R6,Manual install 0R resistor/link,,Manual for Rev A draft,Need exact axial 0R jumper matching DIN0207 footprint before factory assembly
 Keyboard series resistors,R16-R23,Populate 220R resistors,C410657,Candidate assigned,TyoHM RN 1/4W 220R F T/B A1 D2.4xL6.4mm
 Configuration link,R15,Manual install 0R link,,Manual for Rev A draft,Need exact axial 0R jumper matching DIN0207 footprint before factory assembly
-USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,C433473,Candidate assigned,TyoHM RN 1/8W 5K1 F T/B A1 is electrically fine but smaller than DIN0207; prefer footprint review before order
+USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,C433473,Candidate assigned,TyoHM RN 1/8W 5K1 F T/B A1 is D1.7xL3.5mm; PCB uses DIN0204 L3.6mm/D1.6mm footprint for closer fit
 Keyboard header,J30,Manual install 1x15 2.54mm pin header,,Manual for Rev A draft,Inline bring-up header; exact vertical header CPN still needed before factory assembly
 Debug headers,J90-J93,Populate 2.54mm debug headers,C9900010269 C9900257430,Candidate assigned,J90-J92 use PinHeader_2x05_P2.54mm_Vertical; J93 uses HDR-1X4; JLCPCB assembly-library wave-solder candidates need fixture/fit confirmation at order time
 VGA timing header,U40,Populate 2x6 2.54mm header,C5383107,Candidate assigned,HanElectricity 2541WV-2x06P straight 2x6 2.54mm wave-solder header candidate; verify fixture handling at order time
-Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A; J3 HRO TYPE-C-31-M-17; verify J1 5.00/5.08mm footprint fit
+Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A uses 5.08mm pitch and PCB now uses a 5.08mm terminal footprint; J3 HRO TYPE-C-31-M-17
 VGA output,J40,Populate 1x07 2.54mm header,C9900031531,Candidate assigned,PinHeader_1x07_P2.54mm_Vertical JLCPCB assembly-library wave-solder candidate; verify fixture handling at order time
 Fuse,F1,Populate resettable fuse,C3761779,Candidate assigned,Bourns MF-RG300-0-14 radial PTC; 3A hold; footprint lead spacing matches current 5.1mm Bourns MF-RG300 footprint; verify expected +5V load and order-time stock
 TVS,D1,Manual install 5V TVS clamp,,Manual/footprint open,No clean DO-35 5V TVS candidate found; consider DO-15 or SMA footprint change for factory assembly

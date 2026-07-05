@@ -112,6 +112,12 @@ FP_BY_TYPE = {
     "POWER_DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x04_P2.54mm_Vertical"),
 }
 
+FP_BY_REF = {
+    "J1": ("TerminalBlock_Phoenix.pretty", "TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"),
+    "R30": ("Resistor_THT.pretty", "R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal"),
+    "R31": ("Resistor_THT.pretty", "R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal"),
+}
+
 PLACE = {
     "J1": (22, 25.6, 90),
     "J3": (24, 100, 0),
@@ -205,8 +211,8 @@ def mm(value):
     return pcbnew.FromMM(value)
 
 
-def load_footprint(typ):
-    lib, name = FP_BY_TYPE[typ]
+def load_footprint(typ, ref=None):
+    lib, name = FP_BY_REF.get(ref, FP_BY_TYPE[typ])
     path = os.path.join(ROOT, lib)
     fp = pcbnew.FootprintLoad(path, name)
     if fp is None:
@@ -412,7 +418,7 @@ def main():
         typ = chip["type"]
         if typ not in FP_BY_TYPE:
             raise RuntimeError(f"no footprint mapping for {typ}")
-        fp = load_footprint(typ)
+        fp = load_footprint(typ, ref)
         fp.SetReference(ref)
         fp.SetValue(chip.get("value", typ))
         x, y, rot = PLACE.get(ref, (30 + len(placed) % 8 * 28, 30 + len(placed) // 8 * 35, 0))

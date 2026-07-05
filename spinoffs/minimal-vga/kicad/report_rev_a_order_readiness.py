@@ -64,7 +64,7 @@ HUMAN_GATES = [
     "Trace geometry, via count, power width, and return-path review on the autorouted baseline.",
     "Decision on whether to restore GND/+5V pours before ordering.",
     "Socket/header footprint fit check against the exact purchased sockets and connectors.",
-    "Mechanical-fit review for J1, R30, and R31 before factory population.",
+    "Order-time vendor drawing and assembly-service review for mechanically sensitive through-hole rows.",
     "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
     "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
     "Manual-row decisions for TVS protection, keyboard header, oscillator, reset supervisor, and configuration links.",
@@ -204,7 +204,7 @@ def machine_gate_summary(out_dir):
                 or has_ready_line(mechanical_fit, "REVIEW REQUIRED")
             )
             and "- Mechanical fit failures: 0" in mechanical_fit,
-            "`assembly/mechanical-fit-readiness.md` reports no hard mechanical mismatches; review rows still need human sign-off.",
+            "`assembly/mechanical-fit-readiness.md` reports no hard mechanical mismatches.",
         ),
         (
             "Manual row dispositions",

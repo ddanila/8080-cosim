@@ -168,9 +168,10 @@ Status: routed FreeRouting baseline.
   expected Gerber/drill/job files, matches the exported sources, has
   deterministic ZIP metadata, and is covered by `SHA256SUMS.txt`.
 - Current physical source/routed PCB counts: 95 schematic refs, 116 source
-  nets, 95 PCB footprints, 117 KiCad PCB nets, and 2067 routed tracks. The PCB
-  net count includes KiCad-generated net bookkeeping beyond the source-model
-  named nets.
+  nets, 95 PCB footprints, 117 KiCad PCB nets, and 2082 KiCad track objects
+  after routing. The routing-geometry report breaks this down as 1992 routed
+  track segments plus 90 vias. The PCB net count includes KiCad-generated net
+  bookkeeping beyond the source-model named nets.
 - Current draft JLCPCB export: 26 factory BOM rows, 89 CPL placements, 19
   post-assembly socketed IC insertions, and 6 deliberate manual placements.
 - `export_fab.sh` now gates on both ERC and DRC before exporting Gerbers,
@@ -221,11 +222,13 @@ Open production blockers:
   `U50`, and `U51`) stay owner-installed or get factory CPNs /
   footprint changes before ordering. The generated manual-row readiness report
   now verifies that this exact manual set is deliberate and classified.
-- Re-check assigned candidate CPNs immediately before order and confirm
-  footprint fit for the mechanically sensitive rows: J1 and R30-R31. F1 now has
-  a footprint-matched Bourns MF-RG300-class candidate, but still needs final
-  load/current review before upload. U51 is manual for Rev A unless a matching
-  MCP130 F-bondout assembly CPN is found.
+- Re-check assigned candidate CPNs immediately before order and confirm vendor
+  drawings/assembly handling for the mechanically sensitive through-hole rows.
+  J1 now uses a 5.08 mm terminal footprint, R30-R31 now use DIN0204 footprints
+  for the selected 1/8 W CC pulldowns, and F1 has a footprint-matched Bourns
+  MF-RG300-class candidate. F1 still needs final load/current review before
+  upload. U51 is manual for Rev A unless a matching MCP130 F-bondout assembly
+  CPN is found.
 - Review autorouted traces, power widths, via count, and return paths.
 - Decide whether GND/+5V pours return after manual cleanup.
 - Do final Gerber inspection in an independent viewer.

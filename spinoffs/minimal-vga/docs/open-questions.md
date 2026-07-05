@@ -59,12 +59,12 @@ before ordering hardware.
      supervisor candidate, decouplers, LEDs, and fuse candidate are assigned in
      `../kicad/rev-a.bom.csv` and `../kicad/rev-a-jlcpcb-cpn-checklist.csv`.
      C50, J40, J90-J93, and U40 now also have factory assembly candidates.
-   - Several assigned rows still need footprint confirmation immediately before
-     upload, especially J1 5.00/5.08 mm pitch and the mechanically smaller
-     5.1k CC pulldown resistor candidate. F1 now uses a Bourns
-     MF-RG300-class candidate that matches the current footprint pitch. U51 is
-     pinned for MCP130 F-bondout and kept manual until a matching assembly CPN
-     is found.
+   - Assigned factory rows still need order-time vendor drawing, stock, and
+     assembly-service confirmation. J1 now uses a 5.08 mm terminal footprint for
+     the 5.08 mm candidate, R30-R31 now use DIN0204 footprints for the selected
+     1/8 W CC pulldowns, and F1 uses a Bourns MF-RG300-class candidate matching
+     the current footprint pitch. U51 is pinned for MCP130 F-bondout and kept
+     manual until a matching assembly CPN is found.
 2. TTL640x480 physical integration:
    - Deferred from Rev A. Do not block this manufacturing slice on full onboard
      VGA logic unless the Rev A scope changes.
