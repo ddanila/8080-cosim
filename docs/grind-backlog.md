@@ -642,3 +642,20 @@ on duplicate component refs. Fixes: CONN += {PAR_CONN, KBD_CONN}; UNTRACED D51 e
 Board now: 237 footprints, 0 dup refs, DSN exports (143KB). Also: fonts/gost-type-b-italic.ttf
 installed to ~/Library/Fonts (user request) — KiCad no longer substitutes Verdana Italic.
 Freerouting fork (ddanila/freerouting, custom branch) re-cloned + jar rebuilt; route run started.
+
+## Route campaign: headless CLI penalty root-caused UPSTREAM -> route via GUI (decision)
+Research (freerouting/freerouting discussion #508): the maintainer confirms **"board-specific
+parameter optimizations were not being applied to CLI jobs"** — a v2.x architectural regression
+from the headless/API refactor. GUI runs get board-tuned heuristics; CLI runs of the SAME version
+don't. Benchmarks: v1.9.0 beats v2.1.0/2.2.0 on 6/10 DAC-2020 boards. This explains (a) why our
+v75 route (1176/1176 in one session) was achieved through the GUI, and (b) why the headless
+re-route of the same board crawled (pass1 518 unrouted / pass2 337, ~35 min/pass, 344 violations).
+No evidence of GUI visualization overhead being significant.
+**DECISION (owner): route through the GUI; headless run killed.** Handoff state for the GUI
+session: kicad/juku.dsn is FRESH (regenerated after the dup-refdes fix 7a3b14e — 237 footprints,
+0 dup refs, СБ-true placements incl. the D56-RC/R6x moves); import the .ses back with
+kicad/finalize_route.py <ses> kicad/juku_routed.kicad_pcb, then kicad-cli pcb drc + renders.
+Reminder from the triage log: the GUI persists max_passes (was silently capped at 20) — check
+the setting before the run. Fork jar: /Users/danila.sukharev/fun/freerouting/build/libs/
+freerouting-current-executable.jar (custom branch, PolylineTrace.combine fix; needs JDK 25:
+~/.gradle/jdks/eclipse_adoptium-25-aarch64-os_x.2/jdk-25.0.3+9/Contents/Home/bin/java).
