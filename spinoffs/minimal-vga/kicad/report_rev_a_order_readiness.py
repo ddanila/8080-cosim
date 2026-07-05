@@ -11,6 +11,7 @@ REQUIRED_ARTIFACTS = [
     "erc-readiness.md",
     "fab-readiness.md",
     "routing-geometry-readiness.md",
+    "fab-package-integrity.md",
     "fab-notes.md",
     "rev-a.engineering-bom.csv",
     "gerbers/rev-a-physical-F_Cu.gtl",
@@ -114,6 +115,7 @@ def machine_gate_summary(out_dir):
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
+    fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
@@ -168,6 +170,13 @@ def machine_gate_summary(out_dir):
             )
             and "- Hard geometry failures: 0" in routing_geometry,
             "`routing-geometry-readiness.md` records track widths, via count, power routing, and zone policy.",
+        ),
+        (
+            "Fabrication package integrity",
+            has_ready_line(fab_package_integrity, "READY")
+            and "- Integrity failures: 0" in fab_package_integrity
+            and "- Expected fabrication files: 11" in fab_package_integrity,
+            "`fab-package-integrity.md` verifies Gerber/drill ZIP contents, deterministic metadata, format markers, and SHA256 entries.",
         ),
         (
             "JLCPCB assembly draft",

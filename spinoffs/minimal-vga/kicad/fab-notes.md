@@ -146,6 +146,10 @@ Factory assembly:
   `fab/minimal-vga/routing-geometry-readiness.md`, summarizing track widths,
   vias, power-net routing, and zone policy. It catches hard geometry
   regressions while keeping power-width and return-path review explicit.
+- `report_rev_a_fab_package_integrity.py` writes
+  `fab/minimal-vga/fab-package-integrity.md`, verifying the Gerber/drill ZIP
+  member list, deterministic ZIP metadata, source-file format markers, and
+  `SHA256SUMS.txt` entries before human Gerber review.
 - `report_rev_a_erc_readiness.sh` writes the current schematic ERC summary to
   `fab/minimal-vga/erc-readiness.md`. ERC should remain clean before ordering;
   human schematic review still applies. The cleanup history is tracked in

@@ -121,6 +121,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/routing-geometry-readiness.md`, recording track widths, via
   sizes/counts, power-net route statistics, and whether power planes/zones are
   present.
+- `report_rev_a_fab_package_integrity.py` produces
+  `fab/minimal-vga/fab-package-integrity.md`, verifying the upload Gerber/drill
+  ZIP member list, deterministic ZIP metadata, source-file format markers, and
+  `SHA256SUMS.txt` entries before independent visual Gerber review.
 - `report_rev_a_order_readiness.py` produces
   `fab/minimal-vga/order-readiness.md`, which combines the ERC, DRC, assembly,
   upload package, artifact, manual-row, and post-assembly-insertion checks with
@@ -160,6 +164,9 @@ Status: routed FreeRouting baseline.
 - Current routing-geometry report has zero hard geometry failures. It records
   the explicit no-zone baseline and flags 0.20 mm routed power traces for human
   review before ordering.
+- Current fabrication-package integrity passes: the upload ZIP contains the 11
+  expected Gerber/drill/job files, matches the exported sources, has
+  deterministic ZIP metadata, and is covered by `SHA256SUMS.txt`.
 - Current physical source/routed PCB counts: 95 schematic refs, 116 source
   nets, 95 PCB footprints, 117 KiCad PCB nets, and 2067 routed tracks. The PCB
   net count includes KiCad-generated net bookkeeping beyond the source-model
