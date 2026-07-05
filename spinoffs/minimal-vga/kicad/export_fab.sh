@@ -19,6 +19,8 @@ mkdir -p "$OUT"
 python3 spinoffs/minimal-vga/kicad/report_rev_a_source_model.py \
   spinoffs/minimal-vga/kicad/rev-a-physical.board.json \
   "$OUT" >/dev/null
+python3 spinoffs/minimal-vga/kicad/report_rev_a_router_readiness.py \
+  "$OUT" >/dev/null
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_behavioral_readiness.py "$OUT" >/dev/null
 
 if [ "${MINIMAL_VGA_ALLOW_ERC_EXPORT:-0}" != "1" ]; then

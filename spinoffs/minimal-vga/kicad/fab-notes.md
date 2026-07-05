@@ -131,6 +131,10 @@ Factory assembly:
   `fab/minimal-vga/source-model-readiness.md`, recording the Rev A physical
   source-model ref/net/pin-binding coverage and explicit no-connect policy
   before schematic export.
+- `report_rev_a_router_readiness.py` writes
+  `fab/minimal-vga/router-readiness.md`, recording that the VJUGA autoroute
+  path uses the `external/freerouting` custom branch, its built executable jar,
+  and the headless v1.9 scheduler selection used as the current #508 workaround.
 - `report_rev_a_behavioral_readiness.py` writes
   `fab/minimal-vga/behavioral-readiness.md`, running the spin-off simulator
   entry point and recording the ROM/cosim boot oracle, T80 smoke test,

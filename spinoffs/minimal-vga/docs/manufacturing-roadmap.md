@@ -102,6 +102,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/source-model-readiness.md`, recording the Rev A physical
   source-model ref/net/pin-binding coverage and explicit no-connect policy
   before schematic export.
+- `report_rev_a_router_readiness.py` produces
+  `fab/minimal-vga/router-readiness.md`, recording the custom Freerouting
+  submodule state and the fast checks behind the headless v1.9 route path used
+  for the upstream #508 workaround.
 - `report_rev_a_erc_readiness.sh` records the current KiCad ERC status for the
   physical schematic and exits nonzero if error-level ERC findings return. The
   Rev A source model now has explicit no-connect policy for unused pins; the
@@ -150,6 +154,9 @@ Status: routed FreeRouting baseline.
   target checks, PCB scaffold check, DRC summary, and DRAM row/column unit.
 - Current source-model readiness passes the Rev A required ref/net/pin-binding
   policy and records 38 explicit no-connect pins.
+- Current router readiness passes the fast custom-fork checks: the submodule is
+  on `custom`, the built fork jar is present, headless scheduler v1.9 selection
+  is present, and `route_rev_a_pcb.sh` defaults to that path.
 - Current routing-geometry report has zero hard geometry failures. It records
   the explicit no-zone baseline and flags 0.20 mm routed power traces for human
   review before ordering.

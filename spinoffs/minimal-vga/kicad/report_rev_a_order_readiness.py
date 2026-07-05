@@ -6,6 +6,7 @@ from pathlib import Path
 
 REQUIRED_ARTIFACTS = [
     "source-model-readiness.md",
+    "router-readiness.md",
     "behavioral-readiness.md",
     "erc-readiness.md",
     "fab-readiness.md",
@@ -108,6 +109,7 @@ def has_ready_line(text, label):
 
 def machine_gate_summary(out_dir):
     source_model = read_text(out_dir / "source-model-readiness.md")
+    router = read_text(out_dir / "router-readiness.md")
     behavioral = read_text(out_dir / "behavioral-readiness.md")
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
@@ -130,6 +132,14 @@ def machine_gate_summary(out_dir):
             and "- Multi-net pin conflicts: 0" in source_model
             and "- No-connect conflicts: 0" in source_model,
             "`source-model-readiness.md` records Rev A ref/net/pin-binding and no-connect policy before schematic export.",
+        ),
+        (
+            "Headless router fork",
+            has_ready_line(router, "READY")
+            and "- Failed checks: 0" in router
+            and "Headless scheduler honors v1.9 router | PASS" in router
+            and "VJUGA route script defaults to v1.9 | PASS" in router,
+            "`router-readiness.md` records the custom Freerouting fork and VJUGA headless v1.9 route path.",
         ),
         (
             "Behavioral simulation/LVS",
