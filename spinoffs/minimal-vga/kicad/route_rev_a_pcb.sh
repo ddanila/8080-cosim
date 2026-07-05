@@ -23,6 +23,7 @@ PASSES="${PASSES:-30}"
 THREADS="${THREADS:-4}"
 SEED_ROUTES="${SEED_ROUTES:-1}"
 JAVA_HEAP="${JAVA_HEAP:-}"
+KICAD_PYTHON="${KICAD_PYTHON:-$("scripts/find-kicad-python.sh")}"
 
 if [ ! -x "$JAVA_BIN" ]; then
   if command -v java >/dev/null 2>&1; then
@@ -42,13 +43,13 @@ fi
 
 mkdir -p "$OUT" .tools/freerouting-user
 
-python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py "$BOARD_JSON"
-MINIMAL_VGA_NO_ZONES=1 python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/check_rev_a_physical.py "$BOARD_JSON"
+MINIMAL_VGA_NO_ZONES=1 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
 if [ "$SEED_ROUTES" = "1" ]; then
-  python3 spinoffs/minimal-vga/kicad/seed_rev_a_routes.py "$PCB"
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/seed_rev_a_routes.py "$PCB"
 fi
 
-python3 - "$PCB" "$DSN" <<'PY'
+"$KICAD_PYTHON" - "$PCB" "$DSN" <<'PY'
 import sys
 import pcbnew
 
@@ -81,7 +82,7 @@ fi
   --logging.file.location=.tools/freerouting-user \
   --logging.console.level=INFO
 
-python3 - "$PCB" "$SES" <<'PY'
+"$KICAD_PYTHON" - "$PCB" "$SES" <<'PY'
 import sys
 import pcbnew
 

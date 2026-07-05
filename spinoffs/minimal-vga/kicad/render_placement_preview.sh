@@ -6,13 +6,14 @@ cd "$(dirname "$0")/../../.."
 BOARD_JSON="${1:-spinoffs/minimal-vga/kicad/rev-a-physical.board.json}"
 OUT="${2:-fab/minimal-vga/review}"
 KCLI="$("scripts/find-kicad-cli.sh")"
+KICAD_PYTHON="${KICAD_PYTHON:-$("scripts/find-kicad-python.sh")}"
 
 mkdir -p "$OUT"
 TMP_BOARD="$(mktemp "${TMPDIR:-/tmp}/vjuga-placement.XXXXXX.kicad_pcb")"
 TMP_SVG="$(mktemp "${TMPDIR:-/tmp}/vjuga-placement.XXXXXX.svg")"
 trap 'rm -f "$TMP_BOARD" "$TMP_SVG"' EXIT
 
-MINIMAL_VGA_NO_ZONES=1 python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$TMP_BOARD" >/dev/null
+MINIMAL_VGA_NO_ZONES=1 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$TMP_BOARD" >/dev/null
 
 "$KCLI" pcb export svg \
   --layers F.Cu,F.Mask,F.SilkS,Edge.Cuts \

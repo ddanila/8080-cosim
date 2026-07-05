@@ -80,7 +80,10 @@ Status: routed FreeRouting baseline.
   (b) **duplicate footprint references make `ExportSpecctraDSN` fail silently**
   (returns False, no diagnostics) — the script now pre-checks and fails loudly;
   (c) the script prefers the local fork jar (ddanila/freerouting `custom`:
-  PolylineTrace.combine recursion fix + stagnation tuning) when built.
+  PolylineTrace.combine recursion fix + stagnation tuning) when built;
+  (d) wrappers use `scripts/find-kicad-python.sh` so the KiCad `pcbnew` module
+  is loaded from a compatible interpreter even when Homebrew or another Python
+  appears first in `PATH`.
 - `check_rev_a_pcb.py` rejects accidental layer-count regressions before the
   fabrication exporter is allowed to run.
 - `report_rev_a_fab_readiness.sh` produces a non-gating DRC/unconnected summary
@@ -93,10 +96,9 @@ Status: routed FreeRouting baseline.
   current candidate CPNs for many passives, USB-C, J1, reset, fuse, decouplers,
   and LEDs. The generated assembly readiness report is down to 10 missing CPN
   rows.
-- Current routed baseline has zero KiCad error-level DRC violations and two
-  unconnected items after the decoupler-placement normalization:
-  net `D1` between `U3.3` and the routed data-bus segment near `U2`, and
-  `BUS_DIR` between `U3.1` and `U5.21`.
+- Current routed baseline has zero KiCad error-level DRC violations and zero
+  unconnected items after adding deterministic seed routes for net `D1` and
+  `BUS_DIR`.
 - `export_fab.sh` now exports Gerbers, Excellon drill, fab notes, engineering
   BOM, and draft JLCPCB assembly files from the routed board.
 
@@ -114,17 +116,20 @@ Remaining work:
 
 ### Gate 4: Fabrication Candidate
 
-Status: blocked by final route cleanup.
+Status: fabrication-output candidate.
 
-The PCB has no KiCad error-level DRC violations, but the routed baseline still
-has two unconnected items. Keep the fabrication export scripts available, but do
-not treat the current board as buy-ready until the remaining net `D1` and BUS_DIR
-routes are closed and the export scripts are rerun from that clean board.
+The routed PCB passes KiCad DRC with zero unconnected items, and `export_fab.sh`
+exports Gerbers/drills, schematic PDF, assembly PDFs, position data, and draft
+JLCPCB BOM/CPL files. This is still not a buy-ready design because sourcing,
+connector, and manual layout review gates remain open.
+
+Treat this route as a physical manufacturability smoke test, not logical proof
+that VJUGA boots or that the DRAM/refresh/video handoff is correct. Production
+copper polish should wait until cosim and schematic review have frozen the
+netlist enough that routing churn is unlikely.
 
 Open production blockers:
 
-- Close the remaining routed-board unconnected items: net `D1` between `U3.3` and
-  the data-bus route near `U2`, and `BUS_DIR` between `U3.1` and `U5.21`.
 - Assign the remaining generated JLCPCB/LCSC CPNs for C50, D1, J30, J40,
   J90-J93, R6, R15, U40, and U50.
 - Re-check assigned candidate CPNs immediately before order and confirm

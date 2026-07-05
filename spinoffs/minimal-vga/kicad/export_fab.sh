@@ -6,6 +6,7 @@ cd "$(dirname "$0")/../../.."
 BOARD="${1:-spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb}"
 OUT="${2:-fab/minimal-vga}"
 KCLI="$("scripts/find-kicad-cli.sh")"
+KICAD_PYTHON="${KICAD_PYTHON:-$("scripts/find-kicad-python.sh")}"
 
 if [ ! -f "$BOARD" ]; then
   echo "No routed PCB yet: $BOARD" >&2
@@ -26,7 +27,7 @@ fi
 
 mkdir -p "$OUT/gerbers" "$OUT/drill"
 mkdir -p "$OUT/assembly" "$OUT/review"
-python3 spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
   "$BOARD" \
   spinoffs/minimal-vga/kicad/rev-a.bom.csv \
   "$OUT/assembly"

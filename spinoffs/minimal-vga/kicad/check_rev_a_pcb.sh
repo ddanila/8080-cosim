@@ -5,15 +5,16 @@ cd "$(dirname "$0")/../../.."
 
 BOARD_JSON="spinoffs/minimal-vga/kicad/rev-a-physical.board.json"
 PCB="spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb"
+KICAD_PYTHON="${KICAD_PYTHON:-$("scripts/find-kicad-python.sh")}"
 
 python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py "$BOARD_JSON"
 if [ "${MINIMAL_VGA_REGENERATE_PCB:-0}" = "1" ] || [ ! -f "$PCB" ]; then
-  python3 spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$PCB"
 else
   echo "using existing Rev A PCB: $PCB"
 fi
-python3 spinoffs/minimal-vga/kicad/check_rev_a_pcb.py "$PCB"
-python3 spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/check_rev_a_pcb.py "$PCB"
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py \
   "$PCB" \
   spinoffs/minimal-vga/kicad/rev-a.bom.csv \
   /tmp/minimal-vga-rev-a-assembly
