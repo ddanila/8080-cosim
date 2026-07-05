@@ -604,3 +604,30 @@ already netted) -> LVS untouched.
   cluster + D94 top-center), D2/D6 РТ4 dumps, board-2 EPROM pair, R6x-grid refdes macro photo,
   R61 spot, bypass disc values, D6 V1/V2 continuity, FDC INTRQ/DRQ.
 Next desk campaign: routing run + power widening + DRC + gerbers.
+
+## Census pass 6 (ВП листы 3-4 + 10-11) — the FULL IC census; ВП read COMPLETE (11/11 листов)
+IC census for the ДГШ5.109.006 column (лист 3-4), all counts vs our model:
+- **К555ЛЕ4 ×1 — D92 is in the factory register** (the photo-discovered clock-mesh NOR chip ✓✓).
+- **КР556РТ4 ×2 = programs ДГШ5.106.037 + .106.038** (D2/D6 ✓); **К155РЕ3 ×1 = .106.039** (D8 ✓;
+  D94's .092 is the .009-revision addition, consistent).
+- **К573РФ5 ×8 = programs ДГШ5.106.040 ... .106.047** — the eight EPROM socket programs
+  (D15-D22). NOTE: РФ5 = 2K×8 (2716-class) — the ORIGINAL .006 BIOS was 8 × 2KB = 16KB,
+  matching D8's eight 2K CS windows exactly; the .009 board substitutes 2764-class pairs
+  (model's eprom_8k HALF abstraction consistent with the .009 reality).
+- **565РУ3Г ×32** — the original .006 DRAM complement: РУ3 16-Kbit × 32 = 64KB in FOUR banks —
+  explains the 32-socket field; the .009 moves to РУ5 64-Kbit ×8 (one populated bank, D84-91 ✓).
+- КР580 set matches the model 1:1: ИК80А×1, ИР82×1, ВА86×3 (D4/D29/D107 ✓), ВА87×3 (D23/24/25 ✓),
+  ВИ53×3 (D54/55/57 ✓), ВК38×1, ВН59×1; **ВВ51А×2 (D11 + D28)**, ВВ55А×2 (D26/D27 ✓).
+- Counter/mux/gate counts ✓: ИЕ7×4 (D44-47), ИР16×3 (D41-43), КП14 = 531×4 + 555×1 = 5 (D48-52),
+  ЛА3×3 (D7/D37/D39; board uses КР1533 substitutes), АГ3×1 (D56), ИД7 = 531×1 (D53) + 555×1 (D9),
+  ИЕ17×1 (D40), ИЕ10×1 (D103), ЛА1×1 (D38), ЛА12×1 (D36), ЛН1 531×2 (D33+1 [find]), ЛП5×1 (D34),
+  ТЛ2×1 (D13), ТМ2×1 (D30), АП2×2 (D14/D32), УП2×1 (D104), СА3А×1 [unmodeled].
+- **.006 vs .009 revision delta**: the ВП lists a К561 CMOS group (ИЕ11, ИМ1, ИР9, ЛА7, ЛН2×2,
+  ЛП2, ТМ2, ТВ1) + К554СА3А on .109.006 that the .009 ПЭЗ/board audit does NOT have — the
+  original tape/analog interface circuits, dropped/replaced in the FDC revision [owner check:
+  any unpopulated footprints for these on board #2?].
+- Hardware (листы 10-11, .109.006 rows): X8 = вилка СНО51-30/56х9В-23 ✓, РШ2Н-1-17 ×1 (X9
+  candidate), фиксатор ГЕ8.362.019, винты М2×6 (2), М2.5×8 (6), М2.5×10 (2), гайки М2.5 (6),
+  **втулки БА.226.341-03 ×8 + -04 ×2 = the поз.174 standoffs**.
+- Bypass per-position map stays BLOCKED on materials (СБ draws groups only; values are a mixed
+  0.15/0.22/0.47µF fleet per pass 5). ВП document fully read: листы 1-11 all processed.
