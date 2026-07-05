@@ -564,3 +564,12 @@ s2_d42ld_tag + programmatic line scans):
   RxRDY (3) / TxRDY (3) arrivals -> D10 ВН59 IR rows confirmed.
 - **Task #14 status: all items done or blocked-on-owner.** Blocked residue (owner/materials):
   D6 V1/V2 feed (print), FDC INTRQ/DRQ, bypass values, C99 far plate, D8/D94 РЕ3 dumps.
+
+## Loop iteration: СБ поз. sweep COMPLETE -> task #10 CLOSED
+All remaining bands of sb-1.png swept (left/center/top/bottom). Result: every signal wire drawn
+on the СБ (3-20) maps to the owner's measured harvest — no undocumented wires; classification
+banked in BODGE-TRIAGE.md (final section). Hardware поз. table: connector/mount/cable items
+13-28 + 162-182 identified (incl. 176/179 = factory video coax, 171/172 = DIP sockets,
+174 = edge standoffs). СБ notes: 2.5mm grid, mounting variants (exclusions = R73/C12/C98
+specials + socketed D2/D6/D8/D15-D22), scale 2:1. No board.json changes needed (harvest
+already netted) -> LVS untouched.

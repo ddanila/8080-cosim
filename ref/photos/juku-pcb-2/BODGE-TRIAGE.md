@@ -1059,3 +1059,23 @@ mostly notch-right), ~25 confirmed keeps.
 Netlist-freeze gap list: FDC quadrant nets (biggest), X2/X9 connector nets, DRAM bank CAS
 decode, wire-12 driver + D98 reset chain, D8->D9 coupling (retire SA/SB/SC sim pins),
 sheet-1 keyboard zone, X4/X5 pinouts.
+
+## FINAL: full СБ поз.-callout sweep (all bands) — wire-link table CLOSED
+Sweep of sb-1.png left (x<2750), center (3800-5300), top (y<2600), bottom (y>3400) bands
+(crops sb_left_0-2, sb_ctr_0-1, sb_top_0-1, sb_bot_0-1, sb_xcross, sb_wire40):
+**Signal wires drawn on the СБ** (diagonals w/ end-number flags): 3, 4, 5, 6 [prev pass],
+7 (Φ1, from D1), 8 (STSTB, D5 zone -> D38), 9 (SYNC, crosses DRAM field), 10 (D41.QA -> D50.SEL;
+the "40"-looking label is a serifed 1+0), 12 (D13.2 -> D37.4), 13 (flag at D92 end), 14 (Φ2, D1 ->
+D35, runs parallel to 7), 17 (X2-mount zone -> S4/RESET zone), 19 (MEMW, D5 -> D7), 20 (X3 -> D3
+zone, S_TTL). **Every drawn wire maps 1:1 to the owner's measured 12-link harvest (+ the RF/video
+set 3/4/5/6). NO undocumented wires exist on the СБ** -> the factory wire-link set is fully closed;
+board.json already carries all of them (W-nets + wire_link flags).
+**Hardware поз. (non-wire)**: 13/22+16/21 (X1 mounts), 23/25+165 (X2), 170/169/168 (X3/X4/X5
+brackets), 167 (X7), 162 (XL1), 14/15/28 + "Развальцевать" (Вид А: RF-connector rivet mount),
+166/177/181 + 18/22/25 (X8 cable assembly), 175/178/180/182 + 19/22/25 (X9 cable assembly),
+171/172 (DIP sockets, leaders at D6/D15), **176/179 = the video coax from X6 (the class-c coax is
+FACTORY-documented)**, 174 (board-edge standoff pins, side view).
+**СБ notes read (title corner)**: coordinate grid = 2.5mm; mounting variants (R1-72,R74-106,VD1-7
+= II-a; C1-11,C13-72,C74-97 = II-в; D1,D3-D5,D7,D9-D14,D23-D108 = VIII-a) — the exclusions are
+exactly R73 (special mount, detail M1:1), C12 trimmer, C98 (special mount, detail M1:1), and the
+socketed set D2/D6/D8/D15-D22 ✓; solder ПОС61; поз. numbers match the Э3; scale 2:1.
