@@ -143,8 +143,11 @@ debugging session saved on real hardware.
    ROMBIOS restore/seek prelude plus read-sector transfers behind
    `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk` / `JUKU_DISK=/path/to/image.juk`.
    No disk image is vendored; `docs/ekdos-media-acquisition.md` tracks the
-   external `JUKU-1` image gate. Remaining target: run a real JUKU/EKDOS image
-   to factory `A>`, then port the proven behavior into `juku_top`.
+   external media gate. A transient run with the museum/juku3000
+   `J3KUTIL4.JUK` EKDOS 2.30 image reaches the `A>` prompt in cosim, and the
+   probe now has an optional VRAM bitmap oracle for that boundary. Remaining
+   targets: repeat with the exact factory `JUKU-1` image when available, then
+   port the proven FDC behavior into `juku_top`.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
@@ -371,7 +374,7 @@ commands.
 ## 9. Milestone ledger
 
 - [ ] M1 Baltijets docs mined; PROM-truth status resolved (disk/dump/reconstructed)
-- [ ] M2 EKDOS boots in the twin (cosim, then juku_top)
+- [ ] M2 EKDOS boots in the twin (cosim reaches `A>` with external media; `juku_top` FDC remains)
 - [ ] M3 VJUGA Rev A ordered
 - [ ] M4 Twin emits real video timing (pixel+sync stream validated vs MAME)
 - [ ] M5 jmon33 to live prompt + BASIC launches in the twin

@@ -139,6 +139,12 @@ schematic*), with `cosim/` + MAME as validation oracles.
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:
   `docs/boot-ekta37-T-command*.png`, `docs/basic-cart-readiness.md`,
   `docs/jmon33-interrupt-probe.md`, `docs/jmon33-hdl-probe.md`.
+- **EKDOS cosim milestone:** `sync/ekdos_fdc_probe.py` now treats disk-backed
+  runs as successful only when the framebuffer contains the EKDOS `A>` prompt
+  bitmap. A transient run with the external museum/juku3000 `J3KUTIL4.JUK`
+  EKDOS 2.30 image reaches `52K EKDOS 2.30` and `A>` in cosim. The repo still
+  does not vendor disk media; exact factory `JUKU-1` confirmation and the
+  `juku_top` FDC port remain open.
 - **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
   runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
   traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains

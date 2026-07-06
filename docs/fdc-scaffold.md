@@ -56,8 +56,13 @@ Current cosim result:
 - Setting `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk` passes that image through to
   `JUKU_DISK` and fails the report explicitly if the image is not a valid raw
   `.juk` size.
-- The next implementation step is running a real JUKU/EKDOS image through the
-  disk-backed model to the factory `A>` prompt.
+- Disk-backed runs now also require a left-margin EKDOS `A>` prompt bitmap in
+  VRAM. A transient, non-vendored run with
+  `https://elektroonikamuuseum.ee/failid/juku/tarkvara/J3KUTIL4.JUK` reaches
+  `52K EKDOS 2.30` and `A>` in cosim.
+- The next implementation steps are repeating the prompt proof with the exact
+  factory `JUKU-1` image when available and porting the FDC behavior into
+  `juku_top`.
 
 ## `.juk` sector backend
 `cosim/juk_disk.c` implements the raw MAME `FLOPPY_JUKU_FORMAT` geometry:

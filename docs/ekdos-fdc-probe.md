@@ -26,6 +26,7 @@ JUKU_KEYS=TDD cosim/trace roms/ekta37.bin 250000000 0 200000
 - WD1793 status/command writes (`0x1C`): 6
 - WD1793 status reads (`0x1C`): 8403330
 - WD1793 data reads (`0x1F`): 512
+- EKDOS `A>` prompt bitmap: not checked
 - Probe failures: 0
 
 ## FDC I/O Ports

@@ -38,8 +38,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   and the behavioral oracle.
 - `sync/juk_disk_check.sh` — raw `.juk` loader and minimal WD1793 model guard
   with synthetic media.
-- `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe, with
-  optional `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`.
+- `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe; with
+  optional `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`, disk-backed runs must reach
+  the EKDOS `A>` prompt bitmap.
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.
@@ -57,8 +58,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 
 The LVS/boot path is no longer a small fixture: `juku_top` is the working
 LVS-checked model and the guards above cover connectivity, boot behavior,
-value-level lockstep, FDC sector-read scaffolding, and runnable video readout.
-The remaining high-fidelity boundaries are the external EKDOS image, the
-user-visible jmon33 prompt oracle and cosim-vs-HDL comparison at that boundary,
-the full interactive BASIC prompt path, the analog speaker/current check,
-dumped PROM contents, and the РЕ3/АГ3-gated physical video slot timing.
+value-level lockstep, cosim FDC sector-read/prompt scaffolding, and runnable
+video readout. The remaining high-fidelity boundaries are the exact factory
+`JUKU-1` EKDOS-media proof plus `juku_top` FDC port, the user-visible jmon33
+prompt oracle and cosim-vs-HDL comparison at that boundary, the full
+interactive BASIC prompt path, the analog speaker/current check, dumped PROM
+contents, and the РЕ3/АГ3-gated physical video slot timing.

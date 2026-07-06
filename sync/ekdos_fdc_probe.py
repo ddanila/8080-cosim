@@ -15,6 +15,22 @@ ROM = ROOT / "roms" / "ekta37.bin"
 
 PORT_RE = re.compile(r"^\s*0x([0-9A-Fa-f]{2})\s*:\s*([0-9]+)(?:\s+last=0x([0-9A-Fa-f]{2}))?")
 STOP_RE = re.compile(r"stopped pc=0x([0-9A-Fa-f]{4}) cyc=([0-9]+) halted=([0-9]+) iff=([0-9]+) mode=([0-9]+) switches=([0-9]+)")
+VRAM = ROOT / "cosim" / "vram.bin"
+VRAM_WIDTH = 320
+VRAM_STRIDE = 40
+VRAM_LINES = 241
+PROMPT_PATTERN = [
+    "................",
+    "....#......#....",
+    "...#.#......#...",
+    "..#...#......#..",
+    "..#...#.......#.",
+    "..#####......#..",
+    "..#...#.....#...",
+    "..#...#....#....",
+    "................",
+    "................",
+]
 
 
 def run_probe(max_cycles, frame_cycles, disk_path):
@@ -97,6 +113,36 @@ def parse_stop(stderr):
     return {}
 
 
+def vram_pixel(vram, x, y):
+    byte = vram[y * VRAM_STRIDE + (x // 8)]
+    return (byte >> (7 - (x % 8))) & 1
+
+
+def find_a_prompt(vram_path):
+    try:
+        vram = vram_path.read_bytes()
+    except FileNotFoundError:
+        return None
+    if len(vram) != VRAM_STRIDE * VRAM_LINES:
+        return None
+
+    ph = len(PROMPT_PATTERN)
+    pw = len(PROMPT_PATTERN[0])
+    for y in range(VRAM_LINES - ph + 1):
+        for x in range(3):
+            ok = True
+            for dy, row in enumerate(PROMPT_PATTERN):
+                for dx, want in enumerate(row):
+                    if vram_pixel(vram, x + dx, y + dy) != (want == "#"):
+                        ok = False
+                        break
+                if not ok:
+                    break
+            if ok:
+                return {"x": x, "y": y}
+    return None
+
+
 def table_row(values):
     return "| " + " | ".join(str(value).replace("|", "/") if value is not None else "-" for value in values) + " |"
 
@@ -107,6 +153,7 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
     failures = []
     disk_selected = bool(disk_path)
     disk_loaded = "loaded JUKU disk image" in proc.stderr
+    prompt = find_a_prompt(VRAM) if disk_selected else None
 
     if proc.returncode != 0:
         failures.append(f"trace exited with status {proc.returncode}")
@@ -123,6 +170,8 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
     if disk_selected:
         if data_reads < 512:
             failures.append("ROMBIOS did not perform at least one 512-byte sector transfer")
+        if prompt is None:
+            failures.append("disk-backed run did not render the EKDOS `A>` prompt bitmap")
     elif data_reads != 512:
         failures.append("ROMBIOS did not perform the expected 512-byte first-sector data read")
 
@@ -130,7 +179,7 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
     if failures:
         status = "REGRESSION"
     elif disk_selected:
-        status = "DISK-BACKED FDC PATH REACHED"
+        status = "EKDOS A> PROMPT REACHED"
     else:
         status = "READY FOR EXTERNAL EKDOS IMAGE"
     disk_label = str(disk_path) if disk_selected else "not selected"
@@ -168,6 +217,11 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         f"- WD1793 status/command writes (`0x1C`): {ports['out'].get(0x1C, {}).get('count', 0)}",
         f"- WD1793 status reads (`0x1C`): {ports['in'].get(0x1C, {}).get('count', 0)}",
         f"- WD1793 data reads (`0x1F`): {ports['in'].get(0x1F, {}).get('count', 0)}",
+        (
+            f"- EKDOS `A>` prompt bitmap: found at x={prompt['x']}, y={prompt['y']}"
+            if prompt
+            else "- EKDOS `A>` prompt bitmap: not checked" if not disk_selected else "- EKDOS `A>` prompt bitmap: not found"
+        ),
         f"- Probe failures: {len(failures)}",
         "",
         "## FDC I/O Ports",
