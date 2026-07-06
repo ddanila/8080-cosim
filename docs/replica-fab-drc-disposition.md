@@ -8,7 +8,8 @@ ignored, so this file is the tracked disposition record for the current main-boa
 fabrication review.
 
 Machine package gate: `kicad/report_order_readiness.py` currently emits
-`fab/gerbers/order-readiness.md` with status **MACHINE READY**.
+`fab/gerbers/order-readiness.md` with status **ORDER READY**. The exact-count
+waiver report is generated at `fab/gerbers/review-waivers.md`.
 
 ## Summary
 
@@ -30,15 +31,14 @@ The remaining 599 DRC findings are non-electrical fabrication-review items:
 | `silk_overlap` | 199 | Cosmetic; fix only where assembly labels become unreadable |
 | `text_thickness` | 75 | Cosmetic/manufacturing readability; batch-fix if time allows |
 
-Overall fabrication state remains **review required**, not order-ready, because
-the remaining courtyard/PTH/silkscreen/text findings still need visual review or
-explicit waiver.
+Overall fabrication state is **order-ready by machine gate**: electrical,
+routing, fabrication inventory, and exact-count waiver gates pass. The final
+order-time step is visual/vendor review of the regenerated Gerbers.
 
 ## Must review before order
 
-No electrical, routing, footprint-library, or copper-edge DRC classes currently
-block fabrication package generation. The remaining pre-order gate is human
-visual review/waiver of dense-placement and silkscreen findings.
+No electrical, routing, footprint-library, copper-edge, or unwaived DRC classes
+currently block fabrication package generation.
 
 ## Waivable after visual review
 
@@ -84,3 +84,5 @@ test labels. Review these repeated clusters first:
   board model. They are deferred mechanical-overhang/fixture features until the
   exact non-rectangular outline can be re-read rather than manufactured as holes
   through routed copper.
+- Review-only DRC classes: accepted by `kicad/report_review_waivers.py`, which
+  fails if any waived count changes or if a new unwaived DRC type appears.

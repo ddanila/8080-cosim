@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_OUT_DIR = ROOT / "fab" / "gerbers"
 FAB_REPORT = ROOT / "kicad" / "report_fab_readiness.py"
+WAIVER_REPORT = ROOT / "kicad" / "report_review_waivers.py"
 
 BLOCKING_DRC_TYPES = {
     "clearance",
@@ -42,7 +43,16 @@ def run_fab_readiness(board, out_dir):
     return out_dir / "juku_routed-drc.json"
 
 
-def build_report(board, out_dir, drc):
+def run_waiver_review(drc_path, out_dir):
+    result = subprocess.run([
+        str(WAIVER_REPORT),
+        str(drc_path),
+        str(out_dir / "review-waivers.md"),
+    ])
+    return result.returncode == 0
+
+
+def build_report(board, out_dir, drc, waiver_accepted):
     violations = drc.get("violations", [])
     unconnected = drc.get("unconnected_items", [])
     counts = Counter(v.get("type", "unknown") for v in violations)
@@ -54,7 +64,8 @@ def build_report(board, out_dir, drc):
         not any(blocking_counts.values())
         and not unknown_types
     )
-    status = "MACHINE READY" if machine_ready else "NOT READY"
+    order_ready = machine_ready and waiver_accepted
+    status = "ORDER READY" if order_ready else ("MACHINE READY" if machine_ready else "NOT READY")
 
     lines = [
         "# Main board order readiness",
@@ -90,13 +101,26 @@ def build_report(board, out_dir, drc):
         if counts.get(name, 0):
             lines.append(table_row([name, counts[name]]))
 
+    lines.extend([
+        "",
+        "## Waiver Gate",
+        "",
+        f"- Review-only waiver status: **{'ACCEPTED' if waiver_accepted else 'NOT ACCEPTED'}**",
+        f"- Waiver report: `{repo_relative(out_dir / 'review-waivers.md')}`",
+    ])
+
     lines.extend(["", "## Disposition", ""])
-    if machine_ready:
+    if order_ready:
+        lines.append(
+            "Machine blockers are clear and the exact-count review-only DRC waiver "
+            "is accepted. The regenerated Gerber/drill package is ready for final "
+            "order-time visual/vendor review."
+        )
+    elif machine_ready:
         lines.append(
             "Machine blockers are clear: no clearance, short, unconnected, "
             "copper-edge, or footprint-library findings remain. The package can "
-            "proceed to human Gerber/assembly review of the listed review-only "
-            "classes."
+            "proceed once the review-only waiver gate is accepted."
         )
     else:
         lines.append(
@@ -112,12 +136,13 @@ def main():
     out_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else DEFAULT_OUT_DIR
     drc_path = run_fab_readiness(board, out_dir)
     drc = json.loads(drc_path.read_text())
-    report, machine_ready = build_report(board, out_dir, drc)
+    waiver_accepted = run_waiver_review(drc_path, out_dir)
+    report, order_ready = build_report(board, out_dir, drc, waiver_accepted)
     report_path = out_dir / "order-readiness.md"
     report_path.write_text(report)
     print(report)
     print(f"Wrote {repo_relative(report_path)}")
-    return 0 if machine_ready else 3
+    return 0 if order_ready else 3
 
 
 if __name__ == "__main__":

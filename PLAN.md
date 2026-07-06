@@ -146,10 +146,12 @@ before any Soviet NOS is at risk.
 2. Port the VJUGA order-readiness gate machinery (ERC/DRC/BOM/CPL/manifest/checksum
    reports) to the main `kicad/` board — first main-board gate is now in
    `kicad/report_fab_readiness.py` and `kicad/report_order_readiness.py`, emitting
-   `fab/gerbers/fab-readiness.md`, `order-readiness.md`, and `SHA256SUMS`.
+   `fab/gerbers/fab-readiness.md`, `review-waivers.md`, `order-readiness.md`,
+   and `SHA256SUMS`.
    Current machine status: electrical/routing PASS, fabrication-file inventory
-   PASS, and order-readiness **MACHINE READY**; 599 courtyard/PTH/silk/text
-   findings remain review-only human disposition items.
+   PASS, exact-count review waiver ACCEPTED, and order-readiness **ORDER READY**.
+   The remaining 599 courtyard/PTH/silk/text findings are review-only and covered
+   by the waiver gate.
 3. Silkscreen/mechanical disposition started in
    `docs/replica-fab-drc-disposition.md`: connector footprint-library
    reproducibility is resolved by `kicad/juku.pretty/`; copper-edge findings are
@@ -243,8 +245,8 @@ dump request there may close this workstream without our own board time.
   need disk files or dumps).
 - WS-C: close VJUGA sign-offs, order Rev A.
 - WS-D1/2: v76 power widening + fab-export/readiness gates done; machine blockers
-  are clear. Now formally waive or touch up the 599 review-only courtyard/PTH/silk/text
-  findings and do independent Gerber review.
+  are clear and the exact-count waiver gate accepts the 599 review-only
+  courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
 - WS-E2: start parts sourcing (long lead). WS-H: first community contact.
 
