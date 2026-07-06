@@ -145,10 +145,11 @@ before any Soviet NOS is at risk.
    at 0 unconnected / 0 clearance / 0 shorts. Renders regenerated.
 2. Port the VJUGA order-readiness gate machinery (ERC/DRC/BOM/CPL/manifest/checksum
    reports) to the main `kicad/` board — first main-board gate is now in
-   `kicad/report_fab_readiness.py` and emits `fab/gerbers/fab-readiness.md` plus
-   `SHA256SUMS`. Current status: electrical/routing PASS and fabrication-file
-   inventory PASS, but overall **REVIEW REQUIRED** because 599 courtyard/PTH/silk/text
-   DRC findings still need human disposition.
+   `kicad/report_fab_readiness.py` and `kicad/report_order_readiness.py`, emitting
+   `fab/gerbers/fab-readiness.md`, `order-readiness.md`, and `SHA256SUMS`.
+   Current machine status: electrical/routing PASS, fabrication-file inventory
+   PASS, and order-readiness **MACHINE READY**; 599 courtyard/PTH/silk/text
+   findings remain review-only human disposition items.
 3. Silkscreen/mechanical disposition started in
    `docs/replica-fab-drc-disposition.md`: connector footprint-library
    reproducibility is resolved by `kicad/juku.pretty/`; copper-edge findings are
@@ -241,9 +242,9 @@ dump request there may close this workstream without our own board time.
 - WS-A: pull + mine Baltijets docs (007 first triage done; small-PROM bits still
   need disk files or dumps).
 - WS-C: close VJUGA sign-offs, order Rev A.
-- WS-D1/2: v76 power widening + first fab-export/readiness gates done; now burn
-  down or formally waive the 599 non-electrical DRC findings and do independent
-  Gerber review.
+- WS-D1/2: v76 power widening + fab-export/readiness gates done; machine blockers
+  are clear. Now formally waive or touch up the 599 review-only courtyard/PTH/silk/text
+  findings and do independent Gerber review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
 - WS-E2: start parts sourcing (long lead). WS-H: first community contact.
 
