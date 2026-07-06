@@ -48,6 +48,10 @@ def milestone_rows():
         "docs/ekdos-media-acquisition.md",
         "Status: **COSIM EKDOS PROMPT PROVEN WITH EXTERNAL MEDIA**",
     )
+    hdl_fdc_ready = marker(
+        "docs/fdc-readiness.md",
+        "Status: **HDL WD1793 SYNTHETIC-SECTOR READY**",
+    )
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
@@ -72,15 +76,21 @@ def milestone_rows():
             "evidence": (
                 "`docs/ekdos-media-acquisition.md` records a non-vendored external-media "
                 "run reaching the EKDOS `A>` prompt in cosim; the default tracked probe "
-                "remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`. "
-                "Exact factory `JUKU-1` evidence and the `juku_top` FDC port remain open."
+                "remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`; "
+                "`docs/fdc-readiness.md` guards HDL WD1793 synthetic-sector behavior. "
+                "Exact factory `JUKU-1` evidence and external-media FDC in `juku_top` remain open."
                 if ekdos_external_prompt
                 else "cosim FDC boundary is reproducible without vendored media; "
                 "`docs/ekdos-fdc-probe.md` is READY FOR EXTERNAL EKDOS IMAGE. "
-                "Tracked evidence does not yet prove the exact factory JUKU-1 image "
-                "or a juku_top FDC port."
+                + (
+                    "HDL synthetic-sector behavior is guarded by `docs/fdc-readiness.md`. "
+                    if hdl_fdc_ready
+                    else ""
+                )
+                + "Tracked evidence does not yet prove the exact factory JUKU-1 image "
+                "or external-media FDC in `juku_top`."
             ),
-            "next": "Repeat with exact factory JUKU-1 media when available, then port FDC behavior to juku_top.",
+            "next": "Repeat with exact factory JUKU-1 media when available, then connect external `.juk` media through juku_top.",
         },
         {
             "id": "M3",

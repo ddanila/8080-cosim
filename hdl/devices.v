@@ -595,10 +595,101 @@ endmodule
 module serial_conn (inout wire sout, rts, dtp, ttl_sout, oc_sout, sin);
 endmodule
 
-module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk);
-    reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
-    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
-    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
+                 input wire motor_on, side);
+    localparam ST_BUSY = 8'h01;
+    localparam ST_DRQ = 8'h02;
+    localparam ST_RNF = 8'h10;
+    localparam ST_NOT_READY = 8'h80;
+
+    reg [7:0] status = ST_NOT_READY;
+    reg [7:0] track = 8'h00;
+    reg [7:0] sector = 8'h01;
+    reg [7:0] data = 8'h00;
+    reg [7:0] command = 8'h00;
+    integer buffer_pos = 0;
+    integer buffer_len = 0;
+
+    function is_read_sector(input [7:0] cmd); begin
+        is_read_sector = ((cmd & 8'hE0) == 8'h80);
+    end endfunction
+
+    function is_type_i(input [7:0] cmd); begin
+        is_type_i = (cmd[7] == 1'b0);
+    end endfunction
+
+    function [7:0] synthetic_sector_byte(input integer pos); begin
+        if (pos == 0) synthetic_sector_byte = track;
+        else if (pos == 1) synthetic_sector_byte = {7'b0, side};
+        else if (pos == 2) synthetic_sector_byte = sector;
+        else synthetic_sector_byte = track + ({7'b0, side} << 5) + sector + pos[7:0];
+    end endfunction
+
+    task clear_transfer; begin
+        buffer_pos = 0;
+        buffer_len = 0;
+        status = status & ~(ST_BUSY | ST_DRQ);
+    end endtask
+
+    task begin_read_sector; begin
+        clear_transfer();
+        status = status & ~(ST_RNF | ST_NOT_READY);
+        if (!motor_on) begin
+            status = status | ST_NOT_READY;
+        end else if (sector == 0 || sector > 10) begin
+            status = status | ST_RNF;
+        end else begin
+            buffer_pos = 0;
+            buffer_len = 512;
+            status = status | ST_BUSY | ST_DRQ;
+        end
+    end endtask
+
+    task finish_type_i(input [7:0] cmd); begin
+        clear_transfer();
+        status = status & ~(ST_RNF | ST_NOT_READY);
+        if (!motor_on) begin
+            status = status | ST_NOT_READY;
+        end else if ((cmd & 8'hF0) == 8'h00) begin
+            track = 8'h00;
+        end else if ((cmd & 8'hF0) == 8'h10) begin
+            track = data;
+        end
+    end endtask
+
+    always @(posedge clk) if (~cs_n & ~wr_n) begin
+        case (A)
+            2'd0: begin
+                command = D;
+                if (is_read_sector(D)) begin_read_sector();
+                else if (is_type_i(D)) finish_type_i(D);
+                else if ((D & 8'hF0) == 8'hD0) clear_transfer();
+                else begin
+                    status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
+                end
+            end
+            2'd1: track = D;
+            2'd2: sector = D;
+            2'd3: data = D;
+        endcase
+    end
+
+    always @(posedge clk) if (~cs_n & ~rd_n && A == 2'd3) begin
+        if (buffer_pos < buffer_len) begin
+            data = synthetic_sector_byte(buffer_pos);
+            buffer_pos = buffer_pos + 1;
+            if (buffer_pos >= buffer_len) clear_transfer();
+        end else begin
+            status = status & ~ST_DRQ;
+        end
+    end
+
+    wire [7:0] read_data =
+        (A == 2'd0) ? status :
+        (A == 2'd1) ? track :
+        (A == 2'd2) ? sector :
+        data;
+    assign D = (~cs_n & ~rd_n) ? read_data : 8'bz;
 endmodule
 
 module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6, ir5, ir1, ir0,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)

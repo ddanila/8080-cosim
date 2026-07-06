@@ -145,9 +145,12 @@ debugging session saved on real hardware.
    No disk image is vendored; `docs/ekdos-media-acquisition.md` tracks the
    external media gate. A transient run with the museum/juku3000
    `J3KUTIL4.JUK` EKDOS 2.30 image reaches the `A>` prompt in cosim, and the
-   probe now has an optional VRAM bitmap oracle for that boundary. Remaining
-   targets: repeat with the exact factory `JUKU-1` image when available, then
-   port the proven FDC behavior into `juku_top`.
+   probe now has an optional VRAM bitmap oracle for that boundary. The first
+   HDL-side WD1793 behavior slice is now guarded by `sync/fdc_check.sh` and
+   documented in `docs/fdc-readiness.md`: restore/seek/read-sector/status,
+   side-select, and motor-off behavior are proven with synthetic sector
+   contents. Remaining targets: repeat with the exact factory `JUKU-1` image
+   when available, then connect external `.juk` media through `juku_top`.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

@@ -87,6 +87,13 @@ set, preserving the default no-disk probe behavior. `sync/juk_disk_check.sh`
 guards both the raw `.juk` loader and this minimal FDC model with synthetic
 images.
 
+## HDL WD1793 synthetic-sector guard
+`sync/fdc_check.sh` now guards the first HDL-side WD1793 behavior slice in
+`hdl/devices.v`: restore, seek, read-sector, BUSY/DRQ status, side-select
+stream changes, and motor-off NOT READY behavior. The guard is documented in
+`docs/fdc-readiness.md` and uses synthetic sector contents only; it does not
+vendor EKDOS media or claim that exact factory `JUKU-1` boots in HDL.
+
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3
 one-shots -- step/precomp timing), D96 (ТМ2), D28 (ЛН3), D98 (ЛП11 + the wires-17/18
