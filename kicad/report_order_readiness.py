@@ -328,9 +328,18 @@ def main():
     report_path = out_dir / "order-readiness.md"
     preliminary, _ = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, package_geometry, external_review)
     report_path.write_text(preliminary)
-    upload_runbook = run_upload_runbook(out_dir)
-    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, package_geometry, external_review, upload_runbook)
-    report_path.write_text(report)
+    order_ready = False
+    report = preliminary
+    upload_runbook = None
+    for _attempt in range(4):
+        previous_report = report_path.read_text(errors="replace") if report_path.exists() else ""
+        upload_runbook = run_upload_runbook(out_dir)
+        report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, package_geometry, external_review, upload_runbook)
+        report_path.write_text(report)
+        if report == previous_report:
+            break
+    else:
+        raise SystemExit("order-readiness/upload-runbook reports did not converge")
     print(report)
     print(f"Wrote {repo_relative(report_path)}")
     return 0 if order_ready else 3
