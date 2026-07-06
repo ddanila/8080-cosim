@@ -18,6 +18,10 @@ Environment overrides:
 - `JMON33_HDL_FRAMEIRQ` default `200000`
 - `JMON33_HDL_TIMECAP` default `120000000`
 
+The underlying HDL testbench also accepts `+cursorstop=1`, which stops when
+the cosim jmon33 monitor-idle cursor bytes are present in `juku_top` VRAM.
+That stronger boundary is intentionally not the default for this fast guard.
+
 ## Evidence
 
 | Check | Result |
@@ -36,5 +40,6 @@ Environment overrides:
 - This is a first-video-write HDL probe, not a user-visible jmon33 prompt.
 - The cosim-side interrupt path over a longer run remains documented in
   `docs/jmon33-interrupt-probe.md`.
-- Next step: identify a stable monitor-ready screen/RAM oracle and compare the
-  cosim and `juku_top` jmon33 states at that stronger boundary.
+- The cosim monitor-idle screen/RAM oracle is documented in
+  `docs/jmon33-ready-probe.md`; `juku_top` now has a `+cursorstop=1`
+  testbench stop hook for comparing against that stronger boundary.

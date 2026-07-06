@@ -18,7 +18,7 @@
 
 module juku_top_tb();
   reg osc=0;
-  integer vram_writes=0, max_vram=6000, mcyc=0;
+  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0;
   reg vram_seen=0, sq=0;
 
   // keyboard stimulus (opt-in: keyat=0 => kbd off => boot byte-identical). Press the
@@ -61,6 +61,11 @@ module juku_top_tb();
     vram_writes = vram_writes + 1;
     if (!vram_seen) begin vram_seen=1;
       $display("[VRAM] first video write @0x%04h mcyc=%0d", dut.BA, mcyc); end
+    if (cursorstop && !cursor_seen && cursor_oracle_ok()) begin
+      cursor_seen = 1;
+      $display("[VRAM] jmon33 cursor oracle reached (mcyc=%0d writes=%0d)", mcyc, vram_writes);
+      #60 dump_vram; $finish;
+    end
     if (vram_writes == max_vram) begin
       $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); #60 dump_vram; $finish;
     end
@@ -69,12 +74,20 @@ module juku_top_tb();
   // The framebuffer lives in the 8 bit-sliced К565РУ5 DRAMs (D60=bit0 .. D67=bit7);
   // reconstruct each byte from the eight 1-bit planes.
   integer fd, k, a; reg [7:0] b;
+  function [7:0] dram_byte(input integer addr); begin
+    dram_byte = {dut.U_D91.mem[addr], dut.U_D90.mem[addr], dut.U_D89.mem[addr], dut.U_D88.mem[addr],
+                 dut.U_D87.mem[addr], dut.U_D86.mem[addr], dut.U_D85.mem[addr], dut.U_D84.mem[addr]};
+  end endfunction
+  function cursor_oracle_ok; integer y; begin
+    cursor_oracle_ok = 1'b1;
+    for (y=20; y<30; y=y+1)
+      if (dram_byte(16'hD800 + y*40 + 1) !== 8'hFF) cursor_oracle_ok = 1'b0;
+  end endfunction
   task dump_vram; begin
     fd=$fopen("hdl/sim/vram_top.bin","wb");
     for (k=0;k<40*241;k=k+1) begin
       a = 16'hD800 + k;
-      b = {dut.U_D91.mem[a], dut.U_D90.mem[a], dut.U_D89.mem[a], dut.U_D88.mem[a],
-           dut.U_D87.mem[a], dut.U_D86.mem[a], dut.U_D85.mem[a], dut.U_D84.mem[a]};
+      b = dram_byte(a);
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
@@ -91,6 +104,7 @@ module juku_top_tb();
     if ($value$plusargs("kshift=%d", kshiftp)) ;         // 1 = SHIFT held (uppercase)
     if ($value$plusargs("khold=%d",  khold))  ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)
+    if ($value$plusargs("cursorstop=%d", cursorstop)) ; // stop when jmon33 idle cursor is in VRAM
     if (keyat != 0) begin kbd_en=1; kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
   end
   initial begin #(timecap);       // time cap (the bit-sliced DRAM makes this sim heavy)

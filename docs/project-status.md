@@ -126,8 +126,10 @@ schematic*), with `cosim/` + MAME as validation oracles.
   cosim and `juku_top` at the first Monitor 3.3 video write (`0xFF40`) and requires matching
   first-write VRAM dumps. `sync/jmon33_ready_probe.py` now records a stronger cosim
   monitor-idle oracle: VRAM SHA256 `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
-  plus the solid cursor block at `x=8`, `y=20`; porting `juku_top` to that boundary
-  and proving the user-visible command prompt remain pending.
+  plus the solid cursor block at `x=8`, `y=20`. `juku_top` now has an optional
+  `+cursorstop=1` testbench stop hook for that cursor boundary; completing the
+  cosim-vs-HDL comparison there and proving the user-visible command prompt
+  remain pending.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
