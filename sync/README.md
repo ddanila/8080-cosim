@@ -51,6 +51,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   monitor-idle framebuffer oracle: full VRAM SHA256 plus solid cursor block.
 - `sync/jmon33_hdl_probe.sh` — HDL guard proving `juku_top` runs Monitor 3.3
   to the first video-memory write with frame interrupts enabled.
+- `sync/jmon33_hdl_cursor_probe.py` — bounded HDL diagnostic for the stronger
+  jmon33 monitor-idle cursor oracle; currently documents the open boundary.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:

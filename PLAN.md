@@ -175,10 +175,13 @@ debugging session saved on real hardware.
    `docs/jmon33-ready-probe.md`: full VRAM SHA256
    `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` plus
    the solid cursor block at `x=8`, `y=20`. The HDL testbench now has a
-   `+cursorstop=1` stop hook for that same cursor boundary. Remaining targets:
-   compare cosim and `juku_top` at that stronger boundary, prove the
-   user-visible jmon33 command prompt, and exercise the full EktaSoft `B`
-   command path to a live BASIC prompt.
+   `+cursorstop=1` stop hook for that same cursor boundary, and
+   `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
+   first write still matches at `0xFF40`, but the 300-write HDL run stops with
+   a blank framebuffer before the cursor oracle. Remaining targets: reduce the
+   long interrupt/high-memory HDL path enough to compare cosim and `juku_top`
+   at that stronger boundary, prove the user-visible jmon33 command prompt,
+   and exercise the full EktaSoft `B` command path to a live BASIC prompt.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
