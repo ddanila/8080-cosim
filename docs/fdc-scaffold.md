@@ -36,6 +36,22 @@ Odd pins 1,3,5,7 / 9,11,13,15 / 17,19,21,23 / 25,27,29,31,33 are ground.
 Drive power is +12 V on drive X1 pin 1, ground on pins 2/3, and +5 V on pin 4.
 The drawing labels the drive as `НГМД ЕС 5323.01`.
 
+## Current EKDOS boot-path probe
+`sync/ekdos_fdc_probe.py` drives the factory sequence from Baltijets doc 003:
+`ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` toward the `JUKU-1` EKDOS boot.
+The current report is `docs/ekdos-fdc-probe.md`.
+
+Current cosim result:
+
+- ROMBIOS reaches the FDC path.
+- WD1793 command/status port `0x1C` is written 6 times and polled millions of
+  times.
+- The data port `0x1F` is read 512 times, matching the first sector transfer
+  size expected before the missing disk model boundary.
+- The next implementation step is a real WD1793 state machine plus `.juk`/JUKU
+  sector loader, then the probe target changes from `READY FOR FDC MODEL` to
+  the factory `A>` prompt.
+
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3
 one-shots -- step/precomp timing), D96 (ТМ2), D28 (ЛН3), D98 (ЛП11 + the wires-17/18

@@ -134,6 +134,10 @@ debugging session saved on real hardware.
    `.juk` image loader in cosim, then port to `juku_top` (D93 already netted);
    milestone: factory sequence `<T>, <D>, <D>` from `ROMBIOS 3.43` to **`A>`**
    with the `JUKU-1`/EKDOS disk image in drive A, cross-checked vs MAME.
+   A cosim probe now exercises that exact `TDD` path and reports
+   `READY FOR FDC MODEL`: ROMBIOS writes WD1793 port `0x1C`, polls it, and reads
+   512 bytes from data port `0x1F`; the remaining implementation is the real
+   WD1793 state machine plus `.juk`/JUKU sector loader.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
