@@ -78,3 +78,77 @@ Implication:
 - Treat doc 010 as sourcing/census evidence, not timing/adjustment evidence.
 - RAS/CAS/refresh and RF/video adjustment data still need to come from another
   adjustment document in the Baltijets set, not this parts-list PDF.
+
+## Doc 003 adjustment-instructions pass
+
+`003 Adjustment instructions.pdf` is the expected E5104 adjustment/check packet
+(`ДГШ3.031.011 Д2`). It is a factory bring-up and acceptance document, not a
+processor schematic, so it does not close PROM contents or hidden copper nets. It
+does provide useful system-level oracles for WS-B/WS-G:
+
+| Page | Finding |
+|---|---|
+| 2 | Contents list confirms sections for processor module `ДГШ5.109.009`, main PSU `ДГШ5.087.019`, FDD PSU `ДГШ2.087.031`, manipulator `ДГШ3.049.040`, keyboard module `ДГШ3.104.015`, complete E5104 terminal check, and burn-in/vibration. |
+| 3 | Adjustment object list includes processor module `.009`, PSU, FDD PSU, manipulator, keyboard module, and removable memory expander `ДГШ5.106.102`; bench setup includes setup stand `ДГШ3.058.002`, two `МС6105-04` monitors, oscilloscope `C1-114`, and supply `ГН-09-01`. |
+| 4 | FDD PSU check gives concrete voltages: set +12 V to `12.1 +/- 0.05 V`; check +5 V at `5 +/- 0.25 V`; idle +12 V on X1/X2 pins 1/2 should be `12 +/- 1 V`; insulation test is 1 minute at 750 V AC. |
+| 5 | System check starts with video warm-up, then auto-tests system RAM/video RAM from `D300H` to `FFFFH`; normal monitor-ready message is `ROMBIOS 3.43` followed by `*`. EKDOS boot uses disk `JUKU-1 ДГШ5.106.105` in left drive A and key sequence `<T>, <D>, <D>`; normal result is prompt `A>`. |
+| 5 | Factory software checks also include QRUN diagnostics, printer check via `CTRL+F` and `D000/003F`, manipulator check using EKDOS and editor `GR`, and BASIC launch from the removable memory expander by command `A`, expecting the BASIC banner and `READY`. |
+| 6-6a | Local-network check uses at least four terminals, network switches per the appendix, NETD/NET boot prompts, and visible `ARVUTUSTEHNIKA EKB` / `EKDOS 1.0` / `JANET 1.2` style messages. |
+| 6b | Factory burn-in is 100 hours at `(25 +/- 10) C`, with the last 4 hours at `+35 C`; QRUN is run before, every 24 hours, and at the end. Vibration is 10 minutes at 30 Hz and 20 m/s^2 with equipment off. |
+
+Implication:
+
+- WS-B's FDC/EKDOS milestone should use the factory key sequence and prompt:
+  `ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` -> `A>`, with `JUKU-1` as the
+  first disk target.
+- WS-G bring-up can now reference factory acceptance strings and QRUN/burn-in
+  cadence instead of inventing its own final smoke test.
+- RAS/CAS timing and PROM byte contents are still not printed here.
+
+## Doc 009 FDD-unit pass
+
+`009 FDDs.pdf` is the floppy unit packet `ДГШ3.065.008`: assembly drawing,
+schematic, element list, and technical description. It is useful for the Tier-2
+storage path and Gotek/real-drive cabling.
+
+| Page | Finding |
+|---|---|
+| 1 | Documentation list names `ДГШ3.065.008 СБ`, `Э3`, `ПЭ3`, and `ТО`; assembly units include FDD PSU `ДГШ2.087.031` plus chassis/mechanical/cable parts. |
+| 6/8 | Drive power connector table: drive X1 pin 1 = +12 V, pins 2/3 = ground, pin 4 = +5 V. PSU-side output table shows +5 V on pin 1, +12 V on pin 3, ground on pins 2/4. |
+| 6/8 | 34-pin FDD signal mapping is Shugart-style: INDEX 8, SEL0 10, SEL1 12, MOTOR ON 16, DIR 18, STEP 20, WRITE DATA 22, WRITE GATE 24, TRACK 0 26, WRITE PROTECT 28, READ DATA 30, SIDE SELECT 32, READY 34. Odd pins 1,3,5,7 / 9,11,13,15 / 17,19,21,23 / 25,27,29,31,33 are ground. |
+| 8 | The drawing labels the drive as `НГМД ЕС 5323.01`. |
+
+Implication:
+
+- A Gotek/HxC adapter for the first EKDOS boot should preserve the standard
+  active-low 34-pin control/data map above and provide READY on pin 34.
+- The real-drive path needs +5 V/+12 V power with the drive connector polarity
+  checked against the original drawing before use.
+
+## Doc 014 removable-memory-expander pass
+
+`014 External storage.pdf` is not floppy storage. It is the removable 32K memory
+expander (`Сменный расширитель`) packet `ДГШ5.106.102`, with module
+`ДГШ5.106.103`.
+
+| Page | Finding |
+|---|---|
+| 1 | Packet contains assembly drawing `ДГШ5.106.102 СБ`, passport `ДГШ5.106.102 ПС`, and assembly unit `ДГШ5.106.103` (`Модуль ЗУ-32К`). |
+| 10 | Schematic page shows ROM/RAM devices marked `573 РФ4` and `РУ8`, with jumpers/switches selecting memory content/banks. |
+
+Implication:
+
+- This document feeds the BASIC/removable-memory path and physical cartridge
+  recreation, not the FDD cable plan.
+
+## Doc 015 floppy-disk label pass
+
+`015 Floppy disk.pdf` is a one-page assembly drawing for disk label `ДГШ5.106.105
+СБ`. The table maps the base designation to `JUKU-1`, suffix `-01` to `JUKU-2`,
+and suffix `-02` to `JUKU-3`.
+
+Implication:
+
+- Doc 003's EKDOS boot disk `JUKU-1 ДГШ5.106.105` is a factory-named disk label
+  family, not a dumped image by itself. The actual disk image still needs to come
+  from MAME/juku3000 media or a physical disk dump.

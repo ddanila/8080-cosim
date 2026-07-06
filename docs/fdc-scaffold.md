@@ -12,6 +12,30 @@ The .009 revision's floppy subsystem, netted to the extent the desk sources allo
 - HDL: inert stubs (never drive DAL/DB/IRQ) -- boot stays byte-identical; connectivity
   is the deliverable. PIC grew ir0/ir1 structural inputs.
 
+## Factory FDD-cable evidence from Baltijets doc 009
+`ref/baltijets-tech-docs/009 FDDs.pdf` confirms the external FDD unit uses a
+standard Shugart-style 34-pin signal map:
+
+| Signal | Pin |
+|---|---:|
+| INDEX | 8 |
+| SEL0 | 10 |
+| SEL1 | 12 |
+| MOTOR ON | 16 |
+| DIR | 18 |
+| STEP | 20 |
+| WRITE DATA | 22 |
+| WRITE GATE | 24 |
+| TRACK 0 | 26 |
+| WRITE PROTECT | 28 |
+| READ DATA | 30 |
+| SIDE SELECT | 32 |
+| READY | 34 |
+
+Odd pins 1,3,5,7 / 9,11,13,15 / 17,19,21,23 / 25,27,29,31,33 are ground.
+Drive power is +12 V on drive X1 pin 1, ground on pins 2/3, and +5 V on pin 4.
+The drawing labels the drive as `НГМД ЕС 5323.01`.
+
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3
 one-shots -- step/precomp timing), D96 (ТМ2), D28 (ЛН3), D98 (ЛП11 + the wires-17/18
@@ -23,5 +47,6 @@ DB-26HD per photo); MR source; 1 MHz CLK rail; VT2/VT4 analog (write precomp/pum
 2. D93.19 (MR) source; D93.24 (CLK) rail (expect 1 MHz mesh tap).
 3. D100.9/11 (OE/T) gating logic.
 4. D94 output destinations (8 lines).
-5. КП12/АГ3 pin wiring; drive cable pinout at the bracket.
+5. КП12/АГ3 pin wiring; processor-board/bracket mapping from the .009 board to
+   the now-known 34-pin FDD unit signals.
 6. Wires 17/18: D98.7 -> 220R -> reset switch chain.

@@ -111,8 +111,19 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
 3. **010-class adjustment instructions** → RAS/CAS/refresh timing, RF/video
    alignment — feeds the video-chain model (WS-B) and physical bring-up (WS-G).
    First pass on doc 010 shows it is a parts-list/census packet, not the needed
-   adjustment instructions; continue with other adjustment/technical docs.
+   adjustment instructions. Doc 003 is the actual E5104 adjustment/check packet:
+   it gives the factory `ROMBIOS 3.43` monitor-ready oracle, EKDOS boot sequence
+   `<T>, <D>, <D>` to `A>` from `JUKU-1`, QRUN/BASIC/printer/manipulator/network
+   checks, FDD PSU voltages, and burn-in/vibration cadence. It still does not
+   print RAS/CAS timing or PROM byte contents.
 4. 009/014 (FDD, external storage) → exact drive model + cable pinout for Tier 2/3.
+   Doc 009 confirms the FDD unit packet and Shugart-style 34-pin map: INDEX 8,
+   SEL0 10, SEL1 12, MOTOR ON 16, DIR 18, STEP 20, W.DATA 22, W.GATE 24, TR0 26,
+   W.PROT 28, RD.DATA 30, SIDE SELECT 32, READY 34, odd pins grounded, with
+   `НГМД ЕС 5323.01` drive labeling and +12/+5 power connector mapping. Doc 014
+   is a removable 32K memory-expander packet, not FDD storage. Doc 015 names the
+   `ДГШ5.106.105` disk label family as `JUKU-1`/`JUKU-2`/`JUKU-3`, but is not a
+   disk image.
 Exit criterion: updated provenance table; owner-measurement list reduced to items
 genuinely requiring hardware.
 
@@ -121,7 +132,8 @@ The twin is the bring-up oracle; every subsystem modeled before fabrication is a
 debugging session saved on real hardware.
 1. **FDC + EKDOS boot** (all materials now available): WD1793 behavioral model +
    `.juk` image loader in cosim, then port to `juku_top` (D93 already netted);
-   milestone: `'T'` → `<D>isk` → **EKDOS prompt** in the twin, cross-checked vs MAME.
+   milestone: factory sequence `<T>, <D>, <D>` from `ROMBIOS 3.43` to **`A>`**
+   with the `JUKU-1`/EKDOS disk image in drive A, cross-checked vs MAME.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
