@@ -46,11 +46,11 @@ Current cosim result:
 - ROMBIOS reaches the FDC path.
 - WD1793 command/status port `0x1C` is written 6 times and polled millions of
   times.
-- The data port `0x1F` is read 512 times, matching the first sector transfer
-  size expected before the missing disk model boundary.
-- The next implementation step is a real WD1793 state machine plus `.juk`/JUKU
-  sector loader, then the probe target changes from `READY FOR FDC MODEL` to
-  the factory `A>` prompt.
+- With no `JUKU_DISK` image selected, the data port `0x1F` is read 512 times,
+  matching the first sector transfer size at the legacy register-echo boundary.
+- The next implementation step is running a real JUKU/EKDOS image through the
+  disk-backed model, then the probe target changes from `READY FOR FDC MODEL`
+  to the factory `A>` prompt.
 
 ## `.juk` sector backend
 `cosim/juk_disk.c` implements the raw MAME `FLOPPY_JUKU_FORMAT` geometry:
@@ -58,6 +58,19 @@ Current cosim result:
 one 409600-byte side or two 819200-byte sides. `sync/juk_disk_check.sh`
 validates CHS-to-offset reads with synthetic disk images. See
 `docs/juk-disk-format.md`.
+
+## Disk-backed WD1793 cosim model
+`cosim/juku_fdc.c` provides the first disk-backed WD1793 read-sector model for
+the twin. The model maps the MAME/Juku FDC register window as command/status at
+`0x1C`, track at `0x1D`, sector at `0x1E`, and data at `0x1F`. Port C follows
+the MAME-derived FDC controls: PC2 motor enable, PC5 drive select, and PC6
+side/head select.
+
+The read-sector command class (`0x80`) loads one 512-byte sector through
+`cosim/juk_disk.c` and streams it through the data register. It is enabled only
+when `JUKU_DISK=/path/to/image.juk` is set, preserving the default no-disk probe
+behavior. `sync/juk_disk_check.sh` guards both the raw `.juk` loader and this
+minimal FDC model with synthetic images.
 
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3

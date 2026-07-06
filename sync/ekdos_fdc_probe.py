@@ -23,7 +23,18 @@ def run_probe(max_cycles, frame_cycles):
         tmpdir = Path(tmp)
         trace = tmpdir / "trace"
         subprocess.run(
-            [cc, "-O2", "-I", str(ROOT / "cosim"), "-o", str(trace), str(TRACE_C), str(I8080_C)],
+            [
+                cc,
+                "-O2",
+                "-I",
+                str(ROOT / "cosim"),
+                "-o",
+                str(trace),
+                str(TRACE_C),
+                str(I8080_C),
+                str(ROOT / "cosim" / "juk_disk.c"),
+                str(ROOT / "cosim" / "juku_fdc.c"),
+            ],
             cwd=ROOT,
             check=True,
         )
@@ -109,9 +120,10 @@ def build_report(proc, max_cycles, frame_cycles):
         "",
         "This probe exercises the factory boot sequence mined from Baltijets doc 003:",
         "`ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the",
-        "`A>` EKDOS prompt. The current cosim intentionally has no WD1793 disk",
-        "engine or `.juk` image loader yet, so success here means the BIOS reaches",
-        "the FDC path and stalls at the known missing model boundary.",
+        "`A>` EKDOS prompt. With no `JUKU_DISK` image selected, cosim preserves",
+        "the legacy register-echo FDC boundary; success here means the BIOS reaches",
+        "the disk path that the `.juk` backend and WD1793 read-sector model now",
+        "need to satisfy with a real EKDOS image.",
         "",
         "## Command",
         "",
@@ -147,7 +159,7 @@ def build_report(proc, max_cycles, frame_cycles):
             "## Disposition",
             "",
             "- The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.",
-            "- The first hard stop is now the expected one: a real WD1793 model plus JUKU/EKDOS disk image loader.",
+            "- The first hard stop is now the expected one: supply a real JUKU/EKDOS image and drive the disk-backed WD1793 read-sector path to the factory `A>` prompt.",
             "- The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.",
         ]
     )

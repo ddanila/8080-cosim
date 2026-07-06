@@ -42,7 +42,7 @@ validate any copyrighted EKDOS image.
 
 ## Next Use
 
-`sync/ekdos_fdc_probe.py` already drives ROMBIOS through the factory
-`<T>, <D>, <D>` disk-boot path and reaches a 512-byte FDC data read. The next
-implementation step is for the WD1793 model to satisfy that read from this
-loader, using an externally supplied `JUKU-1` / EKDOS `.juk` image.
+`cosim/juku_fdc.c` consumes this loader for the first disk-backed WD1793
+read-sector model. The repository still does not vendor any copyrighted EKDOS
+image; use `JUKU_DISK=/path/to/image.juk` to test with an externally supplied
+`JUKU-1` / EKDOS disk.

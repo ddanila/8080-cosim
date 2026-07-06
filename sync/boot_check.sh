@@ -16,7 +16,7 @@ echo "== generate ROM hex from vendored ROM =="
 python3 -c "open('hdl/sim/ekta37.hex','w').write(chr(10).join('%02x'%b for b in open('roms/ekta37.bin','rb').read())+chr(10))"
 
 echo "== build cosim =="
-$CC -O2 -I cosim -o "$TMP/trace" cosim/trace.c cosim/i8080.c
+$CC -O2 -I cosim -o "$TMP/trace" cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
 
 echo "== cosim reference: real ekta37 boot @ $WRITES video writes =="
 ( cd cosim && "$TMP/trace" ../roms/ekta37.bin 50000000 "$WRITES" >/dev/null 2>&1 )

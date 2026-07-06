@@ -4,9 +4,10 @@ Status: **READY FOR FDC MODEL**
 
 This probe exercises the factory boot sequence mined from Baltijets doc 003:
 `ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the
-`A>` EKDOS prompt. The current cosim intentionally has no WD1793 disk
-engine or `.juk` image loader yet, so success here means the BIOS reaches
-the FDC path and stalls at the known missing model boundary.
+`A>` EKDOS prompt. With no `JUKU_DISK` image selected, cosim preserves
+the legacy register-echo FDC boundary; success here means the BIOS reaches
+the disk path that the `.juk` backend and WD1793 read-sector model now
+need to satisfy with a real EKDOS image.
 
 ## Command
 
@@ -41,5 +42,5 @@ JUKU_KEYS=TDD cosim/trace roms/ekta37.bin 250000000 0 200000
 ## Disposition
 
 - The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.
-- The first hard stop is now the expected one: a real WD1793 model plus JUKU/EKDOS disk image loader.
+- The first hard stop is now the expected one: supply a real JUKU/EKDOS image and drive the disk-backed WD1793 read-sector path to the factory `A>` prompt.
 - The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.

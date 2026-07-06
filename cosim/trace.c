@@ -27,6 +27,8 @@
 #include <string.h>
 #include <stdint.h>
 #include "i8080.h"
+#include "juk_disk.h"
+#include "juku_fdc.h"
 
 #define MEM_SIZE   0x10000u
 #define ROM_SIZE   0x4000u          // 16 KB
@@ -38,6 +40,9 @@ static uint8_t rom[ROM_SIZE];
 static uint8_t ram[MEM_SIZE];
 static int     mode = 0;            // memory view 0..3 (reset = 0)
 static uint8_t portc = 0;           // 8255#0 Port C output latch
+static juk_disk disk;
+static juku_fdc fdc;
+static int      fdc_enabled = 0;
 
 // --- instrumentation -------------------------------------------------------
 static unsigned long out_count[256], in_count[256];
@@ -130,6 +135,7 @@ static uint8_t pin(void* u, uint8_t p) {
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
   in_count[p]++;
   if (p == 0x05 && kbd_str && kbd_str[0]) return kbd_portb();   // 8255 Port B = keyboard 74148
+  if (fdc_enabled && p >= 0x1C && p <= 0x1F) return juku_fdc_read(&fdc, p & 3);
   return out_last[p];              // mimic 8255 output-latch readback; 0 if never written
 }
 
@@ -138,6 +144,7 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
   out_count[p]++;
   out_last[p] = v;
+  if (fdc_enabled && p >= 0x1C && p <= 0x1F) juku_fdc_write(&fdc, p & 3, v);
 
   if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
 
@@ -151,14 +158,17 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   // 8255#0 Port C controls the memory view (ports 0x04..0x07)
   if (p == 0x06) {                 // direct write to Port C
     portc = v;
+    if (fdc_enabled) juku_fdc_portc(&fdc, portc);
     set_mode(portc & 0b11);
   } else if (p == 0x07) {          // 8255 control port
     if (v & 0x80) {                // mode-set command: outputs reset to 0
       portc = 0;
+      if (fdc_enabled) juku_fdc_portc(&fdc, portc);
       set_mode(0);
     } else {                       // bit set/reset on Port C
       int bit = (v >> 1) & 7;
       if (v & 1) portc |= (1u << bit); else portc &= ~(1u << bit);
+      if (fdc_enabled) juku_fdc_portc(&fdc, portc);
       set_mode(portc & 0b11);
     }
   }
@@ -175,6 +185,18 @@ int main(int argc, char** argv) {
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
+  const char* disk_path = getenv("JUKU_DISK");
+  if (disk_path && disk_path[0]) {
+    int rc = juk_disk_open(&disk, disk_path);
+    if (rc != 0) {
+      fprintf(stderr, "JUKU_DISK=%s could not be opened as a .juk image (rc=%d)\n", disk_path, rc);
+      return 2;
+    }
+    juku_fdc_init(&fdc, &disk);
+    fdc_enabled = 1;
+    fprintf(stderr, "loaded JUKU disk image %s (%ld bytes, %d side%s)\n",
+            disk_path, disk.size, disk.heads, disk.heads == 1 ? "" : "s");
+  }
 
   FILE* f = fopen(rom_path, "rb");
   if (!f) { perror(rom_path); return 1; }
@@ -269,5 +291,6 @@ int main(int argc, char** argv) {
   if (o) { fwrite(&ram[VRAM_BASE], 1, (size_t)VID_STRIDE * VID_LINES, o); fclose(o);
            printf("\nwrote vram.bin (%d bytes, %dx%d @ 0x%04X)\n",
                   VID_STRIDE * VID_LINES, VID_STRIDE * 8, VID_LINES, VRAM_BASE); }
+  if (fdc_enabled) juk_disk_close(&disk);
   return 0;
 }
