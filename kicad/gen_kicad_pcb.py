@@ -511,8 +511,12 @@ def main():
         h.SetCenter(pcbnew.VECTOR2I(pcbnew.FromMM(hx), pcbnew.FromMM(hy)))
         h.SetEnd(pcbnew.VECTOR2I(pcbnew.FromMM(hx + d/2.0), pcbnew.FromMM(hy))); board.Add(h)
     mhole(10.2, 12.6); mhole(114.4, 13.3)  # top pair flanking X1 [emaplaat]
-    mhole(10.1, 135.6); mhole(300.3, 138.1) # mid-left / mid-right [emaplaat]
-    mhole(104, 251.4); mhole(199, 251.2)   # bottom pair [emaplaat]
+    mhole(10.1, 135.6)                     # mid-left [emaplaat]
+    mhole(199, 251.2)                      # bottom-right [emaplaat]
+    # The read mid-right (300.3,138.1) and bottom-left (104,251.4) targets collide
+    # with D34/D59 copper in the current rectangular board model. Treat them as
+    # deferred mechanical-overhang/fixture features until the exact board outline is
+    # re-read rather than manufacturing edge-cut holes through routed copper.
 
     # top-edge expansion connectors X1/X2 -- non-electrical SILK OUTLINE annotations (read off the
     # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future

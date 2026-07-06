@@ -17,38 +17,25 @@ The routed replica board is electrically/routing clean for the current order gat
 | Shorting items | 0 | Pass |
 | Unconnected items | 0 | Pass |
 
-The remaining 606 DRC findings are non-electrical fabrication-review items:
+The remaining 599 DRC findings are non-electrical fabrication-review items:
 
 | DRC type | Count | Current disposition |
 |---|---:|---|
-| `copper_edge_clearance` | 6 | Review/fix before order |
-| `silk_edge_clearance` | 1 | Cosmetic; review with edge-clearance pass |
 | `courtyards_overlap` | 55 | Waivable after assembly-fit review |
 | `pth_inside_courtyard` | 71 | Waivable after assembly-fit review |
 | `silk_over_copper` | 199 | Cosmetic; fix only where assembly labels become unreadable |
 | `silk_overlap` | 199 | Cosmetic; fix only where assembly labels become unreadable |
 | `text_thickness` | 75 | Cosmetic/manufacturing readability; batch-fix if time allows |
 
-Overall fabrication state remains **review required**, not order-ready.
+Overall fabrication state remains **review required**, not order-ready, because
+the remaining courtyard/PTH/silkscreen/text findings still need visual review or
+explicit waiver.
 
 ## Must review before order
 
-This is the only current DRC class that should block an order decision.
-
-### Copper-edge clearance
-
-All six findings are near board cutouts or the outline. Confirm each against the
-original mechanical intent and the selected fabricator's minimum copper-to-edge
-rule. Fix geometry or consciously waive only after Gerber-viewer inspection.
-
-| Area | Item | Actual issue |
-|---|---|---|
-| Cutout/edge at `(104.0, 251.4)` | `LOAD_VID` track on B.Cu | 0.0000 mm to edge |
-| Cutout/edge at `(104.0, 251.4)` | `LOAD_PRE` track on F.Cu | 0.2527 mm to edge |
-| Cutout/edge at `(104.0, 251.4)` | D59 pad 12 `LOAD_VID` | 0.0000 mm to edge |
-| Cutout/edge at `(300.3, 138.1)` | D34 pad 14, no net | 0.1667 mm to edge |
-| Cutout/edge at `(300.3, 138.1)` | D34 pad 12, no net | 0.2039 mm to edge |
-| Cutout/edge at `(300.3, 138.1)` | D34 pad 13, no net | 0.0000 mm to edge |
+No electrical, routing, footprint-library, or copper-edge DRC classes currently
+block fabrication package generation. The remaining pre-order gate is human
+visual review/waiver of dense-placement and silkscreen findings.
 
 ## Waivable after visual review
 
@@ -77,10 +64,9 @@ test labels. Review these repeated clusters first:
 
 ## Next actions
 
-1. Inspect and resolve or waive the six copper-edge findings.
-2. Open the regenerated Gerbers in an independent viewer and check the courtyard
+1. Open the regenerated Gerbers in an independent viewer and check the courtyard
    and silkscreen clusters listed above.
-3. Regenerate `fab/gerbers/fab-readiness.md` and update this disposition if counts
+2. Regenerate `fab/gerbers/fab-readiness.md` and update this disposition if counts
    or decisions change.
 
 ## Resolved items
@@ -89,3 +75,9 @@ test labels. Review these repeated clusters first:
   `CONN_X3`, `CONN_X8`, and `CONN_X9` under `kicad/juku.pretty/` and adding the
   project `kicad/fp-lib-table`. KiCad 10.99 nightly now resolves those connector
   footprints from tracked repo files.
+- `copper_edge_clearance` and `silk_edge_clearance`: resolved by removing the two
+  conflicting generated Edge.Cuts circles at `(104.0,251.4)` and `(300.3,138.1)`.
+  Those read targets collided with D59/D34 copper in the current rectangular
+  board model. They are deferred mechanical-overhang/fixture features until the
+  exact non-rectangular outline can be re-read rather than manufactured as holes
+  through routed copper.
