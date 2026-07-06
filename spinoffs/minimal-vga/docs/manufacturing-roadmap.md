@@ -161,6 +161,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/assembly/socket-insertion-policy.md`, confirming that the
   factory assembly BOM/CPL mounts sockets for socketed `U*` rows while the
   owner-supplied ICs stay in the post-assembly insertion list.
+- `report_rev_a_orientation_notes.py` writes
+  `fab/minimal-vga/assembly/orientation-notes-readiness.md`, confirming that
+  the upload assembly notes cover manual rows, socket orientation,
+  post-assembly insertion, polarized parts, and connector notes.
 - The engineering BOM now carries socket CPNs for socketed `U*` footprints and
   current candidate CPNs for many passives, USB-C, J1, fuse, decouplers, bulk
   capacitance, debug headers, and LEDs. The generated assembly readiness report
@@ -313,7 +317,8 @@ Remaining order-package work:
   JLCPCB/LCSC part is selected immediately before upload.
 - Verify factory assembly availability for selected through-hole sockets,
   headers, oscillator, reset supervisor, fuse, and TVS.
-- Add explicit socket/polarity/orientation notes to the assembly package.
+- Keep explicit socket/polarity/orientation notes in the assembly package and
+  machine-check their required coverage.
 - Inspect Gerbers in an independent viewer and record the review result.
 - Decide whether to order bare PCB first or accept factory assembly risk for
   Rev A sockets/passives/connectors.

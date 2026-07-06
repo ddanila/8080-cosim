@@ -186,6 +186,11 @@ Factory assembly:
   `fab/minimal-vga/assembly/socket-insertion-policy.md`, verifying that
   socketed `U*` rows are factory socket placements, not IC placements, and that
   every owner-supplied IC appears in the post-assembly insertion list.
+- `report_rev_a_orientation_notes.py` writes
+  `fab/minimal-vga/assembly/orientation-notes-readiness.md`, verifying that
+  the assembly/orientation notes copied into the upload package cover manual
+  rows, socket orientation, post-assembly insertion, polarized parts, and
+  connector notes.
 - Visual inspection of Gerbers in an independent viewer.
 - Confirm all socket footprints match actual sockets and IC widths.
 - Assign and re-check JLCPCB/LCSC SKUs for factory-mounted sockets, passives,

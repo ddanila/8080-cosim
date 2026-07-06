@@ -34,6 +34,7 @@ REQUIRED_ARTIFACTS = [
     "assembly/mechanical-fit-readiness.md",
     "assembly/manual-row-readiness.md",
     "assembly/cpn-consistency.md",
+    "assembly/orientation-notes-readiness.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
     "assembly/manual-assembly.csv",
@@ -129,6 +130,7 @@ def machine_gate_summary(out_dir):
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
     manual_rows_report = read_text(out_dir / "assembly" / "manual-row-readiness.md")
     cpn_consistency = read_text(out_dir / "assembly" / "cpn-consistency.md")
+    orientation_notes = read_text(out_dir / "assembly" / "orientation-notes-readiness.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
@@ -263,6 +265,14 @@ def machine_gate_summary(out_dir):
             )
             and "- CPN consistency failures: 0" in cpn_consistency,
             "`assembly/cpn-consistency.md` cross-checks generated BOM CPNs against the engineering BOM and sourcing checklist.",
+        ),
+        (
+            "Assembly orientation notes",
+            has_ready_line(orientation_notes, "READY")
+            and "- Manual rows referenced: 6 / 6" in orientation_notes
+            and "- Post-assembly insertion CSV rows: 19" in orientation_notes
+            and "- Orientation-note failures: 0" in orientation_notes,
+            "`assembly/orientation-notes-readiness.md` verifies upload notes cover manual rows, socket orientation, post-assembly insertion, polarized parts, and connector notes.",
         ),
         (
             "Upload package",
