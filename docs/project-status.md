@@ -122,8 +122,9 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **jmon33** (Monitor v3.3, MAME `ROM_BIOS(0)`) is **interrupt+input-driven** (dispatches its ISR
   through a RAM vector, needs keyboard/serial) — does NOT self-paint, so it's not the easy target.
   `sync/jmon33_interrupt_probe.py` now proves the cosim path through 8259 setup, frame interrupt
-  vector `0xFF54`, keyboard-port reads, and VRAM writes. A user-visible prompt oracle and the
-  `juku_top` port remain pending.
+  vector `0xFF54`, keyboard-port reads, and VRAM writes. `sync/jmon33_hdl_probe.sh` proves
+  `juku_top` reaches the first Monitor 3.3 video write at `0xFF40`; a user-visible prompt oracle
+  and a cosim-vs-HDL state comparison at that boundary remain pending.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
@@ -137,7 +138,7 @@ schematic*), with `cosim/` + MAME as validation oracles.
   (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:
   `docs/boot-ekta37-T-command*.png`, `docs/basic-cart-readiness.md`,
-  `docs/jmon33-interrupt-probe.md`.
+  `docs/jmon33-interrupt-probe.md`, `docs/jmon33-hdl-probe.md`.
 - **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
   runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
   traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains
