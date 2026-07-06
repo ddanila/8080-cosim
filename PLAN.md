@@ -199,13 +199,16 @@ before any Soviet NOS is at risk.
    Current machine status: electrical/routing PASS, fabrication-file inventory
    PASS, exact-count review waiver ACCEPTED, and order-readiness **ORDER READY**.
    The remaining 599 courtyard/PTH/silk/text findings are review-only and covered
-   by the waiver gate.
+   by the waiver gate. Independent Tracespace Gerber/drill render evidence is now
+   generated for the main board in `fab/gerbers/external-gerber-review.md`, and
+   `kicad/report_order_readiness.py` requires that gate alongside the DRC waiver
+   and dual-config BOM gates.
 3. Silkscreen/mechanical disposition started in
    `docs/replica-fab-drc-disposition.md`: connector footprint-library
    reproducibility is resolved by `kicad/juku.pretty/`; copper-edge findings are
    resolved by deferring two conflicting generated cutouts; courtyard/PTH/silk/text
    classes need visual review or explicit waiver. Continue with DFM review vs the
-   original's thick-power-trace style and independent gerber viewer review.
+   original's thick-power-trace style and final vendor preview review.
 4. Freeze the netlist only after WS-A closes the paper-resolvable unknowns; the few
    assumed nets that remain get flagged as bring-up verification points, not blockers.
 5. **Order** (2-layer, 310×266 mm — the authenticity call stands). Consider ordering

@@ -13,6 +13,7 @@ DEFAULT_OUT_DIR = ROOT / "fab" / "gerbers"
 FAB_REPORT = ROOT / "kicad" / "report_fab_readiness.py"
 WAIVER_REPORT = ROOT / "kicad" / "report_review_waivers.py"
 DUAL_BOM_REPORT = ROOT / "kicad" / "report_dual_config_bom.py"
+EXTERNAL_GERBER_REPORT = ROOT / "kicad" / "report_external_gerber_review.py"
 
 BLOCKING_DRC_TYPES = {
     "clearance",
@@ -68,7 +69,17 @@ def run_dual_config_bom():
     }
 
 
-def build_report(board, out_dir, drc, waiver_accepted, bom):
+def run_external_gerber_review(out_dir):
+    subprocess.run([sys.executable, str(EXTERNAL_GERBER_REPORT), str(out_dir)], check=True)
+    report_path = out_dir / "external-gerber-review.md"
+    text = report_path.read_text(errors="replace")
+    return {
+        "ready": "Status: **READY**" in text and "## Failures" not in text,
+        "report": report_path,
+    }
+
+
+def build_report(board, out_dir, drc, waiver_accepted, bom, external_review):
     violations = drc.get("violations", [])
     unconnected = drc.get("unconnected_items", [])
     counts = Counter(v.get("type", "unknown") for v in violations)
@@ -80,7 +91,7 @@ def build_report(board, out_dir, drc, waiver_accepted, bom):
         not any(blocking_counts.values())
         and not unknown_types
     )
-    order_ready = machine_ready and waiver_accepted
+    order_ready = machine_ready and waiver_accepted and external_review["ready"]
     status = "ORDER READY" if order_ready else ("MACHINE READY" if machine_ready else "NOT READY")
 
     lines = [
@@ -127,6 +138,14 @@ def build_report(board, out_dir, drc, waiver_accepted, bom):
 
     lines.extend([
         "",
+        "## External Gerber Review Gate",
+        "",
+        f"- Independent render status: **{'READY' if external_review['ready'] else 'NOT READY'}**",
+        f"- Report: `{repo_relative(external_review['report'])}`",
+    ])
+
+    lines.extend([
+        "",
         "## Parts / Sourcing Gate",
         "",
         "- Dual-config BOM status: **GENERATED**",
@@ -150,7 +169,7 @@ def build_report(board, out_dir, drc, waiver_accepted, bom):
         lines.append(
             "Machine blockers are clear: no clearance, short, unconnected, "
             "copper-edge, or footprint-library findings remain. The package can "
-            "proceed once the review-only waiver gate is accepted."
+            "proceed once the review-only waiver and external-render gates are accepted."
         )
     else:
         lines.append(
@@ -168,7 +187,8 @@ def main():
     drc = json.loads(drc_path.read_text())
     waiver_accepted = run_waiver_review(drc_path, out_dir)
     bom = run_dual_config_bom()
-    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom)
+    external_review = run_external_gerber_review(out_dir)
+    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, external_review)
     report_path = out_dir / "order-readiness.md"
     report_path.write_text(report)
     print(report)

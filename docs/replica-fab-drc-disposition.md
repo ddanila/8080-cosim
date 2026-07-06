@@ -9,7 +9,9 @@ fabrication review.
 
 Machine package gate: `kicad/report_order_readiness.py` currently emits
 `fab/gerbers/order-readiness.md` with status **ORDER READY**. The exact-count
-waiver report is generated at `fab/gerbers/review-waivers.md`.
+waiver report is generated at `fab/gerbers/review-waivers.md`. Independent
+Tracespace render evidence is generated at `fab/gerbers/external-gerber-review.md`
+with top/bottom SVG and PNG review outputs under `fab/gerbers/review/tracespace/`.
 
 ## Summary
 
@@ -32,8 +34,9 @@ The remaining 599 DRC findings are non-electrical fabrication-review items:
 | `text_thickness` | 75 | Cosmetic/manufacturing readability; batch-fix if time allows |
 
 Overall fabrication state is **order-ready by machine gate**: electrical,
-routing, fabrication inventory, and exact-count waiver gates pass. The final
-order-time step is visual/vendor review of the regenerated Gerbers.
+routing, fabrication inventory, exact-count waiver, independent external-render,
+and dual-config parts-BOM gates pass. The final order-time step is visual/vendor
+review of the regenerated Gerbers.
 
 ## Must review before order
 
@@ -67,8 +70,9 @@ test labels. Review these repeated clusters first:
 
 ## Next actions
 
-1. Open the regenerated Gerbers in an independent viewer and check the courtyard
-   and silkscreen clusters listed above.
+1. Review `fab/gerbers/external-gerber-review.md` plus the generated top/bottom
+   PNGs, then check the courtyard and silkscreen clusters listed above in the
+   vendor preview before ordering.
 2. Regenerate `fab/gerbers/fab-readiness.md` and update this disposition if counts
    or decisions change.
 

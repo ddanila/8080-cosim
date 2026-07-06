@@ -86,10 +86,10 @@ def build_report(drc_path):
         "npx --yes @tracespace/cli --quiet --out=/tmp/juku-tracespace fab/gerbers/juku_routed-F_Cu.gtl fab/gerbers/juku_routed-B_Cu.gbl fab/gerbers/juku_routed-F_Mask.gts fab/gerbers/juku_routed-B_Mask.gbs fab/gerbers/juku_routed-F_Silkscreen.gto fab/gerbers/juku_routed-B_Silkscreen.gbo fab/gerbers/juku_routed-Edge_Cuts.gm1 fab/gerbers/juku_routed.drl",
         "```",
         "",
-        "Tracespace v4.2.8 generated top and bottom board SVGs plus individual",
-        "layer SVGs from the regenerated Gerber/drill package. The command is not",
-        "part of the automated gate because it downloads an npm package on demand,",
-        "but it records an independent viewer path for final order review.",
+        "The automated order-readiness gate now runs",
+        "`kicad/report_external_gerber_review.py`, which renders the same package",
+        "through Tracespace and writes `fab/gerbers/external-gerber-review.md` plus",
+        "top/bottom review screenshots.",
     ])
 
     if failures:
