@@ -105,8 +105,13 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
 2. **002 Schematics and components** → settle .006-vs-.009 revision coverage; attack
    the short blocked-on-materials list (D6 V1/V2 feed, C99 far plate, FDC INTRQ/DRQ,
    D94 outputs, bypass per-position values) from paper before spending owner time.
+   First pass done: doc 002 corroborates the `.009` processor-module applicability
+   and interface/power connector drawings, but does not include the missing full
+   processor schematic pages or PROM byte contents.
 3. **010-class adjustment instructions** → RAS/CAS/refresh timing, RF/video
    alignment — feeds the video-chain model (WS-B) and physical bring-up (WS-G).
+   First pass on doc 010 shows it is a parts-list/census packet, not the needed
+   adjustment instructions; continue with other adjustment/technical docs.
 4. 009/014 (FDD, external storage) → exact drive model + cable pinout for Tier 2/3.
 Exit criterion: updated provenance table; owner-measurement list reduced to items
 genuinely requiring hardware.
