@@ -14,6 +14,9 @@ cosim FDC path is therefore split into two repeatable checks:
 2. `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk sync/ekdos_fdc_probe.py` runs the
    ROMBIOS boot sequence through an externally supplied image.
 
+The public/community request text for this image and the PROM dumps is tracked
+in `docs/community-prom-media-request.md`.
+
 ## Required Image
 
 | Field | Requirement |

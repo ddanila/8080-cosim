@@ -244,7 +244,11 @@ D94 top-center) and the two РТ4s; dump board-2's M2764 pair (settles the BIOS-
 question); continuity beeps (D6 V1/V2, C99, FDC INTRQ/DRQ vs IR0/IR1, D100 OE/T);
 beeper session sheet v2; macro photos (R6x refdes, bypass disc values). Also: a
 **community ask** via infoaed/juku3000 — Pehka1985 has running hardware; a РЕ3/РТ4
-dump request there may close this workstream without our own board time.
+dump request there may close this workstream without our own board time. A
+ready-to-send request packet is now tracked in
+`docs/community-prom-media-request.md`, covering the PROM dump list, the
+`JUKU-1`/`ДГШ5.106.105` media request, deliverable names, and verification
+commands.
 
 ### WS-G — System integration (Tier 1 → Tier 2)
 1. **Power**: bench supply on X8 (+5/+12/−12; −5 is board-derived) for bring-up;
@@ -308,7 +312,8 @@ dump request there may close this workstream without our own board time.
   are clear and the exact-count waiver gate accepts the 599 review-only
   courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
-- WS-E2: start parts sourcing (long lead). WS-H: first community contact.
+- WS-E2: start parts sourcing (long lead). WS-H: first community contact using
+  `docs/community-prom-media-request.md`.
 
 **Then (VJUGA transit + assembly window):**
 - WS-B2/3: video chain model; jmon33 + BASIC. WS-D3/4: replica DFM + netlist freeze.

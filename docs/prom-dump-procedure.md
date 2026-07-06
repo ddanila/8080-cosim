@@ -9,6 +9,10 @@ PROMs, but the relevant programming tables are marked `на диске` rather t
 printed in the PDF. Unless those disk files surface, this dump procedure remains
 the practical path to truth.
 
+The ready-to-send community request packet is
+`docs/community-prom-media-request.md`; it names the same chips, expected dump
+sizes, and the `JUKU-1` media request in one owner-friendly message.
+
 ## What to pull (label each with its socket refdes + board # before removing!)
 | Chip | Where | Type | Organization | Dump method |
 |---|---|---|---|---|
