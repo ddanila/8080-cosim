@@ -6,6 +6,7 @@ from pathlib import Path
 
 REQUIRED_ARTIFACTS = [
     "source-model-readiness.md",
+    "schematic-intent-readiness.md",
     "router-readiness.md",
     "behavioral-readiness.md",
     "erc-readiness.md",
@@ -121,6 +122,7 @@ def has_ready_line(text, label):
 
 def machine_gate_summary(out_dir):
     source_model = read_text(out_dir / "source-model-readiness.md")
+    schematic_intent = read_text(out_dir / "schematic-intent-readiness.md")
     router = read_text(out_dir / "router-readiness.md")
     behavioral = read_text(out_dir / "behavioral-readiness.md")
     erc = read_text(out_dir / "erc-readiness.md")
@@ -152,6 +154,18 @@ def machine_gate_summary(out_dir):
             and "- Multi-net pin conflicts: 0" in source_model
             and "- No-connect conflicts: 0" in source_model,
             "`source-model-readiness.md` records Rev A ref/net/pin-binding and no-connect policy before schematic export.",
+        ),
+        (
+            "Schematic intent contract",
+            has_ready_line(schematic_intent, "READY")
+            and "- Checks: 125" in schematic_intent
+            and "- Failures: 0" in schematic_intent
+            and "Core CPU/ROM/decode" in schematic_intent
+            and "DRAM and arbitration" in schematic_intent
+            and "Keyboard" in schematic_intent
+            and "Video/VGA" in schematic_intent
+            and "Power/clock/reset/debug" in schematic_intent,
+            "`schematic-intent-readiness.md` verifies the Rev A source model against the intended CPU, ROM, DRAM, keyboard, VGA, power, clock, and reset contracts.",
         ),
         (
             "Headless router fork",
