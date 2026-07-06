@@ -230,7 +230,11 @@ before any Soviet NOS is at risk.
 2. Source early (long lead): КР580 set, 8× К565РУ5 (+spares), К556РТ4 ×2,
    К155РЕ3 ×1–2, КР1818ВГ93 (or WD1793), СНП59 connectors (the hard-to-substitute
    mechanical item), sockets, passives. Channels: eBay NOS lots, osta.ee/soov.ee,
-   zx-pk.ru market. Acceptance-test jig for DRAM and CPU spares.
+   zx-pk.ru market. Acceptance-test jig for DRAM and CPU spares. A generated
+   sourcing readiness gate is now in `docs/replica-sourcing-readiness.md`,
+   derived from `docs/replica-dual-config-bom.csv`: it separates source-early
+   rows, PROM/programming blockers, review-before-buying rows, and the minimum
+   staged acceptance ladder.
 3. **Program firmware parts**: 2× 2764 (ekta37/jmon33 split per the D15/D16 story),
    РТ4 ≈ 82S129-class and РЕ3 ≈ 74188-class on a universal programmer
    (`docs/prom-dump-procedure.md`) — contents from the Baltijets referenced
@@ -312,8 +316,8 @@ commands.
   are clear and the exact-count waiver gate accepts the 599 review-only
   courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
-- WS-E2: start parts sourcing (long lead). WS-H: first community contact using
-  `docs/community-prom-media-request.md`.
+- WS-E2: start parts sourcing from `docs/replica-sourcing-readiness.md` (long
+  lead). WS-H: first community contact using `docs/community-prom-media-request.md`.
 
 **Then (VJUGA transit + assembly window):**
 - WS-B2/3: video chain model; jmon33 + BASIC. WS-D3/4: replica DFM + netlist freeze.

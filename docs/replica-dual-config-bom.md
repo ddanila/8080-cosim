@@ -2,11 +2,16 @@
 
 Source: `kicad/juku.board.json`
 CSV: `docs/replica-dual-config-bom.csv`
+Sourcing gate: `docs/replica-sourcing-readiness.md`
 
 This is the first sourcing BOM split required by WS-E: an authentic Soviet
 part column and a functional substitute column. It is generated from the
 current KiCad board source and keeps the .009 populated-vs-expansion-socket
 distinction explicit.
+
+Run `python3 kicad/report_replica_sourcing_readiness.py` after regenerating this
+BOM to refresh the source-early, programming-gated, and review-before-buying
+readiness report.
 
 ## Summary
 
