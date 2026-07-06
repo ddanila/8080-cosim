@@ -64,18 +64,19 @@ python3 kicad/report_order_readiness.py
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2080 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2217 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
 
 ## Order-Time Checks
 
 - [ ] Upload only `upload/juku-replica-gerbers-drill.zip` for PCB fabrication.
-- [ ] Confirm vendor preview reports a 2-layer board, 310 mm x 266 mm outline, and one Excellon drill file.
+- [ ] Confirm vendor preview matches `docs/replica-package-geometry-readiness.md`: 2-layer board, 310 mm x 266 mm Edge.Cuts box, and one mixed-plating Excellon drill file.
 - [ ] Confirm top/bottom copper, soldermask, silkscreen, and edge-cuts all render with the same orientation as `fab/gerbers/review/tracespace/`.
 - [ ] Select 1.6 mm FR-4 unless deliberately changed after DFM review.
 - [ ] Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.

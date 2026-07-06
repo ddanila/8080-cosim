@@ -27,13 +27,14 @@ RETAINED_EVIDENCE = [
     ("Review waiver", "review-waivers.md", "Status: **ACCEPTED**"),
     ("External Gerber review", "external-gerber-review.md", "Status: **READY**"),
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
+    ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Checksum file", "SHA256SUMS", None),
 ]
 
 ORDER_CHECKS = [
     "Upload only `upload/juku-replica-gerbers-drill.zip` for PCB fabrication.",
-    "Confirm vendor preview reports a 2-layer board, 310 mm x 266 mm outline, and one Excellon drill file.",
+    "Confirm vendor preview matches `docs/replica-package-geometry-readiness.md`: 2-layer board, 310 mm x 266 mm Edge.Cuts box, and one mixed-plating Excellon drill file.",
     "Confirm top/bottom copper, soldermask, silkscreen, and edge-cuts all render with the same orientation as `fab/gerbers/review/tracespace/`.",
     "Select 1.6 mm FR-4 unless deliberately changed after DFM review.",
     "Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.",
