@@ -49,6 +49,11 @@ parts; insert those manually after the assembled board is received.
 - Silkscreen: both sides useful for debug. Generated board-owned silkscreen
   labels use the same default KiCad stroke text style as footprint
   reference/value labels.
+- Rev A front silkscreen now has machine-checked functional block outlines and
+  anchored labels for power, clock/reset, DRAM timing, DRAM bank, keyboard,
+  VGA, diagnostics, and debug headers. The PCB scaffold check also verifies
+  key chip labels, downstairs connector/detail values, GAL generic values, SMD
+  policy, and a 1 mm minimum board-owned silkscreen edge clearance.
 - Assembly: factory assembly target for passives, sockets, connectors, and
   protection parts where practical; owner-supplied IC insertion where needed.
 - Diagnostics: first-pass LED bank for +5V, PWR_OK, CLK, RESET_N, M1_N

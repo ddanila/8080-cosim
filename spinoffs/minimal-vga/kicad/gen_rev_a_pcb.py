@@ -11,21 +11,42 @@ BOARD_WIDTH_MM = 285
 BOARD_HEIGHT_MM = 285
 ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 14
+CHIP_BLOCK_LABEL_GAP_MM = 2.0
 SILK_LABELS = {
-    "VJUGA REV A": (25, 76, 0, pcbnew.F_SilkS),
-    "Z80 + 4164 DRAM REFRESH TESTBED": (25, 82, 0, pcbnew.F_SilkS),
-    "POWER": (22, 32.7, 0, pcbnew.F_SilkS),
+    "VJUGA REV A": (158, 268, 0, pcbnew.F_SilkS),
+    "Z80 + 4164 DRAM REFRESH TESTBED": (158, 274, 0, pcbnew.F_SilkS, 1.6),
     "FUSE": (24, 42.0, 0, pcbnew.F_SilkS),
-    "CPU": (55, 75.5, 0, pcbnew.F_SilkS),
-    "ROM": (100, 75.5, 0, pcbnew.F_SilkS),
-    "DRAM REFRESH + TIMING": (150, 116, 0, pcbnew.F_SilkS),
-    "DRAM BANK": (115, 166, 0, pcbnew.F_SilkS),
-    "KEYBOARD MATRIX": (116, 247, 0, pcbnew.F_SilkS),
-    "VGA OUT": (260, 198, 0, pcbnew.F_SilkS),
-    "DIAGNOSTIC LEDS": (236, 260, 0, pcbnew.F_SilkS),
-    "DEBUG HEADERS": (32, 274, 0, pcbnew.F_SilkS),
     "DEFAULT STROKE SILK": (22, 260, 0, pcbnew.B_SilkS),
 }
+CHIP_BLOCK_LABELS = {
+    "CPU": "U1",
+    "ROM": "U2",
+    "ADDRESS DECODE": "U5",
+    "DRAM CONTROL": "U24",
+    "PARALLEL INTERFACE": "U30",
+}
+
+SILK_BLOCK_OUTLINES = {
+    "POWER": (8, 16, 56, 112),
+    "CLOCK_RESET": (232, 34, 276, 92),
+    "DRAM_REFRESH_TIMING": (62, 76, 226, 124),
+    "DRAM_BANK": (36, 130, 194, 168),
+    "KEYBOARD_MATRIX": (42, 176, 190, 248),
+    "VGA_OUT": (204, 144, 276, 220),
+    "DIAGNOSTIC_LEDS": (204, 226, 276, 270),
+    "DEBUG_HEADERS": (20, 252, 132, 281),
+}
+SILK_BLOCK_LABELS = {
+    "POWER": "POWER",
+    "CLOCK_RESET": "CLOCK + RESET",
+    "DRAM_REFRESH_TIMING": "DRAM REFRESH + TIMING",
+    "DRAM_BANK": "DRAM BANK",
+    "KEYBOARD_MATRIX": "KEYBOARD MATRIX",
+    "VGA_OUT": "VGA OUT",
+    "DIAGNOSTIC_LEDS": "DIAGNOSTIC LEDS",
+    "DEBUG_HEADERS": "DEBUG HEADERS",
+}
+SILK_BLOCK_LABEL_PADDING_MM = 2.0
 
 SILK_VALUE_BY_REF = {
     "J1": "5V",
@@ -62,8 +83,8 @@ SILK_VALUE_BY_TYPE = {
     "Z80_DIP40": "Z80",
     "PPI_82C55_DIP40": "82C55",
     "ROM_28C256_DIP28": "27C256",
-    "GAL22V10_DIP24_DECODE": "GAL22V10 DEC",
-    "GAL22V10_DIP24_DRAMSEQ": "GAL22V10 DRAM",
+    "GAL22V10_DIP24_DECODE": "GAL22V10",
+    "GAL22V10_DIP24_DRAMSEQ": "GAL22V10",
     "DRAM4164_DIP16": "KM4164B",
     "74HCT157_DIP16_ADDRMUX": "74HCT157",
     "74HCT148_DIP16": "74HCT148",
@@ -80,6 +101,28 @@ SILK_VALUE_BY_TYPE = {
     "RESET_SUPERVISOR_TO92": "RESET",
     "PS_ON_HEADER": "PS_ON",
     "POWER_DEBUG_HEADER": "PWR DBG",
+}
+
+DOWNSTAIRS_VALUE_REFS = {
+    "C50",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "J3",
+    "J30",
+    "J40",
+    "J90",
+    "J91",
+    "J92",
+    "J93",
+    "U51",
+}
+DOWNSTAIRS_VALUE_TYPES = {
+    "TTL640X480_HEADER",
 }
 
 FP_BY_TYPE = {
@@ -279,6 +322,14 @@ def place_silk_fields(fp, chip, x, y, rot):
             style_field(fp.Reference(), ref, cx, top - 0.9, 0, size=1.15)
             return
 
+        if ref in DOWNSTAIRS_VALUE_REFS or chip["type"] in DOWNSTAIRS_VALUE_TYPES:
+            value_size = 0.85 if len(value) > 6 else 0.95
+            if len(value) > 9:
+                value_size = 0.72
+            style_field(fp.Value(), value, cx, bottom + 1.8, 0, size=value_size)
+            style_field(fp.Reference(), ref, cx, top - 1.4, 0, size=0.8)
+            return
+
         value_angle = 90 if rot % 180 else 0
         ref_angle = value_angle
         if ref[0] == "D" and chip["type"] == "LED_THT":
@@ -373,16 +424,71 @@ def add_power_zone(board, net, layer, name):
     board.Add(zone)
 
 
-def add_silk_label(board, text, x, y, angle, layer):
+def add_silk_label(board, text, x, y, angle, layer, size=2.0):
     label = pcbnew.PCB_TEXT(board)
     label.SetLayer(layer)
     label.SetText(text)
     label.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
     label.SetTextAngleDegrees(angle)
-    label.SetTextSize(pcbnew.VECTOR2I(mm(2.0), mm(2.0)))
+    label.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size)))
     label.SetTextThickness(mm(0.2))
     label.SetItalic(False)
     board.Add(label)
+
+
+def add_chip_block_label(board, text, fp):
+    box = fp.GetBoundingBox(False, False)
+    x = (pcbnew.ToMM(box.GetLeft()) + pcbnew.ToMM(box.GetRight())) / 2
+    y = pcbnew.ToMM(box.GetBottom()) + CHIP_BLOCK_LABEL_GAP_MM
+    size = 1.45 if len(text) > 12 else 2.0
+    label = pcbnew.PCB_TEXT(board)
+    label.SetLayer(pcbnew.F_SilkS)
+    label.SetText(text)
+    label.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
+    label.SetTextAngleDegrees(0)
+    label.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size)))
+    label.SetTextThickness(mm(0.2))
+    label.SetItalic(False)
+    label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_TOP)
+    board.Add(label)
+
+
+def add_silk_block_label(board, text, bounds):
+    left, _, _, bottom = bounds
+    label = pcbnew.PCB_TEXT(board)
+    label.SetLayer(pcbnew.F_SilkS)
+    label.SetText(text)
+    label.SetTextPos(
+        pcbnew.VECTOR2I(
+            mm(left + SILK_BLOCK_LABEL_PADDING_MM),
+            mm(bottom - SILK_BLOCK_LABEL_PADDING_MM),
+        )
+    )
+    label.SetTextAngleDegrees(0)
+    label.SetTextSize(pcbnew.VECTOR2I(mm(2.0), mm(2.0)))
+    label.SetTextThickness(mm(0.2))
+    label.SetItalic(False)
+    label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
+    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_BOTTOM)
+    board.Add(label)
+
+
+def add_silk_segment(board, x1, y1, x2, y2, layer=pcbnew.F_SilkS):
+    shape = pcbnew.PCB_SHAPE(board)
+    shape.SetShape(pcbnew.SHAPE_T_SEGMENT)
+    shape.SetLayer(layer)
+    shape.SetWidth(mm(0.15))
+    shape.SetStart(pcbnew.VECTOR2I(mm(x1), mm(y1)))
+    shape.SetEnd(pcbnew.VECTOR2I(mm(x2), mm(y2)))
+    board.Add(shape)
+
+
+def add_silk_rect(board, left, top, right, bottom, layer=pcbnew.F_SilkS):
+    add_silk_segment(board, left, top, right, top, layer)
+    add_silk_segment(board, right, top, right, bottom, layer)
+    add_silk_segment(board, right, bottom, left, bottom, layer)
+    add_silk_segment(board, left, bottom, left, top, layer)
 
 
 def add_small_silk_label(board, text, x, y, angle=0, layer=pcbnew.F_SilkS):
@@ -451,8 +557,16 @@ def main():
     add_outline(board, BOARD_WIDTH_MM, BOARD_HEIGHT_MM)
     for x, y in ((8, 8), (277, 8), (8, 277), (277, 277)):
         add_mounting_hole(board, x, y)
-    for label, (x, y, angle, layer) in SILK_LABELS.items():
-        add_silk_label(board, label, x, y, angle, layer)
+    for label, settings in SILK_LABELS.items():
+        x, y, angle, layer, *rest = settings
+        size = rest[0] if rest else 2.0
+        add_silk_label(board, label, x, y, angle, layer, size)
+    for label, ref in CHIP_BLOCK_LABELS.items():
+        add_chip_block_label(board, label, placed[ref])
+    for name, bounds in SILK_BLOCK_OUTLINES.items():
+        left, top, right, bottom = bounds
+        add_silk_rect(board, left, top, right, bottom)
+        add_silk_block_label(board, SILK_BLOCK_LABELS[name], bounds)
     for label, x, y, angle in POWER_INPUT_PIN_LABELS:
         add_small_silk_label(board, label, x, y, angle)
 

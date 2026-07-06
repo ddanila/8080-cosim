@@ -4,21 +4,139 @@ import sys
 import pcbnew
 
 
+MM_TOLERANCE = 0.05
 EXPECTED_COPPER_LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
 MIN_EDGE_CLEARANCE_MM = 14
+MIN_SILK_EDGE_CLEARANCE_MM = 1.0
 EXPECTED_SILK_LABELS = (
     "VJUGA REV A",
     "Z80 + 4164 DRAM REFRESH TESTBED",
+    "CLOCK + RESET",
     "DEFAULT STROKE SILK",
 )
 EXPECTED_ZONES = {
     "Rev A GND plane placeholder": ("In1.Cu", "GND"),
     "Rev A VCC plane placeholder": ("In2.Cu", "VCC"),
 }
+EXPECTED_SILK_BLOCK_OUTLINES = {
+    "POWER": (8, 16, 56, 112),
+    "CLOCK_RESET": (232, 34, 276, 92),
+    "DRAM_REFRESH_TIMING": (62, 76, 226, 124),
+    "DRAM_BANK": (36, 130, 194, 168),
+    "KEYBOARD_MATRIX": (42, 176, 190, 248),
+    "VGA_OUT": (204, 144, 276, 220),
+    "DIAGNOSTIC_LEDS": (204, 226, 276, 270),
+    "DEBUG_HEADERS": (20, 252, 132, 281),
+}
+EXPECTED_SILK_BLOCK_LABELS = {
+    "POWER": "POWER",
+    "CLOCK_RESET": "CLOCK + RESET",
+    "DRAM_REFRESH_TIMING": "DRAM REFRESH + TIMING",
+    "DRAM_BANK": "DRAM BANK",
+    "KEYBOARD_MATRIX": "KEYBOARD MATRIX",
+    "VGA_OUT": "VGA OUT",
+    "DIAGNOSTIC_LEDS": "DIAGNOSTIC LEDS",
+    "DEBUG_HEADERS": "DEBUG HEADERS",
+}
+EXPECTED_CHIP_BLOCK_LABELS = {
+    "CPU": "U1",
+    "ROM": "U2",
+    "ADDRESS DECODE": "U5",
+    "DRAM CONTROL": "U24",
+    "PARALLEL INTERFACE": "U30",
+}
+EXPECTED_SILK_VALUES = {
+    "U5": "GAL22V10",
+    "U24": "GAL22V10",
+    "U30": "82C55",
+}
+EXPECTED_DOWNSTAIRS_VALUE_REFS = {
+    "C50",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "J3",
+    "J30",
+    "J40",
+    "J90",
+    "J91",
+    "J92",
+    "J93",
+    "U40",
+    "U51",
+}
+CHIP_BLOCK_LABEL_GAP_MM = 2.0
+SILK_BLOCK_LABEL_PADDING_MM = 2.0
+ALLOWED_SMD_REFS = {"J3"}
 
 
 def fail(message):
     raise SystemExit(f"Rev A PCB check: FAIL: {message}")
+
+
+def silk_text_items(board):
+    for drawing in board.Drawings():
+        text = pcbnew.Cast_to_PCB_TEXT(drawing)
+        if text and text.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS):
+            yield "board", text.GetText(), text
+    for fp in board.Footprints():
+        for text in (fp.Reference(), fp.Value()):
+            if (
+                text
+                and text.IsVisible()
+                and text.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)
+            ):
+                yield fp.GetReference(), text.GetText(), text
+
+
+def segment_points(shape):
+    return (
+        round(pcbnew.ToMM(shape.GetStart().x), 2),
+        round(pcbnew.ToMM(shape.GetStart().y), 2),
+        round(pcbnew.ToMM(shape.GetEnd().x), 2),
+        round(pcbnew.ToMM(shape.GetEnd().y), 2),
+    )
+
+
+def matching_silk_segment(board, expected):
+    ex1, ey1, ex2, ey2 = expected
+    for drawing in board.Drawings():
+        shape = pcbnew.Cast_to_PCB_SHAPE(drawing)
+        if not shape or shape.GetLayer() != pcbnew.F_SilkS:
+            continue
+        if shape.GetShape() != pcbnew.SHAPE_T_SEGMENT:
+            continue
+        x1, y1, x2, y2 = segment_points(shape)
+        forward = (
+            abs(x1 - ex1) <= MM_TOLERANCE
+            and abs(y1 - ey1) <= MM_TOLERANCE
+            and abs(x2 - ex2) <= MM_TOLERANCE
+            and abs(y2 - ey2) <= MM_TOLERANCE
+        )
+        reverse = (
+            abs(x1 - ex2) <= MM_TOLERANCE
+            and abs(y1 - ey2) <= MM_TOLERANCE
+            and abs(x2 - ex1) <= MM_TOLERANCE
+            and abs(y2 - ey1) <= MM_TOLERANCE
+        )
+        if forward or reverse:
+            return True
+    return False
+
+
+def missing_silk_outline_edges(board, name, bounds):
+    left, top, right, bottom = bounds
+    edges = {
+        "top": (left, top, right, top),
+        "right": (right, top, right, bottom),
+        "bottom": (right, bottom, left, bottom),
+        "left": (left, bottom, left, top),
+    }
+    return [edge for edge, segment in edges.items() if not matching_silk_segment(board, segment)]
 
 
 def main():
@@ -61,6 +179,18 @@ def main():
     if duplicate_value_refs:
         fail(f"footprint values duplicate refdes: {', '.join(sorted(duplicate_value_refs))}")
 
+    unexpected_smd_refs = []
+    for fp in board.Footprints():
+        if fp.GetReference() in ALLOWED_SMD_REFS:
+            continue
+        if any(pad.GetAttribute() == pcbnew.PAD_ATTRIB_SMD for pad in fp.Pads()):
+            unexpected_smd_refs.append(fp.GetReference())
+    if unexpected_smd_refs:
+        fail(
+            "unexpected SMD pads on mostly-through-hole Rev A board: "
+            + ", ".join(sorted(unexpected_smd_refs))
+        )
+
     zones = {}
     for zone in board.Zones():
         layer = zone.GetLayer()
@@ -93,8 +223,7 @@ def main():
     for label in EXPECTED_SILK_LABELS:
         matches = [
             text
-            for drawing in board.Drawings()
-            if (text := pcbnew.Cast_to_PCB_TEXT(drawing))
+            for _, _, text in silk_text_items(board)
             if (
                 text.GetText() == label
                 and text.GetLayer() in (pcbnew.F_SilkS, pcbnew.B_SilkS)
@@ -110,6 +239,114 @@ def main():
                     f"silkscreen label uses custom font '{text.GetFontName()}'; "
                     f"expected default footprint text style: {label}"
                 )
+
+    block_label_violations = []
+    for name, label in EXPECTED_SILK_BLOCK_LABELS.items():
+        left, _, _, bottom = EXPECTED_SILK_BLOCK_OUTLINES[name]
+        expected_pos = (
+            left + SILK_BLOCK_LABEL_PADDING_MM,
+            bottom - SILK_BLOCK_LABEL_PADDING_MM,
+        )
+        matches = [
+            text
+            for _, _, text in silk_text_items(board)
+            if text.GetText() == label and text.GetLayer() == pcbnew.F_SilkS
+        ]
+        if not matches:
+            block_label_violations.append(f"{label}:missing")
+            continue
+        for text in matches:
+            x = pcbnew.ToMM(text.GetTextPos().x)
+            y = pcbnew.ToMM(text.GetTextPos().y)
+            if abs(x - expected_pos[0]) > MM_TOLERANCE or abs(y - expected_pos[1]) > MM_TOLERANCE:
+                block_label_violations.append(
+                    f"{label}=({x:.2f},{y:.2f}) expected=({expected_pos[0]:.2f},{expected_pos[1]:.2f})"
+                )
+    if block_label_violations:
+        fail("silkscreen block labels are not at lower-left padded anchors: " + "; ".join(block_label_violations))
+
+    chip_label_violations = []
+    for label, ref in EXPECTED_CHIP_BLOCK_LABELS.items():
+        fp = board.FindFootprintByReference(ref)
+        if fp is None:
+            chip_label_violations.append(f"{label}:{ref}:missing-footprint")
+            continue
+        box = fp.GetBoundingBox(False, False)
+        expected_x = (pcbnew.ToMM(box.GetLeft()) + pcbnew.ToMM(box.GetRight())) / 2
+        expected_y = pcbnew.ToMM(box.GetBottom()) + CHIP_BLOCK_LABEL_GAP_MM
+        matches = [
+            text
+            for _, _, text in silk_text_items(board)
+            if text.GetText() == label and text.GetLayer() == pcbnew.F_SilkS
+        ]
+        if not matches:
+            chip_label_violations.append(f"{label}:missing")
+            continue
+        for text in matches:
+            x = pcbnew.ToMM(text.GetTextPos().x)
+            y = pcbnew.ToMM(text.GetTextPos().y)
+            if abs(x - expected_x) > MM_TOLERANCE or abs(y - expected_y) > MM_TOLERANCE:
+                chip_label_violations.append(
+                    f"{label}=({x:.2f},{y:.2f}) expected=({expected_x:.2f},{expected_y:.2f})"
+                )
+    if chip_label_violations:
+        fail("CPU/ROM silkscreen labels do not use the standard chip gap: " + "; ".join(chip_label_violations))
+
+    silk_value_violations = []
+    for ref, expected_value in EXPECTED_SILK_VALUES.items():
+        fp = board.FindFootprintByReference(ref)
+        if fp is None:
+            silk_value_violations.append(f"{ref}:missing-footprint")
+            continue
+        if fp.Value().GetText() != expected_value:
+            silk_value_violations.append(f"{ref}={fp.Value().GetText()} expected={expected_value}")
+    if silk_value_violations:
+        fail("named chip silkscreen values are not as expected: " + "; ".join(silk_value_violations))
+
+    downstairs_violations = []
+    for ref in EXPECTED_DOWNSTAIRS_VALUE_REFS:
+        fp = board.FindFootprintByReference(ref)
+        if fp is None:
+            downstairs_violations.append(f"{ref}:missing-footprint")
+            continue
+        if not fp.Value().IsVisible():
+            downstairs_violations.append(f"{ref}:value-hidden")
+            continue
+        fp_box = fp.GetBoundingBox(False, False)
+        value_box = fp.Value().GetBoundingBox()
+        gap = pcbnew.ToMM(value_box.GetTop()) - pcbnew.ToMM(fp_box.GetBottom())
+        if gap < 0.2:
+            downstairs_violations.append(f"{ref}:value-not-downstairs gap={gap:.2f}mm")
+    if downstairs_violations:
+        fail("connector/detail values are not below their footprints: " + "; ".join(downstairs_violations))
+
+    silk_edge_violations = []
+    for owner, text_value, text in silk_text_items(board):
+        box = text.GetBoundingBox()
+        left = pcbnew.ToMM(box.GetLeft())
+        top = pcbnew.ToMM(box.GetTop())
+        right = pcbnew.ToMM(box.GetRight())
+        bottom = pcbnew.ToMM(box.GetBottom())
+        margin = min(left, top, 285 - right, 285 - bottom)
+        if margin < MIN_SILK_EDGE_CLEARANCE_MM:
+            silk_edge_violations.append(
+                f"{owner}:{text_value}={margin:.2f}mm "
+                f"box=({left:.2f},{top:.2f},{right:.2f},{bottom:.2f})"
+            )
+    if silk_edge_violations:
+        fail(
+            "silkscreen text too close to board edge "
+            f"(<{MIN_SILK_EDGE_CLEARANCE_MM:.1f}mm): "
+            + "; ".join(silk_edge_violations)
+        )
+
+    missing_outlines = []
+    for name, bounds in EXPECTED_SILK_BLOCK_OUTLINES.items():
+        missing_edges = missing_silk_outline_edges(board, name, bounds)
+        if missing_edges:
+            missing_outlines.append(f"{name}:{','.join(missing_edges)}")
+    if missing_outlines:
+        fail(f"missing silkscreen block outline edges: {'; '.join(missing_outlines)}")
 
     print(
         "Rev A PCB check: PASS "

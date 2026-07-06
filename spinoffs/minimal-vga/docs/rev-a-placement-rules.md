@@ -81,9 +81,19 @@ breaking a higher item.
 
 - Repeated ICs use uniform spacing and orientation.
 - Repeated passives use matching orientation within a functional block.
-- Section labels go below the block when practical; refdes stays close to the
-  component body.
+- Functional sections use generated F.SilkS block outlines with labels anchored
+  at the lower-left inside corner. The checked Rev A blocks are power,
+  clock/reset, DRAM refresh/timing, DRAM bank, keyboard matrix, VGA out,
+  diagnostic LEDs, and debug headers.
+- CPU/ROM/decode/control interface labels sit below their owner chip with a
+  uniform 2 mm gap, so the large IC functions can be read without relying only
+  on refdes.
+- Connector, diagnostic LED, TVS, fuse, and bring-up header values are placed
+  below their footprints where practical; their refdes remain near the body.
+- GAL U5/U24 silkscreen values are intentionally generic `GAL22V10`; their
+  function is carried by the nearby block label and the GAL-equation document.
 - Small side labels use the same style as J1/F1 pin/type labels.
+- Board-owned silkscreen text keeps at least 1 mm edge clearance.
 
 ## Sources
 
