@@ -43,6 +43,7 @@ def milestone_rows():
         "Status: **READY TO UPLOAD**",
     )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**")
+    parts_inventory_template = exists("docs/replica-parts-inventory-template.md")
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
@@ -127,12 +128,17 @@ def milestone_rows():
         {
             "id": "M8",
             "target": "Full functional parts kit in hand; firmware/PROMs programmed",
-            "status": "OPEN",
+            "status": "EVIDENCE TEMPLATE READY / EXTERNAL PENDING" if parts_inventory_template else "OPEN",
             "evidence": (
-                "`docs/replica-sourcing-readiness.md` is a sourcing gate, not a "
+                "`docs/replica-sourcing-readiness.md` defines the source/test gate; "
+                "`docs/replica-parts-inventory-template.md` defines the received-parts "
+                "and PROM/EPROM programming evidence record. No filled inventory or "
+                "programmer logs are tracked yet."
+                if parts_inventory_template
+                else "`docs/replica-sourcing-readiness.md` is a sourcing gate, not a "
                 "received-inventory or programmed-PROM record."
             ),
-            "next": "Buy/receive the functional kit and record PROM programming evidence.",
+            "next": "Buy/receive the functional kit, run acceptance tests, and fill the private inventory/programming record.",
         },
         {
             "id": "M9",

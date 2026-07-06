@@ -9,8 +9,8 @@ unless there is tracked evidence for them.
 
 | Status | Count |
 | --- | ---: |
+| EVIDENCE TEMPLATE READY / EXTERNAL PENDING | 1 |
 | EXTERNAL PENDING | 5 |
-| OPEN | 1 |
 | PARTIAL | 4 |
 | REPO READY / EXTERNAL PENDING | 1 |
 
@@ -25,7 +25,7 @@ unless there is tracked evidence for them.
 | M5 | jmon33 live prompt + BASIC launches in the twin | PARTIAL | jmon33 interrupt/first-write/cosim cursor probes exist; `docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED. | Compare HDL at the stronger jmon33 cursor boundary and close the B-command path. |
 | M6 | VJUGA Rev A boots real Juku ROM on the bench | EXTERNAL PENDING | Requires fabricated and assembled Rev A hardware; no bench artifact exists in repo. | Order, assemble, and run the staged bring-up ladder. |
 | M7 | Replica fab package passes order-readiness gates; boards ordered | REPO READY / EXTERNAL PENDING | `docs/replica-manufacturing-readiness.md` is READY TO UPLOAD and `fab/gerbers/order-readiness.md` is ORDER READY; no vendor order number or accepted order evidence is tracked. | Run `kicad/check_replica_manufacturing_ready.sh`, upload the ZIP, save vendor preview/order evidence. |
-| M8 | Full functional parts kit in hand; firmware/PROMs programmed | OPEN | `docs/replica-sourcing-readiness.md` is a sourcing gate, not a received-inventory or programmed-PROM record. | Buy/receive the functional kit and record PROM programming evidence. |
+| M8 | Full functional parts kit in hand; firmware/PROMs programmed | EVIDENCE TEMPLATE READY / EXTERNAL PENDING | `docs/replica-sourcing-readiness.md` defines the source/test gate; `docs/replica-parts-inventory-template.md` defines the received-parts and PROM/EPROM programming evidence record. No filled inventory or programmer logs are tracked yet. | Buy/receive the functional kit, run acceptance tests, and fill the private inventory/programming record. |
 | M9 | Replica assembled; staged bring-up complete to Tier 1 | EXTERNAL PENDING | Requires fabricated boards, parts, assembly, and bench bring-up. | Assemble sockets-first and execute the power/clock/ROM/RAM/video/keyboard ladder. |
 | M10 | EKDOS boots from floppy emulator or drive on real hardware | EXTERNAL PENDING | Requires working replica hardware plus storage hardware/media. | Use Gotek/HxC-class emulator first, then confirm real drive path for Tier 3. |
 | M11 | Authentic parts, dumped PROMs, original peripherals | EXTERNAL PENDING | Requires NOS parts, PROM dumps, original peripherals, and physical validation. | Converge after Tier 2 is stable. |

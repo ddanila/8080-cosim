@@ -246,6 +246,7 @@ def build_report(rows):
             "## Related Gates",
             "",
             "- `docs/replica-dual-config-bom.md` / `.csv`: source-of-truth BOM split.",
+            "- `docs/replica-parts-inventory-template.md`: received-parts, acceptance-test, and PROM/EPROM programming evidence template.",
             "- `docs/prom-dump-procedure.md`: PROM/EPROM dump and programming provenance.",
             "- `docs/community-prom-media-request.md`: owner/community request for PROMs and `JUKU-1` media.",
             "- `docs/replica-fab-drc-disposition.md`: fabrication review posture before board order.",
