@@ -37,6 +37,7 @@ REQUIRED_ARTIFACTS = [
     "assembly/socket-insertion-policy.md",
     "assembly/mechanical-fit-readiness.md",
     "assembly/manual-row-readiness.md",
+    "assembly/manual-install-disposition.md",
     "assembly/cpn-consistency.md",
     "assembly/orientation-notes-readiness.md",
     "assembly/jlcpcb-bom-draft.csv",
@@ -80,7 +81,7 @@ HUMAN_GATES = [
     "Order-time vendor drawing and assembly-service review for mechanically sensitive through-hole rows.",
     "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
     "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
-    "Manual-row decisions for TVS protection, keyboard header, oscillator, reset supervisor, and configuration links.",
+    "Confirm the manual-install disposition for D1/J30/R6/R15/U50/U51 remains intentional for this prototype order.",
 ]
 
 
@@ -141,6 +142,7 @@ def machine_gate_summary(out_dir):
     socket_insertion = read_text(out_dir / "assembly" / "socket-insertion-policy.md")
     mechanical_fit = read_text(out_dir / "assembly" / "mechanical-fit-readiness.md")
     manual_rows_report = read_text(out_dir / "assembly" / "manual-row-readiness.md")
+    manual_install_disposition = read_text(out_dir / "assembly" / "manual-install-disposition.md")
     cpn_consistency = read_text(out_dir / "assembly" / "cpn-consistency.md")
     orientation_notes = read_text(out_dir / "assembly" / "orientation-notes-readiness.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
@@ -305,6 +307,16 @@ def machine_gate_summary(out_dir):
             and "- Unknown manual rows: 0" in manual_rows_report
             and "- Missing expected manual rows: 0" in manual_rows_report,
             "`assembly/manual-row-readiness.md` records explicit dispositions for every manual/non-factory row.",
+        ),
+        (
+            "Manual install disposition",
+            has_ready_line(manual_install_disposition, "READY")
+            and "- Manual install rows: 6" in manual_install_disposition
+            and "- Post-assembly socket insertions: 19" in manual_install_disposition
+            and "- Upload manual CSV matches source: yes" in manual_install_disposition
+            and "- Upload post-insertion CSV matches source: yes" in manual_install_disposition
+            and "- Disposition failures: 0" in manual_install_disposition,
+            "`assembly/manual-install-disposition.md` freezes the Rev A manual-install decision and verifies upload CSV parity.",
         ),
         (
             "CPN consistency",
