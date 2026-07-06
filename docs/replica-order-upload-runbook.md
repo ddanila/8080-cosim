@@ -38,6 +38,22 @@ python3 kicad/report_order_readiness.py
 | --- | ---: | --- | --- |
 | `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 786506 | `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211` | PASS |
 
+## Upload ZIP Members
+
+- Required metadata: timestamp `1980-01-01 00:00:00`, deflated compression, file mode `0644`
+
+| Member | Bytes | Metadata | Source match |
+| --- | ---: | --- | --- |
+| juku_routed-F_Cu.gtl | 358515 | PASS | PASS |
+| juku_routed-B_Cu.gbl | 319987 | PASS | PASS |
+| juku_routed-F_Mask.gts | 66645 | PASS | PASS |
+| juku_routed-B_Mask.gbs | 66645 | PASS | PASS |
+| juku_routed-F_Silkscreen.gto | 2029476 | PASS | PASS |
+| juku_routed-B_Silkscreen.gbo | 533 | PASS | PASS |
+| juku_routed-Edge_Cuts.gm1 | 1302 | PASS | PASS |
+| juku_routed-job.gbrjob | 2445 | PASS | PASS |
+| juku_routed.drl | 42878 | PASS | PASS |
+
 ## Upload Checksum
 
 | File | Bytes | SHA256SUMS entry | Status |

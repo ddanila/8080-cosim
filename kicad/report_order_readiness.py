@@ -133,7 +133,12 @@ def run_upload_runbook(out_dir):
     report_path = ROOT / "docs" / "replica-order-upload-runbook.md"
     text = report_path.read_text(errors="replace") if report_path.exists() else ""
     return {
-        "ready": result.returncode == 0 and "Status: **READY**" in text and "## Failures" not in text,
+        "ready": result.returncode == 0
+        and "Status: **READY**" in text
+        and "## Upload ZIP Members" in text
+        and "Source match" in text
+        and "file mode `0644`" in text
+        and "## Failures" not in text,
         "report": report_path,
     }
 

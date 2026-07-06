@@ -96,6 +96,20 @@ def write_upload_sha256(zip_path):
     return sha_path
 
 
+def zip_member_mode(info):
+    return (info.external_attr >> 16) & 0o777
+
+
+def zip_member_metadata_ok(info):
+    return (
+        info.date_time == FIXED_ZIP_DATE
+        and not info.filename.startswith("/")
+        and ".." not in Path(info.filename).parts
+        and info.compress_type == zipfile.ZIP_DEFLATED
+        and zip_member_mode(info) == 0o644
+    )
+
+
 def build_report(fab_dir, report_path):
     failures = []
     hashes = read_hashes(fab_dir / "SHA256SUMS")
@@ -109,14 +123,16 @@ def build_report(fab_dir, report_path):
             continue
         digest = sha256(path)
         expected = hashes.get(name)
-        if expected and expected != digest:
+        if not expected:
+            failures.append(f"missing SHA256SUMS entry for {name}")
+        elif expected != digest:
             failures.append(f"checksum mismatch for {name}: SHA256SUMS has {expected}, computed {digest}")
         upload_rows.append([
             label,
             f"`{name}`",
             path.stat().st_size,
             f"`{digest}`",
-            "PASS" if not expected or expected == digest else "FAIL",
+            "PASS" if expected == digest else "FAIL",
         ])
 
     evidence_rows = []
@@ -145,23 +161,33 @@ def build_report(fab_dir, report_path):
     zip_status = "FAIL"
     zip_size = zip_path.stat().st_size if zip_path.exists() else 0
     zip_digest = sha256(zip_path) if zip_path.exists() and zip_size else "-"
+    zip_rows = []
     if zip_path.exists() and zip_size > 0:
-        with zipfile.ZipFile(zip_path) as archive:
-            infos = archive.infolist()
-            names = sorted(info.filename for info in infos)
-        expected_names = sorted(name for _label, name in UPLOAD_FILES)
-        if names == expected_names:
-            zip_status = "PASS"
-        else:
-            failures.append("upload ZIP contents differ from expected Gerber/drill file set")
-        deterministic_metadata = all(
-            info.date_time == FIXED_ZIP_DATE
-            and info.compress_type == zipfile.ZIP_DEFLATED
-            and (info.external_attr >> 16) == 0o644
-            for info in infos
-        )
-        if not deterministic_metadata:
-            failures.append("upload ZIP has non-deterministic or unsafe member metadata")
+        try:
+            with zipfile.ZipFile(zip_path) as archive:
+                infos = archive.infolist()
+                names = [info.filename for info in infos]
+                expected_names = [name for _label, name in UPLOAD_FILES]
+                if names != expected_names:
+                    failures.append("upload ZIP member order/content differs from expected Gerber/drill file set")
+                for info in infos:
+                    source = fab_dir / info.filename
+                    metadata_ok = zip_member_metadata_ok(info)
+                    content_ok = source.exists() and archive.read(info.filename) == source.read_bytes()
+                    zip_rows.append([
+                        info.filename,
+                        info.file_size,
+                        "PASS" if metadata_ok else "FAIL",
+                        "PASS" if content_ok else "FAIL",
+                    ])
+                    if not metadata_ok:
+                        failures.append(f"upload ZIP member has non-deterministic or unsafe metadata: {info.filename}")
+                    if not content_ok:
+                        failures.append(f"upload ZIP member does not match source file: {info.filename}")
+            if not failures:
+                zip_status = "PASS"
+        except zipfile.BadZipFile:
+            failures.append("upload ZIP is not a valid ZIP file")
     else:
         failures.append("upload ZIP was not created")
 
@@ -219,6 +245,17 @@ def build_report(fab_dir, report_path):
         "| File | Bytes | SHA256 | Contents |",
         "| --- | ---: | --- | --- |",
         table_row([f"`{repo_relative(zip_path)}`", zip_size, f"`{zip_digest}`" if zip_digest != "-" else "-", zip_status]),
+        "",
+        "## Upload ZIP Members",
+        "",
+        "- Required metadata: timestamp `1980-01-01 00:00:00`, deflated compression, file mode `0644`",
+        "",
+        "| Member | Bytes | Metadata | Source match |",
+        "| --- | ---: | --- | --- |",
+    ])
+    lines.extend(table_row(row) for row in zip_rows)
+
+    lines.extend([
         "",
         "## Upload Checksum",
         "",

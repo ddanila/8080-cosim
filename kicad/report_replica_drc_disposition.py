@@ -70,7 +70,8 @@ def top_refs(violations, limit=8):
     counts = Counter()
     for violation in violations:
         counts.update(set(violation_refs(violation)))
-    return ", ".join(ref for ref, _count in counts.most_common(limit)) or "-"
+    ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    return ", ".join(ref for ref, _count in ranked[:limit]) or "-"
 
 
 def build_report(drc_path):
