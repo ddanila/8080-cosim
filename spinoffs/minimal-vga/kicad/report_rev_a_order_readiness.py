@@ -367,8 +367,11 @@ def machine_gate_summary(out_dir):
             and "- Factory assembly CPL placements: 89" in order_upload_runbook
             and "- Unique factory CPNs: 20" in order_upload_runbook
             and "- Manual-install rows kept out of factory BOM: 6" in order_upload_runbook
-            and "- Owner post-assembly socket insertions: 19" in order_upload_runbook,
-            "`order-upload-runbook.md` gives the exact JLCPCB upload files, checksum command, expected vendor UI counts, and remaining order-time checks.",
+            and "- Owner post-assembly socket insertions: 19" in order_upload_runbook
+            and "- Expected ZIP members: 11" in order_upload_runbook
+            and "- ZIP members found: 11" in order_upload_runbook
+            and "file mode `0644`" in order_upload_runbook,
+            "`order-upload-runbook.md` gives the exact JLCPCB upload files, checksum command, reproducible ZIP metadata, expected vendor UI counts, and remaining order-time checks.",
         ),
     ]
     return gates

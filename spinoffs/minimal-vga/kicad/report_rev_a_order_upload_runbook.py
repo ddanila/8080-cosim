@@ -2,6 +2,7 @@
 import csv
 import hashlib
 import sys
+import zipfile
 from pathlib import Path
 
 
@@ -15,6 +16,22 @@ UPLOAD_FILES = [
     ("Upload README", "upload/README-upload.md"),
     ("Checksum file", "upload/SHA256SUMS.txt"),
 ]
+
+EXPECTED_ZIP_MEMBERS = [
+    "rev-a-physical-F_Cu.gtl",
+    "rev-a-physical-In1_Cu.g1",
+    "rev-a-physical-In2_Cu.g2",
+    "rev-a-physical-B_Cu.gbl",
+    "rev-a-physical-F_Mask.gts",
+    "rev-a-physical-B_Mask.gbs",
+    "rev-a-physical-F_Silkscreen.gto",
+    "rev-a-physical-B_Silkscreen.gbo",
+    "rev-a-physical-Edge_Cuts.gm1",
+    "rev-a-physical-job.gbrjob",
+    "rev-a-physical.drl",
+]
+
+FIXED_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
 
 ORDER_CHECKS = [
     "Verify the Gerber/drill ZIP renders correctly in the JLCPCB preview before payment.",
@@ -71,6 +88,20 @@ def bom_cpn(row):
     return ""
 
 
+def zip_member_mode(info):
+    return (info.external_attr >> 16) & 0o777
+
+
+def zip_member_metadata_ok(info):
+    return (
+        info.date_time == FIXED_ZIP_DATE
+        and not info.filename.startswith("/")
+        and ".." not in Path(info.filename).parts
+        and info.compress_type == zipfile.ZIP_DEFLATED
+        and zip_member_mode(info) == 0o644
+    )
+
+
 def build_report(out_dir):
     failures = []
     upload_dir = out_dir / "upload"
@@ -79,6 +110,7 @@ def build_report(out_dir):
     manual = read_csv(upload_dir / "vjuga-rev-a-manual-assembly.csv")
     post = read_csv(upload_dir / "vjuga-rev-a-post-assembly-insertion.csv")
     hashes = read_hashes(upload_dir / "SHA256SUMS.txt")
+    zip_path = out_dir / "upload/vjuga-rev-a-gerbers-drill.zip"
 
     for label, rel in UPLOAD_FILES:
         require(out_dir / rel, failures, label)
@@ -94,6 +126,30 @@ def build_report(out_dir):
     factory_cpns = sorted({bom_cpn(row) for row in bom if bom_cpn(row)})
     if len(factory_cpns) != 20:
         failures.append(f"expected 20 unique factory CPNs, got {len(factory_cpns)}")
+
+    zip_rows = []
+    if zip_path.exists() and zip_path.stat().st_size > 0:
+        try:
+            with zipfile.ZipFile(zip_path) as archive:
+                infos = archive.infolist()
+                zip_names = [info.filename for info in infos]
+                if zip_names != EXPECTED_ZIP_MEMBERS:
+                    failures.append("Gerber/drill ZIP member order/content mismatch: " + ", ".join(zip_names))
+                for info in infos:
+                    metadata_ok = zip_member_metadata_ok(info)
+                    zip_rows.append(
+                        [
+                            info.filename,
+                            info.file_size,
+                            "PASS" if metadata_ok else "FAIL",
+                        ]
+                    )
+                    if not metadata_ok:
+                        failures.append(f"Gerber/drill ZIP member has non-reproducible metadata: {info.filename}")
+        except zipfile.BadZipFile:
+            failures.append("Gerber/drill ZIP is not a valid ZIP file")
+    else:
+        failures.append("Gerber/drill ZIP missing or empty")
 
     upload_rows = []
     for label, rel in UPLOAD_FILES:
@@ -144,6 +200,21 @@ def build_report(out_dir):
         "| --- | --- | ---: | --- | --- |",
     ]
     lines.extend(table_row(row) for row in upload_rows)
+
+    lines.extend(
+        [
+            "",
+            "## Gerber/Drill ZIP Reproducibility",
+            "",
+            f"- Expected ZIP members: {len(EXPECTED_ZIP_MEMBERS)}",
+            f"- ZIP members found: {len(zip_rows)}",
+            "- Required metadata: timestamp `1980-01-01 00:00:00`, deflated compression, file mode `0644`",
+            "",
+            "| Member | Bytes | Metadata |",
+            "| --- | ---: | --- |",
+        ]
+    )
+    lines.extend(table_row(row) for row in zip_rows)
 
     lines.extend(
         [
