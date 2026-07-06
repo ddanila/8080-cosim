@@ -13,6 +13,7 @@ REQUIRED_ARTIFACTS = [
     "routing-geometry-readiness.md",
     "mounting-hole-readiness.md",
     "diagnostic-led-readiness.md",
+    "drill-readiness.md",
     "fab-package-integrity.md",
     "fab-notes.md",
     "rev-a.engineering-bom.csv",
@@ -120,6 +121,7 @@ def machine_gate_summary(out_dir):
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
     mounting_holes = read_text(out_dir / "mounting-hole-readiness.md")
     diagnostic_leds = read_text(out_dir / "diagnostic-led-readiness.md")
+    drill = read_text(out_dir / "drill-readiness.md")
     fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
@@ -192,6 +194,14 @@ def machine_gate_summary(out_dir):
             and "- Estimated current per lit LED: 1.36 mA" in diagnostic_leds
             and "- Diagnostic LED failures: 0" in diagnostic_leds,
             "`diagnostic-led-readiness.md` verifies diagnostic LED topology, BOM CPNs, and conservative current loading.",
+        ),
+        (
+            "Excellon drill export",
+            has_ready_line(drill, "READY")
+            and "- Excellon drill hits: 677" in drill
+            and "- PCB pad/via drill features: 677" in drill
+            and "- Drill readiness failures: 0" in drill,
+            "`drill-readiness.md` compares the exported Excellon drill file against PCB pad/via drill features and documents Edge.Cuts mounting cutouts.",
         ),
         (
             "Fabrication package integrity",

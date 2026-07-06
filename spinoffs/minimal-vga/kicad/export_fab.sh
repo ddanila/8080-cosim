@@ -80,6 +80,10 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_cpn_consistency.py "$OUT" >/dev/
   --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
   -o "$OUT/gerbers/" "$BOARD"
 "$KCLI" pcb export drill --format excellon --drill-origin absolute -o "$OUT/drill/" "$BOARD"
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_drill_readiness.py \
+  "$BOARD" \
+  "$OUT/drill/rev-a-physical.drl" \
+  "$OUT" >/dev/null
 "$KCLI" sch export pdf \
   --black-and-white \
   --output "$OUT/review/rev-a-physical-schematic.pdf" \

@@ -153,6 +153,10 @@ Factory assembly:
 - `report_rev_a_diagnostic_leds.py` writes
   `fab/minimal-vga/diagnostic-led-readiness.md`, checking the diagnostic LED
   topology, selected LED/resistor CPNs, and conservative 2.2k current loading.
+- `report_rev_a_drill_readiness.py` writes
+  `fab/minimal-vga/drill-readiness.md`, comparing the exported Excellon drill
+  file against PCB pad/via drills and documenting the Edge.Cuts mounting
+  cutouts.
 - `report_rev_a_fab_package_integrity.py` writes
   `fab/minimal-vga/fab-package-integrity.md`, verifying the Gerber/drill ZIP
   member list, deterministic ZIP metadata, source-file format markers, and

@@ -129,6 +129,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/diagnostic-led-readiness.md`, checking the diagnostic LED
   topology, selected LED/resistor CPNs, and conservative 2.2k current loading
   against the Rev A +5V budget.
+- `report_rev_a_drill_readiness.py` produces
+  `fab/minimal-vga/drill-readiness.md`, comparing the exported Excellon drill
+  file against PCB pad/via drill features and documenting the 3.2 mm
+  Edge.Cuts mounting cutouts.
 - `report_rev_a_fab_package_integrity.py` produces
   `fab/minimal-vga/fab-package-integrity.md`, verifying the upload Gerber/drill
   ZIP member list, deterministic ZIP metadata, source-file format markers, and
