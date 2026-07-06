@@ -137,7 +137,9 @@ debugging session saved on real hardware.
    A cosim probe now exercises that exact `TDD` path and reports
    `READY FOR FDC MODEL`: ROMBIOS writes WD1793 port `0x1C`, polls it, and reads
    512 bytes from data port `0x1F`; the remaining implementation is the real
-   WD1793 state machine plus `.juk`/JUKU sector loader.
+   WD1793 state machine plus `.juk`/JUKU sector loader. The raw `.juk` sector
+   backend is now implemented and tested against MAME's 80-track, 10-sector,
+   512-byte, 1/2-sided geometry; it does not vendor any disk image.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

@@ -52,6 +52,13 @@ Current cosim result:
   sector loader, then the probe target changes from `READY FOR FDC MODEL` to
   the factory `A>` prompt.
 
+## `.juk` sector backend
+`cosim/juk_disk.c` implements the raw MAME `FLOPPY_JUKU_FORMAT` geometry:
+80 tracks, 10 sectors per track, 512-byte sectors, sector IDs 1-10, and either
+one 409600-byte side or two 819200-byte sides. `sync/juk_disk_check.sh`
+validates CHS-to-offset reads with synthetic disk images. See
+`docs/juk-disk-format.md`.
+
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3
 one-shots -- step/precomp timing), D96 (ТМ2), D28 (ЛН3), D98 (ЛП11 + the wires-17/18
