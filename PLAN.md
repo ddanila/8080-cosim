@@ -160,9 +160,13 @@ debugging session saved on real hardware.
    guard is now in `sync/basic_cart_check.sh` and documented in
    `docs/basic-cart-readiness.md`: cosim can load `JUKU_CART=roms/jbasic11.bin`,
    D8 selects D22 for the traced `0x4000..0x5FFF` window, and the optional D22
-   sim socket drives `jbasic11.bin[0]` (`0xC3`). Remaining target: exercise the
-   full EktaSoft `B` command path to a live BASIC prompt and mirror that through
-   the interactive HDL harness.
+   sim socket drives `jbasic11.bin[0]` (`0xC3`). The jmon33 interrupt path is
+   now guarded in cosim by `sync/jmon33_interrupt_probe.py` and documented in
+   `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
+   `0xFF54` frame interrupt, reads keyboard ports, and writes VRAM. Remaining
+   targets: identify the jmon33 monitor-ready screen/RAM oracle, port the same
+   run to `juku_top`, and exercise the full EktaSoft `B` command path to a live
+   BASIC prompt.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
