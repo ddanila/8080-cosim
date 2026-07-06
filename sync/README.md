@@ -55,6 +55,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   jmon33 monitor-idle cursor oracle; currently documents the open boundary.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
+- `sync/basic_launch_probe.py` — bounded cosim diagnostic for the full
+  EktaSoft `B` command path into the BASIC cartridge; currently documents the
+  open command/control-flow boundary.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 

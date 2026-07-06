@@ -140,11 +140,14 @@ schematic*), with `cosim/` + MAME as validation oracles.
   polarity — the 8255 SPECIAL bits 6/7 are active-LOW.)
 - **North-star MET on both tracks:** die-accurate 8080 → real BIOS on the LVS-verified structure →
   banner → **reacts to typed commands**. `'T'` → the OS-boot loader `System from <D>isk, <N>et ?`;
-  `'B'` → ROM BASIC (separate `jbasic11.bin`; the optional cartridge window is now guarded by
-  `sync/basic_cart_check.sh`, but the full `B`→BASIC prompt path is still pending); `'A'` → mini-assembler
+  `'B'` → ROM BASIC (separate `jbasic11.bin`; the optional cartridge window is guarded by
+  `sync/basic_cart_check.sh`, and `sync/basic_launch_probe.py` now records that the current
+  `B` run loads the cartridge and uses the keyboard path but never executes in `0x4000..0xBFFF`);
+  `'A'` → mini-assembler
   (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:
   `docs/boot-ekta37-T-command*.png`, `docs/basic-cart-readiness.md`,
+  `docs/basic-launch-probe.md`,
   `docs/jmon33-interrupt-probe.md`, `docs/jmon33-ready-probe.md`,
   `docs/jmon33-hdl-probe.md`.
 - **EKDOS cosim milestone:** `sync/ekdos_fdc_probe.py` now treats disk-backed

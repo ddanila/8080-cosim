@@ -68,9 +68,10 @@ sync/basic_cart_check.sh
 
 ## Remaining Boundary
 
-- Exercise the full EktaSoft `B` command path to a live BASIC prompt. The
-  cartridge bus/window is now guarded; the remaining work is interactive ROM
-  control-flow validation, not expansion-window wiring.
+- Exercise the full EktaSoft `B` command path to a live BASIC prompt.
+  `sync/basic_launch_probe.py` now documents the current open boundary: with
+  `JUKU_CART=roms/jbasic11.bin` and `JUKU_KEYS=B`, the cartridge loads and the
+  keyboard path is active, but PC never enters `0x4000..0xBFFF`.
 EOF
 
 echo "BASIC-CART-CHECK: PASS"
