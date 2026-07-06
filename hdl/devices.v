@@ -181,6 +181,21 @@ endmodule
 module eprom_socket (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
 endmodule
 
+module exprom_8k (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
+    reg [7:0] rom [0:8191]; reg [1023:0] f; integer loaded = 0;
+`ifndef YOSYS
+    initial begin
+        if ($value$plusargs("cart=%s", f)) begin
+            $readmemh(f, rom);
+            loaded = 1;
+        end
+    end
+`endif
+    reg [7:0] held;
+    always @(negedge oe_n) if (loaded && ~cs_n) held <= rom[a];
+    assign d = (loaded && ~cs_n & ~oe_n) ? held : 8'bz;
+endmodule
+
 module eprom_8k #(parameter HALF = 0) (input wire [12:0] a, inout wire [7:0] d, input wire cs_n, oe_n);
     reg [7:0] rom [0:16383]; reg [1023:0] f;
 `ifndef YOSYS

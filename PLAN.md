@@ -156,7 +156,13 @@ debugging session saved on real hardware.
    sim-only second framebuffer read with the real РЕ3/АГ3-gated shared-DRAM
    video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and
-   **multi-ROM** so `'B'` launches jbasic11.
+   **multi-ROM** so `'B'` launches jbasic11. The first BASIC cartridge-window
+   guard is now in `sync/basic_cart_check.sh` and documented in
+   `docs/basic-cart-readiness.md`: cosim can load `JUKU_CART=roms/jbasic11.bin`,
+   D8 selects D22 for the traced `0x4000..0x5FFF` window, and the optional D22
+   sim socket drives `jbasic11.bin[0]` (`0xC3`). Remaining target: exercise the
+   full EktaSoft `B` command path to a live BASIC prompt and mirror that through
+   the interactive HDL harness.
 4. **Sound**: beeper path is fully traced; low-cost model, low priority.
 Guards stay green throughout: LVS, boot_check, cosim_check.
 

@@ -11,6 +11,7 @@
 //   - video reads DRAM at 0xD800, stride = WIDTH/8 = 40 bytes/line (320x241 mono)
 //
 // IN ports return the 8255 output latch (no key). Interrupts not modelled.
+// Optional expansion cartridge: set JUKU_CART=/path/to/image.{bin,hex}.
 //
 // STATUS: boots the real BIOS and draws the banner to VRAM. The long-standing
 // stall was the ROM self-test checksum loop (0x042C/0x0443), NOT the keyboard.
@@ -32,17 +33,20 @@
 
 #define MEM_SIZE   0x10000u
 #define ROM_SIZE   0x4000u          // 16 KB
+#define CART_SIZE  0x8000u          // 32 KB expansion window at 0x4000..0xBFFF
 #define VRAM_BASE  0xD800u
 #define VID_STRIDE 40               // WIDTH(320)/8
 #define VID_LINES  241
 
 static uint8_t rom[ROM_SIZE];
+static uint8_t cart[CART_SIZE];
 static uint8_t ram[MEM_SIZE];
 static int     mode = 0;            // memory view 0..3 (reset = 0)
 static uint8_t portc = 0;           // 8255#0 Port C output latch
 static juk_disk disk;
 static juku_fdc fdc;
 static int      fdc_enabled = 0;
+static int      cart_enabled = 0;
 
 // --- instrumentation -------------------------------------------------------
 static unsigned long out_count[256], in_count[256];
@@ -75,7 +79,7 @@ static uint8_t rb(void* u, uint16_t a) {
   (void)u; unsigned idx = 0;
   int ov = overlay(a, &idx);
   if (ov == 1) return rom[idx];
-  if (ov == 2) return 0xFF;        // no expansion cartridge present
+  if (ov == 2) return cart_enabled ? cart[a - 0x4000] : 0xFF;
   return ram[a];
 }
 
@@ -178,6 +182,30 @@ static uint8_t sum_block(const uint8_t* r) {   // block-1 checksum (0x000B..0x07
   unsigned s = 0; for (int i = 0x0B; i < 0x800; i++) s += r[i]; return s & 0xFF;
 }
 
+static int has_suffix(const char* path, const char* suffix) {
+  size_t plen = strlen(path), slen = strlen(suffix);
+  return plen >= slen && strcmp(path + plen - slen, suffix) == 0;
+}
+
+static size_t load_image(const char* path, uint8_t* dst, size_t cap, int fill) {
+  memset(dst, fill, cap);
+  FILE* f = fopen(path, "r");
+  if (!f) { perror(path); exit(1); }
+  size_t n = 0;
+  if (has_suffix(path, ".hex")) {
+    unsigned byte;
+    while (n < cap && fscanf(f, "%x", &byte) == 1)
+      dst[n++] = (uint8_t)byte;
+  } else {
+    fclose(f);
+    f = fopen(path, "rb");
+    if (!f) { perror(path); exit(1); }
+    n = fread(dst, 1, cap, f);
+  }
+  fclose(f);
+  return n;
+}
+
 int main(int argc, char** argv) {
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
@@ -185,6 +213,14 @@ int main(int argc, char** argv) {
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
+  const char* cart_path = getenv("JUKU_CART");
+  if (cart_path && cart_path[0]) {
+    size_t cn = load_image(cart_path, cart, CART_SIZE, 0xFF);
+    cart_enabled = 1;
+    fprintf(stderr, "loaded %zu bytes of expansion cartridge from %s\n", cn, cart_path);
+  } else {
+    memset(cart, 0xFF, sizeof(cart));
+  }
   const char* disk_path = getenv("JUKU_DISK");
   if (disk_path && disk_path[0]) {
     int rc = juk_disk_open(&disk, disk_path);
@@ -198,10 +234,7 @@ int main(int argc, char** argv) {
             disk_path, disk.size, disk.heads, disk.heads == 1 ? "" : "s");
   }
 
-  FILE* f = fopen(rom_path, "rb");
-  if (!f) { perror(rom_path); return 1; }
-  size_t n = fread(rom, 1, ROM_SIZE, f);
-  fclose(f);
+  size_t n = load_image(rom_path, rom, ROM_SIZE, 0x00);
   fprintf(stderr, "loaded %zu bytes of ROM from %s\n", n, rom_path);
 
   // ekta43.bin (homebrew AT-kbd mod) has a STALE block-1 checksum: bytes
