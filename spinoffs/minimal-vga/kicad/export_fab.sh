@@ -129,5 +129,6 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_orientation_notes.py "$OUT" >/de
 python3 spinoffs/minimal-vga/kicad/report_rev_a_fab_package_integrity.py "$OUT" >/dev/null
 python3 spinoffs/minimal-vga/kicad/report_rev_a_external_gerber_review.py "$OUT" >/dev/null
 python3 spinoffs/minimal-vga/kicad/report_rev_a_manual_install_disposition.py "$OUT" >/dev/null
+python3 spinoffs/minimal-vga/kicad/report_rev_a_vendor_order_checklist.py "$OUT" >/dev/null
 python3 spinoffs/minimal-vga/kicad/report_rev_a_order_readiness.py "$OUT" >/dev/null
 echo "Exported fab package to $OUT"

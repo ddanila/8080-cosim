@@ -39,6 +39,7 @@ REQUIRED_ARTIFACTS = [
     "assembly/manual-row-readiness.md",
     "assembly/manual-install-disposition.md",
     "assembly/cpn-consistency.md",
+    "assembly/vendor-order-checklist.md",
     "assembly/orientation-notes-readiness.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
@@ -79,7 +80,7 @@ HUMAN_GATES = [
     "Confirm the Rev A no-pour and 0.20 mm power-routing disposition remains intentional for this prototype order.",
     "Socket/header footprint fit check against the exact purchased sockets and connectors.",
     "Order-time vendor drawing and assembly-service review for mechanically sensitive through-hole rows.",
-    "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
+    "Order-time JLCPCB/LCSC CPN stock, footprint, price, and alternative confirmation using `assembly/vendor-order-checklist.md`.",
     "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
     "Confirm the manual-install disposition for D1/J30/R6/R15/U50/U51 remains intentional for this prototype order.",
 ]
@@ -144,6 +145,7 @@ def machine_gate_summary(out_dir):
     manual_rows_report = read_text(out_dir / "assembly" / "manual-row-readiness.md")
     manual_install_disposition = read_text(out_dir / "assembly" / "manual-install-disposition.md")
     cpn_consistency = read_text(out_dir / "assembly" / "cpn-consistency.md")
+    vendor_order_checklist = read_text(out_dir / "assembly" / "vendor-order-checklist.md")
     orientation_notes = read_text(out_dir / "assembly" / "orientation-notes-readiness.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
@@ -326,6 +328,19 @@ def machine_gate_summary(out_dir):
             )
             and "- CPN consistency failures: 0" in cpn_consistency,
             "`assembly/cpn-consistency.md` cross-checks generated BOM CPNs against the engineering BOM and sourcing checklist.",
+        ),
+        (
+            "Vendor/order checklist",
+            (
+                has_ready_line(vendor_order_checklist, "READY")
+                or has_ready_line(vendor_order_checklist, "REVIEW REQUIRED")
+            )
+            and "- Factory-mounted designators checked: 89" in vendor_order_checklist
+            and "- Unique factory CPNs: 20" in vendor_order_checklist
+            and "- Manual-install rows excluded from factory BOM: 6" in vendor_order_checklist
+            and "- Post-assembly owner insertions: 19" in vendor_order_checklist
+            and "- Vendor checklist failures: 0" in vendor_order_checklist,
+            "`assembly/vendor-order-checklist.md` records the upload BOM CPN set, manual exclusions, post-assembly insertions, and order-time vendor/stock review rows.",
         ),
         (
             "Assembly orientation notes",
