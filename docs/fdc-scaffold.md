@@ -36,6 +36,11 @@ Odd pins 1,3,5,7 / 9,11,13,15 / 17,19,21,23 / 25,27,29,31,33 are ground.
 Drive power is +12 V on drive X1 pin 1, ground on pins 2/3, and +5 V on pin 4.
 The drawing labels the drive as `НГМД ЕС 5323.01`.
 
+## EKDOS media acquisition gate
+The exact target image is tracked in `docs/ekdos-media-acquisition.md`: the
+factory `JUKU-1` / `ДГШ5.106.105` EKDOS boot disk, supplied externally as a
+MAME/Juku raw `.juk` image. The repository does not vendor that image.
+
 ## Current EKDOS boot-path probe
 `sync/ekdos_fdc_probe.py` drives the factory sequence from Baltijets doc 003:
 `ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` toward the `JUKU-1` EKDOS boot.
@@ -46,11 +51,13 @@ Current cosim result:
 - ROMBIOS reaches the FDC path.
 - WD1793 command/status port `0x1C` is written 6 times and polled millions of
   times.
-- With no `JUKU_DISK` image selected, the data port `0x1F` is read 512 times,
+- With no `EKDOS_PROBE_DISK` image selected, the data port `0x1F` is read 512 times,
   matching the first sector transfer size at the legacy register-echo boundary.
+- Setting `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk` passes that image through to
+  `JUKU_DISK` and fails the report explicitly if the image is not a valid raw
+  `.juk` size.
 - The next implementation step is running a real JUKU/EKDOS image through the
-  disk-backed model, then the probe target changes from `READY FOR FDC MODEL`
-  to the factory `A>` prompt.
+  disk-backed model to the factory `A>` prompt.
 
 ## `.juk` sector backend
 `cosim/juk_disk.c` implements the raw MAME `FLOPPY_JUKU_FORMAT` geometry:
@@ -67,10 +74,13 @@ the MAME-derived FDC controls: PC2 motor enable, PC5 drive select, and PC6
 side/head select.
 
 The read-sector command class (`0x80`) loads one 512-byte sector through
-`cosim/juk_disk.c` and streams it through the data register. It is enabled only
-when `JUKU_DISK=/path/to/image.juk` is set, preserving the default no-disk probe
-behavior. `sync/juk_disk_check.sh` guards both the raw `.juk` loader and this
-minimal FDC model with synthetic images.
+`cosim/juk_disk.c` and streams it through the data register. The minimal model
+also completes the ROMBIOS type-I restore/seek setup commands synchronously, so
+an attached disk image can reach real sector transfers instead of sticking busy
+before the first read. It is enabled only when `JUKU_DISK=/path/to/image.juk` is
+set, preserving the default no-disk probe behavior. `sync/juk_disk_check.sh`
+guards both the raw `.juk` loader and this minimal FDC model with synthetic
+images.
 
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3

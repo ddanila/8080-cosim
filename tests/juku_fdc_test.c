@@ -83,6 +83,22 @@ int main(void) {
   juku_fdc fdc;
   juku_fdc_init(&fdc, &disk);
   juku_fdc_portc(&fdc, 0x04);  // motor on, drive 0, side 0
+  juku_fdc_write(&fdc, 1, 22);
+  juku_fdc_write(&fdc, 0, 0x02);  // restore, as ROMBIOS issues before reading
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, 0, "after restore command");
+  if (juku_fdc_read(&fdc, 1) != 0) {
+    fprintf(stderr, "restore did not return to track 0\n");
+    fail = 1;
+  }
+
+  juku_fdc_write(&fdc, 3, 12);
+  juku_fdc_write(&fdc, 0, 0x12);  // seek to data register
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, 0, "after seek command");
+  if (juku_fdc_read(&fdc, 1) != 12) {
+    fprintf(stderr, "seek did not copy data register to track\n");
+    fail = 1;
+  }
+
   juku_fdc_write(&fdc, 1, 12);
   juku_fdc_write(&fdc, 2, 4);
   juku_fdc_write(&fdc, 0, 0x80);

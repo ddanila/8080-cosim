@@ -135,13 +135,16 @@ debugging session saved on real hardware.
    milestone: factory sequence `<T>, <D>, <D>` from `ROMBIOS 3.43` to **`A>`**
    with the `JUKU-1`/EKDOS disk image in drive A, cross-checked vs MAME.
    A cosim probe now exercises that exact `TDD` path and reports
-   `READY FOR FDC MODEL`: ROMBIOS writes WD1793 port `0x1C`, polls it, and reads
-   512 bytes from data port `0x1F`. The raw `.juk` sector backend is now
+   `READY FOR EXTERNAL EKDOS IMAGE` in its reproducible no-image mode: ROMBIOS
+   writes WD1793 port `0x1C`, polls it, and reads 512 bytes from data port
+   `0x1F`. The raw `.juk` sector backend is now
    implemented and tested against MAME's 80-track, 10-sector, 512-byte,
-   1/2-sided geometry, and a minimal disk-backed WD1793 read-sector model is
-   available in cosim behind `JUKU_DISK=/path/to/image.juk`; no disk image is
-   vendored. Remaining target: run a real JUKU/EKDOS image to factory `A>`,
-   then port the proven behavior into `juku_top`.
+   1/2-sided geometry, and a minimal disk-backed WD1793 model now covers the
+   ROMBIOS restore/seek prelude plus read-sector transfers behind
+   `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk` / `JUKU_DISK=/path/to/image.juk`.
+   No disk image is vendored; `docs/ekdos-media-acquisition.md` tracks the
+   external `JUKU-1` image gate. Remaining target: run a real JUKU/EKDOS image
+   to factory `A>`, then port the proven behavior into `juku_top`.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

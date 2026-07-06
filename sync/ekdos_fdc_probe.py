@@ -17,7 +17,7 @@ PORT_RE = re.compile(r"^\s*0x([0-9A-Fa-f]{2})\s*:\s*([0-9]+)(?:\s+last=0x([0-9A-
 STOP_RE = re.compile(r"stopped pc=0x([0-9A-Fa-f]{4}) cyc=([0-9]+) halted=([0-9]+) iff=([0-9]+) mode=([0-9]+) switches=([0-9]+)")
 
 
-def run_probe(max_cycles, frame_cycles):
+def run_probe(max_cycles, frame_cycles, disk_path):
     cc = os.environ.get("CC", "cc")
     with tempfile.TemporaryDirectory(prefix="ekdos-fdc-probe.") as tmp:
         tmpdir = Path(tmp)
@@ -40,6 +40,10 @@ def run_probe(max_cycles, frame_cycles):
         )
         env = os.environ.copy()
         env["JUKU_KEYS"] = "TDD"
+        if disk_path:
+            env["JUKU_DISK"] = str(disk_path)
+        else:
+            env.pop("JUKU_DISK", None)
         proc = subprocess.run(
             [str(trace), str(ROM), str(max_cycles), "0", str(frame_cycles)],
             cwd=ROOT / "cosim",
@@ -97,22 +101,39 @@ def table_row(values):
     return "| " + " | ".join(str(value).replace("|", "/") if value is not None else "-" for value in values) + " |"
 
 
-def build_report(proc, max_cycles, frame_cycles):
+def build_report(proc, max_cycles, frame_cycles, disk_path):
     ports = parse_ports(proc.stdout)
     stop = parse_stop(proc.stderr)
     failures = []
+    disk_selected = bool(disk_path)
+    disk_loaded = "loaded JUKU disk image" in proc.stderr
 
     if proc.returncode != 0:
         failures.append(f"trace exited with status {proc.returncode}")
+    if disk_selected and not disk_loaded:
+        failures.append("selected EKDOS_PROBE_DISK was not loaded as a valid `.juk` image")
     if ports["out"].get(0x1C, {}).get("count", 0) == 0:
         failures.append("ROMBIOS did not write the WD1793 command/status register at port 0x1C")
-    if ports["in"].get(0x1C, {}).get("count", 0) < 1000:
+    status_reads = ports["in"].get(0x1C, {}).get("count", 0)
+    if disk_selected and status_reads == 0:
+        failures.append("ROMBIOS did not read the WD1793 status register")
+    if not disk_selected and status_reads < 1000:
         failures.append("ROMBIOS did not enter the expected WD1793 status polling loop")
-    if ports["in"].get(0x1F, {}).get("count", 0) != 512:
+    data_reads = ports["in"].get(0x1F, {}).get("count", 0)
+    if disk_selected:
+        if data_reads < 512:
+            failures.append("ROMBIOS did not perform at least one 512-byte sector transfer")
+    elif data_reads != 512:
         failures.append("ROMBIOS did not perform the expected 512-byte first-sector data read")
 
     reached_fdc = not failures
-    status = "READY FOR FDC MODEL" if reached_fdc else "REGRESSION"
+    if failures:
+        status = "REGRESSION"
+    elif disk_selected:
+        status = "DISK-BACKED FDC PATH REACHED"
+    else:
+        status = "READY FOR EXTERNAL EKDOS IMAGE"
+    disk_label = str(disk_path) if disk_selected else "not selected"
     lines = [
         "# EKDOS/FDC boot-path probe",
         "",
@@ -120,20 +141,27 @@ def build_report(proc, max_cycles, frame_cycles):
         "",
         "This probe exercises the factory boot sequence mined from Baltijets doc 003:",
         "`ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the",
-        "`A>` EKDOS prompt. With no `JUKU_DISK` image selected, cosim preserves",
-        "the legacy register-echo FDC boundary; success here means the BIOS reaches",
-        "the disk path that the `.juk` backend and WD1793 read-sector model now",
-        "need to satisfy with a real EKDOS image.",
+        "`A>` EKDOS prompt. The default no-image run preserves the legacy",
+        "register-echo FDC boundary so this guard stays reproducible without",
+        "vendoring copyrighted media. Set `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`",
+        "to run the same path through the disk-backed WD1793 model.",
         "",
         "## Command",
         "",
         "```sh",
-        f"JUKU_KEYS=TDD cosim/trace roms/ekta37.bin {max_cycles} 0 {frame_cycles}",
+        (
+            f"EKDOS_PROBE_DISK={disk_path} JUKU_KEYS=TDD cosim/trace "
+            f"roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
+            if disk_selected
+            else f"JUKU_KEYS=TDD cosim/trace roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
+        ),
         "```",
         "",
         "## Summary",
         "",
         f"- Trace exit code: {proc.returncode}",
+        f"- External disk image: {disk_label}",
+        f"- Disk image loaded by cosim: {'yes' if disk_loaded else 'no'}",
         f"- Stop PC: {stop.get('pc', 0):04X}" if stop else "- Stop PC: not parsed",
         f"- Cycles: {stop.get('cycles', 0)}" if stop else "- Cycles: not parsed",
         f"- Mode switches: {stop.get('switches', 0)}" if stop else "- Mode switches: not parsed",
@@ -159,7 +187,8 @@ def build_report(proc, max_cycles, frame_cycles):
             "## Disposition",
             "",
             "- The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.",
-            "- The first hard stop is now the expected one: supply a real JUKU/EKDOS image and drive the disk-backed WD1793 read-sector path to the factory `A>` prompt.",
+            "- The no-image run proves the BIOS/FDC boundary and keeps the repo self-testable without shipping EKDOS media.",
+            "- A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`; invalid paths or non-`.juk` sizes fail this report explicitly.",
             "- The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.",
         ]
     )
@@ -174,8 +203,10 @@ def main():
     out = Path(sys.argv[1] if len(sys.argv) > 1 else ROOT / "docs" / "ekdos-fdc-probe.md")
     max_cycles = int(os.environ.get("EKDOS_PROBE_MAX_CYCLES", "250000000"))
     frame_cycles = int(os.environ.get("EKDOS_PROBE_FRAME_CYCLES", "200000"))
-    proc = run_probe(max_cycles, frame_cycles)
-    report, ok = build_report(proc, max_cycles, frame_cycles)
+    disk_env = os.environ.get("EKDOS_PROBE_DISK", "")
+    disk_path = Path(disk_env).expanduser() if disk_env else None
+    proc = run_probe(max_cycles, frame_cycles, disk_path)
+    report, ok = build_report(proc, max_cycles, frame_cycles, disk_path)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report)
     print(report)

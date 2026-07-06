@@ -16,6 +16,11 @@ static int is_read_sector(uint8_t command) {
 }
 
 
+static int is_type_i(uint8_t command) {
+  return (command & 0x80) == 0x00;
+}
+
+
 static void clear_transfer(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = 0;
@@ -38,6 +43,21 @@ static void begin_read_sector(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = JUK_SECTOR_SIZE;
   fdc->status |= ST_BUSY | ST_DRQ;
+}
+
+
+static void finish_type_i(juku_fdc* fdc, uint8_t command) {
+  clear_transfer(fdc);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_NOT_READY);
+  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+    fdc->status |= ST_NOT_READY;
+    return;
+  }
+  if ((command & 0xF0) == 0x00) {        // restore
+    fdc->track = 0;
+  } else if ((command & 0xF0) == 0x10) { // seek
+    fdc->track = fdc->data;
+  }
 }
 
 
@@ -84,6 +104,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
     case 0:
       fdc->command = data;
       if (is_read_sector(data)) begin_read_sector(fdc);
+      else if (is_type_i(data)) finish_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) clear_transfer(fdc);  // force interrupt
       else {
         fdc->status &= (uint8_t)~(ST_RNF | ST_DRQ);

@@ -1,13 +1,13 @@
 # EKDOS/FDC boot-path probe
 
-Status: **READY FOR FDC MODEL**
+Status: **READY FOR EXTERNAL EKDOS IMAGE**
 
 This probe exercises the factory boot sequence mined from Baltijets doc 003:
 `ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the
-`A>` EKDOS prompt. With no `JUKU_DISK` image selected, cosim preserves
-the legacy register-echo FDC boundary; success here means the BIOS reaches
-the disk path that the `.juk` backend and WD1793 read-sector model now
-need to satisfy with a real EKDOS image.
+`A>` EKDOS prompt. The default no-image run preserves the legacy
+register-echo FDC boundary so this guard stays reproducible without
+vendoring copyrighted media. Set `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`
+to run the same path through the disk-backed WD1793 model.
 
 ## Command
 
@@ -18,6 +18,8 @@ JUKU_KEYS=TDD cosim/trace roms/ekta37.bin 250000000 0 200000
 ## Summary
 
 - Trace exit code: 0
+- External disk image: not selected
+- Disk image loaded by cosim: no
 - Stop PC: FED4
 - Cycles: 250000008
 - Mode switches: 8795
@@ -42,5 +44,6 @@ JUKU_KEYS=TDD cosim/trace roms/ekta37.bin 250000000 0 200000
 ## Disposition
 
 - The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.
-- The first hard stop is now the expected one: supply a real JUKU/EKDOS image and drive the disk-backed WD1793 read-sector path to the factory `A>` prompt.
+- The no-image run proves the BIOS/FDC boundary and keeps the repo self-testable without shipping EKDOS media.
+- A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`; invalid paths or non-`.juk` sizes fail this report explicitly.
 - The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.

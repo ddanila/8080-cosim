@@ -42,7 +42,8 @@ validate any copyrighted EKDOS image.
 
 ## Next Use
 
-`cosim/juku_fdc.c` consumes this loader for the first disk-backed WD1793
-read-sector model. The repository still does not vendor any copyrighted EKDOS
-image; use `JUKU_DISK=/path/to/image.juk` to test with an externally supplied
-`JUKU-1` / EKDOS disk.
+`cosim/juku_fdc.c` consumes this loader for the disk-backed WD1793 model. The
+repository still does not vendor any copyrighted EKDOS image; use
+`EKDOS_PROBE_DISK=/path/to/JUKU-1.juk sync/ekdos_fdc_probe.py` for the ROMBIOS
+boot-path probe, or `JUKU_DISK=/path/to/image.juk` when invoking `cosim/trace`
+directly.
