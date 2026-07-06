@@ -34,6 +34,11 @@ LOCKED_VENDOR_OPTIONS = [
     ("Impedance/stackup", "do not request impedance control or stackup changes"),
 ]
 
+EXPECTED_UPLOAD_DIR_FILES = {
+    "juku-replica-gerbers-drill.zip",
+    "SHA256SUMS.txt",
+}
+
 
 def repo_relative(path):
     try:
@@ -133,6 +138,13 @@ def build_report(fab_dir):
     zip_digest = sha256(upload_zip) if upload_zip.exists() and upload_zip.stat().st_size else ""
     upload_hashes = read_hashes(upload_sha)
     root_hashes = read_hashes(root_sha)
+    upload_dir_files = sorted(path for path in upload_zip.parent.iterdir() if path.is_file()) if upload_zip.parent.exists() else []
+    upload_dir_names = {path.name for path in upload_dir_files}
+    if upload_dir_names != EXPECTED_UPLOAD_DIR_FILES:
+        failures.append(
+            "upload directory contains unexpected file set: "
+            + ", ".join(sorted(upload_dir_names))
+        )
     if upload_hashes.get(upload_zip.name) != zip_digest:
         failures.append("upload SHA256SUMS.txt does not match the final upload ZIP")
 
@@ -185,6 +197,22 @@ def build_report(fab_dir):
         "| --- | --- |",
     ])
     lines.extend(table_row(row) for row in tools)
+
+    lines.extend([
+        "",
+        "## Final Upload Directory",
+        "",
+        "| File | Bytes | SHA256 | Status |",
+        "| --- | ---: | --- | --- |",
+    ])
+    for path in upload_dir_files:
+        expected = path.name in EXPECTED_UPLOAD_DIR_FILES
+        lines.append(table_row([
+            f"`{repo_relative(path)}`",
+            path.stat().st_size,
+            f"`{sha256(path)}`",
+            "PASS" if expected else "FAIL",
+        ]))
 
     lines.extend([
         "",

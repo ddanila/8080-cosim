@@ -33,6 +33,13 @@ already been placed or accepted.
 | Gerber job generator | KiCad Pcbnew 10.99.0-unknown-3a2065e8de~189~ubuntu26.04.1 |
 | External viewer | @tracespace/cli |
 
+## Final Upload Directory
+
+| File | Bytes | SHA256 | Status |
+| --- | ---: | --- | --- |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `4d0e6c0adfb006cbea7304bf3841659efa7a8f73ddef2c641328c1cfe720d34a` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 786506 | `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211` | PASS |
+
 ## Locked Vendor Options
 
 | Option | Value |
