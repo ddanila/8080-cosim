@@ -205,7 +205,11 @@ before any Soviet NOS is at risk.
    by the waiver gate. Independent Tracespace Gerber/drill render evidence is now
    generated for the main board in `fab/gerbers/external-gerber-review.md`, and
    `kicad/report_order_readiness.py` requires that gate alongside the DRC waiver
-   and dual-config BOM gates.
+   and dual-config BOM gates. The final vendor-upload procedure is now generated
+   by `kicad/report_replica_order_upload_runbook.py` into
+   `docs/replica-order-upload-runbook.md`; it builds the ignored
+   `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, records the exact upload
+   file hashes, and lists the remaining vendor UI preview checks.
 3. Silkscreen/mechanical disposition started in
    `docs/replica-fab-drc-disposition.md`: connector footprint-library
    reproducibility is resolved by `kicad/juku.pretty/`; copper-edge findings are
@@ -312,7 +316,7 @@ commands.
 - WS-A: pull + mine Baltijets docs (007 first triage done; small-PROM bits still
   need disk files or dumps).
 - WS-C: close VJUGA sign-offs, order Rev A.
-- WS-D1/2: v76 power widening + fab-export/readiness gates done; machine blockers
+- WS-D1/2: v76 power widening + fab-export/readiness/upload gates done; machine blockers
   are clear and the exact-count waiver gate accepts the 599 review-only
   courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
