@@ -153,6 +153,10 @@ Factory assembly:
 - `report_rev_a_diagnostic_leds.py` writes
   `fab/minimal-vga/diagnostic-led-readiness.md`, checking the diagnostic LED
   topology, selected LED/resistor CPNs, and conservative 2.2k current loading.
+- `report_rev_a_power_budget.py` writes
+  `fab/minimal-vga/power-budget-readiness.md`, checking the 1.54 A +5V
+  planning budget, selected 3 A F1 PTC candidate, F1 engineering BOM row, and
+  J1/J3 raw-to-fused +5V topology.
 - `report_rev_a_drill_readiness.py` writes
   `fab/minimal-vga/drill-readiness.md`, comparing the exported Excellon drill
   file against PCB pad/via drills and documenting the Edge.Cuts mounting

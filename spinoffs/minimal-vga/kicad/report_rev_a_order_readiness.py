@@ -13,6 +13,7 @@ REQUIRED_ARTIFACTS = [
     "routing-geometry-readiness.md",
     "mounting-hole-readiness.md",
     "diagnostic-led-readiness.md",
+    "power-budget-readiness.md",
     "drill-readiness.md",
     "fab-package-integrity.md",
     "fab-notes.md",
@@ -122,6 +123,7 @@ def machine_gate_summary(out_dir):
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
     mounting_holes = read_text(out_dir / "mounting-hole-readiness.md")
     diagnostic_leds = read_text(out_dir / "diagnostic-led-readiness.md")
+    power_budget = read_text(out_dir / "power-budget-readiness.md")
     drill = read_text(out_dir / "drill-readiness.md")
     fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
@@ -196,6 +198,14 @@ def machine_gate_summary(out_dir):
             and "- Estimated current per lit LED: 1.36 mA" in diagnostic_leds
             and "- Diagnostic LED failures: 0" in diagnostic_leds,
             "`diagnostic-led-readiness.md` verifies diagnostic LED topology, BOM CPNs, and conservative current loading.",
+        ),
+        (
+            "Power/fuse budget",
+            has_ready_line(power_budget, "READY")
+            and "- Planning budget: 1.54 A" in power_budget
+            and "- Fuse hold current: 3.00 A" in power_budget
+            and "- Power-budget failures: 0" in power_budget,
+            "`power-budget-readiness.md` verifies the +5V planning budget, F1 candidate, and raw-to-fused power-entry topology.",
         ),
         (
             "Excellon drill export",

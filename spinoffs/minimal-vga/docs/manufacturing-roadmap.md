@@ -129,6 +129,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/diagnostic-led-readiness.md`, checking the diagnostic LED
   topology, selected LED/resistor CPNs, and conservative 2.2k current loading
   against the Rev A +5V budget.
+- `report_rev_a_power_budget.py` produces
+  `fab/minimal-vga/power-budget-readiness.md`, checking the 1.54 A +5V
+  planning budget, selected 3 A F1 PTC candidate, F1 engineering BOM row, and
+  J1/J3 raw-to-fused +5V topology.
 - `report_rev_a_drill_readiness.py` produces
   `fab/minimal-vga/drill-readiness.md`, comparing the exported Excellon drill
   file against PCB pad/via drill features and documenting the 3.2 mm
@@ -251,9 +255,10 @@ Open production blockers:
   drawings/assembly handling for the mechanically sensitive through-hole rows.
   J1 now uses a 5.08 mm terminal footprint, R30-R31 now use DIN0204 footprints
   for the selected 1/8 W CC pulldowns, and F1 has a footprint-matched Bourns
-  MF-RG300-class candidate. F1 still needs final load/current review before
-  upload. U51 is manual for Rev A unless a matching MCP130 F-bondout assembly
-  CPN is found.
+  MF-RG300-class candidate. The F1 load/current baseline is machine-checked;
+  order-time review still applies for stock, trace/connector rating, ambient
+  derating, and final IC choices. U51 is manual for Rev A unless a matching
+  MCP130 F-bondout assembly CPN is found.
 - Review autorouted traces, power widths, via count, and return paths.
 - Decide whether GND/+5V pours return after manual cleanup.
 - Do final Gerber inspection in an independent viewer.
