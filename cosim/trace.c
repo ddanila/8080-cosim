@@ -127,11 +127,17 @@ static uint8_t kbd_portb(void) {
   return pb;
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
-  (void)u; unsigned idx = 0;
+  unsigned idx = 0;
   if (overlay(a, &idx)) return;    // write under ROM/expcart overlay -> dropped
   ram[a] = v;
   wpage[a >> 8]++;
-  if (a >= VRAM_BASE) g_vw++;      // for CI: stop+dump after N video writes (match HDL)
+  if (a >= VRAM_BASE) {            // for CI: stop+dump after N video writes (match HDL)
+    if (g_vw == 0) {
+      unsigned long cyc = u ? ((i8080*)u)->cyc : 0;
+      fprintf(stderr, "[VRAM] first video write @0x%04X cyc=%lu\n", a, cyc);
+    }
+    g_vw++;
+  }
 }
 
 static uint8_t pin(void* u, uint8_t p) {
@@ -247,7 +253,7 @@ int main(int argc, char** argv) {
 
   i8080 cpu;
   i8080_init(&cpu);
-  cpu.userdata = 0;
+  cpu.userdata = &cpu;
   cpu.read_byte = rb; cpu.write_byte = wb;
   cpu.port_in = pin;  cpu.port_out = pout;
   cpu.pc = 0x0000;

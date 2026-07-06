@@ -165,11 +165,11 @@ debugging session saved on real hardware.
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
    `0xFF54` frame interrupt, reads keyboard ports, and writes VRAM. The first
    HDL-side jmon33 probe is now guarded by `sync/jmon33_hdl_probe.sh` and
-   documented in `docs/jmon33-hdl-probe.md`: `juku_top` reaches the first
-   Monitor 3.3 video write at `0xFF40` with frame interrupts enabled. Remaining
-   targets: identify the jmon33 monitor-ready screen/RAM oracle, compare cosim
-   and `juku_top` at that boundary, and exercise the full EktaSoft `B` command
-   path to a live BASIC prompt.
+   documented in `docs/jmon33-hdl-probe.md`: cosim and `juku_top` both reach
+   the first Monitor 3.3 video write at `0xFF40`, and their first-write VRAM
+   dumps match. Remaining targets: identify the jmon33 monitor-ready screen/RAM
+   oracle, compare cosim and `juku_top` at that boundary, and exercise the full
+   EktaSoft `B` command path to a live BASIC prompt.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

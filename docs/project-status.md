@@ -122,9 +122,9 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **jmon33** (Monitor v3.3, MAME `ROM_BIOS(0)`) is **interrupt+input-driven** (dispatches its ISR
   through a RAM vector, needs keyboard/serial) — does NOT self-paint, so it's not the easy target.
   `sync/jmon33_interrupt_probe.py` now proves the cosim path through 8259 setup, frame interrupt
-  vector `0xFF54`, keyboard-port reads, and VRAM writes. `sync/jmon33_hdl_probe.sh` proves
-  `juku_top` reaches the first Monitor 3.3 video write at `0xFF40`; a user-visible prompt oracle
-  and a cosim-vs-HDL state comparison at that boundary remain pending.
+  vector `0xFF54`, keyboard-port reads, and VRAM writes. `sync/jmon33_hdl_probe.sh` now compares
+  cosim and `juku_top` at the first Monitor 3.3 video write (`0xFF40`) and requires matching
+  first-write VRAM dumps; a user-visible prompt oracle remains pending.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
