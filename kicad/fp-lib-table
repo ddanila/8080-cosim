@@ -1,0 +1,9 @@
+(fp_lib_table
+  (lib
+    (name "juku")
+    (type "KiCad")
+    (uri "${KIPRJMOD}/juku.pretty")
+    (options "")
+    (descr "Juku replica project footprints")
+  )
+)

@@ -202,7 +202,7 @@ def build_report(board, out_dir, kicad_cli, kicad_version, drc):
     elif overall == "REVIEW REQUIRED":
         lines.append(
             "Routing/electrical blockers are clear and the Gerber/drill inventory "
-            "is present. Remaining DRC findings are mechanical/silkscreen/library "
+            "is present. Remaining DRC findings are non-electrical fabrication "
             "review items that need human disposition before ordering."
         )
     else:

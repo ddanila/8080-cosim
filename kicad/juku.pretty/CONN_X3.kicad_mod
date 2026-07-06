@@ -1,0 +1,170 @@
+(footprint "CONN_X3"
+	(version 20260706)
+	(generator "8080-cosim-board-extract")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(property "Value" "CONN_X3"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(duplicate_pad_numbers_are_jumpers no)
+	(pad "23" thru_hole circle
+		(at -9 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "24" thru_hole circle
+		(at -9 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "26" thru_hole circle
+		(at -6.5 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "28" thru_hole circle
+		(at -4 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "29" thru_hole circle
+		(at -6.5 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "30" thru_hole circle
+		(at -4 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "31" thru_hole circle
+		(at -1.5 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "32" thru_hole circle
+		(at -1.5 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "33" thru_hole circle
+		(at 1 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "34" thru_hole circle
+		(at 1 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "35" thru_hole circle
+		(at 6 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "36" thru_hole circle
+		(at 3.5 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "37" thru_hole circle
+		(at 8.5 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "38" thru_hole circle
+		(at 6 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "40" thru_hole circle
+		(at 8.5 1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "51" thru_hole circle
+		(at 3.5 -1.25)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(embedded_fonts no)
+)

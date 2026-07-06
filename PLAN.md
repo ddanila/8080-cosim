@@ -147,13 +147,14 @@ before any Soviet NOS is at risk.
    reports) to the main `kicad/` board — first main-board gate is now in
    `kicad/report_fab_readiness.py` and emits `fab/gerbers/fab-readiness.md` plus
    `SHA256SUMS`. Current status: electrical/routing PASS and fabrication-file
-   inventory PASS, but overall **REVIEW REQUIRED** because 611 mechanical/silk/lib
+   inventory PASS, but overall **REVIEW REQUIRED** because 606 mechanical/silk
    DRC findings still need human disposition.
 3. Silkscreen/mechanical disposition started in
-   `docs/replica-fab-drc-disposition.md`: copper-edge and missing connector
-   footprint-library issues block order; courtyard/PTH/silk/text classes need
-   visual review or explicit waiver. Continue with DFM review vs the original's
-   thick-power-trace style and independent gerber viewer review.
+   `docs/replica-fab-drc-disposition.md`: connector footprint-library
+   reproducibility is resolved by `kicad/juku.pretty/`; copper-edge findings
+   still block order; courtyard/PTH/silk/text classes need visual review or
+   explicit waiver. Continue with DFM review vs the original's thick-power-trace
+   style and independent gerber viewer review.
 4. Freeze the netlist only after WS-A closes the paper-resolvable unknowns; the few
    assumed nets that remain get flagged as bring-up verification points, not blockers.
 5. **Order** (2-layer, 310×266 mm — the authenticity call stands). Consider ordering
@@ -241,7 +242,7 @@ dump request there may close this workstream without our own board time.
   need disk files or dumps).
 - WS-C: close VJUGA sign-offs, order Rev A.
 - WS-D1/2: v76 power widening + first fab-export/readiness gates done; now burn
-  down or formally waive the 611 non-electrical DRC findings and do independent
+  down or formally waive the 606 non-electrical DRC findings and do independent
   Gerber review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
 - WS-E2: start parts sourcing (long lead). WS-H: first community contact.

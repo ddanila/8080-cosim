@@ -1,0 +1,100 @@
+(footprint "CONN_X8"
+	(version 20260706)
+	(generator "8080-cosim-board-extract")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(property "Value" "CONN_X8"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(effects
+			(font
+				(face "GOST type B italic")
+				(size 1.27 1.27)
+				(italic yes)
+			)
+		)
+		
+	)
+	(duplicate_pad_numbers_are_jumpers no)
+	(pad "59" thru_hole circle
+		(at 10 0)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "60" thru_hole circle
+		(at 5 0)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "61" thru_hole circle
+		(at 0 0)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "62" thru_hole circle
+		(at -5 0)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "63" thru_hole circle
+		(at -10 0)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(pad "64" thru_hole circle
+		(at -15 0)
+		(size 1.6 1.6)
+		(drill 0.8)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+	)
+	(embedded_fonts no)
+)

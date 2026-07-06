@@ -17,12 +17,11 @@ The routed replica board is electrically/routing clean for the current order gat
 | Shorting items | 0 | Pass |
 | Unconnected items | 0 | Pass |
 
-The remaining 611 DRC findings are non-electrical fabrication-review items:
+The remaining 606 DRC findings are non-electrical fabrication-review items:
 
 | DRC type | Count | Current disposition |
 |---|---:|---|
 | `copper_edge_clearance` | 6 | Review/fix before order |
-| `lib_footprint_issues` | 5 | Fix local library config or vendor connector footprints before order |
 | `silk_edge_clearance` | 1 | Cosmetic; review with edge-clearance pass |
 | `courtyards_overlap` | 55 | Waivable after assembly-fit review |
 | `pth_inside_courtyard` | 71 | Waivable after assembly-fit review |
@@ -34,7 +33,7 @@ Overall fabrication state remains **review required**, not order-ready.
 
 ## Must review before order
 
-These are the only current DRC classes that should block an order decision.
+This is the only current DRC class that should block an order decision.
 
 ### Copper-edge clearance
 
@@ -50,24 +49,6 @@ rule. Fix geometry or consciously waive only after Gerber-viewer inspection.
 | Cutout/edge at `(300.3, 138.1)` | D34 pad 14, no net | 0.1667 mm to edge |
 | Cutout/edge at `(300.3, 138.1)` | D34 pad 12, no net | 0.2039 mm to edge |
 | Cutout/edge at `(300.3, 138.1)` | D34 pad 13, no net | 0.0000 mm to edge |
-
-### Missing footprint library
-
-KiCad reports that the local configuration does not include footprint library
-`juku` for five connector footprints:
-
-| Footprint | Position |
-|---|---|
-| X1 | `(61.0, 9.1)` |
-| X2 | `(143.0, 7.85)` |
-| X3 | `(193.0, 7.85)` |
-| X8 | `(24.0, 252.6)` |
-| X9 | `(208.0, 262.0)` |
-
-Before ordering, make the connector footprint source reproducible from the repo or
-replace these with vendored project-library footprints. This is a release
-reproducibility issue even if the current board file already contains embedded
-footprint geometry.
 
 ## Waivable after visual review
 
@@ -97,8 +78,14 @@ test labels. Review these repeated clusters first:
 ## Next actions
 
 1. Inspect and resolve or waive the six copper-edge findings.
-2. Make the five `juku` connector footprints reproducible from tracked repo files.
-3. Open the regenerated Gerbers in an independent viewer and check the courtyard
+2. Open the regenerated Gerbers in an independent viewer and check the courtyard
    and silkscreen clusters listed above.
-4. Regenerate `fab/gerbers/fab-readiness.md` and update this disposition if counts
+3. Regenerate `fab/gerbers/fab-readiness.md` and update this disposition if counts
    or decisions change.
+
+## Resolved items
+
+- `lib_footprint_issues`: resolved by vendoring `juku:CONN_X1`, `CONN_X2`,
+  `CONN_X3`, `CONN_X8`, and `CONN_X9` under `kicad/juku.pretty/` and adding the
+  project `kicad/fp-lib-table`. KiCad 10.99 nightly now resolves those connector
+  footprints from tracked repo files.
