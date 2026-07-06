@@ -55,9 +55,7 @@ already been placed or accepted.
 ## Required Pre-Payment Commands
 
 ```sh
-python3 kicad/report_order_readiness.py
-(cd fab/gerbers && sha256sum -c SHA256SUMS)
-(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)
+kicad/check_replica_manufacturing_ready.sh
 ```
 
 ## Remaining External Evidence To Save With The Order
