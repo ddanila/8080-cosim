@@ -45,6 +45,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   byte-identically.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
+- `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
+  programmed `OUT1` toggles the traced `SOUND` net.
 
 ## Status
 
@@ -52,5 +54,5 @@ The LVS/boot path is no longer a small fixture: `juku_top` is the working
 LVS-checked model and the guards above cover connectivity, boot behavior,
 value-level lockstep, FDC sector-read scaffolding, and runnable video readout.
 The remaining high-fidelity boundaries are the external EKDOS image, the full
-interactive BASIC prompt path, dumped PROM contents, and the РЕ3/АГ3-gated
-physical video slot timing.
+interactive BASIC prompt path, the analog speaker/current check, dumped PROM
+contents, and the РЕ3/АГ3-gated physical video slot timing.

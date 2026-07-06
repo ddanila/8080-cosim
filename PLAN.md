@@ -163,7 +163,12 @@ debugging session saved on real hardware.
    sim socket drives `jbasic11.bin[0]` (`0xC3`). Remaining target: exercise the
    full EktaSoft `B` command path to a live BASIC prompt and mirror that through
    the interactive HDL harness.
-4. **Sound**: beeper path is fully traced; low-cost model, low priority.
+4. **Sound**: digital beeper source is now guarded by
+   `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
+   PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
+   output. Remaining physical boundary: the analog driver/current path
+   (`SOUND -> R90 -> VT1/VD4/R91 -> R48 -> SPKR`) still needs bench-level
+   speaker verification during bring-up.
 Guards stay green throughout: LVS, boot_check, cosim_check.
 
 ### WS-C — VJUGA Rev A: order and bring up (de-risk the whole physical program)

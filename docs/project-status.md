@@ -134,6 +134,10 @@ schematic*), with `cosim/` + MAME as validation oracles.
   (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:
   `docs/boot-ekta37-T-command*.png`, `docs/basic-cart-readiness.md`.
+- **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
+  runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
+  traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains
+  a physical bring-up check, documented in `docs/beeper-readiness.md`.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

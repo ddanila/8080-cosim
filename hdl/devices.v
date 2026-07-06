@@ -489,12 +489,73 @@ endmodule
 module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
                  input wire clk0, gate0, clk1, gate1, clk2, gate2,
                  output wire out0, out1, out2);
-    reg [7:0] regs [0:3]; integer i; initial for (i=0;i<4;i=i+1) regs[i]=0;
-    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
+    reg [7:0] regs [0:3]; integer i;
+    reg [1:0] access [0:2], phase [0:2];
+    reg [15:0] reload [0:2], count [0:2];
+    reg [7:0] low_latch [0:2];
+    reg [2:0] mode [0:2];
+    reg [2:0] ch;
+    reg [15:0] next_reload;
+    reg [2:0] ctl_ch;
+    initial begin
+        for (i=0;i<4;i=i+1) regs[i]=0;
+        for (i=0;i<3;i=i+1) begin
+            access[i]=2'b11; phase[i]=0; reload[i]=0; count[i]=0; low_latch[i]=0; mode[i]=0;
+        end
+    end
+
+    always @(negedge wr_n) if (~cs_n) begin
+        regs[A] = D;
+        if (A == 2'd3) begin
+            ctl_ch = D[7:6];
+            if (ctl_ch < 3) begin
+                access[ctl_ch] = D[5:4];
+                mode[ctl_ch] = D[3:1];
+                phase[ctl_ch] = 0;
+            end
+        end else begin
+            ch = A;
+            if (access[ch] == 2'b01) begin
+                next_reload = {8'h00, D};
+                reload[ch] = (next_reload == 0) ? 16'hffff : next_reload;
+                count[ch] = (next_reload == 0) ? 16'hffff : next_reload;
+                phase[ch] = 0;
+            end else if (access[ch] == 2'b10) begin
+                next_reload = {D, 8'h00};
+                reload[ch] = (next_reload == 0) ? 16'hffff : next_reload;
+                count[ch] = (next_reload == 0) ? 16'hffff : next_reload;
+                phase[ch] = 0;
+            end else if (access[ch] == 2'b11) begin
+                if (phase[ch] == 0) begin
+                    low_latch[ch] = D;
+                    phase[ch] = 1;
+                end else begin
+                    next_reload = {D, low_latch[ch]};
+                    reload[ch] = (next_reload == 0) ? 16'hffff : next_reload;
+                    count[ch] = (next_reload == 0) ? 16'hffff : next_reload;
+                    phase[ch] = 0;
+                end
+            end
+        end
+    end
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
-    // counters not modeled (boundary stub): outputs idle low. The MAME-derived cascade
-    // (docs/mame-interface-map.md) is wired at the top level for the PCB netlist.
-    assign out0 = 1'b0; assign out1 = 1'b0; assign out2 = 1'b0;
+    // Minimal programmable divider behavior: enough for video/frame/sound source
+    // guards. It is not a full 8253 mode-accurate waveform model; each loaded
+    // channel divides its input clock by the programmed count and toggles OUT.
+    reg [2:0] out_r = 3'b000;
+    assign out0 = out_r[0]; assign out1 = out_r[1]; assign out2 = out_r[2];
+    always @(posedge clk0) if (gate0 && reload[0] != 0) begin
+        if (count[0] <= 1) begin count[0] <= reload[0]; out_r[0] <= ~out_r[0]; end
+        else count[0] <= count[0] - 1'b1;
+    end
+    always @(posedge clk1) if (gate1 && reload[1] != 0) begin
+        if (count[1] <= 1) begin count[1] <= reload[1]; out_r[1] <= ~out_r[1]; end
+        else count[1] <= count[1] - 1'b1;
+    end
+    always @(posedge clk2) if (gate2 && reload[2] != 0) begin
+        if (count[2] <= 1) begin count[2] <= reload[2]; out_r[2] <= ~out_r[2]; end
+        else count[2] <= count[2] - 1'b1;
+    end
 endmodule
 
 module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk, rxc, txc,
