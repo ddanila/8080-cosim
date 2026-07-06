@@ -401,6 +401,11 @@ commands.
 
 ## 9. Milestone ledger
 
+Generated current-state audit: `docs/milestone-ledger.md`
+(`python3 scripts/report_milestone_ledger.py`). The audit is conservative:
+vendor orders, received parts, programmed PROMs, and bench bring-up only count
+when tracked evidence exists.
+
 - [ ] M1 Baltijets docs mined; PROM-truth status resolved (disk/dump/reconstructed)
 - [ ] M2 EKDOS boots in the twin (cosim reaches `A>` with external media; `juku_top` FDC remains)
 - [ ] M3 VJUGA Rev A ordered

@@ -258,6 +258,7 @@ The physical-board recreation caught up with (and fed back into) the netlist tra
   `docs/replica-power-trace-readiness.md`: 704 power segments, 377 widened beyond
   the 0.20 mm baseline, no segment below baseline or above the 1.00 mm clamp.
   Gerbers + drill export clean (`kicad/export_fab.sh`).
+
 - **Placement is photo-verified** against the owner's board-#2 photos (22, git-lfs), with two
   systematic calibration bugs found and fixed along the way (photo-1 y-scale 9.50 vs 9.87 px/mm;
   the "10xx = 8x01 upside-down" date-code rule). The ВГ93 quadrant follows the owner's
@@ -273,3 +274,13 @@ The physical-board recreation caught up with (and fed back into) the netlist tra
   fixed on the fork's `custom` branch (ddanila/freerouting, rebased on master); the silent
   GUI-persisted `max_passes=20` cap and the hand-pre-route livelock class are documented in the
   triage log. Renders auto-refresh on commit (`.githooks/pre-commit` → `renders/`).
+
+## Manufacturing milestone audit (2026-07)
+The plan-level M1-M11 ledger is now generated into
+`docs/milestone-ledger.md` by `scripts/report_milestone_ledger.py`. Current
+tracked evidence marks the replica main-board package as
+**REPO READY / EXTERNAL PENDING** for M7: `docs/replica-manufacturing-readiness.md`
+is **READY TO UPLOAD**, `fab/gerbers/order-readiness.md` is **ORDER READY**, and
+the remaining M7 proof is external vendor upload/order evidence. The same audit
+keeps PROM truth, exact EKDOS media, VJUGA ordering/bring-up, parts receipt,
+assembly, and Tier 1-3 hardware validation open until tracked evidence exists.

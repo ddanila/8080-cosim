@@ -1,0 +1,213 @@
+#!/usr/bin/env python3
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REPORT = ROOT / "docs" / "milestone-ledger.md"
+
+
+def rel(path):
+    return path.relative_to(ROOT).as_posix()
+
+
+def read(path):
+    if not path.exists():
+        return ""
+    return path.read_text(errors="replace")
+
+
+def marker(path, text):
+    return text in read(ROOT / path)
+
+
+def exists(path):
+    return (ROOT / path).exists()
+
+
+def count_baltijets_pdfs():
+    path = ROOT / "ref" / "baltijets-tech-docs"
+    if not path.exists():
+        return 0
+    return len(list(path.glob("*.pdf")))
+
+
+def table_row(values):
+    escaped = [str(value).replace("|", "/") for value in values]
+    return "| " + " | ".join(escaped) + " |"
+
+
+def milestone_rows():
+    pdf_count = count_baltijets_pdfs()
+    manufacturing_ready = marker(
+        "docs/replica-manufacturing-readiness.md",
+        "Status: **READY TO UPLOAD**",
+    )
+    order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**")
+    vjuga_draft = marker(
+        "fab/minimal-vga/order-readiness.md",
+        "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
+    )
+
+    return [
+        {
+            "id": "M1",
+            "target": "Baltijets docs mined; PROM-truth status resolved",
+            "status": "PARTIAL",
+            "evidence": (
+                f"{pdf_count} Baltijets PDFs present; PLAN records first-pass mining "
+                "for 002/003/007/009/014/015; PROM bytes still need disk files, "
+                "hardware dumps, or accepted reconstruction."
+            ),
+            "next": "Locate programming disk/media or get RE3/RT4 dumps.",
+        },
+        {
+            "id": "M2",
+            "target": "EKDOS boots in the twin",
+            "status": "PARTIAL",
+            "evidence": (
+                "cosim FDC boundary is reproducible without vendored media; "
+                "`docs/ekdos-fdc-probe.md` is READY FOR EXTERNAL EKDOS IMAGE. "
+                "Tracked evidence does not yet prove the exact factory JUKU-1 image "
+                "or a juku_top FDC port."
+            ),
+            "next": "Repeat with exact factory JUKU-1 media, then port FDC behavior to juku_top.",
+        },
+        {
+            "id": "M3",
+            "target": "VJUGA Rev A ordered",
+            "status": "EXTERNAL PENDING",
+            "evidence": (
+                "`fab/minimal-vga/order-readiness.md` is a coherent draft with "
+                "machine gates PASS, but still requires human/vendor review before upload."
+                if vjuga_draft
+                else "No current VJUGA order-readiness draft was found."
+            ),
+            "next": "Perform final JLCPCB UI review and place the Rev A order.",
+        },
+        {
+            "id": "M4",
+            "target": "Twin emits real video timing",
+            "status": "PARTIAL",
+            "evidence": (
+                "`docs/video-readout-readiness.md` proves the V2 byte-to-pixel path; "
+                "the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open."
+            ),
+            "next": "Close the RE3/AG3 timing source and replace the sim-only framebuffer read.",
+        },
+        {
+            "id": "M5",
+            "target": "jmon33 live prompt + BASIC launches in the twin",
+            "status": "PARTIAL",
+            "evidence": (
+                "jmon33 interrupt/first-write/cosim cursor probes exist; "
+                "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
+            ),
+            "next": "Compare HDL at the stronger jmon33 cursor boundary and close the B-command path.",
+        },
+        {
+            "id": "M6",
+            "target": "VJUGA Rev A boots real Juku ROM on the bench",
+            "status": "EXTERNAL PENDING",
+            "evidence": "Requires fabricated and assembled Rev A hardware; no bench artifact exists in repo.",
+            "next": "Order, assemble, and run the staged bring-up ladder.",
+        },
+        {
+            "id": "M7",
+            "target": "Replica fab package passes order-readiness gates; boards ordered",
+            "status": "REPO READY / EXTERNAL PENDING" if manufacturing_ready and order_ready else "OPEN",
+            "evidence": (
+                "`docs/replica-manufacturing-readiness.md` is READY TO UPLOAD and "
+                "`fab/gerbers/order-readiness.md` is ORDER READY; no vendor order "
+                "number or accepted order evidence is tracked."
+                if manufacturing_ready and order_ready
+                else "Replica manufacturing/order readiness gates are not both ready."
+            ),
+            "next": "Run `kicad/check_replica_manufacturing_ready.sh`, upload the ZIP, save vendor preview/order evidence.",
+        },
+        {
+            "id": "M8",
+            "target": "Full functional parts kit in hand; firmware/PROMs programmed",
+            "status": "OPEN",
+            "evidence": (
+                "`docs/replica-sourcing-readiness.md` is a sourcing gate, not a "
+                "received-inventory or programmed-PROM record."
+            ),
+            "next": "Buy/receive the functional kit and record PROM programming evidence.",
+        },
+        {
+            "id": "M9",
+            "target": "Replica assembled; staged bring-up complete to Tier 1",
+            "status": "EXTERNAL PENDING",
+            "evidence": "Requires fabricated boards, parts, assembly, and bench bring-up.",
+            "next": "Assemble sockets-first and execute the power/clock/ROM/RAM/video/keyboard ladder.",
+        },
+        {
+            "id": "M10",
+            "target": "EKDOS boots from floppy emulator or drive on real hardware",
+            "status": "EXTERNAL PENDING",
+            "evidence": "Requires working replica hardware plus storage hardware/media.",
+            "next": "Use Gotek/HxC-class emulator first, then confirm real drive path for Tier 3.",
+        },
+        {
+            "id": "M11",
+            "target": "Authentic parts, dumped PROMs, original peripherals",
+            "status": "EXTERNAL PENDING",
+            "evidence": "Requires NOS parts, PROM dumps, original peripherals, and physical validation.",
+            "next": "Converge after Tier 2 is stable.",
+        },
+    ]
+
+
+def main():
+    rows = milestone_rows()
+    lines = [
+        "# Milestone ledger audit",
+        "",
+        "This generated audit maps the `PLAN.md` M1-M11 ledger to current repo",
+        "evidence. It is intentionally conservative: external vendor orders,",
+        "received parts, programmed PROMs, and bench results are not marked done",
+        "unless there is tracked evidence for them.",
+        "",
+        "## Summary",
+        "",
+        "| Status | Count |",
+        "| --- | ---: |",
+    ]
+    counts = {}
+    for item in rows:
+        counts[item["status"]] = counts.get(item["status"], 0) + 1
+    for status in sorted(counts):
+        lines.append(table_row([status, counts[status]]))
+
+    lines.extend([
+        "",
+        "## Milestones",
+        "",
+        "| ID | Target | Status | Evidence | Next action |",
+        "| --- | --- | --- | --- | --- |",
+    ])
+    for item in rows:
+        lines.append(table_row([
+            item["id"],
+            item["target"],
+            item["status"],
+            item["evidence"],
+            item["next"],
+        ]))
+
+    lines.extend([
+        "",
+        "## Commands",
+        "",
+        "```sh",
+        "python3 scripts/report_milestone_ledger.py",
+        "kicad/check_replica_manufacturing_ready.sh",
+        "```",
+        "",
+    ])
+    REPORT.write_text("\n".join(lines), encoding="utf-8")
+    print(f"Wrote {rel(REPORT)}")
+
+
+if __name__ == "__main__":
+    main()
