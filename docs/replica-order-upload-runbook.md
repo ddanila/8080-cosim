@@ -48,10 +48,11 @@ python3 kicad/report_order_readiness.py
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 1946 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2080 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
 

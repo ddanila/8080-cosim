@@ -17,6 +17,7 @@ SOURCING_REPORT = ROOT / "kicad" / "report_replica_sourcing_readiness.py"
 EXTERNAL_GERBER_REPORT = ROOT / "kicad" / "report_external_gerber_review.py"
 UPLOAD_RUNBOOK_REPORT = ROOT / "kicad" / "report_replica_order_upload_runbook.py"
 POWER_TRACE_REPORT = ROOT / "kicad" / "report_replica_power_trace_readiness.py"
+DRC_DISPOSITION_REPORT = ROOT / "kicad" / "report_replica_drc_disposition.py"
 
 BLOCKING_DRC_TYPES = {
     "clearance",
@@ -96,6 +97,23 @@ def run_power_trace_readiness(board):
     }
 
 
+def run_drc_disposition(drc_path):
+    result = subprocess.run([
+        sys.executable,
+        str(DRC_DISPOSITION_REPORT),
+        str(drc_path),
+    ], check=False)
+    report_path = ROOT / "docs" / "replica-fab-drc-disposition.md"
+    text = report_path.read_text(errors="replace") if report_path.exists() else ""
+    return {
+        "ready": result.returncode == 0
+        and "Status: **READY**" in text
+        and "Visual disposition failures: 0" in text
+        and "## Failures" not in text,
+        "report": report_path,
+    }
+
+
 def run_external_gerber_review(out_dir):
     subprocess.run([sys.executable, str(EXTERNAL_GERBER_REPORT), str(out_dir)], check=True)
     report_path = out_dir / "external-gerber-review.md"
@@ -120,7 +138,7 @@ def run_upload_runbook(out_dir):
     }
 
 
-def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, external_review, upload_runbook=None):
+def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, external_review, upload_runbook=None):
     violations = drc.get("violations", [])
     unconnected = drc.get("unconnected_items", [])
     counts = Counter(v.get("type", "unknown") for v in violations)
@@ -138,6 +156,7 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
         and waiver_accepted
         and sourcing["ready"]
         and power_trace["ready"]
+        and drc_disposition["ready"]
         and external_review["ready"]
         and upload_ready
     )
@@ -219,6 +238,14 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
 
     lines.extend([
         "",
+        "## DRC Visual Disposition Gate",
+        "",
+        f"- DRC disposition status: **{'READY' if drc_disposition['ready'] else 'NOT READY'}**",
+        f"- Report: `{repo_relative(drc_disposition['report'])}`",
+    ])
+
+    lines.extend([
+        "",
         "## Order Upload Runbook Gate",
         "",
         f"- Upload runbook status: **{'READY' if upload_ready else 'NOT READY'}**",
@@ -231,15 +258,16 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
         lines.append(
             "Machine blockers are clear and the exact-count review-only DRC waiver "
             "is accepted. The regenerated Gerber/drill package, sourcing reports, "
-            "power-trace report, external render evidence, and upload runbook are "
-            "ready for final order-time visual/vendor review."
+            "power-trace report, generated DRC visual disposition, external render "
+            "evidence, and upload runbook are ready for final order-time "
+            "visual/vendor review."
         )
     elif machine_ready:
         lines.append(
             "Machine blockers are clear: no clearance, short, unconnected, "
             "copper-edge, or footprint-library findings remain. The package can "
-            "proceed once the waiver, sourcing, power-trace, external-render, and "
-            "upload-runbook gates above are accepted."
+            "proceed once the waiver, sourcing, power-trace, DRC-disposition, "
+            "external-render, and upload-runbook gates above are accepted."
         )
     else:
         lines.append(
@@ -259,12 +287,13 @@ def main():
     bom = run_dual_config_bom()
     sourcing = run_sourcing_readiness()
     power_trace = run_power_trace_readiness(board)
+    drc_disposition = run_drc_disposition(drc_path)
     external_review = run_external_gerber_review(out_dir)
     report_path = out_dir / "order-readiness.md"
-    preliminary, _ = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, external_review)
+    preliminary, _ = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, external_review)
     report_path.write_text(preliminary)
     upload_runbook = run_upload_runbook(out_dir)
-    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, external_review, upload_runbook)
+    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, external_review, upload_runbook)
     report_path.write_text(report)
     print(report)
     print(f"Wrote {repo_relative(report_path)}")

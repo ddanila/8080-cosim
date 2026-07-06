@@ -26,6 +26,7 @@ RETAINED_EVIDENCE = [
     ("Fabrication readiness", "fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
     ("Review waiver", "review-waivers.md", "Status: **ACCEPTED**"),
     ("External Gerber review", "external-gerber-review.md", "Status: **READY**"),
+    ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Checksum file", "SHA256SUMS", None),
 ]
