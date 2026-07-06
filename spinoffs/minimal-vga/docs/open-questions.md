@@ -72,8 +72,10 @@ before ordering hardware.
    - Freeze decode and DRAM timing equations, then bind GAL pinouts to the
      schematic and PCB.
 4. Diagnostic LED values and loading:
-   - Confirm final LED colors and resistor values. The Rev A baseline uses 2.2k
-     through-hole resistors to keep logic loading modest.
+   - Rev A baseline uses 2.2k through-hole resistors and red 3 mm LEDs. The
+     generated diagnostic LED readiness report checks topology, CPNs, and
+     estimated current. Final colors can still change at order time if a
+     footprint-compatible LED is selected.
 5. Autoroute cleanup:
    - Review trace geometry, via count, power trace widths, and return paths.
      Decide whether to reintroduce GND/+5V pours after manual cleanup.

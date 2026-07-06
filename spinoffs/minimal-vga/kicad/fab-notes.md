@@ -150,6 +150,9 @@ Factory assembly:
   `fab/minimal-vga/mounting-hole-readiness.md`, checking the generated Rev A
   corner mounting holes, 3.2 mm diameter, edge web, footprint clearance, and
   routed-track clearance before Gerber packaging.
+- `report_rev_a_diagnostic_leds.py` writes
+  `fab/minimal-vga/diagnostic-led-readiness.md`, checking the diagnostic LED
+  topology, selected LED/resistor CPNs, and conservative 2.2k current loading.
 - `report_rev_a_fab_package_integrity.py` writes
   `fab/minimal-vga/fab-package-integrity.md`, verifying the Gerber/drill ZIP
   member list, deterministic ZIP metadata, source-file format markers, and

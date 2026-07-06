@@ -125,6 +125,10 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/mounting-hole-readiness.md`, checking the generated Rev A
   3.2 mm corner mounting holes for count, diameter, edge web, footprint
   clearance, and routed-track clearance.
+- `report_rev_a_diagnostic_leds.py` produces
+  `fab/minimal-vga/diagnostic-led-readiness.md`, checking the diagnostic LED
+  topology, selected LED/resistor CPNs, and conservative 2.2k current loading
+  against the Rev A +5V budget.
 - `report_rev_a_fab_package_integrity.py` produces
   `fab/minimal-vga/fab-package-integrity.md`, verifying the upload Gerber/drill
   ZIP member list, deterministic ZIP metadata, source-file format markers, and
@@ -206,7 +210,8 @@ Remaining work:
   ownership boundaries.
 - Assign concrete JLCPCB/LCSC CPNs for factory-mounted sockets, passives,
   connectors, oscillator/reset, and protection parts.
-- Confirm diagnostic LED colors and brightness/loading after part selection.
+- Keep the diagnostic LED 2.2k loading machine-checked; color changes remain
+  optional order-time substitutions.
 
 ### Gate 4: Fabrication Candidate
 

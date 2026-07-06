@@ -12,6 +12,7 @@ REQUIRED_ARTIFACTS = [
     "fab-readiness.md",
     "routing-geometry-readiness.md",
     "mounting-hole-readiness.md",
+    "diagnostic-led-readiness.md",
     "fab-package-integrity.md",
     "fab-notes.md",
     "rev-a.engineering-bom.csv",
@@ -118,6 +119,7 @@ def machine_gate_summary(out_dir):
     fab = read_text(out_dir / "fab-readiness.md")
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
     mounting_holes = read_text(out_dir / "mounting-hole-readiness.md")
+    diagnostic_leds = read_text(out_dir / "diagnostic-led-readiness.md")
     fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
@@ -182,6 +184,14 @@ def machine_gate_summary(out_dir):
             and "- Detected mounting holes: 4" in mounting_holes
             and "- Mounting-hole failures: 0" in mounting_holes,
             "`mounting-hole-readiness.md` verifies the Rev A corner mounting-hole count, diameter, edge web, and local clearance.",
+        ),
+        (
+            "Diagnostic LED loading",
+            has_ready_line(diagnostic_leds, "READY")
+            and "- Diagnostic LEDs checked: 6" in diagnostic_leds
+            and "- Estimated current per lit LED: 1.36 mA" in diagnostic_leds
+            and "- Diagnostic LED failures: 0" in diagnostic_leds,
+            "`diagnostic-led-readiness.md` verifies diagnostic LED topology, BOM CPNs, and conservative current loading.",
         ),
         (
             "Fabrication package integrity",
