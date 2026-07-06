@@ -215,6 +215,12 @@ before any Soviet NOS is at risk.
 1. Export a dual-config BOM from `kicad/` + ВП census: **authentic** (Soviet NOS
    types per ДГШ3.031.006) and **functional** (western substitutes per the existing
    ГОСТ↔Western table) — build can start functional and converge to authentic.
+   First generated pass is now in `docs/replica-dual-config-bom.md` and
+   `docs/replica-dual-config-bom.csv`, sourced from `kicad/juku.board.json`.
+   It separates 226 board component positions into 196 current .009 populated
+   parts plus 30 empty expansion/authentic-completeness sockets, with authentic
+   markings, functional substitute classes, PROM/programming rows, and
+   circuit/mechanical review rows called out.
 2. Source early (long lead): КР580 set, 8× К565РУ5 (+spares), К556РТ4 ×2,
    К155РЕ3 ×1–2, КР1818ВГ93 (or WD1793), СНП59 connectors (the hard-to-substitute
    mechanical item), sockets, passives. Channels: eBay NOS lots, osta.ee/soov.ee,

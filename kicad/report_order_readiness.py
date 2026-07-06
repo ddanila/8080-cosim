@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import csv
 import json
 import subprocess
 import sys
@@ -11,6 +12,7 @@ DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_OUT_DIR = ROOT / "fab" / "gerbers"
 FAB_REPORT = ROOT / "kicad" / "report_fab_readiness.py"
 WAIVER_REPORT = ROOT / "kicad" / "report_review_waivers.py"
+DUAL_BOM_REPORT = ROOT / "kicad" / "report_dual_config_bom.py"
 
 BLOCKING_DRC_TYPES = {
     "clearance",
@@ -52,7 +54,21 @@ def run_waiver_review(drc_path, out_dir):
     return result.returncode == 0
 
 
-def build_report(board, out_dir, drc, waiver_accepted):
+def run_dual_config_bom():
+    subprocess.run([sys.executable, str(DUAL_BOM_REPORT)], check=True)
+    csv_path = ROOT / "docs" / "replica-dual-config-bom.csv"
+    with csv_path.open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    return {
+        "lines": len(rows),
+        "positions": sum(int(row["board_positions"]) for row in rows),
+        "populate_now": sum(int(row["populate_now"]) for row in rows),
+        "leave_empty": sum(int(row["leave_empty"]) for row in rows),
+        "actions": sorted({row["action"] for row in rows}),
+    }
+
+
+def build_report(board, out_dir, drc, waiver_accepted, bom):
     violations = drc.get("violations", [])
     unconnected = drc.get("unconnected_items", [])
     counts = Counter(v.get("type", "unknown") for v in violations)
@@ -109,12 +125,26 @@ def build_report(board, out_dir, drc, waiver_accepted):
         f"- Waiver report: `{repo_relative(out_dir / 'review-waivers.md')}`",
     ])
 
+    lines.extend([
+        "",
+        "## Parts / Sourcing Gate",
+        "",
+        "- Dual-config BOM status: **GENERATED**",
+        "- Report: `docs/replica-dual-config-bom.md`",
+        "- CSV: `docs/replica-dual-config-bom.csv`",
+        f"- BOM lines: {bom['lines']}",
+        f"- Board component positions: {bom['positions']}",
+        f"- Current .009 populated parts: {bom['populate_now']}",
+        f"- Empty expansion/authentic-completeness sockets: {bom['leave_empty']}",
+        f"- Action classes: {', '.join(bom['actions'])}",
+    ])
+
     lines.extend(["", "## Disposition", ""])
     if order_ready:
         lines.append(
             "Machine blockers are clear and the exact-count review-only DRC waiver "
-            "is accepted. The regenerated Gerber/drill package is ready for final "
-            "order-time visual/vendor review."
+            "is accepted. The regenerated Gerber/drill package and dual-config "
+            "parts BOM are ready for final order-time visual/vendor review."
         )
     elif machine_ready:
         lines.append(
@@ -137,7 +167,8 @@ def main():
     drc_path = run_fab_readiness(board, out_dir)
     drc = json.loads(drc_path.read_text())
     waiver_accepted = run_waiver_review(drc_path, out_dir)
-    report, order_ready = build_report(board, out_dir, drc, waiver_accepted)
+    bom = run_dual_config_bom()
+    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom)
     report_path = out_dir / "order-readiness.md"
     report_path.write_text(report)
     print(report)
