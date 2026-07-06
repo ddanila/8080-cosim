@@ -13,7 +13,9 @@ DEFAULT_OUT_DIR = ROOT / "fab" / "gerbers"
 FAB_REPORT = ROOT / "kicad" / "report_fab_readiness.py"
 WAIVER_REPORT = ROOT / "kicad" / "report_review_waivers.py"
 DUAL_BOM_REPORT = ROOT / "kicad" / "report_dual_config_bom.py"
+SOURCING_REPORT = ROOT / "kicad" / "report_replica_sourcing_readiness.py"
 EXTERNAL_GERBER_REPORT = ROOT / "kicad" / "report_external_gerber_review.py"
+UPLOAD_RUNBOOK_REPORT = ROOT / "kicad" / "report_replica_order_upload_runbook.py"
 
 BLOCKING_DRC_TYPES = {
     "clearance",
@@ -69,6 +71,16 @@ def run_dual_config_bom():
     }
 
 
+def run_sourcing_readiness():
+    subprocess.run([sys.executable, str(SOURCING_REPORT)], check=True)
+    report_path = ROOT / "docs" / "replica-sourcing-readiness.md"
+    text = report_path.read_text(errors="replace")
+    return {
+        "ready": "Status: **SOURCING READY" in text and "## Failures" not in text,
+        "report": report_path,
+    }
+
+
 def run_external_gerber_review(out_dir):
     subprocess.run([sys.executable, str(EXTERNAL_GERBER_REPORT), str(out_dir)], check=True)
     report_path = out_dir / "external-gerber-review.md"
@@ -79,7 +91,21 @@ def run_external_gerber_review(out_dir):
     }
 
 
-def build_report(board, out_dir, drc, waiver_accepted, bom, external_review):
+def run_upload_runbook(out_dir):
+    result = subprocess.run([
+        sys.executable,
+        str(UPLOAD_RUNBOOK_REPORT),
+        str(out_dir),
+    ], check=False)
+    report_path = ROOT / "docs" / "replica-order-upload-runbook.md"
+    text = report_path.read_text(errors="replace") if report_path.exists() else ""
+    return {
+        "ready": result.returncode == 0 and "Status: **READY**" in text and "## Failures" not in text,
+        "report": report_path,
+    }
+
+
+def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, external_review, upload_runbook=None):
     violations = drc.get("violations", [])
     unconnected = drc.get("unconnected_items", [])
     counts = Counter(v.get("type", "unknown") for v in violations)
@@ -91,7 +117,8 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, external_review):
         not any(blocking_counts.values())
         and not unknown_types
     )
-    order_ready = machine_ready and waiver_accepted and external_review["ready"]
+    upload_ready = upload_runbook["ready"] if upload_runbook else False
+    order_ready = machine_ready and waiver_accepted and sourcing["ready"] and external_review["ready"] and upload_ready
     status = "ORDER READY" if order_ready else ("MACHINE READY" if machine_ready else "NOT READY")
 
     lines = [
@@ -151,6 +178,8 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, external_review):
         "- Dual-config BOM status: **GENERATED**",
         "- Report: `docs/replica-dual-config-bom.md`",
         "- CSV: `docs/replica-dual-config-bom.csv`",
+        f"- Sourcing readiness status: **{'READY' if sourcing['ready'] else 'NOT READY'}**",
+        f"- Sourcing report: `{repo_relative(sourcing['report'])}`",
         f"- BOM lines: {bom['lines']}",
         f"- Board component positions: {bom['positions']}",
         f"- Current .009 populated parts: {bom['populate_now']}",
@@ -158,18 +187,29 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, external_review):
         f"- Action classes: {', '.join(bom['actions'])}",
     ])
 
+    lines.extend([
+        "",
+        "## Order Upload Runbook Gate",
+        "",
+        f"- Upload runbook status: **{'READY' if upload_ready else 'NOT READY'}**",
+        f"- Report: `{repo_relative(upload_runbook['report']) if upload_runbook else 'docs/replica-order-upload-runbook.md'}`",
+        f"- Upload archive: `{repo_relative(out_dir / 'upload' / 'juku-replica-gerbers-drill.zip')}`",
+    ])
+
     lines.extend(["", "## Disposition", ""])
     if order_ready:
         lines.append(
             "Machine blockers are clear and the exact-count review-only DRC waiver "
-            "is accepted. The regenerated Gerber/drill package and dual-config "
-            "parts BOM are ready for final order-time visual/vendor review."
+            "is accepted. The regenerated Gerber/drill package, sourcing reports, "
+            "external render evidence, and upload runbook are ready for final "
+            "order-time visual/vendor review."
         )
     elif machine_ready:
         lines.append(
             "Machine blockers are clear: no clearance, short, unconnected, "
             "copper-edge, or footprint-library findings remain. The package can "
-            "proceed once the review-only waiver and external-render gates are accepted."
+            "proceed once the waiver, sourcing, external-render, and upload-runbook "
+            "gates above are accepted."
         )
     else:
         lines.append(
@@ -177,7 +217,7 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, external_review):
             "are resolved or deliberately reclassified."
         )
     lines.append("")
-    return "\n".join(lines), machine_ready
+    return "\n".join(lines), order_ready
 
 
 def main():
@@ -187,9 +227,13 @@ def main():
     drc = json.loads(drc_path.read_text())
     waiver_accepted = run_waiver_review(drc_path, out_dir)
     bom = run_dual_config_bom()
+    sourcing = run_sourcing_readiness()
     external_review = run_external_gerber_review(out_dir)
-    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, external_review)
     report_path = out_dir / "order-readiness.md"
+    preliminary, _ = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, external_review)
+    report_path.write_text(preliminary)
+    upload_runbook = run_upload_runbook(out_dir)
+    report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, external_review, upload_runbook)
     report_path.write_text(report)
     print(report)
     print(f"Wrote {repo_relative(report_path)}")

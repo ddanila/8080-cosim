@@ -22,7 +22,7 @@ UPLOAD_FILES = [
 ]
 
 RETAINED_EVIDENCE = [
-    ("Order readiness", "order-readiness.md", "Status: **ORDER READY**"),
+    ("Order readiness", "order-readiness.md", "# Main board order readiness"),
     ("Fabrication readiness", "fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
     ("Review waiver", "review-waivers.md", "Status: **ACCEPTED**"),
     ("External Gerber review", "external-gerber-review.md", "Status: **READY**"),
@@ -159,7 +159,6 @@ def build_report(fab_dir, report_path):
         "",
         "```sh",
         "python3 kicad/report_order_readiness.py",
-        "python3 kicad/report_replica_order_upload_runbook.py",
         "(cd fab/gerbers && sha256sum -c SHA256SUMS)",
         "```",
         "",

@@ -205,8 +205,8 @@ before any Soviet NOS is at risk.
    by the waiver gate. Independent Tracespace Gerber/drill render evidence is now
    generated for the main board in `fab/gerbers/external-gerber-review.md`, and
    `kicad/report_order_readiness.py` requires that gate alongside the DRC waiver
-   and dual-config BOM gates. The final vendor-upload procedure is now generated
-   by `kicad/report_replica_order_upload_runbook.py` into
+   and dual-config BOM gates, and now also requires the upload-runbook gate.
+   `kicad/report_replica_order_upload_runbook.py` generates
    `docs/replica-order-upload-runbook.md`; it builds the ignored
    `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, records the exact upload
    file hashes, and lists the remaining vendor UI preview checks.

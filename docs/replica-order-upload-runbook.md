@@ -14,7 +14,6 @@ Run from the repository root:
 
 ```sh
 python3 kicad/report_order_readiness.py
-python3 kicad/report_replica_order_upload_runbook.py
 (cd fab/gerbers && sha256sum -c SHA256SUMS)
 ```
 
@@ -42,7 +41,7 @@ python3 kicad/report_replica_order_upload_runbook.py
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 1516 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 1829 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
