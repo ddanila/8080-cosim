@@ -15,7 +15,7 @@ already been placed or accepted.
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
 | Order readiness | `fab/gerbers/order-readiness.md` | 2253 | PASS |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 4755 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 4771 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
@@ -59,6 +59,8 @@ kicad/check_replica_manufacturing_ready.sh
 ```
 
 ## Remaining External Evidence To Save With The Order
+
+Use `docs/replica-order-evidence-template.md` for the private order record.
 
 - Vendor preview screenshots.
 - Quoted fabrication options and price.

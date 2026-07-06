@@ -13,9 +13,7 @@ vendor UI immediately before payment.
 Run from the repository root:
 
 ```sh
-python3 kicad/report_order_readiness.py
-(cd fab/gerbers && sha256sum -c SHA256SUMS)
-(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)
+kicad/check_replica_manufacturing_ready.sh
 ```
 
 ## Files In Upload ZIP
@@ -72,6 +70,7 @@ python3 kicad/report_order_readiness.py
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2208 | PASS |
 
 ## Order-Time Checks
 
@@ -82,7 +81,7 @@ python3 kicad/report_order_readiness.py
 - [ ] Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.
 - [ ] Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.
 - [ ] Review the 599 accepted courtyard/PTH/silk/text findings against the vendor preview before payment.
-- [ ] Save vendor preview screenshots, quoted options, order number, and final ZIP checksum with the order record.
+- [ ] Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.
 
 ## Do Not Upload
 

@@ -30,6 +30,7 @@ RETAINED_EVIDENCE = [
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Checksum file", "SHA256SUMS", None),
+    ("Order evidence template", "docs/replica-order-evidence-template.md", "# Replica order evidence template"),
 ]
 
 ORDER_CHECKS = [
@@ -40,7 +41,7 @@ ORDER_CHECKS = [
     "Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.",
     "Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.",
     "Review the 599 accepted courtyard/PTH/silk/text findings against the vendor preview before payment.",
-    "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum with the order record.",
+    "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.",
 ]
 FIXED_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
 UPLOAD_ZIP_NAME = "juku-replica-gerbers-drill.zip"
@@ -227,9 +228,7 @@ def build_report(fab_dir, report_path):
         "Run from the repository root:",
         "",
         "```sh",
-        "python3 kicad/report_order_readiness.py",
-        "(cd fab/gerbers && sha256sum -c SHA256SUMS)",
-        "(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)",
+        "kicad/check_replica_manufacturing_ready.sh",
         "```",
         "",
         "## Files In Upload ZIP",

@@ -233,6 +233,8 @@ def build_report(fab_dir):
         "",
         "## Remaining External Evidence To Save With The Order",
         "",
+        "Use `docs/replica-order-evidence-template.md` for the private order record.",
+        "",
         "- Vendor preview screenshots.",
         "- Quoted fabrication options and price.",
         "- Vendor order number.",
