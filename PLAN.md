@@ -148,7 +148,13 @@ debugging session saved on real hardware.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
-   physical video path testable before power-on.
+   physical video path testable before power-on. The runnable V2 readout path is
+   now guarded by `sync/video_readout_check.sh` and documented in
+   `docs/video-readout-readiness.md`: standalone ИР16 serialization and
+   `juku_top`'s `video_raster -> ir16_sr -> lp5_xor1` output reconstruct the
+   booted framebuffer byte-identically. Remaining V3 target: replace the
+   sim-only second framebuffer read with the real РЕ3/АГ3-gated shared-DRAM
+   video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and
    **multi-ROM** so `'B'` launches jbasic11.
 4. **Sound**: beeper path is fully traced; low-cost model, low priority.

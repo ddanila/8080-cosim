@@ -28,11 +28,26 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 # exit 0 = in sync, 1 = mismatch  (suitable for CI)
 ```
 
-## Status
-Working on a 3-chip subset (CPU/ROM/PPI0) via hand-authored KiCad fixtures in
-`testdata/` (one matching → IN SYNC, one miswired → MISMATCH, fault localized).
-The fixtures stand in until the real schematic exists; the parsers/checker are
-unchanged when fed real `kicad-cli` output.
+## Current guards
 
-Next: real KiCad schematic from `../docs/hardware-map.md`, export its netlist,
-extend `map.json` to all 13 chips, run the same check.
+- `sync/check.sh` — KiCad/HDL LVS connectivity, using KiCad CLI when available
+  and the board JSON fallback otherwise.
+- `sync/boot_check.sh` — cosim and HDL boot-regression guard against the real
+  `ekta37` ROM, including the LVS-checked `juku_top`.
+- `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`
+  and the behavioral oracle.
+- `sync/juk_disk_check.sh` — raw `.juk` loader and minimal WD1793 model guard
+  with synthetic media.
+- `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe, with
+  optional `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`.
+- `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
+  serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
+  byte-identically.
+
+## Status
+
+The LVS/boot path is no longer a small fixture: `juku_top` is the working
+LVS-checked model and the guards above cover connectivity, boot behavior,
+value-level lockstep, FDC sector-read scaffolding, and runnable video readout.
+The remaining high-fidelity boundaries are the external EKDOS image, dumped
+PROM contents, and the РЕ3/АГ3-gated physical video slot timing.

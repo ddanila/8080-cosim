@@ -149,7 +149,10 @@ Refined the output routing (owner reading + crops):
 - **V2** — the video-output stage wired into juku_top (emits composite video) AND the ИР16
   serializers **D42/D43 added to the LVS netlist**, fully wired to real checked nets: data ← DB
   (the РУ5 byte), CK ← DOTCLK16M, LD ← VID_LD. Done. (D34 ЛП5, D35 dual-use ЛН5, node-"A" analog
-  mix all traced.)
+  mix all traced.) Guard: `sync/video_readout_check.sh` regenerates a booted
+  framebuffer, proves standalone ИР16 serialization, and proves `juku_top`'s
+  runnable `vid_out` path reconstructs the framebuffer byte-identically. Report:
+  `docs/video-readout-readiness.md`.
 - **V3 (faithful video-read slot timing) — PARKED, blocked on a physical PROM read.** The µP-vs-video
   arbitration + the *slot schedule* (WHEN video steals a bus cycle) is set by the **К155РЕ3 timing
   PROM (+ АГ3 one-shots)**, and the **РЕ3 contents are un-dumped** (MAME omits them; the twin boots

@@ -82,6 +82,12 @@ schematic*), with `cosim/` + MAME as validation oracles.
     - **LVS IN SYNC** (86 scan + 9 prom + 8 assumed/boundary). `hdl/sim/juku_top_tb.v` is the boot
       harness; **`sync/boot_check.sh` now guards `juku_top` too** (== cosim @ 6000 writes, sha1
       `f9163d30…`). Remaining: retire the duplicate `_b` bodies (Step 5); model the video readout chain.
+  - **Video readout V2 guarded:** `sync/video_readout_check.sh` now regenerates a
+    booted `juku_top` framebuffer, serializes it through the standalone ИР16 path,
+    then captures `juku_top`'s own `vid_out` path. Both reconstructed streams must
+    compare byte-identically against the source framebuffer. Report:
+    `docs/video-readout-readiness.md`. V3 remains the РЕ3/АГ3-gated shared-DRAM
+    video slot timing boundary.
   - **★★ CONSOLIDATION COMPLETE — one model, fully interactive, + a new value-level guard.**
     - **Correction to the earlier claim:** the "byte-identical boot" (6000 writes) only ever covered
       the **RAM-test fill** (all mode-0). The real banner needs banking mode-switching, which the
