@@ -182,7 +182,9 @@ Factory assembly:
 - `report_rev_a_order_upload_runbook.py` writes
   `fab/minimal-vga/order-upload-runbook.md`, recording the exact upload files,
   checksum command, expected BOM/CPL/CPN counts, manual rows excluded from
-  factory assembly, and order-time vendor UI checks.
+  factory assembly, and order-time vendor UI checks. It recomputes each
+  checksummed upload artifact and fails on stale, missing, or unexpected
+  `upload/SHA256SUMS.txt` entries.
 - `report_rev_a_manual_rows.py` writes
   `fab/minimal-vga/assembly/manual-row-readiness.md`, recording the explicit
   disposition for every row excluded from factory assembly and failing if a new

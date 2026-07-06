@@ -149,7 +149,8 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/order-upload-runbook.md`, the exact JLCPCB upload checklist:
   upload filenames, checksum command, expected BOM/CPL/CPN counts, manual rows
   kept out of factory assembly, and the vendor-UI checks that still happen at
-  payment time.
+  payment time. It also recomputes every checksummed upload file and fails if
+  `upload/SHA256SUMS.txt` is missing, stale, or contains unexpected entries.
 - `report_rev_a_manual_rows.py` produces
   `fab/minimal-vga/assembly/manual-row-readiness.md`, checking that every
   manual/non-factory row is in the expected Rev A policy table and has an

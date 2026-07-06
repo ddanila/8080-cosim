@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import csv
+import hashlib
 import sys
 from pathlib import Path
 
@@ -11,6 +12,7 @@ UPLOAD_FILES = [
     ("Assembly notes", "upload/vjuga-rev-a-assembly-notes.md"),
     ("Manual-install reference", "upload/vjuga-rev-a-manual-assembly.csv"),
     ("Post-assembly insertion reference", "upload/vjuga-rev-a-post-assembly-insertion.csv"),
+    ("Upload README", "upload/README-upload.md"),
     ("Checksum file", "upload/SHA256SUMS.txt"),
 ]
 
@@ -42,6 +44,14 @@ def read_hashes(path):
         if len(parts) == 2:
             hashes[parts[1].strip()] = parts[0]
     return hashes
+
+
+def sha256(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def require(path, failures, label):
@@ -85,6 +95,30 @@ def build_report(out_dir):
     if len(factory_cpns) != 20:
         failures.append(f"expected 20 unique factory CPNs, got {len(factory_cpns)}")
 
+    upload_rows = []
+    for label, rel in UPLOAD_FILES:
+        path = out_dir / rel
+        size = path.stat().st_size if path.exists() else 0
+        recorded = hashes.get(rel, "")
+        computed = sha256(path) if path.exists() and size else ""
+        if rel == "upload/SHA256SUMS.txt":
+            status_cell = "SELF"
+        elif not recorded:
+            failures.append(f"missing SHA256SUMS entry for {rel}")
+            status_cell = "FAIL"
+        elif recorded != computed:
+            failures.append(f"SHA256SUMS entry for {rel} is stale: recorded {recorded}, computed {computed}")
+            status_cell = "FAIL"
+        else:
+            status_cell = "PASS"
+        digest_cell = f"`{recorded}`" if recorded else "-"
+        upload_rows.append([label, f"`{rel}`", size, digest_cell, status_cell])
+
+    expected_hash_entries = {rel for _label, rel in UPLOAD_FILES if rel != "upload/SHA256SUMS.txt"}
+    extra_hash_entries = sorted(set(hashes) - expected_hash_entries)
+    if extra_hash_entries:
+        failures.append("unexpected SHA256SUMS entries: " + ", ".join(extra_hash_entries))
+
     status = "READY" if not failures else "NOT READY"
     lines = [
         "# VJUGA Rev A order-upload runbook",
@@ -106,14 +140,10 @@ def build_report(out_dir):
         "",
         "## Files To Upload / Retain",
         "",
-        "| Purpose | File | Bytes | SHA256 |",
-        "| --- | --- | ---: | --- |",
+        "| Purpose | File | Bytes | SHA256 | Status |",
+        "| --- | --- | ---: | --- | --- |",
     ]
-    for label, rel in UPLOAD_FILES:
-        path = out_dir / rel
-        size = path.stat().st_size if path.exists() else 0
-        digest = hashes.get(rel, "-")
-        lines.append(table_row([label, f"`{rel}`", size, f"`{digest}`" if digest != "-" else "-"]))
+    lines.extend(table_row(row) for row in upload_rows)
 
     lines.extend(
         [
