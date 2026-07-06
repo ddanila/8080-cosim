@@ -40,6 +40,9 @@ ORDER_CHECKS = [
     "Review the 599 accepted courtyard/PTH/silk/text findings against the vendor preview before payment.",
     "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum with the order record.",
 ]
+FIXED_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
+UPLOAD_ZIP_NAME = "juku-replica-gerbers-drill.zip"
+UPLOAD_SHA_NAME = "SHA256SUMS.txt"
 
 
 def repo_relative(path):
@@ -75,11 +78,21 @@ def read_hashes(path):
 def make_zip(fab_dir, files):
     upload_dir = fab_dir / "upload"
     upload_dir.mkdir(parents=True, exist_ok=True)
-    zip_path = upload_dir / "juku-replica-gerbers-drill.zip"
+    zip_path = upload_dir / UPLOAD_ZIP_NAME
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for _label, name in files:
-            archive.write(fab_dir / name, arcname=name)
+            info = zipfile.ZipInfo(name)
+            info.date_time = FIXED_ZIP_DATE
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            archive.writestr(info, (fab_dir / name).read_bytes())
     return zip_path
+
+
+def write_upload_sha256(zip_path):
+    sha_path = zip_path.parent / UPLOAD_SHA_NAME
+    sha_path.write_text(f"{sha256(zip_path)}  {UPLOAD_ZIP_NAME}\n")
+    return sha_path
 
 
 def build_report(fab_dir, report_path):
@@ -133,14 +146,41 @@ def build_report(fab_dir, report_path):
     zip_digest = sha256(zip_path) if zip_path.exists() and zip_size else "-"
     if zip_path.exists() and zip_size > 0:
         with zipfile.ZipFile(zip_path) as archive:
-            names = sorted(archive.namelist())
+            infos = archive.infolist()
+            names = sorted(info.filename for info in infos)
         expected_names = sorted(name for _label, name in UPLOAD_FILES)
         if names == expected_names:
             zip_status = "PASS"
         else:
             failures.append("upload ZIP contents differ from expected Gerber/drill file set")
+        deterministic_metadata = all(
+            info.date_time == FIXED_ZIP_DATE
+            and info.compress_type == zipfile.ZIP_DEFLATED
+            and (info.external_attr >> 16) == 0o644
+            for info in infos
+        )
+        if not deterministic_metadata:
+            failures.append("upload ZIP has non-deterministic or unsafe member metadata")
     else:
         failures.append("upload ZIP was not created")
+
+    sha_path = write_upload_sha256(zip_path) if zip_path.exists() and zip_size else zip_path.parent / UPLOAD_SHA_NAME
+    upload_hashes = read_hashes(sha_path)
+    recorded_zip_hash = upload_hashes.get(UPLOAD_ZIP_NAME, "")
+    sha_rows = []
+    if not sha_path.exists() or sha_path.stat().st_size == 0:
+        failures.append("upload SHA256SUMS.txt was not created")
+        sha_rows.append([f"`{repo_relative(sha_path)}`", 0, "-", "FAIL"])
+    elif recorded_zip_hash != zip_digest:
+        failures.append(
+            f"upload SHA256SUMS.txt is stale for {UPLOAD_ZIP_NAME}: recorded {recorded_zip_hash}, computed {zip_digest}"
+        )
+        sha_rows.append([f"`{repo_relative(sha_path)}`", sha_path.stat().st_size, f"`{recorded_zip_hash or '-'}`", "FAIL"])
+    else:
+        sha_rows.append([f"`{repo_relative(sha_path)}`", sha_path.stat().st_size, f"`{recorded_zip_hash}`", "PASS"])
+    extra_upload_hashes = sorted(set(upload_hashes) - {UPLOAD_ZIP_NAME})
+    if extra_upload_hashes:
+        failures.append("unexpected upload SHA256SUMS entries: " + ", ".join(extra_upload_hashes))
 
     status = "READY" if not failures else "NOT READY"
     lines = [
@@ -161,6 +201,7 @@ def build_report(fab_dir, report_path):
         "```sh",
         "python3 kicad/report_order_readiness.py",
         "(cd fab/gerbers && sha256sum -c SHA256SUMS)",
+        "(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)",
         "```",
         "",
         "## Files In Upload ZIP",
@@ -177,6 +218,15 @@ def build_report(fab_dir, report_path):
         "| File | Bytes | SHA256 | Contents |",
         "| --- | ---: | --- | --- |",
         table_row([f"`{repo_relative(zip_path)}`", zip_size, f"`{zip_digest}`" if zip_digest != "-" else "-", zip_status]),
+        "",
+        "## Upload Checksum",
+        "",
+        "| File | Bytes | SHA256SUMS entry | Status |",
+        "| --- | ---: | --- | --- |",
+    ])
+    lines.extend(table_row(row) for row in sha_rows)
+
+    lines.extend([
         "",
         "## Retained Evidence",
         "",

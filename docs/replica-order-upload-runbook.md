@@ -15,6 +15,7 @@ Run from the repository root:
 ```sh
 python3 kicad/report_order_readiness.py
 (cd fab/gerbers && sha256sum -c SHA256SUMS)
+(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)
 ```
 
 ## Files In Upload ZIP
@@ -35,7 +36,13 @@ python3 kicad/report_order_readiness.py
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 786506 | `26772410b9bd1f2d241e2b999d44286da1742f9641d85d59715674d0df791080` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 786506 | `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211` | PASS |
+
+## Upload Checksum
+
+| File | Bytes | SHA256SUMS entry | Status |
+| --- | ---: | --- | --- |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211` | PASS |
 
 ## Retained Evidence
 

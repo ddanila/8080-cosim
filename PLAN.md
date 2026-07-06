@@ -252,7 +252,8 @@ before any Soviet NOS is at risk.
    `kicad/report_replica_order_upload_runbook.py` generates
    `docs/replica-order-upload-runbook.md`; it builds the ignored
    `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, records the exact upload
-   file hashes, and lists the remaining vendor UI preview checks.
+   file hashes, writes `fab/gerbers/upload/SHA256SUMS.txt` for the final
+   deterministic upload ZIP, and lists the remaining vendor UI preview checks.
 3. Silkscreen/mechanical disposition started in
    `docs/replica-fab-drc-disposition.md`: connector footprint-library
    reproducibility is resolved by `kicad/juku.pretty/`; copper-edge findings are
