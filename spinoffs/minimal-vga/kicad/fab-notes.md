@@ -94,6 +94,7 @@ Factory assembly:
 - Socket-fit readiness report: `assembly/socket-fit-readiness.md`.
 - Schematic ERC readiness report: `erc-readiness.md`.
 - Order readiness report: `order-readiness.md`.
+- Order-upload runbook: `order-upload-runbook.md`.
 - Upload package manifest: `upload/package-manifest.md`.
 - Upload package checksum list: `upload/SHA256SUMS.txt`.
 - Position file: `assembly/rev-a-position.csv`.
@@ -178,6 +179,10 @@ Factory assembly:
   `fab/minimal-vga/order-readiness.md`, combining ERC, DRC, assembly, upload
   package, artifact, manual-row, and post-assembly-insertion status with the
   remaining human sign-off checklist.
+- `report_rev_a_order_upload_runbook.py` writes
+  `fab/minimal-vga/order-upload-runbook.md`, recording the exact upload files,
+  checksum command, expected BOM/CPL/CPN counts, manual rows excluded from
+  factory assembly, and order-time vendor UI checks.
 - `report_rev_a_manual_rows.py` writes
   `fab/minimal-vga/assembly/manual-row-readiness.md`, recording the explicit
   disposition for every row excluded from factory assembly and failing if a new

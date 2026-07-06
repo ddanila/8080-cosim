@@ -145,6 +145,11 @@ Status: routed FreeRouting baseline.
   `fab/minimal-vga/order-readiness.md`, which combines the ERC, DRC, assembly,
   upload package, artifact, manual-row, and post-assembly-insertion checks with
   the remaining human sign-off items.
+- `report_rev_a_order_upload_runbook.py` produces
+  `fab/minimal-vga/order-upload-runbook.md`, the exact JLCPCB upload checklist:
+  upload filenames, checksum command, expected BOM/CPL/CPN counts, manual rows
+  kept out of factory assembly, and the vendor-UI checks that still happen at
+  payment time.
 - `report_rev_a_manual_rows.py` produces
   `fab/minimal-vga/assembly/manual-row-readiness.md`, checking that every
   manual/non-factory row is in the expected Rev A policy table and has an
@@ -206,7 +211,7 @@ Status: routed FreeRouting baseline.
   from the routed board. It also rebuilds `fab/minimal-vga/upload/` with a
   deterministic Gerber/drill ZIP, upload-named BOM/CPL copies, notes,
   `SHA256SUMS.txt`, and `package-manifest.md`, then emits the root
-  `order-readiness.md` for the upload review.
+  `order-upload-runbook.md` and `order-readiness.md` for the upload review.
 
 Remaining work:
 
@@ -232,10 +237,11 @@ Status: fabrication-output candidate.
 The routed PCB passes KiCad DRC with zero unconnected items, and `export_fab.sh`
 exports Gerbers/drills, schematic PDF, assembly PDFs, position data, and draft
 JLCPCB BOM/CPL files. It also emits upload-ready fabrication and assembly file
-names under `fab/minimal-vga/upload/`. `fab/minimal-vga/order-readiness.md` now
-summarizes the machine gates and the remaining human sign-offs. This is still
-not a buy-ready design because sourcing, connector, and manual layout review
-gates remain open.
+names under `fab/minimal-vga/upload/`. `fab/minimal-vga/order-upload-runbook.md`
+now records the exact upload files, checksum command, vendor UI counts, and
+order-time checks; `fab/minimal-vga/order-readiness.md` summarizes the machine
+gates and remaining human sign-offs. This is still not a paid-order design
+until the vendor UI review and human visual checks are done.
 
 Treat this route as a physical manufacturability smoke test, not logical proof
 that VJUGA boots or that the DRAM/refresh/video handoff is correct. Production
@@ -288,10 +294,13 @@ Required before ordering:
 - Socket-fit readiness report passes for every socketed `U*` footprint.
 - Upload package manifest and SHA256 checksum list are regenerated from the
   current fab export.
+- Order-upload runbook is regenerated and its expected BOM/CPL/CPN/manual-row
+  counts match the generated upload files.
 
 ### Gate 5: Factory Assembly Order Package
 
-Status: draft package generated; not order-ready.
+Status: draft package generated; machine upload runbook ready; vendor UI review
+still required before payment.
 
 PCB fabrication package:
 
@@ -309,6 +318,8 @@ Factory assembly package:
   `fab/minimal-vga/upload/vjuga-rev-a-jlcpcb-cpl.csv`.
 - ERC readiness report generated from the physical schematic.
 - Upload package manifest and checksum list.
+- Order-upload runbook:
+  `fab/minimal-vga/order-upload-runbook.md`.
 - Manual assembly CSV for rows kept out of the factory BOM/CPL.
 - Assembly drawings.
 - Manual/DNP list.

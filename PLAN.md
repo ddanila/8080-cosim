@@ -178,7 +178,10 @@ before any Soviet NOS is at risk.
    `fab/minimal-vga/assembly/vendor-order-checklist.md`, tying the upload BOM CPN
    set to the sourcing checklist, confirming the manual rows stay out of factory
    assembly, and preserving stock/price/alternative/assembly acceptance as an
-   order-time vendor UI review.
+   order-time vendor UI review. The exact upload procedure is now generated in
+   `fab/minimal-vga/order-upload-runbook.md`, with upload filenames, checksum
+   command, expected BOM/CPL/CPN counts, manual-row exclusions, and the remaining
+   vendor UI checks.
 2. **Place the JLCPCB order** (board + factory assembly of sockets/passives).
 3. Bring-up ladder: power/LEDs → clock → ROM fetch (logic analyzer on M1) → DRAM
    test → keyboard scan → VGA header output. Each rung has a twin-side reference.

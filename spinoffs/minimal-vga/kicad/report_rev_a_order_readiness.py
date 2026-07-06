@@ -41,6 +41,7 @@ REQUIRED_ARTIFACTS = [
     "assembly/cpn-consistency.md",
     "assembly/vendor-order-checklist.md",
     "assembly/orientation-notes-readiness.md",
+    "order-upload-runbook.md",
     "assembly/jlcpcb-bom-draft.csv",
     "assembly/jlcpcb-cpl-draft.csv",
     "assembly/manual-assembly.csv",
@@ -147,6 +148,7 @@ def machine_gate_summary(out_dir):
     cpn_consistency = read_text(out_dir / "assembly" / "cpn-consistency.md")
     vendor_order_checklist = read_text(out_dir / "assembly" / "vendor-order-checklist.md")
     orientation_notes = read_text(out_dir / "assembly" / "orientation-notes-readiness.md")
+    order_upload_runbook = read_text(out_dir / "order-upload-runbook.md")
     upload_manifest = read_text(out_dir / "upload" / "package-manifest.md")
 
     gates = [
@@ -357,6 +359,16 @@ def machine_gate_summary(out_dir):
             and "- JLCPCB CPL placements:" in upload_manifest
             and "`upload/vjuga-rev-a-gerbers-drill.zip`" in upload_manifest,
             "`upload/package-manifest.md` records the Gerber ZIP, BOM/CPL, notes, and checksums.",
+        ),
+        (
+            "Order-upload runbook",
+            has_ready_line(order_upload_runbook, "READY")
+            and "- Factory assembly BOM rows: 26" in order_upload_runbook
+            and "- Factory assembly CPL placements: 89" in order_upload_runbook
+            and "- Unique factory CPNs: 20" in order_upload_runbook
+            and "- Manual-install rows kept out of factory BOM: 6" in order_upload_runbook
+            and "- Owner post-assembly socket insertions: 19" in order_upload_runbook,
+            "`order-upload-runbook.md` gives the exact JLCPCB upload files, checksum command, expected vendor UI counts, and remaining order-time checks.",
         ),
     ]
     return gates
