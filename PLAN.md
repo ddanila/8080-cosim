@@ -139,6 +139,9 @@ before any Soviet NOS is at risk.
 1. Close the open human sign-offs (gerber inspection in an independent viewer,
    socket/connector assembly confirmation, final CPN re-check, manual-row
    disposition D1/J30/R6/R15/U50/U51) — the machine gates already pass.
+   Independent Tracespace Gerber/drill render evidence is now generated in
+   `fab/minimal-vga/external-gerber-review.md`; remaining sign-offs are schematic,
+   routing/plane, purchased-part fit, vendor/stock, and manual-row order decisions.
 2. **Place the JLCPCB order** (board + factory assembly of sockets/passives).
 3. Bring-up ladder: power/LEDs → clock → ROM fetch (logic analyzer on M1) → DRAM
    test → keyboard scan → VGA header output. Each rung has a twin-side reference.

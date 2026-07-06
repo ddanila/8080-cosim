@@ -16,6 +16,7 @@ REQUIRED_ARTIFACTS = [
     "power-budget-readiness.md",
     "drill-readiness.md",
     "fab-package-integrity.md",
+    "external-gerber-review.md",
     "fab-notes.md",
     "rev-a.engineering-bom.csv",
     "gerbers/rev-a-physical-F_Cu.gtl",
@@ -62,6 +63,10 @@ OPTIONAL_REVIEW_ARTIFACTS = [
     "review/rev-a-top-populated.png",
     "review/vjuga-placement-top.png",
     "review/vjuga-placement-top.svg",
+    "review/tracespace/rev-a-physical.top.svg",
+    "review/tracespace/rev-a-physical.bottom.svg",
+    "review/tracespace/rev-a-physical-tracespace-top.png",
+    "review/tracespace/rev-a-physical-tracespace-bottom.png",
 ]
 
 HUMAN_GATES = [
@@ -126,6 +131,7 @@ def machine_gate_summary(out_dir):
     power_budget = read_text(out_dir / "power-budget-readiness.md")
     drill = read_text(out_dir / "drill-readiness.md")
     fab_package_integrity = read_text(out_dir / "fab-package-integrity.md")
+    external_gerber_review = read_text(out_dir / "external-gerber-review.md")
     assembly = read_text(out_dir / "assembly" / "assembly-readiness.md")
     socket_fit = read_text(out_dir / "assembly" / "socket-fit-readiness.md")
     socket_insertion = read_text(out_dir / "assembly" / "socket-insertion-policy.md")
@@ -221,6 +227,15 @@ def machine_gate_summary(out_dir):
             and "- Integrity failures: 0" in fab_package_integrity
             and "- Expected fabrication files: 11" in fab_package_integrity,
             "`fab-package-integrity.md` verifies Gerber/drill ZIP contents, deterministic metadata, format markers, and SHA256 entries.",
+        ),
+        (
+            "External Gerber/drill render",
+            has_ready_line(external_gerber_review, "READY")
+            and "Viewer: `@tracespace/cli`" in external_gerber_review
+            and "rev-a-physical.top.svg" in external_gerber_review
+            and "rev-a-physical.bottom.svg" in external_gerber_review
+            and "## Failures" not in external_gerber_review,
+            "`external-gerber-review.md` records a Tracespace render pass over the exported Gerbers and drill file.",
         ),
         (
             "JLCPCB assembly draft",
