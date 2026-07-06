@@ -9,9 +9,10 @@ unless there is tracked evidence for them.
 
 | Status | Count |
 | --- | ---: |
+| COSIM PROMPT PROVEN / HDL PENDING | 1 |
 | EVIDENCE TEMPLATE READY / EXTERNAL PENDING | 1 |
 | EXTERNAL PENDING | 5 |
-| PARTIAL | 4 |
+| PARTIAL | 3 |
 | REPO READY / EXTERNAL PENDING | 1 |
 
 ## Milestones
@@ -19,7 +20,7 @@ unless there is tracked evidence for them.
 | ID | Target | Status | Evidence | Next action |
 | --- | --- | --- | --- | --- |
 | M1 | Baltijets docs mined; PROM-truth status resolved | PARTIAL | 16 Baltijets PDFs present; PLAN records first-pass mining for 002/003/007/009/014/015; PROM bytes still need disk files, hardware dumps, or accepted reconstruction. | Locate programming disk/media or get RE3/RT4 dumps. |
-| M2 | EKDOS boots in the twin | PARTIAL | cosim FDC boundary is reproducible without vendored media; `docs/ekdos-fdc-probe.md` is READY FOR EXTERNAL EKDOS IMAGE. Tracked evidence does not yet prove the exact factory JUKU-1 image or a juku_top FDC port. | Repeat with exact factory JUKU-1 media, then port FDC behavior to juku_top. |
+| M2 | EKDOS boots in the twin | COSIM PROMPT PROVEN / HDL PENDING | `docs/ekdos-media-acquisition.md` records a non-vendored external-media run reaching the EKDOS `A>` prompt in cosim; the default tracked probe remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`. Exact factory `JUKU-1` evidence and the `juku_top` FDC port remain open. | Repeat with exact factory JUKU-1 media when available, then port FDC behavior to juku_top. |
 | M3 | VJUGA Rev A ordered | EXTERNAL PENDING | `fab/minimal-vga/order-readiness.md` is a coherent draft with machine gates PASS, but still requires human/vendor review before upload. | Perform final JLCPCB UI review and place the Rev A order. |
 | M4 | Twin emits real video timing | PARTIAL | `docs/video-readout-readiness.md` proves the V2 byte-to-pixel path; the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open. | Close the RE3/AG3 timing source and replace the sim-only framebuffer read. |
 | M5 | jmon33 live prompt + BASIC launches in the twin | PARTIAL | jmon33 interrupt/first-write/cosim cursor probes exist; `docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED. | Compare HDL at the stronger jmon33 cursor boundary and close the B-command path. |

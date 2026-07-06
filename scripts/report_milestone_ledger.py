@@ -44,6 +44,10 @@ def milestone_rows():
     )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**")
     parts_inventory_template = exists("docs/replica-parts-inventory-template.md")
+    ekdos_external_prompt = marker(
+        "docs/ekdos-media-acquisition.md",
+        "Status: **COSIM EKDOS PROMPT PROVEN WITH EXTERNAL MEDIA**",
+    )
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
@@ -64,14 +68,19 @@ def milestone_rows():
         {
             "id": "M2",
             "target": "EKDOS boots in the twin",
-            "status": "PARTIAL",
+            "status": "COSIM PROMPT PROVEN / HDL PENDING" if ekdos_external_prompt else "PARTIAL",
             "evidence": (
-                "cosim FDC boundary is reproducible without vendored media; "
+                "`docs/ekdos-media-acquisition.md` records a non-vendored external-media "
+                "run reaching the EKDOS `A>` prompt in cosim; the default tracked probe "
+                "remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`. "
+                "Exact factory `JUKU-1` evidence and the `juku_top` FDC port remain open."
+                if ekdos_external_prompt
+                else "cosim FDC boundary is reproducible without vendored media; "
                 "`docs/ekdos-fdc-probe.md` is READY FOR EXTERNAL EKDOS IMAGE. "
                 "Tracked evidence does not yet prove the exact factory JUKU-1 image "
                 "or a juku_top FDC port."
             ),
-            "next": "Repeat with exact factory JUKU-1 media, then port FDC behavior to juku_top.",
+            "next": "Repeat with exact factory JUKU-1 media when available, then port FDC behavior to juku_top.",
         },
         {
             "id": "M3",
