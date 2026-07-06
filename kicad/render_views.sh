@@ -8,11 +8,19 @@ KCLI="$(scripts/find-kicad-cli.sh)"
 BOARD="${1:-kicad/juku_routed.kicad_pcb}"
 mkdir -p renders
 for side in front back; do
-  if [ "$side" = front ]; then L="F.Cu,F.SilkS,Edge.Cuts"; else L="B.Cu,B.SilkS,Edge.Cuts"; fi
-  "$KCLI" pcb export svg --layers "$L" --page-size-mode 2 --fit-page-to-board \
-      --exclude-drawing-sheet -o "/tmp/juku_$side.svg" "$BOARD" >/dev/null 2>&1
-  rsvg-convert -w 2000 "/tmp/juku_$side.svg" -o "renders/board_2d_$side.png"
-  rm -f "/tmp/juku_$side.svg"
+  tmp="/tmp/juku_png_$side"
+  rm -rf "$tmp"
+  mkdir -p "$tmp"
+  if [ "$side" = front ]; then
+    "$KCLI" pcb export png --layers F.Cu --common-layers F.SilkS,Edge.Cuts \
+        --scale 0 --dpi 300 -o "$tmp" "$BOARD" >/dev/null 2>&1
+    mv "$tmp"/*F_Cu.png "renders/board_2d_$side.png"
+  else
+    "$KCLI" pcb export png --layers B.Cu --common-layers B.SilkS,Edge.Cuts --mirror \
+        --scale 0 --dpi 300 -o "$tmp" "$BOARD" >/dev/null 2>&1
+    mv "$tmp"/*B_Cu.png "renders/board_2d_$side.png"
+  fi
+  rm -rf "$tmp"
 done
 "$KCLI" pcb render --side top --quality high --width 2000 --height 1716 \
     --background opaque -o renders/board_3d_top.png "$BOARD" >/dev/null 2>&1

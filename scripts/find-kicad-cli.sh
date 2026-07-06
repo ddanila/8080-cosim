@@ -10,6 +10,11 @@ if [ "${KICAD_CLI:-}" ]; then
   exit 2
 fi
 
+if command -v kicad-cli-nightly >/dev/null 2>&1; then
+  command -v kicad-cli-nightly
+  exit 0
+fi
+
 if command -v kicad-cli >/dev/null 2>&1; then
   command -v kicad-cli
   exit 0

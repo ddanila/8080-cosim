@@ -3,6 +3,12 @@
 The keystone unlock: РЕ3 contents gate V3 (DRAM/video slot timing) and the real clock circuit;
 РТ4 contents replace our *recovered* decode maps with the actual silicon bits.
 
+Update 2026-07-06: Baltijets doc 007 was fetched and triaged in
+`ref/baltijets-tech-docs/`. It confirms programmed-part drawings for the small
+PROMs, but the relevant programming tables are marked `на диске` rather than
+printed in the PDF. Unless those disk files surface, this dump procedure remains
+the practical path to truth.
+
 ## What to pull (label each with its socket refdes + board # before removing!)
 | Chip | Where | Type | Organization | Dump method |
 |---|---|---|---|---|

@@ -2,7 +2,7 @@
 # Export the fab package (gerbers + drill) from the routed board.
 # Usage: sh kicad/export_fab.sh [board] [outdir]
 set -e
-KCLI="/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+KCLI="$(scripts/find-kicad-cli.sh)"
 BOARD="${1:-kicad/juku_routed.kicad_pcb}"
 OUT="${2:-fab/gerbers}"
 mkdir -p "$OUT"

@@ -34,7 +34,7 @@ only after Tier 2.
 | Track | State | Remaining to goal |
 |---|---|---|
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
-| **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 electrical DRC; placement СБ/photo-verified | Power widening, fab export + order-readiness gates, DFM/gerber review, **order** |
+| **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; main-board readiness report says electrical gate PASS / package inventory PASS | Human disposition of mechanical/silkscreen/library DRC classes, independent DFM/gerber review, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
 | **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged | Mine the **new Baltijets factory doc set** (see §3); a short owner measurement list |
 | **Firmware/media** (`roms/`) | Full canonical ROM set vendored (SHA-1 = MAME) | EKDOS/CP/M disk images (available online), РЕ3/РТ4 PROM binaries |
@@ -43,14 +43,15 @@ only after Tier 2.
 
 The July 2026 survey of the online ecosystem changes the plan materially:
 
-1. **Baltijets factory documentation set** — 16 PDFs (~103 MB) uploaded to
+1. **Baltijets factory documentation set** — 16 PDFs (~92 MB) uploaded to
    `elektroonikamuuseum.ee/failid/juku/tech_docs_from_baltijets/` on **2026-07-04**:
    technical specs & testing, schematics & components, adjustment instructions,
    **"007 ROM and ROM programming"**, mouse, FDDs, cables, PSU, keyboard, external
    storage, floppy. This is the factory техническое описание we assumed lost.
-   Doc 007 may contain the К556РТ4/К155РЕ3 programming tables **on paper** —
-   potentially closing the project's longest-standing blocker (D2/D6/D8/D94 PROM
-   contents) without hardware dumps. Highest-leverage desk item in this plan.
+   Doc 007 confirms the programmed-part drawings, but the small-PROM byte tables
+   are referenced as `на диске` rather than printed; it does **not** close the
+   D2/D6/D8/D94 PROM-content blocker by itself. The referenced programming disk
+   or hardware dumps remain the path to PROM truth.
 2. **MAME driver is fully working** (no NOT_WORKING flag since 2024; latest
    hardware-validated fixes merged 2026-01) — including the discrete PIT-driven
    video timing (49.92 Hz frame, 241-line raster) that our video-chain model needs.
@@ -97,10 +98,10 @@ which already boot the twin and are therefore Tier-1/2 sufficient).
 
 ### WS-A — Mine the Baltijets documentation (desk, do first)
 Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
-1. **007 ROM and ROM programming** → РТ4/РЕ3 tables; compare against our
-   emulator-recovered D2/D6 maps and the predicted D8 table (`docs/re3-decode.md`).
-   Any confirmed table upgrades provenance `prom` → documented and unblocks WS-E PROM
-   programming.
+1. **007 ROM and ROM programming** → triaged: РТ4/РЕ3/РТ5 programming-table
+   drawings are present, but their byte tables are marked `на диске`; only РФ2
+   EPROM listings are printed. Next step is locating the referenced disk files or
+   dumping the physical PROMs; no provenance upgrade yet.
 2. **002 Schematics and components** → settle .006-vs-.009 revision coverage; attack
    the short blocked-on-materials list (D6 V1/V2 feed, C99 far plate, FDC INTRQ/DRQ,
    D94 outputs, bypass per-position values) from paper before spending owner time.
@@ -139,9 +140,15 @@ before any Soviet NOS is at risk.
 4. Bank learnings (footprints, socket fit, assembly quirks) into the replica plan.
 
 ### WS-D — Replica board: to a fab-ready package, then order
-1. Finish v76: run `widen_power_v2.py` power widening, re-DRC, regenerate renders.
+1. Finish v76: `widen_power_v2.py` power widening done under KiCad 10.99 nightly
+   compatibility path; 704 power tracks evaluated, 377 widened; re-DRC remains
+   at 0 unconnected / 0 clearance / 0 shorts. Renders regenerated.
 2. Port the VJUGA order-readiness gate machinery (ERC/DRC/BOM/CPL/manifest/checksum
-   reports) to the main `kicad/` board — same discipline, bigger board.
+   reports) to the main `kicad/` board — first main-board gate is now in
+   `kicad/report_fab_readiness.py` and emits `fab/gerbers/fab-readiness.md` plus
+   `SHA256SUMS`. Current status: electrical/routing PASS and fabrication-file
+   inventory PASS, but overall **REVIEW REQUIRED** because 611 mechanical/silk/lib
+   DRC findings still need human disposition.
 3. Silkscreen cosmetics pass (398 silk / 75 text nits), DFM review vs the original's
    thick-power-trace style, independent gerber viewer review.
 4. Freeze the netlist only after WS-A closes the paper-resolvable unknowns; the few
@@ -159,8 +166,9 @@ before any Soviet NOS is at risk.
    zx-pk.ru market. Acceptance-test jig for DRAM and CPU spares.
 3. **Program firmware parts**: 2× 2764 (ekta37/jmon33 split per the D15/D16 story),
    РТ4 ≈ 82S129-class and РЕ3 ≈ 74188-class on a universal programmer
-   (`docs/prom-dump-procedure.md`) — contents from WS-A doc 007, an owner dump, or
-   the boot-validated reconstructed tables (in that preference order).
+   (`docs/prom-dump-procedure.md`) — contents from the Baltijets referenced
+   programming disk, an owner dump, or the boot-validated reconstructed tables
+   (in that preference order).
 4. Assemble sockets-first (factory or hand), power-rail checks before any IC seats.
 
 ### WS-F — Owner / hardware sessions (the short physical list)
@@ -204,8 +212,12 @@ dump request there may close this workstream without our own board time.
   VJUGA is 4-layer (correctness over authenticity). Both intentional.
 - KiCad remains the single source of truth; every physical change goes through
   board.json → LVS → boot_check → cosim_check.
-- PROM strategy preference order: paper tables (doc 007) → hardware dump →
-  boot-validated reconstruction. Reconstructed tables are Tier-1/2 acceptable.
+- PROM strategy preference order: Baltijets programming-disk files referenced by
+  doc 007 → hardware dump → boot-validated reconstruction. Reconstructed tables
+  are Tier-1/2 acceptable.
+- KiCad 10.99/nightly is the active fabrication tool (`kicad-cli-nightly`). Do not
+  depend on the legacy Python `pcbnew` module for main-board gates; use CLI JSON
+  reports or file-preserving board transforms until the IPC API is worth adopting.
 - Tape/network/mouse: out of scope until after Tier 2.
 
 **Open (each blocks or shapes a workstream):**
@@ -222,9 +234,12 @@ dump request there may close this workstream without our own board time.
 ## 7. Sequencing
 
 **Now → next few weeks (parallel):**
-- WS-A: pull + mine Baltijets docs (007 first). ← highest leverage per hour
+- WS-A: pull + mine Baltijets docs (007 first triage done; small-PROM bits still
+  need disk files or dumps).
 - WS-C: close VJUGA sign-offs, order Rev A.
-- WS-D1/2: v76 power widening + fab-export gates.
+- WS-D1/2: v76 power widening + first fab-export/readiness gates done; now burn
+  down or formally waive the 611 non-electrical DRC findings and do independent
+  Gerber review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
 - WS-E2: start parts sourcing (long lead). WS-H: first community contact.
 
@@ -241,7 +256,7 @@ dump request there may close this workstream without our own board time.
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| РЕ3/РТ4 reconstructed tables subtly wrong on real HW | boot failure hard to localize | doc 007 / dumps before burning; socketed PROMs; twin-predicted bus traces at bring-up |
+| РЕ3/РТ4 reconstructed tables subtly wrong on real HW | boot failure hard to localize | Baltijets disk files / dumps before burning; socketed PROMs; twin-predicted bus traces at bring-up |
 | Replica 2-layer routing (ours ≠ original copper) has SI/crosstalk issues at 16 MHz dot clock | flaky video/DRAM | VJUGA proves the timing approach first; original worked on 2 layers — keep power widening + DFM review honest; socketed staged bring-up |
 | NOS Soviet parts dead/counterfeit | schedule slip | spares + acceptance-test jig; western functional config as fallback (Tier 2 doesn't require NOS) |
 | Remaining `assumed`/`boundary` nets (8 + FDC INTRQ/DRQ) wrong | localized rework | flagged as explicit bring-up verification points; bodge-friendly (the original board had factory wires too) |
@@ -251,7 +266,7 @@ dump request there may close this workstream without our own board time.
 
 ## 9. Milestone ledger
 
-- [ ] M1 Baltijets docs mined; PROM-truth status resolved (paper/dump/reconstructed)
+- [ ] M1 Baltijets docs mined; PROM-truth status resolved (disk/dump/reconstructed)
 - [ ] M2 EKDOS boots in the twin (cosim, then juku_top)
 - [ ] M3 VJUGA Rev A ordered
 - [ ] M4 Twin emits real video timing (pixel+sync stream validated vs MAME)
