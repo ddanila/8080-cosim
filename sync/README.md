@@ -47,6 +47,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/jmon33_interrupt_probe.py` — cosim guard for Monitor 3.3's
   interrupt-driven path: 8259 setup, `0xFF54` frame interrupt, keyboard-port
   reads, and VRAM writes.
+- `sync/jmon33_ready_probe.py` — cosim guard for Monitor 3.3's deterministic
+  monitor-idle framebuffer oracle: full VRAM SHA256 plus solid cursor block.
 - `sync/jmon33_hdl_probe.sh` — HDL guard proving `juku_top` runs Monitor 3.3
   to the first video-memory write with frame interrupts enabled.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
@@ -61,6 +63,6 @@ LVS-checked model and the guards above cover connectivity, boot behavior,
 value-level lockstep, cosim FDC sector-read/prompt scaffolding, and runnable
 video readout. The remaining high-fidelity boundaries are the exact factory
 `JUKU-1` EKDOS-media proof plus `juku_top` FDC port, the user-visible jmon33
-prompt oracle and cosim-vs-HDL comparison at that boundary, the full
+command prompt and cosim-vs-HDL comparison at the monitor-idle oracle boundary, the full
 interactive BASIC prompt path, the analog speaker/current check, dumped PROM
 contents, and the РЕ3/АГ3-gated physical video slot timing.

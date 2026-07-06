@@ -170,9 +170,14 @@ debugging session saved on real hardware.
    HDL-side jmon33 probe is now guarded by `sync/jmon33_hdl_probe.sh` and
    documented in `docs/jmon33-hdl-probe.md`: cosim and `juku_top` both reach
    the first Monitor 3.3 video write at `0xFF40`, and their first-write VRAM
-   dumps match. Remaining targets: identify the jmon33 monitor-ready screen/RAM
-   oracle, compare cosim and `juku_top` at that boundary, and exercise the full
-   EktaSoft `B` command path to a live BASIC prompt.
+   dumps match. The cosim monitor-idle screen/RAM oracle is now guarded by
+   `sync/jmon33_ready_probe.py` and documented in
+   `docs/jmon33-ready-probe.md`: full VRAM SHA256
+   `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` plus
+   the solid cursor block at `x=8`, `y=20`. Remaining targets: compare cosim
+   and `juku_top` at that stronger boundary, prove the user-visible jmon33
+   command prompt, and exercise the full EktaSoft `B` command path to a live
+   BASIC prompt.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
