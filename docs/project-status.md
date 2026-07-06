@@ -243,7 +243,10 @@ The physical-board recreation caught up with (and fed back into) the netlist tra
   BOM IC + connectors (X1 СНП59-96 / X2 / X3 / X8 / X9) + passives stage 1 + Z1 РК-171 crystal +
   CT1 trimmer. 2-layer (authenticity call), 310×266 mm, 0.25 mm clearance, **1151/1151 connections,
   0 unconnected, 0 electrical DRC**; power nets widened to ≤1.0 mm (geometric method,
-  `kicad/widen_power_v2.py`). Gerbers + drill export clean (`kicad/export_fab.sh`).
+  `kicad/widen_power_v2.py`). The routed power envelope is now guarded by
+  `docs/replica-power-trace-readiness.md`: 704 power segments, 377 widened beyond
+  the 0.20 mm baseline, no segment below baseline or above the 1.00 mm clamp.
+  Gerbers + drill export clean (`kicad/export_fab.sh`).
 - **Placement is photo-verified** against the owner's board-#2 photos (22, git-lfs), with two
   systematic calibration bugs found and fixed along the way (photo-1 y-scale 9.50 vs 9.87 px/mm;
   the "10xx = 8x01 upside-down" date-code rule). The ВГ93 quadrant follows the owner's

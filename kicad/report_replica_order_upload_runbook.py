@@ -26,6 +26,7 @@ RETAINED_EVIDENCE = [
     ("Fabrication readiness", "fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
     ("Review waiver", "review-waivers.md", "Status: **ACCEPTED**"),
     ("External Gerber review", "external-gerber-review.md", "Status: **READY**"),
+    ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Checksum file", "SHA256SUMS", None),
 ]
 
@@ -106,7 +107,7 @@ def build_report(fab_dir, report_path):
 
     evidence_rows = []
     for label, name, marker in RETAINED_EVIDENCE:
-        path = fab_dir / name
+        path = ROOT / name if "/" in name else fab_dir / name
         if not path.exists() or path.stat().st_size == 0:
             failures.append(f"missing or empty evidence file: {name}")
             evidence_rows.append([label, f"`{repo_relative(path)}`", 0, "FAIL"])

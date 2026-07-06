@@ -229,10 +229,13 @@ before any Soviet NOS is at risk.
    Current machine status: electrical/routing PASS, fabrication-file inventory
    PASS, exact-count review waiver ACCEPTED, and order-readiness **ORDER READY**.
    The remaining 599 courtyard/PTH/silk/text findings are review-only and covered
-   by the waiver gate. Independent Tracespace Gerber/drill render evidence is now
-   generated for the main board in `fab/gerbers/external-gerber-review.md`, and
-   `kicad/report_order_readiness.py` requires that gate alongside the DRC waiver
-   and dual-config BOM gates, and now also requires the upload-runbook gate.
+   by the waiver gate. The routed power-envelope DFM check is now generated in
+   `docs/replica-power-trace-readiness.md`: 704 routed power segments, 377
+   widened beyond the 0.20 mm freerouter baseline, no segment below baseline or
+   above the 1.00 mm clamp. Independent Tracespace Gerber/drill render evidence
+   is now generated for the main board in `fab/gerbers/external-gerber-review.md`,
+   and `kicad/report_order_readiness.py` requires that gate alongside the DRC
+   waiver, dual-config BOM, power-trace, and upload-runbook gates.
    `kicad/report_replica_order_upload_runbook.py` generates
    `docs/replica-order-upload-runbook.md`; it builds the ignored
    `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, records the exact upload
