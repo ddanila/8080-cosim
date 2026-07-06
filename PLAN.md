@@ -141,11 +141,15 @@ before any Soviet NOS is at risk.
    disposition D1/J30/R6/R15/U50/U51) — the machine gates already pass.
    Independent Tracespace Gerber/drill render evidence is now generated in
    `fab/minimal-vga/external-gerber-review.md`; remaining sign-offs are
-   schematic-symbol human review, routing/plane, purchased-part fit, vendor/stock,
-   and manual-row order decisions.
+   schematic-symbol human review, order-time visual routing confirmation,
+   purchased-part fit, vendor/stock, and manual-row order decisions.
    Source-level schematic intent evidence is now generated in
    `fab/minimal-vga/schematic-intent-readiness.md` for the CPU/ROM/decode, DRAM,
    keyboard, VGA, power, clock, and reset contracts.
+   Routing/plane disposition is now generated in
+   `fab/minimal-vga/routing-disposition-readiness.md`, explicitly accepting the
+   Rev A no-pour and 0.20 mm power-routing prototype tradeoff with measured
+   limits.
 2. **Place the JLCPCB order** (board + factory assembly of sockets/passives).
 3. Bring-up ladder: power/LEDs → clock → ROM fetch (logic analyzer on M1) → DRAM
    test → keyboard scan → VGA header output. Each rung has a twin-side reference.

@@ -12,6 +12,7 @@ REQUIRED_ARTIFACTS = [
     "erc-readiness.md",
     "fab-readiness.md",
     "routing-geometry-readiness.md",
+    "routing-disposition-readiness.md",
     "mounting-hole-readiness.md",
     "diagnostic-led-readiness.md",
     "power-budget-readiness.md",
@@ -73,8 +74,8 @@ OPTIONAL_REVIEW_ARTIFACTS = [
 HUMAN_GATES = [
     "Independent Gerber/drill inspection in an external viewer.",
     "Full schematic review against the intended Z80, ROM, DRAM, refresh, keyboard, and VGA behavior.",
-    "Trace geometry, via count, power width, and return-path review on the autorouted baseline.",
-    "Decision on whether to restore GND/+5V pours before ordering.",
+    "Order-time visual routing review against the generated routing geometry and disposition reports.",
+    "Confirm the Rev A no-pour and 0.20 mm power-routing disposition remains intentional for this prototype order.",
     "Socket/header footprint fit check against the exact purchased sockets and connectors.",
     "Order-time vendor drawing and assembly-service review for mechanically sensitive through-hole rows.",
     "Order-time JLCPCB/LCSC CPN stock and footprint confirmation for every factory-mounted row.",
@@ -128,6 +129,7 @@ def machine_gate_summary(out_dir):
     erc = read_text(out_dir / "erc-readiness.md")
     fab = read_text(out_dir / "fab-readiness.md")
     routing_geometry = read_text(out_dir / "routing-geometry-readiness.md")
+    routing_disposition = read_text(out_dir / "routing-disposition-readiness.md")
     mounting_holes = read_text(out_dir / "mounting-hole-readiness.md")
     diagnostic_leds = read_text(out_dir / "diagnostic-led-readiness.md")
     power_budget = read_text(out_dir / "power-budget-readiness.md")
@@ -202,6 +204,14 @@ def machine_gate_summary(out_dir):
             )
             and "- Hard geometry failures: 0" in routing_geometry,
             "`routing-geometry-readiness.md` records track widths, via count, power routing, and zone policy.",
+        ),
+        (
+            "Routing/plane disposition",
+            has_ready_line(routing_disposition, "READY")
+            and "- Disposition failures: 0" in routing_disposition
+            and "Accepted Rev A prototype power routing width is 0.20 mm" in routing_disposition
+            and "No copper pours are used on Rev A" in routing_disposition,
+            "`routing-disposition-readiness.md` accepts the Rev A no-plane and 0.20 mm power-routing tradeoff with explicit measured limits.",
         ),
         (
             "Mounting-hole geometry",
