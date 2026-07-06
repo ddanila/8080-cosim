@@ -24,6 +24,15 @@ already been placed or accepted.
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |
 
+## Toolchain Provenance
+
+| Tool | Version / command |
+| --- | --- |
+| KiCad CLI | /usr/bin/kicad-cli-nightly |
+| KiCad CLI version | 10.99.0 |
+| Gerber job generator | KiCad Pcbnew 10.99.0-unknown-3a2065e8de~189~ubuntu26.04.1 |
+| External viewer | @tracespace/cli |
+
 ## Locked Vendor Options
 
 | Option | Value |

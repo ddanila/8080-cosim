@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import hashlib
+import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -72,6 +74,35 @@ def run_order_readiness(fab_dir):
     ], cwd=ROOT, text=True, capture_output=True)
 
 
+def first_match(text, pattern, default="-"):
+    match = re.search(pattern, text, re.M)
+    return match.group(1).strip() if match else default
+
+
+def toolchain_rows(fab_dir):
+    fab_text = (fab_dir / "fab-readiness.md").read_text(errors="replace")
+    external_text = (fab_dir / "external-gerber-review.md").read_text(errors="replace")
+    job = json.loads((fab_dir / "juku_routed-job.gbrjob").read_text())
+    generation = job.get("Header", {}).get("GenerationSoftware", {})
+    return [
+        ("KiCad CLI", first_match(fab_text, r"^KiCad CLI: `([^`]+)`")),
+        ("KiCad CLI version", first_match(fab_text, r"^KiCad version: `([^`]+)`")),
+        (
+            "Gerber job generator",
+            " ".join(
+                value
+                for value in [
+                    generation.get("Vendor", ""),
+                    generation.get("Application", ""),
+                    generation.get("Version", ""),
+                ]
+                if value
+            ),
+        ),
+        ("External viewer", first_match(external_text, r"^Viewer: `([^`]+)`")),
+    ]
+
+
 def build_report(fab_dir):
     failures = []
     order_result = run_order_readiness(fab_dir)
@@ -120,6 +151,11 @@ def build_report(fab_dir):
     if missing_root_hashes:
         failures.append("root SHA256SUMS missing upload member(s): " + ", ".join(missing_root_hashes))
 
+    tools = toolchain_rows(fab_dir)
+    for label, value in tools:
+        if value == "-":
+            failures.append(f"missing toolchain provenance: {label}")
+
     status = "READY TO UPLOAD" if not failures else "NOT READY"
     lines = [
         "# Replica manufacturing readiness",
@@ -140,6 +176,15 @@ def build_report(fab_dir):
         "| --- | --- | ---: | --- |",
     ]
     lines.extend(table_row(row) for row in report_rows)
+
+    lines.extend([
+        "",
+        "## Toolchain Provenance",
+        "",
+        "| Tool | Version / command |",
+        "| --- | --- |",
+    ])
+    lines.extend(table_row(row) for row in tools)
 
     lines.extend([
         "",
