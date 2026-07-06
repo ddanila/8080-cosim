@@ -149,8 +149,11 @@ before any Soviet NOS is at risk.
    `SHA256SUMS`. Current status: electrical/routing PASS and fabrication-file
    inventory PASS, but overall **REVIEW REQUIRED** because 611 mechanical/silk/lib
    DRC findings still need human disposition.
-3. Silkscreen cosmetics pass (398 silk / 75 text nits), DFM review vs the original's
-   thick-power-trace style, independent gerber viewer review.
+3. Silkscreen/mechanical disposition started in
+   `docs/replica-fab-drc-disposition.md`: copper-edge and missing connector
+   footprint-library issues block order; courtyard/PTH/silk/text classes need
+   visual review or explicit waiver. Continue with DFM review vs the original's
+   thick-power-trace style and independent gerber viewer review.
 4. Freeze the netlist only after WS-A closes the paper-resolvable unknowns; the few
    assumed nets that remain get flagged as bring-up verification points, not blockers.
 5. **Order** (2-layer, 310×266 mm — the authenticity call stands). Consider ordering
