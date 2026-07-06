@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+import hashlib
+import subprocess
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+ORDER_READINESS = ROOT / "kicad" / "report_order_readiness.py"
+DEFAULT_FAB_DIR = ROOT / "fab" / "gerbers"
+DEFAULT_REPORT = ROOT / "docs" / "replica-manufacturing-readiness.md"
+
+REQUIRED_REPORTS = [
+    ("Order readiness", "fab/gerbers/order-readiness.md", "Status: **ORDER READY**"),
+    ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **READY**"),
+    ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
+    ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
+    ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
+    ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "Status: **SOURCING READY"),
+    ("External Gerber review", "fab/gerbers/external-gerber-review.md", "Status: **READY**"),
+    ("Review waiver", "fab/gerbers/review-waivers.md", "Status: **ACCEPTED**"),
+    ("Fabrication readiness", "fab/gerbers/fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
+]
+
+LOCKED_VENDOR_OPTIONS = [
+    ("Service", "PCB fabrication only; no factory assembly package for the replica main board"),
+    ("Layers", "2"),
+    ("Material/thickness", "FR-4, 1.6 mm"),
+    ("Board outline", "310 mm x 266 mm Edge.Cuts coordinate box"),
+    ("Rendered job size", "310.15 mm x 266.15 mm profile-aperture envelope"),
+    ("Drill file", "one mixed-plating Excellon drill file"),
+    ("Impedance/stackup", "do not request impedance control or stackup changes"),
+]
+
+
+def repo_relative(path):
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def table_row(values):
+    return "| " + " | ".join(str(value).replace("|", "/") if value not in (None, "") else "-" for value in values) + " |"
+
+
+def sha256(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def read_hashes(path):
+    hashes = {}
+    if not path.exists():
+        return hashes
+    for line in path.read_text(errors="replace").splitlines():
+        parts = line.split(None, 1)
+        if len(parts) == 2:
+            hashes[parts[1].strip()] = parts[0]
+    return hashes
+
+
+def run_order_readiness(fab_dir):
+    return subprocess.run([
+        sys.executable,
+        str(ORDER_READINESS),
+        str(ROOT / "kicad" / "juku_routed.kicad_pcb"),
+        str(fab_dir),
+    ], cwd=ROOT, text=True, capture_output=True)
+
+
+def build_report(fab_dir):
+    failures = []
+    order_result = run_order_readiness(fab_dir)
+    if order_result.returncode != 0:
+        detail = order_result.stderr.strip() or order_result.stdout.strip()
+        failures.append("order-readiness regeneration failed" + (f": {detail}" if detail else ""))
+
+    report_rows = []
+    for label, rel, marker in REQUIRED_REPORTS:
+        path = ROOT / rel
+        exists = path.exists() and path.stat().st_size > 0
+        text = path.read_text(errors="replace") if exists else ""
+        marker_ok = marker in text if marker else True
+        if not exists:
+            failures.append(f"missing or empty required report: {rel}")
+        elif not marker_ok:
+            failures.append(f"required report marker missing in {rel}: {marker}")
+        report_rows.append([
+            label,
+            f"`{rel}`",
+            path.stat().st_size if exists else 0,
+            "PASS" if exists and marker_ok else "FAIL",
+        ])
+
+    upload_zip = fab_dir / "upload" / "juku-replica-gerbers-drill.zip"
+    upload_sha = upload_zip.parent / "SHA256SUMS.txt"
+    root_sha = fab_dir / "SHA256SUMS"
+    zip_digest = sha256(upload_zip) if upload_zip.exists() and upload_zip.stat().st_size else ""
+    upload_hashes = read_hashes(upload_sha)
+    root_hashes = read_hashes(root_sha)
+    if upload_hashes.get(upload_zip.name) != zip_digest:
+        failures.append("upload SHA256SUMS.txt does not match the final upload ZIP")
+
+    upload_members = [
+        "juku_routed-F_Cu.gtl",
+        "juku_routed-B_Cu.gbl",
+        "juku_routed-F_Mask.gts",
+        "juku_routed-B_Mask.gbs",
+        "juku_routed-F_Silkscreen.gto",
+        "juku_routed-B_Silkscreen.gbo",
+        "juku_routed-Edge_Cuts.gm1",
+        "juku_routed-job.gbrjob",
+        "juku_routed.drl",
+    ]
+    missing_root_hashes = [name for name in upload_members if name not in root_hashes]
+    if missing_root_hashes:
+        failures.append("root SHA256SUMS missing upload member(s): " + ", ".join(missing_root_hashes))
+
+    status = "READY TO UPLOAD" if not failures else "NOT READY"
+    lines = [
+        "# Replica manufacturing readiness",
+        "",
+        f"Status: **{status}**",
+        f"Fabrication package: `{repo_relative(fab_dir)}`",
+        f"Final upload ZIP: `{repo_relative(upload_zip)}`",
+        f"Final upload ZIP SHA256: `{zip_digest or '-'}`",
+        "",
+        "This is the tracked top-level manufacturing packet for the replica main",
+        "board. It proves the generated fabrication package is internally coherent",
+        "and ready for vendor upload; it does not claim that a vendor order has",
+        "already been placed or accepted.",
+        "",
+        "## Gate Summary",
+        "",
+        "| Gate | Evidence | Bytes | Status |",
+        "| --- | --- | ---: | --- |",
+    ]
+    lines.extend(table_row(row) for row in report_rows)
+
+    lines.extend([
+        "",
+        "## Locked Vendor Options",
+        "",
+        "| Option | Value |",
+        "| --- | --- |",
+    ])
+    lines.extend(table_row(row) for row in LOCKED_VENDOR_OPTIONS)
+
+    lines.extend([
+        "",
+        "## Required Pre-Payment Commands",
+        "",
+        "```sh",
+        "python3 kicad/report_order_readiness.py",
+        "(cd fab/gerbers && sha256sum -c SHA256SUMS)",
+        "(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)",
+        "```",
+        "",
+        "## Remaining External Evidence To Save With The Order",
+        "",
+        "- Vendor preview screenshots.",
+        "- Quoted fabrication options and price.",
+        "- Vendor order number.",
+        "- The final upload ZIP checksum above.",
+    ])
+
+    if failures:
+        lines.extend(["", "## Failures", ""])
+        lines.extend(f"- {failure}" for failure in failures)
+
+    lines.append("")
+    return "\n".join(lines), not failures
+
+
+def main():
+    fab_dir = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_FAB_DIR
+    report_path = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else DEFAULT_REPORT
+    report, ok = build_report(fab_dir)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(report)
+    print(report)
+    print(f"Wrote {repo_relative(report_path)}")
+    return 0 if ok else 3
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
