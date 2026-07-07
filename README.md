@@ -56,23 +56,24 @@ with the `cosim/` software emulator + MAME as validation oracles. See
 
 ## Status
 
-LVS pipeline **proven end-to-end on real tooling** (KiCad 10 + Yosys):
-a generated KiCad schematic → `kicad-cli` netlist → `sync/lvs.py` → structural HDL
-reports `IN SYNC` (and localizes faults on a miswired variant). Currently a 3-chip
-subset (CPU/ROM/PPI0); next is extending to all 13 chips.
+The north-star merge is reached for the boot path: the LVS-checked structural
+`juku_top` netlist runs the real Juku ROM, matches cosim, renders the boot banner,
+and reacts to keyboard input. CI now guards status-audit freshness, LVS, fast
+subsystem probes, and the bounded boot regression.
 
-- ✅ `docs/hardware-map.md` — authoritative map (memory/banking/IO/video) from MAME
-- ✅ `cosim/` — traced 8080 (boots real init; parked at the AT-keyboard handshake)
-- ✅ `hdl/` — structural top (13 chips) → Yosys netlist
-- ✅ `sync/` — connectivity LVS checker (KiCad ↔ HDL), CI-ready
-- ✅ `kicad/` — schematic generator from a board spec; real `kicad-cli` round-trip
-- ✅ **PCB placement** — the full **Juku ES101** board laid out from its assembly drawing
-  (`juku3000 emaplaat.pdf`): **102 chip positions** (40 LVS-net-modeled + 62 placement-only
-  outlines) at frame-accurate coordinates, **310×266 mm**, collision-checked (footprints + outlines)
-  and projected back onto the drawing. The component spec (`ДГШ3.031.006`) sums to **~101 ICs** (not
-  the "76" once assumed). See [`docs/comparison.png`](docs/comparison.png) (drawing vs model,
-  side-by-side) and [`docs/phase-b.md`](docs/phase-b.md).
-- ⏳ extend LVS to all chips; net-trace the placement outlines; swap in real Juku schematics
+- ✅ `cosim/` — software oracle for boot, keyboard, FDC/EKDOS probes, BASIC and
+  monitor diagnostics.
+- ✅ `hdl/` — structural runnable twin rooted in the same board/netlist evidence.
+- ✅ `sync/` — LVS, boot, FDC, video, BASIC, sound, and monitor guard scripts.
+- ✅ `kicad/` — routed replica main board: 237 footprints, 1548/1548 routed
+  connections, 0 unconnected items, and 0 clearance/short blockers.
+- ✅ **Replica manufacturing packet** — `kicad/check_replica_manufacturing_ready.sh`
+  reports `READY TO UPLOAD`; final upload ZIP:
+  `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
+  `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211`.
+- ⏳ Remaining work is external or higher-fidelity: vendor preview/order evidence,
+  parts/PROMs, assembly, bench bring-up, exact factory media/PROM dumps, and the
+  stronger video/jmon33/BASIC/EKDOS HDL boundaries tracked in `PLAN.md`.
 
 ## Layout
 
@@ -82,5 +83,5 @@ subset (CPU/ROM/PPI0); next is extending to all 13 chips.
 | `hdl/`   | Verilog models (8080 core, memory, decoder, peripherals)      |
 | `cosim/` | Headless simulation harness (Verilator / CXXRTL driver)       |
 | `sync/`  | LVS-style connectivity checker + part/pin mapping             |
-| `rom/`   | ROM source + assembled images                                 |
+| `roms/`  | ROM images and policy notes                                   |
 | `docs/`  | Design notes / decisions                                      |

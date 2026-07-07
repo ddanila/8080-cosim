@@ -10,7 +10,12 @@ Today we deliberately run **two orthogonal tracks**:
   *connectivity*, it can't *execute*.
 
 ## The far goal: merge them, schematic as source of truth
-Eventually these converge into **one model rooted in the schematic**, so the same
+This has been reached for the boot path: `juku_top` is now the LVS-checked
+structure that executes the real ROM, renders the banner, and reacts to input.
+The remaining work is fidelity expansion around the still-bounded subsystems
+tracked in `PLAN.md`.
+
+The intended end state remains **one model rooted in the schematic**, so the same
 schematic-verified structure is simultaneously:
 1. the **PCB netlist** (fabrication),
 2. the **LVS-checked structure** (correctness vs the drawing), and
@@ -40,5 +45,6 @@ everything else derives from it.
 | `hdl/` | the structure; gains chip behavior to become the runnable twin |
 | `cosim/` (software emu) + MAME | behavioral oracles to validate the twin against |
 
-This is the long-term direction; the two tracks stay separate until the netlist is
-hardened and we're ready to give the verified structure real behavior.
+This is still the direction for the full machine. The boot-critical path now runs
+on the verified structure; `cosim/` and MAME continue as validation oracles for
+the remaining subsystems.

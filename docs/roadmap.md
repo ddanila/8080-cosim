@@ -4,9 +4,12 @@
 one model that is simultaneously the **PCB netlist**, the **LVS-checked structure**,
 and a **runnable digital twin**.
 
-**Where we are:** 52-chip full-module model, LVS green on real KiCad+Yosys, CI-guarded.
-Provenance **28/99 scan-grounded, 71 assumed/boundary** — structure complete, but most
-detailed pin-wiring is inferred, not yet traced.
+**Where we are now:** the structural boot path has passed this roadmap. The
+LVS-checked `juku_top` netlist runs the real ROM, matches cosim, renders the
+banner, and reacts to input; the replica PCB package is routed and the tracked
+manufacturing gate is `READY TO UPLOAD`. `PLAN.md` and `docs/project-status.md`
+are the current milestone/status sources. The notes below remain useful as the
+historical structural-track roadmap.
 
 ---
 
