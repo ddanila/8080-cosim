@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify a cosim checkpoint RAM image loads exactly into juku_top DRAM planes."""
+"""Verify a cosim checkpoint loads into juku_top RAM plus visible state latches."""
 from __future__ import annotations
 
 import os
@@ -112,7 +112,14 @@ def run_hdl_load(tmp: Path, ram_bin: Path) -> tuple[subprocess.CompletedProcess[
         check=True,
     )
     proc = subprocess.run(
-        ["vvp", str(sim), f"+checkpoint_ram={ram_hex}"],
+        [
+            "vvp",
+            str(sim),
+            f"+checkpoint_ram={ram_hex}",
+            "+load_checkpoint_state=1",
+            "+disk=media/disks/JUKU1.CPM",
+            "+disk_heads=2",
+        ],
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,
@@ -156,6 +163,8 @@ def main() -> int:
         failures.append(f"HDL checkpoint loader exited {hdl_proc.returncode}")
     if "JUKU-TOP-CHECKPOINT-LOAD: PASS" not in hdl_proc.stdout:
         failures.append("HDL checkpoint loader did not report PASS")
+    if "JUKU-TOP-CHECKPOINT-STATE: PASS" not in hdl_proc.stdout:
+        failures.append("HDL checkpoint state loader did not report PASS")
     if cosim_ram_sha != EXPECTED_RAM_SHA:
         failures.append(f"cosim RAM SHA {cosim_ram_sha} expected {EXPECTED_RAM_SHA}")
     if hdl_ram_sha != EXPECTED_RAM_SHA:
@@ -171,14 +180,15 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This diagnostic regenerates the 30,000-write EKDOS/TDD cosim checkpoint",
-        "and loads its 64 KiB RAM image into the LVS-checked `juku_top` D84..D91",
-        "bit-sliced DRAM planes. It then dumps RAM and framebuffer bytes back out",
-        "of `juku_top` and compares hashes.",
+        "This diagnostic regenerates the 30,000-write EKDOS/TDD cosim checkpoint,",
+        "loads its 64 KiB RAM image into the LVS-checked `juku_top` D84..D91",
+        "bit-sliced DRAM planes, and injects the checkpoint's visible CPU",
+        "architectural registers plus key PPI/PIC/FDC latches. It then dumps RAM",
+        "and framebuffer bytes back out of `juku_top` and compares hashes.",
         "",
-        "This is not a CPU resume proof. It proves the RAM half of the future",
-        "post-banner resume harness can be injected into the real top-level DRAM",
-        "representation without replaying the slow ROMBIOS draw.",
+        "This is not a CPU resume proof. It proves the RAM and visible-state",
+        "halves of the future post-banner resume harness can be injected into the",
+        "real top-level model without replaying the slow ROMBIOS draw.",
         "",
         "## Command",
         "",
@@ -190,7 +200,8 @@ def main() -> int:
         "",
         f"- Cosim trace exit code: `{cosim_proc.returncode}`",
         f"- HDL loader exit code: `{hdl_proc.returncode}`",
-        f"- HDL pass line: `{'yes' if 'JUKU-TOP-CHECKPOINT-LOAD: PASS' in hdl_proc.stdout else 'no'}`",
+        f"- HDL RAM pass line: `{'yes' if 'JUKU-TOP-CHECKPOINT-LOAD: PASS' in hdl_proc.stdout else 'no'}`",
+        f"- HDL state pass line: `{'yes' if 'JUKU-TOP-CHECKPOINT-STATE: PASS' in hdl_proc.stdout else 'no'}`",
         f"- Cosim RAM SHA256: `{cosim_ram_sha}`",
         f"- HDL RAM SHA256: `{hdl_ram_sha}`",
         f"- Cosim VRAM SHA256: `{cosim_vram_sha}`",
@@ -198,11 +209,12 @@ def main() -> int:
         "",
         "## Boundary",
         "",
-        "- CPU architectural and microcycle state is still not injected.",
-        "- Peripheral register state is still tracked by the cosim checkpoint",
-        "  reference and by direct-bus top-level guards, not by this RAM-load test.",
-        "- The next resume step is a deliberately instrumented CPU-state loader or",
-        "  a narrower ROMBIOS subroutine harness starting from this loaded RAM.",
+        "- CPU microcycle latches are still not initialized, so the die-accurate",
+        "  core is not resumed from this state.",
+        "- Peripheral state coverage is limited to the visible latches needed at",
+        "  the 30,000-write pre-PIC boundary.",
+        "- The next resume step is either microcycle-state initialization or a",
+        "  narrower ROMBIOS subroutine harness starting from this loaded state.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])

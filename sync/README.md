@@ -50,10 +50,11 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   reference at 30,000 framebuffer writes on the vendored `TDD` path; records
   CPU registers, RAM hash, banking/PIC/PPI/FDC state, and the byte-identical
   pre-PIC boundary needed by a future HDL resume harness.
-- `sync/juku_top_checkpoint_load_check.py` — fast top-level checkpoint RAM-load
-  guard; regenerates the 30,000-write cosim RAM checkpoint, loads it into the
-  `juku_top` D84..D91 bit-sliced DRAM planes, and verifies full RAM plus VRAM
-  hashes after dumping them back from the top-level model.
+- `sync/juku_top_checkpoint_load_check.py` — fast top-level checkpoint-load
+  guard; regenerates the 30,000-write cosim checkpoint, loads RAM into the
+  `juku_top` D84..D91 bit-sliced DRAM planes, injects visible CPU architectural
+  registers plus key PPI/PIC/FDC latches, and verifies full RAM plus VRAM hashes
+  after dumping them back from the top-level model.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.

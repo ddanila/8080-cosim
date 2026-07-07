@@ -56,10 +56,11 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   machine checkpoint at that 30,000-write boundary, including CPU
   registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
   framebuffer hash, for a future post-banner HDL resume diagnostic.
-- `sync/juku_top_checkpoint_load_check.py` proves the RAM half of that resume
-  path can already be loaded into the LVS-checked `juku_top` D84..D91
-  bit-sliced DRAM planes and dumped back with matching 64 KiB RAM and VRAM
-  hashes.
+- `sync/juku_top_checkpoint_load_check.py` proves the RAM and visible-state
+  halves of that resume path can already be loaded into the LVS-checked
+  `juku_top`: D84..D91 bit-sliced DRAM dumps back with matching 64 KiB RAM and
+  VRAM hashes, and the checkpoint CPU architectural registers plus key
+  PPI/PIC/FDC latches are injected and verified.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
@@ -97,7 +98,7 @@ sync/juku_top_fdc_probe.sh
 | `juku_top` decoded keyboard/PIC/PPI/FDC direct-bus path reaches vendored `JUKU1.CPM` data | PASS |
 | `juku_top` and cosim PC plus VRAM match at 30,000 writes before the first-PIC window | PASS |
 | cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
-| checkpoint RAM loads into `juku_top` bit-sliced DRAM with matching RAM/VRAM hashes | PASS |
+| checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -127,9 +128,9 @@ sync/juku_top_fdc_probe.sh
   RAM/CPU/peripheral checkpoint. The next automation step is loading that state
   into a narrow HDL post-banner diagnostic; the checkpoint itself is not an HDL
   resume proof.
-- `docs/juku-top-checkpoint-load.md` proves that checkpoint RAM can be injected
-  into the top-level bit-sliced DRAM exactly. CPU architectural/microcycle state
-  and peripheral state injection remain the resume boundary.
+- `docs/juku-top-checkpoint-load.md` proves that checkpoint RAM and visible
+  CPU/PPI/PIC/FDC latches can be injected into the top-level model. CPU
+  microcycle-state initialization remains the resume boundary.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

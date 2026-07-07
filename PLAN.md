@@ -194,8 +194,9 @@ debugging session saved on real hardware.
    HDL diagnostic, not yet an HDL resume proof.
    `docs/juku-top-checkpoint-load.md` now proves the checkpoint's 64 KiB RAM
    image can be loaded into the LVS-checked `juku_top` D84..D91 bit-sliced
-   DRAM planes and dumped back with matching full-RAM and framebuffer hashes.
-   CPU architectural/microcycle state and peripheral-state injection remain the
+   DRAM planes and dumped back with matching full-RAM and framebuffer hashes;
+   it also injects and verifies the checkpoint CPU architectural registers plus
+   key PPI/PIC/FDC latches. CPU microcycle-state initialization remains the
    resume boundary. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including frame INTA vector `0xFED4`,
