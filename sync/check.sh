@@ -36,7 +36,7 @@ echo "==> HDL -> netlist (yosys)"
 # so yosys keeps the chips as cells and doesn't try to resolve their now-functional tri-state
 # bodies (which its "limited tri-state support" mis-merges). juku_top is pure structure (instances
 # + wires) -> the instance/pin connectivity the LVS needs is preserved exactly.
-yosys -q -p "read_verilog -lib hdl/devices.v; read_verilog hdl/juku_top.v; hierarchy -top juku_top; write_json hdl/juku_top.json"
+yosys -q -p "read_verilog -DYOSYS -lib hdl/devices.v; read_verilog hdl/juku_top.v; hierarchy -top juku_top; write_json hdl/juku_top.json"
 
 if [ -n "$KCLI" ] && "$KCLI" sch export netlist --format kicadxml -o kicad/juku.net.xml kicad/juku.kicad_sch 2>/dev/null; then
   echo "==> LVS (real KiCad round-trip via $KCLI)"

@@ -10,6 +10,7 @@ module fdc_1793_tb;
   integer errors = 0;
   integer i;
   reg [7:0] got;
+  reg disk_mode = 0;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side));
@@ -50,7 +51,24 @@ module fdc_1793_tb;
     else want_byte = track + ({7'b0, side_bit} << 5) + sector + pos[7:0];
   end endfunction
 
+  function [7:0] want_juku1_sector2(input integer pos);
+  begin
+    case (pos)
+      0: want_juku1_sector2 = 8'hc3;
+      1: want_juku1_sector2 = 8'h5c;
+      2: want_juku1_sector2 = 8'hb7;
+      3: want_juku1_sector2 = 8'hc3;
+      4: want_juku1_sector2 = 8'h58;
+      5: want_juku1_sector2 = 8'hb7;
+      6: want_juku1_sector2 = 8'h7f;
+      7: want_juku1_sector2 = 8'h00;
+      8, 9, 10, 11, 12, 13, 14, 15: want_juku1_sector2 = 8'h20;
+      default: want_juku1_sector2 = 8'hxx;
+    endcase
+  end endfunction
+
   initial begin
+    disk_mode = $test$plusargs("expect_disk");
     repeat (4) @(posedge clk);
     motor_on = 1;
 
@@ -72,30 +90,36 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
-    write_reg(2'd1, 8'd12);
-    write_reg(2'd2, 8'd4);
+    write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
+    write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
     write_reg(2'd0, 8'h80);
-    expect_status(8'h03, 8'h03, "after side-0 read command");
+    expect_status(8'h03, 8'h03, disk_mode ? "after raw-disk read command" : "after side-0 read command");
     for (i = 0; i < 512; i = i + 1) begin
       read_reg(2'd3, got);
-      if (got !== want_byte(i, 8'd12, 1'b0, 8'd4)) begin
+      if (!disk_mode && got !== want_byte(i, 8'd12, 1'b0, 8'd4)) begin
         $display("FDC-1793: FAIL side0 byte %0d got=%02x want=%02x", i, got, want_byte(i, 8'd12, 1'b0, 8'd4));
+        errors = errors + 1;
+        i = 512;
+      end else if (disk_mode && i < 16 && got !== want_juku1_sector2(i)) begin
+        $display("FDC-1793: FAIL JUKU1 sector2 byte %0d got=%02x want=%02x", i, got, want_juku1_sector2(i));
         errors = errors + 1;
         i = 512;
       end
     end
     expect_status(8'h03, 8'h00, "after side-0 drain");
 
-    side = 1;
-    write_reg(2'd1, 8'd43);
-    write_reg(2'd2, 8'd7);
-    write_reg(2'd0, 8'h80);
-    for (i = 0; i < 512; i = i + 1) begin
-      read_reg(2'd3, got);
-      if (got !== want_byte(i, 8'd43, 1'b1, 8'd7)) begin
-        $display("FDC-1793: FAIL side1 byte %0d got=%02x want=%02x", i, got, want_byte(i, 8'd43, 1'b1, 8'd7));
-        errors = errors + 1;
-        i = 512;
+    if (!disk_mode) begin
+      side = 1;
+      write_reg(2'd1, 8'd43);
+      write_reg(2'd2, 8'd7);
+      write_reg(2'd0, 8'h80);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== want_byte(i, 8'd43, 1'b1, 8'd7)) begin
+          $display("FDC-1793: FAIL side1 byte %0d got=%02x want=%02x", i, got, want_byte(i, 8'd43, 1'b1, 8'd7));
+          errors = errors + 1;
+          i = 512;
+        end
       end
     end
 

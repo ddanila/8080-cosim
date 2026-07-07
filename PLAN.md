@@ -163,8 +163,13 @@ debugging session saved on real hardware.
    The first HDL-side WD1793 behavior slice is now guarded by
    `sync/fdc_check.sh` and documented in `docs/fdc-readiness.md`:
    restore/seek/read-sector/status, side-select, and motor-off behavior are
-   proven with synthetic sector contents. Remaining target: connect external
-   vendored raw media through `juku_top`.
+   proven with synthetic sector contents, and the same HDL FDC can read real
+   bytes from the vendored `media/disks/JUKU1.CPM` raw image via `+disk=...`.
+   `docs/fdc-core-survey.md` records available upstream ВГ93/WD1793 cores and
+   keeps this local block scoped as a boot/media shim rather than a full manual
+   controller clone.
+   Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
+   the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

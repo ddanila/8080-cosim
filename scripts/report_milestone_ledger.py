@@ -81,7 +81,14 @@ def milestone_rows():
     )
     hdl_fdc_ready = marker(
         "docs/fdc-readiness.md",
+        "Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**",
+    ) or marker(
+        "docs/fdc-readiness.md",
         "Status: **HDL WD1793 SYNTHETIC-SECTOR READY**",
+    )
+    hdl_fdc_vendored_sector = marker(
+        "docs/fdc-readiness.md",
+        "Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**",
     )
     basic_launch_reached = marker(
         "docs/basic-launch-probe.md",
@@ -117,12 +124,20 @@ def milestone_rows():
             "id": "M2",
             "target": "EKDOS boots in the twin",
             "status": (
-                "VENDORED JUKU1 PROMPT PROVEN / HDL PENDING"
+                "VENDORED JUKU1 PROMPT PROVEN / HDL RAW-SECTOR READY"
+                if ekdos_juku1_prompt and hdl_fdc_vendored_sector
+                else "VENDORED JUKU1 PROMPT PROVEN / HDL PENDING"
                 if ekdos_juku1_prompt
                 else "COSIM PROMPT PROVEN / HDL PENDING" if ekdos_external_prompt else "PARTIAL"
             ),
             "evidence": (
                 "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
+                "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
+                "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
+                "WD1793 raw-sector reads from vendored `JUKU1.CPM`. Full ROMBIOS-to-EKDOS "
+                "prompt execution in `juku_top` remains open."
+                if ekdos_juku1_prompt and hdl_fdc_vendored_sector
+                else "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
                 "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
                 "WD1793 synthetic-sector behavior. Disk-backed FDC in `juku_top` remains open."
@@ -143,7 +158,11 @@ def milestone_rows():
                 + "Tracked evidence does not yet prove the exact factory JUKU-1 image "
                 "or external-media FDC in `juku_top`."
             ),
-            "next": "Connect vendored raw disk media through juku_top.",
+            "next": (
+                "Drive the full ROMBIOS TDD path through juku_top to an EKDOS prompt."
+                if hdl_fdc_vendored_sector
+                else "Connect vendored raw disk media through juku_top."
+            ),
         },
         {
             "id": "M3",

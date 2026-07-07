@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **HDL WD1793 SYNTHETIC-SECTOR READY**
+Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**
 
 This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 
@@ -10,8 +10,11 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   restore returns to track 0, seek copies the data register to the track
   register, read-sector streams 512 bytes, side select changes the stream,
   and motor-off read reports not-ready.
-- The guard uses synthetic sector contents only. Vendored Juku disk images live
-  under `media/disks/`, but the HDL path does not yet consume disk files.
+- The same testbench also runs with `+disk=media/disks/JUKU1.CPM +disk_heads=2`
+  and verifies that the HDL WD1793 path reads real bytes from the vendored raw
+  disk image.
+- `docs/fdc-core-survey.md` records why this remains a bounded boot shim rather
+  than a growing manual replacement for a full upstream ВГ93/WD1793 core.
 
 ## Command
 
@@ -27,11 +30,16 @@ sync/fdc_check.sh
 | Seek command copies data register to track register | PASS |
 | Read-sector command asserts BUSY/DRQ and streams 512 bytes | PASS |
 | Side select affects the synthetic sector stream | PASS |
+| Vendored `JUKU1.CPM` sector 2 bytes are streamed through the HDL FDC | PASS |
 | Motor-off read reports NOT READY | PASS |
 
 ## Remaining Boundary
 
-- Connect the same behavior to vendored raw disk media for `juku_top`.
+- Drive the full `ROMBIOS 3.43` `<T>, <D>, <D>` path through `juku_top` with
+  `+disk=media/disks/JUKU1.CPM` and promote the HDL boundary from sector-ready
+  to EKDOS-prompt-ready.
 - Preserve the Arti `JUKU1.CPM` cosim proof from
   `docs/ekdos-media-acquisition.md` as the disk-backed reference.
+- If deeper controller behavior becomes the blocker, decide whether GPL
+  Sorgelig-lineage `wd1793.sv` is acceptable to vendor/adapt.
 - Confirm D93 INTRQ/DRQ, MR, CLK, and D100 OE/T wiring during the owner session.

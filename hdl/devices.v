@@ -609,6 +609,33 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [7:0] command = 8'h00;
     integer buffer_pos = 0;
     integer buffer_len = 0;
+    reg [7:0] sector_buf [0:511];
+    reg [1023:0] disk_path;
+    integer disk_file = 0;
+    integer disk_heads = 0;
+    integer disk_requested = 0;
+    integer disk_loaded = 0;
+    integer disk_offset = 0;
+    integer disk_read_count = 0;
+    integer disk_seek_status = 0;
+    integer disk_sector_ok = 0;
+
+`ifndef YOSYS
+    initial begin
+        if ($value$plusargs("disk=%s", disk_path)) begin
+            disk_requested = 1;
+            if (!$value$plusargs("disk_heads=%d", disk_heads)) disk_heads = 2;
+            disk_file = $fopen(disk_path, "rb");
+            if (disk_file) begin
+                disk_loaded = 1;
+                $display("FDC-1793: loaded raw disk %0s (%0d side%s)",
+                         disk_path, disk_heads, disk_heads == 1 ? "" : "s");
+            end else begin
+                $display("FDC-1793: could not open raw disk %0s", disk_path);
+            end
+        end
+    end
+`endif
 
     function is_read_sector(input [7:0] cmd); begin
         is_read_sector = ((cmd & 8'hE0) == 8'h80);
@@ -625,6 +652,27 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         else synthetic_sector_byte = track + ({7'b0, side} << 5) + sector + pos[7:0];
     end endfunction
 
+`ifndef YOSYS
+    task load_disk_sector; begin
+        disk_sector_ok = 0;
+        if (!disk_loaded) begin
+            status = status | ST_NOT_READY;
+        end else if (track > 8'd79 || sector == 0 || sector > 10 || ({31'b0, side} >= disk_heads)) begin
+            status = status | ST_RNF;
+        end else begin
+            disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
+            disk_seek_status = $fseek(disk_file, disk_offset, 0);
+            disk_read_count = $fread(sector_buf, disk_file);
+            if (disk_seek_status == 0 && disk_read_count == 512) disk_sector_ok = 1;
+            else status = status | ST_RNF;
+        end
+    end endtask
+`else
+    task load_disk_sector; begin
+        disk_sector_ok = 0;
+    end endtask
+`endif
+
     task clear_transfer; begin
         buffer_pos = 0;
         buffer_len = 0;
@@ -638,6 +686,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             status = status | ST_NOT_READY;
         end else if (sector == 0 || sector > 10) begin
             status = status | ST_RNF;
+        end else if (disk_requested) begin
+            load_disk_sector();
+            if (disk_sector_ok) begin
+                buffer_pos = 0;
+                buffer_len = 512;
+                status = status | ST_BUSY | ST_DRQ;
+            end
         end else begin
             buffer_pos = 0;
             buffer_len = 512;
@@ -676,7 +731,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     always @(posedge clk) if (~cs_n & ~rd_n && A == 2'd3) begin
         if (buffer_pos < buffer_len) begin
-            data = synthetic_sector_byte(buffer_pos);
+            data = disk_requested ? sector_buf[buffer_pos] : synthetic_sector_byte(buffer_pos);
             buffer_pos = buffer_pos + 1;
             if (buffer_pos >= buffer_len) clear_transfer();
         end else begin
