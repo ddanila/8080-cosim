@@ -267,6 +267,10 @@ before any Soviet NOS is at risk.
    `docs/replica-package-geometry-readiness.md`, gating the 2-layer job, 310 x
    266 mm Edge.Cuts coordinate box, 1.6 mm thickness, and mixed-plating Excellon
    drill tool/hit inventory.
+   `kicad/report_replica_bringup_verification.py` generates
+   `docs/replica-bringup-verification-points.md`, converting remaining
+   assumed/boundary/pending source-risk annotations into explicit vendor-preview,
+   owner-continuity, scope, and logic-analyzer checks for staged bring-up.
    `kicad/report_replica_manufacturing_readiness.py` writes the tracked top-level
    `docs/replica-manufacturing-readiness.md` packet with the final upload ZIP
    checksum, locked vendor options, and the single pre-payment gate command

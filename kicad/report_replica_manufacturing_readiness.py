@@ -18,6 +18,7 @@ REQUIRED_REPORTS = [
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
+    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **READY**"),
     ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "Status: **SOURCING READY"),
     ("External Gerber review", "fab/gerbers/external-gerber-review.md", "Status: **READY**"),
     ("Review waiver", "fab/gerbers/review-waivers.md", "Status: **ACCEPTED**"),

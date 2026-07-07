@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+python3 kicad/report_replica_bringup_verification.py
 python3 kicad/report_replica_manufacturing_readiness.py fab/gerbers
 
 if ! grep -q 'Status: \*\*READY TO UPLOAD\*\*' docs/replica-manufacturing-readiness.md; then
