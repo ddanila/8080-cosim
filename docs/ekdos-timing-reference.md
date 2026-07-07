@@ -42,5 +42,5 @@ sync/ekdos_timing_reference.py
 
 ## Disposition
 
-- This report is a reference, not a gate for HDL prompt readiness.
+- This report is a CI guard for the cosim timing reference, not a gate for HDL prompt readiness.
 - The HDL top-level probe should not expect PPI/FDC activity before the post-banner window shown above.

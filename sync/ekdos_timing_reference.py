@@ -14,6 +14,18 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "ekdos-timing-reference.md"
 ROM = ROOT / "roms" / "ekta37.bin"
 DISK = ROOT / "media" / "disks" / "JUKU1.CPM"
+EXPECTED_FIRSTS = {
+    ("OUT", 0x00): {"cyc": "3061541", "pc": "02B9", "g_vw": "30520", "value": "D6"},
+    ("OUT", 0x01): {"cyc": "3061556", "pc": "02BC", "g_vw": "30520", "value": "FE"},
+    ("IN", 0x05): {"cyc": "3062006", "pc": "1213", "g_vw": "30520", "value": "-"},
+    ("OUT", 0x1C): {"cyc": "6666400", "pc": "E5DE", "g_vw": "63085", "value": "02"},
+    ("IN", 0x1F): {"cyc": "8876919", "pc": "E5AA", "g_vw": "63095", "value": "-"},
+}
+EXPECTED_IRQS = [
+    {"n": "1", "cyc": "3200001", "pc": "0E21", "vec": "FED4", "g_vw": "33812"},
+    {"n": "2", "cyc": "3400004", "pc": "0E25", "vec": "FED4", "g_vw": "38733"},
+    {"n": "3", "cyc": "3600000", "pc": "E2E5", "vec": "FED4", "g_vw": "40633"},
+]
 
 IOT_RE = re.compile(
     r"^\[IOT\] first (IN |OUT) port 0x([0-9A-Fa-f]{2})(?: val=0x([0-9A-Fa-f]{2}))? "
@@ -98,6 +110,12 @@ def main() -> int:
             failures.append(f"no first-access timing captured for port 0x{port:02X}")
     if not irqs:
         failures.append("no frame IRQ timing captured")
+    for (kind, port), expected in EXPECTED_FIRSTS.items():
+        actual = first_in.get(port) if kind == "IN" else first_out.get(port)
+        if actual != expected:
+            failures.append(f"{kind} 0x{port:02X} timing changed: got {actual}, expected {expected}")
+    if irqs[:3] != EXPECTED_IRQS:
+        failures.append(f"first frame IRQ timing changed: got {irqs[:3]}, expected {EXPECTED_IRQS}")
 
     lines = [
         "# EKDOS timing reference",
@@ -133,7 +151,7 @@ def main() -> int:
         for failure in failures:
             lines.append(f"- FAIL: {failure}")
     else:
-        lines.append("- This report is a reference, not a gate for HDL prompt readiness.")
+        lines.append("- This report is a CI guard for the cosim timing reference, not a gate for HDL prompt readiness.")
         lines.append("- The HDL top-level probe should not expect PPI/FDC activity before the post-banner window shown above.")
 
     REPORT.write_text("\n".join(lines) + "\n")
