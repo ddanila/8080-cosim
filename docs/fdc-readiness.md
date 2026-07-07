@@ -5,7 +5,8 @@ Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**
 This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 
 - `hdl/devices.v` implements D93-compatible restore, seek, read-sector,
-  status, track, sector, and data register behavior in `fdc_1793`.
+  status, track, sector, data register, DRQ, and INTRQ behavior in
+  `fdc_1793`.
 - `hdl/sim/fdc_1793_tb.v` mirrors the C-side synthetic media guard:
   restore returns to track 0, seek copies the data register to the track
   register, read-sector streams 512 bytes, side select changes the stream,
@@ -31,6 +32,7 @@ sync/fdc_check.sh
 | Read-sector command asserts BUSY/DRQ and streams 512 bytes | PASS |
 | Side select affects the synthetic sector stream | PASS |
 | Vendored `JUKU1.CPM` sector 2 bytes are streamed through the HDL FDC | PASS |
+| DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
 
 ## Remaining Boundary

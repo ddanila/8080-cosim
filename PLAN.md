@@ -162,9 +162,10 @@ debugging session saved on real hardware.
    and reaches the same `A>` prompt after the factory `<T>, <D>, <D>` path.
    The first HDL-side WD1793 behavior slice is now guarded by
    `sync/fdc_check.sh` and documented in `docs/fdc-readiness.md`:
-   restore/seek/read-sector/status, side-select, and motor-off behavior are
-   proven with synthetic sector contents, and the same HDL FDC can read real
-   bytes from the vendored `media/disks/JUKU1.CPM` raw image via `+disk=...`.
+   restore/seek/read-sector/status/DRQ/INTRQ, side-select, and motor-off
+   behavior are proven with synthetic sector contents, and the same HDL FDC can
+   read real bytes from the vendored `media/disks/JUKU1.CPM` raw image via
+   `+disk=...`.
    `docs/fdc-core-survey.md` records available upstream ВГ93/WD1793 cores and
    keeps this local block scoped as a boot/media shim rather than a full manual
    controller clone.

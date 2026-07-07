@@ -7,13 +7,14 @@ module fdc_1793_tb;
   reg [7:0] drive = 8'h00;
   reg drive_en = 0;
   wire [7:0] D = drive_en ? drive : 8'hzz;
+  wire drq, intrq;
   integer errors = 0;
   integer i;
   reg [7:0] got;
   reg disk_mode = 0;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
-               .clk(clk), .motor_on(motor_on), .side(side));
+               .clk(clk), .motor_on(motor_on), .side(side), .drq(drq), .intrq(intrq));
 
   always #5 clk = ~clk;
 
@@ -94,6 +95,10 @@ module fdc_1793_tb;
     write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
     write_reg(2'd0, 8'h80);
     expect_status(8'h03, 8'h03, disk_mode ? "after raw-disk read command" : "after side-0 read command");
+    if (drq !== 1'b1 || intrq !== 1'b0) begin
+      $display("FDC-1793: FAIL read command drq=%b intrq=%b", drq, intrq);
+      errors = errors + 1;
+    end
     for (i = 0; i < 512; i = i + 1) begin
       read_reg(2'd3, got);
       if (!disk_mode && got !== want_byte(i, 8'd12, 1'b0, 8'd4)) begin
@@ -107,6 +112,10 @@ module fdc_1793_tb;
       end
     end
     expect_status(8'h03, 8'h00, "after side-0 drain");
+    if (drq !== 1'b0 || intrq !== 1'b1) begin
+      $display("FDC-1793: FAIL read completion drq=%b intrq=%b", drq, intrq);
+      errors = errors + 1;
+    end
 
     if (!disk_mode) begin
       side = 1;

@@ -596,7 +596,7 @@ module serial_conn (inout wire sout, rts, dtp, ttl_sout, oc_sout, sin);
 endmodule
 
 module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
-                 input wire motor_on, side);
+                 input wire motor_on, side, output wire drq, intrq);
     localparam ST_BUSY = 8'h01;
     localparam ST_DRQ = 8'h02;
     localparam ST_RNF = 8'h10;
@@ -619,6 +619,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_read_count = 0;
     integer disk_seek_status = 0;
     integer disk_sector_ok = 0;
+    reg intrq_r = 1'b0;
+
+    assign drq = status[1];
+    assign intrq = intrq_r;
 
 `ifndef YOSYS
     initial begin
@@ -677,6 +681,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         buffer_pos = 0;
         buffer_len = 0;
         status = status & ~(ST_BUSY | ST_DRQ);
+        intrq_r = 1'b1;
     end endtask
 
     task begin_read_sector; begin
@@ -692,11 +697,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 buffer_pos = 0;
                 buffer_len = 512;
                 status = status | ST_BUSY | ST_DRQ;
+                intrq_r = 1'b0;
             end
         end else begin
             buffer_pos = 0;
             buffer_len = 512;
             status = status | ST_BUSY | ST_DRQ;
+            intrq_r = 1'b0;
         end
     end endtask
 
@@ -716,6 +723,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         case (A)
             2'd0: begin
                 command = D;
+                intrq_r = 1'b0;
                 if (is_read_sector(D)) begin_read_sector();
                 else if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) clear_transfer();
@@ -800,7 +808,7 @@ endmodule
 // until the owner session verifies the quadrant wiring). Connectivity is the deliverable.
 module vg93_fdc (input wire cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
                  inout wire [7:0] dal, output wire drq, intrq);
-    assign dal = 8'hzz; assign drq = 1'b0; assign intrq = 1'b0;
+    assign dal = 8'hzz; assign drq = 1'bz; assign intrq = 1'bz;
 endmodule
 
 // КР580ВА87 (8287, inverting 8286) D100: FDC bus buffer. Non-driving stub (see vg93_fdc).
