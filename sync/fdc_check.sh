@@ -69,9 +69,10 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
 - `sync/juku_top_periph_bus_check.sh` drives `juku_top`'s buffered CPU bus
-  directly and proves decoded keyboard/PIC/PPI/FDC access, including frame
-  INTA vector `0xFED4` and a media-backed `JUKU1.CPM` sector byte, without
-  waiting for the slow ROMBIOS draw loop.
+  directly and proves decoded keyboard/PIC/PPI/FDC access, including the pinned
+  no-key `0xCF` keyboard poll, shifted-`T` `0x88` poll, frame INTA vector
+  `0xFED4`, exact ROMBIOS first FDC restore command `0x02`, and a media-backed
+  `JUKU1.CPM` sector byte, without waiting for the slow ROMBIOS draw loop.
 
 ## Command
 
@@ -99,7 +100,7 @@ sync/juku_top_fdc_probe.sh
 | DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
 | `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |
-| `juku_top` decoded keyboard/PIC/PPI/FDC direct-bus path reaches vendored `JUKU1.CPM` data | PASS |
+| `juku_top` decoded keyboard/PIC/PPI/FDC direct-bus path mirrors pinned EKDOS I/O and reaches vendored `JUKU1.CPM` data | PASS |
 | `juku_top` and cosim PC, VRAM, and visible CPU/PPI/PIC/FDC state match at 30,000 writes before the first-PIC window | PASS |
 | cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
 | checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
@@ -119,8 +120,9 @@ sync/juku_top_fdc_probe.sh
   early ROMBIOS sample counts PPI0 writes after the trace samples the decoder
   one timestep after the I/O edge.
 - `docs/juku-top-periph-bus-check.md` captures the direct-bus top-level
-  peripheral proof: PIC register readback, frame INTA vector `0xFED4`, shifted
-  `T` keyboard scan, PPI0 motor-on latch, FDC seek/status, and the first
+  peripheral proof: PIC register readback, frame INTA vector `0xFED4`, no-key
+  `0xCF` and shifted-`T` `0x88` keyboard scans, PPI0 motor-on latch, exact
+  ROMBIOS first FDC restore command `0x02`, FDC seek/status, and the first
   `JUKU1.CPM` track 0 sector 2 byte all pass through decoded `juku_top` ports.
 - `docs/juku-top-30000-state-probe.md` captures the slow pre-PIC comparison:
   cosim and `juku_top` both stop at PC `0x0484` after 30,000 VRAM writes, and

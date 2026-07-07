@@ -125,11 +125,15 @@ module juku_top_periph_bus_tb();
     if (dut.intr !== 1'b0) fail("INTR did not clear after three INTA bytes");
 
     kbd_en = 1'b1;
+    kbd_pressed = 1'b0;
+    io_write(8'h04, 8'h04);     // PPI0 Port A: scan column 4
+    io_read(8'h05, rd);
+    if (rd !== 8'hCF) fail("PPI0 no-key keyboard read did not match ROMBIOS first read");
+
     kbd_pressed = 1'b1;
     kbd_shift = 1'b1;
     kbd_kcol = 4'd4;            // T key
     kbd_kbit = 3'd3;
-    io_write(8'h04, 8'h04);     // PPI0 Port A: scan column 4
     io_read(8'h05, rd);
     if (rd !== 8'h88) fail("PPI0 keyboard read did not encode shifted T");
     kbd_pressed = 1'b0;
@@ -139,6 +143,15 @@ module juku_top_periph_bus_tb();
 
     io_read(8'h1C, rd);
     if ((rd & 8'h80) == 8'h00) fail("FDC reset status should report NOT READY before commands");
+
+    io_write(8'h1D, 8'h22);     // nonzero track before ROMBIOS first restore command
+    io_write(8'h1C, 8'h02);     // exact ROMBIOS first FDC command from PC E5DE
+    if (dut.U_FDC.command !== 8'h02) fail("FDC command latch did not capture ROMBIOS restore");
+    if (dut.fdc_intrq !== 1'b1) fail("FDC restore did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h83) !== 8'h00) fail("FDC restore status should clear NOT_READY/BUSY/DRQ with motor on");
+    io_read(8'h1D, rd);
+    if (rd !== 8'h00) fail("FDC restore did not return track register to zero");
 
     io_write(8'h1F, 8'h02);     // FDC data register: seek target / sector byte
     io_write(8'h1D, 8'h00);     // FDC track register

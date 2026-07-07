@@ -203,15 +203,16 @@ debugging session saved on real hardware.
    key PPI/PIC/FDC latches. CPU microcycle-state initialization remains the
    resume boundary. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
-   keyboard/PIC/PPI/FDC path directly, including frame INTA vector `0xFED4`,
-   shifted `T` keyboard scan, and a vendored `JUKU1.CPM` sector byte, without
-   waiting for ROMBIOS drawing. The fast cosim timing
+   keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
+   shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact
+   ROMBIOS first FDC restore command `0x02`, and a vendored `JUKU1.CPM` sector
+   byte, without waiting for ROMBIOS drawing. The fast cosim timing
    reference in `docs/ekdos-timing-reference.md` anchors that window: first
    frame IRQ at 33,812 VRAM writes and first FDC command at 63,085 VRAM writes
    on the vendored `JUKU1.CPM` `TDD` path. `docs/ekdos-ioseq-reference.md`
-   now also pins the full cosim I/O event stream through the shifted `T` key
-   read and first FDC command, tying the direct-bus harness to the real ROMBIOS
-   sequence.
+   now also pins the full cosim I/O event stream through the no-key read,
+   shifted `T` key read, and first FDC command, tying the direct-bus harness to
+   the real ROMBIOS sequence.
    Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
    the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
