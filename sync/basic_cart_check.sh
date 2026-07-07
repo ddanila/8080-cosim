@@ -68,10 +68,10 @@ sync/basic_cart_check.sh
 
 ## Remaining Boundary
 
-- Exercise the full EktaSoft `B` command path to a live BASIC prompt.
-  `sync/basic_launch_probe.py` now documents the current open boundary: with
-  `JUKU_CART=roms/jbasic11.bin` and `JUKU_KEYS=B`, the cartridge loads and the
-  keyboard path is active, but PC never enters `0x4000..0xBFFF`.
+- Exercise the BASIC path to a live prompt. `sync/basic_launch_probe.py` now
+  documents that Monitor 3.3 reaches the `jbasic11.bin` cartridge execution
+  window, while EktaSoft 3.43m #0037 still does not select the cartridge
+  overlay in the same bounded run.
 EOF
 
 echo "BASIC-CART-CHECK: PASS"

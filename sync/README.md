@@ -57,9 +57,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   jmon33 monitor-idle cursor oracle; currently documents the open boundary.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
-- `sync/basic_launch_probe.py` — bounded cosim diagnostic for the full
-  EktaSoft `B` command path into the BASIC cartridge; currently documents the
-  open command/control-flow boundary.
+- `sync/basic_launch_probe.py` — bounded cosim diagnostic for the monitor `B`
+  command path into the BASIC cartridge; Monitor 3.3 reaches cartridge
+  execution, while EktaSoft 3.43m #0037 remains a documented compatibility
+  boundary.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 
@@ -71,6 +72,7 @@ value-level lockstep, cosim FDC sector-read/prompt scaffolding, HDL WD1793
 synthetic-sector behavior, and runnable video readout. The remaining
 high-fidelity boundaries are the exact factory `JUKU-1` EKDOS-media proof plus
 external-media FDC in `juku_top`, the user-visible jmon33 command prompt and
-cosim-vs-HDL comparison at the monitor-idle oracle boundary, the full
-interactive BASIC prompt path, the analog speaker/current check, dumped PROM
-contents, and the РЕ3/АГ3-gated physical video slot timing.
+cosim-vs-HDL comparison at the monitor-idle oracle boundary, the BASIC prompt
+oracle plus HDL coverage of the Monitor 3.3 BASIC path, the analog
+speaker/current check, dumped PROM contents, and the РЕ3/АГ3-gated physical
+video slot timing.
