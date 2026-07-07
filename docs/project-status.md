@@ -132,6 +132,11 @@ schematic*), with `cosim/` + MAME as validation oracles.
   first write still matches at `0xFF40`, but the 300-write run stops before
   the cursor oracle with a blank framebuffer. Completing the cosim-vs-HDL
   comparison there and proving the user-visible command prompt remain pending.
+- **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
+  command reads `jbasic11.bin` through the expansion-cartridge overlay and then
+  executes in the `0x4000..0xBFFF` RAM window. The current boundary is sharper:
+  that window sees accepted writes, but they are all `0x00`; execution fetches a
+  zero-filled NOP sled, and no user-visible BASIC prompt is produced.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;

@@ -125,8 +125,9 @@ def milestone_rows():
             "evidence": (
                 "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
-                "cartridge and executing in the 0x4000 RAM window while EktaSoft 3.43m #0037 "
-                "remains a compatibility boundary."
+                "cartridge and executing in the 0x4000 RAM window, but that window "
+                "only receives zero-byte writes; EktaSoft 3.43m #0037 remains a "
+                "compatibility boundary."
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."

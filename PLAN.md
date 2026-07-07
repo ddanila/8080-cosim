@@ -170,8 +170,9 @@ debugging session saved on real hardware.
    guarded in `sync/basic_launch_probe.py` and documented in
    `docs/basic-launch-probe.md`: Monitor 3.3 reads `jbasic11.bin` from the
    cartridge overlay and then executes in the `0x4000..0xBFFF` RAM window, while
-   the EktaSoft 3.43m #0037 boot ROM still does not select the cartridge overlay
-   in the same bounded run. The jmon33
+   that RAM window receives only zero-byte writes and remains zero-filled; the
+   EktaSoft 3.43m #0037 boot ROM still does not select the cartridge overlay in
+   the same bounded run. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
