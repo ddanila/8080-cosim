@@ -1,0 +1,181 @@
+// Try to resume the LVS-checked juku_top from the cosim EKDOS/TDD checkpoint.
+//
+// This is intentionally narrower than juku_top_tb: it skips the slow banner draw by
+// loading checkpoint RAM and visible latches, then seeds the vm80a core at an M1
+// fetch boundary. The pass condition is the first post-checkpoint ROMBIOS I/O
+// window, not the final EKDOS prompt.
+`timescale 1ns/100ps
+`default_nettype none
+
+module juku_top_checkpoint_resume_tb();
+  reg osc = 0;
+  integer i;
+  reg [1023:0] ram_file;
+  reg [7:0] ram [0:65535];
+  integer mcyc = 0, vram_writes = 30000, max_mcyc = 200000, timecap = 200000000;
+  integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
+  reg sq = 0;
+
+  juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
+               .kbd_en(1'b1), .kbd_pressed(1'b0), .kbd_shift(1'b0),
+               .kbd_kcol(4'd0), .kbd_kbit(3'd0), .frame_tick(1'b0));
+
+  initial forever begin
+    force dut.phi1 = 1'b1; force dut.phi2 = 1'b0; osc = 0; #10; osc = 1; #10;
+    force dut.phi1 = 1'b0; force dut.phi2 = 1'b1; osc = 0; #10; osc = 1; #10;
+    force dut.phi2 = 1'b0;
+  end
+
+  task write_dram_byte(input integer addr, input [7:0] value); begin
+    dut.U_D84.mem[addr] = value[0];
+    dut.U_D85.mem[addr] = value[1];
+    dut.U_D86.mem[addr] = value[2];
+    dut.U_D87.mem[addr] = value[3];
+    dut.U_D88.mem[addr] = value[4];
+    dut.U_D89.mem[addr] = value[5];
+    dut.U_D90.mem[addr] = value[6];
+    dut.U_D91.mem[addr] = value[7];
+  end endtask
+
+  task load_checkpoint_state; begin
+    dut.U_CPU.u.core.r16_pc = 16'h0484;
+    dut.U_CPU.u.core.r16_sp = 16'hD44C;
+    dut.U_CPU.u.core.r16_bc = 16'hD7E7;
+    dut.U_CPU.u.core.r16_de = 16'hFD2F;
+    dut.U_CPU.u.core.r16_hl = 16'h00A1;
+    dut.U_CPU.u.core.r16_wz = 16'h0000;
+    dut.U_CPU.u.core.acc = 8'hA1;
+    dut.U_CPU.u.core.psw_s = 1'b1;
+    dut.U_CPU.u.core.psw_z = 1'b0;
+    dut.U_CPU.u.core.psw_ac = 1'b0;
+    dut.U_CPU.u.core.psw_p = 1'b0;
+    dut.U_CPU.u.core.psw_c = 1'b0;
+    dut.U_CPU.u.core.tmp_c = 1'b0;
+    dut.U_CPU.u.core.inte = 1'b0;
+    dut.U_CPU.u.core.inta = 1'b0;
+    dut.U_CPU.u.core.intr = 1'b0;
+    dut.U_CPU.u.core.minta = 1'b0;
+    dut.U_CPU.u.core.mstart = 1'b0;
+    dut.U_CPU.u.core.i = 8'h00;
+    dut.U_CPU.u.core.di = 8'h00;
+    dut.U_CPU.u.core.db = 8'h00;
+    dut.U_CPU.u.core.a = 16'h0484;
+    dut.U_CPU.u.core.abufena = 1'b1;
+    dut.U_CPU.u.core.db_ena = 1'b0;
+    dut.U_CPU.u.core.db_stb = 1'b0;
+    dut.U_CPU.u.core.dbin_pin = 1'b0;
+    dut.U_CPU.u.core.dbin_ext = 1'b0;
+    dut.U_CPU.u.core.wr_n = 1'b1;
+    dut.U_CPU.u.core.sync = 1'b0;
+    dut.U_CPU.u.core.reset = 1'b0;
+    dut.U_CPU.u.core.t404 = 1'b0;
+
+    // Seed a clean end-of-machine state so the next clocks start an M1 fetch at PC.
+    dut.U_CPU.u.core.t1 = 1'b0; dut.U_CPU.u.core.t2 = 1'b0; dut.U_CPU.u.core.tw = 1'b0;
+    dut.U_CPU.u.core.t3 = 1'b0; dut.U_CPU.u.core.t4 = 1'b0; dut.U_CPU.u.core.t5 = 1'b0;
+    dut.U_CPU.u.core.t1f1 = 1'b0; dut.U_CPU.u.core.t2f1 = 1'b0; dut.U_CPU.u.core.twf1 = 1'b0;
+    dut.U_CPU.u.core.t3f1 = 1'b0; dut.U_CPU.u.core.t4f1 = 1'b0; dut.U_CPU.u.core.t5f1 = 1'b0;
+    dut.U_CPU.u.core.m1 = 1'b1; dut.U_CPU.u.core.m2 = 1'b0; dut.U_CPU.u.core.m3 = 1'b0;
+    dut.U_CPU.u.core.m4 = 1'b0; dut.U_CPU.u.core.m5 = 1'b0;
+    dut.U_CPU.u.core.m1f1 = 1'b1; dut.U_CPU.u.core.m2f1 = 1'b0; dut.U_CPU.u.core.m3f1 = 1'b0;
+    dut.U_CPU.u.core.m4f1 = 1'b0; dut.U_CPU.u.core.m5f1 = 1'b0;
+    dut.U_CPU.u.core.eom = 1'b1;
+    dut.U_CPU.u.core.t789 = 1'b0;
+    dut.U_CPU.u.core.t887 = 1'b0;
+    dut.U_CPU.u.core.t953 = 1'b0;
+    dut.U_CPU.u.core.t976 = 1'b0;
+    dut.U_CPU.u.core.t980 = 1'b0;
+    dut.U_CPU.u.core.hold = 1'b0;
+    dut.U_CPU.u.core.hlda_pin = 1'b0;
+
+    dut.U_PPI0.regs[0] = 8'h0F;
+    dut.U_PPI0.regs[2] = 8'h80;
+    dut.U_PPI0.portc = 8'h80;
+    dut.U_PPI0.kbd_col_sel = 4'hF;
+
+    dut.U_INTR.icw1 = 8'h00;
+    dut.U_INTR.icw2 = 8'h00;
+    dut.U_INTR.mask = 8'hFF;
+    dut.U_INTR.expect_icw2 = 1'b0;
+    dut.U_INTR.pending = 1'b0;
+    dut.U_INTR.inta_idx = 0;
+
+    dut.U_FDC.status = 8'h80;
+    dut.U_FDC.track = 8'h00;
+    dut.U_FDC.sector = 8'h01;
+    dut.U_FDC.data = 8'h00;
+    dut.U_FDC.command = 8'h00;
+    dut.U_FDC.buffer_pos = 0;
+    dut.U_FDC.buffer_len = 0;
+  end endtask
+
+  always @(posedge osc) begin
+    if (dut.sync && !sq) mcyc <= mcyc + 1;
+    sq <= dut.sync;
+    if (mcyc >= max_mcyc) begin
+      $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d",
+               dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen);
+      $finish;
+    end
+  end
+
+  always @(negedge dut.memw_n) if (~dut.ram_sel_n && dut.BA >= 16'hD800) begin
+    vram_writes = vram_writes + 1;
+    if ((vram_writes % 100) == 0)
+      $display("[RESUME-VRAM] writes=%0d mcyc=%0d pc=0x%04h", vram_writes, mcyc, dut.U_CPU.u.core.r16_pc);
+  end
+
+  always @(negedge dut.iowr_n) begin
+    #1;
+    raw_ios = raw_ios + 1;
+    if (!dut.cs_pic_n) begin
+      $display("[RESUME-PIC] OUT port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
+               dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      if (dut.BA[0] == 1'b0 && dut.DB == 8'hD6) pic_seen = 1;
+    end
+  end
+
+  always @(negedge dut.iord_n) begin
+    #1;
+    raw_ios = raw_ios + 1;
+    if (!dut.cs_ppi0_n && dut.BA[1:0] == 2'd1) begin
+      $display("[RESUME-KBD] IN port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
+               dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      if (dut.DB == 8'hCF) kbd_seen = 1;
+    end
+    if (pic_seen && kbd_seen) begin
+      $display("JUKU-TOP-CHECKPOINT-RESUME: PASS pc=0x%04h mcyc=%0d vram=%0d ios=%0d",
+               dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios);
+      $finish;
+    end
+  end
+
+  initial begin
+    if (!$value$plusargs("checkpoint_ram=%s", ram_file)) begin
+      $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL missing +checkpoint_ram=<hex>");
+      $finish;
+    end
+    if ($value$plusargs("max_mcyc=%d", max_mcyc)) ;
+    if ($value$plusargs("timecap=%d", timecap)) ;
+
+    force dut.ready = 1'b1;
+    force dut.reset_sys = 1'b1;
+    #2000;
+    force dut.reset_sys = 1'b0;
+    #400;
+
+    $readmemh(ram_file, ram);
+    for (i = 0; i < 65536; i = i + 1) write_dram_byte(i, ram[i]);
+    load_checkpoint_state();
+    $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h", dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp);
+  end
+
+  initial begin
+    #(timecap);
+    $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL timecap pc=0x%04h mcyc=%0d vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d",
+             dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios, pic_seen, kbd_seen);
+    $finish;
+  end
+endmodule
+
+`default_nettype wire

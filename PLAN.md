@@ -190,18 +190,22 @@ debugging session saved on real hardware.
    CPU-address stops for narrowing that boundary. `docs/juku-top-30520-reachability.md`
    records that a 360-second exact-PC stop at `0x02B9` and a 900-second
    30,520-write comparison still do not produce an HDL post-banner dump, so the
-   next automation needs checkpoint/fast-forward or a narrower post-banner
-   harness rather than a larger wall timeout. `docs/ekdos-checkpoint-reference.md` now pins the
+   automation path moved to checkpoint/fast-forward rather than a larger wall
+   timeout. `docs/ekdos-checkpoint-reference.md` now pins the
    full cosim machine checkpoint at that 30,000-write boundary: CPU
    registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
-   framebuffer hash. This is the input evidence for the next checkpoint/resume
-   HDL diagnostic, not yet an HDL resume proof.
+   framebuffer hash. This is the input evidence for the checkpoint/resume HDL
+   diagnostics.
    `docs/juku-top-checkpoint-load.md` now proves the checkpoint's 64 KiB RAM
    image can be loaded into the LVS-checked `juku_top` D84..D91 bit-sliced
    DRAM planes and dumped back with matching full-RAM and framebuffer hashes;
    it also injects and verifies the checkpoint CPU architectural registers plus
-   key PPI/PIC/FDC latches. CPU microcycle-state initialization remains the
-   resume boundary. A first narrow harness,
+   key PPI/PIC/FDC latches. `docs/juku-top-checkpoint-resume.md` now proves a
+   seeded M1-fetch resume from that checkpoint reaches the pinned first
+   post-checkpoint PIC write (`OUT 0x00 = 0xD6` at PC `0x02B9`) and no-key
+   keyboard read (`IN 0x05 = 0xCF` at PC `0x1213`) through decoded `juku_top`
+   ports. The open HDL target has moved forward from first-PIC reachability to
+   the later keyboard/PIC/FDC/EKDOS path. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
    shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact

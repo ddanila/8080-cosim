@@ -65,6 +65,10 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   `juku_top`: D84..D91 bit-sliced DRAM dumps back with matching 64 KiB RAM and
   VRAM hashes, and the checkpoint CPU architectural registers plus key
   PPI/PIC/FDC latches are injected and verified.
+- `sync/juku_top_checkpoint_resume_probe.py` seeds the vm80a core at a clean
+  M1 fetch boundary from that loaded checkpoint and proves the LVS-checked
+  top-level CPU path reaches the pinned post-checkpoint PIC `0xD6` write and
+  no-key keyboard `0xCF` read through decoded ports.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
@@ -84,6 +88,7 @@ sync/juku_top_periph_bus_check.sh
 sync/juku_top_30000_state_probe.sh
 sync/ekdos_checkpoint_reference.py
 sync/juku_top_checkpoint_load_check.py
+sync/juku_top_checkpoint_resume_probe.py
 sync/juku_top_fdc_probe.sh
 ```
 
@@ -104,6 +109,7 @@ sync/juku_top_fdc_probe.sh
 | `juku_top` and cosim PC, VRAM, and visible CPU/PPI/PIC/FDC state match at 30,000 writes before the first-PIC window | PASS |
 | cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
 | checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
+| checkpoint-resumed `juku_top` reaches first post-checkpoint PIC write and no-key keyboard read | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -133,12 +139,14 @@ sync/juku_top_fdc_probe.sh
   speed/checkpointing past the 30,520-write first-PIC point, not a proven
   pre-PIC functional divergence.
 - `docs/ekdos-checkpoint-reference.md` captures the corresponding full cosim
-  RAM/CPU/peripheral checkpoint. The next automation step is loading that state
-  into a narrow HDL post-banner diagnostic; the checkpoint itself is not an HDL
-  resume proof.
+  RAM/CPU/peripheral checkpoint.
 - `docs/juku-top-checkpoint-load.md` proves that checkpoint RAM and visible
-  CPU/PPI/PIC/FDC latches can be injected into the top-level model. CPU
-  microcycle-state initialization remains the resume boundary.
+  CPU/PPI/PIC/FDC latches can be injected into the top-level model.
+- `docs/juku-top-checkpoint-resume.md` proves a seeded M1-fetch resume from
+  that checkpoint reaches the first post-checkpoint PIC programming write and
+  no-key keyboard read through the decoded `juku_top` bus. This moves the open
+  resume boundary forward to the later keyboard/PIC/FDC/EKDOS path rather than
+  the 30,520-write first-PIC window.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
