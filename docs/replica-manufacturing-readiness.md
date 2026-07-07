@@ -67,3 +67,5 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 - Quoted fabrication options and price.
 - Vendor order number.
 - The final upload ZIP checksum above.
+- Confirmation that `docs/replica-bringup-verification-points.md` was reviewed
+  and no listed residual source-risk net blocks fabrication.

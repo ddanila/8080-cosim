@@ -70,7 +70,7 @@ kicad/check_replica_manufacturing_ready.sh
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 2208 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2338 | PASS |
 
 ## Order-Time Checks
 

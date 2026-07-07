@@ -240,6 +240,8 @@ def build_report(fab_dir):
         "- Quoted fabrication options and price.",
         "- Vendor order number.",
         "- The final upload ZIP checksum above.",
+        "- Confirmation that `docs/replica-bringup-verification-points.md` was reviewed",
+        "  and no listed residual source-risk net blocks fabrication.",
     ])
 
     if failures:

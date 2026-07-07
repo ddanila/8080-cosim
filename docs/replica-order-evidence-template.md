@@ -57,6 +57,7 @@ Expected result: `replica manufacturing readiness: READY TO UPLOAD`.
 - [ ] Vendor preview agrees with `docs/replica-package-geometry-readiness.md`.
 - [ ] Top/bottom orientation agrees with `fab/gerbers/review/tracespace/`.
 - [ ] Accepted DRC classes in `docs/replica-fab-drc-disposition.md` remain acceptable in the vendor preview.
+- [ ] Reviewed `docs/replica-bringup-verification-points.md`; none of the listed residual source-risk nets block PCB fabrication.
 - [ ] Vendor did not enable impedance control or change the 2-layer stackup.
 - [ ] Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.
 - [ ] Upload ZIP SHA256 above is saved with the order.
