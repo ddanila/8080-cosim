@@ -187,7 +187,10 @@ debugging session saved on real hardware.
    keyboard/interrupt window; `JUKU_TOP_FDC_STOPPC=HEX` now provides exact
    CPU-address stops for narrowing that boundary, but the next automation still
    needs checkpoint/fast-forward or a narrower post-banner harness rather than
-   a larger wall timeout. The fast cosim timing
+   a larger wall timeout. A first narrow harness,
+   `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
+   PIC/PPI/FDC path directly, including a vendored `JUKU1.CPM` sector byte,
+   without waiting for ROMBIOS drawing. The fast cosim timing
    reference in `docs/ekdos-timing-reference.md` anchors that window: first
    frame IRQ at 33,812 VRAM writes and first FDC command at 63,085 VRAM writes
    on the vendored `JUKU1.CPM` `TDD` path.

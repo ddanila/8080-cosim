@@ -50,6 +50,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
   interrupts, fixed `TDD` keyboard stimulus, traces VRAM progress and PIC setup,
   and can stop on decoded PIC/PPI/WD1793 I/O.
+- `sync/juku_top_periph_bus_check.sh` — fast direct-bus `juku_top` guard for
+  the post-banner peripheral boundary; drives decoded PIC/PPI/FDC ports and
+  verifies a vendored `JUKU1.CPM` sector byte through the top-level bus.
 - `sync/juku_top_io_decode_probe.sh` — fast top-level I/O decode diagnostic; it
   stops after the first 20 raw I/O cycles and verifies delayed trace sampling
   sees settled D7/D9 peripheral selects before the long FDC probe reaches the

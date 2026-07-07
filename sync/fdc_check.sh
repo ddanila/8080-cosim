@@ -21,6 +21,9 @@ if ! printf '%s\n' "$disk_out" | grep -q "FDC-1793: PASS"; then
   exit 1
 fi
 
+echo "== juku_top decoded peripheral bus check =="
+sync/juku_top_periph_bus_check.sh
+
 cat > docs/fdc-readiness.md <<'EOF'
 # FDC readiness
 
@@ -50,6 +53,9 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
+- `sync/juku_top_periph_bus_check.sh` drives `juku_top`'s buffered CPU bus
+  directly and proves decoded PIC/PPI/FDC access, including a media-backed
+  `JUKU1.CPM` sector byte, without waiting for the slow ROMBIOS draw loop.
 
 ## Command
 
@@ -57,6 +63,7 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 sync/fdc_check.sh
 sync/juku_top_io_decode_probe.sh
 sync/juku_top_pc_stop_probe.sh
+sync/juku_top_periph_bus_check.sh
 sync/juku_top_30000_state_probe.sh
 sync/juku_top_fdc_probe.sh
 ```
@@ -73,6 +80,7 @@ sync/juku_top_fdc_probe.sh
 | DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
 | `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |
+| `juku_top` decoded PIC/PPI/FDC direct-bus path reads vendored `JUKU1.CPM` data | PASS |
 | `juku_top` and cosim PC plus VRAM match at 30,000 writes before the first-PIC window | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
@@ -89,6 +97,10 @@ sync/juku_top_fdc_probe.sh
   check: raw I/O is visible, the first mirrored PPI1 write decodes, and the
   early ROMBIOS sample counts PPI0 writes after the trace samples the decoder
   one timestep after the I/O edge.
+- `docs/juku-top-periph-bus-check.md` captures the direct-bus top-level
+  peripheral proof: PIC register readback, PPI0 motor-on latch, FDC seek/status,
+  and the first `JUKU1.CPM` track 0 sector 2 byte all pass through decoded
+  `juku_top` ports.
 - `docs/juku-top-30000-state-probe.md` captures the slow pre-PIC comparison:
   cosim and `juku_top` both stop at PC `0x0484` after 30,000 VRAM writes, and
   their framebuffer dumps have the same SHA256
