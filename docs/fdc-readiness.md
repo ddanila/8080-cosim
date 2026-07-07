@@ -42,6 +42,11 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   resume probe: it seeds the vm80a core at a clean M1 fetch boundary from that
   loaded checkpoint and, when run locally, reaches the pinned post-checkpoint
   PIC `0xD6` write and no-key keyboard `0xCF` read through decoded ports.
+- `sync/juku_top_checkpoint_fdc_probe.py` extends that non-CI checkpointed
+  diagnostic with frame IRQs and fixed `TDD` keyboard stimulus. The current
+  bounded run reaches the PIC/no-key window and frame IRQ activity, then stalls
+  around the frame-handler draw loop before the real 42,000-write key window
+  and decoded FDC I/O.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
@@ -62,6 +67,7 @@ sync/juku_top_30000_state_probe.sh
 sync/ekdos_checkpoint_reference.py
 sync/juku_top_checkpoint_load_check.py
 sync/juku_top_checkpoint_resume_probe.py
+sync/juku_top_checkpoint_fdc_probe.py
 sync/juku_top_fdc_probe.sh
 ```
 
@@ -83,6 +89,7 @@ sync/juku_top_fdc_probe.sh
 | cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
 | checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
 | focused checkpoint-resumed `juku_top` probe reaches first post-checkpoint PIC write and no-key keyboard read | PASS (non-CI) |
+| checkpoint-resumed `juku_top` with frame IRQs progresses past PIC/no-key into the frame-handler draw loop | PASS (non-CI boundary) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -121,6 +128,10 @@ sync/juku_top_fdc_probe.sh
   bus. This is not yet a mandatory CI invariant; the open hardening task is
   making the seeded vm80a microstate portable across runner schedules before
   extending it toward FDC I/O and EKDOS `A>`.
+- `docs/juku-top-checkpoint-fdc-probe.md` records the next checkpointed
+  boundary: with frame IRQs and fixed `TDD` stimulus enabled, the run reaches
+  the PIC/no-key window and frame IRQ activity, then stalls around PC `0x0e23`
+  in the frame-handler draw loop before the real key window and decoded FDC I/O.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

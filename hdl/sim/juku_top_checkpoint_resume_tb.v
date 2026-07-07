@@ -15,13 +15,21 @@ module juku_top_checkpoint_resume_tb();
   integer mcyc = 0, vram_writes = 30000, max_mcyc = 200000, timecap = 200000000;
   integer trace_resume = 0;
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
+  integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0;
+  integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0;
+  integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
+  integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
+  reg frame_tick = 1'b0, intr_q = 1'b0, inta_q = 1'b1;
+  reg kbd_en = 1'b1, kbd_pressed = 1'b0, kbd_shift = 1'b0, kbd_was_pressed = 1'b0;
+  reg [3:0] kbd_kcol = 4'd0;
+  reg [2:0] kbd_kbit = 3'd0;
   reg clk_run = 1'b1;
   reg resume_started = 1'b0;
   reg sq = 0;
 
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
-               .kbd_en(1'b1), .kbd_pressed(1'b0), .kbd_shift(1'b0),
-               .kbd_kcol(4'd0), .kbd_kbit(3'd0), .frame_tick(1'b0));
+               .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
+               .kbd_kcol(kbd_kcol), .kbd_kbit(kbd_kbit), .frame_tick(frame_tick));
 
   initial forever begin
     if (clk_run) begin
@@ -116,6 +124,12 @@ module juku_top_checkpoint_resume_tb();
     dut.U_FDC.buffer_len = 0;
   end endtask
 
+  task set_ekdos_key(input integer idx); begin
+    kbd_shift <= 1'b1;
+    if (idx == 0) begin kbd_kcol <= 4; kbd_kbit <= 3; end   // T
+    else begin kbd_kcol <= 6; kbd_kbit <= 5; end             // D
+  end endtask
+
   always @(posedge osc) begin
     if (resume_started && dut.sync && !sq) begin
       if (trace_resume > 0) begin
@@ -147,9 +161,53 @@ module juku_top_checkpoint_resume_tb();
     end
     sq <= dut.sync;
     if (resume_started && mcyc >= max_mcyc) begin
-      $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d",
-               dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen);
+      $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d",
+               dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen, fdc_ios);
       $finish;
+    end
+
+    if (resume_started) begin
+      if (ekdoskeys != 0) begin
+        if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) begin
+          key_t <= 0;
+          ekdos_key <= 0;
+          set_ekdos_key(0);
+        end else if (key_t >= 0 && ekdos_key < 3) begin
+          key_t <= key_t + 1;
+          if (key_t >= khold + kgap - 1) begin
+            ekdos_key <= ekdos_key + 1;
+            key_t <= 0;
+            set_ekdos_key(ekdos_key + 1);
+          end
+        end
+        kbd_pressed <= (key_t >= 0 && key_t < khold && ekdos_key < 3);
+      end
+      if (tracekbd && kbd_pressed && !kbd_was_pressed)
+        $display("[RESUME-KBD-STIM] press key=%0d col=%0d bit=%0d shift=%0d mcyc=%0d vram=%0d",
+                 ekdos_key, kbd_kcol, kbd_kbit, kbd_shift, mcyc, vram_writes);
+      if (tracekbd && !kbd_pressed && kbd_was_pressed)
+        $display("[RESUME-KBD-STIM] release key=%0d mcyc=%0d vram=%0d", ekdos_key, mcyc, vram_writes);
+      kbd_was_pressed <= kbd_pressed;
+
+      osc_n <= osc_n + 1;
+      frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq - 1));
+      if (frame_tick) begin
+        frame_ticks = frame_ticks + 1;
+        if (traceirq > 1) $display("[RESUME-IRQ] frame_tick count=%0d mcyc=%0d vram=%0d",
+                                   frame_ticks, mcyc, vram_writes);
+      end
+      if (dut.intr && !intr_q) begin
+        intr_edges = intr_edges + 1;
+        if (traceirq) $display("[RESUME-IRQ] intr rise count=%0d mcyc=%0d vram=%0d",
+                               intr_edges, mcyc, vram_writes);
+      end
+      if (!dut.inta_n && inta_q) begin
+        inta_edges = inta_edges + 1;
+        if (traceirq) $display("[RESUME-IRQ] inta fall count=%0d mcyc=%0d vram=%0d",
+                               inta_edges, mcyc, vram_writes);
+      end
+      intr_q <= dut.intr;
+      inta_q <= dut.inta_n;
     end
   end
 
@@ -167,6 +225,17 @@ module juku_top_checkpoint_resume_tb();
                dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
       if (dut.BA[0] == 1'b0 && dut.DB == 8'hD6) pic_seen = 1;
     end
+    if (!dut.cs_fdc_n) begin
+      fdc_ios = fdc_ios + 1;
+      fdc_writes = fdc_writes + 1;
+      if (tracefdc) $display("[RESUME-FDC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                             dut.BA[7:0], dut.BA[1:0], dut.DB, mcyc, vram_writes, fdc_ios);
+      if (stopfdc != 0 && fdc_ios >= stopfdc) begin
+        $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+                 fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes);
+        $finish;
+      end
+    end
   end
 
   always @(negedge dut.iord_n) begin
@@ -177,7 +246,18 @@ module juku_top_checkpoint_resume_tb();
                dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
       if (dut.DB == 8'hCF) kbd_seen = 1;
     end
-    if (pic_seen && kbd_seen) begin
+    if (!dut.cs_fdc_n) begin
+      fdc_ios = fdc_ios + 1;
+      fdc_reads = fdc_reads + 1;
+      if (tracefdc) $display("[RESUME-FDC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                             dut.BA[7:0], dut.BA[1:0], dut.DB, mcyc, vram_writes, fdc_ios);
+      if (stopfdc != 0 && fdc_ios >= stopfdc) begin
+        $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+                 fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes);
+        $finish;
+      end
+    end
+    if (pic_seen && kbd_seen && stopfdc == 0) begin
       $display("JUKU-TOP-CHECKPOINT-RESUME: PASS pc=0x%04h mcyc=%0d vram=%0d ios=%0d",
                dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios);
       $finish;
@@ -192,6 +272,15 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("max_mcyc=%d", max_mcyc)) ;
     if ($value$plusargs("timecap=%d", timecap)) ;
     if ($value$plusargs("trace_resume=%d", trace_resume)) ;
+    if ($value$plusargs("frameirq=%d", frameirq)) ;
+    if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;
+    if ($value$plusargs("keyat=%d", keyat)) ;
+    if ($value$plusargs("khold=%d", khold)) ;
+    if ($value$plusargs("kgap=%d", kgap)) ;
+    if ($value$plusargs("traceirq=%d", traceirq)) ;
+    if ($value$plusargs("tracekbd=%d", tracekbd)) ;
+    if ($value$plusargs("tracefdc=%d", tracefdc)) ;
+    if ($value$plusargs("stopfdc=%d", stopfdc)) ;
 
     force dut.ready = 1'b1;
     force dut.reset_sys = 1'b1;
@@ -207,6 +296,7 @@ module juku_top_checkpoint_resume_tb();
     $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h", dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp);
     mcyc = 0;
     sq = 0;
+    osc_n = 0;
     resume_started = 1'b1;
     #100;
     clk_run = 1'b1;
@@ -214,8 +304,9 @@ module juku_top_checkpoint_resume_tb();
 
   initial begin
     #(timecap);
-    $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL timecap pc=0x%04h mcyc=%0d vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d",
-             dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios, pic_seen, kbd_seen);
+    $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL timecap pc=0x%04h mcyc=%0d vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
+             dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios, pic_seen, kbd_seen,
+             fdc_ios, frame_ticks, intr_edges, inta_edges);
     $finish;
   end
 endmodule
