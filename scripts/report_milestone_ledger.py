@@ -108,6 +108,10 @@ def milestone_rows():
         "spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md",
         "Status: **READY FOR VENDOR PREVIEW**",
     )
+    vjuga_order_evidence_template = marker(
+        "spinoffs/minimal-vga/docs/rev-a-bare-pcb-order-evidence-template.md",
+        "Status: **READY**",
+    )
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
@@ -191,8 +195,14 @@ def milestone_rows():
             "evidence": (
                 "`fab/minimal-vga/order-readiness.md` is BARE PCB READY and "
                 "`spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md` records the "
-                "PCB-only first-sample upload policy; vendor preview and order "
-                "evidence are still external."
+                "PCB-only first-sample upload policy"
+                + (
+                    "; `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order-evidence-template.md` "
+                    "defines the vendor-preview/order record"
+                    if vjuga_order_evidence_template
+                    else ""
+                )
+                + "; vendor preview and order evidence are still external."
                 if vjuga_bare_pcb_ready
                 else
                 "`fab/minimal-vga/order-readiness.md` is a coherent draft with "

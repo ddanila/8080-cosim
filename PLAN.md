@@ -264,8 +264,10 @@ before any Soviet NOS is at risk.
    `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md`: upload only
    `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`, select PCB
    fabrication only / no assembly, verify the vendor preview, and save order
-   evidence. The BOM/CPL files are retained as references, not uploaded for the
-   bare-PCB order.
+   evidence using
+   `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order-evidence-template.md`. The
+   BOM/CPL files are retained as references, not uploaded for the bare-PCB
+   order.
 2. **Place the JLCPCB order** (bare PCB only, no factory assembly/components).
 3. Bring-up ladder: power/LEDs → clock → ROM fetch (logic analyzer on M1) → DRAM
    test → keyboard scan → VGA header output. Each rung has a twin-side reference.

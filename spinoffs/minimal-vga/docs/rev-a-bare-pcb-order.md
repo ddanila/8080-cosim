@@ -28,6 +28,9 @@ The generated `fab/minimal-vga/order-upload-runbook.md` is the order-time
 runbook. It marks the retained BOM/CPL files as reference-only for a later
 assembled-board path.
 
+Use `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order-evidence-template.md` as the
+private order-record checklist when the vendor preview/order is placed.
+
 ## Vendor UI Checks
 
 - Select PCB fabrication only / no assembly.
