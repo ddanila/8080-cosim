@@ -22,7 +22,23 @@ schematic-rooted model that is simultaneously the **PCB netlist**, the **LVS-che
 structure**, and a **runnable digital twin** (emulation running *on the digital
 schematic*), with `cosim/` + MAME as validation oracles.
 
-## Where we are (2026-06)
+## Where we are (2026-07)
+- **Replica package is repo-ready for vendor upload:** `docs/replica-manufacturing-readiness.md`
+  is **READY TO UPLOAD** and `fab/gerbers/order-readiness.md` is **ORDER READY**.
+  The final upload ZIP is `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
+  with SHA256 `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211`.
+  Remaining M7 proof is external vendor preview/order evidence.
+- **Residual fabrication/bring-up risks are now explicit:** `docs/replica-bringup-verification-points.md`
+  generates 41 source-risk verification points from `kicad/juku.board.json` and is
+  required by the manufacturing readiness gate.
+- **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim with external media;
+  HDL WD1793 synthetic-sector behavior is guarded; jmon33 first-write HDL coverage
+  passes while the stronger cursor boundary remains blank at the bounded 300-write
+  diagnostic; BASIC cartridge reads are proven but the Monitor 3.3 RAM execution
+  window remains zero-filled.
+
+Historical merge notes:
+
 - **Phase A COMPLETE** — netlist hardened to **82/99 scan-grounded + 9 `prom`**
   (off-schematic decode tables = emulator-recovered maps) + 8 intricate-timing/boundary
   nets. 52 chips, **LVS green, CI-guarded**.
@@ -223,9 +239,9 @@ The full Juku ROM set is vendored in `roms/` (SHA-1s match MAME; abandonware —
   Slower (two DUTs) → thorough/nightly, not every commit. `WINDOW=<ns>` bounds the run.
 
 ## Toolchain
-`kicad-cli` at `/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli`;
-`yosys` + `iverilog` via Homebrew. LVS pipeline: `sync/check.sh` (KiCad-free `--board`
-fallback path used in CI).
+Main-board fabrication gates use KiCad nightly CLI at `/usr/bin/kicad-cli-nightly`
+(`10.99.0` in the current reports). `yosys` + `iverilog` run the LVS/HDL guards.
+LVS pipeline: `sync/check.sh` (KiCad-free `--board` fallback path used in CI).
 
 ## Reference archive + physical ground-truth (2026-06)
 `~/fun/juku3000` (fork of **infoaed/juku3000**) is the definitive Juku archive: full ES101
@@ -254,16 +270,15 @@ the 2 РЕ3, and misc gates. **Converging to 76 is now purely additive** (trace 
 from the archive schematic + placement drawing → add with scan provenance) — the next
 structural sub-passes, which also produce the full Phase-B BOM.
 
-## PCB track status (2026-07-03) — Phase B substantially complete
+## PCB track status (2026-07) — Phase B manufacturing package ready
 The physical-board recreation caught up with (and fed back into) the netlist track:
-- **Board fully placed and routed**: 162 real footprints, **0 placement outlines left** — every
-  BOM IC + connectors (X1 СНП59-96 / X2 / X3 / X8 / X9) + passives stage 1 + Z1 РК-171 crystal +
-  CT1 trimmer. 2-layer (authenticity call), 310×266 mm, 0.25 mm clearance, **1151/1151 connections,
-  0 unconnected, 0 electrical DRC**; power nets widened to ≤1.0 mm (geometric method,
-  `kicad/widen_power_v2.py`). The routed power envelope is now guarded by
-  `docs/replica-power-trace-readiness.md`: 704 power segments, 377 widened beyond
-  the 0.20 mm baseline, no segment below baseline or above the 1.00 mm clamp.
-  Gerbers + drill export clean (`kicad/export_fab.sh`).
+- **Board fully placed and routed**: v76 has 237 footprints, a 2-layer authentic
+  310×266 mm outline, **1548/1548 routed connections**, 0 unconnected items, and
+  0 clearance/short blockers in the order-readiness gate. Power nets are widened
+  to the guarded 0.20–1.00 mm envelope (`docs/replica-power-trace-readiness.md`:
+  704 power segments, 377 widened). The final manufacturing gate is
+  `kicad/check_replica_manufacturing_ready.sh`; it regenerates the upload ZIP and
+  currently reports **READY TO UPLOAD**.
 
 - **Placement is photo-verified** against the owner's board-#2 photos (22, git-lfs), with two
   systematic calibration bugs found and fixed along the way (photo-1 y-scale 9.50 vs 9.87 px/mm;
@@ -287,6 +302,8 @@ The plan-level M1-M11 ledger is now generated into
 tracked evidence marks the replica main-board package as
 **REPO READY / EXTERNAL PENDING** for M7: `docs/replica-manufacturing-readiness.md`
 is **READY TO UPLOAD**, `fab/gerbers/order-readiness.md` is **ORDER READY**, and
-the remaining M7 proof is external vendor upload/order evidence. The same audit
-keeps PROM truth, exact EKDOS media, VJUGA ordering/bring-up, parts receipt,
-assembly, and Tier 1-3 hardware validation open until tracked evidence exists.
+`docs/replica-bringup-verification-points.md` tracks the residual source-risk nets
+for staged bring-up. The remaining M7 proof is external vendor upload/order
+evidence. The same audit keeps PROM truth, exact EKDOS media, VJUGA
+ordering/bring-up, parts receipt, assembly, and Tier 1-3 hardware validation open
+until tracked evidence exists.
