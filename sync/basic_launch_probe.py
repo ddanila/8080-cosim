@@ -409,6 +409,12 @@ def main() -> int:
                 f"sum `{ram_probe['byte_sum']}`. The captured framebuffer has "
                 f"`{result['visible_pixels']}` visible pixels."
             )
+            if result["case"].name == "jmon33" and ram_probe["first_write_pc"] == 0xF008:
+                lines.append(
+                    "  The write PC is sampled after opcode fetch; in the high-ROM "
+                    "`jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` "
+                    "at `0xF007` in the local copy/clear loop."
+                )
         else:
             lines.append(
                 f"- `{result['case'].name}` does not select the cartridge overlay in this run."

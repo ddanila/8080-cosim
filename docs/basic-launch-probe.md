@@ -32,6 +32,7 @@ Environment overrides:
 ## Disposition
 
 - `jmon33` reads the BASIC cartridge and executes in `0x4000..0xBFFF`; `17881962` of those PC cycles are in RAM/ROM mode 1 and `0` are in cartridge overlay mode 2. `17881962` PC cycles fetch a `0x00` opcode there. The RAM window saw `1636` accepted writes, `0` of them nonzero, from PC range `0xF008` to `0xF008` over addresses `0x8AD2`..`0x8AD2`, ending with `0` nonzero bytes and byte sum `0`. The captured framebuffer has `0` visible pixels.
+  The write PC is sampled after opcode fetch; in the high-ROM `jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` at `0xF007` in the local copy/clear loop.
 - `ekta37` does not select the cartridge overlay in this run.
 - The remaining BASIC work is a user-visible BASIC prompt oracle and HDL-side
   coverage of this stronger Monitor 3.3 path.
