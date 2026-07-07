@@ -1,4 +1,4 @@
-name: CI (LVS + boot regression)
+name: CI (status + LVS + boot regression)
 
 on:
   push:

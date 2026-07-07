@@ -228,7 +228,10 @@ The full Juku ROM set is vendored in `roms/` (SHA-1s match MAME; abandonware —
   target for the interactive-emulation track** — booting it to a live prompt requires
   modeling the frame interrupt (8259 → INT/INTA → RST) + keyboard input via the 8255.
 
-## CI guards (three layers, increasing strength)
+## CI guards
+- **Status audit** (`scripts/report_milestone_ledger.py`) — regenerated milestone
+  evidence stays in sync with tracked repo state, and readiness/audit scripts
+  compile in a clean checkout.
 - **LVS** (`sync/check.sh`) — KiCad↔HDL **connectivity** stays in sync (does not check values).
 - **Boot regression** (`sync/boot_check.sh`) — HDL sim levels (juku_sim/chips/**top**) boot the real
   ekta37 **byte-identical to cosim**, bounded to 6000 video writes (~fast). Samples only the framebuffer
