@@ -54,13 +54,14 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/jmon33_hdl_probe.sh` — HDL guard proving `juku_top` runs Monitor 3.3
   to the first video-memory write with frame interrupts enabled.
 - `sync/jmon33_hdl_cursor_probe.py` — bounded HDL diagnostic for the stronger
-  jmon33 monitor-idle cursor oracle; currently documents the open boundary.
+  jmon33 monitor-idle cursor oracle; currently documents that the 300-write
+  HDL boundary is still blank while the first-write guard remains passing.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for the monitor `B`
   command path into the BASIC cartridge; Monitor 3.3 reaches cartridge
-  execution, while EktaSoft 3.43m #0037 remains a documented compatibility
-  boundary.
+  execution through a zero-filled RAM window, while EktaSoft 3.43m #0037
+  remains a documented compatibility boundary.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 
