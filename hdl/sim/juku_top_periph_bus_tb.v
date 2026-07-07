@@ -12,10 +12,13 @@ module juku_top_periph_bus_tb();
   reg [7:0] rd;
   reg [15:0] drive_ba = 16'h0000;
   reg [7:0] drive_db = 8'hff;
+  reg kbd_en = 1'b0, kbd_pressed = 1'b0, kbd_shift = 1'b0, frame_tick = 1'b0;
+  reg [3:0] kbd_kcol = 4'd0;
+  reg [2:0] kbd_kbit = 3'd0;
 
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
-               .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0),
-               .kbd_kcol(4'd0), .kbd_kbit(3'd0), .frame_tick(1'b0));
+               .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
+               .kbd_kcol(kbd_kcol), .kbd_kbit(kbd_kbit), .frame_tick(frame_tick));
 
   initial forever begin osc = 0; #10; osc = 1; #10; end
 
@@ -71,6 +74,28 @@ module juku_top_periph_bus_tb();
     bus_idle();
   end endtask
 
+  task inta_read(output [7:0] data); begin
+    release dut.DB;
+    force dut.iord_n = 1'b1;
+    force dut.iowr_n = 1'b1;
+    force dut.inta_n = 1'b0;
+    @(posedge osc);
+    #1;
+    data = dut.DB;
+    @(negedge osc);
+    force dut.inta_n = 1'b1;
+    #40;
+  end endtask
+
+  task pulse_frame; begin
+    @(negedge osc);
+    frame_tick = 1'b1;
+    @(negedge osc);
+    frame_tick = 1'b0;
+    @(posedge osc);
+    #1;
+  end endtask
+
   initial begin
     force dut.ready = 1'b1;
     force dut.reset_sys = 1'b1;
@@ -81,11 +106,33 @@ module juku_top_periph_bus_tb();
     force dut.reset_sys = 1'b0;
     #200;
 
-    io_write(8'h00, 8'h16);     // PIC ICW1
+    io_write(8'h00, 8'hD6);     // PIC ICW1; ROMBIOS uses high vector bits -> 0xFED4
     io_write(8'h01, 8'hFE);     // PIC ICW2
     io_write(8'h01, 8'hDF);     // unmask IR5, matching ROMBIOS frame path
     io_read(8'h01, rd);
     if (rd !== 8'hDF) fail("PIC register readback mismatch");
+
+    pulse_frame();
+    if (dut.intr !== 1'b1) fail("frame tick did not raise top-level INTR after PIC unmask");
+    inta_read(rd);
+    if (rd !== 8'hCD) fail("first INTA byte should be CALL opcode");
+    inta_read(rd);
+    if (rd !== 8'hD4) fail("second INTA byte should be low byte of 0xFED4");
+    inta_read(rd);
+    if (rd !== 8'hFE) fail("third INTA byte should be high byte of 0xFED4");
+    @(posedge osc);
+    #1;
+    if (dut.intr !== 1'b0) fail("INTR did not clear after three INTA bytes");
+
+    kbd_en = 1'b1;
+    kbd_pressed = 1'b1;
+    kbd_shift = 1'b1;
+    kbd_kcol = 4'd4;            // T key
+    kbd_kbit = 3'd3;
+    io_write(8'h04, 8'h04);     // PPI0 Port A: scan column 4
+    io_read(8'h05, rd);
+    if (rd !== 8'h88) fail("PPI0 keyboard read did not encode shifted T");
+    kbd_pressed = 1'b0;
 
     io_write(8'h06, 8'h04);     // PPI0 Port C: motor on, mode 0
     if (dut.ppi0_pc[2] !== 1'b1) fail("PPI0 PC2 motor-on bit did not latch");
