@@ -22,10 +22,34 @@ STOP_RE = re.compile(
     r"iff=([0-9]+) mode=([0-9]+) switches=([0-9]+)"
 )
 PROBE_RE = re.compile(r"pc_cart_count\s+:\s+([0-9]+).*?pchist_cart\s+:\s+([0-9]+)", re.S)
+READ_RE = re.compile(
+    r"cart_overlay_reads\s+:\s+([0-9]+).*?cart_pc_reads\s+:\s+([0-9]+)",
+    re.S,
+)
 
 
 def instrumented_trace_source() -> str:
     src = TRACE_C.read_text()
+    src = src.replace(
+        "static int      cart_enabled = 0;\n",
+        "static int      cart_enabled = 0;\n"
+        "static unsigned long basic_probe_cart_reads = 0;\n"
+        "static unsigned long basic_probe_cart_pc_reads = 0;\n",
+    )
+    src = src.replace(
+        "  (void)u; unsigned idx = 0;\n",
+        "  i8080* cpu = (i8080*)u; unsigned idx = 0;\n",
+        1,
+    )
+    src = src.replace(
+        "  if (ov == 2) return cart_enabled ? cart[a - 0x4000] : 0xFF;\n",
+        "  if (ov == 2) {\n"
+        "    basic_probe_cart_reads++;\n"
+        "    if (cpu && cpu->pc >= 0x4000 && cpu->pc <= 0xBFFF) basic_probe_cart_pc_reads++;\n"
+        "    return cart_enabled ? cart[a - 0x4000] : 0xFF;\n"
+        "  }\n",
+        1,
+    )
     src = src.replace(
         "  unsigned long last_write_total = 0, writes_total, idle_cyc = 0;\n"
         "  static uint32_t pchist[MEM_SIZE];\n",
@@ -45,6 +69,8 @@ def instrumented_trace_source() -> str:
         '  printf("\\n==== BASIC probe ====\\n");\n'
         '  printf("  pc_cart_count : %8lu\\n", pc_cart_count);\n'
         '  printf("  pchist_cart   : %8lu\\n", cart_hist_count);\n'
+        '  printf("  cart_overlay_reads : %8lu\\n", basic_probe_cart_reads);\n'
+        '  printf("  cart_pc_reads      : %8lu\\n", basic_probe_cart_pc_reads);\n'
         '  printf("\\n==== RAM write density (pages >0) ====\\n");\n',
     )
     return src
@@ -68,6 +94,13 @@ def parse_stop(stderr: str) -> dict[str, int]:
 
 def parse_probe(stdout: str) -> tuple[int, int]:
     match = PROBE_RE.search(stdout)
+    if not match:
+        return 0, 0
+    return int(match.group(1)), int(match.group(2))
+
+
+def parse_cart_reads(stdout: str) -> tuple[int, int]:
+    match = READ_RE.search(stdout)
     if not match:
         return 0, 0
     return int(match.group(1)), int(match.group(2))
@@ -131,6 +164,7 @@ def main() -> int:
     proc, vram = run_probe()
     stop = parse_stop(proc.stderr)
     pc_cart_count, pchist_cart = parse_probe(proc.stdout)
+    cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
     sha = hashlib.sha256(vram).hexdigest() if vram else ""
     vram_ok = len(vram) == VRAM_SIZE
     cart_loaded = "loaded 8192 bytes of expansion cartridge" in proc.stderr
@@ -168,6 +202,8 @@ def main() -> int:
         f"| trace exit code | `{proc.returncode}` |",
         f"| `jbasic11.bin` cartridge loaded | {'PASS' if cart_loaded else 'FAIL'} |",
         f"| keyboard ports used | {'PASS' if key_processed else 'FAIL'} |",
+        f"| cartridge overlay reads in mode 2 | `{cart_overlay_reads}` |",
+        f"| cartridge reads while PC in `0x4000..0xBFFF` | `{cart_pc_reads}` |",
         f"| PC entered `0x4000..0xBFFF` | `{pc_cart_count}` cycles |",
         f"| pchist count in `0x4000..0xBFFF` | `{pchist_cart}` |",
         f"| VRAM dump size | `{len(vram)}` bytes |",
@@ -189,9 +225,11 @@ def main() -> int:
         lines.extend(
             [
                 "- The cartridge is loaded and the keyboard path is active, but the current",
-                "  `B` command run never executes in `0x4000..0xBFFF`.",
-                "- The remaining work is monitor command/control-flow validation, not the",
-                "  D8/D22 cartridge-window wiring guarded by `sync/basic_cart_check.sh`.",
+                "  `B` command run never executes in `0x4000..0xBFFF` and performs no",
+                "  mode-2 reads from the cartridge overlay.",
+                "- The remaining work is monitor command/control-flow validation before",
+                "  the cartridge window is selected, not the D8/D22 cartridge-window",
+                "  wiring guarded by `sync/basic_cart_check.sh`.",
             ]
         )
     lines.append("")

@@ -25,6 +25,8 @@ Environment overrides:
 | trace exit code | `0` |
 | `jbasic11.bin` cartridge loaded | PASS |
 | keyboard ports used | PASS |
+| cartridge overlay reads in mode 2 | `0` |
+| cartridge reads while PC in `0x4000..0xBFFF` | `0` |
 | PC entered `0x4000..0xBFFF` | `0` cycles |
 | pchist count in `0x4000..0xBFFF` | `0` |
 | VRAM dump size | `9640` bytes |
@@ -40,6 +42,8 @@ Environment overrides:
 ## Disposition
 
 - The cartridge is loaded and the keyboard path is active, but the current
-  `B` command run never executes in `0x4000..0xBFFF`.
-- The remaining work is monitor command/control-flow validation, not the
-  D8/D22 cartridge-window wiring guarded by `sync/basic_cart_check.sh`.
+  `B` command run never executes in `0x4000..0xBFFF` and performs no
+  mode-2 reads from the cartridge overlay.
+- The remaining work is monitor command/control-flow validation before
+  the cartridge window is selected, not the D8/D22 cartridge-window
+  wiring guarded by `sync/basic_cart_check.sh`.
