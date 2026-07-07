@@ -47,6 +47,9 @@ sync/juku_top_fdc_probe.sh
   disk media is loaded, the BIOS starts drawing, and early `TDD` key pulses are
   generated. The bounded 16k-VRAM diagnostic sees frame ticks, but no PIC
   interrupt acknowledgements, PPI0 keyboard scanning, or decoded WD1793 I/O.
+- `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
+  same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
+  command at 63,085 VRAM writes.
 - Preserve the Arti `JUKU1.CPM` cosim proof from
   `docs/ekdos-media-acquisition.md` as the disk-backed reference.
 - If deeper controller behavior becomes the blocker, decide whether GPL

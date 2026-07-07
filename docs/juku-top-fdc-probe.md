@@ -64,5 +64,8 @@ Current values: `KEYAT=3000 KHOLD=300000 KGAP=300000 FRAMEIRQ=80000 MAXVRAM=1600
   `+stopfdc=N` hooks.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
+- `docs/ekdos-timing-reference.md` shows the fast cosim target for this same
+  vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
+  command at 63,085 VRAM writes.
 - The remaining M2 target is still the full `juku_top` ROMBIOS `TDD` path to
   an EKDOS `A>` prompt.

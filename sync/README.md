@@ -43,6 +43,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe; defaults
   to vendored `media/disks/JUKU1.CPM`, and disk-backed runs must reach the
   EKDOS `A>` prompt bitmap.
+- `sync/ekdos_timing_reference.py` — fast cosim timing reference for the same
+  vendored `TDD` path; records first PIC/PPI/FDC port touches versus cycles and
+  framebuffer writes.
 - `sync/juku_top_fdc_probe.sh` — bounded HDL diagnostic for the remaining
   `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
   interrupts, fixed `TDD` keyboard stimulus, and stops on decoded WD1793 I/O.

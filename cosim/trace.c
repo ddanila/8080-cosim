@@ -54,6 +54,7 @@ static uint8_t       out_last[256];
 static int           out_seen[256], in_seen[256];
 static unsigned long wpage[256];
 static unsigned long mode_switches;
+static int           timing_log = 0;
 
 static void set_mode(int m) {
   if (m != mode) {
@@ -141,8 +142,12 @@ static void wb(void* u, uint16_t a, uint8_t v) {
 }
 
 static uint8_t pin(void* u, uint8_t p) {
-  (void)u;
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
+  if (timing_log && in_count[p] == 0) {
+    i8080* cpu = (i8080*)u;
+    fprintf(stderr, "[IOT] first IN  port 0x%02X cyc=%lu pc=%04X g_vw=%lu\n",
+            p, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw);
+  }
   in_count[p]++;
   if (p == 0x05 && kbd_str && kbd_str[0]) return kbd_portb();   // 8255 Port B = keyboard 74148
   if (fdc_enabled && p >= 0x1C && p <= 0x1F) return juku_fdc_read(&fdc, p & 3);
@@ -150,8 +155,12 @@ static uint8_t pin(void* u, uint8_t p) {
 }
 
 static void pout(void* u, uint8_t p, uint8_t v) {
-  (void)u;
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
+  if (timing_log && out_count[p] == 0) {
+    i8080* cpu = (i8080*)u;
+    fprintf(stderr, "[IOT] first OUT port 0x%02X val=0x%02X cyc=%lu pc=%04X g_vw=%lu\n",
+            p, v, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw);
+  }
   out_count[p]++;
   out_last[p] = v;
   if (fdc_enabled && p >= 0x1C && p <= 0x1F) juku_fdc_write(&fdc, p & 3, v);
@@ -220,6 +229,8 @@ int main(int argc, char** argv) {
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
   const char* cart_path = getenv("JUKU_CART");
+  timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
+               strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
   if (cart_path && cart_path[0]) {
     size_t cn = load_image(cart_path, cart, CART_SIZE, 0xFF);
     cart_enabled = 1;

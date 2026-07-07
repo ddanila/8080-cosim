@@ -176,7 +176,10 @@ debugging session saved on real hardware.
    VRAM write, emits all three `TDD` key pulses, and shows frame ticks but zero
    PIC interrupt acknowledgements, PPI0 I/O, or FDC I/O by 16k VRAM writes; the
    next trigger needs to start from the proven post-banner keyboard/interrupt
-   window rather than before ROMBIOS begins PPI scanning.
+   window rather than before ROMBIOS begins PPI scanning. The fast cosim timing
+   reference in `docs/ekdos-timing-reference.md` anchors that window: first
+   frame IRQ at 33,812 VRAM writes and first FDC command at 63,085 VRAM writes
+   on the vendored `JUKU1.CPM` `TDD` path.
    Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
    the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
