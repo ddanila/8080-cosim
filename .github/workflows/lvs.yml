@@ -5,6 +5,24 @@ on:
   pull_request:
 
 jobs:
+  status-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check readiness script syntax
+        run: |
+          sh -n kicad/check_replica_manufacturing_ready.sh
+          python3 -m py_compile \
+            scripts/report_milestone_ledger.py \
+            kicad/report_replica_order_upload_runbook.py \
+            kicad/report_replica_manufacturing_readiness.py
+
+      - name: Check milestone ledger freshness
+        run: |
+          python3 scripts/report_milestone_ledger.py
+          git diff --exit-code -- docs/milestone-ledger.md
+
   lvs:
     runs-on: ubuntu-latest
     steps:
