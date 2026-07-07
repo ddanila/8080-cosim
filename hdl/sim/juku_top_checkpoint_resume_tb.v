@@ -13,8 +13,10 @@ module juku_top_checkpoint_resume_tb();
   reg [1023:0] ram_file;
   reg [7:0] ram [0:65535];
   integer mcyc = 0, vram_writes = 30000, max_mcyc = 200000, timecap = 200000000;
+  integer trace_resume = 0;
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
   reg clk_run = 1'b1;
+  reg resume_started = 1'b0;
   reg sq = 0;
 
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
@@ -115,9 +117,36 @@ module juku_top_checkpoint_resume_tb();
   end endtask
 
   always @(posedge osc) begin
-    if (dut.sync && !sq) mcyc <= mcyc + 1;
+    if (resume_started && dut.sync && !sq) begin
+      if (trace_resume > 0) begin
+        $display("[RESUME-TRACE] mcyc=%0d pc=0x%04h ba=0x%04h db=0x%02h i=0x%02h m=%b%b%b%b%b t=%b%b%b%b%b%b sync=%b memr_n=%b memw_n=%b iord_n=%b iowr_n=%b",
+                 mcyc + 1,
+                 dut.U_CPU.u.core.r16_pc,
+                 dut.BA,
+                 dut.DB,
+                 dut.U_CPU.u.core.i,
+                 dut.U_CPU.u.core.m1,
+                 dut.U_CPU.u.core.m2,
+                 dut.U_CPU.u.core.m3,
+                 dut.U_CPU.u.core.m4,
+                 dut.U_CPU.u.core.m5,
+                 dut.U_CPU.u.core.t1,
+                 dut.U_CPU.u.core.t2,
+                 dut.U_CPU.u.core.tw,
+                 dut.U_CPU.u.core.t3,
+                 dut.U_CPU.u.core.t4,
+                 dut.U_CPU.u.core.t5,
+                 dut.sync,
+                 dut.memr_n,
+                 dut.memw_n,
+                 dut.iord_n,
+                 dut.iowr_n);
+        trace_resume = trace_resume - 1;
+      end
+      mcyc <= mcyc + 1;
+    end
     sq <= dut.sync;
-    if (mcyc >= max_mcyc) begin
+    if (resume_started && mcyc >= max_mcyc) begin
       $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d",
                dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen);
       $finish;
@@ -162,6 +191,7 @@ module juku_top_checkpoint_resume_tb();
     end
     if ($value$plusargs("max_mcyc=%d", max_mcyc)) ;
     if ($value$plusargs("timecap=%d", timecap)) ;
+    if ($value$plusargs("trace_resume=%d", trace_resume)) ;
 
     force dut.ready = 1'b1;
     force dut.reset_sys = 1'b1;
@@ -175,6 +205,9 @@ module juku_top_checkpoint_resume_tb();
     for (i = 0; i < 65536; i = i + 1) write_dram_byte(i, ram[i]);
     load_checkpoint_state();
     $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h", dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp);
+    mcyc = 0;
+    sq = 0;
+    resume_started = 1'b1;
     #100;
     clk_run = 1'b1;
   end

@@ -75,6 +75,7 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
 def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
     ram_hex = tmp / "checkpoint.ram.hex"
     sim = tmp / "juku_top_checkpoint_resume_tb"
+    trace_resume = os.environ.get("JUKU_TOP_CHECKPOINT_TRACE_RESUME")
     write_hex(ram_bin, ram_hex)
     subprocess.run(
         [
@@ -90,8 +91,7 @@ def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
         cwd=ROOT,
         check=True,
     )
-    return subprocess.run(
-        [
+    args = [
             "vvp",
             str(sim),
             f"+checkpoint_ram={ram_hex}",
@@ -99,7 +99,11 @@ def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
             "+disk_heads=2",
             "+max_mcyc=200000",
             "+timecap=200000000",
-        ],
+    ]
+    if trace_resume:
+        args.append(f"+trace_resume={trace_resume}")
+    return subprocess.run(
+        args,
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,
@@ -110,6 +114,10 @@ def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
 
 def first_line(text: str, prefix: str) -> str:
     return next((line for line in text.splitlines() if line.startswith(prefix)), "none")
+
+
+def prefixed_lines(text: str, prefix: str) -> list[str]:
+    return [line for line in text.splitlines() if line.startswith(prefix)]
 
 
 def main() -> int:
@@ -165,6 +173,8 @@ def main() -> int:
         "- This probe is intentionally not a mandatory CI gate yet; the next",
         "  hardening step is making the seeded vm80a microstate portable across",
         "  all CI runner schedules before extending it toward FDC I/O.",
+        "- Set `JUKU_TOP_CHECKPOINT_TRACE_RESUME=N` to include the first `N`",
+        "  resumed machine-cycle boundaries in this report.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])
@@ -172,6 +182,12 @@ def main() -> int:
         lines.extend(["", "## HDL stdout tail", ""])
         lines.append("```")
         lines.extend(resume_proc.stdout.splitlines()[-40:])
+        lines.append("```")
+    trace_lines = prefixed_lines(resume_proc.stdout, "[RESUME-TRACE]")
+    if trace_lines:
+        lines.extend(["", "## Resume Trace", ""])
+        lines.append("```")
+        lines.extend(trace_lines)
         lines.append("```")
 
     REPORT.write_text("\n".join(lines) + "\n")
