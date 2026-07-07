@@ -212,12 +212,15 @@ debugging session saved on real hardware.
    cycle-targeted cosim checkpoint at 8,711,550 cycles / 63,095 framebuffer
    writes / PC `0xE643` resumes `juku_top` and drains 13 full 512-byte sectors
    (6,656 `IN 0x1F` data-register reads) after the decoded WD1793/VG93
-   command/setup sequence. A full 10,752-byte cosim-prompt-count target times
-   out after that boundary while looping through keyboard/IRQ service around
-   VRAM write count 63,155; a later 10,066,600-cycle / PC `0xE585` candidate
-   polls FDC status `0x03` without reaching data reads, so the next automatic
-   narrowing target is finding a cleaner late-sector M1 boundary before the
-   remaining sector-read runs. The older first-FDC
+   command/setup sequence. A second clean late-sector checkpoint at 10,066,690
+   cycles / 73,386 framebuffer writes / PC `0xE5A0` resumes immediately before
+   the `OUT 0x1C = 0x80` read-sector command and drains the remaining 8 full
+   sectors (4,096 more `IN 0x1F` reads). Together these checkpoint windows
+   cover the full 10,752-byte FDC data-read count seen on the cosim `A>` path.
+   A single uninterrupted 10,752-byte checkpoint target still times out after
+   the first 6,656-byte boundary while looping through keyboard/IRQ service
+   around VRAM write count 63,155, so the current proof is split across the
+   first and late FDC windows. The older first-FDC
    checkpoint at 63,085 framebuffer writes remains available, and an earlier
    42,000-write key-window run carries the `TDD` stimulus state but still times
    out before FDC. A first narrow harness,

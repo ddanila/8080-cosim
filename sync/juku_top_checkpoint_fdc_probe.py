@@ -12,7 +12,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "docs" / "juku-top-checkpoint-fdc-probe.md"
+REPORT = Path(
+    os.environ.get(
+        "JUKU_TOP_CHECKPOINT_FDC_REPORT",
+        str(ROOT / "docs" / "juku-top-checkpoint-fdc-probe.md"),
+    )
+)
 ROM = ROOT / "roms" / "ekta37.bin"
 DISK = ROOT / "media" / "disks" / "JUKU1.CPM"
 
@@ -225,6 +230,13 @@ def count_lines(text: str, prefix: str) -> int:
     return sum(1 for line in text.splitlines() if line.startswith(prefix))
 
 
+def display_path(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def last_complete_vram_line(text: str) -> str:
     pattern = re.compile(r"^\[RESUME-VRAM\] writes=[0-9]+ mcyc=[0-9]+ pc=0x[0-9a-fA-F]+$")
     return next((line for line in reversed(text.splitlines()) if pattern.match(line)), "none")
@@ -261,14 +273,16 @@ def main() -> int:
         target = f"{want_data_reads} FDC data-register reads"
     else:
         target = "FDC data-register read" if want_data_read else "first decoded FDC I/O"
+    effective_cycles = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_CYCLES", "8711550")
+    effective_writes = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_WRITES", "63085")
     lines = [
         "# juku_top checkpoint FDC probe",
         "",
         f"Status: **{status}**",
         "",
         "This diagnostic starts from a generated EKDOS/TDD cosim checkpoint",
-        "(`JUKU_TOP_CHECKPOINT_FDC_CYCLES`, default 8,711,550, the",
-        "first-data-read setup window),",
+        f"(`JUKU_TOP_CHECKPOINT_FDC_CYCLES={effective_cycles}` or",
+        f"`JUKU_TOP_CHECKPOINT_FDC_WRITES={effective_writes}` when cycle stop is disabled),",
         "loads it into `juku_top`, enables frame IRQs and the",
         f"fixed `TDD` keyboard stimulus, and runs toward the {target}.",
         "It is the checkpointed counterpart to",
@@ -297,6 +311,16 @@ def main() -> int:
         "  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`",
         "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `6656` (13 sectors);",
         "  set to `512` for the first sector or `0` for the first data-register read",
+        "- `JUKU_TOP_CHECKPOINT_FDC_REPORT` default",
+        "  `docs/juku-top-checkpoint-fdc-probe.md`",
+        "",
+        "Known useful windows:",
+        "",
+        "- Default `JUKU_TOP_CHECKPOINT_FDC_CYCLES=8711550` proves the first",
+        "  13 sectors / 6,656 data-register reads.",
+        "- `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690",
+        "  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=4096` proves the later",
+        "  8 sectors / 4,096 data-register reads.",
         "",
         "## Evidence",
         "",
@@ -334,12 +358,15 @@ def main() -> int:
         "  checkpoint-resumed `juku_top` CPU execution.",
         "- The default proves the ROMBIOS FDC path drains 13 full 512-byte sectors",
         "  through FDC data-register reads from a checkpointed CPU run.",
-        "- A full cosim-prompt-count target, `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=10752`,",
-        "  currently times out after the 6,656-byte boundary while looping through",
-        "  keyboard/IRQ service around VRAM write count 63,155. A later",
-        "  `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066600` candidate starts at PC `0xE585`",
-        "  but polls FDC status `0x03` without reaching data reads, so the next",
-        "  narrowing step is finding a cleaner late-sector M1 boundary.",
+        "- A second clean late-sector window at",
+        "  `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690` resumes at PC `0xE5A0`,",
+        "  issues `OUT 0x1C = 0x80`, and drains the remaining 8 full sectors",
+        "  (4,096 data-register reads).",
+        "- A single full cosim-prompt-count target,",
+        "  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=10752`, currently times out",
+        "  after the 6,656-byte boundary while looping through keyboard/IRQ",
+        "  service around VRAM write count 63,155, so the current proof is split",
+        "  across the first and late FDC checkpoint windows.",
         "- Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=63085",
         "  JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1 JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`",
         "  for the older first-command boundary.",
@@ -357,7 +384,7 @@ def main() -> int:
         lines.append("```")
 
     REPORT.write_text("\n".join(lines) + "\n")
-    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    print(f"Wrote {display_path(REPORT)}")
     print("\n".join(lines))
     return 0 if cosim_proc.returncode == 0 and resume_proc.returncode in (0, 124) else 1
 

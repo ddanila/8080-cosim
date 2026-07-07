@@ -74,11 +74,15 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   cycle-targeted checkpoint at 8,711,550 cycles / 63,095 framebuffer writes /
   PC `0xE643` resumes `juku_top` and drains 13 full 512-byte sectors
   (6,656 `IN 0x1F` data-register reads) after the decoded WD1793/VG93
-  command/setup sequence. The full 10,752-byte cosim-prompt-count target
-  currently times out after that boundary around VRAM write count 63,155, and
-  the later 10,066,600-cycle / PC `0xE585` candidate polls FDC status `0x03`
-  without reaching data reads. The older first-FDC checkpoint at 63,085
-  framebuffer writes and the earlier
+  command/setup sequence. A second clean late-sector checkpoint at 10,066,690
+  cycles / 73,386 framebuffer writes / PC `0xE5A0` resumes immediately before
+  the `OUT 0x1C = 0x80` read-sector command and drains the remaining 8 full
+  sectors (4,096 more `IN 0x1F` reads). Together these checkpoint windows cover
+  the full 10,752-byte FDC data-read count seen on the cosim `A>` path. The
+  single uninterrupted 10,752-byte checkpoint target still times out after the
+  first 6,656-byte boundary around VRAM write count 63,155, so this remains a
+  split checkpoint proof rather than a prompt proof. The older first-FDC
+  checkpoint at 63,085 framebuffer writes and the earlier
   42,000-write key-window checkpoint remain available as non-CI narrowing runs.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
@@ -123,6 +127,7 @@ sync/juku_top_fdc_probe.sh
 | checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
 | focused checkpoint-resumed `juku_top` probe reaches first post-checkpoint PIC write and no-key keyboard read | PASS (non-CI) |
 | checkpoint-resumed `juku_top` from the cycle-targeted FDC checkpoint drains 6,656 data-register reads | PASS (non-CI) |
+| checkpoint-resumed `juku_top` from the late FDC checkpoint drains 4,096 more data-register reads | PASS (non-CI) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -165,9 +170,12 @@ sync/juku_top_fdc_probe.sh
   boundary: with frame IRQs and fixed `TDD` stimulus state carried from cosim,
   the default cycle-targeted checkpoint resumes `juku_top` at PC `0xE643` and
   drains 13 full 512-byte sectors through decoded FDC data-register reads after
-  command/setup I/O. The full 10,752-byte target and the later PC `0xE585`
-  checkpoint are not yet stable, so the next automatic step is finding a
-  cleaner late-sector M1 boundary.
+  the first read-sector setup. `docs/juku-top-checkpoint-fdc-late-probe.md`
+  records the late cycle-targeted checkpoint at PC `0xE5A0`, which resumes
+  immediately before a later read-sector command and drains the remaining
+  8 full sectors. These split checkpoint windows cover all 10,752 FDC
+  data-register reads observed before the cosim prompt, but they are not yet an
+  uninterrupted HDL `A>` prompt proof.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
