@@ -8,11 +8,11 @@ from pathlib import Path
 
 UPLOAD_FILES = [
     ("PCB fabrication archive", "upload/vjuga-rev-a-gerbers-drill.zip"),
-    ("Factory assembly BOM", "upload/vjuga-rev-a-jlcpcb-bom.csv"),
-    ("Factory assembly CPL", "upload/vjuga-rev-a-jlcpcb-cpl.csv"),
-    ("Assembly notes", "upload/vjuga-rev-a-assembly-notes.md"),
-    ("Manual-install reference", "upload/vjuga-rev-a-manual-assembly.csv"),
-    ("Post-assembly insertion reference", "upload/vjuga-rev-a-post-assembly-insertion.csv"),
+    ("Reference factory assembly BOM - do not upload for bare PCB", "upload/vjuga-rev-a-jlcpcb-bom.csv"),
+    ("Reference factory assembly CPL - do not upload for bare PCB", "upload/vjuga-rev-a-jlcpcb-cpl.csv"),
+    ("Reference assembly notes", "upload/vjuga-rev-a-assembly-notes.md"),
+    ("Reference manual-install list", "upload/vjuga-rev-a-manual-assembly.csv"),
+    ("Reference post-assembly insertion list", "upload/vjuga-rev-a-post-assembly-insertion.csv"),
     ("Upload README", "upload/README-upload.md"),
     ("Checksum file", "upload/SHA256SUMS.txt"),
 ]
@@ -35,13 +35,12 @@ FIXED_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
 
 ORDER_CHECKS = [
     "Verify the Gerber/drill ZIP renders correctly in the JLCPCB preview before payment.",
-    "Upload only `vjuga-rev-a-jlcpcb-bom.csv` and `vjuga-rev-a-jlcpcb-cpl.csv` for factory assembly.",
+    "Select PCB fabrication only / no assembly for the first concept sample.",
+    "Upload only `vjuga-rev-a-gerbers-drill.zip` for the bare-PCB order.",
+    "Do not upload `vjuga-rev-a-jlcpcb-bom.csv` or `vjuga-rev-a-jlcpcb-cpl.csv` unless deliberately switching to the optional assembled-board path.",
     "Do not upload `rev-a.engineering-bom.csv`; it contains owner/manual insertion rows.",
-    "Confirm all 20 unique factory CPNs are accepted by the order UI with current stock and price.",
-    "Confirm JLCPCB will mount the through-hole sockets and selected headers in this assembly service.",
-    "Keep D1/J30/R6/R15/U50/U51 outside factory assembly for Rev A unless the engineering BOM is deliberately changed.",
     "Confirm the no-plane and 0.20 mm VCC/GND/VCC_RAW routing disposition remains intentional for this low-current prototype.",
-    "Save the final vendor BOM/CPL mapping and preview screenshots with the order record.",
+    "Save the final vendor Gerber preview screenshots, stackup/settings, price, and order number with the order record.",
 ]
 
 
@@ -177,14 +176,15 @@ def build_report(out_dir):
 
     status = "READY" if not failures else "NOT READY"
     lines = [
-        "# VJUGA Rev A order-upload runbook",
+        "# VJUGA Rev A bare-PCB order-upload runbook",
         "",
         f"Package: `{out_dir}`",
         f"Status: **{status}**",
         "",
-        "This is the exact upload/runbook layer for the Rev A JLCPCB order. It",
-        "does not claim live stock or final vendor acceptance; those are order-time",
-        "checks in the vendor UI immediately before payment.",
+        "This is the exact upload/runbook layer for the Rev A bare-PCB first",
+        "sample. It does not claim live vendor acceptance; preview, stackup,",
+        "price, and order-number evidence are order-time checks in the vendor UI",
+        "immediately before payment.",
         "",
         "## Pre-Upload Integrity",
         "",
@@ -219,15 +219,15 @@ def build_report(out_dir):
     lines.extend(
         [
             "",
-            "## Counts Expected In Vendor UI",
+            "## Reference Assembly Counts",
             "",
-            f"- Factory assembly BOM rows: {len(bom)}",
-            f"- Factory assembly CPL placements: {len(cpl)}",
-            f"- Unique factory CPNs: {len(factory_cpns)}",
-            f"- Manual-install rows kept out of factory BOM: {len(manual)}",
-            f"- Owner post-assembly socket insertions: {len(post)}",
+            f"- Reference factory BOM rows retained: {len(bom)}",
+            f"- Reference factory CPL placements retained: {len(cpl)}",
+            f"- Reference unique factory CPNs retained: {len(factory_cpns)}",
+            f"- Manual-install rows retained for later assembly: {len(manual)}",
+            f"- Owner post-assembly socket insertions retained for later assembly: {len(post)}",
             "",
-            "## Unique Factory CPNs",
+            "## Reference Unique Factory CPNs",
             "",
         ]
     )

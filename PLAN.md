@@ -237,13 +237,13 @@ The minimal Z80 board is deliberately the **first physical artifact**: it proves
 fab pipeline (KiCad→JLCPCB), the original-style DRAM refresh/timing and keyboard
 decode on real silicon, and the bring-up methodology — on cheap western parts,
 before any Soviet NOS is at risk.
-1. Close the open human sign-offs (gerber inspection in an independent viewer,
-   socket/connector assembly confirmation, final CPN re-check, manual-row
-   disposition D1/J30/R6/R15/U50/U51) — the machine gates already pass.
+1. Close the open human sign-offs for a **bare-PCB first sample** (gerber
+   inspection in an independent viewer, visual routing confirmation, and vendor
+   preview/settings capture) — the machine gates already pass.
    Independent Tracespace Gerber/drill render evidence is now generated in
    `fab/minimal-vga/external-gerber-review.md`; remaining sign-offs are
-   schematic-symbol human review, order-time visual routing confirmation,
-   purchased-part fit, and vendor/stock decisions.
+   schematic-symbol human review, order-time visual routing confirmation, and
+   vendor preview/settings capture.
    Source-level schematic intent evidence is now generated in
    `fab/minimal-vga/schematic-intent-readiness.md` for the CPU/ROM/decode, DRAM,
    keyboard, VGA, power, clock, and reset contracts.
@@ -253,18 +253,20 @@ before any Soviet NOS is at risk.
    limits.
    Manual-row disposition is now generated in
    `fab/minimal-vga/assembly/manual-install-disposition.md`, explicitly keeping
-   D1/J30/R6/R15/U50/U51 out of factory assembly for Rev A and verifying the
-   upload manual/post-assembly CSVs match the generated package.
+   D1/J30/R6/R15/U50/U51 out of the bare-PCB order path and preserving their
+   manual/post-assembly CSVs for a later assembled-board package.
    Vendor/order checklist evidence is now generated in
    `fab/minimal-vga/assembly/vendor-order-checklist.md`, tying the upload BOM CPN
    set to the sourcing checklist, confirming the manual rows stay out of factory
-   assembly, and preserving stock/price/alternative/assembly acceptance as an
-   order-time vendor UI review. The exact upload procedure is now generated in
-   `fab/minimal-vga/order-upload-runbook.md`, with upload filenames, checksum
-   command, recomputed upload-artifact checksum status, deterministic Gerber ZIP
-   member metadata, expected BOM/CPL/CPN counts, manual-row exclusions, and the
-   remaining vendor UI checks.
-2. **Place the JLCPCB order** (board + factory assembly of sockets/passives).
+   assembly, and preserving stock/price/alternative/assembly acceptance for a
+   later assembled-board order. The exact first-sample upload procedure is now
+   generated in `fab/minimal-vga/order-upload-runbook.md` and summarized in
+   `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md`: upload only
+   `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`, select PCB
+   fabrication only / no assembly, verify the vendor preview, and save order
+   evidence. The BOM/CPL files are retained as references, not uploaded for the
+   bare-PCB order.
+2. **Place the JLCPCB order** (bare PCB only, no factory assembly/components).
 3. Bring-up ladder: power/LEDs → clock → ROM fetch (logic analyzer on M1) → DRAM
    test → keyboard scan → VGA header output. Each rung has a twin-side reference.
 4. Bank learnings (footprints, socket fit, assembly quirks) into the replica plan.

@@ -101,6 +101,13 @@ def milestone_rows():
         "docs/basic-launch-probe.md",
         "Status: **BASIC RAM EXECUTION REACHED**",
     )
+    vjuga_bare_pcb_ready = marker(
+        "fab/minimal-vga/order-readiness.md",
+        "Status: **BARE PCB READY - VENDOR PREVIEW REQUIRED**",
+    ) or marker(
+        "spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md",
+        "Status: **READY FOR VENDOR PREVIEW**",
+    )
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
@@ -182,12 +189,22 @@ def milestone_rows():
             "target": "VJUGA Rev A ordered",
             "status": "EXTERNAL PENDING",
             "evidence": (
+                "`fab/minimal-vga/order-readiness.md` is BARE PCB READY and "
+                "`spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md` records the "
+                "PCB-only first-sample upload policy; vendor preview and order "
+                "evidence are still external."
+                if vjuga_bare_pcb_ready
+                else
                 "`fab/minimal-vga/order-readiness.md` is a coherent draft with "
                 "machine gates PASS, but still requires human/vendor review before upload."
                 if vjuga_draft
                 else "No current VJUGA order-readiness draft was found."
             ),
-            "next": "Perform final JLCPCB UI review and place the Rev A order.",
+            "next": (
+                "Upload the Gerber ZIP as PCB fabrication only, save vendor preview/order evidence."
+                if vjuga_bare_pcb_ready
+                else "Perform final JLCPCB UI review and place the Rev A order."
+            ),
         },
         {
             "id": "M4",

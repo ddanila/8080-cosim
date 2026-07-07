@@ -79,11 +79,9 @@ HUMAN_GATES = [
     "Full schematic review against the intended Z80, ROM, DRAM, refresh, keyboard, and VGA behavior.",
     "Order-time visual routing review against the generated routing geometry and disposition reports.",
     "Confirm the Rev A no-pour and 0.20 mm power-routing disposition remains intentional for this prototype order.",
-    "Socket/header footprint fit check against the exact purchased sockets and connectors.",
-    "Order-time vendor drawing and assembly-service review for mechanically sensitive through-hole rows.",
-    "Order-time JLCPCB/LCSC CPN stock, footprint, price, and alternative confirmation using `assembly/vendor-order-checklist.md`.",
-    "Confirmation that the selected assembly service will mount the intended through-hole sockets/connectors.",
-    "Confirm the manual-install disposition for D1/J30/R6/R15/U50/U51 remains intentional for this prototype order.",
+    "Select PCB fabrication only / no assembly in the vendor UI for this first concept sample.",
+    "Upload only `upload/vjuga-rev-a-gerbers-drill.zip`; keep BOM/CPL files as later assembly references.",
+    "Save vendor Gerber preview, stackup/settings, price, and order-number evidence.",
 ]
 
 
@@ -358,20 +356,23 @@ def machine_gate_summary(out_dir):
             and "- JLCPCB BOM rows:" in upload_manifest
             and "- JLCPCB CPL placements:" in upload_manifest
             and "`upload/vjuga-rev-a-gerbers-drill.zip`" in upload_manifest,
-            "`upload/package-manifest.md` records the Gerber ZIP, BOM/CPL, notes, and checksums.",
+            "`upload/package-manifest.md` records the Gerber ZIP, retained BOM/CPL reference files, notes, and checksums.",
         ),
         (
-            "Order-upload runbook",
+            "Bare-PCB order-upload runbook",
             has_ready_line(order_upload_runbook, "READY")
-            and "- Factory assembly BOM rows: 26" in order_upload_runbook
-            and "- Factory assembly CPL placements: 89" in order_upload_runbook
-            and "- Unique factory CPNs: 20" in order_upload_runbook
-            and "- Manual-install rows kept out of factory BOM: 6" in order_upload_runbook
-            and "- Owner post-assembly socket insertions: 19" in order_upload_runbook
+            and "# VJUGA Rev A bare-PCB order-upload runbook" in order_upload_runbook
+            and "Select PCB fabrication only / no assembly" in order_upload_runbook
+            and "Upload only `vjuga-rev-a-gerbers-drill.zip`" in order_upload_runbook
+            and "- Reference factory BOM rows retained: 26" in order_upload_runbook
+            and "- Reference factory CPL placements retained: 89" in order_upload_runbook
+            and "- Reference unique factory CPNs retained: 20" in order_upload_runbook
+            and "- Manual-install rows retained for later assembly: 6" in order_upload_runbook
+            and "- Owner post-assembly socket insertions retained for later assembly: 19" in order_upload_runbook
             and "- Expected ZIP members: 11" in order_upload_runbook
             and "- ZIP members found: 11" in order_upload_runbook
             and "file mode `0644`" in order_upload_runbook,
-            "`order-upload-runbook.md` gives the exact JLCPCB upload files, checksum command, reproducible ZIP metadata, expected vendor UI counts, and remaining order-time checks.",
+            "`order-upload-runbook.md` gives the exact bare-PCB upload file, checksum command, reproducible ZIP metadata, retained assembly references, and remaining order-time checks.",
         ),
     ]
     return gates
@@ -399,17 +400,18 @@ def build_report(out_dir):
     post_rows = csv_rows(out_dir / "assembly" / "post-assembly-insertion.csv")
     failed_gates = [name for name, passed, _ in gates if not passed]
     machine_ready = not missing_required and not failed_gates
-    status = "DRAFT - HUMAN REVIEW REQUIRED" if machine_ready else "NOT READY"
+    status = "BARE PCB READY - VENDOR PREVIEW REQUIRED" if machine_ready else "NOT READY"
 
     lines = [
-        "# Rev A order readiness",
+        "# Rev A bare-PCB order readiness",
         "",
         f"Package: `{out_dir}`",
         f"Status: **{status}**",
         "",
-        "This report is a machine-generated order checklist. A clean machine gate",
-        "means the package is internally coherent; it does not replace human",
-        "schematic, Gerber, routing, sourcing, and assembly review.",
+        "This report is a machine-generated order checklist for a PCB-only first",
+        "sample. A clean machine gate means the package is internally coherent;",
+        "it does not replace human schematic, Gerber, routing, and vendor-preview",
+        "review before payment.",
         "",
         "## Machine Gates",
         "",
@@ -429,8 +431,8 @@ def build_report(out_dir):
     )
     lines.extend(
         [
-            f"- Manual/non-factory rows: **INFO** - {len(manual_rows)} rows are intentionally excluded from factory assembly.",
-            f"- Post-assembly insertions: **INFO** - {len(post_rows)} owner-supplied socketed parts are listed.",
+            f"- Reference manual/non-factory rows: **INFO** - {len(manual_rows)} retained for a later assembled-board path.",
+            f"- Reference post-assembly insertions: **INFO** - {len(post_rows)} owner-supplied socketed parts retained for a later assembled-board path.",
         ]
     )
 
@@ -444,7 +446,7 @@ def build_report(out_dir):
         for name in missing_optional:
             lines.append(f"- `{name}`")
 
-    lines.extend(["", "## Required Human Sign-Off Before Upload", ""])
+    lines.extend(["", "## Required Human Sign-Off Before Bare-PCB Upload", ""])
     for gate in HUMAN_GATES:
         lines.append(f"- [ ] {gate}")
 
