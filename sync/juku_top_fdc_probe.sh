@@ -11,6 +11,7 @@ command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 command -v vvp >/dev/null || { echo "vvp not found"; exit 2; }
 
 REPORT=${JUKU_TOP_FDC_REPORT:-docs/juku-top-fdc-probe.md}
+REPORT_TITLE=${JUKU_TOP_FDC_REPORT_TITLE:-juku_top FDC probe}
 DISK=${JUKU_TOP_FDC_DISK:-media/disks/JUKU1.CPM}
 KEYAT=${JUKU_TOP_FDC_KEYAT:-42000}
 KHOLD=${JUKU_TOP_FDC_KHOLD:-900000}
@@ -19,6 +20,8 @@ FRAMEIRQ=${JUKU_TOP_FDC_FRAMEIRQ:-80000}
 MAXVRAM=${JUKU_TOP_FDC_MAXVRAM:-88000}
 TIMECAP=${JUKU_TOP_FDC_TIMECAP:-900000000}
 TRACEPROGRESS=${JUKU_TOP_FDC_TRACEPROGRESS:-5000}
+TRACEIO=${JUKU_TOP_FDC_TRACEIO:-0}
+STOPIO=${JUKU_TOP_FDC_STOPIO:-0}
 STOPFDC=${JUKU_TOP_FDC_STOPFDC:-1}
 STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
 STOPPPI=${JUKU_TOP_FDC_STOPPPI:-0}
@@ -41,7 +44,7 @@ if command -v timeout >/dev/null; then
     +frameirq="$FRAMEIRQ" \
     +traceprogress="$TRACEPROGRESS" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-    +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+    +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   rc=$?
 else
@@ -50,7 +53,7 @@ else
     +frameirq="$FRAMEIRQ" \
     +traceprogress="$TRACEPROGRESS" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-    +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+    +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   rc=$?
 fi
@@ -67,6 +70,8 @@ pic_stop=$(grep -m1 '^\[PIC\] stop' "$OUT" || true)
 ppi_key_first=$(grep -m1 '^\[PPI0\] IN' "$OUT" || true)
 ppi_stop=$(grep -m1 '^\[PPI0\] stop' "$OUT" || true)
 irq_first=$(grep -m1 '^\[IRQ\]' "$OUT" || true)
+rawio_first=$(grep -m1 '^\[RAWIO\]' "$OUT" || true)
+rawio_stop=$(grep -m1 '^\[RAWIO\] stop' "$OUT" || true)
 io_summary=$(grep -m1 '^\[IO\]' "$OUT" || true)
 first_vram=$(grep -m1 '^\[VRAM\] first video write' "$OUT" || true)
 last_progress=$(grep '^\[VRAM\] progress' "$OUT" | tail -1 || true)
@@ -79,6 +84,7 @@ progress_lines=$(grep -c '^\[VRAM\] progress' "$OUT" || true)
 pic_lines=$(grep -c '^\[PIC\]' "$OUT" || true)
 ppi_key_lines=$(grep -c '^\[PPI0\] IN' "$OUT" || true)
 irq_lines=$(grep -c '^\[IRQ\]' "$OUT" || true)
+rawio_lines=$(grep -c '^\[RAWIO\]' "$OUT" || true)
 
 status="HDL JUKU_TOP FDC PATH NOT YET OBSERVED"
 fdc_result="NO"
@@ -90,7 +96,7 @@ elif [ "$rc" -eq 124 ]; then
 fi
 
 cat > "$REPORT" <<EOF
-# juku_top FDC probe
+# $REPORT_TITLE
 
 Status: **$status**
 
@@ -114,12 +120,14 @@ Environment overrides:
 - \`JUKU_TOP_FDC_KGAP\` default \`900000\`
 - \`JUKU_TOP_FDC_FRAMEIRQ\` default \`80000\`
 - \`JUKU_TOP_FDC_TRACEPROGRESS\` default \`5000\`
+- \`JUKU_TOP_FDC_TRACEIO\` default \`0\`
+- \`JUKU_TOP_FDC_STOPIO\` default \`0\`
 - \`JUKU_TOP_FDC_STOPFDC\` default \`1\`
 - \`JUKU_TOP_FDC_STOPPIC\` default \`0\`
 - \`JUKU_TOP_FDC_STOPPPI\` default \`0\`
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI TIMEOUT=$TIMEOUT_S\`.
+Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -130,6 +138,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 | first VRAM write observed | $(if [ -n "$first_vram" ]; then echo PASS; else echo NO; fi) |
 | VRAM progress trace observed | $(if [ -n "$last_progress" ]; then echo PASS; else echo NO; fi) |
 | keyboard trace observed | $(if [ -n "$key_first" ]; then echo PASS; else echo NO; fi) |
+| raw I/O trace observed | $(if [ -n "$rawio_first" ]; then echo PASS; else echo NO; fi) |
 | PIC setup trace observed | $(if [ -n "$pic_first" ]; then echo PASS; else echo NO; fi) |
 | PPI key-read trace observed | $(if [ -n "$ppi_key_first" ]; then echo PASS; else echo NO; fi) |
 | IRQ trace observed | $(if [ -n "$irq_first" ]; then echo PASS; else echo NO; fi) |
@@ -139,6 +148,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 | PIC trace lines | \`$pic_lines\` |
 | PPI key-read trace lines | \`$ppi_key_lines\` |
 | IRQ trace lines | \`$irq_lines\` |
+| raw I/O trace lines | \`$rawio_lines\` |
 | FDC trace lines | \`$fdc_lines\` |
 
 ## Stop State
@@ -154,6 +164,8 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 - First PPI key-read line: \`${ppi_key_first:-none}\`
 - PPI stop line: \`${ppi_stop:-none}\`
 - First IRQ line: \`${irq_first:-none}\`
+- First raw I/O line: \`${rawio_first:-none}\`
+- Raw I/O stop line: \`${rawio_stop:-none}\`
 - First FDC line: \`${fdc_first:-none}\`
 - FDC stop line: \`${fdc_stop:-none}\`
 - Time-cap line: \`${timecap_line:-none}\`
@@ -161,8 +173,9 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 
 ## Disposition
 
-- The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+tracepic=1\`,
-  \`+stoppic=N\`, \`+tracefdc=1\`, and \`+stopfdc=N\` hooks.
+- The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+traceio=1\`,
+  \`+stopio=N\`, \`+tracepic=1\`, \`+stoppic=N\`, \`+tracefdc=1\`, and
+  \`+stopfdc=N\` hooks.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
 - \`docs/ekdos-timing-reference.md\` shows the fast cosim target for this same

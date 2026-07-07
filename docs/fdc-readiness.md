@@ -16,11 +16,15 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   disk image.
 - `docs/fdc-core-survey.md` records why this remains a bounded boot shim rather
   than a growing manual replacement for a full upstream ВГ93/WD1793 core.
+- `sync/juku_top_io_decode_probe.sh` proves the top-level diagnostics can see
+  raw ROMBIOS I/O and settled D7/D9 chip-select decode before the long FDC probe
+  reaches the post-banner window.
 
 ## Command
 
 ```sh
 sync/fdc_check.sh
+sync/juku_top_io_decode_probe.sh
 sync/juku_top_fdc_probe.sh
 ```
 
@@ -35,6 +39,7 @@ sync/juku_top_fdc_probe.sh
 | Vendored `JUKU1.CPM` sector 2 bytes are streamed through the HDL FDC | PASS |
 | DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
+| `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -44,9 +49,12 @@ sync/juku_top_fdc_probe.sh
   `+disk=media/disks/JUKU1.CPM` and promote the HDL boundary from sector-ready
   to EKDOS-prompt-ready.
 - `docs/juku-top-fdc-probe.md` now captures the current top-level boundary:
-  disk media is loaded, the BIOS starts drawing, and early `TDD` key pulses are
-  generated. The bounded 16k-VRAM diagnostic sees frame ticks, but no PIC
-  interrupt acknowledgements, PPI0 keyboard scanning, or decoded WD1793 I/O.
+  disk media is loaded and the BIOS starts drawing, but the default 60-second
+  bound still times out before the post-banner keyboard/PIC/FDC window.
+- `docs/juku-top-io-decode-probe.md` captures the fast pre-banner decode sanity
+  check: raw I/O is visible, the first mirrored PPI1 write decodes, and the
+  early ROMBIOS sample counts PPI0 writes after the trace samples the decoder
+  one timestep after the I/O edge.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

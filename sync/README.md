@@ -50,6 +50,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
   interrupts, fixed `TDD` keyboard stimulus, traces VRAM progress and PIC setup,
   and can stop on decoded PIC/PPI/WD1793 I/O.
+- `sync/juku_top_io_decode_probe.sh` — fast top-level I/O decode diagnostic; it
+  stops after the first 20 raw I/O cycles and verifies delayed trace sampling
+  sees settled D7/D9 peripheral selects before the long FDC probe reaches the
+  post-banner keyboard/FDC window.
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.

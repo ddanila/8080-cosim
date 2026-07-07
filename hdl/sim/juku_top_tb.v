@@ -79,6 +79,7 @@ module juku_top_tb();
     frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq-1));        // periodic IR5 tick
   end
 
+  integer traceio=0, stopio=0, raw_ios=0, raw_reads=0, raw_writes=0;
   integer tracekbd=0, traceppi=0, stopppi=0, ppi_ios=0, ppi_reads=0, ppi_writes=0, ppi_key_reads=0;
   integer tracepic=0, stoppic=0, pic_ios=0, pic_reads=0, pic_writes=0;
   reg kbd_was_pressed=0;
@@ -101,6 +102,35 @@ module juku_top_tb();
     inta_q <= dut.inta_n;
   end
 
+  always @(negedge dut.iowr_n) begin
+    #1;
+    raw_ios = raw_ios + 1;
+    raw_writes = raw_writes + 1;
+    if (traceio) $display("[RAWIO] OUT ba=0x%04h port=0x%02h data=0x%02h mcyc=%0d vram=%0d ios=%0d pic=%0d ppi0=%0d sio0=%0d ppi1=%0d pit0=%0d pit1=%0d pit2=%0d fdc=%0d",
+                          dut.BA, dut.BA[7:0], dut.DB, mcyc, vram_writes, raw_ios,
+                          !dut.cs_pic_n, !dut.cs_ppi0_n, !dut.cs_sio0_n, !dut.cs_ppi1_n,
+                          !dut.cs_pit0_n, !dut.cs_pit1_n, !dut.cs_pit2_n, !dut.cs_fdc_n);
+    if (stopio != 0 && raw_ios >= stopio) begin
+      $display("[RAWIO] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+               raw_ios, raw_reads, raw_writes, mcyc, vram_writes);
+      #60 dump_vram; $finish;
+    end
+  end
+  always @(negedge dut.iord_n) begin
+    #1;
+    raw_ios = raw_ios + 1;
+    raw_reads = raw_reads + 1;
+    if (traceio) $display("[RAWIO] IN  ba=0x%04h port=0x%02h data=0x%02h mcyc=%0d vram=%0d ios=%0d pic=%0d ppi0=%0d sio0=%0d ppi1=%0d pit0=%0d pit1=%0d pit2=%0d fdc=%0d",
+                          dut.BA, dut.BA[7:0], dut.DB, mcyc, vram_writes, raw_ios,
+                          !dut.cs_pic_n, !dut.cs_ppi0_n, !dut.cs_sio0_n, !dut.cs_ppi1_n,
+                          !dut.cs_pit0_n, !dut.cs_pit1_n, !dut.cs_pit2_n, !dut.cs_fdc_n);
+    if (stopio != 0 && raw_ios >= stopio) begin
+      $display("[RAWIO] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+               raw_ios, raw_reads, raw_writes, mcyc, vram_writes);
+      #60 dump_vram; $finish;
+    end
+  end
+
   always @(posedge osc) begin
     if (tracekbd && kbd_pressed && !kbd_was_pressed)
       $display("[KBD] press key=%0d col=%0d bit=%0d shift=%0d mcyc=%0d vram=%0d",
@@ -110,75 +140,81 @@ module juku_top_tb();
     kbd_was_pressed <= kbd_pressed;
   end
 
-  always @(negedge dut.iowr_n) if (!dut.cs_pic_n) begin
-    pic_ios = pic_ios + 1;
-    pic_writes = pic_writes + 1;
-    if (tracepic) $display("[PIC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
-                           {7'b0000000, dut.BA[0]}, dut.BA[0], dut.DB, mcyc, vram_writes, pic_ios);
-    if (stoppic != 0 && pic_ios >= stoppic) begin
-      $display("[PIC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
-               pic_ios, pic_reads, pic_writes, mcyc, vram_writes);
-      #60 dump_vram; $finish;
+  always @(negedge dut.iowr_n) begin #1; if (!dut.cs_pic_n) begin
+      pic_ios = pic_ios + 1;
+      pic_writes = pic_writes + 1;
+      if (tracepic) $display("[PIC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                             {7'b0000000, dut.BA[0]}, dut.BA[0], dut.DB, mcyc, vram_writes, pic_ios);
+      if (stoppic != 0 && pic_ios >= stoppic) begin
+        $display("[PIC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+                 pic_ios, pic_reads, pic_writes, mcyc, vram_writes);
+        #60 dump_vram; $finish;
+      end
     end
   end
-  always @(negedge dut.iord_n) if (!dut.cs_pic_n) begin
-    pic_ios = pic_ios + 1;
-    pic_reads = pic_reads + 1;
-    if (tracepic) $display("[PIC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
-                           {7'b0000000, dut.BA[0]}, dut.BA[0], dut.DB, mcyc, vram_writes, pic_ios);
-    if (stoppic != 0 && pic_ios >= stoppic) begin
-      $display("[PIC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
-               pic_ios, pic_reads, pic_writes, mcyc, vram_writes);
-      #60 dump_vram; $finish;
+  always @(negedge dut.iord_n) begin #1; if (!dut.cs_pic_n) begin
+      pic_ios = pic_ios + 1;
+      pic_reads = pic_reads + 1;
+      if (tracepic) $display("[PIC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                             {7'b0000000, dut.BA[0]}, dut.BA[0], dut.DB, mcyc, vram_writes, pic_ios);
+      if (stoppic != 0 && pic_ios >= stoppic) begin
+        $display("[PIC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+                 pic_ios, pic_reads, pic_writes, mcyc, vram_writes);
+        #60 dump_vram; $finish;
+      end
     end
   end
 
-  always @(negedge dut.iowr_n) if (!dut.cs_ppi0_n) begin
-    ppi_ios = ppi_ios + 1;
-    ppi_writes = ppi_writes + 1;
-    if (traceppi > 1) $display("[PPI0] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
-                               {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, ppi_ios);
-    if (stopppi != 0 && ppi_ios >= stopppi) begin
-      $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
-               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
-      #60 dump_vram; $finish;
+  always @(negedge dut.iowr_n) begin #1; if (!dut.cs_ppi0_n) begin
+      ppi_ios = ppi_ios + 1;
+      ppi_writes = ppi_writes + 1;
+      if (traceppi > 1) $display("[PPI0] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
+                                 {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, ppi_ios);
+      if (stopppi != 0 && ppi_ios >= stopppi) begin
+        $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
+                 ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
+        #60 dump_vram; $finish;
+      end
     end
   end
-  always @(negedge dut.iord_n) if (!dut.cs_ppi0_n) begin
-    ppi_ios = ppi_ios + 1;
-    ppi_reads = ppi_reads + 1;
-    if (dut.BA[1:0] == 2'd1 && kbd_pressed) begin
-      ppi_key_reads = ppi_key_reads + 1;
-      if (traceppi) $display("[PPI0] IN  port=0x%02h reg=%0d data=0x%02h col=%0d key_col=%0d key_bit=%0d mcyc=%0d key_reads=%0d",
-                             {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
-                             dut.U_PPI0.kbd_col_sel, kbd_kcol, kbd_kbit, mcyc, ppi_key_reads);
-    end
-    if (stopppi != 0 && ppi_ios >= stopppi) begin
-      $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
-               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
-      #60 dump_vram; $finish;
+  always @(negedge dut.iord_n) begin #1; if (!dut.cs_ppi0_n) begin
+      ppi_ios = ppi_ios + 1;
+      ppi_reads = ppi_reads + 1;
+      if (dut.BA[1:0] == 2'd1 && kbd_pressed) begin
+        ppi_key_reads = ppi_key_reads + 1;
+        if (traceppi) $display("[PPI0] IN  port=0x%02h reg=%0d data=0x%02h col=%0d key_col=%0d key_bit=%0d mcyc=%0d key_reads=%0d",
+                               {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
+                               dut.U_PPI0.kbd_col_sel, kbd_kcol, kbd_kbit, mcyc, ppi_key_reads);
+      end
+      if (stopppi != 0 && ppi_ios >= stopppi) begin
+        $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
+                 ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
+        #60 dump_vram; $finish;
+      end
     end
   end
 
   integer tracefdc=0, stopfdc=0, fdc_ios=0, fdc_reads=0, fdc_writes=0;
-  always @(negedge dut.iowr_n) if (!dut.cs_fdc_n) begin
-    fdc_ios = fdc_ios + 1;
-    fdc_writes = fdc_writes + 1;
-    if (tracefdc) $display("[FDC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
-                           {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
-    if (stopfdc != 0 && fdc_ios >= stopfdc) begin
-      $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
-      #60 dump_vram; $finish;
+  always @(negedge dut.iowr_n) begin #1; if (!dut.cs_fdc_n) begin
+      fdc_ios = fdc_ios + 1;
+      fdc_writes = fdc_writes + 1;
+      if (tracefdc) $display("[FDC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
+                             {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
+      if (stopfdc != 0 && fdc_ios >= stopfdc) begin
+        $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
+        #60 dump_vram; $finish;
+      end
     end
   end
-  always @(negedge dut.iord_n) if (!dut.cs_fdc_n) begin
-    fdc_ios = fdc_ios + 1;
-    fdc_reads = fdc_reads + 1;
-    if (tracefdc) $display("[FDC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
-                           {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
-    if (stopfdc != 0 && fdc_ios >= stopfdc) begin
-      $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
-      #60 dump_vram; $finish;
+  always @(negedge dut.iord_n) begin #1; if (!dut.cs_fdc_n) begin
+      fdc_ios = fdc_ios + 1;
+      fdc_reads = fdc_reads + 1;
+      if (tracefdc) $display("[FDC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
+                             {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
+      if (stopfdc != 0 && fdc_ios >= stopfdc) begin
+        $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
+        #60 dump_vram; $finish;
+      end
     end
   end
 
@@ -219,9 +255,9 @@ module juku_top_tb();
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
-    if (tracekbd || tracepic || traceppi || tracefdc || traceirq)
-      $display("[IO] pic_ios=%0d pic_reads=%0d pic_writes=%0d ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
-               pic_ios, pic_reads, pic_writes, ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
+    if (traceio || tracekbd || tracepic || traceppi || tracefdc || traceirq)
+      $display("[IO] raw_ios=%0d raw_reads=%0d raw_writes=%0d pic_ios=%0d pic_reads=%0d pic_writes=%0d ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
+               raw_ios, raw_reads, raw_writes, pic_ios, pic_reads, pic_writes, ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
                frame_ticks, intr_edges, inta_edges);
   end endtask
 
@@ -238,6 +274,8 @@ module juku_top_tb();
     if ($value$plusargs("khold=%d",  khold))  ;
     if ($value$plusargs("kgap=%d",   kgap))   ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;    // fixed T,D,D sequence
+    if ($value$plusargs("traceio=%d", traceio)) ;
+    if ($value$plusargs("stopio=%d", stopio)) ;
     if ($value$plusargs("tracekbd=%d", tracekbd)) ;
     if ($value$plusargs("tracepic=%d", tracepic)) ;
     if ($value$plusargs("stoppic=%d", stoppic)) ;
