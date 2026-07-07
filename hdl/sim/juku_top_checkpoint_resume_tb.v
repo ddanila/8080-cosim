@@ -24,7 +24,7 @@ module juku_top_checkpoint_resume_tb();
   integer state_fdc_buffer_pos = 0, state_fdc_buffer_len = 0;
   integer trace_resume = 0;
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
-  integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0;
+  integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0, stopfdc_data_read = 0;
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0;
   integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
@@ -285,6 +285,12 @@ module juku_top_checkpoint_resume_tb();
       if (tracefdc) $display("[RESUME-FDC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
                              dut.BA[7:0], dut.BA[1:0], dut.DB, mcyc, vram_writes, fdc_ios);
       if (tracefdc) $fflush;
+      if (stopfdc_data_read != 0 && dut.BA[7:0] == 8'h1f) begin
+        $display("[RESUME-FDC] stop reason=data-read ios=%0d reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d",
+                 fdc_ios, fdc_reads, fdc_writes, dut.DB, mcyc, vram_writes);
+        $fflush;
+        $finish;
+      end
       if (stopfdc != 0 && fdc_ios >= stopfdc) begin
         $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
                  fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes);
@@ -292,7 +298,7 @@ module juku_top_checkpoint_resume_tb();
         $finish;
       end
     end
-    if (pic_seen && kbd_seen && stopfdc == 0) begin
+    if (pic_seen && kbd_seen && stopfdc == 0 && stopfdc_data_read == 0) begin
       $display("JUKU-TOP-CHECKPOINT-RESUME: PASS pc=0x%04h mcyc=%0d vram=%0d ios=%0d",
                dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios);
       $fflush;
@@ -317,6 +323,7 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("tracekbd=%d", tracekbd)) ;
     if ($value$plusargs("tracefdc=%d", tracefdc)) ;
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
+    if ($value$plusargs("stopfdc_data_read=%d", stopfdc_data_read)) ;
     if ($value$plusargs("state_vram_writes=%d", state_vram_writes)) ;
     if ($value$plusargs("state_pc=%h", state_pc)) ;
     if ($value$plusargs("state_sp=%h", state_sp)) ;

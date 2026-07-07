@@ -73,7 +73,10 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   diagnostic with frame IRQs and fixed `TDD` keyboard stimulus. Its default
   first-FDC checkpoint at 63,085 framebuffer writes resumes `juku_top` and
   reaches decoded WD1793/VG93 `OUT 0x1C = 0x02`; the earlier 42,000-write
-  key-window checkpoint remains available as a non-CI narrowing run.
+  key-window checkpoint remains available as a non-CI narrowing run. The probe
+  now also has an opt-in FDC data-register-read stop; the current 63,095-write
+  cosim candidate lands at PC `0x1006` and does not yet resume to decoded FDC
+  traffic.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
@@ -158,7 +161,9 @@ sync/juku_top_fdc_probe.sh
 - `docs/juku-top-checkpoint-fdc-probe.md` records the next checkpointed
   boundary: with frame IRQs and fixed `TDD` stimulus state carried from cosim,
   the default first-FDC checkpoint resumes `juku_top` and reaches decoded
-  WD1793/VG93 `OUT 0x1C = 0x02`.
+  WD1793/VG93 `OUT 0x1C = 0x02`; its opt-in data-register-read target currently
+  documents the failed 63,095-write/PC `0x1006` candidate for the next
+  narrowing pass.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

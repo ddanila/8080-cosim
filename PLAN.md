@@ -212,7 +212,10 @@ debugging session saved on real hardware.
    first-FDC cosim checkpoint at 63,085 framebuffer writes resumes `juku_top`
    and reaches decoded WD1793/VG93 `OUT 0x1C = 0x02`; an earlier 42,000-write
    key-window run carries the `TDD` stimulus state but still times out before
-   FDC. A first narrow harness,
+   FDC. The probe also has an opt-in FDC data-register-read stop; the current
+   63,095-write cosim candidate lands at PC `0x1006` and does not yet resume to
+   decoded FDC traffic, so the proven boundary remains the first command while
+   the next checkpoint window is narrowed. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
    shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact

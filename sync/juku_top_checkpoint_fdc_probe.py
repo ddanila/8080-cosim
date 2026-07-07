@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Probe checkpoint-resumed juku_top toward the first EKDOS FDC I/O."""
+"""Probe checkpoint-resumed juku_top toward EKDOS FDC I/O."""
 from __future__ import annotations
 
 import os
@@ -148,6 +148,8 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
     max_mcyc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC", "1000000")
     timecap = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMECAP", "900000000")
     timeout_s = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMEOUT", "300"))
+    stopfdc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_IO", "1")
+    stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "0")
 
     args = [
         "vvp",
@@ -165,7 +167,8 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
         "+traceirq=1",
         "+tracekbd=1",
         "+tracefdc=1",
-        "+stopfdc=1",
+        f"+stopfdc={stopfdc}",
+        f"+stopfdc_data_read={stopfdc_data_read}",
     ]
     args.extend(state_plusargs(state))
 
@@ -228,6 +231,8 @@ def main() -> int:
 
     fdc_stop = first_line(resume_proc.stdout, "[RESUME-FDC] stop")
     fdc_first = first_line(resume_proc.stdout, "[RESUME-FDC]")
+    want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "0") != "0"
+    reached_data_read = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read")
     reached_fdc = fdc_stop != "none"
     failures: list[str] = []
     if cosim_proc.returncode != 0:
@@ -236,8 +241,11 @@ def main() -> int:
         failures.append(f"HDL checkpoint FDC run exited {resume_proc.returncode}")
     if not reached_fdc:
         failures.append("checkpoint-resumed HDL run did not reach decoded FDC I/O")
+    if want_data_read and not reached_data_read:
+        failures.append("checkpoint-resumed HDL run did not reach FDC data register reads")
 
     status = "PASS" if not failures else "BOUNDARY NOT YET FDC"
+    target = "FDC data-register read" if want_data_read else "first decoded FDC I/O"
     lines = [
         "# juku_top checkpoint FDC probe",
         "",
@@ -246,8 +254,8 @@ def main() -> int:
         "This diagnostic starts from a generated EKDOS/TDD cosim checkpoint",
         "(`JUKU_TOP_CHECKPOINT_FDC_WRITES`, default 63,085, the first-FDC window),",
         "loads it into `juku_top`, enables frame IRQs and the",
-        "fixed `TDD` keyboard stimulus, and runs toward the first decoded",
-        "WD1793/VG93 I/O. It is the checkpointed counterpart to",
+        f"fixed `TDD` keyboard stimulus, and runs toward the {target}.",
+        "It is the checkpointed counterpart to",
         "`sync/juku_top_fdc_probe.sh`.",
         "",
         "## Command",
@@ -266,6 +274,8 @@ def main() -> int:
         "- `JUKU_TOP_CHECKPOINT_FDC_KGAP` default `900000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC` default `1000000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_TIMECAP` default `900000000`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `1`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0`",
         "",
         "## Evidence",
         "",
@@ -298,12 +308,16 @@ def main() -> int:
         "",
         "## Boundary",
         "",
-        "- This is not a prompt proof until decoded FDC I/O and then EKDOS `A>`",
-        "  are reached through CPU execution.",
-        "- This proves the first decoded FDC command from a checkpointed CPU run,",
-        "  not the full uncheckpointed `TDD` path or EKDOS prompt.",
+        "- This is not a prompt proof until EKDOS `A>` is reached through",
+        "  checkpoint-resumed `juku_top` CPU execution.",
+        "- The default proves the first decoded ROMBIOS FDC command from a",
+        "  checkpointed CPU run.",
+        "- Use `JUKU_TOP_CHECKPOINT_FDC_STOP_IO=0",
+        "  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=1` to target the first FDC",
+        "  data-register read; the current 63,095-write candidate lands at",
+        "  PC `0x1006` and does not yet resume to decoded FDC traffic.",
         "- Use `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000` for the earlier key-window",
-        "  narrowing run; the default starts at the cosim first-FDC boundary.",
+        "  narrowing run.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])

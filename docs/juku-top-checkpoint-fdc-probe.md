@@ -5,8 +5,8 @@ Status: **PASS**
 This diagnostic starts from a generated EKDOS/TDD cosim checkpoint
 (`JUKU_TOP_CHECKPOINT_FDC_WRITES`, default 63,085, the first-FDC window),
 loads it into `juku_top`, enables frame IRQs and the
-fixed `TDD` keyboard stimulus, and runs toward the first decoded
-WD1793/VG93 I/O. It is the checkpointed counterpart to
+fixed `TDD` keyboard stimulus, and runs toward the first decoded FDC I/O.
+It is the checkpointed counterpart to
 `sync/juku_top_fdc_probe.sh`.
 
 ## Command
@@ -25,6 +25,8 @@ Environment overrides:
 - `JUKU_TOP_CHECKPOINT_FDC_KGAP` default `900000`
 - `JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC` default `1000000`
 - `JUKU_TOP_CHECKPOINT_FDC_TIMECAP` default `900000000`
+- `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `1`
+- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0`
 
 ## Evidence
 
@@ -57,9 +59,13 @@ Environment overrides:
 
 ## Boundary
 
-- This is not a prompt proof until decoded FDC I/O and then EKDOS `A>`
-  are reached through CPU execution.
-- This proves the first decoded FDC command from a checkpointed CPU run,
-  not the full uncheckpointed `TDD` path or EKDOS prompt.
+- This is not a prompt proof until EKDOS `A>` is reached through
+  checkpoint-resumed `juku_top` CPU execution.
+- The default proves the first decoded ROMBIOS FDC command from a
+  checkpointed CPU run.
+- Use `JUKU_TOP_CHECKPOINT_FDC_STOP_IO=0
+  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=1` to target the first FDC
+  data-register read; the current 63,095-write candidate lands at
+  PC `0x1006` and does not yet resume to decoded FDC traffic.
 - Use `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000` for the earlier key-window
-  narrowing run; the default starts at the cosim first-FDC boundary.
+  narrowing run.

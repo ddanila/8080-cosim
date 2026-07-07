@@ -66,7 +66,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   generated cosim checkpoint, then stops on decoded FDC I/O if reached. The
   default first-FDC checkpoint at 63,085 framebuffer writes reaches decoded
   WD1793/VG93 `OUT 0x1C = 0x02`; the earlier 42,000-write key-window checkpoint
-  is still available through `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`.
+  is still available through `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`. An opt-in
+  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=1` target now stops on FDC data
+  register reads; the current 63,095-write candidate lands at PC `0x1006` and
+  still needs a narrower resume window.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.
