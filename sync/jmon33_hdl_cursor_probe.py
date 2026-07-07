@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -66,6 +67,18 @@ def cursor_block_ok(vram: bytes) -> bool:
     return True
 
 
+def visible_pixels(vram: bytes) -> int:
+    if len(vram) != VRAM_STRIDE * VRAM_LINES:
+        return 0
+    return sum(byte.bit_count() for byte in vram)
+
+
+def nonzero_bytes(vram: bytes) -> int:
+    if len(vram) != VRAM_STRIDE * VRAM_LINES:
+        return 0
+    return sum(1 for byte in vram if byte != 0x00)
+
+
 def main() -> int:
     max_vram = int(os.environ.get("JMON33_HDL_CURSOR_MAXVRAM", "300"))
     frame_irq = int(os.environ.get("JMON33_HDL_CURSOR_FRAMEIRQ", "200000"))
@@ -95,18 +108,18 @@ def main() -> int:
                 sys.stderr.write(build.stderr)
                 return build.returncode
             try:
-                proc = run(
-                    [
-                        "vvp",
-                        str(sim),
-                        "+rom=hdl/sim/jmon33.hex",
-                        f"+frameirq={frame_irq}",
-                        "+cursorstop=1",
-                        f"+maxvram={max_vram}",
-                        f"+timecap={timecap}",
-                    ],
-                    timeout=timeout_s,
-                )
+                vvp_cmd = [
+                    "vvp",
+                    str(sim),
+                    "+rom=hdl/sim/jmon33.hex",
+                    f"+frameirq={frame_irq}",
+                    "+cursorstop=1",
+                    f"+maxvram={max_vram}",
+                    f"+timecap={timecap}",
+                ]
+                if shutil.which("stdbuf"):
+                    vvp_cmd = ["stdbuf", "-oL", "-eL", *vvp_cmd]
+                proc = run(vvp_cmd, timeout=timeout_s)
                 timed_out = False
             except subprocess.TimeoutExpired as exc:
                 proc = subprocess.CompletedProcess(exc.cmd, 124, exc.stdout or "", exc.stderr or "")
@@ -123,6 +136,8 @@ def main() -> int:
 
     sha = hashlib.sha256(vram).hexdigest() if vram else ""
     cursor_ok = cursor_block_ok(vram)
+    pixels = visible_pixels(vram)
+    nonzero = nonzero_bytes(vram)
     cursor_reached = bool(parsed.get("cursor_reached")) and sha == EXPECTED_CURSOR_SHA256 and cursor_ok
     first_ok = parsed.get("first_addr") == "ff40"
     bounded_ok = proc.returncode == 0 and first_ok and sha in {EXPECTED_CURSOR_SHA256, BLANK_VRAM_SHA256}
@@ -160,6 +175,8 @@ def main() -> int:
         f"| first jmon33 video write is `0xFF40` | {'PASS' if first_ok else 'FAIL'} |",
         f"| cursor hook reached | {'PASS' if bool(parsed.get('cursor_reached')) else 'NO'} |",
         f"| framebuffer cursor bytes match cosim | {'PASS' if cursor_ok else 'NO'} |",
+        f"| visible framebuffer pixels | `{pixels}` |",
+        f"| nonzero framebuffer bytes | `{nonzero}` |",
         f"| framebuffer SHA256 | `{sha or 'missing'}` |",
         f"| cosim cursor SHA256 | `{EXPECTED_CURSOR_SHA256}` |",
         "",

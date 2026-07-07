@@ -29,6 +29,8 @@ Environment overrides:
 | first jmon33 video write is `0xFF40` | PASS |
 | cursor hook reached | NO |
 | framebuffer cursor bytes match cosim | NO |
+| visible framebuffer pixels | `0` |
+| nonzero framebuffer bytes | `0` |
 | framebuffer SHA256 | `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d` |
 | cosim cursor SHA256 | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` |
 
