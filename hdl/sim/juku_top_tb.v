@@ -81,6 +81,25 @@ module juku_top_tb();
 
   integer tracekbd=0, traceppi=0, stopppi=0, ppi_ios=0, ppi_reads=0, ppi_writes=0, ppi_key_reads=0;
   reg kbd_was_pressed=0;
+  integer traceirq=0, frame_ticks=0, intr_edges=0, inta_edges=0;
+  reg intr_q=0, inta_q=1;
+  always @(posedge osc) begin
+    if (frame_tick) begin
+      frame_ticks = frame_ticks + 1;
+      if (traceirq > 1) $display("[IRQ] frame_tick count=%0d mcyc=%0d vram=%0d", frame_ticks, mcyc, vram_writes);
+    end
+    if (dut.intr && !intr_q) begin
+      intr_edges = intr_edges + 1;
+      if (traceirq) $display("[IRQ] intr rise count=%0d mcyc=%0d vram=%0d", intr_edges, mcyc, vram_writes);
+    end
+    if (!dut.inta_n && inta_q) begin
+      inta_edges = inta_edges + 1;
+      if (traceirq) $display("[IRQ] inta fall count=%0d mcyc=%0d vram=%0d", inta_edges, mcyc, vram_writes);
+    end
+    intr_q <= dut.intr;
+    inta_q <= dut.inta_n;
+  end
+
   always @(posedge osc) begin
     if (tracekbd && kbd_pressed && !kbd_was_pressed)
       $display("[KBD] press key=%0d col=%0d bit=%0d shift=%0d mcyc=%0d vram=%0d",
@@ -174,9 +193,10 @@ module juku_top_tb();
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
-    if (tracekbd || traceppi || tracefdc)
-      $display("[IO] ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d",
-               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes);
+    if (tracekbd || traceppi || tracefdc || traceirq)
+      $display("[IO] ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
+               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
+               frame_ticks, intr_edges, inta_edges);
   end endtask
 
   integer timecap = 400000000;       // ns; enough for the 6000-write boot guard. Interactive
@@ -194,6 +214,7 @@ module juku_top_tb();
     if ($value$plusargs("tracekbd=%d", tracekbd)) ;
     if ($value$plusargs("traceppi=%d", traceppi)) ;
     if ($value$plusargs("stopppi=%d", stopppi)) ;
+    if ($value$plusargs("traceirq=%d", traceirq)) ;
     if ($value$plusargs("tracefdc=%d", tracefdc)) ;
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)

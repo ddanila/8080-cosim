@@ -36,9 +36,11 @@ Current values: `KEYAT=3000 KHOLD=300000 KGAP=300000 FRAMEIRQ=80000 MAXVRAM=1600
 | first VRAM write observed | PASS |
 | keyboard trace observed | PASS |
 | PPI key-read trace observed | NO |
+| IRQ trace observed | NO |
 | decoded FDC I/O observed | NO |
 | keyboard trace lines | `6` |
 | PPI key-read trace lines | `0` |
+| IRQ trace lines | `0` |
 | FDC trace lines | `0` |
 
 ## Stop State
@@ -50,10 +52,11 @@ Current values: `KEYAT=3000 KHOLD=300000 KGAP=300000 FRAMEIRQ=80000 MAXVRAM=1600
 - Last keyboard line: `[KBD] release key=2 mcyc=255387 vram=13882`
 - First PPI key-read line: `none`
 - PPI stop line: `none`
+- First IRQ line: `none`
 - First FDC line: `none`
 - FDC stop line: `none`
 - Time-cap line: `none`
-- I/O summary line: `[IO] ppi_ios=0 ppi_reads=0 ppi_writes=0 ppi_key_reads=0 fdc_ios=0 fdc_reads=0 fdc_writes=0`
+- I/O summary line: `[IO] ppi_ios=0 ppi_reads=0 ppi_writes=0 ppi_key_reads=0 fdc_ios=0 fdc_reads=0 fdc_writes=0 frame_ticks=29 intr_edges=0 inta_edges=0`
 
 ## Disposition
 

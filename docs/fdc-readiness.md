@@ -45,8 +45,8 @@ sync/juku_top_fdc_probe.sh
   to EKDOS-prompt-ready.
 - `docs/juku-top-fdc-probe.md` now captures the current top-level boundary:
   disk media is loaded, the BIOS starts drawing, and early `TDD` key pulses are
-  generated, but ROMBIOS has not reached PPI0 keyboard scanning or decoded
-  WD1793 I/O by the bounded 16k-VRAM diagnostic.
+  generated. The bounded 16k-VRAM diagnostic sees frame ticks, but no PIC
+  interrupt acknowledgements, PPI0 keyboard scanning, or decoded WD1793 I/O.
 - Preserve the Arti `JUKU1.CPM` cosim proof from
   `docs/ekdos-media-acquisition.md` as the disk-backed reference.
 - If deeper controller behavior becomes the blocker, decide whether GPL

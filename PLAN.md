@@ -173,9 +173,10 @@ debugging session saved on real hardware.
    remaining top-level boundary: it enables vendored `JUKU1.CPM`, frame
    interrupts, and fixed `TDD` key stimulus, then stops on decoded WD1793 I/O.
    The current captured early-key run loads the disk, reaches the first BIOS
-   VRAM write, emits all three `TDD` key pulses, and shows zero PPI0/FDC I/O by
-   16k VRAM writes; the next trigger needs to start from the proven post-banner
-   keyboard window rather than before ROMBIOS begins PPI scanning.
+   VRAM write, emits all three `TDD` key pulses, and shows frame ticks but zero
+   PIC interrupt acknowledgements, PPI0 I/O, or FDC I/O by 16k VRAM writes; the
+   next trigger needs to start from the proven post-banner keyboard/interrupt
+   window rather than before ROMBIOS begins PPI scanning.
    Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
    the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
