@@ -191,7 +191,12 @@ debugging session saved on real hardware.
    full cosim machine checkpoint at that 30,000-write boundary: CPU
    registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
    framebuffer hash. This is the input evidence for the next checkpoint/resume
-   HDL diagnostic, not yet an HDL resume proof. A first narrow harness,
+   HDL diagnostic, not yet an HDL resume proof.
+   `docs/juku-top-checkpoint-load.md` now proves the checkpoint's 64 KiB RAM
+   image can be loaded into the LVS-checked `juku_top` D84..D91 bit-sliced
+   DRAM planes and dumped back with matching full-RAM and framebuffer hashes.
+   CPU architectural/microcycle state and peripheral-state injection remain the
+   resume boundary. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including frame INTA vector `0xFED4`,
    shifted `T` keyboard scan, and a vendored `JUKU1.CPM` sector byte, without
