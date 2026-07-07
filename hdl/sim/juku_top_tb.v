@@ -18,7 +18,7 @@
 
 module juku_top_tb();
   reg osc=0;
-  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0;
+  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, traceprogress=0;
   reg vram_seen=0, sq=0;
 
   // keyboard stimulus (opt-in: keyat=0 => kbd off => boot byte-identical). Press the
@@ -80,6 +80,7 @@ module juku_top_tb();
   end
 
   integer tracekbd=0, traceppi=0, stopppi=0, ppi_ios=0, ppi_reads=0, ppi_writes=0, ppi_key_reads=0;
+  integer tracepic=0, stoppic=0, pic_ios=0, pic_reads=0, pic_writes=0;
   reg kbd_was_pressed=0;
   integer traceirq=0, frame_ticks=0, intr_edges=0, inta_edges=0;
   reg intr_q=0, inta_q=1;
@@ -107,6 +108,29 @@ module juku_top_tb();
     if (tracekbd && !kbd_pressed && kbd_was_pressed)
       $display("[KBD] release key=%0d mcyc=%0d vram=%0d", ekdos_key, mcyc, vram_writes);
     kbd_was_pressed <= kbd_pressed;
+  end
+
+  always @(negedge dut.iowr_n) if (!dut.cs_pic_n) begin
+    pic_ios = pic_ios + 1;
+    pic_writes = pic_writes + 1;
+    if (tracepic) $display("[PIC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                           {7'b0000000, dut.BA[0]}, dut.BA[0], dut.DB, mcyc, vram_writes, pic_ios);
+    if (stoppic != 0 && pic_ios >= stoppic) begin
+      $display("[PIC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+               pic_ios, pic_reads, pic_writes, mcyc, vram_writes);
+      #60 dump_vram; $finish;
+    end
+  end
+  always @(negedge dut.iord_n) if (!dut.cs_pic_n) begin
+    pic_ios = pic_ios + 1;
+    pic_reads = pic_reads + 1;
+    if (tracepic) $display("[PIC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                           {7'b0000000, dut.BA[0]}, dut.BA[0], dut.DB, mcyc, vram_writes, pic_ios);
+    if (stoppic != 0 && pic_ios >= stoppic) begin
+      $display("[PIC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
+               pic_ios, pic_reads, pic_writes, mcyc, vram_writes);
+      #60 dump_vram; $finish;
+    end
   end
 
   always @(negedge dut.iowr_n) if (!dut.cs_ppi0_n) begin
@@ -163,6 +187,8 @@ module juku_top_tb();
     vram_writes = vram_writes + 1;
     if (!vram_seen) begin vram_seen=1;
       $display("[VRAM] first video write @0x%04h mcyc=%0d", dut.BA, mcyc); end
+    if (traceprogress != 0 && (vram_writes % traceprogress) == 0)
+      $display("[VRAM] progress writes=%0d mcyc=%0d", vram_writes, mcyc);
     if (cursorstop && !cursor_seen && cursor_oracle_ok()) begin
       cursor_seen = 1;
       $display("[VRAM] jmon33 cursor oracle reached (mcyc=%0d writes=%0d)", mcyc, vram_writes);
@@ -193,9 +219,9 @@ module juku_top_tb();
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
-    if (tracekbd || traceppi || tracefdc || traceirq)
-      $display("[IO] ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
-               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
+    if (tracekbd || tracepic || traceppi || tracefdc || traceirq)
+      $display("[IO] pic_ios=%0d pic_reads=%0d pic_writes=%0d ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
+               pic_ios, pic_reads, pic_writes, ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
                frame_ticks, intr_edges, inta_edges);
   end endtask
 
@@ -203,6 +229,7 @@ module juku_top_tb();
                                       // runs (full banner + key) need more -> raise via +timecap.
   initial begin
     if ($value$plusargs("maxvram=%d", max_vram)) ;
+    if ($value$plusargs("traceprogress=%d", traceprogress)) ;
     if ($value$plusargs("timecap=%d", timecap)) ;
     if ($value$plusargs("keyat=%d",  keyat))  ;          // press key after N video writes
     if ($value$plusargs("kcol=%d",   kcolp))  ;          // decoded key column 0-15
@@ -212,6 +239,8 @@ module juku_top_tb();
     if ($value$plusargs("kgap=%d",   kgap))   ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;    // fixed T,D,D sequence
     if ($value$plusargs("tracekbd=%d", tracekbd)) ;
+    if ($value$plusargs("tracepic=%d", tracepic)) ;
+    if ($value$plusargs("stoppic=%d", stoppic)) ;
     if ($value$plusargs("traceppi=%d", traceppi)) ;
     if ($value$plusargs("stopppi=%d", stopppi)) ;
     if ($value$plusargs("traceirq=%d", traceirq)) ;

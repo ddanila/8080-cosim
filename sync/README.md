@@ -48,7 +48,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   framebuffer writes.
 - `sync/juku_top_fdc_probe.sh` — bounded HDL diagnostic for the remaining
   `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
-  interrupts, fixed `TDD` keyboard stimulus, and stops on decoded WD1793 I/O.
+  interrupts, fixed `TDD` keyboard stimulus, traces VRAM progress and PIC setup,
+  and can stop on decoded PIC/PPI/WD1793 I/O.
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.
