@@ -69,6 +69,8 @@ kicad/check_replica_manufacturing_ready.sh
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8353 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2338 | PASS |
 
@@ -81,6 +83,7 @@ kicad/check_replica_manufacturing_ready.sh
 - [ ] Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.
 - [ ] Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.
 - [ ] Review the 599 accepted courtyard/PTH/silk/text findings against the vendor preview before payment.
+- [ ] Review `docs/replica-bringup-verification-points.md` and confirm no listed residual source-risk net blocks PCB fabrication.
 - [ ] Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.
 
 ## Do Not Upload

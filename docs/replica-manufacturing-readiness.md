@@ -15,7 +15,7 @@ already been placed or accepted.
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
 | Order readiness | `fab/gerbers/order-readiness.md` | 2253 | PASS |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 4771 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5073 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |

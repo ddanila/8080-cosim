@@ -29,6 +29,8 @@ RETAINED_EVIDENCE = [
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
+    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **READY**"),
+    ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "Status: **SOURCING READY"),
     ("Checksum file", "SHA256SUMS", None),
     ("Order evidence template", "docs/replica-order-evidence-template.md", "# Replica order evidence template"),
 ]
@@ -41,6 +43,7 @@ ORDER_CHECKS = [
     "Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.",
     "Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.",
     "Review the 599 accepted courtyard/PTH/silk/text findings against the vendor preview before payment.",
+    "Review `docs/replica-bringup-verification-points.md` and confirm no listed residual source-risk net blocks PCB fabrication.",
     "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.",
 ]
 FIXED_ZIP_DATE = (1980, 1, 1, 0, 0, 0)
