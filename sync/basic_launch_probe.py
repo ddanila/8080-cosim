@@ -46,6 +46,8 @@ RAM_RE = re.compile(
     r"basic_ram_nonzero_writes\s+:\s+([0-9]+).*?"
     r"basic_ram_first_write\s+:\s+0x([0-9A-Fa-f]{4}).*?"
     r"basic_ram_last_write\s+:\s+0x([0-9A-Fa-f]{4}).*?"
+    r"basic_ram_first_write_pc\s+:\s+0x([0-9A-Fa-f]{4}).*?"
+    r"basic_ram_last_write_pc\s+:\s+0x([0-9A-Fa-f]{4}).*?"
     r"basic_ram_nonzero_bytes\s+:\s+([0-9]+).*?"
     r"basic_ram_byte_sum\s+:\s+([0-9]+)",
     re.S,
@@ -62,7 +64,9 @@ def instrumented_trace_source() -> str:
         "static unsigned long basic_probe_ram_writes = 0;\n"
         "static unsigned long basic_probe_ram_nonzero_writes = 0;\n"
         "static unsigned basic_probe_ram_first_write = 0x10000;\n"
-        "static unsigned basic_probe_ram_last_write = 0;\n",
+        "static unsigned basic_probe_ram_last_write = 0;\n"
+        "static unsigned basic_probe_ram_first_write_pc = 0;\n"
+        "static unsigned basic_probe_ram_last_write_pc = 0;\n",
     )
     src = src.replace(
         "  (void)u; unsigned idx = 0;\n",
@@ -85,8 +89,13 @@ def instrumented_trace_source() -> str:
         "  if (a >= 0x4000 && a <= 0xBFFF) {\n"
         "    basic_probe_ram_writes++;\n"
         "    if (v != 0x00) basic_probe_ram_nonzero_writes++;\n"
-        "    if (basic_probe_ram_first_write == 0x10000) basic_probe_ram_first_write = a;\n"
+        "    i8080* write_cpu = (i8080*)u;\n"
+        "    if (basic_probe_ram_first_write == 0x10000) {\n"
+        "      basic_probe_ram_first_write = a;\n"
+        "      basic_probe_ram_first_write_pc = write_cpu ? write_cpu->pc : 0;\n"
+        "    }\n"
         "    basic_probe_ram_last_write = a;\n"
+        "    basic_probe_ram_last_write_pc = write_cpu ? write_cpu->pc : 0;\n"
         "  }\n"
         "  wpage[a >> 8]++;\n",
         1,
@@ -130,6 +139,8 @@ def instrumented_trace_source() -> str:
         '  printf("  basic_ram_nonzero_writes : %8lu\\n", basic_probe_ram_nonzero_writes);\n'
         '  printf("  basic_ram_first_write    : 0x%04X\\n", basic_probe_ram_first_write & 0xFFFF);\n'
         '  printf("  basic_ram_last_write     : 0x%04X\\n", basic_probe_ram_last_write & 0xFFFF);\n'
+        '  printf("  basic_ram_first_write_pc : 0x%04X\\n", basic_probe_ram_first_write_pc & 0xFFFF);\n'
+        '  printf("  basic_ram_last_write_pc  : 0x%04X\\n", basic_probe_ram_last_write_pc & 0xFFFF);\n'
         '  printf("  basic_ram_nonzero_bytes  : %8lu\\n", basic_ram_nonzero);\n'
         '  printf("  basic_ram_byte_sum       : %8lu\\n", basic_ram_sum);\n'
         '  printf("\\n==== RAM write density (pages >0) ====\\n");\n',
@@ -175,15 +186,28 @@ def parse_ram_probe(stdout: str) -> dict[str, int]:
             "nonzero_writes": 0,
             "first_write": 0,
             "last_write": 0,
+            "first_write_pc": 0,
+            "last_write_pc": 0,
             "nonzero_bytes": 0,
             "byte_sum": 0,
         }
-    writes, nonzero_writes, first_write, last_write, nonzero_bytes, byte_sum = match.groups()
+    (
+        writes,
+        nonzero_writes,
+        first_write,
+        last_write,
+        first_write_pc,
+        last_write_pc,
+        nonzero_bytes,
+        byte_sum,
+    ) = match.groups()
     return {
         "writes": int(writes),
         "nonzero_writes": int(nonzero_writes),
         "first_write": int(first_write, 16),
         "last_write": int(last_write, 16),
+        "first_write_pc": int(first_write_pc, 16),
+        "last_write_pc": int(last_write_pc, 16),
         "nonzero_bytes": int(nonzero_bytes),
         "byte_sum": int(byte_sum),
     }
@@ -343,8 +367,8 @@ def main() -> int:
         "",
         "## Evidence",
         "",
-        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | `0x00` opcode cycles | RAM writes | RAM nonzero bytes | RAM byte sum | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
-        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |",
+        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | `0x00` opcode cycles | RAM writes | RAM first/last write | RAM first/last write PCs | RAM nonzero bytes | RAM byte sum | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: | --- | ---: | --- |",
         *[
             (
                 f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
@@ -354,6 +378,8 @@ def main() -> int:
                 f"`{result['pc_cart_mode1']}` | `{result['pc_cart_mode2']}` | "
                 f"`{result['pc_cart_opcode00']}` | "
                 f"`{result['ram_probe']['writes']}` | "
+                f"`0x{result['ram_probe']['first_write']:04X}..0x{result['ram_probe']['last_write']:04X}` | "
+                f"`0x{result['ram_probe']['first_write_pc']:04X}..0x{result['ram_probe']['last_write_pc']:04X}` | "
                 f"`{result['ram_probe']['nonzero_bytes']}` | "
                 f"`{result['ram_probe']['byte_sum']}` | "
                 f"`{result['visible_pixels']}` | "
@@ -376,6 +402,9 @@ def main() -> int:
                 f"overlay mode 2. `{result['pc_cart_opcode00']}` PC cycles fetch a "
                 f"`0x00` opcode there. The RAM window saw `{ram_probe['writes']}` "
                 f"accepted writes, `{ram_probe['nonzero_writes']}` of them nonzero, "
+                f"from PC range `0x{ram_probe['first_write_pc']:04X}` to "
+                f"`0x{ram_probe['last_write_pc']:04X}` over addresses "
+                f"`0x{ram_probe['first_write']:04X}`..`0x{ram_probe['last_write']:04X}`, "
                 f"ending with `{ram_probe['nonzero_bytes']}` nonzero bytes and byte "
                 f"sum `{ram_probe['byte_sum']}`. The captured framebuffer has "
                 f"`{result['visible_pixels']}` visible pixels."
