@@ -77,6 +77,7 @@ first_vram=$(grep -m1 '^\[VRAM\] first video write' "$OUT" || true)
 last_progress=$(grep '^\[VRAM\] progress' "$OUT" | tail -1 || true)
 vram_stop=$(grep -m1 '^\[VRAM\] [0-9][0-9]* writes' "$OUT" || true)
 timecap_line=$(grep -m1 '^\[SIM\] time cap' "$OUT" || true)
+cpu_line=$(grep -m1 '^\[CPU\]' "$OUT" || true)
 disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
 fdc_lines=$(grep -c '^\[FDC\]' "$OUT" || true)
 kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
@@ -169,6 +170,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 - First FDC line: \`${fdc_first:-none}\`
 - FDC stop line: \`${fdc_stop:-none}\`
 - Time-cap line: \`${timecap_line:-none}\`
+- CPU state line: \`${cpu_line:-none}\`
 - I/O summary line: \`${io_summary:-none}\`
 
 ## Disposition

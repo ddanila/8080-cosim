@@ -54,6 +54,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   stops after the first 20 raw I/O cycles and verifies delayed trace sampling
   sees settled D7/D9 peripheral selects before the long FDC probe reaches the
   post-banner keyboard/FDC window.
+- `sync/juku_top_30000_state_probe.sh` — slow pre-PIC state comparison. It
+  stops cosim and `juku_top` at 30,000 VRAM writes on the vendored `TDD` path
+  and verifies both are still at PC `0x0484`, just before the cosim first-PIC
+  point at 30,520 writes.
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.

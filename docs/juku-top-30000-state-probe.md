@@ -1,0 +1,40 @@
+# juku_top 30,000-write state probe
+
+Status: **PASS**
+
+This slow diagnostic compares the fast cosim and LVS-checked `juku_top` at
+30,000 framebuffer writes on the vendored `JUKU1.CPM` `TDD` path. The fast
+cosim timing reference first touches PIC at 30,520 writes, so this proves whether
+the expensive top-level simulation is still aligned immediately before that
+post-banner PIC/FDC window.
+
+## Command
+
+```sh
+sync/juku_top_30000_state_probe.sh
+```
+
+## Evidence
+
+| Check | Result |
+| --- | --- |
+| Target VRAM writes | `30000` |
+| Cosim stop PC | `0x0484` |
+| HDL stop PC | `0x0484` |
+| Cosim/HDL PC match | PASS |
+
+## Stop State
+
+- Cosim first VRAM line: `[VRAM] first video write @0xD800 cyc=98649`
+- Cosim stop line: `stopped pc=0x0484 cyc=1963707 halted=0 iff=0 mode=0 switches=0`
+- HDL VRAM stop line: `[VRAM] 30000 writes (mcyc=522138) -- dump`
+- HDL CPU state line: `[CPU] pc=0x0484 sp=0xd44c instr=0x36 ba=0xfd2f db=0xff mcyc=522138 vram=30000 memr_n=1 memw_n=1 iord_n=1 iowr_n=1 inta_n=1 sync=0 intr=0`
+- HDL I/O summary line: `[IO] raw_ios=29 raw_reads=1 raw_writes=28 pic_ios=0 pic_reads=0 pic_writes=0 ppi_ios=8 ppi_reads=1 ppi_writes=7 ppi_key_reads=0 fdc_ios=0 fdc_reads=0 fdc_writes=0 frame_ticks=49 intr_edges=0 inta_edges=0`
+
+## Disposition
+
+- At 30,000 VRAM writes, `juku_top` and cosim both stop at PC `0x0484`.
+- The top-level has not diverged before the PIC setup point; it is simply too
+  slow for repeated brute-force wall-time probing past 30,520 writes.
+- The next useful M2 automation is a checkpoint/fast-forward strategy or a
+  narrower post-banner harness, not another larger timeout.

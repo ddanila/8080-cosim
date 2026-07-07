@@ -178,9 +178,13 @@ debugging session saved on real hardware.
    interrupts, and fixed `TDD` key stimulus, then stops on decoded WD1793 I/O.
    `sync/juku_top_io_decode_probe.sh` proves raw ROMBIOS I/O and settled D7/D9
    peripheral decode are visible in the fast pre-banner window, including
-   mirrored PPI1 and PPI0 writes. The current full FDC run loads the disk and
-   reaches BIOS VRAM progress, but the default 60-second bound times out before
-   the proven post-banner keyboard/interrupt window. The fast cosim timing
+   mirrored PPI1 and PPI0 writes. `sync/juku_top_30000_state_probe.sh` proves
+   the slow top-level run still matches cosim at PC `0x0484` after 30,000 VRAM
+   writes, just before the fast cosim first-PIC point at 30,520 writes. The
+   current full FDC run loads the disk and reaches BIOS VRAM progress, but the
+   default 60-second bound times out before the proven post-banner
+   keyboard/interrupt window; the next automation needs checkpoint/fast-forward
+   or a narrower post-banner harness rather than a larger wall timeout. The fast cosim timing
    reference in `docs/ekdos-timing-reference.md` anchors that window: first
    frame IRQ at 33,812 VRAM writes and first FDC command at 63,085 VRAM writes
    on the vendored `JUKU1.CPM` `TDD` path.

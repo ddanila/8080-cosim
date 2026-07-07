@@ -255,6 +255,10 @@ module juku_top_tb();
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
+    $display("[CPU] pc=0x%04h sp=0x%04h instr=0x%02h ba=0x%04h db=0x%02h mcyc=%0d vram=%0d memr_n=%0d memw_n=%0d iord_n=%0d iowr_n=%0d inta_n=%0d sync=%0d intr=%0d",
+             dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp, dut.U_CPU.u.core.i,
+             dut.BA, dut.DB, mcyc, vram_writes, dut.memr_n, dut.memw_n, dut.iord_n,
+             dut.iowr_n, dut.inta_n, dut.sync, dut.intr);
     if (traceio || tracekbd || tracepic || traceppi || tracefdc || traceirq)
       $display("[IO] raw_ios=%0d raw_reads=%0d raw_writes=%0d pic_ios=%0d pic_reads=%0d pic_writes=%0d ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
                raw_ios, raw_reads, raw_writes, pic_ios, pic_reads, pic_writes, ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
