@@ -261,6 +261,7 @@ before any Soviet NOS is at risk.
    assembly, and preserving stock/price/alternative/assembly acceptance for a
    later assembled-board order. The exact first-sample upload procedure is now
    generated in `fab/minimal-vga/order-upload-runbook.md` and summarized in
+   `spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md` plus
    `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md`: upload only
    `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`, select PCB
    fabrication only / no assembly, verify the vendor preview, and save order

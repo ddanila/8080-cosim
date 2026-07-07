@@ -102,6 +102,9 @@ def milestone_rows():
         "Status: **BASIC RAM EXECUTION REACHED**",
     )
     vjuga_bare_pcb_ready = marker(
+        "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
+        "Status: **READY TO UPLOAD**",
+    ) or marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **BARE PCB READY - VENDOR PREVIEW REQUIRED**",
     ) or marker(
@@ -194,6 +197,8 @@ def milestone_rows():
             "status": "EXTERNAL PENDING",
             "evidence": (
                 "`fab/minimal-vga/order-readiness.md` is BARE PCB READY and "
+                "`spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md` "
+                "records the bare-PCB package as READY TO UPLOAD; "
                 "`spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md` records the "
                 "PCB-only first-sample upload policy"
                 + (
