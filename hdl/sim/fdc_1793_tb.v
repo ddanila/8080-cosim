@@ -91,6 +91,34 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
+    write_reg(2'd0, 8'h50);
+    read_reg(2'd1, got);
+    if (got !== 8'd13) begin
+      $display("FDC-1793: FAIL step-in/update track=%02x", got);
+      errors = errors + 1;
+    end
+
+    write_reg(2'd0, 8'h40);
+    read_reg(2'd1, got);
+    if (got !== 8'd13) begin
+      $display("FDC-1793: FAIL step-in/no-update track=%02x", got);
+      errors = errors + 1;
+    end
+
+    write_reg(2'd0, 8'h70);
+    read_reg(2'd1, got);
+    if (got !== 8'd12) begin
+      $display("FDC-1793: FAIL step-out/update track=%02x", got);
+      errors = errors + 1;
+    end
+
+    write_reg(2'd0, 8'h30);
+    read_reg(2'd1, got);
+    if (got !== 8'd11) begin
+      $display("FDC-1793: FAIL step/update previous direction track=%02x", got);
+      errors = errors + 1;
+    end
+
     write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
     write_reg(2'd0, 8'h80);

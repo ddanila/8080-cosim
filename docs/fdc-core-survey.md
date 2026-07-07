@@ -5,9 +5,9 @@ Status date: 2026-07-07.
 The current `hdl/devices.v` `fdc_1793` block is a bounded simulation shim, not a
 full manual ВГ93 clone. It exists to let `juku_top` exercise the boot-critical
 WD1793 register path against vendored raw Juku media while the board connectivity
-stays LVS-checked. It covers restore, seek, read-sector, status/data register
-behavior, side select, motor-not-ready, and `+disk=media/disks/JUKU1.CPM`
-sector streaming.
+stays LVS-checked. It covers restore, seek, Type-I step/step-in/step-out
+track updates, read-sector, status/data register behavior, side select,
+motor-not-ready, and `+disk=media/disks/JUKU1.CPM` sector streaming.
 
 Do not keep expanding this shim into a full floppy controller. If we need full
 format/write/timing behavior, replace or wrap it with an upstream core whose

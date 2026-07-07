@@ -92,10 +92,10 @@ images.
 
 ## HDL WD1793 synthetic-sector guard
 `sync/fdc_check.sh` now guards the first HDL-side WD1793 behavior slice in
-`hdl/devices.v`: restore, seek, read-sector, BUSY/DRQ status, side-select
-stream changes, and motor-off NOT READY behavior. The guard is documented in
-`docs/fdc-readiness.md` and uses synthetic sector contents only; it does not
-load vendored EKDOS media in HDL yet.
+`hdl/devices.v`: restore, seek, Type-I step/step-in/step-out track updates,
+read-sector, BUSY/DRQ status, side-select stream changes, motor-off NOT READY
+behavior, and vendored `JUKU1.CPM` sector bytes. The guard is documented in
+`docs/fdc-readiness.md`.
 
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3

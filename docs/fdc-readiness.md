@@ -4,13 +4,15 @@ Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**
 
 This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 
-- `hdl/devices.v` implements D93-compatible restore, seek, read-sector,
-  status, track, sector, data register, DRQ, and INTRQ behavior in
-  `fdc_1793`.
+- `hdl/devices.v` implements D93-compatible restore, seek, step,
+  step-in, step-out, read-sector, status, track, sector, data register,
+  DRQ, and INTRQ behavior in `fdc_1793`.
 - `hdl/sim/fdc_1793_tb.v` mirrors the C-side synthetic media guard:
   restore returns to track 0, seek copies the data register to the track
-  register, read-sector streams 512 bytes, side select changes the stream,
-  and motor-off read reports not-ready.
+  register, step commands update or preserve the track register according
+  to the command's update bit and previous direction, read-sector streams
+  512 bytes, side select changes the stream, and motor-off read reports
+  not-ready.
 - The same testbench also runs with `+disk=media/disks/JUKU1.CPM +disk_heads=2`
   and verifies that the HDL WD1793 path reads real bytes from the vendored raw
   disk image.
@@ -48,6 +50,7 @@ sync/juku_top_fdc_probe.sh
 | --- | --- |
 | Restore command clears transfer and returns to track 0 | PASS |
 | Seek command copies data register to track register | PASS |
+| Step, step-in, and step-out commands update the track register when requested | PASS |
 | Read-sector command asserts BUSY/DRQ and streams 512 bytes | PASS |
 | Side select affects the synthetic sector stream | PASS |
 | Vendored `JUKU1.CPM` sector 2 bytes are streamed through the HDL FDC | PASS |

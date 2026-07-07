@@ -607,6 +607,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [7:0] sector = 8'h01;
     reg [7:0] data = 8'h00;
     reg [7:0] command = 8'h00;
+    reg step_dir_in = 1'b1;
     integer buffer_pos = 0;
     integer buffer_len = 0;
     reg [7:0] sector_buf [0:511];
@@ -715,7 +716,19 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end else if ((cmd & 8'hF0) == 8'h00) begin
             track = 8'h00;
         end else if ((cmd & 8'hF0) == 8'h10) begin
+            step_dir_in = (data >= track);
             track = data;
+        end else if ((cmd & 8'hE0) == 8'h20) begin
+            if (cmd[4]) begin
+                if (step_dir_in && track != 8'hff) track = track + 8'd1;
+                else if (!step_dir_in && track != 8'h00) track = track - 8'd1;
+            end
+        end else if ((cmd & 8'hE0) == 8'h40) begin
+            step_dir_in = 1'b1;
+            if (cmd[4] && track != 8'hff) track = track + 8'd1;
+        end else if ((cmd & 8'hE0) == 8'h60) begin
+            step_dir_in = 1'b0;
+            if (cmd[4] && track != 8'h00) track = track - 8'd1;
         end
     end endtask
 
