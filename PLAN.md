@@ -170,9 +170,10 @@ debugging session saved on real hardware.
    keeps this local block scoped as a boot/media shim rather than a full manual
    controller clone. `docs/emu80v4-survey.md` adds Emu80v4's GPL-3 software
    FDC1793 model as a reference checklist, but adopts no code and found no
-   Juku-specific machine target there. `docs/wd1772-vg93-reference.md` records
-   the local WD1772 transistor schematic and PLA dump as license-unknown
-   deep-reference material, not vendored implementation input.
+   Juku-specific machine target there. `ref/wd1772-vg93/` now vendors the local
+   WD1772 transistor schematic and PLA dump, with
+   `docs/wd1772-vg93-reference.md` keeping them scoped as deep reference
+   material rather than HDL-derived implementation input.
    `sync/juku_top_fdc_probe.sh` is now the bounded HDL diagnostic for the
    remaining top-level boundary: it enables vendored `JUKU1.CPM`, frame
    interrupts, and fixed `TDD` key stimulus, then stops on decoded WD1793 I/O.

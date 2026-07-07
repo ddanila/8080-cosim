@@ -2,12 +2,12 @@
 
 Status date: 2026-07-07.
 
-Local files inspected:
+Vendored files:
 
 | File | SHA256 | Notes |
 | --- | --- | --- |
-| `/home/ddanila/Downloads/wd1772.pdf` | `d3601f97751b029d7effa493aa5094cd4726759eed0f4f34aa290cdf3305f0ef` | One-page KiCad-generated PDF titled `WD1772`, created 2019-07-13. It is a searchable transistor/gate schematic reference with visible PLA, step, DRQ/INTRQ, DIRC, write-gate/data, data-separator, and host-bus signal names. |
-| `/home/ddanila/Downloads/wd1772pla.txt` | `687a62103ae5a89a3daf4c1decb8968d730802522fa142e458031545b7a34b10` | ASCII PLA/PLM table. It has 120 product rows, 19 input columns, and 20 output columns; one row contains `9` markers and needs interpretation before machine use. |
+| `ref/wd1772-vg93/wd1772.pdf` | `d3601f97751b029d7effa493aa5094cd4726759eed0f4f34aa290cdf3305f0ef` | One-page KiCad-generated PDF titled `WD1772`, created 2019-07-13. It is a searchable transistor/gate schematic reference with visible PLA, step, DRQ/INTRQ, DIRC, write-gate/data, data-separator, and host-bus signal names. |
+| `ref/wd1772-vg93/wd1772pla.txt` | `687a62103ae5a89a3daf4c1decb8968d730802522fa142e458031545b7a34b10` | ASCII PLA/PLM table. It has 120 product rows, 19 input columns, and 20 output columns; one row contains `9` markers and needs interpretation before machine use. |
 
 ## Value
 
@@ -30,10 +30,10 @@ Concrete uses:
 
 ## Boundary
 
-The license/provenance of the PDF and PLA text is not established in this repo.
-Do not vendor or mechanically translate these files into HDL without an explicit
-decision to accept that source boundary. For the current plan they are external
-reference evidence only.
+These files are vendored as project reference material, not as HDL-derived
+source. Do not mechanically translate the PDF or PLA text into HDL without an
+explicit implementation decision. For the current plan they are reference
+evidence only.
 
 This does not change the immediate M2 task: first make `juku_top` reach decoded
 WD1793/VG93 I/O and the EKDOS `A>` prompt with `media/disks/JUKU1.CPM`. Revisit
