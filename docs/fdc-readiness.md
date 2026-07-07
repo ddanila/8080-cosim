@@ -45,9 +45,9 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 - `sync/juku_top_checkpoint_fdc_probe.py` extends that non-CI checkpointed
   diagnostic with frame IRQs and fixed `TDD` keyboard stimulus. Its default
   cycle-targeted checkpoint at 8,711,550 cycles / 63,095 framebuffer writes /
-  PC `0xE643` resumes `juku_top` and reaches an FDC data-register read
-  (`IN 0x1F`) after the decoded WD1793/VG93 command/setup sequence. The older
-  first-FDC checkpoint at 63,085 framebuffer writes and the earlier
+  PC `0xE643` resumes `juku_top` and drains a full 512-byte sector through FDC
+  data-register reads after the decoded WD1793/VG93 command/setup sequence.
+  The older first-FDC checkpoint at 63,085 framebuffer writes and the earlier
   42,000-write key-window checkpoint remain available as non-CI narrowing runs.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
@@ -91,7 +91,7 @@ sync/juku_top_fdc_probe.sh
 | cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
 | checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
 | focused checkpoint-resumed `juku_top` probe reaches first post-checkpoint PIC write and no-key keyboard read | PASS (non-CI) |
-| checkpoint-resumed `juku_top` from the cycle-targeted FDC checkpoint reaches decoded data-register read `IN 0x1F` | PASS (non-CI) |
+| checkpoint-resumed `juku_top` from the cycle-targeted FDC checkpoint drains 512 data-register reads | PASS (non-CI) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -133,7 +133,8 @@ sync/juku_top_fdc_probe.sh
 - `docs/juku-top-checkpoint-fdc-probe.md` records the next checkpointed
   boundary: with frame IRQs and fixed `TDD` stimulus state carried from cosim,
   the default cycle-targeted checkpoint resumes `juku_top` at PC `0xE643` and
-  reaches decoded FDC data-register read `IN 0x1F` after command/setup I/O.
+  drains a full 512-byte sector through decoded FDC data-register reads after
+  command/setup I/O.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

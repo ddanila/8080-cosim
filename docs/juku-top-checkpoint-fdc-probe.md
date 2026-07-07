@@ -6,7 +6,7 @@ This diagnostic starts from a generated EKDOS/TDD cosim checkpoint
 (`JUKU_TOP_CHECKPOINT_FDC_CYCLES`, default 8,711,550, the
 first-data-read setup window),
 loads it into `juku_top`, enables frame IRQs and the
-fixed `TDD` keyboard stimulus, and runs toward the FDC data-register read.
+fixed `TDD` keyboard stimulus, and runs toward the 512 FDC data-register reads.
 It is the checkpointed counterpart to
 `sync/juku_top_fdc_probe.sh`.
 
@@ -29,7 +29,10 @@ Environment overrides:
 - `JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC` default `1000000`
 - `JUKU_TOP_CHECKPOINT_FDC_TIMECAP` default `900000000`
 - `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `0`
-- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `1`
+- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0` when
+  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`
+- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `512`; set to `0`
+  to stop at the first data-register read instead
 
 ## Evidence
 
@@ -49,7 +52,7 @@ Environment overrides:
 - First VRAM line: `none`
 - Last complete VRAM line: `none`
 - First FDC line: `[RESUME-FDC] OUT port=0x1c reg=0 data=0x02 mcyc=58712 vram=63095 ios=1`
-- FDC stop line: `[RESUME-FDC] stop reason=data-read ios=11 reads=7 writes=4 data=0x00 mcyc=83789 vram=63095`
+- FDC stop line: `[RESUME-FDC] stop reason=data-read-count target=512 ios=522 reads=518 data_reads=512 writes=4 data=0xc2 mcyc=90432 vram=63095`
 - Stop/fail line: `none`
 
 | Trace | Lines |
@@ -59,16 +62,18 @@ Environment overrides:
 | key stimulus | `0` |
 | IRQ events | `32` |
 | VRAM progress | `0` |
-| FDC events | `12` |
+| FDC events | `523` |
 
 ## Boundary
 
 - This is not a prompt proof until EKDOS `A>` is reached through
   checkpoint-resumed `juku_top` CPU execution.
-- The default proves the ROMBIOS FDC path advances from command/setup I/O
-  into an FDC data-register read from a checkpointed CPU run.
+- The default proves the ROMBIOS FDC path drains a full 512-byte sector
+  through FDC data-register reads from a checkpointed CPU run.
 - Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=63085
   JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1 JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`
   for the older first-command boundary.
+- Use `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=0` for the older
+  first-data-register-read boundary.
 - Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`
   for the earlier key-window narrowing run.

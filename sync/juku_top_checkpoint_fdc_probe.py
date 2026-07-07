@@ -152,8 +152,10 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
     max_mcyc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC", "1000000")
     timecap = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMECAP", "900000000")
     timeout_s = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMEOUT", "300"))
+    stopfdc_data_reads = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "512")
     stopfdc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_IO", "0")
-    stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "1")
+    default_stop_data_read = "0" if int(stopfdc_data_reads) else "1"
+    stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", default_stop_data_read)
 
     args = [
         "vvp",
@@ -173,6 +175,7 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
         "+tracefdc=1",
         f"+stopfdc={stopfdc}",
         f"+stopfdc_data_read={stopfdc_data_read}",
+        f"+stopfdc_data_reads={stopfdc_data_reads}",
     ]
     args.extend(state_plusargs(state))
 
@@ -235,8 +238,11 @@ def main() -> int:
 
     fdc_stop = first_line(resume_proc.stdout, "[RESUME-FDC] stop")
     fdc_first = first_line(resume_proc.stdout, "[RESUME-FDC]")
-    want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "1") != "0"
+    want_data_reads = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "512"))
+    default_want_data_read = "0" if want_data_reads else "1"
+    want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", default_want_data_read) != "0"
     reached_data_read = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read")
+    reached_data_reads = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read-count")
     reached_fdc = fdc_stop != "none"
     failures: list[str] = []
     if cosim_proc.returncode != 0:
@@ -245,11 +251,16 @@ def main() -> int:
         failures.append(f"HDL checkpoint FDC run exited {resume_proc.returncode}")
     if not reached_fdc:
         failures.append("checkpoint-resumed HDL run did not reach decoded FDC I/O")
-    if want_data_read and not reached_data_read:
+    if want_data_reads and not reached_data_reads:
+        failures.append(f"checkpoint-resumed HDL run did not reach {want_data_reads} FDC data register reads")
+    elif want_data_read and not reached_data_read:
         failures.append("checkpoint-resumed HDL run did not reach FDC data register reads")
 
     status = "PASS" if not failures else "BOUNDARY NOT YET FDC"
-    target = "FDC data-register read" if want_data_read else "first decoded FDC I/O"
+    if want_data_reads:
+        target = f"{want_data_reads} FDC data-register reads"
+    else:
+        target = "FDC data-register read" if want_data_read else "first decoded FDC I/O"
     lines = [
         "# juku_top checkpoint FDC probe",
         "",
@@ -282,7 +293,10 @@ def main() -> int:
         "- `JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC` default `1000000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_TIMECAP` default `900000000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `0`",
-        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `1`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0` when",
+        "  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `512`; set to `0`",
+        "  to stop at the first data-register read instead",
         "",
         "## Evidence",
         "",
@@ -318,11 +332,13 @@ def main() -> int:
         "",
         "- This is not a prompt proof until EKDOS `A>` is reached through",
         "  checkpoint-resumed `juku_top` CPU execution.",
-        "- The default proves the ROMBIOS FDC path advances from command/setup I/O",
-        "  into an FDC data-register read from a checkpointed CPU run.",
+        "- The default proves the ROMBIOS FDC path drains a full 512-byte sector",
+        "  through FDC data-register reads from a checkpointed CPU run.",
         "- Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=63085",
         "  JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1 JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`",
         "  for the older first-command boundary.",
+        "- Use `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=0` for the older",
+        "  first-data-register-read boundary.",
         "- Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`",
         "  for the earlier key-window narrowing run.",
     ]
