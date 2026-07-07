@@ -234,6 +234,78 @@ static size_t load_image(const char* path, uint8_t* dst, size_t cap, int fill) {
   return n;
 }
 
+static void dump_checkpoint(const char* prefix, const i8080* cpu) {
+  if (!prefix || !prefix[0]) return;
+
+  char ram_path[1024];
+  char state_path[1024];
+  snprintf(ram_path, sizeof(ram_path), "%s.ram", prefix);
+  snprintf(state_path, sizeof(state_path), "%s.state", prefix);
+
+  FILE* ram_out = fopen(ram_path, "wb");
+  if (!ram_out) {
+    perror(ram_path);
+    exit(1);
+  }
+  fwrite(ram, 1, sizeof(ram), ram_out);
+  fclose(ram_out);
+
+  FILE* state_out = fopen(state_path, "w");
+  if (!state_out) {
+    perror(state_path);
+    exit(1);
+  }
+  fprintf(state_out, "pc=%04X\n", cpu->pc);
+  fprintf(state_out, "sp=%04X\n", cpu->sp);
+  fprintf(state_out, "a=%02X\n", cpu->a);
+  fprintf(state_out, "b=%02X\n", cpu->b);
+  fprintf(state_out, "c=%02X\n", cpu->c);
+  fprintf(state_out, "d=%02X\n", cpu->d);
+  fprintf(state_out, "e=%02X\n", cpu->e);
+  fprintf(state_out, "h=%02X\n", cpu->h);
+  fprintf(state_out, "l=%02X\n", cpu->l);
+  fprintf(state_out, "sf=%u\n", cpu->sf ? 1 : 0);
+  fprintf(state_out, "zf=%u\n", cpu->zf ? 1 : 0);
+  fprintf(state_out, "hf=%u\n", cpu->hf ? 1 : 0);
+  fprintf(state_out, "pf=%u\n", cpu->pf ? 1 : 0);
+  fprintf(state_out, "cf=%u\n", cpu->cf ? 1 : 0);
+  fprintf(state_out, "iff=%u\n", cpu->iff ? 1 : 0);
+  fprintf(state_out, "halted=%u\n", cpu->halted ? 1 : 0);
+  fprintf(state_out, "interrupt_pending=%u\n", cpu->interrupt_pending ? 1 : 0);
+  fprintf(state_out, "interrupt_vector=%02X\n", cpu->interrupt_vector);
+  fprintf(state_out, "interrupt_delay=%02X\n", cpu->interrupt_delay);
+  fprintf(state_out, "cyc=%lu\n", cpu->cyc);
+  fprintf(state_out, "vram_writes=%lu\n", g_vw);
+  fprintf(state_out, "mode=%d\n", mode);
+  fprintf(state_out, "portc=%02X\n", portc);
+  fprintf(state_out, "mode_switches=%lu\n", mode_switches);
+  fprintf(state_out, "kbd_pos=%d\n", kbd_pos);
+  fprintf(state_out, "kbd_phase=%d\n", kbd_phase);
+  fprintf(state_out, "kbd_col=%02X\n", kbd_col);
+  fprintf(state_out, "pic_icw1=%02X\n", pic_icw1);
+  fprintf(state_out, "pic_icw2=%02X\n", pic_icw2);
+  fprintf(state_out, "pic_mask=%02X\n", pic_mask);
+  fprintf(state_out, "pic_expect_icw2=%d\n", pic_expect_icw2);
+  fprintf(state_out, "fdc_enabled=%d\n", fdc_enabled);
+  fprintf(state_out, "fdc_head=%d\n", fdc.head);
+  fprintf(state_out, "fdc_drive=%d\n", fdc.drive);
+  fprintf(state_out, "fdc_motor_on=%d\n", fdc.motor_on);
+  fprintf(state_out, "fdc_status=%02X\n", fdc.status);
+  fprintf(state_out, "fdc_track=%02X\n", fdc.track);
+  fprintf(state_out, "fdc_sector=%02X\n", fdc.sector);
+  fprintf(state_out, "fdc_data=%02X\n", fdc.data);
+  fprintf(state_out, "fdc_command=%02X\n", fdc.command);
+  fprintf(state_out, "fdc_buffer_pos=%u\n", fdc.buffer_pos);
+  fprintf(state_out, "fdc_buffer_len=%u\n", fdc.buffer_len);
+  for (int p = 0; p < 256; p++) {
+    if (out_count[p] || in_count[p] || out_last[p])
+      fprintf(state_out, "port_%02X=last:%02X,out:%lu,in:%lu\n",
+              p, out_last[p], out_count[p], in_count[p]);
+  }
+  fclose(state_out);
+  fprintf(stderr, "[CHECKPOINT] wrote %s and %s\n", ram_path, state_path);
+}
+
 int main(int argc, char** argv) {
   const char* rom_path = argc > 1 ? argv[1] : "ekta43.bin";
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
@@ -331,6 +403,8 @@ int main(int argc, char** argv) {
 
   fprintf(stderr, "\nstopped pc=0x%04X cyc=%lu halted=%d iff=%d mode=%d switches=%lu\n",
           cpu.pc, cpu.cyc, cpu.halted, cpu.iff, mode, mode_switches);
+
+  dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
 
   printf("\n==== OUT ports ====\n");
   for (int p = 0; p < 256; p++)

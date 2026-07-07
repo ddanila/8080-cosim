@@ -25,6 +25,10 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   matches cosim at PC `0x0484` after 30,000 VRAM writes, with a byte-identical
   9,640-byte framebuffer dump, immediately before the cosim first-PIC point at
   30,520 writes.
+- `sync/ekdos_checkpoint_reference.py` pins the matching cosim-side full
+  machine checkpoint at that 30,000-write boundary, including CPU
+  registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
+  framebuffer hash, for a future post-banner HDL resume diagnostic.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
   focused ROMBIOS boundary diagnostics.
@@ -41,6 +45,7 @@ sync/juku_top_io_decode_probe.sh
 sync/juku_top_pc_stop_probe.sh
 sync/juku_top_periph_bus_check.sh
 sync/juku_top_30000_state_probe.sh
+sync/ekdos_checkpoint_reference.py
 sync/juku_top_fdc_probe.sh
 ```
 
@@ -59,6 +64,7 @@ sync/juku_top_fdc_probe.sh
 | `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |
 | `juku_top` decoded keyboard/PIC/PPI/FDC direct-bus path reaches vendored `JUKU1.CPM` data | PASS |
 | `juku_top` and cosim PC plus VRAM match at 30,000 writes before the first-PIC window | PASS |
+| cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -84,6 +90,10 @@ sync/juku_top_fdc_probe.sh
   `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68`. The open
   problem is top-level simulation speed/checkpointing past the 30,520-write
   first-PIC point, not a proven pre-PIC functional divergence.
+- `docs/ekdos-checkpoint-reference.md` captures the corresponding full cosim
+  RAM/CPU/peripheral checkpoint. The next automation step is loading that state
+  into a narrow HDL post-banner diagnostic; the checkpoint itself is not an HDL
+  resume proof.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

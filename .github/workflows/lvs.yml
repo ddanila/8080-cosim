@@ -17,6 +17,8 @@ jobs:
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_timing_reference.py \
+            sync/ekdos_checkpoint_reference.py \
+            sync/ekdos_ioseq_reference.py \
             kicad/report_replica_order_upload_runbook.py \
             kicad/report_replica_order_evidence_template.py \
             kicad/report_replica_manufacturing_readiness.py
@@ -62,6 +64,7 @@ jobs:
           ./sync/juk_disk_check.sh
           ./sync/ekdos_fdc_probe.py
           ./sync/ekdos_timing_reference.py
+          ./sync/ekdos_checkpoint_reference.py
           ./sync/ekdos_ioseq_reference.py
           ./sync/fdc_check.sh
 

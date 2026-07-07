@@ -187,7 +187,11 @@ debugging session saved on real hardware.
    keyboard/interrupt window; `JUKU_TOP_FDC_STOPPC=HEX` now provides exact
    CPU-address stops for narrowing that boundary, but the next automation still
    needs checkpoint/fast-forward or a narrower post-banner harness rather than
-   a larger wall timeout. A first narrow harness,
+   a larger wall timeout. `docs/ekdos-checkpoint-reference.md` now pins the
+   full cosim machine checkpoint at that 30,000-write boundary: CPU
+   registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
+   framebuffer hash. This is the input evidence for the next checkpoint/resume
+   HDL diagnostic, not yet an HDL resume proof. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including frame INTA vector `0xFED4`,
    shifted `T` keyboard scan, and a vendored `JUKU1.CPM` sector byte, without

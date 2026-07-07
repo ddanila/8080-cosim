@@ -46,6 +46,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_timing_reference.py` — fast cosim timing reference for the same
   vendored `TDD` path; records first PIC/PPI/FDC port touches versus cycles and
   framebuffer writes.
+- `sync/ekdos_checkpoint_reference.py` — fast cosim full-machine checkpoint
+  reference at 30,000 framebuffer writes on the vendored `TDD` path; records
+  CPU registers, RAM hash, banking/PIC/PPI/FDC state, and the byte-identical
+  pre-PIC boundary needed by a future HDL resume harness.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.
