@@ -1,6 +1,6 @@
 # BASIC launch probe
 
-Status: **BASIC CARTRIDGE EXECUTION REACHED**
+Status: **BASIC RAM EXECUTION REACHED**
 
 This probe exercises the monitor `B` command with
 `JUKU_CART=roms/jbasic11.bin`. By default it checks Monitor 3.3,
@@ -24,14 +24,14 @@ Environment overrides:
 
 ## Evidence
 
-| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Visible pixels | Stop PC | Mode | VRAM SHA256 |
-| --- | --- | ---: | --- | ---: | ---: | ---: | --- | ---: | --- |
-| jmon33 | `roms/jmon33.bin` | `200000` | PASS | `8196` | `17881962` | `0` | `0x9B6A` | `1` | `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d` |
-| ekta37 | `roms/ekta37.bin` | `40000` | PASS | `0` | `0` | `16555` | `0xFED4` | `0` | `1a178175b438c9d5b6ef20febe467efb58657646bd9ee6622349bcfa359eed9f` |
+| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | Visible pixels | Stop PC | Mode | VRAM SHA256 |
+| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |
+| jmon33 | `roms/jmon33.bin` | `200000` | PASS | `8196` | `17881962` | `17881962` | `0` | `0` | `0x9B6A` | `1` | `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d` |
+| ekta37 | `roms/ekta37.bin` | `40000` | PASS | `0` | `0` | `0` | `0` | `16555` | `0xFED4` | `0` | `1a178175b438c9d5b6ef20febe467efb58657646bd9ee6622349bcfa359eed9f` |
 
 ## Disposition
 
-- `jmon33` reaches the BASIC cartridge execution window; the captured framebuffer has `0` visible pixels.
+- `jmon33` reads the BASIC cartridge and executes in `0x4000..0xBFFF`; `17881962` of those PC cycles are in RAM/ROM mode 1 and `0` are in cartridge overlay mode 2. The captured framebuffer has `0` visible pixels.
 - `ekta37` does not select the cartridge overlay in this run.
 - The remaining BASIC work is a user-visible BASIC prompt oracle and HDL-side
   coverage of this stronger Monitor 3.3 path.

@@ -29,7 +29,13 @@ STOP_RE = re.compile(
     r"stopped pc=0x([0-9A-Fa-f]{4}) cyc=([0-9]+) halted=([0-9]+) "
     r"iff=([0-9]+) mode=([0-9]+) switches=([0-9]+)"
 )
-PROBE_RE = re.compile(r"pc_cart_count\s+:\s+([0-9]+).*?pchist_cart\s+:\s+([0-9]+)", re.S)
+PROBE_RE = re.compile(
+    r"pc_cart_count\s+:\s+([0-9]+).*?"
+    r"pc_cart_mode1\s+:\s+([0-9]+).*?"
+    r"pc_cart_mode2\s+:\s+([0-9]+).*?"
+    r"pchist_cart\s+:\s+([0-9]+)",
+    re.S,
+)
 READ_RE = re.compile(
     r"cart_overlay_reads\s+:\s+([0-9]+).*?cart_pc_reads\s+:\s+([0-9]+)",
     re.S,
@@ -62,12 +68,16 @@ def instrumented_trace_source() -> str:
         "  unsigned long last_write_total = 0, writes_total, idle_cyc = 0;\n"
         "  static uint32_t pchist[MEM_SIZE];\n",
         "  unsigned long last_write_total = 0, writes_total, idle_cyc = 0;\n"
-        "  unsigned long pc_cart_count = 0, cart_hist_count = 0;\n"
+        "  unsigned long pc_cart_count = 0, pc_cart_mode1 = 0, pc_cart_mode2 = 0, cart_hist_count = 0;\n"
         "  static uint32_t pchist[MEM_SIZE];\n",
     )
     src = src.replace(
         "    pchist[cpu.pc]++;\n",
-        "    if (cpu.pc >= 0x4000 && cpu.pc <= 0xBFFF) pc_cart_count++;\n"
+        "    if (cpu.pc >= 0x4000 && cpu.pc <= 0xBFFF) {\n"
+        "      pc_cart_count++;\n"
+        "      if (mode == 1) pc_cart_mode1++;\n"
+        "      if (mode == 2) pc_cart_mode2++;\n"
+        "    }\n"
         "    pchist[cpu.pc]++;\n",
         1,
     )
@@ -76,6 +86,8 @@ def instrumented_trace_source() -> str:
         '  for (int a = 0x4000; a <= 0xBFFF; a++) cart_hist_count += pchist[a];\n'
         '  printf("\\n==== BASIC probe ====\\n");\n'
         '  printf("  pc_cart_count : %8lu\\n", pc_cart_count);\n'
+        '  printf("  pc_cart_mode1 : %8lu\\n", pc_cart_mode1);\n'
+        '  printf("  pc_cart_mode2 : %8lu\\n", pc_cart_mode2);\n'
         '  printf("  pchist_cart   : %8lu\\n", cart_hist_count);\n'
         '  printf("  cart_overlay_reads : %8lu\\n", basic_probe_cart_reads);\n'
         '  printf("  cart_pc_reads      : %8lu\\n", basic_probe_cart_pc_reads);\n'
@@ -100,11 +112,11 @@ def parse_stop(stderr: str) -> dict[str, int]:
     return {}
 
 
-def parse_probe(stdout: str) -> tuple[int, int]:
+def parse_probe(stdout: str) -> tuple[int, int, int, int]:
     match = PROBE_RE.search(stdout)
     if not match:
-        return 0, 0
-    return int(match.group(1)), int(match.group(2))
+        return 0, 0, 0, 0
+    return tuple(int(group) for group in match.groups())
 
 
 def parse_cart_reads(stdout: str) -> tuple[int, int]:
@@ -198,7 +210,7 @@ def main() -> int:
     for case in probe_cases():
         proc, vram = run_probe(case)
         stop = parse_stop(proc.stderr)
-        pc_cart_count, pchist_cart = parse_probe(proc.stdout)
+        pc_cart_count, pc_cart_mode1, pc_cart_mode2, pchist_cart = parse_probe(proc.stdout)
         cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
         sha = hashlib.sha256(vram).hexdigest() if vram else ""
         vram_ok = len(vram) == VRAM_SIZE
@@ -215,6 +227,8 @@ def main() -> int:
                 "vram": vram,
                 "stop": stop,
                 "pc_cart_count": pc_cart_count,
+                "pc_cart_mode1": pc_cart_mode1,
+                "pc_cart_mode2": pc_cart_mode2,
                 "pchist_cart": pchist_cart,
                 "cart_overlay_reads": cart_overlay_reads,
                 "cart_pc_reads": cart_pc_reads,
@@ -234,7 +248,7 @@ def main() -> int:
         and result["vram_ok"]
         for result in results
     )
-    status = "BASIC CARTRIDGE EXECUTION REACHED" if any_basic_entered else "BASIC LAUNCH NOT YET REACHED"
+    status = "BASIC RAM EXECUTION REACHED" if any_basic_entered else "BASIC LAUNCH NOT YET REACHED"
 
     lines = [
         "# BASIC launch probe",
@@ -263,14 +277,15 @@ def main() -> int:
         "",
         "## Evidence",
         "",
-        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
-        "| --- | --- | ---: | --- | ---: | ---: | ---: | --- | ---: | --- |",
+        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |",
         *[
             (
                 f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
                 f"`{result['case'].frame_cycles}` | "
                 f"{'PASS' if result['proc'].returncode == 0 and result['cart_loaded'] and result['key_processed'] and result['vram_ok'] else 'FAIL'} | "
                 f"`{result['cart_overlay_reads']}` | `{result['pc_cart_count']}` | "
+                f"`{result['pc_cart_mode1']}` | `{result['pc_cart_mode2']}` | "
                 f"`{result['visible_pixels']}` | "
                 f"`0x{result['stop'].get('pc', 0):04X}` | `{result['stop'].get('mode', 0)}` | "
                 f"`{result['sha'] or 'missing'}` |"
@@ -284,8 +299,11 @@ def main() -> int:
     for result in results:
         if result["basic_entered"]:
             lines.append(
-                f"- `{result['case'].name}` reaches the BASIC cartridge execution window; "
-                f"the captured framebuffer has `{result['visible_pixels']}` visible pixels."
+                f"- `{result['case'].name}` reads the BASIC cartridge and executes in "
+                f"`0x4000..0xBFFF`; `{result['pc_cart_mode1']}` of those PC cycles are "
+                f"in RAM/ROM mode 1 and `{result['pc_cart_mode2']}` are in cartridge "
+                f"overlay mode 2. The captured framebuffer has "
+                f"`{result['visible_pixels']}` visible pixels."
             )
         else:
             lines.append(

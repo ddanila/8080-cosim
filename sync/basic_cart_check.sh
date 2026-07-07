@@ -69,9 +69,9 @@ sync/basic_cart_check.sh
 ## Remaining Boundary
 
 - Exercise the BASIC path to a live prompt. `sync/basic_launch_probe.py` now
-  documents that Monitor 3.3 reaches the `jbasic11.bin` cartridge execution
-  window, while EktaSoft 3.43m #0037 still does not select the cartridge
-  overlay in the same bounded run.
+  documents that Monitor 3.3 reads `jbasic11.bin` from the cartridge overlay
+  and then executes in the `0x4000..0xBFFF` RAM window, while EktaSoft 3.43m
+  #0037 still does not select the cartridge overlay in the same bounded run.
 EOF
 
 echo "BASIC-CART-CHECK: PASS"
