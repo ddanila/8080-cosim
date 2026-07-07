@@ -63,9 +63,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   mandatory gate.
 - `sync/juku_top_checkpoint_fdc_probe.py` — focused non-CI checkpoint-resumed
   FDC diagnostic; enables frame IRQs and fixed `TDD` key stimulus from the
-  30,000-write checkpoint, then stops on decoded FDC I/O if reached. The
-  current bounded run reaches post-checkpoint PIC/no-key and frame IRQ activity,
-  then stalls in the frame-handler draw loop before the real key/FDC window.
+  generated cosim checkpoint, then stops on decoded FDC I/O if reached. The
+  default first-FDC checkpoint at 63,085 framebuffer writes reaches decoded
+  WD1793/VG93 `OUT 0x1C = 0x02`; the earlier 42,000-write key-window checkpoint
+  is still available through `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.

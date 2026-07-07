@@ -208,10 +208,11 @@ debugging session saved on real hardware.
    making the seeded vm80a microstate portable across CI runner schedules, then
    extending the checkpoint-run proof toward FDC I/O and EKDOS `A>`.
    `sync/juku_top_checkpoint_fdc_probe.py` now extends the same checkpointed
-   run with frame IRQs and fixed `TDD` key stimulus enabled; the current
-   bounded evidence reaches the PIC/no-key window and frame IRQ activity, then
-   stalls around PC `0x0e23` in the frame-handler draw loop before the real
-   42,000-write key window and decoded FDC I/O. A first narrow harness,
+   run with frame IRQs and fixed `TDD` key stimulus enabled. Its default
+   first-FDC cosim checkpoint at 63,085 framebuffer writes resumes `juku_top`
+   and reaches decoded WD1793/VG93 `OUT 0x1C = 0x02`; an earlier 42,000-write
+   key-window run carries the `TDD` stimulus state but still times out before
+   FDC. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
    shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact

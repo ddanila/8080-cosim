@@ -44,9 +44,20 @@ def compile_trace(tmp: Path) -> Path:
     return trace
 
 
-def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Path]:
+def parse_state(path: Path) -> dict[str, str]:
+    state: dict[str, str] = {}
+    for line in path.read_text().splitlines():
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        state[key] = value
+    return state
+
+
+def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Path, dict[str, str]]:
     trace = compile_trace(tmp)
     prefix = tmp / "ekdos-checkpoint"
+    checkpoint_writes = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_WRITES", "63085")
     old_vram = tmp / "old-vram.bin"
     cosim_vram = ROOT / "cosim" / "vram.bin"
     had_vram = cosim_vram.exists()
@@ -58,7 +69,7 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
     env["JUKU_DISK"] = str(DISK)
     env["JUKU_CHECKPOINT_PREFIX"] = str(prefix)
     proc = subprocess.run(
-        [str(trace), str(ROM), "250000000", "30000", "200000"],
+        [str(trace), str(ROM), "250000000", checkpoint_writes, "200000"],
         cwd=ROOT / "cosim",
         env=env,
         text=True,
@@ -70,10 +81,46 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
         shutil.copyfile(old_vram, cosim_vram)
     elif cosim_vram.exists():
         cosim_vram.unlink()
-    return proc, prefix.with_suffix(".ram")
+    return proc, prefix.with_suffix(".ram"), parse_state(prefix.with_suffix(".state"))
 
 
-def run_resume_to_fdc(tmp: Path, ram_bin: Path) -> tuple[subprocess.CompletedProcess[str], bool]:
+def state_plusargs(state: dict[str, str]) -> list[str]:
+    def hex_pair(name: str) -> str:
+        return state.get(name, "00")
+
+    return [
+        f"+state_vram_writes={state.get('vram_writes', '30000')}",
+        f"+state_pc={state.get('pc', '0484')}",
+        f"+state_sp={state.get('sp', 'D44C')}",
+        f"+state_bc={hex_pair('b')}{hex_pair('c')}",
+        f"+state_de={hex_pair('d')}{hex_pair('e')}",
+        f"+state_hl={hex_pair('h')}{hex_pair('l')}",
+        f"+state_a={state.get('a', 'A1')}",
+        f"+state_sf={state.get('sf', '1')}",
+        f"+state_zf={state.get('zf', '0')}",
+        f"+state_hf={state.get('hf', '0')}",
+        f"+state_pf={state.get('pf', '0')}",
+        f"+state_cf={state.get('cf', '0')}",
+        f"+state_iff={state.get('iff', '0')}",
+        f"+state_portc={state.get('portc', '80')}",
+        f"+state_kbd_col={state.get('kbd_col', '0F')}",
+        f"+state_kbd_pos={state.get('kbd_pos', '0')}",
+        f"+state_kbd_phase={state.get('kbd_phase', '0')}",
+        f"+state_pic_icw1={state.get('pic_icw1', '00')}",
+        f"+state_pic_icw2={state.get('pic_icw2', '00')}",
+        f"+state_pic_mask={state.get('pic_mask', 'FF')}",
+        f"+state_pic_expect_icw2={state.get('pic_expect_icw2', '0')}",
+        f"+state_fdc_status={state.get('fdc_status', '80')}",
+        f"+state_fdc_track={state.get('fdc_track', '00')}",
+        f"+state_fdc_sector={state.get('fdc_sector', '01')}",
+        f"+state_fdc_data={state.get('fdc_data', '00')}",
+        f"+state_fdc_command={state.get('fdc_command', '00')}",
+        f"+state_fdc_buffer_pos={state.get('fdc_buffer_pos', '0')}",
+        f"+state_fdc_buffer_len={state.get('fdc_buffer_len', '0')}",
+    ]
+
+
+def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess.CompletedProcess[str], bool]:
     ram_hex = tmp / "checkpoint.ram.hex"
     sim = tmp / "juku_top_checkpoint_resume_tb"
     out_path = tmp / "checkpoint-fdc.out"
@@ -120,6 +167,7 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path) -> tuple[subprocess.CompletedPro
         "+tracefdc=1",
         "+stopfdc=1",
     ]
+    args.extend(state_plusargs(state))
 
     try:
         with out_path.open("w") as stdout, err_path.open("w") as stderr:
@@ -175,8 +223,8 @@ def last_complete_vram_line(text: str) -> str:
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="juku-top-checkpoint-fdc.") as tmp_name:
         tmp = Path(tmp_name)
-        cosim_proc, ram_bin = generate_checkpoint(tmp)
-        resume_proc, timed_out = run_resume_to_fdc(tmp, ram_bin)
+        cosim_proc, ram_bin, state = generate_checkpoint(tmp)
+        resume_proc, timed_out = run_resume_to_fdc(tmp, ram_bin, state)
 
     fdc_stop = first_line(resume_proc.stdout, "[RESUME-FDC] stop")
     fdc_first = first_line(resume_proc.stdout, "[RESUME-FDC]")
@@ -195,8 +243,9 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This diagnostic starts from the 30,000-write EKDOS/TDD cosim",
-        "checkpoint, loads it into `juku_top`, enables frame IRQs and the",
+        "This diagnostic starts from a generated EKDOS/TDD cosim checkpoint",
+        "(`JUKU_TOP_CHECKPOINT_FDC_WRITES`, default 63,085, the first-FDC window),",
+        "loads it into `juku_top`, enables frame IRQs and the",
         "fixed `TDD` keyboard stimulus, and runs toward the first decoded",
         "WD1793/VG93 I/O. It is the checkpointed counterpart to",
         "`sync/juku_top_fdc_probe.sh`.",
@@ -210,6 +259,7 @@ def main() -> int:
         "Environment overrides:",
         "",
         "- `JUKU_TOP_CHECKPOINT_FDC_TIMEOUT` default `300` seconds",
+        "- `JUKU_TOP_CHECKPOINT_FDC_WRITES` default `63085`",
         "- `JUKU_TOP_CHECKPOINT_FDC_FRAMEIRQ` default `80000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_KEYAT` default `42000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_KHOLD` default `900000`",
@@ -220,6 +270,9 @@ def main() -> int:
         "## Evidence",
         "",
         f"- Cosim checkpoint exit code: `{cosim_proc.returncode}`",
+        f"- Cosim checkpoint writes: `{state.get('vram_writes', 'missing')}`",
+        f"- Cosim checkpoint PC: `0x{state.get('pc', 'missing')}`",
+        f"- Cosim checkpoint key position/phase: `{state.get('kbd_pos', 'missing')}` / `{state.get('kbd_phase', 'missing')}`",
         f"- HDL resume exit code: `{resume_proc.returncode}`",
         f"- Timed out: `{'yes' if timed_out else 'no'}`",
         f"- First PIC line: `{first_line(resume_proc.stdout, '[RESUME-PIC]')}`",
@@ -247,9 +300,10 @@ def main() -> int:
         "",
         "- This is not a prompt proof until decoded FDC I/O and then EKDOS `A>`",
         "  are reached through CPU execution.",
-        "- A timeout with PIC/KBD/IRQ/key evidence is still useful: it proves the",
-        "  checkpointed run is past the previous no-frame/no-key boundary and",
-        "  identifies the next missing event.",
+        "- This proves the first decoded FDC command from a checkpointed CPU run,",
+        "  not the full uncheckpointed `TDD` path or EKDOS prompt.",
+        "- Use `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000` for the earlier key-window",
+        "  narrowing run; the default starts at the cosim first-FDC boundary.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])
