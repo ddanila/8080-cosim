@@ -45,8 +45,10 @@ module juku_top_checkpoint_load_tb();
     dut.U_CPU.u.core.r16_pc = 16'h0484;
     dut.U_CPU.u.core.r16_sp = 16'hD44C;
     dut.U_CPU.u.core.r16_bc = 16'hD7E7;
-    dut.U_CPU.u.core.r16_de = 16'h00A1;
-    dut.U_CPU.u.core.r16_hl = 16'hFD2F;
+    // Empirically, this vm80a core's r16_de/r16_hl internal names are opposite
+    // the architectural DE/HL values visible at the 30,000-write checkpoint.
+    dut.U_CPU.u.core.r16_de = 16'hFD2F;
+    dut.U_CPU.u.core.r16_hl = 16'h00A1;
     dut.U_CPU.u.core.acc = 8'hA1;
     dut.U_CPU.u.core.psw_s = 1'b1;
     dut.U_CPU.u.core.psw_z = 1'b0;
@@ -80,8 +82,8 @@ module juku_top_checkpoint_load_tb();
     if (dut.U_CPU.u.core.r16_pc !== 16'h0484) fail_state("CPU PC mismatch");
     if (dut.U_CPU.u.core.r16_sp !== 16'hD44C) fail_state("CPU SP mismatch");
     if (dut.U_CPU.u.core.r16_bc !== 16'hD7E7) fail_state("CPU BC mismatch");
-    if (dut.U_CPU.u.core.r16_de !== 16'h00A1) fail_state("CPU DE mismatch");
-    if (dut.U_CPU.u.core.r16_hl !== 16'hFD2F) fail_state("CPU HL mismatch");
+    if (dut.U_CPU.u.core.r16_de !== 16'hFD2F) fail_state("CPU HL latch mismatch");
+    if (dut.U_CPU.u.core.r16_hl !== 16'h00A1) fail_state("CPU DE latch mismatch");
     if (dut.U_CPU.u.core.acc !== 8'hA1) fail_state("CPU A mismatch");
     if ({dut.U_CPU.u.core.psw_s, dut.U_CPU.u.core.psw_z, dut.U_CPU.u.core.psw_ac,
          dut.U_CPU.u.core.psw_p, dut.U_CPU.u.core.psw_c} !== 5'b10000) fail_state("CPU flags mismatch");
