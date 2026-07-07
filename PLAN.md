@@ -7,7 +7,7 @@
 > **reached** for the boot path) and [`docs/roadmap.md`](docs/roadmap.md) (the
 > structural-track phases). Purely historical/preservation project, no commercial value.
 >
-> Status date: 2026-07-06. Update this file as milestones land.
+> Status date: 2026-07-07. Update this file as milestones land.
 
 ## 1. Definition of done (tiered)
 
@@ -34,7 +34,7 @@ only after Tier 2.
 | Track | State | Remaining to goal |
 |---|---|---|
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
-| **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; main-board readiness report says electrical gate PASS / package inventory PASS | Human disposition of mechanical/silkscreen/library DRC classes, independent DFM/gerber review, **order** |
+| **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
 | **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged | Mine the **new Baltijets factory doc set** (see §3); a short owner measurement list |
 | **Firmware/media** (`roms/`) | Full canonical ROM set vendored (SHA-1 = MAME) | EKDOS/CP/M disk images (available online), РЕ3/РТ4 PROM binaries |
@@ -387,7 +387,9 @@ commands.
   courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
 - WS-B1: WD1793 + EKDOS boot in cosim.
 - WS-E2: start parts sourcing from `docs/replica-sourcing-readiness.md` (long
-  lead). WS-H: first community contact using `docs/community-prom-media-request.md`.
+  lead); copy `docs/replica-bringup-verification-points.md` into the private
+  build record as parts/assembly evidence accumulates. WS-H: first community
+  contact using `docs/community-prom-media-request.md`.
 
 **Then (VJUGA transit + assembly window):**
 - WS-B2/3: video chain model; jmon33 + BASIC. WS-D3/4: replica DFM + netlist freeze.

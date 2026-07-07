@@ -171,7 +171,8 @@ def milestone_rows():
             "evidence": (
                 "`docs/replica-sourcing-readiness.md` defines the source/test gate; "
                 "`docs/replica-parts-inventory-template.md` defines the received-parts "
-                "and PROM/EPROM programming evidence record. No filled inventory or "
+                "and PROM/EPROM programming evidence record, including carry-forward "
+                "of the bring-up verification checklist. No filled inventory or "
                 "programmer logs are tracked yet."
                 if parts_inventory_template
                 else "`docs/replica-sourcing-readiness.md` is a sourcing gate, not a "
