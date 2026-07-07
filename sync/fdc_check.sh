@@ -44,8 +44,9 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   raw ROMBIOS I/O and settled D7/D9 chip-select decode before the long FDC probe
   reaches the post-banner window.
 - `sync/juku_top_30000_state_probe.sh` proves the expensive top-level run still
-  matches cosim at PC `0x0484` after 30,000 VRAM writes, immediately before the
-  cosim first-PIC point at 30,520 writes.
+  matches cosim at PC `0x0484` after 30,000 VRAM writes, with a byte-identical
+  9,640-byte framebuffer dump, immediately before the cosim first-PIC point at
+  30,520 writes.
 
 ## Command
 
@@ -68,7 +69,7 @@ sync/juku_top_fdc_probe.sh
 | DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
 | `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |
-| `juku_top` and cosim PC match at 30,000 VRAM writes before the first-PIC window | PASS |
+| `juku_top` and cosim PC plus VRAM match at 30,000 writes before the first-PIC window | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -85,8 +86,10 @@ sync/juku_top_fdc_probe.sh
   early ROMBIOS sample counts PPI0 writes after the trace samples the decoder
   one timestep after the I/O edge.
 - `docs/juku-top-30000-state-probe.md` captures the slow pre-PIC comparison:
-  cosim and `juku_top` both stop at PC `0x0484` after 30,000 VRAM writes. The
-  open problem is top-level simulation speed/checkpointing past the 30,520-write
+  cosim and `juku_top` both stop at PC `0x0484` after 30,000 VRAM writes, and
+  their framebuffer dumps have the same SHA256
+  `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68`. The open
+  problem is top-level simulation speed/checkpointing past the 30,520-write
   first-PIC point, not a proven pre-PIC functional divergence.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC

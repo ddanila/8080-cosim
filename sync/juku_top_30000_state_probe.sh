@@ -14,6 +14,8 @@ WRITES=${JUKU_TOP_30000_WRITES:-30000}
 TIMEOUT_S=${JUKU_TOP_30000_TIMEOUT:-900}
 TMP=$(mktemp -d)
 OLD_COSIM_VRAM="$TMP/cosim-vram.old"
+COSIM_VRAM="$TMP/cosim-vram.bin"
+HDL_VRAM="$TMP/hdl-vram.bin"
 trap 'rm -rf "$TMP"' EXIT
 
 if [ -f cosim/vram.bin ]; then cp cosim/vram.bin "$OLD_COSIM_VRAM"; fi
@@ -26,14 +28,24 @@ cc -O2 -I cosim -o "$TMP/trace" cosim/trace.c cosim/i8080.c cosim/juk_disk.c cos
   "$TMP/trace" ../roms/ekta37.bin 250000000 "$WRITES" 200000 \
   >"$TMP/cosim.out" 2>"$TMP/cosim.err")
 
+if [ -f cosim/vram.bin ]; then cp cosim/vram.bin "$COSIM_VRAM"; fi
 if [ -f "$OLD_COSIM_VRAM" ]; then cp "$OLD_COSIM_VRAM" cosim/vram.bin; else rm -f cosim/vram.bin; fi
 
 cosim_stop=$(grep -m1 '^stopped pc=' "$TMP/cosim.err" || true)
 cosim_first_vram=$(grep -m1 '^\[VRAM\] first video write' "$TMP/cosim.err" || true)
 cosim_pc=$(printf '%s\n' "$cosim_stop" | sed -n 's/.*pc=0x\([0-9A-Fa-f]*\).*/\1/p')
+cosim_vram_sha="missing"
+hdl_vram_sha="missing"
+vram_bytes="unknown"
+vram_match="NO"
+if [ -f "$COSIM_VRAM" ]; then
+  cosim_vram_sha=$(sha256sum "$COSIM_VRAM" | awk '{print $1}')
+  vram_bytes=$(wc -c < "$COSIM_VRAM" | tr -d ' ')
+fi
 
 JUKU_TOP_FDC_REPORT="$TMP/hdl.md" \
 JUKU_TOP_FDC_REPORT_TITLE="juku_top ${WRITES}-write state probe" \
+JUKU_TOP_FDC_VRAM_COPY="$HDL_VRAM" \
 JUKU_TOP_FDC_TIMEOUT="$TIMEOUT_S" \
 JUKU_TOP_FDC_MAXVRAM="$WRITES" \
 JUKU_TOP_FDC_KEYAT=30520 \
@@ -45,9 +57,18 @@ hdl_cpu=$(grep -m1 'CPU state line:' "$TMP/hdl.md" | sed 's/^- CPU state line: `
 hdl_vram_stop=$(grep -m1 'VRAM stop line:' "$TMP/hdl.md" | sed 's/^- VRAM stop line: `//; s/`$//' || true)
 hdl_io=$(grep -m1 'I/O summary line:' "$TMP/hdl.md" | sed 's/^- I\/O summary line: `//; s/`$//' || true)
 hdl_pc=$(printf '%s\n' "$hdl_cpu" | sed -n 's/.*pc=0x\([0-9A-Fa-f]*\).*/\1/p')
+if [ -f "$HDL_VRAM" ]; then
+  hdl_vram_sha=$(sha256sum "$HDL_VRAM" | awk '{print $1}')
+fi
+if [ -f "$COSIM_VRAM" ] && [ -f "$HDL_VRAM" ] && cmp -s "$COSIM_VRAM" "$HDL_VRAM"; then
+  vram_match="PASS"
+fi
 
 status="PASS"
 if [ -z "$cosim_pc" ] || [ -z "$hdl_pc" ] || [ "${cosim_pc,,}" != "${hdl_pc,,}" ]; then
+  status="FAIL"
+fi
+if [ "$vram_match" != PASS ]; then
   status="FAIL"
 fi
 
@@ -75,7 +96,11 @@ sync/juku_top_30000_state_probe.sh
 | Target VRAM writes | \`$WRITES\` |
 | Cosim stop PC | \`0x${cosim_pc:-unknown}\` |
 | HDL stop PC | \`0x${hdl_pc:-unknown}\` |
-| Cosim/HDL PC match | $([ "$status" = PASS ] && echo PASS || echo FAIL) |
+| Cosim/HDL PC match | $([ -n "$cosim_pc" ] && [ -n "$hdl_pc" ] && [ "${cosim_pc,,}" = "${hdl_pc,,}" ] && echo PASS || echo FAIL) |
+| VRAM dump bytes | \`$vram_bytes\` |
+| Cosim VRAM SHA256 | \`$cosim_vram_sha\` |
+| HDL VRAM SHA256 | \`$hdl_vram_sha\` |
+| Cosim/HDL VRAM match | $vram_match |
 
 ## Stop State
 
@@ -87,7 +112,8 @@ sync/juku_top_30000_state_probe.sh
 
 ## Disposition
 
-- At 30,000 VRAM writes, \`juku_top\` and cosim both stop at PC \`0x${cosim_pc:-unknown}\`.
+- At 30,000 VRAM writes, \`juku_top\` and cosim both stop at PC \`0x${cosim_pc:-unknown}\`
+  and their framebuffer dumps match byte-for-byte.
 - The top-level has not diverged before the PIC setup point; it is simply too
   slow for repeated brute-force wall-time probing past 30,520 writes.
 - The next useful M2 automation is a checkpoint/fast-forward strategy or a

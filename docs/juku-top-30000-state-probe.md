@@ -22,6 +22,10 @@ sync/juku_top_30000_state_probe.sh
 | Cosim stop PC | `0x0484` |
 | HDL stop PC | `0x0484` |
 | Cosim/HDL PC match | PASS |
+| VRAM dump bytes | `9640` |
+| Cosim VRAM SHA256 | `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68` |
+| HDL VRAM SHA256 | `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68` |
+| Cosim/HDL VRAM match | PASS |
 
 ## Stop State
 
@@ -33,7 +37,8 @@ sync/juku_top_30000_state_probe.sh
 
 ## Disposition
 
-- At 30,000 VRAM writes, `juku_top` and cosim both stop at PC `0x0484`.
+- At 30,000 VRAM writes, `juku_top` and cosim both stop at PC `0x0484`
+  and their framebuffer dumps match byte-for-byte.
 - The top-level has not diverged before the PIC setup point; it is simply too
   slow for repeated brute-force wall-time probing past 30,520 writes.
 - The next useful M2 automation is a checkpoint/fast-forward strategy or a

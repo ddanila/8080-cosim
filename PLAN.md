@@ -180,7 +180,8 @@ debugging session saved on real hardware.
    peripheral decode are visible in the fast pre-banner window, including
    mirrored PPI1 and PPI0 writes. `sync/juku_top_30000_state_probe.sh` proves
    the slow top-level run still matches cosim at PC `0x0484` after 30,000 VRAM
-   writes, just before the fast cosim first-PIC point at 30,520 writes. The
+   writes, with a byte-identical 9,640-byte framebuffer dump, just before the
+   fast cosim first-PIC point at 30,520 writes. The
    current full FDC run loads the disk and reaches BIOS VRAM progress, but the
    default 60-second bound times out before the proven post-banner
    keyboard/interrupt window; the next automation needs checkpoint/fast-forward

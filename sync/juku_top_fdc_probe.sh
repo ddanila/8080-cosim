@@ -26,6 +26,7 @@ STOPFDC=${JUKU_TOP_FDC_STOPFDC:-1}
 STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
 STOPPPI=${JUKU_TOP_FDC_STOPPPI:-0}
 TIMEOUT_S=${JUKU_TOP_FDC_TIMEOUT:-60}
+VRAM_COPY=${JUKU_TOP_FDC_VRAM_COPY:-}
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
@@ -58,6 +59,10 @@ else
   rc=$?
 fi
 set -e
+
+if [ -n "$VRAM_COPY" ] && [ -f hdl/sim/vram_top.bin ]; then
+  cp hdl/sim/vram_top.bin "$VRAM_COPY"
+fi
 
 if [ -f "$OLD_VRAM" ]; then cp "$OLD_VRAM" hdl/sim/vram_top.bin; else rm -f hdl/sim/vram_top.bin; fi
 
