@@ -9,10 +9,24 @@ set -e
 cd "$(dirname "$0")/.."
 
 KCLI=""
-if [ -n "$KICAD_CLI" ] && [ -x "$KICAD_CLI" ]; then KCLI="$KICAD_CLI"
-elif command -v kicad-cli >/dev/null 2>&1; then KCLI="kicad-cli"
-elif [ -x "/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli" ]; then
-  KCLI="/opt/homebrew/Caskroom/kicad/10.0.4/KiCad/KiCad.app/Contents/MacOS/kicad-cli"; fi
+if [ -n "$KICAD_CLI" ]; then
+  if [ -x "$KICAD_CLI" ] || command -v "$KICAD_CLI" >/dev/null 2>&1; then
+    KCLI="$KICAD_CLI"
+  fi
+elif command -v kicad-cli-nightly >/dev/null 2>&1; then
+  KCLI="$(command -v kicad-cli-nightly)"
+elif command -v kicad-cli >/dev/null 2>&1; then
+  KCLI="$(command -v kicad-cli)"
+else
+  for candidate in \
+    /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli \
+    /Applications/KiCad/kicad-cli \
+    /opt/homebrew/Caskroom/kicad/*/KiCad/KiCad.app/Contents/MacOS/kicad-cli \
+    /usr/local/Caskroom/kicad/*/KiCad/KiCad.app/Contents/MacOS/kicad-cli
+  do
+    if [ -x "$candidate" ]; then KCLI="$candidate"; break; fi
+  done
+fi
 
 echo "==> board spec -> KiCad schematic"
 python3 kicad/gen_kicad_sch.py kicad/juku.board.json kicad/juku.kicad_sch
