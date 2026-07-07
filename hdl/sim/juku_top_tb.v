@@ -79,6 +79,44 @@ module juku_top_tb();
     frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq-1));        // periodic IR5 tick
   end
 
+  integer tracekbd=0, traceppi=0, stopppi=0, ppi_ios=0, ppi_reads=0, ppi_writes=0, ppi_key_reads=0;
+  reg kbd_was_pressed=0;
+  always @(posedge osc) begin
+    if (tracekbd && kbd_pressed && !kbd_was_pressed)
+      $display("[KBD] press key=%0d col=%0d bit=%0d shift=%0d mcyc=%0d vram=%0d",
+               ekdos_key, kbd_kcol, kbd_kbit, kbd_shift, mcyc, vram_writes);
+    if (tracekbd && !kbd_pressed && kbd_was_pressed)
+      $display("[KBD] release key=%0d mcyc=%0d vram=%0d", ekdos_key, mcyc, vram_writes);
+    kbd_was_pressed <= kbd_pressed;
+  end
+
+  always @(negedge dut.iowr_n) if (!dut.cs_ppi0_n) begin
+    ppi_ios = ppi_ios + 1;
+    ppi_writes = ppi_writes + 1;
+    if (traceppi > 1) $display("[PPI0] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
+                               {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, ppi_ios);
+    if (stopppi != 0 && ppi_ios >= stopppi) begin
+      $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
+               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
+      #60 dump_vram; $finish;
+    end
+  end
+  always @(negedge dut.iord_n) if (!dut.cs_ppi0_n) begin
+    ppi_ios = ppi_ios + 1;
+    ppi_reads = ppi_reads + 1;
+    if (dut.BA[1:0] == 2'd1 && kbd_pressed) begin
+      ppi_key_reads = ppi_key_reads + 1;
+      if (traceppi) $display("[PPI0] IN  port=0x%02h reg=%0d data=0x%02h col=%0d key_col=%0d key_bit=%0d mcyc=%0d key_reads=%0d",
+                             {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
+                             dut.U_PPI0.kbd_col_sel, kbd_kcol, kbd_kbit, mcyc, ppi_key_reads);
+    end
+    if (stopppi != 0 && ppi_ios >= stopppi) begin
+      $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
+               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
+      #60 dump_vram; $finish;
+    end
+  end
+
   integer tracefdc=0, stopfdc=0, fdc_ios=0, fdc_reads=0, fdc_writes=0;
   always @(negedge dut.iowr_n) if (!dut.cs_fdc_n) begin
     fdc_ios = fdc_ios + 1;
@@ -136,6 +174,9 @@ module juku_top_tb();
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
+    if (tracekbd || traceppi || tracefdc)
+      $display("[IO] ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d",
+               ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes);
   end endtask
 
   integer timecap = 400000000;       // ns; enough for the 6000-write boot guard. Interactive
@@ -150,6 +191,9 @@ module juku_top_tb();
     if ($value$plusargs("khold=%d",  khold))  ;
     if ($value$plusargs("kgap=%d",   kgap))   ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;    // fixed T,D,D sequence
+    if ($value$plusargs("tracekbd=%d", tracekbd)) ;
+    if ($value$plusargs("traceppi=%d", traceppi)) ;
+    if ($value$plusargs("stopppi=%d", stopppi)) ;
     if ($value$plusargs("tracefdc=%d", tracefdc)) ;
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)

@@ -172,8 +172,10 @@ debugging session saved on real hardware.
    `sync/juku_top_fdc_probe.sh` is now the bounded HDL diagnostic for the
    remaining top-level boundary: it enables vendored `JUKU1.CPM`, frame
    interrupts, and fixed `TDD` key stimulus, then stops on decoded WD1793 I/O.
-   The current captured run loads the disk and reaches the first BIOS VRAM
-   write, but times out before FDC I/O.
+   The current captured early-key run loads the disk, reaches the first BIOS
+   VRAM write, emits all three `TDD` key pulses, and shows zero PPI0/FDC I/O by
+   16k VRAM writes; the next trigger needs to start from the proven post-banner
+   keyboard window rather than before ROMBIOS begins PPI scanning.
    Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
    the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so

@@ -19,6 +19,7 @@ FRAMEIRQ=${JUKU_TOP_FDC_FRAMEIRQ:-80000}
 MAXVRAM=${JUKU_TOP_FDC_MAXVRAM:-88000}
 TIMECAP=${JUKU_TOP_FDC_TIMECAP:-900000000}
 STOPFDC=${JUKU_TOP_FDC_STOPFDC:-1}
+STOPPPI=${JUKU_TOP_FDC_STOPPPI:-0}
 TIMEOUT_S=${JUKU_TOP_FDC_TIMEOUT:-60}
 
 TMP=$(mktemp -d)
@@ -37,7 +38,7 @@ if command -v timeout >/dev/null; then
     +disk="$DISK" +disk_heads=2 \
     +frameirq="$FRAMEIRQ" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-    +tracefdc=1 +stopfdc="$STOPFDC" \
+    +tracekbd=1 +traceppi=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   rc=$?
 else
@@ -45,7 +46,7 @@ else
     +disk="$DISK" +disk_heads=2 \
     +frameirq="$FRAMEIRQ" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-    +tracefdc=1 +stopfdc="$STOPFDC" \
+    +tracekbd=1 +traceppi=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   rc=$?
 fi
@@ -55,10 +56,18 @@ if [ -f "$OLD_VRAM" ]; then cp "$OLD_VRAM" hdl/sim/vram_top.bin; else rm -f hdl/
 
 fdc_stop=$(grep -m1 '^\[FDC\] stop' "$OUT" || true)
 fdc_first=$(grep -m1 '^\[FDC\]' "$OUT" || true)
+key_first=$(grep -m1 '^\[KBD\]' "$OUT" || true)
+key_last=$(grep '^\[KBD\]' "$OUT" | tail -1 || true)
+ppi_key_first=$(grep -m1 '^\[PPI0\] IN' "$OUT" || true)
+ppi_stop=$(grep -m1 '^\[PPI0\] stop' "$OUT" || true)
+io_summary=$(grep -m1 '^\[IO\]' "$OUT" || true)
 first_vram=$(grep -m1 '^\[VRAM\] first video write' "$OUT" || true)
+vram_stop=$(grep -m1 '^\[VRAM\] [0-9][0-9]* writes' "$OUT" || true)
 timecap_line=$(grep -m1 '^\[SIM\] time cap' "$OUT" || true)
 disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
 fdc_lines=$(grep -c '^\[FDC\]' "$OUT" || true)
+kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
+ppi_key_lines=$(grep -c '^\[PPI0\] IN' "$OUT" || true)
 
 status="HDL JUKU_TOP FDC PATH NOT YET OBSERVED"
 fdc_result="NO"
@@ -90,9 +99,14 @@ Environment overrides:
 
 - \`JUKU_TOP_FDC_DISK\` default \`media/disks/JUKU1.CPM\`
 - \`JUKU_TOP_FDC_KEYAT\` default \`42000\`
+- \`JUKU_TOP_FDC_KHOLD\` default \`900000\`
+- \`JUKU_TOP_FDC_KGAP\` default \`900000\`
 - \`JUKU_TOP_FDC_FRAMEIRQ\` default \`80000\`
 - \`JUKU_TOP_FDC_STOPFDC\` default \`1\`
+- \`JUKU_TOP_FDC_STOPPPI\` default \`0\`
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
+
+Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPPI=$STOPPPI TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -101,16 +115,26 @@ Environment overrides:
 | vvp/timeout exit code | \`$rc\` |
 | vendored raw disk loaded | $(if [ -n "$disk_line" ]; then echo PASS; else echo NO; fi) |
 | first VRAM write observed | $(if [ -n "$first_vram" ]; then echo PASS; else echo NO; fi) |
+| keyboard trace observed | $(if [ -n "$key_first" ]; then echo PASS; else echo NO; fi) |
+| PPI key-read trace observed | $(if [ -n "$ppi_key_first" ]; then echo PASS; else echo NO; fi) |
 | decoded FDC I/O observed | $fdc_result |
+| keyboard trace lines | \`$kbd_lines\` |
+| PPI key-read trace lines | \`$ppi_key_lines\` |
 | FDC trace lines | \`$fdc_lines\` |
 
 ## Stop State
 
 - Disk line: \`${disk_line:-none}\`
 - First VRAM line: \`${first_vram:-none}\`
+- VRAM stop line: \`${vram_stop:-none}\`
+- First keyboard line: \`${key_first:-none}\`
+- Last keyboard line: \`${key_last:-none}\`
+- First PPI key-read line: \`${ppi_key_first:-none}\`
+- PPI stop line: \`${ppi_stop:-none}\`
 - First FDC line: \`${fdc_first:-none}\`
 - FDC stop line: \`${fdc_stop:-none}\`
 - Time-cap line: \`${timecap_line:-none}\`
+- I/O summary line: \`${io_summary:-none}\`
 
 ## Disposition
 
