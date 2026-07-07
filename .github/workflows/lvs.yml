@@ -39,5 +39,11 @@ jobs:
           ./sync/juk_disk_check.sh
           ./sync/fdc_check.sh
 
+      - name: Run fast subsystem guards
+        run: |
+          ./sync/basic_cart_check.sh
+          ./sync/beeper_check.sh
+          ./sync/jmon33_hdl_probe.sh
+
       - name: Run boot regression check
         run: ./sync/boot_check.sh
