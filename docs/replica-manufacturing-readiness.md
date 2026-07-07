@@ -21,6 +21,7 @@ already been placed or accepted.
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8353 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2795 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |

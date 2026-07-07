@@ -36,7 +36,7 @@ only after Tier 2.
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
-| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged | Mine the **new Baltijets factory doc set** (see §3); a short owner measurement list |
+| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md` | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, exact `JUKU-1` media, and a short owner measurement list |
 | **Firmware/media** (`roms/`) | Full canonical ROM set vendored (SHA-1 = MAME) | EKDOS/CP/M disk images (available online), РЕ3/РТ4 PROM binaries |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
@@ -67,6 +67,13 @@ The July 2026 survey of the online ecosystem changes the plan materially:
    КР1818ВГ93 scarcer but a western WD1793 is a drop-in. Whole machines surface on
    osta.ee/soov.ee. Community: Märt Põder (juku3000/MAME author), Arti Zirk
    (arti.ee), "Pehka1985" (real-hardware validator) — reachable via juku3000 issues.
+
+Source-coverage sanity check: `docs/source-coverage-audit.md` records which
+materials from Arti, Elektroonikamuuseum, infoaed/juku3000 ROMs, and
+Arvutimuuseum are actually consumed. The board-critical drawings, ROM/BASIC
+lineage, and Baltijets docs are covered; the remaining useful external sources
+are the programming disk/PROM dumps, exact factory `JUKU-1` media, and
+owner/community validation rather than more РФ2 ROM material.
 
 ## 4. Critical path
 

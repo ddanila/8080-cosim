@@ -1,5 +1,7 @@
 # Replica order evidence template
 
+Status: **READY**
+
 Copy this checklist into the private order record when the replica main-board
 fabrication order is placed. Do not fill it in ahead of the vendor UI; live DFM,
 price, and order-number evidence only exists after upload/quotation.
@@ -20,25 +22,34 @@ Expected result: `replica manufacturing readiness: READY TO UPLOAD`.
 | Upload ZIP SHA256 | `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211` |
 | Upload checksum command | `(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)` |
 
+## Required Source Evidence
+
+| Purpose | File | Bytes | Status |
+| --- | --- | ---: | --- |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5073 | PASS |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
+
 ## Vendor Options To Record
 
 | Field | Recorded value |
 | --- | --- |
-| Vendor |  |
-| Order/project number |  |
-| Quote timestamp and currency |  |
-| Quantity |  |
+| Vendor | - |
+| Order/project number | - |
+| Quote timestamp and currency | - |
+| Quantity | - |
 | Layers | 2 |
 | Material/thickness | FR-4, 1.6 mm |
-| Board size shown by vendor |  |
-| Drill files accepted |  |
-| Soldermask color |  |
-| Silkscreen color |  |
-| Surface finish |  |
-| Copper weight |  |
-| Electrical test option |  |
+| Board size shown by vendor | - |
+| Drill files accepted | - |
+| Soldermask color | - |
+| Silkscreen color | - |
+| Surface finish | - |
+| Copper weight | - |
+| Electrical test option | - |
 | Impedance/stackup option | none / not requested |
-| Notes sent to vendor |  |
+| Notes sent to vendor | - |
 
 ## Screenshot Evidence To Save
 

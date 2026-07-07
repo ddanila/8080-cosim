@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ORDER_READINESS = ROOT / "kicad" / "report_order_readiness.py"
+ORDER_EVIDENCE_TEMPLATE = ROOT / "kicad" / "report_replica_order_evidence_template.py"
 DEFAULT_FAB_DIR = ROOT / "fab" / "gerbers"
 DEFAULT_REPORT = ROOT / "docs" / "replica-manufacturing-readiness.md"
 
@@ -20,6 +21,7 @@ REQUIRED_REPORTS = [
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
     ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **READY**"),
     ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "Status: **SOURCING READY"),
+    ("Order evidence template", "docs/replica-order-evidence-template.md", "Status: **READY**"),
     ("External Gerber review", "fab/gerbers/external-gerber-review.md", "Status: **READY**"),
     ("Review waiver", "fab/gerbers/review-waivers.md", "Status: **ACCEPTED**"),
     ("Fabrication readiness", "fab/gerbers/fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
@@ -80,6 +82,14 @@ def run_order_readiness(fab_dir):
     ], cwd=ROOT, text=True, capture_output=True)
 
 
+def run_order_evidence_template(fab_dir):
+    return subprocess.run([
+        sys.executable,
+        str(ORDER_EVIDENCE_TEMPLATE),
+        str(fab_dir),
+    ], cwd=ROOT, text=True, capture_output=True)
+
+
 def first_match(text, pattern, default="-"):
     match = re.search(pattern, text, re.M)
     return match.group(1).strip() if match else default
@@ -115,6 +125,10 @@ def build_report(fab_dir):
     if order_result.returncode != 0:
         detail = order_result.stderr.strip() or order_result.stdout.strip()
         failures.append("order-readiness regeneration failed" + (f": {detail}" if detail else ""))
+    evidence_result = run_order_evidence_template(fab_dir)
+    if evidence_result.returncode != 0:
+        detail = evidence_result.stderr.strip() or evidence_result.stdout.strip()
+        failures.append("order-evidence-template regeneration failed" + (f": {detail}" if detail else ""))
 
     report_rows = []
     for label, rel, marker in REQUIRED_REPORTS:

@@ -31,6 +31,19 @@ def count_baltijets_pdfs():
     return len(list(path.glob("*.pdf")))
 
 
+def source_coverage_audited():
+    text = read(ROOT / "docs" / "source-coverage-audit.md")
+    return all(
+        needle in text
+        for needle in [
+            "https://arti.ee/juku/",
+            "https://elektroonikamuuseum.ee/failid/juku/",
+            "https://github.com/infoaed/juku3000/tree/master/roms",
+            "https://arvutimuuseum.ee/cs00000/",
+        ]
+    )
+
+
 def table_row(values):
     escaped = [str(value).replace("|", "/") for value in values]
     return "| " + " | ".join(escaped) + " |"
@@ -38,6 +51,7 @@ def table_row(values):
 
 def milestone_rows():
     pdf_count = count_baltijets_pdfs()
+    public_sources_audited = source_coverage_audited()
     manufacturing_ready = marker(
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -78,8 +92,14 @@ def milestone_rows():
             "status": "PARTIAL",
             "evidence": (
                 f"{pdf_count} Baltijets PDFs present; PLAN records first-pass mining "
-                "for 002/003/007/009/014/015; PROM bytes still need disk files, "
-                "hardware dumps, or accepted reconstruction."
+                "for 002/003/007/009/014/015; "
+                + (
+                    "`docs/source-coverage-audit.md` records Arti, Elektroonikamuuseum, "
+                    "infoaed/juku3000 ROM, and Arvutimuuseum coverage; "
+                    if public_sources_audited
+                    else "public-source coverage audit is missing or incomplete; "
+                )
+                + "PROM bytes still need disk files, hardware dumps, or accepted reconstruction."
             ),
             "next": "Locate programming disk/media or get RE3/RT4 dumps.",
         },

@@ -72,7 +72,7 @@ kicad/check_replica_manufacturing_ready.sh
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8353 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 2338 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2795 | PASS |
 
 ## Order-Time Checks
 
