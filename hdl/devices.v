@@ -755,10 +755,10 @@ endmodule
 
 // D94 К155РЕ3 #2, table ДГШ5.106.113: 2K-granular selects over A000-BFFF (FDC-era fine
 // decode; docs/re3-decode.md). Outputs inert pending the exact hex row values.
-module re3_prom_113 (input wire [4:0] a, input wire e_n, output reg [7:0] d);
+module re3_prom_113 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
     // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
     // D94 (docs/re3-decode.md reconciliation grind). Outputs modeled inactive (all HIGH =
     // OC off + pullups); D94's outputs are un-netted anyway, so this is boot-inert.
-    always @* d = 8'hFF;   // placeholder until the .092 dump; a/e_n kept for connectivity
+    assign d = 8'hFF;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule
