@@ -182,7 +182,7 @@ module juku_top_checkpoint_resume_tb();
 
     if (resume_started) begin
       if (ekdoskeys != 0) begin
-        if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) begin
+        if (kbd_en && key_t < 0 && ekdos_key < 3 && keyat != 0 && vram_writes >= keyat) begin
           key_t <= 0;
           ekdos_key <= 0;
           set_ekdos_key(0);
@@ -370,6 +370,9 @@ module juku_top_checkpoint_resume_tb();
       ekdos_key = state_kbd_pos;
       key_t = state_kbd_phase;
       set_ekdos_key(state_kbd_pos);
+    end else if (ekdoskeys != 0 && state_kbd_pos >= 3) begin
+      ekdos_key = state_kbd_pos;
+      key_t = -1;
     end
     $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h", dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp);
     $fflush;

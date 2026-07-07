@@ -311,6 +311,8 @@ int main(int argc, char** argv) {
   unsigned long max_cyc = argc > 2 ? strtoul(argv[2], 0, 0) : 50000000UL;
   g_vw_limit            = argc > 3 ? strtoul(argv[3], 0, 0) : 0UL;   // 0 = no video-write limit
   unsigned long frame_cyc = argc > 4 ? strtoul(argv[4], 0, 0) : 0UL; // frame-interrupt period (cycles); 0 = off
+  const char* checkpoint_cyc_env = getenv("JUKU_CHECKPOINT_CYC");
+  unsigned long checkpoint_cyc = (checkpoint_cyc_env && checkpoint_cyc_env[0]) ? strtoul(checkpoint_cyc_env, 0, 0) : 0UL;
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
   const char* cart_path = getenv("JUKU_CART");
@@ -360,7 +362,9 @@ int main(int argc, char** argv) {
   static uint32_t pchist[MEM_SIZE];
 
   int chk_logs = 0;
-  while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) && !(g_vw_limit && g_vw >= g_vw_limit)) {
+  while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
+         !(g_vw_limit && g_vw >= g_vw_limit) &&
+         !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc)) {
     pchist[cpu.pc]++;
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",

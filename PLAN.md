@@ -209,13 +209,12 @@ debugging session saved on real hardware.
    extending the checkpoint-run proof toward FDC I/O and EKDOS `A>`.
    `sync/juku_top_checkpoint_fdc_probe.py` now extends the same checkpointed
    run with frame IRQs and fixed `TDD` key stimulus enabled. Its default
-   first-FDC cosim checkpoint at 63,085 framebuffer writes resumes `juku_top`
-   and reaches decoded WD1793/VG93 `OUT 0x1C = 0x02`; an earlier 42,000-write
-   key-window run carries the `TDD` stimulus state but still times out before
-   FDC. The probe also has an opt-in FDC data-register-read stop; the current
-   63,095-write cosim candidate lands at PC `0x1006` and does not yet resume to
-   decoded FDC traffic, so the proven boundary remains the first command while
-   the next checkpoint window is narrowed. A first narrow harness,
+   cycle-targeted cosim checkpoint at 8,711,550 cycles / 63,095 framebuffer
+   writes / PC `0xE643` resumes `juku_top` and reaches an FDC data-register read
+   (`IN 0x1F`) after the decoded WD1793/VG93 command/setup sequence. The older
+   first-FDC checkpoint at 63,085 framebuffer writes remains available, and an
+   earlier 42,000-write key-window run carries the `TDD` stimulus state but
+   still times out before FDC. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
    shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact

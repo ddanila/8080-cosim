@@ -58,6 +58,7 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
     trace = compile_trace(tmp)
     prefix = tmp / "ekdos-checkpoint"
     checkpoint_writes = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_WRITES", "63085")
+    checkpoint_cycles = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_CYCLES", "8711550")
     old_vram = tmp / "old-vram.bin"
     cosim_vram = ROOT / "cosim" / "vram.bin"
     had_vram = cosim_vram.exists()
@@ -68,6 +69,9 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
     env["JUKU_KEYS"] = "TDD"
     env["JUKU_DISK"] = str(DISK)
     env["JUKU_CHECKPOINT_PREFIX"] = str(prefix)
+    if checkpoint_cycles and checkpoint_cycles != "0":
+        env["JUKU_CHECKPOINT_CYC"] = checkpoint_cycles
+        checkpoint_writes = "0"
     proc = subprocess.run(
         [str(trace), str(ROM), "250000000", checkpoint_writes, "200000"],
         cwd=ROOT / "cosim",
@@ -148,8 +152,8 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
     max_mcyc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC", "1000000")
     timecap = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMECAP", "900000000")
     timeout_s = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMEOUT", "300"))
-    stopfdc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_IO", "1")
-    stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "0")
+    stopfdc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_IO", "0")
+    stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "1")
 
     args = [
         "vvp",
@@ -231,7 +235,7 @@ def main() -> int:
 
     fdc_stop = first_line(resume_proc.stdout, "[RESUME-FDC] stop")
     fdc_first = first_line(resume_proc.stdout, "[RESUME-FDC]")
-    want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "0") != "0"
+    want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", "1") != "0"
     reached_data_read = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read")
     reached_fdc = fdc_stop != "none"
     failures: list[str] = []
@@ -252,7 +256,8 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This diagnostic starts from a generated EKDOS/TDD cosim checkpoint",
-        "(`JUKU_TOP_CHECKPOINT_FDC_WRITES`, default 63,085, the first-FDC window),",
+        "(`JUKU_TOP_CHECKPOINT_FDC_CYCLES`, default 8,711,550, the",
+        "first-data-read setup window),",
         "loads it into `juku_top`, enables frame IRQs and the",
         f"fixed `TDD` keyboard stimulus, and runs toward the {target}.",
         "It is the checkpointed counterpart to",
@@ -267,19 +272,22 @@ def main() -> int:
         "Environment overrides:",
         "",
         "- `JUKU_TOP_CHECKPOINT_FDC_TIMEOUT` default `300` seconds",
-        "- `JUKU_TOP_CHECKPOINT_FDC_WRITES` default `63085`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_CYCLES` default `8711550`; set to `0` to use",
+        "  the framebuffer-write checkpoint stop instead",
+        "- `JUKU_TOP_CHECKPOINT_FDC_WRITES` default `63085` when cycle stop is disabled",
         "- `JUKU_TOP_CHECKPOINT_FDC_FRAMEIRQ` default `80000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_KEYAT` default `42000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_KHOLD` default `900000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_KGAP` default `900000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC` default `1000000`",
         "- `JUKU_TOP_CHECKPOINT_FDC_TIMECAP` default `900000000`",
-        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `1`",
-        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `0`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `1`",
         "",
         "## Evidence",
         "",
         f"- Cosim checkpoint exit code: `{cosim_proc.returncode}`",
+        f"- Cosim checkpoint cycle: `{state.get('cyc', 'missing')}`",
         f"- Cosim checkpoint writes: `{state.get('vram_writes', 'missing')}`",
         f"- Cosim checkpoint PC: `0x{state.get('pc', 'missing')}`",
         f"- Cosim checkpoint key position/phase: `{state.get('kbd_pos', 'missing')}` / `{state.get('kbd_phase', 'missing')}`",
@@ -310,14 +318,13 @@ def main() -> int:
         "",
         "- This is not a prompt proof until EKDOS `A>` is reached through",
         "  checkpoint-resumed `juku_top` CPU execution.",
-        "- The default proves the first decoded ROMBIOS FDC command from a",
-        "  checkpointed CPU run.",
-        "- Use `JUKU_TOP_CHECKPOINT_FDC_STOP_IO=0",
-        "  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=1` to target the first FDC",
-        "  data-register read; the current 63,095-write candidate lands at",
-        "  PC `0x1006` and does not yet resume to decoded FDC traffic.",
-        "- Use `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000` for the earlier key-window",
-        "  narrowing run.",
+        "- The default proves the ROMBIOS FDC path advances from command/setup I/O",
+        "  into an FDC data-register read from a checkpointed CPU run.",
+        "- Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=63085",
+        "  JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1 JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`",
+        "  for the older first-command boundary.",
+        "- Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`",
+        "  for the earlier key-window narrowing run.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])
