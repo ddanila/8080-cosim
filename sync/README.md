@@ -65,7 +65,7 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   FDC diagnostic; enables frame IRQs and fixed `TDD` key stimulus from the
   generated cosim checkpoint, then stops on decoded FDC data-register reads if
   reached. The default cycle-targeted checkpoint at 8,711,550 cycles / 63,095
-  framebuffer writes / PC `0xE643` drains a full 512-byte sector through
+  framebuffer writes / PC `0xE643` drains 13 full sectors, 6,656 reads through
   `0x1F`; the older first-command checkpoint remains available with
   `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0
   JUKU_TOP_CHECKPOINT_FDC_WRITES=63085 JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1

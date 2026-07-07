@@ -6,7 +6,7 @@ This diagnostic starts from a generated EKDOS/TDD cosim checkpoint
 (`JUKU_TOP_CHECKPOINT_FDC_CYCLES`, default 8,711,550, the
 first-data-read setup window),
 loads it into `juku_top`, enables frame IRQs and the
-fixed `TDD` keyboard stimulus, and runs toward the 512 FDC data-register reads.
+fixed `TDD` keyboard stimulus, and runs toward the 6656 FDC data-register reads.
 It is the checkpointed counterpart to
 `sync/juku_top_fdc_probe.sh`.
 
@@ -31,8 +31,8 @@ Environment overrides:
 - `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `0`
 - `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0` when
   `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`
-- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `512`; set to `0`
-  to stop at the first data-register read instead
+- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `6656` (13 sectors);
+  set to `512` for the first sector or `0` for the first data-register read
 
 ## Evidence
 
@@ -48,28 +48,34 @@ Environment overrides:
 - First key stimulus line: `none`
 - Last key stimulus line: `none`
 - First IRQ line: `[RESUME-IRQ] intr rise count=1 mcyc=10000 vram=63095`
-- Last IRQ line: `[RESUME-IRQ] inta fall count=24 mcyc=82127 vram=63095`
-- First VRAM line: `none`
-- Last complete VRAM line: `none`
+- Last IRQ line: `[RESUME-IRQ] inta fall count=36 mcyc=199865 vram=63105`
+- First VRAM line: `[RESUME-VRAM] writes=63100 mcyc=179346 pc=0x1006`
+- Last complete VRAM line: `[RESUME-VRAM] writes=63100 mcyc=179346 pc=0x1006`
 - First FDC line: `[RESUME-FDC] OUT port=0x1c reg=0 data=0x02 mcyc=58712 vram=63095 ios=1`
-- FDC stop line: `[RESUME-FDC] stop reason=data-read-count target=512 ios=522 reads=518 data_reads=512 writes=4 data=0xc2 mcyc=90432 vram=63095`
+- FDC stop line: `[RESUME-FDC] stop reason=data-read-count target=6656 ios=6754 reads=6713 data_reads=6656 writes=41 data=0x00 mcyc=216125 vram=63105`
 - Stop/fail line: `none`
 
 | Trace | Lines |
 | --- | ---: |
-| PIC writes | `27` |
-| keyboard reads | `136` |
+| PIC writes | `87` |
+| keyboard reads | `204` |
 | key stimulus | `0` |
-| IRQ events | `32` |
-| VRAM progress | `0` |
-| FDC events | `523` |
+| IRQ events | `48` |
+| VRAM progress | `1` |
+| FDC events | `6755` |
 
 ## Boundary
 
 - This is not a prompt proof until EKDOS `A>` is reached through
   checkpoint-resumed `juku_top` CPU execution.
-- The default proves the ROMBIOS FDC path drains a full 512-byte sector
+- The default proves the ROMBIOS FDC path drains 13 full 512-byte sectors
   through FDC data-register reads from a checkpointed CPU run.
+- A full cosim-prompt-count target, `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=10752`,
+  currently times out after the 6,656-byte boundary while looping through
+  keyboard/IRQ service around VRAM write count 63,155. A later
+  `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066600` candidate starts at PC `0xE585`
+  but polls FDC status `0x03` without reaching data reads, so the next
+  narrowing step is finding a cleaner late-sector M1 boundary.
 - Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=63085
   JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1 JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`
   for the older first-command boundary.

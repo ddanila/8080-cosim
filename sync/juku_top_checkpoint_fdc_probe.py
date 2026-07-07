@@ -152,7 +152,7 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
     max_mcyc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_MAX_MCYC", "1000000")
     timecap = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMECAP", "900000000")
     timeout_s = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMEOUT", "300"))
-    stopfdc_data_reads = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "512")
+    stopfdc_data_reads = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "6656")
     stopfdc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_IO", "0")
     default_stop_data_read = "0" if int(stopfdc_data_reads) else "1"
     stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", default_stop_data_read)
@@ -238,7 +238,7 @@ def main() -> int:
 
     fdc_stop = first_line(resume_proc.stdout, "[RESUME-FDC] stop")
     fdc_first = first_line(resume_proc.stdout, "[RESUME-FDC]")
-    want_data_reads = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "512"))
+    want_data_reads = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "6656"))
     default_want_data_read = "0" if want_data_reads else "1"
     want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", default_want_data_read) != "0"
     reached_data_read = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read")
@@ -295,8 +295,8 @@ def main() -> int:
         "- `JUKU_TOP_CHECKPOINT_FDC_STOP_IO` default `0`",
         "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ` default `0` when",
         "  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`",
-        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `512`; set to `0`",
-        "  to stop at the first data-register read instead",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `6656` (13 sectors);",
+        "  set to `512` for the first sector or `0` for the first data-register read",
         "",
         "## Evidence",
         "",
@@ -332,8 +332,14 @@ def main() -> int:
         "",
         "- This is not a prompt proof until EKDOS `A>` is reached through",
         "  checkpoint-resumed `juku_top` CPU execution.",
-        "- The default proves the ROMBIOS FDC path drains a full 512-byte sector",
+        "- The default proves the ROMBIOS FDC path drains 13 full 512-byte sectors",
         "  through FDC data-register reads from a checkpointed CPU run.",
+        "- A full cosim-prompt-count target, `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=10752`,",
+        "  currently times out after the 6,656-byte boundary while looping through",
+        "  keyboard/IRQ service around VRAM write count 63,155. A later",
+        "  `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066600` candidate starts at PC `0xE585`",
+        "  but polls FDC status `0x03` without reaching data reads, so the next",
+        "  narrowing step is finding a cleaner late-sector M1 boundary.",
         "- Use `JUKU_TOP_CHECKPOINT_FDC_CYCLES=0 JUKU_TOP_CHECKPOINT_FDC_WRITES=63085",
         "  JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1 JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`",
         "  for the older first-command boundary.",
