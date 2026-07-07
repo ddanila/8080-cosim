@@ -169,6 +169,11 @@ debugging session saved on real hardware.
    `docs/fdc-core-survey.md` records available upstream ВГ93/WD1793 cores and
    keeps this local block scoped as a boot/media shim rather than a full manual
    controller clone.
+   `sync/juku_top_fdc_probe.sh` is now the bounded HDL diagnostic for the
+   remaining top-level boundary: it enables vendored `JUKU1.CPM`, frame
+   interrupts, and fixed `TDD` key stimulus, then stops on decoded WD1793 I/O.
+   The current captured run loads the disk and reaches the first BIOS VRAM
+   write, but times out before FDC I/O.
    Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
    the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so

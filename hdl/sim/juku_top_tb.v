@@ -25,7 +25,8 @@ module juku_top_tb();
   // configured key once the banner is drawn (vram_writes >= keyat), hold for khold osc
   // cycles, then release so the BIOS sees a clean edge. kcol/kbit/kshift = the decoded key.
   reg kbd_en=0, kbd_pressed=0, kbd_shift=0; reg [3:0] kbd_kcol=0; reg [2:0] kbd_kbit=0;
-  integer keyat=0, khold=900000, key_t=-1, kcolp=0, kbitp=0, kshiftp=0;
+  integer keyat=0, khold=900000, kgap=900000, key_t=-1, kcolp=0, kbitp=0, kshiftp=0;
+  integer ekdoskeys=0, ekdos_key=0;
   // frame interrupt: a 1-osc-cycle pulse every `frameirq` osc cycles (8253 VER-RTR -> 8259
   // IR5). Opt-in: frameirq=0 => no pulse => intr stays 0 => boot byte-identical.
   reg frame_tick=0; integer frameirq=0, osc_n=0;
@@ -45,15 +46,59 @@ module juku_top_tb();
     force dut.phi2=0;
   end
 
+  task set_ekdos_key(input integer idx); begin
+    kbd_shift <= 1'b1;
+    if (idx == 0) begin kbd_kcol <= 4; kbd_kbit <= 3; end   // T
+    else begin kbd_kcol <= 6; kbd_kbit <= 5; end             // D
+  end endtask
+
   // count machine cycles off the structural SYNC net; drive the keyboard press window
   always @(posedge osc) begin
     if (dut.sync && !sq) mcyc <= mcyc+1;
     sq <= dut.sync;
-    if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) key_t <= 0;  // arm on banner
-    else if (key_t >= 0) key_t <= key_t + 1;
-    kbd_pressed <= (key_t >= 0 && key_t < khold);                               // hold then release
+    if (ekdoskeys != 0) begin
+      if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) begin
+        key_t <= 0;
+        ekdos_key <= 0;
+        set_ekdos_key(0);
+      end else if (key_t >= 0 && ekdos_key < 3) begin
+        key_t <= key_t + 1;
+        if (key_t >= khold + kgap - 1) begin
+          ekdos_key <= ekdos_key + 1;
+          key_t <= 0;
+          set_ekdos_key(ekdos_key + 1);
+        end
+      end
+      kbd_pressed <= (key_t >= 0 && key_t < khold && ekdos_key < 3);
+    end else begin
+      if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) key_t <= 0;  // arm on banner
+      else if (key_t >= 0) key_t <= key_t + 1;
+      kbd_pressed <= (key_t >= 0 && key_t < khold);                               // hold then release
+    end
     osc_n <= osc_n + 1;
     frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq-1));        // periodic IR5 tick
+  end
+
+  integer tracefdc=0, stopfdc=0, fdc_ios=0, fdc_reads=0, fdc_writes=0;
+  always @(negedge dut.iowr_n) if (!dut.cs_fdc_n) begin
+    fdc_ios = fdc_ios + 1;
+    fdc_writes = fdc_writes + 1;
+    if (tracefdc) $display("[FDC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
+                           {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
+    if (stopfdc != 0 && fdc_ios >= stopfdc) begin
+      $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
+      #60 dump_vram; $finish;
+    end
+  end
+  always @(negedge dut.iord_n) if (!dut.cs_fdc_n) begin
+    fdc_ios = fdc_ios + 1;
+    fdc_reads = fdc_reads + 1;
+    if (tracefdc) $display("[FDC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
+                           {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
+    if (stopfdc != 0 && fdc_ios >= stopfdc) begin
+      $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
+      #60 dump_vram; $finish;
+    end
   end
 
   // count video writes (RAM write to >=0xD800); dump the framebuffer at the bound
@@ -103,9 +148,16 @@ module juku_top_tb();
     if ($value$plusargs("kbit=%d",   kbitp))  ;          // decoded key row bit 0-7
     if ($value$plusargs("kshift=%d", kshiftp)) ;         // 1 = SHIFT held (uppercase)
     if ($value$plusargs("khold=%d",  khold))  ;
+    if ($value$plusargs("kgap=%d",   kgap))   ;
+    if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;    // fixed T,D,D sequence
+    if ($value$plusargs("tracefdc=%d", tracefdc)) ;
+    if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)
     if ($value$plusargs("cursorstop=%d", cursorstop)) ; // stop when jmon33 idle cursor is in VRAM
-    if (keyat != 0) begin kbd_en=1; kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
+    if (keyat != 0) begin
+      kbd_en=1;
+      if (ekdoskeys == 0) begin kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
+    end
   end
   initial begin #(timecap);       // time cap (the bit-sliced DRAM makes this sim heavy)
     $display("[SIM] time cap mcyc=%0d vram_writes=%0d", mcyc, vram_writes); dump_vram; $finish;

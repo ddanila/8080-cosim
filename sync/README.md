@@ -43,6 +43,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe; defaults
   to vendored `media/disks/JUKU1.CPM`, and disk-backed runs must reach the
   EKDOS `A>` prompt bitmap.
+- `sync/juku_top_fdc_probe.sh` — bounded HDL diagnostic for the remaining
+  `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
+  interrupts, fixed `TDD` keyboard stimulus, and stops on decoded WD1793 I/O.
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.
@@ -70,7 +73,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 The LVS/boot path is no longer a small fixture: `juku_top` is the working
 LVS-checked model and the guards above cover connectivity, boot behavior,
 value-level lockstep, cosim FDC sector-read/prompt scaffolding, HDL WD1793
-synthetic-sector behavior, and runnable video readout. The remaining
+synthetic-sector behavior, a bounded `juku_top` FDC-path diagnostic, and
+runnable video readout. The remaining
 high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
 jmon33 command prompt and
 cosim-vs-HDL comparison at the monitor-idle oracle boundary, the BASIC prompt

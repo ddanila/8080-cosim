@@ -21,6 +21,7 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 
 ```sh
 sync/fdc_check.sh
+sync/juku_top_fdc_probe.sh
 ```
 
 ## Evidence
@@ -34,12 +35,17 @@ sync/fdc_check.sh
 | Vendored `JUKU1.CPM` sector 2 bytes are streamed through the HDL FDC | PASS |
 | DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
+| `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
+| `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
 ## Remaining Boundary
 
 - Drive the full `ROMBIOS 3.43` `<T>, <D>, <D>` path through `juku_top` with
   `+disk=media/disks/JUKU1.CPM` and promote the HDL boundary from sector-ready
   to EKDOS-prompt-ready.
+- `docs/juku-top-fdc-probe.md` now captures the current top-level boundary:
+  disk media is loaded and the BIOS starts drawing, but the bounded `TDD` run
+  does not yet reach decoded WD1793 I/O.
 - Preserve the Arti `JUKU1.CPM` cosim proof from
   `docs/ekdos-media-acquisition.md` as the disk-backed reference.
 - If deeper controller behavior becomes the blocker, decide whether GPL
