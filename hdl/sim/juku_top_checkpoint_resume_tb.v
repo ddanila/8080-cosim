@@ -14,6 +14,7 @@ module juku_top_checkpoint_resume_tb();
   reg [7:0] ram [0:65535];
   integer mcyc = 0, vram_writes = 30000, max_mcyc = 200000, timecap = 200000000;
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
+  reg clk_run = 1'b1;
   reg sq = 0;
 
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
@@ -21,9 +22,13 @@ module juku_top_checkpoint_resume_tb();
                .kbd_kcol(4'd0), .kbd_kbit(3'd0), .frame_tick(1'b0));
 
   initial forever begin
-    force dut.phi1 = 1'b1; force dut.phi2 = 1'b0; osc = 0; #10; osc = 1; #10;
-    force dut.phi1 = 1'b0; force dut.phi2 = 1'b1; osc = 0; #10; osc = 1; #10;
-    force dut.phi2 = 1'b0;
+    if (clk_run) begin
+      force dut.phi1 = 1'b1; force dut.phi2 = 1'b0; osc = 0; #10; osc = 1; #10;
+      force dut.phi1 = 1'b0; force dut.phi2 = 1'b1; osc = 0; #10; osc = 1; #10;
+      force dut.phi2 = 1'b0;
+    end else begin
+      force dut.phi1 = 1'b0; force dut.phi2 = 1'b0; osc = 0; #10;
+    end
   end
 
   task write_dram_byte(input integer addr, input [7:0] value); begin
@@ -163,11 +168,15 @@ module juku_top_checkpoint_resume_tb();
     #2000;
     force dut.reset_sys = 1'b0;
     #400;
+    clk_run = 1'b0;
+    #100;
 
     $readmemh(ram_file, ram);
     for (i = 0; i < 65536; i = i + 1) write_dram_byte(i, ram[i]);
     load_checkpoint_state();
     $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h", dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp);
+    #100;
+    clk_run = 1'b1;
   end
 
   initial begin
