@@ -42,6 +42,7 @@ jobs:
       - name: Run fast subsystem guards
         run: |
           ./sync/basic_cart_check.sh
+          ./sync/basic_launch_probe.py
           ./sync/beeper_check.sh
           ./sync/jmon33_hdl_probe.sh
 
