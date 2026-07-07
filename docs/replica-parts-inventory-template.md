@@ -9,6 +9,7 @@ Source gates:
 
 - `docs/replica-dual-config-bom.csv`
 - `docs/replica-sourcing-readiness.md`
+- `docs/replica-bringup-verification-points.md`
 - `docs/prom-dump-procedure.md`
 - `docs/community-prom-media-request.md`
 
@@ -22,6 +23,7 @@ Source gates:
 | Parts storage location |  |
 | Anti-static / handling notes |  |
 | Board batch/order reference |  |
+| Bring-up verification checklist revision |  |
 
 ## Required Functional Groups
 
@@ -68,6 +70,7 @@ Source gates:
 - [ ] FDC choice is recorded as КР1818ВГ93 or WD1793-compatible.
 - [ ] Mechanical connector rows are fit-checked against the fabricated board before soldering.
 - [ ] PROM/EPROM contents have provenance and readback checksums.
+- [ ] `docs/replica-bringup-verification-points.md` has been copied into the build record with owner/measured dispositions for source-risk nets touched by early bring-up.
 - [ ] Sockets and passives are installed before any IC is seated.
 - [ ] Power rails are checked with no ICs seated.
 
@@ -77,4 +80,5 @@ Source gates:
 - Photos of received lots and date codes.
 - Tester logs for CPU, DRAM, FDC, and suspicious NOS parts.
 - PROM programmer logs and readback binaries/checksums.
+- Filled bring-up verification-point checklist with continuity/scope/logic-analyzer evidence.
 - Photos of connector/socket fit checks before soldering.

@@ -97,13 +97,15 @@ against drawings/board photos before ordering final quantities.
 2. Test DRAM and CPU-family spares before installation; reject intermittent or hot-running parts.
 3. Program or dump PROM/EPROM rows only after provenance is recorded; keep checksums with the programmer log.
 4. Install sockets first, then passives/connectors, then power-rail checks with no ICs seated.
-5. Seat only the clock/reset/ROM-fetch minimum set first; compare bus behavior against `sync/boot_check.sh` and cosim traces.
-6. Add RAM, video, keyboard, and FDC in staged groups, never as one full-board power-on.
+5. Carry `docs/replica-bringup-verification-points.md` into the private build record and close its source-risk nets as they are reached.
+6. Seat only the clock/reset/ROM-fetch minimum set first; compare bus behavior against `sync/boot_check.sh` and cosim traces.
+7. Add RAM, video, keyboard, and FDC in staged groups, never as one full-board power-on.
 
 ## Related Gates
 
 - `docs/replica-dual-config-bom.md` / `.csv`: source-of-truth BOM split.
 - `docs/replica-parts-inventory-template.md`: received-parts, acceptance-test, and PROM/EPROM programming evidence template.
+- `docs/replica-bringup-verification-points.md`: source-risk net checklist to carry into assembly and staged bring-up.
 - `docs/prom-dump-procedure.md`: PROM/EPROM dump and programming provenance.
 - `docs/community-prom-media-request.md`: owner/community request for PROMs and `JUKU-1` media.
 - `docs/replica-fab-drc-disposition.md`: fabrication review posture before board order.

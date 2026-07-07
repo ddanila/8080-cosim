@@ -20,7 +20,7 @@ already been placed or accepted.
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8097 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8353 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |
