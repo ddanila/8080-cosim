@@ -17,8 +17,9 @@ real media or silicon truth:
 
 - Baltijets doc 007 confirms the programmed-part drawings, but the small-PROM
   byte tables are marked `на диске` instead of printed.
-- The current FDC cosim can load an external `.juk` image and perform WD1793
-  sector reads, but the repo does not vendor copyrighted EKDOS media.
+- The current FDC cosim vendors public Arti `JUKU1/JUKU2` disk images and
+  boots `media/disks/JUKU1.CPM` to the EKDOS `A>` prompt, but physical-media
+  provenance is still useful.
 - The functional PROM maps are boot-validated reconstructions; dumped PROMs
   would turn them into preservation-grade evidence.
 
@@ -37,8 +38,9 @@ Relevant local docs:
    - `ДГШ5.106.039` (`К155РЕ3`, D8)
    - `ДГШ5.106.092` (FDC-era PROM, D94 on the .009 board)
    - `ДГШ5.106.040` etc. EPROM programming files for the 2764/К573РФ5 ROM row
-2. Does anyone have a known-good `.juk` image for the factory boot disk
-   `JUKU-1` / `ДГШ5.106.105`, or a checksum/source pointer for it?
+2. Does anyone have an independently dumped factory boot disk
+   `JUKU-1` / `ДГШ5.106.105`, or checksum/provenance that can verify the
+   vendored public `media/disks/JUKU1.CPM` image?
 3. If a physical .009 processor board is available, can someone dump or help
    dump these socketed parts?
    - `К155РЕ3` D8, 32 bytes
@@ -71,15 +73,12 @@ proms/m2764_d16_<board>.bin
 media/juku-1_dgsh5.106.105_<source>.juk
 ```
 
-Do not post copyrighted images publicly if rights are unclear. A checksum plus
-private pointer is still useful for verification.
-
 ## Ready-To-Send Message
 
 Subject:
 
 ```text
-Juku E5104 .009 PROM dumps and JUKU-1 EKDOS media for preservation/replica validation
+Juku E5104 .009 PROM dumps and JUKU-1 media provenance for preservation/replica validation
 ```
 
 Body:
@@ -106,13 +105,12 @@ board:
 - the FDC-era PROM ДГШ5.106.092, likely D94 on the .009 board
 - the D15/D16 2764/M2764 ROM pair, if a physical board can be read
 
-I am also looking for a known-good JUKU-1 / ДГШ5.106.105 EKDOS boot disk image
-or checksum/source pointer. The cosim now accepts an external raw .juk image via:
+The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
+media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking
+for an independently dumped JUKU-1 / ДГШ5.106.105 disk, or checksum/provenance
+that can verify this public image. The cosim check is:
 
-    EKDOS_PROBE_DISK=/path/to/JUKU-1.juk sync/ekdos_fdc_probe.py
-
-The repo will not vendor copyrighted media unless rights are clear; even a
-checksum and provenance note would help.
+    sync/ekdos_fdc_probe.py
 
 The dump procedure and exact requested outputs are documented here:
 
@@ -127,14 +125,13 @@ Thanks!
 
 ## What To Do With Replies
 
-1. Save binary dumps outside the repo until rights/provenance are clear.
-2. Record metadata and hashes in a local note first.
+1. Record metadata and hashes in a local note first.
 3. For PROM dumps, compare repeated reads and reject all-`00`/all-`FF` files.
-4. For a `.juk` disk, run:
+4. For a raw Juku disk image, run:
 
    ```sh
    sync/juk_disk_check.sh
-   EKDOS_PROBE_DISK=/path/to/JUKU-1.juk sync/ekdos_fdc_probe.py
+   EKDOS_PROBE_DISK=/path/to/image sync/ekdos_fdc_probe.py
    ```
 
 5. If a dump cannot be published, record only the checksum/provenance and keep

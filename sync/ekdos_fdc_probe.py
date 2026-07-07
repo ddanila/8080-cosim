@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TRACE_C = ROOT / "cosim" / "trace.c"
 I8080_C = ROOT / "cosim" / "i8080.c"
 ROM = ROOT / "roms" / "ekta37.bin"
+DEFAULT_DISK = ROOT / "media" / "disks" / "JUKU1.CPM"
 
 
 PORT_RE = re.compile(r"^\s*0x([0-9A-Fa-f]{2})\s*:\s*([0-9]+)(?:\s+last=0x([0-9A-Fa-f]{2}))?")
@@ -147,6 +148,13 @@ def table_row(values):
     return "| " + " | ".join(str(value).replace("|", "/") if value is not None else "-" for value in values) + " |"
 
 
+def repo_relative(path):
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
 def build_report(proc, max_cycles, frame_cycles, disk_path):
     ports = parse_ports(proc.stdout)
     stop = parse_stop(proc.stderr)
@@ -158,7 +166,7 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
     if proc.returncode != 0:
         failures.append(f"trace exited with status {proc.returncode}")
     if disk_selected and not disk_loaded:
-        failures.append("selected EKDOS_PROBE_DISK was not loaded as a valid `.juk` image")
+        failures.append("selected EKDOS_PROBE_DISK was not loaded as a valid raw Juku disk image")
     if ports["out"].get(0x1C, {}).get("count", 0) == 0:
         failures.append("ROMBIOS did not write the WD1793 command/status register at port 0x1C")
     status_reads = ports["in"].get(0x1C, {}).get("count", 0)
@@ -182,7 +190,7 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         status = "EKDOS A> PROMPT REACHED"
     else:
         status = "READY FOR EXTERNAL EKDOS IMAGE"
-    disk_label = str(disk_path) if disk_selected else "not selected"
+    disk_label = repo_relative(disk_path) if disk_selected else "not selected"
     lines = [
         "# EKDOS/FDC boot-path probe",
         "",
@@ -190,16 +198,17 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         "",
         "This probe exercises the factory boot sequence mined from Baltijets doc 003:",
         "`ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the",
-        "`A>` EKDOS prompt. The default no-image run preserves the legacy",
-        "register-echo FDC boundary so this guard stays reproducible without",
-        "vendoring copyrighted media. Set `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`",
-        "to run the same path through the disk-backed WD1793 model.",
+        "`A>` EKDOS prompt. By default it uses the vendored `media/disks/JUKU1.CPM`",
+        "image, so this guard stays reproducible without network access. Set",
+        "`EKDOS_PROBE_DISK=/path/to/image` to run the same path through another",
+        "raw Juku disk image, or set `EKDOS_PROBE_DISK=none` for the legacy",
+        "no-image boundary.",
         "",
         "## Command",
         "",
         "```sh",
         (
-            f"EKDOS_PROBE_DISK={disk_path} JUKU_KEYS=TDD cosim/trace "
+            f"EKDOS_PROBE_DISK={disk_label} JUKU_KEYS=TDD cosim/trace "
             f"roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
             if disk_selected
             else f"JUKU_KEYS=TDD cosim/trace roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
@@ -209,7 +218,7 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         "## Summary",
         "",
         f"- Trace exit code: {proc.returncode}",
-        f"- External disk image: {disk_label}",
+        f"- Disk image: {disk_label}",
         f"- Disk image loaded by cosim: {'yes' if disk_loaded else 'no'}",
         f"- Stop PC: {stop.get('pc', 0):04X}" if stop else "- Stop PC: not parsed",
         f"- Cycles: {stop.get('cycles', 0)}" if stop else "- Cycles: not parsed",
@@ -241,8 +250,8 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
             "## Disposition",
             "",
             "- The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.",
-            "- The no-image run proves the BIOS/FDC boundary and keeps the repo self-testable without shipping EKDOS media.",
-            "- A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`; invalid paths or non-`.juk` sizes fail this report explicitly.",
+            "- The no-image run proves the BIOS/FDC boundary without depending on disk contents.",
+            "- A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/image`; invalid paths or unsupported raw image sizes fail this report explicitly.",
             "- The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.",
         ]
     )
@@ -258,7 +267,14 @@ def main():
     max_cycles = int(os.environ.get("EKDOS_PROBE_MAX_CYCLES", "250000000"))
     frame_cycles = int(os.environ.get("EKDOS_PROBE_FRAME_CYCLES", "200000"))
     disk_env = os.environ.get("EKDOS_PROBE_DISK", "")
-    disk_path = Path(disk_env).expanduser() if disk_env else None
+    if disk_env.lower() in {"none", "no", "0"}:
+        disk_path = None
+    elif disk_env:
+        disk_path = Path(disk_env).expanduser()
+    elif DEFAULT_DISK.exists():
+        disk_path = DEFAULT_DISK
+    else:
+        disk_path = None
     proc = run_probe(max_cycles, frame_cycles, disk_path)
     report, ok = build_report(proc, max_cycles, frame_cycles, disk_path)
     out.parent.mkdir(parents=True, exist_ok=True)

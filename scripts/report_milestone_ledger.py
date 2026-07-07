@@ -68,6 +68,16 @@ def milestone_rows():
     ekdos_external_prompt = marker(
         "docs/ekdos-media-acquisition.md",
         "Status: **COSIM EKDOS PROMPT PROVEN WITH EXTERNAL MEDIA**",
+    ) or marker(
+        "docs/ekdos-media-acquisition.md",
+        "Status: **COSIM JUKU1 PROMPT PROVEN WITH EXTERNAL MEDIA**",
+    ) or marker(
+        "docs/ekdos-media-acquisition.md",
+        "Status: **VENDORED JUKU1 PROMPT PROVEN**",
+    )
+    ekdos_juku1_prompt = marker(
+        "docs/ekdos-media-acquisition.md",
+        "JUKU1.CPM",
     )
     hdl_fdc_ready = marker(
         "docs/fdc-readiness.md",
@@ -106,9 +116,18 @@ def milestone_rows():
         {
             "id": "M2",
             "target": "EKDOS boots in the twin",
-            "status": "COSIM PROMPT PROVEN / HDL PENDING" if ekdos_external_prompt else "PARTIAL",
+            "status": (
+                "VENDORED JUKU1 PROMPT PROVEN / HDL PENDING"
+                if ekdos_juku1_prompt
+                else "COSIM PROMPT PROVEN / HDL PENDING" if ekdos_external_prompt else "PARTIAL"
+            ),
             "evidence": (
-                "`docs/ekdos-media-acquisition.md` records a non-vendored external-media "
+                "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
+                "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
+                "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
+                "WD1793 synthetic-sector behavior. Disk-backed FDC in `juku_top` remains open."
+                if ekdos_juku1_prompt
+                else "`docs/ekdos-media-acquisition.md` records a non-vendored external-media "
                 "run reaching the EKDOS `A>` prompt in cosim; the default tracked probe "
                 "remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`; "
                 "`docs/fdc-readiness.md` guards HDL WD1793 synthetic-sector behavior. "
@@ -124,7 +143,7 @@ def milestone_rows():
                 + "Tracked evidence does not yet prove the exact factory JUKU-1 image "
                 "or external-media FDC in `juku_top`."
             ),
-            "next": "Repeat with exact factory JUKU-1 media when available, then connect external `.juk` media through juku_top.",
+            "next": "Connect vendored raw disk media through juku_top.",
         },
         {
             "id": "M3",

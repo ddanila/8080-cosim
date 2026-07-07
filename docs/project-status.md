@@ -176,8 +176,11 @@ Historical merge notes:
   runs as successful only when the framebuffer contains the EKDOS `A>` prompt
   bitmap. A transient run with the external museum/juku3000 `J3KUTIL4.JUK`
   EKDOS 2.30 image reaches `52K EKDOS 2.30` and `A>` in cosim. The repo still
-  does not vendor disk media; exact factory `JUKU-1` confirmation and the
-  `juku_top` FDC port remain open.
+  now vendors the required public disk media under `media/disks/`. Arti
+  `JUKU1.7Z` extracts `JUKU1.CPM`
+  (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
+  and reaches `A>` through the factory `TDD` path. The `juku_top` disk-backed
+  FDC path remains open.
 - **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
   runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
   traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains

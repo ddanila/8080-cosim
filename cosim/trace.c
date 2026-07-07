@@ -231,7 +231,7 @@ int main(int argc, char** argv) {
   if (disk_path && disk_path[0]) {
     int rc = juk_disk_open(&disk, disk_path);
     if (rc != 0) {
-      fprintf(stderr, "JUKU_DISK=%s could not be opened as a .juk image (rc=%d)\n", disk_path, rc);
+      fprintf(stderr, "JUKU_DISK=%s could not be opened as a raw Juku disk image (rc=%d)\n", disk_path, rc);
       return 2;
     }
     juku_fdc_init(&fdc, &disk);

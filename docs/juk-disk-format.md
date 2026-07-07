@@ -1,7 +1,8 @@
-# Juku `.juk` Disk Image Format
+# Juku Raw Disk Image Format
 
 This repository uses the raw MAME Juku disk image layout as the cosim disk
-backend target.
+backend target. MAME software-list images often use `.juk`; the vendored Arti
+images use `.CPM`, but the byte layout is the same and is validated by size.
 
 Source: MAME `src/lib/formats/juku_dsk.cpp` (`FLOPPY_JUKU_FORMAT`),
 `https://github.com/mamedev/mame/blob/master/src/lib/formats/juku_dsk.cpp`,
@@ -42,8 +43,7 @@ validate any copyrighted EKDOS image.
 
 ## Next Use
 
-`cosim/juku_fdc.c` consumes this loader for the disk-backed WD1793 model. The
-repository still does not vendor any copyrighted EKDOS image; use
-`EKDOS_PROBE_DISK=/path/to/JUKU-1.juk sync/ekdos_fdc_probe.py` for the ROMBIOS
-boot-path probe, or `JUKU_DISK=/path/to/image.juk` when invoking `cosim/trace`
-directly.
+`cosim/juku_fdc.c` consumes this loader for the disk-backed WD1793 model. Use
+`sync/ekdos_fdc_probe.py` for the ROMBIOS boot-path probe; it defaults to the
+vendored `media/disks/JUKU1.CPM`. Use `JUKU_DISK=/path/to/image` when invoking
+`cosim/trace` directly.

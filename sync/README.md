@@ -36,13 +36,13 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `ekta37` ROM, including the LVS-checked `juku_top`.
 - `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`
   and the behavioral oracle.
-- `sync/juk_disk_check.sh` — raw `.juk` loader and minimal WD1793 model guard
+- `sync/juk_disk_check.sh` — raw Juku disk loader and minimal WD1793 model guard
   with synthetic media.
 - `sync/fdc_check.sh` — HDL WD1793 synthetic-sector guard for restore, seek,
   read-sector, status, side-select, and motor-off behavior.
-- `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe; with
-  optional `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk`, disk-backed runs must reach
-  the EKDOS `A>` prompt bitmap.
+- `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe; defaults
+  to vendored `media/disks/JUKU1.CPM`, and disk-backed runs must reach the
+  EKDOS `A>` prompt bitmap.
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.
@@ -71,8 +71,8 @@ The LVS/boot path is no longer a small fixture: `juku_top` is the working
 LVS-checked model and the guards above cover connectivity, boot behavior,
 value-level lockstep, cosim FDC sector-read/prompt scaffolding, HDL WD1793
 synthetic-sector behavior, and runnable video readout. The remaining
-high-fidelity boundaries are the exact factory `JUKU-1` EKDOS-media proof plus
-external-media FDC in `juku_top`, the user-visible jmon33 command prompt and
+high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
+jmon33 command prompt and
 cosim-vs-HDL comparison at the monitor-idle oracle boundary, the BASIC prompt
 oracle plus HDL coverage of the Monitor 3.3 BASIC path, the analog
 speaker/current check, dumped PROM contents, and the РЕ3/АГ3-gated physical

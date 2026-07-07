@@ -37,9 +37,9 @@ Drive power is +12 V on drive X1 pin 1, ground on pins 2/3, and +5 V on pin 4.
 The drawing labels the drive as `НГМД ЕС 5323.01`.
 
 ## EKDOS media acquisition gate
-The exact target image is tracked in `docs/ekdos-media-acquisition.md`: the
-factory `JUKU-1` / `ДГШ5.106.105` EKDOS boot disk, supplied externally as a
-MAME/Juku raw `.juk` image. The repository does not vendor that image.
+The target media is tracked in `docs/ekdos-media-acquisition.md`: the factory
+`JUKU-1` / `ДГШ5.106.105` EKDOS boot disk, now vendored as the MAME/Juku
+raw-geometry image `media/disks/JUKU1.CPM`.
 
 ## Current EKDOS boot-path probe
 `sync/ekdos_fdc_probe.py` drives the factory sequence from Baltijets doc 003:
@@ -53,18 +53,21 @@ Current cosim result:
   times.
 - With no `EKDOS_PROBE_DISK` image selected, the data port `0x1F` is read 512 times,
   matching the first sector transfer size at the legacy register-echo boundary.
-- Setting `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk` passes that image through to
-  `JUKU_DISK` and fails the report explicitly if the image is not a valid raw
-  `.juk` size.
+- Setting `EKDOS_PROBE_DISK=/path/to/image` passes that image through to
+  `JUKU_DISK` and fails the report explicitly if the image is not a supported
+  raw Juku disk size.
 - Disk-backed runs now also require a left-margin EKDOS `A>` prompt bitmap in
   VRAM. A transient, non-vendored run with
   `https://elektroonikamuuseum.ee/failid/juku/tarkvara/J3KUTIL4.JUK` reaches
   `52K EKDOS 2.30` and `A>` in cosim.
-- The next implementation steps are repeating the prompt proof with the exact
-  factory `JUKU-1` image when available and porting the FDC behavior into
+- A stronger run with `https://arti.ee/juku/tarkvara/JUKU1.7Z` extracts the
+  vendored `media/disks/JUKU1.CPM`
+  (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
+  and reaches `A>` through the factory `TDD` path.
+- The next implementation step is porting disk-backed FDC behavior into
   `juku_top`.
 
-## `.juk` sector backend
+## Raw disk sector backend
 `cosim/juk_disk.c` implements the raw MAME `FLOPPY_JUKU_FORMAT` geometry:
 80 tracks, 10 sectors per track, 512-byte sectors, sector IDs 1-10, and either
 one 409600-byte side or two 819200-byte sides. `sync/juk_disk_check.sh`
@@ -82,9 +85,9 @@ The read-sector command class (`0x80`) loads one 512-byte sector through
 `cosim/juk_disk.c` and streams it through the data register. The minimal model
 also completes the ROMBIOS type-I restore/seek setup commands synchronously, so
 an attached disk image can reach real sector transfers instead of sticking busy
-before the first read. It is enabled only when `JUKU_DISK=/path/to/image.juk` is
+before the first read. It is enabled when `JUKU_DISK=/path/to/image` is
 set, preserving the default no-disk probe behavior. `sync/juk_disk_check.sh`
-guards both the raw `.juk` loader and this minimal FDC model with synthetic
+guards both the raw disk loader and this minimal FDC model with synthetic
 images.
 
 ## HDL WD1793 synthetic-sector guard
@@ -92,7 +95,7 @@ images.
 `hdl/devices.v`: restore, seek, read-sector, BUSY/DRQ status, side-select
 stream changes, and motor-off NOT READY behavior. The guard is documented in
 `docs/fdc-readiness.md` and uses synthetic sector contents only; it does not
-vendor EKDOS media or claim that exact factory `JUKU-1` boots in HDL.
+load vendored EKDOS media in HDL yet.
 
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3

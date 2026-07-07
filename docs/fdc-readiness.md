@@ -10,8 +10,8 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   restore returns to track 0, seek copies the data register to the track
   register, read-sector streams 512 bytes, side select changes the stream,
   and motor-off read reports not-ready.
-- The guard uses synthetic sector contents only. It does not vendor EKDOS
-  media and does not claim the exact factory `JUKU-1` image boots in HDL.
+- The guard uses synthetic sector contents only. Vendored Juku disk images live
+  under `media/disks/`, but the HDL path does not yet consume disk files.
 
 ## Command
 
@@ -31,8 +31,7 @@ sync/fdc_check.sh
 
 ## Remaining Boundary
 
-- Connect the same behavior to externally supplied `.juk` media for `juku_top`
-  without committing copyrighted disk images.
-- Repeat the EKDOS `A>` prompt proof with exact factory `JUKU-1` media when it
-  is available.
+- Connect the same behavior to vendored raw disk media for `juku_top`.
+- Preserve the Arti `JUKU1.CPM` cosim proof from
+  `docs/ekdos-media-acquisition.md` as the disk-backed reference.
 - Confirm D93 INTRQ/DRQ, MR, CLK, and D100 OE/T wiring during the owner session.

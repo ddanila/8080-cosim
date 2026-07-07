@@ -5,8 +5,10 @@ the emulator (`cosim/`) and the HDL sims (`hdl/sim/`) can boot the real firmware
 cross-validated in CI without an external ROM path.
 
 ## Provenance
-These are the canonical, preservation-grade Juku ROMs — every image's SHA-1 **matches
-the hashes documented in the MAME `juku` driver** (`ref/mame_juku.cpp`):
+Most boot ROMs are the canonical, preservation-grade Juku ROMs whose SHA-1
+matches the hashes documented in the MAME `juku` driver (`ref/mame_juku.cpp`).
+Additional public monitor images from the museum bundle are listed separately
+in the same table:
 
 | file | size | SHA-1 | role |
 |---|---|---|---|
@@ -17,6 +19,7 @@ the hashes documented in the MAME `juku` driver** (`ref/mame_juku.cpp`):
 | `ekta35.bin`  | 16K | `7aa03497d88cfab9315aa3987765bc06ecb70013` | EktaSoft BIOS |
 | `ekta37.bin`  | 16K | `29366d74c0e27129f2484a973f7a6de659b90cf4` | EktaSoft BIOS '88 (the **boot we validate** — polled, draws a banner) |
 | `ekta43.bin`  | 16K | `a7419bfd8249871cc7dbf5c6ea85022d6963fc9a` | EktaSoft BIOS (stale block-1 checksum) |
+| `jmon22.bin`  | 16K | `dee46441f6beeece3e2dfe897c8b1547939c7b1f` | Juku Monitor v2.2 from the public museum ROM bundle |
 | `jbasic11.bin`| 8K  | `27e40395e8b49e2f9febf2b23773fbfe251befcf` | Juku BASIC 1.1 |
 
 ## Licensing / status

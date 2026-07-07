@@ -10,18 +10,18 @@ unless there is tracked evidence for them.
 | Status | Count |
 | --- | ---: |
 | BASIC RAM EXECUTION REACHED / PROMPT+HDL PENDING | 1 |
-| COSIM PROMPT PROVEN / HDL PENDING | 1 |
 | EVIDENCE TEMPLATE READY / EXTERNAL PENDING | 1 |
 | EXTERNAL PENDING | 5 |
 | PARTIAL | 2 |
 | REPO READY / EXTERNAL PENDING | 1 |
+| VENDORED JUKU1 PROMPT PROVEN / HDL PENDING | 1 |
 
 ## Milestones
 
 | ID | Target | Status | Evidence | Next action |
 | --- | --- | --- | --- | --- |
 | M1 | Baltijets docs mined; PROM-truth status resolved | PARTIAL | 16 Baltijets PDFs present; PLAN records first-pass mining for 002/003/007/009/014/015; `docs/source-coverage-audit.md` records Arti, Elektroonikamuuseum, infoaed/juku3000 ROM, and Arvutimuuseum coverage; PROM bytes still need disk files, hardware dumps, or accepted reconstruction. | Locate programming disk/media or get RE3/RT4 dumps. |
-| M2 | EKDOS boots in the twin | COSIM PROMPT PROVEN / HDL PENDING | `docs/ekdos-media-acquisition.md` records a non-vendored external-media run reaching the EKDOS `A>` prompt in cosim; the default tracked probe remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`; `docs/fdc-readiness.md` guards HDL WD1793 synthetic-sector behavior. Exact factory `JUKU-1` evidence and external-media FDC in `juku_top` remain open. | Repeat with exact factory JUKU-1 media when available, then connect external `.juk` media through juku_top. |
+| M2 | EKDOS boots in the twin | VENDORED JUKU1 PROMPT PROVEN / HDL PENDING | `docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / `JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL WD1793 synthetic-sector behavior. Disk-backed FDC in `juku_top` remains open. | Connect vendored raw disk media through juku_top. |
 | M3 | VJUGA Rev A ordered | EXTERNAL PENDING | `fab/minimal-vga/order-readiness.md` is a coherent draft with machine gates PASS, but still requires human/vendor review before upload. | Perform final JLCPCB UI review and place the Rev A order. |
 | M4 | Twin emits real video timing | PARTIAL | `docs/video-readout-readiness.md` proves the V2 byte-to-pixel path; the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open. | Close the RE3/AG3 timing source and replace the sim-only framebuffer read. |
 | M5 | jmon33 live prompt + BASIC launches in the twin | BASIC RAM EXECUTION REACHED / PROMPT+HDL PENDING | jmon33 interrupt/first-write/cosim cursor probes exist; `docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC cartridge and executing in the 0x4000 RAM window, but that window only receives zero-byte writes; EktaSoft 3.43m #0037 remains a compatibility boundary. | Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage. |

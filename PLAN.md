@@ -36,8 +36,8 @@ only after Tier 2.
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
-| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md` | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, exact `JUKU-1` media, and a short owner measurement list |
-| **Firmware/media** (`roms/`) | Full canonical ROM set vendored (SHA-1 = MAME) | EKDOS/CP/M disk images (available online), РЕ3/РТ4 PROM binaries |
+| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, and a short owner measurement list |
+| **Firmware/media** (`roms/`, `media/disks/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim | РЕ3/РТ4 PROM binaries |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
 
@@ -56,11 +56,12 @@ The July 2026 survey of the online ecosystem changes the plan materially:
    hardware-validated fixes merged 2026-01) — including the discrete PIT-driven
    video timing (49.92 Hz frame, 241-line raster) that our video-chain model needs.
    MAME PR #9946/#14817 discussions are the timing reference.
-3. **EKDOS is fully recoverable**: MAME `hash/juku.xml` ships EKDOS 2.29/2.30,
-   CP/M 2.2 and system/games disks as 800 KB `.juk` images; the disk format is
-   specified in juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS
-   3.0 **source** exists (`EKDOS30.ASM` in infoaed/juku3000). Nothing blocks an
-   FDC/EKDOS milestone in the twin.
+3. **EKDOS is available in-tree**: Arti `JUKU1.7Z` / `JUKU2.7Z` public raw disk
+   images are now vendored under `media/disks/`; `JUKU1.CPM` boots through
+   ROMBIOS `TDD` to `A>` in cosim. The raw geometry is specified in
+   juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS 3.0
+   **source** exists (`EKDOS30.ASM` in infoaed/juku3000). Nothing blocks an
+   FDC/EKDOS milestone in the twin except the HDL external-media path.
 4. **No other recreation exists** — no FPGA core, no clone PCB, no replica project
    found anywhere. This is first-of-its-kind; publishing results back matters.
 5. **Parts are obtainable**: КР580 family plentiful NOS on eBay; К565РУ5 ≡ 4164;
@@ -72,8 +73,8 @@ Source-coverage sanity check: `docs/source-coverage-audit.md` records which
 materials from Arti, Elektroonikamuuseum, infoaed/juku3000 ROMs, and
 Arvutimuuseum are actually consumed. The board-critical drawings, ROM/BASIC
 lineage, and Baltijets docs are covered; the remaining useful external sources
-are the programming disk/PROM dumps, exact factory `JUKU-1` media, and
-owner/community validation rather than more РФ2 ROM material.
+are the programming disk/PROM dumps, disk-backed FDC integration in
+`juku_top`, and owner/community validation rather than more РФ2 ROM material.
 
 ## 4. Critical path
 
@@ -148,16 +149,20 @@ debugging session saved on real hardware.
    implemented and tested against MAME's 80-track, 10-sector, 512-byte,
    1/2-sided geometry, and a minimal disk-backed WD1793 model now covers the
    ROMBIOS restore/seek prelude plus read-sector transfers behind
-   `EKDOS_PROBE_DISK=/path/to/JUKU-1.juk` / `JUKU_DISK=/path/to/image.juk`.
-   No disk image is vendored; `docs/ekdos-media-acquisition.md` tracks the
-   external media gate. A transient run with the museum/juku3000
+   `EKDOS_PROBE_DISK=/path/to/image` / `JUKU_DISK=/path/to/image`.
+   Required public disk images are vendored in `media/disks/`;
+   `docs/ekdos-media-acquisition.md` tracks the media gate. A transient run
+   with the museum/juku3000
    `J3KUTIL4.JUK` EKDOS 2.30 image reaches the `A>` prompt in cosim, and the
-   probe now has an optional VRAM bitmap oracle for that boundary. The first
-   HDL-side WD1793 behavior slice is now guarded by `sync/fdc_check.sh` and
-   documented in `docs/fdc-readiness.md`: restore/seek/read-sector/status,
-   side-select, and motor-off behavior are proven with synthetic sector
-   contents. Remaining targets: repeat with the exact factory `JUKU-1` image
-   when available, then connect external `.juk` media through `juku_top`.
+   probe now has an optional VRAM bitmap oracle for that boundary. A stronger
+   transient run with Arti `JUKU1.7Z` extracts `JUKU1.CPM`
+   (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
+   and reaches the same `A>` prompt after the factory `<T>, <D>, <D>` path.
+   The first HDL-side WD1793 behavior slice is now guarded by
+   `sync/fdc_check.sh` and documented in `docs/fdc-readiness.md`:
+   restore/seek/read-sector/status, side-select, and motor-off behavior are
+   proven with synthetic sector contents. Remaining target: connect external
+   vendored raw media through `juku_top`.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
@@ -340,8 +345,9 @@ commands.
 3. **Keyboard**: adapter first (the 8255/74148 protocol is fully understood and
    twin-tested; a microcontroller adapter from PS/2/USB is a weekend project), the
    original keyboard unit per `klaviatuur.pdf`/Baltijets 013 as its own sub-project.
-4. **Storage**: Gotek/HxC-class emulator with `.juk` images first (the format is
-   fully specified); real 5.25" QD drive + E6502-style dual unit for Tier 3.
+4. **Storage**: Gotek/HxC-class emulator with the vendored raw Juku disk images
+   first (the format is fully specified); real 5.25" QD drive + E6502-style
+   dual unit for Tier 3.
 5. **Bring-up = twin lockstep**: reuse the staged ladder from VJUGA; at each stage
    the twin predicts bus/VRAM behavior — divergence localizes the fault. This is
    the payoff of the whole LVS/cosim discipline.

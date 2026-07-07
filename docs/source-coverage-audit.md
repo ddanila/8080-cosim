@@ -12,9 +12,9 @@ or disk image has been fully mined.
 
 | Source | Current coverage | Gap |
 | --- | --- | --- |
-| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, and legacy ROM/BASIC materials are mirrored or reflected in `ref/`, `roms/`, board placement, BOM, and transcription docs. | The Russian manuals, Estonian user manual, software/game directories, emulator pages, `Noorte_Hääl_1987-04`, and forum links are not exhaustively mined for hardware-critical details. |
-| `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction in `ref/baltijets-tech-docs/` and mined for factory test, ROM-programming, FDD, power, keyboard, and peripheral planning. The `tarkvara/J3KUTIL4.JUK` image has been used as non-vendored EKDOS prompt evidence. | The broader `tarkvara/` disk-image set and `kirjandus/` manuals are not exhaustively classified; exact factory `JUKU-1` media and Baltijets programming-disk files remain missing. |
-| `https://github.com/infoaed/juku3000/tree/master/roms` | The ROM lineage is covered: canonical ROMs are vendored under `roms/`; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The repo still needs exact factory media/PROM provenance, not more РФ2 ROM coverage. |
+| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, and legacy ROM/BASIC materials are mirrored or reflected in `ref/`, `roms/`, board placement, BOM, and transcription docs. `tarkvara/JUKU1.7Z` and `JUKU2.7Z` are now vendored under `media/disks/`; `JUKU1.CPM` boots to `A>` in cosim. | The Russian manuals, Estonian user manual, remaining software/game archives, emulator pages, `Noorte_Hääl_1987-04`, and forum links are not exhaustively mined for hardware-critical details. |
+| `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction in `ref/baltijets-tech-docs/` and mined for factory test, ROM-programming, FDD, power, keyboard, and peripheral planning. The `tarkvara/J3KUTIL4.JUK` image has been used as non-vendored EKDOS prompt evidence. | The broader `tarkvara/` disk-image set and `kirjandus/` manuals are not exhaustively classified; Baltijets programming-disk files remain missing. |
+| `https://github.com/infoaed/juku3000/tree/master/roms` | The ROM lineage is covered: canonical ROMs are vendored under `roms/`; `jmon22.bin` is vendored from the public museum ROM bundle; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The repo still needs PROM provenance and HDL disk-backed media work, not more РФ2 ROM coverage. |
 | `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets/museum contact and public-preservation context. | Not a primary electrical source. Its exhibit text, photos, and linked historical references are not exhaustively mined into board/twin evidence. |
 
 ## Board-critical materials already consumed
@@ -34,7 +34,8 @@ or disk image has been fully mined.
 
 - Arti manual PDFs and the Arti `tarkvara/` collection.
 - Elektroonikamuuseum `kirjandus/` manuals and the full `tarkvara/` disk-image
-  inventory beyond the EKDOS prompt probe image.
+  inventory beyond the vendored Arti images and the earlier `J3KUTIL4.JUK`
+  prompt probe.
 - Arvutimuuseum photos/articles/linked references beyond project context and
   contact path.
 - Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except where
@@ -46,7 +47,8 @@ The current manufacturing packet does not appear blocked by unused РФ2 ROM
 material. The remaining source-risk items are narrower:
 
 - Baltijets programming-disk files or physical РЕ3/РТ4 dumps.
-- Exact factory `JUKU-1`/`ДГШ5.106.105` media.
+- Disk-backed FDC behavior in `juku_top`; the vendored Arti `JUKU1.CPM`
+  image now proves the cosim `JUKU1` boot path.
 - Owner/community confirmation for the generated bring-up verification list.
 - Optional mining of manuals/software for Tier 2/Tier 3 fidelity, especially
   storage workflows, keyboard/monitor operation, and original user-facing
