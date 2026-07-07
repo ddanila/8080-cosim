@@ -46,7 +46,10 @@ def milestone_rows():
         "docs/replica-bringup-verification-points.md",
         "Status: **READY**",
     )
-    order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**")
+    order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**") or marker(
+        "docs/replica-manufacturing-readiness.md",
+        "| Order readiness | `fab/gerbers/order-readiness.md`",
+    )
     parts_inventory_template = exists("docs/replica-parts-inventory-template.md")
     ekdos_external_prompt = marker(
         "docs/ekdos-media-acquisition.md",
@@ -63,6 +66,9 @@ def milestone_rows():
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
+    ) or marker(
+        "PLAN.md",
+        "Vendor/order checklist evidence is now generated",
     )
 
     return [
