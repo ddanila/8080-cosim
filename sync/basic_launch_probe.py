@@ -33,6 +33,7 @@ PROBE_RE = re.compile(
     r"pc_cart_count\s+:\s+([0-9]+).*?"
     r"pc_cart_mode1\s+:\s+([0-9]+).*?"
     r"pc_cart_mode2\s+:\s+([0-9]+).*?"
+    r"pc_cart_opcode00\s+:\s+([0-9]+).*?"
     r"pchist_cart\s+:\s+([0-9]+)",
     re.S,
 )
@@ -68,7 +69,7 @@ def instrumented_trace_source() -> str:
         "  unsigned long last_write_total = 0, writes_total, idle_cyc = 0;\n"
         "  static uint32_t pchist[MEM_SIZE];\n",
         "  unsigned long last_write_total = 0, writes_total, idle_cyc = 0;\n"
-        "  unsigned long pc_cart_count = 0, pc_cart_mode1 = 0, pc_cart_mode2 = 0, cart_hist_count = 0;\n"
+        "  unsigned long pc_cart_count = 0, pc_cart_mode1 = 0, pc_cart_mode2 = 0, pc_cart_opcode00 = 0, cart_hist_count = 0;\n"
         "  static uint32_t pchist[MEM_SIZE];\n",
     )
     src = src.replace(
@@ -77,6 +78,8 @@ def instrumented_trace_source() -> str:
         "      pc_cart_count++;\n"
         "      if (mode == 1) pc_cart_mode1++;\n"
         "      if (mode == 2) pc_cart_mode2++;\n"
+        "      uint8_t op = (mode == 2 && cart_enabled) ? cart[cpu.pc - 0x4000] : ram[cpu.pc];\n"
+        "      if (op == 0x00) pc_cart_opcode00++;\n"
         "    }\n"
         "    pchist[cpu.pc]++;\n",
         1,
@@ -88,6 +91,7 @@ def instrumented_trace_source() -> str:
         '  printf("  pc_cart_count : %8lu\\n", pc_cart_count);\n'
         '  printf("  pc_cart_mode1 : %8lu\\n", pc_cart_mode1);\n'
         '  printf("  pc_cart_mode2 : %8lu\\n", pc_cart_mode2);\n'
+        '  printf("  pc_cart_opcode00 : %8lu\\n", pc_cart_opcode00);\n'
         '  printf("  pchist_cart   : %8lu\\n", cart_hist_count);\n'
         '  printf("  cart_overlay_reads : %8lu\\n", basic_probe_cart_reads);\n'
         '  printf("  cart_pc_reads      : %8lu\\n", basic_probe_cart_pc_reads);\n'
@@ -112,10 +116,10 @@ def parse_stop(stderr: str) -> dict[str, int]:
     return {}
 
 
-def parse_probe(stdout: str) -> tuple[int, int, int, int]:
+def parse_probe(stdout: str) -> tuple[int, int, int, int, int]:
     match = PROBE_RE.search(stdout)
     if not match:
-        return 0, 0, 0, 0
+        return 0, 0, 0, 0, 0
     return tuple(int(group) for group in match.groups())
 
 
@@ -210,7 +214,7 @@ def main() -> int:
     for case in probe_cases():
         proc, vram = run_probe(case)
         stop = parse_stop(proc.stderr)
-        pc_cart_count, pc_cart_mode1, pc_cart_mode2, pchist_cart = parse_probe(proc.stdout)
+        pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
         cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
         sha = hashlib.sha256(vram).hexdigest() if vram else ""
         vram_ok = len(vram) == VRAM_SIZE
@@ -229,6 +233,7 @@ def main() -> int:
                 "pc_cart_count": pc_cart_count,
                 "pc_cart_mode1": pc_cart_mode1,
                 "pc_cart_mode2": pc_cart_mode2,
+                "pc_cart_opcode00": pc_cart_opcode00,
                 "pchist_cart": pchist_cart,
                 "cart_overlay_reads": cart_overlay_reads,
                 "cart_pc_reads": cart_pc_reads,
@@ -277,8 +282,8 @@ def main() -> int:
         "",
         "## Evidence",
         "",
-        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
-        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |",
+        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | `0x00` opcode cycles | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |",
         *[
             (
                 f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
@@ -286,6 +291,7 @@ def main() -> int:
                 f"{'PASS' if result['proc'].returncode == 0 and result['cart_loaded'] and result['key_processed'] and result['vram_ok'] else 'FAIL'} | "
                 f"`{result['cart_overlay_reads']}` | `{result['pc_cart_count']}` | "
                 f"`{result['pc_cart_mode1']}` | `{result['pc_cart_mode2']}` | "
+                f"`{result['pc_cart_opcode00']}` | "
                 f"`{result['visible_pixels']}` | "
                 f"`0x{result['stop'].get('pc', 0):04X}` | `{result['stop'].get('mode', 0)}` | "
                 f"`{result['sha'] or 'missing'}` |"
@@ -302,7 +308,8 @@ def main() -> int:
                 f"- `{result['case'].name}` reads the BASIC cartridge and executes in "
                 f"`0x4000..0xBFFF`; `{result['pc_cart_mode1']}` of those PC cycles are "
                 f"in RAM/ROM mode 1 and `{result['pc_cart_mode2']}` are in cartridge "
-                f"overlay mode 2. The captured framebuffer has "
+                f"overlay mode 2. `{result['pc_cart_opcode00']}` PC cycles fetch a "
+                f"`0x00` opcode there. The captured framebuffer has "
                 f"`{result['visible_pixels']}` visible pixels."
             )
         else:
