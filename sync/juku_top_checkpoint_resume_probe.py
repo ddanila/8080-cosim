@@ -162,12 +162,17 @@ def main() -> int:
         "  CPU path.",
         "- The seeded core state intentionally starts from an instruction-fetch",
         "  boundary rather than a transistor-exact mid-instruction microstate.",
+        "- This probe is intentionally not a mandatory CI gate yet; the next",
+        "  hardening step is making the seeded vm80a microstate portable across",
+        "  all CI runner schedules before extending it toward FDC I/O.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)
         lines.extend(["", "## HDL stdout tail", ""])
-        lines.extend("```" + "\n" + "\n".join(resume_proc.stdout.splitlines()[-40:]) + "\n" + "```")
+        lines.append("```")
+        lines.extend(resume_proc.stdout.splitlines()[-40:])
+        lines.append("```")
 
     REPORT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {REPORT.relative_to(ROOT)}")

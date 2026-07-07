@@ -32,3 +32,6 @@ sync/juku_top_checkpoint_resume_probe.py
   CPU path.
 - The seeded core state intentionally starts from an instruction-fetch
   boundary rather than a transistor-exact mid-instruction microstate.
+- This probe is intentionally not a mandatory CI gate yet; the next
+  hardening step is making the seeded vm80a microstate portable across
+  all CI runner schedules before extending it toward FDC I/O.

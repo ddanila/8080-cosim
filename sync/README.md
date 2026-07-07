@@ -55,11 +55,12 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `juku_top` D84..D91 bit-sliced DRAM planes, injects visible CPU architectural
   registers plus key PPI/PIC/FDC latches, and verifies full RAM plus VRAM hashes
   after dumping them back from the top-level model.
-- `sync/juku_top_checkpoint_resume_probe.py` — fast checkpoint-resume probe;
-  loads the same checkpoint into `juku_top`, seeds the vm80a core at a clean M1
-  fetch boundary, and proves the resumed top-level CPU path reaches the pinned
-  post-checkpoint PIC `0xD6` write and no-key keyboard `0xCF` read through
-  decoded ports.
+- `sync/juku_top_checkpoint_resume_probe.py` — focused non-CI checkpoint-resume
+  probe; loads the same checkpoint into `juku_top`, seeds the vm80a core at a
+  clean M1 fetch boundary, and locally reaches the pinned post-checkpoint PIC
+  `0xD6` write and no-key keyboard `0xCF` read through decoded ports. The
+  seeded microstate still needs CI-schedule hardening before this becomes a
+  mandatory gate.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.

@@ -200,12 +200,13 @@ debugging session saved on real hardware.
    image can be loaded into the LVS-checked `juku_top` D84..D91 bit-sliced
    DRAM planes and dumped back with matching full-RAM and framebuffer hashes;
    it also injects and verifies the checkpoint CPU architectural registers plus
-   key PPI/PIC/FDC latches. `docs/juku-top-checkpoint-resume.md` now proves a
-   seeded M1-fetch resume from that checkpoint reaches the pinned first
+   key PPI/PIC/FDC latches. `docs/juku-top-checkpoint-resume.md` now records a
+   focused seeded M1-fetch resume from that checkpoint reaching the pinned first
    post-checkpoint PIC write (`OUT 0x00 = 0xD6` at PC `0x02B9`) and no-key
    keyboard read (`IN 0x05 = 0xCF` at PC `0x1213`) through decoded `juku_top`
-   ports. The open HDL target has moved forward from first-PIC reachability to
-   the later keyboard/PIC/FDC/EKDOS path. A first narrow harness,
+   ports. This is not yet a mandatory CI invariant; the next hardening step is
+   making the seeded vm80a microstate portable across CI runner schedules, then
+   extending the checkpoint-run proof toward FDC I/O and EKDOS `A>`. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
    shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact
