@@ -42,6 +42,10 @@ def milestone_rows():
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
     )
+    bringup_verification_ready = marker(
+        "docs/replica-bringup-verification-points.md",
+        "Status: **READY**",
+    )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**")
     parts_inventory_template = exists("docs/replica-parts-inventory-template.md")
     ekdos_external_prompt = marker(
@@ -147,8 +151,14 @@ def milestone_rows():
             "status": "REPO READY / EXTERNAL PENDING" if manufacturing_ready and order_ready else "OPEN",
             "evidence": (
                 "`docs/replica-manufacturing-readiness.md` is READY TO UPLOAD and "
-                "`fab/gerbers/order-readiness.md` is ORDER READY; no vendor order "
-                "number or accepted order evidence is tracked."
+                "`fab/gerbers/order-readiness.md` is ORDER READY; "
+                + (
+                    "`docs/replica-bringup-verification-points.md` tracks the "
+                    "residual source-risk nets for staged bring-up; "
+                    if bringup_verification_ready
+                    else ""
+                )
+                + "no vendor order number or accepted order evidence is tracked."
                 if manufacturing_ready and order_ready
                 else "Replica manufacturing/order readiness gates are not both ready."
             ),
