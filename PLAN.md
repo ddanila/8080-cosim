@@ -37,7 +37,7 @@ only after Tier 2.
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
 | **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, and a short owner measurement list |
-| **Firmware/media** (`roms/`, `media/disks/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim | РЕ3/РТ4 PROM binaries |
+| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums | РЕ3/РТ4 PROM binaries |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
 
@@ -60,8 +60,10 @@ The July 2026 survey of the online ecosystem changes the plan materially:
    images are now vendored under `media/disks/`; `JUKU1.CPM` boots through
    ROMBIOS `TDD` to `A>` in cosim. The raw geometry is specified in
    juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS 3.0
-   **source** exists (`EKDOS30.ASM` in infoaed/juku3000). Nothing blocks an
-   FDC/EKDOS milestone in the twin except the HDL external-media path.
+   **source** exists (`EKDOS30.ASM` in infoaed/juku3000). The museum
+   `JUKUSYS.ZIP` CP/M/EKDOS binaries are also vendored under `media/system/`.
+   Nothing blocks an FDC/EKDOS milestone in the twin except the HDL
+   external-media path.
 4. **No other recreation exists** — no FPGA core, no clone PCB, no replica project
    found anywhere. This is first-of-its-kind; publishing results back matters.
 5. **Parts are obtainable**: КР580 family plentiful NOS on eBay; К565РУ5 ≡ 4164;

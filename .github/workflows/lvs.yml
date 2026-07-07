@@ -57,6 +57,7 @@ jobs:
       - name: Run FDC regression checks
         run: |
           (cd media/disks && sha256sum -c SHA256SUMS)
+          (cd media/system && sha256sum -c SHA256SUMS)
           ./sync/juk_disk_check.sh
           ./sync/ekdos_fdc_probe.py
           ./sync/fdc_check.sh

@@ -18,6 +18,11 @@ FDC path is split into two repeatable checks:
 The public/community request text for this image and the PROM dumps is tracked
 in `docs/community-prom-media-request.md`.
 
+The related public CP/M/EKDOS system binaries from the museum `JUKUSYS.ZIP`
+archive are vendored under `media/system/` with checksum manifests. They are
+reference system binaries, not a substitute for the still-missing small-PROM
+programming files.
+
 ## Required Image
 
 | Field | Requirement |
