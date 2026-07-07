@@ -33,6 +33,8 @@ Environment overrides:
   `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`
 - `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `6656` (13 sectors);
   set to `512` for the first sector or `0` for the first data-register read
+- `JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT` default `0`; set to `1` to stop
+  on the EKDOS `A>` prompt bitmap at `x=0`, `y=70`
 - `JUKU_TOP_CHECKPOINT_FDC_REPORT` default
   `docs/juku-top-checkpoint-fdc-probe.md`
 
@@ -43,6 +45,10 @@ Known useful windows:
 - `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690
   JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=4096` proves the later
   8 sectors / 4,096 data-register reads.
+- `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690
+  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=0
+  JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT=1` proves the checkpoint-resumed
+  EKDOS `A>` prompt bitmap.
 
 ## Evidence
 
@@ -63,6 +69,7 @@ Known useful windows:
 - Last complete VRAM line: `[RESUME-VRAM] writes=63100 mcyc=179346 pc=0x1006`
 - First FDC line: `[RESUME-FDC] OUT port=0x1c reg=0 data=0x02 mcyc=58712 vram=63095 ios=1`
 - FDC stop line: `[RESUME-FDC] stop reason=data-read-count target=6656 ios=6754 reads=6713 data_reads=6656 writes=41 data=0x00 mcyc=216125 vram=63105`
+- Prompt stop line: `none`
 - Stop/fail line: `none`
 
 | Trace | Lines |
@@ -73,6 +80,7 @@ Known useful windows:
 | IRQ events | `48` |
 | VRAM progress | `1` |
 | FDC events | `6755` |
+| prompt events | `0` |
 
 ## Boundary
 
@@ -84,6 +92,9 @@ Known useful windows:
   `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690` resumes at PC `0xE5A0`,
   issues `OUT 0x1C = 0x80`, and drains the remaining 8 full sectors
   (4,096 data-register reads).
+- With `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=0` and
+  `JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT=1`, the same late checkpoint
+  continues past those data reads and reaches the EKDOS `A>` prompt.
 - A single full cosim-prompt-count target,
   `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=10752`, currently times out
   after the 6,656-byte boundary while looping through keyboard/IRQ

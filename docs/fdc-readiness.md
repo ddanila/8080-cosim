@@ -52,10 +52,13 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   the `OUT 0x1C = 0x80` read-sector command and drains the remaining 8 full
   sectors (4,096 more `IN 0x1F` reads). Together these checkpoint windows cover
   the full 10,752-byte FDC data-read count seen on the cosim `A>` path. The
+  same late checkpoint can continue past the final FDC sector burst and render
+  the EKDOS `A>` prompt bitmap at `x=0`, `y=70` through checkpoint-resumed
+  `juku_top` CPU execution. The
   single uninterrupted 10,752-byte checkpoint target still times out after the
   first 6,656-byte boundary around VRAM write count 63,155, so this remains a
-  split checkpoint proof rather than a prompt proof. The older first-FDC
-  checkpoint at 63,085 framebuffer writes and the earlier
+  split checkpoint/prompt proof rather than an uninterrupted top-level prompt
+  proof. The older first-FDC checkpoint at 63,085 framebuffer writes and the earlier
   42,000-write key-window checkpoint remain available as non-CI narrowing runs.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
   which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
@@ -101,6 +104,7 @@ sync/juku_top_fdc_probe.sh
 | focused checkpoint-resumed `juku_top` probe reaches first post-checkpoint PIC write and no-key keyboard read | PASS (non-CI) |
 | checkpoint-resumed `juku_top` from the cycle-targeted FDC checkpoint drains 6,656 data-register reads | PASS (non-CI) |
 | checkpoint-resumed `juku_top` from the late FDC checkpoint drains 4,096 more data-register reads | PASS (non-CI) |
+| checkpoint-resumed `juku_top` from the late FDC checkpoint reaches EKDOS `A>` prompt bitmap | PASS (non-CI) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -108,7 +112,7 @@ sync/juku_top_fdc_probe.sh
 
 - Drive the full `ROMBIOS 3.43` `<T>, <D>, <D>` path through `juku_top` with
   `+disk=media/disks/JUKU1.CPM` and promote the HDL boundary from sector-ready
-  to EKDOS-prompt-ready.
+  to uninterrupted EKDOS-prompt-ready.
 - `docs/juku-top-fdc-probe.md` now captures the current top-level boundary:
   disk media is loaded and the BIOS starts drawing, but the default 60-second
   bound still times out before the post-banner keyboard/PIC/FDC window.
@@ -147,8 +151,11 @@ sync/juku_top_fdc_probe.sh
   records the late cycle-targeted checkpoint at PC `0xE5A0`, which resumes
   immediately before a later read-sector command and drains the remaining
   8 full sectors. These split checkpoint windows cover all 10,752 FDC
-  data-register reads observed before the cosim prompt, but they are not yet an
-  uninterrupted HDL `A>` prompt proof.
+  data-register reads observed before the cosim prompt.
+- `docs/juku-top-checkpoint-fdc-prompt-probe.md` records the same late
+  checkpoint continuing past the final FDC sector burst to the EKDOS `A>`
+  prompt bitmap. This is a checkpoint-resumed prompt proof, not yet an
+  uninterrupted full-run HDL `A>` prompt proof.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.

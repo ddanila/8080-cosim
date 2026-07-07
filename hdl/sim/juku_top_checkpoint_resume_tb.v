@@ -25,6 +25,7 @@ module juku_top_checkpoint_resume_tb();
   integer trace_resume = 0;
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
   integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0, stopfdc_data_read = 0, stopfdc_data_reads = 0;
+  integer stopprompt = 0, prompt_seen = 0;
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0, fdc_data_reads = 0;
   integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
@@ -60,6 +61,48 @@ module juku_top_checkpoint_resume_tb();
     dut.U_D89.mem[addr] = value[5];
     dut.U_D90.mem[addr] = value[6];
     dut.U_D91.mem[addr] = value[7];
+  end endtask
+
+  function [7:0] dram_byte(input integer addr); begin
+    dram_byte = {dut.U_D91.mem[addr], dut.U_D90.mem[addr], dut.U_D89.mem[addr], dut.U_D88.mem[addr],
+                 dut.U_D87.mem[addr], dut.U_D86.mem[addr], dut.U_D85.mem[addr], dut.U_D84.mem[addr]};
+  end endfunction
+
+  function [15:0] ekdos_prompt_row(input integer row); begin
+    case (row)
+      0: ekdos_prompt_row = 16'h0000;
+      1: ekdos_prompt_row = 16'h0810;
+      2: ekdos_prompt_row = 16'h1408;
+      3: ekdos_prompt_row = 16'h2204;
+      4: ekdos_prompt_row = 16'h2202;
+      5: ekdos_prompt_row = 16'h3e04;
+      6: ekdos_prompt_row = 16'h2208;
+      7: ekdos_prompt_row = 16'h2210;
+      8: ekdos_prompt_row = 16'h0000;
+      9: ekdos_prompt_row = 16'h0000;
+      default: ekdos_prompt_row = 16'hffff;
+    endcase
+  end endfunction
+
+  function ekdos_prompt_ok; integer y; reg [15:0] got; begin
+    ekdos_prompt_ok = 1'b1;
+    for (y = 0; y < 10; y = y + 1) begin
+      got = {dram_byte(16'hD800 + (70 + y) * 40), dram_byte(16'hD800 + (70 + y) * 40 + 1)};
+      if (got !== ekdos_prompt_row(y)) ekdos_prompt_ok = 1'b0;
+    end
+  end endfunction
+
+  integer fd, dump_i, dump_addr; reg [7:0] dump_b;
+  task dump_vram; begin
+    fd = $fopen("hdl/sim/checkpoint_vram_top.bin", "wb");
+    for (dump_i = 0; dump_i < 40 * 241; dump_i = dump_i + 1) begin
+      dump_addr = 16'hD800 + dump_i;
+      dump_b = dram_byte(dump_addr);
+      $fwrite(fd, "%c", dump_b);
+    end
+    $fclose(fd);
+    $display("[RESUME-VRAM] dumped checkpoint VRAM -> hdl/sim/checkpoint_vram_top.bin");
+    $fflush;
   end endtask
 
   task load_checkpoint_state; begin
@@ -244,6 +287,14 @@ module juku_top_checkpoint_resume_tb();
       $display("[RESUME-VRAM] writes=%0d mcyc=%0d pc=0x%04h", vram_writes, mcyc, dut.U_CPU.u.core.r16_pc);
       $fflush;
     end
+    if (stopprompt != 0 && !prompt_seen && ekdos_prompt_ok()) begin
+      prompt_seen = 1;
+      $display("[RESUME-PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      $fflush;
+      dump_vram();
+      $finish;
+    end
   end
 
   always @(negedge dut.iowr_n) begin
@@ -332,6 +383,7 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("stopfdc_data_read=%d", stopfdc_data_read)) ;
     if ($value$plusargs("stopfdc_data_reads=%d", stopfdc_data_reads)) ;
+    if ($value$plusargs("stopprompt=%d", stopprompt)) ;
     if ($value$plusargs("state_vram_writes=%d", state_vram_writes)) ;
     if ($value$plusargs("state_pc=%h", state_pc)) ;
     if ($value$plusargs("state_sp=%h", state_sp)) ;

@@ -6,7 +6,7 @@ This diagnostic starts from a generated EKDOS/TDD cosim checkpoint
 (`JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690` or
 `JUKU_TOP_CHECKPOINT_FDC_WRITES=63085` when cycle stop is disabled),
 loads it into `juku_top`, enables frame IRQs and the
-fixed `TDD` keyboard stimulus, and runs toward the 4096 FDC data-register reads.
+fixed `TDD` keyboard stimulus, and runs toward the EKDOS `A>` prompt bitmap.
 It is the checkpointed counterpart to
 `sync/juku_top_fdc_probe.sh`.
 
@@ -64,28 +64,28 @@ Known useful windows:
 - First key stimulus line: `none`
 - Last key stimulus line: `none`
 - First IRQ line: `[RESUME-IRQ] intr rise count=1 mcyc=10567 vram=73386`
-- Last IRQ line: `[RESUME-IRQ] inta fall count=39 mcyc=192205 vram=73396`
-- First VRAM line: `none`
-- Last complete VRAM line: `none`
+- Last IRQ line: `[RESUME-IRQ] inta fall count=45 mcyc=224145 vram=73396`
+- First VRAM line: `[RESUME-VRAM] writes=73400 mcyc=225866 pc=0x1006`
+- Last complete VRAM line: `[RESUME-VRAM] writes=73400 mcyc=225866 pc=0x1006`
 - First FDC line: `[RESUME-FDC] OUT port=0x1c reg=0 data=0x80 mcyc=3 vram=73386 ios=1`
-- FDC stop line: `[RESUME-FDC] stop reason=data-read-count target=4096 ios=4146 reads=4124 data_reads=4096 writes=22 data=0xe5 mcyc=208825 vram=73396`
-- Prompt stop line: `none`
+- FDC stop line: `none`
+- Prompt stop line: `[RESUME-PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=229453 vram=73425 pc=0x097a`
 - Stop/fail line: `none`
 
 | Trace | Lines |
 | --- | ---: |
-| PIC writes | `67` |
-| keyboard reads | `221` |
+| PIC writes | `74` |
+| keyboard reads | `255` |
 | key stimulus | `0` |
-| IRQ events | `52` |
-| VRAM progress | `0` |
+| IRQ events | `60` |
+| VRAM progress | `2` |
 | FDC events | `4147` |
-| prompt events | `0` |
+| prompt events | `1` |
 
 ## Boundary
 
-- This is not a prompt proof until EKDOS `A>` is reached through
-  checkpoint-resumed `juku_top` CPU execution.
+- This run is a checkpoint-resumed HDL EKDOS prompt proof: `juku_top` rendered the `A>` bitmap at `x=0`, `y=70`.
+- The prompt was reached after decoded FDC I/O, keyboard/PIC service, and VRAM writes from checkpoint-resumed CPU execution.
 - The default proves the ROMBIOS FDC path drains 13 full 512-byte sectors
   through FDC data-register reads from a checkpointed CPU run.
 - A second clean late-sector window at

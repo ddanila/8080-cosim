@@ -134,6 +134,11 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
     sim = tmp / "juku_top_checkpoint_resume_tb"
     out_path = tmp / "checkpoint-fdc.out"
     err_path = tmp / "checkpoint-fdc.err"
+    prompt_vram = ROOT / "hdl" / "sim" / "checkpoint_vram_top.bin"
+    old_prompt_vram = tmp / "old-checkpoint-vram-top.bin"
+    had_prompt_vram = prompt_vram.exists()
+    if had_prompt_vram:
+        shutil.copyfile(prompt_vram, old_prompt_vram)
     write_hex(ram_bin, ram_hex)
     subprocess.run(
         [
@@ -159,7 +164,8 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
     timeout_s = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_TIMEOUT", "300"))
     stopfdc_data_reads = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "6656")
     stopfdc = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_IO", "0")
-    default_stop_data_read = "0" if int(stopfdc_data_reads) else "1"
+    stopprompt = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT", "0")
+    default_stop_data_read = "0" if int(stopfdc_data_reads) or stopprompt != "0" else "1"
     stopfdc_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", default_stop_data_read)
 
     args = [
@@ -181,8 +187,15 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
         f"+stopfdc={stopfdc}",
         f"+stopfdc_data_read={stopfdc_data_read}",
         f"+stopfdc_data_reads={stopfdc_data_reads}",
+        f"+stopprompt={stopprompt}",
     ]
     args.extend(state_plusargs(state))
+
+    def restore_prompt_vram() -> None:
+        if had_prompt_vram:
+            shutil.copyfile(old_prompt_vram, prompt_vram)
+        elif prompt_vram.exists():
+            prompt_vram.unlink()
 
     try:
         with out_path.open("w") as stdout, err_path.open("w") as stderr:
@@ -195,10 +208,12 @@ def run_resume_to_fdc(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[
                 timeout=timeout_s,
                 check=False,
             )
+        restore_prompt_vram()
         proc.stdout = out_path.read_text(errors="replace") if out_path.exists() else ""
         proc.stderr = err_path.read_text(errors="replace") if err_path.exists() else ""
         return proc, False
     except subprocess.TimeoutExpired as exc:
+        restore_prompt_vram()
         return (
             subprocess.CompletedProcess(
                 args,
@@ -249,28 +264,35 @@ def main() -> int:
         resume_proc, timed_out = run_resume_to_fdc(tmp, ram_bin, state)
 
     fdc_stop = first_line(resume_proc.stdout, "[RESUME-FDC] stop")
+    prompt_stop = first_line(resume_proc.stdout, "[RESUME-PROMPT]")
     fdc_first = first_line(resume_proc.stdout, "[RESUME-FDC]")
     want_data_reads = int(os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS", "6656"))
-    default_want_data_read = "0" if want_data_reads else "1"
+    want_prompt = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT", "0") != "0"
+    default_want_data_read = "0" if want_data_reads or want_prompt else "1"
     want_data_read = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ", default_want_data_read) != "0"
     reached_data_read = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read")
     reached_data_reads = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read-count")
+    reached_prompt = prompt_stop.startswith("[RESUME-PROMPT]")
     reached_fdc = fdc_stop != "none"
     failures: list[str] = []
     if cosim_proc.returncode != 0:
         failures.append(f"cosim checkpoint exited {cosim_proc.returncode}")
     if resume_proc.returncode not in (0, 124):
         failures.append(f"HDL checkpoint FDC run exited {resume_proc.returncode}")
-    if not reached_fdc:
+    if not reached_fdc and not reached_prompt:
         failures.append("checkpoint-resumed HDL run did not reach decoded FDC I/O")
     if want_data_reads and not reached_data_reads:
         failures.append(f"checkpoint-resumed HDL run did not reach {want_data_reads} FDC data register reads")
     elif want_data_read and not reached_data_read:
         failures.append("checkpoint-resumed HDL run did not reach FDC data register reads")
+    if want_prompt and not reached_prompt:
+        failures.append("checkpoint-resumed HDL run did not render the EKDOS `A>` prompt bitmap")
 
     status = "PASS" if not failures else "BOUNDARY NOT YET FDC"
     if want_data_reads:
         target = f"{want_data_reads} FDC data-register reads"
+    elif want_prompt:
+        target = "EKDOS `A>` prompt bitmap"
     else:
         target = "FDC data-register read" if want_data_read else "first decoded FDC I/O"
     effective_cycles = os.environ.get("JUKU_TOP_CHECKPOINT_FDC_CYCLES", "8711550")
@@ -311,6 +333,8 @@ def main() -> int:
         "  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` is nonzero, otherwise `1`",
         "- `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS` default `6656` (13 sectors);",
         "  set to `512` for the first sector or `0` for the first data-register read",
+        "- `JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT` default `0`; set to `1` to stop",
+        "  on the EKDOS `A>` prompt bitmap at `x=0`, `y=70`",
         "- `JUKU_TOP_CHECKPOINT_FDC_REPORT` default",
         "  `docs/juku-top-checkpoint-fdc-probe.md`",
         "",
@@ -321,6 +345,10 @@ def main() -> int:
         "- `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690",
         "  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=4096` proves the later",
         "  8 sectors / 4,096 data-register reads.",
+        "- `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690",
+        "  JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=0",
+        "  JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT=1` proves the checkpoint-resumed",
+        "  EKDOS `A>` prompt bitmap.",
         "",
         "## Evidence",
         "",
@@ -341,6 +369,7 @@ def main() -> int:
         f"- Last complete VRAM line: `{last_complete_vram_line(resume_proc.stdout)}`",
         f"- First FDC line: `{fdc_first}`",
         f"- FDC stop line: `{fdc_stop}`",
+        f"- Prompt stop line: `{prompt_stop}`",
         f"- Stop/fail line: `{first_line(resume_proc.stdout, 'JUKU-TOP-CHECKPOINT-RESUME: FAIL')}`",
         "",
         "| Trace | Lines |",
@@ -351,17 +380,31 @@ def main() -> int:
         f"| IRQ events | `{count_lines(resume_proc.stdout, '[RESUME-IRQ]')}` |",
         f"| VRAM progress | `{count_lines(resume_proc.stdout, '[RESUME-VRAM]')}` |",
         f"| FDC events | `{count_lines(resume_proc.stdout, '[RESUME-FDC]')}` |",
+        f"| prompt events | `{count_lines(resume_proc.stdout, '[RESUME-PROMPT]')}` |",
         "",
         "## Boundary",
         "",
-        "- This is not a prompt proof until EKDOS `A>` is reached through",
-        "  checkpoint-resumed `juku_top` CPU execution.",
+        (
+            "- This run is a checkpoint-resumed HDL EKDOS prompt proof: `juku_top`"
+            " rendered the `A>` bitmap at `x=0`, `y=70`."
+            if reached_prompt
+            else "- This is not a prompt proof until EKDOS `A>` is reached through"
+        ),
+        (
+            "- The prompt was reached after decoded FDC I/O, keyboard/PIC service,"
+            " and VRAM writes from checkpoint-resumed CPU execution."
+            if reached_prompt
+            else "  checkpoint-resumed `juku_top` CPU execution."
+        ),
         "- The default proves the ROMBIOS FDC path drains 13 full 512-byte sectors",
         "  through FDC data-register reads from a checkpointed CPU run.",
         "- A second clean late-sector window at",
         "  `JUKU_TOP_CHECKPOINT_FDC_CYCLES=10066690` resumes at PC `0xE5A0`,",
         "  issues `OUT 0x1C = 0x80`, and drains the remaining 8 full sectors",
         "  (4,096 data-register reads).",
+        "- With `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=0` and",
+        "  `JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT=1`, the same late checkpoint",
+        "  continues past those data reads and reaches the EKDOS `A>` prompt.",
         "- A single full cosim-prompt-count target,",
         "  `JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READS=10752`, currently times out",
         "  after the 6,656-byte boundary while looping through keyboard/IRQ",

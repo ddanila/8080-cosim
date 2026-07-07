@@ -217,6 +217,9 @@ debugging session saved on real hardware.
    the `OUT 0x1C = 0x80` read-sector command and drains the remaining 8 full
    sectors (4,096 more `IN 0x1F` reads). Together these checkpoint windows
    cover the full 10,752-byte FDC data-read count seen on the cosim `A>` path.
+   The same late checkpoint now also runs past the final FDC sector burst and
+   reaches the EKDOS `A>` prompt bitmap at `x=0`, `y=70` through
+   checkpoint-resumed `juku_top` CPU execution.
    A single uninterrupted 10,752-byte checkpoint target still times out after
    the first 6,656-byte boundary while looping through keyboard/IRQ service
    around VRAM write count 63,155, so the current proof is split across the
@@ -235,8 +238,9 @@ debugging session saved on real hardware.
    now also pins the full cosim I/O event stream through the no-key read,
    shifted `T` key read, and first FDC command, tying the direct-bus harness to
    the real ROMBIOS sequence.
-   Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
-   the EKDOS prompt with that external media.
+   Remaining target: drive the uninterrupted full ROMBIOS `TDD` path through
+   `juku_top` to the EKDOS prompt with that external media, without relying on
+   checkpoint/resume acceleration.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
