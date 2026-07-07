@@ -54,7 +54,7 @@ def milestone_rows():
     )
     basic_launch_reached = marker(
         "docs/basic-launch-probe.md",
-        "Status: **BASIC LAUNCH REACHED**",
+        "Status: **BASIC CARTRIDGE EXECUTION REACHED**",
     )
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
@@ -121,7 +121,7 @@ def milestone_rows():
         {
             "id": "M5",
             "target": "jmon33 live prompt + BASIC launches in the twin",
-            "status": "BASIC COSIM REACHED / PROMPT+HDL PENDING" if basic_launch_reached else "PARTIAL",
+            "status": "BASIC EXECUTION REACHED / PROMPT+HDL PENDING" if basic_launch_reached else "PARTIAL",
             "evidence": (
                 "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reaching the "

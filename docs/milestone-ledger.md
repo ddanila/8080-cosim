@@ -9,7 +9,7 @@ unless there is tracked evidence for them.
 
 | Status | Count |
 | --- | ---: |
-| BASIC COSIM REACHED / PROMPT+HDL PENDING | 1 |
+| BASIC EXECUTION REACHED / PROMPT+HDL PENDING | 1 |
 | COSIM PROMPT PROVEN / HDL PENDING | 1 |
 | EVIDENCE TEMPLATE READY / EXTERNAL PENDING | 1 |
 | EXTERNAL PENDING | 5 |
@@ -24,7 +24,7 @@ unless there is tracked evidence for them.
 | M2 | EKDOS boots in the twin | COSIM PROMPT PROVEN / HDL PENDING | `docs/ekdos-media-acquisition.md` records a non-vendored external-media run reaching the EKDOS `A>` prompt in cosim; the default tracked probe remains reproducible without media as `READY FOR EXTERNAL EKDOS IMAGE`; `docs/fdc-readiness.md` guards HDL WD1793 synthetic-sector behavior. Exact factory `JUKU-1` evidence and external-media FDC in `juku_top` remain open. | Repeat with exact factory JUKU-1 media when available, then connect external `.juk` media through juku_top. |
 | M3 | VJUGA Rev A ordered | EXTERNAL PENDING | `fab/minimal-vga/order-readiness.md` is a coherent draft with machine gates PASS, but still requires human/vendor review before upload. | Perform final JLCPCB UI review and place the Rev A order. |
 | M4 | Twin emits real video timing | PARTIAL | `docs/video-readout-readiness.md` proves the V2 byte-to-pixel path; the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open. | Close the RE3/AG3 timing source and replace the sim-only framebuffer read. |
-| M5 | jmon33 live prompt + BASIC launches in the twin | BASIC COSIM REACHED / PROMPT+HDL PENDING | jmon33 interrupt/first-write/cosim cursor probes exist; `docs/basic-launch-probe.md` shows Monitor 3.3 reaching the BASIC cartridge execution window while EktaSoft 3.43m #0037 remains a compatibility boundary. | Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage. |
+| M5 | jmon33 live prompt + BASIC launches in the twin | BASIC EXECUTION REACHED / PROMPT+HDL PENDING | jmon33 interrupt/first-write/cosim cursor probes exist; `docs/basic-launch-probe.md` shows Monitor 3.3 reaching the BASIC cartridge execution window while EktaSoft 3.43m #0037 remains a compatibility boundary. | Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage. |
 | M6 | VJUGA Rev A boots real Juku ROM on the bench | EXTERNAL PENDING | Requires fabricated and assembled Rev A hardware; no bench artifact exists in repo. | Order, assemble, and run the staged bring-up ladder. |
 | M7 | Replica fab package passes order-readiness gates; boards ordered | REPO READY / EXTERNAL PENDING | `docs/replica-manufacturing-readiness.md` is READY TO UPLOAD and `fab/gerbers/order-readiness.md` is ORDER READY; no vendor order number or accepted order evidence is tracked. | Run `kicad/check_replica_manufacturing_ready.sh`, upload the ZIP, save vendor preview/order evidence. |
 | M8 | Full functional parts kit in hand; firmware/PROMs programmed | EVIDENCE TEMPLATE READY / EXTERNAL PENDING | `docs/replica-sourcing-readiness.md` defines the source/test gate; `docs/replica-parts-inventory-template.md` defines the received-parts and PROM/EPROM programming evidence record. No filled inventory or programmer logs are tracked yet. | Buy/receive the functional kit, run acceptance tests, and fill the private inventory/programming record. |

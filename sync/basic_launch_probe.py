@@ -114,6 +114,12 @@ def parse_cart_reads(stdout: str) -> tuple[int, int]:
     return int(match.group(1)), int(match.group(2))
 
 
+def visible_pixels(vram: bytes) -> int:
+    if len(vram) != VRAM_SIZE:
+        return 0
+    return sum(byte.bit_count() for byte in vram)
+
+
 def probe_cases() -> list[ProbeCase]:
     rom_override = os.environ.get("BASIC_LAUNCH_ROM")
     frame_override = os.environ.get("BASIC_LAUNCH_FRAME_CYCLES")
@@ -196,6 +202,7 @@ def main() -> int:
         cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
         sha = hashlib.sha256(vram).hexdigest() if vram else ""
         vram_ok = len(vram) == VRAM_SIZE
+        pixels = visible_pixels(vram)
         cart_loaded = "loaded 8192 bytes of expansion cartridge" in proc.stderr
         key_processed = bool(re.search(r"0x04\s+:\s+[1-9][0-9]*", proc.stdout)) and bool(
             re.search(r"0x05\s+:\s+[1-9][0-9]*", proc.stdout)
@@ -212,6 +219,7 @@ def main() -> int:
                 "cart_overlay_reads": cart_overlay_reads,
                 "cart_pc_reads": cart_pc_reads,
                 "sha": sha,
+                "visible_pixels": pixels,
                 "vram_ok": vram_ok,
                 "cart_loaded": cart_loaded,
                 "key_processed": key_processed,
@@ -226,7 +234,7 @@ def main() -> int:
         and result["vram_ok"]
         for result in results
     )
-    status = "BASIC LAUNCH REACHED" if any_basic_entered else "BASIC LAUNCH NOT YET REACHED"
+    status = "BASIC CARTRIDGE EXECUTION REACHED" if any_basic_entered else "BASIC LAUNCH NOT YET REACHED"
 
     lines = [
         "# BASIC launch probe",
@@ -255,14 +263,15 @@ def main() -> int:
         "",
         "## Evidence",
         "",
-        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Stop PC | Mode | VRAM SHA256 |",
-        "| --- | --- | ---: | --- | ---: | ---: | --- | ---: | --- |",
+        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | --- | ---: | --- |",
         *[
             (
                 f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
                 f"`{result['case'].frame_cycles}` | "
                 f"{'PASS' if result['proc'].returncode == 0 and result['cart_loaded'] and result['key_processed'] and result['vram_ok'] else 'FAIL'} | "
                 f"`{result['cart_overlay_reads']}` | `{result['pc_cart_count']}` | "
+                f"`{result['visible_pixels']}` | "
                 f"`0x{result['stop'].get('pc', 0):04X}` | `{result['stop'].get('mode', 0)}` | "
                 f"`{result['sha'] or 'missing'}` |"
             )
@@ -275,7 +284,8 @@ def main() -> int:
     for result in results:
         if result["basic_entered"]:
             lines.append(
-                f"- `{result['case'].name}` reaches the BASIC cartridge execution window."
+                f"- `{result['case'].name}` reaches the BASIC cartridge execution window; "
+                f"the captured framebuffer has `{result['visible_pixels']}` visible pixels."
             )
         else:
             lines.append(
