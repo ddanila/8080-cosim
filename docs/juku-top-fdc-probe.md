@@ -27,9 +27,10 @@ Environment overrides:
 - `JUKU_TOP_FDC_STOPFDC` default `1`
 - `JUKU_TOP_FDC_STOPPIC` default `0`
 - `JUKU_TOP_FDC_STOPPPI` default `0`
+- `JUKU_TOP_FDC_STOPPC` optional hexadecimal CPU PC stop hook
 - `JUKU_TOP_FDC_TIMEOUT` default `60` seconds
 
-Current values: `KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=80000 TRACEPROGRESS=5000 TRACEIO=0 STOPIO=0 MAXVRAM=88000 TIMECAP=900000000 STOPFDC=1 STOPPIC=0 STOPPPI=0 TIMEOUT=60`.
+Current values: `KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=80000 TRACEPROGRESS=5000 TRACEIO=0 STOPIO=0 MAXVRAM=88000 TIMECAP=900000000 STOPFDC=1 STOPPIC=0 STOPPPI=0 STOPPC=none TIMEOUT=60`.
 
 ## Evidence
 
@@ -70,14 +71,16 @@ Current values: `KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=80000 TRACEPROGRE
 - Raw I/O stop line: `none`
 - First FDC line: `none`
 - FDC stop line: `none`
+- PC stop line: `none`
 - Time-cap line: `none`
+- CPU state line: `none`
 - I/O summary line: `none`
 
 ## Disposition
 
 - The top-level bench now has opt-in `+ekdoskeys=1`, `+traceio=1`,
   `+stopio=N`, `+tracepic=1`, `+stoppic=N`, `+tracefdc=1`, and
-  `+stopfdc=N` hooks.
+  `+stopfdc=N`, plus `+stoppc=HEX` for exact CPU address stops.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
 - `docs/ekdos-timing-reference.md` shows the fast cosim target for this same

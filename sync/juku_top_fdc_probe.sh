@@ -27,6 +27,7 @@ STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
 STOPPPI=${JUKU_TOP_FDC_STOPPPI:-0}
 TIMEOUT_S=${JUKU_TOP_FDC_TIMEOUT:-60}
 VRAM_COPY=${JUKU_TOP_FDC_VRAM_COPY:-}
+STOPPC=${JUKU_TOP_FDC_STOPPC:-}
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
@@ -39,11 +40,14 @@ if [ -f hdl/sim/vram_top.bin ]; then cp hdl/sim/vram_top.bin "$OLD_VRAM"; fi
 iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v
 
 set +e
+stoppc_arg=()
+if [ -n "$STOPPC" ]; then stoppc_arg=("+stoppc=$STOPPC"); fi
 if command -v timeout >/dev/null; then
   timeout "$TIMEOUT_S" vvp "$SIM" \
     +disk="$DISK" +disk_heads=2 \
     +frameirq="$FRAMEIRQ" \
     +traceprogress="$TRACEPROGRESS" \
+    "${stoppc_arg[@]}" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
     +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
@@ -53,6 +57,7 @@ else
     +disk="$DISK" +disk_heads=2 \
     +frameirq="$FRAMEIRQ" \
     +traceprogress="$TRACEPROGRESS" \
+    "${stoppc_arg[@]}" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
     +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
@@ -83,6 +88,7 @@ last_progress=$(grep '^\[VRAM\] progress' "$OUT" | tail -1 || true)
 vram_stop=$(grep -m1 '^\[VRAM\] [0-9][0-9]* writes' "$OUT" || true)
 timecap_line=$(grep -m1 '^\[SIM\] time cap' "$OUT" || true)
 cpu_line=$(grep -m1 '^\[CPU\]' "$OUT" || true)
+pc_stop=$(grep -m1 '^\[PC\] stop' "$OUT" || true)
 disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
 fdc_lines=$(grep -c '^\[FDC\]' "$OUT" || true)
 kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
@@ -131,9 +137,10 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPFDC\` default \`1\`
 - \`JUKU_TOP_FDC_STOPPIC\` default \`0\`
 - \`JUKU_TOP_FDC_STOPPPI\` default \`0\`
+- \`JUKU_TOP_FDC_STOPPC\` optional hexadecimal CPU PC stop hook
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI TIMEOUT=$TIMEOUT_S\`.
+Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPC=${STOPPC:-none} TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -174,6 +181,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 - Raw I/O stop line: \`${rawio_stop:-none}\`
 - First FDC line: \`${fdc_first:-none}\`
 - FDC stop line: \`${fdc_stop:-none}\`
+- PC stop line: \`${pc_stop:-none}\`
 - Time-cap line: \`${timecap_line:-none}\`
 - CPU state line: \`${cpu_line:-none}\`
 - I/O summary line: \`${io_summary:-none}\`
@@ -182,7 +190,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 
 - The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+traceio=1\`,
   \`+stopio=N\`, \`+tracepic=1\`, \`+stoppic=N\`, \`+tracefdc=1\`, and
-  \`+stopfdc=N\` hooks.
+  \`+stopfdc=N\`, plus \`+stoppc=HEX\` for exact CPU address stops.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
 - \`docs/ekdos-timing-reference.md\` shows the fast cosim target for this same

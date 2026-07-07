@@ -23,12 +23,16 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   matches cosim at PC `0x0484` after 30,000 VRAM writes, with a byte-identical
   9,640-byte framebuffer dump, immediately before the cosim first-PIC point at
   30,520 writes.
+- `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
+  which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
+  focused ROMBIOS boundary diagnostics.
 
 ## Command
 
 ```sh
 sync/fdc_check.sh
 sync/juku_top_io_decode_probe.sh
+sync/juku_top_pc_stop_probe.sh
 sync/juku_top_30000_state_probe.sh
 sync/juku_top_fdc_probe.sh
 ```

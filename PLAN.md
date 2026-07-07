@@ -184,8 +184,10 @@ debugging session saved on real hardware.
    fast cosim first-PIC point at 30,520 writes. The
    current full FDC run loads the disk and reaches BIOS VRAM progress, but the
    default 60-second bound times out before the proven post-banner
-   keyboard/interrupt window; the next automation needs checkpoint/fast-forward
-   or a narrower post-banner harness rather than a larger wall timeout. The fast cosim timing
+   keyboard/interrupt window; `JUKU_TOP_FDC_STOPPC=HEX` now provides exact
+   CPU-address stops for narrowing that boundary, but the next automation still
+   needs checkpoint/fast-forward or a narrower post-banner harness rather than
+   a larger wall timeout. The fast cosim timing
    reference in `docs/ekdos-timing-reference.md` anchors that window: first
    frame IRQ at 33,812 VRAM writes and first FDC command at 63,085 VRAM writes
    on the vendored `JUKU1.CPM` `TDD` path.

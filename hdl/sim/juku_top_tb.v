@@ -20,6 +20,7 @@ module juku_top_tb();
   reg osc=0;
   integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, traceprogress=0;
   reg vram_seen=0, sq=0;
+  integer stoppc_en=0; reg [15:0] stoppc=16'h0000;
 
   // keyboard stimulus (opt-in: keyat=0 => kbd off => boot byte-identical). Press the
   // configured key once the banner is drawn (vram_writes >= keyat), hold for khold osc
@@ -56,6 +57,10 @@ module juku_top_tb();
   always @(posedge osc) begin
     if (dut.sync && !sq) mcyc <= mcyc+1;
     sq <= dut.sync;
+    if (stoppc_en && dut.U_CPU.u.core.r16_pc == stoppc) begin
+      $display("[PC] stop pc=0x%04h mcyc=%0d vram=%0d", dut.U_CPU.u.core.r16_pc, mcyc, vram_writes);
+      #60 dump_vram; $finish;
+    end
     if (ekdoskeys != 0) begin
       if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) begin
         key_t <= 0;
@@ -270,6 +275,7 @@ module juku_top_tb();
   initial begin
     if ($value$plusargs("maxvram=%d", max_vram)) ;
     if ($value$plusargs("traceprogress=%d", traceprogress)) ;
+    if ($value$plusargs("stoppc=%h", stoppc)) stoppc_en = 1;
     if ($value$plusargs("timecap=%d", timecap)) ;
     if ($value$plusargs("keyat=%d",  keyat))  ;          // press key after N video writes
     if ($value$plusargs("kcol=%d",   kcolp))  ;          // decoded key column 0-15
