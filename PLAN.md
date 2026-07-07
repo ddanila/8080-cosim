@@ -187,9 +187,11 @@ debugging session saved on real hardware.
    current full FDC run loads the disk and reaches BIOS VRAM progress, but the
    default 60-second bound times out before the proven post-banner
    keyboard/interrupt window; `JUKU_TOP_FDC_STOPPC=HEX` now provides exact
-   CPU-address stops for narrowing that boundary, but the next automation still
-   needs checkpoint/fast-forward or a narrower post-banner harness rather than
-   a larger wall timeout. `docs/ekdos-checkpoint-reference.md` now pins the
+   CPU-address stops for narrowing that boundary. `docs/juku-top-30520-reachability.md`
+   records that a 360-second exact-PC stop at `0x02B9` and a 900-second
+   30,520-write comparison still do not produce an HDL post-banner dump, so the
+   next automation needs checkpoint/fast-forward or a narrower post-banner
+   harness rather than a larger wall timeout. `docs/ekdos-checkpoint-reference.md` now pins the
    full cosim machine checkpoint at that 30,000-write boundary: CPU
    registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
    framebuffer hash. This is the input evidence for the next checkpoint/resume

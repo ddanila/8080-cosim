@@ -4,9 +4,9 @@ Status: **PASS**
 
 This slow diagnostic compares the fast cosim and LVS-checked `juku_top` at
 30,000 framebuffer writes on the vendored `JUKU1.CPM` `TDD` path. The fast
-cosim timing reference first touches PIC at 30,520 writes, so this proves whether
-the expensive top-level simulation is still aligned immediately before that
-post-banner PIC/FDC window.
+cosim timing reference first touches PIC at 30,520 writes; the default 30,000
+write target proves whether the expensive top-level simulation is still aligned
+immediately before that post-banner PIC/FDC window.
 
 ## Command
 
@@ -19,6 +19,8 @@ sync/juku_top_30000_state_probe.sh
 | Check | Result |
 | --- | --- |
 | Target VRAM writes | `30000` |
+| HDL reached dump point | PASS |
+| HDL timeout exit code | `0` |
 | Cosim stop PC | `0x0484` |
 | HDL stop PC | `0x0484` |
 | Cosim/HDL PC match | PASS |
@@ -39,11 +41,14 @@ sync/juku_top_30000_state_probe.sh
 
 ## Disposition
 
-- At 30,000 VRAM writes, `juku_top` and cosim both stop at PC `0x0484`,
-  their framebuffer dumps match byte-for-byte, and their visible CPU/PPI/PIC/FDC
-  register state matches. FDC status is intentionally excluded at this pre-FDC
-  boundary because the HDL shim reports not-ready before motor/command activity.
-- The top-level has not diverged before the PIC setup point; it is simply too
-  slow for repeated brute-force wall-time probing past 30,520 writes.
-- The next useful M2 automation is a checkpoint/fast-forward strategy or a
-  narrower post-banner harness, not another larger timeout.
+- When HDL reaches the requested dump point, this guard compares PC,
+  framebuffer bytes, and visible CPU/PPI/PIC/FDC register state against cosim.
+- FDC status is intentionally excluded at this pre-FDC boundary because the HDL
+  shim reports not-ready before motor/command activity.
+- If HDL does not reach the requested dump point within the bound, the result is
+  a reachability limit rather than a functional mismatch.
+
+## Result Interpretation
+
+- HDL reached the 30,000-write dump point, so the PC, framebuffer, and visible
+  state comparisons above are authoritative for that boundary.

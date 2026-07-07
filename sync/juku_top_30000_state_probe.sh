@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Slow but bounded state comparison just before the ROMBIOS PIC/FDC window.
+# Slow but bounded state comparison near the ROMBIOS PIC/FDC window.
 #
 # The fast cosim first touches PIC at 30,520 VRAM writes on the vendored TDD
 # path. The bit-sliced juku_top sim is too slow to use that as a routine gate,
@@ -11,6 +11,9 @@ command -v cc >/dev/null || { echo "cc not found"; exit 2; }
 
 REPORT=${JUKU_TOP_30000_REPORT:-docs/juku-top-30000-state-probe.md}
 WRITES=${JUKU_TOP_30000_WRITES:-30000}
+DISPLAY_WRITES=$WRITES
+if [ "$WRITES" = "30000" ]; then DISPLAY_WRITES="30,000"; fi
+if [ "$WRITES" = "30520" ]; then DISPLAY_WRITES="30,520"; fi
 TIMEOUT_S=${JUKU_TOP_30000_TIMEOUT:-900}
 TMP=$(mktemp -d)
 OLD_COSIM_VRAM="$TMP/cosim-vram.old"
@@ -47,7 +50,7 @@ if [ -f "$COSIM_VRAM" ]; then
 fi
 
 JUKU_TOP_FDC_REPORT="$TMP/hdl.md" \
-JUKU_TOP_FDC_REPORT_TITLE="juku_top ${WRITES}-write state probe" \
+JUKU_TOP_FDC_REPORT_TITLE="juku_top ${DISPLAY_WRITES}-write state probe" \
 JUKU_TOP_FDC_VRAM_COPY="$HDL_VRAM" \
 JUKU_TOP_FDC_TIMEOUT="$TIMEOUT_S" \
 JUKU_TOP_FDC_MAXVRAM="$WRITES" \
@@ -56,15 +59,20 @@ JUKU_TOP_FDC_TRACEPROGRESS=5000 \
 JUKU_TOP_FDC_STOPFDC=0 \
 sync/juku_top_fdc_probe.sh >"$TMP/hdl.out"
 
+hdl_rc=$(grep -m1 'vvp/timeout exit code' "$TMP/hdl.md" | sed -n 's/.*| `\([0-9][0-9]*\)` |.*/\1/p')
 hdl_cpu=$(grep -m1 'CPU state line:' "$TMP/hdl.md" | sed 's/^- CPU state line: `//; s/`$//' || true)
 hdl_state=$(grep -m1 'Visible state line:' "$TMP/hdl.md" | sed 's/^- Visible state line: `//; s/`$//' || true)
 hdl_vram_stop=$(grep -m1 'VRAM stop line:' "$TMP/hdl.md" | sed 's/^- VRAM stop line: `//; s/`$//' || true)
 hdl_io=$(grep -m1 'I/O summary line:' "$TMP/hdl.md" | sed 's/^- I\/O summary line: `//; s/`$//' || true)
 hdl_pc=$(printf '%s\n' "$hdl_cpu" | sed -n 's/.*pc=0x\([0-9A-Fa-f]*\).*/\1/p')
-if [ -f "$HDL_VRAM" ]; then
+hdl_reached_dump=NO
+if [ -n "$hdl_cpu" ] && [ "$hdl_vram_stop" != "none" ]; then
+  hdl_reached_dump=PASS
+fi
+if [ "$hdl_reached_dump" = PASS ] && [ -f "$HDL_VRAM" ]; then
   hdl_vram_sha=$(sha256sum "$HDL_VRAM" | awk '{print $1}')
 fi
-if [ -f "$COSIM_VRAM" ] && [ -f "$HDL_VRAM" ] && cmp -s "$COSIM_VRAM" "$HDL_VRAM"; then
+if [ "$hdl_reached_dump" = PASS ] && [ -f "$COSIM_VRAM" ] && [ -f "$HDL_VRAM" ] && cmp -s "$COSIM_VRAM" "$HDL_VRAM"; then
   vram_match="PASS"
 fi
 
@@ -91,7 +99,10 @@ state_keys=(
 )
 hex_keys=" pc sp a b c d e h l portc kbd_col pic_icw1 pic_icw2 pic_mask fdc_track fdc_sector fdc_data fdc_command "
 state_match="PASS"
-if [ ! -f "$cosim_state" ]; then
+if [ "$hdl_reached_dump" != PASS ]; then
+  state_match="NO"
+  state_failures+=("HDL did not reach the $DISPLAY_WRITES-write dump point within timeout")
+elif [ ! -f "$cosim_state" ]; then
   state_match="FAIL"
   state_failures+=("missing cosim checkpoint state file")
 elif [ -z "$hdl_state" ]; then
@@ -113,7 +124,9 @@ else
 fi
 
 status="PASS"
-if [ -z "$cosim_pc" ] || [ -z "$hdl_pc" ] || [ "${cosim_pc,,}" != "${hdl_pc,,}" ]; then
+if [ "$hdl_reached_dump" != PASS ]; then
+  status="INCOMPLETE"
+elif [ -z "$cosim_pc" ] || [ -z "$hdl_pc" ] || [ "${cosim_pc,,}" != "${hdl_pc,,}" ]; then
   status="FAIL"
 fi
 if [ "$vram_match" != PASS ]; then
@@ -124,15 +137,15 @@ if [ "$state_match" != PASS ]; then
 fi
 
 cat > "$REPORT" <<EOF
-# juku_top 30,000-write state probe
+# juku_top ${DISPLAY_WRITES}-write state probe
 
 Status: **$status**
 
 This slow diagnostic compares the fast cosim and LVS-checked \`juku_top\` at
-30,000 framebuffer writes on the vendored \`JUKU1.CPM\` \`TDD\` path. The fast
-cosim timing reference first touches PIC at 30,520 writes, so this proves whether
-the expensive top-level simulation is still aligned immediately before that
-post-banner PIC/FDC window.
+$DISPLAY_WRITES framebuffer writes on the vendored \`JUKU1.CPM\` \`TDD\` path. The fast
+cosim timing reference first touches PIC at 30,520 writes; the default 30,000
+write target proves whether the expensive top-level simulation is still aligned
+immediately before that post-banner PIC/FDC window.
 
 ## Command
 
@@ -145,6 +158,8 @@ sync/juku_top_30000_state_probe.sh
 | Check | Result |
 | --- | --- |
 | Target VRAM writes | \`$WRITES\` |
+| HDL reached dump point | $hdl_reached_dump |
+| HDL timeout exit code | \`${hdl_rc:-unknown}\` |
 | Cosim stop PC | \`0x${cosim_pc:-unknown}\` |
 | HDL stop PC | \`0x${hdl_pc:-unknown}\` |
 | Cosim/HDL PC match | $([ -n "$cosim_pc" ] && [ -n "$hdl_pc" ] && [ "${cosim_pc,,}" = "${hdl_pc,,}" ] && echo PASS || echo FAIL) |
@@ -165,14 +180,12 @@ sync/juku_top_30000_state_probe.sh
 
 ## Disposition
 
-- At 30,000 VRAM writes, \`juku_top\` and cosim both stop at PC \`0x${cosim_pc:-unknown}\`,
-  their framebuffer dumps match byte-for-byte, and their visible CPU/PPI/PIC/FDC
-  register state matches. FDC status is intentionally excluded at this pre-FDC
-  boundary because the HDL shim reports not-ready before motor/command activity.
-- The top-level has not diverged before the PIC setup point; it is simply too
-  slow for repeated brute-force wall-time probing past 30,520 writes.
-- The next useful M2 automation is a checkpoint/fast-forward strategy or a
-  narrower post-banner harness, not another larger timeout.
+- When HDL reaches the requested dump point, this guard compares PC,
+  framebuffer bytes, and visible CPU/PPI/PIC/FDC register state against cosim.
+- FDC status is intentionally excluded at this pre-FDC boundary because the HDL
+  shim reports not-ready before motor/command activity.
+- If HDL does not reach the requested dump point within the bound, the result is
+  a reachability limit rather than a functional mismatch.
 EOF
 
 if [ "${#state_failures[@]}" -ne 0 ]; then
@@ -184,6 +197,26 @@ if [ "${#state_failures[@]}" -ne 0 ]; then
       echo "- $failure"
     done
   } >> "$REPORT"
+fi
+
+if [ "$hdl_reached_dump" = PASS ]; then
+  cat >> "$REPORT" <<EOF
+
+## Result Interpretation
+
+- HDL reached the $DISPLAY_WRITES-write dump point, so the PC, framebuffer, and visible
+  state comparisons above are authoritative for that boundary.
+EOF
+else
+  cat >> "$REPORT" <<EOF
+
+## Result Interpretation
+
+- HDL did not reach the $DISPLAY_WRITES-write dump point within the configured timeout,
+  so this run is a reachability result, not evidence of state divergence.
+- Use a checkpoint/fast-forward or narrower post-banner harness before treating
+  this boundary as a functional comparison.
+EOF
 fi
 
 cat "$REPORT"

@@ -25,6 +25,10 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   matches cosim at PC `0x0484` after 30,000 VRAM writes, with a byte-identical
   9,640-byte framebuffer dump and matching visible CPU/PPI/PIC/FDC register
   state, immediately before the cosim first-PIC point at 30,520 writes.
+- `docs/juku-top-30520-reachability.md` records that a 360-second exact-PC stop
+  at `0x02B9` and a 900-second 30,520-write comparison do not produce an HDL
+  post-banner dump, so the next M2 automation step should be
+  checkpoint/fast-forward or a narrow post-banner harness.
 - `sync/ekdos_checkpoint_reference.py` pins the matching cosim-side full
   machine checkpoint at that 30,000-write boundary, including CPU
   registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
