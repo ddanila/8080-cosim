@@ -46,6 +46,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_timing_reference.py` — fast cosim timing reference for the same
   vendored `TDD` path; records first PIC/PPI/FDC port touches versus cycles and
   framebuffer writes.
+- `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
+  vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
+  by the top-level direct-bus guard.
 - `sync/juku_top_fdc_probe.sh` — bounded HDL diagnostic for the remaining
   `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
   interrupts, fixed `TDD` keyboard stimulus, traces VRAM progress and PIC setup,

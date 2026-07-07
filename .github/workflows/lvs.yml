@@ -62,6 +62,7 @@ jobs:
           ./sync/juk_disk_check.sh
           ./sync/ekdos_fdc_probe.py
           ./sync/ekdos_timing_reference.py
+          ./sync/ekdos_ioseq_reference.py
           ./sync/fdc_check.sh
 
       - name: Run fast subsystem guards

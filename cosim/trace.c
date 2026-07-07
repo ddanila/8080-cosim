@@ -55,6 +55,7 @@ static int           out_seen[256], in_seen[256];
 static unsigned long wpage[256];
 static unsigned long mode_switches;
 static int           timing_log = 0;
+static int           io_trace = 0;
 
 static void set_mode(int m) {
   if (m != mode) {
@@ -149,9 +150,16 @@ static uint8_t pin(void* u, uint8_t p) {
             p, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw);
   }
   in_count[p]++;
-  if (p == 0x05 && kbd_str && kbd_str[0]) return kbd_portb();   // 8255 Port B = keyboard 74148
-  if (fdc_enabled && p >= 0x1C && p <= 0x1F) return juku_fdc_read(&fdc, p & 3);
-  return out_last[p];              // mimic 8255 output-latch readback; 0 if never written
+  uint8_t value;
+  if (p == 0x05 && kbd_str && kbd_str[0]) value = kbd_portb();   // 8255 Port B = keyboard 74148
+  else if (fdc_enabled && p >= 0x1C && p <= 0x1F) value = juku_fdc_read(&fdc, p & 3);
+  else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
+  if (io_trace) {
+    i8080* cpu = (i8080*)u;
+    fprintf(stderr, "[IOSEQ] IN  port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
+            p, value, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, in_count[p]);
+  }
+  return value;
 }
 
 static void pout(void* u, uint8_t p, uint8_t v) {
@@ -163,6 +171,11 @@ static void pout(void* u, uint8_t p, uint8_t v) {
   }
   out_count[p]++;
   out_last[p] = v;
+  if (io_trace) {
+    i8080* cpu = (i8080*)u;
+    fprintf(stderr, "[IOSEQ] OUT port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
+            p, v, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, out_count[p]);
+  }
   if (fdc_enabled && p >= 0x1C && p <= 0x1F) juku_fdc_write(&fdc, p & 3, v);
 
   if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
@@ -231,6 +244,8 @@ int main(int argc, char** argv) {
   const char* cart_path = getenv("JUKU_CART");
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
+  io_trace = getenv("JUKU_TRACE_IO") && getenv("JUKU_TRACE_IO")[0] &&
+             strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
   if (cart_path && cart_path[0]) {
     size_t cn = load_image(cart_path, cart, CART_SIZE, 0xFF);
     cart_enabled = 1;

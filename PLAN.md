@@ -194,7 +194,10 @@ debugging session saved on real hardware.
    waiting for ROMBIOS drawing. The fast cosim timing
    reference in `docs/ekdos-timing-reference.md` anchors that window: first
    frame IRQ at 33,812 VRAM writes and first FDC command at 63,085 VRAM writes
-   on the vendored `JUKU1.CPM` `TDD` path.
+   on the vendored `JUKU1.CPM` `TDD` path. `docs/ekdos-ioseq-reference.md`
+   now also pins the full cosim I/O event stream through the shifted `T` key
+   read and first FDC command, tying the direct-bus harness to the real ROMBIOS
+   sequence.
    Remaining target: drive the full ROMBIOS `TDD` path through `juku_top` to
    the EKDOS prompt with that external media.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so

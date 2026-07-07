@@ -84,6 +84,8 @@ sync/juku_top_fdc_probe.sh
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
+- `docs/ekdos-ioseq-reference.md` records the full cosim I/O event stream that
+  the direct-bus top-level guard mirrors for keyboard/PIC/PPI/FDC boundaries.
 - Preserve the Arti `JUKU1.CPM` cosim proof from
   `docs/ekdos-media-acquisition.md` as the disk-backed reference.
 - If deeper controller behavior becomes the blocker, decide whether GPL
