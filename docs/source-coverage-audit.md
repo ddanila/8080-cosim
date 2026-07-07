@@ -16,6 +16,8 @@ or disk image has been fully mined.
 | `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction in `ref/baltijets-tech-docs/` and mined for factory test, ROM-programming, FDD, power, keyboard, and peripheral planning. The `tarkvara/J3KUTIL4.JUK` image has been used as non-vendored EKDOS prompt evidence. The small `tarkvara/JUKUSYS.ZIP` CP/M/EKDOS system binaries are vendored under `media/system/`. | The broader `tarkvara/` disk-image set and `kirjandus/` manuals are not exhaustively classified; Baltijets programming-disk files remain missing. |
 | `https://github.com/infoaed/juku3000/tree/master/roms` | The ROM lineage is covered: canonical ROMs are vendored under `roms/`; `jmon22.bin` is vendored from the public museum ROM bundle; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The repo still needs PROM provenance and HDL disk-backed media work, not more РФ2 ROM coverage. |
 | `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets/museum contact and public-preservation context. | Not a primary electrical source. Its exhibit text, photos, and linked historical references are not exhaustively mined into board/twin evidence. |
+| `https://github.com/vpyk/emu80v4` | Surveyed as an additional emulator reference. No Juku-specific driver/config/media was found, but its GPL-3 `Fdc1793` software model is recorded in `docs/emu80v4-survey.md` and `docs/fdc-core-survey.md` as a behavioral checklist for future ВГ93/FDC1793 fidelity work. | GPL-3 code is not vendored or copied. It does not close any Juku-specific PROM/media/netlist gap. |
+| Local WD1772 transistor/PLA files in `~/Downloads` | Inspected `wd1772.pdf` and `wd1772pla.txt`; hashes and usage notes are recorded in `docs/wd1772-vg93-reference.md`. They support the WD1772/FD1773/ВГ93 lineage assumption and provide signal/PLA references for future FDC fidelity work. | License/provenance is not established, so the files are not vendored or translated into HDL. They do not add Juku-specific media, PROM data, or board connectivity evidence. |
 
 ## Board-critical materials already consumed
 
@@ -33,6 +35,14 @@ or disk image has been fully mined.
   `media/system/` as five 10 KiB CP/M/EKDOS system binaries. The same public
   software archive pass found no explicit `ДГШ5.106.037`, `ДГШ5.106.038`,
   `ДГШ5.106.039`, or `ДГШ5.106.092` PROM programming files.
+- Emu80v4 contributes no Juku target, but its generic FDC1793 implementation
+  confirms which controller behaviors to revisit if the current boot/media shim
+  becomes the `juku_top` EKDOS blocker: Type-I step family, read-address,
+  write-track, index/status behavior, DRQ/IRQ completion, and multi-sector
+  timeout handling.
+- The local WD1772 schematic/PLA files are useful only below the emulator-core
+  abstraction: they can cross-check ВГ93/FD1773-compatible signal names and PLA
+  behavior if a full controller model becomes necessary.
 
 ## Not yet exhaustive
 
