@@ -8,6 +8,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -16,6 +17,13 @@ REPORT = ROOT / "docs" / "basic-launch-probe.md"
 TRACE_C = ROOT / "cosim" / "trace.c"
 VRAM = ROOT / "cosim" / "vram.bin"
 VRAM_SIZE = 40 * 241
+
+
+@dataclass(frozen=True)
+class ProbeCase:
+    name: str
+    rom: Path
+    frame_cycles: int
 
 STOP_RE = re.compile(
     r"stopped pc=0x([0-9A-Fa-f]{4}) cyc=([0-9]+) halted=([0-9]+) "
@@ -106,10 +114,29 @@ def parse_cart_reads(stdout: str) -> tuple[int, int]:
     return int(match.group(1)), int(match.group(2))
 
 
-def run_probe() -> tuple[subprocess.CompletedProcess[str], bytes]:
+def probe_cases() -> list[ProbeCase]:
+    rom_override = os.environ.get("BASIC_LAUNCH_ROM")
+    frame_override = os.environ.get("BASIC_LAUNCH_FRAME_CYCLES")
+    if rom_override:
+        rom = Path(rom_override)
+        if not rom.is_absolute():
+            rom = ROOT / rom
+        return [
+            ProbeCase(
+                rom.stem,
+                rom,
+                int(frame_override or "40000"),
+            )
+        ]
+    return [
+        ProbeCase("jmon33", ROOT / "roms" / "jmon33.bin", int(frame_override or "200000")),
+        ProbeCase("ekta37", ROOT / "roms" / "ekta37.bin", int(frame_override or "40000")),
+    ]
+
+
+def run_probe(case: ProbeCase) -> tuple[subprocess.CompletedProcess[str], bytes]:
     cc = os.environ.get("CC", "cc")
     max_cycles = int(os.environ.get("BASIC_LAUNCH_MAX_CYCLES", "120000000"))
-    frame_cycles = int(os.environ.get("BASIC_LAUNCH_FRAME_CYCLES", "40000"))
     keys = os.environ.get("BASIC_LAUNCH_KEYS", "B")
     old_vram = VRAM.read_bytes() if VRAM.exists() else None
     try:
@@ -143,7 +170,7 @@ def run_probe() -> tuple[subprocess.CompletedProcess[str], bytes]:
             env["JUKU_CART"] = "../roms/jbasic11.bin"
             env["JUKU_KEYS"] = keys
             proc = subprocess.run(
-                [str(trace_bin), "../roms/ekta37.bin", str(max_cycles), "0", str(frame_cycles)],
+                [str(trace_bin), str(case.rom), str(max_cycles), "0", str(case.frame_cycles)],
                 cwd=ROOT / "cosim",
                 env=env,
                 text=True,
@@ -161,26 +188,56 @@ def run_probe() -> tuple[subprocess.CompletedProcess[str], bytes]:
 
 
 def main() -> int:
-    proc, vram = run_probe()
-    stop = parse_stop(proc.stderr)
-    pc_cart_count, pchist_cart = parse_probe(proc.stdout)
-    cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
-    sha = hashlib.sha256(vram).hexdigest() if vram else ""
-    vram_ok = len(vram) == VRAM_SIZE
-    cart_loaded = "loaded 8192 bytes of expansion cartridge" in proc.stderr
-    key_processed = bool(re.search(r"0x04\s+:\s+[1-9][0-9]*", proc.stdout)) and bool(
-        re.search(r"0x05\s+:\s+[1-9][0-9]*", proc.stdout)
+    results = []
+    for case in probe_cases():
+        proc, vram = run_probe(case)
+        stop = parse_stop(proc.stderr)
+        pc_cart_count, pchist_cart = parse_probe(proc.stdout)
+        cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
+        sha = hashlib.sha256(vram).hexdigest() if vram else ""
+        vram_ok = len(vram) == VRAM_SIZE
+        cart_loaded = "loaded 8192 bytes of expansion cartridge" in proc.stderr
+        key_processed = bool(re.search(r"0x04\s+:\s+[1-9][0-9]*", proc.stdout)) and bool(
+            re.search(r"0x05\s+:\s+[1-9][0-9]*", proc.stdout)
+        )
+        basic_entered = pc_cart_count > 0 or pchist_cart > 0
+        results.append(
+            {
+                "case": case,
+                "proc": proc,
+                "vram": vram,
+                "stop": stop,
+                "pc_cart_count": pc_cart_count,
+                "pchist_cart": pchist_cart,
+                "cart_overlay_reads": cart_overlay_reads,
+                "cart_pc_reads": cart_pc_reads,
+                "sha": sha,
+                "vram_ok": vram_ok,
+                "cart_loaded": cart_loaded,
+                "key_processed": key_processed,
+                "basic_entered": basic_entered,
+            }
+        )
+    any_basic_entered = any(result["basic_entered"] for result in results)
+    all_infra_ok = all(
+        result["proc"].returncode == 0
+        and result["cart_loaded"]
+        and result["key_processed"]
+        and result["vram_ok"]
+        for result in results
     )
-    basic_entered = pc_cart_count > 0 or pchist_cart > 0
-    status = "BASIC LAUNCH REACHED" if basic_entered else "BASIC LAUNCH NOT YET REACHED"
+    status = "BASIC LAUNCH REACHED" if any_basic_entered else "BASIC LAUNCH NOT YET REACHED"
 
     lines = [
         "# BASIC launch probe",
         "",
         f"Status: **{status}**",
         "",
-        "This probe exercises the full EktaSoft monitor `B` command with",
-        "`JUKU_CART=roms/jbasic11.bin`. It complements `sync/basic_cart_check.sh`,",
+        "This probe exercises the monitor `B` command with",
+        "`JUKU_CART=roms/jbasic11.bin`. By default it checks Monitor 3.3,",
+        "which MAME tags as `Monitor/Bootstrap 3.3 \\w JBASIC`, plus the",
+        "EktaSoft 3.43m #0037 ROM used by the main boot guard. It complements",
+        "`sync/basic_cart_check.sh`,",
         "which already proves the cartridge window wiring independently.",
         "",
         "## Command",
@@ -192,54 +249,52 @@ def main() -> int:
         "Environment overrides:",
         "",
         f"- `BASIC_LAUNCH_KEYS` default `{os.environ.get('BASIC_LAUNCH_KEYS', 'B')}`",
+        "- `BASIC_LAUNCH_ROM` default unset (runs `jmon33.bin` and `ekta37.bin`)",
         f"- `BASIC_LAUNCH_MAX_CYCLES` default `{os.environ.get('BASIC_LAUNCH_MAX_CYCLES', '120000000')}`",
-        f"- `BASIC_LAUNCH_FRAME_CYCLES` default `{os.environ.get('BASIC_LAUNCH_FRAME_CYCLES', '40000')}`",
+        "- `BASIC_LAUNCH_FRAME_CYCLES` default unset (`jmon33`: `200000`, `ekta37`: `40000`)",
         "",
         "## Evidence",
         "",
-        "| Check | Result |",
-        "| --- | --- |",
-        f"| trace exit code | `{proc.returncode}` |",
-        f"| `jbasic11.bin` cartridge loaded | {'PASS' if cart_loaded else 'FAIL'} |",
-        f"| keyboard ports used | {'PASS' if key_processed else 'FAIL'} |",
-        f"| cartridge overlay reads in mode 2 | `{cart_overlay_reads}` |",
-        f"| cartridge reads while PC in `0x4000..0xBFFF` | `{cart_pc_reads}` |",
-        f"| PC entered `0x4000..0xBFFF` | `{pc_cart_count}` cycles |",
-        f"| pchist count in `0x4000..0xBFFF` | `{pchist_cart}` |",
-        f"| VRAM dump size | `{len(vram)}` bytes |",
-        f"| VRAM SHA256 | `{sha or 'missing'}` |",
-        "",
-        "## Stop State",
-        "",
-        f"- Stop PC: `0x{stop.get('pc', 0):04X}`" if stop else "- Stop PC: not parsed",
-        f"- Cycles: `{stop.get('cycles', 0)}`" if stop else "- Cycles: not parsed",
-        f"- Mode: `{stop.get('mode', 0)}`" if stop else "- Mode: not parsed",
-        f"- Mode switches: `{stop.get('switches', 0)}`" if stop else "- Mode switches: not parsed",
+        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Stop PC | Mode | VRAM SHA256 |",
+        "| --- | --- | ---: | --- | ---: | ---: | --- | ---: | --- |",
+        *[
+            (
+                f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
+                f"`{result['case'].frame_cycles}` | "
+                f"{'PASS' if result['proc'].returncode == 0 and result['cart_loaded'] and result['key_processed'] and result['vram_ok'] else 'FAIL'} | "
+                f"`{result['cart_overlay_reads']}` | `{result['pc_cart_count']}` | "
+                f"`0x{result['stop'].get('pc', 0):04X}` | `{result['stop'].get('mode', 0)}` | "
+                f"`{result['sha'] or 'missing'}` |"
+            )
+            for result in results
+        ],
         "",
         "## Disposition",
         "",
     ]
-    if basic_entered:
-        lines.append("- The monitor `B` command reached the cartridge execution window.")
-    else:
-        lines.extend(
-            [
-                "- The cartridge is loaded and the keyboard path is active, but the current",
-                "  `B` command run never executes in `0x4000..0xBFFF` and performs no",
-                "  mode-2 reads from the cartridge overlay.",
-                "- The remaining work is monitor command/control-flow validation before",
-                "  the cartridge window is selected, not the D8/D22 cartridge-window",
-                "  wiring guarded by `sync/basic_cart_check.sh`.",
-            ]
-        )
+    for result in results:
+        if result["basic_entered"]:
+            lines.append(
+                f"- `{result['case'].name}` reaches the BASIC cartridge execution window."
+            )
+        else:
+            lines.append(
+                f"- `{result['case'].name}` does not select the cartridge overlay in this run."
+            )
+    lines.extend(
+        [
+            "- The remaining BASIC work is a user-visible BASIC prompt oracle and HDL-side",
+            "  coverage of this stronger Monitor 3.3 path.",
+        ]
+    )
     lines.append("")
     REPORT.write_text("\n".join(lines))
     print(
         "BASIC-LAUNCH-PROBE: "
-        f"{'PASS' if proc.returncode == 0 and cart_loaded and key_processed and vram_ok else 'FAIL'}"
+        f"{'PASS' if any_basic_entered and all_infra_ok else 'FAIL'}"
     )
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    return 0 if proc.returncode == 0 and cart_loaded and key_processed and vram_ok else 1
+    return 0 if any_basic_entered and all_infra_ok else 1
 
 
 if __name__ == "__main__":

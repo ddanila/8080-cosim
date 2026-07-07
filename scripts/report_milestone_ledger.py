@@ -52,6 +52,10 @@ def milestone_rows():
         "docs/fdc-readiness.md",
         "Status: **HDL WD1793 SYNTHETIC-SECTOR READY**",
     )
+    basic_launch_reached = marker(
+        "docs/basic-launch-probe.md",
+        "Status: **BASIC LAUNCH REACHED**",
+    )
     vjuga_draft = marker(
         "fab/minimal-vga/order-readiness.md",
         "Status: **DRAFT - HUMAN REVIEW REQUIRED**",
@@ -117,12 +121,17 @@ def milestone_rows():
         {
             "id": "M5",
             "target": "jmon33 live prompt + BASIC launches in the twin",
-            "status": "PARTIAL",
+            "status": "BASIC COSIM REACHED / PROMPT+HDL PENDING" if basic_launch_reached else "PARTIAL",
             "evidence": (
                 "jmon33 interrupt/first-write/cosim cursor probes exist; "
+                "`docs/basic-launch-probe.md` shows Monitor 3.3 reaching the "
+                "BASIC cartridge execution window while EktaSoft 3.43m #0037 "
+                "remains a compatibility boundary."
+                if basic_launch_reached
+                else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
-            "next": "Compare HDL at the stronger jmon33 cursor boundary and close the B-command path.",
+            "next": "Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage.",
         },
         {
             "id": "M6",

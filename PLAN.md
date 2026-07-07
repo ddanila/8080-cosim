@@ -166,10 +166,11 @@ debugging session saved on real hardware.
    guard is now in `sync/basic_cart_check.sh` and documented in
    `docs/basic-cart-readiness.md`: cosim can load `JUKU_CART=roms/jbasic11.bin`,
    D8 selects D22 for the traced `0x4000..0x5FFF` window, and the optional D22
-   sim socket drives `jbasic11.bin[0]` (`0xC3`). The full `B` command boundary
-   is now reproducible in `sync/basic_launch_probe.py` and documented in
-   `docs/basic-launch-probe.md`: the cartridge loads and the keyboard path is
-   active, but the current run never executes in `0x4000..0xBFFF`. The jmon33
+   sim socket drives `jbasic11.bin[0]` (`0xC3`). The `B` command boundary is now
+   guarded in `sync/basic_launch_probe.py` and documented in
+   `docs/basic-launch-probe.md`: Monitor 3.3 reaches the BASIC cartridge
+   execution window with `jbasic11.bin`, while the EktaSoft 3.43m #0037 boot ROM
+   still does not select the cartridge overlay in the same bounded run. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
@@ -188,7 +189,8 @@ debugging session saved on real hardware.
    a blank framebuffer before the cursor oracle. Remaining targets: reduce the
    long interrupt/high-memory HDL path enough to compare cosim and `juku_top`
    at that stronger boundary, prove the user-visible jmon33 command prompt,
-   and close the `B` command control-flow gap to reach a live BASIC prompt.
+   add a user-visible BASIC prompt oracle, and port the stronger Monitor 3.3
+   BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
