@@ -32,7 +32,12 @@ jobs:
       # and asserts every level is byte-for-byte identical to cosim -- i.e. the merge
       # (the schematic structure executing the firmware) cannot silently regress.
       - name: Install Icarus Verilog
-        run: sudo apt-get update && sudo apt-get install -y iverilog
+        run: sudo apt-get update && sudo apt-get install -y gcc iverilog
+
+      - name: Run FDC regression checks
+        run: |
+          ./sync/juk_disk_check.sh
+          ./sync/fdc_check.sh
 
       - name: Run boot regression check
         run: ./sync/boot_check.sh
