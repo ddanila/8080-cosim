@@ -28,6 +28,21 @@ Concrete uses:
   validate command-decode or state-machine equations against transistor-level
   material.
 
+Additional interpretation notes from the source material:
+
+- The schematic is a KiCad-generated searchable PDF from a transistor/gate
+  reconstruction. Component and net names should be searchable in the PDF.
+- The note explicitly treats КР1818ВГ93 as a close copy of FD1773/WD1772 rather
+  than merely a loose "analog", with matching internal block layout and signal
+  names.
+- Shared term signals named `SHT_xxx` differ between the WD1772 and ВГ93
+  reconstructions and need normalization/renumbering before comparing equations.
+- Transistors are drawn uniformly in the schematic; real pull-up/"upper"
+  transistors in logic gates use built-in normally-on channels.
+- The PLM dump was published after the PDF and is the better artifact for
+  command-decode/state-machine cross-checks than manually reading equations from
+  the schematic drawing.
+
 ## Boundary
 
 These files are vendored as project reference material, not as HDL-derived

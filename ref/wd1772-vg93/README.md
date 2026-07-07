@@ -12,6 +12,17 @@ Use these files as reference evidence for the WD1772 / FD1773 / WD1793 /
 КР1818ВГ93 controller lineage, especially if the current boot/media FDC shim
 needs to be replaced with a fuller controller model.
 
+Source interpretation notes captured with the files:
+
+- The PDF is a KiCad-generated searchable transistor/gate schematic.
+- The accompanying note treats КР1818ВГ93 as a close FD1773/WD1772 copy, with
+  internal block placement and signal naming matching closely enough to use this
+  material as relevant VG93 evidence.
+- `SHT_xxx` shared-term signal numbering differs between WD1772 and ВГ93
+  reconstructions and must be normalized before equation-level comparison.
+- The schematic draws transistors uniformly even though real pull-up/"upper"
+  devices in logic gates are normally-on channel devices.
+
 Do not mechanically translate the schematic or PLA table into HDL without an
 explicit implementation decision. The immediate M2 target remains getting the
 existing `juku_top` ROMBIOS `TDD` path to the vendored `JUKU1.CPM` EKDOS prompt.
