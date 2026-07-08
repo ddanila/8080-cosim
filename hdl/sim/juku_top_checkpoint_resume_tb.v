@@ -470,7 +470,7 @@ module juku_top_checkpoint_resume_tb();
         $fflush;
       end
       if (progress_mcyc != 0 && mcyc >= next_progress_mcyc) begin
-        $display("[RESUME-PROGRESS] mcyc=%0d pc=0x%04h vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d intr=%0d pending=%0d inta_idx=%0d mask=0x%02h inte=%0d",
+        $display("[RESUME-PROGRESS] mcyc=%0d pc=0x%04h vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d fdc_data_reads=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d intr=%0d pending=%0d inta_idx=%0d mask=0x%02h inte=%0d",
                  mcyc,
                  dut.U_CPU.u.core.r16_pc,
                  vram_writes,
@@ -478,6 +478,7 @@ module juku_top_checkpoint_resume_tb();
                  pic_seen,
                  kbd_seen,
                  fdc_ios,
+                 fdc_data_reads,
                  frame_ticks,
                  intr_edges,
                  inta_edges,

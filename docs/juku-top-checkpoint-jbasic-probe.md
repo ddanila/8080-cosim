@@ -25,6 +25,7 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - Cosim checkpoint keyboard position/phase: `4` / `0`
 - HDL resume exit code: `0`
 - Timed out: `no`
+- Keyboard/PPI tracing enabled: `yes`
 - JBASIC key presses: `7`
 - JBASIC key releases: `7`
 - First key press: `[RESUME-KBD-STIM] press key=0 col=7 bit=5 shift=1 mcyc=250 vram=73446`
@@ -49,8 +50,8 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - Checkpoint command row bytes y=71 x=0..9: `08 10 00 00 00 00 00 00 00 00`
 - HDL final command row bytes y=71 x=0..9: `f7 10 0e 3c 08 1c 1c 1c 00 00`
 - First changed VRAM cells: `x=0 y=70 00->ff, x=0 y=71 08->f7, x=2 y=71 00->0e, x=3 y=71 00->3c, x=4 y=71 00->08, x=5 y=71 00->1c, x=6 y=71 00->1c, x=7 y=71 00->1c, x=0 y=72 14->eb, x=2 y=72 00->04, x=3 y=72 00->12, x=4 y=72 00->14, x=5 y=72 00->22, x=6 y=72 00->08, x=7 y=72 00->22, x=0 y=73 22->dd, x=2 y=73 00->04, x=3 y=73 00->12, x=4 y=73 00->22, x=5 y=73 00->20, x=6 y=73 00->08, x=7 y=73 00->20, x=0 y=74 22->dd, x=2 y=74 00->04`
-- First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0xd9d4 vram=73456 ios=787 pic_seen=0 kbd_seen=1 fdc_ios=0 frame_ticks=2 intr_edges=2 inta_edges=6 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
-- Last progress line: `[RESUME-PROGRESS] mcyc=525000 pc=0xc349 vram=73536 ios=15255 pic_seen=0 kbd_seen=1 fdc_ios=3633 frame_ticks=47 intr_edges=40 inta_edges=120 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
+- First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0xd9d4 vram=73456 ios=787 pic_seen=0 kbd_seen=1 fdc_ios=0 fdc_data_reads=0 frame_ticks=2 intr_edges=2 inta_edges=6 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
+- Last progress line: `[RESUME-PROGRESS] mcyc=525000 pc=0xc349 vram=73536 ios=15255 pic_seen=0 kbd_seen=1 fdc_ios=3633 fdc_data_reads=3584 frame_ticks=47 intr_edges=40 inta_edges=120 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
 - Stop/fail line: `none`
 
 ## Boundary
@@ -74,6 +75,8 @@ sync/juku_top_checkpoint_jbasic_probe.py
   to stop at the first sampled keyboard hit during retiming experiments.
 - Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first
   `N` resumed HDL M-cycle trace lines in this report.
+- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD=0` for deeper FDC-transfer
+  experiments where the keyboard/PPI trace volume dominates runtime.
 - Next work is to continue from the 4096-byte FDC data-read window
   through the full disk transfer and finally stop on `[RESUME-JBASIC]`.
 - This run reached HDL FDC data-register reads; next work is to continue through the disk transfer and the `READY` oracle.
@@ -160,5 +163,5 @@ sync/juku_top_checkpoint_jbasic_probe.py
 [RESUME-FDC] IN  port=0x1f reg=3 data=0xe5 mcyc=538973 vram=73536 ios=4151
 [RESUME-FDC] stop reason=data-read-count target=4096 ios=4151 reads=4127 data_reads=4096 writes=24 data=0xe5 mcyc=538973 vram=73536
 [RESUME-VRAM] dumped checkpoint VRAM -> hdl/sim/checkpoint_vram_top.bin
-/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:741: $finish called at 779854210 (100ps)
+/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:742: $finish called at 779854210 (100ps)
 ```

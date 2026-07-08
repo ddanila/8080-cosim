@@ -54,6 +54,7 @@ static uint8_t       out_last[256];
 static int           out_seen[256], in_seen[256];
 static unsigned long wpage[256];
 static unsigned long mode_switches;
+static unsigned long fdc_data_reads, stop_fdc_data_reads;
 static int           timing_log = 0;
 static int           io_trace = 0;
 
@@ -195,7 +196,10 @@ static uint8_t pin(void* u, uint8_t p) {
   in_count[p]++;
   uint8_t value;
   if (p == 0x05 && kbd_enabled) value = kbd_portb();             // 8255 Port B = keyboard 74148
-  else if (fdc_enabled && p >= 0x1C && p <= 0x1F) value = juku_fdc_read(&fdc, p & 3);
+  else if (fdc_enabled && p >= 0x1C && p <= 0x1F) {
+    value = juku_fdc_read(&fdc, p & 3);
+    if (p == 0x1F) fdc_data_reads++;
+  }
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
   if (io_trace) {
     i8080* cpu = (i8080*)u;
@@ -340,6 +344,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "fdc_command=%02X\n", fdc.command);
   fprintf(state_out, "fdc_buffer_pos=%u\n", fdc.buffer_pos);
   fprintf(state_out, "fdc_buffer_len=%u\n", fdc.buffer_len);
+  fprintf(state_out, "fdc_data_reads=%lu\n", fdc_data_reads);
   for (int p = 0; p < 256; p++) {
     if (out_count[p] || in_count[p] || out_last[p])
       fprintf(state_out, "port_%02X=last:%02X,out:%lu,in:%lu\n",
@@ -369,6 +374,9 @@ int main(int argc, char** argv) {
   if (kbd_gap_env && kbd_gap_env[0]) kbd_gap_frames = atoi(kbd_gap_env);
   if (kbd_hold_frames < 1) kbd_hold_frames = KBD_HOLD;
   if (kbd_gap_frames < 1) kbd_gap_frames = KBD_GAP;
+  const char* stop_fdc_data_reads_env = getenv("JUKU_STOP_FDC_DATA_READS");
+  if (stop_fdc_data_reads_env && stop_fdc_data_reads_env[0])
+    stop_fdc_data_reads = strtoul(stop_fdc_data_reads_env, 0, 0);
   const char* cart_path = getenv("JUKU_CART");
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
@@ -418,7 +426,8 @@ int main(int argc, char** argv) {
   int chk_logs = 0;
   while (cpu.cyc < max_cyc && (!cpu.halted || frame_cyc) &&
          !(g_vw_limit && g_vw >= g_vw_limit) &&
-         !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc)) {
+         !(checkpoint_cyc && cpu.cyc >= checkpoint_cyc) &&
+         !(stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)) {
     pchist[cpu.pc]++;
     if (cpu.pc == 0x03E0 && chk_logs < 12)            // checksum entry: HL=ptr, DE=count
       fprintf(stderr, "[CHK] entry HL=%04X DE=%04X mode=%d\n",
@@ -471,6 +480,9 @@ int main(int argc, char** argv) {
 
   fprintf(stderr, "\nstopped pc=0x%04X cyc=%lu halted=%d iff=%d mode=%d switches=%lu\n",
           cpu.pc, cpu.cyc, cpu.halted, cpu.iff, mode, mode_switches);
+  if (stop_fdc_data_reads && fdc_data_reads >= stop_fdc_data_reads)
+    fprintf(stderr, "[FDC] stopped after %lu data reads at cyc=%lu pc=%04X g_vw=%lu\n",
+            fdc_data_reads, cpu.cyc, cpu.pc, g_vw);
 
   dump_checkpoint(getenv("JUKU_CHECKPOINT_PREFIX"), &cpu);
 

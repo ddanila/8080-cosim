@@ -239,7 +239,7 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         f"+keyat={state_arg(state, 'vram_writes', '73446')}",
         f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '160000')}",
         f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '240000')}",
-        "+tracekbd=1",
+        f"+tracekbd={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD', '1')}",
         f"+tracefdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_FDC', '1')}",
         f"+stopkbdhit={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT', '0')}",
         f"+progress_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PROGRESS_MCYC', '25000')}",
@@ -345,6 +345,7 @@ def main() -> int:
         checkpoint_vram = checkpoint_ram[0xD800 : 0xD800 + VRAM_SIZE]
         hdl_proc, timed_out, hdl_vram = run_hdl(tmp, ram_bin, state)
 
+    trace_kbd_enabled = os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD", "1") != "0"
     key_presses = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] press")
     key_releases = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] release")
     key_hits = matching_lines(hdl_proc.stdout, "[RESUME-KBD-HIT]")
@@ -369,9 +370,9 @@ def main() -> int:
         failures.append(f"cosim prompt checkpoint exited {cosim_proc.returncode}")
     if hdl_proc.returncode not in (0, 124):
         failures.append(f"HDL JBASIC command stimulus run exited {hdl_proc.returncode}")
-    if len(key_presses) != 7:
+    if trace_kbd_enabled and len(key_presses) != 7:
         failures.append(f"expected 7 JBASIC key presses, saw {len(key_presses)}")
-    if len(key_releases) != 7 and not reached_fdc:
+    if trace_kbd_enabled and len(key_releases) != 7 and not reached_fdc:
         failures.append(f"expected 7 JBASIC key releases, saw {len(key_releases)}")
 
     status = (
@@ -418,6 +419,7 @@ def main() -> int:
         f"- Cosim checkpoint keyboard position/phase: `{state.get('kbd_pos', 'missing')}` / `{state.get('kbd_phase', 'missing')}`",
         f"- HDL resume exit code: `{hdl_proc.returncode}`",
         f"- Timed out: `{'yes' if timed_out else 'no'}`",
+        f"- Keyboard/PPI tracing enabled: `{'yes' if trace_kbd_enabled else 'no'}`",
         f"- JBASIC key presses: `{len(key_presses)}`",
         f"- JBASIC key releases: `{len(key_releases)}`",
         f"- First key press: `{key_presses[0] if key_presses else 'none'}`",
@@ -467,6 +469,8 @@ def main() -> int:
         "  to stop at the first sampled keyboard hit during retiming experiments.",
         "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first",
         "  `N` resumed HDL M-cycle trace lines in this report.",
+        "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD=0` for deeper FDC-transfer",
+        "  experiments where the keyboard/PPI trace volume dominates runtime.",
         "- Next work is to continue from the 4096-byte FDC data-read window",
         "  through the full disk transfer and finally stop on `[RESUME-JBASIC]`.",
     ]
