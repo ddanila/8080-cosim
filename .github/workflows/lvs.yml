@@ -15,7 +15,9 @@ jobs:
           sh -n kicad/check_replica_manufacturing_ready.sh
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
+            scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \
+            scripts/wd1772_pla.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_timing_reference.py \
@@ -39,8 +41,13 @@ jobs:
 
       - name: Check WD1772 PLA inspection freshness
         run: |
+          python3 scripts/export_wd1772_pla.py
           python3 scripts/report_wd1772_pla_inspection.py
-          git diff --exit-code -- docs/wd1772-pla-inspection.md
+          git diff --exit-code -- \
+            docs/wd1772-pla-inspection.md \
+            ref/wd1772-vg93/SHA256SUMS \
+            ref/wd1772-vg93/wd1772pla.normalized.csv \
+            ref/wd1772-vg93/wd1772pla.normalized.json
 
       - name: Check replica bring-up report freshness
         run: |

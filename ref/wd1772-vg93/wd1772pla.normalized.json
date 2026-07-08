@@ -1,0 +1,1130 @@
+{
+  "ambiguous_rows": [
+    {
+      "a_label": "A17",
+      "ambiguous_output_columns": [
+        0,
+        1,
+        5,
+        8,
+        9,
+        10,
+        11
+      ],
+      "index": 103,
+      "output_bits": "9911191199991111111",
+      "r_label": "R015"
+    }
+  ],
+  "footer_guide_rows": [
+    "|CCCCCCCCCCCCCCCCCCC|CCCCCCCCCCCCCCCCCCC",
+    "|0123456789012345678|9012345678901234567",
+    "|0         1        | 2         3"
+  ],
+  "input_alphabet": [
+    "0",
+    "1"
+  ],
+  "input_width": 19,
+  "output_alphabet": [
+    "0",
+    "1",
+    "9"
+  ],
+  "output_width": 19,
+  "row_count": 120,
+  "rows": [
+    {
+      "a_label": "A62",
+      "ambiguous_output_columns": [],
+      "index": 0,
+      "input_bits": "0011011111111001110",
+      "output_bits": "1011101111101110101",
+      "r_label": "R111",
+      "section": 1
+    },
+    {
+      "a_label": "A61",
+      "ambiguous_output_columns": [],
+      "index": 1,
+      "input_bits": "0011111100000011111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R110",
+      "section": 1
+    },
+    {
+      "a_label": "A60",
+      "ambiguous_output_columns": [],
+      "index": 2,
+      "input_bits": "0010101111000010111",
+      "output_bits": "0101011111111101010",
+      "r_label": "R109",
+      "section": 1
+    },
+    {
+      "a_label": "A59",
+      "ambiguous_output_columns": [],
+      "index": 3,
+      "input_bits": "0111011111000011011",
+      "output_bits": "1001101111111111111",
+      "r_label": "R108",
+      "section": 1
+    },
+    {
+      "a_label": "A58",
+      "ambiguous_output_columns": [],
+      "index": 4,
+      "input_bits": "1011101111010010101",
+      "output_bits": "1001000110111111111",
+      "r_label": "R107",
+      "section": 1
+    },
+    {
+      "a_label": "A57",
+      "ambiguous_output_columns": [],
+      "index": 5,
+      "input_bits": "1001000110110010000",
+      "output_bits": "1101010111111111111",
+      "r_label": "R106",
+      "section": 1
+    },
+    {
+      "a_label": "A56",
+      "ambiguous_output_columns": [],
+      "index": 6,
+      "input_bits": "1000010100110010010",
+      "output_bits": "0101010101011101010",
+      "r_label": "R105",
+      "section": 1
+    },
+    {
+      "a_label": "A55",
+      "ambiguous_output_columns": [],
+      "index": 7,
+      "input_bits": "1111001111110000000",
+      "output_bits": "0111111111111111111",
+      "r_label": "R104",
+      "section": 1
+    },
+    {
+      "a_label": "A54",
+      "ambiguous_output_columns": [],
+      "index": 8,
+      "input_bits": "1111001111110000000",
+      "output_bits": "0111111111111111111",
+      "r_label": "R104",
+      "section": 1
+    },
+    {
+      "a_label": "A53",
+      "ambiguous_output_columns": [],
+      "index": 9,
+      "input_bits": "1011101110110011111",
+      "output_bits": "1111000000101111111",
+      "r_label": "R103",
+      "section": 1
+    },
+    {
+      "a_label": "A52",
+      "ambiguous_output_columns": [],
+      "index": 10,
+      "input_bits": "0011011101110111010",
+      "output_bits": "1111111111111111111",
+      "r_label": "R102",
+      "section": 1
+    },
+    {
+      "a_label": "A51",
+      "ambiguous_output_columns": [],
+      "index": 11,
+      "input_bits": "1001010111111111110",
+      "output_bits": "0001001101001111001",
+      "r_label": "R101",
+      "section": 1
+    },
+    {
+      "a_label": "A50",
+      "ambiguous_output_columns": [],
+      "index": 12,
+      "input_bits": "1110111111111111011",
+      "output_bits": "0111100011011111111",
+      "r_label": "R100",
+      "section": 1
+    },
+    {
+      "a_label": "A49",
+      "ambiguous_output_columns": [],
+      "index": 13,
+      "input_bits": "0011111111001111111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R099",
+      "section": 1
+    },
+    {
+      "a_label": "A48",
+      "ambiguous_output_columns": [],
+      "index": 14,
+      "input_bits": "1011101111001101100",
+      "output_bits": "1010010101110110101",
+      "r_label": "R098",
+      "section": 1
+    },
+    {
+      "a_label": "A47",
+      "ambiguous_output_columns": [],
+      "index": 15,
+      "input_bits": "1001010111001111000",
+      "output_bits": "1011010101110111111",
+      "r_label": "R097",
+      "section": 1
+    },
+    {
+      "a_label": "A46",
+      "ambiguous_output_columns": [],
+      "index": 16,
+      "input_bits": "1111101111001110101",
+      "output_bits": "0011101110111111111",
+      "r_label": "R096",
+      "section": 1
+    },
+    {
+      "a_label": "A45",
+      "ambiguous_output_columns": [],
+      "index": 17,
+      "input_bits": "1111000011001100001",
+      "output_bits": "1100110110110111111",
+      "r_label": "R095",
+      "section": 1
+    },
+    {
+      "a_label": "A44",
+      "ambiguous_output_columns": [],
+      "index": 18,
+      "input_bits": "0101110111001100110",
+      "output_bits": "0101110110100011101",
+      "r_label": "R094",
+      "section": 1
+    },
+    {
+      "a_label": "A43",
+      "ambiguous_output_columns": [],
+      "index": 19,
+      "input_bits": "0111110111001100110",
+      "output_bits": "0101110110100011101",
+      "r_label": "R093",
+      "section": 1
+    },
+    {
+      "a_label": "A42",
+      "ambiguous_output_columns": [],
+      "index": 20,
+      "input_bits": "0011011111001110011",
+      "output_bits": "0101110011100111111",
+      "r_label": "R092",
+      "section": 1
+    },
+    {
+      "a_label": "A36",
+      "ambiguous_output_columns": [],
+      "index": 21,
+      "input_bits": "1111101011101111100",
+      "output_bits": "1011101101100110111",
+      "r_label": "R091",
+      "section": 1
+    },
+    {
+      "a_label": "A35",
+      "ambiguous_output_columns": [],
+      "index": 22,
+      "input_bits": "0001111111001100110",
+      "output_bits": "0001100111100011101",
+      "r_label": "R090",
+      "section": 1
+    },
+    {
+      "a_label": "A34",
+      "ambiguous_output_columns": [],
+      "index": 23,
+      "input_bits": "0011011111001110011",
+      "output_bits": "0000100111100111111",
+      "r_label": "R089",
+      "section": 1
+    },
+    {
+      "a_label": "A33",
+      "ambiguous_output_columns": [],
+      "index": 24,
+      "input_bits": "0011011111001111001",
+      "output_bits": "1111111110111111111",
+      "r_label": "R088",
+      "section": 1
+    },
+    {
+      "a_label": "A32",
+      "ambiguous_output_columns": [],
+      "index": 25,
+      "input_bits": "0011011111001101100",
+      "output_bits": "1010111011101011101",
+      "r_label": "R087",
+      "section": 1
+    },
+    {
+      "a_label": "A30",
+      "ambiguous_output_columns": [],
+      "index": 26,
+      "input_bits": "1011000111110000110",
+      "output_bits": "0001001111101100001",
+      "r_label": "R086",
+      "section": 1
+    },
+    {
+      "a_label": "A29",
+      "ambiguous_output_columns": [],
+      "index": 27,
+      "input_bits": "1111111100110011111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R085",
+      "section": 1
+    },
+    {
+      "a_label": "A28",
+      "ambiguous_output_columns": [],
+      "index": 28,
+      "input_bits": "1111111100110011111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R085",
+      "section": 1
+    },
+    {
+      "a_label": "A27",
+      "ambiguous_output_columns": [],
+      "index": 29,
+      "input_bits": "1111111110110011111",
+      "output_bits": "1111101010101111111",
+      "r_label": "R084",
+      "section": 1
+    },
+    {
+      "a_label": "A26",
+      "ambiguous_output_columns": [],
+      "index": 30,
+      "input_bits": "1011101110110011111",
+      "output_bits": "1111010101111111111",
+      "r_label": "R083",
+      "section": 1
+    },
+    {
+      "a_label": "A25",
+      "ambiguous_output_columns": [],
+      "index": 31,
+      "input_bits": "0001100101110111000",
+      "output_bits": "1111111111111111111",
+      "r_label": "R082",
+      "section": 1
+    },
+    {
+      "a_label": "A24",
+      "ambiguous_output_columns": [],
+      "index": 32,
+      "input_bits": "1000111011111101000",
+      "output_bits": "0111111111111111111",
+      "r_label": "R081",
+      "section": 1
+    },
+    {
+      "a_label": "A23",
+      "ambiguous_output_columns": [],
+      "index": 33,
+      "input_bits": "1011100011111101110",
+      "output_bits": "0010010011100100101",
+      "r_label": "R080",
+      "section": 1
+    },
+    {
+      "a_label": "A22",
+      "ambiguous_output_columns": [],
+      "index": 34,
+      "input_bits": "0111011111111111011",
+      "output_bits": "1111111111111111111",
+      "r_label": "R079",
+      "section": 1
+    },
+    {
+      "a_label": "A21",
+      "ambiguous_output_columns": [],
+      "index": 35,
+      "input_bits": "1111111111111111111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R078",
+      "section": 1
+    },
+    {
+      "a_label": "A20",
+      "ambiguous_output_columns": [],
+      "index": 36,
+      "input_bits": "1011111111111110111",
+      "output_bits": "0101110111110101111",
+      "r_label": "R077",
+      "section": 1
+    },
+    {
+      "a_label": "A19",
+      "ambiguous_output_columns": [],
+      "index": 37,
+      "input_bits": "0110111111111111011",
+      "output_bits": "0011001101011101110",
+      "r_label": "R076",
+      "section": 1
+    },
+    {
+      "a_label": "A18",
+      "ambiguous_output_columns": [],
+      "index": 38,
+      "input_bits": "1001111111111111100",
+      "output_bits": "1111110000111111111",
+      "r_label": "R075",
+      "section": 1
+    },
+    {
+      "a_label": "A17",
+      "ambiguous_output_columns": [],
+      "index": 39,
+      "input_bits": "1111111111101110111",
+      "output_bits": "0111110111011111111",
+      "r_label": "R074",
+      "section": 1
+    },
+    {
+      "a_label": "A16",
+      "ambiguous_output_columns": [],
+      "index": 40,
+      "input_bits": "0011111111001111001",
+      "output_bits": "1111111111111111111",
+      "r_label": "R073",
+      "section": 1
+    },
+    {
+      "a_label": "A15",
+      "ambiguous_output_columns": [],
+      "index": 41,
+      "input_bits": "0111111101011111011",
+      "output_bits": "1111111111111111111",
+      "r_label": "R072",
+      "section": 1
+    },
+    {
+      "a_label": "A14",
+      "ambiguous_output_columns": [],
+      "index": 42,
+      "input_bits": "1111111111111111111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R071",
+      "section": 1
+    },
+    {
+      "a_label": "A13",
+      "ambiguous_output_columns": [],
+      "index": 43,
+      "input_bits": "0101010111001100110",
+      "output_bits": "0011101101101011111",
+      "r_label": "R070",
+      "section": 1
+    },
+    {
+      "a_label": "A12",
+      "ambiguous_output_columns": [],
+      "index": 44,
+      "input_bits": "0101010011001101110",
+      "output_bits": "1101110000111011111",
+      "r_label": "R069",
+      "section": 1
+    },
+    {
+      "a_label": "A11",
+      "ambiguous_output_columns": [],
+      "index": 45,
+      "input_bits": "0111111111001110011",
+      "output_bits": "0111111101111111111",
+      "r_label": "R068",
+      "section": 1
+    },
+    {
+      "a_label": "A10",
+      "ambiguous_output_columns": [],
+      "index": 46,
+      "input_bits": "1011100111001110101",
+      "output_bits": "1000110010100111111",
+      "r_label": "R067",
+      "section": 1
+    },
+    {
+      "a_label": "A41",
+      "ambiguous_output_columns": [],
+      "index": 47,
+      "input_bits": "0011001011011110011",
+      "output_bits": "0101110110110111011",
+      "r_label": "R066",
+      "section": 1
+    },
+    {
+      "a_label": "A09",
+      "ambiguous_output_columns": [],
+      "index": 48,
+      "input_bits": "0011001011011110011",
+      "output_bits": "0101110110110111011",
+      "r_label": "R066",
+      "section": 1
+    },
+    {
+      "a_label": "A40",
+      "ambiguous_output_columns": [],
+      "index": 49,
+      "input_bits": "0100001111101110010",
+      "output_bits": "0101110111110101111",
+      "r_label": "R065",
+      "section": 1
+    },
+    {
+      "a_label": "A08",
+      "ambiguous_output_columns": [],
+      "index": 50,
+      "input_bits": "0100001111101110010",
+      "output_bits": "0101110111110101111",
+      "r_label": "R065",
+      "section": 1
+    },
+    {
+      "a_label": "A39",
+      "ambiguous_output_columns": [],
+      "index": 51,
+      "input_bits": "1111110011001111111",
+      "output_bits": "0000110010100101010",
+      "r_label": "R064",
+      "section": 1
+    },
+    {
+      "a_label": "A07",
+      "ambiguous_output_columns": [],
+      "index": 52,
+      "input_bits": "1111110011001111111",
+      "output_bits": "0000110010100101010",
+      "r_label": "R064",
+      "section": 1
+    },
+    {
+      "a_label": "A38",
+      "ambiguous_output_columns": [],
+      "index": 53,
+      "input_bits": "0010101011001110101",
+      "output_bits": "1001101001001111111",
+      "r_label": "R063",
+      "section": 1
+    },
+    {
+      "a_label": "A06",
+      "ambiguous_output_columns": [],
+      "index": 54,
+      "input_bits": "0010101011001110101",
+      "output_bits": "1001101001001111111",
+      "r_label": "R063",
+      "section": 1
+    },
+    {
+      "a_label": "A37",
+      "ambiguous_output_columns": [],
+      "index": 55,
+      "input_bits": "1111011111001100110",
+      "output_bits": "0111111010010011111",
+      "r_label": "R062",
+      "section": 1
+    },
+    {
+      "a_label": "A05",
+      "ambiguous_output_columns": [],
+      "index": 56,
+      "input_bits": "1111011111001100110",
+      "output_bits": "0111111010010011111",
+      "r_label": "R062",
+      "section": 1
+    },
+    {
+      "a_label": "A04",
+      "ambiguous_output_columns": [],
+      "index": 57,
+      "input_bits": "0011111111001101100",
+      "output_bits": "1011101101100111111",
+      "r_label": "R061",
+      "section": 1
+    },
+    {
+      "a_label": "A03",
+      "ambiguous_output_columns": [],
+      "index": 58,
+      "input_bits": "0011111111001101100",
+      "output_bits": "1011101111001111111",
+      "r_label": "R060",
+      "section": 1
+    },
+    {
+      "a_label": "A02",
+      "ambiguous_output_columns": [],
+      "index": 59,
+      "input_bits": "0011101111001101100",
+      "output_bits": "1001000111100111111",
+      "r_label": "R059",
+      "section": 1
+    },
+    {
+      "a_label": "A01",
+      "ambiguous_output_columns": [],
+      "index": 60,
+      "input_bits": "0011111011011110010",
+      "output_bits": "0101110111110111110",
+      "r_label": "R058",
+      "section": 1
+    },
+    {
+      "a_label": "A00",
+      "ambiguous_output_columns": [],
+      "index": 61,
+      "input_bits": "1111010011001110011",
+      "output_bits": "0101011100110111110",
+      "r_label": "R057",
+      "section": 1
+    },
+    {
+      "a_label": "A61",
+      "ambiguous_output_columns": [],
+      "index": 62,
+      "input_bits": "0110111111111111110",
+      "output_bits": "0011100111001110111",
+      "r_label": "R056",
+      "section": 2
+    },
+    {
+      "a_label": "A60",
+      "ambiguous_output_columns": [],
+      "index": 63,
+      "input_bits": "0111001111001111001",
+      "output_bits": "0110101011101111111",
+      "r_label": "R055",
+      "section": 2
+    },
+    {
+      "a_label": "A59",
+      "ambiguous_output_columns": [],
+      "index": 64,
+      "input_bits": "1001101011001101001",
+      "output_bits": "1011101111101111111",
+      "r_label": "R054",
+      "section": 2
+    },
+    {
+      "a_label": "A58",
+      "ambiguous_output_columns": [],
+      "index": 65,
+      "input_bits": "1101111111001111110",
+      "output_bits": "0001001101100000000",
+      "r_label": "R053",
+      "section": 2
+    },
+    {
+      "a_label": "A57",
+      "ambiguous_output_columns": [],
+      "index": 66,
+      "input_bits": "1001101011101111100",
+      "output_bits": "1011100101100111111",
+      "r_label": "R052",
+      "section": 2
+    },
+    {
+      "a_label": "A56",
+      "ambiguous_output_columns": [],
+      "index": 67,
+      "input_bits": "1101111111001101011",
+      "output_bits": "1110101011101111111",
+      "r_label": "R051",
+      "section": 2
+    },
+    {
+      "a_label": "A53",
+      "ambiguous_output_columns": [],
+      "index": 68,
+      "input_bits": "0001011110000011110",
+      "output_bits": "1001100111101110101",
+      "r_label": "R050",
+      "section": 2
+    },
+    {
+      "a_label": "A52",
+      "ambiguous_output_columns": [],
+      "index": 69,
+      "input_bits": "0110111101010111111",
+      "output_bits": "0101110111110111111",
+      "r_label": "R049",
+      "section": 2
+    },
+    {
+      "a_label": "A51",
+      "ambiguous_output_columns": [],
+      "index": 70,
+      "input_bits": "0010000110010110001",
+      "output_bits": "1101100111111111111",
+      "r_label": "R048",
+      "section": 2
+    },
+    {
+      "a_label": "A50",
+      "ambiguous_output_columns": [],
+      "index": 71,
+      "input_bits": "0011000011111111011",
+      "output_bits": "0111010111110101111",
+      "r_label": "R047",
+      "section": 2
+    },
+    {
+      "a_label": "A49",
+      "ambiguous_output_columns": [],
+      "index": 72,
+      "input_bits": "0011111111111111111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R046",
+      "section": 2
+    },
+    {
+      "a_label": "A48",
+      "ambiguous_output_columns": [],
+      "index": 73,
+      "input_bits": "0011111111111111111",
+      "output_bits": "1101110111111111111",
+      "r_label": "R045",
+      "section": 2
+    },
+    {
+      "a_label": "A47",
+      "ambiguous_output_columns": [],
+      "index": 74,
+      "input_bits": "1110100101111111100",
+      "output_bits": "1111111111111111101",
+      "r_label": "R044",
+      "section": 2
+    },
+    {
+      "a_label": "A46",
+      "ambiguous_output_columns": [],
+      "index": 75,
+      "input_bits": "1101011011111111010",
+      "output_bits": "0101010101011111110",
+      "r_label": "R043",
+      "section": 2
+    },
+    {
+      "a_label": "A45",
+      "ambiguous_output_columns": [],
+      "index": 76,
+      "input_bits": "1101001111111111001",
+      "output_bits": "0111111111111111111",
+      "r_label": "R042",
+      "section": 2
+    },
+    {
+      "a_label": "A44",
+      "ambiguous_output_columns": [],
+      "index": 77,
+      "input_bits": "1111111111111111111",
+      "output_bits": "1111111111111111111",
+      "r_label": "R041",
+      "section": 2
+    },
+    {
+      "a_label": "A43",
+      "ambiguous_output_columns": [],
+      "index": 78,
+      "input_bits": "1011101111111101100",
+      "output_bits": "1011101111101111101",
+      "r_label": "R040",
+      "section": 2
+    },
+    {
+      "a_label": "A42",
+      "ambiguous_output_columns": [],
+      "index": 79,
+      "input_bits": "1111010111111110010",
+      "output_bits": "0101011101110111110",
+      "r_label": "R039",
+      "section": 2
+    },
+    {
+      "a_label": "A41",
+      "ambiguous_output_columns": [],
+      "index": 80,
+      "input_bits": "0010011011111111001",
+      "output_bits": "0111111111111111111",
+      "r_label": "R038",
+      "section": 2
+    },
+    {
+      "a_label": "A40",
+      "ambiguous_output_columns": [],
+      "index": 81,
+      "input_bits": "1110101111111100100",
+      "output_bits": "0011101111101111111",
+      "r_label": "R037",
+      "section": 2
+    },
+    {
+      "a_label": "A39",
+      "ambiguous_output_columns": [],
+      "index": 82,
+      "input_bits": "0001111011111111101",
+      "output_bits": "0011101011111111111",
+      "r_label": "R036",
+      "section": 2
+    },
+    {
+      "a_label": "A38",
+      "ambiguous_output_columns": [],
+      "index": 83,
+      "input_bits": "1011111011111111111",
+      "output_bits": "0101110111110111110",
+      "r_label": "R035",
+      "section": 2
+    },
+    {
+      "a_label": "A37",
+      "ambiguous_output_columns": [],
+      "index": 84,
+      "input_bits": "0111001110111111110",
+      "output_bits": "0110111010111000111",
+      "r_label": "R034",
+      "section": 2
+    },
+    {
+      "a_label": "A36",
+      "ambiguous_output_columns": [],
+      "index": 85,
+      "input_bits": "1000111011111111110",
+      "output_bits": "0001101000011111110",
+      "r_label": "R033",
+      "section": 2
+    },
+    {
+      "a_label": "A35",
+      "ambiguous_output_columns": [],
+      "index": 86,
+      "input_bits": "1001011111111111001",
+      "output_bits": "0111111111111111111",
+      "r_label": "R032",
+      "section": 2
+    },
+    {
+      "a_label": "A34",
+      "ambiguous_output_columns": [],
+      "index": 87,
+      "input_bits": "1110110011111111110",
+      "output_bits": "0010000000011101100",
+      "r_label": "R031",
+      "section": 2
+    },
+    {
+      "a_label": "A33",
+      "ambiguous_output_columns": [],
+      "index": 88,
+      "input_bits": "1001011111111111001",
+      "output_bits": "0101111101110111111",
+      "r_label": "R030",
+      "section": 2
+    },
+    {
+      "a_label": "A32",
+      "ambiguous_output_columns": [],
+      "index": 89,
+      "input_bits": "1001011111111111001",
+      "output_bits": "0111111111111111111",
+      "r_label": "R029",
+      "section": 2
+    },
+    {
+      "a_label": "A30",
+      "ambiguous_output_columns": [],
+      "index": 90,
+      "input_bits": "1111101011111111111",
+      "output_bits": "0101110111110101111",
+      "r_label": "R028",
+      "section": 2
+    },
+    {
+      "a_label": "A29",
+      "ambiguous_output_columns": [],
+      "index": 91,
+      "input_bits": "1111111111111100110",
+      "output_bits": "0010011101001111111",
+      "r_label": "R027",
+      "section": 2
+    },
+    {
+      "a_label": "A28",
+      "ambiguous_output_columns": [],
+      "index": 92,
+      "input_bits": "0001110001111111110",
+      "output_bits": "0100110011110110110",
+      "r_label": "R026",
+      "section": 2
+    },
+    {
+      "a_label": "A27",
+      "ambiguous_output_columns": [],
+      "index": 93,
+      "input_bits": "0011110011111101111",
+      "output_bits": "1101011001010111111",
+      "r_label": "R025",
+      "section": 2
+    },
+    {
+      "a_label": "A26",
+      "ambiguous_output_columns": [],
+      "index": 94,
+      "input_bits": "1100011100111100001",
+      "output_bits": "1011000101110111111",
+      "r_label": "R024",
+      "section": 2
+    },
+    {
+      "a_label": "A25",
+      "ambiguous_output_columns": [],
+      "index": 95,
+      "input_bits": "0011101111111110111",
+      "output_bits": "1101110010100111111",
+      "r_label": "R023",
+      "section": 2
+    },
+    {
+      "a_label": "A24",
+      "ambiguous_output_columns": [],
+      "index": 96,
+      "input_bits": "0001111011111101011",
+      "output_bits": "0000110010110111110",
+      "r_label": "R022",
+      "section": 2
+    },
+    {
+      "a_label": "A23",
+      "ambiguous_output_columns": [],
+      "index": 97,
+      "input_bits": "0010101010111110101",
+      "output_bits": "1011111010101111111",
+      "r_label": "R021",
+      "section": 2
+    },
+    {
+      "a_label": "A22",
+      "ambiguous_output_columns": [],
+      "index": 98,
+      "input_bits": "1010101111111111110",
+      "output_bits": "1001001000000111101",
+      "r_label": "R020",
+      "section": 2
+    },
+    {
+      "a_label": "A21",
+      "ambiguous_output_columns": [],
+      "index": 99,
+      "input_bits": "0011100011111110010",
+      "output_bits": "1101011101011111111",
+      "r_label": "R019",
+      "section": 2
+    },
+    {
+      "a_label": "A20",
+      "ambiguous_output_columns": [],
+      "index": 100,
+      "input_bits": "0110111010111110110",
+      "output_bits": "1100111000111010111",
+      "r_label": "R018",
+      "section": 2
+    },
+    {
+      "a_label": "A19",
+      "ambiguous_output_columns": [],
+      "index": 101,
+      "input_bits": "1101110001111100111",
+      "output_bits": "1010011001011111111",
+      "r_label": "R017",
+      "section": 2
+    },
+    {
+      "a_label": "A18",
+      "ambiguous_output_columns": [],
+      "index": 102,
+      "input_bits": "0011100110111110110",
+      "output_bits": "1011011010011110111",
+      "r_label": "R016",
+      "section": 2
+    },
+    {
+      "a_label": "A17",
+      "ambiguous_output_columns": [
+        0,
+        1,
+        5,
+        8,
+        9,
+        10,
+        11
+      ],
+      "index": 103,
+      "input_bits": "1100110001111111110",
+      "output_bits": "9911191199991111111",
+      "r_label": "R015",
+      "section": 2
+    },
+    {
+      "a_label": "A16",
+      "ambiguous_output_columns": [],
+      "index": 104,
+      "input_bits": "1100111100111111110",
+      "output_bits": "0101001011011111111",
+      "r_label": "R014",
+      "section": 2
+    },
+    {
+      "a_label": "A14",
+      "ambiguous_output_columns": [],
+      "index": 105,
+      "input_bits": "1100111100111111110",
+      "output_bits": "0000101010001111111",
+      "r_label": "R013",
+      "section": 2
+    },
+    {
+      "a_label": "A13",
+      "ambiguous_output_columns": [],
+      "index": 106,
+      "input_bits": "1110101111111111110",
+      "output_bits": "0000011101001100000",
+      "r_label": "R012",
+      "section": 2
+    },
+    {
+      "a_label": "A12",
+      "ambiguous_output_columns": [],
+      "index": 107,
+      "input_bits": "1110111011111101110",
+      "output_bits": "0100111000011101011",
+      "r_label": "R011",
+      "section": 2
+    },
+    {
+      "a_label": "A11",
+      "ambiguous_output_columns": [],
+      "index": 108,
+      "input_bits": "1110101111111100100",
+      "output_bits": "0111111010111111111",
+      "r_label": "R010",
+      "section": 2
+    },
+    {
+      "a_label": "A10",
+      "ambiguous_output_columns": [],
+      "index": 109,
+      "input_bits": "1000001011111111001",
+      "output_bits": "0010101110101111111",
+      "r_label": "R009",
+      "section": 2
+    },
+    {
+      "a_label": "A09",
+      "ambiguous_output_columns": [],
+      "index": 110,
+      "input_bits": "0111011111111111100",
+      "output_bits": "0001100010010011111",
+      "r_label": "R008",
+      "section": 2
+    },
+    {
+      "a_label": "A08",
+      "ambiguous_output_columns": [],
+      "index": 111,
+      "input_bits": "0111011111111111100",
+      "output_bits": "0001100010010011111",
+      "r_label": "R008",
+      "section": 2
+    },
+    {
+      "a_label": "A07",
+      "ambiguous_output_columns": [],
+      "index": 112,
+      "input_bits": "1101101101111111110",
+      "output_bits": "0111111101011011011",
+      "r_label": "R007",
+      "section": 2
+    },
+    {
+      "a_label": "A06",
+      "ambiguous_output_columns": [],
+      "index": 113,
+      "input_bits": "1110000010111111011",
+      "output_bits": "0111111111111111111",
+      "r_label": "R006",
+      "section": 2
+    },
+    {
+      "a_label": "A05",
+      "ambiguous_output_columns": [],
+      "index": 114,
+      "input_bits": "0110000111111110100",
+      "output_bits": "0111100010010111111",
+      "r_label": "R005",
+      "section": 2
+    },
+    {
+      "a_label": "A04",
+      "ambiguous_output_columns": [],
+      "index": 115,
+      "input_bits": "1100101000111111110",
+      "output_bits": "0111111111111110111",
+      "r_label": "R004",
+      "section": 2
+    },
+    {
+      "a_label": "A03",
+      "ambiguous_output_columns": [],
+      "index": 116,
+      "input_bits": "0111110000111100111",
+      "output_bits": "1000000110011111111",
+      "r_label": "R003",
+      "section": 2
+    },
+    {
+      "a_label": "A02",
+      "ambiguous_output_columns": [],
+      "index": 117,
+      "input_bits": "1111111101111111111",
+      "output_bits": "1010011110000111111",
+      "r_label": "R002",
+      "section": 2
+    },
+    {
+      "a_label": "A01",
+      "ambiguous_output_columns": [],
+      "index": 118,
+      "input_bits": "1110111011111110101",
+      "output_bits": "0101000100101111111",
+      "r_label": "R001",
+      "section": 2
+    },
+    {
+      "a_label": "A00",
+      "ambiguous_output_columns": [],
+      "index": 119,
+      "input_bits": "1001101100111110110",
+      "output_bits": "1110111110111111111",
+      "r_label": "R000",
+      "section": 2
+    }
+  ],
+  "schema": "wd1772-pla-normalized-v1",
+  "sections": 2,
+  "source": "ref/wd1772-vg93/wd1772pla.txt",
+  "source_sha256": "687a62103ae5a89a3daf4c1decb8968d730802522fa142e458031545b7a34b10"
+}

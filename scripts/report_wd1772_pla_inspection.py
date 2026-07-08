@@ -2,57 +2,15 @@
 """Inspect the vendored WD1772 PLA/PLM text dump."""
 from __future__ import annotations
 
-import hashlib
-import re
 from collections import Counter
-from pathlib import Path
 
+from wd1772_pla import ROOT, SOURCE, parse_rows, sha256, validate_shape
 
-ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "ref" / "wd1772-vg93" / "wd1772pla.txt"
 REPORT = ROOT / "docs" / "wd1772-pla-inspection.md"
-
-ROW_RE = re.compile(r"^(A\d{2})\|(R\d{3})\|([01]{19})\|([019]{19})$")
-
-
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(65536), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def table_row(values: list[object]) -> str:
     return "| " + " | ".join(str(value).replace("|", "/") for value in values) + " |"
-
-
-def parse_rows() -> tuple[list[dict[str, object]], list[str], int]:
-    rows: list[dict[str, object]] = []
-    ignored: list[str] = []
-    section = 1
-    for raw in SOURCE.read_text().splitlines():
-        line = raw.strip()
-        if not line:
-            continue
-        if line.startswith("---+"):
-            section += 1
-            continue
-        match = ROW_RE.match(line)
-        if not match:
-            ignored.append(line)
-            continue
-        a_id, r_id, inputs, outputs = match.groups()
-        rows.append(
-            {
-                "section": section,
-                "a": a_id,
-                "r": r_id,
-                "inputs": inputs,
-                "outputs": outputs,
-            }
-        )
-    return rows, ignored, section
 
 
 def duplicate_summary(counter: Counter[object], limit: int = 16) -> str:
@@ -71,31 +29,14 @@ def duplicate_summary(counter: Counter[object], limit: int = 16) -> str:
 
 def main() -> int:
     rows, ignored, sections = parse_rows()
-    input_widths = sorted({len(str(row["inputs"])) for row in rows})
-    output_widths = sorted({len(str(row["outputs"])) for row in rows})
-    input_chars = sorted(set("".join(str(row["inputs"]) for row in rows)))
-    output_chars = sorted(set("".join(str(row["outputs"]) for row in rows)))
-    rows_with_9 = [row for row in rows if "9" in str(row["inputs"]) + str(row["outputs"])]
+    input_widths, output_widths, input_chars, output_chars, rows_with_9, failures = validate_shape(
+        rows,
+        ignored,
+    )
     section_counts = Counter(int(row["section"]) for row in rows)
     a_counts = Counter(str(row["a"]) for row in rows)
     r_counts = Counter(str(row["r"]) for row in rows)
     term_counts = Counter((str(row["inputs"]), str(row["outputs"])) for row in rows)
-
-    failures = []
-    if len(rows) != 120:
-        failures.append(f"expected 120 data rows, found {len(rows)}")
-    if input_widths != [19]:
-        failures.append(f"expected 19 input bits, found widths {input_widths}")
-    if output_widths != [19]:
-        failures.append(f"expected 19 output bits, found widths {output_widths}")
-    if input_chars != ["0", "1"]:
-        failures.append(f"unexpected input character set: {input_chars}")
-    if output_chars != ["0", "1", "9"]:
-        failures.append(f"unexpected output character set: {output_chars}")
-    if len(rows_with_9) != 1:
-        failures.append(f"expected exactly one row with 9 markers, found {len(rows_with_9)}")
-    if len(ignored) != 3:
-        failures.append(f"expected 3 footer guide rows, found {len(ignored)}")
 
     status = "PLA SHAPE INSPECTED" if not failures else "PLA SHAPE CHECK FAILED"
     lines = [
@@ -137,7 +78,7 @@ def main() -> int:
     if rows_with_9:
         row = rows_with_9[0]
         outputs = str(row["outputs"])
-        marker_cols = [str(index) for index, char in enumerate(outputs) if char == "9"]
+        marker_cols = [str(index) for index in row["ambiguous_output_columns"]]
         lines.append(table_row(["Row with `9` markers", f"`{row['a']}/{row['r']}`"]))
         lines.append(table_row(["`9` output columns (zero-based)", ", ".join(marker_cols)]))
         lines.append(table_row(["Raw output field", f"`{outputs}`"]))
