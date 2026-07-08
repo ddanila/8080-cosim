@@ -201,9 +201,15 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "sync/ekdos_jbasic_command_probe.py",
     )
-    hdl_jbasic_stimulus = marker(
-        "docs/juku-top-checkpoint-jbasic-probe.md",
-        "Status: **HDL EKDOS JBASIC COMMAND STIMULUS READY**",
+    hdl_jbasic_stimulus = (
+        marker(
+            "docs/juku-top-checkpoint-jbasic-probe.md",
+            "Status: **HDL EKDOS JBASIC KEYBOARD SAMPLING READY**",
+        )
+        or marker(
+            "docs/juku-top-checkpoint-jbasic-probe.md",
+            "Status: **HDL EKDOS JBASIC COMMAND STIMULUS READY**",
+        )
     ) and marker(
         "hdl/sim/juku_top_checkpoint_resume_tb.v",
         "stopjbasicready",
@@ -538,11 +544,13 @@ def milestone_rows():
                 )
                 + (
                     " `docs/juku-top-checkpoint-jbasic-probe.md` now bridges "
-                    "that path into checkpoint-resumed HDL command stimulus: "
-                    "`juku_top` loads the `JUKPROG2.CPM` `A>` checkpoint, injects "
-                    "`JBASIC` plus Return with `+jbasickeys=1`, and carries a "
-                    "`+stopjbasicready=1` exact `READY` glyph oracle for the next "
-                    "longer run."
+                    "that path into checkpoint-resumed HDL keyboard sampling: "
+                    "`juku_top` loads the `JUKPROG2.CPM` `A>` checkpoint with "
+                    "`state_pc_bias=-1`, injects `JBASIC` plus Return with "
+                    "`+jbasickeys=1`, and proves all seven command key indices "
+                    "are read through PPI0 Port B with non-`0xCF` data. It "
+                    "carries a `+stopjbasicready=1` exact `READY` glyph oracle "
+                    "for the next longer run."
                     if hdl_jbasic_stimulus
                     else ""
                 )
@@ -599,11 +607,13 @@ def milestone_rows():
                 )
                 + (
                     " `docs/juku-top-checkpoint-jbasic-probe.md` now bridges "
-                    "that path into checkpoint-resumed HDL command stimulus: "
-                    "`juku_top` loads the `JUKPROG2.CPM` `A>` checkpoint, injects "
-                    "`JBASIC` plus Return with `+jbasickeys=1`, and carries a "
-                    "`+stopjbasicready=1` exact `READY` glyph oracle for the next "
-                    "longer run."
+                    "that path into checkpoint-resumed HDL keyboard sampling: "
+                    "`juku_top` loads the `JUKPROG2.CPM` `A>` checkpoint with "
+                    "`state_pc_bias=-1`, injects `JBASIC` plus Return with "
+                    "`+jbasickeys=1`, and proves all seven command key indices "
+                    "are read through PPI0 Port B with non-`0xCF` data. It "
+                    "carries a `+stopjbasicready=1` exact `READY` glyph oracle "
+                    "for the next longer run."
                     if hdl_jbasic_stimulus
                     else ""
                 )
