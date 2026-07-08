@@ -253,9 +253,12 @@ debugging session saved on real hardware.
    now guarded by `sync/video_readout_check.sh` and documented in
    `docs/video-readout-readiness.md`: standalone ИР16 serialization and
    `juku_top`'s `video_raster -> ir16_sr -> lp5_xor1` output reconstruct the
-   booted framebuffer byte-identically. Remaining V3 target: replace the
-   sim-only second framebuffer read with the real РЕ3/АГ3-gated shared-DRAM
-   video slot timing once PROM truth is available.
+   booted framebuffer byte-identically. `sync/video_timing_check.sh` now pins
+   the runnable `video_raster` geometry against MAME's 320 x 241 visible
+   raster: 40 framebuffer bytes per line, 9,640 bytes total, one load phase
+   followed by seven shift phases per byte, and wrap after 77,120 dot clocks.
+   Remaining V3 target: replace the sim-only second framebuffer read with the
+   real РЕ3/АГ3-gated shared-DRAM video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and
    **multi-ROM** so `'B'` launches jbasic11. The first BASIC cartridge-window
    guard is now in `sync/basic_cart_check.sh` and documented in

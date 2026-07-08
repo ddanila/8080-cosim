@@ -61,7 +61,8 @@ This guard proves the current runnable video-readout path for WS-B2:
 The V3 boundary remains the faithful physical slot timing: shared DRAM
 arbitration through the КП14 muxes and dumped РЕ3/АГ3 timing. This check does not
 claim that timing is closed; it locks the byte-to-pixel serializer and runnable
-juku_top output stage.
+juku_top output stage. The companion raster-geometry guard is
+\`sync/video_timing_check.sh\` / \`docs/video-timing-reference.md\`.
 
 ## Command
 

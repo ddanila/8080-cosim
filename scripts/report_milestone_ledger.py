@@ -120,6 +120,13 @@ def milestone_rows():
         "docs/jmon33-checkpoint-cursor-probe.md",
         "HDL cursor VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`",
     )
+    video_timing_guard = marker(
+        "docs/video-timing-reference.md",
+        "Status: **VIDEO RASTER GEOMETRY GUARDED**",
+    ) and marker(
+        "docs/video-timing-reference.md",
+        "| framebuffer bytes | 9640 |",
+    )
     vjuga_bare_pcb_ready = marker(
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -260,7 +267,13 @@ def milestone_rows():
             "status": "PARTIAL",
             "evidence": (
                 "`docs/video-readout-readiness.md` proves the V2 byte-to-pixel path; "
-                "the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open."
+                + (
+                    "`docs/video-timing-reference.md` guards the MAME-matched "
+                    "40 x 241 byte raster geometry and 8-dot load/shift cadence; "
+                    if video_timing_guard
+                    else ""
+                )
+                + "the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open."
             ),
             "next": "Close the RE3/AG3 timing source and replace the sim-only framebuffer read.",
         },

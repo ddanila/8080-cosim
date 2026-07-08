@@ -105,6 +105,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/video_readout_check.sh` — V2 video-readout guard: standalone ИР16
   serializer and `juku_top` `vid_out` both reconstruct the booted framebuffer
   byte-identically.
+- `sync/video_timing_check.sh` — runnable raster-geometry guard: parses the
+  vendored MAME Juku constants and proves `video_raster` emits a 40 x 241 byte
+  scan with one load phase plus seven shift phases per framebuffer byte.
 - `sync/jmon33_interrupt_probe.py` — cosim guard for Monitor 3.3's
   interrupt-driven path: 8259 setup, `0xFF54` frame interrupt, keyboard-port
   reads, and VRAM writes.
@@ -139,7 +142,7 @@ The LVS/boot path is no longer a small fixture: `juku_top` is the working
 LVS-checked model and the guards above cover connectivity, boot behavior,
 value-level lockstep, cosim FDC sector-read/prompt scaffolding, HDL WD1793
 synthetic-sector behavior, a bounded `juku_top` FDC-path diagnostic, and
-runnable video readout. The remaining
+runnable video readout/raster geometry. The remaining
 high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
 jmon33 command prompt and
 the uninterrupted reset-to-cursor jmon33 path, the BASIC prompt oracle plus HDL
