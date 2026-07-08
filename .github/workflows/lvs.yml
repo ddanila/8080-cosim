@@ -29,6 +29,18 @@ jobs:
             sync/juku_top_checkpoint_load_check.py \
             sync/juku_top_checkpoint_resume_probe.py \
             sync/juku_top_checkpoint_fdc_probe.py \
+            sync/jmon33_interrupt_probe.py \
+            sync/jmon33_ready_probe.py \
+            sync/jmon33_command_probe.py \
+            sync/jmon33_idle_command_probe.py \
+            sync/jmon33_fdc_command_probe.py \
+            sync/jmon33_checkpoint_cursor_probe.py \
+            sync/jmon33_hdl_command_probe.py \
+            sync/jmon33_hdl_a_command_probe.py \
+            sync/jmon33_hdl_b_command_probe.py \
+            sync/jmon33_hdl_fdc_command_probe.py \
+            sync/basic_factory_command_probe.py \
+            sync/basic_entry_probe.py \
             kicad/report_replica_bringup_verification.py \
             kicad/report_replica_order_upload_runbook.py \
             kicad/report_replica_order_evidence_template.py \
@@ -108,6 +120,15 @@ jobs:
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
 
+      - name: Run Monitor and BASIC reference guards
+        run: |
+          ./sync/jmon33_interrupt_probe.py
+          ./sync/jmon33_ready_probe.py
+          ./sync/jmon33_command_probe.py
+          ./sync/jmon33_idle_command_probe.py
+          ./sync/basic_entry_probe.py
+          ./sync/basic_factory_command_probe.py
+
       - name: Run video output guards
         run: |
           ./sync/video_timing_check.sh
@@ -127,6 +148,12 @@ jobs:
             docs/basic-launch-probe.md \
             docs/beeper-readiness.md \
             docs/jmon33-hdl-probe.md \
+            docs/jmon33-interrupt-probe.md \
+            docs/jmon33-ready-probe.md \
+            docs/jmon33-command-probe.md \
+            docs/jmon33-idle-command-probe.md \
+            docs/basic-entry-probe.md \
+            docs/basic-factory-command-probe.md \
             docs/video-timing-reference.md \
             docs/video-readout-readiness.md
 
