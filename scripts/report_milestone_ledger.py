@@ -63,6 +63,15 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check vendored reference artifacts",
     )
+    wd1772_pla_normalized = marker(
+        "docs/wd1772-pla-inspection.md",
+        "Status: **PLA SHAPE INSPECTED**",
+    ) and exists(
+        "ref/wd1772-vg93/wd1772pla.normalized.json"
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check WD1772 PLA inspection freshness",
+    )
     manufacturing_ready = marker(
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -227,6 +236,12 @@ def milestone_rows():
                     "vendored reference hashes are CI-guarded by "
                     "`sync/reference_artifact_check.sh`; "
                     if reference_artifacts_guarded
+                    else ""
+                )
+                + (
+                    "the WD1772/VG93 PLM dump is normalized to JSON/CSV and "
+                    "freshness-guarded; "
+                    if wd1772_pla_normalized
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."

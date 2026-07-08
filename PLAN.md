@@ -178,7 +178,10 @@ debugging session saved on real hardware.
    Juku-specific machine target there. `ref/wd1772-vg93/` now vendors the local
    WD1772 transistor schematic and PLA dump, with
    `docs/wd1772-vg93-reference.md` keeping them scoped as deep reference
-   material rather than HDL-derived implementation input.
+   material rather than HDL-derived implementation input. The PLM dump is now
+   normalized to guarded JSON/CSV under `ref/wd1772-vg93/`, and
+   `docs/wd1772-pla-inspection.md` records the 120-row, 19-input/19-output
+   shape plus the single ambiguous `9` row for future controller-equation work.
    `sync/juku_top_fdc_probe.sh` is now the bounded HDL diagnostic for the
    remaining top-level boundary: it enables vendored `JUKU1.CPM`, frame
    interrupts, and fixed `TDD` key stimulus, then stops on decoded WD1793 I/O.
