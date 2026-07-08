@@ -222,6 +222,13 @@ def milestone_rows():
         "hdl/sim/juku_top_checkpoint_resume_tb.v",
         "stopjbasicready",
     )
+    hdl_jbasic_late_ready = marker(
+        "docs/juku-top-checkpoint-jbasic-late-probe.md",
+        "Status: **HDL EKDOS JBASIC LATE READY**",
+    ) and marker(
+        "docs/juku-top-checkpoint-jbasic-late-probe.md",
+        "[RESUME-JBASIC] READY prompt reached",
+    )
     jmon33_command_surface = marker(
         "docs/jmon33-command-probe.md",
         "Status: **JMON33 COMMAND SURFACE READY**",
@@ -565,6 +572,15 @@ def milestone_rows():
                     if hdl_jbasic_stimulus
                     else ""
                 )
+                + (
+                    " `docs/juku-top-checkpoint-jbasic-late-probe.md` proves "
+                    "the late checkpoint-resumed HDL boundary: from the cosim "
+                    "state after 19,968 WD1793 data-register reads, `juku_top` "
+                    "continues with no keyboard stimulus to `[RESUME-JBASIC]` "
+                    "and renders the fixed-`0xD800` `READY` glyph at scanline 121."
+                    if hdl_jbasic_late_ready
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
@@ -631,17 +647,26 @@ def milestone_rows():
                     if hdl_jbasic_stimulus
                     else ""
                 )
+                + (
+                    " `docs/juku-top-checkpoint-jbasic-late-probe.md` proves "
+                    "the late checkpoint-resumed HDL boundary: from the cosim "
+                    "state after 19,968 WD1793 data-register reads, `juku_top` "
+                    "continues with no keyboard stimulus to `[RESUME-JBASIC]` "
+                    "and renders the fixed-`0xD800` `READY` glyph at scanline 121."
+                    if hdl_jbasic_late_ready
+                    else ""
+                )
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct Monitor 3.3 cartridge BASIC launch path, and extend the "
-                "pinned EKDOS `JBASIC` HDL checkpoint path from command stimulus "
-                "to post-command FDC/data traffic and `[RESUME-JBASIC]`."
+                "correct Monitor 3.3 cartridge BASIC launch path, and bridge the "
+                "pinned EKDOS `JBASIC` HDL checkpoints between the 4,096-read "
+                "early FDC window and the 19,968-read late `READY` window."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and extend the pinned EKDOS BASIC HDL checkpoint path from command stimulus to `[RESUME-JBASIC]`."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and bridge the pinned EKDOS BASIC HDL checkpoints between the early FDC and late `READY` windows."
             ),
         },
         {

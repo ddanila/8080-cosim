@@ -34,6 +34,7 @@ jobs:
             sync/juku_top_checkpoint_resume_probe.py \
             sync/juku_top_checkpoint_fdc_probe.py \
             sync/juku_top_checkpoint_jbasic_probe.py \
+            sync/juku_top_checkpoint_jbasic_late_probe.py \
             sync/jmon33_interrupt_probe.py \
             sync/jmon33_ready_probe.py \
             sync/jmon33_command_probe.py \

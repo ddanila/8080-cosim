@@ -105,6 +105,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `JBASIC` + Enter sequence with `+jbasickeys=1`, and documents the current
   command-stimulus boundary plus the new opt-in `+stopjbasicready=1` `READY`
   glyph oracle.
+- `sync/juku_top_checkpoint_jbasic_late_probe.py` — late checkpoint-resumed
+  HDL guard for the disk BASIC path. It generates the cosim `TDD|JBASIC\r`
+  state after 19,968 WD1793 data-register reads, resumes `juku_top` with no
+  keyboard stimulus, and requires the fixed-`0xD800` BASIC `READY` glyph oracle.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.

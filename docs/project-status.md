@@ -215,8 +215,13 @@ Historical merge notes:
   into `juku_top`, and injects the exact `JBASIC` + Enter sequence through new
   checkpoint-resume `+jbasickeys=1` support. The same HDL bench now has
   `+stopjbasicready=1` for the exact fixed-`0xD800` `READY` glyph oracle. The
-  tracked report proves the command stimulus boundary; it does not yet claim
-  that HDL sampled the command or reached `[RESUME-JBASIC]`.
+  prompt-checkpoint report proves sampled command stimulus, visible `A>JBASIC`,
+  and 4,096 decoded post-command FDC data-register reads. The follow-on
+  `sync/juku_top_checkpoint_jbasic_late_probe.py` report starts from the cosim
+  state after all 19,968 WD1793 data-register reads and proves checkpoint-
+  resumed HDL reaches `[RESUME-JBASIC]` with the visible `READY` glyph at
+  scanline 121. The remaining gap is the uninterrupted HDL bridge between those
+  two checkpoint windows.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
