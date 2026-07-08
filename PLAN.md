@@ -311,10 +311,15 @@ debugging session saved on real hardware.
    frame interrupts, scans the keyboard path, and reaches the same monitor-idle
    cursor framebuffer SHA256 as cosim
    (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
+   `sync/jmon33_hdl_command_probe.py` now adds the first checkpoint-resumed
+   HDL command diagnostic: delayed `A` plus return samples the same active
+   keyboard values as cosim (`0x84`, `0x8F`, `0xC4`) and moves the visible
+   block to `x=8,y=40` within the practical bound, but it has not yet reached
+   the final cosim command framebuffer (`x=8,y=60`).
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, port the jmon33 command-surface proof to HDL, identify the correct
-   monitor/removable-memory pairing for a user-visible BASIC prompt oracle, and
-   port that BASIC path to HDL coverage.
+   path, extend the HDL command diagnostic to the final command oracle,
+   identify the correct monitor/removable-memory pairing for a user-visible
+   BASIC prompt oracle, and port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

@@ -32,6 +32,8 @@ module juku_top_checkpoint_resume_tb();
   integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
   integer progress_mcyc = 0, next_progress_mcyc = 0;
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
+  integer commandkeys = 0, command_key = 0, command_key_count = 2, command_key_mcyc = 0;
+  integer commandstop = 0, command_seen = 0, command_x0 = 0, command_y0 = 0, command_x1 = -1, command_y1 = -1;
   integer state_kbd_pos = 0, state_kbd_phase = 0;
   reg frame_tick = 1'b0, intr_q = 1'b0, inta_q = 1'b1;
   reg kbd_en = 1'b1, kbd_pressed = 1'b0, kbd_shift = 1'b0, kbd_was_pressed = 1'b0;
@@ -99,6 +101,21 @@ module juku_top_checkpoint_resume_tb();
     jmon33_cursor_ok = 1'b1;
     for (y = 20; y < 30; y = y + 1)
       if (dram_byte(16'hD800 + y * 40 + 1) !== 8'hFF) jmon33_cursor_ok = 1'b0;
+  end endfunction
+
+  function solid_vram_block(input integer x, input integer y); integer row; begin
+    solid_vram_block = 1'b1;
+    if ((x % 8) != 0 || x < 0 || x >= 320 || y < 0 || y > 231) begin
+      solid_vram_block = 1'b0;
+    end else begin
+      for (row = 0; row < 10; row = row + 1)
+        if (dram_byte(16'hD800 + (y + row) * 40 + (x / 8)) !== 8'hFF) solid_vram_block = 1'b0;
+    end
+  end endfunction
+
+  function command_oracle_ok; begin
+    command_oracle_ok = (commandstop != 0) && solid_vram_block(command_x0, command_y0);
+    if (command_x1 >= 0) command_oracle_ok = command_oracle_ok && solid_vram_block(command_x1, command_y1);
   end endfunction
 
   integer fd, dump_i, dump_addr; reg [7:0] dump_b;
@@ -197,6 +214,20 @@ module juku_top_checkpoint_resume_tb();
     else begin kbd_kcol <= 6; kbd_kbit <= 5; end             // D
   end endtask
 
+  task set_command_key(input integer idx); begin
+    if (idx == 0) begin
+      kbd_shift <= 1'b1;
+      if (command_key == 65) begin kbd_kcol <= 5; kbd_kbit <= 5; end      // A
+      else if (command_key == 84) begin kbd_kcol <= 4; kbd_kbit <= 3; end // T
+      else if (command_key == 66) begin kbd_kcol <= 4; kbd_kbit <= 1; end // B
+      else begin kbd_kcol <= 0; kbd_kbit <= 0; end
+    end else begin
+      kbd_shift <= 1'b0;
+      kbd_kcol <= 8;
+      kbd_kbit <= 5;                                                     // Enter
+    end
+  end endtask
+
   always @(posedge osc) begin
     if (resume_started && dut.sync && !sq) begin
       if (trace_resume > 0) begin
@@ -271,6 +302,14 @@ module juku_top_checkpoint_resume_tb();
         dump_vram();
         $finish;
       end
+      if (commandstop != 0 && !command_seen && command_oracle_ok()) begin
+        command_seen = 1;
+        $display("[RESUME-COMMAND] jmon33 command oracle reached x0=%0d y0=%0d x1=%0d y1=%0d at bounded exit mcyc=%0d vram=%0d pc=0x%04h",
+                 command_x0, command_y0, command_x1, command_y1, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+        dump_vram();
+        $finish;
+      end
       $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d",
                dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen, fdc_ios);
       $fflush;
@@ -293,6 +332,22 @@ module juku_top_checkpoint_resume_tb();
           end
         end
         kbd_pressed <= (key_t >= 0 && key_t < khold && ekdos_key < 3);
+      end
+      if (commandkeys != 0) begin
+        if (kbd_en && key_t < 0 && ekdos_key < command_key_count && keyat != 0 &&
+            vram_writes >= keyat && (command_key_mcyc == 0 || mcyc >= command_key_mcyc)) begin
+          key_t <= 0;
+          ekdos_key <= 0;
+          set_command_key(0);
+        end else if (key_t >= 0 && ekdos_key < command_key_count) begin
+          key_t <= key_t + 1;
+          if (key_t >= khold + kgap - 1) begin
+            ekdos_key <= ekdos_key + 1;
+            key_t <= 0;
+            set_command_key(ekdos_key + 1);
+          end
+        end
+        kbd_pressed <= (key_t >= 0 && key_t < khold && ekdos_key < command_key_count);
       end
       if (tracekbd && kbd_pressed && !kbd_was_pressed) begin
         $display("[RESUME-KBD-STIM] press key=%0d col=%0d bit=%0d shift=%0d mcyc=%0d vram=%0d",
@@ -354,6 +409,14 @@ module juku_top_checkpoint_resume_tb();
       cursor_seen = 1;
       $display("[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 mcyc=%0d vram=%0d pc=0x%04h",
                mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      $fflush;
+      dump_vram();
+      $finish;
+    end
+    if (commandstop != 0 && !command_seen && command_oracle_ok()) begin
+      command_seen = 1;
+      $display("[RESUME-COMMAND] jmon33 command oracle reached x0=%0d y0=%0d x1=%0d y1=%0d mcyc=%0d vram=%0d pc=0x%04h",
+               command_x0, command_y0, command_x1, command_y1, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
       $fflush;
       dump_vram();
       $finish;
@@ -439,6 +502,15 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("trace_resume=%d", trace_resume)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;
+    if ($value$plusargs("commandkeys=%d", commandkeys)) ;
+    if ($value$plusargs("command_key=%d", command_key)) ;
+    if ($value$plusargs("command_key_count=%d", command_key_count)) ;
+    if ($value$plusargs("command_key_mcyc=%d", command_key_mcyc)) ;
+    if ($value$plusargs("commandstop=%d", commandstop)) ;
+    if ($value$plusargs("command_x0=%d", command_x0)) ;
+    if ($value$plusargs("command_y0=%d", command_y0)) ;
+    if ($value$plusargs("command_x1=%d", command_x1)) ;
+    if ($value$plusargs("command_y1=%d", command_y1)) ;
     if ($value$plusargs("keyat=%d", keyat)) ;
     if ($value$plusargs("khold=%d", khold)) ;
     if ($value$plusargs("kgap=%d", kgap)) ;
@@ -538,6 +610,11 @@ module juku_top_checkpoint_resume_tb();
       cursor_seen = 1;
       $display("[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 at timecap mcyc=%0d vram=%0d pc=0x%04h",
                mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+    end
+    if (commandstop != 0 && !command_seen && command_oracle_ok()) begin
+      command_seen = 1;
+      $display("[RESUME-COMMAND] jmon33 command oracle reached x0=%0d y0=%0d x1=%0d y1=%0d at timecap mcyc=%0d vram=%0d pc=0x%04h",
+               command_x0, command_y0, command_x1, command_y1, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
     end
     $fflush;
     dump_vram();

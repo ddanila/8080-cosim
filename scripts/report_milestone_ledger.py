@@ -121,6 +121,13 @@ def milestone_rows():
         "docs/jmon33-command-probe.md",
         "Status: **JMON33 COMMAND SURFACE READY**",
     )
+    jmon33_hdl_command_diagnostic = marker(
+        "docs/jmon33-hdl-command-probe.md",
+        "Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**",
+    ) or marker(
+        "docs/jmon33-hdl-command-probe.md",
+        "Status: **JMON33 HDL COMMAND SURFACE READY**",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -309,6 +316,14 @@ def milestone_rows():
                     if jmon33_command_surface
                     else ""
                 )
+                + (
+                    "`docs/jmon33-hdl-command-probe.md` adds the checkpoint-resumed "
+                    "HDL command diagnostic; the `A` case samples the same active "
+                    "keyboard values as cosim but has not yet reached the final "
+                    "command framebuffer oracle. "
+                    if jmon33_hdl_command_diagnostic
+                    else ""
+                )
                 + "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes. The same report now records the "
@@ -354,8 +369,8 @@ def milestone_rows():
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
-                "Prove the uninterrupted reset-to-cursor jmon33 path, port the "
-                "jmon33 command-surface proof to HDL, identify the correct "
+                "Prove the uninterrupted reset-to-cursor jmon33 path, extend the "
+                "HDL command diagnostic to the final command oracle, identify the correct "
                 "monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
                 "and port that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor
