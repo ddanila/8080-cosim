@@ -169,7 +169,8 @@ def milestone_rows():
                 "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
                 "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
                 + (
-                    " `sync/ekdos_checkpoint_prompt_check.sh` now guards the "
+                    " `sync/ekdos_checkpoint_prompt_check.sh` provides a "
+                    "local/deep guard for the "
                     "checkpoint-resumed `juku_top` late-FDC window reaching the "
                     "EKDOS `A>` prompt bitmap."
                     if hdl_checkpoint_prompt_guard

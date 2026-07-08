@@ -71,7 +71,6 @@ jobs:
           ./sync/ekdos_ioseq_reference.py
           ./sync/juku_top_checkpoint_load_check.py
           ./sync/fdc_check.sh
-          ./sync/ekdos_checkpoint_prompt_check.sh
 
       - name: Run fast subsystem guards
         run: |

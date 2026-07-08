@@ -220,7 +220,7 @@ debugging session saved on real hardware.
    The same late checkpoint now also runs past the final FDC sector burst and
    reaches the EKDOS `A>` prompt bitmap at `x=0`, `y=70` through
    checkpoint-resumed `juku_top` CPU execution. `sync/ekdos_checkpoint_prompt_check.sh`
-   now promotes that late checkpoint prompt proof into a CI guard.
+   now provides a named local/deep guard for that late checkpoint prompt proof.
    A single uninterrupted 10,752-byte checkpoint target still times out after
    the first 6,656-byte boundary while looping through keyboard/IRQ service
    around VRAM write count 63,155, so the current proof is split across the
