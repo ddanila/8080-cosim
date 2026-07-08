@@ -22,6 +22,7 @@ VRAM_LINES = 241
 BLANK_VRAM_SHA256 = "559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d"
 IDLE_CURSOR_VRAM_SHA256 = "f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397"
 KBD_RE = re.compile(r"\[RESUME-KBD\] IN port=0x05 data=0x([0-9A-Fa-f]{2})")
+KBD_STIM_RE = re.compile(r"^\[RESUME-KBD-STIM\].*$", re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -379,7 +380,9 @@ def run_case(
         "timed_out": timed_out,
         "sha": sha256_bytes(vram),
         "command_line": first_line(proc.stdout, "[RESUME-COMMAND]"),
+        "resume_line": first_line(proc.stdout, "JUKU-TOP-CHECKPOINT-RESUME:"),
         "kbd_samples": len(kbd_values),
+        "stim_lines": tuple(KBD_STIM_RE.findall(proc.stdout))[:4],
         "active_values": active_values[:8],
         "blocks": block_summary(vram),
         "expected_blocks_ok": expected_blocks_ok,
@@ -502,13 +505,14 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |",
-            "| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |",
+            "| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |",
+            "| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | ---: | --- | --- |",
         ]
     )
     for result in results:
         case = result["case"]
         active = ", ".join(f"`0x{value:02X}`" for value in result["active_values"]) or "-"
+        stim = "<br>".join(f"`{line}`" for line in result["stim_lines"]) or "-"
         blocks = ", ".join(f"`x={x},y={y}`" for x, y in result["blocks"]) or "-"
         ok = (
             result["proc"].returncode == 0
@@ -519,7 +523,8 @@ def main() -> int:
         lines.append(
             f"| {case.name} | `{case.key}\\n` | `{result['checkpoint']}` | `{result['proc'].returncode}` | "
             f"`{result['timed_out']}` | `{result['kbd_samples']}` | {active} | "
-            f"`{'yes' if result['idle_cursor_ok'] else 'no'}` | `{result['command_line']}` | "
+            f"{stim} | `{'yes' if result['idle_cursor_ok'] else 'no'}` | `{result['command_line']}` | "
+            f"`{result['resume_line']}` | "
             f"{blocks} | `{result['visible_pixels']}` | "
             f"`{result['sha'] or 'missing'}` | {'PASS' if ok else 'FAIL'} |"
         )

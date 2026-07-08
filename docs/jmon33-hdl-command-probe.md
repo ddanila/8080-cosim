@@ -43,9 +43,9 @@ Environment overrides:
 - Cosim checkpoint VRAM SHA256: `ce4e554e8ef35487ca6e236e23dbe08c97963289b21aff8887e76d0c2a7bf694`
 - Phase-checkpoint mode: `yes`
 
-| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |
-| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `cyc=23200006 pc=0xFF54 iff=0 kbd=0/19` | `0` | `False` | `357` | `0xC4` | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=8 y1=60 mcyc=615862 vram=301 pc=0x01ce` | `x=8,y=20`, `x=8,y=60` | `160` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
+| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |
+| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
+| A-enter | `A\n` | `cyc=23200006 pc=0xFF54 iff=0 kbd=0/19` | `0` | `False` | `357` | `0xC4` | `[RESUME-KBD-STIM] press key=1 col=8 bit=5 shift=0 mcyc=11154 vram=290`<br>`[RESUME-KBD-STIM] release key=1 mcyc=40474 vram=290` | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=8 y1=60 mcyc=615862 vram=301 pc=0x01ce` | `none` | `x=8,y=20`, `x=8,y=60` | `160` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
 
 ## Disposition
 
