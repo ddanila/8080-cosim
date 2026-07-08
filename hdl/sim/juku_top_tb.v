@@ -292,6 +292,8 @@ module juku_top_tb();
              dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp, dut.U_CPU.u.core.i,
              dut.BA, dut.DB, mcyc, vram_writes, dut.memr_n, dut.memw_n, dut.iord_n,
              dut.iowr_n, dut.inta_n, dut.sync, dut.intr);
+    // vm80a's internal r16_de/r16_hl names are opposite the architectural
+    // DE/HL values used by the cosim checkpoint state; print architectural names.
     $display("[STATE] pc=%04h sp=%04h a=%02h b=%02h c=%02h d=%02h e=%02h h=%02h l=%02h sf=%0d zf=%0d hf=%0d pf=%0d cf=%0d iff=%0d mode=%0d portc=%02h kbd_col=%02h pic_icw1=%02h pic_icw2=%02h pic_mask=%02h pic_expect_icw2=%0d fdc_motor_on=%0d fdc_status=%02h fdc_track=%02h fdc_sector=%02h fdc_data=%02h fdc_command=%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
              dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp, dut.U_CPU.u.core.acc,
              dut.U_CPU.u.core.r16_bc[15:8], dut.U_CPU.u.core.r16_bc[7:0],

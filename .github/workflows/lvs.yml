@@ -13,6 +13,7 @@ jobs:
       - name: Check readiness script syntax
         run: |
           sh -n kicad/check_replica_manufacturing_ready.sh
+          sh -n sync/ekdos_checkpoint_prompt_check.sh
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
             scripts/export_wd1772_pla.py \
