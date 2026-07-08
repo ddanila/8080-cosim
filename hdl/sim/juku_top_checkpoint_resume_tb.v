@@ -29,7 +29,7 @@ module juku_top_checkpoint_resume_tb();
   integer stopkbdhit = 0, kbd_active_reads = 0, kbd_noncf_reads = 0;
   integer ppi0_reads = 0, ppi0_writes = 0, ppi0_kbd_col_writes = 0;
   integer stopprompt = 0, prompt_seen = 0, cursorstop = 0, cursor_seen = 0;
-  integer jbasickeys = 0, stopjbasicready = 0, jbasic_ready_seen = 0;
+  integer jbasickeys = 0, stopjbasicready = 0, jbasic_ready_seen = 0, jbasic_command_seen = 0;
   integer defer_iff = 0, restore_iff_pending = 0;
   integer force_clean_status = 0, clean_status_pending = 0;
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0, fdc_data_reads = 0;
@@ -187,6 +187,116 @@ module juku_top_checkpoint_resume_tb();
       end
       default: jbasic_ready_glyph = 8'hff;
     endcase
+  end endfunction
+
+  function [7:0] jbasic_command_glyph(input integer glyph_col, input integer row); begin
+    case (glyph_col)
+      0: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h08;
+          1: jbasic_command_glyph = 8'h14;
+          2: jbasic_command_glyph = 8'h22;
+          3: jbasic_command_glyph = 8'h22;
+          4: jbasic_command_glyph = 8'h3e;
+          5: jbasic_command_glyph = 8'h22;
+          6: jbasic_command_glyph = 8'h22;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      1: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h10;
+          1: jbasic_command_glyph = 8'h08;
+          2: jbasic_command_glyph = 8'h04;
+          3: jbasic_command_glyph = 8'h02;
+          4: jbasic_command_glyph = 8'h04;
+          5: jbasic_command_glyph = 8'h08;
+          6: jbasic_command_glyph = 8'h10;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      2: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h0e;
+          1: jbasic_command_glyph = 8'h04;
+          2: jbasic_command_glyph = 8'h04;
+          3: jbasic_command_glyph = 8'h04;
+          4: jbasic_command_glyph = 8'h04;
+          5: jbasic_command_glyph = 8'h24;
+          6: jbasic_command_glyph = 8'h18;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      3: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h3c;
+          1: jbasic_command_glyph = 8'h12;
+          2: jbasic_command_glyph = 8'h12;
+          3: jbasic_command_glyph = 8'h1c;
+          4: jbasic_command_glyph = 8'h12;
+          5: jbasic_command_glyph = 8'h12;
+          6: jbasic_command_glyph = 8'h3c;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      4: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h08;
+          1: jbasic_command_glyph = 8'h14;
+          2: jbasic_command_glyph = 8'h22;
+          3: jbasic_command_glyph = 8'h22;
+          4: jbasic_command_glyph = 8'h3e;
+          5: jbasic_command_glyph = 8'h22;
+          6: jbasic_command_glyph = 8'h22;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      5: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h1c;
+          1: jbasic_command_glyph = 8'h22;
+          2: jbasic_command_glyph = 8'h20;
+          3: jbasic_command_glyph = 8'h1c;
+          4: jbasic_command_glyph = 8'h02;
+          5: jbasic_command_glyph = 8'h22;
+          6: jbasic_command_glyph = 8'h1c;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      6: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h1c;
+          1: jbasic_command_glyph = 8'h08;
+          2: jbasic_command_glyph = 8'h08;
+          3: jbasic_command_glyph = 8'h08;
+          4: jbasic_command_glyph = 8'h08;
+          5: jbasic_command_glyph = 8'h08;
+          6: jbasic_command_glyph = 8'h1c;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      7: begin
+        case (row)
+          0: jbasic_command_glyph = 8'h1c;
+          1: jbasic_command_glyph = 8'h22;
+          2: jbasic_command_glyph = 8'h20;
+          3: jbasic_command_glyph = 8'h20;
+          4: jbasic_command_glyph = 8'h20;
+          5: jbasic_command_glyph = 8'h22;
+          6: jbasic_command_glyph = 8'h1c;
+          default: jbasic_command_glyph = 8'hff;
+        endcase
+      end
+      default: jbasic_command_glyph = 8'hff;
+    endcase
+  end endfunction
+
+  function jbasic_command_ok; integer row, glyph_col; begin
+    jbasic_command_ok = 1'b1;
+    for (row = 0; row < 7; row = row + 1)
+      for (glyph_col = 0; glyph_col < 8; glyph_col = glyph_col + 1)
+        if (dram_byte(16'hD800 + (71 + row) * 40 + glyph_col) !== jbasic_command_glyph(glyph_col, row))
+          jbasic_command_ok = 1'b0;
   end endfunction
 
   function jbasic_ready_ok; integer row, glyph_col; begin
@@ -525,6 +635,12 @@ module juku_top_checkpoint_resume_tb();
       $fflush;
       dump_vram();
       $finish;
+    end
+    if (!jbasic_command_seen && jbasic_command_ok()) begin
+      jbasic_command_seen = 1;
+      $display("[RESUME-JBASIC-CMD] A>JBASIC command line reached mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      $fflush;
     end
   end
 

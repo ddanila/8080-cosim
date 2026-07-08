@@ -336,10 +336,10 @@ debugging session saved on real hardware.
    oracle. The current tracked HDL run now applies the checkpoint-resume
    `state_pc_bias=-1` fetch alignment, uses frame-scale key holds/gaps to retime
    the `JBASIC` stimulus into the ROMBIOS scanner, proves all seven command key
-   indices are sampled through PPI0 Port B with non-`0xCF` data, matches the
-   full visible `A>JBASIC` command oracle at scanline 71, and stops after 512
-   decoded post-command FDC data-register reads (`IN 0x1F`, target 512 reached
-   at mcyc 361,757). It still stops before the full disk transfer or
+   indices are sampled through PPI0 Port B with non-`0xCF` data, observes the
+   full visible `A>JBASIC` command oracle at scanline 71, and stops after 4,096
+   decoded post-command FDC data-register reads (`IN 0x1F`, target 4,096 reached
+   at mcyc 538,973). It still stops before the full disk transfer or
    `[RESUME-JBASIC]`.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`

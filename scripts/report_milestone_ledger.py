@@ -557,8 +557,9 @@ def milestone_rows():
                     "with `state_pc_bias=-1`, injects `JBASIC` plus Return with "
                     "frame-scale holds/gaps and `+jbasickeys=1`, proves all seven "
                     "command key indices are read through PPI0 Port B with "
-                    "non-`0xCF` data, matches the full visible `A>JBASIC` command "
-                    "line, and stops after 512 decoded FDC data-register reads. "
+                    "non-`0xCF` data, observes the full visible `A>JBASIC` "
+                    "command oracle, and stops after 4,096 decoded FDC "
+                    "data-register reads. "
                     "It carries a `+stopjbasicready=1` exact `READY` glyph oracle "
                     "for the next longer run."
                     if hdl_jbasic_stimulus
@@ -622,8 +623,9 @@ def milestone_rows():
                     "with `state_pc_bias=-1`, injects `JBASIC` plus Return with "
                     "frame-scale holds/gaps and `+jbasickeys=1`, proves all seven "
                     "command key indices are read through PPI0 Port B with "
-                    "non-`0xCF` data, matches the full visible `A>JBASIC` command "
-                    "line, and stops after 512 decoded FDC data-register reads. "
+                    "non-`0xCF` data, observes the full visible `A>JBASIC` "
+                    "command oracle, and stops after 4,096 decoded FDC "
+                    "data-register reads. "
                     "It carries a `+stopjbasicready=1` exact `READY` glyph oracle "
                     "for the next longer run."
                     if hdl_jbasic_stimulus
