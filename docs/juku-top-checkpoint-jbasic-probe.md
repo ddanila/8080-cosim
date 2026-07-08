@@ -41,6 +41,11 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - First HDL M-cycle trace: `none`
 - Last HDL M-cycle trace: `none`
 - READY stop line: `none`
+- HDL VRAM dump size: `9640` (ok)
+- Visible `A>JBASIC` command line at scanline 71: `no`
+- Checkpoint command row bytes y=71 x=0..9: `08 10 00 00 00 00 00 00 00 00`
+- HDL final command row bytes y=71 x=0..9: `08 10 3c ff 00 00 00 00 00 00`
+- First changed VRAM cells: `x=3 y=70 00->ff, x=2 y=71 00->3c, x=3 y=71 00->ff, x=2 y=72 00->12, x=3 y=72 00->ff, x=2 y=73 00->12, x=3 y=73 00->ff, x=2 y=74 00->1c, x=3 y=74 00->ff, x=2 y=75 00->12, x=3 y=75 00->ff, x=2 y=76 00->12, x=3 y=76 00->ff, x=2 y=77 00->3c, x=3 y=77 00->ff, x=3 y=78 00->ff, x=3 y=79 00->ff`
 - First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0xd7ef vram=73456 ios=786 pic_seen=0 kbd_seen=0 fdc_ios=0 frame_ticks=2 intr_edges=2 inta_edges=6 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
 - Last progress line: `[RESUME-PROGRESS] mcyc=100000 pc=0x0496 vram=73456 ios=3101 pic_seen=0 kbd_seen=1 fdc_ios=0 frame_ticks=8 intr_edges=8 inta_edges=24 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
 - Stop/fail line: `JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xff9b ios=3733 pic_seen=0 kbd_seen=1 ppi0_reads=1915 ppi0_writes=1718 kbd_col_writes=177 kbd_active_reads=119 kbd_noncf_reads=103 fdc_ios=0`
@@ -54,6 +59,9 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - This report claims the checkpoint-resumed HDL keyboard-sampling
   boundary: the retimed command stimulus is read through PPI0 Port B
   with non-`0xCF` key data.
+- The report also preserves the HDL framebuffer dump before restoring
+  the worktree copy and checks for the exact cosim-pinned `A>JBASIC`
+  command glyphs at scanline 71.
 - The bench now counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key
   and non-`0xCF` reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1`
   to stop at the first sampled keyboard hit during retiming experiments.

@@ -15,6 +15,75 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = Path(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_REPORT", ROOT / "docs" / "juku-top-checkpoint-jbasic-probe.md"))
 ROM = ROOT / "roms" / "ekta37.bin"
 DISK = ROOT / "media" / "disks" / "JUKPROG2.CPM"
+VRAM_STRIDE = 40
+VRAM_LINES = 241
+VRAM_SIZE = VRAM_STRIDE * VRAM_LINES
+
+SCREEN_GLYPHS = {
+    ">": (
+        "...#....",
+        "....#...",
+        ".....#..",
+        "......#.",
+        ".....#..",
+        "....#...",
+        "...#....",
+    ),
+    "A": (
+        "....#...",
+        "...#.#..",
+        "..#...#.",
+        "..#...#.",
+        "..#####.",
+        "..#...#.",
+        "..#...#.",
+    ),
+    "B": (
+        "..####..",
+        "...#..#.",
+        "...#..#.",
+        "...###..",
+        "...#..#.",
+        "...#..#.",
+        "..####..",
+    ),
+    "C": (
+        "...###..",
+        "..#...#.",
+        "..#.....",
+        "..#.....",
+        "..#.....",
+        "..#...#.",
+        "...###..",
+    ),
+    "I": (
+        "...###..",
+        "....#...",
+        "....#...",
+        "....#...",
+        "....#...",
+        "....#...",
+        "...###..",
+    ),
+    "J": (
+        "....###.",
+        ".....#..",
+        ".....#..",
+        ".....#..",
+        ".....#..",
+        "..#..#..",
+        "...##...",
+    ),
+    "S": (
+        "...###..",
+        "..#...#.",
+        "..#.....",
+        "...###..",
+        "......#.",
+        "..#...#.",
+        "...###..",
+    ),
+}
 
 
 def write_hex(src: Path, dst: Path) -> None:
@@ -123,7 +192,7 @@ def state_plusargs(state: dict[str, str]) -> list[str]:
     ]
 
 
-def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess.CompletedProcess[str], bool]:
+def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess.CompletedProcess[str], bool, bytes]:
     ram_hex = tmp / "jbasic-prompt.ram.hex"
     rom_hex = tmp / "ekta37.hex"
     sim = tmp / "juku_top_checkpoint_resume_tb"
@@ -197,15 +266,18 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
                 timeout=int(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TIMEOUT", "120")),
                 check=False,
             )
+        vram = checkpoint_vram.read_bytes() if checkpoint_vram.exists() else b""
         restore_vram()
         proc.stdout = out_path.read_text(errors="replace")
         proc.stderr = err_path.read_text(errors="replace")
-        return proc, False
+        return proc, False, vram
     except subprocess.TimeoutExpired:
+        vram = checkpoint_vram.read_bytes() if checkpoint_vram.exists() else b""
         restore_vram()
         return (
             subprocess.CompletedProcess(args, 124, stdout=out_path.read_text(errors="replace"), stderr=err_path.read_text(errors="replace")),
             True,
+            vram,
         )
 
 
@@ -221,11 +293,56 @@ def last_line(text: str, prefix: str) -> str:
     return next((line for line in reversed(text.splitlines()) if line.startswith(prefix)), "none")
 
 
+def screen_cell(vram: bytes, cell_x: int, y: int, height: int = 7) -> tuple[str, ...]:
+    rows: list[str] = []
+    for row_y in range(y, y + height):
+        start = row_y * VRAM_STRIDE + cell_x
+        if start < 0 or start >= len(vram):
+            rows.append("........")
+            continue
+        byte = vram[start]
+        rows.append("".join("#" if (byte >> (7 - bit)) & 1 else "." for bit in range(8)))
+    return tuple(rows)
+
+
+def screen_text_at(vram: bytes, text: str, y: int, cell_x: int = 0) -> bool:
+    if len(vram) != VRAM_SIZE:
+        return False
+    for offset, char in enumerate(text):
+        expected = SCREEN_GLYPHS.get(char)
+        if expected is None or screen_cell(vram, cell_x + offset, y) != expected:
+            return False
+    return True
+
+
+def row_hex(vram: bytes, y: int, cell_x: int = 0, cells: int = 10) -> str:
+    if len(vram) != VRAM_SIZE:
+        return "missing"
+    start = y * VRAM_STRIDE + cell_x
+    return " ".join(f"{byte:02x}" for byte in vram[start : start + cells])
+
+
+def changed_cells(before: bytes, after: bytes, limit: int = 24) -> list[str]:
+    if len(before) != VRAM_SIZE or len(after) != VRAM_SIZE:
+        return []
+    changes: list[str] = []
+    for idx, (old, new) in enumerate(zip(before, after)):
+        if old == new:
+            continue
+        y, x = divmod(idx, VRAM_STRIDE)
+        changes.append(f"x={x} y={y} {old:02x}->{new:02x}")
+        if len(changes) >= limit:
+            break
+    return changes
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="juku-top-checkpoint-jbasic.") as tmp_name:
         tmp = Path(tmp_name)
         cosim_proc, ram_bin, state = generate_prompt_checkpoint(tmp)
-        hdl_proc, timed_out = run_hdl(tmp, ram_bin, state)
+        checkpoint_ram = ram_bin.read_bytes()
+        checkpoint_vram = checkpoint_ram[0xD800 : 0xD800 + VRAM_SIZE]
+        hdl_proc, timed_out, hdl_vram = run_hdl(tmp, ram_bin, state)
 
     key_presses = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] press")
     key_releases = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] release")
@@ -237,6 +354,9 @@ def main() -> int:
     kbd_scan_writes = matching_lines(hdl_proc.stdout, "[RESUME-KBD] OUT")
     resume_trace = matching_lines(hdl_proc.stdout, "[RESUME-TRACE]")
     reached_ready = first_line(hdl_proc.stdout, "[RESUME-JBASIC]") != "none"
+    command_visible = screen_text_at(hdl_vram, "A>JBASIC", 71)
+    hdl_vram_ok = len(hdl_vram) == VRAM_SIZE
+    vram_changes = changed_cells(checkpoint_vram, hdl_vram)
     failures: list[str] = []
     if cosim_proc.returncode != 0:
         failures.append(f"cosim prompt checkpoint exited {cosim_proc.returncode}")
@@ -248,6 +368,9 @@ def main() -> int:
         failures.append(f"expected 7 JBASIC key releases, saw {len(key_releases)}")
 
     status = (
+        "HDL EKDOS JBASIC COMMAND ECHO READY"
+        if not failures and command_visible
+        else
         "HDL EKDOS JBASIC KEYBOARD SAMPLING READY"
         if not failures and key_hits
         else "HDL EKDOS JBASIC COMMAND STIMULUS READY"
@@ -298,6 +421,11 @@ def main() -> int:
         f"- First HDL M-cycle trace: `{resume_trace[0] if resume_trace else 'none'}`",
         f"- Last HDL M-cycle trace: `{resume_trace[-1] if resume_trace else 'none'}`",
         f"- READY stop line: `{first_line(hdl_proc.stdout, '[RESUME-JBASIC]')}`",
+        f"- HDL VRAM dump size: `{len(hdl_vram)}` ({'ok' if hdl_vram_ok else 'missing/incomplete'})",
+        f"- Visible `A>JBASIC` command line at scanline 71: `{'yes' if command_visible else 'no'}`",
+        f"- Checkpoint command row bytes y=71 x=0..9: `{row_hex(checkpoint_vram, 71)}`",
+        f"- HDL final command row bytes y=71 x=0..9: `{row_hex(hdl_vram, 71)}`",
+        f"- First changed VRAM cells: `{', '.join(vram_changes) if vram_changes else 'none'}`",
         f"- First progress line: `{first_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
         f"- Last progress line: `{last_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
         f"- Stop/fail line: `{first_line(hdl_proc.stdout, 'JUKU-TOP-CHECKPOINT-RESUME: FAIL')}`",
@@ -311,6 +439,9 @@ def main() -> int:
         "- This report claims the checkpoint-resumed HDL keyboard-sampling",
         "  boundary: the retimed command stimulus is read through PPI0 Port B",
         "  with non-`0xCF` key data.",
+        "- The report also preserves the HDL framebuffer dump before restoring",
+        "  the worktree copy and checks for the exact cosim-pinned `A>JBASIC`",
+        "  command glyphs at scanline 71.",
         "- The bench now counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key",
         "  and non-`0xCF` reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1`",
         "  to stop at the first sampled keyboard hit during retiming experiments.",
@@ -321,6 +452,8 @@ def main() -> int:
     ]
     if reached_ready:
         lines.append("- This run did reach the HDL `READY` oracle; promote the report status and CI gate.")
+    if command_visible:
+        lines.append("- This run did echo the full HDL `A>JBASIC` command line; the next boundary is Return execution and FDC traffic.")
     if failures:
         lines.extend(["", "## Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)
