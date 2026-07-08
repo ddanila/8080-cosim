@@ -197,6 +197,12 @@ Historical merge notes:
   `sync/basic_entry_probe.py` additionally proves both BASIC images are not
   standalone reset ROMs: direct low-ROM execution stops at `PC=0x0038` after
   the first video write to `0xFFFE`, with no BASIC prompt.
+- **EKDOS disk BASIC boundary:** `sync/ekdos_jbasic_command_probe.py` now
+  drives `TDD|JBASIC\r` against `media/disks/JUKPROG2.CPM`. The `|` marker
+  waits for the EKDOS `A>` bitmap before typing `JBASIC`; the run consumes all
+  command keys and reaches 19,968 WD1793 data reads from the directory-backed
+  `JBASIC.COM` candidate. The final framebuffer is pinned, but this is still a
+  command-launch boundary rather than a BASIC `READY` oracle.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;

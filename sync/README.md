@@ -60,6 +60,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_fdc_probe.py` — ROMBIOS `<T>, <D>, <D>` FDC path probe; defaults
   to vendored `media/disks/JUKU1.CPM`, and disk-backed runs must reach the
   EKDOS `A>` prompt bitmap.
+- `sync/ekdos_jbasic_command_probe.py` — post-`A>` EKDOS command diagnostic;
+  uses `JUKU_KEYS=TDD|JBASIC\r` so `|` waits for the prompt bitmap, then types
+  `JBASIC` on `media/disks/JUKPROG2.CPM` and pins the current FDC/screen
+  boundary for the directory-backed disk BASIC candidate.
 - `sync/ekdos_timing_reference.py` — fast cosim timing reference for the same
   vendored `TDD` path; records first PIC/PPI/FDC port touches versus cycles and
   framebuffer writes.

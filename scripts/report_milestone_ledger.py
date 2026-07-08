@@ -192,6 +192,13 @@ def milestone_rows():
         "docs/basic-factory-command-probe.md",
         "| ekta43 | `roms/ekta43.bin` | `BAS0-3.HEX` |",
     )
+    ekdos_jbasic_command_pinned = marker(
+        "docs/ekdos-jbasic-command-probe.md",
+        "Status: **EKDOS JBASIC COMMAND BOUNDARY PINNED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "sync/ekdos_jbasic_command_probe.py",
+    )
     jmon33_command_surface = marker(
         "docs/jmon33-command-probe.md",
         "Status: **JMON33 COMMAND SURFACE READY**",
@@ -507,6 +514,15 @@ def milestone_rows():
                     if basic_disk_extracted
                     else ""
                 )
+                + (
+                    " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
+                    "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
+                    "bitmap, consumes all command keys on `JUKPROG2.CPM`, and "
+                    "triggers 19,968 WD1793 data reads from the directory-backed "
+                    "`JBASIC.COM` candidate."
+                    if ekdos_jbasic_command_pinned
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
@@ -545,15 +561,24 @@ def milestone_rows():
                     if basic_disk_extracted
                     else ""
                 )
+                + (
+                    " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
+                    "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
+                    "bitmap, consumes all command keys on `JUKPROG2.CPM`, and "
+                    "triggers 19,968 WD1793 data reads from the directory-backed "
+                    "`JBASIC.COM` candidate."
+                    if ekdos_jbasic_command_pinned
+                    else ""
+                )
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct BASIC launch path, add a BASIC prompt oracle for the "
-                "disk-side `JBASIC.COM` or monitor/removable-memory path, and port "
-                "that BASIC path to HDL coverage."
+                "correct BASIC launch path, turn the pinned EKDOS `JBASIC` command "
+                "boundary into a BASIC prompt oracle, and port that BASIC path to "
+                "HDL coverage."
                 if jmon33_checkpoint_cursor
                 else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct BASIC launch path, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."
             ),

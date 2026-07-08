@@ -26,6 +26,7 @@ jobs:
             scripts/wd1772_pla.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
+            sync/ekdos_jbasic_command_probe.py \
             sync/ekdos_timing_reference.py \
             sync/ekdos_checkpoint_reference.py \
             sync/ekdos_ioseq_reference.py \
@@ -139,6 +140,7 @@ jobs:
           (cd media/system && sha256sum -c SHA256SUMS)
           ./sync/juk_disk_check.sh
           ./sync/ekdos_fdc_probe.py
+          ./sync/ekdos_jbasic_command_probe.py
           ./sync/ekdos_timing_reference.py
           ./sync/ekdos_checkpoint_reference.py
           ./sync/ekdos_ioseq_reference.py
@@ -172,6 +174,7 @@ jobs:
         run: |
           git diff --exit-code -- \
             docs/ekdos-fdc-probe.md \
+            docs/ekdos-jbasic-command-probe.md \
             docs/ekdos-timing-reference.md \
             docs/ekdos-checkpoint-reference.md \
             docs/ekdos-ioseq-reference.md \

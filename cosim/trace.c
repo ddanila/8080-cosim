@@ -111,6 +111,44 @@ static int kbd_gap_frames = 3;
 #define KBD_HOLD 3
 #define KBD_GAP  3
 
+static int vram_pixel(int x, int y) {
+  if (x < 0 || x >= VID_STRIDE * 8 || y < 0 || y >= VID_LINES) return 0;
+  uint8_t byte = ram[VRAM_BASE + y * VID_STRIDE + (x >> 3)];
+  return (byte >> (7 - (x & 7))) & 1;
+}
+
+static int ekdos_prompt_visible(void) {
+  static const char* pattern[] = {
+    "................",
+    "....#......#....",
+    "...#.#......#...",
+    "..#...#......#..",
+    "..#...#.......#.",
+    "..#####......#..",
+    "..#...#.....#...",
+    "..#...#....#....",
+    "................",
+    "................",
+  };
+  const int ph = (int)(sizeof(pattern) / sizeof(pattern[0]));
+  const int pw = 16;
+  for (int y = 0; y <= VID_LINES - ph; y++) {
+    for (int x = 0; x < 3; x++) {
+      int ok = 1;
+      for (int dy = 0; dy < ph && ok; dy++) {
+        for (int dx = 0; dx < pw; dx++) {
+          if (vram_pixel(x + dx, y + dy) != (pattern[dy][dx] == '#')) {
+            ok = 0;
+            break;
+          }
+        }
+      }
+      if (ok) return 1;
+    }
+  }
+  return 0;
+}
+
 // Port B (0x05) value the BIOS reads: 74148-encode the pressed key in the selected column.
 // Port B value: SHIFT bits 6/7 (active-LOW: 1=released) are GLOBAL (reflect the held key's
 // shift regardless of column); the 74148 code (b1-3) + GS (b0, active-low) are per-column.
@@ -118,6 +156,7 @@ static int kbd_gap_frames = 3;
 static uint8_t kbd_portb(void) {
   if (g_vw < kbd_start_vram) return KBD_NONE;          // default waits until the ekta37 banner is drawn
   char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < kbd_hold_frames) ? kbd_str[kbd_pos] : 0;
+  if (c == '|') return KBD_NONE;                       // prompt wait marker, not a typed key
   int shift = 0, col = -1, bit = -1;
   if (c) {
     char lc = c; if (c >= 'A' && c <= 'Z') { lc = (char)(c + 32); shift = 1; }
@@ -404,7 +443,17 @@ int main(int argc, char** argv) {
       }
       // advance the typed-keystroke state once per frame (HOLD pressed, GAP released)
       if (kbd_str && kbd_str[kbd_pos] && g_vw >= kbd_start_vram) {
-        if (++kbd_phase >= kbd_hold_frames + kbd_gap_frames) { kbd_phase = 0; kbd_pos++; }
+        if (kbd_str[kbd_pos] == '|') {
+          if (ekdos_prompt_visible()) {
+            fprintf(stderr, "[KBD] prompt wait marker consumed at g_vw=%lu cyc=%lu pos=%d\n",
+                    g_vw, cpu.cyc, kbd_pos);
+            kbd_phase = 0;
+            kbd_pos++;
+          }
+        } else if (++kbd_phase >= kbd_hold_frames + kbd_gap_frames) {
+          kbd_phase = 0;
+          kbd_pos++;
+        }
       }
     }
     if ((cpu.cyc & 0xFFFFF) == 0) {

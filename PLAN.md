@@ -309,7 +309,15 @@ debugging session saved on real hardware.
    `docs/basic-disk-extraction.md` now preserves `JUKPROG2_JBASIC.COM` as the
    best directory-backed executable candidate and
    `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset candidate with
-   `BASIC`/`READY`/`ERROR` strings. The jmon33
+   `BASIC`/`READY`/`ERROR` strings. `sync/ekdos_jbasic_command_probe.py` /
+   `docs/ekdos-jbasic-command-probe.md` now pins the next disk-side boundary:
+   after `TDD`, the cosim keyboard driver waits for the EKDOS `A>` prompt bitmap
+   with `JUKU_KEYS=TDD|JBASIC\r`, consumes all command keys on
+   `JUKPROG2.CPM`, and reaches 19,968 WD1793 data-register reads plus final
+   framebuffer SHA256
+   `0b61035c5326e23450c49633cfa449c43851619f9da9fbae2c2ec3c9e80109df`.
+   This proves deterministic post-prompt command entry, not a BASIC `READY`
+   oracle yet. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
@@ -362,9 +370,8 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, identify the correct BASIC launch path, add a user-visible BASIC
-   prompt oracle for disk-side `JBASIC.COM` or the monitor/removable-memory
-   path, and port that BASIC path to HDL coverage.
+   path, turn the pinned EKDOS `JBASIC` command boundary into a user-visible
+   BASIC prompt oracle, and port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
