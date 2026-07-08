@@ -130,6 +130,9 @@ def milestone_rows():
         "Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**",
     ) or marker(
         "docs/jmon33-hdl-command-probe.md",
+        "Status: **JMON33 HDL A-COMMAND ORACLE READY**",
+    ) or marker(
+        "docs/jmon33-hdl-command-probe.md",
         "Status: **JMON33 HDL COMMAND SURFACE READY**",
     )
     jmon33_checkpoint_cursor = marker(
