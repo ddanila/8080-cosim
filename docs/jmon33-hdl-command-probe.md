@@ -19,12 +19,12 @@ Environment overrides:
 - `JMON33_HDL_COMMAND_MAX_MCYC` default `700000`
 - `JMON33_HDL_COMMAND_TIMECAP` default `4000000000`
 - `JMON33_HDL_COMMAND_FRAMEIRQ` default `200000`
-- `JMON33_HDL_COMMAND_KHOLD` default `200000`
+- `JMON33_HDL_COMMAND_KHOLD` default `500000`
 - `JMON33_HDL_COMMAND_KGAP` default `100000`
 - `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `19900000`
 - `JMON33_HDL_COMMAND_PHASE_CHECKPOINT` default `1`
-- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` default `23200000`
-- `JMON33_HDL_COMMAND_PHASE_START_VRAM` default `270`
+- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` default `26050000`
+- `JMON33_HDL_COMMAND_PHASE_START_VRAM` default `210`
 - `JMON33_HDL_COMMAND_HOLD_FRAMES` default `20`
 - `JMON33_HDL_COMMAND_GAP_FRAMES` default `6`
 - Expected checkpoint SHA256 `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
@@ -39,16 +39,16 @@ Environment overrides:
 ## Evidence
 
 - Cosim checkpoint exit: `0`
-- Cosim checkpoint cycle: `23200006`
-- Cosim checkpoint PC: `0xFF54`
-- Cosim checkpoint IFF: `0`
-- Cosim checkpoint VRAM writes: `280`
-- Cosim checkpoint VRAM SHA256: `ce4e554e8ef35487ca6e236e23dbe08c97963289b21aff8887e76d0c2a7bf694`
+- Cosim checkpoint cycle: `26050000`
+- Cosim checkpoint PC: `0xF3AD`
+- Cosim checkpoint IFF: `1`
+- Cosim checkpoint VRAM writes: `290`
+- Cosim checkpoint VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 - Phase-checkpoint mode: `yes`
 
 | Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | FDC trace | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |
 | --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `cyc=23200006 pc=0xFF54 iff=0 kbd=0/19` | `0` | `False` | `357` | `0xC4` | `[RESUME-KBD-STIM] press key=1 col=8 bit=5 shift=0 mcyc=11154 vram=290`<br>`[RESUME-KBD-STIM] release key=1 mcyc=40474 vram=290` | - | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=8 y1=60 mcyc=615862 vram=301 pc=0x01ce` | `none` | `x=8,y=20`, `x=8,y=60` | `160` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
+| A-enter | `A\n` | `cyc=26050000 pc=0xF3AD iff=1 kbd=2/0` | `0` | `False` | `323` | - | - | - | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=8 y1=60 mcyc=543233 vram=301 pc=0x01ce` | `none` | `x=8,y=20`, `x=8,y=60` | `160` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
 
 ## Disposition
 

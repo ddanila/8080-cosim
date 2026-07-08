@@ -320,7 +320,8 @@ debugging session saved on real hardware.
    (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
    `sync/jmon33_hdl_command_probe.py` now compares checkpoint-resumed HDL
    command stimulus against that delayed idle-command oracle. The resumed HDL
-   `A` command reaches its framebuffer oracle; the preserved
+   `A` command reaches its framebuffer oracle, now pinned as a named guard by
+   `sync/jmon33_hdl_a_command_probe.py`; the preserved
    `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows `T` seeing keyboard
    samples but then entering heavy FDC I/O (`fdc_ios=109522`). The matching
    cosim boundary is now pinned by `sync/jmon33_fdc_command_probe.py` /
