@@ -52,6 +52,13 @@ def table_row(values):
 def milestone_rows():
     pdf_count = count_baltijets_pdfs()
     public_sources_audited = source_coverage_audited()
+    reconstructed_proms_exported = marker(
+        "docs/reconstructed-prom-fallbacks.md",
+        "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
+    ) and marker(
+        "ref/reconstructed-proms/SHA256SUMS",
+        "d8_re3_rom_pager_reconstructed.bin",
+    )
     manufacturing_ready = marker(
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -206,9 +213,15 @@ def milestone_rows():
                     if public_sources_audited
                     else "public-source coverage audit is missing or incomplete; "
                 )
-                + "PROM bytes still need disk files, hardware dumps, or accepted reconstruction."
+                + (
+                    "`docs/reconstructed-prom-fallbacks.md` exports boot-validated "
+                    "D6/D8 reconstruction fallbacks; "
+                    if reconstructed_proms_exported
+                    else ""
+                )
+                + "PROM truth still needs disk files or hardware dumps for Tier 3."
             ),
-            "next": "Locate programming disk/media or get RE3/RT4 dumps.",
+            "next": "Locate programming disk/media or get RE3/RT4 dumps; diff any D6/D8 dumps against the exported reconstruction fallbacks.",
         },
         {
             "id": "M2",

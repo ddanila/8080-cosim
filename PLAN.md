@@ -111,7 +111,12 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
 1. **007 ROM and ROM programming** → triaged: РТ4/РЕ3/РТ5 programming-table
    drawings are present, but their byte tables are marked `на диске`; only РФ2
    EPROM listings are printed. Next step is locating the referenced disk files or
-   dumping the physical PROMs; no provenance upgrade yet.
+   dumping the physical PROMs. A Tier 1/2 fallback is now reproducible:
+   `scripts/export_reconstructed_proms.py` exports boot-validated reconstructed
+   D6 and D8 programming images under `ref/reconstructed-proms/`, with hashes and
+   boundaries documented in `docs/reconstructed-prom-fallbacks.md`. These are not
+   Tier 3 factory truth and must be replaced or checked when disk files/dumps
+   arrive.
 2. **002 Schematics and components** → settle .006-vs-.009 revision coverage; attack
    the short blocked-on-materials list (D6 V1/V2 feed, C99 far plate, FDC INTRQ/DRQ,
    D94 outputs, bypass per-position values) from paper before spending owner time.
@@ -463,7 +468,10 @@ before any Soviet NOS is at risk.
    РТ4 ≈ 82S129-class and РЕ3 ≈ 74188-class on a universal programmer
    (`docs/prom-dump-procedure.md`) — contents from the Baltijets referenced
    programming disk, an owner dump, or the boot-validated reconstructed tables
-   (in that preference order).
+   (in that preference order). The current reconstructed fallback exports are
+   `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.*` and
+   `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.*`; D2, D94, and the
+   video-timing РЕ3 truth remain dump/disk items.
 4. Assemble sockets-first (factory or hand), power-rail checks before any IC seats.
 
 ### WS-F — Owner / hardware sessions (the short physical list)

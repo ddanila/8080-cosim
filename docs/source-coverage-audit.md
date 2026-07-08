@@ -31,6 +31,11 @@ or disk image has been fully mined.
   FDC/media/PROM/bring-up docs. The key conclusion remains: doc 007 describes
   programmed-part drawings but references small-PROM byte tables on disk, so the
   РЕ3/РТ4 truth still needs the programming disk or hardware dumps.
+- `scripts/export_reconstructed_proms.py` exports boot-validated reconstructed
+  D6 and D8 fallback images under `ref/reconstructed-proms/`, with hashes and
+  scope documented in `docs/reconstructed-prom-fallbacks.md`. These close the
+  reproducible Tier 1/2 programming fallback path, not the Tier 3 dump/provenance
+  requirement.
 - Elektroonikamuuseum `tarkvara/JUKUSYS.ZIP` is now vendored under
   `media/system/` as five 10 KiB CP/M/EKDOS system binaries. The same public
   software archive pass found no explicit `ДГШ5.106.037`, `ДГШ5.106.038`,
@@ -61,6 +66,8 @@ The current manufacturing packet does not appear blocked by unused РФ2 ROM
 material. The remaining source-risk items are narrower:
 
 - Baltijets programming-disk files or physical РЕ3/РТ4 dumps.
+- Diff any eventual D6/D8 dumps against `ref/reconstructed-proms/` before
+  replacing the current boot-validated reconstruction in HDL.
 - Disk-backed FDC behavior in `juku_top`; the vendored Arti `JUKU1.CPM`
   image now proves the cosim `JUKU1` boot path.
 - Owner/community confirmation for the generated bring-up verification list.

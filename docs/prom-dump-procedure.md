@@ -13,6 +13,13 @@ The ready-to-send community request packet is
 `docs/community-prom-media-request.md`; it names the same chips, expected dump
 sizes, and the `JUKU-1` media request in one owner-friendly message.
 
+Functional fallback update: `scripts/export_reconstructed_proms.py` now exports
+boot-validated reconstructed D6 and D8 programming fallbacks under
+`ref/reconstructed-proms/`, documented in
+`docs/reconstructed-prom-fallbacks.md`. These are useful for Tier 1/2 bring-up
+if no programming disk or dump is available, but they are explicitly not Tier 3
+factory truth.
+
 ## What to pull (label each with its socket refdes + board # before removing!)
 | Chip | Where | Type | Organization | Dump method |
 |---|---|---|---|---|
@@ -64,6 +71,10 @@ Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-
 3. **РТ4 D2 → real I/O decode**: replaces the `io_dec138` functional stand-in (D2's real part is a
    РТ4 per the board photos).
 4. **M2764 ×2**: validates (or forks) our ekta37 ROM image against this physical board.
+
+If the owner dump differs from `ref/reconstructed-proms/*.bin`, keep the dump as
+the authoritative source once repeated reads and socket provenance are sound;
+the reconstruction is only the buildable fallback to diff against.
 
 ## Drawing cross-reference (found 2026-07-03, drawing index ДГШ 3.031.006 ВС)
 The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 … 5.106.047**, each

@@ -22,10 +22,14 @@ real media or silicon truth:
   provenance is still useful.
 - The functional PROM maps are boot-validated reconstructions; dumped PROMs
   would turn them into preservation-grade evidence.
+- Boot-validated D6/D8 reconstruction fallback binaries are now exported under
+  `ref/reconstructed-proms/` for Tier 1/2 bring-up, but those files still need
+  disk/dump validation before they count as preservation-grade PROM truth.
 
 Relevant local docs:
 
 - `docs/prom-dump-procedure.md`
+- `docs/reconstructed-prom-fallbacks.md`
 - `docs/ekdos-media-acquisition.md`
 - `ref/baltijets-tech-docs/README.md`
 - `docs/replica-dual-config-bom.md`
@@ -99,6 +103,10 @@ Baltijets doc 007 confirms several programmed-part drawings, but the byte tables
 for the small PROMs are marked "на диске" rather than printed. I am looking for
 either those programming disk files or dumps from a physical .009 processor
 board:
+
+There are boot-validated reconstructed D6/D8 fallback binaries in the repo for
+functional bring-up, but I still want to validate or replace them with actual
+factory programming-disk files or physical PROM dumps.
 
 - КР556РТ4А D2 and D6, drawing family ДГШ5.106.037/.038
 - К155РЕ3 D8, drawing ДГШ5.106.039
