@@ -170,6 +170,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/basic_entry_probe.py` — bounded cosim diagnostic rejecting the direct
   reset-ROM theory for the same BASIC images; both direct runs stop at
   `PC=0x0038` after the first video write to `0xFFFE`, with no BASIC prompt.
+- `sync/prom_fallback_check.sh` — fast HDL consistency guard for the exported
+  reconstructed D6/D8 PROM fallback images. It compares
+  `ref/reconstructed-proms/` against the actual `decode_prom` and `re3_prom`
+  modules in `hdl/devices.v`.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 

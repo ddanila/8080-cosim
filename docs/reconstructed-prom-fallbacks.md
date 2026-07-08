@@ -11,6 +11,7 @@ PROM dumps when those become available.
 
 ```sh
 scripts/export_reconstructed_proms.py
+sync/prom_fallback_check.sh
 ```
 
 ## Files
@@ -31,6 +32,13 @@ scripts/export_reconstructed_proms.py
   undumped and are not exported here.
 - Use these only for Tier 1/2 functional bring-up if no programming disk
   or dump is available. Tier 3 still requires real dumps.
+
+## HDL Consistency Guard
+
+`sync/prom_fallback_check.sh` compiles `hdl/sim/prom_fallback_tb.v` against the
+current `hdl/devices.v` modules and compares every exported row against the
+actual `decode_prom` and `re3_prom` logic. A passing guard means the files in
+`ref/reconstructed-proms/` still match the boot-validated HDL fallback logic.
 
 ## Diff Procedure
 
