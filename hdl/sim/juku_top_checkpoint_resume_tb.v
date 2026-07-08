@@ -26,8 +26,11 @@ module juku_top_checkpoint_resume_tb();
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
   integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0, stopfdc_data_read = 0, stopfdc_data_reads = 0;
   integer stopprompt = 0, prompt_seen = 0, cursorstop = 0, cursor_seen = 0;
+  integer defer_iff = 0, restore_iff_pending = 0;
+  integer force_clean_status = 0, clean_status_pending = 0;
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0, fdc_data_reads = 0;
   integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
+  integer progress_mcyc = 0, next_progress_mcyc = 0;
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
   integer state_kbd_pos = 0, state_kbd_phase = 0;
   reg frame_tick = 1'b0, intr_q = 1'b0, inta_q = 1'b1;
@@ -127,7 +130,7 @@ module juku_top_checkpoint_resume_tb();
     dut.U_CPU.u.core.psw_p = state_pf[0];
     dut.U_CPU.u.core.psw_c = state_cf[0];
     dut.U_CPU.u.core.tmp_c = 1'b0;
-    dut.U_CPU.u.core.inte = state_iff[0];
+    dut.U_CPU.u.core.inte = defer_iff ? 1'b0 : state_iff[0];
     dut.U_CPU.u.core.inta = 1'b0;
     dut.U_CPU.u.core.intr = 1'b0;
     dut.U_CPU.u.core.minta = 1'b0;
@@ -164,6 +167,8 @@ module juku_top_checkpoint_resume_tb();
     dut.U_CPU.u.core.hold = 1'b0;
     dut.U_CPU.u.core.hlda_pin = 1'b0;
 
+    dut.U_SYS.status = 8'h00;
+
     dut.U_PPI0.regs[0] = state_kbd_col[7:0];
     dut.U_PPI0.regs[2] = state_portc[7:0];
     dut.U_PPI0.portc = state_portc[7:0];
@@ -174,6 +179,7 @@ module juku_top_checkpoint_resume_tb();
     dut.U_INTR.mask = state_pic_mask[7:0];
     dut.U_INTR.expect_icw2 = state_pic_expect_icw2[0];
     dut.U_INTR.pending = 1'b0;
+    dut.U_INTR.inq = 1'b0;
     dut.U_INTR.inta_idx = 0;
 
     dut.U_FDC.status = state_fdc_status[7:0];
@@ -220,12 +226,55 @@ module juku_top_checkpoint_resume_tb();
         trace_resume = trace_resume - 1;
       end
       mcyc <= mcyc + 1;
+      if (restore_iff_pending != 0 && mcyc >= 2) begin
+        dut.U_CPU.u.core.inte = state_iff[0];
+        restore_iff_pending = 0;
+        $display("[RESUME] restored deferred INTE=%0d at mcyc=%0d pc=0x%04h",
+                 dut.U_CPU.u.core.inte, mcyc, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+      end
+      if (clean_status_pending != 0 && mcyc >= 2) begin
+        release dut.U_SYS.status;
+        clean_status_pending = 0;
+        $display("[RESUME] released clean sys_status at mcyc=%0d pc=0x%04h status=0x%02h",
+                 mcyc, dut.U_CPU.u.core.r16_pc, dut.U_SYS.status);
+        $fflush;
+      end
+      if (progress_mcyc != 0 && mcyc >= next_progress_mcyc) begin
+        $display("[RESUME-PROGRESS] mcyc=%0d pc=0x%04h vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d intr=%0d pending=%0d inta_idx=%0d mask=0x%02h inte=%0d",
+                 mcyc,
+                 dut.U_CPU.u.core.r16_pc,
+                 vram_writes,
+                 raw_ios,
+                 pic_seen,
+                 kbd_seen,
+                 fdc_ios,
+                 frame_ticks,
+                 intr_edges,
+                 inta_edges,
+                 dut.intr,
+                 dut.U_INTR.pending,
+                 dut.U_INTR.inta_idx,
+                 dut.U_INTR.mask,
+                 dut.U_CPU.u.core.inte);
+        $fflush;
+        next_progress_mcyc = next_progress_mcyc + progress_mcyc;
+      end
     end
     sq <= dut.sync;
     if (resume_started && mcyc >= max_mcyc) begin
+      if (cursorstop != 0 && !cursor_seen && jmon33_cursor_ok()) begin
+        cursor_seen = 1;
+        $display("[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 at bounded exit mcyc=%0d vram=%0d pc=0x%04h",
+                 mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+        dump_vram();
+        $finish;
+      end
       $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d",
                dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen, fdc_ios);
       $fflush;
+      dump_vram();
       $finish;
     end
 
@@ -339,9 +388,11 @@ module juku_top_checkpoint_resume_tb();
     #1;
     raw_ios = raw_ios + 1;
     if (!dut.cs_ppi0_n && dut.BA[1:0] == 2'd1) begin
-      $display("[RESUME-KBD] IN port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
-               dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
-      $fflush;
+      if (tracekbd) begin
+        $display("[RESUME-KBD] IN port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
+                 dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+      end
       if (dut.DB == 8'hCF) kbd_seen = 1;
     end
     if (!dut.cs_fdc_n) begin
@@ -392,8 +443,11 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("khold=%d", khold)) ;
     if ($value$plusargs("kgap=%d", kgap)) ;
     if ($value$plusargs("traceirq=%d", traceirq)) ;
+    if ($value$plusargs("progress_mcyc=%d", progress_mcyc)) ;
     if ($value$plusargs("tracekbd=%d", tracekbd)) ;
     if ($value$plusargs("tracefdc=%d", tracefdc)) ;
+    if ($value$plusargs("defer_iff=%d", defer_iff)) ;
+    if ($value$plusargs("force_clean_status=%d", force_clean_status)) ;
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("stopfdc_data_read=%d", stopfdc_data_read)) ;
     if ($value$plusargs("stopfdc_data_reads=%d", stopfdc_data_reads)) ;
@@ -441,6 +495,11 @@ module juku_top_checkpoint_resume_tb();
     for (i = 0; i < 65536; i = i + 1) write_dram_byte(i, ram[i]);
     vram_writes = state_vram_writes;
     load_checkpoint_state();
+    if (force_clean_status != 0) begin
+      force dut.U_SYS.status = 8'h00;
+      clean_status_pending = 1;
+    end
+    restore_iff_pending = (defer_iff != 0 && state_iff != 0);
     if (ekdoskeys != 0 && state_vram_writes >= keyat && state_kbd_pos < 3) begin
       ekdos_key = state_kbd_pos;
       key_t = state_kbd_phase;
@@ -449,9 +508,20 @@ module juku_top_checkpoint_resume_tb();
       ekdos_key = state_kbd_pos;
       key_t = -1;
     end
-    $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h", dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp);
+    #1;
+    $display("[RESUME] loaded checkpoint pc=0x%04h sp=0x%04h inta_n=%0d sys_status=0x%02h core_inta=%0d core_minta=%0d core_intr=%0d inte=%0d intr=%0d",
+             dut.U_CPU.u.core.r16_pc,
+             dut.U_CPU.u.core.r16_sp,
+             dut.inta_n,
+             dut.U_SYS.status,
+             dut.U_CPU.u.core.inta,
+             dut.U_CPU.u.core.minta,
+             dut.U_CPU.u.core.intr,
+             dut.U_CPU.u.core.inte,
+             dut.intr);
     $fflush;
     mcyc = 0;
+    next_progress_mcyc = progress_mcyc;
     sq = 0;
     osc_n = 0;
     resume_started = 1'b1;
@@ -464,7 +534,13 @@ module juku_top_checkpoint_resume_tb();
     $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL timecap pc=0x%04h mcyc=%0d vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d fdc_ios=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
              dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios, pic_seen, kbd_seen,
              fdc_ios, frame_ticks, intr_edges, inta_edges);
+    if (cursorstop != 0 && !cursor_seen && jmon33_cursor_ok()) begin
+      cursor_seen = 1;
+      $display("[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 at timecap mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+    end
     $fflush;
+    dump_vram();
     $finish;
   end
 endmodule

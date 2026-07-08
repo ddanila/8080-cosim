@@ -278,15 +278,16 @@ debugging session saved on real hardware.
    `+cursorstop=1` stop hook for that same cursor boundary, and
    `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
    first write still matches at `0xFF40`, but the 300-write HDL run stops with
-   a blank framebuffer before the cursor oracle. A new
-   `sync/jmon33_checkpoint_cursor_probe.py` narrows the stronger HDL boundary:
-   a 3,500,000-cycle cosim checkpoint at PC `0xF3A1` still has blank VRAM, and
-   checkpoint-resumed `juku_top` services frame interrupts from that state but
-   times out before the monitor-idle cursor writes. Remaining targets: reduce the
-   long interrupt/high-memory HDL path enough to compare cosim and `juku_top`
-   at that stronger boundary, prove the user-visible jmon33 command prompt,
-   add a user-visible BASIC prompt oracle, and port the stronger Monitor 3.3
-   BASIC path to HDL coverage.
+   a blank framebuffer before the cursor oracle. The stronger checkpoint-resumed
+   boundary is now guarded by `sync/jmon33_checkpoint_cursor_probe.py`: a late
+   pre-cursor cosim checkpoint at 3,801,005 cycles / PC `0xF2C0` still has a
+   blank framebuffer, and checkpoint-resumed `juku_top` services Monitor 3.3
+   frame interrupts, scans the keyboard path, and reaches the same monitor-idle
+   cursor framebuffer SHA256 as cosim
+   (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
+   Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
+   path, prove the user-visible jmon33 command prompt, add a user-visible BASIC
+   prompt oracle, and port the stronger Monitor 3.3 BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

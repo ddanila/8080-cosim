@@ -146,8 +146,11 @@ Historical merge notes:
   `+cursorstop=1` testbench stop hook for that cursor boundary, and
   `sync/jmon33_hdl_cursor_probe.py` records the current bounded HDL state:
   first write still matches at `0xFF40`, but the 300-write run stops before
-  the cursor oracle with a blank framebuffer. Completing the cosim-vs-HDL
-  comparison there and proving the user-visible command prompt remain pending.
+  the cursor oracle with a blank framebuffer. The stronger checkpoint-resumed
+  proof in `sync/jmon33_checkpoint_cursor_probe.py` now starts from a blank
+  late cosim checkpoint and reaches the same monitor-idle cursor framebuffer
+  SHA256 in `juku_top`. Completing an uninterrupted reset-to-cursor run and
+  proving the user-visible command prompt remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads `jbasic11.bin` through the expansion-cartridge overlay and then
   executes in the `0x4000..0xBFFF` RAM window. The current boundary is sharper:

@@ -99,6 +99,7 @@ def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
             "+disk_heads=2",
             "+max_mcyc=200000",
             "+timecap=200000000",
+            "+tracekbd=1",
     ]
     if trace_resume:
         args.append(f"+trace_resume={trace_resume}")

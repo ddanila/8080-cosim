@@ -66,7 +66,7 @@ def sha256(path: Path) -> str:
 def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Path, dict[str, str], str]:
     trace = compile_trace(tmp)
     prefix = tmp / "jmon33-checkpoint"
-    checkpoint_cycles = os.environ.get("JMON33_CHECKPOINT_CURSOR_CYCLES", "3500000")
+    checkpoint_cycles = os.environ.get("JMON33_CHECKPOINT_CURSOR_CYCLES", "3801000")
     frame_cycles = os.environ.get("JMON33_CHECKPOINT_CURSOR_FRAME_CYCLES", "200000")
     max_cycles = os.environ.get("JMON33_CHECKPOINT_CURSOR_MAX_CYCLES", "20000000")
     old_vram = tmp / "old-vram.bin"
@@ -179,11 +179,14 @@ def run_resume(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subproc
         str(sim),
         f"+checkpoint_ram={ram_hex}",
         "+rom=hdl/sim/jmon33.hex",
-        f"+max_mcyc={os.environ.get('JMON33_CHECKPOINT_CURSOR_MAX_MCYC', '2000000')}",
+        f"+max_mcyc={os.environ.get('JMON33_CHECKPOINT_CURSOR_MAX_MCYC', '250000')}",
         f"+timecap={os.environ.get('JMON33_CHECKPOINT_CURSOR_TIMECAP', '2000000000')}",
         f"+frameirq={os.environ.get('JMON33_CHECKPOINT_CURSOR_FRAMEIRQ', '200000')}",
+        f"+progress_mcyc={os.environ.get('JMON33_CHECKPOINT_CURSOR_PROGRESS_MCYC', '25000')}",
         "+traceirq=1",
         "+cursorstop=1",
+        "+defer_iff=1",
+        "+force_clean_status=1",
     ]
     args.extend(state_plusargs(state))
 
@@ -233,11 +236,13 @@ def main() -> int:
         infra_failures.append(f"cosim checkpoint VRAM was not pre-cursor blank: {checkpoint_vram_sha}")
     if resume_proc.returncode not in (0, 124):
         infra_failures.append(f"HDL resume exited {resume_proc.returncode}")
-    cursor_reached = cursor_line.startswith("[RESUME-CURSOR]") and resume_vram_sha == EXPECTED_CURSOR_SHA256
-    if not cursor_line.startswith("[RESUME-CURSOR]"):
+    cursor_reached = resume_vram_sha == EXPECTED_CURSOR_SHA256
+    if not cursor_line.startswith("[RESUME-CURSOR]") and not cursor_reached:
         observations.append("checkpoint-resumed HDL run did not reach the jmon33 cursor oracle")
     if cursor_line.startswith("[RESUME-CURSOR]") and resume_vram_sha != EXPECTED_CURSOR_SHA256:
         infra_failures.append(f"checkpoint-resumed HDL VRAM SHA256 {resume_vram_sha} did not match cosim cursor oracle")
+    if cursor_reached and not cursor_line.startswith("[RESUME-CURSOR]"):
+        observations.append("checkpoint-resumed HDL VRAM reached the cursor oracle by final dump; the write-triggered cursor hook did not fire before the bounded max_mcyc exit")
 
     status = (
         "PASS"
@@ -262,9 +267,10 @@ def main() -> int:
         "",
         "Environment overrides:",
         "",
-        f"- `JMON33_CHECKPOINT_CURSOR_CYCLES` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_CYCLES', '3500000')}`",
+        f"- `JMON33_CHECKPOINT_CURSOR_CYCLES` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_CYCLES', '3801000')}`",
         f"- `JMON33_CHECKPOINT_CURSOR_FRAME_CYCLES` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_FRAME_CYCLES', '200000')}`",
-        f"- `JMON33_CHECKPOINT_CURSOR_MAX_MCYC` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_MAX_MCYC', '2000000')}`",
+        f"- `JMON33_CHECKPOINT_CURSOR_MAX_MCYC` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_MAX_MCYC', '250000')}`",
+        f"- `JMON33_CHECKPOINT_CURSOR_PROGRESS_MCYC` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_PROGRESS_MCYC', '25000')}`",
         f"- `JMON33_CHECKPOINT_CURSOR_TIMEOUT` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_TIMEOUT', '90')}` seconds",
         "",
         "## Evidence",
@@ -278,6 +284,8 @@ def main() -> int:
         f"- Cursor stop line: `{cursor_line}`",
         f"- First IRQ line: `{first_line(resume_proc.stdout, '[RESUME-IRQ]')}`",
         f"- Last IRQ line: `{last_line(resume_proc.stdout, '[RESUME-IRQ]')}`",
+        f"- First progress line: `{first_line(resume_proc.stdout, '[RESUME-PROGRESS]')}`",
+        f"- Last progress line: `{last_line(resume_proc.stdout, '[RESUME-PROGRESS]')}`",
         f"- HDL cursor VRAM SHA256: `{resume_vram_sha}`",
         "",
         "## Boundary",

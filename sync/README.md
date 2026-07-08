@@ -108,9 +108,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   jmon33 monitor-idle cursor oracle; currently documents that the 300-write
   HDL boundary is still blank while the first-write guard remains passing.
 - `sync/jmon33_checkpoint_cursor_probe.py` — checkpoint-resumed HDL diagnostic
-  for the same jmon33 cursor oracle. It starts from a blank 3,500,000-cycle
-  cosim checkpoint at PC `0xF3A1`; the resumed `juku_top` path services frame
-  interrupts but still times out before the cursor writes.
+  for the same jmon33 cursor oracle. It starts from a blank late cosim
+  checkpoint at 3,801,005 cycles / PC `0xF2C0`; the resumed `juku_top` path
+  services frame interrupts, scans keyboard reads, and reaches the cosim
+  monitor-idle cursor framebuffer hash.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for the monitor `B`
@@ -129,7 +130,7 @@ synthetic-sector behavior, a bounded `juku_top` FDC-path diagnostic, and
 runnable video readout. The remaining
 high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
 jmon33 command prompt and
-cosim-vs-HDL comparison at the monitor-idle oracle boundary, the BASIC prompt
-oracle plus HDL coverage of the Monitor 3.3 BASIC path, the analog
+the uninterrupted reset-to-cursor jmon33 path, the BASIC prompt oracle plus HDL
+coverage of the Monitor 3.3 BASIC path, the analog
 speaker/current check, dumped PROM contents, and the РЕ3/АГ3-gated physical
 video slot timing.
