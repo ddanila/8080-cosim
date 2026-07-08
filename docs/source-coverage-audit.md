@@ -29,7 +29,8 @@ or disk image has been fully mined.
   ROM-window probes.
 - Arti EKDOS source files are now vendored under `ref/ekdos-source/`. `EKDOS30.ASM`
   records the 52K EKDOS 2.30 CP/M BIOS monitor calls, disk parameters, and floppy
-  handler interface used by the current `TDD`/FDC work.
+  handler interface used by the current `TDD`/FDC work; the generated
+  `docs/ekdos-source-inspection.md` report guards those constants.
 - Baltijets docs 002/003/007/009/010/014/015 are reflected in `PLAN.md` and the
   FDC/media/PROM/bring-up docs. The key conclusion remains: doc 007 describes
   programmed-part drawings but references small-PROM byte tables on disk, so the

@@ -39,6 +39,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   vendored WD1772/VG93 PLA/PLM table; CI verifies the report is fresh.
 - `scripts/export_wd1772_pla.py` — emits normalized JSON/CSV copies of the
   same PLA/PLM table for future controller-equation work.
+- `scripts/report_ekdos_source_inspection.py` — generated source-level check
+  for vendored `EKDOS30.ASM`; verifies the ROMBIOS floppy entry constants,
+  floppy work-area labels, and 40-entry sector translation tables used by the
+  EKDOS/FDC probes.
 - `sync/boot_check.sh` — cosim and HDL boot-regression guard against the real
   `ekta37` ROM, including the LVS-checked `juku_top`.
 - `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`

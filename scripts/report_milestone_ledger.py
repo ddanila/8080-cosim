@@ -76,6 +76,33 @@ def milestone_rows():
         "ref/ekdos-source/SHA256SUMS",
         "EKDOS30.ASM",
     )
+    ekdos_source_inspected = marker(
+        "docs/ekdos-source-inspection.md",
+        "Status: **PASS**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check EKDOS source inspection freshness",
+    )
+    ekdos_source_m1_phrase = ""
+    ekdos_source_m2_phrase = ""
+    if ekdos_source_inspected:
+        ekdos_source_m1_phrase = (
+            "Arti's EKDOS 2.30 source is vendored under `ref/ekdos-source/` "
+            "and source-inspected; "
+        )
+        ekdos_source_m2_phrase = (
+            " `docs/ekdos-source-inspection.md` confirms the EKDOS source's "
+            "ROMBIOS floppy entries, 160 side-tracks, and 40-sector "
+            "translation table."
+        )
+    elif ekdos_source_vendored:
+        ekdos_source_m1_phrase = (
+            "Arti's EKDOS 2.30 source is vendored under `ref/ekdos-source/`; "
+        )
+        ekdos_source_m2_phrase = (
+            " `ref/ekdos-source/EKDOS30.ASM` preserves the EKDOS 2.30 BIOS "
+            "source reference for monitor/FDC interface checks."
+        )
     manufacturing_ready = marker(
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -248,12 +275,7 @@ def milestone_rows():
                     if wd1772_pla_normalized
                     else ""
                 )
-                + (
-                    "Arti's EKDOS 2.30 source is vendored under "
-                    "`ref/ekdos-source/`; "
-                    if ekdos_source_vendored
-                    else ""
-                )
+                + ekdos_source_m1_phrase
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
             ),
             "next": "Locate programming disk/media or get RE3/RT4 dumps; diff any D6/D8 dumps against the exported reconstruction fallbacks.",
@@ -273,12 +295,7 @@ def milestone_rows():
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
                 "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
                 "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
-                + (
-                    " `ref/ekdos-source/EKDOS30.ASM` preserves the EKDOS 2.30 BIOS "
-                    "source reference for monitor/FDC interface checks."
-                    if ekdos_source_vendored
-                    else ""
-                )
+                + ekdos_source_m2_phrase
                 + (
                     " `sync/ekdos_checkpoint_prompt_check.sh` provides a "
                     "local/deep guard for the "

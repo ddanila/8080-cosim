@@ -18,6 +18,7 @@ jobs:
           sh -n sync/video_readout_check.sh
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
+            scripts/report_ekdos_source_inspection.py \
             scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
@@ -64,6 +65,11 @@ jobs:
             ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.hex \
             ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin \
             ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.hex
+
+      - name: Check EKDOS source inspection freshness
+        run: |
+          python3 scripts/report_ekdos_source_inspection.py
+          git diff --exit-code -- docs/ekdos-source-inspection.md
 
       - name: Check WD1772 PLA inspection freshness
         run: |

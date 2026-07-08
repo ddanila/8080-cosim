@@ -26,6 +26,8 @@ programming files.
 The public EKDOS source references from Arti's software mirror are vendored
 under `ref/ekdos-source/`. `EKDOS30.ASM` is useful when checking ROMBIOS/FDC
 call conventions and disk geometry; it is source evidence, not a boot image.
+`docs/ekdos-source-inspection.md` is generated from that source and guards the
+stable monitor/FDC constants used by the current probes.
 
 ## Required Image
 
@@ -100,11 +102,15 @@ surfaces.
 
 The same source directory also keeps Arti's `axb.asm` CP/M BIOS skeleton as a
 nearby reference file, with hashes in `ref/ekdos-source/SHA256SUMS`.
+The generated inspection confirms the source-level ROMBIOS floppy entries
+`FLOPPY=0xFF53`, `RWFLOPPY=0xFF59`, 160 side-tracks, and a 40-entry CP/M
+translation table matching 10 physical 512-byte sectors per side-track.
 
 ## Verification Command
 
 ```sh
 (cd ref/ekdos-source && sha256sum -c SHA256SUMS)
+python3 scripts/report_ekdos_source_inspection.py
 sync/juk_disk_check.sh
 sync/ekdos_fdc_probe.py
 ```
