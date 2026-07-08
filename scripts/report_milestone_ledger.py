@@ -90,6 +90,7 @@ def milestone_rows():
         "docs/fdc-readiness.md",
         "Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**",
     )
+    hdl_checkpoint_prompt_guard = Path("sync/ekdos_checkpoint_prompt_check.sh").exists()
     ekdos_timing_guard = marker(
         "docs/ekdos-timing-reference.md",
         "Status: **PASS**",
@@ -168,12 +169,19 @@ def milestone_rows():
                 "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
                 "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
                 + (
+                    " `sync/ekdos_checkpoint_prompt_check.sh` now guards the "
+                    "checkpoint-resumed `juku_top` late-FDC window reaching the "
+                    "EKDOS `A>` prompt bitmap."
+                    if hdl_checkpoint_prompt_guard
+                    else ""
+                )
+                + (
                     " `docs/ekdos-timing-reference.md` pins the fast cosim timing window "
                     "for first frame IRQ and first FDC command. "
                     if ekdos_timing_guard
                     else " "
                 )
-                + "Full ROMBIOS-to-EKDOS prompt execution in `juku_top` remains open."
+                + "Full uninterrupted ROMBIOS-to-EKDOS prompt execution in `juku_top` remains open."
                 if ekdos_juku1_prompt and hdl_fdc_vendored_sector
                 else "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
@@ -197,7 +205,7 @@ def milestone_rows():
                 "or external-media FDC in `juku_top`."
             ),
             "next": (
-                "Drive the full ROMBIOS TDD path through juku_top to an EKDOS prompt."
+                "Drive the full ROMBIOS TDD path through juku_top to an EKDOS prompt without checkpoint/resume."
                 if hdl_fdc_vendored_sector
                 else "Connect vendored raw disk media through juku_top."
             ),

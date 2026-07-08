@@ -71,6 +71,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   JUKU_TOP_CHECKPOINT_FDC_WRITES=63085 JUKU_TOP_CHECKPOINT_FDC_STOP_IO=1
   JUKU_TOP_CHECKPOINT_FDC_STOP_DATA_READ=0`, and the earlier key-window
   checkpoint with `JUKU_TOP_CHECKPOINT_FDC_WRITES=42000`.
+- `sync/ekdos_checkpoint_prompt_check.sh` — CI guard for the strongest current
+  HDL EKDOS prompt proof. It runs the late checkpoint window through
+  `sync/juku_top_checkpoint_fdc_probe.py` and requires checkpoint-resumed
+  `juku_top` to render the EKDOS `A>` prompt bitmap.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.

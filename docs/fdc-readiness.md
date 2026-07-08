@@ -42,7 +42,7 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   resume probe: it seeds the vm80a core at a clean M1 fetch boundary from that
   loaded checkpoint and, when run locally, reaches the pinned post-checkpoint
   PIC `0xD6` write and no-key keyboard `0xCF` read through decoded ports.
-- `sync/juku_top_checkpoint_fdc_probe.py` extends that non-CI checkpointed
+- `sync/juku_top_checkpoint_fdc_probe.py` extends that checkpointed
   diagnostic with frame IRQs and fixed `TDD` keyboard stimulus. Its default
   cycle-targeted checkpoint at 8,711,550 cycles / 63,095 framebuffer writes /
   PC `0xE643` resumes `juku_top` and drains 13 full 512-byte sectors
@@ -54,7 +54,8 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   the full 10,752-byte FDC data-read count seen on the cosim `A>` path. The
   same late checkpoint can continue past the final FDC sector burst and render
   the EKDOS `A>` prompt bitmap at `x=0`, `y=70` through checkpoint-resumed
-  `juku_top` CPU execution. The
+  `juku_top` CPU execution. `sync/ekdos_checkpoint_prompt_check.sh` promotes
+  that late checkpoint prompt proof into a CI guard. The
   single uninterrupted 10,752-byte checkpoint target still times out after the
   first 6,656-byte boundary around VRAM write count 63,155, so this remains a
   split checkpoint/prompt proof rather than an uninterrupted top-level prompt
@@ -81,6 +82,7 @@ sync/ekdos_checkpoint_reference.py
 sync/juku_top_checkpoint_load_check.py
 sync/juku_top_checkpoint_resume_probe.py
 sync/juku_top_checkpoint_fdc_probe.py
+sync/ekdos_checkpoint_prompt_check.sh
 sync/juku_top_fdc_probe.sh
 ```
 
@@ -104,7 +106,7 @@ sync/juku_top_fdc_probe.sh
 | focused checkpoint-resumed `juku_top` probe reaches first post-checkpoint PIC write and no-key keyboard read | PASS (non-CI) |
 | checkpoint-resumed `juku_top` from the cycle-targeted FDC checkpoint drains 6,656 data-register reads | PASS (non-CI) |
 | checkpoint-resumed `juku_top` from the late FDC checkpoint drains 4,096 more data-register reads | PASS (non-CI) |
-| checkpoint-resumed `juku_top` from the late FDC checkpoint reaches EKDOS `A>` prompt bitmap | PASS (non-CI) |
+| checkpoint-resumed `juku_top` from the late FDC checkpoint reaches EKDOS `A>` prompt bitmap | PASS |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
 
@@ -152,10 +154,11 @@ sync/juku_top_fdc_probe.sh
   immediately before a later read-sector command and drains the remaining
   8 full sectors. These split checkpoint windows cover all 10,752 FDC
   data-register reads observed before the cosim prompt.
-- `docs/juku-top-checkpoint-fdc-prompt-probe.md` records the same late
+- `sync/ekdos_checkpoint_prompt_check.sh` and
+  `docs/juku-top-checkpoint-fdc-prompt-probe.md` record the same late
   checkpoint continuing past the final FDC sector burst to the EKDOS `A>`
-  prompt bitmap. This is a checkpoint-resumed prompt proof, not yet an
-  uninterrupted full-run HDL `A>` prompt proof.
+  prompt bitmap. This is now a guarded checkpoint-resumed prompt proof, not yet
+  an uninterrupted full-run HDL `A>` prompt proof.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
