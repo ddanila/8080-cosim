@@ -82,7 +82,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/juku_top_fdc_probe.sh` — bounded HDL diagnostic for the remaining
   `juku_top` ROMBIOS-to-FDC boundary; enables vendored disk media, frame
   interrupts, fixed `TDD` keyboard stimulus, traces VRAM progress and PIC setup,
-  and can stop on decoded PIC/PPI/WD1793 I/O.
+  and can stop on decoded PIC/PPI/WD1793 I/O. Set
+  `JUKU_TOP_FDC_STOPPROMPT=1` and `JUKU_TOP_FDC_STOPFDC=0` for a long
+  uninterrupted run that stops only if the EKDOS `A>` bitmap appears at
+  `x=0`, `y=70`.
 - `sync/juku_top_periph_bus_check.sh` — fast direct-bus `juku_top` guard for
   the post-banner peripheral boundary; drives decoded keyboard/PIC/PPI/FDC
   ports, verifies the pinned no-key `0xCF` and shifted-`T` `0x88` keyboard

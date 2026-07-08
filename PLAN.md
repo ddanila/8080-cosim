@@ -239,9 +239,13 @@ debugging session saved on real hardware.
    now also pins the full cosim I/O event stream through the no-key read,
    shifted `T` key read, and first FDC command, tying the direct-bus harness to
    the real ROMBIOS sequence.
-   Remaining target: drive the uninterrupted full ROMBIOS `TDD` path through
-   `juku_top` to the EKDOS prompt with that external media, without relying on
-   checkpoint/resume acceleration.
+   `sync/juku_top_fdc_probe.sh` now also exposes `JUKU_TOP_FDC_STOPPROMPT=1`
+   as the uninterrupted-run counterpart to the checkpoint prompt oracle, so a
+   long top-level run can stop exactly when the EKDOS `A>` bitmap appears at
+   `x=0`, `y=70` instead of relying on a coarse VRAM count. Remaining target:
+   drive the uninterrupted full ROMBIOS `TDD` path through `juku_top` to the
+   EKDOS prompt with that external media, without relying on checkpoint/resume
+   acceleration.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

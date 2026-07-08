@@ -25,6 +25,7 @@ STOPIO=${JUKU_TOP_FDC_STOPIO:-0}
 STOPFDC=${JUKU_TOP_FDC_STOPFDC:-1}
 STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
 STOPPPI=${JUKU_TOP_FDC_STOPPPI:-0}
+STOPPROMPT=${JUKU_TOP_FDC_STOPPROMPT:-0}
 TIMEOUT_S=${JUKU_TOP_FDC_TIMEOUT:-60}
 VRAM_COPY=${JUKU_TOP_FDC_VRAM_COPY:-}
 STOPPC=${JUKU_TOP_FDC_STOPPC:-}
@@ -50,6 +51,7 @@ if command -v timeout >/dev/null; then
     "${stoppc_arg[@]}" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
     +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+    +stopprompt="$STOPPROMPT" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   rc=$?
 else
@@ -60,6 +62,7 @@ else
     "${stoppc_arg[@]}" \
     +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
     +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+    +stopprompt="$STOPPROMPT" \
     +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   rc=$?
 fi
@@ -73,6 +76,7 @@ if [ -f "$OLD_VRAM" ]; then cp "$OLD_VRAM" hdl/sim/vram_top.bin; else rm -f hdl/
 
 fdc_stop=$(grep -m1 '^\[FDC\] stop' "$OUT" || true)
 fdc_first=$(grep -m1 '^\[FDC\]' "$OUT" || true)
+prompt_line=$(grep -m1 '^\[PROMPT\] EKDOS A> prompt reached' "$OUT" || true)
 key_first=$(grep -m1 '^\[KBD\]' "$OUT" || true)
 key_last=$(grep '^\[KBD\]' "$OUT" | tail -1 || true)
 pic_first=$(grep -m1 '^\[PIC\]' "$OUT" || true)
@@ -101,7 +105,12 @@ rawio_lines=$(grep -c '^\[RAWIO\]' "$OUT" || true)
 
 status="HDL JUKU_TOP FDC PATH NOT YET OBSERVED"
 fdc_result="NO"
-if [ -n "$fdc_stop" ]; then
+prompt_result="NO"
+if [ -n "$prompt_line" ]; then
+  status="HDL JUKU_TOP EKDOS PROMPT REACHED"
+  fdc_result="YES"
+  prompt_result="YES"
+elif [ -n "$fdc_stop" ]; then
   status="HDL JUKU_TOP FDC PATH OBSERVED"
   fdc_result="YES"
 elif [ "$rc" -eq 124 ]; then
@@ -138,10 +147,12 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPFDC\` default \`1\`
 - \`JUKU_TOP_FDC_STOPPIC\` default \`0\`
 - \`JUKU_TOP_FDC_STOPPPI\` default \`0\`
+- \`JUKU_TOP_FDC_STOPPROMPT\` default \`0\`; set to \`1\` to stop when the
+  EKDOS \`A>\` bitmap appears at \`x=0\`, \`y=70\`
 - \`JUKU_TOP_FDC_STOPPC\` optional hexadecimal CPU PC stop hook
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPC=${STOPPC:-none} TIMEOUT=$TIMEOUT_S\`.
+Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -157,6 +168,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 | PPI key-read trace observed | $(if [ -n "$ppi_key_first" ]; then echo PASS; else echo NO; fi) |
 | IRQ trace observed | $(if [ -n "$irq_first" ]; then echo PASS; else echo NO; fi) |
 | decoded FDC I/O observed | $fdc_result |
+| EKDOS \`A>\` prompt bitmap observed | $prompt_result |
 | keyboard trace lines | \`$kbd_lines\` |
 | VRAM progress trace lines | \`$progress_lines\` |
 | PIC trace lines | \`$pic_lines\` |
@@ -182,6 +194,7 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 - Raw I/O stop line: \`${rawio_stop:-none}\`
 - First FDC line: \`${fdc_first:-none}\`
 - FDC stop line: \`${fdc_stop:-none}\`
+- EKDOS prompt line: \`${prompt_line:-none}\`
 - PC stop line: \`${pc_stop:-none}\`
 - Time-cap line: \`${timecap_line:-none}\`
 - CPU state line: \`${cpu_line:-none}\`
@@ -192,7 +205,8 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 
 - The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+traceio=1\`,
   \`+stopio=N\`, \`+tracepic=1\`, \`+stoppic=N\`, \`+tracefdc=1\`, and
-  \`+stopfdc=N\`, plus \`+stoppc=HEX\` for exact CPU address stops.
+  \`+stopfdc=N\`, plus \`+stopprompt=1\` for the EKDOS \`A>\` bitmap and
+  \`+stoppc=HEX\` for exact CPU address stops.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
 - \`docs/ekdos-timing-reference.md\` shows the fast cosim target for this same

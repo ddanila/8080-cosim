@@ -91,6 +91,13 @@ def milestone_rows():
         "Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**",
     )
     hdl_checkpoint_prompt_guard = Path("sync/ekdos_checkpoint_prompt_check.sh").exists()
+    hdl_uninterrupted_prompt_hook = marker(
+        "sync/juku_top_fdc_probe.sh",
+        "JUKU_TOP_FDC_STOPPROMPT",
+    ) and marker(
+        "hdl/sim/juku_top_tb.v",
+        "[PROMPT] EKDOS A> prompt reached",
+    )
     ekdos_timing_guard = marker(
         "docs/ekdos-timing-reference.md",
         "Status: **PASS**",
@@ -181,6 +188,12 @@ def milestone_rows():
                     "for first frame IRQ and first FDC command. "
                     if ekdos_timing_guard
                     else " "
+                )
+                + (
+                    "`sync/juku_top_fdc_probe.sh` exposes `JUKU_TOP_FDC_STOPPROMPT=1` "
+                    "for uninterrupted long runs to stop on the same prompt bitmap. "
+                    if hdl_uninterrupted_prompt_hook
+                    else ""
                 )
                 + "Full uninterrupted ROMBIOS-to-EKDOS prompt execution in `juku_top` remains open."
                 if ekdos_juku1_prompt and hdl_fdc_vendored_sector

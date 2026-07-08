@@ -18,7 +18,7 @@
 
 module juku_top_tb();
   reg osc=0;
-  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, traceprogress=0;
+  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, stopprompt=0, prompt_seen=0, traceprogress=0;
   reg vram_seen=0, sq=0;
   integer stoppc_en=0; reg [15:0] stoppc=16'h0000;
 
@@ -235,6 +235,12 @@ module juku_top_tb();
       $display("[VRAM] jmon33 cursor oracle reached (mcyc=%0d writes=%0d)", mcyc, vram_writes);
       #60 dump_vram; $finish;
     end
+    if (stopprompt && !prompt_seen && ekdos_prompt_ok()) begin
+      prompt_seen = 1;
+      $display("[PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      #60 dump_vram; $finish;
+    end
     if (vram_writes == max_vram) begin
       $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); #60 dump_vram; $finish;
     end
@@ -251,6 +257,28 @@ module juku_top_tb();
     cursor_oracle_ok = 1'b1;
     for (y=20; y<30; y=y+1)
       if (dram_byte(16'hD800 + y*40 + 1) !== 8'hFF) cursor_oracle_ok = 1'b0;
+  end endfunction
+  function [15:0] ekdos_prompt_row(input integer row); begin
+    case (row)
+      0: ekdos_prompt_row = 16'h0000;
+      1: ekdos_prompt_row = 16'h0810;
+      2: ekdos_prompt_row = 16'h1408;
+      3: ekdos_prompt_row = 16'h2204;
+      4: ekdos_prompt_row = 16'h2202;
+      5: ekdos_prompt_row = 16'h3e04;
+      6: ekdos_prompt_row = 16'h2208;
+      7: ekdos_prompt_row = 16'h2210;
+      8: ekdos_prompt_row = 16'h0000;
+      9: ekdos_prompt_row = 16'h0000;
+      default: ekdos_prompt_row = 16'hffff;
+    endcase
+  end endfunction
+  function ekdos_prompt_ok; integer y; reg [15:0] got; begin
+    ekdos_prompt_ok = 1'b1;
+    for (y=0; y<10; y=y+1) begin
+      got = {dram_byte(16'hD800 + (70 + y)*40), dram_byte(16'hD800 + (70 + y)*40 + 1)};
+      if (got !== ekdos_prompt_row(y)) ekdos_prompt_ok = 1'b0;
+    end
   end endfunction
   task dump_vram; begin
     fd=$fopen("hdl/sim/vram_top.bin","wb");
@@ -307,6 +335,7 @@ module juku_top_tb();
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)
     if ($value$plusargs("cursorstop=%d", cursorstop)) ; // stop when jmon33 idle cursor is in VRAM
+    if ($value$plusargs("stopprompt=%d", stopprompt)) ; // stop when EKDOS A> is in VRAM
     if (keyat != 0) begin
       kbd_en=1;
       if (ekdoskeys == 0) begin kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end

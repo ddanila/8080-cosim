@@ -196,7 +196,10 @@ Historical merge notes:
   FDC path remains open for an uninterrupted reset-to-prompt run, but
   `sync/ekdos_checkpoint_prompt_check.sh` now provides a named local/deep guard
   for the checkpoint-resumed late FDC window reaching the EKDOS `A>` prompt
-  bitmap through `juku_top`.
+  bitmap through `juku_top`. The uninterrupted top-level FDC probe also has an
+  opt-in `JUKU_TOP_FDC_STOPPROMPT=1` stop hook for that same bitmap oracle, so
+  future long runs can terminate at the actual M2 target rather than a coarse
+  framebuffer-write limit.
 - **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
   runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
   traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains
