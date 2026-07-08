@@ -34,5 +34,6 @@ sync/basic_cart_check.sh
 - Exercise the BASIC path to a live prompt. `sync/basic_launch_probe.py` now
   documents that Monitor 3.3 reads both `jbasic11.bin` and the legacy BAS0-3
   image from the cartridge overlay and then executes in the `0x4000..0xBFFF`
-  RAM window, while EktaSoft 3.43m #0037 still does not select the cartridge
-  overlay in the same bounded run.
+  RAM window. The launch probe records this as a compatibility boundary because
+  the local MAME source warns about Monitor 3.3/JBASIC compatibility and both
+  BASIC images enter with absolute `JMP 0x0107`.

@@ -35,8 +35,8 @@ schematic*), with `cosim/` + MAME as validation oracles.
   HDL WD1793 synthetic-sector behavior is guarded; jmon33 first-write HDL coverage
   passes while the stronger cursor boundary remains blank at the bounded 300-write
   diagnostic; BASIC cartridge reads are proven for both `jbasic11.bin` and the
-  legacy BAS0-3 image, but the Monitor 3.3 RAM execution window remains
-  zero-filled.
+  legacy BAS0-3 image, but the Monitor 3.3 path is now documented as a
+  compatibility boundary and the RAM execution window remains zero-filled.
 
 Historical merge notes:
 
@@ -157,7 +157,10 @@ Historical merge notes:
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM
   window. The current boundary is sharper: that window sees accepted writes,
   but they are all `0x00`; execution fetches a zero-filled NOP sled, and no
-  user-visible BASIC prompt is produced.
+  user-visible BASIC prompt is produced. The probe also records why this is a
+  compatibility boundary: MAME's local source warns that Monitor 3.3 does not
+  seem compatible with the JBASIC expansion cartridge, and both tested BASIC
+  images start with absolute `JMP 0x0107`, not a direct `0x4000` entry.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
@@ -169,7 +172,8 @@ Historical merge notes:
   `'B'` → ROM BASIC (separate `jbasic11.bin`; the optional cartridge window is guarded by
   `sync/basic_cart_check.sh`, and `sync/basic_launch_probe.py` now records that Monitor 3.3
   reads both `jbasic11.bin` and the legacy BAS0-3 image before executing in the
-  `0x4000..0xBFFF` RAM window while EktaSoft 3.43m #0037 remains a compatibility boundary);
+  `0x4000..0xBFFF` RAM window while the Monitor 3.3/JBASIC pairing itself remains
+  a compatibility boundary);
   `'A'` → mini-assembler
   (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:

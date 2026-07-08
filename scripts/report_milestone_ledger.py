@@ -255,23 +255,26 @@ def milestone_rows():
                 "framebuffer hash from a blank pre-cursor checkpoint. "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
                 "cartridge and executing in the 0x4000 RAM window, but that window "
-                "only receives zero-byte writes; EktaSoft 3.43m #0037 remains a "
-                "compatibility boundary."
+                "only receives zero-byte writes. The same report now records the "
+                "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
+                "images' absolute JMP 0x0107 entry."
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
                 "cartridge and executing in the 0x4000 RAM window, but that window "
-                "only receives zero-byte writes; EktaSoft 3.43m #0037 remains a "
-                "compatibility boundary."
+                "only receives zero-byte writes. The same report now records the "
+                "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
+                "images' absolute JMP 0x0107 entry."
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
-                "Prove the uninterrupted reset-to-cursor jmon33 path, add a BASIC "
-                "prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage."
+                "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
+                "correct monitor/removable-memory BASIC pairing, add a BASIC prompt "
+                "oracle, and port that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."
             ),
         },
         {

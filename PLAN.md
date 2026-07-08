@@ -262,8 +262,12 @@ debugging session saved on real hardware.
    `roms/jbasic11.bin` and the legacy `ref/firmware/BAS0-3.HEX` media. Both
    images read through the cartridge overlay and then execute in the
    `0x4000..0xBFFF` RAM window, while that RAM window receives only zero-byte
-   writes and remains zero-filled; the EktaSoft 3.43m #0037 boot ROM still does
-   not select the cartridge overlay in the same bounded run. The jmon33
+   writes and remains zero-filled. The probe now records the compatibility
+   signals behind that boundary: MAME's local source warns that Monitor 3.3 does
+   not seem compatible with the JBASIC expansion cartridge, and both BASIC media
+   images start with an absolute `JMP 0x0107` rather than a direct `0x4000`
+   window entry. The EktaSoft 3.43m #0037 boot ROM still does not select the
+   cartridge overlay in the same bounded run. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
@@ -287,8 +291,9 @@ debugging session saved on real hardware.
    cursor framebuffer SHA256 as cosim
    (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, prove the user-visible jmon33 command prompt, add a user-visible BASIC
-   prompt oracle, and port the stronger Monitor 3.3 BASIC path to HDL coverage.
+   path, prove the user-visible jmon33 command prompt, identify the correct
+   monitor/removable-memory pairing for a user-visible BASIC prompt oracle, and
+   port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

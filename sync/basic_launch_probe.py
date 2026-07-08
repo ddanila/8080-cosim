@@ -13,10 +13,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "docs" / "basic-launch-probe.md"
+REPORT = Path(os.environ.get("BASIC_LAUNCH_REPORT", ROOT / "docs" / "basic-launch-probe.md"))
 TRACE_C = ROOT / "cosim" / "trace.c"
 VRAM = ROOT / "cosim" / "vram.bin"
 VRAM_SIZE = 40 * 241
+MAME_JUKU = ROOT / "ref" / "mame_juku.cpp"
 
 
 @dataclass(frozen=True)
@@ -26,6 +27,19 @@ class ProbeCase:
     frame_cycles: int
     cart_name: str
     cart: Path
+
+
+@dataclass(frozen=True)
+class CartAnalysis:
+    name: str
+    size: int
+    sha1: str
+    first_bytes: str
+    entry_jmp: int | None
+    basic_offsets: tuple[int, ...]
+    ready_offsets: tuple[int, ...]
+    error_offsets: tuple[int, ...]
+
 
 STOP_RE = re.compile(
     r"stopped pc=0x([0-9A-Fa-f]{4}) cyc=([0-9]+) halted=([0-9]+) "
@@ -221,6 +235,44 @@ def visible_pixels(vram: bytes) -> int:
     return sum(byte.bit_count() for byte in vram)
 
 
+def find_offsets(data: bytes, needle: bytes) -> tuple[int, ...]:
+    offsets = []
+    start = 0
+    while True:
+        pos = data.find(needle, start)
+        if pos < 0:
+            return tuple(offsets)
+        offsets.append(pos)
+        start = pos + 1
+
+
+def format_offsets(offsets: tuple[int, ...]) -> str:
+    if not offsets:
+        return "-"
+    return ", ".join(f"0x{offset:04X}" for offset in offsets)
+
+
+def analyze_cart(name: str, path: Path) -> CartAnalysis:
+    data = path.read_bytes()
+    entry_jmp = data[1] | (data[2] << 8) if len(data) >= 3 and data[0] == 0xC3 else None
+    return CartAnalysis(
+        name=name,
+        size=len(data),
+        sha1=hashlib.sha1(data).hexdigest(),
+        first_bytes=data[:8].hex(" "),
+        entry_jmp=entry_jmp,
+        basic_offsets=find_offsets(data, b"BASIC"),
+        ready_offsets=find_offsets(data, b"READY"),
+        error_offsets=find_offsets(data, b"ERROR"),
+    )
+
+
+def mame_jmon33_note_present() -> bool:
+    return "Does not seem to be compatible with JBASIC expansion cartridge" in MAME_JUKU.read_text(
+        errors="replace"
+    )
+
+
 def decode_hex_bytes(path: Path) -> bytes:
     text = path.read_text(errors="replace")
     hex_digits = "".join(ch for ch in text if ch in "0123456789abcdefABCDEF")
@@ -330,8 +382,11 @@ def run_probe(case: ProbeCase) -> tuple[subprocess.CompletedProcess[str], bytes]
 
 def main() -> int:
     results = []
+    cart_analyses: dict[str, CartAnalysis] = {}
+    mame_note = mame_jmon33_note_present()
     with tempfile.TemporaryDirectory(prefix="basic-launch-carts.") as cart_tmp:
         for case in probe_cases(Path(cart_tmp)):
+            cart_analyses.setdefault(case.cart_name, analyze_cart(case.cart_name, case.cart))
             proc, vram = run_probe(case)
             stop = parse_stop(proc.stderr)
             pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
@@ -400,8 +455,37 @@ def main() -> int:
         f"- `BASIC_LAUNCH_KEYS` default `{os.environ.get('BASIC_LAUNCH_KEYS', 'B')}`",
         "- `BASIC_LAUNCH_ROM` default unset (runs `jmon33.bin` and `ekta37.bin`)",
         "- `BASIC_LAUNCH_CART` default unset (runs `jbasic11.bin` plus legacy `BAS0-3.HEX` for jmon33)",
+        f"- `BASIC_LAUNCH_REPORT` default `{REPORT.relative_to(ROOT) if REPORT.is_relative_to(ROOT) else REPORT}`",
         f"- `BASIC_LAUNCH_MAX_CYCLES` default `{os.environ.get('BASIC_LAUNCH_MAX_CYCLES', '120000000')}`",
         "- `BASIC_LAUNCH_FRAME_CYCLES` default unset (`jmon33`: `200000`, `ekta37`: `40000`)",
+        "",
+        "## Cartridge compatibility signals",
+        "",
+        "| Cartridge | Bytes | SHA1 | First bytes | Entry jump | Strings |",
+        "| --- | ---: | --- | --- | --- | --- |",
+        *[
+            (
+                f"| `{analysis.name}` | `{analysis.size}` | `{analysis.sha1}` | "
+                f"`{analysis.first_bytes}` | "
+                f"{'`0x%04X`' % analysis.entry_jmp if analysis.entry_jmp is not None else '-'} | "
+                f"`BASIC`: {format_offsets(analysis.basic_offsets)}; "
+                f"`READY`: {format_offsets(analysis.ready_offsets)}; "
+                f"`ERROR`: {format_offsets(analysis.error_offsets)} |"
+            )
+            for analysis in cart_analyses.values()
+        ],
+        "",
+        "Compatibility notes:",
+        "",
+        "- `ref/mame_juku.cpp` records Monitor 3.3 as `Monitor/Bootstrap 3.3 \\w JBASIC`",
+        "  and the local source contains the compatibility warning that it does not",
+        f"  seem compatible with the JBASIC expansion cartridge: {'PASS' if mame_note else 'MISSING'}.",
+        "- The BASIC images do contain `BASIC`, `READY`, and `ERROR` strings, but their",
+        "  first instruction is an absolute `JMP 0x0107`; that is not a direct",
+        "  `0x4000`-window entry point by itself.",
+        "- Baltijets doc 003 acceptance notes mention BASIC launch from the removable",
+        "  32K memory expander with command `A`, expecting a BASIC banner and `READY`.",
+        "  That is a separate compatibility target from Monitor 3.3's current `B` path.",
         "",
         "## Evidence",
         "",
@@ -462,8 +546,11 @@ def main() -> int:
             )
     lines.extend(
         [
+            "- The current evidence is therefore a compatibility boundary, not just a",
+            "  missing prompt: the tested Monitor 3.3 path reads the media but does not",
+            "  execute the cartridge overlay as live BASIC code.",
             "- The remaining BASIC work is a user-visible BASIC prompt oracle and HDL-side",
-            "  coverage of this stronger Monitor 3.3 path.",
+            "  coverage of the correct monitor/removable-memory pairing once identified.",
         ]
     )
     lines.append("")
