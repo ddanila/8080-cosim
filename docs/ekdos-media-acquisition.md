@@ -35,6 +35,9 @@ The vendored Arti disk images are also cataloged by
 and identifies disk-side BASIC candidates: `JUKU1.CPM` contains `JBASIC.COM`,
 while `JUKPROG2.CPM` contains `JBASIC.COM`, `B80.COM`, `BRUN.COM`,
 `BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`.
+`scripts/extract_basic_disk_files.py` then vendors the strongest BASIC launch
+inputs under `ref/extracted-software/` and records the extraction boundary in
+`docs/basic-disk-extraction.md`.
 
 ## Required Image
 
@@ -119,6 +122,7 @@ translation table matching 10 physical 512-byte sectors per side-track.
 (cd ref/ekdos-source && sha256sum -c SHA256SUMS)
 python3 scripts/report_ekdos_source_inspection.py
 python3 scripts/report_vendored_disk_catalog.py
+python3 scripts/extract_basic_disk_files.py
 sync/juk_disk_check.sh
 sync/ekdos_fdc_probe.py
 ```

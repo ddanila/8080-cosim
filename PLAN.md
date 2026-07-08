@@ -36,8 +36,8 @@ only after Tier 2.
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
-| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, BASIC prompt oracle, and a short owner measurement list |
-| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums | РЕ3/РТ4 PROM binaries and executable BASIC prompt path |
+| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates; extracted BASIC candidates are guarded under `ref/extracted-software/` | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, BASIC prompt oracle, and a short owner measurement list |
+| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; disk BASIC candidates are extracted in `docs/basic-disk-extraction.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums | РЕ3/РТ4 PROM binaries and executable BASIC prompt path |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
 
@@ -65,8 +65,11 @@ The July 2026 survey of the online ecosystem changes the plan materially:
    The visible CP/M directory catalog is generated in
    `docs/vendored-disk-catalog.md`, including `JBASIC.COM` on the default
    `JUKU1.CPM` boot disk and a fuller BASIC compiler/runtime set on
-   `JUKPROG2.CPM`. Nothing blocks an FDC/EKDOS milestone in the twin except the
-   HDL external-media path.
+   `JUKPROG2.CPM`. `scripts/extract_basic_disk_files.py` now exports the
+   strongest disk-side BASIC candidates under `ref/extracted-software/` and
+   documents the `JUKU1.CPM` directory/raw-candidate mismatch in
+   `docs/basic-disk-extraction.md`. Nothing blocks an FDC/EKDOS milestone in
+   the twin except the HDL external-media path.
 4. **No other recreation exists** — no FPGA core, no clone PCB, no replica project
    found anywhere. This is first-of-its-kind; publishing results back matters.
 5. **Parts are obtainable**: КР580 family plentiful NOS on eBay; К565РУ5 ≡ 4164;
@@ -302,7 +305,11 @@ debugging session saved on real hardware.
    bounded `B` run. `scripts/report_vendored_disk_catalog.py` now records an
    independent disk-side BASIC lead: `media/disks/JUKU1.CPM` contains
    `JBASIC.COM`, and `JUKPROG2.CPM` contains `JBASIC.COM`, `B80.COM`,
-   `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`. The jmon33
+   `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`.
+   `docs/basic-disk-extraction.md` now preserves `JUKPROG2_JBASIC.COM` as the
+   best directory-backed executable candidate and
+   `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset candidate with
+   `BASIC`/`READY`/`ERROR` strings. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the

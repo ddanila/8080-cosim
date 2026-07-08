@@ -18,6 +18,7 @@ jobs:
           sh -n sync/video_readout_check.sh
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
+            scripts/extract_basic_disk_files.py \
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
             scripts/export_wd1772_pla.py \
@@ -76,6 +77,16 @@ jobs:
         run: |
           python3 scripts/report_vendored_disk_catalog.py
           git diff --exit-code -- docs/vendored-disk-catalog.md
+
+      - name: Check BASIC disk extraction freshness
+        run: |
+          python3 scripts/extract_basic_disk_files.py
+          git diff --exit-code -- \
+            docs/basic-disk-extraction.md \
+            ref/extracted-software/JUKPROG2_JBASIC.COM \
+            ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM \
+            ref/extracted-software/README.md \
+            ref/extracted-software/SHA256SUMS
 
       - name: Check WD1772 PLA inspection freshness
         run: |

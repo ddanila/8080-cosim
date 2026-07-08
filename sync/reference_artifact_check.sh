@@ -21,6 +21,7 @@ check_dir() {
 
 check_dir ref/baltijets-tech-docs
 check_dir ref/ekdos-source
+check_dir ref/extracted-software
 check_dir ref/reconstructed-proms
 check_dir ref/wd1772-vg93
 

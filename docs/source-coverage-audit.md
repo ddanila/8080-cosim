@@ -12,7 +12,7 @@ or disk image has been fully mined.
 
 | Source | Current coverage | Gap |
 | --- | --- | --- |
-| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, and legacy ROM/BASIC materials are mirrored or reflected in `ref/`, `roms/`, board placement, BOM, and transcription docs. `tarkvara/JUKU1.7Z` and `JUKU2.7Z` are vendored under `media/disks/`; `JUKU1.CPM` boots to `A>` in cosim and `docs/vendored-disk-catalog.md` indexes the visible CP/M directory entries, including disk-side `JBASIC.COM` and BASIC toolchain files. `EKDOS30.ASM` and `axb.asm` are vendored under `ref/ekdos-source/` as source references for EKDOS/FDC behavior. | The Russian manuals, Estonian user manual, remaining software/game archives, emulator pages, `Noorte_Hääl_1987-04`, and forum links are not exhaustively mined for hardware-critical details. |
+| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, and legacy ROM/BASIC materials are mirrored or reflected in `ref/`, `roms/`, board placement, BOM, and transcription docs. `tarkvara/JUKU1.7Z` and `JUKU2.7Z` are vendored under `media/disks/`; `JUKU1.CPM` boots to `A>` in cosim and `docs/vendored-disk-catalog.md` indexes the visible CP/M directory entries, including disk-side `JBASIC.COM` and BASIC toolchain files. `docs/basic-disk-extraction.md` preserves the strongest extracted disk BASIC candidates under `ref/extracted-software/`. `EKDOS30.ASM` and `axb.asm` are vendored under `ref/ekdos-source/` as source references for EKDOS/FDC behavior. | The Russian manuals, Estonian user manual, remaining software/game archives, emulator pages, `Noorte_Hääl_1987-04`, and forum links are not exhaustively mined for hardware-critical details. |
 | `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction in `ref/baltijets-tech-docs/` and mined for factory test, ROM-programming, FDD, power, keyboard, and peripheral planning. The `tarkvara/` index was checked: Juku system binaries from `JUKUSYS.ZIP` are vendored under `media/system/`; Arti-derived `JUKU1/JUKU2` disk images are already vendored; the earlier `J3KUTIL4.JUK` image remains non-vendored transient prompt evidence. | The many additional museum `tarkvara/*.JUK` classroom/game/user disks and `kirjandus/` manuals are not exhaustively classified because they do not currently close a board/FDC/PROM blocker. Baltijets programming-disk files remain missing. |
 | `https://github.com/infoaed/juku3000/tree/master/roms` | The ROM lineage is covered: canonical ROMs are vendored under `roms/`; `jmon22.bin` is vendored from the public museum ROM bundle; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The repo still needs PROM provenance and HDL disk-backed media work, not more РФ2 ROM coverage. |
 | `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets/museum contact and public-preservation context. | Not a primary electrical source. Its exhibit text, photos, and linked historical references are not exhaustively mined into board/twin evidence. |
@@ -35,6 +35,12 @@ or disk image has been fully mined.
   images and records disk-side BASIC candidates. The default boot disk
   `JUKU1.CPM` contains `JBASIC.COM`; `JUKPROG2.CPM` contains `JBASIC.COM`,
   `B80.COM`, `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`.
+- `scripts/extract_basic_disk_files.py` extracts and vendors the strongest
+  disk-side BASIC candidates under `ref/extracted-software/`: a directory-backed
+  `JUKPROG2_JBASIC.COM` and a raw-offset `JUKU1_JBASIC_raw_candidate.COM`
+  with `BASIC`/`READY`/`ERROR` strings. The `JUKU1.CPM` directory entry is
+  preserved as catalog evidence but currently maps to erased bytes under the
+  same extractor.
 - Baltijets docs 002/003/007/009/010/014/015 are reflected in `PLAN.md` and the
   FDC/media/PROM/bring-up docs. The key conclusion remains: doc 007 describes
   programmed-part drawings but references small-PROM byte tables on disk, so the
@@ -87,5 +93,5 @@ material. The remaining source-risk items are narrower:
 - Owner/community confirmation for the generated bring-up verification list.
 - Optional mining of manuals/software for Tier 2/Tier 3 fidelity, especially
   storage workflows, keyboard/monitor operation, and original user-facing
-  software behavior. The vendored disk catalog makes the disk-side `JBASIC.COM`
-  path the next practical BASIC lead.
+  software behavior. The extracted disk BASIC candidates make the disk-side
+  `JBASIC.COM` path the next practical BASIC lead.

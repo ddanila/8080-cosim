@@ -93,6 +93,17 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check vendored disk catalog freshness",
     )
+    basic_disk_extracted = marker(
+        "docs/basic-disk-extraction.md",
+        "Status: **BASIC DISK FILES EXTRACTED**",
+    ) and exists(
+        "ref/extracted-software/JUKPROG2_JBASIC.COM"
+    ) and exists(
+        "ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM"
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check BASIC disk extraction freshness",
+    )
     ekdos_source_m1_phrase = ""
     ekdos_source_m2_phrase = ""
     if ekdos_source_inspected:
@@ -487,6 +498,15 @@ def milestone_rows():
                     if vendored_disk_cataloged
                     else ""
                 )
+                + (
+                    " `docs/basic-disk-extraction.md` vendors the strongest "
+                    "disk-side BASIC inputs under `ref/extracted-software/`: "
+                    "`JUKPROG2_JBASIC.COM` as the best directory-backed executable "
+                    "candidate and `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset "
+                    "candidate with `BASIC`/`READY`/`ERROR` strings."
+                    if basic_disk_extracted
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
@@ -514,6 +534,15 @@ def milestone_rows():
                     "lead: `JUKU1.CPM` contains `JBASIC.COM`, and `JUKPROG2.CPM` "
                     "contains `JBASIC.COM` plus BASIC compiler/runtime files."
                     if vendored_disk_cataloged
+                    else ""
+                )
+                + (
+                    " `docs/basic-disk-extraction.md` vendors the strongest "
+                    "disk-side BASIC inputs under `ref/extracted-software/`: "
+                    "`JUKPROG2_JBASIC.COM` as the best directory-backed executable "
+                    "candidate and `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset "
+                    "candidate with `BASIC`/`READY`/`ERROR` strings."
+                    if basic_disk_extracted
                     else ""
                 )
                 if basic_launch_reached

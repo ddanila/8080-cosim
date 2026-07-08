@@ -46,6 +46,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `scripts/report_vendored_disk_catalog.py` — generated catalog of visible
   CP/M directory entries in the vendored Arti disk images; CI verifies the
   report is fresh and records the disk-side `JBASIC.COM`/BASIC toolchain lead.
+- `scripts/extract_basic_disk_files.py` — generated extraction of the strongest
+  disk-side BASIC candidates under `ref/extracted-software/`; CI verifies the
+  extracted binaries, checksums, and report stay fresh.
 - `sync/boot_check.sh` — cosim and HDL boot-regression guard against the real
   `ekta37` ROM, including the LVS-checked `juku_top`.
 - `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`
