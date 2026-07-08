@@ -32,6 +32,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 
 - `sync/check.sh` — KiCad/HDL LVS connectivity, using KiCad CLI when available
   and the board JSON fallback otherwise.
+- `sync/reference_artifact_check.sh` — hash guard for vendored reference
+  artifacts under `ref/baltijets-tech-docs`, `ref/reconstructed-proms`, and
+  `ref/wd1772-vg93`.
 - `sync/boot_check.sh` — cosim and HDL boot-regression guard against the real
   `ekta37` ROM, including the LVS-checked `juku_top`.
 - `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`

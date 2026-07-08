@@ -32,6 +32,9 @@ jobs:
           python3 scripts/report_milestone_ledger.py
           git diff --exit-code -- docs/milestone-ledger.md
 
+      - name: Check vendored reference artifacts
+        run: ./sync/reference_artifact_check.sh
+
   lvs:
     runs-on: ubuntu-latest
     steps:
