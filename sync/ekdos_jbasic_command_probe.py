@@ -25,6 +25,11 @@ EXPECTED_KEY_POS = len(KEYS)
 EXPECTED_FINAL_VRAM_SHA256 = "60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b"
 EXPECTED_FINAL_LIT_PIXELS = 1175
 EXPECTED_NONZERO_LINES = 68
+EXPECTED_COMMAND_TEXT = "A>JBASIC"
+EXPECTED_COMMAND_Y = 71
+EXPECTED_READY_TEXT = "READY"
+EXPECTED_READY_Y = 121
+EXPECTED_CURSOR_Y = 130
 
 
 STOP_RE = re.compile(
@@ -50,6 +55,108 @@ VIDEO_PORT_LABELS = {
     0x19: "PIT2 counter 1",
     0x1A: "PIT2 counter 2",
     0x1B: "PIT2 control",
+}
+
+SCREEN_GLYPHS = {
+    ">": (
+        "...#....",
+        "....#...",
+        ".....#..",
+        "......#.",
+        ".....#..",
+        "....#...",
+        "...#....",
+    ),
+    "A": (
+        "....#...",
+        "...#.#..",
+        "..#...#.",
+        "..#...#.",
+        "..#####.",
+        "..#...#.",
+        "..#...#.",
+    ),
+    "B": (
+        "..####..",
+        "...#..#.",
+        "...#..#.",
+        "...###..",
+        "...#..#.",
+        "...#..#.",
+        "..####..",
+    ),
+    "C": (
+        "...###..",
+        "..#...#.",
+        "..#.....",
+        "..#.....",
+        "..#.....",
+        "..#...#.",
+        "...###..",
+    ),
+    "D": (
+        "..####..",
+        "...#..#.",
+        "...#..#.",
+        "...#..#.",
+        "...#..#.",
+        "...#..#.",
+        "..####..",
+    ),
+    "E": (
+        "..#####.",
+        "..#.....",
+        "..#.....",
+        "..####..",
+        "..#.....",
+        "..#.....",
+        "..#####.",
+    ),
+    "I": (
+        "...###..",
+        "....#...",
+        "....#...",
+        "....#...",
+        "....#...",
+        "....#...",
+        "...###..",
+    ),
+    "J": (
+        "....###.",
+        ".....#..",
+        ".....#..",
+        ".....#..",
+        ".....#..",
+        "..#..#..",
+        "...##...",
+    ),
+    "R": (
+        "..####..",
+        "..#...#.",
+        "..#...#.",
+        "..#...#.",
+        "..####..",
+        "..#..#..",
+        "..#...#.",
+    ),
+    "S": (
+        "...###..",
+        "..#...#.",
+        "..#.....",
+        "...###..",
+        "......#.",
+        "..#...#.",
+        "...###..",
+    ),
+    "Y": (
+        "..#...#.",
+        "..#...#.",
+        "...#.#..",
+        "....#...",
+        "....#...",
+        "....#...",
+        "....#...",
+    ),
 }
 
 
@@ -209,6 +316,56 @@ def vram_summary() -> dict[str, int | str]:
     }
 
 
+def screen_cell(data: bytes, cell_x: int, y: int, height: int = 7) -> tuple[str, ...]:
+    rows: list[str] = []
+    for row_y in range(y, y + height):
+        start = row_y * 40 + cell_x
+        if start < 0 or start >= len(data):
+            rows.append("........")
+            continue
+        byte = data[start]
+        rows.append("".join("#" if (byte >> (7 - bit)) & 1 else "." for bit in range(8)))
+    return tuple(rows)
+
+
+def screen_text_at(data: bytes, text: str, y: int, cell_x: int = 0) -> bool:
+    for offset, char in enumerate(text):
+        expected = SCREEN_GLYPHS.get(char)
+        if expected is None or screen_cell(data, cell_x + offset, y) != expected:
+            return False
+    return True
+
+
+def screen_solid_cell(data: bytes, cell_x: int, y: int, height: int = 10) -> bool:
+    return all(row == "########" for row in screen_cell(data, cell_x, y, height))
+
+
+def screen_text_summary() -> dict[str, str | bool | int]:
+    try:
+        data = VRAM.read_bytes()
+    except FileNotFoundError:
+        return {
+            "command_text": EXPECTED_COMMAND_TEXT,
+            "command_y": EXPECTED_COMMAND_Y,
+            "command_visible": False,
+            "ready_text": EXPECTED_READY_TEXT,
+            "ready_y": EXPECTED_READY_Y,
+            "ready_visible": False,
+            "cursor_y": EXPECTED_CURSOR_Y,
+            "cursor_visible": False,
+        }
+    return {
+        "command_text": EXPECTED_COMMAND_TEXT,
+        "command_y": EXPECTED_COMMAND_Y,
+        "command_visible": screen_text_at(data, EXPECTED_COMMAND_TEXT, EXPECTED_COMMAND_Y),
+        "ready_text": EXPECTED_READY_TEXT,
+        "ready_y": EXPECTED_READY_Y,
+        "ready_visible": screen_text_at(data, EXPECTED_READY_TEXT, EXPECTED_READY_Y),
+        "cursor_y": EXPECTED_CURSOR_Y,
+        "cursor_visible": screen_solid_cell(data, 0, EXPECTED_CURSOR_Y),
+    }
+
+
 def live_candidate_summary(ram: bytes) -> dict[str, int | str | bool]:
     try:
         candidate = LIVE_CANDIDATE.read_bytes()
@@ -268,6 +425,7 @@ def build_report(
     state_ports = parse_state_ports(state)
     ports = parse_ports(proc.stdout)
     vram = vram_summary()
+    screen = screen_text_summary()
     live = live_candidate_summary(ram)
     data_reads = int(ports["in"].get(0x1F, {}).get("count", 0) or 0)
     key_pos = int(state.get("kbd_pos", "0"))
@@ -289,6 +447,12 @@ def build_report(
         failures.append(f"final fixed-framebuffer lit pixel count changed: {vram.get('lit_pixels', 0)}")
     if int(vram.get("nonzero_lines", 0)) != EXPECTED_NONZERO_LINES:
         failures.append(f"final fixed-framebuffer nonzero line count changed: {vram.get('nonzero_lines', 0)}")
+    if not screen["command_visible"]:
+        failures.append(f"visible `{EXPECTED_COMMAND_TEXT}` command line is missing at y={EXPECTED_COMMAND_Y}")
+    if not screen["ready_visible"]:
+        failures.append(f"visible `{EXPECTED_READY_TEXT}` prompt is missing at y={EXPECTED_READY_Y}")
+    if not screen["cursor_visible"]:
+        failures.append(f"visible block cursor is missing at y={EXPECTED_CURSOR_Y}")
     if live["candidate_sha256"] == "missing":
         failures.append("live JBASIC candidate artifact is missing")
     if int(live.get("entry_prefix", 0)) < 6:
@@ -297,7 +461,7 @@ def build_report(
         if int(live.get(label, -1)) < 0:
             failures.append(f"{label.replace('_', ' ').upper()} string not present in final RAM")
 
-    status = "EKDOS JBASIC COMMAND BOUNDARY PINNED" if not failures else "REGRESSION"
+    status = "EKDOS JBASIC PROMPT ORACLE PINNED" if not failures else "REGRESSION"
     command_display = r"TDD|JBASIC\r"
     lines = [
         "# EKDOS JBASIC command probe",
@@ -309,10 +473,11 @@ def build_report(
         "`JBASIC` on the vendored programming disk. The keyboard wait marker is",
         "implemented as `|` in `JUKU_KEYS`; it is not a typed key.",
         "",
-        "The result is a bounded command-launch diagnostic, not a BASIC prompt",
-        "claim. It proves the post-prompt keyboard path is deterministic and that",
+        "The result is a bounded command-launch diagnostic and visible BASIC",
+        "prompt oracle. It proves the post-prompt keyboard path is deterministic,",
         "the command triggers further FDC traffic from a real directory-backed",
-        "`JBASIC.COM` candidate.",
+        "`JBASIC.COM` candidate, and the final framebuffer contains the rendered",
+        "`READY` prompt.",
         "",
         "## Command",
         "",
@@ -351,6 +516,9 @@ def build_report(
         f"- Final lit pixels: {vram['lit_pixels']}",
         f"- Final fixed-framebuffer nonzero lines: {vram.get('nonzero_lines', 0)} (`{vram.get('first_nonzero_line', -1)}`..`{vram.get('last_nonzero_line', -1)}`)",
         f"- Final fixed-framebuffer first bytes: `{vram.get('top_bytes', 'missing')}`",
+        f"- Visible command line: `{screen['command_text']}` at scanline {screen['command_y']} ({'yes' if screen['command_visible'] else 'no'})",
+        f"- Visible BASIC prompt: `{screen['ready_text']}` at scanline {screen['ready_y']} ({'yes' if screen['ready_visible'] else 'no'})",
+        f"- Visible block cursor: scanline {screen['cursor_y']} ({'yes' if screen['cursor_visible'] else 'no'})",
         f"- Probe failures: {len(failures)}",
         "",
         "## FDC I/O Ports",
@@ -400,9 +568,9 @@ def build_report(
             "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.",
             "- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.",
             "- The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.",
-            "- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making framebuffer changes auditable without claiming a rendered text prompt.",
-            "- The deeper fixed-`0xD800` framebuffer boundary remains a sparse non-text bitmap, not a user-visible BASIC `READY` oracle.",
-            "- Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.",
+            "- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.",
+            "- The fixed-`0xD800` framebuffer now has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.",
+            "- Next work is to port this disk-backed BASIC path into HDL coverage after the uninterrupted juku_top FDC/EKDOS path is strong enough.",
         ]
     )
     if failures:

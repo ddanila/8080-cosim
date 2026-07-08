@@ -209,7 +209,7 @@ synthetic-sector behavior, a bounded `juku_top` FDC-path diagnostic, and
 runnable video readout/raster geometry. The remaining
 high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
 jmon33 command prompt and
-the uninterrupted reset-to-cursor jmon33 path, the BASIC prompt oracle plus HDL
-coverage of the Monitor 3.3 BASIC path, the analog
+the uninterrupted reset-to-cursor jmon33 path, HDL coverage of the pinned EKDOS
+disk-backed BASIC prompt path, the analog
 speaker/current check, dumped PROM contents, and the РЕ3/АГ3-gated physical
 video slot timing.

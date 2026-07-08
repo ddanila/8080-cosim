@@ -36,8 +36,8 @@ only after Tier 2.
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
-| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates; extracted BASIC candidates are guarded under `ref/extracted-software/` | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, BASIC prompt oracle, and a short owner measurement list |
-| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; disk BASIC candidates are extracted in `docs/basic-disk-extraction.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums | РЕ3/РТ4 PROM binaries and executable BASIC prompt path |
+| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates; extracted BASIC candidates are guarded under `ref/extracted-software/`; EKDOS `JBASIC` reaches a visible `READY` prompt in cosim | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC + BASIC prompt path in `juku_top`, and a short owner measurement list |
+| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; disk BASIC candidates are extracted in `docs/basic-disk-extraction.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums; `JUKPROG2.CPM` `JBASIC` reaches a visible `READY` prompt in cosim | РЕ3/РТ4 PROM binaries and HDL-executable BASIC prompt path |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
 
@@ -318,14 +318,16 @@ debugging session saved on real hardware.
    900,000,000-cycle run plus final
    RAM evidence: the live candidate entry signature at `0x0100` and relocated
    `ERROR`, `READY`, and `BASIC` strings at `0x0469`, `0x0476`, and `0x04AD`.
-   It also pins the fixed-`0xD800` framebuffer negative oracle: SHA256
+   It also pins a positive fixed-`0xD800` framebuffer BASIC prompt oracle:
+   exact 8x7 glyph matches prove visible `A>JBASIC` at scanline 71, `READY` at
+   scanline 121, and a block cursor at scanline 130. The guarded framebuffer SHA256 is
    `60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`,
-   1,175 lit pixels, and 68 nonzero scanlines, still not readable BASIC text.
+   with 1,175 lit pixels and 68 nonzero scanlines.
    The same report now records the final MAME-mapped video/PIT port state
    (`0x10..0x1B`), memory mode `0`, Port C `0x04`, and 77,306 VRAM writes so
-   the non-text framebuffer boundary has an auditable timing/control context.
-   This proves deterministic post-prompt command entry into loaded BASIC
-   code/data, not a user-visible BASIC `READY` oracle yet. The jmon33
+   the rendered prompt has an auditable timing/control context. This proves
+   deterministic post-prompt command entry into loaded BASIC code/data and a
+   user-visible BASIC `READY` oracle in cosim. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
@@ -378,8 +380,8 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, turn the pinned EKDOS `JBASIC` command boundary into a user-visible
-   BASIC prompt oracle, and port that BASIC path to HDL coverage.
+   path, port the pinned EKDOS `JBASIC` BASIC prompt path to HDL coverage, and
+   then retire the checkpointed HDL gaps around disk-backed FDC/EKDOS.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

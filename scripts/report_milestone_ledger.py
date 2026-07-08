@@ -196,7 +196,7 @@ def milestone_rows():
     )
     ekdos_jbasic_command_pinned = marker(
         "docs/ekdos-jbasic-command-probe.md",
-        "Status: **EKDOS JBASIC COMMAND BOUNDARY PINNED**",
+        "Status: **EKDOS JBASIC PROMPT ORACLE PINNED**",
     ) and marker(
         ".github/workflows/lvs.yml",
         "sync/ekdos_jbasic_command_probe.py",
@@ -519,13 +519,13 @@ def milestone_rows():
                 )
                 + (
                     " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
-                    "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
+                    "disk-side BASIC prompt oracle: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
                     "bitmap, consumes all command keys on `JUKPROG2.CPM`, triggers "
                     "19,968 WD1793 data reads in a deeper 900,000,000-cycle run, "
                     "leaves the live candidate entry signature plus relocated "
-                    "`ERROR`/`READY`/`BASIC` strings in RAM, and pins a sparse "
-                    "non-text fixed-framebuffer negative oracle with final "
-                    "video/PIT port-state context."
+                    "`ERROR`/`READY`/`BASIC` strings in RAM, and pins exact "
+                    "8x7 glyph matches for visible `A>JBASIC`, `READY`, and the "
+                    "block cursor with final video/PIT port-state context."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )
@@ -570,13 +570,13 @@ def milestone_rows():
                 )
                 + (
                     " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
-                    "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
+                    "disk-side BASIC prompt oracle: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
                     "bitmap, consumes all command keys on `JUKPROG2.CPM`, triggers "
                     "19,968 WD1793 data reads in a deeper 900,000,000-cycle run, "
                     "leaves the live candidate entry signature plus relocated "
-                    "`ERROR`/`READY`/`BASIC` strings in RAM, and pins a sparse "
-                    "non-text fixed-framebuffer negative oracle with final "
-                    "video/PIT port-state context."
+                    "`ERROR`/`READY`/`BASIC` strings in RAM, and pins exact "
+                    "8x7 glyph matches for visible `A>JBASIC`, `READY`, and the "
+                    "block cursor with final video/PIT port-state context."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )
@@ -586,11 +586,10 @@ def milestone_rows():
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct BASIC launch path, turn the pinned EKDOS `JBASIC` command "
-                "boundary into a BASIC prompt oracle, and port that BASIC path to "
-                "HDL coverage."
+                "correct Monitor 3.3 cartridge BASIC launch path, and port the "
+                "pinned EKDOS `JBASIC` prompt path to HDL coverage."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct BASIC launch path, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and port the pinned EKDOS BASIC prompt path to HDL coverage."
             ),
         },
         {

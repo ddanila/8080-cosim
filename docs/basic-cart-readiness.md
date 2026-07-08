@@ -31,7 +31,7 @@ sync/basic_cart_check.sh
 
 ## Remaining Boundary
 
-- Exercise the BASIC path to a live prompt. `sync/basic_launch_probe.py` now
+- Resolve the Monitor 3.3 cartridge BASIC path to a live prompt. `sync/basic_launch_probe.py` now
   documents that Monitor 3.3 reads both `jbasic11.bin` and the legacy BAS0-3
   image from the cartridge overlay and then executes in the `0x4000..0xBFFF`
   RAM window. The launch probe records this as a compatibility boundary because

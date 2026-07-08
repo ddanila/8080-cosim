@@ -68,7 +68,7 @@ Compatibility notes:
 - The current evidence is therefore a compatibility boundary, not just a
   missing prompt: the tested Monitor 3.3 path reads the media but does not
   execute the cartridge overlay as live BASIC code.
-- The remaining BASIC work is a user-visible BASIC prompt oracle and HDL-side
-  coverage of the correct launch path. The disk-side `JBASIC.COM` evidence now
-  gives a concrete EKDOS command target in addition to the still-unresolved
+- The remaining cartridge BASIC work is the correct Monitor 3.3 launch path.
+  The disk-side `JBASIC.COM` path now has a separate visible EKDOS `READY`
+  prompt oracle, so this report continues to track only the unresolved
   monitor/removable-memory pairing.

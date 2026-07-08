@@ -1,16 +1,17 @@
 # EKDOS JBASIC command probe
 
-Status: **EKDOS JBASIC COMMAND BOUNDARY PINNED**
+Status: **EKDOS JBASIC PROMPT ORACLE PINNED**
 
 This generated report drives the factory ROMBIOS boot sequence to EKDOS,
 waits for the `A>` prompt bitmap, then types the disk command
 `JBASIC` on the vendored programming disk. The keyboard wait marker is
 implemented as `|` in `JUKU_KEYS`; it is not a typed key.
 
-The result is a bounded command-launch diagnostic, not a BASIC prompt
-claim. It proves the post-prompt keyboard path is deterministic and that
+The result is a bounded command-launch diagnostic and visible BASIC
+prompt oracle. It proves the post-prompt keyboard path is deterministic,
 the command triggers further FDC traffic from a real directory-backed
-`JBASIC.COM` candidate.
+`JBASIC.COM` candidate, and the final framebuffer contains the rendered
+`READY` prompt.
 
 ## Command
 
@@ -40,6 +41,9 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - Final lit pixels: 1175
 - Final fixed-framebuffer nonzero lines: 68 (`1`..`139`)
 - Final fixed-framebuffer first bytes: `00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00`
+- Visible command line: `A>JBASIC` at scanline 71 (yes)
+- Visible BASIC prompt: `READY` at scanline 121 (yes)
+- Visible block cursor: scanline 130 (yes)
 - Probe failures: 0
 
 ## FDC I/O Ports
@@ -81,6 +85,6 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.
 - The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.
 - The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.
-- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making framebuffer changes auditable without claiming a rendered text prompt.
-- The deeper fixed-`0xD800` framebuffer boundary remains a sparse non-text bitmap, not a user-visible BASIC `READY` oracle.
-- Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.
+- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.
+- The fixed-`0xD800` framebuffer now has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.
+- Next work is to port this disk-backed BASIC path into HDL coverage after the uninterrupted juku_top FDC/EKDOS path is strong enough.

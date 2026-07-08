@@ -203,11 +203,13 @@ Historical merge notes:
   command keys and reaches 19,968 WD1793 data reads in a deeper 900,000,000-cycle
   run. The final RAM contains the raw live-load `JBASIC.COM` candidate's entry
   signature at `0x0100` plus relocated `ERROR`, `READY`, and `BASIC` strings.
-  The fixed-`0xD800` framebuffer is pinned as a sparse non-text negative oracle
-  (`60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`), and the
-  same generated report now records the final video/PIT port state (`0x10..0x1B`),
-  memory mode `0`, Port C `0x04`, and 77,306 VRAM writes. This is still a
-  loaded-code/data boundary rather than a user-visible BASIC `READY` oracle.
+  The fixed-`0xD800` framebuffer is now a positive BASIC prompt oracle:
+  exact 8x7 glyph matches prove visible `A>JBASIC` at scanline 71, `READY` at
+  scanline 121, and a block cursor at scanline 130. The same generated report
+  records the final framebuffer hash
+  (`60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`),
+  final video/PIT port state (`0x10..0x1B`), memory mode `0`, Port C `0x04`,
+  and 77,306 VRAM writes.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;

@@ -37,5 +37,6 @@ four-side-track system area, and the `TRANS` sector order from
   candidate at `0x67000` has a CP/M jump header plus `BASIC`, `READY`,
   and `ERROR` strings, so it is preserved separately and explicitly
   marked as a candidate.
-- This report does not claim a BASIC prompt yet; it creates stable
-  inputs for the prompt oracle work.
+- This extraction report only preserves payload candidates; the visible
+  BASIC prompt oracle is guarded separately by
+  `docs/ekdos-jbasic-command-probe.md`.
