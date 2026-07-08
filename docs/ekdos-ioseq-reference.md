@@ -33,8 +33,6 @@ sync/ekdos_ioseq_reference.py
 
 - This is a cosim reference, not an HDL prompt proof.
 - `docs/juku-top-periph-bus-check.md` proves the corresponding top-level
-  keyboard/PIC/PPI/FDC hardware path works when driven directly, including the
-  no-key `0xCF` poll, shifted-`T` `0x88` poll, PIC vector, motor latch, and
-  first FDC restore command `0x02`.
+  keyboard/PIC/PPI/FDC hardware path works when driven directly.
 - The remaining HDL M2 target is still full CPU execution to decoded FDC I/O
   and then EKDOS `A>`.

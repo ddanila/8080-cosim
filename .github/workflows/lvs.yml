@@ -105,5 +105,20 @@ jobs:
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
 
+      - name: Check boot report freshness
+        run: |
+          git diff --exit-code -- \
+            docs/ekdos-fdc-probe.md \
+            docs/ekdos-timing-reference.md \
+            docs/ekdos-checkpoint-reference.md \
+            docs/ekdos-ioseq-reference.md \
+            docs/juku-top-checkpoint-load.md \
+            docs/juku-top-periph-bus-check.md \
+            docs/fdc-readiness.md \
+            docs/basic-cart-readiness.md \
+            docs/basic-launch-probe.md \
+            docs/beeper-readiness.md \
+            docs/jmon33-hdl-probe.md
+
       - name: Run boot regression check
         run: ./sync/boot_check.sh
