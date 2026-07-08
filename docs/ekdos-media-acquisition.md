@@ -23,6 +23,10 @@ archive are vendored under `media/system/` with checksum manifests. They are
 reference system binaries, not a substitute for the still-missing small-PROM
 programming files.
 
+The public EKDOS source references from Arti's software mirror are vendored
+under `ref/ekdos-source/`. `EKDOS30.ASM` is useful when checking ROMBIOS/FDC
+call conventions and disk geometry; it is source evidence, not a boot image.
+
 ## Required Image
 
 | Field | Requirement |
@@ -84,9 +88,23 @@ work is to carry disk-backed FDC behavior into `juku_top` and, for museum-grade
 provenance, compare against a fresh physical `ДГШ5.106.105` disk dump if one
 surfaces.
 
+## Source Reference
+
+| Field | Value |
+|---|---|
+| Source URL | `https://arti.ee/juku/tarkvara/EKDOS30.ASM` |
+| Vendored path | `ref/ekdos-source/EKDOS30.ASM` |
+| Size | 14336 bytes |
+| SHA-256 | `9d0d06147597b4039bbbfdb31b98adc17168da2e354962ec12423b385e0ced3d` |
+| Role | 52K EKDOS 2.30 CP/M BIOS source; documents monitor entry points, disk parameters, and floppy handler interface |
+
+The same source directory also keeps Arti's `axb.asm` CP/M BIOS skeleton as a
+nearby reference file, with hashes in `ref/ekdos-source/SHA256SUMS`.
+
 ## Verification Command
 
 ```sh
+(cd ref/ekdos-source && sha256sum -c SHA256SUMS)
 sync/juk_disk_check.sh
 sync/ekdos_fdc_probe.py
 ```

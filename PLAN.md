@@ -59,8 +59,8 @@ The July 2026 survey of the online ecosystem changes the plan materially:
 3. **EKDOS is available in-tree**: Arti `JUKU1.7Z` / `JUKU2.7Z` public raw disk
    images are now vendored under `media/disks/`; `JUKU1.CPM` boots through
    ROMBIOS `TDD` to `A>` in cosim. The raw geometry is specified in
-   juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS 3.0
-   **source** exists (`EKDOS30.ASM` in infoaed/juku3000). The museum
+   juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS 2.30
+   **source** is now vendored under `ref/ekdos-source/`. The museum
    `JUKUSYS.ZIP` CP/M/EKDOS binaries are also vendored under `media/system/`.
    Nothing blocks an FDC/EKDOS milestone in the twin except the HDL
    external-media path.
@@ -157,7 +157,8 @@ debugging session saved on real hardware.
    1/2-sided geometry, and a minimal disk-backed WD1793 model now covers the
    ROMBIOS restore/seek prelude plus read-sector transfers behind
    `EKDOS_PROBE_DISK=/path/to/image` / `JUKU_DISK=/path/to/image`.
-   Required public disk images are vendored in `media/disks/`;
+   Required public disk images are vendored in `media/disks/`, and the public
+   EKDOS 2.30 BIOS source reference is vendored in `ref/ekdos-source/`;
    `docs/ekdos-media-acquisition.md` tracks the media gate. A transient run
    with the museum/juku3000
    `J3KUTIL4.JUK` EKDOS 2.30 image reaches the `A>` prompt in cosim, and the

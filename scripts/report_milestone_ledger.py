@@ -72,6 +72,10 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check WD1772 PLA inspection freshness",
     )
+    ekdos_source_vendored = exists("ref/ekdos-source/EKDOS30.ASM") and marker(
+        "ref/ekdos-source/SHA256SUMS",
+        "EKDOS30.ASM",
+    )
     manufacturing_ready = marker(
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -244,6 +248,12 @@ def milestone_rows():
                     if wd1772_pla_normalized
                     else ""
                 )
+                + (
+                    "Arti's EKDOS 2.30 source is vendored under "
+                    "`ref/ekdos-source/`; "
+                    if ekdos_source_vendored
+                    else ""
+                )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
             ),
             "next": "Locate programming disk/media or get RE3/RT4 dumps; diff any D6/D8 dumps against the exported reconstruction fallbacks.",
@@ -263,6 +273,12 @@ def milestone_rows():
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
                 "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
                 "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
+                + (
+                    " `ref/ekdos-source/EKDOS30.ASM` preserves the EKDOS 2.30 BIOS "
+                    "source reference for monitor/FDC interface checks."
+                    if ekdos_source_vendored
+                    else ""
+                )
                 + (
                     " `sync/ekdos_checkpoint_prompt_check.sh` provides a "
                     "local/deep guard for the "
