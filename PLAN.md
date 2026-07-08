@@ -332,7 +332,8 @@ debugging session saved on real hardware.
    holding BUSY forever. `sync/jmon33_hdl_fdc_command_probe.py` now carries
    that boundary into checkpoint-resumed `juku_top`: with the vendored disk
    attached, the structural path reads FDC status `0x40` repeatedly at PC
-   `0xE43C`.
+   `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
+   `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
    path, make the remaining `T` checkpoint-resumed HDL command row match its
    FDC-aware delayed-command oracle,

@@ -1,6 +1,6 @@
 # jmon33 HDL command-surface probe
 
-Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**
+Status: **JMON33 HDL FDC T-COMMAND ORACLE PINNED**
 
 This guard starts from a generated Monitor 3.3 cosim checkpoint,
 loads that RAM and visible state into `juku_top`, injects a single

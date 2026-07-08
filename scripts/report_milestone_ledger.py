@@ -151,7 +151,7 @@ def milestone_rows():
         "data=0x40",
     ) and marker(
         "docs/jmon33-hdl-fdc-command-probe.md",
-        "JMON33 HDL COMMAND BOUNDED DIAGNOSTIC",
+        "JMON33 HDL FDC T-COMMAND ORACLE PINNED",
     )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
