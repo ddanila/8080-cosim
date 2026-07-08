@@ -334,14 +334,12 @@ debugging session saved on real hardware.
    exact `JBASIC` + Enter command sequence with new `+jbasickeys=1` support,
    and adds an opt-in `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
    oracle. The current tracked HDL run now applies the checkpoint-resume
-   `state_pc_bias=-1` fetch alignment, retimes the `JBASIC` stimulus into the
-   ROMBIOS scanner, and proves all seven command key indices are sampled through
-   PPI0 Port B with non-`0xCF` data. The same report now preserves and compares
-   the resumed HDL framebuffer dump: the current default run does not yet show
-   the full `A>JBASIC` command oracle at scanline 71, and the first changed
-   command-row cells show only a partial `B` echo plus cursor after `A>`. It
-   still stops before full command echo, post-command FDC traffic, or
-   `[RESUME-JBASIC]`.
+   `state_pc_bias=-1` fetch alignment, uses frame-scale key holds/gaps to retime
+   the `JBASIC` stimulus into the ROMBIOS scanner, proves all seven command key
+   indices are sampled through PPI0 Port B with non-`0xCF` data, matches the
+   full visible `A>JBASIC` command oracle at scanline 71, and stops on the first
+   decoded post-command FDC I/O (`IN 0x1C` at mcyc 353,942). It still stops
+   before FDC data reads or `[RESUME-JBASIC]`.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in

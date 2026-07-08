@@ -547,6 +547,7 @@ module juku_top_checkpoint_resume_tb();
         $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
                  fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes);
         $fflush;
+        dump_vram();
         $finish;
       end
     end
@@ -632,6 +633,7 @@ module juku_top_checkpoint_resume_tb();
         $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
                  fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes);
         $fflush;
+        dump_vram();
         $finish;
       end
     end

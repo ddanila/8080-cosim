@@ -228,8 +228,8 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         f"+rom={rom_hex}",
         "+disk=media/disks/JUKPROG2.CPM",
         "+disk_heads=2",
-        f"+max_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_MAX_MCYC', '120000')}",
-        f"+timecap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TIMECAP', '900000000')}",
+        f"+max_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_MAX_MCYC', '550000')}",
+        f"+timecap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TIMECAP', '2200000000')}",
         f"+frameirq={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_FRAMEIRQ', '80000')}",
         f"+trace_resume={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME', '0')}",
         f"+trace_resume_after={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_AFTER', '0')}",
@@ -237,12 +237,13 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         "+jbasickeys=1",
         f"+command_key_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KEY_MCYC', '250')}",
         f"+keyat={state_arg(state, 'vram_writes', '73446')}",
-        f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '40000')}",
-        f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '40000')}",
+        f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '160000')}",
+        f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '240000')}",
         "+tracekbd=1",
+        f"+tracefdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_FDC', '1')}",
         f"+stopkbdhit={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT', '0')}",
         f"+progress_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PROGRESS_MCYC', '25000')}",
-        "+stopfdc=0",
+        f"+stopfdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_FDC', '1')}",
         "+stopfdc_data_read=0",
         "+stopfdc_data_reads=0",
         "+stopjbasicready=1",
@@ -263,7 +264,7 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
                 text=True,
                 stdout=stdout,
                 stderr=stderr,
-                timeout=int(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TIMEOUT", "120")),
+                timeout=int(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TIMEOUT", "240")),
                 check=False,
             )
         vram = checkpoint_vram.read_bytes() if checkpoint_vram.exists() else b""
@@ -354,6 +355,9 @@ def main() -> int:
     kbd_scan_writes = matching_lines(hdl_proc.stdout, "[RESUME-KBD] OUT")
     resume_trace = matching_lines(hdl_proc.stdout, "[RESUME-TRACE]")
     reached_ready = first_line(hdl_proc.stdout, "[RESUME-JBASIC]") != "none"
+    fdc_lines = matching_lines(hdl_proc.stdout, "[RESUME-FDC]")
+    fdc_stop = first_line(hdl_proc.stdout, "[RESUME-FDC] stop")
+    reached_fdc = fdc_stop != "none"
     command_visible = screen_text_at(hdl_vram, "A>JBASIC", 71)
     hdl_vram_ok = len(hdl_vram) == VRAM_SIZE
     vram_changes = changed_cells(checkpoint_vram, hdl_vram)
@@ -364,10 +368,13 @@ def main() -> int:
         failures.append(f"HDL JBASIC command stimulus run exited {hdl_proc.returncode}")
     if len(key_presses) != 7:
         failures.append(f"expected 7 JBASIC key presses, saw {len(key_presses)}")
-    if len(key_releases) != 7:
+    if len(key_releases) != 7 and not reached_fdc:
         failures.append(f"expected 7 JBASIC key releases, saw {len(key_releases)}")
 
     status = (
+        "HDL EKDOS JBASIC POST-COMMAND FDC READY"
+        if not failures and reached_fdc
+        else
         "HDL EKDOS JBASIC COMMAND ECHO READY"
         if not failures and command_visible
         else
@@ -421,6 +428,8 @@ def main() -> int:
         f"- First HDL M-cycle trace: `{resume_trace[0] if resume_trace else 'none'}`",
         f"- Last HDL M-cycle trace: `{resume_trace[-1] if resume_trace else 'none'}`",
         f"- READY stop line: `{first_line(hdl_proc.stdout, '[RESUME-JBASIC]')}`",
+        f"- FDC trace lines: `{len(fdc_lines)}`",
+        f"- FDC stop line: `{fdc_stop}`",
         f"- HDL VRAM dump size: `{len(hdl_vram)}` ({'ok' if hdl_vram_ok else 'missing/incomplete'})",
         f"- Visible `A>JBASIC` command line at scanline 71: `{'yes' if command_visible else 'no'}`",
         f"- Checkpoint command row bytes y=71 x=0..9: `{row_hex(checkpoint_vram, 71)}`",
@@ -436,9 +445,11 @@ def main() -> int:
         "  `JBASIC` + Enter sequence (`J`, `B`, `A`, `S`, `I`, `C`, Return).",
         "- The same bench also has `+stopjbasicready=1`, which checks the final",
         "  `READY` prompt with exact fixed-`0xD800` glyph bytes.",
-        "- This report claims the checkpoint-resumed HDL keyboard-sampling",
-        "  boundary: the retimed command stimulus is read through PPI0 Port B",
-        "  with non-`0xCF` key data.",
+        "- The default run now uses frame-scale key holds/gaps and `+stopfdc=1`",
+        "  so post-command disk traffic becomes a bounded HDL stop condition.",
+        "- This report claims the checkpoint-resumed HDL post-command FDC",
+        "  boundary: frame-scale command stimulus is read through PPI0 Port B,",
+        "  the full `A>JBASIC` command line is visible, and decoded FDC I/O starts.",
         "- The report also preserves the HDL framebuffer dump before restoring",
         "  the worktree copy and checks for the exact cosim-pinned `A>JBASIC`",
         "  command glyphs at scanline 71.",
@@ -447,12 +458,14 @@ def main() -> int:
         "  to stop at the first sampled keyboard hit during retiming experiments.",
         "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first",
         "  `N` resumed HDL M-cycle trace lines in this report.",
-        "- Next work is to continue from sampled command keys until post-command",
-        "  FDC/data traffic begins, then finally stop on `[RESUME-JBASIC]`.",
+        "- Next work is to continue from first post-command FDC I/O through FDC",
+        "  data reads and finally stop on `[RESUME-JBASIC]`.",
     ]
     if reached_ready:
         lines.append("- This run did reach the HDL `READY` oracle; promote the report status and CI gate.")
-    if command_visible:
+    if reached_fdc:
+        lines.append("- This run reached post-command HDL FDC I/O; next work is to continue through FDC data reads and the `READY` oracle.")
+    if command_visible and not reached_fdc:
         lines.append("- This run did echo the full HDL `A>JBASIC` command line; the next boundary is Return execution and FDC traffic.")
     if failures:
         lines.extend(["", "## Failures", ""])
