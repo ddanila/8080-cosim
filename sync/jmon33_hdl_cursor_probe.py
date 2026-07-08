@@ -25,6 +25,7 @@ VRAM_LINES = 241
 FIRST_RE = re.compile(r"first video write @0x([0-9A-Fa-f]+) mcyc=([0-9]+)")
 COUNT_RE = re.compile(r"\[VRAM\] ([0-9]+) writes \(mcyc=([0-9]+)\) -- dump")
 CURSOR_RE = re.compile(r"jmon33 cursor oracle reached \(mcyc=([0-9]+) writes=([0-9]+)\)")
+PROGRESS_RE = re.compile(r"\[VRAM\] progress writes=([0-9]+) mcyc=([0-9]+)")
 TIMECAP_RE = re.compile(r"time cap mcyc=([0-9]+) vram_writes=([0-9]+)")
 
 
@@ -59,6 +60,11 @@ def parse_output(output: str) -> dict[str, int | str | bool]:
         result["stop_mcyc"] = int(match.group(1))
         result["stop_writes"] = int(match.group(2))
         result["stop_reason"] = "cursor"
+    progress = tuple(PROGRESS_RE.finditer(output))
+    if progress:
+        match = progress[-1]
+        result["last_progress_writes"] = int(match.group(1))
+        result["last_progress_mcyc"] = int(match.group(2))
     if match := TIMECAP_RE.search(output):
         result["stop_mcyc"] = int(match.group(1))
         result["stop_writes"] = int(match.group(2))
@@ -91,6 +97,7 @@ def main() -> int:
     max_vram = int(os.environ.get("JMON33_HDL_CURSOR_MAXVRAM", "300"))
     frame_irq = int(os.environ.get("JMON33_HDL_CURSOR_FRAMEIRQ", "200000"))
     timecap = int(os.environ.get("JMON33_HDL_CURSOR_TIMECAP", "1200000000"))
+    trace_progress = int(os.environ.get("JMON33_HDL_CURSOR_TRACEPROGRESS", "0"))
     timeout_s = int(os.environ.get("JMON33_HDL_CURSOR_TIMEOUT", "90"))
     old_vram = VRAM_TOP.read_bytes() if VRAM_TOP.exists() else None
 
@@ -124,6 +131,7 @@ def main() -> int:
                     "+cursorstop=1",
                     f"+maxvram={max_vram}",
                     f"+timecap={timecap}",
+                    f"+traceprogress={trace_progress}",
                 ]
                 if shutil.which("stdbuf"):
                     vvp_cmd = ["stdbuf", "-oL", "-eL", *vvp_cmd]
@@ -177,6 +185,7 @@ def main() -> int:
         f"- `JMON33_HDL_CURSOR_MAXVRAM` default `{max_vram}`",
         f"- `JMON33_HDL_CURSOR_FRAMEIRQ` default `{frame_irq}`",
         f"- `JMON33_HDL_CURSOR_TIMECAP` default `{timecap}`",
+        f"- `JMON33_HDL_CURSOR_TRACEPROGRESS` default `{trace_progress}`",
         f"- `JMON33_HDL_CURSOR_TIMEOUT` default `{timeout_s}` seconds",
         "",
         "## Evidence",
@@ -198,6 +207,8 @@ def main() -> int:
         f"- Stop reason: `{parsed.get('stop_reason', 'timeout' if timed_out else 'unknown')}`",
         f"- Stop writes: `{parsed.get('stop_writes', 'unknown')}`",
         f"- Stop machine cycle: `{parsed.get('stop_mcyc', 'unknown')}`",
+        f"- Last progress writes: `{parsed.get('last_progress_writes', 'unknown')}`",
+        f"- Last progress machine cycle: `{parsed.get('last_progress_mcyc', 'unknown')}`",
         f"- First-write machine cycle: `{parsed.get('first_mcyc', 'unknown')}`",
         "",
         "## Disposition",

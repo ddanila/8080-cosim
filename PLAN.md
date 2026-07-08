@@ -310,8 +310,10 @@ debugging session saved on real hardware.
    The HDL testbench now has a
    `+cursorstop=1` stop hook for that same cursor boundary, and
    `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
-   first write still matches at `0xFF40`, but the 300-write HDL run stops with
-   a blank framebuffer before the cursor oracle. The stronger checkpoint-resumed
+   first write still matches at `0xFF40`; a deeper uninterrupted diagnostic now
+   reaches at least 400 VRAM writes / 579,068 M-cycles and nonzero framebuffer
+   content before the wall-clock timeout, but still does not reach the cursor
+   oracle. The stronger checkpoint-resumed
    boundary is now guarded by `sync/jmon33_checkpoint_cursor_probe.py`: a late
    pre-cursor cosim checkpoint at 3,801,005 cycles / PC `0xF2C0` still has a
    blank framebuffer, and checkpoint-resumed `juku_top` services Monitor 3.3

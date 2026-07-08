@@ -15,30 +15,33 @@ sync/jmon33_hdl_cursor_probe.py
 
 Environment overrides:
 
-- `JMON33_HDL_CURSOR_MAXVRAM` default `300`
+- `JMON33_HDL_CURSOR_MAXVRAM` default `1200`
 - `JMON33_HDL_CURSOR_FRAMEIRQ` default `200000`
-- `JMON33_HDL_CURSOR_TIMECAP` default `1200000000`
-- `JMON33_HDL_CURSOR_TIMEOUT` default `90` seconds
+- `JMON33_HDL_CURSOR_TIMECAP` default `4000000000`
+- `JMON33_HDL_CURSOR_TRACEPROGRESS` default `100`
+- `JMON33_HDL_CURSOR_TIMEOUT` default `240` seconds
 
 ## Evidence
 
 | Check | Result |
 | --- | --- |
-| vvp exit code | `0` |
-| subprocess timeout | NO |
+| vvp exit code | `124` |
+| subprocess timeout | YES |
 | first jmon33 video write is `0xFF40` | PASS |
 | cursor hook reached | NO |
 | framebuffer cursor bytes match cosim | NO |
-| visible framebuffer pixels | `0` |
-| nonzero framebuffer bytes | `0` |
-| framebuffer SHA256 | `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d` |
+| visible framebuffer pixels | `1024` |
+| nonzero framebuffer bytes | `255` |
+| framebuffer SHA256 | `93cf90f64fbe01cd4923ee14f15b182be24a2efae17d6722488bb9431cf99782` |
 | cosim cursor SHA256 | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` |
 
 ## Stop State
 
-- Stop reason: `maxvram`
-- Stop writes: `300`
-- Stop machine cycle: `126631`
+- Stop reason: `timeout`
+- Stop writes: `unknown`
+- Stop machine cycle: `unknown`
+- Last progress writes: `400`
+- Last progress machine cycle: `579068`
 - First-write machine cycle: `12151`
 
 ## Disposition
