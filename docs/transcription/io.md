@@ -29,17 +29,20 @@ The tape-sweep agent **misattributed refdes**. Verified truth:
 - **D54/D55/D57 8253**: CS=21, A0=19, A1=20, RD=22, WR=23, D0-7=8,7,6,5,4,3,2,1;
   per counter CLK/GATE/OUT (0:9/11/10, 1:15/14/13, 2:18/16/17).
 
-## I/O chip-select decoder — A4: it's a PROM (D2), not the 74138
-The agent couldn't isolate a 74138 because the I/O selects are **PROM-decoded**:
-- **D2 = К556РТ4 PROM** (256×4), "ROM РТ4 D2" on Sheet 1, + glue (D105 ЛА3, FFs
-  D13/D30/D35). Analogous to the memory decode (D6 РТ4). [scan]
-- The power-table **ИД7 = D53** (the Sheet-2 RAS/CAS decoder, already found) — not
-  the I/O decoder.
-- **Implication:** like the memory map, the I/O port→chip decode lives in the **PROM
-  contents (off-schematic)** = the known I/O map (0x00→PIC, 0x04→PPI0, …). So the CS
-  *decode* can't be wiring-traced to `scan`; only the РТ4-output→chip-CS wiring could
-  be (intricate, untraced). The DID7 model instance is relabeled **D2** (РТ4 PROM).
-- Same applies to the EPROM **CS4–CS7** (memory selects) — PROM/decoder-based, contents off-schematic.
+## I/O chip-select decoder — corrected boundary
+Later board metadata and owner cross-checks supersede the older D2-as-I/O-PROM
+note here:
+
+- **D9 = К555ИД7** is the functional top-level I/O chip-select decoder in the
+  current board spec and HDL (`sync/map.json`: `D9` -> `U_DID7`). It selects the
+  PIC/PPI/SIO/PIT/FDC regions from the buffered address and I/O strobes.
+- **D2 = К556РТ4** remains a physical PROM, but current `kicad/juku.board.json`
+  records it as a bus-arbitration/wait PROM with deferred nets and pending dump
+  (`ДГШ5.106.037`). It must not be treated as a burnable I/O-decode image.
+- **Implication:** the old functional `io_decode_prom`/DID7 stand-ins are useful
+  only as behavioral I/O map evidence. They are not D2 programming truth.
+- Same caution applies to the unresolved small PROMs: D2, D94, and video/DRAM
+  timing РЕ3 images stay dump/programming-disk dependencies.
 
 ## Integrated + LVS-green ✅
 The HDL I/O shells now carry their **real refdes** (D26/D27→PPI, D11→USART,

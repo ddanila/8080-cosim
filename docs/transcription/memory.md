@@ -114,11 +114,12 @@ schematic set, assembly/placement drawing ДГШ5.109.006 СБ, component list �
 - **There is NO separate video-RAM plane.** The earlier "video plane D76–D79" was an
   assumption — video reads the *same* 64 KB bank via the КП14 µP/video mux. (Model's
   D68–D79 are unpopulated sockets, not a plane.)
-- **Four decode/timing PROMs total:** **2× К556РТ4** (memory decode D6 + I/O decode D2,
-  contents = the recovered map) **+ 2× К155РЕ3** (DRAM/video *timing*-state PROMs,
-  drawing ДГШ5.106.009). The РЕ3 are pure hardware timing — MAME omits them and our twin
-  boots byte-identical without them; their bits are **pending a PROM dump / the programming
-  drawing** (deferred, drop-in when available). See `dram-video-timing.md`.
+- **Four small decode/timing PROM-class parts remain relevant:** **2× К556РТ4**
+  (D6 memory decode plus D2 bus-arbitration/wait PROM, dump pending) **+ 2×
+  К155РЕ3** (ROM paging/timing-state PROMs, including D8 and D94). D6 and D8 have
+  boot-validated reconstructed fallbacks; D2, D94, and video/DRAM timing truth
+  remain **pending a PROM dump / programming-disk table**. See
+  `reconstructed-prom-fallbacks.md` and `dram-video-timing.md`.
 - **Implication:** the functional model should converge to the *populated* set (2 ROM +
   8 RAM, one bank); the 8/32 sockets + expansion are a Phase-B (PCB) layout fact. A
   deliberate restructure (reduce over-modeled memory, add the ~42 still-unmodeled glue/
