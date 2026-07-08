@@ -24,6 +24,8 @@ class ProbeCase:
     name: str
     rom: Path
     frame_cycles: int
+    cart_name: str
+    cart: Path
 
 STOP_RE = re.compile(
     r"stopped pc=0x([0-9A-Fa-f]{4}) cyc=([0-9]+) halted=([0-9]+) "
@@ -219,9 +221,39 @@ def visible_pixels(vram: bytes) -> int:
     return sum(byte.bit_count() for byte in vram)
 
 
-def probe_cases() -> list[ProbeCase]:
+def decode_hex_bytes(path: Path) -> bytes:
+    text = path.read_text(errors="replace")
+    hex_digits = "".join(ch for ch in text if ch in "0123456789abcdefABCDEF")
+    return bytes.fromhex(hex_digits)
+
+
+def legacy_bas_cart(tmpdir: Path) -> Path:
+    out = tmpdir / "bas0-3.bin"
+    out.write_bytes(
+        b"".join(
+            decode_hex_bytes(ROOT / "ref" / "firmware" / f"BAS{idx}.HEX")
+            for idx in range(4)
+        )
+    )
+    return out
+
+
+def probe_cases(tmpdir: Path) -> list[ProbeCase]:
     rom_override = os.environ.get("BASIC_LAUNCH_ROM")
     frame_override = os.environ.get("BASIC_LAUNCH_FRAME_CYCLES")
+    cart_override = os.environ.get("BASIC_LAUNCH_CART")
+    default_cart = ROOT / "roms" / "jbasic11.bin"
+    carts: list[tuple[str, Path]]
+    if cart_override:
+        cart = Path(cart_override)
+        if not cart.is_absolute():
+            cart = ROOT / cart
+        carts = [(cart.name, cart)]
+    else:
+        carts = [
+            ("jbasic11.bin", default_cart),
+            ("BAS0-3.HEX", legacy_bas_cart(tmpdir)),
+        ]
     if rom_override:
         rom = Path(rom_override)
         if not rom.is_absolute():
@@ -231,11 +263,15 @@ def probe_cases() -> list[ProbeCase]:
                 rom.stem,
                 rom,
                 int(frame_override or "40000"),
+                carts[0][0],
+                carts[0][1],
             )
         ]
     return [
-        ProbeCase("jmon33", ROOT / "roms" / "jmon33.bin", int(frame_override or "200000")),
-        ProbeCase("ekta37", ROOT / "roms" / "ekta37.bin", int(frame_override or "40000")),
+        ProbeCase("jmon33", ROOT / "roms" / "jmon33.bin", int(frame_override or "200000"), cart_name, cart)
+        for cart_name, cart in carts
+    ] + [
+        ProbeCase("ekta37", ROOT / "roms" / "ekta37.bin", int(frame_override or "40000"), "jbasic11.bin", default_cart),
     ]
 
 
@@ -272,7 +308,7 @@ def run_probe(case: ProbeCase) -> tuple[subprocess.CompletedProcess[str], bytes]
             if build.returncode != 0:
                 return build, b""
             env = os.environ.copy()
-            env["JUKU_CART"] = "../roms/jbasic11.bin"
+            env["JUKU_CART"] = str(case.cart)
             env["JUKU_KEYS"] = keys
             proc = subprocess.run(
                 [str(trace_bin), str(case.rom), str(max_cycles), "0", str(case.frame_cycles)],
@@ -294,42 +330,43 @@ def run_probe(case: ProbeCase) -> tuple[subprocess.CompletedProcess[str], bytes]
 
 def main() -> int:
     results = []
-    for case in probe_cases():
-        proc, vram = run_probe(case)
-        stop = parse_stop(proc.stderr)
-        pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
-        cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
-        ram_probe = parse_ram_probe(proc.stdout)
-        sha = hashlib.sha256(vram).hexdigest() if vram else ""
-        vram_ok = len(vram) == VRAM_SIZE
-        pixels = visible_pixels(vram)
-        cart_loaded = "loaded 8192 bytes of expansion cartridge" in proc.stderr
-        key_processed = bool(re.search(r"0x04\s+:\s+[1-9][0-9]*", proc.stdout)) and bool(
-            re.search(r"0x05\s+:\s+[1-9][0-9]*", proc.stdout)
-        )
-        basic_entered = pc_cart_count > 0 or pchist_cart > 0
-        results.append(
-            {
-                "case": case,
-                "proc": proc,
-                "vram": vram,
-                "stop": stop,
-                "pc_cart_count": pc_cart_count,
-                "pc_cart_mode1": pc_cart_mode1,
-                "pc_cart_mode2": pc_cart_mode2,
-                "pc_cart_opcode00": pc_cart_opcode00,
-                "pchist_cart": pchist_cart,
-                "cart_overlay_reads": cart_overlay_reads,
-                "cart_pc_reads": cart_pc_reads,
-                "ram_probe": ram_probe,
-                "sha": sha,
-                "visible_pixels": pixels,
-                "vram_ok": vram_ok,
-                "cart_loaded": cart_loaded,
-                "key_processed": key_processed,
-                "basic_entered": basic_entered,
-            }
-        )
+    with tempfile.TemporaryDirectory(prefix="basic-launch-carts.") as cart_tmp:
+        for case in probe_cases(Path(cart_tmp)):
+            proc, vram = run_probe(case)
+            stop = parse_stop(proc.stderr)
+            pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
+            cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
+            ram_probe = parse_ram_probe(proc.stdout)
+            sha = hashlib.sha256(vram).hexdigest() if vram else ""
+            vram_ok = len(vram) == VRAM_SIZE
+            pixels = visible_pixels(vram)
+            cart_loaded = "loaded 8192 bytes of expansion cartridge" in proc.stderr
+            key_processed = bool(re.search(r"0x04\s+:\s+[1-9][0-9]*", proc.stdout)) and bool(
+                re.search(r"0x05\s+:\s+[1-9][0-9]*", proc.stdout)
+            )
+            basic_entered = pc_cart_count > 0 or pchist_cart > 0
+            results.append(
+                {
+                    "case": case,
+                    "proc": proc,
+                    "vram": vram,
+                    "stop": stop,
+                    "pc_cart_count": pc_cart_count,
+                    "pc_cart_mode1": pc_cart_mode1,
+                    "pc_cart_mode2": pc_cart_mode2,
+                    "pc_cart_opcode00": pc_cart_opcode00,
+                    "pchist_cart": pchist_cart,
+                    "cart_overlay_reads": cart_overlay_reads,
+                    "cart_pc_reads": cart_pc_reads,
+                    "ram_probe": ram_probe,
+                    "sha": sha,
+                    "visible_pixels": pixels,
+                    "vram_ok": vram_ok,
+                    "cart_loaded": cart_loaded,
+                    "key_processed": key_processed,
+                    "basic_entered": basic_entered,
+                }
+            )
     any_basic_entered = any(result["basic_entered"] for result in results)
     all_infra_ok = all(
         result["proc"].returncode == 0
@@ -346,9 +383,9 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This probe exercises the monitor `B` command with",
-        "`JUKU_CART=roms/jbasic11.bin`. By default it checks Monitor 3.3,",
-        "which MAME tags as `Monitor/Bootstrap 3.3 \\w JBASIC`, plus the",
-        "EktaSoft 3.43m #0037 ROM used by the main boot guard. It complements",
+        "`JUKU_KEYS=B`. By default it checks Monitor 3.3 with both",
+        "`roms/jbasic11.bin` and the legacy `ref/firmware/BAS0-3.HEX` image,",
+        "plus the EktaSoft 3.43m #0037 ROM used by the main boot guard. It complements",
         "`sync/basic_cart_check.sh`,",
         "which already proves the cartridge window wiring independently.",
         "",
@@ -362,16 +399,18 @@ def main() -> int:
         "",
         f"- `BASIC_LAUNCH_KEYS` default `{os.environ.get('BASIC_LAUNCH_KEYS', 'B')}`",
         "- `BASIC_LAUNCH_ROM` default unset (runs `jmon33.bin` and `ekta37.bin`)",
+        "- `BASIC_LAUNCH_CART` default unset (runs `jbasic11.bin` plus legacy `BAS0-3.HEX` for jmon33)",
         f"- `BASIC_LAUNCH_MAX_CYCLES` default `{os.environ.get('BASIC_LAUNCH_MAX_CYCLES', '120000000')}`",
         "- `BASIC_LAUNCH_FRAME_CYCLES` default unset (`jmon33`: `200000`, `ekta37`: `40000`)",
         "",
         "## Evidence",
         "",
-        "| Monitor | ROM | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | `0x00` opcode cycles | RAM writes | RAM first/last write | RAM first/last write PCs | RAM nonzero bytes | RAM byte sum | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
-        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: | --- | ---: | --- |",
+        "| Monitor | ROM | Cartridge | Frame cycles | Infra | Cart overlay reads | PC in `0x4000..0xBFFF` | Mode-1 PC cycles | Mode-2 PC cycles | `0x00` opcode cycles | RAM writes | RAM first/last write | RAM first/last write PCs | RAM nonzero bytes | RAM byte sum | Visible pixels | Stop PC | Mode | VRAM SHA256 |",
+        "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: | --- | ---: | --- |",
         *[
             (
                 f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
+                f"`{result['case'].cart_name}` | "
                 f"`{result['case'].frame_cycles}` | "
                 f"{'PASS' if result['proc'].returncode == 0 and result['cart_loaded'] and result['key_processed'] and result['vram_ok'] else 'FAIL'} | "
                 f"`{result['cart_overlay_reads']}` | `{result['pc_cart_count']}` | "
@@ -396,7 +435,8 @@ def main() -> int:
         if result["basic_entered"]:
             ram_probe = result["ram_probe"]
             lines.append(
-                f"- `{result['case'].name}` reads the BASIC cartridge and executes in "
+                f"- `{result['case'].name}` with `{result['case'].cart_name}` reads "
+                f"the BASIC cartridge and executes in "
                 f"`0x4000..0xBFFF`; `{result['pc_cart_mode1']}` of those PC cycles are "
                 f"in RAM/ROM mode 1 and `{result['pc_cart_mode2']}` are in cartridge "
                 f"overlay mode 2. `{result['pc_cart_opcode00']}` PC cycles fetch a "
@@ -417,7 +457,8 @@ def main() -> int:
                 )
         else:
             lines.append(
-                f"- `{result['case'].name}` does not select the cartridge overlay in this run."
+                f"- `{result['case'].name}` with `{result['case'].cart_name}` does not "
+                "select the cartridge overlay in this run."
             )
     lines.extend(
         [

@@ -115,9 +115,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for the monitor `B`
-  command path into the BASIC cartridge; Monitor 3.3 reaches cartridge
-  execution through a zero-filled RAM window, while EktaSoft 3.43m #0037
-  remains a documented compatibility boundary.
+  command path into the BASIC cartridge; Monitor 3.3 compares `jbasic11.bin`
+  with the legacy BAS0-3 image and reaches cartridge execution through the same
+  zero-filled RAM window, while EktaSoft 3.43m #0037 remains a documented
+  compatibility boundary.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 

@@ -258,11 +258,12 @@ debugging session saved on real hardware.
    D8 selects D22 for the traced `0x4000..0x5FFF` window, and the optional D22
    sim socket drives `jbasic11.bin[0]` (`0xC3`). The `B` command boundary is now
    guarded in `sync/basic_launch_probe.py` and documented in
-   `docs/basic-launch-probe.md`: Monitor 3.3 reads `jbasic11.bin` from the
-   cartridge overlay and then executes in the `0x4000..0xBFFF` RAM window, while
-   that RAM window receives only zero-byte writes and remains zero-filled; the
-   EktaSoft 3.43m #0037 boot ROM still does not select the cartridge overlay in
-   the same bounded run. The jmon33
+   `docs/basic-launch-probe.md`: Monitor 3.3 now probes both the canonical
+   `roms/jbasic11.bin` and the legacy `ref/firmware/BAS0-3.HEX` media. Both
+   images read through the cartridge overlay and then execute in the
+   `0x4000..0xBFFF` RAM window, while that RAM window receives only zero-byte
+   writes and remains zero-filled; the EktaSoft 3.43m #0037 boot ROM still does
+   not select the cartridge overlay in the same bounded run. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
