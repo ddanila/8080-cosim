@@ -117,9 +117,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   to the first video-memory write with frame interrupts enabled.
 - `sync/jmon33_hdl_cursor_probe.py` — bounded HDL diagnostic for the stronger
   jmon33 monitor-idle cursor oracle; currently documents that the uninterrupted
-  HDL path gets past the old 300-write blank boundary to at least 400 VRAM
-  writes with nonzero framebuffer content, but still times out before the
-  cursor oracle while the first-write guard remains passing.
+  HDL path gets past the old 300-write blank boundary and stops cleanly at 400
+  VRAM writes with a trustworthy nonblank framebuffer dump, but still does not
+  reach the cursor oracle while the first-write guard remains passing.
 - `sync/jmon33_checkpoint_cursor_probe.py` — checkpoint-resumed HDL diagnostic
   for the same jmon33 cursor oracle. It starts from a blank late cosim
   checkpoint at 3,801,005 cycles / PC `0xF2C0`; the resumed `juku_top` path

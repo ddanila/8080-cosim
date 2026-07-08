@@ -27,6 +27,7 @@ COUNT_RE = re.compile(r"\[VRAM\] ([0-9]+) writes \(mcyc=([0-9]+)\) -- dump")
 CURSOR_RE = re.compile(r"jmon33 cursor oracle reached \(mcyc=([0-9]+) writes=([0-9]+)\)")
 PROGRESS_RE = re.compile(r"\[VRAM\] progress writes=([0-9]+) mcyc=([0-9]+)")
 TIMECAP_RE = re.compile(r"time cap mcyc=([0-9]+) vram_writes=([0-9]+)")
+DUMP_RE = re.compile(r"^\[SIM\] dumped VRAM -> hdl/sim/vram_top\.bin$", re.MULTILINE)
 
 
 def run(cmd: list[str], *, cwd: Path = ROOT, timeout: int | None = None) -> subprocess.CompletedProcess[str]:
@@ -47,7 +48,10 @@ def write_rom_hex() -> None:
 
 
 def parse_output(output: str) -> dict[str, int | str | bool]:
-    result: dict[str, int | str | bool] = {"cursor_reached": False}
+    result: dict[str, int | str | bool] = {
+        "cursor_reached": False,
+        "vram_dumped": bool(DUMP_RE.search(output)),
+    }
     if match := FIRST_RE.search(output):
         result["first_addr"] = match.group(1).lower()
         result["first_mcyc"] = int(match.group(2))
@@ -148,7 +152,7 @@ def main() -> int:
 
         output = (proc.stdout or "") + (proc.stderr or "")
         parsed = parse_output(output)
-        vram = VRAM_TOP.read_bytes() if VRAM_TOP.exists() else b""
+        vram = VRAM_TOP.read_bytes() if parsed.get("vram_dumped") and VRAM_TOP.exists() else b""
     finally:
         if old_vram is None:
             VRAM_TOP.unlink(missing_ok=True)
@@ -196,6 +200,7 @@ def main() -> int:
         f"| subprocess timeout | {'YES' if timed_out else 'NO'} |",
         f"| first jmon33 video write is `0xFF40` | {'PASS' if first_ok else 'FAIL'} |",
         f"| cursor hook reached | {'PASS' if bool(parsed.get('cursor_reached')) else 'NO'} |",
+        f"| framebuffer dump observed | {'PASS' if bool(parsed.get('vram_dumped')) else 'NO'} |",
         f"| framebuffer cursor bytes match cosim | {'PASS' if cursor_ok else 'NO'} |",
         f"| visible framebuffer pixels | `{pixels}` |",
         f"| nonzero framebuffer bytes | `{nonzero}` |",
