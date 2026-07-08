@@ -21,21 +21,27 @@ Environment overrides:
 - `JMON33_HDL_COMMAND_FRAMEIRQ` default `200000`
 - `JMON33_HDL_COMMAND_KHOLD` default `200000`
 - `JMON33_HDL_COMMAND_KGAP` default `100000`
-- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `20000000`
+- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `19900000`
 - Expected checkpoint SHA256 `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 - `JMON33_HDL_COMMAND_KEY_MCYC` default `50000`
+- `JMON33_HDL_COMMAND_DEFER_IFF` default `1`
+- `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` default `1`
 - `JMON33_HDL_COMMAND_CASES` selected `A-enter,T-enter,B-enter`
 
 ## Evidence
 
 - Cosim checkpoint exit: `0`
+- Cosim checkpoint cycle: `19900012`
+- Cosim checkpoint PC: `0xF3A1`
+- Cosim checkpoint IFF: `1`
+- Cosim checkpoint VRAM writes: `270`
 - Cosim checkpoint VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 
 | Case | Key | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |
 | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `0` | `False` | `289` | `0x84`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
-| T-enter | `T\n` | `0` | `False` | `289` | `0x88`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
-| B-enter | `B\n` | `0` | `False` | `289` | `0x8C`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
+| A-enter | `A\n` | `0` | `False` | `289` | `0x84`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=40` | `80` | `fef67bc592458805f1db4f8f07406f21c2c33cb1ae877fa999c3c4b97b593433` | FAIL |
+| T-enter | `T\n` | `0` | `False` | `289` | `0x88`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=40` | `80` | `fef67bc592458805f1db4f8f07406f21c2c33cb1ae877fa999c3c4b97b593433` | FAIL |
+| B-enter | `B\n` | `0` | `False` | `289` | `0x8C`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=40` | `80` | `fef67bc592458805f1db4f8f07406f21c2c33cb1ae877fa999c3c4b97b593433` | FAIL |
 
 ## Disposition
 
@@ -44,6 +50,9 @@ Environment overrides:
 - The default checkpoint is the monitor-idle cursor state. A later
   `JMON33_HDL_COMMAND_KEY_MCYC` delay lets the resumed keyboard scan
   settle before the command key is pressed.
+- The default checkpoint is deliberately before the 20,000,000-cycle
+  ready-probe stop, because that stop is visually idle but lands in
+  the frame interrupt vector (`PC=0xFF54`, `IFF=0`).
 - The default checkpoint is the monitor-idle cursor state, so the
   default expected command hashes come from
   `docs/jmon33-idle-command-probe.md`, not from reset-time typed

@@ -193,7 +193,10 @@ def text_output(value: str | bytes | None) -> str:
 def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Path, dict[str, str], str]:
     trace = compile_trace(tmp)
     prefix = tmp / "jmon33-hdl-command"
-    checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_CHECKPOINT_CYCLES", "20000000")
+    # 20,000,000 cycles is visually idle but lands at the frame IRQ vector
+    # (PC=0xFF54/IFF=0). Use a nearby instruction-boundary idle-loop point by
+    # default so the clean-M1 HDL resume starts from monitor code, not an ISR.
+    checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_CHECKPOINT_CYCLES", "19900000")
     frame_cycles = os.environ.get("JMON33_HDL_COMMAND_FRAME_CYCLES", "200000")
     max_cycles = os.environ.get("JMON33_HDL_COMMAND_MAX_COSIM_CYCLES", "20000000")
     old_vram = tmp / "old-vram.bin"
@@ -299,8 +302,8 @@ def run_case(
         f"+keyat={os.environ.get('JMON33_HDL_COMMAND_KEYAT', '1')}",
         f"+khold={os.environ.get('JMON33_HDL_COMMAND_KHOLD', '200000')}",
         f"+kgap={os.environ.get('JMON33_HDL_COMMAND_KGAP', '100000')}",
-        "+defer_iff=1",
-        "+force_clean_status=1",
+        f"+defer_iff={os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}",
+        f"+force_clean_status={os.environ.get('JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS', '1')}",
     ]
     args.extend(state_plusargs(state))
 
@@ -428,14 +431,20 @@ def main() -> int:
         f"- `JMON33_HDL_COMMAND_FRAMEIRQ` default `{os.environ.get('JMON33_HDL_COMMAND_FRAMEIRQ', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KHOLD` default `{os.environ.get('JMON33_HDL_COMMAND_KHOLD', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KGAP` default `{os.environ.get('JMON33_HDL_COMMAND_KGAP', '100000')}`",
-        f"- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `{os.environ.get('JMON33_HDL_COMMAND_CHECKPOINT_CYCLES', '20000000')}`",
+        f"- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `{os.environ.get('JMON33_HDL_COMMAND_CHECKPOINT_CYCLES', '19900000')}`",
         f"- Expected checkpoint SHA256 `{expected_checkpoint_sha}`",
         f"- `JMON33_HDL_COMMAND_KEY_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}`",
+        f"- `JMON33_HDL_COMMAND_DEFER_IFF` default `{os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}`",
+        f"- `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` default `{os.environ.get('JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS', '1')}`",
         f"- `JMON33_HDL_COMMAND_CASES` selected `{','.join(case.name for case in cases)}`",
         "",
         "## Evidence",
         "",
         f"- Cosim checkpoint exit: `{cosim_proc.returncode}`",
+        f"- Cosim checkpoint cycle: `{state.get('cyc', 'unknown')}`",
+        f"- Cosim checkpoint PC: `0x{state.get('pc', '0000')}`",
+        f"- Cosim checkpoint IFF: `{state.get('iff', 'unknown')}`",
+        f"- Cosim checkpoint VRAM writes: `{state.get('vram_writes', 'unknown')}`",
         f"- Cosim checkpoint VRAM SHA256: `{checkpoint_vram_sha}`",
     ]
     if infra_failures:
@@ -474,6 +483,9 @@ def main() -> int:
             "- The default checkpoint is the monitor-idle cursor state. A later",
             "  `JMON33_HDL_COMMAND_KEY_MCYC` delay lets the resumed keyboard scan",
             "  settle before the command key is pressed.",
+            "- The default checkpoint is deliberately before the 20,000,000-cycle",
+            "  ready-probe stop, because that stop is visually idle but lands in",
+            "  the frame interrupt vector (`PC=0xFF54`, `IFF=0`).",
             "- The default checkpoint is the monitor-idle cursor state, so the",
             "  default expected command hashes come from",
             "  `docs/jmon33-idle-command-probe.md`, not from reset-time typed",
