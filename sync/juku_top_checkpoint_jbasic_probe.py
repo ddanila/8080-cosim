@@ -164,6 +164,7 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '10000')}",
         f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '5000')}",
         "+tracekbd=1",
+        f"+stopkbdhit={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT', '0')}",
         f"+progress_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PROGRESS_MCYC', '25000')}",
         "+stopfdc=0",
         "+stopfdc_data_read=0",
@@ -221,6 +222,7 @@ def main() -> int:
 
     key_presses = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] press")
     key_releases = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] release")
+    key_hits = matching_lines(hdl_proc.stdout, "[RESUME-KBD-HIT]")
     reached_ready = first_line(hdl_proc.stdout, "[RESUME-JBASIC]") != "none"
     failures: list[str] = []
     if cosim_proc.returncode != 0:
@@ -264,6 +266,9 @@ def main() -> int:
         f"- JBASIC key releases: `{len(key_releases)}`",
         f"- First key press: `{key_presses[0] if key_presses else 'none'}`",
         f"- Last key release: `{key_releases[-1] if key_releases else 'none'}`",
+        f"- Keyboard hit lines: `{len(key_hits)}`",
+        f"- First keyboard hit: `{key_hits[0] if key_hits else 'none'}`",
+        f"- Last keyboard hit: `{key_hits[-1] if key_hits else 'none'}`",
         f"- READY stop line: `{first_line(hdl_proc.stdout, '[RESUME-JBASIC]')}`",
         f"- First progress line: `{first_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
         f"- Last progress line: `{last_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
@@ -277,7 +282,10 @@ def main() -> int:
         "  `READY` prompt with exact fixed-`0xD800` glyph bytes.",
         "- This report only claims the checkpoint-resumed HDL command stimulus",
         "  boundary. The tracked run is intentionally short and stops before",
-        "  the HDL path reaches the `READY` oracle.",
+        "  the HDL path samples the injected keys or reaches the `READY` oracle.",
+        "- The bench now counts `[RESUME-KBD-HIT]` active-key and non-`0xCF`",
+        "  reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1` to stop at",
+        "  the first sampled keyboard hit during retiming experiments.",
         "- Next work is to lengthen or retime the resumed HDL run until keyboard",
         "  reads sample the injected command and post-command FDC/data traffic",
         "  begins, then finally stop on `[RESUME-JBASIC]`.",

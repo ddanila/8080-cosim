@@ -334,7 +334,9 @@ debugging session saved on real hardware.
    exact `JBASIC` + Enter command sequence with new `+jbasickeys=1` support,
    and adds an opt-in `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
    oracle. The current tracked HDL run proves command stimulus only; it stops
-   before keyboard reads sample the command or `[RESUME-JBASIC]` fires. The jmon33
+   before keyboard reads sample the command or `[RESUME-JBASIC]` fires, and now
+   reports zero active-key/non-`0xCF` PPI keyboard reads in that bounded window.
+   The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the

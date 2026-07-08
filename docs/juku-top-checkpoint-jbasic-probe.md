@@ -28,10 +28,13 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - JBASIC key releases: `7`
 - First key press: `[RESUME-KBD-STIM] press key=0 col=7 bit=5 shift=1 mcyc=50000 vram=73446`
 - Last key release: `[RESUME-KBD-STIM] release key=6 mcyc=62500 vram=73446`
+- Keyboard hit lines: `0`
+- First keyboard hit: `none`
+- Last keyboard hit: `none`
 - READY stop line: `none`
 - First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0x627a vram=73446 ios=1 pic_seen=0 kbd_seen=0 fdc_ios=0 frame_ticks=2 intr_edges=1 inta_edges=1 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0`
 - Last progress line: `[RESUME-PROGRESS] mcyc=75000 pc=0x7c60 vram=73446 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1 frame_ticks=7 intr_edges=2 inta_edges=4 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0`
-- Stop/fail line: `JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1`
+- Stop/fail line: `JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 kbd_active_reads=0 kbd_noncf_reads=0 fdc_ios=1`
 
 ## Boundary
 
@@ -41,7 +44,10 @@ sync/juku_top_checkpoint_jbasic_probe.py
   `READY` prompt with exact fixed-`0xD800` glyph bytes.
 - This report only claims the checkpoint-resumed HDL command stimulus
   boundary. The tracked run is intentionally short and stops before
-  the HDL path reaches the `READY` oracle.
+  the HDL path samples the injected keys or reaches the `READY` oracle.
+- The bench now counts `[RESUME-KBD-HIT]` active-key and non-`0xCF`
+  reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1` to stop at
+  the first sampled keyboard hit during retiming experiments.
 - Next work is to lengthen or retime the resumed HDL run until keyboard
   reads sample the injected command and post-command FDC/data traffic
   begins, then finally stop on `[RESUME-JBASIC]`.
@@ -70,7 +76,7 @@ FDC-1793: loaded raw disk media/disks/JUKPROG2.CPM (2 sides)
 [RESUME-KBD-STIM] press key=6 col=8 bit=5 shift=0 mcyc=61250 vram=73446
 [RESUME-KBD-STIM] release key=6 mcyc=62500 vram=73446
 [RESUME-PROGRESS] mcyc=75000 pc=0x7c60 vram=73446 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1 frame_ticks=7 intr_edges=2 inta_edges=4 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0
-JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1
+JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 kbd_active_reads=0 kbd_noncf_reads=0 fdc_ios=1
 [RESUME-VRAM] dumped checkpoint VRAM -> hdl/sim/checkpoint_vram_top.bin
-/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:408: $finish called at 143569000 (100ps)
+/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:409: $finish called at 143569000 (100ps)
 ```
