@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "docs" / "jmon33-command-probe.md"
+REPORT = Path(os.environ.get("JMON33_COMMAND_REPORT", ROOT / "docs" / "jmon33-command-probe.md"))
 VRAM = ROOT / "cosim" / "vram.bin"
 VRAM_STRIDE = 40
 VRAM_LINES = 241
@@ -27,7 +27,7 @@ class CommandCase:
     expected_blocks: tuple[tuple[int, int], ...]
 
 
-CASES = (
+EARLY_CASES = (
     CommandCase(
         "A-enter",
         "A\n",
@@ -45,6 +45,27 @@ CASES = (
         "B\n",
         "7de5d7ccbcbe39fc6f644adbeb68b1d38706be9d77616772b3d10686e005d52e",
         ((0, 80),),
+    ),
+)
+
+IDLE_CASES = (
+    CommandCase(
+        "A-enter",
+        "A\n",
+        "af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a",
+        ((8, 20), (8, 60)),
+    ),
+    CommandCase(
+        "T-enter",
+        "T\n",
+        "9da43c195487eae0eeac8c65725a3251ff502642025b745a16691a1d7044bae3",
+        ((8, 20), (296, 60)),
+    ),
+    CommandCase(
+        "B-enter",
+        "B\n",
+        "891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0",
+        ((8, 20), (0, 80)),
     ),
 )
 
@@ -130,7 +151,7 @@ def run_case(trace: Path, case: CommandCase, tmp: Path) -> dict[str, object]:
 
     env = os.environ.copy()
     env["JUKU_KEYBOARD_ENABLE"] = "1"
-    env["JUKU_KEY_START_VRAM"] = "0"
+    env["JUKU_KEY_START_VRAM"] = os.environ.get("JMON33_COMMAND_START_VRAM", "0")
     env["JUKU_KEY_HOLD_FRAMES"] = os.environ.get("JMON33_COMMAND_HOLD_FRAMES", "20")
     env["JUKU_KEY_GAP_FRAMES"] = os.environ.get("JMON33_COMMAND_GAP_FRAMES", "6")
     if case.keys is not None:
@@ -180,10 +201,12 @@ def run_case(trace: Path, case: CommandCase, tmp: Path) -> dict[str, object]:
 
 
 def main() -> int:
+    oracle = os.environ.get("JMON33_COMMAND_ORACLE", "early")
+    cases = IDLE_CASES if oracle == "idle" else EARLY_CASES
     with tempfile.TemporaryDirectory(prefix="jmon33-command.") as tmp_name:
         tmp = Path(tmp_name)
         trace = compile_trace(tmp)
-        results = [run_case(trace, case, tmp) for case in CASES]
+        results = [run_case(trace, case, tmp) for case in cases]
 
     passed = all(
         result["proc"].returncode == 0
@@ -191,7 +214,10 @@ def main() -> int:
         and result["expected_blocks_ok"]
         for result in results
     )
-    status = "JMON33 COMMAND SURFACE READY" if passed else "JMON33 COMMAND SURFACE CHANGED"
+    if passed:
+        status = "JMON33 IDLE COMMAND SURFACE READY" if oracle == "idle" else "JMON33 COMMAND SURFACE READY"
+    else:
+        status = "JMON33 COMMAND SURFACE CHANGED"
 
     lines = [
         "# jmon33 command-surface probe",
@@ -216,6 +242,8 @@ def main() -> int:
         f"- `JMON33_COMMAND_FRAME_CYCLES` default `{os.environ.get('JMON33_COMMAND_FRAME_CYCLES', '200000')}`",
         f"- `JMON33_COMMAND_HOLD_FRAMES` default `{os.environ.get('JMON33_COMMAND_HOLD_FRAMES', '20')}`",
         f"- `JMON33_COMMAND_GAP_FRAMES` default `{os.environ.get('JMON33_COMMAND_GAP_FRAMES', '6')}`",
+        f"- `JMON33_COMMAND_START_VRAM` default `{os.environ.get('JMON33_COMMAND_START_VRAM', '0')}`",
+        f"- `JMON33_COMMAND_ORACLE` default `{oracle}`",
         "",
         "## Evidence",
         "",

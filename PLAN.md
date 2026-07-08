@@ -300,7 +300,14 @@ debugging session saved on real hardware.
    surface is now guarded by `sync/jmon33_command_probe.py` and documented in
    `docs/jmon33-command-probe.md`: with a jmon33-appropriate keyboard hold
    window, typed `A`, `T`, and `B` plus return are sampled through port `0x05`
-   and produce deterministic visible cursor states. The HDL testbench now has a
+   and produce deterministic visible cursor states. A second cosim guard,
+   `sync/jmon33_idle_command_probe.py` / `docs/jmon33-idle-command-probe.md`,
+   pins the commands typed after the monitor-idle cursor is already visible:
+   delayed `A`, `T`, and `B` plus return reach framebuffer hashes
+   `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a`,
+   `9da43c195487eae0eeac8c65725a3251ff502642025b745a16691a1d7044bae3`,
+   and `891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0`.
+   The HDL testbench now has a
    `+cursorstop=1` stop hook for that same cursor boundary, and
    `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
    first write still matches at `0xFF40`, but the 300-write HDL run stops with
@@ -317,7 +324,8 @@ debugging session saved on real hardware.
    `0xC4`) and reaches the exact cosim command framebuffer at `x=8,y=60`
    (`SHA256 efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f`).
    The same diagnostic still keeps `T`/`B` as non-passing rows until their
-   final command framebuffers also match cosim.
+   final command framebuffers also match the delayed idle-command cosim
+   oracle.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
    path, extend the HDL command diagnostic to the remaining `T`/`B` command
    oracles,

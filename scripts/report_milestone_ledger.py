@@ -121,6 +121,10 @@ def milestone_rows():
         "docs/jmon33-command-probe.md",
         "Status: **JMON33 COMMAND SURFACE READY**",
     )
+    jmon33_idle_command_surface = marker(
+        "docs/jmon33-idle-command-probe.md",
+        "Status: **JMON33 IDLE COMMAND SURFACE READY**",
+    )
     jmon33_hdl_command_diagnostic = marker(
         "docs/jmon33-hdl-command-probe.md",
         "Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**",
@@ -317,6 +321,12 @@ def milestone_rows():
                     "commands are sampled through the keyboard port and move the "
                     "visible command cursor deterministically in cosim. "
                     if jmon33_command_surface
+                    else ""
+                )
+                + (
+                    "`docs/jmon33-idle-command-probe.md` pins the delayed "
+                    "idle-prompt command oracle for checkpoint-resumed HDL work. "
+                    if jmon33_idle_command_surface
                     else ""
                 )
                 + (

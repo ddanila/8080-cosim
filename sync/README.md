@@ -127,6 +127,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   command surface. It uses a jmon33-appropriate keyboard hold window and proves
   typed `A`, `T`, and `B` plus return are sampled through port `0x05` and move
   the visible command cursor to deterministic screen positions.
+- `sync/jmon33_idle_command_probe.py` — cosim guard for the same Monitor 3.3
+  commands typed after the idle cursor is already visible; this is the reference
+  oracle for checkpoint-resumed HDL command work.
 - `sync/jmon33_hdl_command_probe.py` — checkpoint-resumed HDL diagnostic for
   the same command surface. It delays keyboard stimulus until after the proven
   HDL cursor boundary; the `A` case reaches the same command framebuffer SHA256
