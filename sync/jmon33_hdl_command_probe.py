@@ -336,6 +336,7 @@ def run_case(
     kbd_values = tuple(int(match.group(1), 16) for match in KBD_RE.finditer(proc.stdout))
     active_values = tuple(sorted(set(value for value in kbd_values if value != 0xCF)))
     expected_blocks_ok = all(solid_block(vram, x, y) for x, y in case.expected_blocks)
+    idle_cursor_ok = solid_block(vram, 8, 20)
     return {
         "case": case,
         "proc": proc,
@@ -346,6 +347,7 @@ def run_case(
         "active_values": active_values[:8],
         "blocks": block_summary(vram),
         "expected_blocks_ok": expected_blocks_ok,
+        "idle_cursor_ok": idle_cursor_ok,
         "visible_pixels": sum(byte.bit_count() for byte in vram),
     }
 
@@ -441,8 +443,8 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "| Case | Key | Exit | Timed out | Keyboard samples | Active key values | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |",
-            "| --- | --- | ---: | --- | ---: | --- | --- | --- | ---: | --- | --- |",
+            "| Case | Key | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |",
+            "| --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |",
         ]
     )
     for result in results:
@@ -458,7 +460,8 @@ def main() -> int:
         lines.append(
             f"| {case.name} | `{case.key}\\n` | `{result['proc'].returncode}` | "
             f"`{result['timed_out']}` | `{result['kbd_samples']}` | {active} | "
-            f"`{result['command_line']}` | {blocks} | `{result['visible_pixels']}` | "
+            f"`{'yes' if result['idle_cursor_ok'] else 'no'}` | `{result['command_line']}` | "
+            f"{blocks} | `{result['visible_pixels']}` | "
             f"`{result['sha'] or 'missing'}` | {'PASS' if ok else 'FAIL'} |"
         )
     lines.extend(
@@ -477,6 +480,8 @@ def main() -> int:
             "  command runs.",
             "- The current HDL rows are diagnostic until their final command",
             "  framebuffers match the selected cosim oracle.",
+            "- The `Idle cursor` column checks whether the monitor-idle cursor",
+            "  block from the checkpoint survived into the final framebuffer.",
             "- This proof is scoped to jmon33 monitor commands. BASIC remains tracked",
             "  separately by `docs/basic-launch-probe.md` and",
             "  `docs/basic-factory-command-probe.md`.",

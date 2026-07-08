@@ -31,11 +31,11 @@ Environment overrides:
 - Cosim checkpoint exit: `0`
 - Cosim checkpoint VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 
-| Case | Key | Exit | Timed out | Keyboard samples | Active key values | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |
-| --- | --- | ---: | --- | ---: | --- | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `0` | `False` | `289` | `0x84`, `0x8F`, `0xC4` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
-| T-enter | `T\n` | `0` | `False` | `289` | `0x88`, `0x8F`, `0xC4` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
-| B-enter | `B\n` | `0` | `False` | `289` | `0x8C`, `0x8F`, `0xC4` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
+| Case | Key | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |
+| --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |
+| A-enter | `A\n` | `0` | `False` | `289` | `0x84`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
+| T-enter | `T\n` | `0` | `False` | `289` | `0x88`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
+| B-enter | `B\n` | `0` | `False` | `289` | `0x8C`, `0x8F`, `0xC4` | `no` | `none` | `x=8,y=60` | `80` | `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f` | FAIL |
 
 ## Disposition
 
@@ -50,6 +50,8 @@ Environment overrides:
   command runs.
 - The current HDL rows are diagnostic until their final command
   framebuffers match the selected cosim oracle.
+- The `Idle cursor` column checks whether the monitor-idle cursor
+  block from the checkpoint survived into the final framebuffer.
 - This proof is scoped to jmon33 monitor commands. BASIC remains tracked
   separately by `docs/basic-launch-probe.md` and
   `docs/basic-factory-command-probe.md`.
