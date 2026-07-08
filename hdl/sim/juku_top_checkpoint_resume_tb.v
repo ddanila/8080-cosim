@@ -26,6 +26,7 @@ module juku_top_checkpoint_resume_tb();
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
   integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0, stopfdc_data_read = 0, stopfdc_data_reads = 0;
   integer stopprompt = 0, prompt_seen = 0, cursorstop = 0, cursor_seen = 0;
+  integer jbasickeys = 0, stopjbasicready = 0, jbasic_ready_seen = 0;
   integer defer_iff = 0, restore_iff_pending = 0;
   integer force_clean_status = 0, clean_status_pending = 0;
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0, fdc_data_reads = 0;
@@ -116,6 +117,80 @@ module juku_top_checkpoint_resume_tb();
   function command_oracle_ok; begin
     command_oracle_ok = (commandstop != 0) && solid_vram_block(command_x0, command_y0);
     if (command_x1 >= 0) command_oracle_ok = command_oracle_ok && solid_vram_block(command_x1, command_y1);
+  end endfunction
+
+  function [7:0] jbasic_ready_glyph(input integer glyph_col, input integer row); begin
+    case (glyph_col)
+      0: begin
+        case (row)
+          0: jbasic_ready_glyph = 8'h3c;
+          1: jbasic_ready_glyph = 8'h22;
+          2: jbasic_ready_glyph = 8'h22;
+          3: jbasic_ready_glyph = 8'h22;
+          4: jbasic_ready_glyph = 8'h3c;
+          5: jbasic_ready_glyph = 8'h24;
+          6: jbasic_ready_glyph = 8'h22;
+          default: jbasic_ready_glyph = 8'hff;
+        endcase
+      end
+      1: begin
+        case (row)
+          0: jbasic_ready_glyph = 8'h3e;
+          1: jbasic_ready_glyph = 8'h20;
+          2: jbasic_ready_glyph = 8'h20;
+          3: jbasic_ready_glyph = 8'h3c;
+          4: jbasic_ready_glyph = 8'h20;
+          5: jbasic_ready_glyph = 8'h20;
+          6: jbasic_ready_glyph = 8'h3e;
+          default: jbasic_ready_glyph = 8'hff;
+        endcase
+      end
+      2: begin
+        case (row)
+          0: jbasic_ready_glyph = 8'h08;
+          1: jbasic_ready_glyph = 8'h14;
+          2: jbasic_ready_glyph = 8'h22;
+          3: jbasic_ready_glyph = 8'h22;
+          4: jbasic_ready_glyph = 8'h3e;
+          5: jbasic_ready_glyph = 8'h22;
+          6: jbasic_ready_glyph = 8'h22;
+          default: jbasic_ready_glyph = 8'hff;
+        endcase
+      end
+      3: begin
+        case (row)
+          0: jbasic_ready_glyph = 8'h3c;
+          1: jbasic_ready_glyph = 8'h12;
+          2: jbasic_ready_glyph = 8'h12;
+          3: jbasic_ready_glyph = 8'h12;
+          4: jbasic_ready_glyph = 8'h12;
+          5: jbasic_ready_glyph = 8'h12;
+          6: jbasic_ready_glyph = 8'h3c;
+          default: jbasic_ready_glyph = 8'hff;
+        endcase
+      end
+      4: begin
+        case (row)
+          0: jbasic_ready_glyph = 8'h22;
+          1: jbasic_ready_glyph = 8'h22;
+          2: jbasic_ready_glyph = 8'h14;
+          3: jbasic_ready_glyph = 8'h08;
+          4: jbasic_ready_glyph = 8'h08;
+          5: jbasic_ready_glyph = 8'h08;
+          6: jbasic_ready_glyph = 8'h08;
+          default: jbasic_ready_glyph = 8'hff;
+        endcase
+      end
+      default: jbasic_ready_glyph = 8'hff;
+    endcase
+  end endfunction
+
+  function jbasic_ready_ok; integer row, glyph_col; begin
+    jbasic_ready_ok = 1'b1;
+    for (row = 0; row < 7; row = row + 1)
+      for (glyph_col = 0; glyph_col < 5; glyph_col = glyph_col + 1)
+        if (dram_byte(16'hD800 + (121 + row) * 40 + glyph_col) !== jbasic_ready_glyph(glyph_col, row))
+          jbasic_ready_ok = 1'b0;
   end endfunction
 
   integer fd, dump_i, dump_addr; reg [7:0] dump_b;
@@ -215,7 +290,15 @@ module juku_top_checkpoint_resume_tb();
   end endtask
 
   task set_command_key(input integer idx); begin
-    if (idx == 0) begin
+    if (jbasickeys != 0) begin
+      if (idx == 0) begin kbd_shift <= 1'b1; kbd_kcol <= 7;  kbd_kbit <= 5; end // J
+      else if (idx == 1) begin kbd_shift <= 1'b1; kbd_kcol <= 4;  kbd_kbit <= 1; end // B
+      else if (idx == 2) begin kbd_shift <= 1'b1; kbd_kcol <= 5;  kbd_kbit <= 5; end // A
+      else if (idx == 3) begin kbd_shift <= 1'b1; kbd_kcol <= 1;  kbd_kbit <= 5; end // S
+      else if (idx == 4) begin kbd_shift <= 1'b1; kbd_kcol <= 14; kbd_kbit <= 3; end // I
+      else if (idx == 5) begin kbd_shift <= 1'b1; kbd_kcol <= 6;  kbd_kbit <= 1; end // C
+      else begin kbd_shift <= 1'b0; kbd_kcol <= 8; kbd_kbit <= 5; end                 // Enter
+    end else if (idx == 0) begin
       kbd_shift <= 1'b1;
       if (command_key == 65) begin kbd_kcol <= 5; kbd_kbit <= 5; end      // A
       else if (command_key == 84) begin kbd_kcol <= 4; kbd_kbit <= 3; end // T
@@ -306,6 +389,14 @@ module juku_top_checkpoint_resume_tb();
         command_seen = 1;
         $display("[RESUME-COMMAND] jmon33 command oracle reached x0=%0d y0=%0d x1=%0d y1=%0d at bounded exit mcyc=%0d vram=%0d pc=0x%04h",
                  command_x0, command_y0, command_x1, command_y1, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+        dump_vram();
+        $finish;
+      end
+      if (stopjbasicready != 0 && !jbasic_ready_seen && jbasic_ready_ok()) begin
+        jbasic_ready_seen = 1;
+        $display("[RESUME-JBASIC] READY prompt reached at bounded exit mcyc=%0d vram=%0d pc=0x%04h",
+                 mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
         $fflush;
         dump_vram();
         $finish;
@@ -421,6 +512,14 @@ module juku_top_checkpoint_resume_tb();
       dump_vram();
       $finish;
     end
+    if (stopjbasicready != 0 && !jbasic_ready_seen && jbasic_ready_ok()) begin
+      jbasic_ready_seen = 1;
+      $display("[RESUME-JBASIC] READY prompt reached mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      $fflush;
+      dump_vram();
+      $finish;
+    end
   end
 
   always @(negedge dut.iowr_n) begin
@@ -503,6 +602,12 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("frameirq=%d", frameirq)) ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;
     if ($value$plusargs("commandkeys=%d", commandkeys)) ;
+    if ($value$plusargs("jbasickeys=%d", jbasickeys)) begin
+      if (jbasickeys != 0) begin
+        commandkeys = 1;
+        command_key_count = 7;
+      end
+    end
     if ($value$plusargs("command_key=%d", command_key)) ;
     if ($value$plusargs("command_key_count=%d", command_key_count)) ;
     if ($value$plusargs("command_key_mcyc=%d", command_key_mcyc)) ;
@@ -524,6 +629,7 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("stopfdc_data_read=%d", stopfdc_data_read)) ;
     if ($value$plusargs("stopfdc_data_reads=%d", stopfdc_data_reads)) ;
     if ($value$plusargs("stopprompt=%d", stopprompt)) ;
+    if ($value$plusargs("stopjbasicready=%d", stopjbasicready)) ;
     if ($value$plusargs("cursorstop=%d", cursorstop)) ;
     if ($value$plusargs("state_vram_writes=%d", state_vram_writes)) ;
     if ($value$plusargs("state_pc=%h", state_pc)) ;
@@ -580,7 +686,9 @@ module juku_top_checkpoint_resume_tb();
     end else if (ekdoskeys != 0 && state_kbd_pos >= 3) begin
       ekdos_key = state_kbd_pos;
       key_t = -1;
-    end else if (commandkeys != 0 && state_vram_writes >= keyat && state_kbd_pos < command_key_count) begin
+    end else if (commandkeys != 0 && state_vram_writes >= keyat &&
+                 (command_key_mcyc == 0 || state_kbd_phase_mcyc >= command_key_mcyc) &&
+                 state_kbd_pos < command_key_count) begin
       ekdos_key = state_kbd_pos;
       key_t = state_kbd_phase_mcyc >= 0 ? state_kbd_phase_mcyc : state_kbd_phase;
       set_command_key(state_kbd_pos);
@@ -623,6 +731,11 @@ module juku_top_checkpoint_resume_tb();
       command_seen = 1;
       $display("[RESUME-COMMAND] jmon33 command oracle reached x0=%0d y0=%0d x1=%0d y1=%0d at timecap mcyc=%0d vram=%0d pc=0x%04h",
                command_x0, command_y0, command_x1, command_y1, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+    end
+    if (stopjbasicready != 0 && !jbasic_ready_seen && jbasic_ready_ok()) begin
+      jbasic_ready_seen = 1;
+      $display("[RESUME-JBASIC] READY prompt reached at timecap mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
     end
     $fflush;
     dump_vram();

@@ -327,7 +327,14 @@ debugging session saved on real hardware.
    (`0x10..0x1B`), memory mode `0`, Port C `0x04`, and 77,306 VRAM writes so
    the rendered prompt has an auditable timing/control context. This proves
    deterministic post-prompt command entry into loaded BASIC code/data and a
-   user-visible BASIC `READY` oracle in cosim. The jmon33
+   user-visible BASIC `READY` oracle in cosim. The first HDL bridge for that
+   path is now tracked by `sync/juku_top_checkpoint_jbasic_probe.py` /
+   `docs/juku-top-checkpoint-jbasic-probe.md`: it loads a generated
+   `JUKPROG2.CPM` EKDOS `A>` prompt checkpoint into `juku_top`, injects the
+   exact `JBASIC` + Enter command sequence with new `+jbasickeys=1` support,
+   and adds an opt-in `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
+   oracle. The current tracked HDL run proves command stimulus only; it stops
+   before keyboard reads sample the command or `[RESUME-JBASIC]` fires. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
@@ -380,8 +387,9 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, port the pinned EKDOS `JBASIC` BASIC prompt path to HDL coverage, and
-   then retire the checkpointed HDL gaps around disk-backed FDC/EKDOS.
+   path, extend the pinned EKDOS `JBASIC` HDL checkpoint run from command
+   stimulus to post-command FDC/data traffic and `[RESUME-JBASIC]`, and then
+   retire the checkpointed HDL gaps around disk-backed FDC/EKDOS.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

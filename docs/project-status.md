@@ -210,6 +210,13 @@ Historical merge notes:
   (`60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`),
   final video/PIT port state (`0x10..0x1B`), memory mode `0`, Port C `0x04`,
   and 77,306 VRAM writes.
+- **HDL EKDOS JBASIC bridge:** `sync/juku_top_checkpoint_jbasic_probe.py` now
+  starts from a generated `JUKPROG2.CPM` EKDOS `A>` prompt checkpoint, loads it
+  into `juku_top`, and injects the exact `JBASIC` + Enter sequence through new
+  checkpoint-resume `+jbasickeys=1` support. The same HDL bench now has
+  `+stopjbasicready=1` for the exact fixed-`0xD800` `READY` glyph oracle. The
+  tracked report proves the command stimulus boundary; it does not yet claim
+  that HDL sampled the command or reached `[RESUME-JBASIC]`.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;

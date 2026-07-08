@@ -99,6 +99,12 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `sync/juku_top_checkpoint_fdc_probe.py` and requires checkpoint-resumed
   `juku_top` to render the EKDOS `A>` prompt bitmap. It is intentionally not in
   push CI because GitHub runners are too slow for this vm80a resume window.
+- `sync/juku_top_checkpoint_jbasic_probe.py` — checkpoint-resumed HDL bridge
+  from the EKDOS `A>` prompt toward the disk BASIC path. It generates a
+  `JUKPROG2.CPM` prompt checkpoint, loads it into `juku_top`, injects the exact
+  `JBASIC` + Enter sequence with `+jbasickeys=1`, and documents the current
+  command-stimulus boundary plus the new opt-in `+stopjbasicready=1` `READY`
+  glyph oracle.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.
