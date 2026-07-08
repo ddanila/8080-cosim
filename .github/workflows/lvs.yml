@@ -85,6 +85,7 @@ jobs:
           git diff --exit-code -- \
             docs/basic-disk-extraction.md \
             ref/extracted-software/JUKPROG2_JBASIC.COM \
+            ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM \
             ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM \
             ref/extracted-software/README.md \
             ref/extracted-software/SHA256SUMS

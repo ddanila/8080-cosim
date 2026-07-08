@@ -16,6 +16,7 @@ TRACE_C = ROOT / "cosim" / "trace.c"
 I8080_C = ROOT / "cosim" / "i8080.c"
 ROM = ROOT / "roms" / "ekta37.bin"
 DEFAULT_DISK = ROOT / "media" / "disks" / "JUKPROG2.CPM"
+LIVE_CANDIDATE = ROOT / "ref" / "extracted-software" / "JUKPROG2_JBASIC_live_candidate.COM"
 REPORT = ROOT / "docs" / "ekdos-jbasic-command-probe.md"
 VRAM = ROOT / "cosim" / "vram.bin"
 VRAM_SIZE = 40 * 241
@@ -56,7 +57,7 @@ def compile_trace(tmpdir: Path) -> Path:
     return trace
 
 
-def run_probe(max_cycles: int, frame_cycles: int, disk: Path) -> tuple[subprocess.CompletedProcess[str], str]:
+def run_probe(max_cycles: int, frame_cycles: int, disk: Path) -> tuple[subprocess.CompletedProcess[str], str, bytes]:
     with tempfile.TemporaryDirectory(prefix="ekdos-jbasic-command.") as tmp_name:
         tmpdir = Path(tmp_name)
         trace = compile_trace(tmpdir)
@@ -77,7 +78,8 @@ def run_probe(max_cycles: int, frame_cycles: int, disk: Path) -> tuple[subproces
             check=False,
         )
         state_text = checkpoint_prefix.with_suffix(".state").read_text() if checkpoint_prefix.with_suffix(".state").exists() else ""
-    return proc, state_text
+        ram = checkpoint_prefix.with_suffix(".ram").read_bytes() if checkpoint_prefix.with_suffix(".ram").exists() else b""
+    return proc, state_text, ram
 
 
 def parse_stop(stderr: str) -> dict[str, int]:
@@ -151,6 +153,40 @@ def vram_summary() -> dict[str, int | str]:
     }
 
 
+def live_candidate_summary(ram: bytes) -> dict[str, int | str | bool]:
+    try:
+        candidate = LIVE_CANDIDATE.read_bytes()
+    except FileNotFoundError:
+        return {
+            "candidate_sha256": "missing",
+            "entry_prefix": 0,
+            "match_count": 0,
+            "basic_ram": -1,
+            "ready_ram": -1,
+            "error_ram": -1,
+        }
+    entry_prefix = 0
+    for offset, value in enumerate(candidate):
+        addr = 0x0100 + offset
+        if addr >= len(ram) or ram[addr] != value:
+            break
+        entry_prefix += 1
+    match_count = sum(
+        1
+        for offset, value in enumerate(candidate)
+        if 0x0100 + offset < len(ram) and ram[0x0100 + offset] == value
+    )
+    return {
+        "candidate_sha256": hashlib.sha256(candidate).hexdigest(),
+        "candidate_size": len(candidate),
+        "entry_prefix": entry_prefix,
+        "match_count": match_count,
+        "basic_ram": ram.find(b"BASIC"),
+        "ready_ram": ram.find(b"READY"),
+        "error_ram": ram.find(b"ERROR"),
+    }
+
+
 def table_row(values: list[object]) -> str:
     return "| " + " | ".join(str(value).replace("|", "/") for value in values) + " |"
 
@@ -165,6 +201,7 @@ def rel(path: Path) -> str:
 def build_report(
     proc: subprocess.CompletedProcess[str],
     state_text: str,
+    ram: bytes,
     max_cycles: int,
     frame_cycles: int,
     disk: Path,
@@ -174,6 +211,7 @@ def build_report(
     state = parse_state(state_text)
     ports = parse_ports(proc.stdout)
     vram = vram_summary()
+    live = live_candidate_summary(ram)
     data_reads = int(ports["in"].get(0x1F, {}).get("count", 0) or 0)
     key_pos = int(state.get("kbd_pos", "0"))
     failures: list[str] = []
@@ -190,6 +228,13 @@ def build_report(
         failures.append(f"FDC data reads after the command were too low: {data_reads}")
     if vram["sha256"] != EXPECTED_FINAL_VRAM_SHA256:
         failures.append(f"final VRAM hash changed: {vram['sha256']}")
+    if live["candidate_sha256"] == "missing":
+        failures.append("live JBASIC candidate artifact is missing")
+    if int(live.get("entry_prefix", 0)) < 6:
+        failures.append(f"live JBASIC entry prefix too short: {live.get('entry_prefix', 0)}")
+    for label in ["basic_ram", "ready_ram", "error_ram"]:
+        if int(live.get(label, -1)) < 0:
+            failures.append(f"{label.replace('_', ' ').upper()} string not present in final RAM")
 
     status = "EKDOS JBASIC COMMAND BOUNDARY PINNED" if not failures else "REGRESSION"
     command_display = r"TDD|JBASIC\r"
@@ -234,6 +279,13 @@ def build_report(
         f"- Cycles: {stop.get('cycles', 0)}" if stop else "- Cycles: not parsed",
         f"- Mode switches: {stop.get('switches', 0)}" if stop else "- Mode switches: not parsed",
         f"- WD1793 data reads (`0x1F`): {data_reads}",
+        f"- Live JBASIC candidate: `{rel(LIVE_CANDIDATE)}`",
+        f"- Live JBASIC candidate SHA256: `{live['candidate_sha256']}`",
+        f"- Live JBASIC entry prefix at RAM `0x0100`: {live.get('entry_prefix', 0)} bytes",
+        f"- Live JBASIC byte matches at RAM `0x0100`: {live.get('match_count', 0)} / {live.get('candidate_size', 0)}",
+        f"- Final RAM `ERROR` string: `0x{int(live.get('error_ram', -1)):04X}`",
+        f"- Final RAM `READY` string: `0x{int(live.get('ready_ram', -1)):04X}`",
+        f"- Final RAM `BASIC` string: `0x{int(live.get('basic_ram', -1)):04X}`",
         f"- Final VRAM SHA256: `{vram['sha256']}`",
         f"- Final lit pixels: {vram['lit_pixels']}",
         f"- Probe failures: {len(failures)}",
@@ -254,9 +306,10 @@ def build_report(
             "",
             "## Disposition",
             "",
-            "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` identifies its `JBASIC.COM` as the strongest current directory-backed candidate.",
+            "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.",
             "- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.",
-            "- The final framebuffer hash remains the known post-command boundary rather than a BASIC `READY` oracle.",
+            "- The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.",
+            "- The final framebuffer hash remains the known post-command boundary rather than a user-visible BASIC `READY` oracle.",
             "- Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.",
         ]
     )
@@ -272,8 +325,8 @@ def main() -> int:
     max_cycles = int(os.environ.get("JBASIC_COMMAND_MAX_CYCLES", "450000000"))
     frame_cycles = int(os.environ.get("JBASIC_COMMAND_FRAME_CYCLES", "200000"))
     disk = Path(os.environ.get("JBASIC_COMMAND_DISK", DEFAULT_DISK)).expanduser()
-    proc, state_text = run_probe(max_cycles, frame_cycles, disk)
-    report, ok = build_report(proc, state_text, max_cycles, frame_cycles, disk)
+    proc, state_text, ram = run_probe(max_cycles, frame_cycles, disk)
+    report, ok = build_report(proc, state_text, ram, max_cycles, frame_cycles, disk)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report)
     print(report)

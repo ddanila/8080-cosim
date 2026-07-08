@@ -307,17 +307,21 @@ debugging session saved on real hardware.
    `JBASIC.COM`, and `JUKPROG2.CPM` contains `JBASIC.COM`, `B80.COM`,
    `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`.
    `docs/basic-disk-extraction.md` now preserves `JUKPROG2_JBASIC.COM` as the
-   best directory-backed executable candidate and
+   conservative directory-backed extraction lead,
+   `JUKPROG2_JBASIC_live_candidate.COM` as the live EKDOS-loaded payload, and
    `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset candidate with
    `BASIC`/`READY`/`ERROR` strings. `sync/ekdos_jbasic_command_probe.py` /
    `docs/ekdos-jbasic-command-probe.md` now pins the next disk-side boundary:
    after `TDD`, the cosim keyboard driver waits for the EKDOS `A>` prompt bitmap
    with `JUKU_KEYS=TDD|JBASIC\r`, consumes all command keys on
    `JUKPROG2.CPM`, and reaches 19,968 WD1793 data-register reads plus final
+   RAM evidence: the live candidate entry signature at `0x0100` and relocated
+   `ERROR`, `READY`, and `BASIC` strings at `0x0469`, `0x0476`, and `0x04AD`.
+   It also pins final
    framebuffer SHA256
    `0b61035c5326e23450c49633cfa449c43851619f9da9fbae2c2ec3c9e80109df`.
-   This proves deterministic post-prompt command entry, not a BASIC `READY`
-   oracle yet. The jmon33
+   This proves deterministic post-prompt command entry into loaded BASIC
+   code/data, not a user-visible BASIC `READY` oracle yet. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the

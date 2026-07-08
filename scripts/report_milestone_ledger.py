@@ -99,6 +99,8 @@ def milestone_rows():
     ) and exists(
         "ref/extracted-software/JUKPROG2_JBASIC.COM"
     ) and exists(
+        "ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM"
+    ) and exists(
         "ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM"
     ) and marker(
         ".github/workflows/lvs.yml",
@@ -508,18 +510,19 @@ def milestone_rows():
                 + (
                     " `docs/basic-disk-extraction.md` vendors the strongest "
                     "disk-side BASIC inputs under `ref/extracted-software/`: "
-                    "`JUKPROG2_JBASIC.COM` as the best directory-backed executable "
-                    "candidate and `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset "
-                    "candidate with `BASIC`/`READY`/`ERROR` strings."
+                    "`JUKPROG2_JBASIC.COM` as the conservative directory-backed "
+                    "extraction lead, `JUKPROG2_JBASIC_live_candidate.COM` as the "
+                    "live EKDOS-loaded payload, and `JUKU1_JBASIC_raw_candidate.COM` "
+                    "as a raw-offset candidate with `BASIC`/`READY`/`ERROR` strings."
                     if basic_disk_extracted
                     else ""
                 )
                 + (
                     " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
                     "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
-                    "bitmap, consumes all command keys on `JUKPROG2.CPM`, and "
-                    "triggers 19,968 WD1793 data reads from the directory-backed "
-                    "`JBASIC.COM` candidate."
+                    "bitmap, consumes all command keys on `JUKPROG2.CPM`, triggers "
+                    "19,968 WD1793 data reads, and leaves the live candidate entry "
+                    "signature plus relocated `ERROR`/`READY`/`BASIC` strings in RAM."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )
@@ -555,18 +558,19 @@ def milestone_rows():
                 + (
                     " `docs/basic-disk-extraction.md` vendors the strongest "
                     "disk-side BASIC inputs under `ref/extracted-software/`: "
-                    "`JUKPROG2_JBASIC.COM` as the best directory-backed executable "
-                    "candidate and `JUKU1_JBASIC_raw_candidate.COM` as a raw-offset "
-                    "candidate with `BASIC`/`READY`/`ERROR` strings."
+                    "`JUKPROG2_JBASIC.COM` as the conservative directory-backed "
+                    "extraction lead, `JUKPROG2_JBASIC_live_candidate.COM` as the "
+                    "live EKDOS-loaded payload, and `JUKU1_JBASIC_raw_candidate.COM` "
+                    "as a raw-offset candidate with `BASIC`/`READY`/`ERROR` strings."
                     if basic_disk_extracted
                     else ""
                 )
                 + (
                     " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
                     "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
-                    "bitmap, consumes all command keys on `JUKPROG2.CPM`, and "
-                    "triggers 19,968 WD1793 data reads from the directory-backed "
-                    "`JBASIC.COM` candidate."
+                    "bitmap, consumes all command keys on `JUKPROG2.CPM`, triggers "
+                    "19,968 WD1793 data reads, and leaves the live candidate entry "
+                    "signature plus relocated `ERROR`/`READY`/`BASIC` strings in RAM."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )

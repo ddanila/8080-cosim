@@ -48,7 +48,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   report is fresh and records the disk-side `JBASIC.COM`/BASIC toolchain lead.
 - `scripts/extract_basic_disk_files.py` — generated extraction of the strongest
   disk-side BASIC candidates under `ref/extracted-software/`; CI verifies the
-  extracted binaries, checksums, and report stay fresh.
+  extracted binaries, including the EKDOS live-load `JUKPROG2` candidate,
+  checksums, and report stay fresh.
 - `sync/boot_check.sh` — cosim and HDL boot-regression guard against the real
   `ekta37` ROM, including the LVS-checked `juku_top`.
 - `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`
@@ -63,7 +64,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_jbasic_command_probe.py` — post-`A>` EKDOS command diagnostic;
   uses `JUKU_KEYS=TDD|JBASIC\r` so `|` waits for the prompt bitmap, then types
   `JBASIC` on `media/disks/JUKPROG2.CPM` and pins the current FDC/screen
-  boundary for the directory-backed disk BASIC candidate.
+  boundary plus final-RAM entry/string evidence for the live-load disk BASIC
+  candidate.
 - `sync/ekdos_timing_reference.py` — fast cosim timing reference for the same
   vendored `TDD` path; records first PIC/PPI/FDC port touches versus cycles and
   framebuffer writes.

@@ -200,9 +200,11 @@ Historical merge notes:
 - **EKDOS disk BASIC boundary:** `sync/ekdos_jbasic_command_probe.py` now
   drives `TDD|JBASIC\r` against `media/disks/JUKPROG2.CPM`. The `|` marker
   waits for the EKDOS `A>` bitmap before typing `JBASIC`; the run consumes all
-  command keys and reaches 19,968 WD1793 data reads from the directory-backed
-  `JBASIC.COM` candidate. The final framebuffer is pinned, but this is still a
-  command-launch boundary rather than a BASIC `READY` oracle.
+  command keys and reaches 19,968 WD1793 data reads. The final RAM contains the
+  raw live-load `JBASIC.COM` candidate's entry signature at `0x0100` plus
+  relocated `ERROR`, `READY`, and `BASIC` strings. The final framebuffer is
+  pinned, but this is still a loaded-code/data boundary rather than a
+  user-visible BASIC `READY` oracle.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
