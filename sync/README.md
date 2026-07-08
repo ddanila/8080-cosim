@@ -119,6 +119,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   with the legacy BAS0-3 image and reaches cartridge execution through the same
   zero-filled RAM window. The report also records the MAME Monitor 3.3/JBASIC
   compatibility warning and the BASIC images' absolute `JMP 0x0107` entry.
+- `sync/basic_entry_probe.py` — bounded cosim diagnostic rejecting the direct
+  reset-ROM theory for the same BASIC images; both direct runs stop at
+  `PC=0x0038` after the first video write to `0xFFFE`, with no BASIC prompt.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 

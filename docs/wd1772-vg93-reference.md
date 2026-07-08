@@ -12,10 +12,11 @@ Vendored files:
 ## Value
 
 The user-provided note says the WD1772 transistor/gate schematic shows that
-КР1818ВГ93 is effectively a close copy of the older FD1773/WD1772 lineage, down
-to block placement and signal naming. The local PDF and PLA table are therefore
-useful if this project needs a deeper ВГ93/FD1773-compatible model than the
-current boot/media shim or a GPL HDL core can provide.
+КР1818ВГ93 is effectively a direct copy of the older FD1773/WD1772 lineage, not
+just a loose functional analog, down to block placement and signal naming. The
+local PDF and PLA table are therefore useful if this project needs a deeper
+ВГ93/FD1773-compatible model than the current boot/media shim or a GPL HDL core
+can provide.
 
 Concrete uses:
 
@@ -32,14 +33,14 @@ Additional interpretation notes from the source material:
 
 - The schematic is a KiCad-generated searchable PDF from a transistor/gate
   reconstruction. Component and net names should be searchable in the PDF.
-- The note explicitly treats КР1818ВГ93 as a close copy of FD1773/WD1772 rather
-  than merely a loose "analog", with matching internal block layout and signal
-  names.
+- The note explicitly treats КР1818ВГ93 as effectively a direct FD1773/WD1772
+  copy rather than merely a loose "analog", with matching internal block layout
+  and signal names.
 - Shared term signals named `SHT_xxx` differ between the WD1772 and ВГ93
   reconstructions and need normalization/renumbering before comparing equations.
 - Transistors are drawn uniformly in the schematic; real pull-up/"upper"
   transistors in logic gates use built-in normally-on channels.
-- The PLM dump was published after the PDF and is the better artifact for
+- The PLM dump was published after the PDF note, on 2019-07-15, and is the better artifact for
   command-decode/state-machine cross-checks than manually reading equations from
   the schematic drawing.
 

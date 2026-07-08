@@ -15,9 +15,11 @@ needs to be replaced with a fuller controller model.
 Source interpretation notes captured with the files:
 
 - The PDF is a KiCad-generated searchable transistor/gate schematic.
-- The accompanying note treats КР1818ВГ93 as a close FD1773/WD1772 copy, with
-  internal block placement and signal naming matching closely enough to use this
-  material as relevant VG93 evidence.
+- The accompanying note treats КР1818ВГ93 as effectively a direct FD1773/WD1772
+  copy, not just a loose functional analog: internal block placement and signal
+  names reportedly match closely enough to use this material as relevant VG93
+  evidence.
+- The PLM dump was published after the PDF note on 2019-07-15.
 - `SHT_xxx` shared-term signal numbering differs between WD1772 and ВГ93
   reconstructions and must be normalized before equation-level comparison.
 - The schematic draws transistors uniformly even though real pull-up/"upper"

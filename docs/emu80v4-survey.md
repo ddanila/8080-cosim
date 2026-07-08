@@ -1,8 +1,9 @@
 # Emu80v4 Juku/FDC survey
 
-Status date: 2026-07-07.
+Status date: 2026-07-08.
 
-Source inspected: `https://github.com/vpyk/emu80v4`, shallow clone at survey time.
+Source inspected: `https://github.com/vpyk/emu80v4`, shallow clone at survey
+time and rechecked on 2026-07-08.
 
 ## License Boundary
 
@@ -13,7 +14,7 @@ is an external behavioral reference only.
 ## Juku Coverage
 
 No Juku-specific machine driver, config, ROM set, or media set was found in the
-repository during this survey:
+repository during this survey or the 2026-07-08 recheck:
 
 ```sh
 find /tmp/emu80v4 -iname '*juku*' -o -iname '*510*' -o -iname '*ekdos*'

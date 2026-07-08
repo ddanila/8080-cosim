@@ -101,6 +101,10 @@ def milestone_rows():
         "docs/basic-launch-probe.md",
         "Status: **BASIC RAM EXECUTION REACHED**",
     )
+    basic_entry_rejected = marker(
+        "docs/basic-entry-probe.md",
+        "Status: **BASIC DIRECT RESET PATH REJECTED**",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -257,14 +261,26 @@ def milestone_rows():
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes. The same report now records the "
                 "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
-                "images' absolute JMP 0x0107 entry."
+                "images' absolute JMP 0x0107 entry. "
+                + (
+                    "`docs/basic-entry-probe.md` also rejects direct reset-ROM "
+                    "execution of those BASIC images."
+                    if basic_entry_rejected
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes. The same report now records the "
                 "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
-                "images' absolute JMP 0x0107 entry."
+                "images' absolute JMP 0x0107 entry. "
+                + (
+                    "`docs/basic-entry-probe.md` also rejects direct reset-ROM "
+                    "execution of those BASIC images."
+                    if basic_entry_rejected
+                    else ""
+                )
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."

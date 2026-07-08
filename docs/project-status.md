@@ -161,6 +161,9 @@ Historical merge notes:
   compatibility boundary: MAME's local source warns that Monitor 3.3 does not
   seem compatible with the JBASIC expansion cartridge, and both tested BASIC
   images start with absolute `JMP 0x0107`, not a direct `0x4000` entry.
+  `sync/basic_entry_probe.py` additionally proves both BASIC images are not
+  standalone reset ROMs: direct low-ROM execution stops at `PC=0x0038` after
+  the first video write to `0xFFFE`, with no BASIC prompt.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
@@ -173,7 +176,8 @@ Historical merge notes:
   `sync/basic_cart_check.sh`, and `sync/basic_launch_probe.py` now records that Monitor 3.3
   reads both `jbasic11.bin` and the legacy BAS0-3 image before executing in the
   `0x4000..0xBFFF` RAM window while the Monitor 3.3/JBASIC pairing itself remains
-  a compatibility boundary);
+  a compatibility boundary; `sync/basic_entry_probe.py` rejects direct reset-ROM
+  execution of the same images);
   `'A'` → mini-assembler
   (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:
