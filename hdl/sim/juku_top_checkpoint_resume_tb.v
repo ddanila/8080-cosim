@@ -26,6 +26,7 @@ module juku_top_checkpoint_resume_tb();
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
   integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0, stopfdc_data_read = 0, stopfdc_data_reads = 0;
   integer stopkbdhit = 0, kbd_active_reads = 0, kbd_noncf_reads = 0;
+  integer ppi0_reads = 0, ppi0_writes = 0, ppi0_kbd_col_writes = 0;
   integer stopprompt = 0, prompt_seen = 0, cursorstop = 0, cursor_seen = 0;
   integer jbasickeys = 0, stopjbasicready = 0, jbasic_ready_seen = 0;
   integer defer_iff = 0, restore_iff_pending = 0;
@@ -402,8 +403,9 @@ module juku_top_checkpoint_resume_tb();
         dump_vram();
         $finish;
       end
-      $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d kbd_active_reads=%0d kbd_noncf_reads=%0d fdc_ios=%0d",
-               dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen, kbd_active_reads, kbd_noncf_reads, fdc_ios);
+      $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0x%04h ios=%0d pic_seen=%0d kbd_seen=%0d ppi0_reads=%0d ppi0_writes=%0d kbd_col_writes=%0d kbd_active_reads=%0d kbd_noncf_reads=%0d fdc_ios=%0d",
+               dut.U_CPU.u.core.r16_pc, raw_ios, pic_seen, kbd_seen, ppi0_reads, ppi0_writes,
+               ppi0_kbd_col_writes, kbd_active_reads, kbd_noncf_reads, fdc_ios);
       $fflush;
       dump_vram();
       $finish;
@@ -545,11 +547,34 @@ module juku_top_checkpoint_resume_tb();
         $finish;
       end
     end
+    if (!dut.cs_ppi0_n) begin
+      ppi0_writes = ppi0_writes + 1;
+      if (dut.BA[1:0] == 2'd0) begin
+        ppi0_kbd_col_writes = ppi0_kbd_col_writes + 1;
+        if (tracekbd) begin
+          $display("[RESUME-KBD] OUT port=0x%02h col=0x%01h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
+                   dut.BA[7:0], dut.DB[3:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+          $fflush;
+        end
+      end else if (tracekbd) begin
+        $display("[RESUME-PPI0] OUT port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
+                 dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+      end
+    end
   end
 
   always @(negedge dut.iord_n) begin
     #1;
     raw_ios = raw_ios + 1;
+    if (!dut.cs_ppi0_n) begin
+      ppi0_reads = ppi0_reads + 1;
+      if (tracekbd && dut.BA[1:0] != 2'd1) begin
+        $display("[RESUME-PPI0] IN port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
+                 dut.BA[7:0], dut.DB, mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+        $fflush;
+      end
+    end
     if (!dut.cs_ppi0_n && dut.BA[1:0] == 2'd1) begin
       if (tracekbd) begin
         $display("[RESUME-KBD] IN port=0x%02h data=0x%02h mcyc=%0d vram=%0d pc=0x%04h",
@@ -744,9 +769,10 @@ module juku_top_checkpoint_resume_tb();
 
   initial begin
     #(timecap);
-    $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL timecap pc=0x%04h mcyc=%0d vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d kbd_active_reads=%0d kbd_noncf_reads=%0d fdc_ios=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
+    $display("JUKU-TOP-CHECKPOINT-RESUME: FAIL timecap pc=0x%04h mcyc=%0d vram=%0d ios=%0d pic_seen=%0d kbd_seen=%0d ppi0_reads=%0d ppi0_writes=%0d kbd_col_writes=%0d kbd_active_reads=%0d kbd_noncf_reads=%0d fdc_ios=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
              dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, raw_ios, pic_seen, kbd_seen,
-             kbd_active_reads, kbd_noncf_reads, fdc_ios, frame_ticks, intr_edges, inta_edges);
+             ppi0_reads, ppi0_writes, ppi0_kbd_col_writes, kbd_active_reads, kbd_noncf_reads,
+             fdc_ios, frame_ticks, intr_edges, inta_edges);
     if (cursorstop != 0 && !cursor_seen && jmon33_cursor_ok()) begin
       cursor_seen = 1;
       $display("[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 at timecap mcyc=%0d vram=%0d pc=0x%04h",

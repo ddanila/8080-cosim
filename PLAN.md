@@ -335,7 +335,8 @@ debugging session saved on real hardware.
    and adds an opt-in `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
    oracle. The current tracked HDL run proves command stimulus only; it stops
    before keyboard reads sample the command or `[RESUME-JBASIC]` fires, and now
-   reports zero active-key/non-`0xCF` PPI keyboard reads in that bounded window.
+   reports PPI0 Port C interrupt housekeeping but zero keyboard column writes
+   and zero Port B keyboard reads in that bounded window.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in

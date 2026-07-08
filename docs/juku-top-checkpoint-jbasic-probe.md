@@ -31,10 +31,13 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - Keyboard hit lines: `0`
 - First keyboard hit: `none`
 - Last keyboard hit: `none`
+- PPI0 non-keyboard trace lines: `10`
+- Keyboard column writes: `0`
+- Keyboard Port B reads: `0`
 - READY stop line: `none`
 - First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0x627a vram=73446 ios=1 pic_seen=0 kbd_seen=0 fdc_ios=0 frame_ticks=2 intr_edges=1 inta_edges=1 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0`
 - Last progress line: `[RESUME-PROGRESS] mcyc=75000 pc=0x7c60 vram=73446 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1 frame_ticks=7 intr_edges=2 inta_edges=4 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0`
-- Stop/fail line: `JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 kbd_active_reads=0 kbd_noncf_reads=0 fdc_ios=1`
+- Stop/fail line: `JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 ppi0_reads=5 ppi0_writes=5 kbd_col_writes=0 kbd_active_reads=0 kbd_noncf_reads=0 fdc_ios=1`
 
 ## Boundary
 
@@ -45,9 +48,9 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - This report only claims the checkpoint-resumed HDL command stimulus
   boundary. The tracked run is intentionally short and stops before
   the HDL path samples the injected keys or reaches the `READY` oracle.
-- The bench now counts `[RESUME-KBD-HIT]` active-key and non-`0xCF`
-  reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1` to stop at
-  the first sampled keyboard hit during retiming experiments.
+- The bench now counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key
+  and non-`0xCF` reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1`
+  to stop at the first sampled keyboard hit during retiming experiments.
 - Next work is to lengthen or retime the resumed HDL run until keyboard
   reads sample the injected command and post-command FDC/data traffic
   begins, then finally stop on `[RESUME-JBASIC]`.
@@ -58,8 +61,18 @@ sync/juku_top_checkpoint_jbasic_probe.py
 FDC-1793: loaded raw disk media/disks/JUKPROG2.CPM (2 sides)
 [RESUME] loaded checkpoint pc=0xfed4 sp=0xd2f4 inta_n=1 sys_status=0x00 core_inta=0 core_minta=0 core_intr=0 inte=0 intr=0
 [RESUME-PROGRESS] mcyc=25000 pc=0x627a vram=73446 ios=1 pic_seen=0 kbd_seen=0 fdc_ios=0 frame_ticks=2 intr_edges=1 inta_edges=1 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0
+[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=48177 vram=73446 pc=0xd7ea
+[RESUME-PPI0] OUT port=0x06 data=0x04 mcyc=48183 vram=73446 pc=0xd7ef
 [RESUME-PIC] OUT port=0x01 data=0xff mcyc=48239 vram=73446 pc=0x068b
+[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=48256 vram=73446 pc=0xd7ea
+[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=48262 vram=73446 pc=0xd7ef
+[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=48281 vram=73446 pc=0xe786
+[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=48287 vram=73446 pc=0xe78b
+[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=48365 vram=73446 pc=0xd7ea
+[RESUME-PPI0] OUT port=0x06 data=0x04 mcyc=48371 vram=73446 pc=0xd7ef
 [RESUME-PIC] OUT port=0x01 data=0xdf mcyc=48431 vram=73446 pc=0x068b
+[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=48448 vram=73446 pc=0xd7ea
+[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=48454 vram=73446 pc=0xd7ef
 [RESUME-KBD-STIM] press key=0 col=7 bit=5 shift=1 mcyc=50000 vram=73446
 [RESUME-PROGRESS] mcyc=50000 pc=0x1ab8 vram=73446 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1 frame_ticks=4 intr_edges=1 inta_edges=4 intr=0 pending=0 inta_idx=1 mask=0xdf inte=0
 [RESUME-KBD-STIM] release key=0 mcyc=51250 vram=73446
@@ -76,7 +89,7 @@ FDC-1793: loaded raw disk media/disks/JUKPROG2.CPM (2 sides)
 [RESUME-KBD-STIM] press key=6 col=8 bit=5 shift=0 mcyc=61250 vram=73446
 [RESUME-KBD-STIM] release key=6 mcyc=62500 vram=73446
 [RESUME-PROGRESS] mcyc=75000 pc=0x7c60 vram=73446 ios=14 pic_seen=0 kbd_seen=0 fdc_ios=1 frame_ticks=7 intr_edges=2 inta_edges=4 intr=1 pending=1 inta_idx=1 mask=0xdf inte=0
-JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 kbd_active_reads=0 kbd_noncf_reads=0 fdc_ios=1
+JUKU-TOP-CHECKPOINT-RESUME: FAIL max_mcyc pc=0xbf51 ios=14 pic_seen=0 kbd_seen=0 ppi0_reads=5 ppi0_writes=5 kbd_col_writes=0 kbd_active_reads=0 kbd_noncf_reads=0 fdc_ios=1
 [RESUME-VRAM] dumped checkpoint VRAM -> hdl/sim/checkpoint_vram_top.bin
-/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:409: $finish called at 143569000 (100ps)
+/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:411: $finish called at 143569000 (100ps)
 ```

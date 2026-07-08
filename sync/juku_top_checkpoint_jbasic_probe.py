@@ -223,6 +223,9 @@ def main() -> int:
     key_presses = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] press")
     key_releases = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] release")
     key_hits = matching_lines(hdl_proc.stdout, "[RESUME-KBD-HIT]")
+    ppi0_lines = matching_lines(hdl_proc.stdout, "[RESUME-PPI0]")
+    kbd_scan_reads = matching_lines(hdl_proc.stdout, "[RESUME-KBD] IN")
+    kbd_scan_writes = matching_lines(hdl_proc.stdout, "[RESUME-KBD] OUT")
     reached_ready = first_line(hdl_proc.stdout, "[RESUME-JBASIC]") != "none"
     failures: list[str] = []
     if cosim_proc.returncode != 0:
@@ -269,6 +272,9 @@ def main() -> int:
         f"- Keyboard hit lines: `{len(key_hits)}`",
         f"- First keyboard hit: `{key_hits[0] if key_hits else 'none'}`",
         f"- Last keyboard hit: `{key_hits[-1] if key_hits else 'none'}`",
+        f"- PPI0 non-keyboard trace lines: `{len(ppi0_lines)}`",
+        f"- Keyboard column writes: `{len(kbd_scan_writes)}`",
+        f"- Keyboard Port B reads: `{len(kbd_scan_reads)}`",
         f"- READY stop line: `{first_line(hdl_proc.stdout, '[RESUME-JBASIC]')}`",
         f"- First progress line: `{first_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
         f"- Last progress line: `{last_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
@@ -283,9 +289,9 @@ def main() -> int:
         "- This report only claims the checkpoint-resumed HDL command stimulus",
         "  boundary. The tracked run is intentionally short and stops before",
         "  the HDL path samples the injected keys or reaches the `READY` oracle.",
-        "- The bench now counts `[RESUME-KBD-HIT]` active-key and non-`0xCF`",
-        "  reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1` to stop at",
-        "  the first sampled keyboard hit during retiming experiments.",
+        "- The bench now counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key",
+        "  and non-`0xCF` reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1`",
+        "  to stop at the first sampled keyboard hit during retiming experiments.",
         "- Next work is to lengthen or retime the resumed HDL run until keyboard",
         "  reads sample the injected command and post-command FDC/data traffic",
         "  begins, then finally stop on `[RESUME-JBASIC]`.",
@@ -300,7 +306,11 @@ def main() -> int:
     lines.append("```")
 
     REPORT.write_text("\n".join(lines) + "\n")
-    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    try:
+        report_label = REPORT.relative_to(ROOT)
+    except ValueError:
+        report_label = REPORT
+    print(f"Wrote {report_label}")
     print("\n".join(lines))
     return 1 if failures else 0
 
