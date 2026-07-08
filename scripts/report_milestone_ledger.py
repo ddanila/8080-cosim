@@ -135,6 +135,13 @@ def milestone_rows():
         "docs/jmon33-hdl-command-probe.md",
         "Status: **JMON33 HDL COMMAND SURFACE READY**",
     )
+    jmon33_hdl_b_command_oracle = marker(
+        "docs/jmon33-hdl-b-command-probe.md",
+        "Status: **JMON33 HDL SELECTED COMMAND ORACLE READY**",
+    ) and marker(
+        "docs/jmon33-hdl-b-command-probe.md",
+        "891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0",
+    )
     jmon33_fdc_t_oracle = marker(
         "docs/jmon33-fdc-command-probe.md",
         "Status: **JMON33 FDC T-COMMAND ORACLE PINNED**",
@@ -341,9 +348,15 @@ def milestone_rows():
                     else ""
                 )
                 + (
-                    "`docs/jmon33-hdl-command-probe.md` proves the checkpoint-resumed "
-                    "HDL `A` command reaches its delayed idle-prompt framebuffer oracle; "
-                    "`docs/jmon33-hdl-t-command-fdc-diagnostic.md` preserves the `T` "
+                "`docs/jmon33-hdl-command-probe.md` proves the checkpoint-resumed "
+                "HDL `A` command reaches its delayed idle-prompt framebuffer oracle; "
+                + (
+                    "`docs/jmon33-hdl-b-command-probe.md` now proves the analogous "
+                    "checkpoint-resumed HDL `B` command framebuffer oracle; "
+                    if jmon33_hdl_b_command_oracle
+                    else ""
+                )
+                + "`docs/jmon33-hdl-t-command-fdc-diagnostic.md` preserves the `T` "
                     "command finding where keyboard samples are present but the path "
                     "enters heavy FDC I/O. "
                     if jmon33_hdl_command_diagnostic

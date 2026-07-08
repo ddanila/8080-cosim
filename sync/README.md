@@ -142,6 +142,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   checkpoint-resumed HDL command row. It pins the late Monitor 3.3 phase where
   the command key has already been consumed and requires the `A` command to
   reach the delayed idle-prompt framebuffer oracle.
+- `sync/jmon33_hdl_b_command_probe.py` — named guard for the analogous
+  checkpoint-resumed HDL `B` command row. It uses the same late-phase command
+  checkpoint recipe and requires the delayed idle-prompt `B` framebuffer oracle.
 - `sync/jmon33_hdl_command_probe.py` — checkpoint-resumed HDL diagnostic for
   the same command surface. It delays keyboard stimulus until after the proven
   HDL cursor boundary and compares against `docs/jmon33-idle-command-probe.md`.

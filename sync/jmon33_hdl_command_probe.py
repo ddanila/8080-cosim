@@ -14,6 +14,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = Path(os.environ.get("JMON33_HDL_COMMAND_REPORT", ROOT / "docs" / "jmon33-hdl-command-probe.md"))
+if not REPORT.is_absolute():
+    REPORT = ROOT / REPORT
 ROM = ROOT / "roms" / "jmon33.bin"
 ROM_HEX = ROOT / "hdl" / "sim" / "jmon33.hex"
 VRAM_DUMP = ROOT / "hdl" / "sim" / "checkpoint_vram_top.bin"
@@ -465,6 +467,8 @@ def main() -> int:
         status = "JMON33 HDL COMMAND SURFACE READY"
     elif a_passed and not infra_failures:
         status = "JMON33 HDL A-COMMAND ORACLE READY"
+    elif all_selected_cases_passed:
+        status = "JMON33 HDL SELECTED COMMAND ORACLE READY"
     else:
         status = "JMON33 HDL COMMAND BOUNDED DIAGNOSTIC"
 
@@ -579,7 +583,8 @@ def main() -> int:
     lines.append("")
     REPORT.write_text("\n".join(lines))
     infrastructure_ok = not infra_failures and all(result["proc"].returncode in (0, 124) for result in results)
-    print(f"JMON33-HDL-COMMAND-PROBE: {'PASS' if passed else 'PARTIAL' if a_passed and infrastructure_ok else 'DIAGNOSTIC'}")
+    console_status = "PASS" if passed else "PARTIAL" if (a_passed or all_selected_cases_passed) and infrastructure_ok else "DIAGNOSTIC"
+    print(f"JMON33-HDL-COMMAND-PROBE: {console_status}")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     return 0 if infrastructure_ok else 1
 

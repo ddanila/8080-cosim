@@ -162,9 +162,10 @@ Historical merge notes:
   the checkpoint-resumed HDL path the correct delayed-command reference hashes.
   `sync/jmon33_hdl_command_probe.py` now compares checkpoint-resumed HDL
   command stimulus against that delayed idle-command oracle. The HDL `A`
-  command reaches its framebuffer oracle, with
-  `sync/jmon33_hdl_a_command_probe.py` pinning the late-phase checkpoint
-  parameters as a named guard; the preserved
+  `A` and `B` commands reach their framebuffer oracles, with
+  `sync/jmon33_hdl_a_command_probe.py` and
+  `sync/jmon33_hdl_b_command_probe.py` pinning the late-phase checkpoint
+  parameters as named guards; the preserved
   `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows the `T` path sees
   keyboard samples but then enters heavy FDC I/O. `sync/jmon33_fdc_command_probe.py`
   now pins the corresponding cosim boundary: with `media/disks/JUKU1.CPM`
