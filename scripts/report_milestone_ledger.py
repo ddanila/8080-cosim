@@ -59,6 +59,10 @@ def milestone_rows():
         "ref/reconstructed-proms/SHA256SUMS",
         "d8_re3_rom_pager_reconstructed.bin",
     )
+    reference_artifacts_guarded = exists("sync/reference_artifact_check.sh") and marker(
+        ".github/workflows/lvs.yml",
+        "Check vendored reference artifacts",
+    )
     manufacturing_ready = marker(
         "docs/replica-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -217,6 +221,12 @@ def milestone_rows():
                     "`docs/reconstructed-prom-fallbacks.md` exports boot-validated "
                     "D6/D8 reconstruction fallbacks; "
                     if reconstructed_proms_exported
+                    else ""
+                )
+                + (
+                    "vendored reference hashes are CI-guarded by "
+                    "`sync/reference_artifact_check.sh`; "
+                    if reference_artifacts_guarded
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
