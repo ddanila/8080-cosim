@@ -2,8 +2,8 @@
 
 Status: **BASIC RAM EXECUTION REACHED**
 
-This probe exercises the monitor `B` command with
-`JUKU_KEYS=B`. By default it checks Monitor 3.3 with both
+This probe exercises the configured monitor/removable-memory BASIC
+command with `JUKU_KEYS=B`. By default it checks Monitor 3.3 with both
 `roms/jbasic11.bin` and the legacy `ref/firmware/BAS0-3.HEX` image,
 plus the EktaSoft 3.43m #0037 ROM used by the main boot guard. It complements
 `sync/basic_cart_check.sh`,
@@ -19,7 +19,7 @@ Environment overrides:
 
 - `BASIC_LAUNCH_KEYS` default `B`
 - `BASIC_LAUNCH_ROM` default unset (runs `jmon33.bin` and `ekta37.bin`)
-- `BASIC_LAUNCH_CART` default unset (runs `jbasic11.bin` plus legacy `BAS0-3.HEX` for jmon33)
+- `BASIC_LAUNCH_CART` default unset (runs `jbasic11.bin` plus legacy `BAS0-3.HEX`; with `BASIC_LAUNCH_ROM`, both default cartridges are probed against that ROM)
 - `BASIC_LAUNCH_REPORT` default `docs/basic-launch-probe.md`
 - `BASIC_LAUNCH_MAX_CYCLES` default `120000000`
 - `BASIC_LAUNCH_FRAME_CYCLES` default unset (`jmon33`: `200000`, `ekta37`: `40000`)

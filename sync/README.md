@@ -125,11 +125,16 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   monitor-idle cursor framebuffer hash.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
-- `sync/basic_launch_probe.py` — bounded cosim diagnostic for the monitor `B`
-  command path into the BASIC cartridge; Monitor 3.3 compares `jbasic11.bin`
-  with the legacy BAS0-3 image and reaches cartridge execution through the same
-  zero-filled RAM window. The report also records the MAME Monitor 3.3/JBASIC
-  compatibility warning and the BASIC images' absolute `JMP 0x0107` entry.
+- `sync/basic_launch_probe.py` — bounded cosim diagnostic for a monitor command
+  path into the BASIC cartridge; default `JUKU_KEYS=B`. Monitor 3.3 compares
+  `jbasic11.bin` with the legacy BAS0-3 image and reaches cartridge execution
+  through the same zero-filled RAM window. The report also records the MAME
+  Monitor 3.3/JBASIC compatibility warning and the BASIC images' absolute
+  `JMP 0x0107` entry.
+- `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
+  doc 003 factory BASIC `A` command. It runs public monitor ROMs against both
+  BASIC payload shapes and records that Monitor 3.3 reaches the same zero-filled
+  RAM boundary, while no tested pairing reaches BASIC banner/`READY`.
 - `sync/basic_entry_probe.py` — bounded cosim diagnostic rejecting the direct
   reset-ROM theory for the same BASIC images; both direct runs stop at
   `PC=0x0038` after the first video write to `0xFFFE`, with no BASIC prompt.

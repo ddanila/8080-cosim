@@ -274,11 +274,17 @@ debugging session saved on real hardware.
    signals behind that boundary: MAME's local source warns that Monitor 3.3 does
    not seem compatible with the JBASIC expansion cartridge, and both BASIC media
    images start with an absolute `JMP 0x0107` rather than a direct `0x4000`
-   window entry. `sync/basic_entry_probe.py` also rejects the other tempting
-   false path: running `jbasic11.bin` or the generated BAS0-3 image as a reset
-   ROM stops at `PC=0x0038` after the first video write to `0xFFFE`, with the
-   same framebuffer hash and no BASIC prompt. The EktaSoft 3.43m #0037 boot ROM
-   still does not select the cartridge overlay in the same bounded run. The jmon33
+   window entry. The factory doc 003 `A`-command BASIC clue is now guarded by
+   `sync/basic_factory_command_probe.py` and documented in
+   `docs/basic-factory-command-probe.md`: Monitor 3.3 with `A` reaches the same
+   zero-filled RAM execution boundary as `B`, `ekta37` touches the cartridge
+   overlay without executing it, and no tested public ROM/media pairing reaches
+   the documented BASIC banner/`READY` oracle. `sync/basic_entry_probe.py` also
+   rejects the other tempting false path: running `jbasic11.bin` or the generated
+   BAS0-3 image as a reset ROM stops at `PC=0x0038` after the first video write
+   to `0xFFFE`, with the same framebuffer hash and no BASIC prompt. The EktaSoft
+   3.43m #0037 boot ROM still does not select the cartridge overlay in the same
+   bounded `B` run. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the

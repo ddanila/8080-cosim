@@ -113,6 +113,10 @@ def milestone_rows():
         "docs/basic-entry-probe.md",
         "Status: **BASIC DIRECT RESET PATH REJECTED**",
     )
+    basic_factory_command_pinned = marker(
+        "docs/basic-factory-command-probe.md",
+        "Status: **FACTORY BASIC COMMAND BOUNDARY PINNED**",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -298,6 +302,14 @@ def milestone_rows():
                 "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
                 "images' absolute JMP 0x0107 entry. "
                 + (
+                    "`docs/basic-factory-command-probe.md` pins the Baltijets "
+                    "factory `A` command clue: Monitor 3.3 reaches the same "
+                    "zero-filled RAM boundary, while no tested public ROM/media "
+                    "pairing reaches the BASIC banner/READY oracle. "
+                    if basic_factory_command_pinned
+                    else ""
+                )
+                + (
                     "`docs/basic-entry-probe.md` also rejects direct reset-ROM "
                     "execution of those BASIC images."
                     if basic_entry_rejected
@@ -310,6 +322,14 @@ def milestone_rows():
                 "only receives zero-byte writes. The same report now records the "
                 "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
                 "images' absolute JMP 0x0107 entry. "
+                + (
+                    "`docs/basic-factory-command-probe.md` pins the Baltijets "
+                    "factory `A` command clue: Monitor 3.3 reaches the same "
+                    "zero-filled RAM boundary, while no tested public ROM/media "
+                    "pairing reaches the BASIC banner/READY oracle. "
+                    if basic_factory_command_pinned
+                    else ""
+                )
                 + (
                     "`docs/basic-entry-probe.md` also rejects direct reset-ROM "
                     "execution of those BASIC images."

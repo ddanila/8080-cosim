@@ -36,7 +36,9 @@ schematic*), with `cosim/` + MAME as validation oracles.
   passes while the stronger cursor boundary remains blank at the bounded 300-write
   diagnostic; BASIC cartridge reads are proven for both `jbasic11.bin` and the
   legacy BAS0-3 image, but the Monitor 3.3 path is now documented as a
-  compatibility boundary and the RAM execution window remains zero-filled.
+  compatibility boundary and the RAM execution window remains zero-filled. The
+  Baltijets factory `A` command BASIC clue is now separately guarded and still
+  has no public ROM/media pairing that reaches the BASIC banner/`READY` oracle.
 
 Historical merge notes:
 
@@ -163,6 +165,10 @@ Historical merge notes:
   compatibility boundary: MAME's local source warns that Monitor 3.3 does not
   seem compatible with the JBASIC expansion cartridge, and both tested BASIC
   images start with absolute `JMP 0x0107`, not a direct `0x4000` entry.
+  `sync/basic_factory_command_probe.py` covers the Baltijets doc 003 factory
+  BASIC command `A`: Monitor 3.3 reaches the same zero-filled RAM boundary,
+  `ekta37` touches the cartridge overlay without executing it, and no tested
+  public ROM/media pairing reaches the documented BASIC banner/`READY` oracle.
   `sync/basic_entry_probe.py` additionally proves both BASIC images are not
   standalone reset ROMs: direct low-ROM execution stops at `PC=0x0038` after
   the first video write to `0xFFFE`, with no BASIC prompt.
@@ -178,13 +184,15 @@ Historical merge notes:
   `sync/basic_cart_check.sh`, and `sync/basic_launch_probe.py` now records that Monitor 3.3
   reads both `jbasic11.bin` and the legacy BAS0-3 image before executing in the
   `0x4000..0xBFFF` RAM window while the Monitor 3.3/JBASIC pairing itself remains
-  a compatibility boundary; `sync/basic_entry_probe.py` rejects direct reset-ROM
-  execution of the same images);
+  a compatibility boundary; `sync/basic_factory_command_probe.py` separately
+  pins the factory doc 003 BASIC `A` command boundary; `sync/basic_entry_probe.py`
+  rejects direct reset-ROM execution of the same images);
   `'A'` → mini-assembler
   (`*`-monitor commands, per `juku3000/docs/juku-käsud.md`). Now running on **`juku_top` itself**
   (`ppi_8255` keyboard + `intr_ctl`), not just cosim/the oracle. Evidence:
   `docs/boot-ekta37-T-command*.png`, `docs/basic-cart-readiness.md`,
   `docs/basic-launch-probe.md`,
+  `docs/basic-factory-command-probe.md`,
   `docs/jmon33-interrupt-probe.md`, `docs/jmon33-ready-probe.md`,
   `docs/jmon33-hdl-probe.md`.
 - **EKDOS cosim milestone:** `sync/ekdos_fdc_probe.py` now treats disk-backed

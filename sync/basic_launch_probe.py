@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Probe the EktaSoft B command toward the BASIC cartridge."""
+"""Probe a monitor command toward the BASIC cartridge."""
 from __future__ import annotations
 
 import hashlib
@@ -252,6 +252,14 @@ def format_offsets(offsets: tuple[int, ...]) -> str:
     return ", ".join(f"0x{offset:04X}" for offset in offsets)
 
 
+def display_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def analyze_cart(name: str, path: Path) -> CartAnalysis:
     data = path.read_bytes()
     entry_jmp = data[1] | (data[2] << 8) if len(data) >= 3 and data[0] == 0xC3 else None
@@ -315,9 +323,10 @@ def probe_cases(tmpdir: Path) -> list[ProbeCase]:
                 rom.stem,
                 rom,
                 int(frame_override or "40000"),
-                carts[0][0],
-                carts[0][1],
+                cart_name,
+                cart,
             )
+            for cart_name, cart in carts
         ]
     return [
         ProbeCase("jmon33", ROOT / "roms" / "jmon33.bin", int(frame_override or "200000"), cart_name, cart)
@@ -384,6 +393,7 @@ def main() -> int:
     results = []
     cart_analyses: dict[str, CartAnalysis] = {}
     mame_note = mame_jmon33_note_present()
+    keys = os.environ.get("BASIC_LAUNCH_KEYS", "B")
     with tempfile.TemporaryDirectory(prefix="basic-launch-carts.") as cart_tmp:
         for case in probe_cases(Path(cart_tmp)):
             cart_analyses.setdefault(case.cart_name, analyze_cart(case.cart_name, case.cart))
@@ -437,8 +447,8 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This probe exercises the monitor `B` command with",
-        "`JUKU_KEYS=B`. By default it checks Monitor 3.3 with both",
+        "This probe exercises the configured monitor/removable-memory BASIC",
+        f"command with `JUKU_KEYS={keys}`. By default it checks Monitor 3.3 with both",
         "`roms/jbasic11.bin` and the legacy `ref/firmware/BAS0-3.HEX` image,",
         "plus the EktaSoft 3.43m #0037 ROM used by the main boot guard. It complements",
         "`sync/basic_cart_check.sh`,",
@@ -452,10 +462,11 @@ def main() -> int:
         "",
         "Environment overrides:",
         "",
-        f"- `BASIC_LAUNCH_KEYS` default `{os.environ.get('BASIC_LAUNCH_KEYS', 'B')}`",
+        f"- `BASIC_LAUNCH_KEYS` default `{keys}`",
         "- `BASIC_LAUNCH_ROM` default unset (runs `jmon33.bin` and `ekta37.bin`)",
-        "- `BASIC_LAUNCH_CART` default unset (runs `jbasic11.bin` plus legacy `BAS0-3.HEX` for jmon33)",
-        f"- `BASIC_LAUNCH_REPORT` default `{REPORT.relative_to(ROOT) if REPORT.is_relative_to(ROOT) else REPORT}`",
+        "- `BASIC_LAUNCH_CART` default unset (runs `jbasic11.bin` plus legacy `BAS0-3.HEX`; "
+        "with `BASIC_LAUNCH_ROM`, both default cartridges are probed against that ROM)",
+        f"- `BASIC_LAUNCH_REPORT` default `{display_path(REPORT)}`",
         f"- `BASIC_LAUNCH_MAX_CYCLES` default `{os.environ.get('BASIC_LAUNCH_MAX_CYCLES', '120000000')}`",
         "- `BASIC_LAUNCH_FRAME_CYCLES` default unset (`jmon33`: `200000`, `ekta37`: `40000`)",
         "",
@@ -493,7 +504,7 @@ def main() -> int:
         "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: | --- | ---: | --- |",
         *[
             (
-                f"| {result['case'].name} | `{result['case'].rom.relative_to(ROOT)}` | "
+                f"| {result['case'].name} | `{display_path(result['case'].rom)}` | "
                 f"`{result['case'].cart_name}` | "
                 f"`{result['case'].frame_cycles}` | "
                 f"{'PASS' if result['proc'].returncode == 0 and result['cart_loaded'] and result['key_processed'] and result['vram_ok'] else 'FAIL'} | "
@@ -554,12 +565,13 @@ def main() -> int:
         ]
     )
     lines.append("")
+    REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(lines))
     print(
         "BASIC-LAUNCH-PROBE: "
         f"{'PASS' if any_basic_entered and all_infra_ok else 'FAIL'}"
     )
-    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    print(f"Wrote {display_path(REPORT)}")
     return 0 if any_basic_entered and all_infra_ok else 1
 
 
