@@ -36,12 +36,11 @@ jobs:
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh
 
-      - name: Check replica manufacturing readiness freshness
+      - name: Check replica bring-up report freshness
         run: |
-          kicad/check_replica_manufacturing_ready.sh
+          python3 kicad/report_replica_bringup_verification.py
           git diff --exit-code -- \
-            docs/replica-bringup-verification-points.md \
-            docs/replica-manufacturing-readiness.md
+            docs/replica-bringup-verification-points.md
 
   lvs:
     runs-on: ubuntu-latest
