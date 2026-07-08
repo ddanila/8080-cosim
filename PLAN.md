@@ -337,9 +337,10 @@ debugging session saved on real hardware.
    `state_pc_bias=-1` fetch alignment, uses frame-scale key holds/gaps to retime
    the `JBASIC` stimulus into the ROMBIOS scanner, proves all seven command key
    indices are sampled through PPI0 Port B with non-`0xCF` data, matches the
-   full visible `A>JBASIC` command oracle at scanline 71, and stops on the first
-   decoded post-command FDC I/O (`IN 0x1C` at mcyc 353,942). It still stops
-   before FDC data reads or `[RESUME-JBASIC]`.
+   full visible `A>JBASIC` command oracle at scanline 71, and stops after 512
+   decoded post-command FDC data-register reads (`IN 0x1F`, target 512 reached
+   at mcyc 361,757). It still stops before the full disk transfer or
+   `[RESUME-JBASIC]`.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in

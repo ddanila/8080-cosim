@@ -1,6 +1,6 @@
 # juku_top checkpoint JBASIC probe
 
-Status: **HDL EKDOS JBASIC POST-COMMAND FDC READY**
+Status: **HDL EKDOS JBASIC FDC DATA READ READY**
 
 This diagnostic starts from a generated cosim EKDOS `A>` prompt
 checkpoint on `media/disks/JUKPROG2.CPM`, loads that RAM/state into
@@ -26,23 +26,23 @@ sync/juku_top_checkpoint_jbasic_probe.py
 - HDL resume exit code: `0`
 - Timed out: `no`
 - JBASIC key presses: `7`
-- JBASIC key releases: `6`
+- JBASIC key releases: `7`
 - First key press: `[RESUME-KBD-STIM] press key=0 col=7 bit=5 shift=1 mcyc=250 vram=73446`
-- Last key release: `[RESUME-KBD-STIM] release key=5 mcyc=304322 vram=73526`
+- Last key release: `[RESUME-KBD-STIM] release key=6 mcyc=360249 vram=73526`
 - Keyboard hit lines: `444`
 - Active-read key indices: `[0, 1, 2, 3, 4, 5, 6]`
 - Non-`0xCF` key indices: `[0, 1, 2, 3, 4, 5, 6]`
 - First keyboard hit: `[RESUME-KBD-HIT] active key=0 col=7 bit=5 shift=1 data=0x8f mcyc=298 vram=73446 pc=0x1463`
 - Last keyboard hit: `[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349812 vram=73526 pc=0x128c`
-- PPI0 non-keyboard trace lines: `9484`
-- Keyboard column writes: `519`
+- PPI0 non-keyboard trace lines: `9499`
+- Keyboard column writes: `521`
 - Keyboard Port B reads: `544`
 - HDL M-cycle trace lines: `0`
 - First HDL M-cycle trace: `none`
 - Last HDL M-cycle trace: `none`
 - READY stop line: `none`
-- FDC trace lines: `2`
-- FDC stop line: `[RESUME-FDC] stop ios=1 reads=1 writes=0 mcyc=353942 vram=73526`
+- FDC trace lines: `519`
+- FDC stop line: `[RESUME-FDC] stop reason=data-read-count target=512 ios=518 reads=515 data_reads=512 writes=3 data=0x00 mcyc=361757 vram=73526`
 - HDL VRAM dump size: `9640` (ok)
 - Visible `A>JBASIC` command line at scanline 71: `yes`
 - Checkpoint command row bytes y=71 x=0..9: `08 10 00 00 00 00 00 00 00 00`
@@ -58,11 +58,13 @@ sync/juku_top_checkpoint_jbasic_probe.py
   `JBASIC` + Enter sequence (`J`, `B`, `A`, `S`, `I`, `C`, Return).
 - The same bench also has `+stopjbasicready=1`, which checks the final
   `READY` prompt with exact fixed-`0xD800` glyph bytes.
-- The default run now uses frame-scale key holds/gaps and `+stopfdc=1`
-  so post-command disk traffic becomes a bounded HDL stop condition.
-- This report claims the checkpoint-resumed HDL post-command FDC
+- The default run now uses frame-scale key holds/gaps, `+stopfdc=0`,
+  and `+stopfdc_data_reads=512` so a full 512-byte data-register
+  window is a bounded HDL stop condition.
+- This report claims the checkpoint-resumed HDL FDC data-read
   boundary: frame-scale command stimulus is read through PPI0 Port B,
-  the full `A>JBASIC` command line is visible, and decoded FDC I/O starts.
+  the full `A>JBASIC` command line is visible, and 512 decoded FDC
+  data-register reads complete.
 - The report also preserves the HDL framebuffer dump before restoring
   the worktree copy and checks for the exact cosim-pinned `A>JBASIC`
   command glyphs at scanline 71.
@@ -71,91 +73,91 @@ sync/juku_top_checkpoint_jbasic_probe.py
   to stop at the first sampled keyboard hit during retiming experiments.
 - Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first
   `N` resumed HDL M-cycle trace lines in this report.
-- Next work is to continue from first post-command FDC I/O through FDC
-  data reads and finally stop on `[RESUME-JBASIC]`.
-- This run reached post-command HDL FDC I/O; next work is to continue through FDC data reads and the `READY` oracle.
+- Next work is to continue from the 512-byte FDC data-read window
+  through the full disk transfer and finally stop on `[RESUME-JBASIC]`.
+- This run reached HDL FDC data-register reads; next work is to continue through the disk transfer and the `READY` oracle.
 
 ## HDL stdout tail
 
 ```
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349567 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349567 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x0b mcyc=349579 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0xa data=0x0a mcyc=349584 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349587 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349587 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x0a mcyc=349599 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x9 data=0x09 mcyc=349604 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349607 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349607 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x09 mcyc=349619 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x8 data=0x08 mcyc=349624 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xc4 mcyc=349627 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xc4 mcyc=349627 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] noncf key=6 col=8 bit=5 shift=0 data=0xc4 mcyc=349627 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x08 mcyc=349650 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x7 data=0x07 mcyc=349655 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349658 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349658 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x07 mcyc=349670 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x6 data=0x06 mcyc=349675 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349678 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349678 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x06 mcyc=349690 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x5 data=0x05 mcyc=349695 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349698 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349698 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x05 mcyc=349710 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x4 data=0x04 mcyc=349715 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349718 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349718 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x04 mcyc=349730 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x3 data=0x03 mcyc=349735 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349738 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349738 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x03 mcyc=349750 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x2 data=0x02 mcyc=349755 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349758 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349758 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x02 mcyc=349770 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x1 data=0x01 mcyc=349775 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349778 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349778 vram=73526 pc=0x1463
-[RESUME-PPI0] IN port=0x04 data=0x01 mcyc=349790 vram=73526 pc=0x145d
-[RESUME-KBD] OUT port=0x04 col=0x0 data=0x00 mcyc=349795 vram=73526 pc=0x1461
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349798 vram=73526 pc=0x1463
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349798 vram=73526 pc=0x1463
-[RESUME-KBD] IN port=0x05 data=0xcf mcyc=349812 vram=73526 pc=0x128c
-[RESUME-KBD-HIT] active key=6 col=8 bit=5 shift=0 data=0xcf mcyc=349812 vram=73526 pc=0x128c
-[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=349875 vram=73526 pc=0x0520
-[RESUME-PPI0] OUT port=0x07 data=0x0e mcyc=349881 vram=73526 pc=0x0525
-[RESUME-PROGRESS] mcyc=350000 pc=0x13f9 vram=73526 ios=10811 pic_seen=0 kbd_seen=1 fdc_ios=0 frame_ticks=31 intr_edges=31 inta_edges=93 intr=0 pending=0 inta_idx=0 mask=0xff inte=1
-[RESUME-PPI0] IN port=0x04 data=0x00 mcyc=350060 vram=73526 pc=0x126c
-[RESUME-KBD] OUT port=0x04 col=0x0 data=0x00 mcyc=350065 vram=73526 pc=0x1270
-[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=350266 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=350272 vram=73526 pc=0xd7ef
-[RESUME-PIC] OUT port=0x01 data=0xdf mcyc=350310 vram=73526 pc=0xd820
-[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=350340 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=350346 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=350388 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x04 mcyc=350394 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=350430 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=350436 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=350512 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x04 mcyc=350518 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=350592 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=350598 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=350801 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x04 mcyc=350807 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=350847 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=350853 vram=73526 pc=0xd7ef
-[RESUME-PPI0] OUT port=0x07 data=0x0e mcyc=350983 vram=73526 pc=0xdcd5
-[RESUME-PPI0] IN port=0x06 data=0x05 mcyc=351093 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x04 mcyc=351099 vram=73526 pc=0xd7ef
-[RESUME-PPI0] IN port=0x06 data=0x04 mcyc=351287 vram=73526 pc=0xd7ea
-[RESUME-PPI0] OUT port=0x06 data=0x05 mcyc=351293 vram=73526 pc=0xd7ef
-[RESUME-FDC] IN  port=0x1c reg=0 data=0x00 mcyc=353942 vram=73526 ios=1
-[RESUME-FDC] stop ios=1 reads=1 writes=0 mcyc=353942 vram=73526
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360769 vram=73526 ios=442
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360782 vram=73526 ios=443
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360795 vram=73526 ios=444
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360808 vram=73526 ios=445
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360821 vram=73526 ios=446
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360834 vram=73526 ios=447
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360847 vram=73526 ios=448
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360860 vram=73526 ios=449
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360873 vram=73526 ios=450
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360886 vram=73526 ios=451
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360899 vram=73526 ios=452
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360912 vram=73526 ios=453
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360925 vram=73526 ios=454
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360938 vram=73526 ios=455
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360951 vram=73526 ios=456
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360964 vram=73526 ios=457
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360977 vram=73526 ios=458
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=360990 vram=73526 ios=459
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361003 vram=73526 ios=460
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361016 vram=73526 ios=461
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361029 vram=73526 ios=462
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361042 vram=73526 ios=463
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361055 vram=73526 ios=464
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361068 vram=73526 ios=465
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361081 vram=73526 ios=466
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361094 vram=73526 ios=467
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361107 vram=73526 ios=468
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361120 vram=73526 ios=469
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361133 vram=73526 ios=470
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361146 vram=73526 ios=471
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361159 vram=73526 ios=472
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361172 vram=73526 ios=473
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361185 vram=73526 ios=474
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361198 vram=73526 ios=475
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361211 vram=73526 ios=476
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361224 vram=73526 ios=477
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361237 vram=73526 ios=478
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361250 vram=73526 ios=479
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361263 vram=73526 ios=480
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361276 vram=73526 ios=481
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361289 vram=73526 ios=482
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361302 vram=73526 ios=483
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361315 vram=73526 ios=484
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361328 vram=73526 ios=485
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361341 vram=73526 ios=486
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361354 vram=73526 ios=487
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361367 vram=73526 ios=488
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361380 vram=73526 ios=489
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361393 vram=73526 ios=490
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361406 vram=73526 ios=491
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361419 vram=73526 ios=492
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361432 vram=73526 ios=493
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361445 vram=73526 ios=494
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361458 vram=73526 ios=495
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361471 vram=73526 ios=496
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361484 vram=73526 ios=497
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361497 vram=73526 ios=498
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361510 vram=73526 ios=499
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361523 vram=73526 ios=500
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361536 vram=73526 ios=501
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361549 vram=73526 ios=502
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361562 vram=73526 ios=503
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361575 vram=73526 ios=504
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361588 vram=73526 ios=505
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361601 vram=73526 ios=506
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361614 vram=73526 ios=507
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361627 vram=73526 ios=508
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361640 vram=73526 ios=509
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361653 vram=73526 ios=510
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361666 vram=73526 ios=511
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361679 vram=73526 ios=512
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361692 vram=73526 ios=513
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361705 vram=73526 ios=514
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361718 vram=73526 ios=515
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361731 vram=73526 ios=516
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361744 vram=73526 ios=517
+[RESUME-FDC] IN  port=0x1f reg=3 data=0x00 mcyc=361757 vram=73526 ios=518
+[RESUME-FDC] stop reason=data-read-count target=512 ios=518 reads=515 data_reads=512 writes=3 data=0x00 mcyc=361757 vram=73526
 [RESUME-VRAM] dumped checkpoint VRAM -> hdl/sim/checkpoint_vram_top.bin
-/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:637: $finish called at 502935410 (100ps)
+/home/ddanila/fun/8080-cosim/hdl/sim/juku_top_checkpoint_resume_tb.v:625: $finish called at 514655010 (100ps)
 ```

@@ -621,12 +621,14 @@ module juku_top_checkpoint_resume_tb();
         $display("[RESUME-FDC] stop reason=data-read-count target=%0d ios=%0d reads=%0d data_reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d",
                  stopfdc_data_reads, fdc_ios, fdc_reads, fdc_data_reads, fdc_writes, dut.DB, mcyc, vram_writes);
         $fflush;
+        dump_vram();
         $finish;
       end
       if (stopfdc_data_read != 0 && dut.BA[7:0] == 8'h1f) begin
         $display("[RESUME-FDC] stop reason=data-read ios=%0d reads=%0d data_reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d",
                  fdc_ios, fdc_reads, fdc_data_reads, fdc_writes, dut.DB, mcyc, vram_writes);
         $fflush;
+        dump_vram();
         $finish;
       end
       if (stopfdc != 0 && fdc_ios >= stopfdc) begin
