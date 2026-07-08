@@ -35,6 +35,22 @@ PROMPT_MARKER_RE = re.compile(
     r"\[KBD\] prompt wait marker consumed at g_vw=([0-9]+) cyc=([0-9]+) pos=([0-9]+)"
 )
 PORT_RE = re.compile(r"^\s*0x([0-9A-Fa-f]{2})\s*:\s*([0-9]+)(?:\s+last=0x([0-9A-Fa-f]{2}))?")
+STATE_PORT_RE = re.compile(r"^last:([0-9A-Fa-f]{2}),out:([0-9]+),in:([0-9]+)$")
+
+VIDEO_PORT_LABELS = {
+    0x10: "screen width / PIT0 counter 0",
+    0x11: "horizontal blank / PIT0 counter 1",
+    0x12: "horizontal front porch / PIT0 counter 2",
+    0x13: "PIT0 control",
+    0x14: "screen height / PIT1 counter 0",
+    0x15: "vertical blank / PIT1 counter 1",
+    0x16: "vertical front porch / PIT1 counter 2",
+    0x17: "PIT1 control",
+    0x18: "PIT2 counter 0",
+    0x19: "PIT2 counter 1",
+    0x1A: "PIT2 counter 2",
+    0x1B: "PIT2 control",
+}
 
 
 def compile_trace(tmpdir: Path) -> Path:
@@ -115,6 +131,27 @@ def parse_state(state_text: str) -> dict[str, str]:
             key, value = line.split("=", 1)
             state[key] = value
     return state
+
+
+def parse_state_ports(state: dict[str, str]) -> dict[int, dict[str, int]]:
+    ports: dict[int, dict[str, int]] = {}
+    for key, value in state.items():
+        if not key.startswith("port_"):
+            continue
+        try:
+            port = int(key.removeprefix("port_"), 16)
+        except ValueError:
+            continue
+        match = STATE_PORT_RE.match(value)
+        if not match:
+            continue
+        last, out_count, in_count = match.groups()
+        ports[port] = {
+            "last": int(last, 16),
+            "out": int(out_count),
+            "in": int(in_count),
+        }
+    return ports
 
 
 def parse_ports(stdout: str) -> dict[str, dict[int, dict[str, int | None]]]:
@@ -228,6 +265,7 @@ def build_report(
     marker = parse_prompt_marker(proc.stderr)
     stop = parse_stop(proc.stderr)
     state = parse_state(state_text)
+    state_ports = parse_state_ports(state)
     ports = parse_ports(proc.stdout)
     vram = vram_summary()
     live = live_candidate_summary(ram)
@@ -329,11 +367,40 @@ def build_report(
     lines.extend(
         [
             "",
+            "## Video/Mode State",
+            "",
+            f"- Final memory mode: `{state.get('mode', 'missing')}`",
+            f"- Final PPI Port C latch: `0x{state.get('portc', 'missing')}`",
+            f"- Final VRAM writes: {state.get('vram_writes', 'missing')}",
+            "",
+            "| Port | Function | Last | OUT count | IN count |",
+            "| ---: | --- | ---: | ---: | ---: |",
+        ]
+    )
+    for port in range(0x10, 0x1C):
+        row = state_ports.get(port, {"last": 0, "out": 0, "in": 0})
+        last = f"0x{row['last']:02X}" if row["out"] or row["in"] or row["last"] else "-"
+        lines.append(
+            table_row(
+                [
+                    f"0x{port:02X}",
+                    VIDEO_PORT_LABELS[port],
+                    last,
+                    row["out"],
+                    row["in"],
+                ]
+            )
+        )
+
+    lines.extend(
+        [
+            "",
             "## Disposition",
             "",
             "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.",
             "- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.",
             "- The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.",
+            "- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making framebuffer changes auditable without claiming a rendered text prompt.",
             "- The deeper fixed-`0xD800` framebuffer boundary remains a sparse non-text bitmap, not a user-visible BASIC `READY` oracle.",
             "- Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.",
         ]

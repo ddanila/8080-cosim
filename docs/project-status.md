@@ -204,9 +204,10 @@ Historical merge notes:
   run. The final RAM contains the raw live-load `JBASIC.COM` candidate's entry
   signature at `0x0100` plus relocated `ERROR`, `READY`, and `BASIC` strings.
   The fixed-`0xD800` framebuffer is pinned as a sparse non-text negative oracle
-  (`60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`), so this
-  is still a loaded-code/data boundary rather than a user-visible BASIC `READY`
-  oracle.
+  (`60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`), and the
+  same generated report now records the final video/PIT port state (`0x10..0x1B`),
+  memory mode `0`, Port C `0x04`, and 77,306 VRAM writes. This is still a
+  loaded-code/data boundary rather than a user-visible BASIC `READY` oracle.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;

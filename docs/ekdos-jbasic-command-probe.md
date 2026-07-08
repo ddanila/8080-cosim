@@ -55,10 +55,32 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 | IN | 0x1E | 0 | - |
 | IN | 0x1F | 19968 | - |
 
+## Video/Mode State
+
+- Final memory mode: `0`
+- Final PPI Port C latch: `0x04`
+- Final VRAM writes: 77306
+
+| Port | Function | Last | OUT count | IN count |
+| ---: | --- | ---: | ---: | ---: |
+| 0x10 | screen width / PIT0 counter 0 | 0x64 | 1 | 0 |
+| 0x11 | horizontal blank / PIT0 counter 1 | 0x24 | 1 | 0 |
+| 0x12 | horizontal front porch / PIT0 counter 2 | 0x08 | 1 | 0 |
+| 0x13 | PIT0 control | 0x93 | 3 | 0 |
+| 0x14 | screen height / PIT1 counter 0 | 0x01 | 2 | 0 |
+| 0x15 | vertical blank / PIT1 counter 1 | 0x00 | 2 | 0 |
+| 0x16 | vertical front porch / PIT1 counter 2 | 0x25 | 1 | 0 |
+| 0x17 | PIT1 control | 0x34 | 3 | 0 |
+| 0x18 | PIT2 counter 0 | 0x32 | 1 | 0 |
+| 0x19 | PIT2 counter 1 | 0x03 | 20 | 0 |
+| 0x1A | PIT2 counter 2 | 0xFF | 8962 | 8960 |
+| 0x1B | PIT2 control | 0x80 | 8954 | 0 |
+
 ## Disposition
 
 - `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.
 - The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.
 - The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.
+- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making framebuffer changes auditable without claiming a rendered text prompt.
 - The deeper fixed-`0xD800` framebuffer boundary remains a sparse non-text bitmap, not a user-visible BASIC `READY` oracle.
 - Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.

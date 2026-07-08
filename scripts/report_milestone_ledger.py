@@ -524,7 +524,8 @@ def milestone_rows():
                     "19,968 WD1793 data reads in a deeper 900,000,000-cycle run, "
                     "leaves the live candidate entry signature plus relocated "
                     "`ERROR`/`READY`/`BASIC` strings in RAM, and pins a sparse "
-                    "non-text fixed-framebuffer negative oracle."
+                    "non-text fixed-framebuffer negative oracle with final "
+                    "video/PIT port-state context."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )
@@ -574,7 +575,8 @@ def milestone_rows():
                     "19,968 WD1793 data reads in a deeper 900,000,000-cycle run, "
                     "leaves the live candidate entry signature plus relocated "
                     "`ERROR`/`READY`/`BASIC` strings in RAM, and pins a sparse "
-                    "non-text fixed-framebuffer negative oracle."
+                    "non-text fixed-framebuffer negative oracle with final "
+                    "video/PIT port-state context."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )

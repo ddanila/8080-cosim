@@ -321,6 +321,9 @@ debugging session saved on real hardware.
    It also pins the fixed-`0xD800` framebuffer negative oracle: SHA256
    `60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`,
    1,175 lit pixels, and 68 nonzero scanlines, still not readable BASIC text.
+   The same report now records the final MAME-mapped video/PIT port state
+   (`0x10..0x1B`), memory mode `0`, Port C `0x04`, and 77,306 VRAM writes so
+   the non-text framebuffer boundary has an auditable timing/control context.
    This proves deterministic post-prompt command entry into loaded BASIC
    code/data, not a user-visible BASIC `READY` oracle yet. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
