@@ -117,6 +117,10 @@ def milestone_rows():
         "docs/basic-factory-command-probe.md",
         "Status: **FACTORY BASIC COMMAND BOUNDARY PINNED**",
     )
+    jmon33_command_surface = marker(
+        "docs/jmon33-command-probe.md",
+        "Status: **JMON33 COMMAND SURFACE READY**",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -285,7 +289,9 @@ def milestone_rows():
             "id": "M5",
             "target": "jmon33 live prompt + BASIC launches in the twin",
             "status": (
-                "CHECKPOINT CURSOR PROVEN / PROMPT+HDL BASIC PENDING"
+                "JMON33 COMMAND SURFACE PROVEN / HDL BASIC PENDING"
+                if jmon33_checkpoint_cursor and basic_launch_reached and jmon33_command_surface
+                else "CHECKPOINT CURSOR PROVEN / PROMPT+HDL BASIC PENDING"
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "BASIC RAM EXECUTION REACHED / PROMPT+HDL PENDING"
                 if basic_launch_reached
@@ -296,7 +302,14 @@ def milestone_rows():
                 "`docs/jmon33-checkpoint-cursor-probe.md` now proves "
                 "checkpoint-resumed `juku_top` reaches the Monitor 3.3 cursor "
                 "framebuffer hash from a blank pre-cursor checkpoint. "
-                "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
+                + (
+                    "`docs/jmon33-command-probe.md` proves typed Monitor 3.3 "
+                    "commands are sampled through the keyboard port and move the "
+                    "visible command cursor deterministically in cosim. "
+                    if jmon33_command_surface
+                    else ""
+                )
+                + "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes. The same report now records the "
                 "local MAME Monitor 3.3/JBASIC compatibility warning and the BASIC "
@@ -341,9 +354,10 @@ def milestone_rows():
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
-                "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct monitor/removable-memory BASIC pairing, add a BASIC prompt "
-                "oracle, and port that BASIC path to HDL coverage."
+                "Prove the uninterrupted reset-to-cursor jmon33 path, port the "
+                "jmon33 command-surface proof to HDL, identify the correct "
+                "monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
+                "and port that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor
                 else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."
             ),

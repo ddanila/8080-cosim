@@ -103,7 +103,11 @@ static const struct { char c; uint8_t col, bit; } KMAP[] = {
 };
 static const char* kbd_str = 0;     // keystrokes to "type" (0/empty = keyboard off)
 static int   kbd_pos = 0, kbd_phase = 0;
+static int   kbd_enabled = 0;
 static uint8_t kbd_col = 0;         // last column selected (8255 Port A write)
+static unsigned long kbd_start_vram = 42000;
+static int kbd_hold_frames = 3;
+static int kbd_gap_frames = 3;
 #define KBD_HOLD 3
 #define KBD_GAP  3
 
@@ -112,8 +116,8 @@ static uint8_t kbd_col = 0;         // last column selected (8255 Port A write)
 // shift regardless of column); the 74148 code (b1-3) + GS (b0, active-low) are per-column.
 #define KBD_NONE 0xCF              // no key: code=7, GS released (b0=1), SHIFT released (b6/7=1)
 static uint8_t kbd_portb(void) {
-  if (g_vw < 42000) return KBD_NONE;                   // wait until the banner is drawn
-  char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < KBD_HOLD) ? kbd_str[kbd_pos] : 0;
+  if (g_vw < kbd_start_vram) return KBD_NONE;          // default waits until the ekta37 banner is drawn
+  char c = (kbd_str && kbd_str[kbd_pos] && kbd_phase < kbd_hold_frames) ? kbd_str[kbd_pos] : 0;
   int shift = 0, col = -1, bit = -1;
   if (c) {
     char lc = c; if (c >= 'A' && c <= 'Z') { lc = (char)(c + 32); shift = 1; }
@@ -151,7 +155,7 @@ static uint8_t pin(void* u, uint8_t p) {
   }
   in_count[p]++;
   uint8_t value;
-  if (p == 0x05 && kbd_str && kbd_str[0]) value = kbd_portb();   // 8255 Port B = keyboard 74148
+  if (p == 0x05 && kbd_enabled) value = kbd_portb();             // 8255 Port B = keyboard 74148
   else if (fdc_enabled && p >= 0x1C && p <= 0x1F) value = juku_fdc_read(&fdc, p & 3);
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
   if (io_trace) {
@@ -315,6 +319,17 @@ int main(int argc, char** argv) {
   unsigned long checkpoint_cyc = (checkpoint_cyc_env && checkpoint_cyc_env[0]) ? strtoul(checkpoint_cyc_env, 0, 0) : 0UL;
   unsigned long next_frame = frame_cyc;
   kbd_str = getenv("JUKU_KEYS");     // keystrokes to type (needs frame interrupt on); unset = keyboard off
+  const char* kbd_enabled_env = getenv("JUKU_KEYBOARD_ENABLE");
+  kbd_enabled = (kbd_str && kbd_str[0]) ||
+                (kbd_enabled_env && kbd_enabled_env[0] && strcmp(kbd_enabled_env, "0") != 0);
+  const char* kbd_start_vram_env = getenv("JUKU_KEY_START_VRAM");
+  if (kbd_start_vram_env && kbd_start_vram_env[0]) kbd_start_vram = strtoul(kbd_start_vram_env, 0, 0);
+  const char* kbd_hold_env = getenv("JUKU_KEY_HOLD_FRAMES");
+  if (kbd_hold_env && kbd_hold_env[0]) kbd_hold_frames = atoi(kbd_hold_env);
+  const char* kbd_gap_env = getenv("JUKU_KEY_GAP_FRAMES");
+  if (kbd_gap_env && kbd_gap_env[0]) kbd_gap_frames = atoi(kbd_gap_env);
+  if (kbd_hold_frames < 1) kbd_hold_frames = KBD_HOLD;
+  if (kbd_gap_frames < 1) kbd_gap_frames = KBD_GAP;
   const char* cart_path = getenv("JUKU_CART");
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
@@ -388,8 +403,8 @@ int main(int argc, char** argv) {
         cpu.sp -= 2; cpu.iff = 0; cpu.pc = vec;
       }
       // advance the typed-keystroke state once per frame (HOLD pressed, GAP released)
-      if (kbd_str && kbd_str[kbd_pos] && g_vw >= 42000) {
-        if (++kbd_phase >= KBD_HOLD + KBD_GAP) { kbd_phase = 0; kbd_pos++; }
+      if (kbd_str && kbd_str[kbd_pos] && g_vw >= kbd_start_vram) {
+        if (++kbd_phase >= kbd_hold_frames + kbd_gap_frames) { kbd_phase = 0; kbd_pos++; }
       }
     }
     if ((cpu.cyc & 0xFFFFF) == 0) {

@@ -154,8 +154,11 @@ Historical merge notes:
   the cursor oracle with a blank framebuffer. The stronger checkpoint-resumed
   proof in `sync/jmon33_checkpoint_cursor_probe.py` now starts from a blank
   late cosim checkpoint and reaches the same monitor-idle cursor framebuffer
-  SHA256 in `juku_top`. Completing an uninterrupted reset-to-cursor run and
-  proving the user-visible command prompt remain pending.
+  SHA256 in `juku_top`. `sync/jmon33_command_probe.py` now proves the cosim
+  user-visible command surface: typed `A`, `T`, and `B` plus return are sampled
+  through the keyboard port and move the visible command cursor to deterministic
+  screen positions. Completing an uninterrupted reset-to-cursor run and porting
+  that command-surface proof to HDL remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM

@@ -53,7 +53,9 @@ stopped pc=0xFF54 cyc=20000009 halted=0 iff=0 mode=1 switches=43
 
 ## Remaining Boundary
 
-- This is a reproducible cosim monitor-idle oracle, not yet the full
-  user-visible jmon33 command prompt or BASIC launch path.
+- This is a reproducible cosim monitor-idle oracle. The typed
+  jmon33 command-surface response is guarded separately by
+  `sync/jmon33_command_probe.py`; BASIC launch remains a separate
+  monitor/media pairing problem.
 - The HDL probe still compares only the first video write; the next HDL step
   is to run `juku_top` to this stronger VRAM hash boundary.

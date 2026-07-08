@@ -123,6 +123,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   checkpoint at 3,801,005 cycles / PC `0xF2C0`; the resumed `juku_top` path
   services frame interrupts, scans keyboard reads, and reaches the cosim
   monitor-idle cursor framebuffer hash.
+- `sync/jmon33_command_probe.py` — cosim guard for Monitor 3.3's user-visible
+  command surface. It uses a jmon33-appropriate keyboard hold window and proves
+  typed `A`, `T`, and `B` plus return are sampled through port `0x05` and move
+  the visible command cursor to deterministic screen positions.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for a monitor command

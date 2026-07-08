@@ -296,7 +296,11 @@ debugging session saved on real hardware.
    `sync/jmon33_ready_probe.py` and documented in
    `docs/jmon33-ready-probe.md`: full VRAM SHA256
    `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` plus
-   the solid cursor block at `x=8`, `y=20`. The HDL testbench now has a
+   the solid cursor block at `x=8`, `y=20`. The user-visible jmon33 command
+   surface is now guarded by `sync/jmon33_command_probe.py` and documented in
+   `docs/jmon33-command-probe.md`: with a jmon33-appropriate keyboard hold
+   window, typed `A`, `T`, and `B` plus return are sampled through port `0x05`
+   and produce deterministic visible cursor states. The HDL testbench now has a
    `+cursorstop=1` stop hook for that same cursor boundary, and
    `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
    first write still matches at `0xFF40`, but the 300-write HDL run stops with
@@ -308,7 +312,7 @@ debugging session saved on real hardware.
    cursor framebuffer SHA256 as cosim
    (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, prove the user-visible jmon33 command prompt, identify the correct
+   path, port the jmon33 command-surface proof to HDL, identify the correct
    monitor/removable-memory pairing for a user-visible BASIC prompt oracle, and
    port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
