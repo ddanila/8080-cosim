@@ -15,7 +15,7 @@ the command triggers further FDC traffic from a real directory-backed
 ## Command
 
 ```sh
-JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAMES=6 JUKU_KEY_GAP_FRAMES=8 cosim/trace roms/ekta37.bin 450000000 0 200000
+JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAMES=6 JUKU_KEY_GAP_FRAMES=8 cosim/trace roms/ekta37.bin 900000000 0 200000
 ```
 
 ## Summary
@@ -26,8 +26,8 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - Prompt wait marker: consumed at 73446 VRAM writes, 14200002 cycles, position 3
 - Final keyboard position/phase: `11` / `0`
 - Stop PC: `FED4`
-- Cycles: 450000009
-- Mode switches: 1686977
+- Cycles: 900000005
+- Mode switches: 3415700
 - WD1793 data reads (`0x1F`): 19968
 - Live JBASIC candidate: `ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM`
 - Live JBASIC candidate SHA256: `b1ae68b464c245a888c8e6bbf07037960f5a92d4e968c956c6205a1de6cfc545`
@@ -36,8 +36,10 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - Final RAM `ERROR` string: `0x0469`
 - Final RAM `READY` string: `0x0476`
 - Final RAM `BASIC` string: `0x04AD`
-- Final VRAM SHA256: `0b61035c5326e23450c49633cfa449c43851619f9da9fbae2c2ec3c9e80109df`
-- Final lit pixels: 1095
+- Final VRAM SHA256: `60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`
+- Final lit pixels: 1175
+- Final fixed-framebuffer nonzero lines: 68 (`1`..`139`)
+- Final fixed-framebuffer first bytes: `00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00`
 - Probe failures: 0
 
 ## FDC I/O Ports
@@ -58,5 +60,5 @@ JUKU_DISK=media/disks/JUKPROG2.CPM JUKU_KEYS=$'TDD|JBASIC\r' JUKU_KEY_HOLD_FRAME
 - `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.
 - The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.
 - The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.
-- The final framebuffer hash remains the known post-command boundary rather than a user-visible BASIC `READY` oracle.
+- The deeper fixed-`0xD800` framebuffer boundary remains a sparse non-text bitmap, not a user-visible BASIC `READY` oracle.
 - Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.

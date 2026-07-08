@@ -314,12 +314,13 @@ debugging session saved on real hardware.
    `docs/ekdos-jbasic-command-probe.md` now pins the next disk-side boundary:
    after `TDD`, the cosim keyboard driver waits for the EKDOS `A>` prompt bitmap
    with `JUKU_KEYS=TDD|JBASIC\r`, consumes all command keys on
-   `JUKPROG2.CPM`, and reaches 19,968 WD1793 data-register reads plus final
+   `JUKPROG2.CPM`, and reaches 19,968 WD1793 data-register reads in a deeper
+   900,000,000-cycle run plus final
    RAM evidence: the live candidate entry signature at `0x0100` and relocated
    `ERROR`, `READY`, and `BASIC` strings at `0x0469`, `0x0476`, and `0x04AD`.
-   It also pins final
-   framebuffer SHA256
-   `0b61035c5326e23450c49633cfa449c43851619f9da9fbae2c2ec3c9e80109df`.
+   It also pins the fixed-`0xD800` framebuffer negative oracle: SHA256
+   `60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b`,
+   1,175 lit pixels, and 68 nonzero scanlines, still not readable BASIC text.
    This proves deterministic post-prompt command entry into loaded BASIC
    code/data, not a user-visible BASIC `READY` oracle yet. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`

@@ -521,8 +521,10 @@ def milestone_rows():
                     " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
                     "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
                     "bitmap, consumes all command keys on `JUKPROG2.CPM`, triggers "
-                    "19,968 WD1793 data reads, and leaves the live candidate entry "
-                    "signature plus relocated `ERROR`/`READY`/`BASIC` strings in RAM."
+                    "19,968 WD1793 data reads in a deeper 900,000,000-cycle run, "
+                    "leaves the live candidate entry signature plus relocated "
+                    "`ERROR`/`READY`/`BASIC` strings in RAM, and pins a sparse "
+                    "non-text fixed-framebuffer negative oracle."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )
@@ -569,8 +571,10 @@ def milestone_rows():
                     " `docs/ekdos-jbasic-command-probe.md` pins the next EKDOS "
                     "disk-side boundary: `TDD` plus a prompt-wait marker and `JBASIC\\r` waits for the `A>` prompt "
                     "bitmap, consumes all command keys on `JUKPROG2.CPM`, triggers "
-                    "19,968 WD1793 data reads, and leaves the live candidate entry "
-                    "signature plus relocated `ERROR`/`READY`/`BASIC` strings in RAM."
+                    "19,968 WD1793 data reads in a deeper 900,000,000-cycle run, "
+                    "leaves the live candidate entry signature plus relocated "
+                    "`ERROR`/`READY`/`BASIC` strings in RAM, and pins a sparse "
+                    "non-text fixed-framebuffer negative oracle."
                     if ekdos_jbasic_command_pinned
                     else ""
                 )

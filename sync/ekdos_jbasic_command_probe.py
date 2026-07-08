@@ -22,7 +22,9 @@ VRAM = ROOT / "cosim" / "vram.bin"
 VRAM_SIZE = 40 * 241
 KEYS = "TDD|JBASIC\r"
 EXPECTED_KEY_POS = len(KEYS)
-EXPECTED_FINAL_VRAM_SHA256 = "0b61035c5326e23450c49633cfa449c43851619f9da9fbae2c2ec3c9e80109df"
+EXPECTED_FINAL_VRAM_SHA256 = "60dcda06cf3402a1710e07eb38189518d6a3827c8279888bd8f0d927967ba90b"
+EXPECTED_FINAL_LIT_PIXELS = 1175
+EXPECTED_NONZERO_LINES = 68
 
 
 STOP_RE = re.compile(
@@ -145,11 +147,28 @@ def vram_summary() -> dict[str, int | str]:
     try:
         data = VRAM.read_bytes()
     except FileNotFoundError:
-        return {"bytes": 0, "sha256": "missing", "lit_pixels": 0}
+        return {
+            "bytes": 0,
+            "sha256": "missing",
+            "lit_pixels": 0,
+            "nonzero_lines": 0,
+            "first_nonzero_line": -1,
+            "last_nonzero_line": -1,
+            "top_bytes": "missing",
+        }
+    nonzero_lines = [
+        y
+        for y in range(len(data) // 40)
+        if any(data[y * 40 : (y + 1) * 40])
+    ]
     return {
         "bytes": len(data),
         "sha256": hashlib.sha256(data).hexdigest(),
         "lit_pixels": sum(byte.bit_count() for byte in data) if len(data) == VRAM_SIZE else 0,
+        "nonzero_lines": len(nonzero_lines),
+        "first_nonzero_line": nonzero_lines[0] if nonzero_lines else -1,
+        "last_nonzero_line": nonzero_lines[-1] if nonzero_lines else -1,
+        "top_bytes": data[:16].hex(" ") if data else "missing",
     }
 
 
@@ -228,6 +247,10 @@ def build_report(
         failures.append(f"FDC data reads after the command were too low: {data_reads}")
     if vram["sha256"] != EXPECTED_FINAL_VRAM_SHA256:
         failures.append(f"final VRAM hash changed: {vram['sha256']}")
+    if int(vram.get("lit_pixels", 0)) != EXPECTED_FINAL_LIT_PIXELS:
+        failures.append(f"final fixed-framebuffer lit pixel count changed: {vram.get('lit_pixels', 0)}")
+    if int(vram.get("nonzero_lines", 0)) != EXPECTED_NONZERO_LINES:
+        failures.append(f"final fixed-framebuffer nonzero line count changed: {vram.get('nonzero_lines', 0)}")
     if live["candidate_sha256"] == "missing":
         failures.append("live JBASIC candidate artifact is missing")
     if int(live.get("entry_prefix", 0)) < 6:
@@ -288,6 +311,8 @@ def build_report(
         f"- Final RAM `BASIC` string: `0x{int(live.get('basic_ram', -1)):04X}`",
         f"- Final VRAM SHA256: `{vram['sha256']}`",
         f"- Final lit pixels: {vram['lit_pixels']}",
+        f"- Final fixed-framebuffer nonzero lines: {vram.get('nonzero_lines', 0)} (`{vram.get('first_nonzero_line', -1)}`..`{vram.get('last_nonzero_line', -1)}`)",
+        f"- Final fixed-framebuffer first bytes: `{vram.get('top_bytes', 'missing')}`",
         f"- Probe failures: {len(failures)}",
         "",
         "## FDC I/O Ports",
@@ -309,7 +334,7 @@ def build_report(
             "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.",
             "- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.",
             "- The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.",
-            "- The final framebuffer hash remains the known post-command boundary rather than a user-visible BASIC `READY` oracle.",
+            "- The deeper fixed-`0xD800` framebuffer boundary remains a sparse non-text bitmap, not a user-visible BASIC `READY` oracle.",
             "- Next work is a BASIC prompt oracle: decode the post-command screen/text state or identify the exact EKDOS loader/TPA handoff needed by this `JBASIC.COM`.",
         ]
     )
@@ -322,7 +347,7 @@ def build_report(
 
 def main() -> int:
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else REPORT
-    max_cycles = int(os.environ.get("JBASIC_COMMAND_MAX_CYCLES", "450000000"))
+    max_cycles = int(os.environ.get("JBASIC_COMMAND_MAX_CYCLES", "900000000"))
     frame_cycles = int(os.environ.get("JBASIC_COMMAND_FRAME_CYCLES", "200000"))
     disk = Path(os.environ.get("JBASIC_COMMAND_DISK", DEFAULT_DISK)).expanduser()
     proc, state_text, ram = run_probe(max_cycles, frame_cycles, disk)
