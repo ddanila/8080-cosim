@@ -160,14 +160,12 @@ Historical merge notes:
   screen positions. `sync/jmon33_idle_command_probe.py` separately pins the
   same commands typed after the monitor-idle cursor is already visible, giving
   the checkpoint-resumed HDL path the correct delayed-command reference hashes.
-  `sync/jmon33_hdl_command_probe.py` adds the first
-  checkpoint-resumed HDL command oracle: delayed `A` plus return samples the
-  same active keyboard values as cosim and reaches the exact cosim framebuffer
-  at `x=8,y=60` with SHA256
-  `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f`.
-  The `T`/`B` HDL command rows remain diagnostic against the delayed idle-command
-  oracle. Completing an uninterrupted reset-to-cursor run and the remaining HDL
-  command oracles remain pending.
+  `sync/jmon33_hdl_command_probe.py` now compares checkpoint-resumed HDL
+  command stimulus against that delayed idle-command oracle. The HDL path
+  samples the same active key values, but the visible framebuffer still lands on
+  the reset-time `A` command state, so all HDL command rows remain diagnostic.
+  Completing an uninterrupted reset-to-cursor run and the HDL command oracles
+  remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM

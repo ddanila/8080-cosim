@@ -33,7 +33,7 @@ class CommandCase:
     expected_blocks: tuple[tuple[int, int], ...]
 
 
-CASES = (
+EARLY_CASES = (
     CommandCase(
         "A-enter",
         "A",
@@ -54,6 +54,30 @@ CASES = (
         66,
         "7de5d7ccbcbe39fc6f644adbeb68b1d38706be9d77616772b3d10686e005d52e",
         ((0, 80),),
+    ),
+)
+
+IDLE_CASES = (
+    CommandCase(
+        "A-enter",
+        "A",
+        65,
+        "af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a",
+        ((8, 20), (8, 60)),
+    ),
+    CommandCase(
+        "T-enter",
+        "T",
+        84,
+        "9da43c195487eae0eeac8c65725a3251ff502642025b745a16691a1d7044bae3",
+        ((8, 20), (296, 60)),
+    ),
+    CommandCase(
+        "B-enter",
+        "B",
+        66,
+        "891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0",
+        ((8, 20), (0, 80)),
     ),
 )
 
@@ -327,12 +351,17 @@ def run_case(
 
 
 def main() -> int:
+    expected_checkpoint_sha = os.environ.get(
+        "JMON33_HDL_COMMAND_CHECKPOINT_SHA256",
+        IDLE_CURSOR_VRAM_SHA256,
+    )
+    expected_cases = IDLE_CASES if expected_checkpoint_sha == IDLE_CURSOR_VRAM_SHA256 else EARLY_CASES
     case_filter = {
         name.strip()
         for name in os.environ.get("JMON33_HDL_COMMAND_CASES", "").split(",")
         if name.strip()
     }
-    cases = tuple(case for case in CASES if not case_filter or case.name in case_filter or case.key in case_filter)
+    cases = tuple(case for case in expected_cases if not case_filter or case.name in case_filter or case.key in case_filter)
     if not cases:
         raise SystemExit(f"no cases matched JMON33_HDL_COMMAND_CASES={','.join(sorted(case_filter))}")
 
@@ -345,10 +374,6 @@ def main() -> int:
     infra_failures: list[str] = []
     if cosim_proc.returncode != 0:
         infra_failures.append(f"cosim checkpoint exited {cosim_proc.returncode}")
-    expected_checkpoint_sha = os.environ.get(
-        "JMON33_HDL_COMMAND_CHECKPOINT_SHA256",
-        IDLE_CURSOR_VRAM_SHA256,
-    )
     accepted_checkpoint_shas = {expected_checkpoint_sha, BLANK_VRAM_SHA256}
     if checkpoint_vram_sha not in accepted_checkpoint_shas:
         infra_failures.append(f"cosim checkpoint VRAM SHA256 was unexpected: {checkpoint_vram_sha}")
@@ -369,7 +394,7 @@ def main() -> int:
         and str(result["command_line"]).startswith("[RESUME-COMMAND]")
         for result in results
     ) and not infra_failures
-    passed = all_selected_cases_passed and len(cases) == len(CASES)
+    passed = all_selected_cases_passed and len(cases) == len(expected_cases)
     if passed:
         status = "JMON33 HDL COMMAND SURFACE READY"
     elif a_passed and not infra_failures:
@@ -385,7 +410,8 @@ def main() -> int:
         "This guard starts from a generated Monitor 3.3 cosim checkpoint,",
         "loads that RAM and visible state into `juku_top`, injects a single",
         "command plus Enter through the `juku_top` keyboard pins, and checks the",
-        "visible command-state oracles pinned by `docs/jmon33-command-probe.md`.",
+        "visible command-state oracles pinned by `docs/jmon33-command-probe.md`",
+        "or `docs/jmon33-idle-command-probe.md`, depending on the checkpoint.",
         "",
         "## Command",
         "",
@@ -401,6 +427,7 @@ def main() -> int:
         f"- `JMON33_HDL_COMMAND_KHOLD` default `{os.environ.get('JMON33_HDL_COMMAND_KHOLD', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KGAP` default `{os.environ.get('JMON33_HDL_COMMAND_KGAP', '100000')}`",
         f"- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `{os.environ.get('JMON33_HDL_COMMAND_CHECKPOINT_CYCLES', '20000000')}`",
+        f"- Expected checkpoint SHA256 `{expected_checkpoint_sha}`",
         f"- `JMON33_HDL_COMMAND_KEY_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}`",
         f"- `JMON33_HDL_COMMAND_CASES` selected `{','.join(case.name for case in cases)}`",
         "",
@@ -444,9 +471,12 @@ def main() -> int:
             "- The default checkpoint is the monitor-idle cursor state. A later",
             "  `JMON33_HDL_COMMAND_KEY_MCYC` delay lets the resumed keyboard scan",
             "  settle before the command key is pressed.",
-            "- The `A` command now reaches the same HDL framebuffer SHA256 as the",
-            "  cosim command-surface oracle. `T` and `B` remain diagnostic cases",
-            "  until their final command framebuffers also match cosim.",
+            "- The default checkpoint is the monitor-idle cursor state, so the",
+            "  default expected command hashes come from",
+            "  `docs/jmon33-idle-command-probe.md`, not from reset-time typed",
+            "  command runs.",
+            "- The current HDL rows are diagnostic until their final command",
+            "  framebuffers match the selected cosim oracle.",
             "- This proof is scoped to jmon33 monitor commands. BASIC remains tracked",
             "  separately by `docs/basic-launch-probe.md` and",
             "  `docs/basic-factory-command-probe.md`.",
