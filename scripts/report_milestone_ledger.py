@@ -126,6 +126,9 @@ def milestone_rows():
         "Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**",
     ) or marker(
         "docs/jmon33-hdl-command-probe.md",
+        "Status: **JMON33 HDL A-COMMAND ORACLE READY**",
+    ) or marker(
+        "docs/jmon33-hdl-command-probe.md",
         "Status: **JMON33 HDL COMMAND SURFACE READY**",
     )
     jmon33_checkpoint_cursor = marker(
@@ -318,9 +321,9 @@ def milestone_rows():
                 )
                 + (
                     "`docs/jmon33-hdl-command-probe.md` adds the checkpoint-resumed "
-                    "HDL command diagnostic; the `A` case samples the same active "
-                    "keyboard values as cosim but has not yet reached the final "
-                    "command framebuffer oracle. "
+                    "HDL `A` command oracle; the `A` case samples the same active "
+                    "keyboard values as cosim and reaches the same final command "
+                    "framebuffer hash, while `T`/`B` remain diagnostic rows. "
                     if jmon33_hdl_command_diagnostic
                     else ""
                 )
@@ -370,7 +373,7 @@ def milestone_rows():
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, extend the "
-                "HDL command diagnostic to the final command oracle, identify the correct "
+                "HDL command diagnostic to the remaining `T`/`B` command oracles, identify the correct "
                 "monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
                 "and port that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor

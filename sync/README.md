@@ -129,9 +129,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   the visible command cursor to deterministic screen positions.
 - `sync/jmon33_hdl_command_probe.py` — checkpoint-resumed HDL diagnostic for
   the same command surface. It delays keyboard stimulus until after the proven
-  HDL cursor boundary and currently records that the `A` case samples the same
-  active keyboard values as cosim while stopping short of the final command
-  framebuffer oracle.
+  HDL cursor boundary; the `A` case reaches the same command framebuffer SHA256
+  as cosim, while `T` and `B` remain diagnostic rows until their final
+  framebuffers match.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for a monitor command

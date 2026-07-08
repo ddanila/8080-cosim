@@ -312,12 +312,15 @@ debugging session saved on real hardware.
    cursor framebuffer SHA256 as cosim
    (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
    `sync/jmon33_hdl_command_probe.py` now adds the first checkpoint-resumed
-   HDL command diagnostic: delayed `A` plus return samples the same active
-   keyboard values as cosim (`0x84`, `0x8F`, `0xC4`) and moves the visible
-   block to `x=8,y=40` within the practical bound, but it has not yet reached
-   the final cosim command framebuffer (`x=8,y=60`).
+   HDL command oracle: from the monitor-idle checkpoint, delayed `A` plus
+   return samples the same active keyboard values as cosim (`0x84`, `0x8F`,
+   `0xC4`) and reaches the exact cosim command framebuffer at `x=8,y=60`
+   (`SHA256 efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f`).
+   The same diagnostic still keeps `T`/`B` as non-passing rows until their
+   final command framebuffers also match cosim.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, extend the HDL command diagnostic to the final command oracle,
+   path, extend the HDL command diagnostic to the remaining `T`/`B` command
+   oracles,
    identify the correct monitor/removable-memory pairing for a user-visible
    BASIC prompt oracle, and port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by

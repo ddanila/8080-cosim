@@ -157,12 +157,13 @@ Historical merge notes:
   SHA256 in `juku_top`. `sync/jmon33_command_probe.py` now proves the cosim
   user-visible command surface: typed `A`, `T`, and `B` plus return are sampled
   through the keyboard port and move the visible command cursor to deterministic
-  screen positions. `sync/jmon33_hdl_command_probe.py` adds the corresponding
-  checkpoint-resumed HDL diagnostic: delayed `A` plus return samples the same
-  active keyboard values as cosim and moves the visible block to `x=8,y=40`
-  within the practical bound, but it has not yet reached the final cosim
-  command framebuffer (`x=8,y=60`). Completing an uninterrupted reset-to-cursor
-  run and the final HDL command oracle remain pending.
+  screen positions. `sync/jmon33_hdl_command_probe.py` adds the first
+  checkpoint-resumed HDL command oracle: delayed `A` plus return samples the
+  same active keyboard values as cosim and reaches the exact cosim framebuffer
+  at `x=8,y=60` with SHA256
+  `efc7ce7d04f843c0ad4bf4df5f5139ca52818ba15e4aa7707124308bbdc6858f`.
+  The `T`/`B` HDL command rows remain diagnostic. Completing an uninterrupted
+  reset-to-cursor run and the remaining HDL command oracles remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM

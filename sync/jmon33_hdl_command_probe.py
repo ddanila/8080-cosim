@@ -20,6 +20,7 @@ VRAM_DUMP = ROOT / "hdl" / "sim" / "checkpoint_vram_top.bin"
 VRAM_STRIDE = 40
 VRAM_LINES = 241
 BLANK_VRAM_SHA256 = "559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d"
+IDLE_CURSOR_VRAM_SHA256 = "f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397"
 KBD_RE = re.compile(r"\[RESUME-KBD\] IN port=0x05 data=0x([0-9A-Fa-f]{2})")
 
 
@@ -168,7 +169,7 @@ def text_output(value: str | bytes | None) -> str:
 def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Path, dict[str, str], str]:
     trace = compile_trace(tmp)
     prefix = tmp / "jmon33-hdl-command"
-    checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_CHECKPOINT_CYCLES", "3801000")
+    checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_CHECKPOINT_CYCLES", "20000000")
     frame_cycles = os.environ.get("JMON33_HDL_COMMAND_FRAME_CYCLES", "200000")
     max_cycles = os.environ.get("JMON33_HDL_COMMAND_MAX_COSIM_CYCLES", "20000000")
     old_vram = tmp / "old-vram.bin"
@@ -265,7 +266,7 @@ def run_case(
         "+commandkeys=1",
         f"+command_key={case.key_code}",
         "+command_key_count=2",
-        f"+command_key_mcyc={os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '260000')}",
+        f"+command_key_mcyc={os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}",
         "+commandstop=1",
         f"+command_x0={case.expected_blocks[0][0]}",
         f"+command_y0={case.expected_blocks[0][1]}",
@@ -344,25 +345,45 @@ def main() -> int:
     infra_failures: list[str] = []
     if cosim_proc.returncode != 0:
         infra_failures.append(f"cosim checkpoint exited {cosim_proc.returncode}")
-    if checkpoint_vram_sha != BLANK_VRAM_SHA256:
-        infra_failures.append(f"cosim checkpoint VRAM was not pre-cursor blank: {checkpoint_vram_sha}")
+    expected_checkpoint_sha = os.environ.get(
+        "JMON33_HDL_COMMAND_CHECKPOINT_SHA256",
+        IDLE_CURSOR_VRAM_SHA256,
+    )
+    accepted_checkpoint_shas = {expected_checkpoint_sha, BLANK_VRAM_SHA256}
+    if checkpoint_vram_sha not in accepted_checkpoint_shas:
+        infra_failures.append(f"cosim checkpoint VRAM SHA256 was unexpected: {checkpoint_vram_sha}")
 
-    passed = all(
+    result_by_name = {str(result["case"].name): result for result in results}
+    a_result = result_by_name.get("A-enter")
+    a_passed = bool(
+        a_result is not None
+        and a_result["proc"].returncode == 0
+        and a_result["sha"] == a_result["case"].expected_sha256
+        and a_result["expected_blocks_ok"]
+        and str(a_result["command_line"]).startswith("[RESUME-COMMAND]")
+    )
+    all_selected_cases_passed = all(
         result["proc"].returncode == 0
         and result["sha"] == result["case"].expected_sha256
         and result["expected_blocks_ok"]
         and str(result["command_line"]).startswith("[RESUME-COMMAND]")
         for result in results
     ) and not infra_failures
-    status = "JMON33 HDL COMMAND SURFACE READY" if passed else "JMON33 HDL COMMAND BOUNDED DIAGNOSTIC"
+    passed = all_selected_cases_passed and len(cases) == len(CASES)
+    if passed:
+        status = "JMON33 HDL COMMAND SURFACE READY"
+    elif a_passed and not infra_failures:
+        status = "JMON33 HDL A-COMMAND ORACLE READY"
+    else:
+        status = "JMON33 HDL COMMAND BOUNDED DIAGNOSTIC"
 
     lines = [
         "# jmon33 HDL command-surface probe",
         "",
         f"Status: **{status}**",
         "",
-        "This guard starts from the same pre-cursor Monitor 3.3 cosim checkpoint",
-        "used by `docs/jmon33-checkpoint-cursor-probe.md`, injects a single",
+        "This guard starts from a generated Monitor 3.3 cosim checkpoint,",
+        "loads that RAM and visible state into `juku_top`, injects a single",
         "command plus Enter through the `juku_top` keyboard pins, and checks the",
         "visible command-state oracles pinned by `docs/jmon33-command-probe.md`.",
         "",
@@ -379,7 +400,8 @@ def main() -> int:
         f"- `JMON33_HDL_COMMAND_FRAMEIRQ` default `{os.environ.get('JMON33_HDL_COMMAND_FRAMEIRQ', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KHOLD` default `{os.environ.get('JMON33_HDL_COMMAND_KHOLD', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KGAP` default `{os.environ.get('JMON33_HDL_COMMAND_KGAP', '100000')}`",
-        f"- `JMON33_HDL_COMMAND_KEY_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '260000')}`",
+        f"- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `{os.environ.get('JMON33_HDL_COMMAND_CHECKPOINT_CYCLES', '20000000')}`",
+        f"- `JMON33_HDL_COMMAND_KEY_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}`",
         f"- `JMON33_HDL_COMMAND_CASES` selected `{','.join(case.name for case in cases)}`",
         "",
         "## Evidence",
@@ -419,10 +441,12 @@ def main() -> int:
             "",
             "- The HDL checkpoint harness now has a generic two-key command stimulus",
             "  path in addition to the fixed EKDOS `TDD` stimulus path.",
-            "- This is currently a bounded diagnostic, not a completed HDL command",
-            "  oracle. The keyboard samples match the cosim values, but the",
-            "  checkpoint-resumed top-level run has not yet reached the final cosim",
-            "  command framebuffer within the practical local bound.",
+            "- The default checkpoint is the monitor-idle cursor state. A later",
+            "  `JMON33_HDL_COMMAND_KEY_MCYC` delay lets the resumed keyboard scan",
+            "  settle before the command key is pressed.",
+            "- The `A` command now reaches the same HDL framebuffer SHA256 as the",
+            "  cosim command-surface oracle. `T` and `B` remain diagnostic cases",
+            "  until their final command framebuffers also match cosim.",
             "- This proof is scoped to jmon33 monitor commands. BASIC remains tracked",
             "  separately by `docs/basic-launch-probe.md` and",
             "  `docs/basic-factory-command-probe.md`.",
@@ -431,7 +455,7 @@ def main() -> int:
     lines.append("")
     REPORT.write_text("\n".join(lines))
     infrastructure_ok = not infra_failures and all(result["proc"].returncode in (0, 124) for result in results)
-    print(f"JMON33-HDL-COMMAND-PROBE: {'PASS' if passed else 'DIAGNOSTIC'}")
+    print(f"JMON33-HDL-COMMAND-PROBE: {'PASS' if passed else 'PARTIAL' if a_passed and infrastructure_ok else 'DIAGNOSTIC'}")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     return 0 if infrastructure_ok else 1
 
