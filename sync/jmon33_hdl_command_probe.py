@@ -148,7 +148,7 @@ def parse_state(path: Path) -> dict[str, str]:
     return state
 
 
-def state_plusargs(state: dict[str, str]) -> list[str]:
+def state_plusargs(state: dict[str, str], phase_mcyc: int | None = None) -> list[str]:
     def hex_pair(name: str) -> str:
         return state.get(name, "00")
 
@@ -172,6 +172,9 @@ def state_plusargs(state: dict[str, str]) -> list[str]:
         f"+state_pic_icw2={state.get('pic_icw2', '00')}",
         f"+state_pic_mask={state.get('pic_mask', 'FF')}",
         f"+state_pic_expect_icw2={state.get('pic_expect_icw2', '0')}",
+        f"+state_kbd_pos={state.get('kbd_pos', '0')}",
+        f"+state_kbd_phase={state.get('kbd_phase', '0')}",
+        *([] if phase_mcyc is None else [f"+state_kbd_phase_mcyc={phase_mcyc}"]),
         f"+state_fdc_status={state.get('fdc_status', '80')}",
         f"+state_fdc_track={state.get('fdc_track', '00')}",
         f"+state_fdc_sector={state.get('fdc_sector', '01')}",
@@ -190,15 +193,22 @@ def text_output(value: str | bytes | None) -> str:
     return value
 
 
-def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Path, dict[str, str], str]:
+def generate_checkpoint(
+    tmp: Path,
+    case: CommandCase | None = None,
+) -> tuple[subprocess.CompletedProcess[str], Path, dict[str, str], str]:
     trace = compile_trace(tmp)
     prefix = tmp / "jmon33-hdl-command"
     # 20,000,000 cycles is visually idle but lands at the frame IRQ vector
     # (PC=0xFF54/IFF=0). Use a nearby instruction-boundary idle-loop point by
     # default so the clean-M1 HDL resume starts from monitor code, not an ISR.
-    checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_CHECKPOINT_CYCLES", "19900000")
+    if case is None:
+        checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_CHECKPOINT_CYCLES", "19900000")
+    else:
+        checkpoint_cycles = os.environ.get("JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES", "23200000")
     frame_cycles = os.environ.get("JMON33_HDL_COMMAND_FRAME_CYCLES", "200000")
-    max_cycles = os.environ.get("JMON33_HDL_COMMAND_MAX_COSIM_CYCLES", "20000000")
+    default_max_cycles = checkpoint_cycles if case is not None else "20000000"
+    max_cycles = os.environ.get("JMON33_HDL_COMMAND_MAX_COSIM_CYCLES", default_max_cycles)
     old_vram = tmp / "old-vram.bin"
     cosim_vram = ROOT / "cosim" / "vram.bin"
     had_vram = cosim_vram.exists()
@@ -208,6 +218,12 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
     env = os.environ.copy()
     env["JUKU_CHECKPOINT_PREFIX"] = str(prefix)
     env["JUKU_CHECKPOINT_CYC"] = checkpoint_cycles
+    if case is not None:
+        env["JUKU_KEYBOARD_ENABLE"] = "1"
+        env["JUKU_KEYS"] = f"{case.key}\n"
+        env["JUKU_KEY_START_VRAM"] = os.environ.get("JMON33_HDL_COMMAND_PHASE_START_VRAM", "270")
+        env["JUKU_KEY_HOLD_FRAMES"] = os.environ.get("JMON33_HDL_COMMAND_HOLD_FRAMES", "20")
+        env["JUKU_KEY_GAP_FRAMES"] = os.environ.get("JMON33_HDL_COMMAND_GAP_FRAMES", "6")
     proc = subprocess.run(
         [str(trace), str(ROM), max_cycles, "0", frame_cycles],
         cwd=ROOT / "cosim",
@@ -263,12 +279,29 @@ def first_line(text: str, prefix: str) -> str:
     return next((line for line in text.splitlines() if line.startswith(prefix)), "none")
 
 
+def checkpoint_label(state: dict[str, str]) -> str:
+    return (
+        f"cyc={state.get('cyc', '?')} pc=0x{state.get('pc', '????')} "
+        f"iff={state.get('iff', '?')} kbd={state.get('kbd_pos', '?')}/{state.get('kbd_phase', '?')}"
+    )
+
+
+def scaled_keyboard_phase_mcyc(state: dict[str, str]) -> int:
+    phase = int(state.get("kbd_phase", "0"))
+    hold_frames = int(os.environ.get("JMON33_HDL_COMMAND_HOLD_FRAMES", "20"))
+    gap_frames = int(os.environ.get("JMON33_HDL_COMMAND_GAP_FRAMES", "6"))
+    khold = int(os.environ.get("JMON33_HDL_COMMAND_KHOLD", "200000"))
+    kgap = int(os.environ.get("JMON33_HDL_COMMAND_KGAP", "100000"))
+    return (phase * (khold + kgap)) // max(1, hold_frames + gap_frames)
+
+
 def run_case(
     tmp: Path,
     sim: Path,
     ram_bin: Path,
     state: dict[str, str],
     case: CommandCase,
+    phase_mcyc: int | None = None,
 ) -> dict[str, object]:
     ram_hex = tmp / "checkpoint.ram.hex"
     write_hex(ram_bin, ram_hex)
@@ -285,7 +318,7 @@ def run_case(
         str(sim),
         f"+checkpoint_ram={ram_hex}",
         "+rom=hdl/sim/jmon33.hex",
-        f"+max_mcyc={os.environ.get('JMON33_HDL_COMMAND_MAX_MCYC', '500000')}",
+        f"+max_mcyc={os.environ.get('JMON33_HDL_COMMAND_MAX_MCYC', '700000' if phase_mcyc is not None else '500000')}",
         f"+timecap={os.environ.get('JMON33_HDL_COMMAND_TIMECAP', '4000000000')}",
         f"+frameirq={os.environ.get('JMON33_HDL_COMMAND_FRAMEIRQ', '200000')}",
         f"+progress_mcyc={os.environ.get('JMON33_HDL_COMMAND_PROGRESS_MCYC', '0')}",
@@ -305,7 +338,7 @@ def run_case(
         f"+defer_iff={os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}",
         f"+force_clean_status={os.environ.get('JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS', '1')}",
     ]
-    args.extend(state_plusargs(state))
+    args.extend(state_plusargs(state, phase_mcyc))
 
     try:
         with out_path.open("w") as stdout, err_path.open("w") as stderr:
@@ -315,7 +348,7 @@ def run_case(
                 text=True,
                 stdout=stdout,
                 stderr=stderr,
-                timeout=int(os.environ.get("JMON33_HDL_COMMAND_TIMEOUT", "240")),
+                timeout=int(os.environ.get("JMON33_HDL_COMMAND_TIMEOUT", "360" if phase_mcyc is not None else "240")),
                 check=False,
             )
         timed_out = False
@@ -352,10 +385,12 @@ def run_case(
         "expected_blocks_ok": expected_blocks_ok,
         "idle_cursor_ok": idle_cursor_ok,
         "visible_pixels": sum(byte.bit_count() for byte in vram),
+        "checkpoint": checkpoint_label(state),
     }
 
 
 def main() -> int:
+    phase_checkpoint = os.environ.get("JMON33_HDL_COMMAND_PHASE_CHECKPOINT", "0") not in ("", "0")
     expected_checkpoint_sha = os.environ.get(
         "JMON33_HDL_COMMAND_CHECKPOINT_SHA256",
         IDLE_CURSOR_VRAM_SHA256,
@@ -372,16 +407,25 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="jmon33-hdl-command.") as tmp_name:
         tmp = Path(tmp_name)
-        cosim_proc, ram_bin, state, checkpoint_vram_sha = generate_checkpoint(tmp)
         sim = compile_hdl(tmp)
-        results = [run_case(tmp, sim, ram_bin, state, case) for case in cases]
+        if phase_checkpoint:
+            generated = [(*generate_checkpoint(tmp, case), case) for case in cases]
+            cosim_proc, ram_bin, state, checkpoint_vram_sha, _ = generated[0]
+            results = [
+                run_case(tmp, sim, ram, st, case, scaled_keyboard_phase_mcyc(st))
+                for proc, ram, st, sha, case in generated
+            ]
+        else:
+            cosim_proc, ram_bin, state, checkpoint_vram_sha = generate_checkpoint(tmp)
+            results = [run_case(tmp, sim, ram_bin, state, case) for case in cases]
 
     infra_failures: list[str] = []
     if cosim_proc.returncode != 0:
         infra_failures.append(f"cosim checkpoint exited {cosim_proc.returncode}")
     accepted_checkpoint_shas = {expected_checkpoint_sha, BLANK_VRAM_SHA256}
     if checkpoint_vram_sha not in accepted_checkpoint_shas:
-        infra_failures.append(f"cosim checkpoint VRAM SHA256 was unexpected: {checkpoint_vram_sha}")
+        if not phase_checkpoint:
+            infra_failures.append(f"cosim checkpoint VRAM SHA256 was unexpected: {checkpoint_vram_sha}")
 
     result_by_name = {str(result["case"].name): result for result in results}
     a_result = result_by_name.get("A-enter")
@@ -426,12 +470,17 @@ def main() -> int:
         "",
         "Environment overrides:",
         "",
-        f"- `JMON33_HDL_COMMAND_MAX_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_MAX_MCYC', '500000')}`",
+        f"- `JMON33_HDL_COMMAND_MAX_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_MAX_MCYC', '700000' if phase_checkpoint else '500000')}`",
         f"- `JMON33_HDL_COMMAND_TIMECAP` default `{os.environ.get('JMON33_HDL_COMMAND_TIMECAP', '4000000000')}`",
         f"- `JMON33_HDL_COMMAND_FRAMEIRQ` default `{os.environ.get('JMON33_HDL_COMMAND_FRAMEIRQ', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KHOLD` default `{os.environ.get('JMON33_HDL_COMMAND_KHOLD', '200000')}`",
         f"- `JMON33_HDL_COMMAND_KGAP` default `{os.environ.get('JMON33_HDL_COMMAND_KGAP', '100000')}`",
         f"- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `{os.environ.get('JMON33_HDL_COMMAND_CHECKPOINT_CYCLES', '19900000')}`",
+        f"- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT` default `{os.environ.get('JMON33_HDL_COMMAND_PHASE_CHECKPOINT', '0')}`",
+        f"- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` default `{os.environ.get('JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES', '23200000')}`",
+        f"- `JMON33_HDL_COMMAND_PHASE_START_VRAM` default `{os.environ.get('JMON33_HDL_COMMAND_PHASE_START_VRAM', '270')}`",
+        f"- `JMON33_HDL_COMMAND_HOLD_FRAMES` default `{os.environ.get('JMON33_HDL_COMMAND_HOLD_FRAMES', '20')}`",
+        f"- `JMON33_HDL_COMMAND_GAP_FRAMES` default `{os.environ.get('JMON33_HDL_COMMAND_GAP_FRAMES', '6')}`",
         f"- Expected checkpoint SHA256 `{expected_checkpoint_sha}`",
         f"- `JMON33_HDL_COMMAND_KEY_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}`",
         f"- `JMON33_HDL_COMMAND_DEFER_IFF` default `{os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}`",
@@ -446,14 +495,15 @@ def main() -> int:
         f"- Cosim checkpoint IFF: `{state.get('iff', 'unknown')}`",
         f"- Cosim checkpoint VRAM writes: `{state.get('vram_writes', 'unknown')}`",
         f"- Cosim checkpoint VRAM SHA256: `{checkpoint_vram_sha}`",
+        f"- Phase-checkpoint mode: `{'yes' if phase_checkpoint else 'no'}`",
     ]
     if infra_failures:
         lines.append(f"- Infra failures: `{' ; '.join(infra_failures)}`")
     lines.extend(
         [
             "",
-            "| Case | Key | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |",
-            "| --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |",
+            "| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Idle cursor | Command oracle | Visible blocks | Pixels | VRAM SHA256 | Result |",
+            "| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | ---: | --- | --- |",
         ]
     )
     for result in results:
@@ -467,7 +517,7 @@ def main() -> int:
             and str(result["command_line"]).startswith("[RESUME-COMMAND]")
         )
         lines.append(
-            f"| {case.name} | `{case.key}\\n` | `{result['proc'].returncode}` | "
+            f"| {case.name} | `{case.key}\\n` | `{result['checkpoint']}` | `{result['proc'].returncode}` | "
             f"`{result['timed_out']}` | `{result['kbd_samples']}` | {active} | "
             f"`{'yes' if result['idle_cursor_ok'] else 'no'}` | `{result['command_line']}` | "
             f"{blocks} | `{result['visible_pixels']}` | "
@@ -483,6 +533,10 @@ def main() -> int:
             "- The default checkpoint is the monitor-idle cursor state. A later",
             "  `JMON33_HDL_COMMAND_KEY_MCYC` delay lets the resumed keyboard scan",
             "  settle before the command key is pressed.",
+            "- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT=1` generates a per-case",
+            "  cosim checkpoint with the command key already in the monitor",
+            "  keyboard schedule, scales that frame phase into HDL M-cycles,",
+            "  and resumes through the remaining key/Enter path.",
             "- The default checkpoint is deliberately before the 20,000,000-cycle",
             "  ready-probe stop, because that stop is visually idle but lands in",
             "  the frame interrupt vector (`PC=0xFF54`, `IFF=0`).",

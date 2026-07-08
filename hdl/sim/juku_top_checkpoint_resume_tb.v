@@ -34,7 +34,7 @@ module juku_top_checkpoint_resume_tb();
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
   integer commandkeys = 0, command_key = 0, command_key_count = 2, command_key_mcyc = 0;
   integer commandstop = 0, command_seen = 0, command_x0 = 0, command_y0 = 0, command_x1 = -1, command_y1 = -1;
-  integer state_kbd_pos = 0, state_kbd_phase = 0;
+  integer state_kbd_pos = 0, state_kbd_phase = 0, state_kbd_phase_mcyc = -1;
   reg frame_tick = 1'b0, intr_q = 1'b0, inta_q = 1'b1;
   reg kbd_en = 1'b1, kbd_pressed = 1'b0, kbd_shift = 1'b0, kbd_was_pressed = 1'b0;
   reg [3:0] kbd_kcol = 4'd0;
@@ -543,6 +543,7 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("state_kbd_col=%h", state_kbd_col)) ;
     if ($value$plusargs("state_kbd_pos=%d", state_kbd_pos)) ;
     if ($value$plusargs("state_kbd_phase=%d", state_kbd_phase)) ;
+    if ($value$plusargs("state_kbd_phase_mcyc=%d", state_kbd_phase_mcyc)) ;
     if ($value$plusargs("state_pic_icw1=%h", state_pic_icw1)) ;
     if ($value$plusargs("state_pic_icw2=%h", state_pic_icw2)) ;
     if ($value$plusargs("state_pic_mask=%h", state_pic_mask)) ;
@@ -577,6 +578,13 @@ module juku_top_checkpoint_resume_tb();
       key_t = state_kbd_phase;
       set_ekdos_key(state_kbd_pos);
     end else if (ekdoskeys != 0 && state_kbd_pos >= 3) begin
+      ekdos_key = state_kbd_pos;
+      key_t = -1;
+    end else if (commandkeys != 0 && state_vram_writes >= keyat && state_kbd_pos < command_key_count) begin
+      ekdos_key = state_kbd_pos;
+      key_t = state_kbd_phase_mcyc >= 0 ? state_kbd_phase_mcyc : state_kbd_phase;
+      set_command_key(state_kbd_pos);
+    end else if (commandkeys != 0 && state_kbd_pos >= command_key_count) begin
       ekdos_key = state_kbd_pos;
       key_t = -1;
     end
