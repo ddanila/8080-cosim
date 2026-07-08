@@ -83,6 +83,16 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check EKDOS source inspection freshness",
     )
+    vendored_disk_cataloged = marker(
+        "docs/vendored-disk-catalog.md",
+        "Status: **VENDORED DISK DIRECTORY INDEXED**",
+    ) and marker(
+        "docs/vendored-disk-catalog.md",
+        "JBASIC.COM",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check vendored disk catalog freshness",
+    )
     ekdos_source_m1_phrase = ""
     ekdos_source_m2_phrase = ""
     if ekdos_source_inspected:
@@ -470,6 +480,13 @@ def milestone_rows():
                     if basic_entry_rejected
                     else ""
                 )
+                + (
+                    " `docs/vendored-disk-catalog.md` records a disk-side BASIC "
+                    "lead: `JUKU1.CPM` contains `JBASIC.COM`, and `JUKPROG2.CPM` "
+                    "contains `JBASIC.COM` plus BASIC compiler/runtime files."
+                    if vendored_disk_cataloged
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
@@ -492,16 +509,24 @@ def milestone_rows():
                     if basic_entry_rejected
                     else ""
                 )
+                + (
+                    " `docs/vendored-disk-catalog.md` records a disk-side BASIC "
+                    "lead: `JUKU1.CPM` contains `JBASIC.COM`, and `JUKPROG2.CPM` "
+                    "contains `JBASIC.COM` plus BASIC compiler/runtime files."
+                    if vendored_disk_cataloged
+                    else ""
+                )
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
-                "and port that BASIC path to HDL coverage."
+                "correct BASIC launch path, add a BASIC prompt oracle for the "
+                "disk-side `JBASIC.COM` or monitor/removable-memory path, and port "
+                "that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct BASIC launch path, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."
             ),
         },
         {

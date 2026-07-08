@@ -7,7 +7,7 @@
 > **reached** for the boot path) and [`docs/roadmap.md`](docs/roadmap.md) (the
 > structural-track phases). Purely historical/preservation project, no commercial value.
 >
-> Status date: 2026-07-07. Update this file as milestones land.
+> Status date: 2026-07-08. Update this file as milestones land.
 
 ## 1. Definition of done (tiered)
 
@@ -29,15 +29,15 @@ network protocol, the E4701 mouse, И41/Multibus expansion cards. These are the 
 documented subsystems (also unemulated in MAME) and none block Tiers 1–3. Revisit
 only after Tier 2.
 
-## 2. Where we are (2026-07 snapshot)
+## 2. Where we are (2026-07-08 snapshot)
 
 | Track | State | Remaining to goal |
 |---|---|---|
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
-| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, and a short owner measurement list |
-| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums | РЕ3/РТ4 PROM binaries |
+| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, disk-backed FDC in `juku_top`, BASIC prompt oracle, and a short owner measurement list |
+| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums | РЕ3/РТ4 PROM binaries and executable BASIC prompt path |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
 
@@ -62,8 +62,11 @@ The July 2026 survey of the online ecosystem changes the plan materially:
    juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS 2.30
    **source** is now vendored under `ref/ekdos-source/`. The museum
    `JUKUSYS.ZIP` CP/M/EKDOS binaries are also vendored under `media/system/`.
-   Nothing blocks an FDC/EKDOS milestone in the twin except the HDL
-   external-media path.
+   The visible CP/M directory catalog is generated in
+   `docs/vendored-disk-catalog.md`, including `JBASIC.COM` on the default
+   `JUKU1.CPM` boot disk and a fuller BASIC compiler/runtime set on
+   `JUKPROG2.CPM`. Nothing blocks an FDC/EKDOS milestone in the twin except the
+   HDL external-media path.
 4. **No other recreation exists** — no FPGA core, no clone PCB, no replica project
    found anywhere. This is first-of-its-kind; publishing results back matters.
 5. **Parts are obtainable**: КР580 family plentiful NOS on eBay; К565РУ5 ≡ 4164;
@@ -296,7 +299,10 @@ debugging session saved on real hardware.
    BAS0-3 image as a reset ROM stops at `PC=0x0038` after the first video write
    to `0xFFFE`, with the same framebuffer hash and no BASIC prompt. The EktaSoft
    3.43m #0037 boot ROM still does not select the cartridge overlay in the same
-   bounded `B` run. The jmon33
+   bounded `B` run. `scripts/report_vendored_disk_catalog.py` now records an
+   independent disk-side BASIC lead: `media/disks/JUKU1.CPM` contains
+   `JBASIC.COM`, and `JUKPROG2.CPM` contains `JBASIC.COM`, `B80.COM`,
+   `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`. The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
    `docs/jmon33-interrupt-probe.md`: Monitor 3.3 programs the 8259, takes the
@@ -349,8 +355,9 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, identify the correct monitor/removable-memory pairing for a
-   user-visible BASIC prompt oracle, and port that BASIC path to HDL coverage.
+   path, identify the correct BASIC launch path, add a user-visible BASIC
+   prompt oracle for disk-side `JBASIC.COM` or the monitor/removable-memory
+   path, and port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

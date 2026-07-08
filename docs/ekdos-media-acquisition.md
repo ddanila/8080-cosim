@@ -29,6 +29,13 @@ call conventions and disk geometry; it is source evidence, not a boot image.
 `docs/ekdos-source-inspection.md` is generated from that source and guards the
 stable monitor/FDC constants used by the current probes.
 
+The vendored Arti disk images are also cataloged by
+`scripts/report_vendored_disk_catalog.py`. The generated
+`docs/vendored-disk-catalog.md` report records visible CP/M directory entries
+and identifies disk-side BASIC candidates: `JUKU1.CPM` contains `JBASIC.COM`,
+while `JUKPROG2.CPM` contains `JBASIC.COM`, `B80.COM`, `BRUN.COM`,
+`BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`.
+
 ## Required Image
 
 | Field | Requirement |
@@ -111,6 +118,7 @@ translation table matching 10 physical 512-byte sectors per side-track.
 ```sh
 (cd ref/ekdos-source && sha256sum -c SHA256SUMS)
 python3 scripts/report_ekdos_source_inspection.py
+python3 scripts/report_vendored_disk_catalog.py
 sync/juk_disk_check.sh
 sync/ekdos_fdc_probe.py
 ```

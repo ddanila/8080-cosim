@@ -43,6 +43,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   for vendored `EKDOS30.ASM`; verifies the ROMBIOS floppy entry constants,
   floppy work-area labels, and 40-entry sector translation tables used by the
   EKDOS/FDC probes.
+- `scripts/report_vendored_disk_catalog.py` — generated catalog of visible
+  CP/M directory entries in the vendored Arti disk images; CI verifies the
+  report is fresh and records the disk-side `JBASIC.COM`/BASIC toolchain lead.
 - `sync/boot_check.sh` — cosim and HDL boot-regression guard against the real
   `ekta37` ROM, including the LVS-checked `juku_top`.
 - `sync/cosim_check.sh` — slower value-level lockstep check between `juku_top`

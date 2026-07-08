@@ -42,6 +42,10 @@ Compatibility notes:
 - Baltijets doc 003 acceptance notes mention BASIC launch from the removable
   32K memory expander with command `A`, expecting a BASIC banner and `READY`.
   That is a separate compatibility target from Monitor 3.3's current `B` path.
+- `docs/vendored-disk-catalog.md` records a second BASIC lead independent of
+  the removable-memory cartridge path: the vendored EKDOS boot disk
+  `media/disks/JUKU1.CPM` contains `JBASIC.COM`, and `JUKPROG2.CPM` contains
+  `JBASIC.COM` plus BASIC compiler/runtime support files.
 
 ## Evidence
 
@@ -62,4 +66,6 @@ Compatibility notes:
   missing prompt: the tested Monitor 3.3 path reads the media but does not
   execute the cartridge overlay as live BASIC code.
 - The remaining BASIC work is a user-visible BASIC prompt oracle and HDL-side
-  coverage of the correct monitor/removable-memory pairing once identified.
+  coverage of the correct launch path. The disk-side `JBASIC.COM` evidence now
+  gives a concrete EKDOS command target in addition to the still-unresolved
+  monitor/removable-memory pairing.
