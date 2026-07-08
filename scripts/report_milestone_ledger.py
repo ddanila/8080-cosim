@@ -426,9 +426,8 @@ def milestone_rows():
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
-                "Prove the uninterrupted reset-to-cursor jmon33 path, make the "
-                "remaining checkpoint-resumed HDL command rows match FDC-aware delayed-command oracles, identify the correct "
-                "monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
+                "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
+                "correct monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
                 "and port that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor
                 else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, and port that BASIC path to HDL coverage."

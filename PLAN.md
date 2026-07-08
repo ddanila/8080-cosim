@@ -340,10 +340,8 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, make the remaining `T` checkpoint-resumed HDL command row match its
-   FDC-aware delayed-command oracle,
-   identify the correct monitor/removable-memory pairing for a user-visible
-   BASIC prompt oracle, and port that BASIC path to HDL coverage.
+   path, identify the correct monitor/removable-memory pairing for a
+   user-visible BASIC prompt oracle, and port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

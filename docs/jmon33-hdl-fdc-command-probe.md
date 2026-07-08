@@ -11,7 +11,7 @@ or `docs/jmon33-idle-command-probe.md`, depending on the checkpoint.
 ## Command
 
 ```sh
-sync/jmon33_hdl_command_probe.py
+sync/jmon33_hdl_fdc_command_probe.py
 ```
 
 Environment overrides:

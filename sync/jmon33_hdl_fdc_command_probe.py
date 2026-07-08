@@ -56,6 +56,11 @@ def main() -> int:
         "Status: **JMON33 HDL FDC T-COMMAND ORACLE PINNED**",
         1,
     )
+    text = text.replace(
+        "sync/jmon33_hdl_command_probe.py",
+        "sync/jmon33_hdl_fdc_command_probe.py",
+        1,
+    )
     text += (
         "\n"
         "## FDC-Specific Disposition\n"
