@@ -15,6 +15,7 @@ module juku_top_checkpoint_resume_tb();
   integer mcyc = 0, vram_writes = 30000, max_mcyc = 200000, timecap = 200000000;
   integer state_vram_writes = 30000;
   integer state_pc = 16'h0484, state_sp = 16'hD44C, state_bc = 16'hD7E7;
+  integer state_pc_bias = 0;
   integer state_de = 16'h00A1, state_hl = 16'hFD2F, state_wz = 16'h0000;
   integer state_a = 8'hA1, state_sf = 1, state_zf = 0, state_hf = 0, state_pf = 0, state_cf = 0;
   integer state_iff = 0, state_portc = 8'h80, state_kbd_col = 8'h0F;
@@ -34,6 +35,7 @@ module juku_top_checkpoint_resume_tb();
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0, fdc_data_reads = 0;
   integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
   integer progress_mcyc = 0, next_progress_mcyc = 0;
+  integer trace_resume_after = 0, trace_resume_after_count = 0;
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
   integer commandkeys = 0, command_key = 0, command_key_count = 2, command_key_mcyc = 0;
   integer commandstop = 0, command_seen = 0, command_x0 = 0, command_y0 = 0, command_x1 = -1, command_y1 = -1;
@@ -209,7 +211,7 @@ module juku_top_checkpoint_resume_tb();
   end endtask
 
   task load_checkpoint_state; begin
-    dut.U_CPU.u.core.r16_pc = state_pc[15:0];
+    dut.U_CPU.u.core.r16_pc = (state_pc + state_pc_bias) & 16'hFFFF;
     dut.U_CPU.u.core.r16_sp = state_sp[15:0];
     dut.U_CPU.u.core.r16_bc = state_bc[15:0];
     // Empirically, this vm80a core's r16_de/r16_hl internal names are opposite
@@ -232,7 +234,7 @@ module juku_top_checkpoint_resume_tb();
     dut.U_CPU.u.core.i = 8'h00;
     dut.U_CPU.u.core.di = 8'h00;
     dut.U_CPU.u.core.db = 8'h00;
-    dut.U_CPU.u.core.a = state_pc[15:0];
+    dut.U_CPU.u.core.a = (state_pc + state_pc_bias) & 16'hFFFF;
     dut.U_CPU.u.core.abufena = 1'b1;
     dut.U_CPU.u.core.db_ena = 1'b0;
     dut.U_CPU.u.core.db_stb = 1'b0;
@@ -315,7 +317,7 @@ module juku_top_checkpoint_resume_tb();
 
   always @(posedge osc) begin
     if (resume_started && dut.sync && !sq) begin
-      if (trace_resume > 0) begin
+      if (trace_resume > 0 || (trace_resume_after_count > 0 && mcyc >= trace_resume_after)) begin
         $display("[RESUME-TRACE] mcyc=%0d pc=0x%04h ba=0x%04h db=0x%02h i=0x%02h m=%b%b%b%b%b t=%b%b%b%b%b%b sync=%b memr_n=%b memw_n=%b iord_n=%b iowr_n=%b",
                  mcyc + 1,
                  dut.U_CPU.u.core.r16_pc,
@@ -339,7 +341,8 @@ module juku_top_checkpoint_resume_tb();
                  dut.iord_n,
                  dut.iowr_n);
         $fflush;
-        trace_resume = trace_resume - 1;
+        if (trace_resume > 0) trace_resume = trace_resume - 1;
+        else trace_resume_after_count = trace_resume_after_count - 1;
       end
       mcyc <= mcyc + 1;
       if (restore_iff_pending != 0 && mcyc >= 2) begin
@@ -648,6 +651,8 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("max_mcyc=%d", max_mcyc)) ;
     if ($value$plusargs("timecap=%d", timecap)) ;
     if ($value$plusargs("trace_resume=%d", trace_resume)) ;
+    if ($value$plusargs("trace_resume_after=%d", trace_resume_after)) ;
+    if ($value$plusargs("trace_resume_after_count=%d", trace_resume_after_count)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;
     if ($value$plusargs("commandkeys=%d", commandkeys)) ;
@@ -683,6 +688,7 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("cursorstop=%d", cursorstop)) ;
     if ($value$plusargs("state_vram_writes=%d", state_vram_writes)) ;
     if ($value$plusargs("state_pc=%h", state_pc)) ;
+    if ($value$plusargs("state_pc_bias=%d", state_pc_bias)) ;
     if ($value$plusargs("state_sp=%h", state_sp)) ;
     if ($value$plusargs("state_bc=%h", state_bc)) ;
     if ($value$plusargs("state_de=%h", state_de)) ;

@@ -93,6 +93,7 @@ def state_plusargs(state: dict[str, str]) -> list[str]:
     return [
         f"+state_vram_writes={state_arg(state, 'vram_writes', '73446')}",
         f"+state_pc={state_arg(state, 'pc', 'FED4')}",
+        f"+state_pc_bias={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PC_BIAS', '-1')}",
         f"+state_sp={state_arg(state, 'sp', 'D2F4')}",
         f"+state_bc={state_arg(state, 'b')}{state_arg(state, 'c')}",
         f"+state_de={state_arg(state, 'd')}{state_arg(state, 'e')}",
@@ -124,6 +125,7 @@ def state_plusargs(state: dict[str, str]) -> list[str]:
 
 def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess.CompletedProcess[str], bool]:
     ram_hex = tmp / "jbasic-prompt.ram.hex"
+    rom_hex = tmp / "ekta37.hex"
     sim = tmp / "juku_top_checkpoint_resume_tb"
     out_path = tmp / "jbasic-hdl.out"
     err_path = tmp / "jbasic-hdl.err"
@@ -134,6 +136,7 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         shutil.copyfile(checkpoint_vram, old_vram)
 
     write_hex(ram_bin, ram_hex)
+    write_hex(ROM, rom_hex)
     subprocess.run(
         [
             "iverilog",
@@ -153,16 +156,20 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         "vvp",
         str(sim),
         f"+checkpoint_ram={ram_hex}",
+        f"+rom={rom_hex}",
         "+disk=media/disks/JUKPROG2.CPM",
         "+disk_heads=2",
-        f"+max_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_MAX_MCYC', '90000')}",
+        f"+max_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_MAX_MCYC', '120000')}",
         f"+timecap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TIMECAP', '900000000')}",
         f"+frameirq={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_FRAMEIRQ', '80000')}",
+        f"+trace_resume={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME', '0')}",
+        f"+trace_resume_after={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_AFTER', '0')}",
+        f"+trace_resume_after_count={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_AFTER_COUNT', '0')}",
         "+jbasickeys=1",
-        f"+command_key_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KEY_MCYC', '50000')}",
+        f"+command_key_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KEY_MCYC', '250')}",
         f"+keyat={state_arg(state, 'vram_writes', '73446')}",
-        f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '10000')}",
-        f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '5000')}",
+        f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '40000')}",
+        f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '40000')}",
         "+tracekbd=1",
         f"+stopkbdhit={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT', '0')}",
         f"+progress_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PROGRESS_MCYC', '25000')}",
@@ -223,9 +230,12 @@ def main() -> int:
     key_presses = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] press")
     key_releases = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] release")
     key_hits = matching_lines(hdl_proc.stdout, "[RESUME-KBD-HIT]")
+    active_hit_keys = sorted({int(match.group(1)) for match in re.finditer(r"\[RESUME-KBD-HIT\] active key=([0-9]+)", hdl_proc.stdout)})
+    noncf_hit_keys = sorted({int(match.group(1)) for match in re.finditer(r"\[RESUME-KBD-HIT\] noncf key=([0-9]+)", hdl_proc.stdout)})
     ppi0_lines = matching_lines(hdl_proc.stdout, "[RESUME-PPI0]")
     kbd_scan_reads = matching_lines(hdl_proc.stdout, "[RESUME-KBD] IN")
     kbd_scan_writes = matching_lines(hdl_proc.stdout, "[RESUME-KBD] OUT")
+    resume_trace = matching_lines(hdl_proc.stdout, "[RESUME-TRACE]")
     reached_ready = first_line(hdl_proc.stdout, "[RESUME-JBASIC]") != "none"
     failures: list[str] = []
     if cosim_proc.returncode != 0:
@@ -237,7 +247,13 @@ def main() -> int:
     if len(key_releases) != 7:
         failures.append(f"expected 7 JBASIC key releases, saw {len(key_releases)}")
 
-    status = "HDL EKDOS JBASIC COMMAND STIMULUS READY" if not failures else "REGRESSION"
+    status = (
+        "HDL EKDOS JBASIC KEYBOARD SAMPLING READY"
+        if not failures and key_hits
+        else "HDL EKDOS JBASIC COMMAND STIMULUS READY"
+        if not failures
+        else "REGRESSION"
+    )
     lines = [
         "# juku_top checkpoint JBASIC probe",
         "",
@@ -262,6 +278,7 @@ def main() -> int:
         f"- Cosim checkpoint cycle: `{state.get('cyc', 'missing')}`",
         f"- Cosim checkpoint VRAM writes: `{state.get('vram_writes', 'missing')}`",
         f"- Cosim checkpoint PC: `0x{state.get('pc', 'missing')}`",
+        f"- HDL checkpoint PC bias: `{os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PC_BIAS', '-1')}`",
         f"- Cosim checkpoint keyboard position/phase: `{state.get('kbd_pos', 'missing')}` / `{state.get('kbd_phase', 'missing')}`",
         f"- HDL resume exit code: `{hdl_proc.returncode}`",
         f"- Timed out: `{'yes' if timed_out else 'no'}`",
@@ -270,11 +287,16 @@ def main() -> int:
         f"- First key press: `{key_presses[0] if key_presses else 'none'}`",
         f"- Last key release: `{key_releases[-1] if key_releases else 'none'}`",
         f"- Keyboard hit lines: `{len(key_hits)}`",
+        f"- Active-read key indices: `{active_hit_keys}`",
+        f"- Non-`0xCF` key indices: `{noncf_hit_keys}`",
         f"- First keyboard hit: `{key_hits[0] if key_hits else 'none'}`",
         f"- Last keyboard hit: `{key_hits[-1] if key_hits else 'none'}`",
         f"- PPI0 non-keyboard trace lines: `{len(ppi0_lines)}`",
         f"- Keyboard column writes: `{len(kbd_scan_writes)}`",
         f"- Keyboard Port B reads: `{len(kbd_scan_reads)}`",
+        f"- HDL M-cycle trace lines: `{len(resume_trace)}`",
+        f"- First HDL M-cycle trace: `{resume_trace[0] if resume_trace else 'none'}`",
+        f"- Last HDL M-cycle trace: `{resume_trace[-1] if resume_trace else 'none'}`",
         f"- READY stop line: `{first_line(hdl_proc.stdout, '[RESUME-JBASIC]')}`",
         f"- First progress line: `{first_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
         f"- Last progress line: `{last_line(hdl_proc.stdout, '[RESUME-PROGRESS]')}`",
@@ -286,15 +308,16 @@ def main() -> int:
         "  `JBASIC` + Enter sequence (`J`, `B`, `A`, `S`, `I`, `C`, Return).",
         "- The same bench also has `+stopjbasicready=1`, which checks the final",
         "  `READY` prompt with exact fixed-`0xD800` glyph bytes.",
-        "- This report only claims the checkpoint-resumed HDL command stimulus",
-        "  boundary. The tracked run is intentionally short and stops before",
-        "  the HDL path samples the injected keys or reaches the `READY` oracle.",
+        "- This report claims the checkpoint-resumed HDL keyboard-sampling",
+        "  boundary: the retimed command stimulus is read through PPI0 Port B",
+        "  with non-`0xCF` key data.",
         "- The bench now counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key",
         "  and non-`0xCF` reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1`",
         "  to stop at the first sampled keyboard hit during retiming experiments.",
-        "- Next work is to lengthen or retime the resumed HDL run until keyboard",
-        "  reads sample the injected command and post-command FDC/data traffic",
-        "  begins, then finally stop on `[RESUME-JBASIC]`.",
+        "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first",
+        "  `N` resumed HDL M-cycle trace lines in this report.",
+        "- Next work is to continue from sampled command keys until post-command",
+        "  FDC/data traffic begins, then finally stop on `[RESUME-JBASIC]`.",
     ]
     if reached_ready:
         lines.append("- This run did reach the HDL `READY` oracle; promote the report status and CI gate.")

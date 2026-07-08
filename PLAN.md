@@ -333,10 +333,11 @@ debugging session saved on real hardware.
    `JUKPROG2.CPM` EKDOS `A>` prompt checkpoint into `juku_top`, injects the
    exact `JBASIC` + Enter command sequence with new `+jbasickeys=1` support,
    and adds an opt-in `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
-   oracle. The current tracked HDL run proves command stimulus only; it stops
-   before keyboard reads sample the command or `[RESUME-JBASIC]` fires, and now
-   reports PPI0 Port C interrupt housekeeping but zero keyboard column writes
-   and zero Port B keyboard reads in that bounded window.
+   oracle. The current tracked HDL run now applies the checkpoint-resume
+   `state_pc_bias=-1` fetch alignment, retimes the `JBASIC` stimulus into the
+   ROMBIOS scanner, and proves all seven command key indices are sampled through
+   PPI0 Port B with non-`0xCF` data. It still stops before post-command FDC
+   traffic or `[RESUME-JBASIC]`.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
