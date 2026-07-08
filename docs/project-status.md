@@ -190,9 +190,10 @@ Historical merge notes:
   seem compatible with the JBASIC expansion cartridge, and both tested BASIC
   images start with absolute `JMP 0x0107`, not a direct `0x4000` entry.
   `sync/basic_factory_command_probe.py` covers the Baltijets doc 003 factory
-  BASIC command `A`: Monitor 3.3 reaches the same zero-filled RAM boundary,
-  `ekta37` touches the cartridge overlay without executing it, and no tested
-  public ROM/media pairing reaches the documented BASIC banner/`READY` oracle.
+  BASIC command `A` across all vendored public monitor ROMs: Monitor 3.3
+  reaches the same zero-filled RAM boundary, the EktaSoft monitors still do not
+  execute live BASIC cartridge opcodes, and no tested vendored ROM/media pairing
+  reaches the documented BASIC banner/`READY` oracle.
   `sync/basic_entry_probe.py` additionally proves both BASIC images are not
   standalone reset ROMs: direct low-ROM execution stops at `PC=0x0038` after
   the first video write to `0xFFFE`, with no BASIC prompt.

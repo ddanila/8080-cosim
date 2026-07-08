@@ -116,6 +116,9 @@ def milestone_rows():
     basic_factory_command_pinned = marker(
         "docs/basic-factory-command-probe.md",
         "Status: **FACTORY BASIC COMMAND BOUNDARY PINNED**",
+    ) and marker(
+        "docs/basic-factory-command-probe.md",
+        "| ekta43 | `roms/ekta43.bin` | `BAS0-3.HEX` |",
     )
     jmon33_command_surface = marker(
         "docs/jmon33-command-probe.md",
@@ -383,9 +386,10 @@ def milestone_rows():
                 "images' absolute JMP 0x0107 entry. "
                 + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
-                    "factory `A` command clue: Monitor 3.3 reaches the same "
-                    "zero-filled RAM boundary, while no tested public ROM/media "
-                    "pairing reaches the BASIC banner/READY oracle. "
+                    "factory `A` command clue across all vendored public monitor "
+                    "ROMs: Monitor 3.3 reaches the same zero-filled RAM boundary, "
+                    "while no tested vendored ROM/media pairing reaches the BASIC "
+                    "banner/READY oracle. "
                     if basic_factory_command_pinned
                     else ""
                 )
@@ -404,9 +408,10 @@ def milestone_rows():
                 "images' absolute JMP 0x0107 entry. "
                 + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
-                    "factory `A` command clue: Monitor 3.3 reaches the same "
-                    "zero-filled RAM boundary, while no tested public ROM/media "
-                    "pairing reaches the BASIC banner/READY oracle. "
+                    "factory `A` command clue across all vendored public monitor "
+                    "ROMs: Monitor 3.3 reaches the same zero-filled RAM boundary, "
+                    "while no tested vendored ROM/media pairing reaches the BASIC "
+                    "banner/READY oracle. "
                     if basic_factory_command_pinned
                     else ""
                 )

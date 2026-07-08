@@ -163,9 +163,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   Monitor 3.3/JBASIC compatibility warning and the BASIC images' absolute
   `JMP 0x0107` entry.
 - `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
-  doc 003 factory BASIC `A` command. It runs public monitor ROMs against both
-  BASIC payload shapes and records that Monitor 3.3 reaches the same zero-filled
-  RAM boundary, while no tested pairing reaches BASIC banner/`READY`.
+  doc 003 factory BASIC `A` command. It runs all vendored public monitor ROMs
+  against both BASIC payload shapes and records that Monitor 3.3 reaches the same
+  zero-filled RAM boundary, while no tested pairing reaches BASIC
+  banner/`READY`.
 - `sync/basic_entry_probe.py` — bounded cosim diagnostic rejecting the direct
   reset-ROM theory for the same BASIC images; both direct runs stop at
   `PC=0x0038` after the first video write to `0xFFFE`, with no BASIC prompt.

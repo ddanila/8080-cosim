@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Survey the Baltijets doc 003 BASIC command against public ROM/media pairings."""
+"""Survey the Baltijets doc 003 BASIC command against vendored ROM/media pairings."""
 from __future__ import annotations
 
 import os
@@ -44,7 +44,12 @@ class EvidenceRow:
 CASES = (
     FactoryCase("jmon22", ROOT / "roms" / "jmon22.bin", 200000),
     FactoryCase("jmon33", ROOT / "roms" / "jmon33.bin", 200000),
+    FactoryCase("ekta24", ROOT / "roms" / "ekta24.bin", 40000),
+    FactoryCase("ekta31", ROOT / "roms" / "ekta31.bin", 40000),
+    FactoryCase("ekta32", ROOT / "roms" / "ekta32.bin", 40000),
+    FactoryCase("ekta35", ROOT / "roms" / "ekta35.bin", 40000),
     FactoryCase("ekta37", ROOT / "roms" / "ekta37.bin", 40000),
+    FactoryCase("ekta43", ROOT / "roms" / "ekta43.bin", 40000),
 )
 
 
@@ -138,8 +143,9 @@ def main() -> int:
         "",
         "Baltijets factory document 003 says the removable 32K memory-expander BASIC",
         "check launches with command `A` and expects a BASIC banner plus `READY`.",
-        "This guard runs that `A` command against the public monitor ROMs and both",
-        "public BASIC payload shapes already used by `sync/basic_launch_probe.py`.",
+        "This guard runs that `A` command against the vendored public monitor ROM",
+        "set and both public BASIC payload shapes already used by",
+        "`sync/basic_launch_probe.py`.",
         "",
         "## Command",
         "",
@@ -183,7 +189,7 @@ def main() -> int:
             f"- Any tested `A` candidate executed live cartridge-overlay opcodes in mode 2: {'YES' if any_live_cart_fetch else 'NO'}.",
             f"- Any tested `A` candidate reached the current BASIC RAM execution boundary: {'YES' if any_basic_ram_execution else 'NO'}.",
             "- Result: the factory `A` clue is now tracked as a reproducible boundary",
-            "  for the public ROM/media pairings in this repo. Monitor 3.3 reaches the",
+            "  for the vendored public ROM/media pairings in this repo. Monitor 3.3 reaches the",
             "  same zero-filled RAM execution boundary as the earlier `B` run, but no",
             "  tested pairing executes live cartridge-overlay opcodes or reaches the",
             "  documented BASIC banner/`READY` acceptance oracle. That says the matching",

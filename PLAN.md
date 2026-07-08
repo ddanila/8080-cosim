@@ -276,10 +276,13 @@ debugging session saved on real hardware.
    images start with an absolute `JMP 0x0107` rather than a direct `0x4000`
    window entry. The factory doc 003 `A`-command BASIC clue is now guarded by
    `sync/basic_factory_command_probe.py` and documented in
-   `docs/basic-factory-command-probe.md`: Monitor 3.3 with `A` reaches the same
-   zero-filled RAM execution boundary as `B`, `ekta37` touches the cartridge
-   overlay without executing it, and no tested public ROM/media pairing reaches
-   the documented BASIC banner/`READY` oracle. `sync/basic_entry_probe.py` also
+   `docs/basic-factory-command-probe.md`: the matrix now covers all vendored
+   public monitor ROMs (`jmon22`, `jmon33`, `ekta24`, `ekta31`, `ekta32`,
+   `ekta35`, `ekta37`, `ekta43`) against both public BASIC payload shapes.
+   Monitor 3.3 with `A` reaches the same zero-filled RAM execution boundary as
+   `B`, several EktaSoft monitors touch or display while avoiding live BASIC
+   cartridge execution, and no tested vendored ROM/media pairing reaches the
+   documented BASIC banner/`READY` oracle. `sync/basic_entry_probe.py` also
    rejects the other tempting false path: running `jbasic11.bin` or the generated
    BAS0-3 image as a reset ROM stops at `PC=0x0038` after the first video write
    to `0xFFFE`, with the same framebuffer hash and no BASIC prompt. The EktaSoft
