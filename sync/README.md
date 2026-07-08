@@ -134,6 +134,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   idle-prompt `T` command when the FDC is visible. It compares no-disk behavior
   with vendored `media/disks/JUKU1.CPM` and pins the `0xFD` write-track /
   write-protect polling boundary used by HDL `T` command debugging.
+- `sync/jmon33_hdl_fdc_command_probe.py` — checkpoint-resumed HDL diagnostic
+  for the same FDC-aware `T` boundary. It resumes from the disk-backed cosim
+  checkpoint with `+disk=media/disks/JUKU1.CPM`, traces FDC I/O, and requires
+  the structural path to read write-protect status `0x40`.
 - `sync/jmon33_hdl_command_probe.py` — checkpoint-resumed HDL diagnostic for
   the same command surface. It delays keyboard stimulus until after the proven
   HDL cursor boundary and compares against `docs/jmon33-idle-command-probe.md`.

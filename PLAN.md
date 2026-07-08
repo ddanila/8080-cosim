@@ -327,7 +327,10 @@ debugging session saved on real hardware.
    `docs/jmon33-fdc-command-probe.md`: with `media/disks/JUKU1.CPM` attached,
    `T` issues FDC command `0xFD` and polls write-protect status. The C and HDL
    FDC shims now reject Type-III write-track with WRITE PROTECT instead of
-   holding BUSY forever.
+   holding BUSY forever. `sync/jmon33_hdl_fdc_command_probe.py` now carries
+   that boundary into checkpoint-resumed `juku_top`: with the vendored disk
+   attached, the structural path reads FDC status `0x40` repeatedly at PC
+   `0xE43C`.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
    path, make the remaining checkpoint-resumed HDL command rows match
    FDC-aware delayed-command oracles,

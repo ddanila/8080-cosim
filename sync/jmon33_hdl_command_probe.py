@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "docs" / "jmon33-hdl-command-probe.md"
+REPORT = Path(os.environ.get("JMON33_HDL_COMMAND_REPORT", ROOT / "docs" / "jmon33-hdl-command-probe.md"))
 ROM = ROOT / "roms" / "jmon33.bin"
 ROM_HEX = ROOT / "hdl" / "sim" / "jmon33.hex"
 VRAM_DUMP = ROOT / "hdl" / "sim" / "checkpoint_vram_top.bin"
@@ -23,6 +23,7 @@ BLANK_VRAM_SHA256 = "559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe88
 IDLE_CURSOR_VRAM_SHA256 = "f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397"
 KBD_RE = re.compile(r"\[RESUME-KBD\] IN port=0x05 data=0x([0-9A-Fa-f]{2})")
 KBD_STIM_RE = re.compile(r"^\[RESUME-KBD-STIM\].*$", re.MULTILINE)
+FDC_RE = re.compile(r"^\[RESUME-FDC\].*$", re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -338,7 +339,19 @@ def run_case(
         f"+kgap={os.environ.get('JMON33_HDL_COMMAND_KGAP', '100000')}",
         f"+defer_iff={os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}",
         f"+force_clean_status={os.environ.get('JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS', '1')}",
+        f"+tracefdc={os.environ.get('JMON33_HDL_COMMAND_TRACEFDC', '0')}",
+        f"+stopfdc={os.environ.get('JMON33_HDL_COMMAND_STOPFDC', '0')}",
+        f"+stopfdc_data_read={os.environ.get('JMON33_HDL_COMMAND_STOPFDC_DATA_READ', '0')}",
+        f"+stopfdc_data_reads={os.environ.get('JMON33_HDL_COMMAND_STOPFDC_DATA_READS', '0')}",
     ]
+    disk = os.environ.get("JMON33_HDL_COMMAND_DISK")
+    if disk:
+        args.extend(
+            [
+                f"+disk={disk}",
+                f"+disk_heads={os.environ.get('JMON33_HDL_COMMAND_DISK_HEADS', '2')}",
+            ]
+        )
     args.extend(state_plusargs(state, phase_mcyc))
 
     try:
@@ -383,6 +396,7 @@ def run_case(
         "resume_line": first_line(proc.stdout, "JUKU-TOP-CHECKPOINT-RESUME:"),
         "kbd_samples": len(kbd_values),
         "stim_lines": tuple(KBD_STIM_RE.findall(proc.stdout))[:4],
+        "fdc_lines": tuple(FDC_RE.findall(proc.stdout))[:8],
         "active_values": active_values[:8],
         "blocks": block_summary(vram),
         "expected_blocks_ok": expected_blocks_ok,
@@ -488,6 +502,9 @@ def main() -> int:
         f"- `JMON33_HDL_COMMAND_KEY_MCYC` default `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}`",
         f"- `JMON33_HDL_COMMAND_DEFER_IFF` default `{os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}`",
         f"- `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` default `{os.environ.get('JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS', '1')}`",
+        f"- `JMON33_HDL_COMMAND_DISK` default `{os.environ.get('JMON33_HDL_COMMAND_DISK', 'none')}`",
+        f"- `JMON33_HDL_COMMAND_TRACEFDC` default `{os.environ.get('JMON33_HDL_COMMAND_TRACEFDC', '0')}`",
+        f"- `JMON33_HDL_COMMAND_STOPFDC` default `{os.environ.get('JMON33_HDL_COMMAND_STOPFDC', '0')}`",
         f"- `JMON33_HDL_COMMAND_CASES` selected `{','.join(case.name for case in cases)}`",
         "",
         "## Evidence",
@@ -505,14 +522,15 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |",
-            "| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | ---: | --- | --- |",
+            "| Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | FDC trace | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |",
+            "| --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |",
         ]
     )
     for result in results:
         case = result["case"]
         active = ", ".join(f"`0x{value:02X}`" for value in result["active_values"]) or "-"
         stim = "<br>".join(f"`{line}`" for line in result["stim_lines"]) or "-"
+        fdc_trace = "<br>".join(f"`{line}`" for line in result["fdc_lines"]) or "-"
         blocks = ", ".join(f"`x={x},y={y}`" for x, y in result["blocks"]) or "-"
         ok = (
             result["proc"].returncode == 0
@@ -523,7 +541,7 @@ def main() -> int:
         lines.append(
             f"| {case.name} | `{case.key}\\n` | `{result['checkpoint']}` | `{result['proc'].returncode}` | "
             f"`{result['timed_out']}` | `{result['kbd_samples']}` | {active} | "
-            f"{stim} | `{'yes' if result['idle_cursor_ok'] else 'no'}` | `{result['command_line']}` | "
+            f"{stim} | {fdc_trace} | `{'yes' if result['idle_cursor_ok'] else 'no'}` | `{result['command_line']}` | "
             f"`{result['resume_line']}` | "
             f"{blocks} | `{result['visible_pixels']}` | "
             f"`{result['sha'] or 'missing'}` | {'PASS' if ok else 'FAIL'} |"

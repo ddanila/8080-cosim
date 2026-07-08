@@ -168,8 +168,11 @@ Historical merge notes:
   now pins the corresponding cosim boundary: with `media/disks/JUKU1.CPM`
   attached, `T` issues FDC command `0xFD` and polls write-protect status. The
   local FDC shims now reject Type-III write-track with WRITE PROTECT instead of
-  leaving BUSY stuck forever. Completing an uninterrupted reset-to-cursor run
-  and the remaining HDL command oracles remain pending.
+  leaving BUSY stuck forever. `sync/jmon33_hdl_fdc_command_probe.py` carries the
+  same boundary into checkpoint-resumed `juku_top`: with the vendored disk
+  attached, the structural path reads FDC status `0x40` repeatedly at PC
+  `0xE43C`. Completing an uninterrupted reset-to-cursor run and the remaining
+  HDL command oracles remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM

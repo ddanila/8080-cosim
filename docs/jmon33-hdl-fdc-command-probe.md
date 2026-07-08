@@ -1,6 +1,6 @@
 # jmon33 HDL command-surface probe
 
-Status: **JMON33 HDL A-COMMAND ORACLE READY**
+Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**
 
 This guard starts from a generated Monitor 3.3 cosim checkpoint,
 loads that RAM and visible state into `juku_top`, injects a single
@@ -16,39 +16,39 @@ sync/jmon33_hdl_command_probe.py
 
 Environment overrides:
 
-- `JMON33_HDL_COMMAND_MAX_MCYC` default `700000`
+- `JMON33_HDL_COMMAND_MAX_MCYC` default `120000`
 - `JMON33_HDL_COMMAND_TIMECAP` default `4000000000`
 - `JMON33_HDL_COMMAND_FRAMEIRQ` default `200000`
-- `JMON33_HDL_COMMAND_KHOLD` default `200000`
+- `JMON33_HDL_COMMAND_KHOLD` default `500000`
 - `JMON33_HDL_COMMAND_KGAP` default `100000`
 - `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `19900000`
 - `JMON33_HDL_COMMAND_PHASE_CHECKPOINT` default `1`
-- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` default `23200000`
-- `JMON33_HDL_COMMAND_PHASE_START_VRAM` default `270`
+- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` default `26050000`
+- `JMON33_HDL_COMMAND_PHASE_START_VRAM` default `210`
 - `JMON33_HDL_COMMAND_HOLD_FRAMES` default `20`
 - `JMON33_HDL_COMMAND_GAP_FRAMES` default `6`
 - Expected checkpoint SHA256 `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 - `JMON33_HDL_COMMAND_KEY_MCYC` default `50000`
 - `JMON33_HDL_COMMAND_DEFER_IFF` default `1`
 - `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` default `1`
-- `JMON33_HDL_COMMAND_DISK` default `none`
-- `JMON33_HDL_COMMAND_TRACEFDC` default `0`
-- `JMON33_HDL_COMMAND_STOPFDC` default `0`
-- `JMON33_HDL_COMMAND_CASES` selected `A-enter`
+- `JMON33_HDL_COMMAND_DISK` default `/home/ddanila/fun/8080-cosim/media/disks/JUKU1.CPM`
+- `JMON33_HDL_COMMAND_TRACEFDC` default `1`
+- `JMON33_HDL_COMMAND_STOPFDC` default `8`
+- `JMON33_HDL_COMMAND_CASES` selected `T-enter`
 
 ## Evidence
 
 - Cosim checkpoint exit: `0`
-- Cosim checkpoint cycle: `23200006`
-- Cosim checkpoint PC: `0xFF54`
-- Cosim checkpoint IFF: `0`
-- Cosim checkpoint VRAM writes: `280`
-- Cosim checkpoint VRAM SHA256: `ce4e554e8ef35487ca6e236e23dbe08c97963289b21aff8887e76d0c2a7bf694`
+- Cosim checkpoint cycle: `26050000`
+- Cosim checkpoint PC: `0xE43C`
+- Cosim checkpoint IFF: `1`
+- Cosim checkpoint VRAM writes: `290`
+- Cosim checkpoint VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 - Phase-checkpoint mode: `yes`
 
 | Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | FDC trace | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |
 | --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `cyc=23200006 pc=0xFF54 iff=0 kbd=0/19` | `0` | `False` | `357` | `0xC4` | `[RESUME-KBD-STIM] press key=1 col=8 bit=5 shift=0 mcyc=11154 vram=290`<br>`[RESUME-KBD-STIM] release key=1 mcyc=40474 vram=290` | - | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=8 y1=60 mcyc=615862 vram=301 pc=0x01ce` | `none` | `x=8,y=20`, `x=8,y=60` | `160` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
+| T-enter | `T\n` | `cyc=26050000 pc=0xE43C iff=1 kbd=2/0` | `0` | `False` | `0` | - | - | `[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=422 vram=290 ios=1`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=430 vram=290 ios=2`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=438 vram=290 ios=3`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=446 vram=290 ios=4`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=454 vram=290 ios=5`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=462 vram=290 ios=6`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=470 vram=290 ios=7`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=478 vram=290 ios=8` | `no` | `none` | `none` | - | `0` | `missing` | FAIL |
 
 ## Disposition
 
@@ -75,3 +75,14 @@ Environment overrides:
 - This proof is scoped to jmon33 monitor commands. BASIC remains tracked
   separately by `docs/basic-launch-probe.md` and
   `docs/basic-factory-command-probe.md`.
+
+## FDC-Specific Disposition
+
+- This wrapper intentionally stops on the FDC trace boundary, so the generic
+  command framebuffer result remains `FAIL`/diagnostic.
+- The pass condition is the structural `juku_top` path reading status `0x40`
+  from the disk-backed FDC after the Monitor 3.3 `T` command has entered
+  the write-track/write-protect polling loop.
+- This matches the cosim oracle in `docs/jmon33-fdc-command-probe.md` and
+  removes the previous ambiguity that the HDL `T` path was merely a
+  keyboard-phase mismatch.

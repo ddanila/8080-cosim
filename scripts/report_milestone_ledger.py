@@ -139,6 +139,13 @@ def milestone_rows():
         "docs/jmon33-fdc-command-probe.md",
         "Status: **JMON33 FDC T-COMMAND ORACLE PINNED**",
     )
+    jmon33_hdl_fdc_t_oracle = marker(
+        "docs/jmon33-hdl-fdc-command-probe.md",
+        "data=0x40",
+    ) and marker(
+        "docs/jmon33-hdl-fdc-command-probe.md",
+        "JMON33 HDL COMMAND BOUNDED DIAGNOSTIC",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -347,6 +354,13 @@ def milestone_rows():
                     "with `media/disks/JUKU1.CPM`, command `0xFD` reaches WRITE PROTECT "
                     "status instead of BUSY forever. "
                     if jmon33_fdc_t_oracle
+                    else ""
+                )
+                + (
+                    "`docs/jmon33-hdl-fdc-command-probe.md` carries that boundary into "
+                    "checkpoint-resumed `juku_top`, where the structural path reads FDC "
+                    "status `0x40`. "
+                    if jmon33_hdl_fdc_t_oracle
                     else ""
                 )
                 + "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
