@@ -101,6 +101,13 @@ def milestone_rows():
         "docs/basic-launch-probe.md",
         "Status: **BASIC RAM EXECUTION REACHED**",
     )
+    jmon33_checkpoint_cursor = marker(
+        "docs/jmon33-checkpoint-cursor-probe.md",
+        "Status: **PASS**",
+    ) and marker(
+        "docs/jmon33-checkpoint-cursor-probe.md",
+        "HDL cursor VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`",
+    )
     vjuga_bare_pcb_ready = marker(
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -234,9 +241,24 @@ def milestone_rows():
         {
             "id": "M5",
             "target": "jmon33 live prompt + BASIC launches in the twin",
-            "status": "BASIC RAM EXECUTION REACHED / PROMPT+HDL PENDING" if basic_launch_reached else "PARTIAL",
+            "status": (
+                "CHECKPOINT CURSOR PROVEN / PROMPT+HDL BASIC PENDING"
+                if jmon33_checkpoint_cursor and basic_launch_reached
+                else "BASIC RAM EXECUTION REACHED / PROMPT+HDL PENDING"
+                if basic_launch_reached
+                else "PARTIAL"
+            ),
             "evidence": (
                 "jmon33 interrupt/first-write/cosim cursor probes exist; "
+                "`docs/jmon33-checkpoint-cursor-probe.md` now proves "
+                "checkpoint-resumed `juku_top` reaches the Monitor 3.3 cursor "
+                "framebuffer hash from a blank pre-cursor checkpoint. "
+                "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
+                "cartridge and executing in the 0x4000 RAM window, but that window "
+                "only receives zero-byte writes; EktaSoft 3.43m #0037 remains a "
+                "compatibility boundary."
+                if jmon33_checkpoint_cursor and basic_launch_reached
+                else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes; EktaSoft 3.43m #0037 remains a "
@@ -245,7 +267,12 @@ def milestone_rows():
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
-            "next": "Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage.",
+            "next": (
+                "Prove the uninterrupted reset-to-cursor jmon33 path, add a BASIC "
+                "prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage."
+                if jmon33_checkpoint_cursor
+                else "Compare HDL at the stronger jmon33 cursor boundary, add a BASIC prompt oracle, and port the Monitor 3.3 BASIC path to HDL coverage."
+            ),
         },
         {
             "id": "M6",
