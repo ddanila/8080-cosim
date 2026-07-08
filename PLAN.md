@@ -320,13 +320,13 @@ debugging session saved on real hardware.
    (`f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`).
    `sync/jmon33_hdl_command_probe.py` now compares checkpoint-resumed HDL
    command stimulus against that delayed idle-command oracle. The resumed HDL
-   path samples the same active key values, but all three rows still end at the
-   reset-time `A` framebuffer (`x=8,y=60`) rather than the idle-command
-   framebuffers pinned by cosim, so this remains a diagnostic boundary rather
-   than a command-surface proof.
+   `A` command reaches its framebuffer oracle; the preserved
+   `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows `T` seeing keyboard
+   samples but then entering heavy FDC I/O (`fdc_ios=109522`), so the next useful
+   boundary is an FDC-aware `T` oracle rather than more blind keyboard timing.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, make the checkpoint-resumed HDL command rows match the delayed
-   idle-command oracles,
+   path, make the remaining checkpoint-resumed HDL command rows match
+   FDC-aware delayed-command oracles,
    identify the correct monitor/removable-memory pairing for a user-visible
    BASIC prompt oracle, and port that BASIC path to HDL coverage.
 4. **Sound**: digital beeper source is now guarded by

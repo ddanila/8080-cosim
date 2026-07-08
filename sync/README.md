@@ -132,9 +132,11 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   oracle for checkpoint-resumed HDL command work.
 - `sync/jmon33_hdl_command_probe.py` — checkpoint-resumed HDL diagnostic for
   the same command surface. It delays keyboard stimulus until after the proven
-  HDL cursor boundary and compares against `docs/jmon33-idle-command-probe.md`;
-  all command rows remain diagnostic until the resumed HDL framebuffer matches
-  the delayed idle-command cosim oracle.
+  HDL cursor boundary and compares against `docs/jmon33-idle-command-probe.md`.
+  The `A` command now reaches its HDL framebuffer oracle; the preserved
+  `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows `T` entering heavy
+  FDC I/O, so that path needs an FDC-aware oracle before more keyboard timing
+  scans.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for a monitor command

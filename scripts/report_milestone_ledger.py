@@ -330,10 +330,11 @@ def milestone_rows():
                     else ""
                 )
                 + (
-                    "`docs/jmon33-hdl-command-probe.md` adds the checkpoint-resumed "
-                    "HDL command diagnostic against the delayed idle-prompt oracle; "
-                    "active keyboard values match, but the final framebuffers do "
-                    "not yet match cosim. "
+                    "`docs/jmon33-hdl-command-probe.md` proves the checkpoint-resumed "
+                    "HDL `A` command reaches its delayed idle-prompt framebuffer oracle; "
+                    "`docs/jmon33-hdl-t-command-fdc-diagnostic.md` preserves the `T` "
+                    "command finding where keyboard samples are present but the path "
+                    "enters heavy FDC I/O. "
                     if jmon33_hdl_command_diagnostic
                     else ""
                 )
@@ -383,7 +384,7 @@ def milestone_rows():
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, make the "
-                "checkpoint-resumed HDL command rows match the delayed idle-command oracles, identify the correct "
+                "remaining checkpoint-resumed HDL command rows match FDC-aware delayed-command oracles, identify the correct "
                 "monitor/removable-memory BASIC pairing, add a BASIC prompt oracle, "
                 "and port that BASIC path to HDL coverage."
                 if jmon33_checkpoint_cursor

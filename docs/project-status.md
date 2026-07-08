@@ -161,11 +161,12 @@ Historical merge notes:
   same commands typed after the monitor-idle cursor is already visible, giving
   the checkpoint-resumed HDL path the correct delayed-command reference hashes.
   `sync/jmon33_hdl_command_probe.py` now compares checkpoint-resumed HDL
-  command stimulus against that delayed idle-command oracle. The HDL path
-  samples the same active key values, but the visible framebuffer still lands on
-  the reset-time `A` command state, so all HDL command rows remain diagnostic.
-  Completing an uninterrupted reset-to-cursor run and the HDL command oracles
-  remain pending.
+  command stimulus against that delayed idle-command oracle. The HDL `A`
+  command reaches its framebuffer oracle; the preserved
+  `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows the `T` path sees
+  keyboard samples but then enters heavy FDC I/O, so the remaining command
+  boundary is now an FDC-aware oracle problem. Completing an uninterrupted
+  reset-to-cursor run and the remaining HDL command oracles remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM

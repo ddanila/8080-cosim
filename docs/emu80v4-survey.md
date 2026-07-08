@@ -3,7 +3,9 @@
 Status date: 2026-07-08.
 
 Source inspected: `https://github.com/vpyk/emu80v4`, shallow clone at survey
-time and rechecked on 2026-07-08.
+time and rechecked on 2026-07-08 at upstream `master`
+`774bb1f340b308213f22f6c79a57d09d93285ae4` (`Update whatsnew`,
+2026-06-25).
 
 ## License Boundary
 
@@ -22,6 +24,9 @@ find /tmp/emu80v4 -iname '*juku*' -o -iname '*510*' -o -iname '*ekdos*'
 
 The project therefore does not add new Juku ROM, keyboard, video, schematic, or
 EKDOS media evidence beyond the public sources already tracked here.
+
+The recheck also found no `*juku*`, `*510*`, `*ekdos*`, or `*j3k*` paths in the
+top three directory levels of the clone.
 
 ## Useful FDC1793/VG93 Reference Points
 
@@ -45,6 +50,12 @@ models additional controller behavior worth using as a checklist if our
   when a command or transfer completes.
 - Its disk-image addressing is the same linear raw-sector shape we already use:
   `(sector + (head + track * heads) * sectors_per_track) * sector_size`.
+
+The upstream changelog specifically calls out ВГ93 fixes for read-sector and
+write-track commands, read/write operation timeouts, an added ВГ93 connection
+interface, and index-signal support. Those are good checklist items for the
+local shim if the current EKDOS path fails after decoded FDC I/O is otherwise
+proven.
 
 ## Adoption Decision
 
