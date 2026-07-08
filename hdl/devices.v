@@ -600,6 +600,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     localparam ST_BUSY = 8'h01;
     localparam ST_DRQ = 8'h02;
     localparam ST_RNF = 8'h10;
+    localparam ST_WRITE_PROTECT = 8'h40;
     localparam ST_NOT_READY = 8'h80;
 
     reg [7:0] status = ST_NOT_READY;
@@ -648,6 +649,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     function is_type_i(input [7:0] cmd); begin
         is_type_i = (cmd[7] == 1'b0);
+    end endfunction
+
+    function is_write_track(input [7:0] cmd); begin
+        is_write_track = ((cmd & 8'hF0) == 8'hF0);
     end endfunction
 
     function [7:0] synthetic_sector_byte(input integer pos); begin
@@ -710,7 +715,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task finish_type_i(input [7:0] cmd); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
         end else if ((cmd & 8'hF0) == 8'h00) begin
@@ -732,6 +737,16 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end endtask
 
+    task reject_write_track; begin
+        clear_transfer();
+        status = status & ~(ST_RNF | ST_NOT_READY);
+        if (!motor_on || (disk_requested && !disk_loaded)) begin
+            status = status | ST_NOT_READY;
+        end else begin
+            status = status | ST_WRITE_PROTECT;
+        end
+    end endtask
+
     always @(posedge clk) if (~cs_n & ~wr_n) begin
         case (A)
             2'd0: begin
@@ -740,6 +755,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 if (is_read_sector(D)) begin_read_sector();
                 else if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) clear_transfer();
+                else if (is_write_track(D)) reject_write_track();
                 else begin
                     status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
                 end

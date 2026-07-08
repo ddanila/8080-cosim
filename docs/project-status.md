@@ -164,9 +164,12 @@ Historical merge notes:
   command stimulus against that delayed idle-command oracle. The HDL `A`
   command reaches its framebuffer oracle; the preserved
   `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows the `T` path sees
-  keyboard samples but then enters heavy FDC I/O, so the remaining command
-  boundary is now an FDC-aware oracle problem. Completing an uninterrupted
-  reset-to-cursor run and the remaining HDL command oracles remain pending.
+  keyboard samples but then enters heavy FDC I/O. `sync/jmon33_fdc_command_probe.py`
+  now pins the corresponding cosim boundary: with `media/disks/JUKU1.CPM`
+  attached, `T` issues FDC command `0xFD` and polls write-protect status. The
+  local FDC shims now reject Type-III write-track with WRITE PROTECT instead of
+  leaving BUSY stuck forever. Completing an uninterrupted reset-to-cursor run
+  and the remaining HDL command oracles remain pending.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM

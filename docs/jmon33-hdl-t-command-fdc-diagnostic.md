@@ -47,7 +47,9 @@ The `T` run proves the resumed HDL path is seeing keyboard activity, but it
 does not reach the `T` command framebuffer oracle. The important finding is the
 large FDC I/O count: `fdc_ios=109522`. That means the mismatch is no longer
 purely a keyboard-phase problem; `T` enters a disk-controller path in the
-resumed `juku_top` environment.
+resumed `juku_top` environment. `docs/jmon33-fdc-command-probe.md` now pins the
+matching cosim boundary: with `media/disks/JUKU1.CPM` attached, `T` issues FDC
+command `0xFD` and polls write-protect status.
 
 Before treating this as an FDC core bug, compare the oracle setup. The existing
 jmon33 command oracle is generated without a disk unless `JUKU_DISK` is set,

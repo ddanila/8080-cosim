@@ -322,8 +322,12 @@ debugging session saved on real hardware.
    command stimulus against that delayed idle-command oracle. The resumed HDL
    `A` command reaches its framebuffer oracle; the preserved
    `docs/jmon33-hdl-t-command-fdc-diagnostic.md` run shows `T` seeing keyboard
-   samples but then entering heavy FDC I/O (`fdc_ios=109522`), so the next useful
-   boundary is an FDC-aware `T` oracle rather than more blind keyboard timing.
+   samples but then entering heavy FDC I/O (`fdc_ios=109522`). The matching
+   cosim boundary is now pinned by `sync/jmon33_fdc_command_probe.py` /
+   `docs/jmon33-fdc-command-probe.md`: with `media/disks/JUKU1.CPM` attached,
+   `T` issues FDC command `0xFD` and polls write-protect status. The C and HDL
+   FDC shims now reject Type-III write-track with WRITE PROTECT instead of
+   holding BUSY forever.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
    path, make the remaining checkpoint-resumed HDL command rows match
    FDC-aware delayed-command oracles,

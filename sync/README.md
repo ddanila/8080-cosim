@@ -130,6 +130,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/jmon33_idle_command_probe.py` — cosim guard for the same Monitor 3.3
   commands typed after the idle cursor is already visible; this is the reference
   oracle for checkpoint-resumed HDL command work.
+- `sync/jmon33_fdc_command_probe.py` — cosim diagnostic for Monitor 3.3's
+  idle-prompt `T` command when the FDC is visible. It compares no-disk behavior
+  with vendored `media/disks/JUKU1.CPM` and pins the `0xFD` write-track /
+  write-protect polling boundary used by HDL `T` command debugging.
 - `sync/jmon33_hdl_command_probe.py` — checkpoint-resumed HDL diagnostic for
   the same command surface. It delays keyboard stimulus until after the proven
   HDL cursor boundary and compares against `docs/jmon33-idle-command-probe.md`.

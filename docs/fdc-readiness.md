@@ -11,8 +11,9 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   restore returns to track 0, seek copies the data register to the track
   register, step commands update or preserve the track register according
   to the command's update bit and previous direction, read-sector streams
-  512 bytes, side select changes the stream, and motor-off read reports
-  not-ready.
+  512 bytes, side select changes the stream, Type-III write-track is rejected
+  with write-protect for the read-only raw-image backend, and motor-off read
+  reports not-ready.
 - The same testbench also runs with `+disk=media/disks/JUKU1.CPM +disk_heads=2`
   and verifies that the HDL WD1793 path reads real bytes from the vendored raw
   disk image.
@@ -98,6 +99,7 @@ sync/juku_top_fdc_probe.sh
 | Read-sector command asserts BUSY/DRQ and streams 512 bytes | PASS |
 | Side select affects the synthetic sector stream | PASS |
 | Vendored `JUKU1.CPM` sector 2 bytes are streamed through the HDL FDC | PASS |
+| Write-track command completes with WRITE PROTECT instead of BUSY forever | PASS |
 | DRQ asserts during the sector transfer and INTRQ asserts on completion | PASS |
 | Motor-off read reports NOT READY | PASS |
 | `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |

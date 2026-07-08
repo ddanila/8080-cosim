@@ -135,6 +135,10 @@ def milestone_rows():
         "docs/jmon33-hdl-command-probe.md",
         "Status: **JMON33 HDL COMMAND SURFACE READY**",
     )
+    jmon33_fdc_t_oracle = marker(
+        "docs/jmon33-fdc-command-probe.md",
+        "Status: **JMON33 FDC T-COMMAND ORACLE PINNED**",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -336,6 +340,13 @@ def milestone_rows():
                     "command finding where keyboard samples are present but the path "
                     "enters heavy FDC I/O. "
                     if jmon33_hdl_command_diagnostic
+                    else ""
+                )
+                + (
+                    "`docs/jmon33-fdc-command-probe.md` pins the FDC-aware `T` oracle: "
+                    "with `media/disks/JUKU1.CPM`, command `0xFD` reaches WRITE PROTECT "
+                    "status instead of BUSY forever. "
+                    if jmon33_fdc_t_oracle
                     else ""
                 )
                 + "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "

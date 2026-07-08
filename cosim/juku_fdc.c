@@ -7,6 +7,7 @@ enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
   ST_RNF = 0x10,
+  ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
 };
 
@@ -18,6 +19,11 @@ static int is_read_sector(uint8_t command) {
 
 static int is_type_i(uint8_t command) {
   return (command & 0x80) == 0x00;
+}
+
+
+static int is_write_track(uint8_t command) {
+  return (command & 0xF0) == 0xF0;
 }
 
 
@@ -48,7 +54,7 @@ static void begin_read_sector(juku_fdc* fdc) {
 
 static void finish_type_i(juku_fdc* fdc, uint8_t command) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     return;
@@ -58,6 +64,17 @@ static void finish_type_i(juku_fdc* fdc, uint8_t command) {
   } else if ((command & 0xF0) == 0x10) { // seek
     fdc->track = fdc->data;
   }
+}
+
+
+static void reject_write_track(juku_fdc* fdc) {
+  clear_transfer(fdc);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_NOT_READY);
+  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+    fdc->status |= ST_NOT_READY;
+    return;
+  }
+  fdc->status |= ST_WRITE_PROTECT;
 }
 
 
@@ -106,6 +123,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       if (is_read_sector(data)) begin_read_sector(fdc);
       else if (is_type_i(data)) finish_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) clear_transfer(fdc);  // force interrupt
+      else if (is_write_track(data)) reject_write_track(fdc);
       else {
         fdc->status &= (uint8_t)~(ST_RNF | ST_DRQ);
         fdc->status |= ST_BUSY;

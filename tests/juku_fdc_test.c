@@ -12,6 +12,7 @@
 enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
+  ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
 };
 
@@ -115,6 +116,9 @@ int main(void) {
     }
   }
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after sector drain");
+
+  juku_fdc_write(&fdc, 0, 0xFD);  // write track against read-only raw-image shim
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "after write-track command");
 
   juku_fdc_portc(&fdc, 0x44);  // motor on, drive 0, side 1
   juku_fdc_write(&fdc, 1, 43);

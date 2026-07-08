@@ -145,6 +145,13 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
+    write_reg(2'd0, 8'hFD);
+    expect_status(8'h43, 8'h40, "after write-track reject");
+    if (drq !== 1'b0 || intrq !== 1'b1) begin
+      $display("FDC-1793: FAIL write-track reject drq=%b intrq=%b", drq, intrq);
+      errors = errors + 1;
+    end
+
     if (!disk_mode) begin
       side = 1;
       write_reg(2'd1, 8'd43);
