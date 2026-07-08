@@ -32,6 +32,14 @@ def run(cmd: list[str], *, cwd: Path = ROOT, timeout: int | None = None) -> subp
     return subprocess.run(cmd, cwd=cwd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout, check=False)
 
 
+def text_output(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
 def write_rom_hex() -> None:
     rom = (ROOT / "roms" / "jmon33.bin").read_bytes()
     ROM_HEX.write_text("\n".join(f"{byte:02x}" for byte in rom) + "\n")
@@ -122,7 +130,12 @@ def main() -> int:
                 proc = run(vvp_cmd, timeout=timeout_s)
                 timed_out = False
             except subprocess.TimeoutExpired as exc:
-                proc = subprocess.CompletedProcess(exc.cmd, 124, exc.stdout or "", exc.stderr or "")
+                proc = subprocess.CompletedProcess(
+                    exc.cmd,
+                    124,
+                    text_output(exc.stdout),
+                    text_output(exc.stderr),
+                )
                 timed_out = True
 
         output = (proc.stdout or "") + (proc.stderr or "")

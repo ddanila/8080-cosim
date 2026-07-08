@@ -278,7 +278,11 @@ debugging session saved on real hardware.
    `+cursorstop=1` stop hook for that same cursor boundary, and
    `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
    first write still matches at `0xFF40`, but the 300-write HDL run stops with
-   a blank framebuffer before the cursor oracle. Remaining targets: reduce the
+   a blank framebuffer before the cursor oracle. A new
+   `sync/jmon33_checkpoint_cursor_probe.py` narrows the stronger HDL boundary:
+   a 3,500,000-cycle cosim checkpoint at PC `0xF3A1` still has blank VRAM, and
+   checkpoint-resumed `juku_top` services frame interrupts from that state but
+   times out before the monitor-idle cursor writes. Remaining targets: reduce the
    long interrupt/high-memory HDL path enough to compare cosim and `juku_top`
    at that stronger boundary, prove the user-visible jmon33 command prompt,
    add a user-visible BASIC prompt oracle, and port the stronger Monitor 3.3

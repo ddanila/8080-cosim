@@ -25,7 +25,7 @@ module juku_top_checkpoint_resume_tb();
   integer trace_resume = 0;
   integer pic_seen = 0, kbd_seen = 0, raw_ios = 0;
   integer traceirq = 0, tracekbd = 0, tracefdc = 0, stopfdc = 0, stopfdc_data_read = 0, stopfdc_data_reads = 0;
-  integer stopprompt = 0, prompt_seen = 0;
+  integer stopprompt = 0, prompt_seen = 0, cursorstop = 0, cursor_seen = 0;
   integer fdc_ios = 0, fdc_reads = 0, fdc_writes = 0, fdc_data_reads = 0;
   integer frameirq = 0, osc_n = 0, frame_ticks = 0, intr_edges = 0, inta_edges = 0;
   integer ekdoskeys = 0, ekdos_key = 0, keyat = 42000, khold = 900000, kgap = 900000, key_t = -1;
@@ -90,6 +90,12 @@ module juku_top_checkpoint_resume_tb();
       got = {dram_byte(16'hD800 + (70 + y) * 40), dram_byte(16'hD800 + (70 + y) * 40 + 1)};
       if (got !== ekdos_prompt_row(y)) ekdos_prompt_ok = 1'b0;
     end
+  end endfunction
+
+  function jmon33_cursor_ok; integer y; begin
+    jmon33_cursor_ok = 1'b1;
+    for (y = 20; y < 30; y = y + 1)
+      if (dram_byte(16'hD800 + y * 40 + 1) !== 8'hFF) jmon33_cursor_ok = 1'b0;
   end endfunction
 
   integer fd, dump_i, dump_addr; reg [7:0] dump_b;
@@ -295,6 +301,14 @@ module juku_top_checkpoint_resume_tb();
       dump_vram();
       $finish;
     end
+    if (cursorstop != 0 && !cursor_seen && jmon33_cursor_ok()) begin
+      cursor_seen = 1;
+      $display("[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      $fflush;
+      dump_vram();
+      $finish;
+    end
   end
 
   always @(negedge dut.iowr_n) begin
@@ -384,6 +398,7 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("stopfdc_data_read=%d", stopfdc_data_read)) ;
     if ($value$plusargs("stopfdc_data_reads=%d", stopfdc_data_reads)) ;
     if ($value$plusargs("stopprompt=%d", stopprompt)) ;
+    if ($value$plusargs("cursorstop=%d", cursorstop)) ;
     if ($value$plusargs("state_vram_writes=%d", state_vram_writes)) ;
     if ($value$plusargs("state_pc=%h", state_pc)) ;
     if ($value$plusargs("state_sp=%h", state_sp)) ;

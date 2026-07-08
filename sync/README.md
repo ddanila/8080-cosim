@@ -107,6 +107,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/jmon33_hdl_cursor_probe.py` — bounded HDL diagnostic for the stronger
   jmon33 monitor-idle cursor oracle; currently documents that the 300-write
   HDL boundary is still blank while the first-write guard remains passing.
+- `sync/jmon33_checkpoint_cursor_probe.py` — checkpoint-resumed HDL diagnostic
+  for the same jmon33 cursor oracle. It starts from a blank 3,500,000-cycle
+  cosim checkpoint at PC `0xF3A1`; the resumed `juku_top` path services frame
+  interrupts but still times out before the cursor writes.
 - `sync/basic_cart_check.sh` — optional BASIC cartridge-window guard: cosim
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for the monitor `B`
