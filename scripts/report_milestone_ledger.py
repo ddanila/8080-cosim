@@ -298,6 +298,20 @@ def milestone_rows():
         "docs/juku-top-checkpoint-jbasic-mid-probe.md",
         "target=10752",
     )
+    hdl_jbasic_uninterrupted_ready = marker(
+        "docs/juku-top-jbasic-verilator-probe.md",
+        "Status: **HDL JUKU_TOP JBASIC READY REACHED**",
+    ) and marker(
+        "docs/juku-top-jbasic-verilator-probe.md",
+        "FDC state line: `[FDCSTATE] data_reads=19968 buffer_pos=0 buffer_len=0`",
+    )
+    hdl_jbasic_uninterrupted_guarded = hdl_jbasic_uninterrupted_ready and marker(
+        "sync/juku_top_jbasic_prompt_check.sh",
+        "JUKU-TOP-JBASIC-PROMPT-CHECK: PASS",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "./sync/juku_top_jbasic_prompt_check.sh",
+    )
     jmon33_command_surface = marker(
         "docs/jmon33-command-probe.md",
         "Status: **JMON33 COMMAND SURFACE READY**",
@@ -612,6 +626,9 @@ def milestone_rows():
             "id": "M5",
             "target": "jmon33 live prompt + BASIC launches in the twin",
             "status": (
+                "EKDOS JBASIC HDL READY / JMON33 RESET+CARTRIDGE BASIC PENDING"
+                if jmon33_checkpoint_cursor and basic_launch_reached and jmon33_command_surface and hdl_jbasic_uninterrupted_guarded
+                else
                 "JMON33 COMMAND SURFACE PROVEN / HDL BASIC PENDING"
                 if jmon33_checkpoint_cursor and basic_launch_reached and jmon33_command_surface
                 else "CHECKPOINT CURSOR PROVEN / PROMPT+HDL BASIC PENDING"
@@ -754,6 +771,16 @@ def milestone_rows():
                     if hdl_jbasic_mid_drain
                     else ""
                 )
+                + (
+                    " `docs/juku-top-jbasic-verilator-probe.md` proves the "
+                    "uninterrupted reset-driven `juku_top` path on `JUKPROG2.CPM`: "
+                    "EKDOS `A>` at VRAM 73,405, visible `A>JBASIC` at VRAM "
+                    "73,485, BASIC `READY` at VRAM 73,885, and 19,968 WD1793 "
+                    "data-register reads; `sync/juku_top_jbasic_prompt_check.sh` "
+                    "guards the committed evidence with an opt-in deep rerun."
+                    if hdl_jbasic_uninterrupted_guarded
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
@@ -843,16 +870,24 @@ def milestone_rows():
                     if hdl_jbasic_mid_drain
                     else ""
                 )
+                + (
+                    " `docs/juku-top-jbasic-verilator-probe.md` proves the "
+                    "uninterrupted reset-driven `juku_top` EKDOS `JBASIC` path "
+                    "to visible BASIC `READY`, and "
+                    "`sync/juku_top_jbasic_prompt_check.sh` guards it."
+                    if hdl_jbasic_uninterrupted_guarded
+                    else ""
+                )
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct Monitor 3.3 cartridge BASIC launch path, and drive the "
-                "EKDOS `JBASIC` HDL path without checkpoint/resume."
+                "correct Monitor 3.3 cartridge BASIC launch path, and keep the "
+                "disk-side EKDOS `JBASIC` HDL guard fresh."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and drive the pinned EKDOS BASIC HDL path without checkpoint/resume."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and keep the pinned EKDOS BASIC HDL guard fresh."
             ),
         },
         {

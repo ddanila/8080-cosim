@@ -35,6 +35,10 @@ STOPFDCDATA=${JUKU_TOP_FDC_STOPFDCDATA:-0}
 STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
 STOPPPI=${JUKU_TOP_FDC_STOPPPI:-0}
 STOPPROMPT=${JUKU_TOP_FDC_STOPPROMPT:-0}
+JBASICKEYS=${JUKU_TOP_FDC_JBASICKEYS:-0}
+STOPJBASICCMD=${JUKU_TOP_FDC_STOPJBASICCMD:-0}
+STOPJBASICREADY=${JUKU_TOP_FDC_STOPJBASICREADY:-0}
+COMMAND_KEY_MCYC=${JUKU_TOP_FDC_COMMAND_KEY_MCYC:-0}
 TIMEOUT_S=${JUKU_TOP_FDC_TIMEOUT:-60}
 VRAM_COPY=${JUKU_TOP_FDC_VRAM_COPY:-}
 STOPPC=${JUKU_TOP_FDC_STOPPC:-}
@@ -79,9 +83,9 @@ if command -v timeout >/dev/null; then
       +traceprogress="$TRACEPROGRESS" \
       +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
-      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +ekdoskeys=1 +jbasickeys="$JBASICKEYS" +command_key_mcyc="$COMMAND_KEY_MCYC" +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc="$TRACEFDC" +stopfdc="$STOPFDC" +stopfdcdata="$STOPFDCDATA" \
-      +stopprompt="$STOPPROMPT" \
+      +stopprompt="$STOPPROMPT" +stopjbasiccmd="$STOPJBASICCMD" +stopjbasicready="$STOPJBASICREADY" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   else
     timeout "$TIMEOUT_S" "$SIM" \
@@ -92,9 +96,9 @@ if command -v timeout >/dev/null; then
       +traceprogress="$TRACEPROGRESS" \
       +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
-      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +ekdoskeys=1 +jbasickeys="$JBASICKEYS" +command_key_mcyc="$COMMAND_KEY_MCYC" +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc="$TRACEFDC" +stopfdc="$STOPFDC" +stopfdcdata="$STOPFDCDATA" \
-      +stopprompt="$STOPPROMPT" \
+      +stopprompt="$STOPPROMPT" +stopjbasiccmd="$STOPJBASICCMD" +stopjbasicready="$STOPJBASICREADY" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   fi
   rc=$?
@@ -108,9 +112,9 @@ else
       +traceprogress="$TRACEPROGRESS" \
       +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
-      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +ekdoskeys=1 +jbasickeys="$JBASICKEYS" +command_key_mcyc="$COMMAND_KEY_MCYC" +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc="$TRACEFDC" +stopfdc="$STOPFDC" +stopfdcdata="$STOPFDCDATA" \
-      +stopprompt="$STOPPROMPT" \
+      +stopprompt="$STOPPROMPT" +stopjbasiccmd="$STOPJBASICCMD" +stopjbasicready="$STOPJBASICREADY" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   else
     "$SIM" \
@@ -121,9 +125,9 @@ else
       +traceprogress="$TRACEPROGRESS" \
       +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
-      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +ekdoskeys=1 +jbasickeys="$JBASICKEYS" +command_key_mcyc="$COMMAND_KEY_MCYC" +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc="$TRACEFDC" +stopfdc="$STOPFDC" +stopfdcdata="$STOPFDCDATA" \
-      +stopprompt="$STOPPROMPT" \
+      +stopprompt="$STOPPROMPT" +stopjbasiccmd="$STOPJBASICCMD" +stopjbasicready="$STOPJBASICREADY" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   fi
   rc=$?
@@ -140,6 +144,8 @@ fdc_stop=$(grep -m1 '^\[FDC\] stop' "$OUT" || true)
 fdc_data_stop=$(grep -m1 '^\[FDC\] data-stop' "$OUT" || true)
 fdc_first=$(grep -m1 '^\[FDC\]' "$OUT" || true)
 prompt_line=$(grep -m1 '^\[PROMPT\] EKDOS A> prompt reached' "$OUT" || true)
+jbasic_cmd_line=$(grep -m1 '^\[JBASIC-CMD\]' "$OUT" || true)
+jbasic_ready_line=$(grep -m1 '^\[JBASIC\]' "$OUT" || true)
 key_first=$(grep -m1 '^\[KBD\]' "$OUT" || true)
 key_last=$(grep '^\[KBD\]' "$OUT" | tail -1 || true)
 pic_first=$(grep -m1 '^\[PIC\]' "$OUT" || true)
@@ -177,7 +183,15 @@ rawio_lines=$(grep -c '^\[RAWIO\]' "$OUT" || true)
 status="HDL JUKU_TOP FDC PATH NOT YET OBSERVED"
 fdc_result="NO"
 prompt_result="NO"
-if [ -n "$prompt_line" ]; then
+if [ -n "$jbasic_ready_line" ]; then
+  status="HDL JUKU_TOP JBASIC READY REACHED"
+  fdc_result="YES"
+  prompt_result="YES"
+elif [ -n "$jbasic_cmd_line" ]; then
+  status="HDL JUKU_TOP JBASIC COMMAND REACHED"
+  fdc_result="YES"
+  prompt_result="YES"
+elif [ -n "$prompt_line" ]; then
   status="HDL JUKU_TOP EKDOS PROMPT REACHED"
   fdc_result="YES"
   prompt_result="YES"
@@ -233,11 +247,19 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPPI\` default \`0\`
 - \`JUKU_TOP_FDC_STOPPROMPT\` default \`0\`; set to \`1\` to stop when the
   EKDOS \`A>\` bitmap appears at \`x=0\`, \`y=70\`
+- \`JUKU_TOP_FDC_JBASICKEYS\` default \`0\`; set to \`1\` to type
+  \`JBASIC\` + Enter after the EKDOS \`A>\` bitmap is observed
+- \`JUKU_TOP_FDC_STOPJBASICCMD\` default \`0\`; set to \`1\` to stop when
+  the \`A>JBASIC\` command line bitmap appears
+- \`JUKU_TOP_FDC_STOPJBASICREADY\` default \`0\`; set to \`1\` to stop when
+  the BASIC \`READY\` bitmap appears
+- \`JUKU_TOP_FDC_COMMAND_KEY_MCYC\` default \`0\`; optional minimum machine
+  cycle before post-prompt command-key injection
 - \`JUKU_TOP_FDC_STOPPC\` optional hexadecimal CPU PC stop hook
 - \`JUKU_TOP_FDC_STOPPC_SKIP\` default \`0\`; matching PC entries to skip
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE FRAMEMCYC=$FRAMEMCYC TRACEPROGRESS=$TRACEPROGRESS VRAMSTOP_SYNC=$VRAMSTOP_SYNC TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ TRACEFDC=$TRACEFDC STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPFDCDATA=$STOPFDCDATA STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE FRAMEMCYC=$FRAMEMCYC TRACEPROGRESS=$TRACEPROGRESS VRAMSTOP_SYNC=$VRAMSTOP_SYNC TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ TRACEFDC=$TRACEFDC STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPFDCDATA=$STOPFDCDATA STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT JBASICKEYS=$JBASICKEYS STOPJBASICCMD=$STOPJBASICCMD STOPJBASICREADY=$STOPJBASICREADY COMMAND_KEY_MCYC=$COMMAND_KEY_MCYC STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -255,6 +277,8 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 | IRQ trace observed | $(if [ -n "$irq_first" ]; then echo PASS; else echo NO; fi) |
 | decoded FDC I/O observed | $fdc_result |
 | EKDOS \`A>\` prompt bitmap observed | $prompt_result |
+| EKDOS \`A>JBASIC\` command bitmap observed | $(if [ -n "$jbasic_cmd_line" ]; then echo YES; else echo NO; fi) |
+| BASIC \`READY\` prompt bitmap observed | $(if [ -n "$jbasic_ready_line" ]; then echo YES; else echo NO; fi) |
 | keyboard trace lines | \`$kbd_lines\` |
 | VRAM progress trace lines | \`$progress_lines\` |
 | PIC trace lines | \`$pic_lines\` |
@@ -289,6 +313,8 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 - FDC stop line: \`${fdc_stop:-none}\`
 - FDC data-stop line: \`${fdc_data_stop:-none}\`
 - EKDOS prompt line: \`${prompt_line:-none}\`
+- EKDOS JBASIC command line: \`${jbasic_cmd_line:-none}\`
+- BASIC READY line: \`${jbasic_ready_line:-none}\`
 - PC stop line: \`${pc_stop:-none}\`
 - Time-cap line: \`${timecap_line:-none}\`
 - CPU state line: \`${cpu_line:-none}\`
@@ -330,8 +356,10 @@ $(grep '^\[FDC\]' "$OUT" || true)
 
 - The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+traceio=1\`,
   \`+stopio=N\`, \`+tracepic=1\`, \`+stoppic=N\`, \`+tracefdc=1\`, and
-  \`+stopfdc=N\`, plus \`+stopprompt=1\` for the EKDOS \`A>\` bitmap and
-  \`+stoppc=HEX\` / \`+stoppc_skip=N\` for CPU address stops.
+  \`+stopfdc=N\`, plus \`+stopprompt=1\` for the EKDOS \`A>\` bitmap,
+  \`+jbasickeys=1\` with \`+stopjbasiccmd=1\` / \`+stopjbasicready=1\` for
+  the EKDOS \`JBASIC\` path, and \`+stoppc=HEX\` / \`+stoppc_skip=N\` for
+  CPU address stops.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
 - \`docs/ekdos-timing-reference.md\` shows the fast cosim target for this same
@@ -339,6 +367,8 @@ $(grep '^\[FDC\]' "$OUT" || true)
   frame IRQ at 33,812 VRAM writes, and first FDC command at 63,085 VRAM writes.
 - With \`STOPPROMPT=1\`, this same harness can prove the full \`juku_top\`
   ROMBIOS \`TDD\` path to an EKDOS \`A>\` prompt.
+- With \`JBASICKEYS=1\` and \`STOPJBASICREADY=1\`, the same reset-driven path
+  continues through \`JUKPROG2.CPM\` to the visible BASIC \`READY\` prompt.
 EOF
 
 echo "JUKU-TOP-FDC-PROBE: wrote $REPORT"

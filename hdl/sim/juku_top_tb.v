@@ -19,6 +19,8 @@
 module juku_top_tb();
   reg osc=0;
   integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, stopprompt=0, prompt_seen=0, traceprogress=0, vramstop_sync=0;
+  integer commandkeys=0, jbasickeys=0, command_key=0, command_key_count=2, command_t=-1, command_key_mcyc=0;
+  integer stopjbasiccmd=0, stopjbasicready=0, jbasic_command_seen=0, jbasic_ready_seen=0;
   reg vram_seen=0, sq=0, vram_stop_pending=0;
   integer stoppc_en=0, stoppc_skip=0, stoppc_seen=0; reg [15:0] stoppc=16'h0000, pc_q=16'hffff;
 
@@ -55,6 +57,28 @@ module juku_top_tb();
     else begin kbd_kcol <= 6; kbd_kbit <= 5; end             // D
   end endtask
 
+  task set_command_key(input integer idx); begin
+    if (jbasickeys != 0) begin
+      if (idx == 0) begin kbd_shift <= 1'b1; kbd_kcol <= 7;  kbd_kbit <= 5; end // J
+      else if (idx == 1) begin kbd_shift <= 1'b1; kbd_kcol <= 4;  kbd_kbit <= 1; end // B
+      else if (idx == 2) begin kbd_shift <= 1'b1; kbd_kcol <= 5;  kbd_kbit <= 5; end // A
+      else if (idx == 3) begin kbd_shift <= 1'b1; kbd_kcol <= 1;  kbd_kbit <= 5; end // S
+      else if (idx == 4) begin kbd_shift <= 1'b1; kbd_kcol <= 14; kbd_kbit <= 3; end // I
+      else if (idx == 5) begin kbd_shift <= 1'b1; kbd_kcol <= 6;  kbd_kbit <= 1; end // C
+      else begin kbd_shift <= 1'b0; kbd_kcol <= 8; kbd_kbit <= 5; end                 // Enter
+    end else if (idx == 0) begin
+      kbd_shift <= 1'b1;
+      if (command_key == 65) begin kbd_kcol <= 5; kbd_kbit <= 5; end      // A
+      else if (command_key == 84) begin kbd_kcol <= 4; kbd_kbit <= 3; end // T
+      else if (command_key == 66) begin kbd_kcol <= 4; kbd_kbit <= 1; end // B
+      else begin kbd_kcol <= 0; kbd_kbit <= 0; end
+    end else begin
+      kbd_shift <= 1'b0;
+      kbd_kcol <= 8;
+      kbd_kbit <= 5;                                                     // Enter
+    end
+  end endtask
+
   // count machine cycles off the structural SYNC net; drive the keyboard press window
   integer mcyc_now;
   always @(posedge osc) begin
@@ -77,7 +101,21 @@ module juku_top_tb();
       stoppc_seen <= stoppc_seen + 1;
     end
     pc_q <= dut.U_CPU.u.core.r16_pc;
-    if (ekdoskeys != 0) begin
+    if (commandkeys != 0 && prompt_seen) begin
+      if (kbd_en && command_t < 0 && command_key < command_key_count &&
+          (command_key_mcyc == 0 || mcyc >= command_key_mcyc)) begin
+        command_t <= 0;
+        set_command_key(command_key);
+      end else if (command_t >= 0 && command_key < command_key_count) begin
+        command_t <= command_t + 1;
+        if (command_t >= khold + kgap - 1) begin
+          command_key <= command_key + 1;
+          command_t <= 0;
+          set_command_key(command_key + 1);
+        end
+      end
+      kbd_pressed <= (command_t >= 0 && command_t < khold && command_key < command_key_count);
+    end else if (ekdoskeys != 0) begin
       if (kbd_en && key_t < 0 && keyat != 0 && vram_writes >= keyat) begin
         key_t <= 0;
         ekdos_key <= 0;
@@ -326,9 +364,21 @@ module juku_top_tb();
       $display("[VRAM] jmon33 cursor oracle reached (mcyc=%0d writes=%0d)", mcyc, vram_writes);
       #60 dump_vram; $finish;
     end
-    if (stopprompt && !prompt_seen && ekdos_prompt_ok()) begin
+    if (!prompt_seen && ekdos_prompt_ok()) begin
       prompt_seen = 1;
       $display("[PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      if (stopprompt) begin #60 dump_vram; $finish; end
+    end
+    if (!jbasic_command_seen && jbasic_command_ok()) begin
+      jbasic_command_seen = 1;
+      $display("[JBASIC-CMD] A>JBASIC command line reached mcyc=%0d vram=%0d pc=0x%04h",
+               mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
+      if (stopjbasiccmd) begin #60 dump_vram; $finish; end
+    end
+    if (stopjbasicready && !jbasic_ready_seen && jbasic_ready_ok()) begin
+      jbasic_ready_seen = 1;
+      $display("[JBASIC] READY prompt reached mcyc=%0d vram=%0d pc=0x%04h",
                mcyc, vram_writes, dut.U_CPU.u.core.r16_pc);
       #60 dump_vram; $finish;
     end
@@ -374,6 +424,43 @@ module juku_top_tb();
       got = {dram_byte(16'hD800 + (70 + y)*40), dram_byte(16'hD800 + (70 + y)*40 + 1)};
       if (got !== ekdos_prompt_row(y)) ekdos_prompt_ok = 1'b0;
     end
+  end endfunction
+  function [7:0] jbasic_ready_glyph(input integer glyph_col, input integer row); begin
+    case (glyph_col)
+      0: case (row) 0: jbasic_ready_glyph=8'h3c; 1: jbasic_ready_glyph=8'h22; 2: jbasic_ready_glyph=8'h22; 3: jbasic_ready_glyph=8'h22; 4: jbasic_ready_glyph=8'h3c; 5: jbasic_ready_glyph=8'h24; 6: jbasic_ready_glyph=8'h22; default: jbasic_ready_glyph=8'hff; endcase
+      1: case (row) 0: jbasic_ready_glyph=8'h3e; 1: jbasic_ready_glyph=8'h20; 2: jbasic_ready_glyph=8'h20; 3: jbasic_ready_glyph=8'h3c; 4: jbasic_ready_glyph=8'h20; 5: jbasic_ready_glyph=8'h20; 6: jbasic_ready_glyph=8'h3e; default: jbasic_ready_glyph=8'hff; endcase
+      2: case (row) 0: jbasic_ready_glyph=8'h08; 1: jbasic_ready_glyph=8'h14; 2: jbasic_ready_glyph=8'h22; 3: jbasic_ready_glyph=8'h22; 4: jbasic_ready_glyph=8'h3e; 5: jbasic_ready_glyph=8'h22; 6: jbasic_ready_glyph=8'h22; default: jbasic_ready_glyph=8'hff; endcase
+      3: case (row) 0: jbasic_ready_glyph=8'h3c; 1: jbasic_ready_glyph=8'h12; 2: jbasic_ready_glyph=8'h12; 3: jbasic_ready_glyph=8'h12; 4: jbasic_ready_glyph=8'h12; 5: jbasic_ready_glyph=8'h12; 6: jbasic_ready_glyph=8'h3c; default: jbasic_ready_glyph=8'hff; endcase
+      4: case (row) 0: jbasic_ready_glyph=8'h22; 1: jbasic_ready_glyph=8'h22; 2: jbasic_ready_glyph=8'h14; 3: jbasic_ready_glyph=8'h08; 4: jbasic_ready_glyph=8'h08; 5: jbasic_ready_glyph=8'h08; 6: jbasic_ready_glyph=8'h08; default: jbasic_ready_glyph=8'hff; endcase
+      default: jbasic_ready_glyph = 8'hff;
+    endcase
+  end endfunction
+  function [7:0] jbasic_command_glyph(input integer glyph_col, input integer row); begin
+    case (glyph_col)
+      0: case (row) 0: jbasic_command_glyph=8'h08; 1: jbasic_command_glyph=8'h14; 2: jbasic_command_glyph=8'h22; 3: jbasic_command_glyph=8'h22; 4: jbasic_command_glyph=8'h3e; 5: jbasic_command_glyph=8'h22; 6: jbasic_command_glyph=8'h22; default: jbasic_command_glyph=8'hff; endcase
+      1: case (row) 0: jbasic_command_glyph=8'h10; 1: jbasic_command_glyph=8'h08; 2: jbasic_command_glyph=8'h04; 3: jbasic_command_glyph=8'h02; 4: jbasic_command_glyph=8'h04; 5: jbasic_command_glyph=8'h08; 6: jbasic_command_glyph=8'h10; default: jbasic_command_glyph=8'hff; endcase
+      2: case (row) 0: jbasic_command_glyph=8'h0e; 1: jbasic_command_glyph=8'h04; 2: jbasic_command_glyph=8'h04; 3: jbasic_command_glyph=8'h04; 4: jbasic_command_glyph=8'h04; 5: jbasic_command_glyph=8'h24; 6: jbasic_command_glyph=8'h18; default: jbasic_command_glyph=8'hff; endcase
+      3: case (row) 0: jbasic_command_glyph=8'h3c; 1: jbasic_command_glyph=8'h12; 2: jbasic_command_glyph=8'h12; 3: jbasic_command_glyph=8'h1c; 4: jbasic_command_glyph=8'h12; 5: jbasic_command_glyph=8'h12; 6: jbasic_command_glyph=8'h3c; default: jbasic_command_glyph=8'hff; endcase
+      4: case (row) 0: jbasic_command_glyph=8'h08; 1: jbasic_command_glyph=8'h14; 2: jbasic_command_glyph=8'h22; 3: jbasic_command_glyph=8'h22; 4: jbasic_command_glyph=8'h3e; 5: jbasic_command_glyph=8'h22; 6: jbasic_command_glyph=8'h22; default: jbasic_command_glyph=8'hff; endcase
+      5: case (row) 0: jbasic_command_glyph=8'h1c; 1: jbasic_command_glyph=8'h22; 2: jbasic_command_glyph=8'h20; 3: jbasic_command_glyph=8'h1c; 4: jbasic_command_glyph=8'h02; 5: jbasic_command_glyph=8'h22; 6: jbasic_command_glyph=8'h1c; default: jbasic_command_glyph=8'hff; endcase
+      6: case (row) 0: jbasic_command_glyph=8'h1c; 1: jbasic_command_glyph=8'h08; 2: jbasic_command_glyph=8'h08; 3: jbasic_command_glyph=8'h08; 4: jbasic_command_glyph=8'h08; 5: jbasic_command_glyph=8'h08; 6: jbasic_command_glyph=8'h1c; default: jbasic_command_glyph=8'hff; endcase
+      7: case (row) 0: jbasic_command_glyph=8'h1c; 1: jbasic_command_glyph=8'h22; 2: jbasic_command_glyph=8'h20; 3: jbasic_command_glyph=8'h20; 4: jbasic_command_glyph=8'h20; 5: jbasic_command_glyph=8'h22; 6: jbasic_command_glyph=8'h1c; default: jbasic_command_glyph=8'hff; endcase
+      default: jbasic_command_glyph = 8'hff;
+    endcase
+  end endfunction
+  function jbasic_command_ok; integer row, glyph_col; begin
+    jbasic_command_ok = 1'b1;
+    for (row=0; row<7; row=row+1)
+      for (glyph_col=0; glyph_col<8; glyph_col=glyph_col+1)
+        if (dram_byte(16'hD800 + (71 + row)*40 + glyph_col) !== jbasic_command_glyph(glyph_col, row))
+          jbasic_command_ok = 1'b0;
+  end endfunction
+  function jbasic_ready_ok; integer row, glyph_col; begin
+    jbasic_ready_ok = 1'b1;
+    for (row=0; row<7; row=row+1)
+      for (glyph_col=0; glyph_col<5; glyph_col=glyph_col+1)
+        if (dram_byte(16'hD800 + (121 + row)*40 + glyph_col) !== jbasic_ready_glyph(glyph_col, row))
+          jbasic_ready_ok = 1'b0;
   end endfunction
   task dump_vram; begin
     fd=$fopen("hdl/sim/vram_top.bin","wb");
@@ -426,6 +513,16 @@ module juku_top_tb();
     if ($value$plusargs("khold=%d",  khold))  ;
     if ($value$plusargs("kgap=%d",   kgap))   ;
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;    // fixed T,D,D sequence
+    if ($value$plusargs("commandkeys=%d", commandkeys)) ;
+    if ($value$plusargs("jbasickeys=%d", jbasickeys)) begin
+      if (jbasickeys != 0) begin
+        commandkeys = 1;
+        command_key_count = 7;
+      end
+    end
+    if ($value$plusargs("command_key=%d", command_key)) ;
+    if ($value$plusargs("command_key_count=%d", command_key_count)) ;
+    if ($value$plusargs("command_key_mcyc=%d", command_key_mcyc)) ;
     if ($value$plusargs("traceio=%d", traceio)) ;
     if ($value$plusargs("stopio=%d", stopio)) ;
     if ($value$plusargs("tracechk=%d", tracechk)) ;
@@ -443,6 +540,8 @@ module juku_top_tb();
     if ($value$plusargs("frame_mcyc=%d", frame_mcyc)) ;  // absolute machine-cycle period; overrides frameirq
     if ($value$plusargs("cursorstop=%d", cursorstop)) ; // stop when jmon33 idle cursor is in VRAM
     if ($value$plusargs("stopprompt=%d", stopprompt)) ; // stop when EKDOS A> is in VRAM
+    if ($value$plusargs("stopjbasiccmd=%d", stopjbasiccmd)) ;
+    if ($value$plusargs("stopjbasicready=%d", stopjbasicready)) ;
     if (keyat != 0) begin
       kbd_en=1;
       if (ekdoskeys == 0) begin kbd_kcol=kcolp[3:0]; kbd_kbit=kbitp[2:0]; kbd_shift=kshiftp[0]; end
