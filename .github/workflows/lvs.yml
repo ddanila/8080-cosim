@@ -57,6 +57,7 @@ jobs:
             scripts/report_io_decode_boundary.py \
             scripts/report_video_analog_boundary.py \
             scripts/report_s4_interrupt_boundary.py \
+            scripts/report_unmodeled_footprint_inventory.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -86,6 +87,11 @@ jobs:
             kicad/report_replica_order_evidence_template.py \
             kicad/report_replica_sourcing_readiness.py \
             kicad/report_replica_manufacturing_readiness.py
+
+      - name: Check unmodeled footprint inventory freshness
+        run: |
+          python3 scripts/report_unmodeled_footprint_inventory.py
+          git diff --exit-code -- docs/unmodeled-footprint-inventory.md
 
       - name: Check milestone ledger freshness
         run: |
@@ -236,6 +242,7 @@ jobs:
           python3 scripts/report_io_decode_boundary.py
           python3 scripts/report_video_analog_boundary.py
           python3 scripts/report_s4_interrupt_boundary.py
+          python3 scripts/report_unmodeled_footprint_inventory.py
           python3 scripts/report_owner_measurement_shortlist.py
           git diff --exit-code -- \
             docs/fdc-hardware-handoff.md \
@@ -246,6 +253,7 @@ jobs:
             docs/io-decode-boundary.md \
             docs/video-analog-boundary.md \
             docs/s4-interrupt-boundary.md \
+            docs/unmodeled-footprint-inventory.md \
             docs/owner-measurement-shortlist.md
 
       - name: Check replica bring-up report freshness

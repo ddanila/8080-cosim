@@ -31,6 +31,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | I/O decode boundary guarded | PASS |
 | Video/RF analog boundary guarded | PASS |
 | S4 interrupt boundary guarded | PASS |
+| D105/unmodeled footprint inventory guarded | PASS |
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |
 | Cartridge BASIC boundary documented | PASS |
@@ -45,6 +46,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P1 | D94 .092 continuity | D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required before any defensible D94 reverse-engineered burnable table |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F | reduces first EKDOS-on-hardware debug risk |
 | P1 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins | `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-A/WS-F | tightens the as-built netlist around RAM/video timing before netlist freeze |
+| P1 | D105 wait-gate promotion | D105.10 `H` source and D105.6 destination continuity, plus D2.D0/D105.9 confirmation before board-JSON promotion and reroute | `docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | turns an official placement-only `.009` LA3 into modeled wait-state logic without hiding the required routed-PCB refresh |
 | P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/video-analog-boundary.md`; `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives | `docs/decap-value-fidelity.md`; `PLAN.md` WS-F; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
 

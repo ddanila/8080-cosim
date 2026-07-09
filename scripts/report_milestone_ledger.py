@@ -277,6 +277,16 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check board fidelity gap ledger freshness",
     )
+    unmodeled_footprints_guarded = marker(
+        "docs/unmodeled-footprint-inventory.md",
+        "Status: **UNMODELED FOOTPRINT INVENTORY GUARDED**",
+    ) and marker(
+        "docs/unmodeled-footprint-inventory.md",
+        "D105 Wait-Gate Boundary",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check unmodeled footprint inventory freshness",
+    )
     decap_value_fidelity = marker(
         "docs/decap-value-fidelity.md",
         "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**",
@@ -1365,6 +1375,13 @@ def milestone_rows():
                         "the upload-ready PCB from fully historical-source-proven "
                         "1:1 reproduction"
                         if board_fidelity_gaps_cataloged
+                        else ""
+                    )
+                    + (
+                        ", and `docs/unmodeled-footprint-inventory.md` keeps "
+                        "official PCB/DSN-only IC footprints visible, with D105 "
+                        "identified as a wait-gate netlist/reroute promotion item"
+                        if unmodeled_footprints_guarded
                         else ""
                     )
                     + (
