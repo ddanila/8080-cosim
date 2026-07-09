@@ -47,6 +47,7 @@ REQUIRED_PATHS = [
     "docs/d94-reconstruction-constraints.md",
     "docs/vendored-disk-catalog.md",
     "docs/basic-disk-extraction.md",
+    "docs/basic-cartridge-tail-hypotheses.md",
     "docs/public-software-archive-inventory.md",
     "docs/re3-firmware-inspection.md",
     "docs/reconstructed-prom-fallbacks.md",

@@ -59,6 +59,7 @@ has been fully mined.
 | `docs/d94-reconstruction-constraints.md` | present |
 | `docs/vendored-disk-catalog.md` | present |
 | `docs/basic-disk-extraction.md` | present |
+| `docs/basic-cartridge-tail-hypotheses.md` | present |
 | `docs/public-software-archive-inventory.md` | present |
 | `docs/re3-firmware-inspection.md` | present |
 | `docs/reconstructed-prom-fallbacks.md` | present |

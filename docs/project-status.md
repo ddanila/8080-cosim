@@ -212,6 +212,9 @@ Historical merge notes:
   the public 8 KiB payload leaves `0x2100..0x21FF` unsupplied for the relocation
   source, and neither the extracted BASIC candidates nor the vendored raw
   `*.CPM`/`*.JUK` images provide a direct tail-page donor.
+  `docs/basic-cartridge-tail-hypotheses.md` derives the loop-tail bytes a viable
+  missing page must contain and rejects simple fill, append, and final-page
+  mirror hypotheses with runtime Monitor 3.3 probes.
   `sync/basic_factory_command_probe.py` covers the Baltijets doc 003 factory
   BASIC command `A` across all vendored public monitor ROMs: Monitor 3.3
   reaches the same zero-filled RAM boundary, the EktaSoft monitors still do not

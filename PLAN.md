@@ -360,6 +360,11 @@ debugging session saved on real hardware.
    tail page at `0x2100..0x21FF`; the disk-side BASIC candidates and all
    vendored raw `*.CPM`/`*.JUK` images are checked and are not direct tail donors
    for this cartridge shape.
+   `docs/basic-cartridge-tail-hypotheses.md` now derives the loop-tail bytes
+   required for any viable missing page and rejects the simple fill, raw append,
+   and final-page mirror reconstruction hypotheses with runtime Monitor 3.3
+   probes, so the remaining cartridge path needs a real larger artifact or a
+   deeper patch-level bootstrap reconstruction rather than a blind tail guess.
    The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and

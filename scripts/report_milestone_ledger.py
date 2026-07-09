@@ -287,6 +287,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check BASIC low-stub inspection freshness",
     )
+    basic_tail_hypotheses_rejected = marker(
+        "docs/basic-cartridge-tail-hypotheses.md",
+        "Status: **SIMPLE TAIL HYPOTHESES REJECTED**",
+    ) and marker(
+        "docs/basic-cartridge-tail-hypotheses.md",
+        "7e 12 23 13 0b 78 b1 c2 09 20 c3",
+    )
     basic_entry_rejected = marker(
         "docs/basic-entry-probe.md",
         "Status: **BASIC DIRECT RESET PATH REJECTED**",
@@ -822,6 +829,13 @@ def milestone_rows():
                     else ""
                 )
                 + (
+                    "`docs/basic-cartridge-tail-hypotheses.md` derives the loop-tail "
+                    "bytes required for a viable missing page and rejects fill, raw "
+                    "append, and final-page mirror hypotheses at runtime. "
+                    if basic_tail_hypotheses_rejected
+                    else ""
+                )
+                + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
                     "factory `A` command clue across all vendored public monitor "
                     "ROMs: Monitor 3.3 reaches the same zero-filled RAM boundary, "
@@ -952,6 +966,13 @@ def milestone_rows():
                     "and all vendored raw `*.CPM`/`*.JUK` images are checked and "
                     "are not direct tail donors. "
                     if basic_cartridge_length_audited
+                    else ""
+                )
+                + (
+                    "`docs/basic-cartridge-tail-hypotheses.md` derives the loop-tail "
+                    "bytes required for a viable missing page and rejects fill, raw "
+                    "append, and final-page mirror hypotheses at runtime. "
+                    if basic_tail_hypotheses_rejected
                     else ""
                 )
                 + (
