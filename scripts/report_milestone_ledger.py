@@ -621,7 +621,8 @@ def milestone_rows():
                     "`docs/d94-reconstruction-constraints.md` pins the automatic "
                     "D94 `.092` reconstruction boundary: address inputs are traced "
                     "to `BA11..BA15`, while `E_N`, all data-output destinations, "
-                    "and the `.092` contents remain absent; "
+                    "and the `.092` contents remain absent, with `kicad/juku.dsn` "
+                    "confirming only D94 power/address coverage; "
                     if d94_constraints
                     else ""
                 )

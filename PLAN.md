@@ -310,7 +310,8 @@ debugging session saved on real hardware.
    `docs/d94-reconstruction-constraints.md` now pins the automatic D94
    reconstruction boundary: address inputs are traced to `BA11..BA15`, but
    `E_N`, all eight data-output destinations, and the `.092` contents are
-   still missing from current repo evidence.
+   still missing from current repo evidence; `kicad/juku.dsn` independently
+   agrees on D94 power/address and also lacks the missing enable/output nets.
    Remaining V3 target: replace the sim-only second framebuffer read with the
    real РЕ3/АГ3-gated shared-DRAM video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and

@@ -40,12 +40,37 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 | 7 | D6 | - | not traced/netted |
 | 9 | D7 | - | not traced/netted |
 
+## KiCad DSN Cross-check
+
+The routed DSN independently exposes only D94 power/ground and address
+connections. It does not provide the missing enable/output nets.
+
+| Pin | Role | DSN Net | Result |
+| ---: | --- | --- | --- |
+| 1 | D0 | - | missing in DSN |
+| 2 | D1 | - | missing in DSN |
+| 3 | D2 | - | missing in DSN |
+| 4 | D3 | - | missing in DSN |
+| 5 | D4 | - | missing in DSN |
+| 6 | D5 | - | missing in DSN |
+| 7 | D6 | - | missing in DSN |
+| 8 | GND | `GND` | PASS |
+| 9 | D7 | - | missing in DSN |
+| 10 | A0 | `BA11` | PASS |
+| 11 | A1 | `BA12` | PASS |
+| 12 | A2 | `BA13` | PASS |
+| 13 | A3 | `BA14` | PASS |
+| 14 | A4 | `BA15` | PASS |
+| 15 | E_N | - | missing in DSN |
+| 16 | VCC | `P5V` | PASS |
+
 ## Current Evidence Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
 | Address pins D94.10-D94.14 are traced | PASS | board JSON nets |
+| DSN agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.dsn` D94 pins |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
@@ -59,7 +84,7 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 - Known: D94 is present in the .009 FDC quadrant and its five address
   inputs are wired to `BA11..BA15`.
 - Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are
-  not traced/netted in `kicad/juku.board.json`, and no
+  not traced/netted in `kicad/juku.board.json` or `kicad/juku.dsn`, and no
   `ДГШ5.106.092` programming table or dump is present under
   `ref/firmware/`.
 - Therefore a burnable D94 image is not derivable from current repo

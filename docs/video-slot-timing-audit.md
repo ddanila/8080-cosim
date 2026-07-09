@@ -21,6 +21,9 @@ python3 scripts/report_video_slot_timing_audit.py
 | Physical D42/D43 ИР16 serializers are traced in the transcription | PASS | `docs/transcription/dram-video-timing.md` |
 | Physical serializer instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
+| Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
+| D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
+| D42/D43 serializer control/serial nets are present in the board JSON | PASS | `kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q |
 | Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` V2 adjunct |
 | The DRAM model still exposes sim-only video read pins | PASS | `hdl/devices.v::dram_64kx1` |
 | LVS explicitly treats the sim-only video read pins as non-board pins | PASS | `sync/lvs.py` SIM_ONLY contract |

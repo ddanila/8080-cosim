@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
+DSN = ROOT / "kicad" / "juku.dsn"
 REPORT = ROOT / "docs" / "d94-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
 
@@ -40,6 +42,18 @@ def net_for_pin(board: dict, ref: str, pin: str) -> tuple[str, str] | None:
     return None
 
 
+def dsn_pin_nets(ref: str) -> dict[str, str]:
+    text = DSN.read_text(errors="replace")
+    found: dict[str, str] = {}
+    for match in re.finditer(r"\(net\s+([^\s()]+)\s+\(pins\s+([^)]*)\)\s*\)", text, flags=re.S):
+        name = match.group(1)
+        pins = re.findall(r"([A-Z]+\d+-\d+[A-Z]?)", match.group(2))
+        for pinref in pins:
+            if pinref.startswith(f"{ref}-"):
+                found[pinref.split("-", 1)[1]] = name
+    return found
+
+
 def firmware_candidates() -> list[str]:
     if not FIRMWARE.exists():
         return []
@@ -60,6 +74,7 @@ def main() -> int:
     enable_pins = [(pin, role) for pin, role in pin_roles.items() if role == "E_N"]
     board_type = str(chip.get("type", ""))
     board_identity_ok = board_type == "RE3_PROM_092"
+    dsn_nets = dsn_pin_nets("D94")
 
     address_rows: list[str] = []
     address_ok = True
@@ -94,6 +109,40 @@ def main() -> int:
             name, src = net
             enable_rows.append(f"| {pin} | {role} | `{name}` | {src or '-'} |")
 
+    dsn_pin_roles = dict(pin_roles)
+    dsn_pin_roles.update({"8": "GND", "16": "VCC"})
+    all_report_pins = sorted(dsn_pin_roles, key=lambda pin: int(pin))
+    dsn_rows = []
+    dsn_expected = {
+        "8": "GND",
+        "10": "BA11",
+        "11": "BA12",
+        "12": "BA13",
+        "13": "BA14",
+        "14": "BA15",
+        "16": "P5V",
+    }
+    dsn_ok = True
+    for pin in all_report_pins:
+        role = dsn_pin_roles[pin]
+        name = dsn_nets.get(pin)
+        expected = dsn_expected.get(pin)
+        if name is None:
+            dsn_rows.append(f"| {pin} | {role} | - | missing in DSN |")
+            if role.startswith("A"):
+                dsn_ok = False
+        else:
+            result = "PASS" if expected is None or name == expected else f"expected `{expected}`"
+            dsn_rows.append(f"| {pin} | {role} | `{name}` | {result} |")
+            if expected is not None and name != expected:
+                dsn_ok = False
+
+    dsn_output_nets = [
+        dsn_nets[pin]
+        for pin, role in output_pins
+        if pin in dsn_nets
+    ]
+
     candidates = firmware_candidates()
     hdl_placeholder = marker(
         "hdl/devices.v",
@@ -117,6 +166,7 @@ def main() -> int:
         address_ok
         and enable_ok
         and bool(output_nets)
+        and bool(dsn_output_nets)
         and bool(candidates)
     )
     status = "D94 RECONSTRUCTION READY" if can_reconstruct else "D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
@@ -160,12 +210,26 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## KiCad DSN Cross-check",
+            "",
+            "The routed DSN independently exposes only D94 power/ground and address",
+            "connections. It does not provide the missing enable/output nets.",
+            "",
+            "| Pin | Role | DSN Net | Result |",
+            "| ---: | --- | --- | --- |",
+        ]
+    )
+    lines.extend(dsn_rows)
+    lines.extend(
+        [
+            "",
             "## Current Evidence Checks",
             "",
             "| Check | Result | Evidence |",
             "| --- | --- | --- |",
             f"| Board identity names D94 as `.092`, not stale `.113` | {'PASS' if board_identity_ok else 'FAIL'} | `kicad/juku.board.json` type `{board_type or 'missing'}` |",
             f"| Address pins D94.10-D94.14 are traced | {'PASS' if address_ok else 'FAIL'} | board JSON nets |",
+            f"| DSN agrees on D94 power/address and lacks output nets | {'PASS' if dsn_ok and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
@@ -179,7 +243,7 @@ def main() -> int:
             "- Known: D94 is present in the .009 FDC quadrant and its five address",
             "  inputs are wired to `BA11..BA15`.",
             "- Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are",
-            "  not traced/netted in `kicad/juku.board.json`, and no",
+            "  not traced/netted in `kicad/juku.board.json` or `kicad/juku.dsn`, and no",
             "  `ДГШ5.106.092` programming table or dump is present under",
             "  `ref/firmware/`.",
             "- Therefore a burnable D94 image is not derivable from current repo",
@@ -194,7 +258,7 @@ def main() -> int:
     REPORT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")
-    return 0 if board_identity_ok and address_ok and hdl_placeholder and hdl_unconnected and scanned_not_d94 and video_audit_pending else 1
+    return 0 if board_identity_ok and address_ok and dsn_ok and hdl_placeholder and hdl_unconnected and scanned_not_d94 and video_audit_pending else 1
 
 
 if __name__ == "__main__":

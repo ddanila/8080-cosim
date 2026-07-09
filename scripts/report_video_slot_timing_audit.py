@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "video-slot-timing-audit.md"
 
 
@@ -31,7 +33,41 @@ def row(name: str, ok: bool, evidence: str) -> str:
     return f"| {name} | {'PASS' if ok else 'FAIL'} | {evidence} |"
 
 
+def load_board() -> dict:
+    return json.loads(BOARD.read_text())
+
+
+def net_has(board: dict, net_name: str, *nodes: tuple[str, str]) -> bool:
+    net = board["nets"].get(net_name)
+    if net is None:
+        return False
+    have = {tuple(node) for node in net.get("nodes", [])}
+    return all(node in have for node in nodes)
+
+
 def main() -> int:
+    board = load_board()
+    va_ok = all(
+        net_has(board, f"VA{bit}", (f"D{44 + bit // 4}", str(pin)))
+        for bit, pin in enumerate((3, 2, 6, 7, 3, 2, 6, 7, 3, 2, 6, 7, 3, 2, 6, 7))
+    )
+    d53_outputs = (
+        ("D53_Y0_R49", "15", "R49"),
+        ("D53_Y1_R50", "14", "R50"),
+        ("D53_Y2_R51", "13", "R51"),
+        ("D53_Y3_R52", "12", "R52"),
+    )
+    d53_ok = all(net_has(board, name, ("D53", pin), (res, "1")) for name, pin, res in d53_outputs)
+    serializer_ok = all(
+        net_has(board, net, (ref, pin))
+        for net, ref, pin in (
+            ("LOAD_VID", "D42", "6"),
+            ("LOAD_VID", "D43", "6"),
+            ("D43_DS", "D42", "1"),
+            ("D43_DS", "D43", "10"),
+            ("D42_Q", "D42", "10"),
+        )
+    )
     checks: list[tuple[str, bool, str]] = [
         (
             "Runnable raster geometry is guarded",
@@ -57,6 +93,21 @@ def main() -> int:
             "Physical CPU/video mux and D53 decode instances exist in `juku_top`",
             marker("hdl/juku_top.v", "kp14_mux U_D48", "kp14_mux U_D49", "kp14_mux U_D50", "kp14_mux U_D51", "rascas_dec U_D53"),
             "`hdl/juku_top.v`",
+        ),
+        (
+            "Video counter address nets VA0-VA15 are present in the board JSON",
+            va_ok,
+            "`kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage",
+        ),
+        (
+            "D53 bank/RAS ladder outputs are present in the board JSON",
+            d53_ok,
+            "`kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52",
+        ),
+        (
+            "D42/D43 serializer control/serial nets are present in the board JSON",
+            serializer_ok,
+            "`kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q",
         ),
         (
             "Runnable video still uses the abstract raster/read port",
