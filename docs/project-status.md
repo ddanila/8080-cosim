@@ -31,15 +31,17 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **Residual fabrication/bring-up risks are now explicit:** `docs/replica-bringup-verification-points.md`
   generates 41 source-risk verification points from `kicad/juku.board.json` and is
   required by the manufacturing readiness gate.
-- **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim with external media;
-  HDL WD1793 synthetic-sector behavior is guarded; jmon33 first-write HDL coverage
-  passes and the stronger uninterrupted reset-to-cursor HDL diagnostic now reaches
-  the exact cosim monitor-idle framebuffer hash; BASIC cartridge reads are proven
-  for both `jbasic11.bin` and the legacy
-  BAS0-3 image, but the Monitor 3.3 path is now documented as a compatibility
-  boundary and the RAM execution window remains zero-filled. The
-  Baltijets factory `A` command BASIC clue is now separately guarded and still
-  has no public ROM/media pairing that reaches the BASIC banner/`READY` oracle.
+- **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim and in the
+  reset-driven `juku_top` Verilator path with external media; disk-side
+  `JBASIC` on `JUKPROG2.CPM` reaches visible `A>JBASIC` and BASIC `READY` in
+  uninterrupted HDL. jmon33 first-write HDL coverage passes and the stronger
+  uninterrupted reset-to-cursor HDL diagnostic now reaches the exact cosim
+  monitor-idle framebuffer hash. BASIC cartridge reads are proven for both
+  `jbasic11.bin` and the legacy BAS0-3 image, but the Monitor 3.3 cartridge
+  path is now documented as a compatibility boundary and the later RAM
+  execution window remains zero-filled. The Baltijets factory `A` command BASIC
+  clue is separately guarded and still has no public ROM/media pairing that
+  reaches the cartridge BASIC banner/`READY` oracle.
 
 Historical merge notes:
 
@@ -232,8 +234,12 @@ Historical merge notes:
   scanline 121. The same helper now has an opt-in FDC data-read stop mode;
   `docs/juku-top-checkpoint-jbasic-mid-probe.md` starts from the 17,408-read
   cosim checkpoint and drains 10,752 additional HDL `IN 0x1F` reads. The
-  remaining HDL BASIC gap is the uninterrupted reset-to-EKDOS-to-JBASIC run
-  without checkpoint/resume.
+  checkpoint split is now superseded by
+  `docs/juku-top-jbasic-verilator-probe.md`: an uninterrupted reset-driven
+  `juku_top` run on `JUKPROG2.CPM` reaches EKDOS `A>`, visible `A>JBASIC`,
+  BASIC `READY`, and the expected 19,968 WD1793 data-register reads.
+  `sync/juku_top_jbasic_prompt_check.sh` guards the committed evidence, with an
+  opt-in deep rerun mode for local proof refresh.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;
