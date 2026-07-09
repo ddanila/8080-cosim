@@ -62,8 +62,12 @@ Compatibility notes:
 
 - `jmon33` with `jbasic11.bin` reads the BASIC cartridge and executes in `0x4000..0xBFFF`; `17881962` of those PC cycles are in RAM/ROM mode 1 and `0` are in cartridge overlay mode 2. `17881962` PC cycles fetch a `0x00` opcode there. The RAM window saw `1636` accepted writes, `0` of them nonzero, from PC range `0xF008` to `0xF008` over addresses `0x8AD2`..`0x8AD2`, ending with `0` nonzero bytes and byte sum `0`. The captured framebuffer has `0` visible pixels.
   The write PC is sampled after opcode fetch; in the high-ROM `jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` at `0xF007` in the local copy/clear loop.
+  First sampled cartridge reads: `pc=EF4D a=4004 v=DC mode=2 pc=EF4D a=4003 v=BA mode=2 pc=FF09 a=4006 v=20 mode=2 pc=FF09 a=4005 v=00 mode=2 pc=D763 a=4000 v=C3 mode=2 pc=D763 a=4001 v=07 mode=2 pc=D763 a=4002 v=01 mode=2 pc=D763 a=4003 v=BA mode=2`.
+  First sampled BASIC-window writes: `pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1`.
 - `jmon33` with `BAS0-3.HEX` reads the BASIC cartridge and executes in `0x4000..0xBFFF`; `17881962` of those PC cycles are in RAM/ROM mode 1 and `0` are in cartridge overlay mode 2. `17881962` PC cycles fetch a `0x00` opcode there. The RAM window saw `1636` accepted writes, `0` of them nonzero, from PC range `0xF008` to `0xF008` over addresses `0x8AD2`..`0x8AD2`, ending with `0` nonzero bytes and byte sum `0`. The captured framebuffer has `0` visible pixels.
   The write PC is sampled after opcode fetch; in the high-ROM `jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` at `0xF007` in the local copy/clear loop.
+  First sampled cartridge reads: `pc=EF4D a=4004 v=DC mode=2 pc=EF4D a=4003 v=BA mode=2 pc=FF09 a=4006 v=20 mode=2 pc=FF09 a=4005 v=00 mode=2 pc=D763 a=4000 v=C3 mode=2 pc=D763 a=4001 v=07 mode=2 pc=D763 a=4002 v=01 mode=2 pc=D763 a=4003 v=BA mode=2`.
+  First sampled BASIC-window writes: `pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1 pc=F008 a=8AD2 v=00 mode=1`.
 - `ekta37` with `jbasic11.bin` does not select the cartridge overlay in this run.
 - The current evidence is therefore a compatibility boundary, not just a
   missing prompt: the tested Monitor 3.3 path reads the media but does not

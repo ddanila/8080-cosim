@@ -57,6 +57,11 @@ READ_RE = re.compile(
     r"cart_overlay_reads\s+:\s+([0-9]+).*?cart_pc_reads\s+:\s+([0-9]+)",
     re.S,
 )
+SAMPLES_RE = re.compile(
+    r"cart_read_samples\s+:\s+(.+?)\n"
+    r"\s+basic_ram_write_samples\s+:\s+(.+?)\n",
+    re.S,
+)
 RAM_RE = re.compile(
     r"basic_ram_writes\s+:\s+([0-9]+).*?"
     r"basic_ram_nonzero_writes\s+:\s+([0-9]+).*?"
@@ -82,7 +87,18 @@ def instrumented_trace_source() -> str:
         "static unsigned basic_probe_ram_first_write = 0x10000;\n"
         "static unsigned basic_probe_ram_last_write = 0;\n"
         "static unsigned basic_probe_ram_first_write_pc = 0;\n"
-        "static unsigned basic_probe_ram_last_write_pc = 0;\n",
+        "static unsigned basic_probe_ram_last_write_pc = 0;\n"
+        "#define BASIC_SAMPLE_MAX 8\n"
+        "static unsigned basic_probe_cart_sample_count = 0;\n"
+        "static unsigned basic_probe_cart_sample_pc[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_cart_sample_addr[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_cart_sample_value[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_cart_sample_mode[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_ram_sample_count = 0;\n"
+        "static unsigned basic_probe_ram_sample_pc[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_ram_sample_addr[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_ram_sample_value[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_ram_sample_mode[BASIC_SAMPLE_MAX];\n",
     )
     src = src.replace(
         "  (void)u; unsigned idx = 0;\n",
@@ -94,7 +110,15 @@ def instrumented_trace_source() -> str:
         "  if (ov == 2) {\n"
         "    basic_probe_cart_reads++;\n"
         "    if (cpu && cpu->pc >= 0x4000 && cpu->pc <= 0xBFFF) basic_probe_cart_pc_reads++;\n"
-        "    return cart_enabled ? cart[a - 0x4000] : 0xFF;\n"
+        "    uint8_t cart_value = cart_enabled ? cart[a - 0x4000] : 0xFF;\n"
+        "    if (basic_probe_cart_sample_count < BASIC_SAMPLE_MAX) {\n"
+        "      unsigned sample = basic_probe_cart_sample_count++;\n"
+        "      basic_probe_cart_sample_pc[sample] = cpu ? cpu->pc : 0;\n"
+        "      basic_probe_cart_sample_addr[sample] = a;\n"
+        "      basic_probe_cart_sample_value[sample] = cart_value;\n"
+        "      basic_probe_cart_sample_mode[sample] = mode;\n"
+        "    }\n"
+        "    return cart_value;\n"
         "  }\n",
         1,
     )
@@ -112,6 +136,13 @@ def instrumented_trace_source() -> str:
         "    }\n"
         "    basic_probe_ram_last_write = a;\n"
         "    basic_probe_ram_last_write_pc = write_cpu ? write_cpu->pc : 0;\n"
+        "    if (basic_probe_ram_sample_count < BASIC_SAMPLE_MAX) {\n"
+        "      unsigned sample = basic_probe_ram_sample_count++;\n"
+        "      basic_probe_ram_sample_pc[sample] = write_cpu ? write_cpu->pc : 0;\n"
+        "      basic_probe_ram_sample_addr[sample] = a;\n"
+        "      basic_probe_ram_sample_value[sample] = v;\n"
+        "      basic_probe_ram_sample_mode[sample] = mode;\n"
+        "    }\n"
         "  }\n"
         "  wpage[a >> 8]++;\n",
         1,
@@ -159,6 +190,18 @@ def instrumented_trace_source() -> str:
         '  printf("  basic_ram_last_write_pc  : 0x%04X\\n", basic_probe_ram_last_write_pc & 0xFFFF);\n'
         '  printf("  basic_ram_nonzero_bytes  : %8lu\\n", basic_ram_nonzero);\n'
         '  printf("  basic_ram_byte_sum       : %8lu\\n", basic_ram_sum);\n'
+        '  printf("  cart_read_samples :");\n'
+        '  for (unsigned i = 0; i < basic_probe_cart_sample_count; i++)\n'
+        '    printf(" pc=%04X a=%04X v=%02X mode=%u", basic_probe_cart_sample_pc[i] & 0xFFFF,\n'
+        '           basic_probe_cart_sample_addr[i] & 0xFFFF, basic_probe_cart_sample_value[i] & 0xFF,\n'
+        '           basic_probe_cart_sample_mode[i]);\n'
+        '  printf("\\n");\n'
+        '  printf("  basic_ram_write_samples :");\n'
+        '  for (unsigned i = 0; i < basic_probe_ram_sample_count; i++)\n'
+        '    printf(" pc=%04X a=%04X v=%02X mode=%u", basic_probe_ram_sample_pc[i] & 0xFFFF,\n'
+        '           basic_probe_ram_sample_addr[i] & 0xFFFF, basic_probe_ram_sample_value[i] & 0xFF,\n'
+        '           basic_probe_ram_sample_mode[i]);\n'
+        '  printf("\\n");\n'
         '  printf("\\n==== RAM write density (pages >0) ====\\n");\n',
     )
     return src
@@ -227,6 +270,13 @@ def parse_ram_probe(stdout: str) -> dict[str, int]:
         "nonzero_bytes": int(nonzero_bytes),
         "byte_sum": int(byte_sum),
     }
+
+
+def parse_samples(stdout: str) -> tuple[str, str]:
+    match = SAMPLES_RE.search(stdout)
+    if not match:
+        return "", ""
+    return match.group(1).strip(), match.group(2).strip()
 
 
 def visible_pixels(vram: bytes) -> int:
@@ -402,6 +452,7 @@ def main() -> int:
             pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
             cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
             ram_probe = parse_ram_probe(proc.stdout)
+            cart_samples, ram_samples = parse_samples(proc.stdout)
             sha = hashlib.sha256(vram).hexdigest() if vram else ""
             vram_ok = len(vram) == VRAM_SIZE
             pixels = visible_pixels(vram)
@@ -424,6 +475,8 @@ def main() -> int:
                     "cart_overlay_reads": cart_overlay_reads,
                     "cart_pc_reads": cart_pc_reads,
                     "ram_probe": ram_probe,
+                    "cart_samples": cart_samples,
+                    "ram_samples": ram_samples,
                     "sha": sha,
                     "visible_pixels": pixels,
                     "vram_ok": vram_ok,
@@ -557,6 +610,15 @@ def main() -> int:
                     "`jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` "
                     "at `0xF007` in the local copy/clear loop."
                 )
+                if result["cart_samples"] or result["ram_samples"]:
+                    lines.append(
+                        "  First sampled cartridge reads: "
+                        f"`{result['cart_samples'] or 'none'}`."
+                    )
+                    lines.append(
+                        "  First sampled BASIC-window writes: "
+                        f"`{result['ram_samples'] or 'none'}`."
+                    )
         else:
             lines.append(
                 f"- `{result['case'].name}` with `{result['case'].cart_name}` does not "
