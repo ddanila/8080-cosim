@@ -199,13 +199,36 @@ first later entry into the failing BASIC window as
 `0x3FFF -> 0x4000`, `src=ram`, `op=0x00`, `mode=1/1`: a linear
 fall-through into zero-filled RAM, not a cartridge-overlay jump.
 
-Important inference: the relocation destination `0x0100..0x20FF`
-contains the currently executing bootstrap loop itself, including the
-nominal return jump at `0x2013`. The source region for that return
-slot is runtime `0x2113`, outside the 8 KiB cartridge payload copied
-by Monitor 3.3. That makes the observed missing `0x2013 -> 0x0100`
-return plausible: the loop can erase its own tail before it reaches
-the final jump, after which execution falls through zero-filled RAM.
+## Relocation Self-overwrite Audit
+
+The bootstrap loop is self-destructive with the currently loaded 8 KiB
+cartridge shape. Monitor 3.3 has populated runtime RAM only through
+`0x20FF`; the loop source continues through `0x21FF`, so the bytes
+that overwrite the live loop tail come from zero-filled RAM.
+
+| Runtime byte | Original | Copy iteration | Source byte | Replacement | Remaining copies after write |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| `0x2009` | `0x7E` | `0x1F09` | `0x2109` | `0x00` | `246` |
+| `0x200A` | `0x12` | `0x1F0A` | `0x210A` | `0x00` | `245` |
+| `0x200B` | `0x23` | `0x1F0B` | `0x210B` | `0x00` | `244` |
+| `0x200C` | `0x13` | `0x1F0C` | `0x210C` | `0x00` | `243` |
+| `0x200D` | `0x0B` | `0x1F0D` | `0x210D` | `0x00` | `242` |
+| `0x200E` | `0x78` | `0x1F0E` | `0x210E` | `0x00` | `241` |
+| `0x200F` | `0xB1` | `0x1F0F` | `0x210F` | `0x00` | `240` |
+| `0x2010` | `0xC2` | `0x1F10` | `0x2110` | `0x00` | `239` |
+| `0x2011` | `0x09` | `0x1F11` | `0x2111` | `0x00` | `238` |
+| `0x2012` | `0x20` | `0x1F12` | `0x2112` | `0x00` | `237` |
+| `0x2013` | `0xC3` | `0x1F13` | `0x2113` | `0x00` | `236` |
+| `0x2014` | `0x00` | `0x1F14` | `0x2114` | `0x00` | `235` |
+| `0x2015` | `0x01` | `0x1F15` | `0x2115` | `0x00` | `234` |
+
+The first live loop byte overwritten is `0x2009`, the `MOV A,M` at
+the loop target. It is replaced from runtime `0x2109` while `246`
+copies still remain. The nominal `JMP 0x0100` at `0x2013` is
+replaced from runtime `0x2113` while `236` copies still remain.
+This turns the previous inference into a pinned boundary: the
+current Monitor 3.3 cartridge launch cannot reach the intended
+`0x2013 -> 0x0100` return using only the 8 KiB public payload.
 
 ## Linear Disassembly: Cartridge
 

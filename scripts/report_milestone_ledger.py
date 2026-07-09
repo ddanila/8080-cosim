@@ -242,6 +242,9 @@ def milestone_rows():
     basic_low_stub_inspected = marker(
         "docs/basic-low-stub-inspection.md",
         "Status: **LOW STUB PATCHED / BODY MATCHES**",
+    ) and marker(
+        "docs/basic-low-stub-inspection.md",
+        "Relocation Self-overwrite Audit",
     )
     basic_entry_rejected = marker(
         "docs/basic-entry-probe.md",
@@ -728,8 +731,12 @@ def milestone_rows():
                     "`0x0200..0x21FF` down to `0x0100..0x20FF`. The loaded "
                     "image changes the "
                     "`0x0100` stack pointer to `0xFFFE`, leaves the body exact, "
-                    "and narrows the remaining cartridge work to the relocated "
-                    "low workspace/control path after the `0x2000` bootstrap. "
+                    "and pins the relocation self-overwrite: `0x2009` is replaced "
+                    "from zero-filled `0x2109` with 246 copies left, and the "
+                    "nominal `JMP 0x0100` at `0x2013` is replaced from `0x2113` "
+                    "with 236 copies left. That narrows the remaining cartridge "
+                    "work to a public-8K-payload/Monitor-3.3 compatibility "
+                    "boundary after the `0x2000` bootstrap. "
                     if basic_low_stub_inspected
                     else ""
                 )
@@ -847,8 +854,12 @@ def milestone_rows():
                     "`0x0200..0x21FF` down to `0x0100..0x20FF`. The loaded "
                     "image changes the "
                     "`0x0100` stack pointer to `0xFFFE`, leaves the body exact, "
-                    "and narrows the remaining cartridge work to the relocated "
-                    "low workspace/control path after the `0x2000` bootstrap. "
+                    "and pins the relocation self-overwrite: `0x2009` is replaced "
+                    "from zero-filled `0x2109` with 246 copies left, and the "
+                    "nominal `JMP 0x0100` at `0x2013` is replaced from `0x2113` "
+                    "with 236 copies left. That narrows the remaining cartridge "
+                    "work to a public-8K-payload/Monitor-3.3 compatibility "
+                    "boundary after the `0x2000` bootstrap. "
                     if basic_low_stub_inspected
                     else ""
                 )

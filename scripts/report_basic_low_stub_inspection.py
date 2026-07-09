@@ -68,6 +68,24 @@ def word(data: bytes, addr: int) -> int:
     return data[addr] | (data[addr + 1] << 8)
 
 
+def initial_runtime_ram(cart: bytes) -> bytearray:
+    ram = bytearray(0x10000)
+    ram[0x0100:0x0100 + len(cart)] = cart
+    return ram
+
+
+def relocation_overwrite_rows(cart: bytes) -> list[tuple[int, int, int, int, int, int]]:
+    ram = initial_runtime_ram(cart)
+    rows = []
+    for addr in range(0x2009, 0x2016):
+        iteration = addr - 0x0100
+        src = 0x0200 + iteration
+        replacement = ram[src]
+        remaining_after = 0x2000 - iteration - 1
+        rows.append((addr, ram[addr], iteration, src, replacement, remaining_after))
+    return rows
+
+
 def main() -> int:
     dis8080 = load_disassembler()
     cart = JBASIC.read_bytes()
@@ -79,6 +97,7 @@ def main() -> int:
     loaded_bytes = bytes(loaded)
 
     changed = [(addr, cart[addr], loaded[addr]) for addr in sorted(LOW_RAM_PATCH)]
+    overwrite_rows = relocation_overwrite_rows(cart)
     grouped = [
         ("0101..0102", f"`LXI SP` operand changes `0x{word(cart, 0x0101):04X}` -> `0x{word(loaded_bytes, 0x0101):04X}`"),
         ("0111..0112", f"low control bytes change `0x{word(cart, 0x0111):04X}` -> `0x{word(loaded_bytes, 0x0111):04X}`"),
@@ -203,13 +222,31 @@ def main() -> int:
             "`0x3FFF -> 0x4000`, `src=ram`, `op=0x00`, `mode=1/1`: a linear",
             "fall-through into zero-filled RAM, not a cartridge-overlay jump.",
             "",
-            "Important inference: the relocation destination `0x0100..0x20FF`",
-            "contains the currently executing bootstrap loop itself, including the",
-            "nominal return jump at `0x2013`. The source region for that return",
-            "slot is runtime `0x2113`, outside the 8 KiB cartridge payload copied",
-            "by Monitor 3.3. That makes the observed missing `0x2013 -> 0x0100`",
-            "return plausible: the loop can erase its own tail before it reaches",
-            "the final jump, after which execution falls through zero-filled RAM.",
+            "## Relocation Self-overwrite Audit",
+            "",
+            "The bootstrap loop is self-destructive with the currently loaded 8 KiB",
+            "cartridge shape. Monitor 3.3 has populated runtime RAM only through",
+            "`0x20FF`; the loop source continues through `0x21FF`, so the bytes",
+            "that overwrite the live loop tail come from zero-filled RAM.",
+            "",
+            "| Runtime byte | Original | Copy iteration | Source byte | Replacement | Remaining copies after write |",
+            "| ---: | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    lines.extend(
+        f"| `0x{addr:04X}` | `0x{old:02X}` | `0x{iteration:04X}` | `0x{src:04X}` | `0x{replacement:02X}` | `{remaining}` |"
+        for addr, old, iteration, src, replacement, remaining in overwrite_rows
+    )
+    lines.extend(
+        [
+            "",
+            "The first live loop byte overwritten is `0x2009`, the `MOV A,M` at",
+            "the loop target. It is replaced from runtime `0x2109` while `246`",
+            "copies still remain. The nominal `JMP 0x0100` at `0x2013` is",
+            "replaced from runtime `0x2113` while `236` copies still remain.",
+            "This turns the previous inference into a pinned boundary: the",
+            "current Monitor 3.3 cartridge launch cannot reach the intended",
+            "`0x2013 -> 0x0100` return using only the 8 KiB public payload.",
             "",
             "## Linear Disassembly: Cartridge",
             "",

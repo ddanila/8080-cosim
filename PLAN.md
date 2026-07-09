@@ -341,9 +341,13 @@ debugging session saved on real hardware.
    byte. `docs/basic-low-stub-inspection.md` now groups those deltas: the loaded
    image changes the `0x0100` stack pointer from `0xD700` to `0xFFFE`, keeps the
    first `0x0200` bytes identical across the two public BASIC media shapes, and
-   leaves the full body exact. The remaining cartridge path is therefore the
-   relocated low BASIC/workspace-control flow after the `0x2000` bootstrap, not
-   the D8/D22 window or bulk copy. The probe records the
+   leaves the full body exact. It also pins the relocation self-overwrite: the
+   live loop target byte at `0x2009` is replaced from zero-filled runtime
+   `0x2109` with 246 copies still left, and the nominal `JMP 0x0100` at
+   `0x2013` is replaced from `0x2113` with 236 copies still left. The remaining
+   cartridge path is therefore a public-8K-payload/Monitor-3.3 compatibility
+   boundary after the `0x2000` bootstrap, not the D8/D22 window or bulk copy.
+   The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and
    both BASIC media images start with an absolute `JMP 0x0107` rather than a
