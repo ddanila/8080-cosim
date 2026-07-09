@@ -229,6 +229,9 @@ replaced from runtime `0x2113` while `236` copies still remain.
 This turns the previous inference into a pinned boundary: the
 current Monitor 3.3 cartridge launch cannot reach the intended
 `0x2013 -> 0x0100` return using only the 8 KiB public payload.
+`docs/basic-cartridge-length-audit.md` pins the exact media-shape reason:
+the runtime copy source extends through `0x21FF`, one 256-byte page beyond
+the public payload loaded at `0x0100..0x20FF`.
 
 ## Linear Disassembly: Cartridge
 
@@ -352,7 +355,8 @@ current Monitor 3.3 cartridge launch cannot reach the intended
 - The loaded low stub is not random corruption: changes are sparse,
   repeat for both public BASIC media shapes, and leave the body exact.
 - The next cartridge-BASIC step is to identify what monitor routine patches
-  or synthesizes these low bytes, then confirm the intended launch PC/mode.
+  or synthesizes these low bytes, and to locate a cartridge media shape that
+  supplies the missing runtime `0x2100..0x21FF` tail page.
 - Disk-side EKDOS `JBASIC.COM` is already proven separately to visible
   `READY`; this report only narrows the unresolved Monitor 3.3 cartridge
   path.

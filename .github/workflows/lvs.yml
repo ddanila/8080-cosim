@@ -36,6 +36,7 @@ jobs:
             scripts/wd1772_pla.py \
             scripts/report_juku_top_fdc_alignment.py \
             scripts/report_basic_low_stub_inspection.py \
+            scripts/report_basic_cartridge_length_audit.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -74,7 +75,9 @@ jobs:
       - name: Check BASIC low-stub inspection freshness
         run: |
           python3 scripts/report_basic_low_stub_inspection.py
+          python3 scripts/report_basic_cartridge_length_audit.py
           git diff --exit-code -- docs/basic-low-stub-inspection.md
+          git diff --exit-code -- docs/basic-cartridge-length-audit.md
 
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh

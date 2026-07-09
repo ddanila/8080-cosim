@@ -246,6 +246,16 @@ def milestone_rows():
         "docs/basic-low-stub-inspection.md",
         "Relocation Self-overwrite Audit",
     )
+    basic_cartridge_length_audited = marker(
+        "docs/basic-cartridge-length-audit.md",
+        "Status: **CARTRIDGE BASIC TAIL PAGE MISSING**",
+    ) and marker(
+        "docs/basic-cartridge-length-audit.md",
+        "Missing source bytes | `256`",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check BASIC low-stub inspection freshness",
+    )
     basic_entry_rejected = marker(
         "docs/basic-entry-probe.md",
         "Status: **BASIC DIRECT RESET PATH REJECTED**",
@@ -741,6 +751,15 @@ def milestone_rows():
                     else ""
                 )
                 + (
+                    "`docs/basic-cartridge-length-audit.md` sharpens that boundary: "
+                    "the public 8 KiB payload loaded at `0x0100` ends at `0x20FF`, "
+                    "but the bootstrap copies `0x0200..0x21FF`, leaving an exact "
+                    "missing tail page `0x2100..0x21FF`; disk-side BASIC candidates "
+                    "are checked and are not direct tail donors. "
+                    if basic_cartridge_length_audited
+                    else ""
+                )
+                + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
                     "factory `A` command clue across all vendored public monitor "
                     "ROMs: Monitor 3.3 reaches the same zero-filled RAM boundary, "
@@ -861,6 +880,15 @@ def milestone_rows():
                     "work to a public-8K-payload/Monitor-3.3 compatibility "
                     "boundary after the `0x2000` bootstrap. "
                     if basic_low_stub_inspected
+                    else ""
+                )
+                + (
+                    "`docs/basic-cartridge-length-audit.md` sharpens that boundary: "
+                    "the public 8 KiB payload loaded at `0x0100` ends at `0x20FF`, "
+                    "but the bootstrap copies `0x0200..0x21FF`, leaving an exact "
+                    "missing tail page `0x2100..0x21FF`; disk-side BASIC candidates "
+                    "are checked and are not direct tail donors. "
+                    if basic_cartridge_length_audited
                     else ""
                 )
                 + (
