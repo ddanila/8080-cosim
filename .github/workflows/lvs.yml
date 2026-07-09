@@ -20,6 +20,7 @@ jobs:
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
+            scripts/report_source_coverage_audit.py \
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
             scripts/report_re3_firmware_inspection.py \
@@ -104,6 +105,11 @@ jobs:
             ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM \
             ref/extracted-software/README.md \
             ref/extracted-software/SHA256SUMS
+
+      - name: Check source coverage audit freshness
+        run: |
+          python3 scripts/report_source_coverage_audit.py
+          git diff --exit-code -- docs/source-coverage-audit.md
 
       - name: Check WD1772 PLA inspection freshness
         run: |

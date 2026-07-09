@@ -33,13 +33,18 @@ def count_baltijets_pdfs():
 
 def source_coverage_audited():
     text = read(ROOT / "docs" / "source-coverage-audit.md")
-    return all(
+    return marker("docs/source-coverage-audit.md", "Status: **PASS**") and marker(
+        ".github/workflows/lvs.yml",
+        "Check source coverage audit freshness",
+    ) and all(
         needle in text
         for needle in [
             "https://arti.ee/juku/",
             "https://elektroonikamuuseum.ee/failid/juku/",
             "https://github.com/infoaed/juku3000/tree/master/roms",
             "https://arvutimuuseum.ee/cs00000/",
+            "https://github.com/vpyk/emu80v4",
+            "Local WD1772 transistor/PLA files",
         ]
     )
 
@@ -361,8 +366,10 @@ def milestone_rows():
                 f"{pdf_count} Baltijets PDFs present; PLAN records first-pass mining "
                 "for 002/003/007/009/014/015; "
                 + (
-                    "`docs/source-coverage-audit.md` records Arti, Elektroonikamuuseum, "
-                    "infoaed/juku3000 ROM, and Arvutimuuseum coverage; "
+                    "`docs/source-coverage-audit.md` is a generated PASS audit for "
+                    "Arti, Elektroonikamuuseum, infoaed/juku3000 ROM, "
+                    "Arvutimuuseum, Emu80v4, and local WD1772/VG93 reference "
+                    "coverage; "
                     if public_sources_audited
                     else "public-source coverage audit is missing or incomplete; "
                 )
