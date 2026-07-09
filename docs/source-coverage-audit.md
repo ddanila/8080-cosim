@@ -78,7 +78,8 @@ has been fully mined.
   `docs/ekdos-source-inspection.md` guards the monitor-call, disk
   parameter, and floppy-handler constants used by the `TDD`/FDC work.
 - `scripts/report_vendored_disk_catalog.py` indexes the vendored Arti
-  disk images and records disk-side BASIC candidates. `JUKU1.CPM`
+  and museum raw disk images and records disk-side BASIC candidates.
+  `J3KUTIL4.JUK` is cataloged alongside the CP/M images; `JUKU1.CPM`
   contains `JBASIC.COM`; `JUKPROG2.CPM` contains `JBASIC.COM`,
   `B80.COM`, `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and
   `BASLIB.REL`.

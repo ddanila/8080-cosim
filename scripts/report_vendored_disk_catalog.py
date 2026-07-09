@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DISK_DIR = ROOT / "media" / "disks"
 REPORT = ROOT / "docs" / "vendored-disk-catalog.md"
+DISK_GLOBS = ("*.CPM", "*.JUK")
 
 DIRECTORY_OFFSET = 0x5000
 DIRECTORY_ENTRIES = 128
@@ -84,7 +85,10 @@ def table_row(values):
 
 
 def main():
-    disks = sorted(DISK_DIR.glob("*.CPM"))
+    disks = []
+    for pattern in DISK_GLOBS:
+        disks.extend(DISK_DIR.glob(pattern))
+    disks = sorted(disks)
     catalogs = [(disk, parse_directory(disk)) for disk in disks]
 
     lines = [
@@ -93,7 +97,7 @@ def main():
         "Status: **VENDORED DISK DIRECTORY INDEXED**",
         "",
         "This report indexes the visible CP/M directory entries in the vendored",
-        "Arti Juku raw disk images under `media/disks/`. It is intentionally a",
+        "Juku raw disk images under `media/disks/`. It is intentionally a",
         "conservative catalog, not a full CP/M filesystem extractor.",
         "",
         f"The current images expose their directory at byte offset `0x{DIRECTORY_OFFSET:04X}`.",

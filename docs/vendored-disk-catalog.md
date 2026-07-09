@@ -3,7 +3,7 @@
 Status: **VENDORED DISK DIRECTORY INDEXED**
 
 This report indexes the visible CP/M directory entries in the vendored
-Arti Juku raw disk images under `media/disks/`. It is intentionally a
+Juku raw disk images under `media/disks/`. It is intentionally a
 conservative catalog, not a full CP/M filesystem extractor.
 
 The current images expose their directory at byte offset `0x5000`.
@@ -19,6 +19,73 @@ and strips CP/M attribute bits from filename bytes.
 | media/disks/JUKU1.CPM | `B80.COM`, `JBASIC.COM` |
 
 ## Directory entries
+
+### `media/disks/J3KUTIL4.JUK`
+
+- Size: `819200` bytes
+- Directory entries found: `59`
+
+| Entry | Offset | User | Filename | Extent | Records |
+| ---: | ---: | ---: | --- | ---: | ---: |
+| 0 | 0x05000 | 0 | `READ.ME` | 0 | 33 |
+| 4 | 0x05080 | 0 | `LF.COM` | 0 | 16 |
+| 5 | 0x050A0 | 0 | `MODX.COM` | 0 | 28 |
+| 6 | 0x050C0 | 0 | `CAL.COM` | 1 | 14 |
+| 7 | 0x050E0 | 0 | `CF.COM` | 0 | 8 |
+| 8 | 0x05100 | 0 | `CF.HLP` | 0 | 12 |
+| 9 | 0x05120 | 0 | `COMPU.COM` | 0 | 14 |
+| 10 | 0x05140 | 0 | `DEMO.COM` | 0 | 41 |
+| 11 | 0x05160 | 0 | `DEMO.DOC` | 0 | 70 |
+| 12 | 0x05180 | 0 | `DEMO.HLP` | 0 | 28 |
+| 13 | 0x051A0 | 0 | `DEMOS.COM` | 0 | 66 |
+| 14 | 0x051C0 | 0 | `DEMOS.DOC` | 0 | 123 |
+| 15 | 0x051E0 | 0 | `DOCTOR.COM` | 2 | 28 |
+| 32 | 0x05400 | 0 | `EKDOS30.ASM` | 0 | 112 |
+| 33 | 0x05420 | 0 | `FDMAINT.COM` | 0 | 81 |
+| 34 | 0x05440 | 0 | `FX800.COM` | 0 | 14 |
+| 35 | 0x05460 | 0 | `JCM.COM` | 0 | 96 |
+| 36 | 0x05480 | 0 | `JCM.HLP` | 0 | 59 |
+| 37 | 0x054A0 | 0 | `JLOAD.LDR` | 0 | 3 |
+| 38 | 0x054C0 | 0 | `JSET.COM` | 0 | 4 |
+| 39 | 0x054E0 | 0 | `KULT.COM` | 0 | 95 |
+| 40 | 0x05500 | 0 | `KULT.HLP` | 0 | 69 |
+| 41 | 0x05520 | 0 | `KUVA.COM` | 0 | 6 |
+| 42 | 0x05540 | 0 | `LINK.COM` | 0 | 122 |
+| 43 | 0x05560 | 0 | `MAC.COM` | 0 | 92 |
+| 44 | 0x05580 | 0 | `MDUMP.COM` | 0 | 4 |
+| 45 | 0x055A0 | 0 | `ME.COM` | 1 | 123 |
+| 46 | 0x055C0 | 0 | `ME.DOC` | 0 | 96 |
+| 47 | 0x055E0 | 0 | `MED.COM` | 0 | 24 |
+| 64 | 0x05800 | 0 | `MIC.COM` | 0 | 30 |
+| 65 | 0x05820 | 0 | `MIC.HLP` | 0 | 50 |
+| 66 | 0x05840 | 0 | `MIT.COM` | 0 | 128 |
+| 67 | 0x05860 | 0 | `MUSAM.COM` | 0 | 29 |
+| 68 | 0x05880 | 0 | `PLAYER.ERL` | 0 | 4 |
+| 69 | 0x058A0 | 0 | `POWER.COM` | 0 | 128 |
+| 70 | 0x058C0 | 0 | `PRT.COM` | 0 | 32 |
+| 71 | 0x058E0 | 0 | `PRT.DOC` | 0 | 58 |
+| 72 | 0x05900 | 0 | `RESIDENT.DOC` | 0 | 13 |
+| 73 | 0x05920 | 0 | `SDEL.COM` | 0 | 7 |
+| 74 | 0x05940 | 0 | `SED80.COM` | 0 | 80 |
+| 75 | 0x05960 | 0 | `SEIKO.COM` | 0 | 14 |
+| 76 | 0x05980 | 0 | `SETS.COM` | 0 | 11 |
+| 77 | 0x059A0 | 0 | `SK.COM` | 0 | 32 |
+| 78 | 0x059C0 | 0 | `SYSINFO.COM` | 0 | 9 |
+| 79 | 0x059E0 | 0 | `WSJ.COM` | 0 | 124 |
+| 96 | 0x05C00 | 0 | `WSMSGS.OVR` | 1 | 90 |
+| 97 | 0x05C20 | 0 | `WSOVLY1.OVR` | 2 | 10 |
+| 98 | 0x05C40 | 0 | `BUGABOO.COM` | 1 | 11 |
+| 99 | 0x05C60 | 0 | `BUGABOO.DAT` | 0 | 8 |
+| 100 | 0x05C80 | 0 | `BUGABOO.MSG` | 0 | 11 |
+| 101 | 0x05CA0 | 0 | `BUGABOO.TAB` | 0 | 1 |
+| 102 | 0x05CC0 | 0 | `CATCHUM.COM` | 1 | 101 |
+| 103 | 0x05CE0 | 0 | `CATCHUM.DAT` | 0 | 4 |
+| 104 | 0x05D00 | 0 | `CHESS.COM` | 1 | 120 |
+| 105 | 0x05D20 | 0 | `LADDER.COM` | 2 | 64 |
+| 106 | 0x05D40 | 0 | `LADDER.DAT` | 0 | 4 |
+| 107 | 0x05D60 | 0 | `SNAKE.COM` | 0 | 89 |
+| 108 | 0x05D80 | 0 | `SNAKE.DAT` | 0 | 8 |
+| 109 | 0x05DA0 | 0 | `XONIX.COM` | 0 | 30 |
 
 ### `media/disks/JUKGAME1.CPM`
 

@@ -29,12 +29,13 @@ call conventions and disk geometry; it is source evidence, not a boot image.
 `docs/ekdos-source-inspection.md` is generated from that source and guards the
 stable monitor/FDC constants used by the current probes.
 
-The vendored Arti disk images are also cataloged by
+The vendored Arti and museum disk images are also cataloged by
 `scripts/report_vendored_disk_catalog.py`. The generated
 `docs/vendored-disk-catalog.md` report records visible CP/M directory entries
-and identifies disk-side BASIC candidates: `JUKU1.CPM` contains `JBASIC.COM`,
-while `JUKPROG2.CPM` contains `JBASIC.COM`, `B80.COM`, `BRUN.COM`,
-`BASCOM.COM`, `BASCOM.DOK`, and `BASLIB.REL`.
+and identifies disk-side BASIC candidates. `J3KUTIL4.JUK` is cataloged alongside
+the CP/M images; `JUKU1.CPM` contains `JBASIC.COM`, while `JUKPROG2.CPM`
+contains `JBASIC.COM`, `B80.COM`, `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and
+`BASLIB.REL`.
 `scripts/extract_basic_disk_files.py` then vendors the strongest BASIC launch
 inputs under `ref/extracted-software/` and records the extraction boundary in
 `docs/basic-disk-extraction.md`.
