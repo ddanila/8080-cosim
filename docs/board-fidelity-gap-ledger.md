@@ -1,0 +1,308 @@
+# Board fidelity gap ledger
+
+Status: **BOARD FIDELITY GAPS CATALOGED**
+
+This generated ledger records the remaining board-fidelity surfaces that
+are explicit in `kicad/juku.board.json`: chip-level provenance that is
+still assumed, boundary-only, deferred, untraced, or dump-dependent, and
+net-level source risks already carried into the bring-up checklist. It
+does not block fabrication by itself; it prevents the current 1:1 gaps
+from being hidden behind a green endpoint-coverage gate.
+
+## Command
+
+```sh
+python3 scripts/report_board_fidelity_gap_ledger.py
+```
+
+## Summary
+
+- Board JSON: `kicad/juku.board.json`
+- Chips modeled: `226`
+- Nets modeled: `320`
+- Chip-level fidelity gaps: `143`
+- Net-level source-risk gaps: `41`
+
+## Chip Provenance Types
+
+| Provenance type | Chips |
+| --- | ---: |
+| assumed | 30 |
+| boundary | 2 |
+| datasheet | 1 |
+| mame+datasheet | 1 |
+| missing | 53 |
+| photo | 2 |
+| prom | 1 |
+| scan | 134 |
+| wire | 2 |
+
+## Gap Categories
+
+| Category | Chip gaps | Net gaps |
+| --- | ---: | ---: |
+| FDC owner-continuity | 0 | 3 |
+| PROM truth | 3 | 0 |
+| PROM/decode | 0 | 8 |
+| analog/source | 1 | 0 |
+| clock/I/O | 0 | 4 |
+| connector boundary | 2 | 0 |
+| logic/source | 11 | 4 |
+| memory/timing | 0 | 7 |
+| missing provenance | 53 | 0 |
+| placement/value | 39 | 0 |
+| unpopulated sockets | 30 | 0 |
+| video/analog | 0 | 15 |
+| video/timing | 4 | 0 |
+
+## Chip-Level Gaps
+
+These are package/source/provenance gaps, not necessarily routed-copper
+failures. Large repeated groups, such as unpopulated DRAM sockets and
+decoupling capacitors, are still listed because they affect faithful
+parts placement and Tier-3 reproduction.
+
+### PROM truth
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.037 [dump pending]; drawing = .03... |
+| `D9` | `IO_DEC138` | scan | BOM ДГШ3.031.006 ВП: К555ИД7 x1 = the IO decoder. Decoder refdes = D9 (owner-confirmed К555ИД7 on the board). Physical D2 is a separate КР556РТ4 bus/wait PRO... |
+| `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8) |
+
+### analog/source
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `VD5` | `D_DIODE` | scan | scan: VD5 by R19; zener clamp to GND [assumed orientation] |
+
+### connector boundary
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `X1` | `EXPANSION_CONN` | boundary | assumed Multibus edge-pin codes from scan |
+| `X3` | `SERIAL_CONN` | boundary | assumed RS-232 connector (SIN code assumed) |
+
+### logic/source
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `D100` | `BUF8287` | datasheet | .009 official (5th ВА87 = FDC bus buffer) 8287 std; OE/T gating [assumed] |
+| `D92` | `LE4` | wire | BOM .009 К555ЛЕ4 triple 3-NOR; pin 13 -> D7.1 [WIRE 11], pin 1 - D13.1 [WIRE 13]; rest untraced (Φ1/Φ2 gen candidate) |
+| `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) WD1793 std pinout; bus side per MAME io 1C-1F + sheet-3 CS7 delta |
+| `R49` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R50` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R51` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R52` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R53` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R54` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R55` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+| `R56` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
+
+### missing provenance
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `C10` | `C_KM` | missing | no provenance block |
+| `C11` | `C_KM` | missing | no provenance block |
+| `C12` | `C_TRIM` | missing | no provenance block |
+| `C13` | `C_KM` | missing | no provenance block |
+| `C14` | `C_KM` | missing | no provenance block |
+| `C15` | `C_KM` | missing | no provenance block |
+| `C34` | `C_KM` | missing | no provenance block |
+| `C7` | `C_KM` | missing | no provenance block |
+| `C8` | `C_KM` | missing | no provenance block |
+| `C9` | `C_KM` | missing | no provenance block |
+| `C99` | `C_KM` | missing | no provenance block |
+| `E4` | `JUMPER3` | missing | no provenance block |
+| `E5` | `JUMPER2` | missing | no provenance block |
+| `L1` | `L_RADIAL` | missing | no provenance block |
+| `R11` | `R_AXIAL` | missing | no provenance block |
+| `R12` | `R_AXIAL` | missing | no provenance block |
+| `R13` | `R_AXIAL` | missing | no provenance block |
+| `R14` | `R_AXIAL` | missing | no provenance block |
+| `R17` | `R_AXIAL` | missing | no provenance block |
+| `R47` | `R_AXIAL` | missing | no provenance block |
+| `R48` | `R_AXIAL` | missing | no provenance block |
+| `R57` | `R_AXIAL` | missing | no provenance block |
+| `R58` | `R_AXIAL` | missing | no provenance block |
+| `R59` | `R_AXIAL` | missing | no provenance block |
+| `R60` | `R_AXIAL` | missing | no provenance block |
+| `R61` | `R_AXIAL` | missing | no provenance block |
+| `R62` | `R_AXIAL` | missing | no provenance block |
+| `R63` | `R_AXIAL` | missing | no provenance block |
+| `R64` | `R_AXIAL` | missing | no provenance block |
+| `R65` | `R_AXIAL` | missing | no provenance block |
+| `R66` | `R_AXIAL` | missing | no provenance block |
+| `R67` | `R_AXIAL` | missing | no provenance block |
+| `R68` | `R_AXIAL` | missing | no provenance block |
+| `R69` | `R_AXIAL` | missing | no provenance block |
+| `R70` | `R_AXIAL` | missing | no provenance block |
+| `R71` | `R_AXIAL` | missing | no provenance block |
+| `R72` | `R_AXIAL` | missing | no provenance block |
+| `R73` | `R_TRIM` | missing | no provenance block |
+| `R74` | `R_AXIAL` | missing | no provenance block |
+| `R75` | `R_AXIAL` | missing | no provenance block |
+| `R76` | `R_AXIAL` | missing | no provenance block |
+| `R77` | `R_AXIAL` | missing | no provenance block |
+| `R90` | `R_AXIAL` | missing | no provenance block |
+| `R91` | `R_AXIAL` | missing | no provenance block |
+| `S4` | `SW` | missing | no provenance block |
+| `VD3` | `D_DIODE` | missing | no provenance block |
+| `VD4` | `D_DIODE` | missing | no provenance block |
+| `VT1` | `Q_TO92` | missing | no provenance block |
+| `VT2` | `Q_TO92` | missing | no provenance block |
+| `VT3` | `Q_TO92` | missing | no provenance block |
+| `VT4` | `Q_TO92` | missing | no provenance block |
+| `X6` | `RF_CONN` | missing | no provenance block |
+| `X7` | `VIDEO_CONN` | missing | no provenance block |
+
+### placement/value
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `C32` | `C_ELEC` | scan | scan area: bulk cap [assumed rail -12/GND] |
+| `C35` | `C_KM` | scan | BOM C35-C72 decoupling; position by D60 [assumed] |
+| `C36` | `C_KM` | scan | BOM C35-C72 decoupling; position by D61 [assumed] |
+| `C37` | `C_KM` | scan | BOM C35-C72 decoupling; position by D62 [assumed] |
+| `C38` | `C_KM` | scan | BOM C35-C72 decoupling; position by D63 [assumed] |
+| `C39` | `C_KM` | scan | BOM C35-C72 decoupling; position by D64 [assumed] |
+| `C40` | `C_KM` | scan | BOM C35-C72 decoupling; position by D65 [assumed] |
+| `C41` | `C_KM` | scan | BOM C35-C72 decoupling; position by D66 [assumed] |
+| `C42` | `C_KM` | scan | BOM C35-C72 decoupling; position by D67 [assumed] |
+| `C43` | `C_KM` | scan | BOM C35-C72 decoupling; position by D15 [assumed] |
+| `C44` | `C_KM` | scan | BOM C35-C72 decoupling; position by D17 [assumed] |
+| `C45` | `C_KM` | scan | BOM C35-C72 decoupling; position by D19 [assumed] |
+| `C46` | `C_KM` | scan | BOM C35-C72 decoupling; position by D21 [assumed] |
+| `C47` | `C_KM` | scan | BOM C35-C72 decoupling; position by D5 [assumed] |
+| `C48` | `C_KM` | scan | BOM C35-C72 decoupling; position by D1 [assumed] |
+| `C49` | `C_KM` | scan | BOM C35-C72 decoupling; position by D10 [assumed] |
+| `C50` | `C_KM` | scan | BOM C35-C72 decoupling; position by D11 [assumed] |
+| `C51` | `C_KM` | scan | BOM C35-C72 decoupling; position by D26 [assumed] |
+| `C52` | `C_KM` | scan | BOM C35-C72 decoupling; position by D27 [assumed] |
+| `C53` | `C_KM` | scan | BOM C35-C72 decoupling; position by D54 [assumed] |
+| `C54` | `C_KM` | scan | BOM C35-C72 decoupling; position by D55 [assumed] |
+| `C55` | `C_KM` | scan | BOM C35-C72 decoupling; position by D57 [assumed] |
+| `C56` | `C_KM` | scan | BOM C35-C72 decoupling; position by D23 [assumed] |
+| `C57` | `C_KM` | scan | BOM C35-C72 decoupling; position by D29 [assumed] |
+| `C58` | `C_KM` | scan | BOM C35-C72 decoupling; position by D6 [assumed] |
+| `C59` | `C_KM` | scan | BOM C35-C72 decoupling; position by D7 [assumed] |
+| `C60` | `C_KM` | scan | BOM C35-C72 decoupling; position by D44 [assumed] |
+| `C61` | `C_KM` | scan | BOM C35-C72 decoupling; position by D46 [assumed] |
+| `C62` | `C_KM` | scan | BOM C35-C72 decoupling; position by D48 [assumed] |
+| `C63` | `C_KM` | scan | BOM C35-C72 decoupling; position by D40 [assumed] |
+| `C64` | `C_KM` | scan | BOM C35-C72 decoupling; position by D38 [assumed] |
+| `C65` | `C_KM` | scan | BOM C35-C72 decoupling; position by D35 [assumed] |
+| `C66` | `C_KM` | scan | BOM C35-C72 decoupling; position by D42 [assumed] |
+| `C67` | `C_KM` | scan | BOM C35-C72 decoupling; position by D58 [assumed] |
+| `C68` | `C_KM` | scan | BOM C35-C72 decoupling; position by D14 [assumed] |
+| `C69` | `C_KM` | scan | BOM C35-C72 decoupling; position by D3 [assumed] |
+| `C70` | `C_KM` | scan | BOM C35-C72 decoupling; position by D71 [assumed] |
+| `C71` | `C_KM` | scan | BOM C35-C72 decoupling; position by D79 [assumed] |
+| `C72` | `C_KM` | scan | BOM C35-C72 decoupling; position by D87 [assumed] |
+
+### unpopulated sockets
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `D17` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
+| `D18` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
+| `D19` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
+| `D20` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
+| `D21` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
+| `D22` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
+| `D68` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D69` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D70` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D71` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D72` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D73` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D74` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D75` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
+| `D76` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D77` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D78` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D79` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D80` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D81` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D82` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D83` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
+| `D84` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D85` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D86` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D87` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D88` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D89` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D90` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+| `D91` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
+
+### video/timing
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary] |
+| `D50` | `KP14_MUX` | wire | BOM .009 КР531КП14 video-addr mux; SEL(1) <- D41.QA [WIRE 10, beeper]; rest untraced |
+| `D52` | `KP14_MUX` | scan | sheet-2 MX: the 5th КП14 (VIDEO/µP ADDRESS select for D53 via E2/E3); inputs deferred [boundary] |
+| `D53` | `RASCAS_DEC` | scan | ИД7 74S138 pinout per sheet-2: A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=RAM_SEL; V0-V3=15/14/13/12 through R49-R52 100R (resistors LVS-invisible);... |
+
+## Net-Level Source Risks
+
+This mirrors the net-risk surface used by
+`docs/replica-bringup-verification-points.md`, but keeps it in the
+same fidelity ledger as the chip provenance gaps.
+
+| Net | Category | Endpoints | Source risk |
+| --- | --- | --- | --- |
+| `CAS` | video/analog | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, ... (+29)` | traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C... |
+| `D25_T` | PROM/decode | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs... |
+| `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
+| `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
+| `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] |
+| `D39Y` | logic/source | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); ex-assumed, now traced |
+| `D39_MEMCYC` | memory/timing | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] |
+| `D56_QN` | clock/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
+| `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37` | mame (PC4 = density) |
+| `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | assumed (MAME-era IR1; owner-verify) |
+| `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | assumed (MAME-era IR0; owner-verify) |
+| `FRAME_INT` | memory/timing | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (... |
+| `HF_OUT` | video/analog | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board... |
+| `IORD` | logic/source | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, ... (+5)` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed) |
+| `IOWR` | logic/source | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, ... (+5)` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed) |
+| `LATCH_B` | clock/I/O | `D40.11, D37.2, D54.9, D54.15, D54.18` | scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending) |
+| `MEM_MODE0` | PROM/decode | `D26.14, D6.2` | traced sheet-1 (bios_hunt1: D6.A5/pin2 <- mode-bundle tag 1) + scan (PPI PC0 = D26.14); tag<->PC-bit order assumed. D7.13 endpoint removed (that pin = IORD s... |
+| `MEM_MODE1` | PROM/decode | `D26.15, D6.1` | traced sheet-1 (bios_hunt1: D6.A6/pin1 <- mode-bundle tag 2); source PPI PC1 = D26.15 [order assumed]. Tag 3 -> D6.15 left un-netted (source unread; PC2 guess) |
+| `MEM_MODE2` | PROM/decode | `D26.16, D6.15` | traced sheet-1 300dpi (crop s1_d6_ven2: row "3/15" = mode-bundle tag 3 -> D6.15/A7) + source PPI PC2 = D26.16 [tag<->PC-bit order assumed, same level as MODE... |
+| `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
+| `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
+| `PIT_HCHAIN` | memory/timing | `D54.10, D55.9, D54.14, D54.16` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9) |
+| `PIT_HSYNC_DSL` | video/analog | `D54.17, D55.15, D55.18` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT2(17) "H.SYNC DSL" -> D55.CLK1(15)+CLK2(18) tied pair |
+| `PIT_VCHAIN` | memory/timing | `D55.10, D55.14, D55.16` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D55.OUT0(10) -> D55.G1(14)+G2(16) |
+| `PROM_EN` | PROM/decode | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assu... |
+| `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
+| `RAM_SEL` | PROM/decode | `D6.11, D92.5, R12.2` | scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 "(1)" label). D53.6/G3 detached: its drawn feed = long west... |
+| `REV` | PROM/decode | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder re... |
+| `RF_RAIL` | video/analog | `VT3.3, C9.2, R72.2, C10.1, R73.1, C11.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
+| `RF_TANK` | video/analog | `VT4.3, C11.2, C12.1, L1.1, R76.1, C15.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; L1 tap simplification (1/5 turns, ta... |
+| `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merg... |
+| `SND_MIX` | video/analog | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
+| `SOUND_CLAMP` | video/analog | `R66.2, VD3.2, R67.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R66.1 <- the "SOUND" PIT line [sourc... |
+| `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
+| `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
+| `VT3_BASE` | video/analog | `R68.2, R69.2, R70.2, R71.1, C13.1, VT3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
+| `VT3_E` | video/analog | `VT3.1, R74.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
+| `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
+| `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
+| `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
+| `XTAL16M` | clock/I/O | `D103.2, D42.9, D43.9` | traced sheet-2 (crop s2_dotclk_bend): the 16MHz crystal rail (bundle tag 14) is a SEPARATE net from D56.Q_N; it clocks D103 + the ИР16 shifters. Likely = the... |
+
+## Automatic Closure Rule
+
+- If a gap can be closed from existing scans/docs/code, update
+  `kicad/juku.board.json` first, then regenerate this report and the
+  manufacturing readiness packet.
+- If a gap depends on PROM contents, hidden routing, owner continuity,
+  analog measurement, or vendor/order evidence, keep it listed here
+  until that stronger evidence exists.
+- Endpoint coverage remains necessary but not sufficient: it proves the
+  PCB preserves modeled connectivity, while this ledger records where
+  the model is still not fully historical-source-proven.

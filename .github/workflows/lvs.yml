@@ -46,6 +46,7 @@ jobs:
             scripts/report_basic_cartridge_missing_page_constraints.py \
             scripts/check_project_status_freshness.py \
             scripts/report_firmware_gap_ledger.py \
+            scripts/report_board_fidelity_gap_ledger.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -120,6 +121,11 @@ jobs:
         run: |
           python3 scripts/report_firmware_gap_ledger.py
           git diff --exit-code -- docs/firmware-gap-ledger.md
+
+      - name: Check board fidelity gap ledger freshness
+        run: |
+          python3 scripts/report_board_fidelity_gap_ledger.py
+          git diff --exit-code -- docs/board-fidelity-gap-ledger.md
 
       - name: Check EKDOS source inspection freshness
         run: |

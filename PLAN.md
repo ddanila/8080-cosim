@@ -725,6 +725,9 @@ deliverable names, and verification commands.
 - WS-D1/2: v76 power widening + fab-export/readiness/upload gates done; machine blockers
   are clear and the exact-count waiver gate accepts the 599 review-only
   courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
+- WS-D3: keep `docs/board-fidelity-gap-ledger.md` current as the generated
+  board-level list of chip provenance and net-source gaps that still separate
+  the PCB model from a fully historical-source-proven 1:1 board.
 - WS-B2/3: close the remaining automatic twin gaps: D94/video-slot source truth
   if new evidence appears, Monitor 3.3 cartridge BASIC compatibility, and routine
   freshness for the guarded EKDOS/JBASIC prompt paths.

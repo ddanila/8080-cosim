@@ -53,6 +53,7 @@ REQUIRED_PATHS = [
     "docs/re3-firmware-inspection.md",
     "docs/reconstructed-prom-fallbacks.md",
     "docs/firmware-gap-ledger.md",
+    "docs/board-fidelity-gap-ledger.md",
     "docs/ekdos-source-inspection.md",
     "docs/community-prom-media-request.md",
     "docs/owner-measurement-shortlist.md",

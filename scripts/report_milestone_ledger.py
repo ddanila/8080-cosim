@@ -204,6 +204,13 @@ def milestone_rows():
         "docs/replica-bringup-verification-points.md",
         "Status: **READY**",
     )
+    board_fidelity_gaps_cataloged = marker(
+        "docs/board-fidelity-gap-ledger.md",
+        "Status: **BOARD FIDELITY GAPS CATALOGED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check board fidelity gap ledger freshness",
+    )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**") or marker(
         "docs/replica-manufacturing-readiness.md",
         "| Order readiness | `fab/gerbers/order-readiness.md`",
@@ -1191,6 +1198,14 @@ def milestone_rows():
                         "source plus traced speaker handoff while leaving only analog "
                         "level/current proof for bring-up"
                         if beeper_handoff_guarded
+                        else ""
+                    )
+                    + (
+                        ", and `docs/board-fidelity-gap-ledger.md` catalogs the "
+                        "chip-provenance and net-source gaps that still separate "
+                        "the upload-ready PCB from fully historical-source-proven "
+                        "1:1 reproduction"
+                        if board_fidelity_gaps_cataloged
                         else ""
                     )
                     + "; "
