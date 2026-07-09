@@ -14,6 +14,7 @@ REQUIRED = [
     ROOT / "docs" / "prom-dump-procedure.md",
     ROOT / "docs" / "d94-reconstruction-constraints.md",
     ROOT / "docs" / "fdc-hardware-handoff.md",
+    ROOT / "docs" / "serial-handoff.md",
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
@@ -82,6 +83,7 @@ def main() -> int:
         ("D6/D8 reconstructed fallback exported", has_phrase("docs/reconstructed-prom-fallbacks.md", "d6_rt4_memory_decode_reconstructed")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
+        ("Serial handoff generated", has_phrase("docs/serial-handoff.md", "Status: **SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
     ]
@@ -125,9 +127,9 @@ def main() -> int:
         ),
         (
             "P2",
-            "analog/video/sound bring-up captures",
-            "composite/RF/sync/audio nodes while running the staged bring-up ladder",
-            "`docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`",
+            "analog/video/sound/serial bring-up captures",
+            "composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder",
+            "`docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md`",
             "bench evidence only; does not block PCB fabrication",
         ),
         (

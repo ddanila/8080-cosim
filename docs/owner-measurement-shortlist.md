@@ -22,6 +22,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | D6/D8 reconstructed fallback exported | PASS |
 | D94 constraint report generated | PASS |
 | FDC hardware handoff generated | PASS |
+| Serial handoff generated | PASS |
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |
 
@@ -34,7 +35,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P1 | D94 .092 continuity | D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required before any defensible D94 reverse-engineered burnable table |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F | reduces first EKDOS-on-hardware debug risk |
 | P1 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, and D36/D39/D53 RAM-strobe ambiguous feeds | `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-A/WS-F | tightens the as-built netlist around RAM timing before netlist freeze |
-| P2 | analog/video/sound bring-up captures | composite/RF/sync/audio nodes while running the staged bring-up ladder | `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md` | bench evidence only; does not block PCB fabrication |
+| P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, bypass-cap values by position, sound/video analog corner passives | `PLAN.md` WS-F; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
 
 ## Current D94 blockers

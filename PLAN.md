@@ -494,6 +494,12 @@ debugging session saved on real hardware.
    `SOUND -> R90 -> VT1/VD4/R91 -> R48 -> SPKR` handoff. Remaining physical
    boundary: the analog driver/current path still needs bench-level speaker
    verification during bring-up.
+5. **Serial**: D11 bus-side 8251 wiring, D57 baud-clock handoff, D14/D32/D3/D12
+   output drivers, D104 input receiver, and X3 connector nets are now guarded by
+   `scripts/report_serial_handoff.py` in `docs/serial-handoff.md`. Remaining
+   functional boundary: the HDL USART shell is intentionally boot-safe and idle;
+   a real 8251 transmit/receive engine plus X3 loopback belong to Tier-2
+   functional polish, not PCB-truth gating.
 Guards stay green throughout: LVS, boot_check, cosim_check.
 
 ### WS-C — VJUGA Rev A: order and bring up (de-risk the whole physical program)

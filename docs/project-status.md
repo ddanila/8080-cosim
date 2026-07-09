@@ -309,6 +309,11 @@ Historical merge notes:
   proves the traced `SOUND` source toggles, and checks the board JSON handoff
   through `R90`, `VT1`/`VD4`/`R91`, `R48`, and `SPKR`. The speaker current path
   remains a physical bring-up check, documented in `docs/beeper-readiness.md`.
+- **Serial bus-side handoff guarded:** `docs/serial-handoff.md` now records D11
+  8251 host-bus wiring, D57 baud-clock handoff, the D14/D32/D3/D12/D104 line
+  driver/receiver chain, and X3 signal nets. The HDL USART remains a boot-safe
+  idle shell; full transmit/receive behavior and X3 loopback are Tier-2
+  functional polish.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

@@ -252,6 +252,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/beeper_check.sh` — D57 PIT channel 1 beeper guard: programmed `OUT1`
   toggles the traced `SOUND` net, and the board JSON handoff through
   `R90`/`VT1`/`VD4`/`R91`/`R48`/`SPKR` is present.
+- `scripts/report_serial_handoff.py` — generated D11 USART/X3 serial handoff:
+  verifies the host bus, D57 baud clock, line-driver/receiver chain, and X3
+  connector nets while keeping the full 8251 protocol engine as a boundary.
 
 ## Status
 

@@ -71,6 +71,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check owner measurement shortlist freshness",
     )
+    serial_handoff_guarded = marker(
+        "docs/serial-handoff.md",
+        "Status: **SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/serial-handoff.md",
+    )
     reconstructed_proms_exported = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
@@ -504,6 +511,13 @@ def milestone_rows():
                     "handoff while keeping D93 INTRQ/DRQ, MR/CLK, and D100 OE/T as "
                     "owner-continuity items; "
                     if fdc_handoff_guarded
+                    else ""
+                )
+                + (
+                    "`docs/serial-handoff.md` guards the D11 USART bus-side path, "
+                    "D57 baud handoff, line drivers, receiver, and X3 nets while "
+                    "leaving the full 8251 protocol engine as a Tier-2 boundary; "
+                    if serial_handoff_guarded
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
@@ -1048,6 +1062,13 @@ def milestone_rows():
                         "physical handoff to guarded bus-side wiring plus owner-only "
                         "continuity points"
                         if fdc_handoff_guarded
+                        else ""
+                    )
+                    + (
+                        ", and `docs/serial-handoff.md` guards the serial bus-side "
+                        "D11/X3 handoff while keeping loopback/protocol proof for "
+                        "bring-up"
+                        if serial_handoff_guarded
                         else ""
                     )
                     + "; "
