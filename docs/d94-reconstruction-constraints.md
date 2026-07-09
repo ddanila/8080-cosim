@@ -64,6 +64,30 @@ connections. It does not provide the missing enable/output nets.
 | 15 | E_N | - | missing in DSN |
 | 16 | VCC | `P5V` | PASS |
 
+## KiCad PCB Cross-check
+
+The authoritative PCB file agrees with the DSN: D94 has power/ground and
+address nets only; enable and all data outputs remain unnetted there too.
+
+| Pin | Role | PCB Net | Result |
+| ---: | --- | --- | --- |
+| 1 | D0 | - | unnetted in PCB |
+| 2 | D1 | - | unnetted in PCB |
+| 3 | D2 | - | unnetted in PCB |
+| 4 | D3 | - | unnetted in PCB |
+| 5 | D4 | - | unnetted in PCB |
+| 6 | D5 | - | unnetted in PCB |
+| 7 | D6 | - | unnetted in PCB |
+| 8 | GND | `GND` | PASS |
+| 9 | D7 | - | unnetted in PCB |
+| 10 | A0 | `BA11` | PASS |
+| 11 | A1 | `BA12` | PASS |
+| 12 | A2 | `BA13` | PASS |
+| 13 | A3 | `BA14` | PASS |
+| 14 | A4 | `BA15` | PASS |
+| 15 | E_N | - | unnetted in PCB |
+| 16 | VCC | `P5V` | PASS |
+
 ## Current Evidence Checks
 
 | Check | Result | Evidence |
@@ -71,6 +95,7 @@ connections. It does not provide the missing enable/output nets.
 | Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
 | Address pins D94.10-D94.14 are traced | PASS | board JSON nets |
 | DSN agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.dsn` D94 pins |
+| PCB agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
@@ -142,9 +167,10 @@ the D0-D7 destinations and `.092` programming table/dump are absent.
 - Known: D94 is present in the .009 FDC quadrant and its five address
   inputs are wired to `BA11..BA15`.
 - Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are
-  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`, or the
-  audited text/photo notes, and no `ДГШ5.106.092` programming table or
-  dump is present under the repository artifact scan.
+  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`,
+  `kicad/juku.kicad_pcb`, or the audited text/photo notes, and no
+  `ДГШ5.106.092` programming table or dump is present under the
+  repository artifact scan.
 - Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte
   PROM tables) before even assigning those bits to physical destination
   nets or enable timing.

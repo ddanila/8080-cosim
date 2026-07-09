@@ -738,8 +738,9 @@ def milestone_rows():
                     "identifies D94 as `.092`, while `E_N`, all data-output "
                     "destinations, and the `.092` contents remain absent from the "
                     "repository artifact scan; the generated 32-row address-space "
-                    "table leaves 256 content bits unresolved, with `kicad/juku.dsn` "
-                    "confirming only D94 power/address coverage; "
+                    "table leaves 256 content bits unresolved, with "
+                    "`kicad/juku.dsn` and `kicad/juku.kicad_pcb` confirming only "
+                    "D94 power/address coverage; "
                     if d94_constraints
                     else ""
                 )

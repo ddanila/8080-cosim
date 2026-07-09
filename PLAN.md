@@ -320,8 +320,8 @@ debugging session saved on real hardware.
    eight data-output destinations, and the `.092` contents are still missing
    from the repository artifact scan; the generated 32-row address-space table
    leaves 256 content bits unresolved before output-net semantics, and
-   `kicad/juku.dsn` independently agrees on D94 power/address while also
-   lacking the missing enable/output nets.
+   `kicad/juku.dsn` plus `kicad/juku.kicad_pcb` independently agree on D94
+   power/address while also lacking the missing enable/output nets.
    Remaining V3 target: replace the sim-only second framebuffer read with the
    real РЕ3/АГ3-gated shared-DRAM video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and

@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
 DSN = ROOT / "kicad" / "juku.dsn"
+PCB = ROOT / "kicad" / "juku.kicad_pcb"
 REPORT = ROOT / "docs" / "d94-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
 ARTIFACT_SCAN_DIRS = ("ref", "roms", "media", "docs", "hdl", "kicad", "scripts", "sync")
@@ -52,6 +53,56 @@ def dsn_pin_nets(ref: str) -> dict[str, str]:
         for pinref in pins:
             if pinref.startswith(f"{ref}-"):
                 found[pinref.split("-", 1)[1]] = name
+    return found
+
+
+def matching_block(text: str, start: int) -> str:
+    depth = 0
+    in_string = False
+    escaped = False
+    for pos in range(start, len(text)):
+        char = text[pos]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return text[start : pos + 1]
+    raise ValueError("unterminated S-expression")
+
+
+def pcb_footprint_block(ref: str) -> str:
+    text = PCB.read_text(errors="replace")
+    ref_pos = text.find(f'(property "Reference" "{ref}"')
+    if ref_pos < 0:
+        return ""
+    start = text.rfind("\n\t(footprint ", 0, ref_pos)
+    if start < 0:
+        return ""
+    return matching_block(text, start + 1)
+
+
+def pcb_pin_nets(ref: str) -> dict[str, str]:
+    block = pcb_footprint_block(ref)
+    if not block:
+        return {}
+    found: dict[str, str] = {}
+    for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
+        pin = match.group(1)
+        pad_block = matching_block(block, match.start() + 3)
+        net = re.search(r'\(net\s+"([^"]+)"\)', pad_block)
+        if net:
+            found[pin] = net.group(1)
     return found
 
 
@@ -111,6 +162,7 @@ def main() -> int:
     board_type = str(chip.get("type", ""))
     board_identity_ok = board_type == "RE3_PROM_092"
     dsn_nets = dsn_pin_nets("D94")
+    pcb_nets = pcb_pin_nets("D94")
 
     address_rows: list[str] = []
     address_ok = True
@@ -177,6 +229,26 @@ def main() -> int:
         dsn_nets[pin]
         for pin, role in output_pins
         if pin in dsn_nets
+    ]
+    pcb_rows = []
+    pcb_ok = bool(pcb_nets)
+    for pin in all_report_pins:
+        role = dsn_pin_roles[pin]
+        name = pcb_nets.get(pin)
+        expected = dsn_expected.get(pin)
+        if name is None:
+            pcb_rows.append(f"| {pin} | {role} | - | unnetted in PCB |")
+            if role.startswith("A"):
+                pcb_ok = False
+        else:
+            result = "PASS" if expected is None or name == expected else f"expected `{expected}`"
+            pcb_rows.append(f"| {pin} | {role} | `{name}` | {result} |")
+            if expected is not None and name != expected:
+                pcb_ok = False
+    pcb_output_nets = [
+        pcb_nets[pin]
+        for pin, role in output_pins
+        if pin in pcb_nets
     ]
 
     candidates = firmware_candidates()
@@ -275,6 +347,19 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## KiCad PCB Cross-check",
+            "",
+            "The authoritative PCB file agrees with the DSN: D94 has power/ground and",
+            "address nets only; enable and all data outputs remain unnetted there too.",
+            "",
+            "| Pin | Role | PCB Net | Result |",
+            "| ---: | --- | --- | --- |",
+        ]
+    )
+    lines.extend(pcb_rows)
+    lines.extend(
+        [
+            "",
             "## Current Evidence Checks",
             "",
             "| Check | Result | Evidence |",
@@ -282,6 +367,7 @@ def main() -> int:
             f"| Board identity names D94 as `.092`, not stale `.113` | {'PASS' if board_identity_ok else 'FAIL'} | `kicad/juku.board.json` type `{board_type or 'missing'}` |",
             f"| Address pins D94.10-D94.14 are traced | {'PASS' if address_ok else 'FAIL'} | board JSON nets |",
             f"| DSN agrees on D94 power/address and lacks output nets | {'PASS' if dsn_ok and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
+            f"| PCB agrees on D94 power/address and lacks output nets | {'PASS' if pcb_ok and not pcb_output_nets else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
@@ -326,9 +412,10 @@ def main() -> int:
             "- Known: D94 is present in the .009 FDC quadrant and its five address",
             "  inputs are wired to `BA11..BA15`.",
             "- Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are",
-            "  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`, or the",
-            "  audited text/photo notes, and no `ДГШ5.106.092` programming table or",
-            "  dump is present under the repository artifact scan.",
+            "  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`,",
+            "  `kicad/juku.kicad_pcb`, or the audited text/photo notes, and no",
+            "  `ДГШ5.106.092` programming table or dump is present under the",
+            "  repository artifact scan.",
             "- Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte",
             "  PROM tables) before even assigning those bits to physical destination",
             "  nets or enable timing.",
@@ -348,6 +435,7 @@ def main() -> int:
         board_identity_ok
         and address_ok
         and dsn_ok
+        and pcb_ok
         and official_bom_lead
         and reused_refdes_guard
         and historical_113_conflict
