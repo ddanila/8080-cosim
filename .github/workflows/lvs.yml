@@ -53,6 +53,7 @@ jobs:
             scripts/report_board_fidelity_gap_ledger.py \
             scripts/report_decap_value_fidelity.py \
             scripts/report_d41_timing_boundary.py \
+            scripts/report_memory_timing_boundary.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -143,6 +144,11 @@ jobs:
           python3 scripts/report_d41_timing_boundary.py
           git diff --exit-code -- docs/d41-timing-boundary.md
 
+      - name: Check memory timing boundary freshness
+        run: |
+          python3 scripts/report_memory_timing_boundary.py
+          git diff --exit-code -- docs/memory-timing-boundary.md
+
       - name: Check EKDOS source inspection freshness
         run: |
           python3 scripts/report_ekdos_source_inspection.py
@@ -208,12 +214,14 @@ jobs:
           python3 scripts/report_serial_handoff.py
           python3 scripts/report_decap_value_fidelity.py
           python3 scripts/report_d41_timing_boundary.py
+          python3 scripts/report_memory_timing_boundary.py
           python3 scripts/report_owner_measurement_shortlist.py
           git diff --exit-code -- \
             docs/fdc-hardware-handoff.md \
             docs/serial-handoff.md \
             docs/decap-value-fidelity.md \
             docs/d41-timing-boundary.md \
+            docs/memory-timing-boundary.md \
             docs/owner-measurement-shortlist.md
 
       - name: Check replica bring-up report freshness

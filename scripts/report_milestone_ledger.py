@@ -270,6 +270,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check decap value fidelity freshness",
     )
+    memory_timing_boundary = marker(
+        "docs/memory-timing-boundary.md",
+        "Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check memory timing boundary freshness",
+    )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**") or marker(
         "docs/replica-manufacturing-readiness.md",
         "| Order readiness | `fab/gerbers/order-readiness.md`",
@@ -1318,6 +1325,14 @@ def milestone_rows():
                         "rail-group connectivity while keeping per-position "
                         "factory capacitor values pending macro/spec evidence"
                         if decap_value_fidelity
+                        else ""
+                    )
+                    + (
+                        ", and `docs/memory-timing-boundary.md` guards the traced "
+                        "CAS/RAS ladder, write rail, PHI2TTL fanout, and D56 RC "
+                        "networks while keeping CAS-input, D39 memory-cycle, and "
+                        "D56 Q_N destinations as source-boundary work"
+                        if memory_timing_boundary
                         else ""
                     )
                     + "; "
