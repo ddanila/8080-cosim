@@ -495,8 +495,7 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: identify the correct Monitor 3.3 cartridge BASIC launch
-   path and keep the disk-backed EKDOS `JBASIC` HDL path guarded without
-   checkpoint/resume.
+   path and keep the disk-backed EKDOS `JBASIC` HDL prompt guard fresh.
 4. **Sound**: digital beeper source and board handoff are now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
@@ -710,14 +709,16 @@ commands.
 - WS-D1/2: v76 power widening + fab-export/readiness/upload gates done; machine blockers
   are clear and the exact-count waiver gate accepts the 599 review-only
   courtyard/PTH/silk/text findings. Do final order-time visual/vendor review.
-- WS-B1: WD1793 + EKDOS boot in cosim.
+- WS-B2/3: close the remaining automatic twin gaps: D94/video-slot source truth
+  if new evidence appears, Monitor 3.3 cartridge BASIC compatibility, and routine
+  freshness for the guarded EKDOS/JBASIC prompt paths.
 - WS-E2: start parts sourcing from `docs/replica-sourcing-readiness.md` (long
   lead); copy `docs/replica-bringup-verification-points.md` into the private
   build record as parts/assembly evidence accumulates. WS-H: first community
   contact using `docs/community-prom-media-request.md`.
 
 **Then (VJUGA transit + assembly window):**
-- WS-B2/3: video chain model; jmon33 + BASIC. WS-D3/4: replica DFM + netlist freeze.
+- WS-D3/4: replica DFM + netlist freeze.
 - WS-F: owner session for whatever paper didn't close.
 
 **Then:**
