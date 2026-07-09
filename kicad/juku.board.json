@@ -2468,7 +2468,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D60 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D60 remains assumed"
    },
    "value": "0,047"
   },
@@ -2482,7 +2482,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D61 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D61 remains assumed"
    },
    "value": "0,047"
   },
@@ -2496,7 +2496,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D62 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D62 remains assumed"
    },
    "value": "0,047"
   },
@@ -2510,7 +2510,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D63 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D63 remains assumed"
    },
    "value": "0,047"
   },
@@ -2524,7 +2524,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D64 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D64 remains assumed"
    },
    "value": "0,047"
   },
@@ -2538,7 +2538,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D65 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D65 remains assumed"
    },
    "value": "0,047"
   },
@@ -2552,7 +2552,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D66 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D66 remains assumed"
    },
    "value": "0,047"
   },
@@ -2566,7 +2566,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D67 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D67 remains assumed"
    },
    "value": "0,047"
   },
@@ -2580,7 +2580,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D15 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D15 remains assumed"
    },
    "value": "0,047"
   },
@@ -2594,7 +2594,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D17 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D17 remains assumed"
    },
    "value": "0,047"
   },
@@ -2608,7 +2608,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D19 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D19 remains assumed"
    },
    "value": "0,047"
   },
@@ -2622,7 +2622,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D21 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D21 remains assumed"
    },
    "value": "0,047"
   },
@@ -2636,7 +2636,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D5 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D5 remains assumed"
    },
    "value": "0,047"
   },
@@ -2650,7 +2650,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D1 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D1 remains assumed"
    },
    "value": "0,047"
   },
@@ -2664,7 +2664,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D10 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D10 remains assumed"
    },
    "value": "0,047"
   },
@@ -2678,7 +2678,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D11 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D11 remains assumed"
    },
    "value": "0,047"
   },
@@ -2692,7 +2692,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D26 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D26 remains assumed"
    },
    "value": "0,047"
   },
@@ -2706,7 +2706,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D27 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D27 remains assumed"
    },
    "value": "0,047"
   },
@@ -2720,7 +2720,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D54 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D54 remains assumed"
    },
    "value": "0,047"
   },
@@ -2734,7 +2734,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D55 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D55 remains assumed"
    },
    "value": "0,047"
   },
@@ -2748,7 +2748,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D57 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D57 remains assumed"
    },
    "value": "0,047"
   },
@@ -2762,7 +2762,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D23 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D23 remains assumed"
    },
    "value": "0,047"
   },
@@ -2776,7 +2776,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D29 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D29 remains assumed"
    },
    "value": "0,047"
   },
@@ -2790,7 +2790,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D6 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D6 remains assumed"
    },
    "value": "0,047"
   },
@@ -2804,7 +2804,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D7 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D7 remains assumed"
    },
    "value": "0,047"
   },
@@ -2818,7 +2818,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D44 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D44 remains assumed"
    },
    "value": "0,047"
   },
@@ -2832,7 +2832,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D46 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D46 remains assumed"
    },
    "value": "0,047"
   },
@@ -2846,7 +2846,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D48 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D48 remains assumed"
    },
    "value": "0,047"
   },
@@ -2860,7 +2860,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D40 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D40 remains assumed"
    },
    "value": "0,047"
   },
@@ -2874,7 +2874,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D38 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D38 remains assumed"
    },
    "value": "0,047"
   },
@@ -2888,7 +2888,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D35 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D35 remains assumed"
    },
    "value": "0,047"
   },
@@ -2902,7 +2902,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D42 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D42 remains assumed"
    },
    "value": "0,047"
   },
@@ -2916,7 +2916,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D58 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D58 remains assumed"
    },
    "value": "0,047"
   },
@@ -2930,7 +2930,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D14 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D14 remains assumed"
    },
    "value": "0,047"
   },
@@ -2944,7 +2944,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D3 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D3 remains assumed"
    },
    "value": "0,047"
   },
@@ -2958,7 +2958,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D71 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D71 remains assumed"
    },
    "value": "0,047"
   },
@@ -2972,7 +2972,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D79 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D79 remains assumed"
    },
    "value": "0,047"
   },
@@ -2986,7 +2986,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM C35-C72 decoupling; position by D87 [assumed]"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D87 remains assumed"
    },
    "value": "0,047"
   },

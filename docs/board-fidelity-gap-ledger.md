@@ -48,7 +48,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | connector boundary | 2 | 0 |
 | logic/source | 12 | 4 |
 | memory/timing | 0 | 7 |
-| placement/value | 39 | 0 |
+| placement/refdes | 38 | 0 |
+| placement/value | 1 | 0 |
 | unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 15 |
 | video/timing | 4 | 0 |
@@ -98,49 +99,54 @@ parts placement and Tier-3 reproduction.
 | `R56` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
 | `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
 
+### placement/refdes
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `C35` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D60 remains assumed |
+| `C36` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D61 remains assumed |
+| `C37` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D62 remains assumed |
+| `C38` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D63 remains assumed |
+| `C39` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D64 remains assumed |
+| `C40` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D65 remains assumed |
+| `C41` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D66 remains assumed |
+| `C42` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D67 remains assumed |
+| `C43` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D15 remains assumed |
+| `C44` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D17 remains assumed |
+| `C45` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D19 remains assumed |
+| `C46` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D21 remains assumed |
+| `C47` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D5 remains assumed |
+| `C48` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D1 remains assumed |
+| `C49` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D10 remains assumed |
+| `C50` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D11 remains assumed |
+| `C51` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D26 remains assumed |
+| `C52` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D27 remains assumed |
+| `C53` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D54 remains assumed |
+| `C54` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D55 remains assumed |
+| `C55` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D57 remains assumed |
+| `C56` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D23 remains assumed |
+| `C57` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D29 remains assumed |
+| `C58` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D6 remains assumed |
+| `C59` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D7 remains assumed |
+| `C60` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D44 remains assumed |
+| `C61` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D46 remains assumed |
+| `C62` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D48 remains assumed |
+| `C63` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D40 remains assumed |
+| `C64` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D38 remains assumed |
+| `C65` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D35 remains assumed |
+| `C66` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D42 remains assumed |
+| `C67` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D58 remains assumed |
+| `C68` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D14 remains assumed |
+| `C69` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D3 remains assumed |
+| `C70` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D71 remains assumed |
+| `C71` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D79 remains assumed |
+| `C72` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D87 remains assumed |
+
 ### placement/value
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `C32` | `C_ELEC` | scan | scan area: bulk cap [assumed rail -12/GND] |
-| `C35` | `C_KM` | scan | BOM C35-C72 decoupling; position by D60 [assumed] |
-| `C36` | `C_KM` | scan | BOM C35-C72 decoupling; position by D61 [assumed] |
-| `C37` | `C_KM` | scan | BOM C35-C72 decoupling; position by D62 [assumed] |
-| `C38` | `C_KM` | scan | BOM C35-C72 decoupling; position by D63 [assumed] |
-| `C39` | `C_KM` | scan | BOM C35-C72 decoupling; position by D64 [assumed] |
-| `C40` | `C_KM` | scan | BOM C35-C72 decoupling; position by D65 [assumed] |
-| `C41` | `C_KM` | scan | BOM C35-C72 decoupling; position by D66 [assumed] |
-| `C42` | `C_KM` | scan | BOM C35-C72 decoupling; position by D67 [assumed] |
-| `C43` | `C_KM` | scan | BOM C35-C72 decoupling; position by D15 [assumed] |
-| `C44` | `C_KM` | scan | BOM C35-C72 decoupling; position by D17 [assumed] |
-| `C45` | `C_KM` | scan | BOM C35-C72 decoupling; position by D19 [assumed] |
-| `C46` | `C_KM` | scan | BOM C35-C72 decoupling; position by D21 [assumed] |
-| `C47` | `C_KM` | scan | BOM C35-C72 decoupling; position by D5 [assumed] |
-| `C48` | `C_KM` | scan | BOM C35-C72 decoupling; position by D1 [assumed] |
-| `C49` | `C_KM` | scan | BOM C35-C72 decoupling; position by D10 [assumed] |
-| `C50` | `C_KM` | scan | BOM C35-C72 decoupling; position by D11 [assumed] |
-| `C51` | `C_KM` | scan | BOM C35-C72 decoupling; position by D26 [assumed] |
-| `C52` | `C_KM` | scan | BOM C35-C72 decoupling; position by D27 [assumed] |
-| `C53` | `C_KM` | scan | BOM C35-C72 decoupling; position by D54 [assumed] |
-| `C54` | `C_KM` | scan | BOM C35-C72 decoupling; position by D55 [assumed] |
-| `C55` | `C_KM` | scan | BOM C35-C72 decoupling; position by D57 [assumed] |
-| `C56` | `C_KM` | scan | BOM C35-C72 decoupling; position by D23 [assumed] |
-| `C57` | `C_KM` | scan | BOM C35-C72 decoupling; position by D29 [assumed] |
-| `C58` | `C_KM` | scan | BOM C35-C72 decoupling; position by D6 [assumed] |
-| `C59` | `C_KM` | scan | BOM C35-C72 decoupling; position by D7 [assumed] |
-| `C60` | `C_KM` | scan | BOM C35-C72 decoupling; position by D44 [assumed] |
-| `C61` | `C_KM` | scan | BOM C35-C72 decoupling; position by D46 [assumed] |
-| `C62` | `C_KM` | scan | BOM C35-C72 decoupling; position by D48 [assumed] |
-| `C63` | `C_KM` | scan | BOM C35-C72 decoupling; position by D40 [assumed] |
-| `C64` | `C_KM` | scan | BOM C35-C72 decoupling; position by D38 [assumed] |
-| `C65` | `C_KM` | scan | BOM C35-C72 decoupling; position by D35 [assumed] |
-| `C66` | `C_KM` | scan | BOM C35-C72 decoupling; position by D42 [assumed] |
-| `C67` | `C_KM` | scan | BOM C35-C72 decoupling; position by D58 [assumed] |
-| `C68` | `C_KM` | scan | BOM C35-C72 decoupling; position by D14 [assumed] |
-| `C69` | `C_KM` | scan | BOM C35-C72 decoupling; position by D3 [assumed] |
-| `C70` | `C_KM` | scan | BOM C35-C72 decoupling; position by D71 [assumed] |
-| `C71` | `C_KM` | scan | BOM C35-C72 decoupling; position by D79 [assumed] |
-| `C72` | `C_KM` | scan | BOM C35-C72 decoupling; position by D87 [assumed] |
 
 ### unpopulated sockets
 

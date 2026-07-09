@@ -160,7 +160,9 @@ R36/R37 in Φ1/Φ2 are DEFERRED, they'd split checked nets):
 - **-5V derivation**: R19 470 (-12→) + VD5 zener → completes M5V_DERIVED to D1.11 [scan parts]
 - **Reset network**: R3/R4/R20/C1/C21 + S1 (the front-bracket RESET button, per owner photo) → D13.5
 - **Bulk caps** C31-C33 at X8; **video-mix** R38/R39 into NODE_A (R61/R90/R91/VT1/VD4 defer to D34 stage)
-- **Decoupling C35-C72** (38, BOM count) on P5V/GND, chip-adjacent positions [assumed]
+- **Decoupling C35-C72** (38, BOM count, 0,047): C35-C53 on RAIL_G/RAIL_E and
+  C54-C72 on RAIL_E/RAIL_H per the traced array-power rails; exact per-cap physical
+  association remains [assumed]
 Full board now: **138 net-modeled footprints, 1152 connections, routed 100%, 0 electrical DRC**.
 
 ## Owner photos of BOARD #2 (ref/photos/juku-pcb-2/, git-lfs) — MAJOR finds

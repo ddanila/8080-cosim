@@ -56,6 +56,8 @@ def category_for_chip(chip: dict, text: str) -> str:
         return "PROM truth"
     if "ANALOG" in upper or ref.startswith(("VT", "VD", "L")):
         return "analog/source"
+    if ref.startswith("C") and "PER-POSITION/REFDES" in upper:
+        return "placement/refdes"
     if ref.startswith("C") or "DECOUPLING" in upper:
         return "placement/value"
     if "VIDEO" in upper or "MUX" in upper or "TIMING" in upper:
