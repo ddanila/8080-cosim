@@ -2262,7 +2262,7 @@
    "prov": {
     "type": "scan",
     "refdes": "owner photo + sheet-3 serial connector code map",
-    "pins": "serial connector signal pins traced to S_SOUT/S_RTS/S_DTP/S_TTL/S_OC/S_SIN; external cable/electrical loopback remains a bring-up boundary"
+    "pins": "serial connector signal pins traced to S_SOUT/S_RTS/S_DTP/S_TTL/S_OC/S_SIN; external cable/electrical loopback is covered by bring-up tests"
    }
   },
   {

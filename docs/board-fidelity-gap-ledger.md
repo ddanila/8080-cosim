@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `77`
+- Chip-level fidelity gaps: `76`
 - Net-level source-risk gaps: `41`
 
 ## Chip Provenance Types
@@ -44,7 +44,6 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 8 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
-| connector boundary | 1 | 0 |
 | logic/source | 3 | 4 |
 | memory/timing | 0 | 7 |
 | placement/refdes | 38 | 0 |
@@ -72,12 +71,6 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `VD5` | `D_DIODE` | scan | scan: VD5 by R19; zener clamp to GND [assumed orientation] |
-
-### connector boundary
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `X3` | `SERIAL_CONN` | scan | owner photo + sheet-3 serial connector code map serial connector signal pins traced to S_SOUT/S_RTS/S_DTP/S_TTL/S_OC/S_SIN; external cable/electrical loopbac... |
 
 ### logic/source
 
