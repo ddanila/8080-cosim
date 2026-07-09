@@ -19,6 +19,7 @@ KHOLD=${JUKU_TOP_FDC_KHOLD:-900000}
 KGAP=${JUKU_TOP_FDC_KGAP:-900000}
 FRAMEIRQ=${JUKU_TOP_FDC_FRAMEIRQ:-80000}
 FRAMEPHASE=${JUKU_TOP_FDC_FRAMEPHASE:-0}
+FRAMEMCYC=${JUKU_TOP_FDC_FRAMEMCYC:-0}
 MAXVRAM=${JUKU_TOP_FDC_MAXVRAM:-88000}
 TIMECAP=${JUKU_TOP_FDC_TIMECAP:-900000000}
 TRACEPROGRESS=${JUKU_TOP_FDC_TRACEPROGRESS:-5000}
@@ -71,6 +72,7 @@ if command -v timeout >/dev/null; then
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
       +framephase="$FRAMEPHASE" \
+      +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
@@ -82,6 +84,7 @@ if command -v timeout >/dev/null; then
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
       +framephase="$FRAMEPHASE" \
+      +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
@@ -96,6 +99,7 @@ else
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
       +framephase="$FRAMEPHASE" \
+      +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
@@ -107,6 +111,7 @@ else
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
       +framephase="$FRAMEPHASE" \
+      +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
@@ -200,6 +205,9 @@ Environment overrides:
 - \`JUKU_TOP_FDC_KGAP\` default \`900000\`
 - \`JUKU_TOP_FDC_FRAMEIRQ\` default \`80000\`
 - \`JUKU_TOP_FDC_FRAMEPHASE\` default \`0\`
+- \`JUKU_TOP_FDC_FRAMEMCYC\` default \`0\`; when nonzero, overrides
+  \`JUKU_TOP_FDC_FRAMEIRQ\` and schedules frame ticks on machine-cycle boundaries;
+  in this mode \`JUKU_TOP_FDC_FRAMEPHASE\` is the absolute first machine-cycle tick
 - \`JUKU_TOP_FDC_TRACEPROGRESS\` default \`5000\`
 - \`JUKU_TOP_FDC_TRACEIO\` default \`0\`
 - \`JUKU_TOP_FDC_TRACECHK\` default \`0\`
@@ -215,7 +223,7 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPC_SKIP\` default \`0\`; matching PC entries to skip
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE FRAMEMCYC=$FRAMEMCYC TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -282,6 +290,12 @@ $(grep '^\[CHKHDL' "$OUT" || true)
 
 \`\`\`text
 $(grep '^\[PPI0\]' "$OUT" || true)
+\`\`\`
+
+## IRQ Trace
+
+\`\`\`text
+$(grep '^\[IRQ\]' "$OUT" || true)
 \`\`\`
 
 ## FDC Trace

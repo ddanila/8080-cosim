@@ -281,13 +281,17 @@ debugging session saved on real hardware.
    `docs/juku-top-fdc-alignment.md` summarizes that committed HDL boundary:
    reset-driven `juku_top` reaches FDC command/data I/O and its first no-key
    keyboard scan matches the cosim anchor (`IN 0x05 = 0xCF` at PC `0x1213`,
-   VRAM 30,520), but the first frame IRQ is too early: current reset-run IRQ is
-   at VRAM 30,524, while the cosim reference pins the first frame IRQ at VRAM
-   33,812 and the first FDC command at VRAM 63,085. A no-frame HDL bound reaches
-   VRAM 33,812 at `mcyc=852989`, proving the pre-IRQ framebuffer path still
-   advances. Remaining target: calibrate/fix the frame IRQ phase/timer model so
-   the uninterrupted full ROMBIOS `TDD` path through `juku_top` reaches the
-   EKDOS prompt with that external media, without relying on checkpoint/resume
+   VRAM 30,520). The FDC probe now has an optional machine-cycle frame
+   scheduler (`JUKU_TOP_FDC_FRAMEMCYC`): `FRAMEMCYC=80000` and
+   `FRAMEPHASE=52989` align the first accepted HDL frame IRQ to the cosim
+   framebuffer/mcycle anchor (`mcyc=852989`, VRAM 33,811/33,812) and prove the
+   expected `0xFED4` CALL-vector injection. That calibration also proves the
+   next mismatch is not just frame phase: HDL is still at PC `0x0244` at the
+   first IRQ anchor, while cosim is at PC `0x0E21`, and a no-frame `0x0E21`
+   stop-PC probe does not hit by 90,000 VRAM writes. Remaining target: fix the
+   pre-FDC CPU/video timing path so the uninterrupted full ROMBIOS `TDD` path
+   through `juku_top` reaches first command `0x02`, sector `0x02`, and then the
+   EKDOS prompt with external media, without relying on checkpoint/resume
    acceleration.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry

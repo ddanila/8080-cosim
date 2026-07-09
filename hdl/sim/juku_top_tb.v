@@ -30,7 +30,7 @@ module juku_top_tb();
   integer ekdoskeys=0, ekdos_key=0;
   // frame interrupt: a 1-osc-cycle pulse every `frameirq` osc cycles (8253 VER-RTR -> 8259
   // IR5). Opt-in: frameirq=0 => no pulse => intr stays 0 => boot byte-identical.
-  reg frame_tick=0; integer frameirq=0, framephase=0, osc_n=0;
+  reg frame_tick=0; integer frameirq=0, framephase=0, frame_mcyc=0, next_frame_mcyc=0, frame_mcyc_armed=0, osc_n=0;
 
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
                .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
@@ -56,8 +56,13 @@ module juku_top_tb();
   end endtask
 
   // count machine cycles off the structural SYNC net; drive the keyboard press window
+  integer mcyc_now;
   always @(posedge osc) begin
-    if (dut.sync && !sq) mcyc <= mcyc+1;
+    mcyc_now = mcyc;
+    if (dut.sync && !sq) begin
+      mcyc_now = mcyc + 1;
+      mcyc <= mcyc_now;
+    end
     sq <= dut.sync;
     if (stoppc_en && dut.U_CPU.u.core.r16_pc == stoppc && pc_q != stoppc) begin
       if (stoppc_seen >= stoppc_skip) begin
@@ -88,8 +93,21 @@ module juku_top_tb();
       kbd_pressed <= (key_t >= 0 && key_t < khold);                               // hold then release
     end
     osc_n <= osc_n + 1;
-    frame_tick <= (frameirq != 0 && osc_n >= framephase &&
-                   ((osc_n - framephase) % frameirq) == (frameirq-1));        // periodic IR5 tick
+    if (frame_mcyc != 0) begin
+      if (!frame_mcyc_armed) begin
+        next_frame_mcyc <= (framephase != 0) ? framephase : frame_mcyc;
+        frame_mcyc_armed <= 1;
+        frame_tick <= 1'b0;
+      end else if (mcyc_now >= next_frame_mcyc) begin
+        frame_tick <= 1'b1;
+        next_frame_mcyc <= next_frame_mcyc + frame_mcyc;
+      end else begin
+        frame_tick <= 1'b0;
+      end
+    end else begin
+      frame_tick <= (frameirq != 0 && osc_n >= framephase &&
+                     ((osc_n - framephase) % frameirq) == (frameirq-1));      // periodic IR5 tick
+    end
   end
 
   integer traceio=0, stopio=0, raw_ios=0, raw_reads=0, raw_writes=0;
@@ -404,6 +422,7 @@ module juku_top_tb();
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)
     if ($value$plusargs("framephase=%d", framephase)) ; // oscillator-cycle phase for frameirq
+    if ($value$plusargs("frame_mcyc=%d", frame_mcyc)) ;  // absolute machine-cycle period; overrides frameirq
     if ($value$plusargs("cursorstop=%d", cursorstop)) ; // stop when jmon33 idle cursor is in VRAM
     if ($value$plusargs("stopprompt=%d", stopprompt)) ; // stop when EKDOS A> is in VRAM
     if (keyat != 0) begin
