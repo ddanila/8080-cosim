@@ -2331,7 +2331,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan area: bulk cap [assumed rail -12/GND]"
+    "pins": "scan: bulk cap -12/GND at X8; connected nets M12V/GND carry crop evidence"
    }
   },
   {
@@ -3161,7 +3161,7 @@
    "prov": {
     "type": "wire",
     "refdes": "BOM .009",
-    "pins": "КР531КП14 video-addr mux; SEL(1) <- D41.QA [WIRE 10, beeper]; rest untraced"
+    "pins": "КР531КП14 video-address mux; SEL(1) <- D41.QA [WIRE 10]; A/B/Y pins are netted to VA/MA address rails and VID_MUX_G enable"
    }
   },
   {

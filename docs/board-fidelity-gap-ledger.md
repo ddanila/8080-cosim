@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `82`
+- Chip-level fidelity gaps: `80`
 - Net-level source-risk gaps: `41`
 
 ## Chip Provenance Types
@@ -49,10 +49,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | logic/source | 4 | 4 |
 | memory/timing | 0 | 7 |
 | placement/refdes | 38 | 0 |
-| placement/value | 1 | 0 |
 | unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 15 |
-| video/timing | 3 | 0 |
+| video/timing | 2 | 0 |
 
 ## Chip-Level Gaps
 
@@ -134,12 +133,6 @@ parts placement and Tier-3 reproduction.
 | `C71` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D79 remains assumed |
 | `C72` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D87 remains assumed |
 
-### placement/value
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `C32` | `C_ELEC` | scan | scan area: bulk cap [assumed rail -12/GND] |
-
 ### unpopulated sockets
 
 | Ref | Type | Provenance | Note |
@@ -180,7 +173,6 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary] |
-| `D50` | `KP14_MUX` | wire | BOM .009 КР531КП14 video-addr mux; SEL(1) <- D41.QA [WIRE 10, beeper]; rest untraced |
 | `D52` | `KP14_MUX` | scan | sheet-2 MX: the 5th КП14 (VIDEO/µP ADDRESS select for D53 via E2/E3); inputs deferred [boundary] |
 
 ## Net-Level Source Risks
