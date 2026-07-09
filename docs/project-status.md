@@ -185,15 +185,19 @@ Historical merge notes:
   monitor cursor and command rows.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
-  expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM
-  window. The current boundary is sharper: the loader copies the cartridge body
-  from `0x0200` into matching low RAM for 7,680 bytes with 0 body mismatches,
-  but the low entry/control area has exactly 14 byte mismatches and the later
-  `0x4000` RAM window still receives only `0x00` writes. `docs/basic-low-stub-inspection.md`
+  expansion-cartridge overlay and later executes in the `0x4000..0xBFFF` RAM
+  window. The current boundary is sharper: Monitor 3.3 validates the cartridge
+  header in high ROM, sets up a copy from the `0x4000` cartridge window into
+  low RAM at `0x0100`, jumps to `0x0100`, and only later falls into the
+  zero-filled `0x4000` RAM window. The loader copies the cartridge body from
+  `0x0200` into matching low RAM for 7,680 bytes with 0 body mismatches, but
+  the low entry/control area has exactly 14 byte mismatches.
+  `docs/basic-low-stub-inspection.md`
   groups those 14 deltas: the loaded low image changes the `0x0100` stack
   pointer to `0xFFFE`, keeps the first `0x0200` bytes identical across both
-  public BASIC media shapes, and leaves the body exact. Execution still fetches
-  a zero-filled NOP sled, and no user-visible BASIC prompt is produced. The
+  public BASIC media shapes, and leaves the body exact. The later `0x4000`
+  execution fetches a zero-filled NOP sled from mode-1 RAM, not live cartridge
+  opcodes, and no user-visible BASIC prompt is produced. The
   probe also records why this is a compatibility
   boundary: MAME's local source warns that Monitor 3.3 does not seem compatible
   with the JBASIC expansion cartridge, and both tested BASIC images start with

@@ -216,17 +216,19 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `JUKU_CART` plus HDL D8/D22 expose `jbasic11.bin` at `0x4000`.
 - `sync/basic_launch_probe.py` — bounded cosim diagnostic for a monitor command
   path into the BASIC cartridge; default `JUKU_KEYS=B`. Monitor 3.3 compares
-  `jbasic11.bin` with the legacy BAS0-3 image and reaches cartridge execution
-  through the same zero-filled RAM window. The report also records that the
-  cartridge body from `0x0200` is copied into matching low RAM for 7,680 bytes
-  with 0 body mismatches, while the low entry/control area has 14 byte
-  mismatches, plus the MAME Monitor 3.3/JBASIC compatibility warning and the
-  BASIC images' absolute `JMP 0x0107` entry.
+  `jbasic11.bin` with the legacy BAS0-3 image, validates the cartridge header
+  from high ROM, copies from the `0x4000` cartridge window to low RAM at
+  `0x0100`, and later reaches the same zero-filled `0x4000` RAM execution
+  boundary. The report also records that the cartridge body from `0x0200` is
+  copied into matching low RAM for 7,680 bytes with 0 body mismatches, while
+  the low entry/control area has 14 byte mismatches, plus the MAME Monitor
+  3.3/JBASIC compatibility warning and the BASIC images' absolute
+  `JMP 0x0107` entry.
 - `scripts/report_basic_low_stub_inspection.py` — generated inspection of that
   14-byte low-stub boundary. It groups the sparse deltas, records the
-  `0x0100` stack-pointer patch to `0xFFFE`, and keeps the remaining
-  cartridge-BASIC work focused on low workspace/control bytes plus the monitor
-  launch vector.
+  `0x0100` stack-pointer patch to `0xFFFE`, includes the Monitor 3.3 high-ROM
+  header/copy/jump disassembly, and keeps the remaining cartridge-BASIC work
+  focused on the post-`0x0100` handoff through low workspace/control bytes.
 - `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
   doc 003 factory BASIC `A` command. It runs all vendored public monitor ROMs
   against both BASIC payload shapes and records that Monitor 3.3 reaches the same

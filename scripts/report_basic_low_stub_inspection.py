@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "basic-low-stub-inspection.md"
 JBASIC = ROOT / "roms" / "jbasic11.bin"
+JMON33 = ROOT / "roms" / "jmon33.bin"
 BAS_PARTS = [ROOT / "ref" / "firmware" / f"BAS{idx}.HEX" for idx in range(4)]
 DISASM = ROOT / "cosim" / "dis8080.py"
 
@@ -51,12 +52,13 @@ def sha1(data: bytes) -> str:
     return hashlib.sha1(data).hexdigest()
 
 
-def disassemble(module, data: bytes, start: int, end: int) -> list[str]:
+def disassemble(module, data: bytes, start: int, end: int, base: int = 0) -> list[str]:
     lines: list[str] = []
     pc = start
     while pc < end:
-        text, size = module.decode(data, pc, 0)
-        raw = " ".join(f"{data[pc + idx]:02X}" for idx in range(size) if pc + idx < len(data))
+        text, size = module.decode(data, pc, base)
+        off = pc - base
+        raw = " ".join(f"{data[off + idx]:02X}" for idx in range(size) if off + idx < len(data))
         lines.append(f"{pc:04X}: {raw:<9} {text}")
         pc += size
     return lines
@@ -69,6 +71,7 @@ def word(data: bytes, addr: int) -> int:
 def main() -> int:
     dis8080 = load_disassembler()
     cart = JBASIC.read_bytes()
+    jmon33 = JMON33.read_bytes()
     legacy = b"".join(decode_hex_bytes(path) for path in BAS_PARTS)
     loaded = bytearray(cart)
     for addr, value in LOW_RAM_PATCH.items():
@@ -93,14 +96,16 @@ def main() -> int:
         "This generated report interprets the 14-byte `0x0100..0x01FF`",
         "cartridge-vs-RAM mismatch pinned by `docs/basic-launch-probe.md`.",
         "The `0x0200..0x1FFF` BASIC body is byte-identical after Monitor 3.3",
-        "loads the cartridge; the unresolved boundary is this low entry/workspace",
-        "area and the monitor launch vector, not the cartridge window or bulk copy.",
+        "loads the cartridge; the unresolved boundary is the post-`0x0100`",
+        "handoff through this low entry/workspace area, not the cartridge",
+        "window or bulk copy.",
         "",
         "## Inputs",
         "",
         "| Item | Value |",
         "| --- | --- |",
         f"| `roms/jbasic11.bin` SHA1 | `{sha1(cart)}` |",
+        f"| `roms/jmon33.bin` SHA1 | `{sha1(jmon33)}` |",
         f"| legacy `BAS0-3.HEX` SHA1 | `{sha1(legacy)}` |",
         f"| images identical | `{'YES' if legacy == cart else 'NO'}` |",
         f"| first `0x0200` bytes identical | `{'YES' if legacy[:0x0200] == cart[:0x0200] else 'NO'}` |",
@@ -132,6 +137,43 @@ def main() -> int:
             "low control/workspace region. A linear disassembly is useful for",
             "orientation, but should not be treated as proof that every byte below",
             "`0x0151` is executable code.",
+            "",
+            "## Monitor 3.3 Handoff",
+            "",
+            "In memory modes 1 and 2, Monitor 3.3's high-ROM window maps CPU",
+            "addresses `0xD800..0xFFFF` to `roms/jmon33.bin` offsets",
+            "`0x1800..0x3FFF`; equivalently, disassemble the ROM with file byte",
+            "0 mapped at CPU address `0xC000` for high-window snippets.",
+            "",
+            "The source-aware launch probe now shows the first cartridge reads from",
+            "high ROM at `0xEF4D` / `0xFF09`, followed by reads from RAM-resident",
+            "copy code at `0xD763`. The eventual execution in `0x4000..0xBFFF`",
+            "happens in mode 1 from RAM, not in mode 2 from the cartridge overlay,",
+            "and the sampled opcodes there are `0x00`.",
+            "",
+            "Header check around the first sampled high-ROM cartridge read:",
+            "",
+            "```text",
+            *disassemble(dis8080, jmon33, 0xEF4A, 0xEF5C, 0xC000),
+            "```",
+            "",
+            "Launch/copy setup around the second sampled high-ROM cartridge read:",
+            "",
+            "```text",
+            *disassemble(dis8080, jmon33, 0xFF01, 0xFF1C, 0xC000),
+            "```",
+            "",
+            "Shared high-ROM copy trampoline reached with `A=0x12`, `BC=0x4000`,",
+            "and `DE=0x0100` from the launch setup:",
+            "",
+            "```text",
+            *disassemble(dis8080, jmon33, 0xEE43, 0xEE85, 0xC000),
+            "```",
+            "",
+            "This proves that the monitor deliberately validates the cartridge header,",
+            "copies from the `0x4000` cartridge window into low RAM starting at",
+            "`0x0100`, then jumps to `0x0100`. The still-wrong later execution from",
+            "zero-filled RAM at `0x4000` is therefore after this intentional handoff.",
             "",
             "## Linear Disassembly: Cartridge",
             "",

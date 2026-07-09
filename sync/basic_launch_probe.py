@@ -59,6 +59,7 @@ READ_RE = re.compile(
 )
 SAMPLES_RE = re.compile(
     r"cart_read_samples\s+:\s+(.+?)\n"
+    r"\s+basic_exec_samples\s+:\s+(.+?)\n"
     r"\s+basic_ram_write_samples\s+:\s+(.+?)\n",
     re.S,
 )
@@ -112,6 +113,13 @@ def instrumented_trace_source() -> str:
         "static unsigned basic_probe_cart_sample_addr[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_cart_sample_value[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_cart_sample_mode[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_cart_sample_pc_source[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_cart_sample_pc_opcode[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_exec_sample_count = 0;\n"
+        "static unsigned basic_probe_exec_sample_pc[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_exec_sample_mode[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_exec_sample_source[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_exec_sample_opcode[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_ram_sample_count = 0;\n"
         "static unsigned basic_probe_ram_sample_pc[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_ram_sample_addr[BASIC_SAMPLE_MAX];\n"
@@ -139,10 +147,20 @@ def instrumented_trace_source() -> str:
         "    uint8_t cart_value = cart_enabled ? cart[a - 0x4000] : 0xFF;\n"
         "    if (basic_probe_cart_sample_count < BASIC_SAMPLE_MAX) {\n"
         "      unsigned sample = basic_probe_cart_sample_count++;\n"
+        "      unsigned pc_idx = 0;\n"
+        "      int pc_source = cpu ? overlay(cpu->pc, &pc_idx) : 0;\n"
+        "      uint8_t pc_opcode = 0x00;\n"
+        "      if (cpu) {\n"
+        "        if (pc_source == 1) pc_opcode = rom[pc_idx];\n"
+        "        else if (pc_source == 2) pc_opcode = cart_enabled ? cart[cpu->pc - 0x4000] : 0xFF;\n"
+        "        else pc_opcode = ram[cpu->pc];\n"
+        "      }\n"
         "      basic_probe_cart_sample_pc[sample] = cpu ? cpu->pc : 0;\n"
         "      basic_probe_cart_sample_addr[sample] = a;\n"
         "      basic_probe_cart_sample_value[sample] = cart_value;\n"
         "      basic_probe_cart_sample_mode[sample] = mode;\n"
+        "      basic_probe_cart_sample_pc_source[sample] = pc_source;\n"
+        "      basic_probe_cart_sample_pc_opcode[sample] = pc_opcode;\n"
         "    }\n"
         "    return cart_value;\n"
         "  }\n",
@@ -188,6 +206,19 @@ def instrumented_trace_source() -> str:
         "      if (mode == 2) pc_cart_mode2++;\n"
         "      uint8_t op = (mode == 2 && cart_enabled) ? cart[cpu.pc - 0x4000] : ram[cpu.pc];\n"
         "      if (op == 0x00) pc_cart_opcode00++;\n"
+        "      if (basic_probe_exec_sample_count < BASIC_SAMPLE_MAX) {\n"
+        "        unsigned sample = basic_probe_exec_sample_count++;\n"
+        "        unsigned pc_idx = 0;\n"
+        "        int pc_source = overlay(cpu.pc, &pc_idx);\n"
+        "        uint8_t pc_opcode = 0x00;\n"
+        "        if (pc_source == 1) pc_opcode = rom[pc_idx];\n"
+        "        else if (pc_source == 2) pc_opcode = cart_enabled ? cart[cpu.pc - 0x4000] : 0xFF;\n"
+        "        else pc_opcode = ram[cpu.pc];\n"
+        "        basic_probe_exec_sample_pc[sample] = cpu.pc;\n"
+        "        basic_probe_exec_sample_mode[sample] = mode;\n"
+        "        basic_probe_exec_sample_source[sample] = pc_source;\n"
+        "        basic_probe_exec_sample_opcode[sample] = pc_opcode;\n"
+        "      }\n"
         "    }\n"
         "    pchist[cpu.pc]++;\n",
         1,
@@ -218,9 +249,16 @@ def instrumented_trace_source() -> str:
         '  printf("  basic_ram_byte_sum       : %8lu\\n", basic_ram_sum);\n'
         '  printf("  cart_read_samples :");\n'
         '  for (unsigned i = 0; i < basic_probe_cart_sample_count; i++)\n'
-        '    printf(" pc=%04X a=%04X v=%02X mode=%u", basic_probe_cart_sample_pc[i] & 0xFFFF,\n'
+        '    printf(" pc=%04X src=%u op=%02X a=%04X v=%02X mode=%u", basic_probe_cart_sample_pc[i] & 0xFFFF,\n'
+        '           basic_probe_cart_sample_pc_source[i], basic_probe_cart_sample_pc_opcode[i] & 0xFF,\n'
         '           basic_probe_cart_sample_addr[i] & 0xFFFF, basic_probe_cart_sample_value[i] & 0xFF,\n'
         '           basic_probe_cart_sample_mode[i]);\n'
+        '  printf("\\n");\n'
+        '  printf("  basic_exec_samples :");\n'
+        '  for (unsigned i = 0; i < basic_probe_exec_sample_count; i++)\n'
+        '    printf(" pc=%04X src=%u op=%02X mode=%u", basic_probe_exec_sample_pc[i] & 0xFFFF,\n'
+        '           basic_probe_exec_sample_source[i], basic_probe_exec_sample_opcode[i] & 0xFF,\n'
+        '           basic_probe_exec_sample_mode[i]);\n'
         '  printf("\\n");\n'
         '  printf("  basic_ram_write_samples :");\n'
         '  for (unsigned i = 0; i < basic_probe_ram_sample_count; i++)\n'
@@ -362,11 +400,21 @@ def parse_ram_probe(stdout: str) -> dict[str, int]:
     }
 
 
-def parse_samples(stdout: str) -> tuple[str, str]:
+def parse_samples(stdout: str) -> tuple[str, str, str]:
     match = SAMPLES_RE.search(stdout)
     if not match:
-        return "", ""
-    return match.group(1).strip(), match.group(2).strip()
+        return "", "", ""
+    return match.group(1).strip(), match.group(2).strip(), match.group(3).strip()
+
+
+def explain_source_samples(samples: str) -> str:
+    if not samples:
+        return "none"
+    return (
+        samples.replace("src=0", "src=ram")
+        .replace("src=1", "src=rom")
+        .replace("src=2", "src=cart")
+    )
 
 
 def parse_load_probe(stdout: str) -> dict[str, int | str]:
@@ -580,7 +628,7 @@ def main() -> int:
             pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
             cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
             ram_probe = parse_ram_probe(proc.stdout)
-            cart_samples, ram_samples = parse_samples(proc.stdout)
+            cart_samples, exec_samples, ram_samples = parse_samples(proc.stdout)
             load_probe = parse_load_probe(proc.stdout)
             diff_probe = parse_diff_probe(proc.stdout)
             sha = hashlib.sha256(vram).hexdigest() if vram else ""
@@ -606,6 +654,7 @@ def main() -> int:
                     "cart_pc_reads": cart_pc_reads,
                     "ram_probe": ram_probe,
                     "cart_samples": cart_samples,
+                    "exec_samples": exec_samples,
                     "ram_samples": ram_samples,
                     "load_probe": load_probe,
                     "diff_probe": diff_probe,
@@ -747,10 +796,14 @@ def main() -> int:
                     "`jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` "
                     "at `0xF007` in the local copy/clear loop."
                 )
-                if result["cart_samples"] or result["ram_samples"]:
+                if result["cart_samples"] or result["exec_samples"] or result["ram_samples"]:
                     lines.append(
                         "  First sampled cartridge reads: "
-                        f"`{result['cart_samples'] or 'none'}`."
+                        f"`{explain_source_samples(result['cart_samples'])}`."
+                    )
+                    lines.append(
+                        "  First sampled execution in `0x4000..0xBFFF`: "
+                        f"`{explain_source_samples(result['exec_samples'])}`."
                     )
                     lines.append(
                         "  First sampled BASIC-window writes: "

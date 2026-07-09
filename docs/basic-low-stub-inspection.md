@@ -5,14 +5,16 @@ Status: **LOW STUB PATCHED / BODY MATCHES**
 This generated report interprets the 14-byte `0x0100..0x01FF`
 cartridge-vs-RAM mismatch pinned by `docs/basic-launch-probe.md`.
 The `0x0200..0x1FFF` BASIC body is byte-identical after Monitor 3.3
-loads the cartridge; the unresolved boundary is this low entry/workspace
-area and the monitor launch vector, not the cartridge window or bulk copy.
+loads the cartridge; the unresolved boundary is the post-`0x0100`
+handoff through this low entry/workspace area, not the cartridge
+window or bulk copy.
 
 ## Inputs
 
 | Item | Value |
 | --- | --- |
 | `roms/jbasic11.bin` SHA1 | `27e40395e8b49e2f9febf2b23773fbfe251befcf` |
+| `roms/jmon33.bin` SHA1 | `76407d99bf83035ef526d980c9468cb04972608c` |
 | legacy `BAS0-3.HEX` SHA1 | `3d96ba589aa21d44412efb099a144fbe23a2f52f` |
 | images identical | `NO` |
 | first `0x0200` bytes identical | `YES` |
@@ -55,6 +57,99 @@ cartridge's `LXI SP,0xD700`. The remaining changes sit in the BASIC
 low control/workspace region. A linear disassembly is useful for
 orientation, but should not be treated as proof that every byte below
 `0x0151` is executable code.
+
+## Monitor 3.3 Handoff
+
+In memory modes 1 and 2, Monitor 3.3's high-ROM window maps CPU
+addresses `0xD800..0xFFFF` to `roms/jmon33.bin` offsets
+`0x1800..0x3FFF`; equivalently, disassemble the ROM with file byte
+0 mapped at CPU address `0xC000` for high-window snippets.
+
+The source-aware launch probe now shows the first cartridge reads from
+high ROM at `0xEF4D` / `0xFF09`, followed by reads from RAM-resident
+copy code at `0xD763`. The eventual execution in `0x4000..0xBFFF`
+happens in mode 1 from RAM, not in mode 2 from the cartridge overlay,
+and the sampled opcodes there are `0x00`.
+
+Header check around the first sampled high-ROM cartridge read:
+
+```text
+EF4A: 2A 03 40  LHLD $4003
+EF4D: EB        XCHG
+EF4E: CD E5 D7  CALL $D7E5
+EF51: 7A        MOV  A,D
+EF52: FE DC     CPI  $DC
+EF54: C0        RNZ
+EF55: 7B        MOV  A,E
+EF56: FE BA     CPI  $BA
+EF58: C0        RNZ
+EF59: C3 01 FF  JMP  $FF01
+```
+
+Launch/copy setup around the second sampled high-ROM cartridge read:
+
+```text
+FF01: 3E 02     MVI  A,$02
+FF03: CD E7 D7  CALL $D7E7
+FF06: 2A 05 40  LHLD $4005
+FF09: EB        XCHG
+FF0A: CD E5 D7  CALL $D7E5
+FF0D: EB        XCHG
+FF0E: 11 00 01  LXI  D,$0100
+FF11: 01 00 40  LXI  B,$4000
+FF14: 3E 12     MVI  A,$12
+FF16: CD 43 EE  CALL $EE43
+FF19: C3 00 01  JMP  $0100
+```
+
+Shared high-ROM copy trampoline reached with `A=0x12`, `BC=0x4000`,
+and `DE=0x0100` from the launch setup:
+
+```text
+EE43: 32 59 D7  STA  $D759
+EE46: E5        PUSH H
+EE47: D5        PUSH D
+EE48: 21 30 D6  LXI  H,$D630
+EE4B: E5        PUSH H
+EE4C: 50        MOV  D,B
+EE4D: 59        MOV  E,C
+EE4E: 21 5E EE  LXI  H,$EE5E
+EE51: 3A 59 D7  LDA  $D759
+EE54: E5        PUSH H
+EE55: 21 5E D7  LXI  H,$D75E
+EE58: E5        PUSH H
+EE59: E6 03     ANI  $03
+EE5B: C3 E7 D7  JMP  $D7E7
+EE5E: E1        POP  H
+EE5F: EB        XCHG
+EE60: E3        XTHL
+EE61: E5        PUSH H
+EE62: 11 30 D6  LXI  D,$D630
+EE65: 21 72 EE  LXI  H,$EE72
+EE68: 3A 59 D7  LDA  $D759
+EE6B: 07        RLC
+EE6C: 07        RLC
+EE6D: 07        RLC
+EE6E: 07        RLC
+EE6F: C3 54 EE  JMP  $EE54
+EE72: E1        POP  H
+EE73: C1        POP  B
+EE74: E3        XTHL
+EE75: 11 80 FF  LXI  D,$FF80
+EE78: 19        DAD  D
+EE79: D1        POP  D
+EE7A: 7C        MOV  A,H
+EE7B: FE FF     CPI  $FF
+EE7D: CA E5 D7  JZ   $D7E5
+EE80: B5        ORA  L
+EE81: C2 46 EE  JNZ  $EE46
+EE84: C3 E5 D7  JMP  $D7E5
+```
+
+This proves that the monitor deliberately validates the cartridge header,
+copies from the `0x4000` cartridge window into low RAM starting at
+`0x0100`, then jumps to `0x0100`. The still-wrong later execution from
+zero-filled RAM at `0x4000` is therefore after this intentional handoff.
 
 ## Linear Disassembly: Cartridge
 
