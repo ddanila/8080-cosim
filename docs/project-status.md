@@ -293,10 +293,11 @@ Historical merge notes:
   reduces the remaining physical-owner request to P0 programming/PROM/media
   truth plus P1 continuity items; broad analog/video/sound captures stay in the
   bring-up checklist.
-- **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
-  runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
-  traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains
-  a physical bring-up check, documented in `docs/beeper-readiness.md`.
+- **Beeper digital source + board handoff guarded:** D57 PIT channel 1 (`OUT1`)
+  now has a runnable guard (`sync/beeper_check.sh`) that programs a reload,
+  proves the traced `SOUND` source toggles, and checks the board JSON handoff
+  through `R90`, `VT1`/`VD4`/`R91`, `R48`, and `SPKR`. The speaker current path
+  remains a physical bring-up check, documented in `docs/beeper-readiness.md`.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge

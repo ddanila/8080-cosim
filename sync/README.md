@@ -249,8 +249,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `ref/firmware/`. It guards their hashes and shape while preserving the
   current conclusion that they are not the processor-module D8 `.039` or D94
   `.092` contents.
-- `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
-  programmed `OUT1` toggles the traced `SOUND` net.
+- `sync/beeper_check.sh` — D57 PIT channel 1 beeper guard: programmed `OUT1`
+  toggles the traced `SOUND` net, and the board JSON handoff through
+  `R90`/`VT1`/`VD4`/`R91`/`R48`/`SPKR` is present.
 
 ## Status
 

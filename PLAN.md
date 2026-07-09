@@ -477,12 +477,13 @@ debugging session saved on real hardware.
    Remaining targets: identify the correct Monitor 3.3 cartridge BASIC launch
    path and keep the disk-backed EKDOS `JBASIC` HDL path guarded without
    checkpoint/resume.
-4. **Sound**: digital beeper source is now guarded by
+4. **Sound**: digital beeper source and board handoff are now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
-   output. Remaining physical boundary: the analog driver/current path
-   (`SOUND -> R90 -> VT1/VD4/R91 -> R48 -> SPKR`) still needs bench-level
-   speaker verification during bring-up.
+   output, while `kicad/juku.board.json` is checked for the traced
+   `SOUND -> R90 -> VT1/VD4/R91 -> R48 -> SPKR` handoff. Remaining physical
+   boundary: the analog driver/current path still needs bench-level speaker
+   verification during bring-up.
 Guards stay green throughout: LVS, boot_check, cosim_check.
 
 ### WS-C — VJUGA Rev A: order and bring up (de-risk the whole physical program)

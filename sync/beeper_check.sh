@@ -15,39 +15,88 @@ if ! printf '%s\n' "$out" | grep -q "BEEPER-PATH: PASS"; then
   exit 1
 fi
 
-cat > docs/beeper-readiness.md <<'EOF'
-# Beeper readiness
+python3 - <<'PY'
+import json
+from pathlib import Path
 
-Status: **DIGITAL BEEPER SOURCE READY**
+root = Path.cwd()
+board = json.loads((root / "kicad" / "juku.board.json").read_text())
+expected = {
+    "SOUND": [("D57", "13"), ("R90", "1")],
+    "SND_BASE": [("R90", "2"), ("VD4", "2"), ("VT1", "2")],
+    "SND_CLAMP": [("VD4", "1"), ("R91", "1")],
+    "AVDC": [("R91", "2"), ("D26", "40")],
+    "SND_OUT": [("VT1", "1"), ("R48", "1")],
+    "SPKR": [("R48", "2")],
+}
 
-This guard proves the runnable digital source of the Juku beeper path:
+rows = []
+ok = True
+for name, nodes in expected.items():
+    net = board["nets"].get(name)
+    have = {tuple(node) for node in net.get("nodes", [])} if net else set()
+    missing = [node for node in nodes if node not in have]
+    passed = net is not None and not missing
+    ok = ok and passed
+    rows.append(
+        "| `{}` | {} | {} | {} |".format(
+            name,
+            "PASS" if passed else "FAIL",
+            ", ".join(f"`{ref}.{pin}`" for ref, pin in nodes),
+            (net or {}).get("src", "missing net"),
+        )
+    )
 
-- D57 is the third 8253 PIT (`0x18..0x1B`), and channel 1 / `OUT1` is the
-  traced `SOUND` source.
-- `hdl/sim/beeper_path_tb.v` programs D57 channel 1 with a small reload value
-  and requires `OUT1` to toggle.
-- The physical analog path after `SOUND` is already traced in the board data:
-  `D57.OUT1 -> R90 -> VT1/VD4/R91 clamp -> R48 -> SPKR`.
+if not ok:
+    raise SystemExit("BEEPER-CHECK: board JSON beeper path mismatch")
 
-## Command
-
-```sh
-sync/beeper_check.sh
-```
-
-## Evidence
-
-| Check | Result |
-| --- | --- |
-| D57 channel 1 accepts control/data writes | PASS |
-| D57 `OUT1` / `SOUND` toggles after programming | PASS |
-
-## Remaining Boundary
-
-- This is a digital source guard, not an analog speaker model. Physical bring-up
-  still needs the speaker unit, clamp polarity, and level/current check on real
-  hardware.
-EOF
+lines = [
+    "# Beeper readiness",
+    "",
+    "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**",
+    "",
+    "This guard proves the runnable digital source of the Juku beeper path and",
+    "cross-checks the traced board handoff into the analog driver.",
+    "",
+    "- D57 is the third 8253 PIT (`0x18..0x1B`), and channel 1 / `OUT1` is the",
+    "  traced `SOUND` source.",
+    "- `hdl/sim/beeper_path_tb.v` programs D57 channel 1 with a small reload value",
+    "  and requires `OUT1` to toggle.",
+    "- `kicad/juku.board.json` independently carries the traced handoff:",
+    "  `D57.OUT1 -> R90 -> VT1/VD4/R91 clamp -> R48 -> SPKR`.",
+    "",
+    "## Command",
+    "",
+    "```sh",
+    "sync/beeper_check.sh",
+    "```",
+    "",
+    "## Digital Evidence",
+    "",
+    "| Check | Result |",
+    "| --- | --- |",
+    "| D57 channel 1 accepts control/data writes | PASS |",
+    "| D57 `OUT1` / `SOUND` toggles after programming | PASS |",
+    "",
+    "## Board Handoff Evidence",
+    "",
+    "| Net | Result | Required nodes | Source |",
+    "| --- | --- | --- | --- |",
+]
+lines.extend(rows)
+lines.extend(
+    [
+        "",
+        "## Remaining Boundary",
+        "",
+        "- This is a digital source plus board-handoff guard, not an analog speaker",
+        "  model. Physical bring-up still needs the speaker unit, clamp polarity,",
+        "  and level/current check on real hardware.",
+        "",
+    ]
+)
+(root / "docs" / "beeper-readiness.md").write_text("\n".join(lines))
+PY
 
 echo "BEEPER-CHECK: PASS"
 echo "Wrote docs/beeper-readiness.md"
