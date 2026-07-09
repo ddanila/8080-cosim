@@ -30,6 +30,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Memory timing boundary guarded | PASS |
 | I/O decode boundary guarded | PASS |
 | Video/RF analog boundary guarded | PASS |
+| S4 interrupt boundary guarded | PASS |
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |
 | Cartridge BASIC boundary documented | PASS |
@@ -67,7 +68,7 @@ yet modeled as nets.
 | `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` | sheet-2 timing-chain continuity |
 | `D93` | `19:MR_N, 24:CLK` | FDC quadrant continuity |
 | `D94` | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` | .092 dump/table plus enable/output continuity |
-| `S4` | `1:P1, 2:P2` | sheet-1/SB switch continuity |
+| `S4` | `1:P1, 2:P2` | `docs/s4-interrupt-boundary.md` plus sheet-1/SB switch continuity |
 
 ## Bring-up verification scope
 

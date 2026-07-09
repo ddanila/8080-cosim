@@ -120,6 +120,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check video analog boundary freshness",
     )
+    s4_interrupt_boundary = marker(
+        "docs/s4-interrupt-boundary.md",
+        "Status: **S4 INTERRUPT PATH GUARDED / SWITCH CONTINUITY PENDING**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check S4 interrupt boundary freshness",
+    )
     reconstructed_proms_exported = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
@@ -727,6 +734,12 @@ def milestone_rows():
                     "and RF handoff while keeping R66.1 sound-mix source, connector "
                     "identity, levels, and RF tuning as bench/source-read work; "
                     if video_analog_boundary
+                    else ""
+                )
+                + (
+                    "`docs/s4-interrupt-boundary.md` guards the X1/D3/D10 IR6/IR7 "
+                    "path while keeping S4.1/S4.2 as switch-continuity work; "
+                    if s4_interrupt_boundary
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
@@ -1338,6 +1351,12 @@ def milestone_rows():
                         "VT2/VT3/VT4 board handoff while keeping R66.1, connector "
                         "identity, levels, and RF tuning as bench/source-read work"
                         if video_analog_boundary
+                        else ""
+                    )
+                    + (
+                        ", and `docs/s4-interrupt-boundary.md` guards the X1/D3/D10 "
+                        "IR6/IR7 path while keeping S4.1/S4.2 as switch-continuity work"
+                        if s4_interrupt_boundary
                         else ""
                     )
                     + (

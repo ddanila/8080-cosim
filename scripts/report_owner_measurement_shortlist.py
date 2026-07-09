@@ -26,6 +26,7 @@ REQUIRED = [
     ROOT / "docs" / "memory-timing-boundary.md",
     ROOT / "docs" / "io-decode-boundary.md",
     ROOT / "docs" / "video-analog-boundary.md",
+    ROOT / "docs" / "s4-interrupt-boundary.md",
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
@@ -118,6 +119,8 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
             evidence = "FDC quadrant continuity"
         elif ref == "D41":
             evidence = "sheet-2 timing-chain continuity"
+        elif ref == "S4":
+            evidence = "`docs/s4-interrupt-boundary.md` plus sheet-1/SB switch continuity"
         else:
             evidence = "sheet-1/SB switch continuity"
         rows.append((ref, ", ".join(missing), evidence))
@@ -144,6 +147,7 @@ def main() -> int:
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         ("Video/RF analog boundary guarded", has_phrase("docs/video-analog-boundary.md", "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**")),
+        ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT PATH GUARDED / SWITCH CONTINUITY PENDING**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/basic-cartridge-tail-hypotheses.md", "Status: **SIMPLE TAIL HYPOTHESES REJECTED**")),
