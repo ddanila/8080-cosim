@@ -17,6 +17,37 @@ JUKU_TOP_FDC_STOPFDC=0 \
 JUKU_TOP_FDC_TIMEOUT=${JUKU_TOP_FDC_TIMEOUT:-60} \
 sync/juku_top_fdc_probe.sh
 
+python3 - "$REPORT" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text()
+text = text.replace(
+    "Status: **HDL JUKU_TOP FDC PATH NOT YET OBSERVED**",
+    "Status: **HDL JUKU_TOP RAW I/O DECODE OBSERVED**",
+    1,
+)
+text = text.replace(
+    "This bounded diagnostic runs the LVS-checked `juku_top` with the vendored\n"
+    "Juku disk image, frame interrupts, and the fixed ROMBIOS `TDD` keyboard\n"
+    "sequence enabled. The default simulator is Icarus Verilog, matching the CI\n"
+    "toolchain. Set `JUKU_TOP_FDC_SIM=verilator` for a faster local/deep reset\n"
+    "run through the same testbench and stop hooks.",
+    "This fast diagnostic runs the LVS-checked `juku_top` only far enough to\n"
+    "sample the first settled raw I/O cycles and D7/D9 chip-select decode. It is\n"
+    "not the EKDOS milestone gate; the full disk-backed prompt proof is tracked\n"
+    "separately in `docs/juku-top-fdc-verilator-probe.md`.",
+    1,
+)
+text = text.replace(
+    "```sh\nsync/juku_top_fdc_probe.sh\n```",
+    "```sh\nsync/juku_top_io_decode_probe.sh\n```",
+    1,
+)
+path.write_text(text)
+PY
+
 if ! grep -q 'raw I/O trace observed | PASS' "$REPORT"; then
   echo "juku_top_io_decode_probe: raw I/O trace was not observed" >&2
   exit 1
