@@ -3061,7 +3061,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 MX: the 5th КП14 (VIDEO/µP ADDRESS select for D53 via E2/E3); inputs deferred [boundary]"
+    "pins": "sheet-2 MX: 5th КП14 VIDEO/µP ADDRESS select for D53 via E2/E3; active channels traced as A0/A1=BA7/BA8, B0/B1=VA7/VA8, SEL=VID_CPU_SEL, EN_N=GND, Y0/Y1->E2/E3"
    }
   },
   {

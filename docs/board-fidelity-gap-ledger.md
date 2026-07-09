@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `79`
+- Chip-level fidelity gaps: `78`
 - Net-level source-risk gaps: `41`
 
 ## Chip Provenance Types
@@ -51,7 +51,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | placement/refdes | 38 | 0 |
 | unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 15 |
-| video/timing | 2 | 0 |
+| video/timing | 1 | 0 |
 
 ## Chip-Level Gaps
 
@@ -172,7 +172,6 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary] |
-| `D52` | `KP14_MUX` | scan | sheet-2 MX: the 5th КП14 (VIDEO/µP ADDRESS select for D53 via E2/E3); inputs deferred [boundary] |
 
 ## Net-Level Source Risks
 
