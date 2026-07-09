@@ -64,6 +64,7 @@ has been fully mined.
 | `docs/public-software-archive-inventory.md` | present |
 | `docs/re3-firmware-inspection.md` | present |
 | `docs/reconstructed-prom-fallbacks.md` | present |
+| `docs/firmware-gap-ledger.md` | present |
 | `docs/ekdos-source-inspection.md` | present |
 | `docs/community-prom-media-request.md` | present |
 | `docs/owner-measurement-shortlist.md` | present |

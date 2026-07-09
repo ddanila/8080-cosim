@@ -137,6 +137,9 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
    D2 is pinned as the bus-arbitration/wait РТ4 with no current signal-net or
    burnable-table evidence in board JSON, DSN, or final PCB source, so it remains
    a dump/programming-disk dependency.
+   `docs/firmware-gap-ledger.md` is the generated single-page burnability view:
+   only D6/D8 have repo-burnable Tier 1/2 fallback images today; D2/D94 remain
+   no-burn until programming-disk files or repeated physical dumps land.
 2. **002 Schematics and components** → settle .006-vs-.009 revision coverage; attack
    the short blocked-on-materials list (D6 V1/V2 feed, C99 far plate, FDC INTRQ/DRQ,
    D94 outputs, bypass per-position values) from paper before spending owner time.

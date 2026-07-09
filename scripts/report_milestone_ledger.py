@@ -99,6 +99,19 @@ def milestone_rows():
         "ref/reconstructed-proms/SHA256SUMS",
         "d8_re3_rom_pager_reconstructed.bin",
     )
+    firmware_gap_ledger_ready = marker(
+        "docs/firmware-gap-ledger.md",
+        "Status: **PROM GAP LEDGER READY / DUMP TRUTH PENDING**",
+    ) and marker(
+        "docs/firmware-gap-ledger.md",
+        "only the D6 and D8",
+    ) and marker(
+        "docs/firmware-gap-ledger.md",
+        "D94 is not reconstructable",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check firmware gap ledger freshness",
+    )
     re3_firmware_inspected = marker(
         "docs/re3-firmware-inspection.md",
         "Status: **PASS**",
@@ -512,6 +525,13 @@ def milestone_rows():
                     "`docs/reconstructed-prom-fallbacks.md` exports boot-validated "
                     "D6/D8 reconstruction fallbacks; "
                     if reconstructed_proms_exported
+                    else ""
+                )
+                + (
+                    "`docs/firmware-gap-ledger.md` consolidates PROM burnability: "
+                    "D6/D8 have repo-burnable Tier 1/2 fallbacks while D2/D94 "
+                    "remain no-burn until disk files or dumps land; "
+                    if firmware_gap_ledger_ready
                     else ""
                 )
                 + (

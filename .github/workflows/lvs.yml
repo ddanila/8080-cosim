@@ -45,6 +45,7 @@ jobs:
             scripts/report_basic_cartridge_tail_hypotheses.py \
             scripts/report_basic_cartridge_missing_page_constraints.py \
             scripts/check_project_status_freshness.py \
+            scripts/report_firmware_gap_ledger.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -114,6 +115,11 @@ jobs:
             ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.hex \
             ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin \
             ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.hex
+
+      - name: Check firmware gap ledger freshness
+        run: |
+          python3 scripts/report_firmware_gap_ledger.py
+          git diff --exit-code -- docs/firmware-gap-ledger.md
 
       - name: Check EKDOS source inspection freshness
         run: |
