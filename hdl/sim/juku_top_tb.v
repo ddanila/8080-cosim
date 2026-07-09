@@ -288,17 +288,19 @@ module juku_top_tb();
       $fwrite(fd,"%c", b);
     end
     $fclose(fd); $display("[SIM] dumped VRAM -> hdl/sim/vram_top.bin");
-    $display("[CPU] pc=0x%04h sp=0x%04h instr=0x%02h ba=0x%04h db=0x%02h mcyc=%0d vram=%0d memr_n=%0d memw_n=%0d iord_n=%0d iowr_n=%0d inta_n=%0d sync=%0d intr=%0d",
+    $display("[CPU] pc=0x%04h sp=0x%04h instr=0x%02h ba=0x%04h db=0x%02h mcyc=%0d vram=%0d memr_n=%0d memw_n=%0d iord_n=%0d iowr_n=%0d inta_n=%0d sync=%0d intr=%0d xchg_dh=%0d",
              dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp, dut.U_CPU.u.core.i,
              dut.BA, dut.DB, mcyc, vram_writes, dut.memr_n, dut.memw_n, dut.iord_n,
-             dut.iowr_n, dut.inta_n, dut.sync, dut.intr);
-    // vm80a's internal r16_de/r16_hl names are opposite the architectural
-    // DE/HL values used by the cosim checkpoint state; print architectural names.
+             dut.iowr_n, dut.inta_n, dut.sync, dut.intr, dut.U_CPU.u.core.xchg_dh);
+    // vm80a's XCHG implementation swaps the D/E and H/L register selectors, so
+    // the fixed r16_de/r16_hl latch names are not always architectural names.
     $display("[STATE] pc=%04h sp=%04h a=%02h b=%02h c=%02h d=%02h e=%02h h=%02h l=%02h sf=%0d zf=%0d hf=%0d pf=%0d cf=%0d iff=%0d mode=%0d portc=%02h kbd_col=%02h pic_icw1=%02h pic_icw2=%02h pic_mask=%02h pic_expect_icw2=%0d fdc_motor_on=%0d fdc_status=%02h fdc_track=%02h fdc_sector=%02h fdc_data=%02h fdc_command=%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
              dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp, dut.U_CPU.u.core.acc,
              dut.U_CPU.u.core.r16_bc[15:8], dut.U_CPU.u.core.r16_bc[7:0],
-             dut.U_CPU.u.core.r16_hl[15:8], dut.U_CPU.u.core.r16_hl[7:0],
-             dut.U_CPU.u.core.r16_de[15:8], dut.U_CPU.u.core.r16_de[7:0],
+             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[15:8] : dut.U_CPU.u.core.r16_hl[15:8],
+             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[7:0] : dut.U_CPU.u.core.r16_hl[7:0],
+             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[15:8] : dut.U_CPU.u.core.r16_de[15:8],
+             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[7:0] : dut.U_CPU.u.core.r16_de[7:0],
              dut.U_CPU.u.core.psw_s, dut.U_CPU.u.core.psw_z, dut.U_CPU.u.core.psw_ac,
              dut.U_CPU.u.core.psw_p, dut.U_CPU.u.core.psw_c, dut.U_CPU.u.core.inte,
              dut.mem_mode, dut.U_PPI0.portc, {4'b0000, dut.U_PPI0.kbd_col_sel},

@@ -212,7 +212,11 @@ debugging session saved on real hardware.
    records that a 360-second exact-PC stop at `0x02B9` and a 900-second
    30,520-write comparison still do not produce an HDL post-banner dump, so the
    automation path moved to checkpoint/fast-forward rather than a larger wall
-   timeout. `docs/ekdos-checkpoint-reference.md` now pins the
+   timeout. `docs/juku-top-post30180-divergence.md` now pins the reset-driven
+   branch failure more tightly: cosim and HDL match through 30,180 framebuffer
+   writes, but by 30,182 HDL repeats the ROMBIOS display-test checksum path and
+   by 30,185 it is back in the early `0x0242` RAM-fill loop, long before
+   PIC/FDC setup. `docs/ekdos-checkpoint-reference.md` now pins the
    full cosim machine checkpoint at that 30,000-write boundary: CPU
    registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
    framebuffer hash. This is the input evidence for the checkpoint/resume HDL
