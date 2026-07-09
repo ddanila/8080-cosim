@@ -22,6 +22,7 @@ class Hypothesis:
     description: str
     header_len: int | None
     tail_kind: str
+    loop_len: int | None = None
 
 
 HYPOTHESES = [
@@ -48,6 +49,13 @@ HYPOTHESES = [
         "append zero bytes and patch header word `0x4005` to `0x2100`",
         0x2100,
         "zero",
+    ),
+    Hypothesis(
+        "patch-loop-count-1f00",
+        "patch runtime bootstrap `LXI B,0x2000` to `0x1F00`; append nothing",
+        None,
+        "none",
+        0x1F00,
     ),
 ]
 
@@ -105,8 +113,15 @@ def make_variant(base: bytes, hyp: Hypothesis, out: Path) -> None:
         data.extend(b"\xFF" * 0x100)
     elif hyp.tail_kind == "zero":
         data.extend(b"\x00" * 0x100)
+    elif hyp.tail_kind == "none":
+        pass
     else:
         raise ValueError(hyp.tail_kind)
+    if hyp.loop_len is not None:
+        # File offset 0x1F06 maps to runtime 0x2006 after Monitor 3.3 loads
+        # the cartridge at 0x0100.
+        data[0x1F07] = hyp.loop_len & 0xFF
+        data[0x1F08] = (hyp.loop_len >> 8) & 0xFF
     out.write_bytes(data)
 
 
@@ -282,10 +297,16 @@ def main() -> int:
             "  registers, but the runtime cartridge bootstrap still carries its own",
             "  `LXI B,0x2000` relocation length and still falls through into zero-filled",
             "  `0x4000` RAM instead of rendering a BASIC prompt.",
+            "- Patching only the bootstrap relocation count to `0x1F00` prevents the",
+            "  loop from reading the missing `0x2100..0x21FF` page, but the same",
+            "  Monitor 3.3 path still falls through into zero-filled `0x4000` RAM.",
+            "  That makes the one-page self-overwrite a real bug source, but not the",
+            "  full cartridge/monitor compatibility fix.",
             "- Therefore the missing page is not recoverable by a fill byte, raw append,",
-            "  or final-page mirror alone. A defensible reconstruction needs either the",
-            "  real larger cartridge/programming artifact or a deeper patch-level",
-            "  understanding of the runtime bootstrap and expected low-memory image.",
+            "  final-page mirror, or simple relocation-count patch alone. A defensible",
+            "  reconstruction needs either the real larger cartridge/programming",
+            "  artifact or a deeper patch-level understanding of the runtime bootstrap",
+            "  and expected low-memory image.",
             "",
             "## Probe Excerpts",
             "",
