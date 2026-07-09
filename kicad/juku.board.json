@@ -4110,6 +4110,11 @@
    "pins": {
     "1": "P1",
     "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "СБ position / sheet-1 interrupt receive path",
+    "pins": "ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interrupt path; pin-level wiring pending"
    }
   },
   {

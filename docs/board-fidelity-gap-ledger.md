@@ -31,10 +31,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | boundary | 2 |
 | datasheet | 1 |
 | mame+datasheet | 1 |
-| missing | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 186 |
+| scan | 187 |
 | wire | 2 |
 
 ## Gap Categories
@@ -47,9 +46,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
 | connector boundary | 2 | 0 |
-| logic/source | 11 | 4 |
+| logic/source | 12 | 4 |
 | memory/timing | 0 | 7 |
-| missing provenance | 1 | 0 |
 | placement/value | 39 | 0 |
 | unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 15 |
@@ -98,12 +96,7 @@ parts placement and Tier-3 reproduction.
 | `R54` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
 | `R55` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
 | `R56` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-
-### missing provenance
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `S4` | `SW` | missing | no provenance block |
+| `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
 
 ### placement/value
 
