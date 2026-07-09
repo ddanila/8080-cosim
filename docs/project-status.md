@@ -185,10 +185,11 @@ Historical merge notes:
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM
   window. The current boundary is sharper: the loader copies the cartridge body
-  from `0x0200` into matching low RAM for 7,680 bytes, but the low entry/control
-  area diverges and the later `0x4000` RAM window still receives only `0x00`
-  writes; execution fetches a zero-filled NOP sled, and no user-visible BASIC
-  prompt is produced. The probe also records why this is a compatibility
+  from `0x0200` into matching low RAM for 7,680 bytes with 0 body mismatches,
+  but the low entry/control area has exactly 14 byte mismatches and the later
+  `0x4000` RAM window still receives only `0x00` writes; execution fetches a
+  zero-filled NOP sled, and no user-visible BASIC prompt is produced. The probe
+  also records why this is a compatibility
   boundary: MAME's local source warns that Monitor 3.3 does not seem compatible
   with the JBASIC expansion cartridge, and both tested BASIC images start with
   absolute `JMP 0x0107`, not a direct `0x4000` entry.
