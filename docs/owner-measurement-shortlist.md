@@ -48,6 +48,22 @@ python3 scripts/report_owner_measurement_shortlist.py
 - D94 address pins are already traced to `BA11..BA15`; the useful physical
   work is enable/output continuity plus a real `.092` dump/table.
 
+## Pin-Level Closure
+
+These rows mirror the unnetted functional pins exposed by
+`docs/board-fidelity-gap-ledger.md`. They are the exact pin-level
+closures that endpoint coverage cannot prove because the pins are not
+yet modeled as nets.
+
+| Ref | Unnetted functional pins | Needed evidence |
+| --- | --- | --- |
+| `D100` | `9:OE_N, 11:T` | FDC quadrant continuity |
+| `D2` | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 12:D0, 13:V1, 14:V2, 15:A7` | dump/programming disk plus sheet-1 continuity |
+| `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` | sheet-2 timing-chain continuity |
+| `D93` | `19:MR_N, 24:CLK` | FDC quadrant continuity |
+| `D94` | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` | .092 dump/table plus enable/output continuity |
+| `S4` | `1:P1, 2:P2` | sheet-1/SB switch continuity |
+
 ## Bring-up verification scope
 
 - Generated bring-up verification nets: `36`

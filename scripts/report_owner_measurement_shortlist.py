@@ -2,14 +2,18 @@
 """Generate the short physical-owner measurement/dump list."""
 from __future__ import annotations
 
+import json
 from collections import Counter
+from collections import defaultdict
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "owner-measurement-shortlist.md"
+BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 
 REQUIRED = [
+    BOARD_JSON,
     ROOT / "docs" / "community-prom-media-request.md",
     ROOT / "docs" / "prom-dump-procedure.md",
     ROOT / "docs" / "d2-reconstruction-constraints.md",
@@ -22,6 +26,8 @@ REQUIRED = [
     ROOT / "docs" / "source-coverage-audit.md",
     ROOT / "docs" / "basic-cartridge-tail-hypotheses.md",
 ]
+
+PIN_CLOSURE_REFS = {"D2", "D41", "D93", "D94", "D100", "S4"}
 
 
 def read(path: Path) -> str:
@@ -75,10 +81,49 @@ def has_phrase(path: str, phrase: str) -> str:
     return "PASS" if marker(ROOT / path, phrase) else "MISSING"
 
 
+def pin_sort_key(item: tuple[str, object]) -> object:
+    pin = str(item[0])
+    return int(pin) if pin.isdigit() else pin
+
+
+def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
+    board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
+    netted: dict[str, set[str]] = defaultdict(set)
+    for net in board["nets"].values():
+        for ref, pin in net.get("nodes", []):
+            netted[str(ref)].add(str(pin))
+
+    rows = []
+    for chip in board["chips"]:
+        ref = str(chip.get("ref", ""))
+        if ref not in PIN_CLOSURE_REFS:
+            continue
+        missing = [
+            f"{pin}:{signal}"
+            for pin, signal in sorted(chip.get("pins", {}).items(), key=pin_sort_key)
+            if str(pin) not in netted.get(ref, set())
+        ]
+        if not missing:
+            continue
+        if ref == "D2":
+            evidence = "dump/programming disk plus sheet-1 continuity"
+        elif ref == "D94":
+            evidence = ".092 dump/table plus enable/output continuity"
+        elif ref in {"D93", "D100"}:
+            evidence = "FDC quadrant continuity"
+        elif ref == "D41":
+            evidence = "sheet-2 timing-chain continuity"
+        else:
+            evidence = "sheet-1/SB switch continuity"
+        rows.append((ref, ", ".join(missing), evidence))
+    return sorted(rows)
+
+
 def main() -> int:
     missing = [path for path in REQUIRED if not path.exists()]
     d94_failures = failed_d94_checks() if not missing else []
     categories = bringup_categories() if not missing else Counter()
+    pin_closure_rows = unnetted_pin_closure_rows() if not missing else []
 
     checks = [
         ("Community request packet ready", has_phrase("docs/community-prom-media-request.md", "Status: **READY TO SEND**")),
@@ -199,6 +244,22 @@ def main() -> int:
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
             "- D94 address pins are already traced to `BA11..BA15`; the useful physical",
             "  work is enable/output continuity plus a real `.092` dump/table.",
+            "",
+            "## Pin-Level Closure",
+            "",
+            "These rows mirror the unnetted functional pins exposed by",
+            "`docs/board-fidelity-gap-ledger.md`. They are the exact pin-level",
+            "closures that endpoint coverage cannot prove because the pins are not",
+            "yet modeled as nets.",
+            "",
+            "| Ref | Unnetted functional pins | Needed evidence |",
+            "| --- | --- | --- |",
+        ]
+    )
+    lines.extend(f"| `{ref}` | `{pins}` | {evidence} |" for ref, pins, evidence in pin_closure_rows)
+
+    lines.extend(
+        [
             "",
             "## Bring-up verification scope",
             "",
