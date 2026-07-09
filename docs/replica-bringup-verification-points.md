@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `41`
-- Verification-point endpoints checked in PCB: `204`
+- Verification-point nets: `36`
+- Verification-point endpoints checked in PCB: `156`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `1876`
 - All board endpoints checked in routed PCB: `1876`
@@ -23,10 +23,10 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 7 |
-| memory/decode | 10 |
+| logic | 6 |
+| memory/decode | 9 |
 | sound/analog | 2 |
-| timing/I/O | 8 |
+| timing/I/O | 5 |
 | video/analog | 11 |
 
 ## KiCad PCB Endpoint Coverage
@@ -39,8 +39,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 204/204 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 204/204 net names matched |
+| Risk endpoints present on PCB pads | PASS | 156/156 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 156/156 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -57,12 +57,10 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
-| `CAS` | memory/decode | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, ... (+29)` | traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D25_T` | logic | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [un... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Scope/capture video or timing node during video bring-up. |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out | Scope/capture video or timing node during video bring-up. |
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
-| `D39Y` | logic | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); ex-assumed, now traced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D39_MEMCYC` | memory/decode | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `FDC_DDEN` | FDC | `D26.13, D93.37` | mame (PC4 = density) | Confirm density-control level against drive/emulator behavior. |
@@ -78,9 +76,6 @@ fabrication-source coverage gate, not a historical-source proof.
 | `MEM_MODE2` | memory/decode | `D26.16, D6.15` | traced sheet-1 300dpi (crop s1_d6_ven2: row "3/15" = mode-bundle tag 3 -> D6.15/A7) + source PPI PC2 = D26.16 [tag<->PC-bit order assumed, same level as MODE0/1] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `PIT_HCHAIN` | timing/I/O | `D54.10, D55.9, D54.14, D54.16` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9) | Cross-check against hardware when the peripheral path is exercised. |
-| `PIT_HSYNC_DSL` | timing/I/O | `D54.17, D55.15, D55.18` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT2(17) "H.SYNC DSL" -> D55.CLK1(15)+CLK2(18) tied pair | Cross-check against hardware when the peripheral path is exercised. |
-| `PIT_VCHAIN` | timing/I/O | `D55.10, D55.14, D55.16` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D55.OUT0(10) -> D55.G1(14)+G2(16) | Cross-check against hardware when the peripheral path is exercised. |
 | `PROM_EN` | logic | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed u... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAM_SEL` | memory/decode | `D6.11, D92.5, R12.2` | scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 "(1)" label). D53.6/G3 detached: its drawn feed = long west line [pending]; +R12... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `REV` | logic | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

@@ -7963,7 +7963,7 @@
    ]
   },
   "CAS": {
-   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, video-cycle branch (2,3). Former assumed nets CAS0/1/2 dissolved (no per-bank CAS exists)",
+   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists)",
    "nodes": [
     [
      "D60",
@@ -8174,7 +8174,7 @@
      "13"
     ]
    ],
-   "src": "scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); ex-assumed, now traced"
+   "src": "scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced"
   },
   "CLKG_D33": {
    "nodes": [
@@ -10219,7 +10219,7 @@
    "note": "WIRE 11 (beeper): D7.1 <- D92.13 (ЛЕ4 NOR); H1-endpoint-B etch '11' = this wire's solder point"
   },
   "PIT_HCHAIN": {
-   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9)",
+   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the emulator-derived wiring exactly; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9)",
    "nodes": [
     [
      "D54",
@@ -10240,7 +10240,7 @@
    ]
   },
   "PIT_HSYNC_DSL": {
-   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT2(17) \"H.SYNC DSL\" -> D55.CLK1(15)+CLK2(18) tied pair",
+   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the emulator-derived wiring exactly; D54.OUT2(17) \"H.SYNC DSL\" -> D55.CLK1(15)+CLK2(18) tied pair",
    "nodes": [
     [
      "D54",
@@ -10257,7 +10257,7 @@
    ]
   },
   "PIT_VCHAIN": {
-   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D55.OUT0(10) -> D55.G1(14)+G2(16)",
+   "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the emulator-derived wiring exactly; D55.OUT0(10) -> D55.G1(14)+G2(16)",
    "nodes": [
     [
      "D55",

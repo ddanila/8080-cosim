@@ -21,7 +21,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `226`
 - Nets modeled: `320`
 - Chip-level fidelity gaps: `76`
-- Net-level source-risk gaps: `41`
+- Net-level source-risk gaps: `36`
 
 ## Chip Provenance Types
 
@@ -44,11 +44,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 8 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
-| logic/source | 3 | 4 |
-| memory/timing | 0 | 7 |
+| logic/source | 3 | 3 |
+| memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | unpopulated sockets | 30 | 0 |
-| video/analog | 0 | 15 |
+| video/analog | 0 | 13 |
 | video/timing | 1 | 0 |
 
 ## Chip-Level Gaps
@@ -172,12 +172,10 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
-| `CAS` | video/analog | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, ... (+29)` | traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C... |
 | `D25_T` | PROM/decode | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs... |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] |
-| `D39Y` | logic/source | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); ex-assumed, now traced |
 | `D39_MEMCYC` | memory/timing | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] |
 | `D56_QN` | clock/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
 | `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37` | mame (PC4 = density) |
@@ -193,9 +191,6 @@ same fidelity ledger as the chip provenance gaps.
 | `MEM_MODE2` | PROM/decode | `D26.16, D6.15` | traced sheet-1 300dpi (crop s1_d6_ven2: row "3/15" = mode-bundle tag 3 -> D6.15/A7) + source PPI PC2 = D26.16 [tag<->PC-bit order assumed, same level as MODE... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
-| `PIT_HCHAIN` | memory/timing | `D54.10, D55.9, D54.14, D54.16` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9) |
-| `PIT_HSYNC_DSL` | video/analog | `D54.17, D55.15, D55.18` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D54.OUT2(17) "H.SYNC DSL" -> D55.CLK1(15)+CLK2(18) tied pair |
-| `PIT_VCHAIN` | memory/timing | `D55.10, D55.14, D55.16` | traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the MAME-derived wiring EXACTLY; D55.OUT0(10) -> D55.G1(14)+G2(16) |
 | `PROM_EN` | PROM/decode | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assu... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
 | `RAM_SEL` | PROM/decode | `D6.11, D92.5, R12.2` | scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 "(1)" label). D53.6/G3 detached: its drawn feed = long west... |
