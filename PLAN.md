@@ -424,12 +424,11 @@ debugging session saved on real hardware.
    and `891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0`.
    The HDL testbench now has a
    `+cursorstop=1` stop hook for that same cursor boundary, and
-   `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
-   first write still matches at `0xFF40`; a deeper uninterrupted diagnostic now
-   runs cleanly to 1,000 VRAM writes / 23,597,501 M-cycles under Verilator,
-   proving a stable 8/10-row partial cursor at `x=8`, `y=20` with the final
-   two cursor rows still missing from the full cosim framebuffer hash. The
-   stronger checkpoint-resumed
+   `sync/jmon33_hdl_cursor_probe.py` documents the uninterrupted `juku_top`
+   state: first write still matches at `0xFF40`; with the cursor hook sampled
+   after the bit-sliced DRAM write settles, Verilator reaches the full 10/10-row
+   cursor at 402 VRAM writes / 710,291 M-cycles and dumps the exact cosim
+   framebuffer SHA256. The stronger checkpoint-resumed
    boundary is now guarded by `sync/jmon33_checkpoint_cursor_probe.py`: a late
    pre-cursor cosim checkpoint at 3,801,005 cycles / PC `0xF2C0` still has a
    blank framebuffer, and checkpoint-resumed `juku_top` services Monitor 3.3
@@ -452,9 +451,9 @@ debugging session saved on real hardware.
    attached, the structural path reads FDC status `0x40` repeatedly at PC
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
-   Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path and identify the correct Monitor 3.3 cartridge BASIC launch path; the
-   disk-backed EKDOS `JBASIC` HDL path is now guarded without checkpoint/resume.
+   Remaining targets: identify the correct Monitor 3.3 cartridge BASIC launch
+   path and keep the disk-backed EKDOS `JBASIC` HDL path guarded without
+   checkpoint/resume.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`

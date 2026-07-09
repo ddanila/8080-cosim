@@ -19,6 +19,7 @@
 module juku_top_tb();
   reg osc=0;
   integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, stopprompt=0, prompt_seen=0, traceprogress=0, vramstop_sync=0;
+  integer cursor_check_delay=0;
   integer commandkeys=0, jbasickeys=0, command_key=0, command_key_count=2, command_t=-1, command_key_mcyc=0;
   integer stopjbasiccmd=0, stopjbasicready=0, jbasic_command_seen=0, jbasic_ready_seen=0;
   reg vram_seen=0, sq=0, vram_stop_pending=0;
@@ -149,6 +150,15 @@ module juku_top_tb();
     end else begin
       frame_tick <= (frameirq != 0 && osc_n >= framephase &&
                      ((osc_n - framephase) % frameirq) == (frameirq-1));      // periodic IR5 tick
+    end
+    if (cursor_check_delay > 0) begin
+      cursor_check_delay <= cursor_check_delay - 1;
+      if (cursor_check_delay == 1 && cursorstop && !cursor_seen && cursor_oracle_ok()) begin
+        cursor_seen = 1;
+        $display("[VRAM] jmon33 cursor oracle reached (mcyc=%0d writes=%0d)", mcyc, vram_writes);
+        dump_cursor_rows;
+        #60 dump_vram; $finish;
+      end
     end
   end
 
@@ -359,11 +369,7 @@ module juku_top_tb();
       $display("[VRAM] first video write @0x%04h mcyc=%0d", dut.BA, mcyc); end
     if (traceprogress != 0 && (vram_writes % traceprogress) == 0)
       $display("[VRAM] progress writes=%0d mcyc=%0d", vram_writes, mcyc);
-    if (cursorstop && !cursor_seen && cursor_oracle_ok()) begin
-      cursor_seen = 1;
-      $display("[VRAM] jmon33 cursor oracle reached (mcyc=%0d writes=%0d)", mcyc, vram_writes);
-      #60 dump_vram; $finish;
-    end
+    if (cursorstop && !cursor_seen) cursor_check_delay = 4;
     if (!prompt_seen && ekdos_prompt_ok()) begin
       prompt_seen = 1;
       $display("[PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=%0d vram=%0d pc=0x%04h",
@@ -403,6 +409,14 @@ module juku_top_tb();
     for (y=20; y<30; y=y+1)
       if (dram_byte(16'hD800 + y*40 + 1) !== 8'hFF) cursor_oracle_ok = 1'b0;
   end endfunction
+  task dump_cursor_rows; begin
+    $display("[VRAM] cursor rows x=8 y=20..29: %02h %02h %02h %02h %02h %02h %02h %02h %02h %02h",
+             dram_byte(16'hD800 + 20*40 + 1), dram_byte(16'hD800 + 21*40 + 1),
+             dram_byte(16'hD800 + 22*40 + 1), dram_byte(16'hD800 + 23*40 + 1),
+             dram_byte(16'hD800 + 24*40 + 1), dram_byte(16'hD800 + 25*40 + 1),
+             dram_byte(16'hD800 + 26*40 + 1), dram_byte(16'hD800 + 27*40 + 1),
+             dram_byte(16'hD800 + 28*40 + 1), dram_byte(16'hD800 + 29*40 + 1));
+  end endtask
   function [15:0] ekdos_prompt_row(input integer row); begin
     case (row)
       0: ekdos_prompt_row = 16'h0000;

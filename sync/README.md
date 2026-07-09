@@ -171,10 +171,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/jmon33_hdl_probe.sh` — HDL guard proving `juku_top` runs Monitor 3.3
   to the first video-memory write with frame interrupts enabled.
 - `sync/jmon33_hdl_cursor_probe.py` — bounded HDL diagnostic for the stronger
-  jmon33 monitor-idle cursor oracle; currently documents that the uninterrupted
-  HDL path gets past the old 400-write boundary and runs cleanly to 1,000
-  VRAM writes with a stable 8/10-row partial cursor, while the full cosim
-  framebuffer hash remains open and the first-write guard remains passing.
+  jmon33 monitor-idle cursor oracle; documents that the uninterrupted HDL path
+  reaches the full 10/10-row cursor and exact cosim framebuffer hash under
+  Verilator, while the first-write guard remains passing.
 - `sync/jmon33_checkpoint_cursor_probe.py` — checkpoint-resumed HDL diagnostic
   for the same jmon33 cursor oracle. It starts from a blank late cosim
   checkpoint at 3,801,005 cycles / PC `0xF2C0`; the resumed `juku_top` path
@@ -249,8 +248,7 @@ value-level lockstep, cosim FDC sector-read/prompt scaffolding, HDL WD1793
 synthetic-sector behavior, a bounded `juku_top` FDC-path diagnostic, and
 runnable video readout/raster geometry. The remaining
 high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
-jmon33 command prompt and
-the uninterrupted reset-to-cursor jmon33 path, HDL coverage of the pinned EKDOS
-disk-backed BASIC prompt path, the analog
+jmon33 command prompt, HDL coverage of the pinned EKDOS disk-backed BASIC prompt
+path, the analog
 speaker/current check, dumped PROM contents, and the D94 `.092` РЕ3/АГ3-gated
 physical video slot timing.

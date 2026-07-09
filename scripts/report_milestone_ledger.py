@@ -348,12 +348,12 @@ def milestone_rows():
         "docs/jmon33-hdl-fdc-command-probe.md",
         "JMON33 HDL FDC T-COMMAND ORACLE PINNED",
     )
-    jmon33_hdl_partial_cursor = marker(
+    jmon33_hdl_cursor = marker(
         "docs/jmon33-hdl-cursor-probe.md",
-        "Status: **JMON33 HDL PARTIAL CURSOR BOUNDARY PINNED / FULL ORACLE PENDING**",
+        "Status: **JMON33 HDL CURSOR ORACLE REACHED**",
     ) and marker(
         "docs/jmon33-hdl-cursor-probe.md",
-        "solid cursor rows at `x=8`, `y=20..29` | `8/10`",
+        "framebuffer SHA256 | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`",
     )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
@@ -663,11 +663,10 @@ def milestone_rows():
                     else ""
                 )
                 + (
-                    "`docs/jmon33-hdl-cursor-probe.md` now pushes the uninterrupted "
-                    "`juku_top` Monitor 3.3 cursor diagnostic to 1,000 VRAM writes / "
-                    "23,597,501 M-cycles under Verilator and pins the stable 8/10-row "
-                    "partial cursor boundary; the full cosim framebuffer hash remains open. "
-                    if jmon33_hdl_partial_cursor
+                    "`docs/jmon33-hdl-cursor-probe.md` now proves the uninterrupted "
+                    "`juku_top` Monitor 3.3 reset-to-cursor path reaches the full "
+                    "10/10-row cursor and exact cosim framebuffer hash under Verilator. "
+                    if jmon33_hdl_cursor
                     else ""
                 )
                 + (
@@ -898,9 +897,8 @@ def milestone_rows():
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
             ),
             "next": (
-                "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct Monitor 3.3 cartridge BASIC launch path, and keep the "
-                "disk-side EKDOS `JBASIC` HDL guard fresh."
+                "Identify the correct Monitor 3.3 cartridge BASIC launch path and "
+                "keep the disk-side EKDOS `JBASIC` HDL guard fresh."
                 if jmon33_checkpoint_cursor
                 else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and keep the pinned EKDOS BASIC HDL guard fresh."
             ),

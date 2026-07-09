@@ -33,9 +33,9 @@ schematic*), with `cosim/` + MAME as validation oracles.
   required by the manufacturing readiness gate.
 - **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim with external media;
   HDL WD1793 synthetic-sector behavior is guarded; jmon33 first-write HDL coverage
-  passes while the stronger cursor boundary is now pinned as an uninterrupted
-  1,000-write partial-cursor diagnostic with the full framebuffer hash still
-  open; BASIC cartridge reads are proven for both `jbasic11.bin` and the legacy
+  passes and the stronger uninterrupted reset-to-cursor HDL diagnostic now reaches
+  the exact cosim monitor-idle framebuffer hash; BASIC cartridge reads are proven
+  for both `jbasic11.bin` and the legacy
   BAS0-3 image, but the Monitor 3.3 path is now documented as a compatibility
   boundary and the RAM execution window remains zero-filled. The
   Baltijets factory `A` command BASIC clue is now separately guarded and still
@@ -150,11 +150,11 @@ Historical merge notes:
   monitor-idle oracle: VRAM SHA256 `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
   plus the solid cursor block at `x=8`, `y=20`. `juku_top` now has an optional
   `+cursorstop=1` testbench stop hook for that cursor boundary, and
-  `sync/jmon33_hdl_cursor_probe.py` records the current bounded HDL state:
-  first write still matches at `0xFF40`; a deeper uninterrupted diagnostic now
-  runs cleanly to 1,000 VRAM writes / 23,597,501 M-cycles under Verilator,
-  proving a stable 8/10-row partial cursor at `x=8`, `y=20`; the final two
-  cursor rows / full framebuffer hash remain open. The stronger checkpoint-resumed
+  `sync/jmon33_hdl_cursor_probe.py` now records the uninterrupted HDL state:
+  first write still matches at `0xFF40`; with the cursor hook sampled after the
+  bit-sliced DRAM write settles, Verilator reaches the full 10/10-row cursor at
+  402 VRAM writes / 710,291 M-cycles and dumps the exact cosim framebuffer
+  SHA256. The stronger checkpoint-resumed
   proof in `sync/jmon33_checkpoint_cursor_probe.py` now starts from a blank
   late cosim checkpoint and reaches the same monitor-idle cursor framebuffer
   SHA256 in `juku_top`. `sync/jmon33_command_probe.py` now proves the cosim
@@ -178,9 +178,9 @@ Historical merge notes:
   same boundary into checkpoint-resumed `juku_top`: with the vendored disk
   attached, the structural path reads FDC status `0x40` repeatedly at PC
   `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
-  `T`-command oracle rather than a generic framebuffer diagnostic. Completing
-  an uninterrupted reset-to-cursor run remains pending; BASIC prompt discovery
-  and HDL coverage remain separate from the now-pinned monitor-command rows.
+  `T`-command oracle rather than a generic framebuffer diagnostic. BASIC prompt
+  discovery and HDL coverage remain separate from the now-pinned uninterrupted
+  monitor cursor and command rows.
 - **BASIC under jmon33:** `sync/basic_launch_probe.py` proves Monitor 3.3's `B`
   command reads both `jbasic11.bin` and the legacy BAS0-3 image through the
   expansion-cartridge overlay and then executes in the `0x4000..0xBFFF` RAM
