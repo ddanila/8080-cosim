@@ -24,6 +24,12 @@ JUKU_TOP_FDC_SIM=verilator JUKU_TOP_FDC_TIMECAP=4000000000 \
   JUKU_TOP_30000_WRITES=30182 \
   JUKU_TOP_30000_REPORT=/tmp/juku-top-30182-fixed.md \
   sync/juku_top_30000_state_probe.sh
+
+JUKU_TOP_FDC_SIM=verilator JUKU_TOP_FDC_TIMECAP=4000000000 \
+  JUKU_TOP_FDC_STOPPC=03EB JUKU_TOP_FDC_STOPPC_SKIP=4 \
+  JUKU_TOP_FDC_STOPFDC=0 \
+  JUKU_TOP_FDC_REPORT=/tmp/juku-top-stoppc-03eb-skip4.md \
+  sync/juku_top_fdc_probe.sh
 ```
 
 ## Boundary
@@ -31,7 +37,8 @@ JUKU_TOP_FDC_SIM=verilator JUKU_TOP_FDC_TIMECAP=4000000000 \
 | VRAM writes | Result | cosim PC | HDL PC | VRAM | Notes |
 | ---: | --- | ---: | ---: | --- | --- |
 | 30,180 | PASS | `0x03FF` | `0x03FF` | match | Last clean sampled point. |
-| 30,181 | state FAIL | `0x03EB` | `0x03EB` | match | First real state split: cosim has `B=0x3B/ZF=1`, while HDL has `B=0x00/ZF=0`, so the following `JNZ $0402` goes a different way. |
+| 30,180 / fifth `0x03EB` | state FAIL | expected `B=0x3B/ZF=1` | `B=0x00/ZF=0` | before next write | Direct `STOPPC=03EB`, `STOPPC_SKIP=4` stop: branch condition is already wrong before the 30,181st framebuffer write. |
+| 30,181 | write-boundary FAIL | `0x03EB` | `0x03EB` | match | Same bad state is visible at the following `MVI M,$F8` write boundary, so the next `JNZ $0402` goes a different way. |
 | 30,182 | control-flow FAIL | `0x03F5` | `0x03EB` | mismatch | HDL repeats the `0x03EB` path instead of advancing through the blanking writes at `0x03F4`/`0x03F9`. |
 | 30,185 | FAIL | `0x03FF` | `0x0244` | mismatch | HDL has branched back into the early `0x0242` RAM-fill loop. |
 
@@ -73,7 +80,7 @@ JUKU_TOP_FDC_SIM=verilator JUKU_TOP_FDC_TIMECAP=4000000000 \
 - The next useful fix target is the `CALL $0426` / `CMP B` result feeding
   `0x03EB`: in cosim the zero flag is set and execution falls through to the
   `0x03F4` blanking writes; in reset-driven HDL `B` is already wrong at the
-  same `0x03EB`/30,181-write boundary, so ROMBIOS takes the `0x0402` path and
-  soon returns to the early RAM-fill loop.
+  fifth `0x03EB` visit (`A=0x3B`, `B=0x00`, `ZF=0`, `vram=30180`), so ROMBIOS
+  takes the `0x0402` path and soon returns to the early RAM-fill loop.
 - The top-level state dump now reports `xchg_dh` and maps vm80a DE/HL latches
   dynamically, because this core swaps the D/E and H/L selectors after `XCHG`.
