@@ -55,6 +55,26 @@ the deferred-net boundary in `kicad/juku.board.json`.
 | 14 | V2 | - | missing in DSN |
 | 12 | D0 | - | missing in DSN |
 
+## KiCad PCB Cross-check
+
+The final PCB source currently exposes no D2 signal pad nets. This
+agrees with the deferred-net boundary in `kicad/juku.board.json`
+and `kicad/juku.dsn`.
+
+| Pin | Role | PCB Net | Result |
+| ---: | --- | --- | --- |
+| 1 | A6 | - | unnetted in PCB |
+| 2 | A5 | - | unnetted in PCB |
+| 3 | A4 | - | unnetted in PCB |
+| 4 | A3 | - | unnetted in PCB |
+| 5 | A0 | - | unnetted in PCB |
+| 6 | A1 | - | unnetted in PCB |
+| 7 | A2 | - | unnetted in PCB |
+| 15 | A7 | - | unnetted in PCB |
+| 13 | V1 | - | unnetted in PCB |
+| 14 | V2 | - | unnetted in PCB |
+| 12 | D0 | - | unnetted in PCB |
+
 ## Current Evidence Checks
 
 | Check | Result | Evidence |
@@ -62,6 +82,7 @@ the deferred-net boundary in `kicad/juku.board.json`.
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
 | Any D2 signal net is traced | FAIL | no D2 signal nets in board JSON |
 | Any D2 signal appears in DSN | FAIL | no D2 pins in DSN nets |
+| Any D2 signal appears in PCB | FAIL | no D2 pins in PCB nets |
 | `.037` firmware artifact exists | FAIL | `ref/firmware/` has no `.037` artifact |
 | Old D2-as-I/O-decode path is superseded | PASS | `docs/transcription/io.md` |
 | No reconstructed D2 fallback is exported | PASS | `docs/reconstructed-prom-fallbacks.md` |
@@ -74,8 +95,9 @@ the deferred-net boundary in `kicad/juku.board.json`.
 - Known: the older behavioral D2 I/O-decode model is not physical D2
   programming truth; D9 is the current chip-select decoder.
 - Unknown: D2 address/input rails, V1/V2 handling, D0 destination, and
-  `.037` contents are not traced/netted in current board JSON/DSN and
-  no programming table or dump is present under `ref/firmware/`.
+  `.037` contents are not traced/netted in current board JSON, DSN,
+  or final PCB source, and no programming table or dump is present
+  under `ref/firmware/`.
 - Therefore a burnable D2 image is not derivable from current repo
   evidence. The correct automatic action is to keep this constraint
   report fresh; the data-unlocking action is a programming-disk file

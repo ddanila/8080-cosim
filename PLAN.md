@@ -135,7 +135,8 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
    D8 `.039` or D94 `.092` byte tables.
    `docs/d2-reconstruction-constraints.md` now does the same for D2 `.037`:
    D2 is pinned as the bus-arbitration/wait РТ4 with no current signal-net or
-   burnable-table evidence, so it remains a dump/programming-disk dependency.
+   burnable-table evidence in board JSON, DSN, or final PCB source, so it remains
+   a dump/programming-disk dependency.
 2. **002 Schematics and components** → settle .006-vs-.009 revision coverage; attack
    the short blocked-on-materials list (D6 V1/V2 feed, C99 far plate, FDC INTRQ/DRQ,
    D94 outputs, bypass per-position values) from paper before spending owner time.

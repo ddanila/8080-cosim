@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
 DSN = ROOT / "kicad" / "juku.dsn"
+PCB = ROOT / "kicad" / "juku.kicad_pcb"
 REPORT = ROOT / "docs" / "d2-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
 
@@ -61,6 +62,56 @@ def dsn_pin_nets(ref: str) -> dict[str, str]:
     return found
 
 
+def matching_block(text: str, start: int) -> str:
+    depth = 0
+    in_string = False
+    escaped = False
+    for pos in range(start, len(text)):
+        char = text[pos]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return text[start : pos + 1]
+    raise ValueError("unterminated S-expression")
+
+
+def pcb_footprint_block(ref: str) -> str:
+    text = PCB.read_text(errors="replace")
+    ref_pos = text.find(f'(property "Reference" "{ref}"')
+    if ref_pos < 0:
+        return ""
+    start = text.rfind("\n\t(footprint ", 0, ref_pos)
+    if start < 0:
+        return ""
+    return matching_block(text, start + 1)
+
+
+def pcb_pin_nets(ref: str) -> dict[str, str]:
+    block = pcb_footprint_block(ref)
+    if not block:
+        return {}
+    found: dict[str, str] = {}
+    for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
+        pin = match.group(1)
+        pad_block = matching_block(block, match.start() + 3)
+        net = re.search(r'\(net\s+"([^"]+)"\)', pad_block)
+        if net:
+            found[pin] = net.group(1)
+    return found
+
+
 def firmware_candidates() -> list[str]:
     if not FIRMWARE.exists():
         return []
@@ -85,6 +136,7 @@ def main() -> int:
     board_type = str(chip.get("type", ""))
     prov = chip.get("prov", {})
     dsn_nets = dsn_pin_nets("D2")
+    pcb_nets = pcb_pin_nets("D2")
 
     pin_rows: list[str] = []
     signal_nets: list[str] = []
@@ -109,6 +161,18 @@ def main() -> int:
             ])
         )
 
+    pcb_rows: list[str] = []
+    for pin, role in sorted(pin_roles.items(), key=role_key):
+        name = pcb_nets.get(pin)
+        pcb_rows.append(
+            table_row([
+                pin,
+                role,
+                f"`{name}`" if name else "-",
+                "present" if name else "unnetted in PCB",
+            ])
+        )
+
     candidates = firmware_candidates()
     identity_ok = board_type == "DEC_PROM" and "ДГШ5.106.037" in str(prov)
     io_decoder_superseded = marker(
@@ -129,7 +193,7 @@ def main() -> int:
     )
     status = (
         "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
-        if identity_ok and not signal_nets and not candidates
+        if identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates
         else "D2 RECONSTRUCTION INPUTS CHANGED"
     )
 
@@ -178,6 +242,20 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## KiCad PCB Cross-check",
+            "",
+            "The final PCB source currently exposes no D2 signal pad nets. This",
+            "agrees with the deferred-net boundary in `kicad/juku.board.json`",
+            "and `kicad/juku.dsn`.",
+            "",
+            table_row(["Pin", "Role", "PCB Net", "Result"]),
+            table_row(["---:", "---", "---", "---"]),
+        ]
+    )
+    lines.extend(pcb_rows)
+    lines.extend(
+        [
+            "",
             "## Current Evidence Checks",
             "",
             table_row(["Check", "Result", "Evidence"]),
@@ -200,6 +278,13 @@ def main() -> int:
                 ", ".join(f"`{pin}`=`{net}`" for pin, net in sorted(dsn_nets.items()))
                 if dsn_nets
                 else "no D2 pins in DSN nets",
+            ]),
+            table_row([
+                "Any D2 signal appears in PCB",
+                "PASS" if pcb_nets else "FAIL",
+                ", ".join(f"`{pin}`=`{net}`" for pin, net in sorted(pcb_nets.items()))
+                if pcb_nets
+                else "no D2 pins in PCB nets",
             ]),
             table_row([
                 "`.037` firmware artifact exists",
@@ -231,8 +316,9 @@ def main() -> int:
             "- Known: the older behavioral D2 I/O-decode model is not physical D2",
             "  programming truth; D9 is the current chip-select decoder.",
             "- Unknown: D2 address/input rails, V1/V2 handling, D0 destination, and",
-            "  `.037` contents are not traced/netted in current board JSON/DSN and",
-            "  no programming table or dump is present under `ref/firmware/`.",
+            "  `.037` contents are not traced/netted in current board JSON, DSN,",
+            "  or final PCB source, and no programming table or dump is present",
+            "  under `ref/firmware/`.",
             "- Therefore a burnable D2 image is not derivable from current repo",
             "  evidence. The correct automatic action is to keep this constraint",
             "  report fresh; the data-unlocking action is a programming-disk file",

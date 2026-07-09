@@ -506,8 +506,8 @@ def milestone_rows():
                 )
                 + (
                     "`docs/d2-reconstruction-constraints.md` pins D2 `.037` as a "
-                    "bus-arbitration/wait PROM with no current signal nets or "
-                    "burnable fallback; "
+                    "bus-arbitration/wait PROM with no current signal nets in "
+                    "board JSON/DSN/PCB or burnable fallback; "
                     if d2_constraints_generated
                     else ""
                 )
