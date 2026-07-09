@@ -23,6 +23,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | D2 constraint report generated | PASS |
 | D94 constraint report generated | PASS |
 | FDC hardware handoff generated | PASS |
+| Beeper source/handoff guarded | PASS |
 | Serial USART behavior guarded | PASS |
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |

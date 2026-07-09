@@ -85,6 +85,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "docs/serial-handoff.md",
     )
+    beeper_handoff_guarded = marker(
+        "docs/beeper-readiness.md",
+        "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/beeper-readiness.md",
+    )
     reconstructed_proms_exported = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
@@ -549,6 +556,13 @@ def milestone_rows():
                     "minimal 8251 Tx/Rx loopback behavior slice while leaving "
                     "external X3 loopback/full protocol modes as Tier-2 work; "
                     if serial_handoff_guarded
+                    else ""
+                )
+                + (
+                    "`docs/beeper-readiness.md` guards the D57 channel-1 digital "
+                    "`SOUND` source plus the traced R90/VT1/VD4/R91/R48/SPKR board "
+                    "handoff while leaving speaker current/level proof to bring-up; "
+                    if beeper_handoff_guarded
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
@@ -1117,6 +1131,13 @@ def milestone_rows():
                         "D11/X3 handoff plus a minimal 8251 Tx/Rx loopback behavior "
                         "slice while keeping external loopback proof for bring-up"
                         if serial_handoff_guarded
+                        else ""
+                    )
+                    + (
+                        ", and `docs/beeper-readiness.md` guards the beeper digital "
+                        "source plus traced speaker handoff while leaving only analog "
+                        "level/current proof for bring-up"
+                        if beeper_handoff_guarded
                         else ""
                     )
                     + "; "
