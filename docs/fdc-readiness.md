@@ -114,7 +114,7 @@ sync/juku_top_fdc_probe.sh
 | checkpoint-resumed `juku_top` from the late FDC checkpoint reaches EKDOS `A>` prompt bitmap | PASS (local/deep) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` matches cosim through the former post-30,180 checksum split and the 30,520-write first-PIC window | PASS |
-| `juku_top` reaches decoded PIC setup, frame IRQ, and first FDC status I/O within the Verilator probe window | PASS (local/deep) |
+| `juku_top` reaches decoded PIC setup, frame IRQ, FDC command writes, and FDC data reads within the Verilator probe window | PASS (local/deep) |
 
 ## Remaining Boundary
 
@@ -170,12 +170,14 @@ sync/juku_top_fdc_probe.sh
   command at 63,085 VRAM writes.
 - `docs/juku-top-fdc-verilator-probe.md` records the faster reset-driven
   `juku_top` long-window diagnostic: with the D6 reset-overlay fix and
-  `JUKU_TOP_FDC_FRAMEIRQ=200000`, the Verilator path reaches decoded PIC setup,
-  frame interrupts, and the first decoded WD1793 status read.
+  live WD1793 motor/disk readiness, the Verilator path reaches decoded PIC
+  setup, frame interrupts, WD1793 sector/data/command writes, and FDC data-port
+  reads. The current early interrupt-path command is `0x80` with sector `0xAA`,
+  so it is not yet the cosim `TDD` sector sequence.
 - `docs/juku-top-fdc-alignment.md` summarizes that committed HDL report and
   keeps the current uninterrupted boundary explicit: reset-driven `juku_top`
-  reaches the FDC status-poll edge, but has not yet advanced through the full
-  ROMBIOS FDC command/data path to EKDOS `A>`.
+  reaches FDC command/data I/O, but has not yet aligned with the full ROMBIOS
+  `TDD` sector sequence to EKDOS `A>`.
 - `docs/ekdos-ioseq-reference.md` records the full cosim I/O event stream that
   the direct-bus top-level guard mirrors for keyboard/PIC/PPI/FDC boundaries.
 - Preserve the Arti `JUKU1.CPM` cosim proof from

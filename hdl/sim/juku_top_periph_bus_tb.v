@@ -146,7 +146,7 @@ module juku_top_periph_bus_tb();
     if (dut.ppi0_pc[2] !== 1'b1) fail("PPI0 PC2 motor-on bit did not latch");
 
     io_read(8'h1C, rd);
-    if ((rd & 8'h80) == 8'h00) fail("FDC reset status should report NOT READY before commands");
+    if ((rd & 8'h80) !== 8'h00) fail("FDC status should clear NOT READY once motor is on");
 
     io_write(8'h1D, 8'h22);     // nonzero track before ROMBIOS first restore command
     io_write(8'h1C, 8'h02);     // exact ROMBIOS first FDC command from PC E5DE

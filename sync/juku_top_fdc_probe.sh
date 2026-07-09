@@ -264,6 +264,12 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 $(grep '^\[CHKHDL' "$OUT" || true)
 \`\`\`
 
+## FDC Trace
+
+\`\`\`text
+$(grep '^\[FDC\]' "$OUT" || true)
+\`\`\`
+
 ## Disposition
 
 - The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+traceio=1\`,

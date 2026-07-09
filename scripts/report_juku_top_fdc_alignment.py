@@ -61,12 +61,14 @@ def main() -> int:
         failures.append("HDL Verilator report is not marked FDC-observed")
     if hdl.get("fdc_ios", "0") in ("0", "missing"):
         failures.append("HDL report has no decoded FDC I/O count")
+    if hdl.get("fdc_writes", "0") in ("0", "missing"):
+        failures.append("HDL report has no decoded FDC writes")
     if hdl["first_fdc"] in ("none", "missing"):
         failures.append("HDL report has no first FDC line")
     if hdl["first_pic"] in ("none", "missing"):
         failures.append("HDL report has no first PIC line")
 
-    status = "HDL RESET RUN REACHES DECODED FDC STATUS I/O"
+    status = "HDL RESET RUN REACHES DECODED FDC COMMAND I/O"
     if failures:
         status = "INCOMPLETE"
 
@@ -77,9 +79,10 @@ def main() -> int:
         "",
         "This generated report summarizes the committed reset-driven Verilator",
         "`juku_top` FDC probe for the vendored `media/disks/JUKU1.CPM` path.",
-        "The old post-30,180 reset-run divergence is resolved; the current",
-        "uninterrupted boundary is the first decoded WD1793 status poll, not the",
-        "full EKDOS `A>` prompt.",
+        "The old post-30,180 reset-run divergence is resolved. The current",
+        "uninterrupted boundary reaches decoded WD1793 command/data I/O, but",
+        "lands in an early interrupt-path read-sector attempt with sector `0xAA`",
+        "rather than the cosim `TDD` sector sequence.",
         "",
         "## Commands",
         "",
@@ -88,9 +91,10 @@ def main() -> int:
         "JUKU_TOP_FDC_SIM=verilator \\",
         "JUKU_TOP_FDC_FRAMEIRQ=200000 \\",
         "JUKU_TOP_FDC_STOPPIC=0 \\",
-        "JUKU_TOP_FDC_STOPFDC=1 \\",
-        "JUKU_TOP_FDC_TIMECAP=1200000000 \\",
-        "JUKU_TOP_FDC_TIMEOUT=180 \\",
+        "JUKU_TOP_FDC_STOPFDC=80 \\",
+        "JUKU_TOP_FDC_TIMECAP=2400000000 \\",
+        "JUKU_TOP_FDC_MAXVRAM=90000 \\",
+        "JUKU_TOP_FDC_TIMEOUT=300 \\",
         "sync/juku_top_fdc_probe.sh",
         "```",
         "",
@@ -108,7 +112,8 @@ def main() -> int:
         f"| PPI0 port C | `0x{hdl.get('portc', 'missing').upper()}` |",
         f"| PIC ICW1/ICW2/mask | `0x{hdl.get('pic_icw1', 'missing').upper()}` / `0x{hdl.get('pic_icw2', 'missing').upper()}` / `0x{hdl.get('pic_mask', 'missing').upper()}` |",
         f"| frame ticks / IRQ edges | `{hdl.get('frame_ticks', 'missing')}` / `{hdl.get('intr_edges', 'missing')}` |",
-        f"| FDC status | `0x{hdl.get('fdc_status', 'missing').upper()}` |",
+        f"| FDC command/status | `0x{hdl.get('fdc_command', 'missing').upper()}` / `0x{hdl.get('fdc_status', 'missing').upper()}` |",
+        f"| FDC track/sector/data | `0x{hdl.get('fdc_track', 'missing').upper()}` / `0x{hdl.get('fdc_sector', 'missing').upper()}` / `0x{hdl.get('fdc_data', 'missing').upper()}` |",
         f"| decoded FDC reads/writes | `{hdl.get('fdc_reads', 'missing')}` / `{hdl.get('fdc_writes', 'missing')}` (`{hdl.get('fdc_ios', 'missing')}` ios) |",
         "",
         "## HDL Report Anchors",
@@ -136,8 +141,9 @@ def main() -> int:
         lines.extend(
             [
                 "- The D6 reset-overlay ROM decode now covers `0x0000..0x3FFF`, so the high-BIOS checksum path matches cosim past the old 30,181-write split.",
-                "- With `JUKU_TOP_FDC_FRAMEIRQ=200000`, the uninterrupted reset run programs the PIC, takes frame interrupts, and reaches decoded WD1793 status I/O.",
-                "- The remaining uninterrupted HDL target is to advance from this first status-poll boundary into the ROMBIOS `TDD` FDC command/data path and the EKDOS `A>` prompt.",
+                "- The HDL WD1793 status read now reflects live motor/disk readiness, so the reset run exits the stale not-ready poll and reaches command/data-register traffic.",
+                "- With `JUKU_TOP_FDC_FRAMEIRQ=200000`, the uninterrupted reset run programs the PIC, takes frame interrupts, writes WD1793 sector/data/command registers, and enters data-register reads.",
+                "- The remaining uninterrupted HDL target is to align this early interrupt-path read-sector attempt with the cosim ROMBIOS `TDD` sequence: first command `0x02`, sector `0x02`, and then EKDOS `A>`.",
             ]
         )
 

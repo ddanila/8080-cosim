@@ -273,14 +273,17 @@ debugging session saved on real hardware.
    `x=0`, `y=70` instead of relying on a coarse VRAM count. The same probe now
    has an opt-in Verilator path and `+tracechk` checksum diagnostics.
    `docs/juku-top-fdc-verilator-probe.md` now reaches decoded PIC setup,
-   frame interrupts, and the first decoded WD1793 status read from reset with
-   the vendored `JUKU1.CPM` media attached when run with the deep local
+   frame interrupts, live WD1793 motor-ready status, FDC sector/data/command
+   writes, and FDC data-register reads from reset with the vendored
+   `JUKU1.CPM` media attached when run with the deep local
    `JUKU_TOP_FDC_FRAMEIRQ=200000` setting.
    `docs/juku-top-fdc-alignment.md` summarizes that committed HDL boundary:
-   reset-driven `juku_top` reaches the FDC status-poll edge, but has not yet
-   progressed through the full ROMBIOS FDC command/data path. Remaining target:
-   drive the uninterrupted full ROMBIOS `TDD` path through `juku_top` to the
-   EKDOS prompt with that external media, without relying on checkpoint/resume
+   reset-driven `juku_top` reaches FDC command/data I/O, but the current
+   early interrupt-path read-sector attempt uses command `0x80` with sector
+   `0xAA` instead of the cosim `TDD` sequence (`OUT 0x1C = 0x02`, sector
+   `0x02` at the 63,085-write window). Remaining target: align the
+   uninterrupted full ROMBIOS `TDD` path through `juku_top` to the EKDOS
+   prompt with that external media, without relying on checkpoint/resume
    acceleration.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry

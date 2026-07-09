@@ -623,6 +623,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_sector_ok = 0;
     reg intrq_r = 1'b0;
 
+    wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
+    wire [7:0] effective_status =
+        (motor_on && disk_side_valid) ? (status & ~ST_NOT_READY) : (status | ST_NOT_READY);
+
     assign drq = status[1];
     assign intrq = intrq_r;
 
@@ -780,7 +784,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end
 
     wire [7:0] read_data =
-        (A == 2'd0) ? status :
+        (A == 2'd0) ? effective_status :
         (A == 2'd1) ? track :
         (A == 2'd2) ? sector :
         data;

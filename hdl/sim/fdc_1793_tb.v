@@ -71,7 +71,9 @@ module fdc_1793_tb;
   initial begin
     disk_mode = $test$plusargs("expect_disk");
     repeat (4) @(posedge clk);
+    expect_status(8'h80, 8'h80, "initial motor-off status");
     motor_on = 1;
+    expect_status(8'h80, 8'h00, "initial motor-on status");
 
     write_reg(2'd1, 8'd22);
     write_reg(2'd0, 8'h02);
