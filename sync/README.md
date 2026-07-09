@@ -69,6 +69,11 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/ekdos_timing_reference.py` — fast cosim timing reference for the same
   vendored `TDD` path; records first PIC/PPI/FDC port touches versus cycles and
   framebuffer writes.
+- `sync/juku_top_fdc_probe.sh` — bounded reset-driven `juku_top` diagnostic
+  for the vendored `TDD` path. It defaults to the CI-compatible Icarus flow and
+  can run locally with `JUKU_TOP_FDC_SIM=verilator` for a faster long window;
+  `docs/juku-top-fdc-verilator-probe.md` currently records the 70,000-write
+  boundary with T/D/D stimulus observed but no decoded PIC/FDC path yet.
 - `sync/ekdos_checkpoint_reference.py` — fast cosim full-machine checkpoint
   reference at 30,000 framebuffer writes on the vendored `TDD` path; records
   CPU registers, RAM hash, banking/PIC/PPI/FDC state, and the byte-identical

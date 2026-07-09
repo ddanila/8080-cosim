@@ -12,6 +12,7 @@ command -v vvp >/dev/null || { echo "vvp not found"; exit 2; }
 
 REPORT=${JUKU_TOP_FDC_REPORT:-docs/juku-top-fdc-probe.md}
 REPORT_TITLE=${JUKU_TOP_FDC_REPORT_TITLE:-juku_top FDC probe}
+SIMULATOR=${JUKU_TOP_FDC_SIM:-icarus}
 DISK=${JUKU_TOP_FDC_DISK:-media/disks/JUKU1.CPM}
 KEYAT=${JUKU_TOP_FDC_KEYAT:-42000}
 KHOLD=${JUKU_TOP_FDC_KHOLD:-900000}
@@ -35,35 +36,75 @@ trap 'rm -rf "$TMP"' EXIT
 
 SIM="$TMP/juku_top_tb"
 OUT="$TMP/out.txt"
+BUILD_OUT="$TMP/build.txt"
 OLD_VRAM="$TMP/vram_top.old"
 if [ -f hdl/sim/vram_top.bin ]; then cp hdl/sim/vram_top.bin "$OLD_VRAM"; fi
 
-iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v
+case "$SIMULATOR" in
+  icarus)
+    iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v >"$BUILD_OUT" 2>&1
+    ;;
+  verilator)
+    command -v verilator >/dev/null || { echo "verilator not found"; exit 2; }
+    verilator --binary --timing -Wno-fatal --top-module juku_top_tb \
+      -Mdir "$TMP/obj" \
+      hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v >"$BUILD_OUT" 2>&1
+    SIM="$TMP/obj/Vjuku_top_tb"
+    ;;
+  *)
+    echo "unsupported JUKU_TOP_FDC_SIM=$SIMULATOR (expected icarus or verilator)" >&2
+    exit 2
+    ;;
+esac
 
 set +e
-stoppc_arg=()
-if [ -n "$STOPPC" ]; then stoppc_arg=("+stoppc=$STOPPC"); fi
+STOPPC_PLUSARG=
+if [ -n "$STOPPC" ]; then STOPPC_PLUSARG="+stoppc=$STOPPC"; fi
 if command -v timeout >/dev/null; then
-  timeout "$TIMEOUT_S" vvp "$SIM" \
-    +disk="$DISK" +disk_heads=2 \
-    +frameirq="$FRAMEIRQ" \
-    +traceprogress="$TRACEPROGRESS" \
-    "${stoppc_arg[@]}" \
-    +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-    +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
-    +stopprompt="$STOPPROMPT" \
-    +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
+  if [ "$SIMULATOR" = icarus ]; then
+    timeout "$TIMEOUT_S" vvp "$SIM" \
+      +disk="$DISK" +disk_heads=2 \
+      +frameirq="$FRAMEIRQ" \
+      +traceprogress="$TRACEPROGRESS" \
+      $STOPPC_PLUSARG \
+      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +stopprompt="$STOPPROMPT" \
+      +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
+  else
+    timeout "$TIMEOUT_S" "$SIM" \
+      +disk="$DISK" +disk_heads=2 \
+      +frameirq="$FRAMEIRQ" \
+      +traceprogress="$TRACEPROGRESS" \
+      $STOPPC_PLUSARG \
+      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +stopprompt="$STOPPROMPT" \
+      +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
+  fi
   rc=$?
 else
-  vvp "$SIM" \
-    +disk="$DISK" +disk_heads=2 \
-    +frameirq="$FRAMEIRQ" \
-    +traceprogress="$TRACEPROGRESS" \
-    "${stoppc_arg[@]}" \
-    +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-    +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
-    +stopprompt="$STOPPROMPT" \
-    +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
+  if [ "$SIMULATOR" = icarus ]; then
+    vvp "$SIM" \
+      +disk="$DISK" +disk_heads=2 \
+      +frameirq="$FRAMEIRQ" \
+      +traceprogress="$TRACEPROGRESS" \
+      $STOPPC_PLUSARG \
+      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +stopprompt="$STOPPROMPT" \
+      +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
+  else
+    "$SIM" \
+      +disk="$DISK" +disk_heads=2 \
+      +frameirq="$FRAMEIRQ" \
+      +traceprogress="$TRACEPROGRESS" \
+      $STOPPC_PLUSARG \
+      +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
+      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +stopprompt="$STOPPROMPT" \
+      +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
+  fi
   rc=$?
 fi
 set -e
@@ -95,6 +136,8 @@ cpu_line=$(grep -m1 '^\[CPU\]' "$OUT" || true)
 state_line=$(grep -m1 '^\[STATE\]' "$OUT" || true)
 pc_stop=$(grep -m1 '^\[PC\] stop' "$OUT" || true)
 disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
+verilator_report=$(grep -m1 '^- Verilator: .*walltime' "$OUT" || true)
+build_summary=$(tail -1 "$BUILD_OUT" || true)
 fdc_lines=$(grep -c '^\[FDC\]' "$OUT" || true)
 kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
 progress_lines=$(grep -c '^\[VRAM\] progress' "$OUT" || true)
@@ -124,9 +167,9 @@ Status: **$status**
 
 This bounded diagnostic runs the LVS-checked \`juku_top\` with the vendored
 Juku disk image, frame interrupts, and the fixed ROMBIOS \`TDD\` keyboard
-sequence enabled. The testbench stops on decoded WD1793/VG93 I/O so the
-remaining EKDOS prompt path can be chased without relying on a manual long
-framebuffer run.
+sequence enabled. The default simulator is Icarus Verilog, matching the CI
+toolchain. Set \`JUKU_TOP_FDC_SIM=verilator\` for a faster local/deep reset
+run through the same testbench and stop hooks.
 
 ## Command
 
@@ -137,6 +180,7 @@ sync/juku_top_fdc_probe.sh
 Environment overrides:
 
 - \`JUKU_TOP_FDC_DISK\` default \`media/disks/JUKU1.CPM\`
+- \`JUKU_TOP_FDC_SIM\` default \`icarus\`; optional \`verilator\`
 - \`JUKU_TOP_FDC_KEYAT\` default \`42000\`
 - \`JUKU_TOP_FDC_KHOLD\` default \`900000\`
 - \`JUKU_TOP_FDC_KGAP\` default \`900000\`
@@ -152,12 +196,13 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPC\` optional hexadecimal CPU PC stop hook
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
 | Check | Result |
 | --- | --- |
+| simulator | \`$SIMULATOR\` |
 | vvp/timeout exit code | \`$rc\` |
 | vendored raw disk loaded | $(if [ -n "$disk_line" ]; then echo PASS; else echo NO; fi) |
 | first VRAM write observed | $(if [ -n "$first_vram" ]; then echo PASS; else echo NO; fi) |
@@ -180,6 +225,8 @@ Current values: \`KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEP
 ## Stop State
 
 - Disk line: \`${disk_line:-none}\`
+- Build summary line: \`${build_summary:-none}\`
+- Verilator walltime line: \`${verilator_report:-none}\`
 - First VRAM line: \`${first_vram:-none}\`
 - Last VRAM progress line: \`${last_progress:-none}\`
 - VRAM stop line: \`${vram_stop:-none}\`

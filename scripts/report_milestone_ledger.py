@@ -209,6 +209,13 @@ def milestone_rows():
         "hdl/sim/juku_top_tb.v",
         "[PROMPT] EKDOS A> prompt reached",
     )
+    hdl_verilator_fdc_window = marker(
+        "docs/juku-top-fdc-verilator-probe.md",
+        "simulator | `verilator`",
+    ) and marker(
+        "docs/juku-top-fdc-verilator-probe.md",
+        "VRAM stop line: `[VRAM] 70000 writes",
+    )
     ekdos_timing_guard = marker(
         "docs/ekdos-timing-reference.md",
         "Status: **PASS**",
@@ -460,6 +467,13 @@ def milestone_rows():
                     "`sync/juku_top_fdc_probe.sh` exposes `JUKU_TOP_FDC_STOPPROMPT=1` "
                     "for uninterrupted long runs to stop on the same prompt bitmap. "
                     if hdl_uninterrupted_prompt_hook
+                    else ""
+                )
+                + (
+                    "`docs/juku-top-fdc-verilator-probe.md` records the faster "
+                    "reset-driven Verilator window reaching 70,000 VRAM writes "
+                    "with T/D/D stimulus visible but no decoded PIC/FDC access yet. "
+                    if hdl_verilator_fdc_window
                     else ""
                 )
                 + "Full uninterrupted ROMBIOS-to-EKDOS prompt execution in `juku_top` remains open."

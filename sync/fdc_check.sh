@@ -195,6 +195,10 @@ sync/juku_top_fdc_probe.sh
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
+- `docs/juku-top-fdc-verilator-probe.md` records the faster reset-driven
+  `juku_top` long-window diagnostic: the Verilator path reaches 70,000 VRAM
+  writes in the same testbench and observes the full T/D/D stimulus schedule,
+  but still sees no decoded PIC/FDC access or active key-read hit.
 - `docs/ekdos-ioseq-reference.md` records the full cosim I/O event stream that
   the direct-bus top-level guard mirrors for keyboard/PIC/PPI/FDC boundaries.
 - Preserve the Arti `JUKU1.CPM` cosim proof from

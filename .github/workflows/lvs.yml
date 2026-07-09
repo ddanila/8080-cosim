@@ -15,6 +15,7 @@ jobs:
           sh -n kicad/check_replica_manufacturing_ready.sh
           sh -n sync/ekdos_checkpoint_prompt_check.sh
           sh -n sync/ekdos_jbasic_checkpoint_check.sh
+          sh -n sync/juku_top_fdc_probe.sh
           sh -n sync/jmon33_checkpoint_deep_check.sh
           sh -n sync/video_timing_check.sh
           sh -n sync/video_readout_check.sh

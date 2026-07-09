@@ -264,7 +264,10 @@ debugging session saved on real hardware.
    `sync/juku_top_fdc_probe.sh` now also exposes `JUKU_TOP_FDC_STOPPROMPT=1`
    as the uninterrupted-run counterpart to the checkpoint prompt oracle, so a
    long top-level run can stop exactly when the EKDOS `A>` bitmap appears at
-   `x=0`, `y=70` instead of relying on a coarse VRAM count. Remaining target:
+   `x=0`, `y=70` instead of relying on a coarse VRAM count. The same probe now
+   has an opt-in Verilator path; `docs/juku-top-fdc-verilator-probe.md` reaches
+   70,000 VRAM writes from reset with T/D/D key stimulus visible, but still no
+   decoded PIC/FDC access or active key-read hit. Remaining target:
    drive the uninterrupted full ROMBIOS `TDD` path through `juku_top` to the
    EKDOS prompt with that external media, without relying on checkpoint/resume
    acceleration.

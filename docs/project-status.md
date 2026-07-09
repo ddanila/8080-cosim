@@ -267,7 +267,10 @@ Historical merge notes:
   bitmap through `juku_top`. The uninterrupted top-level FDC probe also has an
   opt-in `JUKU_TOP_FDC_STOPPROMPT=1` stop hook for that same bitmap oracle, so
   future long runs can terminate at the actual M2 target rather than a coarse
-  framebuffer-write limit.
+  framebuffer-write limit. `docs/juku-top-fdc-verilator-probe.md` now records
+  the faster reset-driven Verilator window: the same bench reaches 70,000 VRAM
+  writes with T/D/D stimulus visible, but still no decoded PIC/FDC access or
+  active key-read hit.
 - **Owner measurement shortlist:** `docs/owner-measurement-shortlist.md`
   reduces the remaining physical-owner request to P0 programming/PROM/media
   truth plus P1 continuity items; broad analog/video/sound captures stay in the
