@@ -597,7 +597,7 @@ before any Soviet NOS is at risk.
    `docs/replica-bringup-verification-points.md`, converting remaining
    assumed/boundary/pending source-risk annotations into explicit vendor-preview,
    owner-continuity, scope, and logic-analyzer checks for staged bring-up. It also
-   checks all 204 listed source-risk endpoints against `kicad/juku.kicad_pcb`
+   checks all 156 listed source-risk endpoints against `kicad/juku.kicad_pcb`
    footprint pad net assignments and all 1,876 modeled board endpoints against
    both `kicad/juku.kicad_pcb` and `kicad/juku_routed.kicad_pcb`. That full
    guard caught and closed X2 +5 V contacts 227/229/230, so the final PCB source

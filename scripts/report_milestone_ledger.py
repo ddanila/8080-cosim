@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 from pathlib import Path
 
 
@@ -18,6 +19,14 @@ def read(path):
 
 def marker(path, text):
     return text in read(ROOT / path)
+
+
+def summary_count(path, label, default):
+    text = read(ROOT / path)
+    match = re.search(rf"^- {re.escape(label)}: `([0-9,]+)`$", text, re.MULTILINE)
+    if not match:
+        return default
+    return f"{int(match.group(1).replace(',', '')):,}"
 
 
 def exists(path):
@@ -63,6 +72,16 @@ def milestone_rows():
     ) and marker(
         "docs/owner-measurement-shortlist.md",
         "D94 pin 15 enable",
+    )
+    bringup_endpoint_count = summary_count(
+        "docs/replica-bringup-verification-points.md",
+        "Verification-point endpoints checked in PCB",
+        "unknown",
+    )
+    board_endpoint_count = summary_count(
+        "docs/replica-bringup-verification-points.md",
+        "All board endpoints checked in source PCB",
+        "unknown",
     )
     d2_constraints_generated = marker(
         "docs/d2-reconstruction-constraints.md",
@@ -1176,8 +1195,9 @@ def milestone_rows():
                 + (
                     "`docs/replica-bringup-verification-points.md` tracks the "
                     "residual source-risk nets for staged bring-up and checks "
-                    "204 listed endpoints against `kicad/juku.kicad_pcb` pad "
-                    "net assignments, and all 1,876 modeled board endpoints "
+                    f"{bringup_endpoint_count} listed endpoints against "
+                    "`kicad/juku.kicad_pcb` pad net assignments, and all "
+                    f"{board_endpoint_count} modeled board endpoints "
                     "against both source and routed PCB pad net assignments"
                     + (
                         ", and `docs/fdc-hardware-handoff.md` narrows the FDC "
