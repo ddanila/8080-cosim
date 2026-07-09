@@ -264,20 +264,14 @@ Historical merge notes:
   now vendors the required public disk media under `media/disks/`. Arti
   `JUKU1.7Z` extracts `JUKU1.CPM`
   (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
-  and reaches `A>` through the factory `TDD` path. The `juku_top` disk-backed
-  FDC path remains open for an uninterrupted reset-to-prompt run, but
-  `sync/ekdos_checkpoint_prompt_check.sh` now provides a named local/deep guard
-  for the checkpoint-resumed late FDC window reaching the EKDOS `A>` prompt
-  bitmap through `juku_top`. The uninterrupted top-level FDC probe also has an
-  opt-in `JUKU_TOP_FDC_STOPPROMPT=1` stop hook for that same bitmap oracle, so
-  future long runs can terminate at the actual M2 target rather than a coarse
-  framebuffer-write limit. `docs/juku-top-fdc-verilator-probe.md` now records
-  the faster reset-driven Verilator window: the same bench reaches 70,000 VRAM
-  writes with T/D/D stimulus visible, but still no decoded PIC/FDC access or
-  active key-read hit. `docs/juku-top-fdc-alignment.md` compares that state
-  against a regenerated cosim checkpoint and pins the current divergence:
-  cosim has already drained 6,656 FDC data bytes, while reset-driven `juku_top`
-  has not programmed the PIC or reached FDC I/O.
+  and reaches `A>` through the factory `TDD` path. `juku_top` now reaches the
+  same disk-backed EKDOS prompt from reset in the committed uninterrupted
+  Verilator proof: `docs/juku-top-fdc-verilator-probe.md` records decoded PIC
+  setup, 10,752 FDC data-register reads, and the EKDOS `A>` bitmap at VRAM
+  write 73,405 / PC `0x097A`. `sync/juku_top_fdc_prompt_check.sh` is the
+  routine guard for that evidence, with an opt-in deep rerun mode; the older
+  checkpoint guard in `sync/ekdos_checkpoint_prompt_check.sh` remains useful
+  for late-window diagnostics.
 - **Owner measurement shortlist:** `docs/owner-measurement-shortlist.md`
   reduces the remaining physical-owner request to P0 programming/PROM/media
   truth plus P1 continuity items; broad analog/video/sound captures stay in the
