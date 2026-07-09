@@ -31,6 +31,7 @@ jobs:
             scripts/report_video_slot_timing_audit.py \
             scripts/report_d94_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
+            scripts/report_fdc_hardware_handoff.py \
             scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
@@ -146,8 +147,11 @@ jobs:
 
       - name: Check owner measurement shortlist freshness
         run: |
+          python3 scripts/report_fdc_hardware_handoff.py
           python3 scripts/report_owner_measurement_shortlist.py
-          git diff --exit-code -- docs/owner-measurement-shortlist.md
+          git diff --exit-code -- \
+            docs/fdc-hardware-handoff.md \
+            docs/owner-measurement-shortlist.md
 
       - name: Check replica bring-up report freshness
         run: |

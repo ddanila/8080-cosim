@@ -30,7 +30,9 @@ schematic*), with `cosim/` + MAME as validation oracles.
   Remaining M7 proof is external vendor preview/order evidence.
 - **Residual fabrication/bring-up risks are now explicit:** `docs/replica-bringup-verification-points.md`
   generates 41 source-risk verification points from `kicad/juku.board.json` and is
-  required by the manufacturing readiness gate.
+  required by the manufacturing readiness gate. `docs/fdc-hardware-handoff.md`
+  further narrows the FDC subset to guarded D93/D100 bus-side wiring plus
+  owner-continuity checks for INTRQ/DRQ, D93 MR/CLK, and D100 OE/T.
 - **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim and in the
   reset-driven `juku_top` Verilator path with external media; disk-side
   `JBASIC` on `JUKPROG2.CPM` reaches visible `A>JBASIC` and BASIC `READY` in
@@ -291,8 +293,9 @@ Historical merge notes:
   for late-window diagnostics.
 - **Owner measurement shortlist:** `docs/owner-measurement-shortlist.md`
   reduces the remaining physical-owner request to P0 programming/PROM/media
-  truth plus P1 continuity items; broad analog/video/sound captures stay in the
-  bring-up checklist.
+  truth plus P1 continuity items. `docs/fdc-hardware-handoff.md` is the exact
+  FDC continuity handoff; broad analog/video/sound captures stay in the bring-up
+  checklist.
 - **Beeper digital source + board handoff guarded:** D57 PIT channel 1 (`OUT1`)
   now has a runnable guard (`sync/beeper_check.sh`) that programs a reload,
   proves the traced `SOUND` source toggles, and checks the board JSON handoff
@@ -427,7 +430,8 @@ tracked evidence marks the replica main-board package as
 **REPO READY / EXTERNAL PENDING** for M7: `docs/replica-manufacturing-readiness.md`
 is **READY TO UPLOAD**, `fab/gerbers/order-readiness.md` is **ORDER READY**, and
 `docs/replica-bringup-verification-points.md` tracks the residual source-risk nets
-for staged bring-up. The remaining M7 proof is external vendor upload/order
+for staged bring-up, with `docs/fdc-hardware-handoff.md` splitting the FDC bus
+facts from owner-only continuity points. The remaining M7 proof is external vendor upload/order
 evidence. The same audit keeps PROM truth, exact EKDOS media, VJUGA
 ordering/bring-up, parts receipt, assembly, and Tier 1-3 hardware validation open
 until tracked evidence exists.

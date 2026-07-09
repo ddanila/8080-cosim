@@ -13,6 +13,7 @@ REQUIRED = [
     ROOT / "docs" / "community-prom-media-request.md",
     ROOT / "docs" / "prom-dump-procedure.md",
     ROOT / "docs" / "d94-reconstruction-constraints.md",
+    ROOT / "docs" / "fdc-hardware-handoff.md",
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
@@ -80,6 +81,7 @@ def main() -> int:
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
         ("D6/D8 reconstructed fallback exported", has_phrase("docs/reconstructed-prom-fallbacks.md", "d6_rt4_memory_decode_reconstructed")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
+        ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
     ]
@@ -110,8 +112,8 @@ def main() -> int:
         (
             "P1",
             "FDC interrupt/buffer continuity",
-            "WD1793 DRQ/INTRQ to 8259 inputs, plus D100 OE/T if accessible",
-            "`docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F",
+            "WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible",
+            "`docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F",
             "reduces first EKDOS-on-hardware debug risk",
         ),
         (

@@ -99,11 +99,18 @@ read-sector, BUSY/DRQ status, side-select stream changes, motor-off NOT READY
 behavior, and vendored `JUKU1.CPM` sector bytes. The guard is documented in
 `docs/fdc-readiness.md`.
 
+## Physical board handoff
+`scripts/report_fdc_hardware_handoff.py` generates `docs/fdc-hardware-handoff.md`.
+It guards the current board-JSON FDC handoff without promoting owner-only facts:
+D93/D100 data-bus wiring, register select, I/O strobes, and CS7 decode are wired;
+D93 INTRQ/DRQ ordering, D93 MR/CLK, and D100 OE/T remain owner-continuity points.
+
 ## Not netted (owner-session territory)
 Support logic: D95/D101 (КП12 muxes -- drive/side select fanout?), D97/D99/D102 (АГ3
 one-shots -- step/precomp timing), D96 (ТМ2), D28 (ЛН3), D98 (ЛП11 + the wires-17/18
 reset chain), D106 (ИЕ7), D107? no -- D106 counter; the drive cable connector (X4/X5,
-DB-26HD per photo); MR source; 1 MHz CLK rail; VT2/VT4 analog (write precomp/pump).
+DB-26HD per photo); MR source; 1 MHz CLK rail; D100 OE/T; VT2/VT4 analog (write
+precomp/pump).
 
 ## Owner measurement list (FDC)
 1. D93.39/38 -> D10.18/19 (IR0/IR1) -- confirm which is INTRQ vs DRQ.

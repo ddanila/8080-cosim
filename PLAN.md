@@ -565,7 +565,10 @@ before any Soviet NOS is at risk.
    `kicad/report_replica_bringup_verification.py` generates
    `docs/replica-bringup-verification-points.md`, converting remaining
    assumed/boundary/pending source-risk annotations into explicit vendor-preview,
-   owner-continuity, scope, and logic-analyzer checks for staged bring-up.
+   owner-continuity, scope, and logic-analyzer checks for staged bring-up. The
+   generated `docs/fdc-hardware-handoff.md` now narrows the FDC subset to guarded
+   D93/D100 bus-side wiring plus owner-only continuity points for INTRQ/DRQ,
+   D93 reset/clock, and D100 OE/T.
    `kicad/report_replica_manufacturing_readiness.py` writes the tracked top-level
    `docs/replica-manufacturing-readiness.md` packet with the final upload ZIP
    checksum, locked vendor options, and the single pre-payment gate command
@@ -613,7 +616,8 @@ before any Soviet NOS is at risk.
 ### WS-F — Owner / hardware sessions (the short physical list)
 Whatever WS-A doesn't close on paper: dump both РЕ3 sockets (D8 decode-cluster +
 D94 top-center) and the two РТ4s; dump board-2's M2764 pair (settles the BIOS-pair
-question); continuity beeps (D6 V1/V2, C99, FDC INTRQ/DRQ vs IR0/IR1, D100 OE/T);
+question); continuity beeps (D6 V1/V2, C99, FDC INTRQ/DRQ vs IR0/IR1,
+D93 MR/CLK, D100 OE/T; see `docs/fdc-hardware-handoff.md`);
 beeper session sheet v2; macro photos (R6x refdes, bypass disc values). Also: a
 **community ask** via infoaed/juku3000 — Pehka1985 has running hardware; a РЕ3/РТ4
 dump request there may close this workstream without our own board time. A

@@ -64,6 +64,13 @@ def milestone_rows():
         "docs/owner-measurement-shortlist.md",
         "D94 pin 15 enable",
     )
+    fdc_handoff_guarded = marker(
+        "docs/fdc-hardware-handoff.md",
+        "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check owner measurement shortlist freshness",
+    )
     reconstructed_proms_exported = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
@@ -472,6 +479,13 @@ def milestone_rows():
                     "hardware-owner asks to programming/PROM/media truth plus P1 "
                     "continuity items; "
                     if owner_measurement_shortlist
+                    else ""
+                )
+                + (
+                    "`docs/fdc-hardware-handoff.md` guards the FDC bus-side board "
+                    "handoff while keeping D93 INTRQ/DRQ, MR/CLK, and D100 OE/T as "
+                    "owner-continuity items; "
+                    if fdc_handoff_guarded
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
@@ -1008,7 +1022,15 @@ def milestone_rows():
                 "`fab/gerbers/order-readiness.md` is ORDER READY; "
                 + (
                     "`docs/replica-bringup-verification-points.md` tracks the "
-                    "residual source-risk nets for staged bring-up; "
+                    "residual source-risk nets for staged bring-up"
+                    + (
+                        ", and `docs/fdc-hardware-handoff.md` narrows the FDC "
+                        "physical handoff to guarded bus-side wiring plus owner-only "
+                        "continuity points"
+                        if fdc_handoff_guarded
+                        else ""
+                    )
+                    + "; "
                     if bringup_verification_ready
                     else ""
                 )
