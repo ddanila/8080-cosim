@@ -26,11 +26,14 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **Replica package is repo-ready for vendor upload:** `docs/replica-manufacturing-readiness.md`
   is **READY TO UPLOAD** and `fab/gerbers/order-readiness.md` is **ORDER READY**.
   The final upload ZIP is `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-  with SHA256 `93de3fc0a16b4bb31a4f613af69833ed24353d403d8870a774e365d534a7c815`.
+  with SHA256 `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`.
   Remaining M7 proof is external vendor preview/order evidence.
 - **Residual fabrication/bring-up risks are now explicit:** `docs/replica-bringup-verification-points.md`
   generates 41 source-risk verification points from `kicad/juku.board.json` and is
-  required by the manufacturing readiness gate. `docs/fdc-hardware-handoff.md`
+  required by the manufacturing readiness gate. The same report now checks all
+  1,876 modeled board endpoints against both the source and routed PCB files, so
+  X2/P5V connector contact fixes are covered by the upload gate.
+  `docs/fdc-hardware-handoff.md`
   further narrows the FDC subset to guarded D93/D100 bus-side wiring plus
   owner-continuity checks for INTRQ/DRQ, D93 MR/CLK, and D100 OE/T.
 - **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim and in the
@@ -215,6 +218,13 @@ Historical merge notes:
   `docs/basic-cartridge-tail-hypotheses.md` derives the loop-tail bytes a viable
   missing page must contain and rejects simple fill, append, and final-page
   mirror hypotheses with runtime Monitor 3.3 probes.
+  `docs/basic-cartridge-missing-page-constraints.md` turns that into a static
+  reconstruction boundary: missing source `0x2100..0x21FF` maps to runtime
+  `0x2000..0x20FF`, the required loop-tail/exit bytes occupy
+  `0x2109..0x2115`, known-body operands reference only 15 unique bytes in
+  `0x2000..0x2018`, the sole direct control transfer is `JNZ 0x2009`, and no
+  repo artifact provides a useful page-shaped donor beyond the public
+  cartridge's own final page.
   `sync/basic_factory_command_probe.py` covers the Baltijets doc 003 factory
   BASIC command `A` across all vendored public monitor ROMs: Monitor 3.3
   reaches the same zero-filled RAM boundary, the EktaSoft monitors still do not

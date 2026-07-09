@@ -44,6 +44,7 @@ jobs:
             scripts/report_basic_cartridge_length_audit.py \
             scripts/report_basic_cartridge_tail_hypotheses.py \
             scripts/report_basic_cartridge_missing_page_constraints.py \
+            scripts/check_project_status_freshness.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -89,6 +90,9 @@ jobs:
           git diff --exit-code -- docs/basic-cartridge-length-audit.md
           git diff --exit-code -- docs/basic-cartridge-tail-hypotheses.md
           git diff --exit-code -- docs/basic-cartridge-missing-page-constraints.md
+
+      - name: Check project status freshness
+        run: python3 scripts/check_project_status_freshness.py
 
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh
