@@ -267,6 +267,9 @@ def milestone_rows():
         "docs/basic-cartridge-length-audit.md",
         "Missing source bytes | `256`",
     ) and marker(
+        "docs/basic-cartridge-length-audit.md",
+        "Vendored Raw Disk Sweep",
+    ) and marker(
         ".github/workflows/lvs.yml",
         "Check BASIC low-stub inspection freshness",
     )
@@ -784,7 +787,8 @@ def milestone_rows():
                     "the public 8 KiB payload loaded at `0x0100` ends at `0x20FF`, "
                     "but the bootstrap copies `0x0200..0x21FF`, leaving an exact "
                     "missing tail page `0x2100..0x21FF`; disk-side BASIC candidates "
-                    "are checked and are not direct tail donors. "
+                    "and all vendored raw `*.CPM`/`*.JUK` images are checked and "
+                    "are not direct tail donors. "
                     if basic_cartridge_length_audited
                     else ""
                 )
@@ -916,7 +920,8 @@ def milestone_rows():
                     "the public 8 KiB payload loaded at `0x0100` ends at `0x20FF`, "
                     "but the bootstrap copies `0x0200..0x21FF`, leaving an exact "
                     "missing tail page `0x2100..0x21FF`; disk-side BASIC candidates "
-                    "are checked and are not direct tail donors. "
+                    "and all vendored raw `*.CPM`/`*.JUK` images are checked and "
+                    "are not direct tail donors. "
                     if basic_cartridge_length_audited
                     else ""
                 )

@@ -353,8 +353,9 @@ debugging session saved on real hardware.
    `docs/basic-cartridge-length-audit.md` now sharpens that boundary: the public
    8 KiB payload loaded at runtime `0x0100` ends at `0x20FF`, while its bootstrap
    copies `0x0200..0x21FF` down to `0x0100..0x20FF`, leaving an exact missing
-   tail page at `0x2100..0x21FF`; the disk-side BASIC candidates are checked and
-   are not direct tail donors for this cartridge shape.
+   tail page at `0x2100..0x21FF`; the disk-side BASIC candidates and all
+   vendored raw `*.CPM`/`*.JUK` images are checked and are not direct tail donors
+   for this cartridge shape.
    The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and

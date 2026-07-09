@@ -15,6 +15,7 @@ DISK_CANDIDATES = [
     ROOT / "ref" / "extracted-software" / "JUKPROG2_JBASIC_live_candidate.COM",
     ROOT / "ref" / "extracted-software" / "JUKU1_JBASIC_raw_candidate.COM",
 ]
+VENDORED_DISK_GLOBS = ("*.CPM", "*.JUK")
 
 LOAD_BASE = 0x0100
 RELOC_SRC_START = 0x0200
@@ -71,8 +72,41 @@ def hex_span(start: int, end: int) -> str:
     return f"`0x{start:04X}..0x{end:04X}`"
 
 
-def fmt_offsets(offsets: list[int]) -> str:
-    return ", ".join(f"`0x{offset:04X}`" for offset in offsets) if offsets else "-"
+def fmt_offsets(offsets: list[int], limit: int | None = None) -> str:
+    if not offsets:
+        return "-"
+    visible = offsets if limit is None else offsets[:limit]
+    text = ", ".join(f"`0x{offset:04X}`" for offset in visible)
+    if limit is not None and len(offsets) > limit:
+        text += f" (+{len(offsets) - limit})"
+    return text
+
+
+def vendored_disks() -> list[Path]:
+    disks: list[Path] = []
+    for pattern in VENDORED_DISK_GLOBS:
+        disks.extend((ROOT / "media" / "disks").glob(pattern))
+    return sorted(disks)
+
+
+def find_all(data: bytes, needle: bytes) -> list[int]:
+    offsets: list[int] = []
+    start = 0
+    while True:
+        pos = data.find(needle, start)
+        if pos < 0:
+            return offsets
+        offsets.append(pos)
+        start = pos + 1
+
+
+def fmt_disk_offsets(offsets: list[int]) -> str:
+    if not offsets:
+        return "`0`"
+    sample = ", ".join(f"`0x{offset:05X}`" for offset in offsets[:3])
+    if len(offsets) > 3:
+        sample += f" (+{len(offsets) - 3})"
+    return sample
 
 
 def candidate_rows(cart: bytes) -> list[str]:
@@ -97,6 +131,64 @@ def candidate_rows(cart: bytes) -> list[str]:
     return rows
 
 
+def vendored_disk_rows(cart: bytes) -> tuple[list[str], list[str]]:
+    rows: list[str] = []
+    summary: list[str] = []
+    needles = [b"BASIC", b"READY", b"ERROR"]
+    final_page = cart[-0x100:]
+    first_body_page = cart[0x0200:0x0300]
+    full_tail_hits = 0
+    final_page_hits = 0
+    body_page_hits = 0
+
+    for path in vendored_disks():
+        data = path.read_bytes()
+        best_len, cart_off, disk_off = best_overlap(cart, data, min_chunk=128)
+        strings = string_offsets(data, needles)
+        full_offsets = find_all(data, cart)
+        full_tail_offsets = [
+            offset for offset in full_offsets if offset + len(cart) + 0x100 <= len(data)
+        ]
+        final_offsets = find_all(data, final_page)
+        final_tail_offsets = [
+            offset for offset in final_offsets if offset + len(final_page) + 0x100 <= len(data)
+        ]
+        body_offsets = find_all(data, first_body_page)
+        full_tail_hits += len(full_tail_offsets)
+        final_page_hits += len(final_tail_offsets)
+        body_page_hits += len(body_offsets)
+        rows.append(
+            table_row(
+                [
+                    f"`{path.relative_to(ROOT)}`",
+                    len(data),
+                    f"`{sha256(data)}`",
+                    (
+                        f"`{best_len}` bytes at cart `0x{cart_off:04X}` / "
+                        f"disk `0x{disk_off:05X}`"
+                    ),
+                    fmt_disk_offsets(full_tail_offsets),
+                    fmt_disk_offsets(final_tail_offsets),
+                    fmt_disk_offsets(body_offsets),
+                    (
+                        f"BASIC {fmt_offsets(strings['BASIC'], limit=5)}; "
+                        f"READY {fmt_offsets(strings['READY'], limit=5)}; "
+                        f"ERROR {fmt_offsets(strings['ERROR'], limit=5)}"
+                    ),
+                ]
+            )
+        )
+
+    summary.extend(
+        [
+            table_row(["Known 8 KiB cartridge image followed by an extra page", full_tail_hits]),
+            table_row(["Known final cartridge page followed by an extra page", final_page_hits]),
+            table_row(["First relocated body page occurrences", body_page_hits]),
+        ]
+    )
+    return rows, summary
+
+
 def main() -> int:
     cart = CART.read_bytes()
     legacy = b"".join(decode_hex_bytes(path) for path in BAS_PARTS)
@@ -109,6 +201,7 @@ def main() -> int:
     loop_target_src = RELOC_SRC_START + (LOOP_TARGET - RELOC_DST_START)
     loop_return_src = RELOC_SRC_START + (LOOP_RETURN - RELOC_DST_START)
     first_missing_write = RELOC_DST_START + max(0, missing_start - RELOC_SRC_START)
+    raw_disk_rows, raw_disk_summary = vendored_disk_rows(cart)
 
     status = "CARTRIDGE BASIC TAIL PAGE MISSING" if missing_len else "CARTRIDGE BASIC LENGTH COVERS RELOCATION"
     lines = [
@@ -168,6 +261,31 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## Vendored Raw Disk Sweep",
+            "",
+            "This bytewise sweep covers every vendored `*.CPM` and `*.JUK` image",
+            "under `media/disks/`, including the public `J3KUTIL4.JUK` utility",
+            "image. It looks for the known cartridge stream, the known final",
+            "cartridge page, and the first relocated body page inside raw disk",
+            "bytes. A hit in the first two categories with another `0x100` bytes",
+            "available would be a concrete tail-page donor lead.",
+            "",
+            "| Probe | Hits |",
+            "| --- | ---: |",
+        ]
+    )
+    lines.extend(raw_disk_summary)
+    lines.extend(
+        [
+            "",
+            "| Disk | Bytes | SHA256 | Best exact overlap with cartridge | Full image + tail offsets | Final page + tail offsets | Body-page offsets | Strings |",
+            "| --- | ---: | --- | --- | --- | --- | --- | --- |",
+        ]
+    )
+    lines.extend(raw_disk_rows)
+    lines.extend(
+        [
+            "",
             "## Boundary",
             "",
             "- The D8/D22 cartridge window and Monitor 3.3 copy path are already proven.",
@@ -176,6 +294,10 @@ def main() -> int:
             "  page, `0x2100..0x21FF` in runtime address space.",
             "- The extracted disk BASIC candidates are separate EKDOS payload shapes,",
             "  not an automatic replacement for the missing cartridge tail page.",
+            "- The vendored raw disk sweep finds no known 8 KiB cartridge image, and",
+            "  no known final cartridge page, followed by an extra `0x100` bytes.",
+            "  That rules out a direct raw-disk tail donor among the current",
+            "  vendored public media without claiming the unknown page contents.",
             "- The next automatic cartridge step would require another public artifact",
             "  or a derivable tail-page source. Otherwise this remains a media/monitor",
             "  compatibility boundary, while disk-side `JBASIC.COM` remains the guarded",
