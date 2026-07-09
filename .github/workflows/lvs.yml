@@ -27,6 +27,7 @@ jobs:
             scripts/extract_basic_disk_files.py \
             scripts/report_source_coverage_audit.py \
             scripts/report_public_software_archive_inventory.py \
+            scripts/report_public_manual_archive_inventory.py \
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
             scripts/report_re3_firmware_inspection.py \
@@ -151,9 +152,11 @@ jobs:
       - name: Check source coverage audit freshness
         run: |
           python3 scripts/report_public_software_archive_inventory.py
+          python3 scripts/report_public_manual_archive_inventory.py
           python3 scripts/report_source_coverage_audit.py
           git diff --exit-code -- \
             docs/public-software-archive-inventory.md \
+            docs/public-manual-archive-inventory.md \
             docs/source-coverage-audit.md
 
       - name: Check WD1772 PLA inspection freshness

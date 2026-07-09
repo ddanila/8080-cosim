@@ -15,8 +15,8 @@ has been fully mined.
 
 | Source | Current coverage | Gap |
 | --- | --- | --- |
-| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, ROM/BASIC lineage, EKDOS source, and Arti-derived raw disks are mirrored or reflected in `ref/`, `roms/`, `media/disks/`, the board placement, generated BOM, transcription docs, and FDC/BASIC probes. | Russian manuals, Estonian user manual, remaining software/game archives, emulator pages, newspaper scan, and forum links are not exhaustively mined for hardware-critical details. |
-| `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction under `ref/baltijets-tech-docs/` and mined for factory test, ROM programming, FDD, power, keyboard, and peripheral planning. Public system binaries from `JUKUSYS.ZIP` are vendored under `media/system/`; `J3KUTIL4.JUK` is vendored under `media/disks/`; the public software listing is classified in `docs/public-software-archive-inventory.md`. | Additional museum `kirjandus/` manuals are not exhaustively classified. The Baltijets programming disk files referenced by doc 007 remain missing. |
+| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, ROM/BASIC lineage, EKDOS source, and Arti-derived raw disks are mirrored or reflected in `ref/`, `roms/`, `media/disks/`, the board placement, generated BOM, transcription docs, and FDC/BASIC probes. The public manual/drawing listing is classified in `docs/public-manual-archive-inventory.md`. | Large user/service manuals, emulator pages, newspaper scans, and forum links are optional context unless a future procedure-specific clue is needed. |
+| `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction under `ref/baltijets-tech-docs/` and mined for factory test, ROM programming, FDD, power, keyboard, and peripheral planning. Public system binaries from `JUKUSYS.ZIP` are vendored under `media/system/`; `J3KUTIL4.JUK` is vendored under `media/disks/`; the public software listing is classified in `docs/public-software-archive-inventory.md`; the `e5101-joonised/` and `kirjandus/` manual listings are classified in `docs/public-manual-archive-inventory.md`. | The Baltijets programming disk files referenced by doc 007 remain missing. |
 | `https://github.com/infoaed/juku3000/tree/master/roms` | ROM lineage is covered: canonical monitor/BIOS ROMs are vendored under `roms/`; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The project now needs PROM provenance and uninterrupted HDL disk-backed media work, not more РФ2 ROM coverage. |
 | `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets, museum contact, and public-preservation context. | Not a primary electrical source. Exhibit text, photos, and linked historical references are not exhaustively mined into board/twin evidence. |
 | `https://github.com/vpyk/emu80v4` | Surveyed as an emulator reference. No Juku-specific driver/config was found, but its GPL-3 `Fdc1793` model is recorded as a behavior checklist in `docs/emu80v4-survey.md` and `docs/fdc-core-survey.md`. | GPL-3 code is not vendored or copied. It does not close any Juku-specific PROM/media/netlist gap. |
@@ -62,6 +62,7 @@ has been fully mined.
 | `docs/basic-cartridge-tail-hypotheses.md` | present |
 | `docs/basic-cartridge-missing-page-constraints.md` | present |
 | `docs/public-software-archive-inventory.md` | present |
+| `docs/public-manual-archive-inventory.md` | present |
 | `docs/re3-firmware-inspection.md` | present |
 | `docs/reconstructed-prom-fallbacks.md` | present |
 | `docs/firmware-gap-ledger.md` | present |
@@ -92,6 +93,10 @@ has been fully mined.
   observed Arti and Elektroonikamuuseum software listings. It keeps
   required binaries/images vendored and marks classroom/game/tape
   collections as optional Tier 2/Tier 3 preservation inputs.
+- `scripts/report_public_manual_archive_inventory.py` classifies the
+  public Arti and Elektroonikamuuseum manual/drawing listings. It
+  confirms the board-critical drawings are mirrored or covered and
+  leaves large user/service manuals as optional context.
 - `scripts/extract_basic_disk_files.py` extracts and vendors the
   strongest disk-side BASIC candidates under `ref/extracted-software/`.
 - `scripts/report_basic_cartridge_missing_page_constraints.py` records
@@ -122,10 +127,8 @@ has been fully mined.
 
 ## Not yet exhaustive
 
-- Arti manual PDFs beyond the hardware-critical schematics/component
-  lists and EKDOS/software source files.
-- Elektroonikamuuseum `kirjandus/` manuals beyond the Baltijets technical
-  document mirror.
+- Full text mining of the large user/service manuals for optional
+  Tier 2/Tier 3 operating procedures.
 - Arvutimuuseum photos/articles/linked references beyond project context
   and contact path.
 - Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except

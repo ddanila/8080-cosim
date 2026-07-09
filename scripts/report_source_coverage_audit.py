@@ -50,6 +50,7 @@ REQUIRED_PATHS = [
     "docs/basic-cartridge-tail-hypotheses.md",
     "docs/basic-cartridge-missing-page-constraints.md",
     "docs/public-software-archive-inventory.md",
+    "docs/public-manual-archive-inventory.md",
     "docs/re3-firmware-inspection.md",
     "docs/reconstructed-prom-fallbacks.md",
     "docs/firmware-gap-ledger.md",
@@ -67,10 +68,11 @@ SOURCE_ROWS = [
         "keyboard/PSU/case drawings, ROM/BASIC lineage, EKDOS source, and "
         "Arti-derived raw disks are mirrored or reflected in `ref/`, `roms/`, "
         "`media/disks/`, the board placement, generated BOM, transcription "
-        "docs, and FDC/BASIC probes.",
-        "Russian manuals, Estonian user manual, remaining software/game "
-        "archives, emulator pages, newspaper scan, and forum links are not "
-        "exhaustively mined for hardware-critical details.",
+        "docs, and FDC/BASIC probes. The public manual/drawing listing is "
+        "classified in `docs/public-manual-archive-inventory.md`.",
+        "Large user/service manuals, emulator pages, newspaper scans, and "
+        "forum links are optional context unless a future procedure-specific "
+        "clue is needed.",
     ),
     (
         "`https://elektroonikamuuseum.ee/failid/juku/`",
@@ -79,8 +81,9 @@ SOURCE_ROWS = [
         "programming, FDD, power, keyboard, and peripheral planning. Public "
         "system binaries from `JUKUSYS.ZIP` are vendored under `media/system/`; "
         "`J3KUTIL4.JUK` is vendored under `media/disks/`; the public software "
-        "listing is classified in `docs/public-software-archive-inventory.md`.",
-        "Additional museum `kirjandus/` manuals are not exhaustively classified. "
+        "listing is classified in `docs/public-software-archive-inventory.md`; "
+        "the `e5101-joonised/` and `kirjandus/` manual listings are classified "
+        "in `docs/public-manual-archive-inventory.md`.",
         "The Baltijets programming disk files referenced by doc 007 remain missing.",
     ),
     (
@@ -184,6 +187,10 @@ def main() -> int:
             "  observed Arti and Elektroonikamuuseum software listings. It keeps",
             "  required binaries/images vendored and marks classroom/game/tape",
             "  collections as optional Tier 2/Tier 3 preservation inputs.",
+            "- `scripts/report_public_manual_archive_inventory.py` classifies the",
+            "  public Arti and Elektroonikamuuseum manual/drawing listings. It",
+            "  confirms the board-critical drawings are mirrored or covered and",
+            "  leaves large user/service manuals as optional context.",
             "- `scripts/extract_basic_disk_files.py` extracts and vendors the",
             "  strongest disk-side BASIC candidates under `ref/extracted-software/`.",
             "- `scripts/report_basic_cartridge_missing_page_constraints.py` records",
@@ -214,10 +221,8 @@ def main() -> int:
             "",
             "## Not yet exhaustive",
             "",
-            "- Arti manual PDFs beyond the hardware-critical schematics/component",
-            "  lists and EKDOS/software source files.",
-            "- Elektroonikamuuseum `kirjandus/` manuals beyond the Baltijets technical",
-            "  document mirror.",
+            "- Full text mining of the large user/service manuals for optional",
+            "  Tier 2/Tier 3 operating procedures.",
             "- Arvutimuuseum photos/articles/linked references beyond project context",
             "  and contact path.",
             "- Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except",

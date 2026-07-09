@@ -54,6 +54,7 @@ def source_coverage_audited():
             "https://arvutimuuseum.ee/cs00000/",
             "https://github.com/vpyk/emu80v4",
             "Local WD1772 transistor/PLA files",
+            "docs/public-manual-archive-inventory.md",
         ]
     )
 
@@ -160,6 +161,13 @@ def milestone_rows():
     ) and marker(
         ".github/workflows/lvs.yml",
         "Check source coverage audit freshness",
+    )
+    public_manual_inventory = marker(
+        "docs/public-manual-archive-inventory.md",
+        "Status: **PUBLIC MANUAL ARCHIVE CLASSIFIED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/public-manual-archive-inventory.md",
     )
     ekdos_source_vendored = exists("ref/ekdos-source/EKDOS30.ASM") and marker(
         "ref/ekdos-source/SHA256SUMS",
@@ -592,6 +600,14 @@ def milestone_rows():
                     "`J3KUTIL4.JUK` prompt-proof disk while confirming "
                     "`JUKUROMS.ZIP` is byte-identical to `roms/`; "
                     if public_software_inventory
+                    else ""
+                )
+                + (
+                    "`docs/public-manual-archive-inventory.md` classifies the "
+                    "public Arti/museum manual and drawing listings, with "
+                    "board-critical PDFs mirrored or covered and large user/service "
+                    "manuals kept optional; "
+                    if public_manual_inventory
                     else ""
                 )
                 + ekdos_source_m1_phrase
