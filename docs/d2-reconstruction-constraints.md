@@ -87,6 +87,24 @@ and `kicad/juku.dsn`.
 | Old D2-as-I/O-decode path is superseded | PASS | `docs/transcription/io.md` |
 | No reconstructed D2 fallback is exported | PASS | `docs/reconstructed-prom-fallbacks.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
+| Raw notes preserve D2 pin table but defer nets | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 66 |
+| Raw `.038` D2 note is superseded by official `.037` identity | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 64 vs 68 |
+
+## Raw-Note Reconciliation
+
+- The raw sheet-1 campaign notes contain two useful but easy-to-misread
+  D2 statements. Iteration 64 says the D2/РТ4 wiring is on sheet 1,
+  but it also carries an old `.038` drawing assignment that is
+  superseded by the official `.009` BOM/photo reconciliation: D2 is
+  `.037`, D6 is `.038`.
+- Iteration 66 records the physical D2 pin table
+  `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly
+  says the nets are deferred until the PROM table and output
+  destination are read.
+- Therefore these notes prove D2 identity and pin roles, not a burnable
+  `.037` image and not a board-net closure. The board JSON/DSN/PCB
+  no-net boundary remains authoritative until a stronger trace,
+  programming-disk file, or repeated physical dump exists.
 
 ## Reconstruction Boundary
 

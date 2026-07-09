@@ -191,6 +191,17 @@ def main() -> int:
         "D2 = РТ4 .037",
         "D6 = .038",
     )
+    raw_pin_table_lead = marker(
+        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
+        "D2 (КР556РТ4А) net-modeled",
+        "pin table from sheet 1: A0-A7=5/6/7/4/3/2/1/15",
+        "nets deferred until",
+    )
+    raw_sheet1_contradiction = marker(
+        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
+        "D2/РТ4's full wiring is ON SHEET 1",
+        "content = drawing ДГШ5.106.038",
+    )
     status = (
         "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
         if identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates
@@ -308,6 +319,32 @@ def main() -> int:
                 "PASS" if official_bom_lead else "FAIL",
                 "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             ]),
+            table_row([
+                "Raw notes preserve D2 pin table but defer nets",
+                "PASS" if raw_pin_table_lead else "FAIL",
+                "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 66",
+            ]),
+            table_row([
+                "Raw `.038` D2 note is superseded by official `.037` identity",
+                "PASS" if raw_sheet1_contradiction else "FAIL",
+                "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 64 vs 68",
+            ]),
+            "",
+            "## Raw-Note Reconciliation",
+            "",
+            "- The raw sheet-1 campaign notes contain two useful but easy-to-misread",
+            "  D2 statements. Iteration 64 says the D2/РТ4 wiring is on sheet 1,",
+            "  but it also carries an old `.038` drawing assignment that is",
+            "  superseded by the official `.009` BOM/photo reconciliation: D2 is",
+            "  `.037`, D6 is `.038`.",
+            "- Iteration 66 records the physical D2 pin table",
+            "  `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly",
+            "  says the nets are deferred until the PROM table and output",
+            "  destination are read.",
+            "- Therefore these notes prove D2 identity and pin roles, not a burnable",
+            "  `.037` image and not a board-net closure. The board JSON/DSN/PCB",
+            "  no-net boundary remains authoritative until a stronger trace,",
+            "  programming-disk file, or repeated physical dump exists.",
             "",
             "## Reconstruction Boundary",
             "",
