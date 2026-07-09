@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
+PCB = ROOT / "kicad" / "juku.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 
 RISK_RE = re.compile(
@@ -35,6 +36,52 @@ def short(text: str, limit: int = 180) -> str:
     if len(one_line) <= limit:
         return one_line
     return one_line[: limit - 3].rstrip() + "..."
+
+
+def matching_block(text: str, start: int) -> str:
+    depth = 0
+    in_string = False
+    escaped = False
+    for pos in range(start, len(text)):
+        char = text[pos]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return text[start : pos + 1]
+    raise ValueError("unterminated S-expression")
+
+
+def pcb_pin_nets() -> dict[tuple[str, str], str]:
+    text = PCB.read_text(errors="replace")
+    found: dict[tuple[str, str], str] = {}
+    pos = 0
+    while True:
+        start = text.find("\n\t(footprint ", pos)
+        if start < 0:
+            break
+        block = matching_block(text, start + 1)
+        pos = start + len(block) + 1
+        ref = re.search(r'\(property\s+"Reference"\s+"([^"]+)"', block)
+        if not ref:
+            continue
+        for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
+            pad_block = matching_block(block, match.start() + 3)
+            net = re.search(r'\(net\s+"([^"]+)"\)', pad_block)
+            if net:
+                found[(ref.group(1), match.group(1))] = net.group(1)
+    return found
 
 
 def category_for(name: str, source: str) -> str:
@@ -79,13 +126,24 @@ def action_for(category: str, name: str, source: str) -> str:
 
 def main() -> int:
     board = json.loads(BOARD_JSON.read_text())
+    pcb_nets = pcb_pin_nets()
     rows = []
+    pcb_checked = 0
+    pcb_missing = []
+    pcb_mismatched = []
     for name, net in sorted(board["nets"].items()):
         source = net.get("src", "")
         note = net.get("note", "")
         risk_text = f"{source} {note}"
         if not RISK_RE.search(risk_text):
             continue
+        for ref, pin in net.get("nodes", []):
+            pcb_checked += 1
+            pcb_net = pcb_nets.get((ref, pin))
+            if pcb_net is None:
+                pcb_missing.append(f"{ref}.{pin}")
+            elif pcb_net != name:
+                pcb_mismatched.append(f"{ref}.{pin}: `{pcb_net}` != `{name}`")
         category = category_for(name, risk_text)
         rows.append(
             {
@@ -98,7 +156,8 @@ def main() -> int:
         )
 
     category_counts = Counter(row["category"] for row in rows)
-    status = "READY"
+    pcb_ok = not pcb_missing and not pcb_mismatched
+    status = "READY" if pcb_ok else "NOT READY"
     lines = [
         "# Replica bring-up verification points",
         "",
@@ -113,13 +172,40 @@ def main() -> int:
         "## Summary",
         "",
         f"- Source board JSON: `{BOARD_JSON.relative_to(ROOT)}`",
+        f"- Final PCB source: `{PCB.relative_to(ROOT)}`",
         f"- Verification-point nets: `{len(rows)}`",
+        f"- Verification-point endpoints checked in PCB: `{pcb_checked}`",
+        f"- PCB endpoint coverage: `{'PASS' if pcb_ok else 'FAIL'}`",
         "",
         "| Category | Nets |",
         "| --- | ---: |",
     ]
     for category, count in sorted(category_counts.items()):
         lines.append(table_row([category, count]))
+
+    lines.extend(
+        [
+            "",
+            "## KiCad PCB Endpoint Coverage",
+            "",
+            "Every source-risk endpoint listed below is checked against the final",
+            "`kicad/juku.kicad_pcb` footprint pad net assignment. This proves the",
+            "fabrication source preserves the same residual-risk connectivity as",
+            "`kicad/juku.board.json`; it does not prove the historical assumption",
+            "behind a risk note.",
+            "",
+            "| Check | Result | Evidence |",
+            "| --- | --- | --- |",
+            table_row(["Risk endpoints present on PCB pads", "PASS" if not pcb_missing else "FAIL", f"{pcb_checked - len(pcb_missing)}/{pcb_checked} matched a footprint pad net"]),
+            table_row(["Risk endpoint net names match board JSON", "PASS" if not pcb_mismatched else "FAIL", f"{pcb_checked - len(pcb_mismatched)}/{pcb_checked} net names matched"]),
+        ]
+    )
+    if pcb_missing:
+        lines.extend(["", "Missing PCB pad-net endpoints:"])
+        lines.extend(f"- `{item}`" for item in pcb_missing)
+    if pcb_mismatched:
+        lines.extend(["", "Mismatched PCB pad-net endpoints:"])
+        lines.extend(f"- {item}" for item in pcb_mismatched)
 
     lines.extend(
         [

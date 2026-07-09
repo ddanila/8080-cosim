@@ -11,7 +11,10 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
+- Final PCB source: `kicad/juku.kicad_pcb`
 - Verification-point nets: `41`
+- Verification-point endpoints checked in PCB: `204`
+- PCB endpoint coverage: `PASS`
 
 | Category | Nets |
 | --- | ---: |
@@ -21,6 +24,19 @@ visible and actionable before manufacturing and first power-on.
 | sound/analog | 2 |
 | timing/I/O | 8 |
 | video/analog | 11 |
+
+## KiCad PCB Endpoint Coverage
+
+Every source-risk endpoint listed below is checked against the final
+`kicad/juku.kicad_pcb` footprint pad net assignment. This proves the
+fabrication source preserves the same residual-risk connectivity as
+`kicad/juku.board.json`; it does not prove the historical assumption
+behind a risk note.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Risk endpoints present on PCB pads | PASS | 204/204 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 204/204 net names matched |
 
 ## Checklist
 

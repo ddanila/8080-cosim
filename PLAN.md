@@ -586,7 +586,10 @@ before any Soviet NOS is at risk.
    `kicad/report_replica_bringup_verification.py` generates
    `docs/replica-bringup-verification-points.md`, converting remaining
    assumed/boundary/pending source-risk annotations into explicit vendor-preview,
-   owner-continuity, scope, and logic-analyzer checks for staged bring-up. The
+   owner-continuity, scope, and logic-analyzer checks for staged bring-up. It also
+   checks all 204 listed source-risk endpoints against `kicad/juku.kicad_pcb`
+   footprint pad net assignments, so the final PCB source is guarded against
+   dropping or renaming those residual-risk nets. The
    generated `docs/fdc-hardware-handoff.md` now narrows the FDC subset to guarded
    D93/D100 bus-side wiring plus owner-only continuity points for INTRQ/DRQ,
    D93 reset/clock, and D100 OE/T.

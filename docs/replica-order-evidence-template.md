@@ -29,7 +29,7 @@ Expected result: `replica manufacturing readiness: READY TO UPLOAD`.
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5073 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12793 | PASS |
 
 ## Vendor Options To Record
 

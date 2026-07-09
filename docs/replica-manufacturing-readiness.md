@@ -19,7 +19,7 @@ already been placed or accepted.
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12122 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12793 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8360 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2795 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
