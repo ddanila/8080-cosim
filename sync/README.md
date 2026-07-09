@@ -238,6 +238,11 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   for a viable missing page and rejects simple fill, append, final-page mirror,
   `0x1F00` relocation-count patch, and direct `0x0200` body-entry jump
   hypotheses with bounded runtime probes.
+- `scripts/report_basic_cartridge_missing_page_constraints.py` — static
+  constraint report for the same missing cartridge page. It maps
+  `0x2100..0x21FF` to runtime `0x2000..0x20FF`, records the required
+  relocation-loop tail bytes, and shows that known-body direct operands only
+  reference 15 unique bytes in `0x2000..0x2018`.
 - `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
   doc 003 factory BASIC `A` command. It runs all vendored public monitor ROMs
   against both BASIC payload shapes and records that Monitor 3.3 reaches the same

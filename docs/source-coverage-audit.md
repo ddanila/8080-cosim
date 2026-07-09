@@ -60,6 +60,7 @@ has been fully mined.
 | `docs/vendored-disk-catalog.md` | present |
 | `docs/basic-disk-extraction.md` | present |
 | `docs/basic-cartridge-tail-hypotheses.md` | present |
+| `docs/basic-cartridge-missing-page-constraints.md` | present |
 | `docs/public-software-archive-inventory.md` | present |
 | `docs/re3-firmware-inspection.md` | present |
 | `docs/reconstructed-prom-fallbacks.md` | present |
@@ -91,6 +92,9 @@ has been fully mined.
   collections as optional Tier 2/Tier 3 preservation inputs.
 - `scripts/extract_basic_disk_files.py` extracts and vendors the
   strongest disk-side BASIC candidates under `ref/extracted-software/`.
+- `scripts/report_basic_cartridge_missing_page_constraints.py` records
+  the static constraints on the missing Monitor 3.3 BASIC cartridge
+  page and confirms no current vendored artifact supplies a page donor.
 - Baltijets docs 002/003/007/009/010/014/015 are reflected in
   `PLAN.md` and the FDC/media/PROM/bring-up docs. Doc 007 describes
   programmed-part drawings but references small-PROM byte tables on

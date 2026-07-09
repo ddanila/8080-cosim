@@ -43,6 +43,7 @@ jobs:
             scripts/report_basic_low_stub_inspection.py \
             scripts/report_basic_cartridge_length_audit.py \
             scripts/report_basic_cartridge_tail_hypotheses.py \
+            scripts/report_basic_cartridge_missing_page_constraints.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -83,9 +84,11 @@ jobs:
           python3 scripts/report_basic_low_stub_inspection.py
           python3 scripts/report_basic_cartridge_length_audit.py
           python3 scripts/report_basic_cartridge_tail_hypotheses.py
+          python3 scripts/report_basic_cartridge_missing_page_constraints.py
           git diff --exit-code -- docs/basic-low-stub-inspection.md
           git diff --exit-code -- docs/basic-cartridge-length-audit.md
           git diff --exit-code -- docs/basic-cartridge-tail-hypotheses.md
+          git diff --exit-code -- docs/basic-cartridge-missing-page-constraints.md
 
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh

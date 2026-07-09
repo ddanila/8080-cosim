@@ -368,6 +368,12 @@ debugging session saved on real hardware.
    `0x0200` body-entry jump hypotheses with runtime Monitor 3.3 probes, so the
    remaining cartridge path needs a real larger artifact or a deeper patch-level
    bootstrap reconstruction rather than a blind tail guess.
+   `docs/basic-cartridge-missing-page-constraints.md` further constrains the
+   missing page: the known relocated body has 60 direct 16-bit operand references
+   into runtime `0x2000..0x20FF`, but only one direct control transfer, the
+   relocation loop's own `JNZ 0x2009`; all direct known-body references
+   concentrate in `0x2000..0x2018`, and no repository artifact provides a
+   page-shaped donor beyond the public cartridge's own final page.
    The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and

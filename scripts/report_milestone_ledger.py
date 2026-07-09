@@ -307,6 +307,16 @@ def milestone_rows():
         "docs/basic-cartridge-tail-hypotheses.md",
         "patch-entry-jump-0200",
     )
+    basic_missing_page_constrained = marker(
+        "docs/basic-cartridge-missing-page-constraints.md",
+        "Status: **MISSING PAGE CONSTRAINED / ARTIFACT REQUIRED**",
+    ) and marker(
+        "docs/basic-cartridge-missing-page-constraints.md",
+        "| Control-transfer references | 1 |",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/basic-cartridge-missing-page-constraints.md",
+    )
     basic_entry_rejected = marker(
         "docs/basic-entry-probe.md",
         "Status: **BASIC DIRECT RESET PATH REJECTED**",
@@ -865,6 +875,14 @@ def milestone_rows():
                     else ""
                 )
                 + (
+                    "`docs/basic-cartridge-missing-page-constraints.md` further "
+                    "constrains the unknown page: known-body direct operands "
+                    "reference 15 unique bytes in `0x2000..0x2018`, and the sole "
+                    "direct control transfer is the relocation loop's `JNZ 0x2009`; "
+                    if basic_missing_page_constrained
+                    else ""
+                )
+                + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
                     "factory `A` command clue across all vendored public monitor "
                     "ROMs: Monitor 3.3 reaches the same zero-filled RAM boundary, "
@@ -1003,6 +1021,14 @@ def milestone_rows():
                     "append, final-page mirror, the simple `0x1F00` relocation-"
                     "count patch, and a direct `0x0200` body-entry jump at runtime. "
                     if basic_tail_hypotheses_rejected
+                    else ""
+                )
+                + (
+                    "`docs/basic-cartridge-missing-page-constraints.md` further "
+                    "constrains the unknown page: known-body direct operands "
+                    "reference 15 unique bytes in `0x2000..0x2018`, and the sole "
+                    "direct control transfer is the relocation loop's `JNZ 0x2009`; "
+                    if basic_missing_page_constrained
                     else ""
                 )
                 + (
