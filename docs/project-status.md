@@ -111,7 +111,9 @@ Historical merge notes:
     `docs/video-readout-readiness.md`. `sync/video_timing_check.sh` also guards
     the MAME-matched runnable raster geometry: 320 x 241 visible pixels, 40 bytes
     per line, 9,640 framebuffer bytes, and an 8-dot load/shift cadence. V3
-    remains the РЕ3/АГ3-gated shared-DRAM video slot timing boundary.
+    remains the РЕ3/АГ3-gated shared-DRAM video slot timing boundary; the D94
+    `.092` text/photo trail is audited, but still lacks pin-level `E_N`/D0-D7
+    closure or PROM contents.
   - **★★ CONSOLIDATION COMPLETE — one model, fully interactive, + a new value-level guard.**
     - **Correction to the earlier claim:** the "byte-identical boot" (6000 writes) only ever covered
       the **RAM-test fill** (all mode-0). The real banner needs banking mode-switching, which the

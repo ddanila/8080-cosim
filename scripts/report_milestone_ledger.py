@@ -386,6 +386,9 @@ def milestone_rows():
     ) and marker(
         "docs/d94-reconstruction-constraints.md",
         "D94.10-D94.14",
+    ) and marker(
+        "docs/d94-reconstruction-constraints.md",
+        "Textual / Photo Survey Leads",
     )
     vjuga_bare_pcb_ready = marker(
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
@@ -624,9 +627,11 @@ def milestone_rows():
                 + (
                     "`docs/d94-reconstruction-constraints.md` pins the automatic "
                     "D94 `.092` reconstruction boundary: address inputs are traced "
-                    "to `BA11..BA15`, while `E_N`, all data-output destinations, "
-                    "and the `.092` contents remain absent, with `kicad/juku.dsn` "
-                    "confirming only D94 power/address coverage; "
+                    "to `BA11..BA15` and the official `.009` BOM/photo trail "
+                    "identifies D94 as `.092`, while `E_N`, all data-output "
+                    "destinations, and the `.092` contents remain absent from "
+                    "board/DSN/text evidence, with `kicad/juku.dsn` confirming "
+                    "only D94 power/address coverage; "
                     if d94_constraints
                     else ""
                 )

@@ -74,18 +74,35 @@ connections. It does not provide the missing enable/output nets.
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
+| Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 68 |
+| Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 56/68 |
+| Historical `.113 -> D94` assumption is still visible as a conflict | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 68/70 |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
 | HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` leaves D94 data outputs unconnected | PASS | `hdl/juku_top.v` |
 | Video slot audit is still D94-pending | PASS | `docs/video-slot-timing-audit.md` |
+
+## Textual / Photo Survey Leads
+
+- The official .009 BOM trail identifies the FDC-era D94 as the second
+  К155РЕ3, programmed as `ДГШ5.106.092`.
+- Earlier D94 references in the sheet-3/tape-cluster survey are known
+  refdes reuse history, not evidence for the FDC-era timing PROM.
+- The old `.113 -> D94` note remains in the raw campaign log, but the
+  current guarded firmware inspection supersedes it: `.113/.117` belong
+  to the `.106.103`-family owner-scan evidence and are not a burnable
+  D94 `.092` substitute.
+- These textual leads establish identity and negative evidence only. They
+  do not provide D94 pin 15, D0-D7 destinations, or PROM contents.
 
 ## Reconstruction Boundary
 
 - Known: D94 is present in the .009 FDC quadrant and its five address
   inputs are wired to `BA11..BA15`.
 - Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are
-  not traced/netted in `kicad/juku.board.json` or `kicad/juku.dsn`, and no
-  `ДГШ5.106.092` programming table or dump is present under
+  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`, or the
+  audited text/photo notes, and no `ДГШ5.106.092` programming table or
+  dump is present under
   `ref/firmware/`.
 - Therefore a burnable D94 image is not derivable from current repo
   evidence. The correct next automatic action is to keep this constraint

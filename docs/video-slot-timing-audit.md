@@ -37,7 +37,7 @@ python3 scripts/report_video_slot_timing_audit.py
 - `ref/firmware/re3_dgsh5.106.113.hex`: `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13`
 - `ref/firmware/re3_dgsh5.106.117.hex`: `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18`
 - `docs/d94-reconstruction-constraints.md`: generated D94 `.092`
-  address/output/firmware boundary.
+  address/output/firmware boundary plus text/photo lead audit.
 
 ## Interpretation
 
@@ -50,9 +50,10 @@ python3 scripts/report_video_slot_timing_audit.py
   АГ3 timing. The repo has guarded `.113/.117` scans, but those are not the
   D94 `.092` content.
 - `docs/d94-reconstruction-constraints.md` now records the automatic
-  reconstruction boundary: D94 address pins are traced to `BA11..BA15`,
-  but `E_N`, all eight output destinations, and the `.092` contents are
-  still missing from current repo evidence.
+  reconstruction boundary: D94 address pins are traced to `BA11..BA15`
+  and the official `.009` BOM trail identifies D94 as `.092`, but `E_N`,
+  all eight output destinations, and the `.092` contents are still
+  missing from current repo evidence.
 - Until that PROM is dumped or a programming-disk table appears, the honest
   model keeps `VA/VQ` and `video_raster` as a sim-only V2 adjunct rather
   than inventing a board-critical DRAM arbitration schedule.

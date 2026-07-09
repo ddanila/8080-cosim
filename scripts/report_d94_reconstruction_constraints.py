@@ -151,6 +151,21 @@ def main() -> int:
         "assign d = 8'hFF",
     )
     hdl_unconnected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", ".d()")
+    official_bom_lead = marker(
+        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
+        "D94 = К155РЕ3 #2",
+        "progr. .092",
+    )
+    reused_refdes_guard = marker(
+        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
+        "sheet-3's D94-D108 refdes were re-used for the FDC-era parts",
+        "The drawing's D94-D108 are the К561 CMOS TAPE cluster",
+    )
+    historical_113_conflict = marker(
+        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
+        ".113 (D94): a 2K-granular decode of A000-BFFF",
+        "role-assumed; .113 -> D94",
+    )
     scanned_not_d94 = marker(
         "docs/re3-firmware-inspection.md",
         "Status: **PASS**",
@@ -233,18 +248,35 @@ def main() -> int:
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
+            f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 68 |",
+            f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 56/68 |",
+            f"| Historical `.113 -> D94` assumption is still visible as a conflict | {'PASS' if historical_113_conflict else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 68/70 |",
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
             f"| HDL placeholder is explicitly inert | {'PASS' if hdl_placeholder else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
             f"| `juku_top` leaves D94 data outputs unconnected | {'PASS' if hdl_unconnected else 'FAIL'} | `hdl/juku_top.v` |",
             f"| Video slot audit is still D94-pending | {'PASS' if video_audit_pending else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
+            "",
+            "## Textual / Photo Survey Leads",
+            "",
+            "- The official .009 BOM trail identifies the FDC-era D94 as the second",
+            "  К155РЕ3, programmed as `ДГШ5.106.092`.",
+            "- Earlier D94 references in the sheet-3/tape-cluster survey are known",
+            "  refdes reuse history, not evidence for the FDC-era timing PROM.",
+            "- The old `.113 -> D94` note remains in the raw campaign log, but the",
+            "  current guarded firmware inspection supersedes it: `.113/.117` belong",
+            "  to the `.106.103`-family owner-scan evidence and are not a burnable",
+            "  D94 `.092` substitute.",
+            "- These textual leads establish identity and negative evidence only. They",
+            "  do not provide D94 pin 15, D0-D7 destinations, or PROM contents.",
             "",
             "## Reconstruction Boundary",
             "",
             "- Known: D94 is present in the .009 FDC quadrant and its five address",
             "  inputs are wired to `BA11..BA15`.",
             "- Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are",
-            "  not traced/netted in `kicad/juku.board.json` or `kicad/juku.dsn`, and no",
-            "  `ДГШ5.106.092` programming table or dump is present under",
+            "  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`, or the",
+            "  audited text/photo notes, and no `ДГШ5.106.092` programming table or",
+            "  dump is present under",
             "  `ref/firmware/`.",
             "- Therefore a burnable D94 image is not derivable from current repo",
             "  evidence. The correct next automatic action is to keep this constraint",
@@ -258,7 +290,18 @@ def main() -> int:
     REPORT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")
-    return 0 if board_identity_ok and address_ok and dsn_ok and hdl_placeholder and hdl_unconnected and scanned_not_d94 and video_audit_pending else 1
+    return 0 if (
+        board_identity_ok
+        and address_ok
+        and dsn_ok
+        and official_bom_lead
+        and reused_refdes_guard
+        and historical_113_conflict
+        and hdl_placeholder
+        and hdl_unconnected
+        and scanned_not_d94
+        and video_audit_pending
+    ) else 1
 
 
 if __name__ == "__main__":
