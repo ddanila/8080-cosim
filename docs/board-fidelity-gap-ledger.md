@@ -28,12 +28,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | Provenance type | Chips |
 | --- | ---: |
 | assumed | 30 |
-| boundary | 2 |
+| boundary | 1 |
 | datasheet | 1 |
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 187 |
+| scan | 188 |
 | wire | 2 |
 
 ## Gap Categories
@@ -79,7 +79,7 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `X1` | `EXPANSION_CONN` | boundary | assumed Multibus edge-pin codes from scan |
-| `X3` | `SERIAL_CONN` | boundary | assumed RS-232 connector (SIN code assumed) |
+| `X3` | `SERIAL_CONN` | scan | owner photo + sheet-3 serial connector code map serial connector signal pins traced to S_SOUT/S_RTS/S_DTP/S_TTL/S_OC/S_SIN; external cable/electrical loopbac... |
 
 ### logic/source
 
