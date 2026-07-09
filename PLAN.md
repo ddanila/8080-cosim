@@ -324,11 +324,15 @@ debugging session saved on real hardware.
    `roms/jbasic11.bin` and the legacy `ref/firmware/BAS0-3.HEX` media. Both
    images read through the cartridge overlay and then execute in the
    `0x4000..0xBFFF` RAM window, while that RAM window receives only zero-byte
-   writes and remains zero-filled. The probe now records the compatibility
-   signals behind that boundary: MAME's local source warns that Monitor 3.3 does
-   not seem compatible with the JBASIC expansion cartridge, and both BASIC media
-   images start with an absolute `JMP 0x0107` rather than a direct `0x4000`
-   window entry. The factory doc 003 `A`-command BASIC clue is now guarded by
+   writes and remains zero-filled. The probe now also pins the positive part of
+   the loader: after the header/entry area, `RAM[0x0200..]` matches the cartridge
+   from `0x0200` for 7,680 bytes, while `RAM[0x0100..]` diverges after one byte.
+   The remaining cartridge path is therefore the low entry/control area and
+   launch vector, not the D8/D22 window or bulk copy. The probe records the
+   compatibility signals behind that boundary: MAME's local source warns that
+   Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and
+   both BASIC media images start with an absolute `JMP 0x0107` rather than a
+   direct `0x4000` window entry. The factory doc 003 `A`-command BASIC clue is now guarded by
    `sync/basic_factory_command_probe.py` and documented in
    `docs/basic-factory-command-probe.md`: the matrix now covers all vendored
    public monitor ROMs (`jmon22`, `jmon33`, `ekta24`, `ekta31`, `ekta32`,

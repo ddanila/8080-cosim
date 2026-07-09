@@ -62,6 +62,15 @@ SAMPLES_RE = re.compile(
     r"\s+basic_ram_write_samples\s+:\s+(.+?)\n",
     re.S,
 )
+LOAD_RE = re.compile(
+    r"cart_ram_0200_prefix\s+:\s+([0-9]+).*?"
+    r"cart_ram_0100_prefix\s+:\s+([0-9]+).*?"
+    r"ram_0100_bytes\s+:\s+([0-9A-Fa-f ]+).*?"
+    r"cart_0100_bytes\s+:\s+([0-9A-Fa-f ]+).*?"
+    r"ram_0200_bytes\s+:\s+([0-9A-Fa-f ]+).*?"
+    r"cart_0200_bytes\s+:\s+([0-9A-Fa-f ]+)",
+    re.S,
+)
 RAM_RE = re.compile(
     r"basic_ram_writes\s+:\s+([0-9]+).*?"
     r"basic_ram_nonzero_writes\s+:\s+([0-9]+).*?"
@@ -202,6 +211,28 @@ def instrumented_trace_source() -> str:
         '           basic_probe_ram_sample_addr[i] & 0xFFFF, basic_probe_ram_sample_value[i] & 0xFF,\n'
         '           basic_probe_ram_sample_mode[i]);\n'
         '  printf("\\n");\n'
+        '  unsigned long cart_ram_0200_prefix = 0;\n'
+        '  if (cart_enabled) while (0x0200 + cart_ram_0200_prefix < CART_SIZE &&\n'
+        '      ram[0x0200 + cart_ram_0200_prefix] == cart[0x0200 + cart_ram_0200_prefix])\n'
+        '    cart_ram_0200_prefix++;\n'
+        '  unsigned long cart_ram_0100_prefix = 0;\n'
+        '  if (cart_enabled) while (0x0100 + cart_ram_0100_prefix < CART_SIZE &&\n'
+        '      ram[0x0100 + cart_ram_0100_prefix] == cart[0x0100 + cart_ram_0100_prefix])\n'
+        '    cart_ram_0100_prefix++;\n'
+        '  printf("  cart_ram_0200_prefix : %8lu\\n", cart_ram_0200_prefix);\n'
+        '  printf("  cart_ram_0100_prefix : %8lu\\n", cart_ram_0100_prefix);\n'
+        '  printf("  ram_0100_bytes :");\n'
+        '  for (unsigned i = 0; i < 8; i++) printf(" %02X", ram[0x0100 + i]);\n'
+        '  printf("\\n");\n'
+        '  printf("  cart_0100_bytes :");\n'
+        '  for (unsigned i = 0; i < 8; i++) printf(" %02X", cart[0x0100 + i]);\n'
+        '  printf("\\n");\n'
+        '  printf("  ram_0200_bytes :");\n'
+        '  for (unsigned i = 0; i < 8; i++) printf(" %02X", ram[0x0200 + i]);\n'
+        '  printf("\\n");\n'
+        '  printf("  cart_0200_bytes :");\n'
+        '  for (unsigned i = 0; i < 8; i++) printf(" %02X", cart[0x0200 + i]);\n'
+        '  printf("\\n");\n'
         '  printf("\\n==== RAM write density (pages >0) ====\\n");\n',
     )
     return src
@@ -277,6 +308,27 @@ def parse_samples(stdout: str) -> tuple[str, str]:
     if not match:
         return "", ""
     return match.group(1).strip(), match.group(2).strip()
+
+
+def parse_load_probe(stdout: str) -> dict[str, int | str]:
+    match = LOAD_RE.search(stdout)
+    if not match:
+        return {
+            "prefix_0200": 0,
+            "prefix_0100": 0,
+            "ram_0100": "",
+            "cart_0100": "",
+            "ram_0200": "",
+            "cart_0200": "",
+        }
+    return {
+        "prefix_0200": int(match.group(1)),
+        "prefix_0100": int(match.group(2)),
+        "ram_0100": " ".join(match.group(3).split()).upper(),
+        "cart_0100": " ".join(match.group(4).split()).upper(),
+        "ram_0200": " ".join(match.group(5).split()).upper(),
+        "cart_0200": " ".join(match.group(6).split()).upper(),
+    }
 
 
 def visible_pixels(vram: bytes) -> int:
@@ -453,6 +505,7 @@ def main() -> int:
             cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
             ram_probe = parse_ram_probe(proc.stdout)
             cart_samples, ram_samples = parse_samples(proc.stdout)
+            load_probe = parse_load_probe(proc.stdout)
             sha = hashlib.sha256(vram).hexdigest() if vram else ""
             vram_ok = len(vram) == VRAM_SIZE
             pixels = visible_pixels(vram)
@@ -477,6 +530,7 @@ def main() -> int:
                     "ram_probe": ram_probe,
                     "cart_samples": cart_samples,
                     "ram_samples": ram_samples,
+                    "load_probe": load_probe,
                     "sha": sha,
                     "visible_pixels": pixels,
                     "vram_ok": vram_ok,
@@ -618,6 +672,22 @@ def main() -> int:
                     lines.append(
                         "  First sampled BASIC-window writes: "
                         f"`{result['ram_samples'] or 'none'}`."
+                    )
+                load_probe = result["load_probe"]
+                if load_probe["prefix_0200"]:
+                    lines.append(
+                        "  Cartridge body load check: "
+                        f"`RAM[0x0200..]` matches the cartridge from `0x0200` "
+                        f"for `{load_probe['prefix_0200']}` bytes, while "
+                        f"`RAM[0x0100..]` matches for only `{load_probe['prefix_0100']}` "
+                        "byte before the low entry/control area diverges."
+                    )
+                    lines.append(
+                        "  Low/body bytes: "
+                        f"`RAM[0100]={load_probe['ram_0100']}`, "
+                        f"`CART[0100]={load_probe['cart_0100']}`, "
+                        f"`RAM[0200]={load_probe['ram_0200']}`, "
+                        f"`CART[0200]={load_probe['cart_0200']}`."
                     )
         else:
             lines.append(
