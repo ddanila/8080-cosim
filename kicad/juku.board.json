@@ -1250,9 +1250,9 @@
     "111A": "M12V"
    },
    "prov": {
-    "type": "boundary",
-    "refdes": "assumed",
-    "pins": "Multibus edge-pin codes from scan"
+    "type": "scan",
+    "refdes": "sheet-1 edge connector map + bus-interface transcription",
+    "pins": "X1 edge-pin codes traced for command, data, high/low address, interrupt, clock, and power rails; off-board expansion behavior is outside the replica boot-path model"
    }
   },
   {

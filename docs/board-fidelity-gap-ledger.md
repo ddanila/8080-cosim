@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `78`
+- Chip-level fidelity gaps: `77`
 - Net-level source-risk gaps: `41`
 
 ## Chip Provenance Types
@@ -28,12 +28,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | Provenance type | Chips |
 | --- | ---: |
 | assumed | 30 |
-| boundary | 1 |
 | datasheet | 1 |
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 189 |
+| scan | 190 |
 | wire | 1 |
 
 ## Gap Categories
@@ -45,7 +44,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 8 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
-| connector boundary | 2 | 0 |
+| connector boundary | 1 | 0 |
 | logic/source | 3 | 4 |
 | memory/timing | 0 | 7 |
 | placement/refdes | 38 | 0 |
@@ -78,7 +77,6 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `X1` | `EXPANSION_CONN` | boundary | assumed Multibus edge-pin codes from scan |
 | `X3` | `SERIAL_CONN` | scan | owner photo + sheet-3 serial connector code map serial connector signal pins traced to S_SOUT/S_RTS/S_DTP/S_TTL/S_OC/S_SIN; external cable/electrical loopbac... |
 
 ### logic/source
