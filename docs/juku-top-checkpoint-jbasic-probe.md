@@ -81,7 +81,7 @@ sync/juku_top_checkpoint_jbasic_probe.py
   experiments; leave them quiet for the default READY proof.
 - Set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_DATA_READS=N` to recover bounded
   FDC-transfer checkpoints such as the 4096- and 8192-read windows.
-- This run did reach the HDL `READY` oracle; promote the report status and CI gate.
+- This run did reach the HDL `READY` oracle; `sync/ekdos_jbasic_checkpoint_check.sh` is the named local/deep guard for this boundary.
 - This run did echo the full HDL `A>JBASIC` command line; the next boundary is Return execution and FDC traffic.
 
 ## HDL stdout tail

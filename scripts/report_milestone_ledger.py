@@ -257,6 +257,7 @@ def milestone_rows():
         "hdl/sim/juku_top_checkpoint_resume_tb.v",
         "stopjbasicready",
     )
+    hdl_jbasic_checkpoint_guard = hdl_jbasic_stimulus and Path("sync/ekdos_jbasic_checkpoint_check.sh").exists()
     hdl_jbasic_late_ready = marker(
         "docs/juku-top-checkpoint-jbasic-late-probe.md",
         "Status: **HDL EKDOS JBASIC LATE READY**",
@@ -657,6 +658,13 @@ def milestone_rows():
                     "reached` at mcyc 823,184 / 73,925 VRAM writes. "
                     "The FDC model now latches side effects on decoded active I/O "
                     "strobes, fixing the stale-register 4,096-read boundary."
+                    + (
+                        " `sync/ekdos_jbasic_checkpoint_check.sh` is the named "
+                        "local/deep guard for this checkpoint-resumed BASIC READY "
+                        "boundary."
+                        if hdl_jbasic_checkpoint_guard
+                        else ""
+                    )
                     if hdl_jbasic_stimulus
                     else ""
                 )
@@ -739,6 +747,13 @@ def milestone_rows():
                     "reached` at mcyc 823,184 / 73,925 VRAM writes. "
                     "The FDC model now latches side effects on decoded active I/O "
                     "strobes, fixing the stale-register 4,096-read boundary."
+                    + (
+                        " `sync/ekdos_jbasic_checkpoint_check.sh` is the named "
+                        "local/deep guard for this checkpoint-resumed BASIC READY "
+                        "boundary."
+                        if hdl_jbasic_checkpoint_guard
+                        else ""
+                    )
                     if hdl_jbasic_stimulus
                     else ""
                 )

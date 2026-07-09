@@ -480,7 +480,7 @@ def main() -> int:
         "  FDC-transfer checkpoints such as the 4096- and 8192-read windows.",
     ]
     if reached_ready:
-        lines.append("- This run did reach the HDL `READY` oracle; promote the report status and CI gate.")
+        lines.append("- This run did reach the HDL `READY` oracle; `sync/ekdos_jbasic_checkpoint_check.sh` is the named local/deep guard for this boundary.")
     if reached_fdc:
         if reached_fdc_data_read:
             lines.append("- This run reached HDL FDC data-register reads; next work is to continue through the disk transfer and the `READY` oracle.")

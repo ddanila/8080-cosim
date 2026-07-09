@@ -355,7 +355,9 @@ debugging session saved on real hardware.
    WD1793/VG93 side effects latch on the decoded active I/O strobes instead of
    sampling raw `rd_n`/`wr_n` on the simulator clock; the former 4,096-read
    boundary now lands on the cosim-matched track/sector/data state and the
-   default proof runs through to `READY`. The follow-on late checkpoint remains tracked by
+   default proof runs through to `READY`. `sync/ekdos_jbasic_checkpoint_check.sh`
+   is the named local/deep guard for this checkpoint-resumed HDL BASIC `READY`
+   proof. The follow-on late checkpoint remains tracked by
    `sync/juku_top_checkpoint_jbasic_late_probe.py` /
    `docs/juku-top-checkpoint-jbasic-late-probe.md`: it generates the cosim
    `TDD|JBASIC\r` state after all 19,968 WD1793 data-register reads, resumes

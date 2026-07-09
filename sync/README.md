@@ -104,6 +104,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   `JBASIC` + Enter sequence with `+jbasickeys=1`, and documents the current
   command-stimulus boundary plus the new opt-in `+stopjbasicready=1` `READY`
   glyph oracle.
+- `sync/ekdos_jbasic_checkpoint_check.sh` — local/deep guard for the strongest
+  current HDL EKDOS BASIC proof. It runs the prompt-checkpoint JBASIC bridge and
+  requires the visible `A>JBASIC` command line plus the final fixed-`0xD800`
+  BASIC `READY` glyph. It is intentionally syntax-checked, not run, in push CI.
 - `sync/juku_top_checkpoint_jbasic_late_probe.py` — late checkpoint-resumed
   HDL guard for the disk BASIC path. It generates the cosim `TDD|JBASIC\r`
   state after 19,968 WD1793 data-register reads, resumes `juku_top` with no

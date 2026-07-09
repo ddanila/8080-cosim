@@ -219,7 +219,9 @@ Historical merge notes:
   `[RESUME-JBASIC] READY prompt reached` at mcyc 823,184 / 73,925 VRAM writes,
   with visible `A>JBASIC`, disk-backed FDC data reads, and the final `READY`
   glyph rendered. The FDC model now latches side effects on decoded active I/O
-  strobes, fixing the stale-register 4,096-read boundary. The follow-on
+  strobes, fixing the stale-register 4,096-read boundary.
+  `sync/ekdos_jbasic_checkpoint_check.sh` is the named local/deep guard for
+  this checkpoint-resumed BASIC `READY` proof. The follow-on
   `sync/juku_top_checkpoint_jbasic_late_probe.py` report starts from the cosim
   state after all 19,968 WD1793 data-register reads and proves checkpoint-
   resumed HDL reaches `[RESUME-JBASIC]` with the visible `READY` glyph at
