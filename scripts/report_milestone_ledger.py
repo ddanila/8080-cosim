@@ -174,6 +174,9 @@ def milestone_rows():
         "docs/arvutimuuseum-context-inventory.md",
         "Status: **ARVUTIMUUSEUM CONTEXT CLASSIFIED**",
     ) and marker(
+        "docs/arvutimuuseum-context-inventory.md",
+        "## Gallery Photo Disposition",
+    ) and marker(
         ".github/workflows/lvs.yml",
         "docs/arvutimuuseum-context-inventory.md",
     )
@@ -620,8 +623,9 @@ def milestone_rows():
                 )
                 + (
                     "`docs/arvutimuuseum-context-inventory.md` classifies the "
-                    "Arvutimuuseum exhibit facts as kit/spec/contact context rather "
-                    "than primary electrical evidence; "
+                    "Arvutimuuseum exhibit facts, linked articles, and gallery "
+                    "photos as kit/spec/contact/visual context rather than primary "
+                    "electrical evidence; "
                     if arvutimuuseum_context
                     else ""
                 )

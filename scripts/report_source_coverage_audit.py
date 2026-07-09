@@ -99,7 +99,8 @@ SOURCE_ROWS = [
         "`https://arvutimuuseum.ee/cs00000/`",
         "Used as historical/contextual confirmation for E5104/Baltijets, "
         "museum contact, public-preservation context, kit composition, and "
-        "headline spec cross-checks. The page is classified in "
+        "headline spec cross-checks. The gallery photos and linked articles "
+        "are classified as visual or historical context in "
         "`docs/arvutimuuseum-context-inventory.md`.",
         "Not a primary electrical source; it does not add PROM byte tables, "
         "continuity measurements, or board connectivity.",
@@ -194,8 +195,9 @@ def main() -> int:
             "  confirms the board-critical drawings are mirrored or covered and",
             "  leaves large user/service manuals as optional context.",
             "- `scripts/report_arvutimuuseum_context_inventory.py` classifies the",
-            "  Arvutimuuseum exhibit page as context: useful for kit/spec/contact",
-            "  cross-checks, but not primary electrical evidence.",
+            "  Arvutimuuseum exhibit page, linked articles, and gallery photos",
+            "  as context: useful for kit/spec/contact and visual cross-checks,",
+            "  but not primary electrical evidence.",
             "- `scripts/extract_basic_disk_files.py` extracts and vendors the",
             "  strongest disk-side BASIC candidates under `ref/extracted-software/`.",
             "- `scripts/report_basic_cartridge_missing_page_constraints.py` records",
@@ -228,8 +230,6 @@ def main() -> int:
             "",
             "- Full text mining of the large user/service manuals for optional",
             "  Tier 2/Tier 3 operating procedures.",
-            "- Arvutimuuseum linked articles/photos beyond the classified exhibit",
-            "  page and contact path.",
             "- Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except",
             "  where already captured in `docs/community-prom-media-request.md`.",
             "",

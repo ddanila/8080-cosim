@@ -18,7 +18,7 @@ has been fully mined.
 | `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, ROM/BASIC lineage, EKDOS source, and Arti-derived raw disks are mirrored or reflected in `ref/`, `roms/`, `media/disks/`, the board placement, generated BOM, transcription docs, and FDC/BASIC probes. The public manual/drawing listing is classified in `docs/public-manual-archive-inventory.md`. | Large user/service manuals, emulator pages, newspaper scans, and forum links are optional context unless a future procedure-specific clue is needed. |
 | `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction under `ref/baltijets-tech-docs/` and mined for factory test, ROM programming, FDD, power, keyboard, and peripheral planning. Public system binaries from `JUKUSYS.ZIP` are vendored under `media/system/`; `J3KUTIL4.JUK` is vendored under `media/disks/`; the public software listing is classified in `docs/public-software-archive-inventory.md`; the `e5101-joonised/` and `kirjandus/` manual listings are classified in `docs/public-manual-archive-inventory.md`. | The Baltijets programming disk files referenced by doc 007 remain missing. |
 | `https://github.com/infoaed/juku3000/tree/master/roms` | ROM lineage is covered: canonical monitor/BIOS ROMs are vendored under `roms/`; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The project now needs PROM provenance and uninterrupted HDL disk-backed media work, not more РФ2 ROM coverage. |
-| `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets, museum contact, public-preservation context, kit composition, and headline spec cross-checks. The page is classified in `docs/arvutimuuseum-context-inventory.md`. | Not a primary electrical source; it does not add PROM byte tables, continuity measurements, or board connectivity. |
+| `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets, museum contact, public-preservation context, kit composition, and headline spec cross-checks. The gallery photos and linked articles are classified as visual or historical context in `docs/arvutimuuseum-context-inventory.md`. | Not a primary electrical source; it does not add PROM byte tables, continuity measurements, or board connectivity. |
 | `https://github.com/vpyk/emu80v4` | Surveyed as an emulator reference. No Juku-specific driver/config was found, but its GPL-3 `Fdc1793` model is recorded as a behavior checklist in `docs/emu80v4-survey.md` and `docs/fdc-core-survey.md`. | GPL-3 code is not vendored or copied. It does not close any Juku-specific PROM/media/netlist gap. |
 | Local WD1772 transistor/PLA files from `~/Downloads` | `wd1772.pdf` and `wd1772pla.txt` are vendored under `ref/wd1772-vg93/`; the PLM table is normalized to JSON/CSV and guarded by `docs/wd1772-pla-inspection.md`. | Reference material only. It supports future ВГ93/FD1773 fidelity work but is not translated into HDL and does not add Juku-specific media, PROM contents, or board connectivity. |
 
@@ -99,8 +99,9 @@ has been fully mined.
   confirms the board-critical drawings are mirrored or covered and
   leaves large user/service manuals as optional context.
 - `scripts/report_arvutimuuseum_context_inventory.py` classifies the
-  Arvutimuuseum exhibit page as context: useful for kit/spec/contact
-  cross-checks, but not primary electrical evidence.
+  Arvutimuuseum exhibit page, linked articles, and gallery photos
+  as context: useful for kit/spec/contact and visual cross-checks,
+  but not primary electrical evidence.
 - `scripts/extract_basic_disk_files.py` extracts and vendors the
   strongest disk-side BASIC candidates under `ref/extracted-software/`.
 - `scripts/report_basic_cartridge_missing_page_constraints.py` records
@@ -133,8 +134,6 @@ has been fully mined.
 
 - Full text mining of the large user/service manuals for optional
   Tier 2/Tier 3 operating procedures.
-- Arvutimuuseum linked articles/photos beyond the classified exhibit
-  page and contact path.
 - Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except
   where already captured in `docs/community-prom-media-request.md`.
 

@@ -31,12 +31,24 @@ authoritative sources for connectivity and firmware behavior.
 | Mikroarvuti JUKU kasutamisjuhend | classified | docs/public-manual-archive-inventory.md | Large user manual stays optional until a procedure-specific task needs it. |
 | Russian user manual | classified | docs/public-manual-archive-inventory.md | Large user/service manual stays optional unless a new clue is needed. |
 | Juku E5104 manuals/files page | classified | docs/public-manual-archive-inventory.md; docs/public-software-archive-inventory.md | Arti public archive listings now classified. |
+| Kooliarvuti Juku article PDF | historical context | external link only | Background article; no board connectivity, PROM byte tables, or bring-up procedure extracted. |
+| Domestic PC Production in the Soviet Baltic States PDF | historical context | external link only | Background article; useful for production history but not electrical evidence. |
+| Harno/Tiigrihupe pages and legacy hot.ee link | historical context | external link only | Education-program context; no current board/twin dependency. |
 | Elfafoorum / ZX-PK topics | community path | docs/community-prom-media-request.md | Potential owner knowledge source; not automatically mined into board truth. |
+
+## Gallery Photo Disposition
+
+| Photo group | Visible material | Disposition | Project use |
+| --- | --- | --- | --- |
+| 2019 exhibit overview photos | Exterior machine, monitor, floppy units, signage | Tier-3 visual context | Useful for final-system presentation and peripheral checklist; not required for current PCB fabrication. |
+| 2024/2025 exterior photos | Keyboard case, back-panel ports, bottom plate and serial labels | Tier-3 visual context | Useful for enclosure/label/cabling comparison; does not replace connector drawings or continuity checks. |
+| 2019/2025 interior board photos | Top-side board overviews and close-ups of ROM, DRAM, wiring, and Soviet IC population | visual cross-check | Useful to sanity-check placement, sockets, bodge wires, and parts style; resolution/angles are insufficient to close hidden nets or PROM contents. |
+| Manual-cover photos | E5104 guide covers and document packet photos | manual context | Covered by the manual archive classifier; images are not separately required by the current electrical model. |
 
 ## Boundary
 
 - Arvutimuuseum is useful for provenance, exhibit context, kit composition,
-  and contact/community paths.
+  photo-based visual cross-checks, and contact/community paths.
 - It does not provide the missing `ДГШ5.106.037`, `.039`, or `.092`
   PROM byte tables, FDC continuity measurements, D94 output nets, or
   vendor/order evidence.
