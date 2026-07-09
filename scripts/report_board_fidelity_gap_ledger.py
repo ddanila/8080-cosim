@@ -91,8 +91,32 @@ def nodes_summary(nodes: list[list[str]]) -> str:
     return ", ".join(rendered[:6]) + f", ... (+{len(rendered) - 6})"
 
 
+def netted_pins_by_ref(board: dict) -> dict[str, set[str]]:
+    netted: dict[str, set[str]] = defaultdict(set)
+    for net in board["nets"].values():
+        for ref, pin in net.get("nodes", []):
+            netted[str(ref)].add(str(pin))
+    return netted
+
+
+def unnetted_functional_pins(chip: dict, netted: dict[str, set[str]]) -> list[str]:
+    ref = str(chip.get("ref", ""))
+    pins = chip.get("pins", {})
+    used = netted.get(ref, set())
+    missing = []
+    def pin_sort_key(item: tuple[str, object]) -> object:
+        pin = str(item[0])
+        return int(pin) if pin.isdigit() else pin
+
+    for pin, signal in sorted(pins.items(), key=pin_sort_key):
+        if str(pin) not in used:
+            missing.append(f"{pin}:{signal}")
+    return missing
+
+
 def main() -> int:
     board = json.loads(BOARD.read_text(encoding="utf-8"))
+    netted = netted_pins_by_ref(board)
     chip_prov_counts = Counter(str(chip.get("prov", {}).get("type", "missing")) for chip in board["chips"])
     chip_gap_rows: list[dict[str, object]] = []
     for chip in board["chips"]:
@@ -107,6 +131,7 @@ def main() -> int:
                 "category": category_for_chip(chip, text),
                 "prov_type": prov_type,
                 "note": text or "no provenance block",
+                "unnetted": unnetted_functional_pins(chip, netted),
             }
         )
 
@@ -186,6 +211,39 @@ def main() -> int:
         lines.extend(["", f"### {category}", "", "| Ref | Type | Provenance | Note |", "| --- | --- | --- | --- |"])
         for row in sorted(rows, key=lambda item: str(item["ref"])):
             lines.append(table_row([f"`{row['ref']}`", f"`{row['type']}`", row["prov_type"], short(str(row["note"]))]))
+
+    pin_gap_rows = [
+        row
+        for row in chip_gap_rows
+        if row["unnetted"] and str(row["category"]) not in {"placement/refdes", "placement/value"}
+    ]
+    if pin_gap_rows:
+        lines.extend(
+            [
+                "",
+                "## Unnetted Functional Pins",
+                "",
+                "The full PCB endpoint coverage gate checks every modeled net endpoint,",
+                "but it cannot check package pins that are still deliberately absent",
+                "from `kicad/juku.board.json` nets. These rows expose the remaining",
+                "functional pins on non-placement chip gaps that still need scan,",
+                "continuity, PROM-dump, or implementation evidence before the board",
+                "model is historical-source-complete.",
+                "",
+                "| Ref | Category | Unnetted modeled pins |",
+                "| --- | --- | --- |",
+            ]
+        )
+        for row in sorted(pin_gap_rows, key=lambda item: str(item["ref"])):
+            lines.append(
+                table_row(
+                    [
+                        f"`{row['ref']}`",
+                        row["category"],
+                        "`" + ", ".join(str(item) for item in row["unnetted"]) + "`",
+                    ]
+                )
+            )
 
     lines.extend(
         [

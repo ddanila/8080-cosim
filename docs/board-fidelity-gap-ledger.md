@@ -119,6 +119,24 @@ parts placement and Tier-3 reproduction.
 | --- | --- | --- | --- |
 | `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary] |
 
+## Unnetted Functional Pins
+
+The full PCB endpoint coverage gate checks every modeled net endpoint,
+but it cannot check package pins that are still deliberately absent
+from `kicad/juku.board.json` nets. These rows expose the remaining
+functional pins on non-placement chip gaps that still need scan,
+continuity, PROM-dump, or implementation evidence before the board
+model is historical-source-complete.
+
+| Ref | Category | Unnetted modeled pins |
+| --- | --- | --- |
+| `D100` | logic/source | `9:OE_N, 11:T` |
+| `D2` | PROM truth | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 12:D0, 13:V1, 14:V2, 15:A7` |
+| `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` |
+| `D93` | logic/source | `19:MR_N, 24:CLK` |
+| `D94` | PROM truth | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
+| `S4` | logic/source | `1:P1, 2:P2` |
+
 ## Net-Level Source Risks
 
 This mirrors the net-risk surface used by
