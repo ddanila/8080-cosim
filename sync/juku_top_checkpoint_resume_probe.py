@@ -74,9 +74,11 @@ def generate_checkpoint(tmp: Path) -> tuple[subprocess.CompletedProcess[str], Pa
 
 def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
     ram_hex = tmp / "checkpoint.ram.hex"
+    rom_hex = tmp / "ekta37.hex"
     sim = tmp / "juku_top_checkpoint_resume_tb"
     trace_resume = os.environ.get("JUKU_TOP_CHECKPOINT_TRACE_RESUME")
     write_hex(ram_bin, ram_hex)
+    write_hex(ROM, rom_hex)
     subprocess.run(
         [
             "iverilog",
@@ -95,6 +97,7 @@ def run_resume(tmp: Path, ram_bin: Path) -> subprocess.CompletedProcess[str]:
             "vvp",
             str(sim),
             f"+checkpoint_ram={ram_hex}",
+            f"+rom={rom_hex}",
             "+disk=media/disks/JUKU1.CPM",
             "+disk_heads=2",
             "+max_mcyc=200000",
