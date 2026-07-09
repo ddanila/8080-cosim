@@ -50,6 +50,10 @@ or disk image has been fully mined.
   scope documented in `docs/reconstructed-prom-fallbacks.md`. These close the
   reproducible Tier 1/2 programming fallback path, not the Tier 3 dump/provenance
   requirement.
+- `scripts/report_re3_firmware_inspection.py` guards the tracked owner-scan
+  К155РЕ3 `.113`/`.117` programming-table excerpts under `ref/firmware/`, their
+  source PDF hash, and the current conclusion that these `.106.103`-family
+  tables are not the processor-module D8 `.039` or D94 `.092` contents.
 - Elektroonikamuuseum `tarkvara/JUKUSYS.ZIP` is now vendored under
   `media/system/` as five 10 KiB CP/M/EKDOS system binaries. The same public
   software archive pass found no explicit `ДГШ5.106.037`, `ДГШ5.106.038`,

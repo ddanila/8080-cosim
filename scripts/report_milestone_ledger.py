@@ -59,6 +59,16 @@ def milestone_rows():
         "ref/reconstructed-proms/SHA256SUMS",
         "d8_re3_rom_pager_reconstructed.bin",
     )
+    re3_firmware_inspected = marker(
+        "docs/re3-firmware-inspection.md",
+        "Status: **PASS**",
+    ) and marker(
+        "ref/firmware/SHA256SUMS",
+        "re3_dgsh5.106.113.hex",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check RE3 firmware inspection freshness",
+    )
     reference_artifacts_guarded = exists("sync/reference_artifact_check.sh") and marker(
         ".github/workflows/lvs.yml",
         "Check vendored reference artifacts",
@@ -331,6 +341,13 @@ def milestone_rows():
                     "`docs/reconstructed-prom-fallbacks.md` exports boot-validated "
                     "D6/D8 reconstruction fallbacks; "
                     if reconstructed_proms_exported
+                    else ""
+                )
+                + (
+                    "`docs/re3-firmware-inspection.md` guards the scanned `.113`/"
+                    "`.117` РЕ3 tables and keeps them explicitly out of the D8/D94 "
+                    "burnable fallback set; "
+                    if re3_firmware_inspected
                     else ""
                 )
                 + (

@@ -122,7 +122,10 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
    D6 and D8 programming images under `ref/reconstructed-proms/`, with hashes and
    boundaries documented in `docs/reconstructed-prom-fallbacks.md`. These are not
    Tier 3 factory truth and must be replaced or checked when disk files/dumps
-   arrive.
+   arrive. Owner-scan РЕ3 tables `.113`/`.117` are now hash- and shape-guarded by
+   `scripts/report_re3_firmware_inspection.py` / `docs/re3-firmware-inspection.md`;
+   they remain useful `.106.103`-family lineage evidence, not the processor-module
+   D8 `.039` or D94 `.092` byte tables.
 2. **002 Schematics and components** → settle .006-vs-.009 revision coverage; attack
    the short blocked-on-materials list (D6 V1/V2 feed, C99 far plate, FDC INTRQ/DRQ,
    D94 outputs, bypass per-position values) from paper before spending owner time.

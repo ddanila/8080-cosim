@@ -210,6 +210,11 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   reconstructed D6/D8 PROM fallback images. It compares
   `ref/reconstructed-proms/` against the actual `decode_prom` and `re3_prom`
   modules in `hdl/devices.v`.
+- `scripts/report_re3_firmware_inspection.py` — generated inspection for the
+  owner-scan К155РЕ3 `.113`/`.117` programming-table excerpts under
+  `ref/firmware/`. It guards their hashes and shape while preserving the
+  current conclusion that they are not the processor-module D8 `.039` or D94
+  `.092` contents.
 - `sync/beeper_check.sh` — D57 PIT channel 1 digital beeper-source guard:
   programmed `OUT1` toggles the traced `SOUND` net.
 
