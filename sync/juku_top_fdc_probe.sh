@@ -18,11 +18,14 @@ KEYAT=${JUKU_TOP_FDC_KEYAT:-42000}
 KHOLD=${JUKU_TOP_FDC_KHOLD:-900000}
 KGAP=${JUKU_TOP_FDC_KGAP:-900000}
 FRAMEIRQ=${JUKU_TOP_FDC_FRAMEIRQ:-80000}
+FRAMEPHASE=${JUKU_TOP_FDC_FRAMEPHASE:-0}
 MAXVRAM=${JUKU_TOP_FDC_MAXVRAM:-88000}
 TIMECAP=${JUKU_TOP_FDC_TIMECAP:-900000000}
 TRACEPROGRESS=${JUKU_TOP_FDC_TRACEPROGRESS:-5000}
 TRACEIO=${JUKU_TOP_FDC_TRACEIO:-0}
 TRACECHK=${JUKU_TOP_FDC_TRACECHK:-0}
+TRACEPPI=${JUKU_TOP_FDC_TRACEPPI:-1}
+TRACEIRQ=${JUKU_TOP_FDC_TRACEIRQ:-1}
 STOPIO=${JUKU_TOP_FDC_STOPIO:-0}
 STOPFDC=${JUKU_TOP_FDC_STOPFDC:-1}
 STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
@@ -67,20 +70,22 @@ if command -v timeout >/dev/null; then
     timeout "$TIMEOUT_S" vvp "$SIM" \
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
+      +framephase="$FRAMEPHASE" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   else
     timeout "$TIMEOUT_S" "$SIM" \
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
+      +framephase="$FRAMEPHASE" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   fi
@@ -90,20 +95,22 @@ else
     vvp "$SIM" \
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
+      +framephase="$FRAMEPHASE" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   else
     "$SIM" \
       +disk="$DISK" +disk_heads=2 \
       +frameirq="$FRAMEIRQ" \
+      +framephase="$FRAMEPHASE" \
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   fi
@@ -126,6 +133,7 @@ pic_first=$(grep -m1 '^\[PIC\]' "$OUT" || true)
 pic_stop=$(grep -m1 '^\[PIC\] stop' "$OUT" || true)
 ppi_key_first=$(grep -m1 '^\[PPI0\] IN' "$OUT" || true)
 ppi_stop=$(grep -m1 '^\[PPI0\] stop' "$OUT" || true)
+ppi_first=$(grep -m1 '^\[PPI0\]' "$OUT" || true)
 irq_first=$(grep -m1 '^\[IRQ\]' "$OUT" || true)
 rawio_first=$(grep -m1 '^\[RAWIO\]' "$OUT" || true)
 rawio_stop=$(grep -m1 '^\[RAWIO\] stop' "$OUT" || true)
@@ -148,6 +156,7 @@ kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
 progress_lines=$(grep -c '^\[VRAM\] progress' "$OUT" || true)
 pic_lines=$(grep -c '^\[PIC\]' "$OUT" || true)
 ppi_key_lines=$(grep -c '^\[PPI0\] IN' "$OUT" || true)
+ppi_lines=$(grep -c '^\[PPI0\]' "$OUT" || true)
 irq_lines=$(grep -c '^\[IRQ\]' "$OUT" || true)
 rawio_lines=$(grep -c '^\[RAWIO\]' "$OUT" || true)
 
@@ -190,9 +199,12 @@ Environment overrides:
 - \`JUKU_TOP_FDC_KHOLD\` default \`900000\`
 - \`JUKU_TOP_FDC_KGAP\` default \`900000\`
 - \`JUKU_TOP_FDC_FRAMEIRQ\` default \`80000\`
+- \`JUKU_TOP_FDC_FRAMEPHASE\` default \`0\`
 - \`JUKU_TOP_FDC_TRACEPROGRESS\` default \`5000\`
 - \`JUKU_TOP_FDC_TRACEIO\` default \`0\`
 - \`JUKU_TOP_FDC_TRACECHK\` default \`0\`
+- \`JUKU_TOP_FDC_TRACEPPI\` default \`1\`
+- \`JUKU_TOP_FDC_TRACEIRQ\` default \`1\`
 - \`JUKU_TOP_FDC_STOPIO\` default \`0\`
 - \`JUKU_TOP_FDC_STOPFDC\` default \`1\`
 - \`JUKU_TOP_FDC_STOPPIC\` default \`0\`
@@ -203,7 +215,7 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPC_SKIP\` default \`0\`; matching PC entries to skip
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO TRACECHK=$TRACECHK STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -225,6 +237,7 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 | VRAM progress trace lines | \`$progress_lines\` |
 | PIC trace lines | \`$pic_lines\` |
 | PPI key-read trace lines | \`$ppi_key_lines\` |
+| PPI trace lines | \`$ppi_lines\` |
 | IRQ trace lines | \`$irq_lines\` |
 | raw I/O trace lines | \`$rawio_lines\` |
 | FDC trace lines | \`$fdc_lines\` |
@@ -243,6 +256,7 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 - First PIC line: \`${pic_first:-none}\`
 - PIC stop line: \`${pic_stop:-none}\`
 - First PPI key-read line: \`${ppi_key_first:-none}\`
+- First PPI line: \`${ppi_first:-none}\`
 - PPI stop line: \`${ppi_stop:-none}\`
 - First IRQ line: \`${irq_first:-none}\`
 - First raw I/O line: \`${rawio_first:-none}\`
@@ -262,6 +276,12 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 
 \`\`\`text
 $(grep '^\[CHKHDL' "$OUT" || true)
+\`\`\`
+
+## PPI0 Trace
+
+\`\`\`text
+$(grep '^\[PPI0\]' "$OUT" || true)
 \`\`\`
 
 ## FDC Trace

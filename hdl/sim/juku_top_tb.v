@@ -30,7 +30,7 @@ module juku_top_tb();
   integer ekdoskeys=0, ekdos_key=0;
   // frame interrupt: a 1-osc-cycle pulse every `frameirq` osc cycles (8253 VER-RTR -> 8259
   // IR5). Opt-in: frameirq=0 => no pulse => intr stays 0 => boot byte-identical.
-  reg frame_tick=0; integer frameirq=0, osc_n=0;
+  reg frame_tick=0; integer frameirq=0, framephase=0, osc_n=0;
 
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
                .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
@@ -88,7 +88,8 @@ module juku_top_tb();
       kbd_pressed <= (key_t >= 0 && key_t < khold);                               // hold then release
     end
     osc_n <= osc_n + 1;
-    frame_tick <= (frameirq != 0 && (osc_n % frameirq) == (frameirq-1));        // periodic IR5 tick
+    frame_tick <= (frameirq != 0 && osc_n >= framephase &&
+                   ((osc_n - framephase) % frameirq) == (frameirq-1));        // periodic IR5 tick
   end
 
   integer traceio=0, stopio=0, raw_ios=0, raw_reads=0, raw_writes=0;
@@ -101,15 +102,20 @@ module juku_top_tb();
   always @(posedge osc) begin
     if (frame_tick) begin
       frame_ticks = frame_ticks + 1;
-      if (traceirq > 1) $display("[IRQ] frame_tick count=%0d mcyc=%0d vram=%0d", frame_ticks, mcyc, vram_writes);
+      if (traceirq > 1) $display("[IRQ] frame_tick count=%0d osc=%0d mcyc=%0d vram=%0d",
+                                 frame_ticks, osc_n, mcyc, vram_writes);
     end
     if (dut.intr && !intr_q) begin
       intr_edges = intr_edges + 1;
-      if (traceirq) $display("[IRQ] intr rise count=%0d mcyc=%0d vram=%0d", intr_edges, mcyc, vram_writes);
+      if (traceirq) $display("[IRQ] intr rise count=%0d pc=0x%04h sp=0x%04h osc=%0d mcyc=%0d vram=%0d",
+                             intr_edges, dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp,
+                             osc_n, mcyc, vram_writes);
     end
     if (!dut.inta_n && inta_q) begin
       inta_edges = inta_edges + 1;
-      if (traceirq) $display("[IRQ] inta fall count=%0d mcyc=%0d vram=%0d", inta_edges, mcyc, vram_writes);
+      if (traceirq) $display("[IRQ] inta fall count=%0d pc=0x%04h sp=0x%04h db=0x%02h osc=%0d mcyc=%0d vram=%0d",
+                             inta_edges, dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp,
+                             dut.DB, osc_n, mcyc, vram_writes);
     end
     intr_q <= dut.intr;
     inta_q <= dut.inta_n;
@@ -211,8 +217,9 @@ module juku_top_tb();
   always @(negedge dut.iowr_n) begin #1; if (!dut.cs_ppi0_n) begin
       ppi_ios = ppi_ios + 1;
       ppi_writes = ppi_writes + 1;
-      if (traceppi > 1) $display("[PPI0] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
-                                 {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, ppi_ios);
+      if (traceppi > 1) $display("[PPI0] OUT port=0x%02h reg=%0d data=0x%02h pc=0x%04h mcyc=%0d vram=%0d ios=%0d",
+                                 {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
+                                 dut.U_CPU.u.core.r16_pc, mcyc, vram_writes, ppi_ios);
       if (stopppi != 0 && ppi_ios >= stopppi) begin
         $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
                  ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, mcyc);
@@ -223,11 +230,13 @@ module juku_top_tb();
   always @(negedge dut.iord_n) begin #1; if (!dut.cs_ppi0_n) begin
       ppi_ios = ppi_ios + 1;
       ppi_reads = ppi_reads + 1;
-      if (dut.BA[1:0] == 2'd1 && kbd_pressed) begin
+      if (dut.BA[1:0] == 2'd1) begin
         ppi_key_reads = ppi_key_reads + 1;
-        if (traceppi) $display("[PPI0] IN  port=0x%02h reg=%0d data=0x%02h col=%0d key_col=%0d key_bit=%0d mcyc=%0d key_reads=%0d",
+        if (traceppi) $display("[PPI0] IN  port=0x%02h reg=%0d data=0x%02h col=%0d key_col=%0d key_bit=%0d pressed=%0d pc=0x%04h mcyc=%0d vram=%0d key_reads=%0d",
                                {6'b000001, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
-                               dut.U_PPI0.kbd_col_sel, kbd_kcol, kbd_kbit, mcyc, ppi_key_reads);
+                               dut.U_PPI0.kbd_col_sel, kbd_kcol, kbd_kbit,
+                               kbd_pressed, dut.U_CPU.u.core.r16_pc, mcyc, vram_writes,
+                               ppi_key_reads);
       end
       if (stopppi != 0 && ppi_ios >= stopppi) begin
         $display("[PPI0] stop ios=%0d reads=%0d writes=%0d key_reads=%0d mcyc=%0d",
@@ -241,8 +250,16 @@ module juku_top_tb();
   always @(negedge dut.iowr_n) begin #1; if (!dut.cs_fdc_n) begin
       fdc_ios = fdc_ios + 1;
       fdc_writes = fdc_writes + 1;
-      if (tracefdc) $display("[FDC] OUT port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
-                             {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
+      if (tracefdc) $display("[FDC] OUT port=0x%02h reg=%0d data=0x%02h pc=0x%04h sp=0x%04h a=0x%02h b=0x%02h c=0x%02h d=0x%02h e=0x%02h h=0x%02h l=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                             {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
+                             dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp,
+                             dut.U_CPU.u.core.acc, dut.U_CPU.u.core.r16_bc[15:8],
+                             dut.U_CPU.u.core.r16_bc[7:0],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[15:8] : dut.U_CPU.u.core.r16_hl[15:8],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[7:0] : dut.U_CPU.u.core.r16_hl[7:0],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[15:8] : dut.U_CPU.u.core.r16_de[15:8],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[7:0] : dut.U_CPU.u.core.r16_de[7:0],
+                             mcyc, vram_writes, fdc_ios);
       if (stopfdc != 0 && fdc_ios >= stopfdc) begin
         $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
         #60 dump_vram; $finish;
@@ -252,8 +269,16 @@ module juku_top_tb();
   always @(negedge dut.iord_n) begin #1; if (!dut.cs_fdc_n) begin
       fdc_ios = fdc_ios + 1;
       fdc_reads = fdc_reads + 1;
-      if (tracefdc) $display("[FDC] IN  port=0x%02h reg=%0d data=0x%02h mcyc=%0d ios=%0d",
-                             {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB, mcyc, fdc_ios);
+      if (tracefdc) $display("[FDC] IN  port=0x%02h reg=%0d data=0x%02h pc=0x%04h sp=0x%04h a=0x%02h b=0x%02h c=0x%02h d=0x%02h e=0x%02h h=0x%02h l=0x%02h mcyc=%0d vram=%0d ios=%0d",
+                             {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
+                             dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp,
+                             dut.U_CPU.u.core.acc, dut.U_CPU.u.core.r16_bc[15:8],
+                             dut.U_CPU.u.core.r16_bc[7:0],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[15:8] : dut.U_CPU.u.core.r16_hl[15:8],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[7:0] : dut.U_CPU.u.core.r16_hl[7:0],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[15:8] : dut.U_CPU.u.core.r16_de[15:8],
+                             dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[7:0] : dut.U_CPU.u.core.r16_de[7:0],
+                             mcyc, vram_writes, fdc_ios);
       if (stopfdc != 0 && fdc_ios >= stopfdc) begin
         $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
         #60 dump_vram; $finish;
@@ -378,6 +403,7 @@ module juku_top_tb();
     if ($value$plusargs("tracefdc=%d", tracefdc)) ;
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)
+    if ($value$plusargs("framephase=%d", framephase)) ; // oscillator-cycle phase for frameirq
     if ($value$plusargs("cursorstop=%d", cursorstop)) ; // stop when jmon33 idle cursor is in VRAM
     if ($value$plusargs("stopprompt=%d", stopprompt)) ; // stop when EKDOS A> is in VRAM
     if (keyat != 0) begin

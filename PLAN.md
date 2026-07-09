@@ -205,10 +205,9 @@ debugging session saved on real hardware.
    writes, with a byte-identical 9,640-byte framebuffer dump and matching
    visible CPU/PPI/PIC/FDC register state, just before the fast cosim first-PIC
    point at 30,520 writes. The
-   current full FDC run loads the disk and reaches BIOS VRAM progress, but the
-   default 60-second bound times out before the proven post-banner
-   keyboard/interrupt window; `JUKU_TOP_FDC_STOPPC=HEX` now provides exact
-   CPU-address stops for narrowing that boundary. `docs/juku-top-30520-reachability.md`
+   current full FDC run loads the disk, reaches BIOS VRAM progress, and now
+   exposes decoded PIC/PPI/IRQ/FDC context from reset; `JUKU_TOP_FDC_STOPPC=HEX`
+   provides exact CPU-address stops for narrowing that boundary. `docs/juku-top-30520-reachability.md`
    records that a 360-second exact-PC stop at `0x02B9` and a 900-second
    30,520-write comparison still do not produce an HDL post-banner dump, so the
    automation path moved to checkpoint/fast-forward rather than a larger wall
@@ -271,19 +270,24 @@ debugging session saved on real hardware.
    as the uninterrupted-run counterpart to the checkpoint prompt oracle, so a
    long top-level run can stop exactly when the EKDOS `A>` bitmap appears at
    `x=0`, `y=70` instead of relying on a coarse VRAM count. The same probe now
-   has an opt-in Verilator path and `+tracechk` checksum diagnostics.
+   has an opt-in Verilator path, `+tracechk` checksum diagnostics,
+   `JUKU_TOP_FDC_TRACEPPI` / `JUKU_TOP_FDC_TRACEIRQ` trace-level knobs, and
+   `JUKU_TOP_FDC_FRAMEPHASE` to calibrate the sim-only frame-timer phase.
    `docs/juku-top-fdc-verilator-probe.md` now reaches decoded PIC setup,
    frame interrupts, live WD1793 motor-ready status, FDC sector/data/command
    writes, and FDC data-register reads from reset with the vendored
    `JUKU1.CPM` media attached when run with the deep local
    `JUKU_TOP_FDC_FRAMEIRQ=200000` setting.
    `docs/juku-top-fdc-alignment.md` summarizes that committed HDL boundary:
-   reset-driven `juku_top` reaches FDC command/data I/O, but the current
-   early interrupt-path read-sector attempt uses command `0x80` with sector
-   `0xAA` instead of the cosim `TDD` sequence (`OUT 0x1C = 0x02`, sector
-   `0x02` at the 63,085-write window). Remaining target: align the
-   uninterrupted full ROMBIOS `TDD` path through `juku_top` to the EKDOS
-   prompt with that external media, without relying on checkpoint/resume
+   reset-driven `juku_top` reaches FDC command/data I/O and its first no-key
+   keyboard scan matches the cosim anchor (`IN 0x05 = 0xCF` at PC `0x1213`,
+   VRAM 30,520), but the first frame IRQ is too early: current reset-run IRQ is
+   at VRAM 30,524, while the cosim reference pins the first frame IRQ at VRAM
+   33,812 and the first FDC command at VRAM 63,085. A no-frame HDL bound reaches
+   VRAM 33,812 at `mcyc=852989`, proving the pre-IRQ framebuffer path still
+   advances. Remaining target: calibrate/fix the frame IRQ phase/timer model so
+   the uninterrupted full ROMBIOS `TDD` path through `juku_top` reaches the
+   EKDOS prompt with that external media, without relying on checkpoint/resume
    acceleration.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
