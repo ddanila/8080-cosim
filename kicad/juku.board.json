@@ -966,8 +966,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ИД7 74S138 pinout per sheet-2: A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=RAM_SEL; V0-V3=15/14/13/12 through R49-R52 100R (resistors LVS-invisible); RAS=V3/pin12 (wire 11), CAS pin [assumed]",
-    "note": "ИД7/74138 RAS/CAS decode: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-52(100R) -> R53-56(5.1k) -> array RAS/CAS/bank [sheet2 scan]"
+    "pins": "ИД7 74S138 pinout per sheet-2: A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL; Y0-Y3=15/14/13/12 through R49-R52 100R into RAIL14/13/12/11 RAS rails",
+    "note": "ИД7/74138 RAS decoder: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-R52(100R) -> R53-R56(5.1k) -> RAIL_E. Shared CAS is driven separately by D36/R57/R58."
    }
   },
   {
@@ -3535,8 +3535,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R49: D53.Y0 -> RAIL14 bank-3 RAS; connected nets D53_Y0_R49/RAIL14 carry crop evidence"
    }
   },
   {
@@ -3548,8 +3548,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R50: D53.Y1 -> RAIL13 bank-2 RAS; connected nets D53_Y1_R50/RAIL13 carry crop evidence"
    }
   },
   {
@@ -3561,8 +3561,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R51: D53.Y2 -> RAIL12 bank-1 RAS; connected nets D53_Y2_R51/RAIL12 carry crop evidence"
    }
   },
   {
@@ -3574,8 +3574,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R52: D53.Y3 -> RAS bank-0 rail; connected nets D53_Y3_R52/RAS carry crop evidence"
    }
   },
   {
@@ -3587,8 +3587,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R53: RAIL14 bank-3 RAS termination to RAIL_E; connected nets RAIL14/RAIL_E carry crop evidence"
    }
   },
   {
@@ -3600,8 +3600,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R54: RAIL13 bank-2 RAS termination to RAIL_E; connected nets RAIL13/RAIL_E carry crop evidence"
    }
   },
   {
@@ -3613,8 +3613,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R55: RAIL12 bank-1 RAS termination to RAIL_E; connected nets RAIL12/RAIL_E carry crop evidence"
    }
   },
   {
@@ -3626,8 +3626,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups)",
-    "pins": "nets pending rail-15/rail-E read"
+    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
+    "pins": "R56: RAS bank-0 rail termination to RAIL_E; connected nets RAS/RAIL_E carry crop evidence"
    }
   },
   {

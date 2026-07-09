@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `91`
+- Chip-level fidelity gaps: `82`
 - Net-level source-risk gaps: `41`
 
 ## Chip Provenance Types
@@ -46,13 +46,13 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
 | connector boundary | 2 | 0 |
-| logic/source | 12 | 4 |
+| logic/source | 4 | 4 |
 | memory/timing | 0 | 7 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
 | unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 15 |
-| video/timing | 4 | 0 |
+| video/timing | 3 | 0 |
 
 ## Chip-Level Gaps
 
@@ -89,14 +89,6 @@ parts placement and Tier-3 reproduction.
 | `D100` | `BUF8287` | datasheet | .009 official (5th ВА87 = FDC bus buffer) 8287 std; OE/T gating [assumed] |
 | `D92` | `LE4` | wire | BOM .009 К555ЛЕ4 triple 3-NOR; pin 13 -> D7.1 [WIRE 11], pin 1 - D13.1 [WIRE 13]; rest untraced (Φ1/Φ2 gen candidate) |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) WD1793 std pinout; bus side per MAME io 1C-1F + sheet-3 CS7 delta |
-| `R49` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R50` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R51` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R52` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R53` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R54` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R55` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
-| `R56` | `R_AXIAL` | scan | sheet-2 strobe chain (R49-52 100R series, R53-56 5.1k pullups) nets pending rail-15/rail-E read |
 | `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
 
 ### placement/refdes
@@ -190,7 +182,6 @@ parts placement and Tier-3 reproduction.
 | `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary] |
 | `D50` | `KP14_MUX` | wire | BOM .009 КР531КП14 video-addr mux; SEL(1) <- D41.QA [WIRE 10, beeper]; rest untraced |
 | `D52` | `KP14_MUX` | scan | sheet-2 MX: the 5th КП14 (VIDEO/µP ADDRESS select for D53 via E2/E3); inputs deferred [boundary] |
-| `D53` | `RASCAS_DEC` | scan | ИД7 74S138 pinout per sheet-2: A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=RAM_SEL; V0-V3=15/14/13/12 through R49-R52 100R (resistors LVS-invisible);... |
 
 ## Net-Level Source Risks
 
