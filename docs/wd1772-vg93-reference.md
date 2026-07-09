@@ -1,6 +1,6 @@
 # WD1772 / VG93 reverse-engineering reference
 
-Status date: 2026-07-07.
+Status date: 2026-07-09.
 
 Vendored files:
 
@@ -59,7 +59,8 @@ source. Do not mechanically translate the PDF or PLA text into HDL without an
 explicit implementation decision. For the current plan they are reference
 evidence only.
 
-This does not change the immediate M2 task: first make `juku_top` reach decoded
-WD1793/VG93 I/O and the EKDOS `A>` prompt with `media/disks/JUKU1.CPM`. Revisit
-this reference only if controller fidelity becomes the blocker after that
-boundary is reached.
+This no longer gates the M2 EKDOS proof: the reset-driven `juku_top` Verilator
+path now reaches decoded WD1793/VG93 I/O and the EKDOS `A>` prompt with
+`media/disks/JUKU1.CPM`. Revisit this reference only if the project decides to
+replace the current boot/media shim with a fuller controller implementation or
+needs equation-level evidence for write-side/edge-case fidelity.
