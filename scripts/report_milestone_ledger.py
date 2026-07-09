@@ -64,6 +64,13 @@ def milestone_rows():
         "docs/owner-measurement-shortlist.md",
         "D94 pin 15 enable",
     )
+    d2_constraints_generated = marker(
+        "docs/d2-reconstruction-constraints.md",
+        "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/d2-reconstruction-constraints.md",
+    )
     fdc_handoff_guarded = marker(
         "docs/fdc-hardware-handoff.md",
         "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**",
@@ -469,6 +476,13 @@ def milestone_rows():
                     "`docs/reconstructed-prom-fallbacks.md` exports boot-validated "
                     "D6/D8 reconstruction fallbacks; "
                     if reconstructed_proms_exported
+                    else ""
+                )
+                + (
+                    "`docs/d2-reconstruction-constraints.md` pins D2 `.037` as a "
+                    "bus-arbitration/wait PROM with no current signal nets or "
+                    "burnable fallback; "
+                    if d2_constraints_generated
                     else ""
                 )
                 + (

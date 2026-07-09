@@ -12,6 +12,7 @@ REPORT = ROOT / "docs" / "owner-measurement-shortlist.md"
 REQUIRED = [
     ROOT / "docs" / "community-prom-media-request.md",
     ROOT / "docs" / "prom-dump-procedure.md",
+    ROOT / "docs" / "d2-reconstruction-constraints.md",
     ROOT / "docs" / "d94-reconstruction-constraints.md",
     ROOT / "docs" / "fdc-hardware-handoff.md",
     ROOT / "docs" / "serial-handoff.md",
@@ -81,6 +82,7 @@ def main() -> int:
         ("Community request packet ready", has_phrase("docs/community-prom-media-request.md", "Status: **READY TO SEND**")),
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
         ("D6/D8 reconstructed fallback exported", has_phrase("docs/reconstructed-prom-fallbacks.md", "d6_rt4_memory_decode_reconstructed")),
+        ("D2 constraint report generated", has_phrase("docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Serial handoff generated", has_phrase("docs/serial-handoff.md", "Status: **SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY**")),
@@ -94,7 +96,7 @@ def main() -> int:
             "P0",
             "programming disk / PROM truth",
             "Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs",
-            "`docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`",
+            "`docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md`",
             "unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks",
         ),
         (

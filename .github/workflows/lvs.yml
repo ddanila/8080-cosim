@@ -30,6 +30,7 @@ jobs:
             scripts/report_vendored_disk_catalog.py \
             scripts/report_re3_firmware_inspection.py \
             scripts/report_video_slot_timing_audit.py \
+            scripts/report_d2_reconstruction_constraints.py \
             scripts/report_d94_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
             scripts/report_fdc_hardware_handoff.py \
@@ -144,9 +145,11 @@ jobs:
 
       - name: Check video slot timing audit freshness
         run: |
+          python3 scripts/report_d2_reconstruction_constraints.py
           python3 scripts/report_d94_reconstruction_constraints.py
           python3 scripts/report_video_slot_timing_audit.py
           git diff --exit-code -- \
+            docs/d2-reconstruction-constraints.md \
             docs/d94-reconstruction-constraints.md \
             docs/video-slot-timing-audit.md
 

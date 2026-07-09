@@ -43,6 +43,7 @@ REQUIRED_PATHS = [
     "docs/fdc-core-survey.md",
     "docs/wd1772-vg93-reference.md",
     "docs/wd1772-pla-inspection.md",
+    "docs/d2-reconstruction-constraints.md",
     "docs/d94-reconstruction-constraints.md",
     "docs/vendored-disk-catalog.md",
     "docs/basic-disk-extraction.md",

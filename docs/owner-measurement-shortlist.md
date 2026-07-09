@@ -20,6 +20,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Community request packet ready | PASS |
 | PROM dump procedure exists | PASS |
 | D6/D8 reconstructed fallback exported | PASS |
+| D2 constraint report generated | PASS |
 | D94 constraint report generated | PASS |
 | FDC hardware handoff generated | PASS |
 | Serial handoff generated | PASS |
@@ -30,7 +31,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 | Priority | Ask | Exact deliverable | Evidence source | Why it matters |
 | --- | --- | --- | --- | --- |
-| P0 | programming disk / PROM truth | Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md` | unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks |
+| P0 | programming disk / PROM truth | Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks |
 | P0 | JUKU-1 media provenance | independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM` | `docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md` | turns the public EKDOS boot image into stronger physical-media evidence |
 | P1 | D94 .092 continuity | D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required before any defensible D94 reverse-engineered burnable table |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F | reduces first EKDOS-on-hardware debug risk |

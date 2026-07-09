@@ -55,6 +55,7 @@ has been fully mined.
 | `docs/fdc-core-survey.md` | present |
 | `docs/wd1772-vg93-reference.md` | present |
 | `docs/wd1772-pla-inspection.md` | present |
+| `docs/d2-reconstruction-constraints.md` | present |
 | `docs/d94-reconstruction-constraints.md` | present |
 | `docs/vendored-disk-catalog.md` | present |
 | `docs/basic-disk-extraction.md` | present |

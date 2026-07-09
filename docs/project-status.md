@@ -314,6 +314,10 @@ Historical merge notes:
   driver/receiver chain, and X3 signal nets. The HDL USART remains a boot-safe
   idle shell; full transmit/receive behavior and X3 loopback are Tier-2
   functional polish.
+- **D2 PROM boundary pinned:** `docs/d2-reconstruction-constraints.md` records
+  D2 as the `.037` К556РТ4 bus-arbitration/wait PROM, not the old behavioral
+  I/O-decode stand-in. No D2 signal nets or burnable `.037` table are derivable
+  from current repo evidence.
 
 ## Gotchas worth remembering
 - **8080 status-byte latch timing (HDL sim):** latch the status byte on a `clk` edge
