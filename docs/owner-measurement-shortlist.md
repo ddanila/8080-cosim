@@ -50,12 +50,12 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `41`
+- Generated bring-up verification nets: `36`
 - `FDC`: `3` net(s)
-- `logic`: `7` net(s)
-- `memory/decode`: `10` net(s)
+- `logic`: `6` net(s)
+- `memory/decode`: `9` net(s)
 - `sound/analog`: `2` net(s)
-- `timing/I/O`: `8` net(s)
+- `timing/I/O`: `5` net(s)
 - `video/analog`: `11` net(s)
 
 ## Practical sequencing
