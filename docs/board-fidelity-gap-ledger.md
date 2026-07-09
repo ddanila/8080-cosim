@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `46`
+- Chip-level fidelity gaps: `44`
 - Net-level source-risk gaps: `36`
 
 ## Chip Provenance Types
@@ -39,9 +39,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
 | FDC owner-continuity | 0 | 3 |
-| PROM truth | 3 | 0 |
+| PROM truth | 2 | 0 |
 | PROM/decode | 0 | 8 |
-| analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
 | logic/source | 3 | 3 |
 | memory/timing | 0 | 5 |
@@ -61,14 +60,7 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.037 [dump pending]; drawing = .03... |
-| `D9` | `IO_DEC138` | scan | BOM ДГШ3.031.006 ВП: К555ИД7 x1 = the IO decoder. Decoder refdes = D9 (owner-confirmed К555ИД7 on the board). Physical D2 is a separate КР556РТ4 bus/wait PRO... |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8) |
-
-### analog/source
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `VD5` | `D_DIODE` | scan | scan: VD5 by R19; zener clamp to GND [assumed orientation] |
 
 ### logic/source
 
