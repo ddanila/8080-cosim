@@ -15,7 +15,7 @@ ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 
 RISK_RE = re.compile(
-    r"assumed|boundary|pending|unread|approx|owner-verify|refine|chase|mame",
+    r"assumed|boundary|deferred|untraced|not traced|pending|unread|owner-verify|mame|approx|refine|dump",
     re.I,
 )
 
