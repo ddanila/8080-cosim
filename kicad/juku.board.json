@@ -3182,9 +3182,9 @@
     "8": "Y3"
    },
    "prov": {
-    "type": "wire",
+    "type": "scan",
     "refdes": "BOM .009",
-    "pins": "К555ЛЕ4 triple 3-NOR; pin 13 -> D7.1 [WIRE 11], pin 1 - D13.1 [WIRE 13]; rest untraced (Φ1/Φ2 gen candidate)"
+    "pins": "К555ЛЕ4 triple 3-NOR in the RAM strobe cluster: sec1 ROE/PHI2TTL/W11 -> D92_RD_NOR, sec2 PHI2TTL/MEMW/RAM_SEL -> D92_WR_NOR, sec3 -> D92_NOACC/D39.5"
    }
   },
   {
