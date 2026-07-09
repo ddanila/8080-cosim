@@ -84,18 +84,18 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   same late checkpoint can continue past the final FDC sector burst and render
   the EKDOS `A>` prompt bitmap at `x=0`, `y=70` through checkpoint-resumed
   `juku_top` CPU execution. `sync/ekdos_checkpoint_prompt_check.sh` provides
-  a named local/deep guard for that late checkpoint prompt proof. The
-  single uninterrupted 10,752-byte checkpoint target still times out after the
-  first 6,656-byte boundary around VRAM write count 63,155, so this remains a
-  split checkpoint/prompt proof rather than an uninterrupted top-level prompt
-  proof. The older first-FDC checkpoint at 63,085 framebuffer writes and the earlier
-  42,000-write key-window checkpoint remain available as non-CI narrowing runs.
+  a named local/deep guard for that late checkpoint prompt proof. That split
+  checkpoint proof is now superseded by the uninterrupted reset-driven
+  Verilator prompt proof, but the first-FDC checkpoint at 63,085 framebuffer
+  writes and the earlier 42,000-write key-window checkpoint remain available
+  as non-CI narrowing runs.
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX` plus
   optional `JUKU_TOP_FDC_STOPPC_SKIP=N`, which map to the `juku_top_tb`
   `+stoppc=HEX` / `+stoppc_skip=N` CPU-address stop hooks for focused ROMBIOS
   boundary diagnostics, `JUKU_TOP_FDC_TRACECHK=N` for the ROMBIOS checksum
-  helper, and `JUKU_TOP_FDC_STOPPROMPT=1`, which maps to the same uninterrupted
-  harness's EKDOS `A>` bitmap oracle at `x=0`, `y=70`.
+  helper, `JUKU_TOP_FDC_STOPFDCDATA=N` for compact sector-drain stops, and
+  `JUKU_TOP_FDC_STOPPROMPT=1`, which maps to the same uninterrupted harness's
+  EKDOS `A>` bitmap oracle at `x=0`, `y=70`.
 - `sync/juku_top_periph_bus_check.sh` drives `juku_top`'s buffered CPU bus
   directly and proves decoded keyboard/PIC/PPI/FDC access, including the pinned
   no-key `0xCF` keyboard poll, shifted-`T` `0x88` poll, frame INTA vector
@@ -142,13 +142,13 @@ sync/juku_top_fdc_probe.sh
 | checkpoint-resumed `juku_top` from the late FDC checkpoint reaches EKDOS `A>` prompt bitmap | PASS (local/deep) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` matches cosim through the former post-30,180 checksum split and the 30,520-write first-PIC window | PASS |
-| `juku_top` reaches decoded PIC setup, frame IRQ, FDC command writes, and FDC data reads within the Verilator probe window | PASS (local/deep) |
+| `juku_top` uninterrupted reset path drains 10,752 FDC data-register reads and reaches EKDOS `A>` | PASS (local/deep) |
 
 ## Remaining Boundary
 
-- Drive the full `ROMBIOS 3.43` `<T>, <D>, <D>` path through `juku_top` with
-  `+disk=media/disks/JUKU1.CPM` and promote the HDL boundary from sector-ready
-  to uninterrupted EKDOS-prompt-ready.
+- Promote the full `ROMBIOS 3.43` `<T>, <D>, <D>` path through `juku_top` with
+  `+disk=media/disks/JUKU1.CPM` from local/deep Verilator evidence to an
+  appropriately bounded routine guard.
 - `docs/juku-top-fdc-probe.md` now captures the current top-level boundary:
   disk media is loaded and the BIOS starts drawing, but the default 60-second
   bound still times out before the post-banner keyboard/PIC/FDC window.
@@ -188,23 +188,22 @@ sync/juku_top_fdc_probe.sh
 - `sync/ekdos_checkpoint_prompt_check.sh` and
   `docs/juku-top-checkpoint-fdc-prompt-probe.md` record the same late
   checkpoint continuing past the final FDC sector burst to the EKDOS `A>`
-  prompt bitmap. This is a local/deep checkpoint-resumed prompt proof, not yet
-  an uninterrupted full-run HDL `A>` prompt proof. GitHub push runners time out
-  on this vm80a resume window, so the fast push CI keeps the lower-level raw
-  sector and direct-bus FDC guards.
+  prompt bitmap. This older split proof is now superseded by the uninterrupted
+  reset-driven Verilator prompt proof, but remains useful as a checkpointed
+  diagnostic. GitHub push runners keep the lower-level raw sector and
+  direct-bus FDC guards.
 - `docs/ekdos-timing-reference.md` records the fast cosim timing target for the
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
 - `docs/juku-top-fdc-verilator-probe.md` records the faster reset-driven
   `juku_top` long-window diagnostic: with the D6 reset-overlay fix and
   live WD1793 motor/disk readiness, the Verilator path reaches decoded PIC
-  setup, frame interrupts, WD1793 sector/data/command writes, and FDC data-port
-  reads. The current early interrupt-path command is `0x80` with sector `0xAA`,
-  so it is not yet the cosim `TDD` sector sequence.
+  setup, frame interrupts, WD1793 sector/data/command writes, drains all
+  10,752 FDC data-register reads on the `TDD` path, and reaches the EKDOS
+  `A>` bitmap at `x=0`, `y=70`.
 - `docs/juku-top-fdc-alignment.md` summarizes that committed HDL report and
   keeps the current uninterrupted boundary explicit: reset-driven `juku_top`
-  reaches FDC command/data I/O, but has not yet aligned with the full ROMBIOS
-  `TDD` sector sequence to EKDOS `A>`.
+  now reaches the full ROMBIOS `TDD` sector sequence to EKDOS `A>`.
 - `docs/ekdos-ioseq-reference.md` records the full cosim I/O event stream that
   the direct-bus top-level guard mirrors for keyboard/PIC/PPI/FDC boundaries.
 - Preserve the Arti `JUKU1.CPM` cosim proof from

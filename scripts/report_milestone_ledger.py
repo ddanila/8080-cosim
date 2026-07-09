@@ -209,17 +209,18 @@ def milestone_rows():
         "hdl/sim/juku_top_tb.v",
         "[PROMPT] EKDOS A> prompt reached",
     )
-    hdl_verilator_fdc_window = marker(
+    hdl_verilator_fdc_prompt = marker(
         "docs/juku-top-fdc-verilator-probe.md",
-        "simulator | `verilator`",
+        "Status: **HDL JUKU_TOP EKDOS PROMPT REACHED**",
     ) and marker(
         "docs/juku-top-fdc-verilator-probe.md",
-        "VRAM stop line: `[VRAM] 70000 writes",
+        "FDC state line: `[FDCSTATE] data_reads=10752 buffer_pos=0 buffer_len=0`",
     )
     hdl_fdc_alignment = marker(
         "docs/juku-top-fdc-alignment.md",
-        "Status: **HDL RESET PATH DIVERGES BEFORE COSIM FDC WINDOW**",
+        "Status: **HDL RESET RUN REACHES EKDOS A> PROMPT**",
     )
+    hdl_prompt_ready = hdl_verilator_fdc_prompt and hdl_fdc_alignment
     ekdos_timing_guard = marker(
         "docs/ekdos-timing-reference.md",
         "Status: **PASS**",
@@ -433,7 +434,9 @@ def milestone_rows():
             "id": "M2",
             "target": "EKDOS boots in the twin",
             "status": (
-                "VENDORED JUKU1 PROMPT PROVEN / HDL RAW-SECTOR READY"
+                "VENDORED JUKU1 PROMPT PROVEN / HDL PROMPT READY"
+                if ekdos_juku1_prompt and hdl_prompt_ready
+                else "VENDORED JUKU1 PROMPT PROVEN / HDL RAW-SECTOR READY"
                 if ekdos_juku1_prompt and hdl_fdc_vendored_sector
                 else "VENDORED JUKU1 PROMPT PROVEN / HDL PENDING"
                 if ekdos_juku1_prompt
@@ -442,8 +445,9 @@ def milestone_rows():
             "evidence": (
                 "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
-                "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
-                "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
+                "through the factory `TDD` path; `docs/fdc-readiness.md` guards the "
+                "HDL WD1793 raw-sector path and records the uninterrupted `juku_top` "
+                "prompt proof."
                 + ekdos_source_m2_phrase
                 + (
                     " `docs/juku-top-checkpoint-resume.md` is now a push-CI "
@@ -475,18 +479,26 @@ def milestone_rows():
                 )
                 + (
                     "`docs/juku-top-fdc-verilator-probe.md` records the faster "
-                    "reset-driven Verilator window reaching 70,000 VRAM writes "
-                    "with T/D/D stimulus visible but no decoded PIC/FDC access yet. "
-                    if hdl_verilator_fdc_window
+                    "reset-driven Verilator run reaching decoded PIC setup, frame "
+                    "interrupts, 10,752 FDC data-register reads, and the EKDOS `A>` "
+                    "bitmap at VRAM 73,405. "
+                    if hdl_verilator_fdc_prompt
                     else ""
                 )
                 + (
                     "`docs/juku-top-fdc-alignment.md` compares that state with "
-                    "cosim and pins the current pre-PIC/FDC divergence. "
+                    "cosim and pins the prompt-ready boundary at PC `0x097A`. "
                     if hdl_fdc_alignment
                     else ""
                 )
-                + "Full uninterrupted ROMBIOS-to-EKDOS prompt execution in `juku_top` remains open."
+                + "The remaining work is guard hardening, not proving the path."
+                if ekdos_juku1_prompt and hdl_prompt_ready
+                else "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
+                "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
+                "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
+                "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
+                + ekdos_source_m2_phrase
+                + "The reset-driven `juku_top` ROMBIOS-to-EKDOS prompt proof remains open."
                 if ekdos_juku1_prompt and hdl_fdc_vendored_sector
                 else "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
@@ -510,7 +522,9 @@ def milestone_rows():
                 "or external-media FDC in `juku_top`."
             ),
             "next": (
-                "Drive the full ROMBIOS TDD path through juku_top to an EKDOS prompt without checkpoint/resume."
+                "Promote the uninterrupted juku_top prompt proof into an appropriately bounded routine guard."
+                if hdl_prompt_ready
+                else "Finish the reset-driven juku_top ROMBIOS TDD prompt path without checkpoint/resume."
                 if hdl_fdc_vendored_sector
                 else "Connect vendored raw disk media through juku_top."
             ),

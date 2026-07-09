@@ -32,12 +32,15 @@ def parse_hdl_report() -> dict[str, str]:
         "first_ppi": first_match(text, r"^- First PPI line: `([^`]+)`$"),
         "first_fdc": first_match(text, r"^- First FDC line: `([^`]+)`$"),
         "fdc_stop": first_match(text, r"^- FDC stop line: `([^`]+)`$"),
+        "fdc_data_stop": first_match(text, r"^- FDC data-stop line: `([^`]+)`$"),
+        "prompt_line": first_match(text, r"^- EKDOS prompt line: `([^`]+)`$"),
         "cpu_line": first_match(text, r"^- CPU state line: `\[CPU\] ([^`]+)`$"),
         "state_line": first_match(text, r"^- Visible state line: `\[STATE\] ([^`]+)`$"),
         "io_line": first_match(text, r"^- I/O summary line: `\[IO\] ([^`]+)`$"),
+        "fdc_state_line": first_match(text, r"^- FDC state line: `\[FDCSTATE\] ([^`]+)`$"),
     }
 
-    for line in (result["cpu_line"], result["state_line"], result["io_line"]):
+    for line in (result["cpu_line"], result["state_line"], result["io_line"], result["fdc_state_line"]):
         for key, value in re.findall(r"([A-Za-z0-9_]+)=([0-9A-Fa-fx]+)", line):
             result[key] = value
 
@@ -46,6 +49,7 @@ def parse_hdl_report() -> dict[str, str]:
         ("PPI key-read trace observed", "ppi_key_observed"),
         ("IRQ trace observed", "irq_observed"),
         ("decoded FDC I/O observed", "fdc_observed"),
+        ("EKDOS `A>` prompt bitmap observed", "prompt_observed"),
     ):
         result[key] = first_match(text, rf"^\| {re.escape(label)} \| `?([^`|]+)`? \|$")
 
@@ -58,18 +62,20 @@ def main() -> int:
 
     hdl = parse_hdl_report()
     failures: list[str] = []
-    if "FDC PATH OBSERVED" not in hdl["status"]:
-        failures.append("HDL Verilator report is not marked FDC-observed")
+    if "EKDOS PROMPT REACHED" not in hdl["status"]:
+        failures.append("HDL Verilator report is not marked prompt-reached")
     if hdl.get("fdc_ios", "0") in ("0", "missing"):
         failures.append("HDL report has no decoded FDC I/O count")
     if hdl.get("fdc_writes", "0") in ("0", "missing"):
         failures.append("HDL report has no decoded FDC writes")
-    if hdl["first_fdc"] in ("none", "missing"):
-        failures.append("HDL report has no first FDC line")
+    if hdl.get("data_reads", "0") != "10752":
+        failures.append("HDL report did not drain 10,752 FDC data-register reads")
+    if hdl["prompt_line"] in ("none", "missing"):
+        failures.append("HDL report has no EKDOS prompt line")
     if hdl["first_pic"] in ("none", "missing"):
         failures.append("HDL report has no first PIC line")
 
-    status = "HDL RESET RUN REACHES DECODED FDC COMMAND I/O"
+    status = "HDL RESET RUN REACHES EKDOS A> PROMPT"
     if failures:
         status = "INCOMPLETE"
 
@@ -81,13 +87,13 @@ def main() -> int:
         "This generated report summarizes the committed reset-driven Verilator",
         "`juku_top` FDC probe for the vendored `media/disks/JUKU1.CPM` path.",
         "The old post-30,180 reset-run divergence is resolved. The current",
-        "uninterrupted boundary reaches the cosim ROMBIOS `TDD` first-FDC",
-        "sequence: restore command `0x02` at VRAM 63,085, then sector/data",
-        "setup at VRAM 63,095.",
+        "uninterrupted boundary now reaches the EKDOS `A>` prompt bitmap from",
+        "reset through the cosim ROMBIOS `TDD` path: first FDC command at VRAM",
+        "63,085, all 10,752 FDC data-register reads drained, and prompt at",
+        "VRAM 73,405.",
         "The no-key keyboard scan now matches the cosim anchor, and the",
         "no-frame reset run now matches cosim through the first-frame anchor",
-        "after the PPI0 Port C latch fix. The remaining reset-run mismatch is",
-        "after calibrated interrupt entry and before uninterrupted EKDOS prompt.",
+        "after the PPI0 Port C latch fix.",
         "",
         "## Commands",
         "",
@@ -98,10 +104,12 @@ def main() -> int:
         "JUKU_TOP_FDC_FRAMEMCYC=50761 \\",
         "JUKU_TOP_FDC_FRAMEPHASE=49891 \\",
         "JUKU_TOP_FDC_STOPPIC=0 \\",
-        "JUKU_TOP_FDC_STOPFDC=20 \\",
-        "JUKU_TOP_FDC_TIMECAP=1800000000 \\",
-        "JUKU_TOP_FDC_MAXVRAM=90000 \\",
-        "JUKU_TOP_FDC_TIMEOUT=180 \\",
+        "JUKU_TOP_FDC_TRACEFDC=0 \\",
+        "JUKU_TOP_FDC_STOPFDC=0 \\",
+        "JUKU_TOP_FDC_STOPPROMPT=1 \\",
+        "JUKU_TOP_FDC_TIMECAP=12000000000 \\",
+        "JUKU_TOP_FDC_MAXVRAM=100000 \\",
+        "JUKU_TOP_FDC_TIMEOUT=420 \\",
         "sync/juku_top_fdc_probe.sh",
         "```",
         "",
@@ -123,6 +131,7 @@ def main() -> int:
         f"| FDC command/status | `0x{hdl.get('fdc_command', 'missing').upper()}` / `0x{hdl.get('fdc_status', 'missing').upper()}` |",
         f"| FDC track/sector/data | `0x{hdl.get('fdc_track', 'missing').upper()}` / `0x{hdl.get('fdc_sector', 'missing').upper()}` / `0x{hdl.get('fdc_data', 'missing').upper()}` |",
         f"| decoded FDC reads/writes | `{hdl.get('fdc_reads', 'missing')}` / `{hdl.get('fdc_writes', 'missing')}` (`{hdl.get('fdc_ios', 'missing')}` ios) |",
+        f"| FDC data-register reads | `{hdl.get('data_reads', 'missing')}` |",
         "",
         "## HDL Report Anchors",
         "",
@@ -136,9 +145,12 @@ def main() -> int:
         f"- First PPI line: `{hdl['first_ppi']}`",
         f"- First FDC line: `{hdl['first_fdc']}`",
         f"- FDC stop line: `{hdl['fdc_stop']}`",
+        f"- FDC data-stop line: `{hdl['fdc_data_stop']}`",
+        f"- EKDOS prompt line: `{hdl['prompt_line']}`",
         f"- CPU line: `[CPU] {hdl['cpu_line']}`",
         f"- State line: `[STATE] {hdl['state_line']}`",
         f"- I/O summary line: `[IO] {hdl['io_line']}`",
+        f"- FDC state line: `[FDCSTATE] {hdl['fdc_state_line']}`",
         "",
         "## Frame Calibration Check",
         "",
@@ -180,7 +192,8 @@ def main() -> int:
         "pc=0x0e24 sp=0xd434 ... mcyc=811306 vram=33812`, followed by INTA",
         "bytes `0xCD 0xD4 0xFE`. The 50,761-mcycle period also tracks the",
         "cosim 200,000-cycle frame cadence closely enough for the reset run to",
-        "reach the first ROMBIOS FDC command at PC `0xE5DE`, VRAM 63,085.",
+        "reach the first ROMBIOS FDC command at PC `0xE5DE`, drain all",
+        "10,752 data-register reads, and render the EKDOS `A>` prompt.",
         "",
         "## Disposition",
         "",
@@ -197,7 +210,7 @@ def main() -> int:
                 "- With `JUKU_TOP_FDC_FRAMEMCYC=50761` and `JUKU_TOP_FDC_FRAMEPHASE=49891`, the uninterrupted reset run programs the PIC, takes calibrated frame interrupts, writes WD1793 sector/data/command registers, and enters the ROMBIOS FDC path at the cosim VRAM boundary.",
                 "- The oscillator-period reset run still takes its first IRQ too early: current reset-run IRQ is at VRAM `30524`, while `docs/ekdos-timing-reference.md` pins the cosim first frame IRQ at VRAM `33812`.",
                 "- The machine-cycle scheduler now aligns the first accepted frame IRQ to `mcyc=811306` / VRAM `33812`; the HDL effective PC, framebuffer, and visible state match cosim there after the PPI0 Port C latch fix.",
-                "- The remaining uninterrupted HDL target is now the FDC data-drain/prompt path after the observed first command `0x02`, sector `0x02`, and read-sector setup.",
+                "- The uninterrupted reset run now drains all 10,752 FDC data-register reads and reaches the EKDOS `A>` prompt bitmap at VRAM `73405`, PC `0x097A`.",
             ]
         )
 

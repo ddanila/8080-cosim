@@ -1,17 +1,17 @@
 # juku_top FDC reset alignment
 
-Status: **HDL RESET RUN REACHES DECODED FDC COMMAND I/O**
+Status: **HDL RESET RUN REACHES EKDOS A> PROMPT**
 
 This generated report summarizes the committed reset-driven Verilator
 `juku_top` FDC probe for the vendored `media/disks/JUKU1.CPM` path.
 The old post-30,180 reset-run divergence is resolved. The current
-uninterrupted boundary reaches the cosim ROMBIOS `TDD` first-FDC
-sequence: restore command `0x02` at VRAM 63,085, then sector/data
-setup at VRAM 63,095.
+uninterrupted boundary now reaches the EKDOS `A>` prompt bitmap from
+reset through the cosim ROMBIOS `TDD` path: first FDC command at VRAM
+63,085, all 10,752 FDC data-register reads drained, and prompt at
+VRAM 73,405.
 The no-key keyboard scan now matches the cosim anchor, and the
 no-frame reset run now matches cosim through the first-frame anchor
-after the PPI0 Port C latch fix. The remaining reset-run mismatch is
-after calibrated interrupt entry and before uninterrupted EKDOS prompt.
+after the PPI0 Port C latch fix.
 
 ## Commands
 
@@ -22,47 +22,53 @@ JUKU_TOP_FDC_FRAMEIRQ=0 \
 JUKU_TOP_FDC_FRAMEMCYC=50761 \
 JUKU_TOP_FDC_FRAMEPHASE=49891 \
 JUKU_TOP_FDC_STOPPIC=0 \
-JUKU_TOP_FDC_STOPFDC=20 \
-JUKU_TOP_FDC_TIMECAP=1800000000 \
-JUKU_TOP_FDC_MAXVRAM=90000 \
-JUKU_TOP_FDC_TIMEOUT=180 \
+JUKU_TOP_FDC_TRACEFDC=0 \
+JUKU_TOP_FDC_STOPFDC=0 \
+JUKU_TOP_FDC_STOPPROMPT=1 \
+JUKU_TOP_FDC_TIMECAP=12000000000 \
+JUKU_TOP_FDC_MAXVRAM=100000 \
+JUKU_TOP_FDC_TIMEOUT=420 \
 sync/juku_top_fdc_probe.sh
 ```
 
-Current HDL probe values: `SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 FRAMEPHASE=49891 FRAMEMCYC=50761 TRACEPROGRESS=5000 VRAMSTOP_SYNC=0 TRACEIO=0 TRACECHK=0 TRACEPPI=0 TRACEIRQ=1 STOPIO=0 MAXVRAM=90000 TIMECAP=1800000000 STOPFDC=20 STOPPIC=0 STOPPPI=0 STOPPROMPT=0 STOPPC=none STOPPC_SKIP=0 TIMEOUT=180`.
+Current HDL probe values: `SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 FRAMEPHASE=49891 FRAMEMCYC=50761 TRACEPROGRESS=10000 VRAMSTOP_SYNC=0 TRACEIO=0 TRACECHK=0 TRACEPPI=0 TRACEIRQ=0 TRACEFDC=0 STOPIO=0 MAXVRAM=100000 TIMECAP=12000000000 STOPFDC=0 STOPFDCDATA=0 STOPPIC=0 STOPPPI=0 STOPPROMPT=1 STOPPC=none STOPPC_SKIP=0 TIMEOUT=420`.
 
 ## Boundary
 
 | Signal | juku_top Verilator report |
 | --- | ---: |
-| PC | `0xE64D` |
-| SP | `0xD6DC` |
-| M-cycles | `2159597` |
-| VRAM writes | `63095` |
-| memory mode | `1` |
-| PPI0 port C | `0x05` |
+| PC | `0x097A` |
+| SP | `0xD2E8` |
+| M-cycles | `2701313` |
+| VRAM writes | `73405` |
+| memory mode | `0` |
+| PPI0 port C | `0x04` |
 | PIC ICW1/ICW2/mask | `0xD6` / `0xFE` / `0xDF` |
-| frame ticks / IRQ edges | `42` / `27` |
-| keyboard-port scans | `467` |
-| FDC command/status | `0x1A` / `0x00` |
-| FDC track/sector/data | `0x00` / `0x03` / `0x00` |
-| decoded FDC reads/writes | `12` / `8` (`20` ios) |
+| frame ticks / IRQ edges | `53` / `32` |
+| keyboard-port scans | `552` |
+| FDC command/status | `0x80` / `0x00` |
+| FDC track/sector/data | `0x02` / `0x06` / `0xE5` |
+| decoded FDC reads/writes | `10854` / `71` (`10925` ios) |
+| FDC data-register reads | `10752` |
 
 ## HDL Report Anchors
 
 - Disk line: `FDC-1793: loaded raw disk media/disks/JUKU1.CPM (2 sides)`
 - First VRAM line: `[VRAM] first video write @0xd800 mcyc=25011`
-- Last VRAM progress line: `[VRAM] progress writes=60000 mcyc=1396952`
+- Last VRAM progress line: `[VRAM] progress writes=70000 mcyc=2381003`
 - VRAM stop line: `none`
 - First PIC line: `[PIC] OUT port=0x00 reg=0 data=0xd6 mcyc=776238 vram=30520 ios=1`
-- First IRQ line: `[IRQ] intr rise count=1 pc=0x0e24 sp=0xd434 osc=6400051 mcyc=811306 vram=33812`
+- First IRQ line: `none`
 - First PPI key-read line: `none`
 - First PPI line: `none`
-- First FDC line: `[FDC] OUT port=0x1c reg=0 data=0x02 pc=0xe5de sp=0xd6de a=0x02 b=0x00 c=0xea d=0xd9 e=0x44 h=0x01 l=0xe5 mcyc=1590617 vram=63085 ios=1`
-- FDC stop line: `[FDC] stop ios=20 reads=12 writes=8 mcyc=2159597`
-- CPU line: `[CPU] pc=0xe64d sp=0xd6dc instr=0xd3 ba=0xe64d db=0xff mcyc=2159597 vram=63095 memr_n=1 memw_n=1 iord_n=1 iowr_n=1 inta_n=1 sync=1 intr=0 xchg_dh=0`
-- State line: `[STATE] pc=e64d sp=d6dc a=1a b=18 c=00 d=02 e=50 h=01 l=e5 sf=0 zf=0 hf=0 pf=0 cf=0 iff=1 mode=1 portc=05 kbd_col=00 pic_icw1=d6 pic_icw2=fe pic_mask=df pic_expect_icw2=0 fdc_motor_on=1 fdc_status=00 fdc_track=00 fdc_sector=03 fdc_data=00 fdc_command=1a fdc_buffer_pos=0 fdc_buffer_len=0`
-- I/O summary line: `[IO] raw_ios=10795 raw_reads=5358 raw_writes=5437 pic_ios=93 pic_reads=0 pic_writes=93 ppi_ios=10495 ppi_reads=5292 ppi_writes=5203 ppi_key_reads=467 fdc_ios=20 fdc_reads=12 fdc_writes=8 frame_ticks=42 intr_edges=27 inta_edges=81`
+- First FDC line: `none`
+- FDC stop line: `none`
+- FDC data-stop line: `none`
+- EKDOS prompt line: `[PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=2701313 vram=73405 pc=0x097a`
+- CPU line: `[CPU] pc=0x097a sp=0xd2e8 instr=0x77 ba=0xe431 db=0xff mcyc=2701313 vram=73405 memr_n=1 memw_n=1 iord_n=1 iowr_n=1 inta_n=1 sync=0 intr=0 xchg_dh=1`
+- State line: `[STATE] pc=097a sp=d2e8 a=00 b=02 c=28 d=d4 e=97 h=e4 l=31 sf=0 zf=0 hf=1 pf=0 cf=0 iff=1 mode=0 portc=04 kbd_col=00 pic_icw1=d6 pic_icw2=fe pic_mask=df pic_expect_icw2=0 fdc_motor_on=1 fdc_status=00 fdc_track=02 fdc_sector=06 fdc_data=e5 fdc_command=80 fdc_buffer_pos=0 fdc_buffer_len=0`
+- I/O summary line: `[IO] raw_ios=22945 raw_reads=16765 raw_writes=6180 pic_ios=190 pic_reads=0 pic_writes=190 ppi_ios=11613 ppi_reads=5847 ppi_writes=5766 ppi_key_reads=552 fdc_ios=10925 fdc_reads=10854 fdc_writes=71 frame_ticks=53 intr_edges=32 inta_edges=96`
+- FDC state line: `[FDCSTATE] data_reads=10752 buffer_pos=0 buffer_len=0`
 
 ## Frame Calibration Check
 
@@ -104,7 +110,8 @@ the cosim framebuffer/mcycle anchor: `[IRQ] intr rise count=1
 pc=0x0e24 sp=0xd434 ... mcyc=811306 vram=33812`, followed by INTA
 bytes `0xCD 0xD4 0xFE`. The 50,761-mcycle period also tracks the
 cosim 200,000-cycle frame cadence closely enough for the reset run to
-reach the first ROMBIOS FDC command at PC `0xE5DE`, VRAM 63,085.
+reach the first ROMBIOS FDC command at PC `0xE5DE`, drain all
+10,752 data-register reads, and render the EKDOS `A>` prompt.
 
 ## Disposition
 
@@ -114,4 +121,4 @@ reach the first ROMBIOS FDC command at PC `0xE5DE`, VRAM 63,085.
 - With `JUKU_TOP_FDC_FRAMEMCYC=50761` and `JUKU_TOP_FDC_FRAMEPHASE=49891`, the uninterrupted reset run programs the PIC, takes calibrated frame interrupts, writes WD1793 sector/data/command registers, and enters the ROMBIOS FDC path at the cosim VRAM boundary.
 - The oscillator-period reset run still takes its first IRQ too early: current reset-run IRQ is at VRAM `30524`, while `docs/ekdos-timing-reference.md` pins the cosim first frame IRQ at VRAM `33812`.
 - The machine-cycle scheduler now aligns the first accepted frame IRQ to `mcyc=811306` / VRAM `33812`; the HDL effective PC, framebuffer, and visible state match cosim there after the PPI0 Port C latch fix.
-- The remaining uninterrupted HDL target is now the FDC data-drain/prompt path after the observed first command `0x02`, sector `0x02`, and read-sector setup.
+- The uninterrupted reset run now drains all 10,752 FDC data-register reads and reaches the EKDOS `A>` prompt bitmap at VRAM `73405`, PC `0x097A`.

@@ -83,5 +83,5 @@ Current values: `KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=80000 TRACEPROGRE
 - `docs/ekdos-timing-reference.md` shows the fast cosim target for this same
   vendored `TDD` path: first PIC/PPI setup around 30,520 VRAM writes, first
   frame IRQ at 33,812 VRAM writes, and first FDC command at 63,085 VRAM writes.
-- The remaining M2 target is still the full `juku_top` ROMBIOS `TDD` path to
-  an EKDOS `A>` prompt.
+- The full `juku_top` ROMBIOS `TDD` path to an EKDOS `A>` prompt is now
+  covered by the calibrated Verilator FDC prompt probe.

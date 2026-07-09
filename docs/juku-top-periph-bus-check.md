@@ -35,10 +35,8 @@ sync/juku_top_periph_bus_check.sh
 
 ## Boundary
 
-- This is a direct-bus harness, not proof that the full ROMBIOS `TDD` CPU path
-  has reached decoded FDC I/O.
-- It narrows the remaining M2 blocker: the top-level peripheral decode mirrors
+- This is a direct-bus harness, not the full ROMBIOS `TDD` CPU path.
+- It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path
-  to a media-backed sector read. The open problem is still getting the full CPU
-  run through the slow post-banner path efficiently.
+  to a media-backed sector read.

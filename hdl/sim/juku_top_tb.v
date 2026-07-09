@@ -268,7 +268,7 @@ module juku_top_tb();
     end
   end
 
-  integer tracefdc=0, stopfdc=0, fdc_ios=0, fdc_reads=0, fdc_writes=0;
+  integer tracefdc=0, stopfdc=0, stopfdcdata=0, fdc_ios=0, fdc_reads=0, fdc_writes=0, fdc_data_reads=0;
   always @(negedge dut.iowr_n) begin #1; if (!dut.cs_fdc_n) begin
       fdc_ios = fdc_ios + 1;
       fdc_writes = fdc_writes + 1;
@@ -291,6 +291,7 @@ module juku_top_tb();
   always @(negedge dut.iord_n) begin #1; if (!dut.cs_fdc_n) begin
       fdc_ios = fdc_ios + 1;
       fdc_reads = fdc_reads + 1;
+      if (dut.BA[1:0] == 2'd3) fdc_data_reads = fdc_data_reads + 1;
       if (tracefdc) $display("[FDC] IN  port=0x%02h reg=%0d data=0x%02h pc=0x%04h sp=0x%04h a=0x%02h b=0x%02h c=0x%02h d=0x%02h e=0x%02h h=0x%02h l=0x%02h mcyc=%0d vram=%0d ios=%0d",
                              {6'b000111, dut.BA[1:0]}, dut.BA[1:0], dut.DB,
                              dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp,
@@ -301,6 +302,11 @@ module juku_top_tb();
                              dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[15:8] : dut.U_CPU.u.core.r16_de[15:8],
                              dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[7:0] : dut.U_CPU.u.core.r16_de[7:0],
                              mcyc, vram_writes, fdc_ios);
+      if (stopfdcdata != 0 && fdc_data_reads >= stopfdcdata) begin
+        $display("[FDC] data-stop data_reads=%0d ios=%0d reads=%0d writes=%0d mcyc=%0d",
+                 fdc_data_reads, fdc_ios, fdc_reads, fdc_writes, mcyc);
+        #60 dump_vram; $finish;
+      end
       if (stopfdc != 0 && fdc_ios >= stopfdc) begin
         $display("[FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d", fdc_ios, fdc_reads, fdc_writes, mcyc);
         #60 dump_vram; $finish;
@@ -400,6 +406,8 @@ module juku_top_tb();
       $display("[IO] raw_ios=%0d raw_reads=%0d raw_writes=%0d pic_ios=%0d pic_reads=%0d pic_writes=%0d ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",
                raw_ios, raw_reads, raw_writes, pic_ios, pic_reads, pic_writes, ppi_ios, ppi_reads, ppi_writes, ppi_key_reads, fdc_ios, fdc_reads, fdc_writes,
                frame_ticks, intr_edges, inta_edges);
+    $display("[FDCSTATE] data_reads=%0d buffer_pos=%0d buffer_len=%0d",
+             fdc_data_reads, dut.U_FDC.buffer_pos, dut.U_FDC.buffer_len);
   end endtask
 
   integer timecap = 400000000;       // ns; enough for the 6000-write boot guard. Interactive
@@ -429,6 +437,7 @@ module juku_top_tb();
     if ($value$plusargs("traceirq=%d", traceirq)) ;
     if ($value$plusargs("tracefdc=%d", tracefdc)) ;
     if ($value$plusargs("stopfdc=%d", stopfdc)) ;
+    if ($value$plusargs("stopfdcdata=%d", stopfdcdata)) ;
     if ($value$plusargs("frameirq=%d", frameirq)) ;     // 0=off (boot-identical)
     if ($value$plusargs("framephase=%d", framephase)) ; // oscillator-cycle phase for frameirq
     if ($value$plusargs("frame_mcyc=%d", frame_mcyc)) ;  // absolute machine-cycle period; overrides frameirq

@@ -248,13 +248,12 @@ debugging session saved on real hardware.
    reaches the EKDOS `A>` prompt bitmap at `x=0`, `y=70` through
    checkpoint-resumed `juku_top` CPU execution. `sync/ekdos_checkpoint_prompt_check.sh`
    now provides a named local/deep guard for that late checkpoint prompt proof.
-   A single uninterrupted 10,752-byte checkpoint target still times out after
-   the first 6,656-byte boundary while looping through keyboard/IRQ service
-   around VRAM write count 63,155, so the current proof is split across the
-   first and late FDC windows. The older first-FDC
+   These split checkpoint windows are now diagnostic aids; the uninterrupted
+   reset-driven Verilator probe supersedes them by draining all 10,752 FDC
+   data-register reads and reaching the same EKDOS prompt. The older first-FDC
    checkpoint at 63,085 framebuffer writes remains available, and an earlier
-   42,000-write key-window run carries the `TDD` stimulus state but still times
-   out before FDC. A first narrow harness,
+   42,000-write key-window run carries the `TDD` stimulus state for narrowing
+   pre-FDC behavior. A first narrow harness,
    `sync/juku_top_periph_bus_check.sh`, now proves the decoded top-level
    keyboard/PIC/PPI/FDC path directly, including the pinned no-key `0xCF` and
    shifted-`T` `0x88` keyboard reads, frame INTA vector `0xFED4`, exact
@@ -273,11 +272,10 @@ debugging session saved on real hardware.
    has an opt-in Verilator path, `+tracechk` checksum diagnostics,
    `JUKU_TOP_FDC_TRACEPPI` / `JUKU_TOP_FDC_TRACEIRQ` trace-level knobs, and
    `JUKU_TOP_FDC_FRAMEPHASE` to calibrate the sim-only frame-timer phase.
-   `docs/juku-top-fdc-verilator-probe.md` now reaches decoded PIC setup,
-   frame interrupts, live WD1793 motor-ready status, FDC sector/data/command
-   writes, and FDC data-register reads from reset with the vendored
-   `JUKU1.CPM` media attached when run with the deep local
-   `JUKU_TOP_FDC_FRAMEIRQ=200000` setting.
+   `docs/juku-top-fdc-verilator-probe.md` now reaches the EKDOS `A>` prompt
+   from reset with the vendored `JUKU1.CPM` media attached: decoded PIC setup,
+   calibrated frame interrupts, WD1793 sector/data/command writes, all 10,752
+   FDC data-register reads, and the visible `A>` bitmap at `x=0`, `y=70`.
    `docs/juku-top-fdc-alignment.md` summarizes that committed HDL boundary:
    reset-driven `juku_top` reaches FDC command/data I/O and its first no-key
    keyboard scan matches the cosim anchor (`IN 0x05 = 0xCF` at PC `0x1213`,
@@ -286,11 +284,12 @@ debugging session saved on real hardware.
    latch on `WR#`, `FRAMEMCYC=50761` and `FRAMEPHASE=49891` align the first
    accepted HDL frame IRQ to the cosim framebuffer/mcycle anchor (`mcyc=811306`,
    VRAM 33,812), keep the next frame IRQs near the cosim 200,000-cycle cadence,
-   and drive uninterrupted `juku_top` to the cosim first-FDC boundary:
-   `OUT 0x1C = 0x02` at PC `0xE5DE`, VRAM 63,085, followed by sector/data setup
-   at VRAM 63,095. Remaining target: continue that same uninterrupted ROMBIOS
-   `TDD` path through the FDC data drain to the EKDOS prompt with external
-   media, without relying on checkpoint/resume acceleration.
+   and drive uninterrupted `juku_top` through the cosim FDC path to EKDOS:
+   `OUT 0x1C = 0x02` at PC `0xE5DE`, VRAM 63,085; sector/data setup at VRAM
+   63,095; all 10,752 FDC data-register reads; and the EKDOS `A>` prompt at
+   VRAM 73,405. Remaining target: promote that local/deep Verilator proof into
+   an appropriately bounded routine guard while continuing the broader
+   video/PROM/PCB tasks.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the
@@ -687,7 +686,7 @@ vendor orders, received parts, programmed PROMs, and bench bring-up only count
 when tracked evidence exists.
 
 - [ ] M1 Baltijets docs mined; PROM-truth status resolved (disk/dump/reconstructed)
-- [ ] M2 EKDOS boots in the twin (cosim reaches `A>` with external media; `juku_top` FDC remains)
+- [x] M2 EKDOS boots in the twin (cosim and uninterrupted `juku_top` reach `A>` with external media)
 - [ ] M3 VJUGA Rev A ordered
 - [ ] M4 Twin emits real video timing (pixel+sync stream validated vs MAME)
 - [ ] M5 jmon33 to live prompt + BASIC launches in the twin
