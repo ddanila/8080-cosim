@@ -328,8 +328,10 @@ debugging session saved on real hardware.
    writes and remains zero-filled. The source-aware probe now distinguishes the
    intentional launch handoff from the later failure: Monitor 3.3 validates the
    cartridge header in high ROM, sets up a copy from the `0x4000` cartridge
-   window to low RAM at `0x0100`, jumps to `0x0100`, and the eventual `0x4000`
-   execution is mode-1 RAM, not mode-2 cartridge overlay. The probe now also
+   window to low RAM at `0x0100`, jumps to the cartridge bootstrap at
+   `0x0100`, which jumps through `0x0107` to a `0x2000` relocation loop, and
+   then the eventual failing `0x4000` entry is a mode-1 RAM fall-through
+   `0x3FFF -> 0x4000`, not a mode-2 cartridge-overlay jump. The probe now also
    pins the positive part of the loader: after the header/entry area,
    `RAM[0x0200..]` matches the cartridge from `0x0200` for 7,680 bytes with
    0 body mismatches, while
@@ -338,8 +340,8 @@ debugging session saved on real hardware.
    image changes the `0x0100` stack pointer from `0xD700` to `0xFFFE`, keeps the
    first `0x0200` bytes identical across the two public BASIC media shapes, and
    leaves the full body exact. The remaining cartridge path is therefore the
-   post-`0x0100` handoff into the low entry/workspace-control area, not the
-   D8/D22 window or bulk copy. The probe records the
+   relocated low BASIC/workspace-control flow after the `0x2000` bootstrap, not
+   the D8/D22 window or bulk copy. The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and
    both BASIC media images start with an absolute `JMP 0x0107` rather than a

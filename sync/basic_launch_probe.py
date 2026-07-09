@@ -60,8 +60,15 @@ READ_RE = re.compile(
 SAMPLES_RE = re.compile(
     r"cart_read_samples\s+:\s+(.+?)\n"
     r"\s+basic_exec_samples\s+:\s+(.+?)\n"
+    r"\s+basic_handoff_samples\s+:\s+(.+?)\n"
     r"\s+basic_ram_write_samples\s+:\s+(.+?)\n",
     re.S,
+)
+HANDOFF_RECORD_RE = re.compile(
+    r"pre=([0-9A-Fa-f]{4}) post=([0-9A-Fa-f]{4}) src=([a-z0-9]+) "
+    r"op=([0-9A-Fa-f]{2}) mode=([0-9]+)/([0-9]+) sp=([0-9A-Fa-f]{4}) "
+    r"a=([0-9A-Fa-f]{2}) bc=([0-9A-Fa-f]{4}) de=([0-9A-Fa-f]{4}) "
+    r"hl=([0-9A-Fa-f]{4})"
 )
 LOAD_RE = re.compile(
     r"cart_ram_0200_prefix\s+:\s+([0-9]+).*?"
@@ -107,6 +114,7 @@ def instrumented_trace_source() -> str:
         "static unsigned basic_probe_ram_first_write_pc = 0;\n"
         "static unsigned basic_probe_ram_last_write_pc = 0;\n"
         "#define BASIC_SAMPLE_MAX 8\n"
+        "#define BASIC_HANDOFF_SAMPLE_MAX 48\n"
         "#define BASIC_MISMATCH_SAMPLE_MAX 16\n"
         "static unsigned basic_probe_cart_sample_count = 0;\n"
         "static unsigned basic_probe_cart_sample_pc[BASIC_SAMPLE_MAX];\n"
@@ -120,6 +128,20 @@ def instrumented_trace_source() -> str:
         "static unsigned basic_probe_exec_sample_mode[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_exec_sample_source[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_exec_sample_opcode[BASIC_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_seen_0100 = 0;\n"
+        "static unsigned basic_probe_handoff_seen_4000 = 0;\n"
+        "static unsigned basic_probe_handoff_sample_count = 0;\n"
+        "static unsigned basic_probe_handoff_pre_pc[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_post_pc[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_source[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_opcode[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_mode_before[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_mode_after[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_sp[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_a[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_bc[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_de[BASIC_HANDOFF_SAMPLE_MAX];\n"
+        "static unsigned basic_probe_handoff_hl[BASIC_HANDOFF_SAMPLE_MAX];\n"
         "static unsigned basic_probe_ram_sample_count = 0;\n"
         "static unsigned basic_probe_ram_sample_pc[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_ram_sample_addr[BASIC_SAMPLE_MAX];\n"
@@ -224,6 +246,73 @@ def instrumented_trace_source() -> str:
         1,
     )
     src = src.replace(
+        "    i8080_step(&cpu);\n",
+        "    uint16_t basic_handoff_pre_pc = cpu.pc;\n"
+        "    uint16_t basic_handoff_pre_sp = cpu.sp;\n"
+        "    uint16_t basic_handoff_pre_bc = ((uint16_t)cpu.b << 8) | cpu.c;\n"
+        "    uint16_t basic_handoff_pre_de = ((uint16_t)cpu.d << 8) | cpu.e;\n"
+        "    uint16_t basic_handoff_pre_hl = ((uint16_t)cpu.h << 8) | cpu.l;\n"
+        "    uint8_t basic_handoff_pre_a = cpu.a;\n"
+        "    int basic_handoff_mode_before = mode;\n"
+        "    unsigned basic_handoff_idx = 0;\n"
+        "    int basic_handoff_src = overlay(cpu.pc, &basic_handoff_idx);\n"
+        "    uint8_t basic_handoff_op = 0x00;\n"
+        "    if (basic_handoff_src == 1) basic_handoff_op = rom[basic_handoff_idx];\n"
+        "    else if (basic_handoff_src == 2) basic_handoff_op = cart_enabled ? cart[cpu.pc - 0x4000] : 0xFF;\n"
+        "    else basic_handoff_op = ram[cpu.pc];\n"
+        "    int basic_handoff_active = basic_probe_handoff_seen_0100 && !basic_probe_handoff_seen_4000;\n"
+        "    if (cpu.pc == 0x0100) { basic_probe_handoff_seen_0100 = 1; basic_handoff_active = 1; }\n"
+        "    i8080_step(&cpu);\n"
+        "    if (basic_handoff_active) {\n"
+        "      int basic_handoff_control =\n"
+        "        basic_handoff_op == 0xC3 || basic_handoff_op == 0xC2 || basic_handoff_op == 0xCA ||\n"
+        "        basic_handoff_op == 0xD2 || basic_handoff_op == 0xDA || basic_handoff_op == 0xE2 ||\n"
+        "        basic_handoff_op == 0xEA || basic_handoff_op == 0xF2 || basic_handoff_op == 0xFA ||\n"
+        "        basic_handoff_op == 0xCD || basic_handoff_op == 0xC4 || basic_handoff_op == 0xCC ||\n"
+        "        basic_handoff_op == 0xD4 || basic_handoff_op == 0xDC || basic_handoff_op == 0xE4 ||\n"
+        "        basic_handoff_op == 0xEC || basic_handoff_op == 0xF4 || basic_handoff_op == 0xFC ||\n"
+        "        basic_handoff_op == 0xC9 || basic_handoff_op == 0xC0 || basic_handoff_op == 0xC8 ||\n"
+        "        basic_handoff_op == 0xD0 || basic_handoff_op == 0xD8 || basic_handoff_op == 0xE0 ||\n"
+        "        basic_handoff_op == 0xE8 || basic_handoff_op == 0xF0 || basic_handoff_op == 0xF8 ||\n"
+        "        basic_handoff_op == 0xE9 || (basic_handoff_op & 0xC7) == 0xC7;\n"
+        "      int basic_handoff_should_sample =\n"
+        "        basic_probe_handoff_sample_count < 12 || basic_handoff_pre_pc < 0x0200 ||\n"
+        "        cpu.pc < 0x0200 || (cpu.pc >= 0x4000 && cpu.pc <= 0xBFFF) ||\n"
+        "        (basic_handoff_control && !(basic_handoff_pre_pc == 0x2010 && cpu.pc == 0x2009));\n"
+        "      if (basic_handoff_should_sample && basic_probe_handoff_sample_count < BASIC_HANDOFF_SAMPLE_MAX) {\n"
+        "        unsigned sample = basic_probe_handoff_sample_count++;\n"
+        "        basic_probe_handoff_pre_pc[sample] = basic_handoff_pre_pc;\n"
+        "        basic_probe_handoff_post_pc[sample] = cpu.pc;\n"
+        "        basic_probe_handoff_source[sample] = basic_handoff_src;\n"
+        "        basic_probe_handoff_opcode[sample] = basic_handoff_op;\n"
+        "        basic_probe_handoff_mode_before[sample] = basic_handoff_mode_before;\n"
+        "        basic_probe_handoff_mode_after[sample] = mode;\n"
+        "        basic_probe_handoff_sp[sample] = basic_handoff_pre_sp;\n"
+        "        basic_probe_handoff_a[sample] = basic_handoff_pre_a;\n"
+        "        basic_probe_handoff_bc[sample] = basic_handoff_pre_bc;\n"
+        "        basic_probe_handoff_de[sample] = basic_handoff_pre_de;\n"
+        "        basic_probe_handoff_hl[sample] = basic_handoff_pre_hl;\n"
+        "      }\n"
+        "      if ((cpu.pc >= 0x4000 && cpu.pc <= 0xBFFF) &&\n"
+        "          basic_probe_handoff_sample_count >= BASIC_HANDOFF_SAMPLE_MAX) {\n"
+        "        unsigned sample = BASIC_HANDOFF_SAMPLE_MAX - 1;\n"
+        "        basic_probe_handoff_pre_pc[sample] = basic_handoff_pre_pc;\n"
+        "        basic_probe_handoff_post_pc[sample] = cpu.pc;\n"
+        "        basic_probe_handoff_source[sample] = basic_handoff_src;\n"
+        "        basic_probe_handoff_opcode[sample] = basic_handoff_op;\n"
+        "        basic_probe_handoff_mode_before[sample] = basic_handoff_mode_before;\n"
+        "        basic_probe_handoff_mode_after[sample] = mode;\n"
+        "        basic_probe_handoff_sp[sample] = basic_handoff_pre_sp;\n"
+        "        basic_probe_handoff_a[sample] = basic_handoff_pre_a;\n"
+        "        basic_probe_handoff_bc[sample] = basic_handoff_pre_bc;\n"
+        "        basic_probe_handoff_de[sample] = basic_handoff_pre_de;\n"
+        "        basic_probe_handoff_hl[sample] = basic_handoff_pre_hl;\n"
+        "      }\n"
+        "      if (cpu.pc >= 0x4000 && cpu.pc <= 0xBFFF) basic_probe_handoff_seen_4000 = 1;\n"
+        "    }\n",
+        1,
+    )
+    src = src.replace(
         '  printf("\\n==== RAM write density (pages >0) ====\\n");\n',
         '  for (int a = 0x4000; a <= 0xBFFF; a++) cart_hist_count += pchist[a];\n'
         '  unsigned long basic_ram_nonzero = 0, basic_ram_sum = 0;\n'
@@ -259,6 +348,16 @@ def instrumented_trace_source() -> str:
         '    printf(" pc=%04X src=%u op=%02X mode=%u", basic_probe_exec_sample_pc[i] & 0xFFFF,\n'
         '           basic_probe_exec_sample_source[i], basic_probe_exec_sample_opcode[i] & 0xFF,\n'
         '           basic_probe_exec_sample_mode[i]);\n'
+        '  printf("\\n");\n'
+        '  printf("  basic_handoff_samples :");\n'
+        '  for (unsigned i = 0; i < basic_probe_handoff_sample_count; i++)\n'
+        '    printf(" pre=%04X post=%04X src=%u op=%02X mode=%u/%u sp=%04X a=%02X bc=%04X de=%04X hl=%04X",\n'
+        '           basic_probe_handoff_pre_pc[i] & 0xFFFF, basic_probe_handoff_post_pc[i] & 0xFFFF,\n'
+        '           basic_probe_handoff_source[i], basic_probe_handoff_opcode[i] & 0xFF,\n'
+        '           basic_probe_handoff_mode_before[i], basic_probe_handoff_mode_after[i],\n'
+        '           basic_probe_handoff_sp[i] & 0xFFFF, basic_probe_handoff_a[i] & 0xFF,\n'
+        '           basic_probe_handoff_bc[i] & 0xFFFF, basic_probe_handoff_de[i] & 0xFFFF,\n'
+        '           basic_probe_handoff_hl[i] & 0xFFFF);\n'
         '  printf("\\n");\n'
         '  printf("  basic_ram_write_samples :");\n'
         '  for (unsigned i = 0; i < basic_probe_ram_sample_count; i++)\n'
@@ -400,11 +499,16 @@ def parse_ram_probe(stdout: str) -> dict[str, int]:
     }
 
 
-def parse_samples(stdout: str) -> tuple[str, str, str]:
+def parse_samples(stdout: str) -> tuple[str, str, str, str]:
     match = SAMPLES_RE.search(stdout)
     if not match:
-        return "", "", ""
-    return match.group(1).strip(), match.group(2).strip(), match.group(3).strip()
+        return "", "", "", ""
+    return (
+        match.group(1).strip(),
+        match.group(2).strip(),
+        match.group(3).strip(),
+        match.group(4).strip(),
+    )
 
 
 def explain_source_samples(samples: str) -> str:
@@ -415,6 +519,39 @@ def explain_source_samples(samples: str) -> str:
         .replace("src=1", "src=rom")
         .replace("src=2", "src=cart")
     )
+
+
+def summarize_handoff_samples(samples: str) -> str:
+    expanded = explain_source_samples(samples)
+    records = HANDOFF_RECORD_RE.findall(expanded)
+    if not records:
+        return expanded or "none"
+    start = []
+    for pre, post, src, op, before, after, sp, a, bc, de, hl in records[:12]:
+        regs = f"bc={bc.upper()} de={de.upper()} hl={hl.upper()}"
+        start.append(
+            f"{pre.upper()}->{post.upper()} src={src} op={op.upper()} "
+            f"mode={before}/{after} {regs}"
+        )
+    entry = next(
+        (
+            record
+            for record in records
+            if 0x4000 <= int(record[1], 16) <= 0xBFFF
+        ),
+        None,
+    )
+    if entry:
+        pre, post, src, op, before, after, sp, a, bc, de, hl = entry
+        entry_text = (
+            f"; first `0x4000` entry: {pre.upper()}->{post.upper()} "
+            f"src={src} op={op.upper()} mode={before}/{after} "
+            f"sp={sp.upper()} a={a.upper()} bc={bc.upper()} "
+            f"de={de.upper()} hl={hl.upper()}"
+        )
+    else:
+        entry_text = "; first `0x4000` entry: not sampled"
+    return "start: " + " | ".join(start) + entry_text
 
 
 def parse_load_probe(stdout: str) -> dict[str, int | str]:
@@ -628,7 +765,7 @@ def main() -> int:
             pc_cart_count, pc_cart_mode1, pc_cart_mode2, pc_cart_opcode00, pchist_cart = parse_probe(proc.stdout)
             cart_overlay_reads, cart_pc_reads = parse_cart_reads(proc.stdout)
             ram_probe = parse_ram_probe(proc.stdout)
-            cart_samples, exec_samples, ram_samples = parse_samples(proc.stdout)
+            cart_samples, exec_samples, handoff_samples, ram_samples = parse_samples(proc.stdout)
             load_probe = parse_load_probe(proc.stdout)
             diff_probe = parse_diff_probe(proc.stdout)
             sha = hashlib.sha256(vram).hexdigest() if vram else ""
@@ -655,6 +792,7 @@ def main() -> int:
                     "ram_probe": ram_probe,
                     "cart_samples": cart_samples,
                     "exec_samples": exec_samples,
+                    "handoff_samples": handoff_samples,
                     "ram_samples": ram_samples,
                     "load_probe": load_probe,
                     "diff_probe": diff_probe,
@@ -796,7 +934,12 @@ def main() -> int:
                     "`jmon33.bin` mapping, `0xF008` is the byte after the `MOV M,A` "
                     "at `0xF007` in the local copy/clear loop."
                 )
-                if result["cart_samples"] or result["exec_samples"] or result["ram_samples"]:
+                if (
+                    result["cart_samples"]
+                    or result["exec_samples"]
+                    or result["handoff_samples"]
+                    or result["ram_samples"]
+                ):
                     lines.append(
                         "  First sampled cartridge reads: "
                         f"`{explain_source_samples(result['cart_samples'])}`."
@@ -804,6 +947,10 @@ def main() -> int:
                     lines.append(
                         "  First sampled execution in `0x4000..0xBFFF`: "
                         f"`{explain_source_samples(result['exec_samples'])}`."
+                    )
+                    lines.append(
+                        "  Sampled post-`0x0100` handoff path: "
+                        f"`{summarize_handoff_samples(result['handoff_samples'])}`."
                     )
                     lines.append(
                         "  First sampled BASIC-window writes: "

@@ -188,8 +188,10 @@ Historical merge notes:
   expansion-cartridge overlay and later executes in the `0x4000..0xBFFF` RAM
   window. The current boundary is sharper: Monitor 3.3 validates the cartridge
   header in high ROM, sets up a copy from the `0x4000` cartridge window into
-  low RAM at `0x0100`, jumps to `0x0100`, and only later falls into the
-  zero-filled `0x4000` RAM window. The loader copies the cartridge body from
+  low RAM at `0x0100`, jumps to the cartridge bootstrap at `0x0100`, which
+  jumps through `0x0107` to a `0x2000` relocation loop, and only later falls
+  linearly from `0x3FFF` into the zero-filled `0x4000` RAM window. The loader
+  copies the cartridge body from
   `0x0200` into matching low RAM for 7,680 bytes with 0 body mismatches, but
   the low entry/control area has exactly 14 byte mismatches.
   `docs/basic-low-stub-inspection.md`
@@ -197,7 +199,7 @@ Historical merge notes:
   pointer to `0xFFFE`, keeps the first `0x0200` bytes identical across both
   public BASIC media shapes, and leaves the body exact. The later `0x4000`
   execution fetches a zero-filled NOP sled from mode-1 RAM, not live cartridge
-  opcodes, and no user-visible BASIC prompt is produced. The
+  opcodes or a cartridge-overlay jump, and no user-visible BASIC prompt is produced. The
   probe also records why this is a compatibility
   boundary: MAME's local source warns that Monitor 3.3 does not seem compatible
   with the JBASIC expansion cartridge, and both tested BASIC images start with

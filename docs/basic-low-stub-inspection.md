@@ -151,6 +151,54 @@ copies from the `0x4000` cartridge window into low RAM starting at
 `0x0100`, then jumps to `0x0100`. The still-wrong later execution from
 zero-filled RAM at `0x4000` is therefore after this intentional handoff.
 
+## Runtime Cartridge Bootstrap
+
+The initial Monitor copy places cartridge offset `0x0000` at runtime
+RAM address `0x0100`, so the first runtime bootstrap snippets below
+disassemble `roms/jbasic11.bin` with file byte 0 mapped at CPU
+address `0x0100`.
+
+Initial entry stub:
+
+```text
+0100: C3 07 01  JMP  $0107
+0103: BA        CMP  D
+0104: DC 00 20  CC   $2000
+0107: C3 00 20  JMP  $2000
+010A: FF        RST  7
+010B: FF        RST  7
+010C: FF        RST  7
+010D: FF        RST  7
+010E: FF        RST  7
+010F: FF        RST  7
+```
+
+Relocation loop reached by that stub:
+
+```text
+2000: 21 00 02  LXI  H,$0200
+2003: 11 00 01  LXI  D,$0100
+2006: 01 00 20  LXI  B,$2000
+2009: 7E        MOV  A,M
+200A: 12        STAX D
+200B: 23        INX  H
+200C: 13        INX  D
+200D: 0B        DCX  B
+200E: 78        MOV  A,B
+200F: B1        ORA  C
+2010: C2 09 20  JNZ  $2009
+2013: C3 00 01  JMP  $0100
+```
+
+The source-aware launch probe now records this runtime path as
+`0x0100 -> 0x0107 -> 0x2000`. The `0x2000` loop copies runtime
+`0x0200..0x21FF` down to `0x0100..0x20FF`, then jumps back to
+`0x0100`; that is why the final loaded RAM shape compares cartridge
+offset `0x0100` against runtime `0x0100`. The same probe records the
+first later entry into the failing BASIC window as
+`0x3FFF -> 0x4000`, `src=ram`, `op=0x00`, `mode=1/1`: a linear
+fall-through into zero-filled RAM, not a cartridge-overlay jump.
+
 ## Linear Disassembly: Cartridge
 
 ```text
