@@ -278,9 +278,8 @@ Historical merge notes:
   `docs/jmon33-hdl-probe.md`.
 - **EKDOS cosim milestone:** `sync/ekdos_fdc_probe.py` now treats disk-backed
   runs as successful only when the framebuffer contains the EKDOS `A>` prompt
-  bitmap. A transient run with the external museum/juku3000 `J3KUTIL4.JUK`
-  EKDOS 2.30 image reaches `52K EKDOS 2.30` and `A>` in cosim. The repo still
-  now vendors the required public disk media under `media/disks/`. Arti
+  bitmap. The museum/juku3000 `J3KUTIL4.JUK` EKDOS 2.30 image is now vendored
+  under `media/disks/` and reaches `52K EKDOS 2.30` and `A>` in cosim. Arti
   `JUKU1.7Z` extracts `JUKU1.CPM`
   (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
   and reaches `A>` through the factory `TDD` path. `juku_top` now reaches the
@@ -291,6 +290,11 @@ Historical merge notes:
   routine guard for that evidence, with an opt-in deep rerun mode; the older
   checkpoint guard in `sync/ekdos_checkpoint_prompt_check.sh` remains useful
   for late-window diagnostics.
+- **Public software inventory classified:** `docs/public-software-archive-inventory.md`
+  records the observed Arti and Elektroonikamuuseum `tarkvara/` listings,
+  vendors the required binary/media inputs, confirms museum `JUKUROMS.ZIP` is
+  byte-identical to the tracked `roms/` payloads, and leaves only user/classroom/game
+  disks plus large tape/flux archives as optional preservation inputs.
 - **Owner measurement shortlist:** `docs/owner-measurement-shortlist.md`
   reduces the remaining physical-owner request to P0 programming/PROM/media
   truth plus P1 continuity items. `docs/fdc-hardware-handoff.md` is the exact

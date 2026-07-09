@@ -59,15 +59,13 @@ Current cosim result:
   `JUKU_DISK` and fails the report explicitly if the image is not a supported
   raw Juku disk size.
 - Disk-backed runs now also require a left-margin EKDOS `A>` prompt bitmap in
-  VRAM. A transient, non-vendored run with
-  `https://elektroonikamuuseum.ee/failid/juku/tarkvara/J3KUTIL4.JUK` reaches
+  VRAM. The vendored `media/disks/J3KUTIL4.JUK` museum utility disk reaches
   `52K EKDOS 2.30` and `A>` in cosim.
 - A stronger run with `https://arti.ee/juku/tarkvara/JUKU1.7Z` extracts the
   vendored `media/disks/JUKU1.CPM`
   (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
   and reaches `A>` through the factory `TDD` path.
-- The next implementation step is porting disk-backed FDC behavior into
-  `juku_top`.
+- The HDL `juku_top` prompt path is now guarded in `docs/fdc-readiness.md`.
 
 ## Raw disk sector backend
 `cosim/juk_disk.c` implements the raw MAME `FLOPPY_JUKU_FORMAT` geometry:

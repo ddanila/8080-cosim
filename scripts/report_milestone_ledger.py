@@ -101,6 +101,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check WD1772 PLA inspection freshness",
     )
+    public_software_inventory = marker(
+        "docs/public-software-archive-inventory.md",
+        "Status: **PUBLIC SOFTWARE INVENTORY CLASSIFIED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check source coverage audit freshness",
+    )
     ekdos_source_vendored = exists("ref/ekdos-source/EKDOS30.ASM") and marker(
         "ref/ekdos-source/SHA256SUMS",
         "EKDOS30.ASM",
@@ -471,6 +478,14 @@ def milestone_rows():
                     "the WD1772/VG93 PLM dump is normalized to JSON/CSV and "
                     "freshness-guarded; "
                     if wd1772_pla_normalized
+                    else ""
+                )
+                + (
+                    "`docs/public-software-archive-inventory.md` classifies the "
+                    "public Arti/museum software listings and vendors the required "
+                    "`J3KUTIL4.JUK` prompt-proof disk while confirming "
+                    "`JUKUROMS.ZIP` is byte-identical to `roms/`; "
+                    if public_software_inventory
                     else ""
                 )
                 + ekdos_source_m1_phrase

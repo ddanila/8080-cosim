@@ -60,23 +60,24 @@ inputs under `ref/extracted-software/` and records the extraction boundary in
 Record any later replacement source, filename, SHA-256, and software-list label
 in `media/disks/README.md`.
 
-## Transient Validation
+## Museum Utility Disk Validation
 
-An earlier transient run with the museum/juku3000 EKDOS 2.30 utility disk
-proved the cosim side reaches a live EKDOS prompt:
+The museum/juku3000 EKDOS 2.30 utility disk is now vendored and proves the
+cosim side reaches a live EKDOS prompt:
 
 | Field | Value |
 |---|---|
 | Source URL | `https://elektroonikamuuseum.ee/failid/juku/tarkvara/J3KUTIL4.JUK` |
-| Local policy | not currently vendored |
+| Vendored path | `media/disks/J3KUTIL4.JUK` |
 | Size | 819200 bytes |
 | SHA-1 | `fb8a5239cdd74eced3b0bb7ab8ec6e8b2092f4c3` |
+| SHA-256 | `d7a0b766a00c80ac487e24f48499386249534418ccb42739bae83a9e5a075de3` |
 | Probe status | `EKDOS A> PROMPT REACHED` |
 | Screen evidence | `52K EKDOS 2.30` and left-margin `A>` prompt |
 
 This was the first cosim proof for a disk-backed EKDOS image. The stronger
-vendored `JUKU1.CPM` proof below is now the default media gate; disk-backed FDC
-behavior still needs to be ported into `juku_top`.
+vendored `JUKU1.CPM` proof below is now the default media gate; the current
+HDL prompt path is guarded in `docs/fdc-readiness.md`.
 
 A follow-up run with Arti's public `JUKU1.7Z` found a stronger factory-media
 candidate. The archive extracts to a single 819200-byte raw image `JUKU1.CPM`;

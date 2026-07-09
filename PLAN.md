@@ -36,8 +36,8 @@ only after Tier 2.
 | **Digital twin** (`cosim/` + `hdl/` + `sync/`) | North star reached: die-accurate vm80a boots ekta37 **on the LVS-checked netlist**, byte-identical to cosim, interactive; 3-layer CI guard | Video output chain model, WD1793/EKDOS boot, jmon33-to-prompt, BASIC multi-ROM, sound; real PROM contents |
 | **Replica PCB** (`kicad/`) | v76 fully placed + routed: 237 footprints, 1548/1548, 0 unconnected, 0 clearance/short DRC; power widened; Gerbers/drill/renders exported with KiCad 10.99 nightly; top-level manufacturing gate is **READY TO UPLOAD** with generated DRC disposition, external Gerber review, package geometry, sourcing, and bring-up verification evidence | Final vendor preview/payment evidence, **order** |
 | **VJUGA spinoff** (`spinoffs/minimal-vga/`) | Gate-4 fabrication candidate: routed 4-layer, ERC/DRC clean, JLCPCB BOM/CPL drafted, 19 socketed ICs + owner-ordered Z80/DRAM | Close human sign-offs, **order Rev A**, assemble, bring-up |
-| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates; extracted BASIC candidates are guarded under `ref/extracted-software/`; EKDOS `JBASIC` reaches a visible `READY` prompt in cosim and uninterrupted `juku_top` | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, cartridge BASIC truth, and a short owner measurement list |
-| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images vendored and `JUKU1.CPM` boots to `A>` in cosim; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; disk BASIC candidates are extracted in `docs/basic-disk-extraction.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums; `JUKPROG2.CPM` `JBASIC` reaches a visible `READY` prompt in cosim; uninterrupted HDL now proves EKDOS `A>`, visible `A>JBASIC`, and BASIC `READY` from reset | РЕ3/РТ4 PROM binaries and cartridge/Monitor 3.3 BASIC-launch truth |
+| **Reference base** (`ref/`, `~/fun/juku3000`) | Full Э3+СБ+ВП read (11/11 ВП sheets), 219→317-net LVS, provenance-tagged; public-source coverage audited in `docs/source-coverage-audit.md`; public Arti/museum software listings classified in `docs/public-software-archive-inventory.md`; vendored Arti `JUKU1.CPM` boots to `A>` in cosim; vendored disk catalog identifies disk-side `JBASIC.COM` / BASIC toolchain candidates; extracted BASIC candidates are guarded under `ref/extracted-software/`; EKDOS `JBASIC` reaches a visible `READY` prompt in cosim and uninterrupted `juku_top` | Finish only the source items still material to board/twin proof: Baltijets programming disk or PROM dumps, cartridge BASIC truth, and a short owner measurement list |
+| **Firmware/media** (`roms/`, `media/disks/`, `media/system/`) | Full canonical ROM set plus public Juku Monitor 2.2 vendored; Arti `JUKU1/JUKU2` raw disk images plus museum `J3KUTIL4.JUK` vendored and `JUKU1.CPM` boots to `A>` in cosim; museum `JUKUROMS.ZIP` inspected as byte-identical to `roms/`; visible CP/M directories are generated in `docs/vendored-disk-catalog.md`; disk BASIC candidates are extracted in `docs/basic-disk-extraction.md`; public CP/M/EKDOS system binaries from `JUKUSYS.ZIP` are vendored with checksums; `JUKPROG2.CPM` `JBASIC` reaches a visible `READY` prompt in cosim; uninterrupted HDL now proves EKDOS `A>`, visible `A>JBASIC`, and BASIC `READY` from reset | РЕ3/РТ4 PROM binaries and cartridge/Monitor 3.3 BASIC-launch truth |
 
 ## 3. New external unlocks (ecosystem survey, 2026-07-06)
 
@@ -57,11 +57,15 @@ The July 2026 survey of the online ecosystem changes the plan materially:
    video timing (49.92 Hz frame, 241-line raster) that our video-chain model needs.
    MAME PR #9946/#14817 discussions are the timing reference.
 3. **EKDOS is available in-tree**: Arti `JUKU1.7Z` / `JUKU2.7Z` public raw disk
-   images are now vendored under `media/disks/`; `JUKU1.CPM` boots through
+   images plus museum `J3KUTIL4.JUK` are now vendored under `media/disks/`;
+   `JUKU1.CPM` boots through
    ROMBIOS `TDD` to `A>` in cosim. The raw geometry is specified in
    juku3000's cpmtools `diskdefs` + MAME `FLOPPY_JUKU_FORMAT`; EKDOS 2.30
    **source** is now vendored under `ref/ekdos-source/`. The museum
    `JUKUSYS.ZIP` CP/M/EKDOS binaries are also vendored under `media/system/`.
+   The remaining public Arti/museum software listings are classified in
+   `docs/public-software-archive-inventory.md`; no unvendored public disk is
+   required for current EKDOS/JBASIC evidence.
    The visible CP/M directory catalog is generated in
    `docs/vendored-disk-catalog.md`, including `JBASIC.COM` on the default
    `JUKU1.CPM` boot disk and a fuller BASIC compiler/runtime set on
@@ -171,11 +175,10 @@ debugging session saved on real hardware.
    `EKDOS_PROBE_DISK=/path/to/image` / `JUKU_DISK=/path/to/image`.
    Required public disk images are vendored in `media/disks/`, and the public
    EKDOS 2.30 BIOS source reference is vendored in `ref/ekdos-source/`;
-   `docs/ekdos-media-acquisition.md` tracks the media gate. A transient run
-   with the museum/juku3000
-   `J3KUTIL4.JUK` EKDOS 2.30 image reaches the `A>` prompt in cosim, and the
-   probe now has an optional VRAM bitmap oracle for that boundary. A stronger
-   transient run with Arti `JUKU1.7Z` extracts `JUKU1.CPM`
+   `docs/ekdos-media-acquisition.md` tracks the media gate. The vendored
+   museum/juku3000 `J3KUTIL4.JUK` EKDOS 2.30 image reaches the `A>` prompt in
+   cosim, and the probe has a VRAM bitmap oracle for that boundary. A stronger
+   Arti `JUKU1.7Z` run extracts `JUKU1.CPM`
    (`SHA256 859b627d1439c4137f62b5f977ea7d99202e6874fc48c8b818341a38a0f8cd27`)
    and reaches the same `A>` prompt after the factory `<T>, <D>, <D>` path.
    The first HDL-side WD1793 behavior slice is now guarded by
