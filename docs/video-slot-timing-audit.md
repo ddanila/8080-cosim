@@ -24,6 +24,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
 | D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
 | D42/D43 serializer control/serial nets are present in the board JSON | PASS | `kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q |
+| D41 latch-chain output boundary is guarded | PASS | `docs/d41-timing-boundary.md` |
 | Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` V2 adjunct |
 | The DRAM model still exposes sim-only video read pins | PASS | `hdl/devices.v::dram_64kx1` |
 | LVS explicitly treats the sim-only video read pins as non-board pins | PASS | `sync/lvs.py` SIM_ONLY contract |
@@ -38,6 +39,8 @@ python3 scripts/report_video_slot_timing_audit.py
 - `ref/firmware/re3_dgsh5.106.117.hex`: `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18`
 - `docs/d94-reconstruction-constraints.md`: generated D94 `.092`
   address/output/firmware boundary plus text/photo lead audit.
+- `docs/d41-timing-boundary.md`: generated D41 output-side net
+  guard plus explicit input/control timing-bus boundary.
 
 ## Interpretation
 
@@ -45,6 +48,9 @@ python3 scripts/report_video_slot_timing_audit.py
   expected 40 x 241 framebuffer stream.
 - The physical chips for the serializer and mux/decode path are present in
   the structural model, so this is no longer a vague video-output gap.
+- D41's output-side role is now narrowed: QA/QB are modeled, while
+  serial input, parallel inputs, load, gate, and clock remain a timing-bus
+  source-read/continuity boundary.
 - The missing piece is the exact video-read slot schedule, which depends on
   the still-undumped D94 `ДГШ5.106.092` РЕ3 timing PROM plus the adjacent
   АГ3 timing. The repo has guarded `.113/.117` scans, but those are not the

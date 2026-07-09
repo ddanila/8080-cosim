@@ -533,6 +533,13 @@ def milestone_rows():
         "docs/video-slot-timing-audit.md",
         "D94 `.092`",
     )
+    d41_timing_boundary = marker(
+        "docs/d41-timing-boundary.md",
+        "Status: **D41 OUTPUTS GUARDED / INPUT TIMING BUS PENDING**",
+    ) and marker(
+        "docs/d41-timing-boundary.md",
+        "D41.QA selects D50",
+    )
     d94_constraints = marker(
         "docs/d94-reconstruction-constraints.md",
         "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**",
@@ -855,6 +862,14 @@ def milestone_rows():
                     "sim-only `VA/VQ` read path, and missing D94 `.092` timing "
                     "PROM/table; "
                     if video_slot_timing_audit
+                    else ""
+                )
+                + (
+                    "`docs/d41-timing-boundary.md` narrows the D41 ИР16 gap to "
+                    "input/control timing-bus pins: QA/QB output-side nets are "
+                    "guarded, while pins 1-6/8/9 remain source-read or continuity "
+                    "work; "
+                    if d41_timing_boundary
                     else ""
                 )
                 + (

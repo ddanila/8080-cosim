@@ -22,6 +22,7 @@ REQUIRED = [
     ROOT / "docs" / "beeper-readiness.md",
     ROOT / "docs" / "serial-handoff.md",
     ROOT / "docs" / "decap-value-fidelity.md",
+    ROOT / "docs" / "d41-timing-boundary.md",
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
@@ -136,6 +137,7 @@ def main() -> int:
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**")),
+        ("D41 timing boundary guarded", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 OUTPUTS GUARDED / INPUT TIMING BUS PENDING**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/basic-cartridge-tail-hypotheses.md", "Status: **SIMPLE TAIL HYPOTHESES REJECTED**")),
@@ -181,9 +183,9 @@ def main() -> int:
         (
             "P1",
             "memory-decode stragglers",
-            "D6 V1/V2 feed, C99 far plate, and D36/D39/D53 RAM-strobe ambiguous feeds",
-            "`docs/replica-bringup-verification-points.md`; `PLAN.md` WS-A/WS-F",
-            "tightens the as-built netlist around RAM timing before netlist freeze",
+            "D6 V1/V2 feed, C99 far plate, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins",
+            "`docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-A/WS-F",
+            "tightens the as-built netlist around RAM/video timing before netlist freeze",
         ),
         (
             "P2",
