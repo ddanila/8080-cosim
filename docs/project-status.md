@@ -33,10 +33,11 @@ schematic*), with `cosim/` + MAME as validation oracles.
   required by the manufacturing readiness gate.
 - **Digital-twin gaps are bounded:** EKDOS reaches `A>` in cosim with external media;
   HDL WD1793 synthetic-sector behavior is guarded; jmon33 first-write HDL coverage
-  passes while the stronger cursor boundary remains blank at the bounded 300-write
-  diagnostic; BASIC cartridge reads are proven for both `jbasic11.bin` and the
-  legacy BAS0-3 image, but the Monitor 3.3 path is now documented as a
-  compatibility boundary and the RAM execution window remains zero-filled. The
+  passes while the stronger cursor boundary is now pinned as an uninterrupted
+  1,000-write partial-cursor diagnostic with the full framebuffer hash still
+  open; BASIC cartridge reads are proven for both `jbasic11.bin` and the legacy
+  BAS0-3 image, but the Monitor 3.3 path is now documented as a compatibility
+  boundary and the RAM execution window remains zero-filled. The
   Baltijets factory `A` command BASIC clue is now separately guarded and still
   has no public ROM/media pairing that reaches the BASIC banner/`READY` oracle.
 
@@ -151,9 +152,9 @@ Historical merge notes:
   `+cursorstop=1` testbench stop hook for that cursor boundary, and
   `sync/jmon33_hdl_cursor_probe.py` records the current bounded HDL state:
   first write still matches at `0xFF40`; a deeper uninterrupted diagnostic now
-  stops cleanly at 400 VRAM writes / 579,068 M-cycles with a trustworthy
-  nonblank framebuffer dump (64 visible pixels), but still does not reach the
-  cursor oracle. The stronger checkpoint-resumed
+  runs cleanly to 1,000 VRAM writes / 23,597,501 M-cycles under Verilator,
+  proving a stable 8/10-row partial cursor at `x=8`, `y=20`; the final two
+  cursor rows / full framebuffer hash remain open. The stronger checkpoint-resumed
   proof in `sync/jmon33_checkpoint_cursor_probe.py` now starts from a blank
   late cosim checkpoint and reaches the same monitor-idle cursor framebuffer
   SHA256 in `juku_top`. `sync/jmon33_command_probe.py` now proves the cosim

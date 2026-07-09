@@ -85,6 +85,12 @@ def cursor_block_ok(vram: bytes) -> bool:
     return True
 
 
+def cursor_rows(vram: bytes) -> list[int]:
+    if len(vram) != VRAM_STRIDE * VRAM_LINES:
+        return []
+    return [vram[y * VRAM_STRIDE + 1] for y in range(20, 30)]
+
+
 def visible_pixels(vram: bytes) -> int:
     if len(vram) != VRAM_STRIDE * VRAM_LINES:
         return 0
@@ -103,6 +109,8 @@ def main() -> int:
     timecap = int(os.environ.get("JMON33_HDL_CURSOR_TIMECAP", "1200000000"))
     trace_progress = int(os.environ.get("JMON33_HDL_CURSOR_TRACEPROGRESS", "0"))
     timeout_s = int(os.environ.get("JMON33_HDL_CURSOR_TIMEOUT", "90"))
+    simulator = os.environ.get("JMON33_HDL_CURSOR_SIM", "icarus")
+    stop_hook = int(os.environ.get("JMON33_HDL_CURSOR_STOPHOOK", "1"))
     old_vram = VRAM_TOP.read_bytes() if VRAM_TOP.exists() else None
 
     try:
@@ -110,36 +118,65 @@ def main() -> int:
             tmpdir = Path(tmp)
             sim = tmpdir / "juku_top_jmon33"
             write_rom_hex()
-            build = run(
-                [
-                    "iverilog",
-                    "-g2012",
-                    "-o",
-                    str(sim),
-                    "hdl/vendor/vm80a.v",
-                    "hdl/devices.v",
-                    "hdl/juku_top.v",
-                    "hdl/sim/juku_top_tb.v",
-                ]
-            )
+            if simulator == "icarus":
+                build = run(
+                    [
+                        "iverilog",
+                        "-g2012",
+                        "-o",
+                        str(sim),
+                        "hdl/vendor/vm80a.v",
+                        "hdl/devices.v",
+                        "hdl/juku_top.v",
+                        "hdl/sim/juku_top_tb.v",
+                    ]
+                )
+                run_cmd = ["vvp", str(sim)]
+            elif simulator == "verilator":
+                if not shutil.which("verilator"):
+                    sys.stderr.write("verilator not found\n")
+                    return 2
+                build = run(
+                    [
+                        "verilator",
+                        "--binary",
+                        "--timing",
+                        "-Wno-fatal",
+                        "--top-module",
+                        "juku_top_tb",
+                        "-Mdir",
+                        str(tmpdir / "obj"),
+                        "hdl/vendor/vm80a.v",
+                        "hdl/devices.v",
+                        "hdl/juku_top.v",
+                        "hdl/sim/juku_top_tb.v",
+                    ]
+                )
+                sim = tmpdir / "obj" / "Vjuku_top_tb"
+                run_cmd = [str(sim)]
+            else:
+                sys.stderr.write(
+                    f"unsupported JMON33_HDL_CURSOR_SIM={simulator} "
+                    "(expected icarus or verilator)\n"
+                )
+                return 2
             if build.returncode != 0:
                 sys.stderr.write(build.stdout)
                 sys.stderr.write(build.stderr)
                 return build.returncode
             try:
-                vvp_cmd = [
-                    "vvp",
-                    str(sim),
+                sim_cmd = [
+                    *run_cmd,
                     "+rom=hdl/sim/jmon33.hex",
                     f"+frameirq={frame_irq}",
-                    "+cursorstop=1",
+                    f"+cursorstop={stop_hook}",
                     f"+maxvram={max_vram}",
                     f"+timecap={timecap}",
                     f"+traceprogress={trace_progress}",
                 ]
-                if shutil.which("stdbuf"):
-                    vvp_cmd = ["stdbuf", "-oL", "-eL", *vvp_cmd]
-                proc = run(vvp_cmd, timeout=timeout_s)
+                if simulator == "icarus" and shutil.which("stdbuf"):
+                    sim_cmd = ["stdbuf", "-oL", "-eL", *sim_cmd]
+                proc = run(sim_cmd, timeout=timeout_s)
                 timed_out = False
             except subprocess.TimeoutExpired as exc:
                 proc = subprocess.CompletedProcess(
@@ -161,12 +198,19 @@ def main() -> int:
 
     sha = hashlib.sha256(vram).hexdigest() if vram else ""
     cursor_ok = cursor_block_ok(vram)
+    rows = cursor_rows(vram)
+    solid_rows = sum(1 for value in rows if value == 0xFF)
     pixels = visible_pixels(vram)
     nonzero = nonzero_bytes(vram)
     cursor_reached = bool(parsed.get("cursor_reached")) and sha == EXPECTED_CURSOR_SHA256 and cursor_ok
     first_ok = parsed.get("first_addr") == "ff40"
-    bounded_ok = proc.returncode == 0 and first_ok and sha in {EXPECTED_CURSOR_SHA256, BLANK_VRAM_SHA256}
-    status = "JMON33 HDL CURSOR ORACLE REACHED" if cursor_reached else "JMON33 HDL CURSOR ORACLE NOT YET REACHED"
+    bounded_ok = proc.returncode == 0 and first_ok and bool(parsed.get("vram_dumped"))
+    if cursor_reached:
+        status = "JMON33 HDL CURSOR ORACLE REACHED"
+    elif solid_rows:
+        status = "JMON33 HDL PARTIAL CURSOR BOUNDARY PINNED / FULL ORACLE PENDING"
+    else:
+        status = "JMON33 HDL CURSOR ORACLE NOT YET REACHED"
 
     lines = [
         "# jmon33 HDL cursor-boundary probe",
@@ -174,7 +218,7 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This bounded diagnostic runs Monitor 3.3 on `juku_top` with frame",
-        "interrupts enabled and the `+cursorstop=1` testbench hook active. It",
+        "interrupts enabled and an optional `+cursorstop=1` testbench hook. It",
         "records whether the structural HDL reaches the same monitor-idle cursor",
         "oracle that cosim records in `docs/jmon33-ready-probe.md`.",
         "",
@@ -187,6 +231,8 @@ def main() -> int:
         "Environment overrides:",
         "",
         f"- `JMON33_HDL_CURSOR_MAXVRAM` default `{max_vram}`",
+        f"- `JMON33_HDL_CURSOR_SIM` default `{simulator}`; optional `verilator`",
+        f"- `JMON33_HDL_CURSOR_STOPHOOK` default `{stop_hook}`",
         f"- `JMON33_HDL_CURSOR_FRAMEIRQ` default `{frame_irq}`",
         f"- `JMON33_HDL_CURSOR_TIMECAP` default `{timecap}`",
         f"- `JMON33_HDL_CURSOR_TRACEPROGRESS` default `{trace_progress}`",
@@ -196,12 +242,15 @@ def main() -> int:
         "",
         "| Check | Result |",
         "| --- | --- |",
-        f"| vvp exit code | `{proc.returncode}` |",
+        f"| simulator | `{simulator}` |",
+        f"| simulator exit code | `{proc.returncode}` |",
         f"| subprocess timeout | {'YES' if timed_out else 'NO'} |",
         f"| first jmon33 video write is `0xFF40` | {'PASS' if first_ok else 'FAIL'} |",
         f"| cursor hook reached | {'PASS' if bool(parsed.get('cursor_reached')) else 'NO'} |",
         f"| framebuffer dump observed | {'PASS' if bool(parsed.get('vram_dumped')) else 'NO'} |",
         f"| framebuffer cursor bytes match cosim | {'PASS' if cursor_ok else 'NO'} |",
+        f"| solid cursor rows at `x=8`, `y=20..29` | `{solid_rows}/10` |",
+        f"| cursor row bytes | `{rows or 'missing'}` |",
         f"| visible framebuffer pixels | `{pixels}` |",
         f"| nonzero framebuffer bytes | `{nonzero}` |",
         f"| framebuffer SHA256 | `{sha or 'missing'}` |",
@@ -221,6 +270,15 @@ def main() -> int:
     ]
     if cursor_reached:
         lines.append("- `juku_top` reached the cosim monitor-idle cursor boundary in this bounded run.")
+    elif solid_rows:
+        lines.extend(
+            [
+                f"- `juku_top` reached a stable partial cursor boundary ({solid_rows}/10 rows)",
+                "  in an uninterrupted run from reset.",
+                "- The full cosim monitor-idle framebuffer hash remains open; the next",
+                "  diagnostic target is the final two cursor rows / full VRAM hash.",
+            ]
+        )
     else:
         lines.extend(
             [

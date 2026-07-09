@@ -348,6 +348,13 @@ def milestone_rows():
         "docs/jmon33-hdl-fdc-command-probe.md",
         "JMON33 HDL FDC T-COMMAND ORACLE PINNED",
     )
+    jmon33_hdl_partial_cursor = marker(
+        "docs/jmon33-hdl-cursor-probe.md",
+        "Status: **JMON33 HDL PARTIAL CURSOR BOUNDARY PINNED / FULL ORACLE PENDING**",
+    ) and marker(
+        "docs/jmon33-hdl-cursor-probe.md",
+        "solid cursor rows at `x=8`, `y=20..29` | `8/10`",
+    )
     jmon33_checkpoint_cursor = marker(
         "docs/jmon33-checkpoint-cursor-probe.md",
         "Status: **PASS**",
@@ -653,6 +660,14 @@ def milestone_rows():
                     "`docs/jmon33-idle-command-probe.md` pins the delayed "
                     "idle-prompt command oracle for checkpoint-resumed HDL work. "
                     if jmon33_idle_command_surface
+                    else ""
+                )
+                + (
+                    "`docs/jmon33-hdl-cursor-probe.md` now pushes the uninterrupted "
+                    "`juku_top` Monitor 3.3 cursor diagnostic to 1,000 VRAM writes / "
+                    "23,597,501 M-cycles under Verilator and pins the stable 8/10-row "
+                    "partial cursor boundary; the full cosim framebuffer hash remains open. "
+                    if jmon33_hdl_partial_cursor
                     else ""
                 )
                 + (

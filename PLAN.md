@@ -426,9 +426,10 @@ debugging session saved on real hardware.
    `+cursorstop=1` stop hook for that same cursor boundary, and
    `sync/jmon33_hdl_cursor_probe.py` documents the bounded `juku_top` state:
    first write still matches at `0xFF40`; a deeper uninterrupted diagnostic now
-   stops cleanly at 400 VRAM writes / 579,068 M-cycles with a trustworthy
-   nonblank framebuffer dump (64 visible pixels), but still does not reach the
-   cursor oracle. The stronger checkpoint-resumed
+   runs cleanly to 1,000 VRAM writes / 23,597,501 M-cycles under Verilator,
+   proving a stable 8/10-row partial cursor at `x=8`, `y=20` with the final
+   two cursor rows still missing from the full cosim framebuffer hash. The
+   stronger checkpoint-resumed
    boundary is now guarded by `sync/jmon33_checkpoint_cursor_probe.py`: a late
    pre-cursor cosim checkpoint at 3,801,005 cycles / PC `0xF2C0` still has a
    blank framebuffer, and checkpoint-resumed `juku_top` services Monitor 3.3
