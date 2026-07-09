@@ -51,8 +51,10 @@ jobs:
             sync/basic_factory_command_probe.py \
             sync/basic_entry_probe.py \
             kicad/report_replica_bringup_verification.py \
+            kicad/report_dual_config_bom.py \
             kicad/report_replica_order_upload_runbook.py \
             kicad/report_replica_order_evidence_template.py \
+            kicad/report_replica_sourcing_readiness.py \
             kicad/report_replica_manufacturing_readiness.py
 
       - name: Check milestone ledger freshness
@@ -122,6 +124,15 @@ jobs:
           python3 kicad/report_replica_bringup_verification.py
           git diff --exit-code -- \
             docs/replica-bringup-verification-points.md
+
+      - name: Check replica sourcing/BOM report freshness
+        run: |
+          python3 kicad/report_dual_config_bom.py
+          python3 kicad/report_replica_sourcing_readiness.py
+          git diff --exit-code -- \
+            docs/replica-dual-config-bom.csv \
+            docs/replica-dual-config-bom.md \
+            docs/replica-sourcing-readiness.md
 
   lvs:
     runs-on: ubuntu-latest

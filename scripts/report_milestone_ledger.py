@@ -148,6 +148,14 @@ def milestone_rows():
         "docs/replica-manufacturing-readiness.md",
         "| Order readiness | `fab/gerbers/order-readiness.md`",
     )
+    sourcing_ready = marker(
+        "docs/replica-sourcing-readiness.md",
+        "Status: **SOURCING READY / PROGRAMMING BLOCKED**",
+    )
+    dual_config_bom_ready = marker(
+        "docs/replica-dual-config-bom.md",
+        "Source: `kicad/juku.board.json`",
+    ) and exists("docs/replica-dual-config-bom.csv")
     parts_inventory_template = exists("docs/replica-parts-inventory-template.md")
     ekdos_external_prompt = marker(
         "docs/ekdos-media-acquisition.md",
@@ -758,6 +766,13 @@ def milestone_rows():
             "status": "EVIDENCE TEMPLATE READY / EXTERNAL PENDING" if parts_inventory_template else "OPEN",
             "evidence": (
                 "`docs/replica-sourcing-readiness.md` defines the source/test gate; "
+                + (
+                    "`docs/replica-dual-config-bom.md` and "
+                    "`docs/replica-dual-config-bom.csv` provide the generated "
+                    "functional/modernized kit BOM; "
+                    if sourcing_ready and dual_config_bom_ready
+                    else ""
+                ) +
                 "`docs/replica-parts-inventory-template.md` defines the received-parts "
                 "and PROM/EPROM programming evidence record, including carry-forward "
                 "of the bring-up verification checklist. No filled inventory or "
