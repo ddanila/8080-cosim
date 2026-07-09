@@ -26,7 +26,7 @@ schematic*), with `cosim/` + MAME as validation oracles.
 - **Replica package is repo-ready for vendor upload:** `docs/replica-manufacturing-readiness.md`
   is **READY TO UPLOAD** and `fab/gerbers/order-readiness.md` is **ORDER READY**.
   The final upload ZIP is `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-  with SHA256 `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211`.
+  with SHA256 `93de3fc0a16b4bb31a4f613af69833ed24353d403d8870a774e365d534a7c815`.
   Remaining M7 proof is external vendor preview/order evidence.
 - **Residual fabrication/bring-up risks are now explicit:** `docs/replica-bringup-verification-points.md`
   generates 41 source-risk verification points from `kicad/juku.board.json` and is

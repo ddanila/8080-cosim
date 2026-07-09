@@ -7,7 +7,7 @@
 > **reached** for the boot path) and [`docs/roadmap.md`](docs/roadmap.md) (the
 > structural-track phases). Purely historical/preservation project, no commercial value.
 >
-> Status date: 2026-07-08. Update this file as milestones land.
+> Status date: 2026-07-09. Update this file as milestones land.
 
 ## 1. Definition of done (tiered)
 
@@ -29,7 +29,7 @@ network protocol, the E4701 mouse, И41/Multibus expansion cards. These are the 
 documented subsystems (also unemulated in MAME) and none block Tiers 1–3. Revisit
 only after Tier 2.
 
-## 2. Where we are (2026-07-08 snapshot)
+## 2. Where we are (2026-07-09 snapshot)
 
 | Track | State | Remaining to goal |
 |---|---|---|
