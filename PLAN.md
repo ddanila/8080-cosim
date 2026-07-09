@@ -752,7 +752,7 @@ deliverable names, and verification commands.
 | РЕ3/РТ4 reconstructed tables subtly wrong on real HW | boot failure hard to localize | Baltijets disk files / dumps before burning; socketed PROMs; twin-predicted bus traces at bring-up |
 | Replica 2-layer routing (ours ≠ original copper) has SI/crosstalk issues at 16 MHz dot clock | flaky video/DRAM | VJUGA proves the timing approach first; original worked on 2 layers — keep power widening + DFM review honest; socketed staged bring-up |
 | NOS Soviet parts dead/counterfeit | schedule slip | spares + acceptance-test jig; western functional config as fallback (Tier 2 doesn't require NOS) |
-| Residual source-risk nets wrong | localized rework | 41 generated bring-up verification points in `docs/replica-bringup-verification-points.md`; bodge-friendly (the original board had factory wires too) |
+| Residual source-risk nets or unnetted functional pins wrong | localized rework | 36 generated bring-up verification nets in `docs/replica-bringup-verification-points.md` plus the pin-level closure rows in `docs/owner-measurement-shortlist.md`; bodge-friendly (the original board had factory wires too) |
 | СНП59 connectors unobtainable | mechanical infidelity | adapters/substitutes for Tier 1–2; hunt originals for Tier 3 |
 | ROM/software rights question resurfaces | takedown of `roms/` | policy already in `roms/README.md`; images re-fetchable from MAME/museum archives |
 | Solo-project stall on the long grind | — | keep milestones small and CI-guarded (the repo's proven loop discipline); community engagement adds pull |

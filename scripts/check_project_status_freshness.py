@@ -9,9 +9,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT_STATUS = ROOT / "docs" / "project-status.md"
+PLAN = ROOT / "PLAN.md"
 MANUFACTURING = ROOT / "docs" / "replica-manufacturing-readiness.md"
 BASIC_MISSING = ROOT / "docs" / "basic-cartridge-missing-page-constraints.md"
 BRINGUP = ROOT / "docs" / "replica-bringup-verification-points.md"
+OWNER_SHORTLIST = ROOT / "docs" / "owner-measurement-shortlist.md"
 
 
 def read(path: Path) -> str:
@@ -39,9 +41,11 @@ def extract_int(text: str, label: str) -> int:
 
 def main() -> int:
     project = read(PROJECT_STATUS)
+    plan = read(PLAN)
     manufacturing = read(MANUFACTURING)
     basic_missing = read(BASIC_MISSING)
     bringup = read(BRINGUP)
+    owner_shortlist = read(OWNER_SHORTLIST)
     failures: list[str] = []
 
     upload_sha = extract_zip_sha(manufacturing)
@@ -66,6 +70,18 @@ def main() -> int:
         "project status does not mirror bring-up endpoint coverage and X2/P5V closure",
         failures,
     )
+    require(
+        f"{risk_nets} generated bring-up verification nets" in plan
+        and "pin-level closure rows" in plan,
+        "PLAN risk table does not mirror current bring-up net count and pin-level closure coverage",
+        failures,
+    )
+    for ref in ("D2", "D41", "D93", "D94", "D100", "S4"):
+        require(
+            f"`{ref}`" in owner_shortlist,
+            f"owner shortlist no longer contains pin-level closure row for {ref}",
+            failures,
+        )
 
     require(
         "docs/basic-cartridge-missing-page-constraints.md" in project,
