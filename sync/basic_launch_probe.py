@@ -106,6 +106,7 @@ def instrumented_trace_source() -> str:
         "static unsigned basic_probe_ram_first_write_pc = 0;\n"
         "static unsigned basic_probe_ram_last_write_pc = 0;\n"
         "#define BASIC_SAMPLE_MAX 8\n"
+        "#define BASIC_MISMATCH_SAMPLE_MAX 16\n"
         "static unsigned basic_probe_cart_sample_count = 0;\n"
         "static unsigned basic_probe_cart_sample_pc[BASIC_SAMPLE_MAX];\n"
         "static unsigned basic_probe_cart_sample_addr[BASIC_SAMPLE_MAX];\n"
@@ -250,15 +251,15 @@ def instrumented_trace_source() -> str:
         '  for (unsigned i = 0; i < 8; i++) printf(" %02X", cart[0x0200 + i]);\n'
         '  printf("\\n");\n'
         '  unsigned long cart_ram_0100_mismatches = 0, cart_ram_0200_mismatches = 0;\n'
-        '  unsigned low_mismatch_addr[BASIC_SAMPLE_MAX], low_mismatch_ram[BASIC_SAMPLE_MAX];\n'
-        '  unsigned low_mismatch_cart[BASIC_SAMPLE_MAX], low_mismatch_count = 0;\n'
-        '  unsigned body_mismatch_addr[BASIC_SAMPLE_MAX], body_mismatch_ram[BASIC_SAMPLE_MAX];\n'
-        '  unsigned body_mismatch_cart[BASIC_SAMPLE_MAX], body_mismatch_count = 0;\n'
+        '  unsigned low_mismatch_addr[BASIC_MISMATCH_SAMPLE_MAX], low_mismatch_ram[BASIC_MISMATCH_SAMPLE_MAX];\n'
+        '  unsigned low_mismatch_cart[BASIC_MISMATCH_SAMPLE_MAX], low_mismatch_count = 0;\n'
+        '  unsigned body_mismatch_addr[BASIC_MISMATCH_SAMPLE_MAX], body_mismatch_ram[BASIC_MISMATCH_SAMPLE_MAX];\n'
+        '  unsigned body_mismatch_cart[BASIC_MISMATCH_SAMPLE_MAX], body_mismatch_count = 0;\n'
         '  if (cart_enabled) {\n'
         '    for (unsigned a = 0x0100; a < 0x0200; a++) {\n'
         '      if (ram[a] != cart[a]) {\n'
         '        cart_ram_0100_mismatches++;\n'
-        '        if (low_mismatch_count < BASIC_SAMPLE_MAX) {\n'
+        '        if (low_mismatch_count < BASIC_MISMATCH_SAMPLE_MAX) {\n'
         '          unsigned sample = low_mismatch_count++;\n'
         '          low_mismatch_addr[sample] = a;\n'
         '          low_mismatch_ram[sample] = ram[a];\n'
@@ -270,7 +271,7 @@ def instrumented_trace_source() -> str:
         '    for (unsigned a = 0x0200; a < body_limit; a++) {\n'
         '      if (ram[a] != cart[a]) {\n'
         '        cart_ram_0200_mismatches++;\n'
-        '        if (body_mismatch_count < BASIC_SAMPLE_MAX) {\n'
+        '        if (body_mismatch_count < BASIC_MISMATCH_SAMPLE_MAX) {\n'
         '          unsigned sample = body_mismatch_count++;\n'
         '          body_mismatch_addr[sample] = a;\n'
         '          body_mismatch_ram[sample] = ram[a];\n'
