@@ -268,6 +268,10 @@ Historical merge notes:
   opt-in `JUKU_TOP_FDC_STOPPROMPT=1` stop hook for that same bitmap oracle, so
   future long runs can terminate at the actual M2 target rather than a coarse
   framebuffer-write limit.
+- **Owner measurement shortlist:** `docs/owner-measurement-shortlist.md`
+  reduces the remaining physical-owner request to P0 programming/PROM/media
+  truth plus P1 continuity items; broad analog/video/sound captures stay in the
+  bring-up checklist.
 - **Beeper digital source guarded:** D57 PIT channel 1 (`OUT1`) now has a
   runnable guard (`sync/beeper_check.sh`) that programs a reload and proves the
   traced `SOUND` source toggles. The downstream VT1/R48 speaker driver remains

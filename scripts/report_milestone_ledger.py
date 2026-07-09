@@ -57,6 +57,13 @@ def table_row(values):
 def milestone_rows():
     pdf_count = count_baltijets_pdfs()
     public_sources_audited = source_coverage_audited()
+    owner_measurement_shortlist = marker(
+        "docs/owner-measurement-shortlist.md",
+        "Status: **READY**",
+    ) and marker(
+        "docs/owner-measurement-shortlist.md",
+        "D94 pin 15 enable",
+    )
     reconstructed_proms_exported = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
@@ -400,9 +407,16 @@ def milestone_rows():
                     else ""
                 )
                 + ekdos_source_m1_phrase
+                + (
+                    "`docs/owner-measurement-shortlist.md` reduces the remaining "
+                    "hardware-owner asks to programming/PROM/media truth plus P1 "
+                    "continuity items; "
+                    if owner_measurement_shortlist
+                    else ""
+                )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
             ),
-            "next": "Locate programming disk/media or get RE3/RT4 dumps; diff any D6/D8 dumps against the exported reconstruction fallbacks.",
+            "next": "Send the owner/community request, locate programming disk/media or get RE3/RT4 dumps, then diff any D6/D8 dumps against the exported reconstruction fallbacks.",
         },
         {
             "id": "M2",

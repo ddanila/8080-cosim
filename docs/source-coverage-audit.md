@@ -61,6 +61,7 @@ has been fully mined.
 | `docs/reconstructed-prom-fallbacks.md` | present |
 | `docs/ekdos-source-inspection.md` | present |
 | `docs/community-prom-media-request.md` | present |
+| `docs/owner-measurement-shortlist.md` | present |
 
 ## Board-critical materials already consumed
 
@@ -128,7 +129,7 @@ ROM material. The remaining source-risk items are narrower:
 - Disk-backed FDC behavior in `juku_top`; the vendored Arti `JUKU1.CPM`
   image proves the cosim `JUKU1` boot path.
 - Owner/community confirmation for the generated bring-up verification
-  list.
+  list, now compressed into `docs/owner-measurement-shortlist.md`.
 - Optional mining of manuals/software for Tier 2/Tier 3 fidelity,
   especially storage workflows, keyboard/monitor operation, and original
   user-facing software behavior.

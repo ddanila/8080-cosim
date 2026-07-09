@@ -83,6 +83,8 @@ Arvutimuuseum are actually consumed. The board-critical drawings, ROM/BASIC
 lineage, and Baltijets docs are covered; the remaining useful external sources
 are the programming disk/PROM dumps, disk-backed FDC integration in
 `juku_top`, and owner/community validation rather than more РФ2 ROM material.
+`docs/owner-measurement-shortlist.md` now compresses the owner/community ask to
+the current P0/P1 hardware items.
 
 ## 4. Critical path
 
@@ -149,7 +151,8 @@ Pull all 16 PDFs into `ref/` (plus arti.ee mirrors). Priority order:
    `ДГШ5.106.105` disk label family as `JUKU-1`/`JUKU-2`/`JUKU-3`, but is not a
    disk image.
 Exit criterion: updated provenance table; owner-measurement list reduced to items
-genuinely requiring hardware.
+genuinely requiring hardware. The generated reduction is tracked in
+`docs/owner-measurement-shortlist.md`.
 
 ### WS-B — Finish the digital twin (fidelity gaps)
 The twin is the bring-up oracle; every subsystem modeled before fabrication is a
