@@ -96,6 +96,7 @@ address nets only; enable and all data outputs remain unnetted there too.
 | Address pins D94.10-D94.14 are traced | PASS | board JSON nets |
 | DSN agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.dsn` D94 pins |
 | PCB agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
+| `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
@@ -120,6 +121,10 @@ address nets only; enable and all data outputs remain unnetted there too.
   D94 `.092` substitute.
 - These textual leads establish identity and negative evidence only. They
   do not provide D94 pin 15, D0-D7 destinations, or PROM contents.
+- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
+  in board JSON/DSN, but D94 pin 15 and D0-D7 are not tied to it in
+  board JSON, DSN, or PCB evidence. It cannot substitute for the missing
+  D94 enable/output continuity.
 
 ## Address Space
 
@@ -171,6 +176,9 @@ the D0-D7 destinations and `.092` programming table/dump are absent.
   `kicad/juku.kicad_pcb`, or the audited text/photo notes, and no
   `ДГШ5.106.092` programming table or dump is present under the
   repository artifact scan.
+- The traced `V3_RC` RC network is a negative cross-check here, not a
+  replacement source for D94: its current nodes are `R17.1`, `C99.1`,
+  and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.
 - Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte
   PROM tables) before even assigning those bits to physical destination
   nets or enable timing.

@@ -44,6 +44,16 @@ def net_for_pin(board: dict, ref: str, pin: str) -> tuple[str, str] | None:
     return None
 
 
+def net_nodes(board: dict, name: str) -> list[list[str]]:
+    return board["nets"].get(name, {}).get("nodes", [])
+
+
+def format_nodes(nodes: list[list[str]]) -> str:
+    if not nodes:
+        return "-"
+    return ", ".join(f"`{ref}.{pin}`" for ref, pin in nodes)
+
+
 def dsn_pin_nets(ref: str) -> dict[str, str]:
     text = DSN.read_text(errors="replace")
     found: dict[str, str] = {}
@@ -250,6 +260,12 @@ def main() -> int:
         for pin, role in output_pins
         if pin in pcb_nets
     ]
+    d94_signal_pins = [pin for pin, role in pin_roles.items() if role.startswith("D") or role == "E_N"]
+    v3_rc_nodes = net_nodes(board, "V3_RC")
+    v3_rc_board_no_d94 = bool(v3_rc_nodes) and all(node[0] != "D94" for node in v3_rc_nodes)
+    v3_rc_dsn_no_d94 = all(dsn_nets.get(pin) != "V3_RC" for pin in d94_signal_pins)
+    v3_rc_pcb_no_d94 = all(pcb_nets.get(pin) != "V3_RC" for pin in d94_signal_pins)
+    v3_rc_not_d94_evidence = v3_rc_board_no_d94 and v3_rc_dsn_no_d94 and v3_rc_pcb_no_d94
 
     candidates = firmware_candidates()
     repo_candidates = repo_092_artifact_candidates()
@@ -368,6 +384,7 @@ def main() -> int:
             f"| Address pins D94.10-D94.14 are traced | {'PASS' if address_ok else 'FAIL'} | board JSON nets |",
             f"| DSN agrees on D94 power/address and lacks output nets | {'PASS' if dsn_ok and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
             f"| PCB agrees on D94 power/address and lacks output nets | {'PASS' if pcb_ok and not pcb_output_nets else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
+            f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
@@ -392,6 +409,10 @@ def main() -> int:
             "  D94 `.092` substitute.",
             "- These textual leads establish identity and negative evidence only. They",
             "  do not provide D94 pin 15, D0-D7 destinations, or PROM contents.",
+            "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
+            "  in board JSON/DSN, but D94 pin 15 and D0-D7 are not tied to it in",
+            "  board JSON, DSN, or PCB evidence. It cannot substitute for the missing",
+            "  D94 enable/output continuity.",
             "",
             "## Address Space",
             "",
@@ -416,6 +437,9 @@ def main() -> int:
             "  `kicad/juku.kicad_pcb`, or the audited text/photo notes, and no",
             "  `ДГШ5.106.092` programming table or dump is present under the",
             "  repository artifact scan.",
+            "- The traced `V3_RC` RC network is a negative cross-check here, not a",
+            "  replacement source for D94: its current nodes are `R17.1`, `C99.1`,",
+            "  and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.",
             "- Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte",
             "  PROM tables) before even assigning those bits to physical destination",
             "  nets or enable timing.",
@@ -439,6 +463,7 @@ def main() -> int:
         and official_bom_lead
         and reused_refdes_guard
         and historical_113_conflict
+        and v3_rc_not_d94_evidence
         and hdl_placeholder
         and hdl_unconnected
         and scanned_not_d94
