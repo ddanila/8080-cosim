@@ -236,7 +236,8 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `scripts/report_basic_cartridge_tail_hypotheses.py` — generated Monitor 3.3
   cartridge-tail reconstruction audit. It derives the loop-tail bytes required
   for a viable missing page and rejects simple fill, append, final-page mirror,
-  and `0x1F00` relocation-count patch hypotheses with bounded runtime probes.
+  `0x1F00` relocation-count patch, and direct `0x0200` body-entry jump
+  hypotheses with bounded runtime probes.
 - `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
   doc 003 factory BASIC `A` command. It runs all vendored public monitor ROMs
   against both BASIC payload shapes and records that Monitor 3.3 reaches the same

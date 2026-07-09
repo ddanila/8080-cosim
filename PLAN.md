@@ -363,10 +363,10 @@ debugging session saved on real hardware.
    for this cartridge shape.
    `docs/basic-cartridge-tail-hypotheses.md` now derives the loop-tail bytes
    required for any viable missing page and rejects the simple fill, raw append,
-   final-page mirror, and simple `0x1F00` relocation-count patch hypotheses with
-   runtime Monitor 3.3 probes, so the remaining cartridge path needs a real
-   larger artifact or a deeper patch-level bootstrap reconstruction rather than
-   a blind tail guess.
+   final-page mirror, simple `0x1F00` relocation-count patch, and direct
+   `0x0200` body-entry jump hypotheses with runtime Monitor 3.3 probes, so the
+   remaining cartridge path needs a real larger artifact or a deeper patch-level
+   bootstrap reconstruction rather than a blind tail guess.
    The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and

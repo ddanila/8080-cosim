@@ -23,6 +23,7 @@ class Hypothesis:
     header_len: int | None
     tail_kind: str
     loop_len: int | None = None
+    entry_target: int | None = None
 
 
 HYPOTHESES = [
@@ -56,6 +57,14 @@ HYPOTHESES = [
         None,
         "none",
         0x1F00,
+    ),
+    Hypothesis(
+        "patch-entry-jump-0200",
+        "patch runtime bootstrap `JMP 0x2000` at `0x0107` to `JMP 0x0200`; append nothing",
+        None,
+        "none",
+        None,
+        0x0200,
     ),
 ]
 
@@ -122,6 +131,10 @@ def make_variant(base: bytes, hyp: Hypothesis, out: Path) -> None:
         # the cartridge at 0x0100.
         data[0x1F07] = hyp.loop_len & 0xFF
         data[0x1F08] = (hyp.loop_len >> 8) & 0xFF
+    if hyp.entry_target is not None:
+        # File offset 0x0007 maps to the runtime stub's JMP at 0x0107.
+        data[0x0008] = hyp.entry_target & 0xFF
+        data[0x0009] = (hyp.entry_target >> 8) & 0xFF
     out.write_bytes(data)
 
 
@@ -202,7 +215,10 @@ def main() -> int:
             pixels = int(summary["pixels"])
             mode2 = int(summary["mode2"])
             nonzero = int(summary["nonzero"])
-            interesting = interesting or pixels > 0 or mode2 > 0 or nonzero > 0
+            # A patched variant can leave monitor/interrupt pixels on screen
+            # without reaching the BASIC cartridge path. Treat only cartridge
+            # overlay execution or nonzero BASIC-window data as a real lead.
+            interesting = interesting or mode2 > 0 or nonzero > 0
             rows.append(
                 table_row(
                     [
@@ -302,11 +318,15 @@ def main() -> int:
             "  Monitor 3.3 path still falls through into zero-filled `0x4000` RAM.",
             "  That makes the one-page self-overwrite a real bug source, but not the",
             "  full cartridge/monitor compatibility fix.",
+            "- Patching the entry stub to skip the `0x2000` relocation loop and jump",
+            "  directly to the already copied body at `0x0200` also fails to render",
+            "  BASIC or write nonzero bytes into the later BASIC execution window.",
+            "  The runtime body is not position-independent enough for that shortcut.",
             "- Therefore the missing page is not recoverable by a fill byte, raw append,",
-            "  final-page mirror, or simple relocation-count patch alone. A defensible",
-            "  reconstruction needs either the real larger cartridge/programming",
-            "  artifact or a deeper patch-level understanding of the runtime bootstrap",
-            "  and expected low-memory image.",
+            "  final-page mirror, simple relocation-count patch, or direct body-entry",
+            "  jump. A defensible reconstruction needs either the real larger",
+            "  cartridge/programming artifact or a deeper patch-level understanding",
+            "  of the runtime bootstrap and expected low-memory image.",
             "",
             "## Probe Excerpts",
             "",

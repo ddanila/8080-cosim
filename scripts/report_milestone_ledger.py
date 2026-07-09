@@ -303,6 +303,9 @@ def milestone_rows():
     ) and marker(
         "docs/basic-cartridge-tail-hypotheses.md",
         "patch-loop-count-1f00",
+    ) and marker(
+        "docs/basic-cartridge-tail-hypotheses.md",
+        "patch-entry-jump-0200",
     )
     basic_entry_rejected = marker(
         "docs/basic-entry-probe.md",
@@ -855,8 +858,8 @@ def milestone_rows():
                 + (
                     "`docs/basic-cartridge-tail-hypotheses.md` derives the loop-tail "
                     "bytes required for a viable missing page and rejects fill, raw "
-                    "append, final-page mirror, and the simple `0x1F00` relocation-"
-                    "count patch at runtime. "
+                    "append, final-page mirror, the simple `0x1F00` relocation-"
+                    "count patch, and a direct `0x0200` body-entry jump at runtime. "
                     if basic_tail_hypotheses_rejected
                     else ""
                 )
@@ -996,8 +999,8 @@ def milestone_rows():
                 + (
                     "`docs/basic-cartridge-tail-hypotheses.md` derives the loop-tail "
                     "bytes required for a viable missing page and rejects fill, raw "
-                    "append, final-page mirror, and the simple `0x1F00` relocation-"
-                    "count patch at runtime. "
+                    "append, final-page mirror, the simple `0x1F00` relocation-"
+                    "count patch, and a direct `0x0200` body-entry jump at runtime. "
                     if basic_tail_hypotheses_rejected
                     else ""
                 )
