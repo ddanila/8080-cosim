@@ -267,7 +267,11 @@ debugging session saved on real hardware.
    `x=0`, `y=70` instead of relying on a coarse VRAM count. The same probe now
    has an opt-in Verilator path; `docs/juku-top-fdc-verilator-probe.md` reaches
    70,000 VRAM writes from reset with T/D/D key stimulus visible, but still no
-   decoded PIC/FDC access or active key-read hit. Remaining target:
+   decoded PIC/FDC access or active key-read hit.
+   `docs/juku-top-fdc-alignment.md` now compares that committed HDL long-window
+   report with a regenerated cosim 70,000-write checkpoint: cosim is already in
+   the FDC path with 6,656 data-register reads, while reset-driven `juku_top`
+   has not reached PIC/FDC I/O. Remaining target:
    drive the uninterrupted full ROMBIOS `TDD` path through `juku_top` to the
    EKDOS prompt with that external media, without relying on checkpoint/resume
    acceleration.

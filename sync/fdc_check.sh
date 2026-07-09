@@ -199,6 +199,10 @@ sync/juku_top_fdc_probe.sh
   `juku_top` long-window diagnostic: the Verilator path reaches 70,000 VRAM
   writes in the same testbench and observes the full T/D/D stimulus schedule,
   but still sees no decoded PIC/FDC access or active key-read hit.
+- `docs/juku-top-fdc-alignment.md` compares that committed HDL long-window
+  report against a regenerated cosim 70,000-write checkpoint and makes the
+  current divergence explicit: cosim has already drained 6,656 FDC data bytes,
+  while reset-driven `juku_top` has not programmed the PIC or reached FDC I/O.
 - `docs/ekdos-ioseq-reference.md` records the full cosim I/O event stream that
   the direct-bus top-level guard mirrors for keyboard/PIC/PPI/FDC boundaries.
 - Preserve the Arti `JUKU1.CPM` cosim proof from

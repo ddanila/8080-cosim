@@ -270,7 +270,10 @@ Historical merge notes:
   framebuffer-write limit. `docs/juku-top-fdc-verilator-probe.md` now records
   the faster reset-driven Verilator window: the same bench reaches 70,000 VRAM
   writes with T/D/D stimulus visible, but still no decoded PIC/FDC access or
-  active key-read hit.
+  active key-read hit. `docs/juku-top-fdc-alignment.md` compares that state
+  against a regenerated cosim checkpoint and pins the current divergence:
+  cosim has already drained 6,656 FDC data bytes, while reset-driven `juku_top`
+  has not programmed the PIC or reached FDC I/O.
 - **Owner measurement shortlist:** `docs/owner-measurement-shortlist.md`
   reduces the remaining physical-owner request to P0 programming/PROM/media
   truth plus P1 continuity items; broad analog/video/sound captures stay in the

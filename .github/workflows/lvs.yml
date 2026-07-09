@@ -32,6 +32,7 @@ jobs:
             scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
+            scripts/report_juku_top_fdc_alignment.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -189,6 +190,8 @@ jobs:
           ./sync/ekdos_fdc_probe.py
           ./sync/ekdos_jbasic_command_probe.py
           ./sync/ekdos_timing_reference.py
+          python3 scripts/report_juku_top_fdc_alignment.py
+          git diff --exit-code -- docs/juku-top-fdc-alignment.md
           ./sync/ekdos_checkpoint_reference.py
           ./sync/ekdos_ioseq_reference.py
           ./sync/juku_top_checkpoint_load_check.py

@@ -216,6 +216,10 @@ def milestone_rows():
         "docs/juku-top-fdc-verilator-probe.md",
         "VRAM stop line: `[VRAM] 70000 writes",
     )
+    hdl_fdc_alignment = marker(
+        "docs/juku-top-fdc-alignment.md",
+        "Status: **HDL RESET PATH DIVERGES BEFORE COSIM FDC WINDOW**",
+    )
     ekdos_timing_guard = marker(
         "docs/ekdos-timing-reference.md",
         "Status: **PASS**",
@@ -474,6 +478,12 @@ def milestone_rows():
                     "reset-driven Verilator window reaching 70,000 VRAM writes "
                     "with T/D/D stimulus visible but no decoded PIC/FDC access yet. "
                     if hdl_verilator_fdc_window
+                    else ""
+                )
+                + (
+                    "`docs/juku-top-fdc-alignment.md` compares that state with "
+                    "cosim and pins the current pre-PIC/FDC divergence. "
+                    if hdl_fdc_alignment
                     else ""
                 )
                 + "Full uninterrupted ROMBIOS-to-EKDOS prompt execution in `juku_top` remains open."

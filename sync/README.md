@@ -74,6 +74,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   can run locally with `JUKU_TOP_FDC_SIM=verilator` for a faster long window;
   `docs/juku-top-fdc-verilator-probe.md` currently records the 70,000-write
   boundary with T/D/D stimulus observed but no decoded PIC/FDC path yet.
+- `scripts/report_juku_top_fdc_alignment.py` — fast freshness guard comparing
+  that committed Verilator long-window report against a regenerated cosim
+  70,000-write checkpoint. It records that cosim is already in the FDC path
+  while reset-driven `juku_top` has not reached PIC/FDC I/O.
 - `sync/ekdos_checkpoint_reference.py` — fast cosim full-machine checkpoint
   reference at 30,000 framebuffer writes on the vendored `TDD` path; records
   CPU registers, RAM hash, banking/PIC/PPI/FDC state, and the byte-identical
