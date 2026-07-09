@@ -18,13 +18,14 @@ sync/prom_fallback_check.sh
 
 | Stem | Size | BIN SHA256 | HEX SHA256 | Role |
 | --- | ---: | --- | --- | --- |
-| `d6_rt4_memory_decode_reconstructed` | 256 | `10063c67c86b4c5f82dfcc63f692e38fa4a567d34d7226e29ca7198255fb96f0` | `f89f8aa348e1c2c4e94ee59c2e80ab23ebf16d488b3a10b8232b21f581a32d96` | D6 К556РТ4 memory decode; low nibble uses D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N. |
+| `d6_rt4_memory_decode_reconstructed` | 256 | `b5c69c8fdc03e592d817c1c872c67e07761f218d5223f6257944248018473baf` | `e80a3f9b4b30de7dbe7a7148a73921287be07c84646c52217641d6a387504b2c` | D6 К556РТ4 memory decode; low nibble uses D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N. |
 | `d8_re3_rom_pager_reconstructed` | 32 | `0cecad4f89dce2e5e0dba0622c89d8cfa01324dd8ff3e9f7b8f92d20ced690b3` | `c95273ef8c46ab5db1fcbaabb6971f988e934752f6921ecb06dda6cc38b1a0bc` | D8 К155РЕ3 ROM-socket pager; byte values are active-low output rails. |
 
 ## Boundaries
 
 - `d6_rt4_memory_decode_reconstructed.*` covers only the D6 memory decode
-  fallback. It does not claim to be the dumped factory byte table.
+  fallback. Its reset-mode overlay selects ROM for `0x0000..0x3FFF`.
+  It does not claim to be the dumped factory byte table.
 - `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager
   fallback for programmed drawing family `ДГШ5.106.039`.
 - No D2 image is exported. Current board metadata identifies D2 as a

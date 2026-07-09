@@ -21,10 +21,11 @@ def d6_byte(row: int) -> int:
     Bit convention follows the HDL output comments in hdl/devices.v:
     D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N.
     """
+    ba15_14 = (row >> 6) & 0x3
     ba15_13 = (row >> 5) & 0x7
     ba15_11 = (row >> 3) & 0x1F
     mode0 = (row >> 2) & 0x1
-    rom_region = ba15_13 == 0 if mode0 == 0 else ba15_11 >= 0x1B
+    rom_region = ba15_14 == 0 if mode0 == 0 else ba15_11 >= 0x1B
     rom_n = 0 if rom_region else 1
     ram_n = 0 if not rom_region else 1
     rev = 0 if ba15_13 == 0 else 1
@@ -121,7 +122,8 @@ def main() -> int:
             "## Boundaries",
             "",
             "- `d6_rt4_memory_decode_reconstructed.*` covers only the D6 memory decode",
-            "  fallback. It does not claim to be the dumped factory byte table.",
+            "  fallback. Its reset-mode overlay selects ROM for `0x0000..0x3FFF`.",
+            "  It does not claim to be the dumped factory byte table.",
             "- `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager",
             "  fallback for programmed drawing family `ДГШ5.106.039`.",
             "- No D2 image is exported. Current board metadata identifies D2 as a",
