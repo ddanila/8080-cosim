@@ -55,6 +55,7 @@ jobs:
             scripts/report_d41_timing_boundary.py \
             scripts/report_memory_timing_boundary.py \
             scripts/report_io_decode_boundary.py \
+            scripts/report_video_analog_boundary.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -155,6 +156,11 @@ jobs:
           python3 scripts/report_io_decode_boundary.py
           git diff --exit-code -- docs/io-decode-boundary.md
 
+      - name: Check video analog boundary freshness
+        run: |
+          python3 scripts/report_video_analog_boundary.py
+          git diff --exit-code -- docs/video-analog-boundary.md
+
       - name: Check EKDOS source inspection freshness
         run: |
           python3 scripts/report_ekdos_source_inspection.py
@@ -222,6 +228,7 @@ jobs:
           python3 scripts/report_d41_timing_boundary.py
           python3 scripts/report_memory_timing_boundary.py
           python3 scripts/report_io_decode_boundary.py
+          python3 scripts/report_video_analog_boundary.py
           python3 scripts/report_owner_measurement_shortlist.py
           git diff --exit-code -- \
             docs/fdc-hardware-handoff.md \
@@ -230,6 +237,7 @@ jobs:
             docs/d41-timing-boundary.md \
             docs/memory-timing-boundary.md \
             docs/io-decode-boundary.md \
+            docs/video-analog-boundary.md \
             docs/owner-measurement-shortlist.md
 
       - name: Check replica bring-up report freshness

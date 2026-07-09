@@ -113,6 +113,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "docs/beeper-readiness.md",
     )
+    video_analog_boundary = marker(
+        "docs/video-analog-boundary.md",
+        "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check video analog boundary freshness",
+    )
     reconstructed_proms_exported = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
@@ -713,6 +720,13 @@ def milestone_rows():
                     "`SOUND` source plus the traced R90/VT1/VD4/R91/R48/SPKR board "
                     "handoff while leaving speaker current/level proof to bring-up; "
                     if beeper_handoff_guarded
+                    else ""
+                )
+                + (
+                    "`docs/video-analog-boundary.md` guards the VT2/VT3/VT4 composite "
+                    "and RF handoff while keeping R66.1 sound-mix source, connector "
+                    "identity, levels, and RF tuning as bench/source-read work; "
+                    if video_analog_boundary
                     else ""
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
@@ -1317,6 +1331,13 @@ def milestone_rows():
                         "source plus traced speaker handoff while leaving only analog "
                         "level/current proof for bring-up"
                         if beeper_handoff_guarded
+                        else ""
+                    )
+                    + (
+                        ", and `docs/video-analog-boundary.md` guards the composite/RF "
+                        "VT2/VT3/VT4 board handoff while keeping R66.1, connector "
+                        "identity, levels, and RF tuning as bench/source-read work"
+                        if video_analog_boundary
                         else ""
                     )
                     + (
