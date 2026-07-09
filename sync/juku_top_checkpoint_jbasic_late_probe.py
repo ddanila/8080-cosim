@@ -285,6 +285,8 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         f"+tracekbd={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_LATE_TRACE_KBD', '0')}",
         f"+tracefdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_LATE_TRACE_FDC', '0')}",
         f"+progress_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_LATE_PROGRESS_MCYC', '25000')}",
+        f"+stopfdc_data_read={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_LATE_STOP_DATA_READ', '0')}",
+        f"+stopfdc_data_reads={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_LATE_STOP_DATA_READS', '0')}",
         "+stopjbasicready=1",
     ]
     args.extend(state_plusargs(state))
@@ -386,7 +388,22 @@ def data_read_count(text: str) -> int:
     return counts[-1] if counts else 0
 
 
+def command_lines(total_reads: str, stop_reads: str) -> list[str]:
+    env_bits: list[str] = []
+    if total_reads != "19968":
+        env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_FDC_READS={total_reads}")
+    if stop_reads != "0":
+        env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_STOP_DATA_READS={stop_reads}")
+    if REPORT != ROOT / "docs" / "juku-top-checkpoint-jbasic-late-probe.md":
+        env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_REPORT={REPORT}")
+    command = " ".join(env_bits + ["sync/juku_top_checkpoint_jbasic_late_probe.py"])
+    return ["```sh", command, "```"]
+
+
 def main() -> int:
+    total_reads = os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_LATE_FDC_READS", "19968")
+    stop_reads = os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_LATE_STOP_DATA_READS", "0")
+    stop_read_target = int(stop_reads)
     with tempfile.TemporaryDirectory(prefix="juku-top-checkpoint-jbasic-late.") as tmp_name:
         tmp = Path(tmp_name)
         cosim_proc, ram_bin, state = generate_late_checkpoint(tmp)
@@ -396,6 +413,8 @@ def main() -> int:
 
     ready_line = first_line(hdl_proc.stdout, "[RESUME-JBASIC]")
     reached_ready = ready_line != "none"
+    fdc_stop = first_line(hdl_proc.stdout, "[RESUME-FDC] stop")
+    reached_fdc_stop = fdc_stop.startswith("[RESUME-FDC] stop reason=data-read-count")
     ready_visible = screen_text_at(hdl_vram, "READY", 121)
     command_visible = screen_text_at(hdl_vram, "A>JBASIC", 71)
     hdl_vram_ok = len(hdl_vram) == VRAM_SIZE
@@ -406,28 +425,52 @@ def main() -> int:
         failures.append(f"cosim late checkpoint exited {cosim_proc.returncode}")
     if hdl_proc.returncode not in (0, 124):
         failures.append(f"HDL late JBASIC run exited {hdl_proc.returncode}")
-    if not reached_ready:
-        failures.append("HDL did not report the JBASIC READY oracle")
-    if not ready_visible:
-        failures.append("HDL final framebuffer does not contain READY at scanline 121")
+    if stop_read_target:
+        if not reached_fdc_stop:
+            failures.append(f"HDL did not stop at {stop_read_target} FDC data reads")
+    else:
+        if not reached_ready:
+            failures.append("HDL did not report the JBASIC READY oracle")
+        if not ready_visible:
+            failures.append("HDL final framebuffer does not contain READY at scanline 121")
 
-    status = "HDL EKDOS JBASIC LATE READY" if not failures else "REGRESSION"
+    status = (
+        "HDL EKDOS JBASIC MID FDC DRAIN READY"
+        if stop_read_target and not failures
+        else "HDL EKDOS JBASIC LATE READY"
+        if not failures
+        else "REGRESSION"
+    )
     lines = [
         "# juku_top checkpoint JBASIC late probe",
         "",
         f"Status: **{status}**",
         "",
         "This diagnostic starts from a generated cosim EKDOS `JBASIC` checkpoint",
-        "after the complete 19,968-byte WD1793 data-register transfer on",
+        f"after `{total_reads}` total WD1793 data-register reads on",
         "`media/disks/JUKPROG2.CPM`. The command is already entered in the",
-        "checkpoint, so the HDL resume runs with no keyboard stimulus and stops",
-        "only when the fixed-`0xD800` BASIC `READY` glyph oracle appears.",
+        "checkpoint, so the HDL resume runs with no keyboard stimulus.",
+    ]
+    if stop_read_target:
+        lines.extend(
+            [
+                f"This run stops after `{stop_read_target}` additional HDL FDC data-register",
+                "reads, preserving a bounded mid-transfer bridge between the prompt",
+                "checkpoint and the final BASIC prompt checkpoint.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "It stops only when the fixed-`0xD800` BASIC `READY` glyph oracle appears.",
+            ]
+        )
+    lines.extend(
+        [
         "",
         "## Command",
         "",
-        "```sh",
-        "sync/juku_top_checkpoint_jbasic_late_probe.py",
-        "```",
+        *command_lines(total_reads, stop_reads),
         "",
         "## Evidence",
         "",
@@ -442,6 +485,7 @@ def main() -> int:
         f"- HDL resume exit code: `{hdl_proc.returncode}`",
         f"- Timed out: `{'yes' if timed_out else 'no'}`",
         f"- READY stop line: `{ready_line}`",
+        f"- FDC stop line: `{fdc_stop}`",
         f"- HDL final visible `READY` at scanline 121: `{'yes' if ready_visible else 'no'}`",
         f"- HDL final visible `A>JBASIC` command line at scanline 71: `{'yes' if command_visible else 'no'}`",
         f"- HDL final VRAM size: `{len(hdl_vram)}` ({'ok' if hdl_vram_ok else 'missing/incomplete'})",
@@ -457,16 +501,34 @@ def main() -> int:
         "",
         "## Boundary",
         "",
-        "- This is a late-state proof, not a replacement for the prompt-checkpoint",
-        "  command-stimulus report. It proves that checkpoint-resumed `juku_top`",
-        "  can continue from the post-transfer JBASIC state to the user-visible",
-        "  BASIC `READY` prompt.",
+        "- This is a checkpoint-resumed proof, not a replacement for the",
+        "  prompt-checkpoint command-stimulus report.",
         "- The prompt-checkpoint report still owns the early HDL path: `JBASIC`",
         "  key sampling, command echo, and the first 4,096 post-command FDC data",
         "  reads.",
-        "- The open gap is now the uninterrupted HDL bridge between those two",
-        "  checkpoint windows, not the final BASIC prompt renderer itself.",
-    ]
+        ]
+    )
+    if stop_read_target:
+        lines.extend(
+            [
+                "- This mid-transfer run proves that a later `JBASIC` checkpoint can",
+                f"  drain `{stop_read_target}` additional decoded FDC data-register reads",
+                "  under checkpoint-resumed `juku_top` execution.",
+                "- The open gap remains the uninterrupted HDL bridge from the prompt",
+                "  checkpoint through the later transfer checkpoints and then into",
+                "  the final `READY` renderer.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "- This late-state run proves that checkpoint-resumed `juku_top` can",
+                "  continue from the post-transfer JBASIC state to the user-visible",
+                "  BASIC `READY` prompt.",
+                "- The open gap is now the uninterrupted HDL bridge between those two",
+                "  checkpoint windows, not the final BASIC prompt renderer itself.",
+            ]
+        )
     if failures:
         lines.extend(["", "## Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)

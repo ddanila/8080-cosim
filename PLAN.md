@@ -345,9 +345,15 @@ debugging session saved on real hardware.
    `TDD|JBASIC\r` state after all 19,968 WD1793 data-register reads, resumes
    `juku_top` with no keyboard stimulus, and reaches `[RESUME-JBASIC] READY
    prompt reached` at mcyc 59,120 with the final fixed-`0xD800` `READY` glyph
-   visible at scanline 121. The remaining gap is the uninterrupted HDL bridge
-   between the 4,096-read early checkpoint and the 19,968-read late checkpoint,
-   not the final BASIC prompt renderer.
+   visible at scanline 121. A new bounded mid-transfer run is tracked by
+   `docs/juku-top-checkpoint-jbasic-mid-probe.md`: the same checkpoint-resume
+   helper starts from the cosim state after 17,408 total WD1793 data-register
+   reads and drains 10,752 additional decoded HDL `IN 0x1F` reads, stopping at
+   mcyc 922,973 / VRAM writes 73,916. Exploratory runs show the early prompt
+   checkpoint still plateaus at 4,096 reads, while the 14,848-read checkpoint
+   drains 9,216 more before plateau. The remaining gap is now the uninterrupted
+   HDL bridge from the 4,096-read early checkpoint into the later transfer
+   checkpoint windows, not the final BASIC prompt renderer.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
@@ -401,8 +407,8 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, bridge the pinned EKDOS `JBASIC` HDL checkpoints between the 4,096-read
-   early FDC window and the 19,968-read late `READY` window, and then retire the
+   path, bridge the pinned EKDOS `JBASIC` HDL checkpoints from the 4,096-read
+   early FDC window into the later transfer windows, and then retire the
    checkpointed HDL gaps around disk-backed FDC/EKDOS.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57

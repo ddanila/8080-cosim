@@ -229,6 +229,13 @@ def milestone_rows():
         "docs/juku-top-checkpoint-jbasic-late-probe.md",
         "[RESUME-JBASIC] READY prompt reached",
     )
+    hdl_jbasic_mid_drain = marker(
+        "docs/juku-top-checkpoint-jbasic-mid-probe.md",
+        "Status: **HDL EKDOS JBASIC MID FDC DRAIN READY**",
+    ) and marker(
+        "docs/juku-top-checkpoint-jbasic-mid-probe.md",
+        "target=10752",
+    )
     jmon33_command_surface = marker(
         "docs/jmon33-command-probe.md",
         "Status: **JMON33 COMMAND SURFACE READY**",
@@ -581,6 +588,14 @@ def milestone_rows():
                     if hdl_jbasic_late_ready
                     else ""
                 )
+                + (
+                    " `docs/juku-top-checkpoint-jbasic-mid-probe.md` narrows "
+                    "the remaining bridge: from the 17,408-read cosim checkpoint, "
+                    "checkpoint-resumed `juku_top` drains 10,752 additional "
+                    "decoded `IN 0x1F` data-register reads before the bounded stop."
+                    if hdl_jbasic_mid_drain
+                    else ""
+                )
                 if jmon33_checkpoint_cursor and basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` shows Monitor 3.3 reading the BASIC "
@@ -656,6 +671,14 @@ def milestone_rows():
                     if hdl_jbasic_late_ready
                     else ""
                 )
+                + (
+                    " `docs/juku-top-checkpoint-jbasic-mid-probe.md` narrows "
+                    "the remaining bridge: from the 17,408-read cosim checkpoint, "
+                    "checkpoint-resumed `juku_top` drains 10,752 additional "
+                    "decoded `IN 0x1F` data-register reads before the bounded stop."
+                    if hdl_jbasic_mid_drain
+                    else ""
+                )
                 if basic_launch_reached
                 else "jmon33 interrupt/first-write/cosim cursor probes exist; "
                 "`docs/basic-launch-probe.md` still says BASIC LAUNCH NOT YET REACHED."
@@ -663,10 +686,10 @@ def milestone_rows():
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
                 "correct Monitor 3.3 cartridge BASIC launch path, and bridge the "
-                "pinned EKDOS `JBASIC` HDL checkpoints between the 4,096-read "
-                "early FDC window and the 19,968-read late `READY` window."
+                "pinned EKDOS `JBASIC` HDL checkpoints from the 4,096-read early "
+                "FDC window into the later transfer windows."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and bridge the pinned EKDOS BASIC HDL checkpoints between the early FDC and late `READY` windows."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and bridge the pinned EKDOS BASIC HDL checkpoints from the early FDC window into the later transfer windows."
             ),
         },
         {

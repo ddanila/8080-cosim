@@ -109,6 +109,9 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   HDL guard for the disk BASIC path. It generates the cosim `TDD|JBASIC\r`
   state after 19,968 WD1793 data-register reads, resumes `juku_top` with no
   keyboard stimulus, and requires the fixed-`0xD800` BASIC `READY` glyph oracle.
+  Its opt-in `JUKU_TOP_CHECKPOINT_JBASIC_LATE_STOP_DATA_READS=N` mode also
+  records bounded mid-transfer drains, currently used by
+  `docs/juku-top-checkpoint-jbasic-mid-probe.md`.
 - `sync/ekdos_ioseq_reference.py` — full cosim I/O-sequence reference for the
   vendored `TDD` path; pins exact ROMBIOS keyboard/PIC/PPI/FDC events mirrored
   by the top-level direct-bus guard.

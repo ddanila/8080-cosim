@@ -3,10 +3,10 @@
 Status: **HDL EKDOS JBASIC LATE READY**
 
 This diagnostic starts from a generated cosim EKDOS `JBASIC` checkpoint
-after the complete 19,968-byte WD1793 data-register transfer on
+after `19968` total WD1793 data-register reads on
 `media/disks/JUKPROG2.CPM`. The command is already entered in the
-checkpoint, so the HDL resume runs with no keyboard stimulus and stops
-only when the fixed-`0xD800` BASIC `READY` glyph oracle appears.
+checkpoint, so the HDL resume runs with no keyboard stimulus.
+It stops only when the fixed-`0xD800` BASIC `READY` glyph oracle appears.
 
 ## Command
 
@@ -27,6 +27,7 @@ sync/juku_top_checkpoint_jbasic_late_probe.py
 - HDL resume exit code: `0`
 - Timed out: `no`
 - READY stop line: `[RESUME-JBASIC] READY prompt reached mcyc=59120 vram=73975 pc=0x097a`
+- FDC stop line: `none`
 - HDL final visible `READY` at scanline 121: `yes`
 - HDL final visible `A>JBASIC` command line at scanline 71: `yes`
 - HDL final VRAM size: `9640` (ok)
@@ -42,13 +43,14 @@ sync/juku_top_checkpoint_jbasic_late_probe.py
 
 ## Boundary
 
-- This is a late-state proof, not a replacement for the prompt-checkpoint
-  command-stimulus report. It proves that checkpoint-resumed `juku_top`
-  can continue from the post-transfer JBASIC state to the user-visible
-  BASIC `READY` prompt.
+- This is a checkpoint-resumed proof, not a replacement for the
+  prompt-checkpoint command-stimulus report.
 - The prompt-checkpoint report still owns the early HDL path: `JBASIC`
   key sampling, command echo, and the first 4,096 post-command FDC data
   reads.
+- This late-state run proves that checkpoint-resumed `juku_top` can
+  continue from the post-transfer JBASIC state to the user-visible
+  BASIC `READY` prompt.
 - The open gap is now the uninterrupted HDL bridge between those two
   checkpoint windows, not the final BASIC prompt renderer itself.
 
