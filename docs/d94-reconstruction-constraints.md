@@ -74,6 +74,7 @@ connections. It does not provide the missing enable/output nets.
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
+| Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 68 |
 | Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 56/68 |
 | Historical `.113 -> D94` assumption is still visible as a conflict | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 68/70 |
@@ -95,6 +96,47 @@ connections. It does not provide the missing enable/output nets.
 - These textual leads establish identity and negative evidence only. They
   do not provide D94 pin 15, D0-D7 destinations, or PROM contents.
 
+## Address Space
+
+D94 is a 32 x 8 PROM. The address pins are traced, so the reachable
+rows are mechanically known, but every row byte is still unknown because
+the D0-D7 destinations and `.092` programming table/dump are absent.
+
+| Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |
+| ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 00 | 0 | 0 | 0 | 0 | 0 | unknown |
+| 01 | 0 | 0 | 0 | 0 | 1 | unknown |
+| 02 | 0 | 0 | 0 | 1 | 0 | unknown |
+| 03 | 0 | 0 | 0 | 1 | 1 | unknown |
+| 04 | 0 | 0 | 1 | 0 | 0 | unknown |
+| 05 | 0 | 0 | 1 | 0 | 1 | unknown |
+| 06 | 0 | 0 | 1 | 1 | 0 | unknown |
+| 07 | 0 | 0 | 1 | 1 | 1 | unknown |
+| 08 | 0 | 1 | 0 | 0 | 0 | unknown |
+| 09 | 0 | 1 | 0 | 0 | 1 | unknown |
+| 10 | 0 | 1 | 0 | 1 | 0 | unknown |
+| 11 | 0 | 1 | 0 | 1 | 1 | unknown |
+| 12 | 0 | 1 | 1 | 0 | 0 | unknown |
+| 13 | 0 | 1 | 1 | 0 | 1 | unknown |
+| 14 | 0 | 1 | 1 | 1 | 0 | unknown |
+| 15 | 0 | 1 | 1 | 1 | 1 | unknown |
+| 16 | 1 | 0 | 0 | 0 | 0 | unknown |
+| 17 | 1 | 0 | 0 | 0 | 1 | unknown |
+| 18 | 1 | 0 | 0 | 1 | 0 | unknown |
+| 19 | 1 | 0 | 0 | 1 | 1 | unknown |
+| 20 | 1 | 0 | 1 | 0 | 0 | unknown |
+| 21 | 1 | 0 | 1 | 0 | 1 | unknown |
+| 22 | 1 | 0 | 1 | 1 | 0 | unknown |
+| 23 | 1 | 0 | 1 | 1 | 1 | unknown |
+| 24 | 1 | 1 | 0 | 0 | 0 | unknown |
+| 25 | 1 | 1 | 0 | 0 | 1 | unknown |
+| 26 | 1 | 1 | 0 | 1 | 0 | unknown |
+| 27 | 1 | 1 | 0 | 1 | 1 | unknown |
+| 28 | 1 | 1 | 1 | 0 | 0 | unknown |
+| 29 | 1 | 1 | 1 | 0 | 1 | unknown |
+| 30 | 1 | 1 | 1 | 1 | 0 | unknown |
+| 31 | 1 | 1 | 1 | 1 | 1 | unknown |
+
 ## Reconstruction Boundary
 
 - Known: D94 is present in the .009 FDC quadrant and its five address
@@ -102,8 +144,10 @@ connections. It does not provide the missing enable/output nets.
 - Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are
   not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`, or the
   audited text/photo notes, and no `ДГШ5.106.092` programming table or
-  dump is present under
-  `ref/firmware/`.
+  dump is present under the repository artifact scan.
+- Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte
+  PROM tables) before even assigning those bits to physical destination
+  nets or enable timing.
 - Therefore a burnable D94 image is not derivable from current repo
   evidence. The correct next automatic action is to keep this constraint
   report fresh; the next data-unlocking action is an owner dump or a

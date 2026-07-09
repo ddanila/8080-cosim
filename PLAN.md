@@ -318,9 +318,10 @@ debugging session saved on real hardware.
    reconstruction boundary: address inputs are traced to `BA11..BA15` and the
    official `.009` BOM/photo trail identifies D94 as `.092`, but `E_N`, all
    eight data-output destinations, and the `.092` contents are still missing
-   from current repo evidence; `kicad/juku.dsn` independently agrees on D94
-   power/address and also lacks the missing enable/output nets, while the
-   audited text/photo notes do not provide pin-level closure.
+   from the repository artifact scan; the generated 32-row address-space table
+   leaves 256 content bits unresolved before output-net semantics, and
+   `kicad/juku.dsn` independently agrees on D94 power/address while also
+   lacking the missing enable/output nets.
    Remaining V3 target: replace the sim-only second framebuffer read with the
    real РЕ3/АГ3-gated shared-DRAM video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and

@@ -12,6 +12,7 @@ BOARD = ROOT / "kicad" / "juku.board.json"
 DSN = ROOT / "kicad" / "juku.dsn"
 REPORT = ROOT / "docs" / "d94-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
+ARTIFACT_SCAN_DIRS = ("ref", "roms", "media", "docs", "hdl", "kicad", "scripts", "sync")
 
 
 def read(path: str) -> str:
@@ -63,6 +64,41 @@ def firmware_candidates() -> list[str]:
         for path in FIRMWARE.iterdir()
         if path.name.lower().endswith(suffixes)
     )
+
+
+def repo_092_artifact_candidates() -> list[str]:
+    suffixes = (".092", ".092.hex", "_092.hex", "106.092", "106.092.hex")
+    candidates: list[str] = []
+    for dirname in ARTIFACT_SCAN_DIRS:
+        base = ROOT / dirname
+        if not base.exists():
+            continue
+        for path in base.rglob("*"):
+            if not path.is_file():
+                continue
+            name = path.name.lower()
+            if any(name.endswith(suffix) for suffix in suffixes):
+                candidates.append(str(path.relative_to(ROOT)))
+    return sorted(candidates)
+
+
+def address_space_rows() -> list[str]:
+    rows = []
+    for address in range(32):
+        ba = {
+            "BA15": (address >> 4) & 1,
+            "BA14": (address >> 3) & 1,
+            "BA13": (address >> 2) & 1,
+            "BA12": (address >> 1) & 1,
+            "BA11": address & 1,
+        }
+        rows.append(
+            "| "
+            + f"{address:02d} | "
+            + " | ".join(str(ba[name]) for name in ("BA15", "BA14", "BA13", "BA12", "BA11"))
+            + " | unknown |"
+        )
+    return rows
 
 
 def main() -> int:
@@ -144,6 +180,7 @@ def main() -> int:
     ]
 
     candidates = firmware_candidates()
+    repo_candidates = repo_092_artifact_candidates()
     hdl_placeholder = marker(
         "hdl/devices.v",
         "module re3_prom_092",
@@ -248,6 +285,7 @@ def main() -> int:
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
+            f"| Repository-wide `.092` artifact filename exists | {'PASS' if repo_candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in repo_candidates) if repo_candidates else 'no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync'} |",
             f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 68 |",
             f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 56/68 |",
             f"| Historical `.113 -> D94` assumption is still visible as a conflict | {'PASS' if historical_113_conflict else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 68/70 |",
@@ -269,6 +307,20 @@ def main() -> int:
             "- These textual leads establish identity and negative evidence only. They",
             "  do not provide D94 pin 15, D0-D7 destinations, or PROM contents.",
             "",
+            "## Address Space",
+            "",
+            "D94 is a 32 x 8 PROM. The address pins are traced, so the reachable",
+            "rows are mechanically known, but every row byte is still unknown because",
+            "the D0-D7 destinations and `.092` programming table/dump are absent.",
+            "",
+            "| Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |",
+            "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+        ]
+    )
+    lines.extend(address_space_rows())
+    lines.extend(
+        [
+            "",
             "## Reconstruction Boundary",
             "",
             "- Known: D94 is present in the .009 FDC quadrant and its five address",
@@ -276,8 +328,10 @@ def main() -> int:
             "- Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are",
             "  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`, or the",
             "  audited text/photo notes, and no `ДГШ5.106.092` programming table or",
-            "  dump is present under",
-            "  `ref/firmware/`.",
+            "  dump is present under the repository artifact scan.",
+            "- Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte",
+            "  PROM tables) before even assigning those bits to physical destination",
+            "  nets or enable timing.",
             "- Therefore a burnable D94 image is not derivable from current repo",
             "  evidence. The correct next automatic action is to keep this constraint",
             "  report fresh; the next data-unlocking action is an owner dump or a",
