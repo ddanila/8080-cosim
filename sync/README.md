@@ -161,6 +161,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   checkpoint at 3,801,005 cycles / PC `0xF2C0`; the resumed `juku_top` path
   services frame interrupts, scans keyboard reads, and reaches the cosim
   monitor-idle cursor framebuffer hash.
+- `sync/jmon33_checkpoint_deep_check.sh` — local/deep aggregate for the
+  checkpoint-resumed jmon33 HDL cursor, `A`, `B`, and FDC-aware `T` command
+  oracles. It is syntax-checked in push CI, but intentionally not run there
+  because the vm80a resume windows are long on shared runners.
 - `sync/jmon33_command_probe.py` — cosim guard for Monitor 3.3's user-visible
   command surface. It uses a jmon33-appropriate keyboard hold window and proves
   typed `A`, `T`, and `B` plus return are sampled through port `0x05` and move

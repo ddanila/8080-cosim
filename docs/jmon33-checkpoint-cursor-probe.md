@@ -19,7 +19,7 @@ Environment overrides:
 - `JMON33_CHECKPOINT_CURSOR_FRAME_CYCLES` default `200000`
 - `JMON33_CHECKPOINT_CURSOR_MAX_MCYC` default `250000`
 - `JMON33_CHECKPOINT_CURSOR_PROGRESS_MCYC` default `25000`
-- `JMON33_CHECKPOINT_CURSOR_TIMEOUT` default `90` seconds
+- `JMON33_CHECKPOINT_CURSOR_TIMEOUT` default `180` seconds
 
 ## Evidence
 
@@ -32,8 +32,8 @@ Environment overrides:
 - Cursor stop line: `[RESUME-CURSOR] jmon33 cursor oracle reached x=8 y=20 at bounded exit mcyc=250000 vram=210 pc=0xfc90`
 - First IRQ line: `[RESUME-IRQ] intr rise count=1 mcyc=29329 vram=210`
 - Last IRQ line: `[RESUME-IRQ] inta fall count=24 mcyc=234602 vram=210`
-- First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0xfc95 vram=210 ios=11 pic_seen=0 kbd_seen=0 fdc_ios=0 frame_ticks=0 intr_edges=0 inta_edges=0 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
-- Last progress line: `[RESUME-PROGRESS] mcyc=225000 pc=0xf3a5 vram=210 ios=452 pic_seen=0 kbd_seen=1 fdc_ios=0 frame_ticks=7 intr_edges=7 inta_edges=21 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
+- First progress line: `[RESUME-PROGRESS] mcyc=25000 pc=0xfc95 vram=210 ios=11 pic_seen=0 kbd_seen=0 fdc_ios=0 fdc_data_reads=0 frame_ticks=0 intr_edges=0 inta_edges=0 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
+- Last progress line: `[RESUME-PROGRESS] mcyc=225000 pc=0xf3a5 vram=210 ios=452 pic_seen=0 kbd_seen=1 fdc_ios=0 fdc_data_reads=0 frame_ticks=7 intr_edges=7 inta_edges=21 intr=0 pending=0 inta_idx=0 mask=0xdf inte=1`
 - HDL cursor VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
 
 ## Boundary

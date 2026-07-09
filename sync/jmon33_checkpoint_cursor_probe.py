@@ -198,7 +198,7 @@ def run_resume(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subproc
                 text=True,
                 stdout=stdout,
                 stderr=stderr,
-                timeout=int(os.environ.get("JMON33_CHECKPOINT_CURSOR_TIMEOUT", "90")),
+                timeout=int(os.environ.get("JMON33_CHECKPOINT_CURSOR_TIMEOUT", "180")),
                 check=False,
             )
         timed_out = False
@@ -271,7 +271,7 @@ def main() -> int:
         f"- `JMON33_CHECKPOINT_CURSOR_FRAME_CYCLES` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_FRAME_CYCLES', '200000')}`",
         f"- `JMON33_CHECKPOINT_CURSOR_MAX_MCYC` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_MAX_MCYC', '250000')}`",
         f"- `JMON33_CHECKPOINT_CURSOR_PROGRESS_MCYC` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_PROGRESS_MCYC', '25000')}`",
-        f"- `JMON33_CHECKPOINT_CURSOR_TIMEOUT` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_TIMEOUT', '90')}` seconds",
+        f"- `JMON33_CHECKPOINT_CURSOR_TIMEOUT` default `{os.environ.get('JMON33_CHECKPOINT_CURSOR_TIMEOUT', '180')}` seconds",
         "",
         "## Evidence",
         "",

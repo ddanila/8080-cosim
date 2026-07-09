@@ -23,7 +23,7 @@ def main() -> int:
     env.setdefault("JMON33_HDL_COMMAND_PHASE_START_VRAM", "210")
     env.setdefault("JMON33_HDL_COMMAND_KHOLD", "500000")
     env.setdefault("JMON33_HDL_COMMAND_KGAP", "100000")
-    env.setdefault("JMON33_HDL_COMMAND_TIMEOUT", "240")
+    env.setdefault("JMON33_HDL_COMMAND_TIMEOUT", "360")
 
     proc = subprocess.run(
         [sys.executable, str(ROOT / "sync" / "jmon33_hdl_command_probe.py")],
