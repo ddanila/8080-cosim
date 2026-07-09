@@ -51,6 +51,7 @@ REQUIRED_PATHS = [
     "docs/basic-cartridge-missing-page-constraints.md",
     "docs/public-software-archive-inventory.md",
     "docs/public-manual-archive-inventory.md",
+    "docs/arvutimuuseum-context-inventory.md",
     "docs/re3-firmware-inspection.md",
     "docs/reconstructed-prom-fallbacks.md",
     "docs/firmware-gap-ledger.md",
@@ -97,10 +98,11 @@ SOURCE_ROWS = [
     (
         "`https://arvutimuuseum.ee/cs00000/`",
         "Used as historical/contextual confirmation for E5104/Baltijets, "
-        "museum contact, and public-preservation context.",
-        "Not a primary electrical source. Exhibit text, photos, and linked "
-        "historical references are not exhaustively mined into board/twin "
-        "evidence.",
+        "museum contact, public-preservation context, kit composition, and "
+        "headline spec cross-checks. The page is classified in "
+        "`docs/arvutimuuseum-context-inventory.md`.",
+        "Not a primary electrical source; it does not add PROM byte tables, "
+        "continuity measurements, or board connectivity.",
     ),
     (
         "`https://github.com/vpyk/emu80v4`",
@@ -191,6 +193,9 @@ def main() -> int:
             "  public Arti and Elektroonikamuuseum manual/drawing listings. It",
             "  confirms the board-critical drawings are mirrored or covered and",
             "  leaves large user/service manuals as optional context.",
+            "- `scripts/report_arvutimuuseum_context_inventory.py` classifies the",
+            "  Arvutimuuseum exhibit page as context: useful for kit/spec/contact",
+            "  cross-checks, but not primary electrical evidence.",
             "- `scripts/extract_basic_disk_files.py` extracts and vendors the",
             "  strongest disk-side BASIC candidates under `ref/extracted-software/`.",
             "- `scripts/report_basic_cartridge_missing_page_constraints.py` records",
@@ -223,8 +228,8 @@ def main() -> int:
             "",
             "- Full text mining of the large user/service manuals for optional",
             "  Tier 2/Tier 3 operating procedures.",
-            "- Arvutimuuseum photos/articles/linked references beyond project context",
-            "  and contact path.",
+            "- Arvutimuuseum linked articles/photos beyond the classified exhibit",
+            "  page and contact path.",
             "- Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except",
             "  where already captured in `docs/community-prom-media-request.md`.",
             "",

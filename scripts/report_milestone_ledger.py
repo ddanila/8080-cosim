@@ -55,6 +55,7 @@ def source_coverage_audited():
             "https://github.com/vpyk/emu80v4",
             "Local WD1772 transistor/PLA files",
             "docs/public-manual-archive-inventory.md",
+            "docs/arvutimuuseum-context-inventory.md",
         ]
     )
 
@@ -168,6 +169,13 @@ def milestone_rows():
     ) and marker(
         ".github/workflows/lvs.yml",
         "docs/public-manual-archive-inventory.md",
+    )
+    arvutimuuseum_context = marker(
+        "docs/arvutimuuseum-context-inventory.md",
+        "Status: **ARVUTIMUUSEUM CONTEXT CLASSIFIED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/arvutimuuseum-context-inventory.md",
     )
     ekdos_source_vendored = exists("ref/ekdos-source/EKDOS30.ASM") and marker(
         "ref/ekdos-source/SHA256SUMS",
@@ -608,6 +616,13 @@ def milestone_rows():
                     "board-critical PDFs mirrored or covered and large user/service "
                     "manuals kept optional; "
                     if public_manual_inventory
+                    else ""
+                )
+                + (
+                    "`docs/arvutimuuseum-context-inventory.md` classifies the "
+                    "Arvutimuuseum exhibit facts as kit/spec/contact context rather "
+                    "than primary electrical evidence; "
+                    if arvutimuuseum_context
                     else ""
                 )
                 + ekdos_source_m1_phrase
