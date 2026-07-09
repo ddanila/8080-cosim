@@ -51,7 +51,9 @@ REQUIRED_PATHS = [
     "docs/basic-cartridge-missing-page-constraints.md",
     "docs/public-software-archive-inventory.md",
     "docs/public-manual-archive-inventory.md",
+    "docs/public-manual-text-triage.md",
     "docs/arvutimuuseum-context-inventory.md",
+    "docs/public-community-link-inventory.md",
     "docs/re3-firmware-inspection.md",
     "docs/reconstructed-prom-fallbacks.md",
     "docs/firmware-gap-ledger.md",
@@ -70,9 +72,10 @@ SOURCE_ROWS = [
         "Arti-derived raw disks are mirrored or reflected in `ref/`, `roms/`, "
         "`media/disks/`, the board placement, generated BOM, transcription "
         "docs, and FDC/BASIC probes. The public manual/drawing listing is "
-        "classified in `docs/public-manual-archive-inventory.md`.",
+        "classified in `docs/public-manual-archive-inventory.md`; forum links "
+        "are classified in `docs/public-community-link-inventory.md`.",
         "Large user/service manuals, emulator pages, newspaper scans, and "
-        "forum links are optional context unless a future procedure-specific "
+        "other historical links are optional context unless a future procedure-specific "
         "clue is needed.",
     ),
     (
@@ -84,7 +87,8 @@ SOURCE_ROWS = [
         "`J3KUTIL4.JUK` is vendored under `media/disks/`; the public software "
         "listing is classified in `docs/public-software-archive-inventory.md`; "
         "the `e5101-joonised/` and `kirjandus/` manual listings are classified "
-        "in `docs/public-manual-archive-inventory.md`.",
+        "in `docs/public-manual-archive-inventory.md`; large manual text is "
+        "triaged in `docs/public-manual-text-triage.md`.",
         "The Baltijets programming disk files referenced by doc 007 remain missing.",
     ),
     (
@@ -121,6 +125,24 @@ SOURCE_ROWS = [
         "Reference material only. It supports future ВГ93/FD1773 fidelity "
         "work but is not translated into HDL and does not add Juku-specific "
         "media, PROM contents, or board connectivity.",
+    ),
+    (
+        "Public Elfafoorum / ZX-PK community links",
+        "`docs/public-community-link-inventory.md` classifies the public "
+        "threads as owner/contact and historical/software context. It records "
+        "that no extracted public snippet supplies the missing PROM byte "
+        "tables, pin continuity, or board nets.",
+        "Useful contact path only until a reply provides files, photos, "
+        "checksums, continuity measurements, or PROM dumps.",
+    ),
+    (
+        "Large public Juku manuals",
+        "`docs/public-manual-text-triage.md` records a targeted `pdftotext` "
+        "pass over the public Elektroonikamuuseum literature PDFs. It found "
+        "ROMBIOS, BASIC, FDD, and `ДГШ5.106.105` media-kit context, but no "
+        "small-PROM byte tables or electrical closure.",
+        "Procedure context only unless a future task needs a specific manual "
+        "page promoted with checksum.",
     ),
 ]
 
@@ -194,10 +216,16 @@ def main() -> int:
             "  public Arti and Elektroonikamuuseum manual/drawing listings. It",
             "  confirms the board-critical drawings are mirrored or covered and",
             "  leaves large user/service manuals as optional context.",
+            "- `scripts/report_public_manual_text_triage.py` records the targeted",
+            "  text pass over large public manuals: useful ROMBIOS/BASIC/FDD and",
+            "  `ДГШ5.106.105` context, but no small-PROM byte-table or net evidence.",
             "- `scripts/report_arvutimuuseum_context_inventory.py` classifies the",
             "  Arvutimuuseum exhibit page, linked articles, and gallery photos",
             "  as context: useful for kit/spec/contact and visual cross-checks,",
             "  but not primary electrical evidence.",
+            "- `scripts/report_public_community_link_inventory.py` classifies",
+            "  public Elfafoorum/ZX-PK links as contact and historical context,",
+            "  with no new PROM byte-table or continuity evidence extracted.",
             "- `scripts/extract_basic_disk_files.py` extracts and vendors the",
             "  strongest disk-side BASIC candidates under `ref/extracted-software/`.",
             "- `scripts/report_basic_cartridge_missing_page_constraints.py` records",
@@ -228,10 +256,10 @@ def main() -> int:
             "",
             "## Not yet exhaustive",
             "",
-            "- Full text mining of the large user/service manuals for optional",
-            "  Tier 2/Tier 3 operating procedures.",
-            "- Forum-linked owner knowledge from Arti/Arvutimuuseum pages, except",
-            "  where already captured in `docs/community-prom-media-request.md`.",
+            "- Procedure-page promotion from large manuals only if a future",
+            "  Tier 2/Tier 3 workflow needs exact wording or screenshots.",
+            "- Forum follow-up after the ready-to-send owner/community request",
+            "  produces actual files, photos, checksums, or measurements.",
             "",
             "## Practical implication",
             "",

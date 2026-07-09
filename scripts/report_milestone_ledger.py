@@ -170,6 +170,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "docs/public-manual-archive-inventory.md",
     )
+    public_manual_text_triage = marker(
+        "docs/public-manual-text-triage.md",
+        "Status: **PUBLIC MANUAL TEXT TRIAGED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/public-manual-text-triage.md",
+    )
     arvutimuuseum_context = marker(
         "docs/arvutimuuseum-context-inventory.md",
         "Status: **ARVUTIMUUSEUM CONTEXT CLASSIFIED**",
@@ -179,6 +186,13 @@ def milestone_rows():
     ) and marker(
         ".github/workflows/lvs.yml",
         "docs/arvutimuuseum-context-inventory.md",
+    )
+    public_community_inventory = marker(
+        "docs/public-community-link-inventory.md",
+        "Status: **PUBLIC COMMUNITY LINKS CLASSIFIED**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "docs/public-community-link-inventory.md",
     )
     ekdos_source_vendored = exists("ref/ekdos-source/EKDOS30.ASM") and marker(
         "ref/ekdos-source/SHA256SUMS",
@@ -622,11 +636,25 @@ def milestone_rows():
                     else ""
                 )
                 + (
+                    "`docs/public-manual-text-triage.md` records a targeted text "
+                    "pass over large public manuals and found ROMBIOS/BASIC/FDD "
+                    "context but no small-PROM byte tables or electrical closure; "
+                    if public_manual_text_triage
+                    else ""
+                )
+                + (
                     "`docs/arvutimuuseum-context-inventory.md` classifies the "
                     "Arvutimuuseum exhibit facts, linked articles, and gallery "
                     "photos as kit/spec/contact/visual context rather than primary "
                     "electrical evidence; "
                     if arvutimuuseum_context
+                    else ""
+                )
+                + (
+                    "`docs/public-community-link-inventory.md` classifies public "
+                    "Elfafoorum/ZX-PK links as owner-contact and historical "
+                    "context rather than PROM or continuity evidence; "
+                    if public_community_inventory
                     else ""
                 )
                 + ekdos_source_m1_phrase
