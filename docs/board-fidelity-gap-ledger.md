@@ -20,19 +20,18 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `76`
+- Chip-level fidelity gaps: `46`
 - Net-level source-risk gaps: `36`
 
 ## Chip Provenance Types
 
 | Provenance type | Chips |
 | --- | ---: |
-| assumed | 30 |
 | datasheet | 1 |
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 190 |
+| scan | 220 |
 | wire | 1 |
 
 ## Gap Categories
@@ -47,7 +46,6 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | logic/source | 3 | 3 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
-| unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 13 |
 | video/timing | 1 | 0 |
 
@@ -122,41 +120,6 @@ parts placement and Tier-3 reproduction.
 | `C70` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D71 remains assumed |
 | `C71` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D79 remains assumed |
 | `C72` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D87 remains assumed |
-
-### unpopulated sockets
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `D17` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
-| `D18` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
-| `D19` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
-| `D20` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
-| `D21` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
-| `D22` | `EPROM8K` | assumed | scan unpopulated ROM socket [CS decode not traced] |
-| `D68` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D69` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D70` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D71` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D72` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D73` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D74` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D75` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 1 [assumed bank-CAS] |
-| `D76` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D77` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D78` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D79` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D80` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D81` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D82` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D83` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 2 [assumed bank-CAS] |
-| `D84` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D85` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D86` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D87` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D88` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D89` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D90` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
-| `D91` | `RU5` | assumed | scan unpopulated РУ5 socket, bank 3 [assumed bank-CAS] |
 
 ### video/timing
 

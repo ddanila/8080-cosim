@@ -1390,9 +1390,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1414,9 +1414,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1438,9 +1438,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1462,9 +1462,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1486,9 +1486,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1510,9 +1510,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1534,9 +1534,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1558,9 +1558,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 1 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 1; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1582,9 +1582,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1606,9 +1606,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1630,9 +1630,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1654,9 +1654,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1678,9 +1678,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1702,9 +1702,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1726,9 +1726,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1750,9 +1750,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 2 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 2; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1774,9 +1774,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1798,9 +1798,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1822,9 +1822,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1846,9 +1846,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1870,9 +1870,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1894,9 +1894,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1918,9 +1918,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1942,9 +1942,9 @@
     "14": "DO_"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 socket, bank 3 [assumed bank-CAS]"
+    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1976,9 +1976,9 @@
     "22": "OE_N"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated ROM socket [CS decode not traced]"
+    "pins": "optional unpopulated 2764-class ROM socket; address/data/OE/power and CS riser traced, empty in the .009 functional build"
    }
   },
   {
@@ -2010,9 +2010,9 @@
     "22": "OE_N"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated ROM socket [CS decode not traced]"
+    "pins": "optional unpopulated 2764-class ROM socket; address/data/OE/power and CS riser traced, empty in the .009 functional build"
    }
   },
   {
@@ -2044,9 +2044,9 @@
     "22": "OE_N"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated ROM socket [CS decode not traced]"
+    "pins": "optional unpopulated 2764-class ROM socket; address/data/OE/power and CS riser traced, empty in the .009 functional build"
    }
   },
   {
@@ -2078,9 +2078,9 @@
     "22": "OE_N"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated ROM socket [CS decode not traced]"
+    "pins": "optional unpopulated 2764-class ROM socket; address/data/OE/power and CS riser traced, empty in the .009 functional build"
    }
   },
   {
@@ -2112,9 +2112,9 @@
     "22": "OE_N"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated ROM socket [CS decode not traced]"
+    "pins": "optional unpopulated 2764-class ROM socket; address/data/OE/power and CS riser traced, empty in the .009 functional build"
    }
   },
   {
@@ -2146,9 +2146,9 @@
     "22": "OE_N"
    },
    "prov": {
-    "type": "assumed",
+    "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated ROM socket [CS decode not traced]"
+    "pins": "optional unpopulated 2764-class ROM socket; address/data/OE/power and CS riser traced, empty in the .009 functional build"
    }
   },
   {
