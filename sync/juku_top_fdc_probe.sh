@@ -30,6 +30,7 @@ STOPPROMPT=${JUKU_TOP_FDC_STOPPROMPT:-0}
 TIMEOUT_S=${JUKU_TOP_FDC_TIMEOUT:-60}
 VRAM_COPY=${JUKU_TOP_FDC_VRAM_COPY:-}
 STOPPC=${JUKU_TOP_FDC_STOPPC:-}
+STOPPC_SKIP=${JUKU_TOP_FDC_STOPPC_SKIP:-0}
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
@@ -59,7 +60,7 @@ esac
 
 set +e
 STOPPC_PLUSARG=
-if [ -n "$STOPPC" ]; then STOPPC_PLUSARG="+stoppc=$STOPPC"; fi
+if [ -n "$STOPPC" ]; then STOPPC_PLUSARG="+stoppc=$STOPPC +stoppc_skip=$STOPPC_SKIP"; fi
 if command -v timeout >/dev/null; then
   if [ "$SIMULATOR" = icarus ]; then
     timeout "$TIMEOUT_S" vvp "$SIM" \
@@ -194,9 +195,10 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPROMPT\` default \`0\`; set to \`1\` to stop when the
   EKDOS \`A>\` bitmap appears at \`x=0\`, \`y=70\`
 - \`JUKU_TOP_FDC_STOPPC\` optional hexadecimal CPU PC stop hook
+- \`JUKU_TOP_FDC_STOPPC_SKIP\` default \`0\`; matching PC entries to skip
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -253,7 +255,7 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 - The top-level bench now has opt-in \`+ekdoskeys=1\`, \`+traceio=1\`,
   \`+stopio=N\`, \`+tracepic=1\`, \`+stoppic=N\`, \`+tracefdc=1\`, and
   \`+stopfdc=N\`, plus \`+stopprompt=1\` for the EKDOS \`A>\` bitmap and
-  \`+stoppc=HEX\` for exact CPU address stops.
+  \`+stoppc=HEX\` / \`+stoppc_skip=N\` for CPU address stops.
 - Existing boot guards keep those hooks disabled, preserving the byte-identical
   ekta37 boot comparison.
 - \`docs/ekdos-timing-reference.md\` shows the fast cosim target for this same

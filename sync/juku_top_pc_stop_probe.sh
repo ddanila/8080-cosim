@@ -51,8 +51,8 @@ sync/juku_top_pc_stop_probe.sh
 
 ## Disposition
 
-- Use \`JUKU_TOP_FDC_STOPPC=HEX sync/juku_top_fdc_probe.sh\` for exact ROMBIOS
-  boundary stops.
+- Use \`JUKU_TOP_FDC_STOPPC=HEX\` plus optional \`JUKU_TOP_FDC_STOPPC_SKIP=N\`
+  with \`sync/juku_top_fdc_probe.sh\` for ROMBIOS boundary stops.
 - The hook is diagnostic only; default boot and LVS guards leave it disabled.
 EOF
 

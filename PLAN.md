@@ -214,9 +214,10 @@ debugging session saved on real hardware.
    automation path moved to checkpoint/fast-forward rather than a larger wall
    timeout. `docs/juku-top-post30180-divergence.md` now pins the reset-driven
    branch failure more tightly: cosim and HDL match through 30,180 framebuffer
-   writes, but by 30,182 HDL repeats the ROMBIOS display-test checksum path and
-   by 30,185 it is back in the early `0x0242` RAM-fill loop, long before
-   PIC/FDC setup. `docs/ekdos-checkpoint-reference.md` now pins the
+   writes, diverge in the ROMBIOS display-test checksum state at 30,181 writes,
+   split control flow by 30,182, and by 30,185 HDL is back in the early
+   `0x0242` RAM-fill loop, long before PIC/FDC setup.
+   `docs/ekdos-checkpoint-reference.md` now pins the
    full cosim machine checkpoint at that 30,000-write boundary: CPU
    registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
    framebuffer hash. This is the input evidence for the checkpoint/resume HDL

@@ -89,11 +89,11 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   split checkpoint/prompt proof rather than an uninterrupted top-level prompt
   proof. The older first-FDC checkpoint at 63,085 framebuffer writes and the earlier
   42,000-write key-window checkpoint remain available as non-CI narrowing runs.
-- `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX`,
-  which maps to the `juku_top_tb` `+stoppc=HEX` CPU-address stop hook for
-  focused ROMBIOS boundary diagnostics, and `JUKU_TOP_FDC_STOPPROMPT=1`,
-  which maps to the same uninterrupted harness's EKDOS `A>` bitmap oracle at
-  `x=0`, `y=70`.
+- `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX` plus
+  optional `JUKU_TOP_FDC_STOPPC_SKIP=N`, which map to the `juku_top_tb`
+  `+stoppc=HEX` / `+stoppc_skip=N` CPU-address stop hooks for focused ROMBIOS
+  boundary diagnostics, and `JUKU_TOP_FDC_STOPPROMPT=1`, which maps to the same
+  uninterrupted harness's EKDOS `A>` bitmap oracle at `x=0`, `y=70`.
 - `sync/juku_top_periph_bus_check.sh` drives `juku_top`'s buffered CPU bus
   directly and proves decoded keyboard/PIC/PPI/FDC access, including the pinned
   no-key `0xCF` keyboard poll, shifted-`T` `0x88` poll, frame INTA vector
