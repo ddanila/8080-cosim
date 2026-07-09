@@ -23,6 +23,7 @@ FRAMEMCYC=${JUKU_TOP_FDC_FRAMEMCYC:-0}
 MAXVRAM=${JUKU_TOP_FDC_MAXVRAM:-88000}
 TIMECAP=${JUKU_TOP_FDC_TIMECAP:-900000000}
 TRACEPROGRESS=${JUKU_TOP_FDC_TRACEPROGRESS:-5000}
+VRAMSTOP_SYNC=${JUKU_TOP_FDC_VRAMSTOP_SYNC:-0}
 TRACEIO=${JUKU_TOP_FDC_TRACEIO:-0}
 TRACECHK=${JUKU_TOP_FDC_TRACECHK:-0}
 TRACEPPI=${JUKU_TOP_FDC_TRACEPPI:-1}
@@ -74,6 +75,7 @@ if command -v timeout >/dev/null; then
       +framephase="$FRAMEPHASE" \
       +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
+      +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
@@ -86,6 +88,7 @@ if command -v timeout >/dev/null; then
       +framephase="$FRAMEPHASE" \
       +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
+      +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
@@ -101,6 +104,7 @@ else
       +framephase="$FRAMEPHASE" \
       +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
+      +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
@@ -113,6 +117,7 @@ else
       +framephase="$FRAMEPHASE" \
       +frame_mcyc="$FRAMEMCYC" \
       +traceprogress="$TRACEPROGRESS" \
+      +vramstop_sync="$VRAMSTOP_SYNC" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
       +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi="$TRACEPPI" +traceirq="$TRACEIRQ" +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
@@ -209,6 +214,8 @@ Environment overrides:
   \`JUKU_TOP_FDC_FRAMEIRQ\` and schedules frame ticks on machine-cycle boundaries;
   in this mode \`JUKU_TOP_FDC_FRAMEPHASE\` is the absolute first machine-cycle tick
 - \`JUKU_TOP_FDC_TRACEPROGRESS\` default \`5000\`
+- \`JUKU_TOP_FDC_VRAMSTOP_SYNC\` default \`0\`; when nonzero, stops at the next
+  CPU SYNC after \`JUKU_TOP_FDC_MAXVRAM\` for architectural state comparison
 - \`JUKU_TOP_FDC_TRACEIO\` default \`0\`
 - \`JUKU_TOP_FDC_TRACECHK\` default \`0\`
 - \`JUKU_TOP_FDC_TRACEPPI\` default \`1\`
@@ -223,7 +230,7 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPC_SKIP\` default \`0\`; matching PC entries to skip
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE FRAMEMCYC=$FRAMEMCYC TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE FRAMEMCYC=$FRAMEMCYC TRACEPROGRESS=$TRACEPROGRESS VRAMSTOP_SYNC=$VRAMSTOP_SYNC TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -290,6 +297,12 @@ $(grep '^\[CHKHDL' "$OUT" || true)
 
 \`\`\`text
 $(grep '^\[PPI0\]' "$OUT" || true)
+\`\`\`
+
+## Raw I/O Trace
+
+\`\`\`text
+$(grep '^\[RAWIO\]' "$OUT" || true)
 \`\`\`
 
 ## IRQ Trace

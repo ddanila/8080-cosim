@@ -18,8 +18,8 @@
 
 module juku_top_tb();
   reg osc=0;
-  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, stopprompt=0, prompt_seen=0, traceprogress=0;
-  reg vram_seen=0, sq=0;
+  integer vram_writes=0, max_vram=6000, mcyc=0, cursorstop=0, cursor_seen=0, stopprompt=0, prompt_seen=0, traceprogress=0, vramstop_sync=0;
+  reg vram_seen=0, sq=0, vram_stop_pending=0;
   integer stoppc_en=0, stoppc_skip=0, stoppc_seen=0; reg [15:0] stoppc=16'h0000, pc_q=16'hffff;
 
   // keyboard stimulus (opt-in: keyat=0 => kbd off => boot byte-identical). Press the
@@ -62,6 +62,10 @@ module juku_top_tb();
     if (dut.sync && !sq) begin
       mcyc_now = mcyc + 1;
       mcyc <= mcyc_now;
+      if (vram_stop_pending) begin
+        $display("[VRAM] %0d writes (mcyc=%0d) -- sync dump", vram_writes, mcyc_now);
+        #60 dump_vram; $finish;
+      end
     end
     sq <= dut.sync;
     if (stoppc_en && dut.U_CPU.u.core.r16_pc == stoppc && pc_q != stoppc) begin
@@ -323,7 +327,11 @@ module juku_top_tb();
       #60 dump_vram; $finish;
     end
     if (vram_writes == max_vram) begin
-      $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); #60 dump_vram; $finish;
+      if (vramstop_sync) begin
+        vram_stop_pending = 1;
+      end else begin
+        $display("[VRAM] %0d writes (mcyc=%0d) -- dump", vram_writes, mcyc); #60 dump_vram; $finish;
+      end
     end
   end
 
@@ -398,6 +406,7 @@ module juku_top_tb();
                                       // runs (full banner + key) need more -> raise via +timecap.
   initial begin
     if ($value$plusargs("maxvram=%d", max_vram)) ;
+    if ($value$plusargs("vramstop_sync=%d", vramstop_sync)) ;
     if ($value$plusargs("traceprogress=%d", traceprogress)) ;
     if ($value$plusargs("stoppc=%h", stoppc)) stoppc_en = 1;
     if ($value$plusargs("stoppc_skip=%d", stoppc_skip)) ;

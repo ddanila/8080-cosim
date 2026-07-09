@@ -201,10 +201,10 @@ debugging session saved on real hardware.
    `sync/juku_top_io_decode_probe.sh` proves raw ROMBIOS I/O and settled D7/D9
    peripheral decode are visible in the fast pre-banner window, including
    mirrored PPI1 and PPI0 writes. `sync/juku_top_30000_state_probe.sh` proves
-   the slow top-level run still matches cosim at PC `0x0484` after 30,000 VRAM
-   writes, with a byte-identical 9,640-byte framebuffer dump and matching
-   visible CPU/PPI/PIC/FDC register state, just before the fast cosim first-PIC
-   point at 30,520 writes. The
+   the slow top-level run matches cosim through the post-PIC, pre-FDC
+   first-frame anchor at 33,812 VRAM writes when frame IRQs are disabled, with
+   effective PC `0x0E23`, a byte-identical 9,640-byte framebuffer dump, and
+   matching visible CPU/PPI/PIC/FDC register state. The
    current full FDC run loads the disk, reaches BIOS VRAM progress, and now
    exposes decoded PIC/PPI/IRQ/FDC context from reset; `JUKU_TOP_FDC_STOPPC=HEX`
    provides exact CPU-address stops for narrowing that boundary. `docs/juku-top-30520-reachability.md`
@@ -282,17 +282,15 @@ debugging session saved on real hardware.
    reset-driven `juku_top` reaches FDC command/data I/O and its first no-key
    keyboard scan matches the cosim anchor (`IN 0x05 = 0xCF` at PC `0x1213`,
    VRAM 30,520). The FDC probe now has an optional machine-cycle frame
-   scheduler (`JUKU_TOP_FDC_FRAMEMCYC`): `FRAMEMCYC=80000` and
-   `FRAMEPHASE=52989` align the first accepted HDL frame IRQ to the cosim
-   framebuffer/mcycle anchor (`mcyc=852989`, VRAM 33,811/33,812) and prove the
-   expected `0xFED4` CALL-vector injection. That calibration also proves the
-   next mismatch is not just frame phase: HDL is still at PC `0x0244` at the
-   first IRQ anchor, while cosim is at PC `0x0E21`, and a no-frame `0x0E21`
-   stop-PC probe does not hit by 90,000 VRAM writes. Remaining target: fix the
-   pre-FDC CPU/video timing path so the uninterrupted full ROMBIOS `TDD` path
-   through `juku_top` reaches first command `0x02`, sector `0x02`, and then the
-   EKDOS prompt with external media, without relying on checkpoint/resume
-   acceleration.
+   scheduler (`JUKU_TOP_FDC_FRAMEMCYC`): after fixing PPI0 Port C writes to
+   latch on `WR#`, `FRAMEMCYC=50761` and `FRAMEPHASE=49891` align the first
+   accepted HDL frame IRQ to the cosim framebuffer/mcycle anchor (`mcyc=811306`,
+   VRAM 33,812), keep the next frame IRQs near the cosim 200,000-cycle cadence,
+   and drive uninterrupted `juku_top` to the cosim first-FDC boundary:
+   `OUT 0x1C = 0x02` at PC `0xE5DE`, VRAM 63,085, followed by sector/data setup
+   at VRAM 63,095. Remaining target: continue that same uninterrupted ROMBIOS
+   `TDD` path through the FDC data drain to the EKDOS prompt with external
+   media, without relying on checkpoint/resume acceleration.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

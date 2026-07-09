@@ -475,13 +475,22 @@ module ppi_8255 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                             kactive ? {((~kbit) & 3'h7), 1'b0} : 4'hF};
 
     assign D = (~cs_n & ~rd_n) ? ((kbd_en & A == 2'd1) ? kbd_portb : regs[A]) : 8'bz;
-    always @(*) if (~cs_n & ~wr_n) begin
-        regs[A] = D;
-        if (A == 2'd0) kbd_col_sel = D[3:0];    // Port A write = keyboard column select
-        if (A == 2'd2) portc = D;
-        else if (A == 2'd3) begin               // BSR: set/reset one Port C bit
-            if (D[7]) portc = 0;
-            else begin bsr_bit=(D>>1)&3'd7; if (D[0]) portc[bsr_bit]=1; else portc[bsr_bit]=0; end
+    always @(posedge reset or negedge wr_n) begin
+        if (reset) begin
+            for (i=0;i<4;i=i+1) regs[i] <= 0;
+            portc <= 0;
+            kbd_col_sel <= 0;
+        end else begin
+            #1;
+            if (~cs_n) begin
+                regs[A] <= D;
+                if (A == 2'd0) kbd_col_sel <= D[3:0];    // Port A write = keyboard column select
+                if (A == 2'd2) portc <= D;
+                else if (A == 2'd3) begin                // BSR: set/reset one Port C bit
+                    if (D[7]) portc <= 0;
+                    else begin bsr_bit = (D >> 1) & 3'd7; portc[bsr_bit] <= D[0]; end
+                end
+            end
         end
     end
 endmodule

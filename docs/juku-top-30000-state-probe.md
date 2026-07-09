@@ -1,9 +1,9 @@
-# juku_top 30,000-write state probe
+# juku_top 33812-write state probe
 
 Status: **PASS**
 
 This slow diagnostic compares the fast cosim and LVS-checked `juku_top` at
-30,000 framebuffer writes on the vendored `JUKU1.CPM` `TDD` path. The fast
+33812 framebuffer writes on the vendored `JUKU1.CPM` `TDD` path. The fast
 cosim timing reference first touches PIC at 30,520 writes; the default 30,000
 write target proves whether the expensive top-level simulation is still aligned
 immediately before that post-banner PIC/FDC window.
@@ -18,26 +18,31 @@ sync/juku_top_30000_state_probe.sh
 
 | Check | Result |
 | --- | --- |
-| Target VRAM writes | `30000` |
+| Target VRAM writes | `33812` |
+| HDL simulator | `verilator` |
+| Cosim frame cycles | `0` |
+| HDL frame settings | `FRAMEIRQ=0 FRAMEPHASE=0 FRAMEMCYC=0` |
+| Keyboard start VRAM | `42000` |
 | HDL reached dump point | PASS |
 | HDL timeout exit code | `0` |
-| Cosim stop PC | `0x0484` |
-| HDL stop PC | `0x0484` |
-| Cosim/HDL PC match | PASS |
+| Cosim stop PC | `0x0E23` |
+| HDL stop PC | `0x0e24` |
+| HDL effective PC | `0x0e23` |
+| Cosim/HDL effective PC match | PASS |
 | VRAM dump bytes | `9640` |
-| Cosim VRAM SHA256 | `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68` |
-| HDL VRAM SHA256 | `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68` |
+| Cosim VRAM SHA256 | `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d` |
+| HDL VRAM SHA256 | `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d` |
 | Cosim/HDL VRAM match | PASS |
 | Cosim/HDL visible state match | PASS |
 
 ## Stop State
 
 - Cosim first VRAM line: `[VRAM] first video write @0xD800 cyc=98649`
-- Cosim stop line: `stopped pc=0x0484 cyc=1963707 halted=0 iff=0 mode=0 switches=0`
-- HDL VRAM stop line: `[VRAM] 30000 writes (mcyc=522138) -- dump`
-- HDL CPU state line: `[CPU] pc=0x0484 sp=0xd44c instr=0x36 ba=0xfd2f db=0xff mcyc=522138 vram=30000 memr_n=1 memw_n=1 iord_n=1 iowr_n=1 inta_n=1 sync=0 intr=0 xchg_dh=0`
-- HDL visible state line: `[STATE] pc=0484 sp=d44c a=a1 b=d7 c=e7 d=00 e=a1 h=fd l=2f sf=1 zf=0 hf=0 pf=0 cf=0 iff=0 mode=0 portc=80 kbd_col=0f pic_icw1=00 pic_icw2=00 pic_mask=ff pic_expect_icw2=0 fdc_motor_on=0 fdc_status=80 fdc_track=00 fdc_sector=01 fdc_data=00 fdc_command=00 fdc_buffer_pos=0 fdc_buffer_len=0`
-- HDL I/O summary line: `[IO] raw_ios=29 raw_reads=1 raw_writes=28 pic_ios=0 pic_reads=0 pic_writes=0 ppi_ios=8 ppi_reads=1 ppi_writes=7 ppi_key_reads=0 fdc_ios=0 fdc_reads=0 fdc_writes=0 frame_ticks=49 intr_edges=0 inta_edges=0`
+- Cosim stop line: `stopped pc=0x0E23 cyc=3199972 halted=0 iff=1 mode=0 switches=16`
+- HDL VRAM stop line: `[VRAM] 33812 writes (mcyc=811306) -- sync dump`
+- HDL CPU state line: `[CPU] pc=0x0e24 sp=0xd434 instr=0x03 ba=0x0e23 db=0x03 mcyc=811306 vram=33812 memr_n=0 memw_n=1 iord_n=1 iowr_n=1 inta_n=1 sync=0 intr=0 xchg_dh=1`
+- HDL visible state line: `[STATE] pc=0e24 sp=d434 a=00 b=e4 c=b1 d=00 e=28 h=fd l=d0 sf=0 zf=1 hf=0 pf=1 cf=0 iff=1 mode=0 portc=00 kbd_col=07 pic_icw1=d6 pic_icw2=fe pic_mask=df pic_expect_icw2=0 fdc_motor_on=0 fdc_status=80 fdc_track=00 fdc_sector=01 fdc_data=00 fdc_command=00 fdc_buffer_pos=0 fdc_buffer_len=0`
+- HDL I/O summary line: `[IO] raw_ios=97 raw_reads=33 raw_writes=64 pic_ios=4 pic_reads=0 pic_writes=4 ppi_ios=72 ppi_reads=33 ppi_writes=39 ppi_key_reads=8 fdc_ios=0 fdc_reads=0 fdc_writes=0 frame_ticks=0 intr_edges=0 inta_edges=0`
 
 ## Disposition
 
@@ -50,5 +55,5 @@ sync/juku_top_30000_state_probe.sh
 
 ## Result Interpretation
 
-- HDL reached the 30,000-write dump point, so the PC, framebuffer, and visible
+- HDL reached the 33812-write dump point, so the PC, framebuffer, and visible
   state comparisons above are authoritative for that boundary.

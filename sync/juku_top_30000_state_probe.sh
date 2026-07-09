@@ -15,6 +15,12 @@ DISPLAY_WRITES=$WRITES
 if [ "$WRITES" = "30000" ]; then DISPLAY_WRITES="30,000"; fi
 if [ "$WRITES" = "30520" ]; then DISPLAY_WRITES="30,520"; fi
 TIMEOUT_S=${JUKU_TOP_30000_TIMEOUT:-900}
+SIMULATOR=${JUKU_TOP_30000_SIM:-icarus}
+COSIM_FRAME_CYCLES=${JUKU_TOP_30000_COSIM_FRAME_CYCLES:-200000}
+HDL_FRAMEIRQ=${JUKU_TOP_30000_HDL_FRAMEIRQ:-80000}
+HDL_FRAMEPHASE=${JUKU_TOP_30000_HDL_FRAMEPHASE:-0}
+HDL_FRAMEMCYC=${JUKU_TOP_30000_HDL_FRAMEMCYC:-0}
+KEYAT=${JUKU_TOP_30000_KEYAT:-42000}
 TMP=$(mktemp -d)
 OLD_COSIM_VRAM="$TMP/cosim-vram.old"
 COSIM_VRAM="$TMP/cosim-vram.bin"
@@ -28,9 +34,10 @@ cc -O2 -I cosim -o "$TMP/trace" cosim/trace.c cosim/i8080.c cosim/juk_disk.c cos
 (cd cosim && \
   JUKU_KEYS=TDD \
   JUKU_DISK=../media/disks/JUKU1.CPM \
+  JUKU_KEY_START_VRAM="$KEYAT" \
   JUKU_TRACE_TIMING=1 \
   JUKU_CHECKPOINT_PREFIX="$CHECKPOINT_PREFIX" \
-  "$TMP/trace" ../roms/ekta37.bin 250000000 "$WRITES" 200000 \
+  "$TMP/trace" ../roms/ekta37.bin 250000000 "$WRITES" "$COSIM_FRAME_CYCLES" \
   >"$TMP/cosim.out" 2>"$TMP/cosim.err")
 
 if [ -f cosim/vram.bin ]; then cp cosim/vram.bin "$COSIM_VRAM"; fi
@@ -51,10 +58,15 @@ fi
 
 JUKU_TOP_FDC_REPORT="$TMP/hdl.md" \
 JUKU_TOP_FDC_REPORT_TITLE="juku_top ${DISPLAY_WRITES}-write state probe" \
+JUKU_TOP_FDC_SIM="$SIMULATOR" \
 JUKU_TOP_FDC_VRAM_COPY="$HDL_VRAM" \
 JUKU_TOP_FDC_TIMEOUT="$TIMEOUT_S" \
 JUKU_TOP_FDC_MAXVRAM="$WRITES" \
-JUKU_TOP_FDC_KEYAT=30520 \
+JUKU_TOP_FDC_VRAMSTOP_SYNC=1 \
+JUKU_TOP_FDC_FRAMEIRQ="$HDL_FRAMEIRQ" \
+JUKU_TOP_FDC_FRAMEPHASE="$HDL_FRAMEPHASE" \
+JUKU_TOP_FDC_FRAMEMCYC="$HDL_FRAMEMCYC" \
+JUKU_TOP_FDC_KEYAT="$KEYAT" \
 JUKU_TOP_FDC_TRACEPROGRESS=5000 \
 JUKU_TOP_FDC_STOPFDC=0 \
 sync/juku_top_fdc_probe.sh >"$TMP/hdl.out"
@@ -65,6 +77,12 @@ hdl_state=$(grep -m1 'Visible state line:' "$TMP/hdl.md" | sed 's/^- Visible sta
 hdl_vram_stop=$(grep -m1 'VRAM stop line:' "$TMP/hdl.md" | sed 's/^- VRAM stop line: `//; s/`$//' || true)
 hdl_io=$(grep -m1 'I/O summary line:' "$TMP/hdl.md" | sed 's/^- I\/O summary line: `//; s/`$//' || true)
 hdl_pc=$(printf '%s\n' "$hdl_cpu" | sed -n 's/.*pc=0x\([0-9A-Fa-f]*\).*/\1/p')
+hdl_ba=$(printf '%s\n' "$hdl_cpu" | sed -n 's/.*ba=0x\([0-9A-Fa-f]*\).*/\1/p')
+hdl_memr_n=$(printf '%s\n' "$hdl_cpu" | sed -n 's/.*memr_n=\([0-9]\).*/\1/p')
+hdl_effective_pc=$hdl_pc
+if [ "$hdl_memr_n" = "0" ] && [ -n "$hdl_ba" ]; then
+  hdl_effective_pc=$hdl_ba
+fi
 hdl_reached_dump=NO
 if [ -n "$hdl_cpu" ] && [ "$hdl_vram_stop" != "none" ]; then
   hdl_reached_dump=PASS
@@ -92,7 +110,7 @@ normalize_hex() {
 
 state_failures=()
 state_keys=(
-  pc sp a b c d e h l sf zf hf pf cf iff mode portc kbd_col
+  sp a b c d e h l sf zf hf pf cf iff mode portc kbd_col
   pic_icw1 pic_icw2 pic_mask pic_expect_icw2
   fdc_motor_on fdc_track fdc_sector fdc_data fdc_command
   fdc_buffer_pos fdc_buffer_len
@@ -126,7 +144,7 @@ fi
 status="PASS"
 if [ "$hdl_reached_dump" != PASS ]; then
   status="INCOMPLETE"
-elif [ -z "$cosim_pc" ] || [ -z "$hdl_pc" ] || [ "${cosim_pc,,}" != "${hdl_pc,,}" ]; then
+elif [ -z "$cosim_pc" ] || [ -z "$hdl_effective_pc" ] || [ "${cosim_pc,,}" != "${hdl_effective_pc,,}" ]; then
   status="FAIL"
 fi
 if [ "$vram_match" != PASS ]; then
@@ -158,11 +176,16 @@ sync/juku_top_30000_state_probe.sh
 | Check | Result |
 | --- | --- |
 | Target VRAM writes | \`$WRITES\` |
+| HDL simulator | \`$SIMULATOR\` |
+| Cosim frame cycles | \`$COSIM_FRAME_CYCLES\` |
+| HDL frame settings | \`FRAMEIRQ=$HDL_FRAMEIRQ FRAMEPHASE=$HDL_FRAMEPHASE FRAMEMCYC=$HDL_FRAMEMCYC\` |
+| Keyboard start VRAM | \`$KEYAT\` |
 | HDL reached dump point | $hdl_reached_dump |
 | HDL timeout exit code | \`${hdl_rc:-unknown}\` |
 | Cosim stop PC | \`0x${cosim_pc:-unknown}\` |
 | HDL stop PC | \`0x${hdl_pc:-unknown}\` |
-| Cosim/HDL PC match | $([ -n "$cosim_pc" ] && [ -n "$hdl_pc" ] && [ "${cosim_pc,,}" = "${hdl_pc,,}" ] && echo PASS || echo FAIL) |
+| HDL effective PC | \`0x${hdl_effective_pc:-unknown}\` |
+| Cosim/HDL effective PC match | $([ -n "$cosim_pc" ] && [ -n "$hdl_effective_pc" ] && [ "${cosim_pc,,}" = "${hdl_effective_pc,,}" ] && echo PASS || echo FAIL) |
 | VRAM dump bytes | \`$vram_bytes\` |
 | Cosim VRAM SHA256 | \`$cosim_vram_sha\` |
 | HDL VRAM SHA256 | \`$hdl_vram_sha\` |

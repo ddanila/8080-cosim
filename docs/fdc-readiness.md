@@ -22,10 +22,11 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 - `sync/juku_top_io_decode_probe.sh` proves the top-level diagnostics can see
   raw ROMBIOS I/O and settled D7/D9 chip-select decode before the long FDC probe
   reaches the post-banner window.
-- `sync/juku_top_30000_state_probe.sh` proves the expensive top-level run still
-  matches cosim at PC `0x0484` after 30,000 VRAM writes, with a byte-identical
-  9,640-byte framebuffer dump and matching visible CPU/PPI/PIC/FDC register
-  state, immediately before the cosim first-PIC point at 30,520 writes.
+- `sync/juku_top_30000_state_probe.sh` proves the expensive top-level run now
+  matches cosim through the post-PIC, pre-FDC first-frame anchor at 33,812 VRAM
+  writes when frame IRQs are disabled, with effective PC `0x0E23`, a
+  byte-identical 9,640-byte framebuffer dump, and matching visible
+  CPU/PPI/PIC/FDC register state.
 - `docs/juku-top-30520-reachability.md` records that a 360-second exact-PC stop
   at `0x02B9` and a 900-second 30,520-write comparison do not produce an HDL
   post-banner dump, so the next M2 automation step should be
@@ -105,7 +106,7 @@ sync/juku_top_fdc_probe.sh
 | Motor-off read reports NOT READY | PASS |
 | `juku_top` raw I/O and settled PPI decode are visible in the fast decode probe | PASS |
 | `juku_top` decoded keyboard/PIC/PPI/FDC direct-bus path mirrors pinned EKDOS I/O and reaches vendored `JUKU1.CPM` data | PASS |
-| `juku_top` and cosim PC, VRAM, and visible CPU/PPI/PIC/FDC state match at 30,000 writes before the first-PIC window | PASS |
+| `juku_top` and cosim effective PC, VRAM, and visible CPU/PPI/PIC/FDC state match at 33,812 writes before the first frame IRQ/FDC window | PASS |
 | cosim full-machine checkpoint is pinned at the same 30,000-write boundary | PASS |
 | checkpoint RAM and visible CPU/PPI/PIC/FDC state load into `juku_top` | PASS |
 | focused checkpoint-resumed `juku_top` probe reaches first post-checkpoint PIC write and no-key keyboard read | PASS (non-CI) |
@@ -134,11 +135,10 @@ sync/juku_top_fdc_probe.sh
   ROMBIOS first FDC restore command `0x02`, FDC seek/status, and the first
   `JUKU1.CPM` track 0 sector 2 byte all pass through decoded `juku_top` ports.
 - `docs/juku-top-30000-state-probe.md` captures the slow comparison through the
-  old pre-PIC window: cosim and `juku_top` both stop at PC `0x0484` after
-  30,000 VRAM writes, and their framebuffer dumps have the same SHA256
-  `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68`. The same
-  harness now also passes at the old 30,182-write checksum split and at the
-  30,520-write first-PIC boundary.
+  post-PIC, pre-FDC first-frame anchor: cosim stops at PC `0x0E23` and
+  `juku_top` has effective PC `0x0E23` after 33,812 VRAM writes, with matching
+  visible CPU/PPI/PIC/FDC state and framebuffer SHA256
+  `559eb05d39a8e243be3e4b051e94f6572a487cc6f90c4847f333d61fe887b28d`.
 - `docs/ekdos-checkpoint-reference.md` captures the corresponding full cosim
   RAM/CPU/peripheral checkpoint.
 - `docs/juku-top-checkpoint-load.md` proves that checkpoint RAM and visible
