@@ -136,7 +136,8 @@ def main() -> int:
         "first PIC/PPI setup window at 30,520 writes.",
         "",
         "The generated checkpoint files are not committed. They are an automation",
-        "source for a future post-banner HDL resume harness.",
+        "source for the checkpoint-resumed HDL diagnostics and a historical",
+        "anchor for the uninterrupted prompt guard.",
         "",
         "## Command",
         "",
@@ -190,9 +191,10 @@ def main() -> int:
             "",
             "- This proves the cosim checkpoint is stable; it does not by itself",
             "  resume the die-accurate HDL CPU.",
-            "- The next M2 automation step is loading this RAM/state into a narrow",
-            "  `juku_top` post-banner diagnostic so the first PIC/PPI/FDC window can",
-            "  be reached without replaying the full framebuffer draw.",
+            "- This checkpoint is now a historical lower-level anchor: later",
+            "  checkpoint-resumed diagnostics and the uninterrupted Verilator prompt",
+            "  guard cover the first PIC/PPI/FDC window without replaying the full",
+            "  framebuffer draw in every routine check.",
         ]
     )
     if failures:

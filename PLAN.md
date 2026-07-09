@@ -287,9 +287,10 @@ debugging session saved on real hardware.
    and drive uninterrupted `juku_top` through the cosim FDC path to EKDOS:
    `OUT 0x1C = 0x02` at PC `0xE5DE`, VRAM 63,085; sector/data setup at VRAM
    63,095; all 10,752 FDC data-register reads; and the EKDOS `A>` prompt at
-   VRAM 73,405. Remaining target: promote that local/deep Verilator proof into
-   an appropriately bounded routine guard while continuing the broader
-   video/PROM/PCB tasks.
+   VRAM 73,405. `sync/juku_top_fdc_prompt_check.sh` is the routine guard for
+   that committed proof, with `JUKU_TOP_FDC_PROMPT_DEEP=1` available for local
+   Verilator proof refresh. Remaining automatic work moves to the broader
+   video/PROM/BASIC/PCB tasks.
 2. **Video readout chain**: model the ИР16 shifters / sync counters / РЕ3 timing so
    the twin emits a real pixel+sync stream (not a VRAM dump); validate geometry
    against MAME's measured 49.92 Hz / 241-line timing. This is what makes the

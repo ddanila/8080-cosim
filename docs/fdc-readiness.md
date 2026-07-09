@@ -29,8 +29,8 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
   CPU/PPI/PIC/FDC register state.
 - `docs/juku-top-30520-reachability.md` records that a 360-second exact-PC stop
   at `0x02B9` and a 900-second 30,520-write comparison do not produce an HDL
-  post-banner dump, so the next M2 automation step should be
-  checkpoint/fast-forward or a narrow post-banner harness.
+  post-banner dump. That old boundary is now superseded by the checkpoint and
+  uninterrupted Verilator prompt guards below.
 - `sync/ekdos_checkpoint_reference.py` pins the matching cosim-side full
   machine checkpoint at that 30,000-write boundary, including CPU
   registers/flags, 64 KiB RAM hash, banking, keyboard/PIC/PPI/FDC state, and
@@ -88,6 +88,7 @@ sync/juku_top_checkpoint_load_check.py
 sync/juku_top_checkpoint_resume_probe.py
 sync/juku_top_checkpoint_fdc_probe.py
 sync/ekdos_checkpoint_prompt_check.sh
+sync/juku_top_fdc_prompt_check.sh
 sync/juku_top_fdc_probe.sh
 ```
 
@@ -116,12 +117,15 @@ sync/juku_top_fdc_probe.sh
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
 | `juku_top` matches cosim through the former post-30,180 checksum split and the 30,520-write first-PIC window | PASS |
 | `juku_top` uninterrupted reset path drains 10,752 FDC data-register reads and reaches EKDOS `A>` | PASS (local/deep) |
+| committed `juku_top` prompt report is freshness-guarded by a routine check | PASS |
 
 ## Remaining Boundary
 
-- Promote the full `ROMBIOS 3.43` `<T>, <D>, <D>` path through `juku_top` with
-  `+disk=media/disks/JUKU1.CPM` from local/deep Verilator evidence to an
-  appropriately bounded routine guard.
+- Keep the full `ROMBIOS 3.43` `<T>, <D>, <D>` prompt proof guarded while
+  moving on to the remaining video/PROM/BASIC/PCB tasks. `sync/juku_top_fdc_prompt_check.sh`
+  is the routine guard for the committed prompt evidence; set
+  `JUKU_TOP_FDC_PROMPT_DEEP=1` to rerun the expensive Verilator prompt proof
+  locally.
 - `docs/juku-top-fdc-probe.md` now captures the current top-level boundary:
   disk media is loaded and the BIOS starts drawing, but the default 60-second
   bound still times out before the post-banner keyboard/PIC/FDC window.

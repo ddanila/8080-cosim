@@ -221,6 +221,13 @@ def milestone_rows():
         "Status: **HDL RESET RUN REACHES EKDOS A> PROMPT**",
     )
     hdl_prompt_ready = hdl_verilator_fdc_prompt and hdl_fdc_alignment
+    hdl_prompt_guarded = hdl_prompt_ready and marker(
+        "sync/juku_top_fdc_prompt_check.sh",
+        "JUKU-TOP-FDC-PROMPT-CHECK: PASS",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "./sync/juku_top_fdc_prompt_check.sh",
+    )
     ekdos_timing_guard = marker(
         "docs/ekdos-timing-reference.md",
         "Status: **PASS**",
@@ -434,7 +441,9 @@ def milestone_rows():
             "id": "M2",
             "target": "EKDOS boots in the twin",
             "status": (
-                "VENDORED JUKU1 PROMPT PROVEN / HDL PROMPT READY"
+                "VENDORED JUKU1 PROMPT PROVEN / HDL PROMPT GUARDED"
+                if ekdos_juku1_prompt and hdl_prompt_guarded
+                else "VENDORED JUKU1 PROMPT PROVEN / HDL PROMPT READY"
                 if ekdos_juku1_prompt and hdl_prompt_ready
                 else "VENDORED JUKU1 PROMPT PROVEN / HDL RAW-SECTOR READY"
                 if ekdos_juku1_prompt and hdl_fdc_vendored_sector
@@ -491,7 +500,13 @@ def milestone_rows():
                     if hdl_fdc_alignment
                     else ""
                 )
-                + "The remaining work is guard hardening, not proving the path."
+                + (
+                    "`sync/juku_top_fdc_prompt_check.sh` is the routine guard for "
+                    "the committed prompt evidence, with an opt-in deep Verilator "
+                    "rerun mode for local proof refresh."
+                    if hdl_prompt_guarded
+                    else "The prompt path is proven; add the routine guard before closing M2."
+                )
                 if ekdos_juku1_prompt and hdl_prompt_ready
                 else "`docs/ekdos-media-acquisition.md` records vendored Arti `JUKU1.7Z` / "
                 "`JUKU2.7Z` media under `media/disks/`; `JUKU1.CPM` reaches `A>` "
@@ -522,7 +537,9 @@ def milestone_rows():
                 "or external-media FDC in `juku_top`."
             ),
             "next": (
-                "Promote the uninterrupted juku_top prompt proof into an appropriately bounded routine guard."
+                "Move on to the remaining video timing, PROM-truth, BASIC, and PCB tasks."
+                if hdl_prompt_guarded
+                else "Add the routine guard for the uninterrupted juku_top prompt proof."
                 if hdl_prompt_ready
                 else "Finish the reset-driven juku_top ROMBIOS TDD prompt path without checkpoint/resume."
                 if hdl_fdc_vendored_sector

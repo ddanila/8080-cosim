@@ -19,5 +19,7 @@ loop.
 
 ## Disposition
 
-The next M2 automation step should be checkpoint/fast-forward or a narrow
-post-banner ROMBIOS harness, not a larger wall-clock timeout.
+This is now a historical reachability boundary. The follow-up checkpoint and
+uninterrupted Verilator prompt guards cover the first PIC/PPI/FDC and EKDOS
+`A>` path; the useful lesson here is still not to grow the brute-force
+Icarus timeout for this window.
