@@ -189,9 +189,12 @@ Historical merge notes:
   window. The current boundary is sharper: the loader copies the cartridge body
   from `0x0200` into matching low RAM for 7,680 bytes with 0 body mismatches,
   but the low entry/control area has exactly 14 byte mismatches and the later
-  `0x4000` RAM window still receives only `0x00` writes; execution fetches a
-  zero-filled NOP sled, and no user-visible BASIC prompt is produced. The probe
-  also records why this is a compatibility
+  `0x4000` RAM window still receives only `0x00` writes. `docs/basic-low-stub-inspection.md`
+  groups those 14 deltas: the loaded low image changes the `0x0100` stack
+  pointer to `0xFFFE`, keeps the first `0x0200` bytes identical across both
+  public BASIC media shapes, and leaves the body exact. Execution still fetches
+  a zero-filled NOP sled, and no user-visible BASIC prompt is produced. The
+  probe also records why this is a compatibility
   boundary: MAME's local source warns that Monitor 3.3 does not seem compatible
   with the JBASIC expansion cartridge, and both tested BASIC images start with
   absolute `JMP 0x0107`, not a direct `0x4000` entry.

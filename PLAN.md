@@ -329,8 +329,12 @@ debugging session saved on real hardware.
    the loader: after the header/entry area, `RAM[0x0200..]` matches the cartridge
    from `0x0200` for 7,680 bytes with 0 body mismatches, while
    `RAM[0x0100..0x01FF]` has exactly 14 byte mismatches after matching the first
-   byte. The remaining cartridge path is therefore the low entry/control area
-   and launch vector, not the D8/D22 window or bulk copy. The probe records the
+   byte. `docs/basic-low-stub-inspection.md` now groups those deltas: the loaded
+   image changes the `0x0100` stack pointer from `0xD700` to `0xFFFE`, keeps the
+   first `0x0200` bytes identical across the two public BASIC media shapes, and
+   leaves the full body exact. The remaining cartridge path is therefore the low
+   entry/workspace-control area and launch vector, not the D8/D22 window or bulk
+   copy. The probe records the
    compatibility signals behind that boundary: MAME's local source warns that
    Monitor 3.3 does not seem compatible with the JBASIC expansion cartridge, and
    both BASIC media images start with an absolute `JMP 0x0107` rather than a

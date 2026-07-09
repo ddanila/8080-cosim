@@ -35,6 +35,7 @@ jobs:
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
             scripts/report_juku_top_fdc_alignment.py \
+            scripts/report_basic_low_stub_inspection.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -69,6 +70,11 @@ jobs:
         run: |
           python3 scripts/report_milestone_ledger.py
           git diff --exit-code -- docs/milestone-ledger.md
+
+      - name: Check BASIC low-stub inspection freshness
+        run: |
+          python3 scripts/report_basic_low_stub_inspection.py
+          git diff --exit-code -- docs/basic-low-stub-inspection.md
 
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh
@@ -204,6 +210,7 @@ jobs:
       - name: Run fast subsystem guards
         run: |
           ./sync/basic_cart_check.sh
+          python3 scripts/report_basic_low_stub_inspection.py
           ./sync/basic_launch_probe.py
           ./sync/prom_fallback_check.sh
           ./sync/beeper_check.sh
@@ -239,6 +246,7 @@ jobs:
             docs/juku-top-jbasic-verilator-probe.md \
             docs/fdc-readiness.md \
             docs/basic-cart-readiness.md \
+            docs/basic-low-stub-inspection.md \
             docs/basic-launch-probe.md \
             docs/beeper-readiness.md \
             docs/jmon33-hdl-probe.md \

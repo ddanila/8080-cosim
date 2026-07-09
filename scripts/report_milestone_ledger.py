@@ -239,6 +239,10 @@ def milestone_rows():
         "docs/basic-launch-probe.md",
         "Status: **BASIC RAM EXECUTION REACHED**",
     )
+    basic_low_stub_inspected = marker(
+        "docs/basic-low-stub-inspection.md",
+        "Status: **LOW STUB PATCHED / BODY MATCHES**",
+    )
     basic_entry_rejected = marker(
         "docs/basic-entry-probe.md",
         "Status: **BASIC DIRECT RESET PATH REJECTED**",
@@ -708,6 +712,15 @@ def milestone_rows():
                 "the local MAME Monitor 3.3/JBASIC compatibility warning and the "
                 "BASIC images' absolute JMP 0x0107 entry. "
                 + (
+                    "`docs/basic-low-stub-inspection.md` now groups those 14 "
+                    "low-stub deltas: the loaded image changes the `0x0100` "
+                    "stack pointer to `0xFFFE`, leaves the body exact, and "
+                    "narrows the remaining cartridge work to low workspace/control "
+                    "bytes plus the monitor launch vector. "
+                    if basic_low_stub_inspected
+                    else ""
+                )
+                + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
                     "factory `A` command clue across all vendored public monitor "
                     "ROMs: Monitor 3.3 reaches the same zero-filled RAM boundary, "
@@ -809,6 +822,15 @@ def milestone_rows():
                 "entry/control area has 14 byte mismatches, plus "
                 "the local MAME Monitor 3.3/JBASIC compatibility warning and the "
                 "BASIC images' absolute JMP 0x0107 entry. "
+                + (
+                    "`docs/basic-low-stub-inspection.md` now groups those 14 "
+                    "low-stub deltas: the loaded image changes the `0x0100` "
+                    "stack pointer to `0xFFFE`, leaves the body exact, and "
+                    "narrows the remaining cartridge work to low workspace/control "
+                    "bytes plus the monitor launch vector. "
+                    if basic_low_stub_inspected
+                    else ""
+                )
                 + (
                     "`docs/basic-factory-command-probe.md` pins the Baltijets "
                     "factory `A` command clue across all vendored public monitor "
