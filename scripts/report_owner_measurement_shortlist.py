@@ -20,6 +20,7 @@ REQUIRED = [
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
+    ROOT / "docs" / "basic-cartridge-tail-hypotheses.md",
 ]
 
 
@@ -90,6 +91,7 @@ def main() -> int:
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
+        ("Cartridge BASIC boundary documented", has_phrase("docs/basic-cartridge-tail-hypotheses.md", "Status: **SIMPLE TAIL HYPOTHESES REJECTED**")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
@@ -107,6 +109,13 @@ def main() -> int:
             "independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM`",
             "`docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md`",
             "turns the public EKDOS boot image into stronger physical-media evidence",
+        ),
+        (
+            "P0",
+            "cartridge BASIC truth",
+            "larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY`",
+            "`docs/community-prom-media-request.md`; `docs/basic-launch-probe.md`; `docs/basic-cartridge-tail-hypotheses.md`",
+            "closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary",
         ),
         (
             "P1",
@@ -202,8 +211,8 @@ def main() -> int:
             "",
             "## Practical sequencing",
             "",
-            "1. Ask for programming disk files first; they can close PROM truth without",
-            "   touching fragile sockets.",
+            "1. Ask for programming disk files and BASIC cartridge artifacts first;",
+            "   they can close PROM/software truth without touching fragile sockets.",
             "2. If a board owner can help, dump socketed PROM/EPROM parts before",
             "   continuity probing; repeated reads plus socket photos are enough to",
             "   compare against the reconstructed fallbacks.",

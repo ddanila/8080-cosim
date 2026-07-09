@@ -25,12 +25,19 @@ real media or silicon truth:
 - Boot-validated D6/D8 reconstruction fallback binaries are now exported under
   `ref/reconstructed-proms/` for Tier 1/2 bring-up, but those files still need
   disk/dump validation before they count as preservation-grade PROM truth.
+- Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
+  uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
+  remains a Monitor 3.3 compatibility boundary. Current probes show the body is
+  copied, then the runtime bootstrap needs bytes beyond the public payload and
+  simple tail/entry patches do not reach BASIC.
 
 Relevant local docs:
 
 - `docs/prom-dump-procedure.md`
 - `docs/reconstructed-prom-fallbacks.md`
 - `docs/ekdos-media-acquisition.md`
+- `docs/basic-launch-probe.md`
+- `docs/basic-cartridge-tail-hypotheses.md`
 - `ref/baltijets-tech-docs/README.md`
 - `docs/replica-dual-config-bom.md`
 
@@ -45,7 +52,10 @@ Relevant local docs:
 2. Does anyone have an independently dumped factory boot disk
    `JUKU-1` / `ДГШ5.106.105`, or checksum/provenance that can verify the
    vendored public `media/disks/JUKU1.CPM` image?
-3. If a physical .009 processor board is available, can someone dump or help
+3. Does anyone have a larger/different removable-memory BASIC cartridge image,
+   programming artifact, or hardware-confirmed Monitor 3.3 launch procedure
+   that reaches the documented BASIC banner / `READY` prompt?
+4. If a physical .009 processor board is available, can someone dump or help
    dump these socketed parts?
    - `К155РЕ3` D8, 32 bytes
    - `К155РЕ3` D94 / FDC-era top-corner PROM, 32 bytes
@@ -75,6 +85,7 @@ proms/rt4_d6_<board>.bin
 proms/m2764_d15_<board>.bin
 proms/m2764_d16_<board>.bin
 media/juku-1_dgsh5.106.105_<source>.juk
+roms/jbasic_cartridge_<source>.bin
 ```
 
 ## Ready-To-Send Message
@@ -120,6 +131,15 @@ that can verify this public image. The cosim check is:
 
     sync/ekdos_fdc_probe.py
 
+The disk-side JBASIC.COM path is now proven to a visible READY prompt, but the
+public 8 KiB removable-memory BASIC cartridge is still unresolved with Monitor
+3.3. Current probes show Monitor 3.3 copies the cartridge body, then the runtime
+bootstrap needs a page beyond the public 8 KiB payload; simple fill, append,
+final-page mirror, relocation-count, and direct body-entry patch hypotheses do
+not reach BASIC. I am also looking for any larger/different BASIC cartridge
+image, programming artifact, or hardware-confirmed launch procedure that reaches
+the documented BASIC banner / READY prompt.
+
 The dump procedure and exact requested outputs are documented here:
 
 https://github.com/ddanila/8080-cosim/blob/main/docs/prom-dump-procedure.md
@@ -142,5 +162,12 @@ Thanks!
    EKDOS_PROBE_DISK=/path/to/image sync/ekdos_fdc_probe.py
    ```
 
-5. If a dump cannot be published, record only the checksum/provenance and keep
+5. For a BASIC cartridge image or launch procedure, compare it against:
+
+   ```sh
+   sync/basic_launch_probe.py
+   python3 scripts/report_basic_cartridge_tail_hypotheses.py
+   ```
+
+6. If a dump cannot be published, record only the checksum/provenance and keep
    reconstructed tables as the buildable Tier-1/2 fallback.

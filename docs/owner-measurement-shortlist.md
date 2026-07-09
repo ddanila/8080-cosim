@@ -27,6 +27,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Serial USART behavior guarded | PASS |
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |
+| Cartridge BASIC boundary documented | PASS |
 
 ## Highest-value physical asks
 
@@ -34,6 +35,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | --- | --- | --- | --- | --- |
 | P0 | programming disk / PROM truth | Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks |
 | P0 | JUKU-1 media provenance | independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM` | `docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md` | turns the public EKDOS boot image into stronger physical-media evidence |
+| P0 | cartridge BASIC truth | larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY` | `docs/community-prom-media-request.md`; `docs/basic-launch-probe.md`; `docs/basic-cartridge-tail-hypotheses.md` | closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary |
 | P1 | D94 .092 continuity | D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required before any defensible D94 reverse-engineered burnable table |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F | reduces first EKDOS-on-hardware debug risk |
 | P1 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, and D36/D39/D53 RAM-strobe ambiguous feeds | `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-A/WS-F | tightens the as-built netlist around RAM timing before netlist freeze |
@@ -58,8 +60,8 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 ## Practical sequencing
 
-1. Ask for programming disk files first; they can close PROM truth without
-   touching fragile sockets.
+1. Ask for programming disk files and BASIC cartridge artifacts first;
+   they can close PROM/software truth without touching fragile sockets.
 2. If a board owner can help, dump socketed PROM/EPROM parts before
    continuity probing; repeated reads plus socket photos are enough to
    compare against the reconstructed fallbacks.
