@@ -735,22 +735,28 @@ module juku_top_checkpoint_resume_tb();
                              dut.BA[7:0], dut.BA[1:0], dut.DB, mcyc, vram_writes, fdc_ios);
       if (tracefdc) $fflush;
       if (stopfdc_data_reads != 0 && dut.BA[7:0] == 8'h1f && fdc_data_reads >= stopfdc_data_reads) begin
-        $display("[RESUME-FDC] stop reason=data-read-count target=%0d ios=%0d reads=%0d data_reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d",
-                 stopfdc_data_reads, fdc_ios, fdc_reads, fdc_data_reads, fdc_writes, dut.DB, mcyc, vram_writes);
+        $display("[RESUME-FDC] stop reason=data-read-count target=%0d ios=%0d reads=%0d data_reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d pc=0x%04h fdc_status=0x%02h fdc_track=0x%02h fdc_sector=0x%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
+                 stopfdc_data_reads, fdc_ios, fdc_reads, fdc_data_reads, fdc_writes, dut.DB, mcyc, vram_writes,
+                 dut.U_CPU.u.core.r16_pc, dut.U_FDC.status, dut.U_FDC.track, dut.U_FDC.sector,
+                 dut.U_FDC.buffer_pos, dut.U_FDC.buffer_len);
         $fflush;
         dump_vram();
         $finish;
       end
       if (stopfdc_data_read != 0 && dut.BA[7:0] == 8'h1f) begin
-        $display("[RESUME-FDC] stop reason=data-read ios=%0d reads=%0d data_reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d",
-                 fdc_ios, fdc_reads, fdc_data_reads, fdc_writes, dut.DB, mcyc, vram_writes);
+        $display("[RESUME-FDC] stop reason=data-read ios=%0d reads=%0d data_reads=%0d writes=%0d data=0x%02h mcyc=%0d vram=%0d pc=0x%04h fdc_status=0x%02h fdc_track=0x%02h fdc_sector=0x%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
+                 fdc_ios, fdc_reads, fdc_data_reads, fdc_writes, dut.DB, mcyc, vram_writes,
+                 dut.U_CPU.u.core.r16_pc, dut.U_FDC.status, dut.U_FDC.track, dut.U_FDC.sector,
+                 dut.U_FDC.buffer_pos, dut.U_FDC.buffer_len);
         $fflush;
         dump_vram();
         $finish;
       end
       if (stopfdc != 0 && fdc_ios >= stopfdc) begin
-        $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d",
-                 fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes);
+        $display("[RESUME-FDC] stop ios=%0d reads=%0d writes=%0d mcyc=%0d vram=%0d pc=0x%04h fdc_status=0x%02h fdc_track=0x%02h fdc_sector=0x%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
+                 fdc_ios, fdc_reads, fdc_writes, mcyc, vram_writes,
+                 dut.U_CPU.u.core.r16_pc, dut.U_FDC.status, dut.U_FDC.track, dut.U_FDC.sector,
+                 dut.U_FDC.buffer_pos, dut.U_FDC.buffer_len);
         $fflush;
         dump_vram();
         $finish;

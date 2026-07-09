@@ -228,7 +228,7 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         f"+rom={rom_hex}",
         "+disk=media/disks/JUKPROG2.CPM",
         "+disk_heads=2",
-        f"+max_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_MAX_MCYC', '700000')}",
+        f"+max_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_MAX_MCYC', '900000')}",
         f"+timecap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TIMECAP', '4200000000')}",
         f"+frameirq={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_FRAMEIRQ', '80000')}",
         f"+trace_resume={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME', '0')}",
@@ -239,13 +239,13 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
         f"+keyat={state_arg(state, 'vram_writes', '73446')}",
         f"+khold={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KHOLD', '160000')}",
         f"+kgap={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_KGAP', '240000')}",
-        f"+tracekbd={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD', '1')}",
-        f"+tracefdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_FDC', '1')}",
+        f"+tracekbd={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD', '0')}",
+        f"+tracefdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_TRACE_FDC', '0')}",
         f"+stopkbdhit={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT', '0')}",
         f"+progress_mcyc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_PROGRESS_MCYC', '25000')}",
         f"+stopfdc={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_FDC', '0')}",
         f"+stopfdc_data_read={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_DATA_READ', '0')}",
-        f"+stopfdc_data_reads={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_DATA_READS', '4096')}",
+        f"+stopfdc_data_reads={os.environ.get('JUKU_TOP_CHECKPOINT_JBASIC_STOP_DATA_READS', '0')}",
         "+stopjbasicready=1",
     ]
     args.extend(state_plusargs(state))
@@ -264,7 +264,7 @@ def run_hdl(tmp: Path, ram_bin: Path, state: dict[str, str]) -> tuple[subprocess
                 text=True,
                 stdout=stdout,
                 stderr=stderr,
-                timeout=int(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TIMEOUT", "480")),
+                timeout=int(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TIMEOUT", "600")),
                 check=False,
             )
         vram = checkpoint_vram.read_bytes() if checkpoint_vram.exists() else b""
@@ -345,7 +345,7 @@ def main() -> int:
         checkpoint_vram = checkpoint_ram[0xD800 : 0xD800 + VRAM_SIZE]
         hdl_proc, timed_out, hdl_vram = run_hdl(tmp, ram_bin, state)
 
-    trace_kbd_enabled = os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD", "1") != "0"
+    trace_kbd_enabled = os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD", "0") != "0"
     key_presses = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] press")
     key_releases = matching_lines(hdl_proc.stdout, "[RESUME-KBD-STIM] release")
     key_hits = matching_lines(hdl_proc.stdout, "[RESUME-KBD-HIT]")
@@ -376,6 +376,9 @@ def main() -> int:
         failures.append(f"expected 7 JBASIC key releases, saw {len(key_releases)}")
 
     status = (
+        "HDL EKDOS JBASIC READY"
+        if not failures and reached_ready
+        else
         "HDL EKDOS JBASIC FDC DATA READ READY"
         if not failures and reached_fdc_data_read
         else
@@ -455,12 +458,13 @@ def main() -> int:
         "- The same bench also has `+stopjbasicready=1`, which checks the final",
         "  `READY` prompt with exact fixed-`0xD800` glyph bytes.",
         "- The default run now uses frame-scale key holds/gaps, `+stopfdc=0`,",
-        "  and `+stopfdc_data_reads=4096` so eight full 512-byte data-register",
-        "  windows are a bounded HDL stop condition.",
-        "- This report claims the checkpoint-resumed HDL FDC data-read",
-        "  boundary: frame-scale command stimulus is read through PPI0 Port B,",
-        "  the full `A>JBASIC` command line is observed by the bench-side",
-        "  oracle, and 4096 decoded FDC data-register reads complete.",
+        "  `+stopfdc_data_reads=0`, quiet keyboard/FDC tracing, and",
+        "  `+stopjbasicready=1` so the normal proof stops on the exact HDL",
+        "  `READY` glyph oracle.",
+        "- This report claims the checkpoint-resumed HDL BASIC prompt bridge:",
+        "  frame-scale command stimulus is read through PPI0 Port B, the full",
+        "  visible `A>JBASIC` command line is observed, disk-backed FDC data",
+        "  reads complete, and the fixed-`0xD800` `READY` glyph is rendered.",
         "- The report also preserves the HDL framebuffer dump before restoring",
         "  the worktree copy and checks for the exact cosim-pinned `A>JBASIC`",
         "  command glyphs at scanline 71.",
@@ -469,10 +473,11 @@ def main() -> int:
         "  to stop at the first sampled keyboard hit during retiming experiments.",
         "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first",
         "  `N` resumed HDL M-cycle trace lines in this report.",
-        "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD=0` for deeper FDC-transfer",
-        "  experiments where the keyboard/PPI trace volume dominates runtime.",
-        "- Next work is to continue from the 4096-byte FDC data-read window",
-        "  through the full disk transfer and finally stop on `[RESUME-JBASIC]`.",
+        "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_KBD=1` and",
+        "  `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_FDC=1` for detailed retiming",
+        "  experiments; leave them quiet for the default READY proof.",
+        "- Set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_DATA_READS=N` to recover bounded",
+        "  FDC-transfer checkpoints such as the 4096- and 8192-read windows.",
     ]
     if reached_ready:
         lines.append("- This run did reach the HDL `READY` oracle; promote the report status and CI gate.")

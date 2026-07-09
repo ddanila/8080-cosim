@@ -204,6 +204,11 @@ def milestone_rows():
     hdl_jbasic_stimulus = (
         marker(
             "docs/juku-top-checkpoint-jbasic-probe.md",
+            "Status: **HDL EKDOS JBASIC READY**",
+        )
+        or
+        marker(
+            "docs/juku-top-checkpoint-jbasic-probe.md",
             "Status: **HDL EKDOS JBASIC FDC DATA READ READY**",
         )
         or marker(
@@ -566,16 +571,15 @@ def milestone_rows():
                 )
                 + (
                     " `docs/juku-top-checkpoint-jbasic-probe.md` now bridges "
-                    "that path into checkpoint-resumed HDL disk data reads: "
+                    "that path into a checkpoint-resumed HDL BASIC prompt: "
                     "`juku_top` loads the `JUKPROG2.CPM` `A>` checkpoint "
                     "with `state_pc_bias=-1`, injects `JBASIC` plus Return with "
-                    "frame-scale holds/gaps and `+jbasickeys=1`, proves all seven "
-                    "command key indices are read through PPI0 Port B with "
-                    "non-`0xCF` data, observes the full visible `A>JBASIC` "
-                    "command oracle, and stops after 4,096 decoded FDC "
-                    "data-register reads. "
-                    "It carries a `+stopjbasicready=1` exact `READY` glyph oracle "
-                    "for the next longer run."
+                    "frame-scale holds/gaps and `+jbasickeys=1`, observes the "
+                    "full visible `A>JBASIC` command oracle, completes disk-backed "
+                    "FDC data reads, and reaches `[RESUME-JBASIC] READY prompt "
+                    "reached` at mcyc 823,184 / 73,925 VRAM writes. "
+                    "The FDC model now latches side effects on decoded active I/O "
+                    "strobes, fixing the stale-register 4,096-read boundary."
                     if hdl_jbasic_stimulus
                     else ""
                 )
@@ -589,8 +593,8 @@ def milestone_rows():
                     else ""
                 )
                 + (
-                    " `docs/juku-top-checkpoint-jbasic-mid-probe.md` narrows "
-                    "the remaining bridge: from the 17,408-read cosim checkpoint, "
+                    " `docs/juku-top-checkpoint-jbasic-mid-probe.md` preserves "
+                    "the bounded mid-transfer checkpoint: from the 17,408-read cosim checkpoint, "
                     "checkpoint-resumed `juku_top` drains 10,752 additional "
                     "decoded `IN 0x1F` data-register reads before the bounded stop."
                     if hdl_jbasic_mid_drain
@@ -649,16 +653,15 @@ def milestone_rows():
                 )
                 + (
                     " `docs/juku-top-checkpoint-jbasic-probe.md` now bridges "
-                    "that path into checkpoint-resumed HDL disk data reads: "
+                    "that path into a checkpoint-resumed HDL BASIC prompt: "
                     "`juku_top` loads the `JUKPROG2.CPM` `A>` checkpoint "
                     "with `state_pc_bias=-1`, injects `JBASIC` plus Return with "
-                    "frame-scale holds/gaps and `+jbasickeys=1`, proves all seven "
-                    "command key indices are read through PPI0 Port B with "
-                    "non-`0xCF` data, observes the full visible `A>JBASIC` "
-                    "command oracle, and stops after 4,096 decoded FDC "
-                    "data-register reads. "
-                    "It carries a `+stopjbasicready=1` exact `READY` glyph oracle "
-                    "for the next longer run."
+                    "frame-scale holds/gaps and `+jbasickeys=1`, observes the "
+                    "full visible `A>JBASIC` command oracle, completes disk-backed "
+                    "FDC data reads, and reaches `[RESUME-JBASIC] READY prompt "
+                    "reached` at mcyc 823,184 / 73,925 VRAM writes. "
+                    "The FDC model now latches side effects on decoded active I/O "
+                    "strobes, fixing the stale-register 4,096-read boundary."
                     if hdl_jbasic_stimulus
                     else ""
                 )
@@ -672,8 +675,8 @@ def milestone_rows():
                     else ""
                 )
                 + (
-                    " `docs/juku-top-checkpoint-jbasic-mid-probe.md` narrows "
-                    "the remaining bridge: from the 17,408-read cosim checkpoint, "
+                    " `docs/juku-top-checkpoint-jbasic-mid-probe.md` preserves "
+                    "the bounded mid-transfer checkpoint: from the 17,408-read cosim checkpoint, "
                     "checkpoint-resumed `juku_top` drains 10,752 additional "
                     "decoded `IN 0x1F` data-register reads before the bounded stop."
                     if hdl_jbasic_mid_drain
@@ -685,11 +688,10 @@ def milestone_rows():
             ),
             "next": (
                 "Prove the uninterrupted reset-to-cursor jmon33 path, identify the "
-                "correct Monitor 3.3 cartridge BASIC launch path, and bridge the "
-                "pinned EKDOS `JBASIC` HDL checkpoints from the 4,096-read early "
-                "FDC window into the later transfer windows."
+                "correct Monitor 3.3 cartridge BASIC launch path, and drive the "
+                "EKDOS `JBASIC` HDL path without checkpoint/resume."
                 if jmon33_checkpoint_cursor
-                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and bridge the pinned EKDOS BASIC HDL checkpoints from the early FDC window into the later transfer windows."
+                else "Compare HDL at the stronger jmon33 cursor boundary, identify the correct Monitor 3.3 cartridge BASIC launch path, and drive the pinned EKDOS BASIC HDL path without checkpoint/resume."
             ),
         },
         {

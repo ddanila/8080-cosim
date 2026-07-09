@@ -215,16 +215,19 @@ Historical merge notes:
   into `juku_top`, and injects the exact `JBASIC` + Enter sequence through new
   checkpoint-resume `+jbasickeys=1` support. The same HDL bench now has
   `+stopjbasicready=1` for the exact fixed-`0xD800` `READY` glyph oracle. The
-  prompt-checkpoint report proves sampled command stimulus, visible `A>JBASIC`,
-  and 4,096 decoded post-command FDC data-register reads. The follow-on
+  prompt-checkpoint report now proves the checkpoint-resumed HDL bridge reaches
+  `[RESUME-JBASIC] READY prompt reached` at mcyc 823,184 / 73,925 VRAM writes,
+  with visible `A>JBASIC`, disk-backed FDC data reads, and the final `READY`
+  glyph rendered. The FDC model now latches side effects on decoded active I/O
+  strobes, fixing the stale-register 4,096-read boundary. The follow-on
   `sync/juku_top_checkpoint_jbasic_late_probe.py` report starts from the cosim
   state after all 19,968 WD1793 data-register reads and proves checkpoint-
   resumed HDL reaches `[RESUME-JBASIC]` with the visible `READY` glyph at
   scanline 121. The same helper now has an opt-in FDC data-read stop mode;
   `docs/juku-top-checkpoint-jbasic-mid-probe.md` starts from the 17,408-read
   cosim checkpoint and drains 10,752 additional HDL `IN 0x1F` reads. The
-  remaining gap is the uninterrupted HDL bridge from the early 4,096-read
-  window into those later transfer windows.
+  remaining HDL BASIC gap is the uninterrupted reset-to-EKDOS-to-JBASIC run
+  without checkpoint/resume.
 - **ekta37 is the interactive target** — it displays and is **polled**: at idle it hammers 8255
   **Port C (0x06)** scanning the keyboard, and reads **Port A/B (0x04/0x05)** only on a key.
 - **Keyboard protocol** (matrix → 74148 encoder): **Port A(0x04) low-nibble = column select**;

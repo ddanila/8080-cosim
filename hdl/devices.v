@@ -747,7 +747,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end endtask
 
-    always @(posedge clk) if (~cs_n & ~wr_n) begin
+    wire fdc_write_active = ~cs_n & ~wr_n;
+    wire fdc_data_read_active = ~cs_n & ~rd_n & (A == 2'd3);
+
+    always @(posedge fdc_write_active) begin
         case (A)
             2'd0: begin
                 command = D;
@@ -766,7 +769,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         endcase
     end
 
-    always @(posedge clk) if (~cs_n & ~rd_n && A == 2'd3) begin
+    always @(posedge fdc_data_read_active) begin
         if (buffer_pos < buffer_len) begin
             data = disk_requested ? sector_buf[buffer_pos] : synthetic_sector_byte(buffer_pos);
             buffer_pos = buffer_pos + 1;

@@ -332,28 +332,29 @@ debugging session saved on real hardware.
    `docs/juku-top-checkpoint-jbasic-probe.md`: it loads a generated
    `JUKPROG2.CPM` EKDOS `A>` prompt checkpoint into `juku_top`, injects the
    exact `JBASIC` + Enter command sequence with new `+jbasickeys=1` support,
-   and adds an opt-in `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
+   and adds a `+stopjbasicready=1` exact fixed-`0xD800` `READY` glyph
    oracle. The current tracked HDL run now applies the checkpoint-resume
    `state_pc_bias=-1` fetch alignment, uses frame-scale key holds/gaps to retime
-   the `JBASIC` stimulus into the ROMBIOS scanner, proves all seven command key
-   indices are sampled through PPI0 Port B with non-`0xCF` data, observes the
-   full visible `A>JBASIC` command oracle at scanline 71, and stops after 4,096
-   decoded post-command FDC data-register reads (`IN 0x1F`, target 4,096 reached
-   at mcyc 538,973). The follow-on late checkpoint is now tracked by
+   the `JBASIC` stimulus into the ROMBIOS scanner, observes the full visible
+   `A>JBASIC` command oracle at scanline 71, completes the disk-backed FDC data
+   path from `JUKPROG2.CPM`, and reaches `[RESUME-JBASIC] READY prompt reached`
+   at mcyc 823,184 with 73,925 VRAM writes. The key FDC fix was to make
+   WD1793/VG93 side effects latch on the decoded active I/O strobes instead of
+   sampling raw `rd_n`/`wr_n` on the simulator clock; the former 4,096-read
+   boundary now lands on the cosim-matched track/sector/data state and the
+   default proof runs through to `READY`. The follow-on late checkpoint remains tracked by
    `sync/juku_top_checkpoint_jbasic_late_probe.py` /
    `docs/juku-top-checkpoint-jbasic-late-probe.md`: it generates the cosim
    `TDD|JBASIC\r` state after all 19,968 WD1793 data-register reads, resumes
    `juku_top` with no keyboard stimulus, and reaches `[RESUME-JBASIC] READY
    prompt reached` at mcyc 59,120 with the final fixed-`0xD800` `READY` glyph
-   visible at scanline 121. A new bounded mid-transfer run is tracked by
+   visible at scanline 121. The bounded mid-transfer run is tracked by
    `docs/juku-top-checkpoint-jbasic-mid-probe.md`: the same checkpoint-resume
    helper starts from the cosim state after 17,408 total WD1793 data-register
    reads and drains 10,752 additional decoded HDL `IN 0x1F` reads, stopping at
-   mcyc 922,973 / VRAM writes 73,916. Exploratory runs show the early prompt
-   checkpoint still plateaus at 4,096 reads, while the 14,848-read checkpoint
-   drains 9,216 more before plateau. The remaining gap is now the uninterrupted
-   HDL bridge from the 4,096-read early checkpoint into the later transfer
-   checkpoint windows, not the final BASIC prompt renderer.
+   mcyc 922,973 / VRAM writes 73,916. The remaining gap is now the uninterrupted
+   reset-to-EKDOS-to-JBASIC run in `juku_top` without checkpoint/resume, not the
+   BASIC prompt renderer.
    The jmon33
    interrupt path is now guarded in cosim by `sync/jmon33_interrupt_probe.py`
    and documented in
@@ -407,9 +408,8 @@ debugging session saved on real hardware.
    `0xE43C`, and the dedicated report is now marked as a pinned HDL FDC
    `T`-command oracle rather than a generic framebuffer diagnostic.
    Remaining targets: prove the full uninterrupted `juku_top` reset-to-cursor
-   path, bridge the pinned EKDOS `JBASIC` HDL checkpoints from the 4,096-read
-   early FDC window into the later transfer windows, and then retire the
-   checkpointed HDL gaps around disk-backed FDC/EKDOS.
+   path, drive the pinned EKDOS `JBASIC` HDL path without checkpoint/resume,
+   and then retire the checkpointed HDL gaps around disk-backed FDC/EKDOS.
 4. **Sound**: digital beeper source is now guarded by
    `sync/beeper_check.sh` and documented in `docs/beeper-readiness.md`: D57
    PIT channel 1 accepts a programmed reload and toggles the traced `SOUND`
