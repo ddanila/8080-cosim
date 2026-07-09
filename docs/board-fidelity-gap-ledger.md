@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `226`
 - Nets modeled: `320`
-- Chip-level fidelity gaps: `143`
+- Chip-level fidelity gaps: `91`
 - Net-level source-risk gaps: `41`
 
 ## Chip Provenance Types
@@ -31,10 +31,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | boundary | 2 |
 | datasheet | 1 |
 | mame+datasheet | 1 |
-| missing | 53 |
+| missing | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 134 |
+| scan | 186 |
 | wire | 2 |
 
 ## Gap Categories
@@ -49,7 +49,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | connector boundary | 2 | 0 |
 | logic/source | 11 | 4 |
 | memory/timing | 0 | 7 |
-| missing provenance | 53 | 0 |
+| missing provenance | 1 | 0 |
 | placement/value | 39 | 0 |
 | unpopulated sockets | 30 | 0 |
 | video/analog | 0 | 15 |
@@ -103,59 +103,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `C10` | `C_KM` | missing | no provenance block |
-| `C11` | `C_KM` | missing | no provenance block |
-| `C12` | `C_TRIM` | missing | no provenance block |
-| `C13` | `C_KM` | missing | no provenance block |
-| `C14` | `C_KM` | missing | no provenance block |
-| `C15` | `C_KM` | missing | no provenance block |
-| `C34` | `C_KM` | missing | no provenance block |
-| `C7` | `C_KM` | missing | no provenance block |
-| `C8` | `C_KM` | missing | no provenance block |
-| `C9` | `C_KM` | missing | no provenance block |
-| `C99` | `C_KM` | missing | no provenance block |
-| `E4` | `JUMPER3` | missing | no provenance block |
-| `E5` | `JUMPER2` | missing | no provenance block |
-| `L1` | `L_RADIAL` | missing | no provenance block |
-| `R11` | `R_AXIAL` | missing | no provenance block |
-| `R12` | `R_AXIAL` | missing | no provenance block |
-| `R13` | `R_AXIAL` | missing | no provenance block |
-| `R14` | `R_AXIAL` | missing | no provenance block |
-| `R17` | `R_AXIAL` | missing | no provenance block |
-| `R47` | `R_AXIAL` | missing | no provenance block |
-| `R48` | `R_AXIAL` | missing | no provenance block |
-| `R57` | `R_AXIAL` | missing | no provenance block |
-| `R58` | `R_AXIAL` | missing | no provenance block |
-| `R59` | `R_AXIAL` | missing | no provenance block |
-| `R60` | `R_AXIAL` | missing | no provenance block |
-| `R61` | `R_AXIAL` | missing | no provenance block |
-| `R62` | `R_AXIAL` | missing | no provenance block |
-| `R63` | `R_AXIAL` | missing | no provenance block |
-| `R64` | `R_AXIAL` | missing | no provenance block |
-| `R65` | `R_AXIAL` | missing | no provenance block |
-| `R66` | `R_AXIAL` | missing | no provenance block |
-| `R67` | `R_AXIAL` | missing | no provenance block |
-| `R68` | `R_AXIAL` | missing | no provenance block |
-| `R69` | `R_AXIAL` | missing | no provenance block |
-| `R70` | `R_AXIAL` | missing | no provenance block |
-| `R71` | `R_AXIAL` | missing | no provenance block |
-| `R72` | `R_AXIAL` | missing | no provenance block |
-| `R73` | `R_TRIM` | missing | no provenance block |
-| `R74` | `R_AXIAL` | missing | no provenance block |
-| `R75` | `R_AXIAL` | missing | no provenance block |
-| `R76` | `R_AXIAL` | missing | no provenance block |
-| `R77` | `R_AXIAL` | missing | no provenance block |
-| `R90` | `R_AXIAL` | missing | no provenance block |
-| `R91` | `R_AXIAL` | missing | no provenance block |
 | `S4` | `SW` | missing | no provenance block |
-| `VD3` | `D_DIODE` | missing | no provenance block |
-| `VD4` | `D_DIODE` | missing | no provenance block |
-| `VT1` | `Q_TO92` | missing | no provenance block |
-| `VT2` | `Q_TO92` | missing | no provenance block |
-| `VT3` | `Q_TO92` | missing | no provenance block |
-| `VT4` | `Q_TO92` | missing | no provenance block |
-| `X6` | `RF_CONN` | missing | no provenance block |
-| `X7` | `VIDEO_CONN` | missing | no provenance block |
 
 ### placement/value
 
