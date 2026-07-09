@@ -89,7 +89,7 @@ lineage, and Baltijets docs are covered; the remaining useful external sources
 are the programming disk/PROM dumps, cartridge BASIC truth, and
 owner/community validation rather than more РФ2 ROM material.
 `docs/owner-measurement-shortlist.md` now compresses the owner/community ask to
-the current P0/P1 hardware items.
+the current P0/P1 PROM, media, cartridge BASIC, and hardware-continuity items.
 
 ## 4. Critical path
 
@@ -644,8 +644,8 @@ beeper session sheet v2; macro photos (R6x refdes, bypass disc values). Also: a
 dump request there may close this workstream without our own board time. A
 ready-to-send request packet is now tracked in
 `docs/community-prom-media-request.md`, covering the PROM dump list, the
-`JUKU-1`/`ДГШ5.106.105` media request, deliverable names, and verification
-commands.
+`JUKU-1`/`ДГШ5.106.105` media request, cartridge BASIC artifact/procedure ask,
+deliverable names, and verification commands.
 
 ### WS-G — System integration (Tier 1 → Tier 2)
 1. **Power**: bench supply on X8 (+5/+12/−12; −5 is board-derived) for bring-up;

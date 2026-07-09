@@ -541,8 +541,8 @@ def milestone_rows():
                 + ekdos_source_m1_phrase
                 + (
                     "`docs/owner-measurement-shortlist.md` reduces the remaining "
-                    "hardware-owner asks to programming/PROM/media truth plus P1 "
-                    "continuity items; "
+                    "owner/community asks to programming/PROM/media truth, "
+                    "cartridge BASIC truth, and P1 continuity items; "
                     if owner_measurement_shortlist
                     else ""
                 )
@@ -570,7 +570,7 @@ def milestone_rows():
                 )
                 + "PROM truth still needs disk files or hardware dumps for Tier 3."
             ),
-            "next": "Send the owner/community request, locate programming disk/media or get RE3/RT4 dumps, then diff any D6/D8 dumps against the exported reconstruction fallbacks.",
+            "next": "Send the owner/community request, locate programming disk/media or get RE3/RT4 dumps, and check any BASIC cartridge artifact/procedure against the current probes.",
         },
         {
             "id": "M2",
