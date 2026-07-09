@@ -27,11 +27,14 @@ python3 scripts/report_video_slot_timing_audit.py
 | Owner photo survey confirms a socketed top-center РЕ3 is dumpable | PASS | `ref/photos/juku-pcb-2/SURVEY.md` |
 | Scanned `.113/.117` РЕ3 tables are guarded but not D94 `.092` | PASS | `docs/re3-firmware-inspection.md` |
 | No D94 `.092` programming table or dump is present under `ref/firmware` | PASS | `ref/firmware/` has no `.092` artifact |
+| D94 reconstruction constraints are generated | PASS | `docs/d94-reconstruction-constraints.md` |
 
 ## Guarded Inputs
 
 - `ref/firmware/re3_dgsh5.106.113.hex`: `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13`
 - `ref/firmware/re3_dgsh5.106.117.hex`: `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18`
+- `docs/d94-reconstruction-constraints.md`: generated D94 `.092`
+  address/output/firmware boundary.
 
 ## Interpretation
 
@@ -43,6 +46,10 @@ python3 scripts/report_video_slot_timing_audit.py
   the still-undumped D94 `ДГШ5.106.092` РЕ3 timing PROM plus the adjacent
   АГ3 timing. The repo has guarded `.113/.117` scans, but those are not the
   D94 `.092` content.
+- `docs/d94-reconstruction-constraints.md` now records the automatic
+  reconstruction boundary: D94 address pins are traced to `BA11..BA15`,
+  but `E_N`, all eight output destinations, and the `.092` contents are
+  still missing from current repo evidence.
 - Until that PROM is dumped or a programming-disk table appears, the honest
   model keeps `VA/VQ` and `video_raster` as a sim-only V2 adjunct rather
   than inventing a board-critical DRAM arbitration schedule.

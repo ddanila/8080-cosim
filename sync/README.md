@@ -147,6 +147,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   verifies the traced physical serializer/mux/decode pieces are present, the
   runnable model still uses the explicit sim-only video read path, and the D94
   `.092` РЕ3 timing PROM dump/table is still absent.
+- `scripts/report_d94_reconstruction_constraints.py` — generated D94 `.092`
+  reconstruction boundary; proves the address side is traced to `BA11..BA15`
+  and records the still-missing enable/output nets plus absent `.092` dump/table
+  before any burnable replacement is attempted.
 - `sync/jmon33_interrupt_probe.py` — cosim guard for Monitor 3.3's
   interrupt-driven path: 8259 setup, `0xFF54` frame interrupt, keyboard-port
   reads, and VRAM writes.

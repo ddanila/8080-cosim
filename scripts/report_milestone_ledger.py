@@ -323,6 +323,13 @@ def milestone_rows():
         "docs/video-slot-timing-audit.md",
         "D94 `.092`",
     )
+    d94_constraints = marker(
+        "docs/d94-reconstruction-constraints.md",
+        "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**",
+    ) and marker(
+        "docs/d94-reconstruction-constraints.md",
+        "D94.10-D94.14",
+    )
     vjuga_bare_pcb_ready = marker(
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -510,6 +517,14 @@ def milestone_rows():
                     "sim-only `VA/VQ` read path, and missing D94 `.092` timing "
                     "PROM/table; "
                     if video_slot_timing_audit
+                    else ""
+                )
+                + (
+                    "`docs/d94-reconstruction-constraints.md` pins the automatic "
+                    "D94 `.092` reconstruction boundary: address inputs are traced "
+                    "to `BA11..BA15`, while `E_N`, all data-output destinations, "
+                    "and the `.092` contents remain absent; "
+                    if d94_constraints
                     else ""
                 )
                 + "the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open."

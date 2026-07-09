@@ -24,6 +24,7 @@ jobs:
             scripts/report_vendored_disk_catalog.py \
             scripts/report_re3_firmware_inspection.py \
             scripts/report_video_slot_timing_audit.py \
+            scripts/report_d94_reconstruction_constraints.py \
             scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
@@ -116,8 +117,11 @@ jobs:
 
       - name: Check video slot timing audit freshness
         run: |
+          python3 scripts/report_d94_reconstruction_constraints.py
           python3 scripts/report_video_slot_timing_audit.py
-          git diff --exit-code -- docs/video-slot-timing-audit.md
+          git diff --exit-code -- \
+            docs/d94-reconstruction-constraints.md \
+            docs/video-slot-timing-audit.md
 
       - name: Check replica bring-up report freshness
         run: |

@@ -281,6 +281,10 @@ debugging session saved on real hardware.
    guarded: the physical D42/D43 serializer plus D48-D53 mux/decode pieces are
    traced/present, the runnable model still uses the intentional sim-only
    `VA/VQ` read path, and the D94 `.092` timing PROM/table is absent.
+   `docs/d94-reconstruction-constraints.md` now pins the automatic D94
+   reconstruction boundary: address inputs are traced to `BA11..BA15`, but
+   `E_N`, all eight data-output destinations, and the `.092` contents are
+   still missing from current repo evidence.
    Remaining V3 target: replace the sim-only second framebuffer read with the
    real РЕ3/АГ3-gated shared-DRAM video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and

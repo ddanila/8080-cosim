@@ -88,6 +88,11 @@ def main() -> int:
             not any(path.name.lower().endswith((".092", ".092.hex", "_092.hex")) for path in (ROOT / "ref" / "firmware").glob("*")),
             "`ref/firmware/` has no `.092` artifact",
         ),
+        (
+            "D94 reconstruction constraints are generated",
+            marker("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**", "D94.10-D94.14"),
+            "`docs/d94-reconstruction-constraints.md`",
+        ),
     ]
 
     status = "VIDEO SLOT TIMING AUDITED / D94 PROM DUMP PENDING" if all(ok for _, ok, _ in checks) else "VIDEO SLOT TIMING AUDIT FAILED"
@@ -120,6 +125,8 @@ def main() -> int:
             "",
             f"- `ref/firmware/re3_dgsh5.106.113.hex`: `{sha256('ref/firmware/re3_dgsh5.106.113.hex')}`",
             f"- `ref/firmware/re3_dgsh5.106.117.hex`: `{sha256('ref/firmware/re3_dgsh5.106.117.hex')}`",
+            "- `docs/d94-reconstruction-constraints.md`: generated D94 `.092`",
+            "  address/output/firmware boundary.",
             "",
             "## Interpretation",
             "",
@@ -131,6 +138,10 @@ def main() -> int:
             "  the still-undumped D94 `ДГШ5.106.092` РЕ3 timing PROM plus the adjacent",
             "  АГ3 timing. The repo has guarded `.113/.117` scans, but those are not the",
             "  D94 `.092` content.",
+            "- `docs/d94-reconstruction-constraints.md` now records the automatic",
+            "  reconstruction boundary: D94 address pins are traced to `BA11..BA15`,",
+            "  but `E_N`, all eight output destinations, and the `.092` contents are",
+            "  still missing from current repo evidence.",
             "- Until that PROM is dumped or a programming-disk table appears, the honest",
             "  model keeps `VA/VQ` and `video_raster` as a sim-only V2 adjunct rather",
             "  than inventing a board-critical DRAM arbitration schedule.",
