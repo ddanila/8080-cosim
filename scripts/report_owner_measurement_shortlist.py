@@ -85,7 +85,7 @@ def main() -> int:
         ("D2 constraint report generated", has_phrase("docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
-        ("Serial handoff generated", has_phrase("docs/serial-handoff.md", "Status: **SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY**")),
+        ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
     ]

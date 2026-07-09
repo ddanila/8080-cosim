@@ -309,11 +309,12 @@ Historical merge notes:
   proves the traced `SOUND` source toggles, and checks the board JSON handoff
   through `R90`, `VT1`/`VD4`/`R91`, `R48`, and `SPKR`. The speaker current path
   remains a physical bring-up check, documented in `docs/beeper-readiness.md`.
-- **Serial bus-side handoff guarded:** `docs/serial-handoff.md` now records D11
-  8251 host-bus wiring, D57 baud-clock handoff, the D14/D32/D3/D12/D104 line
-  driver/receiver chain, and X3 signal nets. The HDL USART remains a boot-safe
-  idle shell; full transmit/receive behavior and X3 loopback are Tier-2
-  functional polish.
+- **Serial behavior guarded:** `docs/serial-handoff.md` now records D11 8251
+  host-bus wiring, D57 baud-clock handoff, the D14/D32/D3/D12/D104 line
+  driver/receiver chain, X3 signal nets, and a minimal 8251-style Tx/Rx loopback
+  slice. `sync/serial_check.sh` proves mode/command writes, status bits,
+  RTS/DTR, and one 8N1 byte through digital loopback. External X3 loopback and
+  full 8251 protocol modes remain Tier-2 bring-up work.
 - **D2 PROM boundary pinned:** `docs/d2-reconstruction-constraints.md` records
   D2 as the `.037` К556РТ4 bus-arbitration/wait PROM, not the old behavioral
   I/O-decode stand-in. No D2 signal nets or burnable `.037` table are derivable

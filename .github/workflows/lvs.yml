@@ -21,6 +21,7 @@ jobs:
           sh -n sync/jmon33_checkpoint_deep_check.sh
           sh -n sync/video_timing_check.sh
           sh -n sync/video_readout_check.sh
+          sh -n sync/serial_check.sh
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
@@ -231,6 +232,7 @@ jobs:
           ./sync/basic_launch_probe.py
           ./sync/prom_fallback_check.sh
           ./sync/beeper_check.sh
+          ./sync/serial_check.sh
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
 
@@ -266,6 +268,7 @@ jobs:
             docs/basic-low-stub-inspection.md \
             docs/basic-launch-probe.md \
             docs/beeper-readiness.md \
+            docs/serial-handoff.md \
             docs/jmon33-hdl-probe.md \
             docs/jmon33-interrupt-probe.md \
             docs/jmon33-ready-probe.md \

@@ -1,12 +1,13 @@
 # Serial handoff
 
-Status: **SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY**
+Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**
 
 This generated report separates the serial-port facts already guarded by
 the board JSON and HDL from the remaining functional serial boundary.
 It covers the D11 8251 host bus path, the D57 baud-clock handoff, and
-the X3 line-driver/receiver wiring. It does not claim a complete 8251
-protocol engine or an external loopback proof.
+the X3 line-driver/receiver wiring. It now also guards a minimal
+bus-visible 8251-style async Tx/Rx loopback slice; it does not claim
+external X3 loopback or full protocol-mode coverage.
 
 ## Command
 
@@ -41,7 +42,7 @@ python3 scripts/report_serial_handoff.py
 | S_TTL reaches X3.23 | PASS | `S_TTL` |
 | S_OC reaches X3.32 | PASS | `S_OC` |
 | S_SIN reaches X3.33 | PASS | `S_SIN` |
-| HDL USART shell exposes idle serial outputs | PASS | `hdl/devices.v` |
+| HDL USART model has guarded Tx/Rx loopback | PASS | `hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh` |
 | HDL serial connector and drivers are instantiated | PASS | `hdl/juku_top.v` |
 
 ## Serial Nets
@@ -68,7 +69,8 @@ python3 scripts/report_serial_handoff.py
 - D57 `OUT0` reaches both D11 clock inputs through `PIT_BAUD`.
 - D11 serial-side pins are carried through the modeled D14/D32/D3/D12
   output drivers and D104 receiver to X3 signal pins.
-- The current HDL USART shell is intentionally boot-safe: bus registers
-  latch and read back, while serial-side outputs idle. A real 8251
-  transmit/receive engine and external loopback remain future Tier-2
-  functional work, not PCB-truth blockers.
+- `sync/serial_check.sh` now proves a scoped USART behavior slice:
+  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
+  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
+- External X3 loopback, electrical levels, and full 8251 sync/parity
+  modes remain Tier-2 bench/software work, not PCB-truth blockers.

@@ -115,14 +115,21 @@ def check_rows(board: dict) -> list[list[object]]:
         )
     checks.append(
         (
-            "HDL USART shell exposes idle serial outputs",
+            "HDL USART model has guarded Tx/Rx loopback",
             marker(
                 "hdl/devices.v",
                 "module usart_8251",
-                "Full serial engine is a boundary",
-                "assign txd = 1'b1",
+                "Minimal async 8N1 shifter",
+            )
+            and marker(
+                "hdl/sim/usart_8251_tb.v",
+                "USART8251: PASS",
+            )
+            and marker(
+                "sync/serial_check.sh",
+                "hdl/sim/usart_8251_tb.v",
             ),
-            "`hdl/devices.v`",
+            "`hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh`",
         )
     )
     checks.append(
@@ -143,7 +150,7 @@ def main() -> int:
     board = load_board()
     rows = check_rows(board)
     status = (
-        "SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY"
+        "SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING"
         if all_pass(rows)
         else "SERIAL HANDOFF REGRESSION"
     )
@@ -156,8 +163,9 @@ def main() -> int:
         "This generated report separates the serial-port facts already guarded by",
         "the board JSON and HDL from the remaining functional serial boundary.",
         "It covers the D11 8251 host bus path, the D57 baud-clock handoff, and",
-        "the X3 line-driver/receiver wiring. It does not claim a complete 8251",
-        "protocol engine or an external loopback proof.",
+        "the X3 line-driver/receiver wiring. It now also guards a minimal",
+        "bus-visible 8251-style async Tx/Rx loopback slice; it does not claim",
+        "external X3 loopback or full protocol-mode coverage.",
         "",
         "## Command",
         "",
@@ -205,10 +213,11 @@ def main() -> int:
             "- D57 `OUT0` reaches both D11 clock inputs through `PIT_BAUD`.",
             "- D11 serial-side pins are carried through the modeled D14/D32/D3/D12",
             "  output drivers and D104 receiver to X3 signal pins.",
-            "- The current HDL USART shell is intentionally boot-safe: bus registers",
-            "  latch and read back, while serial-side outputs idle. A real 8251",
-            "  transmit/receive engine and external loopback remain future Tier-2",
-            "  functional work, not PCB-truth blockers.",
+            "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
+            "  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven",
+            "  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.",
+            "- External X3 loopback, electrical levels, and full 8251 sync/parity",
+            "  modes remain Tier-2 bench/software work, not PCB-truth blockers.",
             "",
         ]
     )

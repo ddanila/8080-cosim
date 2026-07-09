@@ -80,7 +80,7 @@ def milestone_rows():
     )
     serial_handoff_guarded = marker(
         "docs/serial-handoff.md",
-        "Status: **SERIAL BUS-SIDE HANDOFF READY / PROTOCOL BOUNDARY**",
+        "Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**",
     ) and marker(
         ".github/workflows/lvs.yml",
         "docs/serial-handoff.md",
@@ -529,8 +529,9 @@ def milestone_rows():
                 )
                 + (
                     "`docs/serial-handoff.md` guards the D11 USART bus-side path, "
-                    "D57 baud handoff, line drivers, receiver, and X3 nets while "
-                    "leaving the full 8251 protocol engine as a Tier-2 boundary; "
+                    "D57 baud handoff, line drivers, receiver, X3 nets, and a "
+                    "minimal 8251 Tx/Rx loopback behavior slice while leaving "
+                    "external X3 loopback/full protocol modes as Tier-2 work; "
                     if serial_handoff_guarded
                     else ""
                 )
@@ -1080,8 +1081,8 @@ def milestone_rows():
                     )
                     + (
                         ", and `docs/serial-handoff.md` guards the serial bus-side "
-                        "D11/X3 handoff while keeping loopback/protocol proof for "
-                        "bring-up"
+                        "D11/X3 handoff plus a minimal 8251 Tx/Rx loopback behavior "
+                        "slice while keeping external loopback proof for bring-up"
                         if serial_handoff_guarded
                         else ""
                     )

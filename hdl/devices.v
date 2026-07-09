@@ -569,12 +569,85 @@ endmodule
 
 module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk, rxc, txc,
                    output wire txd, rts, dtr, input wire rxd);
-    reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
-    always @(*) if (~cs_n & ~wr_n) regs[A] = D;
-    assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
-    // serial-side outputs (off the CPU bus -> boot-safe). Stub-idle (mark/deasserted); the drivers
-    // (D14/D32/D3/D12) buffer these to the X3 serial connector. Full serial engine is a boundary.
-    assign txd = 1'b1; assign rts = 1'b1; assign dtr = 1'b1;
+    reg [7:0] mode = 8'h00, command = 8'h00, rx_data = 8'h00;
+    reg mode_seen = 1'b0;
+
+    reg txd_r = 1'b1, tx_busy = 1'b0;
+    reg [8:0] tx_shift = 9'h1ff;
+    integer tx_bits = 0;
+
+    reg rx_busy = 1'b0, rx_ready = 1'b0;
+    reg [7:0] rx_shift = 8'h00;
+    integer rx_bits = 0;
+
+    wire tx_enable = command[0];
+    wire rx_enable = command[2];
+    wire [7:0] status = {5'b00000, ~tx_busy, rx_ready, ~tx_busy};
+
+    assign D = (~cs_n & ~rd_n) ? (A ? status : rx_data) : 8'bz;
+    assign txd = txd_r;
+    assign rts = ~command[5];
+    assign dtr = ~command[1];
+
+    always @(negedge wr_n) if (~cs_n) begin
+        if (A) begin
+            if (!mode_seen) begin
+                mode <= D;
+                mode_seen <= 1'b1;
+            end else if (D[6]) begin
+                command <= 8'h00;
+                mode_seen <= 1'b0;
+                txd_r <= 1'b1;
+                tx_busy <= 1'b0;
+                rx_busy <= 1'b0;
+                rx_ready <= 1'b0;
+            end else begin
+                command <= D;
+                if (D[4]) rx_ready <= 1'b0;  // error reset also clears the minimal RX latch.
+            end
+        end else if (tx_enable && !tx_busy) begin
+            tx_shift <= {1'b1, D};  // 8 data bits, then stop; start bit is driven immediately.
+            tx_bits <= 9;
+            txd_r <= 1'b0;
+            tx_busy <= 1'b1;
+        end
+    end
+
+    always @(negedge rd_n) if (~cs_n && !A) begin
+        rx_ready <= 1'b0;
+    end
+
+    // Minimal async 8N1 shifter. It is enough for digital loopback/bring-up
+    // guards; mode word parity/stop-bit variants and sync mode remain out of
+    // scope until software needs them.
+    always @(posedge txc) if (tx_busy) begin
+        txd_r <= tx_shift[0];
+        tx_shift <= {1'b1, tx_shift[8:1]};
+        if (tx_bits <= 1) begin
+            tx_busy <= 1'b0;
+            tx_bits <= 0;
+        end else begin
+            tx_bits <= tx_bits - 1;
+        end
+    end
+
+    always @(posedge rxc) begin
+        if (!rx_busy) begin
+            if (rx_enable && !rx_ready && rxd == 1'b0) begin
+                rx_busy <= 1'b1;
+                rx_bits <= 0;
+                rx_shift <= 8'h00;
+            end
+        end else if (rx_bits < 8) begin
+            rx_shift <= {rxd, rx_shift[7:1]};
+            rx_bits <= rx_bits + 1;
+        end else begin
+            rx_data <= rx_shift;
+            rx_ready <= 1'b1;
+            rx_busy <= 1'b0;
+            rx_bits <= 0;
+        end
+    end
 endmodule
 
 // К170АП2 serial line driver -- DIP-8 DUAL (board photo pin-count; power 8/5/4 per the power table
