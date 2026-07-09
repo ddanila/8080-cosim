@@ -35,6 +35,8 @@ module juku_top_tb();
   juku_top dut(.clk(1'b0), .reset_n(1'b1), .osc(osc),
                .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift),
                .kbd_kcol(kbd_kcol), .kbd_kbit(kbd_kbit), .frame_tick(frame_tick));
+  wire [15:0] cpu_arch_de = dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de : dut.U_CPU.u.core.r16_hl;
+  wire [15:0] cpu_arch_hl = dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl : dut.U_CPU.u.core.r16_de;
 
   // reset + ready (discrete subsystems = boundary, driven here)
   initial begin force dut.ready=1'b1; force dut.reset_sys=1; #2000 force dut.reset_sys=0; end
@@ -90,6 +92,7 @@ module juku_top_tb();
   end
 
   integer traceio=0, stopio=0, raw_ios=0, raw_reads=0, raw_writes=0;
+  integer tracechk=0, chk_mem_lines=0;
   integer tracekbd=0, traceppi=0, stopppi=0, ppi_ios=0, ppi_reads=0, ppi_writes=0, ppi_key_reads=0;
   integer tracepic=0, stoppic=0, pic_ios=0, pic_reads=0, pic_writes=0;
   reg kbd_was_pressed=0;
@@ -141,6 +144,19 @@ module juku_top_tb();
     end
   end
 
+  always @(negedge dut.memr_n) begin
+    #1;
+    if (tracechk > 1 &&
+        dut.U_CPU.u.core.r16_pc >= 16'h0426 && dut.U_CPU.u.core.r16_pc <= 16'h043c &&
+        vram_writes >= 30180 && chk_mem_lines < 48) begin
+      chk_mem_lines = chk_mem_lines + 1;
+      $display("[CHKHDL-MEM] pc=0x%04h ba=0x%04h db=0x%02h hl=0x%04h de=0x%04h a=0x%02h b=0x%02h zf=%0d memr_n=%0d rom=%0d ram=%0d mcyc=%0d vram=%0d n=%0d",
+               dut.U_CPU.u.core.r16_pc, dut.BA, dut.DB, cpu_arch_hl, cpu_arch_de,
+               dut.U_CPU.u.core.acc, dut.U_CPU.u.core.r16_bc[15:8], dut.U_CPU.u.core.psw_z,
+               dut.memr_n, !dut.rom_sel_n, !dut.ram_sel_n, mcyc, vram_writes, chk_mem_lines);
+    end
+  end
+
   always @(posedge osc) begin
     if (tracekbd && kbd_pressed && !kbd_was_pressed)
       $display("[KBD] press key=%0d col=%0d bit=%0d shift=%0d mcyc=%0d vram=%0d",
@@ -148,6 +164,23 @@ module juku_top_tb();
     if (tracekbd && !kbd_pressed && kbd_was_pressed)
       $display("[KBD] release key=%0d mcyc=%0d vram=%0d", ekdos_key, mcyc, vram_writes);
     kbd_was_pressed <= kbd_pressed;
+  end
+
+  always @(posedge osc) begin
+    if (tracechk != 0 && dut.U_CPU.u.core.r16_pc != pc_q) begin
+      if (dut.U_CPU.u.core.r16_pc == 16'h03DA)
+        $display("[CHKHDL] call0426 hl=0x%04h de=0x%04h a=0x%02h b=0x%02h zf=%0d mcyc=%0d vram=%0d",
+                 cpu_arch_hl, cpu_arch_de, dut.U_CPU.u.core.acc,
+                 dut.U_CPU.u.core.r16_bc[15:8], dut.U_CPU.u.core.psw_z, mcyc, vram_writes);
+      if (dut.U_CPU.u.core.r16_pc == 16'h03E0)
+        $display("[CHKHDL] cmp stored=0x%02h computed=0x%02h hl=0x%04h de=0x%04h zf=%0d mcyc=%0d vram=%0d",
+                 dut.U_CPU.u.core.acc, dut.U_CPU.u.core.r16_bc[15:8],
+                 cpu_arch_hl, cpu_arch_de, dut.U_CPU.u.core.psw_z, mcyc, vram_writes);
+      if (dut.U_CPU.u.core.r16_pc == 16'h03EB)
+        $display("[CHKHDL] branch a=0x%02h b=0x%02h zf=%0d hl=0x%04h de=0x%04h mcyc=%0d vram=%0d",
+                 dut.U_CPU.u.core.acc, dut.U_CPU.u.core.r16_bc[15:8],
+                 dut.U_CPU.u.core.psw_z, cpu_arch_hl, cpu_arch_de, mcyc, vram_writes);
+    end
   end
 
   always @(negedge dut.iowr_n) begin #1; if (!dut.cs_pic_n) begin
@@ -335,6 +368,7 @@ module juku_top_tb();
     if ($value$plusargs("ekdoskeys=%d", ekdoskeys)) ;    // fixed T,D,D sequence
     if ($value$plusargs("traceio=%d", traceio)) ;
     if ($value$plusargs("stopio=%d", stopio)) ;
+    if ($value$plusargs("tracechk=%d", tracechk)) ;
     if ($value$plusargs("tracekbd=%d", tracekbd)) ;
     if ($value$plusargs("tracepic=%d", tracepic)) ;
     if ($value$plusargs("stoppic=%d", stoppic)) ;

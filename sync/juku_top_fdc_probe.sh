@@ -22,6 +22,7 @@ MAXVRAM=${JUKU_TOP_FDC_MAXVRAM:-88000}
 TIMECAP=${JUKU_TOP_FDC_TIMECAP:-900000000}
 TRACEPROGRESS=${JUKU_TOP_FDC_TRACEPROGRESS:-5000}
 TRACEIO=${JUKU_TOP_FDC_TRACEIO:-0}
+TRACECHK=${JUKU_TOP_FDC_TRACECHK:-0}
 STOPIO=${JUKU_TOP_FDC_STOPIO:-0}
 STOPFDC=${JUKU_TOP_FDC_STOPFDC:-1}
 STOPPIC=${JUKU_TOP_FDC_STOPPIC:-0}
@@ -69,7 +70,7 @@ if command -v timeout >/dev/null; then
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   else
@@ -79,7 +80,7 @@ if command -v timeout >/dev/null; then
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   fi
@@ -92,7 +93,7 @@ else
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   else
@@ -102,7 +103,7 @@ else
       +traceprogress="$TRACEPROGRESS" \
       $STOPPC_PLUSARG \
       +ekdoskeys=1 +keyat="$KEYAT" +khold="$KHOLD" +kgap="$KGAP" \
-      +traceio="$TRACEIO" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
+      +traceio="$TRACEIO" +tracechk="$TRACECHK" +stopio="$STOPIO" +tracekbd=1 +tracepic=1 +stoppic="$STOPPIC" +traceppi=1 +traceirq=1 +stopppi="$STOPPPI" +tracefdc=1 +stopfdc="$STOPFDC" \
       +stopprompt="$STOPPROMPT" \
       +maxvram="$MAXVRAM" +timecap="$TIMECAP" >"$OUT" 2>&1
   fi
@@ -128,6 +129,8 @@ ppi_stop=$(grep -m1 '^\[PPI0\] stop' "$OUT" || true)
 irq_first=$(grep -m1 '^\[IRQ\]' "$OUT" || true)
 rawio_first=$(grep -m1 '^\[RAWIO\]' "$OUT" || true)
 rawio_stop=$(grep -m1 '^\[RAWIO\] stop' "$OUT" || true)
+chk_first=$(grep -m1 '^\[CHKHDL' "$OUT" || true)
+chk_last=$(grep '^\[CHKHDL' "$OUT" | tail -1 || true)
 io_summary=$(grep -m1 '^\[IO\]' "$OUT" || true)
 first_vram=$(grep -m1 '^\[VRAM\] first video write' "$OUT" || true)
 last_progress=$(grep '^\[VRAM\] progress' "$OUT" | tail -1 || true)
@@ -140,6 +143,7 @@ disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
 verilator_report=$(grep -m1 '^- Verilator: .*walltime' "$OUT" || true)
 build_summary=$(tail -1 "$BUILD_OUT" || true)
 fdc_lines=$(grep -c '^\[FDC\]' "$OUT" || true)
+chk_lines=$(grep -c '^\[CHKHDL' "$OUT" || true)
 kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
 progress_lines=$(grep -c '^\[VRAM\] progress' "$OUT" || true)
 pic_lines=$(grep -c '^\[PIC\]' "$OUT" || true)
@@ -188,6 +192,7 @@ Environment overrides:
 - \`JUKU_TOP_FDC_FRAMEIRQ\` default \`80000\`
 - \`JUKU_TOP_FDC_TRACEPROGRESS\` default \`5000\`
 - \`JUKU_TOP_FDC_TRACEIO\` default \`0\`
+- \`JUKU_TOP_FDC_TRACECHK\` default \`0\`
 - \`JUKU_TOP_FDC_STOPIO\` default \`0\`
 - \`JUKU_TOP_FDC_STOPFDC\` default \`1\`
 - \`JUKU_TOP_FDC_STOPPIC\` default \`0\`
@@ -198,7 +203,7 @@ Environment overrides:
 - \`JUKU_TOP_FDC_STOPPC_SKIP\` default \`0\`; matching PC entries to skip
 - \`JUKU_TOP_FDC_TIMEOUT\` default \`60\` seconds
 
-Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
+Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ TRACEPROGRESS=$TRACEPROGRESS TRACEIO=$TRACEIO TRACECHK=$TRACECHK STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence
 
@@ -223,6 +228,7 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 | IRQ trace lines | \`$irq_lines\` |
 | raw I/O trace lines | \`$rawio_lines\` |
 | FDC trace lines | \`$fdc_lines\` |
+| checksum trace lines | \`$chk_lines\` |
 
 ## Stop State
 
@@ -241,6 +247,8 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 - First IRQ line: \`${irq_first:-none}\`
 - First raw I/O line: \`${rawio_first:-none}\`
 - Raw I/O stop line: \`${rawio_stop:-none}\`
+- First checksum line: \`${chk_first:-none}\`
+- Last checksum line: \`${chk_last:-none}\`
 - First FDC line: \`${fdc_first:-none}\`
 - FDC stop line: \`${fdc_stop:-none}\`
 - EKDOS prompt line: \`${prompt_line:-none}\`
@@ -249,6 +257,12 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 - CPU state line: \`${cpu_line:-none}\`
 - Visible state line: \`${state_line:-none}\`
 - I/O summary line: \`${io_summary:-none}\`
+
+## Checksum Trace
+
+\`\`\`text
+$(grep '^\[CHKHDL' "$OUT" || true)
+\`\`\`
 
 ## Disposition
 

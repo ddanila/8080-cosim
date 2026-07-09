@@ -65,8 +65,9 @@ This guard proves the first HDL-side WD1793 behavior slice needed by WS-B1:
 - `sync/juku_top_fdc_probe.sh` now also accepts `JUKU_TOP_FDC_STOPPC=HEX` plus
   optional `JUKU_TOP_FDC_STOPPC_SKIP=N`, which map to the `juku_top_tb`
   `+stoppc=HEX` / `+stoppc_skip=N` CPU-address stop hooks for focused ROMBIOS
-  boundary diagnostics, and `JUKU_TOP_FDC_STOPPROMPT=1`, which maps to the same
-  uninterrupted harness's EKDOS `A>` bitmap oracle at `x=0`, `y=70`.
+  boundary diagnostics, `JUKU_TOP_FDC_TRACECHK=N` for the ROMBIOS checksum
+  helper, and `JUKU_TOP_FDC_STOPPROMPT=1`, which maps to the same uninterrupted
+  harness's EKDOS `A>` bitmap oracle at `x=0`, `y=70`.
 - `sync/juku_top_periph_bus_check.sh` drives `juku_top`'s buffered CPU bus
   directly and proves decoded keyboard/PIC/PPI/FDC access, including the pinned
   no-key `0xCF` keyboard poll, shifted-`T` `0x88` poll, frame INTA vector
@@ -112,7 +113,8 @@ sync/juku_top_fdc_probe.sh
 | checkpoint-resumed `juku_top` from the late FDC checkpoint drains 4,096 more data-register reads | PASS (non-CI) |
 | checkpoint-resumed `juku_top` from the late FDC checkpoint reaches EKDOS `A>` prompt bitmap | PASS (local/deep) |
 | `juku_top` loads vendored `JUKU1.CPM` and reaches first BIOS VRAM write under the FDC probe | PASS |
-| `juku_top` reaches decoded FDC I/O within the bounded probe window | NO |
+| `juku_top` matches cosim through the former post-30,180 checksum split and the 30,520-write first-PIC window | PASS |
+| `juku_top` reaches decoded PIC setup, frame IRQ, and first FDC status I/O within the Verilator probe window | PASS (local/deep) |
 
 ## Remaining Boundary
 
@@ -131,14 +133,12 @@ sync/juku_top_fdc_probe.sh
   `0xCF` and shifted-`T` `0x88` keyboard scans, PPI0 motor-on latch, exact
   ROMBIOS first FDC restore command `0x02`, FDC seek/status, and the first
   `JUKU1.CPM` track 0 sector 2 byte all pass through decoded `juku_top` ports.
-- `docs/juku-top-30000-state-probe.md` captures the slow pre-PIC comparison:
-  cosim and `juku_top` both stop at PC `0x0484` after 30,000 VRAM writes, and
-  their framebuffer dumps have the same SHA256
+- `docs/juku-top-30000-state-probe.md` captures the slow comparison through the
+  old pre-PIC window: cosim and `juku_top` both stop at PC `0x0484` after
+  30,000 VRAM writes, and their framebuffer dumps have the same SHA256
   `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68`. The same
-  run now also matches visible CPU registers/flags, PPI/PIC latches, and stable
-  FDC register latches. The open problem is top-level simulation
-  speed/checkpointing past the 30,520-write first-PIC point, not a proven
-  pre-PIC functional divergence.
+  harness now also passes at the old 30,182-write checksum split and at the
+  30,520-write first-PIC boundary.
 - `docs/ekdos-checkpoint-reference.md` captures the corresponding full cosim
   RAM/CPU/peripheral checkpoint.
 - `docs/juku-top-checkpoint-load.md` proves that checkpoint RAM and visible
@@ -169,13 +169,13 @@ sync/juku_top_fdc_probe.sh
   same vendored `TDD` path: first frame IRQ at 33,812 VRAM writes and first FDC
   command at 63,085 VRAM writes.
 - `docs/juku-top-fdc-verilator-probe.md` records the faster reset-driven
-  `juku_top` long-window diagnostic: the Verilator path reaches 70,000 VRAM
-  writes in the same testbench and observes the full T/D/D stimulus schedule,
-  but still sees no decoded PIC/FDC access or active key-read hit.
-- `docs/juku-top-fdc-alignment.md` compares that committed HDL long-window
-  report against a regenerated cosim 70,000-write checkpoint and makes the
-  current divergence explicit: cosim has already drained 6,656 FDC data bytes,
-  while reset-driven `juku_top` has not programmed the PIC or reached FDC I/O.
+  `juku_top` long-window diagnostic: with the D6 reset-overlay fix and
+  `JUKU_TOP_FDC_FRAMEIRQ=200000`, the Verilator path reaches decoded PIC setup,
+  frame interrupts, and the first decoded WD1793 status read.
+- `docs/juku-top-fdc-alignment.md` summarizes that committed HDL report and
+  keeps the current uninterrupted boundary explicit: reset-driven `juku_top`
+  reaches the FDC status-poll edge, but has not yet advanced through the full
+  ROMBIOS FDC command/data path to EKDOS `A>`.
 - `docs/ekdos-ioseq-reference.md` records the full cosim I/O event stream that
   the direct-bus top-level guard mirrors for keyboard/PIC/PPI/FDC boundaries.
 - Preserve the Arti `JUKU1.CPM` cosim proof from

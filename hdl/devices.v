@@ -151,7 +151,7 @@ module decode_prom (input wire [15:8] a, input wire v_en_n,
     //   mode 0 (a[10]=0, reset overlay): ROM at 0x0000-0x3FFF.
     //   mode 1 (a[10]=1): ROM folds up to 0xD800-0xFFFF (the EPROM's BA[12:0] wiring yields the
     //   0x1800+ offset automatically), RAM below.
-    wire rom_region = ~a[10] ? (a[15:13] == 3'b000) : (a[15:11] >= 5'b11011);
+    wire rom_region = ~a[10] ? (a[15:14] == 2'b00) : (a[15:11] >= 5'b11011);
     assign rom_n = ~rom_region;              // ROM-region enable -> D8.E_N (traced); the РЕ3 pager splits per-chip
     assign rev   = ~(a[15:13] == 3'b000);    // io region qualifier -> D9.G2A/G2B: low for ports 00-1F (port mirror
                                              // on A8-15); mode-independent so io works in every map [reconstructed]
