@@ -48,11 +48,10 @@ netlist is fabrication-faithful except those inherently-off-schematic / intricat
   pin8 (read on scan) -> CPU Φ1/Φ2 + 8238 STSTB. `PHI1/PHI2/STSTB` -> `scan`.
   Provenance **44 -> 47/99**. Oscillator (D59) internals + ФRTTL + RESET/READY
   (Sheet-1 D13/D30) remain structural.
-- **A4 done (finding)** — I/O chip-select decode is a **РТ4 PROM (D2)** + glue, NOT
-  a 74138 (the power-table ИД7 = D53, the RAS/CAS decoder). Like the memory decode
-  (D6), the decode lives in **off-schematic PROM contents** = the known I/O map. So
-  the CS *decode* nets can't be wiring-traced to scan (only РТ4-out->chip-CS wiring,
-  intricate/untraced). Model decoder relabeled DID7 -> D2. Provenance 47/99 (unchanged).
+- **A4 corrected by later board evidence** — I/O chip-select decode is **D9 К555ИД7**.
+  Earlier D2-as-I/O-PROM notes were behavioral stand-ins and must not be used as
+  programming truth. D2 remains the separate **К556РТ4 bus/wait PROM**
+  (`ДГШ5.106.037`, dump pending); D6 is the memory decode PROM.
 - **Milestone A refined:** a handful of nets (PROM-decode: CS_*, ROM_SEL, ROE, CS4-7)
   are inherently PROM-internal -> they reach `prom`(contents off-schematic), not `scan`.
   The achievable target is "all WIRING traced; PROM decode contents = emulator-recovered."

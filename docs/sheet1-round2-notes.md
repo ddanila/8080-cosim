@@ -1,4 +1,9 @@
 # Sheet-1 (p3_sheet1.png, 5150x3603) zone map for round-2 crops (orig px)
+
+> Historical scratch notes. Later board metadata supersedes the D2-as-I/O-decode
+> hypothesis below: D9 К555ИД7 is the functional I/O chip-select decoder, while
+> D2 is the separate К556РТ4 bus/wait PROM (`ДГШ5.106.037`, dump pending).
+
 - D9/ИД7 + CS4-CS7 outputs (ROM selects?): crop (1890,540)-(2340,960)
 - D2 РТ4 decode PROM (V1/V2 outs) + REV/ROE/RAM_SEL logic: crop (690,1770)-(1260,2340)
 - D8 РЕ3 (top, R41 pullups, E-pin): crop (1650,240)-(2100,560)

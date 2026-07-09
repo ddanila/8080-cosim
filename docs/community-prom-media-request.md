@@ -38,7 +38,7 @@ Relevant local docs:
 
 1. Does anyone have the Baltijets programming disk files referenced by doc 007,
    especially tables/dumps for:
-   - `ДГШ5.106.037` / `ДГШ5.106.038` (`КР556РТ4`, D2/D6 decode PROMs)
+   - `ДГШ5.106.037` / `ДГШ5.106.038` (`КР556РТ4`, D2 bus/wait + D6 memory-decode PROMs)
    - `ДГШ5.106.039` (`К155РЕ3`, D8)
    - `ДГШ5.106.092` (FDC-era PROM, D94 on the .009 board)
    - `ДГШ5.106.040` etc. EPROM programming files for the 2764/К573РФ5 ROM row

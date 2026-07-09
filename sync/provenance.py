@@ -14,8 +14,9 @@ LEGEND = {
     "assumed":    "simplifying assumption (bus bit-order / byte-split) pending a scan trace",
     "placeholder":"provisional pin numbers/refdes, not yet sourced",
     "boundary":   "chip pins traced, but the net's other end is an un-modeled subsystem",
-    "prom":       "PROM-decode net: decode chip identified (D2/D6 РТ4), but the decode "
-                  "table is in off-schematic PROM contents (= the emulator-recovered map)",
+    "prom":       "PROM-derived net: the selected rail depends on off-schematic PROM "
+                  "contents or an emulator-recovered map; D6 is the memory decode PROM, "
+                  "while D2 is a separate bus/wait PROM with no burnable fallback here",
 }
 
 b = json.load(open(sys.argv[1]))

@@ -28,7 +28,7 @@ far more legible. That's how the clock subsystem (`docs/transcription/clock-subs
 ## Modeled today (34) — the booting, interactive core
 CPU (D1) · 8238 (D5) · 2× ВА86 addr buf (D4/DLB) · D6 decode-PROM · D7 gate · 2× EPROM
 (D15/D16) · 8× РУ5 DRAM (D60–67) · 2× 8255 (D26/D27) · 8251 (D11) · 3× 8253 (D54/55/57) ·
-8259 (D10) · clock D35/D38/D59 · I/O decode D2 (74138) · 4× ИЕ7 video ctr (D44–47) ·
+8259 (D10) · clock D35/D38/D59 · I/O decode D9 (К555ИД7) · 4× ИЕ7 video ctr (D44–47) ·
 2× КП14 addr mux (D48/49) · D53 RAS/CAS decode (ИД7).
 
 ## The gap (~42) by cluster — the grind backlog

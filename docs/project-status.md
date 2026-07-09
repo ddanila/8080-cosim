@@ -306,8 +306,9 @@ Historical merge notes:
   every fetch mis-read as an I/O read → CPU executes all-NOPs (PC just increments 1,2,3…).
 - **The banking is PROM-decoded**, not the 8255 "memory_view" MAME abstracts: D6 (К556РТ4)
   decodes A8–A15 + a mode enable (from 8255#0 Port C via the D7 ЛА3 gate). The decode
-  *table* lives in off-schematic PROM contents = the emulator-recovered map. Same for
-  the I/O decode (D2 РТ4).
+  *table* lives in off-schematic PROM contents = the emulator-recovered map. The I/O
+  chip-select decoder is D9 (К555ИД7); D2 is a separate К556РТ4 bus/wait PROM
+  (`ДГШ5.106.037`, dump pending), not a burnable I/O-decode image.
 - **ROMs are kept out of git** (copyright + size). `cosim` reads the `.bin` from an
   external path; `hdl/sim/ekta37.hex` is ROM-derived and **gitignored** (generate
   locally — see the `juku_sim_tb.v` header).

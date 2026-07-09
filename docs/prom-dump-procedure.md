@@ -68,8 +68,9 @@ Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-
    retires the twin's last big abstraction (`clk_phase`, D53 combinational RAS/CAS, `frame_tick`).
 2. **РТ4 D6 → real memory decode**: replaces `decode_prom`'s emulator-recovered banking map with
    silicon truth; boot_check re-verifies byte-identity.
-3. **РТ4 D2 → real I/O decode**: replaces the `io_dec138` functional stand-in (D2's real part is a
-   РТ4 per the board photos).
+3. **РТ4 D2 → bus/wait PROM truth**: fills the still-missing physical D2
+   (`ДГШ5.106.037`) contents. It does **not** replace the I/O decoder; current
+   board evidence puts the functional I/O chip-select decoder at D9 К555ИД7.
 4. **M2764 ×2**: validates (or forks) our ekta37 ROM image against this physical board.
 
 If the owner dump differs from `ref/reconstructed-proms/*.bin`, keep the dump as
