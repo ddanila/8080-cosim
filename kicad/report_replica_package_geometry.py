@@ -25,7 +25,7 @@ EXPECTED_DRILL_TOOLS = {
 EXPECTED_DRILL_HITS = {
     "1": 315,
     "2": 12,
-    "3": 2296,
+    "3": 2299,
     "4": 30,
     "5": 5,
 }

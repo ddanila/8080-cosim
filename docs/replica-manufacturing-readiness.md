@@ -3,7 +3,7 @@
 Status: **READY TO UPLOAD**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Final upload ZIP SHA256: `93de3fc0a16b4bb31a4f613af69833ed24353d403d8870a774e365d534a7c815`
+Final upload ZIP SHA256: `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`
 
 This is the tracked top-level manufacturing packet for the replica main
 board. It proves the generated fabrication package is internally coherent
@@ -19,7 +19,7 @@ already been placed or accepted.
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12793 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 13422 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8360 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2795 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
@@ -39,8 +39,8 @@ already been placed or accepted.
 
 | File | Bytes | SHA256 | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `23f5f949df5027f3200251440bc40288f71bae5c51fd21a8f3386339b1056a9f` | PASS |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 787065 | `93de3fc0a16b4bb31a4f613af69833ed24353d403d8870a774e365d534a7c815` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `77f1f333efac7179fce780a03f400a64cfcee412cd26cb1aa2271f7d4809f984` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 787196 | `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424` | PASS |
 
 ## Locked Vendor Options
 

@@ -12,9 +12,13 @@ visible and actionable before manufacturing and first power-on.
 
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
+- Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Verification-point nets: `41`
 - Verification-point endpoints checked in PCB: `204`
 - PCB endpoint coverage: `PASS`
+- All board endpoints checked in source PCB: `1876`
+- All board endpoints checked in routed PCB: `1876`
+- Full PCB endpoint coverage: `PASS`
 
 | Category | Nets |
 | --- | ---: |
@@ -37,6 +41,17 @@ behind a risk note.
 | --- | --- | --- |
 | Risk endpoints present on PCB pads | PASS | 204/204 matched a footprint pad net |
 | Risk endpoint net names match board JSON | PASS | 204/204 net names matched |
+
+## Full Board Endpoint Coverage
+
+Every modeled `kicad/juku.board.json` endpoint is also checked against
+the generated source PCB and the routed fabrication PCB. This is a
+fabrication-source coverage gate, not a historical-source proof.
+
+| PCB | Present | Matching net names | Result |
+| --- | ---: | ---: | --- |
+| `kicad/juku.kicad_pcb` | 1876/1876 | 1876/1876 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1876/1876 | 1876/1876 | PASS |
 
 ## Checklist
 

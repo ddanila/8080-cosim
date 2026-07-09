@@ -1124,7 +1124,8 @@ def milestone_rows():
                     "`docs/replica-bringup-verification-points.md` tracks the "
                     "residual source-risk nets for staged bring-up and checks "
                     "204 listed endpoints against `kicad/juku.kicad_pcb` pad "
-                    "net assignments"
+                    "net assignments, and all 1,876 modeled board endpoints "
+                    "against both source and routed PCB pad net assignments"
                     + (
                         ", and `docs/fdc-hardware-handoff.md` narrows the FDC "
                         "physical handoff to guarded bus-side wiring plus owner-only "

@@ -413,12 +413,14 @@ def main():
         for ci, code in enumerate(rowcodes):
             x3_pads[code] = (184.0 + ci * 2.5, 6.6 + ri * 2.5)
     make_conn('X3', 193, 7.85, x3_pads)
-    # X2: СНП59-30 parallel connector (sheet-1 codes 201-226), top edge [emaplaat x~118-169]
+    # X2: СНП59-30 parallel connector, top edge [emaplaat x~118-169].
+    # Sheet-1 traces PPI signal codes 201-226 plus +5 V contacts 227/229/230.
     x2_codes = ['201','202','203','204','205','206','207','208','209','210','211','212','213',
                 '215','217','218','219','220','221','222','223','224','225','226']
     x2_pads = {}
     for ci, code in enumerate(x2_codes):
         x2_pads[code] = (128.0 + (ci // 2) * 2.5, 6.6 + (ci % 2) * 2.5)
+    x2_pads.update({'227': (158.0, 6.6), '229': (160.5, 6.6), '230': (160.5, 9.1)})
     make_conn('X2', 143, 7.85, x2_pads)
     # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
     x8_pads = {str(59 + i): (34.0 - i * 5.0, 252.6) for i in range(6)}   # 62..59 read left->right on the drawing

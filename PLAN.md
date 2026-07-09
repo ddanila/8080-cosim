@@ -557,7 +557,7 @@ before any Soviet NOS is at risk.
 
 ### WS-D — Replica board: to a fab-ready package, then order
 1. Finish v76: `widen_power_v2.py` power widening done under KiCad 10.99 nightly
-   compatibility path; 704 power tracks evaluated, 377 widened; re-DRC remains
+   compatibility path; 710 power tracks evaluated, 377 widened; re-DRC remains
    at 0 unconnected / 0 clearance / 0 shorts. Renders regenerated.
 2. Port the VJUGA order-readiness gate machinery (ERC/DRC/BOM/CPL/manifest/checksum
    reports) to the main `kicad/` board — first main-board gate is now in
@@ -568,7 +568,7 @@ before any Soviet NOS is at risk.
    PASS, exact-count review waiver ACCEPTED, and order-readiness **ORDER READY**.
    The remaining 599 courtyard/PTH/silk/text findings are review-only and covered
    by the waiver gate. The routed power-envelope DFM check is now generated in
-   `docs/replica-power-trace-readiness.md`: 704 routed power segments, 377
+   `docs/replica-power-trace-readiness.md`: 710 routed power segments, 377
    widened beyond the 0.20 mm freerouter baseline, no segment below baseline or
    above the 1.00 mm clamp. Independent Tracespace Gerber/drill render evidence
    is now generated for the main board in `fab/gerbers/external-gerber-review.md`,
@@ -589,8 +589,11 @@ before any Soviet NOS is at risk.
    assumed/boundary/pending source-risk annotations into explicit vendor-preview,
    owner-continuity, scope, and logic-analyzer checks for staged bring-up. It also
    checks all 204 listed source-risk endpoints against `kicad/juku.kicad_pcb`
-   footprint pad net assignments, so the final PCB source is guarded against
-   dropping or renaming those residual-risk nets. The
+   footprint pad net assignments and all 1,876 modeled board endpoints against
+   both `kicad/juku.kicad_pcb` and `kicad/juku_routed.kicad_pcb`. That full
+   guard caught and closed X2 +5 V contacts 227/229/230, so the final PCB source
+   and routed fabrication board are guarded against dropping or renaming modeled
+   nets. The
    generated `docs/fdc-hardware-handoff.md` now narrows the FDC subset to guarded
    D93/D100 bus-side wiring plus owner-only continuity points for INTRQ/DRQ,
    D93 reset/clock, and D100 OE/T.

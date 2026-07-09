@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 PCB = ROOT / "kicad" / "juku.kicad_pcb"
+ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 
 RISK_RE = re.compile(
@@ -63,8 +64,8 @@ def matching_block(text: str, start: int) -> str:
     raise ValueError("unterminated S-expression")
 
 
-def pcb_pin_nets() -> dict[tuple[str, str], str]:
-    text = PCB.read_text(errors="replace")
+def pcb_pin_nets(path: Path) -> dict[tuple[str, str], str]:
+    text = path.read_text(errors="replace")
     found: dict[tuple[str, str], str] = {}
     pos = 0
     while True:
@@ -82,6 +83,26 @@ def pcb_pin_nets() -> dict[tuple[str, str], str]:
             if net:
                 found[(ref.group(1), match.group(1))] = net.group(1)
     return found
+
+
+def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str]) -> dict[str, object]:
+    checked = 0
+    missing = []
+    mismatched = []
+    for name, net in sorted(board["nets"].items()):
+        for ref, pin in net.get("nodes", []):
+            checked += 1
+            pcb_net = pcb_nets.get((ref, pin))
+            if pcb_net is None:
+                missing.append(f"{name}: {ref}.{pin}")
+            elif pcb_net != name:
+                mismatched.append(f"{ref}.{pin}: `{pcb_net}` != `{name}`")
+    return {
+        "checked": checked,
+        "missing": missing,
+        "mismatched": mismatched,
+        "ok": not missing and not mismatched,
+    }
 
 
 def category_for(name: str, source: str) -> str:
@@ -126,7 +147,10 @@ def action_for(category: str, name: str, source: str) -> str:
 
 def main() -> int:
     board = json.loads(BOARD_JSON.read_text())
-    pcb_nets = pcb_pin_nets()
+    pcb_nets = pcb_pin_nets(PCB)
+    routed_pcb_nets = pcb_pin_nets(ROUTED_PCB)
+    source_coverage = endpoint_coverage(board, pcb_nets)
+    routed_coverage = endpoint_coverage(board, routed_pcb_nets)
     rows = []
     pcb_checked = 0
     pcb_missing = []
@@ -157,7 +181,8 @@ def main() -> int:
 
     category_counts = Counter(row["category"] for row in rows)
     pcb_ok = not pcb_missing and not pcb_mismatched
-    status = "READY" if pcb_ok else "NOT READY"
+    full_pcb_ok = bool(source_coverage["ok"] and routed_coverage["ok"])
+    status = "READY" if pcb_ok and full_pcb_ok else "NOT READY"
     lines = [
         "# Replica bring-up verification points",
         "",
@@ -173,9 +198,13 @@ def main() -> int:
         "",
         f"- Source board JSON: `{BOARD_JSON.relative_to(ROOT)}`",
         f"- Final PCB source: `{PCB.relative_to(ROOT)}`",
+        f"- Routed PCB source: `{ROUTED_PCB.relative_to(ROOT)}`",
         f"- Verification-point nets: `{len(rows)}`",
         f"- Verification-point endpoints checked in PCB: `{pcb_checked}`",
         f"- PCB endpoint coverage: `{'PASS' if pcb_ok else 'FAIL'}`",
+        f"- All board endpoints checked in source PCB: `{source_coverage['checked']}`",
+        f"- All board endpoints checked in routed PCB: `{routed_coverage['checked']}`",
+        f"- Full PCB endpoint coverage: `{'PASS' if full_pcb_ok else 'FAIL'}`",
         "",
         "| Category | Nets |",
         "| --- | ---: |",
@@ -206,6 +235,39 @@ def main() -> int:
     if pcb_mismatched:
         lines.extend(["", "Mismatched PCB pad-net endpoints:"])
         lines.extend(f"- {item}" for item in pcb_mismatched)
+
+    lines.extend(
+        [
+            "",
+            "## Full Board Endpoint Coverage",
+            "",
+            "Every modeled `kicad/juku.board.json` endpoint is also checked against",
+            "the generated source PCB and the routed fabrication PCB. This is a",
+            "fabrication-source coverage gate, not a historical-source proof.",
+            "",
+            "| PCB | Present | Matching net names | Result |",
+            "| --- | ---: | ---: | --- |",
+            table_row([
+                f"`{PCB.relative_to(ROOT)}`",
+                f"{source_coverage['checked'] - len(source_coverage['missing'])}/{source_coverage['checked']}",
+                f"{source_coverage['checked'] - len(source_coverage['missing']) - len(source_coverage['mismatched'])}/{source_coverage['checked']}",
+                "PASS" if source_coverage["ok"] else "FAIL",
+            ]),
+            table_row([
+                f"`{ROUTED_PCB.relative_to(ROOT)}`",
+                f"{routed_coverage['checked'] - len(routed_coverage['missing'])}/{routed_coverage['checked']}",
+                f"{routed_coverage['checked'] - len(routed_coverage['missing']) - len(routed_coverage['mismatched'])}/{routed_coverage['checked']}",
+                "PASS" if routed_coverage["ok"] else "FAIL",
+            ]),
+        ]
+    )
+    for label, coverage in ((PCB.relative_to(ROOT), source_coverage), (ROUTED_PCB.relative_to(ROOT), routed_coverage)):
+        if coverage["missing"]:
+            lines.extend(["", f"Missing endpoints in `{label}`:"])
+            lines.extend(f"- `{item}`" for item in coverage["missing"])
+        if coverage["mismatched"]:
+            lines.extend(["", f"Mismatched endpoints in `{label}`:"])
+            lines.extend(f"- {item}" for item in coverage["mismatched"])
 
     lines.extend(
         [
