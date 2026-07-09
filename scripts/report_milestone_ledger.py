@@ -263,6 +263,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check board fidelity gap ledger freshness",
     )
+    decap_value_fidelity = marker(
+        "docs/decap-value-fidelity.md",
+        "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check decap value fidelity freshness",
+    )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**") or marker(
         "docs/replica-manufacturing-readiness.md",
         "| Order readiness | `fab/gerbers/order-readiness.md`",
@@ -1289,6 +1296,13 @@ def milestone_rows():
                         "the upload-ready PCB from fully historical-source-proven "
                         "1:1 reproduction"
                         if board_fidelity_gaps_cataloged
+                        else ""
+                    )
+                    + (
+                        ", and `docs/decap-value-fidelity.md` guards the C35-C72 "
+                        "rail-group connectivity while keeping per-position "
+                        "factory capacitor values pending macro/spec evidence"
+                        if decap_value_fidelity
                         else ""
                     )
                     + "; "

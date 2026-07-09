@@ -51,6 +51,7 @@ jobs:
             scripts/check_project_status_freshness.py \
             scripts/report_firmware_gap_ledger.py \
             scripts/report_board_fidelity_gap_ledger.py \
+            scripts/report_decap_value_fidelity.py \
             scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
@@ -131,6 +132,11 @@ jobs:
           python3 scripts/report_board_fidelity_gap_ledger.py
           git diff --exit-code -- docs/board-fidelity-gap-ledger.md
 
+      - name: Check decap value fidelity freshness
+        run: |
+          python3 scripts/report_decap_value_fidelity.py
+          git diff --exit-code -- docs/decap-value-fidelity.md
+
       - name: Check EKDOS source inspection freshness
         run: |
           python3 scripts/report_ekdos_source_inspection.py
@@ -192,10 +198,12 @@ jobs:
         run: |
           python3 scripts/report_fdc_hardware_handoff.py
           python3 scripts/report_serial_handoff.py
+          python3 scripts/report_decap_value_fidelity.py
           python3 scripts/report_owner_measurement_shortlist.py
           git diff --exit-code -- \
             docs/fdc-hardware-handoff.md \
             docs/serial-handoff.md \
+            docs/decap-value-fidelity.md \
             docs/owner-measurement-shortlist.md
 
       - name: Check replica bring-up report freshness

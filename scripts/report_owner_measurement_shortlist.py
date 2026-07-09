@@ -21,6 +21,7 @@ REQUIRED = [
     ROOT / "docs" / "fdc-hardware-handoff.md",
     ROOT / "docs" / "beeper-readiness.md",
     ROOT / "docs" / "serial-handoff.md",
+    ROOT / "docs" / "decap-value-fidelity.md",
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
@@ -134,6 +135,7 @@ def main() -> int:
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**")),
+        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**")),
         ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/basic-cartridge-tail-hypotheses.md", "Status: **SIMPLE TAIL HYPOTHESES REJECTED**")),
@@ -193,8 +195,8 @@ def main() -> int:
         (
             "P2",
             "photos and passive values",
-            "macro photos for the FDC/top-center quadrant, bypass-cap values by position, sound/video analog corner passives",
-            "`PLAN.md` WS-F; generated BOM/sourcing docs",
+            "macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives",
+            "`docs/decap-value-fidelity.md`; `PLAN.md` WS-F; generated BOM/sourcing docs",
             "improves authenticity and reduces assembly substitutions",
         ),
     ]
