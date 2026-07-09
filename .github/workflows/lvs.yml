@@ -23,6 +23,7 @@ jobs:
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
             scripts/report_re3_firmware_inspection.py \
+            scripts/report_video_slot_timing_audit.py \
             scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
@@ -110,6 +111,11 @@ jobs:
             ref/wd1772-vg93/SHA256SUMS \
             ref/wd1772-vg93/wd1772pla.normalized.csv \
             ref/wd1772-vg93/wd1772pla.normalized.json
+
+      - name: Check video slot timing audit freshness
+        run: |
+          python3 scripts/report_video_slot_timing_audit.py
+          git diff --exit-code -- docs/video-slot-timing-audit.md
 
       - name: Check replica bring-up report freshness
         run: |

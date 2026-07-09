@@ -301,6 +301,13 @@ def milestone_rows():
         "docs/video-timing-reference.md",
         "| framebuffer bytes | 9640 |",
     )
+    video_slot_timing_audit = marker(
+        "docs/video-slot-timing-audit.md",
+        "Status: **VIDEO SLOT TIMING AUDITED / D94 PROM DUMP PENDING**",
+    ) and marker(
+        "docs/video-slot-timing-audit.md",
+        "D94 `.092`",
+    )
     vjuga_bare_pcb_ready = marker(
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
         "Status: **READY TO UPLOAD**",
@@ -472,6 +479,14 @@ def milestone_rows():
                     "`docs/video-timing-reference.md` guards the MAME-matched "
                     "40 x 241 byte raster geometry and 8-dot load/shift cadence; "
                     if video_timing_guard
+                    else ""
+                )
+                + (
+                    "`docs/video-slot-timing-audit.md` now verifies the traced "
+                    "D42/D43 serializer, D48-D53 mux/decode presence, explicit "
+                    "sim-only `VA/VQ` read path, and missing D94 `.092` timing "
+                    "PROM/table; "
+                    if video_slot_timing_audit
                     else ""
                 )
                 + "the faithful RE3/AG3 shared-DRAM slot timing is explicitly still open."

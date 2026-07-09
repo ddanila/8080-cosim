@@ -275,6 +275,11 @@ debugging session saved on real hardware.
    the runnable `video_raster` geometry against MAME's 320 x 241 visible
    raster: 40 framebuffer bytes per line, 9,640 bytes total, one load phase
    followed by seven shift phases per byte, and wrap after 77,120 dot clocks.
+   `scripts/report_video_slot_timing_audit.py` /
+   `docs/video-slot-timing-audit.md` now makes the V3 boundary explicit and
+   guarded: the physical D42/D43 serializer plus D48-D53 mux/decode pieces are
+   traced/present, the runnable model still uses the intentional sim-only
+   `VA/VQ` read path, and the D94 `.092` timing PROM/table is absent.
    Remaining V3 target: replace the sim-only second framebuffer read with the
    real РЕ3/АГ3-gated shared-DRAM video slot timing once PROM truth is available.
 3. **jmon33 to a live prompt** (interrupt-driven boot; frame-int machinery exists) and

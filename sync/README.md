@@ -144,6 +144,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
 - `sync/video_timing_check.sh` — runnable raster-geometry guard: parses the
   vendored MAME Juku constants and proves `video_raster` emits a 40 x 241 byte
   scan with one load phase plus seven shift phases per framebuffer byte.
+- `scripts/report_video_slot_timing_audit.py` — generated M4/V3 boundary audit:
+  verifies the traced physical serializer/mux/decode pieces are present, the
+  runnable model still uses the explicit sim-only video read path, and the D94
+  `.092` РЕ3 timing PROM dump/table is still absent.
 - `sync/jmon33_interrupt_probe.py` — cosim guard for Monitor 3.3's
   interrupt-driven path: 8259 setup, `0xFF54` frame interrupt, keyboard-port
   reads, and VRAM writes.
@@ -233,5 +237,5 @@ high-fidelity boundaries are disk-backed FDC in `juku_top`, the user-visible
 jmon33 command prompt and
 the uninterrupted reset-to-cursor jmon33 path, HDL coverage of the pinned EKDOS
 disk-backed BASIC prompt path, the analog
-speaker/current check, dumped PROM contents, and the РЕ3/АГ3-gated physical
-video slot timing.
+speaker/current check, dumped PROM contents, and the D94 `.092` РЕ3/АГ3-gated
+physical video slot timing.
