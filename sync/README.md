@@ -218,9 +218,10 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   path into the BASIC cartridge; default `JUKU_KEYS=B`. Monitor 3.3 compares
   `jbasic11.bin` with the legacy BAS0-3 image and reaches cartridge execution
   through the same zero-filled RAM window. The report also records that the
-  cartridge body from `0x0200` is copied into matching low RAM for 7,680 bytes,
-  while the low entry/control area diverges, plus the MAME Monitor 3.3/JBASIC
-  compatibility warning and the BASIC images' absolute `JMP 0x0107` entry.
+  cartridge body from `0x0200` is copied into matching low RAM for 7,680 bytes
+  with 0 body mismatches, while the low entry/control area has 14 byte
+  mismatches, plus the MAME Monitor 3.3/JBASIC compatibility warning and the
+  BASIC images' absolute `JMP 0x0107` entry.
 - `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
   doc 003 factory BASIC `A` command. It runs all vendored public monitor ROMs
   against both BASIC payload shapes and records that Monitor 3.3 reaches the same

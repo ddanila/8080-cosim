@@ -71,6 +71,13 @@ LOAD_RE = re.compile(
     r"cart_0200_bytes\s+:\s+([0-9A-Fa-f ]+)",
     re.S,
 )
+DIFF_RE = re.compile(
+    r"cart_ram_0100_mismatches[ \t]+:[ \t]+([0-9]+).*?"
+    r"cart_ram_0200_mismatches[ \t]+:[ \t]+([0-9]+).*?"
+    r"cart_ram_0100_mismatch_samples[ \t]+:[ \t]*([^\n]*)\n"
+    r"[ \t]+cart_ram_0200_mismatch_samples[ \t]+:[ \t]*([^\n]*)\n",
+    re.S,
+)
 RAM_RE = re.compile(
     r"basic_ram_writes\s+:\s+([0-9]+).*?"
     r"basic_ram_nonzero_writes\s+:\s+([0-9]+).*?"
@@ -89,6 +96,7 @@ def instrumented_trace_source() -> str:
     src = src.replace(
         "static int      cart_enabled = 0;\n",
         "static int      cart_enabled = 0;\n"
+        "static unsigned long basic_probe_cart_loaded_bytes = 0;\n"
         "static unsigned long basic_probe_cart_reads = 0;\n"
         "static unsigned long basic_probe_cart_pc_reads = 0;\n"
         "static unsigned long basic_probe_ram_writes = 0;\n"
@@ -112,6 +120,14 @@ def instrumented_trace_source() -> str:
     src = src.replace(
         "  (void)u; unsigned idx = 0;\n",
         "  i8080* cpu = (i8080*)u; unsigned idx = 0;\n",
+        1,
+    )
+    src = src.replace(
+        "    size_t cn = load_image(cart_path, cart, CART_SIZE, 0xFF);\n"
+        "    cart_enabled = 1;\n",
+        "    size_t cn = load_image(cart_path, cart, CART_SIZE, 0xFF);\n"
+        "    basic_probe_cart_loaded_bytes = (unsigned long)cn;\n"
+        "    cart_enabled = 1;\n",
         1,
     )
     src = src.replace(
@@ -233,6 +249,48 @@ def instrumented_trace_source() -> str:
         '  printf("  cart_0200_bytes :");\n'
         '  for (unsigned i = 0; i < 8; i++) printf(" %02X", cart[0x0200 + i]);\n'
         '  printf("\\n");\n'
+        '  unsigned long cart_ram_0100_mismatches = 0, cart_ram_0200_mismatches = 0;\n'
+        '  unsigned low_mismatch_addr[BASIC_SAMPLE_MAX], low_mismatch_ram[BASIC_SAMPLE_MAX];\n'
+        '  unsigned low_mismatch_cart[BASIC_SAMPLE_MAX], low_mismatch_count = 0;\n'
+        '  unsigned body_mismatch_addr[BASIC_SAMPLE_MAX], body_mismatch_ram[BASIC_SAMPLE_MAX];\n'
+        '  unsigned body_mismatch_cart[BASIC_SAMPLE_MAX], body_mismatch_count = 0;\n'
+        '  if (cart_enabled) {\n'
+        '    for (unsigned a = 0x0100; a < 0x0200; a++) {\n'
+        '      if (ram[a] != cart[a]) {\n'
+        '        cart_ram_0100_mismatches++;\n'
+        '        if (low_mismatch_count < BASIC_SAMPLE_MAX) {\n'
+        '          unsigned sample = low_mismatch_count++;\n'
+        '          low_mismatch_addr[sample] = a;\n'
+        '          low_mismatch_ram[sample] = ram[a];\n'
+        '          low_mismatch_cart[sample] = cart[a];\n'
+        '        }\n'
+        '      }\n'
+        '    }\n'
+        '    unsigned body_limit = basic_probe_cart_loaded_bytes < CART_SIZE ? basic_probe_cart_loaded_bytes : CART_SIZE;\n'
+        '    for (unsigned a = 0x0200; a < body_limit; a++) {\n'
+        '      if (ram[a] != cart[a]) {\n'
+        '        cart_ram_0200_mismatches++;\n'
+        '        if (body_mismatch_count < BASIC_SAMPLE_MAX) {\n'
+        '          unsigned sample = body_mismatch_count++;\n'
+        '          body_mismatch_addr[sample] = a;\n'
+        '          body_mismatch_ram[sample] = ram[a];\n'
+        '          body_mismatch_cart[sample] = cart[a];\n'
+        '        }\n'
+        '      }\n'
+        '    }\n'
+        '  }\n'
+        '  printf("  cart_ram_0100_mismatches : %8lu\\n", cart_ram_0100_mismatches);\n'
+        '  printf("  cart_ram_0200_mismatches : %8lu\\n", cart_ram_0200_mismatches);\n'
+        '  printf("  cart_ram_0100_mismatch_samples :");\n'
+        '  for (unsigned i = 0; i < low_mismatch_count; i++)\n'
+        '    printf(" a=%04X ram=%02X cart=%02X", low_mismatch_addr[i] & 0xFFFF,\n'
+        '           low_mismatch_ram[i] & 0xFF, low_mismatch_cart[i] & 0xFF);\n'
+        '  printf("\\n");\n'
+        '  printf("  cart_ram_0200_mismatch_samples :");\n'
+        '  for (unsigned i = 0; i < body_mismatch_count; i++)\n'
+        '    printf(" a=%04X ram=%02X cart=%02X", body_mismatch_addr[i] & 0xFFFF,\n'
+        '           body_mismatch_ram[i] & 0xFF, body_mismatch_cart[i] & 0xFF);\n'
+        '  printf("\\n");\n'
         '  printf("\\n==== RAM write density (pages >0) ====\\n");\n',
     )
     return src
@@ -328,6 +386,23 @@ def parse_load_probe(stdout: str) -> dict[str, int | str]:
         "cart_0100": " ".join(match.group(4).split()).upper(),
         "ram_0200": " ".join(match.group(5).split()).upper(),
         "cart_0200": " ".join(match.group(6).split()).upper(),
+    }
+
+
+def parse_diff_probe(stdout: str) -> dict[str, int | str]:
+    match = DIFF_RE.search(stdout)
+    if not match:
+        return {
+            "mismatches_0100": 0,
+            "mismatches_0200": 0,
+            "samples_0100": "",
+            "samples_0200": "",
+        }
+    return {
+        "mismatches_0100": int(match.group(1)),
+        "mismatches_0200": int(match.group(2)),
+        "samples_0100": match.group(3).strip(),
+        "samples_0200": match.group(4).strip(),
     }
 
 
@@ -506,6 +581,7 @@ def main() -> int:
             ram_probe = parse_ram_probe(proc.stdout)
             cart_samples, ram_samples = parse_samples(proc.stdout)
             load_probe = parse_load_probe(proc.stdout)
+            diff_probe = parse_diff_probe(proc.stdout)
             sha = hashlib.sha256(vram).hexdigest() if vram else ""
             vram_ok = len(vram) == VRAM_SIZE
             pixels = visible_pixels(vram)
@@ -531,6 +607,7 @@ def main() -> int:
                     "cart_samples": cart_samples,
                     "ram_samples": ram_samples,
                     "load_probe": load_probe,
+                    "diff_probe": diff_probe,
                     "sha": sha,
                     "visible_pixels": pixels,
                     "vram_ok": vram_ok,
@@ -675,12 +752,23 @@ def main() -> int:
                     )
                 load_probe = result["load_probe"]
                 if load_probe["prefix_0200"]:
+                    diff_probe = result["diff_probe"]
                     lines.append(
                         "  Cartridge body load check: "
                         f"`RAM[0x0200..]` matches the cartridge from `0x0200` "
                         f"for `{load_probe['prefix_0200']}` bytes, while "
                         f"`RAM[0x0100..]` matches for only `{load_probe['prefix_0100']}` "
                         "byte before the low entry/control area diverges."
+                    )
+                    lines.append(
+                        "  Cartridge-vs-RAM mismatch check: "
+                        f"`0x0100..0x01FF` has `{diff_probe['mismatches_0100']}` "
+                        f"mismatches; `0x0200..0x1FFF` has "
+                        f"`{diff_probe['mismatches_0200']}` mismatches. "
+                        f"Low mismatch samples: "
+                        f"`{diff_probe['samples_0100'] or 'none'}`. "
+                        f"Body mismatch samples: "
+                        f"`{diff_probe['samples_0200'] or 'none'}`."
                     )
                     lines.append(
                         "  Low/body bytes: "

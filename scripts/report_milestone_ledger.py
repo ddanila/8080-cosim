@@ -703,7 +703,8 @@ def milestone_rows():
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes. The same report now records that "
                 "the cartridge body from 0x0200 is copied into matching low RAM "
-                "for 7,680 bytes while the low entry/control area diverges, plus "
+                "for 7,680 bytes with 0 body mismatches, while the low "
+                "entry/control area has 14 byte mismatches, plus "
                 "the local MAME Monitor 3.3/JBASIC compatibility warning and the "
                 "BASIC images' absolute JMP 0x0107 entry. "
                 + (
@@ -804,7 +805,8 @@ def milestone_rows():
                 "cartridge and executing in the 0x4000 RAM window, but that window "
                 "only receives zero-byte writes. The same report now records that "
                 "the cartridge body from 0x0200 is copied into matching low RAM "
-                "for 7,680 bytes while the low entry/control area diverges, plus "
+                "for 7,680 bytes with 0 body mismatches, while the low "
+                "entry/control area has 14 byte mismatches, plus "
                 "the local MAME Monitor 3.3/JBASIC compatibility warning and the "
                 "BASIC images' absolute JMP 0x0107 entry. "
                 + (
