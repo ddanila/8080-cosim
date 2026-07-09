@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROJECT_STATUS = ROOT / "docs" / "project-status.md"
 MANUFACTURING = ROOT / "docs" / "replica-manufacturing-readiness.md"
 BASIC_MISSING = ROOT / "docs" / "basic-cartridge-missing-page-constraints.md"
+BRINGUP = ROOT / "docs" / "replica-bringup-verification-points.md"
 
 
 def read(path: Path) -> str:
@@ -29,13 +30,24 @@ def extract_zip_sha(text: str) -> str:
     return match.group(1)
 
 
+def extract_int(text: str, label: str) -> int:
+    match = re.search(rf"- {re.escape(label)}: `([0-9,]+)`", text)
+    if not match:
+        raise SystemExit(f"Could not find {label} in bring-up report")
+    return int(match.group(1).replace(",", ""))
+
+
 def main() -> int:
     project = read(PROJECT_STATUS)
     manufacturing = read(MANUFACTURING)
     basic_missing = read(BASIC_MISSING)
+    bringup = read(BRINGUP)
     failures: list[str] = []
 
     upload_sha = extract_zip_sha(manufacturing)
+    risk_nets = extract_int(bringup, "Verification-point nets")
+    risk_endpoints = extract_int(bringup, "Verification-point endpoints checked in PCB")
+    board_endpoints = extract_int(bringup, "All board endpoints checked in source PCB")
     require(
         upload_sha in project,
         f"project status does not mention current upload ZIP SHA {upload_sha}",
@@ -47,8 +59,11 @@ def main() -> int:
         failures,
     )
     require(
-        "1,876 modeled board endpoints" in project and "X2/P5V" in project,
-        "project status does not mention full PCB endpoint coverage and X2/P5V closure",
+        f"{risk_nets} source-risk verification points" in project
+        and f"{risk_endpoints} listed source-risk endpoints" in project
+        and f"{board_endpoints:,} modeled board endpoints" in project
+        and "X2/P5V" in project,
+        "project status does not mirror bring-up endpoint coverage and X2/P5V closure",
         failures,
     )
 

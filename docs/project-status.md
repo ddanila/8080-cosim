@@ -29,10 +29,12 @@ schematic*), with `cosim/` + MAME as validation oracles.
   with SHA256 `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`.
   Remaining M7 proof is external vendor preview/order evidence.
 - **Residual fabrication/bring-up risks are now explicit:** `docs/replica-bringup-verification-points.md`
-  generates 41 source-risk verification points from `kicad/juku.board.json` and is
+  generates 36 source-risk verification points from `kicad/juku.board.json` and is
   required by the manufacturing readiness gate. The same report now checks all
-  1,876 modeled board endpoints against both the source and routed PCB files, so
-  X2/P5V connector contact fixes are covered by the upload gate.
+  228 listed source-risk endpoints against `kicad/juku.kicad_pcb` pad net
+  assignments and all 1,876 modeled board endpoints against both the source and
+  routed PCB files, so X2/P5V connector contact fixes are covered by the upload
+  gate.
   `docs/fdc-hardware-handoff.md`
   further narrows the FDC subset to guarded D93/D100 bus-side wiring plus
   owner-continuity checks for INTRQ/DRQ, D93 MR/CLK, and D100 OE/T.
