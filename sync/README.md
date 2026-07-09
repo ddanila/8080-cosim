@@ -222,6 +222,11 @@ python3 sync/lvs.py --hdl hdl/juku_top.json --kicad <net.xml> --map sync/map.jso
   with 0 body mismatches, while the low entry/control area has 14 byte
   mismatches, plus the MAME Monitor 3.3/JBASIC compatibility warning and the
   BASIC images' absolute `JMP 0x0107` entry.
+- `scripts/report_basic_low_stub_inspection.py` — generated inspection of that
+  14-byte low-stub boundary. It groups the sparse deltas, records the
+  `0x0100` stack-pointer patch to `0xFFFE`, and keeps the remaining
+  cartridge-BASIC work focused on low workspace/control bytes plus the monitor
+  launch vector.
 - `sync/basic_factory_command_probe.py` — bounded cosim matrix for the Baltijets
   doc 003 factory BASIC `A` command. It runs all vendored public monitor ROMs
   against both BASIC payload shapes and records that Monitor 3.3 reaches the same
