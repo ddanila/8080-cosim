@@ -183,6 +183,13 @@ def milestone_rows():
         "Status: **HDL WD1793 VENDORED-MEDIA SECTOR READY**",
     )
     hdl_checkpoint_prompt_guard = Path("sync/ekdos_checkpoint_prompt_check.sh").exists()
+    hdl_checkpoint_resume_ci_guard = marker(
+        "docs/juku-top-checkpoint-resume.md",
+        "Status: **PASS**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "./sync/juku_top_checkpoint_resume_probe.py",
+    )
     hdl_uninterrupted_prompt_hook = marker(
         "sync/juku_top_fdc_probe.sh",
         "JUKU_TOP_FDC_STOPPROMPT",
@@ -398,6 +405,14 @@ def milestone_rows():
                 "through the factory `TDD` path; `docs/fdc-readiness.md` guards HDL "
                 "WD1793 raw-sector reads from vendored `JUKU1.CPM`."
                 + ekdos_source_m2_phrase
+                + (
+                    " `docs/juku-top-checkpoint-resume.md` is now a push-CI "
+                    "checkpoint-resume guard for the post-checkpoint PIC `0xD6` "
+                    "write and no-key keyboard `0xCF` read through decoded "
+                    "`juku_top` ports."
+                    if hdl_checkpoint_resume_ci_guard
+                    else ""
+                )
                 + (
                     " `sync/ekdos_checkpoint_prompt_check.sh` provides a "
                     "local/deep guard for the "

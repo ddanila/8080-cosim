@@ -23,7 +23,7 @@ sync/juku_top_checkpoint_resume_probe.py
 - HDL resume exit code: `0`
 - Resume pass line: `JUKU-TOP-CHECKPOINT-RESUME: PASS pc=0x1213 mcyc=25744 vram=30321 ios=26`
 - First PIC line: `[RESUME-PIC] OUT port=0x00 data=0xd6 mcyc=25615 vram=30321 pc=0x02b9`
-- First keyboard line: `[RESUME-KBD] IN port=0x05 data=0xcf mcyc=25744 vram=30321 pc=0x1213`
+- First keyboard IN line: `[RESUME-KBD] IN port=0x05 data=0xcf mcyc=25744 vram=30321 pc=0x1213`
 - Stop/fail line: `none`
 
 ## Boundary
@@ -32,8 +32,9 @@ sync/juku_top_checkpoint_resume_probe.py
   CPU path.
 - The seeded core state intentionally starts from an instruction-fetch
   boundary rather than a transistor-exact mid-instruction microstate.
-- This probe is intentionally not a mandatory CI gate yet; the next
-  hardening step is making the seeded vm80a microstate portable across
-  all CI runner schedules before extending it toward FDC I/O.
+- This probe is a mandatory push-CI guard for the post-checkpoint
+  PIC/keyboard resume boundary; deeper checkpoint-resumed FDC and
+  prompt paths remain local/deep guards because they are too slow for
+  shared runners.
 - Set `JUKU_TOP_CHECKPOINT_TRACE_RESUME=N` to include the first `N`
   resumed machine-cycle boundaries in this report.

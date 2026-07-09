@@ -121,6 +121,17 @@ def prefixed_lines(text: str, prefix: str) -> list[str]:
     return [line for line in text.splitlines() if line.startswith(prefix)]
 
 
+def first_keyboard_in_line(text: str) -> str:
+    return next(
+        (
+            line
+            for line in text.splitlines()
+            if line.startswith("[RESUME-KBD] IN ")
+        ),
+        "none",
+    )
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="juku-top-checkpoint-resume.") as tmp_name:
         tmp = Path(tmp_name)
@@ -162,7 +173,7 @@ def main() -> int:
         f"- HDL resume exit code: `{resume_proc.returncode}`",
         f"- Resume pass line: `{first_line(resume_proc.stdout, 'JUKU-TOP-CHECKPOINT-RESUME: PASS')}`",
         f"- First PIC line: `{first_line(resume_proc.stdout, '[RESUME-PIC]')}`",
-        f"- First keyboard line: `{first_line(resume_proc.stdout, '[RESUME-KBD]')}`",
+        f"- First keyboard IN line: `{first_keyboard_in_line(resume_proc.stdout)}`",
         f"- Stop/fail line: `{first_line(resume_proc.stdout, 'JUKU-TOP-CHECKPOINT-RESUME: FAIL')}`",
         "",
         "## Boundary",
@@ -171,9 +182,10 @@ def main() -> int:
         "  CPU path.",
         "- The seeded core state intentionally starts from an instruction-fetch",
         "  boundary rather than a transistor-exact mid-instruction microstate.",
-        "- This probe is intentionally not a mandatory CI gate yet; the next",
-        "  hardening step is making the seeded vm80a microstate portable across",
-        "  all CI runner schedules before extending it toward FDC I/O.",
+        "- This probe is a mandatory push-CI guard for the post-checkpoint",
+        "  PIC/keyboard resume boundary; deeper checkpoint-resumed FDC and",
+        "  prompt paths remain local/deep guards because they are too slow for",
+        "  shared runners.",
         "- Set `JUKU_TOP_CHECKPOINT_TRACE_RESUME=N` to include the first `N`",
         "  resumed machine-cycle boundaries in this report.",
     ]

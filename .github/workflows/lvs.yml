@@ -174,6 +174,7 @@ jobs:
           ./sync/ekdos_checkpoint_reference.py
           ./sync/ekdos_ioseq_reference.py
           ./sync/juku_top_checkpoint_load_check.py
+          ./sync/juku_top_checkpoint_resume_probe.py
           ./sync/fdc_check.sh
 
       - name: Run fast subsystem guards
@@ -208,6 +209,7 @@ jobs:
             docs/ekdos-checkpoint-reference.md \
             docs/ekdos-ioseq-reference.md \
             docs/juku-top-checkpoint-load.md \
+            docs/juku-top-checkpoint-resume.md \
             docs/juku-top-periph-bus-check.md \
             docs/fdc-readiness.md \
             docs/basic-cart-readiness.md \

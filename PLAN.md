@@ -222,9 +222,10 @@ debugging session saved on real hardware.
    focused seeded M1-fetch resume from that checkpoint reaching the pinned first
    post-checkpoint PIC write (`OUT 0x00 = 0xD6` at PC `0x02B9`) and no-key
    keyboard read (`IN 0x05 = 0xCF` at PC `0x1213`) through decoded `juku_top`
-   ports. This is not yet a mandatory CI invariant; the next hardening step is
-   making the seeded vm80a microstate portable across CI runner schedules, then
-   extending the checkpoint-run proof toward FDC I/O and EKDOS `A>`.
+   ports; this boundary is now a mandatory push-CI invariant. The next
+   checkpoint-run proof remains deeper FDC I/O and EKDOS `A>`, which are kept
+   as local/deep guards because those vm80a resume windows are too slow for
+   shared runners.
    `sync/juku_top_checkpoint_fdc_probe.py` now extends the same checkpointed
    run with frame IRQs and fixed `TDD` key stimulus enabled. Its default
    cycle-targeted cosim checkpoint at 8,711,550 cycles / 63,095 framebuffer
