@@ -277,6 +277,13 @@ def milestone_rows():
         ".github/workflows/lvs.yml",
         "Check memory timing boundary freshness",
     )
+    io_decode_boundary = marker(
+        "docs/io-decode-boundary.md",
+        "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**",
+    ) and marker(
+        ".github/workflows/lvs.yml",
+        "Check I/O decode boundary freshness",
+    )
     order_ready = marker("fab/gerbers/order-readiness.md", "Status: **ORDER READY**") or marker(
         "docs/replica-manufacturing-readiness.md",
         "| Order readiness | `fab/gerbers/order-readiness.md`",
@@ -1333,6 +1340,14 @@ def milestone_rows():
                         "networks while keeping CAS-input, D39 memory-cycle, and "
                         "D56 Q_N destinations as source-boundary work"
                         if memory_timing_boundary
+                        else ""
+                    )
+                    + (
+                        ", and `docs/io-decode-boundary.md` guards the D9/D7/R17/C99 "
+                        "I/O decode-enable path while keeping D7 strobe order, C99 "
+                        "far plate, and D25_T source inputs as small source-boundary "
+                        "work"
+                        if io_decode_boundary
                         else ""
                     )
                     + "; "
