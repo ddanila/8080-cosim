@@ -3474,7 +3474,7 @@
   },
   {
    "ref": "D94",
-   "type": "RE3_PROM_113",
+   "type": "RE3_PROM_092",
    "pins": {
     "10": "A0",
     "11": "A1",
@@ -3493,7 +3493,7 @@
    },
    "prov": {
     "type": "prom",
-    "refdes": ".009 official; programming .092->.113",
+    "refdes": ".009 official; programming ДГШ5.106.092 (dump pending)",
     "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8)"
    }
   },

@@ -393,7 +393,7 @@ module juku_top (
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3));  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]
 
-    // ============ FDC quadrant scaffold (.009): ВГ93 + РЕ3 .113 + ВА87 bus buffer ============
+    // ============ FDC quadrant scaffold (.009): ВГ93 + РЕ3 .092 + ВА87 bus buffer ============
     // Bus side traced (CS7/sheet-3 delta + MAME 1C-1F + WD1793 datasheet); support logic
     // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. Stubs are inert.
     assign mem_mode = ppi0_pc[1:0];
@@ -402,7 +402,7 @@ module juku_top (
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1));
-    re3_prom_113 U_D94 (.a(BA[15:11]), .e_n(1'b0), .d());
+    re3_prom_092 U_D94 (.a(BA[15:11]), .e_n(1'b0), .d());
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries

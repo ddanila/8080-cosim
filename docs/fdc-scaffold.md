@@ -7,8 +7,10 @@ The .009 revision's floppy subsystem, netted to the extent the desk sources allo
   DDEN(37) <- D26.PC4 [MAME], INTRQ(39) -> D10.IR0 [assumed], DRQ(38) -> D10.IR1 [assumed].
 - **D100 КР580ВА87** (8287): A-side <- DB0-7, B-side -> FDC_DAL0-7. OE/T gating [assumed
   boundary -- likely CS_FDC + IORD-derived].
-- **D94 К155РЕ3** (.113 table): A0-A4 <- BA11-15 (same convention as D8); outputs = 2K
-  selects over A000-BFFF; destinations unknown (FDC buffer RAM enables?) [owner].
+- **D94 К155РЕ3** (`ДГШ5.106.092`, dump pending): A0-A4 <- BA11-15 (same
+  convention as D8); enable/output destinations and contents remain unknown
+  [owner/programming disk]. Do not use the scanned `.113` table here; later
+  reconciliation identifies `.113/.117` as `.106.103`-family evidence, not D94.
 - HDL: inert stubs (never drive DAL/DB/IRQ) -- boot stays byte-identical; connectivity
   is the deliverable. PIC grew ir0/ir1 structural inputs.
 

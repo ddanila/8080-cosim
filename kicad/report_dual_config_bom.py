@@ -27,7 +27,7 @@ AUTHENTIC_MARK = {
     "EPROM8K": "2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM",
     "DEC_PROM": "КР556РТ4А",
     "RE3_PROM": "К155РЕ3",
-    "RE3_PROM_113": "К155РЕ3",
+    "RE3_PROM_092": "К155РЕ3",
     "VG93_FDC": "КР1818ВГ93",
     "IO_DEC138": "К555ИД7",
     "RASCAS_DEC": "К531ИД7",
@@ -90,7 +90,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "EPROM8K": "2764 / 27C64 / M2764 EPROM, programmed per ROM split",
     "DEC_PROM": "74S287/82S129-class 256x4 bipolar PROM, programmed",
     "RE3_PROM": "74188/82S23-class 32x8 bipolar PROM, programmed",
-    "RE3_PROM_113": "74188/82S23-class 32x8 bipolar PROM, programmed",
+    "RE3_PROM_092": "74188/82S23-class 32x8 bipolar PROM, programmed",
     "VG93_FDC": "WD1793-compatible FDC",
     "IO_DEC138": "74LS138 / 74HCT138 decoder",
     "RASCAS_DEC": "74S138/74F138-class fast decoder; verify timing",
@@ -129,14 +129,14 @@ FUNCTIONAL_SUBSTITUTE = {
 TYPE_NOTES = {
     "DEC_PROM": "Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming.",
     "RE3_PROM": "Timing/window PROM contents remain dump/reconstruction-gated.",
-    "RE3_PROM_113": "FDC-revision timing/window PROM contents remain dump/reconstruction-gated.",
+    "RE3_PROM_092": "FDC-revision D94 `.092` timing/window PROM contents remain dump-gated.",
     "EPROM8K": "Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.",
     "RU5": "Only D60-D67 are populated for the current 64 KB .009 functional build; D68-D91 are empty expansion sockets.",
     "VG93_FDC": "Western WD1793 is the intended functional drop-in.",
 }
 
 
-PROGRAM_TYPES = {"DEC_PROM", "RE3_PROM", "RE3_PROM_113", "EPROM8K"}
+PROGRAM_TYPES = {"DEC_PROM", "RE3_PROM", "RE3_PROM_092", "EPROM8K"}
 EMPTY_SOCKET_TYPES = {"RU5", "EPROM8K"}
 MECHANICAL_TYPES = {
     "EXPANSION_CONN",
@@ -257,7 +257,7 @@ def write_csv(path, rows):
         "notes",
     ]
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

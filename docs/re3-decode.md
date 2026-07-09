@@ -4,7 +4,7 @@ Cross-referencing the factory programming tables (ref/firmware/, owner's scans) 
 RomBios manual's memory-paging documentation ("окно внешней памяти по адресам 4000...BFFF",
 directive `P XX`) yields a clean decode:
 
-## ДГШ 5.106.117 → D8 (sheet-1 РЕ3, feeds D9)
+## Retired hypothesis: ДГШ 5.106.117 → D8 (sheet-1 РЕ3, feeds D9)
 Address inputs **A4..A0 = BA15..BA11** (each table row = 2 KB of address space). Content:
 | table addr | memory range | value | asserted output (active-low) |
 |---|---|---|---|
@@ -20,18 +20,20 @@ window**; D9 (ИД7) downstream turns bank state into the 8 EPROM socket selects
 pairs) and CS4-CS7 peripheral selects. This also explains the 8 per-socket ROM programming
 drawings (.041-.043/.087-.091).
 
-## ДГШ 5.106.113 → D94 (FDC-revision РЕ3)
+## Retired hypothesis: ДГШ 5.106.113 → D94 (FDC-revision РЕ3)
 Same address convention; content = four **2K-granular** active-low selects over A000-BFFF only
-(A000-A7FF / A800-AFFF / B000-B7FF / B800-BFFF). The FDC-era fine decode of the top window
-quarter (FDC buffer / EKDOS region -- wiring is board-only, pending dump/beeper).
+(A000-A7FF / A800-AFFF / B000-B7FF / B800-BFFF). This was an early role-derived
+assignment, now superseded by the reconciliation below: D94 is the .009-added
+`ДГШ5.106.092` PROM, and `.113/.117` belong to the `.106.103` family.
 
 ## Model status
-- `re3_prom` (devices.v) carries the .117 table; D8.A0-A4 rewired to BA11-15 (board.json +
-  juku_top) -- the earlier BA2-4 guess is corrected.
+- `re3_prom` (devices.v) is now a boot-validated reconstructed D8 `.039`
+  fallback, not the scanned `.117` table.
+- `re3_prom_092` is the inert D94 placeholder. It deliberately exports no
+  burnable image until `ДГШ5.106.092` is dumped or recovered from the Baltijets
+  programming disk.
 - The functional IO/ROM decode still runs on sim-only selects; flipping to full structural
   decode needs the D8->D9 coupling verified (beeper) plus the D9 enable polarity.
-- Assignment .117=D8 / .113=D94 is role-derived (window-pager must feed the ROM CS chain =
-  sheet-1 D8); the physical dumps will confirm.
 
 ## RECONCILIATION GRIND (owner: "the dumps are correct") — impossibility proof + reassignment
 Attempted to make .117-as-D8 work under EVERY freedom: tag permutation, row-address bijection

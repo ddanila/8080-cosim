@@ -25,7 +25,7 @@ LONG_LEAD_TYPES = {
     "RU5",
     "DEC_PROM",
     "RE3_PROM",
-    "RE3_PROM_113",
+    "RE3_PROM_092",
     "EPROM8K",
     "EXPANSION_CONN",
     "SERIAL_CONN",
@@ -52,7 +52,7 @@ BUY_EARLY_TYPES = {
 }
 
 
-PROGRAM_TYPES = {"DEC_PROM", "RE3_PROM", "RE3_PROM_113", "EPROM8K"}
+PROGRAM_TYPES = {"DEC_PROM", "RE3_PROM", "RE3_PROM_092", "EPROM8K"}
 
 
 def table_row(values):
@@ -189,7 +189,7 @@ def build_report(rows):
         "DEC_PROM": "Need D2/D6 RT4 maps or accepted reconstructed decode tables before programming.",
         "EPROM8K": "Program D15/D16 for the .009 build; leave D17-D22 empty unless authentic-completeness build is chosen.",
         "RE3_PROM": "Need D8 RE3 dump/table or accepted reconstructed table.",
-        "RE3_PROM_113": "Need D94/FDC-era RE3 dump/table or accepted reconstructed table.",
+        "RE3_PROM_092": "Need D94/FDC-era `.092` RE3 dump/table or accepted reconstructed table.",
     }
     for row in sorted(programming, key=sort_key):
         lines.append(

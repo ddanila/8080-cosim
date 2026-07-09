@@ -58,6 +58,8 @@ def main() -> int:
     address_pins = [(pin, role) for pin, role in pin_roles.items() if role.startswith("A")]
     output_pins = [(pin, role) for pin, role in pin_roles.items() if role.startswith("D")]
     enable_pins = [(pin, role) for pin, role in pin_roles.items() if role == "E_N"]
+    board_type = str(chip.get("type", ""))
+    board_identity_ok = board_type == "RE3_PROM_092"
 
     address_rows: list[str] = []
     address_ok = True
@@ -95,10 +97,11 @@ def main() -> int:
     candidates = firmware_candidates()
     hdl_placeholder = marker(
         "hdl/devices.v",
+        "module re3_prom_092",
         "D94 = programmed part ДГШ5.106.092",
         "assign d = 8'hFF",
     )
-    hdl_unconnected = marker("hdl/juku_top.v", "re3_prom_113 U_D94", ".d()")
+    hdl_unconnected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", ".d()")
     scanned_not_d94 = marker(
         "docs/re3-firmware-inspection.md",
         "Status: **PASS**",
@@ -135,6 +138,8 @@ def main() -> int:
         "",
         "## Address / Enable Pins",
         "",
+        f"Board identity: D94 type is `{board_type or 'missing'}`.",
+        "",
         "Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.",
         "",
         "| Pin | Role | Net | Source |",
@@ -159,12 +164,13 @@ def main() -> int:
             "",
             "| Check | Result | Evidence |",
             "| --- | --- | --- |",
+            f"| Board identity names D94 as `.092`, not stale `.113` | {'PASS' if board_identity_ok else 'FAIL'} | `kicad/juku.board.json` type `{board_type or 'missing'}` |",
             f"| Address pins D94.10-D94.14 are traced | {'PASS' if address_ok else 'FAIL'} | board JSON nets |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
-            f"| HDL placeholder is explicitly inert | {'PASS' if hdl_placeholder else 'FAIL'} | `hdl/devices.v::re3_prom_113` |",
+            f"| HDL placeholder is explicitly inert | {'PASS' if hdl_placeholder else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
             f"| `juku_top` leaves D94 data outputs unconnected | {'PASS' if hdl_unconnected else 'FAIL'} | `hdl/juku_top.v` |",
             f"| Video slot audit is still D94-pending | {'PASS' if video_audit_pending else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
             "",
@@ -188,7 +194,7 @@ def main() -> int:
     REPORT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")
-    return 0 if address_ok and hdl_placeholder and hdl_unconnected and scanned_not_d94 and video_audit_pending else 1
+    return 0 if board_identity_ok and address_ok and hdl_placeholder and hdl_unconnected and scanned_not_d94 and video_audit_pending else 1
 
 
 if __name__ == "__main__":

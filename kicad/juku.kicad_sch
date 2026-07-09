@@ -989,11 +989,11 @@
 				(pin bidirectional line (at 43.18 0 0) (length 2.54) (name "INTRQ" (effects (font (size 1.27 1.27)))) (number "39" (effects (font (size 1.27 1.27)))))
 			)
 		)
-		(symbol "juku:RE3_PROM_113"
+		(symbol "juku:RE3_PROM_092"
 			(pin_names (offset 0.254)) (exclude_from_sim no) (in_bom yes) (on_board yes)
 			(property "Reference" "U" (at 0 5 0) (effects (font (size 1.27 1.27))))
-			(property "Value" "RE3_PROM_113" (at 0 -5 0) (effects (font (size 1.27 1.27))))
-			(symbol "RE3_PROM_113_1_1"
+			(property "Value" "RE3_PROM_092" (at 0 -5 0) (effects (font (size 1.27 1.27))))
+			(symbol "RE3_PROM_092_1_1"
 				(pin bidirectional line (at 0.0 0 0) (length 2.54) (name "D0" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
 				(pin bidirectional line (at 2.54 0 0) (length 2.54) (name "D1" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27)))))
 				(pin bidirectional line (at 5.08 0 0) (length 2.54) (name "D2" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))
@@ -1907,10 +1907,10 @@
 		(property "Reference" "D93" (at 50 6513 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "VG93_FDC" (at 50 6527 0) (effects (font (size 1.27 1.27))))
 		(instances (project "juku" (path "/" (reference "D93") (unit 1)))))
-	(symbol (lib_id "juku:RE3_PROM_113") (at 50 6560 0) (unit 1)
+	(symbol (lib_id "juku:RE3_PROM_092") (at 50 6560 0) (unit 1)
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "00000000-0000-0000-0000-000000000263")
 		(property "Reference" "D94" (at 50 6553 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "RE3_PROM_113" (at 50 6567 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "RE3_PROM_092" (at 50 6567 0) (effects (font (size 1.27 1.27))))
 		(instances (project "juku" (path "/" (reference "D94") (unit 1)))))
 	(symbol (lib_id "juku:BUF8287") (at 50 6600 0) (unit 1)
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "00000000-0000-0000-0000-000000000264")

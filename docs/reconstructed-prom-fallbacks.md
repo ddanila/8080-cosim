@@ -31,7 +31,7 @@ sync/prom_fallback_check.sh
   К556РТ4 bus-arbitration/wait PROM (`ДГШ5.106.037`, dump pending) with
   deferred nets. Older functional I/O-decode stand-ins must not be burned
   as a physical D2 programming image.
-- No D94 image is exported. The current `re3_prom_113` HDL block is an
+- No D94 image is exported. The current `re3_prom_092` HDL block is an
   all-high inert stub for the unknown `ДГШ5.106.092` content.
 - No video/DRAM timing РЕ3 image is exported. The exact slot/state timing
   remains a dump/programming-disk dependency.

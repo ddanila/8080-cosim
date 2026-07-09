@@ -290,7 +290,8 @@ REMAINING LOOSE ENDS (for the freeze review): D48/D49.S exact rail; D46 preset r
 E14.1/E13.1 rail IDs; D34 sect-1 inputs (4,5); D42/D43 CK/LD (still DOTCLK16M/VID_LD
 [assumed]); R54-58 rail-E pullup zone; counter R (reset) rail source.
 LEFTOVER SESSION (post-grind-C):
-- D94 got its REAL .113 content (hex rows 0x14-17 = 07/0B/0D/0E, 2K one-cold over A000-BFFF).
+- D94 `.113` assignment from this session was later retired: D94 is the
+  .009-added `ДГШ5.106.092` PROM, still dump/programming-disk pending.
 - ppi0_pc declaration-order boot break fixed (the grind-C commit was transiently red).
 - D53 zone read (crops c1_d53/c1_d53b): selects A<-E2.2, B<-E3.2 ✓ (beeper nets confirmed),
   C+G2 grounded (netted), G1<-above-rail, G3<-left-rail [queued]. Outputs Y0-Y3 -> R49-52

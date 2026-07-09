@@ -848,9 +848,9 @@ module buf_8287 (input wire [7:0] a, inout wire [7:0] b, input wire oe_n, t);
     assign b = 8'hzz;
 endmodule
 
-// D94 К155РЕ3 #2, table ДГШ5.106.113: 2K-granular selects over A000-BFFF (FDC-era fine
-// decode; docs/re3-decode.md). Outputs inert pending the exact hex row values.
-module re3_prom_113 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
+// D94 К155РЕ3 #2, programmed part ДГШ5.106.092. Outputs inert pending the exact
+// hex row values from a dump or the Baltijets programming disk.
+module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
     // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
     // D94 (docs/re3-decode.md reconciliation grind). Outputs modeled inactive (all HIGH =

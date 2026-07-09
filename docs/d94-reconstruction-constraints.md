@@ -14,6 +14,8 @@ python3 scripts/report_d94_reconstruction_constraints.py
 
 ## Address / Enable Pins
 
+Board identity: D94 type is `RE3_PROM_092`.
+
 Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 
 | Pin | Role | Net | Source |
@@ -42,12 +44,13 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
+| Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
 | Address pins D94.10-D94.14 are traced | PASS | board JSON nets |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
-| HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_113` |
+| HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` leaves D94 data outputs unconnected | PASS | `hdl/juku_top.v` |
 | Video slot audit is still D94-pending | PASS | `docs/video-slot-timing-audit.md` |
 
