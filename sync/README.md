@@ -76,5 +76,6 @@ reset-to-prompt reports are the stronger evidence where both exist.
 The FDC, USART, PIT/PPI/PIC, memory timing, and video helpers are scoped to
 guarded Juku behavior. They are not complete drop-in models of every original
 chip. Most importantly, behavioral success cannot supply the missing D2/D94
-wiring or the pin-level connectivity of the 11 placement-only official ICs;
+wiring, D30 section B, or the pin-level connectivity of the 10 placement-only
+official ICs;
 those are fabrication-release blockers tracked in `PLAN.md`.

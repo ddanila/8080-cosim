@@ -11,10 +11,10 @@ DEFAULT_OUT = ROOT / "fab" / "gerbers" / "review-waivers.md"
 
 WAIVED_COUNTS = {
     "courtyards_overlap": 55,
-    "pth_inside_courtyard": 71,
+    "pth_inside_courtyard": 0,
     "silk_over_copper": 199,
     "silk_overlap": 199,
-    "text_thickness": 75,
+    "text_thickness": 80,
 }
 WAIVER_RATIONALE = {
     "courtyards_overlap": "Dense authentic placement; assembly-fit review item, not a copper/routing fault.",

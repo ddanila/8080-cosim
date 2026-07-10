@@ -70,9 +70,10 @@ D2 A0/A1/A2/A4/A6, the D105 pin-10 `H` source, or every output destination.
 Sheet 1 proves the first half of D30 (`КМ555ТМ2`) rather than merely showing a
 placement: pins 4 (`/PRE`) and 2 (`D`) are pulled high, pin 3 (`CLK`) receives
 `PHI2TTL`, pin 1 (`/CLR`) receives `-SSTB`, and pin 5 (`Q`) drives D1 READY/pin
-23 through R29 1 kΩ. The second half, pins 8-13, is present and visibly wired
-near the D105/select-rail area, but its crossing rails are not yet resolved
-end-to-end. D30 therefore remains placement-only until that half is closed.
+23 through R29 1 kΩ. This section and R5/R6/R29 are now in the pin-level board
+model. The second half, pins 8-13, is present and visibly wired near the
+D105/select-rail area, but its crossing rails are not yet resolved end-to-end;
+that half remains an explicit design-release boundary.
 
 ## Factory wire-link evidence
 

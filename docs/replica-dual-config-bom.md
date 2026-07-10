@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 226
-- Populate for current functional .009 build: 196
+- Board component positions: 230
+- Populate for current functional .009 build: 200
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 68
+- Unique BOM lines: 70
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 97 |
+| source-now | 101 |
 | source-populated-now | 8 |
 
 ## BOM Lines
@@ -94,10 +94,12 @@ readiness report.
 | source-now | R_AXIAL 1,5к | axial resistor 1,5к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R20 | - |
 | source-now | R_AXIAL 100 | axial resistor 100 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R3, R4 | - |
 | source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R39 | - |
-| source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R38 | - |
+| source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R29, R38 | - |
+| source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R5, R6 | - |
 | source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R19 | - |
 | source-now | SYS8238 | КР580ВК38 | 8228/8238-class system controller; verify pinout | 1 | 1 | 0 | D5 | - |
 | source-now | TL2 | К155ТЛ2 | 74LS13 Schmitt NAND-class gate | 1 | 1 | 0 | D13 | - |
+| source-now | TM2_DFF | TM2_DFF | select exact substitute after circuit review | 1 | 1 | 0 | D30 | - |
 | source-now | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | 1 | 0 | D11 | - |
 | source-now | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 4 | 4 | 0 | D23, D24, D25, D29 | - |
 | source-now | VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | 1 | 0 | D93 | A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit. |

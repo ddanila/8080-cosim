@@ -111,17 +111,17 @@ def main() -> int:
         failures.append("dual-config BOM does not select D84-D91 as the populated RAM row")
 
     unmodeled = evidence["unmodeled ICs"]
-    expected_unmodeled = ("D28", "D30", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D105", "D106")
+    expected_unmodeled = ("D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D105", "D106")
     unmodeled_count_match = re.search(r"Footprint-only ICs present in source PCB, routed PCB, and DSN: `(\d+)`", unmodeled)
     unmodeled_count = None
     if unmodeled_count_match:
         unmodeled_count = int(unmodeled_count_match.group(1))
         if unmodeled_count and f"{unmodeled_count} official IC footprints" not in core["README.md"]:
             failures.append("README does not expose the current placement-only IC count")
-    if "Footprint-only ICs present in source PCB, routed PCB, and DSN: `11`" in unmodeled:
+    if "Footprint-only ICs present in source PCB, routed PCB, and DSN: `10`" in unmodeled:
         for ref in expected_unmodeled:
             if f"| `{ref}` |" not in unmodeled:
-                failures.append(f"unmodeled-footprint report count is 11 but omits {ref}")
+                failures.append(f"unmodeled-footprint report count is 10 but omits {ref}")
     if unmodeled_count and f"{unmodeled_count} official placement-only IC footprints" not in board:
         failures.append("board JSON does not expose all placement-only official ICs as a design boundary")
 

@@ -23,7 +23,7 @@ REVIEW_ONLY_TYPES = {
         "disposition": "Waived as dense authentic placement after visual assembly-fit review.",
     },
     "pth_inside_courtyard": {
-        "expected": 71,
+        "expected": 0,
         "disposition": "Waived as dense through-hole/socket proximity after visual assembly-fit review.",
     },
     "silk_over_copper": {
@@ -35,7 +35,7 @@ REVIEW_ONLY_TYPES = {
         "disposition": "Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable.",
     },
     "text_thickness": {
-        "expected": 75,
+        "expected": 80,
         "disposition": "GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry.",
     },
 }

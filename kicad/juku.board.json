@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 signal wiring and 11 official placement-only IC footprints (including D30 READY support, D105 wait logic, and FDC glue) remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 signal wiring, D30 section B, and 10 official placement-only IC footprints (including D105 wait logic and FDC glue) remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -4324,6 +4324,32 @@
     "refdes": "sheet-2 frame interrupt pullup",
     "pins": "FRAME_INT pullup; connected nets P5V/FRAME_INT carry crop evidence"
    }
+  },
+  {
+   "ref": "D30",
+   "type": "TM2_DFF",
+   "pins": {
+    "1": "CLR1_N", "2": "D1", "3": "CLK1", "4": "PRE1_N",
+    "5": "Q1", "6": "Q1_N", "8": "Q2_N", "9": "Q2",
+    "10": "PRE2_N", "11": "CLK2", "12": "D2", "13": "CLR2_N"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": ".009 official; assembly drawing position and sheet-1 READY circuit",
+    "pins": "section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->R29->D1.READY; section B pins 8-13 remain boundary/untraced"
+   }
+  },
+  {
+   "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
+   "prov": {"type": "scan", "refdes": "sheet-1 D30 READY preset pullup", "pins": "P5V to D30.4"}
+  },
+  {
+   "ref": "R6", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
+   "prov": {"type": "scan", "refdes": "sheet-1 D30 READY data pullup", "pins": "P5V to D30.2"}
+  },
+  {
+   "ref": "R29", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "1к",
+   "prov": {"type": "scan", "refdes": "sheet-1 D30 READY output series resistor; assembly drawing beside D30", "pins": "D30.5 to D1.23 READY"}
   }
  ],
  "nets": {
@@ -6676,6 +6702,10 @@
     [
      "D53",
      "4"
+    ],
+    [
+     "D30",
+     "3"
     ]
    ]
   },
@@ -8989,6 +9019,10 @@
      "10"
     ],
     [
+     "D30",
+     "7"
+    ],
+    [
      "D7",
      "7"
     ],
@@ -9505,6 +9539,18 @@
     [
      "D29",
      "20"
+    ],
+    [
+     "D30",
+     "14"
+    ],
+    [
+     "R5",
+     "1"
+    ],
+    [
+     "R6",
+     "1"
     ],
     [
      "D7",
@@ -13454,6 +13500,26 @@
      "15"
     ]
    ]
+  },
+  "SSTB_N": {
+   "src": "sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary",
+   "nodes": [["D30", "1"]]
+  },
+  "READY_D": {
+   "src": "traced sheet-1: R6 2k pullup feeds D30 section-A D input pin 2",
+   "nodes": [["R6", "2"], ["D30", "2"]]
+  },
+  "READY_PRE_N": {
+   "src": "traced sheet-1: R5 2k pullup feeds D30 section-A asynchronous preset pin 4",
+   "nodes": [["R5", "2"], ["D30", "4"]]
+  },
+  "READY_Q": {
+   "src": "traced sheet-1: D30 section-A Q pin 5 reaches R29 1k series resistor",
+   "nodes": [["D30", "5"], ["R29", "1"]]
+  },
+  "READY": {
+   "src": "traced sheet-1: R29 1k output reaches D1 READY pin 23",
+   "nodes": [["R29", "2"], ["D1", "23"]]
   },
   "D25_T": {
    "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",

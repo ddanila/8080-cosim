@@ -11,8 +11,8 @@ DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_REPORT = ROOT / "docs" / "replica-power-trace-readiness.md"
 
 POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
-EXPECTED_POWER_SEGMENTS = 710
-EXPECTED_WIDENED_SEGMENTS = 377
+EXPECTED_POWER_SEGMENTS = 748
+EXPECTED_WIDENED_SEGMENTS = 451
 BASELINE_WIDTH_MM = 0.20
 MAX_WIDTH_MM = 1.00
 
@@ -52,6 +52,10 @@ def first_string(block, name):
 
 def parse_segments(board):
     text = board.read_text(errors="replace")
+    net_names = {
+        int(code): name
+        for code, name in re.findall(r'^\s*\(net\s+(\d+)\s+"([^"]+)"\)', text, re.M)
+    }
     rows = []
     for block in iter_segment_blocks(text):
         start = first_pair(block, "start")
@@ -59,6 +63,9 @@ def parse_segments(board):
         width = first_value(block, "width")
         layer = first_string(block, "layer")
         net = first_string(block, "net")
+        if net is None:
+            code = first_value(block, "net")
+            net = net_names.get(int(code)) if code is not None else None
         if not start or not end or width is None or not layer or not net:
             continue
         length = math.hypot(end[0] - start[0], end[1] - start[1])
@@ -170,8 +177,8 @@ def build_report(board):
         lines.extend(f"- {failure}" for failure in failures)
     else:
         lines.append(
-            "The routed power nets match the reviewed v76 widening envelope: "
-            "710 power segments present, 377 widened where local clearance allowed, "
+            "The routed power nets match the reviewed current-route widening envelope: "
+            "748 power segments present, 451 widened where local clearance allowed, "
             "no power segment below the routed baseline, and no widened segment above "
             "the 1.00 mm clamp. KiCad DRC remains the clearance authority."
         )

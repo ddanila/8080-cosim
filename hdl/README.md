@@ -32,9 +32,9 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - D2’s physical bus/wait wiring is absent from the board model and therefore
   from the runnable structure.
 - D94’s outputs and enable are unknown; `re3_prom_092` is intentionally inert.
-- Eleven official PCB/DSN IC footprints are not represented by board-JSON pins
-  or HDL instances. They include D30 READY support, D105 wait logic, and FDC
-  support parts; `docs/unmodeled-footprint-inventory.md` owns that boundary.
+- Ten official PCB/DSN IC footprints are not represented by board-JSON pins
+  or HDL instances. They include D105 wait logic and FDC support parts;
+  `docs/unmodeled-footprint-inventory.md` owns that boundary.
 - Thirty-six modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.

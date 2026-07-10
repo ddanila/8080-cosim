@@ -16,16 +16,16 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Modeled board-JSON `D*` ICs: `95`
+- Modeled board-JSON `D*` ICs: `96`
 - Source PCB IC footprints: `106`
 - Routed PCB IC footprints: `106`
 - DSN IC placements: `106`
-- Footprint-only ICs in any PCB/DSN artifact: `11`
-- Footprint-only ICs present in source PCB, routed PCB, and DSN: `11`
+- Footprint-only ICs in any PCB/DSN artifact: `10`
+- Footprint-only ICs present in source PCB, routed PCB, and DSN: `10`
 
 ## Design-Release Consequence
 
-There are `11` IC footprints in PCB/DSN artifacts with no
+There are `10` IC footprints in PCB/DSN artifacts with no
 pin-level representation in board JSON. KiCad's zero-unconnected result
 cannot detect missing connections on placement-only footprints. Every row
 below therefore blocks design release until it is either modeled and routed
@@ -55,17 +55,17 @@ PCB artifacts. Closing D105 alone is not sufficient.
   and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
   `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
   through R29 1 kΩ.
-- This establishes the CPU READY function and replaces the former generic
-  'D30 support' description with exact pins. D30 section B (pins 8-13)
-  is visibly wired on the same sheet but its crossed rail destinations
-  still require a clean end-to-end read before D30 is promoted and routed.
+- D30 section A, R5, R6, and R29 are now promoted into board JSON. D30
+  section B (pins 8-13) is visibly wired on the same sheet but its crossed
+  rail destinations still require a clean end-to-end read. The footprint
+  is no longer placement-only, but design release remains blocked until
+  section B is traced and the regenerated route is verified.
 
 ## Footprint-Only ICs
 
 | Ref | Mark/value | Footprint | Source PCB | Routed PCB | DSN | Generator note |
 | --- | --- | --- | --- | --- | --- | --- |
 | `D28` | `К155ЛН3` | `DIP-14_W7.62mm` | yes | yes | `К155ЛН3` | row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread] |
-| `D30` | `КМ555ТМ2` | `DIP-14_W7.62mm` | yes | yes | `КМ555ТМ2` | [emaplaat]  # ready ТМ2 [photo; 176.8 sat inside D1's DIP-40 body] |
 | `D95` | `К555КП12` | `DIP-16_W7.62mm` | yes | yes | `К555КП12` | row 3: КП12 #1 [.009: D95] |
 | `D96` | `КМ555ТМ2` | `DIP-14_W7.62mm` | yes | yes | `КМ555ТМ2` | row 2 [.009: D96=ТМ2] |
 | `D97` | `КМ555АГ3` | `DIP-14_W7.62mm` | yes | yes | `КМ555АГ3` | row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED] |

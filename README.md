@@ -12,14 +12,15 @@ with the machine-readable board model.
   vendored disk images, and reach disk BASIC `READY`.
 - `sync/check.sh` currently compares 97 mapped instances and 227 nets with no
   KiCad/HDL mismatch.
-- The routed main-board artifact has 237 footprints and no KiCad
+- The routed main-board artifact has 240 footprints and no KiCad
   clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
   and internally coherent. Current ZIP SHA256:
-  `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`.
+  `7001c1245d4bb92d552800eec35e33de399768d4c7cb2ec871eeef69c3dfb07e`.
 - The main board is **not released for fabrication**. D2 is still physically
-  unnetted, D94 lacks its enable/output wiring, and 11 official IC footprints
-  (including D30 READY support, D105 wait logic, and FDC glue) have no modeled
-  pin connectivity. The D2/D94 PROM contents are also missing, and 36 modeled
+  unnetted, D94 lacks its enable/output wiring, and 10 official IC footprints
+  (including D105 wait logic and FDC glue) have no modeled pin connectivity.
+  D30 READY section A is modeled, while section B remains untraced. The D2/D94
+  PROM contents are also missing, and 36 modeled
   nets retain source-risk annotations requiring evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

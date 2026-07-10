@@ -943,3 +943,14 @@ module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // OC off + pullups); D94's outputs are un-netted anyway, so this is boot-inert.
     assign d = 8'hFF;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule
+
+// D30 КМ555ТМ2 dual D flip-flop. Section A is physically traced into the READY
+// chain; section B remains a pin-level boundary. Outputs stay high-impedance in
+// the runnable twin so adding the LVS-visible package cannot change boot timing.
+module tm2_dff (input wire clr1_n, d1, clk1, pre1_n,
+                output wire q1, q1_n,
+                input wire clr2_n, d2, clk2, pre2_n,
+                output wire q2, q2_n);
+    assign q1 = 1'bz; assign q1_n = 1'bz;
+    assign q2 = 1'bz; assign q2_n = 1'bz;
+endmodule

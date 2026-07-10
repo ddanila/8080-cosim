@@ -34,6 +34,7 @@ FP = {
     'SYS8238':'DIP-28_W15.24mm', 'EPROM8K':'DIP-28_W15.24mm', 'USART8251':'DIP-28_W15.24mm',
     'PIC8259':'DIP-28_W15.24mm', 'PIT8253':'DIP-24_W15.24mm', 'BUF8286':'DIP-20_W7.62mm',
     'AP2':'DIP-8_W7.62mm', 'LA18':'DIP-8_W7.62mm',   # DIP-8 confirmed by board photos
+    'TM2_DFF':'DIP-14_W7.62mm',
 }
 SHARED = FOOTPRINT_ROOT + "/"
 PASSIVE_FP = {
@@ -58,6 +59,7 @@ PASSIVE_FP = {
 PASSIVE_PLACE = {
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
     'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),'S1':(63.5,183.2,0),
+    'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
     'R38':(121.4,249.1,90),'R39':(230.5,192.5,0),
     'Z1':(79.4,243.5,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
@@ -125,7 +127,7 @@ MARK = {
     'KP14_MUX':'К531КП14',  'LA1_GATE':'К531ЛА1',    'LA3_GATE':'К555ЛА3',
     'LA12_GATE':'К531ЛА12', 'LN1_INV':'К531ЛН1',     'LN1_OSC':'К531ЛН1',
     'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'КР556РТ4',
-    'RE3_PROM':'К155РЕ3',  'RE3_PROM_092':'К155РЕ3',
+    'RE3_PROM':'К155РЕ3',  'RE3_PROM_092':'К155РЕ3', 'TM2_DFF':'КМ555ТМ2',
     'CT16_CTR':'КР531ИЕ17',   'CLK_PHASE':'К155ЛН5',           # pinned via repo tracing (clock-subsystem.md / memory.md)
     'VABUS':'КР580ВА87',    'IR82':'КР580ИР82',      'IR16':'К155ИР16',
     'TL2':'К155ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
@@ -206,6 +208,7 @@ PLACE = {
     # (old 116.7-118 dips clipped the x-decap band at 124.3 and bank0 at 133.1)
     'D5':(31.2,99.2,90),'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),'D10':(178.9,101.3,90),
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
+    'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
@@ -436,7 +439,6 @@ def main():
         # Refdes per the OFFICIAL ДГШ5.109.009 ПЭЗ (owner's scan, 2026-07) -- the FDC-revision
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
-        'D30':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   32.9, 189.5, 90),  # [emaplaat]  # ready ТМ2 [photo; 176.8 sat inside D1's DIP-40 body]
         # D51 removed: promoted to a net-modeled chip (KP14_MUX in board.json) -- keeping it here duplicated the refdes (DSN killer)
         'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 215.5, 90),  # below D13 [emaplaat; was stacked ON D13 at 205.2]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---

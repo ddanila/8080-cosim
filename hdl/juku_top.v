@@ -37,7 +37,8 @@ module juku_top (
     // ---- clock / reset domain (boundary to a DISCRETE subsystem) ----
     // The real board has NO 8224: clock = crystal Z1 + D59 (ЛН1) oscillator +
     // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
-    // READY from D30, STSTB(8238) from D13. Driven by that subsystem, not modeled here.
+    // READY section A is now represented by D30 below; its off-sheet -SSTB source and section B
+    // remain boundaries. STSTB(8238) comes from D13/D38.
     wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;   // ststb_n = D38.8 [WIRE 8]
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
@@ -117,6 +118,10 @@ module juku_top (
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
+    wire d30_q, d30_qn, d30_q2, d30_q2n;
+    tm2_dff U_D30 (.clr1_n(1'b1), .d1(1'b1), .clk1(phi2ttl), .pre1_n(1'b1),
+                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(1'b1), .d2(1'b0),
+                   .clk2(1'b0), .pre2_n(1'b1), .q2(d30_q2), .q2_n(d30_q2n));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
     // reproduces the boot-tb's waveform (osc posedge mid-phase, one per phase) but self-generated.

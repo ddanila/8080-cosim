@@ -28,12 +28,12 @@ is not a prerequisite for ordering or bringing up the replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer/keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected checkpoint-resumed commands | Exact shared-DRAM video-slot timing, full controller fidelity, cartridge BASIC compatibility, and analog behavior |
 | Connectivity | `sync/check.sh` reports 97 mapped instances and 227 matched nets | Unmapped footprints, pins absent from `board.json`, and the correctness of behavioral models |
-| PCB package | 237-footprint routed artifact; no KiCad clearance/short/unconnected-item errors; reproducible 2-layer 310 x 266 mm Gerber/drill package | Electrical completeness or historical correctness of omitted/assumed nets |
+| PCB package | 240-footprint routed artifact; no KiCad clearance/short/unconnected-item errors; reproducible 2-layer 310 x 266 mm Gerber/drill package | Electrical completeness or historical correctness of omitted/assumed nets |
 | Sources/media | Factory schematic set, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, photographs, and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, and the missing cartridge BASIC page/procedure |
 
 The current main-board ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
-`77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`.
+`7001c1245d4bb92d552800eec35e33de399768d4c7cb2ec871eeef69c3dfb07e`.
 It is retained as a reproducible engineering snapshot. **Do not send it to a
 fabricator until the release blockers below are closed and the package is
 regenerated.**
@@ -46,12 +46,13 @@ regenerated.**
    unnetted, while the official D105 К155ЛА3 footprint is placement-only.
    Trace the D2 input rails and D0 destination, including D105.10's source and
    D105.6's destination, then update the model and reroute.
-2. **All placement-only official ICs** — D28, D30, D95-D99, D101, D102, D105,
+2. **All placement-only official ICs** — D28, D95-D99, D101, D102, D105,
    and D106 exist in the source PCB, routed PCB, and DSN but have no pin model.
    Trace and route each required function, or document a deliberate redesign/
-   DNP decision and remove it from the released artifacts. D30 is part of the
-   READY support path; most of the others are FDC support logic. Closing D105
-   alone cannot release the board.
+   DNP decision and remove it from the released artifacts. D30 READY section A
+   is now modeled through R5/R6/R29, but its section-B pins remain untraced;
+   most of the placement-only parts are FDC support logic. Closing D105 alone
+   cannot release the board.
 3. **D94 `.092` PROM** — only BA11..BA15 and power are currently connected.
    Resolve pin 15 and D0..D7 destinations, update the model, and reroute.
 4. **Release-risk net review** — disposition the remaining source-risk rows in
