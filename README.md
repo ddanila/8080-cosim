@@ -10,7 +10,7 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`.
-- `sync/check.sh` currently compares 97 mapped instances and 227 nets with no
+- `sync/check.sh` currently compares 99 mapped instances and 231 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and no KiCad
   clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
@@ -62,6 +62,8 @@ release.
 - [docs/architecture.md](docs/architecture.md) — model boundaries and data flow.
 - [docs/source-coverage-audit.md](docs/source-coverage-audit.md) — adopted
   external evidence and remaining source gaps.
+- [docs/tooling-roadmap.md](docs/tooling-roadmap.md) — evaluated open-source
+  tooling and the deliberately deferred adoption sequence.
 - [sync/README.md](sync/README.md) — verification commands.
 - [docs/replica-manufacturing-readiness.md](docs/replica-manufacturing-readiness.md)
   — fabrication-package integrity and the current design hold.

@@ -11,7 +11,7 @@ assembly drawing, or owner continuity measurements have been removed.
   `ДГШ5.109.009 ПЭЗ` in `ref/Juku_official_chip_BOM.pdf`.
 - Primary electrical evidence: the three schematic sheets in
   `ref/schematics/`, the official parts list, and owner continuity readings.
-- Physical placement evidence: `es101_emaplaat.pdf` and the 22 owner photos in
+- Physical placement evidence: `es101_emaplaat.pdf` and the 50 owner photos in
   this directory.
 - The current normalized endpoint record is `kicad/juku.board.json`.
 

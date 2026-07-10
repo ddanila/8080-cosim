@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          # The status audit validates all 22 owner photographs as materialized
+          # The status audit validates all 50 owner photographs as materialized
           # JPEG evidence; checkout's default leaves Git LFS pointer stubs.
           lfs: true
 

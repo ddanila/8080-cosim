@@ -1,12 +1,18 @@
 # Board #2 photo survey
 
-Target: processor module `7.102.158`, 22 owner photographs taken in 2026.
+Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
 
 ## Confirmed observations
 
 - A top-center **К155РЕ3** timing PROM is **SOCKETED** and therefore
   dumpable. The exact refdes/program identity must still be established before
   treating a dump as D8 or D94 evidence.
+- `PXL_20260710_200402344.jpg` clearly shows a populated **КР1818ВГ93**.
+  The processor visible elsewhere on the board is not evidence that the FDC is
+  absent. The earlier non-FDC classification is withdrawn.
+- The July component-side grid clearly shows a populated eight-chip
+  **КР565РУ5** bank, consistent with D84-D91, while the other DRAM expansion
+  positions are empty.
 - D2, D6, D8, and the D15-D22 ROM positions are socketed according to the
   combined drawing/photo evidence.
 - X1 is a 3x32 СНП59-family connector. X2 is a 30-contact СНП connector. The
@@ -21,19 +27,21 @@ Target: processor module `7.102.158`, 22 owner photographs taken in 2026.
 - The clock/video corner visibly includes ИЕ17/74S169-class, ИР16, ЛП5, ЛА3,
   ИЕ10, and ЛА1 devices. Refdes and exact role come from the official documents
   and board model, not package sighting alone.
-- `PXL_20260519_201915520.jpg` is a clear component-side view of the region
-  occupied by D93-D106 in the `.009` reconstruction. On this photographed
-  assembly that region contains the КР580ВМ80А processor and the older support
-  population, not the `.009` ВГ93/FDC cluster. It is therefore useful as
-  revision-lineage evidence but cannot prove any `.009` FDC-support net.
+- The 2026-07-10 batch adds a complete overlapping solder-side grid suitable
+  for registering physical pads and following visible two-layer copper. No
+  endpoint from that grid has yet been promoted into `kicad/juku.board.json`.
+- Seven later 2026-07-10 component-side photographs show the same FDC-equipped
+  board with the КР1818ВГ93 temporarily removed. In particular,
+  `PXL_20260710_202708344.jpg` exposes the footprint and component-side copper
+  normally obscured by the package. No pin destination has yet been inferred
+  from this view.
 
 ## Limitations
 
-This board has its DRAM bank unpopulated and electrolytics removed. It is useful
-for routing, sockets, connectors, and package identity, but another assembly is
-needed for installed DRAM/capacitor-value evidence. Photo sighting alone does
-not close D2/D94 contents. Because this is not an `.009` FDC-populated board,
-its copper must not be used to assign the functional nets of D28, D95-D99,
-D101, D102, or D106; a trace-side photograph or continuity measurements from an
-actual `.009` board are required. The remaining D30 READY and D105
-WAIT-revision boundaries also require stronger evidence.
+Photo sighting alone does not close D2/D94 contents. The July grid is applicable
+physical evidence for the populated FDC board, but refdes-to-pad registration
+and end-to-end trace extraction must be completed before using it to assign the
+functional nets of D28, D95-D99, D101, D102, or D106. Traces hidden by sockets,
+solder, glare, or crossings still require continuity measurements. The exact
+C35-C72 per-position capacitor values and the remaining D30 READY/D105 WAIT
+boundaries also remain open.

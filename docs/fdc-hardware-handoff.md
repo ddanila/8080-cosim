@@ -22,11 +22,13 @@ python3 scripts/report_fdc_hardware_handoff.py
 
 ## Photograph Applicability
 
-The owner-photo set under `ref/photos/juku-pcb-2/` does not show an `.009`
-FDC-populated board. In particular, `PXL_20260519_201915520.jpg` clearly shows
-the КР580ВМ80А processor and the older support population in the region used by
-D93-D106 in the `.009` reconstruction. Those photographs cannot be used as
-copper-continuity evidence for the FDC support nets below.
+The July owner-photo batches under `ref/photos/juku-pcb-2/` clearly show a
+populated КР1818ВГ93, add an overlapping 3x3 solder-side grid, and include
+a later component-side view with the VG93 temporarily removed to expose its
+footprint copper. The board is therefore applicable physical evidence for the
+FDC handoff. The new views have not yet been registered to refdes/pin
+coordinates or traced end-to-end, so they do not promote any missing endpoint
+to `WIRED`.
 
 ## Bus-Side Handoff Checks
 

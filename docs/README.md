@@ -13,6 +13,8 @@ history.
 - `vision.md` — project invariant and source-of-truth policy.
 - `source-coverage-audit.md` — adopted external evidence and remaining source
   gaps.
+- `tooling-roadmap.md` — evaluated open-source tooling, evidence boundaries,
+  and the deferred adoption order.
 
 ## Current generated evidence
 

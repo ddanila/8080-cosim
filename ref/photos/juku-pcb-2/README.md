@@ -1,8 +1,27 @@
 # Juku processor-board owner photos
 
-This directory contains 22 owner-supplied photographs of processor module
+This directory contains 50 owner-supplied photographs of processor module
 `7.102.158`. They are retained as routing, placement, connector, socket, and
 package-identification evidence.
+
+The first batch contains 22 photographs from 2026-05-19. The second batch
+contains 21 higher-coverage photographs from 2026-07-10:
+
+- 12 component-side tiles, photographed left-to-right and then top-to-bottom
+  as a 4-row by 3-column sequence (`200354648` through `200455512`);
+- 9 solder-side tiles in the same acquisition order as a 3-row by 3-column
+  sequence (`200506061` through `200537608`).
+
+The third batch contains 7 component-side photographs from later on
+2026-07-10 (`202708344` through `202753536`) with the КР1818ВГ93 temporarily
+removed. `PXL_20260710_202708344.jpg` is the close footprint view; the other six
+retain wider placement context. “VG93 removed” describes the photographed
+maintenance state, not a non-FDC board population.
+
+The solder-side view reverses the component-side left/right coordinate. Keep
+that mirror relationship explicit when registering pads to reference
+designators. The July batches have been adopted as source evidence but have not
+yet been used to promote any new endpoint or net claim.
 
 The JPEGs are Git LFS objects. Run `git lfs pull` after cloning; pointer stubs
 do not count as available visual evidence, and `sync/reference_artifact_check.sh`
@@ -12,5 +31,8 @@ rejects them.
 - `BODGE-TRIAGE.md` is the settled cross-source physical-evidence summary. Its
   legacy filename is kept for stable generated-report references.
 
-The pictured board has no populated DRAM bank and its electrolytic capacitors
-were removed, so it is not authoritative for those populations or values.
+The July component-side tiles clearly show the КР1818ВГ93 FDC and one populated
+eight-chip КР565РУ5 bank, consistent with D84-D91. Empty D60-D83 expansion
+positions are not evidence of missing production RAM. Some capacitor positions
+are empty and the photographs do not yet establish a complete per-refdes value
+map, so capacitor-value fidelity remains open.

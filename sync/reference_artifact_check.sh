@@ -44,8 +44,8 @@ for photo in ref/photos/juku-pcb-2/*.jpg; do
   fi
 done
 
-if [ "$photo_count" -ne 22 ]; then
-  echo "reference artifact check: expected 22 owner photos, found $photo_count" >&2
+if [ "$photo_count" -ne 50 ]; then
+  echo "reference artifact check: expected 50 owner photos, found $photo_count" >&2
   exit 2
 fi
 

@@ -29,7 +29,7 @@ is not a prerequisite for ordering or bringing up the replica.
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer/keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected checkpoint-resumed commands | Exact shared-DRAM video-slot timing, full controller fidelity, cartridge BASIC compatibility, and analog behavior |
 | Connectivity | `sync/check.sh` reports 99 mapped instances and 231 matched nets | Unmapped footprints, pins absent from `board.json`, and the correctness of behavioral models |
 | PCB package | 240-footprint routed artifact; no KiCad clearance/short/unconnected-item errors; reproducible 2-layer 310 x 266 mm Gerber/drill package | Electrical completeness or historical correctness of omitted/assumed nets |
-| Sources/media | Factory schematic set, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, photographs, and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, and the missing cartridge BASIC page/procedure |
+| Sources/media | Factory schematic set, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner board photographs, and owner RE3 scans are local and artifact-guarded | Baltijets programming-disk payloads, D2/D94 dumps, and the missing cartridge BASIC page/procedure |
 
 The current main-board ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
@@ -65,6 +65,42 @@ regenerated.**
    bus direction, interrupts, or video timing must be measured or explicitly
    redesigned; they cannot be deferred as generic “bring-up” items.
 
+#### Queued July photo grind — evidence adopted, extraction not started
+
+The 28-photo 2026-07-10 intake is retained under
+`ref/photos/juku-pcb-2/` through Git LFS. It contains a 4x3 component-side grid
+followed by a 3x3 solder-side grid, each photographed left-to-right and then
+top-to-bottom, plus 7 later component-side views with the КР1818ВГ93
+temporarily removed. Intake review confirms that the physical board contains a
+КР1818ВГ93 FDC and the populated eight-chip КР565РУ5 bank; the former
+non-FDC/unpopulated-RAM photo classification is retired. The removed-package
+views expose normally hidden VG93 footprint copper but do not promote a single
+new net yet.
+
+When physical tracing resumes, process the batch in this order:
+
+1. Register both grids to a shared board coordinate system, mirror the
+   solder-side X axis, and attach refdes/pin overlays using the assembly drawing
+   and unambiguous socket/component landmarks. Record every accepted read with
+   filename and crop coordinates.
+2. Register the temporarily uncovered VG93 footprint against the populated and
+   solder-side views, then trace the highest-risk FDC handoff first: D93 pins
+   19/24/37/38/39 and D100 pins 9/11, including DRQ/INTRQ ordering, reset,
+   clock, density, output enable, and direction.
+3. Grind every functional pin of D28, D95-D99, D101, D102, and D106. Require a
+   matching component-side landing and solder-side copper path; queue continuity
+   measurements wherever glare, a socket, a via transition, or a crossing makes
+   the photographic read non-unique.
+4. Trace D94 pin 15 and pins 1-7/9, but keep PROM contents independently blocked
+   on a `.092` dump or programming artifact. Then trace the remaining D2,
+   D30-section-B, and D105 WAIT-handoff endpoints.
+5. Use the remaining grid coverage for D41/memory-timing boundaries, factory
+   wire endpoints, connector geometry, and passive/refdes mapping. Do not infer
+   absent C35-C72 values from aggregate part counts.
+6. Review the extracted endpoint table before changing `juku.board.json`.
+   Only reviewed, unambiguous paths may enter the model; regenerate/reroute and
+   run the release audits after the evidence pass is complete, not tile by tile.
+
 Exit criterion: regenerated source and routed PCBs contain every required
 functional endpoint; the design-release audit reports no P0 blocker; LVS,
 DRC, boot, and cosim checks remain green.
@@ -98,6 +134,25 @@ After the netlist changes stop:
    evidence using `docs/replica-order-evidence-template.md`.
 
 ## Parallel work that does not block PCB tracing
+
+### Tooling preparation
+
+`docs/tooling-roadmap.md` records the evaluated open-source additions. No new
+tool is yet a project dependency, and this documentation phase does not start
+photo tracing, net promotion, powered capture, formal proof, or analog
+simulation.
+
+The intended adoption order is:
+
+1. Pilot PCB ReTrace on only the VG93 quadrant, then retain a small repo-native
+   OpenCV registration manifest even if the interactive tool is useful.
+2. Add main-board KiCad ERC and schematic/PCB parity gates after the first
+   reviewed photo-derived endpoints enter the model.
+3. Add a Juku/8080 sigrok decoder when powered-board captures begin.
+4. Use `minipro` only for explicitly supported EPROMs; keep the documented MCU
+   sweep for unsupported bipolar PROMs.
+5. Defer targeted SymbiYosys and ngspice/Qucs-S work until the corresponding
+   digital and analog connectivity is evidence-complete.
 
 ### Parts and assembly preparation
 
