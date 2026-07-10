@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Guard the public status against the repository's active release evidence."""
+"""Guard public status in both a working tree and a clean Git checkout.
+
+The fabrication tree is intentionally ignored.  Tracked status/checksum records
+must therefore be internally consistent without it; byte-level package and
+order-report checks are added when the local fabrication tree is available.
+"""
 
 from __future__ import annotations
 
@@ -9,6 +14,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SHA256_RE = re.compile(r"(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])", re.I)
 
 
 def read(path: str) -> str:
@@ -55,21 +61,29 @@ def main() -> int:
         if design_held and "hold" not in text.lower() and "not released" not in text.lower():
             failures.append(f"{path} does not expose the active design hold")
 
-    upload_zip = ROOT / "fab/gerbers/upload/juku-replica-gerbers-drill.zip"
-    if not upload_zip.exists():
-        failures.append("main-board upload ZIP is missing")
-    else:
+    manufacturing = read("docs/replica-manufacturing-readiness.md")
+    recorded_package_digests: dict[str, set[str]] = {}
+    for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
+        recorded_package_digests[path] = {digest.lower() for digest in SHA256_RE.findall(read(path))}
+    shared_package_digests = set.intersection(*recorded_package_digests.values())
+    if not shared_package_digests:
+        failures.append("tracked release documents do not share a recorded package SHA256")
+
+    fab_root = ROOT / "fab"
+    upload_zip = fab_root / "gerbers/upload/juku-replica-gerbers-drill.zip"
+    if fab_root.exists() and not upload_zip.exists():
+        failures.append("local fabrication tree exists but main-board upload ZIP is missing")
+    elif upload_zip.exists():
         digest = sha256(upload_zip)
         for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
             if digest not in read(path):
                 failures.append(f"{path} does not contain current upload ZIP SHA256 {digest}")
 
-    manufacturing = read("docs/replica-manufacturing-readiness.md")
     order = read("fab/gerbers/order-readiness.md")
     if design_held:
         if "Status: **DESIGN HOLD / PACKAGE VERIFIED**" not in manufacturing:
             failures.append("manufacturing report does not distinguish package verification from design hold")
-        if "Status: **PACKAGE READY / DESIGN HOLD**" not in order:
+        if fab_root.exists() and "Status: **PACKAGE READY / DESIGN HOLD**" not in order:
             failures.append("order-readiness report does not expose the active design hold")
         for path, text in core.items():
             if "READY TO UPLOAD" in text or "ORDER READY" in text:
@@ -77,7 +91,7 @@ def main() -> int:
     else:
         if "Status: **RELEASED FOR UPLOAD**" not in manufacturing:
             failures.append("all release evidence passes but manufacturing report is not released")
-        if "Status: **RELEASED FOR ORDER**" not in order:
+        if fab_root.exists() and "Status: **RELEASED FOR ORDER**" not in order:
             failures.append("all release evidence passes but order report is not released")
 
     removed_live_docs = [
@@ -168,7 +182,8 @@ def main() -> int:
         return 1
 
     held = ", ".join(name for name, active in blockers.items() if active)
-    print(f"Documentation status is consistent; design hold: {held or 'none'}.")
+    package_scope = "local package verified" if upload_zip.exists() else "tracked package record verified"
+    print(f"Documentation status is consistent; design hold: {held or 'none'}; {package_scope}.")
     return 0
 
 
