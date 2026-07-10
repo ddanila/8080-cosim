@@ -1,12 +1,11 @@
 # Unmodeled footprint inventory
 
-Status: **DESIGN HOLD / FUNCTIONAL FOOTPRINTS UNMODELED**
+Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**
 
-This generated report catches IC footprints that exist in the generated
-PCB/DSN artifacts but are not yet part of `kicad/juku.board.json`.
-These parts are placement-only in the current engineering package:
-promoting any of them to modeled nets changes the netlist and requires
-a routed-PCB refresh plus endpoint-coverage proof.
+This generated report catches both IC footprints absent from the board
+model and promoted devices whose functional pins remain outside named
+nets. Adding either class of endpoint requires a routed-PCB refresh and
+endpoint-coverage proof.
 
 ## Command
 
@@ -16,21 +15,19 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Modeled board-JSON `D*` ICs: `97`
+- Modeled board-JSON `D*` ICs: `106`
 - Source PCB IC footprints: `106`
 - Routed PCB IC footprints: `106`
 - DSN IC placements: `106`
-- Footprint-only ICs in any PCB/DSN artifact: `9`
-- Footprint-only ICs present in source PCB, routed PCB, and DSN: `9`
+- Footprint-only ICs in any PCB/DSN artifact: `0`
+- Footprint-only ICs present in source PCB, routed PCB, and DSN: `0`
 
 ## Design-Release Consequence
 
-There are `9` IC footprints in PCB/DSN artifacts with no
-pin-level representation in board JSON. KiCad's zero-unconnected result
-cannot detect missing connections on placement-only footprints. Every row
-below therefore blocks design release until it is either modeled and routed
-or explicitly dispositioned as a redesign/DNP and removed from the released
-PCB artifacts. Closing D105 alone is not sufficient.
+There are `0` IC footprints with no board-JSON representation
+and `9` promoted FDC devices with functional pins still
+outside named nets. KiCad's zero-unconnected result cannot detect either class
+until those endpoints are modeled. Both classes block design release.
 
 ## D105 Wait-Gate Boundary
 
@@ -69,24 +66,31 @@ PCB artifacts. Closing D105 alone is not sufficient.
 
 | Ref | Mark/value | Footprint | Source PCB | Routed PCB | DSN | Generator note |
 | --- | --- | --- | --- | --- | --- | --- |
-| `D28` | `К155ЛН3` | `DIP-14_W7.62mm` | yes | yes | `К155ЛН3` | row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread] |
-| `D95` | `К555КП12` | `DIP-16_W7.62mm` | yes | yes | `К555КП12` | row 3: КП12 #1 [.009: D95] |
-| `D96` | `КМ555ТМ2` | `DIP-14_W7.62mm` | yes | yes | `КМ555ТМ2` | row 2 [.009: D96=ТМ2] |
-| `D97` | `КМ555АГ3` | `DIP-16_W7.62mm` | yes | yes | `КМ555АГ3` | row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED] |
-| `D98` | `К155ЛП11` | `DIP-16_W7.62mm` | yes | yes | `К155ЛП11` | row 1 [.009: D98=ЛП11 ✓] |
-| `D99` | `КМ555АГ3` | `DIP-16_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 middle [pool, ASSUMED; shifted 0.7 mm for 16-pin package clearance] |
-| `D101` | `К555КП12` | `DIP-16_W7.62mm` | yes | yes | `К555КП12` | row 4: КП12 #2 [.009: D101] |
-| `D102` | `КМ555АГ3` | `DIP-16_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 right [pool, ASSUMED] |
-| `D106` | `К555ИЕ7` | `DIP-16_W7.62mm` | yes | yes | `К555ИЕ7` | row 2: the 5th ИЕ7 [.009: D106=ИЕ7] |
+
+## Promoted FDC Pin Boundaries
+
+These devices now have physical pin models and routed power pins. Their
+remaining signal pins stay explicitly unnetted until continuity is proved.
+
+| Ref | Untraced functional pins |
+| --- | --- |
+| `D28` | 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 |
+| `D95` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D96` | 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 |
+| `D97` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D98` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D99` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D101` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D102` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D106` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
 
 ## Closure Rule
 
-1. Keep placement-only official footprints here until their pins are
-   traceable enough to add to `kicad/juku.board.json`.
-2. After board JSON promotion, regenerate PCB/DSN/BOM reports and route
-   the affected pads before claiming endpoint coverage.
+1. Keep every unread functional pin explicit until continuity is proved.
+2. After any board-JSON net promotion, regenerate PCB/DSN/BOM reports
+   and route the affected pads before claiming endpoint coverage.
 3. D105 is modeled and routed. Remaining priority belongs to D2's
    truth/input rails, the `.009` WAIT-inverter handoff, D30's unread
    section-B endpoints, and the FDC support cluster.
-4. `READY FOR DESIGN RELEASE` is emitted only when no IC footprint
-   remains outside the board-JSON pin model.
+4. `READY FOR DESIGN RELEASE` is emitted only when no footprint or
+   promoted FDC functional pin remains outside the net model.

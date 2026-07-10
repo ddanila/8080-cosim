@@ -33,7 +33,7 @@ is not a prerequisite for ordering or bringing up the replica.
 
 The current main-board ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
-`cf346cce590ea3d11c6f072face5161782f5cc4ab17a1e1cabe68e4d0b31f20e`.
+`a1688aab1625a6c1d2a4ee4aa87540030d9b82b5d545b7bca9aa7e3ebc7da344`.
 It is retained as a reproducible engineering snapshot. **Do not send it to a
 fabricator until the release blockers below are closed and the package is
 regenerated.**
@@ -47,14 +47,15 @@ regenerated.**
    A5/A7 retain explicit `-XACK`/`-WREQ` boundaries. Trace the five remaining
    address inputs and recover the PROM truth table. Reconcile the `.006` D95
    inverter after D105.6 with `.009`'s reassignment of D95 to an FDC К555КП12.
-2. **All placement-only official ICs** — D28, D95-D99, D101, D102,
-   and D106 exist in the source PCB, routed PCB, and DSN but have no pin model.
-   Trace and route each required function, or document a deliberate redesign/
-   DNP decision and remove it from the released artifacts. D30 READY section A
+2. **FDC support IC signal closure** — D28, D95-D99, D101, D102,
+   and D106 now have physical pin models and routed power endpoints; their
+   functional signal pins remain explicit continuity boundaries. Trace and route
+   each required function, or document a deliberate redesign/DNP decision and
+   remove it from the released artifacts. D30 READY section A
    is now modeled through R5/R6/R29. In section B, pins 10 and 12 are visibly
    tied and pins 6 and 9 are documented no-connects; pins 8, 11, and 13 still
    require end-to-end tracing, as does the shared pin-10/pin-12 source;
-   the remaining placement-only parts are FDC support logic. D105 is now modeled
+   the remaining signal-boundary parts are FDC support logic. D105 is now modeled
    and routed, but that alone cannot release the board.
 3. **D94 `.092` PROM** — only BA11..BA15 and power are currently connected.
    Resolve pin 15 and D0..D7 destinations, update the model, and reroute.

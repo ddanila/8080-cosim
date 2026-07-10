@@ -97,7 +97,7 @@ def design_release_checks():
             "Status: **D94 RECONSTRUCTION READY**",
         ),
         (
-            "All placement-only functional IC dispositions",
+            "All FDC-support functional pin dispositions",
             ROOT / "docs" / "unmodeled-footprint-inventory.md",
             "Status: **READY FOR DESIGN RELEASE**",
         ),

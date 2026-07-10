@@ -264,7 +264,7 @@ def build_report(fab_dir):
         "- The final upload ZIP checksum above.",
         "- Confirmation that `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`.",
         "- Confirmation that the package was regenerated after the final D2/D94",
-        "  changes, placement-only functional IC dispositions, and source-risk",
+        "  changes, FDC-support functional pin dispositions, and source-risk",
         "  net corrections.",
     ])
 

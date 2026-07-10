@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `41`
 - Verification-point endpoints checked in PCB: `235`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1914`
-- All board endpoints checked in routed PCB: `1914`
+- All board endpoints checked in source PCB: `1932`
+- All board endpoints checked in routed PCB: `1932`
 - Full PCB endpoint coverage: `PASS`
 
 | Category | Nets |
@@ -50,8 +50,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1914/1914 | 1914/1914 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1914/1914 | 1914/1914 | PASS |
+| `kicad/juku.kicad_pcb` | 1932/1932 | 1932/1932 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1932/1932 | 1932/1932 | PASS |
 
 ## Checklist
 

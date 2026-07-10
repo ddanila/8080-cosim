@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 231
-- Populate for current functional .009 build: 201
+- Board component positions: 240
+- Populate for current functional .009 build: 210
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 70
+- Unique BOM lines: 73
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 102 |
+| source-now | 111 |
 | source-populated-now | 8 |
 
 ## BOM Lines
@@ -61,7 +61,7 @@ readiness report.
 | program/dump | EPROM8K | 2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 8 | 2 | 6 | D15, D16, D17, D18, D19, D20, D21, D22 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
 | program/dump | RE3_PROM | К155РЕ3 | 74188/82S23-class 32x8 bipolar PROM, programmed | 1 | 1 | 0 | D8 | Timing/window PROM contents remain dump/reconstruction-gated. |
 | program/dump | RE3_PROM_092 | К155РЕ3 | 74188/82S23-class 32x8 bipolar PROM, programmed | 1 | 1 | 0 | D94 | FDC-revision D94 `.092` timing/window PROM contents remain dump-gated. |
-| source-now | AG3_ONESHOT | К155/КМ555АГ3 | 74LS123/74123-class one-shot; verify RC timing | 1 | 1 | 0 | D56 | - |
+| source-now | AG3_ONESHOT | К155/КМ555АГ3 | 74LS123/74123-class one-shot; verify RC timing | 4 | 4 | 0 | D56, D97, D99, D102 | - |
 | source-now | BUF8286 | КР580ВА86 | Intel 8286 / compatible bus transceiver | 2 | 2 | 0 | D4, D107 | - |
 | source-now | BUF8287 | КР580ВА87 | Intel 8287 / compatible bus transceiver | 1 | 1 | 0 | D100 | - |
 | source-now | CLK_PHASE | К155ЛН5 | 74LS04/74LS14-class inverter; verify phase/timing use | 1 | 1 | 0 | D35 | - |
@@ -73,10 +73,11 @@ readiness report.
 | source-now | C_TRIM 4/20 | trimmer capacitor 4/20 | modern trimmer capacitor matching footprint/value | 1 | 1 | 0 | C73 | - |
 | source-now | D_DIODE КС147 | Soviet diode/zener per value КС147 | modern diode/zener matching value and power | 1 | 1 | 0 | VD5 | - |
 | source-now | IE10_CTR | К555ИЕ10 | 74LS193/191-class counter; verify exact pinout | 1 | 1 | 0 | D103 | - |
-| source-now | IE7_CTR | К555ИЕ7 | 74LS161/163-class counter; verify exact Soviet pin/timing match | 4 | 4 | 0 | D44, D45, D46, D47 | - |
+| source-now | IE7_CTR | К555ИЕ7 | 74LS161/163-class counter; verify exact Soviet pin/timing match | 5 | 5 | 0 | D44, D45, D46, D47, D106 | - |
 | source-now | IO_DEC138 | К555ИД7 | 74LS138 / 74HCT138 decoder | 1 | 1 | 0 | D9 | - |
 | source-now | IR16 | К155ИР16 | 74295/74LS295-class shift register; verify pinout | 3 | 3 | 0 | D41, D42, D43 | - |
 | source-now | IR82 | КР580ИР82 | 8282/8283-class latch; verify polarity/package | 1 | 1 | 0 | D58 | - |
+| source-now | KP12_BOUNDARY | KP12_BOUNDARY | select exact substitute after circuit review | 2 | 2 | 0 | D95, D101 | - |
 | source-now | KP14_MUX | К531/К555КП14 | 74LS257/258-class quad 2:1 mux; verify OE/polarity | 5 | 5 | 0 | D48, D49, D50, D51, D52 | - |
 | source-now | LA12_GATE | К531ЛА12 | 74S20/74LS20-class NAND; verify section | 1 | 1 | 0 | D36 | - |
 | source-now | LA18 | К155ЛА18 | open-collector NAND/driver; verify output topology | 1 | 1 | 0 | D12 | - |
@@ -86,6 +87,8 @@ readiness report.
 | source-now | LN1_DUAL | К531ЛН1 | 74S04/74LS04-class inverter | 1 | 1 | 0 | D33 | - |
 | source-now | LN1_OSC | К531ЛН1 | 74S04/74LS04-class inverter; oscillator section timing matters | 1 | 1 | 0 | D59 | - |
 | source-now | LN2 | К561ЛН2 | CD4049/К561ЛН2-class CMOS inverter; verify role | 1 | 1 | 0 | D3 | - |
+| source-now | LN3_BOUNDARY | LN3_BOUNDARY | select exact substitute after circuit review | 1 | 1 | 0 | D28 | - |
+| source-now | LP11_BOUNDARY | LP11_BOUNDARY | select exact substitute after circuit review | 1 | 1 | 0 | D98 | - |
 | source-now | LP5_XOR | К155ЛП5 | 74LS86 XOR-class gate | 1 | 1 | 0 | D34 | - |
 | source-now | PIC8259 | КР580ВН59 | 8259A PIC | 1 | 1 | 0 | D10 | - |
 | source-now | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | 3 | 0 | D54, D55, D57 | - |
@@ -99,7 +102,7 @@ readiness report.
 | source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R19 | - |
 | source-now | SYS8238 | КР580ВК38 | 8228/8238-class system controller; verify pinout | 1 | 1 | 0 | D5 | - |
 | source-now | TL2 | К155ТЛ2 | 74LS13 Schmitt NAND-class gate | 1 | 1 | 0 | D13 | - |
-| source-now | TM2_DFF | TM2_DFF | select exact substitute after circuit review | 1 | 1 | 0 | D30 | - |
+| source-now | TM2_DFF | TM2_DFF | select exact substitute after circuit review | 2 | 2 | 0 | D30, D96 | - |
 | source-now | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | 1 | 0 | D11 | - |
 | source-now | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 4 | 4 | 0 | D23, D24, D25, D29 | - |
 | source-now | VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | 1 | 0 | D93 | A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit. |

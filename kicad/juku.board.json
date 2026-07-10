@@ -4355,6 +4355,51 @@
    }
   },
   {
+   "ref": "D96", "type": "TM2_DFF",
+   "pins": {"1": "CLR1_N", "2": "D1", "3": "CLK1", "4": "PRE1_N", "5": "Q1", "6": "Q1_N", "8": "Q2_N", "9": "Q2", "10": "PRE2_N", "11": "CLK2", "12": "D2", "13": "CLR2_N"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555ТМ2 identity and standard pinout", "pins": "power pins 7/14 promoted; all functional pins remain explicit FDC continuity boundaries"}
+  },
+  {
+   "ref": "D97", "type": "AG3_ONESHOT",
+   "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+  },
+  {
+   "ref": "D99", "type": "AG3_ONESHOT",
+   "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+  },
+  {
+   "ref": "D102", "type": "AG3_ONESHOT",
+   "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+  },
+  {
+   "ref": "D106", "type": "IE7_CTR",
+   "pins": {"5": "UP", "4": "DOWN", "15": "D0", "1": "D1", "10": "D2", "9": "D3", "11": "LOAD_N", "14": "CLR", "3": "Q0", "2": "Q1", "6": "Q2", "7": "Q3", "12": "CO", "13": "BO"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout", "pins": "power pins 8/16 promoted; counter inputs and outputs remain explicit FDC continuity boundaries"}
+  },
+  {
+   "ref": "D28", "type": "LN3_BOUNDARY",
+   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "8": "PIN8", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "14-pin physical boundary; power pins 7/14 promoted, exact inverter signal assignment awaits FDC continuity"}
+  },
+  {
+   "ref": "D95", "type": "KP12_BOUNDARY",
+   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "7": "PIN7", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13", "14": "PIN14", "15": "PIN15"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity"}
+  },
+  {
+   "ref": "D98", "type": "LP11_BOUNDARY",
+   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "7": "PIN7", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13", "14": "PIN14", "15": "PIN15"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "16-pin physical boundary; power pins 8/16 promoted, exact logic signal assignment awaits FDC continuity"}
+  },
+  {
+   "ref": "D101", "type": "KP12_BOUNDARY",
+   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "7": "PIN7", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13", "14": "PIN14", "15": "PIN15"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity"}
+  },
+  {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY preset pullup", "pins": "P5V to D30.4"}
   },
@@ -9360,6 +9405,42 @@
     [
      "D2",
      "14"
+    ],
+    [
+     "D96",
+     "7"
+    ],
+    [
+     "D97",
+     "8"
+    ],
+    [
+     "D99",
+     "8"
+    ],
+    [
+     "D102",
+     "8"
+    ],
+    [
+     "D106",
+     "8"
+    ],
+    [
+     "D28",
+     "7"
+    ],
+    [
+     "D95",
+     "8"
+    ],
+    [
+     "D98",
+     "8"
+    ],
+    [
+     "D101",
+     "8"
     ]
    ]
   },
@@ -9890,6 +9971,42 @@
     [
      "D29",
      "11"
+    ],
+    [
+     "D96",
+     "14"
+    ],
+    [
+     "D97",
+     "16"
+    ],
+    [
+     "D99",
+     "16"
+    ],
+    [
+     "D102",
+     "16"
+    ],
+    [
+     "D106",
+     "16"
+    ],
+    [
+     "D28",
+     "14"
+    ],
+    [
+     "D95",
+     "16"
+    ],
+    [
+     "D98",
+     "16"
+    ],
+    [
+     "D101",
+     "16"
     ]
    ]
   },

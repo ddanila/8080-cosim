@@ -18,6 +18,7 @@ GEN = ROOT / "kicad" / "gen_kicad_pcb.py"
 REPORT = ROOT / "docs" / "unmodeled-footprint-inventory.md"
 PHYSICAL_EVIDENCE = ROOT / "ref" / "photos" / "juku-pcb-2" / "BODGE-TRIAGE.md"
 SHEET1 = ROOT / "ref" / "schematics" / "p3_sheet1.png"
+FDC_BOUNDARY_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
 
 
 UNTRACED_RE = re.compile(r"^\s*'([^']+)':\s*\(([^#]+)\),\s*(?:#\s*(.*))?$")
@@ -81,9 +82,9 @@ def markers_ok() -> tuple[bool, list[str]]:
         (PHYSICAL_EVIDENCE, "D2 wiring region is on sheet 1"),
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
         (PHYSICAL_EVIDENCE, "D105 = К155ЛА3"),
-        (GEN, "'D97':  ('DIP-16_W7.62mm', 'КМ555АГ3'"),
-        (GEN, "'D99':  ('DIP-16_W7.62mm', 'КМ555АГ3'"),
-        (GEN, "'D102': ('DIP-16_W7.62mm', 'КМ555АГ3'"),
+        (GEN, "'D97':(228,88,90)"),
+        (GEN, "'D99':(250.8,110,90)"),
+        (GEN, "'D102':(270.8,111.8,90)"),
         (SHEET1, None),
     ]
     missing: list[str] = []
@@ -96,12 +97,28 @@ def markers_ok() -> tuple[bool, list[str]]:
 
 
 def main() -> int:
+    board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
     model = modeled_refs()
     source = pcb_refs(SOURCE_PCB)
     routed = pcb_refs(ROUTED_PCB)
     placements = dsn_placements()
     untraced = untraced_entries()
     evidence_ok, missing_markers = markers_ok()
+    netted_nodes = {
+        (str(ref), str(pin))
+        for net in board["nets"].values()
+        for ref, pin in net.get("nodes", [])
+    }
+    boundary_untraced = {}
+    for chip in board["chips"]:
+        ref = str(chip.get("ref"))
+        if ref in FDC_BOUNDARY_REFS:
+            missing = sorted(
+                (str(pin) for pin in chip.get("pins", {}) if (ref, str(pin)) not in netted_nodes),
+                key=int,
+            )
+            if missing:
+                boundary_untraced[ref] = missing
 
     footprint_only = sorted((source | routed | set(placements)) - model, key=lambda ref: int(ref[1:]))
     common_footprint_only = sorted((source & routed & set(placements)) - model, key=lambda ref: int(ref[1:]))
@@ -112,6 +129,8 @@ def main() -> int:
         status = "EVIDENCE MARKERS MISSING"
     elif release_pending:
         status = "DESIGN HOLD / FUNCTIONAL FOOTPRINTS UNMODELED"
+    elif boundary_untraced:
+        status = "DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED"
     else:
         status = "READY FOR DESIGN RELEASE"
     if "D105" in model:
@@ -147,11 +166,10 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This generated report catches IC footprints that exist in the generated",
-        "PCB/DSN artifacts but are not yet part of `kicad/juku.board.json`.",
-        "These parts are placement-only in the current engineering package:",
-        "promoting any of them to modeled nets changes the netlist and requires",
-        "a routed-PCB refresh plus endpoint-coverage proof.",
+        "This generated report catches both IC footprints absent from the board",
+        "model and promoted devices whose functional pins remain outside named",
+        "nets. Adding either class of endpoint requires a routed-PCB refresh and",
+        "endpoint-coverage proof.",
         "",
         "## Command",
         "",
@@ -170,12 +188,10 @@ def main() -> int:
         "",
         "## Design-Release Consequence",
         "",
-        f"There are `{len(footprint_only)}` IC footprints in PCB/DSN artifacts with no",
-        "pin-level representation in board JSON. KiCad's zero-unconnected result",
-        "cannot detect missing connections on placement-only footprints. Every row",
-        "below therefore blocks design release until it is either modeled and routed",
-        "or explicitly dispositioned as a redesign/DNP and removed from the released",
-        "PCB artifacts. Closing D105 alone is not sufficient.",
+        f"There are `{len(footprint_only)}` IC footprints with no board-JSON representation",
+        f"and `{len(boundary_untraced)}` promoted FDC devices with functional pins still",
+        "outside named nets. KiCad's zero-unconnected result cannot detect either class",
+        "until those endpoints are modeled. Both classes block design release.",
         "",
         "## D105 Wait-Gate Boundary",
         "",
@@ -223,6 +239,21 @@ def main() -> int:
             )
         )
 
+    lines.extend(
+        [
+            "",
+            "## Promoted FDC Pin Boundaries",
+            "",
+            "These devices now have physical pin models and routed power pins. Their",
+            "remaining signal pins stay explicitly unnetted until continuity is proved.",
+            "",
+            "| Ref | Untraced functional pins |",
+            "| --- | --- |",
+        ]
+    )
+    for ref in sorted(boundary_untraced, key=lambda item: int(item[1:])):
+        lines.append(table_row([f"`{ref}`", ", ".join(boundary_untraced[ref])]))
+
     only_partial = [ref for ref in footprint_only if ref not in common_footprint_only]
     if only_partial:
         lines.extend(
@@ -242,15 +273,14 @@ def main() -> int:
             "",
             "## Closure Rule",
             "",
-            "1. Keep placement-only official footprints here until their pins are",
-            "   traceable enough to add to `kicad/juku.board.json`.",
-            "2. After board JSON promotion, regenerate PCB/DSN/BOM reports and route",
-            "   the affected pads before claiming endpoint coverage.",
+            "1. Keep every unread functional pin explicit until continuity is proved.",
+            "2. After any board-JSON net promotion, regenerate PCB/DSN/BOM reports",
+            "   and route the affected pads before claiming endpoint coverage.",
             "3. D105 is modeled and routed. Remaining priority belongs to D2's",
             "   truth/input rails, the `.009` WAIT-inverter handoff, D30's unread",
             "   section-B endpoints, and the FDC support cluster.",
-            "4. `READY FOR DESIGN RELEASE` is emitted only when no IC footprint",
-            "   remains outside the board-JSON pin model.",
+            "4. `READY FOR DESIGN RELEASE` is emitted only when no footprint or",
+            "   promoted FDC functional pin remains outside the net model.",
             "",
         ]
     )

@@ -3,7 +3,7 @@
 Status: **DESIGN HOLD / PACKAGE VERIFIED**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Final upload ZIP SHA256: `cf346cce590ea3d11c6f072face5161782f5cc4ab17a1e1cabe68e4d0b31f20e`
+Final upload ZIP SHA256: `a1688aab1625a6c1d2a4ee4aa87540030d9b82b5d545b7bca9aa7e3ebc7da344`
 
 This is the tracked top-level manufacturing packet for the replica main
 board. It separates reproducible package integrity from functional design
@@ -14,11 +14,11 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2824 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2822 | PASS |
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2874 | PASS |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2510 | PASS |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2598 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 13845 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8548 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
@@ -39,8 +39,8 @@ DESIGN HOLD.
 
 | File | Bytes | SHA256 | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `4bff78364cd1c9ff8b140298f0c118fecce2280049d1a6c17bc71c1b54cfed6c` | PASS |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 785899 | `cf346cce590ea3d11c6f072face5161782f5cc4ab17a1e1cabe68e4d0b31f20e` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `657389af5c6d40e6641c2700a75a55abde09e94b383a90ecb378947a96ecc05d` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 787272 | `a1688aab1625a6c1d2a4ee4aa87540030d9b82b5d545b7bca9aa7e3ebc7da344` | PASS |
 
 ## Locked Vendor Options
 
@@ -70,5 +70,5 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 - The final upload ZIP checksum above.
 - Confirmation that `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`.
 - Confirmation that the package was regenerated after the final D2/D94
-  changes, placement-only functional IC dispositions, and source-risk
+  changes, FDC-support functional pin dispositions, and source-risk
   net corrections.

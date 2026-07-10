@@ -18,9 +18,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `231`
+- Chips modeled: `240`
 - Nets modeled: `334`
-- Chip-level fidelity gaps: `46`
+- Chip-level fidelity gaps: `53`
 - Net-level source-risk gaps: `41`
 - Documented intentional no-connect pins: `2`
 
@@ -32,7 +32,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 225 |
+| scan | 234 |
 | wire | 1 |
 
 ## Gap Categories
@@ -40,7 +40,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
 | FDC owner-continuity | 0 | 3 |
-| PROM truth | 2 | 0 |
+| PROM truth | 9 | 0 |
 | PROM/decode | 0 | 10 |
 | clock/I/O | 0 | 4 |
 | logic/source | 5 | 6 |
@@ -60,8 +60,15 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
+| `D101` | `KP12_BOUNDARY` | scan | .009 official FDC population identifies К555КП12 16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity |
+| `D102` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
 | `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/... |
+| `D28` | `LN3_BOUNDARY` | scan | .009 official FDC population identifies К155ЛН3 14-pin physical boundary; power pins 7/14 promoted, exact inverter signal assignment awaits FDC continuity |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8) |
+| `D95` | `KP12_BOUNDARY` | scan | .009 official FDC population identifies К555КП12 16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity |
+| `D97` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
+| `D98` | `LP11_BOUNDARY` | scan | .009 official FDC population identifies К155ЛП11 16-pin physical boundary; power pins 8/16 promoted, exact logic signal assignment awaits FDC continuity |
+| `D99` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
 
 ### logic/source
 
@@ -134,11 +141,18 @@ model is historical-source-complete.
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
 | `D100` | logic/source | `9:OE_N, 11:T` |
+| `D101` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 7:PIN7, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13, 14:PIN14, 15:PIN15` |
+| `D102` | PROM truth | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `D2` | PROM truth | `1:A6, 3:A4, 5:A0, 6:A1, 7:A2` |
+| `D28` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 8:PIN8, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` |
 | `D93` | logic/source | `19:MR_N, 24:CLK` |
 | `D94` | PROM truth | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
+| `D95` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 7:PIN7, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13, 14:PIN14, 15:PIN15` |
+| `D97` | PROM truth | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
+| `D98` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 7:PIN7, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13, 14:PIN14, 15:PIN15` |
+| `D99` | PROM truth | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `S4` | logic/source | `1:P1, 2:P2` |
 
 ## Documented Intentional No-Connects

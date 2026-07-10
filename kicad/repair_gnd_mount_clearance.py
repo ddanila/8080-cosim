@@ -13,6 +13,8 @@ board = pcbnew.LoadBoard(sys.argv[1])
 ends = {
     (198551100, 253670100, 194430000, 249549000),
     (194430000, 249549000, 198551100, 253670100),
+    (199508200, 248752600, 205475000, 254719400),
+    (205475000, 254719400, 199508200, 248752600),
 }
 old = None
 for item in board.GetTracks():
@@ -25,7 +27,10 @@ if old is None:
 
 start, end, net, width = old.GetStart(), old.GetEnd(), old.GetNet(), old.GetWidth()
 board.Remove(old)
-mid = pcbnew.VECTOR2I_MM(196.2, 254.0)
+if {start.x, end.x} == {199508200, 205475000}:
+    mid = pcbnew.VECTOR2I_MM(202.5, 247.5)
+else:
+    mid = pcbnew.VECTOR2I_MM(196.2, 254.0)
 for a, b in ((start, mid), (mid, end)):
     track = pcbnew.PCB_TRACK(board)
     track.SetStart(a)

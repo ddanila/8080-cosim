@@ -35,6 +35,8 @@ FP = {
     'PIC8259':'DIP-28_W15.24mm', 'PIT8253':'DIP-24_W15.24mm', 'BUF8286':'DIP-20_W7.62mm',
     'AP2':'DIP-8_W7.62mm', 'LA18':'DIP-8_W7.62mm',   # DIP-8 confirmed by board photos
     'TM2_DFF':'DIP-14_W7.62mm',
+    'LN3_BOUNDARY':'DIP-14_W7.62mm', 'KP12_BOUNDARY':'DIP-16_W7.62mm',
+    'LP11_BOUNDARY':'DIP-16_W7.62mm',
 }
 SHARED = FOOTPRINT_ROOT + "/"
 PASSIVE_FP = {
@@ -128,6 +130,7 @@ MARK = {
     'LA12_GATE':'К531ЛА12', 'LN1_INV':'К531ЛН1',     'LN1_OSC':'К531ЛН1',
     'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'КР556РТ4',
     'RE3_PROM':'К155РЕ3',  'RE3_PROM_092':'К155РЕ3', 'TM2_DFF':'КМ555ТМ2',
+    'LN3_BOUNDARY':'К155ЛН3', 'KP12_BOUNDARY':'К555КП12', 'LP11_BOUNDARY':'К155ЛП11',
     'CT16_CTR':'КР531ИЕ17',   'CLK_PHASE':'К155ЛН5',           # pinned via repo tracing (clock-subsystem.md / memory.md)
     'VABUS':'КР580ВА87',    'IR82':'КР580ИР82',      'IR16':'К155ИР16',
     'TL2':'К155ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
@@ -219,6 +222,9 @@ PLACE = {
     'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     'D93':(248,70,0),'D94':(228,33,0),'D100':(245,30,0),   # FDC trio promoted to netted [grind C]
+    'D98':(268,30,90),'D106':(262,74,0),'D28':(272,74,0),'D96':(284,74,0),
+    'D95':(268,93,90),'D97':(228,88,90),'D101':(230,109,90),
+    'D99':(250.8,110,90),'D102':(270.8,111.8,90),
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
@@ -443,15 +449,6 @@ def main():
         # schematic exists for the .009 additions).
         # D51 removed: promoted to a net-modeled chip (KP14_MUX in board.json) -- keeping it here duplicated the refdes (DSN killer)
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
-        'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]
-        'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 74, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]
-        'D28':  ('DIP-14_W7.62mm', 'К155ЛН3',    272, 74, 0),   # row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread]
-        'D96':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 74, 0),   # row 2 [.009: D96=ТМ2]
-        'D95':  ('DIP-16_W7.62mm', 'К555КП12',   268, 93, 90), # row 3: КП12 #1 [.009: D95]
-        'D97':  ('DIP-16_W7.62mm', 'КМ555АГ3',   228, 88, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
-        'D101': ('DIP-16_W7.62mm', 'К555КП12',   230, 109, 90), # row 4: КП12 #2 [.009: D101]
-        'D99':  ('DIP-16_W7.62mm', 'КМ555АГ3',   250.8, 110, 90), # row 4 middle [pool, ASSUMED; shifted 0.7 mm for 16-pin package clearance]
-        'D102': ('DIP-16_W7.62mm', 'КМ555АГ3',   270.8, 111.8, 90),# row 4 right [pool, ASSUMED]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)
