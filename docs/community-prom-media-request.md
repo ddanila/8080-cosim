@@ -59,8 +59,9 @@ Relevant local docs:
    - `КР556РТ4А` D2, 256 nibbles stored as 256 bytes
    - `КР556РТ4А` D6, 256 nibbles stored as 256 bytes
    - D15/D16 2764/M2764 EPROM pair, 8192 bytes each
-5. Can an owner provide continuity readings, or clear trace-side photographs,
-   for the official footprints that are still absent from the pin model:
+5. Can an owner provide continuity readings, or clear trace-side photographs
+   of an actual `.009` FDC-populated board, for the official footprints whose
+   device pinouts are modeled but whose Juku signal nets remain untraced:
    D28, D95-D99, D101, D102, and D106? The FDC support cluster is the first
    priority. D105 is modeled; the useful WAIT ask is the `.009` replacement for
    the older sheet's D95 inverter after D105.6.
@@ -109,8 +110,9 @@ recreation and digital twin:
 https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D2/D94, 9 official
-placement-only FDC-support ICs, and programmable-part evidence are incomplete.
+reproducible but the physical design remains on hold while D2/D94, the
+Juku-specific nets of 9 modeled FDC-support ICs, and programmable-part evidence
+are incomplete.
 D105 wait/MRD logic and most of D30 READY are already modeled and routed.
 
 Baltijets doc 007 confirms several programmed-part drawings, but the byte tables
@@ -127,10 +129,13 @@ factory programming-disk files or physical PROM dumps.
 - the FDC-era D94 PROM ДГШ5.106.092 on the .009 board
 - the D15/D16 2764/M2764 ROM pair, if a physical board can be read
 
-The same board also has 9 official footprints not yet represented in the
-pin-level model: D28, D95-D99, D101, D102, and D106. Continuity readings or
-clear trace-side photographs for the FDC support cluster, D30's remaining
-section-B endpoints, and the `.009` WAIT handoff would directly unblock it.
+The `.009` board also has 9 FDC-support devices whose packages and device-level
+pin roles are now represented, but whose Juku-specific functional nets remain
+untraced: D28, D95-D99, D101, D102, and D106. The available owner photographs
+show a pre-FDC population in that region, so continuity readings or clear
+trace-side photographs must come from an actual `.009` FDC-populated board.
+Those readings, D30's remaining section-B endpoints, and the `.009` WAIT
+handoff would directly unblock it.
 
 The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
 media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking

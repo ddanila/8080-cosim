@@ -20,6 +20,14 @@ python3 scripts/report_fdc_hardware_handoff.py
 - D93 package: `КР1818ВГ93` / WD1793-compatible FDC
 - D100 package: `КР580ВА87` / Intel 8287-compatible bus transceiver
 
+## Photograph Applicability
+
+The owner-photo set under `ref/photos/juku-pcb-2/` does not show an `.009`
+FDC-populated board. In particular, `PXL_20260519_201915520.jpg` clearly shows
+the КР580ВМ80А processor and the older support population in the region used by
+D93-D106 in the `.009` reconstruction. Those photographs cannot be used as
+copper-continuity evidence for the FDC support nets below.
+
 ## Bus-Side Handoff Checks
 
 | Net / path | Status | Endpoint / purpose | Evidence boundary |
