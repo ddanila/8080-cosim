@@ -9,6 +9,7 @@
 #
 # Run:   sync/cosim_check.sh            # default window (covers boot + full banner)
 #        WINDOW=800000000 sync/cosim_check.sh   # shorter window (faster, boot + early banner)
+# Runtime baseline and progress-output notes: docs/cosim-runtime-reference.md
 set -euo pipefail
 cd "$(dirname "$0")/.."
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
@@ -23,9 +24,8 @@ iverilog -g2012 -o "$TMP/cosim" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v 
          hdl/sim/juku_struct.v hdl/sim/cosim_diff_tb.v
 
 echo "== run lockstep diff (window=${WINDOW}ns) =="
-out=$(vvp "$TMP/cosim" +timecap="$WINDOW" 2>&1)
-echo "$out" | grep -E "DIVERGE|NO-DIVERGE" || true
-if echo "$out" | grep -q "NO-DIVERGE"; then
+vvp "$TMP/cosim" +timecap="$WINDOW" 2>&1 | tee "$TMP/cosim.out"
+if grep -q "NO-DIVERGE" "$TMP/cosim.out"; then
   echo "COSIM-CHECK: PASS (juku_top bit-identical to the oracle)"
 else
   echo "COSIM-CHECK: FAIL"; exit 1

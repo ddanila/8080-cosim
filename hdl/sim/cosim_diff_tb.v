@@ -30,8 +30,21 @@ module cosim_diff_tb;
     phi2=0; force dtop.phi2=0;
   end
 
-  integer nrd=0, timecap=1600000000; reg done=0;
+  integer nrd=0, timecap=1600000000, progress_step, progress_mark; reg done=0;
   initial if ($value$plusargs("timecap=%d", timecap)) ;
+  // Sparse milestones make multi-hour default runs observable. Twenty writes
+  // are negligible beside millions of lockstep reads.
+  initial begin
+    #1;
+    progress_step = timecap / 20;
+    if (progress_step < 1) progress_step = 1;
+    for (progress_mark = 1; progress_mark < 20; progress_mark = progress_mark + 1) begin
+      #(progress_step);
+      if (!done)
+        $display("COSIM-PROGRESS: %0d%% simulated (%0d/%0d ns), %0d reads compared",
+                 progress_mark * 5, progress_mark * progress_step, timecap, nrd);
+    end
+  end
   // compare the captured read byte each memory read; first mismatch = the divergence
   always @(negedge dtop.dbin) if (~dtop.memr_n && !done) begin
     nrd = nrd + 1;
