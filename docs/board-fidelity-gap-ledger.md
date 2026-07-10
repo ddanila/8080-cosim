@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `240`
 - Nets modeled: `334`
-- Chip-level fidelity gaps: `53`
+- Chip-level fidelity gaps: `55`
 - Net-level source-risk gaps: `41`
 - Documented intentional no-connect pins: `2`
 
@@ -39,8 +39,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 0 | 3 |
-| PROM truth | 9 | 0 |
+| FDC owner-continuity | 9 | 3 |
+| PROM truth | 2 | 0 |
 | PROM/decode | 0 | 10 |
 | clock/I/O | 0 | 4 |
 | logic/source | 5 | 6 |
@@ -56,19 +56,26 @@ failures. Large repeated groups, such as unpopulated DRAM sockets and
 decoupling capacitors, are still listed because they affect faithful
 parts placement and Tier-3 reproduction.
 
+### FDC owner-continuity
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `D101` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed, mux signals await FDC continuity |
+| `D102` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
+| `D106` | `IE7_CTR` | scan | .009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout power pins 8/16 promoted; counter inputs and outputs remain explicit FDC conti... |
+| `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed, six inverter signal pairs await FDC continuity |
+| `D95` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed, mux signals await FDC continuity |
+| `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 promoted; all functional pins remain explicit FDC continuity boundaries |
+| `D97` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
+| `D98` | `LP11_BUF` | scan | .009 official FDC population identifies К155ЛП11 К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed, six buffer signals and two enables await FDC cont... |
+| `D99` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
+
 ### PROM truth
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D101` | `KP12_BOUNDARY` | scan | .009 official FDC population identifies К555КП12 16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity |
-| `D102` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
 | `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/... |
-| `D28` | `LN3_BOUNDARY` | scan | .009 official FDC population identifies К155ЛН3 14-pin physical boundary; power pins 7/14 promoted, exact inverter signal assignment awaits FDC continuity |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8) |
-| `D95` | `KP12_BOUNDARY` | scan | .009 official FDC population identifies К555КП12 16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity |
-| `D97` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
-| `D98` | `LP11_BOUNDARY` | scan | .009 official FDC population identifies К155ЛП11 16-pin physical boundary; power pins 8/16 promoted, exact logic signal assignment awaits FDC continuity |
-| `D99` | `AG3_ONESHOT` | scan | .009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation 16-pin package and standard AG3 pinout; power pins 8/16 promo... |
 
 ### logic/source
 
@@ -141,18 +148,20 @@ model is historical-source-complete.
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
 | `D100` | logic/source | `9:OE_N, 11:T` |
-| `D101` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 7:PIN7, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13, 14:PIN14, 15:PIN15` |
-| `D102` | PROM truth | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
+| `D101` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
+| `D102` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
+| `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
 | `D2` | PROM truth | `1:A6, 3:A4, 5:A0, 6:A1, 7:A2` |
-| `D28` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 8:PIN8, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13` |
+| `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` |
 | `D93` | logic/source | `19:MR_N, 24:CLK` |
 | `D94` | PROM truth | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
-| `D95` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 7:PIN7, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13, 14:PIN14, 15:PIN15` |
-| `D97` | PROM truth | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
-| `D98` | PROM truth | `1:PIN1, 2:PIN2, 3:PIN3, 4:PIN4, 5:PIN5, 6:PIN6, 7:PIN7, 9:PIN9, 10:PIN10, 11:PIN11, 12:PIN12, 13:PIN13, 14:PIN14, 15:PIN15` |
-| `D99` | PROM truth | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
+| `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
+| `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
+| `D97` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
+| `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 3:Y1, 4:A2, 5:Y2, 6:A3, 7:Y3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
+| `D99` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `S4` | logic/source | `1:P1, 2:P2` |
 
 ## Documented Intentional No-Connects

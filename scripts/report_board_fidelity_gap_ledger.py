@@ -14,9 +14,10 @@ BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "board-fidelity-gap-ledger.md"
 
 RISK_RE = re.compile(
-    r"assumed|boundary|deferred|untraced|not traced|pending|unread|owner-verify|mame|approx|refine|dump",
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|pending|unread|await|owner-verify|mame|approx|refine|dump",
     re.I,
 )
+FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
 
 
 def table_row(values: list[object]) -> str:
@@ -50,9 +51,11 @@ def category_for_chip(chip: dict, text: str) -> str:
     upper = f"{ref} {ctype} {text}".upper()
     if prov_type == "missing":
         return "missing provenance"
+    if ref in FDC_SUPPORT_REFS:
+        return "FDC owner-continuity"
     if "UNPOPULATED" in upper:
         return "unpopulated sockets"
-    if "D2" == ref or "D94" == ref or "PROM" in upper or "РТ4" in upper or "РЕ3" in upper:
+    if "D2" == ref or "D94" == ref or re.search(r"\bPROM\b|РТ4|РЕ3", upper):
         return "PROM truth"
     if "ANALOG" in upper or ref.startswith(("VT", "VD", "L")):
         return "analog/source"

@@ -34,7 +34,8 @@ REQUIRED = [
     ROOT / "docs" / "cartridge-basic-boundary.md",
 ]
 
-PIN_CLOSURE_REFS = {"D2", "D41", "D93", "D94", "D100", "S4"}
+FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
+PIN_CLOSURE_REFS = {"D2", "D41", "D93", "D94", "D100", "S4"} | FDC_SUPPORT_REFS
 
 
 def read(path: Path) -> str:
@@ -116,8 +117,8 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
             evidence = "dump/programming disk plus sheet-1 continuity"
         elif ref == "D94":
             evidence = ".092 dump/table plus enable/output continuity"
-        elif ref in {"D93", "D100"}:
-            evidence = "FDC quadrant continuity"
+        elif ref in {"D93", "D100"} | FDC_SUPPORT_REFS:
+            evidence = "continuity from an actual `.009` FDC-populated board"
         elif ref == "D41":
             evidence = "sheet-2 timing-chain continuity"
         elif ref == "S4":
