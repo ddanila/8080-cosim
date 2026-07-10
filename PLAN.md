@@ -27,7 +27,7 @@ is not a prerequisite for ordering or bringing up the replica.
 | Area | What is proved | What is not proved |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer/keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected checkpoint-resumed commands | Exact shared-DRAM video-slot timing, full controller fidelity, cartridge BASIC compatibility, and analog behavior |
-| Connectivity | `sync/check.sh` reports 97 mapped instances and 227 matched nets | Unmapped footprints, pins absent from `board.json`, and the correctness of behavioral models |
+| Connectivity | `sync/check.sh` reports 99 mapped instances and 231 matched nets | Unmapped footprints, pins absent from `board.json`, and the correctness of behavioral models |
 | PCB package | 240-footprint routed artifact; no KiCad clearance/short/unconnected-item errors; reproducible 2-layer 310 x 266 mm Gerber/drill package | Electrical completeness or historical correctness of omitted/assumed nets |
 | Sources/media | Factory schematic set, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, photographs, and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, and the missing cartridge BASIC page/procedure |
 
