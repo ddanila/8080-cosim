@@ -11,85 +11,96 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 ## Summary
 
-- Routed power segments: 742
-- Widened power segments (`>0.20 mm`): 430
-- Total routed power length: 4878.740 mm
-- Widened routed power length: 2260.334 mm
+- Routed power segments: 815
+- Widened power segments (`>0.20 mm`): 455
+- Total routed power length: 4879.608 mm
+- Widened routed power length: 1977.866 mm
 - Width clamp: 0.20 mm to 1.00 mm
 
 ## Nets
 
 | Net | Segments | Widened | Min width mm | Max width mm | Total length mm | Widened length mm | Layers |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| GND | 320 | 168 | 0.200 | 1.000 | 1833.836 | 878.279 | B.Cu, F.Cu |
-| P5V | 313 | 209 | 0.200 | 1.000 | 1975.140 | 954.811 | B.Cu, F.Cu |
-| P12V | 46 | 26 | 0.200 | 1.000 | 471.387 | 224.428 | B.Cu, F.Cu |
-| M12V | 44 | 16 | 0.200 | 1.000 | 515.643 | 161.729 | B.Cu, F.Cu |
-| M5V_DERIVED | 19 | 11 | 0.200 | 1.000 | 82.733 | 41.088 | B.Cu, F.Cu |
+| GND | 352 | 192 | 0.200 | 1.000 | 1901.961 | 838.397 | B.Cu, F.Cu |
+| P5V | 340 | 218 | 0.200 | 1.000 | 1992.953 | 955.012 | B.Cu, F.Cu |
+| P12V | 57 | 20 | 0.200 | 1.000 | 445.747 | 87.884 | B.Cu, F.Cu |
+| M12V | 50 | 17 | 0.200 | 1.000 | 455.864 | 68.131 | B.Cu, F.Cu |
+| M5V_DERIVED | 16 | 8 | 0.200 | 1.000 | 83.084 | 28.443 | B.Cu, F.Cu |
 
 ## Width Histogram
 
 | Width mm | Segments |
 | ---: | ---: |
-| 0.2 | 312 |
-| 0.3217 | 1 |
-| 0.3368 | 1 |
-| 0.3382 | 1 |
-| 0.3412 | 1 |
-| 0.363 | 1 |
-| 0.366 | 1 |
-| 0.3664 | 1 |
+| 0.2 | 360 |
+| 0.3007 | 1 |
+| 0.3038 | 1 |
+| 0.3218 | 1 |
+| 0.3248 | 2 |
+| 0.3265 | 1 |
+| 0.3302 | 1 |
+| 0.331 | 1 |
+| 0.3366 | 1 |
+| 0.3574 | 1 |
+| 0.3593 | 1 |
+| 0.3675 | 1 |
 | 0.38 | 2 |
-| 0.388 | 2 |
-| 0.4183 | 1 |
-| 0.4194 | 1 |
-| 0.4198 | 2 |
-| 0.42 | 11 |
-| 0.4256 | 2 |
-| 0.4326 | 1 |
-| 0.434 | 1 |
+| 0.3894 | 1 |
+| 0.4092 | 1 |
+| 0.417 | 1 |
+| 0.42 | 18 |
+| 0.4256 | 1 |
+| 0.4312 | 1 |
+| 0.4412 | 1 |
+| 0.4562 | 1 |
+| 0.4572 | 1 |
 | 0.46 | 1 |
-| 0.4712 | 2 |
-| 0.4832 | 1 |
-| 0.4834 | 5 |
+| 0.4812 | 1 |
+| 0.4834 | 2 |
+| 0.4874 | 1 |
 | 0.4896 | 1 |
-| 0.5 | 1 |
-| 0.5092 | 1 |
+| 0.4902 | 2 |
+| 0.4913 | 3 |
 | 0.5175 | 1 |
-| 0.5188 | 1 |
-| 0.52 | 2 |
-| 0.5361 | 1 |
-| 0.5566 | 7 |
-| 0.5599 | 1 |
-| 0.577 | 1 |
-| 0.5835 | 1 |
-| 0.6042 | 1 |
-| 0.6103 | 1 |
-| 0.6302 | 1 |
-| 0.6306 | 2 |
-| 0.6345 | 1 |
+| 0.52 | 4 |
+| 0.5226 | 1 |
+| 0.5358 | 1 |
+| 0.5376 | 1 |
+| 0.5456 | 1 |
+| 0.5566 | 6 |
+| 0.5647 | 1 |
+| 0.573 | 1 |
+| 0.6123 | 1 |
+| 0.6157 | 1 |
+| 0.6184 | 1 |
+| 0.6295 | 1 |
+| 0.6304 | 1 |
+| 0.6352 | 1 |
 | 0.6358 | 1 |
-| 0.7084 | 1 |
-| 0.7354 | 1 |
+| 0.6531 | 1 |
+| 0.6552 | 1 |
+| 0.657 | 1 |
+| 0.6685 | 1 |
+| 0.6686 | 1 |
+| 0.6688 | 2 |
+| 0.711 | 1 |
+| 0.712 | 1 |
+| 0.7258 | 1 |
+| 0.73 | 2 |
 | 0.7596 | 1 |
-| 0.768 | 1 |
-| 0.7862 | 1 |
-| 0.8145 | 1 |
-| 0.8203 | 1 |
-| 0.8344 | 1 |
-| 0.855 | 1 |
-| 0.8656 | 2 |
-| 0.8674 | 2 |
-| 0.8742 | 2 |
-| 0.8744 | 1 |
+| 0.7763 | 1 |
+| 0.7886 | 1 |
+| 0.81 | 1 |
 | 0.8798 | 1 |
-| 0.9042 | 1 |
-| 0.9227 | 1 |
-| 0.9516 | 2 |
-| 0.9553 | 1 |
-| 0.9566 | 1 |
-| 1 | 343 |
+| 0.8865 | 1 |
+| 0.9014 | 1 |
+| 0.9379 | 1 |
+| 0.9404 | 1 |
+| 0.9539 | 1 |
+| 0.9856 | 1 |
+| 0.9938 | 3 |
+| 0.9962 | 1 |
+| 1 | 353 |
 
 ## Disposition
 
-The routed power nets match the reviewed current-route widening envelope: 742 power segments present, 430 widened where local clearance allowed, no power segment below the routed baseline, and no widened segment above the 1.00 mm clamp. KiCad DRC remains the clearance authority.
+The routed power nets match the reviewed current-route widening envelope: 815 power segments present, 455 widened where local clearance allowed, no power segment below the routed baseline, and no widened segment above the 1.00 mm clamp. KiCad DRC remains the clearance authority.

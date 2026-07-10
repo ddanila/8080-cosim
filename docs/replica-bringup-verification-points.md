@@ -13,17 +13,17 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `40`
-- Verification-point endpoints checked in PCB: `234`
+- Verification-point nets: `41`
+- Verification-point endpoints checked in PCB: `235`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1909`
-- All board endpoints checked in routed PCB: `1909`
+- All board endpoints checked in source PCB: `1914`
+- All board endpoints checked in routed PCB: `1914`
 - Full PCB endpoint coverage: `PASS`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 10 |
+| logic | 11 |
 | memory/decode | 9 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
@@ -39,8 +39,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 234/234 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 234/234 net names matched |
+| Risk endpoints present on PCB pads | PASS | 235/235 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 235/235 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -50,8 +50,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1909/1909 | 1909/1909 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1909/1909 | 1909/1909 | PASS |
+| `kicad/juku.kicad_pcb` | 1914/1914 | 1914/1914 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1914/1914 | 1914/1914 | PASS |
 
 ## Checklist
 
@@ -96,6 +96,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable | Scope/capture video or timing node during video bring-up. |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout | Scope/capture video or timing node during video bring-up. |
 | `W_RAIL16` | memory/decode | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reprodu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
+| `XACK_N` | logic | `D2.2` | traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explicit conflict boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `XTAL16M` | timing/I/O | `D103.2, D42.9, D43.9` | traced sheet-2 (crop s2_dotclk_bend): the 16MHz crystal rail (bundle tag 14) is a SEPARATE net from D56.Q_N; it clocks D103 + the ИР16 shifters. Likely = the OSC net continuatio... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 
 ## Design-release disposition

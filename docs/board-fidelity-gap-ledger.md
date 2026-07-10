@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `231`
-- Nets modeled: `332`
+- Nets modeled: `334`
 - Chip-level fidelity gaps: `46`
-- Net-level source-risk gaps: `40`
+- Net-level source-risk gaps: `41`
 - Documented intentional no-connect pins: `2`
 
 ## Chip Provenance Types
@@ -41,7 +41,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 0 | 3 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 9 |
+| PROM/decode | 0 | 10 |
 | clock/I/O | 0 | 4 |
 | logic/source | 5 | 6 |
 | memory/timing | 0 | 5 |
@@ -60,7 +60,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.037 [dump pending]; drawing = .03... |
+| `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/... |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8) |
 
 ### logic/source
@@ -134,7 +134,7 @@ model is historical-source-complete.
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
 | `D100` | logic/source | `9:OE_N, 11:T` |
-| `D2` | PROM truth | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 13:V1, 14:V2, 15:A7` |
+| `D2` | PROM truth | `1:A6, 3:A4, 5:A0, 6:A1, 7:A2` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` |
 | `D93` | logic/source | `19:MR_N, 24:CLK` |
@@ -198,6 +198,7 @@ same fidelity ledger as the chip provenance gaps.
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 | `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
+| `XACK_N` | PROM/decode | `D2.2` | traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explici... |
 | `XTAL16M` | clock/I/O | `D103.2, D42.9, D43.9` | traced sheet-2 (crop s2_dotclk_bend): the 16MHz crystal rail (bundle tag 14) is a SEPARATE net from D56.Q_N; it clocks D103 + the ИР16 shifters. Likely = the... |
 
 ## Automatic Closure Rule

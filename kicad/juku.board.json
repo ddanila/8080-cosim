@@ -3136,7 +3136,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-1: РТ4 D2 = bus-arbitration/wait PROM (A <- VIDEO CYCLE/-XACK/-WREQ rails, DO=12); nets deferred; contents = ДГШ5.106.037 [dump pending]; drawing = .037 per the official .009 BOM"
+    "pins": "sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/pin12->D105.9; remaining A inputs and ДГШ5.106.037 truth table pending"
    }
   },
   {
@@ -8161,6 +8161,10 @@
     [
      "D36",
      "1"
+    ],
+    [
+     "D2",
+     "4"
     ]
    ]
   },
@@ -9352,6 +9356,14 @@
     [
      "D105",
      "10"
+    ],
+    [
+     "D2",
+     "13"
+    ],
+    [
+     "D2",
+     "14"
     ]
    ]
   },
@@ -13567,6 +13579,14 @@
   "D2_WAIT_RAW": {
    "src": "traced sheet-1: D2 D0/pin 12 enters D105 NAND input pin 9",
    "nodes": [["D2", "12"], ["D105", "9"]]
+  },
+  "XACK_N": {
+   "src": "traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explicit conflict boundary",
+   "nodes": [["D2", "2"]]
+  },
+  "WREQ_N": {
+   "src": "traced sheet-1: label -WREQ enters D2 A7/pin 15 from edge code 107C; target connector destination remains unmodeled",
+   "nodes": [["D2", "15"]]
   },
   "D105_WAIT_STAGE": {
    "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",

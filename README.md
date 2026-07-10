@@ -15,7 +15,7 @@ with the machine-readable board model.
 - The routed main-board artifact has 240 footprints and no KiCad
   clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
   and internally coherent. Current ZIP SHA256:
-  `cf2ea833be2a0be7ceaa2147682a5cb4a6a86c4da963340b3b3d5aa2e8e35518`.
+  `d81a7ffbc401dfb8fbc6af22f775d18a4dde04d0b8c481f9b9199a7044a2a62e`.
 - The main board is **not released for fabrication**. D2 is only partially
   traced, D94 lacks its enable/output wiring, and 9 official IC footprints in
   the FDC cluster have no modeled pin connectivity. D105 wait/MRD
@@ -24,7 +24,7 @@ with the machine-readable board model.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
   untraced. The D2/D94
-  PROM contents are also missing, and 40 modeled nets retain source-risk annotations
+  PROM contents are also missing, and 41 modeled nets retain source-risk annotations
   requiring evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

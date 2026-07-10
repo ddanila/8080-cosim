@@ -33,7 +33,7 @@ is not a prerequisite for ordering or bringing up the replica.
 
 The current main-board ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
-`cf2ea833be2a0be7ceaa2147682a5cb4a6a86c4da963340b3b3d5aa2e8e35518`.
+`d81a7ffbc401dfb8fbc6af22f775d18a4dde04d0b8c481f9b9199a7044a2a62e`.
 It is retained as a reproducible engineering snapshot. **Do not send it to a
 fabricator until the release blockers below are closed and the package is
 regenerated.**
@@ -43,8 +43,9 @@ regenerated.**
 ### P0: physical connectivity
 
 1. **D2 `.037` bus/wait PROM and WAIT revision handoff** — D2 D0/pin 12 is now
-   routed into the fully modeled D105 К155ЛА3 wait/MRD logic. Trace the remaining
-   D2 input rails and recover the PROM truth table. Reconcile the `.006` D95
+   routed into D105; A3 is the CAS/video-cycle rail, V1/V2 are grounded, and
+   A5/A7 retain explicit `-XACK`/`-WREQ` boundaries. Trace the five remaining
+   address inputs and recover the PROM truth table. Reconcile the `.006` D95
    inverter after D105.6 with `.009`'s reassignment of D95 to an FDC К555КП12.
 2. **All placement-only official ICs** — D28, D95-D99, D101, D102,
    and D106 exist in the source PCB, routed PCB, and DSN but have no pin model.

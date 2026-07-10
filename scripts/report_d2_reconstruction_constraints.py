@@ -260,9 +260,9 @@ def main() -> int:
         [
             "",
             "The named schematic leads above are pin-level source evidence, not a",
-            "claim that their complete PCB nets or D2 truth table are known. They",
-            "must be promoted only with the remaining address inputs and destination",
-            "continuity so a regenerated PCB does not encode a partial circuit.",
+            "claim that the remaining address inputs or D2 truth table are known.",
+            "Each proved pin is promoted independently; unresolved pins remain",
+            "explicit rather than being filled by behavioral inference.",
             "",
             "## KiCad DSN Cross-check",
             "",
