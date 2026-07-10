@@ -43,8 +43,8 @@ explicit rather than being filled by behavioral inference.
 
 ## KiCad DSN Cross-check
 
-The routed DSN currently exposes no D2 signal nets. The factory-sheet
-leads above therefore remain an unrouted reconstruction boundary.
+The routed DSN exposes every currently proved D2 lead. The five
+untraced address inputs remain an explicit reconstruction boundary.
 
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |
@@ -62,23 +62,22 @@ leads above therefore remain an unrouted reconstruction boundary.
 
 ## KiCad PCB Cross-check
 
-The final PCB source currently exposes no D2 signal pad nets. This
-agrees with the deferred-net boundary in `kicad/juku.board.json`
-and `kicad/juku.dsn`.
+The final PCB source exposes every currently proved D2 lead and
+leaves only the five untraced address-input pads unnetted.
 
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
 | 1 | A6 | - | unnetted in PCB |
-| 2 | A5 | - | unnetted in PCB |
+| 2 | A5 | `XACK_N` | present |
 | 3 | A4 | - | unnetted in PCB |
-| 4 | A3 | - | unnetted in PCB |
+| 4 | A3 | `CAS` | present |
 | 5 | A0 | - | unnetted in PCB |
 | 6 | A1 | - | unnetted in PCB |
 | 7 | A2 | - | unnetted in PCB |
-| 15 | A7 | - | unnetted in PCB |
-| 13 | V1 | - | unnetted in PCB |
-| 14 | V2 | - | unnetted in PCB |
-| 12 | D0 | - | unnetted in PCB |
+| 15 | A7 | `WREQ_N` | present |
+| 13 | V1 | `GND` | present |
+| 14 | V2 | `GND` | present |
+| 12 | D0 | `D2_WAIT_RAW` | present |
 
 ## Current Evidence Checks
 
@@ -87,12 +86,12 @@ and `kicad/juku.dsn`.
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
 | Any D2 signal net is traced | PASS | `XACK_N`, `CAS`, `WREQ_N`, `GND`, `GND`, `D2_WAIT_RAW` |
 | Any D2 signal appears in DSN | PASS | `12`=`D2_WAIT_RAW`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `4`=`CAS` |
-| Any D2 signal appears in PCB | FAIL | no D2 pins in PCB nets |
+| Any D2 signal appears in PCB | PASS | `12`=`D2_WAIT_RAW`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `4`=`CAS` |
 | `.037` firmware artifact exists | FAIL | `ref/firmware/` has no `.037` artifact |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
 | No reconstructed D2 fallback is exported | PASS | `docs/reconstructed-prom-fallbacks.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
-| Evidence summary preserves D2 pin table but defers nets | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
+| Evidence summary preserves D2 pin table but defers nets | FAIL | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 
 ## Evidence Reconciliation
 

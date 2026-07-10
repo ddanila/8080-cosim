@@ -118,7 +118,7 @@ def pcb_pin_nets(ref: str) -> dict[str, str]:
     for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
         pin = match.group(1)
         pad_block = matching_block(block, match.start() + 3)
-        net = re.search(r'\(net\s+"([^"]+)"\)', pad_block)
+        net = re.search(r'\(net\s+\d+\s+"([^"]+)"\)', pad_block)
         if net:
             found[pin] = net.group(1)
     return found
@@ -266,8 +266,8 @@ def main() -> int:
             "",
             "## KiCad DSN Cross-check",
             "",
-            "The routed DSN currently exposes no D2 signal nets. The factory-sheet",
-            "leads above therefore remain an unrouted reconstruction boundary.",
+            "The routed DSN exposes every currently proved D2 lead. The five",
+            "untraced address inputs remain an explicit reconstruction boundary.",
             "",
             table_row(["Pin", "Role", "DSN Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),
@@ -279,9 +279,8 @@ def main() -> int:
             "",
             "## KiCad PCB Cross-check",
             "",
-            "The final PCB source currently exposes no D2 signal pad nets. This",
-            "agrees with the deferred-net boundary in `kicad/juku.board.json`",
-            "and `kicad/juku.dsn`.",
+            "The final PCB source exposes every currently proved D2 lead and",
+            "leaves only the five untraced address-input pads unnetted.",
             "",
             table_row(["Pin", "Role", "PCB Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),

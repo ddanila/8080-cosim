@@ -54,16 +54,16 @@ every destination strongly enough to route it. D2 pin table from sheet 1:
 `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, and `D0=12`.
 
 D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Current evidence
-indicates D2 pin 12 into D105 pin 9 and D2 V1/V2 tied low. D105 pin 10's source
-and pin 6's destination still require continuity confirmation. D2 signal nets
-remain deferred until those paths and the PROM inputs/output destination are
-closed. The footprint must not be mistaken for a modeled or routed function.
+indicates D2 pin 12 into D105 pin 9 and D2 V1/V2 tied low. The sheet's power
+legend identifies D105 pin 10's `H` source as the derived −5 V rail. D105 pin
+6's destination still requires continuity confirmation. The proved D2 leads
+are modeled and routed; its other inputs and PROM contents remain deferred.
 
 The full-resolution sheet also proves three D2 address leads: `VIDEO CYCLE` to
 A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other
 two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
 MRD inverter). These reads reduce the trace boundary but do not yet establish
-D2 A0/A1/A2/A4/A6, the D105 pin-10 `H` source, or every output destination.
+D2 A0/A1/A2/A4/A6 or every output destination.
 
 ## D30 READY boundary
 
