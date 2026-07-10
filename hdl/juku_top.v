@@ -119,9 +119,15 @@ module juku_top (
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
     wire d30_q, d30_qn, d30_q2, d30_q2n;
+`ifdef YOSYS
+    wire d30b_d_pre_n;
+`else
+    tri1 d30b_d_pre_n;
+`endif
+    // Sheet-1 proves D30 pins 10 (/PRE2) and 12 (D2) share this boundary net.
     tm2_dff U_D30 (.clr1_n(1'b1), .d1(1'b1), .clk1(phi2ttl), .pre1_n(1'b1),
-                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(1'b1), .d2(1'b0),
-                   .clk2(1'b0), .pre2_n(1'b1), .q2(d30_q2), .q2_n(d30_q2n));
+                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(1'b1), .d2(d30b_d_pre_n),
+                   .clk2(1'b0), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
     // reproduces the boot-tb's waveform (osc posedge mid-phase, one per phase) but self-generated.

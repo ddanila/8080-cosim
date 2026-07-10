@@ -79,7 +79,9 @@ def pcb_pin_nets(path: Path) -> dict[tuple[str, str], str]:
             continue
         for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
             pad_block = matching_block(block, match.start() + 3)
-            net = re.search(r'\(net\s+"([^"]+)"\)', pad_block)
+            # KiCad 9/10 serializes pad nets as `(net <code> "<name>")`;
+            # older generated artifacts omitted the numeric code.
+            net = re.search(r'\(net\s+(?:\d+\s+)?"([^"]+)"\)', pad_block)
             if net:
                 found[(ref.group(1), match.group(1))] = net.group(1)
     return found

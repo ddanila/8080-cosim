@@ -33,7 +33,7 @@ is not a prerequisite for ordering or bringing up the replica.
 
 The current main-board ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
-`7001c1245d4bb92d552800eec35e33de399768d4c7cb2ec871eeef69c3dfb07e`.
+`261db032c3301d5604feca84ee3cd581aaa5dc924d8a183a921c4b0d180de0a1`.
 It is retained as a reproducible engineering snapshot. **Do not send it to a
 fabricator until the release blockers below are closed and the package is
 regenerated.**
