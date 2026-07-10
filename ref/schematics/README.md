@@ -1,22 +1,27 @@
-# Juku processor-module schematic — SOURCE OF TRUTH
+# Juku processor-module factory drawings
 
-Authoritative electrical schematic of the Juku processor module. From now on this
-**supersedes the MAME-derived map** wherever they disagree (MAME was a stand-in
-until we had the real drawing).
+`juku_es101_processor_module.pdf` is the primary factory electrical schematic
+for the ДГШ5.109.006 processor module. It outranks emulator inference for the
+circuits it depicts, but it is not the complete `.009` FDC-era target by
+itself: sheet 3 shows the earlier tape subsystem, while the official `.009`
+parts list and physical-board evidence establish the later FDC population.
 
-- **File:** `juku_es101_processor_module.pdf`
-- **Drawing:** ДГШ5.109.006 Э3 — «Модуль процессора. Схема электрическая принципиальная»
-- **Source:** https://arti.ee/juku/ (Juku preservation archive)
-- **Format:** 3-sheet raster scan, ~A1, ГОСТ style, Russian/Estonian labels
-- **Variant:** ES101/E5101 family (NB: our HDL/map were derived from MAME's **E5104** —
-  expect real differences, esp. tape-vs-disk and RAM organization; record them).
+- Drawing: `ДГШ5.109.006 Э3` — processor module electrical schematic.
+- Source: https://arti.ee/juku/
+- Format: three-sheet raster scan, approximately A1, ГОСТ style.
+- Related evidence: `es101_emaplaat.pdf` assembly/placement drawing,
+  `es101_nimekiri_komponendid.pdf`, `ref/Juku_official_chip_BOM.pdf`, and the
+  owner photographs under `ref/photos/`.
 
-## Page ↔ sheet mapping (PDF page order is reversed)
-| PDF page | sheet | rendered PNG | contents |
-|---|---|---|---|
-| 3 | Лист 1 | `p3_sheet1.png` | CPU `КР580ВМ80`, 8238 (`БК38`), 8286 (`БА86`) buffers, ROM/EPROM + RAM array, 8251/8255/8259, edge connectors X2–X9 |
-| 2 | Лист 2 | `p2_sheet2.png` | counters/timers `ВИ53`, RAM `РУ5` array, video address/sync, baud/tape gen |
-| 1 | Лист 3 | `p1_sheet3.png` | USART/SIO, tape interface (`СА3` comparator), serial connectors, glue |
+## PDF page mapping
 
-PNGs are 150 DPI renders (`pdftoppm`) kept for close reading + transcription; re-render
-specific regions at higher DPI as needed.
+| PDF page | Sheet | Rendered PNG | Main contents |
+| ---: | ---: | --- | --- |
+| 3 | 1 | `p3_sheet1.png` | CPU, controller/buffers, ROM, RAM interface, PPI/PIC/USART, connectors |
+| 2 | 2 | `p2_sheet2.png` | PITs, DRAM array/timing, video counters and output timing |
+| 1 | 3 | `p1_sheet3.png` | earlier tape/serial subsystem; do not map its reused D94-D108 refdes onto `.009` FDC parts |
+
+The PNGs are 150-DPI working renders. Electrical claims should cite the
+factory sheet plus any `.009` BOM/photo/continuity evidence needed to resolve
+revision differences. The normalized current interpretation lives in
+`kicad/juku.board.json` with provenance and explicit boundaries.

@@ -116,10 +116,11 @@ def main() -> int:
         "",
         "## Remaining Boundary",
         "",
-        "- This proves the interrupt-driven monitor path is alive in cosim. It does",
-        "  not yet prove a live user-visible jmon33 prompt.",
-        "- Next step: identify the monitor-ready screen/RAM oracle and port the same",
-        "  jmon33 interrupt run to `juku_top`.",
+        "- This fast probe proves that the interrupt-driven monitor path is alive in",
+        "  cosim; it is not the user-visible completion oracle by itself.",
+        "- `docs/jmon33-ready-probe.md` records the stronger cosim monitor-idle",
+        "  framebuffer oracle, and `docs/jmon33-hdl-cursor-probe.md` records the",
+        "  matching structural-HDL cursor result.",
     ]) + "\n")
 
     print(f"JMON33-PROBE: {'PASS' if passed else 'FAIL'}")

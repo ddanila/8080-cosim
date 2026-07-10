@@ -7,7 +7,7 @@ from pathlib import Path
 CHECK_COMMAND = ["spinoffs/minimal-vga/sim/check.sh"]
 
 EXPECTED_MARKERS = [
-    ("ROM/cosim boot oracle", "BOOT-CHECK: PASS"),
+    ("Main-project ROM regression (not VJUGA boot)", "BOOT-CHECK: PASS"),
     ("T80 minimal top", "[Z80-MIN] PASS"),
     ("Schematic/HDL LVS", "==> IN SYNC"),
     ("Rev A physical schematic target", "Rev A physical spec check: PASS"),
@@ -26,18 +26,19 @@ def fenced_log(text):
 
 def build_report(returncode, output):
     missing = [name for name, marker in EXPECTED_MARKERS if marker not in output]
-    status = "READY" if returncode == 0 and not missing else "NOT READY"
+    status = (
+        "SMOKE TESTS PASS / REAL VJUGA BOOT UNPROVEN"
+        if returncode == 0 and not missing
+        else "SMOKE TESTS FAILED"
+    )
     lines = [
         "# Rev A behavioral readiness",
         "",
         f"Status: **{status}**",
         "",
-        "This report captures the simulator and LVS proof used before treating the",
-        "Rev A board package as internally coherent. It runs",
-        "`spinoffs/minimal-vga/sim/check.sh`, which covers the existing ROM/cosim",
-        "boot oracle, T80 smoke test, schematic/HDL LVS, physical target checks,",
-        "PCB scaffold checks, fabrication-readiness DRC summary, and DRAM",
-        "row/column unit test.",
+        "This report captures current smoke, structural, and package checks. The",
+        "main-project ROM/cosim regression protects shared code but does not run",
+        "the VJUGA top. VJUGA itself still executes only its synthetic T80 ROM.",
         "",
         "## Summary",
         "",
@@ -80,7 +81,7 @@ def main():
     path.write_text(report)
     print(report)
     print(f"Wrote {path}")
-    return 0 if status == "READY" else 3
+    return 0 if status == "SMOKE TESTS PASS / REAL VJUGA BOOT UNPROVEN" else 3
 
 
 if __name__ == "__main__":

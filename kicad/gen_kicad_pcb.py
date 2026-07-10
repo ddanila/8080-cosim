@@ -225,8 +225,8 @@ PLACE = {
     'D37':(241.7,181,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
     'D13':(31.9,205.3,90),
 }
-# unpopulated DRAM banks 1-3 (D68-D91) -- now net-modeled sockets -> real footprints at their
-# array positions (bit7..bit0 = cols 127..238; rows y190/217/242), promoted from silk outlines.
+# remaining DRAM rows D68-D91 -- now net-modeled sockets -> real footprints at their
+# array positions. D84-D91 are populated on the .158/.009 target; D68-D83 are empty.
 _DCOLS = [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4]
 # rows re-anchored to bank-0's precise y=148 (the old ladder started at 158.2 = bank-0's PRE-re-base
 # y; leaving banks 1-3 unshifted overlapped bank 0 with bank 1 -> 192 pad shorts, route-blocking)
@@ -523,7 +523,7 @@ def main():
 
     # top-edge expansion connectors X1/X2 -- non-electrical SILK OUTLINE annotations (read off the
     # drawing: X1 mm15..107, X2 mm118..177, at the top edge). Their full pin/net model is future
-    # LVS work (bom-toward-76); this just shows the two prominent connectors so the top matches.
+    # LVS work; this just shows the two prominent connectors so the top matches.
     outline_chips = []                        # placement-only chip outlines (D-refs), for the count report
     outline_boxes = []                        # (x0,y0,x1,y1,label) for the outline-overlap guard
     def silk_box(x0, y0, x1, y1, label):
@@ -555,10 +555,8 @@ def main():
     # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the
     # 8-EPROM bank visually (same row y86, ~21 mm pitch). Not in board.json -> LVS unaffected.
     # (ROM sockets D17-D22 are now net-modeled footprints -- see PLACE -- not silk outlines.)
-    # DRAM array is 565РУ3Г ×32 (BOM) -> D60-D91 in a 4×8 grid. Row 1 (D60-67 @ y158) is net-
-    # modeled; add the other 3 rows (D68-D91, 24 chips) as placement-only silk outlines so the
-    # full array shows (same 8 columns; rows read at y≈190/217/242). Not in board.json -> LVS clean.
-    # (DRAM banks 1-3 D68-D91 are now net-modeled footprints -- see PLACE -- not silk outlines.)
+    # DRAM array is 565РУ5 ×32 -> D60-D91 in a 4×8 grid. All sockets are net-modeled;
+    # the .158/.009 target populates the bottom D84-D91 row.
     # DRAM-array left column D50/D51 (still placement-only). (D42/D43/D58 are now net-modeled
     # footprints -- see PLACE -- so they're no longer silk outlines here.)
     # (converted to untraced footprints)

@@ -31,5 +31,6 @@ Source interpretation notes captured with the files:
   devices in logic gates are normally-on channel devices.
 
 Do not mechanically translate the schematic or PLA table into HDL without an
-explicit implementation decision. The immediate M2 target remains getting the
-existing `juku_top` ROMBIOS `TDD` path to the vendored `JUKU1.CPM` EKDOS prompt.
+explicit implementation decision. The current boot-scoped model already
+reaches the vendored `JUKU1.CPM` EKDOS prompt; use this deeper reference only
+when a concrete missing command or timing requirement justifies a fuller core.

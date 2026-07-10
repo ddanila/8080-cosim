@@ -1,87 +1,88 @@
 # 8080-cosim
 
-Experiment: model an Intel 8080–based computer as **both** a physical PCB and a
-runnable digital simulation, and keep the two models provably in sync — without a
-GUI in the loop, so the whole thing can be driven by an LLM.
+Reconstruction of the Soviet/Estonian Juku E5104 processor board as both a
+physical PCB and a runnable, headless digital model. The project’s distinctive
+piece is an LVS-style check that compares the structural Verilog connectivity
+with the machine-readable board model.
+
+## Current result
+
+- The C emulator and the structural `juku_top` model boot the real Juku ROM,
+  render the same framebuffer, accept keyboard input, boot EKDOS from the
+  vendored disk images, and reach disk BASIC `READY`.
+- `sync/check.sh` currently compares 97 mapped instances and 227 nets with no
+  KiCad/HDL mismatch.
+- The routed main-board artifact has 237 footprints and no KiCad
+  clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
+  and internally coherent. Current ZIP SHA256:
+  `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`.
+- The main board is **not released for fabrication**. D2 is still physically
+  unnetted, D94 lacks its enable/output wiring, and 11 official IC footprints
+  (including D30 READY support, D105 wait logic, and FDC glue) have no modeled
+  pin connectivity. The D2/D94 PROM contents are also missing, and 36 modeled
+  nets retain source-risk annotations requiring evidence or explicit redesign.
+  See [PLAN.md](PLAN.md).
+
+That last distinction matters: a clean DRC and a green LVS prove only the
+connectivity represented in those checks. They do not prove omitted pins,
+unmodeled footprints, reconstructed PROM contents, or analog/timing assumptions.
+
+## Evidence and source hierarchy
+
+1. Factory drawings, board photographs, dumps, and owner measurements under
+   `ref/` are the historical evidence.
+2. `kicad/juku.board.json` is the current machine-readable connectivity model.
+3. `kicad/juku.kicad_sch`, the PCB files, and fabrication outputs are derived
+   from or checked against that model.
+4. `hdl/juku_top.v` is independently maintained structural Verilog and is
+   checked against the modeled connectivity by `sync/`.
+5. `cosim/` and the current upstream MAME Juku driver are behavioral oracles;
+   they are not substitutes for missing physical wiring evidence.
 
 ## Board previews
 
-The recreated ДГШ5.109.006 processor board (auto-routed 2-layer, 310×266 mm), regenerated
-from `kicad/juku_routed.kicad_pcb` by `kicad/render_views.sh`. A repo pre-commit hook
-(`.githooks/pre-commit`; enable once with `git config core.hooksPath .githooks`) refreshes
-these whenever the routed board is committed, so they never go stale.
+These renders show the current routed engineering artifact, not a fabrication
+release.
 
 | 3D | 2D |
-|---|---|
+| --- | --- |
 | ![3D top](renders/board_3d_top.png) | ![component side](renders/board_2d_front.png) |
 | ![3D perspective](renders/board_3d_persp.png) | ![solder side](renders/board_2d_back.png) |
 
+## Useful entry points
 
-## Goal
+- [PLAN.md](PLAN.md) — remaining work and release criteria.
+- [docs/README.md](docs/README.md) — documentation map and generated-report
+  policy.
+- [docs/architecture.md](docs/architecture.md) — model boundaries and data flow.
+- [docs/source-coverage-audit.md](docs/source-coverage-audit.md) — adopted
+  external evidence and remaining source gaps.
+- [sync/README.md](sync/README.md) — verification commands.
+- [docs/replica-manufacturing-readiness.md](docs/replica-manufacturing-readiness.md)
+  — fabrication-package integrity and the current design hold.
 
-1. **PCB** — schematic + board for an 8080 system (CPU + ROM + RAM + glue +
-   peripherals + keyboard) in KiCad.
-2. **Simulation** — a headless, scriptable model of the same machine that can:
-   - load a ROM image,
-   - clock the CPU,
-   - inject keystrokes,
-   - let us read **video RAM** to confirm something was printed,
-   - feed commands and observe the machine react.
-3. **Sync glue** — automated checking that the PCB and the simulation describe
-   the *same* circuit (connectivity equivalence, a.k.a. LVS), so the two models
-   can't silently drift apart.
+## Quick checks
 
-## Approach (see `docs/architecture.md` for the full reasoning)
+```sh
+sync/check.sh
+sync/boot_check.sh
+sync/cosim_check.sh
+python3 scripts/check_documentation_consistency.py
+```
 
-- **PCB:** KiCad. Source of truth for connectivity. ERC/DRC here.
-- **HDL:** structural + behavioral Verilog mirroring the schematic
-  (open-source 8080 core, ROM/RAM/VRAM, address decoder, 8255-style keyboard port).
-- **Headless sim:** Verilator (or Yosys CXXRTL) compiled to C++, driven by a thin
-  harness (load ROM, tick clock, inject keys, dump VRAM). LLM drives the harness
-  over CLI/stdin — no UI.
-- **Sync checker (the interesting bit):** KiCad netlist (`kicad-cli sch export
-  netlist`) and Verilog (elaborated to a netlist via Yosys `write_json`) are both
-  reduced to connectivity graphs and diffed against a part/pin mapping file. A
-  mismatch fails CI.
-
-KiCad stays the single source of truth — we **generate/verify** the HDL side from
-it, not the other way round. No bidirectional sync.
-
-## North star
-Long-term, the two tracks **converge on the schematic as the single source of truth**
-— one schematic-rooted model that is simultaneously the PCB netlist, the LVS-checked
-structure, and a **runnable digital twin** (run emulation *on the digital schematic*),
-with the `cosim/` software emulator + MAME as validation oracles. See
-[`docs/vision.md`](docs/vision.md).
-
-## Status
-
-The north-star merge is reached for the boot path: the LVS-checked structural
-`juku_top` netlist runs the real Juku ROM, matches cosim, renders the boot banner,
-and reacts to keyboard input. CI now guards status-audit freshness, LVS, fast
-subsystem probes, and the bounded boot regression.
-
-- ✅ `cosim/` — software oracle for boot, keyboard, FDC/EKDOS probes, BASIC and
-  monitor diagnostics.
-- ✅ `hdl/` — structural runnable twin rooted in the same board/netlist evidence.
-- ✅ `sync/` — LVS, boot, FDC, video, BASIC, sound, and monitor guard scripts.
-- ✅ `kicad/` — routed replica main board: 237 footprints, 1548/1548 routed
-  connections, 0 unconnected items, and 0 clearance/short blockers.
-- ✅ **Replica manufacturing packet** — `kicad/check_replica_manufacturing_ready.sh`
-  reports `READY TO UPLOAD`; final upload ZIP:
-  `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
-  `0f52569a63601573c300ef099561f93bda1845cf51985a530b9e46863232a211`.
-- ⏳ Remaining work is external or higher-fidelity: vendor preview/order evidence,
-  parts/PROMs, assembly, bench bring-up, exact factory media/PROM dumps, and the
-  stronger video/jmon33/BASIC/EKDOS HDL boundaries tracked in `PLAN.md`.
+The long reset-to-EKDOS/BASIC and Monitor 3.3 diagnostics are intentionally
+separate from the fast default checks; `sync/README.md` identifies their entry
+points.
 
 ## Layout
 
-| Dir      | Purpose                                                       |
-|----------|---------------------------------------------------------------|
-| `kicad/` | KiCad project — schematic + PCB (source of truth)             |
-| `hdl/`   | Verilog models (8080 core, memory, decoder, peripherals)      |
-| `cosim/` | Headless simulation harness (Verilator / CXXRTL driver)       |
-| `sync/`  | LVS-style connectivity checker + part/pin mapping             |
-| `roms/`  | ROM images and policy notes                                   |
-| `docs/`  | Design notes / decisions                                      |
+| Path | Purpose |
+| --- | --- |
+| `ref/` | Factory drawings, photographs, firmware evidence, and external references |
+| `kicad/` | Board model, generated schematic, source/routed PCB, and fabrication tooling |
+| `hdl/` | Structural runnable model and device behavior |
+| `cosim/` | Independent software emulator/oracle |
+| `sync/` | LVS, behavioral comparisons, and subsystem guards |
+| `roms/`, `media/` | Vendored preservation inputs with provenance/checksums |
+| `docs/` | Current specifications and generated evidence reports |
+| `spinoffs/minimal-vga/` | Independent VJUGA experiment; not on the replica critical path |

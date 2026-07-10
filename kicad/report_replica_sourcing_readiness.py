@@ -102,7 +102,14 @@ def build_report(rows):
 
     programming_blocked = bool(programming)
     review_blockers = bool(review_blocked)
-    status = "SOURCING READY / PROGRAMMING BLOCKED" if programming_blocked else "SOURCING READY"
+    if programming_blocked and review_blockers:
+        status = "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
+    elif programming_blocked:
+        status = "PARTIAL / PROGRAMMING BLOCKED"
+    elif review_blockers:
+        status = "PARTIAL / REVIEW BLOCKED"
+    else:
+        status = "SOURCING READY"
 
     lines = [
         "# Replica sourcing readiness",
@@ -111,7 +118,7 @@ def build_report(rows):
         "",
         "Source: `docs/replica-dual-config-bom.csv`.",
         "",
-        "This report turns the WS-E dual-config BOM into an ordering and acceptance",
+        "This report turns the dual-config BOM into an ordering and acceptance",
         "gate. It is not a vendor cart: prices, live stock, and seller trust must be",
         "checked at order time. It defines what can be sourced early, what needs",
         "bench acceptance, and what must wait for PROM/media truth or mechanical",
@@ -154,8 +161,8 @@ def build_report(rows):
         "BUF8287": "Continuity/orientation check; verify direction/OE before attaching FDC data path.",
         "VABUS": "Continuity/orientation check on expansion bus transceivers.",
         "IR82": "Verify latch polarity around DRAM write-data path.",
-        "VG93_FDC": "Prefer socket; WD1793 drop-in acceptable for functional config.",
-        "RU5": "Buy spares; run 4164/565RU5 tester before installation.",
+        "VG93_FDC": "Prefer a socket; verify the exact WD1793/VG93 candidate's pinout, clock, rails, and timing before approval.",
+        "RU5": "Verify exact 4164/565RU5 pinout, refresh, speed, and rails; buy tested spares only after approval.",
         "XTAL": "Verify 16 MHz oscillation and load-cap fit before debugging timing.",
     }
     for row in sorted(buy_early, key=sort_key):

@@ -1,6 +1,6 @@
 # Memory timing boundary
 
-Status date: 2026-07-09.
+Status date: 2026-07-10.
 
 Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**
 

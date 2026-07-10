@@ -1,8 +1,8 @@
-// Arc V2 demo: drive juku_top's OWN video-output stage. Preload a banner framebuffer into juku_top's
+// Runnable-video check: drive juku_top's OWN video-output stage. Preload a banner framebuffer into juku_top's
 // bit-sliced РУ5, run the dot clock, and capture the composite video (vid_out) the model emits --
 // then reconstruct the image from that serial stream. If it matches the loaded framebuffer, the
 // video-output stage (video_raster -> ИР16 -> ЛП5) inside juku_top faithfully turns stored bytes into
-// the pixel stream a display sees. (µP/video arbitration = V3; here the РУ5 2nd read port is used.)
+// the pixel stream a display sees. (Physical µP/video arbitration remains open; this uses the РУ5 2nd read port.)
 `timescale 1ns/100ps
 `default_nettype none
 

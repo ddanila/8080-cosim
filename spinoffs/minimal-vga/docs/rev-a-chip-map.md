@@ -1,8 +1,8 @@
 # Revision A chip map
 
-This is the working physical decomposition for the first manufacturable
-spin-off board. It intentionally starts conservative: socketed DIP logic, +5V
-western parts, and enough test headers to debug DRAM timing.
+This is the working physical decomposition for the experimental Rev A board.
+It uses socketed DIP logic, +5 V parts, and test headers for DRAM-timing debug;
+it is not a released manufacturing BOM.
 
 ## Core
 
@@ -73,8 +73,8 @@ western parts, and enough test headers to debug DRAM timing.
   back only if simulator or hardware bring-up proves they are needed.
 - Rev A should use western parts only; Soviet-part footprints are not preserved
   as a constraint for this spin-off.
-- Factory assembly is the intended manufacturing target, with sockets/passives
-  mounted by the assembler where practical and vintage ICs inserted after
-  assembly.
+- A future assembly path may mount sockets/passives at the factory and insert
+  vintage or programmed ICs later, but that path is blocked on functional
+  proof and design review.
 - The physical schematic should replace logical blocks one group at a time while
   keeping LVS green at each step.

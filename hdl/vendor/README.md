@@ -6,6 +6,6 @@
 - Files: `vm80a.v` (the core, pin-compatible 8080 wrapper + die logic),
   `tb80a.v` + `config.h` (the upstream reference testbench, kept for reference).
 
-Used in Phase C (the merge) to give the LVS-verified structure a real, die-accurate
-КР580ВМ80А — the exact CPU the Juku uses — so the schematic can *execute*.
+Used by the current structural model to execute Juku firmware through an
+8080-compatible, die-derived CPU implementation.
 Attribution per CC-BY 3.0: core © 2014–2018 1801BM1@gmail.com.

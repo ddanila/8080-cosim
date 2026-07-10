@@ -1,10 +1,11 @@
 # Rev A GAL/PAL Equations
 
-Status: frozen as the Rev A bring-up contract.
+Status: **DRAFT / UNVALIDATED**.
 
-These equations are intentionally conservative placeholders for the first
-factory-orderable board. They document the pinout and intended behavior that the
-board routes today. Timing constants still need scope validation on hardware.
+These equations document the pinout and intended bring-up behavior routed by
+the current experimental board. They are not a released programming file and
+must be simulated, reviewed, converted to a device-specific source format, and
+validated against the selected DRAM timing before fabrication.
 
 ## U5 Address/control Decode GAL22V10
 

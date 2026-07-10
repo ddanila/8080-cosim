@@ -31,7 +31,7 @@ REQUIRED = [
     ROOT / "docs" / "replica-bringup-verification-points.md",
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
-    ROOT / "docs" / "basic-cartridge-tail-hypotheses.md",
+    ROOT / "docs" / "cartridge-basic-boundary.md",
 ]
 
 PIN_CLOSURE_REFS = {"D2", "D41", "D93", "D94", "D100", "S4"}
@@ -149,10 +149,14 @@ def main() -> int:
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         ("Video/RF analog boundary guarded", has_phrase("docs/video-analog-boundary.md", "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**")),
         ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT PATH GUARDED / SWITCH CONTINUITY PENDING**")),
-        ("D105/unmodeled footprint inventory guarded", has_phrase("docs/unmodeled-footprint-inventory.md", "Status: **UNMODELED FOOTPRINT INVENTORY GUARDED**")),
-        ("Bring-up verification points generated", has_phrase("docs/replica-bringup-verification-points.md", "Status: **READY**")),
+        ("Unmodeled-IC design hold is visible", has_phrase("docs/unmodeled-footprint-inventory.md", "Status: **DESIGN HOLD / FUNCTIONAL FOOTPRINTS UNMODELED**")),
+        (
+            "Bring-up verification points generated",
+            has_phrase("docs/replica-bringup-verification-points.md", "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**")
+            or has_phrase("docs/replica-bringup-verification-points.md", "Status: **DESIGN RELEASE RISKS CLOSED**"),
+        ),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
-        ("Cartridge BASIC boundary documented", has_phrase("docs/basic-cartridge-tail-hypotheses.md", "Status: **SIMPLE TAIL HYPOTHESES REJECTED**")),
+        ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
@@ -165,21 +169,21 @@ def main() -> int:
             "unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks",
         ),
         (
-            "P0",
+            "P2",
             "JUKU-1 media provenance",
             "independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM`",
             "`docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md`",
             "turns the public EKDOS boot image into stronger physical-media evidence",
         ),
         (
-            "P0",
+            "P2",
             "cartridge BASIC truth",
             "larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY`",
-            "`docs/community-prom-media-request.md`; `docs/basic-launch-probe.md`; `docs/basic-cartridge-tail-hypotheses.md`",
+            "`docs/community-prom-media-request.md`; `docs/cartridge-basic-boundary.md`",
             "closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary",
         ),
         (
-            "P1",
+            "P0",
             "D94 .092 continuity",
             "D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board",
             "`docs/d94-reconstruction-constraints.md`",
@@ -189,19 +193,26 @@ def main() -> int:
             "P1",
             "FDC interrupt/buffer continuity",
             "WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible",
-            "`docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-F",
+            "`docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0/P1 gates",
             "reduces first EKDOS-on-hardware debug risk",
         ),
         (
-            "P1",
+            "P0",
             "memory-decode stragglers",
             "D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins",
-            "`docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` WS-A/WS-F",
+            "`docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate",
             "tightens the as-built netlist around RAM/video timing before netlist freeze",
         ),
         (
-            "P1",
-            "D105 wait-gate promotion",
+            "P0",
+            "placement-only IC dispositions",
+            "pin-level continuity or an explicit redesign/DNP decision for D28, D30, D95-D99, D101, D102, and D106; prioritize D30 READY support and the FDC cluster",
+            "`docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence",
+            "prevents 10 official footprints besides D105 from remaining electrically invisible to LVS and KiCad's unconnected-item check",
+        ),
+        (
+            "P0",
+            "D2/D105 wait-chain promotion",
             "D105.10 `H` source and D105.6 destination continuity, plus D2.D0/D105.9 confirmation before board-JSON promotion and reroute",
             "`docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             "turns an official placement-only `.009` LA3 into modeled wait-state logic without hiding the required routed-PCB refresh",
@@ -217,7 +228,7 @@ def main() -> int:
             "P2",
             "photos and passive values",
             "macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives",
-            "`docs/decap-value-fidelity.md`; `PLAN.md` WS-F; generated BOM/sourcing docs",
+            "`docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs",
             "improves authenticity and reduces assembly substitutions",
         ),
     ]

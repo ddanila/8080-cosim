@@ -1,23 +1,18 @@
-# Simulation
+# VJUGA simulation
 
-`check.sh` is the spin-off entry point. `../kicad/report_rev_a_behavioral_readiness.py`
-runs it and records the expected pass markers into
-`fab/minimal-vga/behavioral-readiness.md` for the order package.
+`check.sh` is the experiment's aggregate check. It currently runs:
 
-For now it runs:
+- the main replica's real-ROM boot regression, which guards shared repository
+  code but does **not** execute the VJUGA design;
+- a T80/VJUGA synthetic-ROM smoke test;
+- logical HDL/KiCad structural comparison;
+- Rev A source/PCB invariant and DRC checks; and
+- the shared 4164-style DRAM unit test.
 
-- `../../../sync/boot_check.sh`, which compares the existing HDL boot paths
-  against the C cosim oracle using the real Juku ROM.
-- `../../../hdl/sim/dram_unit_tb.v`, which tests the 64K x 1 row/column DRAM
-  model.
+The VJUGA smoke program writes and reads RAM, exercises I/O, observes refresh
+and video arbitration, samples keyboard-style input, and advances VGA timing.
+It does not prove the Juku ROM mapping, firmware boot, or visible prompt.
 
-Once `../hdl/` contains a minimal top, add a third check here:
-
-1. Compile the minimal top.
-2. Boot `../../../roms/ekta37.bin`.
-3. Compare its framebuffer/VRAM output to the existing cosim reference.
-4. Then add VGA-side assertions for `hsync`, `vsync`, blanking, and visible
-   prompt/banner output.
-
-T80 is VHDL, so the next simulator dependency is `ghdl` or an equivalent VHDL
-tool. The existing project Verilog checks still require `iverilog`/`vvp`.
+The next meaningful simulation milestone is a real Juku ROM boot on the VJUGA
+T80 top with a framebuffer/VGA-side oracle. Until that exists, aggregate check
+success means "current smoke and package invariants pass," not "board works."

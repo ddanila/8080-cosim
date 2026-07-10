@@ -120,7 +120,7 @@ $pass_line
 ## Boundary
 
 This does not close the faithful shared-DRAM video slot timing. The still-open
-V3 work is the РЕ3/АГ3-driven CPU/video arbitration schedule and replacement of
+work is the РЕ3/АГ3-driven CPU/video arbitration schedule and replacement of
 the sim-only video read port with that real slot timing.
 EOF
 

@@ -174,17 +174,16 @@ def build_report(out_dir):
     if extra_hash_entries:
         failures.append("unexpected SHA256SUMS entries: " + ", ".join(extra_hash_entries))
 
-    status = "READY" if not failures else "NOT READY"
+    status = "PACKAGE VERIFIED / DESIGN HOLD" if not failures else "PACKAGE INVALID"
     lines = [
         "# VJUGA Rev A bare-PCB order-upload runbook",
         "",
         f"Package: `{out_dir}`",
         f"Status: **{status}**",
         "",
-        "This is the exact upload/runbook layer for the Rev A bare-PCB first",
-        "sample. It does not claim live vendor acceptance; preview, stackup,",
-        "price, and order-number evidence are order-time checks in the vendor UI",
-        "immediately before payment.",
+        "This report verifies the files that would form a future bare-PCB upload.",
+        "It is not upload or purchase authorization: the VJUGA design remains on",
+        "hold until real-ROM boot, GAL/timing validation, and design review close.",
         "",
         "## Pre-Upload Integrity",
         "",

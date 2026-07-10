@@ -1,5 +1,8 @@
 # HDL integration
 
+Status: **SYNTHETIC SMOKE TEST ONLY**. No real Juku ROM has booted on this
+spin-off top.
+
 The first CPU target is the VHDL T80 core from the `external/T80` submodule.
 
 Use `T80se` first:

@@ -1,62 +1,39 @@
 # VJUGA Rev A manufacturing readiness
 
-Status: **READY TO UPLOAD**
-Fabrication package: `fab/minimal-vga`
-Final upload ZIP: `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
-Final upload ZIP SHA256: `6fbb59ff5afc1c82aad08dd874c4ef77a3cbb802212d1cc5920d2bc032c58966`
+Status date: 2026-07-10.
 
-This is the tracked top-level manufacturing packet for the VJUGA Rev A first
-sample. It proves the generated fabrication package is internally coherent and
-ready for vendor upload as a **bare PCB only** order. It does not claim that a
-vendor order has already been placed or accepted.
+Status: **DESIGN HOLD / PACKAGE VERIFIED**.
 
-## Gate Summary
+The ignored fabrication directory currently contains an internally coherent
+bare-PCB package. Its upload archive is:
 
-| Gate | Evidence | Bytes | Status |
-| --- | --- | ---: | --- |
-| Bare-PCB order readiness | `fab/minimal-vga/order-readiness.md` | 6715 | PASS |
-| Bare-PCB upload runbook | `fab/minimal-vga/order-upload-runbook.md` | 3817 | PASS |
-| Fabrication readiness | `fab/minimal-vga/fab-readiness.md` | 385 | PASS |
-| Fabrication package integrity | `fab/minimal-vga/fab-package-integrity.md` | 2425 | PASS |
-| External Gerber review | `fab/minimal-vga/external-gerber-review.md` | 2291 | PASS |
-| Routing/plane disposition | `fab/minimal-vga/routing-disposition-readiness.md` | 1342 | PASS |
-| Bare-PCB order note | `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order.md` | 1624 | PASS |
-| Order evidence template | `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order-evidence-template.md` | 3160 | PASS |
+`fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
 
-## Final Upload Directory
+SHA256:
 
-| File | Bytes | SHA256 | Status |
-| --- | ---: | --- | --- |
-| `fab/minimal-vga/upload/SHA256SUMS.txt` | 714 | `9cda63e83af2eeadd99373ffce6db88eebbc019df8cc4e84b34ed2d73c401b4e` | PASS |
-| `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip` | 134872 | `6fbb59ff5afc1c82aad08dd874c4ef77a3cbb802212d1cc5920d2bc032c58966` | PASS |
+`4c6553e1eaef0a72ac24a2a3ad89998cab806d236a18404764c18ba064ca7138`
 
-## Locked Vendor Options
+This checksum proves artifact identity only. It is not permission to upload or
+order the board.
 
-| Option | Value |
-| --- | --- |
-| Service | PCB fabrication only; no factory assembly and no components |
-| Layers | 4 |
-| Material/thickness | FR-4, vendor default unless changed deliberately |
-| Drill file | one mixed-plating Excellon drill file |
-| Assembly | disabled |
-| BOM/CPL upload | do not upload for this first sample |
-| Impedance/stackup | do not request impedance control or stackup changes |
-| Routing disposition | Rev A no-plane layout with 0.20 mm VCC/GND/VCC_RAW routing accepted for this low-current prototype |
+## Verified package facts
 
-## Required Pre-Payment Commands
+- The source PCB is four-layer and routed.
+- Current KiCad checks report zero DRC violations and zero unconnected items.
+- Gerber/drill membership, deterministic ZIP metadata, checksums, drill count,
+  and external rendering have machine-generated checks.
+- Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
+  artifacts exist.
 
-```sh
-spinoffs/minimal-vga/sim/check.sh
-(cd fab/minimal-vga && sha256sum -c upload/SHA256SUMS.txt)
-```
+## Release blockers
 
-## Remaining External Evidence To Save With The Order
+- No real Juku ROM has booted on the VJUGA T80 top.
+- The passing main-project ROM check does not execute this spin-off.
+- U5/U24 GAL behavior and DRAM timing are unvalidated bring-up drafts.
+- The VGA proof is synthetic timing/activity, not a real firmware display.
+- The schematic, selected-part pinouts, copper, power/return strategy, and
+  Gerbers have not received the independent design review needed for release.
 
-Use `spinoffs/minimal-vga/docs/rev-a-bare-pcb-order-evidence-template.md` for
-the private order record.
-
-- Vendor preview screenshots.
-- Quoted fabrication options and price.
-- Vendor order number.
-- The final upload ZIP checksum above.
-- Confirmation that assembly was disabled and no BOM/CPL was uploaded.
+Regenerate the package after every source change. Only change this status to a
+release state after the functional and review gates in `../README.md` are
+closed. Until then: **do not upload, order, or pay for this board**.

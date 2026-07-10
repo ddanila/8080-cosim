@@ -12,7 +12,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = Path(os.environ.get("JUKU_TOP_CHECKPOINT_JBASIC_REPORT", ROOT / "docs" / "juku-top-checkpoint-jbasic-probe.md"))
+REPORT = Path(
+    os.environ.get(
+        "JUKU_TOP_CHECKPOINT_JBASIC_REPORT",
+        Path(tempfile.gettempdir()) / "juku-top-checkpoint-jbasic-probe.md",
+    )
+)
 ROM = ROOT / "roms" / "ekta37.bin"
 DISK = ROOT / "media" / "disks" / "JUKPROG2.CPM"
 VRAM_STRIDE = 40

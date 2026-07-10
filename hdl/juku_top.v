@@ -3,7 +3,7 @@
 // is 8080 + 8224 clock + 8238 system controller + 8286 address buffers, producing
 // the BUFFERED address bus (BA) / system data bus (DB) + strobes that the rest of
 // the board hangs off. Each instance = a chip; wires = board nets. This is the LVS
-// target. See docs/transcription/cpu-core.md.
+// target. The authoritative endpoint model is kicad/juku.board.json.
 `default_nettype none
 
 module juku_top (
@@ -72,7 +72,7 @@ module juku_top (
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));
 
-    // ---- discrete clock subsystem (faithful mesh; docs/transcription/clock-subsystem.md) ----
+    // ---- discrete clock subsystem (faithful mesh; see board JSON provenance) ----
     // Z1 -> D59 (ЛН1 osc) -> OSC -> D40 (СТ16 divider) -> gate mesh D33(ЛН1)/D39(ЛА3)/D36(ЛА12)
     // -> D38 (ЛА1) = STB, and -> D35 (ЛН5) = Φ1/Φ2. D59/D40/D33/D39 are now FUNCTIONAL (not stubs)
     // and the divider->gate feedback nets D40.Q1->D39.12, D40.Q2->D33.5 are wired per the 2026-07
@@ -181,7 +181,7 @@ module juku_top (
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
     wire [7:0] d8_d;
-    re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));   // A4..A0 = BA15..BA11; E_N <- D6.ROM_N (traced: the "12 ROM" rail into pin 15). Pager for ALL 8 sockets (see docs/re3-decode.md)
+    re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));   // A4..A0 = BA15..BA11; E_N <- D6.ROM_N (traced: the "12 ROM" rail into pin 15). Pager for ALL 8 sockets; see reconstructed-prom-fallbacks.md.
     net_boundary U_R17LNK (.a(io_strobe_h), .b(d9_g1_w));   // R17 200R (+C99 160pF deglitch) in series [traced]
     io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
                       .g1(d9_g1_w), .g2a_n(rev), .g2b_n(rev),   // traced: G1 <- RC'd D7.11 strobe-NAND; G2A+G2B bridged <- REV
@@ -211,10 +211,10 @@ module juku_top (
     exprom_8k    U_D22 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[3]), .oe_n(memr_n));  // 4000-5FFF bank (code 8), optional BASIC cartridge
 
     // DRAM: К565РУ5 64Kx1 array. 32 sockets on the board (4 banks x 8), only 8 POPULATED
-    // = one byte-bank bit-sliced D60..D67 = the real 64KB RAM. The other 24 sockets are
+    // = one byte-bank bit-sliced D84..D91 = the real 64KB RAM. The other 24 sockets are
     // bank-expansion (up to 256KB), unpopulated. There is NO separate video plane -- the
     // video reads this same bank via the КП14 µP/video mux. Address is MULTIPLEXED (MA);
-    // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see docs/transcription/dram-video-timing.md).
+    // RAS/CAS from the D53 ИД7 decoder + АГ3 timing (see board JSON provenance).
     wire [7:0] MA;                 // muxed row/col address  (from address mux)
     // (ras_n/cas_n declared with the chip-select wires up top: the D36 CAS-rail tap needs them early)
     // W rail (rail 16): every DRAM W pin hangs on rail 16, driven by D36.8 (the strobe-chain write
@@ -242,9 +242,9 @@ module juku_top (
     dram_64kx1 U_D89 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]), .va(vid_addr), .vq(vbyte[5]));
     dram_64kx1 U_D90 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]), .va(vid_addr), .vq(vbyte[6]));
     dram_64kx1 U_D91 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]), .va(vid_addr), .vq(vbyte[7]));
-    // ---- unpopulated DRAM rows 0-2 (D60-D83): sockets wired to the shared MA/RAS/WE + per-bit
-    // DIN/DOUT buses, per-row CAS. Passive (no chip installed) -> boot-safe. Bank-select CAS
-    // decode not yet traced [assumed]. Completes the 4x8 РУ5 array for the PCB.
+    // ---- unpopulated DRAM rows 0-2 (D60-D83): sockets wired to the shared MA/CAS/WE + per-bit
+    // DIN/DOUT buses and per-row RAS. Passive (no chip installed) -> boot-safe. Completes the
+    // 4x8 РУ5 array for the PCB.
     ru5_socket U_D60 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]));
     ru5_socket U_D61 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]));
     ru5_socket U_D62 (.ma(MA), .ras_n(ras0_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]));
@@ -359,13 +359,13 @@ module juku_top (
                         .q(), .q_n(), .q2(), .q2_n());  // Q_N destination = south vertical [chase]; old 16MHz attribution retired
     ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
 
-    // ---- video-output stage (arc V2): raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
+    // ---- runnable video-output stage: raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
     // serializes each byte at the dot clock through the ИР16, and drives the composite video the
     // display sees. Driven by the sim `dotclk`. The RUNNABLE demo uses the abstracted 8-bit ir16_sr
     // (U_IR16) -> lp5_xor (U_D34V); the REAL chips D42/D43 (ИР16) are instantiated below for the LVS
-    // structure (traced sheet-2 top-right, docs/transcription/dram-video-timing.md). The 2x4-bit +
-    // analog node-"A" byte->pixel scheme + the КП14 µP/video arbitration are the V3/boundary items.
+    // structure (traced sheet-2 top-right; see board JSON provenance). The 2x4-bit +
+    // analog node-"A" byte->pixel scheme + the КП14 µP/video arbitration remain physical boundaries.
     wire vpixel, vshl_n;
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
@@ -415,7 +415,7 @@ module juku_top (
                       .pa(), .pb(8'hFF),
                       .reset(reset_sys), .pc(),
                       .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kcol(4'b0), .kbit(3'b0));
-    // PIT cascade per MAME (docs/mame-interface-map.md): D54 horiz -> D55 vert -> FRAME INT.
+    // PIT cascade per the pinned MAME driver: D54 horiz -> D55 vert -> FRAME INT.
     // 1 MHz = D40 QD (the same /16 tap that feeds the D37 latch chain, net LATCH_B); 2 MHz =
     // D40 QC; 1.23 MHz (D57 baud clk0) = D103 /13 [boundary, undriven].
     wire clk1m = d40_q[3];

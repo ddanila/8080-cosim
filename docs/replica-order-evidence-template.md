@@ -1,10 +1,11 @@
 # Replica order evidence template
 
-Status: **READY**
+Status: **TEMPLATE READY / DESIGN HOLD**
 
-Copy this checklist into the private order record when the replica main-board
-fabrication order is placed. Do not fill it in ahead of the vendor UI; live DFM,
-price, and order-number evidence only exists after upload/quotation.
+This is a future private order-record template. Do not upload the current
+package or start an order while the design-release report says DESIGN HOLD.
+Live DFM, price, and order-number evidence only exists after a released
+design is uploaded and quoted.
 
 ## Pre-Payment Gate
 
@@ -12,7 +13,7 @@ price, and order-number evidence only exists after upload/quotation.
 kicad/check_replica_manufacturing_ready.sh
 ```
 
-Expected result: `replica manufacturing readiness: READY TO UPLOAD`.
+Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 
 ## Upload Artifact
 
@@ -26,10 +27,10 @@ Expected result: `replica manufacturing readiness: READY TO UPLOAD`.
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5073 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5273 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12043 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12587 | PASS |
 
 ## Vendor Options To Record
 
@@ -68,7 +69,8 @@ Expected result: `replica manufacturing readiness: READY TO UPLOAD`.
 - [ ] Vendor preview agrees with `docs/replica-package-geometry-readiness.md`.
 - [ ] Top/bottom orientation agrees with `fab/gerbers/review/tracespace/`.
 - [ ] Accepted DRC classes in `docs/replica-fab-drc-disposition.md` remain acceptable in the vendor preview.
-- [ ] Reviewed `docs/replica-bringup-verification-points.md`; none of the listed residual source-risk nets block PCB fabrication.
+- [ ] Confirmed every P0 item in `PLAN.md` is closed and the design-release report explicitly authorizes fabrication.
+- [ ] Reviewed and dispositioned every relevant source-risk row in `docs/replica-bringup-verification-points.md`.
 - [ ] Vendor did not enable impedance control or change the 2-layer stackup.
 - [ ] Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.
 - [ ] Upload ZIP SHA256 above is saved with the order.

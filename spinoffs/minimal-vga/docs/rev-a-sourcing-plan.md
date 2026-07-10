@@ -1,187 +1,70 @@
-# Rev A Sourcing Plan
+# Rev A future sourcing policy
 
-Goal: make the Rev A board orderable as a JLCPCB factory-assembled board where
-practical, while keeping vintage or programmable ICs socketed.
+Status: **DESIGN HOLD / NOT A SHOPPING LIST**.
 
-## Assembly Policy
+This document preserves the assembly responsibility and verification rules for
+a possible future VJUGA build. Specific stock, prices, vendor capabilities, and
+assembly-library CPNs are intentionally not treated as durable documentation;
+they must be rechecked only after functional design release.
 
-- Target JLCPCB factory assembly for passives, protection parts, connectors,
-  sockets, oscillator/reset parts, and any currently available logic parts.
-- Use socketed ICs for Z80, ROM, DRAM, 8255, GAL/PAL, and DIP 74HCT logic.
-- Prefer factory-installed DIP sockets over factory-installed vintage ICs.
-- Treat vintage/NOS ICs as owner-supplied post-assembly insertion unless a
-  reliable JLCPCB/LCSC source exists at order time.
-- For the assembly BOM, do not include Z80, ROM, DRAM, 8255, GAL/PAL, or other
-  socketed ICs as factory-populated IC parts. Include sockets only; insert the
-  ICs manually later.
-- Keep the BOM explicit about `Factory`, `Socketed`, `Manual`, and `NOS`
-  responsibilities.
-- Generate the JLCPCB upload BOM/CPL from the PCB with
-  `spinoffs/minimal-vga/kicad/export_jlcpcb_assembly.py`; do not upload the
-  engineering BOM directly.
-- In the generated JLCPCB BOM, socketed `U*` designators mean "mount this
-  socket here". The matching `post-assembly-insertion.csv` file records which
-  owner-supplied IC goes into each socket after factory assembly.
+## Assembly responsibility
 
-## JLCPCB/LCSC Work Items
+| Group | Intended handling after release |
+| --- | --- |
+| Z80, ROM, DRAM, 8255, GAL/PAL, DIP logic | socketed; owner-supplied IC insertion after board assembly |
+| Sockets, ordinary passives, protection, connectors, diagnostics | factory candidate if the selected process and parts support them |
+| Rows marked `Manual`, `DNP`, or `Do not populate` | excluded from factory BOM/CPL and installed or left empty per the final record |
+| Programmed ROM/GAL devices | program and verify before insertion; retain source and readback hashes |
 
-JLCPCB's assembly flow uses in-stock parts from its assembly parts library and
-supports through-hole/manual or wave-soldered assembly for suitable parts. Use
-current JLCPCB/LCSC stock as order-time evidence; do not freeze stock-sensitive
-part numbers without rechecking them.
+The generated assembly BOM must describe sockets at the `U*` designators, not
+the owner-supplied ICs. `post-assembly-insertion.csv` owns the later IC list.
+Never upload the engineering BOM as a factory placement BOM.
 
-Immediate SKU targets:
+## Part classes to freeze
 
-- DIP sockets:
-  - DIP-40 wide for Z80/8255.
-  - DIP-28 wide for 27C256 ROM.
-  - DIP-24 wide for GAL22V10 devices.
-  - DIP-16 narrow for 4164 DRAM, 74HCT157/148/166.
-  - DIP-14 narrow for 74HCT393/00 and oscillator footprint if socketed.
-- Passives:
-  - 100 nF decoupling capacitors.
-  - 47 uF bulk capacitor.
-  - 470 ohm VGA series resistors.
-  - 220 ohm keyboard column series resistors.
-  - 10k pullups.
-  - 0 ohm configuration link.
-  - 2.2k diagnostic LED resistors.
-  - 3 mm diagnostic LEDs.
-- Protection and power:
-  - +5V resettable PTC fuse.
-  - +5V TVS clamp.
-  - 2-pin +5V/GND terminal/header.
-  - Power-only USB-C receptacle with 5.1k CC pulldowns.
-  - Power debug header.
-- Clock/reset:
-  - 5V oscillator.
-  - 5V reset supervisor with verified pinout. Rev A currently expects an
-    MCP130 `F` TO-92 bondout or an equivalent `1=VSS, 2=RST, 3=VDD` part.
-- Connectors:
-  - 1x7 VGA bring-up/debug header; HD-15 adapter is external for Rev A.
-  - Original-keyboard-compatible connector once the pinout/mechanics are locked.
-  - Logic analyzer/debug headers.
+- DIP-40 sockets for Z80 and 8255.
+- DIP-28 socket and an electrically compatible 27C256/28C256-class ROM choice.
+- DIP-24 sockets and a supported GAL22V10-class programming workflow.
+- Eight narrow DIP-16 sockets and exact 4164-compatible DRAM pinout/timing.
+- DIP-14/16 logic sockets with the final HCT/TTL family decision.
+- 100 nF local decoupling, bulk capacitance, pullups, keyboard/video series
+  resistors, diagnostic LEDs/resistors, and configuration links.
+- +5 V input connector/USB-C sink, CC resistors, fuse, TVS, clock oscillator,
+  reset supervisor, debug headers, and cable-facing keyboard/VGA headers.
 
-## Current Candidate Assignments
+Recorded owner-supplied candidates are a `Z0840004PSC` 4 MHz DIP Z80 and
+`KM4164B-10` 100 ns DIP DRAM. Treat these as candidates until their actual
+markings, pinout, electrical limits, and bench behavior are checked.
 
-These are order-time candidates, not a blanket approval to upload without a
-final JLC/LCSC stock and footprint check.
+## Current manual rows
 
-- DIP sockets:
-  - DIP-14 narrow: `C2325`.
-  - DIP-16 narrow: `C2326`.
-  - DIP-24 wide: `C72120`.
-  - DIP-28 wide: `C72121`.
-  - DIP-40 wide: `C2332`.
-- Power/connectors:
-  - USB-C power-only receptacle: HRO `TYPE-C-31-M-17`, JLC/LCSC `C283540`.
-  - +5V terminal candidate: KANGNEX `WJ2EDGR-5.08-02P-14-00A`, `C8383`.
-    The PCB now uses a 5.08 mm terminal footprint; verify the exact vendor
-    drawing and assembly availability before upload.
-- Passives and indicators:
-  - 100 nF P=5 mm ceramic decoupler: SHM `DCS104Z26Y5VF6BL5A0`, `C2896070`.
-  - 10k axial pullup: TyoHM `RN1/4W10KFT/BA1`, `C410695`.
-  - 220 ohm axial series resistor: TyoHM `RN 1/4W 220R F T/B A1`, `C410657`.
-  - 470 ohm VGA resistor candidate: VO `CR1/4W-470R` class, `C2896817`.
-  - 2.2k LED resistor candidate: YAGEO `MFR-25FBF52-2K2`, `C3454390`.
-  - 5.1k USB-C CC pulldown candidate: TyoHM `RN 1/8W 5K1 F T/B A1`,
-    `C433473`. The PCB now uses DIN0204 L3.6mm/D1.6mm footprints for this
-    1/8 W D1.7xL3.5mm candidate.
-  - 3 mm red diagnostic LED baseline: EVERLIGHT `204-10SURD/S530-A3`,
-    `C99772`.
-  - 47 uF bulk capacitor candidate: AISHI `ERG1EM470D11OT`, `C724688`;
-    47 uF, 25 V, D5xL11 mm, 2 mm pin spacing.
-- Protection/reset:
-  - Resettable fuse candidate: Bourns `MF-RG300-0-14`, `C3761779`; 3 A hold.
-    This matches the current 5.1 mm Bourns MF-RG300 footprint; verify final
-    +5V load and order-time stock before order.
-  - Reset supervisor candidate: Microchip `MCP130-460FI/TO` or
-    `MCP130-475FI/TO`; manual install for Rev A unless a JLCPCB/LCSC
-    F-bondout CPN is found. The previous `MCP130-460DI/TO` / `C621481`
-    candidate is D-bondout and does not match the current footprint net order.
-- Headers/connectors:
-  - VGA 1x7 header candidate: JLCPCB Assembly
-    `PinHeader_1x07_P2.54mm_Vertical`, `C9900031531`.
-  - Logic-analyzer 2x5 header candidate: JLCPCB Assembly
-    `PinHeader_2x05_P2.54mm_Vertical`, `C9900010269`.
-  - Power-debug 1x4 header candidate: JLCPCB Assembly `HDR-1X4`,
-    `C9900257430`. Verify exact 2.54 mm footprint fit at order time.
-  - VGA timing 2x6 header candidate: HanElectricity `2541WV-2x06P`,
-    `C5383107`; straight 2x6, 2.54 mm pitch.
-  - These are wave-solder assembly-library candidates and may require a
-    fixture; confirm JLCPCB handling before upload.
+The present draft classifies six placements as manual:
 
-Rows deliberately left manual in the Rev A draft assembly package:
+- `D1` TVS;
+- `J30` keyboard header;
+- `R6` and `R15` zero-ohm links;
+- `U50` oscillator; and
+- `U51` reset supervisor.
 
-- `D1`: 5 V TVS for current DO-35/SOD27 footprint. Available 5 V candidates
-  are easier in DO-15 or SMA, so this likely needs a footprint decision before
-  factory assembly.
-- `J30`: exact 1x15 2.54 mm vertical header CPN still needs selection. This is
-  safe to hand-install for Rev A bring-up.
-- `R6`, `R15`: exact axial 0 ohm jumpers still need selection. These can be
-  hand-installed for Rev A if no factory 0R axial part is chosen.
-- `U50`: DIP-14 5 V oscillator, or a deliberate PCB change to a common SMD
-  oscillator footprint. Manual oscillator install is acceptable for Rev A
-  bring-up.
-- `U51`: reset supervisor is now manual for Rev A because the currently found
-  JLCPCB/LCSC `MCP130-460DI/TO` part is D-bondout. The current board expects an
-  F-bondout MCP130 or equivalent `1=VSS, 2=RST, 3=VDD` supervisor.
+The generated manual-row report checks that this set does not change silently.
+It does not prove the selected parts fit or function.
 
-The generated `assembly/manual-row-readiness.md` report is the current machine
-gate for this list: it passes only when all six expected manual rows are present
-and no unclassified manual/non-factory rows have appeared.
+## Release-time checks
 
-The generated `assembly/cpn-consistency.md` report cross-checks every
-factory-mounted designator in the JLCPCB BOM against this sourcing plan's
-engineering BOM CPNs and `rev-a-jlcpcb-cpn-checklist.csv`. It catches local CPN
-drift, while order-time stock and package drawing review still remain mandatory.
+After real-ROM boot, VGA output, and GAL/timing validation release the design:
 
-## External/NOS Work Items
+1. Verify every IC and connector pinout against the selected manufacturer's
+   datasheet and the final PCB footprint.
+2. Recalculate the +5 V budget and fuse/trace margin with the selected lots.
+3. Check socket body width, lead spacing, insertion orientation, and assembly
+   process support.
+4. Requery the vendor's official parts library for every factory-mounted row;
+   reject obsolete, out-of-stock, or package-mismatched CPNs.
+5. Regenerate BOM/CPL/manual/post-insertion outputs and compare their designator
+   sets.
+6. Save the selected-part datasheets, order-time CPN export, vendor DFM/preview,
+   and final package hashes with the private build record.
 
-Source these separately unless a current assembly-library option is confirmed:
-
-- Z80 DIP-40 CPU: ordered `Z0840004PSC`, 4 MHz, owner-supplied insertion after
-  socket assembly.
-- ROM: 27C256-class DIP-28 EPROM; 28C256-compatible EEPROM remains useful for
-  development if pin-compatible in the programmed address range.
-- DRAM: ordered Samsung `KM4164B-10`, western 4164-compatible 64K x 1 DIP-16,
-  100 ns, +5V-only, owner-supplied insertion after socket assembly.
-- PPI: 82C55/8255-compatible DIP-40.
-- GAL/PAL: GAL22V10-class DIP-24 devices and a programming workflow.
-
-## Current Evidence Notes
-
-- JLCPCB's parts library lists DIP IC sockets as assembly-library parts, so
-  factory-installed sockets are plausible for Rev A.
-- JLCPCB documentation describes through-hole assembly support for suitable
-  parts, including manual or wave-soldered handling.
-- DRAM availability is stock-sensitive and should be checked again immediately
-  before purchasing; do not rely on stale marketplace listings.
-
-Source links to re-check before ordering:
-
-- JLCPCB parts library: https://jlcpcb.com/parts
-- USB-C `TYPE-C-31-M-17` candidate:
-  https://jlcpcb.com/partdetail/Korean_HropartsElec-TYPE_C_31_M17/C283540
-- KANGNEX 5.08 mm 2-pin terminal candidate:
-  https://www.lcsc.com/product-detail/C8383.html
-- Through-hole resistor category:
-  https://www.lcsc.com/category/1203.html
-- Through-hole ceramic capacitor candidate:
-  https://jlcpcb.com/partdetail/SHM-DCS104Z26Y5VF6BL5A0/C2896070
-- 3 mm LED candidate:
-  https://www.lcsc.com/product-detail/C99772.html
-- Resettable fuse category:
-  https://jlcpcb.com/parts/2nd/Circuit_Protection/Resettable_Fuses_3294
-- Reset supervisor category:
-  https://jlcpcb.com/parts/2nd/Power_Management_%28PMIC%29/Supervisor_and_Reset_ICs_3202
-- JLCPCB IC/transistor socket category:
-  https://jlcpcb.com/parts/2nd/Connectors/IC__Transistor_Socket_2943
-- JLCPCB PCB assembly FAQ:
-  https://jlcpcb.com/help/article/pcb-assembly-faqs
-- JLCPCB BOM file guide:
-  https://jlcpcb.com/help/article/bill-of-materials-for-pcb-assembly
-- JLCPCB BOM/CPL preparation advice:
-  https://jlcpcb.com/help/article/advice-for-bom-and-cpl-files-preparation
-- JLCPCB KiCad BOM/CPL export guide:
-  https://jlcpcb.com/help/article/how-to-generate-the-bom-and-centroid-file-from-kicad
+Useful order-time primary sources are the chosen manufacturers' datasheets and
+the vendor's official parts library/assembly documentation. Marketplace seller
+claims are not compatibility evidence.

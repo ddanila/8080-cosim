@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Full processor module model (FDC skipped). 20-chip РУ5 array (D60-79: bank0 D60-67 + bank1 D68-75 on DB, video plane D76-79 on VD). All boundaries closed.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 signal wiring and 11 official placement-only IC footprints (including D30 READY support, D105 wait logic, and FDC glue) remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -285,8 +285,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -310,8 +309,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -335,8 +333,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -360,8 +357,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -385,8 +381,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -410,8 +405,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -435,8 +429,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -460,8 +453,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan",
-    "board": "POPULATED К565РУ5Г, bank0 = the real 64KB RAM [physical]"
+    "pins": "unpopulated РУ5 expansion socket, row 0; address/data/RAS/CAS/WE/power rails traced from array read"
    }
   },
   {
@@ -1776,7 +1768,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1800,7 +1793,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1824,7 +1818,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1848,7 +1843,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1872,7 +1868,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1896,7 +1893,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1920,7 +1918,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {
@@ -1944,7 +1943,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "unpopulated РУ5 expansion socket, bank 3; address/data/RAS/CAS/WE/power rails traced from array read"
+    "pins": "scan",
+    "board": "POPULATED К565РУ5Г, bottom row D84-D91 = the target's real 64KB RAM [official .009 BOM and assembly evidence]"
    }
   },
   {

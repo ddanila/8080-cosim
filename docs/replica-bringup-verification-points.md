@@ -1,6 +1,6 @@
 # Replica bring-up verification points
 
-Status: **READY**
+Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**
 
 This report is generated from `kicad/juku.board.json`. It turns the
 remaining source-risk annotations into an explicit checklist for vendor
@@ -94,10 +94,18 @@ fabrication-source coverage gate, not a historical-source proof.
 | `W_RAIL16` | memory/decode | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reprodu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `XTAL16M` | timing/I/O | `D103.2, D42.9, D43.9` | traced sheet-2 (crop s2_dotclk_bend): the 16MHz crystal rail (bundle tag 14) is a SEPARATE net from D56.Q_N; it clocks D103 + the ИР16 shifters. Likely = the OSC net continuatio... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 
-## Manufacturing Disposition
+## Design-release disposition
 
-- These items do not block PCB fabrication: the package is socketed,
-  bodge-friendly, and the digital twin/CI gates cover the boot path.
+- Endpoint coverage proves that modeled nets survive into both PCB files;
+  it does not prove that the modeled net is historically correct or that
+  omitted functional pins are safe.
+- The 11 official IC footprints with no board-JSON pin model are tracked
+  separately in `docs/unmodeled-footprint-inventory.md`; they are outside
+  every endpoint count above and remain design-release blockers.
+- Any row affecting boot, memory, bus direction, interrupts, or video
+  timing must be measured, source-proven, or explicitly redesigned before
+  fabrication release. Socketing and possible bodge wires are not a
+  substitute for completing the design.
 - Save any vendor-preview, owner-continuity, oscilloscope, or logic-analyzer
   evidence against this checklist as bring-up progresses.
 - If a point is corrected in source, update `kicad/juku.board.json` first

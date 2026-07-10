@@ -2,7 +2,7 @@
 // shift-register at the dot clock -- exactly what the video output stage does -- capture the serial
 // pixel stream, and reconstruct the image from it. If the reconstruction == the input framebuffer,
 // the serializer + readout timing faithfully turn stored bytes into the pixel stream a display sees.
-// (The µP/video КП14 arbitration on the shared РУ5 is a V3 boundary; here we read the framebuffer
+// (The µP/video КП14 arbitration on the shared РУ5 remains open; here we read the framebuffer
 // array directly, since a sim read doesn't contend.) Loads hdl/sim/vram_top.hex (a booted screen).
 `timescale 1ns/100ps
 `default_nettype none

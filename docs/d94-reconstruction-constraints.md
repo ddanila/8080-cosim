@@ -101,9 +101,8 @@ address nets only; enable and all data outputs remain unnetted there too.
 | Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
 | Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
-| Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 68 |
-| Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 56/68 |
-| Historical `.113 -> D94` assumption is still visible as a conflict | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 68/70 |
+| Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
+| Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
 | HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` leaves D94 data outputs unconnected | PASS | `hdl/juku_top.v` |
@@ -115,8 +114,7 @@ address nets only; enable and all data outputs remain unnetted there too.
   К155РЕ3, programmed as `ДГШ5.106.092`.
 - Earlier D94 references in the sheet-3/tape-cluster survey are known
   refdes reuse history, not evidence for the FDC-era timing PROM.
-- The old `.113 -> D94` note remains in the raw campaign log, but the
-  current guarded firmware inspection supersedes it: `.113/.117` belong
+- The guarded firmware inspection establishes that `.113/.117` belong
   to the `.106.103`-family owner-scan evidence and are not a burnable
   D94 `.092` substitute.
 - These textual leads establish identity and negative evidence only. They

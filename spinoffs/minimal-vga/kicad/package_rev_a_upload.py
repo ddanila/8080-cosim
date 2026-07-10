@@ -97,12 +97,12 @@ def write_readme(out_dir):
     lines = [
         "# VJUGA Rev A upload bundle",
         "",
-        "Bare-PCB first-sample order:",
+        "Status: DESIGN HOLD. Retain this as an engineering package; do not",
+        "upload or order it.",
         "",
-        "- Upload `vjuga-rev-a-gerbers-drill.zip` as the PCB fabrication archive.",
-        "- Do not enable factory assembly for the first concept sample.",
-        "- Do not upload the BOM/CPL files unless deliberately switching to the",
-        "  optional assembled-board path.",
+        "If a later functional/design review releases the board, regenerate this",
+        "directory first. The Gerber ZIP would then be the PCB archive; BOM/CPL",
+        "files remain reference-only unless assembly is deliberately released.",
         "",
         "Do not upload `rev-a.engineering-bom.csv` as the assembly BOM. It is kept",
         "outside this upload directory because it records design intent and manual",
@@ -110,8 +110,8 @@ def write_readme(out_dir):
         "",
         "The BOM/CPL, manual assembly list, post-assembly insertion list, and",
         "assembly notes are retained as reference material for a later assembled",
-        "order. Review root `order-readiness.md` and SHA256 checksums before the",
-        "bare-PCB order upload.",
+        "order. Review root `order-readiness.md`; a PACKAGE VERIFIED status is",
+        "not fabrication authorization.",
         "",
     ]
     path.write_text("\n".join(lines))

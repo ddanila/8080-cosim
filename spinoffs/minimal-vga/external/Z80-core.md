@@ -1,5 +1,9 @@
 # Selected Z80 HDL core
 
+Rechecked: 2026-07-10. The submodule is pinned at
+`f7f776b54d67dcd6b19d3b97027dfbc6db6f14f4`, which matched upstream `master`
+at the time of the audit.
+
 Selected core:
 
 - Repository: https://github.com/mist-devel/T80

@@ -175,11 +175,10 @@ def main() -> int:
 
     candidates = firmware_candidates()
     identity_ok = board_type == "DEC_PROM" and "ДГШ5.106.037" in str(prov)
-    io_decoder_superseded = marker(
-        "docs/transcription/io.md",
-        "D2 = К556РТ4",
-        "bus-arbitration/wait PROM",
-        "must not be treated as a burnable I/O-decode image",
+    d9 = next((item for item in board["chips"] if item.get("ref") == "D9"), {})
+    io_decoder_superseded = (
+        d9.get("type") == "IO_DEC138"
+        and "Physical D2 is a separate КР556РТ4 bus/wait part" in str(d9.get("prov", {}))
     )
     fallback_boundary = marker(
         "docs/reconstructed-prom-fallbacks.md",
@@ -193,20 +192,22 @@ def main() -> int:
     )
     raw_pin_table_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
-        "D2 (КР556РТ4А) net-modeled",
-        "pin table from sheet 1: A0-A7=5/6/7/4/3/2/1/15",
-        "nets deferred until",
+        "D2 pin table from sheet 1:",
+        "A0-A7=5/6/7/4/3/2/1/15",
+        "D2 signal nets",
+        "remain deferred until",
     )
-    raw_sheet1_contradiction = marker(
-        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
-        "D2/РТ4's full wiring is ON SHEET 1",
-        "content = drawing ДГШ5.106.038",
+    all_signal_pins_netted = (
+        len(signal_nets) == len(pin_roles)
+        and len(dsn_nets) >= len(pin_roles)
+        and len(pcb_nets) >= len(pin_roles)
     )
-    status = (
-        "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
-        if identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates
-        else "D2 RECONSTRUCTION INPUTS CHANGED"
-    )
+    if identity_ok and all_signal_pins_netted and candidates:
+        status = "D2 RECONSTRUCTION READY"
+    elif identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates:
+        status = "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
+    else:
+        status = "D2 RECONSTRUCTION INPUTS CHANGED"
 
     lines = [
         "# D2 .037 reconstruction constraints",
@@ -307,7 +308,7 @@ def main() -> int:
             table_row([
                 "Old D2-as-I/O-decode path is superseded",
                 "PASS" if io_decoder_superseded else "FAIL",
-                "`docs/transcription/io.md`",
+                "`kicad/juku.board.json` D9 identity and provenance",
             ]),
             table_row([
                 "No reconstructed D2 fallback is exported",
@@ -320,24 +321,16 @@ def main() -> int:
                 "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             ]),
             table_row([
-                "Raw notes preserve D2 pin table but defer nets",
+                "Evidence summary preserves D2 pin table but defers nets",
                 "PASS" if raw_pin_table_lead else "FAIL",
-                "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 66",
-            ]),
-            table_row([
-                "Raw `.038` D2 note is superseded by official `.037` identity",
-                "PASS" if raw_sheet1_contradiction else "FAIL",
-                "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 64 vs 68",
+                "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             ]),
             "",
-            "## Raw-Note Reconciliation",
+            "## Evidence Reconciliation",
             "",
-            "- The raw sheet-1 campaign notes contain two useful but easy-to-misread",
-            "  D2 statements. Iteration 64 says the D2/РТ4 wiring is on sheet 1,",
-            "  but it also carries an old `.038` drawing assignment that is",
-            "  superseded by the official `.009` BOM/photo reconciliation: D2 is",
-            "  `.037`, D6 is `.038`.",
-            "- Iteration 66 records the physical D2 pin table",
+            "- The official `.009` BOM/photo reconciliation identifies D2 as `.037`",
+            "  and D6 as `.038`.",
+            "- The surviving sheet-1 evidence records the physical D2 pin table",
             "  `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly",
             "  says the nets are deferred until the PROM table and output",
             "  destination are read.",
@@ -365,7 +358,8 @@ def main() -> int:
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    return 0 if status == "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED" else 1
+    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead))
+    return 0 if evidence_ok and status != "D2 RECONSTRUCTION INPUTS CHANGED" else 1
 
 
 if __name__ == "__main__":

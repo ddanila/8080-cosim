@@ -7,11 +7,12 @@ NOT the processor module's set: the .006 ВП lists D8's programmed part as ДГ
 .009 ПЭЗ adds .092 for D94 (neither table is in our scans).
 Content semantics: low nibble is ONE-COLD (0111/1011/1101/1110) — four active-low selects.
 .117 steps them with 4-address dwell across the 08-17h window; .113 fires each once at 14-17h.
-The earlier role-based assignment D8↔.117 / D94↔.113 is RETIRED (see docs/re3-decode.md
-reconciliation grind): no permutation/addressing/population reading lets .117 or .113 boot a
+The earlier role-based assignment D8↔.117 / D94↔.113 is retired. The guarded
+inspection in `docs/re3-firmware-inspection.md` shows that no
+permutation/addressing/population reading lets .117 or .113 boot a
 2-chip BIOS machine from D8, and the factory paper trail assigns D8=.039 / D94=.092. The
 .113/.117 shape (FF idle + one-cold walk) reads as a timing/phase PROM pair — candidate home:
-the socketed V3-gating timing РЕ3 (photo, 8904) and the .103 family.
+the socketed timing РЕ3 (photo, 8904) and the .103 family.
 
 **2026-07 tracing update: NEITHER table can be our board's D8.** Sheet-1 tracing shows all
 eight ROM-socket CEs hang on D8 (tags D4..D7→D15..D18, D0..D3→D19..D22, E̅←D6.ROM̅), and the

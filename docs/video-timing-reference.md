@@ -45,5 +45,5 @@ VIDEO-RASTER-GEOMETRY: PASS cols=40 rows=241 bytes=9640 dots=77120 wrap_addr=0xd
 ## Boundary
 
 This does not close the faithful shared-DRAM video slot timing. The still-open
-V3 work is the РЕ3/АГ3-driven CPU/video arbitration schedule and replacement of
+work is the РЕ3/АГ3-driven CPU/video arbitration schedule and replacement of
 the sim-only video read port with that real slot timing.

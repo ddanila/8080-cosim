@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = Path(
     os.environ.get(
         "JUKU_TOP_CHECKPOINT_JBASIC_LATE_REPORT",
-        ROOT / "docs" / "juku-top-checkpoint-jbasic-late-probe.md",
+        Path(tempfile.gettempdir()) / "juku-top-checkpoint-jbasic-late-probe.md",
     )
 )
 ROM = ROOT / "roms" / "ekta37.bin"
@@ -394,8 +394,7 @@ def command_lines(total_reads: str, stop_reads: str) -> list[str]:
         env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_FDC_READS={total_reads}")
     if stop_reads != "0":
         env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_STOP_DATA_READS={stop_reads}")
-    if REPORT != ROOT / "docs" / "juku-top-checkpoint-jbasic-late-probe.md":
-        env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_REPORT={REPORT}")
+    env_bits.append(f"JUKU_TOP_CHECKPOINT_JBASIC_LATE_REPORT={REPORT}")
     command = " ".join(env_bits + ["sync/juku_top_checkpoint_jbasic_late_probe.py"])
     return ["```sh", command, "```"]
 

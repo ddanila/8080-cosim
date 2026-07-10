@@ -11,10 +11,10 @@ UPLOAD_ZIP_NAME = "juku-replica-gerbers-drill.zip"
 UPLOAD_SHA_NAME = "SHA256SUMS.txt"
 
 REQUIRED_EVIDENCE = [
-    ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **READY**"),
+    ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
-    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **READY**"),
+    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**"),
 ]
 
 VENDOR_OPTIONS = [
@@ -51,7 +51,8 @@ REVIEW_CHECKS = [
     "Vendor preview agrees with `docs/replica-package-geometry-readiness.md`.",
     "Top/bottom orientation agrees with `fab/gerbers/review/tracespace/`.",
     "Accepted DRC classes in `docs/replica-fab-drc-disposition.md` remain acceptable in the vendor preview.",
-    "Reviewed `docs/replica-bringup-verification-points.md`; none of the listed residual source-risk nets block PCB fabrication.",
+    "Confirmed every P0 item in `PLAN.md` is closed and the design-release report explicitly authorizes fabrication.",
+    "Reviewed and dispositioned every relevant source-risk row in `docs/replica-bringup-verification-points.md`.",
     "Vendor did not enable impedance control or change the 2-layer stackup.",
     "Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.",
     "Upload ZIP SHA256 above is saved with the order.",
@@ -133,15 +134,23 @@ def build_report(fab_dir):
     rows, evidence_failures = evidence_rows()
     failures.extend(evidence_failures)
 
-    status = "READY" if not failures else "NOT READY"
+    order_text = (fab_dir / "order-readiness.md").read_text(errors="replace") if (fab_dir / "order-readiness.md").exists() else ""
+    released = "Status: **RELEASED FOR ORDER**" in order_text
+    if failures:
+        status = "TEMPLATE INVALID"
+    elif released:
+        status = "READY FOR RELEASED ORDER RECORD"
+    else:
+        status = "TEMPLATE READY / DESIGN HOLD"
     lines = [
         "# Replica order evidence template",
         "",
         f"Status: **{status}**",
         "",
-        "Copy this checklist into the private order record when the replica main-board",
-        "fabrication order is placed. Do not fill it in ahead of the vendor UI; live DFM,",
-        "price, and order-number evidence only exists after upload/quotation.",
+        "This is a future private order-record template. Do not upload the current",
+        "package or start an order while the design-release report says DESIGN HOLD.",
+        "Live DFM, price, and order-number evidence only exists after a released",
+        "design is uploaded and quoted.",
         "",
         "## Pre-Payment Gate",
         "",
@@ -149,7 +158,7 @@ def build_report(fab_dir):
         "kicad/check_replica_manufacturing_ready.sh",
         "```",
         "",
-        "Expected result: `replica manufacturing readiness: READY TO UPLOAD`.",
+        "Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.",
         "",
         "## Upload Artifact",
         "",

@@ -12,7 +12,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "docs" / "jmon33-checkpoint-cursor-probe.md"
+REPORT = Path(
+    os.environ.get(
+        "JMON33_CHECKPOINT_CURSOR_REPORT",
+        Path(tempfile.gettempdir()) / "jmon33-checkpoint-cursor-probe.md",
+    )
+)
 ROM = ROOT / "roms" / "jmon33.bin"
 ROM_HEX = ROOT / "hdl" / "sim" / "jmon33.hex"
 VRAM_DUMP = ROOT / "hdl" / "sim" / "checkpoint_vram_top.bin"
@@ -307,7 +312,11 @@ def main() -> int:
         lines.append("```")
 
     REPORT.write_text("\n".join(lines) + "\n")
-    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    try:
+        report_label = REPORT.relative_to(ROOT)
+    except ValueError:
+        report_label = REPORT
+    print(f"Wrote {report_label}")
     print("\n".join(lines))
     return 1 if infra_failures else 0
 

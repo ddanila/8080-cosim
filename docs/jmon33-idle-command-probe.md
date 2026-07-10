@@ -37,6 +37,5 @@ Environment overrides:
   `JUKU_KEY_GAP_FRAMES` make the cosim keyboard stimulus usable for
   both ekta37's long banner path and jmon33's short cursor path.
 - This proves jmon33 is accepting keyboard input and moving its visible
-  command cursor deterministically. It does not prove the BASIC prompt;
-  the BASIC pairing remains tracked by `docs/basic-launch-probe.md` and
-  `docs/basic-factory-command-probe.md`.
+  command cursor deterministically. It does not prove cartridge BASIC;
+  that pairing remains tracked by `docs/cartridge-basic-boundary.md`.

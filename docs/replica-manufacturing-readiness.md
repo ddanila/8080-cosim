@@ -1,27 +1,27 @@
 # Replica manufacturing readiness
 
-Status: **READY TO UPLOAD**
+Status: **DESIGN HOLD / PACKAGE VERIFIED**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
 Final upload ZIP SHA256: `77f71719133c19470d853b4769e3584df2a2854320a68febb934ea7c25f74424`
 
 This is the tracked top-level manufacturing packet for the replica main
-board. It proves the generated fabrication package is internally coherent
-and ready for vendor upload; it does not claim that a vendor order has
-already been placed or accepted.
+board. It separates reproducible package integrity from functional design
+release. A verified package must not be uploaded while the status is
+DESIGN HOLD.
 
 ## Gate Summary
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2253 | PASS |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5073 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2854 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5273 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2912 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2788 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12043 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8360 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 2795 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 12587 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8547 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1629 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1905 | PASS |
@@ -54,13 +54,13 @@ already been placed or accepted.
 | Drill file | one mixed-plating Excellon drill file |
 | Impedance/stackup | do not request impedance control or stackup changes |
 
-## Required Pre-Payment Commands
+## Required release/pre-payment command
 
 ```sh
 kicad/check_replica_manufacturing_ready.sh
 ```
 
-## Remaining External Evidence To Save With The Order
+## External evidence to save after design release
 
 Use `docs/replica-order-evidence-template.md` for the private order record.
 
@@ -68,5 +68,7 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 - Quoted fabrication options and price.
 - Vendor order number.
 - The final upload ZIP checksum above.
-- Confirmation that `docs/replica-bringup-verification-points.md` was reviewed
-  and no listed residual source-risk net blocks fabrication.
+- Confirmation that `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`.
+- Confirmation that the package was regenerated after the final D2/D94
+  changes, placement-only functional IC dispositions, and source-risk
+  net corrections.

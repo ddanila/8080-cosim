@@ -4,9 +4,9 @@ Status: **JMON33 FDC T-COMMAND ORACLE PINNED**
 
 This cosim diagnostic pins Monitor 3.3's `T` command behavior after the
 monitor-idle cursor, both with no disk-backed FDC and with the vendored
-`media/disks/JUKU1.CPM` image. It exists to align the HDL
-`docs/jmon33-hdl-t-command-fdc-diagnostic.md` finding, where keyboard
-sampling works but the resumed `T` path enters heavy FDC I/O.
+`media/disks/JUKU1.CPM` image. It provides a command-level oracle for the
+current structural HDL FDC probe; keyboard sampling works, while the resumed
+`T` path enters heavy FDC I/O.
 
 ## Command
 

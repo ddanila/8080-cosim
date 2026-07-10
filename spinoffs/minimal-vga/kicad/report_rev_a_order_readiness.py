@@ -75,6 +75,9 @@ OPTIONAL_REVIEW_ARTIFACTS = [
 ]
 
 HUMAN_GATES = [
+    "Boot the intended real Juku ROM on the VJUGA T80 top and compare it to an explicit oracle.",
+    "Render a deterministic real-ROM banner or prompt through the shared-DRAM/VGA path.",
+    "Simulate, finalize, program, and review the U5/U24 GAL equations and DRAM timing.",
     "Independent Gerber/drill inspection in an external viewer.",
     "Full schematic review against the intended Z80, ROM, DRAM, refresh, keyboard, and VGA behavior.",
     "Order-time visual routing review against the generated routing geometry and disposition reports.",
@@ -183,10 +186,10 @@ def machine_gate_summary(out_dir):
         ),
         (
             "Behavioral simulation/LVS",
-            has_ready_line(behavioral, "READY")
+            has_ready_line(behavioral, "SMOKE TESTS PASS / REAL VJUGA BOOT UNPROVEN")
             and "- Exit code: 0" in behavioral
             and "- Expected markers missing: 0" in behavioral,
-            "`behavioral-readiness.md` records the ROM/cosim boot oracle, T80 smoke test, LVS, physical checks, PCB scaffold, DRC summary, and DRAM unit test.",
+            "`behavioral-readiness.md` records the main-project regression plus VJUGA synthetic smoke, LVS, physical, PCB, DRC, and DRAM checks without claiming a real VJUGA boot.",
         ),
         (
             "KiCad ERC",
@@ -360,7 +363,7 @@ def machine_gate_summary(out_dir):
         ),
         (
             "Bare-PCB order-upload runbook",
-            has_ready_line(order_upload_runbook, "READY")
+            has_ready_line(order_upload_runbook, "PACKAGE VERIFIED / DESIGN HOLD")
             and "# VJUGA Rev A bare-PCB order-upload runbook" in order_upload_runbook
             and "Select PCB fabrication only / no assembly" in order_upload_runbook
             and "Upload only `vjuga-rev-a-gerbers-drill.zip`" in order_upload_runbook
@@ -399,8 +402,8 @@ def build_report(out_dir):
     manual_rows = csv_rows(out_dir / "assembly" / "manual-assembly.csv")
     post_rows = csv_rows(out_dir / "assembly" / "post-assembly-insertion.csv")
     failed_gates = [name for name, passed, _ in gates if not passed]
-    machine_ready = not missing_required and not failed_gates
-    status = "BARE PCB READY - VENDOR PREVIEW REQUIRED" if machine_ready else "NOT READY"
+    package_verified = not missing_required and not failed_gates
+    status = "PACKAGE VERIFIED / DESIGN HOLD" if package_verified else "PACKAGE INVALID"
 
     lines = [
         "# Rev A bare-PCB order readiness",
@@ -408,10 +411,9 @@ def build_report(out_dir):
         f"Package: `{out_dir}`",
         f"Status: **{status}**",
         "",
-        "This report is a machine-generated order checklist for a PCB-only first",
-        "sample. A clean machine gate means the package is internally coherent;",
-        "it does not replace human schematic, Gerber, routing, and vendor-preview",
-        "review before payment.",
+        "This report checks a possible future PCB-only package. A clean machine",
+        "gate means only that the artifacts are internally coherent. Functional",
+        "design release is blocked; do not upload or order this board.",
         "",
         "## Machine Gates",
         "",
@@ -446,7 +448,7 @@ def build_report(out_dir):
         for name in missing_optional:
             lines.append(f"- `{name}`")
 
-    lines.extend(["", "## Required Human Sign-Off Before Bare-PCB Upload", ""])
+    lines.extend(["", "## Required Release Work And Human Sign-Off", ""])
     for gate in HUMAN_GATES:
         lines.append(f"- [ ] {gate}")
 
@@ -467,17 +469,17 @@ def build_report(out_dir):
         lines.append("No post-assembly insertion rows found.")
 
     lines.append("")
-    return "\n".join(lines), machine_ready
+    return "\n".join(lines), package_verified
 
 
 def main():
     out_dir = Path(sys.argv[1] if len(sys.argv) > 1 else "fab/minimal-vga")
-    report, machine_ready = build_report(out_dir)
+    report, package_verified = build_report(out_dir)
     report_path = out_dir / "order-readiness.md"
     report_path.write_text(report)
     print(report)
     print(f"Wrote {report_path}")
-    return 0 if machine_ready else 3
+    return 0 if package_verified else 3
 
 
 if __name__ == "__main__":

@@ -6,8 +6,8 @@ This generated ledger records the remaining board-fidelity surfaces that
 are explicit in `kicad/juku.board.json`: chip-level provenance that is
 still assumed, boundary-only, deferred, untraced, or dump-dependent, and
 net-level source risks already carried into the bring-up checklist. It
-does not block fabrication by itself; it prevents the current 1:1 gaps
-from being hidden behind a green endpoint-coverage gate.
+is not a release decision by itself; its P0 rows feed `PLAN.md` and
+prevent current gaps from hiding behind a green endpoint-coverage gate.
 
 ## Command
 

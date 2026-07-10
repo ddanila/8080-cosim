@@ -26,11 +26,7 @@ jobs:
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
             scripts/report_source_coverage_audit.py \
-            scripts/report_public_software_archive_inventory.py \
-            scripts/report_public_manual_archive_inventory.py \
-            scripts/report_public_manual_text_triage.py \
-            scripts/report_arvutimuuseum_context_inventory.py \
-            scripts/report_public_community_link_inventory.py \
+            scripts/check_documentation_consistency.py \
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
             scripts/report_re3_firmware_inspection.py \
@@ -44,11 +40,6 @@ jobs:
             scripts/report_wd1772_pla_inspection.py \
             scripts/wd1772_pla.py \
             scripts/report_juku_top_fdc_alignment.py \
-            scripts/report_basic_low_stub_inspection.py \
-            scripts/report_basic_cartridge_length_audit.py \
-            scripts/report_basic_cartridge_tail_hypotheses.py \
-            scripts/report_basic_cartridge_missing_page_constraints.py \
-            scripts/check_project_status_freshness.py \
             scripts/report_firmware_gap_ledger.py \
             scripts/report_board_fidelity_gap_ledger.py \
             scripts/report_decap_value_fidelity.py \
@@ -58,7 +49,6 @@ jobs:
             scripts/report_video_analog_boundary.py \
             scripts/report_s4_interrupt_boundary.py \
             scripts/report_unmodeled_footprint_inventory.py \
-            scripts/report_milestone_ledger.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
             sync/ekdos_timing_reference.py \
@@ -79,8 +69,6 @@ jobs:
             sync/jmon33_hdl_a_command_probe.py \
             sync/jmon33_hdl_b_command_probe.py \
             sync/jmon33_hdl_fdc_command_probe.py \
-            sync/basic_factory_command_probe.py \
-            sync/basic_entry_probe.py \
             kicad/report_replica_bringup_verification.py \
             kicad/report_dual_config_bom.py \
             kicad/report_replica_order_upload_runbook.py \
@@ -93,24 +81,8 @@ jobs:
           python3 scripts/report_unmodeled_footprint_inventory.py
           git diff --exit-code -- docs/unmodeled-footprint-inventory.md
 
-      - name: Check milestone ledger freshness
-        run: |
-          python3 scripts/report_milestone_ledger.py
-          git diff --exit-code -- docs/milestone-ledger.md
-
-      - name: Check BASIC low-stub inspection freshness
-        run: |
-          python3 scripts/report_basic_low_stub_inspection.py
-          python3 scripts/report_basic_cartridge_length_audit.py
-          python3 scripts/report_basic_cartridge_tail_hypotheses.py
-          python3 scripts/report_basic_cartridge_missing_page_constraints.py
-          git diff --exit-code -- docs/basic-low-stub-inspection.md
-          git diff --exit-code -- docs/basic-cartridge-length-audit.md
-          git diff --exit-code -- docs/basic-cartridge-tail-hypotheses.md
-          git diff --exit-code -- docs/basic-cartridge-missing-page-constraints.md
-
-      - name: Check project status freshness
-        run: python3 scripts/check_project_status_freshness.py
+      - name: Check documentation consistency
+        run: python3 scripts/check_documentation_consistency.py
 
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh
@@ -196,19 +168,8 @@ jobs:
 
       - name: Check source coverage audit freshness
         run: |
-          python3 scripts/report_public_software_archive_inventory.py
-          python3 scripts/report_public_manual_archive_inventory.py
-          python3 scripts/report_public_manual_text_triage.py
-          python3 scripts/report_arvutimuuseum_context_inventory.py
-          python3 scripts/report_public_community_link_inventory.py
           python3 scripts/report_source_coverage_audit.py
-          git diff --exit-code -- \
-            docs/public-software-archive-inventory.md \
-            docs/public-manual-archive-inventory.md \
-            docs/public-manual-text-triage.md \
-            docs/arvutimuuseum-context-inventory.md \
-            docs/public-community-link-inventory.md \
-            docs/source-coverage-audit.md
+          git diff --exit-code -- docs/source-coverage-audit.md
 
       - name: Check WD1772 PLA inspection freshness
         run: |
@@ -320,8 +281,6 @@ jobs:
       - name: Run fast subsystem guards
         run: |
           ./sync/basic_cart_check.sh
-          python3 scripts/report_basic_low_stub_inspection.py
-          ./sync/basic_launch_probe.py
           ./sync/prom_fallback_check.sh
           ./sync/beeper_check.sh
           ./sync/serial_check.sh
@@ -335,8 +294,6 @@ jobs:
           ./sync/jmon33_command_probe.py
           ./sync/jmon33_idle_command_probe.py
           ./sync/juku_top_jbasic_prompt_check.sh
-          ./sync/basic_entry_probe.py
-          ./sync/basic_factory_command_probe.py
 
       - name: Run video output guards
         run: |
@@ -357,8 +314,6 @@ jobs:
             docs/juku-top-jbasic-verilator-probe.md \
             docs/fdc-readiness.md \
             docs/basic-cart-readiness.md \
-            docs/basic-low-stub-inspection.md \
-            docs/basic-launch-probe.md \
             docs/beeper-readiness.md \
             docs/serial-handoff.md \
             docs/jmon33-hdl-probe.md \
@@ -366,8 +321,6 @@ jobs:
             docs/jmon33-ready-probe.md \
             docs/jmon33-command-probe.md \
             docs/jmon33-idle-command-probe.md \
-            docs/basic-entry-probe.md \
-            docs/basic-factory-command-probe.md \
             docs/video-timing-reference.md \
             docs/video-readout-readiness.md
 

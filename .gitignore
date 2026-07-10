@@ -23,6 +23,7 @@ _autosave-*
 *.tmp.hex
 *.vcd
 /vram.bin
+/cosim/vram.bin
 # Build / sim artifacts
 # cosim artifacts
 # generated netlists

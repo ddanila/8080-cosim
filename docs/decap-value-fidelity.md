@@ -1,6 +1,6 @@
 # Decoupling capacitor value fidelity
 
-Status date: 2026-07-09.
+Status date: 2026-07-10.
 
 Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**
 
@@ -69,13 +69,11 @@ capacitance values are not proven by current automatic evidence.
 - The current BOM/model value for these 38 positions is uniform
   `0,047`, which is suitable for the functional replica's modeled
   bypass role.
-- `docs/grind-backlog.md` records an older physical/passives census
-  tension: `0.15uF x20`, `0.22uF x16`, and `0.47uF x17`, with a
-  note that the value counts do not align with the C35-C72 rail
-  groups. That is not enough to assign values to C35-C72.
-- `docs/emaplaat-harvest.md` and the DSN/PCB placements provide row
-  and approximate position evidence, but not readable capacitor
-  value markings for every position.
+- The retained factory and owner-photo evidence includes aggregate
+  mixed-value capacitor counts, but no defensible mapping from those
+  counts to individual C35-C72 positions.
+- DSN/PCB placement preserves the two physical rows, but the available
+  photographs do not expose readable markings for every position.
 
 ## Boundary
 

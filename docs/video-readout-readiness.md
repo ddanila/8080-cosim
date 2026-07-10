@@ -1,8 +1,8 @@
 # Video readout readiness
 
-Status: **READY FOR V2 VIDEO READOUT**
+Status: **RUNNABLE VIDEO READOUT GUARDED**
 
-This guard proves the current runnable video-readout path for WS-B2:
+This guard proves the current runnable video-readout path:
 
 - hdl/sim/video_readout_tb.v serializes a booted framebuffer through the
   abstracted ir16_sr pixel serializer and reconstructs the bytes.
@@ -11,9 +11,9 @@ This guard proves the current runnable video-readout path for WS-B2:
 - Both reconstructed byte streams must compare exactly against the booted
   juku_top framebuffer.
 
-The V3 boundary remains the faithful physical slot timing: shared DRAM
-arbitration through the КП14 muxes and dumped РЕ3/АГ3 timing. This check does not
-claim that timing is closed; it locks the byte-to-pixel serializer and runnable
+The remaining physical boundary is the shared-DRAM slot timing: arbitration
+through the КП14 muxes and the РЕ3/АГ3 timing network. This check does not claim
+that timing is closed; it locks the byte-to-pixel serializer and runnable
 juku_top output stage. The companion raster-geometry guard is
 `sync/video_timing_check.sh` / `docs/video-timing-reference.md`.
 

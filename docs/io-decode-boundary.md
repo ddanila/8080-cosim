@@ -1,6 +1,6 @@
 # I/O decode boundary
 
-Status date: 2026-07-09.
+Status date: 2026-07-10.
 
 Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**
 

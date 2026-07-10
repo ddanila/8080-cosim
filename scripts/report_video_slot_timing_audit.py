@@ -45,6 +45,13 @@ def net_has(board: dict, net_name: str, *nodes: tuple[str, str]) -> bool:
     return all(node in have for node in nodes)
 
 
+def chip_type(board: dict, ref: str) -> str:
+    for chip in board["chips"]:
+        if chip.get("ref") == ref:
+            return str(chip.get("type", ""))
+    return ""
+
+
 def main() -> int:
     board = load_board()
     va_ok = all(
@@ -76,13 +83,13 @@ def main() -> int:
         ),
         (
             "Runnable byte-to-pixel readout is guarded",
-            marker("docs/video-readout-readiness.md", "Status: **READY FOR V2 VIDEO READOUT**", "byte-identical"),
+            marker("docs/video-readout-readiness.md", "Status: **RUNNABLE VIDEO READOUT GUARDED**", "byte-identical"),
             "`docs/video-readout-readiness.md` / `sync/video_readout_check.sh`",
         ),
         (
-            "Physical D42/D43 ИР16 serializers are traced in the transcription",
-            marker("docs/transcription/dram-video-timing.md", "ИР16 pixel serializer LOCATED", "D42, D43"),
-            "`docs/transcription/dram-video-timing.md`",
+            "Physical D42/D43 ИР16 serializers are identified in the board model",
+            chip_type(board, "D42") == "IR16" and chip_type(board, "D43") == "IR16",
+            "`kicad/juku.board.json` D42/D43 identities",
         ),
         (
             "Physical serializer instances exist in `juku_top`",
@@ -122,7 +129,7 @@ def main() -> int:
         (
             "Runnable video still uses the abstract raster/read port",
             marker("hdl/juku_top.v", "video_raster U_VRAS", "ir16_sr U_IR16", "sim-only 2nd port"),
-            "`hdl/juku_top.v` V2 adjunct",
+            "`hdl/juku_top.v` runnable adjunct",
         ),
         (
             "The DRAM model still exposes sim-only video read pins",
@@ -136,7 +143,7 @@ def main() -> int:
         ),
         (
             "Owner photo survey confirms a socketed top-center РЕ3 is dumpable",
-            marker("ref/photos/juku-pcb-2/SURVEY.md", "К155РЕ3", "SOCKETED", "V3-gating timing PROM is dumpable"),
+            marker("ref/photos/juku-pcb-2/SURVEY.md", "К155РЕ3", "SOCKETED", "timing PROM", "dumpable"),
             "`ref/photos/juku-pcb-2/SURVEY.md`",
         ),
         (
@@ -168,7 +175,7 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This generated audit tracks the remaining M4/V3 boundary: replacing the",
+        "This generated audit tracks the remaining faithful-video boundary: replacing the",
         "runnable sim-only framebuffer read path with the faithful КП14/ИД7/АГ3/РЕ3",
         "shared-DRAM video slot schedule.",
         "",
@@ -198,7 +205,7 @@ def main() -> int:
             "",
             "## Interpretation",
             "",
-            "- V2 is guarded: raster geometry and byte-to-pixel serialization produce the",
+            "- The runnable path is guarded: raster geometry and byte-to-pixel serialization produce the",
             "  expected 40 x 241 framebuffer stream.",
             "- The physical chips for the serializer and mux/decode path are present in",
             "  the structural model, so this is no longer a vague video-output gap.",
@@ -215,7 +222,7 @@ def main() -> int:
             "  all eight output destinations, and the `.092` contents are still",
             "  missing from current repo evidence.",
             "- Until that PROM is dumped or a programming-disk table appears, the honest",
-            "  model keeps `VA/VQ` and `video_raster` as a sim-only V2 adjunct rather",
+            "  model keeps `VA/VQ` and `video_raster` as a sim-only runnable adjunct rather",
             "  than inventing a board-critical DRAM arbitration schedule.",
         ]
     )

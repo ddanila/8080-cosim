@@ -1,70 +1,78 @@
-# Architecture & reasoning
+# Architecture and verification boundaries
 
-## The actual problem
+## Data flow
 
-We are not "syncing two programs". We are checking that **two netlists describe
-the same connectivity**:
-
-- A KiCad schematic *is* a netlist (components + which pins join which nets).
-- A structural Verilog top-level *is* a netlist (chip instances + wires).
-
-Keeping them in sync is the same problem the IC world calls **LVS / netlist
-equivalence checking**. That framing is why no tool fork is needed — the glue is a
-graph comparison that lives *outside* both tools.
-
-## Why not fork KiCad / Verilator
-
-Forking buys nothing and creates merge maintenance against two fast-moving
-upstreams. Both already expose the needed extension points:
-
-- KiCad: `kicad-cli sch export netlist`, the Python API, and custom netlist
-  exporters as *plugins*.
-- Verilog side: Yosys reads structural Verilog and emits a flattened netlist as
-  JSON (`read_verilog; hierarchy; proc; write_json`).
-
-So both sides can be turned into comparable graphs by *consuming their outputs*.
-
-## Pipeline
-
-```
-KiCad schematic  ──kicad-cli sch export netlist──►  netlist  ──┐
-                                                               ├─► normalize → graph diff → pass/fail
-Verilog top      ──yosys write_json──►  netlist  ──────────────┘
+```text
+factory drawings / photos / dumps / measurements
+                       |
+                       v
+             kicad/juku.board.json
+                 /             \
+                v               v
+      generated KiCad       structural HDL
+      schematic + PCB       hdl/juku_top.v
+                \               /
+                 \---- LVS ----/
+                         |
+                         v
+             behavioral regression
+             vs cosim and MAME
 ```
 
-- Nodes = pins, edges = nets.
-- A mapping file relates KiCad refdes/pin ↔ Verilog instance/port.
-- Mismatch fails CI.
+Historical sources are authoritative; `board.json` is the machine-readable
+working model. The generated KiCad schematic and the structural HDL are not two
+freely editable sources that synchronize bidirectionally.
 
-## Single source of truth
+## LVS
 
-KiCad schematic is authoritative. We **generate or verify** the HDL from it.
-No bidirectional sync (edit-either-side-propagate) — that's a tar pit and
-unnecessary.
+`sync/check.sh` elaborates `hdl/juku_top.v` with Yosys and compares its mapped
+instance/pin net partitions with a KiCad netlist. When KiCad CLI is unavailable,
+the same checker reads `board.json` directly.
 
-## Effort tiers
+The comparison uses connectivity rather than net names: mapped endpoints are
+equivalent when they are partitioned into the same nets. `sync/map.json`
+contains the refdes/instance and pin/port mappings.
 
-- **Tier 1 — sync checker (MVP, ~a week):** hand-write the Verilog, build the
-  graph-diff guardrail. Catches "rewired the board, forgot to update the model"
-  in both directions. ~80% of the value for ~20% of the effort.
-- **Tier 2 — auto-generator (KiCad → Verilog, weeks, brittle):** only if the
-  design churns enough to justify it.
+The current check is intentionally partial. Unmapped analog parts, placement-
+only footprints, and pins omitted from `board.json` are outside its proof. A
+green result must never be interpreted as full-board electrical completeness.
 
-## Known hard parts
+## Runnable structural model
 
-- **Tri-state buses.** The data bus has many drivers (CPU/ROM/RAM/peripherals)
-  on shared nets. Verilog needs `inout`/`tri`; each model drives `z` when
-  deselected. KiCad has no concept of drive direction — it comes from the models,
-  not the schematic.
-- **Passives & analog.** Pull-ups, decoupling caps, crystal + clock gen (8224)
-  don't map to digital Verilog. Filter or hand-model them.
-- **Part/pin library.** Each KiCad symbol needs a matching Verilog model with a
-  pin-number ↔ port map. 74xx libraries exist; CPU/ROM/RAM/peripherals are
-  custom. For an 8080 box this is ~20–40 unique parts — bounded but the bulk of
-  the labor.
+`hdl/juku_top.v` instantiates board-level chips and interconnect. Behavioral
+models live in `hdl/devices.v`; simulation-only adjuncts supply bounded behavior
+where the physical circuit is not yet known. `sync/lvs.py` explicitly excludes
+those non-board ports from connectivity comparison.
 
-## Important limitation
+The independent C implementation under `cosim/` is the fast behavioral oracle.
+Lockstep/framebuffer and subsystem tests compare it with HDL. The current MAME
+Juku driver is an additional reference for memory/I/O maps, media geometry, and
+raster behavior, but schematic/measurement evidence wins when they disagree.
 
-Structural sync only proves the **wiring matches**. It does **not** prove the
-chip behavioral models are *correct*. Model correctness is a separate axis,
-covered by simulation/tests — don't let a green sync check imply correct models.
+## Physical artifacts
+
+The source and routed PCB may contain more footprints than the LVS-mapped HDL.
+KiCad DRC can also report zero unconnected items when a footprint pad has never
+been assigned a net. Consequently physical release needs all of the following:
+
+- required functional pins modeled and assigned;
+- source and routed PCB endpoint coverage;
+- LVS for the mapped digital structure;
+- DRC and independent Gerber review;
+- programmable-part contents and provenance;
+- explicit disposition of analog/timing assumptions.
+
+The current Gerber ZIP passes package-integrity checks but fails that broader
+design-release criterion. `PLAN.md` lists the blockers.
+
+## Design rules
+
+- Preserve source provenance in `board.json`; never turn an inference into a
+  scan/measurement claim.
+- Change connectivity in the machine-readable model first, then regenerate and
+  reroute downstream artifacts.
+- Keep simulation-only signals visibly named and excluded from LVS only when
+  they have no claimed physical endpoint.
+- Prefer small guards with explicit oracles over narrative claims.
+- Do not retain superseded experimental reports in the live documentation;
+  Git history is the archive.

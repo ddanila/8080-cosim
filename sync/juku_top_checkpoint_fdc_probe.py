@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT = Path(
     os.environ.get(
         "JUKU_TOP_CHECKPOINT_FDC_REPORT",
-        str(ROOT / "docs" / "juku-top-checkpoint-fdc-probe.md"),
+        str(Path(tempfile.gettempdir()) / "juku-top-checkpoint-fdc-probe.md"),
     )
 )
 ROM = ROOT / "roms" / "ekta37.bin"
@@ -335,8 +335,8 @@ def main() -> int:
         "  set to `512` for the first sector or `0` for the first data-register read",
         "- `JUKU_TOP_CHECKPOINT_FDC_STOP_PROMPT` default `0`; set to `1` to stop",
         "  on the EKDOS `A>` prompt bitmap at `x=0`, `y=70`",
-        "- `JUKU_TOP_CHECKPOINT_FDC_REPORT` default",
-        "  `docs/juku-top-checkpoint-fdc-probe.md`",
+        "- `JUKU_TOP_CHECKPOINT_FDC_REPORT` defaults to a temporary file; set it",
+        "  explicitly to retain a diagnostic report",
         "",
         "Known useful windows:",
         "",

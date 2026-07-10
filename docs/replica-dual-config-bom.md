@@ -4,7 +4,7 @@ Source: `kicad/juku.board.json`
 CSV: `docs/replica-dual-config-bom.csv`
 Sourcing gate: `docs/replica-sourcing-readiness.md`
 
-This is the first sourcing BOM split required by WS-E: an authentic Soviet
+This is the current sourcing BOM split: an authentic Soviet
 part column and a functional substitute column. It is generated from the
 current KiCad board source and keeps the .009 populated-vs-expansion-socket
 distinction explicit.
@@ -100,13 +100,13 @@ readiness report.
 | source-now | TL2 | К155ТЛ2 | 74LS13 Schmitt NAND-class gate | 1 | 1 | 0 | D13 | - |
 | source-now | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | 1 | 0 | D11 | - |
 | source-now | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 4 | 4 | 0 | D23, D24, D25, D29 | - |
-| source-now | VG93_FDC | КР1818ВГ93 | WD1793-compatible FDC | 1 | 1 | 0 | D93 | Western WD1793 is the intended functional drop-in. |
+| source-now | VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | 1 | 0 | D93 | A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit. |
 | source-now | XTAL 16 МГц | РК-171 16 MHz crystal 16 МГц | 16 MHz HC-49/metal-can crystal matching footprint/load | 1 | 1 | 0 | Z1 | - |
-| source-populated-now | RU5 | К565РУ5Г / 565РУ5Г | 4164-compatible 64Kx1 DRAM | 32 | 8 | 24 | D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+14) | Only D60-D67 are populated for the current 64 KB .009 functional build; D68-D91 are empty expansion sockets. |
+| source-populated-now | RU5 | К565РУ5Г / 565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 32 | 8 | 24 | D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+14) | D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check. |
 
 ## Use
 
-- `source-now` and `source-populated-now` rows are the functional shopping baseline.
+- `source-now` and `source-populated-now` rows are planning candidates, not an approved shopping cart.
 - `program/dump` rows need firmware/PROM contents before they are build-ready.
 - `leave-empty` rows are sockets present on the board but not populated for the current .009 functional build.
 - `mechanical-review` and `circuit-review` rows need exact part drawing, footprint, or circuit-role confirmation before order.

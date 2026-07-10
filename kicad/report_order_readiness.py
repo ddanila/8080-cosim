@@ -79,9 +79,49 @@ def run_sourcing_readiness():
     report_path = ROOT / "docs" / "replica-sourcing-readiness.md"
     text = report_path.read_text(errors="replace")
     return {
-        "ready": "Status: **SOURCING READY" in text and "## Failures" not in text,
+        "ready": "Status: **SOURCING READY**" in text and "## Failures" not in text,
         "report": report_path,
     }
+
+
+def design_release_checks():
+    checks = [
+        (
+            "D2 bus/wait PROM wiring and contents",
+            ROOT / "docs" / "d2-reconstruction-constraints.md",
+            "Status: **D2 RECONSTRUCTION READY**",
+        ),
+        (
+            "D94 timing PROM wiring and contents",
+            ROOT / "docs" / "d94-reconstruction-constraints.md",
+            "Status: **D94 RECONSTRUCTION READY**",
+        ),
+        (
+            "All placement-only functional IC dispositions",
+            ROOT / "docs" / "unmodeled-footprint-inventory.md",
+            "Status: **READY FOR DESIGN RELEASE**",
+        ),
+        (
+            "Residual source-risk net dispositions",
+            ROOT / "docs" / "replica-bringup-verification-points.md",
+            "Status: **DESIGN RELEASE RISKS CLOSED**",
+        ),
+        (
+            "Complete functional sourcing/programming decision",
+            ROOT / "docs" / "replica-sourcing-readiness.md",
+            "Status: **SOURCING READY**",
+        ),
+    ]
+    rows = []
+    for label, path, marker in checks:
+        text = path.read_text(errors="replace") if path.exists() else ""
+        rows.append({
+            "label": label,
+            "path": path,
+            "ready": bool(text and marker in text),
+            "required": marker,
+        })
+    return rows
 
 
 def run_power_trace_readiness(board):
@@ -154,7 +194,7 @@ def run_upload_runbook(out_dir):
     text = report_path.read_text(errors="replace") if report_path.exists() else ""
     return {
         "ready": result.returncode == 0
-        and "Status: **READY**" in text
+        and "Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**" in text
         and "## Upload ZIP Members" in text
         and "Source match" in text
         and "file mode `0644`" in text
@@ -176,17 +216,26 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
         and not unknown_types
     )
     upload_ready = upload_runbook["ready"] if upload_runbook else False
-    order_ready = (
+    package_ready = (
         machine_ready
         and waiver_accepted
-        and sourcing["ready"]
         and power_trace["ready"]
         and drc_disposition["ready"]
         and package_geometry["ready"]
         and external_review["ready"]
         and upload_ready
     )
-    status = "ORDER READY" if order_ready else ("MACHINE READY" if machine_ready else "NOT READY")
+    release_checks = design_release_checks()
+    design_ready = all(row["ready"] for row in release_checks)
+    order_ready = package_ready and design_ready
+    if order_ready:
+        status = "RELEASED FOR ORDER"
+    elif package_ready:
+        status = "PACKAGE READY / DESIGN HOLD"
+    elif machine_ready:
+        status = "PACKAGE INCOMPLETE"
+    else:
+        status = "NOT READY"
 
     lines = [
         "# Main board order readiness",
@@ -256,6 +305,23 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
 
     lines.extend([
         "",
+        "## Design Release Gate",
+        "",
+        "Package integrity and DRC are necessary but do not authorize fabrication.",
+        "The following functional-design checks must all pass:",
+        "",
+        "| Check | Evidence | Result |",
+        "| --- | --- | --- |",
+    ])
+    for row in release_checks:
+        lines.append(table_row([
+            row["label"],
+            f"`{repo_relative(row['path'])}`",
+            "PASS" if row["ready"] else "HOLD",
+        ]))
+
+    lines.extend([
+        "",
         "## Power Trace Gate",
         "",
         f"- Power trace status: **{'READY' if power_trace['ready'] else 'NOT READY'}**",
@@ -290,11 +356,14 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
     lines.extend(["", "## Disposition", ""])
     if order_ready:
         lines.append(
-            "Machine blockers are clear and the exact-count review-only DRC waiver "
-            "is accepted. The regenerated Gerber/drill package, sourcing reports, "
-            "power-trace report, generated DRC visual disposition, external render "
-            "evidence, package-geometry report, and upload runbook are ready for "
-            "final order-time visual/vendor review."
+            "The package and functional design-release checks pass. Run the top-level "
+            "pre-payment command and complete final vendor preview review."
+        )
+    elif package_ready:
+        lines.append(
+            "The existing Gerber/drill files are internally coherent, but the design "
+            "release checks above are on hold. Do not upload or order this package; "
+            "close the blockers, regenerate the PCB and package, and rerun every gate."
         )
     elif machine_ready:
         lines.append(
@@ -310,7 +379,7 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
             "are resolved or deliberately reclassified."
         )
     lines.append("")
-    return "\n".join(lines), order_ready
+    return "\n".join(lines), package_ready
 
 
 def main():
@@ -328,13 +397,13 @@ def main():
     report_path = out_dir / "order-readiness.md"
     preliminary, _ = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, package_geometry, external_review)
     report_path.write_text(preliminary)
-    order_ready = False
+    package_ready = False
     report = preliminary
     upload_runbook = None
     for _attempt in range(4):
         previous_report = report_path.read_text(errors="replace") if report_path.exists() else ""
         upload_runbook = run_upload_runbook(out_dir)
-        report, order_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, package_geometry, external_review, upload_runbook)
+        report, package_ready = build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trace, drc_disposition, package_geometry, external_review, upload_runbook)
         report_path.write_text(report)
         if report == previous_report:
             break
@@ -342,7 +411,7 @@ def main():
         raise SystemExit("order-readiness/upload-runbook reports did not converge")
     print(report)
     print(f"Wrote {repo_relative(report_path)}")
-    return 0 if order_ready else 3
+    return 0 if package_ready else 3
 
 
 if __name__ == "__main__":

@@ -1,10 +1,10 @@
 # Unmodeled footprint inventory
 
-Status: **UNMODELED FOOTPRINT INVENTORY GUARDED**
+Status: **DESIGN HOLD / FUNCTIONAL FOOTPRINTS UNMODELED**
 
 This generated report catches IC footprints that exist in the generated
 PCB/DSN artifacts but are not yet part of `kicad/juku.board.json`.
-These parts are placement-only for the current upload-ready package:
+These parts are placement-only in the current engineering package:
 promoting any of them to modeled nets changes the netlist and requires
 a routed-PCB refresh plus endpoint-coverage proof.
 
@@ -23,9 +23,18 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 - Footprint-only ICs in any PCB/DSN artifact: `11`
 - Footprint-only ICs present in source PCB, routed PCB, and DSN: `11`
 
+## Design-Release Consequence
+
+There are `11` IC footprints in PCB/DSN artifacts with no
+pin-level representation in board JSON. KiCad's zero-unconnected result
+cannot detect missing connections on placement-only footprints. Every row
+below therefore blocks design release until it is either modeled and routed
+or explicitly dispositioned as a redesign/DNP and removed from the released
+PCB artifacts. Closing D105 alone is not sufficient.
+
 ## D105 Wait-Gate Boundary
 
-- D105 inventory state: `PASS`
+- D105 inventory state: `PENDING MODEL + REROUTE`
 - `D105` is an official `.009` `К155ЛА3` footprint present in
   `kicad/gen_kicad_pcb.py`, `kicad/juku.dsn`, `kicad/juku.kicad_pcb`,
   and `kicad/juku_routed.kicad_pcb`, but absent from
@@ -61,5 +70,8 @@ python3 scripts/report_unmodeled_footprint_inventory.py
    traceable enough to add to `kicad/juku.board.json`.
 2. After board JSON promotion, regenerate PCB/DSN/BOM reports and route
    the affected pads before claiming endpoint coverage.
-3. D105 has priority over the other placement-only extras because it is
-   already tied to D2's wait-state PROM output and CPU wait behavior.
+3. D105 has first priority because it is tied to D2's wait-state PROM
+   output and CPU wait behavior; D30 READY support and the FDC support
+   cluster still require their own complete dispositions.
+4. `READY FOR DESIGN RELEASE` is emitted only when no IC footprint
+   remains outside the board-JSON pin model.

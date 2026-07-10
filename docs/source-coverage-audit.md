@@ -1,165 +1,62 @@
 # Source coverage audit
 
-Status date: 2026-07-09.
+Status date: **2026-07-10**.
 
 Status: **PASS**
 
-This generated audit records how the public Juku archives are used by
-this repository. It is deliberately conservative: "used" means a
-source materially affected the replica board, digital twin,
-firmware/media probes, manufacturing packet, or bring-up plan. It does
-not mean every historical article, manual page, program, or disk image
-has been fully mined.
+This is the single external-source inventory. It records only material
+that affects the board, runnable twin, firmware/media, or current release
+blockers. Broad historical link lists and completed search diaries are
+deliberately omitted.
 
-## Summary
+## Adopted sources
 
-| Source | Current coverage | Gap |
+| Source | Local use | Remaining gap |
 | --- | --- | --- |
-| `https://arti.ee/juku/` | Main ES101 board drawings, processor-module schematic, component list, keyboard/PSU/case drawings, ROM/BASIC lineage, EKDOS source, and Arti-derived raw disks are mirrored or reflected in `ref/`, `roms/`, `media/disks/`, the board placement, generated BOM, transcription docs, and FDC/BASIC probes. The public manual/drawing listing is classified in `docs/public-manual-archive-inventory.md`; forum links are classified in `docs/public-community-link-inventory.md`. | Large user/service manuals, emulator pages, newspaper scans, and other historical links are optional context unless a future procedure-specific clue is needed. |
-| `https://elektroonikamuuseum.ee/failid/juku/` | `tech_docs_from_baltijets/` 000-015 are mirrored with text extraction under `ref/baltijets-tech-docs/` and mined for factory test, ROM programming, FDD, power, keyboard, and peripheral planning. Public system binaries from `JUKUSYS.ZIP` are vendored under `media/system/`; `J3KUTIL4.JUK` is vendored under `media/disks/`; the public software listing is classified in `docs/public-software-archive-inventory.md`; the `e5101-joonised/` and `kirjandus/` manual listings are classified in `docs/public-manual-archive-inventory.md`; large manual text is triaged in `docs/public-manual-text-triage.md`. | The Baltijets programming disk files referenced by doc 007 remain missing. |
-| `https://github.com/infoaed/juku3000/tree/master/roms` | ROM lineage is covered: canonical monitor/BIOS ROMs are vendored under `roms/`; legacy `BAS0-3` and `JUKUROM0/1` material is mirrored under `ref/firmware/` and feeds BASIC/ROM-window work. | The project now needs PROM provenance and uninterrupted HDL disk-backed media work, not more РФ2 ROM coverage. |
-| `https://arvutimuuseum.ee/cs00000/` | Used as historical/contextual confirmation for E5104/Baltijets, museum contact, public-preservation context, kit composition, and headline spec cross-checks. The gallery photos and linked articles are classified as visual or historical context in `docs/arvutimuuseum-context-inventory.md`. | Not a primary electrical source; it does not add PROM byte tables, continuity measurements, or board connectivity. |
-| `https://github.com/vpyk/emu80v4` | Surveyed as an emulator reference. No Juku-specific driver/config was found, but its GPL-3 `Fdc1793` model is recorded as a behavior checklist in `docs/emu80v4-survey.md` and `docs/fdc-core-survey.md`. | GPL-3 code is not vendored or copied. It does not close any Juku-specific PROM/media/netlist gap. |
-| Local WD1772 transistor/PLA files from `~/Downloads` | `wd1772.pdf` and `wd1772pla.txt` are vendored under `ref/wd1772-vg93/`; the PLM table is normalized to JSON/CSV and guarded by `docs/wd1772-pla-inspection.md`. | Reference material only. It supports future ВГ93/FD1773 fidelity work but is not translated into HDL and does not add Juku-specific media, PROM contents, or board connectivity. |
-| Public Elfafoorum / ZX-PK community links | `docs/public-community-link-inventory.md` classifies the public threads as owner/contact and historical/software context. It records that no extracted public snippet supplies the missing PROM byte tables, pin continuity, or board nets. | Useful contact path only until a reply provides files, photos, checksums, continuity measurements, or PROM dumps. |
-| Large public Juku manuals | `docs/public-manual-text-triage.md` records a targeted `pdftotext` pass over the public Elektroonikamuuseum literature PDFs. It found ROMBIOS, BASIC, FDD, and `ДГШ5.106.105` media-kit context, but no small-PROM byte tables or electrical closure. | Procedure context only unless a future task needs a specific manual page promoted with checksum. |
+| [Arti Juku archive](https://arti.ee/juku/) | schematics/assembly material, ROM lineage, EKDOS source, and raw disks under `ref/`, `roms/`, and `media/` | no D2 `.037` or D94 `.092` programming payload; no complete Monitor 3.3 cartridge BASIC image/procedure |
+| [Elektroonikamuuseum Juku files](https://elektroonikamuuseum.ee/failid/juku/) | 16 Baltijets factory PDFs, J3K utility disk, and system binaries | doc 007 points to programming data on disk, but those disk files are not public in the mirrored set |
+| [infoaed/juku3000](https://github.com/infoaed/juku3000) | ROM/media provenance and MAME/community cross-checks | contact path for hardware dumps; no additional public PROM payload adopted |
+| [MAME Juku driver](https://github.com/mamedev/mame/blob/master/src/mame/ussr/juku.cpp) | behavioral oracle, I/O map, floppy geometry, raster constants; current master is vendored byte-for-byte as `ref/mame_juku.cpp` | emulator behavior cannot supply omitted physical nets or PROM truth |
+| [MAME PR #14817](https://github.com/mamedev/mame/pull/14817) | real-hardware-tested 241st raster line and corrected JBASIC byte | already reflected in the local reference and video/BASIC guards |
+| Arvutimuuseum/community pages | historical context and owner/contact leads only | promote a claim into the repo only when a file, checksum, photo, or measurement is obtained |
+| Emu80v4 and public WD1793 HDL/software models | reviewed as implementation checklists; no code adopted | the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core |
+| Local WD1772 transistor/PLA reference | checksum-guarded under `ref/wd1772-vg93/`; PLA normalized for future comparison | deep reference only; not evidence for Juku-specific D93/D94 wiring |
+
+## Current source requests
+
+1. D2 `ДГШ5.106.037` input/output continuity and repeated PROM dump or programming-disk file.
+2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.
+3. Pin-level continuity or explicit redesign/DNP dispositions for all 11 placement-only official ICs: D28, D30, D95-D99, D101, D102, D105, and D106. D105's wait chain and D30's READY support are first priority.
+4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
+5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
+
+`docs/community-prom-media-request.md` is the ready-to-send request. New
+web/archive work should be tied to one of these named deliverables.
 
 ## Required local evidence
 
-| Evidence path | Status |
+| Path | State |
 | --- | --- |
-| `ref/schematics/es101_emaplaat.pdf` | present |
 | `ref/schematics/juku_es101_processor_module.pdf` | present |
+| `ref/schematics/es101_emaplaat.pdf` | present |
+| `ref/Juku_official_chip_BOM.pdf` | present |
 | `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf` | present |
-| `ref/baltijets-tech-docs/007 ROM and ROM programming.txt` | present |
 | `ref/baltijets-tech-docs/009 FDDs.pdf` | present |
-| `ref/baltijets-tech-docs/015 Floppy disk.txt` | present |
 | `ref/ekdos-source/EKDOS30.ASM` | present |
+| `ref/mame_juku.cpp` | present |
+| `roms/ekta37.bin` | present |
+| `roms/jmon33.bin` | present |
+| `roms/jbasic11.bin` | present |
 | `media/disks/JUKU1.CPM` | present |
 | `media/disks/JUKPROG2.CPM` | present |
 | `media/disks/J3KUTIL4.JUK` | present |
 | `media/system/EKDOS230.BIN` | present |
-| `roms/ekta37.bin` | present |
-| `roms/jmon33.bin` | present |
-| `roms/jbasic11.bin` | present |
-| `ref/firmware/JUKUROM0.HEX` | present |
-| `ref/firmware/JUKUROM1.HEX` | present |
-| `ref/firmware/re3_dgsh5.106.113.hex` | present |
-| `ref/firmware/re3_dgsh5.106.117.hex` | present |
 | `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin` | present |
 | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` | present |
-| `ref/extracted-software/JUKPROG2_JBASIC.COM` | present |
-| `ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM` | present |
-| `ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM` | present |
 | `ref/wd1772-vg93/wd1772.pdf` | present |
 | `ref/wd1772-vg93/wd1772pla.normalized.json` | present |
-| `docs/emu80v4-survey.md` | present |
-| `docs/fdc-core-survey.md` | present |
-| `docs/wd1772-vg93-reference.md` | present |
-| `docs/wd1772-pla-inspection.md` | present |
 | `docs/d2-reconstruction-constraints.md` | present |
 | `docs/d94-reconstruction-constraints.md` | present |
-| `docs/vendored-disk-catalog.md` | present |
-| `docs/basic-disk-extraction.md` | present |
-| `docs/basic-cartridge-tail-hypotheses.md` | present |
-| `docs/basic-cartridge-missing-page-constraints.md` | present |
-| `docs/public-software-archive-inventory.md` | present |
-| `docs/public-manual-archive-inventory.md` | present |
-| `docs/public-manual-text-triage.md` | present |
-| `docs/arvutimuuseum-context-inventory.md` | present |
-| `docs/public-community-link-inventory.md` | present |
-| `docs/re3-firmware-inspection.md` | present |
-| `docs/reconstructed-prom-fallbacks.md` | present |
 | `docs/firmware-gap-ledger.md` | present |
-| `docs/board-fidelity-gap-ledger.md` | present |
-| `docs/ekdos-source-inspection.md` | present |
+| `docs/vendored-disk-catalog.md` | present |
 | `docs/community-prom-media-request.md` | present |
-| `docs/owner-measurement-shortlist.md` | present |
-
-## Board-critical materials already consumed
-
-- ES101 main-board drawing and processor-module schematics drive the
-  placement, netlist, LVS, and routed replica package.
-- Component-list material drives `docs/replica-dual-config-bom.*`,
-  `docs/replica-sourcing-readiness.md`, and the generated parts/order
-  gates.
-- Arti/juku3000 ROM and BASIC files drive the boot, BASIC cartridge,
-  monitor, and ROM-window probes.
-- Arti EKDOS source files are vendored under `ref/ekdos-source/`.
-  `docs/ekdos-source-inspection.md` guards the monitor-call, disk
-  parameter, and floppy-handler constants used by the `TDD`/FDC work.
-- `scripts/report_vendored_disk_catalog.py` indexes the vendored Arti
-  and museum raw disk images and records disk-side BASIC candidates.
-  `J3KUTIL4.JUK` is cataloged alongside the CP/M images; `JUKU1.CPM`
-  contains `JBASIC.COM`; `JUKPROG2.CPM` contains `JBASIC.COM`,
-  `B80.COM`, `BRUN.COM`, `BASCOM.COM`, `BASCOM.DOK`, and
-  `BASLIB.REL`.
-- `scripts/report_public_software_archive_inventory.py` classifies the
-  observed Arti and Elektroonikamuuseum software listings. It keeps
-  required binaries/images vendored and marks classroom/game/tape
-  collections as optional Tier 2/Tier 3 preservation inputs.
-- `scripts/report_public_manual_archive_inventory.py` classifies the
-  public Arti and Elektroonikamuuseum manual/drawing listings. It
-  confirms the board-critical drawings are mirrored or covered and
-  leaves large user/service manuals as optional context.
-- `scripts/report_public_manual_text_triage.py` records the targeted
-  text pass over large public manuals: useful ROMBIOS/BASIC/FDD and
-  `ДГШ5.106.105` context, but no small-PROM byte-table or net evidence.
-- `scripts/report_arvutimuuseum_context_inventory.py` classifies the
-  Arvutimuuseum exhibit page, linked articles, and gallery photos
-  as context: useful for kit/spec/contact and visual cross-checks,
-  but not primary electrical evidence.
-- `scripts/report_public_community_link_inventory.py` classifies
-  public Elfafoorum/ZX-PK links as contact and historical context,
-  with no new PROM byte-table or continuity evidence extracted.
-- `scripts/extract_basic_disk_files.py` extracts and vendors the
-  strongest disk-side BASIC candidates under `ref/extracted-software/`.
-- `scripts/report_basic_cartridge_missing_page_constraints.py` records
-  the static constraints on the missing Monitor 3.3 BASIC cartridge
-  page and confirms no current vendored artifact supplies a page donor.
-- Baltijets docs 002/003/007/009/010/014/015 are reflected in
-  `PLAN.md` and the FDC/media/PROM/bring-up docs. Doc 007 describes
-  programmed-part drawings but references small-PROM byte tables on
-  disk, so РЕ3/РТ4 truth still needs the programming disk or hardware
-  dumps.
-- `scripts/export_reconstructed_proms.py` exports boot-validated
-  reconstructed D6 and D8 fallback images under
-  `ref/reconstructed-proms/`. These close the reproducible Tier 1/2
-  programming fallback path, not the Tier 3 dump/provenance requirement.
-- `scripts/report_re3_firmware_inspection.py` guards the tracked
-  owner-scan К155РЕ3 `.113`/`.117` excerpts and the current conclusion
-  that these `.106.103`-family tables are not the processor-module
-  D8 `.039` or D94 `.092` contents.
-- Elektroonikamuuseum `tarkvara/JUKUSYS.ZIP` is vendored under
-  `media/system/` as five 10 KiB CP/M/EKDOS system binaries.
-  `J3KUTIL4.JUK` is vendored under `media/disks/` because earlier FDC
-  docs cite it as a prompt-proof disk. The public software archive pass
-  found no explicit `ДГШ5.106.037`, `ДГШ5.106.038`, `ДГШ5.106.039`,
-  or `ДГШ5.106.092` PROM programming files.
-- The local WD1772 schematic/PLA files are useful below the emulator-core
-  abstraction: they can cross-check ВГ93/FD1773-compatible signal names
-  and PLA behavior if a full controller model becomes necessary.
-
-## Not yet exhaustive
-
-- Procedure-page promotion from large manuals only if a future
-  Tier 2/Tier 3 workflow needs exact wording or screenshots.
-- Forum follow-up after the ready-to-send owner/community request
-  produces actual files, photos, checksums, or measurements.
-
-## Practical implication
-
-The current manufacturing packet does not appear blocked by unused РФ2
-ROM material. The remaining source-risk items are narrower:
-
-- Baltijets programming-disk files or physical РЕ3/РТ4 dumps.
-- Diff any eventual D6/D8 dumps against `ref/reconstructed-proms/` before
-  replacing the current boot-validated reconstruction in HDL.
-- Disk-backed FDC behavior stays guarded by vendored `JUKU1.CPM` and
-  `J3KUTIL4.JUK`; no unvendored public disk is required for current
-  EKDOS/JBASIC evidence.
-- Owner/community confirmation for the generated bring-up verification
-  list, now compressed into `docs/owner-measurement-shortlist.md`.
-- Optional mining of manuals/software for Tier 2/Tier 3 fidelity,
-  especially storage workflows, keyboard/monitor operation, and original
-  user-facing software behavior.

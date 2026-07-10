@@ -1,5 +1,7 @@
 # Rev A Power Budget
 
+Status: **PLANNING ESTIMATE / DESIGN HOLD**.
+
 This is a first-pass +5 V current budget for choosing the input fuse and supply
 path. It is intentionally conservative until the exact socketed IC vendors are
 frozen.

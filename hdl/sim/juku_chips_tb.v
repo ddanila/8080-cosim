@@ -107,7 +107,7 @@ module juku_chips_tb();
     f2=0;
   end
 
-  // status-byte latch (on a clk edge INSIDE the sync window -- see project-status.md)
+  // status-byte latch (on a clk edge inside the 8080 SYNC window)
   reg sync_q=0;
   always @(posedge clk) begin
     if (sync && !sync_q) begin status <= d; mcyc <= mcyc+1; end

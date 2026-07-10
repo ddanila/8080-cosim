@@ -14,14 +14,14 @@ DEFAULT_FAB_DIR = ROOT / "fab" / "gerbers"
 DEFAULT_REPORT = ROOT / "docs" / "replica-manufacturing-readiness.md"
 
 REQUIRED_REPORTS = [
-    ("Order readiness", "fab/gerbers/order-readiness.md", "Status: **ORDER READY**"),
-    ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **READY**"),
+    ("Order readiness", "fab/gerbers/order-readiness.md", "# Main board order readiness"),
+    ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
-    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **READY**"),
-    ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "Status: **SOURCING READY"),
-    ("Order evidence template", "docs/replica-order-evidence-template.md", "Status: **READY**"),
+    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "# Replica bring-up verification points"),
+    ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "# Replica sourcing readiness"),
+    ("Order evidence template", "docs/replica-order-evidence-template.md", "# Replica order evidence template"),
     ("External Gerber review", "fab/gerbers/external-gerber-review.md", "Status: **READY**"),
     ("Review waiver", "fab/gerbers/review-waivers.md", "Status: **ACCEPTED**"),
     ("Fabrication readiness", "fab/gerbers/fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
@@ -183,7 +183,15 @@ def build_report(fab_dir):
         if value == "-":
             failures.append(f"missing toolchain provenance: {label}")
 
-    status = "READY TO UPLOAD" if not failures else "NOT READY"
+    order_path = ROOT / "fab" / "gerbers" / "order-readiness.md"
+    order_text = order_path.read_text(errors="replace") if order_path.exists() else ""
+    released = "Status: **RELEASED FOR ORDER**" in order_text
+    if failures:
+        status = "PACKAGE INVALID"
+    elif released:
+        status = "RELEASED FOR UPLOAD"
+    else:
+        status = "DESIGN HOLD / PACKAGE VERIFIED"
     lines = [
         "# Replica manufacturing readiness",
         "",
@@ -193,9 +201,9 @@ def build_report(fab_dir):
         f"Final upload ZIP SHA256: `{zip_digest or '-'}`",
         "",
         "This is the tracked top-level manufacturing packet for the replica main",
-        "board. It proves the generated fabrication package is internally coherent",
-        "and ready for vendor upload; it does not claim that a vendor order has",
-        "already been placed or accepted.",
+        "board. It separates reproducible package integrity from functional design",
+        "release. A verified package must not be uploaded while the status is",
+        "DESIGN HOLD.",
         "",
         "## Gate Summary",
         "",
@@ -240,13 +248,13 @@ def build_report(fab_dir):
 
     lines.extend([
         "",
-        "## Required Pre-Payment Commands",
+        "## Required release/pre-payment command",
         "",
         "```sh",
         "kicad/check_replica_manufacturing_ready.sh",
         "```",
         "",
-        "## Remaining External Evidence To Save With The Order",
+        "## External evidence to save after design release",
         "",
         "Use `docs/replica-order-evidence-template.md` for the private order record.",
         "",
@@ -254,8 +262,10 @@ def build_report(fab_dir):
         "- Quoted fabrication options and price.",
         "- Vendor order number.",
         "- The final upload ZIP checksum above.",
-        "- Confirmation that `docs/replica-bringup-verification-points.md` was reviewed",
-        "  and no listed residual source-risk net blocks fabrication.",
+        "- Confirmation that `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`.",
+        "- Confirmation that the package was regenerated after the final D2/D94",
+        "  changes, placement-only functional IC dispositions, and source-risk",
+        "  net corrections.",
     ])
 
     if failures:

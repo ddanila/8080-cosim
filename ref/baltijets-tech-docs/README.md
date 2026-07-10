@@ -4,11 +4,13 @@ Source:
 `https://elektroonikamuuseum.ee/failid/juku/tech_docs_from_baltijets/`
 
 Fetched: 2026-07-06.
+Remote directory rechecked: 2026-07-10; it still listed files `000` through
+`015`, matching the 16 mirrored PDFs.
 
 The directory contains 16 PDFs found in the former Baltijets factory building in
 Narva and scanned in November 2024. `000 Info.pdf` is text-searchable; the other
-PDFs are image scans. The adjacent `.txt` files are `pdftotext` outputs and are
-empty for the scan-only PDFs.
+PDFs are image scans. The adjacent `.txt` files are `pdftotext` outputs and
+contain no useful body OCR for the scan-only PDFs beyond sparse metadata.
 
 `SHA256SUMS` records the fetched PDF hashes.
 
@@ -48,7 +50,7 @@ Useful pages identified in the first pass:
 
 | Page | Finding |
 |---|---|
-| 28 | Power-supply schematic `ДГШ2.087.031 Э3`, showing +5 V/+12 V/GND connector mapping and PSU component values. Useful for WS-G PSU recreation, not processor-board LVS. |
+| 28 | Power-supply schematic `ДГШ2.087.031 Э3`, showing +5 V/+12 V/GND connector mapping and PSU component values. Useful for later PSU recreation, not processor-board LVS. |
 | 29 | Power-supply element list `ДГШ2.087.031 ПЭ3`; confirms PSU capacitors, regulators, diodes, transformer, fuse, and connector types. |
 | 32 | Interface-terminal connection schematic `ДГШ3.031.007 Э4`; confirms X8 power pins 62/61/60/59 and X9 signal labels including `K2`, `K0`, `K1`, `-ГК`, `+5V`, `SHIFT`, `CTRL`, `WAIT`, `STB`, `SC0`..`SC3`. Useful for bring-up cabling. |
 | 34-35 | Applicability/specification table for `ДГШ5.109.009` processor module. Confirms the .009 module includes programmed microcircuits `ДГШ5.106.037`, `.038`, `.039`, `.041`, `.042`, `.043`, `.087`, `.088`, `.089`, `.090`, `.091`, `.092`, plus related module/enclosure items. |
@@ -59,7 +61,7 @@ Implication:
   applicability tables.
 - The table confirms the small PROM drawing numbers already seen in doc 007,
   but still gives no byte contents.
-- The remaining net blockers in PLAN WS-A/WS-F still need either the original
+- The P0 connectivity blockers in `PLAN.md` still need either the original
   processor schematic pages, the referenced programming disk, or hardware
   continuity/dump sessions.
 
@@ -84,7 +86,7 @@ Implication:
 `003 Adjustment instructions.pdf` is the expected E5104 adjustment/check packet
 (`ДГШ3.031.011 Д2`). It is a factory bring-up and acceptance document, not a
 processor schematic, so it does not close PROM contents or hidden copper nets. It
-does provide useful system-level oracles for WS-B/WS-G:
+does provide useful system-level oracles for digital-twin and physical bring-up work:
 
 | Page | Finding |
 |---|---|
@@ -98,10 +100,10 @@ does provide useful system-level oracles for WS-B/WS-G:
 
 Implication:
 
-- WS-B's FDC/EKDOS milestone should use the factory key sequence and prompt:
+- The FDC/EKDOS oracle should use the factory key sequence and prompt:
   `ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` -> `A>`, with `JUKU-1` as the
   first disk target.
-- WS-G bring-up can now reference factory acceptance strings and QRUN/burn-in
+- Physical bring-up can reference factory acceptance strings and QRUN/burn-in
   cadence instead of inventing its own final smoke test.
 - RAS/CAS timing and PROM byte contents are still not printed here.
 

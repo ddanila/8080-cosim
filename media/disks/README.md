@@ -1,8 +1,10 @@
 # Juku disk images
 
 Vendored public Juku raw disk images used by the FDC/EKDOS probes and Tier 2
-software bring-up work. These are abandonware preservation artifacts, kept in
-tree so the emulator and future HDL media path have stable inputs.
+software bring-up work. They are kept in tree so the emulator and HDL media
+path have stable, checksum-identified inputs. Public availability does not by
+itself establish a redistribution license; preserve the source and hash
+metadata and assess applicable rights before redistributing the images.
 
 ## Provenance
 

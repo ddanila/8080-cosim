@@ -1,10 +1,10 @@
 # Replica sourcing readiness
 
-Status: **SOURCING READY / PROGRAMMING BLOCKED**
+Status: **PARTIAL / PROGRAMMING AND REVIEW BLOCKED**
 
 Source: `docs/replica-dual-config-bom.csv`.
 
-This report turns the WS-E dual-config BOM into an ordering and acceptance
+This report turns the dual-config BOM into an ordering and acceptance
 gate. It is not a vendor cart: prices, live stock, and seller trust must be
 checked at order time. It defines what can be sourced early, what needs
 bench acceptance, and what must wait for PROM/media truth or mechanical
@@ -43,9 +43,9 @@ review before being treated as build-ready.
 | SYS8238 | КР580ВК38 | 8228/8238-class system controller; verify pinout | 1 | D5 | Verify pin-compatible 8228/8238 behavior; check MEMR/IO strobes in a socketed bring-up. |
 | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | D11 | Socket; loopback test after clock/reset are proven. |
 | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 4 | D23, D24, D25, D29 | Continuity/orientation check on expansion bus transceivers. |
-| VG93_FDC | КР1818ВГ93 | WD1793-compatible FDC | 1 | D93 | Prefer socket; WD1793 drop-in acceptable for functional config. |
+| VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | D93 | Prefer a socket; verify the exact WD1793/VG93 candidate's pinout, clock, rails, and timing before approval. |
 | XTAL | РК-171 16 MHz crystal 16 МГц | 16 MHz HC-49/metal-can crystal matching footprint/load | 1 | Z1 | Verify 16 MHz oscillation and load-cap fit before debugging timing. |
-| RU5 | К565РУ5Г / 565РУ5Г | 4164-compatible 64Kx1 DRAM | 8 | D60, D61, D62, D63, D64, D65, D66, D67 | Buy spares; run 4164/565RU5 tester before installation. |
+| RU5 | К565РУ5Г / 565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 8 | D84, D85, D86, D87, D88, D89, D90, D91 | Verify exact 4164/565RU5 pinout, refresh, speed, and rails; buy tested spares only after approval. |
 
 ## Programming / Dump Gate
 

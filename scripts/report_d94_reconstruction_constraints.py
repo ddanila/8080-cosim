@@ -286,11 +286,6 @@ def main() -> int:
         "sheet-3's D94-D108 refdes were re-used for the FDC-era parts",
         "The drawing's D94-D108 are the К561 CMOS TAPE cluster",
     )
-    historical_113_conflict = marker(
-        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
-        ".113 (D94): a 2K-granular decode of A000-BFFF",
-        "role-assumed; .113 -> D94",
-    )
     scanned_not_d94 = marker(
         "docs/re3-firmware-inspection.md",
         "Status: **PASS**",
@@ -305,8 +300,11 @@ def main() -> int:
     can_reconstruct = (
         address_ok
         and enable_ok
-        and bool(output_nets)
-        and bool(dsn_output_nets)
+        and len(output_nets) == len(output_pins)
+        and len(dsn_output_nets) == len(output_pins)
+        and len(pcb_output_nets) == len(output_pins)
+        and all(pin in dsn_nets for pin, _ in enable_pins)
+        and all(pin in pcb_nets for pin, _ in enable_pins)
         and bool(candidates)
     )
     status = "D94 RECONSTRUCTION READY" if can_reconstruct else "D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
@@ -389,9 +387,8 @@ def main() -> int:
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
             f"| Repository-wide `.092` artifact filename exists | {'PASS' if repo_candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in repo_candidates) if repo_candidates else 'no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync'} |",
-            f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 68 |",
-            f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 56/68 |",
-            f"| Historical `.113 -> D94` assumption is still visible as a conflict | {'PASS' if historical_113_conflict else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iterations 68/70 |",
+            f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
+            f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
             f"| HDL placeholder is explicitly inert | {'PASS' if hdl_placeholder else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
             f"| `juku_top` leaves D94 data outputs unconnected | {'PASS' if hdl_unconnected else 'FAIL'} | `hdl/juku_top.v` |",
@@ -403,8 +400,7 @@ def main() -> int:
             "  К155РЕ3, programmed as `ДГШ5.106.092`.",
             "- Earlier D94 references in the sheet-3/tape-cluster survey are known",
             "  refdes reuse history, not evidence for the FDC-era timing PROM.",
-            "- The old `.113 -> D94` note remains in the raw campaign log, but the",
-            "  current guarded firmware inspection supersedes it: `.113/.117` belong",
+            "- The guarded firmware inspection establishes that `.113/.117` belong",
             "  to the `.106.103`-family owner-scan evidence and are not a burnable",
             "  D94 `.092` substitute.",
             "- These textual leads establish identity and negative evidence only. They",
@@ -462,7 +458,6 @@ def main() -> int:
         and pcb_ok
         and official_bom_lead
         and reused_refdes_guard
-        and historical_113_conflict
         and v3_rc_not_d94_evidence
         and hdl_placeholder
         and hdl_unconnected

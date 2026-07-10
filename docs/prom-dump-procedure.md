@@ -1,7 +1,8 @@
 # PROM dump procedure — the 4 socketed chips (+2 EPROMs)
 
-The keystone unlock: РЕ3 contents gate V3 (DRAM/video slot timing) and the real clock circuit;
-РТ4 contents replace our *recovered* decode maps with the actual silicon bits.
+D94 РЕ3 contents and continuity are needed for the physical DRAM/video slot
+timing; the D8 РЕ3 and D2/D6 РТ4 dumps replace reconstructed or missing maps
+with the actual silicon bits.
 
 Update 2026-07-06: Baltijets doc 007 was fetched and triaged in
 `ref/baltijets-tech-docs/`. It confirms programmed-part drawings for the small
@@ -23,22 +24,27 @@ factory truth.
 ## What to pull (label each with its socket refdes + board # before removing!)
 | Chip | Where | Type | Organization | Dump method |
 |---|---|---|---|---|
-| К155РЕ3 #1 | serial/FDC corner socket (board #2; loosely seated already) | bipolar PROM, 74188/82S23 class | 32 × 8 | MCU sweep (below) |
-| К155РЕ3 #2 | CPU-cluster socket | same | 32 × 8 | MCU sweep |
+| К155РЕ3 (candidate D94; confirm refdes) | serial/FDC corner socket (board #2; loosely seated already) | bipolar PROM, 74188/82S23 class | 32 × 8 | MCU sweep (below) |
+| К155РЕ3 (candidate D8; confirm refdes) | CPU-cluster socket | same | 32 × 8 | MCU sweep |
 | КР556РТ4А (D6) | CPU cluster, socketed | bipolar PROM, 74S287/387 class | 256 × 4 | MCU sweep |
 | КР556РТ4А (D2) | CPU cluster, socketed | same | 256 × 4 | MCU sweep |
 | M2764AF1 ×2 (D15/D16) | ROM sockets | standard 2764 EPROM | 8K × 8 | any programmer (TL866 etc.) |
 
-**Handling:** photograph each socket before pulling; note pin-1 notch orientation; bipolar PROMs are
-rugged but sockets are old — rock gently lengthwise. Anti-static is nice-to-have (these are TTL).
+**Handling:** photograph each socket before pulling, note pin-1 orientation,
+use normal ESD precautions, and remove devices gently with an IC extractor so
+old sockets and pins are not bent.
 
 ## M2764A (easy, do first)
-Any cheap programmer (TL866II+/XGecu T48) reads 2764 directly (12.5 V VPP is only for writing —
-reading is safe). Dump both, then diff against our `roms/ekta37.bin` — if identical, our whole boot
-stack is validated against this physical board's ROMs; if different, we found a BIOS variant!
+A programmer whose current device list explicitly supports the exact 2764/M2764
+variant can read these EPROMs; verify the selected device and orientation before
+insertion. Dump both twice, then compare the combined result with the documented
+D15/D16 split of `roms/ekta37.bin`. A difference is evidence for either a BIOS
+variant, a split/order issue, or a bad read—not a conclusion by itself.
 
-## Bipolar PROMs — TL866-class programmers do NOT read them. MCU sweep instead:
-Any 5V-tolerant MCU board (Arduino Uno/Nano ideal — real 5V I/O). Outputs are open-collector →
+## Bipolar PROMs — verify programmer support or use an MCU sweep
+Do not assume a general EPROM programmer supports these bipolar PROMs; check its
+current device list and any required adapter. A 5 V MCU setup is the fallback.
+Outputs are open-collector →
 **pull-ups needed: 4.7k from each output pin to +5V** (or enable internal pull-ups and read
 open-collector as-is — external 4.7k is more reliable for S-series).
 
@@ -63,9 +69,11 @@ Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-
 `proms/rt4_d2.bin` (256B), `proms/m2764_d15.bin` + `_d16.bin` (8KB each) + a provenance README
 (board #, socket, date, method). 
 
-## What each dump unlocks (in order of excitement)
-1. **РЕ3 ×2 → V3**: the DRAM/video slot timing + (with D92/ЛЕ4 tracing) the complete real clock —
-   retires the twin's last big abstraction (`clk_phase`, D53 combinational RAS/CAS, `frame_tick`).
+## What each dump unlocks
+1. **РЕ3 dumps**: socket/refdes identification is essential. A D8 `.039` dump
+   validates the reconstructed ROM pager; a D94 `.092` dump, together with its
+   missing output/enable continuity, informs the physical DRAM/video schedule.
+   Do not substitute the `.113/.117` tables from the `.106.103` family.
 2. **РТ4 D6 → real memory decode**: replaces `decode_prom`'s emulator-recovered banking map with
    silicon truth; boot_check re-verifies byte-identity.
 3. **РТ4 D2 → bus/wait PROM truth**: fills the still-missing physical D2
@@ -78,11 +86,11 @@ the authoritative source once repeated reads and socket provenance are sound;
 the reconstruction is only the buildable fallback to diff against.
 
 ## Drawing cross-reference (found 2026-07-03, drawing index ДГШ 3.031.006 ВС)
-The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 … 5.106.047**, each
-"куда входит: ДГШ 5.109.006" (the processor module). These are the factory programming documents
-for the module's custom-content chips (РЕ3 ×2, РТ4 ×2 + likely the M2764 images and the '87-revision
-FDC-era additions). When the dumps are made, label each with its best-guess drawing number; if the
-paper drawings ever surface, they're the ground truth to diff against.
-Note: the index title block carries change "ДГШ003-87" — the archive's Э3 schematic sheets are the
-PRE-revision originals; board 7.102.158's FDC glue (the ВГ93 quadrant TTL) has no schematic in the
-archive, so its netlist comes only from the physical board (beeper/etch tracing).
+The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …
+5.106.047**, each marked as used by processor module `ДГШ5.109.006`. The `.009`
+applicability material separately identifies D94 `.092`; do not infer that its
+bytes are present in the `.037-.047` index. Label every dump by board and socket
+first, then associate a drawing number only when the factory paper trail or
+repeated hardware evidence supports it. The available electrical schematic
+does not contain the complete `.009` FDC support circuit, so continuity evidence
+is still required.

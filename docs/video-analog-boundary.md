@@ -1,6 +1,6 @@
 # Video analog boundary
 
-Status date: 2026-07-09.
+Status date: 2026-07-10.
 
 Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**
 

@@ -78,11 +78,11 @@ endmodule
 // Expansion backplane connector (Multibus-style card slots). A BOUNDARY component: its far side is
 // the off-board cards, so it carries no logic -- it exists so the transceiver->connector nets have a
 // 2nd endpoint (LVS forbids 1-node nets). Stage-1 pins = the D29 bus-command signals; grows as more
-// backplane transceivers (D23 addr, D24 data, D25 control) are wired. See docs/transcription/bus-interface.md.
+// backplane transceivers (D23 addr, D24 data, D25 control) are wired. Endpoint truth lives in board JSON.
 // К565РУ5 socket, UNPOPULATED (banks 1-3 of the 4-bank DRAM array). The sockets ARE on the board and
-// wired (shared MA/RAS/WE + per-bit DIN/DOUT, per-bank CAS), but no chip is installed -> modelled as a
+// wired (shared MA/CAS/WE + per-bit DIN/DOUT, per-row RAS), but no chip is installed -> modelled as a
 // passive footprint: pins on the buses, NO logic (never drives DB/WD) -> boot-safe. Same RU5 pinmap as
-// the populated bank 0. (Bank select / per-bank CAS decode is not yet traced -> CAS nets are assumed.)
+// the populated row.
 module ru5_socket (input wire [7:0] ma, input wire ras_n, cas_n, we_n, di, inout wire do_);
 endmodule
 
@@ -173,7 +173,7 @@ endmodule
 // The 16KB ekta37 BIOS spans D15 (low 8K, HALF=0) + D16 (high 8K, HALF=1), each with its own CE
 // from the decode PROM. oe_n is the read strobe (MEMR). Sample-and-hold: latch the byte at the
 // read strobe and hold it through DBIN (8080 tOS1/tOS2 -- a combinational multi-hop drive corrupts
-// vm80a's fixed-phase capture; see project-status gotchas).
+// vm80a's fixed-phase capture; this is a simulator timing accommodation).
 // EPROM socket, UNPOPULATED (6 of the 8 ROM sockets: only D15/D16 hold the 16KB BIOS). Wired to the
 // shared address/data + OE buses; no chip installed -> passive footprint (never drives DB) -> boot-safe.
 // Per-socket CS comes from the ROM bank decode (not yet traced -> CS left as a documented gap). Same
@@ -230,7 +230,7 @@ module clk_phase (input wire osc, input wire phsel, output reg phi1, phi2, phi2t
 endmodule
 module stb_gen   (input wire osc, output wire stb);                  // D38 (legacy stub, unused)
     assign stb = 1'bz; endmodule
-// clock divider + gate mesh (scan: docs/transcription/clock-subsystem.md). Z1 -> D59 osc ->
+// clock divider + gate mesh (board JSON provenance). Z1 -> D59 osc ->
 // D40 divider -> D33/D39/D36 gates -> D38 (ЛА1) = STB and D35 (ЛН5) = Φ1/Φ2.
 module ct16_ctr  (input wire clk, r_n, ep, et, pe_n, input wire [3:0] d,  // D40 СТ16 (74161-class)
                   output wire [3:0] q, output wire co);
@@ -303,8 +303,8 @@ endmodule
 module re3_prom (input wire [4:0] a, input wire e_n, output reg [7:0] d);
     // PREDICTED CONTENT for the board's D8 = programmed part ДГШ5.106.039 per the factory ВП/ПЭЗ
     // (UNDUMPED -- owner item). The scanned .113/.117 tables belong to the .106.103 family (likely
-    // the V3-gating timing РЕ3 pair): proven unable to boot any config from D8 for every tag
-    // permutation / addressing / population -- see docs/re3-decode.md reconciliation grind.
+    // a timing РЕ3 pair): proven unable to boot any config from D8 for every tag
+    // permutation / addressing / population -- see reconstructed-prom-fallbacks.md.
     // This table is the MAME-verified behavioral reconstruction of .039 (byte-identical boot).
     always @* begin
         if (e_n)              d = 8'hFF;
@@ -365,7 +365,7 @@ endmodule
 // Configuration jumper (Е2/Е3/Е10/Е13 family): 3 pads, position 1-2 or 2-3. Functional model =
 // the 2-3 position (the traced/boot configuration): common follows p3.
 module jumper3 (input wire p1, p3, output wire p2); assign p2 = p3; endmodule
-// ---- video dot-clock chain (scan: docs/transcription/dram-video-timing.md, sheet-2 BR) ----
+// ---- video dot-clock chain (board JSON provenance, sheet-2 BR) ----
 module ag3_oneshot (input wire a_n, b, clr_n, a2_n, b2, clr2_n,   // D56 АГ3 (74123) dual one-shot
                     output wire q, q_n, q2, q2_n);                 // both sections SYNC-B-triggered (traced)
     assign q = 1'bz; assign q_n = 1'bz; assign q2 = 1'bz; assign q2_n = 1'bz; endmodule
@@ -429,7 +429,7 @@ module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling
     reg [7:0] row; reg mem [0:65535]; reg held; integer i;
     initial begin held = 0; for (i = 0; i < 65536; i = i+1) mem[i] = 0; end
     // Video read port: the real РУ5 time-multiplexes ONE data pin between CPU and video (КП14
-    // arbitration = V3 boundary); in sim a read doesn't contend, so we expose the framebuffer
+    // arbitration remains a physical boundary); in sim a read doesn't contend, so we expose the framebuffer
     // bit at `va` directly. `va`/`vq` are sim artifacts (not real pins) -> LVS allowlist drops them.
     assign vq = mem[va];
     // The drawn D48-D51 mux tables scramble BA[15:8] onto the row-phase MA lines (finding 24;
@@ -939,7 +939,7 @@ endmodule
 module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
     // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
-    // D94 (docs/re3-decode.md reconciliation grind). Outputs modeled inactive (all HIGH =
+    // D94 (see d94-reconstruction-constraints.md). Outputs modeled inactive (all HIGH =
     // OC off + pullups); D94's outputs are un-netted anyway, so this is boot-inert.
     assign d = 8'hFF;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule

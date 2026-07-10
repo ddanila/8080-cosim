@@ -16,7 +16,7 @@ SOURCE_PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 GEN = ROOT / "kicad" / "gen_kicad_pcb.py"
 REPORT = ROOT / "docs" / "unmodeled-footprint-inventory.md"
-RAW_NOTES = ROOT / "ref" / "photos" / "juku-pcb-2" / "BODGE-TRIAGE.md"
+PHYSICAL_EVIDENCE = ROOT / "ref" / "photos" / "juku-pcb-2" / "BODGE-TRIAGE.md"
 SHEET1 = ROOT / "ref" / "schematics" / "p3_sheet1.png"
 
 
@@ -77,10 +77,10 @@ def untraced_entries() -> dict[str, dict[str, object]]:
 def markers_ok() -> tuple[bool, list[str]]:
     checks = [
         (GEN, "'D105': ('DIP-14_W7.62mm', 'К155ЛА3'"),
-        (RAW_NOTES, "D105's two ЛА3 sections drawn"),
-        (RAW_NOTES, "D2/РТ4's full wiring is ON SHEET 1"),
-        (RAW_NOTES, "D2 = РТ4 .037"),
-        (RAW_NOTES, "D105 = К155ЛА3"),
+        (PHYSICAL_EVIDENCE, "D105 two visible ЛА3 sections"),
+        (PHYSICAL_EVIDENCE, "D2 wiring region is on sheet 1"),
+        (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
+        (PHYSICAL_EVIDENCE, "D105 = К155ЛА3"),
         (SHEET1, None),
     ]
     missing: list[str] = []
@@ -103,8 +103,22 @@ def main() -> int:
     footprint_only = sorted((source | routed | set(placements)) - model, key=lambda ref: int(ref[1:]))
     common_footprint_only = sorted((source & routed & set(placements)) - model, key=lambda ref: int(ref[1:]))
 
-    status = "UNMODELED FOOTPRINT INVENTORY GUARDED" if evidence_ok else "EVIDENCE MARKERS MISSING"
-    d105_state = "PASS" if "D105" in common_footprint_only and "D105" in untraced else "FAIL"
+    d105_pending = "D105" in common_footprint_only and "D105" in untraced
+    release_pending = bool(footprint_only)
+    if not evidence_ok:
+        status = "EVIDENCE MARKERS MISSING"
+    elif release_pending:
+        status = "DESIGN HOLD / FUNCTIONAL FOOTPRINTS UNMODELED"
+    else:
+        status = "READY FOR DESIGN RELEASE"
+    if "D105" in model:
+        d105_state = "MODELED"
+    elif d105_pending:
+        d105_state = "PENDING MODEL + REROUTE"
+    elif "D105" in source | routed | set(placements):
+        d105_state = "INCONSISTENT ARTIFACT INVENTORY"
+    else:
+        d105_state = "NOT PRESENT"
 
     lines = [
         "# Unmodeled footprint inventory",
@@ -113,7 +127,7 @@ def main() -> int:
         "",
         "This generated report catches IC footprints that exist in the generated",
         "PCB/DSN artifacts but are not yet part of `kicad/juku.board.json`.",
-        "These parts are placement-only for the current upload-ready package:",
+        "These parts are placement-only in the current engineering package:",
         "promoting any of them to modeled nets changes the netlist and requires",
         "a routed-PCB refresh plus endpoint-coverage proof.",
         "",
@@ -131,6 +145,15 @@ def main() -> int:
         f"- DSN IC placements: `{len(placements)}`",
         f"- Footprint-only ICs in any PCB/DSN artifact: `{len(footprint_only)}`",
         f"- Footprint-only ICs present in source PCB, routed PCB, and DSN: `{len(common_footprint_only)}`",
+        "",
+        "## Design-Release Consequence",
+        "",
+        f"There are `{len(footprint_only)}` IC footprints in PCB/DSN artifacts with no",
+        "pin-level representation in board JSON. KiCad's zero-unconnected result",
+        "cannot detect missing connections on placement-only footprints. Every row",
+        "below therefore blocks design release until it is either modeled and routed",
+        "or explicitly dispositioned as a redesign/DNP and removed from the released",
+        "PCB artifacts. Closing D105 alone is not sufficient.",
         "",
         "## D105 Wait-Gate Boundary",
         "",
@@ -192,8 +215,11 @@ def main() -> int:
             "   traceable enough to add to `kicad/juku.board.json`.",
             "2. After board JSON promotion, regenerate PCB/DSN/BOM reports and route",
             "   the affected pads before claiming endpoint coverage.",
-            "3. D105 has priority over the other placement-only extras because it is",
-            "   already tied to D2's wait-state PROM output and CPU wait behavior.",
+            "3. D105 has first priority because it is tied to D2's wait-state PROM",
+            "   output and CPU wait behavior; D30 READY support and the FDC support",
+            "   cluster still require their own complete dispositions.",
+            "4. `READY FOR DESIGN RELEASE` is emitted only when no IC footprint",
+            "   remains outside the board-JSON pin model.",
             "",
         ]
     )
@@ -208,8 +234,12 @@ def main() -> int:
     if not evidence_ok:
         print("Missing evidence markers: " + ", ".join(missing_markers))
         return 1
-    if d105_state != "PASS":
-        print("D105 is not consistently represented as a placement-only footprint")
+    missing_generator_entries = [ref for ref in common_footprint_only if ref not in untraced]
+    if missing_generator_entries:
+        print(
+            "Placement-only footprints are missing from the generator inventory: "
+            + ", ".join(missing_generator_entries)
+        )
         return 1
     return 0
 

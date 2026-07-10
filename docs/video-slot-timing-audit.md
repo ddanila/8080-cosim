@@ -2,7 +2,7 @@
 
 Status: **VIDEO SLOT TIMING AUDITED / D94 PROM DUMP PENDING**
 
-This generated audit tracks the remaining M4/V3 boundary: replacing the
+This generated audit tracks the remaining faithful-video boundary: replacing the
 runnable sim-only framebuffer read path with the faithful КП14/ИД7/АГ3/РЕ3
 shared-DRAM video slot schedule.
 
@@ -18,14 +18,14 @@ python3 scripts/report_video_slot_timing_audit.py
 | --- | --- | --- |
 | Runnable raster geometry is guarded | PASS | `docs/video-timing-reference.md` / `sync/video_timing_check.sh` |
 | Runnable byte-to-pixel readout is guarded | PASS | `docs/video-readout-readiness.md` / `sync/video_readout_check.sh` |
-| Physical D42/D43 ИР16 serializers are traced in the transcription | PASS | `docs/transcription/dram-video-timing.md` |
+| Physical D42/D43 ИР16 serializers are identified in the board model | PASS | `kicad/juku.board.json` D42/D43 identities |
 | Physical serializer instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
 | D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
 | D42/D43 serializer control/serial nets are present in the board JSON | PASS | `kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q |
 | D41 latch-chain output boundary is guarded | PASS | `docs/d41-timing-boundary.md` |
-| Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` V2 adjunct |
+| Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` runnable adjunct |
 | The DRAM model still exposes sim-only video read pins | PASS | `hdl/devices.v::dram_64kx1` |
 | LVS explicitly treats the sim-only video read pins as non-board pins | PASS | `sync/lvs.py` SIM_ONLY contract |
 | Owner photo survey confirms a socketed top-center РЕ3 is dumpable | PASS | `ref/photos/juku-pcb-2/SURVEY.md` |
@@ -44,7 +44,7 @@ python3 scripts/report_video_slot_timing_audit.py
 
 ## Interpretation
 
-- V2 is guarded: raster geometry and byte-to-pixel serialization produce the
+- The runnable path is guarded: raster geometry and byte-to-pixel serialization produce the
   expected 40 x 241 framebuffer stream.
 - The physical chips for the serializer and mux/decode path are present in
   the structural model, so this is no longer a vague video-output gap.
@@ -61,5 +61,5 @@ python3 scripts/report_video_slot_timing_audit.py
   all eight output destinations, and the `.092` contents are still
   missing from current repo evidence.
 - Until that PROM is dumped or a programming-disk table appears, the honest
-  model keeps `VA/VQ` and `video_raster` as a sim-only V2 adjunct rather
+  model keeps `VA/VQ` and `video_raster` as a sim-only runnable adjunct rather
   than inventing a board-critical DRAM arbitration schedule.

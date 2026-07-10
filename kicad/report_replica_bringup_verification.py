@@ -182,7 +182,12 @@ def main() -> int:
     category_counts = Counter(row["category"] for row in rows)
     pcb_ok = not pcb_missing and not pcb_mismatched
     full_pcb_ok = bool(source_coverage["ok"] and routed_coverage["ok"])
-    status = "READY" if pcb_ok and full_pcb_ok else "NOT READY"
+    if not pcb_ok or not full_pcb_ok:
+        status = "ENDPOINT COVERAGE FAILED"
+    elif rows:
+        status = "EVIDENCE INDEX READY / RISKS UNRESOLVED"
+    else:
+        status = "DESIGN RELEASE RISKS CLOSED"
     lines = [
         "# Replica bring-up verification points",
         "",
@@ -294,10 +299,18 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## Manufacturing Disposition",
+            "## Design-release disposition",
             "",
-            "- These items do not block PCB fabrication: the package is socketed,",
-            "  bodge-friendly, and the digital twin/CI gates cover the boot path.",
+            "- Endpoint coverage proves that modeled nets survive into both PCB files;",
+            "  it does not prove that the modeled net is historically correct or that",
+            "  omitted functional pins are safe.",
+            "- The 11 official IC footprints with no board-JSON pin model are tracked",
+            "  separately in `docs/unmodeled-footprint-inventory.md`; they are outside",
+            "  every endpoint count above and remain design-release blockers.",
+            "- Any row affecting boot, memory, bus direction, interrupts, or video",
+            "  timing must be measured, source-proven, or explicitly redesigned before",
+            "  fabrication release. Socketing and possible bodge wires are not a",
+            "  substitute for completing the design.",
             "- Save any vendor-preview, owner-continuity, oscilloscope, or logic-analyzer",
             "  evidence against this checklist as bring-up progresses.",
             "- If a point is corrected in source, update `kicad/juku.board.json` first",

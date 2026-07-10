@@ -575,9 +575,8 @@ def main() -> int:
             "  framebuffers match the selected cosim oracle.",
             "- The `Idle cursor` column checks whether the monitor-idle cursor",
             "  block from the checkpoint survived into the final framebuffer.",
-            "- This proof is scoped to jmon33 monitor commands. BASIC remains tracked",
-            "  separately by `docs/basic-launch-probe.md` and",
-            "  `docs/basic-factory-command-probe.md`.",
+            "- This proof is scoped to jmon33 monitor commands. Cartridge BASIC",
+            "  remains tracked by `docs/cartridge-basic-boundary.md`.",
         ]
     )
     lines.append("")

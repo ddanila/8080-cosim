@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Bounded diagnostic for the full juku_top ROMBIOS -> FDC boundary.
 #
-# This is intentionally not a CI gate yet: the full EKDOS prompt path is still
-# slow in the bit-sliced top-level sim. The probe makes the current state
-# reproducible and stops as soon as decoded WD1793 I/O is observed.
+# The same harness can stop at early decoded WD1793 activity or run through the
+# committed uninterrupted EKDOS/JBASIC prompt boundaries. Long reruns remain
+# opt-in because the bit-sliced top-level simulation is expensive.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 command -v vvp >/dev/null || { echo "vvp not found"; exit 2; }
 
-REPORT=${JUKU_TOP_FDC_REPORT:-docs/juku-top-fdc-probe.md}
+REPORT=${JUKU_TOP_FDC_REPORT:-${TMPDIR:-/tmp}/juku-top-fdc-probe.md}
 REPORT_TITLE=${JUKU_TOP_FDC_REPORT_TITLE:-juku_top FDC probe}
 SIMULATOR=${JUKU_TOP_FDC_SIM:-icarus}
 DISK=${JUKU_TOP_FDC_DISK:-media/disks/JUKU1.CPM}

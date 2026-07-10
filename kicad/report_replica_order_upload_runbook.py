@@ -29,14 +29,15 @@ RETAINED_EVIDENCE = [
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("Power trace readiness", "docs/replica-power-trace-readiness.md", "Status: **READY**"),
-    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **READY**"),
-    ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "Status: **SOURCING READY"),
+    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "# Replica bring-up verification points"),
+    ("Sourcing readiness", "docs/replica-sourcing-readiness.md", "# Replica sourcing readiness"),
     ("Checksum file", "SHA256SUMS", None),
     ("Order evidence template", "docs/replica-order-evidence-template.md", "# Replica order evidence template"),
 ]
 
 ORDER_CHECKS = [
-    "Upload only `upload/juku-replica-gerbers-drill.zip` for PCB fabrication.",
+    "Confirm `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`; while it says `DESIGN HOLD`, do not upload anything.",
+    "After release, upload only `upload/juku-replica-gerbers-drill.zip` for PCB fabrication.",
     "Confirm vendor preview matches `docs/replica-package-geometry-readiness.md`: 2-layer board, 310 mm x 266 mm Edge.Cuts box, and one mixed-plating Excellon drill file.",
     "Confirm top/bottom copper, soldermask, silkscreen, and edge-cuts all render with the same orientation as `fab/gerbers/review/tracespace/`.",
     "Select 1.6 mm FR-4 unless deliberately changed after DFM review.",
@@ -214,7 +215,7 @@ def build_report(fab_dir, report_path):
     if extra_upload_hashes:
         failures.append("unexpected upload SHA256SUMS entries: " + ", ".join(extra_upload_hashes))
 
-    status = "READY" if not failures else "NOT READY"
+    status = "PACKAGE VERIFIED / DESIGN RELEASE SEPARATE" if not failures else "PACKAGE INVALID"
     lines = [
         "# Replica order-upload runbook",
         "",
@@ -222,9 +223,9 @@ def build_report(fab_dir, report_path):
         f"Upload archive: `{repo_relative(zip_path)}`",
         f"Status: **{status}**",
         "",
-        "This is the exact upload/runbook layer for the main replica board PCB order.",
-        "It does not claim live vendor DFM acceptance; those checks happen in the",
-        "vendor UI immediately before payment.",
+        "This report verifies the mechanics of the saved upload package. It is not",
+        "an order authorization. The current design-release state is owned by",
+        "`fab/gerbers/order-readiness.md` and the top-level command below.",
         "",
         "## Pre-Upload Integrity",
         "",

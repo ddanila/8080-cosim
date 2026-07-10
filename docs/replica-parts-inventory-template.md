@@ -1,7 +1,7 @@
 # Replica parts and PROM inventory template
 
 Copy this checklist into the private build record when parts are ordered,
-received, tested, and programmed. Do not mark M8 complete until the received
+received, tested, and programmed. Do not mark the parts/programming milestone complete until the received
 inventory, bench tests, and PROM/EPROM programming records below are filled
 with real evidence.
 
@@ -32,7 +32,7 @@ Source gates:
 | CPU and system controller | received CPU8080 + SYS8238-class parts, socket fit checked, pre-install test or known-good provenance |  |
 | Bus transceivers/latches | received BUF8286/BUF8287/VABUS/IR82 parts, orientation and pinout checked |  |
 | DRAM bank | at least 8 tested 4164/К565РУ5-compatible chips plus spares |  |
-| PIT/PPI/PIC/USART/FDC | received socketed peripheral ICs, FDC drop-in decision recorded |  |
+| PIT/PPI/PIC/USART/FDC | received socketed peripheral ICs, FDC compatibility decision recorded |  |
 | Clock/video glue | received fast counters, muxes, gates, oscillator/crystal, and serializer-related ICs |  |
 | Passives | received resistor/capacitor/diode/transistor values with circuit-review rows resolved |  |
 | Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X7/X8/X9/S1/S3/S4 |  |
@@ -46,7 +46,7 @@ Source gates:
 | --- | --- | ---: | --- | --- | --- | --- | --- |
 | D1 |  |  |  |  |  |  |  |
 | D5 |  |  |  |  |  |  |  |
-| D60-D67 |  |  |  |  |  |  |  |
+| D84-D91 |  |  |  |  |  |  |  |
 | D93 |  |  |  |  |  |  |  |
 | X1/X2/X3/X7/X8/X9 |  |  |  |  | fit check |  |  |
 | sockets |  |  |  |  | footprint check |  |  |

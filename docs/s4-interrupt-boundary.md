@@ -1,6 +1,6 @@
 # S4 interrupt boundary
 
-Status date: 2026-07-09.
+Status date: 2026-07-10.
 
 Status: **S4 INTERRUPT PATH GUARDED / SWITCH CONTINUITY PENDING**
 

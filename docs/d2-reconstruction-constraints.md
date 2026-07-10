@@ -84,20 +84,16 @@ and `kicad/juku.dsn`.
 | Any D2 signal appears in DSN | FAIL | no D2 pins in DSN nets |
 | Any D2 signal appears in PCB | FAIL | no D2 pins in PCB nets |
 | `.037` firmware artifact exists | FAIL | `ref/firmware/` has no `.037` artifact |
-| Old D2-as-I/O-decode path is superseded | PASS | `docs/transcription/io.md` |
+| Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
 | No reconstructed D2 fallback is exported | PASS | `docs/reconstructed-prom-fallbacks.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
-| Raw notes preserve D2 pin table but defer nets | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 66 |
-| Raw `.038` D2 note is superseded by official `.037` identity | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` iteration 64 vs 68 |
+| Evidence summary preserves D2 pin table but defers nets | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 
-## Raw-Note Reconciliation
+## Evidence Reconciliation
 
-- The raw sheet-1 campaign notes contain two useful but easy-to-misread
-  D2 statements. Iteration 64 says the D2/РТ4 wiring is on sheet 1,
-  but it also carries an old `.038` drawing assignment that is
-  superseded by the official `.009` BOM/photo reconciliation: D2 is
-  `.037`, D6 is `.038`.
-- Iteration 66 records the physical D2 pin table
+- The official `.009` BOM/photo reconciliation identifies D2 as `.037`
+  and D6 as `.038`.
+- The surviving sheet-1 evidence records the physical D2 pin table
   `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly
   says the nets are deferred until the PROM table and output
   destination are read.

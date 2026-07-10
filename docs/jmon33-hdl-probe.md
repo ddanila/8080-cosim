@@ -35,11 +35,12 @@ That stronger boundary is intentionally not the default for this fast guard.
 | captured video writes | `1` |
 | first-write VRAM dump equals cosim | PASS |
 
-## Remaining Boundary
+## Scope
 
-- This is a first-video-write HDL probe, not a user-visible jmon33 prompt.
-- The cosim-side interrupt path over a longer run remains documented in
+- This remains the fast first-video-write HDL guard; it is not the stronger
+  user-visible completion check by itself.
+- The cosim-side interrupt path is documented in
   `docs/jmon33-interrupt-probe.md`.
-- The cosim monitor-idle screen/RAM oracle is documented in
-  `docs/jmon33-ready-probe.md`; `juku_top` now has a `+cursorstop=1`
-  testbench stop hook for comparing against that stronger boundary.
+- `docs/jmon33-ready-probe.md` defines the cosim monitor-idle framebuffer
+  oracle, and `docs/jmon33-hdl-cursor-probe.md` records that `juku_top`
+  reaches the matching cursor/hash boundary.

@@ -204,12 +204,11 @@ def main() -> int:
         "",
         "## Remaining Boundary",
         "",
-        "- This is a reproducible cosim monitor-idle oracle. The typed",
-        "  jmon33 command-surface response is guarded separately by",
-        "  `sync/jmon33_command_probe.py`; BASIC launch remains a separate",
-        "  monitor/media pairing problem.",
-        "- The HDL probe still compares only the first video write; the next HDL step",
-        "  is to run `juku_top` to this stronger VRAM hash boundary.",
+        "- This is the reproducible cosim monitor-idle oracle. The typed jmon33",
+        "  command surface is guarded separately by `sync/jmon33_command_probe.py`.",
+        "- `docs/jmon33-hdl-cursor-probe.md` records that `juku_top` reaches this",
+        "  same cursor/framebuffer hash. Cartridge BASIC remains a separate",
+        "  artifact/procedure boundary summarized in `docs/cartridge-basic-boundary.md`.",
         "",
     ]
     REPORT.write_text("\n".join(lines))
