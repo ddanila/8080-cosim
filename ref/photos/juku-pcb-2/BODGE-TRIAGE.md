@@ -59,6 +59,21 @@ and pin 6's destination still require continuity confirmation. D2 signal nets
 remain deferred until those paths and the PROM inputs/output destination are
 closed. The footprint must not be mistaken for a modeled or routed function.
 
+The full-resolution sheet also proves three D2 address leads: `VIDEO CYCLE` to
+A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other
+two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
+MRD inverter). These reads reduce the trace boundary but do not yet establish
+D2 A0/A1/A2/A4/A6, the D105 pin-10 `H` source, or every output destination.
+
+## D30 READY boundary
+
+Sheet 1 proves the first half of D30 (`КМ555ТМ2`) rather than merely showing a
+placement: pins 4 (`/PRE`) and 2 (`D`) are pulled high, pin 3 (`CLK`) receives
+`PHI2TTL`, pin 1 (`/CLR`) receives `-SSTB`, and pin 5 (`Q`) drives D1 READY/pin
+23 through R29 1 kΩ. The second half, pins 8-13, is present and visibly wired
+near the D105/select-rail area, but its crossing rails are not yet resolved
+end-to-end. D30 therefore remains placement-only until that half is closed.
+
 ## Factory wire-link evidence
 
 The conspicuous insulated wires are documented assembly links, not an

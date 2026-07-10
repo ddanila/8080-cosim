@@ -25,21 +25,26 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
 | 1 | A6 | - | not traced/netted |
-| 2 | A5 | - | not traced/netted |
+| 2 | A5 | `XACK_N` (not netted) | sheet 1 label `-XACK` enters D2 A5/pin 2 |
 | 3 | A4 | - | not traced/netted |
-| 4 | A3 | - | not traced/netted |
+| 4 | A3 | `VIDEO_CYCLE` (not netted) | sheet 1 label `VIDEO CYCLE` enters D2 A3/pin 4 |
 | 5 | A0 | - | not traced/netted |
 | 6 | A1 | - | not traced/netted |
 | 7 | A2 | - | not traced/netted |
-| 15 | A7 | - | not traced/netted |
-| 13 | V1 | - | not traced/netted |
-| 14 | V2 | - | not traced/netted |
-| 12 | D0 | - | not traced/netted |
+| 15 | A7 | `WREQ_N` (not netted) | sheet 1 label `-WREQ` enters D2 A7/pin 15 |
+| 13 | V1 | `GND` (not netted) | sheet 1 D2 V1/pin 13 is tied low |
+| 14 | V2 | `GND` (not netted) | sheet 1 D2 V2/pin 14 is tied low |
+| 12 | D0 | `D2_WAIT_RAW` (not netted) | sheet 1 D2 D0/pin 12 enters D105 pin 9 |
+
+The named schematic leads above are pin-level source evidence, not a
+claim that their complete PCB nets or D2 truth table are known. They
+must be promoted only with the remaining address inputs and destination
+continuity so a regenerated PCB does not encode a partial circuit.
 
 ## KiCad DSN Cross-check
 
-The routed DSN currently exposes no D2 signal nets. This agrees with
-the deferred-net boundary in `kicad/juku.board.json`.
+The routed DSN currently exposes no D2 signal nets. The factory-sheet
+leads above therefore remain an unrouted reconstruction boundary.
 
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |

@@ -26,4 +26,27 @@ check_dir ref/firmware
 check_dir ref/reconstructed-proms
 check_dir ref/wd1772-vg93
 
+# The owner photographs are Git LFS objects rather than checksum-manifested
+# reference directories.  A pointer stub is useful to Git but cannot support
+# the visual/continuity evidence claimed by the generated PCB reports.
+photo_count=0
+for photo in ref/photos/juku-pcb-2/*.jpg; do
+  [ -e "$photo" ] || continue
+  photo_count=$((photo_count + 1))
+  if head -n 1 "$photo" | grep -qx 'version https://git-lfs.github.com/spec/v1'; then
+    echo "reference artifact check: Git LFS owner photo is not materialized: $photo" >&2
+    echo "reference artifact check: run 'git lfs pull --include=ref/photos/juku-pcb-2/*.jpg'" >&2
+    exit 2
+  fi
+  if ! file "$photo" | grep -q 'JPEG image data'; then
+    echo "reference artifact check: owner photo is not a JPEG: $photo" >&2
+    exit 2
+  fi
+done
+
+if [ "$photo_count" -ne 22 ]; then
+  echo "reference artifact check: expected 22 owner photos, found $photo_count" >&2
+  exit 2
+fi
+
 echo "REFERENCE-ARTIFACT-CHECK: PASS"

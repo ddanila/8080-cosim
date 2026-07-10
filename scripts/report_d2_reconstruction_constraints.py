@@ -14,6 +14,18 @@ PCB = ROOT / "kicad" / "juku.kicad_pcb"
 REPORT = ROOT / "docs" / "d2-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
 
+# Direct reads from the full-resolution factory sheet.  These are deliberately
+# kept separate from board nets: the source endpoint is proved, but the other
+# five address inputs and the complete copper destinations are not yet closed.
+SCHEMATIC_LEADS = {
+    "4": ("VIDEO_CYCLE", "sheet 1 label `VIDEO CYCLE` enters D2 A3/pin 4"),
+    "2": ("XACK_N", "sheet 1 label `-XACK` enters D2 A5/pin 2"),
+    "15": ("WREQ_N", "sheet 1 label `-WREQ` enters D2 A7/pin 15"),
+    "12": ("D2_WAIT_RAW", "sheet 1 D2 D0/pin 12 enters D105 pin 9"),
+    "13": ("GND", "sheet 1 D2 V1/pin 13 is tied low"),
+    "14": ("GND", "sheet 1 D2 V2/pin 14 is tied low"),
+}
+
 
 def read(path: str) -> str:
     return (ROOT / path).read_text(errors="replace")
@@ -143,7 +155,11 @@ def main() -> int:
     for pin, role in sorted(pin_roles.items(), key=role_key):
         net = net_for_pin(board, "D2", pin)
         if net is None:
-            pin_rows.append(table_row([pin, role, "-", "not traced/netted"]))
+            lead = SCHEMATIC_LEADS.get(pin)
+            if lead:
+                pin_rows.append(table_row([pin, role, f"`{lead[0]}` (not netted)", lead[1]]))
+            else:
+                pin_rows.append(table_row([pin, role, "-", "not traced/netted"]))
         else:
             name, src = net
             signal_nets.append(name)
@@ -241,10 +257,15 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "The named schematic leads above are pin-level source evidence, not a",
+            "claim that their complete PCB nets or D2 truth table are known. They",
+            "must be promoted only with the remaining address inputs and destination",
+            "continuity so a regenerated PCB does not encode a partial circuit.",
+            "",
             "## KiCad DSN Cross-check",
             "",
-            "The routed DSN currently exposes no D2 signal nets. This agrees with",
-            "the deferred-net boundary in `kicad/juku.board.json`.",
+            "The routed DSN currently exposes no D2 signal nets. The factory-sheet",
+            "leads above therefore remain an unrouted reconstruction boundary.",
             "",
             table_row(["Pin", "Role", "DSN Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),

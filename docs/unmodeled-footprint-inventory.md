@@ -42,11 +42,23 @@ PCB artifacts. Closing D105 alone is not sufficient.
 - Existing sheet-1 evidence narrows the first useful closure to the
   wait-state chain: D2 `DO`/pin 12 feeds D105 pin 9; D105 has the two
   visible NAND sections `(9,10)->8` and `(4,5)->6`; D2 `V1/V2` are tied
-  to ground.
+  to ground. The same sheet also shows D105 `(1,2)->3` with D13.4 and
+  MWR inputs, plus `(12,13)->11` used as an MRD inverter.
 - Do not promote D105 into board JSON from this partial read alone. The
   remaining automatic/owner work is to trace the D105.10 `H` source and
   the D105.6 destination, then rerun PCB generation/routing so both
   source and routed PCB pad nets match the model.
+
+## D30 READY Flip-Flop Boundary
+
+- The full-resolution sheet-1 source proves D30 section A: pin 4 `/PRE`
+  and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
+  `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
+  through R29 1 kΩ.
+- This establishes the CPU READY function and replaces the former generic
+  'D30 support' description with exact pins. D30 section B (pins 8-13)
+  is visibly wired on the same sheet but its crossed rail destinations
+  still require a clean end-to-end read before D30 is promoted and routed.
 
 ## Footprint-Only ICs
 
