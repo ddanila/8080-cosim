@@ -118,7 +118,18 @@ module juku_top (
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
-    wire d30_q, d30_qn, d30_q2, d30_q2n;
+    wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4;
+    wire d105_mrd_inv, d105_wait_stage;
+`ifdef YOSYS
+    wire d2_wait_raw, d105_gate1_y, d105_wait_preinv;
+`else
+    tri1 d2_wait_raw;
+    wire d105_gate1_y, d105_wait_preinv;
+`endif
+    la3_gate U_D105 (.a(memr_n), .b(memr_n), .y(d105_mrd_inv),
+                     .a2(memw_n), .b2(d13_o4), .y2(d105_gate1_y),
+                     .a3(d105_wait_stage), .b3(d105_wait_stage), .y3(d105_wait_preinv),
+                     .a4(d2_wait_raw), .b4(1'b0), .y4(d105_wait_stage));
 `ifdef YOSYS
     wire d30b_d_pre_n;
 `else
@@ -126,7 +137,7 @@ module juku_top (
 `endif
     // Sheet-1 proves D30 pins 10 (/PRE2) and 12 (D2) share this boundary net.
     tm2_dff U_D30 (.clr1_n(1'b1), .d1(1'b1), .clk1(phi2ttl), .pre1_n(1'b1),
-                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(1'b1), .d2(d30b_d_pre_n),
+                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_mrd_inv), .d2(d30b_d_pre_n),
                    .clk2(1'b0), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
@@ -151,7 +162,7 @@ module juku_top (
     // in <- D6.9 "-RAMOUTEN" (roe_n, modeled permissive-low => ram_out_en stays 1 = the old tri1
     // boot-verified value). Section 5->6 = RESIN Schmitt -> RES (boundary). Old dual-4-NAND
     // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
-    tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(),
+    tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(d13_o4),
                      .i5(1'b1), .o6(d13_res), .i9(1'b1), .o8(),
                      .i11(1'b1), .o10(), .i13(1'b1), .o12());
     assign ststb_n = stb_d38;

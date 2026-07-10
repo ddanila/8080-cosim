@@ -33,7 +33,7 @@ is not a prerequisite for ordering or bringing up the replica.
 
 The current main-board ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
-`261db032c3301d5604feca84ee3cd581aaa5dc924d8a183a921c4b0d180de0a1`.
+`cf2ea833be2a0be7ceaa2147682a5cb4a6a86c4da963340b3b3d5aa2e8e35518`.
 It is retained as a reproducible engineering snapshot. **Do not send it to a
 fabricator until the release blockers below are closed and the package is
 regenerated.**
@@ -42,19 +42,19 @@ regenerated.**
 
 ### P0: physical connectivity
 
-1. **D2 `.037` bus/wait PROM and D105 wait logic** — D2's signal pins are
-   unnetted, while the official D105 К155ЛА3 footprint is placement-only.
-   Trace the D2 input rails and D0 destination, including D105.10's source and
-   D105.6's destination, then update the model and reroute.
-2. **All placement-only official ICs** — D28, D95-D99, D101, D102, D105,
+1. **D2 `.037` bus/wait PROM and WAIT revision handoff** — D2 D0/pin 12 is now
+   routed into the fully modeled D105 К155ЛА3 wait/MRD logic. Trace the remaining
+   D2 input rails and recover the PROM truth table. Reconcile the `.006` D95
+   inverter after D105.6 with `.009`'s reassignment of D95 to an FDC К555КП12.
+2. **All placement-only official ICs** — D28, D95-D99, D101, D102,
    and D106 exist in the source PCB, routed PCB, and DSN but have no pin model.
    Trace and route each required function, or document a deliberate redesign/
    DNP decision and remove it from the released artifacts. D30 READY section A
    is now modeled through R5/R6/R29. In section B, pins 10 and 12 are visibly
    tied and pins 6 and 9 are documented no-connects; pins 8, 11, and 13 still
    require end-to-end tracing, as does the shared pin-10/pin-12 source;
-   most of the placement-only parts are FDC support logic. Closing D105 alone
-   cannot release the board.
+   the remaining placement-only parts are FDC support logic. D105 is now modeled
+   and routed, but that alone cannot release the board.
 3. **D94 `.092` PROM** — only BA11..BA15 and power are currently connected.
    Resolve pin 15 and D0..D7 destinations, update the model, and reroute.
 4. **Release-risk net review** — disposition the remaining source-risk rows in

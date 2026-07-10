@@ -222,6 +222,8 @@ def main() -> int:
         status = "D2 RECONSTRUCTION READY"
     elif identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates:
         status = "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
+    elif identity_ok and signal_nets and not all_signal_pins_netted and not candidates:
+        status = "D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED"
     else:
         status = "D2 RECONSTRUCTION INPUTS CHANGED"
 
@@ -366,9 +368,9 @@ def main() -> int:
             "  identifies it as programmed drawing `ДГШ5.106.037`.",
             "- Known: the older behavioral D2 I/O-decode model is not physical D2",
             "  programming truth; D9 is the current chip-select decoder.",
-            "- Unknown: D2 address/input rails, V1/V2 handling, D0 destination, and",
-            "  `.037` contents are not traced/netted in current board JSON, DSN,",
-            "  or final PCB source, and no programming table or dump is present",
+            "- Partially known: D2 D0/pin 12 is routed to D105.9. The remaining",
+            "  address/input rails and `.037` truth table are not yet closed, and",
+            "  no programming table or dump is present",
             "  under `ref/firmware/`.",
             "- Therefore a burnable D2 image is not derivable from current repo",
             "  evidence. The correct automatic action is to keep this constraint",

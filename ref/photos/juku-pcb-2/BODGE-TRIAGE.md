@@ -36,7 +36,7 @@ two assemblies must not be mixed.
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
 | D97, D99, D102 | КМ555АГ3 | FDC quadrant one-shots |
 | D100 | КР580ВА87 | FDC data-bus buffer |
-| D105 | К155ЛА3 | official wait-gate footprint; still placement-only |
+| D105 | К155ЛА3 | official wait/MRD gate; modeled and routed from sheet-1 evidence |
 | D106 | К555ИЕ7 | FDC quadrant counter |
 | D107 | КР580ВА86 | low-address bus buffer |
 
@@ -117,8 +117,8 @@ invented connection.
 ## Release consequence
 
 This evidence closes several old identity disputes, but it does not release the
-PCB for fabrication. D2 and D94 remain incomplete, and 11 official IC
-footprints (D28, D30, D95-D99, D101, D102, D105, and D106) remain outside the
-pin-level model. They include READY/wait and FDC support logic, so closing D105
-alone is not a complete disposition. See `PLAN.md` and the generated
+PCB for fabrication. D2 and D94 remain incomplete, and 9 official IC
+footprints (D28, D95-D99, D101, D102, and D106) remain outside the pin-level
+model. D105 wait/MRD logic is modeled and routed; the FDC cluster and remaining
+READY/WAIT revision boundaries are not complete. See `PLAN.md` and the generated
 reconstruction/unmodeled-footprint reports.

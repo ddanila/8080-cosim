@@ -61,8 +61,9 @@ Relevant local docs:
    - D15/D16 2764/M2764 EPROM pair, 8192 bytes each
 5. Can an owner provide continuity readings, or clear trace-side photographs,
    for the official footprints that are still absent from the pin model:
-   D28, D30, D95-D99, D101, D102, D105, and D106? D30 READY support and the
-   D2/D105 wait chain are the first priority.
+   D28, D95-D99, D101, D102, and D106? The FDC support cluster is the first
+   priority. D105 is modeled; the useful WAIT ask is the `.009` replacement for
+   the older sheet's D95 inverter after D105.6.
 
 ## Minimal Useful Deliverables
 
@@ -108,9 +109,9 @@ recreation and digital twin:
 https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D2/D94, 11 official
-placement-only ICs, and programmable-part evidence are incomplete. Those ICs
-include D30 READY support, D105 wait logic, and the FDC support cluster.
+reproducible but the physical design remains on hold while D2/D94, 9 official
+placement-only FDC-support ICs, and programmable-part evidence are incomplete.
+D105 wait/MRD logic and most of D30 READY are already modeled and routed.
 
 Baltijets doc 007 confirms several programmed-part drawings, but the byte tables
 for the small PROMs are marked "на диске" rather than printed. I am looking for
@@ -126,10 +127,10 @@ factory programming-disk files or physical PROM dumps.
 - the FDC-era D94 PROM ДГШ5.106.092 on the .009 board
 - the D15/D16 2764/M2764 ROM pair, if a physical board can be read
 
-The same board also has 11 official footprints not yet represented in the
-pin-level model: D28, D30, D95-D99, D101, D102, D105, and D106. Continuity
-readings or clear trace-side photographs for D30 READY support, the D2/D105
-wait chain, and the FDC support cluster would directly unblock the PCB design.
+The same board also has 9 official footprints not yet represented in the
+pin-level model: D28, D95-D99, D101, D102, and D106. Continuity readings or
+clear trace-side photographs for the FDC support cluster, D30's remaining
+section-B endpoints, and the `.009` WAIT handoff would directly unblock it.
 
 The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
 media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking

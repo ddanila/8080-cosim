@@ -26,7 +26,7 @@ deliberately omitted.
 
 1. D2 `ДГШ5.106.037` input/output continuity and repeated PROM dump or programming-disk file.
 2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.
-3. Pin-level continuity or explicit redesign/DNP dispositions for all 10 placement-only official ICs: D28, D95-D99, D101, D102, D105, and D106. D105's wait chain, D30 section B, and the FDC cluster are first priority.
+3. Pin-level continuity or explicit redesign/DNP dispositions for all 9 placement-only official ICs: D28, D95-D99, D101, D102, and D106. The FDC cluster is first priority; D105 is now modeled and routed.
 4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
 5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
 

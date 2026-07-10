@@ -137,7 +137,8 @@ MARK_REF = {'D29':'КР580ВА86',   # the ВА86 among the VABUS transceivers (
             'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos
             'D7':'КР1533ЛА3',   # owner-read off the real board (was assumed К555; ALS vs LS -- same logic/pinout, marking only)
             'D56':'К155АГ3',    # board-#2 row-4 АГ3s are К155 8901 (BOM said КМ555АГ3; real board wins, D7 precedent)
-            'D2':'КР556РТ4А'}   # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
+            'D2':'КР556РТ4А',    # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
+            'D105':'К155ЛА3'}    # official .009 BOM/assembly marking; sheet-1 wait-chain gate
 
 BOARD_SILK_NOTES = [
     ("8080 HEART", 32, 134, 0),
@@ -209,6 +210,7 @@ PLACE = {
     'D5':(31.2,99.2,90),'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),'D10':(178.9,101.3,90),
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary
+    'D105':(31.9,215.5,90),  # wait/MRD NAND below D13; official .009 assembly position
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
     # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
@@ -440,7 +442,6 @@ def main():
         # per-refdes BOM. Types photo-verified; positions photo-measured; nets untraced (no
         # schematic exists for the .009 additions).
         # D51 removed: promoted to a net-modeled chip (KP14_MUX in board.json) -- keeping it here duplicated the refdes (DSN killer)
-        'D105': ('DIP-14_W7.62mm', 'К155ЛА3',    31.9, 215.5, 90),  # below D13 [emaplaat; was stacked ON D13 at 205.2]  # [.009 official]
         # --- ВГ93 quadrant (owner's 4-row layout; refdes = official .009) ---
         'D98':  ('DIP-16_W7.62mm', 'К155ЛП11',   268, 30, 90),  # row 1 [.009: D98=ЛП11 ✓]
         'D106': ('DIP-16_W7.62mm', 'К555ИЕ7',    262, 74, 0),   # row 2: the 5th ИЕ7 [.009: D106=ИЕ7]

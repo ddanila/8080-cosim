@@ -16,16 +16,16 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Modeled board-JSON `D*` ICs: `96`
+- Modeled board-JSON `D*` ICs: `97`
 - Source PCB IC footprints: `106`
 - Routed PCB IC footprints: `106`
 - DSN IC placements: `106`
-- Footprint-only ICs in any PCB/DSN artifact: `10`
-- Footprint-only ICs present in source PCB, routed PCB, and DSN: `10`
+- Footprint-only ICs in any PCB/DSN artifact: `9`
+- Footprint-only ICs present in source PCB, routed PCB, and DSN: `9`
 
 ## Design-Release Consequence
 
-There are `10` IC footprints in PCB/DSN artifacts with no
+There are `9` IC footprints in PCB/DSN artifacts with no
 pin-level representation in board JSON. KiCad's zero-unconnected result
 cannot detect missing connections on placement-only footprints. Every row
 below therefore blocks design release until it is either modeled and routed
@@ -34,20 +34,16 @@ PCB artifacts. Closing D105 alone is not sufficient.
 
 ## D105 Wait-Gate Boundary
 
-- D105 inventory state: `PENDING MODEL + REROUTE`
-- `D105` is an official `.009` `К155ЛА3` footprint present in
-  `kicad/gen_kicad_pcb.py`, `kicad/juku.dsn`, `kicad/juku.kicad_pcb`,
-  and `kicad/juku_routed.kicad_pcb`, but absent from
-  `kicad/juku.board.json`.
-- Existing sheet-1 evidence narrows the first useful closure to the
-  wait-state chain: D2 `DO`/pin 12 feeds D105 pin 9; D105 has the two
-  visible NAND sections `(9,10)->8` and `(4,5)->6`; D2 `V1/V2` are tied
-  to ground. The same sheet also shows D105 `(1,2)->3` with D13.4 and
-  MWR inputs, plus `(12,13)->11` used as an MRD inverter.
-- Do not promote D105 into board JSON from this partial read alone. The
-  remaining automatic/owner work is to trace the D105.10 `H` source and
-  the D105.6 destination, then rerun PCB generation/routing so both
-  source and routed PCB pad nets match the model.
+- D105 inventory state: `MODELED`
+- `D105` is promoted into board JSON and both PCB artifacts as a
+  four-section К155ЛА3. The regenerated route has zero unrouted items.
+- Sheet 1 proves D2.12 -> D105.9, D105.10 -> `H`/ground,
+  D105.8 -> tied inputs 4+5, D13.4/MWR -> inputs 2/1, and the
+  tied-input MRD inverter 12+13 -> 11 -> D30.13.
+- D105.6 is traced to a D95 inverter on the older `.006` sheet and
+  onward as `-WAIT` to E8-1. The `.009` BOM reassigns D95 to an FDC
+  К555КП12, so that revision-specific inverter destination remains an
+  explicit boundary rather than being assigned to the wrong footprint.
 
 ## D30 READY Flip-Flop Boundary
 
@@ -55,13 +51,10 @@ PCB artifacts. Closing D105 alone is not sufficient.
   and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
   `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
   through R29 1 kΩ.
-- D30 section A, R5, R6, and R29 are now promoted into board JSON. In section
-  B, the local U-shaped wire proves that pin 10 `/PRE` and pin 12 `D` share a
-  net; pins 6 `/Q1` and 9 `Q2` are not drawn and are recorded as intentional
-  no-connects. Pin 8 `/Q2`, pin 11 `CLK`, pin 13 `/CLR`, and the upstream source
-  of the pin-10/pin-12 net still require clean end-to-end reads. The footprint
-  is no longer placement-only, but design release remains blocked until those
-  endpoints are traced and the regenerated route is verified.
+- D30 section A, R5, R6, and R29 are now promoted into board JSON. In
+  section B, pins 10+12 are tied, pins 6+9 are intentional no-connects,
+  and D105.11 now drives pin 13. Pin 8, pin 11, and the upstream source
+  of pins 10+12 still require end-to-end reads.
 
 ## Footprint-Only ICs
 
@@ -75,7 +68,6 @@ PCB artifacts. Closing D105 alone is not sufficient.
 | `D99` | `КМ555АГ3` | `DIP-14_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 middle [pool, ASSUMED] |
 | `D101` | `К555КП12` | `DIP-16_W7.62mm` | yes | yes | `К555КП12` | row 4: КП12 #2 [.009: D101] |
 | `D102` | `КМ555АГ3` | `DIP-14_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 right [pool, ASSUMED] |
-| `D105` | `К155ЛА3` | `DIP-14_W7.62mm` | yes | yes | `К155ЛА3` | below D13 [emaplaat; was stacked ON D13 at 205.2]  # [.009 official] |
 | `D106` | `К555ИЕ7` | `DIP-16_W7.62mm` | yes | yes | `К555ИЕ7` | row 2: the 5th ИЕ7 [.009: D106=ИЕ7] |
 
 ## Closure Rule
@@ -84,8 +76,8 @@ PCB artifacts. Closing D105 alone is not sufficient.
    traceable enough to add to `kicad/juku.board.json`.
 2. After board JSON promotion, regenerate PCB/DSN/BOM reports and route
    the affected pads before claiming endpoint coverage.
-3. D105 has first priority because it is tied to D2's wait-state PROM
-   output and CPU wait behavior; D30 READY support and the FDC support
-   cluster still require their own complete dispositions.
+3. D105 is modeled and routed. Remaining priority belongs to D2's
+   truth/input rails, the `.009` WAIT-inverter handoff, D30's unread
+   section-B endpoints, and the FDC support cluster.
 4. `READY FOR DESIGN RELEASE` is emitted only when no IC footprint
    remains outside the board-JSON pin model.

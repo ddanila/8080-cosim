@@ -15,8 +15,8 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 230
-- Populate for current functional .009 build: 200
+- Board component positions: 231
+- Populate for current functional .009 build: 201
 - Leave empty for expansion/authentic completeness: 30
 - Unique BOM lines: 70
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 101 |
+| source-now | 102 |
 | source-populated-now | 8 |
 
 ## BOM Lines
@@ -81,7 +81,7 @@ readiness report.
 | source-now | LA12_GATE | К531ЛА12 | 74S20/74LS20-class NAND; verify section | 1 | 1 | 0 | D36 | - |
 | source-now | LA18 | К155ЛА18 | open-collector NAND/driver; verify output topology | 1 | 1 | 0 | D12 | - |
 | source-now | LA1_GATE | К531ЛА1 | 74S/74LS NAND-class gate; verify exact logic section | 1 | 1 | 0 | D38 | - |
-| source-now | LA3_GATE | К555/КР1533ЛА3 | 74LS00 / 74ALS00-class NAND | 3 | 3 | 0 | D7, D37, D39 | - |
+| source-now | LA3_GATE | К555/КР1533ЛА3 | 74LS00 / 74ALS00-class NAND | 4 | 4 | 0 | D7, D37, D39, D105 | - |
 | source-now | LE4 | К555ЛЕ4 | 74LS02 NOR-class gate | 1 | 1 | 0 | D92 | - |
 | source-now | LN1_DUAL | К531ЛН1 | 74S04/74LS04-class inverter | 1 | 1 | 0 | D33 | - |
 | source-now | LN1_OSC | К531ЛН1 | 74S04/74LS04-class inverter; oscillator section timing matters | 1 | 1 | 0 | D59 | - |

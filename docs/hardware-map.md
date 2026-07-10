@@ -65,7 +65,8 @@ bus/wait PROM and must not be described as the I/O decoder.
 
 The digital twin reaches Monitor and EKDOS prompts, and the modeled endpoints
 pass structural comparison. That does not release the current PCB for
-fabrication: D2 signal connectivity/content, D94 enable/output/content, and 11
-official IC footprints without pin models remain open design items. That group
-includes D30 READY support, the D105 wait gate, and FDC support logic. `PLAN.md`
+fabrication: D2 signal connectivity/content, D94 enable/output/content, and 9
+official FDC-support IC footprints without pin models remain open design items.
+D105 is modeled and routed; D30 and the WAIT revision handoff retain smaller
+explicit boundaries. `PLAN.md`
 is the living release checklist.

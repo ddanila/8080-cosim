@@ -27,6 +27,6 @@ Target: processor module `7.102.158`, 22 owner photographs taken in 2026.
 This board has its DRAM bank unpopulated and electrolytics removed. It is useful
 for routing, sockets, connectors, and package identity, but another assembly is
 needed for installed DRAM/capacitor-value evidence. Photo sighting alone does
-not close D2/D94 contents or provide pin-level connectivity for the 11 official
-placement-only IC footprints, including D30 READY support, D105 wait logic, and
-the FDC support cluster.
+not close D2/D94 contents or provide pin-level connectivity for the 9 official
+placement-only IC footprints in the FDC cluster. The remaining D30 READY and
+D105 WAIT-revision boundaries also require stronger evidence.

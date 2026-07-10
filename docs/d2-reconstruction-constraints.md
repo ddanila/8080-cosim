@@ -1,6 +1,6 @@
 # D2 .037 reconstruction constraints
 
-Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**
+Status: **D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED**
 
 This generated report records what the repo can currently prove about
 the processor-board `D2` К556РТ4 PROM (`ДГШ5.106.037`) before attempting
@@ -34,7 +34,7 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | 15 | A7 | `WREQ_N` (not netted) | sheet 1 label `-WREQ` enters D2 A7/pin 15 |
 | 13 | V1 | `GND` (not netted) | sheet 1 D2 V1/pin 13 is tied low |
 | 14 | V2 | `GND` (not netted) | sheet 1 D2 V2/pin 14 is tied low |
-| 12 | D0 | `D2_WAIT_RAW` (not netted) | sheet 1 D2 D0/pin 12 enters D105 pin 9 |
+| 12 | D0 | `D2_WAIT_RAW` | traced sheet-1: D2 D0/pin 12 enters D105 NAND input pin 9 |
 
 The named schematic leads above are pin-level source evidence, not a
 claim that their complete PCB nets or D2 truth table are known. They
@@ -58,7 +58,7 @@ leads above therefore remain an unrouted reconstruction boundary.
 | 15 | A7 | - | missing in DSN |
 | 13 | V1 | - | missing in DSN |
 | 14 | V2 | - | missing in DSN |
-| 12 | D0 | - | missing in DSN |
+| 12 | D0 | `D2_WAIT_RAW` | present |
 
 ## KiCad PCB Cross-check
 
@@ -85,8 +85,8 @@ and `kicad/juku.dsn`.
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
-| Any D2 signal net is traced | FAIL | no D2 signal nets in board JSON |
-| Any D2 signal appears in DSN | FAIL | no D2 pins in DSN nets |
+| Any D2 signal net is traced | PASS | `D2_WAIT_RAW` |
+| Any D2 signal appears in DSN | PASS | `12`=`D2_WAIT_RAW` |
 | Any D2 signal appears in PCB | FAIL | no D2 pins in PCB nets |
 | `.037` firmware artifact exists | FAIL | `ref/firmware/` has no `.037` artifact |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
@@ -113,9 +113,9 @@ and `kicad/juku.dsn`.
   identifies it as programmed drawing `ДГШ5.106.037`.
 - Known: the older behavioral D2 I/O-decode model is not physical D2
   programming truth; D9 is the current chip-select decoder.
-- Unknown: D2 address/input rails, V1/V2 handling, D0 destination, and
-  `.037` contents are not traced/netted in current board JSON, DSN,
-  or final PCB source, and no programming table or dump is present
+- Partially known: D2 D0/pin 12 is routed to D105.9. The remaining
+  address/input rails and `.037` truth table are not yet closed, and
+  no programming table or dump is present
   under `ref/firmware/`.
 - Therefore a burnable D2 image is not derivable from current repo
   evidence. The correct automatic action is to keep this constraint

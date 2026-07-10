@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `230`
-- Nets modeled: `326`
-- Chip-level fidelity gaps: `45`
-- Net-level source-risk gaps: `38`
+- Chips modeled: `231`
+- Nets modeled: `332`
+- Chip-level fidelity gaps: `46`
+- Net-level source-risk gaps: `40`
 - Documented intentional no-connect pins: `2`
 
 ## Chip Provenance Types
@@ -32,7 +32,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 224 |
+| scan | 225 |
 | wire | 1 |
 
 ## Gap Categories
@@ -43,7 +43,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 9 |
 | clock/I/O | 0 | 4 |
-| logic/source | 4 | 4 |
+| logic/source | 5 | 6 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 13 |
@@ -68,6 +68,7 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D100` | `BUF8287` | datasheet | .009 official (5th ВА87 = FDC bus buffer) 8287 std; OE/T gating [assumed] |
+| `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with 10 tied... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) WD1793 std pinout; bus side per MAME io 1C-1F + sheet-3 CS7 delta |
 | `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
@@ -133,8 +134,8 @@ model is historical-source-complete.
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
 | `D100` | logic/source | `9:OE_N, 11:T` |
-| `D2` | PROM truth | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 12:D0, 13:V1, 14:V2, 15:A7` |
-| `D30` | logic/source | `8:Q2_N, 11:CLK2, 13:CLR2_N` |
+| `D2` | PROM truth | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 13:V1, 14:V2, 15:A7` |
+| `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` |
 | `D93` | logic/source | `19:MR_N, 24:CLK` |
 | `D94` | PROM truth | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
@@ -158,6 +159,8 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
+| `D105_GATE1_Y` | logic/source | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread |
+| `D105_WAIT_PREINV` | logic/source | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination re... |
 | `D25_T` | PROM/decode | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs... |
 | `D30B_D_PRE_N` | PROM/decode | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |

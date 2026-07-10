@@ -46,8 +46,8 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P0 | D94 .092 continuity | D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required before any defensible D94 reverse-engineered burnable table |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0/P1 gates | reduces first EKDOS-on-hardware debug risk |
 | P0 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins | `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate | tightens the as-built netlist around RAM/video timing before netlist freeze |
-| P0 | placement-only IC dispositions | pin-level continuity or an explicit redesign/DNP decision for D28, D30, D95-D99, D101, D102, and D106; prioritize D30 READY support and the FDC cluster | `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence | prevents 10 official footprints besides D105 from remaining electrically invisible to LVS and KiCad's unconnected-item check |
-| P0 | D2/D105 wait-chain promotion | D105.10 `H` source and D105.6 destination continuity, plus D2.D0/D105.9 confirmation before board-JSON promotion and reroute | `docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | turns an official placement-only `.009` LA3 into modeled wait-state logic without hiding the required routed-PCB refresh |
+| P0 | placement-only IC dispositions | pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster | `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence | prevents the 9 remaining official placement-only footprints from staying electrically invisible to LVS and KiCad's unconnected-item check |
+| P0 | D2/D105 wait-chain revision handoff | reconcile the older-sheet D95 inverter after D105.6 with the `.009` D95 FDC-multiplexer assignment; trace D2's remaining inputs and obtain the `.037` truth table | `docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | closes the remaining target-revision WAIT handoff without undoing the now-modeled and routed D105 gates |
 | P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/video-analog-boundary.md`; `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives | `docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
 
@@ -67,7 +67,7 @@ yet modeled as nets.
 | Ref | Unnetted functional pins | Needed evidence |
 | --- | --- | --- |
 | `D100` | `9:OE_N, 11:T` | FDC quadrant continuity |
-| `D2` | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 12:D0, 13:V1, 14:V2, 15:A7` | dump/programming disk plus sheet-1 continuity |
+| `D2` | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 13:V1, 14:V2, 15:A7` | dump/programming disk plus sheet-1 continuity |
 | `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` | sheet-2 timing-chain continuity |
 | `D93` | `19:MR_N, 24:CLK` | FDC quadrant continuity |
 | `D94` | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` | .092 dump/table plus enable/output continuity |
@@ -75,9 +75,9 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `36`
+- Generated bring-up verification nets: `40`
 - `FDC`: `3` net(s)
-- `logic`: `6` net(s)
+- `logic`: `10` net(s)
 - `memory/decode`: `9` net(s)
 - `sound/analog`: `2` net(s)
 - `timing/I/O`: `5` net(s)

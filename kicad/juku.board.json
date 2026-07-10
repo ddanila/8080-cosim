@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 signal wiring, D30 section B, and 10 official placement-only IC footprints (including D105 wait logic and FDC glue) remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 signal wiring, the remaining D30 section-B endpoints, the D105-to-WAIT revision handoff, and 9 official placement-only IC footprints in the FDC cluster remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -4340,6 +4340,21 @@
    }
   },
   {
+   "ref": "D105",
+   "type": "LA3_GATE",
+   "pins": {
+    "1": "A2", "2": "B2", "3": "Y2",
+    "4": "A3", "5": "B3", "6": "Y3",
+    "9": "A4", "10": "B4", "8": "Y4",
+    "12": "A", "13": "B", "11": "Y"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": ".009 official placement; sheet-1 .006 wait/MRD logic",
+    "pins": "12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with 10 tied to H/ground -> 8; 8 ties 4+5 -> 6, which feeds the older-sheet D95 inverter boundary before -WAIT/E8-1"
+   }
+  },
+  {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY preset pullup", "pins": "P5V to D30.4"}
   },
@@ -6433,6 +6448,14 @@
     [
      "D33",
      "3"
+    ],
+    [
+     "D105",
+     "12"
+    ],
+    [
+     "D105",
+     "13"
     ]
    ]
   },
@@ -6458,6 +6481,10 @@
     [
      "D36",
      "9"
+    ],
+    [
+     "D105",
+     "1"
     ]
    ],
    "note": "WIRE 19 (beeper): D5.26 -> D7.2 physical wire",
@@ -9317,6 +9344,14 @@
     [
      "D29",
      "9"
+    ],
+    [
+     "D105",
+     "7"
+    ],
+    [
+     "D105",
+     "10"
     ]
    ]
   },
@@ -9542,6 +9577,10 @@
     ],
     [
      "D30",
+     "14"
+    ],
+    [
+     "D105",
      "14"
     ],
     [
@@ -13524,6 +13563,30 @@
   "D30B_D_PRE_N": {
    "src": "traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread",
    "nodes": [["D30", "10"], ["D30", "12"]]
+  },
+  "D2_WAIT_RAW": {
+   "src": "traced sheet-1: D2 D0/pin 12 enters D105 NAND input pin 9",
+   "nodes": [["D2", "12"], ["D105", "9"]]
+  },
+  "D105_WAIT_STAGE": {
+   "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",
+   "nodes": [["D105", "8"], ["D105", "4"], ["D105", "5"]]
+  },
+  "D105_WAIT_PREINV": {
+   "src": "traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination remains a boundary",
+   "nodes": [["D105", "6"]]
+  },
+  "D13_4_D105_2": {
+   "src": "traced sheet-1: D13 TL2 output pin 4 enters D105 NAND input pin 2",
+   "nodes": [["D13", "4"], ["D105", "2"]]
+  },
+  "D105_GATE1_Y": {
+   "src": "traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread",
+   "nodes": [["D105", "3"]]
+  },
+  "D105_MRD_INV": {
+   "src": "traced sheet-1: tied-input D105 gate pins 12+13 inverts MRD and pin 11 drives D30 section-B /CLR pin 13",
+   "nodes": [["D105", "11"], ["D30", "13"]]
   },
   "D25_T": {
    "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",

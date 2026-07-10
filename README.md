@@ -15,15 +15,17 @@ with the machine-readable board model.
 - The routed main-board artifact has 240 footprints and no KiCad
   clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
   and internally coherent. Current ZIP SHA256:
-  `261db032c3301d5604feca84ee3cd581aaa5dc924d8a183a921c4b0d180de0a1`.
-- The main board is **not released for fabrication**. D2 is still physically
-  unnetted, D94 lacks its enable/output wiring, and 10 official IC footprints
-  (including D105 wait logic and FDC glue) have no modeled pin connectivity.
+  `cf2ea833be2a0be7ceaa2147682a5cb4a6a86c4da963340b3b3d5aa2e8e35518`.
+- The main board is **not released for fabrication**. D2 is only partially
+  traced, D94 lacks its enable/output wiring, and 9 official IC footprints in
+  the FDC cluster have no modeled pin connectivity. D105 wait/MRD
+  logic is now modeled and routed; its `.006`-to-`.009` WAIT handoff remains a
+  documented revision boundary.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
   untraced. The D2/D94
-  PROM contents are also missing, and 36 modeled
-  38 modeled nets retain source-risk annotations requiring evidence or explicit redesign.
+  PROM contents are also missing, and 40 modeled nets retain source-risk annotations
+  requiring evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
 That last distinction matters: a clean DRC and a green LVS prove only the

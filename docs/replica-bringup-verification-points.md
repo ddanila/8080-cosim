@@ -13,17 +13,17 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `38`
-- Verification-point endpoints checked in PCB: `232`
+- Verification-point nets: `40`
+- Verification-point endpoints checked in PCB: `234`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1892`
-- All board endpoints checked in routed PCB: `1892`
+- All board endpoints checked in source PCB: `1909`
+- All board endpoints checked in routed PCB: `1909`
 - Full PCB endpoint coverage: `PASS`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 8 |
+| logic | 10 |
 | memory/decode | 9 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
@@ -39,8 +39,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 232/232 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 232/232 net names matched |
+| Risk endpoints present on PCB pads | PASS | 234/234 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 234/234 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -50,13 +50,15 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1892/1892 | 1892/1892 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1892/1892 | 1892/1892 | PASS |
+| `kicad/juku.kicad_pcb` | 1909/1909 | 1909/1909 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1909/1909 | 1909/1909 | PASS |
 
 ## Checklist
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
+| `D105_GATE1_Y` | logic | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D105_WAIT_PREINV` | logic | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D25_T` | logic | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [un... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D30B_D_PRE_N` | logic | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Scope/capture video or timing node during video bring-up. |
@@ -101,7 +103,7 @@ fabrication-source coverage gate, not a historical-source proof.
 - Endpoint coverage proves that modeled nets survive into both PCB files;
   it does not prove that the modeled net is historically correct or that
   omitted functional pins are safe.
-- The 11 official IC footprints with no board-JSON pin model are tracked
+- The 9 official IC footprints with no board-JSON pin model are tracked
   separately in `docs/unmodeled-footprint-inventory.md`; they are outside
   every endpoint count above and remain design-release blockers.
 - Any row affecting boot, memory, bus direction, interrupts, or video

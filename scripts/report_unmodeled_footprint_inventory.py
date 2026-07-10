@@ -76,7 +76,7 @@ def untraced_entries() -> dict[str, dict[str, object]]:
 
 def markers_ok() -> tuple[bool, list[str]]:
     checks = [
-        (GEN, "'D105': ('DIP-14_W7.62mm', 'К155ЛА3'"),
+        (GEN, "'D105':(31.9,215.5,90)"),
         (PHYSICAL_EVIDENCE, "D105 two visible ЛА3 sections"),
         (PHYSICAL_EVIDENCE, "D2 wiring region is on sheet 1"),
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
@@ -120,6 +120,25 @@ def main() -> int:
     else:
         d105_state = "NOT PRESENT"
 
+    if d105_state == "MODELED":
+        d105_lines = [
+            "- `D105` is promoted into board JSON and both PCB artifacts as a",
+            "  four-section К155ЛА3. The regenerated route has zero unrouted items.",
+            "- Sheet 1 proves D2.12 -> D105.9, D105.10 -> `H`/ground,",
+            "  D105.8 -> tied inputs 4+5, D13.4/MWR -> inputs 2/1, and the",
+            "  tied-input MRD inverter 12+13 -> 11 -> D30.13.",
+            "- D105.6 is traced to a D95 inverter on the older `.006` sheet and",
+            "  onward as `-WAIT` to E8-1. The `.009` BOM reassigns D95 to an FDC",
+            "  К555КП12, so that revision-specific inverter destination remains an",
+            "  explicit boundary rather than being assigned to the wrong footprint.",
+        ]
+    else:
+        d105_lines = [
+            "- `D105` remains outside the pin-level board model.",
+            "- Existing sheet-1 evidence proves the four NAND sections, but the",
+            "  target-revision handoff still requires reconciliation.",
+        ]
+
     lines = [
         "# Unmodeled footprint inventory",
         "",
@@ -158,19 +177,7 @@ def main() -> int:
         "## D105 Wait-Gate Boundary",
         "",
         f"- D105 inventory state: `{d105_state}`",
-        "- `D105` is an official `.009` `К155ЛА3` footprint present in",
-        "  `kicad/gen_kicad_pcb.py`, `kicad/juku.dsn`, `kicad/juku.kicad_pcb`,",
-        "  and `kicad/juku_routed.kicad_pcb`, but absent from",
-        "  `kicad/juku.board.json`.",
-        "- Existing sheet-1 evidence narrows the first useful closure to the",
-        "  wait-state chain: D2 `DO`/pin 12 feeds D105 pin 9; D105 has the two",
-        "  visible NAND sections `(9,10)->8` and `(4,5)->6`; D2 `V1/V2` are tied",
-        "  to ground. The same sheet also shows D105 `(1,2)->3` with D13.4 and",
-        "  MWR inputs, plus `(12,13)->11` used as an MRD inverter.",
-        "- Do not promote D105 into board JSON from this partial read alone. The",
-        "  remaining automatic/owner work is to trace the D105.10 `H` source and",
-        "  the D105.6 destination, then rerun PCB generation/routing so both",
-        "  source and routed PCB pad nets match the model.",
+        *d105_lines,
         "",
         "## D30 READY Flip-Flop Boundary",
         "",
@@ -178,11 +185,10 @@ def main() -> int:
         "  and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1",
         "  `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23",
         "  through R29 1 kΩ.",
-        "- D30 section A, R5, R6, and R29 are now promoted into board JSON. D30",
-        "  section B (pins 8-13) is visibly wired on the same sheet but its crossed",
-        "  rail destinations still require a clean end-to-end read. The footprint",
-        "  is no longer placement-only, but design release remains blocked until",
-        "  section B is traced and the regenerated route is verified.",
+        "- D30 section A, R5, R6, and R29 are now promoted into board JSON. In",
+        "  section B, pins 10+12 are tied, pins 6+9 are intentional no-connects,",
+        "  and D105.11 now drives pin 13. Pin 8, pin 11, and the upstream source",
+        "  of pins 10+12 still require end-to-end reads.",
         "",
         "## Footprint-Only ICs",
         "",
@@ -228,9 +234,9 @@ def main() -> int:
             "   traceable enough to add to `kicad/juku.board.json`.",
             "2. After board JSON promotion, regenerate PCB/DSN/BOM reports and route",
             "   the affected pads before claiming endpoint coverage.",
-            "3. D105 has first priority because it is tied to D2's wait-state PROM",
-            "   output and CPU wait behavior; D30 READY support and the FDC support",
-            "   cluster still require their own complete dispositions.",
+            "3. D105 is modeled and routed. Remaining priority belongs to D2's",
+            "   truth/input rails, the `.009` WAIT-inverter handoff, D30's unread",
+            "   section-B endpoints, and the FDC support cluster.",
             "4. `READY FOR DESIGN RELEASE` is emitted only when no IC footprint",
             "   remains outside the board-JSON pin model.",
             "",
