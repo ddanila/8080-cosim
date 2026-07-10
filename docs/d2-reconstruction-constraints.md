@@ -91,7 +91,7 @@ leaves only the five untraced address-input pads unnetted.
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
 | No reconstructed D2 fallback is exported | PASS | `docs/reconstructed-prom-fallbacks.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
-| Evidence summary preserves D2 pin table but defers nets | FAIL | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
+| Evidence summary preserves D2 pin table but defers nets | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 
 ## Evidence Reconciliation
 

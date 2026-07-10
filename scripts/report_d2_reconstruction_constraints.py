@@ -210,8 +210,8 @@ def main() -> int:
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
         "D2 pin table from sheet 1:",
         "A0-A7=5/6/7/4/3/2/1/15",
-        "D2 signal nets",
-        "remain deferred until",
+        "The proved D2 leads",
+        "are modeled and routed; its other inputs and PROM contents remain deferred",
     )
     all_signal_pins_netted = (
         len(signal_nets) == len(pin_roles)
