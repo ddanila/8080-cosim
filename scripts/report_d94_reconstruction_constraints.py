@@ -110,7 +110,7 @@ def pcb_pin_nets(ref: str) -> dict[str, str]:
     for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
         pin = match.group(1)
         pad_block = matching_block(block, match.start() + 3)
-        net = re.search(r'\(net\s+"([^"]+)"\)', pad_block)
+        net = re.search(r'\(net\s+\d+\s+"([^"]+)"\)', pad_block)
         if net:
             found[pin] = net.group(1)
     return found

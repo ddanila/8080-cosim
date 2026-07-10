@@ -53,10 +53,13 @@ def main() -> int:
         "ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin",
         32,
     )
-    d2_ok = marker(
-        "docs/d2-reconstruction-constraints.md",
-        "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**",
-        "No reconstructed D2 fallback is exported",
+    d2_text = read("docs/d2-reconstruction-constraints.md")
+    d2_ok = (
+        "No reconstructed D2 fallback is exported" in d2_text
+        and (
+            "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**" in d2_text
+            or "Status: **D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED**" in d2_text
+        )
     )
     d94_ok = marker(
         "docs/d94-reconstruction-constraints.md",

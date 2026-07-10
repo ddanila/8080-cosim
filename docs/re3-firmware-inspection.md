@@ -44,7 +44,7 @@ sync/reference_artifact_check.sh
 | `JUKUROM0.HEX` | 8192 | `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596` |
 | `JUKUROM1.HEX` | 8192 | `35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817` |
 | `Juku_К155РЕ3_firmware.pdf` | 2779146 | `acf0136d7ef5ddded0a67b9617d5f6e75a3222788668451dbcf85fdd82c50ed0` |
-| `README.md` | 1977 | `c99908e61fadab3ddb0f2815212e32a4e4c6c2ebf5c047e5eb4c2505374fe164` |
+| `README.md` | 1992 | `53e647198f2565f3593a9f5baa215988935c1424c014c7a36ad1c265201aa16c` |
 | `re3_dgsh5.106.113.hex` | 96 | `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13` |
 | `re3_dgsh5.106.117.hex` | 96 | `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18` |
 
