@@ -99,17 +99,29 @@ def netted_pins_by_ref(board: dict) -> dict[str, set[str]]:
     return netted
 
 
-def unnetted_functional_pins(chip: dict, netted: dict[str, set[str]]) -> list[str]:
+def no_connect_pins_by_ref(board: dict) -> dict[str, set[str]]:
+    no_connects: dict[str, set[str]] = defaultdict(set)
+    for ref, pin in board.get("no_connects", []):
+        no_connects[str(ref)].add(str(pin))
+    return no_connects
+
+
+def unnetted_functional_pins(
+    chip: dict,
+    netted: dict[str, set[str]],
+    no_connects: dict[str, set[str]],
+) -> list[str]:
     ref = str(chip.get("ref", ""))
     pins = chip.get("pins", {})
     used = netted.get(ref, set())
+    intentional_nc = no_connects.get(ref, set())
     missing = []
     def pin_sort_key(item: tuple[str, object]) -> object:
         pin = str(item[0])
         return int(pin) if pin.isdigit() else pin
 
     for pin, signal in sorted(pins.items(), key=pin_sort_key):
-        if str(pin) not in used:
+        if str(pin) not in used and str(pin) not in intentional_nc:
             missing.append(f"{pin}:{signal}")
     return missing
 
@@ -117,6 +129,7 @@ def unnetted_functional_pins(chip: dict, netted: dict[str, set[str]]) -> list[st
 def main() -> int:
     board = json.loads(BOARD.read_text(encoding="utf-8"))
     netted = netted_pins_by_ref(board)
+    no_connects = no_connect_pins_by_ref(board)
     chip_prov_counts = Counter(str(chip.get("prov", {}).get("type", "missing")) for chip in board["chips"])
     chip_gap_rows: list[dict[str, object]] = []
     for chip in board["chips"]:
@@ -131,7 +144,7 @@ def main() -> int:
                 "category": category_for_chip(chip, text),
                 "prov_type": prov_type,
                 "note": text or "no provenance block",
-                "unnetted": unnetted_functional_pins(chip, netted),
+                "unnetted": unnetted_functional_pins(chip, netted, no_connects),
             }
         )
 
@@ -182,6 +195,7 @@ def main() -> int:
         f"- Nets modeled: `{len(board['nets'])}`",
         f"- Chip-level fidelity gaps: `{len(chip_gap_rows)}`",
         f"- Net-level source-risk gaps: `{len(net_gap_rows)}`",
+        f"- Documented intentional no-connect pins: `{sum(map(len, no_connects.values()))}`",
         "",
         "## Chip Provenance Types",
         "",
@@ -244,6 +258,24 @@ def main() -> int:
                     ]
                 )
             )
+
+    if no_connects:
+        lines.extend(
+            [
+                "",
+                "## Documented Intentional No-Connects",
+                "",
+                "These package pins are visibly unused in the authoritative schematic.",
+                "They are excluded from the unnetted-functional-pin list and emitted as",
+                "explicit KiCad schematic no-connect markers.",
+                "",
+                "| Ref | Pins |",
+                "| --- | --- |",
+            ]
+        )
+        for ref in sorted(no_connects):
+            pins = sorted(no_connects[ref], key=lambda pin: int(pin) if pin.isdigit() else pin)
+            lines.append(table_row([f"`{ref}`", "`" + ", ".join(pins) + "`"] ))
 
     lines.extend(
         [

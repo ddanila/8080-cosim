@@ -4336,7 +4336,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official; assembly drawing position and sheet-1 READY circuit",
-    "pins": "section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->R29->D1.READY; section B pins 8-13 remain boundary/untraced"
+    "pins": "section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->R29->D1.READY; section B: pins 10 /PRE2 and 12 D2 are visibly tied, pins 6 /Q1 and 9 Q2 are intentional NCs, while pins 8, 11, 13 and the 10/12 source remain boundary/untraced"
    }
   },
   {
@@ -13521,6 +13521,10 @@
    "src": "traced sheet-1: R29 1k output reaches D1 READY pin 23",
    "nodes": [["R29", "2"], ["D1", "23"]]
   },
+  "D30B_D_PRE_N": {
+   "src": "traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread",
+   "nodes": [["D30", "10"], ["D30", "12"]]
+  },
   "D25_T": {
    "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",
    "nodes": [
@@ -13534,5 +13538,9 @@
     ]
    ]
   }
- }
+ },
+ "no_connects": [
+  ["D30", "6"],
+  ["D30", "9"]
+ ]
 }

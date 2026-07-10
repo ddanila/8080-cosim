@@ -55,11 +55,13 @@ PCB artifacts. Closing D105 alone is not sufficient.
   and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
   `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
   through R29 1 kΩ.
-- D30 section A, R5, R6, and R29 are now promoted into board JSON. D30
-  section B (pins 8-13) is visibly wired on the same sheet but its crossed
-  rail destinations still require a clean end-to-end read. The footprint
-  is no longer placement-only, but design release remains blocked until
-  section B is traced and the regenerated route is verified.
+- D30 section A, R5, R6, and R29 are now promoted into board JSON. In section
+  B, the local U-shaped wire proves that pin 10 `/PRE` and pin 12 `D` share a
+  net; pins 6 `/Q1` and 9 `Q2` are not drawn and are recorded as intentional
+  no-connects. Pin 8 `/Q2`, pin 11 `CLK`, pin 13 `/CLR`, and the upstream source
+  of the pin-10/pin-12 net still require clean end-to-end reads. The footprint
+  is no longer placement-only, but design release remains blocked until those
+  endpoints are traced and the regenerated route is verified.
 
 ## Footprint-Only ICs
 

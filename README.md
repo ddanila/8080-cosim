@@ -19,7 +19,9 @@ with the machine-readable board model.
 - The main board is **not released for fabrication**. D2 is still physically
   unnetted, D94 lacks its enable/output wiring, and 10 official IC footprints
   (including D105 wait logic and FDC glue) have no modeled pin connectivity.
-  D30 READY section A is modeled, while section B remains untraced. The D2/D94
+  D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
+  pin-6/pin-9 no-connects are documented, while its three live endpoints remain
+  untraced. The D2/D94
   PROM contents are also missing, and 36 modeled
   nets retain source-risk annotations requiring evidence or explicit redesign.
   See [PLAN.md](PLAN.md).

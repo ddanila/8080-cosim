@@ -19,9 +19,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `230`
-- Nets modeled: `325`
+- Nets modeled: `326`
 - Chip-level fidelity gaps: `45`
-- Net-level source-risk gaps: `37`
+- Net-level source-risk gaps: `38`
+- Documented intentional no-connect pins: `2`
 
 ## Chip Provenance Types
 
@@ -40,7 +41,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 0 | 3 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 8 |
+| PROM/decode | 0 | 9 |
 | clock/I/O | 0 | 4 |
 | logic/source | 4 | 4 |
 | memory/timing | 0 | 5 |
@@ -133,11 +134,21 @@ model is historical-source-complete.
 | --- | --- | --- |
 | `D100` | logic/source | `9:OE_N, 11:T` |
 | `D2` | PROM truth | `1:A6, 2:A5, 3:A4, 4:A3, 5:A0, 6:A1, 7:A2, 12:D0, 13:V1, 14:V2, 15:A7` |
-| `D30` | logic/source | `6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
+| `D30` | logic/source | `8:Q2_N, 11:CLK2, 13:CLR2_N` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` |
 | `D93` | logic/source | `19:MR_N, 24:CLK` |
 | `D94` | PROM truth | `1:D0, 2:D1, 3:D2, 4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
 | `S4` | logic/source | `1:P1, 2:P2` |
+
+## Documented Intentional No-Connects
+
+These package pins are visibly unused in the authoritative schematic.
+They are excluded from the unnetted-functional-pin list and emitted as
+explicit KiCad schematic no-connect markers.
+
+| Ref | Pins |
+| --- | --- |
+| `D30` | `6, 9` |
 
 ## Net-Level Source Risks
 
@@ -148,6 +159,7 @@ same fidelity ledger as the chip provenance gaps.
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
 | `D25_T` | PROM/decode | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs... |
+| `D30B_D_PRE_N` | PROM/decode | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] |

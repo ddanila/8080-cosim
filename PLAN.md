@@ -50,7 +50,9 @@ regenerated.**
    and D106 exist in the source PCB, routed PCB, and DSN but have no pin model.
    Trace and route each required function, or document a deliberate redesign/
    DNP decision and remove it from the released artifacts. D30 READY section A
-   is now modeled through R5/R6/R29, but its section-B pins remain untraced;
+   is now modeled through R5/R6/R29. In section B, pins 10 and 12 are visibly
+   tied and pins 6 and 9 are documented no-connects; pins 8, 11, and 13 still
+   require end-to-end tracing, as does the shared pin-10/pin-12 source;
    most of the placement-only parts are FDC support logic. Closing D105 alone
    cannot release the board.
 3. **D94 `.092` PROM** — only BA11..BA15 and power are currently connected.
