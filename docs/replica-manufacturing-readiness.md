@@ -3,7 +3,7 @@
 Status: **DESIGN HOLD / PACKAGE VERIFIED**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Final upload ZIP SHA256: `d81a7ffbc401dfb8fbc6af22f775d18a4dde04d0b8c481f9b9199a7044a2a62e`
+Final upload ZIP SHA256: `dec4424f17b16c36f3ccb09c1697b4cf2d665ff456ddbf36619025a3898409fd`
 
 This is the tracked top-level manufacturing packet for the replica main
 board. It separates reproducible package integrity from functional design
@@ -18,7 +18,7 @@ DESIGN HOLD.
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2873 | PASS |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2513 | PASS |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2638 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 13845 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8548 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
@@ -39,8 +39,8 @@ DESIGN HOLD.
 
 | File | Bytes | SHA256 | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `31090bad9bfd9dffda3ee7b3c44bc22ff5b4f45c380354e74a23c83c4e313094` | PASS |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 785575 | `d81a7ffbc401dfb8fbc6af22f775d18a4dde04d0b8c481f9b9199a7044a2a62e` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `31cdbda6f277b181dc3466d9516da8a6913bf63df9548fd6590816c650dec407` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 787459 | `dec4424f17b16c36f3ccb09c1697b4cf2d665ff456ddbf36619025a3898409fd` | PASS |
 
 ## Locked Vendor Options
 

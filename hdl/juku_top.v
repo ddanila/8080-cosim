@@ -129,7 +129,7 @@ module juku_top (
     la3_gate U_D105 (.a(memr_n), .b(memr_n), .y(d105_mrd_inv),
                      .a2(memw_n), .b2(d13_o4), .y2(d105_gate1_y),
                      .a3(d105_wait_stage), .b3(d105_wait_stage), .y3(d105_wait_preinv),
-                     .a4(d2_wait_raw), .b4(1'b0), .y4(d105_wait_stage));
+                     .a4(d2_wait_raw), .b4(1'b0), .y4(d105_wait_stage)); // pin10 is physical H/-5V, a TTL low
 `ifdef YOSYS
     wire d30b_d_pre_n;
 `else

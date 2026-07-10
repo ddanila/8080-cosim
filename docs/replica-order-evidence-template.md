@@ -20,7 +20,7 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 | Field | Value |
 | --- | --- |
 | Upload ZIP | `fab/gerbers/upload/juku-replica-gerbers-drill.zip` |
-| Upload ZIP SHA256 | `d81a7ffbc401dfb8fbc6af22f775d18a4dde04d0b8c481f9b9199a7044a2a62e` |
+| Upload ZIP SHA256 | `dec4424f17b16c36f3ccb09c1697b4cf2d665ff456ddbf36619025a3898409fd` |
 | Upload checksum command | `(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)` |
 
 ## Required Source Evidence
