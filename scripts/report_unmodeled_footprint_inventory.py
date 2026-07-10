@@ -114,8 +114,8 @@ def main() -> int:
         ref = str(chip.get("ref"))
         if ref in FDC_BOUNDARY_REFS:
             missing = sorted(
-                (str(pin) for pin in chip.get("pins", {}) if (ref, str(pin)) not in netted_nodes),
-                key=int,
+                ((str(pin), str(role)) for pin, role in chip.get("pins", {}).items() if (ref, str(pin)) not in netted_nodes),
+                key=lambda item: int(item[0]),
             )
             if missing:
                 boundary_untraced[ref] = missing
@@ -218,6 +218,18 @@ def main() -> int:
         "- D99 is shifted 0.7 mm within its explicitly assumed photo placement",
         "  to clear R75 after restoring the full package length.",
         "",
+        "## FDC Device Pinout Recovery",
+        "",
+        "- `D95` and `D101` are now typed as К555КП12 / 74LS253 dual",
+        "  4:1 three-state multiplexers with the documented OE/address/data/output",
+        "  pin roles: <https://gatchina.pw/datasheets/микросхемы/555/555КП12.pdf>.",
+        "- `D98` is now typed as a К155ЛП11 / SN74367 six-channel three-state",
+        "  buffer; its two enable groups and six A/Y pairs follow the device sheet:",
+        "  <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.",
+        "- `D28` is now typed as the К155ЛН3 six-inverter open-collector family.",
+        "  These are device-level pin roles only; no Juku-specific signal net is",
+        "  assigned until the `.009` copper continuity is proved.",
+        "",
         "## Footprint-Only ICs",
         "",
         "| Ref | Mark/value | Footprint | Source PCB | Routed PCB | DSN | Generator note |",
@@ -252,7 +264,7 @@ def main() -> int:
         ]
     )
     for ref in sorted(boundary_untraced, key=lambda item: int(item[1:])):
-        lines.append(table_row([f"`{ref}`", ", ".join(boundary_untraced[ref])]))
+        lines.append(table_row([f"`{ref}`", ", ".join(f"{pin}:{role}" for pin, role in boundary_untraced[ref])]))
 
     only_partial = [ref for ref in footprint_only if ref not in common_footprint_only]
     if only_partial:

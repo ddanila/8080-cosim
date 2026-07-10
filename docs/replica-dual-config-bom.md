@@ -73,11 +73,11 @@ readiness report.
 | source-now | C_TRIM 4/20 | trimmer capacitor 4/20 | modern trimmer capacitor matching footprint/value | 1 | 1 | 0 | C73 | - |
 | source-now | D_DIODE КС147 | Soviet diode/zener per value КС147 | modern diode/zener matching value and power | 1 | 1 | 0 | VD5 | - |
 | source-now | IE10_CTR | К555ИЕ10 | 74LS193/191-class counter; verify exact pinout | 1 | 1 | 0 | D103 | - |
-| source-now | IE7_CTR | К555ИЕ7 | 74LS161/163-class counter; verify exact Soviet pin/timing match | 5 | 5 | 0 | D44, D45, D46, D47, D106 | - |
+| source-now | IE7_CTR | К555ИЕ7 | 74LS193 up/down counter; verify timing and load/clear polarity | 5 | 5 | 0 | D44, D45, D46, D47, D106 | - |
 | source-now | IO_DEC138 | К555ИД7 | 74LS138 / 74HCT138 decoder | 1 | 1 | 0 | D9 | - |
 | source-now | IR16 | К155ИР16 | 74295/74LS295-class shift register; verify pinout | 3 | 3 | 0 | D41, D42, D43 | - |
 | source-now | IR82 | КР580ИР82 | 8282/8283-class latch; verify polarity/package | 1 | 1 | 0 | D58 | - |
-| source-now | KP12_BOUNDARY | KP12_BOUNDARY | select exact substitute after circuit review | 2 | 2 | 0 | D95, D101 | - |
+| source-now | KP12_MUX | К555КП12 | 74LS253 dual 4:1 three-state multiplexer | 2 | 2 | 0 | D95, D101 | - |
 | source-now | KP14_MUX | К531/К555КП14 | 74LS257/258-class quad 2:1 mux; verify OE/polarity | 5 | 5 | 0 | D48, D49, D50, D51, D52 | - |
 | source-now | LA12_GATE | К531ЛА12 | 74S20/74LS20-class NAND; verify section | 1 | 1 | 0 | D36 | - |
 | source-now | LA18 | К155ЛА18 | open-collector NAND/driver; verify output topology | 1 | 1 | 0 | D12 | - |
@@ -87,8 +87,8 @@ readiness report.
 | source-now | LN1_DUAL | К531ЛН1 | 74S04/74LS04-class inverter | 1 | 1 | 0 | D33 | - |
 | source-now | LN1_OSC | К531ЛН1 | 74S04/74LS04-class inverter; oscillator section timing matters | 1 | 1 | 0 | D59 | - |
 | source-now | LN2 | К561ЛН2 | CD4049/К561ЛН2-class CMOS inverter; verify role | 1 | 1 | 0 | D3 | - |
-| source-now | LN3_BOUNDARY | LN3_BOUNDARY | select exact substitute after circuit review | 1 | 1 | 0 | D28 | - |
-| source-now | LP11_BOUNDARY | LP11_BOUNDARY | select exact substitute after circuit review | 1 | 1 | 0 | D98 | - |
+| source-now | LN3_OC_INV | К155ЛН3 | 7406-class hex open-collector inverter; verify pullups and voltage | 1 | 1 | 0 | D28 | - |
+| source-now | LP11_BUF | К155ЛП11 | SN74367 hex three-state buffer | 1 | 1 | 0 | D98 | - |
 | source-now | LP5_XOR | К155ЛП5 | 74LS86 XOR-class gate | 1 | 1 | 0 | D34 | - |
 | source-now | PIC8259 | КР580ВН59 | 8259A PIC | 1 | 1 | 0 | D10 | - |
 | source-now | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | 3 | 0 | D54, D55, D57 | - |
@@ -102,7 +102,7 @@ readiness report.
 | source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R19 | - |
 | source-now | SYS8238 | КР580ВК38 | 8228/8238-class system controller; verify pinout | 1 | 1 | 0 | D5 | - |
 | source-now | TL2 | К155ТЛ2 | 74LS13 Schmitt NAND-class gate | 1 | 1 | 0 | D13 | - |
-| source-now | TM2_DFF | TM2_DFF | select exact substitute after circuit review | 2 | 2 | 0 | D30, D96 | - |
+| source-now | TM2_DFF | КМ555ТМ2 | 74LS74 dual D flip-flop | 2 | 2 | 0 | D30, D96 | - |
 | source-now | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | 1 | 0 | D11 | - |
 | source-now | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 4 | 4 | 0 | D23, D24, D25, D29 | - |
 | source-now | VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | 1 | 0 | D93 | A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit. |

@@ -62,6 +62,18 @@ until those endpoints are modeled. Both classes block design release.
 - D99 is shifted 0.7 mm within its explicitly assumed photo placement
   to clear R75 after restoring the full package length.
 
+## FDC Device Pinout Recovery
+
+- `D95` and `D101` are now typed as К555КП12 / 74LS253 dual
+  4:1 three-state multiplexers with the documented OE/address/data/output
+  pin roles: <https://gatchina.pw/datasheets/микросхемы/555/555КП12.pdf>.
+- `D98` is now typed as a К155ЛП11 / SN74367 six-channel three-state
+  buffer; its two enable groups and six A/Y pairs follow the device sheet:
+  <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.
+- `D28` is now typed as the К155ЛН3 six-inverter open-collector family.
+  These are device-level pin roles only; no Juku-specific signal net is
+  assigned until the `.009` copper continuity is proved.
+
 ## Footprint-Only ICs
 
 | Ref | Mark/value | Footprint | Source PCB | Routed PCB | DSN | Generator note |
@@ -74,15 +86,15 @@ remaining signal pins stay explicitly unnetted until continuity is proved.
 
 | Ref | Untraced functional pins |
 | --- | --- |
-| `D28` | 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 |
-| `D95` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
-| `D96` | 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13 |
-| `D97` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
-| `D98` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
-| `D99` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
-| `D101` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
-| `D102` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
-| `D106` | 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15 |
+| `D28` | 1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6 |
+| `D95` | 1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N |
+| `D96` | 1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N |
+| `D97` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
+| `D98` | 1:OE14_N, 2:A1, 3:Y1, 4:A2, 5:Y2, 6:A3, 7:Y3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N |
+| `D99` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
+| `D101` | 1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N |
+| `D102` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
+| `D106` | 1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0 |
 
 ## Closure Rule
 

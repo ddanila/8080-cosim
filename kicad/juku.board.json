@@ -4380,24 +4380,24 @@
    "prov": {"type": "scan", "refdes": ".009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout", "pins": "power pins 8/16 promoted; counter inputs and outputs remain explicit FDC continuity boundaries"}
   },
   {
-   "ref": "D28", "type": "LN3_BOUNDARY",
-   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "8": "PIN8", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "14-pin physical boundary; power pins 7/14 promoted, exact inverter signal assignment awaits FDC continuity"}
+   "ref": "D28", "type": "LN3_OC_INV",
+   "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed, six inverter signal pairs await FDC continuity"}
   },
   {
-   "ref": "D95", "type": "KP12_BOUNDARY",
-   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "7": "PIN7", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13", "14": "PIN14", "15": "PIN15"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity"}
+   "ref": "D95", "type": "KP12_MUX",
+   "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed, mux signals await FDC continuity"}
   },
   {
-   "ref": "D98", "type": "LP11_BOUNDARY",
-   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "7": "PIN7", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13", "14": "PIN14", "15": "PIN15"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "16-pin physical boundary; power pins 8/16 promoted, exact logic signal assignment awaits FDC continuity"}
+   "ref": "D98", "type": "LP11_BUF",
+   "pins": {"1": "OE14_N", "2": "A1", "3": "Y1", "4": "A2", "5": "Y2", "6": "A3", "7": "Y3", "9": "Y4", "10": "A4", "11": "Y5", "12": "A5", "13": "Y6", "14": "A6", "15": "OE56_N"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed, six buffer signals and two enables await FDC continuity"}
   },
   {
-   "ref": "D101", "type": "KP12_BOUNDARY",
-   "pins": {"1": "PIN1", "2": "PIN2", "3": "PIN3", "4": "PIN4", "5": "PIN5", "6": "PIN6", "7": "PIN7", "9": "PIN9", "10": "PIN10", "11": "PIN11", "12": "PIN12", "13": "PIN13", "14": "PIN14", "15": "PIN15"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "16-pin physical boundary; power pins 8/16 promoted, exact multiplexer signal assignment awaits FDC continuity"}
+   "ref": "D101", "type": "KP12_MUX",
+   "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed, mux signals await FDC continuity"}
   },
   {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",

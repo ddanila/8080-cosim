@@ -35,8 +35,8 @@ FP = {
     'PIC8259':'DIP-28_W15.24mm', 'PIT8253':'DIP-24_W15.24mm', 'BUF8286':'DIP-20_W7.62mm',
     'AP2':'DIP-8_W7.62mm', 'LA18':'DIP-8_W7.62mm',   # DIP-8 confirmed by board photos
     'TM2_DFF':'DIP-14_W7.62mm',
-    'LN3_BOUNDARY':'DIP-14_W7.62mm', 'KP12_BOUNDARY':'DIP-16_W7.62mm',
-    'LP11_BOUNDARY':'DIP-16_W7.62mm',
+    'LN3_OC_INV':'DIP-14_W7.62mm', 'KP12_MUX':'DIP-16_W7.62mm',
+    'LP11_BUF':'DIP-16_W7.62mm',
 }
 SHARED = FOOTPRINT_ROOT + "/"
 PASSIVE_FP = {
@@ -130,7 +130,7 @@ MARK = {
     'LA12_GATE':'К531ЛА12', 'LN1_INV':'К531ЛН1',     'LN1_OSC':'К531ЛН1',
     'AG3_ONESHOT':'КМ555АГ3','IE10_CTR':'К555ИЕ10',  'DEC_PROM':'КР556РТ4',
     'RE3_PROM':'К155РЕ3',  'RE3_PROM_092':'К155РЕ3', 'TM2_DFF':'КМ555ТМ2',
-    'LN3_BOUNDARY':'К155ЛН3', 'KP12_BOUNDARY':'К555КП12', 'LP11_BOUNDARY':'К155ЛП11',
+    'LN3_OC_INV':'К155ЛН3', 'KP12_MUX':'К555КП12', 'LP11_BUF':'К155ЛП11',
     'CT16_CTR':'КР531ИЕ17',   'CLK_PHASE':'К155ЛН5',           # pinned via repo tracing (clock-subsystem.md / memory.md)
     'VABUS':'КР580ВА87',    'IR82':'КР580ИР82',      'IR16':'К155ИР16',
     'TL2':'К155ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
