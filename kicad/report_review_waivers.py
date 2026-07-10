@@ -10,7 +10,7 @@ DEFAULT_DRC = ROOT / "fab" / "gerbers" / "juku_routed-drc.json"
 DEFAULT_OUT = ROOT / "fab" / "gerbers" / "review-waivers.md"
 
 WAIVED_COUNTS = {
-    "courtyards_overlap": 55,
+    "courtyards_overlap": 57,
     "pth_inside_courtyard": 0,
     "silk_over_copper": 199,
     "silk_overlap": 199,

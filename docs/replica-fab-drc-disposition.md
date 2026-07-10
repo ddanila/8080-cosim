@@ -22,9 +22,9 @@ silently.
 
 | DRC type | Count | Expected | Highest-repeat references | Disposition |
 | --- | ---: | ---: | --- | --- |
-| `courtyards_overlap` | 55 | 55 | D102, D84, D95, D76, C12, C13, D93, C15 | Waived as dense authentic placement after visual assembly-fit review. |
+| `courtyards_overlap` | 57 | 57 | D102, D84, D95, D76, D99, C12, C13, D93 | Waived as dense authentic placement after visual assembly-fit review. |
 | `pth_inside_courtyard` | 0 | 0 | - | Waived as dense through-hole/socket proximity after visual assembly-fit review. |
-| `silk_over_copper` | 199 | 199 | D95, D84, D76, D102, E13, C9, D48, S1 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
+| `silk_over_copper` | 199 | 199 | D95, D84, D76, E13, C9, D48, D102, C12 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
 | `silk_overlap` | 199 | 199 | C1, S1, S3, C33, D23, D2, D25, D24 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
 | `text_thickness` | 80 | 80 | C73, R19, R29, R3, R38, R39, R6, VD3 | GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry. |
 

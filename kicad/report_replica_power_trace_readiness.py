@@ -11,8 +11,8 @@ DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_REPORT = ROOT / "docs" / "replica-power-trace-readiness.md"
 
 POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
-EXPECTED_POWER_SEGMENTS = 779
-EXPECTED_WIDENED_SEGMENTS = 439
+EXPECTED_POWER_SEGMENTS = 745
+EXPECTED_WIDENED_SEGMENTS = 452
 BASELINE_WIDTH_MM = 0.20
 MAX_WIDTH_MM = 1.00
 
@@ -178,7 +178,7 @@ def build_report(board):
     else:
         lines.append(
             "The routed power nets match the reviewed current-route widening envelope: "
-            "779 power segments present, 439 widened where local clearance allowed, "
+            "745 power segments present, 452 widened where local clearance allowed, "
             "no power segment below the routed baseline, and no widened segment above "
             "the 1.00 mm clamp. KiCad DRC remains the clearance authority."
         )

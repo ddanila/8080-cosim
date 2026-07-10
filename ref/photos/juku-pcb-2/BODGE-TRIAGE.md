@@ -65,6 +65,11 @@ two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
 MRD inverter). These reads reduce the trace boundary but do not yet establish
 D2 A0/A1/A2/A4/A6 or every output destination.
 
+The three КМ555АГ3 positions require 16-pin DIP footprints. This is consistent
+with the traced D56 АГ3 pinout on sheet 2, whose RC terminals explicitly use
+pins 14 and 15; the former 14-pin placement-only packages were physically
+incomplete and are not valid substitutes.
+
 ## D30 READY boundary
 
 Sheet 1 proves the first half of D30 (`КМ555ТМ2`) rather than merely showing a

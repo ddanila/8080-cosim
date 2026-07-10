@@ -19,7 +19,7 @@ BLOCKING_TYPES = {
 }
 REVIEW_ONLY_TYPES = {
     "courtyards_overlap": {
-        "expected": 55,
+        "expected": 57,
         "disposition": "Waived as dense authentic placement after visual assembly-fit review.",
     },
     "pth_inside_courtyard": {

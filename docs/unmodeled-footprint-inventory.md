@@ -56,6 +56,15 @@ PCB artifacts. Closing D105 alone is not sufficient.
   and D105.11 now drives pin 13. Pin 8, pin 11, and the upstream source
   of pins 10+12 still require end-to-end reads.
 
+## AG3 Package Correction
+
+- `D97`, `D99`, and `D102` are КМ555АГ3 dual one-shots and use
+  16-pin 7.62 mm DIP packages, matching the already traced D56 AG3
+  pinout (including RC pins 14/15). The earlier 14-pin placement-only
+  footprints omitted six physical holes across these three positions.
+- D99 is shifted 0.7 mm within its explicitly assumed photo placement
+  to clear R75 after restoring the full package length.
+
 ## Footprint-Only ICs
 
 | Ref | Mark/value | Footprint | Source PCB | Routed PCB | DSN | Generator note |
@@ -63,11 +72,11 @@ PCB artifacts. Closing D105 alone is not sufficient.
 | `D28` | `К155ЛН3` | `DIP-14_W7.62mm` | yes | yes | `К155ЛН3` | row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread] |
 | `D95` | `К555КП12` | `DIP-16_W7.62mm` | yes | yes | `К555КП12` | row 3: КП12 #1 [.009: D95] |
 | `D96` | `КМ555ТМ2` | `DIP-14_W7.62mm` | yes | yes | `КМ555ТМ2` | row 2 [.009: D96=ТМ2] |
-| `D97` | `КМ555АГ3` | `DIP-14_W7.62mm` | yes | yes | `КМ555АГ3` | row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED] |
+| `D97` | `КМ555АГ3` | `DIP-16_W7.62mm` | yes | yes | `КМ555АГ3` | row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED] |
 | `D98` | `К155ЛП11` | `DIP-16_W7.62mm` | yes | yes | `К155ЛП11` | row 1 [.009: D98=ЛП11 ✓] |
-| `D99` | `КМ555АГ3` | `DIP-14_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 middle [pool, ASSUMED] |
+| `D99` | `КМ555АГ3` | `DIP-16_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 middle [pool, ASSUMED; shifted 0.7 mm for 16-pin package clearance] |
 | `D101` | `К555КП12` | `DIP-16_W7.62mm` | yes | yes | `К555КП12` | row 4: КП12 #2 [.009: D101] |
-| `D102` | `КМ555АГ3` | `DIP-14_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 right [pool, ASSUMED] |
+| `D102` | `КМ555АГ3` | `DIP-16_W7.62mm` | yes | yes | `КМ555АГ3` | row 4 right [pool, ASSUMED] |
 | `D106` | `К555ИЕ7` | `DIP-16_W7.62mm` | yes | yes | `К555ИЕ7` | row 2: the 5th ИЕ7 [.009: D106=ИЕ7] |
 
 ## Closure Rule

@@ -448,10 +448,10 @@ def main():
         'D28':  ('DIP-14_W7.62mm', 'К155ЛН3',    272, 74, 0),   # row 2 [.009: D28=ЛН3 -- NOT РЕ3; the old misread]
         'D96':  ('DIP-14_W7.62mm', 'КМ555ТМ2',   284, 74, 0),   # row 2 [.009: D96=ТМ2]
         'D95':  ('DIP-16_W7.62mm', 'К555КП12',   268, 93, 90), # row 3: КП12 #1 [.009: D95]
-        'D97':  ('DIP-14_W7.62mm', 'КМ555АГ3',   228, 88, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
+        'D97':  ('DIP-16_W7.62mm', 'КМ555АГ3',   228, 88, 90),# row 3 [.009 АГ3 pool D97/D99/D102; per-position ASSUMED]
         'D101': ('DIP-16_W7.62mm', 'К555КП12',   230, 109, 90), # row 4: КП12 #2 [.009: D101]
-        'D99':  ('DIP-14_W7.62mm', 'КМ555АГ3',   251.5, 110, 90), # row 4 middle [pool, ASSUMED]
-        'D102': ('DIP-14_W7.62mm', 'КМ555АГ3',   270.8, 111.8, 90),# row 4 right [pool, ASSUMED]
+        'D99':  ('DIP-16_W7.62mm', 'КМ555АГ3',   250.8, 110, 90), # row 4 middle [pool, ASSUMED; shifted 0.7 mm for 16-pin package clearance]
+        'D102': ('DIP-16_W7.62mm', 'КМ555АГ3',   270.8, 111.8, 90),# row 4 right [pool, ASSUMED]
     }
     for ref, (fpn, mark, x, y, rot) in UNTRACED.items():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpn)
@@ -582,7 +582,7 @@ def main():
     # boxes were part of the same drawing misread. NOTE: tape-serial.md predicted ИЕ11/ИМ1/ИР9 for
     # the baud chain -- the real quadrant has ИЕ7/ЛН3/ТМ2, so either the chain lives elsewhere or
     # the sheet-3 read needs revisiting; D99=ИР9 (296,82) kept but now suspect.)
-    # (D106 -> untraced К155АГ3 footprint, photo-confirmed)
+    # (D106 -> untraced К555ИЕ7 footprint, .009 BOM/photo reconciliation)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
     silk_box(182, 12, 210, 20, "X3")   # serial edge connector, right of X2 (emaplaat)
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
