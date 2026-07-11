@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import csv
 from pathlib import Path
 
 
@@ -14,6 +15,7 @@ PCB = ROOT / "kicad" / "juku.kicad_pcb"
 REPORT = ROOT / "docs" / "d94-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
 ARTIFACT_SCAN_DIRS = ("ref", "roms", "media", "docs", "hdl", "kicad", "scripts", "sync")
+PHOTO_ENDPOINTS = ROOT / "ref" / "photos" / "juku-pcb-2" / "endpoints.csv"
 
 
 def read(path: str) -> str:
@@ -141,6 +143,21 @@ def repo_092_artifact_candidates() -> list[str]:
             if any(name.endswith(suffix) for suffix in suffixes):
                 candidates.append(str(path.relative_to(ROOT)))
     return sorted(candidates)
+
+
+def remaining_output_departures() -> dict[str, str]:
+    """Return component-side observations proving copper leaves D94 D3-D7 pads."""
+    observations: dict[str, str] = {}
+    with PHOTO_ENDPOINTS.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("refdes") != "D94" or row.get("pin") not in {"4", "5", "6", "7", "9"}:
+                continue
+            if not row.get("endpoint_id", "").startswith("seed-component-"):
+                continue
+            note = row.get("note", "")
+            if "copper" in note or "trace runs" in note:
+                observations[row["pin"]] = note
+    return observations
 
 
 def address_space_rows() -> list[str]:
@@ -299,6 +316,8 @@ def main() -> int:
         "Status: **VIDEO SLOT TIMING AUDITED / PHYSICAL SLOT SCHEDULE PENDING**",
         "D94 is not used as video-timing evidence",
     )
+    output_departures = remaining_output_departures()
+    all_remaining_outputs_depart = set(output_departures) == {"4", "5", "6", "7", "9"}
 
     can_reconstruct = (
         address_ok
@@ -388,6 +407,7 @@ def main() -> int:
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
+            f"| Every unresolved D94 output has a photographed copper departure | {'PASS' if all_remaining_outputs_depart else 'FAIL'} | component-side local-fit observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
             f"| Repository-wide `.092` artifact filename exists | {'PASS' if repo_candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in repo_candidates) if repo_candidates else 'no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync'} |",
             f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
@@ -409,6 +429,9 @@ def main() -> int:
             "- Local two-sided fits and continuous copper now establish D0-D2 as the",
             "  private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources",
             "  still do not provide pin 15, D3-D7 destinations, or PROM contents.",
+            "- Registered component-side local fits show copper departing every remaining",
+            "  output pad D3-D7 (pins 4-7 and 9). Their far destinations remain unknown,",
+            "  but none may be reconstructed as an unused/NC PROM output.",
             "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
             "  in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in",
             "  board JSON, DSN, or PCB evidence. It cannot substitute for the missing",
@@ -466,6 +489,8 @@ def main() -> int:
             "- Unknown: D94 pin 15 (`E_N`) and D3-D7 destinations remain untraced, and no",
             "  `ДГШ5.106.092` programming table or dump is present under the",
             "  repository artifact scan.",
+            "- D3-D7 are destination-unknown, not unused: registered component-side",
+            "  photographs prove copper leaves all five output pads.",
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
             "  replacement source for D94: its current nodes are `R17.1`, `C99.1`,",
             "  and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.",

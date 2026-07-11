@@ -99,6 +99,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
 | Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N` |
+| Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 5, 6, 7, 9 |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
 | Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
@@ -120,6 +121,9 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 - Local two-sided fits and continuous copper now establish D0-D2 as the
   private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources
   still do not provide pin 15, D3-D7 destinations, or PROM contents.
+- Registered component-side local fits show copper departing every remaining
+  output pad D3-D7 (pins 4-7 and 9). Their far destinations remain unknown,
+  but none may be reconstructed as an unused/NC PROM output.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
   in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in
   board JSON, DSN, or PCB evidence. It cannot substitute for the missing
@@ -204,6 +208,8 @@ the `.092` programming table/dump is absent and D3-D7 remain unassigned.
 - Unknown: D94 pin 15 (`E_N`) and D3-D7 destinations remain untraced, and no
   `ДГШ5.106.092` programming table or dump is present under the
   repository artifact scan.
+- D3-D7 are destination-unknown, not unused: registered component-side
+  photographs prove copper leaves all five output pads.
 - The traced `V3_RC` RC network is a negative cross-check here, not a
   replacement source for D94: its current nodes are `R17.1`, `C99.1`,
   and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.
