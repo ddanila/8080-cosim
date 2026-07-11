@@ -22,8 +22,8 @@ endpoint table contains 612 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 20 | two-sided evidence adopted into the board model |
-| `measurement` | 592 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 22 | two-sided evidence adopted into the board model |
+| `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 135 `local-package-fit`, 432
 `registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
@@ -38,6 +38,7 @@ Accepted paths:
 - D94.3 -> D93.2 / `FDC_WE_N`.
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
+- D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
