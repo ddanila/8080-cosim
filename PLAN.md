@@ -81,7 +81,9 @@ extraction work from that set:
 
 1. Confirm the board model reflects the factory solder-side trace cuts
    («Вид В», poz. 150/159) at D56, D15, D14, and D11 — these are drawn design
-   changes, not board-specific repairs.
+   changes, not board-specific repairs. Their existence/locality is guarded by
+   `docs/factory-modification-disposition.md`; exact modified pads, removed
+   segments, and replacement nets remain a P0 mapping hold.
 2. Follow the drawn wire paths to close the wire 17/18 reset-chain endpoint
    left unread in `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`.
 3. Cross-check the corrected D94/D100/D98 placement and connector/off-board

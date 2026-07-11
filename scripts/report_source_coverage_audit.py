@@ -15,6 +15,7 @@ REQUIRED = [
     "ref/Juku_official_chip_BOM.pdf",
     "ref/photos/dgsh5-109-009-sb/README.md",
     "docs/assembly-drawing-extraction.md",
+    "docs/factory-modification-disposition.md",
     "ref/baltijets-tech-docs/007 ROM and ROM programming.pdf",
     "ref/baltijets-tech-docs/009 FDDs.pdf",
     "ref/ekdos-source/EKDOS30.ASM",

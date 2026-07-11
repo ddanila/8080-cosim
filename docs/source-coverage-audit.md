@@ -43,6 +43,7 @@ web/archive work should be tied to one of these named deliverables.
 | `ref/Juku_official_chip_BOM.pdf` | present |
 | `ref/photos/dgsh5-109-009-sb/README.md` | present |
 | `docs/assembly-drawing-extraction.md` | present |
+| `docs/factory-modification-disposition.md` | present |
 | `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf` | present |
 | `ref/baltijets-tech-docs/009 FDDs.pdf` | present |
 | `ref/ekdos-source/EKDOS30.ASM` | present |
