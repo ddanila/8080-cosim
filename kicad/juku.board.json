@@ -4972,7 +4972,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official placement; sheet-1 .006 wait/MRD logic",
-    "pins": "12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with 10 tied to H/-5V -> 8; 8 ties 4+5 -> 6, which feeds the older-sheet D95 inverter boundary before -WAIT/E8-1"
+    "pins": "12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with named off-sheet H -> 10, producing 8; 8 ties 4+5 -> 6, which feeds the older-sheet D95 inverter boundary before -WAIT/E8-1"
    }
   },
   {
