@@ -4,6 +4,19 @@
   "promotion_rule": "local fits establish package pad identity only; they are not electrical connectivity evidence",
   "packages": [
     {
+      "refdes": "D10",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2123.0, 1625.0], "use": "fit", "observation": "bottom-left ВН59 contact immediately below the left-facing notch"},
+        {"pin": "14", "image_px": [2844.0, 1625.0], "use": "fit", "observation": "bottom-right contact of the 14-pin row"},
+        {"pin": "15", "image_px": [2844.0, 1305.0], "use": "fit", "observation": "top-right contact of the opposite row"},
+        {"pin": "28", "image_px": [2123.0, 1305.0], "use": "check", "observation": "top-left contact beside the notch end"}
+      ],
+      "note": "The marking is unambiguous КР580ВН59. This fit replaces global projections displaced onto adjacent resistors and the package body, corrects the source footprint centre to approximately (192.44,110.08) mm through the registered component panorama, and provides physical PIC endpoint geometry for the FDC interrupt audit."
+    },
+    {
       "refdes": "D94",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",

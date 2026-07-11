@@ -712,7 +712,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "verified; IR map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB"
+    "pins": "verified; IR map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB",
+    "note": "КР580ВН59 marking and notch-left posture are photo-confirmed; July-2026 affine component fit corrects the source footprint centre to (192.44,110.08) mm"
    }
   },
   {

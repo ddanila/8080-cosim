@@ -60,11 +60,14 @@ The two-sided package fits make the controller-end pad identity exact.
 The available photographs do not show an unbroken path from these pads
 to the modeled remote endpoints.
 
-| Signal | D93 pin | Solder-image coordinate | Photograph result |
-| --- | ---: | --- | --- |
-| `FDC_DDEN` | 37 | `(1276.300, 1618.983) px` | pad and local copper identified; no photographed unbroken path to D26.13 / D6.15 |
-| `FDC_DRQ` | 38 | `(1276.622, 1571.944) px` | pad and local copper identified; no photographed unbroken path to D10.19 |
-| `FDC_INTRQ` | 39 | `(1276.944, 1524.906) px` | pad and local copper identified; no photographed unbroken path to D10.18 |
+The D10 affine fit independently localizes the КР580ВН59 interrupt-input
+contacts at the other end of the modeled DRQ/INTRQ nets.
+
+| Signal | D93 pin | D93 solder coordinate | Remote component coordinate | Photograph result |
+| --- | ---: | --- | --- | --- |
+| `FDC_DDEN` | 37 | `(1276.300, 1618.983) px` | not locally fitted | pad and local copper identified; no photographed unbroken path to D26.13 / D6.15 |
+| `FDC_DRQ` | 38 | `(1276.622, 1571.944) px` | `D10.19 (2622.154, 1305.000) px` | pad and local copper identified; no photographed unbroken path to D10.19 |
+| `FDC_INTRQ` | 39 | `(1276.944, 1524.906) px` | `D10.18 (2677.615, 1305.000) px` | pad and local copper identified; no photographed unbroken path to D10.18 |
 
 ## Remaining Owner Continuity Points
 

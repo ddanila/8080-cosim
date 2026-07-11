@@ -71,6 +71,20 @@ def main() -> int:
     if d9.get("type") != "IO_DEC138":
         failures.append("D9 is not typed as IO_DEC138")
 
+    d10_component_fits = [
+        item for item in local_report.get("fits", [])
+        if item.get("refdes") == "D10" and item.get("side") == "component"
+    ]
+    d10_photo_fit_ok = (
+        len(d10_component_fits) == 1
+        and d10_component_fits[0].get("image", "").endswith("PXL_20260710_200415237.jpg")
+        and d10_component_fits[0].get("model") == "affine"
+        and max((check.get("error_px", 999) for check in d10_component_fits[0].get("checks", [])), default=999) <= 8
+    )
+    if not d10_photo_fit_ok:
+        failures.append("D10 КР580ВН59 component-side package fit is absent or invalid")
+    d10_component_pins = d10_component_fits[0].get("projected_pins", {}) if d10_component_fits else {}
+
     d93_component_fits = [
         item for item in local_report.get("fits", [])
         if item.get("refdes") == "D93" and item.get("side") == "component"
@@ -244,23 +258,34 @@ def main() -> int:
             "The available photographs do not show an unbroken path from these pads",
             "to the modeled remote endpoints.",
             "",
-            "| Signal | D93 pin | Solder-image coordinate | Photograph result |",
-            "| --- | ---: | --- | --- |",
+            "The D10 affine fit independently localizes the КР580ВН59 interrupt-input",
+            "contacts at the other end of the modeled DRQ/INTRQ nets.",
+            "",
+            "| Signal | D93 pin | D93 solder coordinate | Remote component coordinate | Photograph result |",
+            "| --- | ---: | --- | --- | --- |",
         ]
     )
-    for signal, pin, remote in (
-        ("`FDC_DDEN`", "37", "D26.13 / D6.15"),
-        ("`FDC_DRQ`", "38", "D10.19"),
-        ("`FDC_INTRQ`", "39", "D10.18"),
+    for signal, pin, remote, remote_pin in (
+        ("`FDC_DDEN`", "37", "D26.13 / D6.15", None),
+        ("`FDC_DRQ`", "38", "D10.19", "19"),
+        ("`FDC_INTRQ`", "39", "D10.18", "18"),
     ):
         point = d93_solder_pins.get(pin)
         coordinate = f"`({point[0]:.3f}, {point[1]:.3f}) px`" if point else "MISSING"
         if point is None:
             failures.append(f"D93 solder fit lacks pin {pin}")
+        remote_point = d10_component_pins.get(remote_pin) if remote_pin else None
+        remote_coordinate = (
+            f"`D10.{remote_pin} ({remote_point[0]:.3f}, {remote_point[1]:.3f}) px`"
+            if remote_point else "not locally fitted"
+        )
+        if remote_pin and remote_point is None:
+            failures.append(f"D10 component fit lacks pin {remote_pin}")
         lines.append(table_row([
             signal,
             pin,
             coordinate,
+            remote_coordinate,
             f"pad and local copper identified; no photographed unbroken path to {remote}",
         ]))
     lines.extend(

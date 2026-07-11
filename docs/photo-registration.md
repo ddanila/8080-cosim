@@ -38,7 +38,7 @@ Accepted paths:
 - D94.3 -> D93.2 / `FDC_WE_N`.
 
 The reviewed package fits also corrected the source placement/orientation of
-D2, D41, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
+D2, D10, D41, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
 remain the last clean pre-correction snapshot until the whole D94/D100 bus
 cluster can be rerouted coherently.
 

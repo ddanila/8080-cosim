@@ -210,7 +210,8 @@ PLACE = {
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
     # D5 at its СБ box (y92-106; old 114.1 clipped the ROM sockets); D6/D7/D10 row at y114.1
     # (old 116.7-118 dips clipped the x-decap band at 124.3 and bank0 at 133.1)
-    'D5':(31.2,99.2,90),'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),'D10':(178.9,101.3,90),
+    'D5':(31.2,99.2,90),'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),
+    'D10':(192.44,110.08,90),  # КР580ВН59 local affine photo fit; old centre projected onto adjacent resistors/body
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary
     'D105':(31.9,215.5,90),  # wait/MRD NAND below D13; official .009 assembly position
@@ -480,7 +481,15 @@ def main():
 
     # nets: create a NETINFO per net name, assign to each (ref,pin) pad
     assigned = 0
-    for name, e in spec['nets'].items():
+    # Keep the three photo-promoted D94 control nets at the tail, matching the
+    # established source-PCB net-number order. JSON insertion during evidence
+    # promotion must not renumber every later KiCad net and create a 60k-line
+    # serialization diff on an otherwise local placement correction.
+    tail_nets = ("FDC_RE_N", "FDC_CS_N", "FDC_WE_N")
+    net_names = [name for name in spec['nets'] if name not in tail_nets]
+    net_names.extend(name for name in tail_nets if name in spec['nets'])
+    for name in net_names:
+        e = spec['nets'][name]
         ni = pcbnew.NETINFO_ITEM(board, name); board.Add(ni)
         for ref, pin in (e['nodes'] if isinstance(e, dict) else e):
             fp = placed.get(ref)
