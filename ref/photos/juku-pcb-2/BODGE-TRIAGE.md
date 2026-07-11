@@ -155,6 +155,9 @@ The source-drawn OC SOUT bias network is also restored: assembly and owner
 photos identify R18 as the diagonal 33k link from `S_OC` to `SER_TXD`/D3.11,
 and R30 as the long vertical 33k link from `S_OC` to ground. Their fitted
 10.16 mm and 12.7 mm footprints match the photographed terminals.
+The same source block shows SER_TXD feeding both D3.11 and D3.9; D3.8 then
+drives tied D12.1/.2 before D12.3 produces OC SOUT. That physical inverter
+stage is now modeled instead of the former direct SER_TXD-to-D12 shortcut.
 
 ## Factory solder-side cuts and patches
 

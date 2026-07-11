@@ -480,14 +480,15 @@ module juku_top (
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
     // D3=TTL SOUT, D12=OC SOUT, D104=SIN receiver. TxD fans to the SOUT/TTL/OC drivers (same data, diff levels).
-    wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin, s_cts, s_dsr;
+    wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin, s_cts, s_dsr, ser_txd_inv;
     ap2_drv U_D14 (.i3(ser_txd), .i2(1'b1),    .o6(s_sout), .o7());
     ap2_drv U_D32 (.i3(ser_rts), .i2(ser_dtr), .o6(s_rts),  .o7(s_dtp));
     wire ir7_sig, ir6_sig;
     ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
                    .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_sig),
-                   .i3(1'bz), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());  // unused sections remain explicit unresolved package pins
-    la18_oc U_D12 (.i1(ser_txd), .i2(1'b1), .o3(s_oc));
+                   .i3(1'bz), .o4(), .i5(1'bz), .o6(),
+                   .i9(ser_txd), .o8(ser_txd_inv));
+    la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc));
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),
                    .dsr_in(s_dsr), .dsr_out(ser_dsr_n));

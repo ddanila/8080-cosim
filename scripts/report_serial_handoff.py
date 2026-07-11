@@ -112,10 +112,17 @@ def check_rows(board: dict) -> list[list[object]]:
             has_node(board, "SER_TXD", "D11", "19")
             and has_node(board, "SER_TXD", "D14", "3")
             and has_node(board, "SER_TXD", "D3", "11")
-            and has_node(board, "SER_TXD", "D12", "1"),
+            and has_node(board, "SER_TXD", "D3", "9"),
             "`SER_TXD`",
         )
     )
+    checks.append((
+        "D3.9->8 pre-inverter drives tied D12 inputs",
+        has_node(board, "SER_TXD_INV", "D3", "8")
+        and has_node(board, "SER_TXD_INV", "D12", "1")
+        and has_node(board, "SER_TXD_INV", "D12", "2"),
+        "`SER_TXD_INV`",
+    ))
     checks.append(
         (
             "USART RTS/DTR reach AP2 driver",
@@ -232,6 +239,7 @@ def main() -> int:
         "CS_D11",
         "PIT_BAUD",
         "SER_TXD",
+        "SER_TXD_INV",
         "SER_RTS",
         "SER_DTR",
         "SER_RXD",

@@ -143,6 +143,8 @@ removed.
 The adjacent source-drawn OC SOUT network is now complete as well: R18 33k
 returns `S_OC` to `SER_TXD`/D3.11, and R30 33k biases `S_OC` to ground.
 Assembly and owner photos identify and fit both physical resistor bodies.
+SER_TXD also feeds D3.9; D3.8 drives the tied D12.1/.2 inputs, restoring the
+source-drawn pre-inverter rather than a direct behavioral shortcut.
 
 ## Sheet 6 — Лист регистрации изменений (change registration)
 

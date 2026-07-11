@@ -78,6 +78,15 @@ def main() -> int:
                 failures.append(f"{refdes}.{pin} is not assigned to {net}")
         if footprint is not None and footprint.GetValue() != "33k":
             failures.append(f"{refdes} value is not 33k")
+    for refdes, expected in {
+        "D3": {"9": "SER_TXD", "8": "SER_TXD_INV"},
+        "D12": {"1": "SER_TXD_INV", "2": "SER_TXD_INV", "3": "S_OC"},
+    }.items():
+        footprint = board.FindFootprintByReference(refdes)
+        for pin, net in expected.items():
+            pad = footprint.FindPadByNumber(pin) if footprint else None
+            if pad is None or pad.GetNetname() != net:
+                failures.append(f"{refdes}.{pin} is not assigned to {net}")
 
     if failures:
         for failure in failures:

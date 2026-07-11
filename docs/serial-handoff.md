@@ -36,6 +36,7 @@ python3 scripts/report_serial_handoff.py
 | D11 write strobe is wired | PASS | `IOWR` |
 | D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
+| D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
@@ -56,7 +57,8 @@ python3 scripts/report_serial_handoff.py
 | --- | --- |
 | `CS_D11` | `D9.13`, `D11.11` |
 | `PIT_BAUD` | `D57.10`, `D11.25`, `D11.9` |
-| `SER_TXD` | `D11.19`, `D14.3`, `D3.11`, `D12.1`, `R18.2` |
+| `SER_TXD` | `D11.19`, `D14.3`, `D3.11`, `D3.9`, `R18.2` |
+| `SER_TXD_INV` | `D3.8`, `D12.1`, `D12.2` |
 | `SER_RTS` | `D11.23`, `D32.3` |
 | `SER_DTR` | `D11.24`, `D32.2` |
 | `SER_RXD` | `D11.3`, `D104.13` |

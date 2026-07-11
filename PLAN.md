@@ -112,7 +112,9 @@ extraction work from that set:
    +5 V through 120 ohms; source junctions also close A22 onto the OC SOUT
    node shared with A32. A27/A28 are source-undrawn, photo-proved cable-only
    reserved contacts. Photo-fitted R18/R30 now restore the source-drawn 33k
-   SER_TXD feedback and ground bias on OC SOUT, completing the X3 harness
+   SER_TXD feedback and ground bias on OC SOUT; the physical D3.9->8
+   pre-inverter and tied D12.1/.2 inputs replace the former direct-D12 shortcut,
+   completing the X3 harness
    disposition. Promote X4 and
    the remaining numbered links only after
    each А:N point is mapped to a package pin.
