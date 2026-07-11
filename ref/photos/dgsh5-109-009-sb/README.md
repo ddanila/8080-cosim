@@ -21,8 +21,10 @@ What the drawing is authoritative for:
   assemblies (X8 lead 300 mm, X9 ribbon 400 mm, poz. 151 shielded cable).
 - Per-component mounting details («Установка VT1/VT2/Z1/C73/C98,C100»).
 - Factory solder-side trace cuts («Разрезать», «Вид В», «сторона монтажа»)
-  around D56, D15, D4, and D11 — i.e. the cuts are on the drawing, not
-  board-specific bodges.
+  around D56, D15, D14, and D11 — i.e. the cuts are on the drawing, not
+  board-specific bodges. The D15, D14, and D11 patch labels were verified
+  against same-hand glyph references (Д15/Д16 socket labels, callouts
+  150/159, Д56) at full photo resolution.
 - Technical requirements 1–14 (ОСТ4.010.030-81 placement variants, ПОС61
   solder, marking, cable dressing, Z1 mounting on лакоткань/ВК-9).
 - Revision history: change-table rows `ен147279`, `ен147160`, `ен47074`,
@@ -41,7 +43,7 @@ Photo index (`PXL_20260711_*`):
 | `114615300` | Centre: `7.102.158` outline marking, DRAM row `D84`–`D91`, `D50`/`D51`, `C38`–`C50` row |
 | `114617677` | Lower-centre: `Z1`, `D59`, `D42`/`D43`/`D58`, `C98`, «Установка VT2» |
 | `114620466` | Lower-right: `D26`/`D54`/`D55`, `E8` wire fan, `X9` ribbon detail, «Установка C73/C98,C100» |
-| `114626340` | «Вид В» solder-side detail: trace cuts at `D56`, patches at `D15`/`D4`/`D11` |
+| `114626340` | «Вид В» solder-side detail: trace cuts at `D56`, patches at `D15`/`D14`/`D11` |
 | `114633498` | Enlarged «Разрезать» cut detail at `D15` |
 | `114638730.MP` | «Вид В» full detail, callouts 150/159, «сторона монтажа» |
 | `114649169` | Technical requirements, items 1–14 |

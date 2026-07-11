@@ -80,7 +80,7 @@ document revision closer to the target than the `.006` Э3 scan. Pending
 extraction work from that set:
 
 1. Confirm the board model reflects the factory solder-side trace cuts
-   («Вид В», poz. 150/159) at D56, D15, D4, and D11 — these are drawn design
+   («Вид В», poz. 150/159) at D56, D15, D14, and D11 — these are drawn design
    changes, not board-specific repairs.
 2. Follow the drawn wire paths to close the wire 17/18 reset-chain endpoint
    left unread in `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`.
