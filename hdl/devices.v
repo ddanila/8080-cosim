@@ -581,6 +581,7 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 endmodule
 
 module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk, rxc, txc,
+                   input wire vss_gnd, vcc_5v,
                    output wire txd, rts, dtr, rxrdy, txrdy, syndet, txempty,
                    input wire rxd, cts_n, reset, dsr_n);
     reg [7:0] mode = 8'h00, command = 8'h00, rx_data = 8'h00;
@@ -902,6 +903,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 endmodule
 
 module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n,
+                 input wire vss_gnd, vcc_5v,
                  input wire ir7, ir6, ir5, ir3, ir2, ir1, ir0,
                  output wire cas0, cas1, cas2, inout wire sp_en,
                  output wire intr, input wire inta_n);
@@ -962,7 +964,8 @@ module vg93_fdc (input wire cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
 endmodule
 
 // КР580ВА87 (8287, inverting 8286) D100: FDC bus buffer. Non-driving stub (see vg93_fdc).
-module buf_8287 (input wire [7:0] a, inout wire [7:0] b, input wire oe_n, t);
+module buf_8287 (input wire [7:0] a, inout wire [7:0] b, input wire oe_n, t,
+                 input wire vss_gnd, vcc_5v);
     assign b = 8'hzz;
 endmodule
 

@@ -21,6 +21,7 @@ python3 scripts/report_serial_handoff.py
 | --- | --- | --- |
 | D11 is the board USART | PASS | board JSON |
 | D11 complete auxiliary pin contract is exposed | PASS | КР580ВВ51А/8251 datasheet contract |
+| D11 power-pin contract is routed | PASS | D11.4 GND / D11.26 +5V |
 | D11 chip select is decoded | PASS | `CS_D11` |
 | D11 register select BA0 is wired | PASS | `BA0` |
 | D11 data bit DB0 is wired | PASS | `DB0` |

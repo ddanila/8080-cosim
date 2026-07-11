@@ -82,8 +82,16 @@ def main() -> int:
         failures.append("D93 internal back-bias pin 1 is not explicitly NC")
     if d100.get("type") != "BUF8287":
         failures.append("D100 is not typed as BUF8287")
+    if d100.get("pins", {}).get("10") != "VSS_GND" or d100.get("pins", {}).get("20") != "VCC_5V":
+        failures.append("D100 power-pin contract is absent or incorrect")
+    if not has_node(board, "GND", "D100", "10") or not has_node(board, "P5V", "D100", "20"):
+        failures.append("D100 traced ground or +5 V supply is absent")
     if d10.get("type") != "PIC8259":
         failures.append("D10 is not typed as PIC8259")
+    if d10.get("pins", {}).get("14") != "VSS_GND" or d10.get("pins", {}).get("28") != "VCC_5V":
+        failures.append("D10 power-pin contract is absent or incorrect")
+    if not has_node(board, "GND", "D10", "14") or not has_node(board, "P5V", "D10", "28"):
+        failures.append("D10 traced ground or +5 V supply is absent")
     if d9.get("type") != "IO_DEC138":
         failures.append("D9 is not typed as IO_DEC138")
 

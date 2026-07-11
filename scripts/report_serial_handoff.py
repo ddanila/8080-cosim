@@ -73,6 +73,16 @@ def check_rows(board: dict) -> list[list[object]]:
         )
     )
     checks.append(
+        (
+            "D11 power-pin contract is routed",
+            chip(board, "D11").get("pins", {}).get("4") == "VSS_GND"
+            and chip(board, "D11").get("pins", {}).get("26") == "VCC_5V"
+            and has_node(board, "GND", "D11", "4")
+            and has_node(board, "P5V", "D11", "26"),
+            "D11.4 GND / D11.26 +5V",
+        )
+    )
+    checks.append(
         ("D11 chip select is decoded", has_node(board, "CS_D11", "D11", "11"), "`CS_D11`")
     )
     checks.append(

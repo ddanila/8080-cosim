@@ -610,12 +610,14 @@
     "18": "TXEMPTY",
     "20": "CLK",
     "21": "RESET",
-    "22": "DSR_N"
+    "22": "DSR_N",
+    "4": "VSS_GND",
+    "26": "VCC_5V"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "verified used data/control/serial pins; КР580ВВ51А/8251 standard contract restored for RXRDY, TXRDY, SYNDET, CTS, TXEMPTY, CLK, RESET, and DSR; their target-board destinations or intentional NC state require source confirmation"
+    "pins": "complete КР580ВВ51А/8251 package contract including VSS pin4 and +5V VCC pin26; verified data/control/serial pins include RXRDY, TXRDY, SYNDET, CTS, TXEMPTY, CLK, RESET, and DSR; auxiliary destinations or intentional NC state require source confirmation"
    }
   },
   {
@@ -749,12 +751,14 @@
     "18": "IR0",
     "19": "IR1",
     "20": "IR2",
-    "21": "IR3"
+    "21": "IR3",
+    "14": "VSS_GND",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "КР580ВН59/8259 standard contract restored for CAS0-2, SP/EN, and IR2/IR3; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; omitted-function destinations/NC state require source confirmation",
+    "pins": "complete КР580ВН59/8259 package contract including VSS pin14 and +5V VCC pin28; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; auxiliary destinations/NC state require source confirmation",
     "note": "КР580ВН59 marking and notch-left posture are photo-confirmed; July-2026 affine component fit corrects the source footprint centre to (192.44,110.08) mm"
    }
   },
@@ -3695,12 +3699,14 @@
     "13": "B6",
     "12": "B7",
     "9": "OE_N",
-    "11": "T"
+    "11": "T",
+    "10": "VSS_GND",
+    "20": "VCC_5V"
    },
    "prov": {
     "type": "datasheet",
     "refdes": ".009 official (5th ВА87 = FDC bus buffer)",
-    "pins": "8287 std; OE/T gating [assumed]"
+    "pins": "complete 8287 contract including VSS pin10 and +5V VCC pin20; OE/T gating remains assumed pending continuity"
    }
   },
   {

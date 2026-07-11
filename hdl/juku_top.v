@@ -431,7 +431,7 @@ module juku_top (
     vg93_fdc   U_D93  (.cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
-    buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1));
+    buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1), .vss_gnd(1'b0), .vcc_5v(1'b1));
     wire d94_d3, d94_d4, d94_d5, d94_d6, d94_d7;
     // July-2026 two-sided local photo registration + continuous component
     // copper: D94.1(D0)->D93.4 RE, .2(D1)->D93.3 CS, .3(D2)->D93.2 WE.
@@ -472,6 +472,7 @@ module juku_top (
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
     wire ser_txd, ser_rts, ser_dtr, ser_rxd;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+                      .vss_gnd(1'b0), .vcc_5v(1'b1),
                       .rxc(pit_baud), .txc(pit_baud),
                       .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(), .txrdy(), .syndet(), .txempty(),
                       .rxd(ser_rxd), .cts_n(1'b0), .reset(1'b0), .dsr_n(1'b0));
@@ -496,6 +497,7 @@ module juku_top (
                       .ready(1'b1), .wf_vfoe(), .tr00(1'b0), .index(1'b0), .wprt(1'b0),
                       .drq(fdc_drq), .intrq(fdc_intrq));
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
+                      .vss_gnd(1'b0), .vcc_5v(1'b1),
                       .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(1'b0), .ir2(1'b0), .ir1(fdc_drq), .ir0(fdc_intrq),
                       .cas0(), .cas1(), .cas2(), .sp_en(), .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
