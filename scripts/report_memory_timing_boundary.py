@@ -66,6 +66,19 @@ def main() -> int:
     }
     guarded_checks = [
         (
+            "All 32 DRAM sockets retain complete option-rail roles",
+            all(
+                chips[f"D{ref}"].get("pins", {}).get("1") == "NC_VBB_OPTION"
+                and chips[f"D{ref}"].get("pins", {}).get("8") == "VCC_OPTION"
+                and chips[f"D{ref}"].get("pins", {}).get("16") == "VSS_GND"
+                and (f"D{ref}", "1") in set(nodes(board, "RAIL_H"))
+                and (f"D{ref}", "8") in set(nodes(board, "RAIL_G"))
+                and (f"D{ref}", "16") in set(nodes(board, "RAIL_E"))
+                for ref in range(60, 92)
+            ),
+            "D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/RAIL_E; pin 1 is internal NC for populated РУ5",
+        ),
+        (
             "D53 RAS/CAS ladder outputs are guarded",
             all(has_nodes(board, name, expected) for name, expected in d53_outputs.items()),
             "`D53_Y0_R49`..`D53_Y3_R52`",

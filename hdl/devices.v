@@ -84,7 +84,8 @@ endmodule
 // wired (shared MA/CAS/WE + per-bit DIN/DOUT, per-row RAS), but no chip is installed -> modelled as a
 // passive footprint: pins on the buses, NO logic (never drives DB/WD) -> boot-safe. Same RU5 pinmap as
 // the populated row.
-module ru5_socket (input wire [7:0] ma, input wire ras_n, cas_n, we_n, di, inout wire do_);
+module ru5_socket (input wire [7:0] ma, input wire ras_n, cas_n, we_n, di,
+                   input wire nc_vbb_option, vcc_option, vss_gnd, inout wire do_);
 endmodule
 
 // К580ИР82 (8282) octal latch. Here (D58) it's the DRAM WRITE-DATA latch: it latches the system data
@@ -435,6 +436,7 @@ endmodule
 module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling clock (see write below)
                    input wire [7:0] ma,
                    input wire ras_n, cas_n, we_n, di,
+                   input wire nc_vbb_option, vcc_option, vss_gnd,
                    output wire do_,
                    input wire [15:0] va, output wire vq);   // SIM-ONLY 2nd read port for video readout
     reg [7:0] row; reg mem [0:65535]; reg held; integer i;

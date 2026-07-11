@@ -20,6 +20,7 @@ python3 scripts/report_memory_timing_boundary.py
 
 | Check | Result | Evidence |
 | --- | --- | --- |
+| All 32 DRAM sockets retain complete option-rail roles | PASS | D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/RAIL_E; pin 1 is internal NC for populated РУ5 |
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
 | D36 write rail is guarded to all modeled DRAM W pins | PASS | `W_RAIL16` includes D36.8 plus DRAM pin-3 fanout |
 | D36 CAS pre-driver reaches R57 | PASS | `CAS_PRE`: D36.11 -> R57.1 |

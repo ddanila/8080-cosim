@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 PROM truth and routed-snapshot parity, the remaining D30 section-B endpoints, the D105-to-WAIT revision handoff, and 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. D2/D94 PROM truth and routed-snapshot parity, the remaining D30 section-B endpoints, the D105-to-WAIT revision handoff, and 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -284,7 +284,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -308,7 +311,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -332,7 +338,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -356,7 +365,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -380,7 +392,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -404,7 +419,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -428,7 +446,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -452,7 +473,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1430,7 +1454,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1454,7 +1481,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1478,7 +1508,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1502,7 +1535,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1526,7 +1562,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1550,7 +1589,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1574,7 +1616,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1598,7 +1643,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1622,7 +1670,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1646,7 +1697,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1670,7 +1724,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1694,7 +1751,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1718,7 +1778,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1742,7 +1805,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1766,7 +1832,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1790,7 +1859,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1814,7 +1886,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1839,7 +1914,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1864,7 +1942,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1889,7 +1970,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1914,7 +1998,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1939,7 +2026,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1964,7 +2054,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",
@@ -1989,7 +2082,10 @@
     "15": "CAS_N",
     "3": "WE_N",
     "2": "DI",
-    "14": "DO_"
+    "14": "DO_",
+    "1": "NC_VBB_OPTION",
+    "8": "VCC_OPTION",
+    "16": "VSS_GND"
    },
    "prov": {
     "type": "scan",

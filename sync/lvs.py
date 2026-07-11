@@ -28,7 +28,7 @@ SIM_ONLY = {"SCLK", "KBD_EN", "KBD_PRESSED", "KBD_SHIFT", "KCOL", "KBIT", "FRAME
             "SACTIVE",   # SACTIVE = sim-only mem_active qualifier into D53 (structural inputs now per sheet-2)
             "CAS_SIM",   # (see above)
             "RAM_EN_SIM"}  # RAM_EN_SIM = sim-only DRAM-enable into D53 (real G1/G2A = VID_CPU_SEL/Ф2TTL, timing un-modeled)   # CAS_SIM = sim-only CAS scaffold leg out of D53 -> rail-15 net_boundary
-POWER_ONLY = {"VSS_GND", "VBB_M5V", "VCC_5V", "VDD_12V"}  # physical voltage rails; guarded by board/power reports, not logic LVS
+POWER_ONLY = {"VSS_GND", "VBB_M5V", "VCC_5V", "VDD_12V", "NC_VBB_OPTION", "VCC_OPTION"}  # physical voltage/option rails; guarded by board/power reports, not logic LVS
                          # (the real rail-15 driver is D36.11 -> R57; the sim cannot reproduce that
                          # RC/delay chain, so the behavioral strobe rides this documented sim pin)
             # SA/SB/SC RETIRED 2026-07: D9 decodes from the real A10-A12 rails (sheet-1)
