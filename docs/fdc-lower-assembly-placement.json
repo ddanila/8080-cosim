@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "source": "ref/photos/dgsh5-109-009-sb/fdc-lower-placement-registration.json",
+  "transform": [
+    0.051963839873,
+    -0.009500305129,
+    186.49539291805,
+    -0.000546806467,
+    0.058715418525,
+    -37.865296884363
+  ],
+  "checks": [
+    {
+      "refdes": "D95",
+      "use": "fit",
+      "error_mm": 0.0
+    },
+    {
+      "refdes": "D101",
+      "use": "fit",
+      "error_mm": 0.0
+    },
+    {
+      "refdes": "D102",
+      "use": "fit",
+      "error_mm": 0.0
+    },
+    {
+      "refdes": "D99",
+      "use": "check",
+      "error_mm": 0.91
+    },
+    {
+      "refdes": "D97",
+      "use": "check",
+      "error_mm": 0.851
+    }
+  ],
+  "targets": [
+    {
+      "refdes": "C11",
+      "drawing_px": [
+        1985.5,
+        2256.5
+      ],
+      "projected_board_mm": [
+        268.232,
+        93.54
+      ],
+      "current_footprint_mm": [
+        268.232,
+        93.54
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
+      "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C16",
+      "drawing_px": [
+        1987.0,
+        2384.5
+      ],
+      "projected_board_mm": [
+        267.094,
+        101.055
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "horizontal capacitor between the upper and lower IC rows",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C15",
+      "drawing_px": [
+        2268.5,
+        2541.5
+      ],
+      "projected_board_mm": [
+        280.23,
+        110.12
+      ],
+      "current_footprint_mm": [
+        280.23,
+        110.12
+      ],
+      "projected_delta_mm": [
+        0.0,
+        -0.0
+      ],
+      "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C19",
+      "drawing_px": [
+        2461.0,
+        2261.5
+      ],
+      "projected_board_mm": [
+        292.893,
+        93.574
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "vertical capacitor immediately right of D99",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R92",
+      "drawing_px": [
+        1732.5,
+        2384.5
+      ],
+      "projected_board_mm": [
+        253.869,
+        101.194
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "horizontal resistor below D95",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R99",
+      "drawing_px": [
+        1495.5,
+        2421.0
+      ],
+      "projected_board_mm": [
+        241.207,
+        103.467
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "horizontal resistor below-left of D95",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R100",
+      "drawing_px": [
+        2595.0,
+        2270.0
+      ],
+      "projected_board_mm": [
+        299.776,
+        94.0
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "upper resistor in the four-part row right of C19",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R102",
+      "drawing_px": [
+        2595.0,
+        2325.0
+      ],
+      "projected_board_mm": [
+        299.253,
+        97.229
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "second resistor in the four-part row right of C19",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R108",
+      "drawing_px": [
+        2595.0,
+        2380.0
+      ],
+      "projected_board_mm": [
+        298.731,
+        100.458
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "third resistor in the four-part row right of C19",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "R86",
+      "drawing_px": [
+        2595.0,
+        2435.0
+      ],
+      "projected_board_mm": [
+        298.208,
+        103.688
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "lowest resistor in the four-part row right of C19",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C20",
+      "drawing_px": [
+        2648.0,
+        2545.0
+      ],
+      "projected_board_mm": [
+        299.917,
+        110.117
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "first vertical capacitor at the right end of D102",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C22",
+      "drawing_px": [
+        2692.0,
+        2545.0
+      ],
+      "projected_board_mm": [
+        302.204,
+        110.093
+      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
+      "observation": "second vertical capacitor at the right end of D102",
+      "electrical_evidence": false
+    }
+  ]
+}

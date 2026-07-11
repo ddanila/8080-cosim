@@ -124,8 +124,12 @@ extraction work from that set:
    exposed row ends and factory drawing position. The four guarded centre
    offsets are D95->D99 `(23.895,+0.451)` mm, D95->D101
    `(-11.190,+17.380)` mm, D101->D97 `(23.794,-0.107)` mm, and D97->D102
-   `(23.963,-0.249)` mm. Fit the now-colliding passive/transistor placeholders
-   from the same photographs rather than moving the proven IC row. Continue cross-checking the
+   `(23.963,-0.249)` mm. A separate factory-drawing affine registration uses
+   three of those centres and holds D99/D97 out at 0.910/0.851 mm. It corrects
+   vertical C11 between D95/D99 and C15 between D97/D102, and records ten
+   still-absent named passives without inventing their electrical endpoints.
+   Fit the remaining colliding passive/transistor placeholders from the same
+   photographs rather than moving the proven IC row. Continue cross-checking the
    remaining FDC cluster and connector/off-board geometry (X8 300 mm lead,
    X9 400 mm ribbon, poz. 151 shielded cable) before the reroute.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are

@@ -53,6 +53,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_d95_d101_photo_placement.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    lower_passive_placement = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/report_fdc_lower_assembly_placement.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
     switch_landings = subprocess.run(
         [kicad_python, str(ROOT / "kicad/check_factory_switch_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
@@ -101,6 +105,11 @@ def main() -> int:
             "D101 follows its registered package-centre offset from D95",
             mux_placement.returncode == 0,
             "shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py`",
+        ),
+        (
+            "Lower FDC passive identities follow the registered factory drawing",
+            lower_passive_placement.returncode == 0,
+            "five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py`",
         ),
         (
             "Cable geometry is recorded from the drawing",

@@ -141,6 +141,14 @@ right board edge independently constrains the row's absolute x position. The
 source PCB guards all four relations; remaining collisions are stale passive
 and transistor placements, not IC-to-IC overlaps.
 
+The factory assembly drawing is now locally registered to the same row. D95,
+D101, and D102 define an affine fit while D99 and D97 remain held-out checks at
+0.910 and 0.851 mm. This fixes the reference identity and physical posture of
+vertical C11 between D95/D99 and vertical C15 between D97/D102. Ten more named
+passives are projected in `docs/fdc-lower-assembly-placement.md`, but remain
+explicit omissions until their packages and `.009` electrical endpoints are
+proved.
+
 ## Promotion rule and remaining work
 
 Use `measurement` when a path still needs continuity, `rejected` for a

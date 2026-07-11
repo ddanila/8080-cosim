@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+  "coordinate_system": "original source-image pixels to component-side board millimetres",
+  "promotion_rule": "factory drawing registration establishes component identity and placement only, never electrical connectivity",
+  "model": "affine",
+  "anchors": [
+    {"refdes": "D95", "drawing_px": [1748.0, 2245.0], "board_mm": [256.000, 92.995], "use": "fit"},
+    {"refdes": "D101", "drawing_px": [1586.5, 2539.5], "board_mm": [244.810, 110.375], "use": "fit"},
+    {"refdes": "D102", "drawing_px": [2506.0, 2542.0], "board_mm": [292.567, 110.019], "use": "fit"},
+    {"refdes": "D99", "drawing_px": [2218.0, 2244.5], "board_mm": [279.895, 93.446], "use": "check"},
+    {"refdes": "D97", "drawing_px": [2060.5, 2539.5], "board_mm": [268.604, 110.268], "use": "check"}
+  ],
+  "targets": [
+    {"refdes": "C11", "drawing_px": [1985.5, 2256.5], "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"},
+    {"refdes": "C16", "drawing_px": [1987.0, 2384.5], "observation": "horizontal capacitor between the upper and lower IC rows"},
+    {"refdes": "C15", "drawing_px": [2268.5, 2541.5], "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"},
+    {"refdes": "C19", "drawing_px": [2461.0, 2261.5], "observation": "vertical capacitor immediately right of D99"},
+    {"refdes": "R92", "drawing_px": [1732.5, 2384.5], "observation": "horizontal resistor below D95"},
+    {"refdes": "R99", "drawing_px": [1495.5, 2421.0], "observation": "horizontal resistor below-left of D95"},
+    {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19"},
+    {"refdes": "R102", "drawing_px": [2595.0, 2325.0], "observation": "second resistor in the four-part row right of C19"},
+    {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19"},
+    {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19"},
+    {"refdes": "C20", "drawing_px": [2648.0, 2545.0], "observation": "first vertical capacitor at the right end of D102"},
+    {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "second vertical capacitor at the right end of D102"}
+  ]
+}

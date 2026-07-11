@@ -97,13 +97,15 @@ PASSIVE_PLACE = {
     # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
     # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
     'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.0,119.6,90),
-    'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(264.9,92.0,0),'R85':(274.7,87.4,0),'C94':(284.4,119.6,90),
+    'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(284.4,119.6,90),
     # R6x grid: slot positions СБ-true (crops sb_analog2/sb_r6x_right: trio y116.9 at x288.3/291.0/293.8,
     # trio y126.2 same x, singles ~(297.5,117.5)/(299.4,120.4)); refdes-to-slot within the grid is APPROX —
     # the rotated labels sit at the scan's resolution floor (blocked: needs macro photo / owner read)
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(293.8,127.2,90),
     'R67':(288.3,116.4,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
-    'C9':(275,95,0),'C10':(283.5,112,90),'C12':(254.6,95.6,0),'C13':(249.5,99.0,90),'C15':(253.8,104.0,0),
+    # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
+    # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
+    'C9':(275,95,0),'C10':(283.5,112,90),'C12':(254.6,95.6,0),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
     'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)

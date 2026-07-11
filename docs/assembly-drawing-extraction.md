@@ -19,6 +19,7 @@ is promoted as a copper netlist.
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | D106/D28/D96 row follows registered owner-photo spacing | PASS | two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py` |
 | D101 follows its registered package-centre offset from D95 | PASS | shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py` |
+| Lower FDC passive identities follow the registered factory drawing | PASS | five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
 | Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |

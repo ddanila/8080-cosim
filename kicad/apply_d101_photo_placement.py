@@ -41,7 +41,7 @@ def main() -> int:
     donor_path, target_path = map(Path, sys.argv[1:])
     target = target_path.read_text(encoding="utf-8")
     donor = donor_path.read_text(encoding="utf-8")
-    for refdes in ("D95", "D99", "D101", "D97", "D102"):
+    for refdes in ("D95", "D99", "D101", "D97", "D102", "C11", "C15"):
         start, end = footprint_span(target, refdes)
         block = target[start:end]
         old = placement(target, refdes)
