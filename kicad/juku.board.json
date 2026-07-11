@@ -4983,17 +4983,17 @@
   {
    "ref": "D97", "type": "AG3_ONESHOT",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
   },
   {
    "ref": "D99", "type": "AG3_ONESHOT",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
   },
   {
    "ref": "D102", "type": "AG3_ONESHOT",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555АГ3 pool position assumed from assembly/photo reconciliation", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo К155АГ3 8901 marking; D102 is the rightmost lower-row one-shot", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
   },
   {
    "ref": "D106", "type": "IE7_CTR",

@@ -174,6 +174,42 @@
       "note": "Direct fit to the second horizontal notch-right К555КП12, D101. The distinct 8812-marked package lies below-left of D95; standard top-view DIP numbering and the complete lower pins 16-to-9 row establish its physical sequence without promoting electrical continuity."
     },
     {
+      "refdes": "D97",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2579.0, 1599.0], "use": "fit", "observation": "bottom-left contact below the left-facing notch on the first К155АГ3 package right of D101"},
+        {"pin": "4", "image_px": [2747.0, 1597.5], "use": "check", "observation": "independent fourth contact on the complete bottom row"},
+        {"pin": "8", "image_px": [2971.0, 1595.0], "use": "fit", "observation": "bottom-right contact at the far end of the same coherent pins 1-to-8 row"}
+      ],
+      "note": "The factory assembly drawing fixes the lower-row order as D101, D97, D102. This direct fit therefore identifies the first unobscured left-notch К155АГ3 to the right of D101 as D97; pad identity is not electrical continuity."
+    },
+    {
+      "refdes": "D102",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "3", "image_px": [3220.0, 1593.0], "use": "fit", "observation": "first unobscured lower-row contact beyond the cable-covered notch-left end"},
+        {"pin": "5", "image_px": [3332.0, 1591.0], "use": "check", "observation": "independent middle contact on the coherent visible pins 3-to-8 row"},
+        {"pin": "8", "image_px": [3500.0, 1588.0], "use": "fit", "observation": "bottom-right contact beside the two grey capacitors"}
+      ],
+      "note": "The factory assembly drawing places D102 to the right of D97 in the D101/D97/D102 row. The cable hides pins 1-2 and the left-facing notch, but the uninterrupted pins 3-8 row and the К155АГ3 marking establish package geometry; no electrical path is promoted."
+    },
+    {
+      "refdes": "D99",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "9", "image_px": [2827.0, 1232.0], "use": "fit", "observation": "bottom-left contact of the notch-right one-shot package directly right of D95"},
+        {"pin": "14", "image_px": [3107.0, 1229.0], "use": "check", "observation": "independent first unobscured lower-row contact right of the black cable"},
+        {"pin": "16", "image_px": [3219.0, 1227.0], "use": "fit", "observation": "bottom-right contact below the right-facing notch"}
+      ],
+      "note": "The factory assembly drawing places D99 directly right of D95. Its black cable hides lower pins 12-13 and part of the marking, but the six visible lower contacts and right-facing notch establish the pins 9-to-16 row; no electrical path is promoted."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

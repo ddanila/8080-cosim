@@ -118,9 +118,14 @@ extraction work from that set:
    D106->D28 `(15.064,-1.442)` mm and D28->D96 `(14.451,0.240)` mm centre
    offsets without promoting unresolved signals. The distinct D95/D101
    К555КП12 packages are also fitted with corrected top-view pin numbering;
-   D101 follows the shared-photo centre offset `(-11.763,+17.877)` mm from
-   D95. This exposes the D99/D102 placeholders as physical collisions, so fit
-   and place those visible АГ3 packages next. Continue cross-checking the
+   the complete D95/D99 and D101/D97/D102 cluster is now fitted and placed
+   from shared raw-image pitch plus the visible board edge. D97 and D102 are
+   photo-read `К155АГ3 8901`; the cable-crossed D99 identity is fixed by its
+   exposed row ends and factory drawing position. The four guarded centre
+   offsets are D95->D99 `(23.895,+0.451)` mm, D95->D101
+   `(-11.190,+17.380)` mm, D101->D97 `(23.794,-0.107)` mm, and D97->D102
+   `(23.963,-0.249)` mm. Fit the now-colliding passive/transistor placeholders
+   from the same photographs rather than moving the proven IC row. Continue cross-checking the
    remaining FDC cluster and connector/off-board geometry (X8 300 mm lead,
    X9 400 mm ribbon, poz. 151 shielded cable) before the reroute.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are

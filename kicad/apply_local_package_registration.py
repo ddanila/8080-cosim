@@ -92,6 +92,23 @@ def main() -> None:
         corrected_d101 = ("Validated D101 component fit identifies the distinct 8812-marked "
                           "К555КП12 package contact and replaces the displaced projection")
         row["note"] = row["note"].replace(stale_d101, corrected_d101)
+        stale_d97 = ("D97 generated landings cross resistor, body, and parallel-trace areas "
+                     "instead of following a coherent package row; pin identity and "
+                     "destinations are not locally reliable")
+        corrected_d97 = ("Validated D97 component fit identifies the first К155АГ3 right "
+                         "of D101 and replaces the displaced generated landing")
+        row["note"] = row["note"].replace(stale_d97, corrected_d97)
+        stale_d102 = ("D102 projections alternate between adjacent package bodies, contacts, "
+                      "and bare fanout, demonstrating an unreliable local package fit with no "
+                      "complete destination")
+        corrected_d102 = ("Validated D102 component fit identifies the cable-partly-obscured "
+                          "К155АГ3 package right of D97 and replaces the displaced projection")
+        row["note"] = row["note"].replace(stale_d102, corrected_d102)
+        stale_d99 = ("D99 component landings are crossed by a factory wire or offset from "
+                     "package contacts, and none exposes a unique complete fanout")
+        corrected_d99 = ("Validated D99 component fit identifies the cable-crossed notch-right "
+                         "К155АГ3 package beside D95 and replaces the displaced projection")
+        row["note"] = row["note"].replace(stale_d99, corrected_d99)
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")

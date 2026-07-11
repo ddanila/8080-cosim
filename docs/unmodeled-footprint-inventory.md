@@ -55,12 +55,13 @@ until those endpoints are modeled. Both classes block design release.
 
 ## AG3 Package Correction
 
-- `D97`, `D99`, and `D102` are КМ555АГ3 dual one-shots and use
+- `D97`, `D99`, and `D102` are photographed К155АГ3 dual one-shots and use
   16-pin 7.62 mm DIP packages, matching the already traced D56 AG3
   pinout (including RC pins 14/15). The earlier 14-pin placement-only
   footprints omitted six physical holes across these three positions.
-- D99 is shifted 0.7 mm within its explicitly assumed photo placement
-  to clear R75 after restoring the full package length.
+- Their two photographed rows are now package-fitted and placed from
+  shared-image pitch plus the visible right board edge; the previous
+  placeholder grid and its D99 clearance nudge are retired.
 
 ## FDC Device Pinout Recovery
 
@@ -90,7 +91,7 @@ remaining signal pins stay explicitly unnetted until continuity is proved.
 | `D95` | 1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N |
 | `D96` | 1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N |
 | `D97` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
-| `D98` | 1:OE14_N, 2:A1, 3:Y1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N |
+| `D98` | 1:OE14_N, 2:A1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N |
 | `D99` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |
 | `D101` | 1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N |
 | `D102` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |

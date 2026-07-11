@@ -35,7 +35,7 @@ two assemblies must not be mixed.
 | D93 | КР1818ВГ93 | FDC |
 | D94 | К155РЕ3, program `.092` | FDC-era PROM; enable, outputs, and contents still open |
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
-| D97, D99, D102 | КМ555АГ3 | FDC quadrant one-shots |
+| D97, D99, D102 | К155АГ3 | FDC quadrant one-shots; owner photo shows the 8901 packages |
 | D100 | КР580ВА87 | FDC data-bus buffer |
 | D105 | К155ЛА3 | official wait/MRD gate; modeled and routed from sheet-1 evidence |
 | D106 | К555ИЕ7 | FDC quadrant counter |
@@ -69,7 +69,7 @@ two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
 MRD inverter). These reads reduce the trace boundary but do not yet establish
 D2 A0/A1/A2/A4/A6 or every output destination.
 
-The three КМ555АГ3 positions require 16-pin DIP footprints. This is consistent
+The three photographed К155АГ3 positions require 16-pin DIP footprints. This is consistent
 with the traced D56 АГ3 pinout on sheet 2, whose RC terminals explicitly use
 pins 14 and 15; the former 14-pin placement-only packages were physically
 incomplete and are not valid substitutes.

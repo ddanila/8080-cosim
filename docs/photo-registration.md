@@ -25,7 +25,7 @@ endpoint table contains 612 reviewed rows:
 | `accepted` | 22 | two-sided evidence adopted into the board model |
 | `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 227 `local-package-fit`, 348
+Confidence metadata consists of 269 `local-package-fit`, 306
 `registration-only`, and 37 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
@@ -127,13 +127,19 @@ consistent registration, with its pin-13 check at 0.755 px. All 16 projected
 pads of each mux land on their photographed contacts; their inputs, selects,
 enables, and outputs remain explicit FDC continuity questions.
 
-Because D95 and D101 share one original photograph, their package-centre
-spacing is stronger than either package's absolute panorama position. After
-the registered panorama-to-board transform, D101 is 11.763 mm left and 17.877
-mm below D95; the source PCB now guards that relative offset. This exposes the
-old D99/D102 placeholder positions as collisions with the physical D101 site.
-Those two one-shot packages must be fitted and moved from their own visible
-contacts; they are not displaced merely to silence DRC.
+The same original photograph and the factory assembly drawing now identify
+the complete two-row cluster: D95/D99 above and D101/D97/D102 below. D97 and
+D102 visibly read `К155АГ3 8901`; D99's body and middle pins are cable-covered,
+but its two exposed row ends, right-facing notch, and drawing position fix its
+identity. Held-out errors are 0.214 px for D97, exactly 0 px at the recorded
+precision for D102, and 0.571 px for D99.
+
+Package-local pitch converts shared raw-image offsets directly: D95->D99 is
+`(23.895,+0.451)` mm; D95->D101 is `(-11.190,+17.380)` mm; D101->D97 is
+`(23.794,-0.107)` mm; and D97->D102 is `(23.963,-0.249)` mm. The visible
+right board edge independently constrains the row's absolute x position. The
+source PCB guards all four relations; remaining collisions are stale passive
+and transistor placements, not IC-to-IC overlaps.
 
 ## Promotion rule and remaining work
 
