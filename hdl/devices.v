@@ -15,6 +15,7 @@ module cpu_8080 (
                                    // real crystal oscillator D59.OSC, so the LVS allowlist can drop
                                    // this without touching the real OSC net)
     input  wire        phi1, phi2, ready, reset, hold, intr,
+    input  wire        vss_gnd, vbb_m5v, vcc_5v, vdd_12v, // physical supplies; logic body is voltage-abstracted
     output wire [15:0] A,
     inout  wire [7:0]  D,        // multiplexed data + status byte
     output wire        dbin, wr_n, sync, hlda, inte, wait_o

@@ -19,6 +19,12 @@ Current scope: 99 mapped instances and 234 compared nets. Placement-only
 footprints, unnetted pins, analog passives, and explicit simulation-only ports
 are outside this result.
 
+Physical supply ports such as the 8080's GND, -5 V, +5 V, and +12 V pins are
+also excluded from logic LVS by an explicit `POWER_ONLY` list. Their package
+roles and board nets remain present in the source schematic and are checked by
+the include-power ERC and dedicated power-readiness reports; tying Verilog
+logic constants cannot validate real voltage rails.
+
 Key files:
 
 - `lvs.py` — comparison and diagnostics.

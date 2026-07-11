@@ -81,7 +81,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D1` | `CPU8080` | scan | scan; HOLD/pin13 grounded on sheet-1; INTE/pin16 omitted/NC; WAIT/pin24 visibly enters the lower control bundle with far destination unread |
+| `D1` | `CPU8080` | scan | complete КР580ВМ80А/8080 package contract: scan traces VSS pin2 to GND, VBB pin11 to locally derived -5V, VCC pin20 to +5V, and VDD pin28 to +12V; HOLD/pin13... |
 | `D10` | `PIC8259` | scan | КР580ВН59/8259 standard contract restored for CAS0-2, SP/EN, and IR2/IR3; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-... |
 | `D100` | `BUF8287` | datasheet | .009 official (5th ВА87 = FDC bus buffer) 8287 std; OE/T gating [assumed] |
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with 10 tied... |

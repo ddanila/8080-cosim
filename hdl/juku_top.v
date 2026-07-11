@@ -68,6 +68,7 @@ module juku_top (
 
     // ============ CPU core (the discrete chips) ============
     cpu_8080  U_CPU (.sclk(sclk_i), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset_sys),
+                     .vss_gnd(1'b0), .vbb_m5v(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                      .hold(1'b0), .intr(intr), .A(A), .D(D),
                      .dbin(dbin), .wr_n(wr_n), .sync(sync), .hlda(hlda),
                      .inte(inte), .wait_o(wait_o));

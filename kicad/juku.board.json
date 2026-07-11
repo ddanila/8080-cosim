@@ -46,12 +46,16 @@
     "14": "INTR",
     "16": "INTE",
     "24": "WAIT_O",
-    "13": "HOLD"
+    "13": "HOLD",
+    "2": "VSS_GND",
+    "11": "VBB_M5V",
+    "20": "VCC_5V",
+    "28": "VDD_12V"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; HOLD/pin13 grounded on sheet-1; INTE/pin16 omitted/NC; WAIT/pin24 visibly enters the lower control bundle with far destination unread"
+    "pins": "complete КР580ВМ80А/8080 package contract: scan traces VSS pin2 to GND, VBB pin11 to locally derived -5V, VCC pin20 to +5V, and VDD pin28 to +12V; HOLD/pin13 is grounded; WAIT/pin24 enters the lower control bundle with far destination unread"
    }
   },
   {
