@@ -47,7 +47,16 @@ def main() -> int:
     board = load_board()
     d9 = chip(board, "D9")
     d7 = chip(board, "D7")
+    d5 = chip(board, "D5")
     checks = [
+        (
+            "D5 system-controller power contract is routed",
+            d5.get("pins", {}).get("14") == "VSS_GND"
+            and d5.get("pins", {}).get("28") == "VCC_5V"
+            and has_nodes(board, "GND", {("D5", "14")})
+            and has_nodes(board, "P5V", {("D5", "28")}),
+            "D5.14 GND / D5.28 +5V",
+        ),
         (
             "D9 is the physical К555ИД7 I/O decoder",
             d9.get("type") == "IO_DEC138" and "D2 is a separate" in d9.get("prov", {}).get("refdes", ""),

@@ -19,6 +19,7 @@ python3 scripts/report_io_decode_boundary.py
 
 | Check | Result | Evidence |
 | --- | --- | --- |
+| D5 system-controller power contract is routed | PASS | D5.14 GND / D5.28 +5V |
 | D9 is the physical К555ИД7 I/O decoder | PASS | `kicad/juku.board.json` D9 provenance |
 | D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node | PASS | `PROM_EN` -> `V3_RC` |
 | D9 region-enable inputs are tied to REV | PASS | `REV`: D6.10 -> D9.4/D9.5 |

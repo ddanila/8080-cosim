@@ -32,6 +32,7 @@ endmodule
 
 // ---- i8238 system controller (КР580ВК38) ----
 module sysctl_8238 (
+    input  wire       vss_gnd, vcc_5v,
     inout  wire [7:0] D,         // CPU data/status side
     inout  wire [7:0] DB,        // buffered system data bus side
     input  wire       dbin, wr_n, hlda, ststb_n, busen_n,

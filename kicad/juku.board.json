@@ -145,12 +145,14 @@
     "12": "D6",
     "11": "DB6",
     "8": "D7",
-    "7": "DB7"
+    "7": "DB7",
+    "14": "VSS_GND",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "control=scan; data=8228 datasheet layout (control pins validate it); BUSEN_N/pin22 grounded on sheet-1"
+    "pins": "complete КР580ВК38/8228-class package contract including VSS pin14 and +5V VCC pin28; control=scan; data=8228 datasheet layout (control pins validate it); BUSEN_N/pin22 grounded on sheet-1"
    }
   },
   {

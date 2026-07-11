@@ -170,6 +170,7 @@ module juku_top (
     assign ststb_n = stb_d38;
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
+                       .vss_gnd(1'b0), .vcc_5v(1'b1),
                        .ststb_n(ststb_n), .busen_n(busen_n),
                        .memr_n(memr_n), .memw_n(memw_n),
                        .iord_n(iord_n), .iowr_n(iowr_n), .inta_n(inta_n));
