@@ -18,8 +18,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `241`
-- Nets modeled: `341`
+- Chips modeled: `275`
+- Nets modeled: `350`
 - Chip-level fidelity gaps: `62`
 - Net-level source-risk gaps: `43`
 - Documented intentional no-connect pins: `16`
@@ -28,13 +28,20 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Provenance type | Chips |
 | --- | ---: |
+| .009 assembly drawing + owner photo | 1 |
 | datasheet | 1 |
+| factory X3 cable table + registered owner photos | 12 |
 | factory assembly drawing + owner photo | 1 |
+| factory power-cable table | 4 |
+| factory wire table | 14 |
 | factory wire table + registered two-sided owner photos | 1 |
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 233 |
+| scan | 230 |
+| scan + assembly drawing + registered owner photo | 2 |
+| scan + factory assembly wire table | 3 |
+| scan + registered owner photo | 1 |
 | wire | 1 |
 
 ## Gap Categories
@@ -156,12 +163,12 @@ model is historical-source-complete.
 
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
-| `D10` | logic/source | `12:CAS0, 13:CAS1, 15:CAS2, 16:SP_EN, 20:IR2, 21:IR3, 22:IR4` |
+| `D10` | logic/source | `12:CAS0, 13:CAS1, 15:CAS2, 20:IR2, 21:IR3, 22:IR4` |
 | `D100` | logic/source | `9:OE_N, 11:T` |
 | `D101` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D102` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
-| `D11` | logic/source | `14:RXRDY, 15:TXRDY, 16:SYNDET, 17:CTS_N, 18:TXEMPTY, 20:CLK, 21:RESET, 22:DSR_N` |
+| `D11` | logic/source | `14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D35` | logic/source | `1:I1, 2:O2, 3:I3, 5:I5, 6:O6, 8:O8, 9:I9` |
@@ -174,7 +181,7 @@ model is historical-source-complete.
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
 | `D97` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
-| `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 3:Y1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
+| `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
 | `D99` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `S4` | logic/source | `1:P1, 2:P2` |
 

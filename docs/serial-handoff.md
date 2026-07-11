@@ -34,6 +34,8 @@ python3 scripts/report_serial_handoff.py
 | D11 data bit DB7 is wired | PASS | `DB7` |
 | D11 read strobe is wired | PASS | `IORD` |
 | D11 write strobe is wired | PASS | `IOWR` |
+| USART reset follows the system reset inverter | PASS | sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET` |
+| USART main clock reaches D13 inverter output | PASS | sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor |
 | D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
@@ -57,6 +59,8 @@ python3 scripts/report_serial_handoff.py
 | Net | Endpoints |
 | --- | --- |
 | `CS_D11` | `D9.13`, `D11.11` |
+| `RESET` | `D13.6`, `D1.12`, `D26.35`, `D27.35`, `D11.21` |
+| `D13_4_D105_2` | `D13.4`, `D105.2`, `D11.20` |
 | `PIT_BAUD` | `D57.10`, `D11.25`, `D11.9` |
 | `SER_TXD` | `D11.19`, `D14.3`, `D3.11`, `D3.9`, `R18.2` |
 | `SER_TXD_INV` | `D3.8`, `D12.1`, `D12.2` |
@@ -85,7 +89,7 @@ python3 scripts/report_serial_handoff.py
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
 - D11 auxiliary pins remain physical-source blockers:
-  14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY, 20:CLK, 21:RESET.
+  14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY.
   Trace each destination or record a source-proved intentional NC before
   treating the USART portion of the PCB as complete.
 - External X3 loopback, electrical levels, and full 8251 sync/parity

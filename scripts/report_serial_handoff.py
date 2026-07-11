@@ -98,6 +98,21 @@ def check_rows(board: dict) -> list[list[object]]:
         )
     checks.append(("D11 read strobe is wired", has_node(board, "IORD", "D11", "13"), "`IORD`"))
     checks.append(("D11 write strobe is wired", has_node(board, "IOWR", "D11", "10"), "`IOWR`"))
+    checks.append((
+        "USART reset follows the system reset inverter",
+        has_node(board, "RESET", "D13", "6")
+        and has_node(board, "RESET", "D1", "12")
+        and has_node(board, "RESET", "D11", "21")
+        and marker("hdl/juku_top.v", ".reset(reset_sys), .dsr_n(ser_dsr_n)"),
+        "sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET`",
+    ))
+    checks.append((
+        "USART main clock reaches D13 inverter output",
+        has_node(board, "D13_4_D105_2", "D13", "4")
+        and has_node(board, "D13_4_D105_2", "D105", "2")
+        and has_node(board, "D13_4_D105_2", "D11", "20"),
+        "sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor",
+    ))
     checks.append(
         (
             "D57 baud output reaches D11 TxC/RxC",
@@ -243,6 +258,8 @@ def main() -> int:
     )
     for net_name in [
         "CS_D11",
+        "RESET",
+        "D13_4_D105_2",
         "PIT_BAUD",
         "SER_TXD",
         "SER_TXD_INV",

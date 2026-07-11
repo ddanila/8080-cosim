@@ -7306,8 +7306,12 @@
    ]
   },
   "RESET": {
-   "src": "scan",
+   "src": "scan sheet-1: reset shaper drives D13 inverter input pin 5; D13.6 is the uninterrupted RESET conductor to CPU D1.12, both PPIs, and USART D11.21",
    "nodes": [
+    [
+     "D13",
+     "6"
+    ],
     [
      "D1",
      "12"
@@ -7319,6 +7323,10 @@
     [
      "D27",
      "35"
+    ],
+    [
+     "D11",
+     "21"
     ]
    ]
   },
@@ -14678,8 +14686,8 @@
    "nodes": [["D105", "6"]]
   },
   "D13_4_D105_2": {
-   "src": "traced sheet-1: D13 TL2 output pin 4 enters D105 NAND input pin 2",
-   "nodes": [["D13", "4"], ["D105", "2"]]
+   "src": "scan sheet-1: uninterrupted D13 TL2 output pin 4 conductor reaches D105 NAND input pin 2 and USART D11 CLK pin 20",
+   "nodes": [["D13", "4"], ["D105", "2"], ["D11", "20"]]
   },
   "D105_GATE1_Y": {
    "src": "traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread",

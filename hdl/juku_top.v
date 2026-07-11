@@ -157,7 +157,6 @@ module juku_top (
     // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
-    wire d13_res;
     wire d37_y3;                      // D37 sect-3 out -> D58.OE (RAM-read gate, sheet-2)
     wire ram_out_en;                  // RAMOUTEN rail: DRIVEN by D13.2 (traced); load = D37.4 (sheet 2)
     // D13 = К555ТЛ2 hex Schmitt inverter (traced + census). Section 1->2 = the RAMOUTEN driver:
@@ -165,7 +164,7 @@ module juku_top (
     // boot-verified value). Section 5->6 = RESIN Schmitt -> RES (boundary). Old dual-4-NAND
     // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
     tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(d13_o4),
-                     .i5(1'b1), .o6(d13_res), .i9(1'b1), .o8(),
+                     .i5(1'b1), .o6(reset_sys), .i9(1'b1), .o8(),
                      .i11(1'b1), .o10(), .i13(1'b1), .o12());
     assign ststb_n = stb_d38;
 
@@ -472,11 +471,11 @@ module juku_top (
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK2 <- 1.23M = D103.QD (crop s2_d103)
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
     wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n;
-    usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
+    usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(d13_o4),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
                       .rxc(pit_baud), .txc(pit_baud),
                       .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(), .txrdy(), .syndet(), .txempty(),
-                      .rxd(ser_rxd), .cts_n(ser_cts_n), .reset(1'b0), .dsr_n(ser_dsr_n));
+                      .rxd(ser_rxd), .cts_n(ser_cts_n), .reset(reset_sys), .dsr_n(ser_dsr_n));
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
     // D3=TTL SOUT, D12=OC SOUT, D104=SIN receiver. TxD fans to the SOUT/TTL/OC drivers (same data, diff levels).

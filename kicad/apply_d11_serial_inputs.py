@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assign D11 CTS/DSR pads without reserializing the tracked PCB."""
+"""Assign source-proved D11 auxiliary pads without reserializing the PCB."""
 from __future__ import annotations
 
 import re
@@ -9,7 +9,12 @@ from pathlib import Path
 from apply_s1_offboard_correction import block_end, footprint_span
 
 
-ASSIGNMENTS = {"17": "SER_CTS_N", "22": "SER_DSR_N"}
+ASSIGNMENTS = {
+    "17": "SER_CTS_N",
+    "20": "D13_4_D105_2",
+    "21": "RESET",
+    "22": "SER_DSR_N",
+}
 
 
 def patch(text: str) -> str:
@@ -26,8 +31,13 @@ def patch(text: str) -> str:
             raise ValueError(f"D11 pad {pin} not found")
         pad_end = block_end(footprint, pad_match.start() + 2)
         pad = footprint[pad_match.start():pad_end]
-        if "\n\t\t\t(net " in pad:
-            raise ValueError(f"D11 pad {pin} is already assigned")
+        assigned = re.search(r'\n\t\t\t\(net \d+ "([^"]+)"\)', pad)
+        if assigned:
+            if assigned.group(1) != net_name:
+                raise ValueError(
+                    f"D11 pad {pin} is assigned to {assigned.group(1)}, expected {net_name}"
+                )
+            continue
         uuid_at = pad.index("\n\t\t\t(uuid ")
         pad = (
             pad[:uuid_at]
@@ -43,7 +53,7 @@ def main() -> int:
         raise SystemExit("usage: apply_d11_serial_inputs.py BOARD.kicad_pcb")
     path = Path(sys.argv[1])
     path.write_text(patch(path.read_text(encoding="utf-8")), encoding="utf-8")
-    print(f"patched {path}: assigned D11.17/22 serial inputs")
+    print(f"patched {path}: guarded D11.17/20/21/22 auxiliary assignments")
     return 0
 
 

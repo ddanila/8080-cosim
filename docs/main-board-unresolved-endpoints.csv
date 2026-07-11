@@ -56,14 +56,11 @@ P1,D11,14,USART8251,RXRDY,functional endpoint lacks disposition
 P1,D11,15,USART8251,TXRDY,functional endpoint lacks disposition
 P1,D11,16,USART8251,SYNDET,functional endpoint lacks disposition
 P1,D11,18,USART8251,TXEMPTY,functional endpoint lacks disposition
-P1,D11,20,USART8251,CLK,functional endpoint lacks disposition
-P1,D11,21,USART8251,RESET,functional endpoint lacks disposition
 P1,D13,10,TL2,O10,functional endpoint lacks disposition
 P1,D13,11,TL2,I11,functional endpoint lacks disposition
 P1,D13,12,TL2,O12,functional endpoint lacks disposition
 P1,D13,13,TL2,I13,functional endpoint lacks disposition
 P1,D13,3,TL2,I3,functional endpoint lacks disposition
-P1,D13,6,TL2,O6,functional endpoint lacks disposition
 P1,D13,8,TL2,O8,functional endpoint lacks disposition
 P1,D13,9,TL2,I9,functional endpoint lacks disposition
 P1,D14,2,AP2,I2,functional endpoint lacks disposition

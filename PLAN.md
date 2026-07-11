@@ -67,6 +67,11 @@ The sheet-1 D10 SP/EN arrow is now modeled as a +5 V master-mode strap rather
 than an unresolved PIC pin. The older RxRDY/TxRDY-to-IR0/IR1 paths are not
 promoted because they conflict with the `.009` FDC interrupt assignment and
 remain a target-revision continuity question.
+
+The older sheet also proves D11 USART RESET pin 21 on the uninterrupted
+D13.6 system-reset conductor and D11 main CLK pin 20 on the uninterrupted
+D13.4/D105.2 conductor. Both are now modeled in the source PCB and HDL; only
+RxRDY, TxRDY, SYNDET, and TXEMPTY remain at the D11 target-revision boundary.
 5. **Restore source/routed parity.** The authoritative source PCB contains the
    accepted D2 address inputs and D94 control outputs. The saved routed PCB
    still lacks those eight endpoints and retains three superseded D93 net
