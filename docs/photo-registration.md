@@ -39,9 +39,13 @@ Accepted paths:
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
-coordinates without changing its source placement. The tracked routed PCB and Gerber ZIP intentionally
-remain the last clean pre-correction snapshot until the whole D94/D100 bus
-cluster can be rerouted coherently.
+coordinates without changing its source placement. At D98.7, the component
+fit also identifies the visible white wire-18 lead; the factory wire table
+independently closes that off-board path as А:18 to S1:2. Its endpoint row
+remains `measurement` because a matching solder-side landing is not locally
+registered. The tracked routed PCB and Gerber ZIP intentionally remain the
+last clean pre-correction snapshot until the whole D94/D100 bus cluster can be
+rerouted coherently.
 
 The D93 component fit uses `PXL_20260710_202708344.jpg`, a close-up taken with
 the known КР1818ВГ93 removed from its socket, rather than the populated-board

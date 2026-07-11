@@ -19,7 +19,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `240`
-- Nets modeled: `340`
+- Nets modeled: `341`
 - Chip-level fidelity gaps: `62`
 - Net-level source-risk gaps: `43`
 - Documented intentional no-connect pins: `16`
@@ -29,10 +29,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | Provenance type | Chips |
 | --- | ---: |
 | datasheet | 1 |
+| factory assembly drawing + owner photo | 1 |
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |
-| scan | 234 |
+| scan | 233 |
 | wire | 1 |
 
 ## Gap Categories
@@ -172,7 +173,7 @@ model is historical-source-complete.
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
 | `D97` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
-| `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 3:Y1, 4:A2, 5:Y2, 6:A3, 7:Y3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
+| `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 3:Y1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
 | `D99` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `S4` | logic/source | `1:P1, 2:P2` |
 

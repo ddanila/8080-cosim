@@ -104,20 +104,21 @@ drawing agree on these endpoints:
 | 20 | D3.10 - X3.3 | serial `S_TTL` path |
 | - | D26.23 - X9.9 | keyboard/tape connector line |
 | 17 | Factory drawing label lies in the X2/D27 top band; sheets 2-5 wire table row 11 (поз. 155) documents А:17 - S1:1, ~19 cm | confirm S1 pin-1 continuity; documentary endpoint from `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
-| 18 | Owner continuity localizes one leg at D98.7 through 220 ohm in the D98/D96/D99/D97 quadrant; sheets 2-5 wire table row 12 documents А:18 - S1:2, ~3 cm | confirm S1 pin-2 continuity; do not conflate with wire 17 |
+| 18 | The validated D98 component fit places the visible white bracket-switch lead directly on D98.7; owner continuity additionally reports a 220-ohm local path in this quadrant; sheets 2-5 wire-table row 12 documents А:18 - S1:2, ~3 cm | promoted as `D98_Y3_S1_2`; the 220-ohm branch remains a separate local-copper check; do not conflate with wire 17 |
 
 The settled wire links are represented in the board model with endpoint
 provenance. Sheet-1 assembly photos `114556899` and `114600417` separate the
 labels for wires 17 and 18, correcting the earlier combined “17/18” shorthand.
-The sheets 2-5 connection table (`ДУБЛИКАТ` scan) now documents both far ends
-on switch S1; the point-to-package-pin mapping and physical continuity
-confirmation remain the open boundary.
+The sheets 2-5 connection table (`ДУБЛИКАТ` scan) documents both far ends on
+switch S1. The component photo plus package fit closes `А:18` as D98.7; only
+the `А:17` point-to-package-pin mapping and its physical continuity remain open.
 
 S1 itself is mounted on the top connector bracket, as shown both by sheet 1
 and owner component photograph `PXL_20260710_200402344.jpg`; it is not a
-two-pin PCB header. The PCB-side objects are the remote termination points
-`А:17` and `А:18`. The generated source PCB currently models S1 as an on-board
-header at `(63.5, 183.2)` and must not be routed or released in that form.
+two-pin PCB header. The PCB-side objects are the remote wire landings `А:17`
+and `А:18`, with `А:18` now proved at D98.7. The generated source PCB now
+excludes S1 from its footprint set; the switch remains in the schematic as an
+off-board harness component.
 
 ## Factory solder-side cuts and patches
 

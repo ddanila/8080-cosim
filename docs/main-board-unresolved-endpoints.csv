@@ -272,7 +272,6 @@ P0,D98,3,LP11_BUF,Y1,PLAN physical-connectivity blocker
 P0,D98,4,LP11_BUF,A2,PLAN physical-connectivity blocker
 P0,D98,5,LP11_BUF,Y2,PLAN physical-connectivity blocker
 P0,D98,6,LP11_BUF,A3,PLAN physical-connectivity blocker
-P0,D98,7,LP11_BUF,Y3,PLAN physical-connectivity blocker
 P0,D98,9,LP11_BUF,Y4,PLAN physical-connectivity blocker
 P0,D99,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
 P0,D99,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker

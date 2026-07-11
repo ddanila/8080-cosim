@@ -19,8 +19,8 @@ is promoted as a copper netlist.
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
 | Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus owner continuity follow-up |
-| Bracket-mounted S1 is distinguished from PCB termination pads А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
-| Known generated-PCB S1 header mismatch is explicitly held from routing | PASS | `kicad/gen_kicad_pcb.py`; PLAN source-PCB correction boundary |
+| Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
+| Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
 | Connection-table sheets 2-6 are adopted and transcribed | PASS | `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
 
 ## Photograph inventory
@@ -66,6 +66,6 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 
 - Preserve the electrical result of the factory D56/D15/D14/D11 modifications.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
-- Wires 17/18 far ends are documented at S1:1/S1:2; confirm continuity and pin mapping before promotion.
-- Do not route the generated on-board S1 header; replace it with separate А:17/А:18 PCB wire pads after their local copper is proved.
+- Wire 18 is promoted as D98.7/А:18 to S1:2; map wire 17's А:17 landing before promoting its S1:1 path.
+- S1 remains an off-board bracket component and is excluded from generated PCB footprints.
 - Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.

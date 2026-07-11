@@ -2584,9 +2584,9 @@
     "2": "P2"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "scan: reset switch S1"
+    "type": "factory assembly drawing + owner photo",
+    "refdes": "ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg",
+    "pins": "wire-table rows 11/12 identify А:17->S1.1 and А:18->S1.2; bracket-mounted, excluded from PCB footprints"
    }
   },
   {
@@ -9424,10 +9424,6 @@
      "2"
     ],
     [
-     "S1",
-     "2"
-    ],
-    [
      "D3",
      "7"
     ],
@@ -10395,6 +10391,20 @@
     ]
    ],
    "_note": "reset RC node [node split assumed]"
+  },
+  "D98_Y3_S1_2": {
+   "src": "ДГШ5.109.009 СБ sheets 2-5 wire table row 12 (А:18 -> S1:2); owner component photo PXL_20260710_200402344.jpg with validated D98 package fit places the white bracket-switch lead directly on D98.7",
+   "nodes": [
+    [
+     "D98",
+     "7"
+    ],
+    [
+     "S1",
+     "2"
+    ]
+   ],
+   "_note": "off-board wire 18; S1 is bracket-mounted and must not become an on-board two-pin footprint"
   },
   "RESIN": {
    "src": "scan",

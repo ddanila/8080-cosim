@@ -87,8 +87,11 @@ S1 is bracket-mounted, not soldered into the processor PCB. Sheet 1 draws the
 pushbutton on the top connector bracket, and owner component photograph
 `PXL_20260710_200402344.jpg` shows the same physical button at the upper-right
 bracket edge. Consequently, `А:17` and `А:18` must become separate PCB wire
-termination pads while S1 remains an off-board schematic/mechanical part. The
-current generated PCB's two-pin S1 header is not a faithful substitute.
+landings while S1 remains an off-board schematic/mechanical part. The validated
+D98 package fit places the visible white wire-18 lead directly on D98.7, so
+`А:18` is that package pad rather than a separate header pad. `А:17` remains to
+be localized. The former generated two-pin S1 header was therefore removed;
+S1 is retained only in the schematic and off-board harness contract.
 
 ## Sheets 4-5 — Провода to X3 and X4
 
@@ -138,4 +141,5 @@ numbered wire links. Before board-model promotion, each `А:N` point must be
 mapped to a package pin via the sheet-1 placement plus owner continuity;
 the table gives point numbers, not pin numbers. In particular, do not route a
 single on-board S1 footprint: first model the physically separate `А:17` and
-`А:18` termination pads and their proved local copper.
+`А:18` wire landings and their proved local copper. For wire 18, the proved
+landing is D98.7 itself.

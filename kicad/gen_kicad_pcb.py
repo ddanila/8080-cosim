@@ -60,7 +60,7 @@ PASSIVE_FP = {
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
-    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),'S1':(63.5,183.2,0),
+    'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
     'R38':(121.4,249.1,90),'R39':(230.5,192.5,0),
     'Z1':(79.4,243.5,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
@@ -193,7 +193,9 @@ PLACE = {
     'D57':(274.9,206.6,90),'D55':(274.9,229.2,90),'D54':(274.7,251,90),'D26':(232,251,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
-    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(78.9,126.1,0),'D8':(89.5,102.4,0),'D9':(114.0,103.0,0),   # D2 vertical, notch/pin 1 upward; D8 = socketed РЕ3 PROM; D9 = К555ИД7 IO decoder
+    # D2 input compensates the stock footprint anchor offset so the saved
+    # photo-corrected KiCad position remains (70.010,129.905), notch upward.
+    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(73.815,138.795,0),'D8':(89.5,102.4,0),'D9':(114.0,103.0,0),   # D8 = socketed РЕ3 PROM; D9 = К555ИД7 IO decoder
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -222,8 +224,11 @@ PLACE = {
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
-    'D93':(248,70,0),'D94':(233.08,47,90),'D100':(257.65,37.40,90), # local fits: D94 and marked D100 VA87 horizontal/notch-left
-    'D98':(298.90,33.595,90),'D106':(262,74,0),'D28':(272,74,0),'D96':(284,74,0),
+    # Inputs below compensate the stock footprint anchor/bounding-box offset so
+    # the saved KiCad footprint positions remain the photo-guarded coordinates
+    # D94=(229.275,38.110), D100=(257.650,37.400), D98=(290.000,37.400).
+    'D93':(248,70,0),'D94':(238.165,34.305,90),'D100':(269.08,33.595,90),
+    'D98':(298.89,33.595,90),'D106':(262,74,0),'D28':(272,74,0),'D96':(284,74,0),
     'D95':(268,93,90),'D97':(228,88,90),'D101':(230,109,90),
     'D99':(250.8,110,90),'D102':(270.8,111.8,90),
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
@@ -367,11 +372,15 @@ def main():
 
     # connectors are silk outlines, not DIP footprints -> never placed as chips
     CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN', 'PAR_CONN', 'KBD_CONN'}  # PAR/KBD: X2/X9 are made by make_conn -- placing them here too duplicates the refdes and silently kills the Specctra DSN export
+    # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
+    # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
+    # retained in the schematic but must never become a PCB header footprint.
+    OFF_BOARD = {'S1'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
         t = chips[ref]['type']
-        if t in CONN: continue
+        if t in CONN or ref in OFF_BOARD: continue
         if t in PASSIVE_FP:
             if ref in PASSIVE_PLACE:
                 x, y, rot = PASSIVE_PLACE[ref]; add_passive(ref, x, y, rot)
@@ -380,7 +389,7 @@ def main():
             x, y, rot = PLACE[ref]; add_chip(ref, x, y, rot)
     col = 0
     for ref in sorted(chips):
-        if chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP or ref in PLACE: continue
+        if ref in OFF_BOARD or chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP or ref in PLACE: continue
         add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
         if col == 8: col = 0; row += 1
 
