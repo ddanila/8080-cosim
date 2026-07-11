@@ -18,9 +18,10 @@ is promoted as a copper netlist.
 | Factory solder-side cuts/patches are protected as designed operations | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
-| Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus owner continuity follow-up |
+| Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
 | Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
+| Dedicated А:17 landing is present on RES_RC in the board spec and source PCB | PASS | two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py` |
 | Connection-table sheets 2-6 are adopted and transcribed | PASS | `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
 
 ## Photograph inventory
@@ -66,6 +67,6 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 
 - Preserve the electrical result of the factory D56/D15/D14/D11 modifications.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
-- Wire 18 is promoted as D98.7/А:18 to S1:2; map wire 17's А:17 landing before promoting its S1:1 path.
+- Wire 17 is promoted as A17.1/А:17 to S1:1; wire 18 is promoted as D98.7/А:18 to S1:2.
 - S1 remains an off-board bracket component and is excluded from generated PCB footprints.
 - Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.

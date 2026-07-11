@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""Insert the generated А:17 wire-pad footprint without reserializing the PCB.
+
+The tracked source board contains small hand-routed corrections absent from a
+clean generator run.  Copy only the generated A17 footprint block from a donor
+board, remapping its named nets to the tracked board's numeric net IDs.
+"""
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+from apply_s1_offboard_correction import footprint_span
+
+
+REFDES = "A17"
+
+
+def net_ids(text: str) -> dict[str, str]:
+    header = text[:text.index("\n\t(footprint ")]
+    return {name: number for number, name in re.findall(
+        r'(?m)^\t\(net (\d+) "([^"]+)"\)$', header)}
+
+
+def main() -> int:
+    if len(sys.argv) != 3:
+        raise SystemExit("usage: apply_wire17_landing.py TARGET.kicad_pcb DONOR.kicad_pcb")
+    target_path, donor_path = map(Path, sys.argv[1:])
+    target = target_path.read_text(encoding="utf-8")
+    donor = donor_path.read_text(encoding="utf-8")
+    try:
+        footprint_span(target, REFDES)
+    except ValueError:
+        pass
+    else:
+        raise SystemExit(f"target already contains {REFDES}")
+
+    start, end = footprint_span(donor, REFDES)
+    block = donor[start:end].rstrip("\n")
+    target_nets = net_ids(target)
+
+    def remap(match: re.Match[str]) -> str:
+        name = match.group(2)
+        if name not in target_nets:
+            raise ValueError(f"target lacks donor net {name}")
+        return f'(net {target_nets[name]} "{name}")'
+
+    block = re.sub(r'\(net (\d+) "([^"]+)"\)', remap, block)
+    insertion = target.index("\n\t(footprint ") + 1
+    updated = target[:insertion] + block + "\n" + target[insertion:]
+    target_path.write_text(updated, encoding="utf-8")
+    print(f"patched {target_path}: inserted generated {REFDES} footprint")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -18,15 +18,15 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 610 reviewed rows:
+endpoint table contains 612 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 16 | two-sided evidence adopted into the board model |
+| `accepted` | 18 | two-sided evidence adopted into the board model |
 | `measurement` | 594 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 121 `local-package-fit`, 444
-`registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
+`registration-only`, and 47 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -36,6 +36,7 @@ Accepted paths:
 - D94.1 -> D93.4 / `FDC_RE_N`;
 - D94.2 -> D93.3 / `FDC_CS_N`;
 - D94.3 -> D93.2 / `FDC_WE_N`.
+- А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D41, D94, D100, and D98. A D11 solder fit corrects endpoint

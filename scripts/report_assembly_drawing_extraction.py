@@ -16,6 +16,7 @@ WIRE_TABLE_PDF = ROOT / "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf"
 WIRE_TABLE_MD = ROOT / "ref/schematics/dgsh5-109-009-sb-wire-table.md"
 PCB_GENERATOR = ROOT / "kicad/gen_kicad_pcb.py"
 SOURCE_PCB = ROOT / "kicad/juku.kicad_pcb"
+BOARD_SPEC = ROOT / "kicad/juku.board.json"
 REPORT = ROOT / "docs/assembly-drawing-extraction.md"
 
 
@@ -44,6 +45,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_fdc_cluster_placement.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    switch_landings = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_factory_switch_landings.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -70,21 +75,27 @@ def main() -> int:
         ),
         (
             "Factory wires 17 and 18 carry documented S1 far ends without conflation",
-            marker(bodge_text, "| 17 |", "X2/D27 top band", "А:17 - S1:1", "| 18 |", "validated D98 component fit", "А:18 - S1:2", "do not conflate with wire 17"),
-            "sheets 2-5 wire table rows 11/12 plus owner continuity follow-up",
+            marker(bodge_text, "| 17 |", "200358952", "A17.1", "| 18 |", "validated D98 component fit", "А:18 - S1:2", "do not conflate with wire 17"),
+            "sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence",
         ),
         (
             "Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18",
             marker(bodge_text, "S1 itself is mounted on the top connector bracket", "two-pin PCB header", "А:17", "А:18")
-            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "D98.7", "former generated two-pin S1 header"),
+            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "D98.7", "former generated two-pin", "S1 header"),
             "sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12",
         ),
         (
             "Bracket-mounted S1 is excluded from generated PCB footprints",
             marker(read(PCB_GENERATOR), "OFF_BOARD = {'S1'}", "must never become a PCB header footprint")
             and '(property "Reference" "S1"' not in read(SOURCE_PCB)
-            and marker(plan_text, "excluded from the", "generated PCB", "fictitious on-board S1 header has been removed"),
+            and marker(plan_text, "excluded from", "generated PCB", "fictitious on-board S1 header", "is removed"),
             "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction",
+        ),
+        (
+            "Dedicated А:17 landing is present on RES_RC in the board spec and source PCB",
+            marker(read(BOARD_SPEC), '"ref": "A17"', '"A17",', '"RES_RC"')
+            and switch_landings.returncode == 0,
+            "two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py`",
         ),
         (
             "Connection-table sheets 2-6 are adopted and transcribed",
@@ -144,7 +155,7 @@ def main() -> int:
         "",
         "- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.",
         "- Keep D94/D100/D98 horizontal during the source-PCB reroute.",
-        "- Wire 18 is promoted as D98.7/А:18 to S1:2; map wire 17's А:17 landing before promoting its S1:1 path.",
+        "- Wire 17 is promoted as A17.1/А:17 to S1:1; wire 18 is promoted as D98.7/А:18 to S1:2.",
         "- S1 remains an off-board bracket component and is excluded from generated PCB footprints.",
         "- Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.",
         "",

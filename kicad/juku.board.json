@@ -2590,6 +2590,18 @@
    }
   },
   {
+   "ref": "A17",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table + registered two-sided owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:17",
+    "pins": "wire-table row 11 connects А:17 to S1.1; component 200358952 (914,1154) and solder 200509593 local mounting-hole transfer identify the dedicated board landing"
+   }
+  },
+  {
    "ref": "R38",
    "type": "R_AXIAL",
    "pins": {
@@ -10371,7 +10383,7 @@
    "_note": "-5V for D1.11 derived from -12V: R19 dropper + VD5 negative zener clamp"
   },
   "RES_RC": {
-   "src": "scan",
+   "src": "scan reset RC; ДГШ5.109.009 СБ wire-table row 11 plus two-sided owner photos identify dedicated board landing А:17 and off-board wire to bracket switch S1.1",
    "nodes": [
     [
      "R3",
@@ -10388,9 +10400,13 @@
     [
      "S1",
      "1"
+    ],
+    [
+     "A17",
+     "1"
     ]
    ],
-   "_note": "reset RC node [node split assumed]"
+   "_note": "А:17 is a dedicated tinned wire pad at approximately (115.8,27.1) mm; S1 is off-board"
   },
   "D98_Y3_S1_2": {
    "src": "ДГШ5.109.009 СБ sheets 2-5 wire table row 12 (А:18 -> S1:2); owner component photo PXL_20260710_200402344.jpg with validated D98 package fit places the white bracket-switch lead directly on D98.7",

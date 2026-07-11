@@ -18,7 +18,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `240`
+- Chips modeled: `241`
 - Nets modeled: `341`
 - Chip-level fidelity gaps: `62`
 - Net-level source-risk gaps: `43`
@@ -30,6 +30,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: |
 | datasheet | 1 |
 | factory assembly drawing + owner photo | 1 |
+| factory wire table + registered two-sided owner photos | 1 |
 | mame+datasheet | 1 |
 | photo | 2 |
 | prom | 1 |

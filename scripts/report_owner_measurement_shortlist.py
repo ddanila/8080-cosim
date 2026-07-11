@@ -222,10 +222,10 @@ def main() -> int:
         ),
         (
             "P1",
-            "factory wire 17 and wire-18 resistor branch",
-            "map wire 17's A:17 landing in the X2/D27 top band to a package/pad and confirm it to S1:1; wire 18 A:18 is already proved as D98.7 to S1:2, so only identify the separately reported 220-ohm local branch if it affects that net",
+            "wire-18 220-ohm local branch",
+            "A:17/A:18 and both S1 endpoints are now photo/document proved; identify only the separately reported 220-ohm branch near D98.7 and state whether it is part of D98_Y3_S1_2 or another local FDC net",
             "`ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
-            "closes the remaining A:17 endpoint without reopening the photo-and-table-proved D98.7/A:18/S1:2 path",
+            "prevents an unproved resistor from being folded into the now-closed S1 harness nets",
         ),
         (
             "P0",

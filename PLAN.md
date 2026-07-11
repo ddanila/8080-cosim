@@ -68,9 +68,9 @@ closed and the corrected board has been rerouted and reviewed.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
-610 seeded observations have dispositions. Sixteen rows are accepted evidence
-for five D2 address nets and three D94-to-D93 control nets; the other 594 remain
-measurement requests. This closes the automated review queue, not the P0
+612 observations have dispositions. Eighteen rows are accepted evidence for
+five D2 address nets, three D94-to-D93 control nets, and the two-sided А:17
+wire landing; the other 594 remain measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.
 
@@ -88,9 +88,9 @@ extraction work from that set:
    the obscured bridge endpoints are not yet electrically proved.
 2. Wires 17 and 18 have documented far ends at S1:1/S1:2 from the sheets 2-5
    wire table. Package-local component evidence maps А:18 directly to D98.7;
-   map А:17 to its package/pad before promotion. S1 is bracket-mounted, so
-   it remains in the schematic/off-board harness but is excluded from the
-   generated PCB; the former fictitious on-board S1 header has been removed.
+   two-sided labeled-pad evidence maps А:17 to a dedicated `A17` footprint on
+   `RES_RC`. S1 remains in the schematic/off-board harness but is excluded from
+   the generated PCB; the former fictitious on-board S1 header is removed.
 3. Cross-check the corrected D94/D100/D98 placement and connector/off-board
    geometry (X8 300 mm lead, X9 400 mm ribbon, poz. 151 shielded cable)
    before the reroute.

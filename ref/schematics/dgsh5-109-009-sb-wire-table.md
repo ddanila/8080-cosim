@@ -89,9 +89,11 @@ pushbutton on the top connector bracket, and owner component photograph
 bracket edge. Consequently, `А:17` and `А:18` must become separate PCB wire
 landings while S1 remains an off-board schematic/mechanical part. The validated
 D98 package fit places the visible white wire-18 lead directly on D98.7, so
-`А:18` is that package pad rather than a separate header pad. `А:17` remains to
-be localized. The former generated two-pin S1 header was therefore removed;
-S1 is retained only in the schematic and off-board harness contract.
+`А:18` is that package pad rather than a separate header pad. Two-sided owner
+photos identify `А:17` as the dedicated pad
+printed `17`, at approximately `(115.8,27.1)` mm. The former generated two-pin
+S1 header was therefore removed; S1 is retained only in the schematic and
+off-board harness contract, while `A17` is a one-pad PCB footprint.
 
 ## Sheets 4-5 — Провода to X3 and X4
 
@@ -142,4 +144,4 @@ mapped to a package pin via the sheet-1 placement plus owner continuity;
 the table gives point numbers, not pin numbers. In particular, do not route a
 single on-board S1 footprint: first model the physically separate `А:17` and
 `А:18` wire landings and their proved local copper. For wire 18, the proved
-landing is D98.7 itself.
+landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
