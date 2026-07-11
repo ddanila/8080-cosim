@@ -2976,6 +2976,28 @@
    }
   },
   {
+   "ref": "R18",
+   "type": "R_AXIAL",
+   "pins": {"1": "S_OC_SIDE", "2": "SER_TXD_SIDE"},
+   "prov": {
+    "type": "scan + assembly drawing + registered owner photo",
+    "refdes": "sheet-1 R18 33k between OC SOUT and D3.11; .009 assembly/photo placement",
+    "pins": "source junctions and component copper identify the upper S_OC and lower SER_TXD terminals"
+   },
+   "value": "33k"
+  },
+  {
+   "ref": "R30",
+   "type": "R_AXIAL",
+   "pins": {"1": "S_OC_SIDE", "2": "GND_SIDE"},
+   "prov": {
+    "type": "scan + assembly drawing + registered owner photo",
+    "refdes": "sheet-1 R30 33k from OC SOUT to ground; .009 assembly/photo placement",
+    "pins": "source junctions identify the upper S_OC and lower ground terminals"
+   },
+   "value": "33k"
+  },
+  {
    "ref": "R104",
    "type": "R_AXIAL",
    "pins": {
@@ -9453,6 +9475,10 @@
     [
      "D12",
      "1"
+    ],
+    [
+     "R18",
+     "2"
     ]
    ]
   },
@@ -9571,6 +9597,14 @@
      "3"
     ],
     [
+     "R18",
+     "1"
+    ],
+    [
+     "R30",
+     "1"
+    ],
+    [
      "A22",
      "1"
     ],
@@ -9685,6 +9719,10 @@
    "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9",
    "power": true,
    "nodes": [
+    [
+     "R30",
+     "2"
+    ],
     [
      "D1",
      "2"

@@ -61,6 +61,8 @@ PASSIVE_FP = {
 PASSIVE_FP_REF = {
     'R94': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
+    'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R30': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -73,6 +75,8 @@ PASSIVE_PLACE = {
     'A25':(183.86,15.2,0),'A26':(186.40,15.2,0),'A27':(188.94,15.2,0),'A28':(191.48,15.2,0),
     'A29':(194.02,15.2,0),'A30':(196.56,15.2,0),'A31':(199.10,15.2,0),'A32':(201.64,15.2,0),
     'R104':(194.34,25.87,0), # registered photo terminals; 12.7 mm pitch, A21 side at left
+    'R30':(203.74,38.37,270), # registered photo terminals; S_OC at top, ground at bottom
+    'R18':(215.20,64.59,278), # registered photo terminals; S_OC at top, SER_TXD at bottom
     # X9 is bracket-mounted. These are its reversed-ribbon PCB landings:
     # A45->X9.14 through A58->X9.1 (factory sheets 4-5).
     'A45':(224.5,262.0,0),'A46':(222.0,262.0,0),'A47':(219.5,262.0,0),'A48':(217.0,262.0,0),

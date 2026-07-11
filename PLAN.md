@@ -111,7 +111,9 @@ extraction work from that set:
    and CTS/DSR are electrically closed, and photographed R104 closes A21 to
    +5 V through 120 ohms; source junctions also close A22 onto the OC SOUT
    node shared with A32. A27/A28 are source-undrawn, photo-proved cable-only
-   reserved contacts, completing the X3 harness disposition. Promote X4 and
+   reserved contacts. Photo-fitted R18/R30 now restore the source-drawn 33k
+   SER_TXD feedback and ground bias on OC SOUT, completing the X3 harness
+   disposition. Promote X4 and
    the remaining numbered links only after
    each А:N point is mapped to a package pin.
 

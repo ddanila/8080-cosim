@@ -140,6 +140,10 @@ their installed wires to X3.7/.8 are therefore recorded as intentional
 cable-only reserved contacts. The former provisional 2x8 on-board X3 body is
 removed.
 
+The adjacent source-drawn OC SOUT network is now complete as well: R18 33k
+returns `S_OC` to `SER_TXD`/D3.11, and R30 33k biases `S_OC` to ground.
+Assembly and owner photos identify and fit both physical resistor bodies.
+
 ## Sheet 6 — Лист регистрации изменений (change registration)
 
 Row alignment between изм. numbers, document numbers, and dates is partly

@@ -151,6 +151,10 @@ replaces that boundary. Source junction dots tie A22/X3.2 to the same OC SOUT
 node as A32/X3.12 and D12.3. A27/A28 show no solder-side copper departure and
 are absent from the older circuit sheet, so their installed X3.7/.8 wires are
 intentional cable-only reserved contacts rather than missing PCB traces.
+The source-drawn OC SOUT bias network is also restored: assembly and owner
+photos identify R18 as the diagonal 33k link from `S_OC` to `SER_TXD`/D3.11,
+and R30 as the long vertical 33k link from `S_OC` to ground. Their fitted
+10.16 mm and 12.7 mm footprints match the photographed terminals.
 
 ## Factory solder-side cuts and patches
 

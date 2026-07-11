@@ -67,6 +67,17 @@ def main() -> int:
             failures.append(f"R104.{pin} is not assigned to {net}")
     if r104 is not None and r104.GetValue() != "120":
         failures.append("R104 value is not 120 ohms")
+    for refdes, expected in {
+        "R18": {"1": "S_OC", "2": "SER_TXD"},
+        "R30": {"1": "S_OC", "2": "GND"},
+    }.items():
+        footprint = board.FindFootprintByReference(refdes)
+        for pin, net in expected.items():
+            pad = footprint.FindPadByNumber(pin) if footprint else None
+            if pad is None or pad.GetNetname() != net:
+                failures.append(f"{refdes}.{pin} is not assigned to {net}")
+        if footprint is not None and footprint.GetValue() != "33k":
+            failures.append(f"{refdes} value is not 33k")
 
     if failures:
         for failure in failures:
