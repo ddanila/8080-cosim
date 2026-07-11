@@ -128,17 +128,27 @@ def check_rows(board: dict) -> list[list[object]]:
         (
             "USART RxD comes from UP2 receiver",
             has_node(board, "SER_RXD", "D11", "3")
-            and has_node(board, "SER_RXD", "D104", "2"),
+            and has_node(board, "SER_RXD", "D104", "13"),
             "`SER_RXD`",
         )
     )
+    checks.append((
+        "USART CTS/DSR come from the other two UP2 receivers",
+        has_node(board, "SER_CTS_N", "D104", "12")
+        and has_node(board, "SER_CTS_N", "D11", "17")
+        and has_node(board, "SER_DSR_N", "D104", "11")
+        and has_node(board, "SER_DSR_N", "D11", "22"),
+        "`SER_CTS_N` / `SER_DSR_N`",
+    ))
     for net_name, ref, pin in [
-        ("S_SOUT", "X3", "29"),
-        ("S_RTS", "X3", "30"),
-        ("S_DTP", "X3", "51"),
-        ("S_TTL", "X3", "23"),
-        ("S_OC", "X3", "32"),
-        ("S_SIN", "X3", "33"),
+        ("S_SOUT", "X3", "9"),
+        ("S_RTS", "X3", "10"),
+        ("S_DTP", "X3", "11"),
+        ("S_TTL", "X3", "3"),
+        ("S_OC", "X3", "12"),
+        ("S_SIN", "X3", "4"),
+        ("S_CTS", "X3", "5"),
+        ("S_DSR", "X3", "6"),
     ]:
         checks.append(
             (f"{net_name} reaches X3.{pin}", has_node(board, net_name, ref, pin), f"`{net_name}`")
@@ -225,12 +235,16 @@ def main() -> int:
         "SER_RTS",
         "SER_DTR",
         "SER_RXD",
+        "SER_CTS_N",
+        "SER_DSR_N",
         "S_SOUT",
         "S_RTS",
         "S_DTP",
         "S_TTL",
         "S_OC",
         "S_SIN",
+        "S_CTS",
+        "S_DSR",
     ]:
         lines.append(table_row([f"`{net_name}`", endpoints(board, net_name)]))
     lines.extend(

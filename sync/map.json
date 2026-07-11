@@ -706,16 +706,26 @@
     "3": "O3"
    },
    "UP2": {
-    "1": "A",
-    "2": "Y"
+    "4": "SIN_IN",
+    "13": "SIN_OUT",
+    "5": "CTS_IN",
+    "12": "CTS_OUT",
+    "6": "DSR_IN",
+    "11": "DSR_OUT"
    },
    "SERIAL_CONN": {
-    "29": "SOUT",
-    "30": "RTS",
-    "51": "DTP",
-    "23": "TTL_SOUT",
-    "32": "OC_SOUT",
-    "33": "SIN"
+    "1": "PULLUP_IO",
+    "2": "AUX2",
+    "3": "TTL_SOUT",
+    "4": "SIN",
+    "5": "CTS",
+    "6": "DSR",
+    "7": "AUX7",
+    "8": "AUX8",
+    "9": "SOUT",
+    "10": "RTS",
+    "11": "DTP",
+    "12": "OC_SOUT"
    },
    "POWER_CONN": {
     "1": "GND1",

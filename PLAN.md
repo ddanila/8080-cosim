@@ -107,8 +107,10 @@ extraction work from that set:
    X8 power cable and X9 ribbon are promoted as physical A59..A62 and
    A45..A58 PCB landings feeding schematic-only bracket connectors; duplicated
    X8 +5 V/GND conductors and X9's reversed pin order are explicit. Promote
-   X3/X4 and the remaining numbered links only after each А:N point is mapped
-   to a package pin.
+   X3 is likewise promoted as the photo-fitted A21..A32 row; six serial signals
+   and CTS/DSR are electrically closed, while A21/A22/A27/A28 retain explicit
+   PCB-side boundaries. Promote X4 and the remaining numbered links only after
+   each А:N point is mapped to a package pin.
 
 Next tracing order:
 

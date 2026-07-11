@@ -66,6 +66,11 @@ PASSIVE_PLACE = {
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
     'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
     'A17':(115.8,27.1,0),  # two-sided owner photos, transferred from top mounting hole (114.4,13.3)
+    # Registered component/solder views show one 2.5 mm-pitch X3 cable row;
+    # sheet 1 labels the left/right ends A21/A32.
+    'A21':(173.70,15.2,0),'A22':(176.24,15.2,0),'A23':(178.78,15.2,0),'A24':(181.32,15.2,0),
+    'A25':(183.86,15.2,0),'A26':(186.40,15.2,0),'A27':(188.94,15.2,0),'A28':(191.48,15.2,0),
+    'A29':(194.02,15.2,0),'A30':(196.56,15.2,0),'A31':(199.10,15.2,0),'A32':(201.64,15.2,0),
     # X9 is bracket-mounted. These are its reversed-ribbon PCB landings:
     # A45->X9.14 through A58->X9.1 (factory sheets 4-5).
     'A45':(224.5,262.0,0),'A46':(222.0,262.0,0),'A47':(219.5,262.0,0),'A48':(217.0,262.0,0),
@@ -390,7 +395,7 @@ def main():
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
     # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
     # retained in the schematic but must never become a PCB header footprint.
-    OFF_BOARD = {'S1', 'X8', 'X9'}
+    OFF_BOARD = {'S1', 'X3', 'X8', 'X9'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -442,13 +447,9 @@ def main():
         for ri, row in enumerate('ABC'):
             x1_pads[f'1{col:02d}{row}'] = (px, 6.6 + ri * 2.5)
     make_conn('X1', 61, 9.1, x1_pads)
-    # X3: serial edge connector (traced codes 23,29,30,32,33,51 among 2 rows; provisional 2x8 grid)
-    x3_codes = [['23','29','30','32','33','51','35','37'], ['24','26','28','31','34','36','38','40']]
-    x3_pads = {}
-    for ri, rowcodes in enumerate(x3_codes):
-        for ci, code in enumerate(rowcodes):
-            x3_pads[code] = (184.0 + ci * 2.5, 6.6 + ri * 2.5)
-    make_conn('X3', 193, 7.85, x3_pads)
+    # X3 is bracket-mounted. A21..A32 above are the photographed PCB cable
+    # landings; the old 2x8 edge-connector stand-in was both provisional and
+    # physically wrong.
     # X2: СНП59-30 parallel connector, top edge [emaplaat x~118-169].
     # Sheet-1 traces PPI signal codes 201-226 plus +5 V contacts 227/229/230.
     x2_codes = ['201','202','203','204','205','206','207','208','209','210','211','212','213',
@@ -580,7 +581,7 @@ def main():
         t.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         board.Add(t)
 
-    silk_box(15, 13, 107, 21, "X1"); silk_box(118, 13, 177, 21, "X2")   # bodies end ~y15-20; old y23-33 boxes overlapped the СБ-true buffer/D27 rows
+    silk_box(15, 13, 107, 21, "X1"); silk_box(118, 13, 171.5, 21, "X2") # X2 ends immediately before photo-fitted A21
     silk_box(222, 283, 273, 287.6, "X9")   # bottom connector (read mm222..273, pins 58..45; box held 0.4 off the edge cut for silk-edge DRC)
     # ROM bank is К573РФ5 ×8 (BOM) -> D15-D22. D15/D16 are net-modeled chips; the other 6 aren't
     # traced yet (toward-76), so show them as PLACEMENT-ONLY silk socket outlines to complete the
@@ -612,7 +613,7 @@ def main():
     # the sheet-3 read needs revisiting; D99=ИР9 (296,82) kept but now suspect.)
     # (D106 -> untraced К555ИЕ7 footprint, .009 BOM/photo reconciliation)
     # (D32/D12/D3 are now net-modeled serial-driver footprints -- see PLACE.)
-    silk_box(182, 12, 210, 20, "X3")   # serial edge connector, right of X2 (emaplaat)
+    # X3 is on the bracket; its former on-board silk body is intentionally absent.
     silk_box(72, 278, 98, 286, "X8")     # power connector, bottom-left (+5/GND/+12/-12; 61/62/60/59)     # RS-232 serial connector (drivers D14/D32/D3/D12 -> here)
     for label, x, y, rot in BOARD_SILK_NOTES:
         silk_note(label, x, y, rot)

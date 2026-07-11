@@ -140,6 +140,14 @@ the schematic harness records the six 300 mm conductors, including the paired
 +5 V and ground wires. The former provisional six-pad on-board X8 connector is
 therefore removed.
 
+The X3 serial connector is also bracket-mounted. Registered component and
+solder views show its twelve cable wires terminating in one PCB row labeled
+A21..A32, while factory sheets 4-5 map those points to X3.1..X3.12. Sheet 1
+also corrects two former reads: DTP is A31 (not 51), and SIN is A24 (not 33).
+It proves all three D104 К170УП2 receivers: SIN 4->13, CTS 5->12, and DSR
+6->11, closing D11 RxD/CTS/DSR. A21/A22/A27/A28 remain explicit PCB-side
+trace boundaries.
+
 ## Factory solder-side cuts and patches
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent

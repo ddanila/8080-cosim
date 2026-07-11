@@ -56,11 +56,9 @@ P0,D106,9,IE7_CTR,D3,PLAN physical-connectivity blocker
 P1,D11,14,USART8251,RXRDY,functional endpoint lacks disposition
 P1,D11,15,USART8251,TXRDY,functional endpoint lacks disposition
 P1,D11,16,USART8251,SYNDET,functional endpoint lacks disposition
-P1,D11,17,USART8251,CTS_N,functional endpoint lacks disposition
 P1,D11,18,USART8251,TXEMPTY,functional endpoint lacks disposition
 P1,D11,20,USART8251,CLK,functional endpoint lacks disposition
 P1,D11,21,USART8251,RESET,functional endpoint lacks disposition
-P1,D11,22,USART8251,DSR_N,functional endpoint lacks disposition
 P1,D12,2,LA18,I2,functional endpoint lacks disposition
 P1,D13,10,TL2,O10,functional endpoint lacks disposition
 P1,D13,11,TL2,I11,functional endpoint lacks disposition

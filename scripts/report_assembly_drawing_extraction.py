@@ -61,6 +61,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_x8_offboard_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    x3_landings = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_x3_offboard_landings.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -126,6 +130,12 @@ def main() -> int:
             x8_landings.returncode == 0
             and marker(read(WIRE_TABLE_MD), "X8 cable is now promoted", "A59", "A62", "schematic-only"),
             "sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py`",
+        ),
+        (
+            "X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32",
+            x3_landings.returncode == 0
+            and marker(read(WIRE_TABLE_MD), "X3 is now promoted", "A21", "A32", "schematic-only"),
+            "sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py`",
         ),
         (
             "Connection-table sheets 2-6 are adopted and transcribed",

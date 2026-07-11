@@ -38,12 +38,15 @@ python3 scripts/report_serial_handoff.py
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
-| S_SOUT reaches X3.29 | PASS | `S_SOUT` |
-| S_RTS reaches X3.30 | PASS | `S_RTS` |
-| S_DTP reaches X3.51 | PASS | `S_DTP` |
-| S_TTL reaches X3.23 | PASS | `S_TTL` |
-| S_OC reaches X3.32 | PASS | `S_OC` |
-| S_SIN reaches X3.33 | PASS | `S_SIN` |
+| USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
+| S_SOUT reaches X3.9 | PASS | `S_SOUT` |
+| S_RTS reaches X3.10 | PASS | `S_RTS` |
+| S_DTP reaches X3.11 | PASS | `S_DTP` |
+| S_TTL reaches X3.3 | PASS | `S_TTL` |
+| S_OC reaches X3.12 | PASS | `S_OC` |
+| S_SIN reaches X3.4 | PASS | `S_SIN` |
+| S_CTS reaches X3.5 | PASS | `S_CTS` |
+| S_DSR reaches X3.6 | PASS | `S_DSR` |
 | HDL USART model has guarded Tx/Rx loopback | PASS | `hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh` |
 | HDL serial connector and drivers are instantiated | PASS | `hdl/juku_top.v` |
 
@@ -56,13 +59,17 @@ python3 scripts/report_serial_handoff.py
 | `SER_TXD` | `D11.19`, `D14.3`, `D3.11`, `D12.1` |
 | `SER_RTS` | `D11.23`, `D32.3` |
 | `SER_DTR` | `D11.24`, `D32.2` |
-| `SER_RXD` | `D11.3`, `D104.2` |
-| `S_SOUT` | `D14.6`, `X3.29` |
-| `S_RTS` | `D32.6`, `X3.30` |
-| `S_DTP` | `D32.7`, `X3.51` |
-| `S_TTL` | `D3.10`, `X3.23` |
-| `S_OC` | `D12.3`, `X3.32` |
-| `S_SIN` | `X3.33`, `D104.1` |
+| `SER_RXD` | `D11.3`, `D104.13` |
+| `SER_CTS_N` | `D104.12`, `D11.17` |
+| `SER_DSR_N` | `D104.11`, `D11.22` |
+| `S_SOUT` | `D14.6`, `A29.1`, `X3.9` |
+| `S_RTS` | `D32.6`, `A30.1`, `X3.10` |
+| `S_DTP` | `D32.7`, `A31.1`, `X3.11` |
+| `S_TTL` | `D3.10`, `A23.1`, `X3.3` |
+| `S_OC` | `D12.3`, `A32.1`, `X3.12` |
+| `S_SIN` | `A24.1`, `X3.4`, `D104.4` |
+| `S_CTS` | `A25.1`, `X3.5`, `D104.5` |
+| `S_DSR` | `A26.1`, `X3.6`, `D104.6` |
 
 ## Boundary
 
@@ -75,7 +82,7 @@ python3 scripts/report_serial_handoff.py
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
 - D11 auxiliary pins remain physical-source blockers:
-  14:RXRDY, 15:TXRDY, 16:SYNDET, 17:CTS_N, 18:TXEMPTY, 20:CLK, 21:RESET, 22:DSR_N.
+  14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY, 20:CLK, 21:RESET.
   Trace each destination or record a source-proved intentional NC before
   treating the USART portion of the PCB as complete.
 - External X3 loopback, electrical levels, and full 8251 sync/parity

@@ -2398,30 +2398,42 @@
    "ref": "D104",
    "type": "UP2",
    "pins": {
-    "1": "A",
-    "2": "Y"
+    "4": "SIN_IN",
+    "13": "SIN_OUT",
+    "5": "CTS_IN",
+    "12": "CTS_OUT",
+    "6": "DSR_IN",
+    "11": "DSR_OUT",
+    "8": "GND",
+    "15": "P5V"
    },
    "prov": {
     "type": "scan",
-    "refdes": "scan",
-    "pins": "serial driver (owner img #2)"
+    "refdes": "sheet-1 triple К170УП2 receiver and power-pin table",
+    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; +5 V pin15, ground pin8"
    }
   },
   {
    "ref": "X3",
    "type": "SERIAL_CONN",
    "pins": {
-    "29": "SOUT",
-    "30": "RTS",
-    "51": "DTP",
-    "23": "TTL_SOUT",
-    "32": "OC_SOUT",
-    "33": "SIN"
+    "1": "PULLUP",
+    "2": "AUX2",
+    "3": "TTL_SOUT",
+    "4": "SIN",
+    "5": "CTS",
+    "6": "DSR",
+    "7": "AUX7",
+    "8": "AUX8",
+    "9": "SOUT",
+    "10": "RTS",
+    "11": "DTP",
+    "12": "OC_SOUT"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "owner photo + sheet-3 serial connector code map",
-    "pins": "serial connector signal pins traced to S_SOUT/S_RTS/S_DTP/S_TTL/S_OC/S_SIN; external cable/electrical loopback is covered by bring-up tests"
+    "type": "scan + factory assembly wire table",
+    "refdes": "older .006 sheet-1 board-point labels; .009 СБ sheets 4-5 cable mapping",
+    "pins": "off-board bracket connector; A21..A32 map in order to X3.1..X3.12"
    }
   },
   {
@@ -2601,6 +2613,150 @@
     "type": "factory wire table + registered two-sided owner photos",
     "refdes": "ДГШ5.109.009 СБ point А:17",
     "pins": "wire-table row 11 connects А:17 to S1.1; component 200358952 (914,1154) and solder 200509593 local mounting-hole transfer identify the dedicated board landing"
+   }
+  },
+  {
+   "ref": "A21",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:21",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 1"
+   }
+  },
+  {
+   "ref": "A22",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:22",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 2"
+   }
+  },
+  {
+   "ref": "A23",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:23",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 3"
+   }
+  },
+  {
+   "ref": "A24",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:24",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 4"
+   }
+  },
+  {
+   "ref": "A25",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:25",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 5"
+   }
+  },
+  {
+   "ref": "A26",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:26",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 6"
+   }
+  },
+  {
+   "ref": "A27",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:27",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 7"
+   }
+  },
+  {
+   "ref": "A28",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:28",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 8"
+   }
+  },
+  {
+   "ref": "A29",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:29",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 9"
+   }
+  },
+  {
+   "ref": "A30",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:30",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 10"
+   }
+  },
+  {
+   "ref": "A31",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:31",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 11"
+   }
+  },
+  {
+   "ref": "A32",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory X3 cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:32",
+    "pins": "sheets 4-5 map this photographed PCB landing to bracket connector X3 pin 12"
    }
   },
   {
@@ -9313,7 +9469,7 @@
    ]
   },
   "SER_RXD": {
-   "src": "scan",
+   "src": "scan sheet-1 К170УП2 receiver section 4->13",
    "nodes": [
     [
      "D11",
@@ -9321,87 +9477,187 @@
     ],
     [
      "D104",
-     "2"
+     "13"
     ]
    ]
   },
   "S_SOUT": {
-   "src": "scan",
+   "src": "scan sheet-1 board point A29 plus .009 factory X3 cable table",
    "nodes": [
     [
      "D14",
      "6"
     ],
     [
+     "A29",
+     "1"
+    ],
+    [
      "X3",
-     "29"
+     "9"
     ]
    ]
   },
   "S_RTS": {
-   "src": "scan",
+   "src": "scan sheet-1 board point A30 plus .009 factory X3 cable table",
    "nodes": [
     [
      "D32",
      "6"
     ],
     [
+     "A30",
+     "1"
+    ],
+    [
      "X3",
-     "30"
+     "10"
     ]
    ]
   },
   "S_DTP": {
-   "src": "scan",
+   "src": "scan sheet-1 board point A31 plus .009 factory X3 cable table; earlier 51 read corrected",
    "nodes": [
     [
      "D32",
      "7"
     ],
     [
+     "A31",
+     "1"
+    ],
+    [
      "X3",
-     "51"
+     "11"
     ]
    ]
   },
   "S_TTL": {
-   "src": "scan",
+   "src": "scan sheet-1 board point A23 plus .009 factory X3 cable table; owner continuity D3.10-X3.3",
    "nodes": [
     [
      "D3",
      "10"
     ],
     [
+     "A23",
+     "1"
+    ],
+    [
      "X3",
-     "23"
+     "3"
     ]
    ]
   },
   "S_OC": {
-   "src": "scan",
+   "src": "scan sheet-1 board point A32 plus .009 factory X3 cable table",
    "nodes": [
     [
      "D12",
      "3"
     ],
     [
+     "A32",
+     "1"
+    ],
+    [
      "X3",
-     "32"
+     "12"
     ]
    ]
   },
   "S_SIN": {
-   "src": "scan",
+   "src": "scan sheet-1 board point A24 and К170УП2 input pin4 plus .009 factory X3 cable table; earlier X3.33/D104.1 aliases corrected",
    "nodes": [
     [
+     "A24",
+     "1"
+    ],
+    [
      "X3",
-     "33"
+     "4"
     ],
     [
      "D104",
-     "1"
+     "4"
     ]
    ]
+  },
+  "S_CTS": {
+   "src": "scan sheet-1 board point A25 through К170УП2 receiver 5->12 plus .009 factory X3 cable table",
+   "nodes": [
+    [
+     "A25",
+     "1"
+    ],
+    [
+     "X3",
+     "5"
+    ],
+    [
+     "D104",
+     "5"
+    ]
+   ]
+  },
+  "SER_CTS_N": {
+   "src": "scan sheet-1 К170УП2 receiver section 5->12",
+   "nodes": [
+    [
+     "D104",
+     "12"
+    ],
+    [
+     "D11",
+     "17"
+    ]
+   ]
+  },
+  "S_DSR": {
+   "src": "scan sheet-1 board point A26 through К170УП2 receiver 6->11 plus .009 factory X3 cable table",
+   "nodes": [
+    [
+     "A26",
+     "1"
+    ],
+    [
+     "X3",
+     "6"
+    ],
+    [
+     "D104",
+     "6"
+    ]
+   ]
+  },
+  "SER_DSR_N": {
+   "src": "scan sheet-1 К170УП2 receiver section 6->11",
+   "nodes": [
+    [
+     "D104",
+     "11"
+    ],
+    [
+     "D11",
+     "22"
+    ]
+   ]
+  },
+  "X3_HARNESS_1": {
+   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A21 remains unresolved",
+   "nodes": [["A21", "1"], ["X3", "1"]]
+  },
+  "X3_HARNESS_2": {
+   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A22 remains unresolved",
+   "nodes": [["A22", "1"], ["X3", "2"]]
+  },
+  "X3_HARNESS_7": {
+   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A27 remains unresolved",
+   "nodes": [["A27", "1"], ["X3", "7"]]
+  },
+  "X3_HARNESS_8": {
+   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A28 remains unresolved",
+   "nodes": [["A28", "1"], ["X3", "8"]]
   },
   "GND": {
    "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9",

@@ -690,13 +690,19 @@ endmodule
 module la18_oc (input wire i1, i2, output wire o3);
     assign o3 = ~(i1 & i2);
 endmodule
-// К170УП2 serial line receiver (D104): X3 SIN -> USART RxD. One-way buffer.
-module up2_rcv (input wire a, output wire y);
-    assign y = a;
+// К170УП2 triple serial line receiver (D104), as drawn on sheet 1:
+// pins 4->13 SIN, 5->12 CTS, and 6->11 DSR. Electrical threshold/polarity
+// remains an idealized one-way buffer, matching the former single-section model.
+module up2_rcv (input wire sin_in, cts_in, dsr_in,
+                output wire sin_out, cts_out, dsr_out);
+    assign sin_out = sin_in;
+    assign cts_out = cts_in;
+    assign dsr_out = dsr_in;
 endmodule
-// Serial port connector X3 (RS-232). BOUNDARY component (off-board cable) -- anchors the driver->X3
-// nets. Pins = the traced X3 signal codes (owner scan img #2).
-module serial_conn (inout wire sout, rts, dtp, ttl_sout, oc_sout, sin);
+// Bracket-mounted serial connector X3. The .009 assembly cable maps PCB
+// landings A21..A32 in order to these physical pins 1..12.
+module serial_conn (inout wire pullup_io, aux2, ttl_sout, sin, cts, dsr,
+                    aux7, aux8, sout, rts, dtp, oc_sout);
 endmodule
 
 module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, mr_n, clk, dden,
