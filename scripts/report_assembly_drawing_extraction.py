@@ -49,6 +49,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_d28_d106_photo_placement.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    mux_placement = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_d95_d101_photo_placement.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
     switch_landings = subprocess.run(
         [kicad_python, str(ROOT / "kicad/check_factory_switch_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
@@ -92,6 +96,11 @@ def main() -> int:
             "D106/D28/D96 row follows registered owner-photo spacing",
             fdc_row_placement.returncode == 0,
             "two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py`",
+        ),
+        (
+            "D101 follows its registered package-centre offset from D95",
+            mux_placement.returncode == 0,
+            "shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py`",
         ),
         (
             "Cable geometry is recorded from the drawing",

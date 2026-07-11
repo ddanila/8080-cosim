@@ -257,7 +257,9 @@ PLACE = {
     # Registered component fits: D28 centre is 15.064 mm right / 1.442 mm
     # above D106; D96 is another 14.451 mm right / 0.240 mm below D28.
     'D98':(298.89,33.595,90),'D106':(262,74,0),'D28':(277.064,72.558,0),'D96':(291.515,72.798,0),
-    'D95':(268,93,90),'D97':(228,88,90),'D101':(230,109,90),
+    # D101 shares the D95 component panorama: its fitted pad centre is
+    # 11.763 mm left / 17.877 mm below D95 after the registered panorama-to-board transform.
+    'D95':(268,93,90),'D97':(228,88,90),'D101':(256.237,110.877,90),
     'D99':(250.8,110,90),'D102':(270.8,111.8,90),
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z

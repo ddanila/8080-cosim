@@ -116,7 +116,11 @@ extraction work from that set:
    photographs now also identify and space the vertical D106 К555ИЕ7, D28
    К155ЛН3, and D96 КМ555ТМ2 row; the source PCB follows the measured
    D106->D28 `(15.064,-1.442)` mm and D28->D96 `(14.451,0.240)` mm centre
-   offsets without promoting unresolved signals. Continue cross-checking the
+   offsets without promoting unresolved signals. The distinct D95/D101
+   К555КП12 packages are also fitted with corrected top-view pin numbering;
+   D101 follows the shared-photo centre offset `(-11.763,+17.877)` mm from
+   D95. This exposes the D99/D102 placeholders as physical collisions, so fit
+   and place those visible АГ3 packages next. Continue cross-checking the
    remaining FDC cluster and connector/off-board geometry (X8 300 mm lead,
    X9 400 mm ribbon, poz. 151 shielded cable) before the reroute.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are

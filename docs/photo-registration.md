@@ -127,6 +127,14 @@ consistent registration, with its pin-13 check at 0.755 px. All 16 projected
 pads of each mux land on their photographed contacts; their inputs, selects,
 enables, and outputs remain explicit FDC continuity questions.
 
+Because D95 and D101 share one original photograph, their package-centre
+spacing is stronger than either package's absolute panorama position. After
+the registered panorama-to-board transform, D101 is 11.763 mm left and 17.877
+mm below D95; the source PCB now guards that relative offset. This exposes the
+old D99/D102 placeholder positions as collisions with the physical D101 site.
+Those two one-shot packages must be fitted and moved from their own visible
+contacts; they are not displaced merely to silence DRC.
+
 ## Promotion rule and remaining work
 
 Use `measurement` when a path still needs continuity, `rejected` for a
