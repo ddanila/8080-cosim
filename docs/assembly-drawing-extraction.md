@@ -17,7 +17,7 @@ netlist. The referenced connection table is on missing sheets 2-6.
 | Factory solder-side cuts/patches are protected as designed operations | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
-| Wire 17/18 reset-chain endpoint remains explicitly unresolved | PASS | owner continuity follow-up; no invented endpoint |
+| Factory wires 17 and 18 are separated without inventing endpoints | PASS | assembly photos 114556899/114600417 plus owner continuity follow-up |
 | Missing connection-table sheets 2-6 remain on the owner request list | PASS | `PLAN.md` external evidence |
 
 ## Photograph inventory
@@ -55,5 +55,5 @@ netlist. The referenced connection table is on missing sheets 2-6.
 
 - Preserve the electrical result of the factory D56/D15/D4/D11 modifications.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
-- Do not infer the wire 17/18 destination from the assembly view alone.
+- Measure wires 17 and 18 separately; sheet 1 localizes them but does not identify both endpoints.
 - Request sheets 2-6 before claiming factory wire-table closure.

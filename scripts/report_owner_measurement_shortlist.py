@@ -219,6 +219,13 @@ def main() -> int:
             "tightens the as-built netlist around RAM/video timing before netlist freeze",
         ),
         (
+            "P1",
+            "factory wires 17 and 18",
+            "measure wire 17 in the X2/D27 top band separately from wire 18 in the D98/D96/D99/D97 quadrant; for wire 18, start from the owner-proved D98.7 through-220-ohm leg and identify the far pad",
+            "`docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`; request `.009 СБ` sheets 2-6 connection table",
+            "closes the previously conflated reset/FDC factory-link boundary without inventing an endpoint from placement art",
+        ),
+        (
             "P0",
             "FDC support signal dispositions",
             "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster",

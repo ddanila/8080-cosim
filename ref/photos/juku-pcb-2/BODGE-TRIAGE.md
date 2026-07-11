@@ -103,11 +103,14 @@ drawing agree on these endpoints:
 | 11 | D7.1 - D92.13 | timing support path |
 | 20 | D3.10 - X3.3 | serial `S_TTL` path |
 | - | D26.23 - X9.9 | keyboard/tape connector line |
-| 17/18 | D98.7 through 220 ohm, far endpoint unread | reset-chain follow-up |
+| 17 | Factory drawing label lies in the X2/D27 top band; endpoints are not readable on sheet 1 | request the sheets 2-6 connection table or measure this wire separately |
+| 18 | Owner continuity localizes one leg at D98.7 through 220 ohm; the factory drawing independently places wire 18 in the D98/D96/D99/D97 quadrant, but its far pad is not identified | reset/FDC-chain continuity follow-up; do not conflate with wire 17 |
 
 The settled wire links are represented in the board model with endpoint
-provenance. The unread reset-chain endpoint remains a boundary rather than an
-invented connection.
+provenance. Sheet-1 assembly photos `114556899` and `114600417` separate the
+labels for wires 17 and 18, correcting the earlier combined “17/18” shorthand.
+They show route locality, not pin endpoints. Both far-end questions therefore
+remain boundaries rather than invented connections.
 
 ## Factory solder-side cuts and patches
 
