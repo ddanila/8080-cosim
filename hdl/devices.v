@@ -698,6 +698,7 @@ module serial_conn (inout wire sout, rts, dtp, ttl_sout, oc_sout, sin);
 endmodule
 
 module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, mr_n, clk, dden,
+                 input wire nc_back_bias, vss_gnd, vcc_5v, vdd_12v,
                  output wire step, dirc, early, late, rg, hld, tg43, wg, wdata,
                  input wire test, hlt, rclk, raw_read, ready, tr00, index, wprt,
                  inout wire wf_vfoe,

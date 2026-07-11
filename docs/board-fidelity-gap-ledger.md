@@ -90,7 +90,7 @@ parts placement and Tier-3 reproduction.
 | `D35` | `CLK_PHASE` | scan | К155ЛН5 standard hex-inverter package contract; scan proves phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), while D35.4 is already traced to R39.1/VID_MIX2... |
 | `D42` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
-| `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) Western Digital FD179X-01 primary datasheet contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/IN... |
+| `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, wr... |
 | `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
 
 ### placement/refdes

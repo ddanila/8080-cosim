@@ -17,6 +17,7 @@ D93_DRIVE_PINS = {
     "31": "WDATA", "32": "READY", "33": "WF_VFOE", "34": "TR00",
     "35": "INDEX", "36": "WPRT", "40": "VDD_12V",
 }
+D93_POWER_PINS = {"1": "NC_BACK_BIAS", "20": "VSS_GND", "21": "VCC_5V", "40": "VDD_12V"}
 
 
 def load_board() -> dict:
@@ -73,6 +74,12 @@ def main() -> int:
         failures.append("D93 is not typed as VG93_FDC")
     if not all(d93.get("pins", {}).get(pin) == role for pin, role in D93_DRIVE_PINS.items()):
         failures.append("D93 full FD1793 drive-interface pin contract is absent or incorrect")
+    if not all(d93.get("pins", {}).get(pin) == role for pin, role in D93_POWER_PINS.items()):
+        failures.append("D93 full FD1793 power/back-bias pin contract is absent or incorrect")
+    if not has_node(board, "GND", "D93", "20") or not has_node(board, "P5V", "D93", "21"):
+        failures.append("D93 traced ground or +5 V supply is absent")
+    if ["D93", "1"] not in board.get("no_connects", []):
+        failures.append("D93 internal back-bias pin 1 is not explicitly NC")
     if d100.get("type") != "BUF8287":
         failures.append("D100 is not typed as BUF8287")
     if d10.get("type") != "PIC8259":

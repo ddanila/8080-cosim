@@ -3621,6 +3621,8 @@
     "17": "EARLY",
     "18": "LATE",
     "19": "MR_N",
+    "20": "VSS_GND",
+    "21": "VCC_5V",
     "22": "TEST",
     "23": "HLT",
     "24": "CLK",
@@ -3644,7 +3646,7 @@
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "Western Digital FD179X-01 primary datasheet contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/INTRQ, and VDD pin40 restored; July-2026 local photo traces RE/CS/WE privately to D94 D0-D2; pin 1 internal back-bias node must remain open; all restored drive-interface destinations and +12V continuity require target-board source confirmation"
+    "pins": "Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/INTRQ, VSS pin20, +5V VCC pin21, and +12V VDD pin40 restored; July-2026 local photo traces RE/CS/WE privately to D94 D0-D2; pin 1 internal back-bias node must remain open; all restored drive-interface destinations and +12V continuity require target-board source confirmation"
    }
   },
   {
