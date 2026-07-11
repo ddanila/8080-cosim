@@ -5,9 +5,11 @@ Status date: **2026-07-11**.
 Release status: **DESIGN HOLD**. The saved main-board package is a reproducible
 engineering snapshot, not fabrication authorization.
 
-This is the sole living project plan for the ДГШ5.109.006 processor module with
-the `.009` FDC-era population. Generated evidence belongs in `docs/`; completed
-experiments and debug history belong in Git history.
+This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
+module (documented by its ПЭЗ parts list and СБ assembly drawing; the earlier
+`.006` revision's Э3 scan remains the electrical-schematic evidence base).
+Generated evidence belongs in `docs/`; completed experiments and debug history
+belong in Git history.
 
 ## Definition of done
 
@@ -107,14 +109,28 @@ Next tracing order:
    and direction.
 2. Every functional pin of D28, D95-D99, D101, D102, and D106.
 3. D94 pin 15 and outputs D3-D7, then D30 section B and the D105 WAIT handoff.
-4. D41/memory timing, factory-wire endpoints, connector geometry, and the
-   remaining analog/passive boundaries.
+4. D41/memory timing, factory-wire endpoints (documented in
+   `ref/schematics/dgsh5-109-009-sb-wire-table.md`; confirm by continuity),
+   connector geometry, and the remaining analog/passive boundaries.
 5. Update `kicad/juku.board.json` only from reviewed unambiguous evidence;
    regenerate and reroute after a coherent batch, then rerun all release gates.
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated
 design-release reports contain no P0 blocker.
+
+Active generated boundary/gate documents — each names its own pending hold,
+and `docs/owner-measurement-shortlist.md` queues them for the next hardware
+session: `replica-bringup-verification-points.md` (endpoint coverage),
+`unmodeled-footprint-inventory.md` (9 FDC devices),
+`factory-modification-disposition.md` (Вид В pad mapping),
+`assembly-drawing-extraction.md` (wire-table pin mapping),
+`io-decode-boundary.md`, `memory-timing-boundary.md`,
+`d41-timing-boundary.md`, `s4-interrupt-boundary.md`,
+`video-analog-boundary.md`, `main-board-erc-parity.md`,
+`board-fidelity-gap-ledger.md`, `decap-value-fidelity.md`, and
+`firmware-gap-ledger.md` (PROM truth, also gating the programmable-parts
+blocker below).
 
 ### P0: programmable parts
 
