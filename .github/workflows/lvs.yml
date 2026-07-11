@@ -287,6 +287,7 @@ jobs:
           ./sync/basic_cart_check.sh
           ./sync/prom_fallback_check.sh
           python3 scripts/validate_rt4_dump.py --self-test
+          python3 scripts/validate_re3_dump.py --self-test
           ./sync/beeper_check.sh
           ./sync/serial_check.sh
           ./sync/juku_top_periph_bus_check.sh

@@ -194,7 +194,9 @@ blocker below).
   rejects missing, duplicate, unstable, non-complementary, or repeat-mismatched
   D2/D6 reads. It exports raw pin-level and active-low views separately with
   hashes; `docs/rt4-dump-acquisition.md` records the physical provenance still
-  required. D94 is К155РЕ3 and needs a separate reader.
+  required. The separate К155РЕ3 validator now applies the same repeated-read
+  discipline to D8/D94 32-byte captures and preserves raw versus asserted
+  bytes; a D94 dump still does not replace its missing continuity.
 - Keep reconstructed D6/D8 images labeled as Tier-1/2 fallbacks. The owner
   `.113/.117` scans are not D8 `.039` or D94 `.092`.
 - Record the final D15/D16 EPROM split, image hashes, device choice, and

@@ -57,6 +57,19 @@ open-collector as-is — external 4.7k is more reliable for S-series).
 Sweep: for A in 0..31: set address pins, delay ≥1µs, read 8 outputs → 32 bytes. Read the whole
 array **twice**, require identical; also sanity-check the dump isn't all-0x00/all-0xFF.
 
+Capture each row as `AA,RR,OK`, where `AA` is the two-digit address and `RR`
+is the raw two-digit output-pin byte (`D0..D7` = bits 0..7). Validate repeated
+logs with:
+
+```sh
+python3 scripts/validate_re3_dump.py read-1.txt read-2.txt read-3.txt \
+  --out-dir dump-output --name d94_092
+```
+
+The validator emits both raw pin levels and a separately named active-low
+asserted complement. Raw levels are the authoritative dump and the format used
+by the 32-byte D8 fallback; do not replace them silently with asserted bits.
+
 ### КР556РТ4А (74S287/387 class, DIP-16, 256×4)
 - VCC = 16, GND = 8 *(power table)*
 - **Verify the А/О pin order against a КР556РТ4А datasheet before wiring** — Soviet sources vary;
@@ -69,6 +82,10 @@ Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-
 `proms/re3_1.bin` (32B), `proms/re3_2.bin` (32B), `proms/rt4_d6.bin` (256B, nibbles),
 `proms/rt4_d2.bin` (256B), `proms/m2764_d15.bin` + `_d16.bin` (8KB each) + a provenance README
 (board #, socket, date, method). 
+
+Host validation rejects missing, duplicate, out-of-range, unstable, or
+repeat-mismatched RE3 rows. It proves capture consistency, not socket identity,
+wiring, polarity, or the unresolved D94 output/enable branches.
 
 ## What each dump unlocks
 1. **РЕ3 dumps**: socket/refdes identification is essential. A D8 `.039` dump

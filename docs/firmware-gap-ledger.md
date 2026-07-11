@@ -35,6 +35,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
 | Fallback report excludes D2 and D94 exports | PASS |
 | Repeated RT4 dump validation procedure is available | PASS |
+| Repeated RE3 dump validation procedure is available | PASS |
 
 ## Practical Burn Rule
 
@@ -58,3 +59,5 @@ python3 scripts/report_firmware_gap_ledger.py
   replace the HDL/fallbacks only if the dump provenance is stronger.
 - Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;
   preserve raw pin-level and active-low asserted tables separately.
+- Validate D8/D94 serial captures with `scripts/validate_re3_dump.py`;
+  a sound D94 dump still requires complete enable/output continuity.
