@@ -86,6 +86,12 @@ def main() -> None:
         corrected_d95 = ("Validated D95 component fit corrects the reversed/offset projection "
                          "and identifies the photographed К555КП12 package contact")
         row["note"] = row["note"].replace(stale_d95, corrected_d95)
+        stale_d101 = ("D101 projections fall on factory-wire bundles and bare trace fields "
+                      "rather than a coherent package contact row; the modeled placement is "
+                      "not locally registered")
+        corrected_d101 = ("Validated D101 component fit identifies the distinct 8812-marked "
+                          "К555КП12 package contact and replaces the displaced projection")
+        row["note"] = row["note"].replace(stale_d101, corrected_d101)
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")

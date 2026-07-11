@@ -143,11 +143,11 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "model": "similarity",
       "anchors": [
-        {"pin": "1", "image_px": [2692.495, 1216.791], "use": "fit", "observation": "bottom-right contact beside the right-facing notch and pin-1 corner mark"},
-        {"pin": "4", "image_px": [2525.745, 1219.261], "use": "check", "observation": "independent fourth contact on the unobscured bottom row"},
-        {"pin": "8", "image_px": [2303.235, 1221.208], "use": "fit", "observation": "bottom-left contact at the far end of the same coherent eight-pad row"}
+        {"pin": "16", "image_px": [2692.495, 1216.791], "use": "fit", "observation": "bottom-right contact below the right-facing notch"},
+        {"pin": "13", "image_px": [2525.745, 1219.261], "use": "check", "observation": "independent fourth contact from the right on the unobscured bottom row"},
+        {"pin": "9", "image_px": [2303.235, 1221.208], "use": "fit", "observation": "bottom-left contact at the far end of the same coherent pins 16-to-9 row"}
       ],
-      "note": "Direct fit to the horizontal notch-right К555КП12 D95. The pin-1 corner mark and both complete contact rows correct the prior reversed/offset projections; pad identity is not functional continuity."
+      "note": "Direct fit to the horizontal notch-right К555КП12 D95. Standard top-view DIP numbering makes the photographed lower row pins 16-to-9 and the upper row pins 1-to-8; this corrects the prior reversed/offset projections without treating pad identity as functional continuity."
     },
     {
       "refdes": "D96",
@@ -160,6 +160,18 @@
         {"pin": "7", "image_px": [3148.0, 2393.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent seven-pad column"}
       ],
       "note": "Direct fit to the vertical КМ555ТМ2 D96 immediately right of D28. It establishes package identity and relative placement only; functional FDC continuity remains unresolved."
+    },
+    {
+      "refdes": "D101",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "16", "image_px": [2446.968, 1596.790], "use": "fit", "observation": "bottom-right contact below the right-facing notch on the upside-down К555КП12 marking"},
+        {"pin": "13", "image_px": [2281.566, 1598.196], "use": "check", "observation": "independent fourth contact from the right on the complete bottom row"},
+        {"pin": "9", "image_px": [2059.269, 1600.070], "use": "fit", "observation": "bottom-left contact at the far end of the same coherent pins 16-to-9 row"}
+      ],
+      "note": "Direct fit to the second horizontal notch-right К555КП12, D101. The distinct 8812-marked package lies below-left of D95; standard top-view DIP numbering and the complete lower pins 16-to-9 row establish its physical sequence without promoting electrical continuity."
     },
     {
       "refdes": "D41",

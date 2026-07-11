@@ -25,8 +25,8 @@ endpoint table contains 612 reviewed rows:
 | `accepted` | 22 | two-sided evidence adopted into the board model |
 | `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 135 `local-package-fit`, 432
-`registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
+Confidence metadata consists of 227 `local-package-fit`, 348
+`registration-only`, and 37 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -118,10 +118,14 @@ The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Together the D106, D28, and D96 fits guard the physical
 row spacing rather than preserving the former overlapping placeholder grid;
 none of their functional pins is promoted without complete copper continuity.
-The horizontal notch-right D95 К555КП12 is also component-fitted: its physical
-pin-1 corner mark corrects the formerly reversed/offset row, with pin 4 held
-out at 0.582 px. Its mux inputs, selects, enables, and outputs remain explicit
-FDC continuity questions.
+The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
+both photographed rows corrects the earlier row-label error: standard top-view
+DIP numbering places pins 1-to-8 on the upper row and pins 16-to-9 on the lower
+row. The independent pin-13 check is 0.582 px. The separate, upside-down
+8812-marked D101 К555КП12 below-left of D95 now has the same physically
+consistent registration, with its pin-13 check at 0.755 px. All 16 projected
+pads of each mux land on their photographed contacts; their inputs, selects,
+enables, and outputs remain explicit FDC continuity questions.
 
 ## Promotion rule and remaining work
 
