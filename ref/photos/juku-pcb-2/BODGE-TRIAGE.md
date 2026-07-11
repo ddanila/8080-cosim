@@ -134,6 +134,12 @@ landings at the photographed cable exit, while X9 is retained only in the
 schematic harness. This preserves all existing D26 keyboard nets and the two
 +5 V conductors without depicting the remote connector body on the PCB.
 
+Factory sheet 2 likewise separates the X8 bracket connector from PCB points
+A59..A62. The four numbered landings now carry -12 V, +12 V, +5 V, and ground;
+the schematic harness records the six 300 mm conductors, including the paired
++5 V and ground wires. The former provisional six-pad on-board X8 connector is
+therefore removed.
+
 ## Factory solder-side cuts and patches
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent

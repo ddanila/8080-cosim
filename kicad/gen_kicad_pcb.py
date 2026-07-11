@@ -72,6 +72,9 @@ PASSIVE_PLACE = {
     'A49':(214.5,262.0,0),'A50':(212.0,262.0,0),'A51':(209.5,262.0,0),'A52':(207.0,262.0,0),
     'A53':(204.5,262.0,0),'A54':(202.0,262.0,0),'A55':(199.5,262.0,0),'A56':(197.0,262.0,0),
     'A57':(194.5,262.0,0),'A58':(192.0,262.0,0),
+    # X8 is bracket-mounted; these four points terminate its six-conductor
+    # power cable (A61 +5 V and A62 GND each take two conductors).
+    'A59':(34.0,252.6,0),'A60':(29.0,252.6,0),'A61':(24.0,252.6,0),'A62':(19.0,252.6,0),
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
     'R38':(121.4,249.1,90),'R39':(230.5,192.5,0),
@@ -387,7 +390,7 @@ def main():
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
     # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
     # retained in the schematic but must never become a PCB header footprint.
-    OFF_BOARD = {'S1', 'X9'}
+    OFF_BOARD = {'S1', 'X8', 'X9'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -455,9 +458,8 @@ def main():
         x2_pads[code] = (128.0 + (ci // 2) * 2.5, 6.6 + (ci % 2) * 2.5)
     x2_pads.update({'227': (158.0, 6.6), '229': (160.5, 6.6), '230': (160.5, 9.1)})
     make_conn('X2', 143, 7.85, x2_pads)
-    # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
-    x8_pads = {str(59 + i): (34.0 - i * 5.0, 252.6) for i in range(6)}   # 62..59 read left->right on the drawing
-    make_conn('X8', 24, 252.6, x8_pads)
+    # X8 itself is on the bracket. A59..A62 above are its physical PCB
+    # cable landings; do not recreate the remote connector on the board.
     # X9 itself is on the bracket. A45..A58 above are the physical PCB
     # landings at this cable exit; do not recreate an on-board X9 footprint.
 

@@ -33,6 +33,11 @@ make the reading uncertain. Connection columns are legible throughout.
 | 5 | А:62 | X8:5 |
 | 6 | А:62 | X8:1 |
 
+This X8 cable is now promoted as four physical one-pad PCB landings `A59`..
+`A62` plus a schematic-only bracket connector. The harness nets preserve the
+single -12 V and +12 V conductors and both duplicated +5 V/GND conductors:
+A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
+
 Поз. 153 — X9 ribbon cable, 14 conductors, all 30 cm, reversed pin order:
 
 | Провод | Начало | Конец |
@@ -152,6 +157,7 @@ the table gives point numbers, not pin numbers. In particular, do not route a
 single on-board S1 footprint: first model the physically separate `А:17` and
 `А:18` wire landings and their proved local copper. For wire 18, the proved
 landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
-The fully enumerated X9 ribbon is promoted as A45-A58 landings, but the X3/X4
+The fully enumerated X8 and X9 cables are promoted as A59-A62 and A45-A58
+landings, respectively, but the X3/X4
 rows remain at this boundary until their A:N points are reconciled with the
 older schematic contact codes.

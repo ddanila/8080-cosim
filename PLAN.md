@@ -104,10 +104,11 @@ extraction work from that set:
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9
-   ribbon is promoted as physical A45..A58 PCB landings feeding the
-   schematic-only bracket connector in reversed pin order. Promote X8/X3/X4
-   and the remaining numbered links only after each А:N point is mapped to a
-   package pin.
+   X8 power cable and X9 ribbon are promoted as physical A59..A62 and
+   A45..A58 PCB landings feeding schematic-only bracket connectors; duplicated
+   X8 +5 V/GND conductors and X9's reversed pin order are explicit. Promote
+   X3/X4 and the remaining numbered links only after each А:N point is mapped
+   to a package pin.
 
 Next tracing order:
 

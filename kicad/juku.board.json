@@ -2428,15 +2428,17 @@
    "ref": "X8",
    "type": "POWER_CONN",
    "pins": {
-    "61": "P5V",
-    "62": "GND",
-    "60": "P12V",
-    "59": "M12V"
+    "1": "GND1",
+    "2": "P5V1",
+    "3": "P12V",
+    "5": "GND2",
+    "6": "P5V2",
+    "8": "M12V"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "61=+5В(802) 62=Земля(801) 60=+12В(803) 59=-12В(808)"
+    "type": "scan + factory assembly wire table",
+    "refdes": "ДГШ5.109.009 СБ sheet 2, power cable poz. 152",
+    "pins": "off-board bracket connector: A59->8 (-12 V), A60->3 (+12 V), A61->6/2 (+5 V), A62->5/1 (GND)"
    }
   },
   {
@@ -2767,6 +2769,54 @@
     "type": "factory wire table",
     "refdes": "ДГШ5.109.009 СБ point А:58",
     "pins": "sheets 4-5 map board point А:58 through the X9 ribbon to connector pin 1"
+   }
+  },
+  {
+   "ref": "A59",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory power-cable table",
+    "refdes": "ДГШ5.109.009 СБ point А:59",
+    "pins": "sheet 2 maps this PCB landing through 300 mm power cable poz. 152 to bracket connector X8"
+   }
+  },
+  {
+   "ref": "A60",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory power-cable table",
+    "refdes": "ДГШ5.109.009 СБ point А:60",
+    "pins": "sheet 2 maps this PCB landing through 300 mm power cable poz. 152 to bracket connector X8"
+   }
+  },
+  {
+   "ref": "A61",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory power-cable table",
+    "refdes": "ДГШ5.109.009 СБ point А:61",
+    "pins": "sheet 2 maps this PCB landing through 300 mm power cable poz. 152 to bracket connector X8"
+   }
+  },
+  {
+   "ref": "A62",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory power-cable table",
+    "refdes": "ДГШ5.109.009 СБ point А:62",
+    "pins": "sheet 2 maps this PCB landing through 300 mm power cable poz. 152 to bracket connector X8"
    }
   },
   {
@@ -9458,8 +9508,16 @@
      "10"
     ],
     [
+     "A62",
+     "1"
+    ],
+    [
      "X8",
-     "62"
+     "1"
+    ],
+    [
+     "X8",
+     "5"
     ],
     [
      "D15",
@@ -9964,8 +10022,16 @@
      "20"
     ],
     [
+     "A61",
+     "1"
+    ],
+    [
      "X8",
-     "61"
+     "2"
+    ],
+    [
+     "X8",
+     "6"
     ],
     [
      "D15",
@@ -10490,8 +10556,12 @@
      "8"
     ],
     [
+     "A60",
+     "1"
+    ],
+    [
      "X8",
-     "60"
+     "3"
     ],
     [
      "C33",
@@ -10524,8 +10594,12 @@
      "5"
     ],
     [
+     "A59",
+     "1"
+    ],
+    [
      "X8",
-     "59"
+     "8"
     ],
     [
      "R19",
