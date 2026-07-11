@@ -192,9 +192,9 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "D94 pin 15 enable and remaining pins 4-7/9 output destinations on a .009 processor board",
+            "D94 pin 15 enable, pins 4-7/9 destinations, and every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
             "`docs/d94-reconstruction-constraints.md`",
-            "required before any defensible D94 reverse-engineered burnable table",
+            "required to resolve the PROM-only read/write-strobe impossibility before any defensible D94 replacement",
         ),
         (
             "P1",

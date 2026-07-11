@@ -40,7 +40,8 @@ They are not generic cycle-accurate replacements for every original IC mode.
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM
-  slot timing still needs D41/D94/timing evidence.
+  slot timing still needs D41 and adjacent one-shot/mux/counter evidence;
+  D94's proved outputs belong to FDC control.
 - Several device models implement only the modes exercised by the guarded Juku
   paths.
 - Simulation-only CPU sampling, keyboard stimulus, framebuffer access, and

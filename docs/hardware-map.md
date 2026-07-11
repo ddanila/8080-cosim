@@ -33,8 +33,9 @@ is not dumped; a behaviorally reconstructed table is exported under
   significant bit first.
 - The current runnable HDL uses an abstract second DRAM read port. The physical
   D42/D43 serializers and part of the arbitration mesh are structural, but the
-  exact shared-memory slot timing remains blocked on D94 `.092` and other
-  timing continuity. See `video-slot-timing-audit.md`.
+  exact shared-memory slot timing remains blocked on D41 and adjacent
+  one-shot/mux/counter continuity. D94 `.092` is constrained as FDC control,
+  not video-slot timing. See `video-slot-timing-audit.md`.
 
 ## I/O map
 

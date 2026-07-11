@@ -1,6 +1,6 @@
 # Video slot timing audit
 
-Status: **VIDEO SLOT TIMING AUDITED / D94 PROM DUMP PENDING**
+Status: **VIDEO SLOT TIMING AUDITED / PHYSICAL SLOT SCHEDULE PENDING**
 
 This generated audit tracks the remaining faithful-video boundary: replacing the
 runnable sim-only framebuffer read path with the faithful КП14/ИД7/АГ3/РЕ3
@@ -31,14 +31,14 @@ python3 scripts/report_video_slot_timing_audit.py
 | Owner photo survey confirms a socketed top-center РЕ3 is dumpable | PASS | `ref/photos/juku-pcb-2/SURVEY.md` |
 | Scanned `.113/.117` РЕ3 tables are guarded but not D94 `.092` | PASS | `docs/re3-firmware-inspection.md` |
 | No D94 `.092` programming table or dump is present under `ref/firmware` | PASS | `ref/firmware/` has no `.092` artifact |
-| D94 reconstruction constraints are generated | PASS | `docs/d94-reconstruction-constraints.md` |
+| D94 FDC-control role is separated from video timing | PASS | `docs/d94-reconstruction-constraints.md`; only proved outputs terminate at D93 |
 
 ## Guarded Inputs
 
 - `ref/firmware/re3_dgsh5.106.113.hex`: `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13`
 - `ref/firmware/re3_dgsh5.106.117.hex`: `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18`
-- `docs/d94-reconstruction-constraints.md`: generated D94 `.092`
-  address/output/firmware boundary plus text/photo lead audit.
+- `docs/d94-reconstruction-constraints.md`: generated D94 `.092` FDC
+  control/address/firmware boundary; D94 is not used as video-timing evidence.
 - `docs/d41-timing-boundary.md`: generated D41 output-side net
   guard plus explicit input/control timing-bus boundary.
 
@@ -51,15 +51,9 @@ python3 scripts/report_video_slot_timing_audit.py
 - D41's output-side role is now narrowed: QA/QB are modeled, while
   serial input, parallel inputs, load, gate, and clock remain a timing-bus
   source-read/continuity boundary.
-- The missing piece is the exact video-read slot schedule, which depends on
-  the still-undumped D94 `ДГШ5.106.092` РЕ3 timing PROM plus the adjacent
-  АГ3 timing. The repo has guarded `.113/.117` scans, but those are not the
-  D94 `.092` content.
-- `docs/d94-reconstruction-constraints.md` now records the automatic
-  reconstruction boundary: D94 address pins are traced to `BA11..BA15`
-  and the official `.009` BOM trail identifies D94 as `.092`, but `E_N`,
-  all eight output destinations, and the `.092` contents are still
-  missing from current repo evidence.
-- Until that PROM is dumped or a programming-disk table appears, the honest
+- The missing piece is the exact video-read slot schedule around D41, D52,
+  D53, D56, and the adjacent one-shot/counter timing. D94 is not used as
+  video-timing evidence: its only proved outputs terminate at FDC D93.
+- Until those physical slot-control paths are traced, the honest
   model keeps `VA/VQ` and `video_raster` as a sim-only runnable adjunct rather
   than inventing a board-critical DRAM arbitration schedule.

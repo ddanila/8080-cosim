@@ -62,7 +62,7 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2914 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2940 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1875 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1628 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |

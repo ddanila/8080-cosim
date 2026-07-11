@@ -22,7 +22,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D2 | К556РТ4 | `ДГШ5.106.037` | bus-arbitration/wait PROM | no | `docs/d2-reconstruction-constraints.md` | programming-disk file or repeated physical dump |
 | D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin` (256 bytes, SHA256 `b5c69c8fdc03e592d817c1c872c67e07761f218d5223f6257944248018473baf`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
 | D8 | К155РЕ3 | `ДГШ5.106.039` | ROM-socket pager PROM | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` (32 bytes, SHA256 `0cecad4f89dce2e5e0dba0622c89d8cfa01324dd8ff3e9f7b8f92d20ced690b3`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
-| D94 | К155РЕ3 | `ДГШ5.106.092` | FDC-era video/DRAM slot timing PROM | no | `docs/d94-reconstruction-constraints.md` | programming-disk file, repeated physical dump, or D94 enable/output continuity plus contents |
+| D94 | К155РЕ3 | `ДГШ5.106.092` | FDC control/decode PROM | no | `docs/d94-reconstruction-constraints.md` | programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity |
 
 ## Evidence Checks
 

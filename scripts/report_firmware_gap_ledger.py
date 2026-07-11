@@ -112,10 +112,10 @@ def main() -> int:
             "D94",
             "К155РЕ3",
             "`ДГШ5.106.092`",
-            "FDC-era video/DRAM slot timing PROM",
+            "FDC control/decode PROM",
             "no",
             "`docs/d94-reconstruction-constraints.md`",
-            "programming-disk file, repeated physical dump, or D94 enable/output continuity plus contents",
+            "programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity",
         ],
     ]
 

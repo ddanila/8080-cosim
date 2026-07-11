@@ -106,7 +106,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
 | HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
-| Video slot audit is still D94-pending | PASS | `docs/video-slot-timing-audit.md` |
+| Video slot audit does not rely on D94 | PASS | `docs/video-slot-timing-audit.md` |
 
 ## Textual / Photo Survey Leads
 
@@ -124,6 +124,30 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in
   board JSON, DSN, or PCB evidence. It cannot substitute for the missing
   D94 enable/output continuity.
+
+## Control-feasibility constraint
+
+The three proved outputs create a circuit-level constraint that the PROM
+dump alone cannot resolve:
+
+- D94's five proved row inputs are only buffered address bits `BA11..BA15`.
+- D94.D0 and D94.D2 terminate at the separate active-low D93 `/RE` and
+  `/WE` inputs. An FDC register must support both reads and writes at the
+  same port address.
+- A 32 x 8 combinational PROM row selected only by those five address bits
+  has the same D0/D2 values for a read and a write to that address. Its one
+  common active-low enable cannot independently select the read output on
+  one cycle and the write output on the other.
+- Therefore the currently visible direct D94-to-D93 copper is not a complete
+  functional explanation. At least one missing fact must exist: additional
+  wired/open-collector branches at D93.2/.4, a direction-dependent D94.15
+  network with further gating, a wrong address/pin premise, or another
+  target-revision circuit detail hidden by the photographs.
+
+This does not refute the accepted local copper paths. It proves that a
+`.092` byte dump by itself is insufficient to release the FDC interface;
+continuity from D93.2, D93.4, and D94.15 must include every branch, not just
+the visible local segment.
 
 ## Address Space
 
@@ -178,6 +202,9 @@ the `.092` programming table/dump is absent and D3-D7 remain unassigned.
 - The traced `V3_RC` RC network is a negative cross-check here, not a
   replacement source for D94: its current nodes are `R17.1`, `C99.1`,
   and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.
+- D94 is now classified as an FDC control/decode PROM because its only
+  proved outputs terminate at D93. It is not evidence for the separate
+  shared-DRAM video-slot schedule.
 - Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte
   PROM tables) before even assigning those bits to physical destination
   nets or enable timing.

@@ -137,7 +137,7 @@ FUNCTIONAL_SUBSTITUTE = {
 TYPE_NOTES = {
     "DEC_PROM": "Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming.",
     "RE3_PROM": "Timing/window PROM contents remain dump/reconstruction-gated.",
-    "RE3_PROM_092": "FDC-revision D94 `.092` timing/window PROM contents remain dump-gated.",
+    "RE3_PROM_092": "FDC control/decode D94 `.092` contents and complete strobe gating remain dump/continuity-gated.",
     "EPROM8K": "Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.",
     "RU5": "D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check.",
     "VG93_FDC": "A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit.",

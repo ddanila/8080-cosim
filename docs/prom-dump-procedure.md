@@ -1,8 +1,9 @@
 # PROM dump procedure — the 4 socketed chips (+2 EPROMs)
 
-D94 РЕ3 contents and continuity are needed for the physical DRAM/video slot
-timing; the D8 РЕ3 and D2/D6 РТ4 dumps replace reconstructed or missing maps
-with the actual silicon bits.
+D94 РЕ3 contents and complete control-strobe continuity are needed for FDC-era
+reconstruction; its proved outputs terminate at D93 and are not video-slot
+timing evidence. The D8 РЕ3 and D2/D6 РТ4 dumps replace reconstructed or
+missing maps with the actual silicon bits.
 
 Update 2026-07-06: Baltijets doc 007 was fetched and triaged in
 `ref/baltijets-tech-docs/`. It confirms programmed-part drawings for the small

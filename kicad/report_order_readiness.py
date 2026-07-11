@@ -97,7 +97,7 @@ def design_release_checks():
             "Status: **D2 RECONSTRUCTION READY**",
         ),
         (
-            "D94 timing PROM wiring and contents",
+            "D94 FDC-control PROM wiring, strobe feasibility, and contents",
             ROOT / "docs" / "d94-reconstruction-constraints.md",
             "Status: **D94 RECONSTRUCTION READY**",
         ),

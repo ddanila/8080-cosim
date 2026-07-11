@@ -131,8 +131,9 @@ After connectivity and programmable-part decisions stop changing:
 The twin is already sufficient as a boot/FDC/BASIC oracle. Further work should
 serve physical bring-up or historical fidelity:
 
-1. Replace the simulation-only framebuffer read port after D41/D94/shared-DRAM
-   timing is evidence-complete.
+1. Replace the simulation-only framebuffer read port after D41/shared-DRAM
+   slot timing is evidence-complete. D94's proved outputs belong to FDC control,
+   not the video-slot schedule.
 2. Preserve reset-to-EKDOS and disk-BASIC guards while physical FDC wiring is
    corrected.
 3. Revisit cartridge BASIC only when a complete artifact or documented loading
