@@ -118,6 +118,10 @@ The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Together the D106, D28, and D96 fits guard the physical
 row spacing rather than preserving the former overlapping placeholder grid;
 none of their functional pins is promoted without complete copper continuity.
+The horizontal notch-right D95 К555КП12 is also component-fitted: its physical
+pin-1 corner mark corrects the formerly reversed/offset row, with pin 4 held
+out at 0.582 px. Its mux inputs, selects, enables, and outputs remain explicit
+FDC continuity questions.
 
 ## Promotion rule and remaining work
 

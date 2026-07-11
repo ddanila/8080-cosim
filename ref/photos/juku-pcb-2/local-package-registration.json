@@ -138,6 +138,18 @@
       "note": "Reflected fit to the two photographed 7-pad D28 solder columns immediately beside D106. It identifies package pads only; the traced copper still requires complete remote-pad proof."
     },
     {
+      "refdes": "D95",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2692.495, 1216.791], "use": "fit", "observation": "bottom-right contact beside the right-facing notch and pin-1 corner mark"},
+        {"pin": "4", "image_px": [2525.745, 1219.261], "use": "check", "observation": "independent fourth contact on the unobscured bottom row"},
+        {"pin": "8", "image_px": [2303.235, 1221.208], "use": "fit", "observation": "bottom-left contact at the far end of the same coherent eight-pad row"}
+      ],
+      "note": "Direct fit to the horizontal notch-right К555КП12 D95. The pin-1 corner mark and both complete contact rows correct the prior reversed/offset projections; pad identity is not functional continuity."
+    },
+    {
       "refdes": "D96",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
