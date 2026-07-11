@@ -79,7 +79,7 @@ def markers_ok() -> tuple[bool, list[str]]:
     checks = [
         (GEN, "'D105':(31.9,215.5,90)"),
         (PHYSICAL_EVIDENCE, "D105 two visible ЛА3 sections"),
-        (PHYSICAL_EVIDENCE, "D2 wiring region is on sheet 1"),
+        (PHYSICAL_EVIDENCE, "The D2 pin table from sheet 1 is"),
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
         (PHYSICAL_EVIDENCE, "D105 = К155ЛА3"),
         (GEN, "'D97':(228,88,90)"),

@@ -499,7 +499,7 @@ module juku_top_tb();
              dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_hl[7:0] : dut.U_CPU.u.core.r16_de[7:0],
              dut.U_CPU.u.core.psw_s, dut.U_CPU.u.core.psw_z, dut.U_CPU.u.core.psw_ac,
              dut.U_CPU.u.core.psw_p, dut.U_CPU.u.core.psw_c, dut.U_CPU.u.core.inte,
-             dut.mem_mode, dut.U_PPI0.portc, {4'b0000, dut.U_PPI0.kbd_col_sel},
+             dut.ppi0_pc[4:2], dut.U_PPI0.portc, {4'b0000, dut.U_PPI0.kbd_col_sel},
              dut.U_INTR.icw1, dut.U_INTR.icw2, dut.U_INTR.mask, dut.U_INTR.expect_icw2,
              dut.ppi0_pc[2], dut.U_FDC.status, dut.U_FDC.track, dut.U_FDC.sector,
              dut.U_FDC.data, dut.U_FDC.command, dut.U_FDC.buffer_pos, dut.U_FDC.buffer_len);
