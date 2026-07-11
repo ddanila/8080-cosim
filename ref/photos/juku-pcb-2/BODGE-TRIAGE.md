@@ -134,6 +134,14 @@ drawn vias beside the package, approximately between the eighth and ninth
 visible D15 pad levels. It is not a cut made directly at a D15 lead. The net of
 that via-to-via segment remains to be identified from continuity or sheets 2-6.
 
+The D14 detail likewise cannot yet be reduced to a package pin number. It
+draws five holes in the auxiliary/left field beside a four-pad right package
+row; the position-159 leader enters that auxiliary field. Three long
+replacement traces terminate toward the lower field and a separate dogleg
+reaches a right-row pad. Until the solder-side view is locally registered or
+the connection table is obtained, assigning those features to D14 pins 1/2/7
+would be an unsupported mirror/orientation guess.
+
 ## Placement conclusions retained
 
 - Board outline: `310 x 266 mm` from the owner-measured physical target. An
