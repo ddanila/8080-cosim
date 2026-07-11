@@ -105,7 +105,7 @@ PASSIVE_PLACE = {
     'R67':(288.3,116.4,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
-    'C9':(275,95,0),'C10':(283.5,112,90),'C12':(254.6,95.6,0),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
+    'C9':(285.807,33.590,90),'C10':(283.5,112,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
     'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)

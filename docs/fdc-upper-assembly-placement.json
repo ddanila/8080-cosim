@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "source": "ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json",
+  "held_out": {
+    "refdes": "D100",
+    "error_mm": 1.309
+  },
+  "targets": [
+    {
+      "refdes": "C12",
+      "between": [
+        "D94",
+        "D100"
+      ],
+      "fraction": 0.486906,
+      "projected_board_mm": [
+        253.218,
+        33.954
+      ],
+      "current_footprint_mm": [
+        253.218,
+        33.954
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
+      "observation": "vertical C12 between D94 and D100; owner component view shows the landing area without an unambiguous fitted body",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C9",
+      "between": [
+        "D100",
+        "D98"
+      ],
+      "fraction": 0.561111,
+      "projected_board_mm": [
+        285.807,
+        33.59
+      ],
+      "current_footprint_mm": [
+        285.807,
+        33.59
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
+      "observation": "vertical C9 between D100 and D98; owner component view is hidden by the black factory cable",
+      "electrical_evidence": false
+    }
+  ]
+}

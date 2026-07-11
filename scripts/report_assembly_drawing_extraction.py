@@ -57,6 +57,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/report_fdc_lower_assembly_placement.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    upper_passive_placement = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/report_fdc_upper_assembly_placement.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
     switch_landings = subprocess.run(
         [kicad_python, str(ROOT / "kicad/check_factory_switch_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
@@ -110,6 +114,11 @@ def main() -> int:
             "Lower FDC passive identities follow the registered factory drawing",
             lower_passive_placement.returncode == 0,
             "five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py`",
+        ),
+        (
+            "Upper-row C12/C9 placements follow adjacent fitted IC centres",
+            upper_passive_placement.returncode == 0,
+            "D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py`",
         ),
         (
             "Cable geometry is recorded from the drawing",

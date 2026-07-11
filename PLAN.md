@@ -128,6 +128,12 @@ extraction work from that set:
    three of those centres and holds D99/D97 out at 0.910/0.851 mm. It corrects
    vertical C11 between D95/D99 and C15 between D97/D102, and records ten
    still-absent named passives without inventing their electrical endpoints.
+   The upper drawing row independently places vertical C12 between D94/D100
+   and C9 between D100/D98; a D94-to-D98 interpolation holds D100 within
+   1.309 mm. Moving C9/C12 from the false y~95 mm placeholder row to y~34 mm
+   removes 13 source-PCB DRC violations. C12's owner-photo site has no
+   unambiguous fitted body and C9 is cable-hidden, so neither placement is
+   promoted as connectivity evidence.
    Fit the remaining colliding passive/transistor placeholders from the same
    photographs rather than moving the proven IC row. Continue cross-checking the
    remaining FDC cluster and connector/off-board geometry (X8 300 mm lead,

@@ -149,6 +149,14 @@ passives are projected in `docs/fdc-lower-assembly-placement.md`, but remain
 explicit omissions until their packages and `.009` electrical endpoints are
 proved.
 
+The upper factory row is handled separately because its three IC centres are
+nearly collinear. C12 is interpolated 48.6906% from D94 to D100, and C9 is
+56.1111% from D100 to D98; the independent D94-to-D98 line predicts D100
+within 1.309 mm. Both capacitors are now vertical at y~34 mm instead of the
+former false y~95 mm analog placeholder row. The C12 owner site lacks an
+unambiguous body and C9 is cable-hidden, so the inherited analog nets remain
+unverified.
+
 ## Promotion rule and remaining work
 
 Use `measurement` when a path still needs continuity, `rejected` for a

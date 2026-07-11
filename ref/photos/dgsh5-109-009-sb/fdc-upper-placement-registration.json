@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+  "coordinate_system": "original source-image pixels interpolated between photo-fitted component-side package centres",
+  "promotion_rule": "factory drawing registration establishes component identity and placement only, never electrical connectivity",
+  "anchors": [
+    {"refdes": "D94", "drawing_px": [1193.0, 1243.0], "board_mm": [238.165, 34.300]},
+    {"refdes": "D100", "drawing_px": [1708.5, 1256.0], "board_mm": [269.080, 33.590]},
+    {"refdes": "D98", "drawing_px": [2248.5, 1255.5], "board_mm": [298.890, 33.590]}
+  ],
+  "targets": [
+    {"refdes": "C12", "drawing_px": [1444.0, 1252.5], "between": ["D94", "D100"], "observation": "vertical C12 between D94 and D100; owner component view shows the landing area without an unambiguous fitted body"},
+    {"refdes": "C9", "drawing_px": [2011.5, 1271.0], "between": ["D100", "D98"], "observation": "vertical C9 between D100 and D98; owner component view is hidden by the black factory cable"}
+  ]
+}
