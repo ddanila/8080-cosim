@@ -134,7 +134,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); standard serial Q/pin10 is now an explicit unresolved functional endpoint; inputs D/C/B/A=5/4/3/2 from th... |
+| `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs QB(12)/QA(13); standard К155ИР16/74295 outputs QC/pin11 and QD/pin10 are explicit unresolved functional endpoints; inp... |
 
 ## Unnetted Functional Pins
 
@@ -153,7 +153,7 @@ model is historical-source-complete.
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
-| `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:Q` |
+| `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` |
 | `D94` | PROM truth | `4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |

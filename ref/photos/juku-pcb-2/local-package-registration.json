@@ -76,6 +76,18 @@
       "note": "The physical К555ИР16 is horizontal with its notch to the right. This package-local fit replaces global seed projections that landed in the parallel-rail field left of the actual IC."
     },
     {
+      "refdes": "D41",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1451.0, 1620.0], "use": "fit", "observation": "leftmost contact on the mirrored upper row"},
+        {"pin": "4", "image_px": [1616.0, 1620.0], "use": "check", "observation": "independent fourth contact on the mirrored upper row"},
+        {"pin": "7", "image_px": [1781.0, 1620.0], "use": "fit", "observation": "rightmost contact on the same coherent row"}
+      ],
+      "note": "Transferred through the registered component and solder panoramas, then anchored in the original solder image. The fit replaces global projections that landed about 300 pixels to the right of the actual package."
+    },
+    {
       "refdes": "D93",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",

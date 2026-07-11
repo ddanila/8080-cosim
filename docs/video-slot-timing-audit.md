@@ -49,7 +49,7 @@ python3 scripts/report_video_slot_timing_audit.py
 - The physical chips for the serializer and mux/decode path are present in
   the structural model, so this is no longer a vague video-output gap.
 - D41's output-side role is now narrowed: QA/QB are modeled, while
-  serial input/output, parallel inputs, load, gate, and clock remain a timing-bus
+  serial input, QC/QD outputs, parallel inputs, load, gate, and clock remain a timing-bus
   source-read/continuity boundary.
 - The missing piece is the exact video-read slot schedule around D41, D52,
   D53, D56, and the adjacent one-shot/counter timing. D94 is not used as

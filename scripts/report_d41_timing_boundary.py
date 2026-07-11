@@ -20,7 +20,8 @@ EXPECTED_UNNETTED = {
     "6": "LD",
     "8": "G",
     "9": "CK",
-    "10": "Q",
+    "10": "QD",
+    "11": "QC",
 }
 
 
@@ -62,9 +63,12 @@ def main() -> int:
     netted = d41_netted_pins(board)
     unnetted = {pin: name for pin, name in chip["pins"].items() if pin not in netted}
     local_report = json.loads((ROOT / "docs/photo-registration/local-packages/report.json").read_text())
-    d41_fits = [item for item in local_report.get("fits", [])
-                if item.get("refdes") == "D41" and item.get("side") == "component"]
-    d41_photo_fit_ok = len(d41_fits) == 1 and d41_fits[0].get("model") == "similarity"
+    d41_fits = [item for item in local_report.get("fits", []) if item.get("refdes") == "D41"]
+    d41_photo_fit_ok = (
+        len(d41_fits) == 2
+        and {item.get("side") for item in d41_fits} == {"component", "solder"}
+        and {item.get("model") for item in d41_fits} == {"similarity", "similarity_reflected"}
+    )
 
     checks = [
         (
@@ -101,9 +105,9 @@ def main() -> int:
             ", ".join(f"{pin}:{name}" for pin, name in sorted(unnetted.items(), key=lambda item: int(item[0]))),
         ),
         (
-            "D41 component-side package landing is locally registered",
+            "D41 package landing is locally registered on both sides",
             d41_photo_fit_ok,
-            "validated horizontal notch-right fit in `docs/photo-registration/local-packages/report.json`",
+            "validated notch-right component fit plus reflected solder fit in `docs/photo-registration/local-packages/report.json`",
         ),
     ]
     ok = all(result for _, result, _ in checks)
@@ -150,7 +154,7 @@ def main() -> int:
         ]
     )
     for pin, name in sorted(EXPECTED_UNNETTED.items(), key=lambda item: int(item[0])):
-        boundary = "serial-output destination continuity/source read required" if pin == "10" else "sheet-2 timing-bus continuity/source read required"
+        boundary = "parallel-output destination/NC source read required" if pin in {"10", "11"} else "sheet-2 timing-bus continuity/source read required"
         lines.append(table_row([pin, name, boundary]))
 
     lines.extend(
@@ -160,9 +164,10 @@ def main() -> int:
             "",
             "- D41 is not a generic unresolved video chip anymore: its output-side",
             "  effects are modeled and route-checked.",
-            "- The corrected component-side package fit replaces global projections",
-            "  that landed in the parallel-rail field left of the actual IC.",
-            "- The remaining D41 gap is specific to pins 1-6/8-10: serial input/output,",
+            "- The corrected two-sided package fits replace global projections",
+            "  that landed in the parallel-rail field left/right of the actual IC.",
+            "- The remaining D41 gap is specific to pins 1-6/8-11: serial input,",
+            "  unresolved QC/QD parallel outputs,",
             "  parallel inputs, load, gate, and clock from the timing-wire bus.",
             "- Do not infer these input/control nets from the runnable raster model;",
             "  they need a readable sheet-2 timing-chain source, macro photo, or",

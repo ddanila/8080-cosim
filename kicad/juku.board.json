@@ -1122,12 +1122,15 @@
     "8": "G",
     "9": "CK",
     "1": "DS",
-    "10": "Q"
+    "10": "QD",
+    "11": "QC",
+    "12": "QB",
+    "13": "QA"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC status require source confirmation"
    }
   },
   {
@@ -1142,12 +1145,15 @@
     "8": "G",
     "9": "CK",
     "1": "DS",
-    "10": "Q"
+    "10": "QD",
+    "11": "QC",
+    "12": "QB",
+    "13": "QA"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC status require source confirmation"
    }
   },
   {
@@ -3036,14 +3042,15 @@
     "8": "G",
     "9": "CK",
     "1": "DS",
-    "10": "Q",
+    "10": "QD",
+    "11": "QC",
     "13": "QA",
     "12": "QB"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); standard serial Q/pin10 is now an explicit unresolved functional endpoint; inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary]; July-2026 package-local photo fit corrects the horizontal notch-right landing"
+    "pins": "sheet-2 LATCH chain: ИР16 D41, outputs QB(12)/QA(13); standard К155ИР16/74295 outputs QC/pin11 and QD/pin10 are explicit unresolved functional endpoints; inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary]; July-2026 two-sided package-local photo fit corrects the horizontal notch-right landing"
    }
   },
   {

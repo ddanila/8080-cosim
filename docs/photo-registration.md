@@ -18,14 +18,14 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 496 reviewed rows:
+endpoint table contains 502 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
 | `accepted` | 16 | two-sided evidence adopted into the board model |
-| `measurement` | 480 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `measurement` | 486 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 46 `local-package-fit`, 405
+Confidence metadata consists of 66 `local-package-fit`, 391
 `registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
@@ -38,7 +38,7 @@ Accepted paths:
 - D94.3 -> D93.2 / `FDC_WE_N`.
 
 The reviewed package fits also corrected the source placement/orientation of
-D2, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
+D2, D41, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
 remain the last clean pre-correction snapshot until the whole D94/D100 bus
 cluster can be rerouted coherently.
 
