@@ -123,6 +123,12 @@ def check_rows(board: dict) -> list[list[object]]:
         and has_node(board, "SER_TXD_INV", "D12", "2"),
         "`SER_TXD_INV`",
     ))
+    checks.append((
+        "8259 SP/EN is strapped high for standalone master mode",
+        has_node(board, "P5V", "D10", "16")
+        and marker("hdl/juku_top.v", "wire pic_sp_en = 1'b1", ".sp_en(pic_sp_en)"),
+        "sheet-1 A-rail arrow; `P5V`",
+    ))
     checks.append(
         (
             "USART RTS/DTR reach AP2 driver",

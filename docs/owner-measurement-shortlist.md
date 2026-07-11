@@ -70,7 +70,7 @@ yet modeled as nets.
 
 | Ref | Unnetted functional pins | Needed evidence |
 | --- | --- | --- |
-| `D10` | `12:CAS0, 13:CAS1, 15:CAS2, 16:SP_EN, 20:IR2, 21:IR3, 22:IR4` | continuity from an actual `.009` FDC-populated board |
+| `D10` | `12:CAS0, 13:CAS1, 15:CAS2, 20:IR2, 21:IR3, 22:IR4` | continuity from an actual `.009` FDC-populated board |
 | `D100` | `9:OE_N, 11:T` | continuity from an actual `.009` FDC-populated board |
 | `D101` | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` | continuity from an actual `.009` FDC-populated board |
 | `D102` | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` | continuity from an actual `.009` FDC-populated board |

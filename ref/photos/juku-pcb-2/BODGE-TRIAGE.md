@@ -159,6 +159,11 @@ The same source block shows SER_TXD feeding both D3.11 and D3.9; D3.8 then
 drives tied D12.1/.2 before D12.3 produces OC SOUT. That physical inverter
 stage is now modeled instead of the former direct SER_TXD-to-D12 shortcut.
 
+Sheet 1 also explicitly ties D10 PIC SP/EN pin 16 to the `A` (+5 V) rail,
+selecting standalone master mode. This is now modeled. Its older RxRDY/TxRDY
+IR0/IR1 labels conflict with the FDC-era target assignment and are retained as
+a revision boundary rather than overwriting the current D93 interrupt nets.
+
 ## Factory solder-side cuts and patches
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent

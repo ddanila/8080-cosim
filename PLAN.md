@@ -62,6 +62,11 @@ closed and the corrected board has been rerouted and reviewed.
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
+
+The sheet-1 D10 SP/EN arrow is now modeled as a +5 V master-mode strap rather
+than an unresolved PIC pin. The older RxRDY/TxRDY-to-IR0/IR1 paths are not
+promoted because they conflict with the `.009` FDC interrupt assignment and
+remain a target-revision continuity question.
 5. **Restore source/routed parity.** The authoritative source PCB contains the
    accepted D2 address inputs and D94 control outputs. The saved routed PCB
    still lacks those eight endpoints and retains three superseded D93 net

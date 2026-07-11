@@ -502,10 +502,11 @@ module juku_top (
                       .rg(), .rclk(1'b0), .raw_read(1'b1), .hld(), .tg43(), .wg(), .wdata(),
                       .ready(1'b1), .wf_vfoe(), .tr00(1'b0), .index(1'b0), .wprt(1'b0),
                       .drq(fdc_drq), .intrq(fdc_intrq));
+    wire pic_sp_en = 1'b1; // sheet-1 A-rail strap: standalone/master 8259
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
                       .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(1'b0), .ir2(1'b0), .ir1(fdc_drq), .ir0(fdc_intrq),
-                      .cas0(), .cas1(), .cas2(), .sp_en(), .intr(intr), .inta_n(inta_n));
+                      .cas0(), .cas1(), .cas2(), .sp_en(pic_sp_en), .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
     intr_ctl  U_INTR (.osc(sclk_i), .dbin(dbin), .inta_n(inta_n), .iowr_n(iowr_n),

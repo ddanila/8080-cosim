@@ -10246,9 +10246,13 @@
    ]
   },
   "P5V": {
-   "src": "scan; sheet-1 arrow-A rail ties both address-buffer direction pins D4.11/D107.11 high for CPU-address to buffered-address flow",
+   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high",
    "power": true,
    "nodes": [
+    [
+     "D10",
+     "16"
+    ],
     [
      "D1",
      "20"

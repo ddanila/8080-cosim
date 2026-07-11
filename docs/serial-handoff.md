@@ -37,6 +37,7 @@ python3 scripts/report_serial_handoff.py
 | D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
+| 8259 SP/EN is strapped high for standalone master mode | PASS | sheet-1 A-rail arrow; `P5V` |
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
