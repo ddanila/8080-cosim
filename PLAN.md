@@ -190,6 +190,11 @@ blocker below).
 
 - Acquire repeated dumps or the Baltijets programming files for D2 `.037` and
   D94 `.092`.
+- The host-side К556РТ4 capture validator is now guarded by a self-test and
+  rejects missing, duplicate, unstable, non-complementary, or repeat-mismatched
+  D2/D6 reads. It exports raw pin-level and active-low views separately with
+  hashes; `docs/rt4-dump-acquisition.md` records the physical provenance still
+  required. D94 is К155РЕ3 and needs a separate reader.
 - Keep reconstructed D6/D8 images labeled as Tier-1/2 fallbacks. The owner
   `.113/.117` scans are not D8 `.039` or D94 `.092`.
 - Record the final D15/D16 EPROM split, image hashes, device choice, and

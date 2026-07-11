@@ -34,6 +34,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D94 no-burn boundary is constrained | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
 | Fallback report excludes D2 and D94 exports | PASS |
+| Repeated RT4 dump validation procedure is available | PASS |
 
 ## Practical Burn Rule
 
@@ -55,3 +56,5 @@ python3 scripts/report_firmware_gap_ledger.py
 - Or repeatedly dump the socketed D2/D6 RT4 and D8/D94 RE3 parts from
   hardware, then compare D6/D8 against `ref/reconstructed-proms/` and
   replace the HDL/fallbacks only if the dump provenance is stronger.
+- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;
+  preserve raw pin-level and active-low asserted tables separately.

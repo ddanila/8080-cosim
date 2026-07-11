@@ -79,6 +79,13 @@ def main() -> int:
         "No D2 image is exported",
         "No D94 image is exported",
     )
+    rt4_validator_ok = marker(
+        "docs/rt4-dump-acquisition.md",
+        "HOST VALIDATION READY / PHYSICAL DUMP PENDING",
+        "*.raw.bin",
+        "D94 `.092` requires a",
+        "separate К155РЕ3 reader",
+    ) and exists("scripts/validate_rt4_dump.py")
 
     rows = [
         [
@@ -126,6 +133,7 @@ def main() -> int:
         ("D94 no-burn boundary is constrained", d94_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
         ("Fallback report excludes D2 and D94 exports", fallback_report_ok),
+        ("Repeated RT4 dump validation procedure is available", rt4_validator_ok),
     ]
     status = "PROM GAP LEDGER READY / DUMP TRUTH PENDING" if all(ok for _, ok in checks) else "PROM GAP LEDGER FAILED"
 
@@ -186,6 +194,8 @@ def main() -> int:
             "- Or repeatedly dump the socketed D2/D6 RT4 and D8/D94 RE3 parts from",
             "  hardware, then compare D6/D8 against `ref/reconstructed-proms/` and",
             "  replace the HDL/fallbacks only if the dump provenance is stronger.",
+            "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
+            "  preserve raw pin-level and active-low asserted tables separately.",
             "",
         ]
     )
