@@ -26,14 +26,17 @@ Milestones make a live run observable and allow a better ETA after the first
 few samples. Only 19 progress lines are emitted, so their overhead should be
 negligible relative to millions of compared reads.
 
-## Current regression
+## Resolved 2026-07-12 overlay regression
 
 On 2026-07-12, both the default run and a focused `WINDOW=200000000` run
 diverged at read 743,463: bus address `D830`, structural byte `00`, oracle byte
 `B7` (122,571,350 ns). The testbench forces `dtop.ready=1`, so this mismatch is
-independent of the unresolved D105 pin-10 WAIT input. The faster boot guard still
-passes, but the deep guard remains a digital-twin blocker until this late read
-path is reconciled.
+independent of the unresolved D105 pin-10 WAIT input. The faster boot guard
+continued to pass. The late read path was reconciled by replacing the oracle's
+invented PPI0 `PC0/PC1` mode
+with the board-traced D6 address inputs `PC2/PC3/PC4`. A focused
+`WINDOW=130000000` run then passed 789,879 reads—past the former failure—and
+the added completed-write comparison found no persistent RAM mismatch.
 
 For a quick validation of the harness and progress output without claiming the
 full deep guard:

@@ -88,7 +88,7 @@ module io_dec138_b(input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
   assign y_n = en ? ~(8'b1 << sel) : 8'hFF;
 endmodule
 
-// 8255#0 (D26): latched ports + Port C -> banking mode (portc_lo) + the KEYBOARD.
+// 8255#0 (D26): latched ports + full Port C -> traced D6 inputs + the KEYBOARD.
 // Writes are sampled on `osc` while wr_n is low (data settled on DB) -- NOT on the
 // wr_n edge: the 8238 gates DB onto the bus with wr_n, so an edge-latch reads stale DB.
 //
@@ -97,11 +97,11 @@ endmodule
 //   Port B (A==1) READ = {SHIFT b7-6 active-LOW, 74148 code b3-1, GS b0 active-LOW}.
 // The "typed" key is presented externally as (kcol,kbit,shift,pressed) from the TB.
 module ppi0_b(input wire osc, input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
-              output reg [1:0] portc_lo,
+              output reg [7:0] portc,
               input wire kbd_en, kbd_pressed, kbd_shift, input wire [3:0] kcol, input wire [2:0] kbit);
-  reg [7:0] regs [0:3]; reg [7:0] portc; reg [2:0] pb; integer i;
+  reg [7:0] regs [0:3]; reg [2:0] pb; integer i;
   reg [3:0] kbd_col_sel = 0;                 // last column the BIOS wrote to Port A
-  initial begin for (i=0;i<4;i=i+1) regs[i]=0; portc=0; portc_lo=0; end
+  initial begin for (i=0;i<4;i=i+1) regs[i]=0; portc=0; end
 
   // 74148 encode of the held key in the BIOS-selected column (mirrors cosim kbd_portb):
   wire held    = kbd_en & kbd_pressed;
@@ -114,10 +114,10 @@ module ppi0_b(input wire osc, input wire [1:0] A, inout wire [7:0] D, input wire
   always @(posedge osc) if (~cs_n & ~wr_n) begin
     regs[A] = D;
     if (A == 2'd0) kbd_col_sel <= D[3:0];    // Port A write = keyboard column select
-    if (A == 2'd2) begin portc = D; portc_lo = D[1:0]; end
+    if (A == 2'd2) portc = D;
     else if (A == 2'd3) begin
-      if (D[7]) begin portc = 0; portc_lo = 0; end
-      else begin pb=(D>>1)&3'd7; if (D[0]) portc[pb]=1; else portc[pb]=0; portc_lo=portc[1:0]; end
+      if (D[7]) portc = 0;
+      else begin pb=(D>>1)&3'd7; if (D[0]) portc[pb]=1; else portc[pb]=0; end
     end
   end
 endmodule
@@ -163,15 +163,19 @@ endmodule
 // D6 (К556РТ4) memory-decode PROM: high address + banking mode -> ROM/RAM select +
 // the ROM offset (banking folds 0xD800->0x1800). Contents = emulator-recovered map
 // (`prom` provenance). Mode is the 8255#0 Port-C value.
-module decode_prom_b(input wire [15:0] a, input wire [1:0] mode,
+module decode_prom_b(input wire [15:0] a, input wire [7:0] ppi0_pc,
                      output reg rom_sel, ram_sel, output reg [13:0] rom_idx);
   always @(*) begin
     rom_sel=0; ram_sel=0; rom_idx=14'd0;
-    case (mode)
-      2'd0:      if (a<=16'h3FFF) begin rom_sel=1; rom_idx=a[13:0]; end else ram_sel=1;
-      2'd1,2'd2: if (a>=16'hD800) begin rom_sel=1; rom_idx=16'h1800+(a-16'hD800); end else ram_sel=1;
-      default:   ram_sel=1;
-    endcase
+    // Traced D6 address tags are PPI0 PC2/PC3/PC4. The recovered truth used by
+    // the structural model currently depends on PC2: low selects the reset
+    // overlay at 0000-3FFF; high folds BIOS into D800-FFFF. PC3/PC4 remain
+    // physical PROM inputs whose truth-table effect awaits the D6 dump.
+    if (~ppi0_pc[2]) begin
+      if (a<=16'h3FFF) begin rom_sel=1; rom_idx=a[13:0]; end else ram_sel=1;
+    end else begin
+      if (a>=16'hD800) begin rom_sel=1; rom_idx=16'h1800+(a-16'hD800); end else ram_sel=1;
+    end
   end
 endmodule
 
@@ -207,7 +211,7 @@ module juku_struct(input wire osc, phi1, phi2, reset, input wire ready,
   wire dbin, wr_n, sync, hlda, inte, wait_o, intr;
   wire memr_n, memw_n, iord_n, iowr_n, inta_n;
   wire cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n, cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
-  wire [1:0] mem_mode;
+  wire [7:0] ppi0_pc;
 
   cpu_8080_b  U_CPU (.osc(osc), .phi1(phi1), .phi2(phi2), .ready(ready), .reset(reset),
                      .hold(1'b0), .intr(intr), .A(A), .D(D),
@@ -221,11 +225,11 @@ module juku_struct(input wire osc, phi1, phi2, reset, input wire ready,
       .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
   wire dec_rom, dec_ram; wire [13:0] dec_idx;
-  decode_prom_b U_D6   (.a(BA), .mode(mem_mode), .rom_sel(dec_rom), .ram_sel(dec_ram), .rom_idx(dec_idx));
+  decode_prom_b U_D6   (.a(BA), .ppi0_pc(ppi0_pc), .rom_sel(dec_rom), .ram_sel(dec_ram), .rom_idx(dec_idx));
   eprom_b       U_EPROM(.idx(dec_idx), .sel(dec_rom), .rd_n(memr_n), .db(DB));
   dram_bank_b   U_DRAM (.osc(osc), .a(BA), .sel(dec_ram), .rd_n(memr_n), .we_n(memw_n), .db(DB));
 
-  ppi0_b    U_PPI0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n), .reset(reset), .portc_lo(mem_mode),
+  ppi0_b    U_PPI0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n), .reset(reset), .portc(ppi0_pc),
                     .kbd_en(kbd_en), .kbd_pressed(kbd_pressed), .kbd_shift(kbd_shift), .kcol(kbd_kcol), .kbit(kbd_kbit));
   periph_b  U_PPI1 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_ppi1_n), .rd_n(iord_n), .wr_n(iowr_n));
   periph_b  U_PIT0 (.osc(osc), .A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n));

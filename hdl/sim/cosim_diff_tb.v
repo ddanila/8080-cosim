@@ -31,6 +31,12 @@ module cosim_diff_tb;
   end
 
   integer nrd=0, timecap=1600000000, progress_step, progress_mark; reg done=0;
+  integer nwr=0;
+  function automatic [7:0] top_ram(input [15:0] a);
+    top_ram = {dtop.U_D91.mem[a], dtop.U_D90.mem[a], dtop.U_D89.mem[a],
+               dtop.U_D88.mem[a], dtop.U_D87.mem[a], dtop.U_D86.mem[a],
+               dtop.U_D85.mem[a], dtop.U_D84.mem[a]};
+  endfunction
   initial if ($value$plusargs("timecap=%d", timecap)) ;
   // Sparse milestones make multi-hour default runs observable. Twenty writes
   // are negligible beside millions of lockstep reads.
@@ -51,6 +57,22 @@ module cosim_diff_tb;
     if (dtop.D !== dstr.D) begin done=1;
       $display("DIVERGE at read#%0d: BA=%04h  juku_top.D=%02h  juku_struct.D=%02h",
                nrd, dtop.BA, dtop.D, dstr.D);
+      #100 $finish;
+    end
+  end
+  // Stop at the completed write that first makes the two RAM realizations disagree. This
+  // turns a much later bad read into an actionable write address/data/timing
+  // report. The structural DRAM samples repeatedly while the strobe is low and
+  // can lag the flat oracle on its first sampling edge, so compare only after
+  // the complete write window closes.
+  always @(posedge dtop.memw_n) if (!done) begin
+    nwr = nwr + 1;
+    #1;
+    if (dtop.BA !== dstr.BA || top_ram(dstr.BA) !== dstr.U_DRAM.mem[dstr.BA]) begin
+      done=1;
+      $display("RAM-DIVERGE at write#%0d: top.BA=%04h oracle.BA=%04h top.DB=%02h oracle.DB=%02h top.RAM=%02h oracle.RAM=%02h MA=%02h row=%02h",
+               nwr, dtop.BA, dstr.BA, dtop.DB, dstr.DB, top_ram(dstr.BA),
+               dstr.U_DRAM.mem[dstr.BA], dtop.MA, dtop.U_D84.row);
       #100 $finish;
     end
   end

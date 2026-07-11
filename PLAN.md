@@ -68,8 +68,11 @@ using D105.10 as a plated-through junction; fabrication remains on hold until a
 legal replacement route is found. A high simulation default for `H` diverges
 from the formerly constant-low gate behavior, so simulation uses a low default
 while the physical source remains unresolved. The deep cosim forces `ready=1`,
-making its separate read-743,463 (`BA=D830`) mismatch independent of this WAIT
-chain; that late digital-twin divergence is also now an explicit blocker.
+making its former read-743,463 (`BA=D830`) mismatch independent of this WAIT
+chain. That mismatch was traced to the behavioral oracle using unphysical
+PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
+inputs instead passes 789,879 lockstep reads through 130 ms.
+
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
    current generated evidence lists 43 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
