@@ -491,7 +491,7 @@ module juku_top (
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),
                    .dsr_in(s_dsr), .dsr_out(ser_dsr_n));
-    serial_conn U_X3 (.pullup_io(), .aux2(), .ttl_sout(s_ttl), .sin(s_sin),
+    serial_conn U_X3 (.pullup_io(), .aux2(s_oc), .ttl_sout(s_ttl), .sin(s_sin),
                       .cts(s_cts), .dsr(s_dsr), .aux7(), .aux8(),
                       .sout(s_sout), .rts(s_rts), .dtp(s_dtp), .oc_sout(s_oc));
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n),

@@ -11,7 +11,7 @@ import pcbnew
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
 SPEC = ROOT / "kicad/juku.board.json"
-SIGNALS = {23: "S_TTL", 24: "S_SIN", 25: "S_CTS", 26: "S_DSR",
+SIGNALS = {22: "S_OC", 23: "S_TTL", 24: "S_SIN", 25: "S_CTS", 26: "S_DSR",
            29: "S_SOUT", 30: "S_RTS", 31: "S_DTP", 32: "S_OC"}
 
 

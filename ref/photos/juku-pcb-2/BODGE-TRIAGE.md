@@ -147,7 +147,8 @@ also corrects two former reads: DTP is A31 (not 51), and SIN is A24 (not 33).
 It proves all three D104 К170УП2 receivers: SIN 4->13, CTS 5->12, and DSR
 6->11, closing D11 RxD/CTS/DSR. The same sheet and photo identify R104 as the
 120-ohm pull-up from A21/X3.1 to +5 V; its fitted 12.7 mm-pitch footprint now
-replaces that boundary. A22/A27/A28 remain explicit PCB-side trace boundaries.
+replaces that boundary. Source junction dots tie A22/X3.2 to the same OC SOUT
+node as A32/X3.12 and D12.3. Only A27/A28 remain explicit PCB-side boundaries.
 
 ## Factory solder-side cuts and patches
 
