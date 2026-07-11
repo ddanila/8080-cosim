@@ -160,6 +160,19 @@
         {"pin": "7", "image_px": [3248.0, 1545.0], "use": "fit", "observation": "last unobscured lower-row contact before the white wire"}
       ],
       "note": "Marked horizontal К155ЛП11 immediately right of D100; outer contacts are wire-obscured, so pins 2/7 anchor the coherent row."
+    },
+    {
+      "refdes": "D98",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [981.0, 1305.0], "use": "fit", "observation": "rightmost joint of the mirrored pin-1/8 row"},
+        {"pin": "8", "image_px": [650.0, 1304.0], "use": "fit", "observation": "leftmost joint of the same complete eight-contact row"},
+        {"pin": "9", "image_px": [650.0, 1161.0], "use": "fit", "observation": "leftmost joint of the opposite eight-contact row"},
+        {"pin": "16", "image_px": [981.0, 1162.0], "use": "check", "observation": "independent rightmost joint of the opposite coherent row"}
+      ],
+      "note": "Direct solder-side 2x8 row is mirrored relative to the component package. The affine fit accommodates the photographed perspective and replaces board-level projections displaced roughly 330 pixels to the left."
     }
   ]
 }

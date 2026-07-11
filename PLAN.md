@@ -70,9 +70,9 @@ closed and the corrected board has been rerouted and reviewed.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
-612 observations have dispositions. Eighteen rows are accepted evidence for
+612 observations have dispositions. Twenty rows are accepted evidence for
 five D2 address nets, three D94-to-D93 control nets, and the two-sided А:17
-wire landing; the other 594 remain measurement requests. This closes the automated review queue, not the P0
+and D98.7/S1.2 wire landings; the other 592 remain measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.
 

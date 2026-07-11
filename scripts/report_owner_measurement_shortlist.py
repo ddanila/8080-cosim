@@ -222,10 +222,10 @@ def main() -> int:
         ),
         (
             "P1",
-            "wire-18 220-ohm local branch",
-            "A:17/A:18 and both S1 endpoints are now photo/document proved; identify only the separately reported 220-ohm branch near D98.7 and state whether it is part of D98_Y3_S1_2 or another local FDC net",
+            "R94 220-ohm far endpoint",
+            "two-sided D98 evidence disproves a 220-ohm branch at pin 7; confirm the photographed R94 far terminal and its apparent near-side copper to D98.3",
             "`ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
-            "prevents an unproved resistor from being folded into the now-closed S1 harness nets",
+            "adds the missing .009 R94 part on its actual FDC support net without reopening the closed S1 harness",
         ),
         (
             "P0",

@@ -104,7 +104,7 @@ drawing agree on these endpoints:
 | 20 | D3.10 - X3.3 | serial `S_TTL` path |
 | - | D26.23 - X9.9 | keyboard/tape connector line |
 | 17 | Component photo 200358952 at `(914,1154)` and solder photo 200509593 at `(2145,1155)` show the same dedicated tinned pad printed `17`; sheets 2-5 row 11 documents А:17 - S1:1, ~19 cm | promoted as `A17.1` on `RES_RC`; board position approximately `(115.8,27.1)` mm from the adjacent `(114.4,13.3)` mounting-hole transfer |
-| 18 | The validated D98 component fit places the visible white bracket-switch lead directly on D98.7; owner continuity additionally reports a 220-ohm local path in this quadrant; sheets 2-5 wire-table row 12 documents А:18 - S1:2, ~3 cm | promoted as `D98_Y3_S1_2`; the 220-ohm branch remains a separate local-copper check; do not conflate with wire 17 |
+| 18 | Validated component and solder fits place the white bracket-switch lead on D98.7 and show no PCB-copper departure from that pad; sheets 2-5 row 12 documents А:18 - S1:2, ~3 cm | promoted as `D98_Y3_S1_2`; the photographed 220-ohm part is the separately placed R94 below-left of D98, not a D98.7 branch; do not conflate with wire 17 |
 
 The settled wire links are represented in the board model with endpoint
 provenance. Sheet-1 assembly photos `114556899` and `114600417` separate the

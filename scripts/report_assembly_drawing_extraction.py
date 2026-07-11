@@ -75,7 +75,7 @@ def main() -> int:
         ),
         (
             "Factory wires 17 and 18 carry documented S1 far ends without conflation",
-            marker(bodge_text, "| 17 |", "200358952", "A17.1", "| 18 |", "validated D98 component fit", "А:18 - S1:2", "do not conflate with wire 17"),
+            marker(bodge_text, "| 17 |", "200358952", "A17.1", "| 18 |", "Validated component and solder fits", "А:18 - S1:2", "do not conflate with wire 17"),
             "sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence",
         ),
         (

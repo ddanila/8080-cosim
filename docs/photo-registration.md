@@ -22,11 +22,11 @@ endpoint table contains 612 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 18 | two-sided evidence adopted into the board model |
-| `measurement` | 594 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 20 | two-sided evidence adopted into the board model |
+| `measurement` | 592 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 121 `local-package-fit`, 444
-`registration-only`, and 47 `registration+unique-hole-snap` rows. A hole snap
+Confidence metadata consists of 135 `local-package-fit`, 432
+`registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -37,14 +37,15 @@ Accepted paths:
 - D94.2 -> D93.3 / `FDC_CS_N`;
 - D94.3 -> D93.2 / `FDC_WE_N`.
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
+- D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
 coordinates without changing its source placement. At D98.7, the component
 fit also identifies the visible white wire-18 lead; the factory wire table
-independently closes that off-board path as А:18 to S1:2. Its endpoint row
-remains `measurement` because a matching solder-side landing is not locally
-registered. The tracked routed PCB and Gerber ZIP intentionally remain the
+independently closes that off-board path as А:18 to S1:2. A new affine solder
+fit corrects a roughly 330 px global-projection displacement and shows that no
+PCB copper departs D98.7; both observations are accepted. The tracked routed PCB and Gerber ZIP intentionally remain the
 last clean pre-correction snapshot until the whole D94/D100 bus cluster can be
 rerouted coherently.
 
@@ -101,7 +102,8 @@ fits. D93, D100, and D98 also have useful local fits, but their unresolved
 signals remain measurements where copper is obscured or leaves the visible
 layer. The D11 solder fit holds both unused corners out at 2.375 px and
 localizes the factory-reworked area beside pins 4-6; it does not establish the
-obscured bridge endpoints.
+obscured bridge endpoints. The D98 solder fit holds pin 16 out at 0 px on the
+complete affine 2x8 row.
 
 ## Promotion rule and remaining work
 
