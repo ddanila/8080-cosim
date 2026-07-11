@@ -47,7 +47,7 @@ def main() -> int:
         ),
         (
             "Factory solder-side cuts/patches are protected as designed operations",
-            marker(bodge_text, "Factory solder-side cuts and patches", "D56", "D15", "D4", "D11", "150", "159"),
+            marker(bodge_text, "Factory solder-side cuts and patches", "D56", "D15", "D14", "D11", "150", "159"),
             "`BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730",
         ),
         (
@@ -106,7 +106,7 @@ def main() -> int:
         "",
         "## Release interpretation",
         "",
-        "- Preserve the electrical result of the factory D56/D15/D4/D11 modifications.",
+        "- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.",
         "- Keep D94/D100/D98 horizontal during the source-PCB reroute.",
         "- Measure wires 17 and 18 separately; sheet 1 localizes them but does not identify both endpoints.",
         "- Request sheets 2-6 before claiming factory wire-table closure.",

@@ -53,7 +53,7 @@ netlist. The referenced connection table is on missing sheets 2-6.
 
 ## Release interpretation
 
-- Preserve the electrical result of the factory D56/D15/D4/D11 modifications.
+- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
 - Measure wires 17 and 18 separately; sheet 1 localizes them but does not identify both endpoints.
 - Request sheets 2-6 before claiming factory wire-table closure.

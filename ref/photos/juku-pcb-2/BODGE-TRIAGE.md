@@ -116,7 +116,7 @@ remain boundaries rather than invented connections.
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent
 “bodge.” Its factory `Вид В` detail explicitly calls out positions 150 and 159
-on the mounting side and draws the cut/patch areas at D56, D15, D4, and D11.
+on the mounting side and draws the cut/patch areas at D56, D15, D14, and D11.
 Close-ups `PXL_20260711_114626340.jpg`, `114633498.jpg`, and
 `114638730.MP.jpg` preserve those instructions. These features are therefore
 revision-controlled assembly operations, not owner-board damage or optional
