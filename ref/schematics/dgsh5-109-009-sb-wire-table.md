@@ -134,9 +134,11 @@ A23/TTL SOUT, A24/SIN, A25/CTS, A26/DSR, A29/SOUT, A30/RTS, A31/DTP, and
 A32/OC SOUT; the `.009` table supplies the connector-pin mapping. Sheet 1 and
 the registered component photo additionally close A21 through R104 120 ohms
 to +5 V. Junction dots on the same source sheet tie A22/X3.2 directly to the
-OC SOUT node shared by A32/X3.12 and D12.3. Only A27 and A28 retain explicit
-harness-only nets until their PCB-side circuitry is traced. The former
-provisional 2x8 on-board X3 body is removed.
+OC SOUT node shared by A32/X3.12 and D12.3. The identified A27/A28 solder
+joints have no PCB-copper departure and the older circuit sheet omits both;
+their installed wires to X3.7/.8 are therefore recorded as intentional
+cable-only reserved contacts. The former provisional 2x8 on-board X3 body is
+removed.
 
 ## Sheet 6 — Лист регистрации изменений (change registration)
 

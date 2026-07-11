@@ -42,6 +42,10 @@ def main() -> int:
         nodes = {tuple(node) for node in spec["nets"][net]["nodes"]}
         if ("X3", str(number - 20)) not in nodes:
             failures.append(f"{net} lacks X3.{number - 20}")
+    for net in ("X3_HARNESS_7", "X3_HARNESS_8"):
+        record = spec["nets"][net]
+        if record.get("intentional_harness_only") is not True or len(record["nodes"]) != 2:
+            failures.append(f"{net} is not a two-end intentional cable-only contact")
 
     d104 = board.FindFootprintByReference("D104")
     expected_d104 = {"4": "S_SIN", "13": "SER_RXD", "5": "S_CTS",

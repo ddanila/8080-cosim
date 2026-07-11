@@ -9670,12 +9670,16 @@
    "nodes": [["A21", "1"], ["X3", "1"], ["R104", "1"]]
   },
   "X3_HARNESS_7": {
-   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A27 remains unresolved",
-   "nodes": [["A27", "1"], ["X3", "7"]]
+   "src": "scan .009 factory X3 cable table plus registered solder photo; cable-only reserved contact",
+   "nodes": [["A27", "1"], ["X3", "7"]],
+   "_note": "older circuit sheet omits A27/X3.7 and the identified solder joint has no PCB-copper departure",
+   "intentional_harness_only": true
   },
   "X3_HARNESS_8": {
-   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A28 remains unresolved",
-   "nodes": [["A28", "1"], ["X3", "8"]]
+   "src": "scan .009 factory X3 cable table plus registered solder photo; cable-only reserved contact",
+   "nodes": [["A28", "1"], ["X3", "8"]],
+   "_note": "older circuit sheet omits A28/X3.8 and the identified solder joint has no PCB-copper departure",
+   "intentional_harness_only": true
   },
   "GND": {
    "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9",

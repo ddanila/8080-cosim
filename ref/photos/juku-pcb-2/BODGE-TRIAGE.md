@@ -148,7 +148,9 @@ It proves all three D104 К170УП2 receivers: SIN 4->13, CTS 5->12, and DSR
 6->11, closing D11 RxD/CTS/DSR. The same sheet and photo identify R104 as the
 120-ohm pull-up from A21/X3.1 to +5 V; its fitted 12.7 mm-pitch footprint now
 replaces that boundary. Source junction dots tie A22/X3.2 to the same OC SOUT
-node as A32/X3.12 and D12.3. Only A27/A28 remain explicit PCB-side boundaries.
+node as A32/X3.12 and D12.3. A27/A28 show no solder-side copper departure and
+are absent from the older circuit sheet, so their installed X3.7/.8 wires are
+intentional cable-only reserved contacts rather than missing PCB traces.
 
 ## Factory solder-side cuts and patches
 

@@ -110,8 +110,9 @@ extraction work from that set:
    X3 is likewise promoted as the photo-fitted A21..A32 row; six serial signals
    and CTS/DSR are electrically closed, and photographed R104 closes A21 to
    +5 V through 120 ohms; source junctions also close A22 onto the OC SOUT
-   node shared with A32. A27/A28 retain explicit PCB-side boundaries.
-   Promote X4 and the remaining numbered links only after
+   node shared with A32. A27/A28 are source-undrawn, photo-proved cable-only
+   reserved contacts, completing the X3 harness disposition. Promote X4 and
+   the remaining numbered links only after
    each А:N point is mapped to a package pin.
 
 Next tracing order:
