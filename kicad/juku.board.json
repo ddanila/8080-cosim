@@ -973,14 +973,18 @@
     "14": "Y_N1",
     "13": "Y_N2",
     "12": "Y_N3",
+    "11": "Y_N4",
+    "10": "Y_N5",
+    "9": "Y_N6",
+    "7": "Y_N7",
     "4": "G2A_N",
     "5": "G2B_N"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ИД7 74S138 pinout per sheet-2: A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL; Y0-Y3=15/14/13/12 through R49-R52 100R into RAIL14/13/12/11 RAS rails",
-    "note": "ИД7/74138 RAS decoder: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-R52(100R) -> R53-R56(5.1k) -> RAIL_E. Shared CAS is driven separately by D36/R57/R58."
+    "pins": "ИД7/74138 complete standard package contract; sheet-2 proves A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL, and Y0-Y3=15/14/13/12 through R49-R52 100R into RAIL14/13/12/11 RAS rails; Y4-Y7 pins 11/10/9/7 require source-proved destinations or NC dispositions",
+    "note": "ИД7/74138 RAS decoder: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-R52(100R) -> R53-R56(5.1k) -> RAIL_E. Shared CAS is driven separately by D36/R57/R58. Y4-Y7 are restored as functional package pins and deliberately remain unresolved pending sheet/photo continuity or explicit NC proof."
    }
   },
   {
@@ -1018,7 +1022,9 @@
     "4": "D1",
     "5": "D2",
     "6": "D3",
+    "7": "ENP",
     "9": "LOAD_N",
+    "10": "ENT",
     "11": "Q3",
     "12": "Q2",
     "13": "Q1",
@@ -1028,7 +1034,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "datasheet + sheet-2 divider: 16MHz input and labeled 1.23MHz Q3 output constrain modulo-13 operation; preset 0011 has D0/D1 high and D2/D3 low, ENP/ENT and CLR_N high; Q0-Q2 undrawn/NC"
+    "pins": "complete ИЕ10/74161-class package contract plus sheet-2 divider: 16MHz input and labeled 1.23MHz Q3 output constrain modulo-13 operation; preset 0011 has D0/D1 high and D2/D3 low, ENP(7)/ENT(10) and CLR_N high; Q0-Q2 undrawn/NC"
    }
   },
   {

@@ -362,9 +362,9 @@ module juku_top (
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
     net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));   // -> ram_en_sim (SIM-ONLY DRAM-enable semantics)
-    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(vid_cpu_sel), .g2a_n(phi2ttl),
+    rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(vid_cpu_sel), .g2a_n(phi2ttl), .g2b_n(1'b0),
                       .sactive(mem_active), .ram_en_sim(d53_g_in),
-                      .y_n(d53_y), .cas_sim(d53_cas_sim));
+                      .y_n(d53_y), .y_n4(), .y_n5(), .y_n6(), .y_n7(), .cas_sim(d53_cas_sim));
     net_boundary U_R49LNK (.a(d53_y[0]), .b(ras3_n));   // Y0 -> R49 -> rail 14 (bank 3, POPULATED)
     net_boundary U_R50LNK (.a(d53_y[1]), .b(ras2_n));   // Y1 -> R50 -> rail 13 (bank 2 sockets)
     net_boundary U_R51LNK (.a(d53_y[2]), .b(ras1_n));   // Y2 -> R51 -> rail 12 (bank 1 sockets)
@@ -378,7 +378,7 @@ module juku_top (
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
     ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
                         .q(), .q_n(), .q2(), .q2_n());  // Q_N destination = south vertical [chase]; old 16MHz attribution retired
-    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
+    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
 
     // ---- runnable video-output stage: raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,

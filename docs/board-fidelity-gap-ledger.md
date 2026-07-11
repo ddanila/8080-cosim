@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `240`
 - Nets modeled: `340`
-- Chip-level fidelity gaps: `60`
+- Chip-level fidelity gaps: `61`
 - Net-level source-risk gaps: `43`
 - Documented intentional no-connect pins: `16`
 
@@ -47,7 +47,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 13 |
-| video/timing | 1 | 0 |
+| video/timing | 2 | 0 |
 
 ## Chip-Level Gaps
 
@@ -140,6 +140,7 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D41` | `IR16` | scan | sheet-2 LATCH chain: ИР16 D41, outputs QB(12)/QA(13); standard К155ИР16/74295 outputs QC/pin11 and QD/pin10 are explicit unresolved functional endpoints; inp... |
+| `D53` | `RASCAS_DEC` | scan | ИД7/74138 complete standard package contract; sheet-2 proves A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL, and Y0-Y3=15/14/13/12 through R... |
 
 ## Unnetted Functional Pins
 
@@ -163,6 +164,7 @@ model is historical-source-complete.
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` |
 | `D42` | logic/source | `8:G, 11:QC, 12:QB, 13:QA` |
 | `D43` | logic/source | `1:DS, 8:G, 11:QC, 12:QB, 13:QA` |
+| `D53` | video/timing | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 | `D94` | PROM truth | `4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |

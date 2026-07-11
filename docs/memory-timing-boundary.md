@@ -1,6 +1,6 @@
 # Memory timing boundary
 
-Status date: 2026-07-10.
+Status date: 2026-07-11.
 
 Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**
 
@@ -32,6 +32,7 @@ python3 scripts/report_memory_timing_boundary.py
 
 | Boundary | Result | Current endpoints |
 | --- | --- | --- |
+| D53 Y4-Y7 remain explicit unresolved functional pins | PASS | D53.11/.10/.9/.7 require traced destinations or explicit NC proof |
 | D36_CAS_IN remains source-boundary only | PASS | D36.12, D36.13 |
 | D39_MEMCYC remains source-boundary only | PASS | D39.3, D39.4 |
 | D56_QN remains unresolved one-shot output | PASS | D56.4 |

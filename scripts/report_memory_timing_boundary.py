@@ -38,6 +38,11 @@ def row(values: list[object]) -> str:
 
 def main() -> int:
     board = load_board()
+    d53 = next(chip for chip in board["chips"] if chip.get("ref") == "D53")
+    d53_contract = {
+        "7": "Y_N7", "9": "Y_N6", "10": "Y_N5", "11": "Y_N4",
+        "12": "Y_N3", "13": "Y_N2", "14": "Y_N1", "15": "Y_N0",
+    }
     d53_outputs = {
         "D53_Y0_R49": {("D53", "15"), ("R49", "1")},
         "D53_Y1_R50": {("D53", "14"), ("R50", "1")},
@@ -93,6 +98,13 @@ def main() -> int:
     ]
     boundary_checks = [
         (
+            "D53 Y4-Y7 remain explicit unresolved functional pins",
+            all(d53.get("pins", {}).get(pin) == role for pin, role in d53_contract.items())
+            and not any(ref == "D53" and pin in {"7", "9", "10", "11"}
+                        for net in board["nets"].values() for ref, pin in net.get("nodes", [])),
+            "D53.11/.10/.9/.7 require traced destinations or explicit NC proof",
+        ),
+        (
             "D36_CAS_IN remains source-boundary only",
             set(nodes(board, "D36_CAS_IN")) == {("D36", "12"), ("D36", "13")},
             endpoint_text(board, "D36_CAS_IN"),
@@ -114,7 +126,7 @@ def main() -> int:
     lines = [
         "# Memory timing boundary",
         "",
-        "Status date: 2026-07-10.",
+        "Status date: 2026-07-11.",
         "",
         f"Status: **{status}**",
         "",

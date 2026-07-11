@@ -356,10 +356,12 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
 // Ф2TTL (strobe window), G2B_N(5) = GND. The sim cannot reproduce that timing (frozen mesh), so
 // g/g2a_n are connectivity-only here and the DRAM-enable semantics ride ram_en_sim -- a SIM-ONLY
 // leg (lvs.py contract, like SACTIVE/CAS_SIM) fed from the RAM decode through a net_boundary.
-module rascas_dec (input wire a, b, c, input wire g, g2a_n, input wire sactive, ram_en_sim,
-                   output wire [3:0] y_n, output wire cas_sim);
+module rascas_dec (input wire a, b, c, input wire g, g2a_n, g2b_n, input wire sactive, ram_en_sim,
+                   output wire [3:0] y_n, output wire y_n4, y_n5, y_n6, y_n7,
+                   output wire cas_sim);
     assign y_n[0]   = ~(sactive & ~ram_en_sim & a);   // behavioral RAS -> rail 14 (populated bank D84-91)
     assign y_n[3:1] = 3'b111;                         // expansion-bank RAS rails (sockets empty)
+    assign {y_n7, y_n6, y_n5, y_n4} = 4'b1111;       // physical pins restored; destinations unresolved
     assign cas_sim  = ~(sactive & ~ram_en_sim & b);   // sim CAS scaffold -> rail 15 boundary
 endmodule
 // Configuration jumper (Е2/Е3/Е10/Е13 family): 3 pads, position 1-2 or 2-3. Functional model =
@@ -369,7 +371,7 @@ module jumper3 (input wire p1, p3, output wire p2); assign p2 = p3; endmodule
 module ag3_oneshot (input wire a_n, b, clr_n, a2_n, b2, clr2_n,   // D56 АГ3 (74123) dual one-shot
                     output wire q, q_n, q2, q2_n);                 // both sections SYNC-B-triggered (traced)
     assign q = 1'bz; assign q_n = 1'bz; assign q2 = 1'bz; assign q2_n = 1'bz; endmodule
-module ie10_ctr (input wire clk, clr_n, load_n, input wire [3:0] d,  // D103 ИЕ10 (СТ16): /N -> 1.23 MHz
+module ie10_ctr (input wire clk, clr_n, load_n, enp, ent, input wire [3:0] d,  // D103 ИЕ10 (СТ16): /N -> 1.23 MHz
                  output wire [3:0] q, output wire co);
     assign q = 4'bz; assign co = 1'bz; endmodule
 
