@@ -1,6 +1,6 @@
 # Replica bring-up verification points
 
-Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**
+Status: **ENDPOINT COVERAGE FAILED**
 
 This report is generated from `kicad/juku.board.json`. It turns the
 remaining source-risk annotations into an explicit checklist for vendor
@@ -13,17 +13,17 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `42`
-- Verification-point endpoints checked in PCB: `234`
+- Verification-point nets: `43`
+- Verification-point endpoints checked in PCB: `233`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1952`
-- All board endpoints checked in routed PCB: `1952`
-- Full PCB endpoint coverage: `PASS`
+- All board endpoints checked in source PCB: `1960`
+- All board endpoints checked in routed PCB: `1960`
+- Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 15 |
+| logic | 16 |
 | memory/decode | 6 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
@@ -39,8 +39,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 234/234 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 234/234 net names matched |
+| Risk endpoints present on PCB pads | PASS | 233/233 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 233/233 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -50,14 +50,30 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1952/1952 | 1952/1952 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1952/1952 | 1952/1952 | PASS |
+| `kicad/juku.kicad_pcb` | 1960/1960 | 1960/1960 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1952/1960 | 1949/1960 | FAIL |
+
+Missing endpoints in `kicad/juku_routed.kicad_pcb`:
+- `A10: D2.1`
+- `A12: D2.5`
+- `A14: D2.3`
+- `A15: D2.6`
+- `A9: D2.7`
+- `FDC_CS_N: D94.2`
+- `FDC_RE_N: D94.1`
+- `FDC_WE_N: D94.3`
+
+Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- D93.3: `CS_FDC` != `FDC_CS_N`
+- D93.4: `IORD` != `FDC_RE_N`
+- D93.2: `IOWR` != `FDC_WE_N`
 
 ## Checklist
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
 | `CPU_WAIT_STATUS` | logic | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `CS_FDC` | logic | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | Cross-check against hardware when the peripheral path is exercised. |
 | `D105_GATE1_Y` | logic | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D105_WAIT_PREINV` | logic | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D25_T` | logic | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [un... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -75,8 +91,8 @@ fabrication-source coverage gate, not a historical-source proof.
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | assumed (MAME-era IR0; owner-verify) | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FRAME_INT` | timing/I/O | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (D55.OUT1 export, cro... | Cross-check against hardware when the peripheral path is exercised. |
 | `HF_OUT` | video/analog | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delt... | Scope/capture video or timing node during video bring-up. |
-| `IORD` | logic | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, ... (+5)` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `IOWR` | logic | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, ... (+5)` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `IORD` | logic | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, ... (+4)` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `IOWR` | logic | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, ... (+4)` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `LATCH_B` | timing/I/O | `D40.11, D37.2, D54.9, D54.15, D54.18` | scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending) | Cross-check against hardware when the peripheral path is exercised. |
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
