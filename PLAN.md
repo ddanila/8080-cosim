@@ -70,8 +70,12 @@ remain a target-revision continuity question.
 
 The older sheet also proves D11 USART RESET pin 21 on the uninterrupted
 D13.6 system-reset conductor and D11 main CLK pin 20 on the uninterrupted
-D13.4/D105.2 conductor. Both are now modeled in the source PCB and HDL; only
-RxRDY, TxRDY, SYNDET, and TXEMPTY remain at the D11 target-revision boundary.
+D13.4/D105.2 conductor. Both are now modeled in the source PCB and HDL. On the
+older sheet RxRDY/TxRDY explicitly feed PIC IR0/IR1, while D11 SYNDET/TXEMPTY
+are omitted from the USART symbol with no conductor. None of those four is
+promoted onto the `.009` board: the first pair conflicts with the FDC-era
+КР1818ВГ93 interrupt assignment, and the latter pair still needs target-board
+NC/continuity proof.
 5. **Restore source/routed parity.** The authoritative source PCB contains the
    accepted D2 address inputs and D94 control outputs. The saved routed PCB
    still lacks those eight endpoints and retains three superseded D93 net
