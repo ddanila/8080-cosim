@@ -2976,6 +2976,20 @@
    }
   },
   {
+   "ref": "R104",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "A21_SIDE",
+    "2": "P5V_SIDE"
+   },
+   "prov": {
+    "type": "scan + registered owner photo",
+    "refdes": "sheet-1 R104 120-ohm X3 pull-up; .009 assembly drawing and component photo",
+    "pins": "photo fit places left terminal on A21-side copper and right terminal on the +5 V rail"
+   },
+   "value": "120"
+  },
+  {
    "ref": "R94",
    "type": "R_AXIAL",
    "pins": {
@@ -9644,8 +9658,8 @@
    ]
   },
   "X3_HARNESS_1": {
-   "src": "scan .009 factory X3 cable table; PCB-side signal beyond A21 remains unresolved",
-   "nodes": [["A21", "1"], ["X3", "1"]]
+   "src": "scan sheet-1 R104 pull-up plus .009 factory X3 cable table and registered owner photo",
+   "nodes": [["A21", "1"], ["X3", "1"], ["R104", "1"]]
   },
   "X3_HARNESS_2": {
    "src": "scan .009 factory X3 cable table; PCB-side signal beyond A22 remains unresolved",
@@ -10679,6 +10693,10 @@
     ],
     [
      "R60",
+     "2"
+    ],
+    [
+     "R104",
      "2"
     ],
     [

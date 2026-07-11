@@ -131,9 +131,11 @@ carry the two +5 V conductors.
 X3 is now promoted as the photographed single-row `A21`..`A32` PCB landings
 feeding schematic-only connector pins 1..12. The older `.006` schematic closes
 A23/TTL SOUT, A24/SIN, A25/CTS, A26/DSR, A29/SOUT, A30/RTS, A31/DTP, and
-A32/OC SOUT; the `.009` table supplies the connector-pin mapping. A21, A22,
-A27, and A28 retain explicit harness-only nets until their PCB-side circuitry
-is traced. The former provisional 2x8 on-board X3 body is removed.
+A32/OC SOUT; the `.009` table supplies the connector-pin mapping. Sheet 1 and
+the registered component photo additionally close A21 through R104 120 ohms
+to +5 V. A22, A27, and A28 retain explicit harness-only nets until their
+PCB-side circuitry is traced. The former provisional 2x8 on-board X3 body is
+removed.
 
 ## Sheet 6 — Лист регистрации изменений (change registration)
 

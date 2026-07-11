@@ -56,6 +56,13 @@ def main() -> int:
         pad = d11.FindPadByNumber(pin) if d11 else None
         if pad is None or pad.GetNetname() != net:
             failures.append(f"D11.{pin} is not assigned to {net}")
+    r104 = board.FindFootprintByReference("R104")
+    for pin, net in {"1": "X3_HARNESS_1", "2": "P5V"}.items():
+        pad = r104.FindPadByNumber(pin) if r104 else None
+        if pad is None or pad.GetNetname() != net:
+            failures.append(f"R104.{pin} is not assigned to {net}")
+    if r104 is not None and r104.GetValue() != "120":
+        failures.append("R104 value is not 120 ohms")
 
     if failures:
         for failure in failures:
