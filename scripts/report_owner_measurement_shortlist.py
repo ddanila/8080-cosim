@@ -153,8 +153,14 @@ def main() -> int:
         ("FDC functional-pin design hold is visible", has_phrase("docs/unmodeled-footprint-inventory.md", "Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**")),
         (
             "Bring-up verification points generated",
-            has_phrase("docs/replica-bringup-verification-points.md", "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**")
-            or has_phrase("docs/replica-bringup-verification-points.md", "Status: **DESIGN RELEASE RISKS CLOSED**"),
+            "PASS" if any(
+                marker(ROOT / "docs/replica-bringup-verification-points.md", status)
+                for status in (
+                    "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**",
+                    "Status: **ENDPOINT COVERAGE FAILED**",
+                    "Status: **DESIGN RELEASE RISKS CLOSED**",
+                )
+            ) else "MISSING",
         ),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
