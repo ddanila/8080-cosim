@@ -103,8 +103,11 @@ fits. Direct component and reflected solder fits now replace D106 projections
 that landed left of the vertical К555ИЕ7 package, on its body, or between
 solder columns. The independent component pin-4 check is exact and the solder
 pin-5 check is 0.021 px at the recorded precision; all D106 signals remain
-measurements. D28 is the adjacent К155ЛН3 and remains unfitted rather than
-being conflated with D106. D93, D100, and D98 also have useful local fits, but their unresolved
+measurements. Separate component and reflected solder fits now land D28 on the
+adjacent К155ЛН3, using its unobscured seven-pad column and coherent solder
+rows. The component pin-4 check is exact and the solder pin-5 check is 0.010
+px; this prevents D28 from being conflated with D106, while the cable-hidden
+component fanout remains a continuity boundary. D93, D100, and D98 also have useful local fits, but their unresolved
 signals remain measurements where copper is obscured or leaves the visible
 layer. The D11 solder fit holds both unused corners out at 2.375 px and
 localizes the factory-reworked area beside pins 4-6; it does not establish the
