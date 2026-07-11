@@ -52,6 +52,7 @@ Provenance for vendored inputs belongs beside the inputs:
 - `../ref/baltijets-tech-docs/README.md`
 - `../ref/ekdos-source/README.md`
 - `../ref/wd1772-vg93/README.md`
+- `assembly-drawing-extraction.md` — guarded extraction and checksums for the photographed `ДГШ5.109.009 СБ` sheet 1.
 
 ## Status vocabulary
 

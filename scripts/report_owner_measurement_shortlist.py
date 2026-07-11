@@ -32,6 +32,7 @@ REQUIRED = [
     ROOT / "docs" / "reconstructed-prom-fallbacks.md",
     ROOT / "docs" / "source-coverage-audit.md",
     ROOT / "docs" / "cartridge-basic-boundary.md",
+    ROOT / "docs" / "assembly-drawing-extraction.md",
 ]
 
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
@@ -170,6 +171,7 @@ def main() -> int:
         ),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
+        (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEET 1 ADOPTED / CONNECTION TABLE SHEETS 2-6 REQUESTED**")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 

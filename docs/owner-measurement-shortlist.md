@@ -35,6 +35,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |
 | Cartridge BASIC boundary documented | PASS |
+| .009 assembly drawing extraction guarded | PASS |
 
 ## Highest-value physical asks
 
