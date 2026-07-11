@@ -142,6 +142,14 @@ reaches a right-row pad. Until the solder-side view is locally registered or
 the connection table is obtained, assigning those features to D14 pins 1/2/7
 would be an unsupported mirror/orientation guess.
 
+For D11, Вид В draws a single 14-pad package column beside a separate
+four-hole auxiliary field; position 159 marks the bridge into that field. The
+registered board-level solder crop `PXL_20260710_200506061.jpg` shows genuine
+reworked copper nearby, but D11 does not yet have a package-local fit and the
+dense parallel rows make global pin projection unsafe. Review must first fit
+corner pads 1/14/15/28, then assign the four auxiliary holes and bridge; no
+D11 pin number is promoted before that step.
+
 ## Placement conclusions retained
 
 - Board outline: `310 x 266 mm` from the owner-measured physical target. An

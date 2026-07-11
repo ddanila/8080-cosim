@@ -15,7 +15,7 @@ AFFECTED = {
     "D56": "АГ3 timing area: multiple drawn cuts/patches around the package fanout",
     "D15": "EPROM area: Разрезать is on the auxiliary vertical trace between its second/third shown vias, aligned roughly between the eighth/ninth visible package-pad levels; position-159 patch detail is separate",
     "D14": "АП2 serial-driver area: position-159 leader enters a five-hole auxiliary/left field beside the four-pad package row; three long replacement traces and one right-row dogleg are drawn, but mirrored pin numbering is not proved",
-    "D11": "8251 USART area: position-159 patch copper at the lower package end",
+    "D11": "8251 USART area: detail shows one 14-pad package column plus a four-hole auxiliary field and a position-159 bridge; owner solder photo 200506061 shows reworked copper in this area, but D11 lacks a package-local fit",
 }
 
 
