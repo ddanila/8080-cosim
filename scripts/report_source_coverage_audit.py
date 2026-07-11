@@ -71,8 +71,8 @@ def main() -> int:
         ]),
         row([
             "[infoaed/juku3000](https://github.com/infoaed/juku3000)",
-            "ROM/media provenance and MAME/community cross-checks; full public tree audited at commit `be8bf9e53a6702299b9c0221d7c486fce1f25b0f` (2026-07-09)",
-            "tree contains runtime ROMs, EKDOS source, and Juku disks, but no `ДГШ5.106.037`/`.092`, RT4/RE3 programming table, or factory PROM-programming disk payload",
+            "ROM/media provenance and MAME/community cross-checks; full tree and Git object history audited at commit `be8bf9e53a6702299b9c0221d7c486fce1f25b0f` (2026-07-09)",
+            "no `ДГШ5.106.037`/`.092`, RT4/RE3 table, or factory PROM-programming payload; deleted `prog1.juk` blob `ed7fc2e3a289f25da5006143c9f45d9ac20ed3c2` is byte-identical to local `JUKPROG1.CPM` (SHA256 `94670f3333b29e205c1586a0f52882aaa0f8cff2d45c3493676ce3ab263ae269`)",
         ]),
         row([
             "[MAME Juku driver](https://github.com/mamedev/mame/blob/master/src/mame/ussr/juku.cpp)",
