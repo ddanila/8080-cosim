@@ -172,7 +172,7 @@ def main() -> int:
         ),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
-        (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEET 1 ADOPTED / CONNECTION TABLE SHEETS 2-6 REQUESTED**")),
+        (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**")),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
@@ -223,14 +223,14 @@ def main() -> int:
         (
             "P1",
             "factory wires 17 and 18",
-            "measure wire 17 in the X2/D27 top band separately from wire 18 in the D98/D96/D99/D97 quadrant; for wire 18, start from the owner-proved D98.7 through-220-ohm leg and identify the far pad",
-            "`docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`; request `.009 СБ` sheets 2-6 connection table",
-            "closes the previously conflated reset/FDC factory-link boundary without inventing an endpoint from placement art",
+            "confirm the wire-table far ends by continuity: wire 17 from the X2/D27 top band to S1:1, wire 18 from the owner-proved D98.7 through-220-ohm leg to S1:2; map the A:17/A:18 board points to package pins",
+            "`ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
+            "closes the previously conflated reset/FDC factory-link boundary with documented S1 endpoints instead of invented ones",
         ),
         (
             "P0",
             "factory Вид В pad mapping",
-            "for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 first make a package-local fit from corner pads 1/14/15/28 in solder photo 200506061, then map the four-hole auxiliary field and bridge; use `.009 СБ` sheets 2-6 or continuity",
+            "for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 first make a package-local fit from corner pads 1/14/15/28 in solder photo 200506061, then map the four-hole auxiliary field and bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
             "`docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg`",
             "proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release",
         ),

@@ -61,7 +61,7 @@ def main() -> int:
             ref,
             detail,
             "DESIGN HOLD — affected footprint exists, exact modified pads/nets not mapped",
-            "sheets 2-6 connection table, or registered two-sided copper overlay plus pad/via continuity",
+            "registered two-sided copper overlay plus pad/via continuity (the acquired sheets 2-5 wire table covers wires/cables only, not cut pads)",
         ]))
     lines += [
         "",

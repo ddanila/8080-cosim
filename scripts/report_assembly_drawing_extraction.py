@@ -12,6 +12,8 @@ PHOTO_DIR = ROOT / "ref/photos/dgsh5-109-009-sb"
 PHOTO_README = PHOTO_DIR / "README.md"
 BODGE = ROOT / "ref/photos/juku-pcb-2/BODGE-TRIAGE.md"
 PLAN = ROOT / "PLAN.md"
+WIRE_TABLE_PDF = ROOT / "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf"
+WIRE_TABLE_MD = ROOT / "ref/schematics/dgsh5-109-009-sb-wire-table.md"
 REPORT = ROOT / "docs/assembly-drawing-extraction.md"
 
 
@@ -32,8 +34,12 @@ def main() -> int:
     photo_text = read(PHOTO_README)
     bodge_text = read(BODGE)
     plan_text = read(PLAN)
+    kicad_python = subprocess.run(
+        [str(ROOT / "scripts/find-kicad-python.sh")],
+        cwd=ROOT, text=True, capture_output=True,
+    ).stdout.strip() or "/usr/bin/python3"
     placement = subprocess.run(
-        ["/usr/bin/python3", str(ROOT / "kicad/check_fdc_cluster_placement.py")],
+        [kicad_python, str(ROOT / "kicad/check_fdc_cluster_placement.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
 
@@ -61,18 +67,20 @@ def main() -> int:
             "assembly-photo README",
         ),
         (
-            "Factory wires 17 and 18 are separated without inventing endpoints",
-            marker(bodge_text, "| 17 |", "X2/D27 top band", "| 18 |", "D98/D96/D99/D97 quadrant", "do not conflate with wire 17"),
-            "assembly photos 114556899/114600417 plus owner continuity follow-up",
+            "Factory wires 17 and 18 carry documented S1 far ends without conflation",
+            marker(bodge_text, "| 17 |", "X2/D27 top band", "А:17 - S1:1", "| 18 |", "D98/D96/D99/D97 quadrant", "А:18 - S1:2", "do not conflate with wire 17"),
+            "sheets 2-5 wire table rows 11/12 plus owner continuity follow-up",
         ),
         (
-            "Missing connection-table sheets 2-6 remain on the owner request list",
-            marker(plan_text, "sheets 2-6", "таблица соединений", "Ask the owner"),
-            "`PLAN.md` external evidence",
+            "Connection-table sheets 2-6 are adopted and transcribed",
+            WIRE_TABLE_PDF.exists() and WIRE_TABLE_MD.exists()
+            and marker(read(WIRE_TABLE_MD), "ДУБЛИКАТ", "S1:1", "S1:2", "X9:14")
+            and marker(plan_text, "sheets 2-6", "таблица соединений"),
+            "`ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md`",
         ),
     ]
     ok = all(result for _, result, _ in checks)
-    status = "SHEET 1 ADOPTED / CONNECTION TABLE SHEETS 2-6 REQUESTED" if ok else "ASSEMBLY DRAWING EXTRACTION FAILED"
+    status = "SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING" if ok else "ASSEMBLY DRAWING EXTRACTION FAILED"
 
     lines = [
         "# ДГШ5.109.009 СБ extraction audit",
@@ -83,8 +91,9 @@ def main() -> int:
         "",
         "This generated audit turns the photographed factory assembly drawing into",
         "guarded project evidence. Sheet 1 proves component posture, mounting/cable",
-        "details, and factory cut/patch operations; it is not promoted as a copper",
-        "netlist. The referenced connection table is on missing sheets 2-6.",
+        "details, and factory cut/patch operations; sheets 2-6 (ДУБЛИКАТ scan)",
+        "document the wire/cable connection table and change registration. Neither",
+        "is promoted as a copper netlist.",
         "",
         "## Extraction checks",
         "",
@@ -102,14 +111,26 @@ def main() -> int:
     for path in photos:
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         lines.append(row([path.name, path.stat().st_size, f"`{digest}`"]))
+    if WIRE_TABLE_PDF.exists():
+        digest = hashlib.sha256(WIRE_TABLE_PDF.read_bytes()).hexdigest()
+        lines += [
+            "",
+            "## Connection-table scan (sheets 2-6)",
+            "",
+            "| File | Bytes | SHA256 |",
+            "| --- | ---: | --- |",
+            row([WIRE_TABLE_PDF.name, WIRE_TABLE_PDF.stat().st_size, f"`{digest}`"]),
+            "",
+            "Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.",
+        ]
     lines += [
         "",
         "## Release interpretation",
         "",
         "- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.",
         "- Keep D94/D100/D98 horizontal during the source-PCB reroute.",
-        "- Measure wires 17 and 18 separately; sheet 1 localizes them but does not identify both endpoints.",
-        "- Request sheets 2-6 before claiming factory wire-table closure.",
+        "- Wires 17/18 far ends are documented at S1:1/S1:2; confirm continuity and pin mapping before promotion.",
+        "- Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

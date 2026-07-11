@@ -2,12 +2,13 @@
 
 Status date: **2026-07-11**.
 
-Status: **SHEET 1 ADOPTED / CONNECTION TABLE SHEETS 2-6 REQUESTED**
+Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**
 
 This generated audit turns the photographed factory assembly drawing into
 guarded project evidence. Sheet 1 proves component posture, mounting/cable
-details, and factory cut/patch operations; it is not promoted as a copper
-netlist. The referenced connection table is on missing sheets 2-6.
+details, and factory cut/patch operations; sheets 2-6 (ДУБЛИКАТ scan)
+document the wire/cable connection table and change registration. Neither
+is promoted as a copper netlist.
 
 ## Extraction checks
 
@@ -17,8 +18,8 @@ netlist. The referenced connection table is on missing sheets 2-6.
 | Factory solder-side cuts/patches are protected as designed operations | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
-| Factory wires 17 and 18 are separated without inventing endpoints | PASS | assembly photos 114556899/114600417 plus owner continuity follow-up |
-| Missing connection-table sheets 2-6 remain on the owner request list | PASS | `PLAN.md` external evidence |
+| Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus owner continuity follow-up |
+| Connection-table sheets 2-6 are adopted and transcribed | PASS | `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
 
 ## Photograph inventory
 
@@ -51,9 +52,17 @@ netlist. The referenced connection table is on missing sheets 2-6.
 | PXL_20260711_114734104.jpg | 1612958 | `f761ba2bba76b7ce373707967abba7138b02366cc78787a7cd96959851d004ed` |
 | PXL_20260711_114740861.jpg | 1674135 | `d75a952734b8984b20fa8eb468e9a0359e0cb4f7efedfe3e7a2633fdd7327399` |
 
+## Connection-table scan (sheets 2-6)
+
+| File | Bytes | SHA256 |
+| --- | ---: | --- |
+| dgsh5_109_009_sb_sheets2-6.pdf | 4743658 | `779bca02a2b7d0aba9b170b39ab55ff5f980d06f3f324fd91958ece646ddfc2b` |
+
+Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
+
 ## Release interpretation
 
 - Preserve the electrical result of the factory D56/D15/D14/D11 modifications.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
-- Measure wires 17 and 18 separately; sheet 1 localizes them but does not identify both endpoints.
-- Request sheets 2-6 before claiming factory wire-table closure.
+- Wires 17/18 far ends are documented at S1:1/S1:2; confirm continuity and pin mapping before promotion.
+- Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.

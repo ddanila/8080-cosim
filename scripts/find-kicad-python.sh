@@ -31,7 +31,9 @@ for candidate in \
   /usr/bin/python3 \
   python3 \
   /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 \
-  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.*/bin/python3
+  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.*/bin/python3 \
+  /opt/homebrew/Caskroom/kicad/*/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.*/bin/python3 \
+  /usr/local/Caskroom/kicad/*/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.*/bin/python3
 do
   for expanded in $candidate; do
     if try_python "$expanded"; then

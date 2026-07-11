@@ -27,8 +27,15 @@ What the drawing is authoritative for:
   150/159, Д56) at full photo resolution.
 - Technical requirements 1–14 (ОСТ4.010.030-81 placement variants, ПОС61
   solder, marking, cable dressing, Z1 mounting on лакоткань/ВК-9).
-- Revision history: change-table rows `ен147279`, `ен147160`, `ен47074`,
-  `ен139546`, `ен164807`, `ен157459`, `ен157937` with dates and signatures.
+- Revision history: change-table rows `ен147279`, `ен147160`, `ен147074`,
+  `ен139546`, `ен164807`, `ен157459`, `ен157937` with dates and signatures
+  (`ен147074` corrected from an earlier `ен47074` reading against the sheet-6
+  registration list).
+
+Sheets 2-6 of this document (the таблица соединений referenced by note 8 and
+the change-registration sheet) were acquired on 2026-07-11 as an owner
+«ДУБЛИКАТ» scan: `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`, transcribed
+in `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 
 Photo index (`PXL_20260711_*`):
 

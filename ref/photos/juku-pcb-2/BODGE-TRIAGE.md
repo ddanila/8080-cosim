@@ -103,14 +103,15 @@ drawing agree on these endpoints:
 | 11 | D7.1 - D92.13 | timing support path |
 | 20 | D3.10 - X3.3 | serial `S_TTL` path |
 | - | D26.23 - X9.9 | keyboard/tape connector line |
-| 17 | Factory drawing label lies in the X2/D27 top band; endpoints are not readable on sheet 1 | request the sheets 2-6 connection table or measure this wire separately |
-| 18 | Owner continuity localizes one leg at D98.7 through 220 ohm; the factory drawing independently places wire 18 in the D98/D96/D99/D97 quadrant, but its far pad is not identified | reset/FDC-chain continuity follow-up; do not conflate with wire 17 |
+| 17 | Factory drawing label lies in the X2/D27 top band; sheets 2-5 wire table row 11 (поз. 155) documents А:17 - S1:1, ~19 cm | confirm S1 pin-1 continuity; documentary endpoint from `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
+| 18 | Owner continuity localizes one leg at D98.7 through 220 ohm in the D98/D96/D99/D97 quadrant; sheets 2-5 wire table row 12 documents А:18 - S1:2, ~3 cm | confirm S1 pin-2 continuity; do not conflate with wire 17 |
 
 The settled wire links are represented in the board model with endpoint
 provenance. Sheet-1 assembly photos `114556899` and `114600417` separate the
 labels for wires 17 and 18, correcting the earlier combined “17/18” shorthand.
-They show route locality, not pin endpoints. Both far-end questions therefore
-remain boundaries rather than invented connections.
+The sheets 2-5 connection table (`ДУБЛИКАТ` scan) now documents both far ends
+on switch S1; the point-to-package-pin mapping and physical continuity
+confirmation remain the open boundary.
 
 ## Factory solder-side cuts and patches
 
