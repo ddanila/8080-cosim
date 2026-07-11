@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `43`
 - Verification-point endpoints checked in PCB: `233`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1960`
-- All board endpoints checked in routed PCB: `1960`
+- All board endpoints checked in source PCB: `1962`
+- All board endpoints checked in routed PCB: `1962`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
@@ -50,8 +50,12 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1960/1960 | 1960/1960 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1952/1960 | 1949/1960 | FAIL |
+| `kicad/juku.kicad_pcb` | 1960/1962 | 1960/1962 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1952/1962 | 1948/1962 | FAIL |
+
+Missing endpoints in `kicad/juku.kicad_pcb`:
+- `D98_Y3_S1_2: S1.2`
+- `RES_RC: S1.1`
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -59,11 +63,14 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A14: D2.3`
 - `A15: D2.6`
 - `A9: D2.7`
+- `D98_Y3_S1_2: D98.7`
 - `FDC_CS_N: D94.2`
 - `FDC_RE_N: D94.1`
 - `FDC_WE_N: D94.3`
+- `RES_RC: A17.1`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- S1.2: `GND` != `D98_Y3_S1_2`
 - D93.3: `CS_FDC` != `FDC_CS_N`
 - D93.4: `IORD` != `FDC_RE_N`
 - D93.2: `IOWR` != `FDC_WE_N`
