@@ -25,7 +25,7 @@ endpoint table contains 610 reviewed rows:
 | `accepted` | 16 | two-sided evidence adopted into the board model |
 | `measurement` | 594 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 113 `local-package-fit`, 452
+Confidence metadata consists of 121 `local-package-fit`, 444
 `registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
@@ -38,7 +38,8 @@ Accepted paths:
 - D94.3 -> D93.2 / `FDC_WE_N`.
 
 The reviewed package fits also corrected the source placement/orientation of
-D2, D10, D41, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
+D2, D10, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
+coordinates without changing its source placement. The tracked routed PCB and Gerber ZIP intentionally
 remain the last clean pre-correction snapshot until the whole D94/D100 bus
 cluster can be rerouted coherently.
 
@@ -93,7 +94,9 @@ state until visible copper or continuity establishes a destination.
 Current held-out errors are sub-2.2 px for the accepted D2/D4/D94 package-row
 fits. D93, D100, and D98 also have useful local fits, but their unresolved
 signals remain measurements where copper is obscured or leaves the visible
-layer.
+layer. The D11 solder fit holds both unused corners out at 2.375 px and
+localizes the factory-reworked area beside pins 4-6; it does not establish the
+obscured bridge endpoints.
 
 ## Promotion rule and remaining work
 

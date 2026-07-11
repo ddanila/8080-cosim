@@ -77,6 +77,19 @@
       "note": "Fits the D4 input row independently to identify the five remote D2 solder-trace landings."
     },
     {
+      "refdes": "D11",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [2705.0, 1425.0], "use": "fit", "observation": "top joint of the mirrored pin-1/14 solder column"},
+        {"pin": "14", "image_px": [2705.0, 2026.0], "use": "check", "observation": "independent bottom joint of the same coherent 14-contact column"},
+        {"pin": "15", "image_px": [2425.0, 2026.0], "use": "fit", "observation": "bottom joint of the opposite 14-contact column"},
+        {"pin": "28", "image_px": [2425.0, 1425.0], "use": "check", "observation": "independent top joint of the opposite coherent column"}
+      ],
+      "note": "The two complete 14-contact columns identify the D11 КР580ВВ51А footprint. This package-local reflected fit replaces whole-board projections displaced about 100 pixels onto adjacent copper and reserves both unused corners for independent validation."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

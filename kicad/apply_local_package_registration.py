@@ -55,6 +55,13 @@ def main() -> None:
             raise SystemExit(f"{row['endpoint_id']}: pin absent from local fit")
         row["x_px"], row["y_px"] = f"{point[0]:.3f}", f"{point[1]:.3f}"
         row["confidence"] = "local-package-fit"
+        stale = ("Board-level solder projection is registration-only among the dense "
+                 "USART/bus fanout; a local fit or continuity measurement is required "
+                 "before assigning a destination or NC state")
+        replacement = ("Package-local solder fit corrects the displaced board-level "
+                       "projection and identifies this physical pad; continuity is still "
+                       "required before assigning a destination or NC state")
+        row["note"] = row["note"].replace(stale, replacement)
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")

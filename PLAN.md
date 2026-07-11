@@ -83,7 +83,9 @@ extraction work from that set:
    («Вид В», poz. 150/159) at D56, D15, D14, and D11 — these are drawn design
    changes, not board-specific repairs. Their existence/locality is guarded by
    `docs/factory-modification-disposition.md`; exact modified pads/vias, removed
-   segments, and replacement nets remain a P0 mapping hold.
+   segments, and replacement nets remain a P0 mapping hold. A validated D11
+   solder fit has narrowed its visible rework to the area beside pins 4-6, but
+   the obscured bridge endpoints are not yet electrically proved.
 2. Wires 17 and 18 now have documented far ends at S1:1/S1:2 from the
    sheets 2-5 wire table; confirm S1 continuity and map the А:17/А:18
    points to package pins before promotion.

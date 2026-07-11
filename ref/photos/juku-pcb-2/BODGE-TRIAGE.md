@@ -144,12 +144,14 @@ the connection table is obtained, assigning those features to D14 pins 1/2/7
 would be an unsupported mirror/orientation guess.
 
 For D11, Вид В draws a single 14-pad package column beside a separate
-four-hole auxiliary field; position 159 marks the bridge into that field. The
-registered board-level solder crop `PXL_20260710_200506061.jpg` shows genuine
-reworked copper nearby, but D11 does not yet have a package-local fit and the
-dense parallel rows make global pin projection unsafe. Review must first fit
-corner pads 1/14/15/28, then assign the four auxiliary holes and bridge; no
-D11 pin number is promoted before that step.
+four-hole auxiliary field; position 159 marks the bridge into that field. A
+reflected package-local fit in `PXL_20260710_200506061.jpg` now uses D11 corner
+pads 1/15 and holds pads 14/28 out at 2.375 px error. It places the visibly
+scraped/reworked copper beside package pins 4-6, correcting the board-level
+projection that was displaced about 100 px onto adjacent copper. The rework
+obscures the individual bridge landings, so neither an exact D11 pin nor any of
+the four auxiliary-hole destinations is promoted without continuity or the
+missing connection table.
 
 ## Placement conclusions retained
 
