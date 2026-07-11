@@ -29,7 +29,7 @@ is not a prerequisite for this replica.
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 99 mapped instances and 234 matched nets | Unmapped footprints, omitted pins, behavioral correctness, and historical correctness of assumed nets |
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short/unconnected-item errors, and a reproducible 2-layer 310 x 266 mm Gerber/drill package | The routed snapshot predates accepted D2/D94 endpoint changes and is not electrically complete |
-| Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
+| Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, 26 photographs of the original `ДГШ5.109.009 СБ` assembly drawing, and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, sheets 2-6 of the `.009 СБ` drawing, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The saved upload ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
@@ -73,6 +73,23 @@ for five D2 address nets and three D94-to-D93 control nets; the other 594 remain
 measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.
+
+The 2026-07-11 photographs of the original `ДГШ5.109.009 СБ` assembly drawing
+(`ref/photos/dgsh5-109-009-sb/`) are FDC-era factory assembly evidence, one
+document revision closer to the target than the `.006` Э3 scan. Pending
+extraction work from that set:
+
+1. Confirm the board model reflects the factory solder-side trace cuts
+   («Вид В», poz. 150/159) at D56, D15, D4, and D11 — these are drawn design
+   changes, not board-specific repairs.
+2. Follow the drawn wire paths to close the wire 17/18 reset-chain endpoint
+   left unread in `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`.
+3. Cross-check the corrected D94/D100/D98 placement and connector/off-board
+   geometry (X8 300 mm lead, X9 400 mm ribbon, poz. 151 shielded cable)
+   before the reroute.
+4. The title block reads «лист 1 из 6» and note 8 references a таблица
+   соединений: sheets 2-6 were not photographed and belong on the owner
+   request list.
 
 Next tracing order:
 
@@ -148,6 +165,9 @@ serve physical bring-up or historical fidelity:
 - Use `docs/community-prom-media-request.md` for D2, D94, programming-disk, and
   cartridge BASIC requests.
 - Use `docs/owner-measurement-shortlist.md` for the next hardware session.
+- Ask the owner for sheets 2-6 of `ДГШ5.109.009 СБ` — note 8 of the drawing
+  references a таблица соединений, which would document factory wire endpoints
+  directly.
 - Recheck external sources only for a named blocker. The 2026-07-11 audit found
   that the current MAME driver still matches the vendored copy; the museum's
   new `JUKUROMS.ZIP` duplicates the nine local ROMs, and `CASTOOLS.JUK` is
