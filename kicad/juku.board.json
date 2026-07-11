@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 signal wiring, the remaining D30 section-B endpoints, the D105-to-WAIT revision handoff, and 9 official placement-only IC footprints in the FDC cluster remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. D2/D94 PROM truth and routed-snapshot parity, the remaining D30 section-B endpoints, the D105-to-WAIT revision handoff, and 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",

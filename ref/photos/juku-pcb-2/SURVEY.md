@@ -27,14 +27,16 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
 - The clock/video corner visibly includes ИЕ17/74S169-class, ИР16, ЛП5, ЛА3,
   ИЕ10, and ЛА1 devices. Refdes and exact role come from the official documents
   and board model, not package sighting alone.
-- The 2026-07-10 batch adds a complete overlapping solder-side grid suitable
-  for registering physical pads and following visible two-layer copper. No
-  endpoint from that grid has yet been promoted into `kicad/juku.board.json`.
+- The 2026-07-10 batch adds a complete overlapping solder-side grid. Reviewed
+  two-sided copper establishes D2.1/.3/.5/.6/.7 to
+  `A10/A14/A12/A15/A9` and D94.1/.2/.3 to
+  `FDC_RE_N/FDC_CS_N/FDC_WE_N`; these paths are now in
+  `kicad/juku.board.json`.
 - Seven later 2026-07-10 component-side photographs show the same FDC-equipped
   board with the КР1818ВГ93 temporarily removed. In particular,
   `PXL_20260710_202708344.jpg` exposes the footprint and component-side copper
-  normally obscured by the package. No pin destination has yet been inferred
-  from this view.
+  normally obscured by the package. The view improves package registration but
+  does not by itself establish the remaining VG93 pin destinations.
 
 ## Limitations
 

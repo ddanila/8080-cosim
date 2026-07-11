@@ -131,11 +131,11 @@ factory programming-disk files or physical PROM dumps.
 
 The `.009` board also has 9 FDC-support devices whose packages and device-level
 pin roles are now represented, but whose Juku-specific functional nets remain
-untraced: D28, D95-D99, D101, D102, and D106. The available owner photographs
-show a pre-FDC population in that region, so continuity readings or clear
-trace-side photographs must come from an actual `.009` FDC-populated board.
-Those readings, D30's remaining section-B endpoints, and the `.009` WAIT
-handoff would directly unblock it.
+untraced: D28, D95-D99, D101, D102, and D106. The current owner photographs do
+show the FDC-equipped population, but sockets, wires, crossings, and incomplete
+local registration hide most end-to-end paths. Continuity readings or clearer
+trace-side photographs of those devices, D30's remaining section-B endpoints,
+and the `.009` WAIT handoff would directly unblock the board.
 
 The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
 media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking

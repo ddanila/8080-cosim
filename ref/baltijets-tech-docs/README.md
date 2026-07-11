@@ -4,7 +4,7 @@ Source:
 `https://elektroonikamuuseum.ee/failid/juku/tech_docs_from_baltijets/`
 
 Fetched: 2026-07-06.
-Remote directory rechecked: 2026-07-10; it still listed files `000` through
+Remote directory rechecked: 2026-07-11; it still listed files `000` through
 `015`, matching the 16 mirrored PDFs.
 
 The directory contains 16 PDFs found in the former Baltijets factory building in

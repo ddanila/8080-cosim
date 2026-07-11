@@ -30,7 +30,7 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2874 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 14079 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 14761 | PASS |
 
 ## Vendor Options To Record
 

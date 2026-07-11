@@ -46,7 +46,7 @@ def main() -> int:
     lines = [
         "# Source coverage audit",
         "",
-        "Status date: **2026-07-10**.",
+        "Status date: **2026-07-11**.",
         "",
         f"Status: **{status}**",
         "",
@@ -67,7 +67,7 @@ def main() -> int:
         row([
             "[Elektroonikamuuseum Juku files](https://elektroonikamuuseum.ee/failid/juku/)",
             "16 Baltijets factory PDFs, J3K utility disk, and system binaries",
-            "doc 007 points to programming data on disk, but those disk files are not public in the mirrored set",
+            "doc 007 points to programming data on disk, but those files are not public; the 2026-07-11 recheck found only duplicate `JUKUROMS.ZIP` ROMs and out-of-scope cassette utilities in new `CASTOOLS.JUK` media",
         ]),
         row([
             "[infoaed/juku3000](https://github.com/infoaed/juku3000)",
@@ -76,7 +76,7 @@ def main() -> int:
         ]),
         row([
             "[MAME Juku driver](https://github.com/mamedev/mame/blob/master/src/mame/ussr/juku.cpp)",
-            "behavioral oracle, I/O map, floppy geometry, raster constants; current master is vendored byte-for-byte as `ref/mame_juku.cpp`",
+            "behavioral oracle, I/O map, floppy geometry, raster constants; 2026-07-11 master is vendored byte-for-byte as `ref/mame_juku.cpp` (SHA256 `3b9dde3d3bc5eefd1271cd7a29266165d86f41882443f210437020d230a6202e`)",
             "emulator behavior cannot supply omitted physical nets or PROM truth",
         ]),
         row([
@@ -102,7 +102,7 @@ def main() -> int:
         "",
         "## Current source requests",
         "",
-        "1. D2 `ДГШ5.106.037` input/output continuity and repeated PROM dump or programming-disk file.",
+        "1. D2 `ДГШ5.106.037` repeated PROM dump or programming-disk file; all physical inputs and the used D0 output are already traced.",
         "2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.",
         "3. Pin-level continuity or explicit redesign/DNP dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. D105 is now modeled and routed.",
         "4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.",

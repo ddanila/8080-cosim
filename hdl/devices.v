@@ -940,9 +940,9 @@ module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
     // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
     // D94 (see d94-reconstruction-constraints.md). The real bipolar PROM has
-    // open-collector outputs.  Photo tracing now places D2/D3/D4 on the shared
-    // IORD/CS_FDC/IOWR rails; model the undumped part as electrically released
-    // rather than driving a placeholder HIGH into those resolved nets.
+    // open-collector outputs. Photo tracing connects D0/D1/D2 directly to
+    // D93 RE/CS/WE with no branch to the formerly assumed global I/O rails;
+    // model the undumped part as electrically released on those private nets.
     assign d = 8'hzz;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule
 

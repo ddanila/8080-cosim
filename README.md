@@ -10,22 +10,23 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`.
-- `sync/check.sh` currently compares 99 mapped instances and 230 nets with no
+- `sync/check.sh` currently compares 99 mapped instances and 232 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and no KiCad
   clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
   and internally coherent. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
-- The main board is **not released for fabrication**. D2 is only partially
-  traced, D94 lacks its enable/output wiring, and 9 official FDC-support ICs
-  have only their physical pin maps and power endpoints modeled. D105 wait/MRD
+- The main board is **not released for fabrication**. D2's physical inputs are
+  traced but its truth table and routed-snapshot update are missing; D94 still
+  lacks pin 15, outputs D3-D7, and PROM truth. There are 9 official
+  FDC-support ICs with only their physical pin maps and power endpoints modeled.
+  D105 wait/MRD
   logic is now modeled and routed; its `.006`-to-`.009` WAIT handoff remains a
   documented revision boundary.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
-  untraced. The D2/D94
-  PROM contents are also missing, and 43 modeled nets retain source-risk annotations
-  requiring evidence or explicit redesign.
+  untraced. In total, 43 modeled nets retain source-risk annotations requiring
+  evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
 That last distinction matters: a clean DRC and a green LVS prove only the
@@ -64,8 +65,6 @@ release.
 - [docs/architecture.md](docs/architecture.md) — model boundaries and data flow.
 - [docs/source-coverage-audit.md](docs/source-coverage-audit.md) — adopted
   external evidence and remaining source gaps.
-- [docs/tooling-roadmap.md](docs/tooling-roadmap.md) — evaluated open-source
-  tooling and the deliberately deferred adoption sequence.
 - [sync/README.md](sync/README.md) — verification commands.
 - [docs/replica-manufacturing-readiness.md](docs/replica-manufacturing-readiness.md)
   — fabrication-package integrity and the current design hold.

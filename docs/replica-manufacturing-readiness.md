@@ -14,13 +14,13 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1610 | PASS |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1640 | PASS |
 | Order readiness | `fab/gerbers/order-readiness.md` | 2914 | PASS |
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2874 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2598 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 14079 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 14761 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8548 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |

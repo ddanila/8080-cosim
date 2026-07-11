@@ -11,15 +11,16 @@ history.
   criteria.
 - `architecture.md` — data flow and scope of each verification layer.
 - `vision.md` — project invariant and source-of-truth policy.
+- `hardware-map.md` — concise software-visible machine map and physical
+  boundary.
+- `photo-registration.md` — current photo-evidence workflow and accepted paths.
 - `source-coverage-audit.md` — adopted external evidence and remaining source
   gaps.
-- `tooling-roadmap.md` — evaluated open-source tooling, evidence boundaries,
-  and the deferred adoption order.
 
-## Current generated evidence
+## Current evidence
 
-These reports are outputs of scripts or checks. Their status applies only to
-the boundary named by the report.
+Most reports are outputs of scripts or checks; a few are consolidated durable
+findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
   `unmodeled-footprint-inventory.md`, `owner-measurement-shortlist.md`.
@@ -36,8 +37,9 @@ the boundary named by the report.
 - Media/software: `vendored-disk-catalog.md`, `basic-disk-extraction.md`, and
   `cartridge-basic-boundary.md`, plus the current disk-BASIC/Monitor guards.
 
-Each generated report names its regeneration command. CI reruns the reports
-that guard active boundaries and fails if their committed output changes.
+The producing scripts live under `scripts/`, `kicad/`, or `sync/`. CI reruns
+the reports that guard active boundaries and fails if their committed output
+changes.
 
 ## Reference-area READMEs
 

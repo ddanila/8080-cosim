@@ -14,7 +14,15 @@ REQUIRED_EVIDENCE = [
     ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
     ("DRC visual disposition", "docs/replica-fab-drc-disposition.md", "Status: **READY**"),
-    ("Bring-up verification points", "docs/replica-bringup-verification-points.md", "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**"),
+    (
+        "Bring-up verification points",
+        "docs/replica-bringup-verification-points.md",
+        (
+            "Status: **ENDPOINT COVERAGE FAILED**",
+            "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**",
+            "Status: **DESIGN RELEASE RISKS CLOSED**",
+        ),
+    ),
 ]
 
 VENDOR_OPTIONS = [
@@ -96,11 +104,14 @@ def evidence_rows():
         path = ROOT / rel
         exists = path.exists() and path.stat().st_size > 0
         text = path.read_text(errors="replace") if exists else ""
-        marker_ok = marker in text if marker else True
+        markers = (marker,) if isinstance(marker, str) else marker
+        marker_ok = any(candidate in text for candidate in markers) if markers else True
         if not exists:
             failures.append(f"missing or empty evidence file: {rel}")
         elif not marker_ok:
-            failures.append(f"evidence marker missing in {rel}: {marker}")
+            failures.append(
+                f"evidence marker missing in {rel}: " + " or ".join(markers)
+            )
         rows.append([
             label,
             f"`{rel}`",

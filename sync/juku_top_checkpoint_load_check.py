@@ -215,8 +215,8 @@ def main() -> int:
         "  boundary and reaches the first post-checkpoint PIC/keyboard events.",
         "- Peripheral state coverage is limited to the visible latches needed at",
         "  the 30,000-write pre-PIC boundary.",
-        "- The next resume step is extending the checkpoint-run proof from the",
-        "  first post-checkpoint PIC/keyboard events toward FDC I/O and EKDOS `A>`.",
+        "- This loader remains a regression-narrowing diagnostic. Uninterrupted",
+        "  reset-to-EKDOS evidence is the stronger user-visible milestone.",
     ]
     if failures:
         lines.extend(["", "## Failures", ""])

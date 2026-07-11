@@ -15,7 +15,7 @@ elaborates `hdl/juku_top.v` with Yosys, and compares mapped endpoint
 partitions. It uses a real KiCad netlist when compatible `kicad-cli` is
 available and the board JSON directly otherwise.
 
-Current scope: 99 mapped instances and 231 compared nets. Placement-only
+Current scope: 99 mapped instances and 232 compared nets. Placement-only
 footprints, unnetted pins, analog passives, and explicit simulation-only ports
 are outside this result.
 
@@ -76,6 +76,5 @@ reset-to-prompt reports are the stronger evidence where both exist.
 The FDC, USART, PIT/PPI/PIC, memory timing, and video helpers are scoped to
 guarded Juku behavior. They are not complete drop-in models of every original
 chip. Most importantly, behavioral success cannot supply the missing D2/D94
-wiring, D30 section B, or the pin-level connectivity of the 10 placement-only
-official ICs;
-those are fabrication-release blockers tracked in `PLAN.md`.
+wiring and PROM truth, D30 section B, or the functional connectivity of the 9
+FDC-support ICs; those are fabrication-release blockers tracked in `PLAN.md`.

@@ -61,6 +61,22 @@ def main() -> int:
         if design_held and "hold" not in text.lower() and "not released" not in text.lower():
             failures.append(f"{path} does not expose the active design hold")
 
+    lvs_scope: dict[str, tuple[int, int]] = {}
+    for path in ("README.md", "PLAN.md", "sync/README.md"):
+        match = re.search(
+            r"(\d+) mapped instances and (\d+) (?:matched |compared )?nets",
+            read(path),
+        )
+        if not match:
+            failures.append(f"{path} does not expose the current LVS scope")
+        else:
+            lvs_scope[path] = (int(match.group(1)), int(match.group(2)))
+    if len(set(lvs_scope.values())) > 1:
+        failures.append(
+            "LVS scope disagrees across public docs: "
+            + ", ".join(f"{path}={scope[0]}/{scope[1]}" for path, scope in lvs_scope.items())
+        )
+
     manufacturing = read("docs/replica-manufacturing-readiness.md")
     recorded_package_digests: dict[str, set[str]] = {}
     for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
@@ -126,18 +142,23 @@ def main() -> int:
 
     unmodeled = evidence["unmodeled ICs"]
     expected_unmodeled = ("D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106")
-    unmodeled_count_match = re.search(r"Footprint-only ICs present in source PCB, routed PCB, and DSN: `(\d+)`", unmodeled)
+    unmodeled_count_match = re.search(r"and `(\d+)` promoted FDC devices", unmodeled)
     unmodeled_count = None
     if unmodeled_count_match:
         unmodeled_count = int(unmodeled_count_match.group(1))
-        if unmodeled_count and f"{unmodeled_count} official IC footprints" not in core["README.md"]:
-            failures.append("README does not expose the current placement-only IC count")
+        if unmodeled_count and not re.search(
+            rf"{unmodeled_count}\s+official\s+FDC-support\s+ICs",
+            core["README.md"],
+        ):
+            failures.append("README does not expose the current untraced FDC-device count")
     if unmodeled_count == len(expected_unmodeled):
         for ref in expected_unmodeled:
             if f"| `{ref}` |" not in unmodeled:
-                failures.append(f"unmodeled-footprint report count is 10 but omits {ref}")
-    if unmodeled_count and f"{unmodeled_count} official placement-only IC footprints" not in board:
-        failures.append("board JSON does not expose all placement-only official ICs as a design boundary")
+                failures.append(
+                    f"unmodeled-footprint report count is {unmodeled_count} but omits {ref}"
+                )
+    if unmodeled_count and f"{unmodeled_count} official FDC devices with untraced functional pins" not in board:
+        failures.append("board JSON does not expose all untraced FDC devices as a design boundary")
 
     risk_match = re.search(r"Verification-point nets: `(\d+)`", evidence["source-risk nets"])
     if risk_match:
@@ -147,6 +168,9 @@ def main() -> int:
             core["README.md"],
         ):
             failures.append("README does not expose the current residual source-risk net count")
+        for path in ("PLAN.md", "hdl/README.md"):
+            if not re.search(rf"\b{risk_count}\b[^\n]*source-risk", read(path)):
+                failures.append(f"{path} does not expose the current residual source-risk net count")
 
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),

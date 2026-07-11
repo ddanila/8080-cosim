@@ -18,10 +18,10 @@ removed. `PXL_20260710_202708344.jpg` is the close footprint view; the other six
 retain wider placement context. “VG93 removed” describes the photographed
 maintenance state, not a non-FDC board population.
 
-The solder-side view reverses the component-side left/right coordinate. Keep
-that mirror relationship explicit when registering pads to reference
-designators. The July batches have been adopted as source evidence but have not
-yet been used to promote any new endpoint or net claim.
+The solder-side view reverses the component-side left/right coordinate. The
+registration manifest preserves that mirror relationship. Reviewed two-sided
+paths have promoted five D2 address inputs and three D94-to-D93 FDC controls;
+all other seeded observations remain measurement requests.
 
 The JPEGs are Git LFS objects. Run `git lfs pull` after cloning; pointer stubs
 do not count as available visual evidence, and `sync/reference_artifact_check.sh`
