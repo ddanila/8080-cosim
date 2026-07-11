@@ -83,7 +83,6 @@ yet modeled as nets.
 | `D53` | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` | sheet-2 memory-timing continuity or source-proved NC |
 | `D59` | `1:XIN, 5:I5, 6:O6, 8:O8, 9:I9, 10:O10` | sheet-2 timing-chain continuity |
 | `D93` | `1:NC_BACK_BIAS, 15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` | continuity from an actual `.009` FDC-populated board |
-| `D94` | `4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` | .092 dump/table plus enable/output continuity |
 | `D95` | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` | continuity from an actual `.009` FDC-populated board |
 | `D96` | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` | continuity from an actual `.009` FDC-populated board |
 | `D97` | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` | continuity from an actual `.009` FDC-populated board |
@@ -93,9 +92,9 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `43`
+- Generated bring-up verification nets: `48`
 - `FDC`: `3` net(s)
-- `logic`: `16` net(s)
+- `logic`: `21` net(s)
 - `memory/decode`: `6` net(s)
 - `sound/analog`: `2` net(s)
 - `timing/I/O`: `5` net(s)

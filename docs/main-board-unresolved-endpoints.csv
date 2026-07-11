@@ -205,12 +205,6 @@ P0,D93,34,VG93_FDC,TR00,PLAN physical-connectivity blocker
 P0,D93,35,VG93_FDC,INDEX,PLAN physical-connectivity blocker
 P0,D93,36,VG93_FDC,WPRT,PLAN physical-connectivity blocker
 P0,D93,40,VG93_FDC,VDD_12V,PLAN physical-connectivity blocker
-P0,D94,15,RE3_PROM_092,E_N,PLAN physical-connectivity blocker
-P0,D94,4,RE3_PROM_092,D3,PLAN physical-connectivity blocker
-P0,D94,5,RE3_PROM_092,D4,PLAN physical-connectivity blocker
-P0,D94,6,RE3_PROM_092,D5,PLAN physical-connectivity blocker
-P0,D94,7,RE3_PROM_092,D6,PLAN physical-connectivity blocker
-P0,D94,9,RE3_PROM_092,D7,PLAN physical-connectivity blocker
 P0,D95,1,KP12_MUX,OE0_N,PLAN physical-connectivity blocker
 P0,D95,10,KP12_MUX,D10,PLAN physical-connectivity blocker
 P0,D95,11,KP12_MUX,D11,PLAN physical-connectivity blocker

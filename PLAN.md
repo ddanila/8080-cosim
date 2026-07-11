@@ -53,6 +53,9 @@ closed and the corrected board has been rerouted and reviewed.
    photo-proven D94.1/.2/.3 paths to D93.4/.3/.2
    (`FDC_RE_N`/`FDC_CS_N`/`FDC_WE_N`). Resolve pin 15 and D3-D7 destinations.
    The corrected horizontal D94/D100/D98 placement must then be rerouted.
+   All five remaining output pads and pin 15 now have explicit photo-grounded
+   boundary nets, so they are no longer misreported as unused/unconnected;
+   their far destinations/source and `.092` contents remain unresolved.
 3. **Close the WAIT/READY revision boundary.** D2 inputs and D0/pin 12 are now
    modeled, D105 is modeled and routed, and D30 section A is closed. Resolve
    D30 section B pins 8/11/13 and the pin-10/pin-12 source, then reconcile the
@@ -74,7 +77,7 @@ PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
 inputs instead passes 789,879 lockstep reads through 130 ms.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 43 source-risk nets and 9 official FDC
+   current generated evidence lists 48 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.

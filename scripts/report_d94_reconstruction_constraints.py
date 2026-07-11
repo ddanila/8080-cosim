@@ -215,6 +215,7 @@ def main() -> int:
 
     enable_rows: list[str] = []
     enable_ok = True
+    enable_accounted = False
     for pin, role in enable_pins:
         net = net_for_pin(board, "D94", pin)
         if net is None:
@@ -222,7 +223,10 @@ def main() -> int:
             enable_rows.append(f"| {pin} | {role} | - | MISSING |")
         else:
             name, src = net
+            enable_accounted = True
             enable_rows.append(f"| {pin} | {role} | `{name}` | {src or '-'} |")
+            if re.search(r"boundary|unresolved|cannot be uniquely|unknown|pending", src, re.I):
+                enable_ok = False
 
     dsn_pin_roles = dict(pin_roles)
     dsn_pin_roles.update({"8": "GND", "16": "VCC"})
@@ -406,7 +410,9 @@ def main() -> int:
             f"| PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
+            f"| Enable pad/fanout is represented as an unresolved boundary | {'PASS' if enable_accounted and not enable_ok else 'FAIL'} | `D94_EN_BOUNDARY` |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
+            f"| Every D94 output pad has an explicit net/boundary | {'PASS' if len(output_nets) == len(output_pins) else 'FAIL'} | {len(output_nets)}/{len(output_pins)} output pins netted |",
             f"| Every unresolved D94 output has a photographed copper departure | {'PASS' if all_remaining_outputs_depart else 'FAIL'} | component-side local-fit observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
             f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
             f"| Repository-wide `.092` artifact filename exists | {'PASS' if repo_candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in repo_candidates) if repo_candidates else 'no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync'} |",
@@ -428,9 +434,10 @@ def main() -> int:
             "  D94 `.092` substitute.",
             "- Local two-sided fits and continuous copper now establish D0-D2 as the",
             "  private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources",
-            "  still do not provide pin 15, D3-D7 destinations, or PROM contents.",
+            "  still do not provide pin 15's source, D3-D7 destinations, or PROM contents.",
             "- Registered component-side local fits show copper departing every remaining",
-            "  output pad D3-D7 (pins 4-7 and 9). Their far destinations remain unknown,",
+            "  output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary",
+            "  nets. Their far destinations remain unknown,",
             "  but none may be reconstructed as an unused/NC PROM output.",
             "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
             "  in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in",
@@ -470,7 +477,7 @@ def main() -> int:
             "",
             "D94 is a 32 x 8 PROM. The address pins are traced, so the reachable",
             "rows are mechanically known, but every row byte is still unknown because",
-            "the `.092` programming table/dump is absent and D3-D7 remain unassigned.",
+            "the `.092` programming table/dump is absent and D3-D7 destinations remain unknown.",
             "",
             "| Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
@@ -486,7 +493,8 @@ def main() -> int:
             "  inputs are wired to `BA11..BA15`.",
             "- Known output destinations: D0-D2 drive the private D93 read/select/write",
             "  controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.",
-            "- Unknown: D94 pin 15 (`E_N`) and D3-D7 destinations remain untraced, and no",
+            "- Unknown: D94 pin 15's upstream source and D3-D7 far destinations remain",
+            "  unresolved behind explicit boundary nets, and no",
             "  `ДГШ5.106.092` programming table or dump is present under the",
             "  repository artifact scan.",
             "- D3-D7 are destination-unknown, not unused: registered component-side",

@@ -434,10 +434,15 @@ module juku_top (
                        .drq(fdc_drq), .intrq(fdc_intrq));
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1), .vss_gnd(1'b0), .vcc_5v(1'b1));
     wire d94_d3, d94_d4, d94_d5, d94_d6, d94_d7;
+`ifdef YOSYS
+    wire d94_en_boundary;
+`else
+    tri0 d94_en_boundary;
+`endif
     // July-2026 two-sided local photo registration + continuous component
     // copper: D94.1(D0)->D93.4 RE, .2(D1)->D93.3 CS, .3(D2)->D93.2 WE.
     // The photographs show no branch to the formerly assumed global I/O rails.
-    re3_prom_092 U_D94 (.a(BA[15:11]), .e_n(1'b0),
+    re3_prom_092 U_D94 (.a(BA[15:11]), .e_n(d94_en_boundary),
                         .d({d94_d7, d94_d6, d94_d5, d94_d4,
                             d94_d3, fdc_prom_we_n, fdc_prom_cs_n, fdc_prom_re_n}));
 

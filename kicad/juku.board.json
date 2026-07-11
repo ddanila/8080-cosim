@@ -12650,6 +12650,30 @@
    "src": "July-2026 two-sided local fit + continuous component copper",
    "nodes": [["D94", "3"], ["D93", "2"]]
   },
+  "D94_D3": {
+   "src": "July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary",
+   "nodes": [["D94", "4"]]
+  },
+  "D94_D4": {
+   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary",
+   "nodes": [["D94", "5"]]
+  },
+  "D94_D5": {
+   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary",
+   "nodes": [["D94", "6"]]
+  },
+  "D94_D6": {
+   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 7; far destination remains a boundary",
+   "nodes": [["D94", "7"]]
+  },
+  "D94_D7": {
+   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary",
+   "nodes": [["D94", "9"]]
+  },
+  "D94_EN_BOUNDARY": {
+   "src": "July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the adjacent tile",
+   "nodes": [["D94", "15"]]
+  },
   "FDC_DAL0": {
    "src": "datasheet (8287 B-side -> ВГ93 DAL)",
    "nodes": [

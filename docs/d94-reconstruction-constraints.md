@@ -25,7 +25,7 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 | 12 | A2 | `BA13` | scan |
 | 13 | A3 | `BA14` | scan |
 | 14 | A4 | `BA15` | scan |
-| 15 | E_N | - | MISSING |
+| 15 | E_N | `D94_EN_BOUNDARY` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the adjacent tile |
 
 ## Output Pins
 
@@ -34,11 +34,11 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 | 1 | D0 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper |
 | 2 | D1 | `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper |
 | 3 | D2 | `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper |
-| 4 | D3 | - | not traced/netted |
-| 5 | D4 | - | not traced/netted |
-| 6 | D5 | - | not traced/netted |
-| 7 | D6 | - | not traced/netted |
-| 9 | D7 | - | not traced/netted |
+| 4 | D3 | `D94_D3` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary |
+| 5 | D4 | `D94_D4` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
+| 6 | D5 | `D94_D5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
+| 7 | D6 | `D94_D6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 7; far destination remains a boundary |
+| 9 | D7 | `D94_D7` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 
 ## KiCad DSN Cross-check
 
@@ -74,18 +74,18 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | 1 | D0 | `FDC_RE_N` | PASS |
 | 2 | D1 | `FDC_CS_N` | PASS |
 | 3 | D2 | `FDC_WE_N` | PASS |
-| 4 | D3 | - | unnetted in PCB |
-| 5 | D4 | - | unnetted in PCB |
-| 6 | D5 | - | unnetted in PCB |
-| 7 | D6 | - | unnetted in PCB |
+| 4 | D3 | `D94_D3` | PASS |
+| 5 | D4 | `D94_D4` | PASS |
+| 6 | D5 | `D94_D5` | PASS |
+| 7 | D6 | `D94_D6` | PASS |
 | 8 | GND | `GND` | PASS |
-| 9 | D7 | - | unnetted in PCB |
+| 9 | D7 | `D94_D7` | PASS |
 | 10 | A0 | `BA11` | PASS |
 | 11 | A1 | `BA12` | PASS |
 | 12 | A2 | `BA13` | PASS |
 | 13 | A3 | `BA14` | PASS |
 | 14 | A4 | `BA15` | PASS |
-| 15 | E_N | - | unnetted in PCB |
+| 15 | E_N | `D94_EN_BOUNDARY` | PASS |
 | 16 | VCC | `P5V` | PASS |
 
 ## Current Evidence Checks
@@ -98,7 +98,9 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
-| Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N` |
+| Enable pad/fanout is represented as an unresolved boundary | PASS | `D94_EN_BOUNDARY` |
+| Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N`, `D94_D3`, `D94_D4`, `D94_D5`, `D94_D6`, `D94_D7` |
+| Every D94 output pad has an explicit net/boundary | PASS | 8/8 output pins netted |
 | Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 5, 6, 7, 9 |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
 | Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
@@ -120,9 +122,10 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   D94 `.092` substitute.
 - Local two-sided fits and continuous copper now establish D0-D2 as the
   private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources
-  still do not provide pin 15, D3-D7 destinations, or PROM contents.
+  still do not provide pin 15's source, D3-D7 destinations, or PROM contents.
 - Registered component-side local fits show copper departing every remaining
-  output pad D3-D7 (pins 4-7 and 9). Their far destinations remain unknown,
+  output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary
+  nets. Their far destinations remain unknown,
   but none may be reconstructed as an unused/NC PROM output.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
   in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in
@@ -162,7 +165,7 @@ the visible local segment.
 
 D94 is a 32 x 8 PROM. The address pins are traced, so the reachable
 rows are mechanically known, but every row byte is still unknown because
-the `.092` programming table/dump is absent and D3-D7 remain unassigned.
+the `.092` programming table/dump is absent and D3-D7 destinations remain unknown.
 
 | Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -205,7 +208,8 @@ the `.092` programming table/dump is absent and D3-D7 remain unassigned.
   inputs are wired to `BA11..BA15`.
 - Known output destinations: D0-D2 drive the private D93 read/select/write
   controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.
-- Unknown: D94 pin 15 (`E_N`) and D3-D7 destinations remain untraced, and no
+- Unknown: D94 pin 15's upstream source and D3-D7 far destinations remain
+  unresolved behind explicit boundary nets, and no
   `ДГШ5.106.092` programming table or dump is present under the
   repository artifact scan.
 - D3-D7 are destination-unknown, not unused: registered component-side

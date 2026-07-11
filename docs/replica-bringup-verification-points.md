@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `43`
-- Verification-point endpoints checked in PCB: `233`
+- Verification-point nets: `48`
+- Verification-point endpoints checked in PCB: `238`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1987`
-- All board endpoints checked in routed PCB: `1987`
+- All board endpoints checked in source PCB: `1993`
+- All board endpoints checked in routed PCB: `1993`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 16 |
+| logic | 21 |
 | memory/decode | 6 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 233/233 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 233/233 net names matched |
+| Risk endpoints present on PCB pads | PASS | 238/238 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 238/238 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1987/1987 | 1987/1987 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/1987 | 1920/1987 | FAIL |
+| `kicad/juku.kicad_pcb` | 1993/1993 | 1993/1993 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/1993 | 1920/1993 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -63,6 +63,12 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A15: D2.6`
 - `A9: D2.7`
 - `D13_4_D105_2: D11.20`
+- `D94_D3: D94.4`
+- `D94_D4: D94.5`
+- `D94_D5: D94.6`
+- `D94_D6: D94.7`
+- `D94_D7: D94.9`
+- `D94_EN_BOUNDARY: D94.15`
 - `D98_Y1_R94: D98.3`
 - `D98_Y1_R94: R94.1`
 - `D98_Y3_S1_2: D98.7`
@@ -145,6 +151,11 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D39_MEMCYC` | memory/decode | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_D3` | logic | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destinat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_D4` | logic | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_D6` | logic | `D94.7` | July-2026 registered component/solder local fits prove copper departs D94 output pin 7; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_D7` | logic | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `FDC_DDEN` | FDC | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its l... | Confirm density-control level against drive/emulator behavior. |
 | `FDC_DRQ` | FDC | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
