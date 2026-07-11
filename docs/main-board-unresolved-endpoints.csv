@@ -111,7 +111,7 @@ P1,D40,6,CT16_CTR,D3,functional endpoint lacks disposition
 P1,D40,7,CT16_CTR,EP,functional endpoint lacks disposition
 P1,D40,9,CT16_CTR,PE_N,functional endpoint lacks disposition
 P0,D41,1,IR16,DS,PLAN physical-connectivity blocker
-P0,D41,10,IR16,symbol-union boundary,PLAN physical-connectivity blocker
+P0,D41,10,IR16,Q,PLAN physical-connectivity blocker
 P0,D41,2,IR16,A,PLAN physical-connectivity blocker
 P0,D41,3,IR16,B,PLAN physical-connectivity blocker
 P0,D41,4,IR16,C,PLAN physical-connectivity blocker

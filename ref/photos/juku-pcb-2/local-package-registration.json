@@ -64,6 +64,18 @@
       "note": "Fits the D4 input row independently to identify the five remote D2 solder-trace landings."
     },
     {
+      "refdes": "D41",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2204.0, 1954.0], "use": "fit", "observation": "upper-right contact beside the right-facing package notch"},
+        {"pin": "4", "image_px": [2034.5, 1954.0], "use": "check", "observation": "independent fourth contact on the upper row"},
+        {"pin": "7", "image_px": [1865.0, 1954.0], "use": "fit", "observation": "upper-left contact at the far end of the same coherent row"}
+      ],
+      "note": "The physical К555ИР16 is horizontal with its notch to the right. This package-local fit replaces global seed projections that landed in the parallel-rail field left of the actual IC."
+    },
+    {
       "refdes": "D93",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",

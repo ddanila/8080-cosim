@@ -3036,13 +3036,14 @@
     "8": "G",
     "9": "CK",
     "1": "DS",
+    "10": "Q",
     "13": "QA",
     "12": "QB"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary]"
+    "pins": "sheet-2 LATCH chain: ИР16 D41, outputs B(12)/A(13); standard serial Q/pin10 is now an explicit unresolved functional endpoint; inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary]; July-2026 package-local photo fit corrects the horizontal notch-right landing"
    }
   },
   {

@@ -71,7 +71,7 @@ yet modeled as nets.
 | `D102` | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` | continuity from an actual `.009` FDC-populated board |
 | `D106` | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` | continuity from an actual `.009` FDC-populated board |
 | `D28` | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` | continuity from an actual `.009` FDC-populated board |
-| `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK` | sheet-2 timing-chain continuity |
+| `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:Q` | sheet-2 timing-chain continuity |
 | `D93` | `19:MR_N, 24:CLK` | continuity from an actual `.009` FDC-populated board |
 | `D94` | `4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` | .092 dump/table plus enable/output continuity |
 | `D95` | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` | continuity from an actual `.009` FDC-populated board |
