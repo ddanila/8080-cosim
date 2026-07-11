@@ -35,7 +35,7 @@ REQUIRED = [
 ]
 
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
-PIN_CLOSURE_REFS = {"D2", "D10", "D41", "D93", "D94", "D100", "S4"} | FDC_SUPPORT_REFS
+PIN_CLOSURE_REFS = {"D2", "D10", "D11", "D41", "D93", "D94", "D100", "S4"} | FDC_SUPPORT_REFS
 
 
 def read(path: Path) -> str:
@@ -119,6 +119,8 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
             evidence = ".092 dump/table plus enable/output continuity"
         elif ref in {"D10", "D93", "D100"} | FDC_SUPPORT_REFS:
             evidence = "continuity from an actual `.009` FDC-populated board"
+        elif ref == "D11":
+            evidence = "sheet-1 continuity plus `docs/serial-handoff.md`"
         elif ref == "D41":
             evidence = "sheet-2 timing-chain continuity"
         elif ref == "S4":
@@ -143,7 +145,7 @@ def main() -> int:
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
-        ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**")),
+        ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**")),
         ("D41 timing boundary guarded", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 OUTPUTS GUARDED / INPUT TIMING BUS PENDING**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**")),

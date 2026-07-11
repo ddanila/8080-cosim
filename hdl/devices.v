@@ -570,7 +570,8 @@ module pit_8253 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 endmodule
 
 module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk, rxc, txc,
-                   output wire txd, rts, dtr, input wire rxd);
+                   output wire txd, rts, dtr, rxrdy, txrdy, syndet, txempty,
+                   input wire rxd, cts_n, reset, dsr_n);
     reg [7:0] mode = 8'h00, command = 8'h00, rx_data = 8'h00;
     reg mode_seen = 1'b0;
 
@@ -590,6 +591,10 @@ module usart_8251 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n
     assign txd = txd_r;
     assign rts = ~command[5];
     assign dtr = ~command[1];
+    assign rxrdy = rx_ready;
+    assign txrdy = ~tx_busy;
+    assign txempty = ~tx_busy;
+    assign syndet = 1'b0;
 
     always @(negedge wr_n) if (~cs_n) begin
         if (A) begin

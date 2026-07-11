@@ -1,6 +1,6 @@
 # Serial handoff
 
-Status: **SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING**
+Status: **SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING**
 
 This generated report separates the serial-port facts already guarded by
 the board JSON and HDL from the remaining functional serial boundary.
@@ -20,6 +20,7 @@ python3 scripts/report_serial_handoff.py
 | Check | Result | Evidence |
 | --- | --- | --- |
 | D11 is the board USART | PASS | board JSON |
+| D11 complete auxiliary pin contract is exposed | PASS | КР580ВВ51А/8251 datasheet contract |
 | D11 chip select is decoded | PASS | `CS_D11` |
 | D11 register select BA0 is wired | PASS | `BA0` |
 | D11 data bit DB0 is wired | PASS | `DB0` |
@@ -72,5 +73,9 @@ python3 scripts/report_serial_handoff.py
 - `sync/serial_check.sh` now proves a scoped USART behavior slice:
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
+- D11 auxiliary pins remain physical-source blockers:
+  14:RXRDY, 15:TXRDY, 16:SYNDET, 17:CTS_N, 18:TXEMPTY, 20:CLK, 21:RESET, 22:DSR_N.
+  Trace each destination or record a source-proved intentional NC before
+  treating the USART portion of the PCB as complete.
 - External X3 loopback, electrical levels, and full 8251 sync/parity
-  modes remain Tier-2 bench/software work, not PCB-truth blockers.
+  modes remain Tier-2 bench/software work after that PCB-truth boundary.

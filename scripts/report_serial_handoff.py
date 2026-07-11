@@ -9,6 +9,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "serial-handoff.md"
+AUXILIARY_PINS = {
+    "14": "RXRDY", "15": "TXRDY", "16": "SYNDET", "17": "CTS_N",
+    "18": "TXEMPTY", "20": "CLK", "21": "RESET", "22": "DSR_N",
+}
 
 
 def load_board() -> dict:
@@ -38,6 +42,14 @@ def chip_type(board: dict, ref: str) -> str:
     return ""
 
 
+def chip(board: dict, ref: str) -> dict:
+    return next((item for item in board["chips"] if item.get("ref") == ref), {})
+
+
+def pin_is_netted(board: dict, ref: str, pin: str) -> bool:
+    return any([ref, pin] in net.get("nodes", []) for net in board["nets"].values())
+
+
 def marker(path: str, *needles: str) -> bool:
     text = (ROOT / path).read_text(errors="replace")
     return all(needle in text for needle in needles)
@@ -51,6 +63,14 @@ def check_rows(board: dict) -> list[list[object]]:
     checks: list[tuple[str, bool, str]] = []
     checks.append(
         ("D11 is the board USART", chip_type(board, "D11") == "USART8251", "board JSON")
+    )
+    checks.append(
+        (
+            "D11 complete auxiliary pin contract is exposed",
+            all(chip(board, "D11").get("pins", {}).get(pin) == role
+                for pin, role in AUXILIARY_PINS.items()),
+            "КР580ВВ51А/8251 datasheet contract",
+        )
     )
     checks.append(
         ("D11 chip select is decoded", has_node(board, "CS_D11", "D11", "11"), "`CS_D11`")
@@ -150,7 +170,7 @@ def main() -> int:
     board = load_board()
     rows = check_rows(board)
     status = (
-        "SERIAL USART BEHAVIOR GUARDED / EXTERNAL LOOPBACK PENDING"
+        "SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING"
         if all_pass(rows)
         else "SERIAL HANDOFF REGRESSION"
     )
@@ -216,8 +236,15 @@ def main() -> int:
             "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
             "  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven",
             "  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.",
+            "- D11 auxiliary pins remain physical-source blockers:",
+            "  " + ", ".join(
+                f"{pin}:{role}" for pin, role in AUXILIARY_PINS.items()
+                if not pin_is_netted(board, "D11", pin)
+            ) + ".",
+            "  Trace each destination or record a source-proved intentional NC before",
+            "  treating the USART portion of the PCB as complete.",
             "- External X3 loopback, electrical levels, and full 8251 sync/parity",
-            "  modes remain Tier-2 bench/software work, not PCB-truth blockers.",
+            "  modes remain Tier-2 bench/software work after that PCB-truth boundary.",
             "",
         ]
     )

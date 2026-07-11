@@ -574,12 +574,20 @@
     "24": "DTR",
     "3": "RXD",
     "25": "RXC",
-    "9": "TXC"
+    "9": "TXC",
+    "14": "RXRDY",
+    "15": "TXRDY",
+    "16": "SYNDET",
+    "17": "CTS_N",
+    "18": "TXEMPTY",
+    "20": "CLK",
+    "21": "RESET",
+    "22": "DSR_N"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "verified"
+    "pins": "verified used data/control/serial pins; КР580ВВ51А/8251 standard contract restored for RXRDY, TXRDY, SYNDET, CTS, TXEMPTY, CLK, RESET, and DSR; their target-board destinations or intentional NC state require source confirmation"
    }
   },
   {

@@ -464,7 +464,8 @@ module juku_top (
     wire ser_txd, ser_rts, ser_dtr, ser_rxd;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .rxc(pit_baud), .txc(pit_baud),
-                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxd(ser_rxd));
+                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(), .txrdy(), .syndet(), .txempty(),
+                      .rxd(ser_rxd), .cts_n(1'b0), .reset(1'b0), .dsr_n(1'b0));
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
     // D3=TTL SOUT, D12=OC SOUT, D104=SIN receiver. TxD fans to the SOUT/TTL/OC drivers (same data, diff levels).
