@@ -24,7 +24,7 @@ python3 scripts/report_io_decode_boundary.py
 | D9 region-enable inputs are tied to REV | PASS | `REV`: D6.10 -> D9.4/D9.5 |
 | D9 select inputs are BA10..BA12 | PASS | `BA10`, `BA11`, `BA12` into D9.A/B/C |
 | D7 input strobes are wired to IOWR/IORD | PASS | `IOWR`/`IORD` fanout |
-| D9 chip-select outputs are routed to the modeled peripherals | PASS | `CS_D10`..`CS_FDC` |
+| D9 chip-select outputs are routed to the modeled peripherals | PASS | `CS_D10`..`CS_FDC` plus private D94-to-D93 controls |
 | D25 bus turnaround handoff is guarded | PASS | `D25_T`: D7.6 -> D25.11 |
 
 ## Pending Boundary Checks
@@ -45,8 +45,8 @@ python3 scripts/report_io_decode_boundary.py
 | `BA10` | `D15.21, D16.21, D17.21, D18.21, D19.21, D20.21, D21.21, D22.21, D24.3, D4.12, ... (+2)` | scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1) |
 | `BA11` | `D15.23, D16.23, D17.23, D18.23, D19.23, D20.23, D21.23, D22.23, D24.4, D4.13, ... (+5)` | scan |
 | `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.16, ... (+5)` | scan |
-| `IOWR` | `D10.2, D11.10, D26.36, D27.36, D29.8, D5.27, D54.23, D55.23, D57.23, D7.12, ... (+1)` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed) |
-| `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.7, D5.25, D54.22, D55.22, D57.22, D7.13, ... (+1)` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed) |
+| `IOWR` | `D10.2, D11.10, D26.36, D27.36, D29.8, D5.27, D54.23, D55.23, D57.23, D7.12` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch |
+| `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.7, D5.25, D54.22, D55.22, D57.22, D7.13` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch |
 | `D25_T` | `D25.11, D7.6` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24 |
 | `CS_D10` | `D10.1, D9.15` | prom |
 | `CS_D26` | `D26.6, D9.14` | prom |
@@ -55,7 +55,7 @@ python3 scripts/report_io_decode_boundary.py
 | `CS_D54` | `D54.21, D9.11` | prom |
 | `CS_D55` | `D55.21, D9.10` | prom |
 | `CS_D57` | `D57.21, D9.9` | prom |
-| `CS_FDC` | `D9.7, D93.3` | sheet-3 delta: CS7 (io 1C) -> ВГ93 on .009 |
+| `CS_FDC` | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch |
 
 ## Interpretation
 

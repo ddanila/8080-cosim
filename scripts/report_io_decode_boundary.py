@@ -73,8 +73,8 @@ def main() -> int:
         ),
         (
             "D7 input strobes are wired to IOWR/IORD",
-            has_nodes(board, "IOWR", {("D7", "12"), ("D93", "2"), ("D11", "10"), ("D26", "36"), ("D27", "36")})
-            and has_nodes(board, "IORD", {("D7", "13"), ("D93", "4"), ("D11", "13"), ("D26", "5"), ("D27", "5")}),
+            has_nodes(board, "IOWR", {("D7", "12"), ("D11", "10"), ("D26", "36"), ("D27", "36")})
+            and has_nodes(board, "IORD", {("D7", "13"), ("D11", "13"), ("D26", "5"), ("D27", "5")}),
             "`IOWR`/`IORD` fanout",
         ),
         (
@@ -86,8 +86,11 @@ def main() -> int:
             and has_nodes(board, "CS_D54", {("D9", "11"), ("D54", "21")})
             and has_nodes(board, "CS_D55", {("D9", "10"), ("D55", "21")})
             and has_nodes(board, "CS_D57", {("D9", "9"), ("D57", "21")})
-            and has_nodes(board, "CS_FDC", {("D9", "7"), ("D93", "3")}),
-            "`CS_D10`..`CS_FDC`",
+            and has_nodes(board, "CS_FDC", {("D9", "7")})
+            and has_nodes(board, "FDC_RE_N", {("D94", "1"), ("D93", "4")})
+            and has_nodes(board, "FDC_CS_N", {("D94", "2"), ("D93", "3")})
+            and has_nodes(board, "FDC_WE_N", {("D94", "3"), ("D93", "2")}),
+            "`CS_D10`..`CS_FDC` plus private D94-to-D93 controls",
         ),
         (
             "D25 bus turnaround handoff is guarded",
