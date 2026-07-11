@@ -18,14 +18,18 @@ def sha256(data: bytes) -> str:
 def d6_byte(row: int) -> int:
     """D6 К556РТ4 reconstructed memory decode row.
 
+    Physical row order is {BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4}, matching
+    D6 A0-A7 pins 5,6,7,4,3,2,1,15. The fallback currently constrains only
+    PC2; PC3/PC4 remain enumerated address dimensions whose effect needs a dump.
+
     Bit convention follows the HDL output comments in hdl/devices.v:
     D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N.
     """
     ba15_14 = (row >> 6) & 0x3
     ba15_13 = (row >> 5) & 0x7
     ba15_11 = (row >> 3) & 0x1F
-    mode0 = (row >> 2) & 0x1
-    rom_region = ba15_14 == 0 if mode0 == 0 else ba15_11 >= 0x1B
+    pc2 = (row >> 2) & 0x1
+    rom_region = ba15_14 == 0 if pc2 == 0 else ba15_11 >= 0x1B
     rom_n = 0 if rom_region else 1
     ram_n = 0 if not rom_region else 1
     rev = 0 if ba15_13 == 0 else 1
@@ -122,7 +126,10 @@ def main() -> int:
             "## Boundaries",
             "",
             "- `d6_rt4_memory_decode_reconstructed.*` covers only the D6 memory decode",
-            "  fallback. Its reset-mode overlay selects ROM for `0x0000..0x3FFF`.",
+            "  fallback. Row order is `{BA15..BA11, PC2, PC3, PC4}`, preserving all",
+            "  eight traced physical inputs. Its reset-mode overlay selects ROM for",
+            "  `0x0000..0x3FFF`; current functional evidence constrains PC2, while",
+            "  PC3/PC4 are enumerated but truth-invariant until a dump proves otherwise.",
             "  It does not claim to be the dumped factory byte table.",
             "- `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager",
             "  fallback for programmed drawing family `ДГШ5.106.039`.",

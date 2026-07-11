@@ -24,7 +24,10 @@ sync/prom_fallback_check.sh
 ## Boundaries
 
 - `d6_rt4_memory_decode_reconstructed.*` covers only the D6 memory decode
-  fallback. Its reset-mode overlay selects ROM for `0x0000..0x3FFF`.
+  fallback. Row order is `{BA15..BA11, PC2, PC3, PC4}`, preserving all
+  eight traced physical inputs. Its reset-mode overlay selects ROM for
+  `0x0000..0x3FFF`; current functional evidence constrains PC2, while
+  PC3/PC4 are enumerated but truth-invariant until a dump proves otherwise.
   It does not claim to be the dumped factory byte table.
 - `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager
   fallback for programmed drawing family `ДГШ5.106.039`.
