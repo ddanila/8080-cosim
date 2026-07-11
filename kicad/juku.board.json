@@ -11896,7 +11896,7 @@
    ]
   },
   "FDC_INTRQ": {
-   "src": "assumed (MAME-era IR0; owner-verify)",
+   "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",
    "nodes": [
     [
      "D93",
@@ -11909,7 +11909,7 @@
    ]
   },
   "FDC_DRQ": {
-   "src": "assumed (MAME-era IR1; owner-verify)",
+   "src": "MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required",
    "nodes": [
     [
      "D93",
@@ -11922,7 +11922,7 @@
    ]
   },
   "FDC_DDEN": {
-   "src": "cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37, so the retained memory-mode rail and added FDC DDEN are one physical net",
+   "src": "cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity",
    "nodes": [
     [
      "D26",

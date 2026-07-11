@@ -91,6 +91,7 @@ def main() -> int:
     )
     if not d93_socket_fits_ok:
         failures.append("D93 two-sided socket package fits are absent or invalid")
+    d93_solder_pins = d93_solder_fits[0].get("projected_pins", {}) if d93_solder_fits else {}
 
     rows: list[list[object]] = []
 
@@ -234,6 +235,34 @@ def main() -> int:
         "| --- | --- | --- | --- |",
     ]
     lines.extend(table_row(row) for row in rows)
+    lines.extend(
+        [
+            "",
+            "## D93 Source-Risk Pad Review",
+            "",
+            "The two-sided package fits make the controller-end pad identity exact.",
+            "The available photographs do not show an unbroken path from these pads",
+            "to the modeled remote endpoints.",
+            "",
+            "| Signal | D93 pin | Solder-image coordinate | Photograph result |",
+            "| --- | ---: | --- | --- |",
+        ]
+    )
+    for signal, pin, remote in (
+        ("`FDC_DDEN`", "37", "D26.13 / D6.15"),
+        ("`FDC_DRQ`", "38", "D10.19"),
+        ("`FDC_INTRQ`", "39", "D10.18"),
+    ):
+        point = d93_solder_pins.get(pin)
+        coordinate = f"`({point[0]:.3f}, {point[1]:.3f}) px`" if point else "MISSING"
+        if point is None:
+            failures.append(f"D93 solder fit lacks pin {pin}")
+        lines.append(table_row([
+            signal,
+            pin,
+            coordinate,
+            f"pad and local copper identified; no photographed unbroken path to {remote}",
+        ]))
     lines.extend(
         [
             "",

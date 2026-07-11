@@ -54,6 +54,18 @@ nets; no photographed branch supports the former global I/O-rail assumption.
 | `FDC_INTRQ` | OWNER-VERIFY | D93 INTRQ to PIC IR0 | MAME-era assumption; owner continuity required |
 | `FDC_DRQ` | OWNER-VERIFY | D93 DRQ to PIC IR1 | MAME-era assumption; owner continuity required |
 
+## D93 Source-Risk Pad Review
+
+The two-sided package fits make the controller-end pad identity exact.
+The available photographs do not show an unbroken path from these pads
+to the modeled remote endpoints.
+
+| Signal | D93 pin | Solder-image coordinate | Photograph result |
+| --- | ---: | --- | --- |
+| `FDC_DDEN` | 37 | `(1276.300, 1618.983) px` | pad and local copper identified; no photographed unbroken path to D26.13 / D6.15 |
+| `FDC_DRQ` | 38 | `(1276.622, 1571.944) px` | pad and local copper identified; no photographed unbroken path to D10.19 |
+| `FDC_INTRQ` | 39 | `(1276.944, 1524.906) px` | pad and local copper identified; no photographed unbroken path to D10.18 |
+
 ## Remaining Owner Continuity Points
 
 | Pin | Status | Needed fact | Current boundary |
@@ -77,9 +89,9 @@ nets; no photographed branch supports the former global I/O-rail assumption.
 | `FDC_DAL5` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.14, D93.12` |
 | `FDC_DAL6` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.13, D93.13` |
 | `FDC_DAL7` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.12, D93.14` |
-| `FDC_DDEN` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37, so the retained memory-mode rail and added FDC DDEN are one physical net | `D26.13, D93.37, D6.15` |
-| `FDC_DRQ` | assumed (MAME-era IR1; owner-verify) | `D93.38, D10.19` |
-| `FDC_INTRQ` | assumed (MAME-era IR0; owner-verify) | `D93.39, D10.18` |
+| `FDC_DDEN` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity | `D26.13, D93.37, D6.15` |
+| `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
+| `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper | `D94.1, D93.4` |
 | `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper | `D94.3, D93.2` |
 | `IORD` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+2)` |
