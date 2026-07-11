@@ -700,6 +700,10 @@
     "6": "D5",
     "5": "D6",
     "4": "D7",
+    "12": "CAS0",
+    "13": "CAS1",
+    "15": "CAS2",
+    "16": "SP_EN",
     "17": "INTR",
     "26": "INTA_N",
     "25": "IR7",
@@ -707,12 +711,14 @@
     "23": "IR5",
     "22": "IR4",
     "18": "IR0",
-    "19": "IR1"
+    "19": "IR1",
+    "20": "IR2",
+    "21": "IR3"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "verified; IR map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB",
+    "pins": "КР580ВН59/8259 standard contract restored for CAS0-2, SP/EN, and IR2/IR3; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; omitted-function destinations/NC state require source confirmation",
     "note": "КР580ВН59 marking and notch-left posture are photo-confirmed; July-2026 affine component fit corrects the source footprint centre to (192.44,110.08) mm"
    }
   },

@@ -481,8 +481,9 @@ module juku_top (
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .clk(sclk_i), .motor_on(ppi0_pc[2]), .side(ppi0_pc[6]),
                       .drq(fdc_drq), .intrq(fdc_intrq));
-    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n), .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir1(fdc_drq), .ir0(fdc_intrq),
-                      .intr(intr), .inta_n(inta_n));
+    pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
+                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(1'b0), .ir2(1'b0), .ir1(fdc_drq), .ir0(fdc_intrq),
+                      .cas0(), .cas1(), .cas2(), .sp_en(), .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
     intr_ctl  U_INTR (.osc(sclk_i), .dbin(dbin), .inta_n(inta_n), .iowr_n(iowr_n),

@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `240`
 - Nets modeled: `340`
-- Chip-level fidelity gaps: `55`
+- Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `43`
 - Documented intentional no-connect pins: `16`
 
@@ -43,7 +43,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 13 |
 | clock/I/O | 0 | 4 |
-| logic/source | 5 | 5 |
+| logic/source | 8 | 5 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 13 |
@@ -82,9 +82,12 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D1` | `CPU8080` | scan | scan; HOLD/pin13 grounded on sheet-1; INTE/pin16 omitted/NC; WAIT/pin24 visibly enters the lower control bundle with far destination unread |
+| `D10` | `PIC8259` | scan | КР580ВН59/8259 standard contract restored for CAS0-2, SP/EN, and IR2/IR3; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-... |
 | `D100` | `BUF8287` | datasheet | .009 official (5th ВА87 = FDC bus buffer) 8287 std; OE/T gating [assumed] |
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with 10 tied... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->... |
+| `D42` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
+| `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
 
 ### placement/refdes
@@ -147,6 +150,7 @@ model is historical-source-complete.
 
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
+| `D10` | logic/source | `12:CAS0, 13:CAS1, 15:CAS2, 16:SP_EN, 20:IR2, 21:IR3, 22:IR4` |
 | `D100` | logic/source | `9:OE_N, 11:T` |
 | `D101` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D102` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
@@ -154,6 +158,8 @@ model is historical-source-complete.
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` |
+| `D42` | logic/source | `8:G, 11:QC, 12:QB, 13:QA` |
+| `D43` | logic/source | `1:DS, 8:G, 11:QC, 12:QB, 13:QA` |
 | `D94` | PROM truth | `4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |

@@ -875,11 +875,15 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     assign D = (~cs_n & ~rd_n) ? read_data : 8'bz;
 endmodule
 
-module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, input wire ir7, ir6, ir5, ir1, ir0,   // structural IR7/IR6 (sheet-1; functional INT behavior stays in the sim adjunct)
+module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n,
+                 input wire ir7, ir6, ir5, ir3, ir2, ir1, ir0,
+                 output wire cas0, cas1, cas2, inout wire sp_en,
                  output wire intr, input wire inta_n);
     reg [7:0] regs [0:1]; initial begin regs[0]=0; regs[1]=0; end
     always @(*) if (~cs_n & ~wr_n) regs[A] = D;
     assign D = (~cs_n & ~rd_n) ? regs[A] : 8'bz;
+    assign cas0 = 1'bz; assign cas1 = 1'bz; assign cas2 = 1'bz;
+    assign sp_en = 1'bz;
     assign intr = 1'bz;     // INT pin driven by the intr_ctl sim adjunct (below); z so it can
 endmodule                   // -- with frame ticks off, intr_ctl drives 0 => boot byte-identical
 

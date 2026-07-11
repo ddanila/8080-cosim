@@ -2,6 +2,12 @@ priority,ref,pin,type,role,reason
 P1,C12,2,C_TRIM,P2,functional endpoint lacks disposition
 P1,C73,1,C_TRIM,P1,functional endpoint lacks disposition
 P1,C73,2,C_TRIM,P2,functional endpoint lacks disposition
+P1,D10,12,PIC8259,CAS0,functional endpoint lacks disposition
+P1,D10,13,PIC8259,CAS1,functional endpoint lacks disposition
+P1,D10,15,PIC8259,CAS2,functional endpoint lacks disposition
+P1,D10,16,PIC8259,SP_EN,functional endpoint lacks disposition
+P1,D10,20,PIC8259,IR2,functional endpoint lacks disposition
+P1,D10,21,PIC8259,IR3,functional endpoint lacks disposition
 P1,D10,22,PIC8259,IR4,functional endpoint lacks disposition
 P0,D100,11,BUF8287,T,PLAN physical-connectivity blocker
 P0,D100,9,BUF8287,OE_N,PLAN physical-connectivity blocker

@@ -73,6 +73,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 
 | Pin | Status | Needed fact | Current boundary |
 | --- | --- | --- | --- |
+| D10.12/.13/.15/.16/.20/.21/.22 | MISSING | 8259 CAS0-2, SP/EN, and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; destinations or intentional NC state are not |
 | D93.19 `MR_N` | MISSING | master reset source | photo with ВГ93 removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | photo with ВГ93 removed from its socket plus solder fit localizes the pad/fanout; clock source remains unproved |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
@@ -108,6 +109,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   on pin 15, D3-D7 destinations, and the `.092` truth table.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
-  D100.11.
+  D100.11. Disposition D10 CAS0-2, SP/EN, and IR2-IR4 as connected or
+  intentional NCs; they were previously hidden by an incomplete pin contract.
 - Keep `docs/fdc-readiness.md` as the HDL/media behavior guard; this
   report is only the physical-board handoff checklist.
