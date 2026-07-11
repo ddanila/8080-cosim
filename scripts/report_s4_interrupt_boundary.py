@@ -79,8 +79,12 @@ def main() -> int:
         ),
         (
             "D3 and D10 package roles match the interrupt path",
-            d3.get("type") == "LN2" and d10.get("type") == "PIC8259",
-            "D3 inverter sections feed D10 PIC inputs",
+            d3.get("type") == "LN2" and d10.get("type") == "PIC8259"
+            and all(d3.get("pins", {}).get(pin) == role for pin, role in {
+                "1": "I1", "2": "O2", "3": "I3", "4": "O4", "5": "I5", "6": "O6",
+                "9": "I9", "8": "O8", "11": "A", "10": "Y", "13": "I13", "12": "O12",
+            }.items()),
+            "D3 complete hex-inverter contract; traced sections feed D10 PIC inputs",
         ),
     ]
     boundary_checks = [

@@ -741,18 +741,30 @@
     "11": "I11",
     "10": "O10",
     "3": "I3",
-    "4": "O4"
+    "4": "O4",
+    "5": "I5",
+    "6": "O6",
+    "9": "I9",
+    "8": "O8"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "placeholder"
+    "pins": "К531ЛН1 standard hex-inverter package contract; sheet-2 traces sections 1->2 oscillator, 3->4 PST CLK, 11->10 timing chain, and 13->12 LOAD; sections 5->6 and 9->8 require traced destinations or explicit NC proof"
    }
   },
   {
    "ref": "D35",
    "type": "CLK_PHASE",
    "pins": {
+    "1": "I1",
+    "2": "O2",
+    "3": "I3",
+    "4": "O4",
+    "5": "I5",
+    "6": "O6",
+    "9": "I9",
+    "8": "O8",
     "10": "PHI1",
     "12": "PHI2",
     "11": "OSC",
@@ -761,7 +773,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ЛН5 outputs Φ1=10/Φ2=12 read on scan"
+    "pins": "К155ЛН5 standard hex-inverter package contract; scan proves phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), while D35.4 is already traced to R39.1/VID_MIX2; remaining section inputs/outputs require continuity or explicit NC proof"
    }
   },
   {
@@ -2246,12 +2258,18 @@
     "13": "I13",
     "12": "O12",
     "1": "I1",
-    "2": "O2"
+    "2": "O2",
+    "3": "I3",
+    "4": "O4",
+    "5": "I5",
+    "6": "O6",
+    "9": "I9",
+    "8": "O8"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К561ЛН2 sec 11->10 (АП2 is 8-pin -> the 11/10 section is the ЛН2)"
+    "pins": "К561ЛН2 standard hex-inverter package contract; traced sections 11->10 serial S_TTL, 13->12 IR7, and 1->2 IR6; sections 3->4, 5->6, and 9->8 require traced destinations or explicit NC proof"
    }
   },
   {

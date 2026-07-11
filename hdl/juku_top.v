@@ -85,7 +85,8 @@ module juku_top (
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(1'b1), .g(1'b1), .ck(1'b0),
                      .ds(1'b0), .qd(d41_qd), .qa(d41_qa), .qb(d41_qb), .qc(d41_qc));
     wire pst_clk;
-    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8), .i3(osc_clk), .o4(pst_clk));   // ring sect 3->4 = PST CLK; 13->12 = LOAD rail 6
+    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8),
+                     .i3(osc_clk), .o4(pst_clk), .i5(1'bz), .o6(), .i9(1'bz), .o8());   // unresolved sections remain open
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
     // D39 sections 3+4 (bite-2): NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4; then NAND(out3,
     // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the
@@ -116,7 +117,8 @@ module juku_top (
                      .a2(cas_n), .b2(1'b1), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 [pending]
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
-    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl));
+    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl),
+                     .i1(1'bz), .o2(), .i3(1'bz), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4;
     wire d105_mrd_inv, d105_wait_stage;
 `ifdef YOSYS
@@ -475,7 +477,8 @@ module juku_top (
     wire int7_raw, int6_raw, ir7_sig, ir6_sig;
     assign int7_raw = 1'b1; assign int6_raw = 1'b1;   // X1 expansion -INT7/-INT6 [boundary: idle high]
     ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
-                   .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_sig));  // sec 11->10: TTL SOUT = ~TxD; + INT6/INT7 inverters (sheet-1)
+                   .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_sig),
+                   .i3(1'bz), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());  // unused sections remain explicit unresolved package pins
     la18_oc U_D12 (.i1(ser_txd), .i2(1'b1), .o3(s_oc));
     up2_rcv U_D104(.a(s_sin), .y(ser_rxd));
     serial_conn U_X3 (.sout(s_sout), .rts(s_rts), .dtp(s_dtp), .ttl_sout(s_ttl), .oc_sout(s_oc), .sin(s_sin));

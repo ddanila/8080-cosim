@@ -32,6 +32,7 @@ python3 scripts/report_memory_timing_boundary.py
 
 | Boundary | Result | Current endpoints |
 | --- | --- | --- |
+| D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 is guarded; other restored sections remain continuity boundaries |
 | D53 Y4-Y7 remain explicit unresolved functional pins | PASS | D53.11/.10/.9/.7 require traced destinations or explicit NC proof |
 | D36_CAS_IN remains source-boundary only | PASS | D36.12, D36.13 |
 | D39_MEMCYC remains source-boundary only | PASS | D39.3, D39.4 |

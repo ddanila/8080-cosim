@@ -210,17 +210,22 @@ module eprom_8k #(parameter HALF = 0) (input wire [12:0] a, inout wire [7:0] d, 
 endmodule
 
 // ===== clock subsystem (discrete; replaces the non-existent 8224) =====
-module ln1_osc   (input wire xin, input wire i13, i11, i3, output wire osc, o12, o10, o4);   // D59 ЛН1 crystal oscillator + LOAD/LATCH buffer sections (sheet-2)
+module ln1_osc   (input wire xin, input wire i13, i11, i3, i5, i9,
+                  output wire osc, o12, o10, o4, o6, o8);   // D59 ЛН1 complete hex-inverter package
     assign osc = xin;   // functional: the ЛН1 osc's output tracks its drive (crystal loop abstracted)
     assign o12 = ~i13;  // section 13->12 = LOAD   (D38.6 -> D59.13, sheet-2)
     assign o10 = ~i11;  // section 11->10 = D39.8 -> D59.11 chain (sheet-2)
     assign o4  = ~i3;   // section 3->4 = PST CLK (3rd ring section; buffered osc out -> D44.UP)
+    assign o6  = ~i5;   // physical section 5->6; board destination unresolved
+    assign o8  = ~i9;   // physical section 9->8; board destination unresolved
 endmodule
 // D35 ЛН5 phase generator. Merge step 3: the discrete clock mesh feeding `osc` is an un-traced
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
 // INTENT here -- a non-overlapping Φ1/Φ2. This is a sim clock: it only sets the simulated VALUE;
 // the D35->CPU net wiring (what LVS compares) is unchanged, so LVS stays IN SYNC.
-module clk_phase (input wire osc, input wire phsel, output reg phi1, phi2, phi2ttl);
+module clk_phase (input wire osc, phsel, i1, i3, i5, i9,
+                  output reg phi1, phi2, phi2ttl, output wire o2, o4, o6, o8);
+    assign o2 = ~i1; assign o4 = ~i3; assign o6 = ~i5; assign o8 = ~i9;
     // osc = clkg_d36 (D36.6 -> D35.11, the LVS-visible mesh input). phsel = a clean divider phase bit
     // (d40_q[1], sim-only): the real D35 ЛН5 shapes Φ1/Φ2 by inverting the mesh output through RC
     // (R37/R36 360Ω + the CPU clock caps) -- an analog waveform not derivable from the netlist. So for
@@ -667,9 +672,11 @@ module ap2_drv (input wire i2, i3, output wire o6, o7);
 endmodule
 // К561ЛН2 hex inverter (CMOS), D3: section 11->10 makes TTL SOUT = ~TxD (the schematic section I
 // first misread as an АП2 -- АП2 is 8-pin, so pins 11/10 could only be the ЛН2).
-module ln2_inv (input wire a, i13, i1, output wire y, o12, o2);   // D3 К561ЛН2: 3 used sections
+module ln2_inv (input wire a, i13, i1, i3, i5, i9,
+                output wire y, o12, o2, o4, o6, o8);   // D3 К561ЛН2 complete hex-inverter package
     assign o12 = ~i13;   // 13->12: -INT7 (X1.113B) -> IR7 (D10.25), via S4 [series switch, unmodeled]
     assign o2  = ~i1;    // 1->2:   -INT6 (X1.113C) -> IR6 (D10.24), via S4
+    assign o4  = ~i3; assign o6 = ~i5; assign o8 = ~i9; // unresolved physical sections
 // original section:
     assign y = ~a;
 endmodule

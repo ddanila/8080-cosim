@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `240`
 - Nets modeled: `340`
-- Chip-level fidelity gaps: `61`
+- Chip-level fidelity gaps: `62`
 - Net-level source-risk gaps: `43`
 - Documented intentional no-connect pins: `16`
 
@@ -43,7 +43,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 13 |
 | clock/I/O | 0 | 4 |
-| logic/source | 10 | 5 |
+| logic/source | 11 | 5 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 13 |
@@ -87,6 +87,7 @@ parts placement and Tier-3 reproduction.
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with 10 tied... |
 | `D11` | `USART8251` | scan | verified used data/control/serial pins; КР580ВВ51А/8251 standard contract restored for RXRDY, TXRDY, SYNDET, CTS, TXEMPTY, CLK, RESET, and DSR; their target-... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->... |
+| `D35` | `CLK_PHASE` | scan | К155ЛН5 standard hex-inverter package contract; scan proves phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), while D35.4 is already traced to R39.1/VID_MIX2... |
 | `D42` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) Western Digital FD179X-01 primary datasheet contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/IN... |
@@ -161,6 +162,7 @@ model is historical-source-complete.
 | `D11` | logic/source | `14:RXRDY, 15:TXRDY, 16:SYNDET, 17:CTS_N, 18:TXEMPTY, 20:CLK, 21:RESET, 22:DSR_N` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
+| `D35` | logic/source | `1:I1, 2:O2, 3:I3, 5:I5, 6:O6, 8:O8, 9:I9` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` |
 | `D42` | logic/source | `8:G, 11:QC, 12:QB, 13:QA` |
 | `D43` | logic/source | `1:DS, 8:G, 11:QC, 12:QB, 13:QA` |

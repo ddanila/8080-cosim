@@ -35,7 +35,7 @@ REQUIRED = [
 ]
 
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
-PIN_CLOSURE_REFS = {"D2", "D10", "D11", "D41", "D53", "D93", "D94", "D100", "S4"} | FDC_SUPPORT_REFS
+PIN_CLOSURE_REFS = {"D2", "D3", "D10", "D11", "D35", "D41", "D53", "D59", "D93", "D94", "D100", "S4"} | FDC_SUPPORT_REFS
 
 
 def read(path: Path) -> str:
@@ -121,8 +121,10 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
             evidence = "continuity from an actual `.009` FDC-populated board"
         elif ref == "D11":
             evidence = "sheet-1 continuity plus `docs/serial-handoff.md`"
-        elif ref == "D41":
+        elif ref in {"D35", "D41", "D59"}:
             evidence = "sheet-2 timing-chain continuity"
+        elif ref == "D3":
+            evidence = "sheet-1 serial/interrupt continuity or source-proved NC"
         elif ref == "D53":
             evidence = "sheet-2 memory-timing continuity or source-proved NC"
         elif ref == "S4":
