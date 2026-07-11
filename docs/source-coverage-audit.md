@@ -21,6 +21,7 @@ deliberately omitted.
 | Arvutimuuseum/community pages | historical context and owner/contact leads only | promote a claim into the repo only when a file, checksum, photo, or measurement is obtained |
 | Emu80v4 and public WD1793 HDL/software models | reviewed as implementation checklists; no code adopted | the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core |
 | Western Digital FD179X-01 datasheet plus local WD1772 transistor/PLA reference | checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted and PLA normalized for future comparison | datasheet proves package functions and supplies, not Juku-specific D93 support-net continuity or D94 truth |
+| Owner photographs of `ДГШ5.109.009 СБ` | 26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D4/D11 solder-side cut/patch instructions | assembly detail proves intended modifications and locality, not every copper endpoint or programmable-part truth |
 
 ## Current source requests
 
@@ -40,6 +41,7 @@ web/archive work should be tied to one of these named deliverables.
 | `ref/schematics/juku_es101_processor_module.pdf` | present |
 | `ref/schematics/es101_emaplaat.pdf` | present |
 | `ref/Juku_official_chip_BOM.pdf` | present |
+| `ref/photos/dgsh5-109-009-sb/README.md` | present |
 | `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf` | present |
 | `ref/baltijets-tech-docs/009 FDDs.pdf` | present |
 | `ref/ekdos-source/EKDOS30.ASM` | present |

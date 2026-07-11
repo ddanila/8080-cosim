@@ -11,8 +11,9 @@ assembly drawing, or owner continuity measurements have been removed.
   `ДГШ5.109.009 ПЭЗ` in `ref/Juku_official_chip_BOM.pdf`.
 - Primary electrical evidence: the three schematic sheets in
   `ref/schematics/`, the official parts list, and owner continuity readings.
-- Physical placement evidence: `es101_emaplaat.pdf` and the 50 owner photos in
-  this directory.
+- Physical placement evidence: `es101_emaplaat.pdf`, the 50 owner board photos
+  in this directory, and the 26 owner photographs of the authoritative
+  `ДГШ5.109.009 СБ` assembly drawing under `ref/photos/dgsh5-109-009-sb/`.
 - The current normalized endpoint record is `kicad/juku.board.json`.
 
 ## Settled identity corrections
@@ -107,6 +108,22 @@ drawing agree on these endpoints:
 The settled wire links are represented in the board model with endpoint
 provenance. The unread reset-chain endpoint remains a boundary rather than an
 invented connection.
+
+## Factory solder-side cuts and patches
+
+The new `ДГШ5.109.009 СБ` photographs settle another class of apparent
+“bodge.” Its factory `Вид В` detail explicitly calls out positions 150 and 159
+on the mounting side and draws the cut/patch areas at D56, D15, D4, and D11.
+Close-ups `PXL_20260711_114626340.jpg`, `114633498.jpg`, and
+`114638730.MP.jpg` preserve those instructions. These features are therefore
+revision-controlled assembly operations, not owner-board damage or optional
+cleanup candidates.
+
+The detail is authoritative for the existence and locality of each operation,
+but it is not a copper schematic and does not by itself prove every endpoint.
+The replica must preserve the resulting electrical topology; any future
+artwork reconstruction must reconcile the unmodified copper with the factory
+cuts/patches before replacing them with an equivalent clean trace.
 
 ## Placement conclusions retained
 
