@@ -128,6 +128,12 @@ The replica must preserve the resulting electrical topology; any future
 artwork reconstruction must reconcile the unmodified copper with the factory
 cuts/patches before replacing them with an equivalent clean trace.
 
+The enlarged D15 detail (`114633498`) further shows that its explicit
+`Разрезать` mark is on an auxiliary vertical trace between the second and third
+drawn vias beside the package, approximately between the eighth and ninth
+visible D15 pad levels. It is not a cut made directly at a D15 lead. The net of
+that via-to-via segment remains to be identified from continuity or sheets 2-6.
+
 ## Placement conclusions retained
 
 - Board outline: `310 x 266 mm` from the owner-measured physical target. An

@@ -230,7 +230,7 @@ def main() -> int:
         (
             "P0",
             "factory Вид В pad mapping",
-            "for D56, D15, D14, and D11 identify every position-150/159 cut pad, removed copper segment, and replacement connection; use `.009 СБ` sheets 2-6 or registered solder-side imagery plus continuity",
+            "for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 specifically identify the net of the auxiliary vertical segment cut between its second and third shown vias (roughly pad levels 8/9); use `.009 СБ` sheets 2-6 or registered solder-side imagery plus continuity",
             "`docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg`",
             "proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release",
         ),
