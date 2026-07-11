@@ -99,9 +99,10 @@ a fit updates coordinates and confidence only; it preserves `measurement`
 state until visible copper or continuity establishes a destination.
 
 Current held-out errors are sub-2.2 px for the accepted D2/D4/D94 package-row
-fits. A direct D106 component fit now replaces projections that landed left of
-the vertical К555ИЕ7 package or on its body; its independent pin-4 check is
-exact at the recorded pixel precision, and all D106 signals remain
+fits. Direct component and reflected solder fits now replace D106 projections
+that landed left of the vertical К555ИЕ7 package, on its body, or between
+solder columns. The independent component pin-4 check is exact and the solder
+pin-5 check is 0.021 px at the recorded precision; all D106 signals remain
 measurements. D28 is the adjacent К155ЛН3 and remains unfitted rather than
 being conflated with D106. D93, D100, and D98 also have useful local fits, but their unresolved
 signals remain measurements where copper is obscured or leaves the visible

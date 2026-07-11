@@ -102,6 +102,18 @@
       "note": "Direct fit to the photographed vertical К555ИЕ7 D106 package. It replaces global projections displaced leftward and onto the body; as with every local fit, it establishes pad identity only, not electrical continuity."
     },
     {
+      "refdes": "D106",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1156.155, 1836.447], "use": "fit", "observation": "top joint of the mirrored pin-1/8 solder column"},
+        {"pin": "5", "image_px": [1154.938, 2020.238], "use": "check", "observation": "independent fifth joint in the same coherent column"},
+        {"pin": "7", "image_px": [1154.329, 2112.165], "use": "fit", "observation": "seventh joint near the bottom of the same coherent column"}
+      ],
+      "note": "Reflected fit to the two photographed 8-pad D106 solder columns. It corrects the package identity and pad locations only; trace destinations remain continuity questions."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
