@@ -88,7 +88,9 @@ extraction work from that set:
    the obscured bridge endpoints are not yet electrically proved.
 2. Wires 17 and 18 now have documented far ends at S1:1/S1:2 from the
    sheets 2-5 wire table; confirm S1 continuity and map the А:17/А:18
-   points to package pins before promotion.
+   points to package pins before promotion. S1 is bracket-mounted, so replace
+   the generated PCB's fictitious on-board S1 header with two physically
+   separate А:17/А:18 wire pads once their local copper is mapped.
 3. Cross-check the corrected D94/D100/D98 placement and connector/off-board
    geometry (X8 300 mm lead, X9 400 mm ribbon, poz. 151 shielded cable)
    before the reroute.

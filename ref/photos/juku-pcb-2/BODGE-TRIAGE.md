@@ -113,6 +113,12 @@ The sheets 2-5 connection table (`ДУБЛИКАТ` scan) now documents both far
 on switch S1; the point-to-package-pin mapping and physical continuity
 confirmation remain the open boundary.
 
+S1 itself is mounted on the top connector bracket, as shown both by sheet 1
+and owner component photograph `PXL_20260710_200402344.jpg`; it is not a
+two-pin PCB header. The PCB-side objects are the remote termination points
+`А:17` and `А:18`. The generated source PCB currently models S1 as an on-board
+header at `(63.5, 183.2)` and must not be routed or released in that form.
+
 ## Factory solder-side cuts and patches
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent

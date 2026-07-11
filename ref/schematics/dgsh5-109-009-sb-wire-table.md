@@ -83,6 +83,13 @@ ends terminate on switch `S1` pins 1 and 2. The 3 cm length of wire 12 is
 consistent with board point 18 sitting in the D98 quadrant directly beside
 S1 on the sheet-1 placement.
 
+S1 is bracket-mounted, not soldered into the processor PCB. Sheet 1 draws the
+pushbutton on the top connector bracket, and owner component photograph
+`PXL_20260710_200402344.jpg` shows the same physical button at the upper-right
+bracket edge. Consequently, `А:17` and `А:18` must become separate PCB wire
+termination pads while S1 remains an off-board schematic/mechanical part. The
+current generated PCB's two-pin S1 header is not a faithful substitute.
+
 ## Sheets 4-5 — Провода to X3 and X4
 
 Поз. 155, wires 15-26 (lengths struck and revised; original ~35, revised
@@ -129,4 +136,6 @@ The `ен` numbers overlap the sheet-1 title-block change table
 These rows document factory intent for the off-board harness and the
 numbered wire links. Before board-model promotion, each `А:N` point must be
 mapped to a package pin via the sheet-1 placement plus owner continuity;
-the table gives point numbers, not pin numbers.
+the table gives point numbers, not pin numbers. In particular, do not route a
+single on-board S1 footprint: first model the physically separate `А:17` and
+`А:18` termination pads and their proved local copper.

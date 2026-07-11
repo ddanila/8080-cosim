@@ -14,6 +14,7 @@ BODGE = ROOT / "ref/photos/juku-pcb-2/BODGE-TRIAGE.md"
 PLAN = ROOT / "PLAN.md"
 WIRE_TABLE_PDF = ROOT / "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf"
 WIRE_TABLE_MD = ROOT / "ref/schematics/dgsh5-109-009-sb-wire-table.md"
+PCB_GENERATOR = ROOT / "kicad/gen_kicad_pcb.py"
 REPORT = ROOT / "docs/assembly-drawing-extraction.md"
 
 
@@ -70,6 +71,18 @@ def main() -> int:
             "Factory wires 17 and 18 carry documented S1 far ends without conflation",
             marker(bodge_text, "| 17 |", "X2/D27 top band", "А:17 - S1:1", "| 18 |", "D98/D96/D99/D97 quadrant", "А:18 - S1:2", "do not conflate with wire 17"),
             "sheets 2-5 wire table rows 11/12 plus owner continuity follow-up",
+        ),
+        (
+            "Bracket-mounted S1 is distinguished from PCB termination pads А:17/А:18",
+            marker(bodge_text, "S1 itself is mounted on the top connector bracket", "two-pin PCB header", "А:17", "А:18")
+            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "separate PCB wire", "current generated PCB"),
+            "sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12",
+        ),
+        (
+            "Known generated-PCB S1 header mismatch is explicitly held from routing",
+            marker(read(PCB_GENERATOR), "'S1':(63.5,183.2,0)")
+            and marker(plan_text, "fictitious on-board S1 header", "А:17/А:18 wire pads"),
+            "`kicad/gen_kicad_pcb.py`; PLAN source-PCB correction boundary",
         ),
         (
             "Connection-table sheets 2-6 are adopted and transcribed",
@@ -130,6 +143,7 @@ def main() -> int:
         "- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.",
         "- Keep D94/D100/D98 horizontal during the source-PCB reroute.",
         "- Wires 17/18 far ends are documented at S1:1/S1:2; confirm continuity and pin mapping before promotion.",
+        "- Do not route the generated on-board S1 header; replace it with separate А:17/А:18 PCB wire pads after their local copper is proved.",
         "- Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.",
         "",
     ]
