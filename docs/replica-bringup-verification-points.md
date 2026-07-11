@@ -16,8 +16,9 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `43`
 - Verification-point endpoints checked in PCB: `233`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2021`
-- All board endpoints checked in routed PCB: `2021`
+- All board endpoints checked in source PCB: `1987`
+- All board endpoints checked in routed PCB: `1987`
+- Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
@@ -44,51 +45,16 @@ behind a risk note.
 
 ## Full Board Endpoint Coverage
 
-Every modeled `kicad/juku.board.json` endpoint is also checked against
-the generated source PCB and the routed fabrication PCB. This is a
+Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against
+the generated source PCB and the routed fabrication PCB. Bracket-mounted
+`S1`, `X3`, `X8`, and `X9` are intentionally excluded because their cable
+landings are separate `A*` PCB footprints. This is a
 fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1986/2021 | 1986/2021 | FAIL |
-| `kicad/juku_routed.kicad_pcb` | 1940/2021 | 1935/2021 | FAIL |
-
-Missing endpoints in `kicad/juku.kicad_pcb`:
-- `D98_Y3_S1_2: S1.2`
-- `GND: X8.1`
-- `GND: X8.5`
-- `KBD_CONTRDAT: X9.9`
-- `KBD_CTRL: X9.8`
-- `KBD_FK: X9.4`
-- `KBD_K0: X9.2`
-- `KBD_K1: X9.3`
-- `KBD_K2: X9.1`
-- `KBD_SC0: X9.11`
-- `KBD_SC1: X9.12`
-- `KBD_SC2: X9.13`
-- `KBD_SC3: X9.14`
-- `KBD_SHIFT: X9.7`
-- `KBD_STB: X9.10`
-- `M12V: X8.8`
-- `P12V: X8.3`
-- `P5V: X8.2`
-- `P5V: X8.6`
-- `P5V: X9.5`
-- `P5V: X9.6`
-- `RESET: D13.6`
-- `RES_RC: S1.1`
-- `S_CTS: X3.5`
-- `S_DSR: X3.6`
-- `S_DTP: X3.11`
-- `S_OC: X3.2`
-- `S_OC: X3.12`
-- `S_RTS: X3.10`
-- `S_SIN: X3.4`
-- `S_SOUT: X3.9`
-- `S_TTL: X3.3`
-- `X3_HARNESS_1: X3.1`
-- `X3_HARNESS_7: X3.7`
-- `X3_HARNESS_8: X3.8`
+| `kicad/juku.kicad_pcb` | 1987/1987 | 1987/1987 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/1987 | 1920/1987 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -105,8 +71,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `FDC_WE_N: D94.3`
 - `GND: R30.2`
 - `GND: A62.1`
-- `GND: X8.1`
-- `GND: X8.5`
 - `KBD_CONTRDAT: A50.1`
 - `KBD_CTRL: A51.1`
 - `KBD_FK: A55.1`
@@ -120,13 +84,9 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `KBD_SHIFT: A52.1`
 - `KBD_STB: A49.1`
 - `M12V: A59.1`
-- `M12V: X8.8`
 - `P12V: A60.1`
-- `P12V: X8.3`
 - `P5V: D10.16`
 - `P5V: A61.1`
-- `P5V: X8.2`
-- `P5V: X8.6`
 - `P5V: R104.2`
 - `P5V: A54.1`
 - `P5V: A53.1`
@@ -143,38 +103,25 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `SER_TXD_INV: D3.8`
 - `SER_TXD_INV: D12.2`
 - `S_CTS: A25.1`
-- `S_CTS: X3.5`
 - `S_CTS: D104.5`
 - `S_DSR: A26.1`
-- `S_DSR: X3.6`
 - `S_DSR: D104.6`
 - `S_DTP: A31.1`
-- `S_DTP: X3.11`
 - `S_OC: R18.1`
 - `S_OC: R30.1`
 - `S_OC: A22.1`
-- `S_OC: X3.2`
 - `S_OC: A32.1`
-- `S_OC: X3.12`
 - `S_RTS: A30.1`
-- `S_RTS: X3.10`
 - `S_SIN: A24.1`
-- `S_SIN: X3.4`
 - `S_SIN: D104.4`
 - `S_SOUT: A29.1`
-- `S_SOUT: X3.9`
 - `S_TTL: A23.1`
-- `S_TTL: X3.3`
 - `X3_HARNESS_1: A21.1`
-- `X3_HARNESS_1: X3.1`
 - `X3_HARNESS_1: R104.1`
 - `X3_HARNESS_7: A27.1`
-- `X3_HARNESS_7: X3.7`
 - `X3_HARNESS_8: A28.1`
-- `X3_HARNESS_8: X3.8`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
-- S1.2: `GND` != `D98_Y3_S1_2`
 - D93.3: `CS_FDC` != `FDC_CS_N`
 - D93.4: `IORD` != `FDC_RE_N`
 - D93.2: `IOWR` != `FDC_WE_N`

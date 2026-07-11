@@ -13,6 +13,7 @@ BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
+OFF_BOARD_REFS = {"S1", "X3", "X8", "X9"}
 
 RISK_RE = re.compile(
     r"assumed|boundary|deferred|untraced|not traced|pending|unread|owner-verify|mame|approx|refine|dump",
@@ -89,10 +90,14 @@ def pcb_pin_nets(path: Path) -> dict[tuple[str, str], str]:
 
 def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str]) -> dict[str, object]:
     checked = 0
+    excluded = 0
     missing = []
     mismatched = []
     for name, net in sorted(board["nets"].items()):
         for ref, pin in net.get("nodes", []):
+            if ref in OFF_BOARD_REFS:
+                excluded += 1
+                continue
             checked += 1
             pcb_net = pcb_nets.get((ref, pin))
             if pcb_net is None:
@@ -101,6 +106,7 @@ def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str]) -> dict
                 mismatched.append(f"{ref}.{pin}: `{pcb_net}` != `{name}`")
     return {
         "checked": checked,
+        "excluded": excluded,
         "missing": missing,
         "mismatched": mismatched,
         "ok": not missing and not mismatched,
@@ -164,6 +170,8 @@ def main() -> int:
         if not RISK_RE.search(risk_text):
             continue
         for ref, pin in net.get("nodes", []):
+            if ref in OFF_BOARD_REFS:
+                continue
             pcb_checked += 1
             pcb_net = pcb_nets.get((ref, pin))
             if pcb_net is None:
@@ -211,6 +219,7 @@ def main() -> int:
         f"- PCB endpoint coverage: `{'PASS' if pcb_ok else 'FAIL'}`",
         f"- All board endpoints checked in source PCB: `{source_coverage['checked']}`",
         f"- All board endpoints checked in routed PCB: `{routed_coverage['checked']}`",
+        f"- Intentional off-board endpoints excluded: `{source_coverage['excluded']}`",
         f"- Full PCB endpoint coverage: `{'PASS' if full_pcb_ok else 'FAIL'}`",
         "",
         "| Category | Nets |",
@@ -248,8 +257,10 @@ def main() -> int:
             "",
             "## Full Board Endpoint Coverage",
             "",
-            "Every modeled `kicad/juku.board.json` endpoint is also checked against",
-            "the generated source PCB and the routed fabrication PCB. This is a",
+            "Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against",
+            "the generated source PCB and the routed fabrication PCB. Bracket-mounted",
+            "`S1`, `X3`, `X8`, and `X9` are intentionally excluded because their cable",
+            "landings are separate `A*` PCB footprints. This is a",
             "fabrication-source coverage gate, not a historical-source proof.",
             "",
             "| PCB | Present | Matching net names | Result |",

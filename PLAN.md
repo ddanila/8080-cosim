@@ -93,10 +93,16 @@ promoted onto the `.009` board: the first pair conflicts with the FDC-era
 КР1818ВГ93 interrupt assignment, and the latter pair still needs target-board
 NC/continuity proof.
 5. **Restore source/routed parity.** The authoritative source PCB contains the
-   accepted D2 address inputs and D94 control outputs. The saved routed PCB
-   still lacks those eight endpoints and retains three superseded D93 net
-   names; `docs/replica-bringup-verification-points.md` must report full
-   endpoint coverage before release.
+   accepted D2/D94, reset/USART, R94, serial-harness, keyboard-harness, and
+   power-cable endpoint changes. The saved routed PCB predates that accumulated
+   source work and retains three superseded D93 net names;
+   `docs/replica-bringup-verification-points.md` must report full endpoint
+   coverage before release.
+
+The source PCB now passes all `1987/1987` PCB-scoped board-JSON endpoints.
+Thirty-four endpoints on bracket-mounted S1/X3/X8/X9 are correctly excluded in
+favor of their physical A-point cable landings. The routed PCB remains the sole
+endpoint-coverage failure.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
