@@ -43,7 +43,13 @@ def main() -> None:
             continue
         fit = fits[(row["refdes"], side)]
         if row["image"] != fit["image"]:
-            raise SystemExit(f"{row['endpoint_id']}: fit image differs from observation image")
+            if row["review_state"] != "candidate":
+                raise SystemExit(f"{row['endpoint_id']}: fit image differs from reviewed observation image")
+            # Newly seeded board-level candidates may select a different
+            # overlapping tile. A validated package-local fit is the stronger
+            # pad-identity record, so move only unreviewed candidates onto its
+            # source image before applying the projected coordinate.
+            row["image"] = fit["image"]
         point = fit["projected_pins"].get(row["pin"])
         if point is None:
             raise SystemExit(f"{row['endpoint_id']}: pin absent from local fit")

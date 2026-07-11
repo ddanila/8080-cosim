@@ -20,13 +20,13 @@ deliberately omitted.
 | [MAME PR #14817](https://github.com/mamedev/mame/pull/14817) | real-hardware-tested 241st raster line and corrected JBASIC byte | already reflected in the local reference and video/BASIC guards |
 | Arvutimuuseum/community pages | historical context and owner/contact leads only | promote a claim into the repo only when a file, checksum, photo, or measurement is obtained |
 | Emu80v4 and public WD1793 HDL/software models | reviewed as implementation checklists; no code adopted | the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core |
-| Local WD1772 transistor/PLA reference | checksum-guarded under `ref/wd1772-vg93/`; PLA normalized for future comparison | deep reference only; not evidence for Juku-specific D93/D94 wiring |
+| Western Digital FD179X-01 datasheet plus local WD1772 transistor/PLA reference | checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted and PLA normalized for future comparison | datasheet proves package functions and supplies, not Juku-specific D93 support-net continuity or D94 truth |
 
 ## Current source requests
 
 1. D2 `ДГШ5.106.037` repeated PROM dump or programming-disk file; all physical inputs and the used D0 output are already traced.
 2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.
-3. Pin-level continuity or explicit redesign/DNP dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. D105 is now modeled and routed.
+3. Pin-level continuity for D93's complete drive interface and +12 V supply, plus explicit dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. D105 is now modeled and routed.
 4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
 5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
 
@@ -53,6 +53,7 @@ web/archive work should be tied to one of these named deliverables.
 | `media/system/EKDOS230.BIN` | present |
 | `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin` | present |
 | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` | present |
+| `ref/wd1772-vg93/fd179x-01-datasheet.pdf` | present |
 | `ref/wd1772-vg93/wd1772.pdf` | present |
 | `ref/wd1772-vg93/wd1772pla.normalized.json` | present |
 | `docs/d2-reconstruction-constraints.md` | present |

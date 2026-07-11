@@ -684,7 +684,10 @@ endmodule
 module serial_conn (inout wire sout, rts, dtp, ttl_sout, oc_sout, sin);
 endmodule
 
-module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, clk,
+module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, mr_n, clk, dden,
+                 output wire step, dirc, early, late, rg, hld, tg43, wg, wdata,
+                 input wire test, hlt, rclk, raw_read, ready, tr00, index, wprt,
+                 inout wire wf_vfoe,
                  input wire motor_on, side, output wire drq, intrq);
     localparam ST_BUSY = 8'h01;
     localparam ST_DRQ = 8'h02;
@@ -718,6 +721,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     assign drq = status[1];
     assign intrq = intrq_r;
+    assign step = 1'bz; assign dirc = 1'bz;
+    assign early = 1'bz; assign late = 1'bz; assign rg = 1'bz;
+    assign hld = 1'bz; assign tg43 = 1'bz;
+    assign wg = 1'bz; assign wdata = 1'bz; assign wf_vfoe = 1'bz;
 
 `ifndef YOSYS
     initial begin

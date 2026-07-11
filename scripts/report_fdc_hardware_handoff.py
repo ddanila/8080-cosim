@@ -10,6 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs" / "photo-registration" / "local-packages" / "report.json"
 REPORT = ROOT / "docs" / "fdc-hardware-handoff.md"
+D93_DRIVE_PINS = {
+    "15": "STEP", "16": "DIRC", "17": "EARLY", "18": "LATE",
+    "22": "TEST", "23": "HLT", "25": "RG", "26": "RCLK",
+    "27": "RAW_READ", "28": "HLD", "29": "TG43", "30": "WG",
+    "31": "WDATA", "32": "READY", "33": "WF_VFOE", "34": "TR00",
+    "35": "INDEX", "36": "WPRT", "40": "VDD_12V",
+}
 
 
 def load_board() -> dict:
@@ -64,6 +71,8 @@ def main() -> int:
     failures: list[str] = []
     if d93.get("type") != "VG93_FDC":
         failures.append("D93 is not typed as VG93_FDC")
+    if not all(d93.get("pins", {}).get(pin) == role for pin, role in D93_DRIVE_PINS.items()):
+        failures.append("D93 full FD1793 drive-interface pin contract is absent or incorrect")
     if d100.get("type") != "BUF8287":
         failures.append("D100 is not typed as BUF8287")
     if d10.get("type") != "PIC8259":
@@ -188,6 +197,21 @@ def main() -> int:
             "standard КР580ВН59 contract and affine package fit are proved; destinations or intentional NC state are not",
         ),
         (
+            "D93.15-.18/.22/.23/.25-.36",
+            "MISSING" if any(
+                not any(has_node(board, name, "D93", pin) for name in board["nets"])
+                for pin in D93_DRIVE_PINS if pin != "40"
+            ) else "WIRED",
+            "step/precompensation, separator, head-load, drive status, and write interface",
+            "primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced",
+        ),
+        (
+            "D93.40 `VDD_12V`",
+            "MISSING" if not any(has_node(board, name, "D93", "40") for name in board["nets"]) else "WIRED",
+            "+12 V controller supply continuity",
+            "primary datasheet requires +12 V; local pad/copper are identified but P12V continuity is not proved",
+        ),
+        (
             "D93.19 `MR_N`",
             "MISSING" if not any(has_node(board, n, "D93", "19") for n in board["nets"]) else "WIRED",
             "master reset source",
@@ -234,6 +258,7 @@ def main() -> int:
         "",
         f"- Board JSON: `{BOARD_JSON.relative_to(ROOT)}`",
         "- D93 package: `КР1818ВГ93` / WD1793-compatible FDC",
+        "- Primary pin source: `ref/wd1772-vg93/fd179x-01-datasheet.pdf`",
         "- D100 package: `КР580ВА87` / Intel 8287-compatible bus transceiver",
         "",
         "## Photograph Applicability",
@@ -338,6 +363,9 @@ def main() -> int:
             "  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and",
             "  D100.11. Disposition D10 CAS0-2, SP/EN, and IR2-IR4 as connected or",
             "  intentional NCs; they were previously hidden by an incomplete pin contract.",
+            "- Trace every restored D93 drive-interface pin through D28/D95-D99/",
+            "  D101/D102/D106, and prove D93.40 to `P12V`; pin 40 is a power-safety",
+            "  blocker, not an optional functional refinement.",
             "- Keep `docs/fdc-readiness.md` as the HDL/media behavior guard; this",
             "  report is only the physical-board handoff checklist.",
             "",

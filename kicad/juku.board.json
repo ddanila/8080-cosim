@@ -3489,16 +3489,35 @@
     "12": "DAL5",
     "13": "DAL6",
     "14": "DAL7",
+    "15": "STEP",
+    "16": "DIRC",
+    "17": "EARLY",
+    "18": "LATE",
     "19": "MR_N",
+    "22": "TEST",
+    "23": "HLT",
     "24": "CLK",
+    "25": "RG",
+    "26": "RCLK",
+    "27": "RAW_READ",
+    "28": "HLD",
+    "29": "TG43",
+    "30": "WG",
+    "31": "WDATA",
+    "32": "READY",
+    "33": "WF_VFOE",
+    "34": "TR00",
+    "35": "INDEX",
+    "36": "WPRT",
     "37": "DDEN",
     "38": "DRQ",
-    "39": "INTRQ"
+    "39": "INTRQ",
+    "40": "VDD_12V"
    },
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "WD1793 standard pinout; July-2026 local photo traces RE/CS/WE privately to D94 D0-D2; Western Digital handbook requires pin 1 (internal back-bias node) left open"
+    "pins": "Western Digital FD179X-01 primary datasheet contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/INTRQ, and VDD pin40 restored; July-2026 local photo traces RE/CS/WE privately to D94 D0-D2; pin 1 internal back-bias node must remain open; all restored drive-interface destinations and +12V continuity require target-board source confirmation"
    }
   },
   {

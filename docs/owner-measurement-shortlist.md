@@ -74,7 +74,7 @@ yet modeled as nets.
 | `D11` | `14:RXRDY, 15:TXRDY, 16:SYNDET, 17:CTS_N, 18:TXEMPTY, 20:CLK, 21:RESET, 22:DSR_N` | sheet-1 continuity plus `docs/serial-handoff.md` |
 | `D28` | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` | continuity from an actual `.009` FDC-populated board |
 | `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` | sheet-2 timing-chain continuity |
-| `D93` | `19:MR_N, 24:CLK` | continuity from an actual `.009` FDC-populated board |
+| `D93` | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` | continuity from an actual `.009` FDC-populated board |
 | `D94` | `4:D3, 5:D4, 6:D5, 7:D6, 9:D7, 15:E_N` | .092 dump/table plus enable/output continuity |
 | `D95` | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` | continuity from an actual `.009` FDC-populated board |
 | `D96` | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` | continuity from an actual `.009` FDC-populated board |

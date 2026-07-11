@@ -41,10 +41,12 @@ closed and the corrected board has been rerouted and reviewed.
 
 ### P0: physical connectivity
 
-1. **Complete FDC-era functional wiring.** D28, D95-D99, D101, D102, and D106
-   have package/power models but no functional signal closure. Trace each
+1. **Complete FDC-era functional wiring.** D93's restored drive-interface pins,
+   plus D28, D95-D99, D101, D102, and D106, have package models but no complete
+   functional signal closure. Trace each
    required pin end-to-end, or record a deliberate redesign/DNP decision and
-   remove the unused function from released artifacts.
+   remove the unused function from released artifacts. D93.40 `VDD_12V` must be
+   proved against the board's +12 V rail before any power-up.
 2. **Finish D94 `.092`.** The source model now has BA11..BA15, power, and the
    photo-proven D94.1/.2/.3 paths to D93.4/.3/.2
    (`FDC_RE_N`/`FDC_CS_N`/`FDC_WE_N`). Resolve pin 15 and D3-D7 destinations.
@@ -66,16 +68,17 @@ closed and the corrected board has been rerouted and reviewed.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
-530 seeded observations have dispositions. Sixteen rows are accepted evidence
-for five D2 address nets and three D94-to-D93 control nets; the other 514 remain
+568 seeded observations have dispositions. Sixteen rows are accepted evidence
+for five D2 address nets and three D94-to-D93 control nets; the other 552 remain
 measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.
 
 Next tracing order:
 
-1. D93 pins 19/24/37/38/39 and D100 pins 9/11, including DRQ/INTRQ, reset,
-   clock, density, output enable, and direction.
+1. D93 pins 15-19, 22-40 and D100 pins 9/11, including the complete drive
+   interface, +12 V supply, DRQ/INTRQ, reset, clock, density, output enable,
+   and direction.
 2. Every functional pin of D28, D95-D99, D101, D102, and D106.
 3. D94 pin 15 and outputs D3-D7, then D30 section B and the D105 WAIT handoff.
 4. D41/memory timing, factory-wire endpoints, connector geometry, and the

@@ -5,6 +5,7 @@ table that were provided as project reference material.
 
 | File | SHA256 | Notes |
 | --- | --- | --- |
+| `fd179x-01-datasheet.pdf` | `e51aef0933d88e7705f6f774ffb3238e8e8096bd9b9d774a985d95ef5766e3ce` | Western Digital `FD 179X-01 Floppy Disk Formatter/Controller Family`, October 1979, 20 pages; primary source for the 40-pin FD1793 contract and pin 40 `VDD` (+12 V). |
 | `wd1772.pdf` | `d3601f97751b029d7effa493aa5094cd4726759eed0f4f34aa290cdf3305f0ef` | One-page KiCad-generated searchable schematic titled `WD1772`, created 2019-07-13. |
 | `wd1772pla.txt` | `687a62103ae5a89a3daf4c1decb8968d730802522fa142e458031545b7a34b10` | ASCII PLA/PLM table with 120 product rows, 19 input columns, and 19 output columns. |
 | `wd1772pla.normalized.csv` | `95d3c4796166d1915918c746773e2955cbc91eb77aea2cffb63d5b54c802aa62` | Spreadsheet-friendly normalized export of the same rows. |
@@ -16,6 +17,12 @@ needs to be replaced with a fuller controller model.
 
 Source interpretation notes captured with the files:
 
+- The FD179X-01 datasheet was retrieved from the Bitsavers Western Digital
+  component archive:
+  <https://www.bitsavers.org/components/westernDigital/FD179X-01_Data_Sheet_Oct1979.pdf>.
+  Its pin tables define pins 15-18 and 22-39 as the full
+  drive interface, pin 1 as the internal back-bias node that must remain open,
+  and supplies VSS/VCC/VDD on pins 20/21/40.
 - The PDF is a KiCad-generated searchable transistor/gate schematic.
 - The accompanying note treats КР1818ВГ93 as effectively a direct FD1773/WD1772
   copy, not just a loose functional analog: internal block placement and signal
