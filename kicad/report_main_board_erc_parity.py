@@ -21,7 +21,7 @@ OUT = ROOT / "fab/audit"
 REPORT = ROOT / "docs/main-board-erc-parity.md"
 ENDPOINTS = ROOT / "docs/main-board-unresolved-endpoints.csv"
 
-P0_REFS = {"D2", "D28", "D30", "D41", "D94", "D95", "D96", "D97", "D98",
+P0_REFS = {"D2", "D28", "D30", "D41", "D93", "D94", "D95", "D96", "D97", "D98",
            "D99", "D100", "D101", "D102", "D105", "D106"}
 P0_MEMORY_REFS = {"D6", "D7", "D25", "D36", "D39", "D53"}
 

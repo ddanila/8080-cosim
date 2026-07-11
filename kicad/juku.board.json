@@ -3476,6 +3476,7 @@
    "ref": "D93",
    "type": "VG93_FDC",
    "pins": {
+    "1": "NC_BACK_BIAS",
     "2": "WE_N",
     "3": "CS_N",
     "4": "RE_N",

@@ -14,17 +14,17 @@ schematic parity against it without a matching routed schematic/project.
 | --- | ---: | --- |
 | ERC error violations | 276 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
-| Explicit board-JSON no-connects | 16 | FAIL |
-| KiCad schematic no-connect markers | 15 | FAIL |
+| Explicit board-JSON no-connects | 16 | PASS |
+| KiCad schematic no-connect markers | 16 | PASS |
 | Functional pins without net or explicit NC | 276 | BLOCK |
-| Unknown/conflicting NC records | 1 | FAIL |
+| Unknown/conflicting NC records | 0 | PASS |
 
 ## Unresolved endpoint priorities
 
 | Priority | Count |
 | --- | ---: |
-| P0 | 154 |
-| P1 | 122 |
+| P0 | 175 |
+| P1 | 101 |
 | P2 | 0 |
 
 The complete machine-readable backlog is
@@ -62,8 +62,6 @@ The complete machine-readable backlog is
 Parity currently passes, but unconnected functional pins and ERC errors remain
 release blockers. They must be traced, redesigned, or individually recorded as
 intentional no-connects. This gate deliberately does not exclude or waive them.
-
-Unknown NC records: `D93.1`
 
 Raw machine-readable reports:
 
