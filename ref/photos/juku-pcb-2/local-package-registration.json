@@ -97,7 +97,19 @@
         {"pin": "10", "image_px": [1417.0, 1658.0], "use": "check", "observation": "independent tenth contact on the same exposed socket row"},
         {"pin": "20", "image_px": [803.0, 1658.0], "use": "fit", "observation": "leftmost contact of the exposed socket upper row"}
       ],
-      "note": "The chip-removed close-up exposes all forty socket contacts and their component-side fanout. Pin 1 is the upper-row contact nearest D94; the printed 40 at the lower-right socket end independently confirms the row orientation."
+      "note": "This close-up was taken with the known КР1818ВГ93 removed from its socket, exposing all forty socket contacts and their component-side fanout. Pin 1 is the upper-row contact nearest D94; the printed 40 at the lower-right socket end independently confirms the row orientation."
+    },
+    {
+      "refdes": "D93",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1559.5, 1479.8], "use": "fit", "observation": "top joint of the mirrored pin-1/20 solder column"},
+        {"pin": "10", "image_px": [1557.1, 1900.2], "use": "check", "observation": "independent tenth joint in the same 20-contact column"},
+        {"pin": "19", "image_px": [1553.7, 2326.5], "use": "fit", "observation": "nineteenth joint near the bottom of the same coherent column"}
+      ],
+      "note": "Original solder tile exposes the full D93 2x20 footprint. This package-local reflected fit replaces board-level projections displaced roughly 80 pixels from the actual solder joints."
     },
     {
       "refdes": "D100",

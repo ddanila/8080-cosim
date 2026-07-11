@@ -24,13 +24,15 @@ python3 scripts/report_fdc_hardware_handoff.py
 
 The July owner-photo batches under `ref/photos/juku-pcb-2/` clearly show a
 populated КР1818ВГ93, add an overlapping 3x3 solder-side grid, and include
-a later component-side view with the VG93 temporarily removed to expose its
-footprint copper. The board is therefore applicable physical evidence for the
+a later component-side view with the known КР1818ВГ93 temporarily removed
+from its socket to expose the footprint copper. The board is therefore
+applicable physical evidence for the
 FDC handoff. The grids are registered and D94/D93 have package-local fits.
-The guarded D93 fit specifically uses `PXL_20260710_202708344.jpg`, where
-the removed controller exposes all 40 socket contacts and the pin-40 end
-marking; this localizes MR_N/pin19 and CLK/pin24 without claiming their far
-destinations.
+The guarded D93 component fit specifically uses `PXL_20260710_202708344.jpg`,
+taken with the known КР1818ВГ93 removed from its socket. It exposes all 40
+contacts and the pin-40 end marking. A reflected solder fit then lands on the
+actual joints; together they localize MR_N/pin19 and CLK/pin24 without
+claiming their far destinations.
 Continuous copper promotes the private D94.1/.2/.3 to D93.4/.3/.2 control
 nets; no photographed branch supports the former global I/O-rail assumption.
 
@@ -56,8 +58,8 @@ nets; no photographed branch supports the former global I/O-rail assumption.
 
 | Pin | Status | Needed fact | Current boundary |
 | --- | --- | --- | --- |
-| D93.19 `MR_N` | MISSING | master reset source | chip-removed photo localizes the pad/departure; source not netted in board JSON |
-| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | chip-removed photo localizes the pad/fanout; clock source not netted in board JSON |
+| D93.19 `MR_N` | MISSING | master reset source | photo with ВГ93 removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
+| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | photo with ВГ93 removed from its socket plus solder fit localizes the pad/fanout; clock source remains unproved |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
 | D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
 

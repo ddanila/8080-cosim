@@ -25,7 +25,7 @@ endpoint table contains 502 reviewed rows:
 | `accepted` | 16 | two-sided evidence adopted into the board model |
 | `measurement` | 486 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 66 `local-package-fit`, 391
+Confidence metadata consists of 68 `local-package-fit`, 389
 `registration-only`, and 45 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
@@ -42,12 +42,14 @@ D2, D41, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
 remain the last clean pre-correction snapshot until the whole D94/D100 bus
 cluster can be rerouted coherently.
 
-The D93 component fit uses the chip-removed close-up
-`PXL_20260710_202708344.jpg`, rather than the populated-board panorama. All 40
-socket contacts and the printed pin-40 end are visible there, giving a direct
+The D93 component fit uses `PXL_20260710_202708344.jpg`, a close-up taken with
+the known КР1818ВГ93 removed from its socket, rather than the populated-board
+panorama. All 40 socket contacts and the printed pin-40 end are visible there,
+giving a direct
 pin-row orientation and stronger pad landings for the unresolved reset and
-clock endpoints. Their far destinations remain measurement requests; package
-registration alone is not continuity evidence.
+clock endpoints. A reflected fit in `PXL_20260710_200506061.jpg` places the
+same pins on the actual solder joints. Their far destinations remain
+measurement requests; package registration alone is not continuity evidence.
 
 ## Reproduce the registration aids
 
