@@ -127,6 +127,13 @@ and `А:18`, with `А:18` now proved at D98.7. The generated source PCB now
 excludes S1 from its footprint set and includes the physical `A17` one-pad
 landing; the switch remains in the schematic as an off-board harness component.
 
+The same physical distinction applies to the keyboard ribbon. Factory sheets
+4-5 map PCB points A45..A58 in reverse order to bracket connector X9 pins
+14..1. The source PCB therefore carries numbered `A45`..`A58` one-pad
+landings at the photographed cable exit, while X9 is retained only in the
+schematic harness. This preserves all existing D26 keyboard nets and the two
++5 V conductors without depicting the remote connector body on the PCB.
+
 ## Factory solder-side cuts and patches
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent

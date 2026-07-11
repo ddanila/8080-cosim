@@ -66,6 +66,12 @@ PASSIVE_PLACE = {
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
     'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
     'A17':(115.8,27.1,0),  # two-sided owner photos, transferred from top mounting hole (114.4,13.3)
+    # X9 is bracket-mounted. These are its reversed-ribbon PCB landings:
+    # A45->X9.14 through A58->X9.1 (factory sheets 4-5).
+    'A45':(224.5,262.0,0),'A46':(222.0,262.0,0),'A47':(219.5,262.0,0),'A48':(217.0,262.0,0),
+    'A49':(214.5,262.0,0),'A50':(212.0,262.0,0),'A51':(209.5,262.0,0),'A52':(207.0,262.0,0),
+    'A53':(204.5,262.0,0),'A54':(202.0,262.0,0),'A55':(199.5,262.0,0),'A56':(197.0,262.0,0),
+    'A57':(194.5,262.0,0),'A58':(192.0,262.0,0),
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
     'R38':(121.4,249.1,90),'R39':(230.5,192.5,0),
@@ -381,7 +387,7 @@ def main():
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
     # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
     # retained in the schematic but must never become a PCB header footprint.
-    OFF_BOARD = {'S1'}
+    OFF_BOARD = {'S1', 'X9'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -452,9 +458,8 @@ def main():
     # X8: power connector, codes 59..64 in one row (61=+5В 62=GND 60=+12В 59=-12В per scan)
     x8_pads = {str(59 + i): (34.0 - i * 5.0, 252.6) for i in range(6)}   # 62..59 read left->right on the drawing
     make_conn('X8', 24, 252.6, x8_pads)
-    # X9: keyboard connector, pins 1-14 (sheet-1 codes 901-914), bottom edge [emaplaat x~208]
-    x9_pads = {str(i + 1): (192.0 + i * 2.5, 262.0) for i in range(14)}
-    make_conn('X9', 208, 262, x9_pads)
+    # X9 itself is on the bracket. A45..A58 above are the physical PCB
+    # landings at this cable exit; do not recreate an on-board X9 footprint.
 
     # ---- UNTRACED footprints: photo/BOM-identified chips whose NETS aren't traced yet ----
     # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).

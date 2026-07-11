@@ -103,9 +103,11 @@ extraction work from that set:
    before the reroute.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
-   transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. Promote
-   the X8/X9/X3/X4 harness rows and numbered wire links into the board
-   model only after each А:N point is mapped to a package pin.
+   transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9
+   ribbon is promoted as physical A45..A58 PCB landings feeding the
+   schematic-only bracket connector in reversed pin order. Promote X8/X3/X4
+   and the remaining numbered links only after each А:N point is mapped to a
+   package pin.
 
 Next tracing order:
 

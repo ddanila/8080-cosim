@@ -2602,6 +2602,174 @@
    }
   },
   {
+   "ref": "A45",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:45",
+    "pins": "sheets 4-5 map board point А:45 through the X9 ribbon to connector pin 14"
+   }
+  },
+  {
+   "ref": "A46",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:46",
+    "pins": "sheets 4-5 map board point А:46 through the X9 ribbon to connector pin 13"
+   }
+  },
+  {
+   "ref": "A47",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:47",
+    "pins": "sheets 4-5 map board point А:47 through the X9 ribbon to connector pin 12"
+   }
+  },
+  {
+   "ref": "A48",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:48",
+    "pins": "sheets 4-5 map board point А:48 through the X9 ribbon to connector pin 11"
+   }
+  },
+  {
+   "ref": "A49",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:49",
+    "pins": "sheets 4-5 map board point А:49 through the X9 ribbon to connector pin 10"
+   }
+  },
+  {
+   "ref": "A50",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:50",
+    "pins": "sheets 4-5 map board point А:50 through the X9 ribbon to connector pin 9"
+   }
+  },
+  {
+   "ref": "A51",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:51",
+    "pins": "sheets 4-5 map board point А:51 through the X9 ribbon to connector pin 8"
+   }
+  },
+  {
+   "ref": "A52",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:52",
+    "pins": "sheets 4-5 map board point А:52 through the X9 ribbon to connector pin 7"
+   }
+  },
+  {
+   "ref": "A53",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:53",
+    "pins": "sheets 4-5 map board point А:53 through the X9 ribbon to connector pin 6"
+   }
+  },
+  {
+   "ref": "A54",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:54",
+    "pins": "sheets 4-5 map board point А:54 through the X9 ribbon to connector pin 5"
+   }
+  },
+  {
+   "ref": "A55",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:55",
+    "pins": "sheets 4-5 map board point А:55 through the X9 ribbon to connector pin 4"
+   }
+  },
+  {
+   "ref": "A56",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:56",
+    "pins": "sheets 4-5 map board point А:56 through the X9 ribbon to connector pin 3"
+   }
+  },
+  {
+   "ref": "A57",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:57",
+    "pins": "sheets 4-5 map board point А:57 through the X9 ribbon to connector pin 2"
+   }
+  },
+  {
+   "ref": "A58",
+   "type": "WIRE_PAD",
+   "pins": {
+    "1": "P1"
+   },
+   "prov": {
+    "type": "factory wire table",
+    "refdes": "ДГШ5.109.009 СБ point А:58",
+    "pins": "sheets 4-5 map board point А:58 through the X9 ribbon to connector pin 1"
+   }
+  },
+  {
    "ref": "R94",
    "type": "R_AXIAL",
    "pins": {
@@ -3394,9 +3562,9 @@
     "14": "P14"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "sheet-1 X9 codes 901-914",
-    "pins": "scan"
+    "type": "scan + factory assembly wire table",
+    "refdes": "sheet-1 X9 codes 901-914; ДГШ5.109.009 СБ sheets 4-5",
+    "pins": "off-board bracket connector; ribbon reverses board points А:45..А:58 onto X9 pins 14..1"
    }
   },
   {
@@ -10236,8 +10404,16 @@
      "5"
     ],
     [
+     "A54",
+     "1"
+    ],
+    [
      "X9",
      "6"
+    ],
+    [
+     "A53",
+     "1"
     ],
     [
      "D54",
@@ -10850,6 +11026,10 @@
     [
      "X9",
      "1"
+    ],
+    [
+     "A58",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10864,6 +11044,10 @@
     [
      "X9",
      "2"
+    ],
+    [
+     "A57",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10878,6 +11062,10 @@
     [
      "X9",
      "3"
+    ],
+    [
+     "A56",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10892,6 +11080,10 @@
     [
      "X9",
      "4"
+    ],
+    [
+     "A55",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10906,6 +11098,10 @@
     [
      "X9",
      "7"
+    ],
+    [
+     "A52",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10920,6 +11116,10 @@
     [
      "X9",
      "8"
+    ],
+    [
+     "A51",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10934,6 +11134,10 @@
     [
      "X9",
      "9"
+    ],
+    [
+     "A50",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10948,6 +11152,10 @@
     [
      "X9",
      "10"
+    ],
+    [
+     "A49",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10962,6 +11170,10 @@
     [
      "X9",
      "11"
+    ],
+    [
+     "A48",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10976,6 +11188,10 @@
     [
      "X9",
      "12"
+    ],
+    [
+     "A47",
+     "1"
     ]
    ],
    "wire_link": true
@@ -10990,6 +11206,10 @@
     [
      "X9",
      "13"
+    ],
+    [
+     "A46",
+     "1"
     ]
    ],
    "wire_link": true
@@ -11004,6 +11224,10 @@
     [
      "X9",
      "14"
+    ],
+    [
+     "A45",
+     "1"
     ]
    ],
    "wire_link": true

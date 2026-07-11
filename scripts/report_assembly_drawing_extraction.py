@@ -53,6 +53,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_r94_landing.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    x9_landings = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_x9_offboard_landings.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -90,7 +94,7 @@ def main() -> int:
         ),
         (
             "Bracket-mounted S1 is excluded from generated PCB footprints",
-            marker(read(PCB_GENERATOR), "OFF_BOARD = {'S1'}", "must never become a PCB header footprint")
+            marker(read(PCB_GENERATOR), "OFF_BOARD = {'S1', 'X9'}", "must never become a PCB header footprint")
             and '(property "Reference" "S1"' not in read(SOURCE_PCB)
             and marker(plan_text, "excluded from", "generated PCB", "fictitious on-board S1 header", "is removed"),
             "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction",
@@ -106,6 +110,12 @@ def main() -> int:
             marker(read(BOARD_SPEC), '"ref": "R94"', '"value": "220"', '"D98_Y1_R94"')
             and r94_landing.returncode == 0,
             "`.009` assembly drawing; owner component photo; `kicad/check_r94_landing.py`",
+        ),
+        (
+            "X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58",
+            x9_landings.returncode == 0
+            and marker(read(WIRE_TABLE_MD), "X9 row is now promoted", "A45", "A58", "schematic-only"),
+            "sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py`",
         ),
         (
             "Connection-table sheets 2-6 are adopted and transcribed",

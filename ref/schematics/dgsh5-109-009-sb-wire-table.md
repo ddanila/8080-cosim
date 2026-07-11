@@ -117,6 +117,13 @@ So X3 (12 lines) and X4 (23 lines) are bracket-mounted connectors wired to
 numbered board pads rather than board-edge-soldered; this is direct evidence
 for the connector-harness geometry items in `PLAN.md`.
 
+The X9 row is now promoted without changing its already traced keyboard nets:
+the source PCB contains fourteen one-pad footprints `A45` through `A58` at the
+ribbon exit, and the off-board X9 connector remains schematic-only. Each net
+contains its D26 endpoint, physical A:N landing, and reversed X9 pin; A53/A54
+carry the two +5 V conductors. X3 and X4 still await equivalent point-to-signal
+reconciliation.
+
 ## Sheet 6 — Лист регистрации изменений (change registration)
 
 Row alignment between изм. numbers, document numbers, and dates is partly
@@ -145,3 +152,6 @@ the table gives point numbers, not pin numbers. In particular, do not route a
 single on-board S1 footprint: first model the physically separate `А:17` and
 `А:18` wire landings and their proved local copper. For wire 18, the proved
 landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
+The fully enumerated X9 ribbon is promoted as A45-A58 landings, but the X3/X4
+rows remain at this boundary until their A:N points are reconciled with the
+older schematic contact codes.
