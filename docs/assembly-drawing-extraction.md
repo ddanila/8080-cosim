@@ -15,7 +15,7 @@ netlist. The referenced connection table is on missing sheets 2-6.
 | --- | --- | --- |
 | All 26 photographed sheet-1 views are local, real JPEGs, and indexed | PASS | `ref/photos/dgsh5-109-009-sb/` |
 | Factory solder-side cuts/patches are protected as designed operations | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
-| D94/D100/D98 retain the corrected horizontal assembly posture | PASS | `kicad/gen_kicad_pcb.py` placement map |
+| D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
 | Wire 17/18 reset-chain endpoint remains explicitly unresolved | PASS | owner continuity follow-up; no invented endpoint |
 | Missing connection-table sheets 2-6 remain on the owner request list | PASS | `PLAN.md` external evidence |

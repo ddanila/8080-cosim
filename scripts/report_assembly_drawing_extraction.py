@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-import re
+import subprocess
 from pathlib import Path
 
 
@@ -12,7 +12,6 @@ PHOTO_DIR = ROOT / "ref/photos/dgsh5-109-009-sb"
 PHOTO_README = PHOTO_DIR / "README.md"
 BODGE = ROOT / "ref/photos/juku-pcb-2/BODGE-TRIAGE.md"
 PLAN = ROOT / "PLAN.md"
-PCB_GENERATOR = ROOT / "kicad/gen_kicad_pcb.py"
 REPORT = ROOT / "docs/assembly-drawing-extraction.md"
 
 
@@ -33,7 +32,10 @@ def main() -> int:
     photo_text = read(PHOTO_README)
     bodge_text = read(BODGE)
     plan_text = read(PLAN)
-    generator_text = read(PCB_GENERATOR)
+    placement = subprocess.run(
+        ["/usr/bin/python3", str(ROOT / "kicad/check_fdc_cluster_placement.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -50,9 +52,8 @@ def main() -> int:
         ),
         (
             "D94/D100/D98 retain the corrected horizontal assembly posture",
-            bool(re.search(r"'D94':\(233\.08,47,90\).*'D100':\(257\.65,37\.40,90\)", generator_text))
-            and "'D98':(298.90,33.595,90)" in generator_text,
-            "`kicad/gen_kicad_pcb.py` placement map",
+            placement.returncode == 0,
+            "final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py`",
         ),
         (
             "Cable geometry is recorded from the drawing",
