@@ -2486,7 +2486,7 @@
       (pins X1-110A X1-111A D32-5 R19-1 D14-5 X8-59 C32-1)
     )
     (net M5V_DERIVED
-      (pins R19-2 VD5-2 E5-1 D105-10 D1-11)
+      (pins R19-2 VD5-2 E5-1 D1-11)
     )
     (net RES_RC
       (pins S1-1 C1-1 R3-2 R4-1)
@@ -3070,6 +3070,9 @@
     )
     (net D13_4_D105_2
       (pins D105-2 D13-4)
+    )
+    (net D105_10_H
+      (pins D105-10)
     )
     (net D105_GATE1_Y
       (pins D105-3)

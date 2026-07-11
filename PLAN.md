@@ -57,6 +57,19 @@ closed and the corrected board has been rerouted and reviewed.
    modeled, D105 is modeled and routed, and D30 section A is closed. Resolve
    D30 section B pins 8/11/13 and the pin-10/pin-12 source, then reconcile the
    `.006` D95 inverter after D105.6 with `.009`'s FDC use of D95.
+
+The former D105.10-to-derived-−5 V assignment was disproved by the sheet itself:
+pin 10 receives a named off-sheet `H` arrow, while the separate power legend has
+no `H` supply entry. The unsafe connection and its two final routed segments are
+removed from every source/routed artifact. `H` is now a guarded singleton logic
+boundary; its source/timing remains part of this blocker.
+The derived routed snapshot now exposes one `M5V_DERIVED` airwire rather than
+using D105.10 as a plated-through junction; fabrication remains on hold until a
+legal replacement route is found. A high simulation default for `H` diverges
+from the formerly constant-low gate behavior, so simulation uses a low default
+while the physical source remains unresolved. The deep cosim forces `ready=1`,
+making its separate read-743,463 (`BA=D830`) mismatch independent of this WAIT
+chain; that late digital-twin divergence is also now an explicit blocker.
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
    current generated evidence lists 43 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus

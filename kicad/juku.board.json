@@ -10978,10 +10978,6 @@
     [
      "E5",
      "1"
-    ],
-    [
-     "D105",
-     "10"
     ]
    ],
    "_note": "-5V for D1.11 derived from -12V: R19 dropper + VD5 negative zener clamp"
@@ -14668,6 +14664,10 @@
   "D2_WAIT_RAW": {
    "src": "traced sheet-1: D2 D0/pin 12 enters D105 NAND input pin 9",
    "nodes": [["D2", "12"], ["D105", "9"]]
+  },
+  "D105_10_H": {
+   "src": "sheet-1: named off-sheet arrow H enters D105 pin 10; the power legend separately names +5B/+12B/-12B/GND and does not identify H as the derived -5 V rail; source remains unresolved",
+   "nodes": [["D105", "10"]]
   },
   "XACK_N": {
    "src": "traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explicit conflict boundary",

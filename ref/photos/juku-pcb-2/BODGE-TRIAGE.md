@@ -54,9 +54,11 @@ The D2 pin table from sheet 1 is:
 `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, and `D0=12`.
 
 D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Current evidence
-indicates D2 pin 12 into D105 pin 9 and D2 V1/V2 tied low. The sheet's power
-legend identifies D105 pin 10's `H` source as the derived −5 V rail. D105 pin
-6's destination still requires continuity confirmation. The July-2026 paired
+indicates D2 pin 12 into D105 pin 9 and D2 V1/V2 tied low. D105 pin 10 is fed by
+a named off-sheet `H` arrow. The separate power legend names `+5B`, `+12B`,
+`−12B`, and ground and does not identify `H` as the derived −5 V rail; the
+former power assignment was unsafe and is removed. D105 pin 6's destination
+still requires continuity confirmation. The July-2026 paired
 D2 and D4 solder fits trace D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7
 (`A10/A14/A12/A15/A9`). All D2 inputs are now modeled and routed in the
 authoritative source PCB; its PROM contents remain deferred.

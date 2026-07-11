@@ -145,8 +145,10 @@ def main() -> int:
     if d105_state == "MODELED":
         d105_lines = [
             "- `D105` is promoted into board JSON and both PCB artifacts as a",
-            "  four-section К155ЛА3. The regenerated route has zero unrouted items.",
-            "- Sheet 1 proves D2.12 -> D105.9, D105.10 -> `H`/−5 V,",
+            "  four-section К155ЛА3. Correcting pin 10 exposes one −5 V airwire",
+            "  in the derived routed snapshot; replacement copper remains blocked.",
+            "- Sheet 1 proves D2.12 -> D105.9 and a distinct named off-sheet",
+            "  `H` arrow -> D105.10; the power legend does not equate `H` with −5 V.",
             "  D105.8 -> tied inputs 4+5, D13.4/MWR -> inputs 2/1, and the",
             "  tied-input MRD inverter 12+13 -> 11 -> D30.13.",
             "- D105.6 is traced to a D95 inverter on the older `.006` sheet and",

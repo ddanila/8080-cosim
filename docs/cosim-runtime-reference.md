@@ -26,10 +26,18 @@ Milestones make a live run observable and allow a better ETA after the first
 few samples. Only 19 progress lines are emitted, so their overhead should be
 negligible relative to millions of compared reads.
 
+## Current regression
+
+On 2026-07-12, both the default run and a focused `WINDOW=200000000` run
+diverged at read 743,463: bus address `D830`, structural byte `00`, oracle byte
+`B7` (122,571,350 ns). The testbench forces `dtop.ready=1`, so this mismatch is
+independent of the unresolved D105 pin-10 WAIT input. The faster boot guard still
+passes, but the deep guard remains a digital-twin blocker until this late read
+path is reconciled.
+
 For a quick validation of the harness and progress output without claiming the
 full deep guard:
 
 ```sh
 WINDOW=200000 sync/cosim_check.sh
 ```
-

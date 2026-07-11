@@ -16,7 +16,7 @@ SIGNALS = {
     0: "A12",
     1: "A15",
     2: "A9",
-    3: "VIDEO_CYCLE",
+    3: "CAS_VIDEO_CYCLE",
     4: "A14",
     5: "XACK_N",
     6: "A10",

@@ -1,4 +1,4 @@
-prom_address_hex,A7_WREQ_N,A6_A10,A5_XACK_N,A4_A14,A3_VIDEO_CYCLE,A2_A9,A1_A15,A0_A12,D0,status
+prom_address_hex,A7_WREQ_N,A6_A10,A5_XACK_N,A4_A14,A3_CAS_VIDEO_CYCLE,A2_A9,A1_A15,A0_A12,D0,status
 0x00,0,0,0,0,0,0,0,0,?,input vector proved; output truth requires .037 dump or capture
 0x01,0,0,0,0,0,0,0,1,?,input vector proved; output truth requires .037 dump or capture
 0x02,0,0,0,0,0,0,1,0,?,input vector proved; output truth requires .037 dump or capture

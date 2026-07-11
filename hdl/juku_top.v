@@ -123,15 +123,16 @@ module juku_top (
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4;
     wire d105_mrd_inv, d105_wait_stage;
 `ifdef YOSYS
-    wire d2_wait_raw, d105_gate1_y, d105_wait_preinv;
+    wire d2_wait_raw, d105_h, d105_gate1_y, d105_wait_preinv;
 `else
     tri1 d2_wait_raw;
+    tri0 d105_h;
     wire d105_gate1_y, d105_wait_preinv;
 `endif
     la3_gate U_D105 (.a(memr_n), .b(memr_n), .y(d105_mrd_inv),
                      .a2(memw_n), .b2(d13_o4), .y2(d105_gate1_y),
                      .a3(d105_wait_stage), .b3(d105_wait_stage), .y3(d105_wait_preinv),
-                     .a4(d2_wait_raw), .b4(1'b0), .y4(d105_wait_stage)); // pin10 is physical H/-5V, a TTL low
+                     .a4(d2_wait_raw), .b4(d105_h), .y4(d105_wait_stage)); // pin10 is named off-sheet H, not a proved supply
 `ifdef YOSYS
     wire d30b_d_pre_n;
 `else
