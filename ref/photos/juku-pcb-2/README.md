@@ -38,3 +38,6 @@ eight-chip КР565РУ5 bank, consistent with D84-D91. Empty D60-D83 expansion
 positions are not evidence of missing production RAM. Some capacitor positions
 are empty and the photographs do not yet establish a complete per-refdes value
 map, so capacitor-value fidelity remains open.
+
+The factory assembly drawing for this module (`ДГШ5.109.009 СБ`) is
+photographed in `ref/photos/dgsh5-109-009-sb/`.
