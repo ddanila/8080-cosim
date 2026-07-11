@@ -49,15 +49,18 @@ scanned `.113` and `.117` РЕ3 tables are not substitutes for D94 `.092`.
 
 ## D2 and D105 boundary
 
-The D2 wiring region is on sheet 1, but the available read does not establish
-every destination strongly enough to route it. D2 pin table from sheet 1:
+The D2 pin table from sheet 1 is:
 `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, and `D0=12`.
 
 D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Current evidence
 indicates D2 pin 12 into D105 pin 9 and D2 V1/V2 tied low. The sheet's power
 legend identifies D105 pin 10's `H` source as the derived −5 V rail. D105 pin
-6's destination still requires continuity confirmation. The proved D2 leads
-are modeled and routed; its other inputs and PROM contents remain deferred.
+6's destination still requires continuity confirmation. The July-2026 paired
+D2 and D4 solder fits trace D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7
+(`A10/A14/A12/A15/A9`). All D2 inputs are now modeled and routed in the
+authoritative source PCB; its PROM contents remain deferred.
+The factory symbol draws only D0/pin 12 on the RT4 output side; package outputs
+pins 9-11 have no destination and are explicit no-connects in the board model.
 
 The full-resolution sheet also proves three D2 address leads: `VIDEO CYCLE` to
 A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other

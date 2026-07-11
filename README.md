@@ -10,12 +10,12 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`.
-- `sync/check.sh` currently compares 99 mapped instances and 231 nets with no
+- `sync/check.sh` currently compares 99 mapped instances and 230 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and no KiCad
   clearance/short/unconnected-item errors. Its Gerber/drill ZIP is reproducible
   and internally coherent. Current ZIP SHA256:
-  `a1688aab1625a6c1d2a4ee4aa87540030d9b82b5d545b7bca9aa7e3ebc7da344`.
+  `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
 - The main board is **not released for fabrication**. D2 is only partially
   traced, D94 lacks its enable/output wiring, and 9 official FDC-support ICs
   have only their physical pin maps and power endpoints modeled. D105 wait/MRD
@@ -24,7 +24,7 @@ with the machine-readable board model.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
   untraced. The D2/D94
-  PROM contents are also missing, and 41 modeled nets retain source-risk annotations
+  PROM contents are also missing, and 42 modeled nets retain source-risk annotations
   requiring evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
@@ -59,6 +59,8 @@ release.
 - [PLAN.md](PLAN.md) — remaining work and release criteria.
 - [docs/README.md](docs/README.md) — documentation map and generated-report
   policy.
+- [docs/development-workflow.md](docs/development-workflow.md) — canonical
+  branch, intermediate commit, and direct-push policy.
 - [docs/architecture.md](docs/architecture.md) — model boundaries and data flow.
 - [docs/source-coverage-audit.md](docs/source-coverage-audit.md) — adopted
   external evidence and remaining source gaps.

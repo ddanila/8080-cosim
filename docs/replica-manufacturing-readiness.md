@@ -3,7 +3,7 @@
 Status: **DESIGN HOLD / PACKAGE VERIFIED**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Final upload ZIP SHA256: `a1688aab1625a6c1d2a4ee4aa87540030d9b82b5d545b7bca9aa7e3ebc7da344`
+Final upload ZIP SHA256: `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`
 
 This is the tracked top-level manufacturing packet for the replica main
 board. It separates reproducible package integrity from functional design
@@ -14,12 +14,13 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2822 | PASS |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1610 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2914 | PASS |
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2874 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2598 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 13845 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 14079 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8548 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
@@ -39,8 +40,8 @@ DESIGN HOLD.
 
 | File | Bytes | SHA256 | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `657389af5c6d40e6641c2700a75a55abde09e94b383a90ecb378947a96ecc05d` | PASS |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 787272 | `a1688aab1625a6c1d2a4ee4aa87540030d9b82b5d545b7bca9aa7e3ebc7da344` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `0f0de6fafc8dea26732383e729a733c0ac8350ccb91b56439bacbc9264eeba4e` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790180 | `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4` | PASS |
 
 ## Locked Vendor Options
 

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "navigation-only; electrical promotion still requires original-image review",
+  "groups": {
+    "component_grid": {
+      "fiducials": [
+        {"board_mm": [0, 0], "image_px": [111, 200], "landmark": "board top-left", "use": "fit"},
+        {"board_mm": [310, 0], "image_px": [1570, 184], "landmark": "board top-right", "use": "fit"},
+        {"board_mm": [310, 266], "image_px": [1582, 1451], "landmark": "board bottom-right", "use": "fit"},
+        {"board_mm": [0, 266], "image_px": [99, 1453], "landmark": "board bottom-left", "use": "fit"},
+        {"board_mm": [228, 33], "image_px": [1160, 326], "landmark": "D94 package centre", "use": "check"}
+      ]
+    },
+    "solder_grid": {
+      "fiducials": [
+        {"board_mm": [310, 0], "image_px": [130, 184], "landmark": "mirrored board top-right", "use": "fit"},
+        {"board_mm": [0, 0], "image_px": [1543, 187], "landmark": "mirrored board top-left", "use": "fit"},
+        {"board_mm": [0, 266], "image_px": [1580, 1442], "landmark": "mirrored board bottom-left", "use": "fit"},
+        {"board_mm": [310, 266], "image_px": [91, 1434], "landmark": "mirrored board bottom-right", "use": "fit"},
+        {"board_mm": [228, 33], "image_px": [506, 338], "landmark": "D94 footprint centre", "use": "check"}
+      ]
+    }
+  }
+}

@@ -26,9 +26,9 @@ The July owner-photo batches under `ref/photos/juku-pcb-2/` clearly show a
 populated КР1818ВГ93, add an overlapping 3x3 solder-side grid, and include
 a later component-side view with the VG93 temporarily removed to expose its
 footprint copper. The board is therefore applicable physical evidence for the
-FDC handoff. The new views have not yet been registered to refdes/pin
-coordinates or traced end-to-end, so they do not promote any missing endpoint
-to `WIRED`.
+FDC handoff. The grids are registered and D94/D93 have package-local fits.
+Continuous copper promotes the private D94.1/.2/.3 to D93.4/.3/.2 control
+nets; no photographed branch supports the former global I/O-rail assumption.
 
 ## Bus-Side Handoff Checks
 
@@ -42,8 +42,7 @@ to `WIRED`.
 | `DB5` / `FDC_DAL5` | WIRED | `D100.6` <-> system DB; `D100.14` <-> `D93.12` | scan + WD1793/8287 datasheets |
 | `DB6` / `FDC_DAL6` | WIRED | `D100.7` <-> system DB; `D100.13` <-> `D93.13` | scan + WD1793/8287 datasheets |
 | `DB7` / `FDC_DAL7` | WIRED | `D100.8` <-> system DB; `D100.12` <-> `D93.14` | scan + WD1793/8287 datasheets |
-| `CS_FDC` | WIRED | D9.Y7 decode to D93 CS | sheet-3 delta plus board JSON |
-| `IORD` / `IOWR` | WIRED | host read/write strobes to D93 | scan |
+| `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D0-D2 private controls to D93 RE/CS/WE | two-sided local fits + continuous component copper |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
 | `FDC_INTRQ` | OWNER-VERIFY | D93 INTRQ to PIC IR0 | MAME-era assumption; owner continuity required |
@@ -62,7 +61,8 @@ to `WIRED`.
 
 | Net | Source | Endpoints |
 | --- | --- | --- |
-| `CS_FDC` | sheet-3 delta: CS7 (io 1C) -> ВГ93 on .009 | `D9.7, D93.3` |
+| `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | `D9.7` |
+| `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper | `D94.2, D93.3` |
 | `FDC_DAL0` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.19, D93.7` |
 | `FDC_DAL1` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.18, D93.8` |
 | `FDC_DAL2` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.17, D93.9` |
@@ -71,17 +71,20 @@ to `WIRED`.
 | `FDC_DAL5` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.14, D93.12` |
 | `FDC_DAL6` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.13, D93.13` |
 | `FDC_DAL7` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.12, D93.14` |
-| `FDC_DDEN` | mame (PC4 = density) | `D26.13, D93.37` |
+| `FDC_DDEN` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37, so the retained memory-mode rail and added FDC DDEN are one physical net | `D26.13, D93.37, D6.15` |
 | `FDC_DRQ` | assumed (MAME-era IR1; owner-verify) | `D93.38, D10.19` |
 | `FDC_INTRQ` | assumed (MAME-era IR0; owner-verify) | `D93.39, D10.18` |
-| `IORD` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed) | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+3)` |
-| `IOWR` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed) | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+3)` |
+| `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper | `D94.1, D93.4` |
+| `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper | `D94.3, D93.2` |
+| `IORD` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+2)` |
+| `IOWR` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+2)` |
 
 ## Disposition
 
-- The system data bus, D100 B-side, D93 DAL bus, register select, I/O
-  strobes, and CS7 decode are present in the board JSON and are guarded
-  by this report.
+- The system data bus, D100 B-side, D93 DAL bus, register select, and
+  private D94-to-D93 RE/CS/WE controls are present in board JSON and
+  guarded by this report. Functional I/O decode into D94 remains blocked
+  on pin 15, D3-D7 destinations, and the `.092` truth table.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
   D100.11.

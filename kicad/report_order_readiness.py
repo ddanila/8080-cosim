@@ -87,6 +87,11 @@ def run_sourcing_readiness():
 def design_release_checks():
     checks = [
         (
+            "Main-board ERC, parity, and endpoint ownership",
+            ROOT / "docs" / "main-board-erc-parity.md",
+            "Status: **READY**",
+        ),
+        (
             "D2 bus/wait PROM wiring and contents",
             ROOT / "docs" / "d2-reconstruction-constraints.md",
             "Status: **D2 RECONSTRUCTION READY**",

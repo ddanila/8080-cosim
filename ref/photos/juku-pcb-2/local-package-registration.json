@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "coordinate_system": "original source-image pixels",
+  "promotion_rule": "local fits establish package pad identity only; they are not electrical connectivity evidence",
+  "packages": [
+    {
+      "refdes": "D94",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1627.7, 1559.7], "use": "fit", "observation": "centre of bottom-left socket contact below the notch"},
+        {"pin": "4", "image_px": [1783.7, 1558.6], "use": "check", "observation": "centre of fourth bottom-row socket contact"},
+        {"pin": "8", "image_px": [1991.7, 1557.1], "use": "fit", "observation": "centre of bottom-right socket contact"}
+      ],
+      "note": "Corrected horizontal/notch-left posture and physical pin sequence; top row is partly obscured and is deliberately not used as a fit anchor."
+    },
+    {
+      "refdes": "D94",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [2046.0, 1330.0], "use": "fit", "observation": "centre of lower-row rightmost soldered socket pad"},
+        {"pin": "5", "image_px": [1844.0, 1329.0], "use": "check", "observation": "centre of lower-row middle soldered socket pad"},
+        {"pin": "8", "image_px": [1692.0, 1328.0], "use": "fit", "observation": "centre of lower-row leftmost soldered socket pad"}
+      ],
+      "note": "Direct solder-side view is mirrored relative to component side; the similarity fit uses KiCad pad geometry and the photographed lower row."
+    },
+    {
+      "refdes": "D2",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1932.0, 1726.0], "use": "fit", "observation": "centre of top-left socket contact below the notch"},
+        {"pin": "4", "image_px": [1932.0, 1915.0], "use": "check", "observation": "centre of fourth left-row socket contact"},
+        {"pin": "8", "image_px": [1932.0, 2166.0], "use": "fit", "observation": "centre of bottom-left socket contact"}
+      ],
+      "note": "Physical D2 is a vertical DIP-16 socket; the check anchor is independent of the two endpoint anchors."
+    },
+    {
+      "refdes": "D2",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1800.0, 1498.0], "use": "fit", "observation": "centre of mirrored upper-right solder joint"},
+        {"pin": "4", "image_px": [1800.0, 1673.0], "use": "check", "observation": "centre of fourth right-column solder joint"},
+        {"pin": "8", "image_px": [1800.0, 1902.0], "use": "fit", "observation": "centre of mirrored lower-right solder joint"}
+      ],
+      "note": "Two vertical 8-pad columns are visible; direct solder view reverses the component-side left/right sequence."
+    },
+    {
+      "refdes": "D4",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [2240.0, 1491.0], "use": "fit", "observation": "centre of upper pad on the D4 mirrored input row"},
+        {"pin": "5", "image_px": [2241.0, 1718.0], "use": "check", "observation": "independent fifth-pad centre on the same row"},
+        {"pin": "10", "image_px": [2243.0, 1997.0], "use": "fit", "observation": "centre of lower pad on the D4 mirrored input row"}
+      ],
+      "note": "Fits the D4 input row independently to identify the five remote D2 solder-trace landings."
+    },
+    {
+      "refdes": "D93",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1900.0, 1732.0], "use": "fit", "observation": "top-left VG93 contact below the notch"},
+        {"pin": "2", "image_px": [1900.0, 1788.0], "use": "check", "observation": "second left-row VG93 contact"},
+        {"pin": "4", "image_px": [1900.0, 1900.0], "use": "fit", "observation": "fourth left-row VG93 contact at D94 fanout terminal"}
+      ],
+      "note": "Local fit grounds D93 top-left pin numbering for the visible D94-to-D93 component-side traces."
+    },
+    {
+      "refdes": "D100",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2208.0, 1545.0], "use": "fit", "observation": "bottom-left pad immediately below the left-facing notch"},
+        {"pin": "5", "image_px": [2430.0, 1545.0], "use": "check", "observation": "independent fifth pad on the lower row"},
+        {"pin": "10", "image_px": [2707.0, 1545.0], "use": "fit", "observation": "bottom-right pad on the lower row"}
+      ],
+      "note": "Physical D100 is the horizontal notch-left КР580ВА87 package immediately right of D94; older global projections landed on unrelated packages."
+    },
+    {
+      "refdes": "D98",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "2", "image_px": [2970.0, 1545.0], "use": "fit", "observation": "first unobscured lower-row contact right of the taped package edge"},
+        {"pin": "5", "image_px": [3137.0, 1545.0], "use": "check", "observation": "independent middle lower-row contact"},
+        {"pin": "7", "image_px": [3248.0, 1545.0], "use": "fit", "observation": "last unobscured lower-row contact before the white wire"}
+      ],
+      "note": "Marked horizontal К155ЛП11 immediately right of D100; outer contacts are wire-obscured, so pins 2/7 anchor the coherent row."
+    }
+  ]
+}

@@ -23,7 +23,9 @@ EXPECTED_DRILL_TOOLS = {
     "5": 1.300,
 }
 EXPECTED_DRILL_HITS = {
-    "1": 331,
+    # 331 baseline vias, 39 D26 mode/FDC vias, 8 control-tie vias, 9 D44/D45
+    # counter-tie vias, and 6 D103 modulo-13 preset/enable vias.
+    "1": 393,
     "2": 12,
     "3": 2311,
     "4": 30,

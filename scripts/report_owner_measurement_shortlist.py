@@ -139,7 +139,7 @@ def main() -> int:
         ("Community request packet ready", has_phrase("docs/community-prom-media-request.md", "Status: **READY TO SEND**")),
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
         ("D6/D8 reconstructed fallback exported", has_phrase("docs/reconstructed-prom-fallbacks.md", "d6_rt4_memory_decode_reconstructed")),
-        ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**") or marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED**") else "MISSING"),
+        ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**") or marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED**") or marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 INPUTS TRACED / DUMP REQUIRED**") else "MISSING"),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
@@ -186,7 +186,7 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "D94 pin 15 enable and pins 1-7/9 output destinations on a .009 processor board",
+            "D94 pin 15 enable and remaining pins 4-7/9 output destinations on a .009 processor board",
             "`docs/d94-reconstruction-constraints.md`",
             "required before any defensible D94 reverse-engineered burnable table",
         ),
@@ -214,7 +214,7 @@ def main() -> int:
         (
             "P0",
             "D2/D105 wait-chain revision handoff",
-            "reconcile the older-sheet D95 inverter after D105.6 with the `.009` D95 FDC-multiplexer assignment; trace D2's remaining inputs and obtain the `.037` truth table",
+            "reconcile the older-sheet D95 inverter after D105.6 with the `.009` D95 FDC-multiplexer assignment and obtain the `.037` truth table; all D2 inputs are now traced",
             "`docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             "closes the remaining target-revision WAIT handoff without undoing the now-modeled and routed D105 gates",
         ),

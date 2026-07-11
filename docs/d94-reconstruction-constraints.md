@@ -31,9 +31,9 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
-| 1 | D0 | - | not traced/netted |
-| 2 | D1 | - | not traced/netted |
-| 3 | D2 | - | not traced/netted |
+| 1 | D0 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper |
+| 2 | D1 | `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper |
+| 3 | D2 | `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper |
 | 4 | D3 | - | not traced/netted |
 | 5 | D4 | - | not traced/netted |
 | 6 | D5 | - | not traced/netted |
@@ -66,14 +66,14 @@ connections. It does not provide the missing enable/output nets.
 
 ## KiCad PCB Cross-check
 
-The authoritative PCB file agrees with the DSN: D94 has power/ground and
-address nets only; enable and all data outputs remain unnetted there too.
+The authoritative source PCB includes accepted photo-traced outputs; the
+older routed DSN remains a held engineering snapshot until cluster reroute.
 
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
-| 1 | D0 | - | unnetted in PCB |
-| 2 | D1 | - | unnetted in PCB |
-| 3 | D2 | - | unnetted in PCB |
+| 1 | D0 | `FDC_RE_N` | PASS |
+| 2 | D1 | `FDC_CS_N` | PASS |
+| 3 | D2 | `FDC_WE_N` | PASS |
 | 4 | D3 | - | unnetted in PCB |
 | 5 | D4 | - | unnetted in PCB |
 | 6 | D5 | - | unnetted in PCB |
@@ -95,17 +95,17 @@ address nets only; enable and all data outputs remain unnetted there too.
 | Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
 | Address pins D94.10-D94.14 are traced | PASS | board JSON nets |
 | DSN agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.dsn` D94 pins |
-| PCB agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
+| PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
-| Any D94 output net is traced | FAIL | no D94 output nets in board JSON |
+| Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N` |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
 | Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
 | HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
-| `juku_top` leaves D94 data outputs unconnected | PASS | `hdl/juku_top.v` |
+| `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
 | Video slot audit is still D94-pending | PASS | `docs/video-slot-timing-audit.md` |
 
 ## Textual / Photo Survey Leads
@@ -117,10 +117,11 @@ address nets only; enable and all data outputs remain unnetted there too.
 - The guarded firmware inspection establishes that `.113/.117` belong
   to the `.106.103`-family owner-scan evidence and are not a burnable
   D94 `.092` substitute.
-- These textual leads establish identity and negative evidence only. They
-  do not provide D94 pin 15, D0-D7 destinations, or PROM contents.
+- Local two-sided fits and continuous copper now establish D0-D2 as the
+  private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources
+  still do not provide pin 15, D3-D7 destinations, or PROM contents.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
-  in board JSON/DSN, but D94 pin 15 and D0-D7 are not tied to it in
+  in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in
   board JSON, DSN, or PCB evidence. It cannot substitute for the missing
   D94 enable/output continuity.
 
@@ -128,7 +129,7 @@ address nets only; enable and all data outputs remain unnetted there too.
 
 D94 is a 32 x 8 PROM. The address pins are traced, so the reachable
 rows are mechanically known, but every row byte is still unknown because
-the D0-D7 destinations and `.092` programming table/dump are absent.
+the `.092` programming table/dump is absent and D3-D7 remain unassigned.
 
 | Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -169,9 +170,9 @@ the D0-D7 destinations and `.092` programming table/dump are absent.
 
 - Known: D94 is present in the .009 FDC quadrant and its five address
   inputs are wired to `BA11..BA15`.
-- Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are
-  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`,
-  `kicad/juku.kicad_pcb`, or the audited text/photo notes, and no
+- Known output destinations: D0-D2 drive the private D93 read/select/write
+  controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.
+- Unknown: D94 pin 15 (`E_N`) and D3-D7 destinations remain untraced, and no
   `ДГШ5.106.092` programming table or dump is present under the
   repository artifact scan.
 - The traced `V3_RC` RC network is a negative cross-check here, not a

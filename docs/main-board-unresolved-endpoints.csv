@@ -1,0 +1,241 @@
+priority,ref,pin,type,role,reason
+P1,C12,2,C_TRIM,P2,functional endpoint lacks disposition
+P1,C73,1,C_TRIM,P1,functional endpoint lacks disposition
+P1,C73,2,C_TRIM,P2,functional endpoint lacks disposition
+P1,D10,22,PIC8259,IR4,functional endpoint lacks disposition
+P0,D100,11,BUF8287,T,PLAN physical-connectivity blocker
+P0,D100,9,BUF8287,OE_N,PLAN physical-connectivity blocker
+P0,D101,1,KP12_MUX,OE0_N,PLAN physical-connectivity blocker
+P0,D101,10,KP12_MUX,D10,PLAN physical-connectivity blocker
+P0,D101,11,KP12_MUX,D11,PLAN physical-connectivity blocker
+P0,D101,12,KP12_MUX,D12,PLAN physical-connectivity blocker
+P0,D101,13,KP12_MUX,D13,PLAN physical-connectivity blocker
+P0,D101,14,KP12_MUX,A0,PLAN physical-connectivity blocker
+P0,D101,15,KP12_MUX,OE1_N,PLAN physical-connectivity blocker
+P0,D101,2,KP12_MUX,A1,PLAN physical-connectivity blocker
+P0,D101,3,KP12_MUX,D03,PLAN physical-connectivity blocker
+P0,D101,4,KP12_MUX,D02,PLAN physical-connectivity blocker
+P0,D101,5,KP12_MUX,D01,PLAN physical-connectivity blocker
+P0,D101,6,KP12_MUX,D00,PLAN physical-connectivity blocker
+P0,D101,7,KP12_MUX,Q0,PLAN physical-connectivity blocker
+P0,D101,9,KP12_MUX,Q1,PLAN physical-connectivity blocker
+P0,D102,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
+P0,D102,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
+P0,D102,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker
+P0,D102,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
+P0,D102,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
+P0,D102,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
+P0,D102,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
+P0,D102,2,AG3_ONESHOT,B,PLAN physical-connectivity blocker
+P0,D102,3,AG3_ONESHOT,CLR_N,PLAN physical-connectivity blocker
+P0,D102,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
+P0,D102,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
+P0,D102,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
+P0,D102,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
+P0,D102,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
+P0,D106,1,IE7_CTR,D1,PLAN physical-connectivity blocker
+P0,D106,10,IE7_CTR,D2,PLAN physical-connectivity blocker
+P0,D106,11,IE7_CTR,LOAD_N,PLAN physical-connectivity blocker
+P0,D106,12,IE7_CTR,CO,PLAN physical-connectivity blocker
+P0,D106,13,IE7_CTR,BO,PLAN physical-connectivity blocker
+P0,D106,14,IE7_CTR,CLR,PLAN physical-connectivity blocker
+P0,D106,15,IE7_CTR,D0,PLAN physical-connectivity blocker
+P0,D106,2,IE7_CTR,Q1,PLAN physical-connectivity blocker
+P0,D106,3,IE7_CTR,Q0,PLAN physical-connectivity blocker
+P0,D106,4,IE7_CTR,DOWN,PLAN physical-connectivity blocker
+P0,D106,5,IE7_CTR,UP,PLAN physical-connectivity blocker
+P0,D106,6,IE7_CTR,Q2,PLAN physical-connectivity blocker
+P0,D106,7,IE7_CTR,Q3,PLAN physical-connectivity blocker
+P0,D106,9,IE7_CTR,D3,PLAN physical-connectivity blocker
+P1,D12,2,LA18,I2,functional endpoint lacks disposition
+P1,D13,10,TL2,O10,functional endpoint lacks disposition
+P1,D13,11,TL2,I11,functional endpoint lacks disposition
+P1,D13,12,TL2,O12,functional endpoint lacks disposition
+P1,D13,13,TL2,I13,functional endpoint lacks disposition
+P1,D13,3,TL2,I3,functional endpoint lacks disposition
+P1,D13,6,TL2,O6,functional endpoint lacks disposition
+P1,D13,8,TL2,O8,functional endpoint lacks disposition
+P1,D13,9,TL2,I9,functional endpoint lacks disposition
+P1,D14,2,AP2,I2,functional endpoint lacks disposition
+P1,D14,7,AP2,O7,functional endpoint lacks disposition
+P1,D26,14,PPI8255,PC0,functional endpoint lacks disposition
+P1,D26,15,PPI8255,PC1,functional endpoint lacks disposition
+P1,D26,22,PPI8255,PB4,functional endpoint lacks disposition
+P1,D26,38,PPI8255,PA6,functional endpoint lacks disposition
+P0,D28,1,LN3_OC_INV,A1,PLAN physical-connectivity blocker
+P0,D28,10,LN3_OC_INV,Y5,PLAN physical-connectivity blocker
+P0,D28,11,LN3_OC_INV,A5,PLAN physical-connectivity blocker
+P0,D28,12,LN3_OC_INV,Y6,PLAN physical-connectivity blocker
+P0,D28,13,LN3_OC_INV,A6,PLAN physical-connectivity blocker
+P0,D28,2,LN3_OC_INV,Y1,PLAN physical-connectivity blocker
+P0,D28,3,LN3_OC_INV,A2,PLAN physical-connectivity blocker
+P0,D28,4,LN3_OC_INV,Y2,PLAN physical-connectivity blocker
+P0,D28,5,LN3_OC_INV,A3,PLAN physical-connectivity blocker
+P0,D28,6,LN3_OC_INV,Y3,PLAN physical-connectivity blocker
+P0,D28,8,LN3_OC_INV,Y4,PLAN physical-connectivity blocker
+P0,D28,9,LN3_OC_INV,A4,PLAN physical-connectivity blocker
+P1,D29,1,VABUS,AIN0,functional endpoint lacks disposition
+P1,D29,2,VABUS,AIN1,functional endpoint lacks disposition
+P1,D29,3,VABUS,AIN2,functional endpoint lacks disposition
+P1,D29,6,VABUS,AIN5,functional endpoint lacks disposition
+P0,D30,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
+P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
+P1,D33,12,LN1_DUAL,O12,functional endpoint lacks disposition
+P1,D33,9,LN1_DUAL,I9,functional endpoint lacks disposition
+P1,D34,10,LP5_XOR,B3,functional endpoint lacks disposition
+P1,D34,12,LP5_XOR,A4,functional endpoint lacks disposition
+P1,D34,13,LP5_XOR,B4,functional endpoint lacks disposition
+P1,D34,2,LP5_XOR,B2,functional endpoint lacks disposition
+P1,D34,4,LP5_XOR,A1,functional endpoint lacks disposition
+P1,D34,5,LP5_XOR,B1,functional endpoint lacks disposition
+P1,D34,6,LP5_XOR,Y1,functional endpoint lacks disposition
+P1,D34,9,LP5_XOR,A3,functional endpoint lacks disposition
+P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
+P1,D37,10,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
+P1,D37,8,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
+P1,D37,9,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
+P1,D38,1,LA1_GATE,I7,functional endpoint lacks disposition
+P1,D38,2,LA1_GATE,I6,functional endpoint lacks disposition
+P1,D38,4,LA1_GATE,I5,functional endpoint lacks disposition
+P1,D38,5,LA1_GATE,I4,functional endpoint lacks disposition
+P0,D39,10,LA3_GATE,B2,memory/decode source-risk blocker
+P0,D39,2,LA3_GATE,B3,memory/decode source-risk blocker
+P0,D39,9,LA3_GATE,A2,memory/decode source-risk blocker
+P1,D40,1,CT16_CTR,R_N,functional endpoint lacks disposition
+P1,D40,10,CT16_CTR,ET,functional endpoint lacks disposition
+P1,D40,15,CT16_CTR,CO,functional endpoint lacks disposition
+P1,D40,3,CT16_CTR,D0,functional endpoint lacks disposition
+P1,D40,4,CT16_CTR,D1,functional endpoint lacks disposition
+P1,D40,5,CT16_CTR,D2,functional endpoint lacks disposition
+P1,D40,6,CT16_CTR,D3,functional endpoint lacks disposition
+P1,D40,7,CT16_CTR,EP,functional endpoint lacks disposition
+P1,D40,9,CT16_CTR,PE_N,functional endpoint lacks disposition
+P0,D41,1,IR16,DS,PLAN physical-connectivity blocker
+P0,D41,10,IR16,symbol-union boundary,PLAN physical-connectivity blocker
+P0,D41,2,IR16,A,PLAN physical-connectivity blocker
+P0,D41,3,IR16,B,PLAN physical-connectivity blocker
+P0,D41,4,IR16,C,PLAN physical-connectivity blocker
+P0,D41,5,IR16,D,PLAN physical-connectivity blocker
+P0,D41,6,IR16,LD,PLAN physical-connectivity blocker
+P0,D41,8,IR16,G,PLAN physical-connectivity blocker
+P0,D41,9,IR16,CK,PLAN physical-connectivity blocker
+P1,D42,12,IR16,symbol-union boundary,functional endpoint lacks disposition
+P1,D42,13,IR16,symbol-union boundary,functional endpoint lacks disposition
+P1,D42,8,IR16,G,functional endpoint lacks disposition
+P1,D43,1,IR16,DS,functional endpoint lacks disposition
+P1,D43,12,IR16,symbol-union boundary,functional endpoint lacks disposition
+P1,D43,13,IR16,symbol-union boundary,functional endpoint lacks disposition
+P1,D43,8,IR16,G,functional endpoint lacks disposition
+P1,D46,1,IE7_CTR,D1,functional endpoint lacks disposition
+P1,D46,15,IE7_CTR,D0,functional endpoint lacks disposition
+P1,D51,1,KP14_MUX,SEL,functional endpoint lacks disposition
+P1,D52,10,KP14_MUX,B2,functional endpoint lacks disposition
+P1,D52,11,KP14_MUX,A2,functional endpoint lacks disposition
+P1,D52,12,KP14_MUX,Y3,functional endpoint lacks disposition
+P1,D52,13,KP14_MUX,B3,functional endpoint lacks disposition
+P1,D52,14,KP14_MUX,A3,functional endpoint lacks disposition
+P1,D52,9,KP14_MUX,Y2,functional endpoint lacks disposition
+P1,D54,13,PIT8253,OUT1,functional endpoint lacks disposition
+P1,D55,17,PIT8253,OUT2,functional endpoint lacks disposition
+P1,D56,1,AG3_ONESHOT,A_N,functional endpoint lacks disposition
+P1,D56,12,AG3_ONESHOT,Q2_N,functional endpoint lacks disposition
+P1,D56,13,AG3_ONESHOT,Q,functional endpoint lacks disposition
+P1,D56,5,AG3_ONESHOT,Q2,functional endpoint lacks disposition
+P1,D56,9,AG3_ONESHOT,A2_N,functional endpoint lacks disposition
+P1,D57,11,PIT8253,GATE0,functional endpoint lacks disposition
+P1,D57,9,PIT8253,CLK0,functional endpoint lacks disposition
+P1,D58,11,IR82,STB,functional endpoint lacks disposition
+P1,D59,1,LN1_OSC,XIN,functional endpoint lacks disposition
+P1,D59,10,LN1_OSC,O10,functional endpoint lacks disposition
+P0,D6,13,DEC_PROM,V_EN_N,memory/decode source-risk blocker
+P0,D6,14,DEC_PROM,V_EN_N,memory/decode source-risk blocker
+P0,D7,10,LA3_GATE,symbol-union boundary,memory/decode source-risk blocker
+P0,D7,3,LA3_GATE,Y2,memory/decode source-risk blocker
+P0,D7,4,LA3_GATE,A3,memory/decode source-risk blocker
+P0,D7,5,LA3_GATE,B3,memory/decode source-risk blocker
+P0,D7,8,LA3_GATE,symbol-union boundary,memory/decode source-risk blocker
+P0,D7,9,LA3_GATE,symbol-union boundary,memory/decode source-risk blocker
+P1,D93,19,VG93_FDC,MR_N,functional endpoint lacks disposition
+P1,D93,24,VG93_FDC,CLK,functional endpoint lacks disposition
+P0,D94,15,RE3_PROM_092,E_N,PLAN physical-connectivity blocker
+P0,D94,4,RE3_PROM_092,D3,PLAN physical-connectivity blocker
+P0,D94,5,RE3_PROM_092,D4,PLAN physical-connectivity blocker
+P0,D94,6,RE3_PROM_092,D5,PLAN physical-connectivity blocker
+P0,D94,7,RE3_PROM_092,D6,PLAN physical-connectivity blocker
+P0,D94,9,RE3_PROM_092,D7,PLAN physical-connectivity blocker
+P0,D95,1,KP12_MUX,OE0_N,PLAN physical-connectivity blocker
+P0,D95,10,KP12_MUX,D10,PLAN physical-connectivity blocker
+P0,D95,11,KP12_MUX,D11,PLAN physical-connectivity blocker
+P0,D95,12,KP12_MUX,D12,PLAN physical-connectivity blocker
+P0,D95,13,KP12_MUX,D13,PLAN physical-connectivity blocker
+P0,D95,14,KP12_MUX,A0,PLAN physical-connectivity blocker
+P0,D95,15,KP12_MUX,OE1_N,PLAN physical-connectivity blocker
+P0,D95,2,KP12_MUX,A1,PLAN physical-connectivity blocker
+P0,D95,3,KP12_MUX,D03,PLAN physical-connectivity blocker
+P0,D95,4,KP12_MUX,D02,PLAN physical-connectivity blocker
+P0,D95,5,KP12_MUX,D01,PLAN physical-connectivity blocker
+P0,D95,6,KP12_MUX,D00,PLAN physical-connectivity blocker
+P0,D95,7,KP12_MUX,Q0,PLAN physical-connectivity blocker
+P0,D95,9,KP12_MUX,Q1,PLAN physical-connectivity blocker
+P0,D96,1,TM2_DFF,CLR1_N,PLAN physical-connectivity blocker
+P0,D96,10,TM2_DFF,PRE2_N,PLAN physical-connectivity blocker
+P0,D96,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
+P0,D96,12,TM2_DFF,D2,PLAN physical-connectivity blocker
+P0,D96,13,TM2_DFF,CLR2_N,PLAN physical-connectivity blocker
+P0,D96,2,TM2_DFF,D1,PLAN physical-connectivity blocker
+P0,D96,3,TM2_DFF,CLK1,PLAN physical-connectivity blocker
+P0,D96,4,TM2_DFF,PRE1_N,PLAN physical-connectivity blocker
+P0,D96,5,TM2_DFF,Q1,PLAN physical-connectivity blocker
+P0,D96,6,TM2_DFF,Q1_N,PLAN physical-connectivity blocker
+P0,D96,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
+P0,D96,9,TM2_DFF,Q2,PLAN physical-connectivity blocker
+P0,D97,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
+P0,D97,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
+P0,D97,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker
+P0,D97,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
+P0,D97,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
+P0,D97,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
+P0,D97,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
+P0,D97,2,AG3_ONESHOT,B,PLAN physical-connectivity blocker
+P0,D97,3,AG3_ONESHOT,CLR_N,PLAN physical-connectivity blocker
+P0,D97,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
+P0,D97,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
+P0,D97,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
+P0,D97,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
+P0,D97,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
+P0,D98,1,LP11_BUF,OE14_N,PLAN physical-connectivity blocker
+P0,D98,10,LP11_BUF,A4,PLAN physical-connectivity blocker
+P0,D98,11,LP11_BUF,Y5,PLAN physical-connectivity blocker
+P0,D98,12,LP11_BUF,A5,PLAN physical-connectivity blocker
+P0,D98,13,LP11_BUF,Y6,PLAN physical-connectivity blocker
+P0,D98,14,LP11_BUF,A6,PLAN physical-connectivity blocker
+P0,D98,15,LP11_BUF,OE56_N,PLAN physical-connectivity blocker
+P0,D98,2,LP11_BUF,A1,PLAN physical-connectivity blocker
+P0,D98,3,LP11_BUF,Y1,PLAN physical-connectivity blocker
+P0,D98,4,LP11_BUF,A2,PLAN physical-connectivity blocker
+P0,D98,5,LP11_BUF,Y2,PLAN physical-connectivity blocker
+P0,D98,6,LP11_BUF,A3,PLAN physical-connectivity blocker
+P0,D98,7,LP11_BUF,Y3,PLAN physical-connectivity blocker
+P0,D98,9,LP11_BUF,Y4,PLAN physical-connectivity blocker
+P0,D99,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
+P0,D99,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
+P0,D99,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker
+P0,D99,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
+P0,D99,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
+P0,D99,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
+P0,D99,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
+P0,D99,2,AG3_ONESHOT,B,PLAN physical-connectivity blocker
+P0,D99,3,AG3_ONESHOT,CLR_N,PLAN physical-connectivity blocker
+P0,D99,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
+P0,D99,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
+P0,D99,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
+P0,D99,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
+P0,D99,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
+P1,E1,3,JUMPER3,P3,functional endpoint lacks disposition
+P1,E14,1,JUMPER4,P1,functional endpoint lacks disposition
+P1,R66,1,R_AXIAL,P1,functional endpoint lacks disposition
+P1,R73,3,R_TRIM,P3,functional endpoint lacks disposition
+P1,S4,1,SW,P1,functional endpoint lacks disposition
+P1,S4,2,SW,P2,functional endpoint lacks disposition
+P1,Z1,1,XTAL,P1,functional endpoint lacks disposition
+P1,Z1,2,XTAL,P2,functional endpoint lacks disposition

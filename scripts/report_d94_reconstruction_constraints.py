@@ -273,9 +273,11 @@ def main() -> int:
         "hdl/devices.v",
         "module re3_prom_092",
         "D94 = programmed part ДГШ5.106.092",
-        "assign d = 8'hFF",
+        "assign d = 8'hzz",
     )
-    hdl_unconnected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", ".d()")
+    hdl_connected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", "fdc_prom_re_n", "fdc_prom_cs_n", "fdc_prom_we_n")
+    pcb_outputs_match = all(pcb_nets.get(pin) == net_for_pin(board, "D94", pin)[0]
+                            for pin, _ in output_pins if net_for_pin(board, "D94", pin))
     official_bom_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
         "D94 = К155РЕ3 #2",
@@ -363,8 +365,8 @@ def main() -> int:
             "",
             "## KiCad PCB Cross-check",
             "",
-            "The authoritative PCB file agrees with the DSN: D94 has power/ground and",
-            "address nets only; enable and all data outputs remain unnetted there too.",
+            "The authoritative source PCB includes accepted photo-traced outputs; the",
+            "older routed DSN remains a held engineering snapshot until cluster reroute.",
             "",
             "| Pin | Role | PCB Net | Result |",
             "| ---: | --- | --- | --- |",
@@ -381,7 +383,7 @@ def main() -> int:
             f"| Board identity names D94 as `.092`, not stale `.113` | {'PASS' if board_identity_ok else 'FAIL'} | `kicad/juku.board.json` type `{board_type or 'missing'}` |",
             f"| Address pins D94.10-D94.14 are traced | {'PASS' if address_ok else 'FAIL'} | board JSON nets |",
             f"| DSN agrees on D94 power/address and lacks output nets | {'PASS' if dsn_ok and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
-            f"| PCB agrees on D94 power/address and lacks output nets | {'PASS' if pcb_ok and not pcb_output_nets else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
+            f"| PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
@@ -391,7 +393,7 @@ def main() -> int:
             f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
             f"| HDL placeholder is explicitly inert | {'PASS' if hdl_placeholder else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
-            f"| `juku_top` leaves D94 data outputs unconnected | {'PASS' if hdl_unconnected else 'FAIL'} | `hdl/juku_top.v` |",
+            f"| `juku_top` connects the three accepted local FDC controls | {'PASS' if hdl_connected else 'FAIL'} | `hdl/juku_top.v` |",
             f"| Video slot audit is still D94-pending | {'PASS' if video_audit_pending else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
             "",
             "## Textual / Photo Survey Leads",
@@ -403,10 +405,11 @@ def main() -> int:
             "- The guarded firmware inspection establishes that `.113/.117` belong",
             "  to the `.106.103`-family owner-scan evidence and are not a burnable",
             "  D94 `.092` substitute.",
-            "- These textual leads establish identity and negative evidence only. They",
-            "  do not provide D94 pin 15, D0-D7 destinations, or PROM contents.",
+            "- Local two-sided fits and continuous copper now establish D0-D2 as the",
+            "  private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources",
+            "  still do not provide pin 15, D3-D7 destinations, or PROM contents.",
             "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
-            "  in board JSON/DSN, but D94 pin 15 and D0-D7 are not tied to it in",
+            "  in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in",
             "  board JSON, DSN, or PCB evidence. It cannot substitute for the missing",
             "  D94 enable/output continuity.",
             "",
@@ -414,7 +417,7 @@ def main() -> int:
             "",
             "D94 is a 32 x 8 PROM. The address pins are traced, so the reachable",
             "rows are mechanically known, but every row byte is still unknown because",
-            "the D0-D7 destinations and `.092` programming table/dump are absent.",
+            "the `.092` programming table/dump is absent and D3-D7 remain unassigned.",
             "",
             "| Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
@@ -428,9 +431,9 @@ def main() -> int:
             "",
             "- Known: D94 is present in the .009 FDC quadrant and its five address",
             "  inputs are wired to `BA11..BA15`.",
-            "- Unknown: D94 pin 15 (`E_N`) and the eight D94 output destinations are",
-            "  not traced/netted in `kicad/juku.board.json`, `kicad/juku.dsn`,",
-            "  `kicad/juku.kicad_pcb`, or the audited text/photo notes, and no",
+            "- Known output destinations: D0-D2 drive the private D93 read/select/write",
+            "  controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.",
+            "- Unknown: D94 pin 15 (`E_N`) and D3-D7 destinations remain untraced, and no",
             "  `ДГШ5.106.092` programming table or dump is present under the",
             "  repository artifact scan.",
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
@@ -460,7 +463,8 @@ def main() -> int:
         and reused_refdes_guard
         and v3_rc_not_d94_evidence
         and hdl_placeholder
-        and hdl_unconnected
+        and hdl_connected
+        and pcb_outputs_match
         and scanned_not_d94
         and video_audit_pending
     ) else 1

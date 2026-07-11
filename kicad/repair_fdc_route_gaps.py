@@ -8,12 +8,13 @@ import sys
 import pcbnew
 
 
-if len(sys.argv) != 3:
-    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb")
+if len(sys.argv) not in (3, 4, 8):
+    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2]")
 
 STEP = 0.5
 WIDTH = 0.20
 CLEARANCE = 0.45
+SEARCH_MARGIN = None
 MAX_X, MAX_Y = round(310 / STEP), round(266 / STEP)
 board = pcbnew.LoadBoard(sys.argv[1])
 
@@ -35,24 +36,26 @@ def point_segment_distance(px, py, ax, ay, bx, by):
     return math.hypot(px - (ax + t * dx), py - (ay + t * dy))
 
 
-def mark_circle(blocked, x, y, radius):
-    ix0, ix1 = max(0, math.floor((x - radius) / STEP)), min(MAX_X, math.ceil((x + radius) / STEP))
-    iy0, iy1 = max(0, math.floor((y - radius) / STEP)), min(MAX_Y, math.ceil((y + radius) / STEP))
+def mark_circle(blocked, x, y, radius, bounds=(0, MAX_X, 0, MAX_Y)):
+    ix0, ix1 = max(bounds[0], math.floor((x - radius) / STEP)), min(bounds[1], math.ceil((x + radius) / STEP))
+    iy0, iy1 = max(bounds[2], math.floor((y - radius) / STEP)), min(bounds[3], math.ceil((y + radius) / STEP))
     for ix in range(ix0, ix1 + 1):
         for iy in range(iy0, iy1 + 1):
             if math.hypot(ix * STEP - x, iy * STEP - y) <= radius:
                 blocked.add((ix, iy))
 
 
-def obstacle_map(netname, layer):
+def obstacle_map(netname, layer, bounds=(0, MAX_X, 0, MAX_Y)):
     blocked = set()
     edge = math.ceil(0.40 / STEP)
-    for ix in range(MAX_X + 1):
+    for ix in range(bounds[0], bounds[1] + 1):
         for iy in range(edge):
-            blocked.add((ix, iy)); blocked.add((ix, MAX_Y - iy))
-    for iy in range(MAX_Y + 1):
+            if bounds[2] <= iy <= bounds[3]: blocked.add((ix, iy))
+            if bounds[2] <= MAX_Y - iy <= bounds[3]: blocked.add((ix, MAX_Y - iy))
+    for iy in range(bounds[2], bounds[3] + 1):
         for ix in range(edge):
-            blocked.add((ix, iy)); blocked.add((MAX_X - ix, iy))
+            if bounds[0] <= ix <= bounds[1]: blocked.add((ix, iy))
+            if bounds[0] <= MAX_X - ix <= bounds[1]: blocked.add((MAX_X - ix, iy))
 
     for pad in board.GetPads():
         if pad.GetNetname() == netname:
@@ -60,21 +63,21 @@ def obstacle_map(netname, layer):
         x, y = mm(pad.GetPosition())
         size = pad.GetSize()
         radius = pcbnew.ToMM(max(size.x, size.y)) / 2 + CLEARANCE + WIDTH / 2
-        mark_circle(blocked, x, y, radius)
+        mark_circle(blocked, x, y, radius, bounds)
 
     for item in board.GetTracks():
         if item.GetNetname() == netname:
             continue
         if isinstance(item, pcbnew.PCB_VIA):
             x, y = mm(item.GetPosition())
-            mark_circle(blocked, x, y, pcbnew.ToMM(item.GetWidth(layer)) / 2 + CLEARANCE + WIDTH / 2)
+            mark_circle(blocked, x, y, pcbnew.ToMM(item.GetWidth(layer)) / 2 + CLEARANCE + WIDTH / 2, bounds)
             continue
         if item.GetLayer() != layer:
             continue
         ax, ay = mm(item.GetStart()); bx, by = mm(item.GetEnd())
         radius = pcbnew.ToMM(item.GetWidth()) / 2 + CLEARANCE + WIDTH / 2
-        ix0, ix1 = max(0, math.floor((min(ax, bx) - radius) / STEP)), min(MAX_X, math.ceil((max(ax, bx) + radius) / STEP))
-        iy0, iy1 = max(0, math.floor((min(ay, by) - radius) / STEP)), min(MAX_Y, math.ceil((max(ay, by) + radius) / STEP))
+        ix0, ix1 = max(bounds[0], math.floor((min(ax, bx) - radius) / STEP)), min(bounds[1], math.ceil((max(ax, bx) + radius) / STEP))
+        iy0, iy1 = max(bounds[2], math.floor((min(ay, by) - radius) / STEP)), min(bounds[3], math.ceil((max(ay, by) + radius) / STEP))
         for ix in range(ix0, ix1 + 1):
             for iy in range(iy0, iy1 + 1):
                 if point_segment_distance(ix * STEP, iy * STEP, ax, ay, bx, by) <= radius:
@@ -155,8 +158,17 @@ def add_route(netname, start, end, layers=(pcbnew.F_Cu, pcbnew.B_Cu), endpoint_v
 
 
 def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(0, 1)):
-    blocked = [obstacle_map(netname, pcbnew.F_Cu), obstacle_map(netname, pcbnew.B_Cu)]
     start_cell, goal_cell = cell(start), cell(end)
+    if SEARCH_MARGIN is None:
+        search_bounds = (0, MAX_X, 0, MAX_Y)
+    else:
+        margin = math.ceil(SEARCH_MARGIN / STEP)
+        search_bounds = (max(0, min(start_cell[0], goal_cell[0]) - margin),
+                         min(MAX_X, max(start_cell[0], goal_cell[0]) + margin),
+                         max(0, min(start_cell[1], goal_cell[1]) - margin),
+                         min(MAX_Y, max(start_cell[1], goal_cell[1]) + margin))
+    blocked = [obstacle_map(netname, pcbnew.F_Cu, search_bounds),
+               obstacle_map(netname, pcbnew.B_Cu, search_bounds)]
     for layer_index in start_layers:
         for dx in range(-2, 3):
             for dy in range(-2, 3):
@@ -180,10 +192,18 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
             goal_state = current; break
         x, y, layer_index = current
         options = [(x + dx, y + dy, layer_index, move_cost) for dx, dy, move_cost in MOVES]
-        if (x, y) not in blocked[1 - layer_index]:
+        # Same-net copper may overlap safely, but two drilled vias still need
+        # the board's hole-to-hole clearance.  Keep layer changes away from
+        # every via already placed by earlier incremental routes.
+        via_clear = all(
+            math.hypot(x * STEP - mm(item.GetPosition())[0], y * STEP - mm(item.GetPosition())[1]) >= 0.80
+            for item in board.GetTracks() if isinstance(item, pcbnew.PCB_VIA)
+        )
+        if via_clear and (x, y) not in blocked[1 - layer_index]:
             options.append((x, y, 1 - layer_index, 5.0))
         for nx, ny, nl, move_cost in options:
-            if not (0 <= nx <= MAX_X and 0 <= ny <= MAX_Y) or (nx, ny) in blocked[nl]:
+            if not (search_bounds[0] <= nx <= search_bounds[1]
+                    and search_bounds[2] <= ny <= search_bounds[3]) or (nx, ny) in blocked[nl]:
                 continue
             nxt = (nx, ny, nl); candidate = current_cost + move_cost
             if candidate < cost.get(nxt, float("inf")):
@@ -226,9 +246,54 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
     print(f"{netname}: multilayer {segment_count} segments + {via_count} vias")
 
 
-add_multilayer_route("RF_TANK", pcbnew.VECTOR2I_MM(252.1, 103.2), pcbnew.VECTOR2I_MM(263.3222, 104.233), (1,), (1,))
-add_route("VIDEO_OUT", board.FindFootprintByReference("X7").FindPadByNumber("1").GetPosition(), board.FindFootprintByReference("R65").FindPadByNumber("1").GetPosition())
-add_multilayer_route("RESET", board.FindFootprintByReference("D26").FindPadByNumber("35").GetPosition(), board.FindFootprintByReference("D1").FindPadByNumber("12").GetPosition())
+def pad(ref, pin):
+    return board.FindFootprintByReference(ref).FindPadByNumber(pin).GetPosition()
+
+
+if len(sys.argv) == 8 and sys.argv[3] == "gap":
+    CLEARANCE = 0.45
+    netname = sys.argv[4]
+    x1, y1 = map(float, sys.argv[5].split(",")); x2, y2 = map(float, sys.argv[6].split(","))
+    if sys.argv[7] == "M":
+        SEARCH_MARGIN = 30.0
+        add_multilayer_route(netname, pcbnew.VECTOR2I_MM(x1, y1), pcbnew.VECTOR2I_MM(x2, y2))
+    else:
+        layer = {"F": (pcbnew.F_Cu,), "B": (pcbnew.B_Cu,), "FB": (pcbnew.F_Cu, pcbnew.B_Cu)}[sys.argv[7]]
+        add_route(netname, pcbnew.VECTOR2I_MM(x1, y1), pcbnew.VECTOR2I_MM(x2, y2), layer)
+elif len(sys.argv) == 4 and sys.argv[3] == "d26-mode":
+    add_multilayer_route("MEM_MODE0", pad("D6", "2"), pad("D26", "16"))
+    add_multilayer_route("MEM_MODE1", pad("D6", "1"), pad("D26", "17"))
+    add_multilayer_route("FDC_DDEN", pad("D26", "13"), pad("D93", "37"))
+    add_multilayer_route("FDC_DDEN", pad("D93", "37"), pad("D6", "15"))
+elif len(sys.argv) == 4 and sys.argv[3] == "controls":
+    # Extra cell margin prevents diagonal grid chords from grazing the RESET
+    # and data traces in the dense CPU/controller cluster.
+    CLEARANCE = 0.70
+    add_multilayer_route("GND", pad("D1", "13"), pcbnew.VECTOR2I_MM(38.5084, 149.2434), (0, 1), (0,))
+    add_multilayer_route("GND", pad("D5", "22"), pad("D5", "14"))
+    add_multilayer_route("GND", pad("D4", "9"), pad("D4", "10"))
+    add_multilayer_route("GND", pad("D107", "9"), pad("D107", "10"))
+    add_multilayer_route("P5V", pad("D4", "11"), pad("D107", "20"))
+    add_multilayer_route("P5V", pad("D107", "11"), pad("D107", "20"))
+elif len(sys.argv) == 4 and sys.argv[3] == "video-counters":
+    add_multilayer_route("P5V", pad("D44", "4"), pcbnew.VECTOR2I_MM(84.515, 190.7772), (0, 1), (0,))
+    add_multilayer_route("P5V", pad("D45", "4"), pcbnew.VECTOR2I_MM(96.0105, 226.3492), (0, 1), (1,))
+    add_route("GND", pad("D44", "14"), pad("D44", "15"), (pcbnew.B_Cu,))
+    add_route("GND", pad("D45", "14"), pad("D45", "15"), (pcbnew.B_Cu,))
+elif len(sys.argv) == 4 and sys.argv[3] == "d103":
+    CLEARANCE = 0.70
+    add_multilayer_route("P5V", pad("D103", "1"), pad("D103", "16"))
+    add_multilayer_route("P5V", pad("D103", "1"), pad("D103", "3"))
+    add_multilayer_route("P5V", pad("D103", "3"), pad("D103", "4"))
+    add_multilayer_route("P5V", pad("D103", "4"), pad("D103", "7"))
+    add_multilayer_route("P5V", pad("D103", "7"), pad("D103", "10"))
+    add_route("GND", pad("D103", "5"), pad("D103", "6"), (pcbnew.B_Cu,))
+    add_multilayer_route("GND", pad("D103", "6"), pad("D103", "8"))
+else:
+    add_multilayer_route("RF_TANK", pcbnew.VECTOR2I_MM(252.1, 103.2), pcbnew.VECTOR2I_MM(263.3222, 104.233), (1,), (1,))
+    add_route("VIDEO_OUT", pad("X7", "1"), pad("R65", "1"))
+    add_multilayer_route("RESET", pad("D26", "35"), pad("D1", "12"))
 
 pcbnew.SaveBoard(sys.argv[2], board)
-print(f"closed RESET, VIDEO_OUT, and RF_TANK reroute gaps -> {sys.argv[2]}")
+label = sys.argv[3] if len(sys.argv) in (4, 8) else "RESET, VIDEO_OUT, and RF_TANK"
+print(f"closed {label} reroute gaps -> {sys.argv[2]}")

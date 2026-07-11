@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "pixels_per_mm": 5,
+  "coordinate_system": "component-side board coordinates",
+  "groups": {
+    "component_grid": {
+      "board_to_panorama_homography": [
+        4.650361446858707,
+        -0.05110257795757232,
+        111.0,
+        -0.058186527781342506,
+        4.622615471426833,
+        200.0,
+        -3.572622041052191e-05,
+        -6.050298992611212e-05,
+        1.0
+      ],
+      "max_held_out_error_px": 27.321,
+      "rectified_image": "docs/photo-registration/component_grid-rectified.jpg"
+    },
+    "solder_grid": {
+      "board_to_panorama_homography": [
+        -4.556524342322166,
+        -0.16464931588334658,
+        1543.0,
+        -0.007497481043581553,
+        4.440827859065369,
+        187.0,
+        1.1847490822050206e-05,
+        -0.00019224497483813217,
+        1.0
+      ],
+      "max_held_out_error_px": 7.397,
+      "rectified_image": "docs/photo-registration/solder_grid-rectified.jpg"
+    }
+  }
+}

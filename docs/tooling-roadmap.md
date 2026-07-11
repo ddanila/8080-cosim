@@ -2,7 +2,7 @@
 
 Status date: **2026-07-10**.
 
-Status: **EVALUATED / NOT IMPLEMENTED**
+Status: **PHOTO REGISTRATION SCAFFOLD IMPLEMENTED / OTHER PILOTS DEFERRED**
 
 This document records tools that may reduce evidence-processing and bring-up
 risk. It is a roadmap, not an installation manifest: none of the tools below is
@@ -29,6 +29,15 @@ an opaque interactive project:
   review state;
 - generated component/solder overlays and a candidate endpoint table.
 
+The repo-native portion is now implemented by
+`scripts/photo_registration.py`. It inventories the July grids with hashes and
+dimensions, preserves acquisition/mirror state, generates review contact sheets,
+validates the endpoint promotion schema, and solves four-point projective
+registration with an independently held-out error landmark. The current
+manifest intentionally contains no invented fiducials or promoted endpoints;
+those fields await landmark review of the original-resolution photographs.
+PCB ReTrace has not been adopted as a dependency.
+
 Use [Hugin](https://hugin.sourceforge.io/docs/manual/Hugin.html) only to make
 convenient multi-row visual mosaics. A flattened panorama is not sufficient
 provenance for an electrical endpoint.
@@ -49,13 +58,18 @@ authoritative.
 
 ## KiCad verification additions
 
-After reviewed photo endpoints begin changing the model, port the existing
-minimal-VGA ERC reporting pattern to the main board and add:
+The minimal-VGA ERC reporting pattern is now ported to the main board. The
+generated `docs/main-board-erc-parity.md` gate includes:
 
 - `kicad-cli sch erc` with a machine-readable report;
-- `kicad-cli pcb drc --schematic-parity`;
-- explicit intentional-no-connect accounting;
-- a generated disposition report used by the design-release gate.
+- `kicad-cli pcb drc --schematic-parity` on the same-basename source pair;
+- explicit intentional-no-connect and unowned-functional-pin accounting;
+- a generated disposition report used by the manufacturing-readiness gate.
+
+The gate also emits `docs/main-board-unresolved-endpoints.csv`, an exact
+pin-level P0/P1/P2 backlog derived from the same symbol/net/no-connect surface
+as ERC. This keeps photo tracing and continuity requests focused on release
+critical endpoints rather than raw KiCad violation order.
 
 KiCad documents both
 [schematic ERC and PCB/schematic parity](https://docs.kicad.org/9.0/en/cli/cli.html).
@@ -109,7 +123,7 @@ and adapter support is demonstrated, retain the MCU sweep in
 
 ## Adoption exit criteria
 
-A tool becomes a repository dependency only when it has a pinned version or
+A third-party tool becomes a repository dependency only when it has a pinned version or
 reproducible environment, a small documented invocation, machine-readable
 outputs, a check that fails usefully, and a maintenance benefit larger than its
 dependency cost. Until then, it remains an evaluated aid recorded here.

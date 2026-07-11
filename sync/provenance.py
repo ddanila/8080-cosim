@@ -32,7 +32,8 @@ print("\nCHIPS:")
 for c in b["chips"]:
     p = c.get("prov", {})
     print(f"  {c['ref']:5} {c['type']:9}  type={p.get('type','?')}, refdes={p.get('refdes','?')}, pins={p.get('pins','?')}")
-scan = nc.get("scan",0)+nc.get("datasheet",0)
+scan = sum(n for src, n in nc.items() if src == "scan" or src.startswith("scan "))
+scan += sum(n for src, n in nc.items() if src == "datasheet" or src.startswith("datasheet "))
 prom = nc.get("prom",0)
 total = sum(nc.values())
 rest = total - scan - prom

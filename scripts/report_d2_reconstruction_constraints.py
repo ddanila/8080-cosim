@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import csv
 from pathlib import Path
 
 
@@ -13,10 +14,11 @@ DSN = ROOT / "kicad" / "juku.dsn"
 PCB = ROOT / "kicad" / "juku.kicad_pcb"
 REPORT = ROOT / "docs" / "d2-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
+SYMBOLIC = ROOT / "ref" / "reconstructed-proms" / "d2_037_symbolic_truth.csv"
 
 # Direct reads from the full-resolution factory sheet.  These are deliberately
-# kept separate from board nets: the source endpoint is proved, but the other
-# five address inputs and the complete copper destinations are not yet closed.
+# kept separate from board nets so factory-sheet and later photo evidence remain
+# distinguishable in the generated report.
 SCHEMATIC_LEADS = {
     "4": ("VIDEO_CYCLE", "sheet 1 label `VIDEO CYCLE` enters D2 A3/pin 4"),
     "2": ("XACK_N", "sheet 1 label `-XACK` enters D2 A5/pin 2"),
@@ -190,6 +192,13 @@ def main() -> int:
         )
 
     candidates = firmware_candidates()
+    symbolic_rows = list(csv.DictReader(SYMBOLIC.open())) if SYMBOLIC.exists() else []
+    symbolic_ok = (
+        len(symbolic_rows) == 256
+        and all(row.get("D0") == "?" for row in symbolic_rows)
+        and symbolic_rows[0].get("prom_address_hex") == "0x00"
+        and symbolic_rows[-1].get("prom_address_hex") == "0xFF"
+    )
     identity_ok = board_type == "DEC_PROM" and "ДГШ5.106.037" in str(prov)
     d9 = next((item for item in board["chips"] if item.get("ref") == "D9"), {})
     io_decoder_superseded = (
@@ -208,20 +217,25 @@ def main() -> int:
     )
     raw_pin_table_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
-        "D2 pin table from sheet 1:",
+        "The D2 pin table from sheet 1 is:",
         "A0-A7=5/6/7/4/3/2/1/15",
-        "The proved D2 leads",
-        "are modeled and routed; its other inputs and PROM contents remain deferred",
+        "All D2 inputs are now modeled and routed",
+        "its PROM contents remain deferred",
     )
     all_signal_pins_netted = (
         len(signal_nets) == len(pin_roles)
         and len(dsn_nets) >= len(pin_roles)
         and len(pcb_nets) >= len(pin_roles)
     )
+    address_pins = {"1", "2", "3", "4", "5", "6", "7", "15"}
+    source_inputs_closed = all(net_for_pin(board, "D2", pin) for pin in address_pins)
+    source_inputs_in_pcb = all(pin in pcb_nets for pin in address_pins)
     if identity_ok and all_signal_pins_netted and candidates:
         status = "D2 RECONSTRUCTION READY"
     elif identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates:
         status = "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
+    elif identity_ok and source_inputs_closed and source_inputs_in_pcb and not candidates:
+        status = "D2 INPUTS TRACED / DUMP REQUIRED"
     elif identity_ok and signal_nets and not all_signal_pins_netted and not candidates:
         status = "D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED"
     else:
@@ -259,15 +273,27 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## Exact PROM Address Index",
+            "",
+            "The traced physical address byte is:",
+            "",
+            "`{WREQ_N, A10, XACK_N, A14, VIDEO_CYCLE, A9, A15, A12}`",
+            "",
+            "Therefore `prom_address = (WREQ_N<<7) + (A10<<6) + (XACK_N<<5) +",
+            "(A14<<4) + (VIDEO_CYCLE<<3) + (A9<<2) + (A15<<1) + A12`.",
+            "`ref/reconstructed-proms/d2_037_symbolic_truth.csv` enumerates all",
+            "256 input vectors. Every D0 cell is deliberately `?`; the CSV is a",
+            "constraint artifact, not a programmer image.",
+            "",
             "The named schematic leads above are pin-level source evidence, not a",
-            "claim that the remaining address inputs or D2 truth table are known.",
-            "Each proved pin is promoted independently; unresolved pins remain",
-            "explicit rather than being filled by behavioral inference.",
+            "claim that the D2 truth table is known. Each proved pin is promoted",
+            "independently; the July-2026 paired D2/D4 local fits close all eight",
+            "inputs while the programmed contents remain a separate boundary.",
             "",
             "## KiCad DSN Cross-check",
             "",
-            "The routed DSN exposes every currently proved D2 lead. The five",
-            "untraced address inputs remain an explicit reconstruction boundary.",
+            "The saved routed DSN predates the five photo-traced address inputs.",
+            "Its missing rows are a reroute boundary, not missing source evidence.",
             "",
             table_row(["Pin", "Role", "DSN Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),
@@ -279,8 +305,8 @@ def main() -> int:
             "",
             "## KiCad PCB Cross-check",
             "",
-            "The final PCB source exposes every currently proved D2 lead and",
-            "leaves only the five untraced address-input pads unnetted.",
+            "The authoritative PCB source exposes every proved D2 input and adds",
+            "one idempotent solder-side segment for each D2-to-D4 address route.",
             "",
             table_row(["Pin", "Role", "PCB Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),
@@ -321,6 +347,11 @@ def main() -> int:
                 else "no D2 pins in PCB nets",
             ]),
             table_row([
+                "256-row symbolic address table is non-burnable",
+                "PASS" if symbolic_ok else "FAIL",
+                "all D0 values are `?`" if symbolic_ok else "missing/malformed symbolic CSV",
+            ]),
+            table_row([
                 "`.037` firmware artifact exists",
                 "PASS" if candidates else "FAIL",
                 ", ".join(f"`{item}`" for item in candidates)
@@ -343,7 +374,7 @@ def main() -> int:
                 "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             ]),
             table_row([
-                "Evidence summary preserves D2 pin table but defers nets",
+                "Evidence summary preserves the traced D2 pin table",
                 "PASS" if raw_pin_table_lead else "FAIL",
                 "`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             ]),
@@ -354,12 +385,10 @@ def main() -> int:
             "  and D6 as `.038`.",
             "- The surviving sheet-1 evidence records the physical D2 pin table",
             "  `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly",
-            "  says the nets are deferred until the PROM table and output",
-            "  destination are read.",
-            "- Therefore these notes prove D2 identity and pin roles, not a burnable",
-            "  `.037` image and not a board-net closure. The board JSON/DSN/PCB",
-            "  no-net boundary remains authoritative until a stronger trace,",
-            "  programming-disk file, or repeated physical dump exists.",
+            "  originally deferred the other five input nets.",
+            "- The July-2026 two-sided D2 fit plus an independent D4 solder-row fit",
+            "  now traces D2.1/.3/.5/.6/.7 to D4.1/.3/.5/.6/.7, closing all",
+            "  physical inputs without claiming a burnable `.037` image.",
             "",
             "## Reconstruction Boundary",
             "",
@@ -367,10 +396,14 @@ def main() -> int:
             "  identifies it as programmed drawing `ДГШ5.106.037`.",
             "- Known: the older behavioral D2 I/O-decode model is not physical D2",
             "  programming truth; D9 is the current chip-select decoder.",
-            "- Partially known: D2 D0/pin 12 is routed to D105.9. The remaining",
-            "  address/input rails and `.037` truth table are not yet closed, and",
-            "  no programming table or dump is present",
+            "- Known: all eight D2 inputs and D0/pin 12 to D105.9 are routed in the",
+            "  authoritative board model/source PCB. The saved routed snapshot",
+            "  still predates the five new D2-to-D4 routes.",
+            "- Unknown: the `.037` truth table; no programming table or dump is present",
             "  under `ref/firmware/`.",
+            "- The factory sheet draws only D0/pin 12 from the four-output RT4",
+            "  package; unused output pins 9-11 are explicit no-connects in the",
+            "  board model and do not add unknown truth-table destinations.",
             "- Therefore a burnable D2 image is not derivable from current repo",
             "  evidence. The correct automatic action is to keep this constraint",
             "  report fresh; the data-unlocking action is a programming-disk file",
@@ -380,7 +413,7 @@ def main() -> int:
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead))
+    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok))
     return 0 if evidence_ok and status != "D2 RECONSTRUCTION INPUTS CHANGED" else 1
 
 

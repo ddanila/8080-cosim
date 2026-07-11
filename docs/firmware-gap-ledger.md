@@ -41,7 +41,7 @@ python3 scripts/report_firmware_gap_ledger.py
   reconstructed images are currently burnable from the repo.
 - Do not burn any older D2-as-I/O-decode behavioral table as physical
   D2; D9 is the current chip-select decoder and D2 remains a separate
-  `.037` bus/wait PROM with unknown pins/contents.
+  `.037` bus/wait PROM with fully traced inputs but unknown contents.
 - Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`
   or D94 `.092`; they are lineage evidence, not matching processor
   module programming tables.

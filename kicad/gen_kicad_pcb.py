@@ -193,7 +193,7 @@ PLACE = {
     'D57':(274.9,206.6,90),'D55':(274.9,229.2,90),'D54':(274.7,251,90),'D26':(232,251,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
-    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(78.9,126.1,90),'D8':(89.5,102.4,0),'D9':(114.0,103.0,0),   # D2/D8 = the socketed РТ4/РЕ3 PROMs (sheet-1 decode cluster)   # D9 = К555ИД7 IO decoder (BOM x1; nets moved from the old 'D2' misassignment)
+    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(78.9,126.1,0),'D8':(89.5,102.4,0),'D9':(114.0,103.0,0),   # D2 vertical, notch/pin 1 upward; D8 = socketed РЕ3 PROM; D9 = К555ИД7 IO decoder
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -221,8 +221,8 @@ PLACE = {
     # puts it bottom-centre by the transformer -- read it next pass).
     'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
-    'D93':(248,70,0),'D94':(228,33,0),'D100':(245,30,0),   # FDC trio promoted to netted [grind C]
-    'D98':(268,30,90),'D106':(262,74,0),'D28':(272,74,0),'D96':(284,74,0),
+    'D93':(248,70,0),'D94':(233.08,47,90),'D100':(257.65,37.40,90), # local fits: D94 and marked D100 VA87 horizontal/notch-left
+    'D98':(298.90,33.595,90),'D106':(262,74,0),'D28':(272,74,0),'D96':(284,74,0),
     'D95':(268,93,90),'D97':(228,88,90),'D101':(230,109,90),
     'D99':(250.8,110,90),'D102':(270.8,111.8,90),
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7

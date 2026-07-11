@@ -14,6 +14,7 @@ DEFAULT_FAB_DIR = ROOT / "fab" / "gerbers"
 DEFAULT_REPORT = ROOT / "docs" / "replica-manufacturing-readiness.md"
 
 REQUIRED_REPORTS = [
+    ("Main-board ERC/parity", "docs/main-board-erc-parity.md", "# Main-board ERC and schematic/PCB parity"),
     ("Order readiness", "fab/gerbers/order-readiness.md", "# Main board order readiness"),
     ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),

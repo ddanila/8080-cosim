@@ -147,7 +147,7 @@ endmodule
 // behavioral reconstruction (byte-identical boot).
 module decode_prom (input wire [15:8] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
-    // a[15:11] = BA15..BA11; a[10] = mode bit 0 (PC0), a[9] = mode bit 1 (PC1), a[8] = tag-3 (0).
+    // a[15:11] = BA15..BA11; factory sheet: a[10:8] = D26 PC2,PC3,PC4 via tags 1,2,3.
     //   mode 0 (a[10]=0, reset overlay): ROM at 0x0000-0x3FFF.
     //   mode 1 (a[10]=1): ROM folds up to 0xD800-0xFFFF (the EPROM's BA[12:0] wiring yields the
     //   0x1800+ offset automatically), RAM below.
@@ -939,9 +939,11 @@ endmodule
 module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
     // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
-    // D94 (see d94-reconstruction-constraints.md). Outputs modeled inactive (all HIGH =
-    // OC off + pullups); D94's outputs are un-netted anyway, so this is boot-inert.
-    assign d = 8'hFF;   // placeholder until the .092 dump; a/e_n kept for connectivity
+    // D94 (see d94-reconstruction-constraints.md). The real bipolar PROM has
+    // open-collector outputs.  Photo tracing now places D2/D3/D4 on the shared
+    // IORD/CS_FDC/IOWR rails; model the undumped part as electrically released
+    // rather than driving a placeholder HIGH into those resolved nets.
+    assign d = 8'hzz;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule
 
 // D30 КМ555ТМ2 dual D flip-flop. Section A is physically traced into the READY

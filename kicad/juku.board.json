@@ -51,7 +51,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "scan; HOLD/pin13 grounded on sheet-1; INTE/pin16 omitted/NC; WAIT/pin24 visibly enters the lower control bundle with far destination unread"
    }
   },
   {
@@ -80,7 +80,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan(routed)"
+    "pins": "scan(routed); sheet-1 OE_N/pin9 grounded and T/pin11 tied to arrow-A/+5 V"
    }
   },
   {
@@ -109,7 +109,7 @@
    "prov": {
     "type": "scan",
     "refdes": "official .009 ПЭЗ (3rd ВА86; photo: below D4)",
-    "pins": "scan"
+    "pins": "scan; sheet-1 OE_N/pin9 grounded and T/pin11 tied to arrow-A/+5 V"
    }
   },
   {
@@ -146,7 +146,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "control=scan; data=8228 datasheet layout (control pins validate it)"
+    "pins": "control=scan; data=8228 datasheet layout (control pins validate it); BUSEN_N/pin22 grounded on sheet-1"
    }
   },
   {
@@ -468,6 +468,12 @@
     "35": "RESET",
     "14": "PC0",
     "15": "PC1",
+    "16": "PC2",
+    "17": "PC3",
+    "13": "PC4",
+    "12": "PC5",
+    "11": "PC6",
+    "10": "PC7",
     "34": "D0",
     "33": "D1",
     "32": "D2",
@@ -495,7 +501,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58)"
+    "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58); full-resolution sheet maps PC2/3/4 pins16/17/13 through mode-bundle tags1/2/3 to D6 A5/A6/A7, and PC5/6/7 pins12/11/10 to still-unresolved tags4/5/6; PA5/pin39 is undrawn/NC"
    }
   },
   {
@@ -812,7 +818,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20)"
+    "pins": "scan sheet-2 (74193 pinout, finding 20); DOWN/pin4 tied to +5 V, CLR/pin14 grounded, BO/pin13 undrawn/NC"
    }
   },
   {
@@ -837,7 +843,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20)"
+    "pins": "scan sheet-2 (74193 pinout, finding 20); DOWN/pin4 tied to +5 V, CLR/pin14 grounded, BO/pin13 undrawn/NC"
    }
   },
   {
@@ -862,7 +868,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20)"
+    "pins": "scan sheet-2 (74193 pinout, finding 20); BO/pin13 undrawn/NC"
    }
   },
   {
@@ -887,7 +893,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20)"
+    "pins": "scan sheet-2 (74193 pinout, finding 20); terminal CO/pin12 and BO/pin13 undrawn/NC"
    }
   },
   {
@@ -1007,7 +1013,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "datasheet"
+    "pins": "datasheet + sheet-2 divider: 16MHz input and labeled 1.23MHz Q3 output constrain modulo-13 operation; preset 0011 has D0/D1 high and D2/D3 low, ENP/ENT and CLR_N high; Q0-Q2 undrawn/NC"
    }
   },
   {
@@ -3136,7 +3142,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/pin12->D105.9; remaining A inputs and ДГШ5.106.037 truth table pending"
+    "pins": "sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/pin12->D105.9; factory symbol draws only D0/pin12 and leaves the other RT4 outputs pins9-11 unused/NC; remaining A inputs and ДГШ5.106.037 truth table pending"
    }
   },
   {
@@ -3469,7 +3475,7 @@
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "WD1793 std pinout; bus side per MAME io 1C-1F + sheet-3 CS7 delta"
+    "pins": "WD1793 standard pinout; July-2026 local photo traces RE/CS/WE privately to D94 D0-D2; Western Digital handbook requires pin 1 (internal back-bias node) left open"
    }
   },
   {
@@ -3494,7 +3500,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092 (dump pending)",
-    "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8)"
+    "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
    }
   },
   {
@@ -4531,7 +4537,7 @@
    ]
   },
   "A9": {
-   "src": "scan",
+   "src": "scan + July-2026 D2/D4 solder local fits",
    "nodes": [
     [
      "D1",
@@ -4540,11 +4546,15 @@
     [
      "D4",
      "7"
+    ],
+    [
+     "D2",
+     "7"
     ]
    ]
   },
   "A10": {
-   "src": "scan",
+   "src": "scan + July-2026 D2/D4 solder local fits",
    "nodes": [
     [
      "D1",
@@ -4552,6 +4562,10 @@
     ],
     [
      "D4",
+     "1"
+    ],
+    [
+     "D2",
      "1"
     ]
    ]
@@ -4570,7 +4584,7 @@
    ]
   },
   "A12": {
-   "src": "scan",
+   "src": "scan + July-2026 D2/D4 solder local fits",
    "nodes": [
     [
      "D1",
@@ -4578,6 +4592,10 @@
     ],
     [
      "D4",
+     "5"
+    ],
+    [
+     "D2",
      "5"
     ]
    ]
@@ -4596,7 +4614,7 @@
    ]
   },
   "A14": {
-   "src": "scan",
+   "src": "scan + July-2026 D2/D4 solder local fits",
    "nodes": [
     [
      "D1",
@@ -4605,11 +4623,15 @@
     [
      "D4",
      "3"
+    ],
+    [
+     "D2",
+     "3"
     ]
    ]
   },
   "A15": {
-   "src": "scan",
+   "src": "scan + July-2026 D2/D4 solder local fits",
    "nodes": [
     [
      "D1",
@@ -4617,6 +4639,10 @@
     ],
     [
      "D4",
+     "6"
+    ],
+    [
+     "D2",
      "6"
     ]
    ]
@@ -6536,7 +6562,7 @@
    "wire_link": true
   },
   "IORD": {
-   "src": "scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed)",
+   "src": "scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch",
    "nodes": [
     [
      "D5",
@@ -6575,17 +6601,13 @@
      "7"
     ],
     [
-     "D93",
-     "4"
-    ],
-    [
      "D7",
      "13"
     ]
    ]
   },
   "IOWR": {
-   "src": "scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed)",
+   "src": "scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch",
    "nodes": [
     [
      "D5",
@@ -6624,21 +6646,17 @@
      "8"
     ],
     [
-     "D93",
-     "2"
-    ],
-    [
      "D7",
      "12"
     ]
    ]
   },
   "MEM_MODE0": {
-   "src": "traced sheet-1 (bios_hunt1: D6.A5/pin2 <- mode-bundle tag 1) + scan (PPI PC0 = D26.14); tag<->PC-bit order assumed. D7.13 endpoint removed (that pin = IORD strobe input)",
+   "src": "traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2",
    "nodes": [
     [
      "D26",
-     "14"
+     "16"
     ],
     [
      "D6",
@@ -8963,12 +8981,44 @@
    ]
   },
   "GND": {
-   "src": "scan",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9",
    "power": true,
    "nodes": [
     [
      "D1",
      "2"
+    ],
+    [
+     "D1",
+     "13"
+    ],
+    [
+     "D4",
+     "9"
+    ],
+    [
+     "D5",
+     "22"
+    ],
+    [
+     "D107",
+     "9"
+    ],
+    [
+     "D44",
+     "14"
+    ],
+    [
+     "D45",
+     "14"
+    ],
+    [
+     "D103",
+     "5"
+    ],
+    [
+     "D103",
+     "6"
     ],
     [
      "D5",
@@ -9445,12 +9495,48 @@
    ]
   },
   "P5V": {
-   "src": "scan",
+   "src": "scan; sheet-1 arrow-A rail ties both address-buffer direction pins D4.11/D107.11 high for CPU-address to buffered-address flow",
    "power": true,
    "nodes": [
     [
      "D1",
      "20"
+    ],
+    [
+     "D4",
+     "11"
+    ],
+    [
+     "D107",
+     "11"
+    ],
+    [
+     "D44",
+     "4"
+    ],
+    [
+     "D45",
+     "4"
+    ],
+    [
+     "D103",
+     "1"
+    ],
+    [
+     "D103",
+     "3"
+    ],
+    [
+     "D103",
+     "4"
+    ],
+    [
+     "D103",
+     "7"
+    ],
+    [
+     "D103",
+     "10"
     ],
     [
      "D5",
@@ -11677,17 +11763,25 @@
    ]
   },
   "CS_FDC": {
-   "src": "sheet-3 delta: CS7 (io 1C) -> ВГ93 on .009",
+   "src": "sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch",
    "nodes": [
-    [
+   [
      "D9",
      "7"
-    ],
-    [
-     "D93",
-     "3"
     ]
    ]
+  },
+  "FDC_RE_N": {
+   "src": "July-2026 two-sided local fit + continuous component copper",
+   "nodes": [["D94", "1"], ["D93", "4"]]
+  },
+  "FDC_CS_N": {
+   "src": "July-2026 two-sided local fit + continuous component copper",
+   "nodes": [["D94", "2"], ["D93", "3"]]
+  },
+  "FDC_WE_N": {
+   "src": "July-2026 two-sided local fit + continuous component copper",
+   "nodes": [["D94", "3"], ["D93", "2"]]
   },
   "FDC_DAL0": {
    "src": "datasheet (8287 B-side -> ВГ93 DAL)",
@@ -11820,7 +11914,7 @@
    ]
   },
   "FDC_DDEN": {
-   "src": "mame (PC4 = density)",
+   "src": "cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37, so the retained memory-mode rail and added FDC DDEN are one physical net",
    "nodes": [
     [
      "D26",
@@ -11829,6 +11923,10 @@
     [
      "D93",
      "37"
+    ],
+    [
+     "D6",
+     "15"
     ]
    ]
   },
@@ -13407,11 +13505,11 @@
    ]
   },
   "MEM_MODE1": {
-   "src": "traced sheet-1 (bios_hunt1: D6.A6/pin1 <- mode-bundle tag 2); source PPI PC1 = D26.15 [order assumed]. Tag 3 -> D6.15 left un-netted (source unread; PC2 guess)",
+   "src": "traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1",
    "nodes": [
     [
      "D26",
-     "15"
+     "17"
     ],
     [
      "D6",
@@ -13656,18 +13754,21 @@
     ]
    ]
   },
-  "MEM_MODE2": {
-   "src": "traced sheet-1 300dpi (crop s1_d6_ven2: row \"3|15\" = mode-bundle tag 3 -> D6.15/A7) + source PPI PC2 = D26.16 [tag<->PC-bit order assumed, same level as MODE0/1]",
-   "nodes": [
-    [
-     "D26",
-     "16"
-    ],
-    [
-     "D6",
-     "15"
-    ]
-   ]
+  "D26_PC5_TAG4": {
+   "src": "traced sheet-1 full-resolution: D26 PC5/pin12 exits as mode-bundle tag4; far destination remains unread",
+   "nodes": [["D26", "12"]]
+  },
+  "D26_PC6_TAG5": {
+   "src": "traced sheet-1 full-resolution: D26 PC6/pin11 exits as mode-bundle tag5; far destination remains unread",
+   "nodes": [["D26", "11"]]
+  },
+  "D26_PC7_TAG6": {
+   "src": "traced sheet-1 full-resolution: D26 PC7/pin10 exits as mode-bundle tag6; far destination remains unread",
+   "nodes": [["D26", "10"]]
+  },
+  "CPU_WAIT_STATUS": {
+   "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
+   "nodes": [["D1", "24"]]
   },
   "SSTB_N": {
    "src": "sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary",
@@ -13740,7 +13841,21 @@
   }
  },
  "no_connects": [
+  ["D93", "1"],
   ["D30", "6"],
-  ["D30", "9"]
+  ["D30", "9"],
+  ["D2", "9"],
+  ["D2", "10"],
+  ["D2", "11"],
+  ["D26", "39"],
+  ["D1", "16"],
+  ["D44", "13"],
+  ["D45", "13"],
+  ["D46", "13"],
+  ["D47", "12"],
+  ["D47", "13"],
+  ["D103", "12"],
+  ["D103", "13"],
+  ["D103", "14"]
  ]
 }
