@@ -90,6 +90,18 @@
       "note": "The two complete 14-contact columns identify the D11 КР580ВВ51А footprint. This package-local reflected fit replaces whole-board projections displaced about 100 pixels onto adjacent copper and reserves both unused corners for independent validation."
     },
     {
+      "refdes": "D28",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2533.0, 2074.0], "use": "fit", "observation": "top-left contact beside the top-facing notch"},
+        {"pin": "4", "image_px": [2534.0, 2233.0], "use": "check", "observation": "independent fourth contact on the left package column"},
+        {"pin": "7", "image_px": [2535.0, 2392.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent seven-pad column"}
+      ],
+      "note": "Direct fit to the photographed vertical 14-pin D28 package. It replaces global projections displaced leftward and onto the body; as with every local fit, it establishes pad identity only, not electrical continuity."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

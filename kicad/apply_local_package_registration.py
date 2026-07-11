@@ -43,12 +43,20 @@ def main() -> None:
             continue
         fit = fits[(row["refdes"], side)]
         if row["image"] != fit["image"]:
-            if row["review_state"] != "candidate":
+            replaceable_seed = (
+                row["review_state"] == "candidate"
+                or (
+                    row["review_state"] == "measurement"
+                    and row["confidence"].startswith("registration")
+                    and "local package registration is required" in row["note"]
+                )
+            )
+            if not replaceable_seed:
                 raise SystemExit(f"{row['endpoint_id']}: fit image differs from reviewed observation image")
-            # Newly seeded board-level candidates may select a different
-            # overlapping tile. A validated package-local fit is the stronger
-            # pad-identity record, so move only unreviewed candidates onto its
-            # source image before applying the projected coordinate.
+            # Newly seeded candidates and explicitly rejected registration-only
+            # measurements may select a different overlapping tile. A validated
+            # package-local fit is the stronger pad-identity record; accepted or
+            # genuinely reviewed electrical observations are never moved.
             row["image"] = fit["image"]
         point = fit["projected_pins"].get(row["pin"])
         if point is None:
@@ -62,6 +70,12 @@ def main() -> None:
                        "projection and identifies this physical pad; continuity is still "
                        "required before assigning a destination or NC state")
         row["note"] = row["note"].replace(stale, replacement)
+        stale_d28 = ("Generated D28 landings do not follow the photographed vertical package: "
+                     "pins 1-6 fall left of its contacts and pins 8-13 fall on the body; "
+                     "local package registration is required")
+        corrected_d28 = ("Validated D28 component fit replaces the displaced generated landing "
+                         "and identifies the photographed package contact")
+        row["note"] = row["note"].replace(stale_d28, corrected_d28)
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")

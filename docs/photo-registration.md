@@ -99,7 +99,10 @@ a fit updates coordinates and confidence only; it preserves `measurement`
 state until visible copper or continuity establishes a destination.
 
 Current held-out errors are sub-2.2 px for the accepted D2/D4/D94 package-row
-fits. D93, D100, and D98 also have useful local fits, but their unresolved
+fits. A direct D28 component fit now replaces projections that landed left of
+the vertical package or on its body; its independent pin-4 check is exact at
+the recorded pixel precision, and all D28 signals remain measurements rather
+than inferred X4/FDC nets. D93, D100, and D98 also have useful local fits, but their unresolved
 signals remain measurements where copper is obscured or leaves the visible
 layer. The D11 solder fit holds both unused corners out at 2.375 px and
 localizes the factory-reworked area beside pins 4-6; it does not establish the
