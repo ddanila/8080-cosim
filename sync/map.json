@@ -598,7 +598,9 @@
     "106B": "INHIB_N",
     "111C": "CCLCK",
     "109B": "IOM_N",
-    "102B": "AMWC_N"
+    "102B": "AMWC_N",
+    "113B": "INT7_RAW",
+    "113C": "INT6_RAW"
    },
    "VA87": {
     "1": "AIN0",

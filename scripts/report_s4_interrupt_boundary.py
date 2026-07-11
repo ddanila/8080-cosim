@@ -59,7 +59,8 @@ def main() -> int:
         ),
         (
             "INT7 raw expansion input reaches D3",
-            has_nodes(board, "INT7_RAW", {("X1", "113B"), ("D3", "13")}),
+            has_nodes(board, "INT7_RAW", {("X1", "113B"), ("D3", "13")})
+            and chip(board, "X1").get("pins", {}).get("113B") == "INT7_RAW",
             "`INT7_RAW`: X1.113B -> D3.13",
         ),
         (
@@ -69,7 +70,8 @@ def main() -> int:
         ),
         (
             "INT6 raw expansion input reaches D3",
-            has_nodes(board, "INT6_RAW", {("X1", "113C"), ("D3", "1")}),
+            has_nodes(board, "INT6_RAW", {("X1", "113C"), ("D3", "1")})
+            and chip(board, "X1").get("pins", {}).get("113C") == "INT6_RAW",
             "`INT6_RAW`: X1.113C -> D3.1",
         ),
         (

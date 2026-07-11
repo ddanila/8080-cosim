@@ -1274,6 +1274,8 @@
     "111C": "CCLCK",
     "109B": "IOM_N",
     "102B": "AMWC_N",
+    "113B": "INT7_RAW",
+    "113C": "INT6_RAW",
     "101A": "P5V",
     "102A": "P5V",
     "103A": "P5V",
@@ -1289,7 +1291,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 edge connector map + bus-interface transcription",
-    "pins": "X1 edge-pin codes traced for command, data, high/low address, interrupt, clock, and power rails; off-board expansion behavior is outside the replica boot-path model"
+    "pins": "X1 edge-pin codes traced for command, data, high/low address, interrupt, clock, and power rails; 113B/113C are the traced external -INT7/-INT6 inputs feeding D3; off-board expansion behavior is outside the replica boot-path model"
    }
   },
   {

@@ -192,12 +192,18 @@ module juku_top (
     //   D25 = data      (DB       -> -DAT0..-DAT7)
     // A-side reads the buffered bus (never drives it -> boot-safe); B-side drives the connector.
     wire [7:0] adr_lo, adr_hi, dat;
+`ifdef YOSYS
+    wire int7_raw, int6_raw;
+`else
+    tri1 int7_raw, int6_raw;  // undriven expansion inputs idle inactive in simulation
+`endif
     va87_out U_D23 (.Ain(BA[7:0]),  .Aout(adr_lo), .oe_n(1'b0), .t(1'b1));
     va87_out U_D24 (.Ain(BA[15:8]), .Aout(adr_hi), .oe_n(1'b0), .t(1'b1));
     wire d25_t_w;   // data-bus turnaround: D7 ЛА3 sect (5,4->6) -> D25.T (traced s1_egates2); inputs unread -> held transmit
     va87_out U_D25 (.Ain(DB),       .Aout(dat),    .oe_n(1'b0), .t(d25_t_w));
     expansion_conn U_X1 (.inhib_n(inhib_n), .cclck(cclck), .iom_n(iom_n), .mwc_n(mwc_n),
                          .mrc_n(mrc_n), .amwc_n(amwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
+                         .int7_raw(int7_raw), .int6_raw(int6_raw),
                          .dat(dat), .adr_lo(adr_lo), .adr_hi(adr_hi));
 
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
@@ -474,8 +480,7 @@ module juku_top (
     wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin;
     ap2_drv U_D14 (.i3(ser_txd), .i2(1'b1),    .o6(s_sout), .o7());
     ap2_drv U_D32 (.i3(ser_rts), .i2(ser_dtr), .o6(s_rts),  .o7(s_dtp));
-    wire int7_raw, int6_raw, ir7_sig, ir6_sig;
-    assign int7_raw = 1'b1; assign int6_raw = 1'b1;   // X1 expansion -INT7/-INT6 [boundary: idle high]
+    wire ir7_sig, ir6_sig;
     ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
                    .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_sig),
                    .i3(1'bz), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());  // unused sections remain explicit unresolved package pins
