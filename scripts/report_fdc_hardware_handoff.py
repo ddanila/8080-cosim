@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
+LOCAL_PACKAGE_REPORT = ROOT / "docs" / "photo-registration" / "local-packages" / "report.json"
 REPORT = ROOT / "docs" / "fdc-hardware-handoff.md"
 
 
@@ -54,6 +55,7 @@ def status(ok: bool, uncertain: bool = False) -> str:
 
 def main() -> int:
     board = load_board()
+    local_report = json.loads(LOCAL_PACKAGE_REPORT.read_text(encoding="utf-8"))
     d93 = chip(board, "D93")
     d100 = chip(board, "D100")
     d10 = chip(board, "D10")
@@ -68,6 +70,19 @@ def main() -> int:
         failures.append("D10 is not typed as PIC8259")
     if d9.get("type") != "IO_DEC138":
         failures.append("D9 is not typed as IO_DEC138")
+
+    d93_component_fits = [
+        item for item in local_report.get("fits", [])
+        if item.get("refdes") == "D93" and item.get("side") == "component"
+    ]
+    d93_removed_fit_ok = (
+        len(d93_component_fits) == 1
+        and d93_component_fits[0].get("image", "").endswith("PXL_20260710_202708344.jpg")
+        and d93_component_fits[0].get("model") == "similarity"
+        and max((check.get("error_px", 999) for check in d93_component_fits[0].get("checks", [])), default=999) <= 8
+    )
+    if not d93_removed_fit_ok:
+        failures.append("D93 chip-removed component-side package fit is absent or invalid")
 
     rows: list[list[object]] = []
 
@@ -144,13 +159,13 @@ def main() -> int:
             "D93.19 `MR_N`",
             "MISSING" if not any(has_node(board, n, "D93", "19") for n in board["nets"]) else "WIRED",
             "master reset source",
-            "not netted in board JSON; owner continuity item",
+            "chip-removed photo localizes the pad/departure; source not netted in board JSON",
         ),
         (
             "D93.24 `CLK`",
             "MISSING" if not any(has_node(board, n, "D93", "24") for n in board["nets"]) else "WIRED",
             "1 MHz FDC clock rail",
-            "not netted in board JSON; owner continuity item",
+            "chip-removed photo localizes the pad/fanout; clock source not netted in board JSON",
         ),
         (
             "D100.9 `OE_N`",
@@ -196,6 +211,10 @@ def main() -> int:
         "a later component-side view with the VG93 temporarily removed to expose its",
         "footprint copper. The board is therefore applicable physical evidence for the",
         "FDC handoff. The grids are registered and D94/D93 have package-local fits.",
+        "The guarded D93 fit specifically uses `PXL_20260710_202708344.jpg`, where",
+        "the removed controller exposes all 40 socket contacts and the pin-40 end",
+        "marking; this localizes MR_N/pin19 and CLK/pin24 without claiming their far",
+        "destinations.",
         "Continuous copper promotes the private D94.1/.2/.3 to D93.4/.3/.2 control",
         "nets; no photographed branch supports the former global I/O-rail assumption.",
         "",

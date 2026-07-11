@@ -42,6 +42,13 @@ D2, D41, D94, D100, and D98. The tracked routed PCB and Gerber ZIP intentionally
 remain the last clean pre-correction snapshot until the whole D94/D100 bus
 cluster can be rerouted coherently.
 
+The D93 component fit uses the chip-removed close-up
+`PXL_20260710_202708344.jpg`, rather than the populated-board panorama. All 40
+socket contacts and the printed pin-40 end are visible there, giving a direct
+pin-row orientation and stronger pad landings for the unresolved reset and
+clock endpoints. Their far destinations remain measurement requests; package
+registration alone is not continuity evidence.
+
 ## Reproduce the registration aids
 
 ```sh

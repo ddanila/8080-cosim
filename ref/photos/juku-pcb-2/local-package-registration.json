@@ -90,14 +90,14 @@
     {
       "refdes": "D93",
       "side": "component",
-      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg",
       "model": "similarity",
       "anchors": [
-        {"pin": "1", "image_px": [1900.0, 1732.0], "use": "fit", "observation": "top-left VG93 contact below the notch"},
-        {"pin": "2", "image_px": [1900.0, 1788.0], "use": "check", "observation": "second left-row VG93 contact"},
-        {"pin": "4", "image_px": [1900.0, 1900.0], "use": "fit", "observation": "fourth left-row VG93 contact at D94 fanout terminal"}
+        {"pin": "1", "image_px": [1970.0, 1658.0], "use": "fit", "observation": "rightmost contact of the exposed socket upper row; D94 control-fanout end"},
+        {"pin": "10", "image_px": [1417.0, 1658.0], "use": "check", "observation": "independent tenth contact on the same exposed socket row"},
+        {"pin": "20", "image_px": [803.0, 1658.0], "use": "fit", "observation": "leftmost contact of the exposed socket upper row"}
       ],
-      "note": "Local fit grounds D93 top-left pin numbering for the visible D94-to-D93 component-side traces."
+      "note": "The chip-removed close-up exposes all forty socket contacts and their component-side fanout. Pin 1 is the upper-row contact nearest D94; the printed 40 at the lower-right socket end independently confirms the row orientation."
     },
     {
       "refdes": "D100",
