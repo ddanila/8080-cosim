@@ -48,7 +48,6 @@ def main() -> None:
                 or (
                     row["review_state"] == "measurement"
                     and row["confidence"].startswith("registration")
-                    and "local package registration is required" in row["note"]
                 )
             )
             if not replaceable_seed:
@@ -76,6 +75,11 @@ def main() -> None:
         corrected_d28 = ("Validated D28 component fit replaces the displaced generated landing "
                          "and identifies the photographed package contact")
         row["note"] = row["note"].replace(stale_d28, corrected_d28)
+        stale_d106 = ("D106 projections land on the package body or neighboring trace/via field "
+                      "instead of a coherent pin row, so the physical posture is unresolved")
+        corrected_d106 = ("Validated D106 component fit identifies the photographed К555ИЕ7 "
+                          "package contact and replaces the displaced generated landing")
+        row["note"] = row["note"].replace(stale_d106, corrected_d106)
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")
