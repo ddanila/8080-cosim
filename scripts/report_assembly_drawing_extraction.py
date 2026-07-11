@@ -138,6 +138,16 @@ def main() -> int:
             "sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py`",
         ),
         (
+            "X4 first five legacy circuit exits are explicitly dispositioned",
+            marker(
+                read(WIRE_TABLE_MD),
+                "1 / 401", "D28.8", "2 / 402", "D28.10", "3 / 403", "D28.12",
+                "4 / 404", "D28.4", "5 / 405", "D28.2",
+                "does not yet promote", "X4.6-X4.23",
+            ),
+            "`.006` sheet-1 exit codes 401-405; `.009` target continuity still required",
+        ),
+        (
             "Connection-table sheets 2-6 are adopted and transcribed",
             WIRE_TABLE_PDF.exists() and WIRE_TABLE_MD.exists()
             and marker(read(WIRE_TABLE_MD), "ДУБЛИКАТ", "S1:1", "S1:2", "X9:14")

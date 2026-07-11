@@ -122,6 +122,23 @@ So X3 (12 lines) and X4 (23 lines) are bracket-mounted connectors wired to
 numbered board pads rather than board-edge-soldered; this is direct evidence
 for the connector-harness geometry items in `PLAN.md`.
 
+The older `.006` electrical sheet provides a partial circuit cross-reference
+for five X4 contacts through its explicit exit codes. The open-collector
+К155ЛН3 D28 outputs are drawn as follows:
+
+| X4 contact / exit code | Signal | `.006` source pin |
+| ---: | --- | --- |
+| 1 / 401 | `-FF` | D28.8 |
+| 2 / 402 | `-REC` | D28.10 |
+| 3 / 403 | `-PLAY` | D28.12 |
+| 4 / 404 | `-RN` | D28.4 |
+| 5 / 405 | `-STOP` | D28.2 |
+
+This narrows target-board continuity for X4.1-X4.5, but does not yet promote
+those older tape-control paths into `.009`: D28 is retained in the FDC-era
+population and its actual copper must confirm that the five functions were
+not reassigned. X4.6-X4.23 have no circuit destination proved by this sheet.
+
 The X9 row is now promoted without changing its already traced keyboard nets:
 the source PCB contains fourteen one-pad footprints `A45` through `A58` at the
 ribbon exit, and the off-board X9 connector remains schematic-only. Each net
@@ -176,4 +193,6 @@ single on-board S1 footprint: first model the physically separate `А:17` and
 landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
 The X3, X8, and X9 cables are promoted as physical numbered landings plus
 schematic-only bracket connectors. X4 remains at this boundary until its
-board-side points are reconciled with the circuit.
+board-side points are reconciled with the circuit; the `.006` D28.8/.10/.12/
+.4/.2 cross-reference above is the first five-contact continuity hypothesis,
+not target-board proof.
