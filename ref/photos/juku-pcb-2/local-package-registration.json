@@ -138,6 +138,18 @@
       "note": "Reflected fit to the two photographed 7-pad D28 solder columns immediately beside D106. It identifies package pads only; the traced copper still requires complete remote-pad proof."
     },
     {
+      "refdes": "D96",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [3148.0, 2075.0], "use": "fit", "observation": "top-left contact beside the top-facing notch on the КМ555ТМ2 package"},
+        {"pin": "4", "image_px": [3148.0, 2234.0], "use": "check", "observation": "independent fourth contact on the left package column"},
+        {"pin": "7", "image_px": [3148.0, 2393.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent seven-pad column"}
+      ],
+      "note": "Direct fit to the vertical КМ555ТМ2 D96 immediately right of D28. It establishes package identity and relative placement only; functional FDC continuity remains unresolved."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

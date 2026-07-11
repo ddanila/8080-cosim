@@ -17,6 +17,7 @@ is promoted as a copper netlist.
 | All 26 photographed sheet-1 views are local, real JPEGs, and indexed | PASS | `ref/photos/dgsh5-109-009-sb/` |
 | Factory solder-side cuts/patches are protected as designed operations | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
+| D106/D28/D96 row follows registered owner-photo spacing | PASS | two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
 | Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |

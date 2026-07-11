@@ -114,6 +114,11 @@ localizes the factory-reworked area beside pins 4-6; it does not establish the
 obscured bridge endpoints. The D98 solder fit holds pin 16 out at 0 px on the
 complete affine 2x8 row.
 
+The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
+pin-4 held-out check. Together the D106, D28, and D96 fits guard the physical
+row spacing rather than preserving the former overlapping placeholder grid;
+none of their functional pins is promoted without complete copper continuity.
+
 ## Promotion rule and remaining work
 
 Use `measurement` when a path still needs continuity, `rejected` for a
