@@ -24,7 +24,7 @@ with the machine-readable board model.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
   untraced. The D2/D94
-  PROM contents are also missing, and 42 modeled nets retain source-risk annotations
+  PROM contents are also missing, and 43 modeled nets retain source-risk annotations
   requiring evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
