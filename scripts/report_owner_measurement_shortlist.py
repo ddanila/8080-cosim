@@ -223,9 +223,9 @@ def main() -> int:
         (
             "P1",
             "R94 220-ohm far endpoint",
-            "two-sided D98 evidence disproves a 220-ohm branch at pin 7; confirm the photographed R94 far terminal and its apparent near-side copper to D98.3",
+            "R94.1 is now photo-proved and modeled at D98.3; identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net",
             "`ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
-            "adds the missing .009 R94 part on its actual FDC support net without reopening the closed S1 harness",
+            "closes the remaining endpoint of the now-modeled .009 R94 part without reopening the closed S1 harness",
         ),
         (
             "P0",

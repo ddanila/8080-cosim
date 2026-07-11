@@ -93,10 +93,14 @@ extraction work from that set:
    two-sided labeled-pad evidence maps А:17 to a dedicated `A17` footprint on
    `RES_RC`. S1 remains in the schematic/off-board harness but is excluded from
    the generated PCB; the former fictitious on-board S1 header is removed.
-3. Cross-check the corrected D94/D100/D98 placement and connector/off-board
+3. The assembly drawing and owner component photo identify R94 as the vertical
+   220-ohm resistor below-left of D98. Registered package-local copper closes
+   its upper terminal to D98.3; `R94.1` is now modeled on `D98_Y1_R94`, while
+   the lower `R94.2` endpoint remains an explicit continuity target.
+4. Cross-check the corrected D94/D100/D98 placement and connector/off-board
    geometry (X8 300 mm lead, X9 400 mm ribbon, poz. 151 shielded cable)
    before the reroute.
-4. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
+5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. Promote
    the X8/X9/X3/X4 harness rows and numbered wire links into the board

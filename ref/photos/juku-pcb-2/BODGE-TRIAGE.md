@@ -113,6 +113,13 @@ The sheets 2-5 connection table (`ДУБЛИКАТ` scan) documents both far end
 switch S1. The component photo plus package fit closes `А:18` as D98.7, while
 matching labeled component/solder views close `А:17` as a dedicated board pad.
 
+The `.009` assembly drawing identifies the vertical axial part below-left of
+D98 as R94, and its photographed colour code gives 220 ohms. The registered
+D98 component fit and uninterrupted visible copper close R94's upper terminal
+to D98.3 (`D98_Y1_R94`). R94's lower terminal remains unresolved; the source
+PCB therefore assigns only R94.1 and deliberately leaves R94.2 without a net.
+This resistor is separate from the white wire-18 connection at D98.7.
+
 S1 itself is mounted on the top connector bracket, as shown both by sheet 1
 and owner component photograph `PXL_20260710_200402344.jpg`; it is not a
 two-pin PCB header. The PCB-side objects are the remote wire landings `А:17`

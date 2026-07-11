@@ -22,6 +22,7 @@ is promoted as a copper netlist.
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
 | Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
 | Dedicated А:17 landing is present on RES_RC in the board spec and source PCB | PASS | two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py` |
+| R94 is modeled as 220 ohms from D98.3 with its far endpoint unresolved | PASS | `.009` assembly drawing; owner component photo; `kicad/check_r94_landing.py` |
 | Connection-table sheets 2-6 are adopted and transcribed | PASS | `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` |
 
 ## Photograph inventory

@@ -2602,6 +2602,20 @@
    }
   },
   {
+   "ref": "R94",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": ".009 assembly drawing + owner photo",
+    "refdes": "ДГШ5.109.009 СБ identifies R94 below-left of D98",
+    "pins": "photo color code and owner continuity identify 220 ohm; visible component copper connects the upper terminal to D98.3; far terminal remains unresolved"
+   },
+   "value": "220"
+  },
+  {
    "ref": "R38",
    "type": "R_AXIAL",
    "pins": {
@@ -10421,6 +10435,20 @@
     ]
    ],
    "_note": "off-board wire 18; S1 is bracket-mounted and must not become an on-board two-pin footprint"
+  },
+  "D98_Y1_R94": {
+   "src": "registered D98 component fit plus continuous visible copper from D98.3 to the upper terminal of photographed 220-ohm R94; R94 identity from ДГШ5.109.009 СБ placement",
+   "nodes": [
+    [
+     "D98",
+     "3"
+    ],
+    [
+     "R94",
+     "1"
+    ]
+   ],
+   "_note": "R94.2 far terminal remains a physical-connectivity blocker"
   },
   "RESIN": {
    "src": "scan",

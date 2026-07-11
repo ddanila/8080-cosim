@@ -49,6 +49,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_factory_switch_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    r94_landing = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_r94_landing.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -96,6 +100,12 @@ def main() -> int:
             marker(read(BOARD_SPEC), '"ref": "A17"', '"A17",', '"RES_RC"')
             and switch_landings.returncode == 0,
             "two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py`",
+        ),
+        (
+            "R94 is modeled as 220 ohms from D98.3 with its far endpoint unresolved",
+            marker(read(BOARD_SPEC), '"ref": "R94"', '"value": "220"', '"D98_Y1_R94"')
+            and r94_landing.returncode == 0,
+            "`.009` assembly drawing; owner component photo; `kicad/check_r94_landing.py`",
         ),
         (
             "Connection-table sheets 2-6 are adopted and transcribed",

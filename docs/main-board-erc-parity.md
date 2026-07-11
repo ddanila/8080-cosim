@@ -23,8 +23,8 @@ schematic parity against it without a matching routed schematic/project.
 
 | Priority | Count |
 | --- | ---: |
-| P0 | 178 |
-| P1 | 118 |
+| P0 | 177 |
+| P1 | 119 |
 | P2 | 0 |
 
 The complete machine-readable backlog is
@@ -43,9 +43,9 @@ The complete machine-readable backlog is
 - `D106`: 14
 - `D95`: 14
 - `D101`: 14
-- `D98`: 13
 - `D96`: 12
 - `D28`: 12
+- `D98`: 12
 - `D41`: 10
 - `D40`: 9
 - `D34`: 8

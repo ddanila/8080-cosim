@@ -268,7 +268,6 @@ P0,D98,13,LP11_BUF,Y6,PLAN physical-connectivity blocker
 P0,D98,14,LP11_BUF,A6,PLAN physical-connectivity blocker
 P0,D98,15,LP11_BUF,OE56_N,PLAN physical-connectivity blocker
 P0,D98,2,LP11_BUF,A1,PLAN physical-connectivity blocker
-P0,D98,3,LP11_BUF,Y1,PLAN physical-connectivity blocker
 P0,D98,4,LP11_BUF,A2,PLAN physical-connectivity blocker
 P0,D98,5,LP11_BUF,Y2,PLAN physical-connectivity blocker
 P0,D98,6,LP11_BUF,A3,PLAN physical-connectivity blocker
@@ -291,6 +290,7 @@ P1,E1,3,JUMPER3,P3,functional endpoint lacks disposition
 P1,E14,1,JUMPER4,P1,functional endpoint lacks disposition
 P1,R66,1,R_AXIAL,P1,functional endpoint lacks disposition
 P1,R73,3,R_TRIM,P3,functional endpoint lacks disposition
+P1,R94,2,R_AXIAL,P2,functional endpoint lacks disposition
 P1,S4,1,SW,P1,functional endpoint lacks disposition
 P1,S4,2,SW,P2,functional endpoint lacks disposition
 P1,Z1,1,XTAL,P1,functional endpoint lacks disposition
