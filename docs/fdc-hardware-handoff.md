@@ -76,7 +76,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | --- | --- | --- | --- |
 | D10.12/.13/.15/.20/.21/.22 | MISSING | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; SP/EN pin16 is separately source-proved high, while these destinations or intentional NC states are not |
 | D93.15-.18/.22/.23/.25-.36 | WIRED | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
-| D93.40 `VDD_12V` | WIRED | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
+| D93.40 `VDD_12V` | WIRED | +12 V controller supply continuity | primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved |
 | D93.19 `MR_N` | WIRED | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | WIRED | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
 | D100.9 `OE_N` | WIRED | 8287 output-enable gating | not netted in board JSON; owner continuity item |
@@ -115,7 +115,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   D100.11. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
 - Trace every restored D93 drive-interface pin through D28/D95-D99/
-  D101/D102/D106, and prove D93.40 to `P12V`; pin 40 is a power-safety
+  D101/D102/D106, and prove D93.40 to `P12V`; start with the nearest
+  proved anchors D14.8/D32.8, then confirm against A60.1 or X8.3.
+  Pin 40 is a power-safety
   blocker, not an optional functional refinement.
   The existing photographs have been exhausted for this path: they prove
   local copper but not an unbroken connection to a known +12 V node.
