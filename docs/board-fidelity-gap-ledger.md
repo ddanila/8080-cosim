@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `481`
+- Nets modeled: `492`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `144`
+- Net-level source-risk gaps: `155`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -51,9 +51,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 3 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 31 |
-| clock/I/O | 0 | 4 |
-| logic/source | 9 | 89 |
+| PROM/decode | 0 | 32 |
+| clock/I/O | 0 | 6 |
+| logic/source | 9 | 97 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -75,7 +75,7 @@ parts placement and Tier-3 reproduction.
 | `D106` | `IE7_CTR` | scan | .009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout power pins 8/16 routed; corrected component and solder fits identify all 14 co... |
 | `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all... |
 | `D95` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all... |
-| `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 promoted; all functional pins remain explicit FDC continuity boundaries |
+| `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 routed; full component registration and reflected solder fit identify the... |
 | `D97` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101 16-pin package and standard AG3 pinout; power... |
 | `D98` | `LP11_BUF` | scan | .009 official FDC population identifies К155ЛП11 К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed, six buffer signals and two enables await FDC cont... |
 | `D99` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking 16-pin package and standard A... |
@@ -163,7 +163,6 @@ model is historical-source-complete.
 | --- | --- | --- |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
-| `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
 | `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
 | `D99` | FDC owner-continuity | `1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 
@@ -310,6 +309,17 @@ same fidelity ledger as the chip provenance gaps.
 | `D95_OE1_BOUNDARY` | logic/source | `D95.15` | July-2026 validated component and solder package fits identify D95 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary |
 | `D95_Q0_BOUNDARY` | logic/source | `D95.7` | July-2026 validated component and solder package fits identify D95 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary |
 | `D95_Q1_BOUNDARY` | logic/source | `D95.9` | July-2026 validated component and solder package fits identify D95 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary |
+| `D96_CLK1_BOUNDARY` | clock/I/O | `D96.3` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin3 CLK1; no remote destination is proved, so this remains a me... |
+| `D96_CLK2_BOUNDARY` | clock/I/O | `D96.11` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin11 CLK2; no remote destination is proved, so this remains a m... |
+| `D96_CLR1_BOUNDARY` | logic/source | `D96.1` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin1 CLR1_N; no remote destination is proved, so this remains a... |
+| `D96_CLR2_BOUNDARY` | logic/source | `D96.13` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin13 CLR2_N; no remote destination is proved, so this remains a... |
+| `D96_D1_BOUNDARY` | logic/source | `D96.2` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin2 D1; no remote destination is proved, so this remains a meas... |
+| `D96_D2_BOUNDARY` | PROM/decode | `D96.12` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin12 D2; no remote destination is proved, so this remains a mea... |
+| `D96_PRE1_BOUNDARY` | logic/source | `D96.4` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin4 PRE1_N; no remote destination is proved, so this remains a... |
+| `D96_PRE2_BOUNDARY` | logic/source | `D96.10` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin10 PRE2_N; no remote destination is proved, so this remains a... |
+| `D96_Q1N_BOUNDARY` | logic/source | `D96.6` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin6 Q1_N; no remote destination is proved, so this remains a me... |
+| `D96_Q1_BOUNDARY` | logic/source | `D96.5` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin5 Q1; no remote destination is proved, so this remains a meas... |
+| `D96_Q2_BOUNDARY` | logic/source | `D96.9` | July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin9 Q2; no remote destination is proved, so this remains a meas... |
 | `D97_A1N_BOUNDARY` | logic/source | `D97.1` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary |
 | `D97_A2N_BOUNDARY` | logic/source | `D97.9` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary |
 | `D97_B1_BOUNDARY` | logic/source | `D97.2` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin2 B; no remote destination is proved, so this remains a measurement boundary |

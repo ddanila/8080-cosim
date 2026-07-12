@@ -12,18 +12,18 @@ schematic parity against it without a matching routed schematic/project.
 
 | Check | Count | Result |
 | --- | ---: | --- |
-| ERC error violations | 75 | BLOCK |
+| ERC error violations | 64 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
 | Explicit board-JSON no-connects | 67 | PASS |
 | KiCad schematic no-connect markers | 67 | PASS |
-| Functional pins without net or explicit NC | 75 | BLOCK |
+| Functional pins without net or explicit NC | 64 | BLOCK |
 | Unknown/conflicting NC records | 0 | PASS |
 
 ## Unresolved endpoint priorities
 
 | Priority | Count |
 | --- | ---: |
-| P0 | 60 |
+| P0 | 49 |
 | P1 | 15 |
 | P2 | 0 |
 
@@ -32,14 +32,13 @@ The complete machine-readable backlog is
 
 ## ERC types
 
-- `pin_not_connected`: 75
+- `pin_not_connected`: 64
 
 ## Most affected references
 
 - `D93`: 21
 - `D99`: 12
 - `D98`: 12
-- `D96`: 11
 - `D29`: 4
 - `D26`: 4
 - `D14`: 2

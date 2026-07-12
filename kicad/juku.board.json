@@ -5076,7 +5076,7 @@
   {
    "ref": "D96", "type": "TM2_DFF",
    "pins": {"1": "CLR1_N", "2": "D1", "3": "CLK1", "4": "PRE1_N", "5": "Q1", "6": "Q1_N", "8": "Q2_N", "9": "Q2", "10": "PRE2_N", "11": "CLK2", "12": "D2", "13": "CLR2_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555ТМ2 identity and standard pinout", "pins": "power pins 7/14 promoted; all functional pins remain explicit FDC continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555ТМ2 identity and standard pinout", "pins": "power pins 7/14 routed; full component registration and reflected solder fit identify the package; pin8 reaches a proved isolated test landing and the other 11 functional contacts remain distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "D97", "type": "AG3_ONESHOT",
@@ -13567,6 +13567,50 @@
   "D28_A6_BOUNDARY": {
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin13 A6; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "13"]]
+  },
+  "D96_CLR1_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin1 CLR1_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "1"]]
+  },
+  "D96_D1_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin2 D1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "2"]]
+  },
+  "D96_CLK1_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin3 CLK1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "3"]]
+  },
+  "D96_PRE1_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin4 PRE1_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "4"]]
+  },
+  "D96_Q1_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin5 Q1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "5"]]
+  },
+  "D96_Q1N_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin6 Q1_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "6"]]
+  },
+  "D96_Q2_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin9 Q2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "9"]]
+  },
+  "D96_PRE2_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin10 PRE2_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "10"]]
+  },
+  "D96_CLK2_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin11 CLK2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "11"]]
+  },
+  "D96_D2_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin12 D2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "12"]]
+  },
+  "D96_CLR2_BOUNDARY": {
+   "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin13 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D96", "13"]]
   },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",
