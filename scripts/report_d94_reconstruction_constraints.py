@@ -155,7 +155,7 @@ def remaining_output_departures() -> dict[str, str]:
             if not row.get("endpoint_id", "").startswith("seed-component-"):
                 continue
             note = row.get("note", "")
-            if "copper" in note or "trace runs" in note:
+            if "copper" in note or "trace runs" in note or "local departure" in note:
                 observations[row["pin"]] = note
     return observations
 
