@@ -72,6 +72,7 @@ python3 scripts/photo_registration.py rectify
 /usr/bin/python3 kicad/render_endpoint_crop_atlas.py
 /usr/bin/python3 kicad/render_d96_d99_cross_registration.py
 /usr/bin/python3 kicad/render_d93_clock_isolation.py
+/usr/bin/python3 kicad/check_serial_photo_placement.py
 ```
 
 The panorama stitcher requires every declared source tile to join its
@@ -170,6 +171,15 @@ the broad rail and are explicitly not electrical evidence. Together the D106,
 D28, and D96 fits guard the physical
 row spacing rather than preserving the former overlapping placeholder grid;
 none of their functional pins is promoted without complete copper continuity.
+
+The registered `PXL_20260710_200402344.jpg` serial-area view also corrects an
+older placeholder column. The marked notch-down К170УП2 left of R30 is D104;
+the two marked notch-up К170АП2 packages right of R30 are upper D32 and lower
+D14. Their fitted body centres are `(195.7,38.9)`, `(211.8,29.5)`, and
+`(211.8,41.0)` board mm. This removes the impossible former overlaps of R30
+with D104.12 and D32.8. `kicad/check_serial_photo_placement.py` composes the raw
+photo and board registrations and guards all three centres and orientations.
+
 The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
 both photographed rows corrects the earlier row-label error: standard top-view
 DIP numbering places pins 1-to-8 on the upper row and pins 16-to-9 on the lower

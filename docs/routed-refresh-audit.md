@@ -40,9 +40,11 @@ The 35 source-only footprints are `A17`, `A21-A32`, `A45-A62`, `R18`, `R30`,
 `S1`, `X3`, `X8`, and `X9`; the authoritative source intentionally represents
 their PCB cable landings instead.
 
-The source board currently has 7 electrical shorts and 17 clearance findings
-before any routed copper is transplanted. The conservatively merged audit
-candidate has 33 shorts and 41 clearance findings, so it is correctly rejected.
+The source board now has zero electrical shorts after the D2/D4 corridor fix
+and the registered D104/D32/D14 serial-area placement correction. It retains 30
+clearance findings before any routed copper is transplanted. The earlier
+conservatively merged audit candidate had 33 shorts and 41 clearance findings,
+so it remains correctly rejected and must be regenerated after placement work.
 The extra collisions localize old routes crossing newly fitted D2/D10/D94/FDC
 support geometry and the added cable/passive landings.
 

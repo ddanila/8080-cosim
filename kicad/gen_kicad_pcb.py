@@ -289,8 +289,10 @@ for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLAC
 # anchor): D104/D32/D14 = the column under the X3 serial connector; D12/D3 right of D11.
 # serial column right of СБ-true D11 (D11 pins span x~177-194; D12 begins x~201):
 # D104 tucked above the column, D32/D14 at their emaplaat slots
-PLACE['D104'] = (199.5, 30.5, 0)
-PLACE['D32'] = (198.9, 48.3, 0); PLACE['D14'] = (198.9, 58.7, 0)
+# Registered owner component photo: D104 is the notch-down К170УП2 left of
+# R30; D32/D14 are the upper/lower notch-up К170АП2 pair right of R30.
+PLACE['D104'] = (195.7, 38.9, 180)
+PLACE['D32'] = (211.8, 29.5, 0); PLACE['D14'] = (211.8, 41.0, 0)
 PLACE['D12']  = (206.3, 80.9, 0); PLACE['D3']  = (205.8, 96.4, 0)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
