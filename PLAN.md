@@ -201,6 +201,10 @@ Next tracing order:
 1. D93 pins 15-19, 22-40 and D100 pins 9/11, including the complete drive
    interface, +12 V supply, DRQ/INTRQ, reset, clock, density, output enable,
    and direction.
+   D93.40 is now chased as far as the photographs permit: its corrected solder
+   pad has no same-layer departure, while component copper enters the adjacent
+   clip-obscured region. `docs/d93-pin40-photo-chase.md` records the exact pad
+   coordinates and the required continuity anchors; P12V is not yet promoted.
 2. Every functional pin of D28, D95-D99, D101, D102, and D106.
 3. D94 pin 15 and outputs D3-D7, then D30 section B and the D105 WAIT handoff.
 4. D41/memory timing, factory-wire endpoints (documented in
