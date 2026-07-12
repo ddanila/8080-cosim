@@ -141,7 +141,7 @@ module juku_top (
                      .i1(1'bz), .o2(), .i3(pof_boundary), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4;
     wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
-    wire d2_d1_boundary, d2_d2_boundary, d2_d3_boundary;
+    wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs
 `ifdef YOSYS
     wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
     wire xack_n, wreq_n;
@@ -151,7 +151,7 @@ module juku_top (
 `endif
     wait_prom_037 U_D2 (.a({wreq_n, A[10], xack_n, A[14], cas_n, A[9], A[15], A[12]}),
                         .v1_n(1'b0), .v2_n(1'b0),
-                        .d({d2_d3_boundary, d2_d2_boundary, d2_d1_boundary, ready_d}));
+                        .d({d2_nc, ready_d}));
     la3_gate U_D105 (.a(memw_n), .b(memw_n), .y(d105_memw_inv),
                      .a2(memw_n), .b2(d13_o4), .y2(d105_gate1_y),
                      .a3(d105_dbin_n), .b3(d105_dbin_n), .y3(d105_dbin_gated),

@@ -103,6 +103,7 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
     for net in board["nets"].values():
         for ref, pin in net.get("nodes", []):
             netted[str(ref)].add(str(pin))
+    intentional_nc = {(str(ref), str(pin)) for ref, pin in board.get("no_connects", [])}
 
     rows = []
     for chip in board["chips"]:
@@ -112,7 +113,7 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
         missing = [
             f"{pin}:{signal}"
             for pin, signal in sorted(chip.get("pins", {}).items(), key=pin_sort_key)
-            if str(pin) not in netted.get(ref, set())
+            if str(pin) not in netted.get(ref, set()) and (ref, str(pin)) not in intentional_nc
         ]
         if not missing:
             continue

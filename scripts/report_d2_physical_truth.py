@@ -58,7 +58,7 @@ def main() -> int:
         f"- Four-bit raw `F` (all outputs released/high): {len(high)} rows",
         f"- Four-bit raw `0` (all outputs pulled low): {len(low)} rows", "",
         "All four physical outputs are identical at every address. Only D0/pin12 has",
-        "a proved board destination; pins 9-11 remain continuity/NC boundaries.", "",
+        "a proved board destination; the factory symbol makes pins 9-11 explicit no-connects.", "",
         "## Exact piecewise classification", "",
         "The raw output is `0` whenever `WREQ_N=0`. For `WREQ_N=1`:", "",
         "| Condition | Raw output |", "| --- | --- |",
@@ -76,9 +76,9 @@ def main() -> int:
         "- Raw `F` releases D0/pin12, allowing R6 to pull `READY_D` high.",
         "- D30 samples that level with PHI2TTL and its asynchronous controls; this",
         "  table alone does not prove the full cycle-by-cycle WAIT timing.",
-        "- The identical pins 9-11 must not be connected by inference merely because",
-        "  they contain the same programmed truth; their physical destinations remain",
-        "  a continuity question.", "",
+        "- Pins 9-11 remain physically programmed and were captured by the reader, but",
+        "  the factory symbol draws no external stubs; they are intentional no-connects",
+        "  and must not acquire PCB nets merely because their truth matches D0.", "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")

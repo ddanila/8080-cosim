@@ -3811,7 +3811,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically but pins9-11 destinations/NC states remain boundaries. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
+    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically; the factory symbol draws only D0/pin12, so pins9-11 are explicit no-connects. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
    }
   },
   {
@@ -15869,18 +15869,6 @@
   "D105_MEMW_INV": {
    "src": "owner continuity 2026-07-13: tied D105.12/.13 receive D5.26 MEMW_N; D105.11 drives D30 section-B /CLR pin13",
    "nodes": [["D105", "11"], ["D30", "13"]]
-  },
-  "D2_D1_BOUNDARY": {
-   "src": "owner D2 read 2026-07-13 sampled physical output pin11 but its target-board destination/NC state was not continuity-mapped",
-   "nodes": [["D2", "11"]]
-  },
-  "D2_D2_BOUNDARY": {
-   "src": "owner D2 read 2026-07-13 sampled physical output pin10 but its target-board destination/NC state was not continuity-mapped",
-   "nodes": [["D2", "10"]]
-  },
-  "D2_D3_BOUNDARY": {
-   "src": "owner D2 read 2026-07-13 sampled physical output pin9 but its target-board destination/NC state was not continuity-mapped",
-   "nodes": [["D2", "9"]]
   },
   "D25_T": {
    "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",

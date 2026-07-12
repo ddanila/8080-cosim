@@ -153,17 +153,22 @@ def main() -> int:
     prov = chip.get("prov", {})
     dsn_nets = dsn_pin_nets("D2")
     pcb_nets = pcb_pin_nets("D2")
+    intentional_nc = {str(pin) for ref, pin in board.get("no_connects", []) if ref == "D2"}
+    nc_outputs_ok = intentional_nc == {"9", "10", "11"}
 
     pin_rows: list[str] = []
     signal_nets: list[str] = []
     for pin, role in sorted(pin_roles.items(), key=role_key):
         net = net_for_pin(board, "D2", pin)
         if net is None:
-            lead = SCHEMATIC_LEADS.get(pin)
-            if lead:
-                pin_rows.append(table_row([pin, role, f"`{lead[0]}` (not netted)", lead[1]]))
+            if pin in intentional_nc:
+                pin_rows.append(table_row([pin, role, "NC", "factory symbol draws only D0/pin12; explicit no-connect"] ))
             else:
-                pin_rows.append(table_row([pin, role, "-", "not traced/netted"]))
+                lead = SCHEMATIC_LEADS.get(pin)
+                if lead:
+                    pin_rows.append(table_row([pin, role, f"`{lead[0]}` (not netted)", lead[1]]))
+                else:
+                    pin_rows.append(table_row([pin, role, "-", "not traced/netted"]))
         else:
             name, src = net
             signal_nets.append(name)
@@ -177,7 +182,7 @@ def main() -> int:
                 pin,
                 role,
                 f"`{name}`" if name else "-",
-                "present" if name else "missing in DSN",
+                "present" if name else "intentional NC in source" if pin in intentional_nc else "missing in DSN",
             ])
         )
 
@@ -189,7 +194,7 @@ def main() -> int:
                 pin,
                 role,
                 f"`{name}`" if name else "-",
-                "present" if name else "unnetted in PCB",
+                "present" if name else "intentional NC" if pin in intentional_nc else "unnetted in PCB",
             ])
         )
 
@@ -231,7 +236,8 @@ def main() -> int:
         "The D2 pin table from sheet 1 is:",
         "A0-A7=5/6/7/4/3/2/1/15",
         "All D2 inputs are now modeled and routed",
-        "its PROM contents remain deferred",
+        "preserve the physical `.037` table",
+        "pins 9-11 have no destination and are explicit no-connects",
     )
     all_signal_pins_netted = (
         len(signal_nets) == len(pin_roles)
@@ -334,6 +340,11 @@ def main() -> int:
             table_row(["Check", "Result", "Evidence"]),
             table_row(["---", "---", "---"]),
             table_row([
+                "D2 unused outputs are explicit no-connects",
+                "PASS" if nc_outputs_ok else "FAIL",
+                "pins 9, 10, 11; factory symbol draws only D0/pin12",
+            ]),
+            table_row([
                 "Board identity names D2 as `.037` RT4",
                 "PASS" if identity_ok else "FAIL",
                 "`kicad/juku.board.json`",
@@ -416,8 +427,7 @@ def main() -> int:
             "- Known: the older behavioral D2 I/O-decode model is not physical D2",
             "  programming truth; D9 is the current chip-select decoder.",
             "- Known: all eight inputs are traced and D0/pin12 feeds D30 READY data.",
-            "  Pins9-11 were read but their board destinations/NC states remain explicit",
-            "  continuity boundaries.",
+            "  The factory symbol draws only D0; pins9-11 are explicit no-connects.",
             "- Known: D105.10 is the pulled-up edge-bus `H` net shared with D13.13;",
             "  it gates CPU DBIN through D105 into D5 and is not the −5 V supply.",
             "- Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte",
@@ -429,7 +439,7 @@ def main() -> int:
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok, physical_image_ok, owner_evidence))
+    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok, physical_image_ok, owner_evidence, nc_outputs_ok))
     return 0 if evidence_ok and status != "D2 RECONSTRUCTION INPUTS CHANGED" else 1
 
 

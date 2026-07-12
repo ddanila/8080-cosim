@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `218`
 - Verification-point endpoints checked in PCB: `386`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2241`
-- All board endpoints checked in routed PCB: `2241`
+- All board endpoints checked in source PCB: `2238`
+- All board endpoints checked in routed PCB: `2238`
 - Intentional off-board endpoints excluded: `38`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2241/2241 | 2241/2241 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2241 | 1894/2241 | FAIL |
+| `kicad/juku.kicad_pcb` | 2238/2238 | 2238/2238 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2238 | 1894/2238 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -135,9 +135,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D29_AIN1_BOUNDARY: D29.2`
 - `D29_AIN2_BOUNDARY: D29.3`
 - `D29_AIN5_BOUNDARY: D29.6`
-- `D2_D1_BOUNDARY: D2.11`
-- `D2_D2_BOUNDARY: D2.10`
-- `D2_D3_BOUNDARY: D2.9`
 - `D30_CLK2_BOUNDARY: D30.11`
 - `D30_Q2N_BOUNDARY: D30.8`
 - `D33_CLK_RC: R46.2`

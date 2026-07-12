@@ -53,23 +53,24 @@ scanned `.113` and `.117` РЕ3 tables are not substitutes for D94 `.092`.
 The D2 pin table from sheet 1 is:
 `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, and `D0=12`.
 
-D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Current evidence
-indicates D2 pin 12 into D105 pin 9 and D2 V1/V2 tied low. D105 pin 10 is fed by
-a named off-sheet `H` arrow. The separate power legend names `+5B`, `+12B`,
-`−12B`, and ground and does not identify `H` as the derived −5 V rail; the
-former power assignment was unsafe and is removed. D105 pin 6's destination
-still requires continuity confirmation. The July-2026 paired
+D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Direct owner
+continuity supersedes the false D2.12-to-D105.9 interpretation: D2.12 feeds
+D30.2/R6 `READY_D`, while CPU D1.17 `DBIN` and pulled-up edge `H` feed
+D105.9/.10; the second NAND drives D105.6 to D5.4. D2 V1/V2 are tied low.
+The July-2026 paired
 D2 and D4 solder fits trace D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7
 (`A10/A14/A12/A15/A9`). All D2 inputs are now modeled and routed in the
-authoritative source PCB; its PROM contents remain deferred.
+authoritative source PCB. Three matching reads, including a full power cycle,
+preserve the physical `.037` table.
 The factory symbol draws only D0/pin 12 on the RT4 output side; package outputs
 pins 9-11 have no destination and are explicit no-connects in the board model.
 
 The full-resolution sheet also proves three D2 address leads: `VIDEO CYCLE` to
 A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other
 two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
-MRD inverter). These reads reduce the trace boundary but do not yet establish
-D2 A0/A1/A2/A4/A6 or every output destination.
+MEMW inverter). The paired board photographs subsequently close A0/A1/A2/A4/A6.
+Only D0 is drawn on the factory symbol; D1-D3/pins 11/10/9 are explicit
+no-connects.
 
 The three photographed К155АГ3 positions require 16-pin DIP footprints. This is consistent
 with the traced D56 АГ3 pinout on sheet 2, whose RC terminals explicitly use
