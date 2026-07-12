@@ -784,7 +784,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К531ЛН1 standard hex-inverter package contract; exhaustive sheet-2 symbol census traces sections 9->8 and 1->2 in the crystal oscillator, 3->4 as PST CLK, 11->10 in the timing chain, and 13->12 as LOAD; section 5->6 is absent from every D59 symbol occurrence and pins 5/6 are explicit NCs"
+    "pins": "К531ЛН1 standard hex-inverter package contract; exhaustive sheet-2 symbol census traces sections 9->8 and 1->2 in the crystal oscillator, 3->4 as PST CLK, 11->10 in the timing chain with output 10 reaching bundle tag 10, and 13->12 as LOAD; section 5->6 is absent from every D59 symbol occurrence and pins 5/6 are explicit NCs"
    }
   },
   {
@@ -11310,6 +11310,15 @@
     [
      "D59",
      "11"
+    ]
+   ]
+  },
+  "D59_O10_TAG10": {
+   "src": "scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established",
+   "nodes": [
+    [
+     "D59",
+     "10"
     ]
    ]
   },

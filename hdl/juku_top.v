@@ -82,12 +82,12 @@ module juku_top (
     wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6; wire [3:0] d40_q;
     // sheet-2 LATCH/LOAD chain (D41 ИР16 -> D37 gate2 -> D33 inv; D38 gate2 -> D59 inv). Inputs of
     // D41/D38-2/D39-2 are deferred boundaries (numbered timing wires 1/2/4/15 + РЕ3 states).
-    wire d41_qa, d41_qb, d41_qc, d41_qd, d37_latch_pre, latch_sig, d39_o8, load_pre, load_vid;
+    wire d41_qa, d41_qb, d41_qc, d41_qd, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(1'b1), .g(1'b1), .ck(1'b0),
                      .ds(1'b0), .qd(d41_qd), .qa(d41_qa), .qb(d41_qb), .qc(d41_qc));
     wire pst_clk;
     wire osc_fb, osc_pre;
-    ln1_osc   U_D59 (.sclk(clk), .xin(osc_pre), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8),
+    ln1_osc   U_D59 (.sclk(clk), .xin(osc_pre), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8), .o10(d59_o10_tag10),
                      .i3(osc_clk), .o4(pst_clk), .i5(1'bz), .o6(), .i9(osc_fb), .o8(osc_pre));
     assign osc_fb = 1'bz; // R31/R32/Z1 meet here physically; analog crystal loop is outside HDL
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
