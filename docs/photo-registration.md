@@ -179,6 +179,9 @@ D14. Their fitted body centres are `(195.7,38.9)`, `(211.8,29.5)`, and
 `(211.8,41.0)` board mm. This removes the impossible former overlaps of R30
 with D104.12 and D32.8. `kicad/check_serial_photo_placement.py` composes the raw
 photo and board registrations and guards all three centres and orientations.
+The same check identifies the marked notch-down К531ЛН3 in
+`PXL_20260710_200418174.jpg` as D3 at `(220.434,80.356)` mm. Its former
+`(205.8,96.4)` placeholder landed on a cable and physically overlapped D10.
 
 The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
 both photographed rows corrects the earlier row-label error: standard top-view

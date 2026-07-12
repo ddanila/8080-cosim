@@ -9,11 +9,15 @@ import numpy as np
 import pcbnew
 
 ROOT = Path(__file__).resolve().parents[1]
-IMAGE = "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg"
 OBSERVED = {
-    "D104": ((939.762, 1580.854), 180.0),
-    "D32": ((1269.339, 1385.568), 0.0),
-    "D14": ((1269.935, 1621.741), 0.0),
+    "D104": ("ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+             (939.762, 1580.854), 180.0),
+    "D32": ("ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+            (1269.339, 1385.568), 0.0),
+    "D14": ("ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+            (1269.935, 1621.741), 0.0),
+    "D3": ("ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+           (1375.0, 910.0), 180.0),
 }
 
 
@@ -25,13 +29,13 @@ def project(matrix: np.ndarray, point: tuple[float, float]) -> np.ndarray:
 def main() -> None:
     panorama = json.loads((ROOT / "docs/photo-registration/panorama-registration.json").read_text())
     board_registration = json.loads((ROOT / "docs/photo-registration/board-registration.json").read_text())
-    image_h = np.array(panorama["groups"]["component_grid"]["images"][IMAGE]
-                       ["original_to_panorama_homography"]).reshape(3, 3)
     board_h = np.array(board_registration["groups"]["component_grid"]
                        ["board_to_panorama_homography"]).reshape(3, 3)
     board = pcbnew.LoadBoard(str(ROOT / "kicad/juku.kicad_pcb"))
     errors = []
-    for refdes, (image_point, expected_angle) in OBSERVED.items():
+    for refdes, (image, image_point, expected_angle) in OBSERVED.items():
+        image_h = np.array(panorama["groups"]["component_grid"]["images"][image]
+                           ["original_to_panorama_homography"]).reshape(3, 3)
         expected = project(np.linalg.inv(board_h), project(image_h, image_point))
         footprint = board.FindFootprintByReference(refdes)
         centre = footprint.GetBoundingBox(False, False).GetCenter()
