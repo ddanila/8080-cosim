@@ -879,7 +879,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20); DOWN/pin4 tied to +5 V, CLR/pin14 grounded, BO/pin13 undrawn/NC"
+    "pins": "scan sheet-2 (74193 pinout, finding 20); D0-D3 grounded; DOWN/pin4 tied to +5 V, CLR/pin14 grounded, BO/pin13 undrawn/NC"
    }
   },
   {
@@ -904,7 +904,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20); DOWN/pin4 tied to +5 V, CLR/pin14 grounded, BO/pin13 undrawn/NC"
+    "pins": "scan sheet-2 (74193 pinout, finding 20); D0/D1 grounded, D2/D3 visibly on S3.1/S3.2 preset rails; DOWN/pin4 tied to +5 V, CLR/pin14 grounded, BO/pin13 undrawn/NC"
    }
   },
   {
@@ -929,7 +929,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan sheet-2 (74193 pinout, finding 20); BO/pin13 undrawn/NC"
+   "pins": "scan sheet-2 (74193 pinout, finding 20); D0-D3 visibly parallel D47 preset rails S3.3-S3.6; BO/pin13 undrawn/NC"
    }
   },
   {
@@ -10166,14 +10166,6 @@
      "1"
     ],
     [
-     "D45",
-     "10"
-    ],
-    [
-     "D45",
-     "9"
-    ],
-    [
      "D44",
      "15"
     ],
@@ -12667,7 +12659,7 @@
    ]
   },
   "S3_1": {
-   "src": "scan sheet-2 (S3 config); t7: code-1 glyph read at D46.10 (C preset) -- adjacency assumption CONFIRMED",
+   "src": "scan sheet-2 (S3 config); continuous code-1 conductor to D45 C preset",
    "nodes": [
     [
      "S3",
@@ -12678,13 +12670,13 @@
      "1"
     ],
     [
-     "D46",
+     "D45",
      "10"
     ]
    ]
   },
   "S3_2": {
-   "src": "scan sheet-2 (S3 config; 3-6 -> D47 presets); bite-2: code 2 -> D46.9 (preset D)",
+   "src": "scan sheet-2 (S3 config); continuous code-2 conductor to D45 D preset",
    "nodes": [
     [
      "S3",
@@ -12695,13 +12687,13 @@
      "1"
     ],
     [
-     "D46",
+     "D45",
      "9"
     ]
    ]
   },
   "S3_3": {
-   "src": "scan sheet-2 (S3 config; 3-6 -> D47 presets)",
+   "src": "scan sheet-2 (S3 config); continuous code-3 conductor shared by D46/D47 A presets",
    "nodes": [
     [
      "S3",
@@ -12714,11 +12706,15 @@
     [
      "D47",
      "15"
+    ],
+    [
+     "D46",
+     "15"
     ]
    ]
   },
   "S3_4": {
-   "src": "scan sheet-2 (S3 config; 3-6 -> D47 presets)",
+   "src": "scan sheet-2 (S3 config); continuous code-4 conductor shared by D46/D47 B presets",
    "nodes": [
     [
      "S3",
@@ -12731,11 +12727,15 @@
     [
      "D47",
      "1"
+    ],
+    [
+     "D46",
+     "1"
     ]
    ]
   },
   "S3_5": {
-   "src": "scan sheet-2 (S3 config; 3-6 -> D47 presets)",
+   "src": "scan sheet-2 (S3 config); continuous code-5 conductor shared by D46/D47 C presets",
    "nodes": [
     [
      "S3",
@@ -12748,11 +12748,15 @@
     [
      "D47",
      "10"
+    ],
+    [
+     "D46",
+     "10"
     ]
    ]
   },
   "S3_6": {
-   "src": "scan sheet-2 (S3 config; 3-6 -> D47 presets)",
+   "src": "scan sheet-2 (S3 config); continuous code-6 conductor shared by D46/D47 D presets",
    "nodes": [
     [
      "S3",
@@ -12764,6 +12768,10 @@
     ],
     [
      "D47",
+     "9"
+    ],
+    [
+     "D46",
      "9"
     ]
    ]

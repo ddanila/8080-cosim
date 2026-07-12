@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `49`
 - Verification-point endpoints checked in PCB: `232`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2034`
-- All board endpoints checked in routed PCB: `2034`
+- All board endpoints checked in source PCB: `2036`
+- All board endpoints checked in routed PCB: `2036`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2034/2034 | 2034/2034 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2034 | 1915/2034 | FAIL |
+| `kicad/juku.kicad_pcb` | 2036/2036 | 2036/2036 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2036 | 1911/2036 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -129,6 +129,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `RESET: D11.21`
 - `RES_RC: A17.1`
 - `RF_TAP: L1.3`
+- `S3_3: D46.15`
+- `S3_4: D46.1`
 - `SER_CTS_N: D104.12`
 - `SER_CTS_N: D11.17`
 - `SER_DSR_N: D104.11`
@@ -174,6 +176,10 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D93.2: `IOWR` != `FDC_WE_N`
 - D3.2: `IR6` != `INT6_BUF`
 - R76.1: `RF_TANK` != `RF_TAP`
+- D45.10: `GND` != `S3_1`
+- D45.9: `GND` != `S3_2`
+- D46.10: `S3_1` != `S3_5`
+- D46.9: `S3_2` != `S3_6`
 - D12.1: `SER_TXD` != `SER_TXD_INV`
 - VT4.3: `RF_TANK` != `VT4_C`
 - L1.2: `GND` != `VT4_C`

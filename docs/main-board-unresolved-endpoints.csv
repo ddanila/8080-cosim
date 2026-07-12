@@ -107,8 +107,6 @@ P0,D41,5,IR16,D,PLAN physical-connectivity blocker
 P0,D41,6,IR16,LD,PLAN physical-connectivity blocker
 P0,D41,8,IR16,G,PLAN physical-connectivity blocker
 P0,D41,9,IR16,CK,PLAN physical-connectivity blocker
-P1,D46,1,IE7_CTR,D1,functional endpoint lacks disposition
-P1,D46,15,IE7_CTR,D0,functional endpoint lacks disposition
 P1,D52,10,KP14_MUX,B2,functional endpoint lacks disposition
 P1,D52,11,KP14_MUX,A2,functional endpoint lacks disposition
 P1,D52,12,KP14_MUX,Y3,functional endpoint lacks disposition

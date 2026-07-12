@@ -306,9 +306,14 @@ module juku_top (
     // ---- video address counters + address mux + RAS/CAS decoder (drive РУ5 MA/RAS/CAS) ----
     // sel/en + counter preset are the assumed parts; chips D44-D50/D53 are scan-verified.
     // Video-address counter chain (sheet-2 verified 74193s): VA[15:0], CO->UP cascade.
-    // Presets: D44 grounded [drawn]; D47 <- S3 config switches [drawn]; D45/D46 [unread].
+    // Presets: D44 A-D grounded; S3.1-2 -> D45 C/D; S3.3-6 -> both D46 and D47 A-D [drawn].
     // LD sources (D34 XOR chain) + CLR rail = boundaries.
     wire [15:0] VA; wire co0, co1, co2;
+    wire [3:0] s3_hi_preset;
+    net_boundary U_S3P0LNK (.a(1'b0), .b(s3_hi_preset[0]));
+    net_boundary U_S3P1LNK (.a(1'b0), .b(s3_hi_preset[1]));
+    net_boundary U_S3P2LNK (.a(1'b0), .b(s3_hi_preset[2]));
+    net_boundary U_S3P3LNK (.a(1'b0), .b(s3_hi_preset[3]));
     wire ctr_ld_n;                     // D34 XOR-RC-XOR pulse (LD of D44/D45)
 `ifdef YOSYS
     wire d34_b2;
@@ -322,14 +327,15 @@ module juku_top (
     ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
     // D46/D47 share one LD vertical (bite-2); its driver = the D59.12 "LOAD" inverter [likely,
     // path not continuously traced] -> tri1 boundary (1 = not loading, boot-identical to the old
-    // 1'b1 ties). Presets: S3.1-2 -> D46 C/D, S3.3-6 -> D47 A-D (board nets; sim presets stay 0).
+    // 1'b1 ties). The S3 preset rails are explicit in the board netlist; simulation keeps the
+    // default all-switches-closed preset value at zero until configuration controls are exposed.
 `ifdef YOSYS
     wire vid_hi_ld_n;   // DOWN pins tie to rail "A" = +5V (bite-3) -> plain 1'b1 constants
 `else
     tri1 vid_hi_ld_n;
 `endif
-    ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(4'b0), .q(VA[11:8]),  .co(co2), .bo());
-    ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(4'b0), .q(VA[15:12]), .co(), .bo());
+    ie7_ctr  U_D46 (.up(co1),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(s3_hi_preset), .q(VA[11:8]),  .co(co2), .bo());
+    ie7_ctr  U_D47 (.up(co2),     .down(1'b1), .load_n(vid_hi_ld_n), .clr(1'b0), .d(s3_hi_preset), .q(VA[15:12]), .co(), .bo());
     // DRAM address mux: sel=Φ1 puts the ROW (BA[15:8]) on MA during RAS, the COL (BA[7:0]) during
     // CAS. (CPU row/col realized; the video path through this mux is the un-modeled boundary.)
     // NOTE sheet-2 draws the Y->MA rail order as pins 4,12,9,7; we keep the consistent
