@@ -34,3 +34,21 @@ forces CPU `ready=1`, so it cannot constrain this WAIT input.
 A `.037` dump supplies D2 truth but cannot identify the source or timing of
 `H`. Both are required before releasing the physical WAIT chain. The routed
 snapshot must also regain a DRC-clean −5 V connection before fabrication.
+
+## Rejected local copper repairs
+
+KiCad DRC trials closed the airwire with nearby independent vias, but none
+was electrically legal:
+
+- a via at `(37.0,212.0)` shorts D105.9 `D2_WAIT_RAW` and conflicts with
+  `PHI2TTL`;
+- a left detour through `(31.0,210.4985)` crosses `D105_MRD_INV`, shorts
+  `RAM_OUT_EN`, and violates D13.4/`PHI2` clearance;
+- vias at the retained route near `(35.5722,198.5991)` remain too close to
+  `PHI2TTL`, while right-side front-copper detours cross `RESIN`, GND, or
+  the E3 control routing.
+
+Those candidates were rejected and the routed board restored to its guarded
+one-airwire state. Do not reinstate the original D105.10 junction or adopt a
+jumper/larger reroute without documenting it as a target-revision measurement
+or explicit Tier-1/2 redesign.
