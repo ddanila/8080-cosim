@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `51`
-- Verification-point endpoints checked in PCB: `234`
+- Verification-point nets: `49`
+- Verification-point endpoints checked in PCB: `214`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2075`
-- All board endpoints checked in routed PCB: `2075`
+- All board endpoints checked in source PCB: `2078`
+- All board endpoints checked in routed PCB: `2078`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 26 |
+| logic | 24 |
 | memory/decode | 6 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 234/234 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 234/234 net names matched |
+| Risk endpoints present on PCB pads | PASS | 214/214 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 214/214 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2075/2075 | 2075/2075 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2075 | 1911/2075 | FAIL |
+| `kicad/juku.kicad_pcb` | 2078/2078 | 2078/2078 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2078 | 1909/2078 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -93,6 +93,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D59_O10_TAG10: D59.10`
 - `D7_A3_BOUNDARY: D7.4`
 - `D7_B3_BOUNDARY: D7.5`
+- `D7_Y4_TAG8: D7.8`
 - `D94_D3: D94.4`
 - `D94_D4: D94.5`
 - `D94_D5: D94.6`
@@ -121,6 +122,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `GND: D99.3`
 - `HOR_RTR: D54.13`
 - `INT6_BUF: S4.3`
+- `IORD: D7.9`
+- `IOWR: D7.10`
 - `IR6: S4.2`
 - `KBD_CONTRDAT: A50.1`
 - `KBD_CTRL: A51.1`
@@ -210,6 +213,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `XTAL_TRIM: C73.1`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- D7.12: `IOWR` != `D7_A1_BOUNDARY`
+- D7.13: `IORD` != `D7_B1_BOUNDARY`
 - D93.3: `CS_FDC` != `FDC_CS_N`
 - D93.4: `IORD` != `FDC_RE_N`
 - D93.2: `IOWR` != `FDC_WE_N`
@@ -254,8 +259,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FRAME_INT` | timing/I/O | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (D55.OUT1 export, cro... | Cross-check against hardware when the peripheral path is exercised. |
 | `HF_OUT` | video/analog | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delt... | Scope/capture video or timing node during video bring-up. |
-| `IORD` | logic | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, ... (+4)` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `IOWR` | logic | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, ... (+4)` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `LATCH_B` | timing/I/O | `D40.11, D37.2, D54.9, D54.15, D54.18` | scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending) | Cross-check against hardware when the peripheral path is exercised. |
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIC_IR2_BOUNDARY` | logic | `D10.20` | scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

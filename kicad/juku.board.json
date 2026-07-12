@@ -200,7 +200,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-1 package census: section12,13->11 drives PROM_EN, section1,2->3 remains a destination chase, section5,4->6 drives D25.T with two distinct westbound input boundaries, and section9,10->8 never appears and is explicit NC"
+    "pins": "complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a destination chase; section5,4->6 drives D25.T from two westbound boundaries; section9,10->8 is IORD/IOWR NAND with output on tag8"
    }
   },
   {
@@ -7275,7 +7275,7 @@
    "wire_link": true
   },
   "IORD": {
-   "src": "scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch",
+   "src": "scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision",
    "nodes": [
     [
      "D5",
@@ -7315,12 +7315,12 @@
     ],
     [
      "D7",
-     "13"
+     "9"
     ]
    ]
   },
   "IOWR": {
-   "src": "scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch",
+   "src": "scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision",
    "nodes": [
     [
      "D5",
@@ -7360,7 +7360,7 @@
     ],
     [
      "D7",
-     "12"
+     "10"
     ]
    ]
   },
@@ -15233,12 +15233,21 @@
   "D7_B3_BOUNDARY": {
    "src": "sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan",
    "nodes": [["D7", "5"]]
+  },
+  "D7_A1_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment",
+   "nodes": [["D7", "12"]]
+  },
+  "D7_B1_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment",
+   "nodes": [["D7", "13"]]
+  },
+  "D7_Y4_TAG8": {
+   "src": "sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; unique far destination not established",
+   "nodes": [["D7", "8"]]
   }
  },
  "no_connects": [
-  ["D7", "8"],
-  ["D7", "9"],
-  ["D7", "10"],
   ["D53", "7"],
   ["D53", "9"],
   ["D53", "10"],

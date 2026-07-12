@@ -236,13 +236,15 @@ module juku_top (
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    wire d7_a3_boundary, d7_b3_boundary;
+    wire d7_a1_boundary, d7_b1_boundary, d7_a3_boundary, d7_b3_boundary, d7_y4_tag8;
+    net_boundary U_D7A1LNK (.a(iowr_n), .b(d7_a1_boundary));
+    net_boundary U_D7B1LNK (.a(iord_n), .b(d7_b1_boundary));
     net_boundary U_D7A3LNK (.a(1'b0), .b(d7_a3_boundary));
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_boundary));
-    la3_gate    U_D7     (.a(iowr_n), .b(iord_n), .y(io_strobe_h),     // traced: sect 12,13->11 = strobe-NAND (high on either io strobe) -> R17 -> D9.G1; 12/13 order assumed
+    la3_gate    U_D7     (.a(d7_a1_boundary), .b(d7_b1_boundary), .y(io_strobe_h),     // physical origins of pins12/13 unresolved; sim keeps prior IOWR/IORD semantics through boundaries
                           .a2(1'b1), .b2(memw_n), .y2(),   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
                           .a3(d7_b3_boundary), .b3(d7_a3_boundary), .y3(d25_t_w),
-                          .a4(1'bz), .b4(1'bz), .y4());   // sect3 (5,4->6) -> D25.T; sect4 undrawn/NC
+                          .a4(iord_n), .b4(iowr_n), .y4(d7_y4_tag8));   // sect4 pins9/10 = IORD/IOWR; output8 -> tag8 boundary
     decode_prom U_DECODE (.a({BA[15:11], ppi0_pc[2], ppi0_pc[3], ppi0_pc[4]}),   // traced sheet-1: PC2/3/4 pins16/17/13 -> tags1/2/3 -> D6 pins2/1/15
                           .v_en_n(1'b0),                                     // V1/V2 feed unread; modeled always-enabled (old D7.11 link refuted)
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));

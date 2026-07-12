@@ -14,8 +14,8 @@ schematic parity against it without a matching routed schematic/project.
 | --- | ---: | --- |
 | ERC error violations | 162 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
-| Explicit board-JSON no-connects | 70 | PASS |
-| KiCad schematic no-connect markers | 70 | PASS |
+| Explicit board-JSON no-connects | 67 | PASS |
+| KiCad schematic no-connect markers | 67 | PASS |
 | Functional pins without net or explicit NC | 162 | BLOCK |
 | Unknown/conflicting NC records | 0 | PASS |
 
