@@ -95,13 +95,13 @@ PASSIVE_PLACE = {
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
     'E4':(39.9,226.5,0),'E5':(50.5,224.0,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
     # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
-    # drawing (7.102.100; VT2/VT3/VT4/R73/VD3 read precisely, R6x/C grid improved-approx) ----
+    # drawing (7.102.100); R65 is owner-photo fitted below D102; observed VD3/R66
+    # remain deferred until the conflicting approximate L1 position is registered ----
     'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.0,119.6,90),
     'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(284.4,119.6,90),
-    # R6x grid: slot positions СБ-true (crops sb_analog2/sb_r6x_right: trio y116.9 at x288.3/291.0/293.8,
-    # trio y126.2 same x, singles ~(297.5,117.5)/(299.4,120.4)); refdes-to-slot within the grid is APPROX —
-    # the rotated labels sit at the scan's resolution floor (blocked: needs macro photo / owner read)
-    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(276.9,117.2,90),'R66':(293.8,127.2,90),
+    # Remaining R6x grid refdes-to-slot assignments are approximate; do not move
+    # them independently where they overlap the still-unregistered RF cluster.
+    'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(287.07,132.26,90),'R66':(293.8,127.2,90),
     'R67':(288.3,116.4,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
