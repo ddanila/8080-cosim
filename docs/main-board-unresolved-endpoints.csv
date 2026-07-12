@@ -1,18 +1,4 @@
 priority,ref,pin,type,role,reason
-P0,D106,1,IE7_CTR,D1,PLAN physical-connectivity blocker
-P0,D106,10,IE7_CTR,D2,PLAN physical-connectivity blocker
-P0,D106,11,IE7_CTR,LOAD_N,PLAN physical-connectivity blocker
-P0,D106,12,IE7_CTR,CO,PLAN physical-connectivity blocker
-P0,D106,13,IE7_CTR,BO,PLAN physical-connectivity blocker
-P0,D106,14,IE7_CTR,CLR,PLAN physical-connectivity blocker
-P0,D106,15,IE7_CTR,D0,PLAN physical-connectivity blocker
-P0,D106,2,IE7_CTR,Q1,PLAN physical-connectivity blocker
-P0,D106,3,IE7_CTR,Q0,PLAN physical-connectivity blocker
-P0,D106,4,IE7_CTR,DOWN,PLAN physical-connectivity blocker
-P0,D106,5,IE7_CTR,UP,PLAN physical-connectivity blocker
-P0,D106,6,IE7_CTR,Q2,PLAN physical-connectivity blocker
-P0,D106,7,IE7_CTR,Q3,PLAN physical-connectivity blocker
-P0,D106,9,IE7_CTR,D3,PLAN physical-connectivity blocker
 P1,D11,14,USART8251,RXRDY,functional endpoint lacks disposition
 P1,D11,15,USART8251,TXRDY,functional endpoint lacks disposition
 P1,D13,3,TL2,I3,functional endpoint lacks disposition
