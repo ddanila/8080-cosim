@@ -1105,7 +1105,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-2 package census: CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm; parallel-data pins 3-6 and carry output pin15 have no drawn conductors and are explicit NCs"
+    "pins": "complete sheet-2 package census + К555ИЕ10 truth table: CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm; count enables pins7/10 share the drawn constant-high tie (both must be high for count mode); parallel-data pins3-6 and carry output pin15 have no drawn conductors and are explicit NCs"
    }
   },
   {
@@ -10770,6 +10770,14 @@
     [
      "D40",
      "16"
+    ],
+    [
+     "D40",
+     "7"
+    ],
+    [
+     "D40",
+     "10"
     ],
     [
      "D44",
