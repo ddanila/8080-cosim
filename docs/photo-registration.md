@@ -153,6 +153,11 @@ D97 on the immediately adjacent middle package. Its two solder rows hold
 opposite-row pin 9 out at 4.143 px and leave the rightmost package for D101, as
 required by the reversed physical order.
 
+The same order and pitch identify D101 as the rightmost lower-row solder
+package. Its fitted upper row spans pins 16-to-9 and the independent opposite
+pin-1 joint checks the two-row posture at 1.666 px; the former D101 seeds landed on rails
+farther right rather than package joints.
+
 Package-local pitch converts shared raw-image offsets directly: D95->D99 is
 `(23.895,+0.451)` mm; D95->D101 is `(-11.190,+17.380)` mm; D101->D97 is
 `(23.794,-0.107)` mm; and D97->D102 is `(23.963,-0.249)` mm. The visible

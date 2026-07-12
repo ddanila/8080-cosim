@@ -198,6 +198,18 @@
       "note": "Direct fit to the second horizontal notch-right К555КП12, D101. The distinct 8812-marked package lies below-left of D95; standard top-view DIP numbering and the complete lower pins 16-to-9 row establish its physical sequence without promoting electrical continuity."
     },
     {
+      "refdes": "D101",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "9", "image_px": [2166.0, 1099.0], "use": "fit", "observation": "rightmost joint of rightmost D101's backside pin-9-to-16 row"},
+        {"pin": "16", "image_px": [1790.0, 1100.0], "use": "fit", "observation": "leftmost joint of the same coherent eight-pad row"},
+        {"pin": "1", "image_px": [1789.0, 1262.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+      ],
+      "note": "D102 and D97 fix the reversed backside order and pitch, identifying D101 as the rightmost lower-row package. This fit replaces seeds displaced onto rails farther right."
+    },
+    {
       "refdes": "D97",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

@@ -111,6 +111,11 @@ def main() -> None:
         corrected_d101 = ("Validated D101 component fit identifies the distinct 8812-marked "
                           "К555КП12 package contact and replaces the displaced projection")
         row["note"] = row["note"].replace(stale_d101, corrected_d101)
+        stale_d101_solder = ("D101 solder projections lie on rails and junctions between physical "
+                             "package rows, so no pin identity or endpoint is uniquely established")
+        corrected_d101_solder = ("Validated D101 solder fit identifies the physical joint in the "
+                                 "rightmost backside package after D102 and D97")
+        row["note"] = row["note"].replace(stale_d101_solder, corrected_d101_solder)
         stale_d97 = ("D97 generated landings cross resistor, body, and parallel-trace areas "
                      "instead of following a coherent package row; pin identity and "
                      "destinations are not locally reliable")
