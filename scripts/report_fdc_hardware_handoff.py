@@ -117,6 +117,7 @@ def main() -> int:
         item for item in local_report.get("fits", [])
         if item.get("refdes") == "D93" and item.get("side") == "solder"
     ]
+    d93_solder_pins = d93_solder_fits[0].get("projected_pins", {}) if d93_solder_fits else {}
     d93_socket_fits_ok = (
         len(d93_component_fits) == 1
         and d93_component_fits[0].get("image", "").endswith("PXL_20260710_202708344.jpg")
@@ -126,11 +127,13 @@ def main() -> int:
         and d93_solder_fits[0].get("image", "").endswith("PXL_20260710_200506061.jpg")
         and d93_solder_fits[0].get("model") == "similarity_reflected"
         and max((check.get("error_px", 999) for check in d93_solder_fits[0].get("checks", [])), default=999) <= 8
+        and d93_solder_pins.get("1", [0, 0])[0] > d93_solder_pins.get("40", [9999, 0])[0] + 200
+        and d93_solder_pins.get("20", [0, 0])[0] > d93_solder_pins.get("21", [9999, 0])[0] + 200
+        and d93_solder_pins.get("1", [0, 9999])[1] < d93_solder_pins.get("20", [0, 0])[1]
+        and d93_solder_pins.get("40", [0, 9999])[1] < d93_solder_pins.get("21", [0, 0])[1]
     )
     if not d93_socket_fits_ok:
         failures.append("D93 two-sided socket package fits are absent or invalid")
-    d93_solder_pins = d93_solder_fits[0].get("projected_pins", {}) if d93_solder_fits else {}
-
     rows: list[list[object]] = []
 
     for bit in range(8):
@@ -224,7 +227,7 @@ def main() -> int:
             "D93.40 `VDD_12V`",
             "MISSING" if not any(has_node(board, name, "D93", "40") for name in board["nets"]) else "WIRED",
             "+12 V controller supply continuity",
-            "primary datasheet requires +12 V; registered component/solder fits identify pin 40, and a 2026-07-12 full-resolution chase follows only into the crowded westbound fanout—not to a unique P12V landing",
+            "primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved",
         ),
         (
             "D93.19 `MR_N`",
@@ -236,7 +239,7 @@ def main() -> int:
             "D93.24 `CLK`",
             "MISSING" if not any(has_node(board, n, "D93", "24") for n in board["nets"]) else "WIRED",
             "1 MHz FDC clock rail",
-            "photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/fanout; clock source remains unproved",
+            "photo with the physical КР1818ВГ93 temporarily removed from its socket plus the corrected two-column solder fit localizes the joint and westbound trace; clock source remains unproved",
         ),
         (
             "D100.9 `OE_N`",

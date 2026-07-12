@@ -253,11 +253,11 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "1", "image_px": [1559.5, 1479.8], "use": "fit", "observation": "top joint of the mirrored pin-1/20 solder column"},
-        {"pin": "10", "image_px": [1557.1, 1900.2], "use": "check", "observation": "independent tenth joint in the same 20-contact column"},
-        {"pin": "19", "image_px": [1553.7, 2326.5], "use": "fit", "observation": "nineteenth joint near the bottom of the same coherent column"}
+        {"pin": "40", "image_px": [1559.5, 1479.8], "use": "fit", "observation": "top joint of the physical pin-40/21 solder column, opposite D94"},
+        {"pin": "31", "image_px": [1557.1, 1900.2], "use": "check", "observation": "independent tenth joint down the same 20-contact column"},
+        {"pin": "22", "image_px": [1553.7, 2326.5], "use": "fit", "observation": "nineteenth joint near the bottom of the same coherent column"}
       ],
-      "note": "Original solder tile exposes the full D93 2x20 footprint. This package-local reflected fit replaces board-level projections displaced roughly 80 pixels from the actual solder joints."
+      "note": "Original solder tile exposes the full D93 2x20 footprint. The similarity fit uses the observed pin-40/21 column and projects pin 1-20 onto the equally spaced physical column nearest D94. The orientation is independently fixed by the accepted D94.1/.2/.3 to D93.4/.3/.2 paths and D94-local projection. It replaces the former model that both projected one column onto unrelated copper and swapped the two physical columns' pin identities."
     },
     {
       "refdes": "D100",

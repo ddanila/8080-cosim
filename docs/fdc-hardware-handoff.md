@@ -66,9 +66,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 
 | Signal | D93 pin | D93 solder coordinate | Remote component coordinate | Photograph result |
 | --- | ---: | --- | --- | --- |
-| `FDC_DDEN` | 37 | `(1276.300, 1618.983) px` | not locally fitted | pad and local copper identified; no photographed unbroken path to D26.13 / D6.15 |
-| `FDC_DRQ` | 38 | `(1276.622, 1571.944) px` | `D10.19 (2622.154, 1305.000) px` | pad and local copper identified; no photographed unbroken path to D10.19 |
-| `FDC_INTRQ` | 39 | `(1276.944, 1524.906) px` | `D10.18 (2677.615, 1305.000) px` | pad and local copper identified; no photographed unbroken path to D10.18 |
+| `FDC_DDEN` | 37 | `(1558.533, 1620.917) px` | not locally fitted | pad and local copper identified; no photographed unbroken path to D26.13 / D6.15 |
+| `FDC_DRQ` | 38 | `(1558.856, 1573.878) px` | `D10.19 (2622.154, 1305.000) px` | pad and local copper identified; no photographed unbroken path to D10.19 |
+| `FDC_INTRQ` | 39 | `(1559.178, 1526.839) px` | `D10.18 (2677.615, 1305.000) px` | pad and local copper identified; no photographed unbroken path to D10.18 |
 
 ## Remaining Owner Continuity Points
 
@@ -76,9 +76,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | --- | --- | --- | --- |
 | D10.12/.13/.15/.20/.21/.22 | MISSING | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; SP/EN pin16 is separately source-proved high, while these destinations or intentional NC states are not |
 | D93.15-.18/.22/.23/.25-.36 | MISSING | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
-| D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; registered component/solder fits identify pin 40, and a 2026-07-12 full-resolution chase follows only into the crowded westbound fanout—not to a unique P12V landing |
+| D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
 | D93.19 `MR_N` | MISSING | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/fanout; clock source remains unproved |
+| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | photo with the physical КР1818ВГ93 temporarily removed from its socket plus the corrected two-column solder fit localizes the joint and westbound trace; clock source remains unproved |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
 | D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
 
