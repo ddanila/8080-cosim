@@ -192,12 +192,15 @@
     "3": "Y2",
     "4": "A3",
     "5": "B3",
-    "6": "Y3"
+    "6": "Y3",
+    "9": "A4",
+    "10": "B4",
+    "8": "Y4"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "gate=scan"
+    "pins": "complete sheet-1 package census: section12,13->11 drives PROM_EN, section1,2->3 remains a destination chase, section5,4->6 drives D25.T with two distinct westbound input boundaries, and section9,10->8 never appears and is explicit NC"
    }
   },
   {
@@ -15222,9 +15225,20 @@
      "11"
     ]
    ]
+  },
+  "D7_A3_BOUNDARY": {
+   "src": "sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan",
+   "nodes": [["D7", "4"]]
+  },
+  "D7_B3_BOUNDARY": {
+   "src": "sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan",
+   "nodes": [["D7", "5"]]
   }
  },
  "no_connects": [
+  ["D7", "8"],
+  ["D7", "9"],
+  ["D7", "10"],
   ["D53", "7"],
   ["D53", "9"],
   ["D53", "10"],

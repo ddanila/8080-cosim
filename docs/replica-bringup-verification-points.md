@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `49`
-- Verification-point endpoints checked in PCB: `232`
+- Verification-point nets: `51`
+- Verification-point endpoints checked in PCB: `234`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2073`
-- All board endpoints checked in routed PCB: `2073`
+- All board endpoints checked in source PCB: `2075`
+- All board endpoints checked in routed PCB: `2075`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 24 |
+| logic | 26 |
 | memory/decode | 6 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 232/232 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 232/232 net names matched |
+| Risk endpoints present on PCB pads | PASS | 234/234 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 234/234 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2073/2073 | 2073/2073 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2073 | 1911/2073 | FAIL |
+| `kicad/juku.kicad_pcb` | 2075/2075 | 2075/2075 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2075 | 1911/2075 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -91,6 +91,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D56_Q2_D34: D34.9`
 - `D58_STB_TAG5: D58.11`
 - `D59_O10_TAG10: D59.10`
+- `D7_A3_BOUNDARY: D7.4`
+- `D7_B3_BOUNDARY: D7.5`
 - `D94_D3: D94.4`
 - `D94_D4: D94.5`
 - `D94_D5: D94.6`
@@ -240,6 +242,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D39_MEMCYC` | memory/decode | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D7_A3_BOUNDARY` | logic | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D7_B3_BOUNDARY` | logic | `D7.5` | sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D3` | logic | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destinat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D4` | logic | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
