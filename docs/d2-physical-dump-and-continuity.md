@@ -2,7 +2,7 @@
 
 Status date: **2026-07-13**.
 
-Status: **OWNER-MEASURED / HIGH-CONFIDENCE EVIDENCE / MODEL ADOPTION PENDING**
+Status: **OWNER-MEASURED / D2 DUMP VALIDATED / MODEL ADOPTION PENDING**
 
 This report records continuity measurements made directly on the owner's
 unpowered `.009` processor board and a repeated read of its socketed
@@ -34,12 +34,15 @@ address order already recorded for D2:
 | GND, +5 V | 8, 16 | GND, Nano +5 V |
 
 The breadboard reader used one 3 kOhm pull-up per output and a 100 nF Vishay
-MKT film bypass capacitor. Two complete reads in one powered session agreed at
-all 256 addresses; each address was sampled eight times and both reads reported
-zero unstable addresses. Output pins 9-12 were checked unpowered and were not
-shorted to one another. A separately power-cycled third raw serial capture is
-still preferred, because the two original terminal streams were observed but
-not preserved as unchanged capture files for `scripts/validate_rt4_dump.py`.
+MKT film bypass capacitor. Three preserved complete reads agreed at all 256
+addresses; each address was sampled eight times and every read reported zero
+unstable addresses. The third capture followed a full USB power cycle. Output
+pins 9-12 were checked unpowered and were not shorted to one another.
+
+`scripts/validate_rt4_dump.py` accepts all three unchanged streams under
+`ref/physical-proms/captures/`. The authoritative raw electrical artifact is
+`ref/physical-proms/validated/d2_037.raw.bin`, SHA256
+`953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`.
 
 All four physical outputs agreed at every address. The observed active-low
 asserted nibbles were:
@@ -63,10 +66,9 @@ E0: FFFFFFFFFFFFFFFF
 F0: FFFFFFFFFFFFFFFF
 ```
 
-This is a credible preliminary recovery of `.037`, not yet a preservation-grade
-binary artifact. The raw electrical table is the low-nibble complement of the
-display above and remains the authoritative representation when captures are
-preserved and validated.
+This is a preservation-grade physical recovery of `.037`. The raw electrical
+table is the low-nibble complement of the display above and is the authoritative
+representation; the asserted table is retained only as a convenience.
 
 ## Confirmed continuity
 
@@ -120,4 +122,3 @@ the generated D2/D30/D105 reports together. Until that synchronized change is
 made, generated documents describing `D2.12 -> D105.9`, a direct CPU-to-D5
 DBIN connection, or independent D6.11/D6.12 nets are known stale against these
 owner measurements.
-
