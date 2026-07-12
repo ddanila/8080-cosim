@@ -13,19 +13,19 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `52`
-- Verification-point endpoints checked in PCB: `218`
+- Verification-point nets: `56`
+- Verification-point endpoints checked in PCB: `222`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2082`
-- All board endpoints checked in routed PCB: `2082`
+- All board endpoints checked in source PCB: `2083`
+- All board endpoints checked in routed PCB: `2083`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 27 |
-| memory/decode | 6 |
+| logic | 30 |
+| memory/decode | 7 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
 | video/analog | 10 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 218/218 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 218/218 net names matched |
+| Risk endpoints present on PCB pads | PASS | 222/222 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 222/222 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2082/2082 | 2082/2082 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2082 | 1909/2082 | FAIL |
+| `kicad/juku.kicad_pcb` | 2083/2083 | 2083/2083 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2083 | 1909/2083 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -97,6 +97,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D6_V_ENABLE: D6.14`
 - `D7_A3_BOUNDARY: D7.4`
 - `D7_B3_BOUNDARY: D7.5`
+- `D7_Y2_BOUNDARY: D7.3`
 - `D7_Y4_TAG8: D7.8`
 - `D94_D3: D94.4`
 - `D94_D4: D94.5`
@@ -254,8 +255,12 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D39_MEMCYC` | memory/decode | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D6_V_ENABLE` | logic | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is refuted | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D7_A1_BOUNDARY` | logic | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_A3_BOUNDARY` | logic | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D7_B1_BOUNDARY` | logic | `D7.13` | sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_B3_BOUNDARY` | logic | `D7.5` | sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D7_Y2_BOUNDARY` | memory/decode | `D7.3` | sheet-1 full-resolution package census: D7 section pins1/2 receive the D92.13 wire-11 boundary and MEMW/wire19; NAND output pin3 remains a measurement boundary because its far d... | Probe during ROM/RAM stage; compare address/control timing to twin. |
+| `D7_Y4_TAG8` | logic | `D7.8` | sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 remains a measurement bo... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D3` | logic | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destinat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D4` | logic | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

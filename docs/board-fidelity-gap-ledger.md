@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `398`
+- Nets modeled: `399`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `52`
+- Net-level source-risk gaps: `56`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -53,8 +53,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 17 |
 | clock/I/O | 0 | 4 |
-| logic/source | 9 | 12 |
-| memory/timing | 0 | 5 |
+| logic/source | 9 | 15 |
+| memory/timing | 0 | 6 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
 | video/timing | 1 | 0 |
@@ -166,7 +166,6 @@ model is historical-source-complete.
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
-| `D7` | logic/source | `3:Y2` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
@@ -232,8 +231,12 @@ same fidelity ledger as the chip provenance gaps.
 | `D39_MEMCYC` | memory/timing | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] |
 | `D56_QN` | clock/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
 | `D6_V_ENABLE` | PROM/decode | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is... |
+| `D7_A1_BOUNDARY` | logic/source | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so i... |
 | `D7_A3_BOUNDARY` | logic/source | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan |
+| `D7_B1_BOUNDARY` | logic/source | `D7.13` | sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so i... |
 | `D7_B3_BOUNDARY` | logic/source | `D7.5` | sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan |
+| `D7_Y2_BOUNDARY` | memory/timing | `D7.3` | sheet-1 full-resolution package census: D7 section pins1/2 receive the D92.13 wire-11 boundary and MEMW/wire19; NAND output pin3 remains a measurement bounda... |
+| `D7_Y4_TAG8` | logic/source | `D7.8` | sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 rema... |
 | `D94_D3` | PROM/decode | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) m... |
 | `D94_D4` | PROM/decode | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |

@@ -15247,15 +15247,19 @@
    "nodes": [["D7", "5"]]
   },
   "D7_A1_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment",
+   "src": "sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurement boundary",
    "nodes": [["D7", "12"]]
   },
   "D7_B1_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment",
+   "src": "sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so it remains a measurement boundary",
    "nodes": [["D7", "13"]]
   },
+  "D7_Y2_BOUNDARY": {
+   "src": "sheet-1 full-resolution package census: D7 section pins1/2 receive the D92.13 wire-11 boundary and MEMW/wire19; NAND output pin3 remains a measurement boundary because its far destination is unread",
+   "nodes": [["D7", "3"]]
+  },
   "D7_Y4_TAG8": {
-   "src": "sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; unique far destination not established",
+   "src": "sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 remains a measurement boundary",
    "nodes": [["D7", "8"]]
   }
  },
