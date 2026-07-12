@@ -120,7 +120,7 @@ def main() -> int:
     d93_socket_fits_ok = (
         len(d93_component_fits) == 1
         and d93_component_fits[0].get("image", "").endswith("PXL_20260710_202708344.jpg")
-        and d93_component_fits[0].get("model") == "similarity"
+        and d93_component_fits[0].get("model") == "affine"
         and max((check.get("error_px", 999) for check in d93_component_fits[0].get("checks", [])), default=999) <= 8
         and len(d93_solder_fits) == 1
         and d93_solder_fits[0].get("image", "").endswith("PXL_20260710_200506061.jpg")
@@ -230,13 +230,13 @@ def main() -> int:
             "D93.19 `MR_N`",
             "MISSING" if not any(has_node(board, n, "D93", "19") for n in board["nets"]) else "WIRED",
             "master reset source",
-            "photo with ВГ93 removed from its socket plus solder fit localizes the pad/departure; source remains unproved",
+            "photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved",
         ),
         (
             "D93.24 `CLK`",
             "MISSING" if not any(has_node(board, n, "D93", "24") for n in board["nets"]) else "WIRED",
             "1 MHz FDC clock rail",
-            "photo with ВГ93 removed from its socket plus solder fit localizes the pad/fanout; clock source remains unproved",
+            "photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/fanout; clock source remains unproved",
         ),
         (
             "D100.9 `OE_N`",

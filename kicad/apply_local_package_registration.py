@@ -109,6 +109,32 @@ def main() -> None:
         corrected_d99 = ("Validated D99 component fit identifies the cable-crossed notch-right "
                          "К155АГ3 package beside D95 and replaces the displaced projection")
         row["note"] = row["note"].replace(stale_d99, corrected_d99)
+        if row["refdes"] == "D93" and side == "component":
+            row["note"] = row["note"].replace(
+                "identifies MR_N/pin19 on the exposed socket and shows its "
+                "component-side departure; the trace leaves the close-up without a "
+                "proved source, so reset continuity remains a measurement item",
+                "identifies the MR_N/pin19 spring contact; the socket body obscures "
+                "its component-side departure, so only the separate solder fit can "
+                "seed a reset-continuity chase",
+            )
+            row["note"] = row["note"].replace(
+                "identifies CLK/pin24 on the exposed socket and shows its "
+                "component-side fanout through the socket window; the far clock "
+                "source remains outside proved continuity",
+                "identifies the CLK/pin24 spring contact; the socket body obscures "
+                "its component-side departure, and the separate solder fit still "
+                "does not prove the far clock source",
+            )
+            row["note"] = row["note"].replace(
+                "identifies this drive-interface pin on the exposed ВГ93 socket; "
+                "visible local fanout does not prove its complete target-board "
+                "destination or intentional NC state",
+                "identifies this drive-interface spring contact on the exposed "
+                "КР1818ВГ93 socket; the socket body obscures component-side copper, "
+                "so the target-board destination or intentional NC state remains "
+                "unproved",
+            )
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")

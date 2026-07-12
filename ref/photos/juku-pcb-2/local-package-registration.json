@@ -237,13 +237,15 @@
       "refdes": "D93",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg",
-      "model": "similarity",
+      "model": "affine",
       "anchors": [
-        {"pin": "1", "image_px": [1970.0, 1658.0], "use": "fit", "observation": "rightmost contact of the exposed socket upper row; D94 control-fanout end"},
-        {"pin": "10", "image_px": [1417.0, 1658.0], "use": "check", "observation": "independent tenth contact on the same exposed socket row"},
-        {"pin": "20", "image_px": [803.0, 1658.0], "use": "fit", "observation": "leftmost contact of the exposed socket upper row"}
+        {"pin": "1", "image_px": [2215.0, 1810.0], "use": "fit", "observation": "rightmost spring contact of the exposed socket upper row; D94 control-fanout end"},
+        {"pin": "10", "image_px": [1578.0, 1795.0], "use": "check", "observation": "independent tenth spring contact on the same exposed socket row"},
+        {"pin": "20", "image_px": [870.0, 1778.0], "use": "fit", "observation": "leftmost spring contact of the exposed socket upper row"},
+        {"pin": "21", "image_px": [861.0, 2169.0], "use": "check", "observation": "leftmost spring contact of the exposed socket lower row"},
+        {"pin": "40", "image_px": [2206.0, 2201.0], "use": "fit", "observation": "rightmost spring contact of the exposed socket lower row beside the printed 40"}
       ],
-      "note": "This close-up was taken with the known КР1818ВГ93 removed from its socket, exposing all forty socket contacts and their component-side fanout. Pin 1 is the upper-row contact nearest D94; the printed 40 at the lower-right socket end independently confirms the row orientation."
+      "note": "This close-up was taken with the known КР1818ВГ93 temporarily removed from its socket, exposing all forty socket spring contacts. The affine fit uses three actual contact centres and two independent checks; it replaces the former underscale similarity anchors that landed on copper above and inside the socket window. Pin 1 is the upper-row contact nearest D94; the printed 40 at the lower-right socket end independently confirms the row orientation."
     },
     {
       "refdes": "D93",
