@@ -78,7 +78,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | MISSING | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
 | D93.19 `MR_N` | MISSING | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected D93 fit exposes the westbound trace, but its apparent D99.13 alignment is rejected: direct component copper ties D99.3 CLR_N to the adjacent КМ555ТМ2 ground pin, so section-1 Q cannot be the live clock source |
+| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected D93 fit exposes the westbound trace, but its apparent D99.13 alignment is rejected: full-package cross-photo registration identifies the adjacent КМ555ТМ2 as D96, and direct component copper ties D99.3 CLR_N to D96.7 GND, so section-1 Q cannot be the live clock source |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
 | D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
 
@@ -110,7 +110,10 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   private D94-to-D93 RE/CS/WE controls are present in board JSON and
   guarded by this report. Functional I/O decode into D94 remains blocked
   on pin 15, D3-D7 destinations, and the `.092` truth table.
-- Direct component copper closes D99.3 `CLR_N` to the adjacent КМ555ТМ2 ground pin. This proves
+- Full-package cross-photo registration identifies the adjacent КМ555ТМ2 as
+  D96: all 14 projected contacts and the notch align. Direct component copper
+  closes D99.3 `CLR_N` to D96.7 `GND`. D96.8 `Q2_N` and D99.2 `B` instead
+  reach two separate through-holes and remain unresolved. The ground tie proves
   D99 section 1 is held clear and rules out D99.13 `Q` as the live D93 clock
   source despite the tempting cross-tile solder alignment.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to

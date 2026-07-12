@@ -9732,7 +9732,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; July-2026 component photo directly ties D99.3 CLR_N to the ground pin of the adjacent КМ555ТМ2",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND",
    "power": true,
    "nodes": [
     [

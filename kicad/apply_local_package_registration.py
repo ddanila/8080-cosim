@@ -161,6 +161,20 @@ def main() -> None:
         corrected_d99_solder = ("Validated D99 solder fit identifies the physical joint in the "
                                 "left backside package, before D95")
         row["note"] = row["note"].replace(stale_d99_solder, corrected_d99_solder)
+        if (row["refdes"] == "D99" and row["pin"] == "2"
+                and row["review_state"] != "accepted"):
+            if side == "component":
+                row["note"] = (
+                    "Validated D99 fit identifies B/pin2; its vertical component trace reaches "
+                    "a through-hole distinct from D96.8's right-hand handoff; far endpoint "
+                    "remains unresolved"
+                )
+            else:
+                row["note"] = (
+                    "Validated D99 solder fit identifies the physical joint in the left "
+                    "backside package, before D95; component-side registration rejects "
+                    "D96.8 as its destination"
+                )
         stale_d98_solder = ("D98 solder projections fall in the gap between package pad rows or "
                             "on a broad rail; local two-side registration is required")
         corrected_d98_solder = ("Validated affine D98 fit identifies the physical solder joint "
@@ -235,7 +249,7 @@ def main() -> None:
                 row["note"] = (
                     "Corrected D93.24 fit exposes westbound solder copper, but its apparent "
                     "D99.13 alignment cannot be the live clock: independently proved copper "
-                    "to the adjacent КМ555ТМ2 ground pin holds section-1 CLR_N low"
+                    "from D96.7 GND to D99.3 holds section-1 CLR_N low"
                 )
             elif row["pin"] == "40":
                 row["note"] = (
@@ -270,11 +284,30 @@ def main() -> None:
             and side == "solder"
             and row["pin"] in {"7", "8"}
         )
+        if row["refdes"] == "D96" and side == "component" and row["review_state"] != "accepted":
+            if row["pin"] == "8":
+                row["note"] = (
+                    "Validated D96 fit identifies Q2_N/pin8; full-package cross-photo "
+                    "registration shows its copper reaches a right-hand through-hole distinct "
+                    "from the D99.2 handoff; no far endpoint accepted"
+                )
+            else:
+                row["note"] = (
+                    f"Validated D96 fit identifies physical pin{row['pin']}; projecting the full "
+                    "14-contact package through the registered component panorama aligns both "
+                    "rows and the notch with the same КМ555ТМ2 beside D99"
+                )
         if rail_obscured_d96 and row["review_state"] != "accepted":
-            row["note"] = (
-                f"Validated D96 fit extrapolates pin{row['pin']} into the broad-rail-obscured "
-                "package end; this coordinate is not electrical evidence for a destination"
-            )
+            if row["pin"] == "8":
+                row["note"] = (
+                    "Validated D96 fit extrapolates pin8 into the broad-rail-obscured package "
+                    "end; component-side registration rejects D99.2 as its destination"
+                )
+            else:
+                row["note"] = (
+                    f"Validated D96 fit extrapolates pin{row['pin']} into the broad-rail-obscured "
+                    "package end; this coordinate is not electrical evidence for a destination"
+                )
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
         if (row["review_state"] != "accepted" and not rail_obscured_d106
                 and not rail_obscured_d96 and suffix not in row["note"]):
