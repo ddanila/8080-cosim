@@ -22,6 +22,12 @@ boot-validated reconstructed D6 and D8 programming fallbacks under
 if no programming disk or dump is available, but they are explicitly not Tier 3
 factory truth.
 
+EPROM programming update: `scripts/export_eprom_pair.py` deterministically
+splits the boot-validated `roms/ekta37.bin` into low D15 and high D16 8 KiB
+images under `ref/eprom-images/`, with SHA256 and concatenation guards. These
+are Tier-1/2 functional programming images, not physical-device dumps; see
+`docs/eprom-programming-images.md`.
+
 ## What to pull (label each with its socket refdes + board # before removing!)
 | Chip | Where | Type | Organization | Dump method |
 |---|---|---|---|---|

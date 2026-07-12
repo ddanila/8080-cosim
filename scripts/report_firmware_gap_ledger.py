@@ -53,6 +53,28 @@ def main() -> int:
         "ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin",
         32,
     )
+    d15_cell, d15_ok = reconstructed_cell(
+        "ref/eprom-images/d15_ekta37_low.bin", 8192
+    )
+    d16_cell, d16_ok = reconstructed_cell(
+        "ref/eprom-images/d16_ekta37_high.bin", 8192
+    )
+    bios = ROOT / "roms/ekta37.bin"
+    d15 = ROOT / "ref/eprom-images/d15_ekta37_low.bin"
+    d16 = ROOT / "ref/eprom-images/d16_ekta37_high.bin"
+    eprom_roundtrip_ok = (
+        d15_ok
+        and d16_ok
+        and bios.exists()
+        and d15.read_bytes() + d16.read_bytes() == bios.read_bytes()
+    )
+    eprom_report_ok = marker(
+        "docs/eprom-programming-images.md",
+        "TIER-1/2 FUNCTIONAL IMAGES READY / PHYSICAL DUMPS PENDING",
+        "`U_D15`, `HALF=0`",
+        "`U_D16`, `HALF=1`",
+        "not dumps of the original D15/D16 devices",
+    ) and exists("scripts/export_eprom_pair.py")
     d2_text = read("docs/d2-reconstruction-constraints.md")
     d2_ok = (
         "No reconstructed D2 fallback is exported" in d2_text
@@ -130,11 +152,33 @@ def main() -> int:
             "`docs/d94-reconstruction-constraints.md`",
             "programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity",
         ],
+        [
+            "D15",
+            "M2764/2764",
+            "repository EktaSoft BIOS split",
+            "BIOS low 8 KiB",
+            d15_cell,
+            "`docs/eprom-programming-images.md`",
+            "repeat physical D15 dump for Tier-3 truth",
+        ],
+        [
+            "D16",
+            "M2764/2764",
+            "repository EktaSoft BIOS split",
+            "BIOS high 8 KiB",
+            d16_cell,
+            "`docs/eprom-programming-images.md`",
+            "repeat physical D16 dump for Tier-3 truth",
+        ],
     ]
 
     checks = [
         ("D6 fallback exists and is 256 bytes", d6_ok),
         ("D8 fallback exists and is 32 bytes", d8_ok),
+        ("D15 functional image exists and is 8192 bytes", d15_ok),
+        ("D16 functional image exists and is 8192 bytes", d16_ok),
+        ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
+        ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
         ("D2 no-burn boundary is constrained", d2_ok),
         ("D94 no-burn boundary is constrained", d94_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
@@ -183,8 +227,12 @@ def main() -> int:
             "",
             "## Practical Burn Rule",
             "",
-            "- For functional bring-up without factory truth, only the D6 and D8",
-            "  reconstructed images are currently burnable from the repo.",
+            "- For functional bring-up without factory truth, the D6 and D8",
+            "  reconstructed PROM images and the D15/D16 `ekta37` EPROM split",
+            "  are currently burnable from the repo.",
+            "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
+            "  device dumps. Program them as low/high 8 KiB respectively and",
+            "  retain programmer verification records.",
             "- Do not burn any older D2-as-I/O-decode behavioral table as physical",
             "  D2; D9 is the current chip-select decoder and D2 remains a separate",
             "  `.037` bus/wait PROM with fully traced inputs but unknown contents.",
@@ -205,6 +253,8 @@ def main() -> int:
             "  preserve raw pin-level and active-low asserted tables separately.",
             "- Validate D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
             "  a sound D94 dump still requires complete enable/output continuity.",
+            "- Repeatedly read physical D15/D16 and compare their concatenation",
+            "  with `roms/ekta37.bin`; preserve any stable mismatch as a variant.",
             "",
         ]
     )

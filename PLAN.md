@@ -249,8 +249,10 @@ blocker below).
   bytes; a D94 dump still does not replace its missing continuity.
 - Keep reconstructed D6/D8 images labeled as Tier-1/2 fallbacks. The owner
   `.113/.117` scans are not D8 `.039` or D94 `.092`.
-- Record the final D15/D16 EPROM split, image hashes, device choice, and
-  programmer verification before assembly.
+- The deterministic low-D15/high-D16 `ekta37` split, image hashes, and
+  2764-class device decision are recorded in `eprom-programming-images.md`;
+  retain programmer verification and compare repeat physical dumps before
+  assembly/Tier-3 claims.
 
 Exit criterion: every populated programmable part has a burnable file,
 checksum, device/pinout decision, and provenance. Any functional replacement

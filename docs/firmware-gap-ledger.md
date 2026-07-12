@@ -23,6 +23,8 @@ python3 scripts/report_firmware_gap_ledger.py
 | D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin` (256 bytes, SHA256 `b5c69c8fdc03e592d817c1c872c67e07761f218d5223f6257944248018473baf`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
 | D8 | К155РЕ3 | `ДГШ5.106.039` | ROM-socket pager PROM | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` (32 bytes, SHA256 `0cecad4f89dce2e5e0dba0622c89d8cfa01324dd8ff3e9f7b8f92d20ced690b3`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
 | D94 | К155РЕ3 | `ДГШ5.106.092` | FDC control/decode PROM | no | `docs/d94-reconstruction-constraints.md` | programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity |
+| D15 | M2764/2764 | repository EktaSoft BIOS split | BIOS low 8 KiB | `ref/eprom-images/d15_ekta37_low.bin` (8192 bytes, SHA256 `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596`) | `docs/eprom-programming-images.md` | repeat physical D15 dump for Tier-3 truth |
+| D16 | M2764/2764 | repository EktaSoft BIOS split | BIOS high 8 KiB | `ref/eprom-images/d16_ekta37_high.bin` (8192 bytes, SHA256 `35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817`) | `docs/eprom-programming-images.md` | repeat physical D16 dump for Tier-3 truth |
 
 ## Evidence Checks
 
@@ -30,6 +32,10 @@ python3 scripts/report_firmware_gap_ledger.py
 | --- | --- |
 | D6 fallback exists and is 256 bytes | PASS |
 | D8 fallback exists and is 32 bytes | PASS |
+| D15 functional image exists and is 8192 bytes | PASS |
+| D16 functional image exists and is 8192 bytes | PASS |
+| D15+D16 round-trip exactly to roms/ekta37.bin | PASS |
+| D15/D16 split and non-dump provenance are documented | PASS |
 | D2 no-burn boundary is constrained | PASS |
 | D94 no-burn boundary is constrained | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
@@ -39,8 +45,12 @@ python3 scripts/report_firmware_gap_ledger.py
 
 ## Practical Burn Rule
 
-- For functional bring-up without factory truth, only the D6 and D8
-  reconstructed images are currently burnable from the repo.
+- For functional bring-up without factory truth, the D6 and D8
+  reconstructed PROM images and the D15/D16 `ekta37` EPROM split
+  are currently burnable from the repo.
+- D15/D16 are deterministic Tier-1/2 functional images, not physical
+  device dumps. Program them as low/high 8 KiB respectively and
+  retain programmer verification records.
 - Do not burn any older D2-as-I/O-decode behavioral table as physical
   D2; D9 is the current chip-select decoder and D2 remains a separate
   `.037` bus/wait PROM with fully traced inputs but unknown contents.
@@ -61,3 +71,5 @@ python3 scripts/report_firmware_gap_ledger.py
   preserve raw pin-level and active-low asserted tables separately.
 - Validate D8/D94 serial captures with `scripts/validate_re3_dump.py`;
   a sound D94 dump still requires complete enable/output continuity.
+- Repeatedly read physical D15/D16 and compare their concatenation
+  with `roms/ekta37.bin`; preserve any stable mismatch as a variant.
