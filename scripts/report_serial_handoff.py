@@ -125,6 +125,11 @@ def check_rows(board: dict) -> list[list[object]]:
         and has_node(board, "D13_4_D105_2", "D11", "20"),
         "sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor",
     ))
+    checks.append((
+        "Undrawn D13 inverter sections are explicitly unused",
+        all(pin_is_nc(board, "D13", pin) for pin in ("8", "9", "10", "11", "12", "13")),
+        "sheet-1 uses only D13 sections 1->2, 3->4, and 5->6",
+    ))
     checks.append(
         (
             "D57 baud output reaches D11 TxC/RxC",

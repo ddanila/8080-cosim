@@ -2324,7 +2324,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ТЛ2: secA=RESIN Schmitt->RES, secB=STSTB->D5.STB (cpu-core.md); WIRE 12 (beeper): pin 2 wired to D37.4; WIRE 13: pin 1 wired to D92.1"
+    "pins": "ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET; exhaustive symbol census never uses sections 9->8, 11->10, or 13->12, whose six pins are explicit NCs; WIRE 12 corroborates pin 2->D37.4 and WIRE 13 pin 1->D92.1"
    }
   },
   {
@@ -14936,6 +14936,12 @@
   ["D3", "3"],
   ["D3", "4"],
   ["D3", "5"],
-  ["D3", "6"]
+  ["D3", "6"],
+  ["D13", "8"],
+  ["D13", "9"],
+  ["D13", "10"],
+  ["D13", "11"],
+  ["D13", "12"],
+  ["D13", "13"]
  ]
 }

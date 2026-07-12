@@ -37,6 +37,7 @@ python3 scripts/report_serial_handoff.py
 | D11 write strobe is wired | PASS | `IOWR` |
 | USART reset follows the system reset inverter | PASS | sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET` |
 | USART main clock reaches D13 inverter output | PASS | sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor |
+| Undrawn D13 inverter sections are explicitly unused | PASS | sheet-1 uses only D13 sections 1->2, 3->4, and 5->6 |
 | D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
