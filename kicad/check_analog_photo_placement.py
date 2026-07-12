@@ -10,6 +10,7 @@ EXPECTED = {
     # Reference identities come from СБ photo 114600417; centres come from
     # owner component photo 200418174 registered through the D102 pad field.
     "R65": ((282.21, 125.14), 90.0),
+    "R67": ((295.94, 125.39), 90.0),
 }
 
 

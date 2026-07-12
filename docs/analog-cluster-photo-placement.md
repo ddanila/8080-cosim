@@ -20,12 +20,13 @@ the RF group remains constrained but deferred while its tapped coil is traced.
   three-lead part, not `R65`, and is explicitly superseded here.
 
 The photo read is suitable for package placement but does not yet identify the
-lower obscured/passive positions. `R65` is now placed at its observed centre.
+lower obscured/passive positions. `R65` and the visibly marked red `2к` R67 are
+now placed at their observed centres.
 The yellow part beside `R65` was tested as an L1 candidate and rejected. Its
 full-resolution marking reads `680п` (680 pF), and the registered solder view
 does not yield the three coherent coil terminals required by the schematic.
 The previously recorded `(287.07,132.26)` centre therefore belongs to a
-capacitive part, not L1. `VD3`, `R66`, `R67`, and the remainder stay unchanged
+capacitive part, not L1. `VD3`, `R66`, and the remainder stay unchanged
 until their bodies can be paired unambiguously. The generated `R65` coordinate
 compensates for the KiCad axial-footprint anchor offset.
 
@@ -40,9 +41,9 @@ until the real coil and its solder landings are registered. The adjacent yellow
 `680п` part is explicitly excluded from that search.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
-the former assembly-grid approximation for `R65`. The documented `VD3` and
+the former assembly-grid approximations for `R65`/`R67`. The documented `VD3` and
 `R66` centres are held as the next registration constraints, not silently lost.
 
-After adopting `R65`, KiCad DRC reports zero `shorting_items` (11 clearance and
+After adopting `R65` and `R67`, KiCad DRC reports zero `shorting_items` (10 clearance and
 4 hole-to-hole findings remain elsewhere in the incomplete placement), and the
 99-instance LVS remains fully matched at 239 nets.

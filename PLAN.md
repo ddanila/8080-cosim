@@ -178,6 +178,9 @@ extraction work from that set:
    rather than an invented PIT `SOUND` input.
    It also restores the omitted third terminal of R73: the RF-bias trimmer is
    `RF_RAIL` end / `VT4_B` wiper / grounded end, not a two-pin resistor.
+   Owner-photo/assembly registration now also places the visibly marked red
+   `2к` R67 at `(295.94,125.39)` mm, removing its false D102 pad collision
+   without moving the proven IC row or guessing the obscured L1 location.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

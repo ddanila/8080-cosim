@@ -102,7 +102,7 @@ PASSIVE_PLACE = {
     # Remaining R6x grid refdes-to-slot assignments are approximate; do not move
     # them independently where they overlap the still-unregistered RF cluster.
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(282.21,125.14,90),'R66':(293.8,127.2,90),
-    'R67':(288.3,116.4,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
+    'R67':(295.94,125.39,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
     'C9':(285.807,33.590,90),'C10':(283.5,112,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
