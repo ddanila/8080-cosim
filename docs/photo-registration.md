@@ -127,9 +127,11 @@ none of their functional pins is promoted without complete copper continuity.
 The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
 both photographed rows corrects the earlier row-label error: standard top-view
 DIP numbering places pins 1-to-8 on the upper row and pins 16-to-9 on the lower
-row. The independent pin-13 check is 0.582 px. Its reflected solder fit now
-selects the left eight-pad group below the broad rail instead of straddling D95
-and its right-hand neighbour; the opposite-row pin-9 check is 0.869 px. The separate, upside-down
+row. The independent pin-13 check is 0.582 px. Its solder fit now
+correctly selects the right-hand package below the broad rail; backside reversal
+places D99 on the left and D95 on the right. The former left-group D95 assignment
+is withdrawn. D95's opposite-row pin-1 check is 0.915 px, while D99's independent
+pin-1 check is 1.030 px. The separate, upside-down
 8812-marked D101 К555КП12 below-left of D95 now has the same physically
 consistent registration, with its pin-13 check at 0.755 px. All 16 projected
 pads of each mux land on their photographed contacts; their inputs, selects,

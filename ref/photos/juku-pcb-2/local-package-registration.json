@@ -153,13 +153,13 @@
       "refdes": "D95",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
-      "model": "similarity_reflected",
+      "model": "similarity",
       "anchors": [
-        {"pin": "1", "image_px": [1344.0, 902.0], "use": "fit", "observation": "rightmost joint of the mirrored pin-1-to-8 row"},
-        {"pin": "8", "image_px": [961.0, 900.0], "use": "fit", "observation": "leftmost joint of the same eight-pad row"},
-        {"pin": "9", "image_px": [961.0, 736.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+        {"pin": "9", "image_px": [1895.0, 741.0], "use": "fit", "observation": "rightmost joint of the right-hand D95 backside row"},
+        {"pin": "16", "image_px": [1514.0, 740.0], "use": "fit", "observation": "leftmost joint of the same pins-16-to-9 row"},
+        {"pin": "1", "image_px": [1513.0, 904.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
       ],
-      "note": "The physical D95 rows are the left eight-pad group below the broad rail. This fit rejects the displaced generated projection that straddled D95 and the next package to its right."
+      "note": "Backside reversal places component-side D95 right of D99. This corrected fit withdraws the former left-group identity, which belongs to D99, and selects the coherent right-hand package."
     },
     {
       "refdes": "D96",
@@ -268,6 +268,18 @@
         {"pin": "16", "image_px": [3219.0, 1227.0], "use": "fit", "observation": "bottom-right contact below the right-facing notch"}
       ],
       "note": "The factory assembly drawing places D99 directly right of D95. Its black cable hides lower pins 12-13 and part of the marking, but the six visible lower contacts and right-facing notch establish the pins 9-to-16 row; no electrical path is promoted."
+    },
+    {
+      "refdes": "D99",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "9", "image_px": [1345.0, 738.0], "use": "fit", "observation": "rightmost joint of the left-hand D99 backside row"},
+        {"pin": "16", "image_px": [961.0, 736.0], "use": "fit", "observation": "leftmost joint of the same pins-16-to-9 row"},
+        {"pin": "1", "image_px": [961.0, 900.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+      ],
+      "note": "The board edge and reversed D99/D95 backside order identify the left package as D99. These joints were formerly mislabeled as D95."
     },
     {
       "refdes": "D41",

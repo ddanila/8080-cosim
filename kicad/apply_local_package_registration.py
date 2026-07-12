@@ -143,6 +143,17 @@ def main() -> None:
         corrected_d99 = ("Validated D99 component fit identifies the cable-crossed notch-right "
                          "К155АГ3 package beside D95 and replaces the displaced projection")
         row["note"] = row["note"].replace(stale_d99, corrected_d99)
+        stale_d99_solder = ("D99 solder projections land on broad rails/inter-row trace fields "
+                            "rather than a uniquely identified package pad and destination")
+        corrected_d99_solder = ("Validated D99 solder fit identifies the physical joint in the "
+                                "left backside package, before D95")
+        row["note"] = row["note"].replace(stale_d99_solder, corrected_d99_solder)
+        if row["refdes"] == "D95" and side == "solder" and row["review_state"] != "accepted":
+            row["note"] = (
+                "Corrected backside-order D95 fit identifies the physical joint in the "
+                "right-hand package; the former left-group D95 assignment is withdrawn "
+                "because that package is D99"
+            )
         if row["refdes"] == "D93" and side == "component":
             if row["pin"] == "40":
                 row["note"] = (
