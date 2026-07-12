@@ -37,6 +37,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Cartridge BASIC boundary documented | PASS |
 | .009 assembly drawing extraction guarded | PASS |
 | Factory Вид В modifications guarded | PASS |
+| Source-PCB placement hold is current | PASS |
 
 ## Highest-value physical asks
 
@@ -51,6 +52,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P1 | R94 220-ohm far endpoint | R94.1 is now photo-proved and modeled at D98.3; identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net | `ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | closes the remaining endpoint of the now-modeled .009 R94 part without reopening the closed S1 harness |
 | P0 | factory Вид В pad mapping | for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 use the validated solder fit that localizes rework beside pins 4-6 to map the four-hole auxiliary field and obscured bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity | `docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg` | proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release |
 | P0 | FDC support signal dispositions | pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster | `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence | closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices |
+| P0 | source-PCB collision placement | register exact target-board lead centres for C13, R68, R69, R73, and R74: C13.2 currently overlaps D95.2; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; and R74.1 overlaps D102.12/.13. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102 centres fixed | `docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md` | removes all six known source-board electrical shorts without inventing target-revision passive placement |
 | P0 | D2/D105 wait-chain revision handoff | reconcile the older-sheet D95 inverter after D105.6 with the `.009` D95 FDC-multiplexer assignment and obtain the `.037` truth table; all D2 inputs are now traced | `docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | closes the remaining target-revision WAIT handoff without undoing the now-modeled and routed D105 gates |
 | P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/video-analog-boundary.md`; `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives | `docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
@@ -81,13 +83,13 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `200`
+- Generated bring-up verification nets: `219`
 - `FDC`: `24` net(s)
-- `logic`: `151` net(s)
-- `memory/decode`: `7` net(s)
+- `logic`: `165` net(s)
+- `memory/decode`: `9` net(s)
 - `sound/analog`: `1` net(s)
-- `timing/I/O`: `7` net(s)
-- `video/analog`: `10` net(s)
+- `timing/I/O`: `8` net(s)
+- `video/analog`: `12` net(s)
 
 ## Practical sequencing
 

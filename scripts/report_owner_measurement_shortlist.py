@@ -34,6 +34,7 @@ REQUIRED = [
     ROOT / "docs" / "cartridge-basic-boundary.md",
     ROOT / "docs" / "assembly-drawing-extraction.md",
     ROOT / "docs" / "factory-modification-disposition.md",
+    ROOT / "docs" / "source-pcb-drc.md",
 ]
 
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
@@ -174,6 +175,7 @@ def main() -> int:
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
         (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**")),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
+        ("Source-PCB placement hold is current", has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `6`")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
@@ -240,6 +242,13 @@ def main() -> int:
             "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster",
             "`docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence",
             "closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices",
+        ),
+        (
+            "P0",
+            "source-PCB collision placement",
+            "register exact target-board lead centres for C13, R68, R69, R73, and R74: C13.2 currently overlaps D95.2; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; and R74.1 overlaps D102.12/.13. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102 centres fixed",
+            "`docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`",
+            "removes all six known source-board electrical shorts without inventing target-revision passive placement",
         ),
         (
             "P0",
