@@ -418,10 +418,12 @@ module juku_top (
     // (dot clock), LD = ctrl-rail 6 = D59.12 (the INVERTED load strobe: D38.6 -> D59.13, and
     // 13->12 feeds rail 6 -- one-inversion correction of the earlier array read; net LOAD_VID).
     // G <- ctrl-rail 8 [pending]. Q -> D37 inverter -> analog video mix.
+    wire shift_g;
+    net_boundary U_SHIFTGLNK (.a(1'b1), .b(shift_g));
     ir16 U_D42 (.d(rdo[7]), .c(rdo[6]), .b(rdo[5]), .a(rdo[4]),
-                .ld(load_vid), .g(1'b1), .ck(xtal16m_w), .ds(d43_q), .qd(d42_q), .qa(), .qb(), .qc());
+                .ld(load_vid), .g(shift_g), .ck(xtal16m_w), .ds(d43_q), .qd(d42_q), .qa(), .qb(), .qc());
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
-                .ld(load_vid), .g(1'b1), .ck(xtal16m_w), .ds(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
+                .ld(load_vid), .g(shift_g), .ck(xtal16m_w), .ds(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
     // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
     // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
     wire d37_out;

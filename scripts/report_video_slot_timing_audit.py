@@ -73,6 +73,8 @@ def main() -> int:
             ("D43_DS", "D42", "1"),
             ("D43_DS", "D43", "10"),
             ("D42_Q", "D42", "10"),
+            ("SHIFT_G", "D42", "8"),
+            ("SHIFT_G", "D43", "8"),
         )
     )
     checks: list[tuple[str, bool, str]] = [

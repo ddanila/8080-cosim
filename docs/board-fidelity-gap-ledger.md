@@ -19,10 +19,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `277`
-- Nets modeled: `374`
+- Nets modeled: `375`
 - Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `49`
-- Documented intentional no-connect pins: `41`
+- Documented intentional no-connect pins: `47`
 
 ## Chip Provenance Types
 
@@ -166,8 +166,6 @@ model is historical-source-complete.
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` |
-| `D42` | logic/source | `8:G, 11:QC, 12:QB, 13:QA` |
-| `D43` | logic/source | `1:DS, 8:G, 11:QC, 12:QB, 13:QA` |
 | `D53` | video/timing | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
@@ -194,6 +192,8 @@ explicit KiCad schematic no-connect markers.
 | `D3` | `3, 4, 5, 6` |
 | `D30` | `6, 9` |
 | `D35` | `1, 2, 5, 6, 8, 9` |
+| `D42` | `11, 12, 13` |
+| `D43` | `11, 12, 13` |
 | `D44` | `13` |
 | `D45` | `13` |
 | `D46` | `13` |

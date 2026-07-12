@@ -29,7 +29,7 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 100 mapped instances and 245 matched nets; the complete D59/Z1/C73/R31/R32 oscillator loop and S4 SPDT interrupt selector are source-modeled and LVS-visible | Unmapped footprints, omitted pins, behavioral correctness, the analog oscillator waveform, and historical correctness of assumed nets |
+| Connectivity | `sync/check.sh` reports 100 mapped instances and 246 matched nets; the complete D59/Z1/C73/R31/R32 oscillator loop and S4 SPDT interrupt selector are source-modeled and LVS-visible | Unmapped footprints, omitted pins, behavioral correctness, the analog oscillator waveform, and historical correctness of assumed nets |
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a reproducible 2-layer 310 x 266 mm Gerber/drill package | The routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes and is not electrically complete |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
@@ -106,7 +106,7 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2031/2031` PCB-scoped board-JSON endpoints.
+The source PCB now passes all `2034/2034` PCB-scoped board-JSON endpoints.
 Thirty-four endpoints on bracket-mounted S1/X3/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
