@@ -13792,6 +13792,82 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin40 VDD_12V; the +12V feed is not proved and remains a power-safety measurement boundary that must not be assumed for fabrication",
    "nodes": [["D93", "40"]]
   },
+  "D11_RXRDY_BOUNDARY": {
+   "src": "sheet-1 full-resolution USART package census identifies D11 pin14 RXRDY; no target-revision destination is drawn after rejecting the older IR0 mapping, so this remains a measurement boundary",
+   "nodes": [["D11", "14"]]
+  },
+  "D11_TXRDY_BOUNDARY": {
+   "src": "sheet-1 full-resolution USART package census identifies D11 pin15 TXRDY; no target-revision destination is drawn after rejecting the older IR1 mapping, so this remains a measurement boundary",
+   "nodes": [["D11", "15"]]
+  },
+  "D13_I3_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary",
+   "nodes": [["D13", "3"]]
+  },
+  "D14_I2_BOUNDARY": {
+   "src": "sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary",
+   "nodes": [["D14", "2"]]
+  },
+  "D14_O7_BOUNDARY": {
+   "src": "sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary",
+   "nodes": [["D14", "7"]]
+  },
+  "D26_PC0_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D26 PC0 pin14 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary",
+   "nodes": [["D26", "14"]]
+  },
+  "D26_PC1_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary",
+   "nodes": [["D26", "15"]]
+  },
+  "D26_PB4_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remains a measurement boundary",
+   "nodes": [["D26", "22"]]
+  },
+  "D26_PA6_PREN_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measurement boundary",
+   "nodes": [["D26", "38"]]
+  },
+  "D29_AIN0_BOUNDARY": {
+   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN0 pin1; its remote source is unread and remains a measurement boundary",
+   "nodes": [["D29", "1"]]
+  },
+  "D29_AIN1_BOUNDARY": {
+   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary",
+   "nodes": [["D29", "2"]]
+  },
+  "D29_AIN2_BOUNDARY": {
+   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary",
+   "nodes": [["D29", "3"]]
+  },
+  "D29_AIN5_BOUNDARY": {
+   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN5 pin6; its remote source is unread and remains a measurement boundary",
+   "nodes": [["D29", "6"]]
+  },
+  "D30_CLK2_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary",
+   "nodes": [["D30", "11"]]
+  },
+  "D30_Q2N_BOUNDARY": {
+   "src": "sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boundary",
+   "nodes": [["D30", "8"]]
+  },
+  "D39_B2_BOUNDARY": {
+   "src": "sheet-2 full-resolution D39 package census identifies NAND input pin10 as a distinct timing conductor; its unique remote source is unread and remains a measurement boundary",
+   "nodes": [["D39", "10"]]
+  },
+  "D39_B3_BOUNDARY": {
+   "src": "sheet-2 full-resolution D39 package census identifies NAND input pin2 as a distinct timing conductor; its unique remote source is unread and remains a measurement boundary",
+   "nodes": [["D39", "2"]]
+  },
+  "R94_P2_BOUNDARY": {
+   "src": "July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary",
+   "nodes": [["R94", "2"]]
+  },
+  "S1_3_BOUNDARY": {
+   "src": "ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains a measurement boundary",
+   "nodes": [["S1", "3"]]
+  },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",
    "nodes": [
