@@ -25,10 +25,10 @@ The temporary candidate is an audit artifact, not a fabrication deliverable.
 
 | Item | Count |
 | --- | ---: |
-| Source footprints | 278 |
+| Source footprints | 277 |
 | Routed-snapshot footprints | 240 |
 | Source-only footprints | 42 |
-| Routed-only off-board connector bodies | 4 |
+| Routed-only off-board connector bodies | 5 |
 | Routed copper nets | 326 |
 | Nets with reusable routed copper | 207 |
 | Routed nets quarantined before DRC | 119 |
@@ -38,23 +38,24 @@ The temporary candidate is an audit artifact, not a fabrication deliverable.
 | Reusable items after DRC quarantine | 4,330 |
 
 The source-only set includes `A17`, `A21-A32`, `A45-A62`, newly modeled FDC
-support/passive parts, and the photo-fitted serial resistors. The four routed-only bodies are the bracket-mounted
-`S1`, `X3`, `X8`, and `X9`; the authoritative source intentionally represents
+support/passive parts, and the photo-fitted serial resistors. The five routed-only bodies are the off-board
+`S1`, `S4`, `X3`, `X8`, and `X9`; the authoritative source intentionally represents
 their PCB cable landings instead.
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
-routed nets and removes every transplanted-track short. The remaining 18 DRC
-short violations are nine duplicated pad-to-pad placement collisions already
-present in the source PCB: approximate S4 and analog-part positions overlap the
-factory-registered D93/D95/D97/D102 cluster. The routed candidate therefore
+routed nets and removes every transplanted-track short. The remaining 12 DRC
+short violations are six duplicated pad-to-pad placement collisions already
+present in the source PCB: approximate analog-part positions overlap the
+factory-registered D95/D97/D102 cluster. S4 is now correctly schematic/off-board
+and no longer contributes a fabricated footprint collision. The routed candidate therefore
 remains rejected. This corrected audit supersedes the earlier false zero-short
 statement, which inspected a nonexistent top-level JSON field instead of
 `violations[type=shorting_items]`.
 
 A clean refresh therefore requires this order:
 
-1. repair the nine source-placement electrical overlaps from stronger placement evidence;
+1. repair the six source-placement electrical overlaps from stronger placement evidence;
 2. generate the compatible-copper candidate;
 3. iteratively quarantine any transplanted net implicated by DRC using `--exclude-drc`;
 4. route the quarantined nets against the current placement;

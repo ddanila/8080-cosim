@@ -4832,8 +4832,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "СБ position / sheet-1 interrupt receive path",
-    "pins": "ВДМ1-2 SPDT microswitch at СБ .100 position; full-resolution sheet-1 shows common S4.2 to PIC IR6, upper throw from D3.2 buffered -INT6, and lower S4.1 throw from D11.16 SYNDET"
+    "refdes": "separate .100 mechanical assembly / sheet-1 interrupt receive path",
+    "pins": "schematic/off-board ВДМ1-2 SPDT contract: the .009 PCB assembly sheet has no S4 footprint; full-resolution sheet-1 shows common S4.2 to PIC IR6, upper throw from D3.2 buffered -INT6, and lower S4.1 throw from D11.16 SYNDET"
    }
   },
   {

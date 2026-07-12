@@ -419,7 +419,7 @@ def main():
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
     # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
     # retained in the schematic but must never become a PCB header footprint.
-    OFF_BOARD = {'S1', 'X3', 'X8', 'X9'}
+    OFF_BOARD = {'S1', 'S4', 'X3', 'X8', 'X9'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:

@@ -16,9 +16,9 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `219`
 - Verification-point endpoints checked in PCB: `384`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2239`
-- All board endpoints checked in routed PCB: `2239`
-- Intentional off-board endpoints excluded: `35`
+- All board endpoints checked in source PCB: `2236`
+- All board endpoints checked in routed PCB: `2236`
+- Intentional off-board endpoints excluded: `38`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2239/2239 | 2239/2239 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2239 | 1909/2239 | FAIL |
+| `kicad/juku.kicad_pcb` | 2236/2236 | 2236/2236 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2236 | 1909/2236 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -281,10 +281,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `GND: R73.3`
 - `GND: D99.3`
 - `HOR_RTR: D54.13`
-- `INT6_BUF: S4.3`
 - `IORD: D7.9`
 - `IOWR: D7.10`
-- `IR6: S4.2`
 - `KBD_CONTRDAT: A50.1`
 - `KBD_CTRL: A51.1`
 - `KBD_FK: A55.1`
@@ -346,7 +344,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `SHIFT_G: D42.8`
 - `SHIFT_G: D43.8`
 - `SYNDET_S4: D11.16`
-- `SYNDET_S4: S4.1`
 - `S_CTS: A25.1`
 - `S_CTS: D104.5`
 - `S_DSR: A26.1`
