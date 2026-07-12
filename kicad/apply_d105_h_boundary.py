@@ -10,7 +10,6 @@ SOURCE = ROOT / "kicad/juku.kicad_pcb"
 ROUTED = ROOT / "kicad/juku_routed.kicad_pcb"
 DSN = ROOT / "kicad/juku.dsn"
 SES = ROOT / "kicad/juku.ses"
-NEW_NET = 352
 REMOVED_SEGMENTS = (
     "3896bafd-e60f-4be6-8d17-bcca07e7b4b9",
     "43ebc532-c09d-4739-a5f6-f48f290b06c2",
@@ -18,6 +17,10 @@ REMOVED_SEGMENTS = (
     "d0ed8a5b-531b-4486-adc2-4c2da185afc7",
     "e851b90c-2d09-494c-b562-f5a9a5eb8798",
     "6392bf0b-30dc-4022-8620-0e688c3edbd0",
+    # 0.133 mm B.Cu tail beyond the retained SES endpoint (35.5722,210.4985).
+    # Leaving it behind creates a track_dangling warning after the false
+    # D105.10 branch is removed.
+    "9fcf72a2-49fa-4c35-b237-b365ccc21a48",
 )
 
 
@@ -54,17 +57,26 @@ def footprint_block(text: str, refdes: str) -> tuple[int, int]:
 
 def patch_pcb(path: Path, remove_segments: bool) -> None:
     text = path.read_text(encoding="utf-8")
-    if '\t(net 352 "D105_10_H")' not in text:
+    named_net = re.search(r'\n\t\(net\s+(\d+)\s+"D105_10_H"\)', text)
+    if named_net:
+        new_net = int(named_net.group(1))
+    else:
+        net_ids = [int(value) for value in re.findall(r'\n\t\(net\s+(\d+)\s+"', text)]
+        new_net = max(net_ids, default=0) + 1
         insertion = text.index("\n\t(footprint ")
-        text = text[:insertion] + '\n\t(net 352 "D105_10_H")' + text[insertion:]
+        text = text[:insertion] + f'\n\t(net {new_net} "D105_10_H")' + text[insertion:]
 
     start, end = footprint_block(text, "D105")
     block = text[start:end]
     pad_start = block.index('\n\t\t(pad "10"') + 3
     left, right = matching_block(block, pad_start)
     pad = block[left:right]
-    pad, changed = re.subn(r'\(net\s+144\s+"M5V_DERIVED"\)',
-                           '(net 352 "D105_10_H")', pad, count=1)
+    pad, changed = re.subn(
+        r'\(net\s+\d+\s+"(?:M5V_DERIVED|D105_10_H)"\)',
+        f'(net {new_net} "D105_10_H")',
+        pad,
+        count=1,
+    )
     if changed != 1 and "D105_10_H" not in pad:
         raise SystemExit(f"{path}: D105.10 does not carry expected old/new net")
     block = block[:left] + pad + block[right:]

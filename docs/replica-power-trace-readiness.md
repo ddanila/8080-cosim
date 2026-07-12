@@ -1,7 +1,7 @@
 # Replica power-trace readiness
 
 Board: `kicad/juku_routed.kicad_pcb`
-Status: **NOT READY**
+Status: **READY**
 
 This report records the routed main-board power traces after
 `kicad/widen_power_v2.py`. It is a fabrication-readiness guard for the
@@ -11,10 +11,10 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 ## Summary
 
-- Routed power segments: 986
-- Widened power segments (`>0.20 mm`): 485
-- Total routed power length: 5527.740 mm
-- Widened routed power length: 2305.810 mm
+- Routed power segments: 985
+- Widened power segments (`>0.20 mm`): 484
+- Total routed power length: 5527.607 mm
+- Widened routed power length: 2305.676 mm
 - Width clamp: 0.20 mm to 1.00 mm
 
 ## Nets
@@ -25,7 +25,7 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 | P5V | 470 | 236 | 0.200 | 1.000 | 2405.230 | 1045.186 | B.Cu, F.Cu |
 | P12V | 57 | 23 | 0.200 | 1.000 | 446.234 | 98.025 | B.Cu, F.Cu |
 | M12V | 52 | 18 | 0.200 | 1.000 | 481.070 | 133.590 | B.Cu, F.Cu |
-| M5V_DERIVED | 16 | 7 | 0.200 | 1.000 | 71.981 | 21.106 | B.Cu |
+| M5V_DERIVED | 15 | 6 | 0.200 | 1.000 | 71.848 | 20.973 | B.Cu |
 
 ## Width Histogram
 
@@ -77,7 +77,6 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 | 0.6586 | 1 |
 | 0.6593 | 1 |
 | 0.6688 | 1 |
-| 0.6791 | 1 |
 | 0.6792 | 1 |
 | 0.7114 | 1 |
 | 0.736 | 1 |
@@ -107,9 +106,4 @@ the KiCad DRC gate in `kicad/report_order_readiness.py`.
 
 ## Disposition
 
-Do not use this routed package until the failures below are resolved.
-
-## Failures
-
-- Expected 992 routed power segments, found 986.
-- Expected 491 widened power segments, found 485.
+The routed power nets match the reviewed current-route widening envelope: 985 power segments present, 484 widened where local clearance allowed, no power segment below the routed baseline, and no widened segment above the 1.00 mm clamp. KiCad DRC remains the clearance authority.

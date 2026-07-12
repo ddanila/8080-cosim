@@ -11,10 +11,11 @@ DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_REPORT = ROOT / "docs" / "replica-power-trace-readiness.md"
 
 POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
-# 854 reviewed baseline segments, 82 HOLD/BUSEN/buffer-control segments,
-# 33 D44/D45 counter ties, and 23 D103 modulo-13 preset/enable segments.
-EXPECTED_POWER_SEGMENTS = 992
-EXPECTED_WIDENED_SEGMENTS = 491
+# The former 992/491 routed envelope included six segments of the rejected
+# D105.10-to-M5V branch plus its 0.133 mm orphan tail.  The corrected retained
+# route therefore has seven fewer power segments, all formerly widened.
+EXPECTED_POWER_SEGMENTS = 985
+EXPECTED_WIDENED_SEGMENTS = 484
 BASELINE_WIDTH_MM = 0.20
 MAX_WIDTH_MM = 1.00
 

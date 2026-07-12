@@ -27,7 +27,7 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5516 | FAIL |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3028 | FAIL |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 73540 | PASS |

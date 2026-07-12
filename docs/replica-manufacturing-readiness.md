@@ -15,11 +15,11 @@ DESIGN HOLD.
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
 | Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1194 | PASS |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2879 | PASS |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5516 | FAIL |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2875 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3028 | FAIL |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2468 | FAIL |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2546 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 73540 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8586 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
@@ -78,5 +78,4 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 
 - required report marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
 - required report marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
-- required report marker missing in docs/replica-power-trace-readiness.md: Status: **READY**
 - required report marker missing in fab/gerbers/review-waivers.md: Status: **ACCEPTED**
