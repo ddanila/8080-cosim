@@ -210,6 +210,18 @@
       "note": "The factory assembly drawing fixes the lower-row order as D101, D97, D102. This direct fit therefore identifies the first unobscured left-notch К155АГ3 to the right of D101 as D97; pad identity is not electrical continuity."
     },
     {
+      "refdes": "D97",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1123.0, 1095.0], "use": "fit", "observation": "rightmost joint of D97's mirrored pin-1-to-8 row"},
+        {"pin": "8", "image_px": [737.0, 1092.0], "use": "fit", "observation": "leftmost joint of the same coherent eight-pad row"},
+        {"pin": "9", "image_px": [735.0, 1255.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+      ],
+      "note": "Cross-side panorama localization places D97 in the middle of the D102/D97/D101 mirrored solder order. This fit replaces seeds split between unrelated trace fields in two overlapping tiles."
+    },
+    {
       "refdes": "D102",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
