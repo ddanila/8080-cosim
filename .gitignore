@@ -46,6 +46,7 @@ juku-drc.rpt
 kicad/*.kicad_prl
 kicad/*.kicad_pro
 obj_dir/
+tools/*/build/
 V*.cpp
 V*.h
 venv/

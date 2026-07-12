@@ -252,10 +252,10 @@ def main() -> int:
         ),
         (
             "P0",
-            "D2/D105 wait-chain revision handoff",
-            "reconcile the older-sheet D95 inverter after D105.6 with the `.009` D95 FDC-multiplexer assignment and obtain the `.037` truth table; all D2 inputs are now traced",
-            "`docs/unmodeled-footprint-inventory.md`; `ref/schematics/p3_sheet1.png`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
-            "closes the remaining target-revision WAIT handoff without undoing the now-modeled and routed D105 gates",
+            "D2/D30/D105 continuity adoption",
+            "owner continuity proves D2.12->D30.2, D1.17/H gating through D105 to D5.4, and a joined D13.12/D6.11/D6.12 net; preserve one power-cycled raw `.037` capture and independently spot-check the corrected endpoints",
+            "`docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
+            "replaces the stale older-sheet D2->D105 interpretation and enables a physical READY-path simulation",
         ),
         (
             "P2",

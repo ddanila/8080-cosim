@@ -1,6 +1,6 @@
 # Firmware gap ledger
 
-Status: **PROM GAP LEDGER READY / DUMP TRUTH PENDING**
+Status: **PROM GAP LEDGER FAILED**
 
 This generated ledger is the single-page burnability view for the
 small PROMs that still matter to replica and Tier-3 preservation work.
@@ -19,7 +19,7 @@ python3 scripts/report_firmware_gap_ledger.py
 
 | Ref | Part | Programmed drawing | Role | Burnable repo fallback | Guard | Next truth source |
 | --- | --- | --- | --- | --- | --- | --- |
-| D2 | К556РТ4 | `ДГШ5.106.037` | bus-arbitration/wait PROM | no | `docs/d2-reconstruction-constraints.md` | programming-disk file or repeated physical dump |
+| D2 | К556РТ4 | `ДГШ5.106.037` | READY/bus-control PROM | preliminary repeated read in `docs/d2-physical-dump-and-continuity.md`; unchanged raw logs not preserved | `docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md` | separately power-cycle, preserve raw capture, validate, then adopt corrected D2/D30 wiring |
 | D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin` (256 bytes, SHA256 `b5c69c8fdc03e592d817c1c872c67e07761f218d5223f6257944248018473baf`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
 | D8 | К155РЕ3 | `ДГШ5.106.039` | ROM-socket pager PROM | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` (32 bytes, SHA256 `0cecad4f89dce2e5e0dba0622c89d8cfa01324dd8ff3e9f7b8f92d20ced690b3`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
 | D94 | К155РЕ3 | `ДГШ5.106.092` | FDC control/decode PROM | no | `docs/d94-reconstruction-constraints.md` | programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity |
@@ -40,7 +40,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D94 no-burn boundary is constrained | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
 | Fallback report excludes D2 and D94 exports | PASS |
-| Repeated RT4 dump validation procedure is available | PASS |
+| Repeated RT4 dump validation procedure is available | FAIL |
 | Repeated RE3 dump validation procedure is available | PASS |
 
 ## Practical Burn Rule
@@ -51,9 +51,10 @@ python3 scripts/report_firmware_gap_ledger.py
 - D15/D16 are deterministic Tier-1/2 functional images, not physical
   device dumps. Program them as low/high 8 KiB respectively and
   retain programmer verification records.
-- Do not burn any older D2-as-I/O-decode behavioral table as physical
-  D2; D9 is the current chip-select decoder and D2 remains a separate
-  `.037` bus/wait PROM with fully traced inputs but unknown contents.
+- Do not burn any older D2-as-I/O-decode behavioral table as physical D2; D9
+  is the current chip-select decoder. Two matching stable `.037` reads are now
+  documented, but an unchanged power-cycled capture is still required before
+  exporting or burning a preservation artifact.
 - Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`
   or D94 `.092`; they are lineage evidence, not matching processor
   module programming tables.
