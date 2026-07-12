@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,6 +61,18 @@ def main() -> int:
     if actual_runs != expected_runs:
         raise SystemExit(f"D6 mode-map classification changed: {actual_runs}")
 
+    board = json.loads((ROOT / "kicad/juku.board.json").read_text())
+    joined_nodes = {tuple(node) for node in board["nets"]["D6_MEM_SELECT_N"]["nodes"]}
+    required_join = {("D6", "11"), ("D6", "12"), ("D13", "12"), ("D8", "15")}
+    hdl = (ROOT / "hdl/juku_top.v").read_text()
+    model_checks = [
+        ("Board source joins D6.11/D6.12 to D13.12 and D8.15", required_join <= joined_nodes),
+        ("HDL drives both D6 outputs onto the joined conductor", ".rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n)" in hdl),
+        ("HDL uses physical D6 address order", ".a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
+    ]
+    if not all(ok for _, ok in model_checks):
+        raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
+
     counts = {word: data.count(word) for word in words}
     lines = [
         "# Physical D6 `.038` decode", "", "Status: **PHYSICAL TABLE CLASSIFIED AND GUARDED**", "",
@@ -97,8 +110,11 @@ def main() -> int:
         "  joined D1/D0 conductor is high only in word `F`.", "- These are physical electrical facts, not yet a complete explanation of",
         "  the downstream D8/D13/D92 memory timing. That behavior must be derived",
         "  from the joined conductor and its consumers rather than resurrecting",
-        "  separate RAM/ROM selects.", "",
+        "  separate RAM/ROM selects.", "", "## Model adoption guards", "",
+        "| Check | Result |", "| --- | --- |",
     ]
+    lines.extend(f"| {name} | {'PASS' if ok else 'FAIL'} |" for name, ok in model_checks)
+    lines.append("")
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print("Status: PHYSICAL TABLE CLASSIFIED AND GUARDED")

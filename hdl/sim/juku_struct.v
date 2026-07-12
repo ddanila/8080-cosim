@@ -160,17 +160,17 @@ module periph_b(input wire osc, input wire [1:0] A, inout wire [7:0] D, input wi
 endmodule
 
 // ===== memory subsystem as REAL chip instances (loop-B deepening) =====
-// D6 (К556РТ4) memory-decode PROM: high address + banking mode -> ROM/RAM select +
-// the ROM offset (banking folds 0xD800->0x1800). Contents = emulator-recovered map
-// (`prom` provenance). Mode is the 8255#0 Port-C value.
+// Behavioral memory-map oracle retained for differential debugging. It reproduces
+// the exercised boot map but is not the physical D6 implementation: the validated
+// `.038` table has four outputs and `.009` continuity joins pins 11/12. The real
+// table and all eight modes are guarded in docs/d6-physical-decode.md; juku_top is
+// the authoritative physical-table-backed model.
 module decode_prom_b(input wire [15:0] a, input wire [7:0] ppi0_pc,
                      output reg rom_sel, ram_sel, output reg [13:0] rom_idx);
   always @(*) begin
     rom_sel=0; ram_sel=0; rom_idx=14'd0;
-    // Traced D6 address tags are PPI0 PC2/PC3/PC4. The recovered truth used by
-    // the structural model currently depends on PC2: low selects the reset
-    // overlay at 0000-3FFF; high folds BIOS into D800-FFFF. PC3/PC4 remain
-    // physical PROM inputs whose truth-table effect awaits the D6 dump.
+    // This reduced oracle depends on PC2 only; do not use it as PROM burn data or
+    // as evidence that PC3/PC4 are truth-invariant.
     if (~ppi0_pc[2]) begin
       if (a<=16'h3FFF) begin rom_sel=1; rom_idx=a[13:0]; end else ram_sel=1;
     end else begin

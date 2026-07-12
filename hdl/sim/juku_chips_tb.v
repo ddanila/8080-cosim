@@ -7,8 +7,9 @@
 // shared bus. Peripherals use cosim's latch model (IN = last OUT) -> byte-identical.
 //
 // Decomposition vs juku_sim_tb.v (monolithic): same vm80a, same cross-validation
-// target. The PROM-decode *contents* are the emulator-recovered map (expressed as the
-// РТ4 truth table) -- consistent with the `prom` provenance in the LVS model.
+// target. Its PROM decode is a historical behavioral oracle, not physical D6 burn
+// data. The validated `.038` table and joined pins 11/12 live in juku_top; see
+// docs/d6-physical-decode.md.
 //
 // Run (from repo root, needs hdl/sim/ekta37.hex -- see juku_sim_tb.v header):
 //   iverilog -g2012 -o /tmp/jchips hdl/vendor/vm80a.v hdl/sim/juku_chips_tb.v
@@ -16,8 +17,7 @@
 //   vvp /tmp/jchips +maxvram=43000  # -> full boot banner
 `timescale 1ns/100ps
 
-// --- D6 К556РТ4 memory-decode PROM: high address + banking mode -> ROM/RAM select.
-//     Combinational truth table = the emulator-recovered map (cosim overlay()). -------
+// --- Historical boot-map oracle; not the physical D6 `.038` implementation. ---------
 module mem_decode_prom(
   input  [15:0] a,
   input  [1:0]  mode,
