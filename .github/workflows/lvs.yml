@@ -36,6 +36,7 @@ jobs:
             scripts/report_re3_firmware_inspection.py \
             scripts/report_video_slot_timing_audit.py \
             scripts/report_d2_reconstruction_constraints.py \
+            scripts/report_d2_physical_truth.py \
             scripts/report_d6_physical_decode.py \
             scripts/report_d94_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
@@ -130,6 +131,11 @@ jobs:
         run: |
           python3 scripts/report_d6_physical_decode.py
           git diff --exit-code -- docs/d6-physical-decode.md
+
+      - name: Check physical D2 truth report freshness
+        run: |
+          python3 scripts/report_d2_physical_truth.py
+          git diff --exit-code -- docs/d2-physical-truth.md
 
       - name: Check firmware gap ledger freshness
         run: |

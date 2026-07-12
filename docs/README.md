@@ -30,7 +30,8 @@ findings. Every status applies only to the boundary named by the report.
   `reconstructed-prom-fallbacks.md`, `d6-physical-decode.md`,
   `eprom-programming-images.md`, and
   `d2-physical-dump-and-continuity.md` (validated owner dump and synchronized
-  connectivity adoption).
+  connectivity adoption), and `d2-physical-truth.md` (exact READY truth
+  classification).
 - Fabrication package: `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, and `replica-power-trace-readiness.md`.
