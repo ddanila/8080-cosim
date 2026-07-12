@@ -25,7 +25,7 @@ with the machine-readable board model.
   documented revision boundary.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
-  untraced. In total, 76 modeled nets retain source-risk annotations requiring
+  untraced. In total, 90 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

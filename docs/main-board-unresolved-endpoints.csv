@@ -1,18 +1,4 @@
 priority,ref,pin,type,role,reason
-P0,D102,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
-P0,D102,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
-P0,D102,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker
-P0,D102,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
-P0,D102,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
-P0,D102,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
-P0,D102,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
-P0,D102,2,AG3_ONESHOT,B,PLAN physical-connectivity blocker
-P0,D102,3,AG3_ONESHOT,CLR_N,PLAN physical-connectivity blocker
-P0,D102,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
-P0,D102,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
-P0,D102,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
-P0,D102,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
-P0,D102,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
 P0,D106,1,IE7_CTR,D1,PLAN physical-connectivity blocker
 P0,D106,10,IE7_CTR,D2,PLAN physical-connectivity blocker
 P0,D106,11,IE7_CTR,LOAD_N,PLAN physical-connectivity blocker

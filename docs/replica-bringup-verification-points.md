@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `76`
-- Verification-point endpoints checked in PCB: `242`
+- Verification-point nets: `90`
+- Verification-point endpoints checked in PCB: `256`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2097`
-- All board endpoints checked in routed PCB: `2097`
+- All board endpoints checked in source PCB: `2111`
+- All board endpoints checked in routed PCB: `2111`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 50 |
+| logic | 64 |
 | memory/decode | 7 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 242/242 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 242/242 net names matched |
+| Risk endpoints present on PCB pads | PASS | 256/256 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 256/256 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2097/2097 | 2097/2097 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2097 | 1909/2097 | FAIL |
+| `kicad/juku.kicad_pcb` | 2111/2111 | 2111/2111 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2111 | 1909/2111 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -80,6 +80,20 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D101_OE1_BOUNDARY: D101.15`
 - `D101_Q0_BOUNDARY: D101.7`
 - `D101_Q1_BOUNDARY: D101.9`
+- `D102_A1N_BOUNDARY: D102.1`
+- `D102_A2N_BOUNDARY: D102.9`
+- `D102_B1_BOUNDARY: D102.2`
+- `D102_B2_BOUNDARY: D102.10`
+- `D102_C1_BOUNDARY: D102.14`
+- `D102_C2_BOUNDARY: D102.6`
+- `D102_CLR1_BOUNDARY: D102.3`
+- `D102_CLR2_BOUNDARY: D102.11`
+- `D102_Q1N_BOUNDARY: D102.4`
+- `D102_Q1_BOUNDARY: D102.13`
+- `D102_Q2N_BOUNDARY: D102.12`
+- `D102_Q2_BOUNDARY: D102.5`
+- `D102_RC1_BOUNDARY: D102.15`
+- `D102_RC2_BOUNDARY: D102.7`
 - `D13_4_D105_2: D11.20`
 - `D33_CLK_RC: R46.2`
 - `D33_CLK_RC: C6.1`
@@ -270,6 +284,20 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D101_OE1_BOUNDARY` | logic | `D101.15` | July-2026 validated component and solder package fits identify D101 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_Q0_BOUNDARY` | logic | `D101.7` | July-2026 validated component and solder package fits identify D101 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_Q1_BOUNDARY` | logic | `D101.9` | July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_A1N_BOUNDARY` | logic | `D102.1` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_A2N_BOUNDARY` | logic | `D102.9` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_B1_BOUNDARY` | logic | `D102.2` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin2 B; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_B2_BOUNDARY` | logic | `D102.10` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_C1_BOUNDARY` | logic | `D102.14` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_C2_BOUNDARY` | logic | `D102.6` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_CLR1_BOUNDARY` | logic | `D102.3` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_CLR2_BOUNDARY` | logic | `D102.11` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_Q1N_BOUNDARY` | logic | `D102.4` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_Q1_BOUNDARY` | logic | `D102.13` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_Q2N_BOUNDARY` | logic | `D102.12` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_Q2_BOUNDARY` | logic | `D102.5` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_RC1_BOUNDARY` | logic | `D102.15` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D102_RC2_BOUNDARY` | logic | `D102.7` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D105_GATE1_Y` | logic | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D105_WAIT_PREINV` | logic | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D25_T` | logic | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [un... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
