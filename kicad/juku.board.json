@@ -4184,7 +4184,7 @@
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/INTRQ, VSS pin20, +5V VCC pin21, and +12V VDD pin40 restored; July-2026 local photos trace RE/CS/WE privately to D94 D0-D2; pin 1 internal back-bias node must remain open; all restored drive-interface destinations, CLK source, and +12V continuity require target-board source confirmation"
+    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact, RE/CS/WE trace privately to D94 D0-D2, pin1 internal back-bias remains open, and the 20 unresolved drive/clock/control contacts plus pin40 +12V are explicit measurement boundaries requiring target-board continuity"
    }
   },
   {
@@ -13707,6 +13707,90 @@
   "D99_RC1_BOUNDARY": {
    "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D99", "15"]]
+  },
+  "D93_STEP_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin15 STEP; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "15"]]
+  },
+  "D93_DIRC_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "16"]]
+  },
+  "D93_EARLY_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "17"]]
+  },
+  "D93_LATE_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "18"]]
+  },
+  "D93_MR_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "19"]]
+  },
+  "D93_TEST_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin22 TEST; remote strap continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "22"]]
+  },
+  "D93_HLT_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "23"]]
+  },
+  "D93_CLK_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "24"]]
+  },
+  "D93_RG_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "25"]]
+  },
+  "D93_RCLK_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin26 RCLK; remote separator continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "26"]]
+  },
+  "D93_RAW_READ_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "27"]]
+  },
+  "D93_HLD_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin28 HLD; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "28"]]
+  },
+  "D93_TG43_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin29 TG43; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "29"]]
+  },
+  "D93_WG_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin30 WG; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "30"]]
+  },
+  "D93_WDATA_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin31 WDATA; remote drive-interface continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "31"]]
+  },
+  "D93_READY_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin32 READY; remote drive-status continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "32"]]
+  },
+  "D93_WF_VFOE_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "33"]]
+  },
+  "D93_TR00_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin34 TR00; remote drive-status continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "34"]]
+  },
+  "D93_INDEX_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin35 INDEX; remote drive-status continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "35"]]
+  },
+  "D93_WPRT_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measurement boundary",
+   "nodes": [["D93", "36"]]
+  },
+  "D93_VDD12_BOUNDARY": {
+   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin40 VDD_12V; the +12V feed is not proved and remains a power-safety measurement boundary that must not be assumed for fabrication",
+   "nodes": [["D93", "40"]]
   },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",

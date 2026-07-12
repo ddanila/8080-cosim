@@ -13,17 +13,17 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `179`
-- Verification-point endpoints checked in PCB: `345`
+- Verification-point nets: `200`
+- Verification-point endpoints checked in PCB: `366`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2200`
-- All board endpoints checked in routed PCB: `2200`
+- All board endpoints checked in source PCB: `2221`
+- All board endpoints checked in routed PCB: `2221`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
-| FDC | 3 |
+| FDC | 24 |
 | logic | 151 |
 | memory/decode | 7 |
 | sound/analog | 1 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 345/345 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 345/345 net names matched |
+| Risk endpoints present on PCB pads | PASS | 366/366 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 366/366 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2200/2200 | 2200/2200 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2200 | 1909/2200 | FAIL |
+| `kicad/juku.kicad_pcb` | 2221/2221 | 2221/2221 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2221 | 1909/2221 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -153,6 +153,27 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D7_B3_BOUNDARY: D7.5`
 - `D7_Y2_BOUNDARY: D7.3`
 - `D7_Y4_TAG8: D7.8`
+- `D93_CLK_BOUNDARY: D93.24`
+- `D93_DIRC_BOUNDARY: D93.16`
+- `D93_EARLY_BOUNDARY: D93.17`
+- `D93_HLD_BOUNDARY: D93.28`
+- `D93_HLT_BOUNDARY: D93.23`
+- `D93_INDEX_BOUNDARY: D93.35`
+- `D93_LATE_BOUNDARY: D93.18`
+- `D93_MR_BOUNDARY: D93.19`
+- `D93_RAW_READ_BOUNDARY: D93.27`
+- `D93_RCLK_BOUNDARY: D93.26`
+- `D93_READY_BOUNDARY: D93.32`
+- `D93_RG_BOUNDARY: D93.25`
+- `D93_STEP_BOUNDARY: D93.15`
+- `D93_TEST_BOUNDARY: D93.22`
+- `D93_TG43_BOUNDARY: D93.29`
+- `D93_TR00_BOUNDARY: D93.34`
+- `D93_VDD12_BOUNDARY: D93.40`
+- `D93_WDATA_BOUNDARY: D93.31`
+- `D93_WF_VFOE_BOUNDARY: D93.33`
+- `D93_WG_BOUNDARY: D93.30`
+- `D93_WPRT_BOUNDARY: D93.36`
 - `D94_D3: D94.4`
 - `D94_D4: D94.5`
 - `D94_D5: D94.6`
@@ -437,6 +458,27 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D7_B3_BOUNDARY` | logic | `D7.5` | sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_Y2_BOUNDARY` | memory/decode | `D7.3` | sheet-1 full-resolution package census: D7 section pins1/2 receive the D92.13 wire-11 boundary and MEMW/wire19; NAND output pin3 remains a measurement boundary because its far d... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D7_Y4_TAG8` | logic | `D7.8` | sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 remains a measurement bo... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D93_CLK_BOUNDARY` | FDC | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_DIRC_BOUNDARY` | FDC | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_EARLY_BOUNDARY` | FDC | `D93.17` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_HLD_BOUNDARY` | FDC | `D93.28` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin28 HLD; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_HLT_BOUNDARY` | FDC | `D93.23` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_INDEX_BOUNDARY` | FDC | `D93.35` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin35 INDEX; remote drive-status continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_LATE_BOUNDARY` | FDC | `D93.18` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_MR_BOUNDARY` | FDC | `D93.19` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_RAW_READ_BOUNDARY` | FDC | `D93.27` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_RCLK_BOUNDARY` | FDC | `D93.26` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin26 RCLK; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_READY_BOUNDARY` | FDC | `D93.32` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin32 READY; remote drive-status continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_RG_BOUNDARY` | FDC | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_STEP_BOUNDARY` | FDC | `D93.15` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin15 STEP; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_TEST_BOUNDARY` | FDC | `D93.22` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin22 TEST; remote strap continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_TG43_BOUNDARY` | FDC | `D93.29` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin29 TG43; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_TR00_BOUNDARY` | FDC | `D93.34` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin34 TR00; remote drive-status continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_VDD12_BOUNDARY` | FDC | `D93.40` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin40 VDD_12V; the +12V feed is not proved and remains a power-safety measurement boundary that must n... | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_WDATA_BOUNDARY` | FDC | `D93.31` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin31 WDATA; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_WF_VFOE_BOUNDARY` | FDC | `D93.33` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_WG_BOUNDARY` | FDC | `D93.30` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin30 WG; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D93_WPRT_BOUNDARY` | FDC | `D93.36` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D94_D3` | logic | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destinat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D4` | logic | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

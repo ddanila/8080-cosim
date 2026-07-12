@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `516`
+- Nets modeled: `537`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `179`
+- Net-level source-risk gaps: `200`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -49,7 +49,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 9 | 3 |
+| FDC owner-continuity | 9 | 24 |
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 32 |
 | clock/I/O | 0 | 6 |
@@ -99,7 +99,7 @@ parts placement and Tier-3 reproduction.
 | `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D6` | `DEC_PROM` | scan | scan; program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged on one upstream-unread boundary; the former D7.11 enable merge is... |
 | `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a dest... |
-| `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, wr... |
+| `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and... |
 
 ### placement/refdes
 
@@ -162,7 +162,6 @@ model is historical-source-complete.
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
-| `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 
 ## Documented Intentional No-Connects
 
@@ -287,6 +286,27 @@ same fidelity ledger as the chip provenance gaps.
 | `D7_B3_BOUNDARY` | logic/source | `D7.5` | sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan |
 | `D7_Y2_BOUNDARY` | memory/timing | `D7.3` | sheet-1 full-resolution package census: D7 section pins1/2 receive the D92.13 wire-11 boundary and MEMW/wire19; NAND output pin3 remains a measurement bounda... |
 | `D7_Y4_TAG8` | logic/source | `D7.8` | sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 rema... |
+| `D93_CLK_BOUNDARY` | FDC owner-continuity | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a me... |
+| `D93_DIRC_BOUNDARY` | FDC owner-continuity | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a mea... |
+| `D93_EARLY_BOUNDARY` | FDC owner-continuity | `D93.17` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a me... |
+| `D93_HLD_BOUNDARY` | FDC owner-continuity | `D93.28` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin28 HLD; remote drive-interface continuity is not proved, so this remains a meas... |
+| `D93_HLT_BOUNDARY` | FDC owner-continuity | `D93.23` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin23 HLT; remote drive-interface continuity is not proved, so this remains a meas... |
+| `D93_INDEX_BOUNDARY` | FDC owner-continuity | `D93.35` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin35 INDEX; remote drive-status continuity is not proved, so this remains a measu... |
+| `D93_LATE_BOUNDARY` | FDC owner-continuity | `D93.18` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a mea... |
+| `D93_MR_BOUNDARY` | FDC owner-continuity | `D93.19` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement b... |
+| `D93_RAW_READ_BOUNDARY` | FDC owner-continuity | `D93.27` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measu... |
+| `D93_RCLK_BOUNDARY` | FDC owner-continuity | `D93.26` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin26 RCLK; remote separator continuity is not proved, so this remains a measureme... |
+| `D93_READY_BOUNDARY` | FDC owner-continuity | `D93.32` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin32 READY; remote drive-status continuity is not proved, so this remains a measu... |
+| `D93_RG_BOUNDARY` | FDC owner-continuity | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement... |
+| `D93_STEP_BOUNDARY` | FDC owner-continuity | `D93.15` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin15 STEP; remote drive-interface continuity is not proved, so this remains a mea... |
+| `D93_TEST_BOUNDARY` | FDC owner-continuity | `D93.22` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin22 TEST; remote strap continuity is not proved, so this remains a measurement b... |
+| `D93_TG43_BOUNDARY` | FDC owner-continuity | `D93.29` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin29 TG43; remote drive-interface continuity is not proved, so this remains a mea... |
+| `D93_TR00_BOUNDARY` | FDC owner-continuity | `D93.34` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin34 TR00; remote drive-status continuity is not proved, so this remains a measur... |
+| `D93_VDD12_BOUNDARY` | FDC owner-continuity | `D93.40` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin40 VDD_12V; the +12V feed is not proved and remains a power-safety measurement... |
+| `D93_WDATA_BOUNDARY` | FDC owner-continuity | `D93.31` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin31 WDATA; remote drive-interface continuity is not proved, so this remains a me... |
+| `D93_WF_VFOE_BOUNDARY` | FDC owner-continuity | `D93.33` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a... |
+| `D93_WG_BOUNDARY` | FDC owner-continuity | `D93.30` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin30 WG; remote drive-interface continuity is not proved, so this remains a measu... |
+| `D93_WPRT_BOUNDARY` | FDC owner-continuity | `D93.36` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measur... |
 | `D94_D3` | PROM/decode | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) m... |
 | `D94_D4` | PROM/decode | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |

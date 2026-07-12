@@ -72,7 +72,7 @@ def category_for_chip(chip: dict, text: str) -> str:
 
 def category_for_net(name: str, text: str) -> str:
     upper = f"{name} {text}".upper()
-    if name.startswith("FDC_"):
+    if name.startswith(("FDC_", "D93_")):
         return "FDC owner-continuity"
     if "PROM" in upper or "D6" in upper or "D2" in upper or "D94" in upper:
         return "PROM/decode"

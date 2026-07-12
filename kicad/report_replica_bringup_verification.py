@@ -115,7 +115,7 @@ def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str]) -> dict
 
 def category_for(name: str, source: str) -> str:
     text = f"{name} {source}".upper()
-    if name.startswith("FDC_"):
+    if name.startswith(("FDC_", "D93_")):
         return "FDC"
     if "SOUND" in text or "SND" in text or "SPKR" in text:
         return "sound/analog"
@@ -140,6 +140,8 @@ def action_for(category: str, name: str, source: str) -> str:
         return "Continuity-check WD1793 pin to 8259 input before EKDOS bring-up."
     if name == "FDC_DDEN":
         return "Confirm density-control level against drive/emulator behavior."
+    if category == "FDC":
+        return "Continuity-check the physical КР1818ВГ93 socket path before drive bring-up."
     if category == "sound/analog":
         return "Bench-check waveform/current path with speaker disconnected first."
     if category == "video/analog":

@@ -75,12 +75,12 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | Pin | Status | Needed fact | Current boundary |
 | --- | --- | --- | --- |
 | D10.12/.13/.15/.20/.21/.22 | MISSING | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; SP/EN pin16 is separately source-proved high, while these destinations or intentional NC states are not |
-| D93.15-.18/.22/.23/.25-.36 | MISSING | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
-| D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; corrected fits identify component `(2206,2201)` and solder `(1559.5,1479.8)` px. The solder pad has no same-layer departure; component copper enters the adjacent clip-obscured region. See `docs/d93-pin40-photo-chase.md`; P12V continuity remains unproved |
-| D93.19 `MR_N` | MISSING | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected raw solder fit shows the D93.24 cap has no same-layer departure; its component contact returns beneath the physical КР1818ВГ93 socket. The former D99.13 chase followed an unrelated nearby conductor, and D99.13 is independently disqualified because D99.3 CLR_N is tied to D96.7 GND |
-| D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
-| D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
+| D93.15-.18/.22/.23/.25-.36 | WIRED | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
+| D93.40 `VDD_12V` | WIRED | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
+| D93.19 `MR_N` | WIRED | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
+| D93.24 `CLK` | WIRED | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
+| D100.9 `OE_N` | WIRED | 8287 output-enable gating | not netted in board JSON; owner continuity item |
+| D100.11 `T` | WIRED | 8287 direction gating | not netted in board JSON; owner continuity item |
 
 ## Netted FDC Endpoints
 
@@ -101,8 +101,8 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper | `D94.1, D93.4` |
 | `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper | `D94.3, D93.2` |
-| `IORD` | scan; D9.5 detached (enable = REV, traced); D7.13 added (strobe-NAND input; 12/13 order assumed); D93.4 removed after local photo fit proved its direct D94.1-only branch | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+2)` |
-| `IOWR` | scan; D9.6 detached (G1 = RC-filtered D7.11, traced); D7.12 added (strobe-NAND input; order assumed); D93.2 removed after local photo fit proved its direct D94.3-only branch | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+2)` |
+| `IORD` | scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+2)` |
+| `IOWR` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+2)` |
 
 ## Disposition
 
@@ -110,15 +110,6 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   private D94-to-D93 RE/CS/WE controls are present in board JSON and
   guarded by this report. Functional I/O decode into D94 remains blocked
   on pin 15, D3-D7 destinations, and the `.092` truth table.
-- Full-package cross-photo registration identifies the adjacent КМ555ТМ2 as
-  D96: all 14 projected contacts and the notch align. Direct component copper
-  closes D99.3 `CLR_N` to D96.7 `GND`. D96.8 `Q2_N` and D99.2 `B` instead
-  reach two separate one-sided component test landings. A 16-hole D99-local
-  cross-side transform projects both onto bare solder-side substrate with no
-  annulus or continuation, so they are explicitly dispositioned rather than
-  treated as hidden vias. The ground tie proves
-  D99 section 1 is held clear and rules out D99.13 `Q` as the live D93 clock
-  source despite the tempting cross-tile solder alignment.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
   D100.11. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
