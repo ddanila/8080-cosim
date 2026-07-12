@@ -14,7 +14,7 @@ BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "board-fidelity-gap-ledger.md"
 
 RISK_RE = re.compile(
-    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
     re.I,
 )
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}

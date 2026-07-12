@@ -21,7 +21,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `282`
 - Nets modeled: `399`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `56`
+- Net-level source-risk gaps: `62`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -51,9 +51,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 3 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 17 |
+| PROM/decode | 0 | 18 |
 | clock/I/O | 0 | 4 |
-| logic/source | 9 | 15 |
+| logic/source | 9 | 20 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -227,9 +227,14 @@ same fidelity ledger as the chip provenance gaps.
 | `D30B_D_PRE_N` | PROM/decode | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
+| `D36_B2_TAG17` | logic/source | `D36.2` | scan sheet-2: D36 second NAND input pin 2 lands directly on numbered timing-bundle rail 17; unique remote driver not established |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] |
 | `D39_MEMCYC` | memory/timing | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] |
+| `D41_CK_BOUNDARY` | logic/source | `D41.9` | scan sheet-2: D41 clock input pin 9 leaves the package as its own timing-bundle conductor; unique remote driver not established |
+| `D41_LD_BOUNDARY` | logic/source | `D41.6` | scan sheet-2: D41 load input pin 6 leaves the package as its own timing-bundle conductor; unique remote driver not established |
 | `D56_QN` | clock/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
+| `D58_STB_TAG5` | logic/source | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established |
+| `D59_O10_TAG10` | logic/source | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established |
 | `D6_V_ENABLE` | PROM/decode | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is... |
 | `D7_A1_BOUNDARY` | logic/source | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so i... |
 | `D7_A3_BOUNDARY` | logic/source | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan |
@@ -242,6 +247,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
 | `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because... |
 | `D94_D7` | PROM/decode | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
+| `D94_EN_BOUNDARY` | PROM/decode | `D94.15` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the... |
 | `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identi... |
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |

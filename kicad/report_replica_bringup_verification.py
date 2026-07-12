@@ -16,7 +16,7 @@ REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 OFF_BOARD_REFS = {"S1", "X3", "X8", "X9"}
 
 RISK_RE = re.compile(
-    r"assumed|boundary|deferred|untraced|not traced|pending|unread|owner-verify|mame|approx|refine|dump",
+    r"assumed|boundary|deferred|untraced|not traced|not established|cannot be uniquely followed|pending|unread|owner-verify|mame|approx|refine|dump",
     re.I,
 )
 

@@ -81,7 +81,7 @@ PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
 inputs instead passes 789,879 lockstep reads through 130 ms.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 56 source-risk nets and 9 official FDC
+   current generated evidence lists 62 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.

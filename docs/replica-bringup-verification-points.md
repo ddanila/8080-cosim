@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `56`
-- Verification-point endpoints checked in PCB: `222`
+- Verification-point nets: `62`
+- Verification-point endpoints checked in PCB: `228`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2083`
 - All board endpoints checked in routed PCB: `2083`
@@ -24,7 +24,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 30 |
+| logic | 36 |
 | memory/decode | 7 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 222/222 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 222/222 net names matched |
+| Risk endpoints present on PCB pads | PASS | 228/228 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 228/228 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -251,9 +251,14 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D30B_D_PRE_N` | logic | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Scope/capture video or timing node during video bring-up. |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out | Scope/capture video or timing node during video bring-up. |
+| `D36_B2_TAG17` | logic | `D36.2` | scan sheet-2: D36 second NAND input pin 2 lands directly on numbered timing-bundle rail 17; unique remote driver not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D39_MEMCYC` | memory/decode | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
+| `D41_CK_BOUNDARY` | logic | `D41.9` | scan sheet-2: D41 clock input pin 9 leaves the package as its own timing-bundle conductor; unique remote driver not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D41_LD_BOUNDARY` | logic | `D41.6` | scan sheet-2: D41 load input pin 6 leaves the package as its own timing-bundle conductor; unique remote driver not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D58_STB_TAG5` | logic | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D59_O10_TAG10` | logic | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D6_V_ENABLE` | logic | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is refuted | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_A1_BOUNDARY` | logic | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_A3_BOUNDARY` | logic | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -266,6 +271,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D6` | logic | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projec... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D7` | logic | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_EN_BOUNDARY` | logic | `D94.15` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the adjacent tile | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `FDC_DDEN` | FDC | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its l... | Confirm density-control level against drive/emulator behavior. |
 | `FDC_DRQ` | FDC | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
