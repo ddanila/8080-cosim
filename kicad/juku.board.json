@@ -828,7 +828,7 @@
   "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "scan; second ЛА1 section pins 5,4,2,1 are four distinct numbered timing-bundle arrivals and pin6 is LOAD_PRE"
    }
   },
   {
@@ -11337,6 +11337,22 @@
      "13"
     ]
    ]
+  },
+  "D38_LOAD_I5": {
+   "src": "scan sheet-2: D38 second ЛА1 section input pin 5 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
+   "nodes": [["D38", "5"]]
+  },
+  "D38_LOAD_I4": {
+   "src": "scan sheet-2: D38 second ЛА1 section input pin 4 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
+   "nodes": [["D38", "4"]]
+  },
+  "D38_LOAD_I2": {
+   "src": "scan sheet-2: D38 second ЛА1 section input pin 2 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
+   "nodes": [["D38", "2"]]
+  },
+  "D38_LOAD_I1": {
+   "src": "scan sheet-2: D38 second ЛА1 section input pin 1 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
+   "nodes": [["D38", "1"]]
   },
   "LOAD_VID": {
    "src": "traced (loop): D59.12 \"LOAD\" label -> east y3640 -> up x2371 -> west y3412 -> left bundle x688 tag 6; shifter side: outer control bundle tag 6 -> D42.6/D43.6 (ИР16 LD/PE, tag|pin read s2_d42ld_tag: LD=tag6, G=tag8, CK=tag3, DS=tag1)",

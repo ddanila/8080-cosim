@@ -155,8 +155,13 @@ module juku_top (
     // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
     // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
     wire stb_d38;
+    wire d38_load_i5, d38_load_i4, d38_load_i2, d38_load_i1;
+    net_boundary U_D38I5LNK (.a(1'b1), .b(d38_load_i5));
+    net_boundary U_D38I4LNK (.a(1'b1), .b(d38_load_i4));
+    net_boundary U_D38I2LNK (.a(1'b1), .b(d38_load_i2));
+    net_boundary U_D38I1LNK (.a(1'b1), .b(d38_load_i1));
     la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9]; pins 13+10 tied <- D39.11 (bite-3, ex-assumed D39Y)
-                     .i4(1'b1), .i5(1'b1), .i6(1'b1), .i7(1'b1), .y2(load_pre));  // sect2 (5,4,2,1->6) = LOAD; ins <- timing wires 4/2/1/15 [boundary]
+                     .i4(d38_load_i5), .i5(d38_load_i4), .i6(d38_load_i2), .i7(d38_load_i1), .y2(load_pre));  // sect2 (5,4,2,1->6) = LOAD; four distinct timing-bundle boundaries
     // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
     // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
     // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
