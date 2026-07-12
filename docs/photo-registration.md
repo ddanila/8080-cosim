@@ -117,6 +117,11 @@ localizes the factory-reworked area beside pins 4-6; it does not establish the
 obscured bridge endpoints. The D98 solder fit holds pin 16 out at 0 px on the
 complete affine 2x8 row.
 
+D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
+An affine fit lands both complete rows in the intervening package and holds
+the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity
+questions because their visible departures do not reach a second named pad.
+
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint
 columns left of D28 with a 0.632 px pin-4 check; pins 7-8 extrapolate beneath

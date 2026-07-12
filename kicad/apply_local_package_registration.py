@@ -86,6 +86,11 @@ def main() -> None:
         corrected_d106 = ("Validated D106 component fit identifies the photographed К555ИЕ7 "
                           "package contact and replaces the displaced generated landing")
         row["note"] = row["note"].replace(stale_d106, corrected_d106)
+        if row["refdes"] == "D100" and side == "solder" and row["review_state"] != "accepted":
+            row["note"] = (
+                "Validated affine D100 fit identifies the physical solder joint between D98 "
+                "and D94; visible copper still lacks a second identified package pad"
+            )
         stale_d95 = ("D95 package-side crops show only local contacts/fanout, with pins 1-2 "
                      "resistor-obscured and opposite-row projections offset; no unresolved pin "
                      "reaches a unique destination")

@@ -344,6 +344,19 @@
       "note": "Physical D100 is the horizontal notch-left КР580ВА87 package immediately right of D94; older global projections landed on unrelated packages."
     },
     {
+      "refdes": "D100",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1555.0, 1166.0], "use": "fit", "observation": "rightmost joint of the backside pin-1-to-10 row"},
+        {"pin": "10", "image_px": [1135.0, 1165.0], "use": "fit", "observation": "leftmost joint of the same coherent ten-pad row"},
+        {"pin": "11", "image_px": [1135.0, 1322.0], "use": "fit", "observation": "leftmost joint of the opposite pins-11-to-20 row"},
+        {"pin": "20", "image_px": [1555.0, 1322.0], "use": "check", "observation": "independent rightmost joint of the opposite row"}
+      ],
+      "note": "D98 and D94 bound the physical 2x10 D100 solder footprint between them. A full affine fit absorbs the close-up's unequal row/pitch scale and rejects the former projections on distant holes."
+    },
+    {
       "refdes": "D98",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
