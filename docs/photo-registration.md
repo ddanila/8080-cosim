@@ -148,6 +148,11 @@ single-image solder fit lands all 16 joints and holds opposite-row pin 9 out at
 2.531 px; a trial D97 label here was rejected because it would place D102
 beyond the physical PCB edge.
 
+Using D102's fitted pitch rather than the displaced global seeds then lands
+D97 on the immediately adjacent middle package. Its two solder rows hold
+opposite-row pin 9 out at 4.143 px and leave the rightmost package for D101, as
+required by the reversed physical order.
+
 Package-local pitch converts shared raw-image offsets directly: D95->D99 is
 `(23.895,+0.451)` mm; D95->D101 is `(-11.190,+17.380)` mm; D101->D97 is
 `(23.794,-0.107)` mm; and D97->D102 is `(23.963,-0.249)` mm. The visible

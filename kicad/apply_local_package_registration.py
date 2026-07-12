@@ -117,6 +117,11 @@ def main() -> None:
         corrected_d97 = ("Validated D97 component fit identifies the first К155АГ3 right "
                          "of D101 and replaces the displaced generated landing")
         row["note"] = row["note"].replace(stale_d97, corrected_d97)
+        stale_d97_solder = ("D97 solder projections lie among trace junctions between physical "
+                            "pad rows; nearby-hole snaps do not establish package pin identity")
+        corrected_d97_solder = ("Validated D97 solder fit identifies the physical joint in the "
+                                "middle backside package, one package right of D102")
+        row["note"] = row["note"].replace(stale_d97_solder, corrected_d97_solder)
         stale_d102 = ("D102 projections alternate between adjacent package bodies, contacts, "
                       "and bare fanout, demonstrating an unreliable local package fit with no "
                       "complete destination")

@@ -210,6 +210,18 @@
       "note": "The factory assembly drawing fixes the lower-row order as D101, D97, D102. This direct fit therefore identifies the first unobscured left-notch К155АГ3 to the right of D101 as D97; pad identity is not electrical continuity."
     },
     {
+      "refdes": "D97",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1615.0, 1097.0], "use": "fit", "observation": "rightmost joint of middle D97's backside pin-1-to-8 row"},
+        {"pin": "8", "image_px": [1228.0, 1097.0], "use": "fit", "observation": "leftmost joint immediately right of D102"},
+        {"pin": "9", "image_px": [1225.0, 1260.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+      ],
+      "note": "D102's validated board-edge fit fixes one-package pitch to the middle backside D97. This replaces former seeds on the rightmost D101 trace field."
+    },
+    {
       "refdes": "D102",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
