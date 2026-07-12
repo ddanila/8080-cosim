@@ -36,6 +36,7 @@ jobs:
             scripts/report_re3_firmware_inspection.py \
             scripts/report_video_slot_timing_audit.py \
             scripts/report_d2_reconstruction_constraints.py \
+            scripts/report_d6_physical_decode.py \
             scripts/report_d94_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
             scripts/report_fdc_hardware_handoff.py \
@@ -124,6 +125,11 @@ jobs:
             cmp "/tmp/d2-validate/d2_037.$suffix" "ref/physical-proms/validated/d2_037.$suffix"
             cmp "/tmp/d6-validate/d6_038.$suffix" "ref/physical-proms/validated/d6_038.$suffix"
           done
+
+      - name: Check physical D6 decode report freshness
+        run: |
+          python3 scripts/report_d6_physical_decode.py
+          git diff --exit-code -- docs/d6-physical-decode.md
 
       - name: Check firmware gap ledger freshness
         run: |

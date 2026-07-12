@@ -147,8 +147,9 @@ endmodule
 // not through the V enable. V1/V2 (13,14) feed unread; modeled always-enabled (v_en_n ignored).
 // Columns (traced): D0/12 = ROM_N -> D8.E_N pager enable; D1/11 = RAM_N -> sheet 2;
 // D2/10 = REV -> D9 io-decode G2A/G2B region enable; D3/9 = "-RAMOUTEN" -> D13 Schmitt.
-// The real .106.037/.038 truth table needs a РТ4 dump; columns below are the MAME-verified
-// behavioral reconstruction (byte-identical boot).
+// The validated physical `.038` table is classified in docs/d6-physical-decode.md.
+// On the `.009` board pins 11/12 are one measured open-collector conductor, so
+// their older-sheet RAM_N/ROM_N names describe pin roles, not independent nets.
 module decode_prom (input wire [7:0] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
     // Validated physical D6 `.038` table. Address bit order is the actual RT4

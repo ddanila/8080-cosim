@@ -1,0 +1,59 @@
+# Physical D6 `.038` decode
+
+Status: **PHYSICAL TABLE CLASSIFIED AND GUARDED**
+
+This generated report translates the preserved КР556РТ4 D6 image into
+address ranges without assigning semantics that the `.009` continuity does
+not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.
+
+## Guarded artifact
+
+- Raw image: `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes)
+- SHA256: `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`
+- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, PC2, PC3, PC4`
+- Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9
+
+## Output words
+
+| Raw word | Rows | D3 D2 D1 D0 | Joined D1/D0 conductor |
+| ---: | ---: | --- | --- |
+| `1` | 18 | `0001` | `0` |
+| `8` | 94 | `1000` | `0` |
+| `D` | 16 | `1101` | `0` |
+| `F` | 128 | `1111` | `1` |
+
+D6 pins 11 and 12 are open-collector outputs joined by direct owner
+continuity on the `.009` board. Their electrical wired-low result is `0`
+for words `1`, `8`, and `D`, and `1` only for word `F`. Consequently the
+older-sheet names `RAM_N` and `ROM_N` must not be interpreted as independent
+`.009` nets even though they remain useful physical pin-role labels.
+
+## Mode maps
+
+Each address interval is inclusive. The 32-character signature is one raw
+nibble per 2 KiB block from `0000` through `F800`.
+
+| PC4 PC3 PC2 | 2 KiB signature | Inclusive address ranges |
+| --- | --- | --- |
+| `000` | `88888888888888888888888888888888` | `0000-FFFF` -> `8` |
+| `001` | `88888888FFFFFFFFFFFFFFFF88811111` | `0000-3FFF` -> `8`; `4000-BFFF` -> `F`; `C000-D7FF` -> `8`; `D800-FFFF` -> `1` |
+| `010` | `88888888888888888888888888811111` | `0000-D7FF` -> `8`; `D800-FFFF` -> `1` |
+| `011` | `11111111888888888888888888888888` | `0000-3FFF` -> `1`; `4000-FFFF` -> `8` |
+| `100` | `DDDDFFFFFFFFFFFFFFFFFFFFFFFFFFFF` | `0000-1FFF` -> `D`; `2000-FFFF` -> `F` |
+| `101` | `DDDDFFFFFFFFFFFFFFFFFFFFFFFFFFFF` | `0000-1FFF` -> `D`; `2000-FFFF` -> `F` |
+| `110` | `DDDDFFFFFFFFFFFFFFFFFFFFFFFFFFFF` | `0000-1FFF` -> `D`; `2000-FFFF` -> `F` |
+| `111` | `DDDDFFFFFFFFFFFFFFFFFFFFFFFFFFFF` | `0000-1FFF` -> `D`; `2000-FFFF` -> `F` |
+
+## Direct observations
+
+- With `PC4=1`, PC2 and PC3 are don't-cares: `0000-1FFF` emits `D` and
+  `2000-FFFF` emits `F`.
+- With `PC4=0`, all four PC3/PC2 combinations are distinct. Mode `001`
+  contains the familiar reset window, an inactive middle window, and the
+  `D800-FFFF` high-memory window; mode `010` extends word `8` through `D7FF`.
+- D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`; the
+  joined D1/D0 conductor is high only in word `F`.
+- These are physical electrical facts, not yet a complete explanation of
+  the downstream D8/D13/D92 memory timing. That behavior must be derived
+  from the joined conductor and its consumers rather than resurrecting
+  separate RAM/ROM selects.
