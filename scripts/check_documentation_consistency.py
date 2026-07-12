@@ -43,6 +43,7 @@ def main() -> int:
         "unmodeled ICs": read("docs/unmodeled-footprint-inventory.md"),
         "source-risk nets": read("docs/replica-bringup-verification-points.md"),
         "sourcing": read("docs/replica-sourcing-readiness.md"),
+        "source PCB placement": read("docs/source-pcb-drc.md"),
     }
 
     blockers = {
@@ -51,6 +52,7 @@ def main() -> int:
         "unmodeled ICs": "Status: **READY FOR DESIGN RELEASE**" not in evidence["unmodeled ICs"],
         "source-risk nets": "Status: **DESIGN RELEASE RISKS CLOSED**" not in evidence["source-risk nets"],
         "sourcing": "Status: **SOURCING READY**" not in evidence["sourcing"],
+        "source PCB placement": "Status: **PASS**" not in evidence["source PCB placement"],
     }
     design_held = any(blockers.values())
 
@@ -134,6 +136,13 @@ def main() -> int:
             failures.append(f"superseded live-status document still exists: {path}")
 
     board = read("kicad/juku.board.json")
+    source_pcb = ROOT / "kicad/juku.kicad_pcb"
+    source_drc = evidence["source PCB placement"]
+    source_drc_hash = re.search(r"Board SHA256: `([0-9a-f]{64})`", source_drc)
+    if not source_drc_hash:
+        failures.append("source-PCB DRC report is missing its board checksum")
+    elif source_pcb.exists() and source_drc_hash.group(1) != sha256(source_pcb):
+        failures.append("source-PCB DRC report is stale for kicad/juku.kicad_pcb")
     dual_bom = read("docs/replica-dual-config-bom.csv")
     if "D84-D91 are populated" not in board or "D60-D83 are empty" not in board:
         failures.append("board JSON does not state the .158/.009 D84-D91 population")

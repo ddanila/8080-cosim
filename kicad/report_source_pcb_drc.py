@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import tempfile
 from collections import Counter
@@ -53,6 +54,7 @@ def main() -> int:
         "",
         "## Summary",
         "",
+        f"- Board SHA256: `{hashlib.sha256(BOARD.read_bytes()).hexdigest()}`",
         f"- Total violations: `{len(violations)}`",
         f"- Unconnected items: `{len(report.get('unconnected_items', []))}`",
         f"- Short violations: `{len(shorts)}`",
