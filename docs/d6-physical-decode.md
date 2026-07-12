@@ -49,8 +49,10 @@ nibble per 2 KiB block from `0000` through `F800`.
 - With `PC4=1`, PC2 and PC3 are don't-cares: `0000-1FFF` emits `D` and
   `2000-FFFF` emits `F`.
 - With `PC4=0`, all four PC3/PC2 combinations are distinct. Mode `001`
-  contains the familiar reset window, an inactive middle window, and the
-  `D800-FFFF` high-memory window; mode `010` extends word `8` through `D7FF`.
+  contains word `8` at `0000-3FFF` and `C000-D7FF`, word `F` in the
+  middle, and word `1` at `D800-FFFF`; mode `010` extends word `8` through `D7FF`.
+  Firmware coverage is reported separately; do not equate these physical
+  mode numbers with the emulator's PC1/PC0 banking convention.
 - D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`; the
   joined D1/D0 conductor is high only in word `F`.
 - These are physical electrical facts, not yet a complete explanation of
