@@ -165,6 +165,17 @@ def main() -> None:
             and side == "solder"
             and row["pin"] in {"7", "8", "9", "10"}
         )
+        visible_d106_joint = (
+            row["refdes"] == "D106"
+            and side == "solder"
+            and not rail_obscured_d106
+        )
+        if visible_d106_joint and row["review_state"] != "accepted":
+            row["note"] = (
+                f"Corrected D106 fit identifies the physical pin{row['pin']} solder-joint "
+                "centre; the solder cap hides its copper departure, so no destination "
+                "or intentional strap is accepted"
+            )
         if rail_obscured_d106 and row["review_state"] != "accepted":
             role = "candidate Q3 clock path" if row["pin"] == "7" else "unresolved functional path"
             row["note"] = (
