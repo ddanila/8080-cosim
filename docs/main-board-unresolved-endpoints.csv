@@ -1,18 +1,4 @@
 priority,ref,pin,type,role,reason
-P0,D101,1,KP12_MUX,OE0_N,PLAN physical-connectivity blocker
-P0,D101,10,KP12_MUX,D10,PLAN physical-connectivity blocker
-P0,D101,11,KP12_MUX,D11,PLAN physical-connectivity blocker
-P0,D101,12,KP12_MUX,D12,PLAN physical-connectivity blocker
-P0,D101,13,KP12_MUX,D13,PLAN physical-connectivity blocker
-P0,D101,14,KP12_MUX,A0,PLAN physical-connectivity blocker
-P0,D101,15,KP12_MUX,OE1_N,PLAN physical-connectivity blocker
-P0,D101,2,KP12_MUX,A1,PLAN physical-connectivity blocker
-P0,D101,3,KP12_MUX,D03,PLAN physical-connectivity blocker
-P0,D101,4,KP12_MUX,D02,PLAN physical-connectivity blocker
-P0,D101,5,KP12_MUX,D01,PLAN physical-connectivity blocker
-P0,D101,6,KP12_MUX,D00,PLAN physical-connectivity blocker
-P0,D101,7,KP12_MUX,Q0,PLAN physical-connectivity blocker
-P0,D101,9,KP12_MUX,Q1,PLAN physical-connectivity blocker
 P0,D102,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
 P0,D102,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
 P0,D102,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker

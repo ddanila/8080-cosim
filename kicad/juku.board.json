@@ -5116,7 +5116,7 @@
   {
    "ref": "D101", "type": "KP12_MUX",
    "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed, mux signals await FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",
@@ -13239,6 +13239,62 @@
   "D100_T_BOUNDARY": {
    "src": "July-2026 two-sided local-package registration identifies D100 direction pin11; its component-side continuation is obscured by the factory wire/tape bundle, so the remote control net remains a measurement boundary",
    "nodes": [["D100", "11"]]
+  },
+  "D101_OE0_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "1"]]
+  },
+  "D101_A1_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "2"]]
+  },
+  "D101_D03_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "3"]]
+  },
+  "D101_D02_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "4"]]
+  },
+  "D101_D01_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "5"]]
+  },
+  "D101_D00_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "6"]]
+  },
+  "D101_Q0_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "7"]]
+  },
+  "D101_Q1_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "9"]]
+  },
+  "D101_D10_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "10"]]
+  },
+  "D101_D11_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "11"]]
+  },
+  "D101_D12_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin12 D12; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "12"]]
+  },
+  "D101_D13_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "13"]]
+  },
+  "D101_A0_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "14"]]
+  },
+  "D101_OE1_BOUNDARY": {
+   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D101", "15"]]
   },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",

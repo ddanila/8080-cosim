@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `62`
-- Verification-point endpoints checked in PCB: `228`
+- Verification-point nets: `76`
+- Verification-point endpoints checked in PCB: `242`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2083`
-- All board endpoints checked in routed PCB: `2083`
+- All board endpoints checked in source PCB: `2097`
+- All board endpoints checked in routed PCB: `2097`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 36 |
+| logic | 50 |
 | memory/decode | 7 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 228/228 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 228/228 net names matched |
+| Risk endpoints present on PCB pads | PASS | 242/242 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 242/242 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2083/2083 | 2083/2083 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2083 | 1909/2083 | FAIL |
+| `kicad/juku.kicad_pcb` | 2097/2097 | 2097/2097 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2097 | 1909/2097 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -66,6 +66,20 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `CLK_123M: D34.12`
 - `D100_OE_BOUNDARY: D100.9`
 - `D100_T_BOUNDARY: D100.11`
+- `D101_A0_BOUNDARY: D101.14`
+- `D101_A1_BOUNDARY: D101.2`
+- `D101_D00_BOUNDARY: D101.6`
+- `D101_D01_BOUNDARY: D101.5`
+- `D101_D02_BOUNDARY: D101.4`
+- `D101_D03_BOUNDARY: D101.3`
+- `D101_D10_BOUNDARY: D101.10`
+- `D101_D11_BOUNDARY: D101.11`
+- `D101_D12_BOUNDARY: D101.12`
+- `D101_D13_BOUNDARY: D101.13`
+- `D101_OE0_BOUNDARY: D101.1`
+- `D101_OE1_BOUNDARY: D101.15`
+- `D101_Q0_BOUNDARY: D101.7`
+- `D101_Q1_BOUNDARY: D101.9`
 - `D13_4_D105_2: D11.20`
 - `D33_CLK_RC: R46.2`
 - `D33_CLK_RC: C6.1`
@@ -242,6 +256,20 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `CS_FDC` | logic | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | Cross-check against hardware when the peripheral path is exercised. |
 | `D100_OE_BOUNDARY` | logic | `D100.9` | July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside point is bare substrat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D100_T_BOUNDARY` | logic | `D100.11` | July-2026 two-sided local-package registration identifies D100 direction pin11; its component-side continuation is obscured by the factory wire/tape bundle, so the remote contro... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_A0_BOUNDARY` | logic | `D101.14` | July-2026 validated component and solder package fits identify D101 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_A1_BOUNDARY` | logic | `D101.2` | July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D00_BOUNDARY` | logic | `D101.6` | July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D01_BOUNDARY` | logic | `D101.5` | July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D02_BOUNDARY` | logic | `D101.4` | July-2026 validated component and solder package fits identify D101 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D03_BOUNDARY` | logic | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D10_BOUNDARY` | logic | `D101.10` | July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D11_BOUNDARY` | logic | `D101.11` | July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D12_BOUNDARY` | logic | `D101.12` | July-2026 validated component and solder package fits identify D101 К555КП12 pin12 D12; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_D13_BOUNDARY` | logic | `D101.13` | July-2026 validated component and solder package fits identify D101 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_OE0_BOUNDARY` | logic | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_OE1_BOUNDARY` | logic | `D101.15` | July-2026 validated component and solder package fits identify D101 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_Q0_BOUNDARY` | logic | `D101.7` | July-2026 validated component and solder package fits identify D101 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D101_Q1_BOUNDARY` | logic | `D101.9` | July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D105_GATE1_Y` | logic | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D105_WAIT_PREINV` | logic | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D25_T` | logic | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [un... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

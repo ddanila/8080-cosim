@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `399`
+- Nets modeled: `413`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `62`
+- Net-level source-risk gaps: `76`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -53,7 +53,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 18 |
 | clock/I/O | 0 | 4 |
-| logic/source | 9 | 20 |
+| logic/source | 9 | 34 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -70,7 +70,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D101` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed, mux signals await FDC continuity |
+| `D101` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all... |
 | `D102` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D102 is the rightmost lower-row one-shot 16-pin package and standard AG3 pinout; power pins 8/1... |
 | `D106` | `IE7_CTR` | scan | .009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout power pins 8/16 promoted; corrected component fit identifies package contacts,... |
 | `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed, six inverter signal pairs await FDC continuity |
@@ -161,7 +161,6 @@ model is historical-source-complete.
 
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
-| `D101` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D102` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
@@ -218,6 +217,20 @@ same fidelity ledger as the chip provenance gaps.
 | `CS_FDC` | PROM/decode | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch |
 | `D100_OE_BOUNDARY` | logic/source | `D100.9` | July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside po... |
 | `D100_T_BOUNDARY` | logic/source | `D100.11` | July-2026 two-sided local-package registration identifies D100 direction pin11; its component-side continuation is obscured by the factory wire/tape bundle,... |
+| `D101_A0_BOUNDARY` | logic/source | `D101.14` | July-2026 validated component and solder package fits identify D101 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary |
+| `D101_A1_BOUNDARY` | logic/source | `D101.2` | July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D00_BOUNDARY` | logic/source | `D101.6` | July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D01_BOUNDARY` | logic/source | `D101.5` | July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D02_BOUNDARY` | logic/source | `D101.4` | July-2026 validated component and solder package fits identify D101 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D03_BOUNDARY` | logic/source | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D10_BOUNDARY` | logic/source | `D101.10` | July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D11_BOUNDARY` | logic/source | `D101.11` | July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D12_BOUNDARY` | logic/source | `D101.12` | July-2026 validated component and solder package fits identify D101 К555КП12 pin12 D12; no remote destination is proved, so this remains a measurement boundary |
+| `D101_D13_BOUNDARY` | logic/source | `D101.13` | July-2026 validated component and solder package fits identify D101 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary |
+| `D101_OE0_BOUNDARY` | logic/source | `D101.1` | July-2026 validated component and solder package fits identify D101 К555КП12 pin1 OE0_N; no remote destination is proved, so this remains a measurement boundary |
+| `D101_OE1_BOUNDARY` | logic/source | `D101.15` | July-2026 validated component and solder package fits identify D101 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boun... |
+| `D101_Q0_BOUNDARY` | logic/source | `D101.7` | July-2026 validated component and solder package fits identify D101 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary |
+| `D101_Q1_BOUNDARY` | logic/source | `D101.9` | July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary |
 | `D105_GATE1_Y` | logic/source | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread |
 | `D105_WAIT_PREINV` | logic/source | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination re... |
 | `D25_T` | PROM/decode | `D7.6, D25.11` | traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs... |
