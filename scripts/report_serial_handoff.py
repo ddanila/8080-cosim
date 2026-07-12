@@ -156,6 +156,11 @@ def check_rows(board: dict) -> list[list[object]]:
         and marker("hdl/juku_top.v", "wire pic_sp_en = 1'b1", ".sp_en(pic_sp_en)"),
         "sheet-1 A-rail arrow; `P5V`",
     ))
+    checks.append((
+        "8259 cascade outputs are source-proved unused",
+        all(pin_is_nc(board, "D10", pin) for pin in ("12", "13", "15")),
+        "full-resolution sheet-1 PIC symbol omits CAS0/CAS1/CAS2 pins 12/13/15",
+    ))
     checks.append(
         (
             "USART RTS/DTR reach AP2 driver",

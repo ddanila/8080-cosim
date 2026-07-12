@@ -760,7 +760,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete КР580ВН59/8259 package contract including VSS pin14 and +5V VCC pin28; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; auxiliary destinations/NC state require source confirmation",
+    "pins": "complete КР580ВН59/8259 package contract including VSS pin14 and +5V VCC pin28; verified used-pin map (sheet-1): IR5<-FRAME INT(2), IR4<-TAPE RUN INT(3), IR0/IR1<-tape-USART Rx/TxRDY(3), IR7/IR6<-X1 -INT7/-INT6 via D3+S4; D0-D7=11-4 on DB; CAS0/1/2 pins 12/13/15 are absent from the full-resolution symbol and explicitly NC",
     "note": "КР580ВН59 marking and notch-left posture are photo-confirmed; July-2026 affine component fit corrects the source footprint centre to (192.44,110.08) mm"
    }
   },
@@ -14902,6 +14902,9 @@
   ["D103", "14"],
   ["D11", "18"],
   ["D59", "5"],
-  ["D59", "6"]
+  ["D59", "6"],
+  ["D10", "12"],
+  ["D10", "13"],
+  ["D10", "15"]
  ]
 }
