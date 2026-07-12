@@ -44,6 +44,9 @@ until the real coil and its solder landings are registered. The adjacent yellow
 the former assembly-grid approximations for `R65`/`R67`. The documented `VD3` and
 `R66` centres are held as the next registration constraints, not silently lost.
 
-After adopting `R65` and `R67`, KiCad DRC reports zero `shorting_items` (10 clearance and
-4 hole-to-hole findings remain elsewhere in the incomplete placement), and the
-100-instance LVS remains fully matched at 251 nets.
+The R65/R67 increment itself removed their false D102-pad collisions. A later
+full-source DRC audit corrected the parser and exposed six other unique
+analog/FDC pad-collision pairs involving C13/R68/R69/R73/R74; the authoritative
+current placement status is `docs/source-pcb-drc.md`, not the earlier
+increment-local zero-short observation. The 100-instance LVS remains fully
+matched at 251 nets, but LVS does not validate physical placement clearance.
