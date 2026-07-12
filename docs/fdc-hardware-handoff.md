@@ -78,7 +78,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | MISSING | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
 | D93.19 `MR_N` | MISSING | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | WIRED | 1 MHz FDC clock rail | corrected D93/D106 two-sided fits prove continuous solder copper from D93.24 to a shared layer handoff and continuous component copper onward to D106.7 Q3; Q3 is the /16 tap, while D106's upstream counter clock remains untraced |
+| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
 | D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
 
@@ -87,7 +87,6 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | Net | Source | Endpoints |
 | --- | --- | --- |
 | `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | `D9.7` |
-| `FDC_CLK_1M` | July-2026 corrected D93/D106 two-sided fits + continuous solder/component copper through the shared layer handoff; К555ИЕ7 Q3 is the /16 tap supplying D93's required 1 MHz clock, while D106's upstream counter clock remains untraced | `D106.7, D93.24` |
 | `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper | `D94.2, D93.3` |
 | `FDC_DAL0` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.19, D93.7` |
 | `FDC_DAL1` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.18, D93.8` |

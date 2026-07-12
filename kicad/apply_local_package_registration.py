@@ -160,8 +160,19 @@ def main() -> None:
                     "on the opposite top solder joint; the former westbound +12 V "
                     "photo chase started from a falsely projected pad and is withdrawn"
                 )
+        rail_obscured_d106 = (
+            row["refdes"] == "D106"
+            and side == "solder"
+            and row["pin"] in {"7", "8", "9", "10"}
+        )
+        if rail_obscured_d106 and row["review_state"] != "accepted":
+            role = "candidate Q3 clock path" if row["pin"] == "7" else "unresolved functional path"
+            row["note"] = (
+                f"Corrected D106 fit extrapolates pin{row['pin']} into the rail-obscured "
+                f"package end; this solder coordinate is not electrical evidence for the {role}"
+            )
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
-        if row["review_state"] != "accepted" and suffix not in row["note"]:
+        if row["review_state"] != "accepted" and not rail_obscured_d106 and suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")
         changed += 1
     expected = sum(len(item["projected_pins"]) for key, item in fits.items() if key[1] in sides)
