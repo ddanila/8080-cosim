@@ -1105,7 +1105,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm"
+    "pins": "complete sheet-2 package census: CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm; parallel-data pins 3-6 and carry output pin15 have no drawn conductors and are explicit NCs"
    }
   },
   {
@@ -15173,6 +15173,11 @@
   }
  },
  "no_connects": [
+  ["D40", "3"],
+  ["D40", "4"],
+  ["D40", "5"],
+  ["D40", "6"],
+  ["D40", "15"],
   ["D37", "8"],
   ["D37", "9"],
   ["D37", "10"],

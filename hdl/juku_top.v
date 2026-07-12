@@ -92,7 +92,7 @@ module juku_top (
     assign osc_fb = 1'bz; // R31/R32/Z1 meet here physically; analog crystal loop is outside HDL
     wire d40_ctrl_pull;
     net_boundary U_R34LNK (.a(1'b1), .b(d40_ctrl_pull));
-    ct16_ctr  U_D40 (.clk(osc_clk), .r_n(d40_ctrl_pull), .ep(1'b1), .et(1'b1), .pe_n(d40_ctrl_pull), .d(4'b0), .q(d40_q), .co());
+    ct16_ctr  U_D40 (.clk(osc_clk), .r_n(d40_ctrl_pull), .ep(1'b1), .et(1'b1), .pe_n(d40_ctrl_pull), .d(4'bzzzz), .q(d40_q), .co());
     // D39 sections 3+4 (bite-2): NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4; then NAND(out3,
     // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the
     // rail-1/rail-4 fanouts are pending; D92 is unmapped, so tri1 defaults keep the leg inert in sim.
