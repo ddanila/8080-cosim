@@ -150,6 +150,7 @@ def main() -> int:
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
         ("Physical D2/D6 tables and D8 fallback are guarded", has_phrase("docs/reconstructed-prom-fallbacks.md", "PHYSICAL RT4 TABLES ADOPTED")),
         ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**") else "MISSING"),
+        ("D30 section-B scan chase guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **SCAN EXHAUSTED / OWNER CONTINUITY REQUIRED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
@@ -262,7 +263,7 @@ def main() -> int:
             "P0",
             "D30/H continuity closure",
             "trace D30.11 to its unique clock source, D30.8 to its unique destination, and identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13; independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available",
-            "`docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
+            "`docs/d30-section-b-scan-chase.md`; `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
             "closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path",
         ),
         (

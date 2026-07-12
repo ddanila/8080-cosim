@@ -16,6 +16,8 @@ history.
 - `photo-registration.md` — current photo-evidence workflow and accepted paths.
 - `source-coverage-audit.md` — adopted external evidence and remaining source
   gaps.
+- `d30-section-b-scan-chase.md` — exhausted sheet-1 trace audit for the two
+  remaining D30 section-B conductors and the exact continuity closure required.
 
 ## Current evidence
 

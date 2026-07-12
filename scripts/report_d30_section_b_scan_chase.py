@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""Guard the exhausted sheet-1 chase for D30 section-B pins 8 and 11."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "ref/schematics/p3_sheet1.png"
+BOARD = ROOT / "kicad/juku.board.json"
+REPORT = ROOT / "docs/d30-section-b-scan-chase.md"
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def nodes(spec: dict, net: str) -> set[tuple[str, str]]:
+    return {tuple(item) for item in spec["nets"][net]["nodes"]}
+
+
+def main() -> int:
+    spec = json.loads(BOARD.read_text(encoding="utf-8"))
+    checks = [
+        ("D30.11 remains a singleton clock boundary",
+         nodes(spec, "D30_CLK2_BOUNDARY") == {("D30", "11")}),
+        ("D30.8 remains a singleton inverted-output boundary",
+         nodes(spec, "D30_Q2N_BOUNDARY") == {("D30", "8")}),
+        ("Measured section-B D and /PRE pull-up is kept separate",
+         nodes(spec, "D30B_D_PRE_N") == {("D30", "10"), ("D30", "12"), ("R5", "2")}),
+        ("Measured /CLR path from D105.11 is kept separate",
+         nodes(spec, "D105_MEMW_INV") == {("D105", "11"), ("D30", "13")}),
+    ]
+    failed = [name for name, passed in checks if not passed]
+    if failed:
+        raise SystemExit("D30 SECTION-B SCAN CHASE: FAIL: " + "; ".join(failed))
+
+    lines = [
+        "# D30 section-B sheet-1 scan chase", "",
+        "Status: **SCAN EXHAUSTED / OWNER CONTINUITY REQUIRED**", "",
+        "The full-resolution `.006` electrical sheet was re-read specifically for the two",
+        "remaining D30 section-B conductors. This audit records what the scan proves and",
+        "why it does not justify a target-board net merge.", "", "## Source", "",
+        f"- Image: `{SOURCE.relative_to(ROOT)}`",
+        f"- SHA256: `{sha256(SOURCE)}`",
+        "- Full image: `5150 x 3603` pixels",
+        "- Primary inspection box: `x=950..2850, y=1200..2150`",
+        "- West clock continuation box: `x=0..1700, y=1350..2100`", "",
+        "## Result", "",
+        "- D30.11 has a drawn westbound clock conductor. It crosses the vertical",
+        "  D13.4/WR:19 route in the crowded gate field without a junction dot; the scan",
+        "  therefore does not prove D30.11 on `D13_4_D105_2`, `D105_3`, or `WR:19`.",
+        "- D30.8 has a drawn east/north departure. It traverses the dense memory/data",
+        "  rail field, but no unique labeled destination or unambiguous junction survives",
+        "  in this scan. Apparent alignment with a bus rail is not evidence for tying a",
+        "  push-pull 7474 output to that bus.",
+        "- D30.9 is omitted from the factory symbol and remains the already-recorded",
+        "  explicit no-connect. The visible section-B output is D30.8, so it cannot be",
+        "  dispositioned as an unused package half.",
+        "- Direct owner continuity remains authoritative for D30.10/.12/R5 and",
+        "  D105.11->D30.13; neither measured net is reopened by this older-sheet chase.", "",
+        "The safe closure is a continuity measurement from D30.11 and D30.8 on the",
+        "physical `.009` board. Until then both singleton boundary nets are intentional.",
+        "", "## Model guards", "", "| Check | Result |", "| --- | --- |",
+    ]
+    lines.extend(f"| {name} | PASS |" for name, _ in checks)
+    REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print("D30 SECTION-B SCAN CHASE: PASS; ambiguous routes rejected")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
