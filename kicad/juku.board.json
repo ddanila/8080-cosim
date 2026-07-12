@@ -5111,7 +5111,7 @@
   {
    "ref": "D98", "type": "LP11_BUF",
    "pins": {"1": "OE14_N", "2": "A1", "3": "Y1", "4": "A2", "5": "Y2", "6": "A3", "7": "Y3", "9": "Y4", "10": "A4", "11": "Y5", "12": "A5", "13": "Y6", "14": "A6", "15": "OE56_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed, six buffer signals and two enables await FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛП11", "pins": "К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed; D98.3 is proved to R94 and D98.7 to S1.2, while registered package evidence preserves the other 12 contacts as distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "D101", "type": "KP12_MUX",
@@ -13611,6 +13611,54 @@
   "D96_CLR2_BOUNDARY": {
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin13 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D96", "13"]]
+  },
+  "D98_OE14_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin1 OE14_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "1"]]
+  },
+  "D98_A1_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin2 A1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "2"]]
+  },
+  "D98_A2_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin4 A2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "4"]]
+  },
+  "D98_Y2_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin5 Y2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "5"]]
+  },
+  "D98_A3_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin6 A3; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "6"]]
+  },
+  "D98_Y4_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "9"]]
+  },
+  "D98_A4_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "10"]]
+  },
+  "D98_Y5_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin11 Y5; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "11"]]
+  },
+  "D98_A5_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin12 A5; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "12"]]
+  },
+  "D98_Y6_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin13 Y6; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "13"]]
+  },
+  "D98_A6_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin14 A6; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "14"]]
+  },
+  "D98_OE56_BOUNDARY": {
+   "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin15 OE56_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D98", "15"]]
   },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",

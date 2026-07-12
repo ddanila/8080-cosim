@@ -81,7 +81,7 @@ PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
 inputs instead passes 789,879 lockstep reads through 130 ms.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 155 source-risk nets and 9 official FDC
+   current generated evidence lists 167 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -106,7 +106,7 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2176/2176` PCB-scoped board-JSON endpoints.
+The source PCB now passes all `2188/2188` PCB-scoped board-JSON endpoints.
 Thirty-four endpoints on bracket-mounted S1/X3/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.

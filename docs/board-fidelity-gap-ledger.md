@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `492`
+- Nets modeled: `504`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `155`
+- Net-level source-risk gaps: `167`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -53,7 +53,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 32 |
 | clock/I/O | 0 | 6 |
-| logic/source | 9 | 97 |
+| logic/source | 9 | 109 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -77,7 +77,7 @@ parts placement and Tier-3 reproduction.
 | `D95` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all... |
 | `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 routed; full component registration and reflected solder fit identify the... |
 | `D97` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101 16-pin package and standard AG3 pinout; power... |
-| `D98` | `LP11_BUF` | scan | .009 official FDC population identifies К155ЛП11 К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed, six buffer signals and two enables await FDC cont... |
+| `D98` | `LP11_BUF` | scan | .009 official FDC population identifies К155ЛП11 К155ЛП11/SN74367 datasheet pinout; power pins 8/16 routed; D98.3 is proved to R94 and D98.7 to S1.2, while r... |
 | `D99` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking 16-pin package and standard A... |
 
 ### PROM truth
@@ -163,7 +163,6 @@ model is historical-source-complete.
 | --- | --- | --- |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
-| `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
 | `D99` | FDC owner-continuity | `1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 
 ## Documented Intentional No-Connects
@@ -334,6 +333,18 @@ same fidelity ledger as the chip provenance gaps.
 | `D97_Q2_BOUNDARY` | logic/source | `D97.5` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary |
 | `D97_RC1_BOUNDARY` | logic/source | `D97.15` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
 | `D97_RC2_BOUNDARY` | logic/source | `D97.7` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
+| `D98_A1_BOUNDARY` | logic/source | `D98.2` | July-2026 validated package registration identifies D98 К155ЛП11 pin2 A1; no remote destination is proved, so this remains a measurement boundary |
+| `D98_A2_BOUNDARY` | logic/source | `D98.4` | July-2026 validated package registration identifies D98 К155ЛП11 pin4 A2; no remote destination is proved, so this remains a measurement boundary |
+| `D98_A3_BOUNDARY` | logic/source | `D98.6` | July-2026 validated package registration identifies D98 К155ЛП11 pin6 A3; no remote destination is proved, so this remains a measurement boundary |
+| `D98_A4_BOUNDARY` | logic/source | `D98.10` | July-2026 validated package registration identifies D98 К155ЛП11 pin10 A4; no remote destination is proved, so this remains a measurement boundary |
+| `D98_A5_BOUNDARY` | logic/source | `D98.12` | July-2026 validated package registration identifies D98 К155ЛП11 pin12 A5; no remote destination is proved, so this remains a measurement boundary |
+| `D98_A6_BOUNDARY` | logic/source | `D98.14` | July-2026 validated package registration identifies D98 К155ЛП11 pin14 A6; no remote destination is proved, so this remains a measurement boundary |
+| `D98_OE14_BOUNDARY` | logic/source | `D98.1` | July-2026 validated package registration identifies D98 К155ЛП11 pin1 OE14_N; no remote destination is proved, so this remains a measurement boundary |
+| `D98_OE56_BOUNDARY` | logic/source | `D98.15` | July-2026 validated package registration identifies D98 К155ЛП11 pin15 OE56_N; no remote destination is proved, so this remains a measurement boundary |
+| `D98_Y2_BOUNDARY` | logic/source | `D98.5` | July-2026 validated package registration identifies D98 К155ЛП11 pin5 Y2; no remote destination is proved, so this remains a measurement boundary |
+| `D98_Y4_BOUNDARY` | logic/source | `D98.9` | July-2026 validated package registration identifies D98 К155ЛП11 pin9 Y4; no remote destination is proved, so this remains a measurement boundary |
+| `D98_Y5_BOUNDARY` | logic/source | `D98.11` | July-2026 validated package registration identifies D98 К155ЛП11 pin11 Y5; no remote destination is proved, so this remains a measurement boundary |
+| `D98_Y6_BOUNDARY` | logic/source | `D98.13` | July-2026 validated package registration identifies D98 К155ЛП11 pin13 Y6; no remote destination is proved, so this remains a measurement boundary |
 | `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identi... |
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
