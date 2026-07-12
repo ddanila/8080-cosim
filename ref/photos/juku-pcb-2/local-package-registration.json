@@ -150,6 +150,18 @@
       "note": "Direct fit to the horizontal notch-right К555КП12 D95. Standard top-view DIP numbering makes the photographed lower row pins 16-to-9 and the upper row pins 1-to-8; this corrects the prior reversed/offset projections without treating pad identity as functional continuity."
     },
     {
+      "refdes": "D95",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1344.0, 902.0], "use": "fit", "observation": "rightmost joint of the mirrored pin-1-to-8 row"},
+        {"pin": "8", "image_px": [961.0, 900.0], "use": "fit", "observation": "leftmost joint of the same eight-pad row"},
+        {"pin": "9", "image_px": [961.0, 736.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+      ],
+      "note": "The physical D95 rows are the left eight-pad group below the broad rail. This fit rejects the displaced generated projection that straddled D95 and the next package to its right."
+    },
+    {
       "refdes": "D96",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",

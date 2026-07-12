@@ -92,6 +92,13 @@ def main() -> None:
         corrected_d95 = ("Validated D95 component fit corrects the reversed/offset projection "
                          "and identifies the photographed К555КП12 package contact")
         row["note"] = row["note"].replace(stale_d95, corrected_d95)
+        stale_d95_solder = ("D95 solder projections lie on intervening trace rails rather than "
+                            "the photographed package-pad rows; local two-side registration is "
+                            "required")
+        corrected_d95_solder = ("Validated reflected D95 fit identifies the physical solder "
+                                "joint in the left eight-pad package group and rejects the "
+                                "former projection spanning the adjacent package")
+        row["note"] = row["note"].replace(stale_d95_solder, corrected_d95_solder)
         stale_d101 = ("D101 projections fall on factory-wire bundles and bare trace fields "
                       "rather than a coherent package contact row; the modeled placement is "
                       "not locally registered")
