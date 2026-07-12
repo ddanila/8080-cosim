@@ -224,7 +224,7 @@ def main() -> int:
             "D93.40 `VDD_12V`",
             "MISSING" if not any(has_node(board, name, "D93", "40") for name in board["nets"]) else "WIRED",
             "+12 V controller supply continuity",
-            "primary datasheet requires +12 V; local pad/copper are identified but P12V continuity is not proved",
+            "primary datasheet requires +12 V; registered component/solder fits identify pin 40, and a 2026-07-12 full-resolution chase follows only into the crowded westbound fanout—not to a unique P12V landing",
         ),
         (
             "D93.19 `MR_N`",
@@ -381,6 +381,8 @@ def main() -> int:
             "- Trace every restored D93 drive-interface pin through D28/D95-D99/",
             "  D101/D102/D106, and prove D93.40 to `P12V`; pin 40 is a power-safety",
             "  blocker, not an optional functional refinement.",
+            "  The existing photographs have been exhausted for this path: they prove",
+            "  local copper but not an unbroken connection to a known +12 V node.",
             "- Keep `docs/fdc-readiness.md` as the HDL/media behavior guard; this",
             "  report is only the physical-board handoff checklist.",
             "",
