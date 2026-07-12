@@ -79,7 +79,7 @@ yet modeled as nets.
 | `D28` | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` | continuity from an actual `.009` FDC-populated board |
 | `D3` | `3:I3, 4:O4, 5:I5, 6:O6` | sheet-1 serial/interrupt continuity or source-proved NC |
 | `D35` | `1:I1, 2:O2, 3:I3, 5:I5, 6:O6, 8:O8, 9:I9` | sheet-2 timing-chain continuity |
-| `D41` | `6:LD, 9:CK, 10:QD, 11:QC` | sheet-2 timing-chain continuity |
+| `D41` | `10:QD, 11:QC` | sheet-2 timing-chain continuity |
 | `D53` | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` | sheet-2 memory-timing continuity or source-proved NC |
 | `D59` | `5:I5, 6:O6` | sheet-2 timing-chain continuity |
 | `D93` | `1:NC_BACK_BIAS, 15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` | continuity from an actual `.009` FDC-populated board |

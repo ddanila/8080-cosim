@@ -19,10 +19,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `385`
-- Chip-level fidelity gaps: `57`
+- Nets modeled: `387`
+- Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `49`
-- Documented intentional no-connect pins: `61`
+- Documented intentional no-connect pins: `63`
 
 ## Chip Provenance Types
 
@@ -57,7 +57,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
-| video/timing | 1 | 0 |
+| video/timing | 2 | 0 |
 
 ## Chip-Level Gaps
 
@@ -146,6 +146,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
+| `D41` | `IR16` | scan | complete sheet-2 package census: A-D pins2-5 share ground, DS1/G8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit N... |
 | `D53` | `RASCAS_DEC` | scan | ИД7/74138 complete standard package contract; sheet-2 proves A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL, and Y0-Y3=15/14/13/12 through R... |
 
 ## Unnetted Functional Pins
@@ -193,6 +194,7 @@ explicit KiCad schematic no-connect markers.
 | `D35` | `1, 2, 5, 6, 8, 9` |
 | `D37` | `8, 9, 10` |
 | `D40` | `3, 4, 5, 6, 15` |
+| `D41` | `10, 11` |
 | `D42` | `11, 12, 13` |
 | `D43` | `11, 12, 13` |
 | `D44` | `13` |

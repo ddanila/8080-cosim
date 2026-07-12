@@ -74,10 +74,6 @@ P1,D35,3,CLK_PHASE,I3,functional endpoint lacks disposition
 P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
 P0,D39,10,LA3_GATE,B2,memory/decode source-risk blocker
 P0,D39,2,LA3_GATE,B3,memory/decode source-risk blocker
-P0,D41,10,IR16,QD,PLAN physical-connectivity blocker
-P0,D41,11,IR16,QC,PLAN physical-connectivity blocker
-P0,D41,6,IR16,LD,PLAN physical-connectivity blocker
-P0,D41,9,IR16,CK,PLAN physical-connectivity blocker
 P0,D53,10,RASCAS_DEC,Y_N5,memory/decode source-risk blocker
 P0,D53,11,RASCAS_DEC,Y_N4,memory/decode source-risk blocker
 P0,D53,7,RASCAS_DEC,Y_N7,memory/decode source-risk blocker

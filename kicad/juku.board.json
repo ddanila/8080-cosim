@@ -3665,7 +3665,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 LATCH chain: ИР16 D41; A-D pins2-5 share the drawn ground bar, while DS pin1 and G pin8 share +5V rail A; outputs QB12/QA13 traced, QC11/QD10 and LD6/CK9 remain conductor chases; July-2026 two-sided package-local photo fit corrects the horizontal notch-right landing"
+    "pins": "complete sheet-2 package census: A-D pins2-5 share ground, DS1/G8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit NCs, and LD6/CK9 leave as distinct timing-bundle boundaries; July-2026 photo fit corrects the horizontal notch-right landing"
    }
   },
   {
@@ -11345,6 +11345,14 @@
     ]
    ]
   },
+  "D41_LD_BOUNDARY": {
+   "src": "scan sheet-2: D41 load input pin 6 leaves the package as its own timing-bundle conductor; unique remote driver not established",
+   "nodes": [["D41", "6"]]
+  },
+  "D41_CK_BOUNDARY": {
+   "src": "scan sheet-2: D41 clock input pin 9 leaves the package as its own timing-bundle conductor; unique remote driver not established",
+   "nodes": [["D41", "9"]]
+  },
   "LATCH_B": {
    "src": "scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending)",
    "nodes": [
@@ -15205,6 +15213,8 @@
   }
  },
  "no_connects": [
+  ["D41", "10"],
+  ["D41", "11"],
   ["D52", "9"],
   ["D52", "10"],
   ["D52", "11"],
