@@ -74,10 +74,6 @@ P1,D29,1,VABUS,AIN0,functional endpoint lacks disposition
 P1,D29,2,VABUS,AIN1,functional endpoint lacks disposition
 P1,D29,3,VABUS,AIN2,functional endpoint lacks disposition
 P1,D29,6,VABUS,AIN5,functional endpoint lacks disposition
-P1,D3,3,LN2,I3,functional endpoint lacks disposition
-P1,D3,4,LN2,O4,functional endpoint lacks disposition
-P1,D3,5,LN2,I5,functional endpoint lacks disposition
-P1,D3,6,LN2,O6,functional endpoint lacks disposition
 P0,D30,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
 P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
 P1,D33,12,LN1_DUAL,O12,functional endpoint lacks disposition

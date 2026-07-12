@@ -151,6 +151,11 @@ def check_rows(board: dict) -> list[list[object]]:
         "`SER_TXD_INV`",
     ))
     checks.append((
+        "Undrawn D3 inverter sections are explicitly unused",
+        all(pin_is_nc(board, "D3", pin) for pin in ("3", "4", "5", "6")),
+        "sheet-1 accounts for sections 13->12, 1->2, 11->10, and 9->8; 3->4 and 5->6 never occur",
+    ))
+    checks.append((
         "8259 SP/EN is strapped high for standalone master mode",
         has_node(board, "P5V", "D10", "16")
         and marker("hdl/juku_top.v", "wire pic_sp_en = 1'b1", ".sp_en(pic_sp_en)"),

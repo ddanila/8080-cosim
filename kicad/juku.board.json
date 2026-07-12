@@ -2377,7 +2377,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К561ЛН2 standard hex-inverter package contract; traced sections 11->10 serial S_TTL, 9->8 serial OC pre-inverter, 13->12 IR7, and 1->2 IR6; sections 3->4 and 5->6 require traced destinations or explicit NC proof"
+    "pins": "К561ЛН2 standard hex-inverter package contract; exhaustive sheet-1 symbol census traces sections 11->10 serial S_TTL, 9->8 serial OC pre-inverter, 13->12 IR7, and 1->2 IR6; sections 3->4 and 5->6 never occur and pins 3/4/5/6 are explicit NCs"
    }
   },
   {
@@ -14932,6 +14932,10 @@
   ["D59", "6"],
   ["D10", "12"],
   ["D10", "13"],
-  ["D10", "15"]
+  ["D10", "15"],
+  ["D3", "3"],
+  ["D3", "4"],
+  ["D3", "5"],
+  ["D3", "6"]
  ]
 }

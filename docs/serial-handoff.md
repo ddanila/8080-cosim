@@ -40,6 +40,7 @@ python3 scripts/report_serial_handoff.py
 | D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
+| Undrawn D3 inverter sections are explicitly unused | PASS | sheet-1 accounts for sections 13->12, 1->2, 11->10, and 9->8; 3->4 and 5->6 never occur |
 | 8259 SP/EN is strapped high for standalone master mode | PASS | sheet-1 A-rail arrow; `P5V` |
 | 8259 cascade outputs are source-proved unused | PASS | full-resolution sheet-1 PIC symbol omits CAS0/CAS1/CAS2 pins 12/13/15 |
 | Remaining PIC interrupt conductors stay explicit | PASS | sheet-1: IR4=(3) TAPE RUN INT; IR3/IR2 leave on distinct unread southbound conductors |
