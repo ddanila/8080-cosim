@@ -38,6 +38,48 @@
   ],
   "targets": [
     {
+      "refdes": "D93",
+      "drawing_px": [
+        1300.0,
+        1906.0
+      ],
+      "projected_board_mm": [
+        235.941,
+        73.335
+      ],
+      "current_footprint_mm": [
+        235.941,
+        73.34
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        -0.005
+      ],
+      "observation": "physical \u041a\u04201818\u0412\u041393 socket centre; factory drawing corrects the former D95-overlapping global placement",
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "C10",
+      "drawing_px": [
+        1616.0,
+        1906.0
+      ],
+      "projected_board_mm": [
+        252.361,
+        73.163
+      ],
+      "current_footprint_mm": [
+        252.361,
+        73.163
+      ],
+      "projected_delta_mm": [
+        0.0,
+        -0.0
+      ],
+      "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102",
+      "electrical_evidence": false
+    },
+    {
       "refdes": "C11",
       "drawing_px": [
         1985.5,

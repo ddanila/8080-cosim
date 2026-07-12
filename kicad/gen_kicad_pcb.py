@@ -113,7 +113,7 @@ PASSIVE_PLACE = {
     'R67':(295.94,125.39,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
-    'C9':(285.807,33.590,90),'C10':(283.5,112,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
+    'C9':(285.807,33.590,90),'C10':(252.361,73.163,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
     'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
@@ -264,7 +264,7 @@ PLACE = {
     # Inputs below compensate the stock footprint anchor/bounding-box offset so
     # the saved KiCad footprint positions remain the photo-guarded coordinates
     # D94=(229.275,38.110), D100=(257.650,37.400), D98=(290.000,37.400).
-    'D93':(248,70,0),'D94':(238.165,34.305,90),'D100':(269.08,33.595,90),
+    'D93':(235.941,73.335,0),'D94':(238.165,34.305,90),'D100':(269.08,33.595,90),
     # Registered component fits: D28 centre is 15.064 mm right / 1.442 mm
     # above D106; D96 is another 14.451 mm right / 0.240 mm below D28.
     'D98':(298.89,33.595,90),'D106':(262,74,0),'D28':(277.064,72.558,0),'D96':(291.515,72.798,0),

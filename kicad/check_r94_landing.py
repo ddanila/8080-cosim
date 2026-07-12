@@ -34,8 +34,8 @@ def main() -> int:
         pad2 = r94.FindPadByNumber("2")
         if pad1 is None or pad1.GetNetname() != "D98_Y1_R94":
             failures.append("R94.1 is not assigned to D98_Y1_R94")
-        if pad2 is None or pad2.GetNetname():
-            failures.append("R94.2 must remain explicitly unresolved")
+        if pad2 is None or pad2.GetNetname() != "R94_P2_BOUNDARY":
+            failures.append("R94.2 must remain on its explicit measurement boundary")
         if pad1 is not None:
             position1 = pad1.GetPosition()
             actual1 = (mm(position1.x), mm(position1.y))
@@ -55,7 +55,7 @@ def main() -> int:
         for failure in failures:
             print("FAIL:", failure)
         return 1
-    print("R94 LANDING: PASS — 220 ohm from D98.3; far terminal unresolved")
+    print("R94 LANDING: PASS — 220 ohm from D98.3; far terminal is an explicit measurement boundary")
     return 0
 
 

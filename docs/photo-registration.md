@@ -58,6 +58,10 @@ pin-row orientation and stronger pad landings for the unresolved reset and
 clock endpoints. A reflected fit in `PXL_20260710_200506061.jpg` places the
 same pins on the actual solder joints. Their far destinations remain
 measurement requests; package registration alone is not continuity evidence.
+The registered `.009` factory assembly drawing now also fixes the socket centre
+at `(235.941,73.335)` mm. This replaces the former `(248,70)` approximation,
+which physically overlapped D95. The same drawing moves C10 from the lower FDC
+row to its depicted position immediately right of D93 at `(252.361,73.163)` mm.
 
 ## Reproduce the registration aids
 

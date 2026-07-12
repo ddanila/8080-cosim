@@ -105,8 +105,8 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "Only C11 and C15 currently have source-PCB footprints. The other named parts",
-          "remain explicit physical/BOM omissions until their package and electrical endpoints",
+lines += ["", "D93, C10, C11, and C15 have source-PCB footprints at their projected",
+          "factory-drawing positions. The other named parts remain explicit physical/BOM omissions until their package and electrical endpoints",
           "are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.",
           "The owner component view does not expose a complete electrical path at either corrected",
           "site: C11's landings are visible without an unambiguous body, while C15 is hidden by the",

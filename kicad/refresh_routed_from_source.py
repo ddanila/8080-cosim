@@ -9,6 +9,8 @@ would short the newly separated pads.
 from __future__ import annotations
 
 import argparse
+import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -45,6 +47,8 @@ def main() -> None:
                         help="write an audit candidate; omitted for read-only classification")
     parser.add_argument("--verbose", action="store_true",
                         help="list every quarantined net and mismatched endpoint")
+    parser.add_argument("--exclude-drc", type=Path, action="append", default=[],
+                        help="quarantine routed track/via nets implicated by shorts in a KiCad DRC JSON")
     args = parser.parse_args()
 
     source = pcbnew.LoadBoard(str(args.source))
@@ -65,6 +69,18 @@ def main() -> None:
     routed_endpoints = nets_to_endpoints(routed_pads)
     compatible_nets = {netname for netname, endpoints in source_endpoints.items()
                        if routed_endpoints.get(netname) == endpoints}
+    forced_excluded: set[str] = set()
+    for drc_path in args.exclude_drc:
+        report = json.loads(drc_path.read_text())
+        for violation in report.get("violations", []):
+            if violation.get("type") != "shorting_items":
+                continue
+            for item in violation.get("items", []):
+                description = str(item.get("description", ""))
+                match = re.match(r"(?:Track|Via) \[([^]]+)]", description)
+                if match and match.group(1) != "<no net>":
+                    forced_excluded.add(match.group(1))
+    compatible_nets -= forced_excluded
     routed_copper_nets = {item.GetNetname() for item in routed.GetTracks()}
     quarantined_nets = routed_copper_nets - compatible_nets
 
@@ -100,7 +116,9 @@ def main() -> None:
     print(f"  quarantined routed nets: {len(quarantined_nets)}")
     print(f"  quarantined/duplicate items: {sum(skipped.values())}")
     print(f"  common-pad mismatches requiring reroute: {len(mismatches)}")
+    print(f"  DRC-forced excluded nets: {len(forced_excluded)}")
     if args.verbose:
+        print(f"  DRC-forced excluded net names: {sorted(forced_excluded)}")
         print(f"  quarantined item counts: {dict(skipped)}")
         print(f"  mismatched endpoints: {mismatches}")
     if args.output:

@@ -25,34 +25,38 @@ The temporary candidate is an audit artifact, not a fabrication deliverable.
 
 | Item | Count |
 | --- | ---: |
-| Source footprints | 271 |
+| Source footprints | 278 |
 | Routed-snapshot footprints | 240 |
-| Source-only footprints | 35 |
+| Source-only footprints | 42 |
 | Routed-only off-board connector bodies | 4 |
 | Routed copper nets | 326 |
-| Nets with identical endpoints and pad coordinates | 227 |
-| Nets requiring reroute | 99 |
-| Reusable track/via items | 5,284 |
-| Quarantined track/via items | 3,372 |
+| Nets with reusable routed copper | 207 |
+| Routed nets quarantined before DRC | 119 |
+| Initially reusable track/via items | 4,874 |
+| Initially quarantined/duplicate items | 3,782 |
+| Additional nets quarantined from candidate DRC | 16 |
+| Reusable items after DRC quarantine | 4,330 |
 
-The 35 source-only footprints are `A17`, `A21-A32`, `A45-A62`, `R18`, `R30`,
-`R94`, and `R104`. The four routed-only bodies are the bracket-mounted
+The source-only set includes `A17`, `A21-A32`, `A45-A62`, newly modeled FDC
+support/passive parts, and the photo-fitted serial resistors. The four routed-only bodies are the bracket-mounted
 `S1`, `X3`, `X8`, and `X9`; the authoritative source intentionally represents
 their PCB cable landings instead.
 
-The source board now has zero electrical shorts after the D2/D4 corridor fix
-and the registered D104/D32/D14/D3 serial-area placement correction. It retains 22
-clearance findings before any routed copper is transplanted. The earlier
-conservatively merged audit candidate had 33 shorts and 41 clearance findings,
-so it remains correctly rejected and must be regenerated after placement work.
-The extra collisions localize old routes crossing newly fitted D2/D10/D94/FDC
-support geometry and the added cable/passive landings.
+The July-2026 refresh audit found 48 short violations in the first candidate.
+Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
+routed nets and removes every transplanted-track short. The remaining 18 DRC
+short violations are nine duplicated pad-to-pad placement collisions already
+present in the source PCB: approximate S4 and analog-part positions overlap the
+factory-registered D93/D95/D97/D102 cluster. The routed candidate therefore
+remains rejected. This corrected audit supersedes the earlier false zero-short
+statement, which inspected a nonexistent top-level JSON field instead of
+`violations[type=shorting_items]`.
 
 A clean refresh therefore requires this order:
 
-1. repair source-placement electrical overlaps;
+1. repair the nine source-placement electrical overlaps from stronger placement evidence;
 2. generate the compatible-copper candidate;
-3. iteratively remove any transplanted net implicated by DRC;
+3. iteratively quarantine any transplanted net implicated by DRC using `--exclude-drc`;
 4. route the quarantined nets against the current placement;
 5. replace `juku_routed.kicad_pcb` only after endpoint parity and zero electrical
    DRC findings are both proved.

@@ -12,6 +12,8 @@
     {"refdes": "D97", "drawing_px": [2060.5, 2539.5], "board_mm": [268.604, 110.268], "use": "check"}
   ],
   "targets": [
+    {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},
+    {"refdes": "C10", "drawing_px": [1616.0, 1906.0], "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"},
     {"refdes": "C11", "drawing_px": [1985.5, 2256.5], "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"},
     {"refdes": "C16", "drawing_px": [1987.0, 2384.5], "observation": "horizontal capacitor between the upper and lower IC rows"},
     {"refdes": "C15", "drawing_px": [2268.5, 2541.5], "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"},
