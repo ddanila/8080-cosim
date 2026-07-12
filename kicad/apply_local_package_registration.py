@@ -192,6 +192,12 @@ def main() -> None:
                     "exposed-socket fit identifies the spring contact, while P12V "
                     "continuity remains unproved"
                 )
+            if row["pin"] == "24" and row["review_state"] != "accepted":
+                row["note"] = (
+                    "Corrected exposed-socket fit identifies physical КР1818ВГ93 CLK/pin24; "
+                    "the apparent D99.13 solder alignment is rejected because direct "
+                    "component copper holds D99 section 1 clear"
+                )
             row["note"] = row["note"].replace(
                 "identifies MR_N/pin19 on the exposed socket and shows its "
                 "component-side departure; the trace leaves the close-up without a "
@@ -227,9 +233,9 @@ def main() -> None:
                 )
             elif row["pin"] == "24":
                 row["note"] = (
-                    "Corrected two-column D93 orientation identifies CLK/pin24 on "
-                    "the opposite solder column and exposes a westbound local trace; "
-                    "the far 1 MHz source remains unproved"
+                    "Corrected D93.24 fit exposes westbound solder copper, but its apparent "
+                    "D99.13 alignment cannot be the live clock: independently proved "
+                    "D99.3-to-D96.7 copper holds section-1 CLR_N at ground"
                 )
             elif row["pin"] == "40":
                 row["note"] = (

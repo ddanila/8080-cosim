@@ -429,19 +429,8 @@ module juku_top (
     // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. Stubs are inert.
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
-`ifdef YOSYS
-    wire fdc_clk_1m;
-`else
-    tri0 fdc_clk_1m;
-`endif
-    // Corrected two-sided package fits and continuous solder copper prove
-    // D99.13 (АГ3 section-1 Q) -> D93.24 CLK. The one-shot's trigger/RC
-    // inputs remain physical boundaries, so its inert stub resolves low in sim.
-    ag3_oneshot U_D99 (.a_n(1'b1), .b(1'b0), .clr_n(1'b1),
-                        .a2_n(1'b1), .b2(1'b0), .clr2_n(1'b1),
-                        .q(fdc_clk_1m), .q_n(), .q2(), .q2_n());
     vg93_fdc   U_D93  (.cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
-                       .mr_n(1'b1), .clk(fdc_clk_1m), .dden(ppi0_pc[4]), .dal(fdc_dal),
+                       .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1), .vss_gnd(1'b0), .vcc_5v(1'b1));
     wire d94_d3, d94_d4, d94_d5, d94_d6, d94_d7;

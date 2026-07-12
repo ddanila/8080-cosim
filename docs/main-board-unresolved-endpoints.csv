@@ -191,6 +191,7 @@ P0,D93,18,VG93_FDC,LATE,PLAN physical-connectivity blocker
 P0,D93,19,VG93_FDC,MR_N,PLAN physical-connectivity blocker
 P0,D93,22,VG93_FDC,TEST,PLAN physical-connectivity blocker
 P0,D93,23,VG93_FDC,HLT,PLAN physical-connectivity blocker
+P0,D93,24,VG93_FDC,CLK,PLAN physical-connectivity blocker
 P0,D93,25,VG93_FDC,RG,PLAN physical-connectivity blocker
 P0,D93,26,VG93_FDC,RCLK,PLAN physical-connectivity blocker
 P0,D93,27,VG93_FDC,RAW_READ,PLAN physical-connectivity blocker
@@ -260,10 +261,10 @@ P0,D99,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
 P0,D99,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
 P0,D99,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker
 P0,D99,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
+P0,D99,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
 P0,D99,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
 P0,D99,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
 P0,D99,2,AG3_ONESHOT,B,PLAN physical-connectivity blocker
-P0,D99,3,AG3_ONESHOT,CLR_N,PLAN physical-connectivity blocker
 P0,D99,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
 P0,D99,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
 P0,D99,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker

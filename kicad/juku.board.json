@@ -9732,7 +9732,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; July-2026 component photo directly ties D99.3 CLR_N to grounded D96.7",
    "power": true,
    "nodes": [
     [
@@ -10250,6 +10250,10 @@
     [
      "D101",
      "8"
+    ],
+    [
+     "D99",
+     "3"
     ]
    ]
   },
@@ -12649,10 +12653,6 @@
   "FDC_WE_N": {
    "src": "July-2026 two-sided local fit + continuous component copper",
    "nodes": [["D94", "3"], ["D93", "2"]]
-  },
-  "FDC_CLK_1M": {
-   "src": "scan photo: July-2026 corrected D93/D99 solder fits plus continuous same-layer copper across the overlapping solder panorama",
-   "nodes": [["D99", "13"], ["D93", "24"]]
   },
   "D94_D3": {
    "src": "July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary",
