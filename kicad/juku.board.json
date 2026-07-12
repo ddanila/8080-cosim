@@ -5086,7 +5086,7 @@
   {
    "ref": "D99", "type": "AG3_ONESHOT",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 promoted, functional and RC pins remain continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; pin2 reaches a proved isolated test landing and pin3 is visibly grounded to D96.7, while the other 12 functional/RC contacts remain distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "D102", "type": "AG3_ONESHOT",
@@ -13659,6 +13659,54 @@
   "D98_OE56_BOUNDARY": {
    "src": "July-2026 validated package registration identifies D98 К155ЛП11 pin15 OE56_N; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D98", "15"]]
+  },
+  "D99_A1N_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "1"]]
+  },
+  "D99_Q1N_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "4"]]
+  },
+  "D99_Q2_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "5"]]
+  },
+  "D99_C2_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "6"]]
+  },
+  "D99_RC2_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "7"]]
+  },
+  "D99_A2N_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "9"]]
+  },
+  "D99_B2_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "10"]]
+  },
+  "D99_CLR2_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "11"]]
+  },
+  "D99_Q2N_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "12"]]
+  },
+  "D99_Q1_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "13"]]
+  },
+  "D99_C1_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "14"]]
+  },
+  "D99_RC1_BOUNDARY": {
+   "src": "July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary",
+   "nodes": [["D99", "15"]]
   },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",

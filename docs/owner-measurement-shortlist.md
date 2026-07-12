@@ -78,13 +78,12 @@ yet modeled as nets.
 | `D53` | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` | sheet-2 memory-timing continuity or source-proved NC |
 | `D59` | `5:I5, 6:O6` | sheet-2 timing-chain continuity |
 | `D93` | `1:NC_BACK_BIAS, 15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` | continuity from an actual `.009` FDC-populated board |
-| `D99` | `1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` | continuity from an actual `.009` FDC-populated board |
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `155`
+- Generated bring-up verification nets: `167`
 - `FDC`: `3` net(s)
-- `logic`: `127` net(s)
+- `logic`: `139` net(s)
 - `memory/decode`: `7` net(s)
 - `sound/analog`: `1` net(s)
 - `timing/I/O`: `7` net(s)

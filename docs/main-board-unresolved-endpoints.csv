@@ -37,17 +37,5 @@ P0,D93,34,VG93_FDC,TR00,PLAN physical-connectivity blocker
 P0,D93,35,VG93_FDC,INDEX,PLAN physical-connectivity blocker
 P0,D93,36,VG93_FDC,WPRT,PLAN physical-connectivity blocker
 P0,D93,40,VG93_FDC,VDD_12V,PLAN physical-connectivity blocker
-P0,D99,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
-P0,D99,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
-P0,D99,11,AG3_ONESHOT,CLR2_N,PLAN physical-connectivity blocker
-P0,D99,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
-P0,D99,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
-P0,D99,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
-P0,D99,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
-P0,D99,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
-P0,D99,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
-P0,D99,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
-P0,D99,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
-P0,D99,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
 P1,R94,2,R_AXIAL,P2,functional endpoint lacks disposition
 P1,S1,3,SW,symbol-union boundary,functional endpoint lacks disposition
