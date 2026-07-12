@@ -25,10 +25,15 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R86 | 298.208, 103.688 | absent | - | lowest resistor in the four-part row right of C19 |
 | C20 | 299.917, 110.117 | absent | - | first vertical capacitor at the right end of D102 |
 | C22 | 302.204, 110.093 | absent | - | second vertical capacitor at the right end of D102 |
+| C63 | 240.224, 141.607 | 176.100, 145.600 | +64.124, -3.993 | factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes |
 
 D93, C10, C11, and C15 have source-PCB footprints at their projected
 factory-drawing positions. The other named parts remain explicit physical/BOM omissions until their package and electrical endpoints
 are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.
+The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.
+Its body-centre projection is retained as a placement lead, but moving the generic
+two-pin footprint there would overlap D41.13; owner-side lead-hole registration is
+required before promoting C63, and this site must not be used to clear C13's D95 collision.
 The owner component view does not expose a complete electrical path at either corrected
 site: C11's landings are visible without an unambiguous body, while C15 is hidden by the
 factory cable. Neither placement is connectivity evidence.

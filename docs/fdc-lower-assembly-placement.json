@@ -270,6 +270,27 @@
       "projected_delta_mm": null,
       "observation": "second vertical capacitor at the right end of D102",
       "electrical_evidence": false
+    },
+    {
+      "refdes": "C63",
+      "drawing_px": [
+        1595.5,
+        3071.5
+      ],
+      "projected_board_mm": [
+        240.224,
+        141.607
+      ],
+      "current_footprint_mm": [
+        176.1,
+        145.6
+      ],
+      "projected_delta_mm": [
+        64.124,
+        -3.993
+      ],
+      "observation": "factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes",
+      "electrical_evidence": false
     }
   ]
 }

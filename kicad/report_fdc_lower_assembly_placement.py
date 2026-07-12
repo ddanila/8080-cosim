@@ -108,6 +108,10 @@ for item in targets:
 lines += ["", "D93, C10, C11, and C15 have source-PCB footprints at their projected",
           "factory-drawing positions. The other named parts remain explicit physical/BOM omissions until their package and electrical endpoints",
           "are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.",
+          "The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.",
+          "Its body-centre projection is retained as a placement lead, but moving the generic",
+          "two-pin footprint there would overlap D41.13; owner-side lead-hole registration is",
+          "required before promoting C63, and this site must not be used to clear C13's D95 collision.",
           "The owner component view does not expose a complete electrical path at either corrected",
           "site: C11's landings are visible without an unambiguous body, while C15 is hidden by the",
           "factory cable. Neither placement is connectivity evidence."]

@@ -25,6 +25,7 @@
     {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19"},
     {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19"},
     {"refdes": "C20", "drawing_px": [2648.0, 2545.0], "observation": "first vertical capacitor at the right end of D102"},
-    {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "second vertical capacitor at the right end of D102"}
+    {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "second vertical capacitor at the right end of D102"},
+    {"refdes": "C63", "drawing_px": [1595.5, 3071.5], "observation": "factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes"}
   ]
 }
