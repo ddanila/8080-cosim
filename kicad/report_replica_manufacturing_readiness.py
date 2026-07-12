@@ -123,11 +123,17 @@ def toolchain_rows(fab_dir):
 def build_report(fab_dir):
     failures = []
     order_result = run_order_readiness(fab_dir)
-    if order_result.returncode != 0:
+    # report_order_readiness returns 3 after successfully writing a coherent
+    # NOT READY / DESIGN HOLD report.  Only other nonzero codes mean its
+    # regeneration failed; the report's own status remains the release gate.
+    if order_result.returncode not in (0, 3):
         detail = order_result.stderr.strip() or order_result.stdout.strip()
         failures.append("order-readiness regeneration failed" + (f": {detail}" if detail else ""))
     evidence_result = run_order_evidence_template(fab_dir)
-    if evidence_result.returncode != 0:
+    # The evidence-template generator likewise uses 3 for a valid template
+    # whose prerequisite reports are held.  Its FAIL rows are consumed below;
+    # do not duplicate the entire generated template as a process failure.
+    if evidence_result.returncode not in (0, 3):
         detail = evidence_result.stderr.strip() or evidence_result.stdout.strip()
         failures.append("order-evidence-template regeneration failed" + (f": {detail}" if detail else ""))
 

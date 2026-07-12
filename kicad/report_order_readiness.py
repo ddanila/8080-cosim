@@ -47,7 +47,14 @@ def table_row(values):
 
 
 def run_fab_readiness(board, out_dir):
-    subprocess.run([str(FAB_REPORT), str(board), str(out_dir)], check=True)
+    result = subprocess.run([str(FAB_REPORT), str(board), str(out_dir)], check=False)
+    # report_fab_readiness uses 3 for a successfully generated NOT READY
+    # report.  That is an expected design/package hold, not a tool failure;
+    # order-readiness still needs the emitted JSON to describe the blockers.
+    if result.returncode not in (0, 3):
+        raise subprocess.CalledProcessError(
+            result.returncode, [str(FAB_REPORT), str(board), str(out_dir)]
+        )
     return out_dir / "juku_routed-drc.json"
 
 

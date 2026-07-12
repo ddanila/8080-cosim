@@ -13,8 +13,10 @@ with the machine-readable board model.
 - `sync/check.sh` currently compares 100 mapped instances and 251 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints, no KiCad clearance/short
-  errors, and one explicit `M5V_DERIVED` airwire after correcting D105.10. Its Gerber/drill ZIP is reproducible
-  and internally coherent. Current ZIP SHA256:
+  errors, and one explicit `M5V_DERIVED` airwire after correcting D105.10. Its
+  saved Gerber/drill ZIP is checksum-reproducible, but the manufacturing gate
+  correctly marks the package invalid until that airwire and the stale routed
+  snapshot are replaced. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
 - The main board is **not released for fabrication**. D2's physical inputs are
   traced but its truth table and routed-snapshot update are missing; D94 still

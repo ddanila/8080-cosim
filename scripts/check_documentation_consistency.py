@@ -99,10 +99,25 @@ def main() -> int:
 
     order = read("fab/gerbers/order-readiness.md")
     if design_held:
-        if "Status: **DESIGN HOLD / PACKAGE VERIFIED**" not in manufacturing:
-            failures.append("manufacturing report does not distinguish package verification from design hold")
-        if fab_root.exists() and "Status: **PACKAGE READY / DESIGN HOLD**" not in order:
-            failures.append("order-readiness report does not expose the active design hold")
+        manufacturing_held = any(
+            status in manufacturing
+            for status in (
+                "Status: **DESIGN HOLD / PACKAGE VERIFIED**",
+                "Status: **PACKAGE INVALID**",
+            )
+        )
+        if not manufacturing_held:
+            failures.append("manufacturing report exposes neither design hold nor package invalidity")
+        order_held = any(
+            status in order
+            for status in (
+                "Status: **PACKAGE READY / DESIGN HOLD**",
+                "Status: **PACKAGE INCOMPLETE**",
+                "Status: **NOT READY**",
+            )
+        )
+        if fab_root.exists() and not order_held:
+            failures.append("order-readiness report exposes neither design hold nor package blockers")
         for path, text in core.items():
             if "READY TO UPLOAD" in text or "ORDER READY" in text:
                 failures.append(f"{path} contains obsolete release language")
@@ -215,7 +230,12 @@ def main() -> int:
         return 1
 
     held = ", ".join(name for name, active in blockers.items() if active)
-    package_scope = "local package verified" if upload_zip.exists() else "tracked package record verified"
+    if "Status: **PACKAGE INVALID**" in manufacturing:
+        package_scope = "local package invalidity exposed"
+    elif upload_zip.exists():
+        package_scope = "local package verified"
+    else:
+        package_scope = "tracked package record verified"
     print(f"Documentation status is consistent; design hold: {held or 'none'}; {package_scope}.")
     return 0
 

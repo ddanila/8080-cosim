@@ -2,8 +2,10 @@
 
 Status date: **2026-07-12**.
 
-Release status: **DESIGN HOLD**. The saved main-board package is a reproducible
-engineering snapshot, not fabrication authorization.
+Release status: **DESIGN HOLD / PACKAGE INVALID**. The saved main-board ZIP is
+a checksum-reproducible engineering snapshot, not fabrication authorization;
+the current routed board still has one explicit airwire and fails its package
+readiness gates.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module (documented by its ПЭЗ parts list and СБ assembly drawing; the earlier
@@ -30,7 +32,7 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 100 mapped instances and 251 matched nets; the complete D59/Z1/C73/R31/R32 oscillator loop, S4 SPDT interrupt selector, parallel D46/D47 S3 preset rails, and D40 shared control pull-up are source-modeled and LVS-visible | Unmapped footprints, omitted pins, behavioral correctness, the analog oscillator waveform, and historical correctness of assumed nets |
-| PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a reproducible 2-layer 310 x 266 mm Gerber/drill package | The routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes and is not electrically complete |
+| PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a checksum-reproducible 2-layer 310 x 266 mm Gerber/drill snapshot | The manufacturing gate correctly marks this package invalid: the routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes, is electrically incomplete, and must not be ordered |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The saved upload ZIP is
