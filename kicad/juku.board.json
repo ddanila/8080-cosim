@@ -4088,7 +4088,7 @@
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/INTRQ, VSS pin20, +5V VCC pin21, and +12V VDD pin40 restored; July-2026 local photo traces RE/CS/WE privately to D94 D0-D2; pin 1 internal back-bias node must remain open; all restored drive-interface destinations and +12V continuity require target-board source confirmation"
+    "pins": "Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, write, DDEN, DRQ/INTRQ, VSS pin20, +5V VCC pin21, and +12V VDD pin40 restored; July-2026 local photos trace RE/CS/WE privately to D94 D0-D2 and the corrected two-layer clock path to D106 Q3/pin7; pin 1 internal back-bias node must remain open; all other restored drive-interface destinations and +12V continuity require target-board source confirmation"
    }
   },
   {
@@ -4998,7 +4998,7 @@
   {
    "ref": "D106", "type": "IE7_CTR",
    "pins": {"5": "UP", "4": "DOWN", "15": "D0", "1": "D1", "10": "D2", "9": "D3", "11": "LOAD_N", "14": "CLR", "3": "Q0", "2": "Q1", "6": "Q2", "7": "Q3", "12": "CO", "13": "BO"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout", "pins": "power pins 8/16 promoted; counter inputs and outputs remain explicit FDC continuity boundaries"}
+   "prov": {"type": "scan+photo", "refdes": ".009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout", "pins": "power pins 8/16 promoted; corrected two-sided local fits and continuous two-layer copper prove Q3/pin7 to D93 CLK/pin24; remaining counter inputs and outputs remain explicit FDC continuity boundaries"}
   },
   {
    "ref": "D28", "type": "LN3_OC_INV",
@@ -12649,6 +12649,10 @@
   "FDC_WE_N": {
    "src": "July-2026 two-sided local fit + continuous component copper",
    "nodes": [["D94", "3"], ["D93", "2"]]
+  },
+  "FDC_CLK_1M": {
+   "src": "July-2026 corrected D93/D106 two-sided fits + continuous solder/component copper through the shared layer handoff; К555ИЕ7 Q3 is the /16 tap supplying D93's required 1 MHz clock, while D106's upstream counter clock remains untraced",
+   "nodes": [["D106", "7"], ["D93", "24"]]
   },
   "D94_D3": {
    "src": "July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary",

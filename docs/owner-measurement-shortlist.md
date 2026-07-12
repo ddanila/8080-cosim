@@ -74,7 +74,7 @@ yet modeled as nets.
 | `D100` | `9:OE_N, 11:T` | continuity from an actual `.009` FDC-populated board |
 | `D101` | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` | continuity from an actual `.009` FDC-populated board |
 | `D102` | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` | continuity from an actual `.009` FDC-populated board |
-| `D106` | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` | continuity from an actual `.009` FDC-populated board |
+| `D106` | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` | continuity from an actual `.009` FDC-populated board |
 | `D11` | `14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY` | sheet-1 continuity plus `docs/serial-handoff.md` |
 | `D28` | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` | continuity from an actual `.009` FDC-populated board |
 | `D3` | `3:I3, 4:O4, 5:I5, 6:O6` | sheet-1 serial/interrupt continuity or source-proved NC |
@@ -82,7 +82,7 @@ yet modeled as nets.
 | `D41` | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` | sheet-2 timing-chain continuity |
 | `D53` | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` | sheet-2 memory-timing continuity or source-proved NC |
 | `D59` | `1:XIN, 5:I5, 6:O6, 8:O8, 9:I9, 10:O10` | sheet-2 timing-chain continuity |
-| `D93` | `1:NC_BACK_BIAS, 15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` | continuity from an actual `.009` FDC-populated board |
+| `D93` | `1:NC_BACK_BIAS, 15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` | continuity from an actual `.009` FDC-populated board |
 | `D95` | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` | continuity from an actual `.009` FDC-populated board |
 | `D96` | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 8:Q2_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` | continuity from an actual `.009` FDC-populated board |
 | `D97` | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` | continuity from an actual `.009` FDC-populated board |

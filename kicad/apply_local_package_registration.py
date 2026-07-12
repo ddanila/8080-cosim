@@ -141,7 +141,7 @@ def main() -> None:
                 "so the target-board destination or intentional NC state remains "
                 "unproved",
             )
-        if row["refdes"] == "D93" and side == "solder":
+        if row["refdes"] == "D93" and side == "solder" and row["review_state"] != "accepted":
             if row["pin"] == "19":
                 row["note"] = (
                     "Corrected two-column D93 orientation identifies MR_N/pin19 "
@@ -161,7 +161,7 @@ def main() -> None:
                     "photo chase started from a falsely projected pad and is withdrawn"
                 )
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
-        if suffix not in row["note"]:
+        if row["review_state"] != "accepted" and suffix not in row["note"]:
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")
         changed += 1
     expected = sum(len(item["projected_pins"]) for key, item in fits.items() if key[1] in sides)

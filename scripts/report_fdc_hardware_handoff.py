@@ -118,6 +118,10 @@ def main() -> int:
         if item.get("refdes") == "D93" and item.get("side") == "solder"
     ]
     d93_solder_pins = d93_solder_fits[0].get("projected_pins", {}) if d93_solder_fits else {}
+    fdc_clock_ok = (
+        has_node(board, "FDC_CLK_1M", "D93", "24")
+        and has_node(board, "FDC_CLK_1M", "D106", "7")
+    )
     d93_socket_fits_ok = (
         len(d93_component_fits) == 1
         and d93_component_fits[0].get("image", "").endswith("PXL_20260710_202708344.jpg")
@@ -237,9 +241,9 @@ def main() -> int:
         ),
         (
             "D93.24 `CLK`",
-            "MISSING" if not any(has_node(board, n, "D93", "24") for n in board["nets"]) else "WIRED",
+            "WIRED" if fdc_clock_ok else "MISSING",
             "1 MHz FDC clock rail",
-            "photo with the physical КР1818ВГ93 temporarily removed from its socket plus the corrected two-column solder fit localizes the joint and westbound trace; clock source remains unproved",
+            "corrected D93/D106 two-sided fits prove continuous solder copper from D93.24 to a shared layer handoff and continuous component copper onward to D106.7 Q3; Q3 is the /16 tap, while D106's upstream counter clock remains untraced",
         ),
         (
             "D100.9 `OE_N`",
