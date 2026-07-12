@@ -619,7 +619,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete КР580ВВ51А/8251 package contract including VSS pin4 and +5V VCC pin26; verified data/control/serial pins include RXRDY, TXRDY, SYNDET, CTS, TXEMPTY, CLK, RESET, and DSR; auxiliary destinations or intentional NC state require source confirmation"
+    "pins": "complete КР580ВВ51А/8251 package contract including VSS pin4 and +5V VCC pin26; sheet-1 connects SYNDET to S4 and omits TXEMPTY pin18 from the drawn symbol, proving NC for the older source; RXRDY/TXRDY remain a target-revision conflict because .006 routes them to PIC IR0/IR1 while .009 uses those inputs for the FDC"
    }
   },
   {
@@ -14899,6 +14899,7 @@
   ["D47", "13"],
   ["D103", "12"],
   ["D103", "13"],
-  ["D103", "14"]
+  ["D103", "14"],
+  ["D11", "18"]
  ]
 }

@@ -21,6 +21,7 @@ python3 scripts/report_serial_handoff.py
 | --- | --- | --- |
 | D11 is the board USART | PASS | board JSON |
 | D11 complete auxiliary pin contract is exposed | PASS | КР580ВВ51А/8251 datasheet contract |
+| D11 TXEMPTY is source-proved NC | PASS | full-resolution sheet-1 omits pin 18 from the drawn USART symbol |
 | D11 power-pin contract is routed | PASS | D11.4 GND / D11.26 +5V |
 | D11 chip select is decoded | PASS | `CS_D11` |
 | D11 register select BA0 is wired | PASS | `BA0` |
@@ -89,17 +90,15 @@ python3 scripts/report_serial_handoff.py
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
 - D11 auxiliary pins remain physical-source blockers:
-  14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY.
+  14:RXRDY, 15:TXRDY.
   Trace each destination or record a source-proved intentional NC before
   treating the USART portion of the PCB as complete.
 - The `.006` sheet explicitly draws D11 RxRDY/TxRDY to PIC IR0/IR1,
   but `.009` uses those PIC inputs for КР1818ВГ93 INTRQ/DRQ; preserving
   the FDC-era target therefore requires `.009` continuity rather than
   copying the older conductors.
-- D11 SYNDET pin 16 and TXEMPTY pin 18 are omitted from the `.006` USART
-  symbol with no attached conductor. The separately labeled `(3) SYNDET`
-  rail enters the S4 interrupt selector and is not visibly joined to D11.16;
-  treat both USART pins as target-revision NC/continuity questions, not as
-  inferred S4 wiring.
+- Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.
+  D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an
+  explicit NC rather than an unresolved functional endpoint.
 - External X3 loopback, electrical levels, and full 8251 sync/parity
   modes remain Tier-2 bench/software work after that PCB-truth boundary.

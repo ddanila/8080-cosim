@@ -50,6 +50,10 @@ def pin_is_netted(board: dict, ref: str, pin: str) -> bool:
     return any([ref, pin] in net.get("nodes", []) for net in board["nets"].values())
 
 
+def pin_is_nc(board: dict, ref: str, pin: str) -> bool:
+    return [ref, pin] in board.get("no_connects", [])
+
+
 def marker(path: str, *needles: str) -> bool:
     text = (ROOT / path).read_text(errors="replace")
     return all(needle in text for needle in needles)
@@ -70,6 +74,14 @@ def check_rows(board: dict) -> list[list[object]]:
             all(chip(board, "D11").get("pins", {}).get(pin) == role
                 for pin, role in AUXILIARY_PINS.items()),
             "КР580ВВ51А/8251 datasheet contract",
+        )
+    )
+    checks.append(
+        (
+            "D11 TXEMPTY is source-proved NC",
+            chip(board, "D11").get("pins", {}).get("18") == "TXEMPTY"
+            and pin_is_nc(board, "D11", "18"),
+            "full-resolution sheet-1 omits pin 18 from the drawn USART symbol",
         )
     )
     checks.append(
@@ -294,7 +306,7 @@ def main() -> int:
             "- D11 auxiliary pins remain physical-source blockers:",
             "  " + ", ".join(
                 f"{pin}:{role}" for pin, role in AUXILIARY_PINS.items()
-                if not pin_is_netted(board, "D11", pin)
+                if not pin_is_netted(board, "D11", pin) and not pin_is_nc(board, "D11", pin)
             ) + ".",
             "  Trace each destination or record a source-proved intentional NC before",
             "  treating the USART portion of the PCB as complete.",
@@ -302,11 +314,9 @@ def main() -> int:
             "  but `.009` uses those PIC inputs for КР1818ВГ93 INTRQ/DRQ; preserving",
             "  the FDC-era target therefore requires `.009` continuity rather than",
             "  copying the older conductors.",
-            "- D11 SYNDET pin 16 and TXEMPTY pin 18 are omitted from the `.006` USART",
-            "  symbol with no attached conductor. The separately labeled `(3) SYNDET`",
-            "  rail enters the S4 interrupt selector and is not visibly joined to D11.16;",
-            "  treat both USART pins as target-revision NC/continuity questions, not as",
-            "  inferred S4 wiring.",
+            "- Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.",
+            "  D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an",
+            "  explicit NC rather than an unresolved functional endpoint.",
             "- External X3 loopback, electrical levels, and full 8251 sync/parity",
             "  modes remain Tier-2 bench/software work after that PCB-truth boundary.",
             "",
