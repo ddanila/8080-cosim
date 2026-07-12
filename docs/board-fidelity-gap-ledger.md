@@ -21,7 +21,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `275`
 - Nets modeled: `361`
 - Chip-level fidelity gaps: `62`
-- Net-level source-risk gaps: `47`
+- Net-level source-risk gaps: `46`
 - Documented intentional no-connect pins: `16`
 
 ## Chip Provenance Types
@@ -55,7 +55,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | logic/source | 11 | 5 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
-| video/analog | 0 | 12 |
+| video/analog | 0 | 11 |
 | video/timing | 2 | 0 |
 
 ## Chip-Level Gaps
@@ -247,7 +247,6 @@ same fidelity ledger as the chip provenance gaps.
 | `RF_RAIL` | video/analog | `VT3.3, C9.2, R72.2, C10.1, R73.1, C11.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
 | `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merg... |
 | `SND_MIX` | video/analog | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `SOUND_CLAMP` | video/analog | `R66.2, VD3.2, R67.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R66.1 <- the "SOUND" PIT line [sourc... |
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |

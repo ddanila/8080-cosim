@@ -7,8 +7,8 @@ Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**
 This generated report isolates the sheet-2 analog video, RF, and
 analog-corner sound-mix handoff. It guards the traced board endpoints
 that feed the composite-video connector and RF output while keeping
-electrical levels, RF tuning, and the unresolved R66.1 source as
-bring-up or source-read boundaries.
+electrical levels and RF tuning as bring-up boundaries. R66.1 is
+source-proved on the sheet's B (+12 V) rail.
 
 ## Command
 
@@ -44,6 +44,7 @@ python3 scripts/report_video_analog_boundary.py
 | VT3 RF/video stage is modeled | PASS | VT3 provenance: sheet-2 analog corner |
 | VT4 RF oscillator/output stage is modeled | PASS | VT4 provenance: sheet-2 analog corner |
 | L1 adjustable tank coil retains its separate 1/5 tap | PASS | L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP |
+| R66 clamp input is fed from the sheet-2 B (+12 V) rail | PASS | sheet-2 B-arrow enters R66.1; power legend defines B (+12) |
 | VIDEO_OUT connector maps to X7 | PASS | X7.1 signal / X7.2 return |
 | HF_OUT connector maps to X6 | PASS | X6.1 signal / X6.2 return |
 
@@ -51,7 +52,6 @@ python3 scripts/report_video_analog_boundary.py
 
 | Boundary | Result | Current evidence |
 | --- | --- | --- |
-| Analog-corner SOUND injection remains source-boundary only | PASS | R66.1 source is still not netted; do not merge with beeper SOUND without source evidence |
 | Composite/RF electrical levels remain bench-only | PASS | transistor bias, RF tank tuning, and output level/current are not digital-netlist facts |
 | X6/X7 connector identity remains assembly-drawing bounded | PASS | connector labels are guarded but need bring-up/photo confirmation for the .158 board |
 
@@ -63,7 +63,7 @@ python3 scripts/report_video_analog_boundary.py
 | `D34_SIG` | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `VIDEO_OUT` | `R65.1, VT2.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible) |
-| `SOUND_CLAMP` | `R66.2, R67.1, VD3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R66.1 <- the "SOUND" PIT line [source pin pending]; VD3 KC147 clamp |
+| `SOUND_CLAMP` | `R66.2, R67.1, VD3.2` | scan sheet-2 analog corner: R66.2 joins VD3.2/R67.1; R66.1 is separately source-proved on power rail B(+12); VD3 is КС147Г clamp |
 | `SND_MIX` | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `VT3_BASE` | `C13.1, R68.2, R69.2, R70.2, R71.1, VT3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 | `RF_RAIL` | `C10.1, C11.1, C9.2, R72.2, R73.1, VT3.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
@@ -83,5 +83,4 @@ python3 scripts/report_video_analog_boundary.py
   composite/RF amplitude, polarity margins, and tank adjustment still need
   bench capture during bring-up.
 - The analog-corner `SOUND_CLAMP` path is not the same as the already guarded
-  beeper speaker driver. R66.1 remains unnetted until source evidence proves
-  the analog sound-mix input.
+  beeper speaker driver. Sheet 2 instead proves R66.1 is biased from B (+12 V).

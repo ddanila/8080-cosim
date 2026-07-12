@@ -13,11 +13,11 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `47`
-- Verification-point endpoints checked in PCB: `232`
+- Verification-point nets: `46`
+- Verification-point endpoints checked in PCB: `229`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1998`
-- All board endpoints checked in routed PCB: `1998`
+- All board endpoints checked in source PCB: `1999`
+- All board endpoints checked in routed PCB: `1999`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -26,7 +26,7 @@ visible and actionable before manufacturing and first power-on.
 | FDC | 3 |
 | logic | 21 |
 | memory/decode | 6 |
-| sound/analog | 2 |
+| sound/analog | 1 |
 | timing/I/O | 5 |
 | video/analog | 10 |
 
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 232/232 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 232/232 net names matched |
+| Risk endpoints present on PCB pads | PASS | 229/229 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 229/229 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1998/1998 | 1998/1998 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/1998 | 1916/1998 | FAIL |
+| `kicad/juku.kicad_pcb` | 1999/1999 | 1999/1999 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/1999 | 1916/1999 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -94,6 +94,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `KBD_STB: A49.1`
 - `M12V: A59.1`
 - `P12V: A60.1`
+- `P12V: R66.1`
 - `P5V: D10.16`
 - `P5V: A61.1`
 - `P5V: R104.2`
@@ -182,7 +183,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `RF_RAIL` | video/analog | `VT3.3, C9.2, R72.2, C10.1, R73.1, C11.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed | Scope/capture video or timing node during video bring-up. |
 | `ROE` | memory/decode | `D6.9, D13.1, D92.1, R14.2` | traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merged factory wire W13... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `SND_MIX` | sound/analog | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Bench-check waveform/current path with speaker disconnected first. |
-| `SOUND_CLAMP` | sound/analog | `R66.2, VD3.2, R67.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R66.1 <- the "SOUND" PIT line [source pin pending]; VD3... | Bench-check waveform/current path with speaker disconnected first. |
 | `SSTB_N` | logic | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board... | Scope/capture video or timing node during video bring-up. |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |

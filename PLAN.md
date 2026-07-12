@@ -77,7 +77,7 @@ PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
 inputs instead passes 789,879 lockstep reads through 130 ms.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 47 source-risk nets and 9 official FDC
+   current generated evidence lists 46 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -102,7 +102,7 @@ NC/continuity proof.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `1998/1998` PCB-scoped board-JSON endpoints.
+The source PCB now passes all `1999/1999` PCB-scoped board-JSON endpoints.
 Thirty-four endpoints on bracket-mounted S1/X3/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -169,6 +169,9 @@ extraction work from that set:
    formerly omitted C12.2 endpoint, with a three-pad electrical stand-in. The
    real coil footprint and location still require photo/solder registration;
    the adjacent yellow `680п` capacitor is explicitly not L1.
+   The same full-resolution sheet closes the former R66.1 source boundary:
+   its `B` arrow is the power legend's `B (+12)`, so R66.1 is now on `P12V`
+   rather than an invented PIT `SOUND` input.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

@@ -115,6 +115,11 @@ def main() -> int:
             "L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP",
         ),
         (
+            "R66 clamp input is fed from the sheet-2 B (+12 V) rail",
+            ("R66", "1") in nodes(board, "P12V"),
+            "sheet-2 B-arrow enters R66.1; power legend defines B (+12)",
+        ),
+        (
             "VIDEO_OUT connector maps to X7",
             ("X7", "1") in nodes(board, "VIDEO_OUT") and ("X7", "2") in nodes(board, "GND"),
             "X7.1 signal / X7.2 return",
@@ -127,11 +132,6 @@ def main() -> int:
     ]
 
     boundary_checks = [
-        (
-            "Analog-corner SOUND injection remains source-boundary only",
-            not has_pin(board, "R66", "1"),
-            "R66.1 source is still not netted; do not merge with beeper SOUND without source evidence",
-        ),
         (
             "Composite/RF electrical levels remain bench-only",
             True,
@@ -158,8 +158,8 @@ def main() -> int:
         "This generated report isolates the sheet-2 analog video, RF, and",
         "analog-corner sound-mix handoff. It guards the traced board endpoints",
         "that feed the composite-video connector and RF output while keeping",
-        "electrical levels, RF tuning, and the unresolved R66.1 source as",
-        "bring-up or source-read boundaries.",
+        "electrical levels and RF tuning as bring-up boundaries. R66.1 is",
+        "source-proved on the sheet's B (+12 V) rail.",
         "",
         "## Command",
         "",
@@ -220,8 +220,7 @@ def main() -> int:
             "  composite/RF amplitude, polarity margins, and tank adjustment still need",
             "  bench capture during bring-up.",
             "- The analog-corner `SOUND_CLAMP` path is not the same as the already guarded",
-            "  beeper speaker driver. R66.1 remains unnetted until source evidence proves",
-            "  the analog sound-mix input.",
+            "  beeper speaker driver. Sheet 2 instead proves R66.1 is biased from B (+12 V).",
             "",
         ]
     )
