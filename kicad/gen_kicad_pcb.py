@@ -67,6 +67,7 @@ PASSIVE_FP_REF = {
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
+    'R34':(247.0,125.6,90),  # 13k D40 CLR/LOAD pull-up, left of D40 [sheet-2]
     'R46':(249.0,180.0,90),  # 200R vertical immediately left of D33 [owner photo]
     'C6':(251.0,165.0,90),   # 56p D33 input shunt [sheet-2; local placement approximate]
     'R33':(297.5,133.3,0),   # 620R D34 RC resistor, horizontal above D34 [owner photo]

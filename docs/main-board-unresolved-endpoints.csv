@@ -74,7 +74,6 @@ P1,D35,3,CLK_PHASE,I3,functional endpoint lacks disposition
 P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
 P0,D39,10,LA3_GATE,B2,memory/decode source-risk blocker
 P0,D39,2,LA3_GATE,B3,memory/decode source-risk blocker
-P1,D40,1,CT16_CTR,R_N,functional endpoint lacks disposition
 P1,D40,10,CT16_CTR,ET,functional endpoint lacks disposition
 P1,D40,15,CT16_CTR,CO,functional endpoint lacks disposition
 P1,D40,3,CT16_CTR,D0,functional endpoint lacks disposition
@@ -82,7 +81,6 @@ P1,D40,4,CT16_CTR,D1,functional endpoint lacks disposition
 P1,D40,5,CT16_CTR,D2,functional endpoint lacks disposition
 P1,D40,6,CT16_CTR,D3,functional endpoint lacks disposition
 P1,D40,7,CT16_CTR,EP,functional endpoint lacks disposition
-P1,D40,9,CT16_CTR,PE_N,functional endpoint lacks disposition
 P0,D41,1,IR16,DS,PLAN physical-connectivity blocker
 P0,D41,10,IR16,QD,PLAN physical-connectivity blocker
 P0,D41,11,IR16,QC,PLAN physical-connectivity blocker

@@ -1105,7 +1105,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "scan; CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm"
    }
   },
   {
@@ -4110,6 +4110,17 @@
     "pins": "drawn from the C5.2/D34.2 RC node to ground"
    },
    "value": "620"
+  },
+  {
+   "ref": "R34",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "sheet-2 R34 13 kOhm D40 control pull-up",
+    "pins": "drawn from +5V rail A to the shared D40 pins 1 and 9 node"
+   },
+   "value": "13к"
   },
   {
    "ref": "R46",
@@ -9053,6 +9064,14 @@
    ],
    "src": "scan"
   },
+  "D40_CTRL_PULL": {
+   "src": "scan sheet-2: R34 13 kOhm pulls the continuous D40 CLR_N pin1 / LOAD_N pin9 node toward +5V",
+   "nodes": [
+    ["R34", "2"],
+    ["D40", "1"],
+    ["D40", "9"]
+   ]
+  },
   "D33_CLK_RC": {
    "src": "scan sheet-2: D40.Q0 passes through R46 200 ohm into D33.9; C6 56 pF shunts the D33 input node to ground",
    "nodes": [
@@ -10795,6 +10814,10 @@
     [
      "R20",
      "2"
+    ],
+    [
+     "R34",
+     "1"
     ],
     [
      "D3",
