@@ -1,6 +1,6 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-07-12**.
+Status date: **2026-07-13**.
 
 Release status: **DESIGN HOLD / PACKAGE INVALID**. The saved main-board ZIP is
 a checksum-reproducible engineering snapshot, not fabrication authorization;
@@ -31,9 +31,9 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 100 mapped instances and 251 matched nets; the complete D59/Z1/C73/R31/R32 oscillator loop, S4 SPDT interrupt selector, parallel D46/D47 S3 preset rails, and D40 shared control pull-up are source-modeled and LVS-visible | Unmapped footprints, omitted pins, behavioral correctness, the analog oscillator waveform, and historical correctness of assumed nets |
+| Connectivity | `sync/check.sh` reports 101 mapped instances and 254 matched nets; physical D2/D6 PROM tables and the measured D2/D30/D105/D13 READY/DBIN handoff are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a checksum-reproducible 2-layer 310 x 266 mm Gerber/drill snapshot | The manufacturing gate correctly marks this package invalid: the routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes, is electrically incomplete, and must not be ordered |
-| Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
+| Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, physical D2 `.037`/D6 `.038` captures, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D8/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The saved upload ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
@@ -58,29 +58,17 @@ closed and the corrected board has been rerouted and reviewed.
    All five remaining output pads and pin 15 now have explicit photo-grounded
    boundary nets, so they are no longer misreported as unused/unconnected;
    their far destinations/source and `.092` contents remain unresolved.
-3. **Close the WAIT/READY revision boundary.** D2 inputs and D0/pin 12 are now
-   modeled, D105 is modeled and routed, and D30 section A is closed. Resolve
-   D30 section B pins 8/11/13 and the pin-10/pin-12 source, then reconcile the
-   `.006` D95 inverter after D105.6 with `.009`'s FDC use of D95.
+3. **Finish the measured WAIT/READY edge boundaries.** Three matching physical
+   D2 `.037` reads, including a power-cycled capture, are adopted. Direct owner
+   continuity proves D2.12/R6 -> D30.2, D30.5 -> R29 -> CPU READY,
+   D30.10/.12 -> R5 pull-up, D1.17 DBIN + pulled-up edge `H` -> D105, and
+   D105.6 -> D5.4; D105.12/.13 receive MEMW and D105.11 drives D30.13.
+   Resolve D2 output pins 9-11, D30 pins 8/11, and the exact edge contact/pull-up
+   for `H`. The former D2.12->D105.9 and D105.10->−5 V assignments are rejected.
 
-The former D105.10-to-derived-−5 V assignment remains rejected: pin 10 of the
-К155ЛА3 is a TTL logic input receiving a named off-sheet `H` arrow, so −5 V
-would be electrically invalid. A full-resolution sheet-2 table does contain an
-`H (−5)` supply-row label, contradicting the earlier claim that no H legend
-exists; whether that supply notation and sheet-1's logic-arrow `H` are intended
-to be identical is now an explicit revision/notation conflict, not silently
-resolved either way. The unsafe connection and its two final routed segments
-remain removed. `H` is a guarded singleton logic boundary pending target-board
-continuity or a revision-matched source.
-The derived routed snapshot now exposes one `M5V_DERIVED` airwire rather than
-using D105.10 as a plated-through junction; fabrication remains on hold until a
-legal replacement route is found. A high simulation default for `H` diverges
-from the formerly constant-low gate behavior, so simulation uses a low default
-while the physical source remains unresolved. The deep cosim forces `ready=1`,
-making its former read-743,463 (`BA=D830`) mismatch independent of this WAIT
-chain. That mismatch was traced to the behavioral oracle using unphysical
-PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
-inputs instead passes 789,879 lockstep reads through 130 ms.
+The routed PCB/DSN/SES predate this measured topology. Do not locally restore
+the obsolete WAIT copper; regenerate the complete routed snapshot after the six
+source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
    current generated evidence lists 218 source-risk nets and 9 official FDC
@@ -108,7 +96,7 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2236/2236` PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2241/2241` PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
 holds routed-board adoption on six unique analog/FDC pad collisions.
@@ -240,8 +228,9 @@ blocker below).
 
 ### P0: programmable parts
 
-- Acquire repeated dumps or the Baltijets programming files for D2 `.037` and
-  D94 `.092`.
+- Acquire a D94 `.092` dump or Baltijets programming file; compare the validated
+  physical D2 `.037` and D6 `.038` tables against independent reads or original
+  programming files if those surface.
 - The host-side К556РТ4 capture validator is now guarded by a self-test and
   rejects missing, duplicate, unstable, non-complementary, or repeat-mismatched
   D2/D6 reads. It exports raw pin-level and active-low views separately with

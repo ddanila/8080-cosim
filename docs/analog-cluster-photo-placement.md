@@ -48,5 +48,5 @@ The R65/R67 increment itself removed their false D102-pad collisions. A later
 full-source DRC audit corrected the parser and exposed six other unique
 analog/FDC pad-collision pairs involving C13/R68/R69/R73/R74; the authoritative
 current placement status is `docs/source-pcb-drc.md`, not the earlier
-increment-local zero-short observation. The 100-instance LVS remains fully
-matched at 251 nets, but LVS does not validate physical placement clearance.
+increment-local zero-short observation. The 101-instance LVS remains fully
+matched at 254 nets, but LVS does not validate physical placement clearance.
