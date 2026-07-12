@@ -131,6 +131,12 @@ bare substrate with no via or annulus, so the feature is an isolated
 component-side landing/test pad rather than the previously suspected layer
 handoff. This closes the false solder chase without assigning OE_N's source.
 
+The corrected D93.24 joint launches a continuous westbound solder trace into
+the adjacent one-shot row. In the overlapping tile, its far joint is D99.13;
+the validated D99 fit identifies that pin as section-1 `Q`. This proves the
+physical `FDC_CLK_1M` net from D99.13 to the КР1818ВГ93 clock input while
+leaving D99's trigger and RC timing sources as explicit boundaries.
+
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint
 columns left of D28 with a 0.632 px pin-4 check; pins 7-8 extrapolate beneath

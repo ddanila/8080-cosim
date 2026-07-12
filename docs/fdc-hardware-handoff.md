@@ -78,7 +78,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | MISSING | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
 | D93.19 `MR_N` | MISSING | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
+| D93.24 `CLK` | WIRED | 1 MHz FDC clock rail | corrected D93/D99 fits and continuous same-layer solder copper prove D99.13 section-1 Q -> D93.24; D99 trigger/RC sources remain unresolved |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
 | D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
 
@@ -88,6 +88,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | --- | --- | --- |
 | `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | `D9.7` |
 | `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper | `D94.2, D93.3` |
+| `FDC_CLK_1M` | corrected D93/D99 local fits + continuous solder copper across overlapping tiles | `D99.13, D93.24` |
 | `FDC_DAL0` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.19, D93.7` |
 | `FDC_DAL1` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.18, D93.8` |
 | `FDC_DAL2` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.17, D93.9` |
@@ -111,8 +112,8 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   guarded by this report. Functional I/O decode into D94 remains blocked
   on pin 15, D3-D7 destinations, and the `.092` truth table.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
-  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
-  D100.11. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
+  confirm INTRQ/DRQ ordering, then identify D93.19, D100.9, D100.11, and
+  D99's upstream trigger/RC timing network. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
 - Trace every restored D93 drive-interface pin through D28/D95-D99/
   D101/D102/D106, and prove D93.40 to `P12V`; pin 40 is a power-safety

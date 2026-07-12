@@ -38,8 +38,9 @@ evidence exists.
 ## Remaining boundaries
 
 - The model is a Juku boot/media shim, not a general WD1793 conformance model.
-- Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
-  continuity checks in `docs/fdc-hardware-handoff.md`.
+- Physical D93 INTRQ/DRQ, reset, D100 OE/T, and the upstream D99 one-shot
+  timing network still require the targeted continuity checks in
+  `docs/fdc-hardware-handoff.md`; D99.13 to D93.24 CLK is now photo-proved.
 - D94 `.092` pins 1-3 are now wired to the three accepted local FDC controls;
   pin 15, outputs D3-D7, and PROM contents remain unknown and block main-board
   design release.

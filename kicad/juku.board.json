@@ -12650,6 +12650,10 @@
    "src": "July-2026 two-sided local fit + continuous component copper",
    "nodes": [["D94", "3"], ["D93", "2"]]
   },
+  "FDC_CLK_1M": {
+   "src": "scan photo: July-2026 corrected D93/D99 solder fits plus continuous same-layer copper across the overlapping solder panorama",
+   "nodes": [["D99", "13"], ["D93", "24"]]
+  },
   "D94_D3": {
    "src": "July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary",
    "nodes": [["D94", "4"]]
