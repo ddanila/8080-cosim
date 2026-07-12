@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg"
 TARGET = "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg"
 OUTPUT = ROOT / "docs/photo-registration/d96-d99-cross-registration.jpg"
+SOLDER = "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg"
 
 
 def project(matrix: np.ndarray, point: tuple[float, float]) -> tuple[float, float]:
@@ -63,8 +64,60 @@ def main() -> None:
         draw.text((x+23, y-10), f"D99.{pin}", fill=colour, stroke_width=2,
                   stroke_fill="black", font=font)
 
-    image.crop((2800, 400, 3450, 1150)).save(OUTPUT, quality=92)
+    component_landings = {"D96.8 landing": (3292.0, 951.0),
+                          "D99.2 landing": (3162.0, 951.0),
+                          "D99.3 GND path": (3106.0, 951.0)}
+    landing_colours = {"D96.8 landing": "cyan", "D99.2 landing": "magenta",
+                       "D99.3 GND path": "lime"}
+    for label, (x, y) in component_landings.items():
+        colour = landing_colours[label]
+        draw.ellipse((x-16, y-16, x+16, y+16), outline=colour, width=7)
+        draw.text((x+19, y-10), label, fill=colour, stroke_width=2,
+                  stroke_fill="black", font=font)
+
+    component_crop = image.crop((2800, 400, 3450, 1150))
+
+    d99_component = next(item for item in report["fits"]
+                         if item["refdes"] == "D99" and item["side"] == "component")
+    d99_solder = next(item for item in report["fits"]
+                      if item["refdes"] == "D99" and item["side"] == "solder")
+    rows, values = [], []
+    for pin in sorted(d99_component["projected_pins"], key=int):
+        x, y = d99_component["projected_pins"][pin]
+        u, v = d99_solder["projected_pins"][pin]
+        rows.extend(([x, y, 1, 0, 0, 0], [0, 0, 0, x, y, 1]))
+        values.extend((u, v))
+    affine = np.linalg.lstsq(np.array(rows), np.array(values), rcond=None)[0]
+    residuals = []
+    for pin in d99_component["projected_pins"]:
+        x, y = d99_component["projected_pins"][pin]
+        observed = np.array(d99_solder["projected_pins"][pin])
+        predicted = np.array([[x, y, 1, 0, 0, 0],
+                              [0, 0, 0, x, y, 1]]) @ affine
+        residuals.append(float(np.linalg.norm(predicted - observed)))
+    if max(residuals) > 0.001:
+        raise SystemExit(f"D99 cross-side affine drift: {max(residuals):.6f} px")
+
+    # Manually reviewed centres of the three circular component endpoints. The
+    # D99-local affine avoids the much looser board-wide cross-side transform.
+    landings = component_landings
+    solder_image = Image.open(ROOT / SOLDER).convert("RGB")
+    solder_draw = ImageDraw.Draw(solder_image)
+    colours = landing_colours
+    for label, (x, y) in landings.items():
+        u, v = np.array([[x, y, 1, 0, 0, 0],
+                         [0, 0, 0, x, y, 1]]) @ affine
+        colour = colours[label]
+        solder_draw.ellipse((u-16, v-16, u+16, v+16), outline=colour, width=7)
+        solder_draw.text((u+19, v-10), label, fill=colour, stroke_width=2,
+                         stroke_fill="black", font=font)
+    solder_crop = solder_image.crop((700, 850, 1250, 1150)).resize((650, 355))
+    combined = Image.new("RGB", (650, 1105), "black")
+    combined.paste(component_crop, (0, 0))
+    combined.paste(solder_crop, (0, 750))
+    combined.save(OUTPUT, quality=92)
     print(f"D96 cross-photo registration PASS: max anchor error {max(errors.values()):.3f} px")
+    print(f"D99 local cross-side affine PASS: max residual {max(residuals):.6f} px")
     print(f"wrote {OUTPUT.relative_to(ROOT)}")
 
 

@@ -139,8 +139,14 @@ D96.7 `GND`. The identity is no longer inferred merely from the package type:
 all 14 contacts of D96's validated fit in `PXL_20260710_200402344.jpg` project
 onto the same photographed КМ555ТМ2 in the overlapping
 `PXL_20260710_200418174.jpg`, with the notch and both rows aligned. The adjacent
-D96.8 `Q2_N` and D99.2 `B` conductors terminate at visibly separate through-holes;
-the overlay explicitly rejects their tempting apparent association. D99 section
+D96.8 `Q2_N` and D99.2 `B` conductors terminate at visibly separate circular landings;
+the overlay explicitly rejects their tempting apparent association. A second,
+package-local cross-side transform uses all 16 D99 package holes (maximum fit
+residual below 0.001 px) to project those circular endpoints into the solder
+photo. Both land on bare substrate immediately above the tinned rail, with no
+annulus or continuing copper; they are one-sided test landings, not through-holes.
+The already-proved neighboring D99.3 ground path is shown alongside as a local
+orientation check. D99 section
 1 is therefore held cleared and its pin-13 `Q`
 cannot be the live КР1818ВГ93 clock source. The alignment remains evidence for
 a nearby conductor, not an accepted `FDC_CLK_1M` net.

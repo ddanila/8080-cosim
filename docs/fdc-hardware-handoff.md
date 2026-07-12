@@ -113,7 +113,10 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 - Full-package cross-photo registration identifies the adjacent КМ555ТМ2 as
   D96: all 14 projected contacts and the notch align. Direct component copper
   closes D99.3 `CLR_N` to D96.7 `GND`. D96.8 `Q2_N` and D99.2 `B` instead
-  reach two separate through-holes and remain unresolved. The ground tie proves
+  reach two separate one-sided component test landings. A 16-hole D99-local
+  cross-side transform projects both onto bare solder-side substrate with no
+  annulus or continuation, so they are explicitly dispositioned rather than
+  treated as hidden vias. The ground tie proves
   D99 section 1 is held clear and rules out D99.13 `Q` as the live D93 clock
   source despite the tempting cross-tile solder alignment.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to

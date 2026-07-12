@@ -12654,6 +12654,14 @@
    "src": "July-2026 two-sided local fit + continuous component copper",
    "nodes": [["D94", "3"], ["D93", "2"]]
   },
+  "D96_Q2_N_TEST_LANDING": {
+   "src": "July-2026 D99-package-local cross-side affine: D96.8 Q2_N reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
+   "nodes": [["D96", "8"]]
+  },
+  "D99_B_TEST_LANDING": {
+   "src": "July-2026 D99-package-local cross-side affine: D99.2 B reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
+   "nodes": [["D99", "2"]]
+  },
   "D94_D3": {
    "src": "July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary",
    "nodes": [["D94", "4"]]

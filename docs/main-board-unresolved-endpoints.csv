@@ -229,7 +229,6 @@ P0,D96,3,TM2_DFF,CLK1,PLAN physical-connectivity blocker
 P0,D96,4,TM2_DFF,PRE1_N,PLAN physical-connectivity blocker
 P0,D96,5,TM2_DFF,Q1,PLAN physical-connectivity blocker
 P0,D96,6,TM2_DFF,Q1_N,PLAN physical-connectivity blocker
-P0,D96,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
 P0,D96,9,TM2_DFF,Q2,PLAN physical-connectivity blocker
 P0,D97,1,AG3_ONESHOT,A_N,PLAN physical-connectivity blocker
 P0,D97,10,AG3_ONESHOT,B2,PLAN physical-connectivity blocker
@@ -264,7 +263,6 @@ P0,D99,12,AG3_ONESHOT,Q2_N,PLAN physical-connectivity blocker
 P0,D99,13,AG3_ONESHOT,Q,PLAN physical-connectivity blocker
 P0,D99,14,AG3_ONESHOT,C1,PLAN physical-connectivity blocker
 P0,D99,15,AG3_ONESHOT,RC1,PLAN physical-connectivity blocker
-P0,D99,2,AG3_ONESHOT,B,PLAN physical-connectivity blocker
 P0,D99,4,AG3_ONESHOT,Q_N,PLAN physical-connectivity blocker
 P0,D99,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
 P0,D99,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker

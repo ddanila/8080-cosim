@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `48`
 - Verification-point endpoints checked in PCB: `238`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `1993`
-- All board endpoints checked in routed PCB: `1993`
+- All board endpoints checked in source PCB: `1996`
+- All board endpoints checked in routed PCB: `1996`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 1993/1993 | 1993/1993 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/1993 | 1920/1993 | FAIL |
+| `kicad/juku.kicad_pcb` | 1996/1996 | 1996/1996 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/1996 | 1920/1996 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -69,14 +69,17 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D94_D6: D94.7`
 - `D94_D7: D94.9`
 - `D94_EN_BOUNDARY: D94.15`
+- `D96_Q2_N_TEST_LANDING: D96.8`
 - `D98_Y1_R94: D98.3`
 - `D98_Y1_R94: R94.1`
 - `D98_Y3_S1_2: D98.7`
+- `D99_B_TEST_LANDING: D99.2`
 - `FDC_CS_N: D94.2`
 - `FDC_RE_N: D94.1`
 - `FDC_WE_N: D94.3`
 - `GND: R30.2`
 - `GND: A62.1`
+- `GND: D99.3`
 - `KBD_CONTRDAT: A50.1`
 - `KBD_CTRL: A51.1`
 - `KBD_FK: A55.1`
