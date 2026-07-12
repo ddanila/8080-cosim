@@ -126,9 +126,10 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 - Known: all eight D2 inputs and D0/pin 12 to D105.9 are routed in the
   authoritative board model/source PCB. The saved routed snapshot
   still predates the five new D2-to-D4 routes.
-- Known: D105.10 is a separate named off-sheet `H` input. The sheet's
-  power legend does not identify it as −5 V; that former assignment
-  masked D2 logically and has been removed from every PCB/route artifact.
+- Known: D105.10 is a separate named off-sheet `H` input. Sheet 2 also has an
+  `H (−5)` supply-table row, but applying −5 V to a К155ЛА3 TTL input would be
+  electrically invalid; the notation/revision conflict is unresolved. The
+  former assignment masked D2 logically and remains removed from every artifact.
   The routed snapshot consequently carries one honest −5 V airwire; a legal
   replacement route remains a fabrication blocker.
 - Simulation default: unresolved `H` defaults low to preserve the formerly

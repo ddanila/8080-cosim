@@ -3,10 +3,11 @@
 Status: **D105 H BOUNDARY CORRECTED / SOURCE UNRESOLVED**
 
 The full-resolution `.006` sheet draws a named off-sheet `H` arrow into
-D105 pin 10. It is not a power symbol. The separate sheet power legend
-names `+5B`, `+12B`, `−12B`, and ground and does not map `H` to the
-derived −5 V rail. The former connection was both electrically unsafe for
-a К155ЛА3 input and logically masked D2's only used PROM output.
+D105 pin 10, a К155ЛА3 TTL logic input. A full-resolution sheet-2
+supply table also contains `H (−5)`, disproving the earlier claim that no
+H supply legend exists. Equating the two would put −5 V on a TTL input,
+so this is retained as a revision/notation conflict rather than a supply
+connection. The former connection also masked D2's used PROM output.
 
 The correction removes D105.10 from −5 V in board JSON, source PCB, routed
 PCB, DSN, SES, and HDL. This exposes one honest −5 V airwire in the

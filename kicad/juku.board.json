@@ -14707,7 +14707,7 @@
    "nodes": [["D2", "12"], ["D105", "9"]]
   },
   "D105_10_H": {
-   "src": "sheet-1: named off-sheet arrow H enters D105 pin 10; the power legend separately names +5B/+12B/-12B/GND and does not identify H as the derived -5 V rail; source remains unresolved",
+   "src": "sheet-1: named off-sheet arrow H enters К155ЛА3 logic input D105.10; sheet-2 table also labels H(-5), but -5 V is invalid on this TTL input, leaving an explicit revision/notation conflict",
    "nodes": [["D105", "10"]]
   },
   "XACK_N": {

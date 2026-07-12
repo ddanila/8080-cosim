@@ -61,11 +61,15 @@ closed and the corrected board has been rerouted and reviewed.
    D30 section B pins 8/11/13 and the pin-10/pin-12 source, then reconcile the
    `.006` D95 inverter after D105.6 with `.009`'s FDC use of D95.
 
-The former D105.10-to-derived-−5 V assignment was disproved by the sheet itself:
-pin 10 receives a named off-sheet `H` arrow, while the separate power legend has
-no `H` supply entry. The unsafe connection and its two final routed segments are
-removed from every source/routed artifact. `H` is now a guarded singleton logic
-boundary; its source/timing remains part of this blocker.
+The former D105.10-to-derived-−5 V assignment remains rejected: pin 10 of the
+К155ЛА3 is a TTL logic input receiving a named off-sheet `H` arrow, so −5 V
+would be electrically invalid. A full-resolution sheet-2 table does contain an
+`H (−5)` supply-row label, contradicting the earlier claim that no H legend
+exists; whether that supply notation and sheet-1's logic-arrow `H` are intended
+to be identical is now an explicit revision/notation conflict, not silently
+resolved either way. The unsafe connection and its two final routed segments
+remain removed. `H` is a guarded singleton logic boundary pending target-board
+continuity or a revision-matched source.
 The derived routed snapshot now exposes one `M5V_DERIVED` airwire rather than
 using D105.10 as a plated-through junction; fabrication remains on hold until a
 legal replacement route is found. A high simulation default for `H` diverges
