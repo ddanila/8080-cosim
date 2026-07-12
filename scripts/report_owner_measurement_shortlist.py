@@ -204,9 +204,9 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "D94 pin 15 enable, pins 4-7/9 destinations, and every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
+            "test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
             "`docs/d94-reconstruction-constraints.md`",
-            "required to resolve the PROM-only read/write-strobe impossibility before any defensible D94 replacement",
+            "tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before any defensible D94 replacement",
         ),
         (
             "P1",
@@ -317,7 +317,8 @@ def main() -> int:
             "",
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
             "- D94 address pins are already traced to `BA11..BA15`; the useful physical",
-            "  work is enable/output continuity plus a real `.092` dump/table.",
+            "  work starts with D94.15-to-D9.7 continuity (D9.9 negative control),",
+            "  output-branch continuity, and a real `.092` dump/table.",
             "",
             "## Pin-Level Closure",
             "",

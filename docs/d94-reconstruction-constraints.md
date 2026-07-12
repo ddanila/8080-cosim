@@ -110,6 +110,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
 | Video slot audit does not rely on D94 | PASS | `docs/video-slot-timing-audit.md` |
+| D94 row alias with PIT2/FDC groups is guarded | PASS | ports `18-1B` and `1C-1F` both select D94 row `00011`; D9.Y6/Y7 distinguish the groups |
 
 ## Textual / Photo Survey Leads
 
@@ -160,6 +161,25 @@ This does not refute the accepted local copper paths. It proves that a
 `.092` byte dump by itself is insufficient to release the FDC interface;
 continuity from D93.2, D93.4, and D94.15 must include every branch, not just
 the visible local segment.
+
+## Port-group row constraint
+
+On the 8080 I/O cycle the port byte is mirrored onto the buffered high
+address byte used by this decode cluster. D94 sees `BA11..BA15`, i.e.
+port bits 3..7, while D9 additionally sees `BA10` (port bit 2). Therefore:
+
+| Port group | D9 output | D94 row BA15..BA11 |
+| --- | --- | --- |
+| `18-1B` PIT2 | `D9.Y6` / `CS_D57` | `00011` |
+| `1C-1F` FDC | `D9.Y7` / `CS_FDC` | `00011` |
+
+D94 cannot distinguish those two groups from its five row inputs. Its
+pin-15 enable, or an equivalent missing branch, must therefore carry the
+D9 group distinction if D94 is to affect only the FDC. This makes
+`CS_FDC` a strong continuity candidate for D94.15, but not a promoted net:
+the photographs do not yet prove that connection. Even if D94.15 is
+`CS_FDC`, the common enable still cannot distinguish `/RE` from `/WE`;
+direction-dependent branches at D93.2/.4 remain required.
 
 ## Address Space
 

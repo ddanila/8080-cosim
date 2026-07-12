@@ -46,7 +46,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P0 | programming disk / PROM truth | Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | cross-checks the validated physical D2/D6 tables and replaces the remaining D8 fallback |
 | P2 | JUKU-1 media provenance | independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM` | `docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md` | turns the public EKDOS boot image into stronger physical-media evidence |
 | P2 | cartridge BASIC truth | larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY` | `docs/community-prom-media-request.md`; `docs/cartridge-basic-boundary.md` | closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary |
-| P0 | D94 .092 continuity | D94 pin 15 enable, pins 4-7/9 destinations, and every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required to resolve the PROM-only read/write-strobe impossibility before any defensible D94 replacement |
+| P0 | D94 .092 continuity | test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board | `docs/d94-reconstruction-constraints.md` | tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before any defensible D94 replacement |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0/P1 gates | reduces first EKDOS-on-hardware debug risk |
 | P0 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins | `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate | tightens the as-built netlist around RAM/video timing before netlist freeze |
 | P1 | R94 220-ohm far endpoint | R94.1 is now photo-proved and modeled at D98.3; identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net | `ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | closes the remaining endpoint of the now-modeled .009 R94 part without reopening the closed S1 harness |
@@ -61,7 +61,8 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 - D94 failed evidence checks: `Enable pin D94.15 is traced, Every unresolved D94 output has a photographed copper departure, .092 firmware artifact exists, Repository-wide .092 artifact filename exists`
 - D94 address pins are already traced to `BA11..BA15`; the useful physical
-  work is enable/output continuity plus a real `.092` dump/table.
+  work starts with D94.15-to-D9.7 continuity (D9.9 negative control),
+  output-branch continuity, and a real `.092` dump/table.
 
 ## Pin-Level Closure
 
