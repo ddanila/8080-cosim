@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `49`
 - Verification-point endpoints checked in PCB: `232`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2051`
-- All board endpoints checked in routed PCB: `2051`
+- All board endpoints checked in source PCB: `2056`
+- All board endpoints checked in routed PCB: `2056`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2051/2051 | 2051/2051 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2051 | 1911/2051 | FAIL |
+| `kicad/juku.kicad_pcb` | 2056/2056 | 2056/2056 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2056 | 1911/2056 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -65,6 +65,9 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `CLK_123M: D57.9`
 - `CLK_123M: D34.12`
 - `D13_4_D105_2: D11.20`
+- `D33_CLK_RC: R46.2`
+- `D33_CLK_RC: C6.1`
+- `D33_CLK_RC: D33.9`
 - `D34_A1_TAG2: D34.4`
 - `D34_RC_DRIVE: D34.6`
 - `D34_RC_DRIVE: C5.1`
@@ -75,6 +78,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D38_LOAD_I2: D38.2`
 - `D38_LOAD_I4: D38.4`
 - `D38_LOAD_I5: D38.5`
+- `D40QA: R46.1`
 - `D56_Q2N_D34: D56.12`
 - `D56_Q2N_D34: D34.10`
 - `D56_Q2_D34: D56.5`
@@ -99,6 +103,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `GND: A62.1`
 - `GND: D34.5`
 - `GND: R33.2`
+- `GND: C6.2`
 - `GND: R73.3`
 - `GND: D99.3`
 - `HOR_RTR: D54.13`

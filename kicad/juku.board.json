@@ -1151,7 +1151,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 traces all six inverter sections except the source of pin 9; section 13->12 is the labeled LATCH conductor into D39.9"
+    "pins": "sheet-2 traces all six inverter sections; pin9 is the R46/C6 RC-delayed D40.Q0 input, and section 13->12 is the labeled LATCH conductor into D39.9"
    }
   },
   {
@@ -4087,6 +4087,17 @@
    "value": "560"
   },
   {
+   "ref": "C6",
+   "type": "C_KM",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "sheet-2 C6 56 pF at D33 clock-gate input",
+    "pins": "drawn from the R46.2/D33.9 RC node to ground"
+   },
+   "value": "56"
+  },
+  {
    "ref": "R33",
    "type": "R_AXIAL",
    "pins": {
@@ -4099,6 +4110,17 @@
     "pins": "drawn from the C5.2/D34.2 RC node to ground"
    },
    "value": "620"
+  },
+  {
+   "ref": "R46",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan + owner photo",
+    "refdes": "sheet-2 R46 200 ohm from D40.Q0 to D33.9; vertical resistor visible beside D33",
+    "pins": "continuous source conductor and local package photo"
+   },
+   "value": "200"
   },
   {
    "ref": "D93",
@@ -9023,9 +9045,21 @@
     [
      "D39",
      "13"
+    ],
+    [
+     "R46",
+     "1"
     ]
    ],
    "src": "scan"
+  },
+  "D33_CLK_RC": {
+   "src": "scan sheet-2: D40.Q0 passes through R46 200 ohm into D33.9; C6 56 pF shunts the D33 input node to ground",
+   "nodes": [
+    ["R46", "2"],
+    ["C6", "1"],
+    ["D33", "9"]
+   ]
   },
   "D39Y": {
    "nodes": [
@@ -10138,6 +10172,10 @@
     ],
     [
      "R33",
+     "2"
+    ],
+    [
+     "C6",
      "2"
     ],
     [

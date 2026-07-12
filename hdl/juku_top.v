@@ -104,7 +104,9 @@ module juku_top (
                      .a3(phi2ttl), .b3(1'b1), .y3(d39_memcyc),                                   // 1,2->3: pin1 <- Ф2TTL (bite-3; = ex gate-T), pin2 <- rail 1 [pending]
                      .a4(d39_memcyc), .b4(d92_noacc), .y4(vid_cpu_sel));                         // 4,5->6 -> D52.1
     wire d33_o4, d36_y2, d33_o10;
-    ln1_dual  U_D33 (.i9(1'b0), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6), .i13(d37_latch_pre), .o12(latch_sig),
+    wire d33_clk_rc;
+    net_boundary U_R46LNK (.a(d40_q[0]), .b(d33_clk_rc));
+    ln1_dual  U_D33 (.i9(d33_clk_rc), .i5(d40_q[2]), .o8(clkg_d33), .o6(d33_o6), .i13(d37_latch_pre), .o12(latch_sig),
                      .i1(d103_co), .o2(d103_ld),   // sect 1->2: D103 CO -> LD reload (the /13 divider loop, traced)
                      .i3(memr_n), .o4(d33_o4),  // + 13->12 = LATCH; 3->4 = ~MRD -> D37.5 (sheet-2)
                      .i11(d36_y2), .o10(d33_o10));  // 11->10 = CAS strobe-chain delay leg (bite-2)
