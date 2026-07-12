@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "device": "KR556RT4 256x4",
+  "name": "d6_038",
+  "capture_count": 2,
+  "raw_pin_level_sha256": "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
+  "active_low_asserted_sha256": "0a1b2ae84d4d152655fa0ad82cb8248dfe00b6ceb7005afd98b91ead9b274a2b",
+  "packing": "256 bytes in address order; low nibble significant; high nibble zero",
+  "comparison_rule": "raw pin-level table is authoritative; asserted table is bitwise low-nibble complement",
+  "inputs": [
+    {
+      "path": "ref/physical-proms/captures/d6_038_20260713_capture1.txt",
+      "sha256": "9289199cb42eaece1448ea943219465ff5ac77a78f6072f6a8a69a972a2e2c5d"
+    },
+    {
+      "path": "ref/physical-proms/captures/d6_038_20260713_capture2.txt",
+      "sha256": "21b37b8406fafe5d6a4b7dca1293c92b8fee18f5d82ab7999540895fc7d9d8e5"
+    }
+  ],
+  "captures": [
+    "ref/physical-proms/captures/d6_038_20260713_capture1.txt#1",
+    "ref/physical-proms/captures/d6_038_20260713_capture2.txt#1"
+  ]
+}
