@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `469`
+- Nets modeled: `481`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `132`
+- Net-level source-risk gaps: `144`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -51,7 +51,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 3 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 19 |
+| PROM/decode | 0 | 31 |
 | clock/I/O | 0 | 4 |
 | logic/source | 9 | 89 |
 | memory/timing | 0 | 6 |
@@ -73,7 +73,7 @@ parts placement and Tier-3 reproduction.
 | `D101` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all... |
 | `D102` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D102 is the rightmost lower-row one-shot 16-pin package and standard AG3 pinout; power pins 8/1... |
 | `D106` | `IE7_CTR` | scan | .009 official FDC population; К555ИЕ7 identity and standard 74193-class pinout power pins 8/16 routed; corrected component and solder fits identify all 14 co... |
-| `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed, six inverter signal pairs await FDC continuity |
+| `D28` | `LN3_OC_INV` | scan | .009 official FDC population identifies К155ЛН3 К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all... |
 | `D95` | `KP12_MUX` | scan | .009 official FDC population identifies К555КП12 К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all... |
 | `D96` | `TM2_DFF` | scan | .009 official FDC population; КМ555ТМ2 identity and standard pinout power pins 7/14 promoted; all functional pins remain explicit FDC continuity boundaries |
 | `D97` | `AG3_ONESHOT` | scan | .009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101 16-pin package and standard AG3 pinout; power... |
@@ -161,7 +161,6 @@ model is historical-source-complete.
 
 | Ref | Category | Unnetted modeled pins |
 | --- | --- | --- |
-| `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
@@ -261,6 +260,18 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PC5_TAG4` | PROM/decode | `D26.12` | traced sheet-1 full-resolution: D26 PC5/pin12 exits as mode-bundle tag4; far destination remains unread |
 | `D26_PC6_TAG5` | PROM/decode | `D26.11` | traced sheet-1 full-resolution: D26 PC6/pin11 exits as mode-bundle tag5; far destination remains unread |
 | `D26_PC7_TAG6` | PROM/decode | `D26.10` | traced sheet-1 full-resolution: D26 PC7/pin10 exits as mode-bundle tag6; far destination remains unread |
+| `D28_A1_BOUNDARY` | PROM/decode | `D28.1` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin1 A1; no remote destination is proved, so this remains a measurement... |
+| `D28_A2_BOUNDARY` | PROM/decode | `D28.3` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin3 A2; no remote destination is proved, so this remains a measurement... |
+| `D28_A3_BOUNDARY` | PROM/decode | `D28.5` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement... |
+| `D28_A4_BOUNDARY` | PROM/decode | `D28.9` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin9 A4; no remote destination is proved, so this remains a measurement... |
+| `D28_A5_BOUNDARY` | PROM/decode | `D28.11` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin11 A5; no remote destination is proved, so this remains a measurement... |
+| `D28_A6_BOUNDARY` | PROM/decode | `D28.13` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin13 A6; no remote destination is proved, so this remains a measurement... |
+| `D28_Y1_BOUNDARY` | PROM/decode | `D28.2` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement... |
+| `D28_Y2_BOUNDARY` | PROM/decode | `D28.4` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement... |
+| `D28_Y3_BOUNDARY` | PROM/decode | `D28.6` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin6 Y3; no remote destination is proved, so this remains a measurement... |
+| `D28_Y4_BOUNDARY` | PROM/decode | `D28.8` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement... |
+| `D28_Y5_BOUNDARY` | PROM/decode | `D28.10` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement... |
+| `D28_Y6_BOUNDARY` | PROM/decode | `D28.12` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement... |
 | `D30B_D_PRE_N` | PROM/decode | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |

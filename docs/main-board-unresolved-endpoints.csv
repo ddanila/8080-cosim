@@ -8,18 +8,6 @@ P1,D26,14,PPI8255,PC0,functional endpoint lacks disposition
 P1,D26,15,PPI8255,PC1,functional endpoint lacks disposition
 P1,D26,22,PPI8255,PB4,functional endpoint lacks disposition
 P1,D26,38,PPI8255,PA6,functional endpoint lacks disposition
-P0,D28,1,LN3_OC_INV,A1,PLAN physical-connectivity blocker
-P0,D28,10,LN3_OC_INV,Y5,PLAN physical-connectivity blocker
-P0,D28,11,LN3_OC_INV,A5,PLAN physical-connectivity blocker
-P0,D28,12,LN3_OC_INV,Y6,PLAN physical-connectivity blocker
-P0,D28,13,LN3_OC_INV,A6,PLAN physical-connectivity blocker
-P0,D28,2,LN3_OC_INV,Y1,PLAN physical-connectivity blocker
-P0,D28,3,LN3_OC_INV,A2,PLAN physical-connectivity blocker
-P0,D28,4,LN3_OC_INV,Y2,PLAN physical-connectivity blocker
-P0,D28,5,LN3_OC_INV,A3,PLAN physical-connectivity blocker
-P0,D28,6,LN3_OC_INV,Y3,PLAN physical-connectivity blocker
-P0,D28,8,LN3_OC_INV,Y4,PLAN physical-connectivity blocker
-P0,D28,9,LN3_OC_INV,A4,PLAN physical-connectivity blocker
 P1,D29,1,VABUS,AIN0,functional endpoint lacks disposition
 P1,D29,2,VABUS,AIN1,functional endpoint lacks disposition
 P1,D29,3,VABUS,AIN2,functional endpoint lacks disposition
