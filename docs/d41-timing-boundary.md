@@ -20,7 +20,7 @@ python3 scripts/report_d41_timing_boundary.py
 | Check | Result | Evidence |
 | --- | --- | --- |
 | D41 exists as an ИР16 timing-chain chip | PASS | `kicad/juku.board.json` D41 |
-| D41 QA output is wired to the video address mux select | PASS | `W10_QA_SEL`: D41.13 -> D50.1 |
+| D41 QA output is wired to both video address mux selects | PASS | `W10_QA_SEL`: D41.13 -> D50.1 + D51.1 |
 | D41 QB output is wired into the latch/preload chain | PASS | `LATCH_A`: D41.12 -> D37.1 |
 | Adjacent latch chain context is modeled | PASS | `LATCH_B`/`LATCH_PRE` around D37/D40/D33 |
 | Only D41 output pins are currently netted | PASS | D41.12, D41.13 |
@@ -32,7 +32,7 @@ python3 scripts/report_d41_timing_boundary.py
 | Pin | Signal | Net | Evidence |
 | --- | --- | --- | --- |
 | 12 | QB | LATCH_A | D41.QB feeds D37.1 in the modeled latch/preload chain |
-| 13 | QA | W10_QA_SEL | D41.QA selects D50 video/uP mux input via documented wire 10 |
+| 13 | QA | W10_QA_SEL | D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10 |
 
 ## Pending D41 Pins
 

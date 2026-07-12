@@ -77,9 +77,11 @@ def main() -> int:
             "`kicad/juku.board.json` D41",
         ),
         (
-            "D41 QA output is wired to the video address mux select",
-            node_in(board, "W10_QA_SEL", "D41", "13") and node_in(board, "W10_QA_SEL", "D50", "1"),
-            "`W10_QA_SEL`: D41.13 -> D50.1",
+            "D41 QA output is wired to both video address mux selects",
+            node_in(board, "W10_QA_SEL", "D41", "13")
+            and node_in(board, "W10_QA_SEL", "D50", "1")
+            and node_in(board, "W10_QA_SEL", "D51", "1"),
+            "`W10_QA_SEL`: D41.13 -> D50.1 + D51.1",
         ),
         (
             "D41 QB output is wired into the latch/preload chain",
@@ -145,7 +147,7 @@ def main() -> int:
             "| Pin | Signal | Net | Evidence |",
             "| --- | --- | --- | --- |",
             table_row(["12", chip["pins"]["12"], "LATCH_A", "D41.QB feeds D37.1 in the modeled latch/preload chain"]),
-            table_row(["13", chip["pins"]["13"], "W10_QA_SEL", "D41.QA selects D50 video/uP mux input via documented wire 10"]),
+            table_row(["13", chip["pins"]["13"], "W10_QA_SEL", "D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10"]),
             "",
             "## Pending D41 Pins",
             "",

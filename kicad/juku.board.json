@@ -11416,9 +11416,13 @@
     [
      "D50",
      "1"
+    ],
+    [
+     "D51",
+     "1"
     ]
    ],
-   "note": "WIRE 10 (beeper): D41.QA -> D50.SEL (video/µP mux select from the ИР16 chain)"
+   "note": "WIRE 10 (beeper): D41.QA -> the shared D50/D51 SEL rail (video/µP mux select from the ИР16 chain)"
   },
   "W11_D7_D92": {
    "src": "wire",

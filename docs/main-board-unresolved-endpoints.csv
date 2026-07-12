@@ -146,7 +146,6 @@ P1,D43,13,IR16,QA,functional endpoint lacks disposition
 P1,D43,8,IR16,G,functional endpoint lacks disposition
 P1,D46,1,IE7_CTR,D1,functional endpoint lacks disposition
 P1,D46,15,IE7_CTR,D0,functional endpoint lacks disposition
-P1,D51,1,KP14_MUX,SEL,functional endpoint lacks disposition
 P1,D52,10,KP14_MUX,B2,functional endpoint lacks disposition
 P1,D52,11,KP14_MUX,A2,functional endpoint lacks disposition
 P1,D52,12,KP14_MUX,Y3,functional endpoint lacks disposition
