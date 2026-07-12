@@ -22,7 +22,7 @@ python3 scripts/report_d41_timing_boundary.py
 | D41 exists as an ИР16 timing-chain chip | PASS | `kicad/juku.board.json` D41 |
 | D41 QA output is wired to both video address mux selects | PASS | `W10_QA_SEL`: D41.13 -> D50.1 + D51.1 |
 | D41 QB output is wired into the latch/preload chain | PASS | `LATCH_A`: D41.12 -> D37.1 |
-| Adjacent latch chain context is modeled | PASS | `LATCH_B`/`LATCH_PRE` around D37/D40/D33 |
+| Adjacent latch chain context is modeled | PASS | `LATCH_B`/`LATCH_PRE`/`LATCH_SIG` around D37/D40/D33/D39 |
 | Only D41 output pins are currently netted | PASS | D41.12, D41.13 |
 | D41 input/control pins remain an explicit source boundary | PASS | 1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC |
 | D41 package landing is locally registered on both sides | PASS | validated notch-right component fit plus reflected solder fit in `docs/photo-registration/local-packages/report.json` |

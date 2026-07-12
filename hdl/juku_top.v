@@ -100,7 +100,7 @@ module juku_top (
     tri1 d92_noacc;
 `endif
     wire d39_memcyc, vid_cpu_sel;
-    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(1'b1), .b2(1'b1), .y2(d39_o8),  // pin13(B)<-D40.Q0(14), pin12(A)<-D40.Q1(13) [traced]; sect2 9,10->8 -> D59.11 (sheet-2, ins deferred)
+    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(latch_sig), .b2(1'b1), .y2(d39_o8),  // pin9 <- D33.12 LATCH; pin10 remains pending; output8 -> D59.11
                      .a3(phi2ttl), .b3(1'b1), .y3(d39_memcyc),                                   // 1,2->3: pin1 <- Ф2TTL (bite-3; = ex gate-T), pin2 <- rail 1 [pending]
                      .a4(d39_memcyc), .b4(d92_noacc), .y4(vid_cpu_sel));                         // 4,5->6 -> D52.1
     wire d33_o4, d36_y2, d33_o10;

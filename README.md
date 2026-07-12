@@ -10,7 +10,7 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`.
-- `sync/check.sh` currently compares 100 mapped instances and 242 nets with no
+- `sync/check.sh` currently compares 100 mapped instances and 243 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints, no KiCad clearance/short
   errors, and one explicit `M5V_DERIVED` airwire after correcting D105.10. Its Gerber/drill ZIP is reproducible

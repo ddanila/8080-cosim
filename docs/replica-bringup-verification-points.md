@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `49`
 - Verification-point endpoints checked in PCB: `232`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2021`
-- All board endpoints checked in routed PCB: `2021`
+- All board endpoints checked in source PCB: `2023`
+- All board endpoints checked in routed PCB: `2023`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2021/2021 | 2021/2021 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2021 | 1915/2021 | FAIL |
+| `kicad/juku.kicad_pcb` | 2023/2023 | 2023/2023 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2023 | 1915/2023 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -95,6 +95,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `KBD_SC3: A45.1`
 - `KBD_SHIFT: A52.1`
 - `KBD_STB: A49.1`
+- `LATCH_SIG: D33.12`
+- `LATCH_SIG: D39.9`
 - `M12V: A59.1`
 - `MA6: E1.3`
 - `OSC: C73.2`

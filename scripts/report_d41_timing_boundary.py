@@ -93,8 +93,10 @@ def main() -> int:
             node_in(board, "LATCH_B", "D40", "11")
             and node_in(board, "LATCH_B", "D37", "2")
             and node_in(board, "LATCH_PRE", "D37", "3")
-            and node_in(board, "LATCH_PRE", "D33", "13"),
-            "`LATCH_B`/`LATCH_PRE` around D37/D40/D33",
+            and node_in(board, "LATCH_PRE", "D33", "13")
+            and node_in(board, "LATCH_SIG", "D33", "12")
+            and node_in(board, "LATCH_SIG", "D39", "9"),
+            "`LATCH_B`/`LATCH_PRE`/`LATCH_SIG` around D37/D40/D33/D39",
         ),
         (
             "Only D41 output pins are currently netted",

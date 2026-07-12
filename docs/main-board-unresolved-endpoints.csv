@@ -70,7 +70,6 @@ P1,D29,3,VABUS,AIN2,functional endpoint lacks disposition
 P1,D29,6,VABUS,AIN5,functional endpoint lacks disposition
 P0,D30,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
 P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
-P1,D33,12,LN1_DUAL,O12,functional endpoint lacks disposition
 P1,D33,9,LN1_DUAL,I9,functional endpoint lacks disposition
 P1,D34,10,LP5_XOR,B3,functional endpoint lacks disposition
 P1,D34,12,LP5_XOR,A4,functional endpoint lacks disposition
@@ -91,7 +90,6 @@ P1,D38,4,LA1_GATE,I5,functional endpoint lacks disposition
 P1,D38,5,LA1_GATE,I4,functional endpoint lacks disposition
 P0,D39,10,LA3_GATE,B2,memory/decode source-risk blocker
 P0,D39,2,LA3_GATE,B3,memory/decode source-risk blocker
-P0,D39,9,LA3_GATE,A2,memory/decode source-risk blocker
 P1,D40,1,CT16_CTR,R_N,functional endpoint lacks disposition
 P1,D40,10,CT16_CTR,ET,functional endpoint lacks disposition
 P1,D40,15,CT16_CTR,CO,functional endpoint lacks disposition

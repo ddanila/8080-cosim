@@ -825,7 +825,7 @@
     "1": "I7",
     "6": "Y2"
    },
-   "prov": {
+  "prov": {
     "type": "scan",
     "refdes": "scan",
     "pins": "scan"
@@ -1151,7 +1151,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "sheet-2 traces all six inverter sections except the source of pin 9; section 13->12 is the labeled LATCH conductor into D39.9"
    }
   },
   {
@@ -11244,6 +11244,19 @@
     [
      "D33",
      "13"
+    ]
+   ]
+  },
+  "LATCH_SIG": {
+   "src": "scan sheet-2: D33.12 labeled LATCH runs directly to D39 second-gate input pin 9",
+   "nodes": [
+    [
+     "D33",
+     "12"
+    ],
+    [
+     "D39",
+     "9"
     ]
    ]
   },
