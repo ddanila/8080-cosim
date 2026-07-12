@@ -5,7 +5,7 @@ Status date: 2026-07-11.
 Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**
 
 This generated report narrows the remaining DRAM/clock timing risks.
-The board model preserves the traced RAS/CAS ladder, write rail,
+The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,
 PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the
 unread CAS input, memory-cycle gate, and D56 Q_N destination as
 explicit source boundaries instead of silently promoting them.
@@ -21,6 +21,8 @@ python3 scripts/report_memory_timing_boundary.py
 | Check | Result | Evidence |
 | --- | --- | --- |
 | All 32 DRAM sockets retain complete option-rail roles | PASS | D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/RAIL_E; pin 1 is internal NC for populated РУ5 |
+| E1 MA7/DRAM-size selector retains all three source endpoints | PASS | sheet-2: E1.1=+5 V, E1.2=MA7 rail 28, E1.3=D51.9/MA6 |
+| E14 video-mux enable retains the drawn 1-3 strap | PASS | sheet-2: E14.1-E14.3 fitted strap; E14.2=+5 V; E14.4=GND |
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
 | D36 write rail is guarded to all modeled DRAM W pins | PASS | `W_RAIL16` includes D36.8 plus DRAM pin-3 fanout |
 | D36 CAS pre-driver reaches R57 | PASS | `CAS_PRE`: D36.11 -> R57.1 |

@@ -79,6 +79,20 @@ def main() -> int:
             "D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/RAIL_E; pin 1 is internal NC for populated РУ5",
         ),
         (
+            "E1 MA7/DRAM-size selector retains all three source endpoints",
+            has_nodes(board, "P5V", {("E1", "1")})
+            and has_nodes(board, "MA7", {("E1", "2")})
+            and has_nodes(board, "MA6", {("E1", "3"), ("D51", "9")}),
+            "sheet-2: E1.1=+5 V, E1.2=MA7 rail 28, E1.3=D51.9/MA6",
+        ),
+        (
+            "E14 video-mux enable retains the drawn 1-3 strap",
+            has_nodes(board, "VID_MUX_G", {("E14", "1"), ("E14", "3"), ("D50", "15"), ("D51", "15")})
+            and has_nodes(board, "P5V", {("E14", "2")})
+            and has_nodes(board, "GND", {("E14", "4")}),
+            "sheet-2: E14.1-E14.3 fitted strap; E14.2=+5 V; E14.4=GND",
+        ),
+        (
             "D53 RAS/CAS ladder outputs are guarded",
             all(has_nodes(board, name, expected) for name, expected in d53_outputs.items()),
             "`D53_Y0_R49`..`D53_Y3_R52`",
@@ -159,7 +173,7 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This generated report narrows the remaining DRAM/clock timing risks.",
-        "The board model preserves the traced RAS/CAS ladder, write rail,",
+        "The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,",
         "PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the",
         "unread CAS input, memory-cycle gate, and D56 Q_N destination as",
         "explicit source boundaries instead of silently promoting them.",

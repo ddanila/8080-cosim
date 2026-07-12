@@ -262,8 +262,6 @@ P0,D99,5,AG3_ONESHOT,Q2,PLAN physical-connectivity blocker
 P0,D99,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
 P0,D99,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
 P0,D99,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
-P1,E1,3,JUMPER3,P3,functional endpoint lacks disposition
-P1,E14,1,JUMPER4,P1,functional endpoint lacks disposition
 P1,R94,2,R_AXIAL,P2,functional endpoint lacks disposition
 P1,S4,1,SW,P1,functional endpoint lacks disposition
 P1,S4,2,SW,P2,functional endpoint lacks disposition
