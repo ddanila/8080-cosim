@@ -234,8 +234,8 @@ def main() -> None:
             elif row["pin"] == "24":
                 row["note"] = (
                     "Corrected D93.24 fit exposes westbound solder copper, but its apparent "
-                    "D99.13 alignment cannot be the live clock: independently proved "
-                    "D99.3-to-D96.7 copper holds section-1 CLR_N at ground"
+                    "D99.13 alignment cannot be the live clock: independently proved copper "
+                    "to the adjacent КМ555ТМ2 ground pin holds section-1 CLR_N low"
                 )
             elif row["pin"] == "40":
                 row["note"] = (

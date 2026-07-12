@@ -134,7 +134,7 @@ handoff. This closes the false solder chase without assigning OE_N's source.
 The corrected D93.24 joint launches a westbound solder trace whose apparent
 far alignment is D99.13. That promotion is rejected by independent
 component-side topology: uninterrupted copper ties D99.3 `CLR_N` directly to
-grounded D96.7. D99 section 1 is therefore held cleared and its pin-13 `Q`
+the adjacent КМ555ТМ2 ground pin. D99 section 1 is therefore held cleared and its pin-13 `Q`
 cannot be the live КР1818ВГ93 clock source. The alignment remains evidence for
 a nearby conductor, not an accepted `FDC_CLK_1M` net.
 
