@@ -1444,7 +1444,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ИР82 write-data latch; owner trace (Q->РУ5 DIN)"
+    "pins": "ИР82 read-data latch; D inputs come from РУ5 DO rails, Q outputs drive DB0-DB7, OE pin9 comes from D37.6, and STB pin11 reaches timing-bundle tag 5"
    }
   },
   {
@@ -12335,6 +12335,10 @@
      "9"
     ]
    ]
+  },
+  "D58_STB_TAG5": {
+   "src": "scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established",
+   "nodes": [["D58", "11"]]
   },
   "D42_Q": {
    "src": "scan sheet-2",

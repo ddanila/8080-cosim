@@ -78,7 +78,6 @@ P0,D53,10,RASCAS_DEC,Y_N5,memory/decode source-risk blocker
 P0,D53,11,RASCAS_DEC,Y_N4,memory/decode source-risk blocker
 P0,D53,7,RASCAS_DEC,Y_N7,memory/decode source-risk blocker
 P0,D53,9,RASCAS_DEC,Y_N6,memory/decode source-risk blocker
-P1,D58,11,IR82,STB,functional endpoint lacks disposition
 P0,D6,13,DEC_PROM,V_EN_N,memory/decode source-risk blocker
 P0,D6,14,DEC_PROM,V_EN_N,memory/decode source-risk blocker
 P0,D7,10,LA3_GATE,symbol-union boundary,memory/decode source-risk blocker

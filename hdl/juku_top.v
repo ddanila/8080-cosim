@@ -275,7 +275,9 @@ module juku_top (
         // D58 = RAM READ-data latch (sheet-2 confirmed): РУ5 DO bus (rails 1-8) -> D -> Q -> DB,
     // OE = D37 sect-3 read strobe. Writes go DB -> РУ5 DI directly (rails 31-38 = DB codes).
     wire [7:0] rdo;                    // РУ5 DO read bus
-    ir82_latch U_D58 (.d(rdo), .stb(1'b0), .oe_n(d37_y3), .q(DB));
+    wire d58_stb_tag5;
+    net_boundary U_D58STBLNK (.a(1'b0), .b(d58_stb_tag5));
+    ir82_latch U_D58 (.d(rdo), .stb(d58_stb_tag5), .oe_n(d37_y3), .q(DB));
     // Populated bank = D84-D91 (bottom array row) per the official ДГШ5.109.009 ПЭЗ; board #1
     // (rev 7.102.100) had the TOP row (D60-67) stuffed instead -- a per-revision factory choice.
     dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]), .va(vid_addr), .vq(vbyte[0]));
