@@ -276,6 +276,12 @@ endmodule
 // the simulated value through unchanged, but as a -lib blackbox cell it keeps the two sides SEPARATE
 // NETS for LVS -- the board netlist has the series part / unknown feed there, the sim does not.
 module net_boundary (input wire a, output wire b); assign b = a; endmodule
+// S4 ВДМ1-2 SPDT interrupt selector. The photographed build is simulated in
+// the external-INT6 position; reading this file as a -lib cell keeps all three
+// switch terminals as separate LVS-visible nets.
+module spdt_switch (input wire syndet_throw, int6_throw, output wire ir6_common);
+    assign ir6_common = int6_throw;
+endmodule
 // К555ТЛ2 hex Schmitt INVERTER (74LS14; census ВП p.3 x1 + drawn D13 symbol: 1-in/1-out with
 // inversion = hex-inverter sections, NOT the earlier dual-4-NAND ТЛ1-shaped stand-in).
 // D13 (Sheet-1): section 1->2 = the RAMOUTEN driver (in <- D6.9 "-RAMOUTEN" rail, out -> sheet-2
@@ -683,7 +689,7 @@ endmodule
 module ln2_inv (input wire a, i13, i1, i3, i5, i9,
                 output wire y, o12, o2, o4, o6, o8);   // D3 К561ЛН2 complete hex-inverter package
     assign o12 = ~i13;   // 13->12: -INT7 (X1.113B) -> IR7 (D10.25), via S4 [series switch, unmodeled]
-    assign o2  = ~i1;    // 1->2:   -INT6 (X1.113C) -> IR6 (D10.24), via S4
+    assign o2  = ~i1;    // 1->2:   -INT6 (X1.113C) -> S4 INT6 throw
     assign o4  = ~i3; assign o6 = ~i5; assign o8 = ~i9; // 9->8 is the serial OC pre-inverter; 3/5 remain unresolved
 // original section:
     assign y = ~a;

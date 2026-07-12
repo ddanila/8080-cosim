@@ -63,6 +63,7 @@ PASSIVE_FP_REF = {
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R30': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
+    'S4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -110,7 +111,7 @@ PASSIVE_PLACE = {
     'C9':(285.807,33.590,90),'C10':(283.5,112,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
     'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
-    'S4':(245.0,80.2,0),    # ВДМ1-2 microswitch (СБ position, .100; present on .158 photos; wiring pending)
+    'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
     'X6':(288,6,0),     # RF socket (СБ top edge, поз.18 ring; contact 701/702)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]

@@ -19,8 +19,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `277`
-- Nets modeled: `364`
-- Chip-level fidelity gaps: `62`
+- Nets modeled: `366`
+- Chip-level fidelity gaps: `61`
 - Net-level source-risk gaps: `46`
 - Documented intentional no-connect pins: `16`
 
@@ -52,7 +52,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 18 |
 | clock/I/O | 0 | 4 |
-| logic/source | 11 | 5 |
+| logic/source | 10 | 5 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -100,7 +100,6 @@ parts placement and Tier-3 reproduction.
 | `D42` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, wr... |
-| `S4` | `SW` | scan | СБ position / sheet-1 interrupt receive path ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interr... |
 
 ### placement/refdes
 
@@ -168,7 +167,7 @@ model is historical-source-complete.
 | `D101` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D102` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
-| `D11` | logic/source | `14:RXRDY, 15:TXRDY, 16:SYNDET, 18:TXEMPTY` |
+| `D11` | logic/source | `14:RXRDY, 15:TXRDY, 18:TXEMPTY` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
 | `D35` | logic/source | `1:I1, 2:O2, 3:I3, 5:I5, 6:O6, 8:O8, 9:I9` |
@@ -182,7 +181,6 @@ model is historical-source-complete.
 | `D97` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
 | `D99` | FDC owner-continuity | `1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
-| `S4` | logic/source | `1:P1, 2:P2` |
 
 ## Documented Intentional No-Connects
 

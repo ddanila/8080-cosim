@@ -478,11 +478,11 @@ module juku_top (
                       .clk0(clk123m), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK2 <- 1.23M = D103.QD (crop s2_d103)
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
-    wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n;
+    wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n, ser_syndet;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(d13_o4),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
                       .rxc(pit_baud), .txc(pit_baud),
-                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(), .txrdy(), .syndet(), .txempty(),
+                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(), .txrdy(), .syndet(ser_syndet), .txempty(),
                       .rxd(ser_rxd), .cts_n(ser_cts_n), .reset(reset_sys), .dsr_n(ser_dsr_n));
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
@@ -490,11 +490,14 @@ module juku_top (
     wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin, s_cts, s_dsr, ser_txd_inv;
     ap2_drv U_D14 (.i3(ser_txd), .i2(1'b1),    .o6(s_sout), .o7());
     ap2_drv U_D32 (.i3(ser_rts), .i2(ser_dtr), .o6(s_rts),  .o7(s_dtp));
-    wire ir7_sig, ir6_sig;
+    wire ir7_sig, ir6_buf, ir6_sig;
     ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
-                   .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_sig),
+                   .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_buf),
                    .i3(1'bz), .o4(), .i5(1'bz), .o6(),
                    .i9(ser_txd), .o8(ser_txd_inv));
+    // S4 selects PIC IR6 between buffered -INT6 and USART SYNDET. The photographed
+    // build defaults to the external-interrupt throw for simulation.
+    spdt_switch U_S4 (.syndet_throw(ser_syndet), .int6_throw(ir6_buf), .ir6_common(ir6_sig));
     la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc));
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),

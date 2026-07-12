@@ -157,7 +157,7 @@ def main() -> int:
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         ("Video/RF analog boundary guarded", has_phrase("docs/video-analog-boundary.md", "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**")),
-        ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT PATH GUARDED / SWITCH CONTINUITY PENDING**")),
+        ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT SELECTOR GUARDED**")),
         ("FDC functional-pin design hold is visible", has_phrase("docs/unmodeled-footprint-inventory.md", "Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**")),
         (
             "Bring-up verification points generated",

@@ -51,7 +51,6 @@ P0,D106,7,IE7_CTR,Q3,PLAN physical-connectivity blocker
 P0,D106,9,IE7_CTR,D3,PLAN physical-connectivity blocker
 P1,D11,14,USART8251,RXRDY,functional endpoint lacks disposition
 P1,D11,15,USART8251,TXRDY,functional endpoint lacks disposition
-P1,D11,16,USART8251,SYNDET,functional endpoint lacks disposition
 P1,D11,18,USART8251,TXEMPTY,functional endpoint lacks disposition
 P1,D13,10,TL2,O10,functional endpoint lacks disposition
 P1,D13,11,TL2,I11,functional endpoint lacks disposition
@@ -262,5 +261,4 @@ P0,D99,6,AG3_ONESHOT,C2,PLAN physical-connectivity blocker
 P0,D99,7,AG3_ONESHOT,RC2,PLAN physical-connectivity blocker
 P0,D99,9,AG3_ONESHOT,A2_N,PLAN physical-connectivity blocker
 P1,R94,2,R_AXIAL,P2,functional endpoint lacks disposition
-P1,S4,1,SW,P1,functional endpoint lacks disposition
-P1,S4,2,SW,P2,functional endpoint lacks disposition
+P1,S1,3,SW,symbol-union boundary,functional endpoint lacks disposition

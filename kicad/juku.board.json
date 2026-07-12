@@ -4759,13 +4759,14 @@
    "ref": "S4",
    "type": "SW",
    "pins": {
-    "1": "P1",
-    "2": "P2"
+    "1": "SYNDET_THROW",
+    "2": "IR6_COMMON",
+    "3": "INT6_THROW"
    },
    "prov": {
     "type": "scan",
     "refdes": "СБ position / sheet-1 interrupt receive path",
-    "pins": "ВДМ1-2 microswitch at СБ .100 position; sheet-1 notes place S4.1/S4.2 in the D3-buffered IR7/IR6 external interrupt path; pin-level wiring pending"
+    "pins": "ВДМ1-2 SPDT microswitch at СБ .100 position; full-resolution sheet-1 shows common S4.2 to PIC IR6, upper throw from D3.2 buffered -INT6, and lower S4.1 throw from D11.16 SYNDET"
    }
   },
   {
@@ -11393,16 +11394,42 @@
     ]
    ]
   },
-  "IR6": {
-   "src": "scan",
+  "INT6_BUF": {
+   "src": "scan sheet-1: D3.2 buffered -INT6 reaches the upper S4.2 throw",
    "nodes": [
     [
      "D3",
      "2"
     ],
     [
+     "S4",
+     "3"
+    ]
+   ]
+  },
+  "IR6": {
+   "src": "scan sheet-1: S4 changeover common drives D10 IR6",
+   "nodes": [
+    [
      "D10",
      "24"
+    ],
+    [
+     "S4",
+     "2"
+    ]
+   ]
+  },
+  "SYNDET_S4": {
+   "src": "scan sheet-1: D11 SYNDET pin 16 reaches the lower S4.1 throw",
+   "nodes": [
+    [
+     "D11",
+     "16"
+    ],
+    [
+     "S4",
+     "1"
     ]
    ]
   },

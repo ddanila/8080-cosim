@@ -54,7 +54,7 @@ def main() -> int:
             "S4 is present as the scanned interrupt-path switch",
             s4.get("type") == "SW"
             and "ВДМ1-2" in s4.get("prov", {}).get("pins", "")
-            and "D3-buffered IR7/IR6" in s4.get("prov", {}).get("pins", ""),
+            and "SPDT" in s4.get("prov", {}).get("pins", ""),
             "S4 provenance block",
         ),
         (
@@ -75,9 +75,19 @@ def main() -> int:
             "`INT6_RAW`: X1.113C -> D3.1",
         ),
         (
-            "D3 buffered IR6 reaches PIC IR6",
-            has_nodes(board, "IR6", {("D3", "2"), ("D10", "24")}),
-            "`IR6`: D3.2 -> D10.24",
+            "D3 buffered INT6 reaches the upper S4 throw",
+            has_nodes(board, "INT6_BUF", {("D3", "2"), ("S4", "3")}),
+            "`INT6_BUF`: D3.2 -> S4.3",
+        ),
+        (
+            "S4 common reaches PIC IR6",
+            has_nodes(board, "IR6", {("S4", "2"), ("D10", "24")}),
+            "`IR6`: S4.2 -> D10.24",
+        ),
+        (
+            "USART SYNDET reaches the lower S4 throw",
+            has_nodes(board, "SYNDET_S4", {("D11", "16"), ("S4", "1")}),
+            "`SYNDET_S4`: D11.16 -> S4.1",
         ),
         (
             "D3 and D10 package roles match the interrupt path",
@@ -91,9 +101,10 @@ def main() -> int:
     ]
     boundary_checks = [
         (
-            "S4 pins remain unnetted until source/continuity proof",
-            not pin_is_netted(board, "S4", "1") and not pin_is_netted(board, "S4", "2"),
-            "S4.1/S4.2 are known switch pins, but their exact insertion into IR6/IR7 remains pending",
+            "S4 retains a complete three-terminal SPDT contract",
+            s4.get("pins") == {"1": "SYNDET_THROW", "2": "IR6_COMMON", "3": "INT6_THROW"}
+            and all(pin_is_netted(board, "S4", pin) for pin in ("1", "2", "3")),
+            "sheet-1 S4.1/S4.2 changeover symbol; all three electrical terminals assigned",
         ),
         (
             "Do not infer S4 wiring from MAME or behavior",
@@ -103,7 +114,7 @@ def main() -> int:
     ]
 
     ok = all(result for _, result, _ in guarded_checks + boundary_checks)
-    status = "S4 INTERRUPT PATH GUARDED / SWITCH CONTINUITY PENDING" if ok else "S4 INTERRUPT BOUNDARY FAILED"
+    status = "S4 INTERRUPT SELECTOR GUARDED" if ok else "S4 INTERRUPT BOUNDARY FAILED"
 
     lines = [
         "# S4 interrupt boundary",
@@ -114,8 +125,7 @@ def main() -> int:
         "",
         "This generated report isolates the external interrupt receive path",
         "around S4. It guards the current X1 -> D3 -> D10 IR6/IR7 evidence",
-        "while keeping the two S4 switch pins as explicit source-read or",
-        "continuity work.",
+        "and preserves the full three-terminal S4 changeover topology.",
         "",
         "## Command",
         "",
@@ -150,7 +160,7 @@ def main() -> int:
             "| --- | --- | --- |",
         ]
     )
-    for name in ("INT7_RAW", "IR7", "INT6_RAW", "IR6"):
+    for name in ("INT7_RAW", "IR7", "INT6_RAW", "INT6_BUF", "SYNDET_S4", "IR6"):
         net = board["nets"].get(name, {})
         lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
 
@@ -159,12 +169,11 @@ def main() -> int:
             "",
             "## Interpretation",
             "",
-            "- The modeled interrupt path carries expansion `INT7`/`INT6` through D3",
-            "  inverter sections to PIC inputs IR7/IR6.",
-            "- S4 is physically present and associated with that path, but its two",
-            "  switch pins are deliberately not promoted into the netlist yet.",
-            "- Closing this boundary requires a sheet read, macro photo, or continuity",
-            "  check of S4.1/S4.2 on a .009 processor board.",
+            "- Expansion `INT7` continues through D3 directly to PIC IR7.",
+            "- Expansion `INT6` passes through D3 to one S4 throw; USART SYNDET feeds",
+            "  the other throw, and the common drives PIC IR6.",
+            "- The exact fitted switch position affects behavior but no longer leaves",
+            "  any copper endpoint or switch terminal omitted from the source PCB.",
             "",
         ]
     )

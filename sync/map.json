@@ -98,7 +98,8 @@
   "D94": "U_D94",
   "D100": "U_D100",
   "D30": "U_D30",
-  "D105": "U_D105"
+  "D105": "U_D105",
+  "S4": "U_S4"
  },
  "pinmaps": {
   "kicad": {
@@ -863,6 +864,11 @@
     "11": "T",
     "10": "VSS_GND",
     "20": "VCC_5V"
+   },
+   "SW": {
+    "1": "SYNDET_THROW",
+    "2": "IR6_COMMON",
+    "3": "INT6_THROW"
    }
   },
   "kicad_instance": {
