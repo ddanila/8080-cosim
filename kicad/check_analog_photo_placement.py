@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
     # Reference identities come from СБ photo 114600417; centres come from
     # owner component photo 200418174 registered through the D102 pad field.
-    "R65": ((287.07, 132.26), 90.0),
+    "R65": ((282.21, 125.14), 90.0),
 }
 
 

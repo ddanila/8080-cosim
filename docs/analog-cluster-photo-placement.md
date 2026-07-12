@@ -1,30 +1,41 @@
 # Analog-cluster owner-photo placement
 
-The assembly drawing and the populated owner board now jointly identify the
-first three axial parts immediately below `D102`. This avoids assigning the
-visually similar parts from colour or circuit expectations alone. `R65` can be
-placed independently; `VD3` and `R66` expose a stale `L1` approximation and are
-recorded without introducing shorts into the source PCB.
+The assembly drawing and the populated owner board jointly identify the
+passive groups below `D102`. This avoids assigning visually similar axial parts
+from colour or circuit expectations alone. `R65` can be placed independently;
+the RF group remains constrained but deferred while its tapped coil is traced.
 
 ## Evidence and registration
 
 - `ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg` labels the positions
   below `D102`: `R65` at the left and `R67`/`VD3`/`R66` at the right.
 - `ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg` shows the corresponding
-  populated region.  The upper visible row below `D102` is the left axial
-  resistor `R65`, glass axial diode `VD3`, and right axial resistor `R66`.
+  populated region. The red axial resistor left of the yellow three-lead RF
+  part is `R65`; the right group contains `R67`, glass `VD3`, and `R66`.
 - The owner image is mapped to board millimetres with the independently fitted
-  16-pad `D102` affine registration.  Read body centres project to `(287.07,
-  132.26)`, `(296.34, 133.56)`, and `(299.72, 134.75)` mm respectively.
+  16-pad `D102` affine registration. A full-resolution reread projects the
+  `R65` body centre to `(282.21, 125.14)` mm. The right-group observations are
+  approximately `R67=(295.94,125.39)`, `VD3=(299.38,128.40)`, and
+  `R66=(302.69,128.46)` mm. The earlier `(287.07,132.26)` reading was the yellow
+  three-lead part, not `R65`, and is explicitly superseded here.
 
 The photo read is suitable for package placement but does not yet identify the
 lower obscured/passive positions. `R65` is now placed at its observed centre.
-Trial placement of `VD3` and `R66` created real-net shorts against the old
-approximate `L1` pads (`SOUND_CLAMP` against both `RF_TANK` and `GND`), proving
-that `L1` must be registered with that RF subcluster before those two observed
-positions can safely be adopted. `R67` and the remainder likewise stay
-unchanged until their bodies can be paired unambiguously. The generated `R65`
+The yellow part projects near `(286.60,133.16)` mm and is the leading physical
+candidate for the schematic's three-terminal tapped L1; its identity and pad
+topology still require solder-side proof. `VD3`, `R66`, `R67`, and the remainder
+stay unchanged until their bodies can be paired unambiguously. The generated `R65`
 coordinate compensates for the KiCad axial-footprint anchor offset.
+
+## L1 model discrepancy
+
+The original sheet-2 RF circuit (`ref/schematics/p2_sheet2.png`) draws `L1` as
+an adjustable three-terminal coil with a `1/5` tap feeding `R76` and the `HF`
+output. The current `L_RADIAL` two-pad footprint and its ground-ended net model
+are therefore acknowledged reconstruction placeholders, not a faithful source
+reading. They must be replaced together after the yellow candidate's three
+solder landings are registered; merely moving the current two-pad footprint
+would preserve the wrong circuit.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximation for `R65`. The documented `VD3` and
