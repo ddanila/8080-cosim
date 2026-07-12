@@ -130,15 +130,11 @@ P0,D53,10,RASCAS_DEC,Y_N5,memory/decode source-risk blocker
 P0,D53,11,RASCAS_DEC,Y_N4,memory/decode source-risk blocker
 P0,D53,7,RASCAS_DEC,Y_N7,memory/decode source-risk blocker
 P0,D53,9,RASCAS_DEC,Y_N6,memory/decode source-risk blocker
-P1,D54,13,PIT8253,OUT1,functional endpoint lacks disposition
-P1,D55,17,PIT8253,OUT2,functional endpoint lacks disposition
 P1,D56,1,AG3_ONESHOT,A_N,functional endpoint lacks disposition
 P1,D56,12,AG3_ONESHOT,Q2_N,functional endpoint lacks disposition
 P1,D56,13,AG3_ONESHOT,Q,functional endpoint lacks disposition
 P1,D56,5,AG3_ONESHOT,Q2,functional endpoint lacks disposition
 P1,D56,9,AG3_ONESHOT,A2_N,functional endpoint lacks disposition
-P1,D57,11,PIT8253,GATE0,functional endpoint lacks disposition
-P1,D57,9,PIT8253,CLK0,functional endpoint lacks disposition
 P1,D58,11,IR82,STB,functional endpoint lacks disposition
 P1,D59,10,LN1_OSC,O10,functional endpoint lacks disposition
 P0,D6,13,DEC_PROM,V_EN_N,memory/decode source-risk blocker

@@ -19,7 +19,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `277`
-- Nets modeled: `370`
+- Nets modeled: `372`
 - Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `49`
 - Documented intentional no-connect pins: `38`

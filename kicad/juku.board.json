@@ -10801,6 +10801,10 @@
     ],
     [
      "D57",
+     "11"
+    ],
+    [
+     "D57",
      "16"
     ],
     [
@@ -11540,6 +11544,24 @@
     [
      "D55",
      "18"
+    ]
+   ]
+  },
+  "HOR_RTR": {
+   "src": "scan sheet-2: D54.OUT1 pin 13 is explicitly labeled HOR RTR and exits at off-sheet code 1",
+   "nodes": [
+    [
+     "D54",
+     "13"
+    ]
+   ]
+  },
+  "VERT_SYNC": {
+   "src": "scan sheet-2: D55.OUT2 pin 17 is explicitly labeled VERT SYNC and exits the timer block",
+   "nodes": [
+    [
+     "D55",
+     "17"
     ]
    ]
   },
@@ -14684,6 +14706,10 @@
     [
      "D57",
      "18"
+    ],
+    [
+     "D57",
+     "9"
     ]
    ]
   },

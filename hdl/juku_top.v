@@ -475,8 +475,8 @@ module juku_top (
                       .clk2(pit_hsync_dsl), .gate2(pit_vchain),
                       .out0(pit_vchain), .out1(frame_int), .out2());
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
-                      .clk0(clk123m), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
-                      .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK2 <- 1.23M = D103.QD (crop s2_d103)
+                      .clk0(d103_q[3]), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
+                      .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK0+CLK2 share 1.23M = D103.QD
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
     wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n, ser_syndet;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(d13_o4),

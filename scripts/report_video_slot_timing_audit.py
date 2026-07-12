@@ -112,6 +112,14 @@ def main() -> int:
             "`kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52",
         ),
         (
+            "PIT video/baud timing endpoints are source-complete",
+            net_has(board, "HOR_RTR", ("D54", "13"))
+            and net_has(board, "VERT_SYNC", ("D55", "17"))
+            and net_has(board, "CLK_123M", ("D103", "11"), ("D57", "18"), ("D57", "9"))
+            and net_has(board, "P5V", ("D57", "11")),
+            "sheet-2 D54 HOR RTR, D55 VERT SYNC, and D57 CLK0/GATE0 labels",
+        ),
+        (
             "D42/D43 serializer control/serial nets are present in the board JSON",
             serializer_ok,
             "`kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q",
@@ -121,7 +129,7 @@ def main() -> int:
             marker(
                 "docs/d41-timing-boundary.md",
                 "Status: **D41 OUTPUTS GUARDED / INPUT TIMING BUS PENDING**",
-                "D41.QA selects D50",
+                "D41.QA selects both D50/D51",
                 "pins 1-6/8-11",
             ),
             "`docs/d41-timing-boundary.md`",
