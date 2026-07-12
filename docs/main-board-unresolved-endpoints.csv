@@ -73,9 +73,6 @@ P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
 P1,D33,9,LN1_DUAL,I9,functional endpoint lacks disposition
 P1,D35,3,CLK_PHASE,I3,functional endpoint lacks disposition
 P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
-P1,D37,10,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
-P1,D37,8,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
-P1,D37,9,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
 P1,D38,1,LA1_GATE,I7,functional endpoint lacks disposition
 P1,D38,2,LA1_GATE,I6,functional endpoint lacks disposition
 P1,D38,4,LA1_GATE,I5,functional endpoint lacks disposition
