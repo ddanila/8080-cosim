@@ -78,7 +78,7 @@ yet modeled as nets.
 | `D11` | `14:RXRDY, 15:TXRDY, 18:TXEMPTY` | sheet-1 continuity plus `docs/serial-handoff.md` |
 | `D28` | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` | continuity from an actual `.009` FDC-populated board |
 | `D3` | `3:I3, 4:O4, 5:I5, 6:O6` | sheet-1 serial/interrupt continuity or source-proved NC |
-| `D35` | `1:I1, 2:O2, 3:I3, 5:I5, 6:O6, 8:O8, 9:I9` | sheet-2 timing-chain continuity |
+| `D35` | `1:I1, 2:O2, 5:I5, 6:O6, 8:O8, 9:I9` | sheet-2 timing-chain continuity |
 | `D41` | `10:QD, 11:QC` | sheet-2 timing-chain continuity |
 | `D53` | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` | sheet-2 memory-timing continuity or source-proved NC |
 | `D59` | `5:I5, 6:O6` | sheet-2 timing-chain continuity |
