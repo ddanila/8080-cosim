@@ -123,6 +123,11 @@ def main() -> None:
         corrected_d102 = ("Validated D102 component fit identifies the cable-partly-obscured "
                           "К155АГ3 package right of D97 and replaces the displaced projection")
         row["note"] = row["note"].replace(stale_d102, corrected_d102)
+        stale_d102_solder = ("D102 solder projections sit on broad rails or between actual pad "
+                             "rows; local two-side registration is required before pin assignment")
+        corrected_d102_solder = ("Validated D102 solder fit identifies the physical joint in "
+                                 "the board-edge package, leftmost in backside view")
+        row["note"] = row["note"].replace(stale_d102_solder, corrected_d102_solder)
         stale_d99 = ("D99 component landings are crossed by a factory wire or offset from "
                      "package contacts, and none exposes a unique complete fanout")
         corrected_d99 = ("Validated D99 component fit identifies the cable-crossed notch-right "

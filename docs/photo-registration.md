@@ -142,6 +142,12 @@ but its two exposed row ends, right-facing notch, and drawing position fix its
 identity. Held-out errors are 0.214 px for D97, exactly 0 px at the recorded
 precision for D102, and 0.571 px for D99.
 
+The solder-side board edge independently fixes the reversed lower-row order:
+D102 is the leftmost physical package, followed by D97 and D101. D102's
+single-image solder fit lands all 16 joints and holds opposite-row pin 9 out at
+2.531 px; a trial D97 label here was rejected because it would place D102
+beyond the physical PCB edge.
+
 Package-local pitch converts shared raw-image offsets directly: D95->D99 is
 `(23.895,+0.451)` mm; D95->D101 is `(-11.190,+17.380)` mm; D101->D97 is
 `(23.794,-0.107)` mm; and D97->D102 is `(23.963,-0.249)` mm. The visible

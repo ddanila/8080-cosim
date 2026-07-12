@@ -222,6 +222,18 @@
       "note": "The factory assembly drawing places D102 to the right of D97 in the D101/D97/D102 row. The cable hides pins 1-2 and the left-facing notch, but the uninterrupted pins 3-8 row and the К155АГ3 marking establish package geometry; no electrical path is promoted."
     },
     {
+      "refdes": "D102",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1123.0, 1095.0], "use": "fit", "observation": "rightmost joint of D102's backside pin-1-to-8 row"},
+        {"pin": "8", "image_px": [737.0, 1092.0], "use": "fit", "observation": "leftmost joint of the same coherent eight-pad row"},
+        {"pin": "9", "image_px": [735.0, 1255.0], "use": "check", "observation": "independent leftmost joint of the opposite row"}
+      ],
+      "note": "The physical board edge and the reversed backside package order identify this as leftmost D102, not middle D97. The fit replaces displaced seeds on the next package to the right."
+    },
+    {
       "refdes": "D99",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
