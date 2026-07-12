@@ -470,7 +470,10 @@ module juku_top (
     vg93_fdc   U_D93  (.cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
-    buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(1'b1), .t(1'b1), .vss_gnd(1'b0), .vcc_5v(1'b1));
+    wire d100_oe_boundary, d100_t_boundary;
+    net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
+    net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
+    buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(d100_oe_boundary), .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
     wire d94_d3, d94_d4, d94_d5, d94_d6, d94_d7;
 `ifdef YOSYS
     wire d94_en_boundary;

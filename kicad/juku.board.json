@@ -4240,7 +4240,7 @@
    "prov": {
     "type": "datasheet",
     "refdes": ".009 official (5th ВА87 = FDC bus buffer)",
-    "pins": "complete 8287 contract including VSS pin10 and +5V VCC pin20; OE/T gating remains assumed pending continuity"
+    "pins": "complete 8287 contract including VSS pin10 and +5V VCC pin20; OE_N pin9 and T pin11 are two-sided photo-identified measurement boundaries, with remote gating still pending continuity"
    }
   },
   {
@@ -13231,6 +13231,14 @@
      "14"
     ]
    ]
+  },
+  "D100_OE_BOUNDARY": {
+   "src": "July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside point is bare substrate, so the remote control net remains a measurement boundary",
+   "nodes": [["D100", "9"]]
+  },
+  "D100_T_BOUNDARY": {
+   "src": "July-2026 two-sided local-package registration identifies D100 direction pin11; its component-side continuation is obscured by the factory wire/tape bundle, so the remote control net remains a measurement boundary",
+   "nodes": [["D100", "11"]]
   },
   "FDC_INTRQ": {
    "src": "MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required",

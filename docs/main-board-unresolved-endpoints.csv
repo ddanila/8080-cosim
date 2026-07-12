@@ -1,6 +1,4 @@
 priority,ref,pin,type,role,reason
-P0,D100,11,BUF8287,T,PLAN physical-connectivity blocker
-P0,D100,9,BUF8287,OE_N,PLAN physical-connectivity blocker
 P0,D101,1,KP12_MUX,OE0_N,PLAN physical-connectivity blocker
 P0,D101,10,KP12_MUX,D10,PLAN physical-connectivity blocker
 P0,D101,11,KP12_MUX,D11,PLAN physical-connectivity blocker
