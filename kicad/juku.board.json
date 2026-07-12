@@ -3665,7 +3665,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 LATCH chain: ИР16 D41, outputs QB(12)/QA(13); standard К155ИР16/74295 outputs QC/pin11 and QD/pin10 are explicit unresolved functional endpoints; inputs D/C/B/A=5/4/3/2 from the timing-wire bus [boundary]; July-2026 two-sided package-local photo fit corrects the horizontal notch-right landing"
+    "pins": "sheet-2 LATCH chain: ИР16 D41; A-D pins2-5 share the drawn ground bar, while DS pin1 and G pin8 share +5V rail A; outputs QB12/QA13 traced, QC11/QD10 and LD6/CK9 remain conductor chases; July-2026 two-sided package-local photo fit corrects the horizontal notch-right landing"
    }
   },
   {
@@ -10198,6 +10198,22 @@
      "2"
     ],
     [
+     "D41",
+     "2"
+    ],
+    [
+     "D41",
+     "3"
+    ],
+    [
+     "D41",
+     "4"
+    ],
+    [
+     "D41",
+     "5"
+    ],
+    [
      "D3",
      "7"
     ],
@@ -10778,6 +10794,14 @@
     [
      "D40",
      "10"
+    ],
+    [
+     "D41",
+     "1"
+    ],
+    [
+     "D41",
+     "8"
     ],
     [
      "D44",
