@@ -184,9 +184,9 @@ def main() -> int:
         (
             "P0",
             "programming disk / PROM truth",
-            "Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs",
+            "Baltijets doc 007 programming files; physical dumps of D8 RE3, D94 RE3, and D15/D16 EPROMs; an independent D2/D6 RT4 read only as corroboration of the validated captures",
             "`docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md`",
-            "cross-checks the validated physical D2/D6 tables and replaces the remaining D8 fallback",
+            "replaces the remaining D8 fallback, supplies the absent D94 truth, and cross-checks the already validated physical D2/D6 tables",
         ),
         (
             "P2",

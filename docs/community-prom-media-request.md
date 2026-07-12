@@ -110,10 +110,12 @@ recreation and digital twin:
 https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D2/D94, the
-Juku-specific nets of 9 modeled FDC-support ICs, and programmable-part evidence
-are incomplete.
-D105 wait/MRD logic and most of D30 READY are already modeled and routed.
+reproducible but the physical design remains on hold while D94, the
+Juku-specific nets of 9 modeled FDC-support ICs, and remaining
+programmable-part evidence are incomplete. D2 now has validated physical
+contents and its measured READY handoff is source-modeled. D105 wait/MRD logic
+and most of D30 READY are also source-modeled; the saved routed snapshot
+predates this accepted topology and must be regenerated later.
 
 Baltijets doc 007 confirms several programmed-part drawings, but the byte tables
 for the small PROMs are marked "на диске" rather than printed. I am looking for

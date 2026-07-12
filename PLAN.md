@@ -63,8 +63,11 @@ closed and the corrected board has been rerouted and reviewed.
    continuity proves D2.12/R6 -> D30.2, D30.5 -> R29 -> CPU READY,
    D30.10/.12 -> R5 pull-up, D1.17 DBIN + pulled-up edge `H` -> D105, and
    D105.6 -> D5.4; D105.12/.13 receive MEMW and D105.11 drives D30.13.
-   Resolve D2 output pins 9-11, D30 pins 8/11, and the exact edge contact/pull-up
-   for `H`. The former D2.12->D105.9 and D105.10->−5 V assignments are rejected.
+   The factory symbol draws only D2 D0/pin 12; D2 output pins 9-11 are now
+   explicit no-connects in the board model (their programmed values remain
+   preserved as internal PROM data). Resolve D30 pins 8/11 and the exact edge
+   contact/pull-up for `H`. The former D2.12->D105.9 and D105.10->−5 V
+   assignments are rejected.
 
 The routed PCB/DSN/SES predate this measured topology. Do not locally restore
 the obsolete WAIT copper; regenerate the complete routed snapshot after the six
@@ -292,8 +295,8 @@ serve physical bring-up or historical fidelity:
 
 ### External evidence
 
-- Use `docs/community-prom-media-request.md` for D2, D94, programming-disk, and
-  cartridge BASIC requests.
+- Use `docs/community-prom-media-request.md` for D2/D6 independent
+  corroboration, D8/D94 truth, programming-disk, and cartridge BASIC requests.
 - Use `docs/owner-measurement-shortlist.md` for the next hardware session.
 - Sheets 2-6 of `ДГШ5.109.009 СБ` (the таблица соединений) are acquired and
   transcribed; the remaining document gap for this drawing family is the

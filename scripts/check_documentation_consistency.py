@@ -38,7 +38,7 @@ def main() -> int:
         "docs/README.md": read("docs/README.md"),
     }
     evidence = {
-        "D2": read("docs/d2-reconstruction-constraints.md"),
+        "WAIT/READY edges": read("docs/d2-reconstruction-constraints.md"),
         "D94": read("docs/d94-reconstruction-constraints.md"),
         "unmodeled ICs": read("docs/unmodeled-footprint-inventory.md"),
         "source-risk nets": read("docs/replica-bringup-verification-points.md"),
@@ -47,7 +47,7 @@ def main() -> int:
     }
 
     blockers = {
-        "D2": "Status: **D2 RECONSTRUCTION READY**" not in evidence["D2"],
+        "WAIT/READY edges": "Status: **D2 RECONSTRUCTION READY**" not in evidence["WAIT/READY edges"],
         "D94": "Status: **D94 RECONSTRUCTION READY**" not in evidence["D94"],
         "unmodeled ICs": "Status: **READY FOR DESIGN RELEASE**" not in evidence["unmodeled ICs"],
         "source-risk nets": "Status: **DESIGN RELEASE RISKS CLOSED**" not in evidence["source-risk nets"],
