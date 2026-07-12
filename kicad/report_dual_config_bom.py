@@ -62,7 +62,7 @@ AUTHENTIC_MARK = {
     "C_TRIM": "trimmer capacitor",
     "D_DIODE": "Soviet diode/zener per value",
     "Q_TO92": "КТ315/КТ972-class transistor per position",
-    "L_RADIAL": "radial inductor/choke",
+    "L_TAPPED": "three-terminal adjustable tapped RF coil",
     "XTAL": "РК-171 16 MHz crystal",
     "SW": "switch",
     "SW_DIP6": "DIP switch",
@@ -129,7 +129,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "C_TRIM": "modern trimmer capacitor matching footprint/value",
     "D_DIODE": "modern diode/zener matching value and power",
     "Q_TO92": "modern transistor selected per exact circuit role",
-    "L_RADIAL": "modern radial choke/inductor after value confirmation",
+    "L_TAPPED": "custom/recovered tapped coil or documented three-terminal RF replacement",
     "XTAL": "16 MHz HC-49/metal-can crystal matching footprint/load",
 }
 
@@ -195,7 +195,7 @@ def action_for(typ, pop_count, socket_count):
         return "program/dump"
     if typ in MECHANICAL_TYPES:
         return "mechanical-review"
-    if typ in {"AP2", "UP2", "Q_TO92", "L_RADIAL"}:
+    if typ in {"AP2", "UP2", "Q_TO92", "L_TAPPED"}:
         return "circuit-review"
     if typ in EMPTY_SOCKET_TYPES and pop_count < socket_count:
         return "source-populated-now"

@@ -12,8 +12,8 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 74
-- Populate-now component positions: 211
+- BOM lines: 77
+- Populate-now component positions: 245
 - Long-lead/source-early lines: 21
 - Programming/dump-gated lines: 4
 - Mechanical/circuit-review lines: 22
@@ -26,7 +26,7 @@ review before being treated as build-ready.
 | circuit-review | 10 | 68 |
 | mechanical-review | 12 | 17 |
 | program/dump | 4 | 6 |
-| source-now | 47 | 112 |
+| source-now | 50 | 146 |
 | source-populated-now | 1 | 8 |
 
 ## Buy Early / Acceptance-Test First
@@ -73,7 +73,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_KM | КМ ceramic capacitor | 10 | C7, C8, C9, C10, C11, C13, C14, C15, C34, C99 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | C_TRIM | trimmer capacitor | 1 | C12 | modern trimmer capacitor matching footprint/value |
 | circuit-review | D_DIODE | Soviet diode/zener per value | 2 | VD3, VD4 | modern diode/zener matching value and power |
-| circuit-review | L_RADIAL | radial inductor/choke | 1 | L1 | modern radial choke/inductor after value confirmation |
+| circuit-review | L_TAPPED | three-terminal adjustable tapped RF coil | 1 | L1 | custom/recovered tapped coil or documented three-terminal RF replacement |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | 4 | VT1, VT2, VT3, VT4 | modern transistor selected per exact circuit role |
 | circuit-review | R_AXIAL | axial resistor | 43 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+25) | modern axial resistor, matching value and power rating |
 | circuit-review | R_TRIM | СП3-22б trimmer | 1 | R73 | modern vertical trimmer matching footprint/value |

@@ -77,7 +77,7 @@ PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
 inputs instead passes 789,879 lockstep reads through 130 ms.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 48 source-risk nets and 9 official FDC
+   current generated evidence lists 47 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -102,7 +102,7 @@ NC/continuity proof.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `1987/1987` PCB-scoped board-JSON endpoints.
+The source PCB now passes all `1998/1998` PCB-scoped board-JSON endpoints.
 Thirty-four endpoints on bracket-mounted S1/X3/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -163,6 +163,12 @@ extraction work from that set:
    photographs rather than moving the proven IC row. Continue cross-checking the
    remaining FDC cluster and connector/off-board geometry (X8 300 mm lead,
    X9 400 mm ribbon, poz. 151 shielded cable) before the reroute.
+   Sheet 2 also disproves the former two-terminal grounded L1 simplification:
+   the adjustable RF coil has separate tank ends and a 1/5 tap feeding R76/HF.
+   The source PCB now preserves `RF_TANK`, `VT4_C`, and `RF_TAP`, including the
+   formerly omitted C12.2 endpoint, with a three-pad electrical stand-in. The
+   real coil footprint and location still require photo/solder registration;
+   the adjacent yellow `680п` capacitor is explicitly not L1.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

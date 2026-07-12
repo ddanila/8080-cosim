@@ -22,6 +22,8 @@ ANALOG_NETS = (
     "VT3_E",
     "VT4_B",
     "RF_TANK",
+    "VT4_C",
+    "RF_TAP",
     "HF_OUT",
     "VT4_E",
 )
@@ -37,7 +39,9 @@ REQUIRED_NODES = {
     "RF_RAIL": {("VT3", "3"), ("C9", "2"), ("R72", "2"), ("C10", "1"), ("R73", "1"), ("C11", "1")},
     "VT3_E": {("VT3", "1"), ("R74", "1")},
     "VT4_B": {("R73", "2"), ("VT4", "2"), ("C10", "2")},
-    "RF_TANK": {("VT4", "3"), ("C11", "2"), ("C12", "1"), ("L1", "1"), ("R76", "1"), ("C15", "1")},
+    "RF_TANK": {("C11", "2"), ("C12", "1"), ("L1", "1")},
+    "VT4_C": {("VT4", "3"), ("C12", "2"), ("L1", "2"), ("C15", "1")},
+    "RF_TAP": {("L1", "3"), ("R76", "1")},
     "HF_OUT": {("R76", "2"), ("R77", "1"), ("X6", "1")},
     "VT4_E": {("VT4", "1"), ("R75", "1"), ("C14", "1"), ("C15", "2")},
 }
@@ -105,6 +109,12 @@ def main() -> int:
             "VT4 provenance: sheet-2 analog corner",
         ),
         (
+            "L1 adjustable tank coil retains its separate 1/5 tap",
+            chip(board, "L1").get("type") == "L_TAPPED"
+            and {"1", "2", "3"} <= set(chip(board, "L1").get("pins", {})),
+            "L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP",
+        ),
+        (
             "VIDEO_OUT connector maps to X7",
             ("X7", "1") in nodes(board, "VIDEO_OUT") and ("X7", "2") in nodes(board, "GND"),
             "X7.1 signal / X7.2 return",
@@ -141,7 +151,7 @@ def main() -> int:
     lines = [
         "# Video analog boundary",
         "",
-        "Status date: 2026-07-10.",
+        "Status date: 2026-07-12.",
         "",
         f"Status: **{status}**",
         "",

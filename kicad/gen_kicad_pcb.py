@@ -53,7 +53,7 @@ PASSIVE_FP = {
     'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
     'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
     'Q_TO92':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315/КТ325 (flat KT-13 pkg; TO-92 stand-in)
-    'L_RADIAL':('Inductor_THT.pretty', 'L_Radial_D7.0mm_P3.00mm'),             # L1 RF coil (tunable core; stand-in)
+    'L_TAPPED':('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'), # L1 electrical 3-pad stand-in; physical coil still to fit
     'VIDEO_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X7 video socket stand-in (601/602)
     'RF_CONN':    ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X6 RF socket stand-in (701/702)
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings

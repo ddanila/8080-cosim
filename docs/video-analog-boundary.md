@@ -1,6 +1,6 @@
 # Video analog boundary
 
-Status date: 2026-07-10.
+Status date: 2026-07-12.
 
 Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**
 
@@ -30,7 +30,9 @@ python3 scripts/report_video_analog_boundary.py
 | `RF_RAIL` carries the traced analog-corner endpoints | PASS | `C10.1, C11.1, C9.2, R72.2, R73.1, VT3.3` |
 | `VT3_E` carries the traced analog-corner endpoints | PASS | `R74.1, VT3.1` |
 | `VT4_B` carries the traced analog-corner endpoints | PASS | `C10.2, R73.2, VT4.2` |
-| `RF_TANK` carries the traced analog-corner endpoints | PASS | `C11.2, C12.1, C15.1, L1.1, R76.1, VT4.3` |
+| `RF_TANK` carries the traced analog-corner endpoints | PASS | `C11.2, C12.1, L1.1` |
+| `VT4_C` carries the traced analog-corner endpoints | PASS | `C12.2, C15.1, L1.2, VT4.3` |
+| `RF_TAP` carries the traced analog-corner endpoints | PASS | `L1.3, R76.1` |
 | `HF_OUT` carries the traced analog-corner endpoints | PASS | `R76.2, R77.1, X6.1` |
 | `VT4_E` carries the traced analog-corner endpoints | PASS | `C14.1, C15.2, R75.1, VT4.1` |
 
@@ -41,6 +43,7 @@ python3 scripts/report_video_analog_boundary.py
 | VT2 video emitter follower is modeled | PASS | VT2 provenance: sheet-2 analog corner |
 | VT3 RF/video stage is modeled | PASS | VT3 provenance: sheet-2 analog corner |
 | VT4 RF oscillator/output stage is modeled | PASS | VT4 provenance: sheet-2 analog corner |
+| L1 adjustable tank coil retains its separate 1/5 tap | PASS | L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP |
 | VIDEO_OUT connector maps to X7 | PASS | X7.1 signal / X7.2 return |
 | HF_OUT connector maps to X6 | PASS | X6.1 signal / X6.2 return |
 
@@ -66,7 +69,9 @@ python3 scripts/report_video_analog_boundary.py
 | `RF_RAIL` | `C10.1, C11.1, C9.2, R72.2, R73.1, VT3.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
 | `VT3_E` | `R74.1, VT3.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `VT4_B` | `C10.2, R73.2, VT4.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
-| `RF_TANK` | `C11.2, C12.1, C15.1, L1.1, R76.1, VT4.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; L1 tap simplification (1/5 turns, tap -> R76) |
+| `RF_TANK` | `C11.2, C12.1, L1.1` | scan sheet-2 full-resolution analog corner: C11.2 feeds the parallel C12/L1 tank top |
+| `VT4_C` | `C12.2, C15.1, L1.2, VT4.3` | scan sheet-2 full-resolution analog corner: C12/L1 tank return joins VT4 collector and C15 top |
+| `RF_TAP` | `L1.3, R76.1` | scan sheet-2 full-resolution analog corner: L1 adjustable-coil 1/5 tap feeds series R76 then HF output |
 | `HF_OUT` | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible) |
 | `VT4_E` | `C14.1, C15.2, R75.1, VT4.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 

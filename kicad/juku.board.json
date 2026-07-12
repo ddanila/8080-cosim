@@ -4674,15 +4674,16 @@
   },
   {
    "ref": "L1",
-   "type": "L_RADIAL",
+   "type": "L_TAPPED",
    "pins": {
     "1": "P1",
-    "2": "P2"
+    "2": "P2",
+    "3": "TAP"
    },
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 analog corner",
-    "pins": "RF_TANK inductor; connected nets carry an_* crop evidence"
+    "pins": "three-terminal adjustable RF tank coil; sheet-2 draws a 1/5 tap to R76/HF"
    }
   },
   {
@@ -10172,10 +10173,6 @@
      "1"
     ],
     [
-     "L1",
-     "2"
-    ],
-    [
      "X7",
      "2"
     ],
@@ -14220,12 +14217,8 @@
    ]
   },
   "RF_TANK": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; L1 tap simplification (1/5 turns, tap -> R76)",
+   "src": "scan sheet-2 full-resolution analog corner: C11.2 feeds the parallel C12/L1 tank top",
    "nodes": [
-    [
-     "VT4",
-     "3"
-    ],
     [
      "C11",
      "2"
@@ -14237,15 +14230,23 @@
     [
      "L1",
      "1"
-    ],
-    [
-     "R76",
-     "1"
-    ],
-    [
-     "C15",
-     "1"
     ]
+   ]
+  },
+  "VT4_C": {
+   "src": "scan sheet-2 full-resolution analog corner: C12/L1 tank return joins VT4 collector and C15 top",
+   "nodes": [
+    ["VT4", "3"],
+    ["C12", "2"],
+    ["L1", "2"],
+    ["C15", "1"]
+   ]
+  },
+  "RF_TAP": {
+   "src": "scan sheet-2 full-resolution analog corner: L1 adjustable-coil 1/5 tap feeds series R76 then HF output",
+   "nodes": [
+    ["L1", "3"],
+    ["R76", "1"]
    ]
   },
   "HF_OUT": {

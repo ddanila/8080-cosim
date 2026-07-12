@@ -33,12 +33,11 @@ compensates for the KiCad axial-footprint anchor offset.
 
 The original sheet-2 RF circuit (`ref/schematics/p2_sheet2.png`) draws `L1` as
 an adjustable three-terminal coil with a `1/5` tap feeding `R76` and the `HF`
-output. The current `L_RADIAL` two-pad footprint and its ground-ended net model
-are therefore acknowledged reconstruction placeholders, not a faithful source
-reading. They must be replaced together after the real coil and its three
-solder landings are registered; merely moving the current two-pad footprint
-would preserve the wrong circuit. The adjacent yellow `680п` part is explicitly
-excluded from that search.
+output. The source model now preserves those three electrical terminals as
+`RF_TANK`, `VT4_C`, and `RF_TAP`; this also restores previously omitted C12.2
+to the collector/coil-return node. The PCB uses an explicit three-pad stand-in
+until the real coil and its solder landings are registered. The adjacent yellow
+`680п` part is explicitly excluded from that search.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximation for `R65`. The documented `VD3` and
