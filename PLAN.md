@@ -106,7 +106,7 @@ NC/continuity proof.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `1999/1999` PCB-scoped board-JSON endpoints.
+The source PCB now passes all `2000/2000` PCB-scoped board-JSON endpoints.
 Thirty-four endpoints on bracket-mounted S1/X3/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -176,6 +176,8 @@ extraction work from that set:
    The same full-resolution sheet closes the former R66.1 source boundary:
    its `B` arrow is the power legend's `B (+12)`, so R66.1 is now on `P12V`
    rather than an invented PIT `SOUND` input.
+   It also restores the omitted third terminal of R73: the RF-bias trimmer is
+   `RF_RAIL` end / `VT4_B` wiper / grounded end, not a two-pin resistor.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

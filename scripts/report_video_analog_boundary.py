@@ -120,6 +120,13 @@ def main() -> int:
             "sheet-2 B-arrow enters R66.1; power legend defines B (+12)",
         ),
         (
+            "R73 RF-bias trimmer retains its grounded third terminal",
+            ("R73", "1") in nodes(board, "RF_RAIL")
+            and ("R73", "2") in nodes(board, "VT4_B")
+            and ("R73", "3") in nodes(board, "GND"),
+            "sheet-2: top end RF_RAIL, wiper VT4_B, bottom end GND",
+        ),
+        (
             "VIDEO_OUT connector maps to X7",
             ("X7", "1") in nodes(board, "VIDEO_OUT") and ("X7", "2") in nodes(board, "GND"),
             "X7.1 signal / X7.2 return",

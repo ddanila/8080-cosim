@@ -45,6 +45,7 @@ python3 scripts/report_video_analog_boundary.py
 | VT4 RF oscillator/output stage is modeled | PASS | VT4 provenance: sheet-2 analog corner |
 | L1 adjustable tank coil retains its separate 1/5 tap | PASS | L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP |
 | R66 clamp input is fed from the sheet-2 B (+12 V) rail | PASS | sheet-2 B-arrow enters R66.1; power legend defines B (+12) |
+| R73 RF-bias trimmer retains its grounded third terminal | PASS | sheet-2: top end RF_RAIL, wiper VT4_B, bottom end GND |
 | VIDEO_OUT connector maps to X7 | PASS | X7.1 signal / X7.2 return |
 | HF_OUT connector maps to X6 | PASS | X6.1 signal / X6.2 return |
 

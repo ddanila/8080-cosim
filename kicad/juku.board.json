@@ -4471,7 +4471,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 analog corner",
-    "pins": "VT4_B adjustable RF bias; connected nets carry an_* crop evidence"
+    "pins": "sheet-2 three-terminal RF-bias trimmer: pin1 RF_RAIL, wiper pin2 VT4_B, bottom pin3 GND"
    }
   },
   {
@@ -10171,6 +10171,10 @@
     [
      "C9",
      "1"
+    ],
+    [
+     "R73",
+     "3"
     ],
     [
      "X7",
