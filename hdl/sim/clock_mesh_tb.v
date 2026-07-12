@@ -20,7 +20,11 @@ module clock_mesh_tb;
   wire [3:0] d40_q;
 
   // mirror juku_top's mesh wiring exactly
-  ln1_osc   U_D59 (.xin(clk), .osc(osc_clk));
+  // sclk is the functional simulation drive; xin is the physical oscillator-loop landing.
+  // The ln1_osc interface split those roles after this test was written, so driving xin left
+  // osc_clk floating and made the counter-coverage assertion vacuous.
+  ln1_osc   U_D59 (.sclk(clk), .xin(1'b0), .i13(1'b0), .i11(1'b0), .i3(1'b0), .i5(1'b0), .i9(1'b0),
+                   .osc(osc_clk), .o12(), .o10(), .o4(), .o6(), .o8());
   ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0),
                    .q(d40_q), .co());
   la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y));            // pin12<-Q1, pin13<-Q0
