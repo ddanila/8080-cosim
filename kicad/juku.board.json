@@ -1029,8 +1029,8 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ИД7/74138 complete standard package contract; sheet-2 proves A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL, and Y0-Y3=15/14/13/12 through R49-R52 100R into RAIL14/13/12/11 RAS rails; Y4-Y7 pins 11/10/9/7 require source-proved destinations or NC dispositions",
-    "note": "ИД7/74138 RAS decoder: G1/G2/G3 enables (timed), A/B/C select via straps E2/E3, Y0-3 -> R49-R52(100R) -> R53-R56(5.1k) -> RAIL_E. Shared CAS is driven separately by D36/R57/R58. Y4-Y7 are restored as functional package pins and deliberately remain unresolved pending sheet/photo continuity or explicit NC proof."
+    "pins": "ИД7/74138 complete package census; sheet-2 proves A/B<-E2/E3, C=GND, G1(6)=VID_CPU_SEL, and Y0-Y3 pins15/14/13/12 through R49-R52 into RAS rails; Y4-Y7 pins11/10/9/7 have no drawn conductors and are explicit NCs",
+    "note": "ИД7/74138 RAS decoder: G1/G2/G3 enables are timed, A/B/C select through E2/E3, Y0-3 drive the four RAS rails, and shared CAS is driven separately by D36/R57/R58."
    }
   },
   {
@@ -15225,6 +15225,10 @@
   }
  },
  "no_connects": [
+  ["D53", "7"],
+  ["D53", "9"],
+  ["D53", "10"],
+  ["D53", "11"],
   ["D41", "10"],
   ["D41", "11"],
   ["D52", "9"],

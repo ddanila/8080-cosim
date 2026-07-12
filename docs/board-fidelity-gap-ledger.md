@@ -20,9 +20,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
 - Nets modeled: `390`
-- Chip-level fidelity gaps: `58`
+- Chip-level fidelity gaps: `57`
 - Net-level source-risk gaps: `49`
-- Documented intentional no-connect pins: `63`
+- Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
 
@@ -57,7 +57,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
-| video/timing | 2 | 0 |
+| video/timing | 1 | 0 |
 
 ## Chip-Level Gaps
 
@@ -147,7 +147,6 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D41` | `IR16` | scan | complete sheet-2 package census: A-D pins2-5 share ground, DS1/G8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit N... |
-| `D53` | `RASCAS_DEC` | scan | ИД7/74138 complete standard package contract; sheet-2 proves A/B<-E2/E3 jumpers (D52 mux vs Φ1/Φ2), C=GND, G1(6)=VID_CPU_SEL, and Y0-Y3=15/14/13/12 through R... |
 
 ## Unnetted Functional Pins
 
@@ -166,7 +165,6 @@ model is historical-source-complete.
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
-| `D53` | video/timing | `7:Y_N7, 9:Y_N6, 10:Y_N5, 11:Y_N4` |
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
@@ -202,6 +200,7 @@ explicit KiCad schematic no-connect markers.
 | `D46` | `13` |
 | `D47` | `12, 13` |
 | `D52` | `9, 10, 11, 12, 13, 14` |
+| `D53` | `7, 9, 10, 11` |
 | `D56` | `1, 9, 13` |
 | `D59` | `5, 6` |
 | `D93` | `1` |

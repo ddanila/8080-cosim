@@ -378,7 +378,7 @@ module rascas_dec (input wire a, b, c, input wire g, g2a_n, g2b_n, input wire sa
                    output wire cas_sim);
     assign y_n[0]   = ~(sactive & ~ram_en_sim & a);   // behavioral RAS -> rail 14 (populated bank D84-91)
     assign y_n[3:1] = 3'b111;                         // expansion-bank RAS rails (sockets empty)
-    assign {y_n7, y_n6, y_n5, y_n4} = 4'b1111;       // physical pins restored; destinations unresolved
+    assign {y_n7, y_n6, y_n5, y_n4} = 4'b1111;       // physical pins are undrawn/NC on sheet 2
     assign cas_sim  = ~(sactive & ~ram_en_sim & b);   // sim CAS scaffold -> rail 15 boundary
 endmodule
 // Configuration jumper (Е2/Е3/Е10/Е13 family): 3 pads, position 1-2 or 2-3. Functional model =
