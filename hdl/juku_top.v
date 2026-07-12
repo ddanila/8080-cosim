@@ -245,8 +245,10 @@ module juku_top (
                           .a2(1'b1), .b2(memw_n), .y2(),   // sect2: pin2 <- MEMW [WIRE 19, beeper]; pin1 <- D92.13 [WIRE 11, D92 unmapped]
                           .a3(d7_b3_boundary), .b3(d7_a3_boundary), .y3(d25_t_w),
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_tag8));   // sect4 pins9/10 = IORD/IOWR; output8 -> tag8 boundary
+    wire d6_v_enable;
+    net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
     decode_prom U_DECODE (.a({BA[15:11], ppi0_pc[2], ppi0_pc[3], ppi0_pc[4]}),   // traced sheet-1: PC2/3/4 pins16/17/13 -> tags1/2/3 -> D6 pins2/1/15
-                          .v_en_n(1'b0),                                     // V1/V2 feed unread; modeled always-enabled (old D7.11 link refuted)
+                          .v_en_n(d6_v_enable),                               // V1/V2 are one source-visible, upstream-unread boundary
                           .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
 
     // ============ memory chips on the buffered buses ============
