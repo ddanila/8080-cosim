@@ -80,13 +80,7 @@ P1,D34,4,LP5_XOR,A1,functional endpoint lacks disposition
 P1,D34,5,LP5_XOR,B1,functional endpoint lacks disposition
 P1,D34,6,LP5_XOR,Y1,functional endpoint lacks disposition
 P1,D34,9,LP5_XOR,A3,functional endpoint lacks disposition
-P1,D35,1,CLK_PHASE,I1,functional endpoint lacks disposition
-P1,D35,2,CLK_PHASE,O2,functional endpoint lacks disposition
 P1,D35,3,CLK_PHASE,I3,functional endpoint lacks disposition
-P1,D35,5,CLK_PHASE,I5,functional endpoint lacks disposition
-P1,D35,6,CLK_PHASE,O6,functional endpoint lacks disposition
-P1,D35,8,CLK_PHASE,O8,functional endpoint lacks disposition
-P1,D35,9,CLK_PHASE,I9,functional endpoint lacks disposition
 P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
 P1,D37,10,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
 P1,D37,8,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition

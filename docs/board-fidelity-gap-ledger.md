@@ -20,9 +20,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `277`
 - Nets modeled: `369`
-- Chip-level fidelity gaps: `59`
+- Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `49`
-- Documented intentional no-connect pins: `32`
+- Documented intentional no-connect pins: `38`
 
 ## Chip Provenance Types
 
@@ -52,7 +52,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 18 |
 | clock/I/O | 0 | 4 |
-| logic/source | 8 | 8 |
+| logic/source | 7 | 8 |
 | memory/timing | 0 | 5 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -94,7 +94,6 @@ parts placement and Tier-3 reproduction.
 | `D100` | `BUF8287` | datasheet | .009 official (5th ВА87 = FDC bus buffer) complete 8287 contract including VSS pin10 and +5V VCC pin20; OE/T gating remains assumed pending continuity |
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with named of... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->... |
-| `D35` | `CLK_PHASE` | scan | К155ЛН5 standard hex-inverter package contract; scan proves phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), while D35.4 is already traced to R39.1/VID_MIX2... |
 | `D42` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) Western Digital FD179X-01 primary datasheet complete package contract: host, step/precompensation, separator, head-load, drive-status, wr... |
@@ -166,7 +165,6 @@ model is historical-source-complete.
 | `D106` | FDC owner-continuity | `1:D1, 2:Q1, 3:Q0, 4:DOWN, 5:UP, 6:Q2, 7:Q3, 9:D3, 10:D2, 11:LOAD_N, 12:CO, 13:BO, 14:CLR, 15:D0` |
 | `D28` | FDC owner-continuity | `1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6` |
 | `D30` | logic/source | `8:Q2_N, 11:CLK2` |
-| `D35` | logic/source | `1:I1, 2:O2, 3:I3, 5:I5, 6:O6, 8:O8, 9:I9` |
 | `D41` | video/timing | `1:DS, 2:A, 3:B, 4:C, 5:D, 6:LD, 8:G, 9:CK, 10:QD, 11:QC` |
 | `D42` | logic/source | `8:G, 11:QC, 12:QB, 13:QA` |
 | `D43` | logic/source | `1:DS, 8:G, 11:QC, 12:QB, 13:QA` |
@@ -195,6 +193,7 @@ explicit KiCad schematic no-connect markers.
 | `D26` | `39` |
 | `D3` | `3, 4, 5, 6` |
 | `D30` | `6, 9` |
+| `D35` | `1, 2, 5, 6, 8, 9` |
 | `D44` | `13` |
 | `D45` | `13` |
 | `D46` | `13` |

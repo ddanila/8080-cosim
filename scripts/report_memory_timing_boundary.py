@@ -136,7 +136,8 @@ def main() -> int:
             "D35/D59 complete inverter package roles remain visible",
             all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
             and all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
-            and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")}),
+            and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
+            and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6", "8", "9")),
             "D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary",
         ),
         (
