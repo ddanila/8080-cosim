@@ -11420,6 +11420,33 @@
     ]
    ]
   },
+  "TAPE_RUN_INT": {
+   "src": "scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary",
+   "nodes": [
+    [
+     "D10",
+     "22"
+    ]
+   ]
+  },
+  "PIC_IR3_BOUNDARY": {
+   "src": "scan sheet-1: D10 IR3 pin 21 has a distinct southbound conductor; far destination remains unread",
+   "nodes": [
+    [
+     "D10",
+     "21"
+    ]
+   ]
+  },
+  "PIC_IR2_BOUNDARY": {
+   "src": "scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread",
+   "nodes": [
+    [
+     "D10",
+     "20"
+    ]
+   ]
+  },
   "SYNDET_S4": {
    "src": "scan sheet-1: D11 SYNDET pin 16 reaches the lower S4.1 throw",
    "nodes": [

@@ -161,6 +161,13 @@ def check_rows(board: dict) -> list[list[object]]:
         all(pin_is_nc(board, "D10", pin) for pin in ("12", "13", "15")),
         "full-resolution sheet-1 PIC symbol omits CAS0/CAS1/CAS2 pins 12/13/15",
     ))
+    checks.append((
+        "Remaining PIC interrupt conductors stay explicit",
+        has_node(board, "TAPE_RUN_INT", "D10", "22")
+        and has_node(board, "PIC_IR3_BOUNDARY", "D10", "21")
+        and has_node(board, "PIC_IR2_BOUNDARY", "D10", "20"),
+        "sheet-1: IR4=(3) TAPE RUN INT; IR3/IR2 leave on distinct unread southbound conductors",
+    ))
     checks.append(
         (
             "USART RTS/DTR reach AP2 driver",
