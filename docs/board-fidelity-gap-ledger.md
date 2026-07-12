@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `427`
+- Nets modeled: `441`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `90`
+- Net-level source-risk gaps: `104`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -53,7 +53,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 18 |
 | clock/I/O | 0 | 4 |
-| logic/source | 9 | 48 |
+| logic/source | 9 | 62 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 11 |
@@ -167,7 +167,6 @@ model is historical-source-complete.
 | `D93` | logic/source | `15:STEP, 16:DIRC, 17:EARLY, 18:LATE, 19:MR_N, 22:TEST, 23:HLT, 24:CLK, 25:RG, 26:RCLK, 27:RAW_READ, 28:HLD, 29:TG43, 30:WG, 31:WDATA, 32:READY, 33:WF_VFOE, 34:TR00, 35:INDEX, 36:WPRT, 40:VDD_12V` |
 | `D95` | FDC owner-continuity | `1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N` |
 | `D96` | FDC owner-continuity | `1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N` |
-| `D97` | FDC owner-continuity | `1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 | `D98` | FDC owner-continuity | `1:OE14_N, 2:A1, 4:A2, 5:Y2, 6:A3, 9:Y4, 10:A4, 11:Y5, 12:A5, 13:Y6, 14:A6, 15:OE56_N` |
 | `D99` | FDC owner-continuity | `1:A_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1` |
 
@@ -274,6 +273,20 @@ same fidelity ledger as the chip provenance gaps.
 | `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because... |
 | `D94_D7` | PROM/decode | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 | `D94_EN_BOUNDARY` | PROM/decode | `D94.15` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the... |
+| `D97_A1N_BOUNDARY` | logic/source | `D97.1` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin1 A_N; no remote destination is proved, so this remains a measurement boundary |
+| `D97_A2N_BOUNDARY` | logic/source | `D97.9` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin9 A2_N; no remote destination is proved, so this remains a measurement boundary |
+| `D97_B1_BOUNDARY` | logic/source | `D97.2` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin2 B; no remote destination is proved, so this remains a measurement boundary |
+| `D97_B2_BOUNDARY` | logic/source | `D97.10` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin10 B2; no remote destination is proved, so this remains a measurement boundary |
+| `D97_C1_BOUNDARY` | logic/source | `D97.14` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin14 C1; no remote destination is proved, so this remains a measurement boundary |
+| `D97_C2_BOUNDARY` | logic/source | `D97.6` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin6 C2; no remote destination is proved, so this remains a measurement boundary |
+| `D97_CLR1_BOUNDARY` | logic/source | `D97.3` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin3 CLR_N; no remote destination is proved, so this remains a measurement boundary |
+| `D97_CLR2_BOUNDARY` | logic/source | `D97.11` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin11 CLR2_N; no remote destination is proved, so this remains a measurement boundary |
+| `D97_Q1N_BOUNDARY` | logic/source | `D97.4` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin4 Q_N; no remote destination is proved, so this remains a measurement boundary |
+| `D97_Q1_BOUNDARY` | logic/source | `D97.13` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin13 Q; no remote destination is proved, so this remains a measurement boundary |
+| `D97_Q2N_BOUNDARY` | logic/source | `D97.12` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin12 Q2_N; no remote destination is proved, so this remains a measurement boundary |
+| `D97_Q2_BOUNDARY` | logic/source | `D97.5` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary |
+| `D97_RC1_BOUNDARY` | logic/source | `D97.15` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
+| `D97_RC2_BOUNDARY` | logic/source | `D97.7` | July-2026 validated component and solder package fits identify D97 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
 | `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identi... |
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
