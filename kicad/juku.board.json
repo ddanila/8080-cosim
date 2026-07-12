@@ -4066,7 +4066,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 D34 ЛП5: XOR-RC-XOR counter-LD pulse gen",
-    "pins": "scan; gate 4 is drawn as 1.23MHz on pin12 XOR +5V on pin13, producing SIG on pin11"
+    "pins": "scan; gate 1 pin4 reaches top-edge tag 2 while pin5 is grounded and pin6 drives C5/R33; gate 4 is drawn as 1.23MHz on pin12 XOR +5V on pin13, producing SIG on pin11"
    }
   },
   {
@@ -12902,6 +12902,15 @@
     [
      "C5",
      "1"
+    ]
+   ]
+  },
+  "D34_A1_TAG2": {
+   "src": "scan sheet-2: D34 gate-1 input pin 4 runs continuously to the top-edge conductor marked 2; no unique far endpoint is drawn on this sheet",
+   "nodes": [
+    [
+     "D34",
+     "4"
     ]
    ]
   },
