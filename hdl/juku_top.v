@@ -86,8 +86,10 @@ module juku_top (
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(1'b1), .g(1'b1), .ck(1'b0),
                      .ds(1'b0), .qd(d41_qd), .qa(d41_qa), .qb(d41_qb), .qc(d41_qc));
     wire pst_clk;
-    ln1_osc   U_D59 (.xin(clk), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8),
-                     .i3(osc_clk), .o4(pst_clk), .i5(1'bz), .o6(), .i9(1'bz), .o8());   // unresolved sections remain open
+    wire osc_fb, osc_pre;
+    ln1_osc   U_D59 (.sclk(clk), .xin(osc_pre), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8),
+                     .i3(osc_clk), .o4(pst_clk), .i5(1'bz), .o6(), .i9(osc_fb), .o8(osc_pre));
+    assign osc_fb = 1'bz; // R31/R32/Z1 meet here physically; analog crystal loop is outside HDL
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(1'b1), .ep(1'b1), .et(1'b1), .pe_n(1'b1), .d(4'b0), .q(d40_q), .co());
     // D39 sections 3+4 (bite-2): NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4; then NAND(out3,
     // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the

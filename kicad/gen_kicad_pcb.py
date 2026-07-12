@@ -88,6 +88,8 @@ PASSIVE_PLACE = {
     'A59':(34.0,252.6,0),'A60':(29.0,252.6,0),'A61':(24.0,252.6,0),'A62':(19.0,252.6,0),
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
+    'R31':(94.0,257.0,90),  # .009/.158 СБ + owner photo: vertical between Z1 and D59; left of D59 pad row
+    'R32':(109.5,246.0,0),  # .009/.158 СБ + owner photo: horizontal above D59
     'R38':(121.4,249.1,90),'R39':(230.5,192.5,0),
     'Z1':(79.4,243.5,90),    # РК-171 crystal at its PHOTO-TRUE spot (edge-relative measurement, straight-on corner crop)
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]

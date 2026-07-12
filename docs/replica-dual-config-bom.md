@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 275
-- Populate for current functional .009 build: 245
+- Board component positions: 277
+- Populate for current functional .009 build: 247
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 77
+- Unique BOM lines: 78
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 146 |
+| source-now | 148 |
 | source-populated-now | 8 |
 
 ## BOM Lines
@@ -94,11 +94,12 @@ readiness report.
 | source-now | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | 3 | 0 | D54, D55, D57 | - |
 | source-now | PPI8255 | КР580ВВ55А | 8255A / 82C55 PPI | 2 | 2 | 0 | D26, D27 | - |
 | source-now | RASCAS_DEC | К531ИД7 | 74S138/74F138-class fast decoder; verify timing | 1 | 1 | 0 | D53 | - |
+| source-now | R_AXIAL 1,2к | axial resistor 1,2к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R32 | - |
 | source-now | R_AXIAL 1,5к | axial resistor 1,5к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R20 | - |
 | source-now | R_AXIAL 100 | axial resistor 100 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R3, R4 | - |
 | source-now | R_AXIAL 120 | axial resistor 120 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R104 | - |
 | source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R39 | - |
-| source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R29, R38 | - |
+| source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R29, R31, R38 | - |
 | source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R94 | - |
 | source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R5, R6 | - |
 | source-now | R_AXIAL 33k | axial resistor 33k | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R18, R30 | - |

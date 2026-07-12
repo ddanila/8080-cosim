@@ -784,7 +784,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К531ЛН1 standard hex-inverter package contract; sheet-2 traces sections 1->2 oscillator, 3->4 PST CLK, 11->10 timing chain, and 13->12 LOAD; sections 5->6 and 9->8 require traced destinations or explicit NC proof"
+    "pins": "К531ЛН1 standard hex-inverter package contract; sheet-2 traces sections 9->8 and 1->2 in the crystal oscillator, 3->4 as PST CLK, 11->10 in the timing chain, and 13->12 as LOAD; section 5->6 still requires a traced destination or explicit NC proof"
    }
   },
   {
@@ -3595,7 +3595,7 @@
    "prov": {
     "type": "photo",
     "refdes": "photo",
-    "pins": "РК-171 8903 metal-can crystal + trimmer at the D59 corner (board-#2 photos, 'Д1' ink stamp); drives D59/ЛН1 osc -- nets SIM_ONLY, not wired here; 16 MHz per sheet-2 master-clock net"
+    "pins": "РК-171 8903 metal-can crystal at the D59 corner (board-#2 photos, 'Д1' ink stamp); sheet-2 series branch Z1+C73 connects OSC_FB to OSC; 16 MHz master clock"
    },
    "value": "16 МГц"
   },
@@ -3609,9 +3609,38 @@
    "prov": {
     "type": "photo",
     "refdes": "photo",
-    "pins": "C73 4/20 pF trimmer (sheet-2 schematic: Z1+C73+R32 oscillator group; '8811' disc in the corner photos); osc tuning"
+    "pins": "C73 4/20 pF trimmer (sheet-2 schematic and owner-board D59 corner); series branch Z1+C73 connects OSC_FB to OSC"
    },
    "value": "4/20"
+  },
+  {
+   "ref": "R31",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "photo",
+    "refdes": "scan",
+    "pins": "sheet-2 oscillator feedback resistor; .009/.158 assembly drawing places R31 vertically between Z1 and D59; owner board #2 visibly carries a 1K0-marked part where the schematic scan reads 820 ohm",
+    "note": "target-board physical population value 1 кОм retained; 820-ohm sheet value is a documented revision/source conflict"
+   },
+   "value": "1к"
+  },
+  {
+   "ref": "R32",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "photo",
+    "refdes": "scan",
+    "pins": "sheet-2 1.2 kOhm oscillator feedback resistor; .009/.158 assembly drawing and owner board #2 place R32 horizontally above D59"
+   },
+   "value": "1,2к"
   },
   {
    "ref": "D41",
@@ -7344,9 +7373,64 @@
     [
      "D59",
      "3"
+    ],
+    [
+     "C73",
+     "2"
     ]
    ],
-   "src": "scan"
+   "src": "scan sheet-2: D59.2/D59.3 oscillator node, through C73+Z1 series branch to OSC_FB"
+  },
+  "OSC_FB": {
+   "src": "scan sheet-2: D59.9 input feedback node joins R31.1, R32.1, and Z1.1",
+   "nodes": [
+    [
+     "D59",
+     "9"
+    ],
+    [
+     "R31",
+     "1"
+    ],
+    [
+     "R32",
+     "1"
+    ],
+    [
+     "Z1",
+     "1"
+    ]
+   ]
+  },
+  "OSC_PRE": {
+   "src": "scan sheet-2: D59.8 output returns through R31 to the D59.9 feedback node and drives D59.1",
+   "nodes": [
+    [
+     "D59",
+     "8"
+    ],
+    [
+     "D59",
+     "1"
+    ],
+    [
+     "R31",
+     "2"
+    ]
+   ]
+  },
+  "XTAL_TRIM": {
+   "src": "scan sheet-2: Z1 and C73 form the series frequency-setting branch",
+   "nodes": [
+    [
+     "Z1",
+     "2"
+    ],
+    [
+     "C73",
+     "1"
+    ]
+   ]
   },
   "PHI1": {
    "src": "scan",
@@ -12597,6 +12681,10 @@
     [
      "D44",
      "5"
+    ],
+    [
+     "R32",
+     "2"
     ]
    ]
   },

@@ -214,14 +214,16 @@ module eprom_8k #(parameter HALF = 0) (input wire [12:0] a, inout wire [7:0] d, 
 endmodule
 
 // ===== clock subsystem (discrete; replaces the non-existent 8224) =====
-module ln1_osc   (input wire xin, input wire i13, i11, i3, i5, i9,
+module ln1_osc   (input wire sclk, xin, input wire i13, i11, i3, i5, i9,
                   output wire osc, o12, o10, o4, o6, o8);   // D59 ЛН1 complete hex-inverter package
-    assign osc = xin;   // functional: the ЛН1 osc's output tracks its drive (crystal loop abstracted)
+    // sclk is the simulation drive only. Physical pin 1 (xin) is retained as the
+    // D59.8 feedback landing; the analog Z1/C73/R31/R32 loop cannot be synthesized.
+    assign osc = sclk;  // functional clock value; real OSC copper remains pin 2
     assign o12 = ~i13;  // section 13->12 = LOAD   (D38.6 -> D59.13, sheet-2)
     assign o10 = ~i11;  // section 11->10 = D39.8 -> D59.11 chain (sheet-2)
     assign o4  = ~i3;   // section 3->4 = PST CLK (3rd ring section; buffered osc out -> D44.UP)
     assign o6  = ~i5;   // physical section 5->6; board destination unresolved
-    assign o8  = ~i9;   // physical section 9->8; board destination unresolved
+    assign o8  = ~i9;   // section 9->8 returns through R31 to physical pin 1
 endmodule
 // D35 ЛН5 phase generator. Merge step 3: the discrete clock mesh feeding `osc` is an un-traced
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional

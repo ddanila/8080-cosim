@@ -29,7 +29,7 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 99 mapped instances and 239 matched nets | Unmapped footprints, omitted pins, behavioral correctness, and historical correctness of assumed nets |
+| Connectivity | `sync/check.sh` reports 99 mapped instances and 240 matched nets; the complete D59/Z1/C73/R31/R32 oscillator loop is source-modeled and LVS-visible at its digital endpoints | Unmapped footprints, omitted pins, behavioral correctness, the analog oscillator waveform, and historical correctness of assumed nets |
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a reproducible 2-layer 310 x 266 mm Gerber/drill package | The routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes and is not electrically complete |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D2/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
@@ -228,7 +228,7 @@ session: `replica-bringup-verification-points.md` (endpoint coverage),
 `assembly-drawing-extraction.md` (wire-table pin mapping),
 `io-decode-boundary.md`, `memory-timing-boundary.md`,
 `d41-timing-boundary.md`, `s4-interrupt-boundary.md`,
-`video-analog-boundary.md`, `main-board-erc-parity.md`,
+`master-oscillator-boundary.md`, `video-analog-boundary.md`, `main-board-erc-parity.md`,
 `board-fidelity-gap-ledger.md`, `decap-value-fidelity.md`, and
 `firmware-gap-ledger.md` (PROM truth, also gating the programmable-parts
 blocker below).

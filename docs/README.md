@@ -23,6 +23,7 @@ Most reports are outputs of scripts or checks; a few are consolidated durable
 findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
+  `master-oscillator-boundary.md`,
   `unmodeled-footprint-inventory.md`, `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,

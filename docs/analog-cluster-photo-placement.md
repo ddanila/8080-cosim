@@ -46,4 +46,4 @@ the former assembly-grid approximations for `R65`/`R67`. The documented `VD3` an
 
 After adopting `R65` and `R67`, KiCad DRC reports zero `shorting_items` (10 clearance and
 4 hole-to-hole findings remain elsewhere in the incomplete placement), and the
-99-instance LVS remains fully matched at 239 nets.
+99-instance LVS remains fully matched at 240 nets.

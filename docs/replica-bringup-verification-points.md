@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `46`
 - Verification-point endpoints checked in PCB: `229`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2000`
-- All board endpoints checked in routed PCB: `2000`
+- All board endpoints checked in source PCB: `2011`
+- All board endpoints checked in routed PCB: `2011`
 - Intentional off-board endpoints excluded: `34`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2000/2000 | 2000/2000 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2000 | 1916/2000 | FAIL |
+| `kicad/juku.kicad_pcb` | 2011/2011 | 2011/2011 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2011 | 1916/2011 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -94,6 +94,14 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `KBD_SHIFT: A52.1`
 - `KBD_STB: A49.1`
 - `M12V: A59.1`
+- `OSC: C73.2`
+- `OSC_FB: D59.9`
+- `OSC_FB: R31.1`
+- `OSC_FB: R32.1`
+- `OSC_FB: Z1.1`
+- `OSC_PRE: D59.8`
+- `OSC_PRE: D59.1`
+- `OSC_PRE: R31.2`
 - `P12V: A60.1`
 - `P12V: R66.1`
 - `P5V: D10.16`
@@ -101,6 +109,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P5V: R104.2`
 - `P5V: A54.1`
 - `P5V: A53.1`
+- `PST_CLK: R32.2`
 - `RESET: D13.6`
 - `RESET: D11.21`
 - `RES_RC: A17.1`
@@ -133,6 +142,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `X3_HARNESS_1: R104.1`
 - `X3_HARNESS_7: A27.1`
 - `X3_HARNESS_8: A28.1`
+- `XTAL_TRIM: Z1.2`
+- `XTAL_TRIM: C73.1`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D93.3: `CS_FDC` != `FDC_CS_N`
