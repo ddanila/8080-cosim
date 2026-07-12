@@ -57,7 +57,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 ## Current D94 blockers
 
-- D94 failed evidence checks: `Enable pin D94.15 is traced, .092 firmware artifact exists, Repository-wide .092 artifact filename exists`
+- D94 failed evidence checks: `Enable pin D94.15 is traced, Every unresolved D94 output has a photographed copper departure, .092 firmware artifact exists, Repository-wide .092 artifact filename exists`
 - D94 address pins are already traced to `BA11..BA15`; the useful physical
   work is enable/output continuity plus a real `.092` dump/table.
 

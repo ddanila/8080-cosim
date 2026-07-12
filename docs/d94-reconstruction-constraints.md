@@ -37,7 +37,7 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 | 4 | D3 | `D94_D3` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary |
 | 5 | D4 | `D94_D4` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | 6 | D5 | `D94_D5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
-| 7 | D6 | `D94_D6` | July-2026 registered component fit and full-resolution photo prove copper from D94 output pin 7 to a distinct plated handoff near (1915,1676) px in PXL_20260710_200402344.jpg; far-side destination remains a boundary |
+| 7 | D6 | `D94_D6` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projection lands on bare substrate, so the far destination remains a boundary |
 | 9 | D7 | `D94_D7` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 
 ## KiCad DSN Cross-check
@@ -101,7 +101,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Enable pad/fanout is represented as an unresolved boundary | PASS | `D94_EN_BOUNDARY` |
 | Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N`, `D94_D3`, `D94_D4`, `D94_D5`, `D94_D6`, `D94_D7` |
 | Every D94 output pad has an explicit net/boundary | PASS | 8/8 output pins netted |
-| Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 5, 6, 7, 9 |
+| Every unresolved D94 output has a photographed copper departure | FAIL | component-side local-fit observations for pins 4, 5, 6, 9 |
 | `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
 | Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
