@@ -137,7 +137,7 @@ def main() -> int:
             all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
             and all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
             and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")}),
-            "D35.4->R39.1 is guarded; other restored sections remain continuity boundaries",
+            "D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary",
         ),
         (
             "D53 Y4-Y7 remain explicit unresolved functional pins",

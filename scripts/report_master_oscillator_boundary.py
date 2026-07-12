@@ -55,6 +55,12 @@ def main() -> int:
             and chips.get("R31", {}).get("value") == "1к",
             "owner board #2: 1K0; sheet-2 scan: 820 ohm",
         ),
+        (
+            "Undrawn D59 section 5->6 is explicitly unused",
+            ["D59", "5"] in board.get("no_connects", [])
+            and ["D59", "6"] in board.get("no_connects", []),
+            "all five drawn D59 sections are accounted for; pins 5/6 never occur on sheet 2",
+        ),
     ))
     ok = all(result for _, result, _ in checks)
     status = "MASTER OSCILLATOR TOPOLOGY GUARDED" if ok else "MASTER OSCILLATOR CHECK FAILED"
