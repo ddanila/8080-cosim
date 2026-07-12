@@ -107,8 +107,10 @@ the rail-obscured package end and are explicitly not electrical evidence, so
 all D106 signals remain measurements. Separate component and reflected solder fits now land D28 on the
 adjacent К155ЛН3, using its unobscured seven-pad column and coherent solder
 rows. The component pin-4 check is exact and the solder pin-5 check is 0.010
-px; this prevents D28 from being conflated with D106, while the cable-hidden
-component fanout remains a continuity boundary. D93, D100, and D98 also have useful local fits, but their unresolved
+px. A close audit distinguishes the small fitted solder joints from the larger
+adjacent open vias and their trace departures; this prevents D28 from being
+conflated with D106, while the cable-hidden component fanout remains a
+continuity boundary. D93, D100, and D98 also have useful local fits, but their unresolved
 signals remain measurements where copper is obscured or leaves the visible
 layer. The D11 solder fit holds both unused corners out at 2.375 px and
 localizes the factory-reworked area beside pins 4-6; it does not establish the

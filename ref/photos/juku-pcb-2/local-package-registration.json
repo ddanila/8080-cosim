@@ -135,7 +135,7 @@
         {"pin": "5", "image_px": [976.192, 2042.444], "use": "check", "observation": "independent fifth joint in the same coherent column"},
         {"pin": "6", "image_px": [975.878, 2088.371], "use": "fit", "observation": "sixth joint near the bottom of the same coherent column"}
       ],
-      "note": "Reflected fit to the two photographed 7-pad D28 solder columns immediately beside D106. It identifies package pads only; the traced copper still requires complete remote-pad proof."
+      "note": "Reflected fit to the two photographed 7-pad D28 solder columns immediately beside D106. The anchors are the small solder joints, not the larger adjacent open vias or their trace departures. It identifies package pads only; the traced copper still requires complete remote-pad proof."
     },
     {
       "refdes": "D95",

@@ -75,6 +75,12 @@ def main() -> None:
         corrected_d28 = ("Validated D28 component fit replaces the displaced generated landing "
                          "and identifies the photographed package contact")
         row["note"] = row["note"].replace(stale_d28, corrected_d28)
+        stale_d28_solder = ("Without a valid D28 package fit, nearby solder holes and trace "
+                            "junctions cannot be assigned to a pin or destination safely")
+        corrected_d28_solder = ("Validated reflected D28 fit identifies the photographed solder "
+                                "joint, distinct from the adjacent open vias; the visible local "
+                                "copper does not reach an identified remote package pad")
+        row["note"] = row["note"].replace(stale_d28_solder, corrected_d28_solder)
         stale_d106 = ("D106 projections land on the package body or neighboring trace/via field "
                       "instead of a coherent pin row, so the physical posture is unresolved")
         corrected_d106 = ("Validated D106 component fit identifies the photographed К555ИЕ7 "
