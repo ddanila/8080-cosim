@@ -228,7 +228,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D94_D3` | PROM/decode | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) m... |
 | `D94_D4` | PROM/decode | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
-| `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component/solder local fits prove copper departs D94 output pin 7; far destination remains a boundary |
+| `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component fit and full-resolution photo prove copper from D94 output pin 7 to a distinct plated handoff near (1915,1676) px in PXL_20260... |
 | `D94_D7` | PROM/decode | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 | `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identi... |
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |

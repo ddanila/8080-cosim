@@ -100,10 +100,11 @@ state until visible copper or continuity establishes a destination.
 
 Current held-out errors are sub-2.2 px for the accepted D2/D4/D94 package-row
 fits. Direct component and reflected solder fits now replace D106 projections
-that landed left of the vertical К555ИЕ7 package, on its body, or between
-solder columns. The independent component pin-4 check is exact and the solder
-pin-5 check is 0.021 px at the recorded precision; all D106 signals remain
-measurements. Separate component and reflected solder fits now land D28 on the
+that landed left of the vertical К555ИЕ7 package or on its body. The corrected
+solder anchors use the centers of visible joints rather than adjacent trace
+departures; the independent pin-5 check is 0.001 px. Pins 7-10 extrapolate into
+the rail-obscured package end and are explicitly not electrical evidence, so
+all D106 signals remain measurements. Separate component and reflected solder fits now land D28 on the
 adjacent К155ЛН3, using its unobscured seven-pad column and coherent solder
 rows. The component pin-4 check is exact and the solder pin-5 check is 0.010
 px; this prevents D28 from being conflated with D106, while the cable-hidden

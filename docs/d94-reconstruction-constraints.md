@@ -37,7 +37,7 @@ Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
 | 4 | D3 | `D94_D3` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary |
 | 5 | D4 | `D94_D4` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | 6 | D5 | `D94_D5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
-| 7 | D6 | `D94_D6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 7; far destination remains a boundary |
+| 7 | D6 | `D94_D6` | July-2026 registered component fit and full-resolution photo prove copper from D94 output pin 7 to a distinct plated handoff near (1915,1676) px in PXL_20260710_200402344.jpg; far-side destination remains a boundary |
 | 9 | D7 | `D94_D7` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 
 ## KiCad DSN Cross-check
