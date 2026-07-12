@@ -74,7 +74,7 @@ def category_for_net(name: str, text: str) -> str:
     upper = f"{name} {text}".upper()
     if name.startswith(("FDC_", "D93_")):
         return "FDC owner-continuity"
-    if "PROM" in upper or "D6" in upper or "D2" in upper or "D94" in upper:
+    if "PROM" in upper or re.search(r"(?<![A-Z0-9])D(?:2|6|94)(?![0-9])", upper):
         return "PROM/decode"
     if "VIDEO" in upper or "SYNC" in upper or "RF" in upper or "ANALOG" in upper:
         return "video/analog"
