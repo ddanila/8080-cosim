@@ -387,7 +387,7 @@ module juku_top (
     // on the SIM-ONLY cas_sim leg (same LVS contract as SACTIVE).
     wire [3:0] d52_y; wire e2_com, e3_com;
     wire d53_g_in; wire [3:0] d53_y; wire d53_cas_sim;
-    kp14_mux  U_D52 (.a({2'b00, BA[8], BA[7]}), .b({2'b00, VA[8], VA[7]}),
+    kp14_mux  U_D52 (.a({2'bzz, BA[8], BA[7]}), .b({2'bzz, VA[8], VA[7]}),
                      .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));

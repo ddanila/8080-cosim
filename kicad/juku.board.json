@@ -3690,7 +3690,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-2 MX: 5th КП14 VIDEO/µP ADDRESS select for D53 via E2/E3; active channels traced as A0/A1=BA7/BA8, B0/B1=VA7/VA8, SEL=VID_CPU_SEL, EN_N=GND, Y0/Y1->E2/E3"
+    "pins": "complete sheet-2 package census: active channels 1/2 are A pins2/5=BA7/BA8, B pins3/6=VA7/VA8, outputs4/7->E2/E3, SEL=VID_CPU_SEL, EN_N=GND; undrawn channels 3/4 pins11/10->9 and14/13->12 are explicit NCs"
    }
   },
   {
@@ -15181,6 +15181,12 @@
   }
  },
  "no_connects": [
+  ["D52", "9"],
+  ["D52", "10"],
+  ["D52", "11"],
+  ["D52", "12"],
+  ["D52", "13"],
+  ["D52", "14"],
   ["D40", "3"],
   ["D40", "4"],
   ["D40", "5"],

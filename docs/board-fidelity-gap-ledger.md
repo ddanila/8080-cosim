@@ -22,7 +22,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Nets modeled: `385`
 - Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `49`
-- Documented intentional no-connect pins: `55`
+- Documented intentional no-connect pins: `61`
 
 ## Chip Provenance Types
 
@@ -201,6 +201,7 @@ explicit KiCad schematic no-connect markers.
 | `D45` | `13` |
 | `D46` | `13` |
 | `D47` | `12, 13` |
+| `D52` | `9, 10, 11, 12, 13, 14` |
 | `D56` | `1, 9, 13` |
 | `D59` | `5, 6` |
 | `D93` | `1` |
