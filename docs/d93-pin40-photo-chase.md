@@ -1,34 +1,53 @@
 # D93 pin-40 power-trace chase
 
-Status: **PAD IDENTIFIED / P12V DESTINATION STILL UNPROVED**
+Status: **PAD GUARDED / NEAREST P12V ANCHORS RANKED / CONTINUITY REQUIRED**
 
-The physical D93 is a populated КР1818ВГ93 in the normal board state. The
-2026-07-10 maintenance close-up temporarily removes it from its socket, which
-exposes the contacts for a more reliable power-pad chase.
+The physical D93 is the populated КР1818ВГ93. The maintenance close-up
+temporarily removes it from its socket and provides the clearest pin-40
+registration; this is not evidence that the design omits the controller.
 
 ## Registered evidence
 
-- `ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg`: the corrected exposed-
-  socket affine fit places D93.40 at `(2206,2201)` px, the rightmost lower-row
-  contact beside the socket's printed `40`.
-- `ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg`: the reflected solder fit
-  places the same physical pad at `(1559.5,1479.8)` px.
-- The solder joint has no same-layer trace departure. This agrees with the
-  component close-up, where copper leaves the socket contact on the component
-  side toward the immediately adjacent region hidden by the green clip.
-- The overlapping populated component tile
-  `PXL_20260710_200402344.jpg` confirms the trace continues away from the
-  D93 corner, but the intervening landing/path is obscured by the cable/clip
-  area. It does not establish a connection to D100 or any other package.
+- Component observation: `ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg` at `(2206.000, 2201.000)` px.
+- Solder observation: `ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg` at `(1559.500, 1479.800)` px.
+- Source-PCB D93.40 pad centre: `(243.561, 49.210)` mm on `D93_VDD12_BOUNDARY`.
+- The solder joint has no accepted same-layer departure. Component copper
+  enters the adjacent clip/cable-obscured region, so no P12V merge is made.
 
-The earlier westbound solder chase was based on a falsely projected pad and
-remains rejected. The new evidence proves pad identity and which copper side
-must be followed, but not continuity to `P12V`. Therefore D93.40 stays unnetted
-in the authoritative board model.
+## Guard checks
+
+| Check | Result |
+| --- | --- |
+| D93 is the physical КР1818ВГ93 | PASS |
+| D93 pin 40 has the VDD_12V role | PASS |
+| Source model keeps D93.40 off P12V pending continuity | PASS |
+| Source model exposes exactly one D93.40 boundary | PASS |
+| Source PCB assigns D93.40 to the boundary | PASS |
+| Component and solder observations are preserved | PASS |
+| Nearest P12V anchors are D14.8 and D32.8 | PASS |
+
+## Ranked continuity anchors
+
+These distances are source-PCB geometry only; they do not prove copper.
+They rank convenient already-proved P12V contacts for a meter test.
+
+| Rank | P12V contact | Board centre (mm) | Distance from D93.40 |
+| ---: | --- | --- | ---: |
+| 1 | `D14.8` | `(215.615, 37.190)` | `30.421 mm` |
+| 2 | `D32.8` | `(215.615, 25.690)` | `36.526 mm` |
+| 3 | `R66.1` | `(293.800, 131.010)` | `95.996 mm` |
+| 4 | `X1.132A` | `(99.750, 6.600)` | `149.991 mm` |
+| 5 | `X1.131A` | `(97.250, 6.600)` | `152.389 mm` |
+| 6 | `D1.28` | `(39.920, 163.355)` | `233.450 mm` |
+
+The closest modeled +12 V anchors are D14.8 and D32.8, roughly 30.4
+and 36.5 mm from D93.40 in the source geometry. They are preferable first
+meter probes to the much more distant A60/X8 harness anchor. Confirm against
+A60.1 or X8.3 as a second independent reference if practical.
 
 ## Closure requirement
 
-Use continuity mode between the exposed D93.40 socket contact and a known
-`P12V` anchor (`X8.3`, `A60`, or another already-proved +12 V point), or obtain
-an unobscured component-side macro photograph of the adjacent landing. A
-datasheet requirement alone is insufficient for the power-safety release gate.
+With power removed and the ВГ93 removed from its socket, continuity-test
+D93.40 against D14.8 and D32.8, then against A60.1 or X8.3. Record both
+positive and negative readings. Promote D93.40 to P12V only after direct
+continuity or an unobscured, uniquely traceable component-side image.

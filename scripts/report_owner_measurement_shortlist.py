@@ -217,6 +217,13 @@ def main() -> int:
         ),
         (
             "P0",
+            "ВГ93 +12 V continuity",
+            "with power removed and D93 removed, test D93.40 first against the nearest proved P12V contacts D14.8 and D32.8, then confirm against A60.1 or X8.3; record positive and negative readings",
+            "`docs/d93-pin40-photo-chase.md`; `docs/fdc-hardware-handoff.md`",
+            "closes the controller's power-safety gate without inferring hidden clip-obscured copper",
+        ),
+        (
+            "P0",
             "memory-decode stragglers",
             "D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins",
             "`docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate",

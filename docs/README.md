@@ -24,7 +24,8 @@ findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
   `master-oscillator-boundary.md`,
-  `unmodeled-footprint-inventory.md`, `owner-measurement-shortlist.md`.
+  `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
+  `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `reconstructed-prom-fallbacks.md`, `d6-physical-decode.md`,
