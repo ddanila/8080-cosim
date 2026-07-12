@@ -260,10 +260,10 @@ def main() -> int:
         ),
         (
             "P0",
-            "D2/D30/D105 continuity adoption",
-            "owner continuity proves D2.12->D30.2, D1.17/H gating through D105 to D5.4, and a joined D13.12/D6.11/D6.12 net; independently spot-check the corrected endpoints on another board if available",
+            "D30/H continuity closure",
+            "trace D30.11 to its unique clock source, D30.8 to its unique destination, and identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13; independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available",
             "`docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
-            "independently corroborates the adopted physical READY and DBIN paths",
+            "closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path",
         ),
         (
             "P2",

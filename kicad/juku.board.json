@@ -15839,7 +15839,7 @@
    "nodes": [["R29", "2"], ["D1", "23"]]
   },
   "D30B_D_PRE_N": {
-   "src": "owner continuity 2026-07-13: D30 /PRE2 pin10 and D2 pin12 are tied together and to R5.2; R5.1 is +5 V",
+   "src": "owner continuity 2026-07-13: D30 /PRE2 pin10 and section-B D input pin12 are tied together and to R5.2; R5.1 is +5 V",
    "nodes": [["D30", "10"], ["D30", "12"], ["R5", "2"]]
   },
   "D105_10_H": {
