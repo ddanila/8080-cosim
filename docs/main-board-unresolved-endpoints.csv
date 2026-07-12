@@ -71,14 +71,12 @@ P1,D29,6,VABUS,AIN5,functional endpoint lacks disposition
 P0,D30,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
 P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
 P1,D33,9,LN1_DUAL,I9,functional endpoint lacks disposition
-P1,D34,10,LP5_XOR,B3,functional endpoint lacks disposition
 P1,D34,12,LP5_XOR,A4,functional endpoint lacks disposition
 P1,D34,13,LP5_XOR,B4,functional endpoint lacks disposition
 P1,D34,2,LP5_XOR,B2,functional endpoint lacks disposition
 P1,D34,4,LP5_XOR,A1,functional endpoint lacks disposition
 P1,D34,5,LP5_XOR,B1,functional endpoint lacks disposition
 P1,D34,6,LP5_XOR,Y1,functional endpoint lacks disposition
-P1,D34,9,LP5_XOR,A3,functional endpoint lacks disposition
 P1,D35,3,CLK_PHASE,I3,functional endpoint lacks disposition
 P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
 P1,D37,10,LA3_GATE,symbol-union boundary,functional endpoint lacks disposition
@@ -130,11 +128,6 @@ P0,D53,10,RASCAS_DEC,Y_N5,memory/decode source-risk blocker
 P0,D53,11,RASCAS_DEC,Y_N4,memory/decode source-risk blocker
 P0,D53,7,RASCAS_DEC,Y_N7,memory/decode source-risk blocker
 P0,D53,9,RASCAS_DEC,Y_N6,memory/decode source-risk blocker
-P1,D56,1,AG3_ONESHOT,A_N,functional endpoint lacks disposition
-P1,D56,12,AG3_ONESHOT,Q2_N,functional endpoint lacks disposition
-P1,D56,13,AG3_ONESHOT,Q,functional endpoint lacks disposition
-P1,D56,5,AG3_ONESHOT,Q2,functional endpoint lacks disposition
-P1,D56,9,AG3_ONESHOT,A2_N,functional endpoint lacks disposition
 P1,D58,11,IR82,STB,functional endpoint lacks disposition
 P1,D59,10,LN1_OSC,O10,functional endpoint lacks disposition
 P0,D6,13,DEC_PROM,V_EN_N,memory/decode source-risk blocker

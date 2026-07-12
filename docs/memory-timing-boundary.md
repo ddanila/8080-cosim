@@ -30,6 +30,7 @@ python3 scripts/report_memory_timing_boundary.py
 | PHI2TTL timing gate fanout is guarded | PASS | `PHI2TTL` source-risk net |
 | D39 latch/output context is guarded | PASS | `D39_O8` and `D39Y` |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
+| D56 active outputs reach both gate-3 XOR inputs | PASS | sheet-2: D56.5/.12 -> D34.9/.10; undrawn D56.1/.9/.13 are NC |
 
 ## Pending Boundary Checks
 

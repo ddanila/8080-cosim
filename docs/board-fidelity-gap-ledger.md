@@ -19,10 +19,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `277`
-- Nets modeled: `372`
+- Nets modeled: `374`
 - Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `49`
-- Documented intentional no-connect pins: `38`
+- Documented intentional no-connect pins: `41`
 
 ## Chip Provenance Types
 
@@ -198,6 +198,7 @@ explicit KiCad schematic no-connect markers.
 | `D45` | `13` |
 | `D46` | `13` |
 | `D47` | `12, 13` |
+| `D56` | `1, 9, 13` |
 | `D59` | `5, 6` |
 | `D93` | `1` |
 

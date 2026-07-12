@@ -965,9 +965,11 @@ endmodule
 
 // D34 К555ЛП5 (XOR): sect (4,5->6) -> C5 560pF RC -> sect (1,2->8) = the video-counter LD
 // pulse generator (sheet-2). Pin 1 = +5 (node A) -> y2 = ~b2; b2 <- the RC (boundary).
-module lp5_xor (input wire a1, b1, a2, b2, output wire y1, y2);
+module lp5_xor (input wire a1, b1, a2, b2, a3, b3, a4, b4, output wire y1, y2, y3, y4);
     assign y1 = a1 ^ b1;
     assign y2 = a2 ^ b2;
+    assign y3 = a3 ^ b3;
+    assign y4 = a4 ^ b4;
 endmodule
 
 // ---- КР1818ВГ93 (WD1793 clone) D93: bus-side scaffold. INERT stub: never drives DAL/IRQ

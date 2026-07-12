@@ -130,6 +130,13 @@ def main() -> int:
             all(has_nodes(board, name, expected) for name, expected in d56_rc.items()),
             "`D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2`",
         ),
+        (
+            "D56 active outputs reach both gate-3 XOR inputs",
+            has_nodes(board, "D56_Q2_D34", {("D56", "5"), ("D34", "9")})
+            and has_nodes(board, "D56_Q2N_D34", {("D56", "12"), ("D34", "10")})
+            and all(["D56", pin] in board.get("no_connects", []) for pin in ("1", "9", "13")),
+            "sheet-2: D56.5/.12 -> D34.9/.10; undrawn D56.1/.9/.13 are NC",
+        ),
     ]
     boundary_checks = [
         (

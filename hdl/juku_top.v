@@ -315,7 +315,9 @@ module juku_top (
 `else
     tri0 d34_b2;                       // RC node (C5) boundary: idle low -> ctr_ld_n = 1 (counting)
 `endif
-    lp5_xor U_D34 (.a1(1'b0), .b1(1'b0), .y1(), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n));
+    wire d56_q2, d56_q2_n, d34_sync_phys;
+    lp5_xor U_D34 (.a1(1'b0), .b1(1'b0), .y1(), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n),
+                   .a3(d56_q2), .b3(d56_q2_n), .y3(d34_sync_phys), .a4(1'b1), .b4(1'b1), .y4());
     ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
     ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
     // D46/D47 share one LD vertical (bite-2); its driver = the D59.12 "LOAD" inverter [likely,
@@ -389,7 +391,7 @@ module juku_top (
     wire d56_clr_w;   // shared CLR rail = R61 12k pullup (traced); boundary-driven so yosys keeps the net
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
     ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
-                        .q(), .q_n(), .q2(), .q2_n());  // Q_N destination = south vertical [chase]; old 16MHz attribution retired
+                        .q(), .q_n(), .q2(d56_q2), .q2_n(d56_q2_n));
     ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
 
     // ---- runnable video-output stage: raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
