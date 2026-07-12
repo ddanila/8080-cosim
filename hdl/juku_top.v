@@ -122,8 +122,10 @@ module juku_top (
 `else
     tri1 d36_cas_in;
 `endif
+    wire d36_b2_tag17;
+    net_boundary U_D36B2LNK (.a(1'b1), .b(d36_b2_tag17));
     la12_gate U_D36 (.a(d40_q[1]), .b(d33_o6), .y(clkg_d36),   // pin5(A)<-D40.Q1(=D39.12), pin4(B)<-D33.6, pin6->D35.11 [traced]
-                     .a2(cas_n), .b2(1'b1), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 [pending]
+                     .a2(cas_n), .b2(d36_b2_tag17), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 boundary
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     wire pof_boundary;

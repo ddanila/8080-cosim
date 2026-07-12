@@ -1174,7 +1174,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan"
+    "pins": "complete sheet-2 package trace; second NAND input pin2 reaches timing-bundle tag17"
    }
   },
   {
@@ -13323,6 +13323,10 @@
      "4"
     ]
    ]
+  },
+  "D36_B2_TAG17": {
+   "src": "scan sheet-2: D36 second NAND input pin 2 lands directly on numbered timing-bundle rail 17; unique remote driver not established",
+   "nodes": [["D36", "2"]]
   },
   "VID_CPU_SEL": {
    "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); + D53.6 G1 (cycle qualifier enables the RAS decoder) [scan sheet-2 (chase crops c4_g3_src: 4x y-match both feeds)]",

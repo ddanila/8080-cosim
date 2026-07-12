@@ -70,7 +70,6 @@ P1,D29,3,VABUS,AIN2,functional endpoint lacks disposition
 P1,D29,6,VABUS,AIN5,functional endpoint lacks disposition
 P0,D30,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
 P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
-P0,D36,2,LA12_GATE,B2,memory/decode source-risk blocker
 P0,D39,10,LA3_GATE,B2,memory/decode source-risk blocker
 P0,D39,2,LA3_GATE,B3,memory/decode source-risk blocker
 P0,D53,10,RASCAS_DEC,Y_N5,memory/decode source-risk blocker
