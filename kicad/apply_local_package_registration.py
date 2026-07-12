@@ -166,6 +166,12 @@ def main() -> None:
         corrected_d98_solder = ("Validated affine D98 fit identifies the physical solder joint "
                                 "on the complete 2x8 package rows")
         row["note"] = row["note"].replace(stale_d98_solder, corrected_d98_solder)
+        stale_d98_component = ("Most D98 component projections fall on the horizontal transceiver "
+                               "body or wire-covered fanout rather than package contacts; no "
+                               "end-to-end path is proven")
+        corrected_d98_component = ("Validated D98 component fit identifies the physical package "
+                                   "contact; wires or the package body still obscure the remote fanout")
+        row["note"] = row["note"].replace(stale_d98_component, corrected_d98_component)
         if row["refdes"] == "D95" and side == "solder" and row["review_state"] != "accepted":
             row["note"] = (
                 "Corrected backside-order D95 fit identifies the physical joint in the "

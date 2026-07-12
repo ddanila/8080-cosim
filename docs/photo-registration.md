@@ -117,7 +117,9 @@ localizes the factory-reworked area beside pins 4-6; it does not establish the
 obscured bridge endpoints. The D98 solder fit holds pin 16 out at 0 px on the
 complete affine 2x8 row. Its remaining measurement records now describe
 unresolved copper destinations rather than retaining the obsolete claim that
-two-side package registration is still required.
+two-side package registration is still required. Component-side records likewise
+use the validated contact coordinates and limit uncertainty to wire/body-hidden
+remote fanout, rather than calling the fitted contacts body projections.
 
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
