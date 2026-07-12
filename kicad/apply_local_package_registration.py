@@ -99,6 +99,12 @@ def main() -> None:
                                 "joint in the left eight-pad package group and rejects the "
                                 "former projection spanning the adjacent package")
         row["note"] = row["note"].replace(stale_d95_solder, corrected_d95_solder)
+        stale_d96_solder = ("D96 solder projections fall between the physical pad rows at trace "
+                            "junctions and holes; none proves a pin-to-destination path without "
+                            "local registration")
+        corrected_d96_solder = ("Validated reflected D96 fit identifies the physical solder "
+                                "joint, distinct from the adjacent open vias")
+        row["note"] = row["note"].replace(stale_d96_solder, corrected_d96_solder)
         stale_d101 = ("D101 projections fall on factory-wire bundles and bare trace fields "
                       "rather than a coherent package contact row; the modeled placement is "
                       "not locally registered")
@@ -195,8 +201,19 @@ def main() -> None:
                 f"Corrected D106 fit extrapolates pin{row['pin']} into the rail-obscured "
                 f"package end; this solder coordinate is not electrical evidence for the {role}"
             )
+        rail_obscured_d96 = (
+            row["refdes"] == "D96"
+            and side == "solder"
+            and row["pin"] in {"7", "8"}
+        )
+        if rail_obscured_d96 and row["review_state"] != "accepted":
+            row["note"] = (
+                f"Validated D96 fit extrapolates pin{row['pin']} into the broad-rail-obscured "
+                "package end; this coordinate is not electrical evidence for a destination"
+            )
         suffix = f"local {side} package fit establishes pad identity only; no electrical path accepted"
-        if row["review_state"] != "accepted" and not rail_obscured_d106 and suffix not in row["note"]:
+        if (row["review_state"] != "accepted" and not rail_obscured_d106
+                and not rail_obscured_d96 and suffix not in row["note"]):
             row["note"] = (row["note"].rstrip("; ") + "; " + suffix).lstrip("; ")
         changed += 1
     expected = sum(len(item["projected_pins"]) for key, item in fits.items() if key[1] in sides)

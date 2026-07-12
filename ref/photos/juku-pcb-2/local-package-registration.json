@@ -174,6 +174,18 @@
       "note": "Direct fit to the vertical КМ555ТМ2 D96 immediately right of D28. It establishes package identity and relative placement only; functional FDC continuity remains unresolved."
     },
     {
+      "refdes": "D96",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [764.0, 1858.0], "use": "fit", "observation": "top joint of the mirrored pin-1-to-7 column"},
+        {"pin": "4", "image_px": [763.0, 1996.0], "use": "check", "observation": "independent fourth joint in the same coherent column"},
+        {"pin": "6", "image_px": [762.0, 2087.0], "use": "fit", "observation": "sixth visible joint immediately above the broad rail"}
+      ],
+      "note": "Reflected fit to D96's two vertical solder columns left of D28. The anchors are the small package joints rather than adjacent open vias; pins 7-8 extrapolate into the broad-rail-obscured package end and are not electrical evidence."
+    },
+    {
       "refdes": "D101",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

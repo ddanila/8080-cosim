@@ -118,7 +118,10 @@ obscured bridge endpoints. The D98 solder fit holds pin 16 out at 0 px on the
 complete affine 2x8 row.
 
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
-pin-4 held-out check. Together the D106, D28, and D96 fits guard the physical
+pin-4 held-out check. Its reflected solder fit identifies the two small-joint
+columns left of D28 with a 0.632 px pin-4 check; pins 7-8 extrapolate beneath
+the broad rail and are explicitly not electrical evidence. Together the D106,
+D28, and D96 fits guard the physical
 row spacing rather than preserving the former overlapping placeholder grid;
 none of their functional pins is promoted without complete copper continuity.
 The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
