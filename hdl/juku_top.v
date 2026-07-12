@@ -322,7 +322,7 @@ module juku_top (
 `endif
     wire d56_q2, d56_q2_n, d34_sync_phys, d34_rc_drive;
     lp5_xor U_D34 (.a1(1'b0), .b1(1'b0), .y1(d34_rc_drive), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n),
-                   .a3(d56_q2), .b3(d56_q2_n), .y3(d34_sync_phys), .a4(1'b1), .b4(1'b1), .y4());
+                   .a3(d56_q2), .b3(d56_q2_n), .y3(d34_sync_phys), .a4(d103_q[3]), .b4(1'b1), .y4());
     ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
     ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());
     // D46/D47 share one LD vertical (bite-2); its driver = the D59.12 "LOAD" inverter [likely,

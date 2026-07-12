@@ -4066,7 +4066,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 D34 ЛП5: XOR-RC-XOR counter-LD pulse gen",
-    "pins": "scan"
+    "pins": "scan; gate 4 is drawn as 1.23MHz on pin12 XOR +5V on pin13, producing SIG on pin11"
    }
   },
   {
@@ -10808,6 +10808,10 @@
      "1"
     ],
     [
+     "D34",
+     "13"
+    ],
+    [
      "D93",
      "21"
     ],
@@ -14788,7 +14792,7 @@
    ]
   },
   "CLK_123M": {
-   "src": "traced sheet-2 300dpi (crop s2_d103): D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK2 (pin 18)",
+   "src": "traced sheet-2: D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK0/CLK2 and D34 gate-4 input pin 12",
    "nodes": [
     [
      "D103",
@@ -14801,6 +14805,10 @@
     [
      "D57",
      "9"
+    ],
+    [
+     "D34",
+     "12"
     ]
    ]
   },
