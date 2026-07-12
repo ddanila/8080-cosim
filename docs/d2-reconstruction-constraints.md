@@ -1,10 +1,10 @@
 # D2 .037 reconstruction constraints
 
-Status: **D2 INPUTS TRACED / DUMP REQUIRED**
+Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**
 
 This generated report records what the repo can currently prove about
-the processor-board `D2` К556РТ4 PROM (`ДГШ5.106.037`) before attempting
-any reverse-engineered or burnable replacement table.
+the processor-board `D2` К556РТ4 PROM (`ДГШ5.106.037`). It separates
+the validated physical table from older reconstruction assumptions.
 
 ## Command
 
@@ -16,7 +16,7 @@ python3 scripts/report_d2_reconstruction_constraints.py
 
 | Field | Value |
 | --- | --- |
-| Board type | `DEC_PROM` |
+| Board type | `WAIT_PROM` |
 | Programmed drawing | `ДГШ5.106.037` |
 | Current role | bus-arbitration/wait PROM, not I/O decode |
 
@@ -32,9 +32,12 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | 6 | A1 | `A15` | scan + July-2026 D2/D4 solder local fits |
 | 7 | A2 | `A9` | scan + July-2026 D2/D4 solder local fits |
 | 15 | A7 | `WREQ_N` | traced sheet-1: label -WREQ enters D2 A7/pin 15 from edge code 107C; target connector destination remains unmodeled |
-| 13 | V1 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9 |
-| 14 | V2 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9 |
-| 12 | D0 | `D2_WAIT_RAW` | traced sheet-1: D2 D0/pin 12 enters D105 NAND input pin 9 |
+| 13 | V1 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND |
+| 14 | V2 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND |
+| 9 | D3 | `D2_D3_BOUNDARY` | owner D2 read 2026-07-13 sampled physical output pin9 but its target-board destination/NC state was not continuity-mapped |
+| 10 | D2 | `D2_D2_BOUNDARY` | owner D2 read 2026-07-13 sampled physical output pin10 but its target-board destination/NC state was not continuity-mapped |
+| 11 | D1 | `D2_D1_BOUNDARY` | owner D2 read 2026-07-13 sampled physical output pin11 but its target-board destination/NC state was not continuity-mapped |
+| 12 | D0 | `READY_D` | owner continuity 2026-07-13: D2 D0/pin12 and R6 2k pullup feed D30 section-A D input pin2; D2 open-collector output overrides the pullup |
 
 ## Exact PROM Address Index
 
@@ -45,13 +48,15 @@ The traced physical address byte is:
 Therefore `prom_address = (WREQ_N<<7) + (A10<<6) + (XACK_N<<5) +
 (A14<<4) + (CAS_VIDEO_CYCLE<<3) + (A9<<2) + (A15<<1) + A12`.
 `ref/reconstructed-proms/d2_037_symbolic_truth.csv` enumerates all
-256 input vectors. Every D0 cell is deliberately `?`; the CSV is a
-constraint artifact, not a programmer image.
+256 input vectors. Its D0 cells remain `?` as a topology constraint;
+the separately named validated raw programming image carries the
+owner-observed values without rewriting this historical constraint file.
 
 The named schematic leads above are pin-level source evidence, not a
 claim that the D2 truth table is known. Each proved pin is promoted
 independently; the July-2026 paired D2/D4 local fits close all eight
-inputs while the programmed contents remain a separate boundary.
+inputs. Three validated owner captures, including a separate power cycle,
+now establish the physical raw table.
 
 ## KiCad DSN Cross-check
 
@@ -70,6 +75,9 @@ Its missing rows are a reroute boundary, not missing source evidence.
 | 15 | A7 | `WREQ_N` | present |
 | 13 | V1 | `GND` | present |
 | 14 | V2 | `GND` | present |
+| 9 | D3 | - | missing in DSN |
+| 10 | D2 | - | missing in DSN |
+| 11 | D1 | - | missing in DSN |
 | 12 | D0 | `D2_WAIT_RAW` | present |
 
 ## KiCad PCB Cross-check
@@ -89,20 +97,24 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 | 15 | A7 | `WREQ_N` | present |
 | 13 | V1 | `GND` | present |
 | 14 | V2 | `GND` | present |
-| 12 | D0 | `D2_WAIT_RAW` | present |
+| 9 | D3 | `D2_D3_BOUNDARY` | present |
+| 10 | D2 | `D2_D2_BOUNDARY` | present |
+| 11 | D1 | `D2_D1_BOUNDARY` | present |
+| 12 | D0 | `READY_D` | present |
 
 ## Current Evidence Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
-| Any D2 signal net is traced | PASS | `A10`, `XACK_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `D2_WAIT_RAW` |
+| Any D2 signal net is traced | PASS | `A10`, `XACK_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `D2_D3_BOUNDARY`, `D2_D2_BOUNDARY`, `D2_D1_BOUNDARY`, `READY_D` |
 | Any D2 signal appears in DSN | PASS | `12`=`D2_WAIT_RAW`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `4`=`CAS` |
-| Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`D2_WAIT_RAW`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
+| Any D2 signal appears in PCB | PASS | `1`=`A10`, `10`=`D2_D2_BOUNDARY`, `11`=`D2_D1_BOUNDARY`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9`, `9`=`D2_D3_BOUNDARY` |
 | 256-row symbolic address table is non-burnable | PASS | all D0 values are `?` |
-| `.037` firmware artifact exists | FAIL | `ref/firmware/` has no `.037` artifact |
+| Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
-| No reconstructed D2 fallback is exported | PASS | `docs/reconstructed-prom-fallbacks.md` |
+| D2 physical-table provenance is preserved | PASS | `docs/reconstructed-prom-fallbacks.md` |
+| Owner dump and corrected continuity are recorded | PASS | `docs/d2-physical-dump-and-continuity.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Evidence summary preserves the traced D2 pin table | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 
@@ -113,9 +125,11 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 - The surviving sheet-1 evidence records the physical D2 pin table
   `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly
   originally deferred the other five input nets.
-- The July-2026 two-sided D2 fit plus an independent D4 solder-row fit
-  now traces D2.1/.3/.5/.6/.7 to D4.1/.3/.5/.6/.7, closing all
-  physical inputs without claiming a burnable `.037` image.
+- Direct owner continuity supersedes the false D2.12->D105.9 path:
+  D2.12 joins D30.2 and R6 in the READY latch input.
+- Two complete same-session reads matched at every address with zero
+  unstable rows; all four outputs agreed. A third separately power-cycled
+  capture validates to the same authoritative raw SHA256.
 
 ## Reconstruction Boundary
 
@@ -123,26 +137,12 @@ one idempotent solder-side segment for each D2-to-D4 address route.
   identifies it as programmed drawing `ДГШ5.106.037`.
 - Known: the older behavioral D2 I/O-decode model is not physical D2
   programming truth; D9 is the current chip-select decoder.
-- Known: all eight D2 inputs and D0/pin 12 to D105.9 are routed in the
-  authoritative board model/source PCB. The saved routed snapshot
-  still predates the five new D2-to-D4 routes.
-- Known: D105.10 is a separate named off-sheet `H` input. Sheet 2 also has an
-  `H (−5)` supply-table row, but applying −5 V to a К155ЛА3 TTL input would be
-  electrically invalid; the notation/revision conflict is unresolved. The
-  former assignment masked D2 logically and remains removed from every artifact.
-  The routed snapshot consequently carries one honest −5 V airwire; a legal
-  replacement route remains a fabrication blocker.
-- Simulation default: unresolved `H` defaults low to preserve the formerly
-  constant-low gate behavior, without claiming that `H` is a supply. The deep
-  cosim forces CPU `ready=1`, so its separate late mismatch cannot constrain H.
-- Unknown: the `.037` truth table; no programming table or dump is present
-  under `ref/firmware/`.
-- The factory sheet draws only D0/pin 12 from the four-output RT4
-  package; unused output pins 9-11 are explicit no-connects in the
-  board model and do not add unknown truth-table destinations.
-- Unknown: the source and timing of `H`; even a functional WAIT fallback
-  must preserve that input boundary rather than tie it to a supply.
-- Therefore a burnable D2 image is not derivable from current repo
-  evidence. The correct automatic action is to keep this constraint
-  report fresh; the data-unlocking action is a programming-disk file
-  or a repeated physical dump.
+- Known: all eight inputs are traced and D0/pin12 feeds D30 READY data.
+  Pins9-11 were read but their board destinations/NC states remain explicit
+  continuity boundaries.
+- Known: D105.10 is the pulled-up edge-bus `H` net shared with D13.13;
+  it gates CPU DBIN through D105 into D5 and is not the −5 V supply.
+- Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte
+  authoritative raw low-nibble image, reproduced from all three captures.
+- Remaining closure is historical comparison against a programming-disk
+  file or independent future read, not recovery of the current chip table.

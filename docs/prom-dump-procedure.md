@@ -15,12 +15,10 @@ The ready-to-send community request packet is
 `docs/community-prom-media-request.md`; it names the same chips, expected dump
 sizes, and the `JUKU-1` media request in one owner-friendly message.
 
-Functional fallback update: `scripts/export_reconstructed_proms.py` now exports
-boot-validated reconstructed D6 and D8 programming fallbacks under
-`ref/reconstructed-proms/`, documented in
-`docs/reconstructed-prom-fallbacks.md`. These are useful for Tier 1/2 bring-up
-if no programming disk or dump is available, but they are explicitly not Tier 3
-factory truth.
+PROM update: validated physical D2 `.037` and D6 `.038` raw tables are preserved
+under `ref/physical-proms/`. `scripts/export_reconstructed_proms.py` now emits
+only the remaining D8 functional fallback. Raw pin-level files are authoritative;
+asserted complements remain separately named.
 
 EPROM programming update: `scripts/export_eprom_pair.py` deterministically
 splits the boot-validated `roms/ekta37.bin` into low D15 and high D16 8 KiB

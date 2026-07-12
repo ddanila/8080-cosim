@@ -83,7 +83,7 @@ PPI0 `PC0/PC1` banking inputs; consuming the board-traced D6 `PC2/PC3/PC4`
 inputs instead passes 789,879 lockstep reads through 130 ms.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 219 source-risk nets and 9 official FDC
+   current generated evidence lists 218 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -249,8 +249,9 @@ blocker below).
   required. The separate К155РЕ3 validator now applies the same repeated-read
   discipline to D8/D94 32-byte captures and preserves raw versus asserted
   bytes; a D94 dump still does not replace its missing continuity.
-- Keep reconstructed D6/D8 images labeled as Tier-1/2 fallbacks. The owner
-  `.113/.117` scans are not D8 `.039` or D94 `.092`.
+- D2 `.037` and D6 `.038` now use validated physical raw tables; D8 remains a
+  labeled Tier-1/2 fallback. The owner `.113/.117` scans are not D8 `.039` or
+  D94 `.092`.
 - The deterministic low-D15/high-D16 `ekta37` split, image hashes, and
   2764-class device decision are recorded in `eprom-programming-images.md`;
   retain programmer verification and compare repeat physical dumps before

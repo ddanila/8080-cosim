@@ -1,6 +1,6 @@
 # Source coverage audit
 
-Status date: **2026-07-13**.
+Status date: **2026-07-11**.
 
 Status: **PASS**
 
@@ -25,15 +25,9 @@ deliberately omitted.
 
 ## Current source requests
 
-1. Preserve and validate a separately power-cycled D2 `ДГШ5.106.037` raw
-   serial capture. Two matching, stable reads and high-confidence local
-   continuity are recorded in `docs/d2-physical-dump-and-continuity.md`, but
-   the original serial streams were not retained as unchanged input files.
+1. Compare the validated physical D2 `.037` and D6 `.038` raw tables against Baltijets programming-disk files if those surface; D6 would benefit from an additional separately power-cycled confirmation.
 2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.
-3. Pin-level continuity for D93's complete drive interface and +12 V supply,
-   plus explicit dispositions for the 9 power-routed FDC-support boundaries:
-   D28, D95-D99, D101, D102, and D106. Adopt the 2026-07-13 owner-measured
-   D2/D30/D105/D13/D6 corrections into the synchronized board and HDL models.
+3. Pin-level continuity for D93's complete drive interface and +12 V supply, plus explicit dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. The owner-measured D2/D30/D105/D13/D6 corrections are synchronized.
 4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
 5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
 
@@ -61,7 +55,8 @@ web/archive work should be tied to one of these named deliverables.
 | `media/disks/JUKPROG2.CPM` | present |
 | `media/disks/J3KUTIL4.JUK` | present |
 | `media/system/EKDOS230.BIN` | present |
-| `ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin` | present |
+| `ref/physical-proms/validated/d2_037.raw.bin` | present |
+| `ref/physical-proms/validated/d6_038.raw.bin` | present |
 | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` | present |
 | `ref/wd1772-vg93/fd179x-01-datasheet.pdf` | present |
 | `ref/wd1772-vg93/wd1772.pdf` | present |

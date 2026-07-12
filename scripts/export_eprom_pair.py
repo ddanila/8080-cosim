@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 
@@ -14,7 +15,15 @@ D15 = OUT_DIR / "d15_ekta37_low.bin"
 D16 = OUT_DIR / "d16_ekta37_high.bin"
 MANIFEST = OUT_DIR / "SHA256SUMS"
 REPORT = ROOT / "docs" / "eprom-programming-images.md"
+BOARD = ROOT / "kicad" / "juku.board.json"
 HALF_SIZE = 8192
+READ_MODE_PINS = {
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V",
+}
 
 
 def sha256(data: bytes) -> str:
@@ -32,6 +41,20 @@ def main() -> int:
     d16 = source[HALF_SIZE:]
     if d15 + d16 != source:
         raise SystemExit("internal split/round-trip check failed")
+
+    board = json.loads(BOARD.read_text(encoding="utf-8"))
+    chips = {chip["ref"]: chip for chip in board["chips"]}
+    p5v_nodes = {tuple(map(str, node)) for node in board["nets"]["P5V"]["nodes"]}
+    gnd_nodes = {tuple(map(str, node)) for node in board["nets"]["GND"]["nodes"]}
+    for ref in (f"D{number}" for number in range(15, 23)):
+        actual = {pin: chips[ref]["pins"].get(pin) for pin in READ_MODE_PINS}
+        if actual != READ_MODE_PINS:
+            raise SystemExit(f"{ref} incomplete 2764 read-mode pin contract: {actual}")
+        for pin in ("1", "26", "27", "28"):
+            if (ref, pin) not in p5v_nodes:
+                raise SystemExit(f"{ref}.{pin} missing from P5V")
+        if (ref, "14") not in gnd_nodes:
+            raise SystemExit(f"{ref}.14 missing from GND")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     D15.write_bytes(d15)
@@ -79,6 +102,29 @@ and D16 is the high 8 KiB. Program each file into a compatible 2764/M2764 or
 electrically suitable 27C64-class device after confirming programmer support,
 pinout, blank check, and device voltage requirements; perform a programmer
 verify pass after writing.
+
+## Socket and device decision
+
+Use 2764/M2764-compatible 8 KiB x 8 DIP-28 devices for D15 and D16. A 27C64
+substitute is acceptable for the functional build only when its datasheet and
+programmer selection match the same read-mode pinout and supply limits.
+
+| Pin | 2764 read-mode role | Board connection |
+| ---: | --- | --- |
+| 1 | VPP | +5 V (`P5V`) |
+| 14 | VSS | ground (`GND`) |
+| 20 | /CE | per-socket D8 pager select |
+| 22 | /OE | memory-read strobe |
+| 26 | NC on M2764; compatibility tie | +5 V (`P5V`) |
+| 27 | /PGM | +5 V (`P5V`) for read mode |
+| 28 | VCC | +5 V (`P5V`) |
+
+The exporter guards these five power/programming pins for all eight physical
+D15-D22 sockets, not only the two populated devices. Pins 2-13, 15-19, 21,
+23-25 retain the standard A0-A12/D0-D7 mapping recorded in
+`kicad/juku.board.json`. Programming voltage and pulse requirements come from
+the exact device selected in the programmer and must never be applied through
+the board socket.
 
 ## Provenance boundary
 

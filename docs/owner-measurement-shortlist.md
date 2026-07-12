@@ -19,7 +19,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | --- | --- |
 | Community request packet ready | PASS |
 | PROM dump procedure exists | PASS |
-| D6/D8 reconstructed fallback exported | PASS |
+| Physical D2/D6 tables and D8 fallback are guarded | PASS |
 | D2 constraint report generated | PASS |
 | D94 constraint report generated | PASS |
 | FDC hardware handoff generated | PASS |
@@ -43,7 +43,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 | Priority | Ask | Exact deliverable | Evidence source | Why it matters |
 | --- | --- | --- | --- | --- |
-| P0 | programming disk / PROM truth | Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks |
+| P0 | programming disk / PROM truth | Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | cross-checks the validated physical D2/D6 tables and replaces the remaining D8 fallback |
 | P2 | JUKU-1 media provenance | independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM` | `docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md` | turns the public EKDOS boot image into stronger physical-media evidence |
 | P2 | cartridge BASIC truth | larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY` | `docs/community-prom-media-request.md`; `docs/cartridge-basic-boundary.md` | closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary |
 | P0 | D94 .092 continuity | D94 pin 15 enable, pins 4-7/9 destinations, and every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board | `docs/d94-reconstruction-constraints.md` | required to resolve the PROM-only read/write-strobe impossibility before any defensible D94 replacement |
@@ -53,7 +53,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P0 | factory Вид В pad mapping | for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 use the validated solder fit that localizes rework beside pins 4-6 to map the four-hole auxiliary field and obscured bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity | `docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg` | proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release |
 | P0 | FDC support signal dispositions | pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster | `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence | closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices |
 | P0 | source-PCB collision placement | register exact target-board lead centres for C13, R68, R69, R73, and R74: C13.2 currently overlaps D95.2; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; and R74.1 overlaps D102.12/.13. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102 centres fixed | `docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md` | removes all six known source-board electrical shorts without inventing target-revision passive placement |
-| P0 | D2/D30/D105 continuity adoption | owner continuity proves D2.12->D30.2, D1.17/H gating through D105 to D5.4, and a joined D13.12/D6.11/D6.12 net; preserve one power-cycled raw `.037` capture and independently spot-check the corrected endpoints | `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md` | replaces the stale older-sheet D2->D105 interpretation and enables a physical READY-path simulation |
+| P0 | D2/D30/D105 continuity adoption | owner continuity proves D2.12->D30.2, D1.17/H gating through D105 to D5.4, and a joined D13.12/D6.11/D6.12 net; independently spot-check the corrected endpoints on another board if available | `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md` | independently corroborates the adopted physical READY and DBIN paths |
 | P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/video-analog-boundary.md`; `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives | `docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
 
@@ -83,13 +83,13 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `219`
+- Generated bring-up verification nets: `218`
 - `FDC`: `24` net(s)
-- `logic`: `165` net(s)
+- `logic`: `163` net(s)
 - `memory/decode`: `9` net(s)
 - `sound/analog`: `1` net(s)
 - `timing/I/O`: `8` net(s)
-- `video/analog`: `12` net(s)
+- `video/analog`: `13` net(s)
 
 ## Practical sequencing
 

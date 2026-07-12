@@ -1,12 +1,11 @@
 # К556РТ4 dump acquisition
 
-Status: **HOST VALIDATION READY / PRELIMINARY D2 READ OBSERVED**
+Status: **PHYSICAL D2/D6 TABLES VALIDATED**
 
-Two matching D2 reads with zero unstable addresses were observed on
-2026-07-12/13 and are documented in `d2-physical-dump-and-continuity.md`.
-Because the original serial streams were not saved unchanged, a separately
-power-cycled capture still needs to be preserved and passed through this
-validator before exporting the preservation artifact.
+Three preserved D2 captures—including a separate power cycle—and two preserved
+D6 captures validate with zero unstable or mismatched addresses. Inputs and
+derived artifacts are under `ref/physical-proms/`; D6 would still benefit from
+an additional separately power-cycled confirmation.
 
 `scripts/validate_rt4_dump.py` validates the line-oriented serial format emitted
 by a К556РТ4 reader. It is applicable to D2 `.037` and D6 `.038`; it does not
@@ -36,7 +35,7 @@ The output retains both interpretations:
 
 - `*.raw.bin` is the authoritative electrical pin-level table: 256 bytes in
   address order, low nibble significant. This is the representation to compare
-  with the repository's 256-byte D6 fallback.
+  with the repository's validated physical RT4 images.
 - `*.asserted.bin` is the bitwise low-nibble complement and is only a convenient
   active-low assertion view. It must not silently replace the raw table.
 - `*.raw.hex` is one two-digit raw nibble byte per address.

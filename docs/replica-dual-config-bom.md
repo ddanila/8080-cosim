@@ -18,7 +18,7 @@ readiness report.
 - Board component positions: 282
 - Populate for current functional .009 build: 252
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 83
+- Unique BOM lines: 84
 
 ## Action Totals
 
@@ -57,10 +57,11 @@ readiness report.
 | mechanical-review | SW | switch | select exact substitute after circuit review | 2 | 2 | 0 | S1, S4 | - |
 | mechanical-review | SW_DIP6 | DIP switch | select exact substitute after circuit review | 1 | 1 | 0 | S3 | - |
 | mechanical-review | VIDEO_CONN | BNC/composite video connector | select exact substitute after circuit review | 1 | 1 | 0 | X7 | - |
-| program/dump | DEC_PROM | КР556РТ4А | 74S287/82S129-class 256x4 bipolar PROM, programmed | 2 | 2 | 0 | D2, D6 | Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming. |
+| program/dump | DEC_PROM | КР556РТ4А | 74S287/82S129-class 256x4 bipolar PROM, programmed | 1 | 1 | 0 | D6 | Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming. |
 | program/dump | EPROM8K | 2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 8 | 2 | 6 | D15, D16, D17, D18, D19, D20, D21, D22 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
 | program/dump | RE3_PROM | К155РЕ3 | 74188/82S23-class 32x8 bipolar PROM, programmed | 1 | 1 | 0 | D8 | Timing/window PROM contents remain dump/reconstruction-gated. |
 | program/dump | RE3_PROM_092 | К155РЕ3 | 74188/82S23-class 32x8 bipolar PROM, programmed | 1 | 1 | 0 | D94 | FDC control/decode D94 `.092` contents and complete strobe gating remain dump/continuity-gated. |
+| program/dump | WAIT_PROM | КР556РТ4А | 74S287/82S129-class 256x4 bipolar PROM, programmed | 1 | 1 | 0 | D2 | D2 uses the preservation-grade physical `.037` table from three matching reads, including a power-cycled capture. |
 | source-now | AG3_ONESHOT | К155/КМ555АГ3 | 74LS123/74123-class one-shot; verify RC timing | 4 | 4 | 0 | D56, D97, D99, D102 | - |
 | source-now | BUF8286 | КР580ВА86 | Intel 8286 / compatible bus transceiver | 2 | 2 | 0 | D4, D107 | - |
 | source-now | BUF8287 | КР580ВА87 | Intel 8287 / compatible bus transceiver | 1 | 1 | 0 | D100 | - |

@@ -82,8 +82,8 @@ def main() -> int:
         ),
         (
             "D7 input strobes are wired to IOWR/IORD",
-            has_nodes(board, "IOWR", {("D7", "12"), ("D11", "10"), ("D26", "36"), ("D27", "36")})
-            and has_nodes(board, "IORD", {("D7", "13"), ("D11", "13"), ("D26", "5"), ("D27", "5")}),
+            has_nodes(board, "IOWR", {("D7", "10"), ("D11", "10"), ("D26", "36"), ("D27", "36")})
+            and has_nodes(board, "IORD", {("D7", "9"), ("D11", "13"), ("D26", "5"), ("D27", "5")}),
             "`IOWR`/`IORD` fanout",
         ),
         (
@@ -109,12 +109,12 @@ def main() -> int:
     ]
     boundaries = [
         (
-            "D7 strobe input order is still assumed",
-            d7.get("pins", {}).get("12") == "A"
-            and d7.get("pins", {}).get("13") == "B"
-            and "order assumed" in board["nets"]["IOWR"]["src"]
-            and "order assumed" in board["nets"]["IORD"]["src"],
-            "IOWR/ IORD are on D7.12/D7.13; source note keeps order assumed",
+            "D7 fourth-gate strobe inputs are source-proven",
+            d7.get("pins", {}).get("9") == "A4"
+            and d7.get("pins", {}).get("10") == "B4"
+            and "full-resolution" in board["nets"]["IOWR"]["src"]
+            and "full-resolution" in board["nets"]["IORD"]["src"],
+            "IORD/IOWR are on D7.9/D7.10 from the full-resolution sheet",
         ),
         (
             "C99 far plate is still not source-proven",
@@ -204,8 +204,8 @@ def main() -> int:
             "  board model; this report guards that D2-as-I/O-decode is not revived.",
             "- The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,",
             "  with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.",
-            "- Remaining work is now narrow: confirm D7.12/D7.13 order if needed,",
-            "  read or continuity-check C99.2, and trace the D7.5/D7.4 sources for",
+            "- Remaining work is now narrow: trace the independent D7.12/D7.13",
+            "  boundaries, read or continuity-check C99.2, and trace D7.5/D7.4 for",
             "  D25_T. None of those should be replaced by a simulator-only guess.",
             "",
         ]

@@ -14,7 +14,7 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `8d931ab026b7db09fcb0306828ed318943fbdab946f50401d9ab2e8332085ca2`
+- Board SHA256: `a86ee18459b4177a446ec938ba38ad2ea97d49801958e199f0cbb5190d587a86`
 - Total violations: `620`
 - Unconnected items: `499`
 - Short violations: `12`
@@ -37,7 +37,7 @@ python3 kicad/report_source_pcb_drc.py
 
 | Nets | Items |
 | --- | --- |
-| Items shorting two nets (nets RF_RAIL and D97_A2N_BOUNDARY) | PTH pad 1 [RF_RAIL] of R73; PTH pad 9 [D97_A2N_BOUNDARY] of D97 |
+| Items shorting two nets (nets D97_A2N_BOUNDARY and RF_RAIL) | PTH pad 9 [D97_A2N_BOUNDARY] of D97; PTH pad 1 [RF_RAIL] of R73 |
 | Items shorting two nets (nets D102_Q1N_BOUNDARY and VT3_BASE) | PTH pad 4 [D102_Q1N_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R68 |
 | Items shorting two nets (nets D102_Q2_BOUNDARY and VT3_BASE) | PTH pad 5 [D102_Q2_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R69 |
 | Items shorting two nets (nets D102_Q2N_BOUNDARY and VT3_E) | PTH pad 12 [D102_Q2N_BOUNDARY] of D102; PTH pad 1 [VT3_E] of R74 |

@@ -26,6 +26,7 @@ AUTHENTIC_MARK = {
     "RU5": "К565РУ5Г / 565РУ5Г",
     "EPROM8K": "2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM",
     "DEC_PROM": "КР556РТ4А",
+    "WAIT_PROM": "КР556РТ4А",
     "RE3_PROM": "К155РЕ3",
     "RE3_PROM_092": "К155РЕ3",
     "VG93_FDC": "КР1818ВГ93",
@@ -93,6 +94,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "RU5": "4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails",
     "EPROM8K": "2764 / 27C64 / M2764 EPROM, programmed per ROM split",
     "DEC_PROM": "74S287/82S129-class 256x4 bipolar PROM, programmed",
+    "WAIT_PROM": "74S287/82S129-class 256x4 bipolar PROM, programmed",
     "RE3_PROM": "74188/82S23-class 32x8 bipolar PROM, programmed",
     "RE3_PROM_092": "74188/82S23-class 32x8 bipolar PROM, programmed",
     "VG93_FDC": "WD1793 pin-compatible candidate; verify clock, rails, and interface timing",
@@ -136,6 +138,7 @@ FUNCTIONAL_SUBSTITUTE = {
 
 TYPE_NOTES = {
     "DEC_PROM": "Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming.",
+    "WAIT_PROM": "D2 uses the preservation-grade physical `.037` table from three matching reads, including a power-cycled capture.",
     "RE3_PROM": "Timing/window PROM contents remain dump/reconstruction-gated.",
     "RE3_PROM_092": "FDC control/decode D94 `.092` contents and complete strobe gating remain dump/continuity-gated.",
     "EPROM8K": "Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.",
@@ -144,7 +147,7 @@ TYPE_NOTES = {
 }
 
 
-PROGRAM_TYPES = {"DEC_PROM", "RE3_PROM", "RE3_PROM_092", "EPROM8K"}
+PROGRAM_TYPES = {"DEC_PROM", "WAIT_PROM", "RE3_PROM", "RE3_PROM_092", "EPROM8K"}
 EMPTY_SOCKET_TYPES = {"RU5", "EPROM8K"}
 MECHANICAL_TYPES = {
     "EXPANSION_CONN",

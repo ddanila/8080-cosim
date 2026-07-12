@@ -12,14 +12,6 @@ REPORT = ROOT / "docs" / "d41-timing-boundary.md"
 
 
 EXPECTED_UNNETTED = {
-    "1": "DS",
-    "2": "A",
-    "3": "B",
-    "4": "C",
-    "5": "D",
-    "6": "LD",
-    "8": "G",
-    "9": "CK",
     "10": "QD",
     "11": "QC",
 }
@@ -73,7 +65,7 @@ def main() -> int:
     checks = [
         (
             "D41 exists as an ИР16 timing-chain chip",
-            chip.get("type") == "IR16" and "LATCH chain" in chip.get("prov", {}).get("pins", ""),
+            chip.get("type") == "IR16" and "complete sheet-2 package census" in chip.get("prov", {}).get("pins", ""),
             "`kicad/juku.board.json` D41",
         ),
         (
@@ -99,12 +91,12 @@ def main() -> int:
             "`LATCH_B`/`LATCH_PRE`/`LATCH_SIG` around D37/D40/D33/D39",
         ),
         (
-            "Only D41 output pins are currently netted",
-            netted == {"12", "13"},
+            "D41 proved straps, outputs, and timing boundaries are netted",
+            netted == {"1", "2", "3", "4", "5", "6", "8", "9", "12", "13"},
             ", ".join(f"D41.{pin}" for pin in sorted(netted)),
         ),
         (
-            "D41 input/control pins remain an explicit source boundary",
+            "D41 unused QC/QD outputs remain intentional no-connects",
             unnetted == EXPECTED_UNNETTED,
             ", ".join(f"{pin}:{name}" for pin, name in sorted(unnetted.items(), key=lambda item: int(item[0]))),
         ),
@@ -115,7 +107,7 @@ def main() -> int:
         ),
     ]
     ok = all(result for _, result, _ in checks)
-    status = "D41 OUTPUTS GUARDED / INPUT TIMING BUS PENDING" if ok else "D41 TIMING BOUNDARY FAILED"
+    status = "D41 STRAPS/OUTPUTS GUARDED / LD-CK SOURCES PENDING" if ok else "D41 TIMING BOUNDARY FAILED"
 
     lines = [
         "# D41 timing boundary",
@@ -126,8 +118,7 @@ def main() -> int:
         "",
         "This generated report isolates the D41 ИР16 timing-chain boundary.",
         "The board model has guarded evidence for D41's two output-side",
-        "uses, but it still lacks historical-source-complete nets for the",
-        "serial/parallel inputs and control pins that come from the sheet-2 timing bus.",
+        "uses, its fixed straps, and its two remaining timing-source boundaries.",
         "",
         "## Command",
         "",
@@ -151,14 +142,14 @@ def main() -> int:
             table_row(["12", chip["pins"]["12"], "LATCH_A", "D41.QB feeds D37.1 in the modeled latch/preload chain"]),
             table_row(["13", chip["pins"]["13"], "W10_QA_SEL", "D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10"]),
             "",
-            "## Pending D41 Pins",
+            "## Intentional No-Connect D41 Pins",
             "",
             "| Pin | Signal | Boundary |",
             "| --- | --- | --- |",
         ]
     )
     for pin, name in sorted(EXPECTED_UNNETTED.items(), key=lambda item: int(item[0])):
-        boundary = "parallel-output destination/NC source read required" if pin in {"10", "11"} else "sheet-2 timing-bus continuity/source read required"
+        boundary = "sheet-2 package census shows no external stub"
         lines.append(table_row([pin, name, boundary]))
 
     lines.extend(
@@ -170,12 +161,10 @@ def main() -> int:
             "  effects are modeled and route-checked.",
             "- The corrected two-sided package fits replace global projections",
             "  that landed in the parallel-rail field left/right of the actual IC.",
-            "- The remaining D41 gap is specific to pins 1-6/8-11: serial input,",
-            "  unresolved QC/QD parallel outputs,",
-            "  parallel inputs, load, gate, and clock from the timing-wire bus.",
-            "- Do not infer these input/control nets from the runnable raster model;",
-            "  they need a readable sheet-2 timing-chain source, macro photo, or",
-            "  continuity pass before D41 can leave the board-fidelity gap ledger.",
+            "- A-D are grounded, DS/G are tied high, and QC/QD have no external",
+            "  stubs. LD and CK are preserved as distinct timing-bundle boundaries.",
+            "- Do not infer the LD/CK remote drivers from the runnable raster model;",
+            "  they still need a readable source or continuity pass.",
             "",
         ]
     )

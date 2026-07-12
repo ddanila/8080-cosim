@@ -12,10 +12,10 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 83
+- BOM lines: 84
 - Populate-now component positions: 252
-- Long-lead/source-early lines: 21
-- Programming/dump-gated lines: 4
+- Long-lead/source-early lines: 22
+- Programming/dump-gated lines: 5
 - Mechanical/circuit-review lines: 22
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
@@ -25,7 +25,7 @@ review before being treated as build-ready.
 | --- | ---: | ---: |
 | circuit-review | 10 | 68 |
 | mechanical-review | 12 | 17 |
-| program/dump | 4 | 6 |
+| program/dump | 5 | 6 |
 | source-now | 56 | 153 |
 | source-populated-now | 1 | 8 |
 
@@ -55,10 +55,11 @@ boot-validated reconstructed tables in that preference order.
 
 | Type | Authentic part | Populate now | Refs | Gate |
 | --- | --- | ---: | --- | --- |
-| DEC_PROM | КР556РТ4А | 2 | D2, D6 | Need D2/D6 RT4 maps or accepted reconstructed decode tables before programming. |
+| DEC_PROM | КР556РТ4А | 1 | D6 | Program from the validated physical D6 `.038` table; compare with a future programming-disk file or power-cycled recapture when available. |
 | EPROM8K | 2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM | 2 | D15, D16 | Program D15/D16 for the .009 build; leave D17-D22 empty unless authentic-completeness build is chosen. |
 | RE3_PROM | К155РЕ3 | 1 | D8 | Need D8 RE3 dump/table or accepted reconstructed table. |
 | RE3_PROM_092 | К155РЕ3 | 1 | D94 | Need D94/FDC-era `.092` RE3 dump/table or accepted reconstructed table. |
+| WAIT_PROM | КР556РТ4А | 1 | D2 | Program from the preservation-grade physical D2 `.037` table recovered by three matching reads, including a power-cycled capture. |
 
 ## Review Before Buying Blind
 

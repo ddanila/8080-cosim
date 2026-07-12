@@ -57,7 +57,14 @@ module juku_top (
     // ---- chip selects + memory enables ----
     wire        cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n;
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
-    wire        rom_sel_n, ram_sel_n, rev, roe_n;
+`ifdef YOSYS
+    wire        d6_mem_select_n;
+`else
+    wand        d6_mem_select_n;  // owner-measured wired join: D6.11 + D6.12 + D13.12
+`endif
+    wire        rev, roe_n;
+    wire        rom_sel_n = d6_mem_select_n; // compatibility aliases; physically one joined net
+    wire        ram_sel_n = d6_mem_select_n;
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
     wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
     wire [7:0]  ppi0_pc;               // D26 Port C: PC2/3/4 -> D6 A5/6/7; PC4 also -> FDC DDEN
@@ -133,27 +140,28 @@ module juku_top (
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl),
                      .i1(1'bz), .o2(), .i3(pof_boundary), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4;
-    wire d105_mrd_inv, d105_wait_stage;
+    wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
+    wire d2_d1_boundary, d2_d2_boundary, d2_d3_boundary;
 `ifdef YOSYS
-    wire d2_wait_raw, d105_h, d105_gate1_y, d105_wait_preinv;
+    wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
+    wire xack_n, wreq_n;
 `else
-    tri1 d2_wait_raw;
-    tri0 d105_h;
-    wire d105_gate1_y, d105_wait_preinv;
+    tri1 d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
+    tri1 xack_n, wreq_n;
 `endif
-    la3_gate U_D105 (.a(memr_n), .b(memr_n), .y(d105_mrd_inv),
+    wait_prom_037 U_D2 (.a({wreq_n, A[10], xack_n, A[14], cas_n, A[9], A[15], A[12]}),
+                        .v1_n(1'b0), .v2_n(1'b0),
+                        .d({d2_d3_boundary, d2_d2_boundary, d2_d1_boundary, ready_d}));
+    la3_gate U_D105 (.a(memw_n), .b(memw_n), .y(d105_memw_inv),
                      .a2(memw_n), .b2(d13_o4), .y2(d105_gate1_y),
-                     .a3(d105_wait_stage), .b3(d105_wait_stage), .y3(d105_wait_preinv),
-                     .a4(d2_wait_raw), .b4(d105_h), .y4(d105_wait_stage)); // pin10 is named off-sheet H, not a proved supply
-`ifdef YOSYS
-    wire d30b_d_pre_n;
-`else
-    tri1 d30b_d_pre_n;
-`endif
-    // Sheet-1 proves D30 pins 10 (/PRE2) and 12 (D2) share this boundary net.
-    tm2_dff U_D30 (.clr1_n(1'b1), .d1(1'b1), .clk1(phi2ttl), .pre1_n(1'b1),
-                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_mrd_inv), .d2(d30b_d_pre_n),
+                     .a3(d105_dbin_n), .b3(d105_dbin_n), .y3(d105_dbin_gated),
+                     .a4(dbin), .b4(d105_h), .y4(d105_dbin_n));
+    // Owner continuity: D2.12 + R6 -> D30.D1; Q1 -> R29 -> CPU READY.
+    // D30.10/.12 share the R5 pull-up; D105.11 clears section B from ~MEMW.
+    tm2_dff #(.FUNCTIONAL(1)) U_D30 (.clr1_n(d30_sstb_n), .d1(ready_d), .clk1(phi2ttl), .pre1_n(d30_pre1_n),
+                   .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_memw_inv), .d2(d30b_d_pre_n),
                    .clk2(1'b0), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
+    net_boundary U_R29LNK (.a(d30_q), .b(ready));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
     // reproduces the boot-tb's waveform (osc posedge mid-phase, one per phase) but self-generated.
@@ -183,10 +191,10 @@ module juku_top (
     // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
     tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(d13_o4),
                      .i5(1'b1), .o6(reset_sys), .i9(1'b1), .o8(),
-                     .i11(1'b1), .o10(), .i13(1'b1), .o12());
+                     .i11(1'b1), .o10(), .i13(d105_h), .o12(d6_mem_select_n));
     assign ststb_n = stb_d38;
 
-    sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(dbin), .wr_n(wr_n), .hlda(hlda),
+    sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(d105_dbin_gated), .wr_n(wr_n), .hlda(hlda),
                        .vss_gnd(1'b0), .vcc_5v(1'b1),
                        .ststb_n(ststb_n), .busen_n(busen_n),
                        .memr_n(memr_n), .memw_n(memw_n),
@@ -229,7 +237,7 @@ module juku_top (
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
     wire [7:0] d8_d;
-    re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));   // A4..A0 = BA15..BA11; E_N <- D6.ROM_N (traced: the "12 ROM" rail into pin 15). Pager for ALL 8 sockets; see reconstructed-prom-fallbacks.md.
+    re3_prom  U_D8   (.a(BA[15:11]), .e_n(d6_mem_select_n), .d(d8_d));
     net_boundary U_R17LNK (.a(io_strobe_h), .b(d9_g1_w));   // R17 200R (+C99 160pF deglitch) in series [traced]
     io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
                       .g1(d9_g1_w), .g2a_n(rev), .g2b_n(rev),   // traced: G1 <- RC'd D7.11 strobe-NAND; G2A+G2B bridged <- REV
@@ -247,9 +255,9 @@ module juku_top (
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_tag8));   // sect4 pins9/10 = IORD/IOWR; output8 -> tag8 boundary
     wire d6_v_enable;
     net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
-    decode_prom U_DECODE (.a({BA[15:11], ppi0_pc[2], ppi0_pc[3], ppi0_pc[4]}),   // traced sheet-1: PC2/3/4 pins16/17/13 -> tags1/2/3 -> D6 pins2/1/15
+    decode_prom U_DECODE (.a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),                               // V1/V2 are one source-visible, upstream-unread boundary
-                          .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
+                          .rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n), .rev(rev), .roe_n(roe_n));
 
     // ============ memory chips on the buffered buses ============
     // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS in the
@@ -407,7 +415,7 @@ module juku_top (
                      .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
-    net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));   // -> ram_en_sim (SIM-ONLY DRAM-enable semantics)
+    net_boundary U_G3LNK  (.a(d6_mem_select_n), .b(d53_g_in));
     rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(vid_cpu_sel), .g2a_n(phi2ttl), .g2b_n(1'b0),
                       .sactive(mem_active), .ram_en_sim(d53_g_in),
                       .y_n(d53_y), .y_n4(), .y_n5(), .y_n6(), .y_n7(), .cas_sim(d53_cas_sim));

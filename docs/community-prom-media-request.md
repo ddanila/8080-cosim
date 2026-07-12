@@ -18,11 +18,11 @@ truth:
 - The current FDC cosim vendors public Arti `JUKU1/JUKU2` disk images and
   boots `media/disks/JUKU1.CPM` to the EKDOS `A>` prompt, but physical-media
   provenance is still useful.
-- The functional PROM maps are boot-validated reconstructions; dumped PROMs
-  would turn them into preservation-grade evidence.
-- Boot-validated D6/D8 reconstruction fallback binaries are now exported under
-  `ref/reconstructed-proms/` for Tier 1/2 bring-up, but those files still need
-  disk/dump validation before they count as preservation-grade PROM truth.
+- D2 `.037` and D6 `.038` now have validated physical tables. Independent
+  reads or original programming-disk files would provide useful corroboration.
+- D8 remains a boot-validated reconstruction fallback under
+  `ref/reconstructed-proms/`; it still needs disk/dump validation before it
+  counts as preservation-grade PROM truth.
 - Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
   uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
   remains a Monitor 3.3 compatibility boundary. Current probes show the body is
@@ -120,9 +120,8 @@ for the small PROMs are marked "на диске" rather than printed. I am looki
 either those programming disk files or dumps from a physical .009 processor
 board:
 
-There are boot-validated reconstructed D6/D8 fallback binaries in the repo for
-functional bring-up, but I still want to validate or replace them with actual
-factory programming-disk files or physical PROM dumps.
+Validated physical D2/D6 tables are now preserved; D8 remains a reconstructed
+fallback. Factory programming-disk files are still valuable independent truth.
 
 - КР556РТ4А D2 and D6, drawing family ДГШ5.106.037/.038
 - К155РЕ3 D8, drawing ДГШ5.106.039

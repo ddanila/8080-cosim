@@ -18,10 +18,10 @@ with the machine-readable board model.
   correctly marks the package invalid until that airwire and the stale routed
   snapshot are replaced. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
-- The main board is **not released for fabrication**. A repeated preliminary
-  physical D2 dump and high-confidence D2/D30/D105 continuity corrections are
-  recorded, but need a preserved power-cycled capture and synchronized model /
-  routed-snapshot adoption; D94 still
+- The main board is **not released for fabrication**. Validated physical D2
+  `.037` and D6 `.038` tables are preserved; the measured D2/D30/D105 and
+  D6/D13 continuity is adopted in the source model and HDL, while the routed
+  snapshot still needs replacement. D94 still
   lacks pin 15, outputs D3-D7, and PROM truth. There are 9 official
   FDC-support ICs with only their physical pin maps and power endpoints modeled.
   D105 wait/MRD
@@ -29,7 +29,7 @@ with the machine-readable board model.
   documented revision boundary.
   D30 READY section A is modeled; section B's pin-10/pin-12 tie and intentional
   pin-6/pin-9 no-connects are documented, while its three live endpoints remain
-  untraced. In total, 219 modeled nets retain source-risk annotations requiring
+  untraced. In total, 218 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

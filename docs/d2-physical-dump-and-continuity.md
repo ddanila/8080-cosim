@@ -2,7 +2,7 @@
 
 Status date: **2026-07-13**.
 
-Status: **OWNER-MEASURED / D2 DUMP VALIDATED / MODEL ADOPTION PENDING**
+Status: **D2 PHYSICAL TABLE VALIDATED / CONNECTIVITY ADOPTED**
 
 This report records continuity measurements made directly on the owner's
 unpowered `.009` processor board and a repeated read of its socketed
@@ -114,11 +114,9 @@ joined `D13.12/D6.11/D6.12` net disproves the current model's assumption that
 D6 pins 11 and 12 are independently routed `RAM_N` and `ROM_N` outputs on this
 physical revision. D5.26 is `MEMW_N`; D105.12/.13 invert it onto D30.13.
 
-## Adoption boundary
+## Adoption result
 
-This evidence requires a dedicated connectivity-adoption change to reconcile
-board JSON, structural HDL, generated KiCad artifacts, photo registration, and
-the generated D2/D30/D105 reports together. Until that synchronized change is
-made, generated documents describing `D2.12 -> D105.9`, a direct CPU-to-D5
-DBIN connection, or independent D6.11/D6.12 nets are known stale against these
-owner measurements.
+Board JSON, structural HDL, generated KiCad artifacts, and D2/D30/D105 reports
+now adopt these measurements. The old `D2.12 -> D105.9`, direct CPU-to-D5
+DBIN, and independent D6.11/D6.12 interpretations are retired. The saved routed
+PCB remains stale and must be regenerated after source-placement shorts close.

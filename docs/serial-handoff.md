@@ -94,7 +94,7 @@ python3 scripts/report_serial_handoff.py
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
 - D11 auxiliary pins remain physical-source blockers:
-  14:RXRDY, 15:TXRDY.
+  .
   Trace each destination or record a source-proved intentional NC before
   treating the USART portion of the PCB as complete.
 - The `.006` sheet explicitly draws D11 RxRDY/TxRDY to PIC IR0/IR1,

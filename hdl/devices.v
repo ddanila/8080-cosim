@@ -149,20 +149,34 @@ endmodule
 // D2/10 = REV -> D9 io-decode G2A/G2B region enable; D3/9 = "-RAMOUTEN" -> D13 Schmitt.
 // The real .106.037/.038 truth table needs a РТ4 dump; columns below are the MAME-verified
 // behavioral reconstruction (byte-identical boot).
-module decode_prom (input wire [15:8] a, input wire v_en_n,
+module decode_prom (input wire [7:0] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
-    // a[15:11] = BA15..BA11; factory sheet: a[10:8] = D26 PC2,PC3,PC4 via tags 1,2,3.
-    //   mode 0 (a[10]=0, reset overlay): ROM at 0x0000-0x3FFF.
-    //   mode 1 (a[10]=1): ROM folds up to 0xD800-0xFFFF (the EPROM's BA[12:0] wiring yields the
-    //   0x1800+ offset automatically), RAM below.
-    wire rom_region = ~a[10] ? (a[15:14] == 2'b00) : (a[15:11] >= 5'b11011);
-    assign rom_n = ~rom_region;              // ROM-region enable -> D8.E_N (traced); the РЕ3 pager splits per-chip
-    assign rev   = ~(a[15:13] == 3'b000);    // io region qualifier -> D9.G2A/G2B: low for ports 00-1F (port mirror
-                                             // on A8-15); mode-independent so io works in every map [reconstructed]
-    assign ram_n = ~(~rom_region);           // RAM select (outside ROM)
-    assign roe_n = 1'b0;                     // "-RAMOUTEN" column: modeled permissive (RAM out always allowed) =
-                                             // the boot-verified behavior of the old undriven tri1 rail. Real
-                                             // region shape needs the РТ4 dump [reconstructed]
+    // Validated physical D6 `.038` table. Address bit order is the actual RT4
+    // pin order: a[0:7] = pins 5,6,7,4,3,2,1,15 =
+    // BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4.
+`ifdef YOSYS
+    wire [3:0] raw = 4'h0; // contents are irrelevant to structural LVS
+`else
+    reg [7:0] prom [0:255];
+    initial $readmemh("ref/physical-proms/validated/d6_038.raw.hex", prom);
+    wire [3:0] raw = prom[a][3:0];
+`endif
+    assign {roe_n, rev, ram_n, rom_n} = v_en_n ? 4'hF : raw;
+endmodule
+
+// D2 КР556РТ4 `.037` bus/READY PROM. Three preserved owner captures agree at
+// all 256 addresses (eight samples/address, zero unstable rows), including a
+// full power-cycled read. All four physical output pins read identically.
+module wait_prom_037 (input wire [7:0] a, input wire v1_n, v2_n,
+                      output wire [3:0] d);
+`ifdef YOSYS
+    wire [3:0] raw = 4'h0; // contents are irrelevant to structural LVS
+`else
+    reg [7:0] prom [0:255];
+    initial $readmemh("ref/physical-proms/validated/d2_037.raw.hex", prom);
+    wire [3:0] raw = prom[a][3:0];
+`endif
+    assign d = (~v1_n && ~v2_n) ? raw : 4'hF;
 endmodule
 
 // ---- ЛА3 NAND gate section (D7) gating the PROM enable ----
@@ -998,13 +1012,28 @@ module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     assign d = 8'hzz;   // placeholder until the .092 dump; a/e_n kept for connectivity
 endmodule
 
-// D30 КМ555ТМ2 dual D flip-flop. Section A is physically traced into the READY
-// chain; section B remains a pin-level boundary. Outputs stay high-impedance in
-// the runnable twin so adding the LVS-visible package cannot change boot timing.
-module tm2_dff (input wire clr1_n, d1, clk1, pre1_n,
+// КМ555ТМ2 dual D flip-flop. D30 enables the functional model now that direct
+// owner continuity closes its READY section; other boundary-only packages keep
+// the non-driving default until their timing is proved.
+module tm2_dff #(parameter FUNCTIONAL = 0) (input wire clr1_n, d1, clk1, pre1_n,
                 output wire q1, q1_n,
                 input wire clr2_n, d2, clk2, pre2_n,
                 output wire q2, q2_n);
-    assign q1 = 1'bz; assign q1_n = 1'bz;
-    assign q2 = 1'bz; assign q2_n = 1'bz;
+    generate if (FUNCTIONAL) begin : g_functional
+        reg q1_r = 1'b1;
+        reg q2_r = 1'b1;
+        always @(posedge clk1 or negedge clr1_n or negedge pre1_n)
+            if (!clr1_n) q1_r <= 1'b0;
+            else if (!pre1_n) q1_r <= 1'b1;
+            else q1_r <= d1;
+        always @(posedge clk2 or negedge clr2_n or negedge pre2_n)
+            if (!clr2_n) q2_r <= 1'b0;
+            else if (!pre2_n) q2_r <= 1'b1;
+            else q2_r <= d2;
+        assign q1 = q1_r; assign q1_n = ~q1_r;
+        assign q2 = q2_r; assign q2_n = ~q2_r;
+    end else begin : g_boundary
+        assign q1 = 1'bz; assign q1_n = 1'bz;
+        assign q2 = 1'bz; assign q2_n = 1'bz;
+    end endgenerate
 endmodule

@@ -1,9 +1,10 @@
 # Reconstructed PROM fallback images
 
-Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**
+Status: **D8 FUNCTIONAL FALLBACK EXPORTED / PHYSICAL RT4 TABLES ADOPTED**
 
-These files are programming fallbacks, not dumped factory truth. They are
-derived from the current boot-validated HDL/cosim behavior and should be
+The D8 file is a programming fallback, not dumped factory truth. D2 and D6
+now use validated owner captures under `ref/physical-proms/`; they are no
+longer emitted here as reconstructions. The D8 fallback should be
 replaced or checked against Baltijets programming-disk files or physical
 PROM dumps when those become available.
 
@@ -18,23 +19,18 @@ sync/prom_fallback_check.sh
 
 | Stem | Size | BIN SHA256 | HEX SHA256 | Role |
 | --- | ---: | --- | --- | --- |
-| `d6_rt4_memory_decode_reconstructed` | 256 | `b5c69c8fdc03e592d817c1c872c67e07761f218d5223f6257944248018473baf` | `e80a3f9b4b30de7dbe7a7148a73921287be07c84646c52217641d6a387504b2c` | D6 К556РТ4 memory decode; low nibble uses D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N. |
 | `d8_re3_rom_pager_reconstructed` | 32 | `0cecad4f89dce2e5e0dba0622c89d8cfa01324dd8ff3e9f7b8f92d20ced690b3` | `c95273ef8c46ab5db1fcbaabb6971f988e934752f6921ecb06dda6cc38b1a0bc` | D8 К155РЕ3 ROM-socket pager; byte values are active-low output rails. |
 
 ## Boundaries
 
-- `d6_rt4_memory_decode_reconstructed.*` covers only the D6 memory decode
-  fallback. Row order is `{BA15..BA11, PC2, PC3, PC4}`, preserving all
-  eight traced physical inputs. Its reset-mode overlay selects ROM for
-  `0x0000..0x3FFF`; current functional evidence constrains PC2, while
-  PC3/PC4 are enumerated but truth-invariant until a dump proves otherwise.
-  It does not claim to be the dumped factory byte table.
+- D2 `.037` has three validated captures including a separate power cycle;
+  authoritative raw SHA256 is
+  `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`.
+- D6 `.038` has two validated captures; authoritative raw SHA256 is
+  `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`.
+  This physical table supersedes the old reconstructed D6 image.
 - `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager
   fallback for programmed drawing family `ДГШ5.106.039`.
-- No D2 image is exported. Current board metadata identifies D2 as a
-  К556РТ4 bus-arbitration/wait PROM (`ДГШ5.106.037`, dump pending) with
-  traced physical inputs but unknown truth. Older functional I/O-decode
-  stand-ins must not be burned as a physical D2 programming image.
 - No D94 image is exported. The current `re3_prom_092` HDL block is an
   electrically released stub connected to the three accepted FDC controls;
   it supplies no truth for the unknown `ДГШ5.106.092` content.
@@ -47,7 +43,6 @@ sync/prom_fallback_check.sh
 
 | PROM | Programmed drawing | Reason no fallback is emitted |
 | --- | --- | --- |
-| D2 К556РТ4 | `ДГШ5.106.037` | Physical inputs are traced, but no source constrains the output truth table. |
 | D94 К155РЕ3 | `ДГШ5.106.092` | Content is unknown; HDL leaves the connected FDC-control outputs electrically released. |
 | Video/DRAM timing РЕ3 | `ДГШ5.106.009` family | Timing truth is not derivable from current schematic/MAME evidence; needs dump or programming-disk table. |
 
@@ -55,8 +50,9 @@ sync/prom_fallback_check.sh
 
 `sync/prom_fallback_check.sh` compiles `hdl/sim/prom_fallback_tb.v` against the
 current `hdl/devices.v` modules and compares every exported row against the
-actual `decode_prom` and `re3_prom` logic. A passing guard means the files in
-`ref/reconstructed-proms/` still match the boot-validated HDL fallback logic.
+actual physical-table-backed `wait_prom_037`/`decode_prom` and reconstructed
+`re3_prom` logic. A passing guard means the selected physical/reconstructed
+files still match HDL.
 
 CI also reruns `scripts/export_reconstructed_proms.py` and fails if the
 generated files or this report are stale.

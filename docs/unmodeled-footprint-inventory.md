@@ -3,8 +3,8 @@
 Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**
 
 This generated report catches both IC footprints absent from the board
-model and promoted devices whose functional pins remain outside named
-nets. Adding either class of endpoint requires a routed-PCB refresh and
+model and promoted devices whose functional pins remain untraced or on
+explicit continuity-boundary nets. Closing either class requires a routed-PCB refresh and
 endpoint-coverage proof.
 
 ## Command
@@ -26,24 +26,22 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 There are `0` IC footprints with no board-JSON representation
 and `9` promoted FDC devices with functional pins still
-outside named nets. KiCad's zero-unconnected result cannot detect either class
-until those endpoints are modeled. Both classes block design release.
+untraced or carried only by explicit boundary nets. KiCad's zero-unconnected
+result cannot establish remote continuity for those endpoints. They block
+design release until measured or explicitly dispositioned.
 
 ## D105 Wait-Gate Boundary
 
 - D105 inventory state: `MODELED`
 - `D105` is promoted into board JSON and both PCB artifacts as a
-  four-section К155ЛА3. Correcting pin 10 exposes one −5 V airwire
-  in the derived routed snapshot; replacement copper remains blocked.
-- Sheet 1 proves D2.12 -> D105.9 and a distinct named off-sheet
-  `H` arrow -> D105.10; sheet 2 also labels H(−5), but −5 V is invalid
-  on this К155ЛА3 TTL input, so the revision/notation conflict remains.
-  D105.8 -> tied inputs 4+5, D13.4/MWR -> inputs 2/1, and the
-  tied-input MRD inverter 12+13 -> 11 -> D30.13.
-- D105.6 is traced to a D95 inverter on the older `.006` sheet and
-  onward as `-WAIT` to E8-1. The `.009` BOM reassigns D95 to an FDC
-  К555КП12, so that revision-specific inverter destination remains an
-  explicit boundary rather than being assigned to the wrong footprint.
+  four-section К155ЛА3. Direct `.009` continuity proves D1.17 DBIN ->
+  D105.9, pulled-up edge `H`/D13.13 -> D105.10, tied D105.4/.5, and
+  D105.6 -> D5.4. The two NAND stages implement `DBIN AND H`.
+- The same continuity pass proves MEMW on tied D105.12/.13 and
+  D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9
+  merge and the older `.006` D95 WAIT handoff.
+- The derived routed snapshot predates those corrections and the source
+  placement has six collision pairs, so a full reroute remains blocked.
 
 ## D30 READY Flip-Flop Boundary
 
@@ -51,10 +49,9 @@ until those endpoints are modeled. Both classes block design release.
   and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
   `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
   through R29 1 kΩ.
-- D30 section A, R5, R6, and R29 are now promoted into board JSON. In
-  section B, pins 10+12 are tied, pins 6+9 are intentional no-connects,
-  and D105.11 now drives pin 13. Pin 8, pin 11, and the upstream source
-  of pins 10+12 still require end-to-end reads.
+- Direct owner continuity corrects that topology: D2.12 and R6 feed D30.2;
+  D30.5 reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;
+  and D105.11 drives D30.13. Pins 8 and 11 remain explicit boundaries.
 
 ## AG3 Package Correction
 

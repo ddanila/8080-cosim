@@ -30,6 +30,29 @@ electrically suitable 27C64-class device after confirming programmer support,
 pinout, blank check, and device voltage requirements; perform a programmer
 verify pass after writing.
 
+## Socket and device decision
+
+Use 2764/M2764-compatible 8 KiB x 8 DIP-28 devices for D15 and D16. A 27C64
+substitute is acceptable for the functional build only when its datasheet and
+programmer selection match the same read-mode pinout and supply limits.
+
+| Pin | 2764 read-mode role | Board connection |
+| ---: | --- | --- |
+| 1 | VPP | +5 V (`P5V`) |
+| 14 | VSS | ground (`GND`) |
+| 20 | /CE | per-socket D8 pager select |
+| 22 | /OE | memory-read strobe |
+| 26 | NC on M2764; compatibility tie | +5 V (`P5V`) |
+| 27 | /PGM | +5 V (`P5V`) for read mode |
+| 28 | VCC | +5 V (`P5V`) |
+
+The exporter guards these five power/programming pins for all eight physical
+D15-D22 sockets, not only the two populated devices. Pins 2-13, 15-19, 21,
+23-25 retain the standard A0-A12/D0-D7 mapping recorded in
+`kicad/juku.board.json`. Programming voltage and pulse requirements come from
+the exact device selected in the programmer and must never be applied through
+the board socket.
+
 ## Provenance boundary
 
 - These files inherit the public preservation provenance and rights caveat in

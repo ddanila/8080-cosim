@@ -1,54 +1,44 @@
-# D105 pin-10 H boundary
+# D105 H/DBIN boundary
 
-Status: **D105 H BOUNDARY CORRECTED / SOURCE UNRESOLVED**
+Status: **D105 H/DBIN HANDOFF ADOPTED / ROUTED REFRESH REQUIRED**
 
-The full-resolution `.006` sheet draws a named off-sheet `H` arrow into
-D105 pin 10, a К155ЛА3 TTL logic input. A full-resolution sheet-2
-supply table also contains `H (−5)`, disproving the earlier claim that no
-H supply legend exists. Equating the two would put −5 V on a TTL input,
-so this is retained as a revision/notation conflict rather than a supply
-connection. The former connection also masked D2's used PROM output.
+Direct owner continuity on the physical `.009` board supersedes the older
+interpretation of this package. D105.10 is the pulled-up edge-bus `H` net
+shared with D13.13, not the −5 V supply. CPU D1.17 `DBIN` reaches D105.9;
+D105.9/.10 feed one NAND and tied D105.4/.5 invert it again, so D105.6
+drives D5.4 as `DBIN AND H`. Tied D105.12/.13 receive `MEMW`, while
+D105.11 drives D30.13.
 
-The correction removes D105.10 from −5 V in board JSON, source PCB, routed
-PCB, DSN, SES, and HDL. This exposes one honest −5 V airwire in the
-derived routed snapshot instead of hiding it through D105.10; replacement
-copper remains a fabrication blocker. `H` remains a
-singleton target-revision boundary;
-the simulation low is an unresolved-input default that preserves the former
-constant-low gate behavior, not a claim that H is a supply. The deep cosim
-forces CPU `ready=1`, so it cannot constrain this WAIT input.
+The authoritative board JSON, source PCB, and HDL now preserve that measured
+topology. The routed PCB/DSN/SES predate it and remain deliberately stale:
+they must be regenerated after the separately documented placement collisions
+are resolved, not patched locally around invalid package placement.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| H is a singleton D105.10 boundary | PASS | `[['D105', '10']]` |
-| Derived -5 V excludes D105.10 | PASS | `[['D1', '11'], ['R19', '2'], ['VD5', '2'], ['E5', '1']]` |
-| Derived -5 V remains a power net | PASS | `True` |
-| Source PCB assigns D105.10 to H | PASS | `D105_10_H` |
-| Source PCB has no routed segment on D105.10 | PASS | `0` |
-| Routed PCB assigns D105.10 to H | PASS | `D105_10_H` |
-| Routed PCB has no routed segment on D105.10 | PASS | `0` |
-| DSN assigns singleton D105-10 to H | PASS | `kicad/juku.dsn` |
-| SES M5V route no longer terminates at D105.10 | PASS | `kicad/juku.ses` |
-| HDL exposes H as an independent low-default boundary | PASS | `hdl/juku_top.v` |
+| Source model preserves D105_10_H | PASS | `[('D105', '10'), ('D13', '13')]` |
+| Source model preserves DBIN | PASS | `[('D1', '17'), ('D105', '9')]` |
+| Source model preserves DBIN_GATED | PASS | `[('D105', '6'), ('D5', '4')]` |
+| Source model preserves D105_WAIT_STAGE | PASS | `[('D105', '4'), ('D105', '5'), ('D105', '8')]` |
+| Source model preserves D105_MEMW_INV | PASS | `[('D105', '11'), ('D30', '13')]` |
+| MEMW reaches tied D105 inputs | PASS | `[('D105', '12'), ('D105', '13')]` |
+| H remains separate from derived -5 V | PASS | `[('D1', '11'), ('E5', '1'), ('R19', '2'), ('VD5', '2')]` |
+| Source PCB assigns D105.10 to D105_10_H | PASS | `D105_10_H` |
+| Source PCB assigns D13.13 to D105_10_H | PASS | `D105_10_H` |
+| Source PCB assigns D1.17 to DBIN | PASS | `DBIN` |
+| Source PCB assigns D105.9 to DBIN | PASS | `DBIN` |
+| Source PCB assigns D105.6 to DBIN_GATED | PASS | `DBIN_GATED` |
+| Source PCB assigns D5.4 to DBIN_GATED | PASS | `DBIN_GATED` |
+| Source PCB assigns D105.12 to MEMW | PASS | `MEMW` |
+| Source PCB assigns D105.13 to MEMW | PASS | `MEMW` |
+| HDL models pulled-up H and gated DBIN | PASS | `hdl/juku_top.v` |
+| Invalid routed snapshot is explicitly stale | PASS | `D105.9: D2_WAIT_RAW != DBIN; D105.6: D105_WAIT_PREINV != DBIN_GATED; D5.4: DBIN != DBIN_GATED; D105.12: MEMR != MEMW; D105.13: MEMR != MEMW` |
 
-A `.037` dump supplies D2 truth but cannot identify the source or timing of
-`H`. Both are required before releasing the physical WAIT chain. The routed
-snapshot must also regain a DRC-clean −5 V connection before fabrication.
+## Rejected routed-snapshot repairs
 
-## Rejected local copper repairs
-
-KiCad DRC trials closed the airwire with nearby independent vias, but none
-was electrically legal:
-
-- a via at `(37.0,212.0)` shorts D105.9 `D2_WAIT_RAW` and conflicts with
-  `PHI2TTL`;
-- a left detour through `(31.0,210.4985)` crosses `D105_MRD_INV`, shorts
-  `RAM_OUT_EN`, and violates D13.4/`PHI2` clearance;
-- vias at the retained route near `(35.5722,198.5991)` remain too close to
-  `PHI2TTL`, while right-side front-copper detours cross `RESIN`, GND, or
-  the E3 control routing.
-
-Those candidates were rejected and the routed board restored to its guarded
-one-airwire state. Do not reinstate the original D105.10 junction or adopt a
-jumper/larger reroute without documenting it as a target-revision measurement
-or explicit Tier-1/2 redesign.
+Earlier local copper trials attempted to preserve the obsolete routed netlist.
+They produced shorts or clearance failures around PHI2TTL, PHI2, RESIN, GND,
+RAM_OUT_EN, and the E3 control routing. Those trials remain rejected. The
+correct next operation is a complete routed refresh from the measured source
+netlist after collision-free placement, followed by DRC—not restoration of the
+old D2.12-to-D105.9 assumption or a hidden jumper.

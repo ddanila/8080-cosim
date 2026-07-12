@@ -23,7 +23,9 @@ SCHEMATIC_LEADS = {
     "4": ("VIDEO_CYCLE", "sheet 1 label `VIDEO CYCLE` enters D2 A3/pin 4"),
     "2": ("XACK_N", "sheet 1 label `-XACK` enters D2 A5/pin 2"),
     "15": ("WREQ_N", "sheet 1 label `-WREQ` enters D2 A7/pin 15"),
-    "12": ("D2_WAIT_RAW", "sheet 1 D2 D0/pin 12 enters D105 pin 9"),
+    # The saved DSN still contains the older D2_WAIT_RAW interpretation, but
+    # direct owner continuity supersedes it in the authoritative source model.
+    "12": ("READY_D", "owner continuity: D2 D0/pin 12 enters D30 pin 2 and R6"),
     "13": ("GND", "sheet 1 D2 V1/pin 13 is tied low"),
     "14": ("GND", "sheet 1 D2 V2/pin 14 is tied low"),
 }
@@ -192,6 +194,8 @@ def main() -> int:
         )
 
     candidates = firmware_candidates()
+    physical_image = ROOT / "ref/physical-proms/validated/d2_037.raw.bin"
+    physical_image_ok = physical_image.exists() and physical_image.stat().st_size == 256
     symbolic_rows = list(csv.DictReader(SYMBOLIC.open())) if SYMBOLIC.exists() else []
     symbolic_ok = (
         len(symbolic_rows) == 256
@@ -199,7 +203,7 @@ def main() -> int:
         and symbolic_rows[0].get("prom_address_hex") == "0x00"
         and symbolic_rows[-1].get("prom_address_hex") == "0xFF"
     )
-    identity_ok = board_type == "DEC_PROM" and "ДГШ5.106.037" in str(prov)
+    identity_ok = board_type == "WAIT_PROM" and "ДГШ5.106.037" in str(prov)
     d9 = next((item for item in board["chips"] if item.get("ref") == "D9"), {})
     io_decoder_superseded = (
         d9.get("type") == "IO_DEC138"
@@ -207,8 +211,15 @@ def main() -> int:
     )
     fallback_boundary = marker(
         "docs/reconstructed-prom-fallbacks.md",
-        "No D2 image is exported",
-        "ДГШ5.106.037",
+        "PHYSICAL RT4 TABLES ADOPTED",
+        "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
+    )
+    owner_evidence = marker(
+        "docs/d2-physical-dump-and-continuity.md",
+        "Three preserved complete reads agreed",
+        "D2.12  <-> D30.2",
+        "D105.9  <-> D1.17 DBIN",
+        "D13.12 <-> D6.11 <-> D6.12",
     )
     official_bom_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
@@ -230,8 +241,8 @@ def main() -> int:
     address_pins = {"1", "2", "3", "4", "5", "6", "7", "15"}
     source_inputs_closed = all(net_for_pin(board, "D2", pin) for pin in address_pins)
     source_inputs_in_pcb = all(pin in pcb_nets for pin in address_pins)
-    if identity_ok and all_signal_pins_netted and candidates:
-        status = "D2 RECONSTRUCTION READY"
+    if identity_ok and source_inputs_closed and physical_image_ok and owner_evidence:
+        status = "D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED"
     elif identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates:
         status = "D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
     elif identity_ok and source_inputs_closed and source_inputs_in_pcb and not candidates:
@@ -247,8 +258,8 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This generated report records what the repo can currently prove about",
-        "the processor-board `D2` К556РТ4 PROM (`ДГШ5.106.037`) before attempting",
-        "any reverse-engineered or burnable replacement table.",
+        "the processor-board `D2` К556РТ4 PROM (`ДГШ5.106.037`). It separates",
+        "the validated physical table from older reconstruction assumptions.",
         "",
         "## Command",
         "",
@@ -282,13 +293,15 @@ def main() -> int:
             "Therefore `prom_address = (WREQ_N<<7) + (A10<<6) + (XACK_N<<5) +",
             "(A14<<4) + (CAS_VIDEO_CYCLE<<3) + (A9<<2) + (A15<<1) + A12`.",
             "`ref/reconstructed-proms/d2_037_symbolic_truth.csv` enumerates all",
-            "256 input vectors. Every D0 cell is deliberately `?`; the CSV is a",
-            "constraint artifact, not a programmer image.",
+            "256 input vectors. Its D0 cells remain `?` as a topology constraint;",
+            "the separately named validated raw programming image carries the",
+            "owner-observed values without rewriting this historical constraint file.",
             "",
             "The named schematic leads above are pin-level source evidence, not a",
             "claim that the D2 truth table is known. Each proved pin is promoted",
             "independently; the July-2026 paired D2/D4 local fits close all eight",
-            "inputs while the programmed contents remain a separate boundary.",
+            "inputs. Three validated owner captures, including a separate power cycle,",
+            "now establish the physical raw table.",
             "",
             "## KiCad DSN Cross-check",
             "",
@@ -352,11 +365,10 @@ def main() -> int:
                 "all D0 values are `?`" if symbolic_ok else "missing/malformed symbolic CSV",
             ]),
             table_row([
-                "`.037` firmware artifact exists",
-                "PASS" if candidates else "FAIL",
-                ", ".join(f"`{item}`" for item in candidates)
-                if candidates
-                else "`ref/firmware/` has no `.037` artifact",
+                "Validated physical `.037` raw programming image exists",
+                "PASS" if physical_image_ok else "FAIL",
+                "`ref/physical-proms/validated/d2_037.raw.bin`"
+                if physical_image_ok else "missing or not 256 bytes",
             ]),
             table_row([
                 "Old D2-as-I/O-decode path is superseded",
@@ -364,9 +376,14 @@ def main() -> int:
                 "`kicad/juku.board.json` D9 identity and provenance",
             ]),
             table_row([
-                "No reconstructed D2 fallback is exported",
+                "D2 physical-table provenance is preserved",
                 "PASS" if fallback_boundary else "FAIL",
                 "`docs/reconstructed-prom-fallbacks.md`",
+            ]),
+            table_row([
+                "Owner dump and corrected continuity are recorded",
+                "PASS" if owner_evidence else "FAIL",
+                "`docs/d2-physical-dump-and-continuity.md`",
             ]),
             table_row([
                 "Official BOM/photo trail identifies `.037/.038` pair",
@@ -386,9 +403,11 @@ def main() -> int:
             "- The surviving sheet-1 evidence records the physical D2 pin table",
             "  `A0-A7=5/6/7/4/3/2/1/15`, `V1/V2=13/14`, `DO=12`, but explicitly",
             "  originally deferred the other five input nets.",
-            "- The July-2026 two-sided D2 fit plus an independent D4 solder-row fit",
-            "  now traces D2.1/.3/.5/.6/.7 to D4.1/.3/.5/.6/.7, closing all",
-            "  physical inputs without claiming a burnable `.037` image.",
+            "- Direct owner continuity supersedes the false D2.12->D105.9 path:",
+            "  D2.12 joins D30.2 and R6 in the READY latch input.",
+            "- Two complete same-session reads matched at every address with zero",
+            "  unstable rows; all four outputs agreed. A third separately power-cycled",
+            "  capture validates to the same authoritative raw SHA256.",
             "",
             "## Reconstruction Boundary",
             "",
@@ -396,34 +415,21 @@ def main() -> int:
             "  identifies it as programmed drawing `ДГШ5.106.037`.",
             "- Known: the older behavioral D2 I/O-decode model is not physical D2",
             "  programming truth; D9 is the current chip-select decoder.",
-            "- Known: all eight D2 inputs and D0/pin 12 to D105.9 are routed in the",
-            "  authoritative board model/source PCB. The saved routed snapshot",
-            "  still predates the five new D2-to-D4 routes.",
-            "- Known: D105.10 is a separate named off-sheet `H` input. The sheet's",
-            "  power legend does not identify it as −5 V; that former assignment",
-            "  masked D2 logically and has been removed from every PCB/route artifact.",
-            "  The routed snapshot consequently carries one honest −5 V airwire; a legal",
-            "  replacement route remains a fabrication blocker.",
-            "- Simulation default: unresolved `H` defaults low to preserve the formerly",
-            "  constant-low gate behavior, without claiming that `H` is a supply. The deep",
-            "  cosim forces CPU `ready=1`, so its separate late mismatch cannot constrain H.",
-            "- Unknown: the `.037` truth table; no programming table or dump is present",
-            "  under `ref/firmware/`.",
-            "- The factory sheet draws only D0/pin 12 from the four-output RT4",
-            "  package; unused output pins 9-11 are explicit no-connects in the",
-            "  board model and do not add unknown truth-table destinations.",
-            "- Unknown: the source and timing of `H`; even a functional WAIT fallback",
-            "  must preserve that input boundary rather than tie it to a supply.",
-            "- Therefore a burnable D2 image is not derivable from current repo",
-            "  evidence. The correct automatic action is to keep this constraint",
-            "  report fresh; the data-unlocking action is a programming-disk file",
-            "  or a repeated physical dump.",
+            "- Known: all eight inputs are traced and D0/pin12 feeds D30 READY data.",
+            "  Pins9-11 were read but their board destinations/NC states remain explicit",
+            "  continuity boundaries.",
+            "- Known: D105.10 is the pulled-up edge-bus `H` net shared with D13.13;",
+            "  it gates CPU DBIN through D105 into D5 and is not the −5 V supply.",
+            "- Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte",
+            "  authoritative raw low-nibble image, reproduced from all three captures.",
+            "- Remaining closure is historical comparison against a programming-disk",
+            "  file or independent future read, not recovery of the current chip table.",
             "",
         ]
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok))
+    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok, physical_image_ok, owner_evidence))
     return 0 if evidence_ok and status != "D2 RECONSTRUCTION INPUTS CHANGED" else 1
 
 

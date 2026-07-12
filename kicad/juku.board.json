@@ -159,14 +159,14 @@
    "ref": "D6",
    "type": "DEC_PROM",
    "pins": {
-    "15": "A0",
-    "1": "A1",
-    "2": "A2",
-    "3": "A3",
-    "4": "A4",
-    "7": "A5",
-    "6": "A6",
-    "5": "A7",
+    "5": "A0",
+    "6": "A1",
+    "7": "A2",
+    "4": "A3",
+    "3": "A4",
+    "2": "A5",
+    "1": "A6",
+    "15": "A7",
     "13": "V_EN_N",
     "14": "V_EN_N",
     "12": "ROM_N",
@@ -177,7 +177,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged on one upstream-unread boundary; the former D7.11 enable merge is refuted"
+    "pins": "validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged; two preserved captures parse identically with raw SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
    }
   },
   {
@@ -229,7 +229,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -264,7 +269,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -2132,7 +2142,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -2166,7 +2181,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -2200,7 +2220,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -2234,7 +2259,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -2268,7 +2298,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -2302,7 +2337,12 @@
     "18": "D6",
     "19": "D7",
     "20": "CS_N",
-    "22": "OE_N"
+    "22": "OE_N",
+    "1": "VPP_5V",
+    "14": "VSS_GND",
+    "26": "NC_5V_COMPAT",
+    "27": "PGM_5V",
+    "28": "VCC_5V"
    },
    "prov": {
     "type": "scan",
@@ -3751,7 +3791,7 @@
   },
   {
    "ref": "D2",
-   "type": "DEC_PROM",
+   "type": "WAIT_PROM",
    "pins": {
     "5": "A0",
     "6": "A1",
@@ -3763,12 +3803,15 @@
     "15": "A7",
     "13": "V1",
     "14": "V2",
-    "12": "D0"
+    "12": "D0",
+    "11": "D1",
+    "10": "D2",
+    "9": "D3"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/pin12->D105.9; factory symbol draws only D0/pin12 and leaves the other RT4 outputs pins9-11 unused/NC; remaining A inputs and ДГШ5.106.037 truth table pending"
+    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically but pins9-11 destinations/NC states remain boundaries. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
    }
   },
   {
@@ -5465,17 +5508,18 @@
    ]
   },
   "DBIN": {
-   "src": "scan",
+   "src": "owner continuity 2026-07-13: CPU D1.17 DBIN enters D105.9; D5.4 receives the gated result from D105.6",
    "nodes": [
     [
      "D1",
      "17"
     ],
-    [
-     "D5",
-     "4"
-    ]
+    ["D105", "9"]
    ]
+  },
+  "DBIN_GATED": {
+   "src": "owner continuity 2026-07-13: D105.9=DBIN and D105.10=H feed NAND pin8; tied D105.4/.5 invert it again, so D105.6 -> D5.4 implements DBIN AND H",
+   "nodes": [["D105", "6"], ["D5", "4"]]
   },
   "WR": {
    "src": "scan",
@@ -7135,9 +7179,10 @@
     ]
    ]
   },
-  "ROM_SEL": {
-   "src": "traced sheet-1 (romdec_above: \"12 ROM\" junction rail runs right into D8 pin 15 E_N, R11 1k pullup). D6.ROM_N = ROM-region enable for the D8 pager, NOT a chip CE (D15.20 detached: CS traced to D8.D4); +R11 1k pullup (romdec_above)",
+  "D6_MEM_SELECT_N": {
+   "src": "owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation; existing R11/R12, D8.15, and D92.5 branches are retained on the measured joined conductor pending a preserved D6 dump/spot-check",
    "nodes": [
+    ["D6", "11"],
     [
      "D6",
      "12"
@@ -7149,7 +7194,10 @@
     [
      "R11",
      "2"
-    ]
+    ],
+    ["D92", "5"],
+    ["R12", "2"],
+    ["D13", "12"]
    ]
   },
   "D6_V_ENABLE": {
@@ -7236,14 +7284,6 @@
     [
      "D33",
      "3"
-    ],
-    [
-     "D105",
-     "12"
-    ],
-    [
-     "D105",
-     "13"
     ]
    ]
   },
@@ -7273,7 +7313,9 @@
     [
      "D105",
      "1"
-    ]
+    ],
+    ["D105", "12"],
+    ["D105", "13"]
    ],
    "note": "WIRE 19 (beeper): D5.26 -> D7.2 physical wire",
    "wire_link": true
@@ -9162,23 +9204,6 @@
     ],
     [
      "R13",
-     "2"
-    ]
-   ]
-  },
-  "RAM_SEL": {
-   "src": "scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 \"(1)\" label). D53.6/G3 detached: its drawn feed = long west line [pending]; +R12 1k pullup (scan note + R11/R12 pair zone)",
-   "nodes": [
-    [
-     "D6",
-     "11"
-    ],
-    [
-     "D92",
-     "5"
-    ],
-    [
-     "R12",
      "2"
     ]
    ]
@@ -15798,12 +15823,12 @@
    "nodes": [["D30", "1"]]
   },
   "READY_D": {
-   "src": "traced sheet-1: R6 2k pullup feeds D30 section-A D input pin 2",
-   "nodes": [["R6", "2"], ["D30", "2"]]
+   "src": "owner continuity 2026-07-13: D2 D0/pin12 and R6 2k pullup feed D30 section-A D input pin2; D2 open-collector output overrides the pullup",
+   "nodes": [["R6", "2"], ["D30", "2"], ["D2", "12"]]
   },
   "READY_PRE_N": {
-   "src": "traced sheet-1: R5 2k pullup feeds D30 section-A asynchronous preset pin 4",
-   "nodes": [["R5", "2"], ["D30", "4"]]
+   "src": "D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12",
+   "nodes": [["D30", "4"]]
   },
   "READY_Q": {
    "src": "traced sheet-1: D30 section-A Q pin 5 reaches R29 1k series resistor",
@@ -15814,16 +15839,12 @@
    "nodes": [["R29", "2"], ["D1", "23"]]
   },
   "D30B_D_PRE_N": {
-   "src": "traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread",
-   "nodes": [["D30", "10"], ["D30", "12"]]
-  },
-  "D2_WAIT_RAW": {
-   "src": "traced sheet-1: D2 D0/pin 12 enters D105 NAND input pin 9",
-   "nodes": [["D2", "12"], ["D105", "9"]]
+   "src": "owner continuity 2026-07-13: D30 /PRE2 pin10 and D2 pin12 are tied together and to R5.2; R5.1 is +5 V",
+   "nodes": [["D30", "10"], ["D30", "12"], ["R5", "2"]]
   },
   "D105_10_H": {
-   "src": "sheet-1: named off-sheet arrow H enters К155ЛА3 logic input D105.10; sheet-2 table also labels H(-5), but -5 V is invalid on this TTL input, leaving an explicit revision/notation conflict",
-   "nodes": [["D105", "10"]]
+   "src": "owner continuity 2026-07-13: pulled-up edge-bus H joins D105.10 and D13.13; exact edge contact and pullup reference/value remain unresolved. This disproves the old H(-5) supply merge",
+   "nodes": [["D105", "10"], ["D13", "13"]]
   },
   "XACK_N": {
    "src": "traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explicit conflict boundary",
@@ -15837,10 +15858,6 @@
    "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",
    "nodes": [["D105", "8"], ["D105", "4"], ["D105", "5"]]
   },
-  "D105_WAIT_PREINV": {
-   "src": "traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination remains a boundary",
-   "nodes": [["D105", "6"]]
-  },
   "D13_4_D105_2": {
    "src": "scan sheet-1: uninterrupted D13 TL2 output pin 4 conductor reaches D105 NAND input pin 2 and USART D11 CLK pin 20",
    "nodes": [["D13", "4"], ["D105", "2"], ["D11", "20"]]
@@ -15849,9 +15866,21 @@
    "src": "traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread",
    "nodes": [["D105", "3"]]
   },
-  "D105_MRD_INV": {
-   "src": "traced sheet-1: tied-input D105 gate pins 12+13 inverts MRD and pin 11 drives D30 section-B /CLR pin 13",
+  "D105_MEMW_INV": {
+   "src": "owner continuity 2026-07-13: tied D105.12/.13 receive D5.26 MEMW_N; D105.11 drives D30 section-B /CLR pin13",
    "nodes": [["D105", "11"], ["D30", "13"]]
+  },
+  "D2_D1_BOUNDARY": {
+   "src": "owner D2 read 2026-07-13 sampled physical output pin11 but its target-board destination/NC state was not continuity-mapped",
+   "nodes": [["D2", "11"]]
+  },
+  "D2_D2_BOUNDARY": {
+   "src": "owner D2 read 2026-07-13 sampled physical output pin10 but its target-board destination/NC state was not continuity-mapped",
+   "nodes": [["D2", "10"]]
+  },
+  "D2_D3_BOUNDARY": {
+   "src": "owner D2 read 2026-07-13 sampled physical output pin9 but its target-board destination/NC state was not continuity-mapped",
+   "nodes": [["D2", "9"]]
   },
   "D25_T": {
    "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",

@@ -147,14 +147,14 @@ def main() -> int:
     checks = [
         ("Community request packet ready", has_phrase("docs/community-prom-media-request.md", "Status: **READY TO SEND**")),
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
-        ("D6/D8 reconstructed fallback exported", has_phrase("docs/reconstructed-prom-fallbacks.md", "d6_rt4_memory_decode_reconstructed")),
-        ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**") or marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED**") or marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 INPUTS TRACED / DUMP REQUIRED**") else "MISSING"),
+        ("Physical D2/D6 tables and D8 fallback are guarded", has_phrase("docs/reconstructed-prom-fallbacks.md", "PHYSICAL RT4 TABLES ADOPTED")),
+        ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**") else "MISSING"),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**")),
-        ("D41 timing boundary guarded", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 OUTPUTS GUARDED / INPUT TIMING BUS PENDING**")),
+        ("D41 timing boundary guarded", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 STRAPS/OUTPUTS GUARDED / LD-CK SOURCES PENDING**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         ("Video/RF analog boundary guarded", has_phrase("docs/video-analog-boundary.md", "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**")),
@@ -185,7 +185,7 @@ def main() -> int:
             "programming disk / PROM truth",
             "Baltijets doc 007 disk files, or dumps of D2/D6 RT4, D8 RE3, D94 RE3, D15/D16 EPROMs",
             "`docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md`",
-            "unblocks preservation-grade PROM truth and validates/replaces reconstructed D6/D8 fallbacks",
+            "cross-checks the validated physical D2/D6 tables and replaces the remaining D8 fallback",
         ),
         (
             "P2",
@@ -253,9 +253,9 @@ def main() -> int:
         (
             "P0",
             "D2/D30/D105 continuity adoption",
-            "owner continuity proves D2.12->D30.2, D1.17/H gating through D105 to D5.4, and a joined D13.12/D6.11/D6.12 net; preserve one power-cycled raw `.037` capture and independently spot-check the corrected endpoints",
+            "owner continuity proves D2.12->D30.2, D1.17/H gating through D105 to D5.4, and a joined D13.12/D6.11/D6.12 net; independently spot-check the corrected endpoints on another board if available",
             "`docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
-            "replaces the stale older-sheet D2->D105 interpretation and enables a physical READY-path simulation",
+            "independently corroborates the adopted physical READY and DBIN paths",
         ),
         (
             "P2",

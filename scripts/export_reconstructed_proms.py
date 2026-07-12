@@ -15,28 +15,6 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def d6_byte(row: int) -> int:
-    """D6 К556РТ4 reconstructed memory decode row.
-
-    Physical row order is {BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4}, matching
-    D6 A0-A7 pins 5,6,7,4,3,2,1,15. The fallback currently constrains only
-    PC2; PC3/PC4 remain enumerated address dimensions whose effect needs a dump.
-
-    Bit convention follows the HDL output comments in hdl/devices.v:
-    D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N.
-    """
-    ba15_14 = (row >> 6) & 0x3
-    ba15_13 = (row >> 5) & 0x7
-    ba15_11 = (row >> 3) & 0x1F
-    pc2 = (row >> 2) & 0x1
-    rom_region = ba15_14 == 0 if pc2 == 0 else ba15_11 >= 0x1B
-    rom_n = 0 if rom_region else 1
-    ram_n = 0 if not rom_region else 1
-    rev = 0 if ba15_13 == 0 else 1
-    roe_n = 0
-    return rom_n | (ram_n << 1) | (rev << 2) | (roe_n << 3)
-
-
 def d8_byte(row: int) -> int:
     """D8 К155РЕ3 reconstructed ROM-socket pager row."""
     if 0x00 <= row <= 0x03:
@@ -70,11 +48,6 @@ def main() -> int:
     OUTDIR.mkdir(parents=True, exist_ok=True)
     images = [
         (
-            "d6_rt4_memory_decode_reconstructed",
-            bytes(d6_byte(row) for row in range(256)),
-            "D6 К556РТ4 memory decode; low nibble uses D0=ROM_N, D1=RAM_N, D2=REV, D3=ROE_N.",
-        ),
-        (
             "d8_re3_rom_pager_reconstructed",
             bytes(d8_byte(row) for row in range(32)),
             "D8 К155РЕ3 ROM-socket pager; byte values are active-low output rails.",
@@ -98,10 +71,11 @@ def main() -> int:
     lines = [
         "# Reconstructed PROM fallback images",
         "",
-        "Status: **BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED**",
+        "Status: **D8 FUNCTIONAL FALLBACK EXPORTED / PHYSICAL RT4 TABLES ADOPTED**",
         "",
-        "These files are programming fallbacks, not dumped factory truth. They are",
-        "derived from the current boot-validated HDL/cosim behavior and should be",
+        "The D8 file is a programming fallback, not dumped factory truth. D2 and D6",
+        "now use validated owner captures under `ref/physical-proms/`; they are no",
+        "longer emitted here as reconstructions. The D8 fallback should be",
         "replaced or checked against Baltijets programming-disk files or physical",
         "PROM dumps when those become available.",
         "",
@@ -125,18 +99,14 @@ def main() -> int:
             "",
             "## Boundaries",
             "",
-            "- `d6_rt4_memory_decode_reconstructed.*` covers only the D6 memory decode",
-            "  fallback. Row order is `{BA15..BA11, PC2, PC3, PC4}`, preserving all",
-            "  eight traced physical inputs. Its reset-mode overlay selects ROM for",
-            "  `0x0000..0x3FFF`; current functional evidence constrains PC2, while",
-            "  PC3/PC4 are enumerated but truth-invariant until a dump proves otherwise.",
-            "  It does not claim to be the dumped factory byte table.",
+            "- D2 `.037` has three validated captures including a separate power cycle;",
+            "  authoritative raw SHA256 is",
+            "  `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`.",
+            "- D6 `.038` has two validated captures; authoritative raw SHA256 is",
+            "  `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`.",
+            "  This physical table supersedes the old reconstructed D6 image.",
             "- `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager",
             "  fallback for programmed drawing family `ДГШ5.106.039`.",
-            "- No D2 image is exported. Current board metadata identifies D2 as a",
-            "  К556РТ4 bus-arbitration/wait PROM (`ДГШ5.106.037`, dump pending) with",
-            "  traced physical inputs but unknown truth. Older functional I/O-decode",
-            "  stand-ins must not be burned as a physical D2 programming image.",
             "- No D94 image is exported. The current `re3_prom_092` HDL block is an",
             "  electrically released stub connected to the three accepted FDC controls;",
             "  it supplies no truth for the unknown `ДГШ5.106.092` content.",
@@ -149,7 +119,6 @@ def main() -> int:
             "",
             "| PROM | Programmed drawing | Reason no fallback is emitted |",
             "| --- | --- | --- |",
-            "| D2 К556РТ4 | `ДГШ5.106.037` | Physical inputs are traced, but no source constrains the output truth table. |",
             "| D94 К155РЕ3 | `ДГШ5.106.092` | Content is unknown; HDL leaves the connected FDC-control outputs electrically released. |",
             "| Video/DRAM timing РЕ3 | `ДГШ5.106.009` family | Timing truth is not derivable from current schematic/MAME evidence; needs dump or programming-disk table. |",
             "",
@@ -157,8 +126,9 @@ def main() -> int:
             "",
             "`sync/prom_fallback_check.sh` compiles `hdl/sim/prom_fallback_tb.v` against the",
             "current `hdl/devices.v` modules and compares every exported row against the",
-            "actual `decode_prom` and `re3_prom` logic. A passing guard means the files in",
-            "`ref/reconstructed-proms/` still match the boot-validated HDL fallback logic.",
+            "actual physical-table-backed `wait_prom_037`/`decode_prom` and reconstructed",
+            "`re3_prom` logic. A passing guard means the selected physical/reconstructed",
+            "files still match HDL.",
             "",
             "CI also reruns `scripts/export_reconstructed_proms.py` and fails if the",
             "generated files or this report are stale.",

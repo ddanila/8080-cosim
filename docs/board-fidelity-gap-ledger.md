@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `556`
+- Nets modeled: `557`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `219`
+- Net-level source-risk gaps: `218`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -51,12 +51,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 24 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 16 |
+| PROM/decode | 0 | 15 |
 | clock/I/O | 0 | 7 |
-| logic/source | 9 | 151 |
+| logic/source | 9 | 150 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
-| video/analog | 0 | 13 |
+| video/analog | 0 | 14 |
 | video/timing | 1 | 0 |
 
 ## Chip-Level Gaps
@@ -84,7 +84,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D2` | `DEC_PROM` | scan | sheet-1: РТ4 D2 bus-arbitration/wait PROM; A3/pin4=VIDEO CYCLE=sheet-2 CAS rail 15, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND, D0/... |
+| `D2` | `WAIT_PROM` | scan | owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/... |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); corrected July-2026 local pin fit traces D0/pin1-... |
 
 ### logic/source
@@ -97,7 +97,7 @@ parts placement and Tier-3 reproduction.
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->... |
 | `D42` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
 | `D43` | `IR16` | scan | scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC st... |
-| `D6` | `DEC_PROM` | scan | scan; program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged on one upstream-unread boundary; the former D7.11 enable merge is... |
+| `D6` | `DEC_PROM` | scan | validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively.... |
 | `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a dest... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and... |
 
@@ -224,7 +224,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D102_RC1_BOUNDARY` | logic/source | `D102.15` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
 | `D102_RC2_BOUNDARY` | logic/source | `D102.7` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
 | `D105_GATE1_Y` | logic/source | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread |
-| `D105_WAIT_PREINV` | logic/source | `D105.6` | traced sheet-1 .006: D105 pin 6 feeds D95 inverter pin 1, whose pin 2 is -WAIT/E8-1; .009 reassigns D95 to an FDC KP12, so the target-revision destination re... |
 | `D106_BO_BOUNDARY` | logic/source | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary |
 | `D106_CLR_BOUNDARY` | logic/source | `D106.14` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary |
 | `D106_CO_BOUNDARY` | logic/source | `D106.12` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin12 CO; no remote destination is proved, so this remains a measurement boundary |
@@ -268,7 +267,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D29_AIN1_BOUNDARY` | logic/source | `D29.2` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary |
 | `D29_AIN2_BOUNDARY` | logic/source | `D29.3` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary |
 | `D29_AIN5_BOUNDARY` | logic/source | `D29.6` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN5 pin6; its remote source is unread and remains a measurement boundary |
-| `D30B_D_PRE_N` | PROM/decode | `D30.10, D30.12` | traced sheet-1: D30 section-B /PRE2 pin 10 and D2 pin 12 are visibly tied by the local U-shaped wire; the shared upstream source remains unread |
 | `D30_CLK2_BOUNDARY` | clock/I/O | `D30.11` | sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary |
 | `D30_Q2N_BOUNDARY` | logic/source | `D30.8` | sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boun... |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
@@ -283,6 +281,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D56_QN` | clock/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
 | `D58_STB_TAG5` | logic/source | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established |
 | `D59_O10_TAG10` | logic/source | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established |
+| `D6_MEM_SELECT_N` | PROM/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation... |
 | `D6_V_ENABLE` | PROM/decode | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is... |
 | `D7_A1_BOUNDARY` | logic/source | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so i... |
 | `D7_A3_BOUNDARY` | logic/source | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan |
@@ -393,7 +392,7 @@ same fidelity ledger as the chip provenance gaps.
 | `PROM_EN` | PROM/decode | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assu... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
-| `RAM_SEL` | PROM/decode | `D6.11, D92.5, R12.2` | scan sheet-2 (bite-2: -RAM SEL arrival -> D92.5 write-strobe NOR; source D6.11 RAM_N per sheet-1 "(1)" label). D53.6/G3 detached: its drawn feed = long west... |
+| `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `REV` | PROM/decode | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder re... |
 | `RF_RAIL` | video/analog | `VT3.3, C9.2, R72.2, C10.1, R73.1, C11.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
 | `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merg... |

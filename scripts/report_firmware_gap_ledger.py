@@ -45,8 +45,11 @@ def marker(path: str, *needles: str) -> bool:
 
 
 def main() -> int:
+    d2_cell, d2_image_ok = reconstructed_cell(
+        "ref/physical-proms/validated/d2_037.raw.bin", 256
+    )
     d6_cell, d6_ok = reconstructed_cell(
-        "ref/reconstructed-proms/d6_rt4_memory_decode_reconstructed.bin",
+        "ref/physical-proms/validated/d6_038.raw.bin",
         256,
     )
     d8_cell, d8_ok = reconstructed_cell(
@@ -77,12 +80,8 @@ def main() -> int:
     ) and exists("scripts/export_eprom_pair.py")
     d2_text = read("docs/d2-reconstruction-constraints.md")
     d2_ok = (
-        "No reconstructed D2 fallback is exported" in d2_text
-        and (
-            "Status: **D2 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**" in d2_text
-            or "Status: **D2 RECONSTRUCTION PARTIALLY TRACED / DUMP REQUIRED**" in d2_text
-            or "Status: **D2 INPUTS TRACED / DUMP REQUIRED**" in d2_text
-        )
+        "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**" in d2_text
+        and d2_image_ok
     )
     d94_ok = marker(
         "docs/d94-reconstruction-constraints.md",
@@ -97,13 +96,13 @@ def main() -> int:
     )
     fallback_report_ok = marker(
         "docs/reconstructed-prom-fallbacks.md",
-        "BOOT-VALIDATED RECONSTRUCTION FALLBACKS EXPORTED",
-        "No D2 image is exported",
+        "D8 FUNCTIONAL FALLBACK EXPORTED / PHYSICAL RT4 TABLES ADOPTED",
+        "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
         "No D94 image is exported",
     )
     rt4_validator_ok = marker(
         "docs/rt4-dump-acquisition.md",
-        "HOST VALIDATION READY / PHYSICAL DUMP PENDING",
+        "PHYSICAL D2/D6 TABLES VALIDATED",
         "*.raw.bin",
         "D94 `.092` requires a",
         "separate К155РЕ3 reader",
@@ -121,9 +120,9 @@ def main() -> int:
             "К556РТ4",
             "`ДГШ5.106.037`",
             "READY/bus-control PROM",
-            "preliminary repeated read in `docs/d2-physical-dump-and-continuity.md`; unchanged raw logs not preserved",
+            d2_cell,
             "`docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md`",
-            "separately power-cycle, preserve raw capture, validate, then adopt corrected D2/D30 wiring",
+            "programming-disk comparison or independent future read",
         ],
         [
             "D6",
@@ -131,8 +130,8 @@ def main() -> int:
             "`ДГШ5.106.038`",
             "memory decode PROM",
             d6_cell,
-            "`docs/reconstructed-prom-fallbacks.md`",
-            "replace/check fallback against programming-disk file or dump",
+            "`ref/physical-proms/README.md`",
+            "separately power-cycled confirmation or programming-disk comparison",
         ],
         [
             "D8",
@@ -173,16 +172,17 @@ def main() -> int:
     ]
 
     checks = [
-        ("D6 fallback exists and is 256 bytes", d6_ok),
+        ("D2 validated physical raw image exists and is 256 bytes", d2_image_ok),
+        ("D6 validated physical raw image exists and is 256 bytes", d6_ok),
         ("D8 fallback exists and is 32 bytes", d8_ok),
         ("D15 functional image exists and is 8192 bytes", d15_ok),
         ("D16 functional image exists and is 8192 bytes", d16_ok),
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
-        ("D2 no-burn boundary is constrained", d2_ok),
+        ("D2 physical table and continuity are guarded", d2_ok),
         ("D94 no-burn boundary is constrained", d94_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
-        ("Fallback report excludes D2 and D94 exports", fallback_report_ok),
+        ("Fallback report adopts physical RT4 tables but excludes D94", fallback_report_ok),
         ("Repeated RT4 dump validation procedure is available", rt4_validator_ok),
         ("Repeated RE3 dump validation procedure is available", re3_validator_ok),
     ]
@@ -227,16 +227,16 @@ def main() -> int:
             "",
             "## Practical Burn Rule",
             "",
-            "- For functional bring-up without factory truth, the D6 and D8",
-            "  reconstructed PROM images and the D15/D16 `ekta37` EPROM split",
-            "  are currently burnable from the repo.",
+            "- D2 and D6 now have validated physical raw tables. D8 remains a",
+            "  reconstructed functional image; D15/D16 use the `ekta37` EPROM split.",
+            "- D2 is preservation-strength within current evidence: three captures",
+            "  validate identically and include a separate power cycle. D6 has two",
+            "  matching preserved captures; another power cycle remains desirable.",
             "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
             "  device dumps. Program them as low/high 8 KiB respectively and",
             "  retain programmer verification records.",
-            "- Do not burn any older D2-as-I/O-decode behavioral table as physical D2; D9",
-            "  is the current chip-select decoder. Two matching stable `.037` reads are now",
-            "  documented, but an unchanged power-cycled capture is still required before",
-            "  exporting or burning a preservation artifact.",
+            "- Never substitute the older D2-as-I/O-decode behavioral table; D9 is",
+            "  the chip-select decoder and D2 is the separate `.037` READY/wait PROM.",
             "- Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`",
             "  or D94 `.092`; they are lineage evidence, not matching processor",
             "  module programming tables.",
@@ -247,9 +247,8 @@ def main() -> int:
             "## Required External Closure",
             "",
             "- Locate the Baltijets programming-disk files referenced by doc 007.",
-            "- Or repeatedly dump the socketed D2/D6 RT4 and D8/D94 RE3 parts from",
-            "  hardware, then compare D6/D8 against `ref/reconstructed-proms/` and",
-            "  replace the HDL/fallbacks only if the dump provenance is stronger.",
+            "- Compare the validated D2/D6 tables against Baltijets programming files",
+            "  if recovered; obtain D8/D94 RE3 physical truth separately.",
             "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
             "  preserve raw pin-level and active-low asserted tables separately.",
             "- Validate D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
