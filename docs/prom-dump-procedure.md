@@ -1,9 +1,10 @@
 # PROM dump procedure — the 4 socketed chips (+2 EPROMs)
 
 D94 РЕ3 contents and complete control-strobe continuity are needed for FDC-era
-reconstruction; its proved outputs terminate at D93 and are not video-slot
-timing evidence. The D8 РЕ3 and D2/D6 РТ4 dumps replace reconstructed or
-missing maps with the actual silicon bits.
+reconstruction; its proved D0-D2 paths terminate at D93 and are not video-slot
+timing evidence. A D8 РЕ3 dump would replace its reconstructed map. Validated
+physical D2/D6 РТ4 tables are already adopted; further reads are independent
+corroboration rather than missing replica inputs.
 
 Update 2026-07-06: Baltijets doc 007 was fetched and triaged in
 `ref/baltijets-tech-docs/`. It confirms programmed-part drawings for the small
@@ -94,13 +95,15 @@ wiring, polarity, or the unresolved D94 output/enable branches.
 ## What each dump unlocks
 1. **РЕ3 dumps**: socket/refdes identification is essential. A D8 `.039` dump
    validates the reconstructed ROM pager; a D94 `.092` dump, together with its
-   missing output/enable continuity, informs the physical DRAM/video schedule.
+   missing output/enable continuity, defines the physical FDC control decode.
    Do not substitute the `.113/.117` tables from the `.106.103` family.
-2. **РТ4 D6 → real memory decode**: replaces `decode_prom`'s emulator-recovered banking map with
-   silicon truth; boot_check re-verifies byte-identity.
-3. **РТ4 D2 → bus/wait PROM truth**: fills the still-missing physical D2
-   (`ДГШ5.106.037`) contents. It does **not** replace the I/O decoder; current
-   board evidence puts the functional I/O chip-select decoder at D9 К555ИД7.
+2. **РТ4 D6 → memory-decode corroboration**: compare another independently
+   power-cycled read with the adopted physical `.038` table; preserve any
+   stable difference as a board variant.
+3. **РТ4 D2 → bus/wait corroboration**: compare another physical `.037` read
+   with the three matching adopted captures. It does **not** replace the I/O
+   decoder; board evidence puts the functional I/O chip-select decoder at D9
+   К555ИД7.
 4. **M2764 ×2**: validates (or forks) our ekta37 ROM image against this physical board.
 
 If the owner dump differs from `ref/reconstructed-proms/*.bin`, keep the dump as
