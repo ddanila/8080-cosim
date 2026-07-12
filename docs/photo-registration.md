@@ -121,6 +121,11 @@ D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity
 questions because their visible departures do not reach a second named pad.
+Composing D100's component and solder fits projects the circular endpoint near
+`(2625,1900)` component pixels to `(1204,830)` solder pixels. That region is
+bare substrate with no via or annulus, so the feature is an isolated
+component-side landing/test pad rather than the previously suspected layer
+handoff. This closes the false solder chase without assigning OE_N's source.
 
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint

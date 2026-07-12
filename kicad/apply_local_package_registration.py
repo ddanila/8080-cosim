@@ -91,6 +91,14 @@ def main() -> None:
                 "Validated affine D100 fit identifies the physical solder joint between D98 "
                 "and D94; visible copper still lacks a second identified package pad"
             )
+        if (row["refdes"] == "D100" and side == "component"
+                and row["pin"] == "9" and row["review_state"] != "accepted"):
+            row["note"] = (
+                "D100 notch-left fit identifies OE_N/pin9; its component trace terminates at "
+                "the isolated circular landing near (2625,1900). The package-derived "
+                "cross-side projection near (1204,830) is bare solder substrate, proving "
+                "that landing is not a through-board via"
+            )
         stale_d95 = ("D95 package-side crops show only local contacts/fanout, with pins 1-2 "
                      "resistor-obscured and opposite-row projections offset; no unresolved pin "
                      "reaches a unique destination")
