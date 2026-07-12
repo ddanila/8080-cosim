@@ -21,11 +21,13 @@ the RF group remains constrained but deferred while its tapped coil is traced.
 
 The photo read is suitable for package placement but does not yet identify the
 lower obscured/passive positions. `R65` is now placed at its observed centre.
-The yellow part projects near `(286.60,133.16)` mm and is the leading physical
-candidate for the schematic's three-terminal tapped L1; its identity and pad
-topology still require solder-side proof. `VD3`, `R66`, `R67`, and the remainder
-stay unchanged until their bodies can be paired unambiguously. The generated `R65`
-coordinate compensates for the KiCad axial-footprint anchor offset.
+The yellow part beside `R65` was tested as an L1 candidate and rejected. Its
+full-resolution marking reads `680п` (680 pF), and the registered solder view
+does not yield the three coherent coil terminals required by the schematic.
+The previously recorded `(287.07,132.26)` centre therefore belongs to a
+capacitive part, not L1. `VD3`, `R66`, `R67`, and the remainder stay unchanged
+until their bodies can be paired unambiguously. The generated `R65` coordinate
+compensates for the KiCad axial-footprint anchor offset.
 
 ## L1 model discrepancy
 
@@ -33,9 +35,10 @@ The original sheet-2 RF circuit (`ref/schematics/p2_sheet2.png`) draws `L1` as
 an adjustable three-terminal coil with a `1/5` tap feeding `R76` and the `HF`
 output. The current `L_RADIAL` two-pad footprint and its ground-ended net model
 are therefore acknowledged reconstruction placeholders, not a faithful source
-reading. They must be replaced together after the yellow candidate's three
+reading. They must be replaced together after the real coil and its three
 solder landings are registered; merely moving the current two-pad footprint
-would preserve the wrong circuit.
+would preserve the wrong circuit. The adjacent yellow `680п` part is explicitly
+excluded from that search.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximation for `R65`. The documented `VD3` and
