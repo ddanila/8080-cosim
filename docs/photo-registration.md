@@ -71,6 +71,7 @@ python3 scripts/photo_registration.py rectify
 /usr/bin/python3 kicad/report_photo_placement_residuals.py
 /usr/bin/python3 kicad/render_endpoint_crop_atlas.py
 /usr/bin/python3 kicad/render_d96_d99_cross_registration.py
+/usr/bin/python3 kicad/render_d93_clock_isolation.py
 ```
 
 The panorama stitcher requires every declared source tile to join its
@@ -132,10 +133,14 @@ bare substrate with no via or annulus, so the feature is an isolated
 component-side landing/test pad rather than the previously suspected layer
 handoff. This closes the false solder chase without assigning OE_N's source.
 
-The corrected D93.24 joint launches a westbound solder trace whose apparent
-far alignment is D99.13. That promotion is rejected by independent
-component-side topology: uninterrupted copper ties D99.3 `CLR_N` directly to
-D96.7 `GND`. The identity is no longer inferred merely from the package type:
+The corrected D93.24 solder joint has no same-layer copper departure. The raw
+tile shows a clean gap between its solder cap and the nearby horizontal trace;
+the component-side contact disappears beneath the physical КР1818ВГ93 socket.
+The former westbound chase to D99.13 was therefore a panorama-alignment error,
+not merely a functionally implausible connection. D99.13's raw tile likewise
+shows a capped joint without a same-layer departure. Independent component-side
+topology still supplies a contradiction check: uninterrupted copper ties D99.3
+`CLR_N` directly to D96.7 `GND`. The identity is no longer inferred merely from the package type:
 all 14 contacts of D96's validated fit in `PXL_20260710_200402344.jpg` project
 onto the same photographed КМ555ТМ2 in the overlapping
 `PXL_20260710_200418174.jpg`, with the notch and both rows aligned. The adjacent
@@ -148,8 +153,8 @@ annulus or continuing copper; they are one-sided test landings, not through-hole
 The already-proved neighboring D99.3 ground path is shown alongside as a local
 orientation check. D99 section
 1 is therefore held cleared and its pin-13 `Q`
-cannot be the live КР1818ВГ93 clock source. The alignment remains evidence for
-a nearby conductor, not an accepted `FDC_CLK_1M` net.
+cannot be the live КР1818ВГ93 clock source. No physical `FDC_CLK_1M` source is
+accepted from the photographed layers.
 
 D93.19 `MR_N` remains unresolved, but its boundary is narrower. The corrected
 solder joint reaches a through-hole near `(1743,2320)` pixels. Composing the

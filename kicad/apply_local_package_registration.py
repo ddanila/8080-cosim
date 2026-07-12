@@ -209,8 +209,8 @@ def main() -> None:
             if row["pin"] == "24" and row["review_state"] != "accepted":
                 row["note"] = (
                     "Corrected exposed-socket fit identifies physical КР1818ВГ93 CLK/pin24; "
-                    "the apparent D99.13 solder alignment is rejected because direct "
-                    "component copper holds D99 section 1 clear"
+                    "its component-side continuation returns beneath the socket body and "
+                    "cannot be followed in this view"
                 )
             row["note"] = row["note"].replace(
                 "identifies MR_N/pin19 on the exposed socket and shows its "
@@ -247,9 +247,9 @@ def main() -> None:
                 )
             elif row["pin"] == "24":
                 row["note"] = (
-                    "Corrected D93.24 fit exposes westbound solder copper, but its apparent "
-                    "D99.13 alignment cannot be the live clock: independently proved copper "
-                    "from D96.7 GND to D99.3 holds section-1 CLR_N low"
+                    "Corrected D93.24 fit identifies the solder cap; the raw tile shows no "
+                    "same-layer departure and a clean gap to the unrelated nearby horizontal "
+                    "trace, while the component continuation is socket-obscured"
                 )
             elif row["pin"] == "40":
                 row["note"] = (

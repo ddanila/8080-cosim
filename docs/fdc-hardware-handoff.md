@@ -78,7 +78,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | MISSING | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.40 `VDD_12V` | MISSING | +12 V controller supply continuity | primary datasheet requires +12 V; corrected component/solder fits identify pin 40, while the former westbound chase is withdrawn because it began at a falsely projected solder pad; P12V continuity remains unproved |
 | D93.19 `MR_N` | MISSING | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected D93 fit exposes the westbound trace, but its apparent D99.13 alignment is rejected: full-package cross-photo registration identifies the adjacent КМ555ТМ2 as D96, and direct component copper ties D99.3 CLR_N to D96.7 GND, so section-1 Q cannot be the live clock source |
+| D93.24 `CLK` | MISSING | 1 MHz FDC clock rail | corrected raw solder fit shows the D93.24 cap has no same-layer departure; its component contact returns beneath the physical КР1818ВГ93 socket. The former D99.13 chase followed an unrelated nearby conductor, and D99.13 is independently disqualified because D99.3 CLR_N is tied to D96.7 GND |
 | D100.9 `OE_N` | MISSING | 8287 output-enable gating | not netted in board JSON; owner continuity item |
 | D100.11 `T` | MISSING | 8287 direction gating | not netted in board JSON; owner continuity item |
 
