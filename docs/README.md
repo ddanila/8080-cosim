@@ -27,7 +27,9 @@ findings. Every status applies only to the boundary named by the report.
   `unmodeled-footprint-inventory.md`, `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
-  `reconstructed-prom-fallbacks.md`, `eprom-programming-images.md`.
+  `reconstructed-prom-fallbacks.md`, `eprom-programming-images.md`, and
+  `d2-physical-dump-and-continuity.md` (owner-measured evidence awaiting
+  synchronized model adoption).
 - Fabrication package: `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, and `replica-power-trace-readiness.md`.

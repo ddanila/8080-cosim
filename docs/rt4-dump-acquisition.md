@@ -1,6 +1,12 @@
 # К556РТ4 dump acquisition
 
-Status: **HOST VALIDATION READY / PHYSICAL DUMP PENDING**
+Status: **HOST VALIDATION READY / PRELIMINARY D2 READ OBSERVED**
+
+Two matching D2 reads with zero unstable addresses were observed on
+2026-07-12/13 and are documented in `d2-physical-dump-and-continuity.md`.
+Because the original serial streams were not saved unchanged, a separately
+power-cycled capture still needs to be preserved and passed through this
+validator before exporting the preservation artifact.
 
 `scripts/validate_rt4_dump.py` validates the line-oriented serial format emitted
 by a К556РТ4 reader. It is applicable to D2 `.037` and D6 `.038`; it does not

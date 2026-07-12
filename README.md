@@ -18,8 +18,10 @@ with the machine-readable board model.
   correctly marks the package invalid until that airwire and the stale routed
   snapshot are replaced. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
-- The main board is **not released for fabrication**. D2's physical inputs are
-  traced but its truth table and routed-snapshot update are missing; D94 still
+- The main board is **not released for fabrication**. A repeated preliminary
+  physical D2 dump and high-confidence D2/D30/D105 continuity corrections are
+  recorded, but need a preserved power-cycled capture and synchronized model /
+  routed-snapshot adoption; D94 still
   lacks pin 15, outputs D3-D7, and PROM truth. There are 9 official
   FDC-support ICs with only their physical pin maps and power endpoints modeled.
   D105 wait/MRD

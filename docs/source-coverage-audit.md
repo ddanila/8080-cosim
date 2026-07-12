@@ -1,6 +1,6 @@
 # Source coverage audit
 
-Status date: **2026-07-11**.
+Status date: **2026-07-13**.
 
 Status: **PASS**
 
@@ -25,9 +25,15 @@ deliberately omitted.
 
 ## Current source requests
 
-1. D2 `ДГШ5.106.037` repeated PROM dump or programming-disk file; all physical inputs and the used D0 output are already traced.
+1. Preserve and validate a separately power-cycled D2 `ДГШ5.106.037` raw
+   serial capture. Two matching, stable reads and high-confidence local
+   continuity are recorded in `docs/d2-physical-dump-and-continuity.md`, but
+   the original serial streams were not retained as unchanged input files.
 2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.
-3. Pin-level continuity for D93's complete drive interface and +12 V supply, plus explicit dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. D105 is now modeled and routed.
+3. Pin-level continuity for D93's complete drive interface and +12 V supply,
+   plus explicit dispositions for the 9 power-routed FDC-support boundaries:
+   D28, D95-D99, D101, D102, and D106. Adopt the 2026-07-13 owner-measured
+   D2/D30/D105/D13/D6 corrections into the synchronized board and HDL models.
 4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
 5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
 
