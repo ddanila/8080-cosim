@@ -115,7 +115,9 @@ signals remain measurements where copper is obscured or leaves the visible
 layer. The D11 solder fit holds both unused corners out at 2.375 px and
 localizes the factory-reworked area beside pins 4-6; it does not establish the
 obscured bridge endpoints. The D98 solder fit holds pin 16 out at 0 px on the
-complete affine 2x8 row.
+complete affine 2x8 row. Its remaining measurement records now describe
+unresolved copper destinations rather than retaining the obsolete claim that
+two-side package registration is still required.
 
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds

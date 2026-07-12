@@ -161,6 +161,11 @@ def main() -> None:
         corrected_d99_solder = ("Validated D99 solder fit identifies the physical joint in the "
                                 "left backside package, before D95")
         row["note"] = row["note"].replace(stale_d99_solder, corrected_d99_solder)
+        stale_d98_solder = ("D98 solder projections fall in the gap between package pad rows or "
+                            "on a broad rail; local two-side registration is required")
+        corrected_d98_solder = ("Validated affine D98 fit identifies the physical solder joint "
+                                "on the complete 2x8 package rows")
+        row["note"] = row["note"].replace(stale_d98_solder, corrected_d98_solder)
         if row["refdes"] == "D95" and side == "solder" and row["review_state"] != "accepted":
             row["note"] = (
                 "Corrected backside-order D95 fit identifies the physical joint in the "
