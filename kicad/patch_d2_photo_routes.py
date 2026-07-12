@@ -20,31 +20,52 @@ links = {"1": ("1", "A10"), "3": ("3", "A14"), "5": ("5", "A12"),
 d2pads = {p.GetNumber(): p for p in d2.Pads()}
 d4pads = {p.GetNumber(): p for p in d4.Pads()}
 
-# Delete only an earlier invocation's exact direct D2-D4 segments.
-def point_key(point):
-    return point.x, point.y
-
-
-ends = {
-    frozenset((point_key(d2pads[d2pin].GetPosition()), point_key(d4pads[d4pin].GetPosition())))
-    for d2pin, (d4pin, _) in links.items()
-}
+# Delete an earlier invocation's D2-D4 corridor segments.  A straight segment
+# reaches the correct D4 pad only after crossing D4's opposite pad row, so the
+# route must enter through the midpoint between those pads first.
+netnames = {netname for _d4pin, netname in links.values()}
+x_min, x_max = pcbnew.FromMM(46.5), pcbnew.FromMM(70.8)
+y_min, y_max = pcbnew.FromMM(128.5), pcbnew.FromMM(148.0)
+remove = []
 for track in list(board.GetTracks()):
     if isinstance(track, pcbnew.PCB_TRACK) and not isinstance(track, pcbnew.PCB_VIA):
-        if frozenset((point_key(track.GetStart()), point_key(track.GetEnd()))) in ends:
-            board.Remove(track)
+        points = (track.GetStart(), track.GetEnd())
+        if (track.GetNetname() in netnames and track.GetLayer() == pcbnew.B_Cu
+                and all(x_min <= point.x <= x_max and y_min <= point.y <= y_max
+                        for point in points)):
+            remove.append(track)
 
+new_tracks = []
 for d2pin, (d4pin, netname) in links.items():
     net = board.FindNet(netname)
     if net is None:
         raise SystemExit(f"net {netname} not found")
     d2pads[d2pin].SetNet(net)
-    track = pcbnew.PCB_TRACK(board)
-    track.SetStart(d2pads[d2pin].GetPosition())
-    track.SetEnd(d4pads[d4pin].GetPosition())
-    track.SetLayer(pcbnew.B_Cu)
-    track.SetWidth(pcbnew.FromMM(0.25))
-    track.SetNet(net)
+    start = d2pads[d2pin].GetPosition()
+    end = d4pads[d4pin].GetPosition()
+    # D4's opposite row is x=54.915 mm. Cross it halfway between
+    # adjacent pads, then turn inside the package before reaching the target.
+    gateway_y = end.y - pcbnew.FromMM(1.27)
+    points = (start,
+              pcbnew.VECTOR2I(pcbnew.FromMM(58.0), start.y),
+              pcbnew.VECTOR2I(pcbnew.FromMM(58.0), gateway_y),
+              pcbnew.VECTOR2I(pcbnew.FromMM(51.0), gateway_y),
+              pcbnew.VECTOR2I(pcbnew.FromMM(51.0), end.y),
+              end)
+    for first, second in zip(points, points[1:]):
+        track = pcbnew.PCB_TRACK(board)
+        track.SetStart(first)
+        track.SetEnd(second)
+        track.SetLayer(pcbnew.B_Cu)
+        track.SetWidth(pcbnew.FromMM(0.25))
+        track.SetNet(net)
+        new_tracks.append(track)
+
+# Construct everything before removal: KiCad 10's SWIG layer can invalidate
+# unrelated child proxies immediately after BOARD.Remove().
+for track in remove:
+    board.Remove(track)
+for track in new_tracks:
     board.Add(track)
 
 pcbnew.SaveBoard(sys.argv[2], board)
