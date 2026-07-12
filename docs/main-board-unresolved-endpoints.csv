@@ -72,8 +72,6 @@ P0,D30,11,TM2_DFF,CLK2,PLAN physical-connectivity blocker
 P0,D30,8,TM2_DFF,Q2_N,PLAN physical-connectivity blocker
 P0,D39,10,LA3_GATE,B2,memory/decode source-risk blocker
 P0,D39,2,LA3_GATE,B3,memory/decode source-risk blocker
-P0,D6,13,DEC_PROM,V_EN_N,memory/decode source-risk blocker
-P0,D6,14,DEC_PROM,V_EN_N,memory/decode source-risk blocker
 P0,D7,3,LA3_GATE,Y2,memory/decode source-risk blocker
 P0,D93,15,VG93_FDC,STEP,PLAN physical-connectivity blocker
 P0,D93,16,VG93_FDC,DIRC,PLAN physical-connectivity blocker
