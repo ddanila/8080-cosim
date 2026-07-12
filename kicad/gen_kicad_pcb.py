@@ -67,6 +67,8 @@ PASSIVE_FP_REF = {
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
+    'R33':(297.5,133.3,0),   # 620R D34 RC resistor, horizontal above D34 [owner photo]
+    'C5':(304.0,127.5,0),    # 560p D34 RC capacitor above R33 [owner photo]
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
     'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
     'A17':(115.8,27.1,0),  # two-sided owner photos, transferred from top mounting hole (114.4,13.3)

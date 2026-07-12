@@ -4070,6 +4070,34 @@
    }
   },
   {
+   "ref": "C5",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "sheet-2 C5 560 pF in D34 counter-load pulse shaper",
+    "pins": "drawn directly between D34.6 and the D34.2/R33.1 RC node"
+   },
+   "value": "560"
+  },
+  {
+   "ref": "R33",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "sheet-2 R33 620 ohm in D34 counter-load pulse shaper",
+    "pins": "drawn from the C5.2/D34.2 RC node to ground"
+   },
+   "value": "620"
+  },
+  {
    "ref": "D93",
    "type": "VG93_FDC",
    "pins": {
@@ -10102,6 +10130,14 @@
      "2"
     ],
     [
+     "D34",
+     "5"
+    ],
+    [
+     "R33",
+     "2"
+    ],
+    [
      "D3",
      "7"
     ],
@@ -12849,6 +12885,36 @@
     [
      "D45",
      "11"
+    ]
+   ]
+  },
+  "D34_RC_DRIVE": {
+   "src": "scan sheet-2: D34 first XOR output pin 6 drives C5.1 in the counter-load pulse shaper",
+   "nodes": [
+    [
+     "D34",
+     "6"
+    ],
+    [
+     "C5",
+     "1"
+    ]
+   ]
+  },
+  "D34_RC_NODE": {
+   "src": "scan sheet-2: C5.2 joins R33.1 and D34 second-XOR input pin 2",
+   "nodes": [
+    [
+     "C5",
+     "2"
+    ],
+    [
+     "R33",
+     "1"
+    ],
+    [
+     "D34",
+     "2"
     ]
    ]
   },
