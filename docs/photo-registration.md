@@ -137,6 +137,13 @@ the validated D99 fit identifies that pin as section-1 `Q`. This proves the
 physical `FDC_CLK_1M` net from D99.13 to the КР1818ВГ93 clock input while
 leaving D99's trigger and RC timing sources as explicit boundaries.
 
+D93.19 `MR_N` remains unresolved, but its boundary is narrower. The corrected
+solder joint reaches a through-hole near `(1743,2320)` pixels. Composing the
+D93 solder and exposed-socket fits maps that hole to `(950,1909)` component
+pixels, where the same trace is visible before it returns beneath the socket
+body. The available photographs therefore prove the layer handoff but not the
+far reset source.
+
 The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint
 columns left of D28 with a 0.632 px pin-4 check; pins 7-8 extrapolate beneath

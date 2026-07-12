@@ -179,6 +179,13 @@ def main() -> None:
                 "because that package is D99"
             )
         if row["refdes"] == "D93" and side == "component":
+            if row["pin"] == "19" and row["review_state"] != "accepted":
+                row["note"] = (
+                    "Corrected exposed-socket fit identifies physical КР1818ВГ93 MR_N/pin19. "
+                    "The solder trace reaches a through-hole near (1743,2320); composing the "
+                    "two package fits identifies its component-side hole near (950,1909), "
+                    "where the continuation returns beneath the socket body"
+                )
             if row["pin"] == "40":
                 row["note"] = (
                     "FD179X-01 defines D93.40 as the +12 V VDD supply; the corrected "
@@ -213,9 +220,10 @@ def main() -> None:
         if row["refdes"] == "D93" and side == "solder" and row["review_state"] != "accepted":
             if row["pin"] == "19":
                 row["note"] = (
-                    "Corrected two-column D93 orientation identifies MR_N/pin19 "
-                    "on the physical D94-side solder column; its far reset source "
-                    "remains unproved"
+                    "Corrected two-column D93 orientation identifies MR_N/pin19 on the "
+                    "physical D94-side solder column; continuous local copper reaches the "
+                    "through-hole near (1743,2320), whose component continuation is "
+                    "socket-obscured"
                 )
             elif row["pin"] == "24":
                 row["note"] = (
