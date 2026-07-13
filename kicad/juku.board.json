@@ -55,7 +55,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete КР580ВМ80А/8080 package contract: scan traces VSS pin2 to GND, VBB pin11 to locally derived -5V, VCC pin20 to +5V, and VDD pin28 to +12V; HOLD/pin13 is grounded; WAIT/pin24 enters the lower control bundle with far destination unread"
+    "pins": "complete КР580ВМ80А/8080 package contract: scan traces VSS pin2 to GND, VBB pin11 to locally derived -5V, VCC pin20 to +5V, and VDD pin28 to +12V; HOLD/pin13 is grounded; WAIT/pin24 enters the lower control bundle with far destination unread; INTE output pin16 is absent from the complete factory symbol and is an explicit NC"
    }
   },
   {
@@ -1068,7 +1068,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "datasheet"
+    "pins": "К155АГ3 datasheet pin contract plus complete sheet-2 symbol census: used timing/RC pins are modeled; A_N pin1, A2_N pin9, and first-section Q pin13 have no drawn stubs and are explicit NCs"
    }
   },
   {
