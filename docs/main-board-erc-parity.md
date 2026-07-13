@@ -17,6 +17,7 @@ schematic parity against it without a matching routed schematic/project.
 | Explicit board-JSON no-connects | 65 | PASS |
 | KiCad schematic no-connect markers | 65 | PASS |
 | Functional pins without net or explicit NC | 0 | PASS |
+| Duplicate board-JSON endpoint memberships | 0 | PASS |
 | Unknown/conflicting NC records | 0 | PASS |
 
 ## Unresolved endpoint priorities

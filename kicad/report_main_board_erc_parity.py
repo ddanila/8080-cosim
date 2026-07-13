@@ -70,7 +70,14 @@ def main() -> int:
     parity_issues = parity.get("schematic_parity", [])
     spec = json.loads(BOARD_JSON.read_text())
     explicit = [tuple(map(str, row)) for row in spec.get("no_connects", [])]
-    nodes = {(str(r), str(p)) for net in spec["nets"].values() for r, p in net.get("nodes", [])}
+    endpoint_owners: dict[tuple[str, str], list[str]] = {}
+    for net_name, net in spec["nets"].items():
+        for ref, pin in net.get("nodes", []):
+            endpoint_owners.setdefault((str(ref), str(pin)), []).append(str(net_name))
+    nodes = set(endpoint_owners)
+    duplicate_owners = {
+        endpoint: owners for endpoint, owners in endpoint_owners.items() if len(owners) > 1
+    }
     # gen_kicad_sch uses the union of pin numbers for every instance of a given
     # symbol type. Account against that same physical-symbol surface, not only
     # the role subset written on an individual chip record.
@@ -105,7 +112,7 @@ def main() -> int:
     schematic_nc = len(re.findall(r"\(no_connect\s+\(at\s", schematic_text))
     nc_ok = not unknown_nc and not conflicting_nc and schematic_nc == len(explicit)
     parity_ok = not parity_issues
-    status = "READY" if not violations and parity_ok and nc_ok and not unowned else "DESIGN HOLD"
+    status = "READY" if not violations and parity_ok and nc_ok and not unowned and not duplicate_owners else "DESIGN HOLD"
     by_type = Counter(v.get("type", "unknown") for v in violations)
     top_refs = refs(violations)
     lines = [
@@ -121,6 +128,7 @@ def main() -> int:
         f"| Explicit board-JSON no-connects | {len(explicit)} | {'PASS' if nc_ok else 'FAIL'} |",
         f"| KiCad schematic no-connect markers | {schematic_nc} | {'PASS' if schematic_nc == len(explicit) else 'FAIL'} |",
         f"| Functional pins without net or explicit NC | {len(unowned)} | {'PASS' if not unowned else 'BLOCK'} |",
+        f"| Duplicate board-JSON endpoint memberships | {len(duplicate_owners)} | {'PASS' if not duplicate_owners else 'BLOCK'} |",
         f"| Unknown/conflicting NC records | {len(unknown_nc)+len(conflicting_nc)} | {'PASS' if not unknown_nc and not conflicting_nc else 'FAIL'} |",
         "", "## Unresolved endpoint priorities", "",
         "| Priority | Count |", "| --- | ---: |",
@@ -132,6 +140,13 @@ def main() -> int:
     lines += ["", "## Most affected references", ""]
     lines += [f"- `{ref}`: {count}" for ref, count in top_refs.most_common(20)] or ["- None."]
     lines += ["", "## Release interpretation", ""]
+    if duplicate_owners:
+        lines += ["Duplicate board-JSON endpoint memberships must be removed:", ""]
+        lines += [
+            f"- `{ref}.{pin}`: " + ", ".join(f"`{owner}`" for owner in owners)
+            for (ref, pin), owners in sorted(duplicate_owners.items())
+        ]
+        lines += [""]
     if status == "READY":
         lines += ["ERC, parity, endpoint ownership, and explicit no-connect accounting all pass."]
     else:

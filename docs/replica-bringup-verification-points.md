@@ -15,9 +15,9 @@ visible and actionable before manufacturing and first power-on.
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Verification-point nets: `213`
 - Verification-point endpoints checked in PCB: `383`
-- PCB endpoint coverage: `FAIL`
-- All board endpoints checked in source PCB: `2240`
-- All board endpoints checked in routed PCB: `2240`
+- PCB endpoint coverage: `PASS`
+- All board endpoints checked in source PCB: `2230`
+- All board endpoints checked in routed PCB: `2230`
 - Intentional off-board endpoints excluded: `38`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -41,10 +41,7 @@ behind a risk note.
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Risk endpoints present on PCB pads | PASS | 383/383 matched a footprint pad net |
-| Risk endpoint net names match board JSON | FAIL | 382/383 net names matched |
-
-Mismatched PCB pad-net endpoints:
-- C99.2: `GND` != `C99_FAR`
+| Risk endpoint net names match board JSON | PASS | 383/383 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -56,11 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2240/2240 | 2239/2240 | FAIL |
-| `kicad/juku_routed.kicad_pcb` | 1925/2240 | 1893/2240 | FAIL |
-
-Mismatched endpoints in `kicad/juku.kicad_pcb`:
-- C99.2: `GND` != `C99_FAR`
+| `kicad/juku.kicad_pcb` | 2230/2230 | 2230/2230 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2230 | 1883/2230 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
