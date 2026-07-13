@@ -54,7 +54,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2251/2251 | 2251/2251 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2251 | 1879/2251 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1915/2251 | 1863/2251 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -395,6 +395,22 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `XTAL_TRIM: C73.1`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- D107.19: `BA7` != `BA0`
+- D107.18: `BA6` != `BA1`
+- D4.19: `BA8` != `BA10`
+- D4.18: `BA9` != `BA11`
+- D4.15: `BA13` != `BA12`
+- D4.16: `BA12` != `BA13`
+- D4.17: `BA15` != `BA14`
+- D4.14: `BA14` != `BA15`
+- D107.17: `BA5` != `BA2`
+- D107.16: `BA4` != `BA3`
+- D107.15: `BA3` != `BA4`
+- D107.14: `BA2` != `BA5`
+- D107.13: `BA1` != `BA6`
+- D107.12: `BA0` != `BA7`
+- D4.12: `BA10` != `BA8`
+- D4.13: `BA11` != `BA9`
 - C99.2: `GND` != `C99_FAR`
 - D105.11: `D105_MRD_INV` != `D105_MEMW_INV`
 - D30.13: `D105_MRD_INV` != `D105_MEMW_INV`

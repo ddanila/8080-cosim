@@ -18,6 +18,8 @@ history.
   gaps.
 - `d30-section-b-scan-chase.md` — exhausted sheet-1 trace audit for the two
   remaining D30 section-B conductors and the exact continuity closure required.
+- `8286-pinout-audit.md` — physical D4/D107 channel pinout and routed D4
+  high-address permutation guard.
 
 ## Current evidence
 
