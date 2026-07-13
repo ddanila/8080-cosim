@@ -355,6 +355,14 @@ def main():
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp; n_pads += fp.GetPadCount()
+        # R33 and R66 are photo-locked in the dense right-edge analog cluster.
+        # Their nearest pads are 1.721 mm centre-to-centre, so the library's
+        # 1.60 mm copper leaves only 0.121 mm.  The original-style 0.8 mm drills
+        # retain a 0.35 mm annulus with 1.50 mm pads and clear the 0.20 mm rule
+        # without moving either photographed component centre.
+        if ref in {"R33", "R66"}:
+            for pad in fp.Pads():
+                pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
         ctr = fp.GetBoundingBox(False, False).GetCenter()          # re-center on (x,y)
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER

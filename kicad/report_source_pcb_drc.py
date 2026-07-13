@@ -40,12 +40,14 @@ def main() -> int:
     violations = report.get("violations", [])
     counts = Counter(item.get("type", "unknown") for item in violations)
     shorts = [item for item in violations if item.get("type") == "shorting_items"]
+    clearances = [item for item in violations if item.get("type") == "clearance"]
+    crossings = [item for item in violations if item.get("type") == "tracks_crossing"]
     unique: dict[tuple[str, ...], dict] = {}
     for violation in shorts:
         key = tuple(sorted(str(item.get("description", "")) for item in violation.get("items", [])))
         unique.setdefault(key, violation)
 
-    status = "PASS" if not shorts else "PLACEMENT HOLD"
+    status = "PASS" if not (shorts or clearances or crossings) else "PLACEMENT HOLD"
     lines = [
         "# Source PCB DRC",
         "",
@@ -67,6 +69,8 @@ def main() -> int:
         f"- Total violations: `{len(violations)}`",
         f"- Unconnected items: `{len(report.get('unconnected_items', []))}`",
         f"- Short violations: `{len(shorts)}`",
+        f"- Copper-clearance violations: `{len(clearances)}`",
+        f"- Track-crossing violations: `{len(crossings)}`",
         f"- Unique colliding pad/item pairs: `{len(unique)}`",
         "",
         "## Violation types",
@@ -96,20 +100,25 @@ def main() -> int:
         "population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`",
         "factory positions with explicit continuity-boundary nets.",
         "",
+        "R33 and R66 retain their independently photo-registered centres and orientations. Their",
+        "nearest pads are 1.721 mm centre-to-centre; using 1.50 mm copper around the original-style",
+        "0.80 mm drills preserves a 0.35 mm annulus and provides 0.221 mm copper clearance without",
+        "moving either component.",
+        "",
         f"- Guarded legacy-DNP references: `{len(legacy_dnp)}`",
         f"- Current collision references: `{', '.join(collision_refs) if collision_refs else 'none'}`",
         "- Evidence: `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`",
     ]
-    if shorts:
+    if shorts or clearances or crossings:
         lines += [
             "",
             "The source PCB is not eligible for routed-copper adoption while any short remains.",
             "New collisions must be fixed from target-revision placement evidence, not waived.",
         ]
     else:
-        lines += ["", "The source PCB has no electrical pad/item collision and passes this gate."]
+        lines += ["", "The source PCB has no copper short, clearance, or track-crossing violation and passes this gate."]
     OUTPUT.write_text("\n".join(lines) + "\n")
-    print(f"source PCB DRC: {status}; shorts={len(shorts)}, unique={len(unique)}")
+    print(f"source PCB DRC: {status}; shorts={len(shorts)}, clearances={len(clearances)}, crossings={len(crossings)}, unique={len(unique)}")
     print(f"Wrote {OUTPUT.relative_to(ROOT)}")
     return 0 if not shorts else 1
 

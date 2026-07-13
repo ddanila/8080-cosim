@@ -31,7 +31,7 @@ python3 scripts/report_memory_timing_boundary.py
 | Shared CAS rail is guarded to all modeled DRAM C pins | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
 | PHI2TTL timing gate fanout is guarded | PASS | `PHI2TTL` source-risk net |
 | D92 triple-NOR RAM read/write combiner is source-closed | PASS | sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8 |
-| Factory wire 11 is promoted onto MEMR in both PCB snapshots | PASS | native -MRD labels merge D92.13/D7.1; guarded 2.01 mm routed F.Cu join |
+| Factory wire 11 is promoted onto MEMR with a clearance-safe routed bridge | PASS | native -MRD labels merge D92.13/D7.1; two-via B.Cu bridge avoids the front select bus |
 | D39 latch/output context is guarded | PASS | `D39_O8` and `D39Y` |
 | D39 remaining NAND inputs are source-closed onto control rails 3 and 1 | PASS | sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1 |
 | D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2 |
@@ -92,11 +92,11 @@ python3 scripts/report_memory_timing_boundary.py
   combine both results onto D92.8/D39.5. The repeated native-sheet -MRD
   label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the
   former artificial W11 boundary has been removed.
-- The routed snapshot retains the former wire-11 copper as MEMR and adds a
-  2.01 mm same-layer join at `(213.2267,118.2108)` to
-  `(214.6467,116.7908)`. KiCad DRC reports zero shorts and no remaining
-  MEMR unconnected item; only the unrelated historical M5V_DERIVED gap
-  remains in the routed snapshot.
+- The routed snapshot retains the former wire-11 copper as MEMR. Two
+  0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a
+  back-layer bridge join the two MEMR islands without crossing the four
+  front-layer select traces. KiCad DRC reports zero MEMR shorts,
+  clearances, crossings, or unconnected items.
 - The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16
   destination are still not historical-source-complete. D36.12/.13 were
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common

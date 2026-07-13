@@ -25,6 +25,7 @@ EXPECTED_FAB_FILES = [
 ELECTRICAL_BLOCKERS = {
     "clearance",
     "shorting_items",
+    "tracks_crossing",
     "unconnected_items",
 }
 

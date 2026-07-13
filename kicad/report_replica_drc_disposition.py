@@ -14,6 +14,7 @@ BLOCKING_TYPES = {
     "clearance",
     "shorting_items",
     "unconnected_items",
+    "tracks_crossing",
     "copper_edge_clearance",
     "lib_footprint_issues",
 }

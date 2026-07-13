@@ -4,8 +4,9 @@ Status date: **2026-07-13**.
 
 Release status: **DESIGN HOLD / PACKAGE INVALID**. The saved main-board ZIP is
 a checksum-reproducible engineering snapshot, not fabrication authorization;
-the current routed board still has one explicit airwire and fails its package
-readiness gates.
+the current routed board is electrically DRC-clean, but the saved package still
+predates accepted connectivity and has not passed the required regeneration
+and review gates.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module (documented by its ПЭЗ parts list and СБ assembly drawing; the earlier
@@ -31,8 +32,8 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | Retire the D6 functional decoder by completing joined-conductor D8/D13/D92 timing reconstruction; exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 101 mapped instances and 263 matched nets; physical D2/D6 PROM tables, the measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails 8/17, the X1.107C `-WREQ` endpoint, the D26.PC7-to-D35 `POF` path, D11 RXRDY/TXRDY into D10 IR2/IR3, D7.3 into physical D29.5/D29.15 `-AMWC`, D7.8 into physical D29.4/D29.16 `-IO/M`, D7.4 onto `MEMW`/D29.1, D7.12/D7.13 as the physical `SYNC`/pin11-feedback strobe, and the shared D7.5/D29.3 `-INHIB` source boundary are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a checksum-reproducible 2-layer 310 x 266 mm Gerber/drill snapshot | The manufacturing gate correctly marks this package invalid: the routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes, is electrically incomplete, and must not be ordered |
+| Connectivity | `sync/check.sh` reports 102 mapped instances and 266 matched nets; physical D2/D6 PROM tables, the measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails 8/17, the X1.107C `-WREQ` endpoint, the D26.PC7-to-D35 `POF` path, D11 RXRDY/TXRDY into D10 IR2/IR3, D7.3 into physical D29.5/D29.15 `-AMWC`, D7.8 into physical D29.4/D29.16 `-IO/M`, D7.4 onto `MEMW`/D29.1, D7.12/D7.13 as the physical `SYNC`/pin11-feedback strobe, and the shared D7.5/D29.3 `-INHIB` source boundary are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
+| PCB package | The saved routed artifact has 240 footprints and zero KiCad copper clearance, crossing, short, or unconnected findings; MEMR uses a clearance-safe two-via back-layer bridge and the genuine `M5V_DERIVED` rail is complete without D105.10 | The saved 2-layer 310 x 266 mm Gerber/drill snapshot predates accepted D2/D94 and later harness/serial endpoint changes; regenerate and review the package before any order |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, cross-machine physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` captures, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The two-page `.009 ПЭЗ` IC list is now fully transcribed and guarded as 82

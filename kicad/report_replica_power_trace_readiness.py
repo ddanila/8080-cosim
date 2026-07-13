@@ -13,8 +13,9 @@ DEFAULT_REPORT = ROOT / "docs" / "replica-power-trace-readiness.md"
 POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
 # The former 992/491 routed envelope included six segments of the rejected
 # D105.10-to-M5V branch plus its 0.133 mm orphan tail.  The corrected retained
-# route therefore has seven fewer power segments, all formerly widened.
-EXPECTED_POWER_SEGMENTS = 985
+# route removed those seven widened segments, then added six 0.20 mm segments
+# to close the real D1/R19/VD5/E5-derived -5 V rail without restoring D105.10.
+EXPECTED_POWER_SEGMENTS = 991
 EXPECTED_WIDENED_SEGMENTS = 484
 BASELINE_WIDTH_MM = 0.20
 MAX_WIDTH_MM = 1.00

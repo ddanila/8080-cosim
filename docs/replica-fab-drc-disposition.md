@@ -1,7 +1,7 @@
 # Replica fab DRC disposition
 
 Source report: `fab/gerbers/juku_routed-drc.json`
-Status: **REVIEW REQUIRED**
+Status: **READY**
 
 This generated report is the tracked disposition record for the main-board
 fabrication DRC findings. It deliberately fails if a count changes or a new
@@ -16,7 +16,8 @@ silently.
 | `copper_edge_clearance` | 0 | Pass |
 | `lib_footprint_issues` | 0 | Pass |
 | `shorting_items` | 0 | Pass |
-| `unconnected_items` | 1 | Fix before order |
+| `tracks_crossing` | 0 | Pass |
+| `unconnected_items` | 0 | Pass |
 
 ## Review-Only Classes
 
@@ -48,9 +49,4 @@ silently.
 - `copper_edge_clearance` and `silk_edge_clearance`: resolved by deferring the two conflicting generated cutouts at `(104.0,251.4)` and `(300.3,138.1)` until the exact non-rectangular outline can be re-read.
 - Review-only DRC classes are accepted only at the exact counts above; changed counts require a fresh disposition.
 
-Visual disposition failures: 2
-
-## Failures
-
-- Blocking DRC class `unconnected_items` is nonzero: 1
-- Unexpected DRC class without disposition: `track_dangling`=1
+Visual disposition failures: 0

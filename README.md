@@ -10,13 +10,15 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`.
-- `sync/check.sh` currently compares 101 mapped instances and 263 nets with no
+- `sync/check.sh` currently compares 102 mapped instances and 266 nets with no
   KiCad/HDL mismatch.
-- The routed main-board artifact has 240 footprints, no KiCad clearance/short
-  errors, and one explicit `M5V_DERIVED` airwire after correcting D105.10. Its
-  saved Gerber/drill ZIP is checksum-reproducible, but the manufacturing gate
-  correctly marks the package invalid until that airwire and the stale routed
-  snapshot are replaced. Current ZIP SHA256:
+- The routed main-board artifact has 240 footprints and zero KiCad copper
+  clearance, crossing, short, or unconnected findings. The real
+  `M5V_DERIVED` rail is routed independently of the rejected D105.10 branch,
+  and the merged MEMR islands use a two-via back-layer bridge instead of
+  crossing the front-layer select bus. Its saved Gerber/drill ZIP is
+  checksum-reproducible, but remains a stale engineering snapshot and is not
+  released for manufacture. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from

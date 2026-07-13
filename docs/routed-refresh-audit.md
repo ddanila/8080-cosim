@@ -68,12 +68,14 @@ merged into `MEMR` in the board JSON, source PCB, routed PCB, and structural
 HDL/LVS contract.
 
 The routed board's twelve existing wire-11 segments were retained as MEMR
-copper. A 2.01 mm F.Cu segment from `(213.2267,118.2108)` to
-`(214.6467,116.7908)` joins that island to the existing MEMR route. KiCad DRC
-then reports zero shorts and no MEMR unconnected item, reducing the routed
-snapshot from two unconnected nets to the single unrelated pre-existing
-`M5V_DERIVED` gap. This targeted, DRC-proved promotion does not imply that the
-rest of the stale routed snapshot has passed the full refresh audit.
+copper. The first attempted 2.01 mm F.Cu join was rejected because strict DRC
+showed it crossing four select traces. The adopted route instead places
+0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` and joins them on
+B.Cu. The independent `M5V_DERIVED` islands are also closed with a via at
+`(35,213)`, five short B.Cu segments around D105, and a direct F.Cu landing on
+R19.2. Strict KiCad DRC now reports zero copper clearance, crossing, short, or
+unconnected findings. These targeted promotions do not imply that the stale
+fabrication ZIP has passed the full refresh audit.
 
 A clean refresh therefore requires this order:
 

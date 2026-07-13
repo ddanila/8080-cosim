@@ -158,14 +158,15 @@ def main() -> int:
             "sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8",
         ),
         (
-            "Factory wire 11 is promoted onto MEMR in both PCB snapshots",
+            "Factory wire 11 is promoted onto MEMR with a clearance-safe routed bridge",
             "W11_D7_D92" not in board["nets"]
             and "W11_D7_D92" not in source_pcb
             and "W11_D7_D92" not in routed_pcb
-            and "514fcf0c-a7a1-4503-a999-36168c28f107" in routed_pcb
-            and "(start 213.2267 118.2108)" in routed_pcb
-            and "(end 214.6467 116.7908)" in routed_pcb,
-            "native -MRD labels merge D92.13/D7.1; guarded 2.01 mm routed F.Cu join",
+            and "514fcf0c-a7a1-4503-a999-36168c28f107" not in routed_pcb
+            and "e5877b84-97b1-496c-a3ba-ca77b2e25bfd" in routed_pcb
+            and "e0f846b7-603d-48ed-b94f-15ed841c3b5b" in routed_pcb
+            and "08d5d9e2-6b12-4940-98b1-b618e016219c" in routed_pcb,
+            "native -MRD labels merge D92.13/D7.1; two-via B.Cu bridge avoids the front select bus",
         ),
         (
             "D39 latch/output context is guarded",
@@ -346,11 +347,11 @@ def main() -> int:
             "  combine both results onto D92.8/D39.5. The repeated native-sheet -MRD",
             "  label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the",
             "  former artificial W11 boundary has been removed.",
-            "- The routed snapshot retains the former wire-11 copper as MEMR and adds a",
-            "  2.01 mm same-layer join at `(213.2267,118.2108)` to",
-            "  `(214.6467,116.7908)`. KiCad DRC reports zero shorts and no remaining",
-            "  MEMR unconnected item; only the unrelated historical M5V_DERIVED gap",
-            "  remains in the routed snapshot.",
+            "- The routed snapshot retains the former wire-11 copper as MEMR. Two",
+            "  0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a",
+            "  back-layer bridge join the two MEMR islands without crossing the four",
+            "  front-layer select traces. KiCad DRC reports zero MEMR shorts,",
+            "  clearances, crossings, or unconnected items.",
             "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16",
             "  destination are still not historical-source-complete. D36.12/.13 were",
             "  rechecked across the native 5140x3563 sheet on 2026-07-13; their common",
