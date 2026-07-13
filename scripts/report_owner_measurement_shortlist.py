@@ -227,9 +227,9 @@ def main() -> int:
         (
             "P0",
             "memory-decode stragglers",
-            "with power removed and D6/D13 removed, first verify D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9 independently; then resistance-map D6.11 and D6.12 separately to D13.12, D8.15, D92.5, R11.2, and R12.2, recording positive and negative readings. During the known B37A RAM read scope D6.9, D13.2, D37.6, D58.9, and D58.11. All eight physical D6 modes leave pin9 high at B37A, so mode selection and V1/V2 cannot explain the modeled failure; still close the V1/V2 feed for fidelity, plus C99 far plate, the upstream D7.5/D29.3 -INHIB source, and remaining D36 timing feeds",
+            "with power removed and D6/D13 removed, first verify D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9 independently; then resistance-map D6.11 and D6.12 separately to D13.12, D8.15, D92.5, R11.2, and R12.2, recording positive and negative readings. During the known B37A RAM read scope D6.9, D13.2, D37.6, D58.9, and D58.11. All eight physical D6 modes leave pin9 high at B37A, and mode000 emits the same D6 word 8 at checkpoint PC 0484 and B37A; identify the actual address-sensitive qualifier without assuming a D8 feedback branch merely because D8 changes EF-to-FF. Still close the V1/V2 feed for fidelity, plus C99 far plate, the upstream D7.5/D29.3 -INHIB source, and remaining D36 timing feeds",
             "`docs/d6-runtime-path-diagnostic.md`; `docs/d6-physical-decode.md`; `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `PLAN.md` P0 connectivity gate",
-            "resolves the now-all-mode B37A endpoint/polarity/D58-path contradiction before retiring the D6 runnable oracle, then tightens the remaining RAM/video timing nets before netlist freeze",
+            "resolves the now-all-mode B37A endpoint/polarity/D58-path contradiction and finds the missing address qualifier before retiring the D6 runnable oracle, then tightens the remaining RAM/video timing nets before netlist freeze",
         ),
         (
             "P1",

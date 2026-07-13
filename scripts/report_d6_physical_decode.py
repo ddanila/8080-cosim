@@ -79,6 +79,9 @@ def main() -> int:
         ("All-mode B37A RAM-gate boundary has a reproducible diagnostic",
          "ALL PHYSICAL MODES EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
          and runtime_report.count("D6-RUNTIME-ALL-MODES ba=b37a") == 8),
+        ("Mode-000 D6 indistinguishability and D8 pager distinction are reproduced",
+         "D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff" in runtime_report
+         and "every D8 output currently has exactly one peer" in runtime_report),
     ]
     if not all(ok for _, ok in model_checks):
         raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
@@ -134,6 +137,11 @@ def main() -> int:
         "  also leaves it high. Mode selection and V1/V2 cannot repair the currently",
         "  modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,",
         "  polarity/function, and D58-path checks named there must resolve the boundary.",
+        "- At checkpoint mode `000`, D6 emits the same word `8` at PC `0484` and",
+        "  RAM target `B37A`; no D6 output bit can distinguish those reads. D8's",
+        "  pager output changes from `EF` (D15 selected) to `FF` (all sockets released),",
+        "  but its modeled output nets only reach the eight socket CEs. An authentic",
+        "  address-sensitive RAM qualifier remains missing rather than inferred.",
         "", "## Model adoption guards", "",
         "| Check | Result |", "| --- | --- |",
     ]

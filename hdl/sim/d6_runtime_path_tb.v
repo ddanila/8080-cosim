@@ -10,6 +10,7 @@ module d6_runtime_path_tb;
 
   wire d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
   wire d6_join_n = d6_rom_n & d6_ram_n;
+  wire [7:0] d8_d;
   wire ram_out_en;
   wire physical_d58_oe_n;
 
@@ -26,6 +27,8 @@ module d6_runtime_path_tb;
       .a(d6_a), .v_en_n(d6_v_en_n),
       .rom_n(d6_rom_n), .ram_n(d6_ram_n),
       .rev(d6_rev), .roe_n(d6_roe_n));
+  re3_prom U_D8_PHYSICAL (
+      .a(ba[15:11]), .e_n(d6_rom_n), .d(d8_d));
 
   tl2_hex U_D13_PHYSICAL (
       .i1(d6_roe_n), .o2(ram_out_en),
@@ -98,6 +101,28 @@ module d6_runtime_path_tb;
     end
   endtask
 
+  task check_address_qualifier;
+    begin
+      pc = 3'b000;
+      d6_v_en_n = 1'b0;
+      ba = 16'h0484;
+      #1;
+      if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== 4'h8 || d8_d !== 8'hEF) begin
+        $display("D6-RUNTIME-PATH: FAIL qualifier low word=%h d8=%h",
+                 {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n}, d8_d);
+        errors = errors + 1;
+      end
+      ba = 16'hB37A;
+      #1;
+      if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== 4'h8 || d8_d !== 8'hFF) begin
+        $display("D6-RUNTIME-PATH: FAIL qualifier RAM word=%h d8=%h",
+                 {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n}, d8_d);
+        errors = errors + 1;
+      end
+      $display("D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff");
+    end
+  endtask
+
   task check_all_modes_at_ram_call;
     reg [3:0] expected_word;
     begin
@@ -152,6 +177,7 @@ module d6_runtime_path_tb;
     check_ram_call();
     check_all_modes_at_ram_call();
     check_disabled_at_ram_call();
+    check_address_qualifier();
     if (errors != 0) begin
       $display("D6-RUNTIME-PATH: FAIL (%0d errors)", errors);
       $fatal(1);

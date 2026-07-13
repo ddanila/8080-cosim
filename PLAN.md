@@ -353,7 +353,12 @@ adoption road, in dependency order:
    also releases pin 9 high. Mode selection and V1/V2 therefore cannot repair
    the currently modeled D6.9 -> D13 -> D37 path's inactive D58 OE. The focused
    `docs/d6-runtime-path-diagnostic.md` reproduces every tuple without replaying
-   the long boot. It also exposes a cross-revision evidence conflict:
+   the long boot. It additionally proves that checkpoint PC `0484` and RAM target
+   `B37A` both emit D6 word `8` in mode `000`, while D8 changes from `EF` (D15
+   selected) to `FF` (all sockets released). No D6 output can distinguish those
+   reads, and every modeled D8 output currently reaches only its socket CE, so an
+   authentic address-sensitive RAM qualifier is still missing. The analysis also
+   exposes a cross-revision evidence conflict:
    direct `.009` continuity reported D6.11/D6.12/D13.12 joined and no D8/D9
    continuation, while the source model still retains older-sheet D8/D92
    consumers on the joined conductor. Retirement order: isolate and

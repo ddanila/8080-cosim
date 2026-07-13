@@ -70,6 +70,11 @@ nibble per 2 KiB block from `0000` through `F800`.
   also leaves it high. Mode selection and V1/V2 cannot repair the currently
   modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,
   polarity/function, and D58-path checks named there must resolve the boundary.
+- At checkpoint mode `000`, D6 emits the same word `8` at PC `0484` and
+  RAM target `B37A`; no D6 output bit can distinguish those reads. D8's
+  pager output changes from `EF` (D15 selected) to `FF` (all sockets released),
+  but its modeled output nets only reach the eight socket CEs. An authentic
+  address-sensitive RAM qualifier remains missing rather than inferred.
 
 ## Model adoption guards
 
@@ -81,3 +86,4 @@ nibble per 2 KiB block from `0000` through `F800`.
 | Runnable compatibility decode is explicit and excluded from LVS | PASS |
 | Structural consumers retain the measured joined D6 conductor | PASS |
 | All-mode B37A RAM-gate boundary has a reproducible diagnostic | PASS |
+| Mode-000 D6 indistinguishability and D8 pager distinction are reproduced | PASS |

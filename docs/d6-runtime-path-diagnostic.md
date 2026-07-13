@@ -6,7 +6,8 @@ This generated diagnostic preserves the exact combinational failure found
 while testing whether the runnable boot could use D6 `.038` directly. It is
 not a replacement memory decoder and does not bless the compatibility oracle.
 It exhaustively proves that changing the three D6 mode inputs cannot repair
-the observed RAM-read failure at the first checkpoint call target.
+the observed RAM-read failure at the first checkpoint call target, then
+identifies the first address-sensitive physical distinction downstream.
 
 ## Reproduction
 
@@ -18,7 +19,10 @@ The test reads the validated D6 table through `decode_prom`, then follows
 D6.9 through the modeled D13 Schmitt inverter and D37 NAND into D58 OE.
 It also samples `decode_prom_functional` only to state the established
 runnable behavior at the same addresses. The test then evaluates all eight
-PC4..PC2 combinations at `B37A` against the raw four-bit PROM word.
+PC4..PC2 combinations at `B37A` against the raw four-bit PROM word. The
+guarded checkpoint starts at PC `0484` with Port C `80`, hence physical
+mode `000`; the test also evaluates D8's physical pager output at that
+fetch and at `B37A`.
 
 ## Result
 
@@ -34,8 +38,9 @@ D6-RUNTIME-ALL-MODES ba=b37a mode=101 word=f d6_9=1 d13_2=0 d58_9=1
 D6-RUNTIME-ALL-MODES ba=b37a mode=110 word=f d6_9=1 d13_2=0 d58_9=1
 D6-RUNTIME-ALL-MODES ba=b37a mode=111 word=f d6_9=1 d13_2=0 d58_9=1
 D6-RUNTIME-DISABLED ba=b37a word=f d6_9=1 d13_2=0 d58_9=1
+D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff
 D6-RUNTIME-PATH: BOUNDARY REPRODUCED (all physical modes block D58 at B37A)
-hdl/sim/d6_runtime_path_tb.v:160: $finish called at 11000 (1ps)
+hdl/sim/d6_runtime_path_tb.v:186: $finish called at 13000 (1ps)
 ```
 
 At low-ROM address `0484`, physical word `8` correctly leaves D58 released
@@ -48,6 +53,15 @@ feed. The checkpoint-resume
 experiment consequently consumed `FF` at the RAM call and never reached the
 PIC/keyboard boundary. Restoring the explicit oracle returned the guard to
 `PASS` at 25,744 resumed machine cycles.
+
+D6 itself cannot distinguish the two mode-`000` addresses: both emit word
+`8`. D8 can: its pager word is `EF` at `0484` (D15 selected) and `FF` at
+`B37A` (all ROM sockets released). The current RAM-output model has no D8
+or equivalent address-sensitive qualifier between D13 and D58. This does
+not prove an unobserved D8 feedback net; it proves that the modeled D6-only
+gate lacks the information required to separate these two reads. Board JSON
+also confirms every D8 output currently has exactly one peer, its corresponding
+D15-D22 socket CE; there is no modeled feedback branch to the RAM gate.
 
 ## Evidence boundary
 
@@ -62,6 +76,10 @@ PIC/keyboard boundary. Restoring the explicit oracle returned the guard to
   the `B37A` D6.9 level: no physical row can pull pin 9 low there. The remaining
   contradiction is in endpoint assignment, downstream polarity/function, or
   the assumption that this RAM read reaches DB through D58.
+- In checkpoint mode `000`, every D6 output bit is identical at `0484` and
+  `B37A` (word `8`). Any authentic distinction therefore requires another
+  address-sensitive condition; D8's `EF` versus `FF` pager result is the first
+  proved such distinction, but no feedback branch is promoted without copper.
 - The decisive hardware check is an isolated, powered-off resistance map with
   D6 and D13 removed: verify D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9
   independently, as well as D6.11/.12 against D13.12, D8.15, D92.5, R11.2,

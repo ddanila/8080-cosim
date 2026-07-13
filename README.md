@@ -33,7 +33,9 @@ with the machine-readable board model.
   the joined conductor's downstream D8/D13/D92 timing is fully reconstructed.
   A focused diagnostic now proves all eight physical modes leave D6.9 high at
   the `B37A` RAM-output failure, excluding mode selection and V1/V2 as causes
-  and naming the isolated endpoint/polarity/live-level measurements needed;
+  and proves D6 word `8` cannot distinguish checkpoint PC `0484` from `B37A`;
+  D8 distinguishes them, but no D8-to-RAM-gate branch is modeled. The report
+  names the isolated endpoint/polarity/live-level measurements needed;
   the routed snapshot still carries the superseded topology.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
   8 and 11 remain explicit boundaries. D7's physical SYNC/feedback strobe is
