@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `306`
-- Nets modeled: `557`
+- Nets modeled: `555`
 - Chip-level fidelity gaps: `56`
-- Net-level source-risk gaps: `228`
+- Net-level source-risk gaps: `226`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -56,12 +56,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 16 |
 | clock/I/O | 0 | 5 |
-| logic/source | 7 | 160 |
+| logic/source | 7 | 156 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
 | sound/analog | 0 | 1 |
-| video/analog | 0 | 14 |
+| video/analog | 0 | 16 |
 
 ## Chip-Level Gaps
 
@@ -241,8 +241,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D106_Q2_BOUNDARY` | logic/source | `D106.6` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary |
 | `D106_Q3_BOUNDARY` | logic/source | `D106.7` | July-2026 corrected component fit identifies D106 К555ИЕ7 pin7 Q3 while the solder end is rail-obscured; the candidate FDC clock relation is unproved, so thi... |
 | `D106_UP_BOUNDARY` | logic/source | `D106.5` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin5 UP; no remote destination is proved, so this remains a measurement boundary |
-| `D11_RXRDY_BOUNDARY` | logic/source | `D11.14` | sheet-1 full-resolution USART package census identifies D11 pin14 RXRDY; no target-revision destination is drawn after rejecting the older IR0 mapping, so th... |
-| `D11_TXRDY_BOUNDARY` | logic/source | `D11.15` | sheet-1 full-resolution USART package census identifies D11 pin15 TXRDY; no target-revision destination is drawn after rejecting the older IR1 mapping, so th... |
 | `D13_I3_BOUNDARY` | logic/source | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement bo... |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
 | `D14_O7_BOUNDARY` | video/analog | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary |
@@ -373,8 +371,6 @@ same fidelity ledger as the chip provenance gaps.
 | `MEM_MODE0` | PROM/decode | `D26.16, D6.2, D28.11` | traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 i... |
 | `MEM_MODE1` | PROM/decode | `D26.17, D6.1, D28.13` | traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1 and directly into D28 input pin13, whose paired open-collector output pin12 i... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
-| `PIC_IR2_BOUNDARY` | logic/source | `D10.20` | scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread |
-| `PIC_IR3_BOUNDARY` | logic/source | `D10.21` | scan sheet-1: D10 IR3 pin 21 has a distinct southbound conductor; far destination remains unread |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
 | `POF` | logic/source | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter... |
 | `PROM_EN` | PROM/decode | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assu... |
@@ -389,6 +385,8 @@ same fidelity ledger as the chip provenance gaps.
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
+| `USART_RXRDY_IRQ` | video/analog | `D10.20, D11.14` | traced sheet-1 native full-resolution: D11 RXRDY output pin14 runs east, turns north, and lands directly on D10 PIC IR2 pin20; pinned MAME primary-USART wiri... |
+| `USART_TXRDY_IRQ` | video/analog | `D10.21, D11.15` | traced sheet-1 native full-resolution: D11 TXRDY output pin15 runs east, turns north, and lands directly on D10 PIC IR3 pin21; pinned MAME primary-USART wiri... |
 | `V3_RC` | logic/source | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |

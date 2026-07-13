@@ -127,8 +127,10 @@ def check_rows(board: dict) -> list[list[object]]:
     ))
     checks.append((
         "Undrawn D13 inverter sections are explicitly unused",
-        all(pin_is_nc(board, "D13", pin) for pin in ("8", "9", "10", "11", "12", "13")),
-        "sheet-1 uses only D13 sections 1->2, 3->4, and 5->6",
+        all(pin_is_nc(board, "D13", pin) for pin in ("8", "9", "10", "11"))
+        and has_node(board, "D6_MEM_SELECT_N", "D13", "12")
+        and has_node(board, "D105_10_H", "D13", "13"),
+        "sheet-1 uses sections 1->2, 3->4, 5->6, and 13->12; only 9->8 and 11->10 are unused",
     ))
     checks.append(
         (
@@ -172,11 +174,19 @@ def check_rows(board: dict) -> list[list[object]]:
         "full-resolution sheet-1 PIC symbol omits CAS0/CAS1/CAS2 pins 12/13/15",
     ))
     checks.append((
-        "Remaining PIC interrupt conductors stay explicit",
-        has_node(board, "TAPE_RUN_INT", "D10", "22")
-        and has_node(board, "PIC_IR3_BOUNDARY", "D10", "21")
-        and has_node(board, "PIC_IR2_BOUNDARY", "D10", "20"),
-        "sheet-1: IR4=(3) TAPE RUN INT; IR3/IR2 leave on distinct unread southbound conductors",
+        "USART ready outputs reach PIC IR2/IR3",
+        has_node(board, "USART_RXRDY_IRQ", "D11", "14")
+        and has_node(board, "USART_RXRDY_IRQ", "D10", "20")
+        and has_node(board, "USART_TXRDY_IRQ", "D11", "15")
+        and has_node(board, "USART_TXRDY_IRQ", "D10", "21")
+        and marker("hdl/juku_top.v", ".rxrdy(ser_rxrdy)", ".txrdy(ser_txrdy)",
+                   ".ir3(ser_txrdy)", ".ir2(ser_rxrdy)"),
+        "native sheet-1 direct loops; pinned MAME primary-USART IR2/IR3 mapping",
+    ))
+    checks.append((
+        "Tape-run interrupt remains an explicit off-sheet boundary",
+        has_node(board, "TAPE_RUN_INT", "D10", "22"),
+        "sheet-1: IR4=(3) TAPE RUN INT",
     ))
     checks.append(
         (
@@ -302,6 +312,8 @@ def main() -> int:
         "SER_RXD",
         "SER_CTS_N",
         "SER_DSR_N",
+        "USART_RXRDY_IRQ",
+        "USART_TXRDY_IRQ",
         "S_SOUT",
         "S_RTS",
         "S_DTP",
@@ -332,10 +344,10 @@ def main() -> int:
             ) + ".",
             "  Trace each destination or record a source-proved intentional NC before",
             "  treating the USART portion of the PCB as complete.",
-            "- The `.006` sheet explicitly draws D11 RxRDY/TxRDY to PIC IR0/IR1,",
-            "  but `.009` uses those PIC inputs for КР1818ВГ93 INTRQ/DRQ; preserving",
-            "  the FDC-era target therefore requires `.009` continuity rather than",
-            "  copying the older conductors.",
+            "- Native sheet 1 directly loops D11 RxRDY pin14 to PIC IR2 pin20 and",
+            "  D11 TxRDY pin15 to PIC IR3 pin21. The separately labeled off-sheet",
+            "  `(3)` RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface;",
+            "  those two inputs are replaced by КР1818ВГ93 INTRQ/DRQ on `.009`.",
             "- Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.",
             "  D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an",
             "  explicit NC rather than an unresolved functional endpoint.",

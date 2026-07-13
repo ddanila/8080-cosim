@@ -230,7 +230,7 @@ def main() -> int:
             "D10.12/.13/.15/.20/.21/.22",
             group_state(board, "D10", ("12", "13", "15", "20", "21", "22")),
             "8259 CAS0-2 and IR2-IR4 dispositions",
-            "standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, while IR2/IR3/IR4 remain target-revision boundaries",
+            "standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, IR2/IR3 connect directly to D11 RXRDY/TXRDY, and only IR4 remains an off-sheet boundary",
         ),
         (
             "D93.15-.18/.22/.23/.25-.36",

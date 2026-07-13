@@ -31,7 +31,7 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 101 mapped instances and 257 matched nets; physical D2/D6 PROM tables, the measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails 8/17, the X1.107C `-WREQ` endpoint, and the D26.PC7-to-D35 `POF` path are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
+| Connectivity | `sync/check.sh` reports 101 mapped instances and 259 matched nets; physical D2/D6 PROM tables, the measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails 8/17, the X1.107C `-WREQ` endpoint, the D26.PC7-to-D35 `POF` path, and D11 RXRDY/TXRDY into D10 IR2/IR3 are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a checksum-reproducible 2-layer 310 x 266 mm Gerber/drill snapshot | The manufacturing gate correctly marks this package invalid: the routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes, is electrically incomplete, and must not be ordered |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, physical D2 `.037`/D6 `.038` captures, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D8/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
@@ -74,22 +74,24 @@ the obsolete WAIT copper; regenerate the complete routed snapshot after the six
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 228 source-risk nets and 9 official FDC
+   current generated evidence lists 226 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
 The sheet-1 D10 SP/EN arrow is now modeled as a +5 V master-mode strap rather
-than an unresolved PIC pin. The older RxRDY/TxRDY-to-IR0/IR1 paths are not
-promoted because they conflict with the `.009` FDC interrupt assignment and
-remain a target-revision continuity question.
+than an unresolved PIC pin. Native-sheet review distinguishes D11's direct
+RXRDY/TXRDY loops to IR2/IR3 from the separate off-sheet `(3)` RxRDY/TxRDY
+arrows entering IR0/IR1; the latter remain superseded by the `.009` FDC
+interrupt assignment.
 
 The older sheet also proves D11 USART RESET pin 21 on the uninterrupted
 D13.6 system-reset conductor and D11 main CLK pin 20 on the uninterrupted
 D13.4/D105.2 conductor. Both are now modeled in the source PCB and HDL. On the
-older sheet RxRDY/TxRDY explicitly feed PIC IR0/IR1; those two paths are not
-promoted onto the `.009` board because they conflict with the FDC-era
-КР1818ВГ93 interrupt assignment. Full-resolution review separately proves
+same sheet directly loops D11 RXRDY/TXRDY to PIC IR2/IR3, now modeled in the
+source PCB and HDL. The separately labeled off-sheet arrows into IR0/IR1 are
+not D11 and remain replaced by the FDC-era КР1818ВГ93 interrupt assignment.
+Full-resolution review separately proves
 D11.16 SYNDET on the lower S4 throw and omits D11.18 TXEMPTY from the drawn
 USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
 5. **Restore source/routed parity.** The authoritative source PCB contains the

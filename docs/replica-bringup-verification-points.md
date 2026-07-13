@@ -13,7 +13,7 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `228`
+- Verification-point nets: `226`
 - Verification-point endpoints checked in PCB: `411`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2251`
@@ -24,11 +24,11 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 171 |
+| logic | 167 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
-| video/analog | 14 |
+| video/analog | 16 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -110,8 +110,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D106_Q2_BOUNDARY: D106.6`
 - `D106_Q3_BOUNDARY: D106.7`
 - `D106_UP_BOUNDARY: D106.5`
-- `D11_RXRDY_BOUNDARY: D11.14`
-- `D11_TXRDY_BOUNDARY: D11.15`
 - `D13_4_D105_2: D11.20`
 - `D13_I3_BOUNDARY: D13.3`
 - `D14_I2_BOUNDARY: D14.2`
@@ -311,8 +309,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P5V: R104.2`
 - `P5V: A54.1`
 - `P5V: A53.1`
-- `PIC_IR2_BOUNDARY: D10.20`
-- `PIC_IR3_BOUNDARY: D10.21`
 - `POF: D35.3`
 - `PST_CLK: R32.2`
 - `R94_P2_BOUNDARY: R94.2`
@@ -353,6 +349,10 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `TIMING_TAG17: D36.2`
 - `TIMING_TAG17: D41.6`
 - `TIMING_TAG2: D38.4`
+- `USART_RXRDY_IRQ: D10.20`
+- `USART_RXRDY_IRQ: D11.14`
+- `USART_TXRDY_IRQ: D10.21`
+- `USART_TXRDY_IRQ: D11.15`
 - `VERT_SYNC: D55.17`
 - `VID_MUX_G: E14.1`
 - `VT4_C: C12.2`
@@ -484,8 +484,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D106_Q2_BOUNDARY` | logic | `D106.6` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_Q3_BOUNDARY` | logic | `D106.7` | July-2026 corrected component fit identifies D106 К555ИЕ7 pin7 Q3 while the solder end is rail-obscured; the candidate FDC clock relation is unproved, so this remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_UP_BOUNDARY` | logic | `D106.5` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin5 UP; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D11_RXRDY_BOUNDARY` | logic | `D11.14` | sheet-1 full-resolution USART package census identifies D11 pin14 RXRDY; no target-revision destination is drawn after rejecting the older IR0 mapping, so this remains a measure... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D11_TXRDY_BOUNDARY` | logic | `D11.15` | sheet-1 full-resolution USART package census identifies D11 pin15 TXRDY; no target-revision destination is drawn after rejecting the older IR1 mapping, so this remains a measure... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D13_I3_BOUNDARY` | logic | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
 | `D14_O7_BOUNDARY` | video/analog | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
@@ -616,8 +614,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `MEM_MODE0` | memory/decode | `D26.16, D6.2, D28.11` | traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 is labeled -REC/X4.2;... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `MEM_MODE1` | memory/decode | `D26.17, D6.1, D28.13` | traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1 and directly into D28 input pin13, whose paired open-collector output pin12 is labeled -PLAY/X4.3... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `PIC_IR2_BOUNDARY` | logic | `D10.20` | scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `PIC_IR3_BOUNDARY` | logic | `D10.21` | scan sheet-1: D10 IR3 pin 21 has a distinct southbound conductor; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `POF` | logic | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter input pin3; the pin... | Cross-check against hardware when the peripheral path is exercised. |
 | `PROM_EN` | logic | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed u... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -632,6 +628,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `SSTB_N` | logic | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TAPE_RUN_INT` | logic | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TIMING_TAG2` | logic | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `USART_RXRDY_IRQ` | video/analog | `D10.20, D11.14` | traced sheet-1 native full-resolution: D11 RXRDY output pin14 runs east, turns north, and lands directly on D10 PIC IR2 pin20; pinned MAME primary-USART wiring independently agr... | Scope/capture video or timing node during video bring-up. |
+| `USART_TXRDY_IRQ` | video/analog | `D10.21, D11.15` | traced sheet-1 native full-resolution: D11 TXRDY output pin15 runs east, turns north, and lands directly on D10 PIC IR3 pin21; pinned MAME primary-USART wiring independently agr... | Scope/capture video or timing node during video bring-up. |
 | `V3_RC` | logic | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe -> D9.G1. The visibl... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board... | Scope/capture video or timing node during video bring-up. |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |

@@ -37,14 +37,15 @@ python3 scripts/report_serial_handoff.py
 | D11 write strobe is wired | PASS | `IOWR` |
 | USART reset follows the system reset inverter | PASS | sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET` |
 | USART main clock reaches D13 inverter output | PASS | sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor |
-| Undrawn D13 inverter sections are explicitly unused | PASS | sheet-1 uses only D13 sections 1->2, 3->4, and 5->6 |
+| Undrawn D13 inverter sections are explicitly unused | PASS | sheet-1 uses sections 1->2, 3->4, 5->6, and 13->12; only 9->8 and 11->10 are unused |
 | D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
 | Undrawn D3 inverter sections are explicitly unused | PASS | sheet-1 accounts for sections 13->12, 1->2, 11->10, and 9->8; 3->4 and 5->6 never occur |
 | 8259 SP/EN is strapped high for standalone master mode | PASS | sheet-1 A-rail arrow; `P5V` |
 | 8259 cascade outputs are source-proved unused | PASS | full-resolution sheet-1 PIC symbol omits CAS0/CAS1/CAS2 pins 12/13/15 |
-| Remaining PIC interrupt conductors stay explicit | PASS | sheet-1: IR4=(3) TAPE RUN INT; IR3/IR2 leave on distinct unread southbound conductors |
+| USART ready outputs reach PIC IR2/IR3 | PASS | native sheet-1 direct loops; pinned MAME primary-USART IR2/IR3 mapping |
+| Tape-run interrupt remains an explicit off-sheet boundary | PASS | sheet-1: IR4=(3) TAPE RUN INT |
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
@@ -74,6 +75,8 @@ python3 scripts/report_serial_handoff.py
 | `SER_RXD` | `D11.3`, `D104.13` |
 | `SER_CTS_N` | `D104.12`, `D11.17` |
 | `SER_DSR_N` | `D104.11`, `D11.22` |
+| `USART_RXRDY_IRQ` | `D10.20`, `D11.14` |
+| `USART_TXRDY_IRQ` | `D10.21`, `D11.15` |
 | `S_SOUT` | `D14.6`, `A29.1`, `X3.9` |
 | `S_RTS` | `D32.6`, `A30.1`, `X3.10` |
 | `S_DTP` | `D32.7`, `A31.1`, `X3.11` |
@@ -97,10 +100,10 @@ python3 scripts/report_serial_handoff.py
   .
   Trace each destination or record a source-proved intentional NC before
   treating the USART portion of the PCB as complete.
-- The `.006` sheet explicitly draws D11 RxRDY/TxRDY to PIC IR0/IR1,
-  but `.009` uses those PIC inputs for КР1818ВГ93 INTRQ/DRQ; preserving
-  the FDC-era target therefore requires `.009` continuity rather than
-  copying the older conductors.
+- Native sheet 1 directly loops D11 RxRDY pin14 to PIC IR2 pin20 and
+  D11 TxRDY pin15 to PIC IR3 pin21. The separately labeled off-sheet
+  `(3)` RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface;
+  those two inputs are replaced by КР1818ВГ93 INTRQ/DRQ on `.009`.
 - Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.
   D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an
   explicit NC rather than an unresolved functional endpoint.

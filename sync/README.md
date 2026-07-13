@@ -15,7 +15,7 @@ elaborates `hdl/juku_top.v` with Yosys, and compares mapped endpoint
 partitions. It uses a real KiCad netlist when compatible `kicad-cli` is
 available and the board JSON directly otherwise.
 
-Current scope: 101 mapped instances and 257 compared nets. Placement-only
+Current scope: 101 mapped instances and 259 compared nets. Placement-only
 footprints, unnetted pins, analog passives, and explicit simulation-only ports
 are outside this result.
 

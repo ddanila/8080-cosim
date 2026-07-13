@@ -519,11 +519,11 @@ module juku_top (
                       .clk0(d103_q[3]), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK0+CLK2 share 1.23M = D103.QD
                       .out0(pit_baud), .out1(pit_sound), .out2(sync_b_w));   // OUT1 = SOUND beeper; OUT2 = SYNC B. -> D56 (traced)
-    wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n, ser_syndet;
+    wire ser_txd, ser_rts, ser_dtr, ser_rxd, ser_cts_n, ser_dsr_n, ser_syndet, ser_rxrdy, ser_txrdy;
     usart_8251 U_SIO0(.A(BA[0]),   .D(DB), .cs_n(cs_sio0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(d13_o4),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
                       .rxc(pit_baud), .txc(pit_baud),
-                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(), .txrdy(), .syndet(ser_syndet), .txempty(),
+                      .txd(ser_txd), .rts(ser_rts), .dtr(ser_dtr), .rxrdy(ser_rxrdy), .txrdy(ser_txrdy), .syndet(ser_syndet), .txempty(),
                       .rxd(ser_rxd), .cts_n(ser_cts_n), .reset(reset_sys), .dsr_n(ser_dsr_n));
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
@@ -556,7 +556,7 @@ module juku_top (
     wire pic_sp_en = 1'b1; // sheet-1 A-rail strap: standalone/master 8259
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),
-                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(1'b0), .ir2(1'b0), .ir1(fdc_drq), .ir0(fdc_intrq),
+                      .ir7(ir7_sig), .ir6(ir6_sig), .ir5(frame_int), .ir3(ser_txrdy), .ir2(ser_rxrdy), .ir1(fdc_drq), .ir0(fdc_intrq),
                       .cas0(), .cas1(), .cas2(), .sp_en(pic_sp_en), .intr(intr), .inta_n(inta_n));
     // 8259 interrupt/vector behavior (sim adjunct to U_PIC; unmapped -> LVS-invisible). Drives
     // the shared INT net (pic_8259 leaves it z) and injects the CALL vector during INTA.
