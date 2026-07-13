@@ -3811,7 +3811,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK boundary, A7/pin15=-WREQ boundary, V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically; the factory symbol draws only D0/pin12, so pins9-11 are explicit no-connects. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
+    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK is the local alias of X1/D29 -IORC at the identical factory coordinate 106C, A7/pin15=-WREQ remains a boundary, and V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically; the factory symbol draws only D0/pin12, so pins9-11 are explicit no-connects. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
    }
   },
   {
@@ -9286,7 +9286,7 @@
    ]
   },
   "IORC_N": {
-   "src": "scan",
+   "src": "traced sheet-1: D29.13 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor",
    "nodes": [
     [
      "D29",
@@ -9295,6 +9295,10 @@
     [
      "X1",
      "106C"
+    ],
+    [
+     "D2",
+     "2"
     ]
    ]
   },
@@ -15841,10 +15845,6 @@
   "D105_10_H": {
    "src": "owner continuity 2026-07-13: pulled-up edge-bus H joins D105.10 and D13.13; exact edge contact and pullup reference/value remain unresolved. This disproves the old H(-5) supply merge",
    "nodes": [["D105", "10"], ["D13", "13"]]
-  },
-  "XACK_N": {
-   "src": "traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explicit conflict boundary",
-   "nodes": [["D2", "2"]]
   },
   "WREQ_N": {
    "src": "traced sheet-1: label -WREQ enters D2 A7/pin 15 from edge code 107C; target connector destination remains unmodeled",

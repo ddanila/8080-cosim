@@ -136,17 +136,17 @@ module juku_top (
     net_boundary U_D35POFLNK (.a(1'bz), .b(pof_boundary));
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl),
                      .i1(1'bz), .o2(), .i3(pof_boundary), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());
-    wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4;
+    wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4, iorc_n;
     wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
     wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs
 `ifdef YOSYS
     wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
-    wire xack_n, wreq_n;
+    wire wreq_n;
 `else
     tri1 d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
-    tri1 xack_n, wreq_n;
+    tri1 wreq_n;
 `endif
-    wait_prom_037 U_D2 (.a({wreq_n, A[10], xack_n, A[14], cas_n, A[9], A[15], A[12]}),
+    wait_prom_037 U_D2 (.a({wreq_n, A[10], iorc_n, A[14], cas_n, A[9], A[15], A[12]}),
                         .v1_n(1'b0), .v2_n(1'b0),
                         .d({d2_nc, ready_d}));
     la3_gate U_D105 (.a(memw_n), .b(memw_n), .y(d105_memw_inv),
@@ -203,7 +203,7 @@ module juku_top (
     // A-side reads the internal strobes for the 4 known commands (memw->-MWC, memr->-MRC,
     // iord->-IORC, iowr->-IOWC); the other 4 sources (-INHIB/-CCLCK/-IO/M/-AMWC) aren't modelled
     // here -> tied inactive (boundary). One-way (never drives the strobe nets -> boot-safe).
-    wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n;
+    wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
     va86_out U_D29 (.Ain ({iowr_n, iord_n, 1'b1,   memr_n, memw_n, 1'b1,  1'b1,    1'b1}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));

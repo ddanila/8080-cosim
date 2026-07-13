@@ -25,7 +25,7 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
 | 1 | A6 | `A10` | scan + July-2026 D2/D4 solder local fits |
-| 2 | A5 | `XACK_N` | traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explicit conflict boundary |
+| 2 | A5 | `IORC_N` | traced sheet-1: D29.13 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor |
 | 3 | A4 | `A14` | scan + July-2026 D2/D4 solder local fits |
 | 4 | A3 | `CAS` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
 | 5 | A0 | `A12` | scan + July-2026 D2/D4 solder local fits |
@@ -88,7 +88,7 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
 | 1 | A6 | `A10` | present |
-| 2 | A5 | `XACK_N` | present |
+| 2 | A5 | `IORC_N` | present |
 | 3 | A4 | `A14` | present |
 | 4 | A3 | `CAS` | present |
 | 5 | A0 | `A12` | present |
@@ -108,9 +108,9 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 | --- | --- | --- |
 | D2 unused outputs are explicit no-connects | PASS | pins 9, 10, 11; factory symbol draws only D0/pin12 |
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
-| Any D2 signal net is traced | PASS | `A10`, `XACK_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `READY_D` |
+| Any D2 signal net is traced | PASS | `A10`, `IORC_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `READY_D` |
 | Any D2 signal appears in DSN | PASS | `12`=`D2_WAIT_RAW`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `4`=`CAS` |
-| Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
+| Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
 | 256-row symbolic address table is non-burnable | PASS | all D0 values are `?` |
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |

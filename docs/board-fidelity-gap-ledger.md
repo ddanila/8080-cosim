@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `547`
+- Nets modeled: `546`
 - Chip-level fidelity gaps: `58`
-- Net-level source-risk gaps: `212`
+- Net-level source-risk gaps: `211`
 - Documented intentional no-connect pins: `65`
 
 ## Chip Provenance Types
@@ -51,7 +51,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 24 |
 | PROM truth | 2 | 0 |
-| PROM/decode | 0 | 15 |
+| PROM/decode | 0 | 14 |
 | clock/I/O | 0 | 7 |
 | logic/source | 9 | 145 |
 | memory/timing | 0 | 7 |
@@ -394,7 +394,6 @@ same fidelity ledger as the chip provenance gaps.
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 | `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
-| `XACK_N` | PROM/decode | `D2.2` | traced sheet-1: label -XACK enters D2 A5/pin 2 from edge code 106C; the existing X1.106C transcription says IORC_N, so the connector merge remains an explici... |
 | `XTAL16M` | clock/I/O | `D39.10, D103.2, D42.9, D43.9` | traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43... |
 
 ## Automatic Closure Rule
