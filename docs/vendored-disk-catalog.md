@@ -18,6 +18,21 @@ and strips CP/M attribute bits from filename bytes.
 | media/disks/JUKPROGX.CPM | `BASLIB.REL`, `BIO80.BAS`, `MATIC80.BAS`, `STIIL.BAS`, `YL80.BAS` |
 | media/disks/JUKU1.CPM | `B80.COM`, `JBASIC.COM` |
 
+## Programming-media PROM search
+
+The three `JUKPROG` images were checked separately because factory doc 007
+says the `.037`/`.038`/`.039`/`.092` programming tables were held on disk.
+The audit checks active directory filenames, recoverable deleted-entry
+filenames, and every raw image byte for strong ASCII drawing/part markers.
+This rules out a plainly named/text-tagged payload in the current images; it
+cannot rule out an unidentified binary table with no embedded identifier.
+
+| Disk | Active candidate names | Deleted names | Raw marker hits |
+| --- | --- | --- | --- |
+| media/disks/JUKPROG1.CPM | none | none | none |
+| media/disks/JUKPROG2.CPM | none | none | none |
+| media/disks/JUKPROGX.CPM | none | none | none |
+
 ## Directory entries
 
 ### `media/disks/J3KUTIL4.JUK`

@@ -107,6 +107,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
+| Vendored programming disks have a guarded PROM-name/marker audit | PASS | `docs/vendored-disk-catalog.md` |
 | HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
 | Video slot audit does not rely on D94 | PASS | `docs/video-slot-timing-audit.md` |
@@ -121,6 +122,11 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 - The guarded firmware inspection establishes that `.113/.117` belong
   to the `.106.103`-family owner-scan evidence and are not a burnable
   D94 `.092` substitute.
+- The guarded `JUKPROG1`/`JUKPROG2`/`JUKPROGX` audit finds no active
+  candidate filename, recoverable deleted filename, or strong raw ASCII
+  `.037`/`.038`/`.039`/`.092`/RT4/RE3 marker. An unidentified binary
+  table remains possible, so this is negative search evidence rather than
+  proof that the programming bytes are absent from every unlabelled blob.
 - A 2026-07-13 indexed-web search for exact `ДГШ5.106.092`,
   `ДГШ5.106.092 Juku`, `Juku К155РЕ3 092 dump`, and
   `Juku ES-101 floppy PROM D94` returned no programming table, binary,

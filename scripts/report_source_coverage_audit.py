@@ -53,7 +53,7 @@ def main() -> int:
     lines = [
         "# Source coverage audit",
         "",
-        "Status date: **2026-07-11**.",
+        "Status date: **2026-07-13**.",
         "",
         f"Status: **{status}**",
         "",
@@ -69,7 +69,7 @@ def main() -> int:
         row([
             "[Arti Juku archive](https://arti.ee/juku/)",
             "schematics/assembly material, ROM lineage, EKDOS source, and raw disks under `ref/`, `roms/`, and `media/`",
-            "no D2 `.037` or D94 `.092` programming payload; no complete Monitor 3.3 cartridge BASIC image/procedure",
+            "no D2 `.037` or D94 `.092` programming payload; guarded `JUKPROG1/2/X` active/deleted-name and raw-marker audit finds no labeled PROM candidate (an unidentified binary remains possible); no complete Monitor 3.3 cartridge BASIC image/procedure",
         ]),
         row([
             "[Elektroonikamuuseum Juku files](https://elektroonikamuuseum.ee/failid/juku/)",
