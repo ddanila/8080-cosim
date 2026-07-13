@@ -59,6 +59,8 @@ PASSIVE_FP = {
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings
 }
 PASSIVE_FP_REF = {
+    'C20': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
+    'C22': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'R94': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -128,6 +130,11 @@ PASSIVE_PLACE = {
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
     'C9':(285.807,33.590,90),'C10':(252.361,73.163,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
+    # Registered owner component/solder views: the two grey axial capacitors
+    # occupy adjacent 2.54 mm columns immediately beyond D102.8/.9. Their
+    # 10 mm lead spans share D102's y centre; the bodies lean right in the
+    # component photo, so body pixels are not drill-centre coordinates.
+    'C20':(303.997,110.024,90),'C22':(306.537,110.024,90),
     'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
@@ -338,7 +345,9 @@ def main():
         lib, fpn = PASSIVE_FP_REF.get(ref, PASSIVE_FP[typ])
         fp = pcbnew.FootprintLoad(SHARED + lib, fpn)
         if fp is None: raise RuntimeError(f"no passive footprint {fpn} for {ref}")
-        fp.SetReference(ref); fp.SetValue(c.get('value', ''))
+        # Keep a photographed case marking visible without promoting it to an
+        # interpreted BOM value (C20's `1Н5` still needs unit confirmation).
+        fp.SetReference(ref); fp.SetValue(c.get('value', c.get('prov', {}).get('marking', '')))
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp; n_pads += fp.GetPadCount()

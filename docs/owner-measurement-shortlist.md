@@ -58,6 +58,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P0 | D30/H continuity closure | trace D30.11 to its unique clock source, D30.8 to its unique destination, and identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13; independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available | `docs/d30-section-b-scan-chase.md`; `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md` | closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path |
 | P1 | C94 endpoint continuity | identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved | `docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets | completes the electrical disposition of a target-revision component that was previously absent from the physical model |
 | P1 | right-edge resistor column | read values and both lead destinations for the restored .009 R100/R102/R108/R86 column beside C19; factory identity/order/orientation and body centres are already registered | `docs/fdc-lower-assembly-placement.md`; `kicad/juku.board.json` R100/R102/R108/R86 boundary nets | turns four newly restored physical parts into functional FDC-area circuitry without guessing from the obsolete .006 sheet |
+| P1 | C20/C22 endpoint and value continuity | confirm C20's enhanced-photo `1Н5` body reading, read C22's obscured value, and identify both remote lead destinations of the restored grey axial pair immediately right of D102; their identities, adjacent 2.54 mm columns, and 10.00 mm vertical drill spans are already component/solder-photo proved | `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`; `kicad/juku.board.json` C20/C22 boundary nets | turns two newly restored target-board capacitors into functional circuitry without mistaking their leaning bodies for D102 pin connections |
 | P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/video-analog-boundary.md`; `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives | `docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
 
@@ -80,9 +81,9 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `228`
+- Generated bring-up verification nets: `232`
 - `FDC`: `24` net(s)
-- `logic`: `166` net(s)
+- `logic`: `170` net(s)
 - `memory/decode`: `11` net(s)
 - `sound/analog`: `2` net(s)
 - `timing/I/O`: `6` net(s)

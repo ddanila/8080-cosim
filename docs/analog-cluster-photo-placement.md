@@ -48,7 +48,30 @@ until the real coil and its solder landings are registered. The adjacent yellow
 `680п` part is explicitly excluded from that search.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
-the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`.
+the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
+guards the two newly registered capacitor drill spans beside D102.
+
+## C20/C22 drill registration
+
+The factory `.009` drawing identifies the overlapping vertical bodies at the
+right end of D102 as C20 and C22. Its previously recorded body-label points
+project inside the D102 package outline and therefore are not usable as drill
+centres. The full-resolution owner component view instead shows two grey axial
+capacitors leaning to the right of the package, while the independently
+registered solder view exposes both pairs of joints. Relative to D102's exact
+2.54 mm pad grid, the only coherent paired-hole solution is:
+
+- C20 centre `(303.997,110.024)` mm, pads at y `105.024/115.024` mm;
+- C22 centre `(306.537,110.024)` mm, pads at y `105.024/115.024` mm.
+
+Both spans are 10.00 mm and the columns are 2.54 mm apart. This geometry lands
+on the visible component-side lead arcs and the corresponding four backside
+joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
+uncertainty. Rotation and contrast enhancement makes C20's marking legible as
+`1Н5`; this is retained verbatim rather than assigning an unproved unit/value
+interpretation. C22's marking and all four remote copper destinations remain
+unread, so four singleton boundary nets retain those unknowns without omitting
+the populated hardware.
 
 The R65/R67 increment itself removed their false D102-pad collisions. A later
 full-source DRC audit corrected the parser and exposed six then-current unique

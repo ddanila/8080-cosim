@@ -74,7 +74,7 @@ the obsolete WAIT copper; regenerate the complete routed snapshot after the eigh
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 228 source-risk nets and 9 official FDC
+   current generated evidence lists 232 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -101,7 +101,7 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2261/2261` net-assigned PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2265/2265` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
 holds routed-board adoption on eight unique analog/FDC pad collisions. The two
@@ -190,6 +190,11 @@ extraction work from that set:
    registration plus the populated owner photo also restores the complete
    right-edge resistor column R100/R102/R108/R86 at the projected `.009`
    centres; all eight unread endpoints remain explicit boundaries.
+   Registered component- and solder-side views now also restore the two grey
+   axial C20/C22 capacitors immediately beyond D102 on adjacent 2.54 mm
+   columns, each with a 10.00 mm vertical lead span. C20's enhanced body image
+   reads `1Н5` verbatim; C22's value and their four remote destinations remain
+   explicit continuity boundaries rather than guessed D102 connections.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

@@ -281,6 +281,13 @@ def main() -> int:
             "turns four newly restored physical parts into functional FDC-area circuitry without guessing from the obsolete .006 sheet",
         ),
         (
+            "P1",
+            "C20/C22 endpoint and value continuity",
+            "confirm C20's enhanced-photo `1Н5` body reading, read C22's obscured value, and identify both remote lead destinations of the restored grey axial pair immediately right of D102; their identities, adjacent 2.54 mm columns, and 10.00 mm vertical drill spans are already component/solder-photo proved",
+            "`docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`; `kicad/juku.board.json` C20/C22 boundary nets",
+            "turns two newly restored target-board capacitors into functional circuitry without mistaking their leaning bodies for D102 pin connections",
+        ),
+        (
             "P2",
             "analog/video/sound/serial bring-up captures",
             "composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder",

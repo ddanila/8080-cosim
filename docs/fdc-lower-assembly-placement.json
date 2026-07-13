@@ -275,9 +275,15 @@
         299.917,
         110.117
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
-      "observation": "first vertical capacitor at the right end of D102",
+      "current_footprint_mm": [
+        303.997,
+        110.024
+      ],
+      "projected_delta_mm": [
+        -4.08,
+        0.093
+      ],
+      "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre",
       "electrical_evidence": false
     },
     {
@@ -290,9 +296,15 @@
         302.204,
         110.093
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
-      "observation": "second vertical capacitor at the right end of D102",
+      "current_footprint_mm": [
+        306.537,
+        110.024
+      ],
+      "projected_delta_mm": [
+        -4.333,
+        0.069
+      ],
+      "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre",
       "electrical_evidence": false
     },
     {

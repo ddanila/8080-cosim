@@ -14,7 +14,7 @@ BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "board-fidelity-gap-ledger.md"
 
 RISK_RE = re.compile(
-    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
     re.I,
 )
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
@@ -35,7 +35,7 @@ def chip_prov_text(chip: dict) -> str:
     prov = chip.get("prov", {})
     prov_type = str(prov.get("type", "")).strip()
     parts = []
-    for key in ("refdes", "pins", "note", "value"):
+    for key in ("refdes", "pins", "note", "value", "marking"):
         value = str(prov.get(key, "")).strip()
         if value == prov_type:
             continue

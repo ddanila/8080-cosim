@@ -14,6 +14,13 @@ EXPECTED = {
     "VD3": ((299.38, 128.40), 90.0),
     "R66": ((302.69, 128.46), 90.0),
     "C94": ((287.07, 132.26), 90.0),
+    "C20": ((303.997, 110.024), 90.0),
+    "C22": ((306.537, 110.024), 90.0),
+}
+
+EXPECTED_PAD_SETS = {
+    "C20": {(303.997, 105.024), (303.997, 115.024)},
+    "C22": {(306.537, 105.024), (306.537, 115.024)},
 }
 
 
@@ -31,6 +38,17 @@ def main() -> None:
             errors.append(f"{refdes} centre residual {residual:.3f} mm")
         if angle_error > 0.01:
             errors.append(f"{refdes} angle {footprint.GetOrientationDegrees():.1f}, expected {expected_angle:.1f}")
+        if refdes in EXPECTED_PAD_SETS:
+            actual_pads = {
+                (round(pcbnew.ToMM(pad.GetPosition().x), 3),
+                 round(pcbnew.ToMM(pad.GetPosition().y), 3))
+                for pad in footprint.Pads()
+            }
+            if actual_pads != EXPECTED_PAD_SETS[refdes]:
+                errors.append(
+                    f"{refdes} pad centres {sorted(actual_pads)} != "
+                    f"{sorted(EXPECTED_PAD_SETS[refdes])}"
+                )
     if errors:
         raise SystemExit("analog photo placement FAIL\n- " + "\n- ".join(errors))
     print("analog photo placement PASS")

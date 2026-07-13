@@ -1,7 +1,7 @@
 action,type,value,authentic_part,functional_substitute,board_positions,populate_now,leave_empty,refs,populated_refs,notes
 circuit-review,AP2,,К170АП2,RS-232/line-driver substitute required; verify +/-12 V interface,2,2,0,"D14, D32","D14, D32",
 circuit-review,C_ELEC,,radial electrolytic,modern radial electrolytic with matching value/voltage/polarity,3,3,0,"C31, C32, C33","C31, C32, C33",
-circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matching value/voltage/lead spacing,10,10,0,"C7, C8, C9, C10, C11, C13, C14, C15, C34, C99","C7, C8, C9, C10, C11, C13, C14, C15, C34, C99",
+circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matching value/voltage/lead spacing,12,12,0,"C7, C8, C9, C10, C11, C13, C14, C15, C20, C22, C34, C99","C7, C8, C9, C10, C11, C13, C14, C15, C20, C22, C34, C99",
 circuit-review,C_TRIM,,trimmer capacitor,modern trimmer capacitor matching footprint/value,1,1,0,C12,C12,
 circuit-review,D_DIODE,,Soviet diode/zener per value,modern diode/zener matching value and power,2,2,0,"VD3, VD4","VD3, VD4",
 circuit-review,L_TAPPED,,three-terminal adjustable tapped RF coil,custom/recovered tapped coil or documented three-terminal RF replacement,1,1,0,L1,L1,

@@ -4844,6 +4844,33 @@
    }
   },
   {
+   "ref": "C20",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "marking": "1Н5",
+    "pins": "factory drawing identifies C20 at the right end of D102; both owner-board sides prove a populated grey axial body on a 10 mm vertical drill span. Full-resolution enhancement reads the body marking verbatim as 1Н5; both electrical destinations remain unread"
+   }
+  },
+  {
+   "ref": "C22",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "pins": "factory drawing identifies C22 at the right end of D102; both owner-board sides prove a populated grey axial body on the adjacent 10 mm vertical drill span. The body marking and both electrical destinations remain unread"
+   }
+  },
+  {
    "ref": "VT2",
    "type": "Q_TO92",
    "pins": {
@@ -15979,6 +16006,22 @@
   "R86_2_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
    "nodes": [["R86", "2"]]
+  },
+  "C20_1_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destination is not readable",
+   "nodes": [["C20", "1"]]
+  },
+  "C20_2_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destination is not readable",
+   "nodes": [["C20", "2"]]
+  },
+  "C22_1_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destination is not readable",
+   "nodes": [["C22", "1"]]
+  },
+  "C22_2_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destination is not readable",
+   "nodes": [["C22", "2"]]
   }
  },
  "no_connects": [

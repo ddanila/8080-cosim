@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `311`
-- Nets modeled: `559`
-- Chip-level fidelity gaps: `61`
-- Net-level source-risk gaps: `228`
+- Chips modeled: `313`
+- Nets modeled: `563`
+- Chip-level fidelity gaps: `63`
+- Net-level source-risk gaps: `232`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -40,7 +40,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 238 |
+| scan | 240 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -57,10 +57,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 16 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 5 |
-| logic/source | 11 | 156 |
+| logic/source | 11 | 160 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
-| placement/value | 1 | 0 |
+| placement/value | 3 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 18 |
 
@@ -160,6 +160,8 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
+| `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C20 at the right end of D102; both owner-board sides prove a pop... |
+| `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C22 at the right end of D102; both owner-board sides prove a pop... |
 | `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
 
 ## Documented Intentional No-Connects
@@ -204,6 +206,10 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
+| `C20_1_BOUNDARY` | logic/source | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destinati... |
+| `C20_2_BOUNDARY` | logic/source | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destinati... |
+| `C22_1_BOUNDARY` | logic/source | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destinat... |
+| `C22_2_BOUNDARY` | logic/source | `C22.2` | .009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destinat... |
 | `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit... |
 | `C94_2_BOUNDARY` | video/analog | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit... |
 | `C99_FAR` | logic/source | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity bounda... |
