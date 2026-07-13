@@ -19,9 +19,10 @@ The filenames deliberately retain the board identity:
 - `arvutimuuseum_CS00015` identifies a different physical machine held by
   Arvutimuuseum, inventory/machine identifier `CS00015`.
 
-Identical capture bytes are not aliases: they are deterministic serial outputs
-from independent reads of distinct physical PROMs. Their separate filenames
-and manifest entries preserve that provenance.
+The D8/D94 board-name pairs are byte-for-byte file aliases of the same three
+read events, not six independent reads or proof of two devices. Both names are
+retained to preserve the supplied provenance labels. D2/D6 files that contain
+different serial transcripts are separate physical reads as described below.
 
 ## D2 — ДГШ5.106.037, К556РТ4
 
@@ -49,10 +50,10 @@ SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39
 
 ## D8 — ДГШ5.106.039, К155РЕ3
 
-Six complete accepted reads comprise three from each board, with one
-power-cycled capture in each three-read series. Both physical D8 PROMs are
-byte-identical. The physical table differs from the old reconstructed fallback
-at 19 of 32 addresses and therefore supersedes it.
+Three independent accepted reads include one power-cycled capture; the second
+board-name series is an exact set of aliases and is not counted again. All
+three reads agree. The physical table differs from the old reconstructed
+fallback at 19 of 32 addresses and therefore supersedes it.
 
 ```text
 validated/d8_039.raw.bin
@@ -68,9 +69,10 @@ Active-low asserted table:
 
 ## D94 — ДГШ5.106.092, К155РЕ3
 
-Six complete accepted reads comprise three from each board, with one
-power-cycled capture in each series. Both physical D94 PROMs are byte-identical
-and distinct from D8 at 25 of 32 addresses.
+Three independent accepted reads include one power-cycled capture; the second
+board-name series is an exact set of aliases and is not counted again. All
+three reads agree, and the resulting table differs from D8 at 25 of 32
+addresses.
 
 ```text
 validated/d94_092.raw.bin

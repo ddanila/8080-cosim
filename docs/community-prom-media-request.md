@@ -18,11 +18,10 @@ truth:
 - The current FDC cosim vendors public Arti `JUKU1/JUKU2` disk images and
   boots `media/disks/JUKU1.CPM` to the EKDOS `A>` prompt, but physical-media
   provenance is still useful.
-- D2 `.037` and D6 `.038` now have validated physical tables. Independent
-  reads or original programming-disk files would provide useful corroboration.
-- D8 remains a boot-validated reconstruction fallback under
-  `ref/reconstructed-proms/`; it still needs disk/dump validation before it
-  counts as preservation-grade PROM truth.
+- D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now have validated repeated
+  physical tables. Independent reads or original programming-disk files would
+  provide useful corroboration. D94 continuity remains incomplete even though
+  its content truth is closed.
 - Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
   uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
   remains a Monitor 3.3 compatibility boundary. Current probes show the body is
@@ -52,8 +51,8 @@ Relevant local docs:
 3. Does anyone have a larger/different removable-memory BASIC cartridge image,
    programming artifact, or hardware-confirmed Monitor 3.3 launch procedure
    that reaches the documented BASIC banner / `READY` prompt?
-4. If a physical .009 processor board is available, can someone dump or help
-   dump these socketed parts?
+4. If a physical .009 processor board is available, can someone independently
+   re-read these socketed parts for corroboration or board-variant detection?
    - `К155РЕ3` D8, 32 bytes
    - `К155РЕ3` D94 / FDC-era top-corner PROM, 32 bytes
    - `КР556РТ4А` D2, 256 nibbles stored as 256 bytes
@@ -110,10 +109,10 @@ recreation and digital twin:
 https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D94, the
+reproducible but the physical design remains on hold while D94 continuity, the
 Juku-specific nets of 9 modeled FDC-support ICs, and remaining
-programmable-part evidence are incomplete. D2 now has validated physical
-contents and its measured READY handoff is source-modeled. D105 wait/MRD logic
+programmable-part corroboration are incomplete. D2/D6/D8/D94 now have validated
+physical contents, and D2's measured READY handoff is source-modeled. D105 wait/MRD logic
 and most of D30 READY are also source-modeled; the saved routed snapshot
 predates this accepted topology and must be regenerated later.
 
@@ -122,8 +121,8 @@ for the small PROMs are marked "на диске" rather than printed. I am looki
 either those programming disk files or dumps from a physical .009 processor
 board:
 
-Validated physical D2/D6 tables are now preserved; D8 remains a reconstructed
-fallback. Factory programming-disk files are still valuable independent truth.
+Validated physical D2/D6/D8/D94 tables are now preserved. Factory
+programming-disk files and independent reads remain valuable corroboration.
 
 - КР556РТ4А D2 and D6, drawing family ДГШ5.106.037/.038
 - К155РЕ3 D8, drawing ДГШ5.106.039
@@ -180,5 +179,6 @@ Thanks!
    entry metadata, and missing-page coverage against
    `docs/cartridge-basic-boundary.md` before starting new runtime experiments.
 
-5. If a dump cannot be published, record only the checksum/provenance and keep
-   reconstructed tables as the buildable Tier-1/2 fallback.
+5. If a dump cannot be published, record its checksum/provenance and compare it
+   privately with the validated physical table; do not fall back to the
+   superseded D8 reconstruction.

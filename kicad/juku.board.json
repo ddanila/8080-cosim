@@ -5,7 +5,7 @@
   "boundary": "chip pins present, far end un-modeled",
   "placeholder": "abstracted"
  },
- "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. D94 contents/fanout, routed-snapshot parity, D30 pins8/11 plus the exact H pull-up/contact, and 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
+ "_note": "Processor-module working model for the .009 FDC-era target. The board has 32 РУ5 sockets D60-D91; D84-D91 are populated and D60-D83 are empty expansion rows. Every socket retains the traced RU3/RU5 population-option rails: pin 1 is NC inside a populated РУ5 but carries the VBB option copper, pin 8 carries selectable +5/+12 V, and pin 16 is the array return. Validated physical D2/D6/D8/D94 PROM truth and the measured D2/D30/D105/D13 WAIT/READY handoff are adopted. D94 fanout/enable, routed-snapshot parity, D30 pins8/11 plus the exact H pull-up/contact, and 9 official FDC devices with untraced functional pins remain explicit design boundaries.",
  "chips": [
   {
    "ref": "D1",
@@ -871,7 +871,7 @@
     "type": "scan",
     "refdes": "BOM ДГШ3.031.006 ВП: К555ИД7 x1 = the IO decoder. Decoder refdes = D9 (owner-confirmed К555ИД7 on the board). Physical D2 is a separate КР556РТ4 bus/wait part; see D2 for its programming status.",
     "pins": "scan; Y pin order corrected (74138 descends: Y0=15..Y7=7) per sheet-1 output-row read",
-    "note": "Functional I/O chip-select decoder; historical D2-as-I/O-PROM notes are superseded. D94 .092 is an FDC control/decode PROM by proved output destinations; its pin/content and complete strobe-gating truth remain open."
+    "note": "Functional I/O chip-select decoder; historical D2-as-I/O-PROM notes are superseded. D94 .092 is an FDC control/decode PROM by proved output destinations; its validated content is adopted while enable/fanout and complete strobe-gating truth remain open."
    }
   },
   {
@@ -3845,7 +3845,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "D8 = К155РЕ3, the 0x4000-0xBFFF window decoder (DECODED from firmware .117 + the RomBios P-command window doc): A0-A4 = BA11-BA15 [firmware-derived], D3..D0 = active-low 8K bank selects (4000/6000/8000/A000), D4-D7 asserted across the window; feeds D9 (EPROM pair CS + CS4-7). Table .117 live in re3_prom."
+    "pins": "D8 = К155РЕ3 programmed as ДГШ5.106.039; A0-A4 = BA11-BA15. Three matching physical reads including a power cycle are adopted by re3_prom (raw SHA256 345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc); the old reconstructed window table and unrelated .117 scan are superseded."
    }
   },
   {
@@ -4314,7 +4314,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092 (dump pending)",
-    "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
+    "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0; corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
    }
   },
   {

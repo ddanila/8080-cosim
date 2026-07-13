@@ -216,7 +216,7 @@ def main() -> int:
     )
     fallback_boundary = marker(
         "docs/reconstructed-prom-fallbacks.md",
-        "PHYSICAL RT4 TABLES ADOPTED",
+        "PHYSICAL PROM TABLES ADOPTED",
         "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
     )
     owner_evidence = marker(

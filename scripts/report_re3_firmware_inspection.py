@@ -82,6 +82,8 @@ def main() -> int:
     table_113 = parse_hex_table(REF / "re3_dgsh5.106.113.hex")
     table_117 = parse_hex_table(REF / "re3_dgsh5.106.117.hex")
     d8_fallback = parse_hex_table(ROOT / "ref" / "reconstructed-proms" / "d8_re3_rom_pager_reconstructed.hex")
+    d8_physical = parse_hex_table(ROOT / "ref" / "physical-proms" / "validated" / "d8_039.raw.hex")
+    d94_physical = parse_hex_table(ROOT / "ref" / "physical-proms" / "validated" / "d94_092.raw.hex")
     checks = [
         ("`.113` byte count is 32", len(table_113) == 32),
         ("`.117` byte count is 32", len(table_117) == 32),
@@ -89,7 +91,8 @@ def main() -> int:
         ("`.117` matches the scanned 08h-17h four-row one-cold dwell", table_117 == expected_117()),
         ("Both tables use only `FF`, `07`, `0B`, `0D`, `0E`", one_cold_ok(table_113) and one_cold_ok(table_117)),
         ("The two scanned tables are distinct", table_113 != table_117),
-        ("Neither scanned table matches the reconstructed D8 pager fallback", table_113 != d8_fallback and table_117 != d8_fallback),
+        ("Neither scanned table matches physical D8 or D94", all(table not in (d8_physical, d94_physical) for table in (table_113, table_117))),
+        ("Physical D8 supersedes and differs from the historical reconstruction", d8_physical != d8_fallback),
     ]
     status = "PASS" if all(ok for _, ok in checks) else "REGRESSION"
 
@@ -153,15 +156,15 @@ def main() -> int:
             "  `Juku_К155РЕ3_firmware.pdf` and are useful PROM-lineage evidence.",
             "- They are not exported as D8/D94 burnable fallbacks: the processor-module",
             "  parts list names D8 as `ДГШ5.106.039`, and the `.009` FDC revision adds",
-            "  D94 as `ДГШ5.106.092`; neither table is present in these scans.",
+            "  D94 as `ДГШ5.106.092`; neither scanned table represents those parts.",
             "- The tables' `FF` idle plus one-cold `07/0B/0D/0E` shape is consistent",
             "  with a timing/phase-select PROM family, not with the two-chip BIOS D8",
             "  socket pager required by the traced processor module.",
-            "- The boot-validated D8 fallback remains",
-            "  `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.*` until a",
-            "  physical D8 dump or programming-disk `.039` table appears.",
-            "- Tier 3 still requires repeated physical PROM reads or programming-disk",
-            "  files for D2/D6/D8/D94 and any video/DRAM timing РЕ3.",
+            "- Repeated physical D8 `.039` and D94 `.092` reads are preserved under",
+            "  `ref/physical-proms/validated/`; the former D8 reconstruction is",
+            "  retained only to make the 19-row mismatch auditable.",
+            "- Programming-disk copies remain valuable independent corroboration for",
+            "  D2/D6/D8/D94 and are still needed for any unidentified timing РЕ3.",
             "",
         ]
     )

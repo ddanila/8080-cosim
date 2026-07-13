@@ -50,15 +50,15 @@ review before being treated as build-ready.
 ## Programming / Dump Gate
 
 These rows are required for a complete functional kit, but their contents
-must come from the Baltijets programming disk, an owner dump, or the
-boot-validated reconstructed tables in that preference order.
+must come from validated physical tables or deterministic functional
+EPROM images, with programming-disk copies retained as corroboration.
 
 | Type | Authentic part | Populate now | Refs | Gate |
 | --- | --- | ---: | --- | --- |
 | DEC_PROM | КР556РТ4А | 1 | D6 | Program from the preservation-grade physical D6 `.038` table recovered by three matching reads, including a power-cycled capture; compare with a future programming-disk file when available. |
 | EPROM8K | 2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM | 2 | D15, D16 | Program D15/D16 for the .009 build; leave D17-D22 empty unless authentic-completeness build is chosen. |
-| RE3_PROM | К155РЕ3 | 1 | D8 | Need D8 RE3 dump/table or accepted reconstructed table. |
-| RE3_PROM_092 | К155РЕ3 | 1 | D94 | Need D94/FDC-era `.092` RE3 dump/table or accepted reconstructed table. |
+| RE3_PROM | К155РЕ3 | 1 | D8 | Program D8 from the validated physical `.039` table; do not use the superseded reconstruction. |
+| RE3_PROM_092 | К155РЕ3 | 1 | D94 | Program D94 from the validated physical `.092` table; its unresolved circuit continuity still blocks hardware release. |
 | WAIT_PROM | КР556РТ4А | 1 | D2 | Program from the preservation-grade physical D2 `.037` table recovered by three matching reads, including a power-cycled capture. |
 
 ## Review Before Buying Blind

@@ -19,7 +19,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | --- | --- |
 | Community request packet ready | PASS |
 | PROM dump procedure exists | PASS |
-| Physical D2/D6 tables and D8 fallback are guarded | PASS |
+| Physical D2/D6/D8/D94 tables are guarded | PASS |
 | D2 constraint report generated | PASS |
 | D30 section-B scan chase guarded | PASS |
 | D94 constraint report generated | PASS |
@@ -44,10 +44,10 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 | Priority | Ask | Exact deliverable | Evidence source | Why it matters |
 | --- | --- | --- | --- | --- |
-| P0 | programming disk / PROM truth | Baltijets doc 007 programming files; physical dumps of D8 RE3, D94 RE3, and D15/D16 EPROMs; an independent D2/D6 RT4 read only as corroboration of the validated captures | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | replaces the remaining D8 fallback, supplies the absent D94 truth, and cross-checks the already validated physical D2/D6 tables |
+| P0 | programming disk / PROM truth | Baltijets doc 007 programming files; physical dumps of D15/D16 EPROMs; independent future D2/D6/D8/D94 reads only as corroboration of the validated captures | `docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md` | cross-checks all four validated physical PROM tables and supplies missing Tier-3 EPROM truth |
 | P2 | JUKU-1 media provenance | independent `JUKU-1` / `ДГШ5.106.105` disk image or checksum/provenance for `media/disks/JUKU1.CPM` | `docs/community-prom-media-request.md`; `docs/ekdos-media-acquisition.md` | turns the public EKDOS boot image into stronger physical-media evidence |
 | P2 | cartridge BASIC truth | larger/different removable-memory BASIC cartridge image, programming artifact, or hardware-confirmed Monitor 3.3 launch procedure to BASIC `READY` | `docs/community-prom-media-request.md`; `docs/cartridge-basic-boundary.md` | closes the remaining Monitor 3.3 cartridge BASIC compatibility boundary |
-| P0 | D94 .092 continuity | test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board | `docs/d94-reconstruction-constraints.md` | tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before any defensible D94 replacement |
+| P0 | D94 .092 continuity | test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board | `docs/d94-reconstruction-constraints.md` | tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before an FDC hardware release |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0/P1 gates | reduces first EKDOS-on-hardware debug risk |
 | P0 | ВГ93 +12 V continuity | with power removed and D93 removed, test D93.40 first against the nearest proved P12V contacts D14.8 and D32.8, then confirm against A60.1 or X8.3; record positive and negative readings | `docs/d93-pin40-photo-chase.md`; `docs/fdc-hardware-handoff.md` | closes the controller's power-safety gate without inferring hidden clip-obscured copper |
 | P0 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, the upstream D7.5/D29.3 -INHIB source, and the remaining D36 timing feeds; D7.4/MEMW, D39/D41 package inputs, and D53 output disposition are now source-closed | `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate | tightens the as-built netlist around RAM/video timing before netlist freeze |
@@ -66,10 +66,10 @@ python3 scripts/report_owner_measurement_shortlist.py
 
 ## Current D94 blockers
 
-- D94 failed evidence checks: `Enable pin D94.15 is traced, .092 firmware artifact exists, Repository-wide .092 artifact filename exists`
+- D94 failed evidence checks: `Enable pin D94.15 is traced`
 - D94 address pins are already traced to `BA11..BA15`; the useful physical
   work starts with D94.15-to-D9.7 continuity (D9.9 negative control),
-  output-branch continuity, and a real `.092` dump/table.
+  and output-branch continuity; the `.092` content table is already closed.
 
 ## Pin-Level Closure
 
@@ -97,7 +97,7 @@ yet modeled as nets.
    they can close PROM/software truth without touching fragile sockets.
 2. If a board owner can help, dump socketed PROM/EPROM parts before
    continuity probing; repeated reads plus socket photos are enough to
-   compare against the reconstructed fallbacks.
+   compare against the validated physical tables and retained historical evidence.
 3. Use continuity only for the P1 nets above; broad bring-up checklist
    probes are deferred until a replica or owner board is already on the
    bench.

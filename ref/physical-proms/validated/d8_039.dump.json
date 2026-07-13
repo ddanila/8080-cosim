@@ -1,25 +1,14 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "device": "K155RE3 32x8",
   "name": "d8_039",
   "capture_count": 6,
+  "independent_capture_count": 3,
   "raw_pin_level_sha256": "345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc",
   "active_low_asserted_sha256": "e0f5231c7b24764d729d8d9c397d78a5bf68b899911bd8946be57cd905e72617",
   "packing": "32 raw bytes in A0..A4 address order; D0..D7 map to bits 0..7",
   "comparison_rule": "raw pin-level table is authoritative; asserted table is byte complement",
   "inputs": [
-    {
-      "path": "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture1.txt",
-      "sha256": "5ee1e27e71a86f92e52a7a2c837efe3facee67a6eafd10ea789de378572eb955"
-    },
-    {
-      "path": "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture2.txt",
-      "sha256": "35e39e4a5ce6a853b4ee50465e33316486fc7f9a705d254c74b6c0dfabcb36ee"
-    },
-    {
-      "path": "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture3_powercycled.txt",
-      "sha256": "5ee1e27e71a86f92e52a7a2c837efe3facee67a6eafd10ea789de378572eb955"
-    },
     {
       "path": "ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture1.txt",
       "sha256": "5ee1e27e71a86f92e52a7a2c837efe3facee67a6eafd10ea789de378572eb955"
@@ -31,14 +20,27 @@
     {
       "path": "ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt",
       "sha256": "5ee1e27e71a86f92e52a7a2c837efe3facee67a6eafd10ea789de378572eb955"
+    },
+    {
+      "path": "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture1.txt",
+      "sha256": "5ee1e27e71a86f92e52a7a2c837efe3facee67a6eafd10ea789de378572eb955"
+    },
+    {
+      "path": "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture2.txt",
+      "sha256": "35e39e4a5ce6a853b4ee50465e33316486fc7f9a705d254c74b6c0dfabcb36ee"
+    },
+    {
+      "path": "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture3_powercycled.txt",
+      "sha256": "5ee1e27e71a86f92e52a7a2c837efe3facee67a6eafd10ea789de378572eb955"
     }
   ],
   "captures": [
-    "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture1.txt#1",
-    "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture2.txt#1",
-    "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture3_powercycled.txt#1",
     "ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture1.txt#1",
     "ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture2.txt#1",
-    "ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1"
-  ]
+    "ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1",
+    "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture1.txt#1",
+    "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture2.txt#1",
+    "ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture3_powercycled.txt#1"
+  ],
+  "alias_note": "The sukharev_reference and arvutimuuseum_CS00015 names are byte-for-byte aliases of the same three supplied read events; both labels are retained for provenance."
 }

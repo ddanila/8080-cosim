@@ -13,20 +13,20 @@ deliberately omitted.
 
 | Source | Local use | Remaining gap |
 | --- | --- | --- |
-| [Arti Juku archive](https://arti.ee/juku/) | schematics/assembly material, ROM lineage, EKDOS source, and raw disks under `ref/`, `roms/`, and `media/` | no D2 `.037` or D94 `.092` programming payload; guarded `JUKPROG1/2/X` active/deleted-name and raw-marker audit finds no labeled PROM candidate (an unidentified binary remains possible); no complete Monitor 3.3 cartridge BASIC image/procedure |
+| [Arti Juku archive](https://arti.ee/juku/) | schematics/assembly material, ROM lineage, EKDOS source, and raw disks under `ref/`, `roms/`, and `media/` | no labeled PROM-programming payload; guarded `JUKPROG1/2/X` active/deleted-name and raw-marker audit finds no labeled candidate (an unidentified binary remains possible); no complete Monitor 3.3 cartridge BASIC image/procedure |
 | [Elektroonikamuuseum Juku files](https://elektroonikamuuseum.ee/failid/juku/) | 16 Baltijets factory PDFs, J3K utility disk, and system binaries | doc 007 points to programming data on disk, but those files are not public; the 2026-07-11 recheck found only duplicate `JUKUROMS.ZIP` ROMs and out-of-scope cassette utilities in new `CASTOOLS.JUK` media |
-| [infoaed/juku3000](https://github.com/infoaed/juku3000) | ROM/media provenance and MAME/community cross-checks; full tree and Git object history audited at commit `be8bf9e53a6702299b9c0221d7c486fce1f25b0f` (2026-07-09) | no `ДГШ5.106.037`/`.092`, RT4/RE3 table, or factory PROM-programming payload; deleted `prog1.juk` blob `ed7fc2e3a289f25da5006143c9f45d9ac20ed3c2` is byte-identical to local `JUKPROG1.CPM` (SHA256 `94670f3333b29e205c1586a0f52882aaa0f8cff2d45c3493676ce3ab263ae269`) |
+| [infoaed/juku3000](https://github.com/infoaed/juku3000) | ROM/media provenance and MAME/community cross-checks; full tree and Git object history audited at commit `be8bf9e53a6702299b9c0221d7c486fce1f25b0f` (2026-07-09) | no labeled RT4/RE3 table or factory PROM-programming payload; deleted `prog1.juk` blob `ed7fc2e3a289f25da5006143c9f45d9ac20ed3c2` is byte-identical to local `JUKPROG1.CPM` (SHA256 `94670f3333b29e205c1586a0f52882aaa0f8cff2d45c3493676ce3ab263ae269`) |
 | [MAME Juku driver](https://github.com/mamedev/mame/blob/master/src/mame/ussr/juku.cpp) | behavioral oracle, I/O map, floppy geometry, raster constants; 2026-07-11 master is vendored byte-for-byte as `ref/mame_juku.cpp` (SHA256 `3b9dde3d3bc5eefd1271cd7a29266165d86f41882443f210437020d230a6202e`) | emulator behavior cannot supply omitted physical nets or PROM truth |
 | [MAME PR #14817](https://github.com/mamedev/mame/pull/14817) | real-hardware-tested 241st raster line and corrected JBASIC byte | already reflected in the local reference and video/BASIC guards |
 | Arvutimuuseum/community pages | historical context and owner/contact leads only | promote a claim into the repo only when a file, checksum, photo, or measurement is obtained |
 | Emu80v4 and public WD1793 HDL/software models | reviewed as implementation checklists; no code adopted | the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core |
-| Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference | WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, photo-closed IE7 Q3-to-RCLK path, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented | target copper now proves D106.7-to-D93.26; device/manufacturer references narrow the remaining probes but do not prove other Juku-specific support nets or D94 truth |
+| Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference | WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, photo-closed IE7 Q3-to-RCLK path, remaining separator probes, a KP12 precompensation candidate, and normalized PLA are documented | target copper now proves D106.7-to-D93.26; device/manufacturer references narrow the remaining probes but do not prove other Juku-specific support nets or D94 connectivity |
 | Owner photographs of `ДГШ5.109.009 СБ` | 26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D14/D11 solder-side cut/patch instructions | assembly detail proves intended modifications and locality, not every copper endpoint or programmable-part truth |
 
 ## Current source requests
 
-1. Compare the validated physical D2 `.037` and D6 `.038` raw tables against Baltijets programming-disk files if those surface; both now include separately power-cycled confirmation.
-2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.
+1. Compare all four validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` raw tables against Baltijets programming-disk files if those surface.
+2. D94 `ДГШ5.106.092` enable/output continuity; the repeated content dump is already adopted.
 3. Pin-level continuity for D93's complete drive interface and +12 V supply, plus explicit dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. The owner-measured D2/D30/D105/D13/D6 corrections are synchronized.
 4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.
 5. Targeted analog/timing measurements listed in `docs/owner-measurement-shortlist.md`.
@@ -59,7 +59,8 @@ web/archive work should be tied to one of these named deliverables.
 | `media/system/EKDOS230.BIN` | present |
 | `ref/physical-proms/validated/d2_037.raw.bin` | present |
 | `ref/physical-proms/validated/d6_038.raw.bin` | present |
-| `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` | present |
+| `ref/physical-proms/validated/d8_039.raw.bin` | present |
+| `ref/physical-proms/validated/d94_092.raw.bin` | present |
 | `ref/wd1772-vg93/fd179x-01-datasheet.pdf` | present |
 | `ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf` | present |
 | `ref/wd1772-vg93/wd1772.pdf` | present |

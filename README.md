@@ -19,8 +19,8 @@ with the machine-readable board model.
   snapshot are replaced. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
 - The main board is **not released for fabrication**. Validated physical D2
-  `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved across two
-  independently read boards; the measured D2/D30/D105 and
+  `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
+  repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and
   D6/D13 continuity is adopted in the source model and HDL, while the routed
   snapshot still needs replacement. D94 content truth is closed, but its pin
   15 source and the far destinations or branches of outputs D3-D7 remain

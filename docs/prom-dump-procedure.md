@@ -1,10 +1,10 @@
 # PROM dump procedure — the 4 socketed chips (+2 EPROMs)
 
-D94 РЕ3 contents and complete control-strobe continuity are needed for FDC-era
-reconstruction; its proved D0-D2 paths terminate at D93 and are not video-slot
-timing evidence. A D8 РЕ3 dump would replace its reconstructed map. Validated
-physical D2/D6 РТ4 tables are already adopted; further reads are independent
-corroboration rather than missing replica inputs.
+D8 `.039` and D94 `.092` now have validated repeated physical captures, as do
+D2 `.037` and D6 `.038`. Further reads and programming-disk copies are
+independent corroboration rather than missing content inputs. D94's complete
+control-strobe continuity is still needed for FDC-era reconstruction; its
+proved D0-D2 paths terminate at D93 and are not video-slot timing evidence.
 
 Update 2026-07-06: Baltijets doc 007 was fetched and triaged in
 `ref/baltijets-tech-docs/`. It confirms programmed-part drawings for the small
@@ -16,10 +16,10 @@ The ready-to-send community request packet is
 `docs/community-prom-media-request.md`; it names the same chips, expected dump
 sizes, and the `JUKU-1` media request in one owner-friendly message.
 
-PROM update: validated physical D2 `.037` and D6 `.038` raw tables are preserved
-under `ref/physical-proms/`. `scripts/export_reconstructed_proms.py` now emits
-only the remaining D8 functional fallback. Raw pin-level files are authoritative;
-asserted complements remain separately named.
+PROM update: validated physical D2/D6/D8/D94 raw tables are preserved under
+`ref/physical-proms/`. The D8 reconstruction is retained only as historical
+diff evidence. Raw pin-level files are authoritative; asserted complements
+remain separately named.
 
 EPROM programming update: `scripts/export_eprom_pair.py` deterministically
 splits the boot-validated `roms/ekta37.bin` into low D15 and high D16 8 KiB
@@ -74,7 +74,7 @@ python3 scripts/validate_re3_dump.py read-1.txt read-2.txt read-3.txt \
 
 The validator emits both raw pin levels and a separately named active-low
 asserted complement. Raw levels are the authoritative dump and the format used
-by the 32-byte D8 fallback; do not replace them silently with asserted bits.
+by the validated 32-byte tables; do not replace them silently with asserted bits.
 
 ### КР556РТ4А (74S287/387 class, DIP-16, 256×4)
 - VCC = 16, GND = 8 *(power table)*
@@ -94,9 +94,10 @@ repeat-mismatched RE3 rows. It proves capture consistency, not socket identity,
 wiring, polarity, or the unresolved D94 output/enable branches.
 
 ## What each dump unlocks
-1. **РЕ3 dumps**: socket/refdes identification is essential. A D8 `.039` dump
-   validates the reconstructed ROM pager; a D94 `.092` dump, together with its
-   missing output/enable continuity, defines the physical FDC control decode.
+1. **РЕ3 dumps**: socket/refdes identification is essential. D8 `.039` and
+   D94 `.092` repeated reads are adopted; new reads corroborate or identify a
+   board variant. D94's missing output/enable continuity still defines the
+   physical FDC control boundary.
    Do not substitute the `.113/.117` tables from the `.106.103` family.
 2. **РТ4 D6 → memory-decode corroboration**: a separately power-cycled third
    read now matches the adopted physical `.038` table. Compare an independent
@@ -108,9 +109,9 @@ wiring, polarity, or the unresolved D94 output/enable branches.
    К555ИД7.
 4. **M2764 ×2**: validates (or forks) our ekta37 ROM image against this physical board.
 
-If the owner dump differs from `ref/reconstructed-proms/*.bin`, keep the dump as
-the authoritative source once repeated reads and socket provenance are sound;
-the reconstruction is only the buildable fallback to diff against.
+If a future owner dump differs from `ref/physical-proms/validated/*.bin`, keep
+it as a candidate board variant until repeated reads and socket provenance are
+sound. The old D8 reconstruction is historical comparison material only.
 
 ## Drawing cross-reference (found 2026-07-03, drawing index ДГШ 3.031.006 ВС)
 The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …

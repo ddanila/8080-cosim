@@ -1,12 +1,10 @@
 # Reconstructed PROM fallback images
 
-Status: **D8 FUNCTIONAL FALLBACK EXPORTED / PHYSICAL RT4 TABLES ADOPTED**
+Status: **HISTORICAL D8 FALLBACK RETAINED / PHYSICAL PROM TABLES ADOPTED**
 
-The D8 file is a programming fallback, not dumped factory truth. D2 and D6
-now use validated owner captures under `ref/physical-proms/`; they are no
-longer emitted here as reconstructions. The D8 fallback should be
-replaced or checked against Baltijets programming-disk files or physical
-PROM dumps when those become available.
+The D8 file records the former boot-oriented reconstruction for historical
+comparison only. Validated physical D2, D6, D8, and D94 tables under
+`ref/physical-proms/` now drive HDL and are the burnable PROM truth.
 
 ## Command
 
@@ -30,30 +28,32 @@ sync/prom_fallback_check.sh
   authoritative raw SHA256 is
   `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`.
   This physical table supersedes the old reconstructed D6 image.
-- `d8_re3_rom_pager_reconstructed.*` covers only the D8 ROM-socket pager
-  fallback for programmed drawing family `ДГШ5.106.039`.
-- No D94 image is exported. The current `re3_prom_092` HDL block is an
-  electrically released stub connected to the three accepted FDC controls;
-  it supplies no truth for the unknown `ДГШ5.106.092` content.
+- D8 `.039` physical raw SHA256 is
+  `345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc`.
+  It differs from `d8_re3_rom_pager_reconstructed.*` at 19 rows and
+  supersedes that artifact.
+- D94 `.092` physical raw SHA256 is
+  `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
+  HDL adopts its open-collector table; D94 enable/output continuity
+  remains a separate board-evidence boundary.
 - No video/DRAM timing РЕ3 image is exported. The exact slot/state timing
   remains a dump/programming-disk dependency.
-- Use these only for Tier 1/2 functional bring-up if no programming disk
-  or dump is available. Tier 3 still requires real dumps.
+- Do not program the historical reconstruction now that repeated physical
+  D8 reads exist.
 
 ## Non-exported PROMs
 
 | PROM | Programmed drawing | Reason no fallback is emitted |
 | --- | --- | --- |
-| D94 К155РЕ3 | `ДГШ5.106.092` | Content is unknown; HDL leaves the connected FDC-control outputs electrically released. |
 | Video/DRAM timing РЕ3 | `ДГШ5.106.009` family | Timing truth is not derivable from current schematic/MAME evidence; needs dump or programming-disk table. |
 
 ## HDL Consistency Guard
 
 `sync/prom_fallback_check.sh` compiles `hdl/sim/prom_fallback_tb.v` against the
 current `hdl/devices.v` modules and compares every exported row against the
-actual physical-table-backed `wait_prom_037`/`decode_prom` and reconstructed
-`re3_prom` logic. A passing guard means the selected physical/reconstructed
-files still match HDL.
+physical-table-backed D2/D6/D8/D94 logic. A passing guard means the
+validated physical files still match HDL; it does not validate the retained
+historical D8 reconstruction.
 
 CI also reruns `scripts/export_reconstructed_proms.py` and fails if the
 generated files or this report are stale.

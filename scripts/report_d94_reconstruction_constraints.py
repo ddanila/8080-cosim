@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import csv
+import hashlib
 from pathlib import Path
 
 
@@ -16,6 +17,8 @@ REPORT = ROOT / "docs" / "d94-reconstruction-constraints.md"
 FIRMWARE = ROOT / "ref" / "firmware"
 ARTIFACT_SCAN_DIRS = ("ref", "roms", "media", "docs", "hdl", "kicad", "scripts", "sync")
 PHOTO_ENDPOINTS = ROOT / "ref" / "photos" / "juku-pcb-2" / "endpoints.csv"
+PHYSICAL_D94 = ROOT / "ref" / "physical-proms" / "validated" / "d94_092.raw.bin"
+PHYSICAL_D94_SHA256 = "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0"
 
 
 def read(path: str) -> str:
@@ -160,7 +163,7 @@ def remaining_output_departures() -> dict[str, str]:
     return observations
 
 
-def address_space_rows() -> list[str]:
+def address_space_rows(table: bytes) -> list[str]:
     rows = []
     for address in range(32):
         ba = {
@@ -174,7 +177,7 @@ def address_space_rows() -> list[str]:
             "| "
             + f"{address:02d} | "
             + " | ".join(str(ba[name]) for name in ("BA15", "BA14", "BA13", "BA12", "BA11"))
-            + " | unknown |"
+            + f" | `{table[address]:02X}` |"
         )
     return rows
 
@@ -190,6 +193,11 @@ def main() -> int:
     board_identity_ok = board_type == "RE3_PROM_092"
     dsn_nets = dsn_pin_nets("D94")
     pcb_nets = pcb_pin_nets("D94")
+    physical_table = PHYSICAL_D94.read_bytes() if PHYSICAL_D94.exists() else b""
+    physical_table_ok = (
+        len(physical_table) == 32
+        and hashlib.sha256(physical_table).hexdigest() == PHYSICAL_D94_SHA256
+    )
 
     address_rows: list[str] = []
     address_ok = True
@@ -288,13 +296,13 @@ def main() -> int:
     v3_rc_pcb_no_d94 = all(pcb_nets.get(pin) != "V3_RC" for pin in d94_signal_pins)
     v3_rc_not_d94_evidence = v3_rc_board_no_d94 and v3_rc_dsn_no_d94 and v3_rc_pcb_no_d94
 
-    candidates = firmware_candidates()
-    repo_candidates = repo_092_artifact_candidates()
-    hdl_placeholder = marker(
+    candidates = [str(PHYSICAL_D94.relative_to(ROOT))] if physical_table_ok else []
+    repo_candidates = candidates
+    hdl_physical_table = marker(
         "hdl/devices.v",
         "module re3_prom_092",
-        "D94 = programmed part ДГШ5.106.092",
-        "assign d = 8'hzz",
+        "three matching reads",
+        "assign d[0] = (!e_n && !raw[0])",
     )
     hdl_connected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", "fdc_prom_re_n", "fdc_prom_cs_n", "fdc_prom_we_n")
     pcb_outputs_match = all(pcb_nets.get(pin) == net_for_pin(board, "D94", pin)[0]
@@ -313,7 +321,7 @@ def main() -> int:
         "docs/re3-firmware-inspection.md",
         "Status: **PASS**",
         "D94 `.092`",
-        "neither table is present",
+        "neither scanned table represents those parts",
     )
     programming_media_audited = marker(
         "docs/vendored-disk-catalog.md",
@@ -338,17 +346,7 @@ def main() -> int:
         and ["D9", "9"] in net_nodes(board, "CS_D57")
     )
 
-    can_reconstruct = (
-        address_ok
-        and enable_ok
-        and len(output_nets) == len(output_pins)
-        and len(dsn_output_nets) == len(output_pins)
-        and len(pcb_output_nets) == len(output_pins)
-        and all(pin in dsn_nets for pin, _ in enable_pins)
-        and all(pin in pcb_nets for pin, _ in enable_pins)
-        and bool(candidates)
-    )
-    status = "D94 RECONSTRUCTION READY" if can_reconstruct else "D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED"
+    status = "D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED" if physical_table_ok else "D94 PHYSICAL TABLE FAILED"
 
     lines = [
         "# D94 .092 reconstruction constraints",
@@ -356,8 +354,8 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This generated report records what the repo can currently prove about",
-        "the .009 FDC-era `D94` К155РЕ3 PROM (`ДГШ5.106.092`) before attempting",
-        "any reverse-engineered or burnable replacement table.",
+        "the .009 FDC-era `D94` К155РЕ3 PROM (`ДГШ5.106.092`). Its repeated",
+        "physical table is now burnable truth; unresolved connectivity is kept separate.",
         "",
         "## Command",
         "",
@@ -429,13 +427,12 @@ def main() -> int:
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| Every D94 output pad has an explicit net/boundary | {'PASS' if len(output_nets) == len(output_pins) else 'FAIL'} | {len(output_nets)}/{len(output_pins)} output pins netted |",
             f"| Every unresolved D94 output has a photographed copper departure | {'PASS' if all_remaining_outputs_depart else 'FAIL'} | component-side local-fit observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
-            f"| `.092` firmware artifact exists | {'PASS' if candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in candidates) if candidates else '`ref/firmware/` has no `.092` artifact'} |",
-            f"| Repository-wide `.092` artifact filename exists | {'PASS' if repo_candidates else 'FAIL'} | {', '.join(f'`{c}`' for c in repo_candidates) if repo_candidates else 'no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync'} |",
+            f"| Validated `.092` physical image exists and matches SHA256 | {'PASS' if physical_table_ok else 'FAIL'} | `{PHYSICAL_D94.relative_to(ROOT)}` / `{PHYSICAL_D94_SHA256}` |",
             f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
             f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
             f"| Vendored programming disks have a guarded PROM-name/marker audit | {'PASS' if programming_media_audited else 'FAIL'} | `docs/vendored-disk-catalog.md` |",
-            f"| HDL placeholder is explicitly inert | {'PASS' if hdl_placeholder else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
+            f"| HDL adopts physical open-collector table | {'PASS' if hdl_physical_table else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
             f"| `juku_top` connects the three accepted local FDC controls | {'PASS' if hdl_connected else 'FAIL'} | `hdl/juku_top.v` |",
             f"| Video slot audit does not rely on D94 | {'PASS' if video_audit_independent else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
             f"| D94 row alias with PIT2/FDC groups is guarded | {'PASS' if d9_group_constraint else 'FAIL'} | ports `18-1B` and `1C-1F` both select D94 row `{fdc_row:05b}`; D9.Y6/Y7 distinguish the groups |",
@@ -448,7 +445,7 @@ def main() -> int:
             "  refdes reuse history, not evidence for the FDC-era timing PROM.",
             "- The guarded firmware inspection establishes that `.113/.117` belong",
             "  to the `.106.103`-family owner-scan evidence and are not a burnable",
-            "  D94 `.092` substitute.",
+            "  D94 `.092` substitute. The repeated physical `.092` image is authoritative.",
             "- The guarded `JUKPROG1`/`JUKPROG2`/`JUKPROGX` audit finds no active",
             "  candidate filename, recoverable deleted filename, or strong raw ASCII",
             "  `.037`/`.038`/`.039`/`.092`/RT4/RE3 marker. An unidentified binary",
@@ -461,7 +458,8 @@ def main() -> int:
             "  history and generic К155РЕ3 references do not constrain its contents.",
             "- Local two-sided fits and continuous copper now establish D0-D2 as the",
             "  private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources",
-            "  still do not provide pin 15's source, D3-D7 destinations, or PROM contents.",
+            "  still do not provide pin 15's source or D3-D7 destinations; physical",
+            "  captures now provide the PROM contents.",
             "- Registered component-side local fits show copper departing every remaining",
             "  output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary",
             "  nets. Their far destinations remain unknown,",
@@ -521,15 +519,15 @@ def main() -> int:
             "",
             "## Address Space",
             "",
-            "D94 is a 32 x 8 PROM. The address pins are traced, so the reachable",
-            "rows are mechanically known, but every row byte is still unknown because",
-            "the `.092` programming table/dump is absent and D3-D7 destinations remain unknown.",
+            "D94 is a 32 x 8 PROM. The address pins are traced and the table below",
+            "comes directly from the validated repeated physical reads. Unknown D3-D7",
+            "destinations do not make their captured bit values unknown.",
             "",
             "| Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
         ]
     )
-    lines.extend(address_space_rows())
+    lines.extend(address_space_rows(physical_table))
     lines.extend(
         [
             "",
@@ -539,10 +537,10 @@ def main() -> int:
             "  inputs are wired to `BA11..BA15`.",
             "- Known output destinations: D0-D2 drive the private D93 read/select/write",
             "  controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.",
+            "- Known content: three matching reads including a power-cycled read yield",
+            f"  raw SHA256 `{PHYSICAL_D94_SHA256}`.",
             "- Unknown: D94 pin 15's upstream source and D3-D7 far destinations remain",
-            "  unresolved behind explicit boundary nets, and no",
-            "  `ДГШ5.106.092` programming table or dump is present under the",
-            "  repository artifact scan.",
+            "  unresolved behind explicit boundary nets.",
             "- D3-D7 are destination-unknown, not unused: registered component-side",
             "  photographs prove copper leaves all five output pads.",
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
@@ -551,13 +549,10 @@ def main() -> int:
             "- D94 is now classified as an FDC control/decode PROM because its only",
             "  proved outputs terminate at D93. It is not evidence for the separate",
             "  shared-DRAM video-slot schedule.",
-            "- Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte",
-            "  PROM tables) before even assigning those bits to physical destination",
-            "  nets or enable timing.",
-            "- Therefore a burnable D94 image is not derivable from current repo",
-            "  evidence. The correct next automatic action is to keep this constraint",
-            "  report fresh; the next data-unlocking action is an owner dump or a",
-            "  recovered programming-disk `.092` table.",
+            "- The 256-bit content ambiguity is closed. The remaining ambiguity is",
+            "  electrical: enable timing and the far ends/branches of output nets.",
+            "- The physical image is burnable, but that alone cannot release the FDC",
+            "  circuit or the replica PCB while those continuity boundaries remain.",
             "- Do not reuse `.113` or `.117` as D94: those scans are guarded as",
             "  `.106.103`-family evidence, not the processor-module `.092` content.",
         ]
@@ -574,7 +569,8 @@ def main() -> int:
         and official_bom_lead
         and reused_refdes_guard
         and v3_rc_not_d94_evidence
-        and hdl_placeholder
+        and physical_table_ok
+        and hdl_physical_table
         and hdl_connected
         and pcb_outputs_match
         and scanned_not_d94

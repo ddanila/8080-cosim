@@ -1,10 +1,10 @@
 # D94 .092 reconstruction constraints
 
-Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**
+Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**
 
 This generated report records what the repo can currently prove about
-the .009 FDC-era `D94` К155РЕ3 PROM (`ДГШ5.106.092`) before attempting
-any reverse-engineered or burnable replacement table.
+the .009 FDC-era `D94` К155РЕ3 PROM (`ДГШ5.106.092`). Its repeated
+physical table is now burnable truth; unresolved connectivity is kept separate.
 
 ## Command
 
@@ -102,13 +102,12 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N`, `D94_D3`, `D94_D4`, `D94_D5`, `D94_D6`, `D94_D7` |
 | Every D94 output pad has an explicit net/boundary | PASS | 8/8 output pins netted |
 | Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 5, 6, 7, 9 |
-| `.092` firmware artifact exists | FAIL | `ref/firmware/` has no `.092` artifact |
-| Repository-wide `.092` artifact filename exists | FAIL | no `.092` / `106.092` artifact filename under ref/roms/media/docs/hdl/kicad/scripts/sync |
+| Validated `.092` physical image exists and matches SHA256 | PASS | `ref/physical-proms/validated/d94_092.raw.bin` / `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0` |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
 | Vendored programming disks have a guarded PROM-name/marker audit | PASS | `docs/vendored-disk-catalog.md` |
-| HDL placeholder is explicitly inert | PASS | `hdl/devices.v::re3_prom_092` |
+| HDL adopts physical open-collector table | PASS | `hdl/devices.v::re3_prom_092` |
 | `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
 | Video slot audit does not rely on D94 | PASS | `docs/video-slot-timing-audit.md` |
 | D94 row alias with PIT2/FDC groups is guarded | PASS | ports `18-1B` and `1C-1F` both select D94 row `00011`; D9.Y6/Y7 distinguish the groups |
@@ -121,7 +120,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   refdes reuse history, not evidence for the FDC-era timing PROM.
 - The guarded firmware inspection establishes that `.113/.117` belong
   to the `.106.103`-family owner-scan evidence and are not a burnable
-  D94 `.092` substitute.
+  D94 `.092` substitute. The repeated physical `.092` image is authoritative.
 - The guarded `JUKPROG1`/`JUKPROG2`/`JUKPROGX` audit finds no active
   candidate filename, recoverable deleted filename, or strong raw ASCII
   `.037`/`.038`/`.039`/`.092`/RT4/RE3 marker. An unidentified binary
@@ -134,7 +133,8 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   history and generic К155РЕ3 references do not constrain its contents.
 - Local two-sided fits and continuous copper now establish D0-D2 as the
   private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources
-  still do not provide pin 15's source, D3-D7 destinations, or PROM contents.
+  still do not provide pin 15's source or D3-D7 destinations; physical
+  captures now provide the PROM contents.
 - Registered component-side local fits show copper departing every remaining
   output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary
   nets. Their far destinations remain unknown,
@@ -194,44 +194,44 @@ direction-dependent branches at D93.2/.4 remain required.
 
 ## Address Space
 
-D94 is a 32 x 8 PROM. The address pins are traced, so the reachable
-rows are mechanically known, but every row byte is still unknown because
-the `.092` programming table/dump is absent and D3-D7 destinations remain unknown.
+D94 is a 32 x 8 PROM. The address pins are traced and the table below
+comes directly from the validated repeated physical reads. Unknown D3-D7
+destinations do not make their captured bit values unknown.
 
 | Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 00 | 0 | 0 | 0 | 0 | 0 | unknown |
-| 01 | 0 | 0 | 0 | 0 | 1 | unknown |
-| 02 | 0 | 0 | 0 | 1 | 0 | unknown |
-| 03 | 0 | 0 | 0 | 1 | 1 | unknown |
-| 04 | 0 | 0 | 1 | 0 | 0 | unknown |
-| 05 | 0 | 0 | 1 | 0 | 1 | unknown |
-| 06 | 0 | 0 | 1 | 1 | 0 | unknown |
-| 07 | 0 | 0 | 1 | 1 | 1 | unknown |
-| 08 | 0 | 1 | 0 | 0 | 0 | unknown |
-| 09 | 0 | 1 | 0 | 0 | 1 | unknown |
-| 10 | 0 | 1 | 0 | 1 | 0 | unknown |
-| 11 | 0 | 1 | 0 | 1 | 1 | unknown |
-| 12 | 0 | 1 | 1 | 0 | 0 | unknown |
-| 13 | 0 | 1 | 1 | 0 | 1 | unknown |
-| 14 | 0 | 1 | 1 | 1 | 0 | unknown |
-| 15 | 0 | 1 | 1 | 1 | 1 | unknown |
-| 16 | 1 | 0 | 0 | 0 | 0 | unknown |
-| 17 | 1 | 0 | 0 | 0 | 1 | unknown |
-| 18 | 1 | 0 | 0 | 1 | 0 | unknown |
-| 19 | 1 | 0 | 0 | 1 | 1 | unknown |
-| 20 | 1 | 0 | 1 | 0 | 0 | unknown |
-| 21 | 1 | 0 | 1 | 0 | 1 | unknown |
-| 22 | 1 | 0 | 1 | 1 | 0 | unknown |
-| 23 | 1 | 0 | 1 | 1 | 1 | unknown |
-| 24 | 1 | 1 | 0 | 0 | 0 | unknown |
-| 25 | 1 | 1 | 0 | 0 | 1 | unknown |
-| 26 | 1 | 1 | 0 | 1 | 0 | unknown |
-| 27 | 1 | 1 | 0 | 1 | 1 | unknown |
-| 28 | 1 | 1 | 1 | 0 | 0 | unknown |
-| 29 | 1 | 1 | 1 | 0 | 1 | unknown |
-| 30 | 1 | 1 | 1 | 1 | 0 | unknown |
-| 31 | 1 | 1 | 1 | 1 | 1 | unknown |
+| 00 | 0 | 0 | 0 | 0 | 0 | `FF` |
+| 01 | 0 | 0 | 0 | 0 | 1 | `FF` |
+| 02 | 0 | 0 | 0 | 1 | 0 | `FF` |
+| 03 | 0 | 0 | 0 | 1 | 1 | `FE` |
+| 04 | 0 | 0 | 1 | 0 | 0 | `F5` |
+| 05 | 0 | 0 | 1 | 0 | 1 | `F5` |
+| 06 | 0 | 0 | 1 | 1 | 0 | `F5` |
+| 07 | 0 | 0 | 1 | 1 | 1 | `FC` |
+| 08 | 0 | 1 | 0 | 0 | 0 | `F9` |
+| 09 | 0 | 1 | 0 | 0 | 1 | `F9` |
+| 10 | 0 | 1 | 0 | 1 | 0 | `F9` |
+| 11 | 0 | 1 | 0 | 1 | 1 | `FC` |
+| 12 | 0 | 1 | 1 | 0 | 0 | `FF` |
+| 13 | 0 | 1 | 1 | 0 | 1 | `FF` |
+| 14 | 0 | 1 | 1 | 1 | 0 | `FF` |
+| 15 | 0 | 1 | 1 | 1 | 1 | `FE` |
+| 16 | 1 | 0 | 0 | 0 | 0 | `FF` |
+| 17 | 1 | 0 | 0 | 0 | 1 | `FF` |
+| 18 | 1 | 0 | 0 | 1 | 0 | `FF` |
+| 19 | 1 | 0 | 0 | 1 | 1 | `FF` |
+| 20 | 1 | 0 | 1 | 0 | 0 | `F5` |
+| 21 | 1 | 0 | 1 | 0 | 1 | `F5` |
+| 22 | 1 | 0 | 1 | 1 | 0 | `F5` |
+| 23 | 1 | 0 | 1 | 1 | 1 | `F5` |
+| 24 | 1 | 1 | 0 | 0 | 0 | `F9` |
+| 25 | 1 | 1 | 0 | 0 | 1 | `F9` |
+| 26 | 1 | 1 | 0 | 1 | 0 | `F9` |
+| 27 | 1 | 1 | 0 | 1 | 1 | `F9` |
+| 28 | 1 | 1 | 1 | 0 | 0 | `FF` |
+| 29 | 1 | 1 | 1 | 0 | 1 | `FF` |
+| 30 | 1 | 1 | 1 | 1 | 0 | `FF` |
+| 31 | 1 | 1 | 1 | 1 | 1 | `FF` |
 
 ## Reconstruction Boundary
 
@@ -239,10 +239,10 @@ the `.092` programming table/dump is absent and D3-D7 destinations remain unknow
   inputs are wired to `BA11..BA15`.
 - Known output destinations: D0-D2 drive the private D93 read/select/write
   controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.
+- Known content: three matching reads including a power-cycled read yield
+  raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
 - Unknown: D94 pin 15's upstream source and D3-D7 far destinations remain
-  unresolved behind explicit boundary nets, and no
-  `ДГШ5.106.092` programming table or dump is present under the
-  repository artifact scan.
+  unresolved behind explicit boundary nets.
 - D3-D7 are destination-unknown, not unused: registered component-side
   photographs prove copper leaves all five output pads.
 - The traced `V3_RC` RC network is a negative cross-check here, not a
@@ -251,12 +251,9 @@ the `.092` programming table/dump is absent and D3-D7 destinations remain unknow
 - D94 is now classified as an FDC control/decode PROM because its only
   proved outputs terminate at D93. It is not evidence for the separate
   shared-DRAM video-slot schedule.
-- Content ambiguity alone is 256 unknown bits (`2^256` possible 32-byte
-  PROM tables) before even assigning those bits to physical destination
-  nets or enable timing.
-- Therefore a burnable D94 image is not derivable from current repo
-  evidence. The correct next automatic action is to keep this constraint
-  report fresh; the next data-unlocking action is an owner dump or a
-  recovered programming-disk `.092` table.
+- The 256-bit content ambiguity is closed. The remaining ambiguity is
+  electrical: enable timing and the far ends/branches of output nets.
+- The physical image is burnable, but that alone cannot release the FDC
+  circuit or the replica PCB while those continuity boundaries remain.
 - Do not reuse `.113` or `.117` as D94: those scans are guarded as
   `.106.103`-family evidence, not the processor-module `.092` content.

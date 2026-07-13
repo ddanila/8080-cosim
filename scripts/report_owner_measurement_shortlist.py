@@ -120,7 +120,7 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
         if ref == "D2":
             evidence = "dump/programming disk plus sheet-1 continuity"
         elif ref == "D94":
-            evidence = ".092 dump/table plus enable/output continuity"
+            evidence = "enable/output continuity; physical .092 table is already validated"
         elif ref in {"D10", "D93", "D100"} | FDC_SUPPORT_REFS:
             evidence = "continuity from an actual `.009` FDC-populated board"
         elif ref == "D11":
@@ -148,10 +148,10 @@ def main() -> int:
     checks = [
         ("Community request packet ready", has_phrase("docs/community-prom-media-request.md", "Status: **READY TO SEND**")),
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
-        ("Physical D2/D6 tables and D8 fallback are guarded", has_phrase("docs/reconstructed-prom-fallbacks.md", "PHYSICAL RT4 TABLES ADOPTED")),
+        ("Physical D2/D6/D8/D94 tables are guarded", has_phrase("docs/reconstructed-prom-fallbacks.md", "PHYSICAL PROM TABLES ADOPTED")),
         ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**") else "MISSING"),
         ("D30 section-B scan chase guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **SCAN EXHAUSTED / OWNER CONTINUITY REQUIRED**")),
-        ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**")),
+        ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING**")),
@@ -185,9 +185,9 @@ def main() -> int:
         (
             "P0",
             "programming disk / PROM truth",
-            "Baltijets doc 007 programming files; physical dumps of D8 RE3, D94 RE3, and D15/D16 EPROMs; an independent D2/D6 RT4 read only as corroboration of the validated captures",
+            "Baltijets doc 007 programming files; physical dumps of D15/D16 EPROMs; independent future D2/D6/D8/D94 reads only as corroboration of the validated captures",
             "`docs/community-prom-media-request.md`; `docs/prom-dump-procedure.md`; `docs/d2-reconstruction-constraints.md`",
-            "replaces the remaining D8 fallback, supplies the absent D94 truth, and cross-checks the already validated physical D2/D6 tables",
+            "cross-checks all four validated physical PROM tables and supplies missing Tier-3 EPROM truth",
         ),
         (
             "P2",
@@ -208,7 +208,7 @@ def main() -> int:
             "D94 .092 continuity",
             "test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
             "`docs/d94-reconstruction-constraints.md`",
-            "tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before any defensible D94 replacement",
+            "tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before an FDC hardware release",
         ),
         (
             "P1",
@@ -362,7 +362,7 @@ def main() -> int:
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
             "- D94 address pins are already traced to `BA11..BA15`; the useful physical",
             "  work starts with D94.15-to-D9.7 continuity (D9.9 negative control),",
-            "  output-branch continuity, and a real `.092` dump/table.",
+            "  and output-branch continuity; the `.092` content table is already closed.",
             "",
             "## Pin-Level Closure",
             "",
@@ -395,7 +395,7 @@ def main() -> int:
             "   they can close PROM/software truth without touching fragile sockets.",
             "2. If a board owner can help, dump socketed PROM/EPROM parts before",
             "   continuity probing; repeated reads plus socket photos are enough to",
-            "   compare against the reconstructed fallbacks.",
+            "   compare against the validated physical tables and retained historical evidence.",
             "3. Use continuity only for the P1 nets above; broad bring-up checklist",
             "   probes are deferred until a replica or owner board is already on the",
             "   bench.",

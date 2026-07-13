@@ -347,23 +347,17 @@ endmodule
 // Traced sheet-1: ALL EIGHT socket CEs hang on D8 via the R21-R28 group line (tags D4..D7 ->
 // D15..D18, D0..D3 -> D19..D22), and E_N <- D6.ROM_N (mode-aware "some ROM responds" region).
 module re3_prom (input wire [4:0] a, input wire e_n, output reg [7:0] d);
-    // PREDICTED CONTENT for the board's D8 = programmed part ДГШ5.106.039 per the factory ВП/ПЭЗ
-    // (UNDUMPED -- owner item). The scanned .113/.117 tables belong to the .106.103 family (likely
-    // a timing РЕ3 pair): proven unable to boot any config from D8 for every tag
-    // permutation / addressing / population -- see reconstructed-prom-fallbacks.md.
-    // This table is the MAME-verified behavioral reconstruction of .039 (byte-identical boot).
+    // PHYSICAL CONTENT: three matching reads of the board's .039 part, including a
+    // power-cycled read. The former MAME-derived reconstruction is retained only as
+    // historical evidence; it differs at rows 08-1A and no longer drives this model.
     always @* begin
         if (e_n)              d = 8'hFF;
         else casez (a)
             5'b000??:         d = 8'hEF;   // 00-03: D4 -> D15 (BIOS low 8K, 0000-1FFF)
             5'b001??:         d = 8'hDF;   // 04-07: D5 -> D16 (BIOS high 8K, 2000-3FFF)
-            5'b010??:         d = 8'hF7;   // 08-0B: D3 -> D22 (4000-5FFF window bank)
-            5'b011??:         d = 8'hFB;   // 0C-0F: D2 -> D21 (6000-7FFF)
-            5'b100??:         d = 8'hFD;   // 10-13: D1 -> D20 (8000-9FFF)
-            5'b101??:         d = 8'hFE;   // 14-17: D0 -> D19 (A000-BFFF)
-            5'h1B:            d = 8'hEF;   // D800-DFFF -> D15 top 2K (chip A12..A0 = BA12..BA0 auto-offsets)
+            5'b110??:         d = 8'hEF;   // 18-1B: D4 -> D15
             5'b111??:         d = 8'hDF;   // 1C-1F: E000-FFFF -> D16
-            default:          d = 8'hFF;   // 18-1A: C000-D7FF never ROM
+            default:          d = 8'hFF;   // 08-17: all socket selects released
         endcase
     end
 endmodule
@@ -1016,16 +1010,36 @@ module buf_8287 (input wire [7:0] a, inout wire [7:0] b, input wire oe_n, t,
     assign b = 8'hzz;
 endmodule
 
-// D94 К155РЕ3 #2, programmed part ДГШ5.106.092. Outputs inert pending the exact
-// hex row values from a dump or the Baltijets programming disk.
+// D94 К155РЕ3 #2, programmed part ДГШ5.106.092. The exact physical table is
+// adopted from three matching reads, including a power-cycled read.
 module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
-    // D94 = programmed part ДГШ5.106.092 per the .009 ПЭЗ -- content UNKNOWN (undumped).
-    // The earlier .113-table stand-in is retired: .113 belongs to the .106.103 family, not
-    // D94 (see d94-reconstruction-constraints.md). The real bipolar PROM has
-    // open-collector outputs. Photo tracing connects D0/D1/D2 directly to
-    // D93 RE/CS/WE with no branch to the formerly assumed global I/O rails;
-    // model the undumped part as electrically released on those private nets.
-    assign d = 8'hzz;   // placeholder until the .092 dump; a/e_n kept for connectivity
+    // Photo tracing connects D0/D1/D2 directly to D93 RE/CS/WE. The table closes
+    // their programmed states, but the PROM enable and the remaining D93-side
+    // continuity boundaries are still unresolved; see d94-reconstruction-constraints.md.
+    // РЕ3 outputs are open collector: a programmed one releases the line and a
+    // programmed zero sinks it. Board pull-ups therefore recover the raw byte.
+    reg [7:0] raw;
+    always @* begin
+        case (a)
+            5'h03: raw = 8'hFE;
+            5'h04, 5'h05, 5'h06: raw = 8'hF5;
+            5'h07: raw = 8'hFC;
+            5'h08, 5'h09, 5'h0A: raw = 8'hF9;
+            5'h0B: raw = 8'hFC;
+            5'h0F: raw = 8'hFE;
+            5'h14, 5'h15, 5'h16, 5'h17: raw = 8'hF5;
+            5'h18, 5'h19, 5'h1A, 5'h1B: raw = 8'hF9;
+            default: raw = 8'hFF;
+        endcase
+    end
+    assign d[0] = (!e_n && !raw[0]) ? 1'b0 : 1'bz;
+    assign d[1] = (!e_n && !raw[1]) ? 1'b0 : 1'bz;
+    assign d[2] = (!e_n && !raw[2]) ? 1'b0 : 1'bz;
+    assign d[3] = (!e_n && !raw[3]) ? 1'b0 : 1'bz;
+    assign d[4] = (!e_n && !raw[4]) ? 1'b0 : 1'bz;
+    assign d[5] = (!e_n && !raw[5]) ? 1'b0 : 1'bz;
+    assign d[6] = (!e_n && !raw[6]) ? 1'b0 : 1'bz;
+    assign d[7] = (!e_n && !raw[7]) ? 1'b0 : 1'bz;
 endmodule
 
 // КМ555ТМ2 dual D flip-flop. D30 enables the functional model now that direct

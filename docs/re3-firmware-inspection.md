@@ -24,7 +24,8 @@ sync/reference_artifact_check.sh
 | `.117` matches the scanned 08h-17h four-row one-cold dwell | PASS |
 | Both tables use only `FF`, `07`, `0B`, `0D`, `0E` | PASS |
 | The two scanned tables are distinct | PASS |
-| Neither scanned table matches the reconstructed D8 pager fallback | PASS |
+| Neither scanned table matches physical D8 or D94 | PASS |
+| Physical D8 supersedes and differs from the historical reconstruction | PASS |
 
 ## Tables
 
@@ -54,12 +55,12 @@ sync/reference_artifact_check.sh
   `Juku_К155РЕ3_firmware.pdf` and are useful PROM-lineage evidence.
 - They are not exported as D8/D94 burnable fallbacks: the processor-module
   parts list names D8 as `ДГШ5.106.039`, and the `.009` FDC revision adds
-  D94 as `ДГШ5.106.092`; neither table is present in these scans.
+  D94 as `ДГШ5.106.092`; neither scanned table represents those parts.
 - The tables' `FF` idle plus one-cold `07/0B/0D/0E` shape is consistent
   with a timing/phase-select PROM family, not with the two-chip BIOS D8
   socket pager required by the traced processor module.
-- The boot-validated D8 fallback remains
-  `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.*` until a
-  physical D8 dump or programming-disk `.039` table appears.
-- Tier 3 still requires repeated physical PROM reads or programming-disk
-  files for D2/D6/D8/D94 and any video/DRAM timing РЕ3.
+- Repeated physical D8 `.039` and D94 `.092` reads are preserved under
+  `ref/physical-proms/validated/`; the former D8 reconstruction is
+  retained only to make the 19-row mismatch auditable.
+- Programming-disk copies remain valuable independent corroboration for
+  D2/D6/D8/D94 and are still needed for any unidentified timing РЕ3.

@@ -158,11 +158,11 @@ def main() -> int:
         ),
         (
             "Scanned `.113/.117` РЕ3 tables are guarded but not D94 `.092`",
-            marker("docs/re3-firmware-inspection.md", "Status: **PASS**", "D94 `.092`", "neither table is present"),
+            marker("docs/re3-firmware-inspection.md", "Status: **PASS**", "D94 `.092`", "neither scanned table represents those parts"),
             "`docs/re3-firmware-inspection.md`",
         ),
         (
-            "No D94 `.092` programming table or dump is present under `ref/firmware`",
+            "Owner-scan firmware directory has no mislabeled D94 `.092` table",
             not any(path.name.lower().endswith((".092", ".092.hex", "_092.hex")) for path in (ROOT / "ref" / "firmware").glob("*")),
             "`ref/firmware/` has no `.092` artifact",
         ),
@@ -170,7 +170,7 @@ def main() -> int:
             "D94 FDC-control role is separated from video timing",
             marker(
                 "docs/d94-reconstruction-constraints.md",
-                "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**",
+                "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
                 "D94 is now classified as an FDC control/decode PROM",
             ),
             "`docs/d94-reconstruction-constraints.md`; only proved outputs terminate at D93",

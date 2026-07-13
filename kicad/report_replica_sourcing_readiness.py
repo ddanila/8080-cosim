@@ -186,8 +186,8 @@ def build_report(rows):
             "## Programming / Dump Gate",
             "",
             "These rows are required for a complete functional kit, but their contents",
-            "must come from the Baltijets programming disk, an owner dump, or the",
-            "boot-validated reconstructed tables in that preference order.",
+            "must come from validated physical tables or deterministic functional",
+            "EPROM images, with programming-disk copies retained as corroboration.",
             "",
             "| Type | Authentic part | Populate now | Refs | Gate |",
             "| --- | --- | ---: | --- | --- |",
@@ -197,8 +197,8 @@ def build_report(rows):
         "DEC_PROM": "Program from the preservation-grade physical D6 `.038` table recovered by three matching reads, including a power-cycled capture; compare with a future programming-disk file when available.",
         "WAIT_PROM": "Program from the preservation-grade physical D2 `.037` table recovered by three matching reads, including a power-cycled capture.",
         "EPROM8K": "Program D15/D16 for the .009 build; leave D17-D22 empty unless authentic-completeness build is chosen.",
-        "RE3_PROM": "Need D8 RE3 dump/table or accepted reconstructed table.",
-        "RE3_PROM_092": "Need D94/FDC-era `.092` RE3 dump/table or accepted reconstructed table.",
+        "RE3_PROM": "Program D8 from the validated physical `.039` table; do not use the superseded reconstruction.",
+        "RE3_PROM_092": "Program D94 from the validated physical `.092` table; its unresolved circuit continuity still blocks hardware release.",
     }
     for row in sorted(programming, key=sort_key):
         lines.append(

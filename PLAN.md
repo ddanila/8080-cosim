@@ -58,13 +58,14 @@ closed and the corrected board has been rerouted and reviewed.
    required pin end-to-end, or record a deliberate redesign/DNP decision and
    remove the unused function from released artifacts. D93.40 `VDD_12V` must be
    proved against the board's +12 V rail before any power-up.
-2. **Finish D94 `.092`.** The source model now has BA11..BA15, power, and the
+2. **Finish D94 `.092` connectivity.** The validated repeated physical content
+   table is adopted. The source model now has BA11..BA15, power, and the
    photo-proven D94.1/.2/.3 paths to D93.4/.3/.2
    (`FDC_RE_N`/`FDC_CS_N`/`FDC_WE_N`). Resolve pin 15 and D3-D7 destinations.
    The corrected horizontal D94/D100/D98 placement must then be rerouted.
    All five remaining output pads and pin 15 now have explicit photo-grounded
    boundary nets, so they are no longer misreported as unused/unconnected;
-   their far destinations/source and `.092` contents remain unresolved.
+   their far destinations/source remain unresolved; content no longer is.
 3. **Finish the measured WAIT/READY edge boundaries.** Three matching physical
    D2 `.037` reads, including a power-cycled capture, are adopted. Direct owner
    continuity proves D2.12/R6 -> D30.2, D30.5 -> R29 -> CPU READY,
@@ -294,20 +295,19 @@ blocker below).
 
 ### P0: programmable parts
 
-- Acquire a D94 `.092` dump or Baltijets programming file; compare the validated
-  physical D2 `.037` and D6 `.038` tables against independent reads or original
-  programming files if those surface.
+- Compare the validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092`
+  tables against independent reads or original programming files if those surface.
 - The host-side К556РТ4 capture validator is now guarded by a self-test and
   rejects missing, duplicate, unstable, non-complementary, or repeat-mismatched
   D2/D6 reads. It exports raw pin-level and active-low views separately with
   hashes; `docs/rt4-dump-acquisition.md` records the physical provenance still
   required. The separate К155РЕ3 validator now applies the same repeated-read
   discipline to D8/D94 32-byte captures and preserves raw versus asserted
-  bytes; a D94 dump still does not replace its missing continuity.
-- D2 `.037` and D6 `.038` now use validated physical raw tables, each backed by
-  three matching captures including a separate power cycle; D8 remains a
-  labeled Tier-1/2 fallback. The owner `.113/.117` scans are not D8 `.039` or
-  D94 `.092`.
+  bytes; the adopted D94 dump still does not replace its missing continuity.
+- D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now use validated physical
+  raw tables backed by repeated matching captures including a power cycle.
+  D8/D94 duplicate board-name files are provenance aliases, not extra reads.
+  The owner `.113/.117` scans are not D8 `.039` or D94 `.092`.
 - The deterministic low-D15/high-D16 `ekta37` split, image hashes, and
   2764-class device decision are recorded in `eprom-programming-images.md`;
   retain programmer verification and compare repeat physical dumps before
@@ -359,8 +359,8 @@ serve physical bring-up or historical fidelity:
 
 ### External evidence
 
-- Use `docs/community-prom-media-request.md` for D2/D6 independent
-  corroboration, D8/D94 truth, programming-disk, and cartridge BASIC requests.
+- Use `docs/community-prom-media-request.md` for independent PROM
+  corroboration, programming-disk, and cartridge BASIC requests.
 - Use `docs/owner-measurement-shortlist.md` for the next hardware session.
 - Sheets 2-6 of `ДГШ5.109.009 СБ` (the таблица соединений) are acquired and
   transcribed; the remaining document gap for this drawing family is the

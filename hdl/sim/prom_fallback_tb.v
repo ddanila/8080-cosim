@@ -4,10 +4,12 @@ module prom_fallback_tb;
   reg [7:0] d6_expected [0:255];
   reg [7:0] d2_expected [0:255];
   reg [7:0] d8_expected [0:31];
+  reg [7:0] d94_expected [0:31];
   reg [7:0] a8;
   reg [4:0] a5;
   wire rom_n, ram_n, rev, roe_n;
   wire [7:0] d8_data;
+  tri1 [7:0] d94_data;
   wire [3:0] d2_data;
   integer i;
   integer errors = 0;
@@ -15,11 +17,13 @@ module prom_fallback_tb;
   decode_prom U_D6(.a(a8), .v_en_n(1'b0), .rom_n(rom_n), .ram_n(ram_n), .rev(rev), .roe_n(roe_n));
   wait_prom_037 U_D2(.a(a8), .v1_n(1'b0), .v2_n(1'b0), .d(d2_data));
   re3_prom U_D8(.a(a5), .e_n(1'b0), .d(d8_data));
+  re3_prom_092 U_D94(.a(a5), .e_n(1'b0), .d(d94_data));
 
   initial begin
     $readmemh("ref/physical-proms/validated/d2_037.raw.hex", d2_expected);
     $readmemh("ref/physical-proms/validated/d6_038.raw.hex", d6_expected);
-    $readmemh("ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.hex", d8_expected);
+    $readmemh("ref/physical-proms/validated/d8_039.raw.hex", d8_expected);
+    $readmemh("ref/physical-proms/validated/d94_092.raw.hex", d94_expected);
 
     for (i = 0; i < 256; i = i + 1) begin
       a8 = i[7:0];
@@ -42,6 +46,11 @@ module prom_fallback_tb;
       if (d8_data !== d8_expected[i]) begin
         $display("PROM-FALLBACK: D8 mismatch row=%02x got=%02x expected=%02x",
                  i[7:0], d8_data, d8_expected[i]);
+        errors = errors + 1;
+      end
+      if (d94_data !== d94_expected[i]) begin
+        $display("PROM-FALLBACK: D94 mismatch row=%02x got=%02x expected=%02x",
+                 i[7:0], d94_data, d94_expected[i]);
         errors = errors + 1;
       end
     end

@@ -150,6 +150,41 @@ jobs:
             cmp "/tmp/d6-validate/d6_038.$suffix" "ref/physical-proms/validated/d6_038.$suffix"
           done
 
+      - name: Validate physical RE3 captures
+        run: |
+          rm -rf /tmp/d8-validate /tmp/d94-validate
+          python3 scripts/validate_re3_dump.py \
+            ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture1.txt \
+            ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture2.txt \
+            ref/physical-proms/captures/d8_039_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
+            ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture1.txt \
+            ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture2.txt \
+            ref/physical-proms/captures/d8_039_sukharev_reference_20260713_capture3_powercycled.txt \
+            --independent-capture-count 3 \
+            --alias-note "The sukharev_reference and arvutimuuseum_CS00015 names are byte-for-byte aliases of the same three supplied read events; both labels are retained for provenance." \
+            --out-dir /tmp/d8-validate --name d8_039
+          python3 scripts/validate_re3_dump.py \
+            ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture1.txt \
+            ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture2.txt \
+            ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
+            ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture1.txt \
+            ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture2.txt \
+            ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture3_powercycled.txt \
+            --independent-capture-count 3 \
+            --alias-note "The sukharev_reference and arvutimuuseum_CS00015 names are byte-for-byte aliases of the same three supplied read events; both labels are retained for provenance." \
+            --out-dir /tmp/d94-validate --name d94_092
+          for part in d8_039 d94_092; do
+            for capture in capture1 capture2 capture3_powercycled; do
+              cmp "ref/physical-proms/captures/${part}_arvutimuuseum_CS00015_20260713_${capture}.txt" \
+                "ref/physical-proms/captures/${part}_sukharev_reference_20260713_${capture}.txt"
+            done
+            for suffix in raw.bin asserted.bin raw.hex dump.json; do
+              cmp "/tmp/${part%%_*}-validate/$part.$suffix" \
+                "ref/physical-proms/validated/$part.$suffix"
+            done
+          done
+          (cd ref/physical-proms && sha256sum -c SHA256SUMS)
+
       - name: Check physical D6 decode report freshness
         run: |
           python3 scripts/report_d6_physical_decode.py

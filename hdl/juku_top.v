@@ -284,10 +284,10 @@ module juku_top (
     // +cart=<readmemh file> to model MAME's optional BASIC cartridge at 0x4000-0x5FFF.
     eprom_socket U_D17 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[6]), .oe_n(memr_n));  // expansion (tag 3; no factory РЕ3 program selects it)
     eprom_socket U_D18 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[7]), .oe_n(memr_n));  // expansion (tag 4)
-    eprom_socket U_D19 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[0]), .oe_n(memr_n));  // A000-BFFF bank (.117 one-cold D0; traced CS riser code 5)
-    eprom_socket U_D20 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[1]), .oe_n(memr_n));  // 8000-9FFF bank (code 6)
-    eprom_socket U_D21 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[2]), .oe_n(memr_n));  // 6000-7FFF bank (code 7)
-    exprom_8k    U_D22 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[3]), .oe_n(memr_n));  // 4000-5FFF bank (code 8), optional BASIC cartridge
+    eprom_socket U_D19 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[0]), .oe_n(memr_n));  // traced CS riser code 5; physical .039 never asserts it
+    eprom_socket U_D20 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[1]), .oe_n(memr_n));  // code 6; physical .039 never asserts it
+    eprom_socket U_D21 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[2]), .oe_n(memr_n));  // code 7; physical .039 never asserts it
+    exprom_8k    U_D22 (.a(BA[12:0]), .d(DB), .cs_n(d8_d[3]), .oe_n(memr_n));  // code 8; physical .039 never asserts it
 
     // DRAM: К565РУ5 64Kx1 array. 32 sockets on the board (4 banks x 8), only 8 POPULATED
     // = one byte-bank bit-sliced D84..D91 = the real 64KB RAM. The other 24 sockets are

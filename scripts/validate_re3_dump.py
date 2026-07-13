@@ -85,7 +85,14 @@ def validate(paths: list[Path], allow_single: bool) -> list[Capture]:
     return captures
 
 
-def write_outputs(directory: Path, name: str, captures: list[Capture], inputs: list[Path]) -> None:
+def write_outputs(
+    directory: Path,
+    name: str,
+    captures: list[Capture],
+    inputs: list[Path],
+    independent_capture_count: int | None,
+    alias_note: str | None,
+) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     raw = captures[0].raw
     asserted = bytes((~value) & 0xFF for value in raw)
@@ -99,10 +106,11 @@ def write_outputs(directory: Path, name: str, captures: list[Capture], inputs: l
     paths["asserted"].write_bytes(asserted)
     paths["hex"].write_text("".join(f"{value:02X}\n" for value in raw), encoding="ascii")
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "device": "K155RE3 32x8",
         "name": name,
         "capture_count": len(captures),
+        "independent_capture_count": independent_capture_count or len(captures),
         "raw_pin_level_sha256": sha256(raw),
         "active_low_asserted_sha256": sha256(asserted),
         "packing": "32 raw bytes in A0..A4 address order; D0..D7 map to bits 0..7",
@@ -110,6 +118,8 @@ def write_outputs(directory: Path, name: str, captures: list[Capture], inputs: l
         "inputs": [{"path": str(path), "sha256": sha256(path.read_bytes())} for path in inputs],
         "captures": [capture.source for capture in captures],
     }
+    if alias_note:
+        report["alias_note"] = alias_note
     paths["report"].write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print("wrote " + ", ".join(str(path) for path in paths.values()))
 
@@ -161,6 +171,15 @@ def main() -> int:
     parser.add_argument("--allow-single", action="store_true")
     parser.add_argument("--out-dir", type=Path)
     parser.add_argument("--name", default="re3")
+    parser.add_argument(
+        "--independent-capture-count",
+        type=int,
+        help="explicit read-event count when input filenames include provenance aliases",
+    )
+    parser.add_argument(
+        "--alias-note",
+        help="human-readable explanation for alias inputs preserved in the manifest",
+    )
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
@@ -171,9 +190,24 @@ def main() -> int:
         captures = validate(args.captures, args.allow_single)
     except ValueError as error:
         raise SystemExit(f"RE3 dump validation FAIL: {error}")
-    print(f"RE3 dump validation PASS: {len(captures)} captures; raw SHA256 {sha256(captures[0].raw)}")
+    independent_count = args.independent_capture_count or len(captures)
+    if independent_count < 1 or independent_count > len(captures):
+        parser.error("--independent-capture-count must be between 1 and the parsed capture count")
+    if args.alias_note and args.independent_capture_count is None:
+        parser.error("--alias-note requires --independent-capture-count")
+    print(
+        f"RE3 dump validation PASS: {len(captures)} manifest captures, "
+        f"{independent_count} independent; raw SHA256 {sha256(captures[0].raw)}"
+    )
     if args.out_dir:
-        write_outputs(args.out_dir, args.name, captures, args.captures)
+        write_outputs(
+            args.out_dir,
+            args.name,
+            captures,
+            args.captures,
+            args.independent_capture_count,
+            args.alias_note,
+        )
     return 0
 
 

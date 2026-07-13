@@ -53,8 +53,11 @@ def main() -> int:
         256,
     )
     d8_cell, d8_ok = reconstructed_cell(
-        "ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin",
+        "ref/physical-proms/validated/d8_039.raw.bin",
         32,
+    )
+    d94_cell, d94_image_ok = reconstructed_cell(
+        "ref/physical-proms/validated/d94_092.raw.bin", 32
     )
     d15_cell, d15_ok = reconstructed_cell(
         "ref/eprom-images/d15_ekta37_low.bin", 8192
@@ -85,20 +88,20 @@ def main() -> int:
     )
     d94_ok = marker(
         "docs/d94-reconstruction-constraints.md",
-        "Status: **D94 RECONSTRUCTION CONSTRAINED / DUMP REQUIRED**",
+        "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
         "D94.10-D94.14 map to `BA11..BA15`",
-        "no `.092` / `106.092` artifact",
-    )
+        "validated/d94_092.raw.bin",
+    ) and d94_image_ok
     re3_lineage_ok = marker(
         "docs/re3-firmware-inspection.md",
         "D94 `.092`",
-        "neither table is present",
+        "neither scanned table represents those parts",
     )
     fallback_report_ok = marker(
         "docs/reconstructed-prom-fallbacks.md",
-        "D8 FUNCTIONAL FALLBACK EXPORTED / PHYSICAL RT4 TABLES ADOPTED",
+        "HISTORICAL D8 FALLBACK RETAINED / PHYSICAL PROM TABLES ADOPTED",
         "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
-        "No D94 image is exported",
+        "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
     )
     rt4_validator_ok = marker(
         "docs/rt4-dump-acquisition.md",
@@ -139,17 +142,17 @@ def main() -> int:
             "`ДГШ5.106.039`",
             "ROM-socket pager PROM",
             d8_cell,
-            "`docs/reconstructed-prom-fallbacks.md`",
-            "replace/check fallback against programming-disk file or dump",
+            "`ref/physical-proms/README.md`",
+            "programming-disk comparison or independent future read",
         ],
         [
             "D94",
             "К155РЕ3",
             "`ДГШ5.106.092`",
             "FDC control/decode PROM",
-            "no",
+            d94_cell,
             "`docs/d94-reconstruction-constraints.md`",
-            "programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity",
+            "programming-disk comparison plus complete D94.15 and D93.2/.4 strobe-branch continuity",
         ],
         [
             "D15",
@@ -174,15 +177,16 @@ def main() -> int:
     checks = [
         ("D2 validated physical raw image exists and is 256 bytes", d2_image_ok),
         ("D6 validated physical raw image exists and is 256 bytes", d6_ok),
-        ("D8 fallback exists and is 32 bytes", d8_ok),
+        ("D8 validated physical raw image exists and is 32 bytes", d8_ok),
+        ("D94 validated physical raw image exists and is 32 bytes", d94_image_ok),
         ("D15 functional image exists and is 8192 bytes", d15_ok),
         ("D16 functional image exists and is 8192 bytes", d16_ok),
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
-        ("D94 no-burn boundary is constrained", d94_ok),
+        ("D94 physical table is adopted while continuity stays guarded", d94_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
-        ("Fallback report adopts physical RT4 tables but excludes D94", fallback_report_ok),
+        ("Historical fallback report adopts all physical PROM tables", fallback_report_ok),
         ("Repeated RT4 dump validation procedure is available", rt4_validator_ok),
         ("Repeated RE3 dump validation procedure is available", re3_validator_ok),
     ]
@@ -227,8 +231,8 @@ def main() -> int:
             "",
             "## Practical Burn Rule",
             "",
-            "- D2 and D6 now have validated physical raw tables. D8 remains a",
-            "  reconstructed functional image; D15/D16 use the `ekta37` EPROM split.",
+            "- D2, D6, D8, and D94 have validated physical raw tables; D15/D16",
+            "  still use the deterministic `ekta37` EPROM split.",
             "- D2 is preservation-strength within current evidence: three captures",
             "  validate identically and include a separate power cycle. D6 also has three",
             "  matching preserved captures including a separate power cycle.",
@@ -240,19 +244,19 @@ def main() -> int:
             "- Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`",
             "  or D94 `.092`; they are lineage evidence, not matching processor",
             "  module programming tables.",
-            "- D94 is not reconstructable from current automatic evidence: the",
-            "  board identity and address inputs are known, but enable, outputs,",
-            "  and contents remain absent.",
+            "- D94 content is no longer reconstructed or absent. Its enable source,",
+            "  D3-D7 far destinations, and complete D93.2/.4 branches remain unresolved",
+            "  connectivity boundaries and still block an FDC hardware release.",
             "",
             "## Required External Closure",
             "",
             "- Locate the Baltijets programming-disk files referenced by doc 007.",
             "- Compare the validated D2/D6 tables against Baltijets programming files",
-            "  if recovered; obtain D8/D94 RE3 physical truth separately.",
+            "  if recovered; use it as independent corroboration of D8/D94 as well.",
             "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
             "  preserve raw pin-level and active-low asserted tables separately.",
-            "- Validate D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
-            "  a sound D94 dump still requires complete enable/output continuity.",
+            "- Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
+            "  the adopted D94 table still requires complete enable/output continuity.",
             "- Repeatedly read physical D15/D16 and compare their concatenation",
             "  with `roms/ekta37.bin`; preserve any stable mismatch as a variant.",
             "",

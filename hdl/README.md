@@ -34,8 +34,10 @@ They are not generic cycle-accurate replacements for every original IC mode.
   structural/LVS truth. Runnable simulation uses the explicitly non-LVS
   `decode_prom_functional` memory-map oracle until the joined conductor's
   downstream D8/D13/D92 timing topology is complete enough to execute directly.
-- D94's first three outputs are wired to the accepted local FDC controls; its
-  enable, remaining outputs, and `.092` contents are unknown.
+- D94's validated physical `.092` table is modeled with open-collector outputs,
+  and its first three outputs are wired to the accepted local FDC controls. Its
+  enable source, remaining far destinations, and complete D93 strobe branches
+  are unknown.
 - Nine official FDC-support devices have package pins and power endpoints in
   the board model but no functional signal closure or HDL instances;
   `docs/unmodeled-footprint-inventory.md` owns that boundary.
