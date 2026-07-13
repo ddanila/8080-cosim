@@ -501,14 +501,21 @@ module juku_top (
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(d100_oe_boundary), .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
     wire d94_d3, d94_d4, d94_d5, d94_d6, d94_d7;
 `ifdef YOSYS
+    wire [4:0] d94_a_boundary;
     wire d94_en_boundary;
 `else
+    // Pulling unresolved inputs low keeps the structural device deterministic
+    // in runnable simulation; these defaults are not physical connectivity.
+    tri0 [4:0] d94_a_boundary;
     tri0 d94_en_boundary;
 `endif
     // July-2026 two-sided local photo registration + continuous component
     // copper: D94.1(D0)->D93.4 RE, .2(D1)->D93.3 CS, .3(D2)->D93.2 WE.
     // The photographs show no branch to the formerly assumed global I/O rails.
-    re3_prom_092 U_D94 (.a(BA[15:11]), .e_n(d94_en_boundary),
+    // A0-A4 were added to BA11-BA15 only by analogy in the original FDC
+    // scaffold; no .009 source proves that mapping, so they remain independent
+    // physical continuity boundaries until measured.
+    re3_prom_092 U_D94 (.a(d94_a_boundary), .e_n(d94_en_boundary),
                         .d({d94_d7, d94_d6, d94_d5, d94_d4,
                             d94_d3, fdc_prom_we_n, fdc_prom_cs_n, fdc_prom_re_n}));
 

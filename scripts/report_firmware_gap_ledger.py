@@ -89,7 +89,7 @@ def main() -> int:
     d94_ok = marker(
         "docs/d94-reconstruction-constraints.md",
         "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
-        "D94.10-D94.14 map to `BA11..BA15`",
+        "all five address inputs are explicit continuity boundaries",
         "validated/d94_092.raw.bin",
     ) and d94_image_ok
     re3_lineage_ok = marker(
@@ -152,7 +152,7 @@ def main() -> int:
             "FDC control/decode PROM",
             d94_cell,
             "`docs/d94-reconstruction-constraints.md`",
-            "programming-disk comparison plus complete D94.15 and D93.2/.4 strobe-branch continuity",
+            "programming-disk comparison plus complete D94.10-.15 input/enable and D93.2/.4 strobe-branch continuity",
         ],
         [
             "D15",
@@ -244,8 +244,8 @@ def main() -> int:
             "- Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`",
             "  or D94 `.092`; they are lineage evidence, not matching processor",
             "  module programming tables.",
-            "- D94 content is no longer reconstructed or absent. Its enable source,",
-            "  D3-D7 far destinations, and complete D93.2/.4 branches remain unresolved",
+            "- D94 content is no longer reconstructed or absent. Its A0-A4 input and",
+            "  enable sources, D3-D7 far destinations, and complete D93.2/.4 branches remain unresolved",
             "  connectivity boundaries and still block an FDC hardware release.",
             "",
             "## Required External Closure",
@@ -256,7 +256,7 @@ def main() -> int:
             "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
             "  preserve raw pin-level and active-low asserted tables separately.",
             "- Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
-            "  the adopted D94 table still requires complete enable/output continuity.",
+            "  the adopted D94 table still requires complete input/enable/output continuity.",
             "- Repeatedly read physical D15/D16 and compare their concatenation",
             "  with `roms/ekta37.bin`; preserve any stable mismatch as a variant.",
             "",

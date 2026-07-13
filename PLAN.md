@@ -59,9 +59,13 @@ closed and the corrected board has been rerouted and reviewed.
    remove the unused function from released artifacts. D93.40 `VDD_12V` must be
    proved against the board's +12 V rail before any power-up.
 2. **Finish D94 `.092` connectivity.** The validated repeated physical content
-   table is adopted. The source model now has BA11..BA15, power, and the
-   photo-proven D94.1/.2/.3 paths to D93.4/.3/.2
+   table is adopted. The source model has power and the photo-proven
+   D94.1/.2/.3 paths to D93.4/.3/.2
    (`FDC_RE_N`/`FDC_CS_N`/`FDC_WE_N`). Resolve pin 15 and D3-D7 destinations.
+   Also continuity-map input pins 10-14: their former BA11..BA15 assignment was
+   introduced by the original FDC scaffold only as a same-as-D8 analogy, not
+   from `.009` scan or measurement evidence, and is now retired behind five
+   explicit input boundaries.
    The corrected horizontal D94/D100/D98 placement must then be rerouted.
    All five remaining output pads and pin 15 now have explicit photo-grounded
    boundary nets, so they are no longer misreported as unused/unconnected;
@@ -83,7 +87,7 @@ but complete rerouting remains deferred until the functional netlist stops
 changing; the remaining P0 connectivity work would otherwise invalidate it.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 241 source-risk nets and 9 official FDC
+   current generated evidence lists 246 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -269,7 +273,10 @@ Next tracing order:
    D93.18/.17 and their pin-7 output destinations for the period KP12 write-
    precompensation pattern. Existing Juku photo evidence excludes D96 section 2
    and D99 section 1 from the WD roles; neither reference proves Juku continuity.
-3. D94 pin 15 and outputs D3-D7, then D30 section B and the D105 WAIT handoff.
+3. D94 inputs A0-A4/pins 10-14, pin 15, and output D3/pin 4 first; outputs
+   D4-D7 still need copper reconstruction for PCB fidelity but are invariant
+   released in the captured `.092` program. Then D30 section B and the D105
+   WAIT handoff.
 4. D41/memory timing, factory-wire endpoints (documented in
    `ref/schematics/dgsh5-109-009-sb-wire-table.md`; confirm by continuity),
    connector geometry, and the remaining analog/passive boundaries.
@@ -353,7 +360,8 @@ adoption road, in dependency order:
    physical table drives the three proved strobes into the structural ВГ93,
    but that instance is inert (`mr_n=1`, `clk=0`) and EKDOS boots on the
    behavioral `fdc_1793` selected by D9 `cs_fdc_n`. Adoption requires P0
-   connectivity item 2 (D94.15 enable source and D3-D7 destinations) plus
+   connectivity item 2 (D94 A0-A4 inputs, pin 15 enable source, and D3-D7
+   destinations) plus
    D93 functional closure (the D106.7 -> D93.26 RCLK chain, clock/reset,
    drive interface, D100 buffer direction/enable), after which the boot's
    FDC accesses move to the D94-decoded strobes and `fdc_1793` is retired.

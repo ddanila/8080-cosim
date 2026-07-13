@@ -33,7 +33,7 @@ two assemblies must not be mixed.
 | D84-D91 | К565РУ5 | populated RAM bank on the `.158/.009` target |
 | D92 | К555ЛЕ4 | memory/timing support logic |
 | D93 | КР1818ВГ93 | FDC |
-| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; pin 15 and output D3-D7 destinations remain open |
+| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; input pins 10-14, enable pin 15, and output D3-D7 destinations remain open; D4-D7 are invariant released in the adopted table |
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
 | D97, D99, D102 | К155АГ3 | FDC quadrant one-shots; owner photo shows the 8901 packages |
 | D100 | КР580ВА87 | FDC data-bus buffer |

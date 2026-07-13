@@ -9,6 +9,7 @@ order-report checks are added when the local fabrication tree is available.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -197,6 +198,25 @@ def main() -> int:
             failures.append(f"superseded live-status document still exists: {path}")
 
     board = read("kicad/juku.board.json")
+    try:
+        board_model = json.loads(board)
+    except json.JSONDecodeError as exc:
+        failures.append(f"board JSON is invalid: {exc}")
+        board_model = {"nets": {}}
+    board_nets = board_model.get("nets", {})
+    expected_d94_boundaries = {
+        f"D94_A{bit}_BOUNDARY": [["D94", str(10 + bit)]] for bit in range(5)
+    }
+    for net_name, expected_nodes in expected_d94_boundaries.items():
+        actual_nodes = board_nets.get(net_name, {}).get("nodes")
+        if actual_nodes != expected_nodes:
+            failures.append(
+                f"board JSON does not preserve {net_name} at {expected_nodes[0][0]}.{expected_nodes[0][1]}"
+            )
+    for net_name in ("BA11", "BA12", "BA13", "BA14", "BA15"):
+        nodes = board_nets.get(net_name, {}).get("nodes", [])
+        if any(node[0] == "D94" and node[1] in {"10", "11", "12", "13", "14"} for node in nodes):
+            failures.append(f"board JSON restores unsupported {net_name}-to-D94 address mapping")
     source_pcb = ROOT / "kicad/juku.kicad_pcb"
     source_drc = evidence["source PCB placement"]
     source_drc_hash = re.search(r"Board SHA256: `([0-9a-f]{64})`", source_drc)

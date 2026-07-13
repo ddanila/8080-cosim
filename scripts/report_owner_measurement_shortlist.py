@@ -120,7 +120,7 @@ def unnetted_pin_closure_rows() -> list[tuple[str, str, str]]:
         if ref == "D2":
             evidence = "dump/programming disk plus sheet-1 continuity"
         elif ref == "D94":
-            evidence = "enable/output continuity; physical .092 table is already validated"
+            evidence = "A0-A4 input, enable, and output continuity; physical .092 table is already validated"
         elif ref in {"D10", "D93", "D100"} | FDC_SUPPORT_REFS:
             evidence = "continuity from an actual `.009` FDC-populated board"
         elif ref == "D11":
@@ -206,9 +206,9 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
+            "resistance-map D94 inputs 10-14 and enable 15 to identified package pins/rails, trace active output D3/pin4 first, then D4-D7 for copper fidelity, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
             "`docs/d94-reconstruction-constraints.md`",
-            "tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before an FDC hardware release",
+            "replaces the retired same-as-D8 BA mapping with measured row semantics and resolves the PROM read/write control path before an FDC hardware release",
         ),
         (
             "P1",
@@ -360,9 +360,10 @@ def main() -> int:
             "## Current D94 blockers",
             "",
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
-            "- D94 address pins are already traced to `BA11..BA15`; the useful physical",
-            "  work starts with D94.15-to-D9.7 continuity (D9.9 negative control),",
-            "  and output-branch continuity; the `.092` content table is already closed.",
+            "- D94 A0-A4/pins 10-14 are explicit input boundaries: resistance-map each",
+            "  before interpreting the captured rows. Then map D94.15 and D3/pin4; D4-D7",
+            "  remain PCB-fidelity asks but never assert in the captured `.092` table.",
+            "  The content table itself is already closed.",
             "",
             "## Pin-Level Closure",
             "",
@@ -409,8 +410,12 @@ def main() -> int:
     if failed_checks:
         print("Missing evidence markers: " + ", ".join(failed_checks))
         return 1
-    if "Enable pin D94.15 is traced" not in d94_failures:
-        print("Unexpected D94 status: enable is no longer a blocker; review shortlist")
+    expected_d94_failures = {
+        "D94 address input sources are traced",
+        "Enable pin D94.15 is traced",
+    }
+    if not expected_d94_failures.issubset(set(d94_failures)):
+        print("Unexpected D94 status: input/enable blockers changed; review shortlist")
         return 1
     return 0
 

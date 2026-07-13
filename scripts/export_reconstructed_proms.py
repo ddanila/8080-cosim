@@ -110,7 +110,7 @@ def main() -> int:
             "  supersedes that artifact.",
             "- D94 `.092` physical raw SHA256 is",
             "  `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.",
-            "  HDL adopts its open-collector table; D94 enable/output continuity",
+            "  HDL adopts its open-collector table; D94 input/enable/output continuity",
             "  remains a separate board-evidence boundary.",
             "- No video/DRAM timing РЕ3 image is exported. The exact slot/state timing",
             "  remains a dump/programming-disk dependency.",

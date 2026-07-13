@@ -47,8 +47,8 @@ python3 scripts/report_io_decode_boundary.py
 | `C99_FAR` | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit |
 | `REV` | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked; +R13 1k pullup (v3_junction; R13/R14 pairing order assumed) |
 | `BA10` | `D15.21, D16.21, D17.21, D18.21, D19.21, D20.21, D21.21, D22.21, D24.3, D4.19, ... (+2)` | scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1) |
-| `BA11` | `D15.23, D16.23, D17.23, D18.23, D19.23, D20.23, D21.23, D22.23, D24.4, D4.18, ... (+5)` | scan |
-| `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.15, ... (+5)` | scan |
+| `BA11` | `D15.23, D16.23, D17.23, D18.23, D19.23, D20.23, D21.23, D22.23, D24.4, D4.18, ... (+4)` | scan |
+| `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.15, ... (+4)` | scan |
 | `IOWR` | `D10.2, D11.10, D26.36, D27.36, D29.7, D5.27, D54.23, D55.23, D57.23, D7.10` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision |
 | `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.8, D5.25, D54.22, D55.22, D57.22, D7.9` | scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision |
 | `D25_T` | `D25.11, D7.6` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past the D29.3 rail without a junction and terminates as a T on MEMW/D29 physical pin1, while pin5 meets D29.3 at an explicit junction whose upstream source remains unread. D25.E (9) -> GND like D23/D24 |

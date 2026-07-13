@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `302`
-- Nets modeled: `572`
+- Nets modeled: `577`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `241`
+- Net-level source-risk gaps: `246`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -54,7 +54,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 23 |
 | PROM truth | 1 | 0 |
-| PROM/decode | 0 | 18 |
+| PROM/decode | 0 | 23 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
 | connector boundary | 1 | 0 |
@@ -90,7 +90,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092; validated repeated physical table adopted РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); validated physical .0... |
+| `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092; validated repeated physical table adopted РЕ3 pinout; A0-A4 were originally scaffolded onto BA11-15 only by analogy... |
 
 ### analog/source
 
@@ -331,6 +331,11 @@ same fidelity ledger as the chip provenance gaps.
 | `D93_WF_VFOE_BOUNDARY` | FDC owner-continuity | `D93.33` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a... |
 | `D93_WG_BOUNDARY` | FDC owner-continuity | `D93.30` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin30 WG; remote drive-interface continuity is not proved, so this remains a measu... |
 | `D93_WPRT_BOUNDARY` | FDC owner-continuity | `D93.36` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measur... |
+| `D94_A0_BOUNDARY` | PROM/decode | `D94.10` | D94 .009 input continuity boundary: the retired BA11 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, o... |
+| `D94_A1_BOUNDARY` | PROM/decode | `D94.11` | D94 .009 input continuity boundary: the retired BA12 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, o... |
+| `D94_A2_BOUNDARY` | PROM/decode | `D94.12` | D94 .009 input continuity boundary: the retired BA13 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, o... |
+| `D94_A3_BOUNDARY` | PROM/decode | `D94.13` | D94 .009 input continuity boundary: the retired BA14 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, o... |
+| `D94_A4_BOUNDARY` | PROM/decode | `D94.14` | D94 .009 input continuity boundary: the retired BA15 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, o... |
 | `D94_D3` | PROM/decode | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) m... |
 | `D94_D4` | PROM/decode | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |

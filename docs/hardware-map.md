@@ -66,7 +66,7 @@ bus/wait PROM and must not be described as the I/O decoder.
 
 The digital twin reaches Monitor and EKDOS prompts, and the modeled endpoints
 pass structural comparison. That does not release the current PCB for
-fabrication: routed-snapshot parity, D94's remaining enable/output/content
+fabrication: routed-snapshot parity, D94's remaining input/enable/output
 boundary, and 9 official FDC-support devices with untraced functional pins
 remain open design items. Validated physical D2 contents and the measured
 D2/D30/D105/D13 WAIT/READY handoff are adopted in the source PCB and HDL;

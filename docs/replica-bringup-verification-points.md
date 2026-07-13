@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `241`
-- Verification-point endpoints checked in PCB: `404`
+- Verification-point nets: `246`
+- Verification-point endpoints checked in PCB: `409`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2239`
 - All board endpoints checked in routed PCB: `2239`
@@ -24,7 +24,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 23 |
-| logic | 177 |
+| logic | 182 |
 | memory/decode | 11 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 404/404 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 404/404 net names matched |
+| Risk endpoints present on PCB pads | PASS | 409/409 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 409/409 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -54,7 +54,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2239/2239 | 2239/2239 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1883/2239 | 1813/2239 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1883/2239 | 1808/2239 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -455,6 +455,11 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - R11.2: `ROM_SEL` != `D6_MEM_SELECT_N`
 - D92.5: `RAM_SEL` != `D6_MEM_SELECT_N`
 - R12.2: `RAM_SEL` != `D6_MEM_SELECT_N`
+- D94.10: `BA11` != `D94_A0_BOUNDARY`
+- D94.11: `BA12` != `D94_A1_BOUNDARY`
+- D94.12: `BA13` != `D94_A2_BOUNDARY`
+- D94.13: `BA14` != `D94_A3_BOUNDARY`
+- D94.14: `BA15` != `D94_A4_BOUNDARY`
 - D105.9: `D2_WAIT_RAW` != `DBIN`
 - D105.6: `D105_WAIT_PREINV` != `DBIN_GATED`
 - D5.4: `DBIN` != `DBIN_GATED`
@@ -599,6 +604,11 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D93_WF_VFOE_BOUNDARY` | FDC | `D93.33` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin33 WF_VFOE; remote drive/separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_WG_BOUNDARY` | FDC | `D93.30` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin30 WG; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_WPRT_BOUNDARY` | FDC | `D93.36` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
+| `D94_A0_BOUNDARY` | logic | `D94.10` | D94 .009 input continuity boundary: the retired BA11 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_A1_BOUNDARY` | logic | `D94.11` | D94 .009 input continuity boundary: the retired BA12 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_A2_BOUNDARY` | logic | `D94.12` | D94 .009 input continuity boundary: the retired BA13 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_A3_BOUNDARY` | logic | `D94.13` | D94 .009 input continuity boundary: the retired BA14 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D94_A4_BOUNDARY` | logic | `D94.14` | D94 .009 input continuity boundary: the retired BA15 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D3` | logic | `D94.4` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destinat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D4` | logic | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D5` | logic | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

@@ -16,34 +16,37 @@ python3 scripts/report_d94_reconstruction_constraints.py
 
 Board identity: D94 type is `RE3_PROM_092`.
 
-Address summary: D94.10-D94.14 map to `BA11..BA15` in the board JSON.
+Address summary: all five address inputs are explicit continuity boundaries.
+The former `BA11..BA15` mapping came from the original FDC scaffold's
+same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
-| 10 | A0 | `BA11` | scan |
-| 11 | A1 | `BA12` | scan |
-| 12 | A2 | `BA13` | scan |
-| 13 | A3 | `BA14` | scan |
-| 14 | A4 | `BA15` | scan |
+| 10 | A0 | `D94_A0_BOUNDARY` | D94 .009 input continuity boundary: the retired BA11 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement |
+| 11 | A1 | `D94_A1_BOUNDARY` | D94 .009 input continuity boundary: the retired BA12 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement |
+| 12 | A2 | `D94_A2_BOUNDARY` | D94 .009 input continuity boundary: the retired BA13 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement |
+| 13 | A3 | `D94_A3_BOUNDARY` | D94 .009 input continuity boundary: the retired BA14 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement |
+| 14 | A4 | `D94_A4_BOUNDARY` | D94 .009 input continuity boundary: the retired BA15 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement |
 | 15 | E_N | `D94_EN_BOUNDARY` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the adjacent tile |
 
 ## Output Pins
 
-| Pin | Role | Net | Source |
-| ---: | --- | --- | --- |
-| 1 | D0 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper |
-| 2 | D1 | `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper |
-| 3 | D2 | `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper |
-| 4 | D3 | `D94_D3` | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary |
-| 5 | D4 | `D94_D4` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
-| 6 | D5 | `D94_D5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
-| 7 | D6 | `D94_D6` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projection lands on bare substrate, so the far destination remains a boundary |
-| 9 | D7 | `D94_D7` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
+| Pin | Role | Net | Captured activity | Source |
+| ---: | --- | --- | --- | --- |
+| 1 | D0 | `FDC_RE_N` | asserts at rows 03, 07, 11, 15 | July-2026 two-sided local fit + continuous component copper |
+| 2 | D1 | `FDC_CS_N` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | July-2026 two-sided local fit + continuous component copper |
+| 3 | D2 | `FDC_WE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 | July-2026 two-sided local fit + continuous component copper |
+| 4 | D3 | `D94_D3` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary |
+| 5 | D4 | `D94_D4` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
+| 6 | D5 | `D94_D5` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
+| 7 | D6 | `D94_D6` | invariant released | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projection lands on bare substrate, so the far destination remains a boundary |
+| 9 | D7 | `D94_D7` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 
 ## KiCad DSN Cross-check
 
-The routed DSN independently exposes only D94 power/ground and address
-connections. It does not provide the missing enable/output nets.
+The held routed DSN predates this provenance correction and still carries
+the retired BA11..BA15 scaffold mapping. It is retained as stale-package
+evidence, not independent proof of the D94 input sources.
 
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |
@@ -56,11 +59,11 @@ connections. It does not provide the missing enable/output nets.
 | 7 | D6 | - | missing in DSN |
 | 8 | GND | `GND` | PASS |
 | 9 | D7 | - | missing in DSN |
-| 10 | A0 | `BA11` | PASS |
-| 11 | A1 | `BA12` | PASS |
-| 12 | A2 | `BA13` | PASS |
-| 13 | A3 | `BA14` | PASS |
-| 14 | A4 | `BA15` | PASS |
+| 10 | A0 | `BA11` | STALE scaffold mapping |
+| 11 | A1 | `BA12` | STALE scaffold mapping |
+| 12 | A2 | `BA13` | STALE scaffold mapping |
+| 13 | A3 | `BA14` | STALE scaffold mapping |
+| 14 | A4 | `BA15` | STALE scaffold mapping |
 | 15 | E_N | - | missing in DSN |
 | 16 | VCC | `P5V` | PASS |
 
@@ -80,11 +83,11 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | 7 | D6 | `D94_D6` | PASS |
 | 8 | GND | `GND` | PASS |
 | 9 | D7 | `D94_D7` | PASS |
-| 10 | A0 | `BA11` | PASS |
-| 11 | A1 | `BA12` | PASS |
-| 12 | A2 | `BA13` | PASS |
-| 13 | A3 | `BA14` | PASS |
-| 14 | A4 | `BA15` | PASS |
+| 10 | A0 | `D94_A0_BOUNDARY` | PASS |
+| 11 | A1 | `D94_A1_BOUNDARY` | PASS |
+| 12 | A2 | `D94_A2_BOUNDARY` | PASS |
+| 13 | A3 | `D94_A3_BOUNDARY` | PASS |
+| 14 | A4 | `D94_A4_BOUNDARY` | PASS |
 | 15 | E_N | `D94_EN_BOUNDARY` | PASS |
 | 16 | VCC | `P5V` | PASS |
 
@@ -93,8 +96,10 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
-| Address pins D94.10-D94.14 are traced | PASS | board JSON nets |
-| DSN agrees on D94 power/address and lacks output nets | PASS | `kicad/juku.dsn` D94 pins |
+| Every D94 address input is explicitly accounted | PASS | board JSON nets |
+| D94 address input sources are traced | FAIL | pins 10-14 remain continuity boundaries |
+| Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
+| Held routed DSN is identified with the retired input mapping | PASS | `kicad/juku.dsn` D94 pins |
 | PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | FAIL | board JSON nets |
@@ -102,15 +107,16 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Any D94 output net is traced | PASS | `FDC_RE_N`, `FDC_CS_N`, `FDC_WE_N`, `D94_D3`, `D94_D4`, `D94_D5`, `D94_D6`, `D94_D7` |
 | Every D94 output pad has an explicit net/boundary | PASS | 8/8 output pins netted |
 | Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 5, 6, 7, 9 |
+| Captured table asserts only D0-D3; D4-D7 stay released | PASS | exhaustive 32-row physical table classification |
 | Validated `.092` physical image exists and matches SHA256 | PASS | `ref/physical-proms/validated/d94_092.raw.bin` / `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0` |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | `.113/.117` scans are guarded as not-D94 | PASS | `docs/re3-firmware-inspection.md` |
 | Vendored programming disks have a guarded PROM-name/marker audit | PASS | `docs/vendored-disk-catalog.md` |
 | HDL adopts physical open-collector table | PASS | `hdl/devices.v::re3_prom_092` |
+| HDL keeps D94 A0-A4 off the retired BA mapping | PASS | `hdl/juku_top.v` boundary vector |
 | `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
 | Video slot audit does not rely on D94 | PASS | `docs/video-slot-timing-audit.md` |
-| D94 row alias with PIT2/FDC groups is guarded | PASS | ports `18-1B` and `1C-1F` both select D94 row `00011`; D9.Y6/Y7 distinguish the groups |
 
 ## Textual / Photo Survey Leads
 
@@ -133,72 +139,52 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   history and generic К155РЕ3 references do not constrain its contents.
 - Local two-sided fits and continuous copper now establish D0-D2 as the
   private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources
-  still do not provide pin 15's source or D3-D7 destinations; physical
+  still do not provide A0-A4, pin 15, or D3-D7 destinations; physical
   captures now provide the PROM contents.
+- Git history proves the former A0-A4=`BA11..BA15` assignment entered in
+  commit `ed69b9d` as an FDC scaffold explicitly described as the same
+  convention as D8. No `.009` electrical source or owner measurement was
+  cited. The source PCB now represents pins 10-14 as measurement boundaries.
 - Registered component-side local fits show copper departing every remaining
   output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary
-  nets. Their far destinations remain unknown,
-  but none may be reconstructed as an unused/NC PROM output.
+  nets. Their far destinations remain unknown, so none may be removed from
+  the PCB as NC. The captured program nevertheless keeps D4-D7 released at
+  every row; only D3 among those five can affect circuit behavior.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
-  in board JSON/DSN, but D94 pin 15 and the remaining D3-D7 are not tied to it in
+  in board JSON/DSN, but D94 inputs A0-A4, pin 15, and D3-D7 are not tied to it in
   board JSON, DSN, or PCB evidence. It cannot substitute for the missing
-  D94 enable/output continuity.
+  D94 input/enable/output continuity.
 - A 2026-07-11 high-resolution recheck projected D93.2 and D93.4 from
   the validated reflected D94 solder fit into the same source image.
   Neither pad shows an obvious solder-side fanout, while D94.15 still
   cannot be followed to a unique endpoint across the adjacent tile.
   This is useful negative photo evidence, not a substitute for continuity.
 
-## Control-feasibility constraint
+## Input-mapping correction and control constraint
 
-The three proved outputs create a circuit-level constraint that the PROM
-dump alone cannot resolve:
+The three proved output destinations and physical table reject the old
+scaffold mapping as a closed physical claim:
 
-- D94's five proved row inputs are only buffered address bits `BA11..BA15`.
 - D94.D0 and D94.D2 terminate at the separate active-low D93 `/RE` and
   `/WE` inputs. An FDC register must support both reads and writes at the
   same port address.
-- A 32 x 8 combinational PROM row selected only by those five address bits
-  has the same D0/D2 values for a read and a write to that address. Its one
-  common active-low enable cannot independently select the read output on
-  one cycle and the write output on the other.
-- Therefore the currently visible direct D94-to-D93 copper is not a complete
-  functional explanation. At least one missing fact must exist: additional
-  wired/open-collector branches at D93.2/.4, a direction-dependent D94.15
-  network with further gating, a wrong address/pin premise, or another
-  target-revision circuit detail hidden by the photographs.
+- If A0-A4 were only `BA11..BA15`, the same PROM row would drive both cycle
+  directions and could not independently select `/RE` versus `/WE`.
+- That mapping was never measured; it was copied by analogy from D8. The
+  contradiction therefore narrows the next work to the actual D94 input
+  sources, plus any wired/open-collector branches at D93.2/.4 and pin 15.
 
-This does not refute the accepted local copper paths. It proves that a
-`.092` byte dump by itself is insufficient to release the FDC interface;
-continuity from D93.2, D93.4, and D94.15 must include every branch, not just
-the visible local segment.
-
-## Port-group row constraint
-
-On the 8080 I/O cycle the port byte is mirrored onto the buffered high
-address byte used by this decode cluster. D94 sees `BA11..BA15`, i.e.
-port bits 3..7, while D9 additionally sees `BA10` (port bit 2). Therefore:
-
-| Port group | D9 output | D94 row BA15..BA11 |
-| --- | --- | --- |
-| `18-1B` PIT2 | `D9.Y6` / `CS_D57` | `00011` |
-| `1C-1F` FDC | `D9.Y7` / `CS_FDC` | `00011` |
-
-D94 cannot distinguish those two groups from its five row inputs. Its
-pin-15 enable, or an equivalent missing branch, must therefore carry the
-D9 group distinction if D94 is to affect only the FDC. This makes
-`CS_FDC` a strong continuity candidate for D94.15, but not a promoted net:
-the photographs do not yet prove that connection. Even if D94.15 is
-`CS_FDC`, the common enable still cannot distinguish `/RE` from `/WE`;
-direction-dependent branches at D93.2/.4 remain required.
+This does not refute the accepted local D94-to-D93 copper. It removes a
+false source claim and makes the required measurement explicit: map pins
+10-15 and every branch from D93.2/.4 before assigning row semantics.
 
 ## Address Space
 
-D94 is a 32 x 8 PROM. The address pins are traced and the table below
-comes directly from the validated repeated physical reads. Unknown D3-D7
-destinations do not make their captured bit values unknown.
+D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;
+it intentionally makes no claim about their board signal sources. Unknown
+input wiring or D3-D7 destinations do not make captured bits unknown.
 
-| Row | BA15 | BA14 | BA13 | BA12 | BA11 | D7..D0 |
+| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | 00 | 0 | 0 | 0 | 0 | 0 | `FF` |
 | 01 | 0 | 0 | 0 | 0 | 1 | `FF` |
@@ -235,16 +221,19 @@ destinations do not make their captured bit values unknown.
 
 ## Reconstruction Boundary
 
-- Known: D94 is present in the .009 FDC quadrant and its five address
-  inputs are wired to `BA11..BA15`.
+- Known: D94 is present in the .009 FDC quadrant; all five address input
+  pads are modeled, but their remote sources are not yet known.
 - Known output destinations: D0-D2 drive the private D93 read/select/write
   controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.
 - Known content: three matching reads including a power-cycled read yield
   raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
-- Unknown: D94 pin 15's upstream source and D3-D7 far destinations remain
-  unresolved behind explicit boundary nets.
+- Unknown: D94 A0-A4/pins 10-14, pin 15's upstream source, and D3-D7 far
+  destinations remain unresolved behind explicit boundary nets.
 - D3-D7 are destination-unknown, not unused: registered component-side
   photographs prove copper leaves all five output pads.
+- D4-D7 are physically wired but program-inert: raw bits 4-7 remain one
+  (open-collector released) at all 32 captured rows. D3 is the only
+  behaviorally active output whose far destination is still unknown.
 - The traced `V3_RC` RC network is a negative cross-check here, not a
   replacement source for D94: its current nodes are `R17.1`, `C99.1`,
   and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.

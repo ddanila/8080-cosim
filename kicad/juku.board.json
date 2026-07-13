@@ -4314,7 +4314,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092; validated repeated physical table adopted",
-    "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0; corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
+    "pins": "РЕ3 pinout; A0-A4 were originally scaffolded onto BA11-15 only by analogy with D8, not from .009 evidence, and are now explicit continuity boundaries; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0; corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
    }
   },
   {
@@ -6203,10 +6203,6 @@
     [
      "D48",
      "10"
-    ],
-    [
-     "D94",
-     "10"
     ]
    ]
   },
@@ -6268,10 +6264,6 @@
     [
      "D9",
      "3"
-    ],
-    [
-     "D94",
-     "11"
     ]
    ]
   },
@@ -6297,10 +6289,6 @@
     [
      "D48",
      "13"
-    ],
-    [
-     "D94",
-     "12"
     ]
    ]
   },
@@ -6325,10 +6313,6 @@
     ],
     [
      "D49",
-     "13"
-    ],
-    [
-     "D94",
      "13"
     ]
    ]
@@ -6355,10 +6339,6 @@
     [
      "D49",
      "10"
-    ],
-    [
-     "D94",
-     "14"
     ]
    ]
   },
@@ -13684,6 +13664,10 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "25"]]
   },
+  "D94_A0_BOUNDARY": {
+   "src": "D94 .009 input continuity boundary: the retired BA11 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
+   "nodes": [["D94", "10"]]
+  },
   "D93_RAW_READ_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "27"]]
@@ -15759,6 +15743,22 @@
   "C22_2_BOUNDARY": {
    "src": ".009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destination is not readable",
    "nodes": [["C22", "2"]]
+  },
+  "D94_A1_BOUNDARY": {
+   "src": "D94 .009 input continuity boundary: the retired BA12 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
+   "nodes": [["D94", "11"]]
+  },
+  "D94_A2_BOUNDARY": {
+   "src": "D94 .009 input continuity boundary: the retired BA13 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
+   "nodes": [["D94", "12"]]
+  },
+  "D94_A3_BOUNDARY": {
+   "src": "D94 .009 input continuity boundary: the retired BA14 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
+   "nodes": [["D94", "13"]]
+  },
+  "D94_A4_BOUNDARY": {
+   "src": "D94 .009 input continuity boundary: the retired BA15 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
+   "nodes": [["D94", "14"]]
   }
  },
  "no_connects": [

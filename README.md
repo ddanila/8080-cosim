@@ -22,9 +22,10 @@ with the machine-readable board model.
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
   repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and
   D6/D13 continuity is adopted in the source model and HDL, while the routed
-  snapshot still needs replacement. D94 content truth is closed, but its pin
-  15 source and the far destinations or branches of outputs D3-D7 remain
-  unknown. There are 9 official
+  snapshot still needs replacement. D94 content truth is closed, but its A0-A4
+  input sources, pin 15 source, and the far destinations or branches of outputs
+  D3-D7 remain unknown; the former BA11-BA15 input assignment was an unproved
+  scaffold analogy and is retired. There are 9 official
   FDC-support ICs with only their physical pin maps and power endpoints modeled.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   D6's validated physical table and joined output conductor stay LVS-visible,
@@ -36,7 +37,7 @@ with the machine-readable board model.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
   8 and 11 remain explicit boundaries. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 241 modeled nets retain source-risk annotations requiring
+  In total, 246 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
