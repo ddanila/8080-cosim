@@ -175,8 +175,11 @@ def main() -> int:
             all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
             and all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
             and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
+            and set(nodes(board, "D59_O10_TAG10")) == {("D59", "10")}
+            and ("D59", "10") not in set(nodes(board, "SOUND"))
+            and "Automatic tag-number chase exhausted" in board["nets"]["D59_O10_TAG10"]["src"]
             and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6", "8", "9")),
-            "D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary",
+            "D35.4->R39.1 guarded; D59.5/.6 NC; D59.10 local tag10 explicitly distinct from D57.13 SOUND tag10",
         ),
         (
             "D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge",
@@ -255,6 +258,7 @@ def main() -> int:
         "XTAL16M",
         "D39_O8",
         "D39Y",
+        "D59_O10_TAG10",
         "D56_CLR",
         "D56_RC1",
         "D56_C1",
@@ -283,6 +287,10 @@ def main() -> int:
             "  separate D36.8/DRAM write rail 16. Native full-sheet review shows no",
             "  junction, and such a merge would short two push-pull outputs; its remote",
             "  destination therefore remains a continuity boundary.",
+            "- D59.10's local timing-bundle marker 10 is likewise not the D57.13 SOUND",
+            "  bundle marker 10. Native full-sheet review shows no continuous conductor,",
+            "  and merging them would short active TTL outputs; automatic tag-number",
+            "  chasing is exhausted pending continuity or stronger imagery.",
             "- Do not replace these boundaries with a behavioral timing guess from the",
             "  runnable twin. They need stronger sheet-2 imagery, macro photo,",
             "  continuity check, or scope trace before being removed from the",

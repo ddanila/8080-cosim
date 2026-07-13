@@ -40,7 +40,7 @@ python3 scripts/report_memory_timing_boundary.py
 
 | Boundary | Result | Current endpoints |
 | --- | --- | --- |
-| D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary |
+| D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 guarded; D59.5/.6 NC; D59.10 local tag10 explicitly distinct from D57.13 SOUND tag10 |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
 | D56_Q2_N tag-16 far destination remains unresolved | PASS | D56.12; explicitly not merged with D36.8/DRAM W rail16 |
 
@@ -61,6 +61,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `XTAL16M` | `D39.10, D103.2, D42.9, D43.9` | traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43 ИР16, and D39 NAND input pin10; it is separate from D56.Q_N. Likely = the OSC net continuation (D59) — source-side merge remains pending |
 | `D39_O8` | `D39.8, D59.11` | scan |
 | `D39Y` | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced |
+| `D59_O10_TAG10` | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled numeral-10 use is D57.13 SOUND in a distinct bundle domain; no continuous conductor joins them, and merging would short two active TTL outputs. Automatic tag-number chase exhausted, so D59.10 remains a deliberate continuity boundary |
 | `D56_CLR` | `R61.2, D56.3, D56.11` | traced sheet-2 (crops s2_d56/s2_d56_pin2): R61 12k pullup (from +5V) -> D56 section-1 CLR_N pin 3; the section-2 CLR_N pin 11 vertical joins the same row [join read at low zoom -- probable, marked] |
 | `D56_RC1` | `D56.15, R59.1, C8.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: RC pin 15 = R59 33k + C8 15nF |
 | `D56_C1` | `D56.14, C8.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: C pin 14 = C8 far plate |
@@ -83,6 +84,10 @@ python3 scripts/report_memory_timing_boundary.py
   separate D36.8/DRAM write rail 16. Native full-sheet review shows no
   junction, and such a merge would short two push-pull outputs; its remote
   destination therefore remains a continuity boundary.
+- D59.10's local timing-bundle marker 10 is likewise not the D57.13 SOUND
+  bundle marker 10. Native full-sheet review shows no continuous conductor,
+  and merging them would short active TTL outputs; automatic tag-number
+  chasing is exhausted pending continuity or stronger imagery.
 - Do not replace these boundaries with a behavioral timing guess from the
   runnable twin. They need stronger sheet-2 imagery, macro photo,
   continuity check, or scope trace before being removed from the

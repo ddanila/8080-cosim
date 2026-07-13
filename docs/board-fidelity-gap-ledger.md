@@ -54,10 +54,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 14 |
 | clock/I/O | 0 | 6 |
-| logic/source | 9 | 147 |
+| logic/source | 9 | 146 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
+| sound/analog | 0 | 1 |
 | video/analog | 0 | 14 |
 
 ## Chip-Level Gaps
@@ -275,7 +276,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and o... |
 | `D56_Q2N_TAG16` | memory/timing | `D56.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is dispr... |
 | `D58_STB_TAG5` | logic/source | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established |
-| `D59_O10_TAG10` | logic/source | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established |
+| `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10... |
 | `D6_MEM_SELECT_N` | PROM/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation... |
 | `D6_V_ENABLE` | PROM/decode | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is... |
 | `D7_A1_BOUNDARY` | logic/source | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so i... |
