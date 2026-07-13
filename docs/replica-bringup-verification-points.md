@@ -27,8 +27,8 @@ visible and actionable before manufacturing and first power-on.
 | logic | 158 |
 | memory/decode | 9 |
 | sound/analog | 2 |
-| timing/I/O | 7 |
-| video/analog | 13 |
+| timing/I/O | 6 |
+| video/analog | 14 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -624,7 +624,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable | Scope/capture video or timing node during video bring-up. |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout | Scope/capture video or timing node during video bring-up. |
 | `W_RAIL16` | memory/decode | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reprodu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
-| `XTAL16M` | timing/I/O | `D39.10, D103.2, D42.9, D43.9` | traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43 ИР16, and D39 NAND i... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `XTAL16M` | video/analog | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate fr... | Scope/capture video or timing node during video bring-up. |
 
 ## Design-release disposition
 

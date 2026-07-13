@@ -42,6 +42,7 @@ python3 scripts/report_memory_timing_boundary.py
 | --- | --- | --- |
 | D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 guarded; D59.5/.6 NC; D59.10 local tag10 explicitly distinct from D57.13 SOUND tag10 |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
+| OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | OSC and XTAL16M remain distinct source nets pending continuity |
 | D56_Q2_N tag-16 far destination remains unresolved | PASS | D56.12; explicitly not merged with D36.8/DRAM W rail16 |
 
 ## Current Timing Nets
@@ -58,7 +59,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `D36_CAS_IN` | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57, but the common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so this remains a deliberate continuity boundary |
 | `D39_MEMCYC` | `D39.3, D39.4, D38.5` | scan sheet-2 full-resolution (bite-2 plus D38 load-gate bundle): D39 output3 feeds its section-4 input pin4 and numbered timing rail4, which lands directly on D38 load-gate input pin5 |
 | `PHI2TTL` | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to sheet 1 [sheet-1 pin pending]; + D53.4 G2A_N (strobe window = Phi2) [scan sheet-2 (chase crops c4_g3_src: 4x y-match both feeds)] |
-| `XTAL16M` | `D39.10, D103.2, D42.9, D43.9` | traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43 ИР16, and D39 NAND input pin10; it is separate from D56.Q_N. Likely = the OSC net continuation (D59) — source-side merge remains pending |
+| `XTAL16M` | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate from D56.Q_N. A continuous source-side conductor to D59.2/D59.3 OSC is not drawn through the intervening bundle, so functional expectation alone cannot prove the PCB merge; automatic scan chase exhausted and each net remains a deliberate continuity boundary |
 | `D39_O8` | `D39.8, D59.11` | scan |
 | `D39Y` | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced |
 | `D59_O10_TAG10` | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled numeral-10 use is D57.13 SOUND in a distinct bundle domain; no continuous conductor joins them, and merging would short two active TTL outputs. Automatic tag-number chase exhausted, so D59.10 remains a deliberate continuity boundary |
@@ -88,6 +89,10 @@ python3 scripts/report_memory_timing_boundary.py
   bundle marker 10. Native full-sheet review shows no continuous conductor,
   and merging them would short active TTL outputs; automatic tag-number
   chasing is exhausted pending continuity or stronger imagery.
+- The tag-14 `XTAL16M` bundle is functionally expected to originate at the
+  D59 oscillator, but the native sheet does not draw a continuous source-side
+  path through the intervening bundle. `OSC` and `XTAL16M` therefore remain
+  separate until continuity or stronger artwork proves the PCB merge.
 - Do not replace these boundaries with a behavioral timing guess from the
   runnable twin. They need stronger sheet-2 imagery, macro photo,
   continuity check, or scope trace before being removed from the

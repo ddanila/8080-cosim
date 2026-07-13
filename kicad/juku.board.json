@@ -15712,7 +15712,7 @@
    ]
   },
   "XTAL16M": {
-   "src": "traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43 ИР16, and D39 NAND input pin10; it is separate from D56.Q_N. Likely = the OSC net continuation (D59) — source-side merge remains pending",
+   "src": "scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate from D56.Q_N. A continuous source-side conductor to D59.2/D59.3 OSC is not drawn through the intervening bundle, so functional expectation alone cannot prove the PCB merge; automatic scan chase exhausted and each net remains a deliberate continuity boundary",
    "nodes": [
     [
      "D39",

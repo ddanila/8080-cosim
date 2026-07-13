@@ -422,7 +422,8 @@ module juku_top (
 
     // ---- video dot clock: 16 MHz crystal rail -> ИЕ10 D103 divider (-> 1.23 MHz) ----
     // D56 is the adjacent sync/one-shot chain; its Q_N is source-proved separate from this rail.
-    // 16MHz source bundle tag14 becomes local control rail3 at D39/D42/D43; OSC-merge pending.
+    // 16MHz source bundle tag14 becomes local control rail3 at D39/D42/D43; native-sheet
+    // source-side chase cannot prove its expected physical merge with OSC, so LVS keeps it separate.
     wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
     wire d56_clr_w;   // shared CLR rail = R61 12k pullup (traced); boundary-driven so yosys keeps the net
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));

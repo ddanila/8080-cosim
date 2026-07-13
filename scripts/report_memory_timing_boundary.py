@@ -189,6 +189,13 @@ def main() -> int:
             endpoint_text(board, "D36_CAS_IN") + "; tied inputs visible, west source unlabeled in dense bundle",
         ),
         (
+            "OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase",
+            set(nodes(board, "OSC")).isdisjoint(set(nodes(board, "XTAL16M")))
+            and "automatic scan chase exhausted" in board["nets"]["XTAL16M"]["src"]
+            and "functional expectation alone cannot prove" in board["nets"]["XTAL16M"]["src"],
+            "OSC and XTAL16M remain distinct source nets pending continuity",
+        ),
+        (
             "D56_Q2_N tag-16 far destination remains unresolved",
             set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")}
             and ("D56", "12") not in set(nodes(board, "W_RAIL16"))
@@ -291,6 +298,10 @@ def main() -> int:
             "  bundle marker 10. Native full-sheet review shows no continuous conductor,",
             "  and merging them would short active TTL outputs; automatic tag-number",
             "  chasing is exhausted pending continuity or stronger imagery.",
+            "- The tag-14 `XTAL16M` bundle is functionally expected to originate at the",
+            "  D59 oscillator, but the native sheet does not draw a continuous source-side",
+            "  path through the intervening bundle. `OSC` and `XTAL16M` therefore remain",
+            "  separate until continuity or stronger artwork proves the PCB merge.",
             "- Do not replace these boundaries with a behavioral timing guess from the",
             "  runnable twin. They need stronger sheet-2 imagery, macro photo,",
             "  continuity check, or scope trace before being removed from the",

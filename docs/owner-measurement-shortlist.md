@@ -83,8 +83,8 @@ yet modeled as nets.
 - `logic`: `158` net(s)
 - `memory/decode`: `9` net(s)
 - `sound/analog`: `2` net(s)
-- `timing/I/O`: `7` net(s)
-- `video/analog`: `13` net(s)
+- `timing/I/O`: `6` net(s)
+- `video/analog`: `14` net(s)
 
 ## Practical sequencing
 

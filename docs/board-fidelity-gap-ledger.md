@@ -53,8 +53,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 9 | 24 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 14 |
-| clock/I/O | 0 | 6 |
-| logic/source | 9 | 146 |
+| clock/I/O | 0 | 5 |
+| logic/source | 9 | 147 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
@@ -404,7 +404,7 @@ same fidelity ledger as the chip provenance gaps.
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 | `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
-| `XTAL16M` | clock/I/O | `D39.10, D103.2, D42.9, D43.9` | traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43... |
+| `XTAL16M` | logic/source | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin1... |
 
 ## Automatic Closure Rule
 
