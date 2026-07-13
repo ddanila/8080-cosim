@@ -124,11 +124,12 @@ def main() -> int:
             "C99.1 is on V3_RC; native scan shows C99.2 as a conductor-less plate on singleton C99_FAR",
         ),
         (
-            "D25_T input scan chase is exhausted without inventing a merge",
+            "D25_T MEMW input is source-proven without crossing-rail overmerge",
             has_nodes(board, "D25_T", {("D7", "6"), ("D25", "11")})
-            and "5150x3603" in board["nets"]["D25_T"]["src"]
-            and "deliberate boundary" in board["nets"]["D25_T"]["src"],
-            "Native-resolution review leaves D7.5/D7.4 in an unlabeled dense crossing bundle",
+            and has_nodes(board, "MEMW", {("D7", "4"), ("D29", "1")})
+            and "terminates as a T" in board["nets"]["D25_T"]["src"]
+            and "without a junction" in board["nets"]["D25_T"]["src"],
+            "Native sheet proves D7.4 -> MEMW/D29.1; D7.5 remains on the distinct -INHIB junction",
         ),
     ]
     ok = all(result for _, result, _ in checks + boundaries)
@@ -210,11 +211,10 @@ def main() -> int:
             "- The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,",
             "  with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.",
             "- Remaining work is now narrow: trace the independent D7.12/D7.13",
-            "  boundaries, read or continuity-check C99.2, and trace D7.5/D7.4 for",
-            "  D25_T by continuity or stronger imagery. The native 5150x3603 sheet",
-            "  was rechecked end-to-end on 2026-07-13; the D25_T inputs enter a dense",
-            "  crossing bundle without unique labels or junctions, so further automated",
-            "  scan chasing is exhausted. None should be replaced by a simulator-only guess.",
+            "  boundaries, read or continuity-check C99.2, and identify the upstream",
+            "  source shared by D7.5/D29.3. Native 5150x3603 geometry closes D7.4",
+            "  onto MEMW/D29.1 without merging the crossed D29.3 rail. None of the",
+            "  remaining boundaries should be replaced by a simulator-only guess.",
             "",
         ]
     )

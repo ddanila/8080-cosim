@@ -34,7 +34,7 @@ python3 scripts/report_io_decode_boundary.py
 | --- | --- | --- |
 | D7 fourth-gate strobe inputs are source-proven | PASS | IORD/IOWR are on D7.9/D7.10 from the full-resolution sheet |
 | C99 far physical pad is preserved without assuming ground | PASS | C99.1 is on V3_RC; native scan shows C99.2 as a conductor-less plate on singleton C99_FAR |
-| D25_T input scan chase is exhausted without inventing a merge | PASS | Native-resolution review leaves D7.5/D7.4 in an unlabeled dense crossing bundle |
+| D25_T MEMW input is source-proven without crossing-rail overmerge | PASS | Native sheet proves D7.4 -> MEMW/D29.1; D7.5 remains on the distinct -INHIB junction |
 
 ## Current Decode Nets
 
@@ -49,7 +49,7 @@ python3 scripts/report_io_decode_boundary.py
 | `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.15, ... (+5)` | scan |
 | `IOWR` | `D10.2, D11.10, D26.36, D27.36, D29.7, D5.27, D54.23, D55.23, D57.23, D7.10` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision |
 | `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.8, D5.25, D54.22, D55.22, D57.22, D7.9` | scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision |
-| `D25_T` | `D25.11, D7.6` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin5 meets D29.3 at an explicit junction while their upstream source remains unread, and pin4 remains a separate deliberate boundary. D25.E (9) -> GND like D23/D24 |
+| `D25_T` | `D25.11, D7.6` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past the D29.3 rail without a junction and terminates as a T on MEMW/D29 physical pin1, while pin5 meets D29.3 at an explicit junction whose upstream source remains unread. D25.E (9) -> GND like D23/D24 |
 | `CS_D10` | `D10.1, D9.15` | prom |
 | `CS_D26` | `D26.6, D9.14` | prom |
 | `CS_D11` | `D11.11, D9.13` | prom |
@@ -66,8 +66,7 @@ python3 scripts/report_io_decode_boundary.py
 - The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,
   with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.
 - Remaining work is now narrow: trace the independent D7.12/D7.13
-  boundaries, read or continuity-check C99.2, and trace D7.5/D7.4 for
-  D25_T by continuity or stronger imagery. The native 5150x3603 sheet
-  was rechecked end-to-end on 2026-07-13; the D25_T inputs enter a dense
-  crossing bundle without unique labels or junctions, so further automated
-  scan chasing is exhausted. None should be replaced by a simulator-only guess.
+  boundaries, read or continuity-check C99.2, and identify the upstream
+  source shared by D7.5/D29.3. Native 5150x3603 geometry closes D7.4
+  onto MEMW/D29.1 without merging the crossed D29.3 rail. None of the
+  remaining boundaries should be replaced by a simulator-only guess.

@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `221`
-- Verification-point endpoints checked in PCB: `407`
+- Verification-point nets: `220`
+- Verification-point endpoints checked in PCB: `406`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2251`
 - All board endpoints checked in routed PCB: `2251`
@@ -24,8 +24,8 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 163 |
-| memory/decode | 10 |
+| logic | 161 |
+| memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
 | video/analog | 16 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 407/407 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 407/407 net names matched |
+| Risk endpoints present on PCB pads | PASS | 406/406 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 406/406 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -147,7 +147,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D6_MEM_SELECT_N: D13.12`
 - `D6_V_ENABLE: D6.13`
 - `D6_V_ENABLE: D6.14`
-- `D7_A3_BOUNDARY: D7.4`
 - `D93_CLK_BOUNDARY: D93.24`
 - `D93_DIRC_BOUNDARY: D93.16`
 - `D93_EARLY_BOUNDARY: D93.17`
@@ -285,6 +284,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `MA6: E1.3`
 - `MEMR: D29.6`
 - `MEMW: D29.1`
+- `MEMW: D7.4`
 - `MEM_MODE0: D28.11`
 - `MEM_MODE1: D28.13`
 - `OSC: C73.2`
@@ -514,7 +514,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D13_I3_BOUNDARY` | logic | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
 | `D14_O7_BOUNDARY` | video/analog | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
-| `D25_T` | logic | `D7.6, D25.11` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin5 meets D29.3 at an explicit jun... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D25_T` | memory/decode | `D7.6, D25.11` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past the D29.3 rail with... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D26_PA6_PREN_BOUNDARY` | logic | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PB4_BOUNDARY` | logic | `D26.22` | sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remains a measurement boun... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC0_BOUNDARY` | memory/decode | `D26.14` | sheet-1 full-resolution: D26 PC0 pin14 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary | Probe during ROM/RAM stage; compare address/control timing to twin. |
@@ -534,7 +534,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D6_MEM_SELECT_N` | memory/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation; existing R11/R12,... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D6_V_ENABLE` | logic | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is refuted | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_A1_BOUNDARY` | logic | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D7_A3_BOUNDARY` | logic | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D7_B1_BOUNDARY` | logic | `D7.13` | sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D93_CLK_BOUNDARY` | FDC | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_DIRC_BOUNDARY` | FDC | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |

@@ -37,4 +37,5 @@ Primary pinout source:
 | D4 LVS override preserves its routed high-address permutation | PASS |
 | D29 LVS override preserves its routed command permutation | PASS |
 | D7 pin 5 and D29 physical A2 pin 3 share the traced -INHIB source boundary | PASS |
+| D7 pin 4 and D29 physical pin 1 share the traced MEMW conductor | PASS |
 | D29 physical A1 pin 2 remains isolated from the unproved D105 pin 3 candidate | PASS |

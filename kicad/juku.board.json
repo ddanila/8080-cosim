@@ -200,7 +200,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a destination chase; section5,4->6 drives D25.T from two westbound boundaries that were rechecked at native 5150x3603 resolution on 2026-07-13 but cannot be assigned through the dense crossing bundle; section9,10->8 is IORD/IOWR NAND with output on tag8"
+    "pins": "complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a destination chase; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
    }
   },
   {
@@ -7289,7 +7289,7 @@
    ]
   },
   "MEMW": {
-   "src": "scan; array read: DRAM W pins moved to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps; + D36.9 write-qualifier into the W-strobe NAND (t6: \"(1) WR\" line y-match)",
+   "src": "scan; array read: DRAM W pins moved to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps; native sheet-1 direct T-junction adds D7.4 on the same conductor feeding D29 physical pin1; + D36.9 write-qualifier into the W-strobe NAND (t6: \"(1) WR\" line y-match)",
    "nodes": [
     [
      "D5",
@@ -7302,6 +7302,10 @@
     [
      "D7",
      "2"
+    ],
+    [
+     "D7",
+     "4"
     ],
     [
      "D92",
@@ -15862,7 +15866,7 @@
    "nodes": [["D105", "11"], ["D30", "13"]]
   },
   "D25_T": {
-   "src": "traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin5 meets D29.3 at an explicit junction while their upstream source remains unread, and pin4 remains a separate deliberate boundary. D25.E (9) -> GND like D23/D24",
+   "src": "traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past the D29.3 rail without a junction and terminates as a T on MEMW/D29 physical pin1, while pin5 meets D29.3 at an explicit junction whose upstream source remains unread. D25.E (9) -> GND like D23/D24",
    "nodes": [
     [
      "D7",
@@ -15873,10 +15877,6 @@
      "11"
     ]
    ]
-  },
-  "D7_A3_BOUNDARY": {
-   "src": "sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan",
-   "nodes": [["D7", "4"]]
   },
   "D7_A1_BOUNDARY": {
    "src": "sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurement boundary",

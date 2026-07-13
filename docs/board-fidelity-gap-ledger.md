@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `306`
-- Nets modeled: `552`
+- Nets modeled: `551`
 - Chip-level fidelity gaps: `57`
-- Net-level source-risk gaps: `221`
+- Net-level source-risk gaps: `220`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -56,8 +56,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 16 |
 | clock/I/O | 0 | 5 |
-| logic/source | 8 | 152 |
-| memory/timing | 0 | 7 |
+| logic/source | 8 | 150 |
+| memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
 | sound/analog | 0 | 1 |
@@ -245,7 +245,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D13_I3_BOUNDARY` | logic/source | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement bo... |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
 | `D14_O7_BOUNDARY` | video/analog | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary |
-| `D25_T` | logic/source | `D7.6, D25.11` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin5 meets D29.... |
+| `D25_T` | memory/timing | `D7.6, D25.11` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past... |
 | `D26_PA6_PREN_BOUNDARY` | logic/source | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measu... |
 | `D26_PB4_BOUNDARY` | logic/source | `D26.22` | sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remain... |
 | `D26_PC0_BOUNDARY` | memory/timing | `D26.14` | sheet-1 full-resolution: D26 PC0 pin14 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measure... |
@@ -265,7 +265,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D6_MEM_SELECT_N` | PROM/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation... |
 | `D6_V_ENABLE` | PROM/decode | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is... |
 | `D7_A1_BOUNDARY` | logic/source | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so i... |
-| `D7_A3_BOUNDARY` | logic/source | `D7.4` | sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan |
 | `D7_B1_BOUNDARY` | logic/source | `D7.13` | sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so i... |
 | `D93_CLK_BOUNDARY` | FDC owner-continuity | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a me... |
 | `D93_DIRC_BOUNDARY` | FDC owner-continuity | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a mea... |

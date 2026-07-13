@@ -103,6 +103,13 @@ def main() -> None:
         } == {("D7", "5"), ("D29", "3")},
     ))
     checks.append((
+        "D7 pin 4 and D29 physical pin 1 share the traced MEMW conductor",
+        {("D7", "4"), ("D29", "1")} <= {
+            (ref, str(pin))
+            for ref, pin in board["nets"]["MEMW"]["nodes"]
+        },
+    ))
+    checks.append((
         "D29 physical A1 pin 2 remains isolated from the unproved D105 pin 3 candidate",
         {
             (ref, str(pin))

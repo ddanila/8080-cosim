@@ -222,7 +222,7 @@ module juku_top (
 `endif
     va87_out U_D23 (.Ain(BA[7:0]),  .Aout(adr_lo), .oe_n(1'b0), .t(1'b1));
     va87_out U_D24 (.Ain(BA[15:8]), .Aout(adr_hi), .oe_n(1'b0), .t(1'b1));
-    wire d25_t_w;   // data-bus turnaround: D7 ЛА3 sect (5,4->6) -> D25.T (traced s1_egates2); inputs unread -> held transmit
+    wire d25_t_w;   // data-bus turnaround: D7 ЛА3 sect (5,4->6) -> D25.T; pin4=MEMW, pin5=-INHIB source boundary
     va87_out U_D25 (.Ain(DB),       .Aout(dat),    .oe_n(1'b0), .t(d25_t_w));
     expansion_conn U_X1 (.inhib_n(inhib_n), .cclck(cclck), .iom_n(iom_n), .mwc_n(mwc_n),
                          .mrc_n(mrc_n), .amwc_n(amwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
@@ -241,14 +241,13 @@ module juku_top (
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    wire d7_a1_boundary, d7_b1_boundary, d7_a3_boundary;
+    wire d7_a1_boundary, d7_b1_boundary;
     net_boundary U_D7A1LNK (.a(iowr_n), .b(d7_a1_boundary));
     net_boundary U_D7B1LNK (.a(iord_n), .b(d7_b1_boundary));
-    net_boundary U_D7A3LNK (.a(1'b0), .b(d7_a3_boundary));
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_inhib_status));  // shared source is unread; low preserves the existing boot-safe D25 turnaround scaffold
     la3_gate    U_D7     (.a(d7_a1_boundary), .b(d7_b1_boundary), .y(io_strobe_h),     // physical origins of pins12/13 unresolved; sim keeps prior IOWR/IORD semantics through boundaries
                           .a2(1'b1), .b2(memw_n), .y2(d7_y2_amw_n),     // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 boundary]; pin3 -> physical D29.5 (-AMWC path)
-                          .a3(d7_a3_boundary), .b3(d7_b3_inhib_status), .y3(d25_t_w),
+                          .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
     wire d6_v_enable;
     net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
