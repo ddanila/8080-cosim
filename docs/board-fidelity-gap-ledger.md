@@ -19,7 +19,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `547`
+- Nets modeled: `546`
 - Chip-level fidelity gaps: `58`
 - Net-level source-risk gaps: `215`
 - Documented intentional no-connect pins: `65`
@@ -252,7 +252,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PC1_BOUNDARY` | memory/timing | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measure... |
 | `D26_PC5_TAG4` | logic/source | `D26.12` | traced sheet-1 full-resolution: D26 PC5/pin12 exits as mode-bundle tag4; far destination remains unread |
 | `D26_PC6_TAG5` | logic/source | `D26.11` | traced sheet-1 full-resolution: D26 PC6/pin11 exits as mode-bundle tag5; far destination remains unread |
-| `D26_PC7_TAG6` | logic/source | `D26.10` | traced sheet-1 full-resolution: D26 PC7/pin10 exits as mode-bundle tag6; far destination remains unread |
 | `D28_A1_BOUNDARY` | logic/source | `D28.1` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin1 A1; no remote destination is proved, so this remains a measurement... |
 | `D28_A2_BOUNDARY` | logic/source | `D28.3` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin3 A2; no remote destination is proved, so this remains a measurement... |
 | `D28_A3_BOUNDARY` | logic/source | `D28.5` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement... |
@@ -386,6 +385,7 @@ same fidelity ledger as the chip provenance gaps.
 | `PIC_IR2_BOUNDARY` | logic/source | `D10.20` | scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread |
 | `PIC_IR3_BOUNDARY` | logic/source | `D10.21` | scan sheet-1: D10 IR3 pin 21 has a distinct southbound conductor; far destination remains unread |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
+| `POF` | logic/source | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter... |
 | `PROM_EN` | PROM/decode | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assu... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |

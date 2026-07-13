@@ -14,7 +14,7 @@ visible and actionable before manufacturing and first power-on.
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Verification-point nets: `215`
-- Verification-point endpoints checked in PCB: `385`
+- Verification-point endpoints checked in PCB: `386`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2230`
 - All board endpoints checked in routed PCB: `2230`
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 385/385 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 385/385 net names matched |
+| Risk endpoints present on PCB pads | PASS | 386/386 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 386/386 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -54,7 +54,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2230/2230 | 2230/2230 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2230 | 1882/2230 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1915/2230 | 1881/2230 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -397,6 +397,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D2.2: `XACK_N` != `IORC_N`
 - D105.12: `MEMR` != `MEMW`
 - D105.13: `MEMR` != `MEMW`
+- D26.10: `D26_PC7_TAG6` != `POF`
 - D2.12: `D2_WAIT_RAW` != `READY_D`
 - R76.1: `RF_TANK` != `RF_TAP`
 - D45.10: `GND` != `S3_1`
@@ -472,7 +473,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D26_PC1_BOUNDARY` | memory/decode | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D26_PC5_TAG4` | logic | `D26.12` | traced sheet-1 full-resolution: D26 PC5/pin12 exits as mode-bundle tag4; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC6_TAG5` | logic | `D26.11` | traced sheet-1 full-resolution: D26 PC6/pin11 exits as mode-bundle tag5; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D26_PC7_TAG6` | logic | `D26.10` | traced sheet-1 full-resolution: D26 PC7/pin10 exits as mode-bundle tag6; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_A1_BOUNDARY` | logic | `D28.1` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin1 A1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_A2_BOUNDARY` | logic | `D28.3` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin3 A2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_A3_BOUNDARY` | logic | `D28.5` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -606,6 +606,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `PIC_IR2_BOUNDARY` | logic | `D10.20` | scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIC_IR3_BOUNDARY` | logic | `D10.21` | scan sheet-1: D10 IR3 pin 21 has a distinct southbound conductor; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `POF` | logic | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter input pin3; the pin... | Cross-check against hardware when the peripheral path is exercised. |
 | `PROM_EN` | logic | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed u... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |

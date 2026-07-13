@@ -177,12 +177,13 @@ def main() -> int:
             "D35/D59 complete inverter package roles remain visible",
             all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
             and all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
+            and has_nodes(board, "POF", {("D26", "10"), ("D35", "3")})
             and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
             and set(nodes(board, "D59_O10_TAG10")) == {("D59", "10")}
             and ("D59", "10") not in set(nodes(board, "SOUND"))
             and "Automatic tag-number chase exhausted" in board["nets"]["D59_O10_TAG10"]["src"]
             and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6", "8", "9")),
-            "D35.4->R39.1 guarded; D59.5/.6 NC; D59.10 local tag10 explicitly distinct from D57.13 SOUND tag10",
+            "D26.PC7 -> POF -> D35.3/.4 -> R39.1 guarded; D59.5/.6 NC; D59.10 tag10 distinct from SOUND",
         ),
         (
             "D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge",
@@ -271,6 +272,7 @@ def main() -> int:
         "D39_O8",
         "D39Y",
         "D59_O10_TAG10",
+        "POF",
         "D56_CLR",
         "D56_RC1",
         "D56_C1",

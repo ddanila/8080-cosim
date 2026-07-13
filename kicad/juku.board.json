@@ -11355,8 +11355,8 @@
    ]
   },
   "POF": {
-   "src": "scan sheet-2: conductor explicitly labeled POF rises directly into D35 inverter input pin 3; remote source lies outside the proven crop",
-   "nodes": [["D35", "3"]]
+   "src": "cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter input pin3; the pinned MAME PPI0 Port-C contract independently identifies bit7 as POF",
+   "nodes": [["D26", "10"], ["D35", "3"]]
   },
   "LATCH_B": {
    "src": "scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending)",
@@ -15774,10 +15774,6 @@
   "D26_PC6_TAG5": {
    "src": "traced sheet-1 full-resolution: D26 PC6/pin11 exits as mode-bundle tag5; far destination remains unread",
    "nodes": [["D26", "11"]]
-  },
-  "D26_PC7_TAG6": {
-   "src": "traced sheet-1 full-resolution: D26 PC7/pin10 exits as mode-bundle tag6; far destination remains unread",
-   "nodes": [["D26", "10"]]
   },
   "CPU_WAIT_STATUS": {
    "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
