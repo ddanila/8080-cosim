@@ -48,7 +48,7 @@ def main() -> None:
     parser.add_argument("--verbose", action="store_true",
                         help="list every quarantined net and mismatched endpoint")
     parser.add_argument("--exclude-drc", type=Path, action="append", default=[],
-                        help="quarantine routed track/via nets implicated by shorts in a KiCad DRC JSON")
+                        help="quarantine routed track/via nets implicated by copper errors in a KiCad DRC JSON")
     args = parser.parse_args()
 
     source = pcbnew.LoadBoard(str(args.source))
@@ -73,7 +73,7 @@ def main() -> None:
     for drc_path in args.exclude_drc:
         report = json.loads(drc_path.read_text())
         for violation in report.get("violations", []):
-            if violation.get("type") != "shorting_items":
+            if violation.get("type") not in {"shorting_items", "clearance", "tracks_crossing"}:
                 continue
             for item in violation.get("items", []):
                 description = str(item.get("description", ""))

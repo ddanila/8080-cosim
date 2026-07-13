@@ -1,6 +1,6 @@
 # Juku E5104 behavioral hardware map
 
-Status date: 2026-07-10.
+Status date: 2026-07-13.
 
 This is the concise software-visible map used by the emulator and digital-twin
 tests. The pinned source is `ref/mame_juku.cpp`; the physical endpoint model is
@@ -23,8 +23,9 @@ connection.
 | 3 | none | all RAM |
 
 The repository BIOS is 16 KiB across D15/D16. The physical ROM-pager PROM D8
-is not dumped; a behaviorally reconstructed table is exported under
-`ref/reconstructed-proms/` and explicitly labeled as reconstructed.
+uses the validated `.039` table recovered from three matching reads, including
+a power-cycled capture. The older behavioral reconstruction remains under
+`ref/reconstructed-proms/` as historical comparison evidence only.
 
 ## Video
 

@@ -343,10 +343,8 @@ endmodule
 // ===== I/O chip-select decoder: К555ИД7 (74138) =====
 // Functional (merge step 1): standard 1-of-8 active-low decode, enabled by g1 & !(g2a_n|g2b_n).
 // On the board g2a_n/g2b_n = iord_n/iowr_n (enable on either strobe = the documented strobe-OR intent).
-// D9 ИД7. Structural selects a/b/c come from the D8 РЕ3 state PROM (sheet-1); until the .039
-// table is dumped, the FUNCTIONAL decode uses the sim-only sa/sb/sc (the pre-restructure BA-based
-// selects) so the boot stays byte-identical. When the dump lands: re3_prom gets the table and the
-// decode switches to a/b/c.
+// D9 ИД7 takes its selects from the address rails; D8 is the separate РЕ3
+// ROM-socket pager. Its validated physical `.039` table is implemented below.
 module io_dec138 (input wire a, b, c, g1, g2a_n, g2b_n, output wire [7:0] y_n);
     // selects = A10/A11/A12 rails (sheet-1 rail-code table) = IO port bits 2-4 via the 8080's
     // A15-8 port mirror -- the REAL decode path (sim-only sa/sb/sc retired 2026-07).
