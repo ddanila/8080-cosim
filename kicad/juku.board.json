@@ -1210,7 +1210,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC status require source confirmation"
+    "pins": "scan + К155ИР16/74295 pin contract: exhaustive sheet-2 symbol census draws only serial-chain QD pin10; parallel outputs QC/QB/QA pins11/12/13 have no stubs and are explicit NCs"
    }
   },
   {
@@ -1233,7 +1233,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan + К155ИР16/74295 pin contract: parallel outputs QA/QB/QC/QD = pins 13/12/11/10; only QD is used by the serializer chain, other output destinations/NC status require source confirmation"
+    "pins": "scan + К155ИР16/74295 pin contract: exhaustive sheet-2 symbol census draws only serial-chain QD pin10; parallel outputs QC/QB/QA pins11/12/13 have no stubs and are explicit NCs"
    }
   },
   {

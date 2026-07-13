@@ -159,6 +159,18 @@ def main() -> int:
             "D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2",
         ),
         (
+            "D42/D43 serializer packages retain their source-proved unused parallel outputs",
+            all(
+                [ref, pin] in board.get("no_connects", [])
+                for ref in ("D42", "D43") for pin in ("11", "12", "13")
+            )
+            and all(
+                "exhaustive sheet-2 symbol census" in chips[ref].get("prov", {}).get("pins", "")
+                for ref in ("D42", "D43")
+            ),
+            "sheet-2 draws only QD pin10; QA/QB/QC pins13/12/11 are explicit NCs on both packages",
+        ),
+        (
             "D56 one-shot RC networks are guarded",
             all(has_nodes(board, name, expected) for name, expected in d56_rc.items()),
             "`D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2`",
