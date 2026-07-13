@@ -15,7 +15,7 @@ visible and actionable before manufacturing and first power-on.
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Verification-point nets: `213`
 - Verification-point endpoints checked in PCB: `383`
-- PCB endpoint coverage: `PASS`
+- PCB endpoint coverage: `FAIL`
 - All board endpoints checked in source PCB: `2230`
 - All board endpoints checked in routed PCB: `2230`
 - Intentional off-board endpoints excluded: `38`
@@ -24,10 +24,10 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 159 |
+| logic | 160 |
 | memory/decode | 8 |
 | sound/analog | 1 |
-| timing/I/O | 8 |
+| timing/I/O | 7 |
 | video/analog | 13 |
 
 ## KiCad PCB Endpoint Coverage
@@ -41,7 +41,10 @@ behind a risk note.
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Risk endpoints present on PCB pads | PASS | 383/383 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 383/383 net names matched |
+| Risk endpoint net names match board JSON | FAIL | 382/383 net names matched |
+
+Mismatched PCB pad-net endpoints:
+- D56.12: `D56_Q2N_D34` != `D56_Q2N_TAG16`
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +56,13 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2230/2230 | 2230/2230 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2230 | 1883/2230 | FAIL |
+| `kicad/juku.kicad_pcb` | 2230/2230 | 2227/2230 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1915/2230 | 1882/2230 | FAIL |
+
+Mismatched endpoints in `kicad/juku.kicad_pcb`:
+- D56.12: `D56_Q2N_D34` != `D56_Q2N_TAG16`
+- D56.4: `D56_QN` != `D56_QN_D34`
+- D34.10: `D56_Q2N_D34` != `D56_QN_D34`
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -152,10 +160,10 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D40_CTRL_PULL: R34.2`
 - `D40_CTRL_PULL: D40.1`
 - `D40_CTRL_PULL: D40.9`
-- `D56_Q2N_D34: D56.12`
-- `D56_Q2N_D34: D34.10`
+- `D56_Q2N_TAG16: D56.12`
 - `D56_Q2_D34: D56.5`
 - `D56_Q2_D34: D34.9`
+- `D56_QN_D34: D34.10`
 - `D58_STB_TAG5: D58.11`
 - `D59_O10_TAG10: D59.10`
 - `D6_MEM_SELECT_N: D13.12`
@@ -378,6 +386,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D105.11: `D105_MRD_INV` != `D105_MEMW_INV`
 - D30.13: `D105_MRD_INV` != `D105_MEMW_INV`
 - R5.2: `READY_PRE_N` != `D30B_D_PRE_N`
+- D56.4: `D56_QN` != `D56_QN_D34`
 - D6.11: `RAM_SEL` != `D6_MEM_SELECT_N`
 - D6.12: `ROM_SEL` != `D6_MEM_SELECT_N`
 - D8.15: `ROM_SEL` != `D6_MEM_SELECT_N`
@@ -493,7 +502,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Scope/capture video or timing node during video bring-up. |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out | Scope/capture video or timing node during video bring-up. |
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches... | Probe during ROM/RAM stage; compare address/control timing to twin. |
-| `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D56_Q2N_TAG16` | logic | `D56.12` | scan sheet-2 native 5140x3563 review: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D58_STB_TAG5` | logic | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D59_O10_TAG10` | logic | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D6_MEM_SELECT_N` | memory/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation; existing R11/R12,... | Probe during ROM/RAM stage; compare address/control timing to twin. |

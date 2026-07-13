@@ -163,9 +163,10 @@ def main() -> int:
         (
             "D56 active outputs reach both gate-3 XOR inputs",
             has_nodes(board, "D56_Q2_D34", {("D56", "5"), ("D34", "9")})
-            and has_nodes(board, "D56_Q2N_D34", {("D56", "12"), ("D34", "10")})
+            and has_nodes(board, "D56_QN_D34", {("D56", "4"), ("D34", "10")})
+            and set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")}
             and all(["D56", pin] in board.get("no_connects", []) for pin in ("1", "9", "13")),
-            "sheet-2: D56.5/.12 -> D34.9/.10; undrawn D56.1/.9/.13 are NC",
+            "native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 departs on unresolved tag16; undrawn D56.1/.9/.13 are NC",
         ),
     ]
     boundary_checks = [
@@ -185,9 +186,9 @@ def main() -> int:
             endpoint_text(board, "D36_CAS_IN") + "; tied inputs visible, west source unlabeled in dense bundle",
         ),
         (
-            "D56_QN remains unresolved one-shot output",
-            set(nodes(board, "D56_QN")) == {("D56", "4")},
-            endpoint_text(board, "D56_QN"),
+            "D56_Q2_N tag-16 far destination remains unresolved",
+            set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")},
+            endpoint_text(board, "D56_Q2N_TAG16"),
         ),
     ]
     ok = all(result for _, result, _ in guarded_checks + boundary_checks)
@@ -203,7 +204,7 @@ def main() -> int:
         "This generated report narrows the remaining DRAM/clock timing risks.",
         "The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,",
         "PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the",
-        "unresolved CAS input and D56 Q_N destination as",
+        "unresolved CAS input and D56 Q2_N tag-16 destination as",
         "explicit source boundaries instead of silently promoting them.",
         "",
         "## Command",
@@ -256,7 +257,8 @@ def main() -> int:
         "D56_C1",
         "D56_RC2",
         "D56_C2",
-        "D56_QN",
+        "D56_QN_D34",
+        "D56_Q2N_TAG16",
     ):
         net = board["nets"].get(name, {})
         lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
@@ -269,7 +271,7 @@ def main() -> int:
             "- The functional board model has enough traced structure for fabrication",
             "  and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,",
             "  and the key PHI2TTL/D56 support nets are guarded.",
-            "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q_N",
+            "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16",
             "  destination are still not historical-source-complete. D36.12/.13 were",
             "  rechecked across the native 5140x3563 sheet on 2026-07-13; their common",
             "  west conductor enters an unlabeled dense timing bundle, so the automated",

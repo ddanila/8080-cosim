@@ -7,7 +7,7 @@ Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**
 This generated report narrows the remaining DRAM/clock timing risks.
 The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,
 PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the
-unresolved CAS input and D56 Q_N destination as
+unresolved CAS input and D56 Q2_N tag-16 destination as
 explicit source boundaries instead of silently promoting them.
 
 ## Command
@@ -34,7 +34,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D39 remaining NAND inputs are source-closed onto control rails 3 and 1 | PASS | sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1 |
 | D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- numbered rails4/2/1/15; only rail2 remote origin remains |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
-| D56 active outputs reach both gate-3 XOR inputs | PASS | sheet-2: D56.5/.12 -> D34.9/.10; undrawn D56.1/.9/.13 are NC |
+| D56 active outputs reach both gate-3 XOR inputs | PASS | native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 departs on unresolved tag16; undrawn D56.1/.9/.13 are NC |
 
 ## Pending Boundary Checks
 
@@ -42,7 +42,7 @@ python3 scripts/report_memory_timing_boundary.py
 | --- | --- | --- |
 | D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
-| D56_QN remains unresolved one-shot output | PASS | D56.4 |
+| D56_Q2_N tag-16 far destination remains unresolved | PASS | D56.12 |
 
 ## Current Timing Nets
 
@@ -66,14 +66,15 @@ python3 scripts/report_memory_timing_boundary.py
 | `D56_C1` | `D56.14, C8.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: C pin 14 = C8 far plate |
 | `D56_RC2` | `D56.7, R47.1, C7.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: RC pin 7 = R47 20k + C7 560pF |
 | `D56_C2` | `D56.6, C7.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: C pin 6 = C7 far plate |
-| `D56_QN` | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
+| `D56_QN_D34` | `D56.4, D34.10` | scan sheet-2 native 5140x3563 review: D56 first-section Q_N pin4 runs east, corners south on its own vertical, and enters D34 gate-3 input pin10; it crosses the horizontal 16 MHz rail without a junction |
+| `D56_Q2N_TAG16` | `D56.12` | scan sheet-2 native 5140x3563 review: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical, while the far tag-16 destination remains a deliberate boundary |
 
 ## Interpretation
 
 - The functional board model has enough traced structure for fabrication
   and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,
   and the key PHI2TTL/D56 support nets are guarded.
-- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q_N
+- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16
   destination are still not historical-source-complete. D36.12/.13 were
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common
   west conductor enters an unlabeled dense timing bundle, so the automated

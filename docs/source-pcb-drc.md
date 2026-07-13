@@ -14,7 +14,7 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `dc6ad919ac5d3d5dbf0202946c196b317e09938c8603fdf8e49137325d42c7ab`
+- Board SHA256: `2f91e4fd0fbe6f12ba12d3cc288bc524a52d5a461a62b0db6502b7422fe66e76`
 - Total violations: `620`
 - Unconnected items: `499`
 - Short violations: `12`
@@ -37,12 +37,12 @@ python3 kicad/report_source_pcb_drc.py
 
 | Nets | Items |
 | --- | --- |
+| Items shorting two nets (nets D97_A2N_BOUNDARY and RF_RAIL) | PTH pad 9 [D97_A2N_BOUNDARY] of D97; PTH pad 1 [RF_RAIL] of R73 |
 | Items shorting two nets (nets D95_A1_BOUNDARY and GND) | PTH pad 2 [D95_A1_BOUNDARY] of D95; PTH pad 2 [GND] of C13 |
 | Items shorting two nets (nets D102_Q1N_BOUNDARY and VT3_BASE) | PTH pad 4 [D102_Q1N_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R68 |
 | Items shorting two nets (nets D102_Q2_BOUNDARY and VT3_BASE) | PTH pad 5 [D102_Q2_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R69 |
 | Items shorting two nets (nets D102_Q2N_BOUNDARY and VT3_E) | PTH pad 12 [D102_Q2N_BOUNDARY] of D102; PTH pad 1 [VT3_E] of R74 |
 | Items shorting two nets (nets D102_Q1_BOUNDARY and VT3_E) | PTH pad 13 [D102_Q1_BOUNDARY] of D102; PTH pad 1 [VT3_E] of R74 |
-| Items shorting two nets (nets D97_A2N_BOUNDARY and RF_RAIL) | PTH pad 9 [D97_A2N_BOUNDARY] of D97; PTH pad 1 [RF_RAIL] of R73 |
 
 The source PCB is not eligible for routed-copper adoption while any
 short collision remains. Move parts only from registered target-revision

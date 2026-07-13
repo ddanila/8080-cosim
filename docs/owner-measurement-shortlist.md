@@ -80,10 +80,10 @@ yet modeled as nets.
 
 - Generated bring-up verification nets: `213`
 - `FDC`: `24` net(s)
-- `logic`: `159` net(s)
+- `logic`: `160` net(s)
 - `memory/decode`: `8` net(s)
 - `sound/analog`: `1` net(s)
-- `timing/I/O`: `8` net(s)
+- `timing/I/O`: `7` net(s)
 - `video/analog`: `13` net(s)
 
 ## Practical sequencing

@@ -15732,12 +15732,16 @@
     ]
    ]
   },
-  "D56_QN": {
-   "src": "traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old \"16MHz astable source\" attribution retired",
+  "D56_QN_D34": {
+   "src": "scan sheet-2 native 5140x3563 review: D56 first-section Q_N pin4 runs east, corners south on its own vertical, and enters D34 gate-3 input pin10; it crosses the horizontal 16 MHz rail without a junction",
    "nodes": [
     [
      "D56",
      "4"
+    ],
+    [
+     "D34",
+     "10"
     ]
    ]
   },
@@ -15754,16 +15758,12 @@
     ]
    ]
   },
-  "D56_Q2N_D34": {
-   "src": "scan sheet-2: D56 Q2_N pin 12 conductor code 16 descends directly into D34 gate-3 input pin 10",
+  "D56_Q2N_TAG16": {
+   "src": "scan sheet-2 native 5140x3563 review: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical, while the far tag-16 destination remains a deliberate boundary",
    "nodes": [
     [
      "D56",
      "12"
-    ],
-    [
-     "D34",
-     "10"
     ]
    ]
   },
