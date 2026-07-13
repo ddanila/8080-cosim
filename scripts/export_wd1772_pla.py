@@ -95,6 +95,7 @@ def write_csv(rows: list[dict[str, object]]) -> None:
 def write_sums() -> None:
     names = [
         "fd179x-01-datasheet.pdf",
+        "fd179x-application-notes-jun1980.pdf",
         "wd1772.pdf",
         "wd1772pla.txt",
         OUT_CSV.name,
