@@ -22,9 +22,10 @@ python3 scripts/report_io_decode_boundary.py
 | D5 system-controller power contract is routed | PASS | D5.14 GND / D5.28 +5V |
 | D9 is the physical К555ИД7 I/O decoder | PASS | `kicad/juku.board.json` D9 provenance |
 | D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node | PASS | `PROM_EN` -> `V3_RC` |
+| D7 first-gate SYNC/feedback topology is source-proven | PASS | D1.19 SYNC -> D7.12; D7.11 -> D7.13 feedback before R17 |
 | D9 region-enable inputs are tied to REV | PASS | `REV`: D6.10 -> D9.4/D9.5 |
 | D9 select inputs are BA10..BA12 | PASS | `BA10`, `BA11`, `BA12` into D9.A/B/C |
-| D7 input strobes are wired to IOWR/IORD | PASS | `IOWR`/`IORD` fanout |
+| D7 fourth-gate inputs are wired to IOWR/IORD | PASS | `IOWR`/`IORD` fanout |
 | D9 chip-select outputs are routed to the modeled peripherals | PASS | `CS_D10`..`CS_FDC` plus private D94-to-D93 controls |
 | D25 bus turnaround handoff is guarded | PASS | `D25_T`: D7.6 -> D25.11 |
 
@@ -40,7 +41,8 @@ python3 scripts/report_io_decode_boundary.py
 
 | Net | Endpoints | Source note |
 | --- | --- | --- |
-| `PROM_EN` | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed unread [chase]; D6 modeled always-enabled |
+| `PROM_EN` | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and that shared node runs east into R17.2 (200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed unread [chase] |
+| `SYNC` | `D1.19, D38.12, D7.12` | wire plus sheet-1 native 5150x3603 direct T-junction: CPU D1.19 SYNC reaches D7 first-gate input pin12; WIRE 9 separately continues to D38.12 |
 | `V3_RC` | `C99.1, D9.6, R17.1` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe -> D9.G1. The visible C99 pin2/right plate has no outgoing conductor and is kept separately as C99_FAR rather than assumed grounded |
 | `C99_FAR` | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit |
 | `REV` | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked; +R13 1k pullup (v3_junction; R13/R14 pairing order assumed) |
@@ -65,8 +67,8 @@ python3 scripts/report_io_decode_boundary.py
   board model; this report guards that D2-as-I/O-decode is not revived.
 - The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,
   with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.
-- Remaining work is now narrow: trace the independent D7.12/D7.13
-  boundaries, read or continuity-check C99.2, and identify the upstream
-  source shared by D7.5/D29.3. Native 5150x3603 geometry closes D7.4
+- Remaining work is now narrow: read or continuity-check C99.2 and
+  identify the upstream source shared by D7.5/D29.3. Native 5150x3603
+  geometry closes D7.12 onto SYNC, D7.13 onto its pin11 feedback node, and D7.4
   onto MEMW/D29.1 without merging the crossed D29.3 rail. None of the
   remaining boundaries should be replaced by a simulator-only guess.

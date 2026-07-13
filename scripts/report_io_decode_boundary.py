@@ -64,9 +64,16 @@ def main() -> int:
         ),
         (
             "D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node",
-            has_nodes(board, "PROM_EN", {("D7", "11"), ("R17", "2")})
+            has_nodes(board, "PROM_EN", {("D7", "11"), ("D7", "13"), ("R17", "2")})
             and has_nodes(board, "V3_RC", {("R17", "1"), ("C99", "1"), ("D9", "6")}),
             "`PROM_EN` -> `V3_RC`",
+        ),
+        (
+            "D7 first-gate SYNC/feedback topology is source-proven",
+            has_nodes(board, "SYNC", {("D1", "19"), ("D7", "12")})
+            and has_nodes(board, "PROM_EN", {("D7", "11"), ("D7", "13")})
+            and "feedback strobe" in board["nets"]["PROM_EN"]["src"],
+            "D1.19 SYNC -> D7.12; D7.11 -> D7.13 feedback before R17",
         ),
         (
             "D9 region-enable inputs are tied to REV",
@@ -81,7 +88,7 @@ def main() -> int:
             "`BA10`, `BA11`, `BA12` into D9.A/B/C",
         ),
         (
-            "D7 input strobes are wired to IOWR/IORD",
+            "D7 fourth-gate inputs are wired to IOWR/IORD",
             has_nodes(board, "IOWR", {("D7", "10"), ("D11", "10"), ("D26", "36"), ("D27", "36")})
             and has_nodes(board, "IORD", {("D7", "9"), ("D11", "13"), ("D26", "5"), ("D27", "5")}),
             "`IOWR`/`IORD` fanout",
@@ -180,6 +187,7 @@ def main() -> int:
     )
     for name in (
         "PROM_EN",
+        "SYNC",
         "V3_RC",
         "C99_FAR",
         "REV",
@@ -210,9 +218,9 @@ def main() -> int:
             "  board model; this report guards that D2-as-I/O-decode is not revived.",
             "- The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,",
             "  with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.",
-            "- Remaining work is now narrow: trace the independent D7.12/D7.13",
-            "  boundaries, read or continuity-check C99.2, and identify the upstream",
-            "  source shared by D7.5/D29.3. Native 5150x3603 geometry closes D7.4",
+            "- Remaining work is now narrow: read or continuity-check C99.2 and",
+            "  identify the upstream source shared by D7.5/D29.3. Native 5150x3603",
+            "  geometry closes D7.12 onto SYNC, D7.13 onto its pin11 feedback node, and D7.4",
             "  onto MEMW/D29.1 without merging the crossed D29.3 rail. None of the",
             "  remaining boundaries should be replaced by a simulator-only guess.",
             "",

@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `220`
-- Verification-point endpoints checked in PCB: `406`
+- Verification-point nets: `218`
+- Verification-point endpoints checked in PCB: `405`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2251`
 - All board endpoints checked in routed PCB: `2251`
@@ -24,11 +24,11 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 161 |
+| logic | 158 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
-| video/analog | 16 |
+| video/analog | 17 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 406/406 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 406/406 net names matched |
+| Risk endpoints present on PCB pads | PASS | 405/405 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 405/405 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -426,8 +426,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - R11.2: `ROM_SEL` != `D6_MEM_SELECT_N`
 - D92.5: `RAM_SEL` != `D6_MEM_SELECT_N`
 - R12.2: `RAM_SEL` != `D6_MEM_SELECT_N`
-- D7.12: `IOWR` != `D7_A1_BOUNDARY`
-- D7.13: `IORD` != `D7_B1_BOUNDARY`
 - D105.9: `D2_WAIT_RAW` != `DBIN`
 - D105.6: `D105_WAIT_PREINV` != `DBIN_GATED`
 - D5.4: `DBIN` != `DBIN_GATED`
@@ -448,6 +446,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D29.14: `AMWC_N` != `MRC_N`
 - D29.19: `INHIB_N` != `MWC_N`
 - D26.10: `D26_PC7_TAG6` != `POF`
+- D7.13: `IORD` != `PROM_EN`
 - D2.12: `D2_WAIT_RAW` != `READY_D`
 - R76.1: `RF_TANK` != `RF_TAP`
 - D45.10: `GND` != `S3_1`
@@ -455,6 +454,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D46.10: `S3_1` != `S3_5`
 - D46.9: `S3_2` != `S3_6`
 - D12.1: `SER_TXD` != `SER_TXD_INV`
+- D7.12: `IOWR` != `SYNC`
 - VT4.3: `RF_TANK` != `VT4_C`
 - L1.2: `GND` != `VT4_C`
 - C15.1: `RF_TANK` != `VT4_C`
@@ -533,8 +533,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled... | Bench-check waveform/current path with speaker disconnected first. |
 | `D6_MEM_SELECT_N` | memory/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation; existing R11/R12,... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D6_V_ENABLE` | logic | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is refuted | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D7_A1_BOUNDARY` | logic | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D7_B1_BOUNDARY` | logic | `D7.13` | sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so it remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D93_CLK_BOUNDARY` | FDC | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_DIRC_BOUNDARY` | FDC | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_EARLY_BOUNDARY` | FDC | `D93.17` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
@@ -637,7 +635,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `POF` | logic | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter input pin3; the pin... | Cross-check against hardware when the peripheral path is exercised. |
-| `PROM_EN` | logic | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed u... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `PROM_EN` | video/analog | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and that shared node runs e... | Scope/capture video or timing node during video bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |

@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `306`
-- Nets modeled: `551`
-- Chip-level fidelity gaps: `57`
-- Net-level source-risk gaps: `220`
+- Nets modeled: `549`
+- Chip-level fidelity gaps: `56`
+- Net-level source-risk gaps: `218`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -56,7 +56,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 16 |
 | clock/I/O | 0 | 5 |
-| logic/source | 8 | 150 |
+| logic/source | 7 | 148 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
@@ -99,7 +99,6 @@ parts placement and Tier-3 reproduction.
 | `D105` | `LA3_GATE` | scan | .009 official placement; sheet-1 .006 wait/MRD logic 12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with named of... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `D6` | `DEC_PROM` | scan | validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively.... |
-| `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a dest... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 
@@ -264,8 +263,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10... |
 | `D6_MEM_SELECT_N` | PROM/decode | `D6.11, D6.12, D8.15, R11.2, D92.5, R12.2, ... (+1)` | owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation... |
 | `D6_V_ENABLE` | PROM/decode | `D6.13, D6.14` | sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is... |
-| `D7_A1_BOUNDARY` | logic/source | `D7.12` | sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so i... |
-| `D7_B1_BOUNDARY` | logic/source | `D7.13` | sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so i... |
 | `D93_CLK_BOUNDARY` | FDC owner-continuity | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a me... |
 | `D93_DIRC_BOUNDARY` | FDC owner-continuity | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a mea... |
 | `D93_EARLY_BOUNDARY` | FDC owner-continuity | `D93.17` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a me... |
@@ -368,7 +365,7 @@ same fidelity ledger as the chip provenance gaps.
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
 | `POF` | logic/source | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter... |
-| `PROM_EN` | PROM/decode | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assu... |
+| `PROM_EN` | PROM/decode | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and tha... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
