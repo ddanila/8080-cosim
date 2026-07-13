@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "memory-timing-boundary.md"
+SOURCE_PCB = ROOT / "kicad" / "juku.kicad_pcb"
+ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 
 
 def load_board() -> dict:
@@ -38,6 +40,8 @@ def row(values: list[object]) -> str:
 
 def main() -> int:
     board = load_board()
+    source_pcb = SOURCE_PCB.read_text(encoding="utf-8")
+    routed_pcb = ROUTED_PCB.read_text(encoding="utf-8")
     chips = {chip.get("ref"): chip for chip in board["chips"]}
     d35 = chips["D35"]
     d36 = chips["D36"]
@@ -145,13 +149,23 @@ def main() -> int:
             }
             and has_nodes(board, "ROE", {("D92", "1")})
             and has_nodes(board, "PHI2TTL", {("D92", "2"), ("D92", "3")})
-            and has_nodes(board, "W11_D7_D92", {("D92", "13"), ("D7", "1")})
+            and has_nodes(board, "MEMR", {("D5", "24"), ("D33", "3"), ("D92", "13"), ("D7", "1")})
             and has_nodes(board, "D92_RD_NOR", {("D92", "12"), ("D92", "11")})
             and has_nodes(board, "MEMW", {("D92", "4")})
             and has_nodes(board, "D6_MEM_SELECT_N", {("D92", "5")})
             and has_nodes(board, "D92_WR_NOR", {("D92", "6"), ("D92", "9"), ("D92", "10")})
             and has_nodes(board, "D92_NOACC", {("D92", "8"), ("D39", "5")}),
             "sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8",
+        ),
+        (
+            "Factory wire 11 is promoted onto MEMR in both PCB snapshots",
+            "W11_D7_D92" not in board["nets"]
+            and "W11_D7_D92" not in source_pcb
+            and "W11_D7_D92" not in routed_pcb
+            and "514fcf0c-a7a1-4503-a999-36168c28f107" in routed_pcb
+            and "(start 213.2267 118.2108)" in routed_pcb
+            and "(end 214.6467 116.7908)" in routed_pcb,
+            "native -MRD labels merge D92.13/D7.1; guarded 2.01 mm routed F.Cu join",
         ),
         (
             "D39 latch/output context is guarded",
@@ -297,7 +311,7 @@ def main() -> int:
         "TIMING_TAG2",
         "D34_A1_TAG2",
         "D39_MEMCYC",
-        "W11_D7_D92",
+        "MEMR",
         "D92_RD_NOR",
         "D92_WR_NOR",
         "D92_NOACC",
@@ -329,9 +343,14 @@ def main() -> int:
             "- D92 is no longer an unmodeled timing placeholder. Its native triple-NOR",
             "  read/write combiner is instantiated in the structural HDL and covered by",
             "  LVS: pins 1/2/13 qualify reads, 3/4/5 qualify writes, and 9/10/11",
-            "  combine both results onto D92.8/D39.5. Factory wire 11 remains an",
-            "  explicit source boundary to the global -MRD fanout until target-board",
-            "  continuity closes that last merge.",
+            "  combine both results onto D92.8/D39.5. The repeated native-sheet -MRD",
+            "  label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the",
+            "  former artificial W11 boundary has been removed.",
+            "- The routed snapshot retains the former wire-11 copper as MEMR and adds a",
+            "  2.01 mm same-layer join at `(213.2267,118.2108)` to",
+            "  `(214.6467,116.7908)`. KiCad DRC reports zero shorts and no remaining",
+            "  MEMR unconnected item; only the unrelated historical M5V_DERIVED gap",
+            "  remains in the routed snapshot.",
             "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16",
             "  destination are still not historical-source-complete. D36.12/.13 were",
             "  rechecked across the native 5140x3563 sheet on 2026-07-13; their common",

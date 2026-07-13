@@ -201,7 +201,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 before R17; section1,2->3 remains a destination chase; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
+    "pins": "complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 before R17; section1,2->3 is the source-closed MEMR/MEMW NAND driving AMW_N/D29.5, with factory wire 11 extending the sheet-2 -MRD landing D92.13 to D7.1; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
    }
   },
   {
@@ -3920,7 +3920,7 @@
    "prov": {
     "type": "scan",
     "refdes": "BOM .009",
-    "pins": "К555ЛЕ4 triple 3-NOR in the RAM strobe cluster: sec1 ROE/PHI2TTL/W11 -> D92_RD_NOR, sec2 PHI2TTL/MEMW/RAM_SEL -> D92_WR_NOR, sec3 -> D92_NOACC/D39.5"
+    "pins": "К555ЛЕ4 triple 3-NOR in the RAM strobe cluster: sec1 ROE/PHI2TTL/MEMR (sheet-2 -MRD on pin13, factory wire 11 to D7.1) -> D92_RD_NOR, sec2 PHI2TTL/MEMW/RAM_SEL -> D92_WR_NOR, sec3 -> D92_NOACC/D39.5"
    }
   },
   {
@@ -7182,7 +7182,7 @@
    ]
   },
   "MEMR": {
-   "src": "scan",
+   "src": "native .006 sheets 1-2 full-resolution continuous label chase 2026-07-13: sheet-1 D29 exports -MRD to sheet 2; both sheet-2 arrivals marked (1) -MRD land on D33.3 and D92.13, while factory wire 11 continues D92.13 to D7.1. This closes the former W11_D7_D92 split onto the global MEMR conductor",
    "nodes": [
     [
      "D5",
@@ -7227,6 +7227,14 @@
     [
      "D33",
      "3"
+    ],
+    [
+     "D92",
+     "13"
+    ],
+    [
+     "D7",
+     "1"
     ]
    ]
   },
@@ -11610,20 +11618,6 @@
     ]
    ],
    "note": "WIRE 10 (beeper): D41.QA -> the shared D50/D51 SEL rail (video/µP mux select from the ИР16 chain)"
-  },
-  "W11_D7_D92": {
-   "src": "wire",
-   "nodes": [
-    [
-     "D7",
-     "1"
-    ],
-    [
-     "D92",
-     "13"
-    ]
-   ],
-   "note": "WIRE 11 (beeper): D7.1 <- D92.13 (ЛЕ4 NOR); H1-endpoint-B etch '11' = this wire's solder point"
   },
   "PIT_HCHAIN": {
    "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the emulator-derived wiring exactly; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9)",

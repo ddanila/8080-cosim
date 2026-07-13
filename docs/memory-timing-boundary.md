@@ -31,6 +31,7 @@ python3 scripts/report_memory_timing_boundary.py
 | Shared CAS rail is guarded to all modeled DRAM C pins | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
 | PHI2TTL timing gate fanout is guarded | PASS | `PHI2TTL` source-risk net |
 | D92 triple-NOR RAM read/write combiner is source-closed | PASS | sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8 |
+| Factory wire 11 is promoted onto MEMR in both PCB snapshots | PASS | native -MRD labels merge D92.13/D7.1; guarded 2.01 mm routed F.Cu join |
 | D39 latch/output context is guarded | PASS | `D39_O8` and `D39Y` |
 | D39 remaining NAND inputs are source-closed onto control rails 3 and 1 | PASS | sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1 |
 | D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2 |
@@ -62,7 +63,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `TIMING_TAG2` | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edge conductor visibly terminates in a distinct boundary domain with no continuous line between them; automatic same-number chase exhausted, and the D38.4 remote driver remains a deliberate continuity boundary |
 | `D34_A1_TAG2` | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in that boundary domain; it does not continue to D38.4's separate left-side timing-bundle rail2 |
 | `D39_MEMCYC` | `D39.3, D39.4, D38.5` | scan sheet-2 full-resolution (bite-2 plus D38 load-gate bundle): D39 output3 feeds its section-4 input pin4 and numbered timing rail4, which lands directly on D38 load-gate input pin5 |
-| `W11_D7_D92` | `D7.1, D92.13` | wire |
+| `MEMR` | `D5.24, D15.22, D16.22, D29.6, D17.22, D18.22, D19.22, D20.22, D21.22, D22.22, ... (+3)` | native .006 sheets 1-2 full-resolution continuous label chase 2026-07-13: sheet-1 D29 exports -MRD to sheet 2; both sheet-2 arrivals marked (1) -MRD land on D33.3 and D92.13, while factory wire 11 continues D92.13 to D7.1. This closes the former W11_D7_D92 split onto the global MEMR conductor |
 | `D92_RD_NOR` | `D92.12, D92.11` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D92_WR_NOR` | `D92.6, D92.10, D92.9` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D92_NOACC` | `D92.8, D39.5` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
@@ -88,9 +89,14 @@ python3 scripts/report_memory_timing_boundary.py
 - D92 is no longer an unmodeled timing placeholder. Its native triple-NOR
   read/write combiner is instantiated in the structural HDL and covered by
   LVS: pins 1/2/13 qualify reads, 3/4/5 qualify writes, and 9/10/11
-  combine both results onto D92.8/D39.5. Factory wire 11 remains an
-  explicit source boundary to the global -MRD fanout until target-board
-  continuity closes that last merge.
+  combine both results onto D92.8/D39.5. The repeated native-sheet -MRD
+  label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the
+  former artificial W11 boundary has been removed.
+- The routed snapshot retains the former wire-11 copper as MEMR and adds a
+  2.01 mm same-layer join at `(213.2267,118.2108)` to
+  `(214.6467,116.7908)`. KiCad DRC reports zero shorts and no remaining
+  MEMR unconnected item; only the unrelated historical M5V_DERIVED gap
+  remains in the routed snapshot.
 - The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16
   destination are still not historical-source-complete. D36.12/.13 were
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common

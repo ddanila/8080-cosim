@@ -58,6 +58,23 @@ This corrected audit supersedes the earlier false zero-short
 statement, which inspected a nonexistent top-level JSON field instead of
 `violations[type=shorting_items]`.
 
+## Direct MEMR/wire-11 promotion
+
+The native `.006` sheets make one later source correction independently of a
+full routed refresh: sheet 1 exports `-MRD`, and both sheet-2 arrivals bearing
+that same label land on D33.3 and D92.13. Factory wire 11 continues D92.13 to
+D7.1. The former `W11_D7_D92` net was therefore an artificial split and is now
+merged into `MEMR` in the board JSON, source PCB, routed PCB, and structural
+HDL/LVS contract.
+
+The routed board's twelve existing wire-11 segments were retained as MEMR
+copper. A 2.01 mm F.Cu segment from `(213.2267,118.2108)` to
+`(214.6467,116.7908)` joins that island to the existing MEMR route. KiCad DRC
+then reports zero shorts and no MEMR unconnected item, reducing the routed
+snapshot from two unconnected nets to the single unrelated pre-existing
+`M5V_DERIVED` gap. This targeted, DRC-proved promotion does not imply that the
+rest of the stale routed snapshot has passed the full refresh audit.
+
 A clean refresh therefore requires this order:
 
 1. keep the now-clear source-placement gate guarded while functional connectivity stabilizes;
