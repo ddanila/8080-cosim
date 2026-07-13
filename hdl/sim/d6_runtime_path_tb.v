@@ -6,9 +6,10 @@
 module d6_runtime_path_tb;
   reg [15:0] ba = 16'h0000;
   reg [2:0] pc = 3'b000; // {PC4,PC3,PC2}
+  reg d6_v_en_n = 1'b0;
 
-  wand d6_join_n;
-  wire d6_rev, d6_roe_n;
+  wire d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
+  wire d6_join_n = d6_rom_n & d6_ram_n;
   wire ram_out_en;
   wire physical_d58_oe_n;
 
@@ -22,8 +23,8 @@ module d6_runtime_path_tb;
                      ba[11], ba[12], ba[13], ba[14], ba[15]};
 
   decode_prom U_D6_PHYSICAL (
-      .a(d6_a), .v_en_n(1'b0),
-      .rom_n(d6_join_n), .ram_n(d6_join_n),
+      .a(d6_a), .v_en_n(d6_v_en_n),
+      .rom_n(d6_rom_n), .ram_n(d6_ram_n),
       .rev(d6_rev), .roe_n(d6_roe_n));
 
   tl2_hex U_D13_PHYSICAL (
@@ -54,6 +55,7 @@ module d6_runtime_path_tb;
       .a4(1'b1), .b4(1'b1), .y4());
 
   integer errors = 0;
+  integer mode;
 
   task check_low_rom;
     begin
@@ -72,6 +74,50 @@ module d6_runtime_path_tb;
       end
       $display("D6-RUNTIME-LOW-ROM ba=%04h mode=%03b join_n=%b roe_n=%b d58_oe_n=%b",
                ba, pc, d6_join_n, d6_roe_n, physical_d58_oe_n);
+    end
+  endtask
+
+  task check_disabled_at_ram_call;
+    begin
+      ba = 16'hB37A;
+      pc = 3'b000;
+      d6_v_en_n = 1'b1;
+      #1;
+      if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== 4'hF ||
+          d6_roe_n !== 1'b1 || ram_out_en !== 1'b0 ||
+          physical_d58_oe_n !== 1'b1) begin
+        $display("D6-RUNTIME-PATH: FAIL disabled B37A word=%h d6_9=%b d13_2=%b d58_9=%b",
+                 {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n},
+                 d6_roe_n, ram_out_en, physical_d58_oe_n);
+        errors = errors + 1;
+      end
+      $display("D6-RUNTIME-DISABLED ba=%04h word=%h d6_9=%b d13_2=%b d58_9=%b",
+               ba, {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n},
+               d6_roe_n, ram_out_en, physical_d58_oe_n);
+      d6_v_en_n = 1'b0;
+    end
+  endtask
+
+  task check_all_modes_at_ram_call;
+    reg [3:0] expected_word;
+    begin
+      ba = 16'hB37A;
+      for (mode = 0; mode < 8; mode = mode + 1) begin
+        pc = mode[2:0];
+        #1;
+        expected_word = (mode == 0 || mode == 2 || mode == 3) ? 4'h8 : 4'hF;
+        if ({d6_roe_n, d6_rev, d6_ram_n, d6_rom_n} !== expected_word ||
+            d6_roe_n !== 1'b1 || ram_out_en !== 1'b0 ||
+            physical_d58_oe_n !== 1'b1) begin
+          $display("D6-RUNTIME-PATH: FAIL all-mode B37A mode=%03b word=%h ram_out_en=%b d58_oe_n=%b",
+                   pc, {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n},
+                   ram_out_en, physical_d58_oe_n);
+          errors = errors + 1;
+        end
+        $display("D6-RUNTIME-ALL-MODES ba=%04h mode=%03b word=%h d6_9=%b d13_2=%b d58_9=%b",
+                 ba, pc, {d6_roe_n, d6_rev, d6_ram_n, d6_rom_n},
+                 d6_roe_n, ram_out_en, physical_d58_oe_n);
+      end
     end
   endtask
 
@@ -104,11 +150,13 @@ module d6_runtime_path_tb;
   initial begin
     check_low_rom();
     check_ram_call();
+    check_all_modes_at_ram_call();
+    check_disabled_at_ram_call();
     if (errors != 0) begin
       $display("D6-RUNTIME-PATH: FAIL (%0d errors)", errors);
       $fatal(1);
     end
-    $display("D6-RUNTIME-PATH: BOUNDARY REPRODUCED (physical mode 000 blocks D58 at B37A)");
+    $display("D6-RUNTIME-PATH: BOUNDARY REPRODUCED (all physical modes block D58 at B37A)");
     $finish;
   end
 endmodule

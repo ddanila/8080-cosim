@@ -64,11 +64,12 @@ nibble per 2 KiB block from `0000` through `F800`.
   map. The physical table and joined conductor remain instantiated and
   guarded; the compatibility path must be retired when downstream timing
   continuity is sufficient to execute directly from the physical topology.
-- `docs/d6-runtime-path-diagnostic.md` now reproduces the first decisive
-  adoption failure without a full boot: in physical mode `000`, address
-  `B37A` emits word `8`, leaving D6.9 high and the currently modeled
-  D13/D37 chain's D58 output disabled. The isolated `.009` continuity and
-  live-level probes named there must resolve this cross-revision boundary.
+- `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a
+  full boot. At `B37A`, all eight PC4..PC2 combinations emit word `8` or
+  `F`; D6.9 is therefore high in every physical row, and disabling the PROM
+  also leaves it high. Mode selection and V1/V2 cannot repair the currently
+  modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,
+  polarity/function, and D58-path checks named there must resolve the boundary.
 
 ## Model adoption guards
 
@@ -79,4 +80,4 @@ nibble per 2 KiB block from `0000` through `F800`.
 | HDL uses physical D6 address order | PASS |
 | Runnable compatibility decode is explicit and excluded from LVS | PASS |
 | Structural consumers retain the measured joined D6 conductor | PASS |
-| Mode-000 B37A RAM-gate boundary has a reproducible diagnostic | PASS |
+| All-mode B37A RAM-gate boundary has a reproducible diagnostic | PASS |

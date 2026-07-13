@@ -76,9 +76,9 @@ def main() -> int:
          and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
         ("Structural consumers retain the measured joined D6 conductor",
          "wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;" in hdl),
-        ("Mode-000 B37A RAM-gate boundary has a reproducible diagnostic",
-         "PHYSICAL MODE-000 RAM GATE BOUNDARY REPRODUCED" in runtime_report
-         and "D6-RUNTIME-RAM ba=b37a" in runtime_report),
+        ("All-mode B37A RAM-gate boundary has a reproducible diagnostic",
+         "ALL PHYSICAL MODES EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
+         and runtime_report.count("D6-RUNTIME-ALL-MODES ba=b37a") == 8),
     ]
     if not all(ok for _, ok in model_checks):
         raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
@@ -128,11 +128,12 @@ def main() -> int:
         "  map. The physical table and joined conductor remain instantiated and",
         "  guarded; the compatibility path must be retired when downstream timing",
         "  continuity is sufficient to execute directly from the physical topology.",
-        "- `docs/d6-runtime-path-diagnostic.md` now reproduces the first decisive",
-        "  adoption failure without a full boot: in physical mode `000`, address",
-        "  `B37A` emits word `8`, leaving D6.9 high and the currently modeled",
-        "  D13/D37 chain's D58 output disabled. The isolated `.009` continuity and",
-        "  live-level probes named there must resolve this cross-revision boundary.",
+        "- `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a",
+        "  full boot. At `B37A`, all eight PC4..PC2 combinations emit word `8` or",
+        "  `F`; D6.9 is therefore high in every physical row, and disabling the PROM",
+        "  also leaves it high. Mode selection and V1/V2 cannot repair the currently",
+        "  modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,",
+        "  polarity/function, and D58-path checks named there must resolve the boundary.",
         "", "## Model adoption guards", "",
         "| Check | Result |", "| --- | --- |",
     ]
