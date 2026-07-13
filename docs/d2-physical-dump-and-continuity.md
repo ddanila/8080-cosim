@@ -44,6 +44,12 @@ pins 9-12 were checked unpowered and were not shorted to one another.
 `ref/physical-proms/validated/d2_037.raw.bin`, SHA256
 `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`.
 
+The `arvutimuuseum_CS00015` files are byte-identical archival aliases of those
+three logs. The `sukharev_reference` file differs from capture 1 only by a
+trailing blank line. They preserve useful supplied provenance labels, but are
+not counted as additional independent reads and do not close that provenance
+request.
+
 All four physical outputs agreed at every address. The observed active-low
 asserted nibbles were:
 

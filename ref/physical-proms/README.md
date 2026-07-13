@@ -14,6 +14,12 @@ capture followed a full USB power cycle. `scripts/validate_rt4_dump.py` accepts
 all three with no missing, unstable, non-complementary, or repeat-mismatched
 rows.
 
+The three `d2_037_arvutimuuseum_CS00015_*` files are byte-identical archival
+aliases of those same streams. `d2_037_sukharev_reference_20260713_verify1.txt`
+has identical rows and differs from capture 1 only by one trailing blank line.
+These files preserve the supplied board/source labels, but are deliberately not
+counted as independent captures.
+
 The authoritative raw electrical artifact is `validated/d2_037.raw.bin`:
 
 ```text
