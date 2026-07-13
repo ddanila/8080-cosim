@@ -202,6 +202,18 @@ module la3_gate (input wire a, b, a2, b2, a3, b3, a4, b4, output wire y, y2, y3,
     assign y4 = ~(a4 & b4);   // fourth section (D39: 4,5->6 -> D52 B/A video/µP address select), sheet-2
 endmodule
 
+// D92 К555ЛЕ4 (74LS27-class triple 3-input NOR).  The native sheet-2
+// symbol uses the standard section order 1,2,13->12; 3,4,5->6; and
+// 9,10,11->8.  D92 first qualifies RAM reads, the second qualifies RAM
+// writes, and the third combines those two results into the no-access input
+// of D39.5.
+module le4_nor3 (input wire a1, b1, c1, input wire a2, b2, c2,
+                 input wire a3, b3, c3, output wire y1, y2, y3);
+    assign y1 = ~(a1 | b1 | c1);
+    assign y2 = ~(a2 | b2 | c2);
+    assign y3 = ~(a3 | b3 | c3);
+endmodule
+
 // ---- EPROM 8Kx8 (2764-class, D15/D16 populated) ----
 // The 16KB ekta37 BIOS spans D15 (low 8K, HALF=0) + D16 (high 8K, HALF=1), each with its own CE
 // from the decode PROM. oe_n is the read strobe (MEMR). Sample-and-hold: latch the byte at the

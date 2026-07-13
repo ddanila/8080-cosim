@@ -108,14 +108,25 @@ module juku_top (
     wire d40_ctrl_pull;
     net_boundary U_R34LNK (.a(1'b1), .b(d40_ctrl_pull));
     ct16_ctr  U_D40 (.clk(osc_clk), .r_n(d40_ctrl_pull), .ep(1'b1), .et(1'b1), .pe_n(d40_ctrl_pull), .d(4'bzzzz), .q(d40_q), .co());
-    // D39 sections 3+4 (bite-2): NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4; then NAND(out3,
-    // D92.8 "no CPU RAM access") -> out6 -> D52 B/A select. Gate-T (D39.1 = D92.2 = D92.3) and the
-    // rail-1/rail-4 fanouts are pending; D92 is unmapped, so tri1 defaults keep the leg inert in sim.
+    // D92 is the native sheet-2 RAM-access combiner.  Section 1 qualifies a
+    // read from ROE, PHI2TTL, and factory wire 11 / -MRD; section 2 qualifies
+    // a write from PHI2TTL, -MWR, and -RAM SEL.  Section 3 NORs those results
+    // (the write result is intentionally tied to two inputs) into D92.8, the
+    // "no CPU RAM access" input of D39.5.  W11 is retained across an explicit
+    // boundary because its two accepted package endpoints are source-modeled
+    // separately from the global MEMR fanout; simulation follows -MRD.
 `ifdef YOSYS
-    wire d92_noacc;
+    wire d92_mrd_w;
 `else
-    tri1 d92_noacc;
+    tri1 d92_mrd_w;
 `endif
+    wire d92_rd_nor, d92_wr_nor, d92_noacc;
+    net_boundary U_W11MRDLNK (.a(memr_n), .b(d92_mrd_w));
+    le4_nor3 U_D92 (.a1(roe_n), .b1(phi2ttl), .c1(d92_mrd_w), .y1(d92_rd_nor),
+                    .a2(phi2ttl), .b2(memw_n), .c2(ram_sel_n), .y2(d92_wr_nor),
+                    .a3(d92_wr_nor), .b3(d92_wr_nor), .c3(d92_rd_nor), .y3(d92_noacc));
+    // D39 sections 3+4: NAND(rail1, gate-T) -> out3 -> rail 4 + own pin 4;
+    // then NAND(out3, D92.8) -> out6 -> D52 B/A select.
     wire d39_memcyc, vid_cpu_sel;
     la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(latch_sig), .b2(xtal16m_w), .y2(d39_o8),  // pin9 <- D33.12 LATCH; pin10 <- local control rail3 / 16MHz
                      .a3(phi2ttl), .b3(1'b0), .y3(d39_memcyc),                                   // 1,2->3: pin1 <- Ф2TTL; pin2 <- grounded control rail1 (shared D43.DS)
@@ -260,7 +271,7 @@ module juku_top (
 `endif
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_inhib_status));  // shared source is unread; low preserves the existing boot-safe D25 turnaround scaffold
     la3_gate    U_D7     (.a(d7_a1_w), .b(d7_b1_w), .y(io_strobe_h),
-                          .a2(1'b1), .b2(memw_n), .y2(d7_y2_amw_n),     // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 boundary]; pin3 -> physical D29.5 (-AMWC path)
+                          .a2(d92_mrd_w), .b2(memw_n), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 / -MRD boundary]; pin3 -> physical D29.5 (-AMWC path)
                           .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
     wire d6_v_enable;

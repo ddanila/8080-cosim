@@ -42,6 +42,7 @@ def main() -> int:
     d35 = chips["D35"]
     d36 = chips["D36"]
     d59 = chips["D59"]
+    d92 = chips["D92"]
     hex_contract = {
         "1": "I1", "2": "O2", "3": "I3", "4": "O4", "5": "I5", "6": "O6",
         "9": "I9", "8": "O8",
@@ -134,6 +135,23 @@ def main() -> int:
             "PHI2TTL timing gate fanout is guarded",
             has_nodes(board, "PHI2TTL", {("D35", "13"), ("D39", "1"), ("D92", "2"), ("D92", "3"), ("D53", "4")}),
             "`PHI2TTL` source-risk net",
+        ),
+        (
+            "D92 triple-NOR RAM read/write combiner is source-closed",
+            d92.get("pins", {}) == {
+                "1": "A1", "2": "B1", "13": "C1", "12": "Y1",
+                "3": "A2", "4": "B2", "5": "C2", "6": "Y2",
+                "9": "A3", "10": "B3", "11": "C3", "8": "Y3",
+            }
+            and has_nodes(board, "ROE", {("D92", "1")})
+            and has_nodes(board, "PHI2TTL", {("D92", "2"), ("D92", "3")})
+            and has_nodes(board, "W11_D7_D92", {("D92", "13"), ("D7", "1")})
+            and has_nodes(board, "D92_RD_NOR", {("D92", "12"), ("D92", "11")})
+            and has_nodes(board, "MEMW", {("D92", "4")})
+            and has_nodes(board, "D6_MEM_SELECT_N", {("D92", "5")})
+            and has_nodes(board, "D92_WR_NOR", {("D92", "6"), ("D92", "9"), ("D92", "10")})
+            and has_nodes(board, "D92_NOACC", {("D92", "8"), ("D39", "5")}),
+            "sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8",
         ),
         (
             "D39 latch/output context is guarded",
@@ -279,6 +297,10 @@ def main() -> int:
         "TIMING_TAG2",
         "D34_A1_TAG2",
         "D39_MEMCYC",
+        "W11_D7_D92",
+        "D92_RD_NOR",
+        "D92_WR_NOR",
+        "D92_NOACC",
         "PHI2TTL",
         "XTAL16M",
         "D39_O8",
@@ -304,6 +326,12 @@ def main() -> int:
             "- The functional board model has enough traced structure for fabrication",
             "  and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,",
             "  and the key PHI2TTL/D56 support nets are guarded.",
+            "- D92 is no longer an unmodeled timing placeholder. Its native triple-NOR",
+            "  read/write combiner is instantiated in the structural HDL and covered by",
+            "  LVS: pins 1/2/13 qualify reads, 3/4/5 qualify writes, and 9/10/11",
+            "  combine both results onto D92.8/D39.5. Factory wire 11 remains an",
+            "  explicit source boundary to the global -MRD fanout until target-board",
+            "  continuity closes that last merge.",
             "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q2_N tag-16",
             "  destination are still not historical-source-complete. D36.12/.13 were",
             "  rechecked across the native 5140x3563 sheet on 2026-07-13; their common",
