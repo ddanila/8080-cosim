@@ -22,6 +22,8 @@ history.
   and routed high-address/command permutation guard.
 - `8282-pinout-audit.md` — complete physical D58 DRAM read-latch pinout,
   power, and routed data-channel guard.
+- `package-endpoint-coverage.md` — repository-wide guard against undeclared
+  signal, control, or off-board package endpoints.
 
 ## Current evidence
 

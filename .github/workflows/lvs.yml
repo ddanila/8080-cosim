@@ -40,6 +40,7 @@ jobs:
             scripts/report_d30_section_b_scan_chase.py \
             scripts/report_8286_pinout_audit.py \
             scripts/report_8282_pinout_audit.py \
+            scripts/report_package_endpoint_coverage.py \
             scripts/report_d6_physical_decode.py \
             scripts/report_d6_firmware_modes.py \
             scripts/report_d94_reconstruction_constraints.py \
@@ -255,6 +256,7 @@ jobs:
           python3 scripts/report_d30_section_b_scan_chase.py
           python3 scripts/report_8286_pinout_audit.py
           python3 scripts/report_8282_pinout_audit.py
+          python3 scripts/report_package_endpoint_coverage.py
           python3 scripts/report_owner_measurement_shortlist.py
           git diff --exit-code -- \
             docs/fdc-hardware-handoff.md \
@@ -269,6 +271,7 @@ jobs:
             docs/d30-section-b-scan-chase.md \
             docs/8286-pinout-audit.md \
             docs/8282-pinout-audit.md \
+            docs/package-endpoint-coverage.md \
             docs/owner-measurement-shortlist.md
 
       - name: Check replica bring-up report freshness
