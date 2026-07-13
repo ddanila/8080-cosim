@@ -15759,7 +15759,7 @@
    ]
   },
   "D56_Q2N_TAG16": {
-   "src": "scan sheet-2 native 5140x3563 review: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical, while the far tag-16 destination remains a deliberate boundary",
+   "src": "scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical. No junction to D36.8 or the DRAM W rail is drawn, and merging solely by the repeated numeral 16 would short two push-pull outputs; automatic scan chase exhausted, so the far destination remains a deliberate continuity boundary",
    "nodes": [
     [
      "D56",

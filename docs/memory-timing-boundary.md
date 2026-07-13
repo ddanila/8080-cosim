@@ -42,7 +42,7 @@ python3 scripts/report_memory_timing_boundary.py
 | --- | --- | --- |
 | D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
-| D56_Q2_N tag-16 far destination remains unresolved | PASS | D56.12 |
+| D56_Q2_N tag-16 far destination remains unresolved | PASS | D56.12; explicitly not merged with D36.8/DRAM W rail16 |
 
 ## Current Timing Nets
 
@@ -67,7 +67,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `D56_RC2` | `D56.7, R47.1, C7.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: RC pin 7 = R47 20k + C7 560pF |
 | `D56_C2` | `D56.6, C7.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: C pin 6 = C7 far plate |
 | `D56_QN_D34` | `D56.4, D34.10` | scan sheet-2 native 5140x3563 review: D56 first-section Q_N pin4 runs east, corners south on its own vertical, and enters D34 gate-3 input pin10; it crosses the horizontal 16 MHz rail without a junction |
-| `D56_Q2N_TAG16` | `D56.12` | scan sheet-2 native 5140x3563 review: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical, while the far tag-16 destination remains a deliberate boundary |
+| `D56_Q2N_TAG16` | `D56.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is disproved by the distinct local D56.4-to-D34.10 vertical. No junction to D36.8 or the DRAM W rail is drawn, and merging solely by the repeated numeral 16 would short two push-pull outputs; automatic scan chase exhausted, so the far destination remains a deliberate continuity boundary |
 
 ## Interpretation
 
@@ -79,6 +79,10 @@ python3 scripts/report_memory_timing_boundary.py
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common
   west conductor enters an unlabeled dense timing bundle, so the automated
   scan chase is exhausted.
+- D56.12's printed conductor code 16 is not evidence for a merge with the
+  separate D36.8/DRAM write rail 16. Native full-sheet review shows no
+  junction, and such a merge would short two push-pull outputs; its remote
+  destination therefore remains a continuity boundary.
 - Do not replace these boundaries with a behavioral timing guess from the
   runnable twin. They need stronger sheet-2 imagery, macro photo,
   continuity check, or scope trace before being removed from the

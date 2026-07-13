@@ -187,8 +187,11 @@ def main() -> int:
         ),
         (
             "D56_Q2_N tag-16 far destination remains unresolved",
-            set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")},
-            endpoint_text(board, "D56_Q2N_TAG16"),
+            set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")}
+            and ("D56", "12") not in set(nodes(board, "W_RAIL16"))
+            and "automatic scan chase exhausted" in board["nets"]["D56_Q2N_TAG16"]["src"]
+            and "short two push-pull outputs" in board["nets"]["D56_Q2N_TAG16"]["src"],
+            endpoint_text(board, "D56_Q2N_TAG16") + "; explicitly not merged with D36.8/DRAM W rail16",
         ),
     ]
     ok = all(result for _, result, _ in guarded_checks + boundary_checks)
@@ -276,6 +279,10 @@ def main() -> int:
             "  rechecked across the native 5140x3563 sheet on 2026-07-13; their common",
             "  west conductor enters an unlabeled dense timing bundle, so the automated",
             "  scan chase is exhausted.",
+            "- D56.12's printed conductor code 16 is not evidence for a merge with the",
+            "  separate D36.8/DRAM write rail 16. Native full-sheet review shows no",
+            "  junction, and such a merge would short two push-pull outputs; its remote",
+            "  destination therefore remains a continuity boundary.",
             "- Do not replace these boundaries with a behavioral timing guess from the",
             "  runnable twin. They need stronger sheet-2 imagery, macro photo,",
             "  continuity check, or scope trace before being removed from the",
