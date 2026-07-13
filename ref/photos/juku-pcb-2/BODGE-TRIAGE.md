@@ -25,7 +25,7 @@ two assemblies must not be mixed.
 | Ref | `.009` identity | Current conclusion |
 | --- | --- | --- |
 | D2 | КР556РТ4, program `.037` | bus/wait PROM; signal wiring and contents still open |
-| D6 | КР556РТ4, program `.038` | memory-decode behavior reconstructed; original dump absent |
+| D6 | КР556РТ4, program `.038` | validated physical table adopted from three independent matching reads; runnable joined-conductor timing remains bounded |
 | D8 | К155РЕ3, program `.039` | ROM pager behavior reconstructed; original dump absent |
 | D9 | К555ИД7 | I/O chip-select decoder; physical D2 is not this decoder |
 | D41-D43 | К555ИР16 | timing register plus two pixel serializers |

@@ -177,7 +177,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged; two preserved captures parse identically with raw SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
+    "pins": "validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged; three independent accepted reads, including a power-cycled capture, agree at all 256 addresses with raw SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
    }
   },
   {
@@ -7139,7 +7139,7 @@
    ]
   },
   "D6_MEM_SELECT_N": {
-   "src": "owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation; existing R11/R12, D8.15, and D92.5 branches are retained on the measured joined conductor pending a preserved D6 dump/spot-check",
+   "src": "owner continuity 2026-07-13 joins D6.11, D6.12, and D13.12 on the physical .009 board, superseding the older-sheet independent RAM_SEL/ROM_SEL interpretation; existing R11/R12, D8.15, and D92.5 branches are retained on the modeled joined conductor pending an isolated chip-removed resistance map. The validated physical D6 table is complete; this is a connectivity/polarity boundary, not a content gap",
    "nodes": [
     ["D6", "11"],
     [
