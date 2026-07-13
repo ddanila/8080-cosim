@@ -13830,20 +13830,20 @@
    "src": "sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measurement boundary",
    "nodes": [["D26", "38"]]
   },
-  "D29_AIN0_BOUNDARY": {
-   "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic A0/-INHIB on D29 physical channel A2 pin3; its remote source remains unread",
-   "nodes": [["D29", "3"]]
+  "INHIB_STATUS_BOUNDARY": {
+   "src": "sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction dot; the shared conductor drives physical B2/pin17, routed as command B0 -INHIB, while its upstream westbound source remains unread",
+   "nodes": [["D7", "5"], ["D29", "3"]]
   },
   "D29_AIN1_BOUNDARY": {
    "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary",
    "nodes": [["D29", "2"]]
   },
   "IOM_STATUS": {
-   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 IORD/IOWR NAND output pin8 runs uninterrupted east into semantic D29 A2 on physical channel A3 pin4, paired with B3 pin16 labeled -IO/M",
+   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 IORD/IOWR NAND output pin8 runs uninterrupted east into semantic D29 command A2 on physical package channel A3/pin4, paired with physical B3/pin16 routed as -IO/M",
    "nodes": [["D7", "8"], ["D29", "4"]]
   },
   "AMW_N": {
-   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into semantic D29 A5 on physical channel A4 pin5, paired with B4 pin15 labeled -AMWC",
+   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into semantic D29 command A5 on physical package channel A4/pin5, paired with physical B4/pin15 routed as -AMWC",
    "nodes": [["D7", "3"], ["D29", "5"]]
   },
   "D30_CLK2_BOUNDARY": {
@@ -15862,7 +15862,7 @@
    "nodes": [["D105", "11"], ["D30", "13"]]
   },
   "D25_T": {
-   "src": "traced sheet-1 native 5150x3603 review (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; both inputs enter the dense westbound crossing bundle without a unique label or junction, so each source remains a deliberate boundary after the 2026-07-13 full-sheet recheck. D25.E (9) -> GND like D23/D24",
+   "src": "traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin5 meets D29.3 at an explicit junction while their upstream source remains unread, and pin4 remains a separate deliberate boundary. D25.E (9) -> GND like D23/D24",
    "nodes": [
     [
      "D7",
@@ -15877,10 +15877,6 @@
   "D7_A3_BOUNDARY": {
    "src": "sheet-1 D7 section 5,4->6: pin4 leaves west as a distinct conductor; next hop is unread in the available scan",
    "nodes": [["D7", "4"]]
-  },
-  "D7_B3_BOUNDARY": {
-   "src": "sheet-1 D7 section 5,4->6: pin5 leaves west as a distinct conductor; next hop is unread in the available scan",
-   "nodes": [["D7", "5"]]
   },
   "D7_A1_BOUNDARY": {
    "src": "sheet-1 full-resolution: D7 first-gate pin12 has a drawn conductor, but its unique origin is not established after correcting the false IOWR assignment, so it remains a measurement boundary",

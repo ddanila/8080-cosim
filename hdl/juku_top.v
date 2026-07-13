@@ -198,13 +198,15 @@ module juku_top (
     // ============ expansion/backplane interface (Phase B, sheet 1 -- bus-interface.md) ============
     // D29 (ВА86) = the full bus-command transceiver, 8 signals (B0..B7 per owner's scan read):
     //   B0 -INHIB, B1 -CCLCK, B2 -IO/M, B3 -MWC, B4 -MRC, B5 -AMWC, B6 -IORC, B7 -IOWC.
-    // A-side reads the four direct strobes plus D7.3 -> A5 -> -AMWC. The remaining three
-    // sources (-INHIB/-CCLCK/-IO/M) stay inactive boundaries. One-way (never drives the
+    // A-side reads the four direct strobes plus D7.3 -> A5 -> -AMWC, D7.8 -> A2 -> -IO/M,
+    // and the shared D7.5/D29.3 status boundary -> A0 -> -INHIB. The remaining CCLCK
+    // source stays an inactive boundary. One-way (never drives the
     // strobe nets -> boot-safe).
     wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
-    wire d7_y2_amw_n;  // D7.3 -> physical D29.5/A4; paired D29.15/B4 is -AMWC
-    wire d7_y4_iom_status;  // D7.8 -> physical D29.4/A3; paired D29.16/B3 is -IO/M
-    va86_out U_D29 (.Ain ({iowr_n, iord_n, d7_y2_amw_n, memr_n, memw_n, d7_y4_iom_status, 1'b1, 1'b1}),
+    wire d7_y2_amw_n;  // D7.3 -> semantic command A5 on physical D29 A4/pin5; physical B4/pin15 is -AMWC
+    wire d7_y4_iom_status;  // D7.8 -> semantic command A2 on physical D29 A3/pin4; physical B3/pin16 is -IO/M
+    wire d7_b3_inhib_status;  // D7.5 shares semantic command A0 on physical D29 A2/pin3; physical B2/pin17 is -INHIB
+    va86_out U_D29 (.Ain ({iowr_n, iord_n, d7_y2_amw_n, memr_n, memw_n, d7_y4_iom_status, 1'b1, d7_b3_inhib_status}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
     // Address/data backplane transceivers (ВА87, one-way A->B; refdes confirmed by owner from scan):
@@ -239,14 +241,14 @@ module juku_top (
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    wire d7_a1_boundary, d7_b1_boundary, d7_a3_boundary, d7_b3_boundary;
+    wire d7_a1_boundary, d7_b1_boundary, d7_a3_boundary;
     net_boundary U_D7A1LNK (.a(iowr_n), .b(d7_a1_boundary));
     net_boundary U_D7B1LNK (.a(iord_n), .b(d7_b1_boundary));
     net_boundary U_D7A3LNK (.a(1'b0), .b(d7_a3_boundary));
-    net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_boundary));
+    net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_inhib_status));  // shared source is unread; low preserves the existing boot-safe D25 turnaround scaffold
     la3_gate    U_D7     (.a(d7_a1_boundary), .b(d7_b1_boundary), .y(io_strobe_h),     // physical origins of pins12/13 unresolved; sim keeps prior IOWR/IORD semantics through boundaries
                           .a2(1'b1), .b2(memw_n), .y2(d7_y2_amw_n),     // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 boundary]; pin3 -> physical D29.5 (-AMWC path)
-                          .a3(d7_b3_boundary), .b3(d7_a3_boundary), .y3(d25_t_w),
+                          .a3(d7_a3_boundary), .b3(d7_b3_inhib_status), .y3(d25_t_w),
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
     wire d6_v_enable;
     net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));

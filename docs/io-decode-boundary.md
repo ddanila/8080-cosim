@@ -49,7 +49,7 @@ python3 scripts/report_io_decode_boundary.py
 | `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.15, ... (+5)` | scan |
 | `IOWR` | `D10.2, D11.10, D26.36, D27.36, D29.7, D5.27, D54.23, D55.23, D57.23, D7.10` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision |
 | `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.8, D5.25, D54.22, D55.22, D57.22, D7.9` | scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision |
-| `D25_T` | `D25.11, D7.6` | traced sheet-1 native 5150x3603 review (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; both inputs enter the dense westbound crossing bundle without a unique label or junction, so each source remains a deliberate boundary after the 2026-07-13 full-sheet recheck. D25.E (9) -> GND like D23/D24 |
+| `D25_T` | `D25.11, D7.6` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin5 meets D29.3 at an explicit junction while their upstream source remains unread, and pin4 remains a separate deliberate boundary. D25.E (9) -> GND like D23/D24 |
 | `CS_D10` | `D10.1, D9.15` | prom |
 | `CS_D26` | `D26.6, D9.14` | prom |
 | `CS_D11` | `D11.11, D9.13` | prom |

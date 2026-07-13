@@ -33,7 +33,7 @@ EXPECTED_NET_PINS = {
         "BA12": "15", "BA13": "16", "BA14": "17", "BA15": "14",
     },
     "D29": {
-        "D29_AIN0_BOUNDARY": "3", "D29_AIN1_BOUNDARY": "2",
+        "INHIB_STATUS_BOUNDARY": "3", "D29_AIN1_BOUNDARY": "2",
         "IOM_STATUS": "4", "MEMW": "1", "MEMR": "6",
         "AMW_N": "5", "IORD": "8", "IOWR": "7",
         "INHIB_N": "17", "CCLCK": "18", "IOM_N": "16", "MWC_N": "19",
@@ -95,6 +95,13 @@ def main() -> None:
         pin: f"AOUT{i}" for i, pin in enumerate(("17", "18", "16", "19", "14", "15", "12", "13"))
     })
     checks.append(("D29 LVS override preserves its routed command permutation", d29_map == expected_d29_map))
+    checks.append((
+        "D7 pin 5 and D29 physical A2 pin 3 share the traced -INHIB source boundary",
+        {
+            (ref, str(pin))
+            for ref, pin in board["nets"]["INHIB_STATUS_BOUNDARY"]["nodes"]
+        } == {("D7", "5"), ("D29", "3")},
+    ))
 
     failed = [name for name, ok in checks if not ok]
     if failed:
