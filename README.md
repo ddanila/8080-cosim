@@ -25,6 +25,9 @@ with the machine-readable board model.
   lacks pin 15, outputs D3-D7, and PROM truth. There are 9 official
   FDC-support ICs with only their physical pin maps and power endpoints modeled.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
+  D6's validated physical table and joined output conductor stay LVS-visible,
+  while runnable simulation uses an explicit non-LVS memory-map decoder until
+  the joined conductor's downstream D8/D13/D92 timing is fully reconstructed;
   the routed snapshot still carries the superseded topology.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
   8 and 11 remain explicit boundaries. In total, 220 modeled nets retain source-risk annotations requiring

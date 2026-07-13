@@ -58,7 +58,12 @@ nibble per 2 KiB block from `0000` through `F800`.
 - These are physical electrical facts, not yet a complete explanation of
   the downstream D8/D13/D92 memory timing. That behavior must be derived
   from the joined conductor and its consumers rather than resurrecting
-  separate RAM/ROM selects.
+  separate RAM/ROM selects as physical claims.
+- Runnable simulation therefore uses a separately named, non-LVS
+  `decode_prom_functional` oracle for the established EKTA/EKDOS memory
+  map. The physical table and joined conductor remain instantiated and
+  guarded; the compatibility path must be retired when downstream timing
+  continuity is sufficient to execute directly from the physical topology.
 
 ## Model adoption guards
 
@@ -67,3 +72,5 @@ nibble per 2 KiB block from `0000` through `F800`.
 | Board source joins D6.11/D6.12 to D13.12 and D8.15 | PASS |
 | HDL drives both D6 outputs onto the joined conductor | PASS |
 | HDL uses physical D6 address order | PASS |
+| Runnable compatibility decode is explicit and excluded from LVS | PASS |
+| Structural consumers retain the measured joined D6 conductor | PASS |

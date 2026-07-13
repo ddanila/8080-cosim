@@ -65,10 +65,16 @@ def main() -> int:
     joined_nodes = {tuple(node) for node in board["nets"]["D6_MEM_SELECT_N"]["nodes"]}
     required_join = {("D6", "11"), ("D6", "12"), ("D13", "12"), ("D8", "15")}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
+    devices = (ROOT / "hdl/devices.v").read_text()
     model_checks = [
         ("Board source joins D6.11/D6.12 to D13.12 and D8.15", required_join <= joined_nodes),
         ("HDL drives both D6 outputs onto the joined conductor", ".rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n)" in hdl),
         ("HDL uses physical D6 address order", ".a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
+        ("Runnable compatibility decode is explicit and excluded from LVS",
+         "module decode_prom_functional" in devices
+         and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
+        ("Structural consumers retain the measured joined D6 conductor",
+         "wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;" in hdl),
     ]
     if not all(ok for _, ok in model_checks):
         raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
@@ -112,7 +118,13 @@ def main() -> int:
         "  joined D1/D0 conductor is high only in word `F`.", "- These are physical electrical facts, not yet a complete explanation of",
         "  the downstream D8/D13/D92 memory timing. That behavior must be derived",
         "  from the joined conductor and its consumers rather than resurrecting",
-        "  separate RAM/ROM selects.", "", "## Model adoption guards", "",
+        "  separate RAM/ROM selects as physical claims.",
+        "- Runnable simulation therefore uses a separately named, non-LVS",
+        "  `decode_prom_functional` oracle for the established EKTA/EKDOS memory",
+        "  map. The physical table and joined conductor remain instantiated and",
+        "  guarded; the compatibility path must be retired when downstream timing",
+        "  continuity is sufficient to execute directly from the physical topology.",
+        "", "## Model adoption guards", "",
         "| Check | Result |", "| --- | --- |",
     ]
     lines.extend(f"| {name} | {'PASS' if ok else 'FAIL'} |" for name, ok in model_checks)

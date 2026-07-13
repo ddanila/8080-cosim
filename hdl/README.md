@@ -29,8 +29,11 @@ They are not generic cycle-accurate replacements for every original IC mode.
 
 ## Honest boundaries
 
-- D2's physical inputs and D0/WAIT handoff are modeled, but the `.037` truth
-  table is unknown and the runnable PROM remains a constrained placeholder.
+- D2's physical inputs, validated `.037` table, and D0/WAIT handoff are modeled.
+- D6's validated `.038` table and measured joined pins 11/12 remain the
+  structural/LVS truth. Runnable simulation uses the explicitly non-LVS
+  `decode_prom_functional` memory-map oracle until the joined conductor's
+  downstream D8/D13/D92 timing topology is complete enough to execute directly.
 - D94's first three outputs are wired to the accepted local FDC controls; its
   enable, remaining outputs, and `.092` contents are unknown.
 - Nine official FDC-support devices have package pins and power endpoints in

@@ -62,9 +62,17 @@ module juku_top (
 `else
     wand        d6_mem_select_n;  // owner-measured wired join: D6.11 + D6.12 + D13.12
 `endif
-    wire        rev, roe_n;
-    wire        rom_sel_n = d6_mem_select_n; // compatibility aliases; physically one joined net
-    wire        ram_sel_n = d6_mem_select_n;
+    wire        d6_rev_physical, d6_roe_physical;
+`ifdef YOSYS
+    // Structural/LVS path: preserve the measured `.009` D6 output join and
+    // physical downstream nets exactly.
+    wire        rev = d6_rev_physical, roe_n = d6_roe_physical;
+    wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;
+`else
+    // Runnable path: explicit compatibility boundary until the joined D6
+    // conductor's complete D8/D13/D92 timing topology is reconstructed.
+    wire        rev, roe_n, rom_sel_n, ram_sel_n;
+`endif
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
     wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
     wire [7:0]  ppi0_pc;               // D26 Port C: PC2/3/4 -> D6 A5/6/7; PC4 also -> FDC DDEN
@@ -234,7 +242,7 @@ module juku_top (
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
     wire [7:0] d8_d;
-    re3_prom  U_D8   (.a(BA[15:11]), .e_n(d6_mem_select_n), .d(d8_d));
+    re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));
     net_boundary U_R17LNK (.a(io_strobe_h), .b(d9_g1_w));   // R17 200R (+C99 160pF deglitch) in series [traced]
     io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]
                       .g1(d9_g1_w), .g2a_n(rev), .g2b_n(rev),   // traced: G1 <- RC'd D7.11 strobe-NAND; G2A+G2B bridged <- REV
@@ -253,7 +261,12 @@ module juku_top (
     net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
     decode_prom U_DECODE (.a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),                               // V1/V2 are one source-visible, upstream-unread boundary
-                          .rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n), .rev(rev), .roe_n(roe_n));
+                          .rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n),
+                          .rev(d6_rev_physical), .roe_n(d6_roe_physical));
+`ifndef YOSYS
+    decode_prom_functional U_D6_FUNCTIONAL (.ba(BA[15:11]), .pc2(ppi0_pc[2]),
+                          .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
+`endif
 
     // ============ memory chips on the buffered buses ============
     // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS in the
@@ -411,7 +424,7 @@ module juku_top (
                      .sel(vid_cpu_sel), .en_n(1'b0), .y(d52_y));   // video/µP addr mux (bite-2)
     jumper3   U_E2  (.p1(d52_y[0]), .p3(phi1), .p2(e2_com));
     jumper3   U_E3  (.p1(d52_y[1]), .p3(phi2), .p2(e3_com));
-    net_boundary U_G3LNK  (.a(d6_mem_select_n), .b(d53_g_in));
+    net_boundary U_G3LNK  (.a(ram_sel_n), .b(d53_g_in));
     rascas_dec U_D53 (.a(e2_com), .b(e3_com), .c(1'b0), .g(vid_cpu_sel), .g2a_n(phi2ttl), .g2b_n(1'b0),
                       .sactive(mem_active), .ram_en_sim(d53_g_in),
                       .y_n(d53_y), .y_n4(), .y_n5(), .y_n6(), .y_n7(), .cas_sim(d53_cas_sim));
