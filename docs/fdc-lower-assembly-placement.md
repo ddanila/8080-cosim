@@ -25,13 +25,13 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R86 | 298.208, 103.688 | 298.208, 103.688 | +0.000, -0.000 | lowest resistor in the four-part row right of C19 |
 | C20 | 299.917, 110.117 | 303.997, 110.024 | -4.080, +0.093 | factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre |
 | C22 | 302.204, 110.093 | 306.537, 110.024 | -4.333, +0.069 | factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre |
-| C63 | 240.224, 141.607 | 176.100, 145.600 | +64.124, -3.993 | factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes |
+| C63 | 239.150, 140.065 | 176.100, 145.600 | +63.050, -5.535 | factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site |
 
 D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
 factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the
 overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns
 at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The C63 target site remains an explicit
-placement/BOM discrepancy until its lead holes and endpoints are reconciled with the `.009` board; do not silently merge it with `.006` analog parts.
+population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.
 Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;
 that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view
 `PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views
@@ -39,10 +39,9 @@ also show populated grey horizontal C16 between the IC rows and the red horizont
 backside joints corroborate the factory identities and 12.5/10.16 mm spans; unread markings and all six remote destinations remain boundaries.
 Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20
 pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.
-The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.
-Its body-centre projection is retained as a placement lead, but moving the generic
-two-pin footprint there would overlap D41.13; owner-side lead-hole registration is
-required before promoting C63, and this site must not be used to clear C13's D95 collision.
+The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.
+The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.
+That makes DNP/removal the leading `.009` owner-board disposition, but the old generic array placement is not silently moved or deleted until factory-population intent is reconciled; this site must not be used to clear C13's D95 collision.
 The owner component view does not expose a complete electrical path at either corrected
 site: C11's landings are visible without an unambiguous body, while C15 is hidden by the
 factory cable. Neither placement is connectivity evidence.

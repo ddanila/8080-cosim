@@ -289,10 +289,10 @@ PLACE = {
     'D105':(31.9,215.5,90),  # wait/MRD NAND below D13; official .009 assembly position
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
-    # not a fictional bottom-left row). D40 (СТ16) is drawn horizontal -> rot 90; the ЛА/ЛН gates
+    # not a fictional bottom-left row). D40 (СТ16) is photo-fitted horizontal, notch-right -> rot 270; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(258.0,125.6,90),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D41 net-modeled now (sheet-2 LATCH chain); К555ИР16 photo-confirmed, label-down   # D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
+    'D40':(258.56,140.99,270),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D40/D41 are the registered same-row notch-right pair; D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     # Inputs below compensate the stock footprint anchor/bounding-box offset so
     # the saved KiCad footprint positions remain the photo-guarded coordinates

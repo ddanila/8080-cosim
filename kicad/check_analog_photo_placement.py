@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard assembly-identified parts below D102 in the owner photo."""
+"""Guard assembly-identified analog/FDC and timing parts in owner photos."""
 from pathlib import Path
 
 import numpy as np
@@ -7,6 +7,9 @@ import pcbnew
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
+    # D40 is the marked notch-right КР531ИЕ17 immediately right of D41.
+    # Its centre is transferred through D41's exact raw component-side fit.
+    "D40": ((258.56, 140.99), 270.0),
     # Reference identities come from СБ photo 114600417; centres come from
     # owner component photo 200418174 registered through the D102 pad field.
     "R65": ((282.21, 125.14), 90.0),
@@ -23,6 +26,14 @@ EXPECTED = {
 }
 
 EXPECTED_PAD_SETS = {
+    "D40": {
+        (249.67, 137.185), (252.21, 137.185), (254.75, 137.185),
+        (257.29, 137.185), (259.83, 137.185), (262.37, 137.185),
+        (264.91, 137.185), (267.45, 137.185),
+        (249.67, 144.805), (252.21, 144.805), (254.75, 144.805),
+        (257.29, 144.805), (259.83, 144.805), (262.37, 144.805),
+        (264.91, 144.805), (267.45, 144.805),
+    },
     "C16": {(260.844, 101.055), (273.344, 101.055)},
     "C19": {(292.893, 88.574), (292.893, 98.574)},
     "R92": {(248.789, 101.194), (258.949, 101.194)},

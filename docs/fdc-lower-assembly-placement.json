@@ -57,6 +57,7 @@
       ],
       "observation": "physical \u041a\u04201818\u0412\u041393 socket centre; factory drawing corrects the former D95-overlapping global placement",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -79,6 +80,7 @@
       ],
       "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -101,6 +103,7 @@
       ],
       "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -156,6 +159,7 @@
           "observation": "two backside landings on the factory-identified horizontal C16 span"
         }
       ],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -178,6 +182,7 @@
       ],
       "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -233,6 +238,7 @@
           "observation": "two distinct backside solder joints at the factory-identified C19 site"
         }
       ],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -288,6 +294,7 @@
           "observation": "two backside joints matching the factory-identified R92 span"
         }
       ],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -343,6 +350,7 @@
           "observation": "two backside joints matching the factory-identified R99 span"
         }
       ],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -365,6 +373,7 @@
       ],
       "observation": "upper resistor in the four-part row right of C19",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -387,6 +396,7 @@
       ],
       "observation": "second resistor in the four-part row right of C19",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -409,6 +419,7 @@
       ],
       "observation": "third resistor in the four-part row right of C19",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -431,6 +442,7 @@
       ],
       "observation": "lowest resistor in the four-part row right of C19",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -453,6 +465,7 @@
       ],
       "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -475,28 +488,46 @@
       ],
       "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre",
       "owner_evidence": [],
+      "owner_absence_evidence": [],
       "electrical_evidence": false
     },
     {
       "refdes": "C63",
       "drawing_px": [
-        1595.5,
-        3071.5
+        1570.0,
+        3045.0
       ],
       "projected_board_mm": [
-        240.224,
-        141.607
+        239.15,
+        140.065
       ],
       "current_footprint_mm": [
         176.1,
         145.6
       ],
       "projected_delta_mm": [
-        64.124,
-        -3.993
+        63.05,
+        -5.535
       ],
-      "observation": "factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes",
+      "observation": "factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site",
       "owner_evidence": [],
+      "owner_absence_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "bbox_px": [
+            2230.0,
+            1880.0,
+            2330.0,
+            2170.0
+          ],
+          "between_refs": [
+            "D41",
+            "D40"
+          ],
+          "observation": "the factory-defined inter-package strip is bare; no C63 body and no two-hole axial span are visible"
+        }
+      ],
       "electrical_evidence": false
     }
   ]

@@ -59,8 +59,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | clock/I/O | 0 | 5 |
 | logic/source | 13 | 168 |
 | memory/timing | 0 | 8 |
-| placement/refdes | 38 | 0 |
-| placement/value | 5 | 0 |
+| placement/refdes | 37 | 0 |
+| placement/value | 6 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 18 |
 
@@ -147,7 +147,6 @@ parts placement and Tier-3 reproduction.
 | `C60` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D44 remains assumed |
 | `C61` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D46 remains assumed |
 | `C62` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D48 remains assumed |
-| `C63` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D40 remains assumed |
 | `C64` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D38 remains assumed |
 | `C65` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D35 remains assumed |
 | `C66` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D42 remains assumed |
@@ -166,6 +165,7 @@ parts placement and Tier-3 reproduction.
 | `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; the owner component view proves th... |
 | `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C20 at the right end of D102; both owner-board sides prove a pop... |
 | `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C22 at the right end of D102; both owner-board sides prove a pop... |
+| `C63` | `C_KM` | scan | BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo BOM/DSN value 0,047 and traced array-power bypass role RAIL_E<->RAIL_H are retained, but th... |
 | `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
 
 ## Documented Intentional No-Connects

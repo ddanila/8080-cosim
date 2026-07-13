@@ -282,6 +282,18 @@
       "note": "The board edge and reversed D99/D95 backside order identify the left package as D99. These joints were formerly mislabeled as D95."
     },
     {
+      "refdes": "D40",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2756.0, 1956.0], "use": "fit", "observation": "upper-right contact beside the right-facing notch of the marked КР531ИЕ17"},
+        {"pin": "8", "image_px": [2361.0, 1956.0], "use": "fit", "observation": "upper-left contact at the far end of the same eight-pad row"},
+        {"pin": "9", "image_px": [2361.0, 2126.0], "use": "check", "observation": "independent lower-left contact on the opposite row"}
+      ],
+      "note": "D40 is the marked КР531ИЕ17 immediately right of D41. The common raw-image scale and row baseline put its centre at (258.56,140.99) mm relative to the independently fitted D41 package; the notch-right body requires 270-degree board rotation."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

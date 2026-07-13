@@ -50,7 +50,7 @@ capacitance values are not proven by current automatic evidence.
 | C60 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D44 remains assumed |
 | C61 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D46 remains assumed |
 | C62 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D48 remains assumed |
-| C63 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D40 remains assumed |
+| C63 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047 and traced array-power bypass role RAIL_E<->RAIL_H are retained, but the current generic array-grid placement remains assumed. The .009 factory outline is between D41/D40 while the bracketed owner photo shows that site bare, with no fitted body or coherent drilled lead pair; DNP versus later removal remains unresolved |
 | C64 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D38 remains assumed |
 | C65 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D35 remains assumed |
 | C66 | 0,047 | RAIL_E | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D42 remains assumed |

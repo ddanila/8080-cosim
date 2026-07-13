@@ -41,7 +41,7 @@ Accepted paths:
 - D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
 
 The reviewed package fits also corrected the source placement/orientation of
-D2, D10, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
+D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
 coordinates without changing its source placement. At D98.7, the component
 fit also identifies the visible white wire-18 lead; the factory wire table
 independently closes that off-board path as А:18 to S1:2. A new affine solder
@@ -127,6 +127,16 @@ unresolved copper destinations rather than retaining the obsolete claim that
 two-side package registration is still required. Component-side records likewise
 use the validated contact coordinates and limit uncertainty to wire/body-hidden
 remote fanout, rather than calling the fitted contacts body projections.
+
+The marked `КР531ИЕ17` immediately right of D41 is D40. Its raw component-side
+row shares D41's scale and baseline: pins 1/8 span `(2756,1956)` to
+`(2361,1956)` px and held-out pin 9 lands at `(2361,2126)` px. This moves D40
+from the old `(258.0,125.6)` mm drawing seed to `(258.56,140.99)` mm and rotates
+its notch to the photographed right-facing orientation. The same bracketed
+D41/D40 view resolves the factory C63 label location: the inter-package strip
+contains no populated capacitor body or coherent drilled axial lead pair.
+Factory intent versus owner-board DNP/removal remains explicit rather than
+moving the unrelated generic C63 seed into the IC body/gap.
 
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds

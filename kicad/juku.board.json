@@ -1118,8 +1118,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "scan",
-    "pins": "complete sheet-2 package census + К555ИЕ10 truth table: CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm; count enables pins7/10 share the drawn constant-high tie (both must be high for count mode); parallel-data pins3-6 and carry output pin15 have no drawn conductors and are explicit NCs"
+    "refdes": "sheet-2 plus ДГШ5.109.009 СБ and registered owner component photo",
+    "pins": "complete sheet-2 package census + К555ИЕ10 truth table: CLR_N pin1 and LOAD_N pin9 are visibly tied and pulled to +5V through R34 13 kOhm; count enables pins7/10 share the drawn constant-high tie (both must be high for count mode); parallel-data pins3-6 and carry output pin15 have no drawn conductors and are explicit NCs. Factory identity and the raw owner photo place the marked КР531ИЕ17 horizontally in the same row as D41 with its notch to the right"
    }
   },
   {
@@ -3533,8 +3533,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D40 remains assumed"
+    "refdes": "BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo",
+    "pins": "BOM/DSN value 0,047 and traced array-power bypass role RAIL_E<->RAIL_H are retained, but the current generic array-grid placement remains assumed. The .009 factory outline is between D41/D40 while the bracketed owner photo shows that site bare, with no fitted body or coherent drilled lead pair; DNP versus later removal remains unresolved"
    },
    "value": "0,047"
   },

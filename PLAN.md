@@ -210,6 +210,13 @@ extraction work from that set:
    below D95. C16 uses the photo-corroborated 12.5 mm lead span; both resistors
    use 10.16 mm spans. Their markings and all six remote destinations remain
    explicit continuity boundaries rather than inferred from nearby solder rails.
+   Direct raw-photo registration also corrects the marked КР531ИЕ17 D40 into
+   the same horizontal row as D41 at `(258.56,140.99)` mm with its notch to the
+   right; the former seed was about 15 mm too high. The factory C63 outline lies
+   in the now-bracketed D41/D40 gap, but the owner component view shows neither
+   a fitted body nor a coherent drilled axial span there. C63 therefore remains
+   an explicit factory-intent versus `.009` DNP/removal conflict instead of
+   being silently moved from its older generic decoupler seed.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

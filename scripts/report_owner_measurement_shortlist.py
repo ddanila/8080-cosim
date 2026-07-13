@@ -255,7 +255,7 @@ def main() -> int:
         (
             "P0",
             "source-PCB collision placement",
-            "register exact target-board lead centres for C13, R68, R69, R73, R74, tapped coil L1, and legacy VT3 (or explicitly DNP VT3 for the .009 revision): C13.2 currently overlaps D95.10 and C13.1 overlaps restored R92.1; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13 and R74.2 overlaps restored C19.1; the old L1 stand-in overlaps the factory/photo-proven VD3 centre; and the old VT3 seed overlaps the factory/photo-proven R86 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/C16/C19/R92/R99/VD3/R86 centres and orientations fixed. Do not use the factory-drawing capacitor beside D41: its label is C63, not C13",
+            "register exact target-board lead centres for C13, R68, R69, R73, R74, tapped coil L1, and legacy VT3 (or explicitly DNP VT3 for the .009 revision): C13.2 currently overlaps D95.10 and C13.1 overlaps restored R92.1; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13 and R74.2 overlaps restored C19.1; the old L1 stand-in overlaps the factory/photo-proven VD3 centre; and the old VT3 seed overlaps the factory/photo-proven R86 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/C16/C19/R92/R99/VD3/R86 centres and orientations fixed. Do not use the factory-drawn D41/D40-gap capacitor site: it is C63, not C13, and its owner-photo population is unresolved",
             "`docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`",
             "removes all ten known source-board electrical collision pairs without inventing target-revision placement",
         ),
@@ -272,6 +272,13 @@ def main() -> int:
             "identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved",
             "`docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets",
             "completes the electrical disposition of a target-revision component that was previously absent from the physical model",
+        ),
+        (
+            "P1",
+            "C63 population disposition",
+            "determine whether the factory-drawn C63 between D41 and D40 was intentionally DNP on the .009 build or physically removed later; inspect the two package-bracketed landing area for lead remnants and test whether any candidate pads join the expected array bypass rails",
+            "`docs/fdc-lower-assembly-placement.md`; `docs/photo-registration.md`; raw component photo `PXL_20260710_200418174.jpg`",
+            "resolves the conflict between the factory assembly outline and the bare owner-board gap without inventing a through-hole footprint",
         ),
         (
             "P1",
