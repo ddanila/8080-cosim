@@ -177,7 +177,7 @@ def main() -> int:
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
         (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**")),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
-        ("Source-PCB placement hold is current", has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `9`")),
+        ("Source-PCB placement hold is current", has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `10`")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
@@ -255,9 +255,9 @@ def main() -> int:
         (
             "P0",
             "source-PCB collision placement",
-            "register exact target-board lead centres for C13, R68, R69, R73, R74, tapped coil L1, and legacy VT3 (or explicitly DNP VT3 for the .009 revision): after correcting D95's photographed notch-right orientation, C13.2 currently overlaps D95.10; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13 and R74.2 overlaps restored C19.1; the old L1 stand-in overlaps the factory/photo-proven VD3 centre; and the old VT3 seed overlaps the factory/photo-proven R86 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/C19/VD3/R86 centres and their notch-derived orientations fixed. Do not use the factory-drawing capacitor beside D41: its label is C63, not C13",
+            "register exact target-board lead centres for C13, R68, R69, R73, R74, tapped coil L1, and legacy VT3 (or explicitly DNP VT3 for the .009 revision): C13.2 currently overlaps D95.10 and C13.1 overlaps restored R92.1; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13 and R74.2 overlaps restored C19.1; the old L1 stand-in overlaps the factory/photo-proven VD3 centre; and the old VT3 seed overlaps the factory/photo-proven R86 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/C16/C19/R92/R99/VD3/R86 centres and orientations fixed. Do not use the factory-drawing capacitor beside D41: its label is C63, not C13",
             "`docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`",
-            "removes all nine known source-board electrical collision pairs without inventing target-revision placement",
+            "removes all ten known source-board electrical collision pairs without inventing target-revision placement",
         ),
         (
             "P0",
@@ -272,6 +272,13 @@ def main() -> int:
             "identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved",
             "`docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets",
             "completes the electrical disposition of a target-revision component that was previously absent from the physical model",
+        ),
+        (
+            "P1",
+            "lower-FDC C16/R92/R99 continuity",
+            "read C16, R92, and R99 values and identify both lead destinations for each; factory identity, population, horizontal orientation, and 12.5/10.16 mm drill spans are already registered",
+            "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C16/R92/R99 boundary nets",
+            "turns three restored target-board passives into functional FDC-area circuitry without guessing from unread body markings or nearby solder rails",
         ),
         (
             "P1",

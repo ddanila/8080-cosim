@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `234`
-- Verification-point endpoints checked in PCB: `421`
+- Verification-point nets: `240`
+- Verification-point endpoints checked in PCB: `427`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2267`
-- All board endpoints checked in routed PCB: `2267`
+- All board endpoints checked in source PCB: `2273`
+- All board endpoints checked in routed PCB: `2273`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 172 |
+| logic | 178 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 421/421 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 421/421 net names matched |
+| Risk endpoints present on PCB pads | PASS | 427/427 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 427/427 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2267/2267 | 2267/2267 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2267 | 1852/2267 | FAIL |
+| `kicad/juku.kicad_pcb` | 2273/2273 | 2273/2273 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2273 | 1852/2273 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -63,6 +63,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A15: D2.6`
 - `A9: D2.7`
 - `AMW_N: D7.3`
+- `C16_1_BOUNDARY: C16.1`
+- `C16_2_BOUNDARY: C16.2`
 - `C19_1_BOUNDARY: C19.1`
 - `C19_2_BOUNDARY: C19.2`
 - `C20_1_BOUNDARY: C20.1`
@@ -327,7 +329,11 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `R108_2_BOUNDARY: R108.2`
 - `R86_1_BOUNDARY: R86.1`
 - `R86_2_BOUNDARY: R86.2`
+- `R92_1_BOUNDARY: R92.1`
+- `R92_2_BOUNDARY: R92.2`
 - `R94_P2_BOUNDARY: R94.2`
+- `R99_1_BOUNDARY: R99.1`
+- `R99_2_BOUNDARY: R99.2`
 - `RESET: D13.6`
 - `RESET: D11.21`
 - `RES_RC: A17.1`
@@ -479,6 +485,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
+| `C16_1_BOUNDARY` | logic | `C16.1` | .009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `C16_2_BOUNDARY` | logic | `C16.2` | .009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C19_1_BOUNDARY` | logic | `C19.1` | .009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C19_2_BOUNDARY` | logic | `C19.2` | .009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C20_1_BOUNDARY` | logic | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -668,7 +676,11 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `R108_2_BOUNDARY` | logic | `R108.2` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R86_1_BOUNDARY` | logic | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R86_2_BOUNDARY` | logic | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R92_1_BOUNDARY` | logic | `R92.1` | .009 factory identity plus registered owner component/solder views prove R92 lead 1 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R92_2_BOUNDARY` | logic | `R92.2` | .009 factory identity plus registered owner component/solder views prove R92 lead 2 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R99_1_BOUNDARY` | logic | `R99.1` | .009 factory identity plus registered owner component/solder views prove R99 lead 1 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not rea... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R99_2_BOUNDARY` | logic | `R99.2` | .009 factory identity plus registered owner component/solder views prove R99 lead 2 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not rea... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
 | `REV` | logic | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

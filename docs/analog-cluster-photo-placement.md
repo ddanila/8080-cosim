@@ -49,7 +49,24 @@ until the real coil and its solder landings are registered. The adjacent yellow
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
-guards C19 plus the two newly registered capacitor drill spans beside D102.
+guards C16/C19, R92/R99, plus the two registered capacitor drill spans beside D102.
+
+## C16/R92/R99 drill registration
+
+The `.009` factory drawing identifies C16 as the horizontal capacitor between
+the upper and lower FDC IC rows, R92 as the upper/right horizontal resistor
+below D95, and R99 as the lower/left horizontal resistor below-left of D95.
+Raw component image `PXL_20260710_200418174.jpg` independently shows all three
+parts populated: a grey axial C16 and two red axial resistors. Their visible
+lead landings agree with the affine-projected factory centres and the solder
+image `PXL_20260710_200522685.jpg` corroborates the paired backside locations.
+
+C16 is therefore restored at `(267.094,101.055)` mm on a 12.50 mm horizontal
+span, with pads at `(260.844,101.055)` and `(273.344,101.055)` mm. R92 is at
+`(253.869,101.194)` mm and R99 at `(241.207,103.467)` mm, each on a 10.16 mm
+horizontal span. The body markings are not readable confidently and the broad
+nearby solder rails do not establish unique remote destinations, so the model
+keeps all three values blank and all six leads as singleton boundary nets.
 
 ## C19 drill registration
 

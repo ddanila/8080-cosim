@@ -59,10 +59,13 @@ PASSIVE_FP = {
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings
 }
 PASSIVE_FP_REF = {
+    'C16': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P12.50mm_Horizontal'),
     'C19': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C20': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C22': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'R94': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R92': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R30': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
@@ -131,6 +134,10 @@ PASSIVE_PLACE = {
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
     'C9':(285.807,33.590,90),'C10':(252.361,73.163,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
+    # Factory affine centres plus registered component/solder views restore the
+    # populated horizontal C16/R92/R99 row. Their values and destinations are
+    # unread, so all six leads remain explicit boundaries.
+    'C16':(267.094,101.055,0),'R92':(253.869,101.194,0),'R99':(241.207,103.467,0),
     # The factory drawing identifies C19 immediately right of D99; the owner
     # component and solder views independently prove the populated vertical
     # axial body and its two distinct joints. Keep both destinations open.

@@ -15,7 +15,27 @@
     {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},
     {"refdes": "C10", "drawing_px": [1616.0, 1906.0], "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"},
     {"refdes": "C11", "drawing_px": [1985.5, 2256.5], "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"},
-    {"refdes": "C16", "drawing_px": [1987.0, 2384.5], "observation": "horizontal capacitor between the upper and lower IC rows"},
+    {
+      "refdes": "C16",
+      "drawing_px": [1987.0, 2384.5],
+      "observation": "horizontal capacitor between the upper and lower IC rows",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [[2605.0, 1311.0], [2879.0, 1308.0]],
+          "precision": "reviewed approximate joint centres; identity/orientation and 12.5 mm span corroboration only",
+          "observation": "populated grey axial body with bent leads reaching two horizontal landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [[1601.0, 649.0], [1333.0, 649.0]],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two backside landings on the factory-identified horizontal C16 span"
+        }
+      ]
+    },
     {"refdes": "C15", "drawing_px": [2268.5, 2541.5], "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"},
     {
       "refdes": "C19",
@@ -38,8 +58,48 @@
         }
       ]
     },
-    {"refdes": "R92", "drawing_px": [1732.5, 2384.5], "observation": "horizontal resistor below D95"},
-    {"refdes": "R99", "drawing_px": [1495.5, 2421.0], "observation": "horizontal resistor below-left of D95"},
+    {
+      "refdes": "R92",
+      "drawing_px": [1732.5, 2384.5],
+      "observation": "horizontal resistor below D95",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [[2341.0, 1317.0], [2564.0, 1314.0]],
+          "precision": "reviewed approximate joint centres; identity/orientation and 10.16 mm span corroboration only",
+          "observation": "populated upper/right red horizontal resistor and two distinct lead landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [[1859.0, 647.0], [1642.0, 647.0]],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two backside joints matching the factory-identified R92 span"
+        }
+      ]
+    },
+    {
+      "refdes": "R99",
+      "drawing_px": [1495.5, 2421.0],
+      "observation": "horizontal resistor below-left of D95",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [[2064.0, 1370.0], [2287.0, 1367.0]],
+          "precision": "reviewed approximate joint centres; identity/orientation and 10.16 mm span corroboration only",
+          "observation": "populated lower/left red horizontal resistor and two distinct lead landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [[2131.0, 599.0], [1913.0, 599.0]],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two backside joints matching the factory-identified R99 span"
+        }
+      ]
+    },
     {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19"},
     {"refdes": "R102", "drawing_px": [2595.0, 2325.0], "observation": "second resistor in the four-part row right of C19"},
     {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19"},

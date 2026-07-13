@@ -70,11 +70,11 @@ closed and the corrected board has been rerouted and reviewed.
    assignments are rejected.
 
 The routed PCB/DSN/SES predate this measured topology. Do not locally restore
-the obsolete WAIT copper; regenerate the complete routed snapshot after the nine
+the obsolete WAIT copper; regenerate the complete routed snapshot after the ten
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 234 source-risk nets and 9 official FDC
+   current generated evidence lists 240 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -101,13 +101,13 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2267/2267` net-assigned PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2273/2273` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
-holds routed-board adoption on nine unique analog/FDC pad collisions. The three
+holds routed-board adoption on ten unique analog/FDC pad collisions. The four
 newer pairs are informative rather than regressions in evidence: correcting
-VD3, restoring R86, and restoring C19 to their factory/photo-proven positions
-expose the old unregistered L1, legacy `.006` VT3, and approximate R74 seeds as
+VD3, restoring R86/C19, and restoring R92 to their factory/photo-proven positions
+expose the old unregistered L1, legacy `.006` VT3, and approximate R74/C13 seeds as
 false locations.
 Sixty-one endpoints on bracket-mounted S1/S4/X3/X4/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
@@ -205,6 +205,11 @@ extraction work from that set:
    columns, each with a 10.00 mm vertical lead span. C20's enhanced body image
    reads `1Н5` verbatim; C22's value and their four remote destinations remain
    explicit continuity boundaries rather than guessed D102 connections.
+   The same cross-registration restores populated grey horizontal C16 between
+   the upper/lower FDC IC rows and the two red horizontal resistors R92/R99
+   below D95. C16 uses the photo-corroborated 12.5 mm lead span; both resistors
+   use 10.16 mm spans. Their markings and all six remote destinations remain
+   explicit continuity boundaries rather than inferred from nearby solder rails.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

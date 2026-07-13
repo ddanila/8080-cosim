@@ -113,10 +113,49 @@
         267.094,
         101.055
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        267.094,
+        101.055
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
       "observation": "horizontal capacitor between the upper and lower IC rows",
-      "owner_evidence": [],
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2605.0,
+              1311.0
+            ],
+            [
+              2879.0,
+              1308.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; identity/orientation and 12.5 mm span corroboration only",
+          "observation": "populated grey axial body with bent leads reaching two horizontal landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [
+            [
+              1601.0,
+              649.0
+            ],
+            [
+              1333.0,
+              649.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two backside landings on the factory-identified horizontal C16 span"
+        }
+      ],
       "electrical_evidence": false
     },
     {
@@ -206,10 +245,49 @@
         253.869,
         101.194
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        253.869,
+        101.194
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
       "observation": "horizontal resistor below D95",
-      "owner_evidence": [],
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2341.0,
+              1317.0
+            ],
+            [
+              2564.0,
+              1314.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; identity/orientation and 10.16 mm span corroboration only",
+          "observation": "populated upper/right red horizontal resistor and two distinct lead landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [
+            [
+              1859.0,
+              647.0
+            ],
+            [
+              1642.0,
+              647.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two backside joints matching the factory-identified R92 span"
+        }
+      ],
       "electrical_evidence": false
     },
     {
@@ -222,10 +300,49 @@
         241.207,
         103.467
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        241.207,
+        103.467
+      ],
+      "projected_delta_mm": [
+        0.0,
+        -0.0
+      ],
       "observation": "horizontal resistor below-left of D95",
-      "owner_evidence": [],
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2064.0,
+              1370.0
+            ],
+            [
+              2287.0,
+              1367.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; identity/orientation and 10.16 mm span corroboration only",
+          "observation": "populated lower/left red horizontal resistor and two distinct lead landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [
+            [
+              2131.0,
+              599.0
+            ],
+            [
+              1913.0,
+              599.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two backside joints matching the factory-identified R99 span"
+        }
+      ],
       "electrical_evidence": false
     },
     {

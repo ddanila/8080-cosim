@@ -15,7 +15,7 @@ BOARD = ROOT / "kicad/juku.kicad_pcb"
 OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
-RESTORED_FACTORY_PARTS = {"C19", "R100", "R102", "R108", "R86"}
+RESTORED_FACTORY_PARTS = {"C16", "C19", "R92", "R99", "R100", "R102", "R108", "R86"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -129,15 +129,17 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "D93, C10, C11, C15, C19, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
+lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
           "factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the",
           "overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns",
-          "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The other named parts remain explicit",
-          "physical/BOM omissions until their package and electrical endpoints are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.",
+          "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The C63 target site remains an explicit",
+          "placement/BOM discrepancy until its lead holes and endpoints are reconciled with the `.009` board; do not silently merge it with `.006` analog parts.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
           "that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view",
           "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
-          "show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20",
+          "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
+          "backside joints corroborate the factory identities and 12.5/10.16 mm spans; unread markings and all six remote destinations remain boundaries.",
+          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20",
           "pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.",
           "The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.",
           "Its body-centre projection is retained as a placement lead, but moving the generic",

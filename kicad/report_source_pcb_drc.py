@@ -20,10 +20,10 @@ COLLISION_DISPOSITION = {
     "R69": ("D102", "R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity"),
     "R73": ("D97", "R73 is a three-terminal RF-bias trimmer, not a lower-FDC-row part; register its physical body before moving it"),
     "R74": ("D102 / C19", "R74 placement is only an approximate analog-grid seed; locate the physical VT3 emitter resistor from target-board imagery or continuity"),
-    "C13": ("D95", "the assembly-drawing site formerly read as C13 is proved to be C63; the real C13 position still requires target-board evidence"),
+    "C13": ("D95 / R92", "the assembly-drawing site formerly read as C13 is proved to be C63; the real C13 position still requires target-board evidence"),
     "VT3": ("R86", "VT3 is a legacy .006 analog-placement seed; the .009 factory/photo-proven R86 centre disproves this location, so locate or explicitly DNP the target-revision VT3 before moving it"),
 }
-REGISTERED_COLLISION_REFS = {"D95", "D97", "D102", "VD3", "R86", "C19"}
+REGISTERED_COLLISION_REFS = {"D95", "D97", "D102", "VD3", "R86", "C16", "C19", "R92", "R99"}
 
 
 def item_ref(description: str) -> str | None:
@@ -92,7 +92,7 @@ def main() -> int:
         "",
         "## Placement disposition",
         "",
-        "The D95/D97/D102 package centres plus the VD3, R86, and C19 positions are registered by independent owner-photo",
+        "The D95/D97/D102 package centres plus the VD3, R86, C16, C19, R92, and R99 positions are registered by independent owner-photo",
         "fits and the factory assembly drawing. Each collision instead involves an",
         "analog/FDC part whose current coordinate is explicitly approximate; moving a registered part to",
         "clear one of these shorts would regress known-good placement.",

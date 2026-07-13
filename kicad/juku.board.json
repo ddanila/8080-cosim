@@ -4699,6 +4699,26 @@
    }
   },
   {
+   "ref": "R92",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "pins": "factory drawing identifies the populated upper/right red horizontal resistor below D95; registered component and solder views corroborate its 10.16 mm lead span. Marking, value, and both electrical destinations remain unread"
+   }
+  },
+  {
+   "ref": "R99",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "pins": "factory drawing identifies the populated lower/left red horizontal resistor below-left of D95; registered component and solder views corroborate its 10.16 mm lead span. Marking, value, and both electrical destinations remain unread"
+   }
+  },
+  {
    "ref": "R100",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
@@ -4827,6 +4847,19 @@
     "type": "scan",
     "refdes": "sheet-2 analog corner",
     "pins": "RF_TANK/VT4_E capacitor; connected nets carry an_* crop evidence"
+   }
+  },
+  {
+   "ref": "C16",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "pins": "factory drawing identifies the populated grey horizontal axial capacitor between the upper and lower FDC IC rows; registered component and solder views corroborate its 12.5 mm lead span. Marking, value, and both electrical destinations remain unread"
    }
   },
   {
@@ -15995,6 +16028,30 @@
   "C19_2_BOUNDARY": {
    "src": ".009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destination is not readable",
    "nodes": [["C19", "2"]]
+  },
+  "C16_1_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable",
+   "nodes": [["C16", "1"]]
+  },
+  "C16_2_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable",
+   "nodes": [["C16", "2"]]
+  },
+  "R92_1_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove R92 lead 1 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable",
+   "nodes": [["R92", "1"]]
+  },
+  "R92_2_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove R92 lead 2 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable",
+   "nodes": [["R92", "2"]]
+  },
+  "R99_1_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove R99 lead 1 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not readable",
+   "nodes": [["R99", "1"]]
+  },
+  "R99_2_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove R99 lead 2 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not readable",
+   "nodes": [["R99", "2"]]
   },
   "R100_1_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
