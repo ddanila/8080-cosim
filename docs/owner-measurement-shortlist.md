@@ -27,7 +27,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Beeper source/handoff guarded | PASS |
 | Serial USART behavior guarded | PASS |
 | Decap value boundary guarded | PASS |
-| D41 timing boundary guarded | PASS |
+| D41 timing connectivity source-closed | PASS |
 | Memory timing boundary guarded | PASS |
 | I/O decode boundary guarded | PASS |
 | Video/RF analog boundary guarded | PASS |
@@ -50,7 +50,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P0 | D94 .092 continuity | test D94.15 specifically against D9.7/CS_FDC (and D9.9/CS_D57 as a negative control), trace D94 pins 4-7/9 destinations, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board | `docs/d94-reconstruction-constraints.md` | tests the forced PIT2/FDC row-alias enable candidate and resolves the PROM-only read/write-strobe impossibility before any defensible D94 replacement |
 | P1 | FDC interrupt/buffer continuity | WD1793 DRQ/INTRQ to 8259 inputs, D93 MR/CLK, plus D100 OE/T if accessible | `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0/P1 gates | reduces first EKDOS-on-hardware debug risk |
 | P0 | ВГ93 +12 V continuity | with power removed and D93 removed, test D93.40 first against the nearest proved P12V contacts D14.8 and D32.8, then confirm against A60.1 or X8.3; record positive and negative readings | `docs/d93-pin40-photo-chase.md`; `docs/fdc-hardware-handoff.md` | closes the controller's power-safety gate without inferring hidden clip-obscured copper |
-| P0 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins | `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate | tightens the as-built netlist around RAM/video timing before netlist freeze |
+| P0 | memory-decode stragglers | D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, and D36/D39/D53 RAM-strobe ambiguous feeds; D41 package inputs are now source-closed onto numbered rails 17 and 8 | `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate | tightens the as-built netlist around RAM/video timing before netlist freeze |
 | P1 | R94 220-ohm far endpoint | R94.1 is now photo-proved and modeled at D98.3; identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net | `ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` | closes the remaining endpoint of the now-modeled .009 R94 part without reopening the closed S1 harness |
 | P0 | factory Вид В pad mapping | for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 use the validated solder fit that localizes rework beside pins 4-6 to map the four-hole auxiliary field and obscured bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity | `docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg` | proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release |
 | P0 | FDC support signal dispositions | pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster | `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence | closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices |
@@ -78,9 +78,9 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `218`
+- Generated bring-up verification nets: `215`
 - `FDC`: `24` net(s)
-- `logic`: `163` net(s)
+- `logic`: `160` net(s)
 - `memory/decode`: `9` net(s)
 - `sound/analog`: `1` net(s)
 - `timing/I/O`: `8` net(s)

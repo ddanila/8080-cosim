@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `218`
-- Verification-point endpoints checked in PCB: `386`
+- Verification-point nets: `215`
+- Verification-point endpoints checked in PCB: `383`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2238`
 - All board endpoints checked in routed PCB: `2238`
@@ -24,7 +24,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 163 |
+| logic | 160 |
 | memory/decode | 9 |
 | sound/analog | 1 |
 | timing/I/O | 8 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 386/386 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 386/386 net names matched |
+| Risk endpoints present on PCB pads | PASS | 383/383 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 383/383 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -146,7 +146,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D34_RC_NODE: C5.2`
 - `D34_RC_NODE: R33.1`
 - `D34_RC_NODE: D34.2`
-- `D36_B2_TAG17: D36.2`
 - `D38_LOAD_I1: D38.1`
 - `D38_LOAD_I2: D38.2`
 - `D38_LOAD_I4: D38.4`
@@ -157,8 +156,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D40_CTRL_PULL: R34.2`
 - `D40_CTRL_PULL: D40.1`
 - `D40_CTRL_PULL: D40.9`
-- `D41_CK_BOUNDARY: D41.9`
-- `D41_LD_BOUNDARY: D41.6`
 - `D56_Q2N_D34: D56.12`
 - `D56_Q2N_D34: D34.10`
 - `D56_Q2_D34: D56.5`
@@ -343,6 +340,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `SER_TXD: R18.2`
 - `SER_TXD_INV: D3.8`
 - `SER_TXD_INV: D12.2`
+- `SHIFT_G: D41.9`
 - `SHIFT_G: D42.8`
 - `SHIFT_G: D43.8`
 - `SYNDET_S4: D11.16`
@@ -361,6 +359,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `S_SOUT: A29.1`
 - `S_TTL: A23.1`
 - `TAPE_RUN_INT: D10.22`
+- `TIMING_TAG17: D36.2`
+- `TIMING_TAG17: D41.6`
 - `VERT_SYNC: D55.17`
 - `VID_MUX_G: E14.1`
 - `VT4_C: C12.2`
@@ -488,13 +488,10 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D30_Q2N_BOUNDARY` | logic | `D30.8` | sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Scope/capture video or timing node during video bring-up. |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out | Scope/capture video or timing node during video bring-up. |
-| `D36_B2_TAG17` | logic | `D36.2` | scan sheet-2: D36 second NAND input pin 2 lands directly on numbered timing-bundle rail 17; unique remote driver not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D39_B2_BOUNDARY` | logic | `D39.10` | sheet-2 full-resolution D39 package census identifies NAND input pin10 as a distinct timing conductor; its unique remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D39_B3_BOUNDARY` | logic | `D39.2` | sheet-2 full-resolution D39 package census identifies NAND input pin2 as a distinct timing conductor; its unique remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D39_MEMCYC` | memory/decode | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] | Probe during ROM/RAM stage; compare address/control timing to twin. |
-| `D41_CK_BOUNDARY` | logic | `D41.9` | scan sheet-2: D41 clock input pin 9 leaves the package as its own timing-bundle conductor; unique remote driver not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D41_LD_BOUNDARY` | logic | `D41.6` | scan sheet-2: D41 load input pin 6 leaves the package as its own timing-bundle conductor; unique remote driver not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D56_QN` | timing/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D58_STB_TAG5` | logic | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D59_O10_TAG10` | logic | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

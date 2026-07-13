@@ -127,12 +127,12 @@ def main() -> int:
             "`kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q",
         ),
         (
-            "D41 latch-chain output boundary is guarded",
+            "D41 package timing connectivity is source-closed",
             marker(
                 "docs/d41-timing-boundary.md",
-                "Status: **D41 STRAPS/OUTPUTS GUARDED / LD-CK SOURCES PENDING**",
+                "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**",
                 "D41.QA selects both D50/D51",
-                "LD and CK are preserved as distinct timing-bundle boundaries",
+                "LD joins numbered timing rail 17; CK joins numbered rail 8",
             ),
             "`docs/d41-timing-boundary.md`",
         ),

@@ -11381,14 +11381,6 @@
    "src": "scan sheet-2: conductor explicitly labeled POF rises directly into D35 inverter input pin 3; remote source lies outside the proven crop",
    "nodes": [["D35", "3"]]
   },
-  "D41_LD_BOUNDARY": {
-   "src": "scan sheet-2: D41 load input pin 6 leaves the package as its own timing-bundle conductor; unique remote driver not established",
-   "nodes": [["D41", "6"]]
-  },
-  "D41_CK_BOUNDARY": {
-   "src": "scan sheet-2: D41 clock input pin 9 leaves the package as its own timing-bundle conductor; unique remote driver not established",
-   "nodes": [["D41", "9"]]
-  },
   "LATCH_B": {
    "src": "scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending)",
    "nodes": [
@@ -12407,8 +12399,12 @@
    ]
   },
   "SHIFT_G": {
-   "src": "scan sheet-2: D42.8 and D43.8 G inputs share control-bundle rail 8",
+   "src": "scan sheet-2 full-resolution (D41 control-bundle crop): numbered timing rail 8 has a direct junction to D41 clock pin9 and continues to the D42/D43 G inputs",
    "nodes": [
+    [
+     "D41",
+     "9"
+    ],
     [
      "D42",
      "8"
@@ -13992,9 +13988,9 @@
     ]
    ]
   },
-  "D36_B2_TAG17": {
-   "src": "scan sheet-2: D36 second NAND input pin 2 lands directly on numbered timing-bundle rail 17; unique remote driver not established",
-   "nodes": [["D36", "2"]]
+  "TIMING_TAG17": {
+   "src": "scan sheet-2 full-resolution (D41 control-bundle crop): numbered timing rail 17 has direct junctions to D41 load pin6 and D36 second NAND input pin2; the unique remote driver remains unresolved",
+   "nodes": [["D36", "2"], ["D41", "6"]]
   },
   "VID_CPU_SEL": {
    "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); + D53.6 G1 (cycle qualifier enables the RAS decoder) [scan sheet-2 (chase crops c4_g3_src: 4x y-match both feeds)]",

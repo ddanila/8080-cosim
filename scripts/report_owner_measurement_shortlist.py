@@ -156,7 +156,7 @@ def main() -> int:
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**")),
-        ("D41 timing boundary guarded", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 STRAPS/OUTPUTS GUARDED / LD-CK SOURCES PENDING**")),
+        ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         ("Video/RF analog boundary guarded", has_phrase("docs/video-analog-boundary.md", "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**")),
@@ -227,7 +227,7 @@ def main() -> int:
         (
             "P0",
             "memory-decode stragglers",
-            "D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, D36/D39/D53 RAM-strobe ambiguous feeds, and D41 timing-bus input/control pins",
+            "D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, and D36/D39/D53 RAM-strobe ambiguous feeds; D41 package inputs are now source-closed onto numbered rails 17 and 8",
             "`docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate",
             "tightens the as-built netlist around RAM/video timing before netlist freeze",
         ),

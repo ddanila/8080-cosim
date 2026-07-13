@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `554`
+- Nets modeled: `552`
 - Chip-level fidelity gaps: `59`
-- Net-level source-risk gaps: `218`
+- Net-level source-risk gaps: `215`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -53,7 +53,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 2 | 0 |
 | PROM/decode | 0 | 15 |
 | clock/I/O | 0 | 7 |
-| logic/source | 9 | 150 |
+| logic/source | 9 | 147 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | video/analog | 0 | 14 |
@@ -271,13 +271,10 @@ same fidelity ledger as the chip provenance gaps.
 | `D30_Q2N_BOUNDARY` | logic/source | `D30.8` | sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boun... |
 | `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
-| `D36_B2_TAG17` | logic/source | `D36.2` | scan sheet-2: D36 second NAND input pin 2 lands directly on numbered timing-bundle rail 17; unique remote driver not established |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending] |
 | `D39_B2_BOUNDARY` | logic/source | `D39.10` | sheet-2 full-resolution D39 package census identifies NAND input pin10 as a distinct timing conductor; its unique remote source is unread and remains a measu... |
 | `D39_B3_BOUNDARY` | logic/source | `D39.2` | sheet-2 full-resolution D39 package census identifies NAND input pin2 as a distinct timing conductor; its unique remote source is unread and remains a measur... |
 | `D39_MEMCYC` | memory/timing | `D39.3, D39.4` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending] |
-| `D41_CK_BOUNDARY` | logic/source | `D41.9` | scan sheet-2: D41 clock input pin 9 leaves the package as its own timing-bundle conductor; unique remote driver not established |
-| `D41_LD_BOUNDARY` | logic/source | `D41.6` | scan sheet-2: D41 load input pin 6 leaves the package as its own timing-bundle conductor; unique remote driver not established |
 | `D56_QN` | clock/I/O | `D56.4` | traced sheet-2 (crop s2_dotclk_bend): D56.Q_N (pin 4) corners SOUTH at x~6074 — destination unread [chase]; the old "16MHz astable source" attribution retired |
 | `D58_STB_TAG5` | logic/source | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established |
 | `D59_O10_TAG10` | logic/source | `D59.10` | scan sheet-2: D59 inverter output pin 10 descends continuously to the open-circle bundle marker 10; the unique same-number far continuation is not established |

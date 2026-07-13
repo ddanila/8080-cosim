@@ -81,6 +81,19 @@ def main() -> int:
             "`LATCH_A`: D41.12 -> D37.1",
         ),
         (
+            "D41 LD is source-traced onto timing-bundle rail 17",
+            node_in(board, "TIMING_TAG17", "D41", "6")
+            and node_in(board, "TIMING_TAG17", "D36", "2"),
+            "`TIMING_TAG17`: D41.6 + D36.2",
+        ),
+        (
+            "D41 CK is source-traced onto timing-bundle rail 8",
+            node_in(board, "SHIFT_G", "D41", "9")
+            and node_in(board, "SHIFT_G", "D42", "8")
+            and node_in(board, "SHIFT_G", "D43", "8"),
+            "`SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8",
+        ),
+        (
             "Adjacent latch chain context is modeled",
             node_in(board, "LATCH_B", "D40", "11")
             and node_in(board, "LATCH_B", "D37", "2")
@@ -107,18 +120,18 @@ def main() -> int:
         ),
     ]
     ok = all(result for _, result, _ in checks)
-    status = "D41 STRAPS/OUTPUTS GUARDED / LD-CK SOURCES PENDING" if ok else "D41 TIMING BOUNDARY FAILED"
+    status = "D41 PACKAGE CONNECTIVITY SOURCE-CLOSED" if ok else "D41 TIMING BOUNDARY FAILED"
 
     lines = [
         "# D41 timing boundary",
         "",
-        "Status date: 2026-07-11.",
+        "Status date: 2026-07-13.",
         "",
         f"Status: **{status}**",
         "",
         "This generated report isolates the D41 ИР16 timing-chain boundary.",
         "The board model has guarded evidence for D41's two output-side",
-        "uses, its fixed straps, and its two remaining timing-source boundaries.",
+        "uses, its fixed straps, and both numbered timing-bundle inputs.",
         "",
         "## Command",
         "",
@@ -141,6 +154,8 @@ def main() -> int:
             "| --- | --- | --- | --- |",
             table_row(["12", chip["pins"]["12"], "LATCH_A", "D41.QB feeds D37.1 in the modeled latch/preload chain"]),
             table_row(["13", chip["pins"]["13"], "W10_QA_SEL", "D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10"]),
+            table_row(["6", chip["pins"]["6"], "TIMING_TAG17", "Direct sheet-2 junction to numbered rail 17 shared with D36.2"]),
+            table_row(["9", chip["pins"]["9"], "SHIFT_G", "Direct sheet-2 junction to numbered rail 8 shared with D42.8/D43.8"]),
             "",
             "## Intentional No-Connect D41 Pins",
             "",
@@ -162,9 +177,9 @@ def main() -> int:
             "- The corrected two-sided package fits replace global projections",
             "  that landed in the parallel-rail field left/right of the actual IC.",
             "- A-D are grounded, DS/G are tied high, and QC/QD have no external",
-            "  stubs. LD and CK are preserved as distinct timing-bundle boundaries.",
-            "- Do not infer the LD/CK remote drivers from the runnable raster model;",
-            "  they still need a readable source or continuity pass.",
+            "  stubs. LD joins numbered timing rail 17; CK joins numbered rail 8.",
+            "- The complete D41 package pin disposition is now source-closed. The remote",
+            "  origin of rail 17 remains a wider timing-chain boundary at D36.2/D41.6.",
             "",
         ]
     )

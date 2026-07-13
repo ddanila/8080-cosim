@@ -1,12 +1,12 @@
 # D41 timing boundary
 
-Status date: 2026-07-11.
+Status date: 2026-07-13.
 
-Status: **D41 STRAPS/OUTPUTS GUARDED / LD-CK SOURCES PENDING**
+Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**
 
 This generated report isolates the D41 ИР16 timing-chain boundary.
 The board model has guarded evidence for D41's two output-side
-uses, its fixed straps, and its two remaining timing-source boundaries.
+uses, its fixed straps, and both numbered timing-bundle inputs.
 
 ## Command
 
@@ -21,6 +21,8 @@ python3 scripts/report_d41_timing_boundary.py
 | D41 exists as an ИР16 timing-chain chip | PASS | `kicad/juku.board.json` D41 |
 | D41 QA output is wired to both video address mux selects | PASS | `W10_QA_SEL`: D41.13 -> D50.1 + D51.1 |
 | D41 QB output is wired into the latch/preload chain | PASS | `LATCH_A`: D41.12 -> D37.1 |
+| D41 LD is source-traced onto timing-bundle rail 17 | PASS | `TIMING_TAG17`: D41.6 + D36.2 |
+| D41 CK is source-traced onto timing-bundle rail 8 | PASS | `SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8 |
 | Adjacent latch chain context is modeled | PASS | `LATCH_B`/`LATCH_PRE`/`LATCH_SIG` around D37/D40/D33/D39 |
 | D41 proved straps, outputs, and timing boundaries are netted | PASS | D41.1, D41.12, D41.13, D41.2, D41.3, D41.4, D41.5, D41.6, D41.8, D41.9 |
 | D41 unused QC/QD outputs remain intentional no-connects | PASS | 10:QD, 11:QC |
@@ -32,6 +34,8 @@ python3 scripts/report_d41_timing_boundary.py
 | --- | --- | --- | --- |
 | 12 | QB | LATCH_A | D41.QB feeds D37.1 in the modeled latch/preload chain |
 | 13 | QA | W10_QA_SEL | D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10 |
+| 6 | LD | TIMING_TAG17 | Direct sheet-2 junction to numbered rail 17 shared with D36.2 |
+| 9 | CK | SHIFT_G | Direct sheet-2 junction to numbered rail 8 shared with D42.8/D43.8 |
 
 ## Intentional No-Connect D41 Pins
 
@@ -47,6 +51,6 @@ python3 scripts/report_d41_timing_boundary.py
 - The corrected two-sided package fits replace global projections
   that landed in the parallel-rail field left/right of the actual IC.
 - A-D are grounded, DS/G are tied high, and QC/QD have no external
-  stubs. LD and CK are preserved as distinct timing-bundle boundaries.
-- Do not infer the LD/CK remote drivers from the runnable raster model;
-  they still need a readable source or continuity pass.
+  stubs. LD joins numbered timing rail 17; CK joins numbered rail 8.
+- The complete D41 package pin disposition is now source-closed. The remote
+  origin of rail 17 remains a wider timing-chain boundary at D36.2/D41.6.
