@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import re
 import subprocess
 import tempfile
 from collections import Counter
@@ -13,6 +14,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
 OUTPUT = ROOT / "docs/source-pcb-drc.md"
+COLLISION_DISPOSITION = {
+    "R68": ("D102", "R68 placement is only an approximate analog-grid seed; locate the physical SND_MIX resistor from target-board imagery or continuity"),
+    "R69": ("D102", "R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity"),
+    "R73": ("D97", "R73 is a three-terminal RF-bias trimmer, not a lower-FDC-row part; register its physical body before moving it"),
+    "R74": ("D102", "R74 placement is only an approximate analog-grid seed; locate the physical VT3 emitter resistor from target-board imagery or continuity"),
+    "C13": ("D95", "the assembly-drawing site formerly read as C13 is proved to be C63; the real C13 position still requires target-board evidence"),
+}
+
+
+def item_ref(description: str) -> str | None:
+    match = re.search(r"\bof ([A-Z]+\d+)\b", description)
+    return match.group(1) if match else None
 
 
 def main() -> int:
@@ -72,6 +85,39 @@ def main() -> int:
         items = "; ".join(str(item.get("description", "")).replace("|", "/")
                           for item in violation.get("items", []))
         lines.append(f"| {description} | {items} |")
+    lines += [
+        "",
+        "## Placement disposition",
+        "",
+        "The D95/D97/D102 package centres are registered by independent owner-photo",
+        "fits and the factory assembly drawing. Each collision instead involves a",
+        "passive whose current coordinate is explicitly approximate; moving an IC to",
+        "clear one of these shorts would regress known-good placement.",
+        "",
+        "| Approximate part | Fixed registered anchor | Required evidence |",
+        "| --- | --- | --- |",
+    ]
+    seen_approximate: set[str] = set()
+    for violation in unique.values():
+        refs = {ref for item in violation.get("items", [])
+                if (ref := item_ref(str(item.get("description", ""))))}
+        for ref in sorted(refs & COLLISION_DISPOSITION.keys()):
+            if ref in seen_approximate:
+                continue
+            seen_approximate.add(ref)
+            anchor, evidence = COLLISION_DISPOSITION[ref]
+            lines.append(f"| `{ref}` | `{anchor}` | {evidence} |")
+    unexpected = sorted({
+        ref for violation in unique.values() for item in violation.get("items", [])
+        if (ref := item_ref(str(item.get("description", ""))))
+        and ref not in COLLISION_DISPOSITION
+        and ref not in {anchor for anchor, _ in COLLISION_DISPOSITION.values()}
+    })
+    lines += [
+        "",
+        f"- Classified approximate collision parts: `{len(seen_approximate)}/{len(COLLISION_DISPOSITION)}`",
+        f"- Unexpected collision references: `{', '.join(unexpected) if unexpected else 'none'}`",
+    ]
     lines += [
         "",
         "The source PCB is not eligible for routed-copper adoption while any",
