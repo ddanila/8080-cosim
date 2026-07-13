@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `317`
-- Nets modeled: `571`
-- Chip-level fidelity gaps: `67`
-- Net-level source-risk gaps: `240`
+- Chips modeled: `302`
+- Nets modeled: `573`
+- Chip-level fidelity gaps: `73`
+- Net-level source-risk gaps: `244`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -40,7 +40,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 244 |
+| scan | 229 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -54,15 +54,16 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 24 |
 | PROM truth | 1 | 0 |
-| PROM/decode | 0 | 16 |
+| PROM/decode | 0 | 18 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 5 |
-| logic/source | 13 | 168 |
+| connector boundary | 1 | 0 |
+| logic/source | 13 | 171 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 37 | 0 |
-| placement/value | 6 | 0 |
+| placement/value | 11 | 0 |
 | sound/analog | 0 | 1 |
-| video/analog | 0 | 18 |
+| video/analog | 0 | 17 |
 
 ## Chip-Level Gaps
 
@@ -96,6 +97,12 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `C94` | `C_KM` | scan | ДГШ5.109.009 СБ plus owner component photo factory drawing identifies C94 in the analog/FDC area below D102; owner photo shows the populated yellow 680п body... |
+
+### connector boundary
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `X6` | `RF_CONN` | scan | ДГШ5.109.009 СБ assembly drawing plus owner component photo physical X6/contact 701 is retained with grounded return pin 2; signal pin 1 remains an explicit... |
 
 ### logic/source
 
@@ -161,11 +168,16 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
+| `C10` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C10 vertically immediately right of D93; both target-revision electrical destinations remain explicit con... |
+| `C11` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C11 vertically between D95 and D99; both target-revision electrical destinations remain explicit continui... |
+| `C12` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places the target C12 vertically between D94 and D100; the .006 trimmer identity is revision-superseded and both... |
+| `C15` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C15 vertically between D97 and D102; both target-revision electrical destinations remain explicit continu... |
 | `C16` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated grey horizontal axial capacitor between the upper... |
 | `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; the owner component view proves th... |
 | `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C20 at the right end of D102; both owner-board sides prove a pop... |
 | `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C22 at the right end of D102; both owner-board sides prove a pop... |
 | `C63` | `C_KM` | scan | BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo BOM/DSN value 0,047 and traced array-power bypass role RAIL_E<->RAIL_H are retained, but th... |
+| `C9` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C9 vertically between D100 and D98; both target-revision electrical destinations remain explicit continui... |
 | `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
 
 ## Documented Intentional No-Connects
@@ -210,6 +222,14 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
+| `C10_1_BOUNDARY` | video/analog | `C10.1` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
+| `C10_2_BOUNDARY` | logic/source | `C10.2` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 VT4-base assignment is revision-superseded |
+| `C11_1_BOUNDARY` | video/analog | `C11.1` | .009 factory placement between D95 and D99; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
+| `C11_2_BOUNDARY` | video/analog | `C11.2` | .009 factory placement between D95 and D99; target electrical destination unread and the .006 RF tank assignment is revision-superseded |
+| `C12_1_BOUNDARY` | PROM/decode | `C12.1` | .009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded |
+| `C12_2_BOUNDARY` | PROM/decode | `C12.2` | .009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded |
+| `C15_1_BOUNDARY` | logic/source | `C15.1` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-collector assignment is revision-superseded |
+| `C15_2_BOUNDARY` | logic/source | `C15.2` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded |
 | `C16_1_BOUNDARY` | logic/source | `C16.1` | .009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destin... |
 | `C16_2_BOUNDARY` | logic/source | `C16.2` | .009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destin... |
 | `C19_1_BOUNDARY` | logic/source | `C19.1` | .009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destinati... |
@@ -221,6 +241,8 @@ same fidelity ledger as the chip provenance gaps.
 | `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit... |
 | `C94_2_BOUNDARY` | video/analog | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit... |
 | `C99_FAR` | logic/source | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity bounda... |
+| `C9_1_BOUNDARY` | video/analog | `C9.1` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF ground assignment is revision-superseded |
+| `C9_2_BOUNDARY` | video/analog | `C9.2` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
 | `CPU_WAIT_STATUS` | logic/source | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread |
 | `CS_FDC` | PROM/decode | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 r... |
 | `D100_OE_BOUNDARY` | logic/source | `D100.9` | July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside po... |
@@ -282,7 +304,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D30_CLK2_BOUNDARY` | clock/I/O | `D30.11` | sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary |
 | `D30_Q2N_BOUNDARY` | logic/source | `D30.8` | sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boun... |
 | `D34_A1_TAG2` | logic/source | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in... |
-| `D34_SIG` | video/analog | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
+| `D34_SIG` | video/analog | `D34.11, R63.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and o... |
 | `D56_Q2N_TAG16` | memory/timing | `D56.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D56 second-section Q2_N pin12 leaves east on conductor code 16; the former D34.10 merge is dispr... |
@@ -384,7 +406,6 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FRAME_INT` | memory/timing | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (... |
-| `HF_OUT` | video/analog | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `LATCH_B` | clock/I/O | `D40.11, D37.2, D54.9, D54.15, D54.18` | scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending) |
 | `MEM_MODE0` | PROM/decode | `D26.16, D6.2, D28.11` | traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 i... |
@@ -399,6 +420,7 @@ same fidelity ledger as the chip provenance gaps.
 | `R102_2_BOUNDARY` | logic/source | `R102.2` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
 | `R108_1_BOUNDARY` | logic/source | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R108_2_BOUNDARY` | logic/source | `R108.2` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
+| `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requi... |
 | `R86_1_BOUNDARY` | logic/source | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R86_2_BOUNDARY` | logic/source | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
 | `R92_1_BOUNDARY` | logic/source | `R92.1` | .009 factory identity plus registered owner component/solder views prove R92 lead 1 on the upper/right 10.16 mm resistor span below D95; its remote destinati... |
@@ -409,10 +431,8 @@ same fidelity ledger as the chip provenance gaps.
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `REV` | PROM/decode | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder re... |
-| `RF_RAIL` | video/analog | `VT3.3, C9.2, R72.2, C10.1, R73.1, C11.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
 | `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merg... |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
-| `SND_MIX` | video/analog | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
@@ -421,10 +441,6 @@ same fidelity ledger as the chip provenance gaps.
 | `V3_RC` | logic/source | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `VT3_BASE` | video/analog | `R68.2, R69.2, R70.2, R71.1, C13.1, VT3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
-| `VT3_E` | video/analog | `VT3.1, R74.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
-| `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 | `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
 | `X4_06_BOUNDARY` | logic/source | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced |
 | `X4_07_BOUNDARY` | logic/source | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced |

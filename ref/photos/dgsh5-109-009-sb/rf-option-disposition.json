@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "target": "7.102.158 / ДГШ5.109.009 FDC-era processor module",
+  "conclusion": "The .006 dashed RF-modulator option is not populated on the .009 target. Keep the .009 physical capacitor positions, but do not carry their .006 RF connectivity across the revision boundary.",
+  "legacy_source": {
+    "schematic": "ref/schematics/p2_sheet2.png",
+    "drawing": "ДГШ5.109.006 Э3 sheet 2",
+    "observation": "The lower-right dashed option contains VT3/VT4, the adjustable L1/R73 RF network, and its dedicated bias/output passives.",
+    "group_bom": "ref/schematics/es101_nimekiri_komponendid.pdf",
+    "group_bom_pages": [7, 8],
+    "group_bom_observation": "The adjustable СП3-22б 4.7 kOhm part and the KT315/KT325 transistor population are assigned to ДГШ5.109.006."
+  },
+  "target_evidence": {
+    "assembly_images": [
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114615300.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114617677.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114620466.jpg"
+    ],
+    "assembly_observation": "The overlapping placement views cover the complete .009 board drawing. They label VT1 and VT2, but no VT3/VT4, L1, or R73. In the FDC quadrant they instead label C9, C10, C11, C12, and C15 around D93-D102.",
+    "owner_images": [
+      "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg"
+    ],
+    "owner_observation": "The documented 4x3 component-side tile set covers the complete owner board and corroborates the .009 assembly population: no VT3/VT4 RF cluster, adjustable L1, or R73 trimmer is populated."
+  },
+  "legacy_dnp_refs": [
+    "C13", "C14", "L1",
+    "R68", "R69", "R70", "R71", "R72", "R73", "R74", "R75", "R76", "R77",
+    "VT3", "VT4"
+  ],
+  "reused_target_boundary_refs": ["C9", "C10", "C11", "C12", "C15"],
+  "retained_target_analog_refs": ["R62", "R63", "R64", "R65", "R66", "R67", "VT2", "VD3", "C94", "X7"],
+  "boundary_endpoints": [
+    "C9.1", "C9.2", "C10.1", "C10.2", "C11.1", "C11.2",
+    "C12.1", "C12.2", "C15.1", "C15.2", "R67.2", "X6.1"
+  ],
+  "grounded_connector_endpoint": "X6.2"
+}

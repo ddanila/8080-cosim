@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""A* route the three deterministic legacy gaps left by the FDC-power route."""
+"""A* route deterministic legacy gaps left by the FDC-power route."""
 
 import heapq
 import math
@@ -290,10 +290,9 @@ elif len(sys.argv) == 4 and sys.argv[3] == "d103":
     add_route("GND", pad("D103", "5"), pad("D103", "6"), (pcbnew.B_Cu,))
     add_multilayer_route("GND", pad("D103", "6"), pad("D103", "8"))
 else:
-    add_multilayer_route("RF_TANK", pcbnew.VECTOR2I_MM(252.1, 103.2), pcbnew.VECTOR2I_MM(263.3222, 104.233), (1,), (1,))
     add_route("VIDEO_OUT", pad("X7", "1"), pad("R65", "1"))
     add_multilayer_route("RESET", pad("D26", "35"), pad("D1", "12"))
 
 pcbnew.SaveBoard(sys.argv[2], board)
-label = sys.argv[3] if len(sys.argv) in (4, 8) else "RESET, VIDEO_OUT, and RF_TANK"
+label = sys.argv[3] if len(sys.argv) in (4, 8) else "RESET and VIDEO_OUT"
 print(f"closed {label} reroute gaps -> {sys.argv[2]}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the sheet-2 analog video/RF handoff boundary report."""
+"""Guard the .009 composite-video handoff and the retired .006 RF option."""
 from __future__ import annotations
 
 import json
@@ -7,183 +7,156 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BOARD = ROOT / "kicad" / "juku.board.json"
-REPORT = ROOT / "docs" / "video-analog-boundary.md"
+BOARD = ROOT / "kicad/juku.board.json"
+DISPOSITION = ROOT / "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json"
+REPORT = ROOT / "docs/video-analog-boundary.md"
 
-ANALOG_NETS = (
-    "D34_SYNC",
-    "D34_SIG",
-    "VT2_BASE",
-    "VIDEO_OUT",
-    "SOUND_CLAMP",
-    "SND_MIX",
-    "VT3_BASE",
-    "RF_RAIL",
-    "VT3_E",
-    "VT4_B",
-    "RF_TANK",
-    "VT4_C",
-    "RF_TAP",
-    "HF_OUT",
-    "VT4_E",
-    "C94_1_BOUNDARY",
-    "C94_2_BOUNDARY",
-)
-
-REQUIRED_NODES = {
+RETAINED_NETS = {
     "D34_SYNC": {("D34", "8"), ("R62", "1")},
-    "D34_SIG": {("D34", "11"), ("R63", "1"), ("R69", "1")},
+    "D34_SIG": {("D34", "11"), ("R63", "1")},
     "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "2")},
     "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1")},
     "SOUND_CLAMP": {("R66", "2"), ("VD3", "2"), ("R67", "1")},
-    "SND_MIX": {("R67", "2"), ("R68", "1")},
-    "VT3_BASE": {("R68", "2"), ("R69", "2"), ("R70", "2"), ("R71", "1"), ("C13", "1"), ("VT3", "2")},
-    "RF_RAIL": {("VT3", "3"), ("C9", "2"), ("R72", "2"), ("C10", "1"), ("R73", "1"), ("C11", "1")},
-    "VT3_E": {("VT3", "1"), ("R74", "1")},
-    "VT4_B": {("R73", "2"), ("VT4", "2"), ("C10", "2")},
-    "RF_TANK": {("C11", "2"), ("C12", "1"), ("L1", "1")},
-    "VT4_C": {("VT4", "3"), ("C12", "2"), ("L1", "2"), ("C15", "1")},
-    "RF_TAP": {("L1", "3"), ("R76", "1")},
-    "HF_OUT": {("R76", "2"), ("R77", "1"), ("X6", "1")},
-    "VT4_E": {("VT4", "1"), ("R75", "1"), ("C14", "1"), ("C15", "2")},
+    "R67_2_BOUNDARY": {("R67", "2")},
     "C94_1_BOUNDARY": {("C94", "1")},
     "C94_2_BOUNDARY": {("C94", "2")},
 }
 
+REUSED_BOUNDARY_NETS = {
+    f"{ref}_{pin}_BOUNDARY": {(ref, pin)}
+    for ref in ("C9", "C10", "C11", "C12", "C15")
+    for pin in ("1", "2")
+}
+REUSED_BOUNDARY_NETS["X6_1_BOUNDARY"] = {("X6", "1")}
 
-def load_board() -> dict:
-    return json.loads(BOARD.read_text(encoding="utf-8"))
+RETIRED_NETS = {
+    "SND_MIX", "VT3_BASE", "RF_RAIL", "VT3_E", "VT4_B",
+    "RF_TANK", "VT4_C", "RF_TAP", "HF_OUT", "VT4_E",
+}
 
 
-def chip(board: dict, ref: str) -> dict:
-    for item in board["chips"]:
-        if item.get("ref") == ref:
-            return item
-    raise KeyError(ref)
+def load(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def nodes(board: dict, name: str) -> set[tuple[str, str]]:
+def node_set(board: dict, name: str) -> set[tuple[str, str]]:
     return {tuple(node) for node in board["nets"].get(name, {}).get("nodes", [])}
 
 
 def endpoint_text(board: dict, name: str) -> str:
-    rendered = [f"{ref}.{pin}" for ref, pin in sorted(nodes(board, name))]
-    return ", ".join(rendered) if rendered else "-"
+    return ", ".join(f"{ref}.{pin}" for ref, pin in sorted(node_set(board, name))) or "-"
 
 
-def row(values: list[object]) -> str:
+def table_row(values: list[object]) -> str:
     return "| " + " | ".join(str(value).replace("|", "/") for value in values) + " |"
 
 
-def has_pin(board: dict, ref: str, pin: str) -> bool:
-    return any((ref, pin) in nodes(board, name) for name in board["nets"])
-
-
 def main() -> int:
-    board = load_board()
+    board = load(BOARD)
+    disposition = load(DISPOSITION)
+    chips = {item["ref"]: item for item in board["chips"]}
+    all_nodes = {
+        tuple(node)
+        for net in board["nets"].values()
+        for node in net.get("nodes", [])
+    }
 
-    guarded_checks = []
-    for name in ANALOG_NETS:
-        required = REQUIRED_NODES[name]
-        guarded_checks.append(
-            (
-                f"`{name}` carries the traced analog-corner endpoints",
-                required <= nodes(board, name),
-                f"`{endpoint_text(board, name)}`",
-            )
-        )
+    legacy_dnp = set(disposition["legacy_dnp_refs"])
+    reused = set(disposition["reused_target_boundary_refs"])
+    source_files = [
+        disposition["legacy_source"]["schematic"],
+        disposition["legacy_source"]["group_bom"],
+        *disposition["target_evidence"]["assembly_images"],
+        *disposition["target_evidence"]["owner_images"],
+    ]
 
-    package_checks = [
+    checks: list[tuple[str, bool, str]] = []
+    checks.append((
+        "All cross-revision evidence files are local",
+        all((ROOT / name).is_file() for name in source_files),
+        f"{len(source_files)} schematic/BOM/factory/owner artifacts",
+    ))
+    checks.append((
+        "Legacy .006 RF-only population is absent from the .009 board model",
+        not (legacy_dnp & chips.keys())
+        and not any(ref in legacy_dnp for ref, _ in all_nodes),
+        ", ".join(sorted(legacy_dnp)),
+    ))
+    checks.append((
+        "Legacy RF net names are retired",
+        not (RETIRED_NETS & board["nets"].keys()),
+        ", ".join(sorted(RETIRED_NETS)),
+    ))
+    checks.append((
+        "Factory-reused C9/C10/C11/C12/C15 remain generic capacitors",
+        reused == {"C9", "C10", "C11", "C12", "C15"}
+        and all(chips.get(ref, {}).get("type") == "C_KM" for ref in reused),
+        "physical .009 identities retained; .006 RF assignments not carried across",
+    ))
+
+    guarded = {**RETAINED_NETS, **REUSED_BOUNDARY_NETS}
+    for name, required in guarded.items():
+        checks.append((
+            f"`{name}` has exactly the target endpoints",
+            node_set(board, name) == required,
+            endpoint_text(board, name),
+        ))
+
+    checks += [
         (
-            "VT2 video emitter follower is modeled",
-            chip(board, "VT2").get("type") == "Q_TO92"
-            and "video emitter follower" in chip(board, "VT2").get("prov", {}).get("pins", ""),
-            "VT2 provenance: sheet-2 analog corner",
+            "VT2 composite-video emitter follower is retained",
+            chips.get("VT2", {}).get("type") == "Q_TO92"
+            and "video emitter follower" in chips.get("VT2", {}).get("prov", {}).get("pins", ""),
+            "the non-RF .006 path remains the closest electrical evidence for the populated .009 VT2 stage",
         ),
         (
-            "VT3 RF/video stage is modeled",
-            chip(board, "VT3").get("type") == "Q_TO92"
-            and "RF/video transistor stage" in chip(board, "VT3").get("prov", {}).get("pins", ""),
-            "VT3 provenance: sheet-2 analog corner",
+            "R66 clamp input remains on the source-proved +12 V rail",
+            ("R66", "1") in node_set(board, "P12V"),
+            "sheet-2 B arrow is +12 V",
         ),
         (
-            "VT4 RF oscillator/output stage is modeled",
-            chip(board, "VT4").get("type") == "Q_TO92"
-            and "RF oscillator/output transistor stage" in chip(board, "VT4").get("prov", {}).get("pins", ""),
-            "VT4 provenance: sheet-2 analog corner",
+            "X7 composite connector retains signal and ground",
+            ("X7", "1") in node_set(board, "VIDEO_OUT")
+            and ("X7", "2") in node_set(board, "GND"),
+            "X7.1 VIDEO_OUT / X7.2 GND",
         ),
         (
-            "L1 adjustable tank coil retains its separate 1/5 tap",
-            chip(board, "L1").get("type") == "L_TAPPED"
-            and {"1", "2", "3"} <= set(chip(board, "L1").get("pins", {})),
-            "L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP",
+            "X6 physical connector is retained without invented RF drive",
+            node_set(board, "X6_1_BOUNDARY") == {("X6", "1")}
+            and ("X6", "2") in node_set(board, "GND"),
+            "X6.1 continuity boundary / X6.2 GND",
         ),
         (
-            "R66 clamp input is fed from the sheet-2 B (+12 V) rail",
-            ("R66", "1") in nodes(board, "P12V"),
-            "sheet-2 B-arrow enters R66.1; power legend defines B (+12)",
-        ),
-        (
-            "R73 RF-bias trimmer retains its grounded third terminal",
-            ("R73", "1") in nodes(board, "RF_RAIL")
-            and ("R73", "2") in nodes(board, "VT4_B")
-            and ("R73", "3") in nodes(board, "GND"),
-            "sheet-2: top end RF_RAIL, wiper VT4_B, bottom end GND",
-        ),
-        (
-            "Target-revision C94 680 pF capacitor is physically modeled",
-            chip(board, "C94").get("type") == "C_KM"
-            and chip(board, "C94").get("value") == "680"
-            and "owner component photo" in chip(board, "C94").get("prov", {}).get("refdes", ""),
-            ".009 factory drawing identity plus registered populated 680п owner-photo body",
-        ),
-        (
-            "VIDEO_OUT connector maps to X7",
-            ("X7", "1") in nodes(board, "VIDEO_OUT") and ("X7", "2") in nodes(board, "GND"),
-            "X7.1 signal / X7.2 return",
-        ),
-        (
-            "HF_OUT connector maps to X6",
-            ("X6", "1") in nodes(board, "HF_OUT") and ("X6", "2") in nodes(board, "GND"),
-            "X6.1 signal / X6.2 return",
+            "Target C94 680 pF body remains modeled",
+            chips.get("C94", {}).get("type") == "C_KM"
+            and chips.get("C94", {}).get("value") == "680",
+            ".009 factory identity plus populated owner-photo 680п marking",
         ),
     ]
 
-    boundary_checks = [
-        (
-            "Composite/RF electrical levels remain bench-only",
-            True,
-            "transistor bias, RF tank tuning, and output level/current are not digital-netlist facts",
-        ),
-        (
-            "X6/X7 connector identity remains assembly-drawing bounded",
-            "board 7.102.100; .158 delta possible" in board["nets"]["VIDEO_OUT"]["src"]
-            and "board 7.102.100; .158 delta possible" in board["nets"]["HF_OUT"]["src"],
-            "connector labels are guarded but need bring-up/photo confirmation for the .158 board",
-        ),
-        (
-            "C94 electrical destinations remain explicit continuity boundaries",
-            nodes(board, "C94_1_BOUNDARY") == {("C94", "1")}
-            and nodes(board, "C94_2_BOUNDARY") == {("C94", "2")},
-            "physical presence/value/position are proved; neither lead destination is yet readable",
-        ),
-    ]
-
-    ok = all(result for _, result, _ in guarded_checks + package_checks + boundary_checks)
-    status = "ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING" if ok else "ANALOG VIDEO/RF HANDOFF FAILED"
+    ok = all(result for _, result, _ in checks)
+    status = (
+        ".009 COMPOSITE HANDOFF GUARDED / .006 RF OPTION DNP"
+        if ok else "VIDEO/RF REVISION DISPOSITION FAILED"
+    )
 
     lines = [
         "# Video analog boundary",
         "",
-        "Status date: 2026-07-12.",
+        "Status date: 2026-07-13.",
         "",
         f"Status: **{status}**",
         "",
-        "This generated report isolates the sheet-2 analog video, RF, and",
-        "analog-corner sound-mix handoff. It guards the traced board endpoints",
-        "that feed the composite-video connector and RF output while keeping",
-        "electrical levels and RF tuning as bring-up boundaries. R66.1 is",
-        "source-proved on the sheet's B (+12 V) rail.",
+        "The older `.006` electrical sheet remains useful for the populated VT2 composite-video",
+        "stage, but its dashed VT3/VT4 RF modulator is not a valid `.009` population source.",
+        "The complete `.009` factory placement views label only VT1/VT2, and the complete owner",
+        "component-side tile set corroborates that absence. The archived group BOM independently",
+        "assigns the extra RF transistors and the 4.7 kΩ adjustable trimmer to `.006`.",
+        "",
+        "C9/C10/C11/C12/C15 are not removed: `.009` reuses those reference numbers around",
+        "D93-D102. Their factory positions remain on the PCB, but every pin is an explicit",
+        "continuity boundary instead of inheriting the superseded `.006` RF nets. X6 likewise",
+        "remains physically present with grounded return and an unresolved signal contact.",
         "",
         "## Command",
         "",
@@ -191,65 +164,39 @@ def main() -> int:
         "python3 scripts/report_video_analog_boundary.py",
         "```",
         "",
-        "## Guarded Net Checks",
+        "## Revision checks",
         "",
         "| Check | Result | Evidence |",
         "| --- | --- | --- |",
     ]
-    lines.extend(row([name, "PASS" if result else "FAIL", evidence]) for name, result, evidence in guarded_checks)
+    lines.extend(table_row([name, "PASS" if result else "FAIL", evidence])
+                 for name, result, evidence in checks)
 
-    lines.extend(
-        [
-            "",
-            "## Package / Connector Checks",
-            "",
-            "| Check | Result | Evidence |",
-            "| --- | --- | --- |",
-        ]
-    )
-    lines.extend(row([name, "PASS" if result else "FAIL", evidence]) for name, result, evidence in package_checks)
-
-    lines.extend(
-        [
-            "",
-            "## Pending Boundary Checks",
-            "",
-            "| Boundary | Result | Current evidence |",
-            "| --- | --- | --- |",
-        ]
-    )
-    lines.extend(row([name, "PASS" if result else "FAIL", evidence]) for name, result, evidence in boundary_checks)
-
-    lines.extend(
-        [
-            "",
-            "## Current Analog-Corner Nets",
-            "",
-            "| Net | Endpoints | Source note |",
-            "| --- | --- | --- |",
-        ]
-    )
-    for name in ANALOG_NETS:
+    lines += [
+        "",
+        "## Retained target nets and boundaries",
+        "",
+        "| Net | Endpoints | Source note |",
+        "| --- | --- | --- |",
+    ]
+    for name in guarded:
         net = board["nets"].get(name, {})
-        lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
+        lines.append(table_row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
 
-    lines.extend(
-        [
-            "",
-            "## Interpretation",
-            "",
-            "- The digital video-readout guards prove byte-to-pixel behavior; this report",
-            "  is only the analog board handoff from D34 through VT2/VT3/VT4 and X6/X7.",
-            "- `VIDEO_OUT` and `HF_OUT` are routed to the modeled connectors, but real",
-            "  composite/RF amplitude, polarity margins, and tank adjustment still need",
-            "  bench capture during bring-up.",
-            "- The analog-corner `SOUND_CLAMP` path is not the same as the already guarded",
-            "  beeper speaker driver. Sheet 2 instead proves R66.1 is biased from B (+12 V).",
-            "- `.009` C94 is no longer omitted or conflated with L1: its 680 pF body and",
-            "  placement are source-proved, while both electrical endpoints remain boundaries.",
-            "",
-        ]
-    )
+    lines += [
+        "",
+        "## Interpretation",
+        "",
+        "- The `.009` PCB no longer carries fifteen physically contradicted `.006` RF-only parts",
+        "  or the ten false pad-collision pairs they caused.",
+        "- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Their precise",
+        "  amplitudes, values, and unresolved endpoints still require continuity or bench capture.",
+        "- No RF behavior is claimed for X6 until target-revision circuitry is proved; preserving",
+        "  a physical connector is not evidence for the removed VT3/VT4 network.",
+        "- Machine-readable source and population evidence is in",
+        "  `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`.",
+        "",
+    ]
 
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")

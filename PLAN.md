@@ -70,11 +70,12 @@ closed and the corrected board has been rerouted and reviewed.
    assignments are rejected.
 
 The routed PCB/DSN/SES predate this measured topology. Do not locally restore
-the obsolete WAIT copper; regenerate the complete routed snapshot after the ten
-source-placement collision pairs are resolved.
+the obsolete WAIT copper. The source-placement collision gate is now clear,
+but complete rerouting remains deferred until the functional netlist stops
+changing; the remaining P0 connectivity work would otherwise invalidate it.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 240 source-risk nets and 9 official FDC
+   current generated evidence lists 244 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -101,14 +102,17 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2273/2273` net-assigned PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2239/2239` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
-`docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
-holds routed-board adoption on ten unique analog/FDC pad collisions. The four
-newer pairs are informative rather than regressions in evidence: correcting
-VD3, restoring R86/C19, and restoring R92 to their factory/photo-proven positions
-expose the old unregistered L1, legacy `.006` VT3, and approximate R74/C13 seeds as
-false locations.
+`docs/source-pcb-drc.md` is the separate physical-placement gate and now passes
+with zero electrical pad/item collisions. The former ten pairs came from
+carrying the `.006` dashed VT3/VT4 RF option into the `.009` FDC quadrant.
+Complete factory-placement coverage and the complete owner component tile set
+show only VT1/VT2, while the archived group BOM assigns the extra RF
+transistors and adjustable trimmer to `.006`. Fifteen legacy-only parts are
+therefore DNP; C9/C10/C11/C12/C15 retain their `.009` factory positions with
+explicit target-continuity boundary nets. This clears placement, not the
+remaining connectivity or routed-parity gates.
 Sixty-one endpoints on bracket-mounted S1/S4/X3/X4/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -169,27 +173,25 @@ extraction work from that set:
    removes 13 source-PCB DRC violations. C12's owner-photo site has no
    unambiguous fitted body and C9 is cable-hidden, so neither placement is
    promoted as connectivity evidence.
-   Fit the remaining colliding passive/transistor placeholders from the same
-   photographs rather than moving the proven IC row. Continue cross-checking the
-   remaining FDC cluster and connector/off-board geometry (X8 300 mm lead,
-   X9 400 mm ribbon, poz. 151 shielded cable) before the reroute.
-   Sheet 2 also disproves the former two-terminal grounded L1 simplification:
-   the adjustable RF coil has separate tank ends and a 1/5 tap feeding R76/HF.
-   The source PCB now preserves `RF_TANK`, `VT4_C`, and `RF_TAP`, including the
-   formerly omitted C12.2 endpoint, with a three-pad electrical stand-in. The
-   real coil footprint and location still require photo/solder registration;
-   the adjacent yellow `680п` capacitor is explicitly not L1.
+   Cross-revision reconciliation resolves the remaining collision placeholders
+   without moving the proven IC row. The `.006` sheet-2 dashed RF option contains
+   VT3/VT4, tapped L1, R73, and their dedicated C13/C14/R68-R77 network; the
+   archived group BOM likewise assigns the extra transistors and 4.7 kΩ trimmer
+   to `.006`. Neither the complete `.009` assembly placement nor the complete
+   owner-board component tile set contains that option. Those fifteen refs are
+   DNP on the target. The `.009` drawing instead reuses C9/C10/C11/C12/C15 in
+   the D93-D102 quadrant, so those footprints remain with twelve explicit
+   continuity boundaries including R67.2 and X6.1. This removes all ten source
+   collision pairs while preserving unknown target connectivity rather than
+   inventing an RF circuit. The adjacent yellow `680п` part remains C94, not L1.
    The same full-resolution sheet closes the former R66.1 source boundary:
    its `B` arrow is the power legend's `B (+12)`, so R66.1 is now on `P12V`
    rather than an invented PIT `SOUND` input.
-   It also restores the omitted third terminal of R73: the RF-bias trimmer is
-   `RF_RAIL` end / `VT4_B` wiper / grounded end, not a two-pin resistor.
    Owner-photo/assembly registration now also places the visibly marked red
    `2к` R67 at `(295.94,125.39)` mm, plus glass VD3 at
    `(299.38,128.40)` mm and the rightmost R66 at `(302.69,128.46)` mm.
    The factory drawing fixes the right-group identities independently of
-   colour; these placements do not move the proven IC row or guess the
-   obscured L1 location. The same cross-source read restores the previously
+   colour; these placements do not move the proven IC row. The same cross-source read restores the previously
    omitted populated C94 `680п` capacitor at `(287.07,132.26)` mm; its two
    unread lead destinations remain explicit continuity boundaries. Factory
    registration plus the populated owner photo also restores the complete

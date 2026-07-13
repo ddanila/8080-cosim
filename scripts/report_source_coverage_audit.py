@@ -14,6 +14,7 @@ REQUIRED = [
     "ref/schematics/es101_emaplaat.pdf",
     "ref/Juku_official_chip_BOM.pdf",
     "ref/photos/dgsh5-109-009-sb/README.md",
+    "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json",
     "docs/assembly-drawing-extraction.md",
     "docs/factory-modification-disposition.md",
     "ref/baltijets-tech-docs/007 ROM and ROM programming.pdf",

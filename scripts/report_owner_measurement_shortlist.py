@@ -159,7 +159,7 @@ def main() -> int:
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
-        ("Video/RF analog boundary guarded", has_phrase("docs/video-analog-boundary.md", "Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**")),
+        (".009 video / .006 RF disposition guarded", has_phrase("docs/video-analog-boundary.md", "Status: **.009 COMPOSITE HANDOFF GUARDED / .006 RF OPTION DNP**")),
         ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT SELECTOR GUARDED**")),
         ("FDC functional-pin design hold is visible", has_phrase("docs/unmodeled-footprint-inventory.md", "Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**")),
         (
@@ -177,7 +177,7 @@ def main() -> int:
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
         (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**")),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
-        ("Source-PCB placement hold is current", has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `10`")),
+        ("Source-PCB placement collision gate passes", has_phrase("docs/source-pcb-drc.md", "Status: **PASS**") and has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `0`")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
@@ -253,11 +253,11 @@ def main() -> int:
             "closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices",
         ),
         (
-            "P0",
-            "source-PCB collision placement",
-            "register exact target-board lead centres for C13, R68, R69, R73, R74, tapped coil L1, and legacy VT3 (or explicitly DNP VT3 for the .009 revision): C13.2 currently overlaps D95.10 and C13.1 overlaps restored R92.1; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13 and R74.2 overlaps restored C19.1; the old L1 stand-in overlaps the factory/photo-proven VD3 centre; and the old VT3 seed overlaps the factory/photo-proven R86 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/C16/C19/R92/R99/VD3/R86 centres and orientations fixed. Do not use the factory-drawn D41/D40-gap capacitor site: it is C63, not C13, and its owner-photo population is unresolved",
-            "`docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`",
-            "removes all ten known source-board electrical collision pairs without inventing target-revision placement",
+            "P1",
+            ".009 FDC/analog passive continuity",
+            "trace both leads of factory-positioned C9/C10/C11/C12/C15, the far end of R67.2, and X6.1 on the .009 owner board; do not restore the revision-superseded .006 VT3/VT4 RF nets",
+            "`docs/video-analog-boundary.md`; `docs/source-pcb-drc.md`; `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`",
+            "turns twelve explicit target-revision boundary pins into real .009 connectivity while preserving the now-zero-short source placement",
         ),
         (
             "P0",

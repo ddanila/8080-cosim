@@ -48,18 +48,20 @@ Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
 routed nets and removes every transplanted-track short. The remaining 12 DRC
 short violations were six duplicated pad-to-pad placement collisions already
 present in that source snapshot: approximate analog-part positions overlapped the
-factory-registered D95/D97/D102 cluster. The current regenerated source has ten
-collision pairs because the corrected factory/photo-proven VD3, R86, C19, and R92 positions expose
-the old unregistered L1, legacy `.006` VT3, and approximate R74/C13 seeds as false. S4 is now correctly schematic/off-board
-and no longer contributes a fabricated footprint collision. The routed candidate therefore
-remains rejected. This corrected audit supersedes the earlier false zero-short
+factory-registered D95/D97/D102 cluster. Later evidence briefly raised the
+source count to ten, then complete `.009` assembly/owner coverage proved that
+the colliding bodies belonged to the `.006`-only VT3/VT4 RF option. The current
+source dispositions those fifteen parts DNP and has zero electrical placement
+collisions. S4 is likewise correctly schematic/off-board. The old routed
+candidate still remains rejected because it predates these source changes.
+This corrected audit supersedes the earlier false zero-short
 statement, which inspected a nonexistent top-level JSON field instead of
 `violations[type=shorting_items]`.
 
 A clean refresh therefore requires this order:
 
-1. repair the ten current source-placement electrical overlaps from stronger placement evidence;
-2. generate the compatible-copper candidate;
+1. keep the now-clear source-placement gate guarded while functional connectivity stabilizes;
+2. generate the compatible-copper candidate only after netlist freeze;
 3. iteratively quarantine any transplanted net implicated by DRC using `--exclude-drc`;
 4. route the quarantined nets against the current placement;
 5. replace `juku_routed.kicad_pcb` only after endpoint parity and zero electrical

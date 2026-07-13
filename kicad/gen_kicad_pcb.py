@@ -48,12 +48,12 @@ PASSIVE_FP = {
     'JUMPER3': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),   # Е-family config links
     'XTAL':    ('Crystal.pretty',       'Crystal_HC49-U_Horizontal'),   # РК-171 flat can, lying -- closest stock footprint
     'C_TRIM':  ('Capacitor_THT.pretty', 'C_Disc_D7.5mm_W4.4mm_P5.00mm'), # КТ4-23 trimmer stand-in (no trimmer lib in stock KiCad)
-    'R_TRIM':  ('Potentiometer_THT.pretty', 'Potentiometer_Piher_PT-10-V10_Vertical'),  # R73 = СП3-22б 4.7k (ВП лист 7) stand-in
+    'R_TRIM':  ('Potentiometer_THT.pretty', 'Potentiometer_Piher_PT-10-V10_Vertical'),  # legacy .006-only footprint support
     'SW_DIP6': ('Button_Switch_THT.pretty', 'SW_DIP_SPSTx06_Slide_9.78x17.42mm_W7.62mm_P2.54mm'),  # S3 video-config bank
     'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
     'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
     'Q_TO92':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315/КТ325 (flat KT-13 pkg; TO-92 stand-in)
-    'L_TAPPED':('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'), # L1 electrical 3-pad stand-in; physical coil still to fit
+    'L_TAPPED':('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'), # legacy .006-only footprint support
     'VIDEO_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X7 video socket stand-in (601/602)
     'RF_CONN':    ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X6 RF socket stand-in (701/702)
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings
@@ -122,18 +122,16 @@ PASSIVE_PLACE = {
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
     'E4':(39.9,226.5,0),'E5':(50.5,224.0,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
-    # ---- analog video/RF corner: REAL zone = mid-right x260-300 y95-125 per the СБ assembly
-    # drawing (7.102.100); R65/R67/VD3/R66 are owner-photo fitted below D102.
-    # The corrected VD3 centre deliberately exposes the still-unregistered L1 seed. ----
-    'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.38,128.40,90),
-    'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(287.07,132.26,90),
-    # Remaining R6x grid refdes-to-slot assignments are approximate; do not move
-    # them independently where they overlap the still-unregistered RF cluster.
+    # ---- .009 analog/FDC corner. The .006 VT3/VT4 dashed RF option is DNP on
+    # the target; only the retained VT2/R62-R67/VD3/C94 path is placed here. ----
+    'VT2':(280.7,126.4,0),'VD3':(299.38,128.40,90),
+    'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(287.07,132.26,90),
+    # Remaining retained R6x grid refdes-to-slot assignments are approximate.
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(282.21,125.14,90),'R66':(302.69,128.46,90),
-    'R67':(295.94,125.39,90),'R68':(291.0,116.4,90),'R69':(293.8,116.4,90),'R70':(288.3,127.2,90),'R71':(291.0,127.2,90),
+    'R67':(295.94,125.39,90),
     # Factory lower-FDC drawing registered to photo-fitted D95/D99 and
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
-    'C9':(285.807,33.590,90),'C10':(252.361,73.163,90),'C12':(253.218,33.954,90),'C13':(249.5,99.0,90),'C15':(280.230,110.120,90),
+    'C9':(285.807,33.590,90),'C10':(252.361,73.163,90),'C12':(253.218,33.954,90),'C15':(280.230,110.120,90),
     # Factory affine centres plus registered component/solder views restore the
     # populated horizontal C16/R92/R99 row. Their values and destinations are
     # unread, so all six leads remain explicit boundaries.
@@ -147,7 +145,6 @@ PASSIVE_PLACE = {
     # 10 mm lead spans share D102's y centre; the bodies lean right in the
     # component photo, so body pixels are not drill-centre coordinates.
     'C20':(303.997,110.024,90),'C22':(306.537,110.024,90),
-    'R76':(272,125,0),'R77':(271.5,132.5,0),'L1':(298.9,129.2,0),   # L1 = the СБ circle part at (298.9,129.2); old approx sat on VT2
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)

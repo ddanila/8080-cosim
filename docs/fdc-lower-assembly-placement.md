@@ -41,7 +41,7 @@ Those owner views additionally show the two grey C20/C22 axial bodies and all fo
 pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.
 The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.
 The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.
-That makes DNP/removal the leading `.009` owner-board disposition, but the old generic array placement is not silently moved or deleted until factory-population intent is reconciled; this site must not be used to clear C13's D95 collision.
+That makes DNP/removal the leading `.009` owner-board disposition, but the old generic array placement is not silently moved or deleted until factory-population intent is reconciled. The unrelated `.006` RF-option C13 is now correctly DNP on the `.009` target and must not be conflated with this C63 site.
 The owner component view does not expose a complete electrical path at either corrected
 site: C11's landings are visible without an unambiguous body, while C15 is hidden by the
 factory cable. Neither placement is connectivity evidence.

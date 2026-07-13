@@ -1,14 +1,19 @@
 # Video analog boundary
 
-Status date: 2026-07-12.
+Status date: 2026-07-13.
 
-Status: **ANALOG VIDEO/RF HANDOFF GUARDED / BENCH MEASUREMENT PENDING**
+Status: **.009 COMPOSITE HANDOFF GUARDED / .006 RF OPTION DNP**
 
-This generated report isolates the sheet-2 analog video, RF, and
-analog-corner sound-mix handoff. It guards the traced board endpoints
-that feed the composite-video connector and RF output while keeping
-electrical levels and RF tuning as bring-up boundaries. R66.1 is
-source-proved on the sheet's B (+12 V) rail.
+The older `.006` electrical sheet remains useful for the populated VT2 composite-video
+stage, but its dashed VT3/VT4 RF modulator is not a valid `.009` population source.
+The complete `.009` factory placement views label only VT1/VT2, and the complete owner
+component-side tile set corroborates that absence. The archived group BOM independently
+assigns the extra RF transistors and the 4.7 kΩ adjustable trimmer to `.006`.
+
+C9/C10/C11/C12/C15 are not removed: `.009` reuses those reference numbers around
+D93-D102. Their factory positions remain on the PCB, but every pin is an explicit
+continuity boundary instead of inheriting the superseded `.006` RF nets. X6 likewise
+remains physically present with grounded return and an unresolved signal contact.
 
 ## Command
 
@@ -16,80 +21,70 @@ source-proved on the sheet's B (+12 V) rail.
 python3 scripts/report_video_analog_boundary.py
 ```
 
-## Guarded Net Checks
+## Revision checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| `D34_SYNC` carries the traced analog-corner endpoints | PASS | `D34.8, R62.1` |
-| `D34_SIG` carries the traced analog-corner endpoints | PASS | `D34.11, R63.1, R69.1` |
-| `VT2_BASE` carries the traced analog-corner endpoints | PASS | `R62.2, R63.2, R64.1, VT2.2` |
-| `VIDEO_OUT` carries the traced analog-corner endpoints | PASS | `R65.1, VT2.1, X7.1` |
-| `SOUND_CLAMP` carries the traced analog-corner endpoints | PASS | `R66.2, R67.1, VD3.2` |
-| `SND_MIX` carries the traced analog-corner endpoints | PASS | `R67.2, R68.1` |
-| `VT3_BASE` carries the traced analog-corner endpoints | PASS | `C13.1, R68.2, R69.2, R70.2, R71.1, VT3.2` |
-| `RF_RAIL` carries the traced analog-corner endpoints | PASS | `C10.1, C11.1, C9.2, R72.2, R73.1, VT3.3` |
-| `VT3_E` carries the traced analog-corner endpoints | PASS | `R74.1, VT3.1` |
-| `VT4_B` carries the traced analog-corner endpoints | PASS | `C10.2, R73.2, VT4.2` |
-| `RF_TANK` carries the traced analog-corner endpoints | PASS | `C11.2, C12.1, L1.1` |
-| `VT4_C` carries the traced analog-corner endpoints | PASS | `C12.2, C15.1, L1.2, VT4.3` |
-| `RF_TAP` carries the traced analog-corner endpoints | PASS | `L1.3, R76.1` |
-| `HF_OUT` carries the traced analog-corner endpoints | PASS | `R76.2, R77.1, X6.1` |
-| `VT4_E` carries the traced analog-corner endpoints | PASS | `C14.1, C15.2, R75.1, VT4.1` |
-| `C94_1_BOUNDARY` carries the traced analog-corner endpoints | PASS | `C94.1` |
-| `C94_2_BOUNDARY` carries the traced analog-corner endpoints | PASS | `C94.2` |
+| All cross-revision evidence files are local | PASS | 23 schematic/BOM/factory/owner artifacts |
+| Legacy .006 RF-only population is absent from the .009 board model | PASS | C13, C14, L1, R68, R69, R70, R71, R72, R73, R74, R75, R76, R77, VT3, VT4 |
+| Legacy RF net names are retired | PASS | HF_OUT, RF_RAIL, RF_TANK, RF_TAP, SND_MIX, VT3_BASE, VT3_E, VT4_B, VT4_C, VT4_E |
+| Factory-reused C9/C10/C11/C12/C15 remain generic capacitors | PASS | physical .009 identities retained; .006 RF assignments not carried across |
+| `D34_SYNC` has exactly the target endpoints | PASS | D34.8, R62.1 |
+| `D34_SIG` has exactly the target endpoints | PASS | D34.11, R63.1 |
+| `VT2_BASE` has exactly the target endpoints | PASS | R62.2, R63.2, R64.1, VT2.2 |
+| `VIDEO_OUT` has exactly the target endpoints | PASS | R65.1, VT2.1, X7.1 |
+| `SOUND_CLAMP` has exactly the target endpoints | PASS | R66.2, R67.1, VD3.2 |
+| `R67_2_BOUNDARY` has exactly the target endpoints | PASS | R67.2 |
+| `C94_1_BOUNDARY` has exactly the target endpoints | PASS | C94.1 |
+| `C94_2_BOUNDARY` has exactly the target endpoints | PASS | C94.2 |
+| `C9_1_BOUNDARY` has exactly the target endpoints | PASS | C9.1 |
+| `C9_2_BOUNDARY` has exactly the target endpoints | PASS | C9.2 |
+| `C10_1_BOUNDARY` has exactly the target endpoints | PASS | C10.1 |
+| `C10_2_BOUNDARY` has exactly the target endpoints | PASS | C10.2 |
+| `C11_1_BOUNDARY` has exactly the target endpoints | PASS | C11.1 |
+| `C11_2_BOUNDARY` has exactly the target endpoints | PASS | C11.2 |
+| `C12_1_BOUNDARY` has exactly the target endpoints | PASS | C12.1 |
+| `C12_2_BOUNDARY` has exactly the target endpoints | PASS | C12.2 |
+| `C15_1_BOUNDARY` has exactly the target endpoints | PASS | C15.1 |
+| `C15_2_BOUNDARY` has exactly the target endpoints | PASS | C15.2 |
+| `X6_1_BOUNDARY` has exactly the target endpoints | PASS | X6.1 |
+| VT2 composite-video emitter follower is retained | PASS | the non-RF .006 path remains the closest electrical evidence for the populated .009 VT2 stage |
+| R66 clamp input remains on the source-proved +12 V rail | PASS | sheet-2 B arrow is +12 V |
+| X7 composite connector retains signal and ground | PASS | X7.1 VIDEO_OUT / X7.2 GND |
+| X6 physical connector is retained without invented RF drive | PASS | X6.1 continuity boundary / X6.2 GND |
+| Target C94 680 pF body remains modeled | PASS | .009 factory identity plus populated owner-photo 680п marking |
 
-## Package / Connector Checks
-
-| Check | Result | Evidence |
-| --- | --- | --- |
-| VT2 video emitter follower is modeled | PASS | VT2 provenance: sheet-2 analog corner |
-| VT3 RF/video stage is modeled | PASS | VT3 provenance: sheet-2 analog corner |
-| VT4 RF oscillator/output stage is modeled | PASS | VT4 provenance: sheet-2 analog corner |
-| L1 adjustable tank coil retains its separate 1/5 tap | PASS | L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP |
-| R66 clamp input is fed from the sheet-2 B (+12 V) rail | PASS | sheet-2 B-arrow enters R66.1; power legend defines B (+12) |
-| R73 RF-bias trimmer retains its grounded third terminal | PASS | sheet-2: top end RF_RAIL, wiper VT4_B, bottom end GND |
-| Target-revision C94 680 pF capacitor is physically modeled | PASS | .009 factory drawing identity plus registered populated 680п owner-photo body |
-| VIDEO_OUT connector maps to X7 | PASS | X7.1 signal / X7.2 return |
-| HF_OUT connector maps to X6 | PASS | X6.1 signal / X6.2 return |
-
-## Pending Boundary Checks
-
-| Boundary | Result | Current evidence |
-| --- | --- | --- |
-| Composite/RF electrical levels remain bench-only | PASS | transistor bias, RF tank tuning, and output level/current are not digital-netlist facts |
-| X6/X7 connector identity remains assembly-drawing bounded | PASS | connector labels are guarded but need bring-up/photo confirmation for the .158 board |
-| C94 electrical destinations remain explicit continuity boundaries | PASS | physical presence/value/position are proved; neither lead destination is yet readable |
-
-## Current Analog-Corner Nets
+## Retained target nets and boundaries
 
 | Net | Endpoints | Source note |
 | --- | --- | --- |
 | `D34_SYNC` | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
-| `D34_SIG` | `D34.11, R63.1, R69.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
+| `D34_SIG` | `D34.11, R63.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `VIDEO_OUT` | `R65.1, VT2.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible) |
 | `SOUND_CLAMP` | `R66.2, R67.1, VD3.2` | scan sheet-2 analog corner: R66.2 joins VD3.2/R67.1; R66.1 is separately source-proved on power rail B(+12); VD3 is КС147Г clamp |
-| `SND_MIX` | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `VT3_BASE` | `C13.1, R68.2, R69.2, R70.2, R71.1, VT3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
-| `RF_RAIL` | `C10.1, C11.1, C9.2, R72.2, R73.1, VT3.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed |
-| `VT3_E` | `R74.1, VT3.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `VT4_B` | `C10.2, R73.2, VT4.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
-| `RF_TANK` | `C11.2, C12.1, L1.1` | scan sheet-2 full-resolution analog corner: C11.2 feeds the parallel C12/L1 tank top |
-| `VT4_C` | `C12.2, C15.1, L1.2, VT4.3` | scan sheet-2 full-resolution analog corner: C12/L1 tank return joins VT4 collector and C15 top |
-| `RF_TAP` | `L1.3, R76.1` | scan sheet-2 full-resolution analog corner: L1 adjustable-coil 1/5 tap feeds series R76 then HF output |
-| `HF_OUT` | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible) |
-| `VT4_E` | `C14.1, C15.2, R75.1, VT4.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
+| `R67_2_BOUNDARY` | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity |
 | `C94_1_BOUNDARY` | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster |
 | `C94_2_BOUNDARY` | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster |
+| `C9_1_BOUNDARY` | `C9.1` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF ground assignment is revision-superseded |
+| `C9_2_BOUNDARY` | `C9.2` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
+| `C10_1_BOUNDARY` | `C10.1` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
+| `C10_2_BOUNDARY` | `C10.2` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 VT4-base assignment is revision-superseded |
+| `C11_1_BOUNDARY` | `C11.1` | .009 factory placement between D95 and D99; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
+| `C11_2_BOUNDARY` | `C11.2` | .009 factory placement between D95 and D99; target electrical destination unread and the .006 RF tank assignment is revision-superseded |
+| `C12_1_BOUNDARY` | `C12.1` | .009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded |
+| `C12_2_BOUNDARY` | `C12.2` | .009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded |
+| `C15_1_BOUNDARY` | `C15.1` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-collector assignment is revision-superseded |
+| `C15_2_BOUNDARY` | `C15.2` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded |
+| `X6_1_BOUNDARY` | `X6.1` | .009 factory assembly and owner photo retain physical X6/contact 701, but the .006 VT3/VT4 RF source is DNP on the target; signal destination requires target continuity |
 
 ## Interpretation
 
-- The digital video-readout guards prove byte-to-pixel behavior; this report
-  is only the analog board handoff from D34 through VT2/VT3/VT4 and X6/X7.
-- `VIDEO_OUT` and `HF_OUT` are routed to the modeled connectors, but real
-  composite/RF amplitude, polarity margins, and tank adjustment still need
-  bench capture during bring-up.
-- The analog-corner `SOUND_CLAMP` path is not the same as the already guarded
-  beeper speaker driver. Sheet 2 instead proves R66.1 is biased from B (+12 V).
-- `.009` C94 is no longer omitted or conflated with L1: its 680 pF body and
-  placement are source-proved, while both electrical endpoints remain boundaries.
+- The `.009` PCB no longer carries fifteen physically contradicted `.006` RF-only parts
+  or the ten false pad-collision pairs they caused.
+- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Their precise
+  amplitudes, values, and unresolved endpoints still require continuity or bench capture.
+- No RF behavior is claimed for X6 until target-revision circuitry is proved; preserving
+  a physical connector is not evidence for the removed VT3/VT4 network.
+- Machine-readable source and population evidence is in
+  `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`.

@@ -14,16 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
 OUTPUT = ROOT / "docs/source-pcb-drc.md"
-COLLISION_DISPOSITION = {
-    "L1": ("VD3", "L1 is still an unregistered three-pad tapped-coil stand-in; the factory/photo-proven VD3 centre now disproves this placeholder location, so locate the actual coil holes before moving it"),
-    "R68": ("D102", "R68 placement is only an approximate analog-grid seed; locate the physical SND_MIX resistor from target-board imagery or continuity"),
-    "R69": ("D102", "R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity"),
-    "R73": ("D97", "R73 is a three-terminal RF-bias trimmer, not a lower-FDC-row part; register its physical body before moving it"),
-    "R74": ("D102 / C19", "R74 placement is only an approximate analog-grid seed; locate the physical VT3 emitter resistor from target-board imagery or continuity"),
-    "C13": ("D95 / R92", "the assembly-drawing site formerly read as C13 is proved to be C63; the real C13 position still requires target-board evidence"),
-    "VT3": ("R86", "VT3 is a legacy .006 analog-placement seed; the .009 factory/photo-proven R86 centre disproves this location, so locate or explicitly DNP the target-revision VT3 before moving it"),
-}
-REGISTERED_COLLISION_REFS = {"D95", "D97", "D102", "VD3", "R86", "C16", "C19", "R92", "R99"}
+RF_DISPOSITION = ROOT / "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json"
 
 
 def item_ref(description: str) -> str | None:
@@ -32,6 +23,8 @@ def item_ref(description: str) -> str | None:
 
 
 def main() -> int:
+    disposition = json.loads(RF_DISPOSITION.read_text())
+    legacy_dnp = set(disposition["legacy_dnp_refs"])
     cli = subprocess.check_output(
         [str(ROOT / "scripts/find-kicad-cli.sh")], text=True
     ).strip()
@@ -88,49 +81,37 @@ def main() -> int:
         items = "; ".join(str(item.get("description", "")).replace("|", "/")
                           for item in violation.get("items", []))
         lines.append(f"| {description} | {items} |")
-    lines += [
-        "",
-        "## Placement disposition",
-        "",
-        "The D95/D97/D102 package centres plus the VD3, R86, C16, C19, R92, and R99 positions are registered by independent owner-photo",
-        "fits and the factory assembly drawing. Each collision instead involves an",
-        "analog/FDC part whose current coordinate is explicitly approximate; moving a registered part to",
-        "clear one of these shorts would regress known-good placement.",
-        "",
-        "| Approximate part | Fixed registered anchor | Required evidence |",
-        "| --- | --- | --- |",
-    ]
-    seen_approximate: set[str] = set()
-    for violation in unique.values():
-        refs = {ref for item in violation.get("items", [])
-                if (ref := item_ref(str(item.get("description", ""))))}
-        for ref in sorted(refs & COLLISION_DISPOSITION.keys()):
-            if ref in seen_approximate:
-                continue
-            seen_approximate.add(ref)
-            anchor, evidence = COLLISION_DISPOSITION[ref]
-            lines.append(f"| `{ref}` | `{anchor}` | {evidence} |")
-    unexpected = sorted({
+    collision_refs = sorted({
         ref for violation in unique.values() for item in violation.get("items", [])
         if (ref := item_ref(str(item.get("description", ""))))
-        and ref not in COLLISION_DISPOSITION
-        and ref not in REGISTERED_COLLISION_REFS
     })
     lines += [
         "",
-        f"- Classified approximate collision parts: `{len(seen_approximate)}/{len(COLLISION_DISPOSITION)}`",
-        f"- Unexpected collision references: `{', '.join(unexpected) if unexpected else 'none'}`",
-    ]
-    lines += [
+        "## Revision disposition",
         "",
-        "The source PCB is not eligible for routed-copper adoption while any",
-        "short collision remains. Move parts only from registered target-revision",
-        "placement evidence; do not silence these findings with waivers.",
+        "The former ten collision pairs came from placing the `.006` dashed VT3/VT4 RF option",
+        "on top of independently registered `.009` FDC parts. Complete `.009` assembly-drawing",
+        "coverage and the owner-board component tiles show only VT1/VT2, while the archived group",
+        "BOM assigns the adjustable trimmer and extra RF transistors to `.006`. The legacy-only",
+        "population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`",
+        "factory positions with explicit continuity-boundary nets.",
+        "",
+        f"- Guarded legacy-DNP references: `{len(legacy_dnp)}`",
+        f"- Current collision references: `{', '.join(collision_refs) if collision_refs else 'none'}`",
+        "- Evidence: `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`",
     ]
+    if shorts:
+        lines += [
+            "",
+            "The source PCB is not eligible for routed-copper adoption while any short remains.",
+            "New collisions must be fixed from target-revision placement evidence, not waived.",
+        ]
+    else:
+        lines += ["", "The source PCB has no electrical pad/item collision and passes this gate."]
     OUTPUT.write_text("\n".join(lines) + "\n")
     print(f"source PCB DRC: {status}; shorts={len(shorts)}, unique={len(unique)}")
     print(f"Wrote {OUTPUT.relative_to(ROOT)}")
-    return 0
+    return 0 if not shorts else 1
 
 
 if __name__ == "__main__":

@@ -37,15 +37,22 @@ generated vertical axial/diode coordinates
 compensate for the KiCad footprint-anchor offset; the guarded body centres are
 `VD3=(299.38,128.40)` and `R66=(302.69,128.46)` mm.
 
-## L1 model discrepancy
+## RF-option revision disposition
 
-The original sheet-2 RF circuit (`ref/schematics/p2_sheet2.png`) draws `L1` as
-an adjustable three-terminal coil with a `1/5` tap feeding `R76` and the `HF`
-output. The source model now preserves those three electrical terminals as
-`RF_TANK`, `VT4_C`, and `RF_TAP`; this also restores previously omitted C12.2
-to the collector/coil-return node. The PCB uses an explicit three-pad stand-in
-until the real coil and its solder landings are registered. The adjacent yellow
-`680п` part is explicitly excluded from that search.
+The original `.006` sheet-2 circuit (`ref/schematics/p2_sheet2.png`) draws a
+dashed RF option around VT3/VT4, adjustable three-terminal L1, R73, and their
+dedicated C13/C14/R68-R77 passives. That source remains valid evidence for the
+older revision, but not for target population. The archived group BOM assigns
+the extra RF transistors and 4.7 kΩ adjustable trimmer to `.006`; the complete
+`.009` assembly placement and complete owner-board component tile set instead
+show only VT1/VT2 and no RF-option cluster.
+
+Those fifteen legacy-only references are therefore DNP on the `.009` target.
+The `.009` drawing reuses C9/C10/C11/C12/C15 around D93-D102, so those physical
+capacitors remain at their factory positions with both leads left as explicit
+target-continuity boundaries. R67.2 and physical connector contact X6.1 are
+likewise boundaries rather than being forced onto the superseded RF nets. The
+yellow `680п` part remains the separately proved C94.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
@@ -106,13 +113,9 @@ interpretation. C22's marking and all four remote copper destinations remain
 unread, so four singleton boundary nets retain those unknowns without omitting
 the populated hardware.
 
-The R65/R67 increment itself removed their false D102-pad collisions. A later
-full-source DRC audit corrected the parser and exposed six then-current unique
-analog/FDC pad-collision pairs involving C13/R68/R69/R73/R74; the authoritative
-current placement status is `docs/source-pcb-drc.md`, not the earlier
-increment-local zero-short observation. Promoting the now-unambiguous VD3
-centre exposes one additional collision with the unregistered L1 stand-in;
-that conflict proves the placeholder coil location is false rather than
-weakening the diode placement. Restoring the `.009` R86 column endpoint likewise
-exposes the old `.006` VT3 seed as a second false legacy position. The 101-instance LVS remains fully
-matched at 263 nets, but LVS does not validate physical placement clearance.
+The R65/R67 increment removed their false D102-pad collisions. A later
+full-source DRC audit correctly exposed ten unique pairs caused by the remaining
+`.006` RF-option placeholders. The cross-revision population disposition above
+removes those contradicted footprints rather than moving any registered `.009`
+part. `docs/source-pcb-drc.md` now guards zero electrical pad/item collisions;
+LVS remains a separate connectivity check and does not validate placement.

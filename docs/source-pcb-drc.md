@@ -1,6 +1,6 @@
 # Source PCB DRC
 
-Status: **PLACEMENT HOLD**
+Status: **PASS**
 
 This report parses KiCad's `violations` array. `shorting_items` is a
 violation type, not a top-level JSON member; checking
@@ -14,60 +14,38 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `c54d040605225352b10bfde3a1ace5962c99e6f58e4ca6b506402b46043078c7`
-- Total violations: `699`
+- Board SHA256: `51b51561be9dcfc1c896d14174166a2f47caa34342556375a22433c5b241335e`
+- Total violations: `610`
 - Unconnected items: `499`
-- Short violations: `20`
-- Unique colliding pad/item pairs: `10`
+- Short violations: `0`
+- Unique colliding pad/item pairs: `0`
 
 ## Violation types
 
 | Type | Count |
 | --- | ---: |
-| `clearance` | 8 |
-| `courtyards_overlap` | 122 |
-| `hole_to_hole` | 5 |
-| `shorting_items` | 20 |
+| `clearance` | 2 |
+| `courtyards_overlap` | 90 |
 | `silk_over_copper` | 199 |
 | `silk_overlap` | 199 |
-| `solder_mask_bridge` | 20 |
-| `text_thickness` | 126 |
+| `text_thickness` | 120 |
 
 ## Unique short collisions
 
 | Nets | Items |
 | --- | --- |
-| Items shorting two nets (nets RF_TAP and GND) | PTH pad 3 [RF_TAP] of L1; PTH pad 1 [GND] of VD3 |
-| Items shorting two nets (nets RF_RAIL and D97_A2N_BOUNDARY) | PTH pad 1 [RF_RAIL] of R73; PTH pad 9 [D97_A2N_BOUNDARY] of D97 |
-| Items shorting two nets (nets VT3_BASE and R92_1_BOUNDARY) | PTH pad 1 [VT3_BASE] of C13; PTH pad 1 [R92_1_BOUNDARY] of R92 |
-| Items shorting two nets (nets GND and D95_D10_BOUNDARY) | PTH pad 2 [GND] of C13; PTH pad 10 [D95_D10_BOUNDARY] of D95 |
-| Items shorting two nets (nets VT3_BASE and D102_Q1N_BOUNDARY) | PTH pad 2 [VT3_BASE] of R68; PTH pad 4 [D102_Q1N_BOUNDARY] of D102 |
-| Items shorting two nets (nets D102_Q2_BOUNDARY and VT3_BASE) | PTH pad 5 [D102_Q2_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R69 |
-| Items shorting two nets (nets D102_Q2N_BOUNDARY and VT3_E) | PTH pad 12 [D102_Q2N_BOUNDARY] of D102; PTH pad 1 [VT3_E] of R74 |
-| Items shorting two nets (nets D102_Q1_BOUNDARY and VT3_E) | PTH pad 13 [D102_Q1_BOUNDARY] of D102; PTH pad 1 [VT3_E] of R74 |
-| Items shorting two nets (nets VT3_E and R86_1_BOUNDARY) | PTH pad 1 [VT3_E] of VT3; PTH pad 1 [R86_1_BOUNDARY] of R86 |
-| Items shorting two nets (nets C19_1_BOUNDARY and GND) | PTH pad 1 [C19_1_BOUNDARY] of C19; PTH pad 2 [GND] of R74 |
 
-## Placement disposition
+## Revision disposition
 
-The D95/D97/D102 package centres plus the VD3, R86, C16, C19, R92, and R99 positions are registered by independent owner-photo
-fits and the factory assembly drawing. Each collision instead involves an
-analog/FDC part whose current coordinate is explicitly approximate; moving a registered part to
-clear one of these shorts would regress known-good placement.
+The former ten collision pairs came from placing the `.006` dashed VT3/VT4 RF option
+on top of independently registered `.009` FDC parts. Complete `.009` assembly-drawing
+coverage and the owner-board component tiles show only VT1/VT2, while the archived group
+BOM assigns the adjustable trimmer and extra RF transistors to `.006`. The legacy-only
+population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`
+factory positions with explicit continuity-boundary nets.
 
-| Approximate part | Fixed registered anchor | Required evidence |
-| --- | --- | --- |
-| `L1` | `VD3` | L1 is still an unregistered three-pad tapped-coil stand-in; the factory/photo-proven VD3 centre now disproves this placeholder location, so locate the actual coil holes before moving it |
-| `R73` | `D97` | R73 is a three-terminal RF-bias trimmer, not a lower-FDC-row part; register its physical body before moving it |
-| `C13` | `D95 / R92` | the assembly-drawing site formerly read as C13 is proved to be C63; the real C13 position still requires target-board evidence |
-| `R68` | `D102` | R68 placement is only an approximate analog-grid seed; locate the physical SND_MIX resistor from target-board imagery or continuity |
-| `R69` | `D102` | R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity |
-| `R74` | `D102 / C19` | R74 placement is only an approximate analog-grid seed; locate the physical VT3 emitter resistor from target-board imagery or continuity |
-| `VT3` | `R86` | VT3 is a legacy .006 analog-placement seed; the .009 factory/photo-proven R86 centre disproves this location, so locate or explicitly DNP the target-revision VT3 before moving it |
+- Guarded legacy-DNP references: `15`
+- Current collision references: `none`
+- Evidence: `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`
 
-- Classified approximate collision parts: `7/7`
-- Unexpected collision references: `none`
-
-The source PCB is not eligible for routed-copper adoption while any
-short collision remains. Move parts only from registered target-revision
-placement evidence; do not silence these findings with waivers.
+The source PCB has no electrical pad/item collision and passes this gate.

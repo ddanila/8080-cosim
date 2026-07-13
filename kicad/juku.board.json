@@ -4568,137 +4568,6 @@
    }
   },
   {
-   "ref": "R68",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "SND_MIX to VT3_BASE path; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R69",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "D34_SIG to VT3_BASE path; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R70",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "VT3_BASE bias to P5V; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R71",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "VT3_BASE bias to GND; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R72",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_RAIL feed resistor; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R73",
-   "type": "R_TRIM",
-   "pins": {
-    "1": "P1",
-    "2": "P2",
-    "3": "P3"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "sheet-2 three-terminal RF-bias trimmer: pin1 RF_RAIL, wiper pin2 VT4_B, bottom pin3 GND"
-   }
-  },
-  {
-   "ref": "R74",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "VT3_E emitter resistor; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R75",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "VT4_E emitter resistor; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R76",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_TANK/HF_OUT tap path; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "R77",
-   "type": "R_AXIAL",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "HF_OUT load/return path; connected nets carry an_* crop evidence"
-   }
-  },
-  {
    "ref": "R92",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
@@ -4767,8 +4636,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_RAIL bypass to GND; connected nets carry an_* crop evidence"
+    "refdes": "ДГШ5.109.009 СБ FDC quadrant",
+    "pins": "factory drawing places C9 vertically between D100 and D98; both target-revision electrical destinations remain explicit continuity boundaries because the .006 RF use is superseded"
    }
   },
   {
@@ -4780,8 +4649,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_RAIL to VT4_B coupling/tuning; connected nets carry an_* crop evidence"
+    "refdes": "ДГШ5.109.009 СБ FDC quadrant",
+    "pins": "factory drawing places C10 vertically immediately right of D93; both target-revision electrical destinations remain explicit continuity boundaries because the .006 RF use is superseded"
    }
   },
   {
@@ -4793,25 +4662,12 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_RAIL/RF_TANK capacitor; connected nets carry an_* crop evidence"
+    "refdes": "ДГШ5.109.009 СБ FDC quadrant",
+    "pins": "factory drawing places C11 vertically between D95 and D99; both target-revision electrical destinations remain explicit continuity boundaries because the .006 RF use is superseded"
    }
   },
   {
    "ref": "C12",
-   "type": "C_TRIM",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_TANK trimmer capacitor; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "C13",
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -4819,21 +4675,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "VT3_BASE bypass to GND; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "C14",
-   "type": "C_KM",
-   "pins": {
-    "1": "P1",
-    "2": "P2"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "VT4_E bypass to GND; connected nets carry an_* crop evidence"
+    "refdes": "ДГШ5.109.009 СБ FDC quadrant",
+    "pins": "factory drawing places the target C12 vertically between D94 and D100; the .006 trimmer identity is revision-superseded and both target electrical destinations remain explicit continuity boundaries"
    }
   },
   {
@@ -4845,8 +4688,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF_TANK/VT4_E capacitor; connected nets carry an_* crop evidence"
+    "refdes": "ДГШ5.109.009 СБ FDC quadrant",
+    "pins": "factory drawing places C15 vertically between D97 and D102; both target-revision electrical destinations remain explicit continuity boundaries because the .006 RF use is superseded"
    }
   },
   {
@@ -4931,34 +4774,6 @@
    }
   },
   {
-   "ref": "VT3",
-   "type": "Q_TO92",
-   "pins": {
-    "1": "E",
-    "2": "B",
-    "3": "C"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF/video transistor stage; connected nets VT3_BASE/RF_RAIL/VT3_E carry crop evidence"
-   }
-  },
-  {
-   "ref": "VT4",
-   "type": "Q_TO92",
-   "pins": {
-    "1": "E",
-    "2": "B",
-    "3": "C"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "RF oscillator/output transistor stage; connected nets VT4_B/RF_TANK/VT4_E carry crop evidence"
-   }
-  },
-  {
    "ref": "VD3",
    "type": "D_DIODE",
    "pins": {
@@ -4969,20 +4784,6 @@
     "type": "scan",
     "refdes": "sheet-2 analog corner",
     "pins": "SOUND_CLAMP diode; connected nets carry an_* crop evidence"
-   }
-  },
-  {
-   "ref": "L1",
-   "type": "L_TAPPED",
-   "pins": {
-    "1": "P1",
-    "2": "P2",
-    "3": "TAP"
-   },
-   "prov": {
-    "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "three-terminal adjustable RF tank coil; sheet-2 draws a 1/5 tap to R76/HF"
    }
   },
   {
@@ -5007,8 +4808,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner + СБ assembly drawing",
-    "pins": "HF_OUT connector/contact 701; connected nets carry source evidence"
+    "refdes": "ДГШ5.109.009 СБ assembly drawing plus owner component photo",
+    "pins": "physical X6/contact 701 is retained with grounded return pin 2; signal pin 1 remains an explicit target-revision boundary after the .006 VT3/VT4 RF option is dispositioned DNP"
    }
   },
   {
@@ -10530,38 +10331,6 @@
      "1"
     ],
     [
-     "R71",
-     "2"
-    ],
-    [
-     "R74",
-     "2"
-    ],
-    [
-     "R75",
-     "2"
-    ],
-    [
-     "R77",
-     "2"
-    ],
-    [
-     "C13",
-     "2"
-    ],
-    [
-     "C14",
-     "2"
-    ],
-    [
-     "C9",
-     "1"
-    ],
-    [
-     "R73",
-     "3"
-    ],
-    [
      "X7",
      "2"
     ],
@@ -11130,14 +10899,6 @@
     [
      "VT2",
      "3"
-    ],
-    [
-     "R70",
-     "1"
-    ],
-    [
-     "R72",
-     "1"
     ],
     [
      "VT1",
@@ -15279,10 +15040,6 @@
     [
      "R63",
      "1"
-    ],
-    [
-     "R69",
-     "1"
     ]
    ]
   },
@@ -15341,177 +15098,53 @@
     ]
    ]
   },
-  "SND_MIX": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible",
-   "nodes": [
-    [
-     "R67",
-     "2"
-    ],
-    [
-     "R68",
-     "1"
-    ]
-   ]
+  "R67_2_BOUNDARY": {
+   "src": ".009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity",
+   "nodes": [["R67", "2"]]
   },
-  "VT3_BASE": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout",
-   "nodes": [
-    [
-     "R68",
-     "2"
-    ],
-    [
-     "R69",
-     "2"
-    ],
-    [
-     "R70",
-     "2"
-    ],
-    [
-     "R71",
-     "1"
-    ],
-    [
-     "C13",
-     "1"
-    ],
-    [
-     "VT3",
-     "2"
-    ]
-   ]
+  "C9_1_BOUNDARY": {
+   "src": ".009 factory placement between D100 and D98; target electrical destination unread and the .006 RF ground assignment is revision-superseded",
+   "nodes": [["C9", "1"]]
   },
-  "RF_RAIL": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R72 33R = can supply feed",
-   "nodes": [
-    [
-     "VT3",
-     "3"
-    ],
-    [
-     "C9",
-     "2"
-    ],
-    [
-     "R72",
-     "2"
-    ],
-    [
-     "C10",
-     "1"
-    ],
-    [
-     "R73",
-     "1"
-    ],
-    [
-     "C11",
-     "1"
-    ]
-   ]
+  "C9_2_BOUNDARY": {
+   "src": ".009 factory placement between D100 and D98; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded",
+   "nodes": [["C9", "2"]]
   },
-  "VT3_E": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible",
-   "nodes": [
-    [
-     "VT3",
-     "1"
-    ],
-    [
-     "R74",
-     "1"
-    ]
-   ]
+  "C10_1_BOUNDARY": {
+   "src": ".009 factory placement immediately right of D93; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded",
+   "nodes": [["C10", "1"]]
   },
-  "VT4_B": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable",
-   "nodes": [
-    [
-     "R73",
-     "2"
-    ],
-    [
-     "VT4",
-     "2"
-    ],
-    [
-     "C10",
-     "2"
-    ]
-   ]
+  "C10_2_BOUNDARY": {
+   "src": ".009 factory placement immediately right of D93; target electrical destination unread and the .006 VT4-base assignment is revision-superseded",
+   "nodes": [["C10", "2"]]
   },
-  "RF_TANK": {
-   "src": "scan sheet-2 full-resolution analog corner: C11.2 feeds the parallel C12/L1 tank top",
-   "nodes": [
-    [
-     "C11",
-     "2"
-    ],
-    [
-     "C12",
-     "1"
-    ],
-    [
-     "L1",
-     "1"
-    ]
-   ]
+  "C11_1_BOUNDARY": {
+   "src": ".009 factory placement between D95 and D99; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded",
+   "nodes": [["C11", "1"]]
   },
-  "VT4_C": {
-   "src": "scan sheet-2 full-resolution analog corner: C12/L1 tank return joins VT4 collector and C15 top",
-   "nodes": [
-    ["VT4", "3"],
-    ["C12", "2"],
-    ["L1", "2"],
-    ["C15", "1"]
-   ]
+  "C11_2_BOUNDARY": {
+   "src": ".009 factory placement between D95 and D99; target electrical destination unread and the .006 RF tank assignment is revision-superseded",
+   "nodes": [["C11", "2"]]
   },
-  "RF_TAP": {
-   "src": "scan sheet-2 full-resolution analog corner: L1 adjustable-coil 1/5 tap feeds series R76 then HF output",
-   "nodes": [
-    ["L1", "3"],
-    ["R76", "1"]
-   ]
+  "C12_1_BOUNDARY": {
+   "src": ".009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded",
+   "nodes": [["C12", "1"]]
   },
-  "HF_OUT": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible)",
-   "nodes": [
-    [
-     "R76",
-     "2"
-    ],
-    [
-     "R77",
-     "1"
-    ],
-    [
-     "X6",
-     "1"
-    ]
-   ]
+  "C12_2_BOUNDARY": {
+   "src": ".009 factory placement between D94 and D100; target electrical destination and value unread, and the .006 RF trimmer identity is revision-superseded",
+   "nodes": [["C12", "2"]]
   },
-  "VT4_E": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout",
-   "nodes": [
-    [
-     "VT4",
-     "1"
-    ],
-    [
-     "R75",
-     "1"
-    ],
-    [
-     "C14",
-     "1"
-    ],
-    [
-     "C15",
-     "2"
-    ]
-   ]
+  "C15_1_BOUNDARY": {
+   "src": ".009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-collector assignment is revision-superseded",
+   "nodes": [["C15", "1"]]
+  },
+  "C15_2_BOUNDARY": {
+   "src": ".009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded",
+   "nodes": [["C15", "2"]]
+  },
+  "X6_1_BOUNDARY": {
+   "src": ".009 factory assembly and owner photo retain physical X6/contact 701, but the .006 VT3/VT4 RF source is DNP on the target; signal destination requires target continuity",
+   "nodes": [["X6", "1"]]
   },
   "ROM_CS_A000": {
    "src": "traced sheet-1 (crops romcs_band/band2: code label ON the CS riser) + factory .117 table semantics; code 5 = D8.D0 -> D19.CS",
