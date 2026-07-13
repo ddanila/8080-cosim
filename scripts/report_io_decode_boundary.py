@@ -122,9 +122,11 @@ def main() -> int:
             "C99.1 is on V3_RC; C99.2 is electrically implied return but drawn far end is ambiguous",
         ),
         (
-            "D25_T source inputs remain unread",
-            has_nodes(board, "D25_T", {("D7", "6"), ("D25", "11")}),
-            "D7.5/D7.4 input source is not promoted by this report",
+            "D25_T input scan chase is exhausted without inventing a merge",
+            has_nodes(board, "D25_T", {("D7", "6"), ("D25", "11")})
+            and "5150x3603" in board["nets"]["D25_T"]["src"]
+            and "deliberate boundary" in board["nets"]["D25_T"]["src"],
+            "Native-resolution review leaves D7.5/D7.4 in an unlabeled dense crossing bundle",
         ),
     ]
     ok = all(result for _, result, _ in checks + boundaries)
@@ -133,7 +135,7 @@ def main() -> int:
     lines = [
         "# I/O decode boundary",
         "",
-        "Status date: 2026-07-10.",
+        "Status date: 2026-07-13.",
         "",
         f"Status: **{status}**",
         "",
@@ -206,7 +208,10 @@ def main() -> int:
             "  with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.",
             "- Remaining work is now narrow: trace the independent D7.12/D7.13",
             "  boundaries, read or continuity-check C99.2, and trace D7.5/D7.4 for",
-            "  D25_T. None of those should be replaced by a simulator-only guess.",
+            "  D25_T by continuity or stronger imagery. The native 5150x3603 sheet",
+            "  was rechecked end-to-end on 2026-07-13; the D25_T inputs enter a dense",
+            "  crossing bundle without unique labels or junctions, so further automated",
+            "  scan chasing is exhausted. None should be replaced by a simulator-only guess.",
             "",
         ]
     )

@@ -200,7 +200,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a destination chase; section5,4->6 drives D25.T from two westbound boundaries; section9,10->8 is IORD/IOWR NAND with output on tag8"
+    "pins": "complete sheet-1 full-resolution package census: section12,13->11 drives PROM_EN from two distinct unresolved-source boundaries; section1,2->3 remains a destination chase; section5,4->6 drives D25.T from two westbound boundaries that were rechecked at native 5150x3603 resolution on 2026-07-13 but cannot be assigned through the dense crossing bundle; section9,10->8 is IORD/IOWR NAND with output on tag8"
    }
   },
   {
@@ -15868,7 +15868,7 @@
    "nodes": [["D105", "11"], ["D30", "13"]]
   },
   "D25_T": {
-   "src": "traced sheet-1 300dpi (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; section inputs = next hop west [unread]. D25.E (9) -> GND like D23/D24",
+   "src": "traced sheet-1 native 5150x3603 review (crop s1_egates2): D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; both inputs enter the dense westbound crossing bundle without a unique label or junction, so each source remains a deliberate boundary after the 2026-07-13 full-sheet recheck. D25.E (9) -> GND like D23/D24",
    "nodes": [
     [
      "D7",
