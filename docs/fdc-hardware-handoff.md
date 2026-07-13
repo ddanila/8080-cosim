@@ -125,6 +125,23 @@ promotion while preserving the exact cross-layer continuity request.
 | D106.14 | (1017.546, 1946.087) | D93.33 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
 | D93.33 | (1557.244, 1809.072) | D106.14 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
 
+### D106 static straps and clock raw-crop disposition
+
+The same calibrated tile was exhausted for the six remaining IE7 setup
+checks. Pins 9/10 project beneath crossing rail metal, so apparent overlap
+is not continuity. Pins 15/1/5 and pin 4 have identifiable local joints or
+departures, but none remains visibly unbroken to a known power or clock
+anchor. These are therefore bounded meter probes, not inferred straps.
+
+| Endpoint | Reference expectation | Solder coordinate | Photograph result | Required proof |
+| --- | --- | --- | --- | --- |
+| D106.15 | HIGH | (1017.851, 1900.087) | LOCAL COPPER ONLY / P5V UNPROVED | continuity to a known P5V anchor |
+| D106.1 | HIGH | (1156.155, 1855.000) | LOCAL COPPER ONLY / P5V UNPROVED | continuity to a known P5V anchor |
+| D106.5 | HIGH | (1154.937, 2039.000) | LOCAL COPPER ONLY / P5V UNPROVED | continuity to a known P5V anchor |
+| D106.10 | LOW | (1016.329, 2130.087) | RAIL-OBSCURED / GND UNPROVED | continuity to a known GND anchor |
+| D106.9 | LOW | (1016.024, 2176.087) | RAIL-OBSCURED / GND UNPROVED | continuity to a known GND anchor |
+| D106.4 | RECOVERY CLOCK | (1155.242, 1993.000) | LOCAL COPPER ONLY / CLOCK SOURCE UNPROVED | continuity to a known CLOCK SOURCE anchor |
+
 ## Bus-Side Handoff Checks
 
 | Net / path | Status | Endpoint / purpose | Evidence boundary |

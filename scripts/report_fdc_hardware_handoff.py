@@ -27,6 +27,14 @@ SEPARATOR_PROBES = {
     ("D106", "14"): ("1017.546", "1946.087", "D93.33"),
     ("D93", "33"): ("1557.244", "1809.072", "D106.14"),
 }
+D106_STATIC_PROBES = {
+    "15": ("1017.851", "1900.087", "HIGH", "P5V"),
+    "1": ("1156.155", "1855.000", "HIGH", "P5V"),
+    "5": ("1154.937", "2039.000", "HIGH", "P5V"),
+    "10": ("1016.329", "2130.087", "LOW", "GND"),
+    "9": ("1016.024", "2176.087", "LOW", "GND"),
+    "4": ("1155.242", "1993.000", "RECOVERY CLOCK", "CLOCK SOURCE"),
+}
 
 
 def load_board() -> dict:
@@ -122,6 +130,50 @@ def separator_probe_observations() -> tuple[list[list[str]], bool]:
     return rows, ok
 
 
+def d106_static_probe_observations() -> tuple[list[list[str]], bool]:
+    """Guard the reviewed photo limits for D106 straps and its clock input."""
+    matched: dict[str, dict[str, str]] = {}
+    with PHOTO_ENDPOINTS.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            pin = row.get("pin", "")
+            if (
+                row.get("refdes") == "D106"
+                and pin in D106_STATIC_PROBES
+                and row.get("endpoint_id", "").startswith("seed-solder-")
+            ):
+                matched[pin] = row
+    rows: list[list[str]] = []
+    ok = set(matched) == set(D106_STATIC_PROBES)
+    for pin, (x, y, expected, anchor) in D106_STATIC_PROBES.items():
+        row = matched.get(pin, {})
+        note = row.get("note", "")
+        rail_obscured = pin in {"9", "10"}
+        guarded = (
+            row.get("image") == "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg"
+            and row.get("x_px") == x
+            and row.get("y_px") == y
+            and row.get("confidence") == "local-package-fit"
+            and row.get("review_state") == "measurement"
+            and anchor in note
+            and (("unproved" in note) if not rail_obscured else ("not continuity" in note))
+            and (("rail-obscured" in note) if rail_obscured else ("local" in note))
+        )
+        ok &= guarded
+        photo_result = (
+            f"RAIL-OBSCURED / {anchor} UNPROVED"
+            if rail_obscured
+            else f"LOCAL COPPER ONLY / {anchor} UNPROVED"
+        )
+        rows.append([
+            f"D106.{pin}",
+            expected,
+            f"({row.get('x_px', '-')}, {row.get('y_px', '-')})",
+            photo_result if guarded else "EVIDENCE MISSING",
+            f"continuity to a known {anchor} anchor",
+        ])
+    return rows, ok
+
+
 def main() -> int:
     board = load_board()
     local_report = json.loads(LOCAL_PACKAGE_REPORT.read_text(encoding="utf-8"))
@@ -133,6 +185,9 @@ def main() -> int:
     separator_rows, separator_probe_guarded = separator_probe_observations()
     if not separator_probe_guarded:
         failures.append("D106/D93 separator negative photo evidence is missing or stale")
+    static_probe_rows, static_probe_guarded = d106_static_probe_observations()
+    if not static_probe_guarded:
+        failures.append("D106 static-strap/clock photo evidence is missing or stale")
 
     reference_family_checks = {
         "74193 counter": chip(board, "D106").get("type") == "IE7_CTR",
@@ -469,6 +524,20 @@ def main() -> int:
         "| --- | --- | --- | --- |",
     ]
     lines.extend(table_row(row) for row in separator_rows)
+    lines.extend([
+        "",
+        "### D106 static straps and clock raw-crop disposition",
+        "",
+        "The same calibrated tile was exhausted for the six remaining IE7 setup",
+        "checks. Pins 9/10 project beneath crossing rail metal, so apparent overlap",
+        "is not continuity. Pins 15/1/5 and pin 4 have identifiable local joints or",
+        "departures, but none remains visibly unbroken to a known power or clock",
+        "anchor. These are therefore bounded meter probes, not inferred straps.",
+        "",
+        "| Endpoint | Reference expectation | Solder coordinate | Photograph result | Required proof |",
+        "| --- | --- | --- | --- | --- |",
+    ])
+    lines.extend(table_row(row) for row in static_probe_rows)
     lines.extend([
         "",
         "## Bus-Side Handoff Checks",

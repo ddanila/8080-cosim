@@ -270,9 +270,11 @@ Next tracing order:
    first probes are D106.11-D93.27 and D106.14-D93.33. Calibrated solder-crop
    review rejects uninterrupted same-layer paths for both pairs, so test for
    hidden layer handoffs rather than promoting either reference topology. The
-   WD-only D106.3-D96.3 and D96.2-D96.6 paths are no longer assumed. Follow those with
-   D106's static
-   straps and recovery-clock input, then test D95/D101 pins 2/14 against
+   WD-only D106.3-D96.3 and D96.2-D96.6 paths are no longer assumed. The same
+   calibrated tile has now been exhausted for D106's static straps and recovery-
+   clock input: pins 9/10 remain rail-obscured, while pins 15/1/5 and pin 4 show
+   only local copper or layer handoffs with no unbroken path to known P5V/GND/
+   clock anchors. Meter those six bounded endpoints, then test D95/D101 pins 2/14 against
    D93.18/.17 and their pin-7 output destinations for the period KP12 write-
    precompensation pattern. Existing Juku photo evidence excludes D96 section 2
    and D99 section 1 from the WD roles; neither reference proves Juku continuity.

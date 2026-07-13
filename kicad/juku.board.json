@@ -13405,7 +13405,7 @@
    "nodes": [["D95", "15"]]
   },
   "D106_D1_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin1 D1; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin1 D1; calibrated raw-crop review finds only local copper into a nearby handoff, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
    "nodes": [["D106", "1"]]
   },
   "D106_Q1_BOUNDARY": {
@@ -13417,11 +13417,11 @@
    "nodes": [["D106", "3"]]
   },
   "D106_DOWN_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin4 DOWN; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin4 DOWN and its local copper departure; the path does not remain visibly unbroken to an identified clock source, so the expected recovery-clock input remains an unproved measurement boundary",
    "nodes": [["D106", "4"]]
   },
   "D106_UP_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin5 UP; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin5 UP; calibrated raw-crop review finds only local copper, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
    "nodes": [["D106", "5"]]
   },
   "D106_Q2_BOUNDARY": {
@@ -13433,11 +13433,11 @@
    "nodes": [["D106", "7"], ["D93", "26"]]
   },
   "D106_D3_BOUNDARY": {
-   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin9 D3 while the solder end is rail-obscured; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin9 D3 while the solder end projects beneath crossing rail metal; that apparent overlap is not continuity to GND, so the expected low strap remains an unproved measurement boundary",
    "nodes": [["D106", "9"]]
   },
   "D106_D2_BOUNDARY": {
-   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin10 D2 while the solder end is rail-obscured; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin10 D2 while the solder end projects beneath crossing rail metal; that apparent overlap is not continuity to GND, so the expected low strap remains an unproved measurement boundary",
    "nodes": [["D106", "10"]]
   },
   "D106_LOAD_BOUNDARY": {
@@ -13457,7 +13457,7 @@
    "nodes": [["D106", "14"]]
   },
   "D106_D0_BOUNDARY": {
-   "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin15 D0; no remote destination is proved, so this remains a measurement boundary",
+   "src": "July-2026 corrected component and solder fits identify D106 К555ИЕ7 pin15 D0; calibrated raw-crop review finds only local copper into a nearby handoff, with no uninterrupted path to a known P5V anchor, so the expected high strap remains an unproved measurement boundary",
    "nodes": [["D106", "15"]]
   },
   "D26_PC6_STOP_IN": {
