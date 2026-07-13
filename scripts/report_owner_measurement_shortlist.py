@@ -207,7 +207,7 @@ def main() -> int:
             "P0",
             "D94 .092 continuity",
             "resistance-map D94 inputs 10-14 and enable 15 to identified package pins/rails, trace active output D3/pin4 first, then D4-D7 for copper fidelity, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
-            "`docs/d94-reconstruction-constraints.md`",
+            "`docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv`",
             "replaces the retired same-as-D8 BA mapping with measured row semantics and resolves the PROM read/write control path before an FDC hardware release",
         ),
         (

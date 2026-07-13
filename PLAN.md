@@ -134,10 +134,11 @@ endpoint-coverage failure.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
-612 observations have dispositions. Twenty-four rows are accepted evidence for
+622 observations have dispositions. 30 rows are accepted evidence for
 five D2 address nets, three D94-to-D93 control nets, the two-sided А:17 and
 D98.7/S1.2 wire landings, D98.3/R94.1, and D106.7/D93.26 RCLK; the
-other 588 remain
+D96.8/D99.2 test landings and D99.3 ground observation are also preserved; the
+other 592 remain
 measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.

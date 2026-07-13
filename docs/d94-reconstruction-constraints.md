@@ -97,6 +97,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | --- | --- | --- |
 | Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
 | Every D94 address input is explicitly accounted | PASS | board JSON nets |
+| Every D94 address input has reviewed two-sided photo coordinates | PASS | local-package-fit measurement rows for pins 10, 11, 12, 13, 14 |
 | D94 address input sources are traced | FAIL | pins 10-14 remain continuity boundaries |
 | Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
 | Held routed DSN is identified with the retired input mapping | PASS | `kicad/juku.dsn` D94 pins |
@@ -145,6 +146,10 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   commit `ed69b9d` as an FDC scaffold explicitly described as the same
   convention as D8. No `.009` electrical source or owner measurement was
   cited. The source PCB now represents pins 10-14 as measurement boundaries.
+- Validated local package fits now preserve exact original-image coordinates
+  for D94.10-.14 on both sides. Component copper is socket-obscured and
+  the solder crop has no uniquely traceable remote endpoints, so these are
+  reviewed measurement records rather than promoted electrical nets.
 - Registered component-side local fits show copper departing every remaining
   output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary
   nets. Their far destinations remain unknown, so none may be removed from

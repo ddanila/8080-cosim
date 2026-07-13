@@ -30,6 +30,7 @@ jobs:
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
             scripts/report_source_coverage_audit.py \
+            scripts/photo_registration.py \
             scripts/report_official_009_ic_census.py \
             scripts/check_documentation_consistency.py \
             scripts/report_ekdos_source_inspection.py \
@@ -98,7 +99,9 @@ jobs:
           git diff --exit-code -- docs/unmodeled-footprint-inventory.md
 
       - name: Check documentation consistency
-        run: python3 scripts/check_documentation_consistency.py
+        run: |
+          python3 scripts/photo_registration.py validate
+          python3 scripts/check_documentation_consistency.py
 
       - name: Check vendored reference artifacts
         run: ./sync/reference_artifact_check.sh

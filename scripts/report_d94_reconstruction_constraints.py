@@ -163,6 +163,32 @@ def remaining_output_departures() -> dict[str, str]:
     return observations
 
 
+def address_input_observations() -> dict[str, dict[str, str]]:
+    """Return reviewed two-sided local-fit records for D94 A0-A4."""
+    observations: dict[str, dict[str, str]] = {}
+    with PHOTO_ENDPOINTS.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            pin = row.get("pin", "")
+            if row.get("refdes") != "D94" or pin not in {"10", "11", "12", "13", "14"}:
+                continue
+            endpoint_id = row.get("endpoint_id", "")
+            side = (
+                "component" if endpoint_id.startswith("seed-component-")
+                else "solder" if endpoint_id.startswith("seed-solder-")
+                else ""
+            )
+            if (
+                side
+                and row.get("confidence") == "local-package-fit"
+                and row.get("review_state") == "measurement"
+                and row.get("reviewer")
+            ):
+                observations.setdefault(pin, {})[side] = (
+                    f"{row.get('image', '-')}@({row.get('x_px', '-')},{row.get('y_px', '-')})"
+                )
+    return observations
+
+
 def address_space_rows(table: bytes) -> list[str]:
     rows = []
     for address in range(32):
@@ -356,6 +382,11 @@ def main() -> int:
     )
     output_departures = remaining_output_departures()
     all_remaining_outputs_depart = set(output_departures) == {"4", "5", "6", "7", "9"}
+    address_observations = address_input_observations()
+    all_address_inputs_registered = (
+        set(address_observations) == {"10", "11", "12", "13", "14"}
+        and all(set(sides) == {"component", "solder"} for sides in address_observations.values())
+    )
     retired_ba_mapping_absent = all(
         ["D94", str(pin)] not in net_nodes(board, f"BA{pin + 1}")
         for pin in range(10, 15)
@@ -439,6 +470,7 @@ def main() -> int:
             "| --- | --- | --- |",
             f"| Board identity names D94 as `.092`, not stale `.113` | {'PASS' if board_identity_ok else 'FAIL'} | `kicad/juku.board.json` type `{board_type or 'missing'}` |",
             f"| Every D94 address input is explicitly accounted | {'PASS' if address_accounted else 'FAIL'} | board JSON nets |",
+            f"| Every D94 address input has reviewed two-sided photo coordinates | {'PASS' if all_address_inputs_registered else 'FAIL'} | local-package-fit measurement rows for pins {', '.join(sorted(address_observations, key=int)) or '-'} |",
             f"| D94 address input sources are traced | {'PASS' if address_traced else 'FAIL'} | pins 10-14 remain continuity boundaries |",
             f"| Retired D94 BA11..BA15 mapping is absent from the source model | {'PASS' if retired_ba_mapping_absent else 'FAIL'} | board JSON BA nets |",
             f"| Held routed DSN is identified with the retired input mapping | {'PASS' if dsn_ok and dsn_retains_retired_inputs and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
@@ -487,6 +519,10 @@ def main() -> int:
             "  commit `ed69b9d` as an FDC scaffold explicitly described as the same",
             "  convention as D8. No `.009` electrical source or owner measurement was",
             "  cited. The source PCB now represents pins 10-14 as measurement boundaries.",
+            "- Validated local package fits now preserve exact original-image coordinates",
+            "  for D94.10-.14 on both sides. Component copper is socket-obscured and",
+            "  the solder crop has no uniquely traceable remote endpoints, so these are",
+            "  reviewed measurement records rather than promoted electrical nets.",
             "- Registered component-side local fits show copper departing every remaining",
             "  output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary",
             "  nets. Their far destinations remain unknown, so none may be removed from",
@@ -570,6 +606,7 @@ def main() -> int:
     return 0 if (
         board_identity_ok
         and address_accounted
+        and all_address_inputs_registered
         and not address_traced
         and retired_ba_mapping_absent
         and dsn_ok

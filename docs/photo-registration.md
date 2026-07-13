@@ -18,15 +18,15 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 612 reviewed rows:
+endpoint table contains 622 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 24 | two-sided evidence adopted into the board model |
-| `measurement` | 588 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 30 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 592 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 269 `local-package-fit`, 306
-`registration-only`, and 37 `registration+unique-hole-snap` rows. A hole snap
+Confidence metadata consists of 363 `local-package-fit`, 241
+`registration-only`, and 18 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -59,6 +59,10 @@ pin-row orientation and stronger pad landings for the unresolved reset and
 clock endpoints. A reflected fit in `PXL_20260710_200506061.jpg` places the
 same pins on the actual solder joints. Their far destinations remain
 measurement requests; package registration alone is not continuity evidence.
+The same rule now covers D94 A0-A4 explicitly: validated component and reflected
+solder fits preserve exact original-image coordinates for pins 10-14. Raw-crop
+review cannot follow any of the five to a unique remote source, so all ten rows
+remain measurement requests and no address-bus assignment is inferred.
 The registered `.009` factory assembly drawing now also fixes the socket centre
 at `(235.941,73.335)` mm. This replaces the former `(248,70)` approximation,
 which physically overlapped D95. The same drawing moves C10 from the lower FDC

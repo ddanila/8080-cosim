@@ -8,9 +8,11 @@ order-report checks are added when the local fabrication tree is available.
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 
@@ -46,6 +48,34 @@ def main() -> int:
         "sourcing": read("docs/replica-sourcing-readiness.md"),
         "source PCB placement": read("docs/source-pcb-drc.md"),
     }
+
+    photo_endpoints = ROOT / "ref/photos/juku-pcb-2/endpoints.csv"
+    if not photo_endpoints.exists():
+        failures.append("photo endpoint evidence table is missing")
+    else:
+        with photo_endpoints.open(newline="", encoding="utf-8") as handle:
+            photo_rows = list(csv.DictReader(handle))
+        state_counts = Counter(row.get("review_state", "") for row in photo_rows)
+        confidence_counts = Counter(row.get("confidence", "") for row in photo_rows)
+        photo_doc = read("docs/photo-registration.md")
+        expected_photo_markers = (
+            f"endpoint table contains {len(photo_rows)} reviewed rows",
+            f"| `accepted` | {state_counts['accepted']} |",
+            f"| `measurement` | {state_counts['measurement']} |",
+            f"Confidence metadata consists of {confidence_counts['local-package-fit']} `local-package-fit`, {confidence_counts['registration-only']}",
+            f"`registration-only`, and {confidence_counts['registration+unique-hole-snap']} `registration+unique-hole-snap` rows",
+        )
+        for expected in expected_photo_markers:
+            if expected not in photo_doc:
+                failures.append(f"photo-registration summary is stale; missing {expected!r}")
+        plan = core["PLAN.md"]
+        for expected in (
+            f"{len(photo_rows)} observations have dispositions",
+            f"{state_counts['accepted']} rows are accepted evidence",
+            f"other {state_counts['measurement']} remain",
+        ):
+            if expected not in plan:
+                failures.append(f"PLAN photo-evidence totals are stale; missing {expected!r}")
 
     # Byte-level truth for all four board PROMs is now physical evidence, not a
     # reconstruction TODO. Guard both the artifacts and the legacy provenance
