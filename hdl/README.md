@@ -36,7 +36,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - Nine official FDC-support devices have package pins and power endpoints in
   the board model but no functional signal closure or HDL instances;
   `docs/unmodeled-footprint-inventory.md` owns that boundary.
-- 211 modeled nets still carry source-risk annotations requiring
+- 213 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM

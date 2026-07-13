@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `546`
-- Chip-level fidelity gaps: `57`
-- Net-level source-risk gaps: `211`
+- Nets modeled: `547`
+- Chip-level fidelity gaps: `58`
+- Net-level source-risk gaps: `213`
 - Documented intentional no-connect pins: `65`
 
 ## Chip Provenance Types
@@ -53,9 +53,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 14 |
 | clock/I/O | 0 | 7 |
-| logic/source | 9 | 145 |
+| logic/source | 9 | 147 |
 | memory/timing | 0 | 7 |
 | placement/refdes | 38 | 0 |
+| placement/value | 1 | 0 |
 | video/analog | 0 | 14 |
 
 ## Chip-Level Gaps
@@ -142,6 +143,12 @@ parts placement and Tier-3 reproduction.
 | `C71` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D79 remains assumed |
 | `C72` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D87 remains assumed |
 
+### placement/value
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
+
 ## Documented Intentional No-Connects
 
 These package pins are visibly unused in the authoritative schematic.
@@ -183,6 +190,7 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
+| `C99_FAR` | logic/source | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity bounda... |
 | `CPU_WAIT_STATUS` | logic/source | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread |
 | `CS_FDC` | PROM/decode | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch |
 | `D100_OE_BOUNDARY` | logic/source | `D100.9` | July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside po... |
@@ -386,6 +394,7 @@ same fidelity ledger as the chip provenance gaps.
 | `SND_MIX` | video/analog | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
+| `V3_RC` | logic/source | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `VT3_BASE` | video/analog | `R68.2, R69.2, R70.2, R71.1, C13.1, VT3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |

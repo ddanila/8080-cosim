@@ -4903,7 +4903,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 D7/D9 RC decode path",
-    "pins": "V3_RC capacitor to GND; connected nets carry crop evidence"
+    "pins": "native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its physical pad is preserved as the C99_FAR continuity boundary rather than assumed grounded or marked NC"
    }
   },
   {
@@ -15499,7 +15499,7 @@
    ]
   },
   "V3_RC": {
-   "src": "traced sheet-1 (rc_stack 6x: R17 top + C99 left plate + the D9.6 vertical share one junction; rail-3 crosses above WITHOUT a dot). RC-deglitched io-strobe -> D9.G1. C99.2 -> GND [electrically-implied deglitch return; drawn far end ambiguous at (4335,2120-2500)/300dpi, crop s1_c99_east — flagged]",
+   "src": "traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe -> D9.G1. The visible C99 pin2/right plate has no outgoing conductor and is kept separately as C99_FAR rather than assumed grounded",
    "nodes": [
     [
      "R17",
@@ -15514,6 +15514,10 @@
      "6"
     ]
    ]
+  },
+  "C99_FAR": {
+   "src": "sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit",
+   "nodes": [["C99", "2"]]
   },
   "MEM_MODE1": {
    "src": "traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1",

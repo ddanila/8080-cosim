@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `211`
-- Verification-point endpoints checked in PCB: `379`
-- PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2239`
-- All board endpoints checked in routed PCB: `2239`
+- Verification-point nets: `213`
+- Verification-point endpoints checked in PCB: `383`
+- PCB endpoint coverage: `FAIL`
+- All board endpoints checked in source PCB: `2240`
+- All board endpoints checked in routed PCB: `2240`
 - Intentional off-board endpoints excluded: `38`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 157 |
+| logic | 159 |
 | memory/decode | 8 |
 | sound/analog | 1 |
 | timing/I/O | 8 |
@@ -40,8 +40,11 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 379/379 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 379/379 net names matched |
+| Risk endpoints present on PCB pads | PASS | 383/383 matched a footprint pad net |
+| Risk endpoint net names match board JSON | FAIL | 382/383 net names matched |
+
+Mismatched PCB pad-net endpoints:
+- C99.2: `GND` != `C99_FAR`
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +56,11 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2239/2239 | 2239/2239 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2239 | 1893/2239 | FAIL |
+| `kicad/juku.kicad_pcb` | 2240/2240 | 2239/2240 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1925/2240 | 1893/2240 | FAIL |
+
+Mismatched endpoints in `kicad/juku.kicad_pcb`:
+- C99.2: `GND` != `C99_FAR`
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -374,6 +380,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `XTAL_TRIM: C73.1`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- C99.2: `GND` != `C99_FAR`
 - D105.11: `D105_MRD_INV` != `D105_MEMW_INV`
 - D30.13: `D105_MRD_INV` != `D105_MEMW_INV`
 - R5.2: `READY_PRE_N` != `D30B_D_PRE_N`
@@ -410,6 +417,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
+| `C99_FAR` | logic | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `CPU_WAIT_STATUS` | logic | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `CS_FDC` | logic | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | Cross-check against hardware when the peripheral path is exercised. |
 | `D100_OE_BOUNDARY` | logic | `D100.9` | July-2026 two-sided local-package registration identifies D100 OE_N pin9; component copper ends at an isolated circular landing and the projected backside point is bare substrat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -613,6 +621,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `SND_MIX` | sound/analog | `R67.2, R68.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Bench-check waveform/current path with speaker disconnected first. |
 | `SSTB_N` | logic | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TAPE_RUN_INT` | logic | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `V3_RC` | logic | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe -> D9.G1. The visibl... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board... | Scope/capture video or timing node during video bring-up. |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |
 | `VT3_BASE` | video/analog | `R68.2, R69.2, R70.2, R71.1, C13.1, VT3.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout | Scope/capture video or timing node during video bring-up. |

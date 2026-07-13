@@ -78,9 +78,9 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `210`
+- Generated bring-up verification nets: `211`
 - `FDC`: `24` net(s)
-- `logic`: `156` net(s)
+- `logic`: `157` net(s)
 - `memory/decode`: `8` net(s)
 - `sound/analog`: `1` net(s)
 - `timing/I/O`: `8` net(s)

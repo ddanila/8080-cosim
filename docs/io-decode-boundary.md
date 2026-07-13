@@ -33,7 +33,7 @@ python3 scripts/report_io_decode_boundary.py
 | Boundary | Result | Current evidence |
 | --- | --- | --- |
 | D7 fourth-gate strobe inputs are source-proven | PASS | IORD/IOWR are on D7.9/D7.10 from the full-resolution sheet |
-| C99 far plate is still not source-proven | PASS | C99.1 is on V3_RC; C99.2 is electrically implied return but drawn far end is ambiguous |
+| C99 far physical pad is preserved without assuming ground | PASS | C99.1 is on V3_RC; native scan shows C99.2 as a conductor-less plate on singleton C99_FAR |
 | D25_T input scan chase is exhausted without inventing a merge | PASS | Native-resolution review leaves D7.5/D7.4 in an unlabeled dense crossing bundle |
 
 ## Current Decode Nets
@@ -41,7 +41,8 @@ python3 scripts/report_io_decode_boundary.py
 | Net | Endpoints | Source note |
 | --- | --- | --- |
 | `PROM_EN` | `D7.11, R17.2` | traced sheet-1 (crops r17_west/d7_feed_origins/rc_stack: D7 section 12,13->11 output runs east into R17 200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed unread [chase]; D6 modeled always-enabled |
-| `V3_RC` | `C99.1, D9.6, R17.1` | traced sheet-1 (rc_stack 6x: R17 top + C99 left plate + the D9.6 vertical share one junction; rail-3 crosses above WITHOUT a dot). RC-deglitched io-strobe -> D9.G1. C99.2 -> GND [electrically-implied deglitch return; drawn far end ambiguous at (4335,2120-2500)/300dpi, crop s1_c99_east — flagged] |
+| `V3_RC` | `C99.1, D9.6, R17.1` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe -> D9.G1. The visible C99 pin2/right plate has no outgoing conductor and is kept separately as C99_FAR rather than assumed grounded |
+| `C99_FAR` | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit |
 | `REV` | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked; +R13 1k pullup (v3_junction; R13/R14 pairing order assumed) |
 | `BA10` | `D15.21, D16.21, D17.21, D18.21, D19.21, D20.21, D21.21, D22.21, D24.3, D4.12, ... (+2)` | scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1) |
 | `BA11` | `D15.23, D16.23, D17.23, D18.23, D19.23, D20.23, D21.23, D22.23, D24.4, D4.13, ... (+5)` | scan |

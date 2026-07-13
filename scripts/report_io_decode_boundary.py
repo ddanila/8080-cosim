@@ -117,9 +117,11 @@ def main() -> int:
             "IORD/IOWR are on D7.9/D7.10 from the full-resolution sheet",
         ),
         (
-            "C99 far plate is still not source-proven",
-            has_nodes(board, "V3_RC", {("C99", "1")}) and not any(ref == "C99" and pin == "2" for ref, pin in nodes(board, "V3_RC")),
-            "C99.1 is on V3_RC; C99.2 is electrically implied return but drawn far end is ambiguous",
+            "C99 far physical pad is preserved without assuming ground",
+            has_nodes(board, "V3_RC", {("C99", "1")})
+            and set(nodes(board, "C99_FAR")) == {("C99", "2")}
+            and not any(ref == "C99" and pin == "2" for ref, pin in nodes(board, "V3_RC")),
+            "C99.1 is on V3_RC; native scan shows C99.2 as a conductor-less plate on singleton C99_FAR",
         ),
         (
             "D25_T input scan chase is exhausted without inventing a merge",
@@ -178,6 +180,7 @@ def main() -> int:
     for name in (
         "PROM_EN",
         "V3_RC",
+        "C99_FAR",
         "REV",
         "BA10",
         "BA11",
