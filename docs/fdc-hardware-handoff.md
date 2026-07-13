@@ -20,6 +20,8 @@ python3 scripts/report_fdc_hardware_handoff.py
 - D93 package: `КР1818ВГ93` / WD1793-compatible FDC
 - Primary pin source: `ref/wd1772-vg93/fd179x-01-datasheet.pdf`
 - Primary application source: `ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf`
+- Primary Soviet device source: Kovalenko et al., `БИС контроллера КР1818ВГ93 для накопителя на гибком диске`, МПСС 1986 No. 3, pp. 3-8
+- Historical circuit comparison: `https://atmturbo.nedopc.com/articles/kontroller_diskovoda_shemotehnika_210224.html`
 - D100 package: `КР580ВА87` / Intel 8287-compatible bus transceiver
 
 ## Photograph Applicability
@@ -71,6 +73,38 @@ photos identify the packages but do not prove the candidate paths end to
 end; in particular D106 pins 7/9/10 are rail-obscured. Continuity or a
 Juku-specific electrical sheet remains required before board-JSON changes.
 
+## Soviet VG93 Circuit Cross-Check
+
+The original 1986 КР1818ВГ93 paper confirms that this is the actual Soviet
+controller device and publishes its pin contract; it does not publish an
+external separator schematic. A later technical-history reconstruction
+collects period VG93 support circuits. Its Figure 16 shows a second
+high-value candidate that uses a К155ИЕ7-class counter without a ТМ2
+toggle: raw read loads the counter at pin 11, a 4 MHz recovery clock enters
+pin 4, pin 5 is held high, and Q3/pin 7 supplies VG93 RCLK/pin 26. The
+parallel inputs are strapped 15/1 high and 10/9 low, while pin 14 is
+controlled by WF/VFOE/pin 33.
+
+That circuit competes directly with the Western Digital Figure-11 path
+D106.3 -> D96.3 -> D96.5 -> D93.26. Test D106.7-D93.26 before assuming
+that D96 section 1 participates, then test D106.11-D93.27 and
+D106.14-D93.33. In both references D93.24 is the controller's separate
+main clock input; D106 Q3 must not be treated as a candidate for D93.24.
+
+The same historical comparison also shows a К555КП12-class write
+precompensation selector: VG93 pins 18/17 reach mux select pins 2/14, mux
+pin 1 is enabled low, and mux output pin 7 proceeds through an inverter to
+drive write data. Juku's D95 and D101 match the mux family, but the source
+of their delay taps and the output inverter are not identified. Check both
+muxes against D93.18/.17 and their pin-7 destinations. If either approaches
+D28.5/.6, continuity must override the legacy-sheet NC assumption; the
+current photographs do not prove that reuse, so no target-board net changes
+are made here.
+
+These Soviet-reference paths are also guarded candidates, not Juku
+continuity. Their value is that D106.7-D93.26 versus D96.5-D93.26 is a
+single decisive measurement that separates the two read-clock designs.
+
 ## Bus-Side Handoff Checks
 
 | Net / path | Status | Endpoint / purpose | Evidence boundary |
@@ -112,7 +146,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.40 `VDD_12V` | BOUNDARY | +12 V controller supply continuity | primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
+| D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
 | D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating | singleton D100_OE_BOUNDARY in board JSON; owner continuity item |
 | D100.11 `T` | BOUNDARY | 8287 direction gating | singleton D100_T_BOUNDARY in board JSON; owner continuity item |
 

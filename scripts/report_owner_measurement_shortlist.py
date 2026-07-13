@@ -248,9 +248,9 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; first test the Western Digital Figure-11 candidates D106.3-D96.3, D96.2-D96.6, D96.5-D93.26, and which remaining AG3 /Q jointly reaches D93.27/D106.11; then check D106 straps 15/1/5 high, 10/9 low, 14 inactive and identify D106.4 recovery-clock input. D96 section 2 and D99 section 1 are already excluded by isolated-test-landing/ground evidence",
-            "`docs/fdc-hardware-handoff.md`; `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; Western Digital June-1980 application note Figure 11; `.009` assembly/photo evidence",
-            "tests the manufacturer-matched counter/separator backbone first, narrowing the 9 now-pin-modeled, power-routed FDC support devices without assuming that Juku copied the reference circuit verbatim",
+            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; first discriminate the Soviet IE7-only and Western Digital Figure-11 separators by testing D106.7-D93.26 versus D96.5-D93.26, then D106.11-D93.27, D106.14-D93.33, D106.3-D96.3, and D96.2-D96.6. Check D106 straps 15/1/5 high and 10/9 low plus D106.4 recovery clock. For write precompensation, test D95 and D101 pins 2/14 against D93.18/.17, pins 1 to ground, and pin 7 toward an inverter/write-data path; recheck legacy-NC D28.5/.6 only if that path approaches them. D96 section 2 and D99 section 1 are already excluded from the WD roles",
+            "`docs/fdc-hardware-handoff.md`; `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; Western Digital June-1980 application note Figure 11; Kovalenko et al. МПСС 1986 No. 3 pp. 3-8; `.009` assembly/photo evidence",
+            "one D106.7/D96.5 comparison now separates the two historically plausible read-clock designs, while the mux probes test the package family that the WD-only comparison left unexplained",
         ),
         (
             "P1",

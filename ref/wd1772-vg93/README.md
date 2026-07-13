@@ -30,6 +30,17 @@ Source interpretation notes captured with the files:
   continuity evidence. It is especially relevant because the Juku FDC cluster
   contains the corresponding К155АГ3/К555ИЕ7/КМ555ТМ2 logic families, while
   also containing additional muxes and one-shots absent from that figure.
+- The original Soviet device paper is V. A. Kovalenko, A. V. Oleynik,
+  L. P. Parkhomenko, and L. M. Soldatenko, `БИС контроллера КР1818ВГ93 для
+  накопителя на гибком диске`, *Микропроцессорные средства и системы*, 1986,
+  No. 3, pp. 3-8. A scan is available from
+  <http://publ.lib.ru/ARCHIVES/M/%27%27Mikroprocessornye_sredstva_i_sistemy%27%27_%28jurnal%29/_MPSS.html>.
+  It confirms the literal КР1818ВГ93 device and pin contract, but does not show
+  an external data separator, so it cannot choose among Juku support topologies.
+- A later Russian technical-history comparison at
+  <https://atmturbo.nedopc.com/articles/kontroller_diskovoda_shemotehnika_210224.html>
+  reproduces an IE7-only VG93 separator and a KP12 write-precompensation option.
+  These are useful competing continuity candidates, not primary Juku evidence.
 - The PDF is a KiCad-generated searchable transistor/gate schematic.
 - The accompanying note treats КР1818ВГ93 as effectively a direct FD1773/WD1772
   copy, not just a loose functional analog: internal block placement and signal

@@ -254,12 +254,15 @@ Next tracing order:
    clip-obscured region. `docs/d93-pin40-photo-chase.md` records the exact pad
    coordinates and the required continuity anchors; P12V is not yet promoted.
 2. Every functional pin of D28, D95-D99, D101, D102, and D106.
-   The guarded Western Digital June-1980 Figure-11 topology now makes the first
-   continuity probes D106.3-D96.3, D96.2-D96.6, D96.5-D93.26, and the remaining
-   AG3 `/Q` candidate to D93.27/D106.11, followed by D106's static straps and
-   recovery-clock input. Existing Juku photo evidence excludes D96 section 2
-   and D99 section 1 from those specific reference roles; it does not prove the
-   remaining candidate nets or that Juku copied the reference circuit verbatim.
+   Two guarded period-reference topologies make the first decisive continuity
+   probe D106.7-D93.26 versus D96.5-D93.26. The Soviet IE7-only example uses
+   D106.11 for raw-read loading and D106.14 for WF/VFOE control; the Western
+   Digital Figure-11 example instead suggests D106.3-D96.3, D96.2-D96.6, and an
+   AG3 `/Q` jointly reaching D93.27/D106.11. Follow those with D106's static
+   straps and recovery-clock input, then test D95/D101 pins 2/14 against
+   D93.18/.17 and their pin-7 output destinations for the period KP12 write-
+   precompensation pattern. Existing Juku photo evidence excludes D96 section 2
+   and D99 section 1 from the WD roles; neither reference proves Juku continuity.
 3. D94 pin 15 and outputs D3-D7, then D30 section B and the D105 WAIT handoff.
 4. D41/memory timing, factory-wire endpoints (documented in
    `ref/schematics/dgsh5-109-009-sb-wire-table.md`; confirm by continuity),

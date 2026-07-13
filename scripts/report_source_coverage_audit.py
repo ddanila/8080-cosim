@@ -103,9 +103,9 @@ def main() -> int:
             "the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core",
         ]),
         row([
-            "Western Digital FD179X-01 datasheet and June-1980 application notes plus local WD1772 transistor/PLA reference",
-            "checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted, manufacturer counter/separator topology retained as a guarded continuity constraint, and PLA normalized for future comparison",
-            "manufacturer references prove package functions and a plausible counter/separator scaffold, not Juku-specific D93 support-net continuity or D94 truth",
+            "Western Digital FD179X references, the original 1986 КР1818ВГ93 paper, a historical Soviet circuit comparison, and the local WD1772 transistor/PLA reference",
+            "WD artifacts are checksum-guarded under `ref/wd1772-vg93/`; the literal Soviet-device pin contract, competing WD/IE7-only separator candidates, a KP12 precompensation candidate, and normalized PLA are documented",
+            "device/manufacturer references prove package functions and narrow continuity probes, not Juku-specific D93 support nets or D94 truth",
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",
