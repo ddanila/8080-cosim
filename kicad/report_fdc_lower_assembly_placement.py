@@ -101,7 +101,7 @@ for item in document["targets"]:
                     "observation": item["observation"],
                     "owner_evidence": item.get("owner_evidence", []),
                     "owner_absence_evidence": item.get("owner_absence_evidence", []),
-                    "electrical_evidence": False})
+                    "electrical_evidence": item.get("electrical_evidence", False)})
 
 restored_errors = []
 for item in targets:
@@ -121,7 +121,7 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "transform": [round(value, 12) for value in transform],
                                   "checks": checks, "targets": targets}, indent=2) + "\n")
 lines = ["# FDC lower assembly placement", "",
-         "Status: **FACTORY PLACEMENT EVIDENCE / ELECTRICAL MAPPING PENDING**", "",
+         "Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**", "",
          "The photographed factory assembly drawing is registered to the five package centres",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
@@ -146,7 +146,8 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view",
           "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
-          "backside joints corroborate the factory identities and 12.5/10.16 mm spans; unread markings and all six remote destinations remain boundaries.",
+          "backside joints corroborate the factory identities and 12.5/10.16 mm spans. Uninterrupted component copper closes R92.2-D95.14,",
+          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND; R92/R99 values and both C16 destinations remain boundaries.",
           "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20",
           "pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.",
           "The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.",

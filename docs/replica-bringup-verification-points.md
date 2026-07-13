@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `246`
-- Verification-point endpoints checked in PCB: `409`
+- Verification-point nets: `240`
+- Verification-point endpoints checked in PCB: `403`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2239`
 - All board endpoints checked in routed PCB: `2239`
@@ -24,7 +24,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 23 |
-| logic | 182 |
+| logic | 176 |
 | memory/decode | 11 |
 | sound/analog | 1 |
 | timing/I/O | 5 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 409/409 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 409/409 net names matched |
+| Risk endpoints present on PCB pads | PASS | 403/403 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 403/403 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -83,7 +83,9 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D101_A1_BOUNDARY: D101.2`
 - `D101_D00_BOUNDARY: D101.6`
 - `D101_D01_BOUNDARY: D101.5`
-- `D101_D02_BOUNDARY: D101.4`
+- `D101_D02_R92_R99: D101.4`
+- `D101_D02_R92_R99: R92.1`
+- `D101_D02_R92_R99: R99.2`
 - `D101_D03_BOUNDARY: D101.3`
 - `D101_D10_BOUNDARY: D101.10`
 - `D101_D11_BOUNDARY: D101.11`
@@ -183,7 +185,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D94_D6: D94.7`
 - `D94_D7: D94.9`
 - `D94_EN_BOUNDARY: D94.15`
-- `D95_A0_BOUNDARY: D95.14`
+- `D95_A0_R92: D95.14`
+- `D95_A0_R92: R92.2`
 - `D95_A1_BOUNDARY: D95.2`
 - `D95_D00_BOUNDARY: D95.6`
 - `D95_D01_BOUNDARY: D95.5`
@@ -270,6 +273,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `GND: D41.4`
 - `GND: D41.5`
 - `GND: D99.3`
+- `GND: R99.1`
 - `HOR_RTR: D54.13`
 - `INHIB_STATUS_BOUNDARY: D7.5`
 - `INHIB_STATUS_BOUNDARY: D29.3`
@@ -329,11 +333,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `R108_2_BOUNDARY: R108.2`
 - `R86_1_BOUNDARY: R86.1`
 - `R86_2_BOUNDARY: R86.2`
-- `R92_1_BOUNDARY: R92.1`
-- `R92_2_BOUNDARY: R92.2`
 - `R94_P2_BOUNDARY: R94.2`
-- `R99_1_BOUNDARY: R99.1`
-- `R99_2_BOUNDARY: R99.2`
 - `RESET: D13.6`
 - `RESET: D11.21`
 - `RES_RC: A17.1`
@@ -524,7 +524,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D101_A1_BOUNDARY` | logic | `D101.2` | July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_D00_BOUNDARY` | logic | `D101.6` | July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_D01_BOUNDARY` | logic | `D101.5` | July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D101_D02_BOUNDARY` | logic | `D101.4` | July-2026 validated component and solder package fits identify D101 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_D03_BOUNDARY` | logic | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_D10_BOUNDARY` | logic | `D101.10` | July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D101_D11_BOUNDARY` | logic | `D101.11` | July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -615,7 +614,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D94_D6` | logic | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projec... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_D7` | logic | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D94_EN_BOUNDARY` | logic | `D94.15` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the adjacent tile | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D95_A0_BOUNDARY` | logic | `D95.14` | July-2026 validated component and solder package fits identify D95 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D95_A1_BOUNDARY` | logic | `D95.2` | July-2026 validated component and solder package fits identify D95 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D95_D00_BOUNDARY` | logic | `D95.6` | July-2026 validated component and solder package fits identify D95 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D95_D01_BOUNDARY` | logic | `D95.5` | July-2026 validated component and solder package fits identify D95 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -698,11 +696,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity | Scope/capture video or timing node during video bring-up. |
 | `R86_1_BOUNDARY` | logic | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R86_2_BOUNDARY` | logic | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R92_1_BOUNDARY` | logic | `R92.1` | .009 factory identity plus registered owner component/solder views prove R92 lead 1 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R92_2_BOUNDARY` | logic | `R92.2` | .009 factory identity plus registered owner component/solder views prove R92 lead 2 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R99_1_BOUNDARY` | logic | `R99.1` | .009 factory identity plus registered owner component/solder views prove R99 lead 1 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not rea... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R99_2_BOUNDARY` | logic | `R99.2` | .009 factory identity plus registered owner component/solder views prove R99 lead 2 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not rea... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
 | `REV` | logic | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

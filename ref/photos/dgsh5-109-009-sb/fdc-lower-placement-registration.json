@@ -62,13 +62,14 @@
       "refdes": "R92",
       "drawing_px": [1732.5, 2384.5],
       "observation": "horizontal resistor below D95",
+      "electrical_evidence": true,
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
           "joint_px": [[2341.0, 1317.0], [2564.0, 1314.0]],
-          "precision": "reviewed approximate joint centres; identity/orientation and 10.16 mm span corroboration only",
-          "observation": "populated upper/right red horizontal resistor and two distinct lead landings"
+          "precision": "reviewed approximate joint centres; identity/orientation, 10.16 mm span, and uninterrupted component-copper endpoints",
+          "observation": "R92.2 joins D95.14; R92.1 joins the R99.2/D101.4 junction"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
@@ -83,13 +84,14 @@
       "refdes": "R99",
       "drawing_px": [1495.5, 2421.0],
       "observation": "horizontal resistor below-left of D95",
+      "electrical_evidence": true,
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
           "joint_px": [[2064.0, 1370.0], [2287.0, 1367.0]],
-          "precision": "reviewed approximate joint centres; identity/orientation and 10.16 mm span corroboration only",
-          "observation": "populated lower/left red horizontal resistor and two distinct lead landings"
+          "precision": "reviewed approximate joint centres; identity/orientation, 10.16 mm span, and uninterrupted component-copper endpoints",
+          "observation": "R99.1 joins D101.8/GND; R99.2 joins the R92.1/D101.4 junction"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",

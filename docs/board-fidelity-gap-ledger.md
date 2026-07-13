@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `302`
-- Nets modeled: `577`
+- Nets modeled: `573`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `246`
+- Net-level source-risk gaps: `240`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -58,7 +58,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 4 |
 | connector boundary | 1 | 0 |
-| logic/source | 13 | 170 |
+| logic/source | 13 | 164 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -251,7 +251,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D101_A1_BOUNDARY` | logic/source | `D101.2` | July-2026 validated component and solder package fits identify D101 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D00_BOUNDARY` | logic/source | `D101.6` | July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D01_BOUNDARY` | logic/source | `D101.5` | July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary |
-| `D101_D02_BOUNDARY` | logic/source | `D101.4` | July-2026 validated component and solder package fits identify D101 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D03_BOUNDARY` | logic/source | `D101.3` | July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D10_BOUNDARY` | logic/source | `D101.10` | July-2026 validated component and solder package fits identify D101 К555КП12 pin10 D10; no remote destination is proved, so this remains a measurement boundary |
 | `D101_D11_BOUNDARY` | logic/source | `D101.11` | July-2026 validated component and solder package fits identify D101 К555КП12 pin11 D11; no remote destination is proved, so this remains a measurement boundary |
@@ -342,7 +341,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because... |
 | `D94_D7` | PROM/decode | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
 | `D94_EN_BOUNDARY` | PROM/decode | `D94.15` | July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the... |
-| `D95_A0_BOUNDARY` | logic/source | `D95.14` | July-2026 validated component and solder package fits identify D95 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary |
 | `D95_A1_BOUNDARY` | logic/source | `D95.2` | July-2026 validated component and solder package fits identify D95 К555КП12 pin2 A1; no remote destination is proved, so this remains a measurement boundary |
 | `D95_D00_BOUNDARY` | logic/source | `D95.6` | July-2026 validated component and solder package fits identify D95 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary |
 | `D95_D01_BOUNDARY` | logic/source | `D95.5` | July-2026 validated component and solder package fits identify D95 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary |
@@ -425,11 +423,7 @@ same fidelity ledger as the chip provenance gaps.
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requi... |
 | `R86_1_BOUNDARY` | logic/source | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R86_2_BOUNDARY` | logic/source | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
-| `R92_1_BOUNDARY` | logic/source | `R92.1` | .009 factory identity plus registered owner component/solder views prove R92 lead 1 on the upper/right 10.16 mm resistor span below D95; its remote destinati... |
-| `R92_2_BOUNDARY` | logic/source | `R92.2` | .009 factory identity plus registered owner component/solder views prove R92 lead 2 on the upper/right 10.16 mm resistor span below D95; its remote destinati... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
-| `R99_1_BOUNDARY` | logic/source | `R99.1` | .009 factory identity plus registered owner component/solder views prove R99 lead 1 on the lower/left 10.16 mm resistor span below-left of D95; its remote de... |
-| `R99_2_BOUNDARY` | logic/source | `R99.2` | .009 factory identity plus registered owner component/solder views prove R99 lead 2 on the lower/left 10.16 mm resistor span below-left of D95; its remote de... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `REV` | PROM/decode | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder re... |

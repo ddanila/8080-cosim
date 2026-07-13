@@ -103,14 +103,17 @@ The same historical comparison also shows a К555КП12-class write
 precompensation selector: VG93 pins 18/17 reach mux select pins 2/14, mux
 pin 1 is enabled low, and mux output pin 7 proceeds through an inverter to
 drive write data. Juku's D95 and D101 match the mux family, but the source
-of their delay taps and the output inverter are not identified. Check both
-muxes against D93.18/.17 and their pin-7 destinations. If either approaches
+of their delay taps and the output inverter are not identified. Target-board
+component copper now closes D95.14-R92.2, D101.4-R92.1-R99.2, and
+R99.1-D101.8/GND, bounding part of the passive ladder without proving the
+historical VG93 select assignment. Check the remaining select candidates
+against D93.18/.17 and both pin-7 destinations. If either approaches
 D28.5/.6, continuity must override the legacy-sheet NC assumption; the
-current photographs do not prove that reuse, so no target-board net changes
-are made here.
+current photographs do not prove that reuse.
 
-Only D106.7-D93.26 is promoted from target-board copper. The remaining
-Soviet-reference paths are guarded candidates, not Juku continuity.
+D106.7-D93.26 and the three passive-ladder links above are promoted from
+target-board copper. The remaining Soviet-reference paths are guarded
+candidates, not Juku continuity.
 
 ### Separator candidate raw-crop disposition
 
@@ -141,6 +144,19 @@ anchor. These are therefore bounded meter probes, not inferred straps.
 | D106.10 | LOW | (1016.329, 2130.087) | RAIL-OBSCURED / GND UNPROVED | continuity to a known GND anchor |
 | D106.9 | LOW | (1016.024, 2176.087) | RAIL-OBSCURED / GND UNPROVED | continuity to a known GND anchor |
 | D106.4 | RECOVERY CLOCK | (1155.242, 1993.000) | LOCAL COPPER ONLY / CLOCK SOURCE UNPROVED | continuity to a known CLOCK SOURCE anchor |
+
+### KP12 passive-network component-copper disposition
+
+The calibrated component tile fixes all four factory-identified R92/R99
+landings. These visible links are modeled; resistor values and the mux
+select/output paths remain open.
+
+| Endpoint | Component coordinate | Modeled net | Disposition |
+| --- | --- | --- | --- |
+| R92.1 | (2341.000, 1317.000) | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
+| R92.2 | (2564.000, 1314.000) | D95_A0_R92 | ACCEPTED TARGET COPPER |
+| R99.1 | (2064.000, 1370.000) | GND | ACCEPTED TARGET COPPER |
+| R99.2 | (2287.000, 1367.000) | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
 
 ## Bus-Side Handoff Checks
 

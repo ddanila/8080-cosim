@@ -87,7 +87,7 @@ but complete rerouting remains deferred until the functional netlist stops
 changing; the remaining P0 connectivity work would otherwise invalidate it.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 246 source-risk nets and 9 official FDC
+   current generated evidence lists 240 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -134,11 +134,12 @@ endpoint-coverage failure.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
-622 observations have dispositions. 30 rows are accepted evidence for
+626 observations have dispositions. 36 rows are accepted evidence for
 five D2 address nets, three D94-to-D93 control nets, the two-sided А:17 and
 D98.7/S1.2 wire landings, D98.3/R94.1, and D106.7/D93.26 RCLK; the
-D96.8/D99.2 test landings and D99.3 ground observation are also preserved; the
-other 592 remain
+D96.8/D99.2 test landings and D99.3 ground observation are also preserved.
+Six accepted rows now close the R92/R99 ladder onto D95.14, D101.4, and
+D101.8/GND; the other 590 remain
 measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.
@@ -227,8 +228,9 @@ extraction work from that set:
    The same cross-registration restores populated grey horizontal C16 between
    the upper/lower FDC IC rows and the two red horizontal resistors R92/R99
    below D95. C16 uses the photo-corroborated 12.5 mm lead span; both resistors
-   use 10.16 mm spans. Their markings and all six remote destinations remain
-   explicit continuity boundaries rather than inferred from nearby solder rails.
+   use 10.16 mm spans. Calibrated component copper now closes R92.2-D95.14,
+   R92.1-R99.2-D101.4, and R99.1-D101.8/GND. R92/R99 markings and both C16
+   destinations remain explicit boundaries rather than inferred from nearby rails.
    Direct raw-photo registration also corrects the marked КР531ИЕ17 D40 into
    the same horizontal row as D41 at `(258.56,140.99)` mm with its notch to the
    right; the former seed was about 15 mm too high. The factory C63 outline lies
@@ -274,8 +276,9 @@ Next tracing order:
    calibrated tile has now been exhausted for D106's static straps and recovery-
    clock input: pins 9/10 remain rail-obscured, while pins 15/1/5 and pin 4 show
    only local copper or layer handoffs with no unbroken path to known P5V/GND/
-   clock anchors. Meter those six bounded endpoints, then test D95/D101 pins 2/14 against
-   D93.18/.17 and their pin-7 output destinations for the period KP12 write-
+   clock anchors. Meter those six bounded endpoints, then test the still-open
+   D95/D101 select pins against D93.18/.17 and their pin-7 output destinations
+   for the period KP12 write-
    precompensation pattern. Existing Juku photo evidence excludes D96 section 2
    and D99 section 1 from the WD roles; neither reference proves Juku continuity.
 3. D94 inputs A0-A4/pins 10-14, pin 15, and output D3/pin 4 first; outputs

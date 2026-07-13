@@ -9901,7 +9901,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND",
    "power": true,
    "nodes": [
     [
@@ -10415,6 +10415,10 @@
     [
      "D99",
      "3"
+    ],
+    [
+     "R99",
+     "1"
     ]
    ]
   },
@@ -13192,9 +13196,9 @@
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin3 D03; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D101", "3"]]
   },
-  "D101_D02_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin4 D02; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "4"]]
+  "D101_D02_R92_R99": {
+   "src": "July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper joining D101 К555КП12 pin4 D02 to the right terminal R99.2 and, through the same visible junction, the left terminal R92.1; package fits and factory resistor identities fix all three endpoints",
+   "nodes": [["D101", "4"], ["R92", "1"], ["R99", "2"]]
   },
   "D101_D01_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin5 D01; no remote destination is proved, so this remains a measurement boundary",
@@ -13396,9 +13400,9 @@
    "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin13 D13; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D95", "13"]]
   },
-  "D95_A0_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin14 A0; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D95", "14"]]
+  "D95_A0_R92": {
+   "src": "July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper from D95 К555КП12 pin14 A0 to the right terminal R92.2; the package fit and factory R92 identity fix both endpoints",
+   "nodes": [["D95", "14"], ["R92", "2"]]
   },
   "D95_OE1_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D95 К555КП12 pin15 OE1_N; no remote destination is proved, so this remains a measurement boundary",
@@ -15679,22 +15683,6 @@
   "C16_2_BOUNDARY": {
    "src": ".009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable",
    "nodes": [["C16", "2"]]
-  },
-  "R92_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove R92 lead 1 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable",
-   "nodes": [["R92", "1"]]
-  },
-  "R92_2_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove R92 lead 2 on the upper/right 10.16 mm resistor span below D95; its remote destination is not readable",
-   "nodes": [["R92", "2"]]
-  },
-  "R99_1_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove R99 lead 1 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not readable",
-   "nodes": [["R99", "1"]]
-  },
-  "R99_2_BOUNDARY": {
-   "src": ".009 factory identity plus registered owner component/solder views prove R99 lead 2 on the lower/left 10.16 mm resistor span below-left of D95; its remote destination is not readable",
-   "nodes": [["R99", "2"]]
   },
   "R100_1_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",

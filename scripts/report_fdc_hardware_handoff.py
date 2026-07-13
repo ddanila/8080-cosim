@@ -35,6 +35,12 @@ D106_STATIC_PROBES = {
     "9": ("1016.024", "2176.087", "LOW", "GND"),
     "4": ("1155.242", "1993.000", "RECOVERY CLOCK", "CLOCK SOURCE"),
 }
+KP12_RESISTOR_ENDPOINTS = {
+    "kp12-component-R92-1": ("R92", "1", "2341.000", "1317.000", "D101_D02_R92_R99"),
+    "kp12-component-R92-2": ("R92", "2", "2564.000", "1314.000", "D95_A0_R92"),
+    "kp12-component-R99-1": ("R99", "1", "2064.000", "1370.000", "GND"),
+    "kp12-component-R99-2": ("R99", "2", "2287.000", "1367.000", "D101_D02_R92_R99"),
+}
 
 
 def load_board() -> dict:
@@ -174,6 +180,39 @@ def d106_static_probe_observations() -> tuple[list[list[str]], bool]:
     return rows, ok
 
 
+def kp12_resistor_observations() -> tuple[list[list[str]], bool]:
+    """Guard the accepted component-copper evidence for the R92/R99 ladder."""
+    matched: dict[str, dict[str, str]] = {}
+    with PHOTO_ENDPOINTS.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            endpoint_id = row.get("endpoint_id", "")
+            if endpoint_id in KP12_RESISTOR_ENDPOINTS:
+                matched[endpoint_id] = row
+    rows: list[list[str]] = []
+    ok = set(matched) == set(KP12_RESISTOR_ENDPOINTS)
+    for endpoint_id, (ref, pin, x, y, candidate_net) in KP12_RESISTOR_ENDPOINTS.items():
+        row = matched.get(endpoint_id, {})
+        guarded = (
+            row.get("image") == "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg"
+            and row.get("refdes") == ref
+            and row.get("pin") == pin
+            and row.get("x_px") == x
+            and row.get("y_px") == y
+            and row.get("candidate_net") == candidate_net
+            and row.get("confidence") == "registration+unique-hole-snap"
+            and row.get("review_state") == "accepted"
+            and "uninterrupted copper" in row.get("note", "")
+        )
+        ok &= guarded
+        rows.append([
+            f"{ref}.{pin}",
+            f"({row.get('x_px', '-')}, {row.get('y_px', '-')})",
+            candidate_net,
+            "ACCEPTED TARGET COPPER" if guarded else "EVIDENCE MISSING",
+        ])
+    return rows, ok
+
+
 def main() -> int:
     board = load_board()
     local_report = json.loads(LOCAL_PACKAGE_REPORT.read_text(encoding="utf-8"))
@@ -188,6 +227,9 @@ def main() -> int:
     static_probe_rows, static_probe_guarded = d106_static_probe_observations()
     if not static_probe_guarded:
         failures.append("D106 static-strap/clock photo evidence is missing or stale")
+    kp12_rows, kp12_probe_guarded = kp12_resistor_observations()
+    if not kp12_probe_guarded:
+        failures.append("KP12 R92/R99 component-copper evidence is missing or stale")
 
     reference_family_checks = {
         "74193 counter": chip(board, "D106").get("type") == "IE7_CTR",
@@ -219,6 +261,17 @@ def main() -> int:
     )
     if not rclk_closed:
         failures.append("photo-proved D106.7-to-D93.26 recovered-clock net is absent")
+    kp12_resistor_closed = (
+        has_node(board, "D95_A0_R92", "D95", "14")
+        and has_node(board, "D95_A0_R92", "R92", "2")
+        and has_node(board, "D101_D02_R92_R99", "D101", "4")
+        and has_node(board, "D101_D02_R92_R99", "R92", "1")
+        and has_node(board, "D101_D02_R92_R99", "R99", "2")
+        and has_node(board, "GND", "R99", "1")
+        and has_node(board, "GND", "D101", "8")
+    )
+    if not kp12_resistor_closed:
+        failures.append("photo-proved KP12 R92/R99 ladder nets are absent")
 
     if d93.get("type") != "VG93_FDC":
         failures.append("D93 is not typed as VG93_FDC")
@@ -505,14 +558,17 @@ def main() -> int:
         "precompensation selector: VG93 pins 18/17 reach mux select pins 2/14, mux",
         "pin 1 is enabled low, and mux output pin 7 proceeds through an inverter to",
         "drive write data. Juku's D95 and D101 match the mux family, but the source",
-        "of their delay taps and the output inverter are not identified. Check both",
-        "muxes against D93.18/.17 and their pin-7 destinations. If either approaches",
+        "of their delay taps and the output inverter are not identified. Target-board",
+        "component copper now closes D95.14-R92.2, D101.4-R92.1-R99.2, and",
+        "R99.1-D101.8/GND, bounding part of the passive ladder without proving the",
+        "historical VG93 select assignment. Check the remaining select candidates",
+        "against D93.18/.17 and both pin-7 destinations. If either approaches",
         "D28.5/.6, continuity must override the legacy-sheet NC assumption; the",
-        "current photographs do not prove that reuse, so no target-board net changes",
-        "are made here.",
+        "current photographs do not prove that reuse.",
         "",
-        "Only D106.7-D93.26 is promoted from target-board copper. The remaining",
-        "Soviet-reference paths are guarded candidates, not Juku continuity.",
+        "D106.7-D93.26 and the three passive-ladder links above are promoted from",
+        "target-board copper. The remaining Soviet-reference paths are guarded",
+        "candidates, not Juku continuity.",
         "",
         "### Separator candidate raw-crop disposition",
         "",
@@ -538,6 +594,18 @@ def main() -> int:
         "| --- | --- | --- | --- | --- |",
     ])
     lines.extend(table_row(row) for row in static_probe_rows)
+    lines.extend([
+        "",
+        "### KP12 passive-network component-copper disposition",
+        "",
+        "The calibrated component tile fixes all four factory-identified R92/R99",
+        "landings. These visible links are modeled; resistor values and the mux",
+        "select/output paths remain open.",
+        "",
+        "| Endpoint | Component coordinate | Modeled net | Disposition |",
+        "| --- | --- | --- | --- |",
+    ])
+    lines.extend(table_row(row) for row in kp12_rows)
     lines.extend([
         "",
         "## Bus-Side Handoff Checks",

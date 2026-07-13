@@ -248,7 +248,7 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106. D106.7-D93.26 RCLK is photo-closed, selecting the IE7-only output; resistance-test D106.11-D93.27 and D106.14-D93.33 specifically for hidden layer handoffs because calibrated solder-crop review rejects both direct same-layer paths. Meter the now-photo-bounded D106 setup probes: pins 15/1/5 to a known P5V anchor, pins 10/9 to a known GND anchor, and pin 4 to its clock source; pins 9/10 are rail-obscured and the others show only local copper or handoffs, so visual overlap is not continuity. Do not assume the now-excluded WD RCLK chain D106.3-D96.3/D96.5-D93.26, but still identify D96 section 1's actual role. For write precompensation, test D95 and D101 pins 2/14 against D93.18/.17, pins 1 to ground, and pin 7 toward an inverter/write-data path; recheck legacy-NC D28.5/.6 only if that path approaches them. D96 section 2 and D99 section 1 are already excluded from the WD roles",
+            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106. D106.7-D93.26 RCLK is photo-closed, selecting the IE7-only output; resistance-test D106.11-D93.27 and D106.14-D93.33 specifically for hidden layer handoffs because calibrated solder-crop review rejects both direct same-layer paths. Meter the now-photo-bounded D106 setup probes: pins 15/1/5 to a known P5V anchor, pins 10/9 to a known GND anchor, and pin 4 to its clock source; pins 9/10 are rail-obscured and the others show only local copper or handoffs, so visual overlap is not continuity. Do not assume the now-excluded WD RCLK chain D106.3-D96.3/D96.5-D93.26, but still identify D96 section 1's actual role. For write precompensation, the photo now closes the R92/R99 ladder at D95.14, D101.4, and D101.8/GND; test the remaining D95/D101 select candidates against D93.18/.17, pins 1 to ground, and pin 7 toward an inverter/write-data path. Recheck legacy-NC D28.5/.6 only if that path approaches them. D96 section 2 and D99 section 1 are already excluded from the WD roles",
             "`docs/fdc-hardware-handoff.md`; `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; Western Digital June-1980 application note Figure 11; Kovalenko et al. МПСС 1986 No. 3 pp. 3-8; `.009` assembly/photo evidence",
             "the recovered-clock output is now closed from target copper; the remaining probes complete its loading/reset context and test the mux family that the WD-only comparison left unexplained",
         ),
@@ -283,7 +283,7 @@ def main() -> int:
         (
             "P1",
             "lower-FDC C16/R92/R99 continuity",
-            "read C16, R92, and R99 values and identify both lead destinations for each; factory identity, population, horizontal orientation, and 12.5/10.16 mm drill spans are already registered",
+            "read C16, R92, and R99 values and identify both C16 lead destinations; calibrated component copper already closes every R92/R99 endpoint to D95.14, D101.4, or D101.8/GND",
             "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C16/R92/R99 boundary nets",
             "turns three restored target-board passives into functional FDC-area circuitry without guessing from unread body markings or nearby solder rails",
         ),
