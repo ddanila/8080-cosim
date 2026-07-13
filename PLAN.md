@@ -82,7 +82,7 @@ but complete rerouting remains deferred until the functional netlist stops
 changing; the remaining P0 connectivity work would otherwise invalidate it.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 244 source-risk nets and 9 official FDC
+   current generated evidence lists 242 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -126,9 +126,10 @@ endpoint-coverage failure.
 
 The July photo workflow is complete as a registration/review scaffold: all 50
 photos are inventoried, the 28-image grid is registered on both sides, and all
-612 observations have dispositions. Twenty-two rows are accepted evidence for
-five D2 address nets, three D94-to-D93 control nets, and the two-sided А:17
-and D98.7/S1.2 wire landings plus D98.3/R94.1; the other 590 remain
+612 observations have dispositions. Twenty-four rows are accepted evidence for
+five D2 address nets, three D94-to-D93 control nets, the two-sided А:17 and
+D98.7/S1.2 wire landings, D98.3/R94.1, and D106.7/D93.26 RCLK; the
+other 588 remain
 measurement requests. This closes the automated review queue, not the P0
 connectivity work. `docs/photo-registration.md` records the method and
 `docs/owner-measurement-shortlist.md` is the current hardware-session queue.
@@ -254,11 +255,12 @@ Next tracing order:
    clip-obscured region. `docs/d93-pin40-photo-chase.md` records the exact pad
    coordinates and the required continuity anchors; P12V is not yet promoted.
 2. Every functional pin of D28, D95-D99, D101, D102, and D106.
-   Two guarded period-reference topologies make the first decisive continuity
-   probe D106.7-D93.26 versus D96.5-D93.26. The Soviet IE7-only example uses
-   D106.11 for raw-read loading and D106.14 for WF/VFOE control; the Western
-   Digital Figure-11 example instead suggests D106.3-D96.3, D96.2-D96.6, and an
-   AG3 `/Q` jointly reaching D93.27/D106.11. Follow those with D106's static
+   Registered solder-side copper now closes D106.7 Q3 directly to D93.26 RCLK,
+   choosing the Soviet IE7-only recovered-clock output over the Western
+   Digital Figure-11 D96-toggle candidate on this target board. The remaining
+   first probes are D106.11-D93.27 and D106.14-D93.33; the WD-only
+   D106.3-D96.3 and D96.2-D96.6 paths are no longer assumed. Follow those with
+   D106's static
    straps and recovery-clock input, then test D95/D101 pins 2/14 against
    D93.18/.17 and their pin-7 output destinations for the period KP12 write-
    precompensation pattern. Existing Juku photo evidence excludes D96 section 2

@@ -49,7 +49,7 @@ FD1791/FD1793 counter/separator made from exactly these logic families:
 | --- | --- | --- | --- |
 | raw-read pulse conditioner | 74123 | D97/D99/D102 К155АГ3 | D99 section 1 excluded; remaining section not identified |
 | recovery counter | 74LS193 | D106 К555ИЕ7 | package family matched |
-| read-clock toggle | 74LS74 | D96 КМ555ТМ2 | section 2 excluded; section 1 is the candidate |
+| read-clock toggle | 74LS74 | D96 КМ555ТМ2 | section 2 excluded; target RCLK copper bypasses D96 |
 
 The reference topology makes the following continuity checks high-value:
 D106.3 (Q0) to D96.3 (CLK), D96.2 (D) to D96.6 (/Q), D96.5 (Q) to
@@ -61,16 +61,19 @@ and CLR pin14 inactive.
 Existing Juku photo constraints narrow, but do not close, that mapping.
 D96.8 (/Q2) reaches a proved isolated component-side test landing, so
 section 2 cannot supply the reference circuit's required /Q-to-D feedback;
-D96 section 1 (pins 2/3/5/6) is the remaining toggle candidate. D99.3
+D96 section 1 (pins 2/3/5/6) is the only physically available WD-toggle
+section, but the target RCLK closure below proves that Juku did not use it
+for that output. D99.3
 (/CLR1) is physically grounded and D99.2 (B1) reaches another isolated
 test landing, excluding D99 section 1 as the active raw-read conditioner.
 The remaining AG3 sections still require continuity identification.
 
-These are **reference candidates, not promoted Juku nets**. The Juku
+Except for the separately photo-proved Q3-to-RCLK path below, these are
+**reference candidates, not promoted Juku nets**. The Juku
 cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas
 Figure 11 contains no mux and only one half of a single 74123. The owner
 photos identify the packages but do not prove the candidate paths end to
-end; in particular D106 pins 7/9/10 are rail-obscured. Continuity or a
+end; in particular D106 pins 9/10 are rail-obscured. Continuity or a
 Juku-specific electrical sheet remains required before board-JSON changes.
 
 ## Soviet VG93 Circuit Cross-Check
@@ -85,10 +88,12 @@ pin 4, pin 5 is held high, and Q3/pin 7 supplies VG93 RCLK/pin 26. The
 parallel inputs are strapped 15/1 high and 10/9 low, while pin 14 is
 controlled by WF/VFOE/pin 33.
 
-That circuit competes directly with the Western Digital Figure-11 path
-D106.3 -> D96.3 -> D96.5 -> D93.26. Test D106.7-D93.26 before assuming
-that D96 section 1 participates, then test D106.11-D93.27 and
-D106.14-D93.33. In both references D93.24 is the controller's separate
+The target board now chooses this branch: corrected independent package
+fits place D106.7 and D93.26 on one uninterrupted solder-side trace in
+`PXL_20260710_200506061.jpg`. This excludes the Western Figure-11
+D96-toggle output as Juku's RCLK source, though D96 may have another role.
+Next test D106.11-D93.27 and D106.14-D93.33. In both references
+D93.24 is the controller's separate
 main clock input; D106 Q3 must not be treated as a candidate for D93.24.
 
 The same historical comparison also shows a К555КП12-class write
@@ -101,9 +106,8 @@ D28.5/.6, continuity must override the legacy-sheet NC assumption; the
 current photographs do not prove that reuse, so no target-board net changes
 are made here.
 
-These Soviet-reference paths are also guarded candidates, not Juku
-continuity. Their value is that D106.7-D93.26 versus D96.5-D93.26 is a
-single decisive measurement that separates the two read-clock designs.
+Only D106.7-D93.26 is promoted from target-board copper. The remaining
+Soviet-reference paths are guarded candidates, not Juku continuity.
 
 ## Bus-Side Handoff Checks
 
@@ -167,6 +171,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DDEN` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15 and directly into D28 input pin9, whose paired open-collector output pin8 is labeled -FF/X4.1; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity; the D28 output destination remains a target-board continuity boundary | `D26.13, D93.37, D6.15, D28.9` |
 | `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
+| `FDC_RCLK` | July-2026 cross-package solder-photo closure: the corrected D106 К555ИЕ7 fit projects Q3/pin7 at (1154.329,2131.000) px and the independent D93 socket fit projects RCLK/pin26 at (1554.989,2138.344) px in PXL_20260710_200506061.jpg; one uninterrupted slightly sloped solder-side copper trace passes through both fitted contacts with no via, branch, or gap. The literal VG93 IE7-only reference independently matches Q3->RCLK, but the visible target-board copper is the promotion evidence | `D106.7, D93.26` |
 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper | `D94.1, D93.4` |
 | `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper | `D94.3, D93.2` |
 | `IORD` | scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+2)` |

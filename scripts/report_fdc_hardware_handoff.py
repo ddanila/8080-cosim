@@ -117,6 +117,11 @@ def main() -> int:
         failures.append("D96 section-2 isolated-/Q constraint is absent")
     if not d99_section1_excluded:
         failures.append("D99 section-1 grounded-clear/test-landing constraint is absent")
+    rclk_closed = has_node(board, "FDC_RCLK", "D106", "7") and has_node(
+        board, "FDC_RCLK", "D93", "26"
+    )
+    if not rclk_closed:
+        failures.append("photo-proved D106.7-to-D93.26 recovered-clock net is absent")
 
     if d93.get("type") != "VG93_FDC":
         failures.append("D93 is not typed as VG93_FDC")
@@ -349,7 +354,7 @@ def main() -> int:
         "| --- | --- | --- | --- |",
         table_row(["raw-read pulse conditioner", "74123", "D97/D99/D102 К155АГ3", "D99 section 1 excluded; remaining section not identified"]),
         table_row(["recovery counter", "74LS193", "D106 К555ИЕ7", "package family matched"]),
-        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "section 2 excluded; section 1 is the candidate"]),
+        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "section 2 excluded; target RCLK copper bypasses D96"]),
         "",
         "The reference topology makes the following continuity checks high-value:",
         "D106.3 (Q0) to D96.3 (CLK), D96.2 (D) to D96.6 (/Q), D96.5 (Q) to",
@@ -361,16 +366,19 @@ def main() -> int:
         "Existing Juku photo constraints narrow, but do not close, that mapping.",
         "D96.8 (/Q2) reaches a proved isolated component-side test landing, so",
         "section 2 cannot supply the reference circuit's required /Q-to-D feedback;",
-        "D96 section 1 (pins 2/3/5/6) is the remaining toggle candidate. D99.3",
+        "D96 section 1 (pins 2/3/5/6) is the only physically available WD-toggle",
+        "section, but the target RCLK closure below proves that Juku did not use it",
+        "for that output. D99.3",
         "(/CLR1) is physically grounded and D99.2 (B1) reaches another isolated",
         "test landing, excluding D99 section 1 as the active raw-read conditioner.",
         "The remaining AG3 sections still require continuity identification.",
         "",
-        "These are **reference candidates, not promoted Juku nets**. The Juku",
+        "Except for the separately photo-proved Q3-to-RCLK path below, these are",
+        "**reference candidates, not promoted Juku nets**. The Juku",
         "cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas",
         "Figure 11 contains no mux and only one half of a single 74123. The owner",
         "photos identify the packages but do not prove the candidate paths end to",
-        "end; in particular D106 pins 7/9/10 are rail-obscured. Continuity or a",
+        "end; in particular D106 pins 9/10 are rail-obscured. Continuity or a",
         "Juku-specific electrical sheet remains required before board-JSON changes.",
         "",
         "## Soviet VG93 Circuit Cross-Check",
@@ -385,10 +393,12 @@ def main() -> int:
         "parallel inputs are strapped 15/1 high and 10/9 low, while pin 14 is",
         "controlled by WF/VFOE/pin 33.",
         "",
-        "That circuit competes directly with the Western Digital Figure-11 path",
-        "D106.3 -> D96.3 -> D96.5 -> D93.26. Test D106.7-D93.26 before assuming",
-        "that D96 section 1 participates, then test D106.11-D93.27 and",
-        "D106.14-D93.33. In both references D93.24 is the controller's separate",
+        "The target board now chooses this branch: corrected independent package",
+        "fits place D106.7 and D93.26 on one uninterrupted solder-side trace in",
+        "`PXL_20260710_200506061.jpg`. This excludes the Western Figure-11",
+        "D96-toggle output as Juku's RCLK source, though D96 may have another role.",
+        "Next test D106.11-D93.27 and D106.14-D93.33. In both references",
+        "D93.24 is the controller's separate",
         "main clock input; D106 Q3 must not be treated as a candidate for D93.24.",
         "",
         "The same historical comparison also shows a К555КП12-class write",
@@ -401,9 +411,8 @@ def main() -> int:
         "current photographs do not prove that reuse, so no target-board net changes",
         "are made here.",
         "",
-        "These Soviet-reference paths are also guarded candidates, not Juku",
-        "continuity. Their value is that D106.7-D93.26 versus D96.5-D93.26 is a",
-        "single decisive measurement that separates the two read-clock designs.",
+        "Only D106.7-D93.26 is promoted from target-board copper. The remaining",
+        "Soviet-reference paths are guarded candidates, not Juku continuity.",
         "",
         "## Bus-Side Handoff Checks",
         "",

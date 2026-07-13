@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `244`
-- Verification-point endpoints checked in PCB: `411`
+- Verification-point nets: `242`
+- Verification-point endpoints checked in PCB: `409`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2239`
 - All board endpoints checked in routed PCB: `2239`
@@ -23,8 +23,8 @@ visible and actionable before manufacturing and first power-on.
 
 | Category | Nets |
 | --- | ---: |
-| FDC | 24 |
-| logic | 178 |
+| FDC | 23 |
+| logic | 177 |
 | memory/decode | 11 |
 | sound/analog | 1 |
 | timing/I/O | 6 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 411/411 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 411/411 net names matched |
+| Risk endpoints present on PCB pads | PASS | 409/409 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 409/409 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -120,7 +120,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D106_Q0_BOUNDARY: D106.3`
 - `D106_Q1_BOUNDARY: D106.2`
 - `D106_Q2_BOUNDARY: D106.6`
-- `D106_Q3_BOUNDARY: D106.7`
 - `D106_UP_BOUNDARY: D106.5`
 - `D13_4_D105_2: D11.20`
 - `D13_I3_BOUNDARY: D13.3`
@@ -167,7 +166,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D93_LATE_BOUNDARY: D93.18`
 - `D93_MR_BOUNDARY: D93.19`
 - `D93_RAW_READ_BOUNDARY: D93.27`
-- `D93_RCLK_BOUNDARY: D93.26`
 - `D93_READY_BOUNDARY: D93.32`
 - `D93_RG_BOUNDARY: D93.25`
 - `D93_STEP_BOUNDARY: D93.15`
@@ -255,6 +253,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D99_RC2_BOUNDARY: D99.7`
 - `FDC_CS_N: D94.2`
 - `FDC_DDEN: D28.9`
+- `FDC_RCLK: D106.7`
+- `FDC_RCLK: D93.26`
 - `FDC_RE_N: D94.1`
 - `FDC_WE_N: D94.3`
 - `GND: R30.2`
@@ -556,7 +556,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D106_Q0_BOUNDARY` | logic | `D106.3` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin3 Q0; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_Q1_BOUNDARY` | logic | `D106.2` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin2 Q1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_Q2_BOUNDARY` | logic | `D106.6` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D106_Q3_BOUNDARY` | logic | `D106.7` | July-2026 corrected component fit identifies D106 К555ИЕ7 pin7 Q3 while the solder end is rail-obscured; the candidate FDC clock relation is unproved, so this remains a measurem... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_UP_BOUNDARY` | logic | `D106.5` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin5 UP; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D13_I3_BOUNDARY` | logic | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary | Scope/capture video or timing node during video bring-up. |
@@ -589,7 +588,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D93_LATE_BOUNDARY` | FDC | `D93.18` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_MR_BOUNDARY` | FDC | `D93.19` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_RAW_READ_BOUNDARY` | FDC | `D93.27` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
-| `D93_RCLK_BOUNDARY` | FDC | `D93.26` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin26 RCLK; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_READY_BOUNDARY` | FDC | `D93.32` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin32 READY; remote drive-status continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_RG_BOUNDARY` | FDC | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `D93_STEP_BOUNDARY` | FDC | `D93.15` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin15 STEP; remote drive-interface continuity is not proved, so this remains a measurement boundary | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |

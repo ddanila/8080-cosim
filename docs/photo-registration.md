@@ -22,8 +22,8 @@ endpoint table contains 612 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 22 | two-sided evidence adopted into the board model |
-| `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 24 | two-sided evidence adopted into the board model |
+| `measurement` | 588 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 269 `local-package-fit`, 306
 `registration-only`, and 37 `registration+unique-hole-snap` rows. A hole snap
@@ -39,6 +39,7 @@ Accepted paths:
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
 - D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
+- D106.7 `Q3` -> D93.26 `RCLK` / `FDC_RCLK`.
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
@@ -110,8 +111,11 @@ fits. Direct component and reflected solder fits now replace D106 projections
 that landed left of the vertical К555ИЕ7 package or on its body. The corrected
 solder anchors use the centers of visible joints rather than adjacent trace
 departures; the independent pin-5 check is 0.001 px. Pins 7-10 extrapolate into
-the rail-obscured package end and are explicitly not electrical evidence, so
-all D106 signals remain measurements. Separate component and reflected solder fits now land D28 on the
+the rail-obscured package end. Pin 7 is the one exception now promoted
+electrically: its fitted coordinate lies exactly on an uninterrupted slightly
+sloped solder trace that reaches the independently fitted D93.26 joint, with no
+gap, via, or branch between them. Pins 8-10 remain non-electrical projections.
+Separate component and reflected solder fits now land D28 on the
 adjacent К155ЛН3, using its unobscured seven-pad column and coherent solder
 rows. The component pin-4 check is exact and the solder pin-5 check is 0.010
 px. A close audit distinguishes the small fitted solder joints from the larger
@@ -182,9 +186,10 @@ The adjacent D96 КМ555ТМ2 now has a separate component fit with an exact
 pin-4 held-out check. Its reflected solder fit identifies the two small-joint
 columns left of D28 with a 0.632 px pin-4 check; pins 7-8 extrapolate beneath
 the broad rail and are explicitly not electrical evidence. Together the D106,
-D28, and D96 fits guard the physical
-row spacing rather than preserving the former overlapping placeholder grid;
-none of their functional pins is promoted without complete copper continuity.
+D28, and D96 fits guard the physical row spacing rather than preserving the
+former overlapping placeholder grid. D106.7 is promoted only because complete
+copper continuity to D93.26 is visible; all other unresolved functional pins
+remain measurements.
 
 The registered `PXL_20260710_200402344.jpg` serial-area view also corrects an
 older placeholder column. The marked notch-down К170УП2 left of R30 is D104;
@@ -270,7 +275,7 @@ may support a change to `kicad/juku.board.json`.
 The automated seed/review queue is complete. Further work should be targeted,
 not another broad projection pass:
 
-1. D93 pins 19/24/37/38/39 and D100 pins 9/11.
+1. D93 pins 19/24/37/38/39 and D100 pins 9/11; D93.26 RCLK is now closed.
 2. Functional pins of D28, D95-D99, D101, D102, and D106.
 3. D94 pin 15 and outputs D3-D7, D30 section B, D105 WAIT handoff, and D41
    timing boundaries.

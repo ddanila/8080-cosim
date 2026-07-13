@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `302`
-- Nets modeled: `573`
+- Nets modeled: `572`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `244`
+- Net-level source-risk gaps: `242`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -52,13 +52,13 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 9 | 24 |
+| FDC owner-continuity | 9 | 23 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 18 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 5 |
 | connector boundary | 1 | 0 |
-| logic/source | 13 | 171 |
+| logic/source | 13 | 170 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -288,7 +288,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D106_Q0_BOUNDARY` | logic/source | `D106.3` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin3 Q0; no remote destination is proved, so this remains a measurement boundary |
 | `D106_Q1_BOUNDARY` | logic/source | `D106.2` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin2 Q1; no remote destination is proved, so this remains a measurement boundary |
 | `D106_Q2_BOUNDARY` | logic/source | `D106.6` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary |
-| `D106_Q3_BOUNDARY` | logic/source | `D106.7` | July-2026 corrected component fit identifies D106 К555ИЕ7 pin7 Q3 while the solder end is rail-obscured; the candidate FDC clock relation is unproved, so thi... |
 | `D106_UP_BOUNDARY` | logic/source | `D106.5` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin5 UP; no remote destination is proved, so this remains a measurement boundary |
 | `D13_I3_BOUNDARY` | logic/source | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement bo... |
 | `D14_I2_BOUNDARY` | video/analog | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
@@ -321,7 +320,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D93_LATE_BOUNDARY` | FDC owner-continuity | `D93.18` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin18 LATE; remote drive-interface continuity is not proved, so this remains a mea... |
 | `D93_MR_BOUNDARY` | FDC owner-continuity | `D93.19` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin19 MR_N; remote reset continuity is not proved, so this remains a measurement b... |
 | `D93_RAW_READ_BOUNDARY` | FDC owner-continuity | `D93.27` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measu... |
-| `D93_RCLK_BOUNDARY` | FDC owner-continuity | `D93.26` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin26 RCLK; remote separator continuity is not proved, so this remains a measureme... |
 | `D93_READY_BOUNDARY` | FDC owner-continuity | `D93.32` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin32 READY; remote drive-status continuity is not proved, so this remains a measu... |
 | `D93_RG_BOUNDARY` | FDC owner-continuity | `D93.25` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement... |
 | `D93_STEP_BOUNDARY` | FDC owner-continuity | `D93.15` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin15 STEP; remote drive-interface continuity is not proved, so this remains a mea... |

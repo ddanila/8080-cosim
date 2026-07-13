@@ -32,7 +32,7 @@ with the machine-readable board model.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
   8 and 11 remain explicit boundaries. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 244 modeled nets retain source-risk annotations requiring
+  In total, 242 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

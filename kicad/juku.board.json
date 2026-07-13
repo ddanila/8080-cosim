@@ -13448,9 +13448,9 @@
    "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin6 Q2; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D106", "6"]]
   },
-  "D106_Q3_BOUNDARY": {
-   "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin7 Q3 while the solder end is rail-obscured; the candidate FDC clock relation is unproved, so this remains a measurement boundary",
-   "nodes": [["D106", "7"]]
+  "FDC_RCLK": {
+   "src": "July-2026 cross-package solder-photo closure: the corrected D106 К555ИЕ7 fit projects Q3/pin7 at (1154.329,2131.000) px and the independent D93 socket fit projects RCLK/pin26 at (1554.989,2138.344) px in PXL_20260710_200506061.jpg; one uninterrupted slightly sloped solder-side copper trace passes through both fitted contacts with no via, branch, or gap. The literal VG93 IE7-only reference independently matches Q3->RCLK, but the visible target-board copper is the promotion evidence",
+   "nodes": [["D106", "7"], ["D93", "26"]]
   },
   "D106_D3_BOUNDARY": {
    "src": "July-2026 corrected component fit identifies D106 К555ИЕ7 pin9 D3 while the solder end is rail-obscured; no remote destination is proved, so this remains a measurement boundary",
@@ -13683,10 +13683,6 @@
   "D93_RG_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "25"]]
-  },
-  "D93_RCLK_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin26 RCLK; remote separator continuity is not proved, so this remains a measurement boundary",
-   "nodes": [["D93", "26"]]
   },
   "D93_RAW_READ_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary",
