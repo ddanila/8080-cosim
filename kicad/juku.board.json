@@ -1187,7 +1187,7 @@
    "prov": {
     "type": "scan+datasheet",
     "refdes": "sheet-2 + КР531ЛА12 datasheet (quad high-drive 2И-НЕ; SN74S37 pin-compatible)",
-    "pins": "datasheet contract: inputs 1/2, 4/5, 9/10, 12/13; outputs 3/6/8/11; GND7/VCC14. Complete sheet-2 package trace; second NAND input pin2 reaches timing-bundle tag17"
+    "pins": "datasheet contract: inputs 1/2, 4/5, 9/10, 12/13; outputs 3/6/8/11; GND7/VCC14. Complete sheet-2 package trace; second NAND input pin2 reaches timing-bundle tag17. Native 5140x3563 review confirms pins12/13 tied and output11 to R57, but their west source cannot be uniquely assigned through the dense timing bundle"
    }
   },
   {
@@ -13984,7 +13984,7 @@
    ]
   },
   "D36_CAS_IN": {
-   "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); tied NAND pair = CAS-driver input; west source line [pending]",
+   "src": "scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57, but the common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so this remains a deliberate continuity boundary",
    "nodes": [
     [
      "D36",
