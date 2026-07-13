@@ -94,14 +94,20 @@ def main() -> int:
             "`SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8",
         ),
         (
-            "Adjacent latch chain context is modeled",
+            "Factory tag 7 closes the D40/D37/D54 1 MHz clock net",
             node_in(board, "LATCH_B", "D40", "11")
             and node_in(board, "LATCH_B", "D37", "2")
+            and node_in(board, "LATCH_B", "D54", "9")
+            and node_in(board, "LATCH_B", "D54", "15")
+            and node_in(board, "LATCH_B", "D54", "18")
+            and "scan sheet-2 full-resolution source closure" in board["nets"]["LATCH_B"].get("src", "")
+            and "tag 7" in board["nets"]["LATCH_B"].get("src", "")
+            and "1MHz" in board["nets"]["LATCH_B"].get("src", "")
             and node_in(board, "LATCH_PRE", "D37", "3")
             and node_in(board, "LATCH_PRE", "D33", "13")
             and node_in(board, "LATCH_SIG", "D33", "12")
             and node_in(board, "LATCH_SIG", "D39", "9"),
-            "`LATCH_B`/`LATCH_PRE`/`LATCH_SIG` around D37/D40/D33/D39",
+            "sheet 2: tag 7 joins D40.11/D37.2 and tied D54 CLK0/1/2 pins 9/15/18; adjacent `LATCH_PRE`/`LATCH_SIG` retained",
         ),
         (
             "D41 proved straps, outputs, and timing boundaries are netted",
@@ -178,6 +184,8 @@ def main() -> int:
             "  that landed in the parallel-rail field left/right of the actual IC.",
             "- A-D are grounded, DS/G are tied high, and QC/QD have no external",
             "  stubs. LD joins numbered timing rail 17; CK joins numbered rail 8.",
+            "- Sheet-2 conductor tag 7 closes D40 QD/pin11 and D37.2 to the tied",
+            "  D54 CLK0/CLK1/CLK2 pins 9/15/18 on the labeled 1 MHz rail.",
             "- The complete D41 package pin disposition is now source-closed. The remote",
             "  origin of rail 17 remains a wider timing-chain boundary at D36.2/D41.6.",
             "",

@@ -82,7 +82,7 @@ but complete rerouting remains deferred until the functional netlist stops
 changing; the remaining P0 connectivity work would otherwise invalidate it.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 242 source-risk nets and 9 official FDC
+   current generated evidence lists 241 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -102,6 +102,9 @@ not D11 and remain replaced by the FDC-era КР1818ВГ93 interrupt assignment.
 Full-resolution review separately proves
 D11.16 SYNDET on the lower S4 throw and omits D11.18 TXEMPTY from the drawn
 USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
+Sheet-2 full-resolution review also closes `LATCH_B` without relying on MAME:
+D40 QD/pin11 and D37.2 share conductor tag 7, while D54 CLK0/CLK1/CLK2
+pins 9/15/18 are visibly tied on the labeled 1 MHz rail ending at tag 7.
 5. **Restore source/routed parity.** The authoritative source PCB contains the
    accepted D2/D94, reset/USART, R94, serial-harness, keyboard-harness, and
    power-cable endpoint changes. The saved routed PCB predates that accumulated

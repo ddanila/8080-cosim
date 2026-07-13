@@ -11325,7 +11325,7 @@
    "nodes": [["D26", "10"], ["D35", "3"]]
   },
   "LATCH_B": {
-   "src": "scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending)",
+   "src": "scan sheet-2 full-resolution source closure: D40 QD/pin11 descends to conductor tag 7 and D37.2 joins that same conductor; D54 CLK0/CLK1/CLK2 pins 9/15/18 are visibly tied together on the rail labeled 1MHz, whose remote end is also marked tag 7",
    "nodes": [
     [
      "D40",

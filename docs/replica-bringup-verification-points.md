@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `242`
-- Verification-point endpoints checked in PCB: `409`
+- Verification-point nets: `241`
+- Verification-point endpoints checked in PCB: `404`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2239`
 - All board endpoints checked in routed PCB: `2239`
@@ -27,7 +27,7 @@ visible and actionable before manufacturing and first power-on.
 | logic | 177 |
 | memory/decode | 11 |
 | sound/analog | 1 |
-| timing/I/O | 6 |
+| timing/I/O | 5 |
 | video/analog | 24 |
 
 ## KiCad PCB Endpoint Coverage
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 409/409 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 409/409 net names matched |
+| Risk endpoints present on PCB pads | PASS | 404/404 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 404/404 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -673,7 +673,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FRAME_INT` | timing/I/O | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (D55.OUT1 export, cro... | Cross-check against hardware when the peripheral path is exercised. |
 | `INHIB_STATUS_BOUNDARY` | logic | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `LATCH_B` | timing/I/O | `D40.11, D37.2, D54.9, D54.15, D54.18` | scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending) | Cross-check against hardware when the peripheral path is exercised. |
 | `MEM_MODE0` | memory/decode | `D26.16, D6.2, D28.11` | traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 is labeled -REC/X4.2;... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `MEM_MODE1` | memory/decode | `D26.17, D6.1, D28.13` | traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1 and directly into D28 input pin13, whose paired open-collector output pin12 is labeled -PLAY/X4.3... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
