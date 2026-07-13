@@ -32,8 +32,16 @@ def main() -> None:
 
     by_net = collections.Counter(net for _, _, net, _ in allowed_power)
     refs = {ref for ref, _, _, _ in allowed_power}
+    invalid_nc = [
+        (ref, str(pin)) for ref, pin in board.get("no_connects", [])
+        if ref not in chips or str(pin) not in chips[ref].get("pins", {})
+    ]
+    if invalid_nc:
+        details = "; ".join(f"{ref}.{pin}" for ref, pin in invalid_nc)
+        raise SystemExit("PACKAGE ENDPOINT COVERAGE: FAIL: undeclared no-connect pins: " + details)
     checks = [
         ("Every modeled non-power endpoint is declared by its chip/package", not invalid),
+        ("Every explicit no-connect exists in its chip/package", not invalid_nc),
         ("S1 off-board SPDT contact 3 is explicitly declared", chips["S1"]["pins"].get("3") == "P3"),
         ("Remaining undeclared endpoints belong only to tagged PCB power nets", all(board["nets"][net].get("power") for net in by_net)),
     ]
@@ -46,6 +54,7 @@ def main() -> None:
         "must still be declared in its chip contract; the report fails otherwise.", "",
         "## Summary", "",
         f"- Undeclared non-power endpoints: `{len(invalid)}`",
+        f"- Undeclared explicit no-connect pins: `{len(invalid_nc)}`",
         f"- HDL-excluded physical power endpoints: `{len(allowed_power)}` across `{len(refs)}` refs",
         "", "| Tagged power net | Endpoints intentionally outside HDL pinmaps |",
         "| --- | ---: |",
