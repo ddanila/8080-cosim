@@ -66,8 +66,10 @@ bus/wait PROM and must not be described as the I/O decoder.
 
 The digital twin reaches Monitor and EKDOS prompts, and the modeled endpoints
 pass structural comparison. That does not release the current PCB for
-fabrication: D2 content and routed-snapshot parity, D94's remaining
-enable/output/content boundary, and 9 official FDC-support devices with
-untraced functional pins remain open design items. D105 is modeled and routed;
-D30 and the WAIT revision handoff retain smaller explicit boundaries. `PLAN.md`
-is the living release checklist.
+fabrication: routed-snapshot parity, D94's remaining enable/output/content
+boundary, and 9 official FDC-support devices with untraced functional pins
+remain open design items. Validated physical D2 contents and the measured
+D2/D30/D105/D13 WAIT/READY handoff are adopted in the source PCB and HDL;
+D30.8/.11 and the exact `H` pull-up/contact remain smaller explicit boundaries.
+The saved routed snapshot predates that corrected topology. `PLAN.md` is the
+living release checklist.

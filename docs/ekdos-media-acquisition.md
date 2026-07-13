@@ -33,7 +33,8 @@ archive convention; the loader validates size and geometry.
 
 This closes functional public-media acquisition for Tier 2. It does not prove
 that `JUKU1.CPM` is byte-identical to a surviving factory
-`ДГШ5.106.105` disk, and none of these files supplies D2/D94 programming truth.
+`ДГШ5.106.105` disk, and none of these files supplies D8/D94 programming truth.
+Validated physical D2/D6 tables were acquired independently from the disk media.
 A fresh physical factory-disk dump remains useful preservation evidence but is
 not a fabrication blocker.
 
