@@ -202,7 +202,7 @@ module juku_top (
     // sources (-INHIB/-CCLCK/-IO/M) stay inactive boundaries. One-way (never drives the
     // strobe nets -> boot-safe).
     wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
-    wire d7_y2_amw_n;  // D7.3 -> D29.6; D29 B5 is the -AMWC backplane command
+    wire d7_y2_amw_n;  // D7.3 -> physical D29.5/A4; paired D29.15/B4 is -AMWC
     va86_out U_D29 (.Ain ({iowr_n, iord_n, d7_y2_amw_n, memr_n, memw_n, 1'b1,  1'b1,    1'b1}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
@@ -244,7 +244,7 @@ module juku_top (
     net_boundary U_D7A3LNK (.a(1'b0), .b(d7_a3_boundary));
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_boundary));
     la3_gate    U_D7     (.a(d7_a1_boundary), .b(d7_b1_boundary), .y(io_strobe_h),     // physical origins of pins12/13 unresolved; sim keeps prior IOWR/IORD semantics through boundaries
-                          .a2(1'b1), .b2(memw_n), .y2(d7_y2_amw_n),     // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 boundary]; pin3 -> D29.6 (-AMWC path)
+                          .a2(1'b1), .b2(memw_n), .y2(d7_y2_amw_n),     // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 boundary]; pin3 -> physical D29.5 (-AMWC path)
                           .a3(d7_b3_boundary), .b3(d7_a3_boundary), .y3(d25_t_w),
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_tag8));   // sect4 pins9/10 = IORD/IOWR; output8 -> tag8 boundary
     wire d6_v_enable;

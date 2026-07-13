@@ -183,8 +183,7 @@ MARK = {
     'TL2':'К155ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
     'UP2':'К170УП2',        'LA18':'К155ЛА18',    'LN2':'К561ЛН2',
 }
-MARK_REF = {'D29':'КР580ВА86',   # the ВА86 among the VABUS transceivers (D23-25 = ВА87)
-            'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos
+MARK_REF = {'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos
             'D7':'КР1533ЛА3',   # owner-read off the real board (was assumed К555; ALS vs LS -- same logic/pinout, marking only)
             'D56':'К155АГ3',    # board-#2 row-4 АГ3s are К155 8901 (BOM said КМ555АГ3; real board wins, D7 precedent)
             'D97':'К155АГ3', 'D99':'К155АГ3', 'D102':'К155АГ3',  # owner-photo FDC row, 8901 batch

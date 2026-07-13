@@ -27,7 +27,7 @@ program/dump,RE3_PROM,,К155РЕ3,"74188/82S23-class 32x8 bipolar PROM, programm
 program/dump,RE3_PROM_092,,К155РЕ3,"74188/82S23-class 32x8 bipolar PROM, programmed",1,1,0,D94,D94,FDC control/decode D94 `.092` contents and complete strobe gating remain dump/continuity-gated.
 program/dump,WAIT_PROM,,КР556РТ4А,"74S287/82S129-class 256x4 bipolar PROM, programmed",1,1,0,D2,D2,"D2 uses the preservation-grade physical `.037` table from three matching reads, including a power-cycled capture."
 source-now,AG3_ONESHOT,,К155/КМ555АГ3,74LS123/74123-class one-shot; verify RC timing,4,4,0,"D56, D97, D99, D102","D56, D97, D99, D102",
-source-now,BUF8286,,КР580ВА86,Intel 8286 / compatible bus transceiver,2,2,0,"D4, D107","D4, D107",
+source-now,BUF8286,,КР580ВА86,Intel 8286 / compatible bus transceiver,3,3,0,"D4, D29, D107","D4, D29, D107",
 source-now,BUF8287,,КР580ВА87,Intel 8287 / compatible bus transceiver,1,1,0,D100,D100,
 source-now,CLK_PHASE,,К155ЛН5,74LS04/74LS14-class inverter; verify phase/timing use,1,1,0,D35,D35,
 source-now,CPU8080,,КР580ИК80А,Intel 8080A / compatible 8080 CPU,1,1,0,D1,D1,
@@ -39,6 +39,7 @@ source-now,C_KM,56,КМ ceramic capacitor 56,modern ceramic capacitor with match
 source-now,C_KM,560,КМ ceramic capacitor 560,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C5,C5,
 source-now,C_TRIM,4/20,trimmer capacitor 4/20,modern trimmer capacitor matching footprint/value,1,1,0,C73,C73,
 source-now,D_DIODE,КС147,Soviet diode/zener per value КС147,modern diode/zener matching value and power,1,1,0,VD5,VD5,
+source-now,FDC_CONN,,FDC_CONN,select exact substitute after circuit review,1,1,0,X4,X4,
 source-now,IE10_CTR,,К555ИЕ10,74LS193/191-class counter; verify exact pinout,1,1,0,D103,D103,
 source-now,IE7_CTR,,К555ИЕ7,74LS193 up/down counter; verify timing and load/clear polarity,5,5,0,"D44, D45, D46, D47, D106","D44, D45, D46, D47, D106",
 source-now,IO_DEC138,,К555ИД7,74LS138 / 74HCT138 decoder,1,1,0,D9,D9,
@@ -78,8 +79,8 @@ source-now,SYS8238,,КР580ВК38,8228/8238-class system controller; verify pino
 source-now,TL2,,К155ТЛ2,74LS13 Schmitt NAND-class gate,1,1,0,D13,D13,
 source-now,TM2_DFF,,КМ555ТМ2,74LS74 dual D flip-flop,2,2,0,"D30, D96","D30, D96",
 source-now,USART8251,,КР580ВВ51А,8251A / 82C51-class USART,1,1,0,D11,D11,
-source-now,VABUS,,КР580ВА87,Intel 8287 / compatible bus transceiver,4,4,0,"D23, D24, D25, D29","D23, D24, D25, D29",
+source-now,VABUS,,КР580ВА87,Intel 8287 / compatible bus transceiver,3,3,0,"D23, D24, D25","D23, D24, D25",
 source-now,VG93_FDC,,КР1818ВГ93,"WD1793 pin-compatible candidate; verify clock, rails, and interface timing",1,1,0,D93,D93,"A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit."
-source-now,WIRE_PAD,,WIRE_PAD,select exact substitute after circuit review,31,31,0,"A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+13)","A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+13)",
+source-now,WIRE_PAD,,WIRE_PAD,select exact substitute after circuit review,54,54,0,"A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+36)","A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+36)",
 source-now,XTAL,16 МГц,РК-171 16 MHz crystal 16 МГц,16 MHz HC-49/metal-can crystal matching footprint/load,1,1,0,Z1,Z1,
 source-populated-now,RU5,,К565РУ5Г / 565РУ5Г,"4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails",32,8,24,"D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+14)","D84, D85, D86, D87, D88, D89, D90, D91",D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check.

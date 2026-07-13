@@ -87,7 +87,7 @@ remaining signal pins stay explicitly unnetted until continuity is proved.
 
 | Ref | Untraced functional pins |
 | --- | --- |
-| `D28` | 1:A1, 2:Y1, 3:A2, 4:Y2, 5:A3, 6:Y3, 8:Y4, 9:A4, 10:Y5, 11:A5, 12:Y6, 13:A6 |
+| `D28` | 1:A1, 3:A2, 5:A3, 6:Y3, 9:A4, 11:A5, 13:A6 |
 | `D95` | 1:OE0_N, 2:A1, 3:D03, 4:D02, 5:D01, 6:D00, 7:Q0, 9:Q1, 10:D10, 11:D11, 12:D12, 13:D13, 14:A0, 15:OE1_N |
 | `D96` | 1:CLR1_N, 2:D1, 3:CLK1, 4:PRE1_N, 5:Q1, 6:Q1_N, 9:Q2, 10:PRE2_N, 11:CLK2, 12:D2, 13:CLR2_N |
 | `D97` | 1:A_N, 2:B, 3:CLR_N, 4:Q_N, 5:Q2, 6:C2, 7:RC2, 9:A2_N, 10:B2, 11:CLR2_N, 12:Q2_N, 13:Q, 14:C1, 15:RC1 |

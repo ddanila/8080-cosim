@@ -26,6 +26,13 @@ EXPECTED_NET_PINS = {
         "BA8": "12", "BA9": "13", "BA10": "19", "BA11": "18",
         "BA12": "15", "BA13": "16", "BA14": "17", "BA15": "14",
     },
+    "D29": {
+        "D29_AIN0_BOUNDARY": "3", "D29_AIN1_BOUNDARY": "2",
+        "D29_AIN2_BOUNDARY": "4", "MEMW": "1", "MEMR": "6",
+        "AMW_N": "5", "IORD": "8", "IOWR": "7",
+        "INHIB_N": "17", "CCLCK": "18", "IOM_N": "16", "MWC_N": "19",
+        "MRC_N": "14", "AMWC_N": "15", "IORC_N": "12", "IOWC_N": "13",
+    },
 }
 
 
@@ -40,7 +47,7 @@ def main() -> None:
             endpoint_net[(ref, str(pin))] = name
 
     checks = []
-    for ref in ("D4", "D107"):
+    for ref in ("D4", "D107", "D29"):
         actual = {pin: name for pin, name in chips[ref]["pins"].items() if pin in PHYSICAL}
         checks.append((f"{ref} uses the Intel DIP-20 logical pin names", actual == PHYSICAL))
         expected = EXPECTED_NET_PINS[ref]
@@ -57,19 +64,27 @@ def main() -> None:
         pin: f"AOUT{i}" for i, pin in enumerate(("12", "13", "19", "18", "15", "16", "17", "14"))
     })
     checks.append(("D4 LVS override preserves its routed high-address permutation", d4_map == expected_d4_map))
+    d29_map = mapping["pinmaps"]["kicad_instance"]["D29"]
+    expected_d29_map = {
+        pin: f"AIN{i}" for i, pin in enumerate(("3", "2", "4", "1", "6", "5", "8", "7"))
+    }
+    expected_d29_map.update({
+        pin: f"AOUT{i}" for i, pin in enumerate(("17", "18", "16", "19", "14", "15", "12", "13"))
+    })
+    checks.append(("D29 LVS override preserves its routed command permutation", d29_map == expected_d29_map))
 
     failed = [name for name, ok in checks if not ok]
     if failed:
         raise SystemExit("8286 PINOUT AUDIT: FAIL: " + "; ".join(failed))
 
     lines = [
-        "# 8286 address-buffer pinout audit", "",
+        "# 8286 transceiver pinout audit", "",
         "Status: **PHYSICAL PINOUT GUARDED**", "",
         "The original Intel `M8286/M8287 Octal Bus Transceiver` datasheet assigns",
         "A0-A7 to DIP pins 1-8 and the paired B0-B7 channels to pins 19-12.",
-        "Sheet 1 routes D107 straight and deliberately permutes D4's high-address",
-        "channels. The board pad endpoints and per-instance LVS map preserve that",
-        "routing while HDL exposes ordered `A[15:0]`/`BA[15:0]` buses.", "",
+        "Sheet 1 routes D107 straight, permutes D4's high-address channels, and",
+        "permutes D29's eight command channels. Board pad endpoints and per-instance",
+        "LVS maps preserve those routes while HDL keeps ordered logical buses.", "",
         "Primary pinout source:",
         "`https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",

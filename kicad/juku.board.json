@@ -1261,7 +1261,7 @@
   },
   {
    "ref": "D29",
-   "type": "VABUS",
+   "type": "BUF8286",
    "pins": {
     "1": "AIN0",
     "2": "AIN1",
@@ -1285,7 +1285,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ВА86 (datasheet pinout, as D4); signals=scan"
+    "pins": "Intel M8286/КР580ВА86 physical channels A0-A7 pins1-8 pair with B0-B7 pins19-12; sheet-1 routes command positions through physical channel order 2,1,3,0,5,4,7,6"
    }
   },
   {
@@ -7252,7 +7252,7 @@
     ],
     [
      "D29",
-     "5"
+     "6"
     ],
     [
      "D17",
@@ -7293,7 +7293,7 @@
     ],
     [
      "D29",
-     "4"
+     "1"
     ],
     [
      "D7",
@@ -7354,7 +7354,7 @@
     ],
     [
      "D29",
-     "7"
+     "8"
     ],
     [
      "D7",
@@ -7399,7 +7399,7 @@
     ],
     [
      "D29",
-     "8"
+     "7"
     ],
     [
      "D7",
@@ -9265,7 +9265,7 @@
    "nodes": [
     [
      "D29",
-     "15"
+     "14"
     ],
     [
      "X1",
@@ -9278,7 +9278,7 @@
    "nodes": [
     [
      "D29",
-     "16"
+     "19"
     ],
     [
      "X1",
@@ -9287,11 +9287,11 @@
    ]
   },
   "IORC_N": {
-   "src": "traced sheet-1: D29.13 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor",
+   "src": "traced sheet-1: D29 physical B6 pin12 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor",
    "nodes": [
     [
      "D29",
-     "13"
+     "12"
     ],
     [
      "X1",
@@ -9308,7 +9308,7 @@
    "nodes": [
     [
      "D29",
-     "12"
+     "13"
     ],
     [
      "X1",
@@ -9633,7 +9633,7 @@
    "nodes": [
     [
      "D29",
-     "19"
+     "17"
     ],
     [
      "X1",
@@ -9659,7 +9659,7 @@
    "nodes": [
     [
      "D29",
-     "17"
+     "16"
     ],
     [
      "X1",
@@ -9672,7 +9672,7 @@
    "nodes": [
     [
      "D29",
-     "14"
+     "15"
     ],
     [
      "X1",
@@ -13827,20 +13827,20 @@
    "nodes": [["D26", "38"]]
   },
   "D29_AIN0_BOUNDARY": {
-   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN0 pin1; its remote source is unread and remains a measurement boundary",
-   "nodes": [["D29", "1"]]
+   "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic A0/-INHIB on D29 physical channel A2 pin3; its remote source remains unread",
+   "nodes": [["D29", "3"]]
   },
   "D29_AIN1_BOUNDARY": {
    "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary",
    "nodes": [["D29", "2"]]
   },
   "D29_AIN2_BOUNDARY": {
-   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary",
-   "nodes": [["D29", "3"]]
+   "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic A2/-IO/M on D29 physical channel A3 pin4; its remote source remains unread",
+   "nodes": [["D29", "4"]]
   },
   "AMW_N": {
-   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into D29 ВА86 A5 pin6, whose B5 output is labeled -AMWC",
-   "nodes": [["D7", "3"], ["D29", "6"]]
+   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into semantic D29 A5 on physical channel A4 pin5, paired with B4 pin15 labeled -AMWC",
+   "nodes": [["D7", "3"], ["D29", "5"]]
   },
   "D30_CLK2_BOUNDARY": {
    "src": "sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary",

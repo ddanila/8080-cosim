@@ -25,7 +25,7 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
 | 1 | A6 | `A10` | scan + July-2026 D2/D4 solder local fits |
-| 2 | A5 | `IORC_N` | traced sheet-1: D29.13 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor |
+| 2 | A5 | `IORC_N` | traced sheet-1: D29 physical B6 pin12 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor |
 | 3 | A4 | `A14` | scan + July-2026 D2/D4 solder local fits |
 | 4 | A3 | `CAS` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
 | 5 | A0 | `A12` | scan + July-2026 D2/D4 solder local fits |

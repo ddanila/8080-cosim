@@ -54,7 +54,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2251/2251 | 2251/2251 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2251 | 1863/2251 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1915/2251 | 1852/2251 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -63,7 +63,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A15: D2.6`
 - `A9: D2.7`
 - `AMW_N: D7.3`
-- `AMW_N: D29.6`
 - `CAS: D38.1`
 - `CLK_123M: D57.9`
 - `CLK_123M: D34.12`
@@ -122,9 +121,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D26_PC1_BOUNDARY: D26.15`
 - `D26_PC5_RN_IN: D28.3`
 - `D26_PC6_STOP_IN: D28.1`
-- `D29_AIN0_BOUNDARY: D29.1`
+- `D29_AIN0_BOUNDARY: D29.3`
 - `D29_AIN1_BOUNDARY: D29.2`
-- `D29_AIN2_BOUNDARY: D29.3`
 - `D30_CLK2_BOUNDARY: D30.11`
 - `D30_Q2N_BOUNDARY: D30.8`
 - `D33_CLK_RC: R46.2`
@@ -285,6 +283,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `LATCH_SIG: D39.9`
 - `M12V: A59.1`
 - `MA6: E1.3`
+- `MEMR: D29.6`
+- `MEMW: D29.1`
 - `MEM_MODE0: D28.11`
 - `MEM_MODE1: D28.13`
 - `OSC: C73.2`
@@ -395,6 +395,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `XTAL_TRIM: C73.1`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- D29.15: `MRC_N` != `AMWC_N`
+- D29.5: `MEMR` != `AMW_N`
 - D107.19: `BA7` != `BA0`
 - D107.18: `BA6` != `BA1`
 - D4.19: `BA8` != `BA10`
@@ -416,6 +418,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D30.13: `D105_MRD_INV` != `D105_MEMW_INV`
 - D26.12: `D26_PC5_TAG4` != `D26_PC5_RN_IN`
 - D26.11: `D26_PC6_TAG5` != `D26_PC6_STOP_IN`
+- D29.4: `MEMW` != `D29_AIN2_BOUNDARY`
 - R5.2: `READY_PRE_N` != `D30B_D_PRE_N`
 - D56.4: `D56_QN` != `D56_QN_D34`
 - D6.11: `RAM_SEL` != `D6_MEM_SELECT_N`
@@ -432,10 +435,18 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D93.3: `CS_FDC` != `FDC_CS_N`
 - D93.4: `IORD` != `FDC_RE_N`
 - D93.2: `IOWR` != `FDC_WE_N`
+- D29.17: `IOM_N` != `INHIB_N`
 - D3.2: `IR6` != `INT6_BUF`
+- D29.16: `MWC_N` != `IOM_N`
+- D29.12: `IOWC_N` != `IORC_N`
 - D2.2: `XACK_N` != `IORC_N`
+- D29.8: `IOWR` != `IORD`
+- D29.13: `IORC_N` != `IOWC_N`
+- D29.7: `IORD` != `IOWR`
 - D105.12: `MEMR` != `MEMW`
 - D105.13: `MEMR` != `MEMW`
+- D29.14: `AMWC_N` != `MRC_N`
+- D29.19: `INHIB_N` != `MWC_N`
 - D26.10: `D26_PC7_TAG6` != `POF`
 - D2.12: `D2_WAIT_RAW` != `READY_D`
 - R76.1: `RF_TANK` != `RF_TAP`
@@ -510,9 +521,9 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D26_PC1_BOUNDARY` | memory/decode | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D26_PC5_RN_IN` | logic | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4 is labeled -RN/X4.4;... | Cross-check against hardware when the peripheral path is exercised. |
 | `D26_PC6_STOP_IN` | logic | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2 is labeled -STOP/X4.... | Cross-check against hardware when the peripheral path is exercised. |
-| `D29_AIN0_BOUNDARY` | logic | `D29.1` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN0 pin1; its remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D29_AIN0_BOUNDARY` | logic | `D29.3` | sheet-1 native 5150x3603 command-buffer chase identifies semantic A0/-INHIB on D29 physical channel A2 pin3; its remote source remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D29_AIN1_BOUNDARY` | logic | `D29.2` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D29_AIN2_BOUNDARY` | logic | `D29.3` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D29_AIN2_BOUNDARY` | logic | `D29.4` | sheet-1 native 5150x3603 command-buffer chase identifies semantic A2/-IO/M on D29 physical channel A3 pin4; its remote source remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D30_CLK2_BOUNDARY` | timing/I/O | `D30.11` | sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D30_Q2N_BOUNDARY` | logic | `D30.8` | sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_A1_TAG2` | logic | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in that boundary domai... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
