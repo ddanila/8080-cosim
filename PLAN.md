@@ -31,7 +31,7 @@ is not a prerequisite for this replica.
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands | Exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
-| Connectivity | `sync/check.sh` reports 101 mapped instances and 260 matched nets; physical D2/D6 PROM tables, the measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails 8/17, the X1.107C `-WREQ` endpoint, the D26.PC7-to-D35 `POF` path, D11 RXRDY/TXRDY into D10 IR2/IR3, and D7.3 into physical D29.5/D29.15 `-AMWC` are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
+| Connectivity | `sync/check.sh` reports 101 mapped instances and 261 matched nets; physical D2/D6 PROM tables, the measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails 8/17, the X1.107C `-WREQ` endpoint, the D26.PC7-to-D35 `POF` path, D11 RXRDY/TXRDY into D10 IR2/IR3, D7.3 into physical D29.5/D29.15 `-AMWC`, and D7.8 into physical D29.4/D29.16 `-IO/M` are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a checksum-reproducible 2-layer 310 x 266 mm Gerber/drill snapshot | The manufacturing gate correctly marks this package invalid: the routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes, is electrically incomplete, and must not be ordered |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, physical D2 `.037`/D6 `.038` captures, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D8/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
@@ -74,7 +74,7 @@ the obsolete WAIT copper; regenerate the complete routed snapshot after the six
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 224 source-risk nets and 9 official FDC
+   current generated evidence lists 222 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.

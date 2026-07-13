@@ -10,7 +10,7 @@ with the machine-readable board model.
 - The C emulator and the structural `juku_top` model boot the real Juku ROM,
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`.
-- `sync/check.sh` currently compares 101 mapped instances and 260 nets with no
+- `sync/check.sh` currently compares 101 mapped instances and 261 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints, no KiCad clearance/short
   errors, and one explicit `M5V_DERIVED` airwire after correcting D105.10. Its
@@ -27,7 +27,7 @@ with the machine-readable board model.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   the routed snapshot still carries the superseded topology.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
-  8 and 11 remain explicit boundaries. In total, 224 modeled nets retain source-risk annotations requiring
+  8 and 11 remain explicit boundaries. In total, 222 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

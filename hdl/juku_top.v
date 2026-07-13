@@ -203,7 +203,8 @@ module juku_top (
     // strobe nets -> boot-safe).
     wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
     wire d7_y2_amw_n;  // D7.3 -> physical D29.5/A4; paired D29.15/B4 is -AMWC
-    va86_out U_D29 (.Ain ({iowr_n, iord_n, d7_y2_amw_n, memr_n, memw_n, 1'b1,  1'b1,    1'b1}),
+    wire d7_y4_iom_status;  // D7.8 -> physical D29.4/A3; paired D29.16/B3 is -IO/M
+    va86_out U_D29 (.Ain ({iowr_n, iord_n, d7_y2_amw_n, memr_n, memw_n, d7_y4_iom_status, 1'b1, 1'b1}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
     // Address/data backplane transceivers (ВА87, one-way A->B; refdes confirmed by owner from scan):
@@ -238,7 +239,7 @@ module juku_top (
         .y_n({cs_fdc_n, cs_pit2_n, cs_pit1_n, cs_pit0_n, cs_ppi1_n, cs_sio0_n, cs_ppi0_n, cs_pic_n}));
 
     // ============ memory map decode: D6 (К556РТ4 PROM) gated by D7 (ЛА3) ============
-    wire d7_a1_boundary, d7_b1_boundary, d7_a3_boundary, d7_b3_boundary, d7_y4_tag8;
+    wire d7_a1_boundary, d7_b1_boundary, d7_a3_boundary, d7_b3_boundary;
     net_boundary U_D7A1LNK (.a(iowr_n), .b(d7_a1_boundary));
     net_boundary U_D7B1LNK (.a(iord_n), .b(d7_b1_boundary));
     net_boundary U_D7A3LNK (.a(1'b0), .b(d7_a3_boundary));
@@ -246,7 +247,7 @@ module juku_top (
     la3_gate    U_D7     (.a(d7_a1_boundary), .b(d7_b1_boundary), .y(io_strobe_h),     // physical origins of pins12/13 unresolved; sim keeps prior IOWR/IORD semantics through boundaries
                           .a2(1'b1), .b2(memw_n), .y2(d7_y2_amw_n),     // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 boundary]; pin3 -> physical D29.5 (-AMWC path)
                           .a3(d7_b3_boundary), .b3(d7_a3_boundary), .y3(d25_t_w),
-                          .a4(iord_n), .b4(iowr_n), .y4(d7_y4_tag8));   // sect4 pins9/10 = IORD/IOWR; output8 -> tag8 boundary
+                          .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
     wire d6_v_enable;
     net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
     decode_prom U_DECODE (.a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]}),

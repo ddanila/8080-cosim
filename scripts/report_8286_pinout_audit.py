@@ -34,7 +34,7 @@ EXPECTED_NET_PINS = {
     },
     "D29": {
         "D29_AIN0_BOUNDARY": "3", "D29_AIN1_BOUNDARY": "2",
-        "D29_AIN2_BOUNDARY": "4", "MEMW": "1", "MEMR": "6",
+        "IOM_STATUS": "4", "MEMW": "1", "MEMR": "6",
         "AMW_N": "5", "IORD": "8", "IOWR": "7",
         "INHIB_N": "17", "CCLCK": "18", "IOM_N": "16", "MWC_N": "19",
         "MRC_N": "14", "AMWC_N": "15", "IORC_N": "12", "IOWC_N": "13",

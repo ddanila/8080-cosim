@@ -13838,9 +13838,9 @@
    "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary",
    "nodes": [["D29", "2"]]
   },
-  "D29_AIN2_BOUNDARY": {
-   "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic A2/-IO/M on D29 physical channel A3 pin4; its remote source remains unread",
-   "nodes": [["D29", "4"]]
+  "IOM_STATUS": {
+   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 IORD/IOWR NAND output pin8 runs uninterrupted east into semantic D29 A2 on physical channel A3 pin4, paired with B3 pin16 labeled -IO/M",
+   "nodes": [["D7", "8"], ["D29", "4"]]
   },
   "AMW_N": {
    "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into semantic D29 A5 on physical channel A4 pin5, paired with B4 pin15 labeled -AMWC",
@@ -15889,10 +15889,6 @@
   "D7_B1_BOUNDARY": {
    "src": "sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so it remains a measurement boundary",
    "nodes": [["D7", "13"]]
-  },
-  "D7_Y4_TAG8": {
-   "src": "sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 remains a measurement boundary",
-   "nodes": [["D7", "8"]]
   }
  },
  "no_connects": [
