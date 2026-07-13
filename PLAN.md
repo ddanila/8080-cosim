@@ -313,6 +313,45 @@ blocker below).
   retain programmer verification and compare repeat physical dumps before
   assembly/Tier-3 claims.
 
+#### Road: physical PROM tables into the full boot
+
+All four small-PROM dumps are adopted as validated data and
+`hdl/sim/prom_fallback_tb.v` pins each HDL table to its validated hex, but
+the runnable boot does not yet execute from all of them. The explicit
+adoption road, in dependency order:
+
+1. **D2 `.037` — already executes in boot.** `wait_prom_037` drives the
+   measured D30/R29 READY path in `juku_top`. No content work remains; the
+   open D30 pins 8/11 and the `H` edge contact are P0 connectivity item 3,
+   not a PROM gap.
+2. **D8 `.039` — content executes, enable is still derived.** The physical
+   table drives all eight ROM-socket selects in the runnable boot. Its `E_N`
+   input is the joined D6 conductor, which the runnable path still derives
+   functionally, so full D8 adoption completes with step 3.
+3. **D6 `.038` — the one remaining memory-map stand-in.** The runnable
+   `rom_sel/ram_sel/rev/roe` selects still come from the non-LVS
+   `decode_prom_functional` oracle; the physical table only drives the
+   structural join. Retirement order: reconstruct the joined
+   D6.11/D6.12/D13.12/D8.15 conductor's downstream D8/D13/D92 timing; use
+   `docs/d6-firmware-mode-coverage.md` (boot exercises only physical modes
+   `000`/`001`) to bound what must be proved first; switch the runnable
+   selects to the physical `decode_prom` outputs; rerun the ekta37 boot,
+   EKDOS `A>`, disk-BASIC `READY`, Monitor 3.3, and checkpoint-resume
+   guards byte-identically; then delete the functional oracle and its LVS
+   exclusion.
+4. **D94 `.092` — content adopted, boot still bypasses the quadrant.** The
+   physical table drives the three proved strobes into the structural ВГ93,
+   but that instance is inert (`mr_n=1`, `clk=0`) and EKDOS boots on the
+   behavioral `fdc_1793` selected by D9 `cs_fdc_n`. Adoption requires P0
+   connectivity item 2 (D94.15 enable source and D3-D7 destinations) plus
+   D93 functional closure (the D106.7 -> D93.26 RCLK chain, clock/reset,
+   drive interface, D100 buffer direction/enable), after which the boot's
+   FDC accesses move to the D94-decoded strobes and `fdc_1793` is retired.
+
+Adoption exit criterion: `prom_fallback_tb` equality stays green and every
+boot guard passes with zero functional PROM stand-ins; the digital-twin open
+boundary for the D6 functional decoder then closes.
+
 Exit criterion: every populated programmable part has a burnable file,
 checksum, device/pinout decision, and provenance. Any functional replacement
 for an unavailable PROM must be documented and tested as a redesign.
@@ -393,6 +432,8 @@ Once a released board and programmed parts exist:
   modeled scope.
 - [ ] P0 physical connectivity is complete and rerouted.
 - [ ] Every required PROM/EPROM has verified contents and programming evidence.
+- [ ] Runnable boot executes from all four physical PROM tables; the D6
+  memory-map oracle and the behavioral FDC bypass are retired.
 - [ ] Main-board design release passes; board is ordered.
 - [ ] Functional parts kit is received and tested.
 - [ ] Replica completes Tier 1 bring-up.
