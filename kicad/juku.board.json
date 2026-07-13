@@ -4313,7 +4313,7 @@
    },
    "prov": {
     "type": "prom",
-    "refdes": ".009 official; programming ДГШ5.106.092 (dump pending)",
+    "refdes": ".009 official; programming ДГШ5.106.092; validated repeated physical table adopted",
     "pins": "РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0; corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
    }
   },
