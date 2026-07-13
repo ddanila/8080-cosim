@@ -267,6 +267,13 @@ def main() -> int:
             "closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path",
         ),
         (
+            "P1",
+            "C94 endpoint continuity",
+            "identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved",
+            "`docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets",
+            "completes the electrical disposition of a target-revision component that was previously absent from the physical model",
+        ),
+        (
             "P2",
             "analog/video/sound/serial bring-up captures",
             "composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder",

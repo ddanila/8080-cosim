@@ -42,7 +42,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - D7's physical pin12=`SYNC`, pin13=pin11 feedback strobe is retained in the
   structural/LVS path; runnable zero-delay simulation uses the explicit
   IOWR/IORD activity oracle instead of evaluating the propagation-delay loop.
-- 218 modeled nets still carry source-risk annotations requiring
+- 220 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM

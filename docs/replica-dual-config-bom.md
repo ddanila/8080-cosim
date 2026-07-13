@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 306
-- Populate for current functional .009 build: 276
+- Board component positions: 307
+- Populate for current functional .009 build: 277
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 85
+- Unique BOM lines: 86
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 177 |
+| source-now | 178 |
 | source-populated-now | 8 |
 
 ## BOM Lines
@@ -73,6 +73,7 @@ readiness report.
 | source-now | C_KM 24 | КМ ceramic capacitor 24 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C21 | - |
 | source-now | C_KM 56 | КМ ceramic capacitor 56 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C6 | - |
 | source-now | C_KM 560 | КМ ceramic capacitor 560 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C5 | - |
+| source-now | C_KM 680 | КМ ceramic capacitor 680 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C94 | - |
 | source-now | C_TRIM 4/20 | trimmer capacitor 4/20 | modern trimmer capacitor matching footprint/value | 1 | 1 | 0 | C73 | - |
 | source-now | D_DIODE КС147 | Soviet diode/zener per value КС147 | modern diode/zener matching value and power | 1 | 1 | 0 | VD5 | - |
 | source-now | FDC_CONN | FDC_CONN | select exact substitute after circuit review | 1 | 1 | 0 | X4 | - |

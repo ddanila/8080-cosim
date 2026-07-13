@@ -4790,6 +4790,20 @@
    }
   },
   {
+   "ref": "C94",
+   "type": "C_KM",
+   "value": "680",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus owner component photo",
+    "pins": "factory drawing identifies C94 in the analog/FDC area below D102; owner photo shows the populated yellow 680п body at the registered centre. Both electrical endpoints remain explicit continuity boundaries"
+   }
+  },
+  {
    "ref": "VT2",
    "type": "Q_TO92",
    "pins": {
@@ -15885,6 +15899,14 @@
      "11"
     ]
    ]
+  },
+  "C94_1_BOUNDARY": {
+   "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
+   "nodes": [["C94", "1"]]
+  },
+  "C94_2_BOUNDARY": {
+   "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
+   "nodes": [["C94", "2"]]
   }
  },
  "no_connects": [

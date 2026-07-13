@@ -116,7 +116,7 @@ PASSIVE_PLACE = {
     # drawing (7.102.100); R65/R67/VD3/R66 are owner-photo fitted below D102.
     # The corrected VD3 centre deliberately exposes the still-unregistered L1 seed. ----
     'VT4':(264.3,98.6,0),'R73':(282.1,102.3,0),'VT3':(295.8,102.3,0),'VT2':(280.7,126.4,0),'VD3':(299.38,128.40,90),
-    'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(284.4,119.6,90),
+    'R72':(294.4,95.3,0),'R74':(292.3,102.1,90),'R75':(264.7,104.6,0),'C14':(272.2,102.3,90),'C11':(268.232,93.540,90),'R85':(274.7,87.4,0),'C94':(287.07,132.26,90),
     # Remaining R6x grid refdes-to-slot assignments are approximate; do not move
     # them independently where they overlap the still-unregistered RF cluster.
     'R62':(263,115,90),'R63':(266.5,115,90),'R64':(270,115,90),'R65':(282.21,125.14,90),'R66':(302.69,128.46,90),

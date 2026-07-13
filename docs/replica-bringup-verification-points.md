@@ -13,11 +13,11 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `218`
-- Verification-point endpoints checked in PCB: `405`
+- Verification-point nets: `220`
+- Verification-point endpoints checked in PCB: `407`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2251`
-- All board endpoints checked in routed PCB: `2251`
+- All board endpoints checked in source PCB: `2253`
+- All board endpoints checked in routed PCB: `2253`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -28,7 +28,7 @@ visible and actionable before manufacturing and first power-on.
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
-| video/analog | 17 |
+| video/analog | 19 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 405/405 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 405/405 net names matched |
+| Risk endpoints present on PCB pads | PASS | 407/407 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 407/407 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2251/2251 | 2251/2251 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2251 | 1852/2251 | FAIL |
+| `kicad/juku.kicad_pcb` | 2253/2253 | 2253/2253 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2253 | 1852/2253 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -63,6 +63,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A15: D2.6`
 - `A9: D2.7`
 - `AMW_N: D7.3`
+- `C94_1_BOUNDARY: C94.1`
+- `C94_2_BOUNDARY: C94.2`
 - `CAS: D38.1`
 - `CLK_123M: D57.9`
 - `CLK_123M: D34.12`
@@ -463,6 +465,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
+| `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary... | Scope/capture video or timing node during video bring-up. |
+| `C94_2_BOUNDARY` | video/analog | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary... | Scope/capture video or timing node during video bring-up. |
 | `C99_FAR` | logic | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `CPU_WAIT_STATUS` | logic | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `CS_FDC` | logic | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 remains the physical... | Cross-check against hardware when the peripheral path is exercised. |

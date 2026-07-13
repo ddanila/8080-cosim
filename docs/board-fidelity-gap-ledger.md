@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `306`
-- Nets modeled: `549`
-- Chip-level fidelity gaps: `56`
-- Net-level source-risk gaps: `218`
+- Chips modeled: `307`
+- Nets modeled: `551`
+- Chip-level fidelity gaps: `57`
+- Net-level source-risk gaps: `220`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -40,7 +40,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 233 |
+| scan | 234 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -55,13 +55,14 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 9 | 24 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 16 |
+| analog/source | 1 | 0 |
 | clock/I/O | 0 | 5 |
 | logic/source | 7 | 148 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
 | sound/analog | 0 | 1 |
-| video/analog | 0 | 16 |
+| video/analog | 0 | 18 |
 
 ## Chip-Level Gaps
 
@@ -89,6 +90,12 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); corrected July-2026 local pin fit traces D0/pin1-... |
+
+### analog/source
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `C94` | `C_KM` | scan | ДГШ5.109.009 СБ plus owner component photo factory drawing identifies C94 in the analog/FDC area below D102; owner photo shows the populated yellow 680п body... |
 
 ### logic/source
 
@@ -193,6 +200,8 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
+| `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit... |
+| `C94_2_BOUNDARY` | video/analog | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit... |
 | `C99_FAR` | logic/source | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity bounda... |
 | `CPU_WAIT_STATUS` | logic/source | `D1.24` | traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread |
 | `CS_FDC` | PROM/decode | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 r... |

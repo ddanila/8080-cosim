@@ -28,8 +28,12 @@ The yellow part beside `R65` was tested as an L1 candidate and rejected. Its
 full-resolution marking reads `680п` (680 pF), and the registered solder view
 does not yield the three coherent coil terminals required by the schematic.
 The previously recorded `(287.07,132.26)` centre therefore belongs to a
-capacitive part, not L1. The remaining parts stay unchanged until their bodies
-can be paired unambiguously. The generated vertical axial/diode coordinates
+capacitive part, not L1. The `.009` factory drawing identifies that populated
+part as C94, and its visible marking reads `680п`; C94 is now restored to the
+physical board model with two explicit continuity-boundary leads rather than
+being silently omitted or misidentified as the tapped coil. The remaining
+parts stay unchanged until their bodies can be paired unambiguously. The
+generated vertical axial/diode coordinates
 compensate for the KiCad footprint-anchor offset; the guarded body centres are
 `VD3=(299.38,128.40)` and `R66=(302.69,128.46)` mm.
 
@@ -44,7 +48,7 @@ until the real coil and its solder landings are registered. The adjacent yellow
 `680п` part is explicitly excluded from that search.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
-the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`.
+the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`.
 
 The R65/R67 increment itself removed their false D102-pad collisions. A later
 full-source DRC audit corrected the parser and exposed six then-current unique

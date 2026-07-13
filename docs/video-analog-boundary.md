@@ -35,6 +35,8 @@ python3 scripts/report_video_analog_boundary.py
 | `RF_TAP` carries the traced analog-corner endpoints | PASS | `L1.3, R76.1` |
 | `HF_OUT` carries the traced analog-corner endpoints | PASS | `R76.2, R77.1, X6.1` |
 | `VT4_E` carries the traced analog-corner endpoints | PASS | `C14.1, C15.2, R75.1, VT4.1` |
+| `C94_1_BOUNDARY` carries the traced analog-corner endpoints | PASS | `C94.1` |
+| `C94_2_BOUNDARY` carries the traced analog-corner endpoints | PASS | `C94.2` |
 
 ## Package / Connector Checks
 
@@ -46,6 +48,7 @@ python3 scripts/report_video_analog_boundary.py
 | L1 adjustable tank coil retains its separate 1/5 tap | PASS | L1.1/L1.2 are the tank ends; L1.3 feeds R76 through RF_TAP |
 | R66 clamp input is fed from the sheet-2 B (+12 V) rail | PASS | sheet-2 B-arrow enters R66.1; power legend defines B (+12) |
 | R73 RF-bias trimmer retains its grounded third terminal | PASS | sheet-2: top end RF_RAIL, wiper VT4_B, bottom end GND |
+| Target-revision C94 680 pF capacitor is physically modeled | PASS | .009 factory drawing identity plus registered populated 680п owner-photo body |
 | VIDEO_OUT connector maps to X7 | PASS | X7.1 signal / X7.2 return |
 | HF_OUT connector maps to X6 | PASS | X6.1 signal / X6.2 return |
 
@@ -55,6 +58,7 @@ python3 scripts/report_video_analog_boundary.py
 | --- | --- | --- |
 | Composite/RF electrical levels remain bench-only | PASS | transistor bias, RF tank tuning, and output level/current are not digital-netlist facts |
 | X6/X7 connector identity remains assembly-drawing bounded | PASS | connector labels are guarded but need bring-up/photo confirmation for the .158 board |
+| C94 electrical destinations remain explicit continuity boundaries | PASS | physical presence/value/position are proved; neither lead destination is yet readable |
 
 ## Current Analog-Corner Nets
 
@@ -75,6 +79,8 @@ python3 scripts/report_video_analog_boundary.py
 | `RF_TAP` | `L1.3, R76.1` | scan sheet-2 full-resolution analog corner: L1 adjustable-coil 1/5 tap feeds series R76 then HF output |
 | `HF_OUT` | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible) |
 | `VT4_E` | `C14.1, C15.2, R75.1, VT4.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
+| `C94_1_BOUNDARY` | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster |
+| `C94_2_BOUNDARY` | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster |
 
 ## Interpretation
 
@@ -85,3 +91,5 @@ python3 scripts/report_video_analog_boundary.py
   bench capture during bring-up.
 - The analog-corner `SOUND_CLAMP` path is not the same as the already guarded
   beeper speaker driver. Sheet 2 instead proves R66.1 is biased from B (+12 V).
+- `.009` C94 is no longer omitted or conflated with L1: its 680 pF body and
+  placement are source-proved, while both electrical endpoints remain boundaries.

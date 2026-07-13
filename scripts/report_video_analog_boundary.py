@@ -26,6 +26,8 @@ ANALOG_NETS = (
     "RF_TAP",
     "HF_OUT",
     "VT4_E",
+    "C94_1_BOUNDARY",
+    "C94_2_BOUNDARY",
 )
 
 REQUIRED_NODES = {
@@ -44,6 +46,8 @@ REQUIRED_NODES = {
     "RF_TAP": {("L1", "3"), ("R76", "1")},
     "HF_OUT": {("R76", "2"), ("R77", "1"), ("X6", "1")},
     "VT4_E": {("VT4", "1"), ("R75", "1"), ("C14", "1"), ("C15", "2")},
+    "C94_1_BOUNDARY": {("C94", "1")},
+    "C94_2_BOUNDARY": {("C94", "2")},
 }
 
 
@@ -127,6 +131,13 @@ def main() -> int:
             "sheet-2: top end RF_RAIL, wiper VT4_B, bottom end GND",
         ),
         (
+            "Target-revision C94 680 pF capacitor is physically modeled",
+            chip(board, "C94").get("type") == "C_KM"
+            and chip(board, "C94").get("value") == "680"
+            and "owner component photo" in chip(board, "C94").get("prov", {}).get("refdes", ""),
+            ".009 factory drawing identity plus registered populated 680п owner-photo body",
+        ),
+        (
             "VIDEO_OUT connector maps to X7",
             ("X7", "1") in nodes(board, "VIDEO_OUT") and ("X7", "2") in nodes(board, "GND"),
             "X7.1 signal / X7.2 return",
@@ -149,6 +160,12 @@ def main() -> int:
             "board 7.102.100; .158 delta possible" in board["nets"]["VIDEO_OUT"]["src"]
             and "board 7.102.100; .158 delta possible" in board["nets"]["HF_OUT"]["src"],
             "connector labels are guarded but need bring-up/photo confirmation for the .158 board",
+        ),
+        (
+            "C94 electrical destinations remain explicit continuity boundaries",
+            nodes(board, "C94_1_BOUNDARY") == {("C94", "1")}
+            and nodes(board, "C94_2_BOUNDARY") == {("C94", "2")},
+            "physical presence/value/position are proved; neither lead destination is yet readable",
         ),
     ]
 
@@ -228,6 +245,8 @@ def main() -> int:
             "  bench capture during bring-up.",
             "- The analog-corner `SOUND_CLAMP` path is not the same as the already guarded",
             "  beeper speaker driver. Sheet 2 instead proves R66.1 is biased from B (+12 V).",
+            "- `.009` C94 is no longer omitted or conflated with L1: its 680 pF body and",
+            "  placement are source-proved, while both electrical endpoints remain boundaries.",
             "",
         ]
     )

@@ -56,6 +56,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | P0 | FDC support signal dispositions | pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster | `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence | closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices |
 | P0 | source-PCB collision placement | register exact target-board lead centres for C13, R68, R69, R73, R74, and tapped coil L1: C13.2 currently overlaps D95.2; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13; and the old L1 stand-in overlaps the now factory/photo-proven VD3 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/VD3 centres fixed. Do not use the factory-drawing capacitor beside D41: its label is C63, not C13 | `docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md` | removes all seven known source-board electrical collision pairs without inventing target-revision passive placement |
 | P0 | D30/H continuity closure | trace D30.11 to its unique clock source, D30.8 to its unique destination, and identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13; independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available | `docs/d30-section-b-scan-chase.md`; `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md` | closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path |
+| P1 | C94 endpoint continuity | identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved | `docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets | completes the electrical disposition of a target-revision component that was previously absent from the physical model |
 | P2 | analog/video/sound/serial bring-up captures | composite/RF/sync/audio nodes plus X3 serial loopback while running the staged bring-up ladder | `docs/video-analog-boundary.md`; `docs/replica-bringup-verification-points.md`; `docs/beeper-readiness.md`; `docs/video-readout-readiness.md`; `docs/serial-handoff.md` | bench evidence only; does not block PCB fabrication |
 | P2 | photos and passive values | macro photos for the FDC/top-center quadrant, C35-C72 bypass-cap values by refdes/position, sound/video analog corner passives | `docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs | improves authenticity and reduces assembly substitutions |
 
@@ -78,13 +79,13 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `218`
+- Generated bring-up verification nets: `220`
 - `FDC`: `24` net(s)
 - `logic`: `158` net(s)
 - `memory/decode`: `11` net(s)
 - `sound/analog`: `2` net(s)
 - `timing/I/O`: `6` net(s)
-- `video/analog`: `17` net(s)
+- `video/analog`: `19` net(s)
 
 ## Practical sequencing
 
