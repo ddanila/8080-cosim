@@ -147,13 +147,17 @@ extraction work from that set:
    К155ЛН3, and D96 КМ555ТМ2 row; the source PCB follows the measured
    D106->D28 `(15.064,-1.442)` mm and D28->D96 `(14.451,0.240)` mm centre
    offsets without promoting unresolved signals. The distinct D95/D101
-   К555КП12 packages are also fitted with corrected top-view pin numbering;
+   К555КП12 packages are also fitted with corrected top-view pin numbering.
+   Their photographed right-facing notches, together with D99's, are now
+   guarded as 270-degree footprints; D97/D102 retain their independently
+   photographed left-facing 90-degree posture. This prevents the former
+   centre-correct but physically pin-reversed D95/D99/D101 landings;
    the complete D95/D99 and D101/D97/D102 cluster is now fitted and placed
    from shared raw-image pitch plus the visible board edge. D97 and D102 are
    photo-read `К155АГ3 8901`; the cable-crossed D99 identity is fixed by its
    exposed row ends and factory drawing position. The four guarded centre
    offsets are D95->D99 `(23.895,+0.451)` mm, D95->D101
-   `(-11.190,+17.380)` mm, D101->D97 `(23.794,-0.107)` mm, and D97->D102
+   `(-11.190,+17.380)` mm, D101->D97 `(23.794,-0.117)` mm, and D97->D102
    `(23.963,-0.249)` mm. A separate factory-drawing affine registration uses
    three of those centres and holds D99/D97 out at 0.910/0.851 mm. It corrects
    vertical C11 between D95/D99 and C15 between D97/D102, and records ten

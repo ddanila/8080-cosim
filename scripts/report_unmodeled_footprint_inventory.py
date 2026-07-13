@@ -82,8 +82,10 @@ def markers_ok() -> tuple[bool, list[str]]:
         (PHYSICAL_EVIDENCE, "The D2 pin table from sheet 1 is"),
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
         (PHYSICAL_EVIDENCE, "D105 = К155ЛА3"),
+        (GEN, "'D95':(256.000,93.000,270)"),
         (GEN, "'D97':(268.604,110.273,90)"),
-        (GEN, "'D99':(279.895,93.451,90)"),
+        (GEN, "'D99':(279.895,93.451,270)"),
+        (GEN, "'D101':(244.810,110.380,270)"),
         (GEN, "'D102':(292.567,110.024,90)"),
         (SHEET1, None),
     ]

@@ -1137,7 +1137,7 @@
       "overlay": "docs/photo-registration/local-packages/D95-component.jpg",
       "model": "similarity",
       "scale_px_per_mm": 21.894548,
-      "rotation_deg": 179.349883,
+      "rotation_deg": -0.650117,
       "checks": [
         {
           "pin": "16",
@@ -1230,7 +1230,7 @@
       "overlay": "docs/photo-registration/local-packages/D95-solder.jpg",
       "model": "similarity",
       "scale_px_per_mm": 21.428645,
-      "rotation_deg": 0.150382,
+      "rotation_deg": -179.849618,
       "checks": [
         {
           "pin": "9",
@@ -1493,7 +1493,7 @@
       "overlay": "docs/photo-registration/local-packages/D101-component.jpg",
       "model": "similarity",
       "scale_px_per_mm": 21.806123,
-      "rotation_deg": 179.515279,
+      "rotation_deg": -0.484721,
       "checks": [
         {
           "pin": "16",
@@ -1586,7 +1586,7 @@
       "overlay": "docs/photo-registration/local-packages/D101-solder.jpg",
       "model": "similarity",
       "scale_px_per_mm": 21.147431,
-      "rotation_deg": -0.152382,
+      "rotation_deg": 179.847618,
       "checks": [
         {
           "pin": "9",
@@ -2051,7 +2051,7 @@
       "overlay": "docs/photo-registration/local-packages/D99-component.jpg",
       "model": "similarity",
       "scale_px_per_mm": 22.049037,
-      "rotation_deg": 179.269226,
+      "rotation_deg": -0.730774,
       "checks": [
         {
           "pin": "9",
@@ -2144,7 +2144,7 @@
       "overlay": "docs/photo-registration/local-packages/D99-solder.jpg",
       "model": "similarity",
       "scale_px_per_mm": 21.597593,
-      "rotation_deg": 0.298413,
+      "rotation_deg": -179.701587,
       "checks": [
         {
           "pin": "9",

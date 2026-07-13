@@ -5243,7 +5243,7 @@
   {
    "ref": "D99", "type": "AG3_ONESHOT",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
-   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; pin2 reaches a proved isolated test landing and pin3 is visibly grounded to D96.7, while the other 12 functional/RC contacts remain distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated photos identify the right-facing notch (270-degree footprint); pin2 reaches a proved isolated test landing and pin3 is visibly grounded to D96.7, while the other 12 functional/RC contacts remain distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "D102", "type": "AG3_ONESHOT",
@@ -5263,7 +5263,7 @@
   {
    "ref": "D95", "type": "KP12_MUX",
    "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify the right-facing notch (270-degree footprint) and all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "D98", "type": "LP11_BUF",
@@ -5273,7 +5273,7 @@
   {
    "ref": "D101", "type": "KP12_MUX",
    "pins": {"1": "OE0_N", "2": "A1", "3": "D03", "4": "D02", "5": "D01", "6": "D00", "7": "Q0", "9": "Q1", "10": "D10", "11": "D11", "12": "D12", "13": "D13", "14": "A0", "15": "OE1_N"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К555КП12", "pins": "К555КП12/74LS253 datasheet pinout; power pins 8/16 routed; validated component and solder fits identify the right-facing notch (270-degree footprint) and all 14 signal contacts as distinct measurement boundaries pending remote FDC continuity"}
   },
   {
    "ref": "R5", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "2к",

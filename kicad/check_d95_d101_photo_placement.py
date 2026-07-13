@@ -33,11 +33,27 @@ def pad_centre(board: pcbnew.BOARD, refdes: str) -> tuple[float, float]:
 report = json.loads(REPORT.read_text(encoding="utf-8"))
 fits = {(fit["refdes"], fit["side"]): fit for fit in report["fits"]}
 refs = ("D95", "D99", "D101", "D97", "D102")
+expected_orientations = {
+    "D95": 270.0,
+    "D99": 270.0,
+    "D101": 270.0,
+    "D97": 90.0,
+    "D102": 90.0,
+}
 component = {ref: fits[(ref, "component")] for ref in refs}
 if len({component[ref]["image"] for ref in refs}) != 1:
     raise SystemExit("D95/D101 PHOTO PLACEMENT: row fits do not share one source photo")
 board = pcbnew.LoadBoard(str(BOARD))
 summaries = []
+for ref, expected in expected_orientations.items():
+    footprint = board.FindFootprintByReference(ref)
+    actual = footprint.GetOrientationDegrees()
+    error = abs((actual - expected + 180.0) % 360.0 - 180.0)
+    if error > 0.01:
+        raise SystemExit(
+            f"D95/D101 PHOTO PLACEMENT: FAIL {ref} orientation {actual:.1f}, "
+            f"expected notch-derived {expected:.1f} degrees"
+        )
 for left, right in (("D95", "D99"), ("D95", "D101"),
                     ("D101", "D97"), ("D97", "D102")):
     left_fit, right_fit = component[left], component[right]

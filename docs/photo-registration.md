@@ -190,7 +190,11 @@ The same check identifies the marked notch-down К531ЛН3 in
 The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
 both photographed rows corrects the earlier row-label error: standard top-view
 DIP numbering places pins 1-to-8 on the upper row and pins 16-to-9 on the lower
-row. The independent pin-13 check is 0.582 px. Its solder fit now
+row. The source PCB now also applies the required 270-degree physical footprint
+orientation; the former 90-degree placement had the right centre but reversed
+every numbered landing relative to the visible notch. D99 and D101 share that
+right-facing posture, while D97/D102 remain left-facing at 90 degrees. The
+independent pin-13 check is 0.582 px. D95's solder fit now
 correctly selects the right-hand package below the broad rail; backside reversal
 places D99 on the left and D95 on the right. The former left-group D95 assignment
 is withdrawn. D95's opposite-row pin-1 check is 0.915 px, while D99's independent
@@ -225,7 +229,7 @@ farther right rather than package joints.
 
 Package-local pitch converts shared raw-image offsets directly: D95->D99 is
 `(23.895,+0.451)` mm; D95->D101 is `(-11.190,+17.380)` mm; D101->D97 is
-`(23.794,-0.107)` mm; and D97->D102 is `(23.963,-0.249)` mm. The visible
+`(23.794,-0.117)` mm; and D97->D102 is `(23.963,-0.249)` mm. The visible
 right board edge independently constrains the row's absolute x position. The
 source PCB guards all four relations; remaining collisions are stale passive
 and transistor placements, not IC-to-IC overlaps.

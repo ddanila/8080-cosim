@@ -14,7 +14,7 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `ad8f0891d65936580a0b6da28a8f7a0a806f1dd0ddfa97fafa2831db58b9c097`
+- Board SHA256: `e20687d60197204b17f2be35b847f3e48cfcd2ce92dee673d5f85554dcb9f7d8`
 - Total violations: `677`
 - Unconnected items: `499`
 - Short violations: `16`
@@ -37,14 +37,14 @@ python3 kicad/report_source_pcb_drc.py
 
 | Nets | Items |
 | --- | --- |
-| Items shorting two nets (nets RF_TAP and GND) | PTH pad 3 [RF_TAP] of L1; PTH pad 1 [GND] of VD3 |
-| Items shorting two nets (nets D97_A2N_BOUNDARY and RF_RAIL) | PTH pad 9 [D97_A2N_BOUNDARY] of D97; PTH pad 1 [RF_RAIL] of R73 |
-| Items shorting two nets (nets D102_Q1N_BOUNDARY and VT3_BASE) | PTH pad 4 [D102_Q1N_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R68 |
-| Items shorting two nets (nets D102_Q2_BOUNDARY and VT3_BASE) | PTH pad 5 [D102_Q2_BOUNDARY] of D102; PTH pad 2 [VT3_BASE] of R69 |
+| Items shorting two nets (nets RF_RAIL and D97_A2N_BOUNDARY) | PTH pad 1 [RF_RAIL] of R73; PTH pad 9 [D97_A2N_BOUNDARY] of D97 |
+| Items shorting two nets (nets R86_1_BOUNDARY and VT3_E) | PTH pad 1 [R86_1_BOUNDARY] of R86; PTH pad 1 [VT3_E] of VT3 |
+| Items shorting two nets (nets VT3_BASE and D102_Q2_BOUNDARY) | PTH pad 2 [VT3_BASE] of R69; PTH pad 5 [D102_Q2_BOUNDARY] of D102 |
+| Items shorting two nets (nets D95_D10_BOUNDARY and GND) | PTH pad 10 [D95_D10_BOUNDARY] of D95; PTH pad 2 [GND] of C13 |
 | Items shorting two nets (nets VT3_E and D102_Q2N_BOUNDARY) | PTH pad 1 [VT3_E] of R74; PTH pad 12 [D102_Q2N_BOUNDARY] of D102 |
 | Items shorting two nets (nets VT3_E and D102_Q1_BOUNDARY) | PTH pad 1 [VT3_E] of R74; PTH pad 13 [D102_Q1_BOUNDARY] of D102 |
-| Items shorting two nets (nets VT3_E and R86_1_BOUNDARY) | PTH pad 1 [VT3_E] of VT3; PTH pad 1 [R86_1_BOUNDARY] of R86 |
-| Items shorting two nets (nets GND and D95_A1_BOUNDARY) | PTH pad 2 [GND] of C13; PTH pad 2 [D95_A1_BOUNDARY] of D95 |
+| Items shorting two nets (nets VT3_BASE and D102_Q1N_BOUNDARY) | PTH pad 2 [VT3_BASE] of R68; PTH pad 4 [D102_Q1N_BOUNDARY] of D102 |
+| Items shorting two nets (nets GND and RF_TAP) | PTH pad 1 [GND] of VD3; PTH pad 3 [RF_TAP] of L1 |
 
 ## Placement disposition
 
@@ -55,13 +55,13 @@ clear one of these shorts would regress known-good placement.
 
 | Approximate part | Fixed registered anchor | Required evidence |
 | --- | --- | --- |
-| `L1` | `VD3` | L1 is still an unregistered three-pad tapped-coil stand-in; the factory/photo-proven VD3 centre now disproves this placeholder location, so locate the actual coil holes before moving it |
 | `R73` | `D97` | R73 is a three-terminal RF-bias trimmer, not a lower-FDC-row part; register its physical body before moving it |
-| `R68` | `D102` | R68 placement is only an approximate analog-grid seed; locate the physical SND_MIX resistor from target-board imagery or continuity |
-| `R69` | `D102` | R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity |
-| `R74` | `D102` | R74 placement is only an approximate analog-grid seed; locate the physical VT3 emitter resistor from target-board imagery or continuity |
 | `VT3` | `R86` | VT3 is a legacy .006 analog-placement seed; the .009 factory/photo-proven R86 centre disproves this location, so locate or explicitly DNP the target-revision VT3 before moving it |
+| `R69` | `D102` | R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity |
 | `C13` | `D95` | the assembly-drawing site formerly read as C13 is proved to be C63; the real C13 position still requires target-board evidence |
+| `R74` | `D102` | R74 placement is only an approximate analog-grid seed; locate the physical VT3 emitter resistor from target-board imagery or continuity |
+| `R68` | `D102` | R68 placement is only an approximate analog-grid seed; locate the physical SND_MIX resistor from target-board imagery or continuity |
+| `L1` | `VD3` | L1 is still an unregistered three-pad tapped-coil stand-in; the factory/photo-proven VD3 centre now disproves this placeholder location, so locate the actual coil holes before moving it |
 
 - Classified approximate collision parts: `7/7`
 - Unexpected collision references: `none`

@@ -292,8 +292,11 @@ PLACE = {
     # D95/D101/D97/D102 share one raw component photograph. Package-local
     # scales establish their relative centres; the visible x=3682 px right
     # board edge anchors the row inside the physical 310 mm outline.
-    'D95':(256.000,93.000,90),'D97':(268.604,110.273,90),'D101':(244.810,110.380,90),
-    'D99':(279.895,93.451,90),'D102':(292.567,110.024,90),
+    # D95/D99/D101 have photographed right-facing notches (rot 270); D97/D102
+    # have left-facing notches (rot 90). Centres alone are insufficient here:
+    # reversing a one-shot or mux silently swaps every physical pin landing.
+    'D95':(256.000,93.000,270),'D97':(268.604,110.273,90),'D101':(244.810,110.380,270),
+    'D99':(279.895,93.451,270),'D102':(292.567,110.024,90),
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
     'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
