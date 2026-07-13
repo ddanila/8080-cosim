@@ -248,9 +248,9 @@ def main() -> int:
         (
             "P0",
             "FDC support signal dispositions",
-            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; prioritize the FDC cluster",
-            "`docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; `.009` assembly evidence",
-            "closes the functional signals on the 9 now-pin-modeled, power-routed FDC support devices",
+            "pin-level continuity or an explicit redesign/DNP decision for D28, D95-D99, D101, D102, and D106; first test the Western Digital Figure-11 candidates D106.3-D96.3, D96.2-D96.6, D96.5-D93.26, and which remaining AG3 /Q jointly reaches D93.27/D106.11; then check D106 straps 15/1/5 high, 10/9 low, 14 inactive and identify D106.4 recovery-clock input. D96 section 2 and D99 section 1 are already excluded by isolated-test-landing/ground evidence",
+            "`docs/fdc-hardware-handoff.md`; `docs/unmodeled-footprint-inventory.md`; `PLAN.md` P0 connectivity gate; Western Digital June-1980 application note Figure 11; `.009` assembly/photo evidence",
+            "tests the manufacturer-matched counter/separator backbone first, narrowing the 9 now-pin-modeled, power-routed FDC support devices without assuming that Juku copied the reference circuit verbatim",
         ),
         (
             "P1",

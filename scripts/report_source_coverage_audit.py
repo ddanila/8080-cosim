@@ -33,6 +33,7 @@ REQUIRED = [
     "ref/physical-proms/validated/d6_038.raw.bin",
     "ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin",
     "ref/wd1772-vg93/fd179x-01-datasheet.pdf",
+    "ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf",
     "ref/wd1772-vg93/wd1772.pdf",
     "ref/wd1772-vg93/wd1772pla.normalized.json",
     "docs/d2-reconstruction-constraints.md",
@@ -102,9 +103,9 @@ def main() -> int:
             "the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core",
         ]),
         row([
-            "Western Digital FD179X-01 datasheet plus local WD1772 transistor/PLA reference",
-            "checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted and PLA normalized for future comparison",
-            "datasheet proves package functions and supplies, not Juku-specific D93 support-net continuity or D94 truth",
+            "Western Digital FD179X-01 datasheet and June-1980 application notes plus local WD1772 transistor/PLA reference",
+            "checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted, manufacturer counter/separator topology retained as a guarded continuity constraint, and PLA normalized for future comparison",
+            "manufacturer references prove package functions and a plausible counter/separator scaffold, not Juku-specific D93 support-net continuity or D94 truth",
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",

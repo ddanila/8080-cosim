@@ -6,6 +6,7 @@ table that were provided as project reference material.
 | File | SHA256 | Notes |
 | --- | --- | --- |
 | `fd179x-01-datasheet.pdf` | `e51aef0933d88e7705f6f774ffb3238e8e8096bd9b9d774a985d95ef5766e3ce` | Western Digital `FD 179X-01 Floppy Disk Formatter/Controller Family`, October 1979, 20 pages; primary source for the 40-pin FD1793 contract and pin 40 `VDD` (+12 V). |
+| `fd179x-application-notes-jun1980.pdf` | `3989df6c7edbb20b9645bdd281347dc63e90b04afcd0150238648ddc90958ec9` | Western Digital `FD179X Application Notes`, June 1980, 16 pages; Figure 11 is the manufacturer counter/separator reference using 74123 + 74193 + 74LS74. |
 | `wd1772.pdf` | `d3601f97751b029d7effa493aa5094cd4726759eed0f4f34aa290cdf3305f0ef` | One-page KiCad-generated searchable schematic titled `WD1772`, created 2019-07-13. |
 | `wd1772pla.txt` | `687a62103ae5a89a3daf4c1decb8968d730802522fa142e458031545b7a34b10` | ASCII PLA/PLM table with 120 product rows, 19 input columns, and 19 output columns. |
 | `wd1772pla.normalized.csv` | `95d3c4796166d1915918c746773e2955cbc91eb77aea2cffb63d5b54c802aa62` | Spreadsheet-friendly normalized export of the same rows. |
@@ -23,6 +24,12 @@ Source interpretation notes captured with the files:
   Its pin tables define pins 15-18 and 22-39 as the full
   drive interface, pin 1 as the internal back-bias node that must remain open,
   and supplies VSS/VCC/VDD on pins 20/21/40.
+- The June-1980 application note was retrieved from the same archive:
+  <https://www.bitsavers.org/components/westernDigital/FD179X_Application_Notes_Jun1980.pdf>.
+  Its Figure 11 is a primary-source reference topology, not Juku-specific
+  continuity evidence. It is especially relevant because the Juku FDC cluster
+  contains the corresponding К155АГ3/К555ИЕ7/КМ555ТМ2 logic families, while
+  also containing additional muxes and one-shots absent from that figure.
 - The PDF is a KiCad-generated searchable transistor/gate schematic.
 - The accompanying note treats КР1818ВГ93 as effectively a direct FD1773/WD1772
   copy, not just a loose functional analog: internal block placement and signal

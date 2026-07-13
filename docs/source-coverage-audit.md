@@ -20,7 +20,7 @@ deliberately omitted.
 | [MAME PR #14817](https://github.com/mamedev/mame/pull/14817) | real-hardware-tested 241st raster line and corrected JBASIC byte | already reflected in the local reference and video/BASIC guards |
 | Arvutimuuseum/community pages | historical context and owner/contact leads only | promote a claim into the repo only when a file, checksum, photo, or measurement is obtained |
 | Emu80v4 and public WD1793 HDL/software models | reviewed as implementation checklists; no code adopted | the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core |
-| Western Digital FD179X-01 datasheet plus local WD1772 transistor/PLA reference | checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted and PLA normalized for future comparison | datasheet proves package functions and supplies, not Juku-specific D93 support-net continuity or D94 truth |
+| Western Digital FD179X-01 datasheet and June-1980 application notes plus local WD1772 transistor/PLA reference | checksum-guarded under `ref/wd1772-vg93/`; primary 40-pin FD1793 contract adopted, manufacturer counter/separator topology retained as a guarded continuity constraint, and PLA normalized for future comparison | manufacturer references prove package functions and a plausible counter/separator scaffold, not Juku-specific D93 support-net continuity or D94 truth |
 | Owner photographs of `ДГШ5.109.009 СБ` | 26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D14/D11 solder-side cut/patch instructions | assembly detail proves intended modifications and locality, not every copper endpoint or programmable-part truth |
 
 ## Current source requests
@@ -61,6 +61,7 @@ web/archive work should be tied to one of these named deliverables.
 | `ref/physical-proms/validated/d6_038.raw.bin` | present |
 | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` | present |
 | `ref/wd1772-vg93/fd179x-01-datasheet.pdf` | present |
+| `ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf` | present |
 | `ref/wd1772-vg93/wd1772.pdf` | present |
 | `ref/wd1772-vg93/wd1772pla.normalized.json` | present |
 | `docs/d2-reconstruction-constraints.md` | present |

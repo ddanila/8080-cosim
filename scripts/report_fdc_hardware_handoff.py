@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs" / "photo-registration" / "local-packages" / "report.json"
 REPORT = ROOT / "docs" / "fdc-hardware-handoff.md"
+APPLICATION_NOTE = ROOT / "ref" / "wd1772-vg93" / "fd179x-application-notes-jun1980.pdf"
 D93_DRIVE_PINS = {
     "15": "STEP", "16": "DIRC", "17": "EARLY", "18": "LATE",
     "22": "TEST", "23": "HLT", "25": "RG", "26": "RCLK",
@@ -89,8 +90,34 @@ def main() -> int:
     d100 = chip(board, "D100")
     d10 = chip(board, "D10")
     d9 = chip(board, "D9")
-
     failures: list[str] = []
+
+    reference_family_checks = {
+        "74193 counter": chip(board, "D106").get("type") == "IE7_CTR",
+        "74LS74 flip-flop": chip(board, "D96").get("type") == "TM2_DFF",
+        "74123 one-shot family": all(
+            chip(board, ref).get("type") == "AG3_ONESHOT"
+            for ref in ("D97", "D99", "D102")
+        ),
+    }
+    if not APPLICATION_NOTE.is_file():
+        failures.append("FD179X June-1980 application note is absent")
+    if not all(reference_family_checks.values()):
+        failures.append("Juku FDC cluster no longer matches the Figure-11 logic families")
+    d96_section2_excluded = (
+        has_node(board, "D96_Q2_N_TEST_LANDING", "D96", "8")
+        and endpoint_state(board, "D96", "8") == "BOUNDARY"
+    )
+    d99_section1_excluded = (
+        has_node(board, "GND", "D99", "3")
+        and has_node(board, "D99_B_TEST_LANDING", "D99", "2")
+        and endpoint_state(board, "D99", "2") == "BOUNDARY"
+    )
+    if not d96_section2_excluded:
+        failures.append("D96 section-2 isolated-/Q constraint is absent")
+    if not d99_section1_excluded:
+        failures.append("D99 section-1 grounded-clear/test-landing constraint is absent")
+
     if d93.get("type") != "VG93_FDC":
         failures.append("D93 is not typed as VG93_FDC")
     if not all(d93.get("pins", {}).get(pin) == role for pin, role in D93_DRIVE_PINS.items()):
@@ -292,6 +319,7 @@ def main() -> int:
         f"- Board JSON: `{BOARD_JSON.relative_to(ROOT)}`",
         "- D93 package: `КР1818ВГ93` / WD1793-compatible FDC",
         "- Primary pin source: `ref/wd1772-vg93/fd179x-01-datasheet.pdf`",
+        "- Primary application source: `ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf`",
         "- D100 package: `КР580ВА87` / Intel 8287-compatible bus transceiver",
         "",
         "## Photograph Applicability",
@@ -309,6 +337,39 @@ def main() -> int:
         "claiming their far destinations.",
         "Continuous copper promotes the private D94.1/.2/.3 to D93.4/.3/.2 control",
         "nets; no photographed branch supports the former global I/O-rail assumption.",
+        "",
+        "## Manufacturer Counter/Separator Constraint",
+        "",
+        "Western Digital's June-1980 application note Figure 11 shows a minimal",
+        "FD1791/FD1793 counter/separator made from exactly these logic families:",
+        "",
+        "| Reference function | Manufacturer device | Juku family match | State |",
+        "| --- | --- | --- | --- |",
+        table_row(["raw-read pulse conditioner", "74123", "D97/D99/D102 К155АГ3", "D99 section 1 excluded; remaining section not identified"]),
+        table_row(["recovery counter", "74LS193", "D106 К555ИЕ7", "package family matched"]),
+        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "section 2 excluded; section 1 is the candidate"]),
+        "",
+        "The reference topology makes the following continuity checks high-value:",
+        "D106.3 (Q0) to D96.3 (CLK), D96.2 (D) to D96.6 (/Q), D96.5 (Q) to",
+        "D93.26 (RCLK), and one AG3 /Q output jointly to D93.27 (RAW READ) and",
+        "D106.11 (/LOAD). It also suggests checking D106 preset inputs",
+        "15/1 high and 10/9 low, CU pin5 high, CD pin4 to the recovery clock,",
+        "and CLR pin14 inactive.",
+        "",
+        "Existing Juku photo constraints narrow, but do not close, that mapping.",
+        "D96.8 (/Q2) reaches a proved isolated component-side test landing, so",
+        "section 2 cannot supply the reference circuit's required /Q-to-D feedback;",
+        "D96 section 1 (pins 2/3/5/6) is the remaining toggle candidate. D99.3",
+        "(/CLR1) is physically grounded and D99.2 (B1) reaches another isolated",
+        "test landing, excluding D99 section 1 as the active raw-read conditioner.",
+        "The remaining AG3 sections still require continuity identification.",
+        "",
+        "These are **reference candidates, not promoted Juku nets**. The Juku",
+        "cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas",
+        "Figure 11 contains no mux and only one half of a single 74123. The owner",
+        "photos identify the packages but do not prove the candidate paths end to",
+        "end; in particular D106 pins 7/9/10 are rail-obscured. Continuity or a",
+        "Juku-specific electrical sheet remains required before board-JSON changes.",
         "",
         "## Bus-Side Handoff Checks",
         "",
