@@ -132,6 +132,14 @@ def main() -> int:
             "sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1",
         ),
         (
+            "D38 load gate is source-closed except for the remote origin of rail 2",
+            has_nodes(board, "D39_MEMCYC", {("D39", "3"), ("D39", "4"), ("D38", "5")})
+            and has_nodes(board, "TIMING_TAG2", {("D38", "4")})
+            and has_nodes(board, "GND", {("D38", "2")})
+            and has_nodes(board, "CAS", {("D38", "1")}),
+            "D38 pins5/4/2/1 <- numbered rails4/2/1/15; only rail2 remote origin remains",
+        ),
+        (
             "D56 one-shot RC networks are guarded",
             all(has_nodes(board, name, expected) for name, expected in d56_rc.items()),
             "`D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2`",
@@ -166,18 +174,13 @@ def main() -> int:
             endpoint_text(board, "D36_CAS_IN"),
         ),
         (
-            "D39_MEMCYC remains source-boundary only",
-            set(nodes(board, "D39_MEMCYC")) == {("D39", "3"), ("D39", "4")},
-            endpoint_text(board, "D39_MEMCYC"),
-        ),
-        (
             "D56_QN remains unresolved one-shot output",
             set(nodes(board, "D56_QN")) == {("D56", "4")},
             endpoint_text(board, "D56_QN"),
         ),
     ]
     ok = all(result for _, result, _ in guarded_checks + boundary_checks)
-    status = "MEMORY TIMING GUARDED / CAS-MEMCYC SOURCE BOUNDARY PENDING" if ok else "MEMORY TIMING BOUNDARY FAILED"
+    status = "MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING" if ok else "MEMORY TIMING BOUNDARY FAILED"
 
     lines = [
         "# Memory timing boundary",
@@ -189,7 +192,7 @@ def main() -> int:
         "This generated report narrows the remaining DRAM/clock timing risks.",
         "The board model preserves the traced E1/E14 selector straps, RAS/CAS ladder, write rail,",
         "PHI2TTL fanout, and D56 one-shot RC networks. It also keeps the",
-        "unread CAS input, memory-cycle gate, and D56 Q_N destination as",
+        "unread CAS input and D56 Q_N destination as",
         "explicit source boundaries instead of silently promoting them.",
         "",
         "## Command",
@@ -255,8 +258,8 @@ def main() -> int:
             "- The functional board model has enough traced structure for fabrication",
             "  and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,",
             "  and the key PHI2TTL/D56 support nets are guarded.",
-            "- The exact CAS-driver input source (`D36_CAS_IN`), D39 memory-cycle",
-            "  source/destinations (`D39_MEMCYC`), and D56 Q_N destination are still",
+            "- The exact CAS-driver input source (`D36_CAS_IN`) and D56 Q_N",
+            "  destination are still",
             "  not historical-source-complete.",
             "- Do not replace these boundaries with a behavioral timing guess from the",
             "  runnable twin. They need a readable sheet-2 source pass, macro photo,",

@@ -38,8 +38,8 @@ module juku_top (
     // The real board has NO 8224: clock = crystal Z1 + D59 (ЛН1) oscillator +
     // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
     // READY section A is now represented by D30 below; its off-sheet -SSTB source and section B
-    // remain boundaries. STSTB(8238) comes from D13/D38.
-    wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;   // ststb_n = D38.8 [WIRE 8]
+    // remain boundaries. STSTB(8238) comes from D38.8 over factory wire 8.
+    wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
@@ -170,16 +170,13 @@ module juku_top (
     // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
     // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
     wire stb_d38;
-    wire d38_load_i5, d38_load_i4, d38_load_i2, d38_load_i1;
-    net_boundary U_D38I5LNK (.a(1'b1), .b(d38_load_i5));
-    net_boundary U_D38I4LNK (.a(1'b1), .b(d38_load_i4));
-    net_boundary U_D38I2LNK (.a(1'b1), .b(d38_load_i2));
-    net_boundary U_D38I1LNK (.a(1'b1), .b(d38_load_i1));
+    wire timing_tag2;
+    net_boundary U_D38I4LNK (.a(1'b1), .b(timing_tag2));
     la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9]; pins 13+10 tied <- D39.11 (bite-3, ex-assumed D39Y)
-                     .i4(d38_load_i5), .i5(d38_load_i4), .i6(d38_load_i2), .i7(d38_load_i1), .y2(load_pre));  // sect2 (5,4,2,1->6) = LOAD; four distinct timing-bundle boundaries
-    // D13 (ТЛ2, Sheet-1) = the REAL 8238 status-strobe source (discrete, no 8224): section B STSTB =
-    // ~sync -> ststb_n -> D5 STB(pin1); section A = RESIN Schmitt -> RES (boundary). Byte-identical
-    // (same ~sync the D38 model produced) but now sourced from the faithful chip. [cpu-core.md]
+                     .i4(d39_memcyc), .i5(timing_tag2), .i6(1'b0), .i7(cas_n), .y2(load_pre));  // sect2 LOAD: pins5/4/2/1 <- rails4/2/1/15; only rail2 origin remains pending
+    // D38.8 is the physical 8238 status-strobe source: ~sync -> ststb_n -> D5 STB(pin1).
+    // D13 remains the separate Schmitt inverter package for RAMOUTEN, system-clock handoff,
+    // reset, and the D6/D105 edge path. [cpu-core.md]
     wire d37_y3;                      // D37 sect-3 out -> D58.OE (RAM-read gate, sheet-2)
     wire ram_out_en;                  // RAMOUTEN rail: DRIVEN by D13.2 (traced); load = D37.4 (sheet 2)
     // D13 = К555ТЛ2 hex Schmitt inverter (traced + census). Section 1->2 = the RAMOUTEN driver:

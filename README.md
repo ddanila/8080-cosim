@@ -27,7 +27,7 @@ with the machine-readable board model.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   the routed snapshot still carries the superseded topology.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
-  8 and 11 remain explicit boundaries. In total, 213 modeled nets retain source-risk annotations requiring
+  8 and 11 remain explicit boundaries. In total, 212 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

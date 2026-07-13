@@ -841,7 +841,7 @@
   "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; second ЛА1 section pins 5,4,2,1 are four distinct numbered timing-bundle arrivals and pin6 is LOAD_PRE"
+    "pins": "sheet-2 full-resolution: second ЛА1 section pins5/4/2/1 receive numbered rails4/2/1/15 respectively; rail4 is D39_MEMCYC, rail1 is ground, rail15 is shared CAS, rail2 retains an unresolved remote origin, and pin6 drives LOAD_PRE"
    }
   },
   {
@@ -3708,7 +3708,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "complete sheet-2 package census: A-D pins2-5 share ground, DS1/G8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit NCs, and LD6/CK9 leave as distinct timing-bundle boundaries; July-2026 photo fit corrects the horizontal notch-right landing"
+    "pins": "complete sheet-2 package census: A-D pins2-5 share ground, DS1/G8 share +5V rail A, QB12/QA13 are traced, QC11/QD10 have no external stubs and are explicit NCs, LD6 joins numbered rail17/D36.2, and CK9 joins numbered rail8/D42.8/D43.8; July-2026 photo fit corrects the horizontal notch-right landing"
    }
   },
   {
@@ -8909,7 +8909,7 @@
    ]
   },
   "CAS": {
-   "src": "traced sheet-2 (array read, crop arr_col1_locator: per-bank R rails 11/12/13/14; C+W shared); rail 15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists)",
+   "src": "traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists)",
    "nodes": [
     [
      "D60",
@@ -9049,6 +9049,10 @@
     ],
     [
      "D36",
+     "1"
+    ],
+    [
+     "D38",
      "1"
     ],
     [
@@ -10019,6 +10023,10 @@
     ],
     [
      "D39",
+     "2"
+    ],
+    [
+     "D38",
      "2"
     ],
     [
@@ -11471,21 +11479,9 @@
     ]
    ]
   },
-  "D38_LOAD_I5": {
-   "src": "scan sheet-2: D38 second ЛА1 section input pin 5 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
-   "nodes": [["D38", "5"]]
-  },
-  "D38_LOAD_I4": {
-   "src": "scan sheet-2: D38 second ЛА1 section input pin 4 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
+  "TIMING_TAG2": {
+   "src": "scan sheet-2 full-resolution (D38 load-gate bundle): numbered timing rail2 lands directly on D38 second ЛА1 section input pin4; its remote driver remains unresolved",
    "nodes": [["D38", "4"]]
-  },
-  "D38_LOAD_I2": {
-   "src": "scan sheet-2: D38 second ЛА1 section input pin 2 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
-   "nodes": [["D38", "2"]]
-  },
-  "D38_LOAD_I1": {
-   "src": "scan sheet-2: D38 second ЛА1 section input pin 1 arrives as a distinct conductor from the numbered timing bundle; remote driver not uniquely established",
-   "nodes": [["D38", "1"]]
   },
   "LOAD_VID": {
    "src": "traced (loop): D59.12 \"LOAD\" label -> east y3640 -> up x2371 -> west y3412 -> left bundle x688 tag 6; shifter side: outer control bundle tag 6 -> D42.6/D43.6 (ИР16 LD/PE, tag|pin read s2_d42ld_tag: LD=tag6, G=tag8, CK=tag3, DS=tag1)",
@@ -13972,7 +13968,7 @@
    ]
   },
   "D39_MEMCYC": {
-   "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); out3 also drives rail 4 [rail dests pending]",
+   "src": "scan sheet-2 full-resolution (bite-2 plus D38 load-gate bundle): D39 output3 feeds its section-4 input pin4 and numbered timing rail4, which lands directly on D38 load-gate input pin5",
    "nodes": [
     [
      "D39",
@@ -13981,6 +13977,10 @@
     [
      "D39",
      "4"
+    ],
+    [
+     "D38",
+     "5"
     ]
    ]
   },
