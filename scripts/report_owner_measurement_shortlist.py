@@ -227,9 +227,9 @@ def main() -> int:
         (
             "P0",
             "memory-decode stragglers",
-            "D6 V1/V2 feed, C99 far plate, the upstream D7.5/D29.3 -INHIB source, and the remaining D36 timing feeds; D7.4/MEMW, D39/D41 package inputs, and D53 output disposition are now source-closed",
-            "`docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate",
-            "tightens the as-built netlist around RAM/video timing before netlist freeze",
+            "with power removed and D6/D13 removed, resistance-map D6.11 and D6.12 separately to D13.12, D8.15, D92.5, R11.2, and R12.2, recording positive and negative readings; then during a known RAM read scope D6.9, D13.2, D37.6, and D58.9. Also close D6 V1/V2 feed, C99 far plate, the upstream D7.5/D29.3 -INHIB source, and remaining D36 timing feeds",
+            "`docs/d6-runtime-path-diagnostic.md`; `docs/d6-physical-decode.md`; `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `PLAN.md` P0 connectivity gate",
+            "resolves the mode-000 B37A RAM-output contradiction before retiring the D6 runnable oracle, then tightens the remaining RAM/video timing nets before netlist freeze",
         ),
         (
             "P1",

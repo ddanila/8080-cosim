@@ -331,7 +331,17 @@ adoption road, in dependency order:
 3. **D6 `.038` — the one remaining memory-map stand-in.** The runnable
    `rom_sel/ram_sel/rev/roe` selects still come from the non-LVS
    `decode_prom_functional` oracle; the physical table only drives the
-   structural join. Retirement order: reconstruct the joined
+   structural join. A controlled direct substitution now passes the fast
+   ekta37 boot suite but fails the mandatory checkpoint-resume boundary when
+   execution calls RAM at `B37A`: physical mode `000` emits word `8`, and the
+   currently modeled D6.9 -> D13 -> D37 path leaves D58 OE inactive. The
+   focused `docs/d6-runtime-path-diagnostic.md` reproduces that tuple without
+   replaying the long boot. It also exposes a cross-revision evidence conflict:
+   direct `.009` continuity reported D6.11/D6.12/D13.12 joined and no D8/D9
+   continuation, while the source model still retains older-sheet D8/D92
+   consumers on the joined conductor. Retirement order: isolate and
+   resistance-map those pins, capture the four live RAM-read levels named by
+   the diagnostic, reconstruct the joined
    D6.11/D6.12/D13.12/D8.15 conductor's downstream D8/D13/D92 timing; use
    `docs/d6-firmware-mode-coverage.md` (boot exercises only physical modes
    `000`/`001`) to bound what must be proved first; switch the runnable

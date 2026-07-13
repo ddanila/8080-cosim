@@ -66,6 +66,7 @@ def main() -> int:
     required_join = {("D6", "11"), ("D6", "12"), ("D13", "12"), ("D8", "15")}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
     devices = (ROOT / "hdl/devices.v").read_text()
+    runtime_report = (ROOT / "docs/d6-runtime-path-diagnostic.md").read_text()
     model_checks = [
         ("Board source joins D6.11/D6.12 to D13.12 and D8.15", required_join <= joined_nodes),
         ("HDL drives both D6 outputs onto the joined conductor", ".rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n)" in hdl),
@@ -75,6 +76,9 @@ def main() -> int:
          and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
         ("Structural consumers retain the measured joined D6 conductor",
          "wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;" in hdl),
+        ("Mode-000 B37A RAM-gate boundary has a reproducible diagnostic",
+         "PHYSICAL MODE-000 RAM GATE BOUNDARY REPRODUCED" in runtime_report
+         and "D6-RUNTIME-RAM ba=b37a" in runtime_report),
     ]
     if not all(ok for _, ok in model_checks):
         raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
@@ -124,6 +128,11 @@ def main() -> int:
         "  map. The physical table and joined conductor remain instantiated and",
         "  guarded; the compatibility path must be retired when downstream timing",
         "  continuity is sufficient to execute directly from the physical topology.",
+        "- `docs/d6-runtime-path-diagnostic.md` now reproduces the first decisive",
+        "  adoption failure without a full boot: in physical mode `000`, address",
+        "  `B37A` emits word `8`, leaving D6.9 high and the currently modeled",
+        "  D13/D37 chain's D58 output disabled. The isolated `.009` continuity and",
+        "  live-level probes named there must resolve this cross-revision boundary.",
         "", "## Model adoption guards", "",
         "| Check | Result |", "| --- | --- |",
     ]

@@ -43,6 +43,7 @@ jobs:
             scripts/report_8282_pinout_audit.py \
             scripts/report_package_endpoint_coverage.py \
             scripts/report_d6_physical_decode.py \
+            scripts/report_d6_runtime_path.py \
             scripts/report_d6_firmware_modes.py \
             scripts/report_d94_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
@@ -401,6 +402,8 @@ jobs:
         run: |
           ./sync/basic_cart_check.sh
           ./sync/prom_fallback_check.sh
+          python3 scripts/report_d6_runtime_path.py
+          git diff --exit-code -- docs/d6-runtime-path-diagnostic.md
           python3 scripts/validate_rt4_dump.py --self-test
           python3 scripts/validate_re3_dump.py --self-test
           ./sync/beeper_check.sh
