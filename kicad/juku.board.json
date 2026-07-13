@@ -5098,7 +5098,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official; assembly drawing position and sheet-1 READY circuit",
-    "pins": "section A traced: /PRE4 and D2 via R5/R6 pullups, CLK3=PHI2TTL, /CLR1=-SSTB boundary, Q5->R29->D1.READY; section B: pins 10 /PRE2 and 12 D2 are visibly tied, pins 6 /Q1 and 9 Q2 are intentional NCs, while pins 8, 11, 13 and the 10/12 source remain boundary/untraced"
+    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CLR1=-SSTB boundary, /PRE4 remains a continuity boundary, and Q5->R29->D1.READY; section B: /PRE2 pin10 and D pin12 share the R5 pull-up, /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs, and only Q_N2 pin8 plus CLK2 pin11 remain untraced"
    }
   },
   {
