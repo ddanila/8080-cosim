@@ -19,10 +19,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `541`
+- Nets modeled: `539`
 - Chip-level fidelity gaps: `58`
-- Net-level source-risk gaps: `212`
-- Documented intentional no-connect pins: `65`
+- Net-level source-risk gaps: `210`
+- Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
 
@@ -54,7 +54,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 16 |
 | clock/I/O | 0 | 5 |
-| logic/source | 9 | 144 |
+| logic/source | 9 | 142 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
@@ -166,6 +166,7 @@ explicit KiCad schematic no-connect markers.
 | `D13` | `8, 9, 10, 11` |
 | `D2` | `9, 10, 11` |
 | `D26` | `39` |
+| `D28` | `5, 6` |
 | `D3` | `3, 4, 5, 6` |
 | `D30` | `6, 9` |
 | `D35` | `1, 2, 5, 6, 8, 9` |
@@ -252,10 +253,8 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PC1_BOUNDARY` | memory/timing | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measure... |
 | `D26_PC5_RN_IN` | logic/source | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4... |
 | `D26_PC6_STOP_IN` | logic/source | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2... |
-| `D28_A3_BOUNDARY` | logic/source | `D28.5` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement... |
 | `D28_Y1_BOUNDARY` | logic/source | `D28.2` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement... |
 | `D28_Y2_BOUNDARY` | logic/source | `D28.4` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement... |
-| `D28_Y3_BOUNDARY` | logic/source | `D28.6` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin6 Y3; no remote destination is proved, so this remains a measurement... |
 | `D28_Y4_BOUNDARY` | logic/source | `D28.8` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement... |
 | `D28_Y5_BOUNDARY` | logic/source | `D28.10` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement... |
 | `D28_Y6_BOUNDARY` | logic/source | `D28.12` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement... |

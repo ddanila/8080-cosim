@@ -74,7 +74,7 @@ the obsolete WAIT copper; regenerate the complete routed snapshot after the six
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 212 source-risk nets and 9 official FDC
+   current generated evidence lists 210 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -99,7 +99,7 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2230/2230` unique PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2228/2228` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
 holds routed-board adoption on six unique analog/FDC pad collisions.

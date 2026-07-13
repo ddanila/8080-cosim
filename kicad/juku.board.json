@@ -5145,7 +5145,7 @@
   {
    "ref": "D28", "type": "LN3_OC_INV",
    "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts; legacy sheet-1 directly traces D26 PC2-PC6 into D28 inputs 11/13/9/3/1 for -REC/-PLAY/-FF/-RN/-STOP. Input pin5 and all six output destinations retain explicit target-board continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts; exhaustive legacy sheet-1 package census directly traces D26 PC2-PC6 into D28 inputs 11/13/9/3/1 for -REC/-PLAY/-FF/-RN/-STOP, omits the sixth section pins5/6 as explicit NCs, and leaves the five active output destinations as target-board continuity boundaries"}
   },
   {
    "ref": "D95", "type": "KP12_MUX",
@@ -13526,14 +13526,6 @@
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "4"]]
   },
-  "D28_A3_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "5"]]
-  },
-  "D28_Y3_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin6 Y3; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "6"]]
-  },
   "D28_Y4_BOUNDARY": {
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "8"]]
@@ -15922,6 +15914,8 @@
   ["D42", "13"],
   ["D43", "11"],
   ["D43", "12"],
-  ["D43", "13"]
+  ["D43", "13"],
+  ["D28", "5"],
+  ["D28", "6"]
  ]
 }

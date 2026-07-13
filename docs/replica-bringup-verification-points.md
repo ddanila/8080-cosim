@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `212`
-- Verification-point endpoints checked in PCB: `390`
+- Verification-point nets: `210`
+- Verification-point endpoints checked in PCB: `388`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2230`
-- All board endpoints checked in routed PCB: `2230`
+- All board endpoints checked in source PCB: `2228`
+- All board endpoints checked in routed PCB: `2228`
 - Intentional off-board endpoints excluded: `38`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 155 |
+| logic | 153 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 390/390 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 390/390 net names matched |
+| Risk endpoints present on PCB pads | PASS | 388/388 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 388/388 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2230/2230 | 2230/2230 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2230 | 1879/2230 | FAIL |
+| `kicad/juku.kicad_pcb` | 2228/2228 | 2228/2228 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2228 | 1879/2228 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -122,10 +122,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D26_PC1_BOUNDARY: D26.15`
 - `D26_PC5_RN_IN: D28.3`
 - `D26_PC6_STOP_IN: D28.1`
-- `D28_A3_BOUNDARY: D28.5`
 - `D28_Y1_BOUNDARY: D28.2`
 - `D28_Y2_BOUNDARY: D28.4`
-- `D28_Y3_BOUNDARY: D28.6`
 - `D28_Y4_BOUNDARY: D28.8`
 - `D28_Y5_BOUNDARY: D28.10`
 - `D28_Y6_BOUNDARY: D28.12`
@@ -475,10 +473,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D26_PC1_BOUNDARY` | memory/decode | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D26_PC5_RN_IN` | logic | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4 is labeled -RN/X4.4;... | Cross-check against hardware when the peripheral path is exercised. |
 | `D26_PC6_STOP_IN` | logic | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2 is labeled -STOP/X4.... | Cross-check against hardware when the peripheral path is exercised. |
-| `D28_A3_BOUNDARY` | logic | `D28.5` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_Y1_BOUNDARY` | logic | `D28.2` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_Y2_BOUNDARY` | logic | `D28.4` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D28_Y3_BOUNDARY` | logic | `D28.6` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin6 Y3; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_Y4_BOUNDARY` | logic | `D28.8` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_Y5_BOUNDARY` | logic | `D28.10` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D28_Y6_BOUNDARY` | logic | `D28.12` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
