@@ -252,7 +252,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PC1_BOUNDARY` | memory/timing | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measure... |
 | `D26_PC5_RN_IN` | logic/source | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4... |
 | `D26_PC6_STOP_IN` | logic/source | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2... |
-| `D29_AIN1_BOUNDARY` | logic/source | `D29.2` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary |
+| `D29_AIN1_BOUNDARY` | logic/source | `D29.2` | sheet-1 native 5150x3603 command-buffer chase identifies semantic command A1/CCLCK on D29 physical A1 pin2; its westbound conductor enters the dense D5/D105... |
 | `D30_CLK2_BOUNDARY` | clock/I/O | `D30.11` | sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary |
 | `D30_Q2N_BOUNDARY` | logic/source | `D30.8` | sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boun... |
 | `D34_A1_TAG2` | logic/source | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in... |

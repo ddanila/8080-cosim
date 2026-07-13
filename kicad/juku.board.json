@@ -13835,7 +13835,7 @@
    "nodes": [["D7", "5"], ["D29", "3"]]
   },
   "D29_AIN1_BOUNDARY": {
-   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary",
+   "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic command A1/CCLCK on D29 physical A1 pin2; its westbound conductor enters the dense D5/D105 crossing bundle, where adjacent parallel risers and the absence of an explicit junction do not prove the tempting D105.3 candidate, so the unique source remains unread",
    "nodes": [["D29", "2"]]
   },
   "IOM_STATUS": {

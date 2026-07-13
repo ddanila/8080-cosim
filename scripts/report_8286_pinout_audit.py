@@ -102,6 +102,14 @@ def main() -> None:
             for ref, pin in board["nets"]["INHIB_STATUS_BOUNDARY"]["nodes"]
         } == {("D7", "5"), ("D29", "3")},
     ))
+    checks.append((
+        "D29 physical A1 pin 2 remains isolated from the unproved D105 pin 3 candidate",
+        {
+            (ref, str(pin))
+            for ref, pin in board["nets"]["D29_AIN1_BOUNDARY"]["nodes"]
+        } == {("D29", "2")}
+        and endpoint_net.get(("D105", "3")) == "D105_GATE1_Y",
+    ))
 
     failed = [name for name, ok in checks if not ok]
     if failed:
