@@ -13838,9 +13838,9 @@
    "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary",
    "nodes": [["D29", "3"]]
   },
-  "D29_AIN5_BOUNDARY": {
-   "src": "sheet-1 full-resolution system-bus buffer census identifies D29 AIN5 pin6; its remote source is unread and remains a measurement boundary",
-   "nodes": [["D29", "6"]]
+  "AMW_N": {
+   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into D29 ВА86 A5 pin6, whose B5 output is labeled -AMWC",
+   "nodes": [["D7", "3"], ["D29", "6"]]
   },
   "D30_CLK2_BOUNDARY": {
    "src": "sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary",
@@ -15885,10 +15885,6 @@
   "D7_B1_BOUNDARY": {
    "src": "sheet-1 full-resolution: D7 first-gate pin13 has a drawn conductor, but its unique origin is not established after correcting the false IORD assignment, so it remains a measurement boundary",
    "nodes": [["D7", "13"]]
-  },
-  "D7_Y2_BOUNDARY": {
-   "src": "sheet-1 full-resolution package census: D7 section pins1/2 receive the D92.13 wire-11 boundary and MEMW/wire19; NAND output pin3 remains a measurement boundary because its far destination is unread",
-   "nodes": [["D7", "3"]]
   },
   "D7_Y4_TAG8": {
    "src": "sheet-1 full-resolution: D7 fourth NAND output pin8 leaves on the conductor explicitly marked 8; its unique far destination is not established, so tag 8 remains a measurement boundary",
