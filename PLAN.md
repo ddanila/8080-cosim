@@ -267,8 +267,10 @@ Next tracing order:
    Registered solder-side copper now closes D106.7 Q3 directly to D93.26 RCLK,
    choosing the Soviet IE7-only recovered-clock output over the Western
    Digital Figure-11 D96-toggle candidate on this target board. The remaining
-   first probes are D106.11-D93.27 and D106.14-D93.33; the WD-only
-   D106.3-D96.3 and D96.2-D96.6 paths are no longer assumed. Follow those with
+   first probes are D106.11-D93.27 and D106.14-D93.33. Calibrated solder-crop
+   review rejects uninterrupted same-layer paths for both pairs, so test for
+   hidden layer handoffs rather than promoting either reference topology. The
+   WD-only D106.3-D96.3 and D96.2-D96.6 paths are no longer assumed. Follow those with
    D106's static
    straps and recovery-clock input, then test D95/D101 pins 2/14 against
    D93.18/.17 and their pin-7 output destinations for the period KP12 write-

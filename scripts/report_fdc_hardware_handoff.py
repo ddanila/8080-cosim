@@ -2,6 +2,7 @@
 """Generate the FDC physical-handoff wiring report."""
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -9,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs" / "photo-registration" / "local-packages" / "report.json"
+PHOTO_ENDPOINTS = ROOT / "ref" / "photos" / "juku-pcb-2" / "endpoints.csv"
 REPORT = ROOT / "docs" / "fdc-hardware-handoff.md"
 APPLICATION_NOTE = ROOT / "ref" / "wd1772-vg93" / "fd179x-application-notes-jun1980.pdf"
 D93_DRIVE_PINS = {
@@ -19,6 +21,12 @@ D93_DRIVE_PINS = {
     "35": "INDEX", "36": "WPRT", "40": "VDD_12V",
 }
 D93_POWER_PINS = {"1": "NC_BACK_BIAS", "20": "VSS_GND", "21": "VCC_5V", "40": "VDD_12V"}
+SEPARATOR_PROBES = {
+    ("D106", "11"): ("1016.633", "2084.087", "D93.27"),
+    ("D93", "27"): ("1555.311", "2091.306", "D106.11"),
+    ("D106", "14"): ("1017.546", "1946.087", "D93.33"),
+    ("D93", "33"): ("1557.244", "1809.072", "D106.14"),
+}
 
 
 def load_board() -> dict:
@@ -83,6 +91,37 @@ def status(ok: bool, uncertain: bool = False) -> str:
     return "MISSING"
 
 
+def separator_probe_observations() -> tuple[list[list[str]], bool]:
+    """Guard the reviewed negative same-layer evidence for two separator candidates."""
+    matched: dict[tuple[str, str], dict[str, str]] = {}
+    with PHOTO_ENDPOINTS.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            key = (row.get("refdes", ""), row.get("pin", ""))
+            if key in SEPARATOR_PROBES and row.get("endpoint_id", "").startswith("seed-solder-"):
+                matched[key] = row
+    rows: list[list[str]] = []
+    ok = set(matched) == set(SEPARATOR_PROBES)
+    for key, (x, y, peer) in SEPARATOR_PROBES.items():
+        row = matched.get(key, {})
+        guarded = (
+            row.get("image") == "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg"
+            and row.get("x_px") == x
+            and row.get("y_px") == y
+            and row.get("confidence") == "local-package-fit"
+            and row.get("review_state") == "measurement"
+            and "uninterrupted same-layer path" in row.get("note", "")
+            and peer in row.get("note", "")
+        )
+        ok &= guarded
+        rows.append([
+            f"{key[0]}.{key[1]}",
+            f"({row.get('x_px', '-')}, {row.get('y_px', '-')})",
+            peer,
+            "DIRECT PATH REJECTED / LAYER HANDOFF OPEN" if guarded else "EVIDENCE MISSING",
+        ])
+    return rows, ok
+
+
 def main() -> int:
     board = load_board()
     local_report = json.loads(LOCAL_PACKAGE_REPORT.read_text(encoding="utf-8"))
@@ -91,6 +130,9 @@ def main() -> int:
     d10 = chip(board, "D10")
     d9 = chip(board, "D9")
     failures: list[str] = []
+    separator_rows, separator_probe_guarded = separator_probe_observations()
+    if not separator_probe_guarded:
+        failures.append("D106/D93 separator negative photo evidence is missing or stale")
 
     reference_family_checks = {
         "74193 counter": chip(board, "D106").get("type") == "IE7_CTR",
@@ -397,7 +439,10 @@ def main() -> int:
         "fits place D106.7 and D93.26 on one uninterrupted solder-side trace in",
         "`PXL_20260710_200506061.jpg`. This excludes the Western Figure-11",
         "D96-toggle output as Juku's RCLK source, though D96 may have another role.",
-        "Next test D106.11-D93.27 and D106.14-D93.33. In both references",
+        "Calibrated review of the same raw solder tile finds no uninterrupted",
+        "same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a",
+        "direct visible merge, not cross-layer continuity: both pairs remain meter",
+        "tests for hidden handoffs. In both references",
         "D93.24 is the controller's separate",
         "main clock input; D106 Q3 must not be treated as a candidate for D93.24.",
         "",
@@ -414,11 +459,23 @@ def main() -> int:
         "Only D106.7-D93.26 is promoted from target-board copper. The remaining",
         "Soviet-reference paths are guarded candidates, not Juku continuity.",
         "",
+        "### Separator candidate raw-crop disposition",
+        "",
+        "All coordinates below are validated local-package fits in",
+        "`PXL_20260710_200506061.jpg`. The negative result prevents topology-only",
+        "promotion while preserving the exact cross-layer continuity request.",
+        "",
+        "| Endpoint | Solder coordinate | Candidate peer | Disposition |",
+        "| --- | --- | --- | --- |",
+    ]
+    lines.extend(table_row(row) for row in separator_rows)
+    lines.extend([
+        "",
         "## Bus-Side Handoff Checks",
         "",
         "| Net / path | Status | Endpoint / purpose | Evidence boundary |",
         "| --- | --- | --- | --- |",
-    ]
+    ])
     lines.extend(table_row(row) for row in rows)
     lines.extend(
         [

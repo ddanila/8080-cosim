@@ -92,7 +92,10 @@ The target board now chooses this branch: corrected independent package
 fits place D106.7 and D93.26 on one uninterrupted solder-side trace in
 `PXL_20260710_200506061.jpg`. This excludes the Western Figure-11
 D96-toggle output as Juku's RCLK source, though D96 may have another role.
-Next test D106.11-D93.27 and D106.14-D93.33. In both references
+Calibrated review of the same raw solder tile finds no uninterrupted
+same-layer path for D106.11-D93.27 or D106.14-D93.33. This rejects a
+direct visible merge, not cross-layer continuity: both pairs remain meter
+tests for hidden handoffs. In both references
 D93.24 is the controller's separate
 main clock input; D106 Q3 must not be treated as a candidate for D93.24.
 
@@ -108,6 +111,19 @@ are made here.
 
 Only D106.7-D93.26 is promoted from target-board copper. The remaining
 Soviet-reference paths are guarded candidates, not Juku continuity.
+
+### Separator candidate raw-crop disposition
+
+All coordinates below are validated local-package fits in
+`PXL_20260710_200506061.jpg`. The negative result prevents topology-only
+promotion while preserving the exact cross-layer continuity request.
+
+| Endpoint | Solder coordinate | Candidate peer | Disposition |
+| --- | --- | --- | --- |
+| D106.11 | (1016.633, 2084.087) | D93.27 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
+| D93.27 | (1555.311, 2091.306) | D106.11 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
+| D106.14 | (1017.546, 1946.087) | D93.33 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
+| D93.33 | (1557.244, 1809.072) | D106.14 | DIRECT PATH REJECTED / LAYER HANDOFF OPEN |
 
 ## Bus-Side Handoff Checks
 
