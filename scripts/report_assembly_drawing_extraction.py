@@ -81,6 +81,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_x3_offboard_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    x4_landings = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_x4_offboard_landings.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -179,9 +183,17 @@ def main() -> int:
                 read(WIRE_TABLE_MD),
                 "1 / 401", "D28.8", "2 / 402", "D28.10", "3 / 403", "D28.12",
                 "4 / 404", "D28.4", "5 / 405", "D28.2",
-                "does not yet promote", "X4.6-X4.23",
+                "promotes all 23 board-edge landings", "X4.6-X4.23", "explicit boundaries",
             ),
             "`.006` sheet-1 exit codes 401-405; `.009` target continuity still required",
+        ),
+        (
+            "X4 bracket harness has all 23 physical board landings",
+            x4_landings.returncode == 0 and marker(
+                read(BOARD_SPEC), '"ref": "X4"', '"ref":"AX401"', '"ref":"AX423"',
+                '"X4_06_BOUNDARY"', '"X4_23_BOUNDARY"', '"X4_FF_N"', '"X4_STOP_N"',
+            ),
+            "`.009` sheets4-5 wires27-49; `kicad/check_x4_offboard_landings.py`",
         ),
         (
             "D26 PC2-PC6 retain the five source-drawn D28 sections and the sixth is unused",

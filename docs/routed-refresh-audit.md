@@ -37,10 +37,11 @@ The temporary candidate is an audit artifact, not a fabrication deliverable.
 | Additional nets quarantined from candidate DRC | 16 |
 | Reusable items after DRC quarantine | 4,330 |
 
-The source-only set includes `A17`, `A21-A32`, `A45-A62`, newly modeled FDC
+The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly modeled FDC
 support/passive parts, and the photo-fitted serial resistors. The five routed-only bodies are the off-board
 `S1`, `S4`, `X3`, `X8`, and `X9`; the authoritative source intentionally represents
-their PCB cable landings instead.
+their PCB cable landings instead. X4 is likewise schematic-only in the source;
+its newly modeled `AX401-AX423` landing row is absent from the stale routed snapshot.
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated

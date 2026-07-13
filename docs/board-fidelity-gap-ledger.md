@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `282`
-- Nets modeled: `539`
+- Chips modeled: `306`
+- Nets modeled: `557`
 - Chip-level fidelity gaps: `58`
-- Net-level source-risk gaps: `210`
+- Net-level source-risk gaps: `228`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -31,6 +31,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | .009 assembly drawing + owner photo | 1 |
 | datasheet | 1 |
 | factory X3 cable table + registered owner photos | 12 |
+| factory X4 cable table + legacy circuit | 1 |
+| factory X4 cable table + owner photo | 23 |
 | factory assembly drawing + owner photo | 1 |
 | factory power-cable table | 4 |
 | factory wire table | 14 |
@@ -54,7 +56,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 16 |
 | clock/I/O | 0 | 5 |
-| logic/source | 9 | 142 |
+| logic/source | 9 | 160 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
@@ -253,11 +255,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PC1_BOUNDARY` | memory/timing | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measure... |
 | `D26_PC5_RN_IN` | logic/source | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4... |
 | `D26_PC6_STOP_IN` | logic/source | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2... |
-| `D28_Y1_BOUNDARY` | logic/source | `D28.2` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement... |
-| `D28_Y2_BOUNDARY` | logic/source | `D28.4` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement... |
-| `D28_Y4_BOUNDARY` | logic/source | `D28.8` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement... |
-| `D28_Y5_BOUNDARY` | logic/source | `D28.10` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement... |
-| `D28_Y6_BOUNDARY` | logic/source | `D28.12` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement... |
 | `D29_AIN0_BOUNDARY` | logic/source | `D29.1` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN0 pin1; its remote source is unread and remains a measurement boundary |
 | `D29_AIN1_BOUNDARY` | logic/source | `D29.2` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary |
 | `D29_AIN2_BOUNDARY` | logic/source | `D29.3` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary |
@@ -402,6 +399,29 @@ same fidelity ledger as the chip provenance gaps.
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout |
 | `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
+| `X4_06_BOUNDARY` | logic/source | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced |
+| `X4_07_BOUNDARY` | logic/source | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced |
+| `X4_08_BOUNDARY` | logic/source | `AX408.1, X4.8` | .009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced |
+| `X4_09_BOUNDARY` | logic/source | `AX409.1, X4.9` | .009 sheets4-5 wire35: physical board landing А X4:9 maps directly to bracket X4.9; circuit-side destination remains untraced |
+| `X4_10_BOUNDARY` | logic/source | `AX410.1, X4.10` | .009 sheets4-5 wire36: physical board landing А X4:10 maps directly to bracket X4.10; circuit-side destination remains untraced |
+| `X4_11_BOUNDARY` | logic/source | `AX411.1, X4.11` | .009 sheets4-5 wire37: physical board landing А X4:11 maps directly to bracket X4.11; circuit-side destination remains untraced |
+| `X4_12_BOUNDARY` | logic/source | `AX412.1, X4.12` | .009 sheets4-5 wire38: physical board landing А X4:12 maps directly to bracket X4.12; circuit-side destination remains untraced |
+| `X4_13_BOUNDARY` | logic/source | `AX413.1, X4.13` | .009 sheets4-5 wire39: physical board landing А X4:13 maps directly to bracket X4.13; circuit-side destination remains untraced |
+| `X4_14_BOUNDARY` | logic/source | `AX414.1, X4.14` | .009 sheets4-5 wire40: physical board landing А X4:14 maps directly to bracket X4.14; circuit-side destination remains untraced |
+| `X4_15_BOUNDARY` | logic/source | `AX415.1, X4.15` | .009 sheets4-5 wire41: physical board landing А X4:15 maps directly to bracket X4.15; circuit-side destination remains untraced |
+| `X4_16_BOUNDARY` | logic/source | `AX416.1, X4.16` | .009 sheets4-5 wire42: physical board landing А X4:16 maps directly to bracket X4.16; circuit-side destination remains untraced |
+| `X4_17_BOUNDARY` | logic/source | `AX417.1, X4.17` | .009 sheets4-5 wire43: physical board landing А X4:17 maps directly to bracket X4.17; circuit-side destination remains untraced |
+| `X4_18_BOUNDARY` | logic/source | `AX418.1, X4.18` | .009 sheets4-5 wire44: physical board landing А X4:18 maps directly to bracket X4.18; circuit-side destination remains untraced |
+| `X4_19_BOUNDARY` | logic/source | `AX419.1, X4.19` | .009 sheets4-5 wire45: physical board landing А X4:19 maps directly to bracket X4.19; circuit-side destination remains untraced |
+| `X4_20_BOUNDARY` | logic/source | `AX420.1, X4.20` | .009 sheets4-5 wire46: physical board landing А X4:20 maps directly to bracket X4.20; circuit-side destination remains untraced |
+| `X4_21_BOUNDARY` | logic/source | `AX421.1, X4.21` | .009 sheets4-5 wire47: physical board landing А X4:21 maps directly to bracket X4.21; circuit-side destination remains untraced |
+| `X4_22_BOUNDARY` | logic/source | `AX422.1, X4.22` | .009 sheets4-5 wire48: physical board landing А X4:22 maps directly to bracket X4.22; circuit-side destination remains untraced |
+| `X4_23_BOUNDARY` | logic/source | `AX423.1, X4.23` | .009 sheets4-5 wire49: physical board landing А X4:23 maps directly to bracket X4.23; circuit-side destination remains untraced |
+| `X4_FF_N` | logic/source | `D28.8, AX401.1, X4.1` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin8 -FF and sends it to X4.1; .009 sheets4-5 preserve a direct 23-condu... |
+| `X4_PLAY_N` | logic/source | `D28.12, AX403.1, X4.3` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin12 -PLAY and sends it to X4.3; .009 sheets4-5 preserve a direct 23-co... |
+| `X4_REC_N` | logic/source | `D28.10, AX402.1, X4.2` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin10 -REC and sends it to X4.2; .009 sheets4-5 preserve a direct 23-con... |
+| `X4_RN_N` | logic/source | `D28.4, AX404.1, X4.4` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin4 -RN and sends it to X4.4; .009 sheets4-5 preserve a direct 23-condu... |
+| `X4_STOP_N` | logic/source | `D28.2, AX405.1, X4.5` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin2 -STOP and sends it to X4.5; .009 sheets4-5 preserve a direct 23-con... |
 | `XTAL16M` | logic/source | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin1... |
 
 ## Automatic Closure Rule

@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `210`
-- Verification-point endpoints checked in PCB: `388`
+- Verification-point nets: `228`
+- Verification-point endpoints checked in PCB: `411`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2228`
-- All board endpoints checked in routed PCB: `2228`
-- Intentional off-board endpoints excluded: `38`
+- All board endpoints checked in source PCB: `2251`
+- All board endpoints checked in routed PCB: `2251`
+- Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 153 |
+| logic | 171 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
@@ -40,21 +40,21 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 388/388 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 388/388 net names matched |
+| Risk endpoints present on PCB pads | PASS | 411/411 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 411/411 net names matched |
 
 ## Full Board Endpoint Coverage
 
 Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against
 the generated source PCB and the routed fabrication PCB. Bracket-mounted
-`S1`, `X3`, `X8`, and `X9` are intentionally excluded because their cable
+`S1`, `X3`, `X4`, `X8`, and `X9` are intentionally excluded because their cable
 landings are separate `A*` PCB footprints. This is a
 fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2228/2228 | 2228/2228 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2228 | 1879/2228 | FAIL |
+| `kicad/juku.kicad_pcb` | 2251/2251 | 2251/2251 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2251 | 1879/2251 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -122,11 +122,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D26_PC1_BOUNDARY: D26.15`
 - `D26_PC5_RN_IN: D28.3`
 - `D26_PC6_STOP_IN: D28.1`
-- `D28_Y1_BOUNDARY: D28.2`
-- `D28_Y2_BOUNDARY: D28.4`
-- `D28_Y4_BOUNDARY: D28.8`
-- `D28_Y5_BOUNDARY: D28.10`
-- `D28_Y6_BOUNDARY: D28.12`
 - `D29_AIN0_BOUNDARY: D29.1`
 - `D29_AIN1_BOUNDARY: D29.2`
 - `D29_AIN2_BOUNDARY: D29.3`
@@ -367,6 +362,34 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `X3_HARNESS_1: R104.1`
 - `X3_HARNESS_7: A27.1`
 - `X3_HARNESS_8: A28.1`
+- `X4_06_BOUNDARY: AX406.1`
+- `X4_07_BOUNDARY: AX407.1`
+- `X4_08_BOUNDARY: AX408.1`
+- `X4_09_BOUNDARY: AX409.1`
+- `X4_10_BOUNDARY: AX410.1`
+- `X4_11_BOUNDARY: AX411.1`
+- `X4_12_BOUNDARY: AX412.1`
+- `X4_13_BOUNDARY: AX413.1`
+- `X4_14_BOUNDARY: AX414.1`
+- `X4_15_BOUNDARY: AX415.1`
+- `X4_16_BOUNDARY: AX416.1`
+- `X4_17_BOUNDARY: AX417.1`
+- `X4_18_BOUNDARY: AX418.1`
+- `X4_19_BOUNDARY: AX419.1`
+- `X4_20_BOUNDARY: AX420.1`
+- `X4_21_BOUNDARY: AX421.1`
+- `X4_22_BOUNDARY: AX422.1`
+- `X4_23_BOUNDARY: AX423.1`
+- `X4_FF_N: D28.8`
+- `X4_FF_N: AX401.1`
+- `X4_PLAY_N: D28.12`
+- `X4_PLAY_N: AX403.1`
+- `X4_REC_N: D28.10`
+- `X4_REC_N: AX402.1`
+- `X4_RN_N: D28.4`
+- `X4_RN_N: AX404.1`
+- `X4_STOP_N: D28.2`
+- `X4_STOP_N: AX405.1`
 - `XTAL16M: D39.10`
 - `XTAL_TRIM: Z1.2`
 - `XTAL_TRIM: C73.1`
@@ -473,11 +496,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D26_PC1_BOUNDARY` | memory/decode | `D26.15` | sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D26_PC5_RN_IN` | logic | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4 is labeled -RN/X4.4;... | Cross-check against hardware when the peripheral path is exercised. |
 | `D26_PC6_STOP_IN` | logic | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2 is labeled -STOP/X4.... | Cross-check against hardware when the peripheral path is exercised. |
-| `D28_Y1_BOUNDARY` | logic | `D28.2` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D28_Y2_BOUNDARY` | logic | `D28.4` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D28_Y4_BOUNDARY` | logic | `D28.8` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D28_Y5_BOUNDARY` | logic | `D28.10` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D28_Y6_BOUNDARY` | logic | `D28.12` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D29_AIN0_BOUNDARY` | logic | `D29.1` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN0 pin1; its remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D29_AIN1_BOUNDARY` | logic | `D29.2` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN1 pin2; its remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D29_AIN2_BOUNDARY` | logic | `D29.3` | sheet-1 full-resolution system-bus buffer census identifies D29 AIN2 pin3; its remote source is unread and remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -622,6 +640,29 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `VT4_B` | video/analog | `R73.2, VT4.2, C10.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout; R73 4.7k drawn adjustable | Scope/capture video or timing node during video bring-up. |
 | `VT4_E` | video/analog | `VT4.1, R75.1, C14.1, C15.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible; joint read ~approx, refine vs photos at layout | Scope/capture video or timing node during video bring-up. |
 | `W_RAIL16` | memory/decode | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reprodu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
+| `X4_06_BOUNDARY` | logic | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_07_BOUNDARY` | logic | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_08_BOUNDARY` | logic | `AX408.1, X4.8` | .009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_09_BOUNDARY` | logic | `AX409.1, X4.9` | .009 sheets4-5 wire35: physical board landing А X4:9 maps directly to bracket X4.9; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_10_BOUNDARY` | logic | `AX410.1, X4.10` | .009 sheets4-5 wire36: physical board landing А X4:10 maps directly to bracket X4.10; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_11_BOUNDARY` | logic | `AX411.1, X4.11` | .009 sheets4-5 wire37: physical board landing А X4:11 maps directly to bracket X4.11; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_12_BOUNDARY` | logic | `AX412.1, X4.12` | .009 sheets4-5 wire38: physical board landing А X4:12 maps directly to bracket X4.12; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_13_BOUNDARY` | logic | `AX413.1, X4.13` | .009 sheets4-5 wire39: physical board landing А X4:13 maps directly to bracket X4.13; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_14_BOUNDARY` | logic | `AX414.1, X4.14` | .009 sheets4-5 wire40: physical board landing А X4:14 maps directly to bracket X4.14; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_15_BOUNDARY` | logic | `AX415.1, X4.15` | .009 sheets4-5 wire41: physical board landing А X4:15 maps directly to bracket X4.15; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_16_BOUNDARY` | logic | `AX416.1, X4.16` | .009 sheets4-5 wire42: physical board landing А X4:16 maps directly to bracket X4.16; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_17_BOUNDARY` | logic | `AX417.1, X4.17` | .009 sheets4-5 wire43: physical board landing А X4:17 maps directly to bracket X4.17; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_18_BOUNDARY` | logic | `AX418.1, X4.18` | .009 sheets4-5 wire44: physical board landing А X4:18 maps directly to bracket X4.18; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_19_BOUNDARY` | logic | `AX419.1, X4.19` | .009 sheets4-5 wire45: physical board landing А X4:19 maps directly to bracket X4.19; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_20_BOUNDARY` | logic | `AX420.1, X4.20` | .009 sheets4-5 wire46: physical board landing А X4:20 maps directly to bracket X4.20; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_21_BOUNDARY` | logic | `AX421.1, X4.21` | .009 sheets4-5 wire47: physical board landing А X4:21 maps directly to bracket X4.21; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_22_BOUNDARY` | logic | `AX422.1, X4.22` | .009 sheets4-5 wire48: physical board landing А X4:22 maps directly to bracket X4.22; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_23_BOUNDARY` | logic | `AX423.1, X4.23` | .009 sheets4-5 wire49: physical board landing А X4:23 maps directly to bracket X4.23; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `X4_FF_N` | logic | `D28.8, AX401.1, X4.1` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin8 -FF and sends it to X4.1; .009 sheets4-5 preserve a direct 23-conductor mapping from ph... | Prefer owner continuity check or board measurement before relying on it. |
+| `X4_PLAY_N` | logic | `D28.12, AX403.1, X4.3` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin12 -PLAY and sends it to X4.3; .009 sheets4-5 preserve a direct 23-conductor mapping from... | Prefer owner continuity check or board measurement before relying on it. |
+| `X4_REC_N` | logic | `D28.10, AX402.1, X4.2` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin10 -REC and sends it to X4.2; .009 sheets4-5 preserve a direct 23-conductor mapping from... | Prefer owner continuity check or board measurement before relying on it. |
+| `X4_RN_N` | logic | `D28.4, AX404.1, X4.4` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin4 -RN and sends it to X4.4; .009 sheets4-5 preserve a direct 23-conductor mapping from ph... | Prefer owner continuity check or board measurement before relying on it. |
+| `X4_STOP_N` | logic | `D28.2, AX405.1, X4.5` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin2 -STOP and sends it to X4.5; .009 sheets4-5 preserve a direct 23-conductor mapping from... | Prefer owner continuity check or board measurement before relying on it. |
 | `XTAL16M` | video/analog | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate fr... | Scope/capture video or timing node during video bring-up. |
 
 ## Design-release disposition

@@ -2638,6 +2638,34 @@
    "value": "24"
   },
   {
+   "ref": "X4", "type": "FDC_CONN",
+   "pins": {"1":"P1","2":"P2","3":"P3","4":"P4","5":"P5","6":"P6","7":"P7","8":"P8","9":"P9","10":"P10","11":"P11","12":"P12","13":"P13","14":"P14","15":"P15","16":"P16","17":"P17","18":"P18","19":"P19","20":"P20","21":"P21","22":"P22","23":"P23"},
+   "prov": {"type":"factory X4 cable table + legacy circuit","refdes":"ДГШ5.109.009 СБ sheets 1 and 4-5","pins":"off-board bracket connector; the 23-conductor cable maps board landings А X4:1..23 directly to X4.1..23; legacy .006 circuit labels contacts1-5 -FF/-REC/-PLAY/-RN/-STOP"}
+  },
+  {"ref":"AX401","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:1","pins":"sheets4-5 wire27 maps this board-edge landing to bracket X4.1"}},
+  {"ref":"AX402","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:2","pins":"sheets4-5 wire28 maps this board-edge landing to bracket X4.2"}},
+  {"ref":"AX403","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:3","pins":"sheets4-5 wire29 maps this board-edge landing to bracket X4.3"}},
+  {"ref":"AX404","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:4","pins":"sheets4-5 wire30 maps this board-edge landing to bracket X4.4"}},
+  {"ref":"AX405","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:5","pins":"sheets4-5 wire31 maps this board-edge landing to bracket X4.5"}},
+  {"ref":"AX406","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:6","pins":"sheets4-5 wire32 maps this board-edge landing to bracket X4.6"}},
+  {"ref":"AX407","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:7","pins":"sheets4-5 wire33 maps this board-edge landing to bracket X4.7"}},
+  {"ref":"AX408","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:8","pins":"sheets4-5 wire34 maps this board-edge landing to bracket X4.8"}},
+  {"ref":"AX409","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:9","pins":"sheets4-5 wire35 maps this board-edge landing to bracket X4.9"}},
+  {"ref":"AX410","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:10","pins":"sheets4-5 wire36 maps this board-edge landing to bracket X4.10"}},
+  {"ref":"AX411","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:11","pins":"sheets4-5 wire37 maps this board-edge landing to bracket X4.11"}},
+  {"ref":"AX412","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:12","pins":"sheets4-5 wire38 maps this board-edge landing to bracket X4.12"}},
+  {"ref":"AX413","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:13","pins":"sheets4-5 wire39 maps this board-edge landing to bracket X4.13"}},
+  {"ref":"AX414","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:14","pins":"sheets4-5 wire40 maps this board-edge landing to bracket X4.14"}},
+  {"ref":"AX415","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:15","pins":"sheets4-5 wire41 maps this board-edge landing to bracket X4.15"}},
+  {"ref":"AX416","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:16","pins":"sheets4-5 wire42 maps this board-edge landing to bracket X4.16"}},
+  {"ref":"AX417","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:17","pins":"sheets4-5 wire43 maps this board-edge landing to bracket X4.17"}},
+  {"ref":"AX418","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:18","pins":"sheets4-5 wire44 maps this board-edge landing to bracket X4.18"}},
+  {"ref":"AX419","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:19","pins":"sheets4-5 wire45 maps this board-edge landing to bracket X4.19"}},
+  {"ref":"AX420","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:20","pins":"sheets4-5 wire46 maps this board-edge landing to bracket X4.20"}},
+  {"ref":"AX421","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:21","pins":"sheets4-5 wire47 maps this board-edge landing to bracket X4.21"}},
+  {"ref":"AX422","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:22","pins":"sheets4-5 wire48 maps this board-edge landing to bracket X4.22"}},
+  {"ref":"AX423","type":"WIRE_PAD","pins":{"1":"P1"},"prov":{"type":"factory X4 cable table + owner photo","refdes":"board point А X4:23","pins":"sheets4-5 wire49 maps this board-edge landing to bracket X4.23"}},
+  {
    "ref": "S1",
    "type": "SW",
    "pins": {
@@ -13514,29 +13542,29 @@
    "src": "cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2 is labeled -STOP/X4.5; the pinned MAME .009-era Port-C contract independently retains PC6 as floppy side select. The D28.2 target-board output destination remains a separate continuity boundary",
    "nodes": [["D26", "11"], ["D28", "1"]]
   },
-  "D28_Y1_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "2"]]
+  "X4_STOP_N": {
+   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin2 -STOP and sends it to X4.5; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:5 to bracket connector X4.5, and MAME independently retains D26 PC6 as floppy side select. Target-board D28.2-to-AX405 copper remains owner-verify",
+   "nodes": [["D28", "2"], ["AX405", "1"], ["X4", "5"]]
   },
   "D26_PC5_RN_IN": {
    "src": "cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4 is labeled -RN/X4.4; the pinned MAME .009-era Port-C contract independently retains PC5 as floppy drive select. The D28.4 target-board output destination remains a separate continuity boundary",
    "nodes": [["D26", "12"], ["D28", "3"]]
   },
-  "D28_Y2_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "4"]]
+  "X4_RN_N": {
+   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin4 -RN and sends it to X4.4; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:4 to bracket connector X4.4, and MAME independently retains D26 PC5 as floppy drive select. Target-board D28.4-to-AX404 copper remains owner-verify",
+   "nodes": [["D28", "4"], ["AX404", "1"], ["X4", "4"]]
   },
-  "D28_Y4_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "8"]]
+  "X4_FF_N": {
+   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin8 -FF and sends it to X4.1; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:1 to bracket connector X4.1, and MAME independently retains D26 PC4 as floppy density control. Target-board D28.8-to-AX401 copper remains owner-verify",
+   "nodes": [["D28", "8"], ["AX401", "1"], ["X4", "1"]]
   },
-  "D28_Y5_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "10"]]
+  "X4_REC_N": {
+   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin10 -REC and sends it to X4.2; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:2 to bracket connector X4.2, and MAME independently retains D26 PC2 as floppy motor control. Target-board D28.10-to-AX402 copper remains owner-verify",
+   "nodes": [["D28", "10"], ["AX402", "1"], ["X4", "2"]]
   },
-  "D28_Y6_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "12"]]
+  "X4_PLAY_N": {
+   "src": "cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin12 -PLAY and sends it to X4.3; .009 sheets4-5 preserve a direct 23-conductor mapping from physical board landing А X4:3 to bracket connector X4.3, and MAME independently retains D26 PC3 as floppy-size control. Target-board D28.12-to-AX403 copper remains owner-verify",
+   "nodes": [["D28", "12"], ["AX403", "1"], ["X4", "3"]]
   },
   "D96_CLR1_BOUNDARY": {
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin1 CLR1_N; no remote destination is proved, so this remains a measurement boundary",
@@ -15759,6 +15787,24 @@
     ]
    ]
   },
+  "X4_06_BOUNDARY": {"src":".009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced","nodes":[["AX406","1"],["X4","6"]]},
+  "X4_07_BOUNDARY": {"src":".009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced","nodes":[["AX407","1"],["X4","7"]]},
+  "X4_08_BOUNDARY": {"src":".009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced","nodes":[["AX408","1"],["X4","8"]]},
+  "X4_09_BOUNDARY": {"src":".009 sheets4-5 wire35: physical board landing А X4:9 maps directly to bracket X4.9; circuit-side destination remains untraced","nodes":[["AX409","1"],["X4","9"]]},
+  "X4_10_BOUNDARY": {"src":".009 sheets4-5 wire36: physical board landing А X4:10 maps directly to bracket X4.10; circuit-side destination remains untraced","nodes":[["AX410","1"],["X4","10"]]},
+  "X4_11_BOUNDARY": {"src":".009 sheets4-5 wire37: physical board landing А X4:11 maps directly to bracket X4.11; circuit-side destination remains untraced","nodes":[["AX411","1"],["X4","11"]]},
+  "X4_12_BOUNDARY": {"src":".009 sheets4-5 wire38: physical board landing А X4:12 maps directly to bracket X4.12; circuit-side destination remains untraced","nodes":[["AX412","1"],["X4","12"]]},
+  "X4_13_BOUNDARY": {"src":".009 sheets4-5 wire39: physical board landing А X4:13 maps directly to bracket X4.13; circuit-side destination remains untraced","nodes":[["AX413","1"],["X4","13"]]},
+  "X4_14_BOUNDARY": {"src":".009 sheets4-5 wire40: physical board landing А X4:14 maps directly to bracket X4.14; circuit-side destination remains untraced","nodes":[["AX414","1"],["X4","14"]]},
+  "X4_15_BOUNDARY": {"src":".009 sheets4-5 wire41: physical board landing А X4:15 maps directly to bracket X4.15; circuit-side destination remains untraced","nodes":[["AX415","1"],["X4","15"]]},
+  "X4_16_BOUNDARY": {"src":".009 sheets4-5 wire42: physical board landing А X4:16 maps directly to bracket X4.16; circuit-side destination remains untraced","nodes":[["AX416","1"],["X4","16"]]},
+  "X4_17_BOUNDARY": {"src":".009 sheets4-5 wire43: physical board landing А X4:17 maps directly to bracket X4.17; circuit-side destination remains untraced","nodes":[["AX417","1"],["X4","17"]]},
+  "X4_18_BOUNDARY": {"src":".009 sheets4-5 wire44: physical board landing А X4:18 maps directly to bracket X4.18; circuit-side destination remains untraced","nodes":[["AX418","1"],["X4","18"]]},
+  "X4_19_BOUNDARY": {"src":".009 sheets4-5 wire45: physical board landing А X4:19 maps directly to bracket X4.19; circuit-side destination remains untraced","nodes":[["AX419","1"],["X4","19"]]},
+  "X4_20_BOUNDARY": {"src":".009 sheets4-5 wire46: physical board landing А X4:20 maps directly to bracket X4.20; circuit-side destination remains untraced","nodes":[["AX420","1"],["X4","20"]]},
+  "X4_21_BOUNDARY": {"src":".009 sheets4-5 wire47: physical board landing А X4:21 maps directly to bracket X4.21; circuit-side destination remains untraced","nodes":[["AX421","1"],["X4","21"]]},
+  "X4_22_BOUNDARY": {"src":".009 sheets4-5 wire48: physical board landing А X4:22 maps directly to bracket X4.22; circuit-side destination remains untraced","nodes":[["AX422","1"],["X4","22"]]},
+  "X4_23_BOUNDARY": {"src":".009 sheets4-5 wire49: physical board landing А X4:23 maps directly to bracket X4.23; circuit-side destination remains untraced","nodes":[["AX423","1"],["X4","23"]]},
   "CPU_WAIT_STATUS": {
    "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
    "nodes": [["D1", "24"]]

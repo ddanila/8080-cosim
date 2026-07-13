@@ -92,6 +92,16 @@ PASSIVE_PLACE = {
     # X8 is bracket-mounted; these four points terminate its six-conductor
     # power cable (A61 +5 V and A62 GND each take two conductors).
     'A59':(34.0,252.6,0),'A60':(29.0,252.6,0),'A61':(24.0,252.6,0),'A62':(19.0,252.6,0),
+    # X4 is bracket-mounted. The 23-conductor bundle is visible above the
+    # D93/D28 quadrant; sheets 4-5 map board points A X4:1..23 in order to
+    # the remote connector. Row pitch and span are registered from the owner
+    # component photo; per-contact copper beyond the first five remains open.
+    'AX401':(221.5,15.2,0),'AX402':(224.04,15.2,0),'AX403':(226.58,15.2,0),'AX404':(229.12,15.2,0),
+    'AX405':(231.66,15.2,0),'AX406':(234.20,15.2,0),'AX407':(236.74,15.2,0),'AX408':(239.28,15.2,0),
+    'AX409':(241.82,15.2,0),'AX410':(244.36,15.2,0),'AX411':(246.90,15.2,0),'AX412':(249.44,15.2,0),
+    'AX413':(251.98,15.2,0),'AX414':(254.52,15.2,0),'AX415':(257.06,15.2,0),'AX416':(259.60,15.2,0),
+    'AX417':(262.14,15.2,0),'AX418':(264.68,15.2,0),'AX419':(267.22,15.2,0),'AX420':(269.76,15.2,0),
+    'AX421':(272.30,15.2,0),'AX422':(274.84,15.2,0),'AX423':(277.38,15.2,0),
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
     'R31':(94.0,257.0,90),  # .009/.158 СБ + owner photo: vertical between Z1 and D59; left of D59 pad row
@@ -416,11 +426,11 @@ def main():
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
 
     # connectors are silk outlines, not DIP footprints -> never placed as chips
-    CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN', 'PAR_CONN', 'KBD_CONN'}  # PAR/KBD: X2/X9 are made by make_conn -- placing them here too duplicates the refdes and silently kills the Specctra DSN export
+    CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN', 'PAR_CONN', 'KBD_CONN', 'FDC_CONN'}  # bracket connectors stay schematic-only; X1/X2 are made below
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
     # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
     # retained in the schematic but must never become a PCB header footprint.
-    OFF_BOARD = {'S1', 'S4', 'X3', 'X8', 'X9'}
+    OFF_BOARD = {'S1', 'S4', 'X3', 'X4', 'X8', 'X9'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:

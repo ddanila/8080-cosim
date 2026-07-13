@@ -134,10 +134,13 @@ for five X4 contacts through its explicit exit codes. The open-collector
 | 4 / 404 | `-RN` | D28.4 |
 | 5 / 405 | `-STOP` | D28.2 |
 
-This narrows target-board continuity for X4.1-X4.5, but does not yet promote
-those older tape-control paths into `.009`: D28 is retained in the FDC-era
-population and its actual copper must confirm that the five functions were
-not reassigned. X4.6-X4.23 have no circuit destination proved by this sheet.
+The `.009` cable table promotes all 23 board-edge landings and their direct
+wires to the bracket connector. The first five circuit-side paths are retained
+as cross-revision, owner-verify nets because D28 is present in the FDC-era
+population and MAME independently assigns the same Port-C functions; actual
+`.009` D28-to-landing copper must still confirm they were not reassigned.
+X4.6-X4.23 are promoted only as landing-to-connector harness nets: their
+on-board circuit destinations remain explicit boundaries.
 
 The X9 row is now promoted without changing its already traced keyboard nets:
 the source PCB contains fourteen one-pad footprints `A45` through `A58` at the
@@ -191,8 +194,8 @@ the table gives point numbers, not pin numbers. In particular, do not route a
 single on-board S1 footprint: first model the physically separate `А:17` and
 `А:18` wire landings and their proved local copper. For wire 18, the proved
 landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
-The X3, X8, and X9 cables are promoted as physical numbered landings plus
-schematic-only bracket connectors. X4 remains at this boundary until its
-board-side points are reconciled with the circuit; the `.006` D28.8/.10/.12/
-.4/.2 cross-reference above is the first five-contact continuity hypothesis,
-not target-board proof.
+The X3, X4, X8, and X9 cables are promoted as physical numbered landings plus
+schematic-only bracket connectors. X4 contacts 1-5 carry the guarded `.006`
+D28.8/.10/.12/.4/.2 cross-revision reconstruction; contacts 6-23 stop at
+explicit board-side boundaries until their circuit destinations are traced.
+These are not claims of target-board copper proof.
