@@ -20,6 +20,8 @@ history.
   remaining D30 section-B conductors and the exact continuity closure required.
 - `8286-pinout-audit.md` — physical D4/D107/D23-D25/D29/D100 channel pinouts
   and routed high-address/command permutation guard.
+- `8282-pinout-audit.md` — complete physical D58 DRAM read-latch pinout,
+  power, and routed data-channel guard.
 
 ## Current evidence
 

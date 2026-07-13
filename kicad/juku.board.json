@@ -1453,12 +1453,14 @@
     "13": "Q6",
     "12": "Q7",
     "11": "STB",
-    "9": "OE_N"
+    "9": "OE_N",
+    "10": "VSS_GND",
+    "20": "VCC_5V"
    },
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ИР82 read-data latch; D inputs come from РУ5 DO rails, Q outputs drive DB0-DB7, OE pin9 comes from D37.6, and STB pin11 reaches timing-bundle tag 5"
+    "pins": "Intel 8282/КР580ИР82 complete DIP-20 contract: DI0-DI7 pins1-8, OE pin9, GND pin10, STB pin11, DO7-DO0 pins12-19, and +5V pin20; sheet-2 routes РУ5 DO rails into DI, DO into DB0-DB7, OE from D37.6, and STB to timing tag 5"
    }
   },
   {
