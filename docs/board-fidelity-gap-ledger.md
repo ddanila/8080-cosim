@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
-- Nets modeled: `544`
+- Nets modeled: `541`
 - Chip-level fidelity gaps: `58`
-- Net-level source-risk gaps: `213`
+- Net-level source-risk gaps: `212`
 - Documented intentional no-connect pins: `65`
 
 ## Chip Provenance Types
@@ -52,9 +52,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 24 |
 | PROM truth | 1 | 0 |
-| PROM/decode | 0 | 14 |
+| PROM/decode | 0 | 16 |
 | clock/I/O | 0 | 5 |
-| logic/source | 9 | 147 |
+| logic/source | 9 | 144 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
@@ -253,9 +253,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PC5_RN_IN` | logic/source | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4... |
 | `D26_PC6_STOP_IN` | logic/source | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2... |
 | `D28_A3_BOUNDARY` | logic/source | `D28.5` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin5 A3; no remote destination is proved, so this remains a measurement... |
-| `D28_A4_BOUNDARY` | logic/source | `D28.9` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin9 A4; no remote destination is proved, so this remains a measurement... |
-| `D28_A5_BOUNDARY` | logic/source | `D28.11` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin11 A5; no remote destination is proved, so this remains a measurement... |
-| `D28_A6_BOUNDARY` | logic/source | `D28.13` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin13 A6; no remote destination is proved, so this remains a measurement... |
 | `D28_Y1_BOUNDARY` | logic/source | `D28.2` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement... |
 | `D28_Y2_BOUNDARY` | logic/source | `D28.4` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement... |
 | `D28_Y3_BOUNDARY` | logic/source | `D28.6` | July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin6 Y3; no remote destination is proved, so this remains a measurement... |
@@ -373,12 +370,14 @@ same fidelity ledger as the chip provenance gaps.
 | `D99_Q2_BOUNDARY` | logic/source | `D99.5` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement... |
 | `D99_RC1_BOUNDARY` | logic/source | `D99.15` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measuremen... |
 | `D99_RC2_BOUNDARY` | logic/source | `D99.7` | July-2026 validated component and solder package registration identifies D99 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement... |
-| `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D6.15` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identi... |
+| `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D6.15, D28.9` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15 and directly into D28 input pin9, whose paired open-collector output pin8 is labeled -... |
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FRAME_INT` | memory/timing | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (... |
 | `HF_OUT` | video/analog | `R76.2, R77.1, X6.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: RF out -> contact 701; conn = X6 per СБ assembly drawing (es101_emaplaat.pdf, board... |
 | `LATCH_B` | clock/I/O | `D40.11, D37.2, D54.9, D54.15, D54.18` | scan+mame; +D54 CLK0/1/2: the drawn 1MHz rail = the D40.QD /16 tap (HDL+MAME concur; rail tag read pending) |
+| `MEM_MODE0` | PROM/decode | `D26.16, D6.2, D28.11` | traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 i... |
+| `MEM_MODE1` | PROM/decode | `D26.17, D6.1, D28.13` | traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1 and directly into D28 input pin13, whose paired open-collector output pin12 i... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIC_IR2_BOUNDARY` | logic/source | `D10.20` | scan sheet-1: D10 IR2 pin 20 has a distinct southbound conductor; far destination remains unread |
 | `PIC_IR3_BOUNDARY` | logic/source | `D10.21` | scan sheet-1: D10 IR3 pin 21 has a distinct southbound conductor; far destination remains unread |

@@ -184,11 +184,15 @@ def main() -> int:
             "`.006` sheet-1 exit codes 401-405; `.009` target continuity still required",
         ),
         (
-            "D26 PC5/PC6 retain the source-drawn D28 -RN/-STOP input sections",
+            "D26 PC2-PC6 retain the five source-drawn D28 control input sections",
             marker(
                 read(BOARD_SPEC),
+                '"MEM_MODE0"', "directly into D28 input pin11",
+                '"MEM_MODE1"', "directly into D28 input pin13",
+                '"FDC_DDEN"', "directly into D28 input pin9",
                 '"D26_PC5_RN_IN"', '[["D26", "12"], ["D28", "3"]]',
                 '"D26_PC6_STOP_IN"', '[["D26", "11"], ["D28", "1"]]',
+                "the D28 output destination remains a target-board continuity boundary",
                 "The D28.4 target-board output destination remains a separate continuity boundary",
                 "The D28.2 target-board output destination remains a separate continuity boundary",
             ),

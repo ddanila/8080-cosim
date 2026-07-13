@@ -5145,7 +5145,7 @@
   {
    "ref": "D28", "type": "LN3_OC_INV",
    "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts; legacy sheet-1 directly traces D26 PC6/pin11 -> D28.1 (-STOP section) and D26 PC5/pin12 -> D28.3 (-RN section), while the remaining inputs and all six output destinations retain explicit target-board continuity boundaries"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts; legacy sheet-1 directly traces D26 PC2-PC6 into D28 inputs 11/13/9/3/1 for -REC/-PLAY/-FF/-RN/-STOP. Input pin5 and all six output destinations retain explicit target-board continuity boundaries"}
   },
   {
    "ref": "D95", "type": "KP12_MUX",
@@ -7380,7 +7380,7 @@
    ]
   },
   "MEM_MODE0": {
-   "src": "traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2",
+   "src": "traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 is labeled -REC/X4.2; the D28 output destination remains a target-board continuity boundary",
    "nodes": [
     [
      "D26",
@@ -7389,6 +7389,10 @@
     [
      "D6",
      "2"
+    ],
+    [
+     "D28",
+     "11"
     ]
    ]
   },
@@ -13534,25 +13538,13 @@
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin8 Y4; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "8"]]
   },
-  "D28_A4_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin9 A4; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "9"]]
-  },
   "D28_Y5_BOUNDARY": {
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin10 Y5; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "10"]]
   },
-  "D28_A5_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin11 A5; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "11"]]
-  },
   "D28_Y6_BOUNDARY": {
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin12 Y6; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "12"]]
-  },
-  "D28_A6_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin13 A6; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "13"]]
   },
   "D96_CLR1_BOUNDARY": {
    "src": "July-2026 full component registration and reflected solder package fit identify D96 КМ555ТМ2 pin1 CLR1_N; no remote destination is proved, so this remains a measurement boundary",
@@ -13873,7 +13865,7 @@
    ]
   },
   "FDC_DDEN": {
-   "src": "cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity",
+   "src": "cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15 and directly into D28 input pin9, whose paired open-collector output pin8 is labeled -FF/X4.1; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity; the D28 output destination remains a target-board continuity boundary",
    "nodes": [
     [
      "D26",
@@ -13886,6 +13878,10 @@
     [
      "D6",
      "15"
+    ],
+    [
+     "D28",
+     "9"
     ]
    ]
   },
@@ -15480,7 +15476,7 @@
    "nodes": [["C99", "2"]]
   },
   "MEM_MODE1": {
-   "src": "traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1",
+   "src": "traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1 and directly into D28 input pin13, whose paired open-collector output pin12 is labeled -PLAY/X4.3; the D28 output destination remains a target-board continuity boundary",
    "nodes": [
     [
      "D26",
@@ -15489,6 +15485,10 @@
     [
      "D6",
      "1"
+    ],
+    [
+     "D28",
+     "13"
     ]
    ]
   },
