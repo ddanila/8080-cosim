@@ -19,16 +19,15 @@ The filenames deliberately retain the board identity:
 - `arvutimuuseum_CS00015` identifies a different physical machine held by
   Arvutimuuseum, inventory/machine identifier `CS00015`.
 
-The D8/D94 board-name pairs are byte-for-byte file aliases of the same three
-read events, not six independent reads or proof of two devices. Both names are
-retained to preserve the supplied provenance labels. D2/D6 files that contain
-different serial transcripts are separate physical reads as described below.
+Several board-name pairs are byte-for-byte file aliases, not extra read events
+or proof of another device. Both names are retained to preserve the supplied
+provenance labels. Each section states the independent count explicitly.
 
 ## D2 — ДГШ5.106.037, К556РТ4
 
-Seven complete accepted reads cover both boards, including power-cycled series
-from each source and an extra verification read from Danila's PROM. All agree
-at every address with zero unstable rows.
+Four independent accepted reads include a power-cycled three-read series and a
+separate verification read. Three additional board-name files are exact aliases
+of that series and are not counted again. All agree at every address.
 
 ```text
 validated/d2_037.raw.bin
@@ -37,9 +36,9 @@ SHA256 953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b
 
 ## D6 — ДГШ5.106.038, К556РТ4
 
-Five complete accepted reads cover both boards; the `CS00015` series includes
-a separately power-cycled third read. All agree at every address with zero
-unstable rows. Pin 9 measured 4.4 V when high and pins 9-12 were confirmed
+Three independent accepted reads include a separately power-cycled third read;
+two additional board-name files are exact aliases and are not counted again.
+All agree at every address. Pin 9 measured 4.4 V when high and pins 9-12 were confirmed
 isolated in the reader. This cross-machine physical table supersedes the
 retired reconstructed D6 fallback.
 

@@ -1,8 +1,9 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "device": "KR556RT4 256x4",
   "name": "d2_037",
   "capture_count": 7,
+  "independent_capture_count": 4,
   "raw_pin_level_sha256": "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
   "active_low_asserted_sha256": "7a0cdb0129e75571811dd193fd99a749ac22d3bb198edc7237071b82d9d5d6db",
   "packing": "256 bytes in address order; low nibble significant; high nibble zero",
@@ -45,5 +46,6 @@
     "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt#1",
     "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture2.txt#1",
     "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1"
-  ]
+  ],
+  "alias_note": "The unqualified and arvutimuuseum_CS00015 three-read names are byte-for-byte aliases of the same supplied events; the separate sukharev_reference verification is independent."
 }
