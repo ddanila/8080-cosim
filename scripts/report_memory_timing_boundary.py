@@ -40,17 +40,12 @@ def main() -> int:
     board = load_board()
     chips = {chip.get("ref"): chip for chip in board["chips"]}
     d35 = chips["D35"]
-    d53 = next(chip for chip in board["chips"] if chip.get("ref") == "D53")
     d59 = chips["D59"]
     hex_contract = {
         "1": "I1", "2": "O2", "3": "I3", "4": "O4", "5": "I5", "6": "O6",
         "9": "I9", "8": "O8",
     }
     d59_contract = dict(hex_contract, **{"1": "XIN", "2": "OSC"})
-    d53_contract = {
-        "7": "Y_N7", "9": "Y_N6", "10": "Y_N5", "11": "Y_N4",
-        "12": "Y_N3", "13": "Y_N2", "14": "Y_N1", "15": "Y_N0",
-    }
     d53_outputs = {
         "D53_Y0_R49": {("D53", "15"), ("R49", "1")},
         "D53_Y1_R50": {("D53", "14"), ("R50", "1")},
@@ -96,6 +91,13 @@ def main() -> int:
             "D53 RAS/CAS ladder outputs are guarded",
             all(has_nodes(board, name, expected) for name, expected in d53_outputs.items()),
             "`D53_Y0_R49`..`D53_Y3_R52`",
+        ),
+        (
+            "D53 unused Y4-Y7 outputs remain source-proved no-connects",
+            all(["D53", pin] in board.get("no_connects", []) for pin in ("7", "9", "10", "11"))
+            and not any(ref == "D53" and pin in {"7", "9", "10", "11"}
+                        for net in board["nets"].values() for ref, pin in net.get("nodes", [])),
+            "sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs",
         ),
         (
             "D36 write rail is guarded to all modeled DRAM W pins",
@@ -160,13 +162,6 @@ def main() -> int:
             and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
             and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6", "8", "9")),
             "D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary",
-        ),
-        (
-            "D53 Y4-Y7 remain explicit unresolved functional pins",
-            all(d53.get("pins", {}).get(pin) == role for pin, role in d53_contract.items())
-            and not any(ref == "D53" and pin in {"7", "9", "10", "11"}
-                        for net in board["nets"].values() for ref, pin in net.get("nodes", [])),
-            "D53.11/.10/.9/.7 require traced destinations or explicit NC proof",
         ),
         (
             "D36_CAS_IN remains source-boundary only",

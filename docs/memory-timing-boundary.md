@@ -24,6 +24,7 @@ python3 scripts/report_memory_timing_boundary.py
 | E1 MA7/DRAM-size selector retains all three source endpoints | PASS | sheet-2: E1.1=+5 V, E1.2=MA7 rail 28, E1.3=D51.9/MA6 |
 | E14 video-mux enable retains the drawn 1-3 strap | PASS | sheet-2: E14.1-E14.3 fitted strap; E14.2=+5 V; E14.4=GND |
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
+| D53 unused Y4-Y7 outputs remain source-proved no-connects | PASS | sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs |
 | D36 write rail is guarded to all modeled DRAM W pins | PASS | `W_RAIL16` includes D36.8 plus DRAM pin-3 fanout |
 | D36 CAS pre-driver reaches R57 | PASS | `CAS_PRE`: D36.11 -> R57.1 |
 | Shared CAS rail is guarded to all modeled DRAM C pins | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
@@ -39,7 +40,6 @@ python3 scripts/report_memory_timing_boundary.py
 | Boundary | Result | Current endpoints |
 | --- | --- | --- |
 | D35/D59 complete inverter package roles remain visible | PASS | D35.4->R39.1 is guarded; D59.5/.6 are source-proved NC; D59.10 remains a continuity boundary |
-| D53 Y4-Y7 remain explicit unresolved functional pins | PASS | D53.11/.10/.9/.7 require traced destinations or explicit NC proof |
 | D36_CAS_IN remains source-boundary only | PASS | D36.12, D36.13 |
 | D56_QN remains unresolved one-shot output | PASS | D56.4 |
 

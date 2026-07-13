@@ -227,7 +227,7 @@ def main() -> int:
         (
             "P0",
             "memory-decode stragglers",
-            "D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, and D36/D39/D53 RAM-strobe ambiguous feeds; D41 package inputs are now source-closed onto numbered rails 17 and 8",
+            "D6 V1/V2 feed, C99 far plate, D7/D25_T source inputs, and the remaining D36 timing feeds; D39/D41 package inputs and D53 output disposition are now source-closed",
             "`docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 connectivity gate",
             "tightens the as-built netlist around RAM/video timing before netlist freeze",
         ),
