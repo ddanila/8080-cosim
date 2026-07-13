@@ -24,7 +24,7 @@ runnable behavior at the same addresses.
 D6-RUNTIME-LOW-ROM ba=0484 mode=000 join_n=0 roe_n=1 d58_oe_n=1
 D6-RUNTIME-RAM ba=b37a mode=000 join_n=0 rev=0 roe_n=1 ram_out_en=0 d58_oe_n=1 oracle_ram_n=0 oracle_d58_oe_n=0
 D6-RUNTIME-PATH: BOUNDARY REPRODUCED (physical mode 000 blocks D58 at B37A)
-/home/ddanila/fun/8080-cosim/hdl/sim/d6_runtime_path_tb.v:112: $finish called at 2000 (1ps)
+hdl/sim/d6_runtime_path_tb.v:112: $finish called at 2000 (1ps)
 ```
 
 At low-ROM address `0484`, physical word `8` correctly leaves D58 released

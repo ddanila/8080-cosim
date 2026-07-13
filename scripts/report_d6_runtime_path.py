@@ -16,8 +16,8 @@ def main() -> int:
         compile_proc = subprocess.run(
             [
                 "iverilog", "-g2012", "-s", "d6_runtime_path_tb", "-o", str(sim),
-                str(ROOT / "hdl" / "devices.v"),
-                str(ROOT / "hdl" / "sim" / "d6_runtime_path_tb.v"),
+                "hdl/devices.v",
+                "hdl/sim/d6_runtime_path_tb.v",
             ],
             cwd=ROOT,
             text=True,
