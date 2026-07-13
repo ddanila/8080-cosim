@@ -9938,7 +9938,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND",
    "power": true,
    "nodes": [
     [
@@ -10016,6 +10016,10 @@
     [
      "D43",
      "1"
+    ],
+    [
+     "D39",
+     "2"
     ],
     [
      "D9",
@@ -13873,14 +13877,6 @@
    "src": "sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boundary",
    "nodes": [["D30", "8"]]
   },
-  "D39_B2_BOUNDARY": {
-   "src": "sheet-2 full-resolution D39 package census identifies NAND input pin10 as a distinct timing conductor; its unique remote source is unread and remains a measurement boundary",
-   "nodes": [["D39", "10"]]
-  },
-  "D39_B3_BOUNDARY": {
-   "src": "sheet-2 full-resolution D39 package census identifies NAND input pin2 as a distinct timing conductor; its unique remote source is unread and remains a measurement boundary",
-   "nodes": [["D39", "2"]]
-  },
   "R94_P2_BOUNDARY": {
    "src": "July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary",
    "nodes": [["R94", "2"]]
@@ -15747,8 +15743,12 @@
    ]
   },
   "XTAL16M": {
-   "src": "traced sheet-2 (crop s2_dotclk_bend): the 16MHz crystal rail (bundle tag 14) is a SEPARATE net from D56.Q_N; it clocks D103 + the ИР16 shifters. Likely = the OSC net continuation (D59) — merge pending one tag read at the D42/D43 feed rows",
+   "src": "traced sheet-2 (crops s2_dotclk_bend and D39/D41 control bundle): the 16MHz crystal source at bundle tag14 feeds local control rail3, clocking D103, D42/D43 ИР16, and D39 NAND input pin10; it is separate from D56.Q_N. Likely = the OSC net continuation (D59) — source-side merge remains pending",
    "nodes": [
+    [
+     "D39",
+     "10"
+    ],
     [
      "D103",
      "2"

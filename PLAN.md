@@ -74,7 +74,7 @@ the obsolete WAIT copper; regenerate the complete routed snapshot after the six
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 215 source-risk nets and 9 official FDC
+   current generated evidence lists 213 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.

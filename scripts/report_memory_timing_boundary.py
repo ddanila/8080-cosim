@@ -126,6 +126,12 @@ def main() -> int:
             "`D39_O8` and `D39Y`",
         ),
         (
+            "D39 remaining NAND inputs are source-closed onto control rails 3 and 1",
+            has_nodes(board, "XTAL16M", {("D39", "10"), ("D42", "9"), ("D43", "9")})
+            and has_nodes(board, "GND", {("D39", "2"), ("D43", "1")}),
+            "sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1",
+        ),
+        (
             "D56 one-shot RC networks are guarded",
             all(has_nodes(board, name, expected) for name, expected in d56_rc.items()),
             "`D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2`",
@@ -176,7 +182,7 @@ def main() -> int:
     lines = [
         "# Memory timing boundary",
         "",
-        "Status date: 2026-07-11.",
+        "Status date: 2026-07-13.",
         "",
         f"Status: **{status}**",
         "",
@@ -228,6 +234,7 @@ def main() -> int:
         "D36_CAS_IN",
         "D39_MEMCYC",
         "PHI2TTL",
+        "XTAL16M",
         "D39_O8",
         "D39Y",
         "D56_CLR",

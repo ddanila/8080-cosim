@@ -86,7 +86,7 @@ module juku_top (
     // and the divider->gate feedback nets D40.Q1->D39.12, D40.Q2->D33.5 are wired per the 2026-07
     // re-crop trace (see clock-mesh_tb for the running-divider proof). The boot-tb ties D59.xin=0 so
     // the divider is frozen at 0 -> d39_y=clkg_d33=1 -> ststb_n=~sync, i.e. boot stays byte-identical.
-    wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6; wire [3:0] d40_q;
+    wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6, xtal16m_w; wire [3:0] d40_q;
     // sheet-2 LATCH/LOAD chain (D41 ИР16 -> D37 gate2 -> D33 inv; D38 gate2 -> D59 inv).
     // Full-resolution bundle read: D41.LD joins rail17/D36.B2; D41.CK joins rail8/D42.G/D43.G.
     wire d41_qa, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
@@ -109,8 +109,8 @@ module juku_top (
     tri1 d92_noacc;
 `endif
     wire d39_memcyc, vid_cpu_sel;
-    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(latch_sig), .b2(1'b1), .y2(d39_o8),  // pin9 <- D33.12 LATCH; pin10 remains pending; output8 -> D59.11
-                     .a3(phi2ttl), .b3(1'b1), .y3(d39_memcyc),                                   // 1,2->3: pin1 <- Ф2TTL (bite-3; = ex gate-T), pin2 <- rail 1 [pending]
+    la3_gate  U_D39 (.a(d40_q[1]), .b(d40_q[0]), .y(d39_y), .a2(latch_sig), .b2(xtal16m_w), .y2(d39_o8),  // pin9 <- D33.12 LATCH; pin10 <- local control rail3 / 16MHz
+                     .a3(phi2ttl), .b3(1'b0), .y3(d39_memcyc),                                   // 1,2->3: pin1 <- Ф2TTL; pin2 <- grounded control rail1 (shared D43.DS)
                      .a4(d39_memcyc), .b4(d92_noacc), .y4(vid_cpu_sel));                         // 4,5->6 -> D52.1
     wire d33_o4, d36_y2, d33_o10;
     wire d33_clk_rc;
@@ -422,8 +422,9 @@ module juku_top (
     net_boundary U_R52LNK (.a(d53_y[3]), .b(ras0_n));   // Y3 -> R52 -> rail 11 (bank 0 sockets)
     net_boundary U_R57LNK (.a(d53_cas_sim), .b(cas_n)); // sim CAS scaffold -> rail 15
 
-    // ---- video dot clock: АГ3 D56 (16 MHz RC one-shot) -> ИЕ10 D103 divider (-> 1.23 MHz) ----
-    wire xtal16m_w;   // the 16MHz crystal rail, bundle tag 14 (traced s2_dotclk_bend); OSC-merge pending
+    // ---- video dot clock: 16 MHz crystal rail -> ИЕ10 D103 divider (-> 1.23 MHz) ----
+    // D56 is the adjacent sync/one-shot chain; its Q_N is source-proved separate from this rail.
+    // 16MHz source bundle tag14 becomes local control rail3 at D39/D42/D43; OSC-merge pending.
     wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
     wire d56_clr_w;   // shared CLR rail = R61 12k pullup (traced); boundary-driven so yosys keeps the net
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
