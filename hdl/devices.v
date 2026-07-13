@@ -421,7 +421,7 @@ module ie10_ctr (input wire clk, clr_n, load_n, enp, ent, input wire [3:0] d,  /
                  output wire [3:0] q, output wire co);
     assign q = 4'bz; assign co = 1'bz; endmodule
 
-// ---- ИР16 (К155ИР16 = 74166-class): 8-bit parallel-in / serial-out shift register (PISO) ----
+// ---- ИР16 (factory К555ИР16): 8-bit parallel-in / serial-out shift register (PISO) ----
 // The video pixel serializer. shl_n low = parallel-LOAD the framebuffer byte; high = SHIFT one bit
 // per clk (MSB first) into the ЛП5 combine. clk_inh freezes it; clr_n clears. This is the piece that
 // turns a framebuffer byte into the 8-pixel dot stream at the 16 MHz dot clock.
@@ -435,7 +435,7 @@ endmodule
 // ---- ЛП5 (К531ЛП5, XOR "=1"): D34 video-output combine (pixel stream XOR sync/blanking) ----
 module lp5_xor1 (input wire a, b, output wire y); assign y = a ^ b; endmodule  // sim video-out adjunct section
 
-// ---- ИР16 (К155ИР16): 4-bit parallel-load shift register — the video PIXEL SERIALIZERS D42/D43 ----
+// ---- ИР16 (factory К555ИР16): 4-bit parallel-load shift register — the video PIXEL SERIALIZERS D42/D43 ----
 // Traced (owner + sheet-2 top-right): D=pin5,C=pin4,B=pin3,A=pin2 parallel data in; LD=pin6 load;
 // G=pin8 control; CK=pin9 clock; DS=pin1 serial in; QA/QB/QC/QD = pins13/12/11/10.
 // The serializer uses QD/pin10 as its serial output -> node "A"

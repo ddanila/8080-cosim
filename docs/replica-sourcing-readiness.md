@@ -12,7 +12,7 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 83
+- BOM lines: 87
 - Populate-now component positions: 272
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
@@ -24,10 +24,10 @@ review before being treated as build-ready.
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
 | circuit-review | 7 | 63 |
+| leave-empty | 2 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 58 | 178 |
-| source-populated-now | 1 | 8 |
+| source-now | 61 | 186 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -40,12 +40,12 @@ review before being treated as build-ready.
 | PIC8259 | КР580ВН59 | 8259A PIC | 1 | D10 | Socket; verify frame interrupt vectoring before FDC IRQs. |
 | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | D54, D55, D57 | Socket; verify programmed divisors and video-sync outputs. |
 | PPI8255 | КР580ВВ55А | 8255A / 82C55 PPI | 2 | D26, D27 | Socket; verify keyboard/Port C mode bits against twin during bring-up. |
+| RU5 | К565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 8 | D84, D85, D86, D87, D88, D89, D90, D91 | Verify exact 4164/565RU5 pinout, refresh, speed, and rails; buy tested spares only after approval. |
 | SYS8238 | КР580ВК38 | 8228/8238-class system controller; verify pinout | 1 | D5 | Verify pin-compatible 8228/8238 behavior; check MEMR/IO strobes in a socketed bring-up. |
 | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | D11 | Socket; loopback test after clock/reset are proven. |
 | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 3 | D23, D24, D25 | Continuity/orientation check on expansion bus transceivers. |
 | VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | D93 | Prefer a socket; verify the exact WD1793/VG93 candidate's pinout, clock, rails, and timing before approval. |
 | XTAL | РК-171 16 MHz crystal 16 МГц | 16 MHz HC-49/metal-can crystal matching footprint/load | 1 | Z1 | Verify 16 MHz oscillation and load-cap fit before debugging timing. |
-| RU5 | К565РУ5Г / 565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 8 | D84, D85, D86, D87, D88, D89, D90, D91 | Verify exact 4164/565RU5 pinout, refresh, speed, and rails; buy tested spares only after approval. |
 
 ## Programming / Dump Gate
 

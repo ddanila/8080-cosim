@@ -35,6 +35,13 @@ is not a prerequisite for this replica.
 | PCB package | The saved routed artifact has 240 footprints, no KiCad clearance/short errors, one explicit `M5V_DERIVED` airwire, and a checksum-reproducible 2-layer 310 x 266 mm Gerber/drill snapshot | The manufacturing gate correctly marks this package invalid: the routed snapshot predates accepted D2/D94 and later harness/serial endpoint changes, is electrically incomplete, and must not be ordered |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, physical D2 `.037`/D6 `.038` captures, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, D8/D94 dumps, remaining continuity reads, and the cartridge BASIC loading procedure |
 
+The two-page `.009 ПЭЗ` IC list is now fully transcribed and guarded as 82
+factory positions plus 12 programming identities. This corrects the generated
+part markings for D13 (`К555ТЛ2`), D41-D43 (`К555ИР16`), D52 (`К555КП14`),
+and populated D84-D91 (`К565РУ5Г`), while retaining photo-proved substitutions
+such as `КР1533ЛА3` and `К155АГ3`. D60-D83 remain explicit empty expansion
+sockets rather than being misreported as factory-populated `.009` ICs.
+
 The saved upload ZIP is
 `fab/gerbers/upload/juku-replica-gerbers-drill.zip`, SHA256
 `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.

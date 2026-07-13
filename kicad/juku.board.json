@@ -183,6 +183,7 @@
   {
    "ref": "D7",
    "type": "LA3_GATE",
+   "marking": "КР1533ЛА3",
    "pins": {
     "12": "A",
     "13": "B",
@@ -781,6 +782,7 @@
   {
    "ref": "D59",
    "type": "LN1_OSC",
+   "marking": "КР531ЛН1",
    "pins": {
     "1": "XIN",
     "2": "OSC",
@@ -827,6 +829,7 @@
   {
    "ref": "D38",
    "type": "LA1_GATE",
+   "marking": "КР531ЛА1",
    "pins": {
     "8": "Y",
     "9": "I0",
@@ -974,6 +977,7 @@
   {
    "ref": "D48",
    "type": "KP14_MUX",
+   "marking": "КР531КП14",
    "pins": {
     "1": "SEL",
     "15": "EN_N",
@@ -999,6 +1003,7 @@
   {
    "ref": "D49",
    "type": "KP14_MUX",
+   "marking": "КР531КП14",
    "pins": {
     "1": "SEL",
     "15": "EN_N",
@@ -1024,6 +1029,7 @@
   {
    "ref": "D53",
    "type": "RASCAS_DEC",
+   "marking": "КР531ИД7",
    "pins": {
     "1": "A",
     "2": "B",
@@ -1050,6 +1056,7 @@
   {
    "ref": "D56",
    "type": "AG3_ONESHOT",
+   "marking": "К155АГ3",
    "pins": {
     "1": "A_N",
     "2": "B",
@@ -1100,6 +1107,7 @@
   {
    "ref": "D40",
    "type": "CT16_CTR",
+   "marking": "КР531ИЕ17",
    "pins": {
     "1": "R_N",
     "2": "CLK",
@@ -1125,6 +1133,7 @@
   {
    "ref": "D39",
    "type": "LA3_GATE",
+   "marking": "КР1533ЛА3",
    "pins": {
     "12": "A",
     "13": "B",
@@ -1148,6 +1157,7 @@
   {
    "ref": "D33",
    "type": "LN1_DUAL",
+   "marking": "КР531ЛН1",
    "pins": {
     "9": "I9",
     "5": "I5",
@@ -1171,6 +1181,7 @@
   {
    "ref": "D36",
    "type": "LA12_GATE",
+   "marking": "КР531ЛА12",
    "pins": {
     "4": "B",
     "5": "A",
@@ -1194,6 +1205,7 @@
   {
    "ref": "D42",
    "type": "IR16",
+   "marking": "К555ИР16",
    "pins": {
     "2": "A",
     "3": "B",
@@ -1211,12 +1223,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan + К155ИР16/74295 pin contract: exhaustive sheet-2 symbol census draws only serial-chain QD pin10; parallel outputs QC/QB/QA pins11/12/13 have no stubs and are explicit NCs"
+    "pins": "scan + factory К555ИР16/74295 pin contract: exhaustive sheet-2 symbol census draws only serial-chain QD pin10; parallel outputs QC/QB/QA pins11/12/13 have no stubs and are explicit NCs"
    }
   },
   {
    "ref": "D43",
    "type": "IR16",
+   "marking": "К555ИР16",
    "pins": {
     "2": "A",
     "3": "B",
@@ -1234,12 +1247,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan + К155ИР16/74295 pin contract: exhaustive sheet-2 symbol census draws only serial-chain QD pin10; parallel outputs QC/QB/QA pins11/12/13 have no stubs and are explicit NCs"
+    "pins": "scan + factory К555ИР16/74295 pin contract: exhaustive sheet-2 symbol census draws only serial-chain QD pin10; parallel outputs QC/QB/QA pins11/12/13 have no stubs and are explicit NCs"
    }
   },
   {
    "ref": "D37",
    "type": "LA3_GATE",
+   "marking": "КР1533ЛА3",
    "pins": {
     "12": "A",
     "13": "B",
@@ -1899,6 +1913,7 @@
   {
    "ref": "D84",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -1927,6 +1942,7 @@
   {
    "ref": "D85",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -1955,6 +1971,7 @@
   {
    "ref": "D86",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -1983,6 +2000,7 @@
   {
    "ref": "D87",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -2011,6 +2029,7 @@
   {
    "ref": "D88",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -2039,6 +2058,7 @@
   {
    "ref": "D89",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -2067,6 +2087,7 @@
   {
    "ref": "D90",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -2095,6 +2116,7 @@
   {
    "ref": "D91",
    "type": "RU5",
+   "marking": "К565РУ5Г",
    "pins": {
     "6": "MA0",
     "12": "MA1",
@@ -2201,6 +2223,7 @@
   {
    "ref": "D19",
    "type": "EPROM8K",
+   "marking": "К573РФ6",
    "pins": {
     "10": "A0",
     "9": "A1",
@@ -2357,6 +2380,7 @@
   {
    "ref": "D13",
    "type": "TL2",
+   "marking": "К555ТЛ2",
    "pins": {
     "1": "I1",
     "2": "O2",
@@ -3724,6 +3748,7 @@
   {
    "ref": "D41",
    "type": "IR16",
+   "marking": "К555ИР16",
    "pins": {
     "2": "A",
     "3": "B",
@@ -3747,6 +3772,7 @@
   {
    "ref": "D52",
    "type": "KP14_MUX",
+   "marking": "К555КП14",
    "pins": {
     "1": "SEL",
     "15": "EN_N",
@@ -3825,6 +3851,7 @@
   {
    "ref": "D2",
    "type": "WAIT_PROM",
+   "marking": "КР556РТ4А",
    "pins": {
     "5": "A0",
     "6": "A1",
@@ -3850,6 +3877,7 @@
   {
    "ref": "D50",
    "type": "KP14_MUX",
+   "marking": "КР531КП14",
    "pins": {
     "1": "SEL",
     "15": "EN_N",
@@ -3961,6 +3989,7 @@
   {
    "ref": "D51",
    "type": "KP14_MUX",
+   "marking": "КР531КП14",
    "pins": {
     "1": "SEL",
     "15": "EN_N",
@@ -5065,6 +5094,7 @@
   {
    "ref": "D105",
    "type": "LA3_GATE",
+   "marking": "К155ЛА3",
    "pins": {
     "1": "A2", "2": "B2", "3": "Y2",
     "4": "A3", "5": "B3", "6": "Y3",
@@ -5083,17 +5113,17 @@
    "prov": {"type": "scan", "refdes": ".009 official FDC population; КМ555ТМ2 identity and standard pinout", "pins": "power pins 7/14 routed; full component registration and reflected solder fit identify the package; pin8 reaches a proved isolated test landing and the other 11 functional contacts remain distinct measurement boundaries pending remote FDC continuity"}
   },
   {
-   "ref": "D97", "type": "AG3_ONESHOT",
+   "ref": "D97", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
    "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo К155АГ3 8901 marking; D97 is the first lower-row one-shot right of D101", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated component and solder fits identify all 14 functional/RC contacts as distinct measurement boundaries pending remote FDC continuity"}
   },
   {
-   "ref": "D99", "type": "AG3_ONESHOT",
+   "ref": "D99", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
    "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo 8901 one-shot package directly right of D95; cable obscures part of the К155АГ3 marking", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated photos identify the right-facing notch (270-degree footprint); pin2 reaches a proved isolated test landing and pin3 is visibly grounded to D96.7, while the other 12 functional/RC contacts remain distinct measurement boundaries pending remote FDC continuity"}
   },
   {
-   "ref": "D102", "type": "AG3_ONESHOT",
+   "ref": "D102", "type": "AG3_ONESHOT", "marking": "К155АГ3",
    "pins": {"1": "A_N", "2": "B", "3": "CLR_N", "4": "Q_N", "13": "Q", "9": "A2_N", "10": "B2", "11": "CLR2_N", "5": "Q2", "12": "Q2_N", "7": "RC2", "6": "C2", "15": "RC1", "14": "C1"},
    "prov": {"type": "scan", "refdes": ".009 assembly position plus owner-photo К155АГ3 8901 marking; D102 is the rightmost lower-row one-shot", "pins": "16-pin package and standard AG3 pinout; power pins 8/16 routed; validated component and solder fits identify all 14 functional/RC contacts as distinct measurement boundaries pending remote FDC continuity"}
   },

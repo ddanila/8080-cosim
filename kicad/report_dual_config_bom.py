@@ -49,8 +49,8 @@ AUTHENTIC_MARK = {
     "AG3_ONESHOT": "К155/КМ555АГ3",
     "IE10_CTR": "К555ИЕ10",
     "CT16_CTR": "КР531ИЕ17",
-    "IR16": "К155ИР16",
-    "TL2": "К155ТЛ2",
+    "IR16": "К555ИР16",
+    "TL2": "К555ТЛ2",
     "LA18": "К155ЛА18",
     "LE4": "К555ЛЕ4",
     "LP5_XOR": "К155ЛП5",
@@ -118,7 +118,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "IE10_CTR": "74LS193/191-class counter; verify exact pinout",
     "CT16_CTR": "74F/74S163-class fast counter; verify timing",
     "IR16": "74295/74LS295-class shift register; verify pinout",
-    "TL2": "74LS13 Schmitt NAND-class gate",
+    "TL2": "74LS14-class hex Schmitt inverter",
     "LA18": "open-collector NAND/driver; verify output topology",
     "LE4": "74LS02 NOR-class gate",
     "LP5_XOR": "74LS86 XOR-class gate",
@@ -175,6 +175,10 @@ def value_of(chip):
     return str(chip.get("value") or "").strip()
 
 
+def marking_of(chip):
+    return str(chip.get("marking") or "").strip()
+
+
 def populated(chip):
     typ = chip["type"]
     if typ in EMPTY_SOCKET_TYPES:
@@ -186,9 +190,10 @@ def populated(chip):
 def group_key(chip):
     typ = chip["type"]
     value = value_of(chip)
+    marking = marking_of(chip)
     if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM"}:
-        return typ, value
-    return typ, ""
+        return typ, value, marking
+    return typ, "", marking
 
 
 def action_for(typ, pop_count, socket_count):
@@ -200,6 +205,8 @@ def action_for(typ, pop_count, socket_count):
         return "mechanical-review"
     if typ in {"AP2", "UP2", "Q_TO92", "L_TAPPED"}:
         return "circuit-review"
+    if typ in EMPTY_SOCKET_TYPES and pop_count == 0:
+        return "leave-empty"
     if typ in EMPTY_SOCKET_TYPES and pop_count < socket_count:
         return "source-populated-now"
     return "source-now"
@@ -230,10 +237,10 @@ def build_rows(board_json):
         groups[group_key(chip)].append(chip)
 
     rows = []
-    for (typ, value), chips in groups.items():
+    for (typ, value, marking), chips in groups.items():
         refs = [chip["ref"] for chip in chips]
         pop_refs = [chip["ref"] for chip in chips if populated(chip)]
-        authentic = AUTHENTIC_MARK.get(typ, typ)
+        authentic = marking or AUTHENTIC_MARK.get(typ, typ)
         if value:
             authentic = f"{authentic} {value}"
         rows.append({
@@ -279,7 +286,8 @@ def write_markdown(path, rows, board_json, csv_path):
     leave_empty = sum(row["leave_empty"] for row in rows)
     by_action = defaultdict(int)
     for row in rows:
-        by_action[row["action"]] += row["populate_now"] if row["populate_now"] else row["board_positions"]
+        if row["action"] != "leave-empty":
+            by_action[row["action"]] += row["populate_now"] if row["populate_now"] else row["board_positions"]
     if leave_empty:
         by_action["leave-empty"] += leave_empty
 

@@ -30,6 +30,7 @@ jobs:
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
             scripts/report_source_coverage_audit.py \
+            scripts/report_official_009_ic_census.py \
             scripts/check_documentation_consistency.py \
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
@@ -219,6 +220,11 @@ jobs:
         run: |
           python3 scripts/report_source_coverage_audit.py
           git diff --exit-code -- docs/source-coverage-audit.md
+
+      - name: Check official .009 IC census freshness
+        run: |
+          python3 scripts/report_official_009_ic_census.py
+          git diff --exit-code -- docs/official-009-ic-census.md
 
       - name: Check WD1772 PLA inspection freshness
         run: |

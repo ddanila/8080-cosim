@@ -41,6 +41,7 @@ web/archive work should be tied to one of these named deliverables.
 | `ref/schematics/juku_es101_processor_module.pdf` | present |
 | `ref/schematics/es101_emaplaat.pdf` | present |
 | `ref/Juku_official_chip_BOM.pdf` | present |
+| `ref/juku-official-009-ic-census.json` | present |
 | `ref/photos/dgsh5-109-009-sb/README.md` | present |
 | `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json` | present |
 | `docs/assembly-drawing-extraction.md` | present |

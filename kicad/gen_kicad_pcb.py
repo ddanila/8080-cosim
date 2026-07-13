@@ -183,10 +183,9 @@ def dip_for(n):                       # smallest standard DIP that holds n pins
         if n <= s: return f"DIP-{s}_W{'15.24' if s>=24 else '7.62'}mm"
     return "DIP-40_W15.24mm"
 
-# real Soviet case marking (printed on the chip) per type -> silkscreen Value text. Taken from
-# the authoritative component list ДГШ3.031.006 (juku3000 "nimekiri komponendid.pdf", pp.3-4).
-# The МПК580 set + memory are exact; the few marked (tentative) need the schematic to pin the
-# exact refdes<->part (the BOM gives counts, not refdes mapping).
+# Default Soviet case marking per logical type. Exact factory or owner-observed
+# per-refdes exceptions live as `marking` in juku.board.json and are guarded by
+# ref/juku-official-009-ic-census.json.
 MARK = {
     'CPU8080':'КР580ИК80А', 'SYS8238':'КР580ВК38',  'USART8251':'КР580ВВ51А',
     'PPI8255':'КР580ВВ55А', 'PIT8253':'КР580ВИ53',  'PIC8259':'КР580ВН59',
@@ -199,17 +198,10 @@ MARK = {
     'RE3_PROM':'К155РЕ3',  'RE3_PROM_092':'К155РЕ3', 'TM2_DFF':'КМ555ТМ2',
     'LN3_OC_INV':'К155ЛН3', 'KP12_MUX':'К555КП12', 'LP11_BUF':'К155ЛП11',
     'CT16_CTR':'КР531ИЕ17',   'CLK_PHASE':'К155ЛН5',           # pinned via repo tracing (clock-subsystem.md / memory.md)
-    'VABUS':'КР580ВА87',    'IR82':'КР580ИР82',      'IR16':'К155ИР16',
-    'TL2':'К155ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
+    'VABUS':'КР580ВА87',    'IR82':'КР580ИР82',      'IR16':'К555ИР16',
+    'TL2':'К555ТЛ2',        'LN1_DUAL':'К531ЛН1',    'AP2':'К170АП2',
     'UP2':'К170УП2',        'LA18':'К155ЛА18',    'LN2':'К561ЛН2',
 }
-MARK_REF = {'D37':'КР1533ЛА3', 'D39':'КР1533ЛА3',   # real series per board-#2 photos
-            'D7':'КР1533ЛА3',   # owner-read off the real board (was assumed К555; ALS vs LS -- same logic/pinout, marking only)
-            'D56':'К155АГ3',    # board-#2 row-4 АГ3s are К155 8901 (BOM said КМ555АГ3; real board wins, D7 precedent)
-            'D97':'К155АГ3', 'D99':'К155АГ3', 'D102':'К155АГ3',  # owner-photo FDC row, 8901 batch
-            'D2':'КР556РТ4А',    # D2 is the 2nd РТ4 PROM (photo: both socketed by the CPU), not a 74138
-            'D105':'К155ЛА3'}    # official .009 BOM/assembly marking; sheet-1 wait-chain gate
-
 BOARD_SILK_NOTES = [
     ("8080 HEART", 32, 134, 0),
     ("BOOT ROM FIELD", 93, 72, 0),
@@ -393,8 +385,8 @@ def main():
         # KiCad's footprint ANCHOR sits at pin 1 (a CORNER), not the body centre -- so the
         # SetPosition above placed the corner at (x,y), shifting the chip half-its-size down/right.
         # Re-place so the body CENTRE lands on (x,y), which is what the drawing coords mean.
-        c = fp.GetBoundingBox(False, False).GetCenter()
-        fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - c.x, 2*pcbnew.FromMM(y) - c.y))
+        ctr = fp.GetBoundingBox(False, False).GetCenter()
+        fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
         # Silkscreen per chip (owner spec): (1) a clear pin-1 KEY dot, (2) the refdes at the KEY
         # end so orientation is readable, (3) the real case marking INSIDE the body, written along
         # the chip's long axis. KiCad rotates footprints CCW: at rot 0 (vertical DIP) pin 1 / the
@@ -434,7 +426,7 @@ def main():
             r.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(rx), pcbnew.FromMM(y)))
         # (3) marking inside the body, along the long axis, sized to FIT the body
         v = fp.Value()
-        mark = MARK_REF.get(ref) or MARK.get(typ, typ)
+        mark = c.get('marking') or MARK.get(typ, typ)
         v.SetText(mark)
         body_len = 2*hh if vert else 2*hw          # long-axis length
         body_wid = 2*hw if vert else 2*hh

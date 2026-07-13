@@ -13,6 +13,7 @@ REQUIRED = [
     "ref/schematics/juku_es101_processor_module.pdf",
     "ref/schematics/es101_emaplaat.pdf",
     "ref/Juku_official_chip_BOM.pdf",
+    "ref/juku-official-009-ic-census.json",
     "ref/photos/dgsh5-109-009-sb/README.md",
     "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json",
     "docs/assembly-drawing-extraction.md",
