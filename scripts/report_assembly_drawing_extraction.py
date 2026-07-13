@@ -184,6 +184,17 @@ def main() -> int:
             "`.006` sheet-1 exit codes 401-405; `.009` target continuity still required",
         ),
         (
+            "D26 PC5/PC6 retain the source-drawn D28 -RN/-STOP input sections",
+            marker(
+                read(BOARD_SPEC),
+                '"D26_PC5_RN_IN"', '[["D26", "12"], ["D28", "3"]]',
+                '"D26_PC6_STOP_IN"', '[["D26", "11"], ["D28", "1"]]',
+                "The D28.4 target-board output destination remains a separate continuity boundary",
+                "The D28.2 target-board output destination remains a separate continuity boundary",
+            ),
+            "`.006` sheet-1 direct conductors + К155ЛН3 pin contract + pinned MAME Port-C roles",
+        ),
+        (
             "Connection-table sheets 2-6 are adopted and transcribed",
             WIRE_TABLE_PDF.exists() and WIRE_TABLE_MD.exists()
             and marker(read(WIRE_TABLE_MD), "ДУБЛИКАТ", "S1:1", "S1:2", "X9:14")

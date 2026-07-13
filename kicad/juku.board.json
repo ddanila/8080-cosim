@@ -5145,7 +5145,7 @@
   {
    "ref": "D28", "type": "LN3_OC_INV",
    "pins": {"1": "A1", "2": "Y1", "3": "A2", "4": "Y2", "5": "A3", "6": "Y3", "8": "Y4", "9": "A4", "10": "Y5", "11": "A5", "12": "Y6", "13": "A6"},
-   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts as distinct measurement boundaries pending remote FDC continuity"}
+   "prov": {"type": "scan", "refdes": ".009 official FDC population identifies К155ЛН3", "pins": "К155ЛН3 datasheet pinout; power pins 7/14 routed; validated component and reflected solder fits identify all 12 inverter contacts; legacy sheet-1 directly traces D26 PC6/pin11 -> D28.1 (-STOP section) and D26 PC5/pin12 -> D28.3 (-RN section), while the remaining inputs and all six output destinations retain explicit target-board continuity boundaries"}
   },
   {
    "ref": "D95", "type": "KP12_MUX",
@@ -13506,17 +13506,17 @@
    "src": "July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin15 D0; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D106", "15"]]
   },
-  "D28_A1_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin1 A1; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "1"]]
+  "D26_PC6_STOP_IN": {
+   "src": "cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2 is labeled -STOP/X4.5; the pinned MAME .009-era Port-C contract independently retains PC6 as floppy side select. The D28.2 target-board output destination remains a separate continuity boundary",
+   "nodes": [["D26", "11"], ["D28", "1"]]
   },
   "D28_Y1_BOUNDARY": {
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin2 Y1; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D28", "2"]]
   },
-  "D28_A2_BOUNDARY": {
-   "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin3 A2; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D28", "3"]]
+  "D26_PC5_RN_IN": {
+   "src": "cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4 is labeled -RN/X4.4; the pinned MAME .009-era Port-C contract independently retains PC5 as floppy drive select. The D28.4 target-board output destination remains a separate continuity boundary",
+   "nodes": [["D26", "12"], ["D28", "3"]]
   },
   "D28_Y2_BOUNDARY": {
    "src": "July-2026 validated component and reflected solder package fits identify D28 К155ЛН3 pin4 Y2; no remote destination is proved, so this remains a measurement boundary",
@@ -15766,14 +15766,6 @@
      "12"
     ]
    ]
-  },
-  "D26_PC5_TAG4": {
-   "src": "traced sheet-1 full-resolution: D26 PC5/pin12 exits as mode-bundle tag4; far destination remains unread",
-   "nodes": [["D26", "12"]]
-  },
-  "D26_PC6_TAG5": {
-   "src": "traced sheet-1 full-resolution: D26 PC6/pin11 exits as mode-bundle tag5; far destination remains unread",
-   "nodes": [["D26", "11"]]
   },
   "CPU_WAIT_STATUS": {
    "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
