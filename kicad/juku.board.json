@@ -2370,7 +2370,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET; exhaustive symbol census never uses sections 9->8, 11->10, or 13->12, whose six pins are explicit NCs; WIRE 12 corroborates pin 2->D37.4 and WIRE 13 pin 1->D92.1"
+    "pins": "ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET; owner continuity adopts section 13->12 from pulled-up edge H/D105.10 to the joined D6.11/D6.12/D8.15 select conductor; exhaustive symbol census never uses sections 9->8 or 11->10, whose four pins are explicit NCs; WIRE 12 corroborates pin2->D37.4 and WIRE 13 pin1->D92.1"
    }
   },
   {
@@ -15955,8 +15955,6 @@
   ["D13", "9"],
   ["D13", "10"],
   ["D13", "11"],
-  ["D13", "12"],
-  ["D13", "13"],
   ["D35", "1"],
   ["D35", "2"],
   ["D35", "5"],
