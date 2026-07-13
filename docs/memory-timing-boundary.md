@@ -32,7 +32,7 @@ python3 scripts/report_memory_timing_boundary.py
 | PHI2TTL timing gate fanout is guarded | PASS | `PHI2TTL` source-risk net |
 | D39 latch/output context is guarded | PASS | `D39_O8` and `D39Y` |
 | D39 remaining NAND inputs are source-closed onto control rails 3 and 1 | PASS | sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1 |
-| D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- numbered rails4/2/1/15; only rail2 remote origin remains |
+| D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2 |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
 | D56 active outputs reach both gate-3 XOR inputs | PASS | native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 departs on unresolved tag16; undrawn D56.1/.9/.13 are NC |
 
@@ -57,6 +57,8 @@ python3 scripts/report_memory_timing_boundary.py
 | `CAS_PRE` | `D36.11, R57.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `CAS` | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, D66.15, D67.15, D68.15, D69.15, ... (+27)` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
 | `D36_CAS_IN` | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57, but the common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so this remains a deliberate continuity boundary |
+| `TIMING_TAG2` | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edge conductor visibly terminates in a distinct boundary domain with no continuous line between them; automatic same-number chase exhausted, and the D38.4 remote driver remains a deliberate continuity boundary |
+| `D34_A1_TAG2` | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in that boundary domain; it does not continue to D38.4's separate left-side timing-bundle rail2 |
 | `D39_MEMCYC` | `D39.3, D39.4, D38.5` | scan sheet-2 full-resolution (bite-2 plus D38 load-gate bundle): D39 output3 feeds its section-4 input pin4 and numbered timing rail4, which lands directly on D38 load-gate input pin5 |
 | `PHI2TTL` | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to sheet 1 [sheet-1 pin pending]; + D53.4 G2A_N (strobe window = Phi2) [scan sheet-2 (chase crops c4_g3_src: 4x y-match both feeds)] |
 | `XTAL16M` | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate from D56.Q_N. A continuous source-side conductor to D59.2/D59.3 OSC is not drawn through the intervening bundle, so functional expectation alone cannot prove the PCB merge; automatic scan chase exhausted and each net remains a deliberate continuity boundary |
@@ -93,6 +95,10 @@ python3 scripts/report_memory_timing_boundary.py
   D59 oscillator, but the native sheet does not draw a continuous source-side
   path through the intervening bundle. `OSC` and `XTAL16M` therefore remain
   separate until continuity or stronger artwork proves the PCB merge.
+- D38.4's left-side timing rail 2 and D34.4's top-edge tag 2 are distinct
+  boundary domains. The native vertical strip shows each terminating at its
+  own gate input with no continuous conductor between them; matching numerals
+  alone do not justify a merge.
 - Do not replace these boundaries with a behavioral timing guess from the
   runnable twin. They need stronger sheet-2 imagery, macro photo,
   continuity check, or scope trace before being removed from the

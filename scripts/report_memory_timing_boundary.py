@@ -151,9 +151,12 @@ def main() -> int:
             "D38 load gate is source-closed except for the remote origin of rail 2",
             has_nodes(board, "D39_MEMCYC", {("D39", "3"), ("D39", "4"), ("D38", "5")})
             and has_nodes(board, "TIMING_TAG2", {("D38", "4")})
+            and set(nodes(board, "D34_A1_TAG2")) == {("D34", "4")}
+            and set(nodes(board, "TIMING_TAG2")).isdisjoint(set(nodes(board, "D34_A1_TAG2")))
+            and "automatic same-number chase exhausted" in board["nets"]["TIMING_TAG2"]["src"]
             and has_nodes(board, "GND", {("D38", "2")})
             and has_nodes(board, "CAS", {("D38", "1")}),
-            "D38 pins5/4/2/1 <- numbered rails4/2/1/15; only rail2 remote origin remains",
+            "D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2",
         ),
         (
             "D56 one-shot RC networks are guarded",
@@ -260,6 +263,8 @@ def main() -> int:
         "CAS_PRE",
         "CAS",
         "D36_CAS_IN",
+        "TIMING_TAG2",
+        "D34_A1_TAG2",
         "D39_MEMCYC",
         "PHI2TTL",
         "XTAL16M",
@@ -302,6 +307,10 @@ def main() -> int:
             "  D59 oscillator, but the native sheet does not draw a continuous source-side",
             "  path through the intervening bundle. `OSC` and `XTAL16M` therefore remain",
             "  separate until continuity or stronger artwork proves the PCB merge.",
+            "- D38.4's left-side timing rail 2 and D34.4's top-edge tag 2 are distinct",
+            "  boundary domains. The native vertical strip shows each terminating at its",
+            "  own gate input with no continuous conductor between them; matching numerals",
+            "  alone do not justify a merge.",
             "- Do not replace these boundaries with a behavioral timing guess from the",
             "  runnable twin. They need stronger sheet-2 imagery, macro photo,",
             "  continuity check, or scope trace before being removed from the",

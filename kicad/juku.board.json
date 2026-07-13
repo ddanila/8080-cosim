@@ -11445,7 +11445,7 @@
    ]
   },
   "TIMING_TAG2": {
-   "src": "scan sheet-2 full-resolution (D38 load-gate bundle): numbered timing rail2 lands directly on D38 second ЛА1 section input pin4; its remote driver remains unresolved",
+   "src": "scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edge conductor visibly terminates in a distinct boundary domain with no continuous line between them; automatic same-number chase exhausted, and the D38.4 remote driver remains a deliberate continuity boundary",
    "nodes": [["D38", "4"]]
   },
   "LOAD_VID": {
@@ -13036,7 +13036,7 @@
    ]
   },
   "D34_A1_TAG2": {
-   "src": "scan sheet-2: D34 gate-1 input pin 4 runs continuously to the top-edge conductor marked 2; no unique far endpoint is drawn on this sheet",
+   "src": "scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in that boundary domain; it does not continue to D38.4's separate left-side timing-bundle rail2",
    "nodes": [
     [
      "D34",
