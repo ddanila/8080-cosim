@@ -70,11 +70,11 @@ closed and the corrected board has been rerouted and reviewed.
    assignments are rejected.
 
 The routed PCB/DSN/SES predate this measured topology. Do not locally restore
-the obsolete WAIT copper; regenerate the complete routed snapshot after the eight
+the obsolete WAIT copper; regenerate the complete routed snapshot after the nine
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 232 source-risk nets and 9 official FDC
+   current generated evidence lists 234 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -101,13 +101,14 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2265/2265` net-assigned PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2267/2267` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
-holds routed-board adoption on eight unique analog/FDC pad collisions. The two
+holds routed-board adoption on nine unique analog/FDC pad collisions. The three
 newer pairs are informative rather than regressions in evidence: correcting
-VD3 and restoring R86 to their factory/photo-proven centres exposes the old
-unregistered L1 and legacy `.006` VT3 seeds as false locations.
+VD3, restoring R86, and restoring C19 to their factory/photo-proven positions
+expose the old unregistered L1, legacy `.006` VT3, and approximate R74 seeds as
+false locations.
 Sixty-one endpoints on bracket-mounted S1/S4/X3/X4/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -194,6 +195,11 @@ extraction work from that set:
    registration plus the populated owner photo also restores the complete
    right-edge resistor column R100/R102/R108/R86 at the projected `.009`
    centres; all eight unread endpoints remain explicit boundaries.
+   The same factory/owner cross-registration restores populated grey axial C19
+   immediately right of D99 at `(292.893,93.574)` mm on a vertical 10 mm lead
+   span. Its photographed body leans across the resistor column, but the two
+   landings and backside joints remain distinct; value and remote destinations
+   are therefore explicit boundaries rather than inferred from that overlap.
    Registered component- and solder-side views now also restore the two grey
    axial C20/C22 capacitors immediately beyond D102 on adjacent 2.54 mm
    columns, each with a 10.00 mm vertical lead span. C20's enhanced body image

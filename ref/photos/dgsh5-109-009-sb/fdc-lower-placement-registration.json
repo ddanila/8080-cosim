@@ -17,7 +17,27 @@
     {"refdes": "C11", "drawing_px": [1985.5, 2256.5], "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"},
     {"refdes": "C16", "drawing_px": [1987.0, 2384.5], "observation": "horizontal capacitor between the upper and lower IC rows"},
     {"refdes": "C15", "drawing_px": [2268.5, 2541.5], "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"},
-    {"refdes": "C19", "drawing_px": [2461.0, 2261.5], "observation": "vertical capacitor immediately right of D99"},
+    {
+      "refdes": "C19",
+      "drawing_px": [2461.0, 2261.5],
+      "observation": "vertical capacitor immediately right of D99",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [[3294.0, 1064.0], [3320.0, 1276.0]],
+          "precision": "reviewed approximate joint centres; identity/orientation evidence, not the affine placement source",
+          "observation": "populated grey axial body with both bent leads reaching distinct landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [[823.0, 893.0], [875.0, 712.0]],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two distinct backside solder joints at the factory-identified C19 site"
+        }
+      ]
+    },
     {"refdes": "R92", "drawing_px": [1732.5, 2384.5], "observation": "horizontal resistor below D95"},
     {"refdes": "R99", "drawing_px": [1495.5, 2421.0], "observation": "horizontal resistor below-left of D95"},
     {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19"},

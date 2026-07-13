@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `313`
-- Nets modeled: `563`
-- Chip-level fidelity gaps: `63`
-- Net-level source-risk gaps: `232`
+- Chips modeled: `314`
+- Nets modeled: `565`
+- Chip-level fidelity gaps: `64`
+- Net-level source-risk gaps: `234`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -40,7 +40,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 240 |
+| scan | 241 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -57,10 +57,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 16 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 5 |
-| logic/source | 11 | 160 |
+| logic/source | 11 | 162 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
-| placement/value | 3 | 0 |
+| placement/value | 4 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 18 |
 
@@ -160,6 +160,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
+| `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; the owner component view proves th... |
 | `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C20 at the right end of D102; both owner-board sides prove a pop... |
 | `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C22 at the right end of D102; both owner-board sides prove a pop... |
 | `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
@@ -206,6 +207,8 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
+| `C19_1_BOUNDARY` | logic/source | `C19.1` | .009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destinati... |
+| `C19_2_BOUNDARY` | logic/source | `C19.2` | .009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destinati... |
 | `C20_1_BOUNDARY` | logic/source | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destinati... |
 | `C20_2_BOUNDARY` | logic/source | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destinati... |
 | `C22_1_BOUNDARY` | logic/source | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destinat... |

@@ -4830,6 +4830,19 @@
    }
   },
   {
+   "ref": "C19",
+   "type": "C_KM",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "pins": "factory drawing identifies C19 immediately right of D99; the owner component view proves the populated grey vertical axial body and both lead landings, while the solder view independently exposes two distinct joints. Value and remote electrical destinations remain unread"
+   }
+  },
+  {
    "ref": "C94",
    "type": "C_KM",
    "value": "680",
@@ -15974,6 +15987,14 @@
   "C94_2_BOUNDARY": {
    "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
    "nodes": [["C94", "2"]]
+  },
+  "C19_1_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destination is not readable",
+   "nodes": [["C19", "1"]]
+  },
+  "C19_2_BOUNDARY": {
+   "src": ".009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destination is not readable",
+   "nodes": [["C19", "2"]]
   },
   "R100_1_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",

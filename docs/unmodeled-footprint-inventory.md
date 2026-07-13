@@ -41,7 +41,7 @@ design release until measured or explicitly dispositioned.
   D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9
   merge and the older `.006` D95 WAIT handoff.
 - The derived routed snapshot predates those corrections and the source
-  placement has eight collision pairs, so a full reroute remains blocked.
+  placement has nine collision pairs, so a full reroute remains blocked.
 
 ## D30 READY Flip-Flop Boundary
 

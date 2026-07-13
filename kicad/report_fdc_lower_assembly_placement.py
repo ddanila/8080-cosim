@@ -15,7 +15,7 @@ BOARD = ROOT / "kicad/juku.kicad_pcb"
 OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
-RESTORED_FACTORY_PARTS = {"R100", "R102", "R108", "R86"}
+RESTORED_FACTORY_PARTS = {"C19", "R100", "R102", "R108", "R86"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -56,6 +56,14 @@ def project(transform: tuple[float, ...], point: list[float]) -> tuple[float, fl
 document = json.loads(RECORD.read_text(encoding="utf-8"))
 if document.get("schema_version") != 1 or document.get("model") != "affine":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: unsupported registration schema")
+for item in document["targets"]:
+    for evidence in item.get("owner_evidence", []):
+        image_path = ROOT / evidence["image"]
+        joints = evidence.get("joint_px", [])
+        if not image_path.is_file() or evidence.get("side") not in {"component", "solder"}:
+            raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: invalid owner evidence for {item['refdes']}")
+        if len(joints) != 2 or any(len(point) != 2 for point in joints):
+            raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {item['refdes']} needs two owner joint coordinates")
 transform = fit_affine(document["anchors"])
 checks = []
 for item in document["anchors"]:
@@ -83,7 +91,9 @@ for item in document["targets"]:
     targets.append({"refdes": item["refdes"], "drawing_px": item["drawing_px"],
                     "projected_board_mm": [round(x, 3), round(y, 3)],
                     "current_footprint_mm": current, "projected_delta_mm": delta,
-                    "observation": item["observation"], "electrical_evidence": False})
+                    "observation": item["observation"],
+                    "owner_evidence": item.get("owner_evidence", []),
+                    "electrical_evidence": False})
 
 restored_errors = []
 for item in targets:
@@ -119,13 +129,14 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "D93, C10, C11, C15, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
+lines += ["", "D93, C10, C11, C15, C19, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
           "factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the",
           "overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns",
           "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The other named parts remain explicit",
           "physical/BOM omissions until their package and electrical endpoints are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.",
-          "Owner component photo `PXL_20260710_200418174.jpg` independently shows the four stacked axial bodies in the same top-to-bottom order;",
-          "that corroborates population and orientation, while values and lead destinations remain continuity tasks. The same owner views",
+          "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
+          "that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view",
+          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
           "show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20",
           "pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.",
           "The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.",

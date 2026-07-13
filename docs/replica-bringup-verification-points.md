@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `232`
-- Verification-point endpoints checked in PCB: `419`
+- Verification-point nets: `234`
+- Verification-point endpoints checked in PCB: `421`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2265`
-- All board endpoints checked in routed PCB: `2265`
+- All board endpoints checked in source PCB: `2267`
+- All board endpoints checked in routed PCB: `2267`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 170 |
+| logic | 172 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 419/419 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 419/419 net names matched |
+| Risk endpoints present on PCB pads | PASS | 421/421 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 421/421 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2265/2265 | 2265/2265 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2265 | 1852/2265 | FAIL |
+| `kicad/juku.kicad_pcb` | 2267/2267 | 2267/2267 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2267 | 1852/2267 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -63,6 +63,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A15: D2.6`
 - `A9: D2.7`
 - `AMW_N: D7.3`
+- `C19_1_BOUNDARY: C19.1`
+- `C19_2_BOUNDARY: C19.2`
 - `C20_1_BOUNDARY: C20.1`
 - `C20_2_BOUNDARY: C20.2`
 - `C22_1_BOUNDARY: C22.1`
@@ -477,6 +479,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 
 | Net | Category | Endpoints | Source risk | Bring-up action |
 | --- | --- | --- | --- | --- |
+| `C19_1_BOUNDARY` | logic | `C19.1` | .009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `C19_2_BOUNDARY` | logic | `C19.2` | .009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C20_1_BOUNDARY` | logic | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C20_2_BOUNDARY` | logic | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C22_1_BOUNDARY` | logic | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

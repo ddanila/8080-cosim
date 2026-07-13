@@ -13,7 +13,7 @@ review before being treated as build-ready.
 ## Summary
 
 - BOM lines: 86
-- Populate-now component positions: 283
+- Populate-now component positions: 284
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
 - Mechanical/circuit-review lines: 22
@@ -23,7 +23,7 @@ review before being treated as build-ready.
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 10 | 74 |
+| circuit-review | 10 | 75 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
 | source-now | 58 | 178 |
@@ -71,7 +71,7 @@ against drawings/board photos before ordering final quantities.
 | --- | --- | --- | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | 2 | D14, D32 | RS-232/line-driver substitute required; verify +/-12 V interface |
 | circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern radial electrolytic with matching value/voltage/polarity |
-| circuit-review | C_KM | КМ ceramic capacitor | 12 | C7, C8, C9, C10, C11, C13, C14, C15, C20, C22, C34, C99 | modern ceramic capacitor with matching value/voltage/lead spacing |
+| circuit-review | C_KM | КМ ceramic capacitor | 13 | C7, C8, C9, C10, C11, C13, C14, C15, C19, C20, C22, C34, C99 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | C_TRIM | trimmer capacitor | 1 | C12 | modern trimmer capacitor matching footprint/value |
 | circuit-review | D_DIODE | Soviet diode/zener per value | 2 | VD3, VD4 | modern diode/zener matching value and power |
 | circuit-review | L_TAPPED | three-terminal adjustable tapped RF coil | 1 | L1 | custom/recovered tapped coil or documented three-terminal RF replacement |

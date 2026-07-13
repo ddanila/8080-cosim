@@ -49,7 +49,23 @@ until the real coil and its solder landings are registered. The adjacent yellow
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
-guards the two newly registered capacitor drill spans beside D102.
+guards C19 plus the two newly registered capacitor drill spans beside D102.
+
+## C19 drill registration
+
+The `.009` factory assembly drawing uniquely labels the vertical capacitor
+immediately right of D99 as C19 and projects its body centre to
+`(292.893,93.574)` mm. Raw owner component image
+`PXL_20260710_200418174.jpg` independently shows the populated grey axial body,
+both bent leads, and two separate board landings at that site. The registered
+solder image `PXL_20260710_200522685.jpg` exposes the corresponding distinct
+joints. A vertical 10.00 mm axial footprint therefore preserves the physical
+part at pads `(292.893,88.574)` and `(292.893,98.574)` mm.
+
+The body deliberately leans over the adjacent resistor column, so body overlap
+does not imply an electrical join. Its marking is not read confidently and the
+visible copper does not reach unique remote package pads; both leads remain
+singleton boundary nets.
 
 ## C20/C22 drill registration
 

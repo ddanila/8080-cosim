@@ -56,6 +56,7 @@
         -0.005
       ],
       "observation": "physical \u041a\u04201818\u0412\u041393 socket centre; factory drawing corrects the former D95-overlapping global placement",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -77,6 +78,7 @@
         -0.0
       ],
       "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -98,6 +100,7 @@
         0.0
       ],
       "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -113,6 +116,7 @@
       "current_footprint_mm": null,
       "projected_delta_mm": null,
       "observation": "horizontal capacitor between the upper and lower IC rows",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -134,6 +138,7 @@
         -0.0
       ],
       "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -146,9 +151,49 @@
         292.893,
         93.574
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        292.893,
+        93.574
+      ],
+      "projected_delta_mm": [
+        0.0,
+        -0.0
+      ],
       "observation": "vertical capacitor immediately right of D99",
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              3294.0,
+              1064.0
+            ],
+            [
+              3320.0,
+              1276.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; identity/orientation evidence, not the affine placement source",
+          "observation": "populated grey axial body with both bent leads reaching distinct landings"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "side": "solder",
+          "joint_px": [
+            [
+              823.0,
+              893.0
+            ],
+            [
+              875.0,
+              712.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres; cross-side corroboration only",
+          "observation": "two distinct backside solder joints at the factory-identified C19 site"
+        }
+      ],
       "electrical_evidence": false
     },
     {
@@ -164,6 +209,7 @@
       "current_footprint_mm": null,
       "projected_delta_mm": null,
       "observation": "horizontal resistor below D95",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -179,6 +225,7 @@
       "current_footprint_mm": null,
       "projected_delta_mm": null,
       "observation": "horizontal resistor below-left of D95",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -200,6 +247,7 @@
         -0.0
       ],
       "observation": "upper resistor in the four-part row right of C19",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -221,6 +269,7 @@
         0.0
       ],
       "observation": "second resistor in the four-part row right of C19",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -242,6 +291,7 @@
         0.0
       ],
       "observation": "third resistor in the four-part row right of C19",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -263,6 +313,7 @@
         -0.0
       ],
       "observation": "lowest resistor in the four-part row right of C19",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -284,6 +335,7 @@
         0.093
       ],
       "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -305,6 +357,7 @@
         0.069
       ],
       "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre",
+      "owner_evidence": [],
       "electrical_evidence": false
     },
     {
@@ -326,6 +379,7 @@
         -3.993
       ],
       "observation": "factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes",
+      "owner_evidence": [],
       "electrical_evidence": false
     }
   ]
