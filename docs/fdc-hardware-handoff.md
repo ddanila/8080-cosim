@@ -86,7 +86,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 
 | Net | Source | Endpoints |
 | --- | --- | --- |
-| `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch | `D9.7` |
+| `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 remains the physical КР1818ВГ93 | `D9.7` |
 | `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper | `D94.2, D93.3` |
 | `FDC_DAL0` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.19, D93.7` |
 | `FDC_DAL1` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.18, D93.8` |

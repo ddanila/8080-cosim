@@ -57,7 +57,7 @@ python3 scripts/report_io_decode_boundary.py
 | `CS_D54` | `D54.21, D9.11` | prom |
 | `CS_D55` | `D55.21, D9.10` | prom |
 | `CS_D57` | `D57.21, D9.9` | prom |
-| `CS_FDC` | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 removed after local photo fit proved its direct D94.2-only branch |
+| `CS_FDC` | `D9.7` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 remains the physical КР1818ВГ93 |
 
 ## Interpretation
 

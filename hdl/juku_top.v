@@ -464,9 +464,10 @@ module juku_top (
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3), .a4(1'bz), .b4(1'bz), .y4());  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]; sect4 undrawn/NC
 
-    // ============ FDC quadrant scaffold (.009): ВГ93 + РЕ3 .092 + ВА87 bus buffer ============
+    // ============ Physical FDC quadrant (.009): КР1818ВГ93 + РЕ3 .092 + ВА87 bus buffer ============
     // Bus side traced (CS7/sheet-3 delta + MAME 1C-1F + WD1793 datasheet); support logic
-    // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. Stubs are inert.
+    // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. The physical
+    // packages remain instantiated; incomplete behavioral models release unproved outputs.
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
     vg93_fdc   U_D93  (.cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
