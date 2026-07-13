@@ -1,74 +1,100 @@
 # Physical PROM captures
 
-These files preserve serial reads made from socketed PROMs on the owner's
-`.009` processor board using `tools/rt4_dumper/rt4_dumper.ino` and an Arduino
-Nano 3. The reader used 3 kOhm output pull-ups, a 100 nF Vishay MKT bypass
-capacitor, Nano USB 5 V, and the pin mapping documented in
-`docs/d2-physical-dump-and-continuity.md`.
+These files preserve serial reads made from socketed PROMs on two independent
+`.009` processor boards using an Arduino Nano 3. The RT4 reader is
+`tools/rt4_dumper/rt4_dumper.ino`; the RE3 reader is
+`tools/re3_dumper/re3_dumper.ino`. Both used 3 kOhm output pull-ups, a 100 nF
+Vishay MKT bypass capacitor, and Nano USB 5 V. Raw pin-level bytes are the
+authoritative artifacts; `asserted.bin` is the separately named active-low
+complement.
 
-## D2 `.037`
+## Physical sources
 
-`captures/d2_037_20260713_capture1.txt`, `capture2.txt`, and
-`capture3_powercycled.txt` are complete unchanged serial streams. The third
-capture followed a full USB power cycle. `scripts/validate_rt4_dump.py` accepts
-all three with no missing, unstable, non-complementary, or repeat-mismatched
-rows.
+The filenames deliberately retain the board identity:
 
-The three `d2_037_arvutimuuseum_CS00015_*` files are byte-identical archival
-aliases of those same streams. `d2_037_sukharev_reference_20260713_verify1.txt`
-has identical rows and differs from capture 1 only by one trailing blank line.
-These files preserve the supplied board/source labels, but are deliberately not
-counted as independent captures.
+- `sukharev_reference` and the earlier unqualified D2/D6 names are reads from
+  Danila Sukharev's reference board. Its PROMs are intact. The board has had
+  capacitors removed by palladium hunters and has a separate decapped logic IC,
+  thought to be an ЛЕ4-class part; neither condition describes the PROMs.
+- `arvutimuuseum_CS00015` identifies a different physical machine held by
+  Arvutimuuseum, inventory/machine identifier `CS00015`.
 
-The authoritative raw electrical artifact is `validated/d2_037.raw.bin`:
+Identical capture bytes are not aliases: they are deterministic serial outputs
+from independent reads of distinct physical PROMs. Their separate filenames
+and manifest entries preserve that provenance.
+
+## D2 — ДГШ5.106.037, К556РТ4
+
+Seven complete accepted reads cover both boards, including power-cycled series
+from each source and an extra verification read from Danila's PROM. All agree
+at every address with zero unstable rows.
 
 ```text
+validated/d2_037.raw.bin
 SHA256 953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b
 ```
 
-`d2_037.asserted.bin` is the convenient active-low complement and must not
-silently replace the raw table.
+## D6 — ДГШ5.106.038, К556РТ4
 
-## D6 `.038`
-
-`captures/d6_038_20260713_capture1.txt`, `capture2.txt`, and
-`d6_038_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt` are three
-complete matching reads with zero unstable addresses; the third followed a
-full power cycle. PROM pins 9-12 were confirmed isolated on the breadboard, and
-the high level on pin 9 (the Nano D13 input) measured 4.4 V. The two matching
-`d6_038_arvutimuuseum_CS00015_*capture1/2.txt` files are byte-identical aliases
-of the first two streams and preserve the supplied board label without being
-counted as additional reads.
-
-The preservation-grade raw table is `validated/d6_038.raw.bin`:
+Five complete accepted reads cover both boards; the `CS00015` series includes
+a separately power-cycled third read. All agree at every address with zero
+unstable rows. Pin 9 measured 4.4 V when high and pins 9-12 were confirmed
+isolated in the reader. This cross-machine physical table supersedes the
+retired reconstructed D6 fallback.
 
 ```text
+validated/d6_038.raw.bin
 SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39
 ```
 
-The D6 files retain the reader's explicit address-pin sweep order. After
-reordering addresses to the repository fallback's D6 convention, 252 of 256
-bytes differ from `d6_rt4_memory_decode_reconstructed.bin`. The captured and
-fallback nibble populations also cannot be reconciled by output-bit
-permutation or whole-nibble inversion, so the mismatch is not merely a naming
-or polarity change. Preserve both as distinct evidence; the physical D6 table
-now has a separately power-cycled repeat, but still benefits from an independent
-reader or programming-disk comparison.
+## D8 — ДГШ5.106.039, К155РЕ3
 
-Run validation with:
+Six complete accepted reads comprise three from each board, with one
+power-cycled capture in each three-read series. Both physical D8 PROMs are
+byte-identical. The physical table differs from the old reconstructed fallback
+at 19 of 32 addresses and therefore supersedes it.
 
-```sh
-python3 scripts/validate_rt4_dump.py \
-  ref/physical-proms/captures/d2_037_20260713_capture1.txt \
-  ref/physical-proms/captures/d2_037_20260713_capture2.txt \
-  ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt \
-  --out-dir /tmp/d2-validated --name d2_037
-
-python3 scripts/validate_rt4_dump.py \
-  ref/physical-proms/captures/d6_038_20260713_capture1.txt \
-  ref/physical-proms/captures/d6_038_20260713_capture2.txt \
-  ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
-  --out-dir /tmp/d6-validated --name d6_038
+```text
+validated/d8_039.raw.bin
+SHA256 345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc
 ```
 
-Verify all committed files with `sha256sum -c SHA256SUMS` from this directory.
+Active-low asserted table:
+
+```text
+00: 10 10 10 10 20 20 20 20 00 00 00 00 00 00 00 00
+10: 00 00 00 00 00 00 00 00 10 10 10 10 20 20 20 20
+```
+
+## D94 — ДГШ5.106.092, К155РЕ3
+
+Six complete accepted reads comprise three from each board, with one
+power-cycled capture in each series. Both physical D94 PROMs are byte-identical
+and distinct from D8 at 25 of 32 addresses.
+
+```text
+validated/d94_092.raw.bin
+SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0
+```
+
+Active-low asserted table:
+
+```text
+00: 00 00 00 01 0A 0A 0A 03 06 06 06 03 00 00 00 01
+10: 00 00 00 00 0A 0A 0A 0A 06 06 06 06 00 00 00 00
+```
+
+## Validation
+
+The JSON manifests in `validated/` enumerate every input path and SHA256. They
+were generated by `scripts/validate_rt4_dump.py` and
+`scripts/validate_re3_dump.py`. All captures contain complete address sets,
+stable repeated samples, correct active-low complements where applicable, and
+no disagreements within a device family.
+
+Keep the serial inputs unchanged and regenerate derived binaries rather than
+editing them. Verify every committed capture and artifact from this directory:
+
+```sh
+sha256sum -c SHA256SUMS
+```

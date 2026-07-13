@@ -2,7 +2,7 @@
   "schema_version": 1,
   "device": "KR556RT4 256x4",
   "name": "d2_037",
-  "capture_count": 3,
+  "capture_count": 7,
   "raw_pin_level_sha256": "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
   "active_low_asserted_sha256": "7a0cdb0129e75571811dd193fd99a749ac22d3bb198edc7237071b82d9d5d6db",
   "packing": "256 bytes in address order; low nibble significant; high nibble zero",
@@ -19,11 +19,31 @@
     {
       "path": "ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt",
       "sha256": "18a2202ec3028ce6394729708e724d072687525d50832fc6259e455311171bb0"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_sukharev_reference_20260713_verify1.txt",
+      "sha256": "b1a34c0e99c85a36c1836846d66622f2a1a9e8096cfa54cf6700dad45527f8af"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt",
+      "sha256": "18a2202ec3028ce6394729708e724d072687525d50832fc6259e455311171bb0"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture2.txt",
+      "sha256": "5aab75296c93eacfd75bce77a18cdd1de45bc89edfdb0b75dc758e151e922908"
+    },
+    {
+      "path": "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt",
+      "sha256": "18a2202ec3028ce6394729708e724d072687525d50832fc6259e455311171bb0"
     }
   ],
   "captures": [
     "ref/physical-proms/captures/d2_037_20260713_capture1.txt#1",
     "ref/physical-proms/captures/d2_037_20260713_capture2.txt#1",
-    "ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt#1"
+    "ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt#1",
+    "ref/physical-proms/captures/d2_037_sukharev_reference_20260713_verify1.txt#1",
+    "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt#1",
+    "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture2.txt#1",
+    "ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1"
   ]
 }

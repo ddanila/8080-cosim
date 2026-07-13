@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "device": "K155RE3 32x8",
+  "name": "d94_092",
+  "capture_count": 6,
+  "raw_pin_level_sha256": "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
+  "active_low_asserted_sha256": "6e45374f1eadd171637e4d47aa1540bd549173eb49d30260e985120f7f001095",
+  "packing": "32 raw bytes in A0..A4 address order; D0..D7 map to bits 0..7",
+  "comparison_rule": "raw pin-level table is authoritative; asserted table is byte complement",
+  "inputs": [
+    {
+      "path": "ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture1.txt",
+      "sha256": "43fc4692d7b81d2424a50b70f0a5a2d8b357650f658a991a3e11195de10a3c87"
+    },
+    {
+      "path": "ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture2.txt",
+      "sha256": "a958aa6d52cc59a81832d2dc6c3987e7836cc439fc058dde13549b1b97a75a03"
+    },
+    {
+      "path": "ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture3_powercycled.txt",
+      "sha256": "43fc4692d7b81d2424a50b70f0a5a2d8b357650f658a991a3e11195de10a3c87"
+    },
+    {
+      "path": "ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture1.txt",
+      "sha256": "43fc4692d7b81d2424a50b70f0a5a2d8b357650f658a991a3e11195de10a3c87"
+    },
+    {
+      "path": "ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture2.txt",
+      "sha256": "a958aa6d52cc59a81832d2dc6c3987e7836cc439fc058dde13549b1b97a75a03"
+    },
+    {
+      "path": "ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt",
+      "sha256": "43fc4692d7b81d2424a50b70f0a5a2d8b357650f658a991a3e11195de10a3c87"
+    }
+  ],
+  "captures": [
+    "ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture1.txt#1",
+    "ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture2.txt#1",
+    "ref/physical-proms/captures/d94_092_sukharev_reference_20260713_capture3_powercycled.txt#1",
+    "ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture1.txt#1",
+    "ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture2.txt#1",
+    "ref/physical-proms/captures/d94_092_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt#1"
+  ]
+}
