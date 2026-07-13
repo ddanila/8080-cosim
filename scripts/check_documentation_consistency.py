@@ -46,6 +46,52 @@ def main() -> int:
         "source PCB placement": read("docs/source-pcb-drc.md"),
     }
 
+    # Byte-level truth for all four board PROMs is now physical evidence, not a
+    # reconstruction TODO. Guard both the artifacts and the legacy provenance
+    # notes that previously called those dumps absent/open. Circuit adoption is
+    # intentionally checked elsewhere and must not be conflated with content.
+    physical_proms = {
+        "D2 .037": ("ref/physical-proms/validated/d2_037.raw.bin", 256),
+        "D6 .038": ("ref/physical-proms/validated/d6_038.raw.bin", 256),
+        "D8 .039": ("ref/physical-proms/validated/d8_039.raw.bin", 32),
+        "D94 .092": ("ref/physical-proms/validated/d94_092.raw.bin", 32),
+    }
+    for label, (path, expected_size) in physical_proms.items():
+        artifact = ROOT / path
+        if not artifact.exists():
+            failures.append(f"validated physical PROM is missing: {label} ({path})")
+        elif artifact.stat().st_size != expected_size:
+            failures.append(
+                f"validated physical PROM has wrong size: {label} "
+                f"({artifact.stat().st_size}, expected {expected_size})"
+            )
+
+    stale_prom_claims = {
+        "ref/photos/juku-pcb-2/BODGE-TRIAGE.md": (
+            "signal wiring and contents still open",
+            "original dump absent",
+            "enable, outputs, and contents still open",
+            "D2 and D94 remain incomplete",
+        ),
+        "ref/ekdos-source/README.md": ("D2/D6/D8/D94 PROM-truth gap",),
+        "ref/photos/juku-pcb-2/SURVEY.md": (
+            "Photo sighting alone does not close D2/D94 contents",
+        ),
+        "ref/baltijets-tech-docs/README.md": (
+            "remain dump-or-disk items",
+            "remains the needed D8",
+            "owner/community dump request remains necessary",
+        ),
+        "ref/firmware/README.md": (
+            "Dumping the socketed chip confirms or refutes",
+        ),
+    }
+    for path, phrases in stale_prom_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale physical-PROM claim: {phrase!r}")
+
     blockers = {
         "WAIT/READY edges": "Status: **D2 RECONSTRUCTION READY**" not in evidence["WAIT/READY edges"],
         "D94": "Status: **D94 RECONSTRUCTION READY**" not in evidence["D94"],

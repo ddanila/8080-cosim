@@ -24,16 +24,16 @@ two assemblies must not be mixed.
 
 | Ref | `.009` identity | Current conclusion |
 | --- | --- | --- |
-| D2 | КР556РТ4, program `.037` | bus/wait PROM; signal wiring and contents still open |
+| D2 | КР556РТ4, program `.037` | validated physical table adopted from four independent accepted reads; remaining work is the D30/H WAIT edge, not PROM content |
 | D6 | КР556РТ4, program `.038` | validated physical table adopted from three independent matching reads; runnable joined-conductor timing remains bounded |
-| D8 | К155РЕ3, program `.039` | ROM pager behavior reconstructed; original dump absent |
+| D8 | К155РЕ3, program `.039` | validated physical table adopted from three independent matching reads; its contents select the ROM sockets in boot while D6 still supplies the functional enable |
 | D9 | К555ИД7 | I/O chip-select decoder; physical D2 is not this decoder |
 | D41-D43 | К555ИР16 | timing register plus two pixel serializers |
 | D52 | К555КП14 | fifth DRAM/video address mux |
 | D84-D91 | К565РУ5 | populated RAM bank on the `.158/.009` target |
 | D92 | К555ЛЕ4 | memory/timing support logic |
 | D93 | КР1818ВГ93 | FDC |
-| D94 | К155РЕ3, program `.092` | FDC-era PROM; enable, outputs, and contents still open |
+| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; pin 15 and output D3-D7 destinations remain open |
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
 | D97, D99, D102 | К155АГ3 | FDC quadrant one-shots; owner photo shows the 8901 packages |
 | D100 | КР580ВА87 | FDC data-bus buffer |
@@ -224,8 +224,9 @@ missing connection table.
 ## Release consequence
 
 This evidence closes several old identity disputes, but it does not release the
-PCB for fabrication. D2 and D94 remain incomplete, and 9 official IC
-footprints (D28, D95-D99, D101, D102, and D106) remain outside the pin-level
-model. D105 wait/MRD logic is modeled and routed; the FDC cluster and remaining
-READY/WAIT revision boundaries are not complete. See `PLAN.md` and the generated
-reconstruction/unmodeled-footprint reports.
+PCB for fabrication. All four small-PROM contents are now preserved physical
+truth; the D2/D30 WAIT edge and D94/FDC connectivity remain incomplete, and 9
+official IC footprints (D28, D95-D99, D101, D102, and D106) still lack complete
+pin-level functional nets. D105 wait/MRD logic is modeled and routed; the FDC
+cluster and remaining READY/WAIT revision boundaries are not complete. See
+`PLAN.md` and the generated reconstruction/unmodeled-footprint reports.

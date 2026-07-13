@@ -31,15 +31,14 @@ tables rather than printed in the PDF:
 
 Implication for the replica plan:
 
-- `ДГШ5.106.037/.038` remain dump-or-disk items for the two `КР556РТ4`
-  decode PROMs.
-- `ДГШ5.106.039` remains the needed D8 `К155РЕ3` content.
+- This factory packet does not print the `.037/.038/.039/.092` programming
+  tables. Repeated physical captures now preserve all four tables under
+  `ref/physical-proms/validated/`; the disk-held originals remain valuable
+  independent corroboration rather than a content blocker.
 - `ДГШ5.106.092` is explicitly amended to `К155РЕ3` in the factory paperwork,
   matching the .009 parts list and the physical D94 package. It is not an
-  abstract/removed placeholder; only its programmed bits and incomplete copper
-  destinations remain unresolved.
-- The owner/community dump request remains necessary unless the referenced
-  programming-disk files surface.
+  abstract/removed placeholder; its programmed bits are physically captured,
+  while incomplete copper destinations remain unresolved.
 
 ## Doc 002 schematics/components first pass
 
