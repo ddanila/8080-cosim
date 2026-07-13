@@ -8,8 +8,10 @@ they are not active project reports.
 
 ## What is proved
 
-- `sync/basic_cart_check.sh` proves the D8/D22 cartridge window and exposes
-  `roms/jbasic11.bin` at `0x4000` in memory mode 2.
+- `sync/basic_cart_check.sh` proves that the MAME-compatible cosim option exposes
+  `roms/jbasic11.bin` at `0x4000`, while the validated physical D8 `.039` row is
+  `0xFF` and does not select D22. The missing configuration/decode distinction
+  is part of this boundary, not silently replaced by the old reconstruction.
 - The public cartridge is 8,192 bytes with SHA256
   `ff86e17c7ce6de177e18bc0468d23cee7ed2ecd6e8adc56950138cdf6ee5ba60`.
 - Monitor 3.3 reads and copies the cartridge body. The known body at runtime
