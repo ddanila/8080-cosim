@@ -19,17 +19,19 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | C19 | 292.893, 93.574 | absent | - | vertical capacitor immediately right of D99 |
 | R92 | 253.869, 101.194 | absent | - | horizontal resistor below D95 |
 | R99 | 241.207, 103.467 | absent | - | horizontal resistor below-left of D95 |
-| R100 | 299.776, 94.000 | absent | - | upper resistor in the four-part row right of C19 |
-| R102 | 299.253, 97.229 | absent | - | second resistor in the four-part row right of C19 |
-| R108 | 298.731, 100.458 | absent | - | third resistor in the four-part row right of C19 |
-| R86 | 298.208, 103.688 | absent | - | lowest resistor in the four-part row right of C19 |
+| R100 | 299.776, 94.000 | 299.776, 94.000 | -0.000, -0.000 | upper resistor in the four-part row right of C19 |
+| R102 | 299.253, 97.229 | 299.253, 97.229 | +0.000, +0.000 | second resistor in the four-part row right of C19 |
+| R108 | 298.731, 100.458 | 298.731, 100.458 | -0.000, +0.000 | third resistor in the four-part row right of C19 |
+| R86 | 298.208, 103.688 | 298.208, 103.688 | +0.000, -0.000 | lowest resistor in the four-part row right of C19 |
 | C20 | 299.917, 110.117 | absent | - | first vertical capacitor at the right end of D102 |
 | C22 | 302.204, 110.093 | absent | - | second vertical capacitor at the right end of D102 |
 | C63 | 240.224, 141.607 | 176.100, 145.600 | +64.124, -3.993 | factory label reads C63, not C13, immediately right of D41; body-centre projection is placement evidence only and does not establish lead holes |
 
-D93, C10, C11, and C15 have source-PCB footprints at their projected
+D93, C10, C11, C15, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
 factory-drawing positions. The other named parts remain explicit physical/BOM omissions until their package and electrical endpoints
 are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.
+Owner component photo `PXL_20260710_200418174.jpg` independently shows the four stacked axial bodies in the same top-to-bottom order;
+that corroborates population and orientation, while values and lead destinations remain continuity tasks.
 The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.
 Its body-centre projection is retained as a placement lead, but moving the generic
 two-pin footprint there would overlap D41.13; owner-side lead-hole registration is

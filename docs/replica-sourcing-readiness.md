@@ -13,7 +13,7 @@ review before being treated as build-ready.
 ## Summary
 
 - BOM lines: 86
-- Populate-now component positions: 277
+- Populate-now component positions: 281
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
 - Mechanical/circuit-review lines: 22
@@ -23,7 +23,7 @@ review before being treated as build-ready.
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 10 | 68 |
+| circuit-review | 10 | 72 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
 | source-now | 58 | 178 |
@@ -76,7 +76,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | D_DIODE | Soviet diode/zener per value | 2 | VD3, VD4 | modern diode/zener matching value and power |
 | circuit-review | L_TAPPED | three-terminal adjustable tapped RF coil | 1 | L1 | custom/recovered tapped coil or documented three-terminal RF replacement |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | 4 | VT1, VT2, VT3, VT4 | modern transistor selected per exact circuit role |
-| circuit-review | R_AXIAL | axial resistor | 43 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+25) | modern axial resistor, matching value and power rating |
+| circuit-review | R_AXIAL | axial resistor | 47 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+29) | modern axial resistor, matching value and power rating |
 | circuit-review | R_TRIM | СП3-22б trimmer | 1 | R73 | modern vertical trimmer matching footprint/value |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |

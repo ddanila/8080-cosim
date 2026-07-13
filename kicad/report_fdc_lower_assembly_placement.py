@@ -15,6 +15,7 @@ BOARD = ROOT / "kicad/juku.kicad_pcb"
 OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
+RESTORED_FACTORY_PARTS = {"R100", "R102", "R108", "R86"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -84,6 +85,19 @@ for item in document["targets"]:
                     "current_footprint_mm": current, "projected_delta_mm": delta,
                     "observation": item["observation"], "electrical_evidence": False})
 
+restored_errors = []
+for item in targets:
+    if item["refdes"] not in RESTORED_FACTORY_PARTS:
+        continue
+    if item["current_footprint_mm"] is None:
+        restored_errors.append(f"{item['refdes']} footprint missing")
+    elif math.hypot(*item["projected_delta_mm"]) > 0.02:
+        restored_errors.append(
+            f"{item['refdes']} placement residual {math.hypot(*item['projected_delta_mm']):.3f} mm"
+        )
+if restored_errors:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: restored-row mismatch\n- " + "\n- ".join(restored_errors))
+
 OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "source": RECORD.relative_to(ROOT).as_posix(),
                                   "transform": [round(value, 12) for value in transform],
@@ -105,9 +119,11 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "D93, C10, C11, and C15 have source-PCB footprints at their projected",
+lines += ["", "D93, C10, C11, C15, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
           "factory-drawing positions. The other named parts remain explicit physical/BOM omissions until their package and electrical endpoints",
           "are reconciled with the `.009` board; do not silently merge them with `.006` analog parts.",
+          "Owner component photo `PXL_20260710_200418174.jpg` independently shows the four stacked axial bodies in the same top-to-bottom order;",
+          "that corroborates population and orientation, while values and lead destinations remain continuity tasks.",
           "The lower drawing also labels the vertical part beside D41 as `C63`, not `C13`.",
           "Its body-centre projection is retained as a placement lead, but moving the generic",
           "two-pin footprint there would overlap D41.13; owner-side lead-hole registration is",

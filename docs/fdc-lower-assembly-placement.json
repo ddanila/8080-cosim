@@ -191,8 +191,14 @@
         299.776,
         94.0
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        299.776,
+        94.0
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        -0.0
+      ],
       "observation": "upper resistor in the four-part row right of C19",
       "electrical_evidence": false
     },
@@ -206,8 +212,14 @@
         299.253,
         97.229
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        299.253,
+        97.229
+      ],
+      "projected_delta_mm": [
+        0.0,
+        0.0
+      ],
       "observation": "second resistor in the four-part row right of C19",
       "electrical_evidence": false
     },
@@ -221,8 +233,14 @@
         298.731,
         100.458
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        298.731,
+        100.458
+      ],
+      "projected_delta_mm": [
+        -0.0,
+        0.0
+      ],
       "observation": "third resistor in the four-part row right of C19",
       "electrical_evidence": false
     },
@@ -236,8 +254,14 @@
         298.208,
         103.688
       ],
-      "current_footprint_mm": null,
-      "projected_delta_mm": null,
+      "current_footprint_mm": [
+        298.208,
+        103.688
+      ],
+      "projected_delta_mm": [
+        0.0,
+        -0.0
+      ],
       "observation": "lowest resistor in the four-part row right of C19",
       "electrical_evidence": false
     },

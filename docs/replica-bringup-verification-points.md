@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `220`
-- Verification-point endpoints checked in PCB: `407`
+- Verification-point nets: `228`
+- Verification-point endpoints checked in PCB: `415`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2253`
-- All board endpoints checked in routed PCB: `2253`
+- All board endpoints checked in source PCB: `2261`
+- All board endpoints checked in routed PCB: `2261`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 24 |
-| logic | 158 |
+| logic | 166 |
 | memory/decode | 11 |
 | sound/analog | 2 |
 | timing/I/O | 6 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 407/407 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 407/407 net names matched |
+| Risk endpoints present on PCB pads | PASS | 415/415 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 415/415 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2253/2253 | 2253/2253 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1915/2253 | 1852/2253 | FAIL |
+| `kicad/juku.kicad_pcb` | 2261/2261 | 2261/2261 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1915/2261 | 1852/2261 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -313,6 +313,14 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P5V: A53.1`
 - `POF: D35.3`
 - `PST_CLK: R32.2`
+- `R100_1_BOUNDARY: R100.1`
+- `R100_2_BOUNDARY: R100.2`
+- `R102_1_BOUNDARY: R102.1`
+- `R102_2_BOUNDARY: R102.2`
+- `R108_1_BOUNDARY: R108.1`
+- `R108_2_BOUNDARY: R108.2`
+- `R86_1_BOUNDARY: R86.1`
+- `R86_2_BOUNDARY: R86.2`
 - `R94_P2_BOUNDARY: R94.2`
 - `RESET: D13.6`
 - `RESET: D11.21`
@@ -640,6 +648,14 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `POF` | logic | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter input pin3; the pin... | Cross-check against hardware when the peripheral path is exercised. |
 | `PROM_EN` | video/analog | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and that shared node runs e... | Scope/capture video or timing node during video bring-up. |
+| `R100_1_BOUNDARY` | logic | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R100_2_BOUNDARY` | logic | `R100.2` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R102_1_BOUNDARY` | logic | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R102_2_BOUNDARY` | logic | `R102.2` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R108_1_BOUNDARY` | logic | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R108_2_BOUNDARY` | logic | `R108.2` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R86_1_BOUNDARY` | logic | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R86_2_BOUNDARY` | logic | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |

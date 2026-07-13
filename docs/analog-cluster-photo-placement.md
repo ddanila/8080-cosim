@@ -57,5 +57,6 @@ current placement status is `docs/source-pcb-drc.md`, not the earlier
 increment-local zero-short observation. Promoting the now-unambiguous VD3
 centre exposes one additional collision with the unregistered L1 stand-in;
 that conflict proves the placeholder coil location is false rather than
-weakening the diode placement. The 101-instance LVS remains fully
+weakening the diode placement. Restoring the `.009` R86 column endpoint likewise
+exposes the old `.006` VT3 seed as a second false legacy position. The 101-instance LVS remains fully
 matched at 263 nets, but LVS does not validate physical placement clearance.

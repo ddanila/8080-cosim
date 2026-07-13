@@ -70,11 +70,11 @@ closed and the corrected board has been rerouted and reviewed.
    assignments are rejected.
 
 The routed PCB/DSN/SES predate this measured topology. Do not locally restore
-the obsolete WAIT copper; regenerate the complete routed snapshot after the seven
+the obsolete WAIT copper; regenerate the complete routed snapshot after the eight
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
-   current generated evidence lists 220 source-risk nets and 9 official FDC
+   current generated evidence lists 228 source-risk nets and 9 official FDC
    devices with untraced functional pins. Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
@@ -101,13 +101,13 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2253/2253` net-assigned PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2261/2261` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
-holds routed-board adoption on seven unique analog/FDC pad collisions. The
-seventh is informative rather than a regression in evidence: correcting VD3
-to its factory/photo-proven centre exposes the old unregistered L1 stand-in as
-a false location.
+holds routed-board adoption on eight unique analog/FDC pad collisions. The two
+newer pairs are informative rather than regressions in evidence: correcting
+VD3 and restoring R86 to their factory/photo-proven centres exposes the old
+unregistered L1 and legacy `.006` VT3 seeds as false locations.
 Sixty-one endpoints on bracket-mounted S1/S4/X3/X4/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -186,7 +186,10 @@ extraction work from that set:
    colour; these placements do not move the proven IC row or guess the
    obscured L1 location. The same cross-source read restores the previously
    omitted populated C94 `680п` capacitor at `(287.07,132.26)` mm; its two
-   unread lead destinations remain explicit continuity boundaries.
+   unread lead destinations remain explicit continuity boundaries. Factory
+   registration plus the populated owner photo also restores the complete
+   right-edge resistor column R100/R102/R108/R86 at the projected `.009`
+   centres; all eight unread endpoints remain explicit boundaries.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9

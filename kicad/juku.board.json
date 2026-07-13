@@ -4699,6 +4699,46 @@
    }
   },
   {
+   "ref": "R100",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg",
+    "pins": "upper resistor in the populated four-part vertical column at the right edge beside C19; value and both electrical destinations remain explicit continuity boundaries"
+   }
+  },
+  {
+   "ref": "R102",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg",
+    "pins": "second resistor in the populated four-part vertical column at the right edge beside C19; value and both electrical destinations remain explicit continuity boundaries"
+   }
+  },
+  {
+   "ref": "R108",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg",
+    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; value and both electrical destinations remain explicit continuity boundaries"
+   }
+  },
+  {
+   "ref": "R86",
+   "type": "R_AXIAL",
+   "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": "scan",
+    "refdes": "ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg",
+    "pins": "lowest resistor in the populated four-part vertical column at the right edge beside C19; value and both electrical destinations remain explicit continuity boundaries"
+   }
+  },
+  {
    "ref": "C9",
    "type": "C_KM",
    "pins": {
@@ -15907,6 +15947,38 @@
   "C94_2_BOUNDARY": {
    "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
    "nodes": [["C94", "2"]]
+  },
+  "R100_1_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
+   "nodes": [["R100", "1"]]
+  },
+  "R100_2_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
+   "nodes": [["R100", "2"]]
+  },
+  "R102_1_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
+   "nodes": [["R102", "1"]]
+  },
+  "R102_2_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
+   "nodes": [["R102", "2"]]
+  },
+  "R108_1_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
+   "nodes": [["R108", "1"]]
+  },
+  "R108_2_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
+   "nodes": [["R108", "2"]]
+  },
+  "R86_1_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
+   "nodes": [["R86", "1"]]
+  },
+  "R86_2_BOUNDARY": {
+   "src": ".009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
+   "nodes": [["R86", "2"]]
   }
  },
  "no_connects": [

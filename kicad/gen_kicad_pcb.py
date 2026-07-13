@@ -103,6 +103,10 @@ PASSIVE_PLACE = {
     'AX417':(262.14,15.2,0),'AX418':(264.68,15.2,0),'AX419':(267.22,15.2,0),'AX420':(269.76,15.2,0),
     'AX421':(272.30,15.2,0),'AX422':(274.84,15.2,0),'AX423':(277.38,15.2,0),
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
+    # .009 factory-drawing affine registration, corroborated by the populated
+    # owner-photo column at the right edge beside C19 (top to bottom).
+    'R100':(299.776,94.000,0),'R102':(299.253,97.229,0),
+    'R108':(298.731,100.458,0),'R86':(298.208,103.688,0),
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing
     'R31':(94.0,257.0,90),  # .009/.158 СБ + owner photo: vertical between Z1 and D59; left of D59 pad row
     'R32':(109.5,246.0,0),  # .009/.158 СБ + owner photo: horizontal above D59

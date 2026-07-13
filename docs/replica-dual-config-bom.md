@@ -15,8 +15,8 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 307
-- Populate for current functional .009 build: 277
+- Board component positions: 311
+- Populate for current functional .009 build: 281
 - Leave empty for expansion/authentic completeness: 30
 - Unique BOM lines: 86
 
@@ -24,7 +24,7 @@ readiness report.
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 68 |
+| circuit-review | 72 |
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
@@ -42,7 +42,7 @@ readiness report.
 | circuit-review | D_DIODE | Soviet diode/zener per value | modern diode/zener matching value and power | 2 | 2 | 0 | VD3, VD4 | - |
 | circuit-review | L_TAPPED | three-terminal adjustable tapped RF coil | custom/recovered tapped coil or documented three-terminal RF replacement | 1 | 1 | 0 | L1 | - |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 4 | 4 | 0 | VT1, VT2, VT3, VT4 | - |
-| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 43 | 43 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+25) | - |
+| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 47 | 47 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+29) | - |
 | circuit-review | R_TRIM | СП3-22б trimmer | modern vertical trimmer matching footprint/value | 1 | 1 | 0 | R73 | - |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | select exact substitute after circuit review | 1 | 1 | 0 | X1 | - |

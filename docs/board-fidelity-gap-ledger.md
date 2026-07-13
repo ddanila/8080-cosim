@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `307`
-- Nets modeled: `551`
-- Chip-level fidelity gaps: `57`
-- Net-level source-risk gaps: `220`
+- Chips modeled: `311`
+- Nets modeled: `559`
+- Chip-level fidelity gaps: `61`
+- Net-level source-risk gaps: `228`
 - Documented intentional no-connect pins: `67`
 
 ## Chip Provenance Types
@@ -40,7 +40,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 234 |
+| scan | 238 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -57,7 +57,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 16 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 5 |
-| logic/source | 7 | 148 |
+| logic/source | 11 | 156 |
 | memory/timing | 0 | 8 |
 | placement/refdes | 38 | 0 |
 | placement/value | 1 | 0 |
@@ -107,6 +107,10 @@ parts placement and Tier-3 reproduction.
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `D6` | `DEC_PROM` | scan | validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively.... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and... |
+| `R100` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg upper resistor in the populated four-part vertical column at the right edge beside C19; value and both electr... |
+| `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg second resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
+| `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg third resistor in the populated four-part vertical column at the right edge beside C19; value and both electr... |
+| `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg lowest resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 
 ### placement/refdes
@@ -375,6 +379,14 @@ same fidelity ledger as the chip provenance gaps.
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
 | `POF` | logic/source | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter... |
 | `PROM_EN` | PROM/decode | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and tha... |
+| `R100_1_BOUNDARY` | logic/source | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
+| `R100_2_BOUNDARY` | logic/source | `R100.2` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
+| `R102_1_BOUNDARY` | logic/source | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
+| `R102_2_BOUNDARY` | logic/source | `R102.2` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
+| `R108_1_BOUNDARY` | logic/source | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
+| `R108_2_BOUNDARY` | logic/source | `R108.2` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
+| `R86_1_BOUNDARY` | logic/source | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
+| `R86_2_BOUNDARY` | logic/source | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
