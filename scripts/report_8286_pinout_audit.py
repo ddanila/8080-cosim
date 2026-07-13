@@ -16,6 +16,12 @@ PHYSICAL = {
     "11": "T",
     **{str(pin): f"AOUT{19 - pin}" for pin in range(12, 20)},
 }
+PHYSICAL_D100 = {
+    **{str(pin): f"A{pin - 1}" for pin in range(1, 9)},
+    "9": "OE_N", "10": "VSS_GND", "11": "T",
+    **{str(pin): f"B{19 - pin}" for pin in range(12, 20)},
+    "20": "VCC_5V",
+}
 
 EXPECTED_NET_PINS = {
     "D107": {**{f"A{i}": str(i + 1) for i in range(8)},
@@ -39,6 +45,8 @@ EXPECTED_NET_PINS = {
             **{f"ADR{'89ABCDEF'[i]}_N": str(19 - i) for i in range(8)}},
     "D25": {**{f"DB{i}": str(i + 1) for i in range(8)},
             **{f"DAT{i}_N": str(19 - i) for i in range(8)}},
+    "D100": {**{f"DB{i}": str(i + 1) for i in range(8)},
+             **{f"FDC_DAL{i}": str(19 - i) for i in range(8)}},
 }
 
 
@@ -60,10 +68,17 @@ def main() -> None:
         observed = {net: endpoint_net.get((ref, pin)) for net, pin in expected.items()}
         checks.append((f"{ref} address-channel pad assignments match sheet 1", observed == {n: n for n in expected}))
 
+    d100 = chips["D100"]
+    checks.append(("D100 uses the Intel 8287 DIP-20 pin names", d100["pins"] == PHYSICAL_D100))
+    d100_expected = EXPECTED_NET_PINS["D100"]
+    d100_observed = {net: endpoint_net.get(("D100", pin)) for net, pin in d100_expected.items()}
+    checks.append(("D100 DB/DAL channel pad assignments follow the physical pairs", d100_observed == {n: n for n in d100_expected}))
+
     type_map = mapping["pinmaps"]["kicad"]["BUF8286"]
     checks.append(("LVS type pinmap follows A0-A7 pins 1-8 and B0-B7 pins 19-12", type_map == PHYSICAL))
     vabus_map = mapping["pinmaps"]["kicad"]["VABUS"]
     checks.append(("8287 LVS type pinmap follows the same physical channel pairs", vabus_map == PHYSICAL))
+    checks.append(("D100 LVS pinmap follows the complete 8287 contract", mapping["pinmaps"]["kicad"]["BUF8287"] == PHYSICAL_D100))
     d4_map = mapping["pinmaps"]["kicad_instance"]["D4"]
     expected_d4_map = {
         pin: f"AIN{i}" for i, pin in enumerate(("8", "7", "1", "2", "5", "4", "3", "6"))
@@ -93,7 +108,8 @@ def main() -> None:
         "Sheet 1 routes D107 and D23-D25 straight, permutes D4's high-address",
         "channels, and permutes D29's eight command channels. Board pad endpoints",
         "and per-instance LVS maps preserve those routes while HDL keeps ordered",
-        "logical buses.", "",
+        "logical buses. D100 independently preserves the same straight physical",
+        "pairs between DB0-DB7 and the physical КР1818ВГ93 DAL bus.", "",
         "Primary pinout source:",
         "`https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",
