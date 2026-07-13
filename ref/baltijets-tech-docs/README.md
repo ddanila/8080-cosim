@@ -25,7 +25,7 @@ tables rather than printed in the PDF:
 |---|---|---|---|
 | 16 | `ДГШ5.106.038` | `КР556РТ4` | programming table `ДГШ5.106.038 Д1`; note says `на диске` |
 | 17 | `ДГШ5.106.040` | `К573РФ5` | EPROM, table `ДГШ5.106.040 Д1`; `на диске` |
-| 18 | `ДГШ5.106.092` | `КР556РТ5`-class marking | programming table `ДГШ5.106.092 Д1`; `на диске` |
+| 18 | `ДГШ5.106.092` | printed `КР556РТ5` crossed out; handwritten amendment `К155РЕ3` | programming table `ДГШ5.106.092 Д1`; `на диске` |
 | 19-22 | `ДГШ5.106.106` | `К573РФ2` | printed hex listing `ДГШ5.106.106 Д1`; already low priority because РФ2 ROMs are available elsewhere |
 | 23 | `ДГШ5.106.107` | `К573РФ2` | EPROM sheet, no printed byte table on the shown page |
 
@@ -34,8 +34,10 @@ Implication for the replica plan:
 - `ДГШ5.106.037/.038` remain dump-or-disk items for the two `КР556РТ4`
   decode PROMs.
 - `ДГШ5.106.039` remains the needed D8 `К155РЕ3` content.
-- `ДГШ5.106.092` is confirmed in the factory set for the FDC-era PROM, but its
-  bits are still not present in this PDF.
+- `ДГШ5.106.092` is explicitly amended to `К155РЕ3` in the factory paperwork,
+  matching the .009 parts list and the physical D94 package. It is not an
+  abstract/removed placeholder; only its programmed bits and incomplete copper
+  destinations remain unresolved.
 - The owner/community dump request remains necessary unless the referenced
   programming-disk files surface.
 
@@ -116,6 +118,7 @@ storage path and Gotek/real-drive cabling.
 | Page | Finding |
 |---|---|
 | 1 | Documentation list names `ДГШ3.065.008 СБ`, `Э3`, `ПЭ3`, and `ТО`; assembly units include FDD PSU `ДГШ2.087.031` plus chassis/mechanical/cable parts. |
+| 5 | The FDD-unit electrical sheet includes a 23-contact interface table. Legible signal rows are 8 READY, 9 STEP, 11 WRITE DATA, 14 TRACK 0, 15 INDEX, 16 DIRECTION, 18 WRITE GATE, 19 MOTOR ON, 20 SIDE SELECT, 21 SELECT 1, 22 SELECT 0, and 23 READ DATA; pins 1-6 are shown as ground. The scan does not expose a complete processor-X4-to-FDD pin permutation. |
 | 6/8 | Drive power connector table: drive X1 pin 1 = +12 V, pins 2/3 = ground, pin 4 = +5 V. PSU-side output table shows +5 V on pin 1, +12 V on pin 3, ground on pins 2/4. |
 | 6/8 | 34-pin FDD signal mapping is Shugart-style: INDEX 8, SEL0 10, SEL1 12, MOTOR ON 16, DIR 18, STEP 20, WRITE DATA 22, WRITE GATE 24, TRACK 0 26, WRITE PROTECT 28, READ DATA 30, SIDE SELECT 32, READY 34. Odd pins 1,3,5,7 / 9,11,13,15 / 17,19,21,23 / 25,27,29,31,33 are ground. |
 | 8 | The drawing labels the drive as `НГМД ЕС 5323.01`. |
@@ -126,6 +129,26 @@ Implication:
   active-low 34-pin control/data map above and provide READY on pin 34.
 - The real-drive path needs +5 V/+12 V power with the drive connector polarity
   checked against the original drawing before use.
+
+## Doc 011 cable pass
+
+`011 Cable.pdf` contains three cable assemblies rather than one processor-board
+pinout. Pages 4-5 describe `ДГШ4.853.042`: a 1.5 m cable with two identical
+23-contact `РП15-23` plugs. The assembly drawing shows the physical cable and
+strain relief, but no conductor-by-conductor connection table. Pages 6-8 are
+`ДГШ4.853.043`, whose connection diagram is the printer interface
+(`DATA1`-`DATA8`, `STROBE`, `SELECT`, `ERROR`, `PE`, and `ACKNLG`), not the FDD
+interface.
+
+Implication:
+
+- The `.042` hardware is consistent with a 23-contact inter-unit cable, but the
+  scan does not prove that its contacts are straight-through or that either end
+  is processor connector X4. It therefore cannot yet promote X4.6-X4.23 from
+  explicit harness boundaries to named FDD signals.
+- A cable continuity measurement, an explicit `.042` connection schematic, or
+  another factory interconnection table is still required before applying the
+  FDD-unit page-5 names to processor X4.
 
 ## Doc 014 removable-memory-expander pass
 
