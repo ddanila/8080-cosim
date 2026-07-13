@@ -544,7 +544,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58); full-resolution sheet maps PC2/3/4 pins16/17/13 through mode-bundle tags1/2/3 to D6 A5/A6/A7, and PC5/6/7 pins12/11/10 to still-unresolved tags4/5/6; PA5/pin39 is undrawn/NC"
+    "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58); full-resolution sheet maps PC2/3/4 pins16/17/13 through mode-bundle tags1/2/3 to D6 A5/A6/A7 and the D28 -REC/-PLAY/-FF sections, PC5/6 pins12/11 to D28 -RN/-STOP, and PC7/pin10 to POF/D35.3; PA5/pin39 is undrawn/NC"
    }
   },
   {
