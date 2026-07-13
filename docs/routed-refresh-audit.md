@@ -25,23 +25,25 @@ The temporary candidate is an audit artifact, not a fabrication deliverable.
 
 | Item | Count |
 | --- | ---: |
-| Source footprints | 277 |
+| Source footprints | 296 |
 | Routed-snapshot footprints | 240 |
-| Source-only footprints | 42 |
-| Routed-only off-board connector bodies | 5 |
-| Routed copper nets | 326 |
-| Nets with reusable routed copper | 207 |
-| Routed nets quarantined before DRC | 119 |
-| Initially reusable track/via items | 4,874 |
-| Initially quarantined/duplicate items | 3,782 |
-| Additional nets quarantined from candidate DRC | 16 |
-| Reusable items after DRC quarantine | 4,330 |
+| Source-only footprints | 76 |
+| Routed-only footprints | 20 |
+| Routed copper nets classified by the refresh | 325 |
+| Nets with initially reusable routed copper | 167 |
+| Routed nets quarantined before DRC | 158 |
+| Initially reusable track/via items | 3,574 |
+| Initially quarantined/duplicate items | 5,091 |
+| Additional nets quarantined from candidate copper DRC | 13 |
+| Reusable items after DRC quarantine | 3,269 |
 
-The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly modeled FDC
-support/passive parts, and the photo-fitted serial resistors. The five routed-only bodies are the off-board
-`S1`, `S4`, `X3`, `X8`, and `X9`; the authoritative source intentionally represents
-their PCB cable landings instead. X4 is likewise schematic-only in the source;
-its newly modeled `AX401-AX423` landing row is absent from the stale routed snapshot.
+The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly
+modeled FDC support/passive parts, and the photo-fitted serial and oscillator
+parts. The routed-only set contains superseded `.006` option parts and the
+off-board `S1`, `S4`, `X3`, `X8`, and `X9` bodies; the authoritative source
+represents the applicable cable landings instead. X4 is likewise
+schematic-only in the source; its modeled `AX401-AX423` landing row is absent
+from the stale routed snapshot.
 
 The July-2026 refresh audit found 48 short violations in the first candidate.
 Feeding that DRC JSON back through `--exclude-drc` quarantines 16 implicated
@@ -86,9 +88,23 @@ A clean refresh therefore requires this order:
 5. replace `juku_routed.kicad_pcb` only after endpoint parity and zero electrical
    DRC findings are both proved.
 
-## Rejected full reroute
+## Current full-refresh routing experiment
 
-A fresh Freerouting 2.2.4 run from the current 359-net source was also tested.
-Pass 1 took 8 minutes 43 seconds and still had 299 unrouted connections; pass 2
-did not finish within another five minutes. That inferior candidate was stopped
-and deleted rather than replacing the nearly routed snapshot.
+A source-complete candidate was generated after feeding its first two KiCad
+DRC reports back through `--exclude-drc`. The second report contributed the two
+clearance-implicated nets that the older short-only filter missed. The resulting
+candidate retained 3,269 compatible copper items on 154 nets, quarantined 13
+DRC-implicated nets, and began with zero KiCad shorts, copper-clearance
+violations, track crossings, or placement collisions. Its 296 footprints and
+2,383 pad identities/net assignments exactly match the source; Specctra import
+quantized 54 pad coordinates by at most 38 nm, which is not a topology change.
+
+Freerouting 2.2.4 reduced its internal incomplete count from 1,001 to 270 in
+pass 1 (41 minutes 42 seconds), then to 195 in pass 2 (43 minutes 39 seconds).
+After importing the session, KiCad reported 189 unconnected items across 83
+nets, zero shorts, zero copper-clearance violations, and zero track crossings.
+The two remaining non-connectivity copper findings are one dangling `OSC` track
+and one `GND` track 0.2257 mm from an edge where the configured minimum is
+0.3 mm. The temporary candidate is therefore a substantial convergence result,
+not an adoptable routed board. Further routing must close all 189 connections
+and both residual copper findings before replacing the tracked snapshot.
