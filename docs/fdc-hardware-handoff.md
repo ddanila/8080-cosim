@@ -74,13 +74,13 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 
 | Pin | Status | Needed fact | Current boundary |
 | --- | --- | --- | --- |
-| D10.12/.13/.15/.20/.21/.22 | MISSING | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; SP/EN pin16 is separately source-proved high, while these destinations or intentional NC states are not |
-| D93.15-.18/.22/.23/.25-.36 | WIRED | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
-| D93.40 `VDD_12V` | WIRED | +12 V controller supply continuity | primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved |
-| D93.19 `MR_N` | WIRED | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
-| D93.24 `CLK` | WIRED | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
-| D100.9 `OE_N` | WIRED | 8287 output-enable gating | not netted in board JSON; owner continuity item |
-| D100.11 `T` | WIRED | 8287 direction gating | not netted in board JSON; owner continuity item |
+| D10.12/.13/.15/.20/.21/.22 | BOUNDARY | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, while IR2/IR3/IR4 remain target-revision boundaries |
+| D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
+| D93.40 `VDD_12V` | BOUNDARY | +12 V controller supply continuity | primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved |
+| D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
+| D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source |
+| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating | singleton D100_OE_BOUNDARY in board JSON; owner continuity item |
+| D100.11 `T` | BOUNDARY | 8287 direction gating | singleton D100_T_BOUNDARY in board JSON; owner continuity item |
 
 ## Netted FDC Endpoints
 
@@ -96,7 +96,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DAL5` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.14, D93.12` |
 | `FDC_DAL6` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.13, D93.13` |
 | `FDC_DAL7` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.12, D93.14` |
-| `FDC_DDEN` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity | `D26.13, D93.37, D6.15` |
+| `FDC_DDEN` | cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15 and directly into D28 input pin9, whose paired open-collector output pin8 is labeled -FF/X4.1; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity; the D28 output destination remains a target-board continuity boundary | `D26.13, D93.37, D6.15, D28.9` |
 | `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
 | `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper | `D94.1, D93.4` |

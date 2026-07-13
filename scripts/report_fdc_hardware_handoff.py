@@ -39,6 +39,27 @@ def has_node(board: dict, name: str, ref: str, pin: str) -> bool:
     return [ref, pin] in net(board, name).get("nodes", [])
 
 
+def endpoint_state(board: dict, ref: str, pin: str) -> str:
+    if [ref, pin] in board.get("no_connects", []):
+        return "NC"
+    for record in board["nets"].values():
+        nodes = record.get("nodes", [])
+        if [ref, pin] in nodes:
+            return "CONNECTED" if len(nodes) > 1 else "BOUNDARY"
+    return "MISSING"
+
+
+def group_state(board: dict, ref: str, pins: tuple[str, ...]) -> str:
+    states = {endpoint_state(board, ref, pin) for pin in pins}
+    if "MISSING" in states:
+        return "MISSING"
+    if "BOUNDARY" in states:
+        return "BOUNDARY"
+    if "NC" in states:
+        return "DISPOSITIONED"
+    return "CONNECTED"
+
+
 def endpoint_summary(nodes: list[list[str]]) -> str:
     if not nodes:
         return "-"
@@ -207,51 +228,45 @@ def main() -> int:
     unresolved = [
         (
             "D10.12/.13/.15/.20/.21/.22",
-            "MISSING" if any(
-                not any(has_node(board, name, "D10", pin) for name in board["nets"])
-                for pin in ("12", "13", "15", "20", "21", "22")
-            ) else "WIRED",
+            group_state(board, "D10", ("12", "13", "15", "20", "21", "22")),
             "8259 CAS0-2 and IR2-IR4 dispositions",
-            "standard КР580ВН59 contract and affine package fit are proved; SP/EN pin16 is separately source-proved high, while these destinations or intentional NC states are not",
+            "standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, while IR2/IR3/IR4 remain target-revision boundaries",
         ),
         (
             "D93.15-.18/.22/.23/.25-.36",
-            "MISSING" if any(
-                not any(has_node(board, name, "D93", pin) for name in board["nets"])
-                for pin in D93_DRIVE_PINS if pin != "40"
-            ) else "WIRED",
+            group_state(board, "D93", tuple(pin for pin in D93_DRIVE_PINS if pin != "40")),
             "step/precompensation, separator, head-load, drive status, and write interface",
             "primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced",
         ),
         (
             "D93.40 `VDD_12V`",
-            "MISSING" if not any(has_node(board, name, "D93", "40") for name in board["nets"]) else "WIRED",
+            endpoint_state(board, "D93", "40"),
             "+12 V controller supply continuity",
             "primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved",
         ),
         (
             "D93.19 `MR_N`",
-            "MISSING" if not any(has_node(board, n, "D93", "19") for n in board["nets"]) else "WIRED",
+            endpoint_state(board, "D93", "19"),
             "master reset source",
             "photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved",
         ),
         (
             "D93.24 `CLK`",
-            "MISSING" if not any(has_node(board, n, "D93", "24") for n in board["nets"]) else "WIRED",
+            endpoint_state(board, "D93", "24"),
             "1 MHz FDC clock rail",
             "corrected D93 fit identifies pin24 and local westbound copper; D106 Q3 is a functional /16 candidate, but its package body and rail-obscured solder end prevent a proved connection or upstream clock source",
         ),
         (
             "D100.9 `OE_N`",
-            "MISSING" if not any(has_node(board, n, "D100", "9") for n in board["nets"]) else "WIRED",
+            endpoint_state(board, "D100", "9"),
             "8287 output-enable gating",
-            "not netted in board JSON; owner continuity item",
+            "singleton D100_OE_BOUNDARY in board JSON; owner continuity item",
         ),
         (
             "D100.11 `T`",
-            "MISSING" if not any(has_node(board, n, "D100", "11") for n in board["nets"]) else "WIRED",
+            endpoint_state(board, "D100", "11"),
             "8287 direction gating",
-            "not netted in board JSON; owner continuity item",
+            "singleton D100_T_BOUNDARY in board JSON; owner continuity item",
         ),
     ]
 
