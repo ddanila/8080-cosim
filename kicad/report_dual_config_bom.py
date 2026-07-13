@@ -108,7 +108,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "KP14_MUX": "74LS257/258-class quad 2:1 mux; verify OE/polarity",
     "LA1_GATE": "74S/74LS NAND-class gate; verify exact logic section",
     "LA3_GATE": "74LS00 / 74ALS00-class NAND",
-    "LA12_GATE": "74S20/74LS20-class NAND; verify section",
+    "LA12_GATE": "SN74S37-compatible high-drive quad 2-input NAND",
     "LN1_INV": "74S04/74LS04-class inverter",
     "LN1_OSC": "74S04/74LS04-class inverter; oscillator section timing matters",
     "LN1_DUAL": "74S04/74LS04-class inverter",

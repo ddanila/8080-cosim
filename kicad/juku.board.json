@@ -1185,9 +1185,9 @@
     "11": "Y4"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "scan",
-    "pins": "complete sheet-2 package trace; second NAND input pin2 reaches timing-bundle tag17"
+    "type": "scan+datasheet",
+    "refdes": "sheet-2 + КР531ЛА12 datasheet (quad high-drive 2И-НЕ; SN74S37 pin-compatible)",
+    "pins": "datasheet contract: inputs 1/2, 4/5, 9/10, 12/13; outputs 3/6/8/11; GND7/VCC14. Complete sheet-2 package trace; second NAND input pin2 reaches timing-bundle tag17"
    }
   },
   {
@@ -8878,7 +8878,7 @@
    ]
   },
   "CAS": {
-   "src": "traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (7437) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists)",
+   "src": "traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists)",
    "nodes": [
     [
      "D60",

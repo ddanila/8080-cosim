@@ -82,7 +82,7 @@ readiness report.
 | source-now | IR82 | КР580ИР82 | 8282/8283-class latch; verify polarity/package | 1 | 1 | 0 | D58 | - |
 | source-now | KP12_MUX | К555КП12 | 74LS253 dual 4:1 three-state multiplexer | 2 | 2 | 0 | D95, D101 | - |
 | source-now | KP14_MUX | К531/К555КП14 | 74LS257/258-class quad 2:1 mux; verify OE/polarity | 5 | 5 | 0 | D48, D49, D50, D51, D52 | - |
-| source-now | LA12_GATE | К531ЛА12 | 74S20/74LS20-class NAND; verify section | 1 | 1 | 0 | D36 | - |
+| source-now | LA12_GATE | К531ЛА12 | SN74S37-compatible high-drive quad 2-input NAND | 1 | 1 | 0 | D36 | - |
 | source-now | LA18 | К155ЛА18 | open-collector NAND/driver; verify output topology | 1 | 1 | 0 | D12 | - |
 | source-now | LA1_GATE | К531ЛА1 | 74S/74LS NAND-class gate; verify exact logic section | 1 | 1 | 0 | D38 | - |
 | source-now | LA3_GATE | К555/КР1533ЛА3 | 74LS00 / 74ALS00-class NAND | 4 | 4 | 0 | D7, D37, D39, D105 | - |

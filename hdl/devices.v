@@ -278,7 +278,7 @@ module ln1_dual  (input wire i9, i5, i13, i3, i11, i1, output wire o8, o6, o12, 
     assign o10 = ~i11;  // section 11->10: D36.3 -> D36.10 CAS strobe-chain delay leg (bite-2)
     assign o2  = ~i1;   // section 1->2: D103.CO -> LD reload loop (the /13 preset divider, traced s2_d103)
 endmodule
-// D36 ЛА12 (7437 quad buffer NAND, high drive). Section 4,5->6 = clock mesh (traced 2026-07); bite-2
+// D36 К531ЛА12 (SN74S37-compatible quad 2-input NAND, high drive). Section 4,5->6 = clock mesh (traced 2026-07); bite-2
 // added: 1,2->3 (pin1 taps rail 15 = CAS, pin2 <- rail 17) -> D33.11; 9,10->8 (-> rail 16); 12,13->11
 // (inputs tied) -> R57 -> rail 15 = the populated-bank CAS driver.
 module la12_gate (input wire a, b, a2, b2, a3, b3, a4, b4, output wire y, y2, y3, y4);

@@ -40,6 +40,7 @@ def main() -> int:
     board = load_board()
     chips = {chip.get("ref"): chip for chip in board["chips"]}
     d35 = chips["D35"]
+    d36 = chips["D36"]
     d59 = chips["D59"]
     hex_contract = {
         "1": "I1", "2": "O2", "3": "I3", "4": "O4", "5": "I5", "6": "O6",
@@ -60,6 +61,19 @@ def main() -> int:
         "D56_C2": {("D56", "6"), ("C7", "2")},
     }
     guarded_checks = [
+        (
+            "D36 К531ЛА12 package contract is the SN74S37-compatible quad 2-input NAND",
+            d36.get("pins", {}) == {
+                "1": "A2", "2": "B2", "3": "Y2",
+                "4": "B", "5": "A", "6": "Y",
+                "9": "A3", "10": "B3", "8": "Y3",
+                "12": "A4", "13": "B4", "11": "Y4",
+            }
+            and "SN74S37" in d36.get("prov", {}).get("refdes", "")
+            and has_nodes(board, "GND", {("D36", "7")})
+            and has_nodes(board, "P5V", {("D36", "14")}),
+            "inputs 1/2,4/5,9/10,12/13; outputs 3/6/8/11; GND7/VCC14",
+        ),
         (
             "All 32 DRAM sockets retain complete option-rail roles",
             all(

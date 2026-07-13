@@ -38,11 +38,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | mame+datasheet | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 234 |
+| scan | 233 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
 | scan + registered owner photo | 1 |
+| scan+datasheet | 1 |
 | wire | 1 |
 
 ## Gap Categories
