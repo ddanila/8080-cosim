@@ -20,15 +20,18 @@ the RF group remains constrained but deferred while its tapped coil is traced.
   three-lead part, not `R65`, and is explicitly superseded here.
 
 The photo read is suitable for package placement but does not yet identify the
-lower obscured/passive positions. `R65` and the visibly marked red `2к` R67 are
-now placed at their observed centres.
+lower obscured/passive positions. `R65`, the visibly marked red `2к` R67, glass
+`VD3`, and rightmost `R66` are now placed at their observed centres. The
+factory drawing fixes the left-to-right identity of the right-hand group, so
+the photo centres no longer depend on colour or circuit-role inference.
 The yellow part beside `R65` was tested as an L1 candidate and rejected. Its
 full-resolution marking reads `680п` (680 pF), and the registered solder view
 does not yield the three coherent coil terminals required by the schematic.
 The previously recorded `(287.07,132.26)` centre therefore belongs to a
-capacitive part, not L1. `VD3`, `R66`, and the remainder stay unchanged
-until their bodies can be paired unambiguously. The generated `R65` coordinate
-compensates for the KiCad axial-footprint anchor offset.
+capacitive part, not L1. The remaining parts stay unchanged until their bodies
+can be paired unambiguously. The generated vertical axial/diode coordinates
+compensate for the KiCad footprint-anchor offset; the guarded body centres are
+`VD3=(299.38,128.40)` and `R66=(302.69,128.46)` mm.
 
 ## L1 model discrepancy
 
@@ -41,12 +44,14 @@ until the real coil and its solder landings are registered. The adjacent yellow
 `680п` part is explicitly excluded from that search.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
-the former assembly-grid approximations for `R65`/`R67`. The documented `VD3` and
-`R66` centres are held as the next registration constraints, not silently lost.
+the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`.
 
 The R65/R67 increment itself removed their false D102-pad collisions. A later
-full-source DRC audit corrected the parser and exposed six other unique
+full-source DRC audit corrected the parser and exposed six then-current unique
 analog/FDC pad-collision pairs involving C13/R68/R69/R73/R74; the authoritative
 current placement status is `docs/source-pcb-drc.md`, not the earlier
-increment-local zero-short observation. The 101-instance LVS remains fully
-matched at 254 nets, but LVS does not validate physical placement clearance.
+increment-local zero-short observation. Promoting the now-unambiguous VD3
+centre exposes one additional collision with the unregistered L1 stand-in;
+that conflict proves the placeholder coil location is false rather than
+weakening the diode placement. The 101-instance LVS remains fully
+matched at 263 nets, but LVS does not validate physical placement clearance.

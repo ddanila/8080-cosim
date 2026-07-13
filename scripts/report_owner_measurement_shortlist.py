@@ -177,7 +177,7 @@ def main() -> int:
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
         (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**")),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
-        ("Source-PCB placement hold is current", has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `6`")),
+        ("Source-PCB placement hold is current", has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `7`")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
@@ -255,9 +255,9 @@ def main() -> int:
         (
             "P0",
             "source-PCB collision placement",
-            "register exact target-board lead centres for C13, R68, R69, R73, and R74: C13.2 currently overlaps D95.2; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; and R74.1 overlaps D102.12/.13. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102 centres fixed. Do not use the factory-drawing capacitor beside D41: its label is C63, not C13",
+            "register exact target-board lead centres for C13, R68, R69, R73, R74, and tapped coil L1: C13.2 currently overlaps D95.2; R73.1 overlaps D97.9; R68.2/R69.2 overlap D102.4/.5; R74.1 overlaps D102.12/.13; and the old L1 stand-in overlaps the now factory/photo-proven VD3 centre. Use component- and solder-side photographs or direct hole-centre measurements; keep the already photo/factory-fitted D95/D97/D102/VD3 centres fixed. Do not use the factory-drawing capacitor beside D41: its label is C63, not C13",
             "`docs/source-pcb-drc.md`; `docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`",
-            "removes all six known source-board electrical shorts without inventing target-revision passive placement",
+            "removes all seven known source-board electrical collision pairs without inventing target-revision passive placement",
         ),
         (
             "P0",

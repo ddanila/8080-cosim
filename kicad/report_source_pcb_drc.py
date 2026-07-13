@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
 OUTPUT = ROOT / "docs/source-pcb-drc.md"
 COLLISION_DISPOSITION = {
+    "L1": ("VD3", "L1 is still an unregistered three-pad tapped-coil stand-in; the factory/photo-proven VD3 centre now disproves this placeholder location, so locate the actual coil holes before moving it"),
     "R68": ("D102", "R68 placement is only an approximate analog-grid seed; locate the physical SND_MIX resistor from target-board imagery or continuity"),
     "R69": ("D102", "R69 placement is only an approximate analog-grid seed; locate the physical D34_SIG resistor from target-board imagery or continuity"),
     "R73": ("D97", "R73 is a three-terminal RF-bias trimmer, not a lower-FDC-row part; register its physical body before moving it"),
@@ -89,7 +90,7 @@ def main() -> int:
         "",
         "## Placement disposition",
         "",
-        "The D95/D97/D102 package centres are registered by independent owner-photo",
+        "The D95/D97/D102 package centres and VD3 body centre are registered by independent owner-photo",
         "fits and the factory assembly drawing. Each collision instead involves a",
         "passive whose current coordinate is explicitly approximate; moving an IC to",
         "clear one of these shorts would regress known-good placement.",

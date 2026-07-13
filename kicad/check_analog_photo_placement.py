@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the first assembly-identified parts below D102 in the owner photo."""
+"""Guard assembly-identified parts below D102 in the owner photo."""
 from pathlib import Path
 
 import numpy as np
@@ -11,6 +11,8 @@ EXPECTED = {
     # owner component photo 200418174 registered through the D102 pad field.
     "R65": ((282.21, 125.14), 90.0),
     "R67": ((295.94, 125.39), 90.0),
+    "VD3": ((299.38, 128.40), 90.0),
+    "R66": ((302.69, 128.46), 90.0),
 }
 
 

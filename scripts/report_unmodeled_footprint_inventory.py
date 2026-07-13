@@ -160,7 +160,7 @@ def main() -> int:
             "  D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9",
             "  merge and the older `.006` D95 WAIT handoff.",
             "- The derived routed snapshot predates those corrections and the source",
-            "  placement has six collision pairs, so a full reroute remains blocked.",
+            "  placement has seven collision pairs, so a full reroute remains blocked.",
         ]
     else:
         d105_lines = [

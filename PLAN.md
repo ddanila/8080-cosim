@@ -70,7 +70,7 @@ closed and the corrected board has been rerouted and reviewed.
    assignments are rejected.
 
 The routed PCB/DSN/SES predate this measured topology. Do not locally restore
-the obsolete WAIT copper; regenerate the complete routed snapshot after the six
+the obsolete WAIT copper; regenerate the complete routed snapshot after the seven
 source-placement collision pairs are resolved.
 
 4. **Disposition all remaining source-risk nets and omitted endpoints.** The
@@ -104,7 +104,10 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
 The source PCB now passes all `2251/2251` net-assigned PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
-holds routed-board adoption on six unique analog/FDC pad collisions.
+holds routed-board adoption on seven unique analog/FDC pad collisions. The
+seventh is informative rather than a regression in evidence: correcting VD3
+to its factory/photo-proven centre exposes the old unregistered L1 stand-in as
+a false location.
 Sixty-one endpoints on bracket-mounted S1/S4/X3/X4/X8/X9 are correctly excluded in
 favor of their physical A-point cable landings. The routed PCB remains the sole
 endpoint-coverage failure.
@@ -177,8 +180,11 @@ extraction work from that set:
    It also restores the omitted third terminal of R73: the RF-bias trimmer is
    `RF_RAIL` end / `VT4_B` wiper / grounded end, not a two-pin resistor.
    Owner-photo/assembly registration now also places the visibly marked red
-   `2к` R67 at `(295.94,125.39)` mm, removing its false D102 pad collision
-   without moving the proven IC row or guessing the obscured L1 location.
+   `2к` R67 at `(295.94,125.39)` mm, plus glass VD3 at
+   `(299.38,128.40)` mm and the rightmost R66 at `(302.69,128.46)` mm.
+   The factory drawing fixes the right-group identities independently of
+   colour; these placements do not move the proven IC row or guess the
+   obscured L1 location.
 5. Sheets 2-6 (the note-8 таблица соединений plus change registration) are
    acquired as `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf` and
    transcribed in `ref/schematics/dgsh5-109-009-sb-wire-table.md`. The X9
