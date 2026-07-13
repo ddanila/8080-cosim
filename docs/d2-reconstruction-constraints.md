@@ -31,7 +31,7 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | 5 | A0 | `A12` | scan + July-2026 D2/D4 solder local fits |
 | 6 | A1 | `A15` | scan + July-2026 D2/D4 solder local fits |
 | 7 | A2 | `A9` | scan + July-2026 D2/D4 solder local fits |
-| 15 | A7 | `WREQ_N` | traced sheet-1: label -WREQ enters D2 A7/pin 15 from edge code 107C; target connector destination remains unmodeled |
+| 15 | A7 | `WREQ_N` | traced sheet-1: the factory arrow explicitly labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C |
 | 13 | V1 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND |
 | 14 | V2 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND |
 | 9 | D3 | NC | factory symbol draws only D0/pin12; explicit no-connect |

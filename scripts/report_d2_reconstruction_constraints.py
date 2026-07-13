@@ -22,7 +22,7 @@ SYMBOLIC = ROOT / "ref" / "reconstructed-proms" / "d2_037_symbolic_truth.csv"
 SCHEMATIC_LEADS = {
     "4": ("VIDEO_CYCLE", "sheet 1 label `VIDEO CYCLE` enters D2 A3/pin 4"),
     "2": ("IORC_N", "sheet 1 label `-XACK` enters D2 A5/pin 2 at X1/D29 `-IORC` coordinate 106C"),
-    "15": ("WREQ_N", "sheet 1 label `-WREQ` enters D2 A7/pin 15"),
+    "15": ("WREQ_N", "sheet 1 arrow labels `-WREQ` from X1 coordinate 107C into D2 A7/pin 15"),
     # The saved DSN still contains the older D2_WAIT_RAW interpretation, but
     # direct owner continuity supersedes it in the authoritative source model.
     "12": ("READY_D", "owner continuity: D2 D0/pin 12 enters D30 pin 2 and R6"),

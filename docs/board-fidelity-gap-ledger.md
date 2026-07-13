@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `282`
 - Nets modeled: `546`
-- Chip-level fidelity gaps: `58`
+- Chip-level fidelity gaps: `57`
 - Net-level source-risk gaps: `211`
 - Documented intentional no-connect pins: `65`
 
@@ -50,7 +50,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 24 |
-| PROM truth | 2 | 0 |
+| PROM truth | 1 | 0 |
 | PROM/decode | 0 | 14 |
 | clock/I/O | 0 | 7 |
 | logic/source | 9 | 145 |
@@ -83,7 +83,6 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `D2` | `WAIT_PROM` | scan | owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/... |
 | `D94` | `RE3_PROM_092` | prom | .009 official; programming ДГШ5.106.092 (dump pending) РЕ3 pinout; A0-A4 = BA11-15 (same convention as D8); corrected July-2026 local pin fit traces D0/pin1-... |
 
 ### logic/source

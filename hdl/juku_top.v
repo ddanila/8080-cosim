@@ -224,6 +224,7 @@ module juku_top (
     va87_out U_D25 (.Ain(DB),       .Aout(dat),    .oe_n(1'b0), .t(d25_t_w));
     expansion_conn U_X1 (.inhib_n(inhib_n), .cclck(cclck), .iom_n(iom_n), .mwc_n(mwc_n),
                          .mrc_n(mrc_n), .amwc_n(amwc_n), .iorc_n(iorc_n), .iowc_n(iowc_n),
+                         .wreq_n(wreq_n),
                          .int7_raw(int7_raw), .int6_raw(int6_raw),
                          .dat(dat), .adr_lo(adr_lo), .adr_hi(adr_hi));
 

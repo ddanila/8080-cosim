@@ -99,7 +99,7 @@ USART symbol, so SYNDET is now modeled and TXEMPTY is an explicit NC.
    `docs/replica-bringup-verification-points.md` must report full endpoint
    coverage before release.
 
-The source PCB now passes all `2238/2238` PCB-scoped board-JSON endpoints; the
+The source PCB now passes all `2239/2239` PCB-scoped board-JSON endpoints; the
 off-board S1 and S4 switch contacts are intentionally excluded from PCB-pad coverage.
 `docs/source-pcb-drc.md` is the separate physical-placement gate: it currently
 holds routed-board adoption on six unique analog/FDC pad collisions.

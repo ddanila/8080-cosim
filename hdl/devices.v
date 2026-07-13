@@ -100,7 +100,7 @@ module ir82_latch (input wire [7:0] d, input wire stb, oe_n, output wire [7:0] q
     assign q = oe_n ? 8'hzz : d;
 endmodule
 
-module expansion_conn (inout wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n,
+module expansion_conn (inout wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iorc_n, iowc_n, wreq_n,
                        inout wire int7_raw, int6_raw,
                        inout wire [7:0] dat,
                        inout wire [7:0] adr_lo, inout wire [7:0] adr_hi);  // adr_lo[i]=-ADRi, adr_hi[i]=-ADR(8+i)

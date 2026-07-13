@@ -1295,6 +1295,7 @@
     "104C": "MRC_N",
     "104B": "MWC_N",
     "106C": "IORC_N",
+    "107C": "WREQ_N",
     "105B": "IOWC_N",
     "132C": "DAT0",
     "132B": "DAT1",
@@ -3811,7 +3812,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK is the local alias of X1/D29 -IORC at the identical factory coordinate 106C, A7/pin15=-WREQ remains a boundary, and V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically; the factory symbol draws only D0/pin12, so pins9-11 are explicit no-connects. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
+    "pins": "owner continuity/read 2026-07-13 supersedes the older-sheet output interpretation: D0/pin12 -> D30.2 READY_D with R6 pullup, not D105.9; A3/pin4=VIDEO CYCLE/CAS, A5/pin2=-XACK is the local alias of X1/D29 -IORC at the identical factory coordinate 106C, A7/pin15=-WREQ reaches X1.107C by its explicit factory arrow, and V1/V2 pins13/14=GND. Pins9-12 were all sampled and read identically; the factory symbol draws only D0/pin12, so pins9-11 are explicit no-connects. Three stable reads, including a full power cycle, recover the preservation-grade physical ДГШ5.106.037 table."
    }
   },
   {
@@ -15847,8 +15848,8 @@
    "nodes": [["D105", "10"], ["D13", "13"]]
   },
   "WREQ_N": {
-   "src": "traced sheet-1: label -WREQ enters D2 A7/pin 15 from edge code 107C; target connector destination remains unmodeled",
-   "nodes": [["D2", "15"]]
+   "src": "traced sheet-1: the factory arrow explicitly labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C",
+   "nodes": [["D2", "15"], ["X1", "107C"]]
   },
   "D105_WAIT_STAGE": {
    "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",

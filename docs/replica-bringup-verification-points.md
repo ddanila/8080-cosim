@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `211`
 - Verification-point endpoints checked in PCB: `379`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2238`
-- All board endpoints checked in routed PCB: `2238`
+- All board endpoints checked in source PCB: `2239`
+- All board endpoints checked in routed PCB: `2239`
 - Intentional off-board endpoints excluded: `38`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2238/2238 | 2238/2238 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1924/2238 | 1893/2238 | FAIL |
+| `kicad/juku.kicad_pcb` | 2239/2239 | 2239/2239 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1924/2239 | 1893/2239 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -364,6 +364,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `VID_MUX_G: E14.1`
 - `VT4_C: C12.2`
 - `W10_QA_SEL: D51.1`
+- `WREQ_N: X1.107C`
 - `X3_HARNESS_1: A21.1`
 - `X3_HARNESS_1: R104.1`
 - `X3_HARNESS_7: A27.1`
