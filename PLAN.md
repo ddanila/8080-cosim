@@ -301,7 +301,8 @@ blocker below).
   required. The separate К155РЕ3 validator now applies the same repeated-read
   discipline to D8/D94 32-byte captures and preserves raw versus asserted
   bytes; a D94 dump still does not replace its missing continuity.
-- D2 `.037` and D6 `.038` now use validated physical raw tables; D8 remains a
+- D2 `.037` and D6 `.038` now use validated physical raw tables, each backed by
+  three matching captures including a separate power cycle; D8 remains a
   labeled Tier-1/2 fallback. The owner `.113/.117` scans are not D8 `.039` or
   D94 `.092`.
 - The deterministic low-D15/high-D16 `ekta37` split, image hashes, and

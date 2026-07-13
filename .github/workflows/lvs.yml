@@ -128,6 +128,7 @@ jobs:
           python3 scripts/validate_rt4_dump.py \
             ref/physical-proms/captures/d6_038_20260713_capture1.txt \
             ref/physical-proms/captures/d6_038_20260713_capture2.txt \
+            ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
             --out-dir /tmp/d6-validate --name d6_038
           cmp ref/physical-proms/captures/d2_037_20260713_capture1.txt \
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture1.txt
@@ -135,6 +136,10 @@ jobs:
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture2.txt
           cmp ref/physical-proms/captures/d2_037_20260713_capture3_powercycled.txt \
             ref/physical-proms/captures/d2_037_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt
+          cmp ref/physical-proms/captures/d6_038_20260713_capture1.txt \
+            ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture1.txt
+          cmp ref/physical-proms/captures/d6_038_20260713_capture2.txt \
+            ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture2.txt
           python3 scripts/validate_rt4_dump.py \
             ref/physical-proms/captures/d2_037_sukharev_reference_20260713_verify1.txt \
             --allow-single --out-dir /tmp/d2-alias-validate --name d2_037

@@ -112,7 +112,7 @@ def main() -> int:
         "scripts/validate_re3_dump.py",
         "Raw levels are the authoritative dump",
         "repeat-mismatched RE3 rows",
-    ) and exists("scripts/validate_re3_dump.py")
+    ) and exists("scripts/validate_re3_dump.py") and exists("tools/re3_dumper/re3_dumper.ino")
 
     rows = [
         [
@@ -131,7 +131,7 @@ def main() -> int:
             "memory decode PROM",
             d6_cell,
             "`ref/physical-proms/README.md`",
-            "separately power-cycled confirmation or programming-disk comparison",
+            "independent-reader or programming-disk comparison",
         ],
         [
             "D8",
@@ -230,8 +230,8 @@ def main() -> int:
             "- D2 and D6 now have validated physical raw tables. D8 remains a",
             "  reconstructed functional image; D15/D16 use the `ekta37` EPROM split.",
             "- D2 is preservation-strength within current evidence: three captures",
-            "  validate identically and include a separate power cycle. D6 has two",
-            "  matching preserved captures; another power cycle remains desirable.",
+            "  validate identically and include a separate power cycle. D6 also has three",
+            "  matching preserved captures including a separate power cycle.",
             "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
             "  device dumps. Program them as low/high 8 KiB respectively and",
             "  retain programmer verification records.",

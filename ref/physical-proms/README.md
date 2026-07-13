@@ -31,13 +31,16 @@ silently replace the raw table.
 
 ## D6 `.038`
 
-`captures/d6_038_20260713_capture1.txt` and `capture2.txt` are two complete,
-matching reads from one powered session, with zero unstable addresses. PROM
-pins 9-12 were confirmed isolated on the breadboard, and the high level on pin
-9 (the Nano D13 input) measured 4.4 V. A separately power-cycled capture is
-still preferred before treating D6 as preservation-grade.
+`captures/d6_038_20260713_capture1.txt`, `capture2.txt`, and
+`d6_038_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt` are three
+complete matching reads with zero unstable addresses; the third followed a
+full power cycle. PROM pins 9-12 were confirmed isolated on the breadboard, and
+the high level on pin 9 (the Nano D13 input) measured 4.4 V. The two matching
+`d6_038_arvutimuuseum_CS00015_*capture1/2.txt` files are byte-identical aliases
+of the first two streams and preserve the supplied board label without being
+counted as additional reads.
 
-The preliminary raw table is `validated/d6_038.raw.bin`:
+The preservation-grade raw table is `validated/d6_038.raw.bin`:
 
 ```text
 SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39
@@ -48,8 +51,9 @@ reordering addresses to the repository fallback's D6 convention, 252 of 256
 bytes differ from `d6_rt4_memory_decode_reconstructed.bin`. The captured and
 fallback nibble populations also cannot be reconciled by output-bit
 permutation or whole-nibble inversion, so the mismatch is not merely a naming
-or polarity change. Preserve both as distinct evidence until the physical D6
-map is adopted and independently power-cycled.
+or polarity change. Preserve both as distinct evidence; the physical D6 table
+now has a separately power-cycled repeat, but still benefits from an independent
+reader or programming-disk comparison.
 
 Run validation with:
 
@@ -63,6 +67,7 @@ python3 scripts/validate_rt4_dump.py \
 python3 scripts/validate_rt4_dump.py \
   ref/physical-proms/captures/d6_038_20260713_capture1.txt \
   ref/physical-proms/captures/d6_038_20260713_capture2.txt \
+  ref/physical-proms/captures/d6_038_arvutimuuseum_CS00015_20260713_capture3_powercycled.txt \
   --out-dir /tmp/d6-validated --name d6_038
 ```
 

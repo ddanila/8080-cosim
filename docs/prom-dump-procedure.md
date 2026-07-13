@@ -64,7 +64,8 @@ array **twice**, require identical; also sanity-check the dump isn't all-0x00/al
 
 Capture each row as `AA,RR,OK`, where `AA` is the two-digit address and `RR`
 is the raw two-digit output-pin byte (`D0..D7` = bits 0..7). Validate repeated
-logs with:
+logs with the tracked Nano reader at `tools/re3_dumper/re3_dumper.ino` and host
+validator:
 
 ```sh
 python3 scripts/validate_re3_dump.py read-1.txt read-2.txt read-3.txt \
@@ -97,9 +98,10 @@ wiring, polarity, or the unresolved D94 output/enable branches.
    validates the reconstructed ROM pager; a D94 `.092` dump, together with its
    missing output/enable continuity, defines the physical FDC control decode.
    Do not substitute the `.113/.117` tables from the `.106.103` family.
-2. **РТ4 D6 → memory-decode corroboration**: compare another independently
-   power-cycled read with the adopted physical `.038` table; preserve any
-   stable difference as a board variant.
+2. **РТ4 D6 → memory-decode corroboration**: a separately power-cycled third
+   read now matches the adopted physical `.038` table. Compare an independent
+   reader or programming-disk artifact next; preserve any stable difference as
+   a board variant.
 3. **РТ4 D2 → bus/wait corroboration**: compare another physical `.037` read
    with the three matching adopted captures. It does **not** replace the I/O
    decoder; board evidence puts the functional I/O chip-select decoder at D9

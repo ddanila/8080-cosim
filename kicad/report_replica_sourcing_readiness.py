@@ -194,7 +194,7 @@ def build_report(rows):
         ]
     )
     gate_notes = {
-        "DEC_PROM": "Program from the validated physical D6 `.038` table; compare with a future programming-disk file or power-cycled recapture when available.",
+        "DEC_PROM": "Program from the preservation-grade physical D6 `.038` table recovered by three matching reads, including a power-cycled capture; compare with a future programming-disk file when available.",
         "WAIT_PROM": "Program from the preservation-grade physical D2 `.037` table recovered by three matching reads, including a power-cycled capture.",
         "EPROM8K": "Program D15/D16 for the .009 build; leave D17-D22 empty unless authentic-completeness build is chosen.",
         "RE3_PROM": "Need D8 RE3 dump/table or accepted reconstructed table.",

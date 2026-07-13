@@ -2,12 +2,13 @@
 
 Status: **PHYSICAL D2/D6 TABLES VALIDATED**
 
-Three preserved D2 captures—including a separate power cycle—and two preserved
-D6 captures validate with zero unstable or mismatched addresses. Inputs and
-derived artifacts are under `ref/physical-proms/`; D6 would still benefit from
-an additional separately power-cycled confirmation. Provenance-labelled D2
-aliases are also preserved, but byte identity proves they are copies of these
-same serial streams rather than additional independent measurements.
+Three preserved D2 captures and three preserved D6 captures—each set including
+a separate power cycle—validate with zero unstable or mismatched addresses.
+Inputs and derived artifacts are under `ref/physical-proms/`.
+Provenance-labelled D2 aliases and the first two D6 aliases are also preserved,
+but byte identity proves they are copies of the canonical serial streams rather
+than additional independent measurements. The D6 CS00015 power-cycled stream
+has no earlier counterpart and is the adopted third read.
 
 `scripts/validate_rt4_dump.py` validates the line-oriented serial format emitted
 by a К556РТ4 reader. It is applicable to D2 `.037` and D6 `.038`; it does not

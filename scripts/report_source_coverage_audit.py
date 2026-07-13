@@ -115,7 +115,7 @@ def main() -> int:
         "",
         "## Current source requests",
         "",
-        "1. Compare the validated physical D2 `.037` and D6 `.038` raw tables against Baltijets programming-disk files if those surface; D6 would benefit from an additional separately power-cycled confirmation.",
+        "1. Compare the validated physical D2 `.037` and D6 `.038` raw tables against Baltijets programming-disk files if those surface; both now include separately power-cycled confirmation.",
         "2. D94 `ДГШ5.106.092` enable/output continuity and repeated PROM dump or programming-disk file.",
         "3. Pin-level continuity for D93's complete drive interface and +12 V supply, plus explicit dispositions for the 9 power-routed FDC-support boundaries: D28, D95-D99, D101, D102, and D106. The owner-measured D2/D30/D105/D13/D6 corrections are synchronized.",
         "4. Complete Monitor 3.3-compatible cartridge BASIC artifact or documented factory loading procedure.",

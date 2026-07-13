@@ -20,7 +20,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | Ref | Part | Programmed drawing | Role | Burnable repo fallback | Guard | Next truth source |
 | --- | --- | --- | --- | --- | --- | --- |
 | D2 | К556РТ4 | `ДГШ5.106.037` | READY/bus-control PROM | `ref/physical-proms/validated/d2_037.raw.bin` (256 bytes, SHA256 `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`) | `docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md` | programming-disk comparison or independent future read |
-| D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes, SHA256 `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`) | `ref/physical-proms/README.md` | separately power-cycled confirmation or programming-disk comparison |
+| D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes, SHA256 `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`) | `ref/physical-proms/README.md` | independent-reader or programming-disk comparison |
 | D8 | К155РЕ3 | `ДГШ5.106.039` | ROM-socket pager PROM | `ref/reconstructed-proms/d8_re3_rom_pager_reconstructed.bin` (32 bytes, SHA256 `0cecad4f89dce2e5e0dba0622c89d8cfa01324dd8ff3e9f7b8f92d20ced690b3`) | `docs/reconstructed-prom-fallbacks.md` | replace/check fallback against programming-disk file or dump |
 | D94 | К155РЕ3 | `ДГШ5.106.092` | FDC control/decode PROM | no | `docs/d94-reconstruction-constraints.md` | programming-disk file or repeated dump plus complete D94.15 and D93.2/.4 strobe-branch continuity |
 | D15 | M2764/2764 | repository EktaSoft BIOS split | BIOS low 8 KiB | `ref/eprom-images/d15_ekta37_low.bin` (8192 bytes, SHA256 `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596`) | `docs/eprom-programming-images.md` | repeat physical D15 dump for Tier-3 truth |
@@ -49,8 +49,8 @@ python3 scripts/report_firmware_gap_ledger.py
 - D2 and D6 now have validated physical raw tables. D8 remains a
   reconstructed functional image; D15/D16 use the `ekta37` EPROM split.
 - D2 is preservation-strength within current evidence: three captures
-  validate identically and include a separate power cycle. D6 has two
-  matching preserved captures; another power cycle remains desirable.
+  validate identically and include a separate power cycle. D6 also has three
+  matching preserved captures including a separate power cycle.
 - D15/D16 are deterministic Tier-1/2 functional images, not physical
   device dumps. Program them as low/high 8 KiB respectively and
   retain programmer verification records.
