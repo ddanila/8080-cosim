@@ -219,6 +219,17 @@ MEMR and reached 32 unconnected items on 30 nets with 12,844 copper items, a
 cumulative reduction of 157. A complete hole-aware residual sweep accepted no
 further routes.
 
+P12V and RESET proposals then revealed that the old 0.4 mm hard-coded outer
+rectangle was not an adequate board-edge model. In particular, P12V passed
+only 0.35 mm from the circular Edge.Cuts hole centered at `(10.1,135.6)`;
+the configured copper-to-edge rule is 0.5 mm. The router now rasterizes every
+actual Edge.Cuts primitive through KiCad's shape-aware hit test, including the
+internal mounting holes, with the rule clearance plus half the proposed track
+width. Alternate P12V and RESET routes pass the strict transaction guard and
+reach 30 unconnected items on 29 nets with 13,117 copper items, a cumulative
+reduction of 159. The remaining M12V edge-related proposal becomes correctly
+unroutable rather than producing a new violation.
+
 The current authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
 violation counts are unchanged, including the original dangling `OSC` track and

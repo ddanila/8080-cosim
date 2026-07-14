@@ -17,6 +17,7 @@ if STEP <= 0:
 WIDTH = 0.20
 VIA_DRILL = 0.30
 HOLE_CLEARANCE = 0.25
+EDGE_CLEARANCE = 0.50
 CLEARANCE = float(sys.argv[10]) if len(sys.argv) == 11 else 0.45
 if CLEARANCE <= 0:
     raise SystemExit("clearance must be positive")
@@ -76,17 +77,31 @@ def mark_pad(blocked, pad, bounds=(0, MAX_X, 0, MAX_Y)):
                 blocked.add((ix, iy))
 
 
+def mark_edge_shape(blocked, shape, bounds=(0, MAX_X, 0, MAX_Y)):
+    """Mark an actual Edge.Cuts primitive plus track-center separation."""
+    separation = EDGE_CLEARANCE + WIDTH / 2
+    box = shape.GetBoundingBox()
+    x0 = pcbnew.ToMM(box.GetX()) - separation
+    y0 = pcbnew.ToMM(box.GetY()) - separation
+    x1 = pcbnew.ToMM(box.GetRight()) + separation
+    y1 = pcbnew.ToMM(box.GetBottom()) + separation
+    ix0 = max(bounds[0], math.floor(x0 / STEP))
+    ix1 = min(bounds[1], math.ceil(x1 / STEP))
+    iy0 = max(bounds[2], math.floor(y0 / STEP))
+    iy1 = min(bounds[3], math.ceil(y1 / STEP))
+    accuracy = pcbnew.FromMM(separation)
+    for ix in range(ix0, ix1 + 1):
+        for iy in range(iy0, iy1 + 1):
+            point = pcbnew.VECTOR2I_MM(ix * STEP, iy * STEP)
+            if shape.HitTest(point, accuracy):
+                blocked.add((ix, iy))
+
+
 def obstacle_map(netname, layer, bounds=(0, MAX_X, 0, MAX_Y)):
     blocked = set()
-    edge = math.ceil(0.40 / STEP)
-    for ix in range(bounds[0], bounds[1] + 1):
-        for iy in range(edge):
-            if bounds[2] <= iy <= bounds[3]: blocked.add((ix, iy))
-            if bounds[2] <= MAX_Y - iy <= bounds[3]: blocked.add((ix, MAX_Y - iy))
-    for iy in range(bounds[2], bounds[3] + 1):
-        for ix in range(edge):
-            if bounds[0] <= ix <= bounds[1]: blocked.add((ix, iy))
-            if bounds[0] <= MAX_X - ix <= bounds[1]: blocked.add((MAX_X - ix, iy))
+    for shape in board.GetDrawings():
+        if shape.GetLayer() == pcbnew.Edge_Cuts:
+            mark_edge_shape(blocked, shape, bounds)
 
     for pad in board.GetPads():
         if pad.GetNetname() == netname or not pad.IsOnLayer(layer):
