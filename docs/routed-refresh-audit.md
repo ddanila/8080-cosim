@@ -141,6 +141,8 @@ python3 kicad/close_unconnected_gaps.py OUTPUT.kicad_pcb OUTPUT_50.kicad_pcb \
   --min-distance 30 --max-distance 50 --timeout 20
 python3 kicad/close_unconnected_gaps.py OUTPUT_50.kicad_pcb OUTPUT_M.kicad_pcb \
   --max-distance 15 --mode M --timeout 60 --limit 10
+python3 kicad/close_unconnected_gaps.py OUTPUT_M.kicad_pcb OUTPUT_WIDE.kicad_pcb \
+  --max-distance 450 --mode M --search-margin 60 --timeout 30
 ```
 
 The first two single-layer bands accepted 14 proposals and reduced KiCad's
@@ -163,9 +165,16 @@ including `IORD`, `IOWR`, `POF`, `FDC_DDEN`, `FDC_DAL7`, `DC1`,
 accepted 10 more routes, including `HLDA`, `IORC_N`, `MEMW`,
 and `D6_MEM_SELECT_N`; a second pass accepted none. The guarded candidate then
 accepted eight routes in the 100-125 mm band, including `IORD`, `IOWR`,
-`MEMW`, `ROE`, and `SYNC`, while rejecting a `VIDEO_OUT` proposal. It now has
-90 unconnected items and 8,986 copper items, a cumulative reduction of 99 from
-the Freerouting import.
+`MEMW`, `ROE`, and `SYNC`, while rejecting its first `VIDEO_OUT` proposal.
+The remaining 125-225 mm distance bands accepted 14 routes and reached 76
+unconnected items; no DRC gap is longer than 232 mm.
+
+The multilayer search corridor is now an explicit `--search-margin` parameter
+instead of a fixed 30 mm. Exhaustive 60, 90, and 120 mm corridor sweeps accepted
+8, 3, and 1 additional routes respectively, including `VIDEO_OUT`, `SER_DTR`,
+`MEMW`, BA4/BA5, and another `P5V` island. The 120 mm sweep therefore establishes
+the current corridor-expansion limit at 64 unconnected items on 50 nets and
+10,326 copper items, a cumulative reduction of 125 from the Freerouting import.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity

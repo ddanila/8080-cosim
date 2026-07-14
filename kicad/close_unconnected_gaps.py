@@ -110,6 +110,12 @@ def main() -> None:
         default="FB",
         help="route on either single copper layer (FB), or permit vias (M)",
     )
+    parser.add_argument(
+        "--search-margin",
+        type=float,
+        default=30.0,
+        help="multilayer search corridor beyond the endpoint bounds, in mm",
+    )
     parser.add_argument("--kicad-cli", type=Path)
     args = parser.parse_args()
 
@@ -129,6 +135,8 @@ def main() -> None:
         raise SystemExit("input and output must differ")
     if args.min_distance < 0 or args.max_distance < args.min_distance:
         raise SystemExit("distance range must satisfy 0 <= minimum <= maximum")
+    if args.search_margin <= 0:
+        raise SystemExit("search margin must be positive")
     shutil.copyfile(args.input, args.output)
 
     accepted = 0
@@ -160,6 +168,8 @@ def main() -> None:
                 f"{x2},{y2}",
                 args.mode,
             ]
+            if args.mode == "M":
+                command.append(str(args.search_margin))
             try:
                 proc = subprocess.run(
                     command, text=True, capture_output=True, timeout=args.timeout
