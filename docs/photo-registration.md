@@ -149,6 +149,15 @@ contains no populated capacitor body or coherent drilled axial lead pair.
 Factory intent versus owner-board DNP/removal remains explicit rather than
 moving the unrelated generic C63 seed into the IC body/gap.
 
+The same registered component/solder pair now fits the vertical `КР531ЛА1`
+D38 below D41. On the component side, pins 1/7 define the fit while pins 4/8
+hold out at `0.000` px; the reflected solder fit holds pins 4/8 out at `0.500`
+and `1.118` px. The independently fitted D41 cross-side transform predicts
+the D38 corner rows before this fit, so the two nearby white-wire joints can
+now be investigated against real package geometry instead of the coarse board
+panorama. These fits establish pad identity only; no wire joint or copper path
+is promoted by package registration alone.
+
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity

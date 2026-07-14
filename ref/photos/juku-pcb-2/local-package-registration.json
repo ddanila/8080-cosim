@@ -282,6 +282,32 @@
       "note": "The board edge and reversed D99/D95 backside order identify the left package as D99. These joints were formerly mislabeled as D95."
     },
     {
+      "refdes": "D38",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1952.0, 2280.0], "use": "fit", "observation": "top-left contact beside the top-facing dimple on the marked КР531ЛА1"},
+        {"pin": "4", "image_px": [1958.0, 2447.0], "use": "check", "observation": "independent middle contact on the complete pin-1-to-7 column"},
+        {"pin": "7", "image_px": [1964.0, 2614.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent seven-pad column"},
+        {"pin": "8", "image_px": [2131.0, 2608.0], "use": "check", "observation": "independent bottom-right contact on the opposite column"}
+      ],
+      "note": "Direct fit to the vertical КР531ЛА1 D38 below the independently fitted D41 package. The two nearby white-wire joints are deliberately excluded from the package fit; this record establishes pin identity only."
+    },
+    {
+      "refdes": "D38",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1719.0, 1951.0], "use": "fit", "observation": "top joint of the mirrored pin-1-to-7 column"},
+        {"pin": "4", "image_px": [1720.0, 2119.0], "use": "check", "observation": "independent fourth joint on the same coherent column"},
+        {"pin": "7", "image_px": [1720.0, 2287.0], "use": "fit", "observation": "bottom joint of the mirrored pin-1-to-7 column"},
+        {"pin": "8", "image_px": [1553.0, 2287.0], "use": "check", "observation": "independent bottom joint of the opposite column"}
+      ],
+      "note": "The existing two-sided D41 fit predicts this package before fitting. The reflected D38 fit then identifies both complete seven-pad columns without treating their copper departures as continuity evidence."
+    },
+    {
       "refdes": "D40",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

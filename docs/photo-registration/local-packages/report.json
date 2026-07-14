@@ -2231,6 +2231,186 @@
       "electrical_evidence": false
     },
     {
+      "refdes": "D38",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "overlay": "docs/photo-registration/local-packages/D38-component.jpg",
+      "model": "similarity",
+      "scale_px_per_mm": 21.930151,
+      "rotation_deg": -2.057646,
+      "checks": [
+        {
+          "pin": "1",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "4",
+          "use": "check",
+          "error_px": 0.0
+        },
+        {
+          "pin": "7",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "8",
+          "use": "check",
+          "error_px": 0.0
+        }
+      ],
+      "projected_pins": {
+        "1": [
+          1952.0,
+          2280.0
+        ],
+        "2": [
+          1954.0,
+          2335.667
+        ],
+        "3": [
+          1956.0,
+          2391.333
+        ],
+        "4": [
+          1958.0,
+          2447.0
+        ],
+        "5": [
+          1960.0,
+          2502.667
+        ],
+        "6": [
+          1962.0,
+          2558.333
+        ],
+        "7": [
+          1964.0,
+          2614.0
+        ],
+        "8": [
+          2131.0,
+          2608.0
+        ],
+        "9": [
+          2129.0,
+          2552.333
+        ],
+        "10": [
+          2127.0,
+          2496.667
+        ],
+        "11": [
+          2125.0,
+          2441.0
+        ],
+        "12": [
+          2123.0,
+          2385.333
+        ],
+        "13": [
+          2121.0,
+          2329.667
+        ],
+        "14": [
+          2119.0,
+          2274.0
+        ]
+      },
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "D38",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "overlay": "docs/photo-registration/local-packages/D38-solder.jpg",
+      "model": "similarity_reflected",
+      "scale_px_per_mm": 22.047342,
+      "rotation_deg": 179.829477,
+      "checks": [
+        {
+          "pin": "1",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "4",
+          "use": "check",
+          "error_px": 0.5
+        },
+        {
+          "pin": "7",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "8",
+          "use": "check",
+          "error_px": 1.118
+        }
+      ],
+      "projected_pins": {
+        "1": [
+          1719.0,
+          1951.0
+        ],
+        "2": [
+          1719.167,
+          2007.0
+        ],
+        "3": [
+          1719.333,
+          2063.0
+        ],
+        "4": [
+          1719.5,
+          2119.0
+        ],
+        "5": [
+          1719.667,
+          2175.0
+        ],
+        "6": [
+          1719.833,
+          2231.0
+        ],
+        "7": [
+          1720.0,
+          2287.0
+        ],
+        "8": [
+          1552.0,
+          2287.5
+        ],
+        "9": [
+          1551.833,
+          2231.5
+        ],
+        "10": [
+          1551.667,
+          2175.5
+        ],
+        "11": [
+          1551.5,
+          2119.5
+        ],
+        "12": [
+          1551.333,
+          2063.5
+        ],
+        "13": [
+          1551.167,
+          2007.5
+        ],
+        "14": [
+          1551.0,
+          1951.5
+        ]
+      },
+      "electrical_evidence": false
+    },
+    {
       "refdes": "D40",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
