@@ -35,6 +35,7 @@ jobs:
             kicad/check_factory_wire_landing_registration.py \
             kicad/check_d38_photo_placement.py \
             kicad/check_d38_factory_wire_landings.py \
+            kicad/check_d50_d51_photo_placement.py \
             kicad/report_factory_wire_route_fidelity.py \
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \

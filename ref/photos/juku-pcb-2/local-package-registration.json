@@ -77,6 +77,58 @@
       "note": "Fits the D4 input row independently to identify the five remote D2 solder-trace landings."
     },
     {
+      "refdes": "D50",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2709.0, 2266.0], "use": "fit", "observation": "bottom-right contact immediately left of the photographed bottom-facing notch"},
+        {"pin": "4", "image_px": [2709.0, 2100.0], "use": "check", "observation": "independent fourth contact upward on the complete pin-1-to-8 column"},
+        {"pin": "8", "image_px": [2709.0, 1879.0], "use": "fit", "observation": "top-right contact on the same coherent eight-pad column"},
+        {"pin": "9", "image_px": [2546.0, 1879.0], "use": "check", "observation": "independent top-left contact on the opposite column"}
+      ],
+      "note": "Direct fit to the marked vertical КР531КП14 D50 in the same raw component photo as validated D2. The package notch is visibly bottom-facing, contradicting the inherited 0-degree PCB orientation; pad identity is not electrical continuity."
+    },
+    {
+      "refdes": "D50",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1010.0, 2000.0], "use": "fit", "observation": "bottom-left backside joint after reflection of the bottom-facing component package"},
+        {"pin": "4", "image_px": [1010.0, 1835.0], "use": "check", "observation": "independent fourth joint upward on the complete mirrored pin-1-to-8 column"},
+        {"pin": "8", "image_px": [1010.0, 1614.0], "use": "fit", "observation": "top-left joint on the same coherent eight-pad column"},
+        {"pin": "9", "image_px": [1181.0, 1614.0], "use": "check", "observation": "independent top-right joint on the opposite column"}
+      ],
+      "note": "The validated D2 component/solder transform predicts the D50 backside group before this local fit. Two complete eight-pad columns then establish the reflected package independently of the component marking."
+    },
+    {
+      "refdes": "D51",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2714.0, 2803.0], "use": "fit", "observation": "bottom-right contact beside the bottom-facing notch of the second КР531КП14"},
+        {"pin": "4", "image_px": [2714.0, 2637.0], "use": "check", "observation": "independent fourth contact upward on the complete pin-1-to-8 column"},
+        {"pin": "8", "image_px": [2714.0, 2415.0], "use": "fit", "observation": "top-right contact on the same coherent eight-pad column"},
+        {"pin": "9", "image_px": [2550.0, 2415.0], "use": "check", "observation": "independent top-left contact on the opposite column"}
+      ],
+      "note": "Direct fit to D51 immediately below D50 in the D2 component tile. The visible bottom-facing notch likewise contradicts the inherited 0-degree orientation."
+    },
+    {
+      "refdes": "D51",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1010.0, 2585.0], "use": "fit", "observation": "bottom-left joint of the reflected bottom-facing package"},
+        {"pin": "4", "image_px": [1010.0, 2410.0], "use": "check", "observation": "independent fourth joint upward on the mirrored pin-1-to-8 column"},
+        {"pin": "8", "image_px": [1010.0, 2176.0], "use": "fit", "observation": "top-left joint on the same coherent eight-pad column"},
+        {"pin": "9", "image_px": [1181.0, 2176.0], "use": "check", "observation": "independent top-right joint on the opposite column"}
+      ],
+      "note": "The D2 cross-side transform predicts this lower package group; direct anchors then hold both D51 solder columns independently."
+    },
+    {
       "refdes": "D11",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",

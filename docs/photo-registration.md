@@ -149,6 +149,16 @@ contains no populated capacitor body or coherent drilled axial lead pair.
 Factory intent versus owner-board DNP/removal remains explicit rather than
 moving the unrelated generic C63 seed into the IC body/gap.
 
+D50 and D51 now have direct component and reflected-solder fits in the same
+raw photo pair as validated D2. Their markings and bottom-facing notches both
+require 180-degree PCB orientation. D50's component checks are `0.143`/`2.857`
+px and its solder checks are `0.429`/`5.571` px; D51's corresponding checks are
+`0.286`/`2.286` and `0.286`/`4.286` px. Component and solder estimates place
+D50 relative to D2 with a `2.238` mm spread, while the much more local D50-D51
+spacing agrees within `1.125` mm. Their midpoint pad centres are
+`(100.685,143.923)` and `(100.685,169.057)` mm. The source PCB uses these
+centres and `kicad/check_d50_d51_photo_placement.py` guards the pair.
+
 The same registered component/solder pair now fits the vertical `КР531ЛА1`
 D38 below D41. On the component side, pins 1/7 define the fit while pins 4/8
 hold out at `0.000` px; the reflected solder fit holds pins 4/8 out at `0.500`
