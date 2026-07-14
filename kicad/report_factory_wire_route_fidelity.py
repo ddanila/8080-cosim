@@ -191,6 +191,8 @@ def main() -> int:
         "in `114556899`, again with PCB coordinates deliberately unset.",
         "`А:13` is guarded across `114556899`/`114600417` at `(467,3851)`",
         "and `(1625,3443)`, with C95/D38 between the marks.",
+        "`А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`",
+        "and `(1159,3623)` on its shallow diagonal run.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

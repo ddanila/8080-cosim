@@ -15,6 +15,11 @@
       "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
       "sha256": "43343d7de0fe671fbe73db933755de1acf6c23c297a741085e05cf94b9c8a53d",
       "size_px": [3072, 4080]
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+      "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
+      "size_px": [3072, 4080]
     }
   ],
   "coordinate_system": "original source-image pixels, origin at upper left",
@@ -22,7 +27,29 @@
   "points": [
     {"point": 7, "status": "pending", "endpoints": []},
     {"point": 8, "status": "pending", "endpoints": []},
-    {"point": 9, "status": "pending", "endpoints": []},
+    {
+      "point": 9,
+      "status": "image-registered/board-fit-pending",
+      "observation": "adjacent placement views show the shallow diagonal line leaving the left 9 mark below D31/C34 in 114604420 and arriving from the left at the right 9 mark below R53 in 114600417",
+      "endpoints": [
+        {
+          "terminal": "A9A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+          "drawing_px": [2967, 1768],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A9B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+          "drawing_px": [1159, 3623],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {
       "point": 10,
       "status": "image-registered/board-fit-pending",
