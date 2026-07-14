@@ -78,7 +78,7 @@ exactly one modeled peer, its corresponding D15-D22 socket CE.
   identified as the checkpoint row after the measured D3 correction. The
   actual suffix is `11`; both possible A7 rows still leave D6.9 high at
   `B37A`, so the RAM-gate failure remains valid while A7 is unresolved.
-- Powered-off owner continuity now confirms D6.9-D13.1 and D13.2-D37.4.
-  The decisive remaining downstream check is D37.6-D58.9; also find the
-  target-board driver for D92.5/R12.2. Then record live D6.9, D13.2, D37.6, D58.9, and D58.11 during
+- Powered-off owner continuity now confirms the entire endpoint chain:
+  D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9. Find the target-board
+  driver for D92.5/R12.2. Then record live D6.9, D13.2, D37.6, D58.9, and D58.11 during
   the known `B37A` RAM read. Do not infer a new net merely to make boot pass.

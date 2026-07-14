@@ -189,8 +189,8 @@ module juku_top (
     // D38.8 is the physical 8238 status-strobe source: ~sync -> ststb_n -> D5 STB(pin1).
     // D13 remains the separate Schmitt inverter package for RAMOUTEN, system-clock handoff,
     // reset, and the D6/D105 edge path. [cpu-core.md]
-    wire d37_y3;                      // D37 sect-3 out -> D58.OE (RAM-read gate, sheet-2)
-    wire ram_out_en;                  // RAMOUTEN rail: DRIVEN by D13.2 (traced); load = D37.4 (sheet 2)
+    wire d37_y3;                      // D37 sect-3 out -> D58.OE (owner-confirmed D37.6-D58.9)
+    wire ram_out_en;                  // RAMOUTEN rail: owner-confirmed D13.2 -> D37.4
     // D13 = К555ТЛ2 hex Schmitt inverter (traced + census). Section 1->2 = the RAMOUTEN driver:
     // in <- D6.9 "-RAMOUTEN" (roe_n, modeled permissive-low => ram_out_en stays 1 = the old tri1
     // boot-verified value). Section 5->6 = RESIN Schmitt -> RES (boundary). Old dual-4-NAND

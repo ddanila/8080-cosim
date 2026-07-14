@@ -12260,7 +12260,7 @@
    "wire_link": true
   },
   "RAM_RD_OE": {
-   "src": "traced sheet-2 300dpi (crops s2_d37_d58 + s2_d58_oe): \"(1) RAM OUT EN.\" -> D37.4; \"-MRD\" -> D33 sect 3->4 -> D37.5; D37.6 riser corners east into D58.OE pin 9 — FULLY TRACED",
+   "src": "direct owner continuity 2026-07-14 confirms D37.6 -> D58.OE pin9. This agrees with the fully traced sheet-2 300dpi route (crops s2_d37_d58 + s2_d58_oe): \"(1) RAM OUT EN.\" -> D37.4; \"-MRD\" -> D33 sect 3->4 -> D37.5; D37.6 riser corners east into D58.9",
    "nodes": [
     [
      "D37",
