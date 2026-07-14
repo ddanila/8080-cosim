@@ -75,7 +75,7 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 3 | А:7 | А:7 | ~24 |
 | 4 | А:8 | А:8 | ~19 |
 | 5 | А:9 | А:9 | ~12 |
-| 6 | А:10 | А:10 | ~11.5 |
+| 6 | А:10 | А:10 | 13.5 |
 | 7 | А:11 | А:11 | ~11.5 |
 | 8 | А:12 | А:12 | ~20 |
 | 9 | А:13 | А:13 | ~15 |
@@ -84,6 +84,11 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 12 | А:18 | S1:2 | ~3 |
 | 13 | А:19 | А:19 | ~9.5 |
 | 14 | А:20 | А:20 | ~6 |
+
+The duplicate's conductor-6 length cell has an earlier value crossed out and
+`13,5` written as the final value. The two-sided photo fit independently gives
+a 131.355 mm straight A10 terminal chord, consistent with a 13.5 cm insulated
+lead and impossible for the former tentative `~11.5` transcription.
 
 All ten on-board link rows are now mapped to electrical endpoints. The owner
 read for `А:20` was made through the installed X3 cable, so the table below

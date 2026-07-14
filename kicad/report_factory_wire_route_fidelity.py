@@ -94,6 +94,21 @@ def main() -> int:
         text=True,
         capture_output=True,
     )
+    physical_fit_checks = [
+        subprocess.run(
+            [kicad_python, str(ROOT / script)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        for script in (
+            "kicad/check_d3_factory_wire_landing.py",
+            "kicad/check_d38_factory_wire_landings.py",
+            "kicad/check_d5_factory_wire_landing.py",
+            "kicad/check_a10_factory_wire_landings.py",
+        )
+    ]
+    physical_fits_pass = all(check.returncode == 0 for check in physical_fit_checks)
     landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
     registered_by_point = {
         record["point"]: len(record.get("endpoints", []))
@@ -143,6 +158,7 @@ def main() -> int:
     release_ready = (
         logical.returncode == 0
         and landing_check.returncode == 0
+        and physical_fits_pass
         and image_registered == expected_terminals
         and board_fitted == expected_terminals
         and modeled_terminals == expected_terminals
@@ -177,6 +193,7 @@ def main() -> int:
         "",
         f"- Logical endpoint check: `{'PASS' if logical.returncode == 0 else 'FAIL'}`",
         f"- Landing-registration check: `{'PASS' if landing_check.returncode == 0 else 'FAIL'}`",
+        f"- Board-fit photo/copper evidence checks: `{'PASS' if physical_fits_pass else 'FAIL'}`",
         f"- Drawing-image landing endpoints registered: `{image_registered}/{expected_terminals}`",
         f"- Landing endpoints fitted to PCB coordinates/islands: `{board_fitted}/{expected_terminals}`",
         f"- Paired A-point landing terminals modeled: `{modeled_terminals}/{expected_terminals}`",
@@ -237,8 +254,16 @@ def main() -> int:
         "D7.2-side MEMW landing rather than a neighboring white-wire endpoint.",
         "The same overlap method guards `А:11` at `(1563,3155)` in `114556899`",
         "and `(1898,2837)` in `114600417`; PCB promotion remains pending.",
-        "`А:10` is complete in one view at `(821,3778)` and `(3016,3702)`",
-        "in `114556899`, again with PCB coordinates deliberately unset.",
+        "`А:10` is complete in one drawing view at `(821,3778)` and",
+        "`(3016,3702)` in `114556899`. At the D41 end, component joint",
+        "`(2148,2174)` and reflected solder joint `(1506,1834)` agree within",
+        "0.024 mm and a 2.267 mm copper spur reaches D41.13. At the D50 end,",
+        "component joint `(2804,2266)` and reflected solder joint `(915,2000)`",
+        "agree within 0.012 mm and a 4.370 mm spur reaches D50.1. This proves",
+        "A10A `(240.091,146.982)` mm and A10B `(108.865,152.813)` mm on",
+        "`W10_QA_SEL`. Their 131.355 mm chord agrees with the duplicate's",
+        "final corrected 13.5 cm conductor length; the earlier tentative",
+        "`~11.5` reading is retired.",
         "`А:13` is guarded across `114556899`/`114600417` at `(467,3851)`",
         "and `(1625,3443)`, with C95/D38 between the marks.",
         "`А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`",
@@ -264,6 +289,13 @@ def main() -> int:
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")
+    if logical.returncode or landing_check.returncode or not physical_fits_pass:
+        failures = [
+            check.stdout + check.stderr
+            for check in physical_fit_checks
+            if check.returncode
+        ]
+        raise SystemExit("factory-wire evidence guard failed\n" + "".join(failures))
     return 0
 
 

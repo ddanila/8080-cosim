@@ -12,8 +12,9 @@ zero-open routing checkpoint.
 
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
+- Board-fit photo/copper evidence checks: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `6/20`
+- Landing endpoints fitted to PCB coordinates/islands: `8/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
 - Candidate/source pad-net mismatches: `35`
@@ -36,7 +37,7 @@ be incorporated only after the landing islands and functional netlist freeze.
 | 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 2 | 0 | 241 |
 | 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 2 | 0 | 317 |
 | 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 2 | 0 | 409 |
-| 6 | А:10 | ~11.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 0 | 272 |
+| 6 | А:10 | 13.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 0 | 272 |
 | 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 0 | 189 |
 | 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 2 | 0 | 176 |
 | 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 2 | 0 | 116 |
@@ -81,8 +82,16 @@ matches the factory approximately 9.5 cm conductor and proves the
 D7.2-side MEMW landing rather than a neighboring white-wire endpoint.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`
 and `(1898,2837)` in `114600417`; PCB promotion remains pending.
-`А:10` is complete in one view at `(821,3778)` and `(3016,3702)`
-in `114556899`, again with PCB coordinates deliberately unset.
+`А:10` is complete in one drawing view at `(821,3778)` and
+`(3016,3702)` in `114556899`. At the D41 end, component joint
+`(2148,2174)` and reflected solder joint `(1506,1834)` agree within
+0.024 mm and a 2.267 mm copper spur reaches D41.13. At the D50 end,
+component joint `(2804,2266)` and reflected solder joint `(915,2000)`
+agree within 0.012 mm and a 4.370 mm spur reaches D50.1. This proves
+A10A `(240.091,146.982)` mm and A10B `(108.865,152.813)` mm on
+`W10_QA_SEL`. Their 131.355 mm chord agrees with the duplicate's
+final corrected 13.5 cm conductor length; the earlier tentative
+`~11.5` reading is retired.
 `А:13` is guarded across `114556899`/`114600417` at `(467,3851)`
 and `(1625,3443)`, with C95/D38 between the marks.
 `А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`
