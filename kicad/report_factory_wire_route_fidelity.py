@@ -106,6 +106,7 @@ def main() -> int:
             "kicad/check_d38_factory_wire_landings.py",
             "kicad/check_d5_factory_wire_landing.py",
             "kicad/check_a10_factory_wire_landings.py",
+            "kicad/check_a8_factory_wire_landings.py",
         )
     ]
     physical_fits_pass = all(check.returncode == 0 for check in physical_fit_checks)
@@ -274,9 +275,14 @@ def main() -> int:
         "`(1761,4062)` in the same respective views.",
         "`А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`",
         "in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.",
-        "`А:8` completes the image inventory at `(1624,276)` in `114604420`",
-        "and `(1105,443)` in `114611058`; both are plain endpoint marks, not",
-        "the separate circled drawing callout after R13.",
+        "`А:8` completes the drawing-image inventory at `(1624,276)` in",
+        "`114604420` and `(1105,443)` in `114611058`; both are plain endpoint",
+        "marks, not the separate circled drawing callout after R13. The D5-side",
+        "white-wire joint `(1335,1103)` in `200411500` has a visible 42 px",
+        "copper spur to fitted D5.1, proving A8A/STSTB at `(40.811,99.989)` mm.",
+        "Together with the D38-side landing below, its 195.9 mm chord exceeds",
+        "the duplicate's 19 cm entry; endpoint geometry is adopted, but the final",
+        "A8 fabrication cut length remains held for re-read or direct measurement.",
         "Two D38-side physical landings are now promoted through the validated",
         "D38/D41 local fits. The right white-wire joint at `(2286,2450)` in",
         "`200418174` reaches via `(2288,2298)` and then fitted D38.12 on continuous",

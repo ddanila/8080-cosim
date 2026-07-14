@@ -90,6 +90,12 @@ The duplicate's conductor-6 length cell has an earlier value crossed out and
 a 131.355 mm straight A10 terminal chord, consistent with a 13.5 cm insulated
 lead and impossible for the former tentative `~11.5` transcription.
 
+For conductor 4/A8, the duplicate reads 19 cm while the two locally fitted
+surface terminals have a 196 mm straight chord. The endpoint geometry is
+retained because each landing has direct copper to its owner-confirmed package
+pin, but 19 cm is not yet safe as a fabrication cut length; re-read or measure
+the installed lead before producing the assembly wire table.
+
 All ten on-board link rows are now mapped to electrical endpoints. The owner
 read for `А:20` was made through the installed X3 cable, so the table below
 shows the intervening photographed PCB landing A23 as well as remote X3.3.
