@@ -69,6 +69,9 @@ D6.11 -/-> D6.12
 D13.12 -> D6.14 V2
 ```
 
+The same powered-off owner session directly confirms the next two decode-path
+segments: `D6.9 -> D13.1` and `D13.2 -> D37.4`.
+
 The model therefore restores the independent `ROM_SEL` output and moves
 D6.11 onto the measured `WREQ_N` conductor; the older D92.5/R12.2 RAM branch
 remains a separate boundary until its target-board driver is found. D13.12

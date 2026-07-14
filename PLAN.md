@@ -106,8 +106,8 @@ Every ask below is queued with exact deliverables in
    D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the earlier
    installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ. Find the
    actual driver for the older-sheet D92.5/R12.2 RAM branch, confirm the
-   D13.12->D6.13/.14 enable branch, and the three
-   D6.9-to-D58 endpoint segments; recheck the surprising D13.12->D16.13 report
+   D13.12->D6.13/.14 enable branch, and the remaining D37.6->D58.9 segment;
+   D6.9->D13.1 and D13.2->D37.4 are owner-confirmed. Recheck the surprising D13.12->D16.13 report
    with D16 removed. Capture the five live RAM-read levels named by
    `docs/d6-runtime-path-diagnostic.md`. All eight raw A7..A5 rows leave pin 9
    high at the `B37A` RAM-read failure; resolve the endpoint/polarity path by

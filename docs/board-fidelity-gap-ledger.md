@@ -423,7 +423,7 @@ same fidelity ledger as the chip provenance gaps.
 | `RAM_SEL` | PROM/decode | `D92.5, R12.2` | older-sheet downstream RAM-select branch to D92.5 with R12 1k pull-up; chip-removed direct owner continuity 2026-07-14 moves D6.11 to the D2.15/-WREQ conduct... |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `REV` | PROM/decode | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder re... |
-| `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merg... |
+| `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. This agrees with traced sheet-1 crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-R... |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |

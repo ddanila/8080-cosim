@@ -7143,7 +7143,7 @@
    "nodes": [["D6", "15"], ["D105", "1"]]
   },
   "ROE": {
-   "src": "traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail (real РТ4 column = dump to confirm); +R14 1k pullup (v3_junction; pairing order assumed)",
+   "src": "direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. This agrees with traced sheet-1 crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone; merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail; +R14 1k pullup (v3_junction; pairing order assumed)",
    "nodes": [
     [
      "D6",
@@ -12246,7 +12246,7 @@
    ]
   },
   "RAM_OUT_EN": {
-   "src": "traced sheet-1: D13.2 = ТЛ2 inverter OUTPUT (= ~D6.9) driving RAMOUTEN, exported \"(2)\" code 12 -> sheet-2 D37.4; beeper wire 12 corroborates; cross-sheet arrival \"(1) RAM OUT EN. -> D37.4\" traced (crop s2_d37_d58)",
+   "src": "direct owner continuity 2026-07-14 confirms D13.2 -> D37.4. This agrees with traced sheet-1: D13.2 = ТЛ2 inverter OUTPUT (= ~D6.9) driving RAMOUTEN, exported \"(2)\" code 12 -> sheet-2 D37.4; factory wire 12 corroborates; cross-sheet arrival \"(1) RAM OUT EN. -> D37.4\" traced (crop s2_d37_d58)",
    "nodes": [
     [
      "D13",
