@@ -175,7 +175,7 @@ def main() -> int:
         ),
         ("Source coverage audit current", has_phrase("docs/source-coverage-audit.md", "Status: **PASS**")),
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
-        (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**")),
+        (".009 assembly drawing extraction guarded", has_phrase("docs/assembly-drawing-extraction.md", "Status: **SHEETS 1-6 AND WIRE-TABLE PIN MAPPING ADOPTED**")),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
         ("Source-PCB placement collision gate passes", has_phrase("docs/source-pcb-drc.md", "Status: **PASS**") and has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `0`")),
     ]
