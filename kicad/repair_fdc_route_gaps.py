@@ -15,6 +15,8 @@ STEP = float(sys.argv[9]) if len(sys.argv) >= 10 else 0.5
 if STEP <= 0:
     raise SystemExit("grid step must be positive")
 WIDTH = 0.20
+VIA_DRILL = 0.30
+HOLE_CLEARANCE = 0.25
 CLEARANCE = float(sys.argv[10]) if len(sys.argv) == 11 else 0.45
 if CLEARANCE <= 0:
     raise SystemExit("clearance must be positive")
@@ -174,7 +176,7 @@ def add_route(netname, start, end, layers=(pcbnew.F_Cu, pcbnew.B_Cu), endpoint_v
     if endpoint_vias:
         for position in (start, end):
             via = pcbnew.PCB_VIA(board); via.SetPosition(position)
-            via.SetWidth(pcbnew.FromMM(0.6)); via.SetDrill(pcbnew.FromMM(0.3))
+            via.SetWidth(pcbnew.FromMM(0.6)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))
             via.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu); via.SetNet(net); board.Add(via)
     for a, b in zip(points, points[1:]):
         track = pcbnew.PCB_TRACK(board)
@@ -203,6 +205,22 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
         if isinstance(item, pcbnew.PCB_VIA):
             x, y = mm(item.GetPosition())
             mark_circle(via_blocked, x, y, 0.799999, search_bounds)
+    # A new via must also clear every drilled component/NPTH pad, including
+    # pads on the target net: same-net copper may overlap, but drilled holes
+    # still have a board-wide edge-to-edge spacing rule.
+    for pad in board.GetPads():
+        drill = pad.GetDrillSize()
+        if drill.x <= 0 and drill.y <= 0:
+            continue
+        x, y = mm(pad.GetPosition())
+        hole_radius = pcbnew.ToMM(max(drill.x, drill.y)) / 2
+        mark_circle(
+            via_blocked,
+            x,
+            y,
+            hole_radius + VIA_DRILL / 2 + HOLE_CLEARANCE,
+            search_bounds,
+        )
     for layer_index in start_layers:
         for dx in range(-2, 3):
             for dy in range(-2, 3):
@@ -262,7 +280,7 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
         point = end if index == len(path) - 1 else pcbnew.VECTOR2I_MM(x * STEP, y * STEP)
         if layer_index != last_layer:
             via = pcbnew.PCB_VIA(board); via.SetPosition(last_point)
-            via.SetWidth(pcbnew.FromMM(0.6)); via.SetDrill(pcbnew.FromMM(0.3))
+            via.SetWidth(pcbnew.FromMM(0.6)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))
             via.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu); via.SetNet(net); board.Add(via)
             last_layer = layer_index; via_count += 1
         elif point != last_point:

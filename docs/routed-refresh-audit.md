@@ -209,6 +209,16 @@ changing the acceptance invariant. With the corrected pad geometry, the same
 31 nets with 12,705 copper items, a cumulative reduction of 156 from the
 Freerouting import. A complete second-order sweep accepted no other routes.
 
+The next rejected MEMR proposal identified an independent layer-change bug:
+its new via landed only 0.0198 mm from the drilled hole in same-net pad D92.13,
+while the board rule requires 0.2495 mm. Same-net copper overlap is legal, but
+hole spacing is net-independent. The multilayer router now keeps new vias away
+from every drilled pad using the existing hole radius, the 0.3 mm proposal-via
+drill, and a 0.25 mm edge-to-edge allowance. The corrected proposal closed
+MEMR and reached 32 unconnected items on 30 nets with 12,844 copper items, a
+cumulative reduction of 157. A complete hole-aware residual sweep accepted no
+further routes.
+
 The current authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
 violation counts are unchanged, including the original dangling `OSC` track and

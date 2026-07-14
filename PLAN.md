@@ -32,7 +32,7 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | The deep value-level guard `sync/cosim_check.sh` currently **fails** (see actionable item 1); retire the D6 functional decoder via joined-conductor D8/D13/D92 timing reconstruction; exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 102 mapped instances and 266 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope, but predates accepted D2/D94, reset/USART, and harness endpoint changes. A separate source-complete refresh candidate (296 footprints, exact pad/net parity) is converging: 33 unconnected items on 31 nets remain as of 2026-07-14, with zero shorts, clearance, crossing, or hole findings (`docs/routed-refresh-audit.md`) | Close the remaining connections plus the dangling `OSC` track and one `GND` edge-clearance finding; adoption additionally waits for the functional netlist to stop changing |
+| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope, but predates accepted D2/D94, reset/USART, and harness endpoint changes. A separate source-complete refresh candidate (296 footprints, exact pad/net parity) is converging: 32 unconnected items on 30 nets remain as of 2026-07-14, with zero shorts, clearance, crossing, or hole findings (`docs/routed-refresh-audit.md`) | Close the remaining connections plus the dangling `OSC` track and one `GND` edge-clearance finding; adoption additionally waits for the functional netlist to stop changing |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The recorded upload ZIP SHA256 is
@@ -70,8 +70,9 @@ These are ordered; each is completable with material already in the repo.
 2. **Continue routing convergence on the refresh candidate.** The
    deterministic gap router (`kicad/close_unconnected_gaps.py`) has exhausted
    distance bands to 225 mm, corridor sweeps to 120 mm, and A* grid
-   refinement to 0.10 mm; shape-aware pad keep-outs then closed P5V and BA13,
-   leaving 33 unconnected items on 31 nets as of 2026-07-14. Next: partition
+   refinement to 0.10 mm; shape-aware pad and drilled-hole keep-outs then
+   closed P5V, BA13, and MEMR, leaving 32 unconnected items on 30 nets as of
+   2026-07-14. Next: partition
    or hand-route the residual nets, and clear
    the dangling `OSC` track and the `GND` edge-clearance finding. Track work
    in `docs/routed-refresh-audit.md`. Copper produced now survives later
