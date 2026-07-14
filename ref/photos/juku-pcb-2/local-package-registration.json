@@ -436,6 +436,20 @@
       "note": "The marking directly identifies the official-census D37 owner substitution as КР1533ЛА3. Its top-facing notch contradicts the inherited 180-degree footprint orientation."
     },
     {
+      "refdes": "D37",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [850.0, 1953.0], "use": "fit", "observation": "top joint of the mirrored pin-1-to-7 column left of registered D38"},
+        {"pin": "4", "image_px": [851.0, 2121.0], "use": "check", "observation": "independent fourth joint; no solder-side etched departure is visible"},
+        {"pin": "7", "image_px": [851.0, 2289.0], "use": "fit", "observation": "bottom joint of the same coherent seven-pad column"},
+        {"pin": "8", "image_px": [683.0, 2289.0], "use": "check", "observation": "independent bottom joint of the opposite column"},
+        {"pin": "14", "image_px": [682.0, 1953.0], "use": "check", "observation": "independent top joint of the opposite column"}
+      ],
+      "note": "Transferred from the adjacent two-sided D38 registration and then anchored to all four D37 row corners. The fit audits the package-obscured A12/D37.4 boundary: pin 4 has no visible solder-side copper departure, so it does not invent a remote landing."
+    },
+    {
       "refdes": "D38",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

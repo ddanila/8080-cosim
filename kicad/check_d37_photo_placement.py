@@ -40,6 +40,7 @@ def pad_centre(board: pcbnew.BOARD, refdes: str) -> complex:
 document = json.loads(REPORT.read_text(encoding="utf-8"))
 fits = {(fit["refdes"], fit["side"]): fit for fit in document["fits"]}
 required = {(refdes, "component") for refdes in ("D37", "D38", "D40", "D41")}
+required |= {("D37", "solder"), ("D38", "solder")}
 missing = required - fits.keys()
 if missing:
     raise SystemExit(f"D37 PHOTO PLACEMENT: missing fits {sorted(missing)}")
@@ -52,6 +53,21 @@ if len(images) != 1:
 
 board = pcbnew.LoadBoard(str(BOARD))
 d37_fit = component_fits["D37"]
+d37_solder = fits[("D37", "solder")]
+d38_solder = fits[("D38", "solder")]
+if d37_solder["image"] != d38_solder["image"]:
+    raise SystemExit("D37 PHOTO PLACEMENT: D37/D38 solder fits do not share a raw photo")
+if d37_solder["model"] != "similarity_reflected":
+    raise SystemExit("D37 PHOTO PLACEMENT: solder fit is not reflected")
+solder_checks = {item["pin"]: item["error_px"] for item in d37_solder["checks"]}
+for pin in ("4", "8", "14"):
+    if solder_checks.get(pin, float("inf")) > 0.6:
+        raise SystemExit(
+            f"D37 PHOTO PLACEMENT: solder pin {pin} residual "
+            f"{solder_checks.get(pin)} px exceeds 0.6 px"
+        )
+if d37_solder["projected_pins"].get("4") != [850.5, 2121.0]:
+    raise SystemExit("D37 PHOTO PLACEMENT: solder-side D37.4 coordinate drifted")
 
 
 def estimate_from(anchor: str) -> complex:
@@ -104,5 +120,6 @@ print(
     "D37 PHOTO PLACEMENT: PASS — "
     f"centre {actual.real:.3f},{actual.imag:.3f} mm; "
     f"D40/D41 spread {primary_spread:.3f} mm; "
-    f"D38 held-out residual {heldout_residual:.3f} mm"
+    f"D38 held-out residual {heldout_residual:.3f} mm; "
+    "solder held-outs ≤0.5 px"
 )

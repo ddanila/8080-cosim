@@ -102,6 +102,12 @@ That lower `А:7` line is separately guarded at `(1161,1845)` and
 `(1761,4062)` in the same respective views.
 `А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`
 in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
+A new reflected D37 solder fit holds pins 4/8/14 to 0.5 px and places
+D37.4 at `(850.5,2121.0)` in `200522685`; that pad has no visible
+solder-side etched departure. A handwritten `12` near the lower rail
+does not authorize promotion: its adjacent joint maps onto the wide
+rail rather than `RAM_OUT_EN`. The component-side A12 departure remains
+package/wire-bundle obscured, so both A12 PCB coordinates stay pending.
 `А:8` completes the drawing-image inventory at `(1624,276)` in
 `114604420` and `(1105,443)` in `114611058`; both are plain endpoint
 marks, not the separate circled drawing callout after R13. The D5-side

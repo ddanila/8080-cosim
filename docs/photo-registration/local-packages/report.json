@@ -3309,6 +3309,101 @@
       "electrical_evidence": false
     },
     {
+      "refdes": "D37",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "overlay": "docs/photo-registration/local-packages/D37-solder.jpg",
+      "model": "similarity_reflected",
+      "scale_px_per_mm": 22.047342,
+      "rotation_deg": 179.829477,
+      "checks": [
+        {
+          "pin": "1",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "4",
+          "use": "check",
+          "error_px": 0.5
+        },
+        {
+          "pin": "7",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "8",
+          "use": "check",
+          "error_px": 0.5
+        },
+        {
+          "pin": "14",
+          "use": "check",
+          "error_px": 0.5
+        }
+      ],
+      "projected_pins": {
+        "1": [
+          850.0,
+          1953.0
+        ],
+        "2": [
+          850.167,
+          2009.0
+        ],
+        "3": [
+          850.333,
+          2065.0
+        ],
+        "4": [
+          850.5,
+          2121.0
+        ],
+        "5": [
+          850.667,
+          2177.0
+        ],
+        "6": [
+          850.833,
+          2233.0
+        ],
+        "7": [
+          851.0,
+          2289.0
+        ],
+        "8": [
+          683.0,
+          2289.5
+        ],
+        "9": [
+          682.833,
+          2233.5
+        ],
+        "10": [
+          682.667,
+          2177.5
+        ],
+        "11": [
+          682.5,
+          2121.5
+        ],
+        "12": [
+          682.333,
+          2065.5
+        ],
+        "13": [
+          682.167,
+          2009.5
+        ],
+        "14": [
+          682.0,
+          1953.5
+        ]
+      },
+      "electrical_evidence": false
+    },
+    {
       "refdes": "D38",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

@@ -216,9 +216,15 @@ and D41 packages agree within `0.024` mm and place D37's pad-row centre at
 check; it predicts the centre within `1.940` mm. A visually regular backside
 2x7 joint group near `(885,1945)` px was tested and rejected: composing it
 through D41's two-sided registration misses the component-side D37 position by
-`9.37` mm, proving that it belongs to a neighboring DIP. No D37 solder fit or
-copper continuity is claimed. The source PCB uses the component-derived centre
-and `kicad/check_d37_photo_placement.py` guards the placement and orientation.
+`9.37` mm, proving that it belongs to a neighboring DIP. That former candidate
+is not used. The correct D37 backside group is now locally fitted
+at pins 1/7, with pins 4/8/14 held out at `0.500` px each, immediately left of
+the established D38 footprint. D37.4 is `(850.5,2121.0)` in the raw solder
+image and has no visible backside etched departure. This constrains the A12
+chase but does not promote a hidden component-side wire or copper continuity.
+The source PCB uses the component-derived centre and
+`kicad/check_d37_photo_placement.py` guards both-side identity, placement, and
+orientation.
 
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
