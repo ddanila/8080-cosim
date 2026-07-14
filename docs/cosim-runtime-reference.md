@@ -36,6 +36,23 @@ immediately before it. The passing windows recorded below therefore came
 from a different environment or tree. Fixing this is the top actionable
 item in `PLAN.md`.
 
+Verified 2026-07-14 with `WINDOW=25000000 sync/cosim_check.sh` (about 3
+minutes per run; the window covers both divergence points) on macOS with
+Icarus Verilog 13.0 (installed 2026-06-29, so the same local toolchain
+predates the recorded passes):
+
+| Commit | Result |
+| --- | --- |
+| `5b94c73` (parent of the fix) | DIVERGE read #57, `D75C`, structural `FF`, oracle `00` |
+| `90c04fb` (the recorded fix) | DIVERGE read #115878, `D300`, structural `55`, oracle `AA` |
+| `f3dc06e` with `90c04fb`'s `juku_top.v` | same #115878 divergence |
+| `b283266`, `2a2414b`, `2bf607f`, `4978252`, `616f3d8`, `1d9eb1e` (HEAD) | same #115878 divergence |
+
+Both mismatch patterns look like BIOS RAM-test checkerboard bytes, and the
+faster `sync/boot_check.sh` (final sampled memory, all levels versus cosim)
+still passes at HEAD, so the disagreement is in the lockstep read path, not
+the end state. The guard runs in no CI workflow, so it fails silently.
+
 ## Original note: resolved 2026-07-12 overlay regression
 
 On 2026-07-12, both the default run and a focused `WINDOW=200000000` run

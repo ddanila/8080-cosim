@@ -248,15 +248,17 @@ After connectivity and programmable-part decisions stop changing:
   recovered the Baltijets archive in Narva (Nov 2024), so asking them whether
   unscanned sheets include the `.009 Э3` and the НГМД block `ДГШ3.065.008`
   documentation is the highest-value document lead.
-- **Community coordination lead:** juku3000 issue #25 shows the MAME driver
+- **Community coordination lead:** juku3000 issue #25
+  (<https://github.com/infoaed/juku3000/issues/25>) shows the MAME driver
   maintainer hunting the same FDC-era schematic; the MAME driver's own TODO
   still reads "work out how the floppy interface really works", and the local
   validated К556РТ4/К155РЕ3 dumps appear to be published nowhere else —
   sharing them and the ИЕ7/КП12 findings is a two-way exchange opportunity.
-- **Separator/precomp references:** WD FD179X Application Notes (June 1980,
-  bitsavers), Рюмик's «Контроллер дисковода» survey (emuverse.ru), and the
-  Чеботарев Радиолюбитель 11/92 article (vektor-06c.ru) — see the probe
-  predictions in P0 connectivity item 1.
+- **Separator/precomp references:** WD FD179X Application Notes (June 1980),
+  Рюмик's «Контроллер дисковода» survey, and the Чеботарев Радиолюбитель
+  11/92 article — sources and URLs are recorded in
+  `ref/wd1772-vg93/README.md`; see the probe predictions in P0 connectivity
+  item 1.
 - Recheck external sources only for a named blocker; the current inventory is
   `docs/source-coverage-audit.md` (2026-07-11 audit: MAME driver unchanged,
   museum `JUKUROMS.ZIP` duplicates local ROMs, `CASTOOLS.JUK` is cassette

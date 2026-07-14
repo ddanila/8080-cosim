@@ -41,6 +41,21 @@ Source interpretation notes captured with the files:
   <https://atmturbo.nedopc.com/articles/kontroller_diskovoda_shemotehnika_210224.html>
   reproduces an IE7-only VG93 separator and a KP12 write-precompensation option.
   These are useful competing continuity candidates, not primary Juku evidence.
+- A 2026-07-14 web sweep added two more period references for the same
+  cluster. С. Рюмик, «Контроллер дисковода: схемотехника и принципы работы»
+  (<https://emuverse.ru/wiki/Контроллер_дисковода:_схемотехника_и_принципы_работы>)
+  reproduces the ИЕ7 separator (Рис. 18: 8 MHz on pin 4, `-RAWR` jamming
+  `/LOAD` pin 11, strapped load inputs, Q8/pin 7 into a ТМ2 divide-by-two
+  toward RCLK) and the ИР1+КП12 write-precompensation node (Рис. 16).
+  М. Чеботарев, «Усовершенствованная схема контроллера дисковода для ПК
+  „Вектор"», Радиолюбитель 11/92
+  (<https://www.vektor-06c.ru/upload/iblock/13c/loz333dlz87rco7vxhg10cujwh7yu78r/Usovershenstvovannaya-skhema-kontrollera-diskovoda-dlya-PK-Vektor.pdf>)
+  uses exactly the Juku FDC part family — К1818ВГ93, К555ИЕ7, two К555КП12,
+  К555ТМ2, К155ИР1 — with `RAWR` ТМ2-resynchronized before pin 27/reload and
+  precompensation taps ИР1 Q1 (early), Q2 (nominal), Q4 (late) selected by
+  КП12 under EARLY/LATE pins 17/18. Both are probe-prediction references for
+  the open D106/D95/D101 continuity work in `PLAN.md`, not Juku continuity
+  evidence.
 - The PDF is a KiCad-generated searchable transistor/gate schematic.
 - The accompanying note treats КР1818ВГ93 as effectively a direct FD1773/WD1772
   copy, not just a loose functional analog: internal block placement and signal
