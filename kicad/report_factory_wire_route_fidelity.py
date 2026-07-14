@@ -185,6 +185,8 @@ def main() -> int:
         "and island assignments remain deliberately unset pending a checked local fit.",
         "`А:19` is likewise guarded across two overlapping views: R7 lies between",
         "the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.",
+        "The same overlap method guards `А:11` at `(1563,3155)` in `114556899`",
+        "and `(1898,2837)` in `114600417`; PCB promotion remains pending.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

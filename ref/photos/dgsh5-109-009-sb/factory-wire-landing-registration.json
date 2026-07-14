@@ -10,6 +10,11 @@
       "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
       "sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
       "size_px": [3072, 4080]
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+      "sha256": "43343d7de0fe671fbe73db933755de1acf6c23c297a741085e05cf94b9c8a53d",
+      "size_px": [3072, 4080]
     }
   ],
   "coordinate_system": "original source-image pixels, origin at upper left",
@@ -19,7 +24,29 @@
     {"point": 8, "status": "pending", "endpoints": []},
     {"point": 9, "status": "pending", "endpoints": []},
     {"point": 10, "status": "pending", "endpoints": []},
-    {"point": 11, "status": "pending", "endpoints": []},
+    {
+      "point": 11,
+      "status": "image-registered/board-fit-pending",
+      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark",
+      "endpoints": [
+        {
+          "terminal": "A11A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+          "drawing_px": [1563, 3155],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A11B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+          "drawing_px": [1898, 2837],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {"point": 12, "status": "pending", "endpoints": []},
     {"point": 13, "status": "pending", "endpoints": []},
     {"point": 14, "status": "pending", "endpoints": []},
