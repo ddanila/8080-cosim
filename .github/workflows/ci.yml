@@ -32,6 +32,7 @@ jobs:
           sh -n sync/boot_check.sh
           python3 -m py_compile \
             kicad/check_factory_wire_links.py \
+            kicad/check_factory_wire_landing_registration.py \
             kicad/report_factory_wire_route_fidelity.py \
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \

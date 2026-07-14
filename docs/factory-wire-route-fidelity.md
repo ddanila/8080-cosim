@@ -1,6 +1,6 @@
 # Factory insulated-wire route fidelity
 
-Status: **LOGICAL LINKS ADOPTED / PHYSICAL LANDINGS ABSENT / ROUTED CANDIDATE HOLD**
+Status: **LOGICAL LINKS ADOPTED / LANDING REGISTRATION PARTIAL / ROUTED CANDIDATE HOLD**
 
 The `.009` assembly table proves ten on-board insulated links. Their
 logical endpoints are source-closed, but logical net equality is not
@@ -11,6 +11,9 @@ zero-open routing checkpoint.
 ## Guarded state
 
 - Logical endpoint check: `PASS`
+- Landing-registration check: `PASS`
+- Drawing-image landing endpoints registered: `2/20`
+- Landing endpoints fitted to PCB coordinates/islands: `0/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -51,3 +54,6 @@ historical construction fidelity.
 `А:20` remains on `S_TTL`: enlarged sheet-1 review reads the adjacent
 vertical package as `Д104`, not `Д14`, consistent with owner continuity
 D3.10-A23-X3.3 and inconsistent with moving the link onto `SER_TXD`.
+Its two drawing endpoints are now guarded at `(2022,1408)` and
+`(2503,2325)` original-image pixels (each ±6 px). Their PCB coordinates
+and island assignments remain deliberately unset pending a checked local fit.

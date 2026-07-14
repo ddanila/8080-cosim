@@ -71,3 +71,8 @@ Photo index (`PXL_20260711_*`):
 The drawing shows factory-intended assembly, including the documented trace
 cuts; it does not capture the copper artwork itself, so it complements rather
 than replaces the `ref/schematics/` sheets and the `juku-pcb-2` board photos.
+
+`factory-wire-landing-registration.json` records reviewed repeated `А:N`
+wire endpoints in original-image pixels. Image-space registration is kept
+separate from board millimetres and copper-island assignment; unset fields are
+an explicit hold, not permission to infer geometry from the folded sheet.

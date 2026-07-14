@@ -16,6 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "kicad/juku.kicad_pcb"
 CANDIDATE = ROOT / "kicad/juku_routed_candidate.kicad_pcb"
 REPORT = ROOT / "docs/factory-wire-route-fidelity.md"
+LANDINGS = (
+    ROOT
+    / "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json"
+)
 
 
 def run_drc(board: Path) -> dict:
@@ -54,6 +58,25 @@ def main() -> int:
         text=True,
         capture_output=True,
     )
+    landing_check = subprocess.run(
+        [
+            kicad_python,
+            str(ROOT / "kicad/check_factory_wire_landing_registration.py"),
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+    landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
+    image_registered = sum(
+        len(record.get("endpoints", []))
+        for record in landing_document.get("points", [])
+    )
+    board_fitted = sum(
+        endpoint.get("board_mm") is not None
+        for record in landing_document.get("points", [])
+        for endpoint in record.get("endpoints", [])
+    )
 
     link_rows = []
     modeled_terminals = 0
@@ -87,6 +110,9 @@ def main() -> int:
     expected_terminals = 2 * len(LINKS)
     release_ready = (
         logical.returncode == 0
+        and landing_check.returncode == 0
+        and image_registered == expected_terminals
+        and board_fitted == expected_terminals
         and modeled_terminals == expected_terminals
         and copper_substitutions == 0
         and unconnected == len(LINKS)
@@ -94,7 +120,11 @@ def main() -> int:
     status = (
         "FACTORY WIRE CONSTRUCTION PRESERVED"
         if release_ready
-        else "LOGICAL LINKS ADOPTED / PHYSICAL LANDINGS ABSENT / ROUTED CANDIDATE HOLD"
+        else (
+            "LOGICAL LINKS ADOPTED / LANDING REGISTRATION PARTIAL / ROUTED CANDIDATE HOLD"
+            if image_registered
+            else "LOGICAL LINKS ADOPTED / PHYSICAL LANDINGS ABSENT / ROUTED CANDIDATE HOLD"
+        )
     )
 
     lines = [
@@ -111,6 +141,9 @@ def main() -> int:
         "## Guarded state",
         "",
         f"- Logical endpoint check: `{'PASS' if logical.returncode == 0 else 'FAIL'}`",
+        f"- Landing-registration check: `{'PASS' if landing_check.returncode == 0 else 'FAIL'}`",
+        f"- Drawing-image landing endpoints registered: `{image_registered}/{expected_terminals}`",
+        f"- Landing endpoints fitted to PCB coordinates/islands: `{board_fitted}/{expected_terminals}`",
         f"- Paired A-point landing terminals modeled: `{modeled_terminals}/{expected_terminals}`",
         f"- Link nets carrying candidate copper: `{copper_substitutions}/{len(LINKS)}`",
         f"- Candidate DRC unconnected items: `{unconnected}`",
@@ -142,6 +175,9 @@ def main() -> int:
         "`А:20` remains on `S_TTL`: enlarged sheet-1 review reads the adjacent",
         "vertical package as `Д104`, not `Д14`, consistent with owner continuity",
         "D3.10-A23-X3.3 and inconsistent with moving the link onto `SER_TXD`.",
+        "Its two drawing endpoints are now guarded at `(2022,1408)` and",
+        "`(2503,2325)` original-image pixels (each ±6 px). Their PCB coordinates",
+        "and island assignments remain deliberately unset pending a checked local fit.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

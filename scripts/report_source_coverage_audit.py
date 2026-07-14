@@ -16,6 +16,7 @@ REQUIRED = [
     "ref/juku-official-009-ic-census.json",
     "ref/photos/dgsh5-109-009-sb/README.md",
     "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json",
+    "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json",
     "docs/assembly-drawing-extraction.md",
     "docs/factory-modification-disposition.md",
     "docs/factory-wire-route-fidelity.md",
@@ -56,7 +57,7 @@ def main() -> int:
     lines = [
         "# Source coverage audit",
         "",
-        "Status date: **2026-07-13**.",
+        "Status date: **2026-07-14**.",
         "",
         f"Status: **{status}**",
         "",

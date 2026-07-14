@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "source_sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
+  "source_size_px": [3072, 4080],
+  "coordinate_system": "original source-image pixels, origin at upper left",
+  "promotion_rule": "image registration proves a repeated factory-wire endpoint mark only; PCB millimetres and copper-island assignment require an independently checked local drawing-to-board fit",
+  "points": [
+    {"point": 7, "status": "pending", "endpoints": []},
+    {"point": 8, "status": "pending", "endpoints": []},
+    {"point": 9, "status": "pending", "endpoints": []},
+    {"point": 10, "status": "pending", "endpoints": []},
+    {"point": 11, "status": "pending", "endpoints": []},
+    {"point": 12, "status": "pending", "endpoints": []},
+    {"point": 13, "status": "pending", "endpoints": []},
+    {"point": 14, "status": "pending", "endpoints": []},
+    {"point": 19, "status": "pending", "endpoints": []},
+    {
+      "point": 20,
+      "status": "image-registered/board-fit-pending",
+      "observation": "one uninterrupted diagonal assembly-wire line terminates beside each of two handwritten 20 marks; the adjacent vertical package reads D104, not D14",
+      "endpoints": [
+        {
+          "terminal": "A20A",
+          "drawing_px": [2022, 1408],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A20B",
+          "drawing_px": [2503, 2325],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    }
+  ]
+}

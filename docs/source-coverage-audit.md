@@ -1,6 +1,6 @@
 # Source coverage audit
 
-Status date: **2026-07-13**.
+Status date: **2026-07-14**.
 
 Status: **PASS**
 
@@ -44,6 +44,7 @@ web/archive work should be tied to one of these named deliverables.
 | `ref/juku-official-009-ic-census.json` | present |
 | `ref/photos/dgsh5-109-009-sb/README.md` | present |
 | `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json` | present |
+| `ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json` | present |
 | `docs/assembly-drawing-extraction.md` | present |
 | `docs/factory-modification-disposition.md` | present |
 | `docs/factory-wire-route-fidelity.md` | present |

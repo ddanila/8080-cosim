@@ -20,6 +20,7 @@ on:
       - 'kicad/apply_kp12_resistor_links.py'
       - 'kicad/check_kp12_resistor_links.py'
       - 'kicad/check_factory_wire_links.py'
+      - 'kicad/check_factory_wire_landing_registration.py'
       - '.github/workflows/reports.yml'
   pull_request:
     paths:
@@ -33,6 +34,7 @@ on:
       - 'kicad/apply_kp12_resistor_links.py'
       - 'kicad/check_kp12_resistor_links.py'
       - 'kicad/check_factory_wire_links.py'
+      - 'kicad/check_factory_wire_landing_registration.py'
       - '.github/workflows/reports.yml'
 
 jobs:
@@ -51,7 +53,9 @@ jobs:
           ./sync/reference_artifact_check.sh
 
       - name: Check factory insulated-link endpoint map
-        run: python3 kicad/check_factory_wire_links.py
+        run: |
+          python3 kicad/check_factory_wire_links.py
+          python3 kicad/check_factory_wire_landing_registration.py
 
       - name: Check unmodeled footprint inventory freshness
         run: |

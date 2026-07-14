@@ -27,7 +27,9 @@ with the machine-readable board model.
   2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
   ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)). Its zero-open
   state currently copper-substitutes ten documented factory insulated links;
-  the missing twenty paired A-point landings are now an explicit adoption hold
+  all twenty paired A-point landings remain absent from the PCB. The first pair
+  (`А:20`) is registered in drawing-image space, with board coordinates and
+  island assignment explicitly unset; the landing geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
