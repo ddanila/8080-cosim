@@ -25,7 +25,29 @@
   "coordinate_system": "original source-image pixels, origin at upper left",
   "promotion_rule": "image registration proves a repeated factory-wire endpoint mark only; PCB millimetres and copper-island assignment require an independently checked local drawing-to-board fit",
   "points": [
-    {"point": 7, "status": "pending", "endpoints": []},
+    {
+      "point": 7,
+      "status": "image-registered/board-fit-pending",
+      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14",
+      "endpoints": [
+        {
+          "terminal": "A7A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+          "drawing_px": [1161, 1845],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A7B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+          "drawing_px": [1761, 4062],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {"point": 8, "status": "pending", "endpoints": []},
     {
       "point": 9,

@@ -195,6 +195,8 @@ def main() -> int:
         "and `(1159,3623)` on its shallow diagonal run.",
         "`А:14` is the upper of two close parallel lines at `(1277,1832)` in",
         "`114604420` and `(1700,4044)` in `114600417`; the lower line is `А:7`.",
+        "That lower `А:7` line is separately guarded at `(1161,1845)` and",
+        "`(1761,4062)` in the same respective views.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
