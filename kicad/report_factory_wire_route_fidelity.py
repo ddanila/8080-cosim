@@ -187,6 +187,8 @@ def main() -> int:
         "the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.",
         "The same overlap method guards `А:11` at `(1563,3155)` in `114556899`",
         "and `(1898,2837)` in `114600417`; PCB promotion remains pending.",
+        "`А:10` is complete in one view at `(821,3778)` and `(3016,3702)`",
+        "in `114556899`, again with PCB coordinates deliberately unset.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

@@ -12,7 +12,7 @@ zero-open routing checkpoint.
 
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
-- Drawing-image landing endpoints registered: `6/20`
+- Drawing-image landing endpoints registered: `8/20`
 - Landing endpoints fitted to PCB coordinates/islands: `0/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
@@ -31,7 +31,7 @@ historical construction fidelity.
 | 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 0 | 0 | 241 |
 | 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 0 | 0 | 317 |
 | 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 0 | 0 | 409 |
-| 6 | А:10 | ~11.5 | `W10_QA_SEL` | D41.13, D50.1 | 0 | 0 | 272 |
+| 6 | А:10 | ~11.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 0 | 272 |
 | 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 0 | 189 |
 | 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 0 | 0 | 176 |
 | 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 0 | 0 | 116 |
@@ -61,3 +61,5 @@ and island assignments remain deliberately unset pending a checked local fit.
 the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`
 and `(1898,2837)` in `114600417`; PCB promotion remains pending.
+`А:10` is complete in one view at `(821,3778)` and `(3016,3702)`
+in `114556899`, again with PCB coordinates deliberately unset.

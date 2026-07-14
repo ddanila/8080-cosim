@@ -23,7 +23,29 @@
     {"point": 7, "status": "pending", "endpoints": []},
     {"point": 8, "status": "pending", "endpoints": []},
     {"point": 9, "status": "pending", "endpoints": []},
-    {"point": 10, "status": "pending", "endpoints": []},
+    {
+      "point": 10,
+      "status": "image-registered/board-fit-pending",
+      "observation": "one uninterrupted shallow diagonal line is fully visible in 114556899 between its two handwritten 10 marks",
+      "endpoints": [
+        {
+          "terminal": "A10A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+          "drawing_px": [821, 3778],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A10B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+          "drawing_px": [3016, 3702],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {
       "point": 11,
       "status": "image-registered/board-fit-pending",
