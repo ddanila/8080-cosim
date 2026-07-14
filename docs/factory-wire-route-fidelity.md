@@ -12,7 +12,7 @@ zero-open routing checkpoint.
 
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
-- Drawing-image landing endpoints registered: `2/20`
+- Drawing-image landing endpoints registered: `4/20`
 - Landing endpoints fitted to PCB coordinates/islands: `0/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
@@ -26,18 +26,18 @@ historical construction fidelity.
 
 ## Link audit
 
-| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Modeled A-point terminals | Candidate copper items on net |
-| ---: | ---: | ---: | --- | --- | ---: | ---: |
-| 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 0 | 241 |
-| 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 0 | 317 |
-| 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 0 | 409 |
-| 6 | А:10 | ~11.5 | `W10_QA_SEL` | D41.13, D50.1 | 0 | 272 |
-| 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 0 | 189 |
-| 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 0 | 176 |
-| 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 0 | 116 |
-| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 0 | 230 |
-| 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 0 | 141 |
-| 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 0 | 11 |
+| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Candidate copper items on net |
+| ---: | ---: | ---: | --- | --- | ---: | ---: | ---: |
+| 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 0 | 0 | 241 |
+| 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 0 | 0 | 317 |
+| 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 0 | 0 | 409 |
+| 6 | А:10 | ~11.5 | `W10_QA_SEL` | D41.13, D50.1 | 0 | 0 | 272 |
+| 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 0 | 0 | 189 |
+| 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 0 | 0 | 176 |
+| 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 0 | 0 | 116 |
+| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 0 | 0 | 230 |
+| 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 0 | 141 |
+| 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 0 | 11 |
 
 ## Next automatic closure
 
@@ -57,3 +57,5 @@ D3.10-A23-X3.3 and inconsistent with moving the link onto `SER_TXD`.
 Its two drawing endpoints are now guarded at `(2022,1408)` and
 `(2503,2325)` original-image pixels (each ±6 px). Their PCB coordinates
 and island assignments remain deliberately unset pending a checked local fit.
+`А:19` is likewise guarded across two overlapping views: R7 lies between
+the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.

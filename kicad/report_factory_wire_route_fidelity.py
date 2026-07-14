@@ -68,6 +68,10 @@ def main() -> int:
         capture_output=True,
     )
     landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
+    registered_by_point = {
+        record["point"]: len(record.get("endpoints", []))
+        for record in landing_document.get("points", [])
+    }
     image_registered = sum(
         len(record.get("endpoints", []))
         for record in landing_document.get("points", [])
@@ -101,6 +105,7 @@ def main() -> int:
                 length,
                 f"`{net_name}`",
                 endpoint_text,
+                registered_by_point.get(point, 0),
                 len(present_refs),
                 copper_count,
             ])
@@ -156,8 +161,8 @@ def main() -> int:
         "",
         "## Link audit",
         "",
-        "| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Modeled A-point terminals | Candidate copper items on net |",
-        "| ---: | ---: | ---: | --- | --- | ---: | ---: |",
+        "| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Candidate copper items on net |",
+        "| ---: | ---: | ---: | --- | --- | ---: | ---: | ---: |",
         *link_rows,
         "",
         "## Next automatic closure",
@@ -178,6 +183,8 @@ def main() -> int:
         "Its two drawing endpoints are now guarded at `(2022,1408)` and",
         "`(2503,2325)` original-image pixels (each ±6 px). Their PCB coordinates",
         "and island assignments remain deliberately unset pending a checked local fit.",
+        "`А:19` is likewise guarded across two overlapping views: R7 lies between",
+        "the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

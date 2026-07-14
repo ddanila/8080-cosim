@@ -1,8 +1,17 @@
 {
   "schema_version": 1,
-  "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
-  "source_sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
-  "source_size_px": [3072, 4080],
+  "source_images": [
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
+      "sha256": "a0285bfebba8bfe5ecf66af40322bd708bd5e0ba74493132293ab74990fa334d",
+      "size_px": [3072, 4080]
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+      "sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
+      "size_px": [3072, 4080]
+    }
+  ],
   "coordinate_system": "original source-image pixels, origin at upper left",
   "promotion_rule": "image registration proves a repeated factory-wire endpoint mark only; PCB millimetres and copper-island assignment require an independently checked local drawing-to-board fit",
   "points": [
@@ -14,7 +23,29 @@
     {"point": 12, "status": "pending", "endpoints": []},
     {"point": 13, "status": "pending", "endpoints": []},
     {"point": 14, "status": "pending", "endpoints": []},
-    {"point": 19, "status": "pending", "endpoints": []},
+    {
+      "point": 19,
+      "status": "image-registered/board-fit-pending",
+      "observation": "overlapping views share R7 between the two marks: the 114553710 view shows the line leaving the left 19 mark to the right, while 114556899 shows it arriving from the left at the right 19 mark",
+      "endpoints": [
+        {
+          "terminal": "A19A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
+          "drawing_px": [1310, 3122],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A19B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+          "drawing_px": [1283, 3110],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {
       "point": 20,
       "status": "image-registered/board-fit-pending",
@@ -22,6 +53,7 @@
       "endpoints": [
         {
           "terminal": "A20A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [2022, 1408],
           "uncertainty_px": 6,
           "board_mm": null,
@@ -29,6 +61,7 @@
         },
         {
           "terminal": "A20B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [2503, 2325],
           "uncertainty_px": 6,
           "board_mm": null,

@@ -22,24 +22,31 @@ def main() -> int:
     if document.get("schema_version") != 1:
         errors.append("unsupported schema version")
 
-    source = ROOT / document.get("source_image", "")
-    if not source.is_file():
-        errors.append(f"source image missing: {source.relative_to(ROOT)}")
-    else:
-        digest = hashlib.sha256(source.read_bytes()).hexdigest()
-        if digest != document.get("source_sha256"):
-            errors.append(f"source image SHA256 mismatch: {digest}")
-
-    size = document.get("source_size_px")
-    if not (
-        isinstance(size, list)
-        and len(size) == 2
-        and all(isinstance(value, int) and value > 0 for value in size)
-    ):
-        errors.append("source_size_px must contain two positive integers")
-        width = height = 0
-    else:
-        width, height = size
+    source_records = document.get("source_images", [])
+    sources: dict[str, tuple[int, int]] = {}
+    for record in source_records:
+        path = record.get("path", "")
+        size = record.get("size_px")
+        if not path or path in sources:
+            errors.append(f"missing or duplicate source-image path: {path!r}")
+            continue
+        if not (
+            isinstance(size, list)
+            and len(size) == 2
+            and all(isinstance(value, int) and value > 0 for value in size)
+        ):
+            errors.append(f"{path} size_px must contain two positive integers")
+            continue
+        sources[path] = (size[0], size[1])
+        source = ROOT / path
+        if not source.is_file():
+            errors.append(f"source image missing: {path}")
+        else:
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            if digest != record.get("sha256"):
+                errors.append(f"source image SHA256 mismatch for {path}: {digest}")
+    if not sources:
+        errors.append("no source images registered")
 
     expected_points = {point for _, point, _, _, _ in LINKS}
     records = document.get("points", [])
@@ -57,8 +64,13 @@ def main() -> int:
     for record in records:
         point = record.get("point")
         endpoints = record.get("endpoints", [])
+        status = record.get("status")
         if len(endpoints) not in (0, 2):
             errors.append(f"A:{point} must have zero or two endpoint records")
+        if (not endpoints and status != "pending") or (
+            endpoints and status != "image-registered/board-fit-pending"
+        ):
+            errors.append(f"A:{point} status does not match its endpoint records")
         expected_terminals = {f"A{point}A", f"A{point}B"}
         terminals = {endpoint.get("terminal") for endpoint in endpoints}
         if endpoints and terminals != expected_terminals:
@@ -66,6 +78,12 @@ def main() -> int:
                 f"A:{point} terminal names must be {sorted(expected_terminals)}"
             )
         for endpoint in endpoints:
+            source_image = endpoint.get("source_image")
+            width, height = sources.get(source_image, (0, 0))
+            if source_image not in sources:
+                errors.append(
+                    f"{endpoint.get('terminal')} references unknown source image"
+                )
             drawing = endpoint.get("drawing_px")
             uncertainty = endpoint.get("uncertainty_px")
             if not (
