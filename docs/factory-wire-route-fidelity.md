@@ -12,7 +12,7 @@ zero-open routing checkpoint.
 
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
-- Drawing-image landing endpoints registered: `12/20`
+- Drawing-image landing endpoints registered: `14/20`
 - Landing endpoints fitted to PCB coordinates/islands: `0/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
@@ -35,7 +35,7 @@ historical construction fidelity.
 | 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 0 | 189 |
 | 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 0 | 0 | 176 |
 | 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 2 | 0 | 116 |
-| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 0 | 0 | 230 |
+| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 2 | 0 | 230 |
 | 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 0 | 141 |
 | 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 0 | 11 |
 
@@ -67,3 +67,5 @@ in `114556899`, again with PCB coordinates deliberately unset.
 and `(1625,3443)`, with C95/D38 between the marks.
 `А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`
 and `(1159,3623)` on its shallow diagonal run.
+`А:14` is the upper of two close parallel lines at `(1277,1832)` in
+`114604420` and `(1700,4044)` in `114600417`; the lower line is `А:7`.

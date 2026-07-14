@@ -193,6 +193,8 @@ def main() -> int:
         "and `(1625,3443)`, with C95/D38 between the marks.",
         "`А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`",
         "and `(1159,3623)` on its shallow diagonal run.",
+        "`А:14` is the upper of two close parallel lines at `(1277,1832)` in",
+        "`114604420` and `(1700,4044)` in `114600417`; the lower line is `А:7`.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

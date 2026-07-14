@@ -120,7 +120,29 @@
         }
       ]
     },
-    {"point": 14, "status": "pending", "endpoints": []},
+    {
+      "point": 14,
+      "status": "image-registered/board-fit-pending",
+      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7",
+      "endpoints": [
+        {
+          "terminal": "A14A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+          "drawing_px": [1277, 1832],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A14B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+          "drawing_px": [1700, 4044],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {
       "point": 19,
       "status": "image-registered/board-fit-pending",
