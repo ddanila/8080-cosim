@@ -3,7 +3,7 @@
 
 Each proposed route is made on a temporary board and accepted only when a new
 KiCad DRC report has fewer unconnected items, no short/clearance/crossing
-violations, and no increase in dangling-track or copper-edge findings.
+violations, and no increase in any other DRC finding.
 """
 
 from __future__ import annotations
@@ -22,7 +22,6 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 ROUTER = ROOT / "kicad" / "repair_fdc_route_gaps.py"
 BLOCKERS = {"shorting_items", "clearance", "tracks_crossing"}
-BOUNDED = {"track_dangling", "copper_edge_clearance"}
 NET_RE = re.compile(r"\[([^]]+)\]")
 
 
@@ -82,7 +81,8 @@ def acceptable(before: dict, after: dict) -> bool:
     if any(after_counts.get(kind, 0) for kind in BLOCKERS):
         return False
     return all(
-        after_counts.get(kind, 0) <= before_counts.get(kind, 0) for kind in BOUNDED
+        after_counts.get(kind, 0) <= before_counts.get(kind, 0)
+        for kind in before_counts.keys() | after_counts.keys()
     )
 
 
@@ -103,6 +103,12 @@ def main() -> None:
         type=int,
         default=0,
         help="maximum accepted routes; zero means no limit",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("FB", "M"),
+        default="FB",
+        help="route on either single copper layer (FB), or permit vias (M)",
     )
     parser.add_argument("--kicad-cli", type=Path)
     args = parser.parse_args()
@@ -152,7 +158,7 @@ def main() -> None:
                 net,
                 f"{x1},{y1}",
                 f"{x2},{y2}",
-                "FB",
+                args.mode,
             ]
             try:
                 proc = subprocess.run(

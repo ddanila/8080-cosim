@@ -130,18 +130,25 @@ merely by setting the board-item lock flag.
 The deterministic follow-up uses the existing two-layer A* gap router through a
 strict DRC transaction wrapper. Each proposal is made on a temporary board and
 is accepted only if KiCad reports fewer unconnected items, no shorts,
-clearance violations, or crossings, and no increase in dangling-track or
-copper-edge findings. The first two distance bands are reproducible with:
+clearance violations, or crossings, and no increase in any other DRC violation
+type. The single-layer distance bands and bounded multilayer pass are
+reproducible with:
 
 ```sh
 python3 kicad/close_unconnected_gaps.py INPUT.kicad_pcb OUTPUT.kicad_pcb \
   --max-distance 30 --timeout 20
 python3 kicad/close_unconnected_gaps.py OUTPUT.kicad_pcb OUTPUT_50.kicad_pcb \
   --min-distance 30 --max-distance 50 --timeout 20
+python3 kicad/close_unconnected_gaps.py OUTPUT_50.kicad_pcb OUTPUT_M.kicad_pcb \
+  --max-distance 15 --mode M --timeout 60 --limit 10
 ```
 
-Across the 0-30 mm and 30-50 mm bands, 14 proposals were accepted and reduced
-KiCad's unconnected count from 189 to 175. The final authoritative DRC still
-has zero shorts, copper-clearance violations, and track crossings; the original
-single dangling `OSC` track and `GND` edge-clearance finding remain unchanged.
-This candidate is still temporary and cannot replace the tracked routed board.
+The first two single-layer bands accepted 14 proposals and reduced KiCad's
+unconnected count from 189 to 175. The bounded multilayer pass then accepted 10
+of the short residual gaps, including power, ground, `MA6`, and `CAS`, reaching
+165 unconnected items and 6,843 copper items. The final authoritative DRC still
+has zero shorts, copper-clearance violations, track crossings, or hole-clearance
+violations; all 665 non-connectivity violation counts are unchanged, including
+the original dangling `OSC` track and `GND` edge-clearance finding. Exact
+identity/net parity with all 2,383 source pads also remains proved. This
+candidate is still temporary and cannot replace the tracked routed board.
