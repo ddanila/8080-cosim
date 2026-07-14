@@ -230,9 +230,20 @@ reach 30 unconnected items on 29 nets with 13,117 copper items, a cumulative
 reduction of 159. The remaining M12V edge-related proposal becomes correctly
 unroutable rather than producing a new violation.
 
-The current authoritative DRC still has zero shorts, copper-clearance violations,
-track crossings, or hole-clearance violations; all 665 non-connectivity
-violation counts are unchanged, including the original dangling `OSC` track and
-`GND` edge-clearance finding. Exact identity/net parity with all 2,383 source
-pads also remains proved. This candidate is still temporary and cannot replace
-the tracked routed board.
+The initial candidate also retained one imported GND segment only 0.2257 mm
+from the circular Edge.Cuts hole at `(199,251.2)`. A reproducible targeted
+repair in `kicad/repair_residual_copper_findings.py` preserves both live-chain
+endpoints and replaces that segment with a three-segment F.Cu dogleg on the
+open side of the hole; the lower side was rejected because it conflicts with
+RAM_RD_OE. The accepted dogleg removes the last copper-to-edge finding without
+changing the 30-open count. The apparent
+drop from 665 to 611 other violations is a KiCad/pypcbnew serialization effect:
+an otherwise unchanged load/save round trip also stops reporting the 53
+`pth_inside_courtyard` entries. It is not claimed as a geometry improvement.
+
+The current authoritative DRC has zero shorts, copper-clearance violations,
+track crossings, hole-clearance violations, or copper-to-edge findings. Its
+only remaining electrical-category finding is the dangling end of the still
+open `OSC` net. Exact identity/net parity with all 2,383 source pads also
+remains proved. This candidate is still temporary and cannot replace the
+tracked routed board.
