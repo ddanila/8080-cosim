@@ -9643,7 +9643,7 @@
    ]
   },
   "SER_TXD": {
-   "src": "scan plus .009 assembly sheet-1 A:20 diagonal: the electrical sheet joins D14.3 and D3.11, while the placement drawing puts both ends of the ~6 cm insulated link between the D14 and D3/R18 islands",
+   "src": "scan",
    "nodes": [
     [
      "D11",
@@ -9766,7 +9766,7 @@
    ]
   },
   "S_TTL": {
-   "src": "scan sheet-1 board point A23 plus .009 factory X3 cable table; owner continuity D3.10-X3.3",
+   "src": "scan sheet-1 board point A23 plus .009 factory X3 cable table; owner continuity D3.10-X3.3 closes the intervening on-board A:20 insulated link; enlarged placement review distinguishes adjacent D104 from D14",
    "nodes": [
     [
      "D3",

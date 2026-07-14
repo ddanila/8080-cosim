@@ -22,10 +22,10 @@ LINKS = [
     (9, 13, "~15", "ROE", {("D13", "1"), ("D92", "1")}),
     (10, 14, "~23", "PHI2", {("D1", "15"), ("D35", "12")}),
     (13, 19, "~9.5", "MEMW", {("D5", "26"), ("D7", "2")}),
-    # Sheet-1 placement draws the short A:20 diagonal between the D14 and
-    # D3/R18 islands. The electrical sheet closes those islands as SER_TXD.
-    # D3.10-A23-X3.3 is separate, valid owner continuity for the X3 TTL cable.
-    (14, 20, "~6", "SER_TXD", {("D14", "3"), ("D3", "11")}),
+    # The full-resolution placement crop identifies the adjacent vertical
+    # package as D104, not D14. Owner continuity through the installed X3
+    # harness closes the A:20 link onto the A23/X3.3 TTL-output island.
+    (14, 20, "~6", "S_TTL", {("D3", "10"), ("A23", "1"), ("X3", "3")}),
 ]
 
 
