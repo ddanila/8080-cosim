@@ -169,6 +169,14 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
                          min(MAX_Y, max(start_cell[1], goal_cell[1]) + margin))
     blocked = [obstacle_map(netname, pcbnew.F_Cu, search_bounds),
                obstacle_map(netname, pcbnew.B_Cu, search_bounds)]
+    # Layer changes must stay 0.8 mm from existing drilled vias.  Build this
+    # keep-out once; scanning every track for every expanded A* state made
+    # dense residual routes spend most of their time in an invariant test.
+    via_blocked = set()
+    for item in board.GetTracks():
+        if isinstance(item, pcbnew.PCB_VIA):
+            x, y = mm(item.GetPosition())
+            mark_circle(via_blocked, x, y, 0.799999, search_bounds)
     for layer_index in start_layers:
         for dx in range(-2, 3):
             for dy in range(-2, 3):
@@ -192,14 +200,7 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
             goal_state = current; break
         x, y, layer_index = current
         options = [(x + dx, y + dy, layer_index, move_cost) for dx, dy, move_cost in MOVES]
-        # Same-net copper may overlap safely, but two drilled vias still need
-        # the board's hole-to-hole clearance.  Keep layer changes away from
-        # every via already placed by earlier incremental routes.
-        via_clear = all(
-            math.hypot(x * STEP - mm(item.GetPosition())[0], y * STEP - mm(item.GetPosition())[1]) >= 0.80
-            for item in board.GetTracks() if isinstance(item, pcbnew.PCB_VIA)
-        )
-        if via_clear and (x, y) not in blocked[1 - layer_index]:
+        if (x, y) not in via_blocked and (x, y) not in blocked[1 - layer_index]:
             options.append((x, y, 1 - layer_index, 5.0))
         for nx, ny, nl, move_cost in options:
             if not (search_bounds[0] <= nx <= search_bounds[1]

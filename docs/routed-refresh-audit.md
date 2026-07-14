@@ -144,11 +144,24 @@ python3 kicad/close_unconnected_gaps.py OUTPUT_50.kicad_pcb OUTPUT_M.kicad_pcb \
 ```
 
 The first two single-layer bands accepted 14 proposals and reduced KiCad's
-unconnected count from 189 to 175. The bounded multilayer pass then accepted 10
-of the short residual gaps, including power, ground, `MA6`, and `CAS`, reaching
-165 unconnected items and 6,843 copper items. The final authoritative DRC still
-has zero shorts, copper-clearance violations, track crossings, or hole-clearance
-violations; all 665 non-connectivity violation counts are unchanged, including
-the original dangling `OSC` track and `GND` edge-clearance finding. Exact
-identity/net parity with all 2,383 source pads also remains proved. This
-candidate is still temporary and cannot replace the tracked routed board.
+unconnected count from 189 to 175. The initial bounded multilayer pass then
+accepted 10 short residual gaps, including power, ground, `MA6`, and `CAS`, and
+reached 165 unconnected items.
+
+Profiling the next pass exposed an invariant full-board scan inside every A*
+state: each possible layer change re-enumerated roughly 6,800 copper items to
+check its distance from existing vias. `repair_fdc_route_gaps.py` now rasterizes
+those existing-via keep-outs once per proposal. A previously 60-second timeout
+then produced the same raw candidate in 1.3 seconds; the transaction wrapper
+correctly rejected that particular candidate for a new short and clearance
+violation. With no acceptance-rule relaxation, subsequent 0-30 mm multilayer
+passes accepted 28 more routes. The current temporary board has 137 unconnected
+items and 7,383 copper items, a cumulative reduction of 52 from the Freerouting
+import.
+
+The final authoritative DRC still has zero shorts, copper-clearance violations,
+track crossings, or hole-clearance violations; all 665 non-connectivity
+violation counts are unchanged, including the original dangling `OSC` track and
+`GND` edge-clearance finding. Exact identity/net parity with all 2,383 source
+pads also remains proved. This candidate is still temporary and cannot replace
+the tracked routed board.
