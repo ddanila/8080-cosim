@@ -45,21 +45,28 @@ reviewed.
 
 These are ordered; each is completable with material already in the repo.
 
-1. **Fix the deep cosim divergence.** `sync/boot_check.sh` passes, but
-   `sync/cosim_check.sh` diverges at read #115878: bus address `D300`,
-   `juku_top` byte `55` versus oracle byte `AA` at about 19.9 ms
-   (reproduce with `WINDOW=25000000 sync/cosim_check.sh`, ~3 min). 2026-07-14
-   verification: this exact divergence reproduces at every commit tested back
-   through `90c04fb` (the 2026-07-13 D6 runtime-decode split), and the state
-   before `90c04fb` diverges even earlier (read #57, `D75C`, `FF` versus
-   `00`) — yet `docs/cosim-runtime-reference.md` records passing 130M/200M ns
-   windows on 2026-07-12. The recorded passes therefore came from a different
-   environment or tree than the committed state (local runs use Icarus
-   Verilog 13.0, installed 2026-06-29). Establish which model is wrong at the
-   `D300` RAM-test read (both mismatch patterns look like RAM-test
-   checkerboard bytes), fix it, restore `NO-DIVERGE`, and add a
+1. **Restore the deep cosim guard (harness timing-model fix, not a datapath
+   bug).** `sync/boot_check.sh` passes, but `sync/cosim_check.sh` diverges at
+   read #115878 (bus `D300`, `juku_top` `55` versus oracle `AA`, ~19.9 ms;
+   reproduce with `WINDOW=25000000 sync/cosim_check.sh`, ~3 min). Root-caused
+   2026-07-14 (`docs/cosim-runtime-reference.md`): the memory **contents** are
+   correct in both models; the two independently-written models latch read
+   data on **different events** — `juku_top`'s РУ5 read `held` on `negedge
+   cas_n` (the un-traced D36/R57 slot-timing scaffold), the oracle on the read
+   strobe — so they go stale on different fast read-after-write/back-to-back
+   reads, and Icarus 13.0 (Mac) resolves the sub-cycle ordering differently
+   than the environment where it last passed. Patching either side's latch
+   just moves the divergence (verified: fixing the DRAM read exposed a mirror
+   stale-oracle case at ROM `0x00CE`; making all four latches level/clock
+   sensitive moved it earlier to read #74) while `boot_check` stays
+   byte-identical throughout. The durable fix is a harness decision:
+   (a) compare at a settled point — the CPU's captured byte at a fixed T-state
+   or memory contents — instead of the transient bus at `negedge dbin`;
+   (b) give both models one shared deterministic read-timing model; or
+   (c) complete the physical shared-DRAM slot timing (P0 connectivity, below)
+   so `cas_n` pulses per CPU read. Then restore `NO-DIVERGE` and add a
    bounded-window cosim run to CI — the guard is in no workflow today, so it
-   fails silently.
+   regressed silently.
 2. **Continue routing convergence on the refresh candidate.** The
    deterministic gap router (`kicad/close_unconnected_gaps.py`) has exhausted
    distance bands to 225 mm, corridor sweeps to 120 mm, and A* grid
