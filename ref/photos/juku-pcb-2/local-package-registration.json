@@ -90,6 +90,33 @@
       "note": "The direct fit establishes D3.10 beside the distinct component-side white-wire surface joint. Package geometry alone does not promote the wire connection; that requires the separately visible tinned departure."
     },
     {
+      "refdes": "D13",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1426.0, 906.0], "use": "fit", "observation": "upper-right contact immediately above the photographed right-facing notch"},
+        {"pin": "4", "image_px": [1255.0, 906.0], "use": "check", "observation": "independent middle contact on the complete pin-1-to-7 row"},
+        {"pin": "7", "image_px": [1084.0, 906.0], "use": "fit", "observation": "upper-left contact at the far end of the complete seven-pad row"},
+        {"pin": "8", "image_px": [1084.0, 1093.0], "use": "fit", "observation": "lower-left contact of the opposite complete row"},
+        {"pin": "14", "image_px": [1426.0, 1093.0], "use": "check", "observation": "independent lower-right contact below the notch"}
+      ],
+      "note": "The marked package is unambiguously К555ТЛ2. The photographed right-facing notch and complete 2x7 contact field identify pin 2 on the upper row; the component-side view shows ordinary plated/etched departures but no visible insulated-wire termination at that pad."
+    },
+    {
+      "refdes": "D13",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "8", "image_px": [2682.0, 1009.0], "use": "fit", "observation": "leftmost joint on the complete mirrored pin-8-to-14 row"},
+        {"pin": "11", "image_px": [2868.0, 1009.0], "use": "check", "observation": "independent middle joint on the complete upper row"},
+        {"pin": "14", "image_px": [3051.0, 1009.0], "use": "fit", "observation": "rightmost joint on the complete mirrored upper row"},
+        {"pin": "1", "image_px": [3051.0, 1192.0], "use": "check", "observation": "independent lower-right joint on the opposite row"}
+      ],
+      "note": "The two complete seven-pad rows immediately above D105 establish the reflected backside field. D13.2 is the second joint from the right on the lower row; its solder cap and ordinary narrow etched departure are visible between unrelated broad traces, but there is no distinct insulated-wire stub or remote A12 departure in this view."
+    },
+    {
       "refdes": "D5",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

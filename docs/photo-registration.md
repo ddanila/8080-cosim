@@ -226,6 +226,18 @@ The source PCB uses the component-derived centre and
 `kicad/check_d37_photo_placement.py` guards both-side identity, placement, and
 orientation.
 
+The marked `К555ТЛ2` D13 now has direct component and reflected-solder fits.
+The right-facing notch and complete component contact field put D13.2 at
+`(1369,906)` px in raw image `200450127`; pins 4 and 14 are exact held-out
+checks. The complete mirrored backside row puts the same pin at
+`(2989.5,1193.5)` px in `200537608`, with the independent pins 11 and 1 held
+to `1.5` px. The component contact has no insulated-wire termination, and the
+solder joint has only its ordinary etched departure; no distinct A12 rework
+stub is visible at either face. This rules out a direct D13.2 pad landing but
+does not identify the remote `RAM_OUT_EN` surface joint, so A12A remains
+board-fit pending. `kicad/check_d13_photo_placement.py` guards the two-sided
+identity and coordinates.
+
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity
