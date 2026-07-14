@@ -189,6 +189,8 @@ def main() -> int:
         "and `(1898,2837)` in `114600417`; PCB promotion remains pending.",
         "`А:10` is complete in one view at `(821,3778)` and `(3016,3702)`",
         "in `114556899`, again with PCB coordinates deliberately unset.",
+        "`А:13` is guarded across `114556899`/`114600417` at `(467,3851)`",
+        "and `(1625,3443)`, with C95/D38 between the marks.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

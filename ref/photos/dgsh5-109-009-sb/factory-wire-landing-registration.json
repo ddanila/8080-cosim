@@ -70,7 +70,29 @@
       ]
     },
     {"point": 12, "status": "pending", "endpoints": []},
-    {"point": 13, "status": "pending", "endpoints": []},
+    {
+      "point": 13,
+      "status": "image-registered/board-fit-pending",
+      "observation": "overlapping views show the line leaving the left 13 mark in 114556899, crossing C95/D38, and arriving at the right 13 mark before R35 in 114600417",
+      "endpoints": [
+        {
+          "terminal": "A13A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+          "drawing_px": [467, 3851],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A13B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+          "drawing_px": [1625, 3443],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {"point": 14, "status": "pending", "endpoints": []},
     {
       "point": 19,
