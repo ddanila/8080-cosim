@@ -238,6 +238,15 @@ does not identify the remote `RAM_OUT_EN` surface joint, so A12A remains
 board-fit pending. `kicad/check_d13_photo_placement.py` guards the two-sided
 identity and coordinates.
 
+The overlapping raw component tile `200439607` independently holds D13 pins 4
+and 14 at zero-pixel residual and exposes a tempting white-wire end at
+`(1405,1479)` px east of the package. It is not a landing: the second component
+view maps it to `(1627.8,1070.1)` px and shows the tinned end resting on bare
+substrate, while the D13 backside basis maps it to `(3268.7,1031.5)` px, again
+bare between etched features. The D13 guard preserves both cross-view
+projections. This rejects the conspicuous loose end as A12A without using its
+proximity to D13/R20 as connectivity evidence.
+
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity

@@ -117,6 +117,20 @@
       "note": "The two complete seven-pad rows immediately above D105 establish the reflected backside field. D13.2 is the second joint from the right on the lower row; its solder cap and ordinary narrow etched departure are visible between unrelated broad traces, but there is no distinct insulated-wire stub or remote A12 departure in this view."
     },
     {
+      "refdes": "D13",
+      "side": "component-alt",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1205.0, 1321.0], "use": "fit", "observation": "upper-right contact beside the right-facing notch"},
+        {"pin": "4", "image_px": [1035.5, 1321.0], "use": "check", "observation": "independent middle contact on the complete upper row"},
+        {"pin": "7", "image_px": [866.0, 1321.0], "use": "fit", "observation": "upper-left contact at the far end of the row"},
+        {"pin": "8", "image_px": [866.0, 1501.0], "use": "fit", "observation": "lower-left contact of the opposite row"},
+        {"pin": "14", "image_px": [1205.0, 1501.0], "use": "check", "observation": "independent lower-right contact below the notch"}
+      ],
+      "note": "This sharper overlapping component tile exposes an apparent white-wire endpoint east of D13/R20 near (1405,1479) px. Cross-projection into the second component angle and solder view shows that the tinned end rests over bare substrate rather than a copper landing; the fit preserves the rejected A12 candidate audit."
+    },
+    {
       "refdes": "D5",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

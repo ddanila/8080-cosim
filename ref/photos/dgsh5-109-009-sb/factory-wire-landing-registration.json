@@ -194,7 +194,7 @@
     {
       "point": 12,
       "status": "image-registered/board-fit-pending",
-      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark after C96 near D35; direct component/reflected-solder fits place D13.2 precisely but show no insulated-wire termination on either pad face, so the D13-side remote landing remains unidentified",
+      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark after C96 near D35; direct component/reflected-solder fits place D13.2 precisely but show no insulated-wire termination on either pad face, and a nearby tinned white-wire end is rejected because both cross-view projections land on bare substrate, so the D13-side remote landing remains unidentified",
       "endpoints": [
         {
           "terminal": "A12A",
