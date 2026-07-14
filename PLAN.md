@@ -2,10 +2,10 @@
 
 Status date: **2026-07-14**.
 
-Release status: **DESIGN HOLD / PACKAGE INVALID**. The recorded main-board ZIP
-is a checksum-reproducible engineering snapshot, not fabrication authorization;
-it predates accepted connectivity and has not passed the required regeneration
-and review gates.
+Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The recorded main-board ZIP
+is a checksum-reproducible engineering snapshot, not fabrication authorization.
+It passes package-integrity, DRC-disposition, geometry, checksum, and independent
+render gates, but its routed board predates accepted functional connectivity.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module (documented by its ПЭЗ parts list and СБ assembly drawing; the earlier
@@ -32,14 +32,14 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | Retire the D6 functional decoder via joined-conductor D8/D13/D92 timing reconstruction; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 102 mapped instances and 266 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope, but predates accepted D2/D94, reset/USART, and harness endpoint changes. The preserved source-complete refresh candidate `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, exact 2,383-pad/net parity, zero unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings (`docs/routed-refresh-audit.md`) | The candidate is an engineering checkpoint, not fabrication authorization; adopt/regenerate routed production copper and the manufacturing packet only after the functional P0 netlist freezes, then review the result |
+| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope; its KiCad-nightly 10.99 manufacturing packet is checksum/geometry/render verified under a design hold. The preserved source-complete refresh candidate `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, exact 2,383-pad/net parity, zero unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings (`docs/routed-refresh-audit.md`) | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. Adopt/regenerate production copper and the manufacturing packet only after the functional P0 netlist freezes, then review the result |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The recorded upload ZIP SHA256 is
-`341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
-Do not send any saved package to a fabricator. Regenerate it only after the
-blockers below are closed and the corrected board has been rerouted and
-reviewed.
+`7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
+Do not send this saved package to a fabricator. After the blockers below are
+closed and the corrected board is rerouted and reviewed, regenerate every
+fabrication file and gate again.
 
 ## Actionable now — no new physical evidence required
 
@@ -53,17 +53,7 @@ These are ordered; each is completable with material already in the repo.
    netlist changes through the per-net quarantine mechanism, but final
    production reroute/adoption waits for the P0 functional netlist to freeze,
    followed by repeated endpoint-parity, DRC, and visual review.
-2. **Regenerate the manufacturing packet records on the CI toolchain.**
-   `docs/replica-manufacturing-readiness.md` is stale against its own
-   sub-reports: it marks the now-READY DRC-disposition/waiver/runbook gates
-   as FAIL and records outdated byte sizes. Regeneration must happen on the
-   CI toolchain (`kicad-cli-nightly` 10.99; local KiCad 10.0.4 produces
-   different DRC counts, e.g. 70 `pth_inside_courtyard` findings versus 0)
-   via `kicad/export_fab.sh` and `python3 kicad/report_order_readiness.py`.
-   The stale local `fab/gerbers` leftovers, which predated the recorded ZIP
-   and broke `scripts/check_documentation_consistency.py`, were removed
-   2026-07-14; the checker passes without a local fabrication tree.
-3. **Finish the wire-table pin mapping that existing scans permit.** The
+2. **Finish the wire-table pin mapping that existing scans permit.** The
    sheets 2-6 таблица соединений is transcribed
    (`ref/schematics/dgsh5-109-009-sb-wire-table.md`); X3/X8/X9 landings and
    R94.1 are adopted. Promote X4 and the remaining numbered links only after

@@ -1,9 +1,9 @@
 # Replica manufacturing readiness
 
-Status: **PACKAGE INVALID**
+Status: **DESIGN HOLD / PACKAGE VERIFIED**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Final upload ZIP SHA256: `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`
+Final upload ZIP SHA256: `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`
 
 This is the tracked top-level manufacturing packet for the replica main
 board. It separates reproducible package integrity from functional design
@@ -15,17 +15,17 @@ DESIGN HOLD.
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
 | Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1251 | PASS |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2866 | PASS |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2931 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3028 | FAIL |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2546 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 83889 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8418 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2907 | PASS |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 83019 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1747 | FAIL |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1772 | PASS |
+| Review waiver | `fab/gerbers/review-waivers.md` | 1628 | PASS |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1899 | PASS |
 
 ## Toolchain Provenance
 
@@ -40,8 +40,8 @@ DESIGN HOLD.
 
 | File | Bytes | SHA256 | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `0f0de6fafc8dea26732383e729a733c0ac8350ccb91b56439bacbc9264eeba4e` | PASS |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790180 | `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `8262a982aafd3e2e42c6f048167a5feb341115043983e0970681b3e256c8799f` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790221 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` | PASS |
 
 ## Locked Vendor Options
 
@@ -73,9 +73,3 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 - Confirmation that the package was regenerated after the final D2/D94
   changes, FDC-support functional pin dispositions, and source-risk
   net corrections.
-
-## Failures
-
-- required report marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
-- required report marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
-- required report marker missing in fab/gerbers/review-waivers.md: Status: **ACCEPTED**

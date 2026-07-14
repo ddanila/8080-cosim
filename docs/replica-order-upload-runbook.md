@@ -2,7 +2,7 @@
 
 Fabrication package: `fab/gerbers`
 Upload archive: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Status: **PACKAGE INVALID**
+Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
 
 This report verifies the mechanics of the saved upload package. It is not
 an order authorization. The current design-release state is owned by
@@ -20,21 +20,21 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | SHA256 | Status |
 | --- | --- | ---: | --- | --- |
-| Top copper | `juku_routed-F_Cu.gtl` | 384621 | `fec2dce9e40162e95cc57dc2588b438f702377373331aaf87dc09537fb2e9456` | PASS |
-| Bottom copper | `juku_routed-B_Cu.gbl` | 327687 | `e66878bc0a52edec37111ef4214ae189c49701763779ea8b3a38c4814820aff2` | PASS |
-| Top soldermask | `juku_routed-F_Mask.gts` | 67058 | `48c24ba68013e7c0ab14aa055de3a531e6d4add3c90876294c8fb8794966e652` | PASS |
-| Bottom soldermask | `juku_routed-B_Mask.gbs` | 67058 | `04dd2385027c40a1b53a0c8646243ff9b59e4b3c41ae7a0ec5532ac8d73efe6c` | PASS |
-| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 2036860 | `b1c4e7ac7336e7158e575ce9acd85c12afac9995ad82325c5240a86b92e4cbc6` | PASS |
-| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 533 | `94c08342a9211131786e7f5b4c9bfe9d50baec17e029fbc9b773b74deca1401d` | PASS |
-| Board outline | `juku_routed-Edge_Cuts.gm1` | 1302 | `3ee6d203a9068346bb493637680cd4afe335eb054c2560f75b0974d535b465b7` | PASS |
-| Gerber job | `juku_routed-job.gbrjob` | 2445 | `1db732769e450d82ff5ed8b02f580ddbe592af660d1aa36b3dc1f662d426ec50` | PASS |
-| Excellon drill | `juku_routed.drl` | 44122 | `805197e87b10a2e1090c0130f46da9f0a05c9d106b0c95acc1e46391c39aa76c` | PASS |
+| Top copper | `juku_routed-F_Cu.gtl` | 384651 | `55e5ba8dc44e30a82f3d77cf0648a31aa1906deb58dfd32ce1f2b745689064c3` | PASS |
+| Bottom copper | `juku_routed-B_Cu.gbl` | 327666 | `6ed94f4b9ea5d4a13a0c2a9ebfa14c6a0a69e20e4a79ff950941a60c2c8be2dd` | PASS |
+| Top soldermask | `juku_routed-F_Mask.gts` | 67058 | `3f08b8720f87432b522ae56128581bbd9633559a1079910acd4bd4aded0cf7fd` | PASS |
+| Bottom soldermask | `juku_routed-B_Mask.gbs` | 67058 | `5caff2333072cacbbaf2b959b40f1f5abd3af7cf08d3f7c89cbe25bc8e6cf380` | PASS |
+| Top silkscreen | `juku_routed-F_Silkscreen.gto` | 2036860 | `84d9f11809672e3e3a1581336af8c9a7bce6f12ccf98143f99e6da9e792d8174` | PASS |
+| Bottom silkscreen | `juku_routed-B_Silkscreen.gbo` | 533 | `5adaf8054d32a9b7e8106ce225dafe21a9e53c6a880a41f5bbc25a3e7e0b6564` | PASS |
+| Board outline | `juku_routed-Edge_Cuts.gm1` | 1302 | `85910fb379b54e674528fd34c118fad6fe91ccf5062523badf3eff03f43e4943` | PASS |
+| Gerber job | `juku_routed-job.gbrjob` | 2445 | `c6e257ebe318f9ce59d988f5799ae199ac75c3b51b49a04d6bc4a745d794b0ff` | PASS |
+| Excellon drill | `juku_routed.drl` | 44166 | `55c20e1ff44ad01fc9679a9e105e82b6d0766ffd791a0c8f3f81797c91ff724b` | PASS |
 
 ## Upload Archive
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790180 | `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4` | FAIL |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790221 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` | PASS |
 
 ## Upload ZIP Members
 
@@ -42,37 +42,37 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Member | Bytes | Metadata | Source match |
 | --- | ---: | --- | --- |
-| juku_routed-F_Cu.gtl | 384621 | PASS | PASS |
-| juku_routed-B_Cu.gbl | 327687 | PASS | PASS |
+| juku_routed-F_Cu.gtl | 384651 | PASS | PASS |
+| juku_routed-B_Cu.gbl | 327666 | PASS | PASS |
 | juku_routed-F_Mask.gts | 67058 | PASS | PASS |
 | juku_routed-B_Mask.gbs | 67058 | PASS | PASS |
 | juku_routed-F_Silkscreen.gto | 2036860 | PASS | PASS |
 | juku_routed-B_Silkscreen.gbo | 533 | PASS | PASS |
 | juku_routed-Edge_Cuts.gm1 | 1302 | PASS | PASS |
 | juku_routed-job.gbrjob | 2445 | PASS | PASS |
-| juku_routed.drl | 44122 | PASS | PASS |
+| juku_routed.drl | 44166 | PASS | PASS |
 
 ## Upload Checksum
 
 | File | Bytes | SHA256SUMS entry | Status |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4` | PASS |
+| `fab/gerbers/upload/SHA256SUMS.txt` | 97 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` | PASS |
 
 ## Retained Evidence
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2866 | PASS |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1772 | PASS |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1747 | FAIL |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2931 | PASS |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1899 | PASS |
+| Review waiver | `fab/gerbers/review-waivers.md` | 1628 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3028 | FAIL |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2907 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2546 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 83889 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8418 | PASS |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 83019 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 
 ## Order-Time Checks
 
@@ -92,8 +92,3 @@ kicad/check_replica_manufacturing_ready.sh
 - `docs/replica-dual-config-bom.csv` is a sourcing/provenance BOM, not an assembly file.
 - `docs/replica-sourcing-readiness.md` is for procurement and acceptance planning, not vendor upload.
 - Review PNG/SVG outputs are retained as evidence only.
-
-## Failures
-
-- review-waivers.md does not contain expected marker `Status: **ACCEPTED**`
-- docs/replica-fab-drc-disposition.md does not contain expected marker `Status: **READY**`

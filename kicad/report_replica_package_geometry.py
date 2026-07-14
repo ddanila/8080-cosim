@@ -24,8 +24,10 @@ EXPECTED_DRILL_TOOLS = {
 }
 EXPECTED_DRILL_HITS = {
     # 331 baseline vias, 39 D26 mode/FDC vias, 8 control-tie vias, 9 D44/D45
-    # counter-tie vias, and 6 D103 modulo-13 preset/enable vias.
-    "1": 393,
+    # counter-tie vias, 6 D103 modulo-13 preset/enable vias, two clearance-safe
+    # MEMR bridge vias, and the M5V_DERIVED closure via. The last three are at
+    # (227.0497,127.5849), (230,123), and (35,213), respectively.
+    "1": 396,
     "2": 12,
     "3": 2311,
     "4": 30,

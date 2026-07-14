@@ -22,7 +22,7 @@ with the machine-readable board model.
   crossing the front-layer select bus. Its saved Gerber/drill ZIP is
   checksum-reproducible, but remains a stale engineering snapshot and is not
   released for manufacture. Current ZIP SHA256:
-  `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
+  `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
   A source-complete replacement candidate is preserved separately with exact
   2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
   ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).

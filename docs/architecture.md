@@ -62,9 +62,10 @@ been assigned a net. Consequently physical release needs all of the following:
 - programmable-part contents and provenance;
 - explicit disposition of analog/timing assumptions.
 
-The saved Gerber ZIP is a superseded engineering snapshot (tracked status
-**PACKAGE INVALID**) and fails that broader design-release criterion.
-`PLAN.md` lists the blockers.
+The saved Gerber ZIP is a checksum/geometry/render-verified engineering
+snapshot (tracked status **DESIGN HOLD / PACKAGE VERIFIED**), but its routed
+board is superseded by accepted functional connectivity and therefore fails
+the broader design-release criterion. `PLAN.md` lists the blockers.
 
 ## Design rules
 
