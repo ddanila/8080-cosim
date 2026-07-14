@@ -23,15 +23,17 @@ with the machine-readable board model.
   checksum-reproducible, but remains a stale engineering snapshot and is not
   released for manufacture. Current ZIP SHA256:
   `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
-  A source-complete replacement candidate is preserved separately with exact
-  2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
-  ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)). Its zero-open
-  state currently copper-substitutes ten documented factory insulated links;
+  A 296-footprint replacement routing checkpoint is preserved separately with
+  all 2,383 pad identities, zero internal unconnected items, and zero electrical
+  DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
+  Later source corrections leave it with 17 pad-net mismatches and 88 moved
+  pads across D5/D37/D38/D50/D51, so it is convergence evidence rather than
+  current-source copper. Its zero-open state also copper-substitutes ten documented factory insulated links;
   all twenty paired A-point landings remain absent from the PCB. All ten pairs
   (`А:7`–`А:14`, `А:19`, and `А:20`) are
-  registered in drawing-image space. Both `А:20` and the D38-side
-  `А:8`/`А:9` joints are also board-fitted and island-assigned; the other
-  sixteen terminals remain unset. The landing
+  registered in drawing-image space. Both `А:20`, the D38-side
+  `А:8`/`А:9` joints, and the D5-side `А:19` joint are also board-fitted
+  and island-assigned; the other fifteen terminals remain unset. The landing
   geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
 - The main board is **not released for fabrication**. Validated physical D2

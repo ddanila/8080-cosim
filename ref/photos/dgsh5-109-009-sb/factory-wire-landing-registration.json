@@ -240,8 +240,16 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
           "drawing_px": [1310, 3122],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [47.058, 119.861],
+          "island_assignment": "D5.26-side MEMW island; component-side surface wire joint",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+            "joint_px": [1218, 1593],
+            "pin_px": [1214, 1480],
+            "local_fit": "D5/component",
+            "uncertainty_mm": 0.6,
+            "proof": "the right-facing notch and complete 2x14 contact field identify D5.26; one straight 113 px component-side copper segment runs from fitted D5.26 to the distinct white-wire surface joint"
+          }
         },
         {
           "terminal": "A19B",

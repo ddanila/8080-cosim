@@ -13,8 +13,11 @@ zero-open routing checkpoint.
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `4/20`
+- Landing endpoints fitted to PCB coordinates/islands: `5/20`
 - Paired A-point landing terminals modeled: `0/20`
+- Candidate/source pad identities equal: `PASS`
+- Candidate/source pad-net mismatches: `17`
+- Candidate/source moved pads (>50 nm): `88`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
 - Required release state: twenty registered landing terminals, no copper
@@ -22,7 +25,9 @@ zero-open routing checkpoint.
 
 The current candidate's zero unconnected items are useful routing-convergence
 evidence, but for these ten links they prove copper substitution rather than
-historical construction fidelity.
+historical construction fidelity. It is also a preserved checkpoint rather
+than a current-source route: later net and photo-placement corrections must
+be incorporated only after the landing islands and functional netlist freeze.
 
 ## Link audit
 
@@ -65,6 +70,11 @@ solder-side copper departure. This proves the shared A20A/A23.1/X3.3
 through-hole joint at `(178.780,15.200)` mm rather than merely net equality.
 `А:19` is likewise guarded across two overlapping views: R7 lies between
 the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.
+At its D5 end, the marked КР580ВК38's complete contact field and
+right-facing notch identify D5.26 at `(1214,1480)` in owner image
+`200411500`; a straight 113 px copper segment reaches the distinct
+white-wire surface joint `(1218,1593)`. This proves A19A/MEMW at
+`(47.058,119.861)` mm; the D7-side terminal remains pending.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`
 and `(1898,2837)` in `114600417`; PCB promotion remains pending.
 `А:10` is complete in one view at `(821,3778)` and `(3016,3702)`

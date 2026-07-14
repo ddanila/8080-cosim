@@ -90,6 +90,20 @@
       "note": "The direct fit establishes D3.10 beside the distinct component-side white-wire surface joint. Package geometry alone does not promote the wire connection; that requires the separately visible tinned departure."
     },
     {
+      "refdes": "D5",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1322.0, 1145.0], "use": "fit", "observation": "top-right contact immediately above the photographed right-facing notch"},
+        {"pin": "14", "image_px": [620.0, 1145.0], "use": "fit", "observation": "top-left contact at the far end of the complete 14-pad row"},
+        {"pin": "15", "image_px": [620.0, 1480.0], "use": "fit", "observation": "bottom-left contact of the opposite complete row"},
+        {"pin": "26", "image_px": [1214.0, 1480.0], "use": "check", "observation": "third contact from the right on the bottom row; its copper runs directly to the white-wire joint"},
+        {"pin": "28", "image_px": [1322.0, 1480.0], "use": "check", "observation": "independent bottom-right contact below the notch"}
+      ],
+      "note": "The marked package is unambiguously КР580ВК38. Its right-facing notch proves a 270-degree PCB orientation, while the old drawing seed used 90 degrees and displaced the package. The complete 2x14 contact field also identifies D5.26 independently of the adjacent factory-wire joint."
+    },
+    {
       "refdes": "D50",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

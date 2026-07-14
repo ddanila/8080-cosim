@@ -49,6 +49,33 @@ def main() -> int:
     source_refs = {footprint.GetReference() for footprint in source.GetFootprints()}
     candidate_tracks = list(candidate.GetTracks())
 
+    def pad_map(board: pcbnew.BOARD) -> dict[tuple[str, str], tuple[str, float, float]]:
+        return {
+            (footprint.GetReference(), pad.GetNumber()): (
+                pad.GetNetname(),
+                pcbnew.ToMM(pad.GetPosition().x),
+                pcbnew.ToMM(pad.GetPosition().y),
+            )
+            for footprint in board.GetFootprints()
+            for pad in footprint.Pads()
+        }
+
+    source_pads = pad_map(source)
+    candidate_pads = pad_map(candidate)
+    pad_identity_match = source_pads.keys() == candidate_pads.keys()
+    common_pads = source_pads.keys() & candidate_pads.keys()
+    pad_net_mismatches = sum(
+        source_pads[key][0] != candidate_pads[key][0] for key in common_pads
+    )
+    moved_pads = sum(
+        max(
+            abs(source_pads[key][1] - candidate_pads[key][1]),
+            abs(source_pads[key][2] - candidate_pads[key][2]),
+        )
+        > 0.00005
+        for key in common_pads
+    )
+
     kicad_python = subprocess.check_output(
         [str(ROOT / "scripts/find-kicad-python.sh")], text=True
     ).strip() or "/usr/bin/python3"
@@ -119,6 +146,9 @@ def main() -> int:
         and image_registered == expected_terminals
         and board_fitted == expected_terminals
         and modeled_terminals == expected_terminals
+        and pad_identity_match
+        and pad_net_mismatches == 0
+        and moved_pads == 0
         and copper_substitutions == 0
         and unconnected == len(LINKS)
     )
@@ -150,6 +180,9 @@ def main() -> int:
         f"- Drawing-image landing endpoints registered: `{image_registered}/{expected_terminals}`",
         f"- Landing endpoints fitted to PCB coordinates/islands: `{board_fitted}/{expected_terminals}`",
         f"- Paired A-point landing terminals modeled: `{modeled_terminals}/{expected_terminals}`",
+        f"- Candidate/source pad identities equal: `{'PASS' if pad_identity_match else 'FAIL'}`",
+        f"- Candidate/source pad-net mismatches: `{pad_net_mismatches}`",
+        f"- Candidate/source moved pads (>50 nm): `{moved_pads}`",
         f"- Link nets carrying candidate copper: `{copper_substitutions}/{len(LINKS)}`",
         f"- Candidate DRC unconnected items: `{unconnected}`",
         "- Required release state: twenty registered landing terminals, no copper",
@@ -157,7 +190,9 @@ def main() -> int:
         "",
         "The current candidate's zero unconnected items are useful routing-convergence",
         "evidence, but for these ten links they prove copper substitution rather than",
-        "historical construction fidelity.",
+        "historical construction fidelity. It is also a preserved checkpoint rather",
+        "than a current-source route: later net and photo-placement corrections must",
+        "be incorporated only after the landing islands and functional netlist freeze.",
         "",
         "## Link audit",
         "",
@@ -191,6 +226,11 @@ def main() -> int:
         "through-hole joint at `(178.780,15.200)` mm rather than merely net equality.",
         "`А:19` is likewise guarded across two overlapping views: R7 lies between",
         "the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.",
+        "At its D5 end, the marked КР580ВК38's complete contact field and",
+        "right-facing notch identify D5.26 at `(1214,1480)` in owner image",
+        "`200411500`; a straight 113 px copper segment reaches the distinct",
+        "white-wire surface joint `(1218,1593)`. This proves A19A/MEMW at",
+        "`(47.058,119.861)` mm; the D7-side terminal remains pending.",
         "The same overlap method guards `А:11` at `(1563,3155)` in `114556899`",
         "and `(1898,2837)` in `114600417`; PCB promotion remains pending.",
         "`А:10` is complete in one view at `(821,3778)` and `(3016,3702)`",

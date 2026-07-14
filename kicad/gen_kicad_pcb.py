@@ -269,9 +269,10 @@ PLACE = {
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
-    # D5 at its СБ box (y92-106; old 114.1 clipped the ROM sockets); D6/D7/D10 row at y114.1
-    # (old 116.7-118 dips clipped the x-decap band at 124.3 and bank0 at 133.1)
-    'D5':(31.2,99.2,90),'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),
+    # D5 is now direct-photo fitted (pad rows y99.48/114.72); D6/D7/D10 remain
+    # on the assembly-seeded row near y114.1.
+    'D5':(35.44,107.10,270),  # raw component fit: marked КР580ВК38, notch right; old drawing seed was reversed and displaced
+    'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),
     'D10':(192.44,110.08,90),  # КР580ВН59 local affine photo fit; old centre projected onto adjacent resistors/body
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary

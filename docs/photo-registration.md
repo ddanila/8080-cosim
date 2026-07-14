@@ -149,6 +149,16 @@ contains no populated capacitor body or coherent drilled axial lead pair.
 Factory intent versus owner-board DNP/removal remains explicit rather than
 moving the unrelated generic C63 seed into the IC body/gap.
 
+The marked `КР580ВК38` D5 now has a direct affine component fit in raw
+image `200411500`. Its complete 2x14 contact field and right-facing notch move
+the pad-row centre from the old drawing seed `(31.20,99.20)` mm to
+`(35.44,107.10)` mm and correct the PCB orientation from 90 to 270 degrees.
+Pins 26 and 28 are independent zero-pixel checks. Fitted D5.26 lies at
+`(1214,1480)` px; one straight visible copper segment reaches the distinct
+white-wire surface joint at `(1218,1593)` px. Package registration alone is
+placement evidence, while that separately reviewed copper departure proves
+the D5-side A19/MEMW landing at `(47.058,119.861)` mm.
+
 D50 and D51 now have direct component and reflected-solder fits in the same
 raw photo pair as validated D2. Their markings and bottom-facing notches both
 require 180-degree PCB orientation. D50's component checks are `0.143`/`2.857`
