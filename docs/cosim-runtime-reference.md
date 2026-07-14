@@ -26,7 +26,17 @@ Milestones make a live run observable and allow a better ETA after the first
 few samples. Only 19 progress lines are emitted, so their overhead should be
 negligible relative to millions of compared reads.
 
-## Resolved 2026-07-12 overlay regression
+## 2026-07-12 overlay regression (resolution does not currently reproduce)
+
+**2026-07-14 status:** the resolution below does not reproduce on the
+committed tree with local Icarus Verilog 13.0: `sync/cosim_check.sh`
+diverges at read #115878 (`D300`, structural `55`, oracle `AA`) at every
+commit tested from the fix onward, and at read #57 (`D75C`, `FF`/`00`)
+immediately before it. The passing windows recorded below therefore came
+from a different environment or tree. Fixing this is the top actionable
+item in `PLAN.md`.
+
+## Original note: resolved 2026-07-12 overlay regression
 
 On 2026-07-12, both the default run and a focused `WINDOW=200000000` run
 diverged at read 743,463: bus address `D830`, structural byte `00`, oracle byte

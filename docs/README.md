@@ -48,6 +48,9 @@ findings. Every status applies only to the boundary named by the report.
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, and `replica-power-trace-readiness.md`.
   Package readiness is not design release.
+- Routed-board refresh: `routed-refresh-audit.md` — reproducible audit of the
+  stale routed snapshot against the current source PCB and the running
+  full-refresh routing convergence experiment.
 - Twin: `fdc-readiness.md`, `video-slot-timing-audit.md`,
   `video-readout-readiness.md`, `serial-handoff.md`, and
   `beeper-readiness.md`.

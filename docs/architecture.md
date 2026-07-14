@@ -62,8 +62,9 @@ been assigned a net. Consequently physical release needs all of the following:
 - programmable-part contents and provenance;
 - explicit disposition of analog/timing assumptions.
 
-The current Gerber ZIP passes package-integrity checks but fails that broader
-design-release criterion. `PLAN.md` lists the blockers.
+The saved Gerber ZIP is a superseded engineering snapshot (tracked status
+**PACKAGE INVALID**) and fails that broader design-release criterion.
+`PLAN.md` lists the blockers.
 
 ## Design rules
 
