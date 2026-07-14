@@ -27,8 +27,8 @@ with the machine-readable board model.
   2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
   ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)). Its zero-open
   state currently copper-substitutes ten documented factory insulated links;
-  all twenty paired A-point landings remain absent from the PCB. Nine pairs
-  (`А:7`, `А:9`–`А:14`, `А:19`, and `А:20`) are
+  all twenty paired A-point landings remain absent from the PCB. All ten pairs
+  (`А:7`–`А:14`, `А:19`, and `А:20`) are
   registered in drawing-image space, with board coordinates and island assignment explicitly unset; the landing
   geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
@@ -55,7 +55,7 @@ with the machine-readable board model.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
   8 and 11 remain explicit boundaries. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 240 modeled nets retain source-risk annotations requiring
+  In total, 236 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

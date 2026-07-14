@@ -199,6 +199,9 @@ def main() -> int:
         "`(1761,4062)` in the same respective views.",
         "`А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`",
         "in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.",
+        "`А:8` completes the image inventory at `(1624,276)` in `114604420`",
+        "and `(1105,443)` in `114611058`; both are plain endpoint marks, not",
+        "the separate circled drawing callout after R13.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

@@ -53,7 +53,29 @@
         }
       ]
     },
-    {"point": 8, "status": "pending", "endpoints": []},
+    {
+      "point": 8,
+      "status": "image-registered/board-fit-pending",
+      "observation": "overlapping top-edge views show the line leaving the plain left 8 mark beside D5/R13 in 114604420 and arriving from the left at the plain right 8 mark near D95/R16 in 114611058; the circled 8 after R13 is a separate drawing callout",
+      "endpoints": [
+        {
+          "terminal": "A8A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+          "drawing_px": [1624, 276],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A8B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+          "drawing_px": [1105, 443],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {
       "point": 9,
       "status": "image-registered/board-fit-pending",

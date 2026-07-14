@@ -12,7 +12,7 @@ zero-open routing checkpoint.
 
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
-- Drawing-image landing endpoints registered: `18/20`
+- Drawing-image landing endpoints registered: `20/20`
 - Landing endpoints fitted to PCB coordinates/islands: `0/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
@@ -29,7 +29,7 @@ historical construction fidelity.
 | Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Candidate copper items on net |
 | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: |
 | 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 2 | 0 | 241 |
-| 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 0 | 0 | 317 |
+| 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 2 | 0 | 317 |
 | 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 2 | 0 | 409 |
 | 6 | А:10 | ~11.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 0 | 272 |
 | 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 0 | 189 |
@@ -73,3 +73,6 @@ That lower `А:7` line is separately guarded at `(1161,1845)` and
 `(1761,4062)` in the same respective views.
 `А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`
 in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
+`А:8` completes the image inventory at `(1624,276)` in `114604420`
+and `(1105,443)` in `114611058`; both are plain endpoint marks, not
+the separate circled drawing callout after R13.
