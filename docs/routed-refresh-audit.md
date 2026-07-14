@@ -183,7 +183,10 @@ accepted 21 routes that the default 0.5 mm grid could not represent, including
 dense address/data-bus links plus `XTAL16M`, `PHI1`, `PHI2TTL`, `PIT_BAUD`,
 `D26_PC5_RN_IN`, and `D39_O8`; a second complete pass accepted none. The
 current temporary board has 43 unconnected items on 35 nets and 11,888 copper
-items, a cumulative reduction of 146 from the Freerouting import.
+items, a cumulative reduction of 146 from the Freerouting import. A subsequent
+0.20 mm sweep accepted four routes and closed five more gaps, primarily in the
+remaining `MA6`/`CAS` cluster. Its second-order result is 38 unconnected items
+on 35 nets and 12,113 copper items, a cumulative reduction of 151.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
