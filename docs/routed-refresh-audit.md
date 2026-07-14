@@ -319,9 +319,9 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 
 The zero-open artifact remains an internally clean routing checkpoint, not a
 claim of parity with every later source edit. A current comparison preserves
-all 2,383 pad identities but finds 17 changed pad-net assignments and 88 pads
+all 2,383 pad identities but finds 17 changed pad-net assignments and 138 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
-D37, D38, D50, D51, and the newly direct-fitted D5. `check_routed_candidate.py`
+D5, D7, D8, D9, D37, D38, D50, D51, R13, and R14. `check_routed_candidate.py`
 therefore correctly rejects the checkpoint against current source instead of
 silently blessing stale copper. Refresh/reroute is deliberately deferred until
 the remaining factory-wire islands and functional P0 netlist freeze; doing it

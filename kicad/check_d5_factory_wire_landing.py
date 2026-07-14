@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the D5.26-side A19 factory-wire surface landing."""
+"""Guard both A19 factory-wire surface landings and its physical span."""
 from __future__ import annotations
 
 import json
@@ -18,73 +18,90 @@ MAX_COORDINATE_ERROR_MM = 0.002
 
 landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
 point = next(record for record in landing_document["points"] if record["point"] == 19)
-endpoint = next(item for item in point["endpoints"] if item["terminal"] == "A19A")
-evidence = endpoint.get("board_fit_evidence", {})
+endpoints = {item["terminal"]: item for item in point["endpoints"]}
 local_document = json.loads(LOCAL_REPORT.read_text(encoding="utf-8"))
-d5_fit = next(
-    fit
+fits = {
+    fit["refdes"]: fit
     for fit in local_document["fits"]
-    if fit["refdes"] == "D5" and fit["side"] == "component"
-)
-errors: list[str] = []
-if evidence.get("source_image") != d5_fit["image"]:
-    errors.append("A19A board-fit image does not match the D5 component fit")
-if evidence.get("joint_px") != [1218, 1593]:
-    errors.append("A19A raw white-wire joint coordinate is not guarded")
-if evidence.get("pin_px") != [1214, 1480]:
-    errors.append("A19A D5.26 trace-origin coordinate is not guarded")
-
+    if fit["side"] == "component" and fit["refdes"] in {"D5", "D7"}
+}
 board = pcbnew.LoadBoard(str(BOARD))
-d5 = board.FindFootprintByReference("D5")
-if d5 is None:
-    raise SystemExit("D5 FACTORY LANDING: D5 footprint missing")
-pins = ("1", "14", "15")
-image_matrix = np.array(
-    [
-        [*map(float, d5_fit["projected_pins"][pin]), 1.0]
-        for pin in pins
-    ]
-)
-board_x = np.array(
-    [pcbnew.ToMM(d5.FindPadByNumber(pin).GetPosition().x) for pin in pins]
-)
-board_y = np.array(
-    [pcbnew.ToMM(d5.FindPadByNumber(pin).GetPosition().y) for pin in pins]
-)
-image_to_board = np.vstack(
-    [np.linalg.solve(image_matrix, board_x), np.linalg.solve(image_matrix, board_y)]
-)
-joint = np.array([1218.0, 1593.0, 1.0])
-projected = image_to_board @ joint
-recorded = np.array(endpoint["board_mm"], dtype=float)
-coordinate_error = float(np.linalg.norm(projected - recorded))
-if coordinate_error > MAX_COORDINATE_ERROR_MM:
-    errors.append(f"A19A projected-coordinate error {coordinate_error:.4f} mm")
+errors: list[str] = []
 
-pin26 = d5.FindPadByNumber("26")
-if pin26 is None or pin26.GetNetname() != "MEMW":
-    errors.append("D5.26 is missing or is not on MEMW")
-    trace_length = 0.0
-else:
-    pin_position = np.array(
-        [pcbnew.ToMM(pin26.GetPosition().x), pcbnew.ToMM(pin26.GetPosition().y)]
+
+def project_joint(
+    terminal: str,
+    refdes: str,
+    fit_pins: tuple[str, str, str],
+    expected_joint: list[int],
+    expected_pin: list[int],
+) -> np.ndarray:
+    endpoint = endpoints[terminal]
+    evidence = endpoint.get("board_fit_evidence", {})
+    fit = fits[refdes]
+    if evidence.get("source_image") != fit["image"]:
+        errors.append(f"{terminal}: board-fit image does not match {refdes} fit")
+    if evidence.get("joint_px") != expected_joint:
+        errors.append(f"{terminal}: raw white-wire joint coordinate is not guarded")
+    if evidence.get("pin_px") != expected_pin:
+        errors.append(f"{terminal}: package endpoint coordinate is not guarded")
+    footprint = board.FindFootprintByReference(refdes)
+    image_matrix = np.array(
+        [[*map(float, fit["projected_pins"][pin]), 1.0] for pin in fit_pins]
     )
-    trace_length = float(np.linalg.norm(projected - pin_position))
-    if not 5.0 <= trace_length <= 5.3:
-        errors.append(f"A19A-to-D5.26 visible span {trace_length:.3f} mm is implausible")
-island = endpoint.get("island_assignment", "")
-if "D5.26" not in island or "MEMW" not in island:
-    errors.append("A19A island assignment lacks D5.26/MEMW")
-uncertainty = evidence.get("uncertainty_mm")
-if not isinstance(uncertainty, (int, float)) or not 0.5 <= uncertainty <= 0.8:
-    errors.append("A19A local-fit uncertainty is invalid")
-proof = evidence.get("proof", "")
-if "113 px" not in proof or "D5.26" not in proof:
-    errors.append("A19A proof does not guard the visible local copper segment")
+    board_x = np.array(
+        [pcbnew.ToMM(footprint.FindPadByNumber(pin).GetPosition().x) for pin in fit_pins]
+    )
+    board_y = np.array(
+        [pcbnew.ToMM(footprint.FindPadByNumber(pin).GetPosition().y) for pin in fit_pins]
+    )
+    transform = np.vstack(
+        [np.linalg.solve(image_matrix, board_x), np.linalg.solve(image_matrix, board_y)]
+    )
+    projected = transform @ np.array([*map(float, expected_joint), 1.0])
+    recorded = np.array(endpoint["board_mm"], dtype=float)
+    coordinate_error = float(np.linalg.norm(projected - recorded))
+    if coordinate_error > MAX_COORDINATE_ERROR_MM:
+        errors.append(f"{terminal}: projected-coordinate error {coordinate_error:.4f} mm")
+    uncertainty = evidence.get("uncertainty_mm")
+    if not isinstance(uncertainty, (int, float)) or not 0.5 <= uncertainty <= 0.8:
+        errors.append(f"{terminal}: local-fit uncertainty is invalid")
+    island = endpoint.get("island_assignment", "")
+    if refdes + "." not in island or "MEMW" not in island:
+        errors.append(f"{terminal}: island assignment lacks {refdes}/MEMW")
+    return projected
+
+
+a19a = project_joint("A19A", "D5", ("1", "14", "15"), [1218, 1593], [1214, 1480])
+a19b = project_joint("A19B", "D7", ("1", "7", "8"), [3255, 1585], [3391, 1320])
+
+d5 = board.FindFootprintByReference("D5")
+d7 = board.FindFootprintByReference("D7")
+for refdes, footprint, pin in (("D5", d5, "26"), ("D7", d7, "2")):
+    pad = footprint.FindPadByNumber(pin) if footprint else None
+    if pad is None or pad.GetNetname() != "MEMW":
+        errors.append(f"{refdes}.{pin} is missing or is not on MEMW")
+
+d5_pin = d5.FindPadByNumber("26").GetPosition()
+d5_pin_position = np.array([pcbnew.ToMM(d5_pin.x), pcbnew.ToMM(d5_pin.y)])
+d5_trace_length = float(np.linalg.norm(a19a - d5_pin_position))
+if not 5.0 <= d5_trace_length <= 5.3:
+    errors.append(f"A19A-to-D5.26 visible span {d5_trace_length:.3f} mm is implausible")
+
+wire_span = float(np.linalg.norm(a19b - a19a))
+if not 94.5 <= wire_span <= 95.5:
+    errors.append(f"A19 terminal span {wire_span:.3f} mm does not match ~9.5 cm")
+a19b_proof = endpoints["A19B"].get("board_fit_evidence", {}).get("proof", "")
+if "uninterrupted white lead" not in a19b_proof or "9.5 cm" not in a19b_proof:
+    errors.append("A19B proof does not guard wire continuity/factory length")
+if point.get("status") != "board-fitted":
+    errors.append("A19 point status is not board-fitted")
 
 if errors:
-    raise SystemExit("D5 FACTORY LANDING: FAIL\n- " + "\n- ".join(errors))
+    raise SystemExit("A19 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "D5 FACTORY LANDING: PASS — A19A/D5.26 board-fitted at "
-    f"{recorded[0]:.3f},{recorded[1]:.3f} mm; visible span {trace_length:.3f} mm"
+    "A19 FACTORY LANDINGS: PASS — "
+    f"A19A {a19a[0]:.3f},{a19a[1]:.3f} mm; "
+    f"A19B {a19b[0]:.3f},{a19b[1]:.3f} mm; "
+    f"D5 local copper {d5_trace_length:.3f} mm; terminal span {wire_span:.3f} mm"
 )

@@ -161,7 +161,8 @@ PASSIVE_PLACE = {
     # D56 AG3 RCs СБ-true (crops sb_d56rc/sb_westpair): R59+C8 pair WEST of D56 (between D103 and D56),
     # C7+R47 pair EAST of D56; R61 not found on the СБ in the checked zones [stays approx]
     'R47':(296.5,166.8,90),'C7':(294.1,166.6,90),'R59':(280.1,174.0,90),'C8':(280.1,184.5,90),'R61':(293.5,189.0,0),
-    'R11':(70.0,101.0,90),'R12':(73.5,101.0,90),'R13':(84.5,122.0,90),'R14':(88.0,122.0,90),   # 1k pullups on the D6 OC rails (ROM/RAM/REV/-RAMOUTEN), decode cluster between D6 and D8 [approx]
+    'R11':(70.0,101.0,90),'R12':(73.5,101.0,90),
+    'R13':(50.123,101.273,0),'R14':(59.460,125.041,0),  # row-photo fitted horizontal D6 pullups; R14 body is partly A19-obscured
 }
 _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C35':(119.6,120.9,0),'C36':(119.6,145.6,0),'C37':(119.6,170.7,0),'C38':(119.6,195.8,0),
@@ -254,7 +255,9 @@ PLACE = {
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
     # D2 input compensates the stock footprint anchor offset so the saved
     # photo-corrected KiCad position remains (70.010,129.905), notch upward.
-    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(73.815,138.795,0),'D8':(89.5,102.4,0),'D9':(114.0,103.0,0),   # D8 = socketed РЕ3 PROM; D9 = К555ИД7 IO decoder
+    'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(73.815,138.795,0),
+    'D8':(83.332,113.303,270),  # photo-fitted socketed К155РЕ3 PROM, notch right; DIP origin compensates 5 um body-centre offset
+    'D9':(109.923,113.303,270),  # photo-fitted metal К555ИД7, notch right; same stock-footprint anchor compensation
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -269,10 +272,10 @@ PLACE = {
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
     # and the DRAM array -- D5 (8238) far left, then D6 / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
-    # D5 is now direct-photo fitted (pad rows y99.48/114.72); D6/D7/D10 remain
-    # on the assembly-seeded row near y114.1.
-    'D5':(35.44,107.10,270),  # raw component fit: marked КР580ВК38, notch right; old drawing seed was reversed and displaced
-    'D6':(63.8,114.1,90),'D7':(137.8,110.0,90),
+    # D5/D7-D9 are direct-photo fitted against the nearby fitted D50/D51 anchors;
+    # D6 remains on the assembly-seeded row.
+    'D5':(23.69,109.52,270),  # marked КР580ВК38, notch right
+    'D6':(63.8,114.1,90),'D7':(131.465,113.303,270),  # black КР1533ЛА3, notch right; stock-footprint anchor compensated
     'D10':(192.44,110.08,90),  # КР580ВН59 local affine photo fit; old centre projected onto adjacent resistors/body
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary

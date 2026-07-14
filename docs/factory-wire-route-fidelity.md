@@ -13,11 +13,11 @@ zero-open routing checkpoint.
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `5/20`
+- Landing endpoints fitted to PCB coordinates/islands: `6/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
-- Candidate/source pad-net mismatches: `17`
-- Candidate/source moved pads (>50 nm): `88`
+- Candidate/source pad-net mismatches: `35`
+- Candidate/source moved pads (>50 nm): `138`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
 - Required release state: twenty registered landing terminals, no copper
@@ -74,7 +74,11 @@ At its D5 end, the marked КР580ВК38's complete contact field and
 right-facing notch identify D5.26 at `(1214,1480)` in owner image
 `200411500`; a straight 113 px copper segment reaches the distinct
 white-wire surface joint `(1218,1593)`. This proves A19A/MEMW at
-`(47.058,119.861)` mm; the D7-side terminal remains pending.
+`(35.308,122.281)` mm. The same uninterrupted insulated lead ends at
+the distinct `(3255,1585)` surface joint below the marked black D7.
+The terminal is `(130.027,121.736)` mm: its 94.721 mm span from A19A
+matches the factory approximately 9.5 cm conductor and proves the
+D7.2-side MEMW landing rather than a neighboring white-wire endpoint.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`
 and `(1898,2837)` in `114600417`; PCB promotion remains pending.
 `А:10` is complete in one view at `(821,3778)` and `(3016,3702)`

@@ -71,6 +71,7 @@ fabrication: routed-snapshot parity, D94's remaining input/enable/output
 boundary, and 9 official FDC-support devices with untraced functional pins
 remain open design items. Validated physical D2 contents and the measured
 D2/D30/D105/D13 WAIT/READY handoff are adopted in the source PCB and HDL;
-D30.8/.11 and the exact `H` pull-up/contact remain smaller explicit boundaries.
+D30.8->D29.7 and D30.11->D105.2 are owner-confirmed; only the exact `H`
+pull-up/contact remains as the smaller explicit boundary in this cluster.
 The saved routed snapshot predates that corrected topology. `PLAN.md` is the
 living release checklist.

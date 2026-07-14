@@ -104,6 +104,68 @@
       "note": "The marked package is unambiguously КР580ВК38. Its right-facing notch proves a 270-degree PCB orientation, while the old drawing seed used 90 degrees and displaced the package. The complete 2x14 contact field also identifies D5.26 independently of the adjacent factory-wire joint."
     },
     {
+      "refdes": "D7",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3444.0, 1320.0], "use": "fit", "observation": "top-right contact immediately above the right-facing notch of the marked black package"},
+        {"pin": "2", "image_px": [3391.0, 1320.0], "use": "check", "observation": "independent second contact on the complete top row; factory table endpoint for A19"},
+        {"pin": "7", "image_px": [3126.0, 1320.0], "use": "fit", "observation": "top-left contact at the far end of the seven-pad row"},
+        {"pin": "8", "image_px": [3126.0, 1485.0], "use": "fit", "observation": "bottom-left contact of the opposite complete row"},
+        {"pin": "14", "image_px": [3444.0, 1485.0], "use": "check", "observation": "independent bottom-right contact below the notch"}
+      ],
+      "note": "The black package is unambiguously marked КР1533ЛА3 and the assembly drawing places D7 immediately right of D9. Its complete 2x7 contact field and right-facing notch correct the former seed to 270 degrees. The uninterrupted white A19 lead passes below it and terminates at a distinct surface joint."
+    },
+    {
+      "refdes": "D8",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2444.0, 1320.0], "use": "fit", "observation": "top-right socket contact immediately above the photographed right-facing notch"},
+        {"pin": "8", "image_px": [2058.0, 1320.0], "use": "fit", "observation": "top-left socket contact at the far end of the complete eight-pad row"},
+        {"pin": "9", "image_px": [2058.0, 1485.0], "use": "fit", "observation": "bottom-left socket contact of the opposite complete row"},
+        {"pin": "16", "image_px": [2444.0, 1485.0], "use": "check", "observation": "independent bottom-right socket contact below the notch"}
+      ],
+      "note": "The metal package is the photographed К155РЕ3 D8 PROM, located by the assembly drawing between the unambiguous D6 КР556РТ4А and D9. Its complete 2x8 socket-contact field and right-facing notch replace the stale vertical drawing seed."
+    },
+    {
+      "refdes": "D9",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3011.0, 1320.0], "use": "fit", "observation": "top-right contact immediately above the right-facing notch of the metal package"},
+        {"pin": "8", "image_px": [2640.0, 1320.0], "use": "fit", "observation": "top-left contact at the far end of the complete eight-pad row"},
+        {"pin": "9", "image_px": [2640.0, 1485.0], "use": "fit", "observation": "bottom-left contact of the opposite complete row"},
+        {"pin": "16", "image_px": [3011.0, 1485.0], "use": "check", "observation": "independent bottom-right contact below the notch"}
+      ],
+      "note": "The assembly drawing places D9 between the socketed D8 К155РЕ3 and the marked D7 КР1533ЛА3; the faint metal marking and complete 2x8 field agree with the К555ИД7 footprint. The right-facing notch corrects the stale vertical seed that overlapped D7."
+    },
+    {
+      "refdes": "R13",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1415.0, 1137.0], "use": "fit", "observation": "left joint of the horizontal 1 kOhm resistor drawn above the D5-D6 row"},
+        {"pin": "2", "image_px": [1638.0, 1137.0], "use": "fit", "observation": "right joint of the same fully visible axial resistor"}
+      ],
+      "note": "The assembly drawing labels this isolated horizontal body R13. The fit establishes placement and posture only; symmetric axial-body appearance does not independently promote electrical pad numbering."
+    },
+    {
+      "refdes": "R14",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1580.0, 1655.0], "use": "fit", "observation": "left landing of the lower resistor in the assembly-drawn R11/R14 pair below D6, obscured only at its departure by A19"},
+        {"pin": "2", "image_px": [1880.0, 1655.0], "use": "fit", "observation": "right landing visible beside the crossing A19 wire"}
+      ],
+      "note": "The assembly drawing labels the lower of the stacked horizontal pair R14. The red body is partly hidden by A19, but both terminal regions and the pair ordering remain visible; pad numbering is not promoted as continuity evidence."
+    },
+    {
       "refdes": "D50",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

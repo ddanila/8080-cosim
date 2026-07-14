@@ -301,7 +301,7 @@ def main() -> int:
             "   and route the affected pads before claiming endpoint coverage.",
             "3. D105 is modeled in board JSON, the source PCB, and HDL; the routed",
             "   snapshot predates the corrected topology. Remaining priority belongs",
-            "   to D30.8/.11 and the exact `H` pull-up/contact, D94, and the FDC",
+            "   to the exact `H` pull-up/contact, D94, and the FDC (D30.8/.11 are owner-closed)",
             "   support cluster. Physical D2 truth and its measured D0 path are adopted.",
             "4. `READY FOR DESIGN RELEASE` is emitted only when no footprint or",
             "   promoted FDC functional pin remains outside the net model.",

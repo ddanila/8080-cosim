@@ -100,6 +100,12 @@ def main() -> int:
         "population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`",
         "factory positions with explicit continuity-boundary nets.",
         "",
+        "The upper-left decode row is independently component-photo fitted. D8 is the socketed",
+        "К155РЕ3 PROM, D9 the adjacent metal К555ИД7 decoder, and D7 the marked black",
+        "КР1533ЛА3 package; all three are horizontal with right-facing notches. The drawing-labeled",
+        "R13 and lower R14 are fitted to their photographed horizontal landings. These corrections",
+        "replace stale vertical/overlapping seeds rather than waiving D7/D8/D9/R13/R14 collisions.",
+        "",
         "R33 and R66 retain their independently photo-registered centres and orientations. Their",
         "nearest pads are 1.721 mm centre-to-centre; using 1.50 mm copper around the original-style",
         "0.80 mm drills preserves a 0.35 mm annulus and provides 0.221 mm copper clearance without",
@@ -120,7 +126,7 @@ def main() -> int:
     OUTPUT.write_text("\n".join(lines) + "\n")
     print(f"source PCB DRC: {status}; shorts={len(shorts)}, clearances={len(clearances)}, crossings={len(crossings)}, unique={len(unique)}")
     print(f"Wrote {OUTPUT.relative_to(ROOT)}")
-    return 0 if not shorts else 1
+    return 0 if not (shorts or clearances or crossings) else 1
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ INPUTS = {
     "10": ("BA11", 418, "D94_A0_BOUNDARY"),
     "11": ("BA12", 573, "D94_A1_BOUNDARY"),
     "12": ("BA13", 574, "D94_A2_BOUNDARY"),
-    "13": ("BA14", 575, "D94_A3_BOUNDARY"),
+    "13": ("BA14", 575, "D94_A3_D104_X4_PULLUP"),
     "14": ("BA15", 576, "D94_A4_BOUNDARY"),
 }
 

@@ -232,7 +232,7 @@
     },
     {
       "point": 19,
-      "status": "image-registered/board-fit-pending",
+      "status": "board-fitted",
       "observation": "overlapping views share R7 between the two marks: the 114553710 view shows the line leaving the left 19 mark to the right, while 114556899 shows it arriving from the left at the right 19 mark",
       "endpoints": [
         {
@@ -240,7 +240,7 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
           "drawing_px": [1310, 3122],
           "uncertainty_px": 6,
-          "board_mm": [47.058, 119.861],
+          "board_mm": [35.308, 122.281],
           "island_assignment": "D5.26-side MEMW island; component-side surface wire joint",
           "board_fit_evidence": {
             "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
@@ -256,8 +256,16 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [1283, 3110],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [130.027, 121.736],
+          "island_assignment": "D7.2-side MEMW island; component-side surface wire joint",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+            "joint_px": [3255, 1585],
+            "pin_px": [3391, 1320],
+            "local_fit": "D7/component plus uninterrupted A19 lead",
+            "uncertainty_mm": 0.7,
+            "proof": "the same uninterrupted white lead leaves the proved A19A/D5.26-side joint and ends here; the 94.721 mm fitted terminal span matches the factory approximately 9.5 cm conductor, while the marked КР1533ЛА3 body and complete D7 contact field independently identify the wire-table D7.2 endpoint"
+          }
         }
       ]
     },
