@@ -32,31 +32,37 @@ Linux, failed on Mac" for the same commit. Referencing `cosim` removes the secon
 divergence is now a real `juku_top`-vs-reference difference, reproducible on any host. The
 `juku_struct` oracle and the old `cosim_diff_tb.v` were retired.
 
-## Current state and the one known divergence
+## Current state
 
-`juku_top` matches `cosim` read-for-read through the entire reset/early-boot region and diverges at
-the BIOS RAM test — **read #115878, address `0xD300`**: the test writes `0xAA` to `0xD300` and
-immediately reads it back; `cosim` returns `0xAA`, but `juku_top`'s DRAM serves the pre-write
-`0x55`. Memory holds `0xAA` in both — the fault is in `juku_top`'s read datapath, not its memory.
+The default 130,000-read run reaches `CTRACE-END`: `juku_top` matches `cosim` in address and data
+throughout the bounded trace, including the BIOS RAM test at `0xD300`. There is no accepted
+divergence baseline; any mismatch or missing verdict fails `sync/cosim_check.sh`.
 
-Root cause: `juku_top`'s РУ5 read latch reloads on the CAS strobe, but the un-traced shared-DRAM
-CAS slot-timing scaffold (`d53_cas_sim`, behind the D36.11/R57 mesh) does not re-strobe on every
-CPU read, so a read that immediately follows a write to the same cell can serve a stale byte. This
-is physically impossible on real DRAM (the sense amps output the stored value), so `cosim` is
-correct and `juku_top` is the deviant. The old two-model guard hid this: Icarus on the previous
-host happened to order the write commit and read latch favorably.
+The previously reported read #115878 mismatch was real but its first diagnosis was incomplete.
+Signal-level instrumentation established that CAS did pulse on the failing read. Two zero-delay
+modeling errors made the result depend on simulator event ordering instead:
 
-No read-latch tweak fixes it robustly. Verified 2026-07-14: refreshing `held` on the master clock
-while CAS is low moves the divergence to read #115882 (the next read-after-write, at `0x025b XRA
-M`); latching the column and re-reading current memory moves it back to #115878; every variant kept
-`boot_check` byte-identical. The divergence recurs at each read-after-write because the column
-strobe itself is missing per read. A correct fix needs the physical shared-DRAM slot timing
-(D41/D36/one-shot/mux continuity) so `cas_n` pulses per CPU read — a P0 connectivity item in
-`PLAN.md`.
+- the behavioral D53 scaffold asserted RAS only during Φ1 and released it before the Φ2/CAS column
+  phase, whereas a 4164-class transaction keeps RAS active through CAS; and
+- the РУ5 model committed writes on an unrelated synthetic `sclk` edge while CAS and WE happened
+  to be low. When control transitions shared a timestep, the sampled condition varied with event
+  order.
 
-The divergence is a transient during a RAM test and does not block the functional boot milestones
-(`boot_check`, EKDOS `A>`, disk BASIC `READY`, Monitor 3.3 all still reached). Until the slot
-timing is modeled, `sync/cosim_check.sh` gates against **regression**: it passes if `juku_top`
-matches `cosim` at least to the recorded baseline (read #115878) and fails if it diverges earlier.
-It reports `CTRACE-OK`/`CTRACE-END` and goes fully green once `juku_top` reads correctly through the
-window.
+The corrected functional transaction holds RAS from the row phase through the CAS column pulse.
+The РУ5 model now implements the asynchronous-DRAM rule directly: the latter falling edge of CAS
+or WE strobes DIN, covering both early writes (WE first) and delayed/read-modify writes (CAS first).
+The synthetic DRAM sampling-clock pin is gone. `hdl/sim/dram_unit_tb.v` exercises early, delayed,
+and coincident control edges, immediate read-after-write, the physical row permutation, and
+non-aliasing addresses; `sync/boot_check.sh` runs it in CI.
+
+The write-strobe rule comes from the contemporary Mostek MK4564 64K×1 DRAM data sheet,
+“Data Input/Output”: the later negative transition of WRITE or CAS strobes the DIN register;
+early-write timing references CAS, while delayed-write timing references WRITE
+([manufacturer data sheet scan](https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf)).
+
+This closes the runnable CPU-memory timing defect, not the complete historical video-slot timing.
+The exact D36.12/.13 source, D36/R57 propagation delay, CPU/video arbitration schedule, and precise
+DOUT turn-off point remain evidence boundaries. Until those conductors are traced, the zero-delay
+functional model keeps the sampled bit available through the access window and the runnable video
+path retains its simulation-only second port. Those limitations are tracked separately in
+`docs/memory-timing-boundary.md` and `docs/video-slot-timing-audit.md`.

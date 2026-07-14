@@ -11,10 +11,8 @@ with the machine-readable board model.
   render the same framebuffer, accept keyboard input, boot EKDOS from the
   vendored disk images, and reach disk BASIC `READY`. The deep value-level
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
-  against the C emulator (`cosim`); it matches through the whole early-boot
-  region. One known divergence remains at the BIOS RAM test (a stale DRAM
-  read-after-write), blocked on the shared-DRAM CAS slot timing — see the top
-  actionable item in [PLAN.md](PLAN.md).
+  against the C emulator (`cosim`); the default 130,000-read trace now reaches
+  `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
 - `sync/check.sh` currently compares 102 mapped instances and 266 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and zero KiCad copper
@@ -25,8 +23,8 @@ with the machine-readable board model.
   checksum-reproducible, but remains a stale engineering snapshot and is not
   released for manufacture. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
-  A source-complete replacement candidate is converging separately: it is down
-  to a single unconnected item (`INTR`) with zero electrical DRC findings
+  A source-complete replacement candidate is preserved separately with exact
+  2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
   ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from

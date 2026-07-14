@@ -50,6 +50,10 @@ They are not generic cycle-accurate replacements for every original IC mode.
   Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM
   slot timing still needs D41 and adjacent one-shot/mux/counter evidence;
   D94's proved outputs belong to FDC control.
+- CPU DRAM transactions are functionally closed: RAS spans row through CAS,
+  and the РУ5 model implements early/delayed asynchronous writes without a
+  synthetic sampling clock. Exact D36/R57 delays and DOUT turn-off remain
+  physical evidence boundaries.
 - Several device models implement only the modes exercised by the guarded Juku
   paths.
 - Simulation-only CPU sampling, keyboard stimulus, framebuffer access, and

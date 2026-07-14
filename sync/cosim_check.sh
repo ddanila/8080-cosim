@@ -13,15 +13,9 @@
 # Mac"). Referencing cosim removes the second model and pins each divergence to a real
 # juku_top-vs-reference difference. See docs/cosim-runtime-reference.md.
 #
-# Current state: juku_top matches cosim read-for-read through the whole reset/early-boot region and
-# diverges at the BIOS RAM test (read #115878, addr 0xD300): juku_top's DRAM serves a stale byte on
-# a read that immediately follows a write to the same cell, because the un-traced shared-DRAM CAS
-# slot-timing scaffold (D36/R57) does not re-strobe per CPU read. That is a real juku_top modeling
-# limit blocked on the physical slot timing (a P0 item in PLAN.md), not a toolchain artifact; no
-# read-latch tweak fixes it robustly (they only move the divergence). Until the slot timing is
-# modeled, this guard gates against REGRESSION: PASS if juku_top matches cosim at least as far as the
-# recorded baseline, FAIL if it diverges earlier. It goes fully green (CTRACE-OK/END) once juku_top
-# reads correctly through the window.
+# Current state: juku_top matches cosim across the complete bounded trace. The РУ5 model follows
+# the 4164 early/delayed-write contract, while the functional D53 scaffold holds RAS from the row
+# phase through the CAS column pulse. Any address or data divergence is a hard failure.
 #
 # Run:   sync/cosim_check.sh
 # Slower than boot_check (juku_top runs to ~20 ms sim); run in thorough/nightly CI.
@@ -30,9 +24,8 @@ cd "$(dirname "$0")/.."
 command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 CC=${CC:-cc}
 
-BASELINE_READ=115878          # first known juku_top-vs-cosim read divergence (DRAM read-after-write)
 TRACE_LIMIT=${TRACE_LIMIT:-130000}
-WINDOW=${WINDOW:-30000000}    # ns; covers ~120k reads (past the baseline)
+WINDOW=${WINDOW:-30000000}    # ns; covers the complete default 130k-read trace
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 
 echo "== generate ROM hex from vendored ROM =="
@@ -52,12 +45,5 @@ if grep -qE "CTRACE-OK|CTRACE-END" "$TMP/out"; then
   echo "COSIM-CHECK: PASS (juku_top bit-identical to cosim across the window)"
   exit 0
 fi
-got=$(sed -n 's/.*CTRACE-DIVERGE read=\([0-9]*\).*/\1/p' "$TMP/out" | head -1)
-if [ -z "$got" ]; then echo "COSIM-CHECK: FAIL (no verdict emitted)"; exit 1; fi
-if [ "$got" -ge "$BASELINE_READ" ]; then
-  echo "COSIM-CHECK: PASS (matched cosim to read $got >= baseline $BASELINE_READ; known DRAM read-after-write limit, blocked on shared-DRAM CAS slot timing)"
-  exit 0
-else
-  echo "COSIM-CHECK: FAIL (regression: diverged at read $got, earlier than baseline $BASELINE_READ)"
-  exit 1
-fi
+echo "COSIM-CHECK: FAIL (address/data divergence or no verdict emitted)"
+exit 1

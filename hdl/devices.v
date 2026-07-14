@@ -390,7 +390,9 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
     assign y = en_n ? 4'bz : (sel ? b : a); endmodule
 // D53 ИД7 -- realized as the DRAM RAS/CAS strobe generator (the РЕ3/АГ3 timing it really comes from
 // is un-modeled -> boundary). Repurposed inputs: a = RAM-select (ram_n, active-low), b = Φ1, c = Φ2.
-// RAS asserts on Φ1 of a RAM access (latches the row), CAS on Φ2 (latches the col). y_n[0]=ras_n, [1]=cas_n.
+// RAS falls on Φ1 of a RAM access (latches the row) and remains active through the Φ2/CAS
+// column phase; CAS pulses during Φ2. A real 4164 requires this overlap -- a Φ1-only RAS pulse
+// releases the row before the column transaction and makes write behavior simulator-dependent.
 // ИД7 RAS/CAS decoder. g = decoder enable: only a real memory cycle pulses RAS/CAS, so an
 // INTA / I/O cycle whose address happens to fall in the RAM region does NOT make the DRAM
 // drive the bus (which would corrupt the 8259's injected interrupt vector). Normal read/write
@@ -409,10 +411,18 @@ module kp14_mux  (input wire [3:0] a, b, input wire sel, en_n, output wire [3:0]
 module rascas_dec (input wire a, b, c, input wire g, g2a_n, g2b_n, input wire sactive, ram_en_sim,
                    output wire [3:0] y_n, output wire y_n4, y_n5, y_n6, y_n7,
                    output wire cas_sim);
-    assign y_n[0]   = ~(sactive & ~ram_en_sim & a);   // behavioral RAS -> rail 14 (populated bank D84-91)
+    reg ras_sim_n = 1'b1;
+    // Functional timing latch behind the SIM-ONLY access qualifier. Set RAS active in the row
+    // phase, hold it through the CAS column pulse, and release it when the CPU RAM access ends.
+    // The physical output/bank wiring remains represented by the D53/R49 path in juku_top.
+    always @* begin
+        if (~sactive || ram_en_sim) ras_sim_n = 1'b1;
+        else if (a)                 ras_sim_n = 1'b0;
+    end
+    assign y_n[0]   = ras_sim_n;                       // behavioral RAS -> populated bank rail 14
     assign y_n[3:1] = 3'b111;                         // expansion-bank RAS rails (sockets empty)
     assign {y_n7, y_n6, y_n5, y_n4} = 4'b1111;       // physical pins are undrawn/NC on sheet 2
-    assign cas_sim  = ~(sactive & ~ram_en_sim & b);   // sim CAS scaffold -> rail 15 boundary
+    assign cas_sim  = ~(sactive & ~ram_en_sim & b);   // behavioral CAS column pulse -> rail 15 boundary
 endmodule
 // Configuration jumper (Е2/Е3/Е10/Е13 family): 3 pads, position 1-2 or 2-3. Functional model =
 // the 2-3 position (the traced/boot configuration): common follows p3.
@@ -474,9 +484,9 @@ endmodule
 // ---- К565РУ5 64Kx1 DRAM (one chip = one data bit); array from D60 ----
 // К565РУ5 64Kx1 DRAM (one chip = one data bit). Multiplexed addressing: latch the ROW from MA on
 // RAS, the COL from MA on CAS -> 16-bit cell address. Read is sample-held on CAS and driven onto DB
-// for the duration of the access (we_n high = read); write commits on CAS when we_n low.
-module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling clock (see write below)
-                   input wire [7:0] ma,
+// for the duration of the access. For writes, the 4164-class contract strobes DIN on the latter
+// falling edge of CAS or WE: CAS for an early write, WE for a delayed/read-modify-write cycle.
+module dram_64kx1 (input wire [7:0] ma,
                    input wire ras_n, cas_n, we_n, di,
                    input wire nc_vbb_option, vcc_option, vss_gnd,
                    output wire do_,
@@ -492,15 +502,17 @@ module dram_64kx1 (input wire sclk,                         // SIM-ONLY sampling
     // stays CPU-linear (tbs + the va video port index it directly): un-permute the raw row byte.
     wire [7:0] row_lin = {row[6], row[5], row[1], row[4], row[2], row[3], row[0], row[7]};
     always @(negedge ras_n) row <= ma;                       // latch row (ma = scrambled hi byte during Φ1)
-    // WRITE sampled on osc (the die-replica's master sampling clock) while CAS & WE are both low
-    // (ma = col byte during Φ2). Latching on the CAS *edge* dropped writes whose data-valid window
-    // didn't line up with Φ2 (the DB settled on a different phase), storing the stale bus -- a silent
-    // corruption both guards missed (RAM test checks only 0xD300; VRAM guard only 0xD800+). Sampling
-    // on osc catches the settled data on whatever phase it lands, exactly as juku_struct does. osc is
-    // a SIM artifact (not a real РУ5 pin); the LVS drops it via the sim-only allowlist (sync/lvs.py).
-    always @(posedge sclk) if (~cas_n & ~we_n) mem[{row_lin, ma}] = di;
-    always @(negedge cas_n) if (we_n) held <= mem[{row_lin, ma}]; // read: sample-and-hold (ma = col at CAS-fall)
-    assign do_ = (we_n & (~ras_n | ~cas_n)) ? held : 1'bz;   // drive on read, through the access
+    // The latter negative transition of CAS or WE is the physical DIN strobe. Watching both inputs
+    // handles early and delayed writes without a synthetic master-clock pin or same-timestep race.
+    // A CAS fall with WE high starts a read; a later WE fall converts it to read-modify-write.
+    always @(negedge cas_n or negedge we_n) begin
+        if (~ras_n && ~cas_n && ~we_n) mem[{row_lin, ma}] <= di;
+        else if (~ras_n && ~cas_n)     held <= mem[{row_lin, ma}];
+    end
+    // Keep the sampled value available through the functional access window. Exact DOUT turn-off
+    // awaits the still-untraced D36/R57 delays; the CPU must not see a scheduling-dependent Z when
+    // the zero-delay CAS scaffold rises in the same timestep as its sample.
+    assign do_ = (we_n & (~ras_n | ~cas_n)) ? held : 1'bz;
 endmodule
 
 // ---- peripheral shells ----

@@ -319,14 +319,14 @@ module juku_top (
     ir82_latch U_D58 (.d(rdo), .stb(d58_stb_tag5), .oe_n(d37_y3), .q(DB));
     // Populated bank = D84-D91 (bottom array row) per the official ДГШ5.109.009 ПЭЗ; board #1
     // (rev 7.102.100) had the TOP row (D60-67) stuffed instead -- a per-revision factory choice.
-    dram_64kx1 U_D84 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]), .va(vid_addr), .vq(vbyte[0]));
-    dram_64kx1 U_D85 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]), .va(vid_addr), .vq(vbyte[1]));
-    dram_64kx1 U_D86 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]), .va(vid_addr), .vq(vbyte[2]));
-    dram_64kx1 U_D87 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[3]), .do_(rdo[3]), .va(vid_addr), .vq(vbyte[3]));
-    dram_64kx1 U_D88 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[4]), .do_(rdo[4]), .va(vid_addr), .vq(vbyte[4]));
-    dram_64kx1 U_D89 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]), .va(vid_addr), .vq(vbyte[5]));
-    dram_64kx1 U_D90 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]), .va(vid_addr), .vq(vbyte[6]));
-    dram_64kx1 U_D91 (.sclk(sclk_i), .ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]), .va(vid_addr), .vq(vbyte[7]));
+    dram_64kx1 U_D84 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[0]), .do_(rdo[0]), .va(vid_addr), .vq(vbyte[0]));
+    dram_64kx1 U_D85 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[1]), .do_(rdo[1]), .va(vid_addr), .vq(vbyte[1]));
+    dram_64kx1 U_D86 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[2]), .do_(rdo[2]), .va(vid_addr), .vq(vbyte[2]));
+    dram_64kx1 U_D87 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[3]), .do_(rdo[3]), .va(vid_addr), .vq(vbyte[3]));
+    dram_64kx1 U_D88 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[4]), .do_(rdo[4]), .va(vid_addr), .vq(vbyte[4]));
+    dram_64kx1 U_D89 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[5]), .do_(rdo[5]), .va(vid_addr), .vq(vbyte[5]));
+    dram_64kx1 U_D90 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[6]), .do_(rdo[6]), .va(vid_addr), .vq(vbyte[6]));
+    dram_64kx1 U_D91 (.ma(MA), .ras_n(ras3_n), .cas_n(cas_n), .we_n(dram_we_n), .di(DB[7]), .do_(rdo[7]), .va(vid_addr), .vq(vbyte[7]));
     // ---- unpopulated DRAM rows 0-2 (D60-D83): sockets wired to the shared MA/CAS/WE + per-bit
     // DIN/DOUT buses and per-row RAS. Passive (no chip installed) -> boot-safe. Completes the
     // 4x8 РУ5 array for the PCB.
