@@ -25,7 +25,10 @@ with the machine-readable board model.
   `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
   A source-complete replacement candidate is preserved separately with exact
   2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
-  ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
+  ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)). Its zero-open
+  state currently copper-substitutes ten documented factory insulated links;
+  the missing twenty paired A-point landings are now an explicit adoption hold
+  ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
   repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and

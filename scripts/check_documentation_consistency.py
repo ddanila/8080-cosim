@@ -47,6 +47,7 @@ def main() -> int:
         "source-risk nets": read("docs/replica-bringup-verification-points.md"),
         "sourcing": read("docs/replica-sourcing-readiness.md"),
         "source PCB placement": read("docs/source-pcb-drc.md"),
+        "factory wire routing": read("docs/factory-wire-route-fidelity.md"),
     }
 
     photo_endpoints = ROOT / "ref/photos/juku-pcb-2/endpoints.csv"
@@ -130,6 +131,7 @@ def main() -> int:
         "source-risk nets": "Status: **DESIGN RELEASE RISKS CLOSED**" not in evidence["source-risk nets"],
         "sourcing": "Status: **SOURCING READY**" not in evidence["sourcing"],
         "source PCB placement": "Status: **PASS**" not in evidence["source PCB placement"],
+        "factory wire routing": "Status: **FACTORY WIRE CONSTRUCTION PRESERVED**" not in evidence["factory wire routing"],
     }
     design_held = any(blockers.values())
 

@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+"""Report whether routed copper preserves the factory insulated-link boundary."""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+
+import pcbnew
+
+from check_factory_wire_links import LINKS
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "kicad/juku.kicad_pcb"
+CANDIDATE = ROOT / "kicad/juku_routed_candidate.kicad_pcb"
+REPORT = ROOT / "docs/factory-wire-route-fidelity.md"
+
+
+def run_drc(board: Path) -> dict:
+    cli = subprocess.check_output(
+        [str(ROOT / "scripts/find-kicad-cli.sh")], text=True
+    ).strip()
+    with tempfile.TemporaryDirectory(prefix="juku-factory-wire-drc-") as tmp_name:
+        out = Path(tmp_name) / "drc.json"
+        proc = subprocess.run(
+            [cli, "pcb", "drc", "--format", "json", "--output", str(out), str(board)],
+            text=True,
+            capture_output=True,
+        )
+        if not out.exists():
+            raise SystemExit(f"KiCad DRC produced no report: {proc.stdout}{proc.stderr}")
+        return json.loads(out.read_text(encoding="utf-8"))
+
+
+def row(values: list[object]) -> str:
+    return "| " + " | ".join(str(value).replace("|", "/") for value in values) + " |"
+
+
+def main() -> int:
+    source = pcbnew.LoadBoard(str(SOURCE))
+    candidate = pcbnew.LoadBoard(str(CANDIDATE))
+    drc = run_drc(CANDIDATE)
+    source_refs = {footprint.GetReference() for footprint in source.GetFootprints()}
+    candidate_tracks = list(candidate.GetTracks())
+
+    kicad_python = subprocess.check_output(
+        [str(ROOT / "scripts/find-kicad-python.sh")], text=True
+    ).strip() or "/usr/bin/python3"
+    logical = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_factory_wire_links.py")],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+
+    link_rows = []
+    modeled_terminals = 0
+    copper_substitutions = 0
+    for position, point, length, net_name, endpoints in LINKS:
+        expected_refs = {f"A{point}A", f"A{point}B"}
+        present_refs = sorted(expected_refs & source_refs)
+        modeled_terminals += len(present_refs)
+        net_code = candidate.GetNetcodeFromNetname(net_name)
+        copper_count = sum(
+            1 for item in candidate_tracks if item.GetNetCode() == net_code
+        )
+        if copper_count:
+            copper_substitutions += 1
+        endpoint_text = ", ".join(
+            f"{ref}.{pin}" for ref, pin in sorted(endpoints)
+        )
+        link_rows.append(
+            row([
+                position,
+                f"А:{point}",
+                length,
+                f"`{net_name}`",
+                endpoint_text,
+                len(present_refs),
+                copper_count,
+            ])
+        )
+
+    unconnected = len(drc.get("unconnected_items", []))
+    expected_terminals = 2 * len(LINKS)
+    release_ready = (
+        logical.returncode == 0
+        and modeled_terminals == expected_terminals
+        and copper_substitutions == 0
+        and unconnected == len(LINKS)
+    )
+    status = (
+        "FACTORY WIRE CONSTRUCTION PRESERVED"
+        if release_ready
+        else "LOGICAL LINKS ADOPTED / PHYSICAL LANDINGS ABSENT / ROUTED CANDIDATE HOLD"
+    )
+
+    lines = [
+        "# Factory insulated-wire route fidelity",
+        "",
+        f"Status: **{status}**",
+        "",
+        "The `.009` assembly table proves ten on-board insulated links. Their",
+        "logical endpoints are source-closed, but logical net equality is not",
+        "permission to replace the original flying wire with PCB etch. This report",
+        "separates those two claims and blocks production adoption of the current",
+        "zero-open routing checkpoint.",
+        "",
+        "## Guarded state",
+        "",
+        f"- Logical endpoint check: `{'PASS' if logical.returncode == 0 else 'FAIL'}`",
+        f"- Paired A-point landing terminals modeled: `{modeled_terminals}/{expected_terminals}`",
+        f"- Link nets carrying candidate copper: `{copper_substitutions}/{len(LINKS)}`",
+        f"- Candidate DRC unconnected items: `{unconnected}`",
+        "- Required release state: twenty registered landing terminals, no copper",
+        "  bridge between each island pair, and exactly ten assembly-wire closures.",
+        "",
+        "The current candidate's zero unconnected items are useful routing-convergence",
+        "evidence, but for these ten links they prove copper substitution rather than",
+        "historical construction fidelity.",
+        "",
+        "## Link audit",
+        "",
+        "| Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Modeled A-point terminals | Candidate copper items on net |",
+        "| ---: | ---: | ---: | --- | --- | ---: | ---: |",
+        *link_rows,
+        "",
+        "## Next automatic closure",
+        "",
+        "1. Register both physical landing positions for each repeated `А:N` label",
+        "   from the full-resolution placement drawing and two-sided owner photos.",
+        "2. Add the twenty one-pad landings to the source PCB and split each logical",
+        "   net into its two original copper islands joined by an explicit wire-link",
+        "   assembly object.",
+        "3. Reroute only the affected islands, require exactly ten intentional",
+        "   unconnected DRC pairs, and emit a wire cut/installation table with the",
+        "   factory lengths.",
+        "4. Only then may the refreshed candidate replace production copper.",
+        "",
+        "`А:20` remains on `S_TTL`: enlarged sheet-1 review reads the adjacent",
+        "vertical package as `Д104`, not `Д14`, consistent with owner continuity",
+        "D3.10-A23-X3.3 and inconsistent with moving the link onto `SER_TXD`.",
+        "",
+    ]
+    REPORT.write_text("\n".join(lines), encoding="utf-8")
+    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    print(f"Status: {status}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

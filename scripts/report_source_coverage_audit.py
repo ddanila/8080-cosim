@@ -18,6 +18,7 @@ REQUIRED = [
     "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json",
     "docs/assembly-drawing-extraction.md",
     "docs/factory-modification-disposition.md",
+    "docs/factory-wire-route-fidelity.md",
     "ref/baltijets-tech-docs/007 ROM and ROM programming.pdf",
     "ref/baltijets-tech-docs/009 FDDs.pdf",
     "ref/ekdos-source/EKDOS30.ASM",

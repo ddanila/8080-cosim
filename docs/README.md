@@ -51,6 +51,9 @@ findings. Every status applies only to the boundary named by the report.
 - Routed-board refresh: `routed-refresh-audit.md` — reproducible audit of the
   stale routed snapshot against the current source PCB and the running
   full-refresh routing convergence experiment.
+- Factory-wire routing: `factory-wire-route-fidelity.md` — distinguishes the
+  ten source-closed insulated links from the current candidate's inadmissible
+  copper substitutions and guards the missing paired A-point landing geometry.
 - Twin: `fdc-readiness.md`, `video-slot-timing-audit.md`,
   `video-readout-readiness.md`, `serial-handoff.md`, and
   `beeper-readiness.md`.

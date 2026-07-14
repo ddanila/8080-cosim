@@ -301,6 +301,14 @@ functional P0 netlist is not frozen, and the tracked production routed board
 and manufacturing package must still be regenerated and reviewed after that
 freeze.
 
+Subsequent wire-table review adds a stricter construction-fidelity hold:
+`docs/factory-wire-route-fidelity.md` shows that all ten factory insulated-link
+nets are present in this zero-open checkpoint as ordinary routed copper because
+their twenty paired `А:N` landing terminals and two-island partitions are not
+yet modeled. The artifact remains useful convergence evidence, but it must not
+be adopted as production copper until those ten intentional assembly closures
+replace the copper substitutions.
+
 The preserved artifact is rechecked locally with:
 
 ```sh
