@@ -202,6 +202,13 @@ def main() -> int:
         "`А:8` completes the image inventory at `(1624,276)` in `114604420`",
         "and `(1105,443)` in `114611058`; both are plain endpoint marks, not",
         "the separate circled drawing callout after R13.",
+        "Two D38-side physical landings are now promoted through the validated",
+        "D38/D41 local fits. The right white-wire joint at `(2286,2450)` in",
+        "`200418174` reaches via `(2288,2298)` and then fitted D38.12 on continuous",
+        "solder copper, proving A9B/SYNC at `(245.695,160.293)` mm. With exactly",
+        "two factory-wire joints in that D38 field, the remaining `(1810,2696)`",
+        "joint is A8B/D38.8 at `(223.601,170.724)` mm. Both are component-side",
+        "surface-soldered copper landings, not invented through-hole pads.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

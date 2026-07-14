@@ -13,7 +13,7 @@ zero-open routing checkpoint.
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `0/20`
+- Landing endpoints fitted to PCB coordinates/islands: `2/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -76,3 +76,10 @@ in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
 `А:8` completes the image inventory at `(1624,276)` in `114604420`
 and `(1105,443)` in `114611058`; both are plain endpoint marks, not
 the separate circled drawing callout after R13.
+Two D38-side physical landings are now promoted through the validated
+D38/D41 local fits. The right white-wire joint at `(2286,2450)` in
+`200418174` reaches via `(2288,2298)` and then fitted D38.12 on continuous
+solder copper, proving A9B/SYNC at `(245.695,160.293)` mm. With exactly
+two factory-wire joints in that D38 field, the remaining `(1810,2696)`
+joint is A8B/D38.8 at `(223.601,170.724)` mm. Both are component-side
+surface-soldered copper landings, not invented through-hole pads.

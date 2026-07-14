@@ -71,8 +71,15 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
           "drawing_px": [1105, 443],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [223.601, 170.724],
+          "island_assignment": "D38.8-side STSTB island; component-side surface wire joint",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+            "joint_px": [1810, 2696],
+            "local_fit": "D38/component",
+            "uncertainty_mm": 0.65,
+            "proof": "the only other D38-area factory-wire joint is continuously traced through its adjacent via to D38.12/A9; the remaining joint is therefore the wire-table D38.8/A8 endpoint"
+          }
         }
       ]
     },
@@ -94,8 +101,17 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1159, 3623],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [245.695, 160.293],
+          "island_assignment": "D38.12-side SYNC island; component-side surface wire joint",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+            "joint_px": [2286, 2450],
+            "local_fit": "D38/component",
+            "uncertainty_mm": 0.65,
+            "via_px": [2288, 2298],
+            "solder_via_px": [1374, 1984],
+            "proof": "short component copper reaches the adjacent via; the D41 cross-side transform identifies that via in the solder view, where one uninterrupted trace reaches fitted D38.12"
+          }
         }
       ]
     },
