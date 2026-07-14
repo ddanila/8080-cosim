@@ -157,9 +157,11 @@ correctly rejected that particular candidate for a new short and clearance
 violation. With no acceptance-rule relaxation, subsequent 0-30 mm multilayer
 passes accepted 28 more routes. Two bounded 30-50 mm passes accepted another 15
 across ground, data, timing, density, and latch nets before exhausting that
-band's remaining legal proposals. The current temporary board has 122
-unconnected items and 7,761 copper items, a cumulative reduction of 67 from the
-Freerouting import.
+band's remaining legal proposals. Two 50-75 mm passes accepted 14 more routes,
+including `IORD`, `IOWR`, `POF`, `FDC_DDEN`, `FDC_DAL7`, `DC1`,
+`M5V_DERIVED`, and `X4_STOP_N`, before exhausting the band. The current
+temporary board has 108 unconnected items and 8,312 copper items, a cumulative
+reduction of 81 from the Freerouting import.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
