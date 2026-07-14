@@ -22,9 +22,9 @@ with the machine-readable board model.
   checksum-reproducible, but remains a stale engineering snapshot and is not
   released for manufacture. Current ZIP SHA256:
   `341158da24c356940f763db416e0d54ee81de48bc84632ac97b844e3ea6129f4`.
-  A source-complete replacement candidate is converging separately: 64
-  unconnected items on 50 nets remain, with zero electrical DRC findings
-  ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
+  A source-complete replacement candidate is converging separately: 36
+  unconnected items on 34 nets remain as of 2026-07-14, with zero electrical
+  DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
 - The main board is **not released for fabrication**. Validated physical D2
   `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
   repeated reads (with D8/D94 provenance aliases counted only once); the measured D2/D30/D105 and
