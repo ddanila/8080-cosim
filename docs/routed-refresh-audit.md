@@ -161,9 +161,11 @@ band's remaining legal proposals. Two 50-75 mm passes accepted 14 more routes,
 including `IORD`, `IOWR`, `POF`, `FDC_DDEN`, `FDC_DAL7`, `DC1`,
 `M5V_DERIVED`, and `X4_STOP_N`, before exhausting the band. The 75-100 mm band
 accepted 10 more routes, including `HLDA`, `IORC_N`, `MEMW`,
-and `D6_MEM_SELECT_N`; a second pass accepted none. The current temporary board
-has 98 unconnected items and 8,654 copper items, a cumulative reduction of 91
-from the Freerouting import.
+and `D6_MEM_SELECT_N`; a second pass accepted none. The guarded candidate then
+accepted eight routes in the 100-125 mm band, including `IORD`, `IOWR`,
+`MEMW`, `ROE`, and `SYNC`, while rejecting a `VIDEO_OUT` proposal. It now has
+90 unconnected items and 8,986 copper items, a cumulative reduction of 99 from
+the Freerouting import.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
