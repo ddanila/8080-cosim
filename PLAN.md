@@ -30,7 +30,7 @@ is not a prerequisite for this replica.
 
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
-| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | The deep value-level guard `sync/cosim_check.sh` currently **fails** (see actionable item 1); retire the D6 functional decoder via joined-conductor D8/D13/D92 timing reconstruction; exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
+| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | The deep value-level guard `sync/cosim_check.sh` (now cosim-referenced) matches read-for-read through early boot and gates against regression; full green awaits the shared-DRAM CAS slot timing (actionable item 1). Also: retire the D6 functional decoder via joined-conductor D8/D13/D92 timing reconstruction; exact shared-DRAM video-slot timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 102 mapped instances and 266 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope, but predates accepted D2/D94, reset/USART, and harness endpoint changes. A separate source-complete refresh candidate (296 footprints, exact pad/net parity) is converging: only INTR between D1.14 and D10.17 remains unconnected as of 2026-07-14, with zero shorts, clearance, crossing, hole, dangling, or edge findings (`docs/routed-refresh-audit.md`) | Transactionally rip up and reroute the occupied INTR corridor; adoption additionally waits for the functional netlist to stop changing |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
@@ -45,28 +45,24 @@ reviewed.
 
 These are ordered; each is completable with material already in the repo.
 
-1. **Restore the deep cosim guard (harness timing-model fix, not a datapath
-   bug).** `sync/boot_check.sh` passes, but `sync/cosim_check.sh` diverges at
-   read #115878 (bus `D300`, `juku_top` `55` versus oracle `AA`, ~19.9 ms;
-   reproduce with `WINDOW=25000000 sync/cosim_check.sh`, ~3 min). Root-caused
-   2026-07-14 (`docs/cosim-runtime-reference.md`): the memory **contents** are
-   correct in both models; the two independently-written models latch read
-   data on **different events** — `juku_top`'s РУ5 read `held` on `negedge
-   cas_n` (the un-traced D36/R57 slot-timing scaffold), the oracle on the read
-   strobe — so they go stale on different fast read-after-write/back-to-back
-   reads, and Icarus 13.0 (Mac) resolves the sub-cycle ordering differently
-   than the environment where it last passed. Patching either side's latch
-   just moves the divergence (verified: fixing the DRAM read exposed a mirror
-   stale-oracle case at ROM `0x00CE`; making all four latches level/clock
-   sensitive moved it earlier to read #74) while `boot_check` stays
-   byte-identical throughout. The durable fix is a harness decision:
-   (a) compare at a settled point — the CPU's captured byte at a fixed T-state
-   or memory contents — instead of the transient bus at `negedge dbin`;
-   (b) give both models one shared deterministic read-timing model; or
-   (c) complete the physical shared-DRAM slot timing (P0 connectivity, below)
-   so `cas_n` pulses per CPU read. Then restore `NO-DIVERGE` and add a
-   bounded-window cosim run to CI — the guard is in no workflow today, so it
-   regressed silently.
+1. **Model the shared-DRAM CAS slot timing so the deep cosim guard goes fully
+   green.** The deep guard was rebuilt 2026-07-14 to compare `juku_top`
+   read-for-read against the authoritative C emulator (`cosim`) instead of the
+   retired second Verilog model, and is now in CI (`sync/cosim_check.sh`,
+   `docs/cosim-runtime-reference.md`). It confirms `juku_top` reads identically
+   to `cosim` through the entire reset/early-boot region and pins the one
+   remaining divergence: at the BIOS RAM test (read #115878, `0xD300`),
+   `juku_top`'s РУ5 read serves a stale byte on a read that immediately follows
+   a write to the same cell, because the un-traced CAS scaffold (`d53_cas_sim`,
+   behind the D36.11/R57 mesh) does not re-strobe per CPU read. Memory contents
+   are correct in both; only the read datapath is stale, and no read-latch
+   tweak fixes it robustly (verified — each variant just moves the divergence
+   to the next read-after-write while keeping `boot_check` byte-identical). The
+   real fix is the physical shared-DRAM slot timing (D41/D36/one-shot/mux
+   continuity, tracked under P0 connectivity below) so `cas_n` pulses per CPU
+   read; the guard then reaches `CTRACE-OK`. Until then it gates against
+   regression (baseline read #115878). This is a transient during a RAM test
+   and does not block the functional boot milestones.
 2. **Continue routing convergence on the refresh candidate.** The
    deterministic gap router (`kicad/close_unconnected_gaps.py`) has exhausted
    distance bands to 225 mm, corridor sweeps to 120 mm, and A* grid
@@ -319,7 +315,8 @@ Once a released board and programmed parts exist:
 - [x] EKDOS and disk BASIC reach visible prompts in uninterrupted HDL.
 - [x] Current engineering PCB package is reproducible and DRC-clean within its
   modeled scope.
-- [ ] Deep value-level cosim guard returns to `NO-DIVERGE` and runs in CI.
+- [ ] Deep value-level cosim guard reaches `CTRACE-OK` (currently cosim-referenced,
+  in CI, gating against regression; full green awaits the shared-DRAM CAS slot timing).
 - [ ] P0 physical connectivity is complete and rerouted.
 - [ ] Every required PROM/EPROM has verified contents and programming evidence.
 - [ ] Runnable boot executes from all four physical PROM tables; the D6

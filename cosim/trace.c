@@ -78,12 +78,21 @@ static int overlay(uint16_t a, unsigned* idx) {
   }
 }
 
+static FILE *rdtrace_fp = NULL;         // optional memory-read trace (JUKU_RDTRACE=path)
+static unsigned long rdtrace_limit = 0; // stop tracing after N reads (JUKU_RDTRACE_LIMIT; 0 = unbounded)
+static unsigned long rdtrace_n = 0;
 static uint8_t rb(void* u, uint16_t a) {
   (void)u; unsigned idx = 0;
+  uint8_t v;
   int ov = overlay(a, &idx);
-  if (ov == 1) return rom[idx];
-  if (ov == 2) return cart_enabled ? cart[a - 0x4000] : 0xFF;
-  return ram[a];
+  if (ov == 1) v = rom[idx];
+  else if (ov == 2) v = cart_enabled ? cart[a - 0x4000] : 0xFF;
+  else v = ram[a];
+  if (rdtrace_fp) {
+    fprintf(rdtrace_fp, "%04x %02x\n", a, v);
+    if (rdtrace_limit && ++rdtrace_n >= rdtrace_limit) { fclose(rdtrace_fp); rdtrace_fp = NULL; }
+  }
+  return v;
 }
 
 static unsigned long g_vw = 0, g_vw_limit = 0;   // video-RAM write count + optional stop limit
@@ -377,6 +386,13 @@ int main(int argc, char** argv) {
   const char* stop_fdc_data_reads_env = getenv("JUKU_STOP_FDC_DATA_READS");
   if (stop_fdc_data_reads_env && stop_fdc_data_reads_env[0])
     stop_fdc_data_reads = strtoul(stop_fdc_data_reads_env, 0, 0);
+  const char* rdtrace_path = getenv("JUKU_RDTRACE");
+  if (rdtrace_path && rdtrace_path[0]) {
+    rdtrace_fp = fopen(rdtrace_path, "w");
+    if (!rdtrace_fp) fprintf(stderr, "JUKU_RDTRACE=%s could not be opened for writing\n", rdtrace_path);
+    const char* rdtrace_limit_env = getenv("JUKU_RDTRACE_LIMIT");
+    if (rdtrace_limit_env && rdtrace_limit_env[0]) rdtrace_limit = strtoul(rdtrace_limit_env, 0, 0);
+  }
   const char* cart_path = getenv("JUKU_CART");
   timing_log = getenv("JUKU_TRACE_TIMING") && getenv("JUKU_TRACE_TIMING")[0] &&
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;

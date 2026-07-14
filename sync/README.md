@@ -47,9 +47,13 @@ sync/serial_check.sh
 sync/basic_cart_check.sh
 ```
 
-These cover the real-ROM boot/framebuffer path, structural/oracle agreement,
+These cover the real-ROM boot/framebuffer path, per-read agreement between
+`juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
 raw disk geometry, the bounded WD1793 boot subset, raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.
+
+`sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
+of simulated boot); see `docs/cosim-runtime-reference.md`.
 
 ## Current user-visible oracles
 

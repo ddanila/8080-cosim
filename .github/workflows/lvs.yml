@@ -26,6 +26,7 @@ jobs:
           sh -n sync/video_timing_check.sh
           sh -n sync/video_readout_check.sh
           sh -n sync/serial_check.sh
+          sh -n sync/cosim_check.sh
           python3 -m py_compile \
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
@@ -458,3 +459,6 @@ jobs:
 
       - name: Run boot regression check
         run: ./sync/boot_check.sh
+
+      - name: Run deep cosim value guard (juku_top vs C reference)
+        run: ./sync/cosim_check.sh

@@ -61,7 +61,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
 ```sh
 sync/check.sh       # modeled KiCad/HDL connectivity
 sync/boot_check.sh  # C and HDL boot/framebuffer regression
-sync/cosim_check.sh # value-level structural/oracle comparison
+sync/cosim_check.sh # value-level read comparison vs the C emulator (cosim)
 ```
 
 See `../sync/README.md` for subsystem and deep checks. A green LVS result proves

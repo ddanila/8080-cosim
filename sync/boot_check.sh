@@ -24,9 +24,9 @@ cp cosim/vram.bin "$TMP/ref_ekta37.bin"
 
 echo "== HDL sims must match cosim @ $WRITES writes =="
 # juku_top_tb drives the REAL LVS-checked netlist (juku_top.v + devices.v) -- it is THE model,
-# and boots ekta37 bit-identically (proven deeper by sync/cosim_check.sh). juku_sim/chips are the
-# earlier monolithic/chip-decomposed levels kept as stepping stones. (juku_struct is no longer a
-# boot level here -- it now serves as the cosim_check oracle; hdl/sim/juku_struct.v.)
+# and boots ekta37 bit-identically (probed read-for-read against the cosim reference by
+# sync/cosim_check.sh). juku_sim/chips are the earlier monolithic/chip-decomposed levels kept as
+# stepping stones.
 for tb in juku_sim_tb juku_chips_tb juku_top_tb; do
   case $tb in
     juku_sim_tb)    dump=vram_hdl.bin;    src="hdl/sim/$tb.v" ;;

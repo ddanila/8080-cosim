@@ -79,10 +79,13 @@ static inline void i8080_wb(i8080* const c, uint16_t addr, uint8_t val) {
   c->write_byte(c->userdata, addr, val);
 }
 
-// reads a word from memory
+// reads a word from memory. Low byte first, then high byte, matching the real
+// 8080 bus order (consecutive T-states fetch addr then addr+1) so an external
+// read-stream trace lines up with hardware; the returned value is unchanged.
 static inline uint16_t i8080_rw(i8080* const c, uint16_t addr) {
-  return c->read_byte(c->userdata, addr + 1) << 8 |
-         c->read_byte(c->userdata, addr);
+  uint16_t lo = c->read_byte(c->userdata, addr);
+  uint16_t hi = c->read_byte(c->userdata, addr + 1);
+  return (hi << 8) | lo;
 }
 
 // writes a word to memory
