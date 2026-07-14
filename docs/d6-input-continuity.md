@@ -54,3 +54,24 @@ inverters before D6 A6 and A5. D6 A7 and D105.1 share an explicit boundary.
 The separately named runnable memory-decode oracle remains in place until the
 A7 source and the downstream D6/D13/D37/D58 path are physically closed and
 boot/checkpoint guards pass from the physical topology.
+
+## Chip-removed output correction
+
+A subsequent D6-removed measurement invalidates the earlier installed-PROM
+claim that D6.11, D6.12, and D13.12 form one zero-ohm conductor. The physical
+socket pads are separate:
+
+```text
+D6.12 ROM_N -> D8.15 E_N
+D6.11 RAM_N -> D2.15 A7 / -WREQ
+D6.11 RAM_N -/-> D8.15
+D6.11 -/-> D6.12
+D13.12 -> D6.14 V2
+```
+
+The model therefore restores the independent `ROM_SEL` output and moves
+D6.11 onto the measured `WREQ_N` conductor; the older D92.5/R12.2 RAM branch
+remains a separate boundary until its target-board driver is found. D13.12
+moves to the D6 enable conductor. The reported D13.12-to-D16.13 reading
+is recorded as a follow-up candidate, not promoted connectivity, until D16 is
+removed and the socket pad is rechecked.

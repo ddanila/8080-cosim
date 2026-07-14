@@ -104,8 +104,9 @@ Every ask below is queued with exact deliverables in
    exhausted; owner continuity is required).
 4. **Retire the D6 memory-map oracle.** Chip-removed continuity now proves
    D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the earlier
-   installed-PROM joined reading. Confirm the remaining D6.11->D92.5/R12.2
-   RAM branch, the D13.12->D6.13/.14 enable branch, and the three
+   installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ. Find the
+   actual driver for the older-sheet D92.5/R12.2 RAM branch, confirm the
+   D13.12->D6.13/.14 enable branch, and the three
    D6.9-to-D58 endpoint segments; recheck the surprising D13.12->D16.13 report
    with D16 removed. Capture the five live RAM-read levels named by
    `docs/d6-runtime-path-diagnostic.md`. All eight raw A7..A5 rows leave pin 9
@@ -116,7 +117,7 @@ Every ask below is queued with exact deliverables in
    modified pads, removed segments, and replacement nets remain a P0 mapping
    hold (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
-   240 source-risk nets and 9 official FDC devices with untraced functional
+   236 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

@@ -224,7 +224,8 @@ def main() -> int:
         "Three preserved complete reads agreed",
         "D2.12  <-> D30.2",
         "D105.9  <-> D1.17 DBIN",
-        "D13.12 <-> D6.11 <-> D6.12",
+        "earlier installed-PROM report",
+        "D6.11 and D6.12 are isolated",
     )
     official_bom_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",

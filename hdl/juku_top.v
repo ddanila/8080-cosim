@@ -57,20 +57,17 @@ module juku_top (
     // ---- chip selects + memory enables ----
     wire        cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n;
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
-`ifdef YOSYS
-    wire        d6_mem_select_n;
-`else
-    wand        d6_mem_select_n;  // owner-measured wired join: D6.11 + D6.12 + D13.12
-`endif
+    wire        d6_rom_select_n, d6_ram_output_n, d6_v_enable;
+    wire        ram_select_downstream_n;
     wire        d6_rev_physical, d6_roe_physical;
 `ifdef YOSYS
-    // Structural/LVS path: preserve the measured `.009` D6 output join and
-    // physical downstream nets exactly.
+    // Structural/LVS path: chip-removed continuity preserves separate D6.12
+    // ROM-select and D6.11 RAM-select conductors.
     wire        rev = d6_rev_physical, roe_n = d6_roe_physical;
-    wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;
+    wire        rom_sel_n = d6_rom_select_n, ram_sel_n = ram_select_downstream_n;
 `else
-    // Runnable path: explicit compatibility boundary until the joined D6
-    // conductor's complete D8/D13/D92 timing topology is reconstructed.
+    // Runnable path: explicit compatibility boundary until the complete
+    // D6/D13/D37/D58 timing topology is reconstructed.
     wire        rev, roe_n, rom_sel_n, ram_sel_n;
 `endif
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
@@ -158,6 +155,9 @@ module juku_top (
     tri1 d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
     tri1 wreq_n;
 `endif
+`ifdef YOSYS
+    assign wreq_n = d6_ram_output_n; // chip-removed continuity: D6.11 -> D2.15/-WREQ
+`endif
     wait_prom_037 U_D2 (.a({wreq_n, A[10], iorc_n, A[14], cas_n, A[9], A[15], A[12]}),
                         .v1_n(1'b0), .v2_n(1'b0),
                         .d({d2_nc, ready_d}));
@@ -197,7 +197,7 @@ module juku_top (
     // stand-in retired; STSTB comes from D38 directly (beeper wires 8/9).
     tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(d13_o4),
                      .i5(1'b1), .o6(reset_sys), .i9(1'b1), .o8(),
-                     .i11(1'b1), .o10(), .i13(d105_h), .o12(d6_mem_select_n));
+                     .i11(1'b1), .o10(), .i13(d105_h), .o12(d6_v_enable));
     assign ststb_n = stb_d38;
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(d105_dbin_gated), .wr_n(wr_n), .hlda(hlda),
@@ -269,12 +269,11 @@ module juku_top (
                           .a2(memr_n), .b2(memw_n), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 / -MRD]; pin3 -> physical D29.5 (-AMWC path)
                           .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
-    wire d6_v_enable;
-    net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
     net_boundary U_D6A7LNK (.a(1'b1), .b(d6_a7_d105_i1));
+    net_boundary U_RAMSELLNK (.a(1'b1), .b(ram_select_downstream_n));
     decode_prom U_DECODE (.a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
-                          .v_en_n(d6_v_enable),                               // V1/V2 are one source-visible, upstream-unread boundary
-                          .rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n),
+                          .v_en_n(d6_v_enable),
+                          .rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n),
                           .rev(d6_rev_physical), .roe_n(d6_roe_physical));
 `ifndef YOSYS
     decode_prom_functional U_D6_FUNCTIONAL (.ba(BA[15:11]), .pc2(ppi0_pc[2]),

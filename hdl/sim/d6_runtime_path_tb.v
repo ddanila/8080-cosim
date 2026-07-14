@@ -11,7 +11,7 @@ module d6_runtime_path_tb;
   reg d6_v_en_n = 1'b0;
 
   wire d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
-  wire d6_join_n = d6_rom_n & d6_ram_n;
+  wire d6_select_and_n = d6_rom_n & d6_ram_n; // diagnostic expression, not a copper join
   wire [7:0] d8_d;
   wire ram_out_en;
   wire physical_d58_oe_n;
@@ -66,10 +66,10 @@ module d6_runtime_path_tb;
     begin
       ba = 16'h0484;
       #1;
-      if (d6_join_n !== 1'b0 || d6_roe_n !== 1'b1 ||
+      if (d6_select_and_n !== 1'b0 || d6_roe_n !== 1'b1 ||
           physical_d58_oe_n !== 1'b1) begin
-        $display("D6-RUNTIME-PATH: FAIL low-ROM physical tuple join=%b roe_n=%b d58_oe_n=%b",
-                 d6_join_n, d6_roe_n, physical_d58_oe_n);
+        $display("D6-RUNTIME-PATH: FAIL low-ROM physical tuple select_and=%b roe_n=%b d58_oe_n=%b",
+                 d6_select_and_n, d6_roe_n, physical_d58_oe_n);
         errors = errors + 1;
       end
       if (functional_rom_n !== 1'b0 || functional_ram_n !== 1'b1) begin
@@ -77,8 +77,8 @@ module d6_runtime_path_tb;
                  functional_rom_n, functional_ram_n);
         errors = errors + 1;
       end
-      $display("D6-RUNTIME-LOW-ROM ba=%04h mode=%03b join_n=%b roe_n=%b d58_oe_n=%b",
-               ba, pc, d6_join_n, d6_roe_n, physical_d58_oe_n);
+      $display("D6-RUNTIME-LOW-ROM ba=%04h mode=%03b select_and_n=%b roe_n=%b d58_oe_n=%b",
+               ba, pc, d6_select_and_n, d6_roe_n, physical_d58_oe_n);
     end
   endtask
 
@@ -152,13 +152,13 @@ module d6_runtime_path_tb;
     begin
       ba = 16'hB37A;
       #1;
-      // Physical word 8 keeps the joined conductor low but leaves D6.9 high.
+      // Physical word 8 drives both separate select outputs low but leaves D6.9 high.
       // Through the currently traced D13/D37 polarity that releases D58, so
       // checkpoint RAM cannot drive DB at this address.
-      if (d6_join_n !== 1'b0 || d6_rev !== 1'b0 || d6_roe_n !== 1'b1 ||
+      if (d6_select_and_n !== 1'b0 || d6_rev !== 1'b0 || d6_roe_n !== 1'b1 ||
           ram_out_en !== 1'b0 || physical_d58_oe_n !== 1'b1) begin
-        $display("D6-RUNTIME-PATH: FAIL B37A physical tuple join=%b rev=%b roe_n=%b ram_out_en=%b d58_oe_n=%b",
-                 d6_join_n, d6_rev, d6_roe_n, ram_out_en, physical_d58_oe_n);
+        $display("D6-RUNTIME-PATH: FAIL B37A physical tuple select_and=%b rev=%b roe_n=%b ram_out_en=%b d58_oe_n=%b",
+                 d6_select_and_n, d6_rev, d6_roe_n, ram_out_en, physical_d58_oe_n);
         errors = errors + 1;
       end
       if (functional_rom_n !== 1'b1 || functional_ram_n !== 1'b0 ||
@@ -168,8 +168,8 @@ module d6_runtime_path_tb;
                  functional_d58_oe_n);
         errors = errors + 1;
       end
-      $display("D6-RUNTIME-RAM ba=%04h mode=%03b join_n=%b rev=%b roe_n=%b ram_out_en=%b d58_oe_n=%b oracle_ram_n=%b oracle_d58_oe_n=%b",
-               ba, pc, d6_join_n, d6_rev, d6_roe_n, ram_out_en,
+      $display("D6-RUNTIME-RAM ba=%04h mode=%03b select_and_n=%b rev=%b roe_n=%b ram_out_en=%b d58_oe_n=%b oracle_ram_n=%b oracle_d58_oe_n=%b",
+               ba, pc, d6_select_and_n, d6_rev, d6_roe_n, ram_out_en,
                physical_d58_oe_n, functional_ram_n, functional_d58_oe_n);
     end
   endtask

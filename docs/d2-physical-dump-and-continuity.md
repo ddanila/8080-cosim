@@ -96,12 +96,18 @@ D105.8  <-> D105.4 <-> D105.5
 D105.6  <-> D5.4 DBIN
 D105.12 <-> D105.13 <-> D5.26 MEMW_N
 
-D13.12 <-> D6.11 <-> D6.12
 ```
 
 D105 is the ЛА3 below D30 with D13 physically between them. The exact edge
 connector contact and pull-up reference/value on `H` were difficult to access
-and remain unresolved. No D6.11/D6.12 continuity to any D8 or D9 pin was found.
+and remain unresolved.
+
+The earlier installed-PROM report `D13.12 <-> D6.11 <-> D6.12` and
+`D6.11 <-> D6.12 = 0 ohm` is invalidated by the owner. With D6 removed,
+D6.11 and D6.12 are isolated; D6.12 reaches D8.15, while D6.11 reaches
+D2.15 (`-WREQ`) and does not reach D8.15.
+D13.12 instead reaches D6.14. The reported D13.12-to-D16.13 reading remains
+held for a D16-removed confirmation because both nominal endpoints are outputs.
 
 ## Functional interpretation
 
@@ -115,14 +121,14 @@ D105.9/.10 and D105.4/.5 form two NAND stages, so the confirmed path implements:
 D5.DBIN = D1.DBIN AND H
 ```
 
-`H` is an externally available pulled-up qualifier, also inverted by D13. The
-joined `D13.12/D6.11/D6.12` net disproves the current model's assumption that
-D6 pins 11 and 12 are independently routed `RAM_N` and `ROM_N` outputs on this
-physical revision. D5.26 is `MEMW_N`; D105.12/.13 invert it onto D30.13.
+`H` is an externally available pulled-up qualifier, also inverted by D13.
+D13.12 drives the D6 enable conductor through pin14. D6 output pins11 and12
+remain separate `RAM_N` and `ROM_N` conductors; D6.12 directly enables D8.
+D5.26 is `MEMW_N`; D105.12/.13 invert it onto D30.13.
 
 ## Adoption result
 
 Board JSON, structural HDL, generated KiCad artifacts, and D2/D30/D105 reports
 now adopt these measurements. The old `D2.12 -> D105.9`, direct CPU-to-D5
-DBIN, and independent D6.11/D6.12 interpretations are retired. The saved routed
+DBIN, and installed-PROM D6.11/D6.12 join are retired. The saved routed
 PCB remains stale and must be regenerated after source-placement shorts close.

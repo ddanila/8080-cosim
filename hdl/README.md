@@ -30,10 +30,10 @@ They are not generic cycle-accurate replacements for every original IC mode.
 ## Honest boundaries
 
 - D2's physical inputs, validated `.037` table, and D0/WAIT handoff are modeled.
-- D6's validated `.038` table and measured joined pins 11/12 remain the
+- D6's validated `.038` table and chip-removed separate pins 11/12 remain the
   structural/LVS truth. Runnable simulation uses the explicitly non-LVS
-  `decode_prom_functional` memory-map oracle until the joined conductor's
-  downstream D8/D13/D92 timing topology is complete enough to execute directly.
+  `decode_prom_functional` memory-map oracle until the downstream
+  D6/D13/D92/D37/D58 timing topology is complete enough to execute directly.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
   and its first three outputs are wired to the accepted local FDC controls. Its
   enable source, remaining far destinations, and complete D93 strobe branches
@@ -44,7 +44,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - D7's physical pin12=`SYNC`, pin13=pin11 feedback strobe is retained in the
   structural/LVS path; runnable zero-delay simulation uses the explicit
   IOWR/IORD activity oracle instead of evaluating the propagation-delay loop.
-- 240 modeled nets still carry source-risk annotations requiring
+- 236 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist, but faithful shared-DRAM

@@ -128,7 +128,7 @@ def check_rows(board: dict) -> list[list[object]]:
     checks.append((
         "Undrawn D13 inverter sections are explicitly unused",
         all(pin_is_nc(board, "D13", pin) for pin in ("8", "9", "10", "11"))
-        and has_node(board, "D6_MEM_SELECT_N", "D13", "12")
+        and has_node(board, "D6_V_ENABLE", "D13", "12")
         and has_node(board, "D105_10_H", "D13", "13"),
         "sheet-1 uses sections 1->2, 3->4, 5->6, and 13->12; only 9->8 and 11->10 are unused",
     ))
@@ -158,9 +158,12 @@ def check_rows(board: dict) -> list[list[object]]:
         "`SER_TXD_INV`",
     ))
     checks.append((
-        "Undrawn D3 inverter sections are explicitly unused",
-        all(pin_is_nc(board, "D3", pin) for pin in ("3", "4", "5", "6")),
-        "sheet-1 accounts for sections 13->12, 1->2, 11->10, and 9->8; 3->4 and 5->6 never occur",
+        "D3 sections absent from the older sheet are owner-measured into D6",
+        has_node(board, "D26_PC1_D3_I3", "D3", "3")
+        and has_node(board, "D3_O4_D6_A6", "D3", "4")
+        and has_node(board, "D26_PC0_D3_I5", "D3", "5")
+        and has_node(board, "D3_O6_D6_A5", "D3", "6"),
+        "chip-removed `.009` continuity: /PC1->D3.3/.4->D6.1 and /PC0->D3.5/.6->D6.2",
     ))
     checks.append((
         "8259 SP/EN is strapped high for standalone master mode",

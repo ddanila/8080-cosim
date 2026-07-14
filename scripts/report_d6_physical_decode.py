@@ -62,20 +62,25 @@ def main() -> int:
         raise SystemExit(f"D6 mode-map classification changed: {actual_runs}")
 
     board = json.loads((ROOT / "kicad/juku.board.json").read_text())
-    joined_nodes = {tuple(node) for node in board["nets"]["D6_MEM_SELECT_N"]["nodes"]}
-    required_join = {("D6", "11"), ("D6", "12"), ("D13", "12"), ("D8", "15")}
+    rom_nodes = {tuple(node) for node in board["nets"]["ROM_SEL"]["nodes"]}
+    ram_nodes = {tuple(node) for node in board["nets"]["RAM_SEL"]["nodes"]}
+    enable_nodes = {tuple(node) for node in board["nets"]["D6_V_ENABLE"]["nodes"]}
+    wreq_nodes = {tuple(node) for node in board["nets"]["WREQ_N"]["nodes"]}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
     devices = (ROOT / "hdl/devices.v").read_text()
     runtime_report = (ROOT / "docs/d6-runtime-path-diagnostic.md").read_text()
     model_checks = [
-        ("Board source joins D6.11/D6.12 to D13.12 and D8.15", required_join <= joined_nodes),
-        ("HDL drives both D6 outputs onto the joined conductor", ".rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n)" in hdl),
+        ("Chip-removed ROM select is D6.12 to D8.15", {("D6", "12"), ("D8", "15")} <= rom_nodes),
+        ("D6.11 reaches D2.15/-WREQ and stays separate from ROM select", {("D6", "11"), ("D2", "15")} <= wreq_nodes and ("D6", "11") not in rom_nodes),
+        ("Older D92/R12 RAM branch remains separately bounded", {("D92", "5"), ("R12", "2")} <= ram_nodes and ("D6", "11") not in ram_nodes),
+        ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | ram_nodes),
+        ("HDL keeps the D6 outputs separate", ".rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n)" in hdl),
         ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
         ("Runnable compatibility decode is explicit and excluded from LVS",
          "module decode_prom_functional" in devices
          and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
-        ("Structural consumers retain the measured joined D6 conductor",
-         "wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;" in hdl),
+        ("Structural consumers retain separate ROM/RAM conductors",
+         "wire        rom_sel_n = d6_rom_select_n, ram_sel_n = ram_select_downstream_n;" in hdl),
         ("All-row B37A RAM-gate boundary has a reproducible diagnostic",
          "ALL RAW A7..A5 ROWS EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
          and runtime_report.count("D6-RUNTIME-ALL-MODES ba=b37a") == 8),
@@ -95,17 +100,15 @@ def main() -> int:
         "## Guarded artifact", "", f"- Raw image: `ref/physical-proms/validated/d6_038.raw.bin` ({len(data)} bytes)",
         f"- SHA256: `{sha}`", "- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`",
         "- Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9", "",
-        "## Output words", "", "| Raw word | Rows | D3 D2 D1 D0 | Joined D1/D0 conductor |", "| ---: | ---: | --- | --- |",
+        "## Output words", "", "| Raw word | Rows | D3 D2 D1 D0 | RAM_N D1 | ROM_N D0 |", "| ---: | ---: | --- | ---: | ---: |",
     ]
     for word in words:
-        joined = ((word >> 1) & 1) & (word & 1)
-        lines.append(f"| `{word:X}` | {counts[word]} | `{word:04b}` | `{joined}` |")
+        lines.append(f"| `{word:X}` | {counts[word]} | `{word:04b}` | `{(word >> 1) & 1}` | `{word & 1}` |")
     lines += [
-        "", "D6 pins 11 and 12 are open-collector outputs joined by direct owner",
-        "continuity on the `.009` board. Their electrical wired-low result is `0`",
-        "for words `1`, `8`, and `D`, and `1` only for word `F`. Consequently the",
-        "older-sheet names `RAM_N` and `ROM_N` must not be interpreted as independent",
-        "`.009` nets even though they remain useful physical pin-role labels.", "",
+        "", "Chip-removed owner continuity proves D6 output pins 11 and 12 are",
+        "separate. D6.12 reaches D8.15, while D6.11 reaches D2.15/-WREQ and",
+        "does not reach D8.15; the earlier installed-PROM",
+        "zero-ohm reading that joined D6.11/D6.12/D13.12 is explicitly invalidated.", "",
         "## Mode maps", "", "Each address interval is inclusive. The 32-character signature is one raw",
         "nibble per 2 KiB block from `0000` through `F800`.", "",
         "| D6 A7 A6 A5 | 2 KiB signature | Inclusive address ranges |", "| --- | --- | --- |",
@@ -122,14 +125,12 @@ def main() -> int:
         "  Direct `.009` continuity now proves A6=`~PC1` and A5=`~PC0`; A7 joins",
         "  D105.1 but its driver or pull source is still unresolved. The raw mode",
         "  numbers remain useful table coordinates, not a claim about A7 semantics.",
-        "- D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`; the",
-        "  joined D1/D0 conductor is high only in word `F`.", "- These are physical electrical facts, not yet a complete explanation of",
+        "- D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`.", "- These are physical electrical facts, not yet a complete explanation of",
         "  the downstream D8/D13/D92 memory timing. That behavior must be derived",
-        "  from the joined conductor and its consumers rather than resurrecting",
-        "  separate RAM/ROM selects as physical claims.",
+        "  from the now-separate ROM/RAM conductors and their confirmed consumers.",
         "- Runnable simulation therefore uses a separately named, non-LVS",
         "  `decode_prom_functional` oracle for the established EKTA/EKDOS memory",
-        "  map. The physical table and joined conductor remain instantiated and",
+        "  map. The physical table and separate conductors remain instantiated and",
         "  guarded; the compatibility path must be retired when downstream timing",
         "  continuity is sufficient to execute directly from the physical topology.",
         "- `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a",
@@ -138,11 +139,9 @@ def main() -> int:
         "  also leaves it high. Mode selection and V1/V2 cannot repair the currently",
         "  modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,",
         "  polarity/function, and D58-path checks named there must resolve the boundary.",
-        "- At checkpoint mode `000`, D6 emits the same word `8` at PC `0484` and",
-        "  RAM target `B37A`; no D6 output bit can distinguish those reads. D8's",
-        "  pager output changes from `EF` (D15 selected) to `FF` (all sockets released),",
-        "  but its modeled output nets only reach the eight socket CEs. An authentic",
-        "  address-sensitive RAM qualifier remains missing rather than inferred.",
+        "- Raw row `000` emits word `8` at both PC `0484` and RAM target `B37A`,",
+        "  but measured firmware suffix `11` and unresolved A7 prevent identifying",
+        "  that raw row as the checkpoint state.",
         "", "## Model adoption guards", "",
         "| Check | Result |", "| --- | --- |",
     ]
