@@ -8,10 +8,12 @@ import sys
 import pcbnew
 
 
-if len(sys.argv) not in (3, 4, 8, 9):
-    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2 MODE [SEARCH_MARGIN_MM]]")
+if len(sys.argv) not in (3, 4, 8, 9, 10):
+    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2 MODE [SEARCH_MARGIN_MM [GRID_STEP_MM]]]")
 
-STEP = 0.5
+STEP = float(sys.argv[9]) if len(sys.argv) == 10 else 0.5
+if STEP <= 0:
+    raise SystemExit("grid step must be positive")
 WIDTH = 0.20
 CLEARANCE = 0.45
 SEARCH_MARGIN = None
@@ -251,12 +253,12 @@ def pad(ref, pin):
     return board.FindFootprintByReference(ref).FindPadByNumber(pin).GetPosition()
 
 
-if len(sys.argv) in (8, 9) and sys.argv[3] == "gap":
+if len(sys.argv) in (8, 9, 10) and sys.argv[3] == "gap":
     CLEARANCE = 0.45
     netname = sys.argv[4]
     x1, y1 = map(float, sys.argv[5].split(",")); x2, y2 = map(float, sys.argv[6].split(","))
     if sys.argv[7] == "M":
-        SEARCH_MARGIN = float(sys.argv[8]) if len(sys.argv) == 9 else 30.0
+        SEARCH_MARGIN = float(sys.argv[8]) if len(sys.argv) >= 9 else 30.0
         add_multilayer_route(netname, pcbnew.VECTOR2I_MM(x1, y1), pcbnew.VECTOR2I_MM(x2, y2))
     else:
         layer = {"F": (pcbnew.F_Cu,), "B": (pcbnew.B_Cu,), "FB": (pcbnew.F_Cu, pcbnew.B_Cu)}[sys.argv[7]]
@@ -295,5 +297,5 @@ else:
     add_multilayer_route("RESET", pad("D26", "35"), pad("D1", "12"))
 
 pcbnew.SaveBoard(sys.argv[2], board)
-label = sys.argv[3] if len(sys.argv) in (4, 8, 9) else "RESET and VIDEO_OUT"
+label = sys.argv[3] if len(sys.argv) in (4, 8, 9, 10) else "RESET and VIDEO_OUT"
 print(f"closed {label} reroute gaps -> {sys.argv[2]}")

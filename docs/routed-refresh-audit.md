@@ -143,6 +143,8 @@ python3 kicad/close_unconnected_gaps.py OUTPUT_50.kicad_pcb OUTPUT_M.kicad_pcb \
   --max-distance 15 --mode M --timeout 60 --limit 10
 python3 kicad/close_unconnected_gaps.py OUTPUT_M.kicad_pcb OUTPUT_WIDE.kicad_pcb \
   --max-distance 450 --mode M --search-margin 60 --timeout 30
+python3 kicad/close_unconnected_gaps.py OUTPUT_WIDE.kicad_pcb OUTPUT_FINE.kicad_pcb \
+  --max-distance 450 --mode M --search-margin 60 --grid-step 0.25 --timeout 60
 ```
 
 The first two single-layer bands accepted 14 proposals and reduced KiCad's
@@ -175,6 +177,13 @@ instead of a fixed 30 mm. Exhaustive 60, 90, and 120 mm corridor sweeps accepted
 `MEMW`, BA4/BA5, and another `P5V` island. The 120 mm sweep therefore establishes
 the current corridor-expansion limit at 64 unconnected items on 50 nets and
 10,326 copper items, a cumulative reduction of 125 from the Freerouting import.
+
+The A* lattice is likewise explicit through `--grid-step`. A 0.25 mm sweep
+accepted 21 routes that the default 0.5 mm grid could not represent, including
+dense address/data-bus links plus `XTAL16M`, `PHI1`, `PHI2TTL`, `PIT_BAUD`,
+`D26_PC5_RN_IN`, and `D39_O8`; a second complete pass accepted none. The
+current temporary board has 43 unconnected items on 35 nets and 11,888 copper
+items, a cumulative reduction of 146 from the Freerouting import.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity

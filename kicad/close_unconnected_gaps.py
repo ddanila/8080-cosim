@@ -116,6 +116,12 @@ def main() -> None:
         default=30.0,
         help="multilayer search corridor beyond the endpoint bounds, in mm",
     )
+    parser.add_argument(
+        "--grid-step",
+        type=float,
+        default=0.5,
+        help="multilayer A* grid spacing, in mm",
+    )
     parser.add_argument("--kicad-cli", type=Path)
     args = parser.parse_args()
 
@@ -137,6 +143,8 @@ def main() -> None:
         raise SystemExit("distance range must satisfy 0 <= minimum <= maximum")
     if args.search_margin <= 0:
         raise SystemExit("search margin must be positive")
+    if args.grid_step <= 0:
+        raise SystemExit("grid step must be positive")
     shutil.copyfile(args.input, args.output)
 
     accepted = 0
@@ -169,7 +177,7 @@ def main() -> None:
                 args.mode,
             ]
             if args.mode == "M":
-                command.append(str(args.search_margin))
+                command.extend((str(args.search_margin), str(args.grid_step)))
             try:
                 proc = subprocess.run(
                     command, text=True, capture_output=True, timeout=args.timeout
