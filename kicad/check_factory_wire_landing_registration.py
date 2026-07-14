@@ -67,9 +67,16 @@ def main() -> int:
         status = record.get("status")
         if len(endpoints) not in (0, 2):
             errors.append(f"A:{point} must have zero or two endpoint records")
-        if (not endpoints and status != "pending") or (
-            endpoints and status != "image-registered/board-fit-pending"
-        ):
+        expected_status = (
+            "pending"
+            if not endpoints
+            else (
+                "board-fitted"
+                if all(endpoint.get("board_mm") is not None for endpoint in endpoints)
+                else "image-registered/board-fit-pending"
+            )
+        )
+        if status != expected_status:
             errors.append(f"A:{point} status does not match its endpoint records")
         expected_terminals = {f"A{point}A", f"A{point}B"}
         terminals = {endpoint.get("terminal") for endpoint in endpoints}

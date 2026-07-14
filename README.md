@@ -29,9 +29,9 @@ with the machine-readable board model.
   state currently copper-substitutes ten documented factory insulated links;
   all twenty paired A-point landings remain absent from the PCB. All ten pairs
   (`А:7`–`А:14`, `А:19`, and `А:20`) are
-  registered in drawing-image space. The D38-side `А:8`/`А:9` and D3-side
-  `А:20` surface joints are also board-fitted and island-assigned; the other
-  seventeen terminals remain unset. The landing
+  registered in drawing-image space. Both `А:20` and the D38-side
+  `А:8`/`А:9` joints are also board-fitted and island-assigned; the other
+  sixteen terminals remain unset. The landing
   geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
 - The main board is **not released for fabrication**. Validated physical D2

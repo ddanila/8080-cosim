@@ -255,7 +255,7 @@
     },
     {
       "point": 20,
-      "status": "image-registered/board-fit-pending",
+      "status": "board-fitted",
       "observation": "one uninterrupted diagonal assembly-wire line terminates beside each of two handwritten 20 marks; the adjacent vertical package reads D104, not D14",
       "endpoints": [
         {
@@ -263,8 +263,22 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [2022, 1408],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [178.78, 15.2],
+          "island_assignment": "A23.1/X3.3-side S_TTL island; shared through-hole cable and factory-wire joint",
+          "board_fit_evidence": {
+            "component_projections": [
+              {"source_image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg", "projected_px": [3683.3, 820.3], "observation": "A23 projects beneath the same mastic-covered white-wire entry"},
+              {"source_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "projected_px": [1995.5, 988.3], "observation": "independent overlap puts A23 beneath the same mastic bundle"},
+              {"source_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "projected_px": [596.1, 1098.6], "observation": "third overlap again puts the entering white wire and mastic directly over A23"}
+            ],
+            "solder_observations": [
+              {"source_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg", "projected_px": [2588.6, 934.0], "joint_px": [2594, 935], "observation": "third joint from the row's right end; no solder-side copper departure"},
+              {"source_image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg", "projected_px": [760.4, 1047.7], "joint_px": [760, 1050], "observation": "independent third-from-right joint; again no solder-side copper departure"}
+            ],
+            "local_fit": "A23 PCB pad plus component/solder panorama registrations",
+            "uncertainty_mm": 0.5,
+            "proof": "the factory A20 map terminates on the A23/X3.3 island; three component overlaps place the entering wire over A23, while two solder overlaps identify the isolated A23 through-hole joint with no alternate copper landing"
+          }
         },
         {
           "terminal": "A20B",

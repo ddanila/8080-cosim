@@ -13,7 +13,7 @@ zero-open routing checkpoint.
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `3/20`
+- Landing endpoints fitted to PCB coordinates/islands: `4/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -58,8 +58,11 @@ Its two drawing endpoints are now guarded at `(2022,1408)` and
 `(2503,2325)` original-image pixels (each ±6 px). The D3-side white wire
 terminates at `(1232,872)` in owner image `200418174`; its short tinned
 departure reaches locally fitted D3.10, proving A20B/S_TTL at
-`(213.571,78.499)` mm. The shared A23/X3.3 end remains unset until its
-wire joint is independently visible rather than inferred from net equality.
+`(213.571,78.499)` mm. At the other end, three component overlaps put
+the entering white wire and mastic over A23.1; independent solder views
+`200506061`/`200509593` show the third-from-right A23 joint with no
+solder-side copper departure. This proves the shared A20A/A23.1/X3.3
+through-hole joint at `(178.780,15.200)` mm rather than merely net equality.
 `А:19` is likewise guarded across two overlapping views: R7 lies between
 the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`

@@ -246,8 +246,13 @@ The same check identifies the marked notch-down К561ЛН2 in
 A direct package fit now holds D3.10 and D3.1 out at `0.333` and `2.236` px.
 It also calibrates the distinct white-wire surface joint at `(1232,872)` px:
 the short uninterrupted tinned departure reaches D3.10, identifying the
-D3-side `А:20`/`S_TTL` terminal at `(213.571,78.499)` mm. This does not infer
-the remote A23-side joint, which remains pending despite known net equality.
+D3-side `А:20`/`S_TTL` terminal at `(213.571,78.499)` mm. The remote end is
+independently bounded: three component overlaps project A23 beneath the same
+mastic-covered wire entry, while two solder overlaps identify A23 as the
+third-from-right joint in the twelve-pad row and show no PCB-copper departure.
+Together with the factory A20 endpoint map, this proves the shared A20/A23/X3.3
+through-hole joint at `(178.780,15.200)` mm rather than inferring it from net
+equality alone.
 
 The horizontal notch-right D95 К555КП12 is also component-fitted. A review of
 both photographed rows corrects the earlier row-label error: standard top-view
