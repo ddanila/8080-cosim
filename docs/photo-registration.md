@@ -156,7 +156,10 @@ and `1.118` px. The independently fitted D41 cross-side transform predicts
 the D38 corner rows before this fit, so the two nearby white-wire joints can
 now be investigated against real package geometry instead of the coarse board
 panorama. These fits establish pad identity only; no wire joint or copper path
-is promoted by package registration alone.
+is promoted by package registration alone. Their independent centre offsets
+from D41 agree within `1.117` mm; the midpoint moves D38's pad-row centre from
+the inherited `(233.405,156.600)` mm seed to `(234.563,159.619)` mm. The source
+PCB now uses that midpoint and `kicad/check_d38_photo_placement.py` guards it.
 
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds

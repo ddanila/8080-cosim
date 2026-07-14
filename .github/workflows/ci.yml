@@ -33,6 +33,7 @@ jobs:
           python3 -m py_compile \
             kicad/check_factory_wire_links.py \
             kicad/check_factory_wire_landing_registration.py \
+            kicad/check_d38_photo_placement.py \
             kicad/report_factory_wire_route_fidelity.py \
             scripts/export_reconstructed_proms.py \
             scripts/extract_basic_disk_files.py \
