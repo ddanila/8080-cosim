@@ -136,6 +136,12 @@ def main() -> None:
         default=0.5,
         help="multilayer A* grid spacing, in mm",
     )
+    parser.add_argument(
+        "--route-clearance",
+        type=float,
+        default=0.45,
+        help="obstacle clearance used by the proposal router, in mm",
+    )
     parser.add_argument("--kicad-cli", type=Path)
     args = parser.parse_args()
 
@@ -159,6 +165,8 @@ def main() -> None:
         raise SystemExit("search margin must be positive")
     if args.grid_step <= 0:
         raise SystemExit("grid step must be positive")
+    if args.route_clearance <= 0:
+        raise SystemExit("route clearance must be positive")
     shutil.copyfile(args.input, args.output)
 
     accepted = 0
@@ -191,7 +199,13 @@ def main() -> None:
                 args.mode,
             ]
             if args.mode == "M":
-                command.extend((str(args.search_margin), str(args.grid_step)))
+                command.extend(
+                    (
+                        str(args.search_margin),
+                        str(args.grid_step),
+                        str(args.route_clearance),
+                    )
+                )
             try:
                 proc = subprocess.run(
                     command, text=True, capture_output=True, timeout=args.timeout

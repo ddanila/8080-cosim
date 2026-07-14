@@ -145,6 +145,9 @@ python3 kicad/close_unconnected_gaps.py OUTPUT_M.kicad_pcb OUTPUT_WIDE.kicad_pcb
   --max-distance 450 --mode M --search-margin 60 --timeout 30
 python3 kicad/close_unconnected_gaps.py OUTPUT_WIDE.kicad_pcb OUTPUT_FINE.kicad_pcb \
   --max-distance 450 --mode M --search-margin 60 --grid-step 0.25 --timeout 60
+python3 kicad/close_unconnected_gaps.py OUTPUT_FINE.kicad_pcb OUTPUT_SHAPED.kicad_pcb \
+  --max-distance 450 --mode M --search-margin 60 --grid-step 0.10 \
+  --route-clearance 0.45 --timeout 180
 ```
 
 The first two single-layer bands accepted 14 proposals and reduced KiCad's
@@ -194,7 +197,19 @@ unconnected items on 33 nets with 12,306 copper items; further global lattice
 reduction is no longer productive. Rejected proposals now report their exact
 unconnected and DRC-count deltas to guide route-specific remediation.
 
-The final authoritative DRC still has zero shorts, copper-clearance violations,
+Route-specific diagnosis then exposed a keep-out approximation error: the
+router represented every pad by a circle based on its largest dimension. A
+proposed diagonal P5V segment therefore cleared the circular approximation but
+clipped the corner of square pad E2.1, producing 0.1546 mm actual clearance
+against a 0.2 mm rule. Pad obstacles now use KiCad's shape- and
+rotation-aware hit test on the applicable copper layer. Proposal clearance is
+also exposed as `--route-clearance` so a wider keep-out can be tested without
+changing the acceptance invariant. With the corrected pad geometry, the same
+0.10 mm sweep legally closed P5V and BA13 and reached 33 unconnected items on
+31 nets with 12,705 copper items, a cumulative reduction of 156 from the
+Freerouting import. A complete second-order sweep accepted no other routes.
+
+The current authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
 violation counts are unchanged, including the original dangling `OSC` track and
 `GND` edge-clearance finding. Exact identity/net parity with all 2,383 source

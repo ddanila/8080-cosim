@@ -8,14 +8,16 @@ import sys
 import pcbnew
 
 
-if len(sys.argv) not in (3, 4, 8, 9, 10):
-    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2 MODE [SEARCH_MARGIN_MM [GRID_STEP_MM]]]")
+if len(sys.argv) not in (3, 4, 8, 9, 10, 11):
+    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2 MODE [SEARCH_MARGIN_MM [GRID_STEP_MM [CLEARANCE_MM]]]]")
 
-STEP = float(sys.argv[9]) if len(sys.argv) == 10 else 0.5
+STEP = float(sys.argv[9]) if len(sys.argv) >= 10 else 0.5
 if STEP <= 0:
     raise SystemExit("grid step must be positive")
 WIDTH = 0.20
-CLEARANCE = 0.45
+CLEARANCE = float(sys.argv[10]) if len(sys.argv) == 11 else 0.45
+if CLEARANCE <= 0:
+    raise SystemExit("clearance must be positive")
 SEARCH_MARGIN = None
 MAX_X, MAX_Y = round(310 / STEP), round(266 / STEP)
 board = pcbnew.LoadBoard(sys.argv[1])
@@ -47,6 +49,31 @@ def mark_circle(blocked, x, y, radius, bounds=(0, MAX_X, 0, MAX_Y)):
                 blocked.add((ix, iy))
 
 
+def mark_pad(blocked, pad, bounds=(0, MAX_X, 0, MAX_Y)):
+    """Mark the true pad outline plus the required route separation.
+
+    A radius based on the larger pad dimension misses the corners of square
+    and rectangular pads.  KiCad's own hit test understands pad shape and
+    rotation, so use it over the pad's small expanded bounding box.
+    """
+    separation = CLEARANCE + WIDTH / 2
+    box = pad.GetBoundingBox()
+    x0 = pcbnew.ToMM(box.GetX()) - separation
+    y0 = pcbnew.ToMM(box.GetY()) - separation
+    x1 = pcbnew.ToMM(box.GetRight()) + separation
+    y1 = pcbnew.ToMM(box.GetBottom()) + separation
+    ix0 = max(bounds[0], math.floor(x0 / STEP))
+    ix1 = min(bounds[1], math.ceil(x1 / STEP))
+    iy0 = max(bounds[2], math.floor(y0 / STEP))
+    iy1 = min(bounds[3], math.ceil(y1 / STEP))
+    accuracy = pcbnew.FromMM(separation)
+    for ix in range(ix0, ix1 + 1):
+        for iy in range(iy0, iy1 + 1):
+            point = pcbnew.VECTOR2I_MM(ix * STEP, iy * STEP)
+            if pad.HitTest(point, accuracy):
+                blocked.add((ix, iy))
+
+
 def obstacle_map(netname, layer, bounds=(0, MAX_X, 0, MAX_Y)):
     blocked = set()
     edge = math.ceil(0.40 / STEP)
@@ -60,12 +87,9 @@ def obstacle_map(netname, layer, bounds=(0, MAX_X, 0, MAX_Y)):
             if bounds[0] <= MAX_X - ix <= bounds[1]: blocked.add((MAX_X - ix, iy))
 
     for pad in board.GetPads():
-        if pad.GetNetname() == netname:
+        if pad.GetNetname() == netname or not pad.IsOnLayer(layer):
             continue
-        x, y = mm(pad.GetPosition())
-        size = pad.GetSize()
-        radius = pcbnew.ToMM(max(size.x, size.y)) / 2 + CLEARANCE + WIDTH / 2
-        mark_circle(blocked, x, y, radius, bounds)
+        mark_pad(blocked, pad, bounds)
 
     for item in board.GetTracks():
         if item.GetNetname() == netname:
@@ -253,8 +277,7 @@ def pad(ref, pin):
     return board.FindFootprintByReference(ref).FindPadByNumber(pin).GetPosition()
 
 
-if len(sys.argv) in (8, 9, 10) and sys.argv[3] == "gap":
-    CLEARANCE = 0.45
+if len(sys.argv) in (8, 9, 10, 11) and sys.argv[3] == "gap":
     netname = sys.argv[4]
     x1, y1 = map(float, sys.argv[5].split(",")); x2, y2 = map(float, sys.argv[6].split(","))
     if sys.argv[7] == "M":
@@ -297,5 +320,5 @@ else:
     add_multilayer_route("RESET", pad("D26", "35"), pad("D1", "12"))
 
 pcbnew.SaveBoard(sys.argv[2], board)
-label = sys.argv[3] if len(sys.argv) in (4, 8, 9, 10) else "RESET and VIDEO_OUT"
+label = sys.argv[3] if len(sys.argv) in (4, 8, 9, 10, 11) else "RESET and VIDEO_OUT"
 print(f"closed {label} reroute gaps -> {sys.argv[2]}")
