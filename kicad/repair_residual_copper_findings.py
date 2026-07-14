@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Reroute the residual GND edge-clearance segment around a mounting hole."""
+"""Repair residual GND edge clearance and a connected OSC dead-end tail."""
 
 from __future__ import annotations
 
@@ -28,12 +28,12 @@ def close(a: tuple[float, float], b: tuple[float, float]) -> bool:
     return math.hypot(a[0] - b[0], a[1] - b[1]) < 0.0001
 
 
-def find_track(
+def find_tracks(
     netname: str,
     layer: int,
     start: tuple[float, float],
     end: tuple[float, float],
-) -> pcbnew.PCB_TRACK:
+) -> list[pcbnew.PCB_TRACK]:
     matches = []
     for item in board.GetTracks():
         if isinstance(item, pcbnew.PCB_VIA):
@@ -45,6 +45,16 @@ def find_track(
             close(actual_start, end) and close(actual_end, start)
         ):
             matches.append(item)
+    return matches
+
+
+def one_track(
+    netname: str,
+    layer: int,
+    start: tuple[float, float],
+    end: tuple[float, float],
+) -> pcbnew.PCB_TRACK:
+    matches = find_tracks(netname, layer, start, end)
     if len(matches) != 1:
         raise SystemExit(
             f"expected one {netname} track from {start} to {end}, found {len(matches)}"
@@ -69,23 +79,50 @@ def add_route(netname: str, layer: int, points: list[tuple[float, float]]) -> No
 # horizontal dogleg is 2.6 mm from the centre, leaving 0.75 mm copper-to-edge
 # clearance for a 0.20 mm track against the configured 0.50 mm minimum.  The
 # lower side is occupied by RAM_RD_OE.
-gnd_edge_track = find_track(
+gnd_edge_tracks = find_tracks(
     "GND",
     pcbnew.F_Cu,
     (201.8412, 249.1243),
     (196.6493, 249.1243),
 )
-board.Remove(gnd_edge_track)
-add_route(
-    "GND",
-    pcbnew.F_Cu,
-    [
-        (201.8412, 249.1243),
-        (202.0, 253.8),
-        (196.0, 253.8),
-        (196.6493, 249.1243),
-    ],
-)
+if len(gnd_edge_tracks) == 1:
+    board.Remove(gnd_edge_tracks[0])
+    add_route(
+        "GND",
+        pcbnew.F_Cu,
+        [
+            (201.8412, 249.1243),
+            (202.0, 253.8),
+            (196.0, 253.8),
+            (196.6493, 249.1243),
+        ],
+    )
+elif gnd_edge_tracks:
+    raise SystemExit(f"expected at most one original GND edge track, found {len(gnd_edge_tracks)}")
+else:
+    # Refuse an arbitrary board that has neither the original segment nor the
+    # already-applied replacement's distinctive horizontal middle segment.
+    one_track("GND", pcbnew.F_Cu, (202.0, 253.8), (196.0, 253.8))
+
+# Once another OSC route reaches the old junction, the short vertical tail is
+# no longer part of the connection and only creates a dangling-end finding.
+# Before that route exists there is just one other segment at the junction, so
+# preserve the tail rather than cosmetically moving the open end upstream.
+osc_junction = (255.2983, 211.8337)
+osc_tail_end = (255.2983, 213.3887)
+osc_tails = find_tracks("OSC", pcbnew.B_Cu, osc_junction, osc_tail_end)
+other_osc_ends = 0
+for item in board.GetTracks():
+    if isinstance(item, pcbnew.PCB_VIA) or item.GetNetname() != "OSC":
+        continue
+    if item in osc_tails:
+        continue
+    if close(mm(item.GetStart()), osc_junction) or close(mm(item.GetEnd()), osc_junction):
+        other_osc_ends += 1
+if len(osc_tails) == 1 and other_osc_ends >= 2:
+    board.Remove(osc_tails[0])
+elif len(osc_tails) > 1:
+    raise SystemExit(f"expected at most one OSC tail, found {len(osc_tails)}")
 
 pcbnew.SaveBoard(str(output_path), board)
-print(f"rerouted GND edge segment -> {output_path}")
+print(f"repaired residual GND/OSC copper findings -> {output_path}")

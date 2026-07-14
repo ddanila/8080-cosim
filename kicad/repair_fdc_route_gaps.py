@@ -8,17 +8,18 @@ import sys
 import pcbnew
 
 
-if len(sys.argv) not in (3, 4, 8, 9, 10, 11):
-    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2 MODE [SEARCH_MARGIN_MM [GRID_STEP_MM [CLEARANCE_MM]]]]")
+if len(sys.argv) not in (3, 4, 8, 9, 10, 11, 13):
+    raise SystemExit(f"usage: {sys.argv[0]} INPUT.kicad_pcb OUTPUT.kicad_pcb [d26-mode|controls|video-counters|d103|gap NET X1,Y1 X2,Y2 MODE [SEARCH_MARGIN_MM [GRID_STEP_MM [CLEARANCE_MM [START_LAYER GOAL_LAYER]]]]]")
 
 STEP = float(sys.argv[9]) if len(sys.argv) >= 10 else 0.5
 if STEP <= 0:
     raise SystemExit("grid step must be positive")
 WIDTH = 0.20
+VIA_WIDTH = 0.60
 VIA_DRILL = 0.30
 HOLE_CLEARANCE = 0.25
 EDGE_CLEARANCE = 0.50
-CLEARANCE = float(sys.argv[10]) if len(sys.argv) == 11 else 0.45
+CLEARANCE = float(sys.argv[10]) if len(sys.argv) >= 11 else 0.45
 if CLEARANCE <= 0:
     raise SystemExit("clearance must be positive")
 SEARCH_MARGIN = None
@@ -52,14 +53,14 @@ def mark_circle(blocked, x, y, radius, bounds=(0, MAX_X, 0, MAX_Y)):
                 blocked.add((ix, iy))
 
 
-def mark_pad(blocked, pad, bounds=(0, MAX_X, 0, MAX_Y)):
+def mark_pad(blocked, pad, conductor_radius, bounds=(0, MAX_X, 0, MAX_Y)):
     """Mark the true pad outline plus the required route separation.
 
     A radius based on the larger pad dimension misses the corners of square
     and rectangular pads.  KiCad's own hit test understands pad shape and
     rotation, so use it over the pad's small expanded bounding box.
     """
-    separation = CLEARANCE + WIDTH / 2
+    separation = CLEARANCE + conductor_radius
     box = pad.GetBoundingBox()
     x0 = pcbnew.ToMM(box.GetX()) - separation
     y0 = pcbnew.ToMM(box.GetY()) - separation
@@ -77,9 +78,11 @@ def mark_pad(blocked, pad, bounds=(0, MAX_X, 0, MAX_Y)):
                 blocked.add((ix, iy))
 
 
-def mark_edge_shape(blocked, shape, bounds=(0, MAX_X, 0, MAX_Y)):
+def mark_edge_shape(
+    blocked, shape, conductor_radius, bounds=(0, MAX_X, 0, MAX_Y)
+):
     """Mark an actual Edge.Cuts primitive plus track-center separation."""
-    separation = EDGE_CLEARANCE + WIDTH / 2
+    separation = EDGE_CLEARANCE + conductor_radius
     box = shape.GetBoundingBox()
     x0 = pcbnew.ToMM(box.GetX()) - separation
     y0 = pcbnew.ToMM(box.GetY()) - separation
@@ -97,28 +100,35 @@ def mark_edge_shape(blocked, shape, bounds=(0, MAX_X, 0, MAX_Y)):
                 blocked.add((ix, iy))
 
 
-def obstacle_map(netname, layer, bounds=(0, MAX_X, 0, MAX_Y)):
+def obstacle_map(
+    netname, layer, bounds=(0, MAX_X, 0, MAX_Y), conductor_radius=WIDTH / 2
+):
     blocked = set()
     for shape in board.GetDrawings():
         if shape.GetLayer() == pcbnew.Edge_Cuts:
-            mark_edge_shape(blocked, shape, bounds)
+            mark_edge_shape(blocked, shape, conductor_radius, bounds)
 
     for pad in board.GetPads():
         if pad.GetNetname() == netname or not pad.IsOnLayer(layer):
             continue
-        mark_pad(blocked, pad, bounds)
+        mark_pad(blocked, pad, conductor_radius, bounds)
 
     for item in board.GetTracks():
         if item.GetNetname() == netname:
             continue
         if isinstance(item, pcbnew.PCB_VIA):
             x, y = mm(item.GetPosition())
-            mark_circle(blocked, x, y, pcbnew.ToMM(item.GetWidth(layer)) / 2 + CLEARANCE + WIDTH / 2, bounds)
+            radius = (
+                pcbnew.ToMM(item.GetWidth(layer)) / 2
+                + CLEARANCE
+                + conductor_radius
+            )
+            mark_circle(blocked, x, y, radius, bounds)
             continue
         if item.GetLayer() != layer:
             continue
         ax, ay = mm(item.GetStart()); bx, by = mm(item.GetEnd())
-        radius = pcbnew.ToMM(item.GetWidth()) / 2 + CLEARANCE + WIDTH / 2
+        radius = pcbnew.ToMM(item.GetWidth()) / 2 + CLEARANCE + conductor_radius
         ix0, ix1 = max(bounds[0], math.floor((min(ax, bx) - radius) / STEP)), min(bounds[1], math.ceil((max(ax, bx) + radius) / STEP))
         iy0, iy1 = max(bounds[2], math.floor((min(ay, by) - radius) / STEP)), min(bounds[3], math.ceil((max(ay, by) + radius) / STEP))
         for ix in range(ix0, ix1 + 1):
@@ -191,7 +201,7 @@ def add_route(netname, start, end, layers=(pcbnew.F_Cu, pcbnew.B_Cu), endpoint_v
     if endpoint_vias:
         for position in (start, end):
             via = pcbnew.PCB_VIA(board); via.SetPosition(position)
-            via.SetWidth(pcbnew.FromMM(0.6)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))
+            via.SetWidth(pcbnew.FromMM(VIA_WIDTH)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))
             via.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu); via.SetNet(net); board.Add(via)
     for a, b in zip(points, points[1:]):
         track = pcbnew.PCB_TRACK(board)
@@ -212,6 +222,20 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
                          min(MAX_Y, max(start_cell[1], goal_cell[1]) + margin))
     blocked = [obstacle_map(netname, pcbnew.F_Cu, search_bounds),
                obstacle_map(netname, pcbnew.B_Cu, search_bounds)]
+    via_copper_blocked = [
+        obstacle_map(
+            netname,
+            pcbnew.F_Cu,
+            search_bounds,
+            conductor_radius=VIA_WIDTH / 2,
+        ),
+        obstacle_map(
+            netname,
+            pcbnew.B_Cu,
+            search_bounds,
+            conductor_radius=VIA_WIDTH / 2,
+        ),
+    ]
     # Layer changes must stay 0.8 mm from existing drilled vias.  Build this
     # keep-out once; scanning every track for every expanded A* state made
     # dense residual routes spend most of their time in an invariant test.
@@ -259,7 +283,11 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
             goal_state = current; break
         x, y, layer_index = current
         options = [(x + dx, y + dy, layer_index, move_cost) for dx, dy, move_cost in MOVES]
-        if (x, y) not in via_blocked and (x, y) not in blocked[1 - layer_index]:
+        if (
+            (x, y) not in via_blocked
+            and (x, y) not in via_copper_blocked[layer_index]
+            and (x, y) not in via_copper_blocked[1 - layer_index]
+        ):
             options.append((x, y, 1 - layer_index, 5.0))
         for nx, ny, nl, move_cost in options:
             if not (search_bounds[0] <= nx <= search_bounds[1]
@@ -295,7 +323,7 @@ def add_multilayer_route(netname, start, end, start_layers=(0, 1), goal_layers=(
         point = end if index == len(path) - 1 else pcbnew.VECTOR2I_MM(x * STEP, y * STEP)
         if layer_index != last_layer:
             via = pcbnew.PCB_VIA(board); via.SetPosition(last_point)
-            via.SetWidth(pcbnew.FromMM(0.6)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))
+            via.SetWidth(pcbnew.FromMM(VIA_WIDTH)); via.SetDrill(pcbnew.FromMM(VIA_DRILL))
             via.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu); via.SetNet(net); board.Add(via)
             last_layer = layer_index; via_count += 1
         elif point != last_point:
@@ -310,12 +338,23 @@ def pad(ref, pin):
     return board.FindFootprintByReference(ref).FindPadByNumber(pin).GetPosition()
 
 
-if len(sys.argv) in (8, 9, 10, 11) and sys.argv[3] == "gap":
+if len(sys.argv) in (8, 9, 10, 11, 13) and sys.argv[3] == "gap":
     netname = sys.argv[4]
     x1, y1 = map(float, sys.argv[5].split(",")); x2, y2 = map(float, sys.argv[6].split(","))
     if sys.argv[7] == "M":
         SEARCH_MARGIN = float(sys.argv[8]) if len(sys.argv) >= 9 else 30.0
-        add_multilayer_route(netname, pcbnew.VECTOR2I_MM(x1, y1), pcbnew.VECTOR2I_MM(x2, y2))
+        layer_options = {"F": (0,), "B": (1,), "A": (0, 1)}
+        start_code = sys.argv[11] if len(sys.argv) == 13 else "A"
+        goal_code = sys.argv[12] if len(sys.argv) == 13 else "A"
+        if start_code not in layer_options or goal_code not in layer_options:
+            raise SystemExit("endpoint layers must be F, B, or A")
+        add_multilayer_route(
+            netname,
+            pcbnew.VECTOR2I_MM(x1, y1),
+            pcbnew.VECTOR2I_MM(x2, y2),
+            layer_options[start_code],
+            layer_options[goal_code],
+        )
     else:
         layer = {"F": (pcbnew.F_Cu,), "B": (pcbnew.B_Cu,), "FB": (pcbnew.F_Cu, pcbnew.B_Cu)}[sys.argv[7]]
         add_route(netname, pcbnew.VECTOR2I_MM(x1, y1), pcbnew.VECTOR2I_MM(x2, y2), layer)
@@ -353,5 +392,5 @@ else:
     add_multilayer_route("RESET", pad("D26", "35"), pad("D1", "12"))
 
 pcbnew.SaveBoard(sys.argv[2], board)
-label = sys.argv[3] if len(sys.argv) in (4, 8, 9, 10, 11) else "RESET and VIDEO_OUT"
+label = sys.argv[3] if len(sys.argv) in (4, 8, 9, 10, 11, 13) else "RESET and VIDEO_OUT"
 print(f"closed {label} reroute gaps -> {sys.argv[2]}")

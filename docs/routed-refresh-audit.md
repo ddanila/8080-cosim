@@ -236,14 +236,35 @@ repair in `kicad/repair_residual_copper_findings.py` preserves both live-chain
 endpoints and replaces that segment with a three-segment F.Cu dogleg on the
 open side of the hole; the lower side was rejected because it conflicts with
 RAM_RD_OE. The accepted dogleg removes the last copper-to-edge finding without
-changing the 30-open count. The apparent
-drop from 665 to 611 other violations is a KiCad/pypcbnew serialization effect:
-an otherwise unchanged load/save round trip also stops reporting the 53
-`pth_inside_courtyard` entries. It is not claimed as a geometry improvement.
+changing the 30-open count. One intermediate pypcbnew save stopped reporting
+the 53 `pth_inside_courtyard` entries, while subsequent router saves reported
+them again with unchanged geometry; that transient count change was not
+treated as a routing improvement.
+
+Two final router assumptions explained the residual false proposals. DRC gap
+items identify whether each endpoint is on F.Cu, B.Cu, or a through-hole pad,
+but the wrapper discarded that information and let A* choose either endpoint
+layer. OSC and DB3 routes therefore reached the right coordinates on the wrong
+layers without closing their gaps. The wrapper now passes explicit F/B/A
+endpoint constraints. Layer changes also used track-width keep-outs for a
+0.6 mm via; a separate via-copper obstacle map now checks the full 0.3 mm via
+radius against both layers. With those corrections, OSC closes at a guarded
+0.30 mm proposal clearance, DB3 closes, and the residual cleanup removes the
+now-redundant 1.555 mm OSC tail only after another OSC route reaches its
+junction. This reached 28 unconnected items with zero electrical-category DRC
+findings.
+
+A complete rule-accurate 0.30 mm sweep then accepted 21 more routes: CAS,
+BA11, PST_CLK, S3_2, BA4, IOM_N, MWC_N, INHIB_N, BA10, IOWC_N, DB7, AMWC_N,
+BA12, SYNC, W10_QA_SEL, RESET, INT7_RAW, M12V, MEM_MODE0, STSTB, and
+MEM_MODE1. The current candidate has 7 unconnected items on 7 nets (`BA1`,
+`BA11`, `DB4`, `INTR`, `PHI2`, `MA6`, and `RAM_OUT_EN`) and 16,747 copper
+items, a cumulative reduction of 182 from the Freerouting import. A complete
+second pass accepted nothing.
 
 The current authoritative DRC has zero shorts, copper-clearance violations,
-track crossings, hole-clearance violations, or copper-to-edge findings. Its
-only remaining electrical-category finding is the dangling end of the still
-open `OSC` net. Exact identity/net parity with all 2,383 source pads also
-remains proved. This candidate is still temporary and cannot replace the
-tracked routed board.
+track crossings, hole-clearance violations, dangling tracks, or copper-to-edge
+findings. All 663 remaining non-electrical violation counts equal the prior
+counts after removing the former GND edge and OSC dangling findings. Exact
+identity/net parity with all 2,383 source pads also remains proved. This
+candidate is still temporary and cannot replace the tracked routed board.

@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ROUTER = ROOT / "kicad" / "repair_fdc_route_gaps.py"
 BLOCKERS = {"shorting_items", "clearance", "tracks_crossing"}
 NET_RE = re.compile(r"\[([^]]+)\]")
+LAYER_RE = re.compile(r" on ([FB])\.Cu(?:,|$)")
 
 
 def run_drc(cli: Path, board: Path, report: Path) -> dict:
@@ -56,7 +57,7 @@ def violation_counts(report: dict) -> dict[str, int]:
 
 def gaps(
     report: dict, minimum: float, maximum: float
-) -> list[tuple[float, str, float, float, float, float]]:
+) -> list[tuple[float, str, float, float, float, float, str, str]]:
     result = []
     for violation in report.get("unconnected_items", []):
         items = violation.get("items", [])
@@ -65,10 +66,23 @@ def gaps(
         match = NET_RE.search(items[0].get("description", ""))
         if not match:
             continue
+        layer_a = LAYER_RE.search(items[0].get("description", ""))
+        layer_b = LAYER_RE.search(items[1].get("description", ""))
         a, b = items[0]["pos"], items[1]["pos"]
         distance = math.hypot(a["x"] - b["x"], a["y"] - b["y"])
         if minimum <= distance <= maximum:
-            result.append((distance, match.group(1), a["x"], a["y"], b["x"], b["y"]))
+            result.append(
+                (
+                    distance,
+                    match.group(1),
+                    a["x"],
+                    a["y"],
+                    b["x"],
+                    b["y"],
+                    layer_a.group(1) if layer_a else "A",
+                    layer_b.group(1) if layer_b else "A",
+                )
+            )
     return sorted(result)
 
 
@@ -170,7 +184,7 @@ def main() -> None:
     shutil.copyfile(args.input, args.output)
 
     accepted = 0
-    attempted: set[tuple[str, float, float, float, float]] = set()
+    attempted: set[tuple[str, float, float, float, float, str, str]] = set()
     with tempfile.TemporaryDirectory(prefix="juku-gap-close-") as tmp_name:
         tmp = Path(tmp_name)
         current_report = run_drc(cli, args.output, tmp / "current.json")
@@ -182,7 +196,7 @@ def main() -> None:
             )
             if proposal is None:
                 break
-            distance, net, x1, y1, x2, y2 = proposal
+            distance, net, x1, y1, x2, y2, start_layer, goal_layer = proposal
             signature = proposal[1:]
             attempted.add(signature)
             candidate_board = tmp / "candidate.kicad_pcb"
@@ -204,6 +218,8 @@ def main() -> None:
                         str(args.search_margin),
                         str(args.grid_step),
                         str(args.route_clearance),
+                        start_layer,
+                        goal_layer,
                     )
                 )
             try:
