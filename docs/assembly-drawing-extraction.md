@@ -2,7 +2,7 @@
 
 Status date: **2026-07-11**.
 
-Status: **SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING**
+Status: **SHEETS 1-6 AND WIRE-TABLE PIN MAPPING ADOPTED**
 
 This generated audit turns the photographed factory assembly drawing into
 guarded project evidence. Sheet 1 proves component posture, mounting/cable
@@ -22,7 +22,8 @@ is promoted as a copper netlist.
 | Lower FDC passive identities follow the registered factory drawing | PASS | five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py` |
 | Upper-row C12/C9 placements follow adjacent fitted IC centres | PASS | D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
-| Factory wires 17 and 18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
+| Board points А:17 and А:18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
+| All ten on-board insulated links map conductor positions and А:N points to guarded endpoints | PASS | sheets 2-5 table; owner continuity; `kicad/check_factory_wire_links.py` |
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
 | Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
 | Dedicated А:17 landing is present on RES_RC in the board spec and source PCB | PASS | two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py` |
@@ -78,6 +79,6 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 
 - Preserve the electrical result of the factory D56/D15/D14/D11 modifications.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
-- Wire 17 is promoted as A17.1/А:17 to S1:1; wire 18 is promoted as D98.7/А:18 to S1:2.
+- Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.
 - S1 remains an off-board bracket component and is excluded from generated PCB footprints.
-- Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.
+- Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.

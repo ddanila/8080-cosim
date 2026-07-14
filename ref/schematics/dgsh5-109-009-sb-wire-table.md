@@ -12,8 +12,10 @@ Reading convention (sheet-1 note 8): the processor board (плата, поз. 17
 designated by the letter **А** in this table. `А:N` therefore means the board
 point labelled `N` on the sheet-1 placement drawing. Rows whose начало and
 конец are both `А:N` are the numbered on-board wire links: both solder points
-carry the same number on sheet 1 (this matches the owner-measured pairs in
-`ref/photos/juku-pcb-2/BODGE-TRIAGE.md`, e.g. wire 7 = D1.22-D35.10).
+carry the same point number on sheet 1. The leftmost `Провод` value is the
+conductor's position within assembly item 155; it is **not** the board-point
+number. For example, conductor position 3 joins the two points labelled
+`А:7`, which owner continuity maps to D1.22-D35.10.
 
 This file is a human transcription for review convenience; the scan is the
 evidence. Lengths were revised in ink on the original (struck and rewritten);
@@ -83,8 +85,31 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 13 | А:19 | А:19 | ~9.5 |
 | 14 | А:20 | А:20 | ~6 |
 
-Rows 11 and 12 are the previously open factory wires 17 and 18: their far
-ends terminate on switch `S1` pins 1 and 2. The 3 cm length of wire 12 is
+All ten on-board link rows are now mapped to electrical endpoints. The owner
+read for `А:20` was made through the installed X3 cable, so the table below
+shows the intervening photographed PCB landing A23 as well as remote X3.3.
+These links are insulated assembly wire, not replacement PCB etch.
+
+| Conductor position | Board point | Guarded endpoints | Net |
+| ---: | ---: | --- | --- |
+| 3 | А:7 | D1.22 - D35.10 | `PHI1` |
+| 4 | А:8 | D5.1 - D38.8 | `STSTB` |
+| 5 | А:9 | D1.19 - D38.12 | `SYNC` |
+| 6 | А:10 | D41.13 - D50.1 | `W10_QA_SEL` |
+| 7 | А:11 | D7.1 - D92.13 | `MEMR` |
+| 8 | А:12 | D13.2 - D37.4 | `RAM_OUT_EN` |
+| 9 | А:13 | D13.1 - D92.1 | `ROE` |
+| 10 | А:14 | D1.15 - D35.12 | `PHI2` |
+| 13 | А:19 | D5.26 - D7.2 | `MEMW` |
+| 14 | А:20 | D3.10 - A23.1 - X3.3 | `S_TTL` |
+
+`kicad/check_factory_wire_links.py` guards these mappings against the
+authoritative board model. The mapping does not authorize a routed-copper
+substitution: the final assembly output must retain these as insulated links.
+
+Rows 11 and 12 are the previously open factory links at board points 17 and
+18: their far ends terminate on switch `S1` pins 1 and 2. The 3 cm length of
+conductor 12 is
 consistent with board point 18 sitting in the D98 quadrant directly beside
 S1 on the sheet-1 placement.
 

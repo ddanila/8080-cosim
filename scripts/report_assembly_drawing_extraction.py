@@ -85,6 +85,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_x4_offboard_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    factory_wire_links = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_factory_wire_links.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
 
     real_jpegs = all(path.read_bytes()[:3] == b"\xff\xd8\xff" and path.stat().st_size > 1_000_000 for path in photos)
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
@@ -130,9 +134,19 @@ def main() -> int:
             "assembly-photo README",
         ),
         (
-            "Factory wires 17 and 18 carry documented S1 far ends without conflation",
-            marker(bodge_text, "| 17 |", "200358952", "A17.1", "| 18 |", "Validated component and solder fits", "А:18 - S1:2", "do not conflate with wire 17"),
+            "Board points А:17 and А:18 carry documented S1 far ends without conflation",
+            marker(bodge_text, "11 / А:17", "200358952", "A17.1", "12 / А:18", "Validated component and solder fits", "А:18 - S1:2", "not the А:17 link"),
             "sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence",
+        ),
+        (
+            "All ten on-board insulated links map conductor positions and А:N points to guarded endpoints",
+            factory_wire_links.returncode == 0 and marker(
+                read(WIRE_TABLE_MD),
+                "conductor's position", "not", "board-point", "number",
+                "| 3 | А:7 | D1.22 - D35.10 |", "| 14 | А:20 | D3.10 - A23.1 - X3.3 |",
+                "insulated assembly wire, not replacement PCB etch",
+            ),
+            "sheets 2-5 table; owner continuity; `kicad/check_factory_wire_links.py`",
         ),
         (
             "Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18",
@@ -144,7 +158,7 @@ def main() -> int:
             "Bracket-mounted S1 is excluded from generated PCB footprints",
             marker(read(PCB_GENERATOR), "OFF_BOARD = {", "'S1'", "must never become a PCB header footprint")
             and '(property "Reference" "S1"' not in read(SOURCE_PCB)
-            and marker(plan_text, "excluded from", "generated PCB", "fictitious on-board S1 header", "is removed"),
+            and marker(plan_text, "S1/X3/X4/X8/X9", "intentionally excluded", "physical A-point", "cable landings"),
             "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction",
         ),
         (
@@ -221,7 +235,7 @@ def main() -> int:
         ),
     ]
     ok = all(result for _, result, _ in checks)
-    status = "SHEETS 1-6 ADOPTED / WIRE-TABLE PIN MAPPING PENDING" if ok else "ASSEMBLY DRAWING EXTRACTION FAILED"
+    status = "SHEETS 1-6 AND WIRE-TABLE PIN MAPPING ADOPTED" if ok else "ASSEMBLY DRAWING EXTRACTION FAILED"
 
     lines = [
         "# ДГШ5.109.009 СБ extraction audit",
@@ -270,9 +284,9 @@ def main() -> int:
         "",
         "- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.",
         "- Keep D94/D100/D98 horizontal during the source-PCB reroute.",
-        "- Wire 17 is promoted as A17.1/А:17 to S1:1; wire 18 is promoted as D98.7/А:18 to S1:2.",
+        "- Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.",
         "- S1 remains an off-board bracket component and is excluded from generated PCB footprints.",
-        "- Map each wire-table А:N point to a package pin before board-model promotion; the table gives point numbers, not pins.",
+        "- Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")

@@ -53,12 +53,13 @@ These are ordered; each is completable with material already in the repo.
    netlist changes through the per-net quarantine mechanism, but final
    production reroute/adoption waits for the P0 functional netlist to freeze,
    followed by repeated endpoint-parity, DRC, and visual review.
-2. **Finish the wire-table pin mapping that existing scans permit.** The
-   sheets 2-6 таблица соединений is transcribed
-   (`ref/schematics/dgsh5-109-009-sb-wire-table.md`); X3/X8/X9 landings and
-   R94.1 are adopted. Promote X4 and the remaining numbered links only after
-   each А:N point is mapped to a package pin; exhaust the registered photo
-   set before queueing the remainder as owner measurements.
+2. **Preserve the adopted factory wire-table construction through release.**
+   The sheets 2-6 таблица соединений is transcribed and its two number spaces
+   are now explicit: conductor positions are not `А:N` board-point labels
+   (`ref/schematics/dgsh5-109-009-sb-wire-table.md`). X3/X4/X8/X9 landings,
+   S1 links, R94.1, and all ten on-board insulated links are endpoint-mapped
+   and guarded. Final copper adoption must retain `А:7-А:14` and
+   `А:19-А:20` as assembly wire rather than silently replacing them with etch.
 
 ## Release blockers
 

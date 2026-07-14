@@ -93,25 +93,31 @@ The conspicuous insulated wires are documented assembly links, not an
 undocumented repair campaign. Owner continuity readings and the assembly
 drawing agree on these endpoints:
 
-| Wire | Measured endpoints | Meaning/state |
-| ---: | --- | --- |
-| 7 | D1.22 - D35.10 | PHI1 |
-| 14 | D1.15 - D35.12 | PHI2 |
-| 9 | D1.19 - D38.12 | SYNC |
-| 8 | D5.1 - D38.8 | STSTB |
-| 19 | D5.26 - D7.2 | MEMW branch |
-| 12 | D13.2 - D37.4 | RAM output-enable path |
-| 13 | D13.1 - D92.1 | ROE support path |
-| 10 | D41.13 - D50.1 | video/CPU mux select |
-| 11 | D7.1 - D92.13 | timing support path |
-| 20 | D3.10 - X3.3 | serial `S_TTL` path |
+The factory table has two different number spaces: `Провод` is the conductor
+position within assembly item 155, while `А:N` is the number printed at both
+PCB endpoints. Earlier shorthand called the latter a "wire number"; the
+explicit columns below remove that ambiguity.
+
+| Conductor position | Board point | Measured/guarded endpoints | Meaning/state |
+| ---: | ---: | --- | --- |
+| 3 | А:7 | D1.22 - D35.10 | PHI1 |
+| 4 | А:8 | D5.1 - D38.8 | STSTB |
+| 5 | А:9 | D1.19 - D38.12 | SYNC |
+| 6 | А:10 | D41.13 - D50.1 | video/CPU mux select |
+| 7 | А:11 | D7.1 - D92.13 | timing support path |
+| 8 | А:12 | D13.2 - D37.4 | RAM output-enable path |
+| 9 | А:13 | D13.1 - D92.1 | ROE support path |
+| 10 | А:14 | D1.15 - D35.12 | PHI2 |
+| 13 | А:19 | D5.26 - D7.2 | MEMW branch |
+| 14 | А:20 | D3.10 - A23.1 - X3.3 | serial `S_TTL` path; owner read includes the installed X3 cable |
 | - | D26.23 - X9.9 | keyboard/tape connector line |
-| 17 | Component photo 200358952 at `(914,1154)` and solder photo 200509593 at `(2145,1155)` show the same dedicated tinned pad printed `17`; sheets 2-5 row 11 documents А:17 - S1:1, ~19 cm | promoted as `A17.1` on `RES_RC`; board position approximately `(115.8,27.1)` mm from the adjacent `(114.4,13.3)` mounting-hole transfer |
-| 18 | Validated component and solder fits place the white bracket-switch lead on D98.7 and show no PCB-copper departure from that pad; sheets 2-5 row 12 documents А:18 - S1:2, ~3 cm | promoted as `D98_Y3_S1_2`; the photographed 220-ohm part is the separately placed R94 below-left of D98, not a D98.7 branch; do not conflate with wire 17 |
+| 11 / А:17 | Component photo 200358952 at `(914,1154)` and solder photo 200509593 at `(2145,1155)` show the same dedicated tinned pad printed `17`; sheets 2-5 row 11 documents А:17 - S1:1, ~19 cm | promoted as `A17.1` on `RES_RC`; board position approximately `(115.8,27.1)` mm from the adjacent `(114.4,13.3)` mounting-hole transfer |
+| 12 / А:18 | Validated component and solder fits place the white bracket-switch lead on D98.7 and show no PCB-copper departure from that pad; sheets 2-5 row 12 documents А:18 - S1:2, ~3 cm | promoted as `D98_Y3_S1_2`; the photographed 220-ohm part is the separately placed R94 below-left of D98, not the А:17 link |
 
 The settled wire links are represented in the board model with endpoint
-provenance. Sheet-1 assembly photos `114556899` and `114600417` separate the
-labels for wires 17 and 18, correcting the earlier combined “17/18” shorthand.
+provenance and guarded by `kicad/check_factory_wire_links.py`. Sheet-1 assembly
+photos `114556899` and `114600417` separate board-point labels 17 and 18,
+correcting the earlier combined “17/18” shorthand.
 The sheets 2-5 connection table (`ДУБЛИКАТ` scan) documents both far ends on
 switch S1. The component photo plus package fit closes `А:18` as D98.7, while
 matching labeled component/solder views close `А:17` as a dedicated board pad.
