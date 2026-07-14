@@ -735,7 +735,9 @@ module ln2_inv (input wire a, i13, i1, i3, i5, i9,
                 output wire y, o12, o2, o4, o6, o8);   // D3 К561ЛН2 complete hex-inverter package
     assign o12 = ~i13;   // 13->12: -INT7 (X1.113B) -> IR7 (D10.25), via S4 [series switch, unmodeled]
     assign o2  = ~i1;    // 1->2:   -INT6 (X1.113C) -> S4 INT6 throw
-    assign o4  = ~i3; assign o6 = ~i5; assign o8 = ~i9; // 9->8 is the serial OC pre-inverter; 3/5 remain unresolved
+    assign o4  = ~i3; // D26 PC1/pin15 -> pulled-up pin3 -> pin4 -> D6 A6/pin1
+    assign o6  = ~i5; // D26 PC0/pin14 -> pulled-up pin5 -> pin6 -> D6 A5/pin2
+    assign o8  = ~i9; // 9->8 is the serial OC pre-inverter
 // original section:
     assign y = ~a;
 endmodule

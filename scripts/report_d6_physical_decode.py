@@ -13,16 +13,16 @@ EXPECTED_SHA256 = "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383
 
 
 def row_index(high5: int, mode: int) -> int:
-    """RT4 index: A0..A7 = BA15..BA11,PC2..PC4."""
+    """RT4 index: A0..A7 = BA15..BA11,A5..A7 raw pin levels."""
     ba15 = (high5 >> 4) & 1
     ba14 = (high5 >> 3) & 1
     ba13 = (high5 >> 2) & 1
     ba12 = (high5 >> 1) & 1
     ba11 = high5 & 1
-    pc2 = mode & 1
-    pc3 = (mode >> 1) & 1
-    pc4 = (mode >> 2) & 1
-    return ba15 | ba14 << 1 | ba13 << 2 | ba12 << 3 | ba11 << 4 | pc2 << 5 | pc3 << 6 | pc4 << 7
+    a5 = mode & 1
+    a6 = (mode >> 1) & 1
+    a7 = (mode >> 2) & 1
+    return ba15 | ba14 << 1 | ba13 << 2 | ba12 << 3 | ba11 << 4 | a5 << 5 | a6 << 6 | a7 << 7
 
 
 def ranges(values: list[int]) -> list[tuple[int, int, int]]:
@@ -70,18 +70,18 @@ def main() -> int:
     model_checks = [
         ("Board source joins D6.11/D6.12 to D13.12 and D8.15", required_join <= joined_nodes),
         ("HDL drives both D6 outputs onto the joined conductor", ".rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n)" in hdl),
-        ("HDL uses physical D6 address order", ".a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
+        ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
         ("Runnable compatibility decode is explicit and excluded from LVS",
          "module decode_prom_functional" in devices
          and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
         ("Structural consumers retain the measured joined D6 conductor",
          "wire        rom_sel_n = d6_mem_select_n, ram_sel_n = d6_mem_select_n;" in hdl),
-        ("All-mode B37A RAM-gate boundary has a reproducible diagnostic",
-         "ALL PHYSICAL MODES EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
+        ("All-row B37A RAM-gate boundary has a reproducible diagnostic",
+         "ALL RAW A7..A5 ROWS EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
          and runtime_report.count("D6-RUNTIME-ALL-MODES ba=b37a") == 8),
-        ("Mode-000 D6 indistinguishability and D8 pager distinction are reproduced",
+        ("Raw-row regression and corrected checkpoint suffix are documented",
          "D6-RUNTIME-QUALIFIER mode=000 low_ba=0484 low_word=8 low_d8=ef ram_ba=b37a ram_word=8 ram_d8=ff" in runtime_report
-         and "every D8 output currently has exactly one peer" in runtime_report),
+         and "checkpoint on suffix `11`" in runtime_report),
     ]
     if not all(ok for _, ok in model_checks):
         raise SystemExit(f"D6 physical-model adoption changed: {model_checks}")
@@ -93,7 +93,7 @@ def main() -> int:
         "address ranges without assigning semantics that the `.009` continuity does",
         "not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.", "",
         "## Guarded artifact", "", f"- Raw image: `ref/physical-proms/validated/d6_038.raw.bin` ({len(data)} bytes)",
-        f"- SHA256: `{sha}`", "- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, PC2, PC3, PC4`",
+        f"- SHA256: `{sha}`", "- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`",
         "- Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9", "",
         "## Output words", "", "| Raw word | Rows | D3 D2 D1 D0 | Joined D1/D0 conductor |", "| ---: | ---: | --- | --- |",
     ]
@@ -108,19 +108,20 @@ def main() -> int:
         "`.009` nets even though they remain useful physical pin-role labels.", "",
         "## Mode maps", "", "Each address interval is inclusive. The 32-character signature is one raw",
         "nibble per 2 KiB block from `0000` through `F800`.", "",
-        "| PC4 PC3 PC2 | 2 KiB signature | Inclusive address ranges |", "| --- | --- | --- |",
+        "| D6 A7 A6 A5 | 2 KiB signature | Inclusive address ranges |", "| --- | --- | --- |",
     ]
     for mode in range(8):
         signature = "".join(f"{value:X}" for value in mode_values[mode])
         rendered = "; ".join(f"`{start:04X}-{end:04X}` -> `{word:X}`" for start, end, word in actual_runs[mode])
         lines.append(f"| `{mode:03b}` | `{signature}` | {rendered} |")
     lines += [
-        "", "## Direct observations", "", "- With `PC4=1`, PC2 and PC3 are don't-cares: `0000-1FFF` emits `D` and",
-        "  `2000-FFFF` emits `F`.", "- With `PC4=0`, all four PC3/PC2 combinations are distinct. Mode `001`",
+        "", "## Direct observations", "", "- With raw `A7=1`, A5 and A6 are don't-cares: `0000-1FFF` emits `D` and",
+        "  `2000-FFFF` emits `F`.", "- With raw `A7=0`, all four A6/A5 combinations are distinct. Mode `001`",
         "  contains word `8` at `0000-3FFF` and `C000-D7FF`, word `F` in the",
         "  middle, and word `1` at `D800-FFFF`; mode `010` extends word `8` through `D7FF`.",
-        "  Firmware coverage is reported separately; do not equate these physical",
-        "  mode numbers with the emulator's PC1/PC0 banking convention.",
+        "  Direct `.009` continuity now proves A6=`~PC1` and A5=`~PC0`; A7 joins",
+        "  D105.1 but its driver or pull source is still unresolved. The raw mode",
+        "  numbers remain useful table coordinates, not a claim about A7 semantics.",
         "- D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`; the",
         "  joined D1/D0 conductor is high only in word `F`.", "- These are physical electrical facts, not yet a complete explanation of",
         "  the downstream D8/D13/D92 memory timing. That behavior must be derived",
@@ -132,7 +133,7 @@ def main() -> int:
         "  guarded; the compatibility path must be retired when downstream timing",
         "  continuity is sufficient to execute directly from the physical topology.",
         "- `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a",
-        "  full boot. At `B37A`, all eight PC4..PC2 combinations emit word `8` or",
+        "  full boot. At `B37A`, all eight raw A7..A5 combinations emit word `8` or",
         "  `F`; D6.9 is therefore high in every physical row, and disabling the PROM",
         "  also leaves it high. Mode selection and V1/V2 cannot repair the currently",
         "  modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,",

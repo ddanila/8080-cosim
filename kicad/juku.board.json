@@ -177,7 +177,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "validated owner dump 2026-07-13 uses physical RT4 address order A0-A7=5/6/7/4/3/2/1/15; board signals are BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4 respectively. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged; three independent accepted reads, including a power-cycled capture, agree at all 256 addresses with raw SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
+    "pins": "validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity on 2026-07-14 proves board signals BA15,BA14,BA13,BA12,BA11,/PC0,/PC1,D6_A7_D105_I1_BOUNDARY respectively, superseding the older PC2/PC3/PC4 assignment. Program drawing = ДГШ5.106.038; enable pins V1/pin13 and V2/pin14 are visibly bridged; five accepted cross-machine reads including a power-cycled capture agree at all 256 addresses with raw SHA256 05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39"
    }
   },
   {
@@ -2451,7 +2451,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К561ЛН2 standard hex-inverter package contract; exhaustive sheet-1 symbol census traces sections 11->10 serial S_TTL, 9->8 serial OC pre-inverter, 13->12 IR7, and 1->2 IR6; sections 3->4 and 5->6 never occur and pins 3/4/5/6 are explicit NCs"
+    "pins": "К561ЛН2 standard hex-inverter package contract; sheet-1 traces sections 11->10 serial S_TTL, 9->8 serial OC pre-inverter, 13->12 IR7, and 1->2 IR6. Direct .009 owner continuity on 2026-07-14 supersedes the older-sheet unused-section census: pulled-up D26 PC1/pin15 drives D3.3->D3.4->D6.1 and pulled-up D26 PC0/pin14 drives D3.5->D3.6->D6.2"
    }
   },
   {
@@ -5104,7 +5104,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official placement; sheet-1 .006 wait/MRD logic",
-    "pins": "12+13 tied from MRD -> 11 to D30.13; 1 from MWR and 2 from D13.4 -> 3 boundary; D2.12 -> 9 with named off-sheet H -> 10, producing 8; 8 ties 4+5 -> 6, which feeds the older-sheet D95 inverter boundary before -WAIT/E8-1"
+    "pins": "12+13 tied from MEMW -> 11 to D30.13; direct .009 owner continuity on 2026-07-14 proves pin1 joins D6.15 but not pins12/13 or D5.26, superseding the older-sheet MWR assignment; pin2 receives D13.4 and output3 remains a boundary. D1.17 DBIN -> 9 with named off-sheet H -> 10, producing 8; 8 ties 4+5 -> 6 and feeds D5.4"
    }
   },
   {
@@ -7143,6 +7143,18 @@
    "src": "sheet-1 full-resolution: D6 РТ4 enable pins V1/pin13 and V2/pin14 are visibly bridged; upstream conductor origin remains unread and the former D7.11 merge is refuted",
    "nodes": [["D6", "13"], ["D6", "14"]]
   },
+  "D3_O4_D6_A6": {
+   "src": "direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D3 К561ЛН2 inverter output pin4 drives D6 К556РТ4 address input A6/pin1; D6.1 is explicitly not connected to D26",
+   "nodes": [["D3", "4"], ["D6", "1"]]
+  },
+  "D3_O6_D6_A5": {
+   "src": "direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D3 К561ЛН2 inverter output pin6 drives D6 К556РТ4 address input A5/pin2; D6.2 is explicitly not connected to any D26 pin",
+   "nodes": [["D3", "6"], ["D6", "2"]]
+  },
+  "D6_A7_D105_I1_BOUNDARY": {
+   "src": "direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D6 address input A7/pin15 joins D105 К155ЛА3 input pin1. No other destination was found; D6.15 is explicitly not connected to any D26 pin, and D105.1 is explicitly isolated from D105.12/.13 and D5.26 MEMW. Both proved endpoints are inputs, so the unknown driver or pull source remains a required continuity boundary",
+   "nodes": [["D6", "15"], ["D105", "1"]]
+  },
   "ROE": {
    "src": "traced sheet-1 (crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone) -> D13.1 (TL2 Schmitt input); merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail (real РТ4 column = dump to confirm); +R14 1k pullup (v3_junction; pairing order assumed)",
    "nodes": [
@@ -7239,7 +7251,7 @@
    ]
   },
   "MEMW": {
-   "src": "scan; array read: DRAM W pins moved to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps; native sheet-1 direct T-junction adds D7.4 on the same conductor feeding D29 physical pin1; + D36.9 write-qualifier into the W-strobe NAND (t6: \"(1) WR\" line y-match)",
+   "src": "scan plus owner continuity 2026-07-13/14: tied D105.12/.13 join D5.26; D105.1 is explicitly not on this conductor. Array read moves DRAM W pins to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps; native sheet-1 direct T-junction adds D7.4 on the same conductor feeding D29 physical pin1; D36.9 is the write qualifier into the W-strobe NAND",
    "nodes": [
     [
      "D5",
@@ -7264,10 +7276,6 @@
     [
      "D36",
      "9"
-    ],
-    [
-     "D105",
-     "1"
     ],
     ["D105", "12"],
     ["D105", "13"]
@@ -7366,15 +7374,11 @@
    ]
   },
   "MEM_MODE0": {
-   "src": "traced sheet-1 full-resolution: D26 PC2/pin16 -> mode-bundle tag1 -> D6 A5/pin2 and directly into D28 input pin11, whose paired open-collector output pin10 is labeled -REC/X4.2; the D28 output destination remains a target-board continuity boundary",
+   "src": "older sheet routes D26 PC2/pin16 directly into D28 input pin11; direct .009 owner continuity on 2026-07-14 proves D6.2 is not connected to any D26 pin and instead receives D3.6",
    "nodes": [
     [
      "D26",
      "16"
-    ],
-    [
-     "D6",
-     "2"
     ],
     [
      "D28",
@@ -13722,13 +13726,13 @@
    "src": "sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary",
    "nodes": [["D14", "7"]]
   },
-  "D26_PC0_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D26 PC0 pin14 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary",
-   "nodes": [["D26", "14"]]
+  "D26_PC0_D3_I5": {
+   "src": "direct .009 owner continuity 2026-07-14: D26 PC0/pin14 reaches D3 inverter input pin5 and that input has a resistor pull-up to +5 V; resistor reference/value remain unresolved",
+   "nodes": [["D26", "14"], ["D3", "5"]]
   },
-  "D26_PC1_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D26 PC1 pin15 leaves the PPI into the cassette-control gate region, but its unique next hop is not established and remains a measurement boundary",
-   "nodes": [["D26", "15"]]
+  "D26_PC1_D3_I3": {
+   "src": "direct .009 owner continuity 2026-07-14: D26 PC1/pin15 reaches D3 inverter input pin3 and that input has a resistor pull-up to +5 V; resistor reference/value remain unresolved",
+   "nodes": [["D26", "15"], ["D3", "3"]]
   },
   "D26_PB4_BOUNDARY": {
    "src": "sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remains a measurement boundary",
@@ -13797,7 +13801,7 @@
    ]
   },
   "FDC_DDEN": {
-   "src": "cross-source: sheet-1 D26 PC4/pin13 -> mode-bundle tag3 -> D6 A7/pin15 and directly into D28 input pin9, whose paired open-collector output pin8 is labeled -FF/X4.1; .009/MAME PC4 is also FDC density -> D93.37. July-2026 two-sided local D93 fit identifies pin37 and its local copper, but does not prove the far D26/D6 continuity; the D28 output destination remains a target-board continuity boundary",
+   "src": "cross-source: older sheet routes D26 PC4/pin13 directly into D28 input pin9, while .009/MAME associates PC4 with FDC density; July-2026 two-sided local D93 fit identifies pin37 and its local copper. Direct .009 owner continuity on 2026-07-14 proves D6.15 is not connected to any D26 pin, so the former D6 branch is removed",
    "nodes": [
     [
      "D26",
@@ -13806,10 +13810,6 @@
     [
      "D93",
      "37"
-    ],
-    [
-     "D6",
-     "15"
     ],
     [
      "D28",
@@ -15280,15 +15280,11 @@
    "nodes": [["C99", "2"]]
   },
   "MEM_MODE1": {
-   "src": "traced sheet-1 full-resolution: D26 PC3/pin17 -> mode-bundle tag2 -> D6 A6/pin1 and directly into D28 input pin13, whose paired open-collector output pin12 is labeled -PLAY/X4.3; the D28 output destination remains a target-board continuity boundary",
+   "src": "older sheet routes D26 PC3/pin17 directly into D28 input pin13; direct .009 owner continuity on 2026-07-14 proves D6.1 is not connected to D26 and instead receives D3.4",
    "nodes": [
     [
      "D26",
      "17"
-    ],
-    [
-     "D6",
-     "1"
     ],
     [
      "D28",
@@ -15786,10 +15782,6 @@
   ["D10", "12"],
   ["D10", "13"],
   ["D10", "15"],
-  ["D3", "3"],
-  ["D3", "4"],
-  ["D3", "5"],
-  ["D3", "6"],
   ["D13", "8"],
   ["D13", "9"],
   ["D13", "10"],

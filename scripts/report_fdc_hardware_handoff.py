@@ -631,7 +631,7 @@ def main() -> int:
         ]
     )
     for signal, pin, remote, remote_pin in (
-        ("`FDC_DDEN`", "37", "D26.13 / D6.15", None),
+        ("`FDC_DDEN`", "37", "D26.13 (D6.15 explicitly excluded by continuity)", None),
         ("`FDC_DRQ`", "38", "D10.19", "19"),
         ("`FDC_INTRQ`", "39", "D10.18", "18"),
     ):

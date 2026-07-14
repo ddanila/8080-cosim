@@ -10,7 +10,7 @@ not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.
 
 - Raw image: `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes)
 - SHA256: `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`
-- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, PC2, PC3, PC4`
+- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`
 - Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9
 
 ## Output words
@@ -33,7 +33,7 @@ older-sheet names `RAM_N` and `ROM_N` must not be interpreted as independent
 Each address interval is inclusive. The 32-character signature is one raw
 nibble per 2 KiB block from `0000` through `F800`.
 
-| PC4 PC3 PC2 | 2 KiB signature | Inclusive address ranges |
+| D6 A7 A6 A5 | 2 KiB signature | Inclusive address ranges |
 | --- | --- | --- |
 | `000` | `88888888888888888888888888888888` | `0000-FFFF` -> `8` |
 | `001` | `88888888FFFFFFFFFFFFFFFF88811111` | `0000-3FFF` -> `8`; `4000-BFFF` -> `F`; `C000-D7FF` -> `8`; `D800-FFFF` -> `1` |
@@ -46,13 +46,14 @@ nibble per 2 KiB block from `0000` through `F800`.
 
 ## Direct observations
 
-- With `PC4=1`, PC2 and PC3 are don't-cares: `0000-1FFF` emits `D` and
+- With raw `A7=1`, A5 and A6 are don't-cares: `0000-1FFF` emits `D` and
   `2000-FFFF` emits `F`.
-- With `PC4=0`, all four PC3/PC2 combinations are distinct. Mode `001`
+- With raw `A7=0`, all four A6/A5 combinations are distinct. Mode `001`
   contains word `8` at `0000-3FFF` and `C000-D7FF`, word `F` in the
   middle, and word `1` at `D800-FFFF`; mode `010` extends word `8` through `D7FF`.
-  Firmware coverage is reported separately; do not equate these physical
-  mode numbers with the emulator's PC1/PC0 banking convention.
+  Direct `.009` continuity now proves A6=`~PC1` and A5=`~PC0`; A7 joins
+  D105.1 but its driver or pull source is still unresolved. The raw mode
+  numbers remain useful table coordinates, not a claim about A7 semantics.
 - D3/pin9 is low only in word `1`; D2/pin10 is high in words `D/F`; the
   joined D1/D0 conductor is high only in word `F`.
 - These are physical electrical facts, not yet a complete explanation of
@@ -65,7 +66,7 @@ nibble per 2 KiB block from `0000` through `F800`.
   guarded; the compatibility path must be retired when downstream timing
   continuity is sufficient to execute directly from the physical topology.
 - `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a
-  full boot. At `B37A`, all eight PC4..PC2 combinations emit word `8` or
+  full boot. At `B37A`, all eight raw A7..A5 combinations emit word `8` or
   `F`; D6.9 is therefore high in every physical row, and disabling the PROM
   also leaves it high. Mode selection and V1/V2 cannot repair the currently
   modeled D13/D37 chain's inactive D58 output. The isolated `.009` endpoint,
@@ -82,8 +83,8 @@ nibble per 2 KiB block from `0000` through `F800`.
 | --- | --- |
 | Board source joins D6.11/D6.12 to D13.12 and D8.15 | PASS |
 | HDL drives both D6 outputs onto the joined conductor | PASS |
-| HDL uses physical D6 address order | PASS |
+| HDL uses measured physical D6 address order | PASS |
 | Runnable compatibility decode is explicit and excluded from LVS | PASS |
 | Structural consumers retain the measured joined D6 conductor | PASS |
-| All-mode B37A RAM-gate boundary has a reproducible diagnostic | PASS |
-| Mode-000 D6 indistinguishability and D8 pager distinction are reproduced | PASS |
+| All-row B37A RAM-gate boundary has a reproducible diagnostic | PASS |
+| Raw-row regression and corrected checkpoint suffix are documented | PASS |

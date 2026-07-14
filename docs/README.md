@@ -37,8 +37,9 @@ findings. Every status applies only to the boundary named by the report.
 - Programmable parts: `firmware-gap-ledger.md`,
   `d2-reconstruction-constraints.md`, `d94-reconstruction-constraints.md`,
   `reconstructed-prom-fallbacks.md`, `d6-physical-decode.md`,
+  `d6-input-continuity.md` (measured `/PC1`, `/PC0`, and unresolved A7 routes),
   `d6-runtime-path-diagnostic.md` (all-mode B37A RAM-output boundary),
-  `d6-firmware-mode-coverage.md` (physical PC4..PC2 versus emulator PC1..PC0),
+  `d6-firmware-mode-coverage.md`,
   `eprom-programming-images.md`, and
   `d2-physical-dump-and-continuity.md` (validated owner dump and synchronized
   connectivity adoption), and `d2-physical-truth.md` (exact READY truth

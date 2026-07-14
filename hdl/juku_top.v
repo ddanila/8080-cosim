@@ -75,7 +75,9 @@ module juku_top (
 `endif
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
     wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
-    wire [7:0]  ppi0_pc;               // D26 Port C: PC2/3/4 -> D6 A5/6/7; PC4 also -> FDC DDEN
+    wire [7:0]  ppi0_pc;
+    wire        d3_o4_d6_a6, d3_o6_d6_a5;
+    wire        d6_a7_d105_i1;          // measured D6.15 <-> D105.1; driver/pull source unresolved
     // DRAM strobes (hoisted: the D36 CAS-rail tap reads cas_n in the mesh block). Array read:
     // R is PER BANK (rails 11/12/13/14 <- the D53 Y ladder), C (rail 15) + W (rail 16) are shared.
     wire        cas_n;
@@ -160,7 +162,7 @@ module juku_top (
                         .v1_n(1'b0), .v2_n(1'b0),
                         .d({d2_nc, ready_d}));
     la3_gate U_D105 (.a(memw_n), .b(memw_n), .y(d105_memw_inv),
-                     .a2(memw_n), .b2(d13_o4), .y2(d105_gate1_y),
+                     .a2(d6_a7_d105_i1), .b2(d13_o4), .y2(d105_gate1_y),
                      .a3(d105_dbin_n), .b3(d105_dbin_n), .y3(d105_dbin_gated),
                      .a4(dbin), .b4(d105_h), .y4(d105_dbin_n));
     // Owner continuity: D2.12 + R6 -> D30.D1; Q1 -> R29 -> CPU READY.
@@ -269,7 +271,8 @@ module juku_top (
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
     wire d6_v_enable;
     net_boundary U_D6VENLNK (.a(1'b0), .b(d6_v_enable));
-    decode_prom U_DECODE (.a({ppi0_pc[4], ppi0_pc[3], ppi0_pc[2], BA[11], BA[12], BA[13], BA[14], BA[15]}),
+    net_boundary U_D6A7LNK (.a(1'b1), .b(d6_a7_d105_i1));
+    decode_prom U_DECODE (.a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),                               // V1/V2 are one source-visible, upstream-unread boundary
                           .rom_n(d6_mem_select_n), .ram_n(d6_mem_select_n),
                           .rev(d6_rev_physical), .roe_n(d6_roe_physical));
@@ -568,7 +571,8 @@ module juku_top (
     wire ir7_sig, ir6_buf, ir6_sig;
     ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
                    .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_buf),
-                   .i3(1'bz), .o4(), .i5(1'bz), .o6(),
+                   .i3(ppi0_pc[1]), .o4(d3_o4_d6_a6),
+                   .i5(ppi0_pc[0]), .o6(d3_o6_d6_a5),
                    .i9(ser_txd), .o8(ser_txd_inv));
     // S4 selects PIC IR6 between buffered -INT6 and USART SYNDET. The photographed
     // build defaults to the external-interrupt throw for simulation.

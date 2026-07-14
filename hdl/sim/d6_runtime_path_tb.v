@@ -2,10 +2,12 @@
 
 // Focused diagnostic for the still-open physical-D6 runnable adoption path.
 // It exercises the exact combinational chain which blocked checkpoint-resumed
-// execution when the CPU called RAM at B37A in physical mode 000.
+// execution when the CPU called RAM at B37A. `pc` below is now only a raw
+// A7..A5 table coordinate; measured board inputs are A6=/PC1, A5=/PC0, while
+// the source of A7 remains unresolved.
 module d6_runtime_path_tb;
   reg [15:0] ba = 16'h0000;
-  reg [2:0] pc = 3'b000; // {PC4,PC3,PC2}
+  reg [2:0] pc = 3'b000; // raw {D6 A7,A6,A5}
   reg d6_v_en_n = 1'b0;
 
   wire d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
@@ -18,8 +20,8 @@ module d6_runtime_path_tb;
   wire functional_ram_out_en;
   wire functional_d58_oe_n;
 
-  // juku_top's physical RT4 address order: A0..A7 =
-  // BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4.
+  // Physical RT4 address order: A0..A7 =
+  // BA15,BA14,BA13,BA12,BA11,A5,A6,A7.
   wire [7:0] d6_a = {pc[2], pc[1], pc[0],
                      ba[11], ba[12], ba[13], ba[14], ba[15]};
 

@@ -31,7 +31,7 @@ def main() -> int:
 
     events = []
     portc = 0
-    physical_modes = {0}
+    physical_suffixes = {3}
     legacy_modes = {0}
     for match in IO_RE.finditer(proc.stderr):
         port, value_hex, cyc, pc, writes = match.groups()
@@ -47,16 +47,16 @@ def main() -> int:
                 portc |= 1 << bit
             else:
                 portc &= ~(1 << bit)
-        physical = (portc >> 2) & 7
+        physical = (~portc) & 3
         legacy = portc & 3
-        physical_modes.add(physical)
+        physical_suffixes.add(physical)
         legacy_modes.add(legacy)
         events.append((int(cyc), pc, int(writes), port, value, before, portc, physical, legacy))
 
     if len(events) != 24:
         raise SystemExit(f"unexpected early Port-C event count: {len(events)}")
-    if physical_modes != {0}:
-        raise SystemExit(f"early ROM unexpectedly exercises physical D6 modes {physical_modes}")
+    if physical_suffixes != {2, 3}:
+        raise SystemExit(f"early ROM unexpectedly exercises D6 A6/A5 suffixes {physical_suffixes}")
     if legacy_modes != {0, 1}:
         raise SystemExit(f"legacy emulator modes changed: {legacy_modes}")
 
@@ -76,45 +76,45 @@ def main() -> int:
         raise SystemExit(f"later checkpoint Port-C evidence changed: {later_values}")
 
     lines = [
-        "# D6 firmware mode coverage", "", "Status: **PHYSICAL MODES 000/001 OBSERVED / 010-111 UNEXERCISED**", "",
+        "# D6 firmware mode coverage", "", "Status: **A6/A5 SUFFIXES 11/10 OBSERVED / A7 SOURCE UNRESOLVED**", "",
         "This generated report traces authentic ROMBIOS Port-C writes and separates",
-        "the physical D6 inputs `PC4..PC2` from the historical emulator's unrelated",
-        "two-bit banking convention `PC1..PC0`.", "", "## Reproduction", "",
+        "the measured physical D6 inputs A6=`/PC1`, A5=`/PC0` from the historical",
+        "emulator's non-inverted `PC1..PC0` banking convention. D6 A7 joins D105.1,",
+        "but its driver or pull source remains unresolved.", "", "## Reproduction", "",
         "```sh", "python3 scripts/report_d6_firmware_modes.py", "```", "",
         "The generator builds the C trace harness, runs `ekta37` through 32,000 video",
         "writes with `JUKU_TRACE_IO=1`, and replays every PPI0 port `06/07` update.", "",
         "## Early ROM trace", "", f"- Port-C events: `{len(events)}`",
-        f"- Physical D6 modes observed (`PC4..PC2`): `{', '.join(f'{mode:03b}' for mode in sorted(physical_modes))}`",
+        f"- Physical D6 A6/A5 suffixes observed (`/PC1,/PC0`): `{', '.join(f'{mode:02b}' for mode in sorted(physical_suffixes))}`",
         f"- Legacy emulator modes observed (`PC1..PC0`): `{', '.join(f'{mode:02b}' for mode in sorted(legacy_modes))}`", "",
-        "| Cycle | PC | VRAM writes | Port/value | Port C before -> after | Physical D6 | Legacy view |",
+        "| Cycle | PC | VRAM writes | Port/value | Port C before -> after | D6 A6/A5 | Legacy view |",
         "| ---: | ---: | ---: | --- | --- | --- | --- |",
     ]
     for cyc, pc, writes, port, value, before, after, physical, legacy in events:
         lines.append(f"| {cyc} | `{pc}` | {writes} | `0x{port}=0x{value:02X}` | `0x{before:02X}->0x{after:02X}` | `{physical:03b}` | `{legacy:02b}` |")
     lines += [
         "", "ROMBIOS toggles `0x00/0x01` sixteen times around its high-ROM transition.",
-        "Those writes change PC0 and the emulator view, but they do not change any",
-        "physical D6 address input. The structural `juku_top` therefore remains in",
-        "physical mode `000` throughout this trace and still boots byte-identically.", "",
+        "Those writes change PC0 and therefore toggle physical D6 A5 after the D3",
+        "inverter. The structural table row is `?11` or `?10`; A7 cannot be inferred",
+        "from Port C and remains a measured continuity boundary.", "",
         "## Later FDC/EKDOS evidence", "",
         "The guarded long-run/checkpoint reports below all finish with Port C `0x04`,",
-        "which sets PC2 and therefore exercises physical D6 mode `001`:", "",
-        "| Evidence | Port C | Physical D6 mode |", "| --- | ---: | --- |",
+        "which sets PC2 but leaves PC1/PC0 clear. It therefore retains A6/A5=`11`:", "",
+        "| Evidence | Port C | D6 A6/A5 |", "| --- | ---: | --- |",
     ]
     for rel, value in later_values.items():
-        lines.append(f"| `{rel}` | `0x{value:02X}` | `{(value >> 2) & 7:03b}` |")
+        lines.append(f"| `{rel}` | `0x{value:02X}` | `{(~value) & 3:02b}` |")
     lines += [
         "", "## Coverage boundary", "",
-        "- Physical modes `000` and `001` have firmware execution evidence.",
-        "- Modes `010` through `111` are truth-table guarded but not observed in the",
-        "  current ROM/EKDOS/BASIC paths. Their functions must not be assigned from",
-        "  the legacy emulator's `PC1..PC0` mode numbers.",
+        "- Physical A6/A5 suffixes `11` and `10` have firmware execution evidence.",
+        "- A7 is not a Port-C bit on the measured board. Until its source is traced,",
+        "  firmware writes cannot identify complete three-bit D6 table rows.",
         "- This trace guards firmware writes, not the unresolved downstream meaning of",
         "  every D6 output word; see `docs/d6-physical-decode.md`.", "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    print("Status: PHYSICAL MODES 000/001 OBSERVED / 010-111 UNEXERCISED")
+    print("Status: A6/A5 SUFFIXES 11/10 OBSERVED / A7 SOURCE UNRESOLVED")
     return 0
 
 
