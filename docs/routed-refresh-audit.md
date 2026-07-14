@@ -278,3 +278,31 @@ under-clearanced 0.15 mm diagnostic found a geometric path but strict DRC
 rejected it with 79 new clearance findings. INTR is therefore blocked by a
 broad occupied corridor, not merely lattice quantization; the next automatic
 step is transactional rip-up and reroute of the displaced nets.
+
+`kicad/close_intr_by_ripup.py` makes that final transaction reproducible. It
+generates the guarded 0.15 mm diagnostic path, derives the conflicting copper
+set from its DRC report rather than a hard-coded UUID list, and selects 25
+items across 17 other nets. Removing them creates 22 opens across 18 nets;
+INTR then closes at 0.21 mm proposal clearance. A 0.20 mm recovery sweep
+restores 19 displaced gaps, a 0.21 mm pass restores the marginal P5V and IORD
+gaps, and `prune_dangling_tracks.py` transactionally removes 17 dead track/via
+tails while preserving zero opens after every removal.
+
+The independently repeated result is preserved as
+`kicad/juku_routed_candidate.kicad_pcb`: 296 footprints, all 2,383 source pad
+identities and nets (maximum coordinate quantization 38 nm), 18,245 copper
+items, zero unconnected items, and zero shorts, clearance, crossing, hole,
+dangling, or edge findings. Its byte size is 8,370,737 and SHA256 is
+`d51b2b4a226712c1325ff2b770413911800ad458447343095bab73fe9d7a2f29`.
+The remaining 663 findings are non-electrical
+silkscreen/courtyard/library/text categories with unchanged counts. This is a
+source-complete routing checkpoint, not fabrication authorization: the
+functional P0 netlist is not frozen, and the tracked production routed board
+and manufacturing package must still be regenerated and reviewed after that
+freeze.
+
+The preserved artifact is rechecked locally with:
+
+```sh
+$(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
+```

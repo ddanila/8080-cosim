@@ -56,7 +56,7 @@ def violation_counts(report: dict) -> dict[str, int]:
 
 
 def gaps(
-    report: dict, minimum: float, maximum: float
+    report: dict, minimum: float, maximum: float, net_filter: str | None = None
 ) -> list[tuple[float, str, float, float, float, float, str, str]]:
     result = []
     for violation in report.get("unconnected_items", []):
@@ -65,6 +65,8 @@ def gaps(
             continue
         match = NET_RE.search(items[0].get("description", ""))
         if not match:
+            continue
+        if net_filter is not None and match.group(1) != net_filter:
             continue
         layer_a = LAYER_RE.search(items[0].get("description", ""))
         layer_b = LAYER_RE.search(items[1].get("description", ""))
@@ -157,6 +159,7 @@ def main() -> None:
         help="obstacle clearance used by the proposal router, in mm",
     )
     parser.add_argument("--kicad-cli", type=Path)
+    parser.add_argument("--net", help="attempt only DRC gaps on this exact net")
     args = parser.parse_args()
 
     cli = args.kicad_cli
@@ -190,7 +193,12 @@ def main() -> None:
         current_report = run_drc(cli, args.output, tmp / "current.json")
         initial = len(current_report.get("unconnected_items", []))
         while not args.limit or accepted < args.limit:
-            candidates = gaps(current_report, args.min_distance, args.max_distance)
+            candidates = gaps(
+                current_report,
+                args.min_distance,
+                args.max_distance,
+                args.net,
+            )
             proposal = next(
                 (item for item in candidates if item[1:] not in attempted), None
             )
