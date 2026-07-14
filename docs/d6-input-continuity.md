@@ -43,8 +43,11 @@ A0..A7 = BA15, BA14, BA13, BA12, BA11, /PC0, /PC1, unresolved A7 source
   `D105.12 <-> D105.13 <-> D5.26`.
 
 No continuation beyond the two input endpoints `D6.15 <-> D105.1` was found.
-Because both endpoints are inputs, the driver, pull source, or obscured branch
-remains a continuity boundary. The model must not merge it with MEMW or FDC
+With D6 removed, resistance from D6.15 to both GND and +5 V fluctuates at
+approximately 100-200 kohm. This excludes a simple low-value pull-up or
+pull-down; the variation may reflect in-circuit charging or leakage, but does
+not by itself prove a capacitor. Because both endpoints are inputs, the driver
+or obscured branch remains a continuity boundary. The model must not merge it with MEMW or FDC
 density merely to supply a functional value.
 
 ## Modeling consequence
