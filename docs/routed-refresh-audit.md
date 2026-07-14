@@ -189,7 +189,10 @@ remaining `MA6`/`CAS` cluster. Its second-order result is 38 unconnected items
 on 35 nets and 12,113 copper items, a cumulative reduction of 151. A 0.125 mm
 sweep then accepted two more routes for `CAS` and `DB5`; the current temporary
 board has 36 unconnected items on 34 nets and 12,161 copper items, a cumulative
-reduction of 153.
+reduction of 153. A final 0.10 mm sweep accepted one `DB1` route and reached 35
+unconnected items on 33 nets with 12,306 copper items; further global lattice
+reduction is no longer productive. Rejected proposals now report their exact
+unconnected and DRC-count deltas to guide route-specific remediation.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity

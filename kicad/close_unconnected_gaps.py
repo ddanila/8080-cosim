@@ -86,6 +86,20 @@ def acceptable(before: dict, after: dict) -> bool:
     )
 
 
+def rejection_reason(before: dict, after: dict) -> str:
+    reasons = []
+    before_open = len(before.get("unconnected_items", []))
+    after_open = len(after.get("unconnected_items", []))
+    if after_open >= before_open:
+        reasons.append(f"unconnected {before_open} -> {after_open}")
+    before_counts, after_counts = violation_counts(before), violation_counts(after)
+    for kind in sorted(before_counts.keys() | after_counts.keys()):
+        delta = after_counts.get(kind, 0) - before_counts.get(kind, 0)
+        if delta > 0:
+            reasons.append(f"{kind} +{delta}")
+    return ", ".join(reasons) or "acceptance invariant failed"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path)
@@ -195,7 +209,8 @@ def main() -> None:
             candidate_report = run_drc(cli, candidate_board, candidate_report_path)
             if not acceptable(current_report, candidate_report):
                 print(
-                    f"reject {net} {distance:.3f} mm: DRC did not strictly improve",
+                    f"reject {net} {distance:.3f} mm: "
+                    f"{rejection_reason(current_report, candidate_report)}",
                     flush=True,
                 )
                 continue
