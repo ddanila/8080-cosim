@@ -1,0 +1,105 @@
+name: CI (generic — syntax + doc consistency)
+
+# Always-on, fast (<2 min): the checks that are relevant to any push. No Git LFS
+# fetch -- nothing here reads the LFS-tracked photos (only ref/photos/**/*.jpg is
+# LFS), so the generic job stays quick. Heavier work is split into path-gated
+# workflows: reports.yml (report freshness, PROM/photo validation) and hdl.yml
+# (LVS + behavioral boot). The deep cosim guard runs pre-push, not in CI.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  generic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check script syntax
+        run: |
+          sh -n kicad/check_replica_manufacturing_ready.sh
+          sh -n sync/ekdos_checkpoint_prompt_check.sh
+          sh -n sync/ekdos_jbasic_checkpoint_check.sh
+          sh -n sync/juku_top_jbasic_prompt_check.sh
+          sh -n sync/juku_top_fdc_prompt_check.sh
+          sh -n sync/juku_top_fdc_probe.sh
+          sh -n sync/jmon33_checkpoint_deep_check.sh
+          sh -n sync/video_timing_check.sh
+          sh -n sync/video_readout_check.sh
+          sh -n sync/serial_check.sh
+          sh -n sync/cosim_check.sh
+          sh -n sync/boot_check.sh
+          python3 -m py_compile \
+            scripts/export_reconstructed_proms.py \
+            scripts/extract_basic_disk_files.py \
+            scripts/report_source_coverage_audit.py \
+            scripts/photo_registration.py \
+            scripts/report_official_009_ic_census.py \
+            scripts/check_documentation_consistency.py \
+            scripts/report_ekdos_source_inspection.py \
+            scripts/report_vendored_disk_catalog.py \
+            scripts/report_re3_firmware_inspection.py \
+            scripts/report_video_slot_timing_audit.py \
+            scripts/report_d2_reconstruction_constraints.py \
+            scripts/report_d2_physical_truth.py \
+            scripts/report_d30_section_b_scan_chase.py \
+            scripts/report_8286_pinout_audit.py \
+            scripts/report_8282_pinout_audit.py \
+            scripts/report_package_endpoint_coverage.py \
+            scripts/report_d6_physical_decode.py \
+            scripts/report_d6_runtime_path.py \
+            scripts/report_d6_firmware_modes.py \
+            scripts/report_d94_reconstruction_constraints.py \
+            scripts/report_owner_measurement_shortlist.py \
+            scripts/report_fdc_hardware_handoff.py \
+            scripts/report_serial_handoff.py \
+            scripts/export_wd1772_pla.py \
+            scripts/report_wd1772_pla_inspection.py \
+            scripts/wd1772_pla.py \
+            scripts/report_juku_top_fdc_alignment.py \
+            scripts/export_eprom_pair.py \
+            scripts/report_firmware_gap_ledger.py \
+            scripts/report_board_fidelity_gap_ledger.py \
+            scripts/report_decap_value_fidelity.py \
+            scripts/report_d41_timing_boundary.py \
+            scripts/report_memory_timing_boundary.py \
+            scripts/report_io_decode_boundary.py \
+            scripts/report_video_analog_boundary.py \
+            scripts/report_s4_interrupt_boundary.py \
+            scripts/report_unmodeled_footprint_inventory.py \
+            sync/ekdos_fdc_probe.py \
+            sync/ekdos_jbasic_command_probe.py \
+            sync/ekdos_timing_reference.py \
+            sync/ekdos_checkpoint_reference.py \
+            sync/ekdos_ioseq_reference.py \
+            sync/juku_top_checkpoint_load_check.py \
+            sync/juku_top_checkpoint_resume_probe.py \
+            sync/juku_top_checkpoint_fdc_probe.py \
+            sync/juku_top_checkpoint_jbasic_probe.py \
+            sync/juku_top_checkpoint_jbasic_late_probe.py \
+            sync/jmon33_interrupt_probe.py \
+            sync/jmon33_ready_probe.py \
+            sync/jmon33_command_probe.py \
+            sync/jmon33_idle_command_probe.py \
+            sync/jmon33_fdc_command_probe.py \
+            sync/jmon33_checkpoint_cursor_probe.py \
+            sync/jmon33_hdl_command_probe.py \
+            sync/jmon33_hdl_a_command_probe.py \
+            sync/jmon33_hdl_b_command_probe.py \
+            sync/jmon33_hdl_fdc_command_probe.py \
+            kicad/report_replica_bringup_verification.py \
+            kicad/report_dual_config_bom.py \
+            kicad/report_replica_order_upload_runbook.py \
+            kicad/report_replica_order_evidence_template.py \
+            kicad/report_replica_sourcing_readiness.py \
+            kicad/report_replica_manufacturing_readiness.py
+          python3 -m py_compile \
+            kicad/apply_kp12_resistor_links.py \
+            kicad/check_kp12_resistor_links.py \
+            kicad/report_fdc_lower_assembly_placement.py
+          python3 -m py_compile kicad/report_d93_pin40_photo_chase.py
+          python3 -m py_compile kicad/patch_d94_input_boundaries.py
+
+      - name: Check documentation consistency
+        run: python3 scripts/check_documentation_consistency.py

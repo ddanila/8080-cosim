@@ -53,7 +53,14 @@ raw disk geometry, the bounded WD1793 boot subset, raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.
 
 `sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
-of simulated boot); see `docs/cosim-runtime-reference.md`.
+of simulated boot); see `docs/cosim-runtime-reference.md`. It is kept out of CI
+and runs automatically via `.githooks/pre-push` before any push that touches
+`hdl/`, `cosim/`, or `roms/` (override a failure with `git push --no-verify`).
+
+CI is split by relevance: `ci.yml` (always-on, syntax + doc consistency),
+`reports.yml` (report-freshness + PROM/photo validation, gated on generator and
+data paths), and `hdl.yml` (LVS + behavioral boot, gated on `hdl/`, `cosim/`,
+`roms/`, `sync/`, `media/`, and the board JSON).
 
 ## Current user-visible oracles
 

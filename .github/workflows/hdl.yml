@@ -1,0 +1,129 @@
+name: CI (HDL — LVS + behavioral boot)
+
+# Path-gated: only runs when the HDL model, the C emulator, the ROM/media inputs,
+# the sync guards, or the board connectivity change. Doc-only and routing-loop
+# pushes (which never touch these paths) skip it entirely. The deep cosim value
+# guard (sync/cosim_check.sh) is intentionally NOT here -- it runs pre-push
+# instead (see .githooks/pre-push); this keeps the HDL CI to the boot regression.
+
+on:
+  push:
+    paths:
+      - 'hdl/**'
+      - 'cosim/**'
+      - 'roms/**'
+      - 'sync/**'
+      - 'media/disks/**'
+      - 'media/system/**'
+      - 'kicad/juku.board.json'
+      - '.github/workflows/hdl.yml'
+  pull_request:
+    paths:
+      - 'hdl/**'
+      - 'cosim/**'
+      - 'roms/**'
+      - 'sync/**'
+      - 'media/disks/**'
+      - 'media/system/**'
+      - 'kicad/juku.board.json'
+      - '.github/workflows/hdl.yml'
+
+jobs:
+  lvs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Yosys for the HDL netlist. KiCad is intentionally NOT installed: the
+      # schematic is generated deterministically from the board spec, so check.sh
+      # falls back to the KiCad-free board-direct LVS (same connectivity). This
+      # avoids fragile KiCad-version/schematic-format mismatches in CI. The real
+      # kicad-cli round-trip is exercised locally (KiCad 10).
+      - name: Install Yosys
+        run: sudo apt-get update && sudo apt-get install -y yosys
+
+      - name: Run LVS check
+        run: sh sync/check.sh
+
+  behavioral:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # iverilog runs the vm80a-based HDL sims; gcc builds the cosim oracle.
+      # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL
+      # sim levels, bounded to 6000 video writes (~60s, never the slow full banner),
+      # and asserts every level is byte-for-byte identical to cosim -- i.e. the merge
+      # (the schematic structure executing the firmware) cannot silently regress.
+      - name: Install Icarus Verilog
+        run: sudo apt-get update && sudo apt-get install -y gcc iverilog
+
+      - name: Run FDC regression checks
+        run: |
+          (cd media/disks && sha256sum -c SHA256SUMS)
+          (cd media/system && sha256sum -c SHA256SUMS)
+          ./sync/juk_disk_check.sh
+          ./sync/ekdos_fdc_probe.py
+          ./sync/ekdos_jbasic_command_probe.py
+          ./sync/ekdos_timing_reference.py
+          python3 scripts/report_juku_top_fdc_alignment.py
+          git diff --exit-code -- docs/juku-top-fdc-alignment.md
+          ./sync/juku_top_fdc_prompt_check.sh
+          ./sync/ekdos_checkpoint_reference.py
+          ./sync/ekdos_ioseq_reference.py
+          ./sync/juku_top_checkpoint_load_check.py
+          ./sync/juku_top_checkpoint_resume_probe.py
+          ./sync/fdc_check.sh
+
+      - name: Run fast subsystem guards
+        run: |
+          ./sync/basic_cart_check.sh
+          ./sync/prom_fallback_check.sh
+          python3 scripts/report_d6_runtime_path.py
+          git diff --exit-code -- docs/d6-runtime-path-diagnostic.md
+          python3 scripts/validate_rt4_dump.py --self-test
+          python3 scripts/validate_re3_dump.py --self-test
+          ./sync/beeper_check.sh
+          ./sync/serial_check.sh
+          ./sync/juku_top_periph_bus_check.sh
+          ./sync/jmon33_hdl_probe.sh
+
+      - name: Run Monitor and BASIC reference guards
+        run: |
+          ./sync/jmon33_interrupt_probe.py
+          ./sync/jmon33_ready_probe.py
+          ./sync/jmon33_command_probe.py
+          ./sync/jmon33_idle_command_probe.py
+          ./sync/juku_top_jbasic_prompt_check.sh
+
+      - name: Run video output guards
+        run: |
+          ./sync/video_timing_check.sh
+          ./sync/video_readout_check.sh
+
+      - name: Check boot report freshness
+        run: |
+          git diff --exit-code -- \
+            docs/ekdos-fdc-probe.md \
+            docs/ekdos-jbasic-command-probe.md \
+            docs/ekdos-timing-reference.md \
+            docs/ekdos-checkpoint-reference.md \
+            docs/ekdos-ioseq-reference.md \
+            docs/juku-top-checkpoint-load.md \
+            docs/juku-top-checkpoint-resume.md \
+            docs/juku-top-periph-bus-check.md \
+            docs/juku-top-jbasic-verilator-probe.md \
+            docs/fdc-readiness.md \
+            docs/basic-cart-readiness.md \
+            docs/beeper-readiness.md \
+            docs/serial-handoff.md \
+            docs/jmon33-hdl-probe.md \
+            docs/jmon33-interrupt-probe.md \
+            docs/jmon33-ready-probe.md \
+            docs/jmon33-command-probe.md \
+            docs/jmon33-idle-command-probe.md \
+            docs/video-timing-reference.md \
+            docs/video-readout-readiness.md
+
+      - name: Run boot regression check
+        run: ./sync/boot_check.sh

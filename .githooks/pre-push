@@ -1,3 +1,43 @@
 #!/bin/sh
 command -v git-lfs >/dev/null 2>&1 || { printf >&2 "\n%s\n\n" "This repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting the 'pre-push' file in the hooks directory (set by 'core.hookspath'; usually '.git/hooks')."; exit 2; }
-git lfs pre-push "$@"
+
+# stdin carries the refs being pushed ("<local ref> <local sha> <remote ref> <remote sha>");
+# both git-lfs and the guard below consume it, so capture it once.
+input=$(cat)
+printf '%s\n' "$input" | git lfs pre-push "$@" || exit $?
+
+# The deep cosim value guard (sync/cosim_check.sh) is intentionally kept out of CI
+# because it is slow. Run it here instead, but only when the commits being pushed
+# actually touch the model it verifies (hdl/, cosim/, roms/) -- doc/routing pushes
+# skip it. Override a failing run with 'git push --no-verify' if you know why.
+z40=0000000000000000000000000000000000000000
+need=0
+tmp=$(mktemp)
+printf '%s\n' "$input" > "$tmp"
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "$local_sha" ] && continue
+  [ "$local_sha" = "$z40" ] && continue          # branch deletion: nothing to check
+  if [ "$remote_sha" = "$z40" ]; then            # new ref on the remote
+    base=$(git rev-parse --verify --quiet origin/master 2>/dev/null)
+    if [ -n "$base" ]; then range="$base..$local_sha"; else range="$local_sha"; fi
+  else
+    range="$remote_sha..$local_sha"
+  fi
+  if git diff --name-only "$range" 2>/dev/null | grep -qE '^(hdl/|cosim/|roms/)'; then
+    need=1
+  fi
+done < "$tmp"
+rm -f "$tmp"
+
+if [ "$need" = "1" ]; then
+  if command -v iverilog >/dev/null 2>&1 && command -v cc >/dev/null 2>&1; then
+    echo "pre-push: HDL/cosim/ROM change -> running deep cosim guard (sync/cosim_check.sh)"
+    if ! sync/cosim_check.sh; then
+      echo "pre-push: cosim guard FAILED -- push aborted (override: git push --no-verify)." >&2
+      exit 1
+    fi
+  else
+    echo "pre-push: HDL change detected but iverilog/cc not found; skipping cosim guard (run sync/cosim_check.sh manually)." >&2
+  fi
+fi
+exit 0

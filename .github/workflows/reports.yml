@@ -1,115 +1,57 @@
-name: CI (status + LVS + boot regression)
+name: CI (reports — freshness + PROM/photo validation)
+
+# Path-gated: only runs when a report generator or its input data changes. These
+# steps regenerate committed evidence reports and fail if the committed copy is
+# stale, plus validate the physical PROM captures and the owner photos. The
+# autonomous routing loop touches only kicad/*routed* + kicad routing scripts +
+# docs/, none of which are gated here, so it does not trigger this workflow.
+# Needs Git LFS for the photo checks (ref/photos/**/*.jpg).
 
 on:
   push:
+    paths:
+      - 'scripts/**'
+      - 'ref/**'
+      - 'roms/**'
+      - 'media/**'
+      - 'kicad/juku.board.json'
+      - 'kicad/report_*.py'
+      - 'kicad/patch_d94_input_boundaries.py'
+      - 'kicad/apply_kp12_resistor_links.py'
+      - 'kicad/check_kp12_resistor_links.py'
+      - '.github/workflows/reports.yml'
   pull_request:
+    paths:
+      - 'scripts/**'
+      - 'ref/**'
+      - 'roms/**'
+      - 'media/**'
+      - 'kicad/juku.board.json'
+      - 'kicad/report_*.py'
+      - 'kicad/patch_d94_input_boundaries.py'
+      - 'kicad/apply_kp12_resistor_links.py'
+      - 'kicad/check_kp12_resistor_links.py'
+      - '.github/workflows/reports.yml'
 
 jobs:
-  status-audit:
+  reports:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
-          # The status audit validates all 50 owner photographs as materialized
-          # JPEG evidence; checkout's default leaves Git LFS pointer stubs.
+          # The photo checks validate the 50 + 26 owner photographs as
+          # materialized JPEG evidence; checkout's default leaves LFS pointer stubs.
           lfs: true
 
-      - name: Check readiness script syntax
+      - name: Validate photos and vendored reference artifacts
         run: |
-          sh -n kicad/check_replica_manufacturing_ready.sh
-          sh -n sync/ekdos_checkpoint_prompt_check.sh
-          sh -n sync/ekdos_jbasic_checkpoint_check.sh
-          sh -n sync/juku_top_jbasic_prompt_check.sh
-          sh -n sync/juku_top_fdc_prompt_check.sh
-          sh -n sync/juku_top_fdc_probe.sh
-          sh -n sync/jmon33_checkpoint_deep_check.sh
-          sh -n sync/video_timing_check.sh
-          sh -n sync/video_readout_check.sh
-          sh -n sync/serial_check.sh
-          sh -n sync/cosim_check.sh
-          python3 -m py_compile \
-            scripts/export_reconstructed_proms.py \
-            scripts/extract_basic_disk_files.py \
-            scripts/report_source_coverage_audit.py \
-            scripts/photo_registration.py \
-            scripts/report_official_009_ic_census.py \
-            scripts/check_documentation_consistency.py \
-            scripts/report_ekdos_source_inspection.py \
-            scripts/report_vendored_disk_catalog.py \
-            scripts/report_re3_firmware_inspection.py \
-            scripts/report_video_slot_timing_audit.py \
-            scripts/report_d2_reconstruction_constraints.py \
-            scripts/report_d2_physical_truth.py \
-            scripts/report_d30_section_b_scan_chase.py \
-            scripts/report_8286_pinout_audit.py \
-            scripts/report_8282_pinout_audit.py \
-            scripts/report_package_endpoint_coverage.py \
-            scripts/report_d6_physical_decode.py \
-            scripts/report_d6_runtime_path.py \
-            scripts/report_d6_firmware_modes.py \
-            scripts/report_d94_reconstruction_constraints.py \
-            scripts/report_owner_measurement_shortlist.py \
-            scripts/report_fdc_hardware_handoff.py \
-            scripts/report_serial_handoff.py \
-            scripts/export_wd1772_pla.py \
-            scripts/report_wd1772_pla_inspection.py \
-            scripts/wd1772_pla.py \
-            scripts/report_juku_top_fdc_alignment.py \
-            scripts/export_eprom_pair.py \
-            scripts/report_firmware_gap_ledger.py \
-            scripts/report_board_fidelity_gap_ledger.py \
-            scripts/report_decap_value_fidelity.py \
-            scripts/report_d41_timing_boundary.py \
-            scripts/report_memory_timing_boundary.py \
-            scripts/report_io_decode_boundary.py \
-            scripts/report_video_analog_boundary.py \
-            scripts/report_s4_interrupt_boundary.py \
-            scripts/report_unmodeled_footprint_inventory.py \
-            sync/ekdos_fdc_probe.py \
-            sync/ekdos_jbasic_command_probe.py \
-            sync/ekdos_timing_reference.py \
-            sync/ekdos_checkpoint_reference.py \
-            sync/ekdos_ioseq_reference.py \
-            sync/juku_top_checkpoint_load_check.py \
-            sync/juku_top_checkpoint_resume_probe.py \
-            sync/juku_top_checkpoint_fdc_probe.py \
-            sync/juku_top_checkpoint_jbasic_probe.py \
-            sync/juku_top_checkpoint_jbasic_late_probe.py \
-            sync/jmon33_interrupt_probe.py \
-            sync/jmon33_ready_probe.py \
-            sync/jmon33_command_probe.py \
-            sync/jmon33_idle_command_probe.py \
-            sync/jmon33_fdc_command_probe.py \
-            sync/jmon33_checkpoint_cursor_probe.py \
-            sync/jmon33_hdl_command_probe.py \
-            sync/jmon33_hdl_a_command_probe.py \
-            sync/jmon33_hdl_b_command_probe.py \
-            sync/jmon33_hdl_fdc_command_probe.py \
-            kicad/report_replica_bringup_verification.py \
-            kicad/report_dual_config_bom.py \
-            kicad/report_replica_order_upload_runbook.py \
-            kicad/report_replica_order_evidence_template.py \
-            kicad/report_replica_sourcing_readiness.py \
-            kicad/report_replica_manufacturing_readiness.py
-          python3 -m py_compile \
-            kicad/apply_kp12_resistor_links.py \
-            kicad/check_kp12_resistor_links.py \
-            kicad/report_fdc_lower_assembly_placement.py
-          python3 -m py_compile kicad/report_d93_pin40_photo_chase.py
-          python3 -m py_compile kicad/patch_d94_input_boundaries.py
+          python3 scripts/photo_registration.py validate
+          ./sync/reference_artifact_check.sh
 
       - name: Check unmodeled footprint inventory freshness
         run: |
           python3 scripts/report_unmodeled_footprint_inventory.py
           git diff --exit-code -- docs/unmodeled-footprint-inventory.md
-
-      - name: Check documentation consistency
-        run: |
-          python3 scripts/photo_registration.py validate
-          python3 scripts/check_documentation_consistency.py
-
-      - name: Check vendored reference artifacts
-        run: ./sync/reference_artifact_check.sh
 
       - name: Check RE3 firmware inspection freshness
         run: |
@@ -360,105 +302,3 @@ jobs:
             docs/replica-dual-config-bom.csv \
             docs/replica-dual-config-bom.md \
             docs/replica-sourcing-readiness.md
-
-  lvs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      # Yosys for the HDL netlist. KiCad is intentionally NOT installed: the
-      # schematic is generated deterministically from the board spec, so check.sh
-      # falls back to the KiCad-free board-direct LVS (same connectivity). This
-      # avoids fragile KiCad-version/schematic-format mismatches in CI. The real
-      # kicad-cli round-trip is exercised locally (KiCad 10).
-      - name: Install Yosys
-        run: sudo apt-get update && sudo apt-get install -y yosys
-
-      - name: Run LVS check
-        run: sh sync/check.sh
-
-  boot:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      # iverilog runs the vm80a-based HDL sims; gcc builds the cosim oracle.
-      # boot_check.sh boots the real ekta37 BIOS through cosim AND all three HDL
-      # sim levels, bounded to 6000 video writes (~30s, never the slow full banner),
-      # and asserts every level is byte-for-byte identical to cosim -- i.e. the merge
-      # (the schematic structure executing the firmware) cannot silently regress.
-      - name: Install Icarus Verilog
-        run: sudo apt-get update && sudo apt-get install -y gcc iverilog
-
-      - name: Run FDC regression checks
-        run: |
-          (cd media/disks && sha256sum -c SHA256SUMS)
-          (cd media/system && sha256sum -c SHA256SUMS)
-          ./sync/juk_disk_check.sh
-          ./sync/ekdos_fdc_probe.py
-          ./sync/ekdos_jbasic_command_probe.py
-          ./sync/ekdos_timing_reference.py
-          python3 scripts/report_juku_top_fdc_alignment.py
-          git diff --exit-code -- docs/juku-top-fdc-alignment.md
-          ./sync/juku_top_fdc_prompt_check.sh
-          ./sync/ekdos_checkpoint_reference.py
-          ./sync/ekdos_ioseq_reference.py
-          ./sync/juku_top_checkpoint_load_check.py
-          ./sync/juku_top_checkpoint_resume_probe.py
-          ./sync/fdc_check.sh
-
-      - name: Run fast subsystem guards
-        run: |
-          ./sync/basic_cart_check.sh
-          ./sync/prom_fallback_check.sh
-          python3 scripts/report_d6_runtime_path.py
-          git diff --exit-code -- docs/d6-runtime-path-diagnostic.md
-          python3 scripts/validate_rt4_dump.py --self-test
-          python3 scripts/validate_re3_dump.py --self-test
-          ./sync/beeper_check.sh
-          ./sync/serial_check.sh
-          ./sync/juku_top_periph_bus_check.sh
-          ./sync/jmon33_hdl_probe.sh
-
-      - name: Run Monitor and BASIC reference guards
-        run: |
-          ./sync/jmon33_interrupt_probe.py
-          ./sync/jmon33_ready_probe.py
-          ./sync/jmon33_command_probe.py
-          ./sync/jmon33_idle_command_probe.py
-          ./sync/juku_top_jbasic_prompt_check.sh
-
-      - name: Run video output guards
-        run: |
-          ./sync/video_timing_check.sh
-          ./sync/video_readout_check.sh
-
-      - name: Check boot report freshness
-        run: |
-          git diff --exit-code -- \
-            docs/ekdos-fdc-probe.md \
-            docs/ekdos-jbasic-command-probe.md \
-            docs/ekdos-timing-reference.md \
-            docs/ekdos-checkpoint-reference.md \
-            docs/ekdos-ioseq-reference.md \
-            docs/juku-top-checkpoint-load.md \
-            docs/juku-top-checkpoint-resume.md \
-            docs/juku-top-periph-bus-check.md \
-            docs/juku-top-jbasic-verilator-probe.md \
-            docs/fdc-readiness.md \
-            docs/basic-cart-readiness.md \
-            docs/beeper-readiness.md \
-            docs/serial-handoff.md \
-            docs/jmon33-hdl-probe.md \
-            docs/jmon33-interrupt-probe.md \
-            docs/jmon33-ready-probe.md \
-            docs/jmon33-command-probe.md \
-            docs/jmon33-idle-command-probe.md \
-            docs/video-timing-reference.md \
-            docs/video-readout-readiness.md
-
-      - name: Run boot regression check
-        run: ./sync/boot_check.sh
-
-      - name: Run deep cosim value guard (juku_top vs C reference)
-        run: ./sync/cosim_check.sh
