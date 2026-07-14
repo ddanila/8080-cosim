@@ -108,3 +108,40 @@ and one `GND` track 0.2257 mm from an edge where the configured minimum is
 0.3 mm. The temporary candidate is therefore a substantial convergence result,
 not an adoptable routed board. Further routing must close all 189 connections
 and both residual copper findings before replacing the tracked snapshot.
+
+A continuation experiment re-exported that imported board and began with 222
+Freerouting incompletes across 4,602 route items. Its first pass required 1 hour
+48 minutes and reduced the count only to 207. Freerouting also recovered from
+two `ShapeSearchTree.merge_entries_in_front` null-entry exceptions while
+normalizing the dense imported traces. The remaining three configured passes
+were stopped: this route was converging at only 15 internal connections per
+pass, did not establish an improvement over the existing 189-item KiCad result,
+and had not produced a trustworthy replacement session. Further automated work
+should partition or simplify the residual nets instead of repeating whole-board
+rip-up passes on this geometry.
+
+Marking all 6,516 imported copper items locked before DSN export did not provide
+that partition: Freerouting still reported the same 222 incompletes across
+4,602 route items and reproduced the normalization exception within two
+minutes. That duplicate run was stopped. KiCad's Specctra export therefore does
+not turn the dense imported geometry into a cheap residual-only routing problem
+merely by setting the board-item lock flag.
+
+The deterministic follow-up uses the existing two-layer A* gap router through a
+strict DRC transaction wrapper. Each proposal is made on a temporary board and
+is accepted only if KiCad reports fewer unconnected items, no shorts,
+clearance violations, or crossings, and no increase in dangling-track or
+copper-edge findings. The first two distance bands are reproducible with:
+
+```sh
+python3 kicad/close_unconnected_gaps.py INPUT.kicad_pcb OUTPUT.kicad_pcb \
+  --max-distance 30 --timeout 20
+python3 kicad/close_unconnected_gaps.py OUTPUT.kicad_pcb OUTPUT_50.kicad_pcb \
+  --min-distance 30 --max-distance 50 --timeout 20
+```
+
+Across the 0-30 mm and 30-50 mm bands, 14 proposals were accepted and reduced
+KiCad's unconnected count from 189 to 175. The final authoritative DRC still
+has zero shorts, copper-clearance violations, and track crossings; the original
+single dangling `OSC` track and `GND` edge-clearance finding remain unchanged.
+This candidate is still temporary and cannot replace the tracked routed board.
