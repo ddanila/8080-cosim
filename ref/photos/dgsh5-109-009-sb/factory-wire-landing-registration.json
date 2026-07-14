@@ -271,8 +271,16 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [2503, 2325],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [213.571, 78.499],
+          "island_assignment": "D3.10-side S_TTL island; component-side surface wire joint",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+            "joint_px": [1232, 872],
+            "pin_px": [1296, 858],
+            "local_fit": "D3/component",
+            "uncertainty_mm": 0.5,
+            "proof": "the descending white wire terminates on a distinct circular component-side solder land; its short uninterrupted tinned departure reaches locally fitted D3.10"
+          }
         }
       ]
     }

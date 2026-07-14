@@ -13,7 +13,7 @@ zero-open routing checkpoint.
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `2/20`
+- Landing endpoints fitted to PCB coordinates/islands: `3/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -55,8 +55,11 @@ historical construction fidelity.
 vertical package as `Д104`, not `Д14`, consistent with owner continuity
 D3.10-A23-X3.3 and inconsistent with moving the link onto `SER_TXD`.
 Its two drawing endpoints are now guarded at `(2022,1408)` and
-`(2503,2325)` original-image pixels (each ±6 px). Their PCB coordinates
-and island assignments remain deliberately unset pending a checked local fit.
+`(2503,2325)` original-image pixels (each ±6 px). The D3-side white wire
+terminates at `(1232,872)` in owner image `200418174`; its short tinned
+departure reaches locally fitted D3.10, proving A20B/S_TTL at
+`(213.571,78.499)` mm. The shared A23/X3.3 end remains unset until its
+wire joint is independently visible rather than inferred from net equality.
 `А:19` is likewise guarded across two overlapping views: R7 lies between
 the left `(1310,3122)` and right `(1283,3110)` image-local endpoints.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`

@@ -93,5 +93,5 @@ if errors:
     raise SystemExit("D38 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
     "D38 FACTORY LANDINGS: PASS — A8B/D38.8 and A9B/D38.12; "
-    "2/20 factory terminals board-fitted"
+    "both D38-side factory terminals board-fitted"
 )

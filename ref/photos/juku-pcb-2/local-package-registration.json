@@ -77,6 +77,19 @@
       "note": "Fits the D4 input row independently to identify the five remote D2 solder-trace landings."
     },
     {
+      "refdes": "D3",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "8", "image_px": [1296.0, 751.0], "use": "fit", "observation": "top-left contact of the bottom-notched К561ЛН2 package"},
+        {"pin": "10", "image_px": [1296.0, 858.0], "use": "check", "observation": "independent third contact on the complete pin-8-to-14 column beside the white-wire joint"},
+        {"pin": "14", "image_px": [1296.0, 1071.0], "use": "fit", "observation": "bottom-left contact on the same coherent seven-pad column"},
+        {"pin": "1", "image_px": [1455.0, 1069.0], "use": "check", "observation": "independent bottom-right contact beside the photographed bottom-facing notch"}
+      ],
+      "note": "The direct fit establishes D3.10 beside the distinct component-side white-wire surface joint. Package geometry alone does not promote the wire connection; that requires the separately visible tinned departure."
+    },
+    {
       "refdes": "D50",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

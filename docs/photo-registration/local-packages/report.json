@@ -629,6 +629,96 @@
       "electrical_evidence": false
     },
     {
+      "refdes": "D3",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "overlay": "docs/photo-registration/local-packages/D3-component.jpg",
+      "model": "similarity",
+      "scale_px_per_mm": 20.997375,
+      "rotation_deg": 0.0,
+      "checks": [
+        {
+          "pin": "8",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "10",
+          "use": "check",
+          "error_px": 0.333
+        },
+        {
+          "pin": "14",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "1",
+          "use": "check",
+          "error_px": 2.236
+        }
+      ],
+      "projected_pins": {
+        "1": [
+          1456.0,
+          1071.0
+        ],
+        "2": [
+          1456.0,
+          1017.667
+        ],
+        "3": [
+          1456.0,
+          964.333
+        ],
+        "4": [
+          1456.0,
+          911.0
+        ],
+        "5": [
+          1456.0,
+          857.667
+        ],
+        "6": [
+          1456.0,
+          804.333
+        ],
+        "7": [
+          1456.0,
+          751.0
+        ],
+        "8": [
+          1296.0,
+          751.0
+        ],
+        "9": [
+          1296.0,
+          804.333
+        ],
+        "10": [
+          1296.0,
+          857.667
+        ],
+        "11": [
+          1296.0,
+          911.0
+        ],
+        "12": [
+          1296.0,
+          964.333
+        ],
+        "13": [
+          1296.0,
+          1017.667
+        ],
+        "14": [
+          1296.0,
+          1071.0
+        ]
+      },
+      "electrical_evidence": false
+    },
+    {
       "refdes": "D50",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
@@ -2629,7 +2719,7 @@
       "overlay": "docs/photo-registration/local-packages/D37-component.jpg",
       "model": "similarity",
       "scale_px_per_mm": 22.188182,
-      "rotation_deg": 178.305353,
+      "rotation_deg": -1.694647,
       "checks": [
         {
           "pin": "1",
