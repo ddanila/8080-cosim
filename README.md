@@ -27,8 +27,8 @@ with the machine-readable board model.
   2,383-pad/net parity, zero unconnected items, and zero electrical DRC findings
   ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)). Its zero-open
   state currently copper-substitutes ten documented factory insulated links;
-  all twenty paired A-point landings remain absent from the PCB. Eight pairs
-  (`А:7`, `А:9`, `А:10`, `А:11`, `А:13`, `А:14`, `А:19`, and `А:20`) are
+  all twenty paired A-point landings remain absent from the PCB. Nine pairs
+  (`А:7`, `А:9`–`А:14`, `А:19`, and `А:20`) are
   registered in drawing-image space, with board coordinates and island assignment explicitly unset; the landing
   geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
@@ -42,13 +42,14 @@ with the machine-readable board model.
   scaffold analogy and is retired. There are 9 official
   FDC-support ICs with only their physical pin maps and power endpoints modeled.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
-  D6's validated physical table and joined output conductor stay LVS-visible,
+  D6's validated physical table and chip-removed separate ROM/RAM outputs stay LVS-visible,
   while runnable simulation uses an explicit non-LVS memory-map decoder until
-  the joined conductor's downstream D8/D13/D92 timing is fully reconstructed.
+  the downstream D6/D13/D92/D37/D58 timing is fully reconstructed.
   A focused diagnostic now proves all eight physical modes leave D6.9 high at
   the `B37A` RAM-output failure, excluding mode selection and V1/V2 as causes
-  and proves D6 word `8` cannot distinguish checkpoint PC `0484` from `B37A`;
-  D8 distinguishes them, but no D8-to-RAM-gate branch is modeled. The report
+  across every raw A7..A5 row. Chip-removed continuity proves D6.12->D8.15
+  and isolates D6.11 from D6.12, invalidating the earlier installed-PROM join.
+  The report
   names the isolated endpoint/polarity/live-level measurements needed;
   the routed snapshot still carries the superseded topology.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins

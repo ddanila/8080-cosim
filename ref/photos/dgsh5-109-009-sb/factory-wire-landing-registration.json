@@ -20,6 +20,11 @@
       "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
       "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
       "size_px": [3072, 4080]
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+      "sha256": "8483bec7e30bc7683a880b0a3123f4d6406f79a47bac44c321983804965a5a39",
+      "size_px": [3072, 4080]
     }
   ],
   "coordinate_system": "original source-image pixels, origin at upper left",
@@ -118,7 +123,29 @@
         }
       ]
     },
-    {"point": 12, "status": "pending", "endpoints": []},
+    {
+      "point": 12,
+      "status": "image-registered/board-fit-pending",
+      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark after C96 near D35",
+      "endpoints": [
+        {
+          "terminal": "A12A",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+          "drawing_px": [1714, 2216],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        },
+        {
+          "terminal": "A12B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+          "drawing_px": [1349, 2148],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null
+        }
+      ]
+    },
     {
       "point": 13,
       "status": "image-registered/board-fit-pending",

@@ -32,7 +32,7 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | Retire the D6 functional decoder via joined-conductor D8/D13/D92 timing reconstruction; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 102 mapped instances and 266 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope; its KiCad-nightly 10.99 manufacturing packet is checksum/geometry/render verified under a design hold. The preserved source-complete refresh candidate `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, exact 2,383-pad/net parity, zero unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. The refresh candidate also copper-routes all ten factory insulated-link nets because their twenty paired `А:N` landings are not yet geometrically modeled; `А:7`/`А:9`/`А:10`/`А:11`/`А:13`/`А:14`/`А:19`/`А:20` contribute sixteen guarded drawing-pixel endpoints, but no PCB coordinate/island promotion yet. The candidate is convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split those islands, then adopt/regenerate copper and the manufacturing packet only after the functional P0 netlist freezes |
+| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope; its KiCad-nightly 10.99 manufacturing packet is checksum/geometry/render verified under a design hold. The preserved source-complete refresh candidate `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, exact 2,383-pad/net parity, zero unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. The refresh candidate also copper-routes all ten factory insulated-link nets because their twenty paired `А:N` landings are not yet geometrically modeled; all except `А:8` contribute eighteen guarded drawing-pixel endpoints, but no PCB coordinate/island promotion yet. The candidate is convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split those islands, then adopt/regenerate copper and the manufacturing packet only after the functional P0 netlist freezes |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The recorded upload ZIP SHA256 is
@@ -50,7 +50,7 @@ These are ordered; each is completable with material already in the repo.
    source-complete candidate with zero opens and zero electrical-category DRC
    findings (`docs/routed-refresh-audit.md`). Its ten factory wire nets are
    held from adoption until the twenty paired A-point landing coordinates and
-   copper-island splits are modeled. Sixteen `А:7`/`А:9`/`А:10`/`А:11`/`А:13`/`А:14`/`А:19`/`А:20`
+   copper-island splits are modeled. Eighteen endpoints (all except `А:8`)
    endpoints are now registered in
    original drawing pixels, while all twenty PCB coordinates/island assignments
    remain pending (`docs/factory-wire-route-fidelity.md`). Do not replace
@@ -102,15 +102,15 @@ Every ask below is queued with exact deliverables in
    is adopted; resolve D30 pins 8/11 and the exact edge contact/pull-up for
    `H` (`docs/d30-section-b-scan-chase.md` — sheet-1 scan review is
    exhausted; owner continuity is required).
-4. **Retire the D6 memory-map oracle.** Isolate and resistance-map the joined
-   D6.11/D6.12/D13.12/D8.15 conductor and the three D6.9-to-D58 endpoint
-   segments, capture the five live RAM-read levels named by
-   `docs/d6-runtime-path-diagnostic.md`, and resolve its cross-revision
-   conflict: direct `.009` continuity reported D6.11/D6.12/D13.12 joined with
-   no D8/D9 continuation, while the source model retains older-sheet D8/D92
-   consumers on that conductor. All eight physical D6 modes leave pin 9 high
-   at the `B37A` RAM-read failure, so an authentic address-sensitive RAM
-   qualifier is still missing; find it by measurement, not assumption.
+4. **Retire the D6 memory-map oracle.** Chip-removed continuity now proves
+   D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the earlier
+   installed-PROM joined reading. Confirm the remaining D6.11->D92.5/R12.2
+   RAM branch, the D13.12->D6.13/.14 enable branch, and the three
+   D6.9-to-D58 endpoint segments; recheck the surprising D13.12->D16.13 report
+   with D16 removed. Capture the five live RAM-read levels named by
+   `docs/d6-runtime-path-diagnostic.md`. All eight raw A7..A5 rows leave pin 9
+   high at the `B37A` RAM-read failure; resolve the endpoint/polarity path by
+   measurement, not assumption.
 5. **Map the factory Вид В modifications.** The solder-side trace cuts
    (poz. 150/159) at D56, D15, D14, and D11 are drawn design changes; exact
    modified pads, removed segments, and replacement nets remain a P0 mapping

@@ -197,6 +197,8 @@ def main() -> int:
         "`114604420` and `(1700,4044)` in `114600417`; the lower line is `А:7`.",
         "That lower `А:7` line is separately guarded at `(1161,1845)` and",
         "`(1761,4062)` in the same respective views.",
+        "`А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`",
+        "in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.",
         "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
