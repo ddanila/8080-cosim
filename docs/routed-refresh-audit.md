@@ -155,9 +155,11 @@ those existing-via keep-outs once per proposal. A previously 60-second timeout
 then produced the same raw candidate in 1.3 seconds; the transaction wrapper
 correctly rejected that particular candidate for a new short and clearance
 violation. With no acceptance-rule relaxation, subsequent 0-30 mm multilayer
-passes accepted 28 more routes. The current temporary board has 137 unconnected
-items and 7,383 copper items, a cumulative reduction of 52 from the Freerouting
-import.
+passes accepted 28 more routes. Two bounded 30-50 mm passes accepted another 15
+across ground, data, timing, density, and latch nets before exhausting that
+band's remaining legal proposals. The current temporary board has 122
+unconnected items and 7,761 copper items, a cumulative reduction of 67 from the
+Freerouting import.
 
 The final authoritative DRC still has zero shorts, copper-clearance violations,
 track crossings, or hole-clearance violations; all 665 non-connectivity
