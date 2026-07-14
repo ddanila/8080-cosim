@@ -334,6 +334,19 @@
       "note": "The board edge and reversed D99/D95 backside order identify the left package as D99. These joints were formerly mislabeled as D95."
     },
     {
+      "refdes": "D37",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2811.0, 2287.0], "use": "fit", "observation": "top-left contact beside the top-facing notch on the marked КР1533ЛА3"},
+        {"pin": "4", "image_px": [2814.0, 2456.0], "use": "check", "observation": "independent fourth contact on the complete pin-1-to-7 column"},
+        {"pin": "7", "image_px": [2821.0, 2625.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent column"},
+        {"pin": "8", "image_px": [2988.0, 2625.0], "use": "check", "observation": "independent bottom-right contact on the opposite column"}
+      ],
+      "note": "The marking directly identifies the official-census D37 owner substitution as КР1533ЛА3. Its top-facing notch contradicts the inherited 180-degree footprint orientation."
+    },
+    {
       "refdes": "D38",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

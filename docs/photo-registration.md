@@ -171,6 +171,19 @@ from D41 agree within `1.117` mm; the midpoint moves D38's pad-row centre from
 the inherited `(233.405,156.600)` mm seed to `(234.563,159.619)` mm. The source
 PCB now uses that midpoint and `kicad/check_d38_photo_placement.py` guards it.
 
+The marked `КР1533ЛА3` below D40 is D37, matching the official-census owner
+substitution. Its component fit uses pins 1/7 and holds pins 4/8 out at `2.000`
+and `5.385` px. The photographed top-facing notch also corrects the inherited
+180-degree orientation. Independent projections from the already fitted D40
+and D41 packages agree within `0.024` mm and place D37's pad-row centre at
+`(273.972,159.582)` mm. D38 is deliberately only a held-out, longer-baseline
+check; it predicts the centre within `1.940` mm. A visually regular backside
+2x7 joint group near `(885,1945)` px was tested and rejected: composing it
+through D41's two-sided registration misses the component-side D37 position by
+`9.37` mm, proving that it belongs to a neighboring DIP. No D37 solder fit or
+copper continuity is claimed. The source PCB uses the component-derived centre
+and `kicad/check_d37_photo_placement.py` guards the placement and orientation.
+
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity

@@ -33,6 +33,7 @@ jobs:
           python3 -m py_compile \
             kicad/check_factory_wire_links.py \
             kicad/check_factory_wire_landing_registration.py \
+            kicad/check_d37_photo_placement.py \
             kicad/check_d38_photo_placement.py \
             kicad/check_d38_factory_wire_landings.py \
             kicad/check_d50_d51_photo_placement.py \
