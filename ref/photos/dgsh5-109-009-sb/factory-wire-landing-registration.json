@@ -171,7 +171,7 @@
     {
       "point": 11,
       "status": "image-registered/board-fit-pending",
-      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark; direct component/solder fits identify the decapped D92 and place owner pin D92.13 precisely, but neither pad face carries the wire, so the remote landing remains pending",
+      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark; direct component/solder fits identify the decapped D92 and show that neither D92.13 pad face carries the wire, while the distinct owner-board surface joint printed 11 is independently board-fitted as the D92.13/MEMR end; the D7-side landing remains pending",
       "endpoints": [
         {
           "terminal": "A11A",
@@ -186,8 +186,15 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1898, 2837],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [261.325, 128.548],
+          "island_assignment": "D92.13-side MEMR island; component-side surface wire joint printed 11",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+            "joint_px": [2620, 1764],
+            "local_fit": "independent D40/component and D41/component transforms",
+            "uncertainty_mm": 0.4,
+            "proof": "the white insulated lead is soldered to a distinct surface joint beside the printed 11; D40 and D41 projections agree within 0.013 mm, while the factory wire table identifies this end as D92.13/MEMR"
+          }
         }
       ]
     },

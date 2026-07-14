@@ -260,6 +260,15 @@ within `1.501` mm; that is inside the local photographic uncertainty, so the
 existing `(260.005,159.200)` mm centre and 0-degree posture are retained.
 `kicad/check_d92_photo_placement.py` guards both-side identity and placement.
 
+The same raw component tile exposes a distinct white-wire surface joint at
+`(2620,1764)` px beside the printed board-point number `11`. D40- and
+D41-derived image-to-board transforms place it at `(261.328,128.543)` and
+`(261.322,128.553)` mm, only `0.0127` mm apart. Their midpoint promotes A11B
+at `(261.325,128.548)` mm on the factory-table D92.13/MEMR island; it is a
+remote component-side landing, not the D92.13 package pad. The D7-side A11A
+coordinate remains pending, and `kicad/check_a11_factory_wire_landing.py`
+guards that partial state.
+
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity

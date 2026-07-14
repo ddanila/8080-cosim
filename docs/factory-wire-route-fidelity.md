@@ -14,7 +14,7 @@ zero-open routing checkpoint.
 - Landing-registration check: `PASS`
 - Board-fit photo/copper evidence checks: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `9/20`
+- Landing endpoints fitted to PCB coordinates/islands: `10/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
 - Candidate/source pad-net mismatches: `35`
@@ -83,8 +83,11 @@ D7.2-side MEMW landing rather than a neighboring white-wire endpoint.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`
 and `(1898,2837)` in `114600417`. Two-sided D92 fits place owner pin
 D92.13 at `(2654.333,2345.833)` component and `(1214.333,2004.833)`
-solder pixels; neither pad face carries the wire, so its remote landing
-remains pending.
+solder pixels; neither pad face carries the wire. The distinct white
+surface joint printed `11` at `(2620,1764)` in `200418174` is the
+factory-table D92.13 end. Independent D40/D41 transforms agree within
+0.013 mm and promote A11B at `(261.325,128.548)` mm on `MEMR`; the
+D7-side A11A landing remains pending.
 `А:10` is complete in one drawing view at `(821,3778)` and
 `(3016,3702)` in `114556899`. At the D41 end, component joint
 `(2148,2174)` and reflected solder joint `(1506,1834)` agree within
