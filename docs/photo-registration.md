@@ -247,6 +247,19 @@ bare between etched features. The D13 guard preserves both cross-view
 projections. This rejects the conspicuous loose end as A12A without using its
 proximity to D13/R20 as connectivity evidence.
 
+The owner survey's nominally missing LE4 is the decapped D92 between the
+already fitted D38 and D37 packages: its die and bond wires are exposed, but
+both complete 2x7 contact fields remain intact. Direct affine fits place D92.1
+and D92.13 at `(2484,2290)` and `(2654.333,2345.833)` px in component image
+`200418174`, and at `(1382,1949)` and `(1214.333,2004.833)` px in solder image
+`200522685`. Component held-outs are at most `2.0` px and solder held-outs at
+most `0.5` px. Neither factory-link owner pin has an insulated-wire stub at the
+package joint, so A11B and A13B remain remote-landing searches. Independent
+D38/D37 centre estimates spread `1.864` mm and bracket the source D92 centre
+within `1.501` mm; that is inside the local photographic uncertainty, so the
+existing `(260.005,159.200)` mm centre and 0-degree posture are retained.
+`kicad/check_d92_photo_placement.py` guards both-side identity and placement.
+
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds
 the far pin-20 corner out independently at 1.000 px; D100.9 and D100.11 remain continuity

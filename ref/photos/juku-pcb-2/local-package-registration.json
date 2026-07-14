@@ -41,6 +41,35 @@
       "note": "Direct solder-side view is mirrored relative to component side; the similarity fit uses KiCad pad geometry and the photographed lower row."
     },
     {
+      "refdes": "D92",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2484.0, 2290.0], "use": "fit", "observation": "top contact of the left column on the documented decapped LE4 package"},
+        {"pin": "4", "image_px": [2488.0, 2458.0], "use": "check", "observation": "independent fourth contact on the complete left column"},
+        {"pin": "7", "image_px": [2492.0, 2625.0], "use": "fit", "observation": "bottom contact of the complete pin-1-to-7 column"},
+        {"pin": "8", "image_px": [2661.0, 2625.0], "use": "fit", "observation": "bottom contact of the opposite column"},
+        {"pin": "14", "image_px": [2655.0, 2290.0], "use": "check", "observation": "independent top contact on the pin-8-to-14 column"}
+      ],
+      "note": "The official census and assembly drawing identify D92 as the LE4 between D38 and D37; the owner survey independently records that nominally missing LE4 as decapped. The exposed die and both complete seven-pad columns establish package identity even though the marking lid is absent. Pins 1 and 13 have ordinary etched departures but no direct insulated-wire termination."
+    },
+    {
+      "refdes": "D92",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1382.0, 1949.0], "use": "fit", "observation": "top joint of the reflected pin-1-to-7 column between fitted D38 and D37"},
+        {"pin": "4", "image_px": [1386.0, 2117.0], "use": "check", "observation": "independent fourth joint on the complete right column"},
+        {"pin": "7", "image_px": [1390.0, 2284.0], "use": "fit", "observation": "bottom joint of the complete mirrored right column"},
+        {"pin": "8", "image_px": [1221.0, 2284.0], "use": "fit", "observation": "bottom joint of the opposite complete column"},
+        {"pin": "13", "image_px": [1214.0, 2005.0], "use": "check", "observation": "independent second joint from the top on the mirrored left column"},
+        {"pin": "14", "image_px": [1213.0, 1949.0], "use": "check", "observation": "independent top joint on the mirrored left column"}
+      ],
+      "note": "The two complete seven-joint columns between the already fitted D38 and D37 fields establish D92 on the backside. An affine model absorbs the slight column perspective while holding both factory-link owner pins out independently; neither D92.1 nor D92.13 carries a visible wire stub."
+    },
+    {
       "refdes": "D2",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

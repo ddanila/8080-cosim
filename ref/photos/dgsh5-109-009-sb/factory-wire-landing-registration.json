@@ -171,7 +171,7 @@
     {
       "point": 11,
       "status": "image-registered/board-fit-pending",
-      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark",
+      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark; direct component/solder fits identify the decapped D92 and place owner pin D92.13 precisely, but neither pad face carries the wire, so the remote landing remains pending",
       "endpoints": [
         {
           "terminal": "A11A",
@@ -217,7 +217,7 @@
     {
       "point": 13,
       "status": "image-registered/board-fit-pending",
-      "observation": "overlapping views show the line leaving the left 13 mark in 114556899, crossing C95/D38, and arriving at the right 13 mark before R35 in 114600417",
+      "observation": "overlapping views show the line leaving the left 13 mark in 114556899, crossing C95/D38, and arriving at the right 13 mark before R35 in 114600417; direct component/solder fits identify the decapped D92 and place owner pin D92.1 precisely, but neither pad face carries the wire, so the remote landing remains pending",
       "endpoints": [
         {
           "terminal": "A13A",

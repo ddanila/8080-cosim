@@ -81,7 +81,10 @@ The terminal is `(130.027,121.736)` mm: its 94.721 mm span from A19A
 matches the factory approximately 9.5 cm conductor and proves the
 D7.2-side MEMW landing rather than a neighboring white-wire endpoint.
 The same overlap method guards `А:11` at `(1563,3155)` in `114556899`
-and `(1898,2837)` in `114600417`; PCB promotion remains pending.
+and `(1898,2837)` in `114600417`. Two-sided D92 fits place owner pin
+D92.13 at `(2654.333,2345.833)` component and `(1214.333,2004.833)`
+solder pixels; neither pad face carries the wire, so its remote landing
+remains pending.
 `А:10` is complete in one drawing view at `(821,3778)` and
 `(3016,3702)` in `114556899`. At the D41 end, component joint
 `(2148,2174)` and reflected solder joint `(1506,1834)` agree within
@@ -93,7 +96,9 @@ A10A `(240.091,146.982)` mm and A10B `(108.865,152.813)` mm on
 final corrected 13.5 cm conductor length; the earlier tentative
 `~11.5` reading is retired.
 `А:13` is guarded across `114556899`/`114600417` at `(467,3851)`
-and `(1625,3443)`, with C95/D38 between the marks.
+and `(1625,3443)`, with C95/D38 between the marks. The same D92 fits
+place owner pin D92.1 at `(2484,2290)` component and `(1382,1949)`
+solder pixels; no direct insulated-wire termination is visible.
 `А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`
 and `(1159,3623)` on its shallow diagonal run.
 `А:14` is the upper of two close parallel lines at `(1277,1832)` in
