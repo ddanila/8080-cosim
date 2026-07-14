@@ -7127,7 +7127,7 @@
    "nodes": [["D92", "5"], ["R12", "2"]]
   },
   "D6_V_ENABLE": {
-   "src": "sheet-1 full-resolution shows D6 РТ4 enable pins V1/pin13 and V2/pin14 bridged; chip-removed owner continuity 2026-07-14 proves D13.12 reaches D6.14. The simultaneously reported D16.13 branch is not promoted until rechecked with D16 removed because both package roles are outputs",
+   "src": "direct owner visual inspection of the bottom layer 2026-07-14 confirms physical copper bridges D6 РТ4 enable pins V1/pin13 and V2/pin14; this agrees with the sheet-1 full-resolution trace. Chip-removed owner continuity proves D13.12 reaches D6.14, therefore D13.12 feeds both tied enable pins. The simultaneously reported D16.13 branch is not promoted until rechecked with D16 removed because both package roles are outputs",
    "nodes": [["D6", "13"], ["D6", "14"], ["D13", "12"]]
   },
   "D3_O4_D6_A6": {

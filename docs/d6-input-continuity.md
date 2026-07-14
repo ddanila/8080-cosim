@@ -67,6 +67,7 @@ D6.11 RAM_N -> D2.15 A7 / -WREQ
 D6.11 RAM_N -/-> D8.15
 D6.11 -/-> D6.12
 D13.12 -> D6.14 V2
+D6.13 V1 <-> D6.14 V2 (bottom-layer copper visually confirmed)
 ```
 
 The same powered-off owner session directly confirms the complete decode-path
@@ -76,6 +77,6 @@ endpoint chain: `D6.9 -> D13.1`, `D13.2 -> D37.4`, and
 The model therefore restores the independent `ROM_SEL` output and moves
 D6.11 onto the measured `WREQ_N` conductor; the older D92.5/R12.2 RAM branch
 remains a separate boundary until its target-board driver is found. D13.12
-moves to the D6 enable conductor. The reported D13.12-to-D16.13 reading
+therefore feeds both physically tied D6 enable pins. The reported D13.12-to-D16.13 reading
 is recorded as a follow-up candidate, not promoted connectivity, until D16 is
 removed and the socket pad is rechecked.
