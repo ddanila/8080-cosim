@@ -85,10 +85,12 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 13 | А:19 | А:19 | ~9.5 |
 | 14 | А:20 | А:20 | ~6 |
 
-All ten on-board link rows are now mapped to electrical endpoints. The owner
-read for `А:20` was made through the installed X3 cable, so the table below
-shows the intervening photographed PCB landing A23 as well as remote X3.3.
-These links are insulated assembly wire, not replacement PCB etch.
+All ten on-board link rows are now mapped to electrical endpoints. Full-
+resolution sheet 1 draws `А:20` as the short diagonal between the D14 and
+D3/R18 serial-transmit islands; the electrical sheet joins D14.3 and D3.11 on
+`SER_TXD`. The separate owner read D3.10-A23-X3.3 instead corroborates the
+adjacent X3 TTL-output cable and must not be assigned to `А:20`. These links
+are insulated assembly wire, not replacement PCB etch.
 
 | Conductor position | Board point | Guarded endpoints | Net |
 | ---: | ---: | --- | --- |
@@ -101,7 +103,7 @@ These links are insulated assembly wire, not replacement PCB etch.
 | 9 | А:13 | D13.1 - D92.1 | `ROE` |
 | 10 | А:14 | D1.15 - D35.12 | `PHI2` |
 | 13 | А:19 | D5.26 - D7.2 | `MEMW` |
-| 14 | А:20 | D3.10 - A23.1 - X3.3 | `S_TTL` |
+| 14 | А:20 | D14.3 - D3.11 | `SER_TXD` |
 
 `kicad/check_factory_wire_links.py` guards these mappings against the
 authoritative board model. The mapping does not authorize a routed-copper

@@ -9643,7 +9643,7 @@
    ]
   },
   "SER_TXD": {
-   "src": "scan",
+   "src": "scan plus .009 assembly sheet-1 A:20 diagonal: the electrical sheet joins D14.3 and D3.11, while the placement drawing puts both ends of the ~6 cm insulated link between the D14 and D3/R18 islands",
    "nodes": [
     [
      "D11",

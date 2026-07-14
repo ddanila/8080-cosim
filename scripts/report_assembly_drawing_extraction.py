@@ -143,7 +143,8 @@ def main() -> int:
             factory_wire_links.returncode == 0 and marker(
                 read(WIRE_TABLE_MD),
                 "conductor's position", "not", "board-point", "number",
-                "| 3 | А:7 | D1.22 - D35.10 |", "| 14 | А:20 | D3.10 - A23.1 - X3.3 |",
+                "| 3 | А:7 | D1.22 - D35.10 |", "| 14 | А:20 | D14.3 - D3.11 |",
+                "D3.10-A23-X3.3", "must not be assigned to `А:20`",
                 "insulated assembly wire, not replacement PCB etch",
             ),
             "sheets 2-5 table; owner continuity; `kicad/check_factory_wire_links.py`",
