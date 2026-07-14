@@ -1,0 +1,39 @@
+КР1818ВГ93 / FD179X pinout interpretation — Juku D93
+======================================================
+
+Primary artifact: ../wd1772-vg93/fd179x-01-datasheet.pdf
+Package: 40 pins
+
+Pin contract used by the Juku model
+-----------------------------------
+1   NC                 21  +5 V
+2   /WE                22  TEST
+3   /CS                23  HLT
+4   /RE                24  CLK
+5   A0                 25  RG
+6   A1                 26  RCLK
+7   DAL0               27  RAW READ
+8   DAL1               28  HLD
+9   DAL2               29  TG43
+10  DAL3               30  WG
+11  DAL4               31  WDATA
+12  DAL5               32  READY
+13  DAL6               33  WF/VFOE
+14  DAL7               34  TR00
+15  STEP               35  INDEX
+16  DIRC               36  WPRT
+17  EARLY              37  DDEN
+18  LATE               38  DRQ
+19  /MR                39  INTRQ
+20  GND                40  +12 V
+
+Juku direct-continuity interpretation, 2026-07-15
+-------------------------------------------------
+D93.1 is NC.
+D93.2 (/WE) <-> D94.4.
+D93.3 (/CS) <-> D94.15 (/CE).
+D93.4 (/RE) <-> D94.3.
+D93.40 (+12 V) <-> board +12 V rail.
+
+Do not restore the superseded mirrored-photo mapping D94.1/.2/.3 to
+D93.4/.3/.2.

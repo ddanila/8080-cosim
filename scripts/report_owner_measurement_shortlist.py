@@ -150,7 +150,7 @@ def main() -> int:
         ("PROM dump procedure exists", has_phrase("docs/prom-dump-procedure.md", "Bipolar PROMs")),
         ("Physical D2/D6/D8/D94 tables are guarded", has_phrase("docs/reconstructed-prom-fallbacks.md", "PHYSICAL PROM TABLES ADOPTED")),
         ("D2 constraint report generated", "PASS" if marker(ROOT / "docs/d2-reconstruction-constraints.md", "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**") else "MISSING"),
-        ("D30 section-B scan chase guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **SCAN EXHAUSTED / OWNER CONTINUITY REQUIRED**")),
+        ("D30 section-B continuity closure guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
@@ -206,7 +206,7 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "resistance-map D94 inputs 10-14 and enable 15 to identified package pins/rails, trace active output D3/pin4 first, then D4-D7 for copper fidelity, and find every branch from D93.2/D93.4 beyond the visible D94.3/D94.1 segments on a .009 processor board",
+            "identify the pull-up resistors on D94.13-D104.7, D94.14-D101.7, and D94.1; trace D104.10 and D4-D7 far destinations; later recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 because direct continuity places D94.12/D27.5/D29.4 on IORD contrary to the older IOM_STATUS scan interpretation",
             "`docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv`",
             "replaces the retired same-as-D8 BA mapping with measured row semantics and resolves the PROM read/write control path before an FDC hardware release",
         ),
@@ -219,15 +219,8 @@ def main() -> int:
         ),
         (
             "P0",
-            "ВГ93 +12 V continuity",
-            "with power removed and D93 removed, test D93.40 first against the nearest proved P12V contacts D14.8 and D32.8, then confirm against A60.1 or X8.3; record positive and negative readings",
-            "`docs/d93-pin40-photo-chase.md`; `docs/fdc-hardware-handoff.md`",
-            "closes the controller's power-safety gate without inferring hidden clip-obscured copper",
-        ),
-        (
-            "P0",
             "memory-decode stragglers",
-            "find the source or obscured branch on the measured D6.15-D105.1 input-only boundary; D6-removed resistance to both +5V and GND fluctuates around 100-200 kohm, excluding a simple low-value pull. D6.1<-D3.4<-/PC1 and D6.2<-D3.6<-/PC0 are closed. Chip-removed continuity closes D6.12-D8.15, proves D6.11/D6.12 separate, and routes D6.11 to D2.15/-WREQ; find the actual target-board driver for the older-sheet D92.5/R12.2 RAM branch. D13.12-D6.14 continuity plus visually confirmed bottom-layer D6.13-D6.14 copper closes the enable branch; recheck only the surprising D13.12-D16.13 report with D16 removed. The complete D6.9-D13.1, D13.2-D37.4, D37.6-D58.9 endpoint chain is owner-confirmed. During the known B37A RAM read scope D6.9, D13.2, D37.6, D58.9, and D58.11. All eight raw A7..A5 rows leave pin9 high at B37A. Still close C99 far plate, the upstream D7.5/D29.3 -INHIB source, and remaining D36 timing feeds",
+            "find the source or obscured branch on the measured D6.15-D105.1 input-only boundary; D6-removed resistance to both +5V and GND fluctuates around 100-200 kohm, excluding a simple low-value pull. D6.1<-D3.4<-/PC1 and D6.2<-D3.6<-/PC0 are closed. Chip-removed continuity closes D6.12-D8.15 and proves D6.11/D6.12 separate; follow-up continuity closes the combined D2.15/-WREQ-D6.11-D92.5-R12.2 conductor. D13.12-D6.14 continuity plus visually confirmed bottom-layer D6.13-D6.14 copper closes the enable branch; recheck only the surprising D13.12-D16.13 report with D16 removed. The complete D6.9-D13.1, D13.2-D37.4, D37.6-D58.9 endpoint chain is owner-confirmed. During the known B37A RAM read scope D6.9, D13.2, D37.6, D58.9, and D58.11. All eight raw A7..A5 rows leave pin9 high at B37A. Still close C99 far plate, the upstream D7.5/D29.3 -INHIB source, and remaining D36 timing feeds",
             "`docs/d6-runtime-path-diagnostic.md`; `docs/d6-physical-decode.md`; `docs/io-decode-boundary.md`; `docs/memory-timing-boundary.md`; `docs/d41-timing-boundary.md`; `PLAN.md` P0 connectivity gate",
             "resolves the now-all-mode B37A endpoint/polarity/D58-path contradiction and finds the missing address qualifier before retiring the D6 runnable oracle, then tightens the remaining RAM/video timing nets before netlist freeze",
         ),
@@ -262,7 +255,7 @@ def main() -> int:
         (
             "P0",
             "D30/H continuity closure",
-            "trace D30.11 to its unique clock source, D30.8 to its unique destination, and identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13; independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available",
+            "D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are owner-confirmed; identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13, and independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available",
             "`docs/d30-section-b-scan-chase.md`; `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
             "closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path",
         ),
@@ -360,9 +353,9 @@ def main() -> int:
             "## Current D94 blockers",
             "",
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
-            "- D94 A0-A4/pins 10-14 are explicit input boundaries: resistance-map each",
-            "  before interpreting the captured rows. Then map D94.15 and D3/pin4; D4-D7",
-            "  remain PCB-fidelity asks but never assert in the captured `.092` table.",
+            "- D94 A0-A4/pins 10-14 are owner-closed onto BA0, BA1, IORD, D104.7+pull-up, and D101.7+pull-up.",
+            "  D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4, and D94.4->D93.2 are owner-closed.",
+            "  Pull-up references and D104.10 remain unknown. D94.1 has a separate unidentified +5 V pull-up with no other observed branch; D4-D7 remain PCB-fidelity asks.",
             "  The content table itself is already closed.",
             "",
             "## Pin-Level Closure",
@@ -410,12 +403,9 @@ def main() -> int:
     if failed_checks:
         print("Missing evidence markers: " + ", ".join(failed_checks))
         return 1
-    expected_d94_failures = {
-        "D94 address input sources are traced",
-        "Enable pin D94.15 is traced",
-    }
-    if not expected_d94_failures.issubset(set(d94_failures)):
-        print("Unexpected D94 status: input/enable blockers changed; review shortlist")
+    expected_d94_failures: set[str] = set()
+    if set(d94_failures) != expected_d94_failures or "Enable pin D94.15 is traced" in d94_failures:
+        print("Unexpected D94 status: owner-closed enable or input blockers changed; review shortlist")
         return 1
     return 0
 

@@ -1,0 +1,20 @@
+КР580ВВ55 / Intel 8255A pinout interpretation — Juku D27
+=========================================================
+
+Primary artifact: intel-p8255a.pdf
+Package: 40 pins
+
+Relevant datasheet pins
+-----------------------
+5   /RD          6   /CS          7   GND
+8   A1           9   A0           10  PC7
+11  PC6          12  PC5          13  PC4
+14  PC0          15  PC1          16  PC2
+17  PC3          18-25 PB0-PB7    27-34 D7-D0
+35  RESET        36  /WR          37-40 PA7-PA4
+1-4 PA3-PA0
+
+Juku direct continuity, 2026-07-15
+-----------------------------------
+D27.8  (A1)  <-> D93.6 <-> D94.11.
+D27.5  (/RD) <-> IORD <-> D94.12 <-> D29.4.

@@ -63,7 +63,6 @@ def main() -> int:
 
     board = json.loads((ROOT / "kicad/juku.board.json").read_text())
     rom_nodes = {tuple(node) for node in board["nets"]["ROM_SEL"]["nodes"]}
-    ram_nodes = {tuple(node) for node in board["nets"]["RAM_SEL"]["nodes"]}
     enable_nodes = {tuple(node) for node in board["nets"]["D6_V_ENABLE"]["nodes"]}
     wreq_nodes = {tuple(node) for node in board["nets"]["WREQ_N"]["nodes"]}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
@@ -72,15 +71,15 @@ def main() -> int:
     model_checks = [
         ("Chip-removed ROM select is D6.12 to D8.15", {("D6", "12"), ("D8", "15")} <= rom_nodes),
         ("D6.11 reaches D2.15/-WREQ and stays separate from ROM select", {("D6", "11"), ("D2", "15")} <= wreq_nodes and ("D6", "11") not in rom_nodes),
-        ("Older D92/R12 RAM branch remains separately bounded", {("D92", "5"), ("R12", "2")} <= ram_nodes and ("D6", "11") not in ram_nodes),
-        ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | ram_nodes),
+        ("D6.11 conductor also reaches D92.5/R12.2", {("D6", "11"), ("D2", "15"), ("D92", "5"), ("R12", "2")} <= wreq_nodes),
+        ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | wreq_nodes),
         ("HDL keeps the D6 outputs separate", ".rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n)" in hdl),
         ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
         ("Runnable compatibility decode is explicit and excluded from LVS",
          "module decode_prom_functional" in devices
          and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
         ("Structural consumers retain separate ROM/RAM conductors",
-         "wire        rom_sel_n = d6_rom_select_n, ram_sel_n = ram_select_downstream_n;" in hdl),
+         "wire        rom_sel_n = d6_rom_select_n, ram_sel_n = d6_ram_output_n;" in hdl),
         ("All-row B37A RAM-gate boundary has a reproducible diagnostic",
          "ALL RAW A7..A5 ROWS EXHAUSTED AT THE RAM GATE BOUNDARY" in runtime_report
          and runtime_report.count("D6-RUNTIME-ALL-MODES ba=b37a") == 8),

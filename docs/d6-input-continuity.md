@@ -67,6 +67,7 @@ socket pads are separate:
 ```text
 D6.12 ROM_N -> D8.15 E_N
 D6.11 RAM_N -> D2.15 A7 / -WREQ
+D6.11 RAM_N -> D92.5 and R12.2 pull-up branch
 D6.11 RAM_N -/-> D8.15
 D6.11 -/-> D6.12
 D13.12 -> D6.14 V2
@@ -78,8 +79,10 @@ endpoint chain: `D6.9 -> D13.1`, `D13.2 -> D37.4`, and
 `D37.6 -> D58.9`.
 
 The model therefore restores the independent `ROM_SEL` output and moves
-D6.11 onto the measured `WREQ_N` conductor; the older D92.5/R12.2 RAM branch
-remains a separate boundary until its target-board driver is found. D13.12
+D6.11 onto the measured `WREQ_N` conductor. Follow-up owner continuity proves
+that conductor also reaches D92.5/R12.2, with R12's other side at +5 V,
+physically confirming the older-sheet pull-up branch while keeping D6.12
+separate. D13.12
 therefore feeds both physically tied D6 enable pins. The reported D13.12-to-D16.13 reading
 is recorded as a follow-up candidate, not promoted connectivity, until D16 is
 removed and the socket pad is rechecked.

@@ -37,8 +37,9 @@ taken with the known КР1818ВГ93 removed from its socket. It exposes all 40
 contacts and the pin-40 end marking. A reflected solder fit then lands on the
 actual joints; together they localize MR_N/pin19 and CLK/pin24 without
 claiming their far destinations.
-Continuous copper promotes the private D94.1/.2/.3 to D93.4/.3/.2 control
-nets; no photographed branch supports the former global I/O-rail assumption.
+Chip-removed owner continuity supersedes the mirrored photograph reading:
+D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.8/GND.
+The old D94.1/.2/.3 photograph rows retain registration value only.
 
 ## Manufacturer Counter/Separator Constraint
 
@@ -170,7 +171,7 @@ select/output paths remain open.
 | `DB5` / `FDC_DAL5` | WIRED | `D100.6` <-> system DB; `D100.14` <-> `D93.12` | scan + WD1793/8287 datasheets |
 | `DB6` / `FDC_DAL6` | WIRED | `D100.7` <-> system DB; `D100.13` <-> `D93.13` | scan + WD1793/8287 datasheets |
 | `DB7` / `FDC_DAL7` | WIRED | `D100.8` <-> system DB; `D100.12` <-> `D93.14` | scan + WD1793/8287 datasheets |
-| `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D0-D2 private controls to D93 RE/CS/WE | two-sided local fits + continuous component copper |
+| `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D2/D3 to D93 RE/WE; D94 enable pin15 to D93 CS; D94 D1 grounded via D99.8 | direct owner continuity for all three controls and grounded D1 |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
 | `FDC_INTRQ` | OWNER-VERIFY | D93 INTRQ to PIC IR0 | MAME-era assumption; owner continuity required |
@@ -197,7 +198,6 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | --- | --- | --- | --- |
 | D10.12/.13/.15/.20/.21/.22 | BOUNDARY | 8259 CAS0-2 and IR2-IR4 dispositions | standard КР580ВН59 contract and affine package fit are proved; CAS0-2 pins12/13/15 are explicit NCs, IR2/IR3 connect directly to D11 RXRDY/TXRDY, and only IR4 remains an off-sheet boundary |
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
-| D93.40 `VDD_12V` | BOUNDARY | +12 V controller supply continuity | primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
 | D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating | singleton D100_OE_BOUNDARY in board JSON; owner continuity item |
@@ -208,7 +208,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | Net | Source | Endpoints |
 | --- | --- | --- |
 | `CS_FDC` | sheet-3 delta/MAME functional decode boundary; D93.3 was separated from this speculative net after local photo fit proved its direct D94.2-only branch; D93 remains the physical КР1818ВГ93 | `D9.7` |
-| `FDC_CS_N` | July-2026 two-sided local fit + continuous component copper | `D94.2, D93.3` |
+| `FDC_CS_N` | direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity | `D94.15, D93.3` |
 | `FDC_DAL0` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.19, D93.7` |
 | `FDC_DAL1` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.18, D93.8` |
 | `FDC_DAL2` | datasheet (8287 B-side -> ВГ93 DAL) | `D100.17, D93.9` |
@@ -221,25 +221,25 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DRQ` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continuity remains required | `D93.38, D10.19` |
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
 | `FDC_RCLK` | July-2026 cross-package solder-photo closure: the corrected D106 К555ИЕ7 fit projects Q3/pin7 at (1154.329,2131.000) px and the independent D93 socket fit projects RCLK/pin26 at (1554.989,2138.344) px in PXL_20260710_200506061.jpg; one uninterrupted slightly sloped solder-side copper trace passes through both fitted contacts with no via, branch, or gap. The literal VG93 IE7-only reference independently matches Q3->RCLK, but the visible target-board copper is the promotion evidence | `D106.7, D93.26` |
-| `FDC_RE_N` | July-2026 two-sided local fit + continuous component copper | `D94.1, D93.4` |
-| `FDC_WE_N` | July-2026 two-sided local fit + continuous component copper | `D94.3, D93.2` |
-| `IORD` | scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+2)` |
-| `IOWR` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+2)` |
+| `FDC_RE_N` | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation | `D94.3, D93.4` |
+| `FDC_WE_N` | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is NC | `D94.4, D93.2` |
+| `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+4)` |
+| `IOWR` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1; direct owner continuity assigns D93.2 only to D94.4 on the target revision | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+1)` |
 
 ## Disposition
 
 - The system data bus, D100 B-side, D93 DAL bus, register select, and
   private D94-to-D93 RE/CS/WE controls are present in board JSON and
-  guarded by this report. Functional I/O decode into D94 remains blocked
-  on A0-A4/pins 10-14, pin 15, and D3-D7 destinations; the `.092`
-  truth table itself is physically captured.
+  guarded by this report. All D94 A0-A4 inputs and the private D93
+  controls are owner-mapped; remaining decode boundaries are the upstream
+  pin-15 enable source, pull-up identities, D3-D7 destinations, and the
+  recorded D29.4/IORD recheck. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
   D100.11. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
 - Trace every restored D93 drive-interface pin through D28/D95-D99/
-  D101/D102/D106, and prove D93.40 to `P12V`; start with the nearest
-  proved anchors D14.8/D32.8, then confirm against A60.1 or X8.3.
+  D101/D102/D106. D93.40 to `P12V` is already owner-confirmed.
   Pin 40 is a power-safety
   blocker, not an optional functional refinement.
   The existing photographs have been exhausted for this path: they prove

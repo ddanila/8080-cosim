@@ -125,8 +125,8 @@ def main() -> int:
         "- Chip-removed `.009` continuity proves the `.006` sheet's separate D6",
         "  ROM/RAM outputs are real: D6.12 reaches D8.15; D6.11 does not, and the",
         "  two socket pads are isolated. D6.11 instead reaches D2.15/-WREQ. The",
-        "  earlier installed-PROM joined reading is invalidated; the older-sheet",
-        "  D92.5/R12.2 RAM branch now requires its actual target-board driver.",
+        "  earlier installed-PROM D6.11/D6.12 joined reading is invalidated. Follow-up",
+        "  continuity proves D6.11 also reaches D92.5/R12.2 on the same -WREQ net.",
         "- Mode selection and the D6 enable feed are now excluded as explanations for",
         "  the `B37A` D6.9 level: no physical row can pull pin 9 low there. The remaining",
         "  contradiction is in endpoint assignment, downstream polarity/function, or",
@@ -136,8 +136,8 @@ def main() -> int:
         "  actual suffix is `11`; both possible A7 rows still leave D6.9 high at",
         "  `B37A`, so the RAM-gate failure remains valid while A7 is unresolved.",
         "- Powered-off owner continuity now confirms the entire endpoint chain:",
-        "  D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9. Find the target-board",
-        "  driver for D92.5/R12.2. Then record live D6.9, D13.2, D37.6, D58.9, and D58.11 during",
+        "  D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9. Record live D6.9,",
+        "  D13.2, D37.6, D58.9, and D58.11 during",
         "  the known `B37A` RAM read. Do not infer a new net merely to make boot pass.",
     ]
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")

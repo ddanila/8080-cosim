@@ -1,0 +1,36 @@
+К155РЕ3 / SN74188-compatible pinout interpretation — Juku D94
+================================================================
+
+Primary artifact: sn74188-ti.pdf
+Physical Juku program: ДГШ5.106.092
+Organization: 32 words x 8 bits, open-collector outputs
+
+Pin contract
+------------
+1   D0 output             9   D7 output
+2   D1 output             10  A0 address input
+3   D2 output             11  A1 address input
+4   D3 output             12  A2 address input
+5   D4 output             13  A3 address input
+6   D5 output             14  A4 address input
+7   D6 output             15  /CE enable input
+8   GND                   16  +5 V
+
+Juku direct-continuity interpretation, 2026-07-15
+-------------------------------------------------
+D94.15 <-> D93.3 (/CS)
+D94.2  <-> D99.8 <-> GND
+D94.2 is explicitly isolated from D94.15.
+D94.3  <-> D93.4 (/RE)
+D94.4  <-> D93.2 (/WE)
+D94.13 <-> D104.7 and an unidentified pull-up resistor to +5 V
+D94.10 <-> D93.5 (A0 / BA0)
+D94.11 <-> D93.6 (A1 / BA1) <-> D27.8
+D94.12 <-> D27.5 (/RD, IORD) <-> D29.4
+D94.14 <-> D101.7 (Q0) and an unidentified pull-up resistor to +5 V
+
+D94.1 connects through an unidentified pull-up resistor to +5 V. No other
+trace or branch was observed, but a hidden/missed branch remains possible.
+D93.1 is NC.
+Address pins 10/11/12/14 and output pins 5/6/7/9 remain incomplete board
+routes. Keep programmed-output semantics separate from physical destinations.

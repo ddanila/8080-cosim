@@ -78,7 +78,7 @@ nibble per 2 KiB block from `0000` through `F800`.
 | --- | --- |
 | Chip-removed ROM select is D6.12 to D8.15 | PASS |
 | D6.11 reaches D2.15/-WREQ and stays separate from ROM select | PASS |
-| Older D92/R12 RAM branch remains separately bounded | PASS |
+| D6.11 conductor also reaches D92.5/R12.2 | PASS |
 | D13.12 drives the D6 enable conductor, not either output | PASS |
 | HDL keeps the D6 outputs separate | PASS |
 | HDL uses measured physical D6 address order | PASS |

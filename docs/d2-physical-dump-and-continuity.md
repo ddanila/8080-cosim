@@ -105,7 +105,9 @@ and remain unresolved.
 The earlier installed-PROM report `D13.12 <-> D6.11 <-> D6.12` and
 `D6.11 <-> D6.12 = 0 ohm` is invalidated by the owner. With D6 removed,
 D6.11 and D6.12 are isolated; D6.12 reaches D8.15, while D6.11 reaches
-D2.15 (`-WREQ`) and does not reach D8.15.
+D2.15 (`-WREQ`) and does not reach D8.15. Follow-up direct continuity proves
+the D6.11/D2.15 conductor also reaches D92.5 and R12.2; R12's other side is
+confirmed at +5 V.
 D13.12 instead reaches D6.14; direct bottom-layer inspection confirms D6.13
 and D6.14 are joined by physical copper, so D13.12 feeds both enable pins. The
 reported D13.12-to-D16.13 reading remains

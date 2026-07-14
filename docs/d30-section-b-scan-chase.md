@@ -1,10 +1,10 @@
 # D30 section-B sheet-1 scan chase
 
-Status: **SCAN EXHAUSTED / OWNER CONTINUITY REQUIRED**
+Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**
 
 The full-resolution `.006` electrical sheet was re-read specifically for the two
-remaining D30 section-B conductors. This audit records what the scan proves and
-why it does not justify a target-board net merge.
+formerly unresolved D30 section-B conductors. This audit records why the scan
+alone was ambiguous and how direct target-board continuity closes both routes.
 
 ## Source
 
@@ -29,14 +29,16 @@ why it does not justify a target-board net merge.
 - Direct owner continuity remains authoritative for D30.10/.12/R5 and
   D105.11->D30.13; neither measured net is reopened by this older-sheet chase.
 
-The safe closure is a continuity measurement from D30.11 and D30.8 on the
-physical `.009` board. Until then both singleton boundary nets are intentional.
+Direct owner continuity on the physical `.009` board now closes both routes:
+D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8
+reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
 
 ## Model guards
 
 | Check | Result |
 | --- | --- |
-| D30.11 remains a singleton clock boundary | PASS |
-| D30.8 remains a singleton inverted-output boundary | PASS |
+| D30.11 joins the measured D13.4/D105.2/D11.20 clock conductor | PASS |
+| D30.8 drives D29.7 on a dedicated measured conductor | PASS |
+| D29.7 is removed from raw IOWR | PASS |
 | Measured section-B D and /PRE pull-up is kept separate | PASS |
 | Measured /CLR path from D105.11 is kept separate | PASS |

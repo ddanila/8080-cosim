@@ -22,8 +22,8 @@ endpoint table contains 626 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 36 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 30 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 596 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 363 `local-package-fit`, 241
 `registration-only`, and 22 `registration+unique-hole-snap` rows. A hole snap
@@ -33,9 +33,13 @@ Accepted paths:
 
 - D2.1/.3/.5/.6/.7 -> D4.1/.3/.5/.6/.7 ->
   `A10/A14/A12/A15/A9`;
-- D94.1 -> D93.4 / `FDC_RE_N`;
-- D94.2 -> D93.3 / `FDC_CS_N`;
-- D94.3 -> D93.2 / `FDC_WE_N`.
+- The former D94.1/.2/.3-to-D93.4/.3/.2 photograph interpretation is
+  invalidated by chip-removed owner continuity; those photograph rows establish
+  package registration only, not electrical identity.
+- Direct continuity proves D94.15 -> D93.3 / `FDC_CS_N`, D94.2 -> D99.8 /
+  `GND`, D94.3 -> D93.4 / `FDC_RE_N`, and D94.4 -> D93.2 / `FDC_WE_N`.
+- Direct continuity also proves D94.13 -> D104.7 and an unidentified pull-up
+  resistor whose other side is +5 V.
 - А:17 -> S1.1 / `RES_RC` (dedicated numbered wire landing).
 - D98.7 -> А:18 -> S1.2 / `D98_Y3_S1_2`.
 - D98.3 -> R94.1 / `D98_Y1_R94` (R94.2 remains unresolved).
@@ -152,12 +156,34 @@ moving the unrelated generic C63 seed into the IC body/gap.
 The marked `КР580ВК38` D5 now has a direct affine component fit in raw
 image `200411500`. Its complete 2x14 contact field and right-facing notch move
 the pad-row centre from the old drawing seed `(31.20,99.20)` mm to
-`(35.44,107.10)` mm and correct the PCB orientation from 90 to 270 degrees.
+`(23.69,109.52)` mm and correct the PCB orientation from 90 to 270 degrees.
 Pins 26 and 28 are independent zero-pixel checks. Fitted D5.26 lies at
 `(1214,1480)` px; one straight visible copper segment reaches the distinct
 white-wire surface joint at `(1218,1593)` px. Package registration alone is
 placement evidence, while that separately reviewed copper departure proves
-the D5-side A19/MEMW landing at `(47.058,119.861)` mm.
+the D5-side A19/MEMW landing at `(35.308,122.281)` mm.
+
+The same owner tile and factory drawing now resolve the complete horizontal
+decode row rather than relying on order guesses. Socketed D8 is the marked
+`К155РЕ3` PROM at `(83.332,113.308)` mm; the adjacent metal 2x8 package is
+D9 `К555ИД7` at `(109.923,113.308)` mm; and the black 2x7 package immediately
+right is unambiguously marked `КР1533ЛА3`, placing D7 at
+`(131.465,113.308)` mm. All three notches face right (270 degrees), their
+held-out corner/contact checks are zero-pixel at recorded precision, and the
+independent D50/D51 estimates spread only `0.532`, `0.547`, and `0.560` mm,
+respectively. This corrects the former metal-D7 attribution and the stale
+vertical D8/D9 seeds.
+
+The uninterrupted white A19 lead from the proved D5-side joint ends at the
+distinct `(3255,1585)` px surface joint below the marked black D7. Its fitted
+`(130.027,121.736)` mm position is `94.721` mm from A19A, matching the
+factory's approximately 9.5 cm conductor and closing the D7.2-side MEMW
+landing without inferring identity from an unrelated nearby white wire.
+The same fit moves assembly-labeled horizontal R13 and the lower R14 of the
+R11/R14 pair to `(50.123,101.273)` and `(59.460,125.041)` mm. R14's body is
+partly hidden by A19, but the drawing order and both landing regions remain
+visible. These six row fits restore zero source-PCB short, clearance, and
+crossing violations.
 
 D50 and D51 now have direct component and reflected-solder fits in the same
 raw photo pair as validated D2. Their markings and bottom-facing notches both

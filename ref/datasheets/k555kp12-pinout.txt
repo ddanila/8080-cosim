@@ -1,0 +1,20 @@
+К555КП12 / SN74LS253 pinout interpretation — Juku D101
+=======================================================
+
+Primary artifact: sn74ls253-ti.pdf
+Package: 16 pins
+
+Datasheet pinout
+----------------
+1   /OE0        9   Q1
+2   select B    10  D10
+3   D03         11  D11
+4   D02         12  D12
+5   D01         13  D13
+6   D00         14  select A
+7   Q0          15  /OE1
+8   GND         16  +5 V
+
+Juku direct continuity, 2026-07-15
+-----------------------------------
+D101.7 (Q0) <-> D94.14 (A4) and an unidentified pull-up resistor to +5 V.

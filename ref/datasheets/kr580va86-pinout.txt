@@ -1,0 +1,25 @@
+КР580ВА86 / Intel 8286 pinout interpretation — Juku D29
+========================================================
+
+Primary artifact: kr580va86.pdf
+Package: 20 pins
+
+Datasheet pinout
+----------------
+1-8   A0-A7
+9     /OE
+10    GND
+11    T (direction)
+12-19 B7-B0
+20    +5 V
+
+Juku direct continuity, 2026-07-15
+-----------------------------------
+D29.4 <-> D27.5 (/RD, IORD) <-> D94.12.
+
+The source model previously assigned D7.8/IOM_STATUS to D29.4 and assigned
+IORD to D29.8. Direct board continuity is adopted, but preserve this recheck:
+
+  D29.4 <-> D7.8
+  D29.4 <-> D29.8
+  D29.8 <-> D27.5

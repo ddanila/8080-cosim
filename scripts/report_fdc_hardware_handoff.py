@@ -279,8 +279,12 @@ def main() -> int:
         failures.append("D93 full FD1793 drive-interface pin contract is absent or incorrect")
     if not all(d93.get("pins", {}).get(pin) == role for pin, role in D93_POWER_PINS.items()):
         failures.append("D93 full FD1793 power/back-bias pin contract is absent or incorrect")
-    if not has_node(board, "GND", "D93", "20") or not has_node(board, "P5V", "D93", "21"):
-        failures.append("D93 traced ground or +5 V supply is absent")
+    if (
+        not has_node(board, "GND", "D93", "20")
+        or not has_node(board, "P5V", "D93", "21")
+        or not has_node(board, "P12V", "D93", "40")
+    ):
+        failures.append("D93 measured ground, +5 V, or +12 V supply is absent")
     if ["D93", "1"] not in board.get("no_connects", []):
         failures.append("D93 internal back-bias pin 1 is not explicitly NC")
     if d100.get("type") != "BUF8287":
@@ -365,12 +369,13 @@ def main() -> int:
     control_checks = [
         (
             "`FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N`",
-            "D94 D0-D2 private controls to D93 RE/CS/WE",
-            [("FDC_RE_N", "D94", "1"), ("FDC_RE_N", "D93", "4"),
-             ("FDC_CS_N", "D94", "2"), ("FDC_CS_N", "D93", "3"),
-             ("FDC_WE_N", "D94", "3"), ("FDC_WE_N", "D93", "2")],
+            "D94 D2/D3 to D93 RE/WE; D94 enable pin15 to D93 CS; D94 D1 grounded via D99.8",
+            [("FDC_RE_N", "D94", "3"), ("FDC_RE_N", "D93", "4"),
+             ("FDC_CS_N", "D94", "15"), ("FDC_CS_N", "D93", "3"),
+             ("GND", "D94", "2"), ("GND", "D99", "8"),
+             ("FDC_WE_N", "D94", "4"), ("FDC_WE_N", "D93", "2")],
             False,
-            "two-sided local fits + continuous component copper",
+            "direct owner continuity for all three controls and grounded D1",
         ),
         (
             "`BA0` / `BA1`",
@@ -419,12 +424,6 @@ def main() -> int:
             group_state(board, "D93", tuple(pin for pin in D93_DRIVE_PINS if pin != "40")),
             "step/precompensation, separator, head-load, drive status, and write interface",
             "primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced",
-        ),
-        (
-            "D93.40 `VDD_12V`",
-            endpoint_state(board, "D93", "40"),
-            "+12 V controller supply continuity",
-            "primary datasheet requires +12 V; corrected two-sided fits identify pin 40; generated geometry ranks D14.8 and D32.8 as the closest proved P12V meter anchors, but continuity remains unproved",
         ),
         (
             "D93.19 `MR_N`",
@@ -492,8 +491,9 @@ def main() -> int:
         "contacts and the pin-40 end marking. A reflected solder fit then lands on the",
         "actual joints; together they localize MR_N/pin19 and CLK/pin24 without",
         "claiming their far destinations.",
-        "Continuous copper promotes the private D94.1/.2/.3 to D93.4/.3/.2 control",
-        "nets; no photographed branch supports the former global I/O-rail assumption.",
+        "Chip-removed owner continuity supersedes the mirrored photograph reading:",
+        "D94.3/.15/.4 drive D93.4/.3/.2, while D94.2 reaches D99.8/GND.",
+        "The old D94.1/.2/.3 photograph rows retain registration value only.",
         "",
         "## Manufacturer Counter/Separator Constraint",
         "",
@@ -688,16 +688,16 @@ def main() -> int:
             "",
             "- The system data bus, D100 B-side, D93 DAL bus, register select, and",
             "  private D94-to-D93 RE/CS/WE controls are present in board JSON and",
-            "  guarded by this report. Functional I/O decode into D94 remains blocked",
-            "  on A0-A4/pins 10-14, pin 15, and D3-D7 destinations; the `.092`",
-            "  truth table itself is physically captured.",
+            "  guarded by this report. All D94 A0-A4 inputs and the private D93",
+            "  controls are owner-mapped; remaining decode boundaries are the upstream",
+            "  pin-15 enable source, pull-up identities, D3-D7 destinations, and the",
+            "  recorded D29.4/IORD recheck. The `.092` table is physically captured.",
             "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
             "  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and",
             "  D100.11. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional",
             "  NCs; SP/EN pin16 is already source-proved and modeled at +5 V.",
             "- Trace every restored D93 drive-interface pin through D28/D95-D99/",
-            "  D101/D102/D106, and prove D93.40 to `P12V`; start with the nearest",
-            "  proved anchors D14.8/D32.8, then confirm against A60.1 or X8.3.",
+            "  D101/D102/D106. D93.40 to `P12V` is already owner-confirmed.",
             "  Pin 40 is a power-safety",
             "  blocker, not an optional functional refinement.",
             "  The existing photographs have been exhausted for this path: they prove",

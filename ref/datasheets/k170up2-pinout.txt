@@ -1,0 +1,38 @@
+К170УП2 pinout interpretation — Juku D104
+============================================================
+
+Primary artifact: k170up2.pdf
+Package: 16 pins
+Function: four line receivers/amplifiers
+
+Datasheet pin contract
+----------------------
+1,2,3,14  threshold-control inputs
+4         X1 input
+5         X2 input
+6         X3 input
+7         X4 input
+8         common / GND
+9         unused
+10        X4 output
+11        X3 output
+12        X2 output
+13        X1 output
+15        +5 V supply
+16        +12 V supply
+
+Channel pairs: 4->13, 5->12, 6->11, 7->10.
+
+Juku interpretation and evidence
+--------------------------------
+D104.4->D104.13 = serial SIN receiver.
+D104.5->D104.12 = serial CTS receiver.
+D104.6->D104.11 = serial DSR receiver.
+D104.7 is the fourth receiver input, not NC.
+
+Direct owner continuity, 2026-07-15:
+  D104.7 <-> D94.13 <-> unidentified pull-up resistor -> +5 V.
+
+D104.10, threshold pins 1/2/3/14, and the physical +12 V feed at pin16
+still require board-level disposition. Do not infer those connections solely
+from the datasheet.

@@ -237,13 +237,22 @@ def main() -> int:
         board_model = {"nets": {}}
     board_nets = board_model.get("nets", {})
     expected_d94_boundaries = {
-        f"D94_A{bit}_BOUNDARY": [["D94", str(10 + bit)]] for bit in range(5)
+        "BA0": None,
+        "BA1": None,
+        "IORD": None,
+        "D94_A3_D104_X4_PULLUP": [["D94", "13"], ["D104", "7"]],
+        "D94_A4_D101_Q0_PULLUP": [["D94", "14"], ["D101", "7"]],
     }
     for net_name, expected_nodes in expected_d94_boundaries.items():
         actual_nodes = board_nets.get(net_name, {}).get("nodes")
-        if actual_nodes != expected_nodes:
+        pin = {"BA0": "10", "BA1": "11", "IORD": "12"}.get(net_name)
+        if expected_nodes is None:
+            ok = ["D94", pin] in (actual_nodes or [])
+        else:
+            ok = actual_nodes == expected_nodes
+        if not ok:
             failures.append(
-                f"board JSON does not preserve {net_name} at {expected_nodes[0][0]}.{expected_nodes[0][1]}"
+                f"board JSON does not preserve measured D94 input mapping on {net_name}"
             )
     for net_name in ("BA11", "BA12", "BA13", "BA14", "BA15"):
         nodes = board_nets.get(net_name, {}).get("nodes", [])

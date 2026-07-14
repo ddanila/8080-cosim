@@ -25,10 +25,12 @@ def nodes(spec: dict, net: str) -> set[tuple[str, str]]:
 def main() -> int:
     spec = json.loads(BOARD.read_text(encoding="utf-8"))
     checks = [
-        ("D30.11 remains a singleton clock boundary",
-         nodes(spec, "D30_CLK2_BOUNDARY") == {("D30", "11")}),
-        ("D30.8 remains a singleton inverted-output boundary",
-         nodes(spec, "D30_Q2N_BOUNDARY") == {("D30", "8")}),
+        ("D30.11 joins the measured D13.4/D105.2/D11.20 clock conductor",
+         {("D30", "11"), ("D13", "4"), ("D105", "2"), ("D11", "20")} <= nodes(spec, "D13_4_D105_2")),
+        ("D30.8 drives D29.7 on a dedicated measured conductor",
+         nodes(spec, "D30_Q2N_D29_AIN7") == {("D30", "8"), ("D29", "7")}),
+        ("D29.7 is removed from raw IOWR",
+         ("D29", "7") not in nodes(spec, "IOWR")),
         ("Measured section-B D and /PRE pull-up is kept separate",
          nodes(spec, "D30B_D_PRE_N") == {("D30", "10"), ("D30", "12"), ("R5", "2")}),
         ("Measured /CLR path from D105.11 is kept separate",
@@ -40,10 +42,10 @@ def main() -> int:
 
     lines = [
         "# D30 section-B sheet-1 scan chase", "",
-        "Status: **SCAN EXHAUSTED / OWNER CONTINUITY REQUIRED**", "",
+        "Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**", "",
         "The full-resolution `.006` electrical sheet was re-read specifically for the two",
-        "remaining D30 section-B conductors. This audit records what the scan proves and",
-        "why it does not justify a target-board net merge.", "", "## Source", "",
+        "formerly unresolved D30 section-B conductors. This audit records why the scan",
+        "alone was ambiguous and how direct target-board continuity closes both routes.", "", "## Source", "",
         f"- Image: `{SOURCE.relative_to(ROOT)}`",
         f"- SHA256: `{sha256(SOURCE)}`",
         "- Full image: `5150 x 3603` pixels",
@@ -62,8 +64,9 @@ def main() -> int:
         "  dispositioned as an unused package half.",
         "- Direct owner continuity remains authoritative for D30.10/.12/R5 and",
         "  D105.11->D30.13; neither measured net is reopened by this older-sheet chase.", "",
-        "The safe closure is a continuity measurement from D30.11 and D30.8 on the",
-        "physical `.009` board. Until then both singleton boundary nets are intentional.",
+        "Direct owner continuity on the physical `.009` board now closes both routes:",
+        "D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8",
+        "reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.",
         "", "## Model guards", "", "| Check | Result |", "| --- | --- |",
     ]
     lines.extend(f"| {name} | PASS |" for name, _ in checks)

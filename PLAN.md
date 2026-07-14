@@ -32,7 +32,7 @@ is not a prerequisite for this replica.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | Retire the D6 functional decoder via joined-conductor D8/D13/D92 timing reconstruction; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 102 mapped instances and 270 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope; its KiCad-nightly 10.99 manufacturing packet is checksum/geometry/render verified under a design hold. The preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. The refresh checkpoint is intentionally not current-source copper: later corrections leave 17 pad-net mismatches and 88 moved pads across D5/D37/D38/D50/D51. It also copper-routes all ten factory insulated-link nets because their twenty paired `А:N` landings are not yet geometrically modeled; all twenty drawing-pixel endpoints are guarded, and both A20 terminals, the D38-side A8/A9 joints, and the D5-side A19 joint are board-fitted/island-assigned. The other fifteen PCB terminals remain unpromoted. The checkpoint is convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split those islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
+| PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope; its KiCad-nightly 10.99 manufacturing packet is checksum/geometry/render verified under a design hold. The preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. The refresh checkpoint is intentionally not current-source copper: later corrections leave 17 pad-net mismatches and 138 moved pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14. It also copper-routes all ten factory insulated-link nets because their twenty paired `А:N` landings are not yet geometrically modeled; all twenty drawing-pixel endpoints are guarded, and both A19/A20 terminals plus the D38-side A8/A9 joints are board-fitted/island-assigned. The other fourteen PCB terminals remain unpromoted. The checkpoint is convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split those islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
 
 The recorded upload ZIP SHA256 is
@@ -46,14 +46,14 @@ fabrication file and gate again.
 These are ordered; each is completable with material already in the repo.
 
 1. **Preserve routing convergence until netlist freeze.** The deterministic
-   router and conflict-derived INTR rip-up workflow now produce the preserved
-   source-complete candidate with zero opens and zero electrical-category DRC
+   router and conflict-derived INTR rip-up workflow produced the preserved
+   routing checkpoint with zero opens and zero electrical-category DRC
    findings (`docs/routed-refresh-audit.md`). Its ten factory wire nets are
    held from adoption until the twenty paired A-point landing coordinates and
    copper-island splits are modeled. All twenty endpoints are now registered
    in original drawing pixels. Both A20 terminals and the D38-side A8/A9 are
-   now fitted to their physical joints and copper islands, as is the D5-side
-   A19 terminal; fifteen PCB
+   now fitted to their physical joints and copper islands, as are both A19
+   terminals; fourteen PCB
    coordinates/island assignments remain pending
    (`docs/factory-wire-route-fidelity.md`). Do not replace
    `kicad/juku_routed.kicad_pcb` yet: copper produced now survives later
@@ -79,9 +79,9 @@ Every ask below is queued with exact deliverables in
    D28, D95-D99, D101, D102, and D106 have package models but no complete
    functional signal closure (`docs/unmodeled-footprint-inventory.md`,
    `docs/fdc-hardware-handoff.md`). Trace each required pin end-to-end, or
-   record a deliberate redesign/DNP decision. D93.40 `VDD_12V` must be proved
-   against the +12 V rail before any power-up
-   (`docs/d93-pin40-photo-chase.md`). D106.7 Q3 -> D93.26 RCLK is photo-closed;
+   record a deliberate redesign/DNP decision. D93.40 `VDD_12V` is now
+   owner-confirmed on the +12 V rail (`docs/d93-pin40-photo-chase.md`).
+   D106.7 Q3 -> D93.26 RCLK is photo-closed;
    the remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against
@@ -94,20 +94,24 @@ Every ask below is queued with exact deliverables in
    taps ИР1 Q1/Q2/Q4 selected by КП12 under EARLY/LATE pins 17/18; WD's
    June-1980 Figure 11 grounds CLR pin 14, while a VFOE-gated (D93.33)
    variant is also plausible — meter both.
-2. **Finish D94 `.092` connectivity.** Content truth is closed; the photo
-   proves D94.1/.2/.3 to D93.4/.3/.2. Resolve pin 15, output D3-D7
-   destinations, and continuity-map input pins 10-14 — their former
-   BA11..BA15 assignment was an unproved scaffold analogy and is retired
-   behind five explicit input boundaries
+2. **Finish D94 `.092` connectivity.** Content truth is closed; direct owner
+   continuity proves D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4,
+   D94.4->D93.2, and D94.13->D104.7 plus a +5 V pull-up. Resolve the
+   D4-D7 destinations, D104.10, both pull-up resistor references (D94.13 and
+   the apparently pull-up-only D94.1),
+   and later recheck the D29.4/IORD conflict noted in the source model. The
+   former BA11..BA15 assignment was an unproved scaffold analogy and is retired;
+   all five actual D94 inputs are now owner-mapped
    (`docs/d94-reconstruction-constraints.md`).
 3. **Finish the measured WAIT/READY edge boundaries.** The D2/D30/D105 path
-   is adopted; resolve D30 pins 8/11 and the exact edge contact/pull-up for
-   `H` (`docs/d30-section-b-scan-chase.md` — sheet-1 scan review is
-   exhausted; owner continuity is required).
+   is adopted; D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are now
+   owner-confirmed. Resolve only the exact edge contact/pull-up for `H`
+   (`docs/d30-section-b-scan-chase.md`).
 4. **Retire the D6 memory-map oracle.** Chip-removed continuity now proves
    D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the earlier
    installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ. Find the
-   actual driver for the older-sheet D92.5/R12.2 RAM branch. D13.12->D6.14
+   D6.11->D92.5/R12.2 branch is now owner-confirmed, joining the already
+   measured D6.11->D2.15/-WREQ conductor. D13.12->D6.14
    continuity plus visually confirmed bottom-layer D6.13<->D6.14 copper closes
    the enable branch. The complete D6.9->D13.1,
    D13.2->D37.4, D37.6->D58.9 endpoint chain is owner-confirmed. Recheck the surprising D13.12->D16.13 report
@@ -120,7 +124,7 @@ Every ask below is queued with exact deliverables in
    modified pads, removed segments, and replacement nets remain a P0 mapping
    hold (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
-   236 source-risk nets and 9 official FDC devices with untraced functional
+   228 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
@@ -134,8 +138,8 @@ cable landings, and off-board S4 is likewise outside PCB-pad scope while its
 three switch contacts remain modeled nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-626 observations have dispositions, 36 rows are accepted evidence, and the
-other 590 remain measurement requests (`docs/photo-registration.md`).
+626 observations have dispositions, 30 rows are accepted evidence, and the
+other 596 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated
@@ -171,8 +175,8 @@ The runnable boot does not yet execute from all four physical tables. The
 adoption road, in dependency order:
 
 1. **D2 `.037` — already executes in boot.** `wait_prom_037` drives the
-   measured D30/R29 READY path. The open D30 pins 8/11 and the `H` edge
-   contact are P0 connectivity item 3, not a PROM gap.
+   measured D30/R29 READY path. D30 pins 8/11 are owner-closed; the `H` edge
+   contact is P0 connectivity item 3, not a PROM gap.
 2. **D8 `.039` — content executes, enable is still derived.** The physical
    table drives all eight ROM-socket selects; its `E_N` input is the joined
    D6 conductor, so full adoption completes with step 3.

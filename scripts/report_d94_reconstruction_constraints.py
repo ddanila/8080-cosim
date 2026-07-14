@@ -268,6 +268,7 @@ def main() -> int:
             enable_rows.append(f"| {pin} | {role} | `{name}` | {src or '-'} |")
             if re.search(r"boundary|unresolved|cannot be uniquely|unknown|pending", src, re.I):
                 enable_ok = False
+    enable_output_isolated = net_for_pin(board, "D94", "15")[0] != net_for_pin(board, "D94", "2")[0]
 
     dsn_pin_roles = dict(pin_roles)
     dsn_pin_roles.update({"8": "GND", "16": "VCC"})
@@ -303,11 +304,11 @@ def main() -> int:
     pcb_ok = bool(pcb_nets)
     pcb_expected = {
         **dsn_expected,
-        "10": "D94_A0_BOUNDARY",
-        "11": "D94_A1_BOUNDARY",
-        "12": "D94_A2_BOUNDARY",
-        "13": "D94_A3_BOUNDARY",
-        "14": "D94_A4_BOUNDARY",
+        "10": "BA0",
+        "11": "BA1",
+        "12": "IORD",
+        "13": "D94_A3_D104_X4_PULLUP",
+        "14": "D94_A4_D101_Q0_PULLUP",
     }
     for pin in all_report_pins:
         role = dsn_pin_roles[pin]
@@ -343,11 +344,11 @@ def main() -> int:
         "assign d[0] = (!e_n && !raw[0])",
     )
     hdl_connected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", "fdc_prom_re_n", "fdc_prom_cs_n", "fdc_prom_we_n")
-    hdl_inputs_boundary = marker(
+    hdl_inputs_measured = marker(
         "hdl/juku_top.v",
-        "wire [4:0] d94_a_boundary",
-        ".a(d94_a_boundary)",
-        "no .009 source proves that mapping",
+        "Measured D94 inputs",
+        "iord_n, BA[1], BA[0]",
+        "former BA11-BA15 scaffold is retired",
     )
     pcb_outputs_match = all(pcb_nets.get(pin) == net_for_pin(board, "D94", pin)[0]
                             for pin, _ in output_pins if net_for_pin(board, "D94", pin))
@@ -381,7 +382,10 @@ def main() -> int:
         "D94 is not used as video-timing evidence",
     )
     output_departures = remaining_output_departures()
-    all_remaining_outputs_depart = set(output_departures) == {"4", "5", "6", "7", "9"}
+    # The old pin-4 boundary was superseded by direct D94.4->D93.2 continuity.
+    # Photo evidence still proves departures for the unresolved D4-D7 outputs;
+    # D0/pin1 is owner-reported unresolved but was not photographically closed.
+    all_remaining_outputs_depart = set(output_departures) >= {"5", "6", "7", "9"}
     address_observations = address_input_observations()
     all_address_inputs_registered = (
         set(address_observations) == {"10", "11", "12", "13", "14"}
@@ -477,7 +481,7 @@ def main() -> int:
             f"| PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
-            f"| Enable pad/fanout is represented as an unresolved boundary | {'PASS' if enable_accounted and not enable_ok else 'FAIL'} | `D94_EN_BOUNDARY` |",
+            f"| Enable pin15 is isolated from output pin2 | {'PASS' if enable_output_isolated else 'FAIL'} | direct owner continuity; distinct board nets |",
             f"| Any D94 output net is traced | {'PASS' if output_nets else 'FAIL'} | {', '.join(f'`{n}`' for n in output_nets) if output_nets else 'no D94 output nets in board JSON'} |",
             f"| Every D94 output pad has an explicit net/boundary | {'PASS' if len(output_nets) == len(output_pins) else 'FAIL'} | {len(output_nets)}/{len(output_pins)} output pins netted |",
             f"| Every unresolved D94 output has a photographed copper departure | {'PASS' if all_remaining_outputs_depart else 'FAIL'} | component-side local-fit observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
@@ -488,7 +492,7 @@ def main() -> int:
             f"| `.113/.117` scans are guarded as not-D94 | {'PASS' if scanned_not_d94 else 'FAIL'} | `docs/re3-firmware-inspection.md` |",
             f"| Vendored programming disks have a guarded PROM-name/marker audit | {'PASS' if programming_media_audited else 'FAIL'} | `docs/vendored-disk-catalog.md` |",
             f"| HDL adopts physical open-collector table | {'PASS' if hdl_physical_table else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
-            f"| HDL keeps D94 A0-A4 off the retired BA mapping | {'PASS' if hdl_inputs_boundary else 'FAIL'} | `hdl/juku_top.v` boundary vector |",
+            f"| HDL adopts measured D94 A0-A4 mapping | {'PASS' if hdl_inputs_measured else 'FAIL'} | `hdl/juku_top.v`; BA0, BA1, IORD, D104.7/pull-up, D101.7/pull-up |",
             f"| `juku_top` connects the three accepted local FDC controls | {'PASS' if hdl_connected else 'FAIL'} | `hdl/juku_top.v` |",
             f"| Video slot audit does not rely on D94 | {'PASS' if video_audit_independent else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
             "",
@@ -511,56 +515,58 @@ def main() -> int:
             "  `Juku ES-101 floppy PROM D94` returned no programming table, binary,",
             "  scan, repository, or collector listing for this artifact. Generic Juku",
             "  history and generic К155РЕ3 references do not constrain its contents.",
-            "- Local two-sided fits and continuous copper now establish D0-D2 as the",
-            "  private `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N` rails. Textual sources",
-            "  still do not provide A0-A4, pin 15, or D3-D7 destinations; physical",
+            "- Direct owner continuity supersedes the mirrored-pin local interpretation:",
+            "  enable pin15 reaches D93.3 CS, D1/pin2 reaches D99.8/GND,",
+            "  D2/pin3 reaches D93.4 /RE, and D3/pin4 reaches D93.2 /WE.",
+            "  Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,",
+            "  D104.7+pull-up, and D101.7+pull-up respectively. Remaining textual",
+            "  gaps are pull-up resistor identities and D0/D4-D7 destinations; physical",
             "  captures now provide the PROM contents.",
             "- Git history proves the former A0-A4=`BA11..BA15` assignment entered in",
             "  commit `ed69b9d` as an FDC scaffold explicitly described as the same",
-            "  convention as D8. No `.009` electrical source or owner measurement was",
-            "  cited. The source PCB now represents pins 10-14 as measurement boundaries.",
+            "  convention as D8. No `.009` electrical source was cited. Direct owner",
+            "  continuity now replaces all five scaffold inputs with measured nets.",
             "- Validated local package fits now preserve exact original-image coordinates",
             "  for D94.10-.14 on both sides. Component copper is socket-obscured and",
             "  the solder crop has no uniquely traceable remote endpoints, so these are",
             "  reviewed measurement records rather than promoted electrical nets.",
-            "- Registered component-side local fits show copper departing every remaining",
-            "  output pad D3-D7 (pins 4-7 and 9), now represented by explicit boundary",
-            "  nets. Their far destinations remain unknown, so none may be removed from",
-            "  the PCB as NC. The captured program nevertheless keeps D4-D7 released at",
-            "  every row; only D3 among those five can affect circuit behavior.",
+            "- Registered component-side local fits show copper departing D3-D7",
+            "  (pins 4-7 and 9). Direct continuity now closes D3/pin4 to D93.2;",
+            "  D4-D7 retain explicit far-destination boundaries. D0/pin1 is also",
+            "  destination-unresolved. The captured program keeps D4-D7 released",
+            "  at every row; D0 and the now-closed D3 are behaviorally active.",
             "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
-            "  in board JSON/DSN, but D94 inputs A0-A4, pin 15, and D3-D7 are not tied to it in",
+            "  in board JSON/DSN, but D94 pin 15 and D3-D7 are not tied to it in",
             "  board JSON, DSN, or PCB evidence. It cannot substitute for the missing",
             "  D94 input/enable/output continuity.",
             "- A 2026-07-11 high-resolution recheck projected D93.2 and D93.4 from",
             "  the validated reflected D94 solder fit into the same source image.",
-            "  Neither pad shows an obvious solder-side fanout, while D94.15 still",
-            "  cannot be followed to a unique endpoint across the adjacent tile.",
-            "  This is useful negative photo evidence, not a substitute for continuity.",
+            "  Neither pad shows an obvious solder-side fanout. Owner continuity now",
+            "  closes D94.15->D93.3 and D94.2->D99.8/GND, demonstrating why the",
+            "  earlier local mirrored-pin interpretation was insufficient.",
             "",
             "## Input-mapping correction and control constraint",
             "",
             "The three proved output destinations and physical table reject the old",
             "scaffold mapping as a closed physical claim:",
             "",
-            "- D94.D0 and D94.D2 terminate at the separate active-low D93 `/RE` and",
+            "- D94.D2 and D94.D3 terminate at the separate active-low D93 `/RE` and",
             "  `/WE` inputs. An FDC register must support both reads and writes at the",
             "  same port address.",
             "- If A0-A4 were only `BA11..BA15`, the same PROM row would drive both cycle",
             "  directions and could not independently select `/RE` versus `/WE`.",
-            "- That mapping was never measured; it was copied by analogy from D8. The",
-            "  contradiction therefore narrows the next work to the actual D94 input",
-            "  sources, plus any wired/open-collector branches at D93.2/.4 and pin 15.",
+            "- That mapping was never measured; it was copied by analogy from D8.",
+            "  Owner continuity now supplies the actual five input sources.",
             "",
             "This does not refute the accepted local D94-to-D93 copper. It removes a",
-            "false source claim and makes the required measurement explicit: map pins",
-            "10-15 and every branch from D93.2/.4 before assigning row semantics.",
+            "false source claim. Remaining decode work is the upstream enable source,",
+            "pull-up identities, and guarded D29.4/IORD recheck.",
             "",
             "## Address Space",
             "",
             "D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;",
-            "it intentionally makes no claim about their board signal sources. Unknown",
-            "input wiring or D3-D7 destinations do not make captured bits unknown.",
+            "the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D104.7/pull-up,",
+            "and A4=D101.7/pull-up. Unknown D3-D7 destinations do not make captured bits unknown.",
             "",
             "| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
@@ -572,19 +578,21 @@ def main() -> int:
             "",
             "## Reconstruction Boundary",
             "",
-            "- Known: D94 is present in the .009 FDC quadrant; all five address input",
-            "  pads are modeled, but their remote sources are not yet known.",
-            "- Known output destinations: D0-D2 drive the private D93 read/select/write",
-            "  controls `FDC_RE_N`, `FDC_CS_N`, and `FDC_WE_N`.",
+            "- Known: D94 is present in the .009 FDC quadrant and all five address",
+            "  inputs have direct owner-continuity mappings.",
+            "- Known control destinations: D94 enable pin15 reaches D93.3 CS; D1/pin2",
+            "  is grounded through D99.8; D2/pin3 reaches D93.4 RE; and D3/pin4",
+            "  reaches D93.2 WE. D0/pin1 remains destination-unresolved.",
             "- Known content: three matching reads including a power-cycled read yield",
             f"  raw SHA256 `{PHYSICAL_D94_SHA256}`.",
-            "- Unknown: D94 A0-A4/pins 10-14, pin 15's upstream source, and D3-D7 far",
-            "  destinations remain unresolved behind explicit boundary nets.",
-            "- D3-D7 are destination-unknown, not unused: registered component-side",
-            "  photographs prove copper leaves all five output pads.",
+            "- Unknown: the shared CS/enable upstream source, D0 hidden-branch status,",
+            "  pull-up resistor identities on A3/D104.7 and A4/D101.7, and D4-D7",
+            "  far destinations remain unresolved behind explicit boundary nets.",
+            "- D4-D7 are destination-unknown, not unused: registered component-side",
+            "  photographs prove copper leaves all four output pads.",
             "- D4-D7 are physically wired but program-inert: raw bits 4-7 remain one",
             "  (open-collector released) at all 32 captured rows. D3 is the only",
-            "  behaviorally active output whose far destination is still unknown.",
+            "  closed active output; D0 is behaviorally active and destination-unknown.",
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
             "  replacement source for D94: its current nodes are `R17.1`, `C99.1`,",
             "  and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.",
@@ -618,13 +626,14 @@ def main() -> int:
         and physical_table_ok
         and hdl_physical_table
         and hdl_connected
-        and hdl_inputs_boundary
+        and hdl_inputs_measured
         and pcb_outputs_match
         and scanned_not_d94
         and programming_media_audited
         and video_audit_independent
         and enable_accounted
-        and not enable_ok
+        and enable_ok
+        and enable_output_isolated
         and all_remaining_outputs_depart
         and output_activity_ok
     ) else 1

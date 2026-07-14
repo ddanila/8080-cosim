@@ -14,8 +14,8 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `a98974503f680edf43057b352a99dfe0da1baf5695a9b2cd9e9ee655369274c6`
-- Total violations: `609`
+- Board SHA256: `fb8b448deda3e725d4919dd0673fbacfe1aabf7b397b1ff56aea242b6ae3d957`
+- Total violations: `610`
 - Unconnected items: `499`
 - Short violations: `0`
 - Copper-clearance violations: `0`
@@ -26,7 +26,7 @@ python3 kicad/report_source_pcb_drc.py
 
 | Type | Count |
 | --- | ---: |
-| `courtyards_overlap` | 91 |
+| `courtyards_overlap` | 92 |
 | `silk_over_copper` | 199 |
 | `silk_overlap` | 199 |
 | `text_thickness` | 120 |
@@ -44,6 +44,12 @@ coverage and the owner-board component tiles show only VT1/VT2, while the archiv
 BOM assigns the adjustable trimmer and extra RF transistors to `.006`. The legacy-only
 population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`
 factory positions with explicit continuity-boundary nets.
+
+The upper-left decode row is independently component-photo fitted. D8 is the socketed
+К155РЕ3 PROM, D9 the adjacent metal К555ИД7 decoder, and D7 the marked black
+КР1533ЛА3 package; all three are horizontal with right-facing notches. The drawing-labeled
+R13 and lower R14 are fitted to their photographed horizontal landings. These corrections
+replace stale vertical/overlapping seeds rather than waiving D7/D8/D9/R13/R14 collisions.
 
 R33 and R66 retain their independently photo-registered centres and orientations. Their
 nearest pads are 1.721 mm centre-to-centre; using 1.50 mm copper around the original-style

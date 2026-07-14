@@ -37,8 +37,9 @@ module juku_top (
     // ---- clock / reset domain (boundary to a DISCRETE subsystem) ----
     // The real board has NO 8224: clock = crystal Z1 + D59 (ЛН1) oscillator +
     // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
-    // READY section A is now represented by D30 below; its off-sheet -SSTB source and section B
-    // remain boundaries. STSTB(8238) comes from D38.8 over factory wire 8.
+    // READY section A is represented by D30 below; its off-sheet -SSTB source
+    // remains a boundary, while section B is owner-closed through D13.4 and D29.7.
+    // STSTB(8238) comes from D38.8 over factory wire 8.
     wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
@@ -58,13 +59,12 @@ module juku_top (
     wire        cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n;
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
     wire        d6_rom_select_n, d6_ram_output_n, d6_v_enable;
-    wire        ram_select_downstream_n;
     wire        d6_rev_physical, d6_roe_physical;
 `ifdef YOSYS
     // Structural/LVS path: chip-removed continuity preserves separate D6.12
     // ROM-select and D6.11 RAM-select conductors.
     wire        rev = d6_rev_physical, roe_n = d6_roe_physical;
-    wire        rom_sel_n = d6_rom_select_n, ram_sel_n = ram_select_downstream_n;
+    wire        rom_sel_n = d6_rom_select_n, ram_sel_n = d6_ram_output_n;
 `else
     // Runnable path: explicit compatibility boundary until the complete
     // D6/D13/D37/D58 timing topology is reconstructed.
@@ -169,7 +169,7 @@ module juku_top (
     // D30.10/.12 share the R5 pull-up; D105.11 clears section B from ~MEMW.
     tm2_dff #(.FUNCTIONAL(1)) U_D30 (.clr1_n(d30_sstb_n), .d1(ready_d), .clk1(phi2ttl), .pre1_n(d30_pre1_n),
                    .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_memw_inv), .d2(d30b_d_pre_n),
-                   .clk2(1'b0), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
+                   .clk2(d13_o4), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
     net_boundary U_R29LNK (.a(d30_q), .b(ready));
     // vm80a sampling clock. Default = external `osc` (forced-clock boot tbs). With SELF_CLOCK the CPU
     // is driven entirely by the mesh: sclk = D40 divider LSB, phases = D35 from d40_q[1]. This exactly
@@ -212,15 +212,17 @@ module juku_top (
     // ============ expansion/backplane interface (Phase B, sheet 1 -- bus-interface.md) ============
     // D29 (ВА86) = the full bus-command transceiver, 8 signals (B0..B7 per owner's scan read):
     //   B0 -INHIB, B1 -CCLCK, B2 -IO/M, B3 -MWC, B4 -MRC, B5 -AMWC, B6 -IORC, B7 -IOWC.
-    // A-side reads the four direct strobes plus D7.3 -> A5 -> -AMWC, D7.8 -> A2 -> -IO/M,
-    // and the shared D7.5/D29.3 status boundary -> A0 -> -INHIB. The remaining CCLCK
+    // A-side reads the four direct strobes plus D7.3 -> A5 -> -AMWC and the
+    // shared D7.5/D29.3 status boundary -> A0 -> -INHIB. Owner continuity puts
+    // physical D29.4/A2 on IORD; the older D7.8->D29.4 IOM_STATUS reading is
+    // retained only as a recheck boundary. The remaining CCLCK
     // source stays an inactive boundary. One-way (never drives the
     // strobe nets -> boot-safe).
     wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
     wire d7_y2_amw_n;  // D7.3 -> semantic command A5 on physical D29 A4/pin5; physical B4/pin15 is -AMWC
-    wire d7_y4_iom_status;  // D7.8 -> semantic command A2 on physical D29 A3/pin4; physical B3/pin16 is -IO/M
+    wire d7_y4_iom_status;  // D7.8 boundary; older D29.4 assignment requires recheck
     wire d7_b3_inhib_status;  // D7.5 shares semantic command A0 on physical D29 A2/pin3; physical B2/pin17 is -INHIB
-    va86_out U_D29 (.Ain ({iowr_n, iord_n, d7_y2_amw_n, memr_n, memw_n, d7_y4_iom_status, 1'b1, d7_b3_inhib_status}),
+    va86_out U_D29 (.Ain ({d30_q2n, iord_n, d7_y2_amw_n, memr_n, memw_n, iord_n, 1'b1, d7_b3_inhib_status}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
     // Address/data backplane transceivers (ВА87, one-way A->B; refdes confirmed by owner from scan):
@@ -268,9 +270,8 @@ module juku_top (
     la3_gate    U_D7     (.a(d7_a1_w), .b(d7_b1_w), .y(io_strobe_h),
                           .a2(memr_n), .b2(memw_n), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 / -MRD]; pin3 -> physical D29.5 (-AMWC path)
                           .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
-                          .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 -> D29.4 (-IO/M)
+                          .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 destination recheck boundary
     net_boundary U_D6A7LNK (.a(1'b1), .b(d6_a7_d105_i1));
-    net_boundary U_RAMSELLNK (.a(1'b1), .b(ram_select_downstream_n));
     decode_prom U_DECODE (.a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),
                           .rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n),
@@ -505,25 +506,31 @@ module juku_top (
     net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
     net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(d100_oe_boundary), .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
-    wire d94_d3, d94_d4, d94_d5, d94_d6, d94_d7;
+    wire d94_d0_boundary, d94_d4, d94_d5, d94_d6, d94_d7;
+    supply0 d94_d1_grounded;
 `ifdef YOSYS
-    wire [4:0] d94_a_boundary;
-    wire d94_en_boundary;
+    wire d94_a3_boundary, d94_a4_d101_q0;
 `else
-    // Pulling unresolved inputs low keeps the structural device deterministic
-    // in runnable simulation; these defaults are not physical connectivity.
-    tri0 [4:0] d94_a_boundary;
-    tri0 d94_en_boundary;
+    // A3/A4 have measured local endpoints but their complete upstream behavior
+    // remains outside the runnable model, so deterministic low defaults are used.
+    tri0 d94_a3_boundary, d94_a4_d101_q0;
 `endif
-    // July-2026 two-sided local photo registration + continuous component
-    // copper: D94.1(D0)->D93.4 RE, .2(D1)->D93.3 CS, .3(D2)->D93.2 WE.
-    // The photographs show no branch to the formerly assumed global I/O rails.
-    // A0-A4 were added to BA11-BA15 only by analogy in the original FDC
-    // scaffold; no .009 source proves that mapping, so they remain independent
-    // physical continuity boundaries until measured.
-    re3_prom_092 U_D94 (.a(d94_a_boundary), .e_n(d94_en_boundary),
+    // Direct owner continuity supersedes the mirrored-pin photo interpretation:
+    // D94.15(E_N)->D93.3(CS), D94.2(D1)->D99.8/GND,
+    // D94.3(D2)->D93.4(RE_N), and D94.4(D3)->D93.2(WE_N).
+    // D94.1(D0) has an unidentified pull-up to +5 V and no other observed
+    // branch, but remains a destination boundary in case hidden copper was missed.
+    // These owner measurements
+    // supersede the earlier mirrored-pin interpretation from the photographs.
+    // Measured D94 inputs: A0=D93.A0/BA0, A1=D93.A1/BA1,
+    // A2=IORD (D27.5 and D29.4), A3=D104.7 plus pull-up,
+    // A4=D101.Q0 plus pull-up. The former BA11-BA15 scaffold is retired.
+    net_boundary U_D94CSLNK (.a(1'b1), .b(fdc_prom_cs_n));
+    net_boundary U_D94D0LNK (.a(1'b1), .b(d94_d0_boundary));
+    re3_prom_092 U_D94 (.a({d94_a4_d101_q0, d94_a3_boundary, iord_n, BA[1], BA[0]}), .e_n(fdc_prom_cs_n),
                         .d({d94_d7, d94_d6, d94_d5, d94_d4,
-                            d94_d3, fdc_prom_we_n, fdc_prom_cs_n, fdc_prom_re_n}));
+                            fdc_prom_we_n, fdc_prom_re_n,
+                            d94_d1_grounded, d94_d0_boundary}));
 
     // ============ peripherals (on the buffered buses) ============
     wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries

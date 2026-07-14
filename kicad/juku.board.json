@@ -2477,6 +2477,8 @@
     "5": "CTS_IN",
     "12": "CTS_OUT",
     "6": "DSR_IN",
+    "7": "X4_IN",
+    "10": "X4_OUT",
     "11": "DSR_OUT",
     "8": "GND",
     "15": "P5V"
@@ -2484,7 +2486,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 triple К170УП2 receiver and power-pin table",
-    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; +5 V pin15, ground pin8"
+    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; datasheet fourth receiver is 7->10. Direct owner continuity 2026-07-15 proves input pin7 shares D94.13 and an unidentified pull-up resistor to +5V; +5 V pin15, ground pin8"
    }
   },
   {
@@ -4289,7 +4291,7 @@
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact, RE/CS/WE trace privately to D94 D0-D2, pin1 internal back-bias remains open, and the 20 unresolved drive/clock/control contacts plus pin40 +12V are explicit measurement boundaries requiring target-board continuity"
+    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively, pin1 is NC, and D93.40 reaches the +12 V rail; the remaining drive/clock/control contacts stay explicit measurement boundaries"
    }
   },
   {
@@ -4314,7 +4316,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092; validated repeated physical table adopted",
-    "pins": "РЕ3 pinout; A0-A4 were originally scaffolded onto BA11-15 only by analogy with D8, not from .009 evidence, and are now explicit continuity boundaries; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0; corrected July-2026 local pin fit traces D0/pin1->D93.4 FDC_RE_N, D1/pin2->D93.3 FDC_CS_N, D2/pin3->D93.2 FDC_WE_N; no photographed branch to the formerly assumed global IORD/CS_FDC/IOWR rails"
+    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Direct owner continuity on 2026-07-15 supersedes the mirrored-pin/photo and BA11-BA15 scaffold interpretations: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, D104.7+pull-up, and D101.7+pull-up respectively; enable pin15 reaches D93.3; outputs pin2/3/4 reach GND, D93.4, and D93.2; output pin1 has a pull-up with no other observed branch"
    }
   },
   {
@@ -5035,7 +5037,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1/2 RAM decode pullups",
-    "pins": "RAM_SEL pullup; connected nets RAM_SEL/P5V carry crop evidence"
+    "pins": "D6.11/D2.15/-WREQ/D92.5 pullup; direct owner continuity closes the combined conductor; connected nets WREQ_N/P5V"
    }
   },
   {
@@ -5088,7 +5090,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official; assembly drawing position and sheet-1 READY circuit",
-    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CLR1=-SSTB boundary, /PRE4 remains a continuity boundary, and Q5->R29->D1.READY; section B: /PRE2 pin10 and D pin12 share the R5 pull-up, /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs, and only Q_N2 pin8 plus CLK2 pin11 remain untraced"
+    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CLR1=-SSTB boundary, /PRE4 remains a continuity boundary, and Q5->R29->D1.READY; section B: /PRE2 pin10 and D pin12 share the R5 pull-up, /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs; direct .009 owner continuity on 2026-07-14 proves CLK2 pin11 joins D105.2/D13.4/D11.20 and Q_N2 pin8 drives D29.7"
    }
   },
   {
@@ -5539,7 +5541,7 @@
    ]
   },
   "BA0": {
-   "src": "scan",
+   "src": "scan; direct owner continuity 2026-07-15 proves D94.10/A0 shares D93.5/A0",
    "nodes": [
     [
      "D107",
@@ -5616,11 +5618,15 @@
     [
      "D93",
      "5"
+    ],
+    [
+     "D94",
+     "10"
     ]
    ]
   },
   "BA1": {
-   "src": "scan",
+   "src": "scan; direct owner continuity 2026-07-15 proves D94.11/A1 shares D93.6/A1 and D27.8/A1",
    "nodes": [
     [
      "D107",
@@ -5689,6 +5695,10 @@
     [
      "D93",
      "6"
+    ],
+    [
+     "D94",
+     "11"
     ]
    ]
   },
@@ -7122,10 +7132,6 @@
    "src": "chip-removed direct owner continuity 2026-07-14 proves D6.12 reaches D8.15 while D6.11 does not and the two D6 socket pads are isolated. The older sheet independently places R11 1k as the pull-up on this ROM-region enable. This supersedes the invalid installed-PROM reading that had falsely joined D6.11/D6.12/D13.12",
    "nodes": [["D6", "12"], ["D8", "15"], ["R11", "2"]]
   },
-  "RAM_SEL": {
-   "src": "older-sheet downstream RAM-select branch to D92.5 with R12 1k pull-up; chip-removed direct owner continuity 2026-07-14 moves D6.11 to the D2.15/-WREQ conductor instead. This downstream branch remains a source boundary until its actual target-board driver is found",
-   "nodes": [["D92", "5"], ["R12", "2"]]
-  },
   "D6_V_ENABLE": {
    "src": "direct owner visual inspection of the bottom layer 2026-07-14 confirms physical copper bridges D6 РТ4 enable pins V1/pin13 and V2/pin14; this agrees with the sheet-1 full-resolution trace. Chip-removed owner continuity proves D13.12 reaches D6.14, therefore D13.12 feeds both tied enable pins. The simultaneously reported D16.13 branch is not promoted until rechecked with D16 removed because both package roles are outputs",
    "nodes": [["D6", "13"], ["D6", "14"], ["D13", "12"]]
@@ -7271,7 +7277,7 @@
    "wire_link": true
   },
   "IORD": {
-   "src": "scan sheet-1 full-resolution: D5.25 IORD runs directly into D7 fourth-gate input pin9; D9.5 is REV enable, and D93.4 belongs only to D94.1 on the target revision",
+   "src": "scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3",
    "nodes": [
     [
      "D5",
@@ -7310,13 +7316,21 @@
      "8"
     ],
     [
+     "D29",
+     "4"
+    ],
+    [
+     "D94",
+     "12"
+    ],
+    [
      "D7",
      "9"
     ]
    ]
   },
   "IOWR": {
-   "src": "scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1, and D93.2 belongs only to D94.3 on the target revision",
+   "src": "scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1; direct owner continuity assigns D93.2 only to D94.4 on the target revision",
    "nodes": [
     [
      "D5",
@@ -7349,10 +7363,6 @@
     [
      "D10",
      "2"
-    ],
-    [
-     "D29",
-     "7"
     ],
     [
      "D7",
@@ -10304,6 +10314,10 @@
      "8"
     ],
     [
+     "D94",
+     "2"
+    ],
+    [
      "D100",
      "10"
     ],
@@ -11082,6 +11096,10 @@
     [
      "D32",
      "8"
+    ],
+    [
+     "D93",
+     "40"
     ],
     [
      "A60",
@@ -13014,16 +13032,16 @@
    ]
   },
   "FDC_RE_N": {
-   "src": "July-2026 two-sided local fit + continuous component copper",
-   "nodes": [["D94", "1"], ["D93", "4"]]
+   "src": "direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation",
+   "nodes": [["D94", "3"], ["D93", "4"]]
   },
   "FDC_CS_N": {
-   "src": "July-2026 two-sided local fit + continuous component copper",
-   "nodes": [["D94", "2"], ["D93", "3"]]
+   "src": "direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity",
+   "nodes": [["D94", "15"], ["D93", "3"]]
   },
   "FDC_WE_N": {
-   "src": "July-2026 two-sided local fit + continuous component copper",
-   "nodes": [["D94", "3"], ["D93", "2"]]
+   "src": "direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is NC",
+   "nodes": [["D94", "4"], ["D93", "2"]]
   },
   "D96_Q2_N_TEST_LANDING": {
    "src": "July-2026 D99-package-local cross-side affine: D96.8 Q2_N reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
@@ -13033,9 +13051,9 @@
    "src": "July-2026 D99-package-local cross-side affine: D99.2 B reaches a circular component-side test landing whose solder-side projection is bare substrate with no annulus or continuation",
    "nodes": [["D99", "2"]]
   },
-  "D94_D3": {
-   "src": "July-2026 registered component photo: continuous copper leaves D94 output pin 4 and reaches a distinct terminal via/layer handoff near board (236.74,96.30) mm; far-side destination remains a boundary",
-   "nodes": [["D94", "4"]]
+  "D94_D0_BOUNDARY": {
+   "src": "direct owner inspection 2026-07-15 finds D94 output pin1 connected through an unidentified pull-up resistor to +5V, with no other trace or branch observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded",
+   "nodes": [["D94", "1"]]
   },
   "D94_D4": {
    "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary",
@@ -13052,10 +13070,6 @@
   "D94_D7": {
    "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary",
    "nodes": [["D94", "9"]]
-  },
-  "D94_EN_BOUNDARY": {
-   "src": "July-2026 registered component/solder local fits identify D94 enable pin 15 and exposed fanout, but the onward source cannot be uniquely followed across the adjacent tile",
-   "nodes": [["D94", "15"]]
   },
   "FDC_DAL0": {
    "src": "datasheet (8287 B-side -> ВГ93 DAL)",
@@ -13193,9 +13207,9 @@
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin6 D00; no remote destination is proved, so this remains a measurement boundary",
    "nodes": [["D101", "6"]]
   },
-  "D101_Q0_BOUNDARY": {
-   "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin7 Q0; no remote destination is proved, so this remains a measurement boundary",
-   "nodes": [["D101", "7"]]
+  "D94_A4_D101_Q0_PULLUP": {
+   "src": "direct owner continuity 2026-07-15 proves D94.14/A4 reaches D101 К555КП12 Q0/pin7 and an unidentified pull-up resistor to +5V; resistor reference pending identification",
+   "nodes": [["D94", "14"], ["D101", "7"]]
   },
   "D101_Q1_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary",
@@ -13653,10 +13667,6 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin25 RG; remote separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "25"]]
   },
-  "D94_A0_BOUNDARY": {
-   "src": "D94 .009 input continuity boundary: the retired BA11 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
-   "nodes": [["D94", "10"]]
-  },
   "D93_RAW_READ_BOUNDARY": {
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin27 RAW_READ; remote separator continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "27"]]
@@ -13697,10 +13707,6 @@
    "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measurement boundary",
    "nodes": [["D93", "36"]]
   },
-  "D93_VDD12_BOUNDARY": {
-   "src": "July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin40 VDD_12V; the +12V feed is not proved and remains a power-safety measurement boundary that must not be assumed for fabrication",
-   "nodes": [["D93", "40"]]
-  },
   "D13_I3_BOUNDARY": {
    "src": "sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement boundary",
    "nodes": [["D13", "3"]]
@@ -13737,21 +13743,17 @@
    "src": "sheet-1 native 5150x3603 command-buffer chase identifies semantic command A1/CCLCK on D29 physical A1 pin2; its westbound conductor enters the dense D5/D105 crossing bundle, where adjacent parallel risers and the absence of an explicit junction do not prove the tempting D105.3 candidate, so the unique source remains unread",
    "nodes": [["D29", "2"]]
   },
-  "IOM_STATUS": {
-   "src": "sheet-1 native 5150x3603 direct conductor chase: D7 IORD/IOWR NAND output pin8 runs uninterrupted east into semantic D29 command A2 on physical package channel A3/pin4, paired with physical B3/pin16 routed as -IO/M",
-   "nodes": [["D7", "8"], ["D29", "4"]]
+  "D7_IOM_STATUS_RECHECK": {
+   "src": "the older sheet interpretation joined D7.8 to D29.4 as IOM_STATUS, but direct owner continuity 2026-07-15 instead places D29.4 on the D27.5/IORD/D94.12 conductor. D7.8 remains guarded pending later D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 rechecks",
+   "nodes": [["D7", "8"]]
   },
   "AMW_N": {
    "src": "sheet-1 native 5150x3603 direct conductor chase: D7 NAND output pin3 runs uninterrupted east into semantic D29 command A5 on physical package channel A4/pin5, paired with physical B4/pin15 routed as -AMWC",
    "nodes": [["D7", "3"], ["D29", "5"]]
   },
-  "D30_CLK2_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D30 second flip-flop clock pin11 has a drawn conductor whose unique source is unread, so it remains a measurement boundary",
-   "nodes": [["D30", "11"]]
-  },
-  "D30_Q2N_BOUNDARY": {
-   "src": "sheet-1 full-resolution: D30 second flip-flop inverted output pin8 has a drawn conductor whose unique destination is unread, so it remains a measurement boundary",
-   "nodes": [["D30", "8"]]
+  "D30_Q2N_D29_AIN7": {
+   "src": "direct .009 owner continuity 2026-07-14 proves D30 second flip-flop inverted output pin8 drives D29 VA86 input pin7. This supersedes the prior scan boundary and removes D29.7 from the raw IOWR conductor",
+   "nodes": [["D30", "8"], ["D29", "7"]]
   },
   "R94_P2_BOUNDARY": {
    "src": "July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary",
@@ -15605,16 +15607,16 @@
    "nodes": [["D105", "10"], ["D13", "13"]]
   },
   "WREQ_N": {
-   "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C; chip-removed direct owner continuity 2026-07-14 proves D6 RAM_N output pin11 joins D2.15, superseding the older D6.11-to-D92 interpretation",
-   "nodes": [["D2", "15"], ["X1", "107C"], ["D6", "11"]]
+   "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Chip-removed direct owner continuity on 2026-07-14 proves D6 RAM_N output pin11 joins D2.15; follow-up direct owner continuity on 2026-07-15 proves the same D6.11 conductor reaches D92.5 and R12.2, with R12.1 at +5V. This restores and physically confirms the older-sheet/held-DSN pull-up branch without restoring the invalid D6.11-D6.12 join",
+   "nodes": [["D2", "15"], ["X1", "107C"], ["D6", "11"], ["D92", "5"], ["R12", "2"]]
   },
   "D105_WAIT_STAGE": {
    "src": "traced sheet-1: D105 pin 8 drives both inputs pins 4 and 5 of the following NAND section",
    "nodes": [["D105", "8"], ["D105", "4"], ["D105", "5"]]
   },
   "D13_4_D105_2": {
-   "src": "scan sheet-1: uninterrupted D13 TL2 output pin 4 conductor reaches D105 NAND input pin 2 and USART D11 CLK pin 20",
-   "nodes": [["D13", "4"], ["D105", "2"], ["D11", "20"]]
+   "src": "scan sheet-1 plus direct .009 owner continuity 2026-07-14: uninterrupted D13 TL2 output pin4 conductor reaches D105 NAND input pin2, USART D11 CLK pin20, and D30 second flip-flop clock pin11",
+   "nodes": [["D13", "4"], ["D105", "2"], ["D11", "20"], ["D30", "11"]]
   },
   "D105_GATE1_Y": {
    "src": "traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread",
@@ -15709,21 +15711,9 @@
    "src": ".009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destination is not readable",
    "nodes": [["C22", "2"]]
   },
-  "D94_A1_BOUNDARY": {
-   "src": "D94 .009 input continuity boundary: the retired BA12 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
-   "nodes": [["D94", "11"]]
-  },
-  "D94_A2_BOUNDARY": {
-   "src": "D94 .009 input continuity boundary: the retired BA13 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
-   "nodes": [["D94", "12"]]
-  },
-  "D94_A3_BOUNDARY": {
-   "src": "D94 .009 input continuity boundary: the retired BA14 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
-   "nodes": [["D94", "13"]]
-  },
-  "D94_A4_BOUNDARY": {
-   "src": "D94 .009 input continuity boundary: the retired BA15 assignment came only from the July-2026 FDC scaffold's same-as-D8 assumption, not a scan, photo trace, or owner measurement",
-   "nodes": [["D94", "14"]]
+  "D94_A3_D104_X4_PULLUP": {
+   "src": "direct owner continuity 2026-07-15 proves D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and a pull-up resistor to +5V. The resistor reference is not yet identified; К170УП2 primary pinout confirms channel X4 is input7 -> output10",
+   "nodes": [["D94", "13"], ["D104", "7"]]
   }
  },
  "no_connects": [

@@ -152,7 +152,7 @@ def main() -> int:
             and has_nodes(board, "MEMR", {("D5", "24"), ("D33", "3"), ("D92", "13"), ("D7", "1")})
             and has_nodes(board, "D92_RD_NOR", {("D92", "12"), ("D92", "11")})
             and has_nodes(board, "MEMW", {("D92", "4")})
-            and has_nodes(board, "RAM_SEL", {("D92", "5")})
+            and has_nodes(board, "WREQ_N", {("D6", "11"), ("D92", "5"), ("R12", "2")})
             and has_nodes(board, "D92_WR_NOR", {("D92", "6"), ("D92", "9"), ("D92", "10")})
             and has_nodes(board, "D92_NOACC", {("D92", "8"), ("D39", "5")}),
             "sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8",
