@@ -268,3 +268,13 @@ findings. All 663 remaining non-electrical violation counts equal the prior
 counts after removing the former GND edge and OSC dangling findings. Exact
 identity/net parity with all 2,383 source pads also remains proved. This
 candidate is still temporary and cannot replace the tracked routed board.
+
+A guarded 0.25 mm proposal-clearance sweep then closed DB4, BA11, BA1, PHI2,
+and RAM_OUT_EN. At the exact 0.20 mm board rule, MA6 also closed cleanly. The
+current candidate therefore has one unconnected item, INTR between D1.14 and
+D10.17, with 17,595 copper items and no electrical-category DRC findings: a
+cumulative reduction of 188 from the Freerouting import. An intentionally
+under-clearanced 0.15 mm diagnostic found a geometric path but strict DRC
+rejected it with 79 new clearance findings. INTR is therefore blocked by a
+broad occupied corridor, not merely lattice quantization; the next automatic
+step is transactional rip-up and reroute of the displaced nets.
