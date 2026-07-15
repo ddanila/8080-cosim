@@ -39,8 +39,11 @@ measurement lands, add a row here.
 
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 
-- D6.12 / D8.15 **operating voltage LEVELS** during a ROM fetch (distinguishes
-  "direct + dump-bit-inverted" from "series inverter"; continuity alone can't).
+- **D6 РТ4 re-read on pins 12 (D0) and 9 (D3)** with a corrected reader (avoid
+  Arduino D13/LED pin for data; verify pull-ups). Sim shows only those two bits
+  need inverting to boot from the physical table; routing is direct, so a mis-read
+  dump is the prime suspect. Cheaper cross-check: D6.12/D8.15 operating LEVELS
+  during a ROM fetch (continuity is already done).
 - D6.15/A7 driver/pull source.
 - D30 `H` exact edge contact + pull-up value.
 - Factory Вид В cut pads at D56/D15/D14/D11.

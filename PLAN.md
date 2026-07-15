@@ -86,20 +86,29 @@ These are ordered; each is completable with material already in the repo.
    datasheet-standard as modeled -- no chip is mis-modeled. With the reader, the
    dump, the chip senses, and a uniform complement all excluded, the only
    surviving explanation is a **series inverter on the `D6.12->D8` and
-   `D6.9->D13` conductors** on the produced board that the prototype schematic
-   omits (or that the 95% manual continuity missed) -- a pure routing question.
-   **Owner re-verification asks (produced-board photos = truth; the schematic
-   PDF is the prototype and may differ):**
-   (a) decisive single test — at the reset fetch (address `0000`, mode 0, which
-   must read ROM) is the D8/РЕ3 enable (`D6.12->D8.15`) physically **low** (ROM
-   enabled) while `D6.12` itself reads high? The faithful dump says `D6.12`=high,
-   so a low at D8.15 confirms an inverting stage between them;
-   (b) on the produced board, does `D6.12->D8.15` and/or `D6.9->D13` pass through
-   an inverting gate rather than the modeled direct trace? (D6.10->D9 stays
-   direct — `rev` is already correct.)
-   Once resolved, adopt the physical table under the justified transform, rerun
-   the full guard suite byte-identically, then retire `decode_prom_functional`.
-   Keep the oracle until then. None of this changes
+   `D6.9->D13` conductors, OR the D6 dump's D0/D3 bits themselves.
+   **Sim narrowing (2026-07-15):** driving the runnable selects from the physical
+   table under three transforms — only inverting **D0 (pin 12 -> D8) and D3
+   (pin 9 -> D13)** while leaving D1/D2 direct boots byte-identical across the
+   full guard suite; a uniform 4-bit complement fails (11.2 us) and inverting
+   only D3 fails immediately (2.3 us). So the anomaly is genuinely per-pin on
+   exactly the two РТ4 outputs feeding D8 and D13.
+   **Most likely cause + decisive test:** since `D6.12->D8.15` is owner-recorded
+   as DIRECT (`docs/owner-measured-facts.md`; a photo re-read also looks direct),
+   the effective inversion is not in copper -- it points to the **D6 РТ4 dump
+   being wrong on pins 12 and 9**. Note the reader wiring
+   (`tools/rt4_dumper/rt4_dumper.ino`): PROM pin 9 (D3) is read on Arduino **D13,
+   the on-board LED pin** (LED + series resistor to GND) -- a classic gotcha that
+   can drag an open-collector HIGH down, mis-reading that bit. So the decisive
+   step is a **D6 re-read with a corrected reader** (do not use Arduino D13 for
+   data; verify clean pull-ups on the pin-12 and pin-9 lines), compared against
+   the current `d6_038.raw`. A cheaper cross-check is measuring the D8.15/D6.12
+   operating LEVELS during a ROM fetch (continuity is already done). If the
+   re-read flips D0/D3 in the affected rows, the physical table then boots
+   directly with no transform.
+   Once resolved, adopt the physical table, rerun the full guard suite
+   byte-identically, then retire `decode_prom_functional`. Keep the oracle until
+   then. None of this changes
    copper; the only D6-area netlist ask remains the D105.1/A7 driver (P0
    connectivity item 4). The same polarity resolution unblocks VJUGA workbench
    Phase 2, which routes its decode through the same physical D6 РТ4 chip
