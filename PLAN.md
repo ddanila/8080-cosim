@@ -79,16 +79,21 @@ These are ordered; each is completable with material already in the repo.
    invert and the raw `.038`/`.037` tables are faithful to the programmed data
    (datasheet vendored at `ref/datasheets/82s126-556rt4-256x4-oc-prom.pdf`; and
    D8 РЕ3 boots from its raw `.039`, corroborating raw-faithful readers). So the
-   reader is NOT the cause. The conflict therefore points to the CONSUMER side
-   (prototype-PDF-modeled): either a missing inverting gate on the `D6.12->D8` /
-   `D6.9->D13` conductors, or a mis-modeled downstream enable polarity (e.g. the
-   D8/РЕ3 `E_N` active-high on the produced board). A uniform dump inversion is
-   independently excluded because it would flip `rev` and kill D9/IO.
+   reader is NOT the cause. Consumer-side chip-polarity audit (2026-07-15,
+   against the vendored datasheets) also closes the enable-polarity hypothesis:
+   D8/РЕ3 = SN74188 has an active-low enable (as modeled), and D13 (К555ТЛ2
+   inverter), D37 (К155ЛА3 NAND) and D58 (ИР82 active-low OE) are all
+   datasheet-standard as modeled -- no chip is mis-modeled. With the reader, the
+   dump, the chip senses, and a uniform complement all excluded, the only
+   surviving explanation is a **series inverter on the `D6.12->D8` and
+   `D6.9->D13` conductors** on the produced board that the prototype schematic
+   omits (or that the 95% manual continuity missed) -- a pure routing question.
    **Owner re-verification asks (produced-board photos = truth; the schematic
    PDF is the prototype and may differ):**
    (a) decisive single test — at the reset fetch (address `0000`, mode 0, which
-   must read ROM) is `D6.12` physically **low** (ROM enabled)? The dump implies
-   high; if it measures low, an inverter/reader-sense is confirmed on that path;
+   must read ROM) is the D8/РЕ3 enable (`D6.12->D8.15`) physically **low** (ROM
+   enabled) while `D6.12` itself reads high? The faithful dump says `D6.12`=high,
+   so a low at D8.15 confirms an inverting stage between them;
    (b) on the produced board, does `D6.12->D8.15` and/or `D6.9->D13` pass through
    an inverting gate rather than the modeled direct trace? (D6.10->D9 stays
    direct — `rev` is already correct.)
