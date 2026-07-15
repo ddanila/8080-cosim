@@ -77,6 +77,7 @@ AUTHENTIC_MARK = {
     "JUMPER2": "wire/link",
     "JUMPER3": "wire/link",
     "JUMPER4": "wire/link",
+    "WIRE_LINK": "factory insulated assembly wire",
 }
 
 
@@ -133,6 +134,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "Q_TO92": "modern transistor selected per exact circuit role",
     "L_TAPPED": "custom/recovered tapped coil or documented three-terminal RF replacement",
     "XTAL": "16 MHz HC-49/metal-can crystal matching footprint/load",
+    "WIRE_LINK": "insulated hookup wire cut and installed to the documented route length",
 }
 
 
@@ -144,6 +146,7 @@ TYPE_NOTES = {
     "EPROM8K": "Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.",
     "RU5": "D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check.",
     "VG93_FDC": "A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit.",
+    "WIRE_LINK": "Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.",
 }
 
 
@@ -191,7 +194,7 @@ def group_key(chip):
     typ = chip["type"]
     value = value_of(chip)
     marking = marking_of(chip)
-    if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM"}:
+    if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM", "WIRE_LINK"}:
         return typ, value, marking
     return typ, "", marking
 
