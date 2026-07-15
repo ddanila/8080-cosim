@@ -348,6 +348,41 @@ def main() -> int:
             if not re.search(rf"\b{risk_count}\b[^\n]*source-risk", read(path)):
                 failures.append(f"{path} does not expose the current residual source-risk net count")
 
+    # The preserved zero-open routing candidate intentionally drifts from the
+    # current source. Its generated factory-wire report owns those counts; keep
+    # the public summaries and routed-refresh narrative synchronized with it.
+    candidate_net_match = re.search(
+        r"Candidate/source pad-net mismatches: `(\d+)`",
+        evidence["factory wire routing"],
+    )
+    candidate_moved_match = re.search(
+        r"Candidate/source moved pads \(>50 nm\): `(\d+)`",
+        evidence["factory wire routing"],
+    )
+    if not candidate_net_match or not candidate_moved_match:
+        failures.append("factory-wire report omits candidate/source drift counts")
+    else:
+        candidate_net_count = int(candidate_net_match.group(1))
+        candidate_moved_count = int(candidate_moved_match.group(1))
+        public_drift = re.compile(
+            rf"\b{candidate_net_count}\s+pad-net mismatches and "
+            rf"{candidate_moved_count}\s+moved\s+pads"
+        )
+        for path in ("README.md", "PLAN.md"):
+            if not public_drift.search(read(path)):
+                failures.append(
+                    f"{path} candidate/source drift counts disagree with factory-wire report"
+                )
+        routed_refresh = read("docs/routed-refresh-audit.md")
+        if not re.search(
+            rf"finds {candidate_net_count} changed pad-net assignments and "
+            rf"{candidate_moved_count} pads",
+            routed_refresh,
+        ):
+            failures.append(
+                "routed-refresh post-checkpoint drift counts disagree with factory-wire report"
+            )
+
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
         "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": read(
