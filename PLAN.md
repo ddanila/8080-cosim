@@ -45,7 +45,42 @@ fabrication file and gate again.
 
 These are ordered; each is completable with material already in the repo.
 
-1. **Preserve routing convergence until netlist freeze.** The deterministic
+1. **Decide the D6 `.038` (and D2 `.037`) electrical polarity in simulation
+   and retire the memory-map oracle.** The validated raw captures record pin
+   levels only if the КР556РТ4 reader sensed them correctly; the repo's own
+   boot evidence now over-constrains the answer without new bench work.
+   Firmware-anchored region semantics follow from guarded traces alone
+   (`docs/d6-firmware-mode-coverage.md`, `docs/ekdos-checkpoint-reference.md`,
+   `docs/d6-physical-decode.md`): with A7=0, raw word `1` regions are exactly
+   the ROM overlays (boot `0000-3FFF` in row `011`; high ROM `D800-FFFF` in
+   row `010`, matching the D8 `.039` row-24..31 D15/D16 split and the `D7EF`
+   bank-copy loop in the always-RAM region), word `8` regions are RAM, and
+   word `F` is the expansion window. That mapping contradicts the raw levels
+   at two independent, gate-model-free points: the checkpoint `0484` ROM fetch
+   (portc `80`, row `011`) needs D6.12 low into the active-low D8/РЕ3 `E_N` —
+   the same level the working oracle already drives — where raw records high;
+   and the `B37A` RAM read needs D6.9 low where raw records high. The bitwise
+   complement (the preserved `d6_038.asserted` table) resolves both and every
+   other checkable anchor. The РЕ3 reader is independently validated (raw
+   `.039` single-low-bit selects execute in boot), but the РТ4 reader is not:
+   D2's boot pass only exercises wait-state timing, which the value-level
+   guards cannot see, so it does not pin РТ4 polarity. Actions: (a) extend
+   `hdl/sim/d6_runtime_path_tb.v` to drive the physical `decode_prom` from the
+   asserted table with A7=0 and confirm the D13/D37/D58 chain enables D58 at
+   `B37A`; (b) switch the runnable selects to the physical outputs (asserted
+   table, A7 tied 0 as an explicit boundary, D8 `E_N` from D6.12) and apply
+   the same reader-polarity decision to D2 `.037`; (c) rerun ekta37 boot,
+   EKDOS `A>`, disk-BASIC `READY`, Monitor 3.3, checkpoint-resume, and the
+   130,000-read cosim guard byte-identically; (d) on green, adopt per the
+   Fixed-decisions Tier-1/2 electrically-verified-substitution rule, delete
+   `decode_prom_functional` and its LVS exclusion, and demote the five live
+   levels plus a known-content РТ4 reader re-read to Tier-3 confirmation. If
+   the asserted run is not byte-identical, the surviving hypotheses (D37.5
+   gating, D58 role) stay measurement-gated as before — record the failing
+   divergence in the diagnostic either way. None of this changes copper: all
+   D6-area conductors are already owner-measured, and the only remaining
+   D6-area netlist ask is the D105.1/A7 driver (P0 connectivity item 4).
+2. **Preserve routing convergence until netlist freeze.** The deterministic
    router and conflict-derived INTR rip-up workflow produced the preserved
    routing checkpoint with zero opens and zero electrical-category DRC
    findings (`docs/routed-refresh-audit.md`). Its ten factory wire nets are
@@ -73,7 +108,7 @@ These are ordered; each is completable with material already in the repo.
    netlist changes through the per-net quarantine mechanism, but final
    production reroute/adoption waits for the P0 functional netlist to freeze,
    followed by repeated endpoint-parity, DRC, and visual review.
-2. **Preserve the adopted factory wire-table construction through release.**
+3. **Preserve the adopted factory wire-table construction through release.**
    The sheets 2-6 таблица соединений is transcribed and its two number spaces
    are now explicit: conductor positions are not `А:N` board-point labels
    (`ref/schematics/dgsh5-109-009-sb-wire-table.md`). X3/X4/X8/X9 landings,
@@ -127,19 +162,24 @@ Every ask below is queued with exact deliverables in
 3. **Finish the measured WAIT/READY edge boundaries.** The D2/D30/D105 path
    is adopted; D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are now
    owner-confirmed. Resolve only the exact edge contact/pull-up for `H`
-   (`docs/d30-section-b-scan-chase.md`).
-4. **Retire the D6 memory-map oracle.** Chip-removed continuity now proves
-   D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the earlier
-   installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ. The
-   D6.11->D92.5/R12.2 branch is now owner-confirmed, joining the already
+   (`docs/d30-section-b-scan-chase.md`, `docs/d105-h-boundary.md`).
+4. **Close the remaining D6-area netlist asks.** Chip-removed continuity now
+   proves D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the
+   earlier installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ.
+   The D6.11->D92.5/R12.2 branch is now owner-confirmed, joining the already
    measured D6.11->D2.15/-WREQ conductor. D13.12->D6.14
    continuity plus visually confirmed bottom-layer D6.13<->D6.14 copper closes
    the enable branch. The complete D6.9->D13.1,
-   D13.2->D37.4, D37.6->D58.9 endpoint chain is owner-confirmed. Recheck the surprising D13.12->D16.13 report
-   with D16 removed. Capture the five live RAM-read levels named by
-   `docs/d6-runtime-path-diagnostic.md`. All eight raw A7..A5 rows leave pin 9
-   high at the `B37A` RAM-read failure; resolve the endpoint/polarity path by
-   measurement, not assumption.
+   D13.2->D37.4, D37.6->D58.9 endpoint chain is owner-confirmed. The remaining
+   copper-truth asks are: identify the driver or pull of the D6.15/D105.1
+   conductor (the only D6-area net still missing an endpoint), recheck the
+   surprising D13.12->D16.13 report with D16 removed, and identify the D37.5
+   second NAND input feeding the D58 chain. The former all-mode `B37A` pin-9
+   contradiction is no longer treated as measurement-gated: the raw-vs-asserted
+   polarity decision is resolvable in simulation (Actionable item 1), and the
+   five live RAM-read levels named by `docs/d6-runtime-path-diagnostic.md`
+   plus a known-content КР556РТ4 reader re-validation become Tier-3
+   confirmation asks once the guarded adoption run is green.
 5. **Map the factory Вид В modifications.** The solder-side trace cuts
    (poz. 150/159) at D56, D15, D14, and D11 are drawn design changes; exact
    modified pads, removed segments, and replacement nets remain a P0 mapping
@@ -151,12 +191,15 @@ Every ask below is queued with exact deliverables in
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2239/2239
-net-assigned PCB-scoped board-JSON endpoints and has zero electrical placement
-collisions (`docs/source-pcb-drc.md`); 61 endpoints on bracket-mounted
-S1/X3/X4/X8/X9 are intentionally excluded in favor of their physical A-point
-cable landings, and off-board S4 is likewise outside PCB-pad scope while its
-three switch contacts remain modeled nets (`docs/s4-interrupt-boundary.md`).
+Source-model state feeding this work: the source PCB passes all 2248/2248
+net-assigned PCB-scoped board-JSON endpoints, with 61 endpoints on
+bracket-mounted S1/X3/X4/X8/X9 intentionally excluded in favor of their
+physical A-point cable landings
+(`docs/replica-bringup-verification-points.md`); it has zero electrical
+placement collisions (`docs/source-pcb-drc.md`) and no undeclared non-power
+package endpoints (`docs/package-endpoint-coverage.md`). Off-board S4 is
+likewise outside PCB-pad scope while its three switch contacts remain modeled
+nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
 614 observations have dispositions, 33 rows are accepted evidence, and the
@@ -195,23 +238,28 @@ D15/D16 `ekta37` split and 2764-class device decision are recorded in
 The runnable boot does not yet execute from all four physical tables. The
 adoption road, in dependency order:
 
-1. **D2 `.037` — already executes in boot.** `wait_prom_037` drives the
-   measured D30/R29 READY path. D30 pins 8/11 are owner-closed; the `H` edge
-   contact is P0 connectivity item 3, not a PROM gap.
+1. **D2 `.037` — executes in boot, polarity not yet pinned.** `wait_prom_037`
+   drives the measured D30/R29 READY path. D30 pins 8/11 are owner-closed; the
+   `H` edge contact is P0 connectivity item 3, not a PROM gap. Because wait
+   states are invisible to the value-level guards, the boot pass does not
+   decide raw-vs-asserted polarity for the РТ4 reader; Actionable item 1
+   decides it together with D6.
 2. **D8 `.039` — content executes, enable is still derived.** The physical
    table drives all eight ROM-socket selects; its `E_N` input is the separate
    D6.12 ROM-select conductor, so full adoption completes with step 3.
 3. **D6 `.038` — the one remaining memory-map stand-in.** The runnable
    selects still come from the non-LVS `decode_prom_functional` oracle; a
-   direct substitution fails the checkpoint-resume boundary at RAM `B37A`
-   (P0 connectivity item 4 holds the measurements). After the separate
-   D6.12/D8 and D6.9/D13/D37/D58 paths are functionally reconciled, switch the
-   runnable selects to the physical `decode_prom` outputs, rerun the ekta37
-   boot, EKDOS `A>`, disk-BASIC `READY`, Monitor 3.3, and checkpoint-resume
-   guards byte-identically, then delete the functional oracle and its LVS
-   exclusion. `docs/d6-firmware-mode-coverage.md` bounds what must be proved
-   first: boot firmware observes A6/A5 suffixes `11` and `10`, while the
-   unresolved A7 source prevents assigning complete physical table rows.
+   direct raw-table substitution fails the checkpoint-resume boundary at RAM
+   `B37A`. This is no longer measurement-gated: Actionable item 1 records the
+   firmware-anchored analysis showing the raw capture contradicts two
+   independent, already-working functional anchors while the preserved
+   asserted (complemented) table satisfies every checkable one, and it names
+   the exact guarded adoption run. `docs/d6-firmware-mode-coverage.md` bounds
+   what the trace proves: boot firmware observes A6/A5 suffixes `11` and `10`;
+   A7 is functionally forced to `0`
+   for all firmware-reachable maps (A7=1 rows emit only words `D`/`F` and can
+   express neither observed banking map), while its physical driver on the
+   D105.1 conductor remains the P0 connectivity item 4 netlist ask.
 4. **D94 `.092` — content adopted, boot still bypasses the quadrant.** The
    structural ВГ93 is inert and EKDOS boots on the behavioral `fdc_1793`.
    Adoption requires P0 connectivity item 2 plus D93 functional closure,
@@ -248,8 +296,12 @@ After connectivity and programmable-part decisions stop changing:
   queued, prioritized ask list for the next hardware session; it covers every
   P0 connectivity item above.
 - **Community requests:** use `docs/community-prom-media-request.md` for
-  independent PROM corroboration, Baltijets programming-disk payloads,
-  JUKU-1 media provenance, and cartridge BASIC artifacts.
+  independent PROM corroboration, JUKU-1 media provenance, and cartridge
+  BASIC artifacts. The Baltijets programming-disk payloads are presumed lost;
+  keep the ask open opportunistically, but nothing on the critical path may
+  wait on them — the validated physical dumps plus the in-simulation
+  functional verification of Actionable item 1 are the working PROM truth,
+  and independent reads remain Tier-3 corroboration only.
 - **Document gap:** the remaining item for this drawing family is the
   `.009 Э3` electrical-schematic revision, if it survives. A 2026-07-14 web
   sweep confirms it is not public anywhere; the Arvutimuuseum team physically
