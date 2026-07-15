@@ -32,6 +32,24 @@ trap 'rm -f "$TMP_BOARD"' EXIT
 
 MINIMAL_VGA_NO_ZONES=1 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py "$BOARD_JSON" "$TMP_BOARD" >/dev/null
 
+# Apply the GOST engineering font to every text item. pcbnew (KiCad 10) does not
+# expose the font API, so inject a (face ...) into each (font ...) block of the
+# generated board. Override with SILK_FONT; empty string keeps the stroke font.
+SILK_FONT="${SILK_FONT-GOST type B italic}"
+if [ -n "$SILK_FONT" ]; then
+  python3 - "$TMP_BOARD" "$SILK_FONT" <<'PY'
+import sys, re
+path, face = sys.argv[1], sys.argv[2]
+src = open(path).read()
+# Insert (face "...") as the first child of every (font ...) that lacks one.
+out = re.sub(r'\(font\n(\s*)(?!\s*\(face)',
+             lambda m: f'(font\n{m.group(1)}(face "{face}")\n{m.group(1)}',
+             src)
+open(path, "w").write(out)
+print(f"applied silk font: {face}", file=sys.stderr)
+PY
+fi
+
 "$KCLI" pcb export svg \
   --layers F.Silkscreen,Edge.Cuts \
   --page-size-mode 2 \

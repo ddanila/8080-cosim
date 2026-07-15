@@ -136,18 +136,23 @@ DOWNSTAIRS_VALUE_TYPES = {
     "TTL640X480_HEADER",
 }
 
+# DIP parts use the plain (non-socket) footprints: identical pad pattern, single
+# clean silk outline (the _Socket variants draw a second, nested outline for the
+# socket body -- visually a double box). A socket is soldered into the DIP pads
+# at assembly. Keep neighbour spacing generous since the socket courtyard is not
+# reserved by the footprint.
 FP_BY_TYPE = {
-    "Z80_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm_Socket"),
-    "PPI_82C55_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm_Socket"),
-    "ROM_28C256_DIP28": ("Package_DIP.pretty", "DIP-28_W15.24mm_Socket"),
-    "GAL22V10_DIP24_DECODE": ("Package_DIP.pretty", "DIP-24_W15.24mm_Socket"),
-    "GAL22V10_DIP24_DRAMSEQ": ("Package_DIP.pretty", "DIP-24_W15.24mm_Socket"),
-    "DRAM4164_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
-    "74HCT157_DIP16_ADDRMUX": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
-    "74HCT148_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
-    "74HCT166_DIP16_PIXSHIFT": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
-    "74HCT393_DIP14_REFRESH_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
-    "74HCT393_DIP14_VIDEO_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "Z80_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm"),
+    "PPI_82C55_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm"),
+    "ROM_28C256_DIP28": ("Package_DIP.pretty", "DIP-28_W15.24mm"),
+    "GAL22V10_DIP24_DECODE": ("Package_DIP.pretty", "DIP-24_W15.24mm"),
+    "GAL22V10_DIP24_DRAMSEQ": ("Package_DIP.pretty", "DIP-24_W15.24mm"),
+    "DRAM4164_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
+    "74HCT157_DIP16_ADDRMUX": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
+    "74HCT148_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
+    "74HCT166_DIP16_PIXSHIFT": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
+    "74HCT393_DIP14_REFRESH_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm"),
+    "74HCT393_DIP14_VIDEO_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm"),
     "TTL640X480_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x06_P2.54mm_Vertical"),
     "DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x05_P2.54mm_Vertical"),
     "POWER_INPUT_TERMINAL": ("TerminalBlock.pretty", "TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"),
@@ -166,9 +171,9 @@ FP_BY_TYPE = {
     "POWER_DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x04_P2.54mm_Vertical"),
     # Phase 3/4 additions: real decode PROM sockets, mode inverter, jumpers,
     # and the observability/high-address/control-bus headers.
-    "PROM_556RT4_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
-    "PROM_155RE3_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
-    "HEX_INV_74HC04_DIP14": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "PROM_556RT4_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
+    "PROM_155RE3_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
+    "HEX_INV_74HC04_DIP14": ("Package_DIP.pretty", "DIP-14_W7.62mm"),
     "JUMPER_1x2": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Vertical"),
     "JUMPER_1x3": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x03_P2.54mm_Vertical"),
     "DEBUG_HEADER_1x8": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x08_P2.54mm_Vertical"),
@@ -258,9 +263,11 @@ PLACE = {
     "U3": (130, 62, 0),      # К556РТ4 memory-map decode
     "U4": (158, 62, 0),      # К155РЕ3 ROM pager
     "U6": (186, 62, 0),      # 74HC04 PC0/PC1 inverter
-    "C26": (130, 72, 0), "C27": (158, 72, 0), "C28": (186, 72, 0),
-    "J94": (206, 64, 90),    # decode-mode jumper, near the decode group
-    "R44": (216, 64, 0),     # MODE_B default pull-down
+    # Decoupling caps sit in the clear gaps between the decode chips (same row,
+    # close to the parts, no silk overlap).
+    "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (198, 62, 0),
+    "J94": (117, 58, 90),    # decode-mode jumper, in the gap left of U3 (clear of U5)
+    "R44": (117, 68, 0),     # MODE_B default pull-down
     "J96": (268, 62, 90),    # clock-select jumper, near the oscillator U50
     # PROM output pull-ups, clustered in the free strip between CLOCK/RESET and VGA.
     "R32": (250, 100, 0), "R33": (250, 107, 0), "R34": (250, 114, 0), "R35": (250, 121, 0),
