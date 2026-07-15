@@ -66,9 +66,21 @@ module juku_top (
     wire        rev = d6_rev_physical, roe_n = d6_roe_physical;
     wire        rom_sel_n = d6_rom_select_n, ram_sel_n = d6_ram_output_n;
 `else
-    // Runnable path: explicit compatibility boundary until the complete
-    // D6/D13/D37/D58 timing topology is reconstructed.
-    wire        rev, roe_n, rom_sel_n, ram_sel_n;
+    // PROVISIONAL physical-D6 adoption (owner-directed 2026-07-15): the runnable
+    // twin now runs its memory map from the PHYSICAL `.038` table (U_DECODE below),
+    // not the functional oracle. A per-output polarity correction is applied to the
+    // two РТ4 outputs feeding D8 and D13 -- rom_sel_n = ~D0, roe_n = ~D3 -- which
+    // boots byte-identical to the cosim value oracle across the full guard suite;
+    // D1 (-WREQ) and D2 (rev) are used direct, A7 forced 0. This correction is a
+    // FUNCTIONAL FIT: the reader (82S126 non-inverting) and the raw dump are faithful
+    // and `D6.12->D8.15` is recorded direct, so the two inversions are not yet
+    // physically justified -- they await a reset-fetch level probe (docs, PLAN item 1).
+    // The raw dump is preserved untouched; `~` is sim-only so the YOSYS/LVS branch
+    // above keeps the raw net names and no inverter enters the LVS netlist.
+    wire        rev       = d6_rev_physical;
+    wire        roe_n     = ~d6_roe_physical;
+    wire        rom_sel_n = ~d6_rom_select_n;
+    wire        ram_sel_n = d6_ram_output_n;
 `endif
     wire        io_strobe_h, d9_g1_w;      // D7 strobe-NAND out -> R17/C99 (net_boundary) -> D9.G1
     wire [3:0]  d103_q; wire d103_co, d103_ld;   // the /13 divider (D103+D33 loop, traced s2_d103)
@@ -276,15 +288,16 @@ module juku_top (
                           .a2(memr_n), .b2(memw_n), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 [WIRE 11 / -MRD]; pin3 -> physical D29.5 (-AMWC path)
                           .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 destination recheck boundary
-    net_boundary U_D6A7LNK (.a(1'b1), .b(d6_a7_d105_i1));
+    // A7/D6.15<->D105.1 forced low (see the runnable select block); its physical
+    // driver on the D105.1 conductor is the last D6-area netlist ask (P0 item).
+    net_boundary U_D6A7LNK (.a(1'b0), .b(d6_a7_d105_i1));
     decode_prom U_DECODE (.a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),
                           .rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n),
                           .rev(d6_rev_physical), .roe_n(d6_roe_physical));
-`ifndef YOSYS
-    decode_prom_functional U_D6_FUNCTIONAL (.ba(BA[15:11]), .pc2(ppi0_pc[2]),
-                          .rom_n(rom_sel_n), .ram_n(ram_sel_n), .rev(rev), .roe_n(roe_n));
-`endif
+    // Functional decode oracle retired from the boot path (runnable selects now
+    // come from U_DECODE above). `decode_prom_functional` stays defined in
+    // devices.v only as the contrast reference for the B37A runtime diagnostic.
 
     // ============ memory chips on the buffered buses ============
     // EPROM: 8 ROM sockets on the board, only 2 POPULATED (M2764 8Kx8 = the 16KB BIOS in the

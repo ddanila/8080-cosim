@@ -48,9 +48,17 @@ complete; item 1 now waits on the exact re-read or operating-level observation
 named below. Items 2-3 remain preservation requirements while connectivity is
 measurement-gated.
 
-1. **Adopt the physical D6 `.038` firmware into the runnable twin — blocked on
-   the output-polarity chain, not the table contents.** Bench experiment
-   (2026-07-15, reverted, not committed): driving the runnable selects from the
+1. **Physical D6 `.038` firmware — PROVISIONALLY ADOPTED into the runnable twin
+   (owner-directed 2026-07-15); pending a physical level-probe to confirm.** The
+   runnable twin now runs its memory map from the physical `decode_prom` (not the
+   oracle), with a per-output correction (`rom_sel_n=~D0`, `roe_n=~D3`; D1/D2
+   direct; A7=0) that boots byte-identical to cosim across the full guard suite.
+   This is a documented FUNCTIONAL FIT — the reader/dump are faithful and
+   `D6.12->D8.15` is recorded direct, so the two inversions are not yet physically
+   justified. The owner chose to adopt provisionally to unblock progress; the raw
+   dump is preserved untouched and the reset-fetch level probe (below) will
+   promote this from provisional to confirmed (or reveal the true cause). Bench
+   experiment record (the basis):
    physical `decode_prom` with A7=0 boots **byte-identical** to the cosim value
    oracle across the full suite — `boot_check`, the 130,000-read `cosim_check`
    (`CTRACE-END`), EKDOS `A>`, disk-BASIC `READY`, jmon33 Monitor, BASIC-cart,
@@ -68,7 +76,9 @@ measurement-gated.
    **not** work either: it flips `rev`, which disables the D9 io-decode the boot
    needs. So the earlier "the asserted complement resolves it in simulation"
    claim was wrong. Per the fixed decision that measured evidence outranks
-   inference, do **not** silently commit the functional-fit polarity.
+   inference, this fit is committed only as an explicit, owner-directed
+   PROVISIONAL adoption (labeled in `hdl/juku_top.v` and the D6 docs), not as a
+   proven result; the level probe below is required to confirm it.
    Gate-chain audit (2026-07-15): D13 (К555ТЛ2) inverts and D37 (К555ЛА3) is a
    NAND, both datasheet-correct, so the modeled chain requires `D6.9`=0 for the
    `B37A` RAM read and `D6.12`=0 to select ROM — but the raw `.038` dump has both
@@ -113,13 +123,17 @@ measurement-gated.
    operating LEVELS during a ROM fetch (continuity is already done). If the
    re-read flips D0/D3 in the affected rows, the physical table then boots
    directly with no transform.
-   Once resolved, adopt the physical table, rerun the full guard suite
-   byte-identically, then retire `decode_prom_functional`. Keep the oracle until
-   then. None of this changes
-   copper; the only D6-area netlist ask remains the D105.1/A7 driver (P0
-   connectivity item 4). The same polarity resolution unblocks VJUGA workbench
-   Phase 2, which routes its decode through the same physical D6 РТ4 chip
-   (`spinoffs/minimal-vga/docs/workbench-plan.md`).
+   **Status: provisionally adopted.** The runnable twin now boots from the
+   physical table (with the `~D0`/`~D3` correction) byte-identically; the oracle
+   is retired from the boot path (`decode_prom_functional` kept in `devices.v`
+   only as the B37A-diagnostic reference). The level probe / corrected re-read
+   promotes this to confirmed: if it shows D0/D3 flipped in the raw dump, the
+   model correction can be dropped and the (corrected) table used directly; if it
+   reveals a real consumer-side inversion, the correction becomes justified as-is.
+   None of this changes copper; the only D6-area netlist ask remains the
+   D105.1/A7 driver (P0 connectivity item 4). The same resolution promotes VJUGA
+   workbench Phase 2, which routes its decode through the same physical D6 РТ4
+   chip (`spinoffs/minimal-vga/docs/workbench-plan.md`).
 2. **Preserve routing convergence until netlist freeze.** The deterministic
    router and conflict-derived INTR rip-up workflow produced the preserved
    routing checkpoint with zero opens and zero electrical-category DRC
@@ -424,7 +438,10 @@ Once a released board and programmed parts exist:
 - [ ] Independent programming files/reads corroborate the four factory PROMs
   and original D15/D16 contents for Tier 3.
 - [ ] Runnable boot executes from all four physical PROM tables; the D6
-  memory-map oracle and the behavioral FDC bypass are retired.
+  memory-map oracle and the behavioral FDC bypass are retired. (D6 oracle is
+  provisionally retired 2026-07-15 — runnable boot runs from the physical D6
+  table under a documented `~D0`/`~D3` fit pending the level probe; the D94/FDC
+  behavioral bypass and its `.092` quadrant remain.)
 - [ ] Main-board design release passes; board is ordered.
 - [ ] Functional parts kit is received and tested.
 - [ ] Replica completes Tier 1 bring-up.

@@ -63,11 +63,14 @@ nibble per 2 KiB block from `0000` through `F800`.
 - These are physical electrical facts, not yet a complete explanation of
   the downstream D8/D13/D92 memory timing. That behavior must be derived
   from the now-separate ROM/RAM conductors and their confirmed consumers.
-- Runnable simulation therefore uses a separately named, non-LVS
-  `decode_prom_functional` oracle for the established EKTA/EKDOS memory
-  map. The physical table and separate conductors remain instantiated and
-  guarded; the compatibility path must be retired when downstream timing
-  continuity is sufficient to execute directly from the physical topology.
+- Runnable simulation now executes its memory map from THIS physical table
+  (the `decode_prom` instance), not the former `decode_prom_functional`
+  oracle, which is retired from the boot path. A provisional per-output
+  polarity correction is applied to the two РТ4 outputs feeding D8 and D13
+  (`rom_sel_n = ~D0`, `roe_n = ~D3`; D1/-WREQ and D2/rev used direct); it
+  boots byte-identical to cosim but is a FUNCTIONAL FIT pending a reset-fetch
+  level probe, since the reader/dump are faithful and `D6.12->D8.15` is
+  recorded direct. The raw dump is preserved untouched; see PLAN item 1.
 - `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a
   full boot. At `B37A`, all eight raw A7..A5 combinations emit word `8` or
   `F`; D6.9 is therefore high in every physical row, and disabling the PROM
@@ -92,7 +95,7 @@ nibble per 2 KiB block from `0000` through `F800`.
 | RT4 reader revision 2 avoids Nano D13 and verifies released pull-ups | PASS |
 | RT4 host validation guards revision-2 metadata and classifies the D6 re-read | PASS |
 | Device commentary preserves measured mode pins and separate output conductors | PASS |
-| Runnable compatibility decode is explicit and excluded from LVS | PASS |
+| Runnable twin executes from the physical D6 table (oracle retired from boot path) | PASS |
 | Structural consumers retain separate ROM/RAM conductors | PASS |
 | All-row B37A RAM-gate boundary has a reproducible diagnostic | PASS |
 | Raw-row regression and corrected checkpoint suffix are documented | PASS |
