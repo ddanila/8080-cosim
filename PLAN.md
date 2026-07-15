@@ -312,7 +312,10 @@ Once a released board and programmed parts exist:
 - [x] Deep value-level cosim guard reaches `CTRACE-END` across the default
   130,000-read window and fails on any address/data divergence.
 - [ ] P0 physical connectivity is complete and rerouted.
-- [ ] Every required PROM/EPROM has verified contents and programming evidence.
+- [x] Every populated PROM/EPROM has an exact-hash-guarded burnable Tier-1/2
+  image, a device/pinout decision, and an explicit provenance boundary.
+- [ ] Independent programming files/reads corroborate the four factory PROMs
+  and original D15/D16 contents for Tier 3.
 - [ ] Runnable boot executes from all four physical PROM tables; the D6
   memory-map oracle and the behavioral FDC bypass are retired.
 - [ ] Main-board design release passes; board is ordered.

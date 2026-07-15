@@ -1,13 +1,14 @@
 # Firmware gap ledger
 
-Status: **PROM GAP LEDGER READY / DUMP TRUTH PENDING**
+Status: **BURNABLE SET VERIFIED / TIER-3 CORROBORATION PENDING**
 
 This generated ledger is the single-page burnability view for the
 small PROMs that still matter to replica and Tier-3 preservation work.
-It separates boot-validated functional fallbacks from dumped factory
-truth. A reconstructed fallback may be useful for Tier 1/2 bring-up,
-but a programming-disk file or repeated physical dump wins when it
-arrives.
+It separates boot-validated functional EPROM images from dumped factory
+PROM truth. Every populated device has an exact-hash-guarded burnable
+repository image for Tier 1/2. Programming-disk files, independent PROM
+reads, and original D15/D16 reads remain Tier-3 corroboration and win
+if a stable difference appears.
 
 ## Command
 
@@ -17,7 +18,7 @@ python3 scripts/report_firmware_gap_ledger.py
 
 ## PROM Matrix
 
-| Ref | Part | Programmed drawing | Role | Burnable repo fallback | Guard | Next truth source |
+| Ref | Part | Programmed drawing | Role | Burnable repository image | Guard | Next truth source |
 | --- | --- | --- | --- | --- | --- | --- |
 | D2 | К556РТ4 | `ДГШ5.106.037` | READY/bus-control PROM | `ref/physical-proms/validated/d2_037.raw.bin` (256 bytes, SHA256 `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`) | `docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md` | programming-disk comparison or independent future read |
 | D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes, SHA256 `05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39`) | `ref/physical-proms/README.md` | independent-reader or programming-disk comparison |
@@ -30,12 +31,12 @@ python3 scripts/report_firmware_gap_ledger.py
 
 | Check | Result |
 | --- | --- |
-| D2 validated physical raw image exists and is 256 bytes | PASS |
-| D6 validated physical raw image exists and is 256 bytes | PASS |
-| D8 validated physical raw image exists and is 32 bytes | PASS |
-| D94 validated physical raw image exists and is 32 bytes | PASS |
-| D15 functional image exists and is 8192 bytes | PASS |
-| D16 functional image exists and is 8192 bytes | PASS |
+| D2 validated physical raw image has exact size and SHA256 | PASS |
+| D6 validated physical raw image has exact size and SHA256 | PASS |
+| D8 validated physical raw image has exact size and SHA256 | PASS |
+| D94 validated physical raw image has exact size and SHA256 | PASS |
+| D15 functional image has exact size and SHA256 | PASS |
+| D16 functional image has exact size and SHA256 | PASS |
 | D15+D16 round-trip exactly to roms/ekta37.bin | PASS |
 | D15/D16 split and non-dump provenance are documented | PASS |
 | D2 physical table and continuity are guarded | PASS |

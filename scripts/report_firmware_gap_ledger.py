@@ -9,6 +9,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "firmware-gap-ledger.md"
+EXPECTED_SHA256 = {
+    "ref/physical-proms/validated/d2_037.raw.bin": "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
+    "ref/physical-proms/validated/d6_038.raw.bin": "05a127c330762600b398b6f1bccbecc1b1861b96f8d62ff3e5471dbae9383d39",
+    "ref/physical-proms/validated/d8_039.raw.bin": "345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc",
+    "ref/physical-proms/validated/d94_092.raw.bin": "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
+    "ref/eprom-images/d15_ekta37_low.bin": "d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596",
+    "ref/eprom-images/d16_ekta37_high.bin": "35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817",
+}
 
 
 def rel(path: Path) -> str:
@@ -35,8 +43,12 @@ def reconstructed_cell(path: str, expected_size: int) -> tuple[str, bool]:
     artifact = ROOT / path
     if not artifact.exists():
         return "missing", False
-    size_ok = artifact.stat().st_size == expected_size
-    return f"`{path}` ({artifact.stat().st_size} bytes, SHA256 `{sha256(artifact)}`)", size_ok
+    digest = sha256(artifact)
+    image_ok = (
+        artifact.stat().st_size == expected_size
+        and digest == EXPECTED_SHA256[path]
+    )
+    return f"`{path}` ({artifact.stat().st_size} bytes, SHA256 `{digest}`)", image_ok
 
 
 def marker(path: str, *needles: str) -> bool:
@@ -175,12 +187,12 @@ def main() -> int:
     ]
 
     checks = [
-        ("D2 validated physical raw image exists and is 256 bytes", d2_image_ok),
-        ("D6 validated physical raw image exists and is 256 bytes", d6_ok),
-        ("D8 validated physical raw image exists and is 32 bytes", d8_ok),
-        ("D94 validated physical raw image exists and is 32 bytes", d94_image_ok),
-        ("D15 functional image exists and is 8192 bytes", d15_ok),
-        ("D16 functional image exists and is 8192 bytes", d16_ok),
+        ("D2 validated physical raw image has exact size and SHA256", d2_image_ok),
+        ("D6 validated physical raw image has exact size and SHA256", d6_ok),
+        ("D8 validated physical raw image has exact size and SHA256", d8_ok),
+        ("D94 validated physical raw image has exact size and SHA256", d94_image_ok),
+        ("D15 functional image has exact size and SHA256", d15_ok),
+        ("D16 functional image has exact size and SHA256", d16_ok),
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
@@ -190,7 +202,11 @@ def main() -> int:
         ("Repeated RT4 dump validation procedure is available", rt4_validator_ok),
         ("Repeated RE3 dump validation procedure is available", re3_validator_ok),
     ]
-    status = "PROM GAP LEDGER READY / DUMP TRUTH PENDING" if all(ok for _, ok in checks) else "PROM GAP LEDGER FAILED"
+    status = (
+        "BURNABLE SET VERIFIED / TIER-3 CORROBORATION PENDING"
+        if all(ok for _, ok in checks)
+        else "FIRMWARE GAP LEDGER FAILED"
+    )
 
     lines = [
         "# Firmware gap ledger",
@@ -199,10 +215,11 @@ def main() -> int:
         "",
         "This generated ledger is the single-page burnability view for the",
         "small PROMs that still matter to replica and Tier-3 preservation work.",
-        "It separates boot-validated functional fallbacks from dumped factory",
-        "truth. A reconstructed fallback may be useful for Tier 1/2 bring-up,",
-        "but a programming-disk file or repeated physical dump wins when it",
-        "arrives.",
+        "It separates boot-validated functional EPROM images from dumped factory",
+        "PROM truth. Every populated device has an exact-hash-guarded burnable",
+        "repository image for Tier 1/2. Programming-disk files, independent PROM",
+        "reads, and original D15/D16 reads remain Tier-3 corroboration and win",
+        "if a stable difference appears.",
         "",
         "## Command",
         "",
@@ -212,7 +229,7 @@ def main() -> int:
         "",
         "## PROM Matrix",
         "",
-        "| Ref | Part | Programmed drawing | Role | Burnable repo fallback | Guard | Next truth source |",
+        "| Ref | Part | Programmed drawing | Role | Burnable repository image | Guard | Next truth source |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     lines.extend(table_row(row) for row in rows)
@@ -264,7 +281,7 @@ def main() -> int:
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {rel(REPORT)}")
-    return 0 if status.startswith("PROM GAP LEDGER READY") else 1
+    return 0 if status.startswith("BURNABLE SET VERIFIED") else 1
 
 
 if __name__ == "__main__":
