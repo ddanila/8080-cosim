@@ -29,7 +29,8 @@ Pin contract used by the Juku model
 
 Juku direct-continuity interpretation, 2026-07-15
 -------------------------------------------------
-D93.1 is NC.
+D93.1 is internally NC/back-bias. On the Juku PCB its socket contact is not
+unconnected: exposed front copper joins it to D94.5.
 D93.2 (/WE) <-> D94.4.
 D93.3 (/CS) <-> D94.15 (/CE).
 D93.4 (/RE) <-> D94.3.

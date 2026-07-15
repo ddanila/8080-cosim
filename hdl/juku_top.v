@@ -499,7 +499,7 @@ module juku_top (
     // packages remain instantiated; incomplete behavioral models release unproved outputs.
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
-    vg93_fdc   U_D93  (.cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
+    vg93_fdc   U_D93  (.nc_back_bias(d94_d4), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
     wire d100_oe_boundary, d100_t_boundary;

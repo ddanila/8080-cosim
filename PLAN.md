@@ -109,8 +109,9 @@ Every ask below is queued with exact deliverables in
    variant is also plausible — meter both.
 2. **Finish D94 `.092` connectivity.** Content truth is closed; direct owner
    continuity proves D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4,
-   D94.4->D93.2, and D94.13->D104.7 plus a +5 V pull-up. Resolve the
-   D4-D7 destinations, D104.10, both pull-up resistor references (D94.13 and
+   D94.4->D93.2, and D94.13->D104.7 plus a +5 V pull-up. An exposed-socket
+   component view now closes D94 D4/pin5 to the internally NC/back-bias D93.1
+   socket contact. Resolve the D5-D7 destinations, D104.10, both pull-up resistor references (D94.13 and
    the apparently pull-up-only D94.1),
    and later recheck the D29.4/IORD conflict noted in the source model. The
    former BA11..BA15 assignment was an unproved scaffold analogy and is retired;
@@ -141,7 +142,7 @@ Every ask below is queued with exact deliverables in
    modified pads, removed segments, and replacement nets remain a P0 mapping
    hold (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
-   228 source-risk nets and 9 official FDC devices with untraced functional
+   227 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
@@ -155,8 +156,8 @@ cable landings, and off-board S4 is likewise outside PCB-pad scope while its
 three switch contacts remain modeled nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-612 observations have dispositions, 30 rows are accepted evidence, and the
-other 582 remain measurement requests (`docs/photo-registration.md`).
+614 observations have dispositions, 33 rows are accepted evidence, and the
+other 581 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated

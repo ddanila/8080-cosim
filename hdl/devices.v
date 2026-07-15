@@ -1023,7 +1023,7 @@ endmodule
 // bus pins while the behavioral core and remaining quadrant wiring are incomplete. The temporary
 // released outputs prevent unproved behavior from driving DAL/IRQ; they do not denote an omitted,
 // abstract, or depopulated controller.
-module vg93_fdc (input wire cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
+module vg93_fdc (input wire nc_back_bias, cs_n, re_n, we_n, a0, a1, mr_n, clk, dden,
                  inout wire [7:0] dal, output wire drq, intrq);
     assign dal = 8'hzz; assign drq = 1'bz; assign intrq = 1'bz;
 endmodule

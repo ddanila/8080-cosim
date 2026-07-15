@@ -36,8 +36,8 @@ same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 | 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 | direct owner inspection 2026-07-15 finds D94 output pin1 connected through an unidentified pull-up resistor to +5V, with no other trace or branch observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded |
 | 2 | D1 | `GND` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND |
 | 3 | D2 | `FDC_RE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation |
-| 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is NC |
-| 5 | D4 | `D94_D4` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
+| 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5 |
+| 5 | D4 | `D94_D4` | invariant released | July-2026 exposed-socket photo PXL_20260710_202708344: independent affine D94/D93 fits identify D94.5 at (2477,1768.714) px and D93.1 at (2215,1810) px; uninterrupted front copper and the repaired socket entry join them. D93.1 is internally NC/back-bias on the controller but is not an unconnected PCB pad |
 | 6 | D5 | `D94_D5` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
 | 7 | D6 | `D94_D6` | invariant released | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because its two-sided projection lands on bare substrate, so the far destination remains a boundary |
 | 9 | D7 | `D94_D7` | invariant released | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
@@ -98,7 +98,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Board identity names D94 as `.092`, not stale `.113` | PASS | `kicad/juku.board.json` type `RE3_PROM_092` |
 | Every D94 address input is explicitly accounted | PASS | board JSON nets |
 | Every D94 address input has reviewed two-sided photo coordinates | PASS | local-package-fit measurement rows for pins 10, 11, 12, 13, 14 |
-| D94 address input sources are traced | PASS | pins 10-14 remain continuity boundaries |
+| D94 address input sources are traced | PASS | direct owner continuity/source nets for pins 10-14 |
 | Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
 | Held routed DSN is identified with the retired input mapping | PASS | `kicad/juku.dsn` D94 pins |
 | PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
@@ -143,7 +143,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   D2/pin3 reaches D93.4 /RE, and D3/pin4 reaches D93.2 /WE.
   Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,
   D104.7+pull-up, and D101.7+pull-up respectively. Remaining textual
-  gaps are pull-up resistor identities and D0/D4-D7 destinations; physical
+  gaps are pull-up resistor identities and D0/D5-D7 destinations; physical
   captures now provide the PROM contents.
 - Git history proves the former A0-A4=`BA11..BA15` assignment entered in
   commit `ed69b9d` as an FDC scaffold explicitly described as the same
@@ -154,8 +154,9 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   the solder crop has no uniquely traceable remote endpoints, so these are
   reviewed measurement records rather than promoted electrical nets.
 - Registered component-side local fits show copper departing D3-D7
-  (pins 4-7 and 9). Direct continuity now closes D3/pin4 to D93.2;
-  D4-D7 retain explicit far-destination boundaries. D0/pin1 is also
+  (pins 4-7 and 9). Direct continuity closes D3/pin4 to D93.2; the
+  exposed-socket view closes D4/pin5 to the internally NC/back-bias
+  D93.1 socket contact. D5-D7 retain far-destination boundaries. D0/pin1 is also
   destination-unresolved. The captured program keeps D4-D7 released
   at every row; D0 and the now-closed D3 are behaviorally active.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
@@ -189,7 +190,7 @@ pull-up identities, and guarded D29.4/IORD recheck.
 
 D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;
 the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D104.7/pull-up,
-and A4=D101.7/pull-up. Unknown D3-D7 destinations do not make captured bits unknown.
+and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unknown.
 
 | Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -232,22 +233,24 @@ and A4=D101.7/pull-up. Unknown D3-D7 destinations do not make captured bits unkn
   inputs have direct owner-continuity mappings.
 - Known control destinations: D94 enable pin15 reaches D93.3 CS; D1/pin2
   is grounded through D99.8; D2/pin3 reaches D93.4 RE; and D3/pin4
-  reaches D93.2 WE. D0/pin1 remains destination-unresolved.
+  reaches D93.2 WE. D4/pin5 reaches the internally NC/back-bias D93.1
+  socket contact. D0/pin1 remains destination-unresolved.
 - Known content: three matching reads including a power-cycled read yield
   raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
 - Unknown: the shared CS/enable upstream source, D0 hidden-branch status,
-  pull-up resistor identities on A3/D104.7 and A4/D101.7, and D4-D7
+  pull-up resistor identities on A3/D104.7 and A4/D101.7, and D5-D7
   far destinations remain unresolved behind explicit boundary nets.
-- D4-D7 are destination-unknown, not unused: registered component-side
-  photographs prove copper leaves all four output pads.
+- D5-D7 are destination-unknown, not unused: registered component-side
+  photographs prove copper leaves all three output pads.
 - D4-D7 are physically wired but program-inert: raw bits 4-7 remain one
   (open-collector released) at all 32 captured rows. D3 is the only
   closed active output; D0 is behaviorally active and destination-unknown.
 - The traced `V3_RC` RC network is a negative cross-check here, not a
   replacement source for D94: its current nodes are `R17.1`, `C99.1`,
   and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.
-- D94 is now classified as an FDC control/decode PROM because its only
-  proved outputs terminate at D93. It is not evidence for the separate
+- D94 is now classified as an FDC control/decode PROM because its proved
+  functional outputs and D4's inert/back-bias route terminate at D93.
+  It is not evidence for the separate
   shared-DRAM video-slot schedule.
 - The 256-bit content ambiguity is closed. The remaining ambiguity is
   electrical: enable timing and the far ends/branches of output nets.

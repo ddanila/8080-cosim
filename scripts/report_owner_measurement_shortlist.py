@@ -206,7 +206,7 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "identify the pull-up resistors on D94.13-D104.7, D94.14-D101.7, and D94.1; trace D104.10 and D4-D7 far destinations; later recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 because direct continuity places D94.12/D27.5/D29.4 on IORD contrary to the older IOM_STATUS scan interpretation",
+            "identify the pull-up resistors on D94.13-D104.7, D94.14-D101.7, and D94.1; trace D104.10 and D5-D7 far destinations (D4/pin5 is photo-closed to the internally NC/back-bias D93.1 socket contact); later recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 because direct continuity places D94.12/D27.5/D29.4 on IORD contrary to the older IOM_STATUS scan interpretation",
             "`docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv`",
             "replaces the retired same-as-D8 BA mapping with measured row semantics and resolves the PROM read/write control path before an FDC hardware release",
         ),
@@ -355,7 +355,7 @@ def main() -> int:
             f"- D94 failed evidence checks: `{', '.join(inline(item) for item in d94_failures) if d94_failures else 'none'}`",
             "- D94 A0-A4/pins 10-14 are owner-closed onto BA0, BA1, IORD, D104.7+pull-up, and D101.7+pull-up.",
             "  D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4, and D94.4->D93.2 are owner-closed.",
-            "  Pull-up references and D104.10 remain unknown. D94.1 has a separate unidentified +5 V pull-up with no other observed branch; D4-D7 remain PCB-fidelity asks.",
+            "  Exposed-socket front copper closes D94 D4/pin5 to D93.1. Pull-up references and D104.10 remain unknown. D94.1 has a separate unidentified +5 V pull-up with no other observed branch; D5-D7 remain PCB-fidelity asks.",
             "  The content table itself is already closed.",
             "",
             "## Pin-Level Closure",

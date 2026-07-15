@@ -18,15 +18,16 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 612 reviewed rows:
+endpoint table contains 614 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 30 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 582 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 33 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 581 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 363 `local-package-fit`, 227
-`registration-only`, and 22 `registration+unique-hole-snap` rows. A hole snap
+`registration-only`, and 22 `registration+unique-hole-snap` rows. Two accepted
+route endpoints use the compound `local-package-fit+continuous-copper` class. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -324,6 +325,14 @@ orientation check. D99 section
 1 is therefore held cleared and its pin-13 `Q`
 cannot be the live КР1818ВГ93 clock source. No physical `FDC_CLK_1M` source is
 accepted from the photographed layers.
+
+The exposed-socket `202708344` view also supplies an independent affine D94
+fit: pins 1/8/16 are fit anchors and pins 4/9 hold out at `0.714`/`0.000` px.
+It places D94.5 at `(2477,1768.714)` px in the same raw frame that places
+D93.1 at `(2215,1810)` px. The front-copper line is uninterrupted through the
+repaired socket entry, closing `D94_D4` onto D93.1. The controller datasheet
+still classifies pin 1 as internally NC/back-bias; the new evidence corrects
+the PCB claim only—its socket pad is wired, not a board no-connect.
 
 D93.19 `MR_N` remains unresolved, but its boundary is narrower. The corrected
 solder joint reaches a through-hole near `(1743,2320)` pixels. Composing the

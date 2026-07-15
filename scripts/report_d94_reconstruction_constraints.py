@@ -383,9 +383,10 @@ def main() -> int:
     )
     output_departures = remaining_output_departures()
     # The old pin-4 boundary was superseded by direct D94.4->D93.2 continuity.
-    # Photo evidence still proves departures for the unresolved D4-D7 outputs;
+    # Exposed-socket front copper closes D4/pin5 to D93.1. Photo evidence still
+    # proves departures for the unresolved D5-D7 outputs;
     # D0/pin1 is owner-reported unresolved but was not photographically closed.
-    all_remaining_outputs_depart = set(output_departures) >= {"5", "6", "7", "9"}
+    all_remaining_outputs_depart = set(output_departures) >= {"6", "7", "9"}
     address_observations = address_input_observations()
     all_address_inputs_registered = (
         set(address_observations) == {"10", "11", "12", "13", "14"}
@@ -475,7 +476,7 @@ def main() -> int:
             f"| Board identity names D94 as `.092`, not stale `.113` | {'PASS' if board_identity_ok else 'FAIL'} | `kicad/juku.board.json` type `{board_type or 'missing'}` |",
             f"| Every D94 address input is explicitly accounted | {'PASS' if address_accounted else 'FAIL'} | board JSON nets |",
             f"| Every D94 address input has reviewed two-sided photo coordinates | {'PASS' if all_address_inputs_registered else 'FAIL'} | local-package-fit measurement rows for pins {', '.join(sorted(address_observations, key=int)) or '-'} |",
-            f"| D94 address input sources are traced | {'PASS' if address_traced else 'FAIL'} | pins 10-14 remain continuity boundaries |",
+            f"| D94 address input sources are traced | {'PASS' if address_traced else 'FAIL'} | direct owner continuity/source nets for pins 10-14 |",
             f"| Retired D94 BA11..BA15 mapping is absent from the source model | {'PASS' if retired_ba_mapping_absent else 'FAIL'} | board JSON BA nets |",
             f"| Held routed DSN is identified with the retired input mapping | {'PASS' if dsn_ok and dsn_retains_retired_inputs and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
             f"| PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
@@ -520,7 +521,7 @@ def main() -> int:
             "  D2/pin3 reaches D93.4 /RE, and D3/pin4 reaches D93.2 /WE.",
             "  Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,",
             "  D104.7+pull-up, and D101.7+pull-up respectively. Remaining textual",
-            "  gaps are pull-up resistor identities and D0/D4-D7 destinations; physical",
+            "  gaps are pull-up resistor identities and D0/D5-D7 destinations; physical",
             "  captures now provide the PROM contents.",
             "- Git history proves the former A0-A4=`BA11..BA15` assignment entered in",
             "  commit `ed69b9d` as an FDC scaffold explicitly described as the same",
@@ -531,8 +532,9 @@ def main() -> int:
             "  the solder crop has no uniquely traceable remote endpoints, so these are",
             "  reviewed measurement records rather than promoted electrical nets.",
             "- Registered component-side local fits show copper departing D3-D7",
-            "  (pins 4-7 and 9). Direct continuity now closes D3/pin4 to D93.2;",
-            "  D4-D7 retain explicit far-destination boundaries. D0/pin1 is also",
+            "  (pins 4-7 and 9). Direct continuity closes D3/pin4 to D93.2; the",
+            "  exposed-socket view closes D4/pin5 to the internally NC/back-bias",
+            "  D93.1 socket contact. D5-D7 retain far-destination boundaries. D0/pin1 is also",
             "  destination-unresolved. The captured program keeps D4-D7 released",
             "  at every row; D0 and the now-closed D3 are behaviorally active.",
             "- The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`",
@@ -566,7 +568,7 @@ def main() -> int:
             "",
             "D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;",
             "the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D104.7/pull-up,",
-            "and A4=D101.7/pull-up. Unknown D3-D7 destinations do not make captured bits unknown.",
+            "and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unknown.",
             "",
             "| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |",
             "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
@@ -582,22 +584,24 @@ def main() -> int:
             "  inputs have direct owner-continuity mappings.",
             "- Known control destinations: D94 enable pin15 reaches D93.3 CS; D1/pin2",
             "  is grounded through D99.8; D2/pin3 reaches D93.4 RE; and D3/pin4",
-            "  reaches D93.2 WE. D0/pin1 remains destination-unresolved.",
+            "  reaches D93.2 WE. D4/pin5 reaches the internally NC/back-bias D93.1",
+            "  socket contact. D0/pin1 remains destination-unresolved.",
             "- Known content: three matching reads including a power-cycled read yield",
             f"  raw SHA256 `{PHYSICAL_D94_SHA256}`.",
             "- Unknown: the shared CS/enable upstream source, D0 hidden-branch status,",
-            "  pull-up resistor identities on A3/D104.7 and A4/D101.7, and D4-D7",
+            "  pull-up resistor identities on A3/D104.7 and A4/D101.7, and D5-D7",
             "  far destinations remain unresolved behind explicit boundary nets.",
-            "- D4-D7 are destination-unknown, not unused: registered component-side",
-            "  photographs prove copper leaves all four output pads.",
+            "- D5-D7 are destination-unknown, not unused: registered component-side",
+            "  photographs prove copper leaves all three output pads.",
             "- D4-D7 are physically wired but program-inert: raw bits 4-7 remain one",
             "  (open-collector released) at all 32 captured rows. D3 is the only",
             "  closed active output; D0 is behaviorally active and destination-unknown.",
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
             "  replacement source for D94: its current nodes are `R17.1`, `C99.1`,",
             "  and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.",
-            "- D94 is now classified as an FDC control/decode PROM because its only",
-            "  proved outputs terminate at D93. It is not evidence for the separate",
+            "- D94 is now classified as an FDC control/decode PROM because its proved",
+            "  functional outputs and D4's inert/back-bias route terminate at D93.",
+            "  It is not evidence for the separate",
             "  shared-DRAM video-slot schedule.",
             "- The 256-bit content ambiguity is closed. The remaining ambiguity is",
             "  electrical: enable timing and the far ends/branches of output nets.",
@@ -611,32 +615,35 @@ def main() -> int:
     REPORT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")
-    return 0 if (
-        board_identity_ok
-        and address_accounted
-        and all_address_inputs_registered
-        and not address_traced
-        and retired_ba_mapping_absent
-        and dsn_ok
-        and dsn_retains_retired_inputs
-        and pcb_ok
-        and official_bom_lead
-        and reused_refdes_guard
-        and v3_rc_not_d94_evidence
-        and physical_table_ok
-        and hdl_physical_table
-        and hdl_connected
-        and hdl_inputs_measured
-        and pcb_outputs_match
-        and scanned_not_d94
-        and programming_media_audited
-        and video_audit_independent
-        and enable_accounted
-        and enable_ok
-        and enable_output_isolated
-        and all_remaining_outputs_depart
-        and output_activity_ok
-    ) else 1
+    gates = {
+        "board_identity": board_identity_ok,
+        "address_accounted": address_accounted,
+        "address_inputs_registered": all_address_inputs_registered,
+        "address_sources_traced": address_traced,
+        "retired_ba_mapping_absent": retired_ba_mapping_absent,
+        "held_dsn_classified": dsn_ok and dsn_retains_retired_inputs,
+        "source_pcb": pcb_ok,
+        "official_bom": official_bom_lead,
+        "reused_refdes_guard": reused_refdes_guard,
+        "v3_rc_excluded": v3_rc_not_d94_evidence,
+        "physical_table": physical_table_ok,
+        "hdl_table": hdl_physical_table,
+        "hdl_controls": hdl_connected,
+        "hdl_inputs": hdl_inputs_measured,
+        "pcb_outputs": pcb_outputs_match,
+        "re3_lineage": scanned_not_d94,
+        "programming_media_audit": programming_media_audited,
+        "video_audit_independent": video_audit_independent,
+        "enable_accounted": enable_accounted,
+        "enable_traced": enable_ok,
+        "enable_output_isolated": enable_output_isolated,
+        "remaining_output_departures": all_remaining_outputs_depart,
+        "output_activity": output_activity_ok,
+    }
+    failed = [name for name, ok in gates.items() if not ok]
+    if failed:
+        print("Failed gates: " + ", ".join(failed))
+    return 0 if not failed else 1
 
 
 if __name__ == "__main__":

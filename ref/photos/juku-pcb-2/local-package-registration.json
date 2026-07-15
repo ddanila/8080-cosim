@@ -57,6 +57,20 @@
     },
     {
       "refdes": "D94",
+      "side": "component-alt",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2477.0, 1503.0], "use": "fit", "observation": "top-left spring contact below the top-facing notch of the exposed D94 socket"},
+        {"pin": "4", "image_px": [2477.0, 1703.0], "use": "check", "observation": "independent fourth contact on the complete pin-1-to-8 column"},
+        {"pin": "8", "image_px": [2477.0, 1968.0], "use": "fit", "observation": "bottom-left spring contact of the complete column"},
+        {"pin": "9", "image_px": [2674.0, 1968.0], "use": "check", "observation": "independent bottom-right spring contact"},
+        {"pin": "16", "image_px": [2674.0, 1503.0], "use": "fit", "observation": "top-right spring contact of the opposite complete column"}
+      ],
+      "note": "The same close-up that exposes all forty D93 socket springs also shows the complete notched D94 socket and its front-copper departures. This independent D94 frame is used only to chase output traces within the photograph; connectivity still requires an uninterrupted path to an identified landing."
+    },
+    {
+      "refdes": "D94",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "model": "similarity_reflected",

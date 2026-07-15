@@ -164,7 +164,7 @@ def main() -> int:
             "FDC control/decode PROM",
             d94_cell,
             "`docs/d94-reconstruction-constraints.md`",
-            "programming-disk comparison plus D4-D7 destinations, D104.10 receiver-output continuity, pull-up resistor identities, and the guarded D29.4/IORD recheck",
+            "programming-disk comparison plus D5-D7 destinations (D4 is photo-closed to D93.1), D104.10 receiver-output continuity, pull-up resistor identities, and the guarded D29.4/IORD recheck",
         ],
         [
             "D15",
@@ -262,7 +262,7 @@ def main() -> int:
             "  or D94 `.092`; they are lineage evidence, not matching processor",
             "  module programming tables.",
             "- D94 content and all A0-A4 input destinations are owner-closed. Its",
-            "  enable source, D4-D7 far destinations, D104.10, pull-up identities, guarded D29.4/IORD recheck, and apparently pull-up-only D0 resistor identity remain unresolved",
+            "  enable source, D5-D7 far destinations, D104.10, pull-up identities, guarded D29.4/IORD recheck, and apparently pull-up-only D0 resistor identity remain unresolved",
             "  connectivity boundaries and still block an FDC hardware release.",
             "",
             "## Required External Closure",

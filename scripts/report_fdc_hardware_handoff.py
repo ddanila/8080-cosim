@@ -285,8 +285,12 @@ def main() -> int:
         or not has_node(board, "P12V", "D93", "40")
     ):
         failures.append("D93 measured ground, +5 V, or +12 V supply is absent")
-    if ["D93", "1"] not in board.get("no_connects", []):
-        failures.append("D93 internal back-bias pin 1 is not explicitly NC")
+    if (
+        not has_node(board, "D94_D4", "D93", "1")
+        or not has_node(board, "D94_D4", "D94", "5")
+        or ["D93", "1"] in board.get("no_connects", [])
+    ):
+        failures.append("D93 internal back-bias pin 1 is not photo-closed to D94.5")
     if d100.get("type") != "BUF8287":
         failures.append("D100 is not typed as BUF8287")
     if d100.get("pins", {}).get("10") != "VSS_GND" or d100.get("pins", {}).get("20") != "VCC_5V":
@@ -376,6 +380,13 @@ def main() -> int:
              ("FDC_WE_N", "D94", "4"), ("FDC_WE_N", "D93", "2")],
             False,
             "direct owner continuity for all three controls and grounded D1",
+        ),
+        (
+            "`D94_D4` / D93.1 back-bias landing",
+            "D94 output D4 to the wired D93 socket contact whose controller pin is internally NC/back-bias",
+            [("D94_D4", "D94", "5"), ("D94_D4", "D93", "1")],
+            False,
+            "exposed-socket component photograph with independent affine D94/D93 fits",
         ),
         (
             "`BA0` / `BA1`",

@@ -172,6 +172,7 @@ select/output paths remain open.
 | `DB6` / `FDC_DAL6` | WIRED | `D100.7` <-> system DB; `D100.13` <-> `D93.13` | scan + WD1793/8287 datasheets |
 | `DB7` / `FDC_DAL7` | WIRED | `D100.8` <-> system DB; `D100.12` <-> `D93.14` | scan + WD1793/8287 datasheets |
 | `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D2/D3 to D93 RE/WE; D94 enable pin15 to D93 CS; D94 D1 grounded via D99.8 | direct owner continuity for all three controls and grounded D1 |
+| `D94_D4` / D93.1 back-bias landing | WIRED | D94 output D4 to the wired D93 socket contact whose controller pin is internally NC/back-bias | exposed-socket component photograph with independent affine D94/D93 fits |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
 | `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
 | `FDC_INTRQ` | OWNER-VERIFY | D93 INTRQ to PIC IR0 | MAME-era assumption; owner continuity required |
@@ -222,7 +223,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_INTRQ` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continuity remains required | `D93.39, D10.18` |
 | `FDC_RCLK` | July-2026 cross-package solder-photo closure: the corrected D106 К555ИЕ7 fit projects Q3/pin7 at (1154.329,2131.000) px and the independent D93 socket fit projects RCLK/pin26 at (1554.989,2138.344) px in PXL_20260710_200506061.jpg; one uninterrupted slightly sloped solder-side copper trace passes through both fitted contacts with no via, branch, or gap. The literal VG93 IE7-only reference independently matches Q3->RCLK, but the visible target-board copper is the promotion evidence | `D106.7, D93.26` |
 | `FDC_RE_N` | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation | `D94.3, D93.4` |
-| `FDC_WE_N` | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is NC | `D94.4, D93.2` |
+| `FDC_WE_N` | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5 | `D94.4, D93.2` |
 | `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+4)` |
 | `IOWR` | scan sheet-1 full-resolution: D5.27 IOWR runs directly into D7 fourth-gate input pin10; D9.6 is RC-filtered G1; direct owner continuity assigns D93.2 only to D94.4 on the target revision | `D5.27, D26.36, D27.36, D11.10, D54.23, D55.23, D57.23, D10.2, ... (+1)` |
 

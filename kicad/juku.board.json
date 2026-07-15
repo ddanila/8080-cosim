@@ -4291,7 +4291,7 @@
    "prov": {
     "type": "mame+datasheet",
     "refdes": ".009 official (FDC)",
-    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively, pin1 is NC, and D93.40 reaches the +12 V rail; the remaining drive/clock/control contacts stay explicit measurement boundaries"
+    "pins": "physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and interrupt pins restored; July-2026 two-sided socket registration identifies every contact; direct owner continuity proves D94.4/.15/.3 reach D93 /WE, /CS, /RE respectively; an exposed-socket component photo proves D94.5 reaches the internally NC/back-bias D93.1 socket contact; D93.40 reaches the +12 V rail; the remaining drive/clock/control contacts stay explicit measurement boundaries"
    }
   },
   {
@@ -4316,7 +4316,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092; validated repeated physical table adopted",
-    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Direct owner continuity on 2026-07-15 supersedes the mirrored-pin/photo and BA11-BA15 scaffold interpretations: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, D104.7+pull-up, and D101.7+pull-up respectively; enable pin15 reaches D93.3; outputs pin2/3/4 reach GND, D93.4, and D93.2; output pin1 has a pull-up with no other observed branch"
+    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Direct owner continuity on 2026-07-15 supersedes the mirrored-pin/photo and BA11-BA15 scaffold interpretations: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, D104.7+pull-up, and D101.7+pull-up respectively; enable pin15 reaches D93.3; outputs pin2/3/4 reach GND, D93.4, and D93.2; exposed-socket front copper closes pin5 to D93.1; output pin1 has a pull-up with no other observed branch"
    }
   },
   {
@@ -13040,7 +13040,7 @@
    "nodes": [["D94", "15"], ["D93", "3"]]
   },
   "FDC_WE_N": {
-   "src": "direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is NC",
+   "src": "direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5",
    "nodes": [["D94", "4"], ["D93", "2"]]
   },
   "D96_Q2_N_TEST_LANDING": {
@@ -13056,8 +13056,8 @@
    "nodes": [["D94", "1"]]
   },
   "D94_D4": {
-   "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary",
-   "nodes": [["D94", "5"]]
+   "src": "July-2026 exposed-socket photo PXL_20260710_202708344: independent affine D94/D93 fits identify D94.5 at (2477,1768.714) px and D93.1 at (2215,1810) px; uninterrupted front copper and the repaired socket entry join them. D93.1 is internally NC/back-bias on the controller but is not an unconnected PCB pad",
+   "nodes": [["D94", "5"], ["D93", "1"]]
   },
   "D94_D5": {
    "src": "July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary",
@@ -15737,7 +15737,6 @@
   ["D37", "8"],
   ["D37", "9"],
   ["D37", "10"],
-  ["D93", "1"],
   ["D30", "6"],
   ["D30", "9"],
   ["D2", "9"],

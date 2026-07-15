@@ -21,8 +21,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `302`
 - Nets modeled: `568`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `228`
-- Documented intentional no-connect pins: `63`
+- Net-level source-risk gaps: `227`
+- Documented intentional no-connect pins: `62`
 
 ## Chip Provenance Types
 
@@ -54,7 +54,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 22 |
 | PROM truth | 1 | 0 |
-| PROM/decode | 0 | 16 |
+| PROM/decode | 0 | 15 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 3 |
 | connector boundary | 1 | 0 |
@@ -211,7 +211,6 @@ explicit KiCad schematic no-connect markers.
 | `D53` | `7, 9, 10, 11` |
 | `D56` | `1, 9, 13` |
 | `D59` | `5, 6` |
-| `D93` | `1` |
 
 ## Net-Level Source Risks
 
@@ -326,7 +325,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D93_WPRT_BOUNDARY` | FDC owner-continuity | `D93.36` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin36 WPRT; remote drive-status continuity is not proved, so this remains a measur... |
 | `D94_A4_D101_Q0_PULLUP` | PROM/decode | `D94.14, D101.7` | direct owner continuity 2026-07-15 proves D94.14/A4 reaches D101 К555КП12 Q0/pin7 and an unidentified pull-up resistor to +5V; resistor reference pending ide... |
 | `D94_D0_BOUNDARY` | PROM/decode | `D94.1` | direct owner inspection 2026-07-15 finds D94 output pin1 connected through an unidentified pull-up resistor to +5V, with no other trace or branch observed; r... |
-| `D94_D4` | PROM/decode | `D94.5` | July-2026 registered component/solder local fits prove copper departs D94 output pin 5; far destination remains a boundary |
 | `D94_D5` | PROM/decode | `D94.6` | July-2026 registered component/solder local fits prove copper departs D94 output pin 6; far destination remains a boundary |
 | `D94_D6` | PROM/decode | `D94.7` | July-2026 registered component/solder fits prove copper departs D94 output pin 7; a suspected component-side handoff near (1915,1676) px is rejected because... |
 | `D94_D7` | PROM/decode | `D94.9` | July-2026 registered component/solder local fits prove copper departs D94 output pin 9; far destination remains a boundary |
