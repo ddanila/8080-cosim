@@ -49,7 +49,7 @@ measurement lands, add a row here.
 - D6.15/A7 driver/pull source.
 - D30 `H` exact edge contact + pull-up value.
 - Factory Вид В callout conductors at the registered D56.12/D56.5 level,
-  D14's fifth landing / remaining replacement traces, and D11's registered
+  D14's fifth landing / remaining drawn traces, and D11's registered
   four-landmark bridge endpoints. Position 150 is tubing at solder locations,
   not a D56 cut instruction. The older D11
   pins-4–6 solder scar is now excluded as a different feature. D15's executed

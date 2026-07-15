@@ -241,7 +241,7 @@ def main() -> int:
             disposition = "PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches"
             closure = "two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held"
         elif ref == "D14":
-            disposition = "PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1; remaining fifth landing and replacement traces are held"
+            disposition = "PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1; remaining fifth landing and drawn traces are held"
             closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing, three long traces, and right-row dogleg before full release"
         elif ref == "D11":
             disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured"
@@ -335,7 +335,7 @@ def main() -> int:
         ]))
     lines += [
         "",
-        "The fifth left-row landing below D14.4, the three long replacement",
+        "The fifth left-row landing below D14.4, the three long drawn",
         "traces, and the right-row dogleg are not electrically closed by these",
         "views. D14.2 and D14.7 remain measurement boundaries, and no remote net",
         "or fabrication geometry is inferred from the drawing alone.",

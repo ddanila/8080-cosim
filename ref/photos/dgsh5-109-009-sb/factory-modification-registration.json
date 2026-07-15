@@ -132,7 +132,7 @@
       ],
       "result": "The executed position-159 topology ties D14.1 to the same GND net as D32.4. The clean source PCB must assign D14.1 to GND."
     },
-    "remaining_boundary": "The row identity does not yet prove the remote endpoints of the fifth auxiliary landing, the three long replacement traces, or the right-row dogleg. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
+    "remaining_boundary": "The row identity does not yet prove the remote endpoints of the fifth auxiliary landing, the three long drawn traces, or the right-row dogleg. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
   },
   "d11": {
     "drawing": {
