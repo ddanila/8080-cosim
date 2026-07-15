@@ -20,6 +20,9 @@ REQUIRED_REFS = {
     "U3", "U4", "U6", "J94", "J95",
     "R32", "R33", "R34", "R35", "R36", "R37", "R38", "R39", "R40", "R41",
     "R42", "R43", "R44", "C26", "C27", "C28",
+    # Phase 4: clock-control jumper (J96), high-address+write header (J97),
+    # control-bus header (J98) -- the observability design-ins.
+    "J96", "J97", "J98",
 }
 
 REQUIRED_NETS = {
@@ -258,6 +261,22 @@ def main():
     for net, endpoint in DECODE_SOCKET_CONTRACT:
         if net not in nets or endpoint not in nodes(nets[net]):
             errors.append(f"decode-socket contract: {endpoint[0]}.{endpoint[1]} not on {net}")
+
+    # Phase 4 observability contract: the analyzer/single-step captures depend on
+    # A8-A15 + MEM_WR_N being on J97 (Profile FB high half + write clock), the
+    # Z80 control bus being on J98, and the clock-control jumper grounding
+    # OSC_OE_N (so the UNO rig can drive CLK). See docs/phase4-bench-bringup.md.
+    observability = (
+        [(f"A{8 + i}", ["J97", str(i + 1)]) for i in range(8)]
+        + [("MEM_WR_N", ["J97", "9"]), ("GND", ["J97", "10"])]
+        + [("MREQ_N", ["J98", "1"]), ("IORQ_N", ["J98", "2"]), ("RD_N", ["J98", "3"]),
+           ("WR_N", ["J98", "4"]), ("M1_N", ["J98", "5"]), ("RFSH_N", ["J98", "6"]),
+           ("WAIT_N", ["J98", "7"]), ("GND", ["J98", "8"])]
+        + [("OSC_OE_N", ["J96", "1"]), ("GND", ["J96", "2"])]
+    )
+    for net, endpoint in observability:
+        if net not in nets or endpoint not in nodes(nets[net]):
+            errors.append(f"observability contract: {endpoint[0]}.{endpoint[1]} not on {net}")
 
     if errors:
         print("Rev A physical spec check: FAIL")
