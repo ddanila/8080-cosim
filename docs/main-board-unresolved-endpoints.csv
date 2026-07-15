@@ -1,1 +1,2 @@
 priority,ref,pin,type,role,reason
+P0,D104,10,UP2,X4_OUT,PLAN physical-connectivity blocker

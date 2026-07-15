@@ -28,6 +28,16 @@ REQUIRED_REPORTS = [
     ("Fabrication readiness", "fab/gerbers/fab-readiness.md", "Fabrication-file inventory gate: **PASS**"),
 ]
 
+# These reports are valid evidence even while the design is held, but their
+# summary row must not say PASS until their actual release condition is true.
+# Package-only reports intentionally keep the marker-presence PASS semantics.
+RELEASE_MARKERS = {
+    "docs/main-board-erc-parity.md": "Status: **READY**",
+    "fab/gerbers/order-readiness.md": "Status: **RELEASED FOR ORDER**",
+    "docs/replica-bringup-verification-points.md": "Status: **DESIGN RELEASE RISKS CLOSED**",
+    "docs/replica-sourcing-readiness.md": "Status: **SOURCING READY**",
+}
+
 LOCKED_VENDOR_OPTIONS = [
     ("Service", "PCB fabrication only; no factory assembly package for the replica main board"),
     ("Layers", "2"),
@@ -138,6 +148,7 @@ def build_report(fab_dir):
         failures.append("order-evidence-template regeneration failed" + (f": {detail}" if detail else ""))
 
     report_rows = []
+    release_gates_ready = True
     for label, rel, marker in REQUIRED_REPORTS:
         path = ROOT / rel
         exists = path.exists() and path.stat().st_size > 0
@@ -147,11 +158,21 @@ def build_report(fab_dir):
             failures.append(f"missing or empty required report: {rel}")
         elif not marker_ok:
             failures.append(f"required report marker missing in {rel}: {marker}")
+        release_marker = RELEASE_MARKERS.get(rel)
+        if release_marker is not None and release_marker not in text:
+            release_gates_ready = False
+        gate_status = (
+            "FAIL"
+            if not exists or not marker_ok
+            else "PASS"
+            if release_marker is None or release_marker in text
+            else "HOLD"
+        )
         report_rows.append([
             label,
             f"`{rel}`",
             path.stat().st_size if exists else 0,
-            "PASS" if exists and marker_ok else "FAIL",
+            gate_status,
         ])
 
     upload_zip = fab_dir / "upload" / "juku-replica-gerbers-drill.zip"
@@ -192,7 +213,10 @@ def build_report(fab_dir):
 
     order_path = ROOT / "fab" / "gerbers" / "order-readiness.md"
     order_text = order_path.read_text(errors="replace") if order_path.exists() else ""
-    released = "Status: **RELEASED FOR ORDER**" in order_text
+    released = (
+        "Status: **RELEASED FOR ORDER**" in order_text
+        and release_gates_ready
+    )
     if failures:
         status = "PACKAGE INVALID"
     elif released:

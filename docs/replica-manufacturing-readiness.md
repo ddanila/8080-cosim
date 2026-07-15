@@ -14,14 +14,14 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1251 | PASS |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2931 | PASS |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1440 | HOLD |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2931 | HOLD |
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2907 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 83019 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 79575 | HOLD |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | HOLD |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1628 | PASS |
