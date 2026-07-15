@@ -98,6 +98,9 @@ historical placement, and the original composite/RF chain.
 
 - `docs/workbench-plan.md`: the bench-fixture direction (test the real Juku
   РУ5/РТ4/РЕ3 parts) and the phased build plan.
+- `docs/phase4-bench-bringup.md`: the detailed Phase 4 plan — pre-fab
+  observability design-ins, analyzer channel maps, the framebuffer-readback
+  boot oracle, the UNO single-step rig, and the assembly/chip-test ladder.
 - `hdl/README.md`: exactly what the synthetic simulation proves.
 - `docs/rev-a-chip-map.md`: current physical decomposition.
 - `docs/rev-a-gal-equations.md`: unvalidated programmable-logic draft.

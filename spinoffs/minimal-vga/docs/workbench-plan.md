@@ -136,47 +136,34 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       then independent schematic/copper/Gerber review. The board stays DESIGN
       HOLD until that review passes; only then is it an order candidate.
 
-4. **Phase 4 — observability, assembly, and bench bring-up.**
+4. **Phase 4 — observability, assembly, and bench bring-up.** Detailed plan:
+   **`phase4-bench-bringup.md`**. In brief:
+   - **Design-ins before the step (f) copper freeze** (found by auditing the
+     board model): J96 clock-control jumper (`OSC_OE_N`→GND tri-states U50 so
+     the UNO can drive `CLK`), J97 high-address header (A8-A15 + `MEM_WR_N` are
+     currently on NO header), J98 control-bus header (MREQ/IORQ/RD/WR/M1/RFSH/
+     WAIT), and a documented NOP-plug free-run provision (no copper needed).
+   - **Two fixed RP2350 24-channel capture profiles**: Profile FB (A0-A15 +
+     D0-D7, clocked by `MEM_WR_N` — exactly 24 channels) for framebuffer
+     readback, Profile CTL for single-step/decode debug.
+   - **Framebuffer readback = the bench boot oracle**: capture boot writes,
+     reassemble `0xD800`+9640 bytes, `cmp` vs cosim — banner verified with zero
+     display electronics. The readback tool is validated *against the twin*
+     (twin emits the same capture format) before any hardware exists.
+   - **Arduino UNO single-step rig**: J96 + 4×74HC165 chain; per-M1-fetch trace
+     diffed against a twin-generated reference trace.
+   - **Bring-up ladder** (a-h): GAL/ROM programming → rails → clock/reset →
+     free-run NOP → Mode A baseline banner → single-step diff → one-scarce-
+     chip-at-a-time PASS logging (РУ5 → РЕ3 observed → РТ4 driving in Mode B),
+     with per-chip failure signatures and a `bench-log.md` per-serial record.
+   - **D6 polarity resolution on VJUGA itself** (closes root `PLAN.md` item 1):
+     probe J95.1 (`DEC_ROM_N` = D6.12) at the reset fetch in Mode B; either
+     outcome is a one-line fix in the GAL term + both twins, zero copper.
 
-   **Observability (design-in before fab):**
-   - Keep J90-J93 debug headers; document a fixed **RP2350 24-channel map**
-     (D0-D7, A0-A7, MREQ/IORQ/RD/WR/M1/RFSH, CLK, RESET_N) so captures are
-     comparable across sessions. The analyzer's 5 V input mode hangs directly
-     on the bus.
-   - Add a **single-step clock jumper**: U50 oscillator vs external clock, so
-     the Arduino UNO rig (5 V-native, 74HC165 chain reading the full bus) can
-     drive the CPU statically. Sketch lives in `tools/` beside `rt4_dumper`.
-   - **Framebuffer readback without video hardware:** the RP2350 captures all
-     memory writes to `0xD800-0xFFFF` during boot; an offline script
-     reassembles them into a 9640-byte framebuffer and `cmp`s against cosim's
-     `vram.bin` — the bench twin of `sim/vjuga_boot_check.sh`. This makes the
-     boot banner verifiable with zero display electronics (VGA stays deferred).
-
-   **Assembly & bring-up ladder (each step gated by the previous):**
-   a. Program + verify the GAL (test vectors from step 3d) and the 27C256
-      (`ekta37_z80.bin`, checksummed).
-   b. Assemble sockets/passives only; verify rails, fuse, and clamp with no ICs
-      seated (PWR_OK LED).
-   c. Oscillator + reset supervisor checks; then CPU free-run/NOP test (data
-      bus forced to 0x00 via the debug header), watch address lines count on
-      the analyzer.
-   d. Mode A, western parts: ROM fetch → GAL decode → DRAM write/read →
-      **banner via framebuffer readback** = board baseline PASS.
-   e. Single-step rig session: UNO steps the first ~100 fetches; compare to the
-      twin's trace (instruction-level cross-check).
-   f. **Chip-test procedure (the workbench purpose):** swap ONE scarce part at
-      a time into the proven baseline and re-run the banner readback —
-      КМ4164→РУ5 bank first, then Mode B with the real D8, then the real D6.
-      A byte-identical banner is that chip's PASS; log results per chip serial.
-   g. **Bonus: VJUGA resolves the main-twin D6 question.** With the real D6
-      booting in Mode B, probing D6.12/D8-enable levels at the reset fetch on
-      VJUGA's own header answers the level-probe ask in root `PLAN.md` item 1 —
-      the fixture becomes the instrument, no Juku board needed.
-
-   **Exit criteria:** baseline board boots the banner in Mode A; each scarce
-   chip class (РУ5, РТ4, РЕ3) has at least one part PASS in Mode B; the D6
-   polarity observation is recorded and the provisional fit promoted or
-   corrected in both twins.
+   **Exit criteria:** baseline board boots the banner in Mode A (proven by
+   readback); each scarce chip class (РУ5, РТ4, РЕ3) has at least one part
+   PASS in its functional role; the D6 polarity observation is recorded and
+   the provisional fit promoted or corrected in both twins.
 
 ## Per-chip pass/fail intent (bench)
 
