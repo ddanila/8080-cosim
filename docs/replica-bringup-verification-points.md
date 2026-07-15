@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `217`
 - Verification-point endpoints checked in PCB: `326`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2250`
-- All board endpoints checked in routed PCB: `2250`
+- All board endpoints checked in source PCB: `2252`
+- All board endpoints checked in routed PCB: `2252`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2250/2250 | 2250/2250 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1883/2250 | 1805/2250 | FAIL |
+| `kicad/juku.kicad_pcb` | 2252/2252 | 2252/2252 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1883/2252 | 1804/2252 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -387,7 +387,9 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `VERT_RTR: D35.9`
 - `VERT_SYNC: D55.17`
 - `VID_MUX_G: E14.1`
-- `W10_QA_SEL: D51.1`
+- `W10_QA_SEL: W10.1`
+- `W10_QA_SEL_D50: D51.1`
+- `W10_QA_SEL_D50: W10.2`
 - `WREQ_N: X1.107C`
 - `X3_HARNESS_1: A21.1`
 - `X3_HARNESS_1: R104.1`
@@ -500,6 +502,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D38.8: `STSTB` != `STSTB_D38`
 - D7.12: `IOWR` != `SYNC`
 - D55.13: `FRAME_INT` != `VERT_RTR`
+- D50.1: `W10_QA_SEL` != `W10_QA_SEL_D50`
 - D6.11: `RAM_SEL` != `WREQ_N`
 - D92.5: `RAM_SEL` != `WREQ_N`
 - R12.2: `RAM_SEL` != `WREQ_N`

@@ -108,9 +108,10 @@ module juku_top (
     wire osc_clk, clkg_d33, clkg_d36, d39_y, d33_o6, xtal16m_w; wire [3:0] d40_q;
     // sheet-2 LATCH/LOAD chain (D41 ИР16 -> D37 gate2 -> D33 inv; D38 gate2 -> D59 inv).
     // Full-resolution bundle read: D41.LD joins rail17/D36.B2; D41.CK joins rail8/D42.G/D43.G.
-    wire d41_qa, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
+    wire d41_qa, d41_qa_d41, d41_qb, d36_b2_tag17, shift_g, d37_latch_pre, latch_sig, d39_o8, d59_o10_tag10, load_pre, load_vid;
     ir16      U_D41 (.a(1'b0), .b(1'b0), .c(1'b0), .d(1'b0), .ld(d36_b2_tag17), .g(1'b1), .ck(shift_g),
-                     .ds(1'b1), .qd(), .qa(d41_qa), .qb(d41_qb), .qc());
+                     .ds(1'b1), .qd(), .qa(d41_qa_d41), .qb(d41_qb), .qc());
+    net_boundary U_W10 (.a(d41_qa), .b(d41_qa_d41));
     wire pst_clk;
     wire osc_fb, osc_pre;
     ln1_osc   U_D59 (.sclk(clk), .xin(osc_pre), .osc(osc_clk), .i13(load_pre), .o12(load_vid), .i11(d39_o8), .o10(d59_o10_tag10),

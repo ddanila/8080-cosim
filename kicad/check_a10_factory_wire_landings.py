@@ -28,6 +28,7 @@ fits = {
     if fit["refdes"] in {"D41", "D50"}
 }
 errors: list[str] = []
+w10 = board.FindFootprintByReference("W10")
 
 
 def image_to_board(refdes: str, side: str) -> np.ndarray:
@@ -53,6 +54,7 @@ expected = {
     "A10A": {
         "refdes": "D41",
         "pin": "13",
+        "net": "W10_QA_SEL",
         "component_joint": [2148, 2174],
         "component_pin": [2148, 2124],
         "solder_joint": [1506, 1834],
@@ -62,6 +64,7 @@ expected = {
     "A10B": {
         "refdes": "D50",
         "pin": "1",
+        "net": "W10_QA_SEL_D50",
         "component_joint": [2804, 2266],
         "component_pin": [2709, 2266],
         "solder_joint": [915, 2000],
@@ -109,8 +112,8 @@ for terminal, specification in expected.items():
 
     footprint = board.FindFootprintByReference(refdes)
     pad = footprint.FindPadByNumber(specification["pin"])
-    if pad is None or pad.GetNetname() != "W10_QA_SEL":
-        errors.append(f"{refdes}.{specification['pin']}: missing from W10_QA_SEL")
+    if pad is None or pad.GetNetname() != specification["net"]:
+        errors.append(f"{refdes}.{specification['pin']}: missing from {specification['net']}")
     else:
         pad_position = np.array(
             [pcbnew.ToMM(pad.GetPosition().x), pcbnew.ToMM(pad.GetPosition().y)]
@@ -140,10 +143,32 @@ if point.get("status") != "board-fitted":
 if "13.5 cm" not in point.get("observation", ""):
     errors.append("A10: corrected duplicate-sheet length is not guarded")
 
+if w10 is None:
+    errors.append("A10: W10 assembly-wire footprint is missing")
+else:
+    for pin, terminal in (("1", "A10A"), ("2", "A10B")):
+        pad = w10.FindPadByNumber(pin)
+        expected_net = "W10_QA_SEL" if pin == "1" else "W10_QA_SEL_D50"
+        if pad is None:
+            errors.append(f"A10: W10.{pin} landing is missing")
+            continue
+        position = np.array([pcbnew.ToMM(pad.GetPosition().x), pcbnew.ToMM(pad.GetPosition().y)])
+        if float(np.linalg.norm(position - projected_terminals[terminal])) > MAX_RECORDED_ERROR_MM:
+            errors.append(f"A10: W10.{pin} coordinate drifted")
+        if pad.GetNetname() != expected_net:
+            errors.append(f"A10: W10.{pin} is on {pad.GetNetname()}, expected {expected_net}")
+        layers = pad.GetLayerSet()
+        if pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD or not layers.Contains(pcbnew.F_Cu) or layers.Contains(pcbnew.B_Cu):
+            errors.append(f"A10: W10.{pin} must remain a top-side surface landing")
+
+d51_pad1 = board.FindFootprintByReference("D51").FindPadByNumber("1")
+if d51_pad1.GetNetname() != "W10_QA_SEL_D50":
+    errors.append("D51.1 is missing from the shared A10B copper island")
+
 if errors:
     raise SystemExit("A10 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A10 FACTORY LANDINGS: PASS — "
+    "A10 FACTORY LANDINGS: PASS — two surface islands modeled through W10; "
     f"D41/D50 cross-side fits; terminal chord {wire_chord:.3f} mm; "
     "corrected factory length 13.5 cm"
 )

@@ -5173,10 +5173,20 @@
     "1": "A8A",
     "2": "A8B"
    },
+   "value": "~19 cm",
    "prov": {
     "type": "factory wire table + owner photos",
     "refdes": "ДГШ5.109.009 СБ conductor position 4 / board point А:8",
     "pins": "two independently registered component-side surface joints at (40.811,99.989) and (223.601,170.724) mm; fitted insulated wire joins D5.1 to D38.8; nominal table length approximately 19 cm"
+   }
+  },
+  {
+   "ref": "W10", "type": "WIRE_LINK", "pins": {"1": "A10A", "2": "A10B"},
+   "value": "13.5 cm",
+   "prov": {
+    "type": "factory wire table + two-sided owner photos",
+    "refdes": "ДГШ5.109.009 СБ conductor position 6 / board point А:10",
+    "pins": "independently registered component/solder surface joints at (240.091,146.982) and (108.865,152.813) mm; fitted insulated wire joins D41.13 to the D50.1/D51.1 select island; duplicate table length 13.5 cm"
    }
   }
  ],
@@ -11635,22 +11645,19 @@
    ]
   },
   "W10_QA_SEL": {
-   "src": "wire",
+   "src": "factory wire А:10 D41-side copper island",
    "nodes": [
     [
      "D41",
      "13"
     ],
     [
-     "D50",
-     "1"
-    ],
-    [
-     "D51",
+     "W10",
      "1"
     ]
    ],
-   "note": "WIRE 10 (beeper): D41.QA -> the shared D50/D51 SEL rail (video/µP mux select from the ИР16 chain)"
+   "note": "WIRE 10: explicit assembly wire W10 joins D41.QA/A10A to the shared D50/D51 select island",
+   "wire_link": {"ref": "W10", "other_net": "W10_QA_SEL_D50"}
   },
   "PIT_HCHAIN": {
    "src": "traced sheet-2 300dpi (crops s2_d54/s2_d55): drawn cascade matches the emulator-derived wiring exactly; D54.OUT0(10) -> D54.G1(14)+G2(16) + D55.CLK0(9)",
@@ -15770,6 +15777,11 @@
     ["W8", "2"]
    ],
    "note": "D38.8 reaches the registered A8B surface landing; insulated assembly wire W8 continues to STSTB/D5.1"
+  },
+  "W10_QA_SEL_D50": {
+   "src": "factory wire А:10 D50/D51-side copper island",
+   "nodes": [["D50", "1"], ["D51", "1"], ["W10", "2"]],
+   "note": "D50.1/D51.1 share the registered A10B surface-landing island; insulated assembly wire W10 continues to D41.13"
   }
  },
  "no_connects": [

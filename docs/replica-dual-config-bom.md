@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 303
-- Populate for current functional .009 build: 273
+- Board component positions: 304
+- Populate for current functional .009 build: 274
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 88
+- Unique BOM lines: 89
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 187 |
+| source-now | 188 |
 
 ## BOM Lines
 
@@ -119,7 +119,8 @@ readiness report.
 | source-now | USART8251 | КР580ВВ51А | 8251A / 82C51-class USART | 1 | 1 | 0 | D11 | - |
 | source-now | VABUS | КР580ВА87 | Intel 8287 / compatible bus transceiver | 3 | 3 | 0 | D23, D24, D25 | - |
 | source-now | VG93_FDC | КР1818ВГ93 | WD1793 pin-compatible candidate; verify clock, rails, and interface timing | 1 | 1 | 0 | D93 | A western WD1793 is a functional-build candidate, not an automatically approved drop-in; verify the selected device against the final D93 circuit. |
-| source-now | WIRE_LINK | factory insulated assembly wire | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W8 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
+| source-now | WIRE_LINK 13.5 cm | factory insulated assembly wire 13.5 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W10 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
+| source-now | WIRE_LINK ~19 cm | factory insulated assembly wire ~19 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W8 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_PAD | WIRE_PAD | select exact substitute after circuit review | 54 | 54 | 0 | A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+36) | - |
 | source-now | XTAL 16 МГц | РК-171 16 MHz crystal 16 МГц | 16 MHz HC-49/metal-can crystal matching footprint/load | 1 | 1 | 0 | Z1 | - |
 
