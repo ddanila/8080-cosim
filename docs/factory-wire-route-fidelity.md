@@ -12,7 +12,7 @@ zero-open routing checkpoint.
 
 - Logical endpoint check: `PASS`
 - Landing-registration check: `PASS`
-- Board-fit photo/copper evidence checks: `PASS`
+- Board-fit photo/copper evidence checks: `PASS (9/9)`
 - Drawing-image landing endpoints registered: `20/20`
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
 - Paired A-point landing terminals modeled: `0/20`

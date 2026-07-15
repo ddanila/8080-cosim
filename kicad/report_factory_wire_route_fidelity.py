@@ -20,6 +20,17 @@ LANDINGS = (
     ROOT
     / "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json"
 )
+PHYSICAL_FIT_SCRIPTS = (
+    "kicad/check_d3_factory_wire_landing.py",       # A20
+    "kicad/check_d38_factory_wire_landings.py",     # A8B, A9
+    "kicad/check_d5_factory_wire_landing.py",       # A19
+    "kicad/check_a7_a14_factory_wire_landings.py",  # A7, A14
+    "kicad/check_a8_factory_wire_landings.py",      # A8A and chord
+    "kicad/check_a10_factory_wire_landings.py",     # A10
+    "kicad/check_a11_factory_wire_landing.py",      # A11
+    "kicad/check_a12_factory_wire_landing.py",      # A12 and held A12A
+    "kicad/check_a13_factory_wire_boundaries.py",   # held A13 pair
+)
 
 
 def run_drc(board: Path) -> dict:
@@ -94,22 +105,21 @@ def main() -> int:
         text=True,
         capture_output=True,
     )
-    physical_fit_checks = [
-        subprocess.run(
+    physical_fit_checks = {
+        script: subprocess.run(
             [kicad_python, str(ROOT / script)],
             cwd=ROOT,
             text=True,
             capture_output=True,
         )
-        for script in (
-            "kicad/check_d3_factory_wire_landing.py",
-            "kicad/check_d38_factory_wire_landings.py",
-            "kicad/check_d5_factory_wire_landing.py",
-            "kicad/check_a10_factory_wire_landings.py",
-            "kicad/check_a8_factory_wire_landings.py",
-        )
-    ]
-    physical_fits_pass = all(check.returncode == 0 for check in physical_fit_checks)
+        for script in PHYSICAL_FIT_SCRIPTS
+    }
+    physical_fits_pass = all(
+        check.returncode == 0 for check in physical_fit_checks.values()
+    )
+    physical_fits_passing = sum(
+        check.returncode == 0 for check in physical_fit_checks.values()
+    )
     landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
     registered_by_point = {
         record["point"]: len(record.get("endpoints", []))
@@ -194,7 +204,9 @@ def main() -> int:
         "",
         f"- Logical endpoint check: `{'PASS' if logical.returncode == 0 else 'FAIL'}`",
         f"- Landing-registration check: `{'PASS' if landing_check.returncode == 0 else 'FAIL'}`",
-        f"- Board-fit photo/copper evidence checks: `{'PASS' if physical_fits_pass else 'FAIL'}`",
+        "- Board-fit photo/copper evidence checks: "
+        f"`{'PASS' if physical_fits_pass else 'FAIL'} "
+        f"({physical_fits_passing}/{len(PHYSICAL_FIT_SCRIPTS)})`",
         f"- Drawing-image landing endpoints registered: `{image_registered}/{expected_terminals}`",
         f"- Landing endpoints fitted to PCB coordinates/islands: `{board_fitted}/{expected_terminals}`",
         f"- Paired A-point landing terminals modeled: `{modeled_terminals}/{expected_terminals}`",
@@ -351,9 +363,14 @@ def main() -> int:
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")
     if logical.returncode or landing_check.returncode or not physical_fits_pass:
+        checks = {
+            "logical endpoint check": logical,
+            "landing registration check": landing_check,
+            **physical_fit_checks,
+        }
         failures = [
-            check.stdout + check.stderr
-            for check in physical_fit_checks
+            f"[{name}]\n{check.stdout}{check.stderr}"
+            for name, check in checks.items()
             if check.returncode
         ]
         raise SystemExit("factory-wire evidence guard failed\n" + "".join(failures))

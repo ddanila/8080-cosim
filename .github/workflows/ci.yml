@@ -35,6 +35,12 @@ jobs:
             kicad/check_factory_wire_landing_registration.py \
             kicad/check_d3_factory_wire_landing.py \
             kicad/check_d5_factory_wire_landing.py \
+            kicad/check_a7_a14_factory_wire_landings.py \
+            kicad/check_a8_factory_wire_landings.py \
+            kicad/check_a10_factory_wire_landings.py \
+            kicad/check_a11_factory_wire_landing.py \
+            kicad/check_a12_factory_wire_landing.py \
+            kicad/check_a13_factory_wire_boundaries.py \
             kicad/check_d5_photo_placement.py \
             kicad/check_d37_photo_placement.py \
             kicad/check_d38_photo_placement.py \
