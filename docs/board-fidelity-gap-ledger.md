@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `302`
-- Nets modeled: `568`
+- Nets modeled: `569`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `227`
+- Net-level source-risk gaps: `228`
 - Documented intentional no-connect pins: `62`
 
 ## Chip Provenance Types
@@ -58,7 +58,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 3 |
 | connector boundary | 1 | 0 |
-| logic/source | 13 | 163 |
+| logic/source | 13 | 164 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -271,6 +271,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D102_Q2_BOUNDARY` | logic/source | `D102.5` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary |
 | `D102_RC1_BOUNDARY` | logic/source | `D102.15` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
 | `D102_RC2_BOUNDARY` | logic/source | `D102.7` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
+| `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
 | `D105_GATE1_Y` | logic/source | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread |
 | `D106_BO_BOUNDARY` | logic/source | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary |
 | `D106_CLR_BOUNDARY` | logic/source | `D106.14` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary |

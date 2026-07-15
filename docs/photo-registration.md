@@ -373,7 +373,8 @@ The new reflected D104 backside fit uses the complete 2x8 joint field in
 no B.Cu departure; `200509593` independently shows the same isolated backside
 joint. Both component overlaps cover the possible F.Cu departure with the
 same vertical white wire, so D104.10 remains a targeted continuity request,
-not an inferred no-connect. The serial placement guard preserves that boundary.
+not an inferred no-connect. It is modeled as the singleton
+`D104_X4_OUT_BOUNDARY`, and the serial placement guard preserves that boundary.
 The same check identifies the marked notch-down К561ЛН2 in
 `PXL_20260710_200418174.jpg` as D3 at `(220.434,80.356)` mm. Its former
 `(205.8,96.4)` placeholder landed on a cable and physically overlapped D10.

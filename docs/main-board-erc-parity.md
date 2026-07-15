@@ -1,6 +1,6 @@
 # Main-board ERC and schematic/PCB parity
 
-Status: **DESIGN HOLD**
+Status: **READY**
 
 ERC uses a generated include-power schematic under `fab/audit`; the normal
 LVS schematic deliberately omits power nets. Parity uses `juku.kicad_sch`
@@ -12,11 +12,11 @@ schematic parity against it without a matching routed schematic/project.
 
 | Check | Count | Result |
 | --- | ---: | --- |
-| ERC error violations | 1 | BLOCK |
+| ERC error violations | 0 | PASS |
 | PCB/schematic parity issues | 0 | PASS |
 | Explicit board-JSON no-connects | 62 | PASS |
 | KiCad schematic no-connect markers | 62 | PASS |
-| Functional pins without net or explicit NC | 1 | BLOCK |
+| Functional pins without net or explicit NC | 0 | PASS |
 | Duplicate board-JSON endpoint memberships | 0 | PASS |
 | Unknown/conflicting NC records | 0 | PASS |
 
@@ -24,7 +24,7 @@ schematic parity against it without a matching routed schematic/project.
 
 | Priority | Count |
 | --- | ---: |
-| P0 | 1 |
+| P0 | 0 |
 | P1 | 0 |
 | P2 | 0 |
 
@@ -33,17 +33,15 @@ The complete machine-readable backlog is
 
 ## ERC types
 
-- `pin_not_connected`: 1
+- None.
 
 ## Most affected references
 
-- `D104`: 1
+- None.
 
 ## Release interpretation
 
-Parity currently passes, but unconnected functional pins and ERC errors remain
-release blockers. They must be traced, redesigned, or individually recorded as
-intentional no-connects. This gate deliberately does not exclude or waive them.
+ERC, parity, endpoint ownership, and explicit no-connect accounting all pass.
 
 Raw machine-readable reports:
 

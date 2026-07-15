@@ -1,6 +1,6 @@
 # Serial handoff
 
-Status: **SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING**
+Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**
 
 This generated report separates the serial-port facts already guarded by
 the board JSON and HDL from the remaining functional serial boundary.
@@ -49,6 +49,7 @@ python3 scripts/report_serial_handoff.py
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
+| UP2 fourth receiver output remains an explicit continuity boundary | PASS | D104.7 -> D104.10; output destination remains photo-occluded |
 | S_SOUT reaches X3.9 | PASS | `S_SOUT` |
 | S_RTS reaches X3.10 | PASS | `S_RTS` |
 | S_DTP reaches X3.11 | PASS | `S_DTP` |
@@ -75,6 +76,8 @@ python3 scripts/report_serial_handoff.py
 | `SER_RXD` | `D11.3`, `D104.13` |
 | `SER_CTS_N` | `D104.12`, `D11.17` |
 | `SER_DSR_N` | `D104.11`, `D11.22` |
+| `D94_A3_D104_X4_PULLUP` | `D94.13`, `D104.7` |
+| `D104_X4_OUT_BOUNDARY` | `D104.10` |
 | `USART_RXRDY_IRQ` | `D10.20`, `D11.14` |
 | `USART_TXRDY_IRQ` | `D10.21`, `D11.15` |
 | `S_SOUT` | `D14.6`, `A29.1`, `X3.9` |
@@ -96,10 +99,11 @@ python3 scripts/report_serial_handoff.py
 - `sync/serial_check.sh` now proves a scoped USART behavior slice:
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.
-- D11 auxiliary pins remain physical-source blockers:
-  .
-  Trace each destination or record a source-proved intentional NC before
-  treating the USART portion of the PCB as complete.
+- D104's fourth receiver input pin 7 is owner-closed to D94.13 and
+  its output pin 10 is preserved as `D104_X4_OUT_BOUNDARY`; its far
+  destination remains a targeted continuity measurement.
+- D11 auxiliary pins without a net or explicit NC:
+  none; all are dispositioned.
 - Native sheet 1 directly loops D11 RxRDY pin14 to PIC IR2 pin20 and
   D11 TxRDY pin15 to PIC IR3 pin21. The separately labeled off-sheet
   `(3)` RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface;

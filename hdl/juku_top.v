@@ -584,9 +584,11 @@ module juku_top (
     // build defaults to the external-interrupt throw for simulation.
     spdt_switch U_S4 (.syndet_throw(ser_syndet), .int6_throw(ir6_buf), .ir6_common(ir6_sig));
     la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc));
+    wire d104_x4_out_boundary;
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),
-                   .dsr_in(s_dsr), .dsr_out(ser_dsr_n));
+                   .dsr_in(s_dsr), .dsr_out(ser_dsr_n),
+                   .x4_in(d94_a3_boundary), .x4_out(d104_x4_out_boundary));
     serial_conn U_X3 (.pullup_io(), .aux2(s_oc), .ttl_sout(s_ttl), .sin(s_sin),
                       .cts(s_cts), .dsr(s_dsr), .aux7(), .aux8(),
                       .sout(s_sout), .rts(s_rts), .dtp(s_dtp), .oc_sout(s_oc));

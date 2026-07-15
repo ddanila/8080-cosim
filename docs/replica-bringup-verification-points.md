@@ -13,18 +13,18 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `227`
-- Verification-point endpoints checked in PCB: `381`
+- Verification-point nets: `228`
+- Verification-point endpoints checked in PCB: `382`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2245`
-- All board endpoints checked in routed PCB: `2245`
+- All board endpoints checked in source PCB: `2246`
+- All board endpoints checked in routed PCB: `2246`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 22 |
-| logic | 169 |
+| logic | 170 |
 | memory/decode | 7 |
 | sound/analog | 1 |
 | timing/I/O | 4 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 381/381 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 381/381 net names matched |
+| Risk endpoints present on PCB pads | PASS | 382/382 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 382/382 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2245/2245 | 2245/2245 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1883/2245 | 1807/2245 | FAIL |
+| `kicad/juku.kicad_pcb` | 2246/2246 | 2246/2246 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1883/2246 | 1807/2246 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -108,6 +108,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D102_Q2_BOUNDARY: D102.5`
 - `D102_RC1_BOUNDARY: D102.15`
 - `D102_RC2_BOUNDARY: D102.7`
+- `D104_X4_OUT_BOUNDARY: D104.10`
 - `D105_10_H: D13.13`
 - `D106_BO_BOUNDARY: D106.13`
 - `D106_CLR_BOUNDARY: D106.14`
@@ -553,6 +554,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D102_Q2_BOUNDARY` | logic | `D102.5` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin5 Q2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D102_RC1_BOUNDARY` | logic | `D102.15` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D102_RC2_BOUNDARY` | logic | `D102.7` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D104_X4_OUT_BOUNDARY` | logic | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.C... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D105_GATE1_Y` | logic | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_BO_BOUNDARY` | logic | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D106_CLR_BOUNDARY` | logic | `D106.14` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

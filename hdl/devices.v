@@ -745,14 +745,15 @@ endmodule
 module la18_oc (input wire i1, i2, output wire o3);
     assign o3 = ~(i1 & i2);
 endmodule
-// К170УП2 triple serial line receiver (D104), as drawn on sheet 1:
-// pins 4->13 SIN, 5->12 CTS, and 6->11 DSR. Electrical threshold/polarity
-// remains an idealized one-way buffer, matching the former single-section model.
-module up2_rcv (input wire sin_in, cts_in, dsr_in,
-                output wire sin_out, cts_out, dsr_out);
+// К170УП2 serial line receiver (D104): sheet 1 draws pins 4->13 SIN,
+// 5->12 CTS, and 6->11 DSR; the primary pin contract adds fourth channel
+// 7->10. Electrical threshold/polarity remains an idealized one-way buffer.
+module up2_rcv (input wire sin_in, cts_in, dsr_in, x4_in,
+                output wire sin_out, cts_out, dsr_out, x4_out);
     assign sin_out = sin_in;
     assign cts_out = cts_in;
     assign dsr_out = dsr_in;
+    assign x4_out = x4_in;
 endmodule
 // Bracket-mounted serial connector X3. The .009 assembly cable maps PCB
 // landings A21..A32 in order to these physical pins 1..12.

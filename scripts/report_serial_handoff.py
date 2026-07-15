@@ -215,6 +215,14 @@ def check_rows(board: dict) -> list[list[object]]:
         and has_node(board, "SER_DSR_N", "D11", "22"),
         "`SER_CTS_N` / `SER_DSR_N`",
     ))
+    checks.append((
+        "UP2 fourth receiver output remains an explicit continuity boundary",
+        has_node(board, "D94_A3_D104_X4_PULLUP", "D104", "7")
+        and has_node(board, "D104_X4_OUT_BOUNDARY", "D104", "10")
+        and marker("hdl/juku_top.v", ".x4_in(d94_a3_boundary)",
+                   ".x4_out(d104_x4_out_boundary)"),
+        "D104.7 -> D104.10; output destination remains photo-occluded",
+    ))
     for net_name, ref, pin in [
         ("S_SOUT", "X3", "9"),
         ("S_RTS", "X3", "10"),
@@ -265,7 +273,7 @@ def main() -> int:
     board = load_board()
     rows = check_rows(board)
     status = (
-        "SERIAL CORE GUARDED / AUXILIARY PIN CONTINUITY PENDING"
+        "SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING"
         if all_pass(rows)
         else "SERIAL HANDOFF REGRESSION"
     )
@@ -315,6 +323,8 @@ def main() -> int:
         "SER_RXD",
         "SER_CTS_N",
         "SER_DSR_N",
+        "D94_A3_D104_X4_PULLUP",
+        "D104_X4_OUT_BOUNDARY",
         "USART_RXRDY_IRQ",
         "USART_TXRDY_IRQ",
         "S_SOUT",
@@ -340,13 +350,14 @@ def main() -> int:
             "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
             "  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven",
             "  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.",
-            "- D11 auxiliary pins remain physical-source blockers:",
-            "  " + ", ".join(
+            "- D104's fourth receiver input pin 7 is owner-closed to D94.13 and",
+            "  its output pin 10 is preserved as `D104_X4_OUT_BOUNDARY`; its far",
+            "  destination remains a targeted continuity measurement.",
+            "- D11 auxiliary pins without a net or explicit NC:",
+            "  " + (", ".join(
                 f"{pin}:{role}" for pin, role in AUXILIARY_PINS.items()
                 if not pin_is_netted(board, "D11", pin) and not pin_is_nc(board, "D11", pin)
-            ) + ".",
-            "  Trace each destination or record a source-proved intentional NC before",
-            "  treating the USART portion of the PCB as complete.",
+            ) or "none; all are dispositioned") + ".",
             "- Native sheet 1 directly loops D11 RxRDY pin14 to PIC IR2 pin20 and",
             "  D11 TxRDY pin15 to PIC IR3 pin21. The separately labeled off-sheet",
             "  `(3)` RxRDY/TxRDY arrows enter IR0/IR1 from the alternate interface;",

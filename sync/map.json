@@ -749,7 +749,9 @@
     "5": "CTS_IN",
     "12": "CTS_OUT",
     "6": "DSR_IN",
-    "11": "DSR_OUT"
+    "11": "DSR_OUT",
+    "7": "X4_IN",
+    "10": "X4_OUT"
    },
    "SERIAL_CONN": {
     "1": "PULLUP_IO",

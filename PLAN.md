@@ -121,7 +121,8 @@ Every ask below is queued with exact deliverables in
    (`docs/d94-reconstruction-constraints.md`). A reflected D104 photo fit now
    proves that pin 10 has no B.Cu departure in two backside views; its possible
    F.Cu departure is hidden by the same vertical white wire in both component
-   overlaps, reducing the remaining D104.10 ask to targeted continuity rather
+   overlaps. The functional output is retained on an explicit singleton
+   boundary, reducing the remaining D104.10 ask to targeted continuity rather
    than permitting an inferred no-connect.
 3. **Finish the measured WAIT/READY edge boundaries.** The D2/D30/D105 path
    is adopted; D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are now
@@ -144,7 +145,7 @@ Every ask below is queued with exact deliverables in
    modified pads, removed segments, and replacement nets remain a P0 mapping
    hold (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
-   227 source-risk nets and 9 official FDC devices with untraced functional
+   228 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

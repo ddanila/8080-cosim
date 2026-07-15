@@ -15714,6 +15714,10 @@
   "D94_A3_D104_X4_PULLUP": {
    "src": "direct owner continuity 2026-07-15 proves D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and a pull-up resistor to +5V. The resistor reference is not yet identified; К170УП2 primary pinout confirms channel X4 is input7 -> output10",
    "nodes": [["D94", "13"], ["D104", "7"]]
+  },
+  "D104_X4_OUT_BOUNDARY": {
+   "src": "July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.Cu departure behind the same vertical white wire. This singleton preserves the functional receiver output as a targeted continuity boundary, not an inferred no-connect",
+   "nodes": [["D104", "10"]]
   }
  },
  "no_connects": [
