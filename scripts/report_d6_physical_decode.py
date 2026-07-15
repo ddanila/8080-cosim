@@ -68,6 +68,7 @@ def main() -> int:
     hdl = (ROOT / "hdl/juku_top.v").read_text()
     devices = (ROOT / "hdl/devices.v").read_text()
     reader = (ROOT / "tools/rt4_dumper/rt4_dumper.ino").read_text()
+    validator = (ROOT / "scripts/validate_rt4_dump.py").read_text()
     runtime_report = (ROOT / "docs/d6-runtime-path-diagnostic.md").read_text()
     model_checks = [
         ("Chip-removed ROM select is D6.12 to D8.15", {("D6", "12"), ("D8", "15")} <= rom_nodes),
@@ -85,6 +86,12 @@ def main() -> int:
          and "disabled_raw=" in reader
          and "released.raw != 0x0f" in reader
          and "Nano_D13:NC" in reader),
+        ("RT4 host validation guards revision-2 metadata and classifies the D6 re-read",
+         "--compare-raw" in validator
+         and "EXACT_MATCH" in validator
+         and "EXACT_D0_D3_COMPLEMENT" in validator
+         and "OTHER_DIFFERENCE" in validator
+         and "each revision-2 dump must report disabled_raw=F,stable=OK" in validator),
         ("Device commentary preserves measured mode pins and separate output conductors",
          "pin 2/A5 <- D3.6 <- /PC0" in devices
          and "pin 1/A6 <- D3.4 <- /PC1" in devices

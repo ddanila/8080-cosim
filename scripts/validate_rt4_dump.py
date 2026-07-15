@@ -11,6 +11,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROW = re.compile(r"^([0-9A-Fa-f]{2}),([0-9A-Fa-f]),([0-9A-Fa-f]),(OK|UNSTABLE)$")
+REVISION = re.compile(r"^# reader_revision=(\d+)$")
+DISABLED = re.compile(r"^# disabled_raw=([0-9A-Fa-f]),stable=(OK|UNSTABLE)$")
+REVISION_2_DATA_MAP = (
+    "# data_map=D0:D10,D1:D11,D2:D12,D3:A0; CE14:A1; Nano_D13:NC"
+)
 
 
 @dataclass(frozen=True)
@@ -47,7 +52,35 @@ def parse(path: Path) -> list[Capture]:
     rows: dict[int, tuple[int, int, str]] = {}
     section = 0
     active = False
-    for line_number, text in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+
+    headers = sum(line.strip() == "# KR556RT4 dump" for line in lines)
+    revisions = [
+        int(match.group(1))
+        for line in lines
+        if (match := REVISION.fullmatch(line.strip()))
+    ]
+    disabled = [
+        (int(match.group(1), 16), match.group(2))
+        for line in lines
+        if (match := DISABLED.fullmatch(line.strip()))
+    ]
+    metadata_present = bool(revisions or disabled or REVISION_2_DATA_MAP in lines)
+    if metadata_present:
+        if revisions != [2] * headers:
+            raise ValueError(
+                f"{path}: each dump must declare reader_revision=2; "
+                f"found {revisions!r} for {headers} dump(s)"
+            )
+        if lines.count(REVISION_2_DATA_MAP) != headers:
+            raise ValueError(f"{path}: revision-2 data_map missing or changed")
+        if disabled != [(0x0F, "OK")] * headers:
+            raise ValueError(
+                f"{path}: each revision-2 dump must report disabled_raw=F,stable=OK; "
+                f"found {disabled!r}"
+            )
+
+    for line_number, text in enumerate(lines, 1):
         line = text.strip()
         if line == "# KR556RT4 dump":
             if rows:
@@ -71,6 +104,36 @@ def parse(path: Path) -> list[Capture]:
     if not captures:
         raise ValueError(f"{path}: no RT4 CSV rows found")
     return captures
+
+
+def classify_against(candidate: bytes, baseline: bytes) -> str:
+    if len(baseline) != 256:
+        raise ValueError(f"comparison raw image must be 256 bytes, got {len(baseline)}")
+    invalid = [index for index, value in enumerate(baseline) if value & 0xF0]
+    if invalid:
+        raise ValueError(
+            f"comparison raw image has high-nibble data at address {invalid[0]:02X}"
+        )
+    if candidate == baseline:
+        return "EXACT_MATCH"
+    if candidate == bytes(value ^ 0x09 for value in baseline):
+        return "EXACT_D0_D3_COMPLEMENT"
+
+    differences = [
+        index for index, (left, right) in enumerate(zip(baseline, candidate))
+        if left != right
+    ]
+    bit_flips = [
+        sum(bool((baseline[index] ^ candidate[index]) & (1 << bit)) for index in differences)
+        for bit in range(4)
+    ]
+    first = differences[0]
+    return (
+        f"OTHER_DIFFERENCE rows={len(differences)} first={first:02X}:"
+        f"{baseline[first]:X}->{candidate[first]:X} "
+        f"bit_flips=D0:{bit_flips[0]},D1:{bit_flips[1]},"
+        f"D2:{bit_flips[2]},D3:{bit_flips[3]}"
+    )
 
 
 def validate(paths: list[Path], allow_single: bool) -> list[Capture]:
@@ -98,6 +161,7 @@ def write_outputs(
     inputs: list[Path],
     independent_capture_count: int | None,
     alias_note: str | None,
+    comparison: dict[str, str] | None,
 ) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     raw = captures[0].raw
@@ -124,13 +188,26 @@ def write_outputs(
     }
     if alias_note:
         report["alias_note"] = alias_note
+    if comparison:
+        report["comparison"] = comparison
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {raw_path}, {asserted_path}, {hex_path}, {report_path}")
 
 
 def self_test() -> None:
-    def capture(mutate: tuple[int, int] | None = None, unstable: int | None = None) -> str:
-        lines = ["# KR556RT4 dump", "# addr,raw_pins,logical_active_low,stable"]
+    def capture(
+        mutate: tuple[int, int] | None = None,
+        unstable: int | None = None,
+        revision_2: bool = False,
+    ) -> str:
+        lines = []
+        if revision_2:
+            lines.extend([
+                "# reader_revision=2",
+                REVISION_2_DATA_MAP,
+                "# disabled_raw=F,stable=OK",
+            ])
+        lines.extend(["# KR556RT4 dump", "# addr,raw_pins,logical_active_low,stable"])
         for address in range(256):
             raw = ((address >> 4) ^ address) & 0x0F
             if mutate and address == mutate[0]:
@@ -146,6 +223,10 @@ def self_test() -> None:
         first.write_text(capture()); second.write_text(capture())
         captures = validate([first, second], False)
         assert len(captures) == 2 and len(captures[0].raw) == 256
+        first.write_text(capture(revision_2=True))
+        second.write_text(capture(revision_2=True))
+        captures = validate([first, second], False)
+        assert len(captures) == 2
 
         def expect_error(needle: str) -> None:
             try:
@@ -178,6 +259,28 @@ def self_test() -> None:
             raise AssertionError("single capture was accepted without --allow-single")
         except ValueError as error:
             assert "at least two complete captures" in str(error)
+
+        revision_lines = capture(revision_2=True).replace(
+            "# disabled_raw=F,stable=OK", "# disabled_raw=E,stable=OK"
+        )
+        first.write_text(revision_lines)
+        try:
+            parse(first)
+            raise AssertionError("bad revision-2 disabled state was accepted")
+        except ValueError as error:
+            assert "disabled_raw=F" in str(error)
+
+        baseline = bytes(value & 0x0F for value in range(256))
+        assert classify_against(baseline, baseline) == "EXACT_MATCH"
+        assert (
+            classify_against(bytes(value ^ 0x09 for value in baseline), baseline)
+            == "EXACT_D0_D3_COMPLEMENT"
+        )
+        other = bytearray(baseline)
+        other[0x42] ^= 0x02
+        assert classify_against(bytes(other), baseline).startswith(
+            "OTHER_DIFFERENCE rows=1 first=42:2->0 bit_flips=D0:0,D1:1,D2:0,D3:0"
+        )
     print("RT4 dump validator self-test: PASS")
 
 
@@ -197,6 +300,11 @@ def main() -> int:
         help="human-readable explanation for alias inputs preserved in the manifest",
     )
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument(
+        "--compare-raw",
+        type=Path,
+        help="classify the validated capture against a 256-byte low-nibble raw image",
+    )
     args = parser.parse_args()
     if args.self_test:
         self_test()
@@ -217,6 +325,19 @@ def main() -> int:
         f"RT4 dump validation PASS: {len(captures)} manifest captures, "
         f"{independent_count} independent; raw SHA256 {sha256(raw)}"
     )
+    comparison = None
+    if args.compare_raw:
+        try:
+            comparison_raw = args.compare_raw.read_bytes()
+            classification = classify_against(raw, comparison_raw)
+        except (OSError, ValueError) as error:
+            raise SystemExit(f"RT4 dump comparison FAIL: {error}")
+        print(f"RT4 raw comparison: {classification}")
+        comparison = {
+            "path": str(args.compare_raw),
+            "sha256": sha256(comparison_raw),
+            "classification": classification,
+        }
     if args.out_dir:
         write_outputs(
             args.out_dir,
@@ -225,6 +346,7 @@ def main() -> int:
             args.captures,
             args.independent_capture_count,
             args.alias_note,
+            comparison,
         )
     return 0
 

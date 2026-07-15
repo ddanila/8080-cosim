@@ -41,6 +41,23 @@ byte-identical boot experiment and permits a provenance-reviewed replacement.
 Any other stable difference is a new capture/device-identity investigation,
 not permission to transform the table.
 
+The host validator performs this classification directly and also rejects
+revision-2 logs whose revision, pin map, or disabled-output self-test metadata
+is absent or changed:
+
+```sh
+python3 scripts/validate_rt4_dump.py d6-read-1.txt d6-read-2.txt d6-read-3.txt \
+  --compare-raw ref/physical-proms/validated/d6_038.raw.bin \
+  --out-dir dump-output --name d6_038_reread
+```
+
+The comparison result is exactly one of `EXACT_MATCH`,
+`EXACT_D0_D3_COMPLEMENT`, or `OTHER_DIFFERENCE` with changed-row, first-byte,
+and per-output flip counts. Only the second result matches the already guarded
+physical-table adoption experiment; the third always remains a hold.
+When `--out-dir` is used, the dump JSON preserves the comparison path, baseline
+SHA256, and classification alongside the capture hashes.
+
 ## Capture requirements
 
 1. Capture at least two complete 256-address reads. Three reads after separate
