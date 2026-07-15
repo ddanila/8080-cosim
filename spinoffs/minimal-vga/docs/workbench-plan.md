@@ -73,18 +73,15 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    spurious RAS transition that re-latched `dram_64kx1`'s row from the column.
    Fixed by driving RAS/CAS/WE explicitly per sequencer state (one clean edge
    each), mirroring the proven `hdl/sim/dram_unit_tb.v` drive ordering.
-2. **Fold in the real РЕ3 (D8) and РТ4 (D6) in the functional path (goal 3).**
-   Route VJUGA's ROM-select / memory-map decode through `re3_prom` (D8 `.039`)
-   and `decode_prom` (D6 `.038`) so booting exercises them.
-   - **Dependency:** the physical D6 `.038` table's *contents* are confirmed to
-     encode the correct map (it boots byte-identical in the main twin), but
-     adoption is blocked on the D6 output-polarity/`D13->D37->D58` chain — a
-     uniform complement does not work and the byte-correct per-output polarity
-     contradicts measured `D6.12->D8` continuity (root `PLAN.md` Actionable
-     item 1). VJUGA Phase 2 routes its decode through the same physical D6 РТ4,
-     so it rides on that same polarity resolution; D8 РЕ3 has no such blocker.
-   - D8 РЕ3 has no such dependency; it is already validated in the main boot and
-     can be reused immediately.
+2. **Fold in the real РЕ3 (D8) and РТ4 (D6) in the functional path (goal 3). DONE.**
+   `hdl/vjuga_juku_top.v` now routes the ROM/RAM decode through `decode_prom`
+   (D6 `.038`, provisional `~D0` correction) and `re3_prom` (D8 `.039`) — both
+   reused verbatim from `hdl/devices.v` — so booting self-tests them. Byte-identical
+   to the cosim oracle at 64 and 6000 video writes, with a decode-mismatch
+   assertion guarding D6's decision against the reference map.
+   - Rides on the main-twin's provisional D6 adoption (root `PLAN.md` item 1): if
+     the level probe changes the D6 polarity call, this `~D0` correction updates
+     with it. D8 РЕ3 had no blocker.
 3. **KiCad board half + LVS.** Extend the Rev-A physical model to socket the
    real РУ5 / РТ4 / РЕ3 (and the Z80), then bring up `sync/` LVS so the Verilog
    twin and the PCB agree — closing the digital-twin loop for the fixture.

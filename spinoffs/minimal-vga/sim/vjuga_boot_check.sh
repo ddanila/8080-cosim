@@ -2,10 +2,12 @@
 # VJUGA Verilog twin boot check (Phase 1).
 #
 # Boots the real Juku firmware on the VJUGA Verilog twin -- tv80 (Verilog Z80) +
-# the real К565РУ5 model (dram_64kx1) reused verbatim from hdl/devices.v -- and
-# confirms the framebuffer is byte-for-byte identical to the cosim oracle after N
-# video writes. This exercises the actual DRAM part model (goal 2) and boots the
-# real ROM on a real Z80 (goal 1). No FDC, no interrupts.
+# the real К565РУ5 (dram_64kx1) DRAM AND the real D6 К556РТ4 (decode_prom) /
+# D8 К155РЕ3 (re3_prom) decode PROMs, all reused verbatim from hdl/devices.v --
+# and confirms the framebuffer is byte-for-byte identical to the cosim oracle
+# after N video writes. This boots the real ROM on a real Z80 (goal 1) and
+# exercises the DRAM + both PROMs in the functional path (goals 2 and 3): a bad
+# socketed chip would diverge the boot. No FDC, no interrupts.
 #
 # The byte-identical banner also validates the RAM READ path: the BIOS RAM test
 # reads back what it writes, so a wrong read would diverge the boot and the

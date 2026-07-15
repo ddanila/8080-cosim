@@ -1,20 +1,22 @@
-// VJUGA Verilog twin (Phase 1): the real Juku ekta37 firmware on a Z80 (tv80),
-// with RAM served by the REAL К565РУ5 model (dram_64kx1) reused verbatim from
-// the recreation's hdl/devices.v. Boots roms/ekta37_z80.bin and dumps the
-// framebuffer so sim/boot_check-style comparison against the cosim oracle can
-// confirm it byte-for-byte.
+// VJUGA Verilog twin (Phases 1-2): the real Juku ekta37 firmware on a Z80 (tv80),
+// with RAM served by the REAL К565РУ5 model (dram_64kx1) and the ROM/RAM decode
+// routed through the REAL К556РТ4 (D6, decode_prom) and К155РЕ3 (D8, re3_prom)
+// PROMs -- all reused verbatim from the recreation's hdl/devices.v. Boots
+// roms/ekta37_z80.bin and dumps the framebuffer so sim/vjuga_boot_check.sh can
+// confirm it byte-for-byte against the cosim oracle.
 //
-// Reused from the 8080-cosim recreation:
-//   * dram_64kx1  -- the К565РУ5 bit-slice (this is the "test DRAM" goal)
+// Reused from the 8080-cosim recreation (this is the "test the scarce chips" goal):
+//   * dram_64kx1  -- the К565РУ5 DRAM bit-slice (workbench goal 2)
+//   * decode_prom -- the D6 К556РТ4 memory-map decode, .038 dump (goal 3)
+//   * re3_prom    -- the D8 К155РЕ3 ROM-select pager, .039 dump (goal 3)
 //   * roms/ekta37_z80.bin -- the Z80-patched Juku firmware
-//   * the Juku memory map (modes 0..3 via 8255 Port C), faithful to cosim
-//   * cosim as the reference oracle (comparison done in sim/vjuga_boot_check.sh)
+//   * cosim as the reference oracle
 //
-// Deliberately simple per the VJUGA charter: single memory-decode + a compact
-// RAS/CAS DRAM sequencer with CPU wait-states, no FDC, no interrupts (the ekta37
-// banner draws without them, exactly as cosim runs it). The D6 РТ4 decode PROM
-// is NOT yet in the path (that is Phase 2, blocked on the D6 polarity routing
-// question); Phase 1 uses the explicit mode map + the real РУ5 RAM.
+// Deliberately simple per the VJUGA charter: a compact RAS/CAS DRAM sequencer
+// with CPU wait-states, no FDC, no interrupts (the ekta37 banner draws without
+// them, exactly as cosim runs it). Booting exercises D6/D8/РУ5 in the functional
+// path, so a bad socketed chip on the bench diverges the boot from cosim.
+// The D6 ~D0 output correction is PROVISIONAL (see main-twin PLAN item 1).
 `default_nettype none
 module vjuga_juku_top #(
     parameter rom_file  = "ekta37_z80.hex",
@@ -63,6 +65,26 @@ module vjuga_juku_top #(
     endfunction
     wire is_cart = (mode == 2'b10) && (A >= 16'h4000 && A <= 16'hBFFF);
 
+    // ---- Phase 2: route the ROM/RAM decision through the real Juku PROMs so
+    // booting self-tests them. D6 (К556РТ4 decode_prom) decides ROM vs RAM;
+    // D8 (К155РЕ3 re3_prom) is the ROM-select pager. Both reused verbatim from
+    // hdl/devices.v with the validated .038/.039 dumps. D6 inputs mirror the Juku
+    // (A6=/PC1, A5=/PC0, A7=0); the ~D0 output correction matches the main twin's
+    // provisional adoption (PLAN item 1). If either chip misbehaves on the bench,
+    // the boot diverges from cosim -- that is the chip test.
+    wire d6_rom_n, d6_ram_n, d6_rev, d6_roe;
+    decode_prom U_D6 (.a({1'b0, ~portc[1], ~portc[0], A[11], A[12], A[13], A[14], A[15]}),
+                      .v_en_n(1'b0),
+                      .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
+    wire rom_sel_n = ~d6_rom_n;              // provisional D0 correction (see main-twin PLAN item 1)
+    wire is_rom    = (rom_sel_n == 1'b0);    // D6 РТ4 decides ROM vs RAM
+    wire [7:0] d8_d;
+    re3_prom U_D8 (.a(A[15:11]), .e_n(rom_sel_n), .d(d8_d));   // D8 РЕ3 ROM-select pager
+    // Cross-check: D6's decision must match the reference mode map (flags a bad chip loudly).
+    always @(posedge clk) if (reset_n && mreq_n == 1'b0 && (rd_n == 1'b0 || wr_n == 1'b0) && mode != 2'b10)
+        if (is_rom !== overlay(A))
+            $display("VJUGA-V: D6 decode MISMATCH @%04h mode=%0d D6=%b expected=%b", A, mode, is_rom, overlay(A));
+
     // ---- real К565РУ5 RAM bank (8 bit-slices), driven by a compact sequencer ----
     reg  [7:0] dram_ma;
     reg        dram_ras_n = 1'b1, dram_cas_n = 1'b1, dram_we_n = 1'b1;
@@ -93,7 +115,7 @@ module vjuga_juku_top #(
     reg        acc_write;
     reg [15:0] acc_addr;
 
-    wire ram_access = (mreq_n == 1'b0) && (rd_n == 1'b0 || wr_n == 1'b0) && !overlay(A);
+    wire ram_access = (mreq_n == 1'b0) && (rd_n == 1'b0 || wr_n == 1'b0) && !(is_rom || is_cart);
 
     always @(posedge clk) begin
         if (!reset_n) begin
@@ -153,7 +175,7 @@ module vjuga_juku_top #(
     // CPU read bus: ROM overlay / empty cart / sequenced RAM / IO latch.
     always @* begin
         if (mreq_n == 1'b0 && rd_n == 1'b0) begin
-            if (overlay(A)) cpu_di = is_cart ? 8'hFF : rom[rom_idx(A)];
+            if (is_rom || is_cart) cpu_di = is_cart ? 8'hFF : rom[rom_idx(A)];
             else            cpu_di = ram_rdata;
         end else if (iorq_n == 1'b0 && rd_n == 1'b0) begin
             cpu_di = out_last[A[7:0]];
