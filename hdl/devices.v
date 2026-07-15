@@ -495,7 +495,7 @@ module dram_64kx1 (input wire [7:0] ma,
                    output wire do_,
                    input wire [15:0] va, output wire vq);   // SIM-ONLY 2nd read port for video readout
     reg [7:0] row; reg mem [0:65535]; reg held; integer i;
-    initial begin held = 0; for (i = 0; i < 65536; i = i+1) mem[i] = 0; end
+    initial begin held = 0; row = 0; for (i = 0; i < 65536; i = i+1) mem[i] = 0; end
     // Video read port: the real РУ5 time-multiplexes ONE data pin between CPU and video (КП14
     // arbitration remains a physical boundary); in sim a read doesn't contend, so we expose the framebuffer
     // bit at `va` directly. `va`/`vq` are sim artifacts (not real pins) -> LVS allowlist drops them.
@@ -504,13 +504,29 @@ module dram_64kx1 (input wire [7:0] ma,
     // identical scramble on CPU + video pairs -> behaviorally neutral). Normalize here so mem[]
     // stays CPU-linear (tbs + the va video port index it directly): un-permute the raw row byte.
     wire [7:0] row_lin = {row[6], row[5], row[1], row[4], row[2], row[3], row[0], row[7]};
-    always @(negedge ras_n) row <= ma;                       // latch row (ma = scrambled hi byte during Φ1)
-    // The latter negative transition of CAS or WE is the physical DIN strobe. Watching both inputs
-    // handles early and delayed writes without a synthetic master-clock pin or same-timestep race.
-    // A CAS fall with WE high starts a read; a later WE fall converts it to read-modify-write.
-    always @(negedge cas_n or negedge we_n) begin
-        if (~ras_n && ~cas_n && ~we_n) mem[{row_lin, ma}] <= di;
-        else if (~ras_n && ~cas_n)     held <= mem[{row_lin, ma}];
+    // К565РУ5Г address/data setup (4164-class, "-20" = 200 ns tRAC; family AC spec vendored at
+    // ref/datasheets/mk4564-64kx1-dram.pdf). The device captures the ROW at RAS and the COLUMN at
+    // CAS, and each address must be SET UP and settled around its strobe (tASR/tRAH row, tASC/tCAH
+    // column), while write data must satisfy tDS before the DIN latch. The runnable board drives the
+    // shared MA lines from a zero-delay row/column mux (D48-D51, sel = phi1), so MA can switch in the
+    // SAME timestep that RAS/CAS assert. Sampling live MA at the raw strobe therefore captured a
+    // half-settled column whose value depended on Icarus event ordering -- the guard "passed on Linux,
+    // dropped BIOS RAM-test writes on Mac". Modeling the datasheet setup interval (capture the address
+    // AFTER it settles) makes the latched row/column and the DIN strobe simulator-independent. TSU is a
+    // sub-ns sim delta, not the real 200 ns access: it only has to outlast the zero-delay settling and
+    // stay far inside the compressed phase, which cannot carry full device timing anyway.
+    localparam real TSU = 0.2;
+    always @(negedge ras_n) begin #TSU; row = ma; end        // ROW latched once the mux has settled (tASR/tRAH)
+    always @(negedge cas_n) begin
+        #TSU;                                                // COLUMN + controls settled on MA (tASC/tCAH)
+        if (~ras_n && ~cas_n) begin
+            if (~we_n) mem[{row_lin, ma}] <= di;             // early write (WE already low): strobe DIN now
+            else       held <= mem[{row_lin, ma}];           // read, or capture the cell before a read-modify write
+        end
+    end
+    always @(negedge we_n) begin
+        #TSU;                                                // data + column settled (tDS): later-of-CAS/WE DIN strobe
+        if (~ras_n && ~cas_n) mem[{row_lin, ma}] <= di;      // delayed / read-modify write into the settled column
     end
     // Keep the sampled value available through the functional access window. Exact DOUT turn-off
     // awaits the still-untraced D36/R57 delays; the CPU must not see a scheduling-dependent Z when

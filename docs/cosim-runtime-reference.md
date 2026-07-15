@@ -57,8 +57,24 @@ non-aliasing addresses; `sync/boot_check.sh` runs it in CI.
 
 The write-strobe rule comes from the contemporary Mostek MK4564 64K×1 DRAM data sheet,
 “Data Input/Output”: the later negative transition of WRITE or CAS strobes the DIN register;
-early-write timing references CAS, while delayed-write timing references WRITE
+early-write timing references CAS, while delayed-write timing references WRITE. That data sheet is
+now vendored locally as the 4164-class AC-timing reference for the К565РУ5Г bank
+(`ref/datasheets/mk4564-64kx1-dram.pdf`, interpretation in `ref/datasheets/k565ru5-pinout.txt`)
 ([manufacturer data sheet scan](https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf)).
+
+One further zero-delay hazard survived until it was traced with Icarus 13.0 (the newer local
+toolchain; CI’s older Icarus scheduled around it, so the guard passed on Linux while dropping BIOS
+RAM-test writes on this host). The row/column address is multiplexed onto the shared MA lines by a
+zero-delay mux (D48–D51, `sel = phi1`), so MA can switch in the same timestep that RAS/CAS assert.
+Sampling *live* MA at the raw strobe therefore captured a half-settled column whose value depended
+on event ordering — writes and reads of the same cell used inconsistent columns, so the `AA` half of
+the `0xD300` checkerboard read back the stale `55`. The РУ5 model now honours the data sheet’s
+address/data set-up contract (tASR/tASC = 0, hold > 0: the address is valid *at* its strobe): it
+latches the row at RAS and the column at CAS, and strobes DIN on the later of CAS/WE, capturing the
+**settled** address/data a sub-nanosecond delta after each strobe. That delta only outlasts the
+zero-delay settling and stays far inside the compressed phase; it is not the real 120–200 ns access.
+The result is simulator-independent — the 130,000-read guard now reaches `CTRACE-END` on both Icarus
+generations. See `hdl/devices.v` `dram_64kx1`.
 
 This closes the runnable CPU-memory timing defect, not the complete historical video-slot timing.
 The exact D36.12/.13 source, D36/R57 propagation delay, CPU/video arbitration schedule, and precise
