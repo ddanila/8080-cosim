@@ -71,14 +71,19 @@ These are ordered; each is completable with material already in the repo.
    `B37A` RAM read and `D6.12`=0 to select ROM — but the raw `.038` dump has both
    high in those regions, while `D6.10`->D9 (`rev`)=0 works direct. The mismatch
    is localized to the D6 pin-9 and pin-12 output paths only.
+   D13 = К555ТЛ2 (inverter) is owner-confirmed (2026-07-15), so that hypothesis
+   is closed and the model is right there; the conflict therefore points to a
+   missing inverting stage on the two specific output conductors (the prototype
+   PDF shows them direct; a 95% manual continuity can miss a series gate; a uniform
+   dump inversion is excluded because it would flip `rev` and kill D9/IO).
    **Owner re-verification asks (produced-board photos = truth; the schematic
    PDF is the prototype and may differ):**
    (a) decisive single test — at the reset fetch (address `0000`, mode 0, which
    must read ROM) is `D6.12` physically **low** (ROM enabled)? The dump implies
-   high; if it measures low, the reader sense/an inverter is confirmed;
-   (b) on the produced board, does `D6.12->D8.15` or `D6.9->D13` pass through an
-   inverting gate rather than the modeled direct trace?
-   (c) confirm D13 is a К555ТЛ2 (inverter), not a non-inverting variant.
+   high; if it measures low, an inverter/reader-sense is confirmed on that path;
+   (b) on the produced board, does `D6.12->D8.15` and/or `D6.9->D13` pass through
+   an inverting gate rather than the modeled direct trace? (D6.10->D9 stays
+   direct — `rev` is already correct.)
    Once resolved, adopt the physical table under the justified transform, rerun
    the full guard suite byte-identically, then retire `decode_prom_functional`.
    Keep the oracle until then. None of this changes
