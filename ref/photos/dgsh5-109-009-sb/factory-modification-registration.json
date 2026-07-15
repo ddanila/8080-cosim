@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D56 position-150 cut, D15 cut pair, and D14 position-159 ground link photo-closed; D56 position-159, D11 endpoints, and the remaining D14 paths remain pending",
+  "status": "D56 package and three-callout field registered but electrically held; D15 cut pair and the D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
   "d56": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114638730.MP.jpg",
-      "observation": "The position-150 leader terminates at the short removed segment immediately beside the D56 pin field. Three position-159 leaders reach separate upper landings; their replacement topology is not promoted by the drawing alone."
+      "observation": "The position-150 leader marks the sleeved upper conductor, while three position-159 leaders reach solder locations on one row beside D56. Assembly note 11 explicitly identifies position 150 as tubing fitted at solder locations, so neither number is interpreted as a cut instruction or a net change."
     },
     "package_identity": {
       "ref": "D56",
@@ -26,26 +26,29 @@
         }
       ]
     },
-    "position150_cut": {
-      "d56_pin": "12",
-      "source_net": "D56_Q2N_TAG16",
+    "callout_field": {
+      "registered_level": "D56.12/D56.5 row",
       "solder_observations": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
-          "pin_px": [772.077, 447.902],
-          "rail_cut_endpoint_px": [745.0, 429.0],
-          "observation": "D56.12 is the fourth joint down the reflected left package row; a visible gap separates it from the terminated wide-rail stub"
+          "d56_12_px": [772.077, 447.902],
+          "d56_5_px": [946.897, 448.411],
+          "observation": "the reflected package field fixes the two package joints at the three-leader drawing level; the separate left landing and nearby rail stub are visible but not electrically assigned"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
-          "pin_px": [846.0, 2758.0],
-          "rail_cut_endpoint_px": [820.345, 2742.558],
-          "observation": "overlap view independently shows the same pin-side joint and terminated wide-rail stub with no intervening copper"
+          "d56_12_px": [845.193, 2760.387],
+          "d56_5_px": [1006.132, 2762.066],
+          "observation": "overlap view independently repeats both package joints and the same three-location row"
         }
       ],
-      "result": "Position 150 removes the original D56.12-side connection to the adjacent wide rail. The clean source PCB keeps D56.12 on the separate D56_Q2N_TAG16 boundary and does not merge it with that rail."
+      "result": "The factory detail is registered to the D56.12/D56.5 physical level, but the position-150 tubing and position-159 solder callouts do not by themselves prove a connection between those pins, the separate left landing, or the adjacent rail."
     },
-    "remaining_boundary": "The three position-159 landing leaders and their remote replacement connections remain electrically unassigned. The package/pin registration and position-150 net partition are topology evidence, not fabrication-grade auxiliary geometry."
+    "callout_identity_evidence": {
+      "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114649169.jpg",
+      "observation": "Assembly note 11 says to fit tubing positions 157 and 150 at solder locations; this disproves the former position-150-equals-cut interpretation. The specification identity of position 159 was not photographed, so it remains a guarded solder-location callout rather than an inferred material or conductor."
+    },
+    "remaining_boundary": "Map the separate left landing and all conductors at the registered D56.12/D56.5 level with direct continuity or a complete item-159 specification. The visible nearby wide-rail gap is not promoted as the position-150 operation or as proof of the D56.12 net partition."
   },
   "d15": {
     "drawing": {

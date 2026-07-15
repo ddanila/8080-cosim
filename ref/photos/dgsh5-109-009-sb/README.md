@@ -20,14 +20,17 @@ What the drawing is authoritative for:
 - Edge-connector and cable positions `X1`–`X9`, `S1`, and the off-board cable
   assemblies (X8 lead 300 mm, X9 ribbon 400 mm, poz. 151 shielded cable).
 - Per-component mounting details («Установка VT1/VT2/Z1/C73/C98,C100»).
-- Factory solder-side trace cuts («Разрезать», «Вид В», «сторона монтажа»)
-  around D56, D15, D14, and D11 — i.e. the cuts are on the drawing, not
-  board-specific bodges. The D15, D14, and D11 patch labels were verified
+- Factory local solder/copper details («Разрезать», «Вид В», «сторона монтажа»)
+  around D56, D15, D14, and D11. Only D15 explicitly says «Разрезать»; note 11
+  identifies position 150 as tubing fitted at solder locations, not a cut.
+  The D15, D14, and D11 labels were verified
   against same-hand glyph references (Д15/Д16 socket labels, callouts
   150/159, Д56) at full photo resolution.
-  Owner-board registration now closes D15's A2/A1 cut and D14's position-159
+  Owner-board registration now closes D15's A2/A1 cut and D14's local
   D32.4/GND-to-D14.1 link; the other D14 traces and the D56/D11 details remain
-  measurement-held. At D11, the unique L trace and four position-159 landings
+  measurement-held. At D56 the three-leader level registers to D56.12/D56.5,
+  but no net change is inferred. At D11, the unique L trace and four
+  position-159 solder locations
   are registered in two component views; the earlier pins-4–6 solder scar is a
   different feature, so a local solder through-hole fit or continuity is still
   required.

@@ -6,7 +6,7 @@ Status: **SHEETS 1-6 AND WIRE-TABLE PIN MAPPING ADOPTED**
 
 This generated audit turns the photographed factory assembly drawing into
 guarded project evidence. Sheet 1 proves component posture, mounting/cable
-details, and factory cut/patch operations; sheets 2-6 (ДУБЛИКАТ scan)
+details, and local solder/copper operations; sheets 2-6 (ДУБЛИКАТ scan)
 document the wire/cable connection table and change registration. Neither
 is promoted as a copper netlist.
 
@@ -15,7 +15,7 @@ is promoted as a copper netlist.
 | Check | Result | Evidence |
 | --- | --- | --- |
 | All 26 photographed sheet-1 views are local, real JPEGs, and indexed | PASS | `ref/photos/dgsh5-109-009-sb/` |
-| Factory solder-side cuts/patches are protected as designed operations | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
+| Factory local solder/copper details are guarded without treating position 150 as a cut | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | D106/D28/D96 row follows registered owner-photo spacing | PASS | two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py` |
 | D101 follows its registered package-centre offset from D95 | PASS | shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py` |
@@ -77,7 +77,7 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 
 ## Release interpretation
 
-- Preserve the electrical result of the factory D56/D15/D14/D11 modifications.
+- Preserve the proved D15 cut and D14 local link; hold the registered D56/D11 callout fields until continuity closes them.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
 - Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.
 - S1 remains an off-board bracket component and is excluded from generated PCB footprints.

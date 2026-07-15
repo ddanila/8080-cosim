@@ -177,13 +177,15 @@ a revision boundary rather than overwriting the current D93 interrupt nets.
 
 The new `ДГШ5.109.009 СБ` photographs settle another class of apparent
 “bodge.” Its factory `Вид В` detail explicitly calls out positions 150 and 159
-on the mounting side and draws the cut/patch areas at D56, D15, D14, and D11.
+on the mounting side and draws local assembly areas at D56, D15, D14, and D11.
 Close-ups `PXL_20260711_114626340.jpg`, `114633498.jpg`, and
 `114638730.MP.jpg` preserve those instructions. These features are therefore
 revision-controlled assembly operations, not owner-board damage or optional
 cleanup candidates.
 
-The detail is authoritative for the existence and locality of each operation,
+Only D15 explicitly says `Разрезать`. Assembly note 11 identifies position 150
+as tubing fitted at solder locations, not a cut instruction. The detail is
+authoritative for the existence and locality of each operation,
 but it is not a copper schematic and does not by itself prove every endpoint.
 The replica must preserve the resulting electrical topology; any future
 artwork reconstruction must reconcile the unmodified copper with the factory
@@ -205,17 +207,17 @@ coordinates (`factory-modification-registration.json`).
 
 Three overlapping component photographs identify the actual D56 as the
 notch-down `К155АГ3 8901` package at the right board edge. Two overlapping
-solder photographs resolve its complete reflected 2x8 pin field. The
-position-150 mark is the visible cut immediately beside D56.12: a terminated
-wide-rail stub stops short of the pin joint in both views. This preserves
-D56.12 on the separate `D56_Q2N_TAG16` boundary already present in the clean
-source. The three position-159 leaders and their remote replacement
-connections remain held.
+solder photographs resolve its complete reflected 2x8 pin field and fix the
+drawing's three-leader level at the D56.12/D56.5 row. Assembly note 11 says to
+fit tubing positions 157 and 150 at solder locations, disproving the former
+position-150-equals-cut reading. The separate left landing, nearby wide-rail
+stub/gap, and callout conductors remain electrically held; no D56 net partition
+is promoted without continuity or the missing position-159 specification row.
 
 For D14, notch-oriented component registration maps the first four holes in
 the five-hole left field to D14.1-.4 and the four-hole right row to D14.8-.5.
 Two views show uninterrupted copper from D32.4/GND to D14.1 at the
-position-159 leader, closing that link. The fifth auxiliary landing, three
+callout leader, closing that local link. The fifth auxiliary landing, three
 long replacement traces, right-row dogleg, and their remote endpoints remain
 held.
 

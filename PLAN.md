@@ -241,8 +241,10 @@ Every ask below is queued with exact deliverables in
    alternative in highest-priority item 1. The five live RAM-read levels named
    by `docs/d6-runtime-path-diagnostic.md` become Tier-3 confirmation asks once
    that gate closes and the guarded adoption run is green.
-5. **Map the factory Вид В modifications.** The solder-side trace cuts
-   (poz. 150/159) at D56, D15, D14, and D11 are drawn design changes. D15 is
+5. **Map the factory Вид В modifications.** The local Вид В details at D56,
+   D15, D14, and D11 mix solder/copper context with assembly callouts. Note 11
+   proves position 150 is tubing fitted at solder locations, not a cut; only
+   the D15 detail explicitly says `Разрезать`. D15 is
    now photo-closed: two independent component views register the executed cut
    between the auxiliary D15.8/A2 and D15.9/A1 landings, and reflected solder
    copper confirms both pin destinations. The clean source already preserves
@@ -250,13 +252,13 @@ Every ask below is queued with exact deliverables in
    not invented. D14 is now partially photo-closed: notch-oriented registration
    maps both package rows, and two component views prove the position-159
    D32.4/GND-to-D14.1 copper link now preserved by the source model. Exact
-   D56 is now partially photo-closed: three component views identify the actual
+   D56 geometry is now registered: three component views identify the actual
    notch-down К155АГ3 package, two solder views register its reflected pin
-   field, and the position-150 cut is the visible gap that isolates D56.12 /
-   `D56_Q2N_TAG16` from the adjacent wide rail, matching the clean source net
-   partition. D56's three position-159 replacement landings, plus D14's fifth
-   landing, three long traces, and right-row dogleg, remain held. At D11,
-   two component views now register the L trace and four position-159 landings
+   field, and the three-leader drawing level maps to the D56.12/D56.5 row.
+   The separate left landing, nearby rail gap, and callout conductors are not
+   electrically assigned; no D56 net change is inferred. D14's fifth landing,
+   three long traces, and right-row dogleg remain held. At D11,
+   two component views now register the L trace and four position-159 solder locations
    and exclude the previously cited pins-4–6 solder scar as a different feature;
    the solder-side through-hole fit and electrical endpoints remain the P0 hold
    (`docs/factory-modification-disposition.md`).
