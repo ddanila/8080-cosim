@@ -111,7 +111,9 @@ Every ask below is queued with exact deliverables in
    continuity proves D94.15->D93.3, D94.2->D99.8/GND, D94.3->D93.4,
    D94.4->D93.2, and D94.13->D104.7 plus a +5 V pull-up. An exposed-socket
    component view now closes D94 D4/pin5 to the internally NC/back-bias D93.1
-   socket contact. Resolve the D5-D7 destinations, D104.10, both pull-up resistor references (D94.13 and
+   socket contact. D5/pin6 is photo-bounded to a plated layer handoff, but the
+   available cross-side fits do not uniquely identify its continuation. Resolve
+   the D5-D7 destinations, D104.10, both pull-up resistor references (D94.13 and
    the apparently pull-up-only D94.1),
    and later recheck the D29.4/IORD conflict noted in the source model. The
    former BA11..BA15 assignment was an unproved scaffold analogy and is retired;

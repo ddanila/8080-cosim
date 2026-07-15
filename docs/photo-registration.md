@@ -89,6 +89,7 @@ python3 scripts/photo_registration.py rectify
 /usr/bin/python3 kicad/render_endpoint_crop_atlas.py
 /usr/bin/python3 kicad/render_d96_d99_cross_registration.py
 /usr/bin/python3 kicad/render_d93_clock_isolation.py
+/usr/bin/python3 kicad/render_d94_d5_layer_handoff.py
 /usr/bin/python3 kicad/check_serial_photo_placement.py
 ```
 
@@ -333,6 +334,15 @@ D93.1 at `(2215,1810)` px. The front-copper line is uninterrupted through the
 repaired socket entry, closing `D94_D4` onto D93.1. The controller datasheet
 still classifies pin 1 as internally NC/back-bias; the new evidence corrects
 the PCB claim only—its socket pad is wired, not a board no-connect.
+
+D94.6/D5 is now bounded one step further without assigning a destination. In
+the same exposed-socket frame, uninterrupted front copper reaches the plated
+handoff at `(2266,1828)` px. Composing that point through the D93-local and
+D94-local cross-side fits gives solder-image candidates near
+`(1829.9,1447.5)` and `(1797.7,1491.1)` px, a `54.2` px disagreement. The
+annotated `d94-d5-layer-handoff.jpg` therefore records the proved handoff and
+explicitly rejects a unique solder continuation until continuity or a stronger
+cross-side registration is available.
 
 D93.19 `MR_N` remains unresolved, but its boundary is narrower. The corrected
 solder joint reaches a through-hole near `(1743,2320)` pixels. Composing the
