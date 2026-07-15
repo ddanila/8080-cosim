@@ -11,7 +11,13 @@ product.
 
 ## What works
 
-- The pinned T80 core executes a built-in synthetic ROM.
+- **The VJUGA top boots the real Juku `ekta37` ROM.** `sim/boot_check.sh` runs
+  the T80 core (in 8080 mode) against the real ROM with the Juku memory map and
+  draws a framebuffer that is byte-for-byte identical to the recreation's
+  `cosim` oracle after 6000 video writes (the same ROM, map, and oracle the
+  main `sync/boot_check.sh` uses). No FDC and no interrupts are needed — the
+  banner draws exactly as cosim runs it. See `hdl/juku_boot_top.vhd`.
+- The pinned T80 core also executes a built-in synthetic ROM (smoke test).
 - The synthetic test exercises CPU ROM/RAM/I/O cycles, a bit-sliced DRAM
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
@@ -22,12 +28,22 @@ product.
 - The ignored `fab/minimal-vga/` package can be regenerated and its current
   Gerber/drill ZIP is internally checksummed.
 
+### CPU choice: 8080 mode is required
+
+The Juku firmware is 8080 code for the КР580ВМ80 and relies on 8080 semantics.
+Opcodes `0x08/0x10/0x20/0x28/0x38` are NOPs on the 8080 but real instructions
+(`EX AF,AF'`/`DJNZ`/`JR`) on a Z80, and the ROM hits `0x10` at address `0x0024`
+within the first 40 fetches. A stock Z80 therefore diverges immediately. VJUGA
+runs the T80 core in **8080 mode** (`Mode => 2`) so it executes the ROM
+faithfully; the "Z80" board is really a T80 configured as the 8080 the Juku
+firmware expects.
+
 ## What does not work yet
 
-- The VJUGA top has not booted a real Juku ROM. The main project's boot check
-  runs as a regression, but it executes the main 8080 design, not this board.
-- The Rev A ROM map is a coarse synthetic lower-ROM/upper-RAM map, not the
-  verified Juku overlay behavior.
+- The Rev A *physical* ROM map (in `z80_minimal_top.vhd` / the KiCad model) is
+  still a coarse synthetic lower-ROM/upper-RAM map. The verified Juku overlay
+  behavior currently lives in the functional `juku_boot_top.vhd` boot model;
+  folding it into the Rev A physical top + GAL decode is the next step.
 - The GAL equations are draft bring-up logic; DRAM timing and wait-state
   behavior have not been validated against selected parts or hardware.
 - The VGA test proves timing activity, not a Juku banner or prompt sourced from
@@ -93,8 +109,11 @@ spinoffs/minimal-vga/kicad/export_fab.sh
 
 Before this experiment can become an order candidate it must, at minimum:
 
-1. boot the intended real Juku ROM on the VJUGA T80 top;
-2. match the intended memory and I/O behavior with an explicit oracle;
+1. ~~boot the intended real Juku ROM on the VJUGA T80 top~~ **done**
+   (`sim/boot_check.sh`, framebuffer-identical to cosim at 6000 video writes);
+2. ~~match the intended memory and I/O behavior with an explicit oracle~~
+   **done for the functional boot model** (cosim is the oracle); still to fold
+   into the Rev A *physical* top + GAL decode;
 3. render a deterministic real-ROM display result through the VGA path;
 4. replace draft GAL timing with simulated, programmed, reviewed equations;
 5. validate DRAM, reset, clock, power, connector, and socket pinouts against
