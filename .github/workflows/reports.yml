@@ -241,6 +241,13 @@ jobs:
           python3 scripts/report_cartridge_basic_firmware_lineage.py
           git diff --exit-code -- docs/cartridge-basic-firmware-lineage.md
 
+      - name: Check Monitor 2.2 reconstruction freshness
+        run: |
+          python3 scripts/report_jmon22_reconstruction.py
+          git diff --exit-code -- \
+            docs/jmon22-reconstruction.md \
+            ref/reconstructed-firmware/jmon22-consensus-patch.json
+
       - name: Check source coverage audit freshness
         run: |
           python3 scripts/report_source_coverage_audit.py

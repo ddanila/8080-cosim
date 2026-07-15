@@ -19,8 +19,13 @@ not historical completeness or redistribution rights.
 | `ekta35.bin`  | 16K | `7aa03497d88cfab9315aa3987765bc06ecb70013` | EktaSoft BIOS |
 | `ekta37.bin`  | 16K | `29366d74c0e27129f2484a973f7a6de659b90cf4` | EktaSoft BIOS '88 (the **boot we validate** — polled, draws a banner) |
 | `ekta43.bin`  | 16K | `a7419bfd8249871cc7dbf5c6ea85022d6963fc9a` | EktaSoft 2.43m #0043, tape/disk variant modified for an AT keyboard |
-| `jmon22.bin`  | 16K | `dee46441f6beeece3e2dfe897c8b1547939c7b1f` | Juku Monitor v2.2 from the public museum ROM bundle |
+| `jmon22.bin`  | 16K | `dee46441f6beeece3e2dfe897c8b1547939c7b1f` | Juku Monitor v2.2 from the public museum ROM bundle; blocks 3, 6, and 7 fail internal checksums |
 | `jbasic11.bin`| 8K  | `27e40395e8b49e2f9febf2b23773fbfe251befcf` | Juku BASIC 1.1 |
+
+The generated `docs/jmon22-reconstruction.md` audit proves one correction in
+block 3 from two matching firmware artifacts plus the stored checksum. Blocks
+6 and 7 remain unresolved, so the original image is retained unchanged and no
+partially repaired binary is distributed.
 
 ## Rights status
 

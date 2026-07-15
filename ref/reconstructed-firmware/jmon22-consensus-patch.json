@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "partial-consensus-repair; no binary exported",
+  "source": {
+    "path": "roms/jmon22.bin",
+    "sha256": "1b68f89ae4355391f434b3fae34e95cb4b150bf4bbcb967b5b177d48cd390589",
+    "size": 16384
+  },
+  "patches": [
+    {
+      "offset": "0x1EFC",
+      "from": "0x9A",
+      "to": "0xDA",
+      "evidence": [
+        {
+          "artifact": "roms/jmon33.bin",
+          "sha256": "ce9e9c63abbb1780566423a871081bd0bf048a2f3c79e370b465ea9869ff51b8",
+          "offset": "0x1EFC",
+          "value": "0xDA"
+        },
+        {
+          "artifact": "roms/jbasic11.bin",
+          "sha256": "ff86e17c7ce6de177e18bc0468d23cee7ed2ecd6e8adc56950138cdf6ee5ba60",
+          "offset": "0x1C34",
+          "value": "0xDA"
+        },
+        {
+          "constraint": "Monitor 2.2 block 3 additive checksum",
+          "stored": "0x33",
+          "computed_before": "0xF3",
+          "computed_after": "0x33"
+        }
+      ]
+    }
+  ],
+  "candidate_sha256_if_applied": "37c3d2db23dbccb8b7a81a2510f320d50e30f04a260fa6c8efd132241a4675a5",
+  "unresolved_zero_based_blocks": [
+    6,
+    7
+  ],
+  "provenance_note": {
+    "url": "https://j3k.infoaed.ee/tarkvara-kataloog/",
+    "retrieved": "2026-07-15",
+    "summary": "The JUKUROMS catalog says chip 7 was read with a couple of errors and chip 8 had 50 divergences across seven reads."
+  }
+}

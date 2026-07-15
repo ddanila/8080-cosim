@@ -61,8 +61,8 @@ findings. Every status applies only to the boundary named by the report.
   `beeper-readiness.md`.
 - Media/software: `vendored-disk-catalog.md`, `basic-disk-extraction.md`, and
   `cartridge-basic-boundary.md` and the generated
-  `cartridge-basic-firmware-lineage.md`, plus the current disk-BASIC/Monitor
-  guards.
+  `cartridge-basic-firmware-lineage.md` and `jmon22-reconstruction.md`, plus
+  the current disk-BASIC/Monitor guards.
 
 The producing scripts live under `scripts/`, `kicad/`, or `sync/`. CI reruns
 the reports that guard active boundaries and fails if their committed output

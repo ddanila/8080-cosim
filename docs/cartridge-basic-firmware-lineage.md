@@ -64,6 +64,12 @@ blocks before it can exercise an early-firmware BASIC path: blocks 3, 6, and 7.
 | `6` | `0x3000..0x37FF` | `0x91` | `0x51` | FAIL |
 | `7` | `0x3800..0x3FFF` | `0x58` | `0xB5` | FAIL |
 
+The dedicated `docs/jmon22-reconstruction.md` audit proves that the
+block-3 failure is the sole BASIC-body mismatch: replacing `0x9A` at
+`0x1EFC` with the `0xDA` found in both Monitor 3.3 and this cartridge
+exactly closes the stored checksum. It leaves the original dump unchanged
+because blocks 6 and 7 remain unresolved.
+
 A bounded diagnostic with checksum bytes repaired in temporary memory
 passed the self-test, but then executed at `0xC482`, outside the validated
 E5104 upper-ROM window (`0xD800..0xFFFF`). Widening that temporary window

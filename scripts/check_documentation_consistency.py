@@ -443,6 +443,7 @@ def main() -> int:
 
     cartridge = read("docs/cartridge-basic-boundary.md")
     cartridge_lineage = read("docs/cartridge-basic-firmware-lineage.md")
+    jmon22_reconstruction = read("docs/jmon22-reconstruction.md")
     cartridge_image = ROOT / "roms" / "jbasic11.bin"
     if "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**" not in cartridge:
         failures.append("consolidated cartridge BASIC boundary is missing or stale")
@@ -486,6 +487,15 @@ def main() -> int:
                     failures.append(
                         f"cartridge BASIC firmware-lineage report is stale; missing {marker!r}"
                     )
+    for marker in (
+        "Status: **ONE BYTE PROVEN / ROM BLOCKS 6-7 UNRESOLVED**",
+        "block 3 `0xF3` -> stored `0x33`",
+        "UNRESOLVED (checksum delta `+0x40`)",
+        "UNRESOLVED (checksum delta `+0xA3`)",
+        "jmon22-consensus-patch.json",
+    ):
+        if marker not in jmon22_reconstruction:
+            failures.append(f"Monitor 2.2 reconstruction audit is stale; missing {marker!r}")
 
     if failures:
         print("Documentation consistency check failed:")

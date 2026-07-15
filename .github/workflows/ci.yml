@@ -68,6 +68,7 @@ jobs:
             scripts/report_ekdos_source_inspection.py \
             scripts/report_vendored_disk_catalog.py \
             scripts/report_cartridge_basic_firmware_lineage.py \
+            scripts/report_jmon22_reconstruction.py \
             scripts/report_re3_firmware_inspection.py \
             scripts/report_video_slot_timing_audit.py \
             scripts/report_d2_reconstruction_constraints.py \

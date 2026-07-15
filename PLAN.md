@@ -415,8 +415,9 @@ serve physical bring-up or historical fidelity:
    firmware-lineage audit proves that 7,224 bytes of the cartridge body are
    byte-identical inside Monitor 3.3 (and differ once in Monitor 2.2), so the
    BASIC implementation itself is recovered; the exact correspondence ends
-   before the missing page, and the early Monitor 2.2 image also fails three
-   internal checksum blocks.
+   before the missing page. The Monitor 2.2 audit source-proves its sole BASIC
+   byte correction and closes block 3, but the preservation catalog confirms
+   unstable reads for the still-bad final two ROM blocks; they remain unpatched.
 4. Extend sound/serial behavior only to answer concrete bench questions.
 
 ## Physical bring-up sequence
