@@ -8,6 +8,7 @@ name: CI (reports — freshness + PROM/photo validation)
 # Needs Git LFS for the photo checks (ref/photos/**/*.jpg).
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'scripts/**'
