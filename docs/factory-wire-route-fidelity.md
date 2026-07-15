@@ -15,9 +15,9 @@ zero-open routing checkpoint.
 - Board-fit photo/copper evidence checks: `PASS (9/9)`
 - Drawing-image landing endpoints registered: `20/20`
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
-- Paired A-point landing terminals modeled: `10/20`
+- Paired A-point landing terminals modeled: `12/20`
 - Candidate/source pad identities equal: `FAIL`
-- Candidate/source pad-net mismatches: `46`
+- Candidate/source pad-net mismatches: `47`
 - Candidate/source moved pads (>50 nm): `138`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -34,7 +34,7 @@ be incorporated only after the landing islands and functional netlist freeze.
 
 | Conductor | Board point | Length cm | Logical net | Guarded logical endpoints | Image-registered endpoints | Modeled A-point terminals | Candidate copper items on net |
 | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: |
-| 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 2 | 0 | 241 |
+| 3 | А:7 | ~24 | `PHI1` | D1.22, D35.10 | 2 | 2 | 241 |
 | 4 | А:8 | ~19 | `STSTB` | D38.8, D5.1 | 2 | 2 | 317 |
 | 5 | А:9 | ~12 | `SYNC` | D1.19, D38.12 | 2 | 0 | 409 |
 | 6 | А:10 | 13.5 | `W10_QA_SEL` | D41.13, D50.1 | 2 | 2 | 272 |
@@ -51,7 +51,11 @@ Four PCB landing coordinates/island assignments remain evidence-gated:
 `A9A`, `A12A`, `A13A`, and `A13B`. Existing registered component and
 solder views occlude their joints; the visible approaches do not uniquely
 identify copper. No automatic geometric promotion remains defensible.
-A:8, A:10, A:11, A:19, and A:20 are already split into modeled landing pairs and
+A14B has a separate fabrication contradiction: its current D40-local projection
+is only 0.784 mm from independently placed D41.1, so a distinct landing would
+overlap the D41 power pad. A cross-registered local refit or direct dimensional
+measurement is required before W14 can be promoted.
+A:7, A:8, A:10, A:11, A:19, and A:20 are already split into modeled landing pairs and
 explicit assembly-wire components. After owner continuity or a newly exposing
 photograph closes the four hidden joints:
 

@@ -40,7 +40,7 @@ module juku_top (
     // READY section A is represented by D30 below; its off-sheet -SSTB source
     // remains a boundary, while section B is owner-closed through D13.4 and D29.7.
     // STSTB(8238) comes from D38.8 over factory wire 8.
-    wire        phi1, phi2, phi2ttl, ready, reset_sys, ststb_n;
+    wire        phi1, phi2, phi1_d35, phi2ttl, ready, reset_sys, ststb_n;
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
@@ -157,9 +157,10 @@ module juku_top (
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
     wire vert_rtr, frame_int;
-    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl),
+    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1_d35), .phi2(phi2), .phi2ttl(phi2ttl),
                      .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(), .i5(1'bz), .o6(),
                      .i9(vert_rtr), .o8(frame_int));
+    net_boundary U_W7  (.a(phi1_d35), .b(phi1));
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4, iorc_n;
     wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
     wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs

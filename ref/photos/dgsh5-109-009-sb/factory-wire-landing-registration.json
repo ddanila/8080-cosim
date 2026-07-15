@@ -299,7 +299,8 @@
     {
       "point": 14,
       "status": "board-fitted",
-      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; both printed backside 14 joints are fitted and their 236.690 mm chord exceeds the approximate 23 cm table entry, so endpoint geometry is adopted while fabrication cut length remains held for direct measurement",
+      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; both printed backside 14 joints are locally fitted and their 236.690 mm chord exceeds the approximate 23 cm table entry, so fabrication cut length remains held; the A14B projection is only 0.784 mm from independently placed D41.1 and cannot define a distinct fabrication landing until those local frames are cross-registered or directly measured",
+      "fabrication_hold": "A14B/D41.1 projected centre separation 0.784 mm; a distinct W14 pad would overlap D41.1 P5V copper and drill geometry",
       "endpoints": [
         {
           "terminal": "A14A",

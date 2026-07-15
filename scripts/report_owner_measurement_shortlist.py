@@ -233,6 +233,13 @@ def main() -> int:
         ),
         (
             "P0",
+            "A:14/D41 landing cross-registration",
+            "cross-register the printed A14B solder joint and D41.1 in one calibrated board frame, or directly measure both centre coordinates and the A14B pad/drill diameter; the current D40-local A14B projection is only 0.784 mm from independently placed D41.1 and cannot be fabricated as a distinct pad",
+            "`docs/factory-wire-route-fidelity.md`; `ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json`; solder image `PXL_20260710_200530933.MP.jpg`",
+            "resolves a hard copper/drill collision before W14 is promoted instead of hiding it with undersized or shifted geometry",
+        ),
+        (
+            "P0",
             "factory Вид В pad mapping",
             "for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 use the validated solder fit that localizes rework beside pins 4-6 to map the four-hole auxiliary field and obscured bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
             "`docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg`",

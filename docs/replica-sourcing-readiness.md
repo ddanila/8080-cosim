@@ -12,8 +12,8 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 92
-- Populate-now component positions: 277
+- BOM lines: 93
+- Populate-now component positions: 278
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
 - Mechanical/circuit-review lines: 19
@@ -27,7 +27,7 @@ review before being treated as build-ready.
 | leave-empty | 2 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 66 | 191 |
+| source-now | 67 | 192 |
 
 ## Buy Early / Acceptance-Test First
 

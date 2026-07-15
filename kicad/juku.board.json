@@ -5167,6 +5167,15 @@
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY output series resistor; assembly drawing beside D30", "pins": "D30.5 to D1.23 READY"}
   },
   {
+   "ref": "W7", "type": "WIRE_LINK", "pins": {"1": "A7A", "2": "A7B"},
+   "value": "~24 cm (held)",
+   "prov": {
+    "type": "factory wire table + registered owner backside photos",
+    "refdes": "ДГШ5.109.009 СБ conductor position 3 / board point А:7",
+    "pins": "registered plated through-joints beside the printed 7 marks at (1.697,179.350) and (245.083,133.927) mm; fitted insulated wire joins the D1.22-side PHI1 consumer island to the D35.10 clock-source island; 247.588 mm chord exceeds the approximate table length, so cut length remains held"
+   }
+  },
+  {
    "ref": "W8",
    "type": "WIRE_LINK",
    "pins": {
@@ -7560,12 +7569,8 @@
    ]
   },
   "PHI1": {
-   "src": "scan",
+   "src": "scan + factory wire А:7 registered through-joints",
    "nodes": [
-    [
-     "D35",
-     "10"
-    ],
     [
      "D1",
      "22"
@@ -7581,10 +7586,14 @@
     [
      "E2",
      "3"
+    ],
+    [
+     "W7",
+     "1"
     ]
    ],
-   "note": "WIRE 7 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch",
-   "wire_link": true
+   "note": "D1.22/D48.1/D49.1/E2.3 consumer island reaches the registered A7A through-joint; insulated assembly wire W7 continues to the D35.10 clock-source island",
+   "wire_link": {"ref": "W7", "other_net": "PHI1_D35"}
   },
   "PHI2": {
    "src": "scan",
@@ -7602,7 +7611,7 @@
      "3"
     ]
    ],
-   "note": "WIRE 14 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch",
+   "note": "WIRE 14 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch; explicit landing promotion is held because the current A14B local projection collides with independently placed D41.1",
    "wire_link": true
   },
   "PHI2TTL": {
@@ -15821,6 +15830,11 @@
    "src": "factory wire А:19 D7.2-side copper island",
    "nodes": [["D7", "2"], ["W19", "2"]],
    "note": "D7.2 reaches the registered A19B surface landing; insulated assembly wire W19 continues to the global MEMW/D5.26 island"
+  },
+  "PHI1_D35": {
+   "src": "factory wire А:7 D35 clock-source-side copper island",
+   "nodes": [["D35", "10"], ["W7", "2"]],
+   "note": "D35.10 reaches the registered A7B plated through-joint; insulated assembly wire W7 continues to the PHI1 consumer island"
   },
   "S_TTL_D3": {
    "src": "factory wire А:20 D3.10-side copper island",

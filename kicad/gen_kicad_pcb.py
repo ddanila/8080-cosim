@@ -72,6 +72,15 @@ PASSIVE_FP_REF = {
     'S4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),
 }
 FACTORY_WIRE_PLACE = {
+    'W7': {
+        'pads': {'1': (1.697, 179.350), '2': (245.083, 133.927)},
+        'value': 'A:7 ~24cm insulated wire (cut length held)',
+        # Both ends are photographed backside through-joints beside the
+        # printed 7 marks, so preserve drilled rather than surface landings.
+        'through_hole': True,
+        'pad_diameter': 2.0,
+        'drill_diameter': 1.0,
+    },
     # Board point A:8 / conductor position 4. Both ends are photographed
     # component-side surface joints, not drilled test points. The pad diameter
     # is conservative provisional fabrication geometry; coordinates and island
@@ -489,7 +498,7 @@ def main():
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
 
     def add_factory_wire(ref, specification):
-        """Add two top-side landing pads without an etched bridge."""
+        """Add two assembly-wire landing pads without an etched bridge."""
         nonlocal n_pads
         pads = specification['pads']
         x0, y0 = pads['1']
@@ -505,13 +514,21 @@ def main():
                 number, specification.get('pad_diameter', 2.0)
             )
             pad = pcbnew.PAD(fp)
-            pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
             pad.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
             pad.SetSize(pcbnew.VECTOR2I_MM(diameter, diameter))
-            layers = pcbnew.LSET()
-            layers.AddLayer(pcbnew.F_Cu)
-            layers.AddLayer(pcbnew.F_Mask)
-            pad.SetLayerSet(layers)
+            if specification.get('through_hole'):
+                pad.SetAttribute(pcbnew.PAD_ATTRIB_PTH)
+                pad.SetDrillSize(pcbnew.VECTOR2I_MM(
+                    specification.get('drill_diameter', 1.0),
+                    specification.get('drill_diameter', 1.0),
+                ))
+                pad.SetLayerSet(pcbnew.PAD.PTHMask())
+            else:
+                pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
+                layers = pcbnew.LSET()
+                layers.AddLayer(pcbnew.F_Cu)
+                layers.AddLayer(pcbnew.F_Mask)
+                pad.SetLayerSet(layers)
             pad.SetNumber(number)
             pad.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
             fp.Add(pad)

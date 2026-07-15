@@ -19,7 +19,9 @@ D1_IMAGE = "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg"
 EXPECTED = {
     7: {
         "net": "PHI1",
-        "owner_pins": (("D1", "22"), ("D35", "10")),
+        "remote_net": "PHI1_D35",
+        "wire": "W7",
+        "owner_pins": (("D1", "22", "PHI1"), ("D35", "10", "PHI1_D35")),
         "chord_range": (246.0, 249.0),
         "endpoints": {
             "A7A": {"joint": [3151, 2671], "fit": "D1/global", "uncertainty": (1.5, 2.2)},
@@ -28,7 +30,7 @@ EXPECTED = {
     },
     14: {
         "net": "PHI2",
-        "owner_pins": (("D1", "15"), ("D35", "12")),
+        "owner_pins": (("D1", "15", "PHI2"), ("D35", "12", "PHI2")),
         "chord_range": (235.0, 238.0),
         "endpoints": {
             "A14A": {"joint": [2961, 2672], "fit": "D1/global", "uncertainty": (1.5, 2.2)},
@@ -92,6 +94,8 @@ for number, expected in EXPECTED.items():
         errors.append(f"A{number} point is not fully board-fitted")
     if "cut length" not in point.get("observation", ""):
         errors.append(f"A{number} approximate-length disposition is absent")
+    if number == 14 and "D41.1" not in point.get("fabrication_hold", ""):
+        errors.append("A14 fabrication-conflict disposition is absent")
 
     for terminal, endpoint_expected in expected["endpoints"].items():
         endpoint = endpoints[terminal]
@@ -124,10 +128,42 @@ for number, expected in EXPECTED.items():
         if f"printed {number}" not in assignment or expected["net"] not in assignment:
             errors.append(f"{terminal} printed-point/net assignment is absent")
 
-    for refdes, pin in expected["owner_pins"]:
+    for refdes, pin, net_name in expected["owner_pins"]:
         owner = board.FindFootprintByReference(refdes).FindPadByNumber(pin)
-        if owner is None or owner.GetNetname() != expected["net"]:
-            errors.append(f"{refdes}.{pin} is not on {expected['net']}")
+        if owner is None or owner.GetNetname() != net_name:
+            errors.append(f"{refdes}.{pin} is not on {net_name}")
+
+    wire_ref = expected.get("wire")
+    wire = board.FindFootprintByReference(wire_ref) if wire_ref else None
+    if wire_ref and wire is None:
+        errors.append(f"A{number}: {wire_ref} assembly-wire footprint is missing")
+    elif wire is not None:
+        for pin, terminal, net_name in (
+            ("1", f"A{number}A", expected["net"]),
+            ("2", f"A{number}B", expected["remote_net"]),
+        ):
+            pad = wire.FindPadByNumber(pin)
+            if pad is None:
+                errors.append(f"A{number}: {wire_ref}.{pin} is missing")
+                continue
+            position = pad.GetPosition()
+            actual = np.array([pcbnew.ToMM(position.x), pcbnew.ToMM(position.y)])
+            if float(np.linalg.norm(actual - projected[terminal])) > 0.002:
+                errors.append(f"A{number}: {wire_ref}.{pin} coordinate drifted")
+            if pad.GetNetname() != net_name:
+                errors.append(
+                    f"A{number}: {wire_ref}.{pin} is on {pad.GetNetname()}, expected {net_name}"
+                )
+            size = pad.GetSize()
+            drill = pad.GetDrillSize()
+            if (
+                pad.GetAttribute() != pcbnew.PAD_ATTRIB_PTH
+                or abs(pcbnew.ToMM(size.x) - 2.0) > 0.001
+                or size.x != size.y
+                or abs(pcbnew.ToMM(drill.x) - 1.0) > 0.001
+                or drill.x != drill.y
+            ):
+                errors.append(f"A{number}: {wire_ref}.{pin} through-hole geometry drifted")
 
     chord = float(np.linalg.norm(
         projected[f"A{number}A"] - projected[f"A{number}B"]
@@ -143,11 +179,21 @@ if not 8.5 <= left_separation <= 9.0:
 if not 3.0 <= right_separation <= 3.5:
     errors.append(f"D35-side printed-joint separation {right_separation:.3f} mm is implausible")
 
+d41_pin1 = board.FindFootprintByReference("D41").FindPadByNumber("1")
+d41_position = d41_pin1.GetPosition()
+d41_xy = np.array([pcbnew.ToMM(d41_position.x), pcbnew.ToMM(d41_position.y)])
+a14_d41_separation = float(np.linalg.norm(projected["A14B"] - d41_xy))
+if not 0.7 <= a14_d41_separation <= 0.9:
+    errors.append(f"A14B/D41.1 registration conflict drifted to {a14_d41_separation:.3f} mm")
+if board.FindFootprintByReference("W14") is not None:
+    errors.append("A14: W14 must remain unpromoted while A14B overlaps D41.1")
+
 if errors:
     raise SystemExit("A7/A14 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A7/A14 FACTORY LANDINGS: PASS — "
+    "A7/A14 FACTORY LANDINGS: PASS — A7 modeled through W7; A14 held at D41.1 conflict; "
     f"A7 {np.linalg.norm(projected['A7A']-projected['A7B']):.3f} mm; "
     f"A14 {np.linalg.norm(projected['A14A']-projected['A14B']):.3f} mm; "
-    f"left/right separation {left_separation:.3f}/{right_separation:.3f} mm"
+    f"left/right separation {left_separation:.3f}/{right_separation:.3f} mm; "
+    f"A14B/D41.1 {a14_d41_separation:.3f} mm"
 )
