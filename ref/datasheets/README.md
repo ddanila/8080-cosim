@@ -21,6 +21,7 @@ Current artifacts:
 | D27 | КР580ВВ55 / Intel 8255A | `intel-p8255a.pdf` | `kr580vv55-pinout.txt` |
 | D29 | КР580ВА86 / Intel 8286 | `kr580va86.pdf` | `kr580va86-pinout.txt` |
 | D101 | К555КП12 / SN74LS253 | `sn74ls253-ti.pdf` | `k555kp12-pinout.txt` |
+| D84-D91 | К565РУ5Г / 4164-class 64Kx1 DRAM | `mk4564-64kx1-dram.pdf` | `k565ru5-pinout.txt` |
 
 Checksums:
 
@@ -31,6 +32,7 @@ e51aef0933d88e7705f6f774ffb3238e8e8096bd9b9d774a985d95ef5766e3ce  ../wd1772-vg93
 f4efbeaaed2e19158e67640683407ac0dfd557ff29ef20a702532fddab2ceeef  intel-p8255a.pdf
 44f3c77489e36b015038b8fdde724aa844e2252e554be8158531f6f1e01a614c  kr580va86.pdf
 6dac6d83b154c40e39bf772ae3b144c8d5d7a42f7b31ddc49942223d6df6c47a  sn74ls253-ti.pdf
+8a6169963c020c1ff8b3c413356ed8f354b9963b77dab8f9bd2af22560c44093  mk4564-64kx1-dram.pdf
 ```
 
 Sources:
@@ -41,3 +43,5 @@ Sources:
 - Intel P8255A scan: `https://datasheet4u.com/pdf/511194/P8255A.pdf`
 - КР580ВА86/8286 scan: `https://datasheet4u.com/pdf/1529844/KR580VA86.pdf`
 - SN74LS253 Texas Instruments PDF: `https://www.ti.com/lit/ds/symlink/sn54ls253.pdf`
+- MK4564 (4164-class 64Kx1 DRAM, closest AC-timing reference for the К565РУ5Г
+  bank D84-D91): `https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf`

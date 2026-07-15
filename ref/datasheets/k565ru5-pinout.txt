@@ -1,0 +1,81 @@
+К565РУ5Г / 4164-class 64Kx1 DRAM pinout + timing interpretation — Juku D84-D91
+=============================================================================
+
+Primary artifact: mk4564-64kx1-dram.pdf
+  United Technologies Mostek MK4564(P/N/J/E)-12, "65,536 x 1-BIT DYNAMIC RAM".
+  The board part is К565РУ5Г (Angstrom/Integral), a Soviet 4164-class 64Kx1
+  DRAM; the "-20" suffix seen on period parts denotes 200 ns access. Mostek's
+  MK4564 is the same JEDEC 64K x 1 multiplexed-address device family. It is
+  vendored here as the closest available AC-timing reference for the shared
+  read/write/refresh contract; only the speed grade differs (MK4564-12 =
+  120 ns / 220 ns), and the model relies on the timing STRUCTURE, not the grade.
+Package: 16 pins
+
+Datasheet pinout (Figure 1, DIP-16)
+-----------------------------------
+1   N/C (VBB substrate-bias option; internal NC on a populated РУ5)
+2   DIN (D)
+3   /WRITE (W)
+4   /RAS (RE)      Row Address Strobe
+5   A0
+6   A2
+7   A1
+8   VCC (+5 V)     [note: physical РУ5 pin 8 carries the selectable +5/+12 rail]
+9   A7
+10  A5
+11  A4
+12  A3
+13  A6
+14  DOUT (Q)
+15  /CAS (CE)      Column Address Strobe
+16  VSS (GND)
+
+Address is MULTIPLEXED: /RAS latches the row on A0-A7, then /CAS latches the
+column on the same A0-A7 pins. Pin 9 is not needed for refresh (128 cycles / 2 ms).
+
+AC timing used by the runnable model (MK4564-12 column; K565RU5G is slower but
+the parameter set and edge ordering are identical)
+---------------------------------------------------------------------------
+  tRAC  access from /RAS ...................... 120 ns max
+  tCAC  access from /CAS ...................... 75 ns max
+  tRCD  /RAS-to-/CAS delay .................... 15 ns min / 45 ns max
+  tASR  row address set-up to /RAS ........... 0 ns min
+  tRAH  row address hold after /RAS .......... 15 ns min
+  tASC  column address set-up to /CAS ........ 0 ns min
+  tCAH  column address hold after /CAS ....... 15 ns min
+  tDS   data-in set-up ....................... 0 ns min
+  tDH   data-in hold ......................... 30 ns min
+  tCWD  /CAS-to-/WRITE delay (read-modify) .... 50 ns
+  tRWD  /RAS-to-/WRITE delay (read-modify) .... 95 ns
+
+Write modes (datasheet "early write" / read-modify-write):
+  - Early write:   /WRITE low before /CAS -> DIN latched at /CAS falling edge,
+                   DOUT stays high-Z (Common I/O safe).
+  - Delayed / read-modify write: /CAS before /WRITE -> the cell is read out
+                   first, then DIN latched at /WRITE falling edge.
+  In both cases DIN is strobed on the LATER falling edge of /CAS or /WRITE,
+  and the row/column addresses and DIN are required to be valid AT their strobe
+  edge (set-up >= 0) and held after it (hold > 0).
+
+Why this matters for the sim (hdl/devices.v `dram_64kx1`)
+--------------------------------------------------------
+The runnable board multiplexes row/column onto the shared MA lines with a
+zero-delay mux (D48-D51, sel = phi1), so MA can switch in the SAME simulation
+timestep that /RAS or /CAS asserts. Sampling live MA at the raw strobe made the
+captured column depend on Icarus event-ordering (the deep cosim guard "passed on
+Linux, dropped BIOS RAM-test writes on Mac"). Because the datasheet guarantees
+each address is stable AT its strobe (tASR/tASC = 0, hold > 0), the model
+captures the SETTLED address a sub-nanosecond delta after the strobe. That is a
+faithful reading of the set-up/hold contract, not an invented delay; the delta
+only outlasts the zero-delay settling and stays far inside the compressed phase,
+which cannot carry the full 120-200 ns access time.
+
+Juku board facts (official ДГШ5.109.009 ПЭЗ + array-read trace)
+---------------------------------------------------------------
+D84-D91 = the populated 64 Kbit bank (bottom array row), К565РУ5Г.
+D60-D83 = empty expansion sockets (same rails).
+Every socket: pin 1 = VBB option copper (internal NC when populated),
+pin 8 = selectable +5/+12 V rail, pin 16 = array return.
+Shared /CAS: rail 15 <- D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all
+32 column pins. Per-bank /RAS: D53 Y0-Y3 -> R49-R52 -> rails 14/13/12/11
+(bank 3 = D84-91 = populated). Write rail 16 <- D36.8.
