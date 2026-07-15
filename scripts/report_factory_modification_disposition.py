@@ -184,6 +184,8 @@ def main() -> int:
     )
     d14_aux_spread = max(math.dist(d14_aux_centre, point) for point in d14_aux_points)
     d14_ok &= d14_aux_spread <= 0.15
+    d14_solder_images = [ROOT / image for image in d14["solder_exclusion"]["images"]]
+    d14_ok &= all(path.exists() and path.stat().st_size > 1_000_000 for path in d14_solder_images)
 
     d11 = modification["d11"]
     d11_rows = []
@@ -364,9 +366,13 @@ def main() -> int:
         ]),
         "",
         "The landing's conductor, the three long drawn traces, and the right-row",
-        "dogleg are not electrically closed by these views. D14.2 and D14.7",
-        "remain measurement boundaries, and no remote net or fabrication geometry",
-        "is inferred from the drawing alone.",
+        "dogleg are not electrically closed by these views. Reflected registration",
+        "into `200506061` and `200509593` places the same locality inside a heavily",
+        "scraped/reworked two-row solder field; the component face hides the immediate",
+        "dogleg under the package body. The available photographs are therefore",
+        "exhausted for D14.7 rather than evidence for a guessed path. D14.2 and D14.7",
+        "require direct continuity, and no remote net or fabrication geometry is",
+        "inferred from the drawing alone.",
         "",
         "## D11 position-159 field registration",
         "",

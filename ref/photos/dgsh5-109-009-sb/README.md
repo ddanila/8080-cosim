@@ -29,7 +29,9 @@ What the drawing is authoritative for:
   Owner-board registration now closes D15's A2/A1 cut and D14's local
   D32.4/GND-to-D14.1 link and registers D14's fifth auxiliary landing; its
   conductor, the other D14 traces, and the D56/D11 details remain
-  measurement-held. At D56 the three-leader level registers to D56.12/D56.5,
+  measurement-held. The D14 right-row dogleg is photo-exhausted across both
+  component and reflected solder views and requires continuity. At D56 the
+  three-leader level registers to D56.12/D56.5,
   but no net change is inferred. At D11, the unique L trace and four
   position-159 solder locations
   are registered in two component views; the earlier pins-4–6 solder scar is a

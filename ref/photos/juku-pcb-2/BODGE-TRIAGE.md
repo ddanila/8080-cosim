@@ -219,7 +219,9 @@ the five-hole left field to D14.1-.4 and the four-hole right row to D14.8-.5.
 Two views show uninterrupted copper from D32.4/GND to D14.1 at the
 callout leader, closing that local link. The fifth auxiliary landing is
 registered in both component views; its conductor, three long drawn traces,
-right-row dogleg, and their remote endpoints remain held.
+right-row dogleg, and their remote endpoints remain held. Both reflected solder
+overlaps put D14 into the same scraped/reworked two-row field, while the package
+body hides the component-side dogleg, so D14.2/.7 now require direct continuity.
 
 For D11, two component views instead show that the drawing's long hole column
 and unique L trace form an auxiliary drilled/copper field beside the package,

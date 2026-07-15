@@ -147,7 +147,14 @@
       ],
       "result": "The fifth left-field landing is physically registered in two component views but has no accepted pin/net or fabrication drill geometry."
     },
-    "remaining_boundary": "The fifth auxiliary landing is registered, but its conductor and the remote endpoints of the three long drawn traces and right-row dogleg remain unproved. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
+    "solder_exclusion": {
+      "images": [
+        "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+        "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg"
+      ],
+      "observation": "Reflected board registration places D14 and the fifth landing inside the same heavily scraped/reworked two-row solder field in both overlapping views. The immediate right-row dogleg is hidden by the package on the component face and is not uniquely separable from the scraped solder copper on the reverse face; the available photographs are exhausted for D14.7 continuity."
+    },
+    "remaining_boundary": "The fifth auxiliary landing is registered, but its conductor and the remote endpoints of the three long drawn traces and right-row dogleg remain unproved. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 therefore require direct continuity rather than another global photo projection, and no auxiliary drill geometry is promoted."
   },
   "d11": {
     "drawing": {

@@ -87,9 +87,13 @@ both component views.
 | fifth auxiliary landing | (207.887, 49.900) | 0.011 mm | geometry registered; conductor and fabrication drill held |
 
 The landing's conductor, the three long drawn traces, and the right-row
-dogleg are not electrically closed by these views. D14.2 and D14.7
-remain measurement boundaries, and no remote net or fabrication geometry
-is inferred from the drawing alone.
+dogleg are not electrically closed by these views. Reflected registration
+into `200506061` and `200509593` places the same locality inside a heavily
+scraped/reworked two-row solder field; the component face hides the immediate
+dogleg under the package body. The available photographs are therefore
+exhausted for D14.7 rather than evidence for a guessed path. D14.2 and D14.7
+require direct continuity, and no remote net or fabrication geometry is
+inferred from the drawing alone.
 
 ## D11 position-159 field registration
 

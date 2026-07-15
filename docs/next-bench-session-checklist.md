@@ -36,8 +36,8 @@ PDF is the prototype and may differ.
    pins (`docs/fdc-hardware-handoff.md`).
 5. **Factory Вид В details:** continuity-map the separate left landing, rail
    stub/gap, and conductors at D56's registered D56.12/D56.5 callout level;
-   position 150 is tubing, not a cut. Also map D14's registered fifth-landing conductor, three long traces, and
-   right-row dogleg. At D11, continuity-test the registered four-landmark bridge
+   position 150 is tubing, not a cut. Also continuity-test D14's registered fifth-landing conductor, three long traces, and
+   right-row dogleg/D14.7; the available photos are exhausted there. At D11, continuity-test the registered four-landmark bridge
    and its remote endpoints, or register the same holes locally on the solder
    side; the old pins-4–6 scar is a different feature. D15's A2/A1 cut and D14's
    local D32.4/GND-to-D14.1 link are photo-closed (`docs/factory-modification-disposition.md`).
