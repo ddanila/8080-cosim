@@ -67,6 +67,7 @@ def main() -> int:
     wreq_nodes = {tuple(node) for node in board["nets"]["WREQ_N"]["nodes"]}
     hdl = (ROOT / "hdl/juku_top.v").read_text()
     devices = (ROOT / "hdl/devices.v").read_text()
+    reader = (ROOT / "tools/rt4_dumper/rt4_dumper.ino").read_text()
     runtime_report = (ROOT / "docs/d6-runtime-path-diagnostic.md").read_text()
     model_checks = [
         ("Chip-removed ROM select is D6.12 to D8.15", {("D6", "12"), ("D8", "15")} <= rom_nodes),
@@ -75,6 +76,14 @@ def main() -> int:
         ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | wreq_nodes),
         ("HDL keeps the D6 outputs separate", ".rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n)" in hdl),
         ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
+        ("RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3",
+         "PROM D0..D3 (pins 12,11,10,9)" in reader
+         and "value |= (1U << bit)" in reader),
+        ("Device commentary preserves measured mode pins and separate output conductors",
+         "pin 2/A5 <- D3.6 <- /PC0" in devices
+         and "pin 1/A6 <- D3.4 <- /PC1" in devices
+         and "pins 11 and 12 are separate conductors" in devices
+         and "pins 11/12 are joined" not in devices),
         ("Runnable compatibility decode is explicit and excluded from LVS",
          "module decode_prom_functional" in devices
          and "`ifndef YOSYS\n    decode_prom_functional U_D6_FUNCTIONAL" in hdl),
@@ -99,6 +108,11 @@ def main() -> int:
         "## Guarded artifact", "", f"- Raw image: `ref/physical-proms/validated/d6_038.raw.bin` ({len(data)} bytes)",
         f"- SHA256: `{sha}`", "- Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`",
         "- Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9", "",
+        "The factory programming instruction in `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf`",
+        "page 16 identifies D6 `.038` as a КР556РТ4 and says its programming table",
+        "was supplied on disk. A pin-order audit retained the reader's D0/pin12 through",
+        "D3/pin9 packing: reversing the nibble would contradict the device pin assignment",
+        "and is not a permissible way to make the downstream RAM path run.", "",
         "## Output words", "", "| Raw word | Rows | D3 D2 D1 D0 | RAM_N D1 | ROM_N D0 |", "| ---: | ---: | --- | ---: | ---: |",
     ]
     for word in words:

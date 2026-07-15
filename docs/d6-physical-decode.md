@@ -13,6 +13,12 @@ not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.
 - Physical address order: `A0..A7 = BA15, BA14, BA13, BA12, BA11, ~PC0, ~PC1, D6.15/D105.1 boundary`
 - Raw output order: bit 0..3 = physical D0/pin12, D1/pin11, D2/pin10, D3/pin9
 
+The factory programming instruction in `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf`
+page 16 identifies D6 `.038` as a КР556РТ4 and says its programming table
+was supplied on disk. A pin-order audit retained the reader's D0/pin12 through
+D3/pin9 packing: reversing the nibble would contradict the device pin assignment
+and is not a permissible way to make the downstream RAM path run.
+
 ## Output words
 
 | Raw word | Rows | D3 D2 D1 D0 | RAM_N D1 | ROM_N D0 |
@@ -82,6 +88,8 @@ nibble per 2 KiB block from `0000` through `F800`.
 | D13.12 drives the D6 enable conductor, not either output | PASS |
 | HDL keeps the D6 outputs separate | PASS |
 | HDL uses measured physical D6 address order | PASS |
+| RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3 | PASS |
+| Device commentary preserves measured mode pins and separate output conductors | PASS |
 | Runnable compatibility decode is explicit and excluded from LVS | PASS |
 | Structural consumers retain separate ROM/RAM conductors | PASS |
 | All-row B37A RAM-gate boundary has a reproducible diagnostic | PASS |

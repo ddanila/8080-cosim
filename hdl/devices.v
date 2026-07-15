@@ -142,19 +142,20 @@ module mem_decode (
 endmodule
 
 // ---- memory map decoder: К556РТ4 256x4 bipolar PROM (D6) ----
-// Traced (crop bios_hunt1): address inputs = BA15..BA11 on pins 5,6,7,4,3 PLUS the mode bundle
-// on pins 2,1,15 (tags 1,2,3 <- PPI Port C bits) -- the banking mode enters the PROM as ADDRESS,
-// not through the V enable. V1/V2 (13,14) feed unread; modeled always-enabled (v_en_n ignored).
+// Address inputs = BA15..BA11 on pins 5,6,7,4,3 plus the measured mode bundle:
+// pin 2/A5 <- D3.6 <- /PC0, pin 1/A6 <- D3.4 <- /PC1, and pin 15/A7 <- the
+// unresolved D105.1 boundary. The banking mode enters the PROM as ADDRESS, not
+// through the V enable. V1/V2 (13,14) join D13.12; modeled enabled when low.
 // Columns (traced): D0/12 = ROM_N -> D8.E_N pager enable; D1/11 = RAM_N -> sheet 2;
 // D2/10 = REV -> D9 io-decode G2A/G2B region enable; D3/9 = "-RAMOUTEN" -> D13 Schmitt.
 // The validated physical `.038` table is classified in docs/d6-physical-decode.md.
-// On the `.009` board pins 11/12 are one measured open-collector conductor, so
-// their older-sheet RAM_N/ROM_N names describe pin roles, not independent nets.
+// Chip-removed `.009` continuity proves pins 11 and 12 are separate conductors:
+// pin 12 reaches D8.15, while pin 11 reaches D2.15, D92.5, and R12.2.
 module decode_prom (input wire [7:0] a, input wire v_en_n,
                     output wire rom_n, ram_n, rev, roe_n);
     // Validated physical D6 `.038` table. Address bit order is the actual RT4
     // pin order: a[0:7] = pins 5,6,7,4,3,2,1,15 =
-    // BA15,BA14,BA13,BA12,BA11,PC2,PC3,PC4.
+    // BA15,BA14,BA13,BA12,BA11,/PC0,/PC1,D105.1-boundary.
 `ifdef YOSYS
     wire [3:0] raw = 4'h0; // contents are irrelevant to structural LVS
 `else
@@ -166,8 +167,8 @@ module decode_prom (input wire [7:0] a, input wire v_en_n,
 endmodule
 
 // Functional memory-map oracle used only by runnable simulation. The physical
-// `.009` D6 pins 11/12 are joined and their downstream timing topology is not
-// yet complete enough to reproduce the established EKTA/EKDOS execution path.
+// The downstream D6/D13/D37/D58 timing topology is not yet complete enough to
+// reproduce the established EKTA/EKDOS execution path from the physical table.
 // Keep this behavior separate from `decode_prom`: it is neither PROM content
 // nor an LVS-visible claim about the original board.
 module decode_prom_functional (input wire [15:11] ba, input wire pc2,
