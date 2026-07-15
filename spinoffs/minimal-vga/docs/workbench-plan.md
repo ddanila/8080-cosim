@@ -86,6 +86,13 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    Verilog twin into the physical Rev-A fixture, keeping the twin and the PCB
    provably the same design.
 
+   **Progress:** steps (a) board model + socket contract, (b) dual-mode GAL
+   equations + test vectors, (d) both decode modes boot byte-identical, and
+   (e) power budget are **DONE**. Step (c) — the physical-board socket↔twin
+   contract is enforced by `check_rev_a_physical`; full chip-accurate yosys LVS
+   of the whole board is still staged (see below). Step (f) — routed-PCB
+   re-layout/DRC/fab regen is **pending** (the schematic leads the copper).
+
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets
      (К556РТ4 D6 decode, К155РЕ3 D8 pager) to Rev-A. Their outputs route
@@ -112,11 +119,14 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    b. Update `docs/rev-a-gal-equations.md` for both modes and add the polarity
       terms; derive GAL test vectors from the twin so the equations are
       simulated, not just written (release-gate item 4).
-   c. **LVS the twin against the board.** Map `vjuga_juku_top.v` instances to
-      Rev-A refs (tv80→U1, ROM→U2, GAL→U5, ru5[0..7]→U10-U17, D6/D8→new refs,
-      8255→U30) and extend `sync/check.sh` to compare the twin's netlist to
-      `rev-a-physical.board.json`, replacing the old logical-blocks model one
-      group at a time with LVS green after each swap (existing chip-map policy).
+   c. **LVS the twin against the board.** DONE for the new decode group: the
+      РТ4/РЕ3 socket wiring (addressing, enables, outputs-into-GAL, Port C mode
+      bits) is enforced against the twin's decode semantics by the
+      `DECODE_SOCKET_CONTRACT` in `check_rev_a_physical.py`. STAGED: full
+      chip-accurate yosys LVS of the *whole* board — mapping the tv80 core and
+      the behavioral DRAM sequencer to `rev-a-physical.board.json` and replacing
+      the old 8-instance logical model group-by-group — is a larger effort to be
+      done one group at a time keeping LVS green (existing chip-map policy).
    d. Add the Mode-A (GAL-decode) path to the twin behind a parameter and prove
       **both modes boot byte-identical** to cosim, so each physical jumper
       setting has a simulated counterpart before fab.

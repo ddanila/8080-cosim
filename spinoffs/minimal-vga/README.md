@@ -26,14 +26,24 @@ product.
   writes. Booting exercises the DRAM and both PROMs in the functional path
   (workbench goals 2 and 3): a bad socketed chip diverges the boot. The D6 `~D0`
   correction is provisional (pending the main-twin level probe).
+- **Both decode modes boot byte-identical.** `sim/vjuga_boot_check.sh` builds and
+  boots the twin in Mode B (the real D6 РТ4 drives the decode) *and* Mode A (the
+  U5 GAL's internal A15/A14 baseline, РТ4 socket empty), and requires each to
+  match the cosim framebuffer — so every physical `MODE_B` jumper setting (J94)
+  has a proven simulated counterpart.
 - The pinned T80 core also executes a built-in synthetic ROM (smoke test).
 - The synthetic test exercises CPU ROM/RAM/I/O cycles, a bit-sliced DRAM
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- The Rev A physical source has 95 refs and 116 modeled nets.
+- The Rev A physical source has 116 refs and 134 modeled nets, and now sockets
+  the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
+  jumper; `check_rev_a_physical` enforces a decode-socket contract that matches
+  the verified twin's addressing.
 - The committed four-layer routed PCB passes the repository's KiCad DRC and
-  unconnected-item checks.
+  unconnected-item checks, **but is now stale versus the schematic**: the Phase 3
+  decode sockets exist in the schematic/connectivity (source of truth) and not
+  yet in the copper. Re-layout + DRC + fab regen is Phase 3 step (f).
 - The ignored `fab/minimal-vga/` package can be regenerated and its current
   Gerber/drill ZIP is internally checksummed.
 
@@ -58,12 +68,11 @@ cross-check, but not the board's configuration.)
 
 ## What does not work yet
 
-- The Rev A *physical* ROM map (in `z80_minimal_top.vhd` / the KiCad model) is
-  still a coarse synthetic lower-ROM/upper-RAM map. The verified Juku overlay
-  behavior currently lives in the functional `juku_boot_top.vhd` boot model;
-  folding it into the Rev A physical top + GAL decode is the next step.
-- The GAL equations are draft bring-up logic; DRAM timing and wait-state
-  behavior have not been validated against selected parts or hardware.
+- The Rev A copper (`rev-a-physical.kicad_pcb`) does not yet place or route the
+  Phase 3 decode sockets; the schematic leads the PCB until step (f) re-layout.
+- The U5 decode is now simulated (both jumper modes boot byte-identical), but the
+  U24 DRAM timing/wait-state sequencer is still draft bring-up logic and has not
+  been validated against selected DRAM parts or hardware.
 - The VGA test proves timing activity, not a Juku banner or prompt sourced from
   shared DRAM.
 - No independent end-to-end schematic/design review has released the copper.
@@ -132,10 +141,12 @@ Before this experiment can become an order candidate it must, at minimum:
 1. ~~boot the intended real Juku ROM on the VJUGA T80 top~~ **done**
    (`sim/boot_check.sh`, framebuffer-identical to cosim at 6000 video writes);
 2. ~~match the intended memory and I/O behavior with an explicit oracle~~
-   **done for the functional boot model** (cosim is the oracle); still to fold
-   into the Rev A *physical* top + GAL decode;
+   ~~and fold it into the Rev A physical top + GAL decode~~ **done** — the Rev A
+   decode sockets the real РТ4/РЕ3 and both jumper modes boot byte-identical to
+   cosim (`sim/vjuga_boot_check.sh`);
 3. render a deterministic real-ROM display result through the VGA path;
-4. replace draft GAL timing with simulated, programmed, reviewed equations;
+4. **decode equations** are now simulated (item 2); still replace the draft U24
+   DRAM *timing* logic with simulated, programmed, reviewed equations;
 5. validate DRAM, reset, clock, power, connector, and socket pinouts against
    selected parts;
 6. receive an independent schematic, copper, Gerber, drill, and power-return

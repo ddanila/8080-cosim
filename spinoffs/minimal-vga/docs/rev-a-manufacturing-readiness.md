@@ -24,12 +24,21 @@ order the board.
   and external rendering have machine-generated checks.
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
+- **This package predates the Phase 3 decode-socket addition.** The committed
+  Gerbers/ZIP reflect the earlier 95-ref board; the schematic and connectivity
+  (source of truth, `check_rev_a_physical`) now carry the real РТ4/РЕ3 sockets,
+  the mode inverter, the jumper, and the observability header (116 refs / 134
+  nets). The package must be regenerated from the re-laid-out PCB before it
+  describes the current design.
 
 ## Release blockers
 
 - No real Juku ROM has booted on the VJUGA T80 top.
 - The passing main-project ROM check does not execute this spin-off.
-- U5/U24 GAL behavior and DRAM timing are unvalidated bring-up drafts.
+- The routed copper does not yet include the Phase 3 decode sockets; the PCB
+  must be re-laid-out from the current schematic (Phase 3 step f) before fab.
+- U24 DRAM timing is an unvalidated bring-up draft; the U5 decode is now
+  simulated in both jumper modes but not yet programmed or reviewed on a device.
 - The VGA proof is synthetic timing/activity, not a real firmware display.
 - The schematic, selected-part pinouts, copper, power/return strategy, and
   Gerbers have not received the independent design review needed for release.
