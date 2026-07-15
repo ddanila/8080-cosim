@@ -13,7 +13,7 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 102 mapped instances and 270 nets with no
+- `sync/check.sh` currently compares 102 mapped instances and 272 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and zero KiCad copper
   clearance, crossing, short, or unconnected findings. The real

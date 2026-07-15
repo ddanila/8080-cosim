@@ -546,7 +546,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58); full-resolution sheet maps PC2/3/4 pins16/17/13 through mode-bundle tags1/2/3 to D6 A5/A6/A7 and the D28 -REC/-PLAY/-FF sections, PC5/6 pins12/11 to D28 -RN/-STOP, and PC7/pin10 to POF/D35.3; PA5/pin39 is undrawn/NC"
+    "pins": "scan; kbd interface sheet-1 (X9 codes 901-914, posts 45-58); the older full-resolution sheet maps PC2/3/4 pins16/17/13 through mode-bundle tags1/2/3 to D6 and the D28 -REC/-PLAY/-FF sections, but chip-removed .009 owner continuity supersedes only the D6 legs: D6 A5/A6 now trace to D3.6/D3.4 and D6 A7 to D105.1; PC2/3/4 remain on D28, PC5/6 pins12/11 route to D28 -RN/-STOP, and PC7/pin10 routes to POF/D35.3; PA5/pin39 is undrawn/NC"
    }
   },
   {

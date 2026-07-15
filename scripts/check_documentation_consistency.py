@@ -236,6 +236,34 @@ def main() -> int:
         failures.append(f"board JSON is invalid: {exc}")
         board_model = {"nets": {}}
     board_nets = board_model.get("nets", {})
+    plan = core["PLAN.md"]
+    for stale in (
+        "joined-conductor D8/D13/D92 timing reconstruction",
+        "After the joined\n   conductor's downstream",
+        "boot exercises only physical modes `000`/`001`",
+    ):
+        if stale in plan:
+            failures.append(f"PLAN retains stale D6 topology/mode claim: {stale!r}")
+    for required in (
+        "separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths",
+        "boot firmware observes A6/A5 suffixes `11` and `10`",
+    ):
+        if required not in plan:
+            failures.append(f"PLAN omits current guarded D6 evidence: {required!r}")
+
+    d26 = next((chip for chip in board_model.get("chips", []) if chip.get("ref") == "D26"), {})
+    d26_provenance = d26.get("prov", {}).get("pins", "")
+    if not all(
+        marker in d26_provenance
+        for marker in (
+            "chip-removed .009 owner continuity supersedes only the D6 legs",
+            "D6 A5/A6 now trace to D3.6/D3.4",
+            "D6 A7 to D105.1",
+            "PC2/3/4 remain on D28",
+        )
+    ):
+        failures.append("D26 provenance does not distinguish the retired D6 mode bundle from live D28 routes")
+
     expected_d94_boundaries = {
         "BA0": None,
         "BA1": None,
