@@ -51,17 +51,20 @@ fab but their pinouts freeze in copper, so decide them first.
 
 **Copper-blocking**
 
-1. **Re-layout the routed PCB (Phase 3 step f).** Source model is 119 refs /
-   134 nets; `rev-a-physical.kicad_pcb` still holds the old 95-ref board.
-   Regenerate placement + routing from the model (`gen_rev_a_pcb.py` →
-   `route_rev_a_pcb.sh`), then `check_rev_a_pcb.sh` must report zero DRC and zero
-   unconnected. First-pass footprint mappings + placement for the new parts now
-   exist in `gen_rev_a_pcb.py` (see the silk preview); routing + refinement is
-   the remaining work.
-2. **Footprint / pinout validation against the selected parts (README gate 5).**
-   Datasheet-vs-footprint pass for every socket and passive, especially the new
-   DIP-16 РТ4/РЕ3 sockets, the DIP-14 inverter, the pin headers, the USB-C
-   receptacle, PTC, and TVS.
+1. **Route the PCB (Phase 3 step f).** Placement is DONE: all 119 refs are
+   placed in `gen_rev_a_pcb.py`, the silk is collision-clean
+   (`check_rev_a_placement.sh` passes), and footprints are validated
+   (`check_rev_a_footprints.sh` passes). `rev-a-physical.kicad_pcb` still holds
+   the old routed 95-ref board. REMAINING: regenerate from the model
+   (`gen_rev_a_pcb.py`) → autoroute (`route_rev_a_pcb.sh`, needs the Java 25 +
+   freerouting fork toolchain on the Linux box) → `check_rev_a_pcb.sh` zero DRC /
+   zero unconnected → commit.
+2. **Footprint / pinout validation.** DONE for land-pattern correctness:
+   `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
+   and DIP pad counts match, across all 119 parts (it caught the USB-C shield
+   S1/SH and RES_TH slips). STILL A REVIEW ITEM: physical pin-1 orientation of
+   the socketed parts and confirming the chosen real part variants (USB-C
+   receptacle, PTC, TVS) against their datasheets.
 
 **De-risking (freeze before copper, even though reprogrammable)**
 
