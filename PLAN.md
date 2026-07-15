@@ -411,7 +411,12 @@ serve physical bring-up or historical fidelity:
 2. Preserve reset-to-EKDOS and disk-BASIC guards while physical FDC wiring is
    corrected.
 3. Revisit cartridge BASIC only when a complete artifact or documented loading
-   procedure appears; do not invent missing pages.
+   procedure appears; do not invent missing pages. The 2026-07-15 generated
+   firmware-lineage audit proves that 7,224 bytes of the cartridge body are
+   byte-identical inside Monitor 3.3 (and differ once in Monitor 2.2), so the
+   BASIC implementation itself is recovered; the exact correspondence ends
+   before the missing page, and the early Monitor 2.2 image also fails three
+   internal checksum blocks.
 4. Extend sound/serial behavior only to answer concrete bench questions.
 
 ## Physical bring-up sequence

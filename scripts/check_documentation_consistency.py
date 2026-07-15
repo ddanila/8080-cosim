@@ -442,11 +442,50 @@ def main() -> int:
             failures.append(f"VJUGA readiness does not contain current Gerber ZIP SHA256 {vjuga_digest}")
 
     cartridge = read("docs/cartridge-basic-boundary.md")
+    cartridge_lineage = read("docs/cartridge-basic-firmware-lineage.md")
     cartridge_image = ROOT / "roms" / "jbasic11.bin"
     if "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**" not in cartridge:
         failures.append("consolidated cartridge BASIC boundary is missing or stale")
     if cartridge_image.exists() and sha256(cartridge_image) not in cartridge:
         failures.append("cartridge BASIC boundary does not contain the current jbasic11 SHA256")
+    if "Status: **ONBOARD BASIC LINEAGE PINNED / MISSING PAGE NOT DERIVED**" not in cartridge_lineage:
+        failures.append("cartridge BASIC firmware-lineage audit is missing or stale")
+    if cartridge_image.exists():
+        cartridge_bytes = cartridge_image.read_bytes()
+        monitor33_path = ROOT / "roms" / "jmon33.bin"
+        monitor22_path = ROOT / "roms" / "jmon22.bin"
+        if len(cartridge_bytes) != 0x2000:
+            failures.append("jbasic11 image is no longer the audited 8 KiB shape")
+        elif not monitor33_path.exists() or not monitor22_path.exists():
+            failures.append("cartridge BASIC lineage monitor input is missing")
+        else:
+            monitor33 = monitor33_path.read_bytes()
+            monitor22 = monitor22_path.read_bytes()
+            body = cartridge_bytes[0x0100:0x1D38]
+            if body != monitor33[0x03C8:0x2000]:
+                failures.append("jbasic11/Monitor 3.3 exact BASIC-body lineage changed")
+            mismatch_count = sum(
+                left != right
+                for left, right in zip(body, monitor22[0x03C8:0x2000], strict=True)
+            )
+            if mismatch_count != 1:
+                failures.append(
+                    "jbasic11/Monitor 2.2 BASIC-body lineage no longer has one mismatch"
+                )
+            if any(cartridge_bytes[0x1D38:0x1F00]):
+                failures.append("jbasic11 padding before the relocation bootstrap is no longer zero")
+            loop_tail = bytes.fromhex("7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01")
+            if cartridge_bytes[0x1F09:0x1F16] != loop_tail:
+                failures.append("jbasic11 relocation bootstrap survival bytes changed")
+            for marker in (
+                "`7224` bytes (`0x1C38`)",
+                "cartridge `0x1C34=0xDA`; Monitor ROM `0x1EFC=0x9A`",
+                "blocks 3, 6, and 7",
+            ):
+                if marker not in cartridge_lineage:
+                    failures.append(
+                        f"cartridge BASIC firmware-lineage report is stale; missing {marker!r}"
+                    )
 
     if failures:
         print("Documentation consistency check failed:")

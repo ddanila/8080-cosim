@@ -23,14 +23,31 @@ they are not active project reports.
 - The self-overwriting relocation loop requires the missing page to preserve
   its tail at source `0x2109..0x2115`:
   `7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01`.
+- `scripts/report_cartridge_basic_firmware_lineage.py` proves that cartridge
+  offsets `0x0100..0x1D37` are byte-identical to Monitor 3.3 ROM offsets
+  `0x03C8..0x1FFF` (7,224 bytes, constant `+0x2C8` source delta). Monitor 2.2
+  differs in that same span at only one byte. The meaningful BASIC body is
+  therefore already recovered from two independent firmware shapes.
+- The remaining known cartridge suffix is 456 zero bytes followed by the
+  relocation-bootstrap page. The exact Monitor/body correspondence stops
+  before the missing page, so extending the `+0x2C8` delta into unrelated
+  monitor/bootstrap code would not be a source-proven reconstruction.
 - No current ROM, extracted software file, or vendored disk provides a
   defensible page-shaped donor.
 
 ## Rejected shortcuts
 
 Bounded experiments did not reach a BASIC banner or `READY` after trying fill
-bytes, appending/mirroring the final page, changing the relocation count, or
-jumping directly into the copied body. No patched cartridge is exported.
+bytes, appending/mirroring the final page, changing the relocation count,
+jumping directly into the copied body, or using the semantically aligned final
+page from the live disk BASIC while preserving the relocation loop. No patched
+cartridge is exported.
+
+The public Monitor 2.2 museum image contains the same onboard BASIC lineage but
+fails its own block checksums in blocks 3, 6, and 7. A temporary checksum-only
+diagnostic then reaches code outside the validated E5104 upper-ROM window,
+which indicates an earlier board/decode ABI rather than a safe replacement for
+the reproduced hardware mapping.
 
 Baltijets document 003 describes command `A` for a removable 32 KiB memory
 expander. Tested public monitor/cartridge pairings did not reproduce that

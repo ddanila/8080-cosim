@@ -236,6 +236,11 @@ jobs:
             ref/extracted-software/README.md \
             ref/extracted-software/SHA256SUMS
 
+      - name: Check cartridge BASIC firmware lineage freshness
+        run: |
+          python3 scripts/report_cartridge_basic_firmware_lineage.py
+          git diff --exit-code -- docs/cartridge-basic-firmware-lineage.md
+
       - name: Check source coverage audit freshness
         run: |
           python3 scripts/report_source_coverage_audit.py
