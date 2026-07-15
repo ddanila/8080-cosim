@@ -501,6 +501,10 @@ module juku_top (
     // packages remain instantiated; incomplete behavioral models release unproved outputs.
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
+    // D94 РЕ3 .092 outputs: declared before U_D93 because its back-bias input
+    // is fed from D94.D4/pin5 (`default_nettype none` forbids use-before-decl).
+    wire d94_d0_boundary, d94_d4, d94_d5, d94_d6, d94_d7;
+    supply0 d94_d1_grounded;
     vg93_fdc   U_D93  (.nc_back_bias(d94_d4), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
@@ -508,8 +512,6 @@ module juku_top (
     net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
     net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(d100_oe_boundary), .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
-    wire d94_d0_boundary, d94_d4, d94_d5, d94_d6, d94_d7;
-    supply0 d94_d1_grounded;
 `ifdef YOSYS
     wire d94_a3_boundary, d94_a4_d101_q0;
 `else
