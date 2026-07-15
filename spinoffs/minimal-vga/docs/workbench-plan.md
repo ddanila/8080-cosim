@@ -58,11 +58,18 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
 
 ## Phased build
 
-1. **Verilog twin core (POC + DRAM).** `tv80` + reused `dram_64kx1` bank +
-   `roms/ekta37_z80.bin`; boot and match cosim via a read-trace/framebuffer
-   guard. Establishes the Verilog+tv80 foundation and tests the DRAM (goal 2).
-   - First step: vendor `tv80` under `external/` with provenance + checksums
-     (a new external dependency — flag for owner review before adding).
+1. **Verilog twin core (POC + DRAM). IN PROGRESS.** `tv80` (Verilog Z80) is
+   vendored as a submodule at `external/tv80`, and `hdl/vjuga_juku_top.v` +
+   `hdl/vjuga_juku_tb.v` build and **boot** `roms/ekta37_z80.bin` on it, with RAM
+   served by the real `dram_64kx1` (К565РУ5) reused from `hdl/devices.v`. The CPU
+   executes correctly (verified: writes `0x55` to VRAM in mode 0). **Remaining
+   bug:** the hand-rolled RAS/CAS sequencer's writes land at scrambled RAM
+   addresses (intended `0xD800+` → `d070/d1f0/d271/...`), so the dumped
+   framebuffer is not yet byte-identical to cosim (101/9640 bytes differ). The
+   row-permutation (`raw_row`) math and the CPU execution are confirmed correct;
+   the runtime row/column latch timing into `dram_64kx1` needs a probe pass to
+   finish. Not yet wired into a passing check. (The VHDL `juku_boot_top` remains
+   the byte-identical POC reference.)
 2. **Fold in the real РЕ3 (D8) and РТ4 (D6) in the functional path (goal 3).**
    Route VJUGA's ROM-select / memory-map decode through `re3_prom` (D8 `.039`)
    and `decode_prom` (D6 `.038`) so booting exercises them.

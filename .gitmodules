@@ -5,3 +5,6 @@
 	path = external/freerouting
 	url = https://github.com/ddanila/freerouting.git
 	branch = custom
+[submodule "spinoffs/minimal-vga/external/tv80"]
+	path = spinoffs/minimal-vga/external/tv80
+	url = https://github.com/hutch31/tv80
