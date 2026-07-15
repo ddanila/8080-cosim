@@ -49,6 +49,11 @@ def main() -> None:
                     row["review_state"] == "measurement"
                     and row["confidence"].startswith("registration")
                 )
+                or (
+                    row["refdes"] == "D56"
+                    and row["review_state"] == "measurement"
+                    and row["confidence"] == "local-package-fit"
+                )
             )
             if not replaceable_seed:
                 raise SystemExit(f"{row['endpoint_id']}: fit image differs from reviewed observation image")
@@ -86,6 +91,18 @@ def main() -> None:
         corrected_d106 = ("Validated D106 component fit identifies the photographed К555ИЕ7 "
                           "package contact and replaces the displaced generated landing")
         row["note"] = row["note"].replace(stale_d106, corrected_d106)
+        if row["refdes"] == "D56" and row["review_state"] != "accepted":
+            if side == "component":
+                row["note"] = (
+                    "Validated notch-down D56 component fit replaces the displaced "
+                    "whole-board seed and identifies the physical package contact"
+                )
+            else:
+                row["note"] = (
+                    "Validated reflected D56 fit replaces the displaced whole-board "
+                    "seed and identifies the physical solder joint; positions 150/159 "
+                    "do not by themselves prove installed continuity"
+                )
         if row["refdes"] == "D100" and side == "solder" and row["review_state"] != "accepted":
             row["note"] = (
                 "Validated affine D100 fit identifies the physical solder joint between D98 "

@@ -31,8 +31,9 @@ What the drawing is authoritative for:
   conductor, the other D14 traces, and the D56/D11 details remain
   measurement-held. The D14 right-row dogleg is photo-exhausted across both
   component and reflected solder views and requires continuity. At D56 the
-  three-leader level registers to D56.12/D56.5,
-  but no net change is inferred. At D11, the unique L trace and four
+  three-leader level registers as the separate left annulus plus D56.5/D56.12;
+  bare-board gaps to the adjacent rail are visible, but the installed item-159
+  conductor/material and any net change remain held. At D11, the unique L trace and four
   position-159 solder locations
   are registered in two component views; the earlier pins-4–6 solder scar is a
   different feature. Validated component and reflected package fits project the

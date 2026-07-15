@@ -206,13 +206,15 @@ landing centres remain navigation evidence rather than fabrication-ready drill
 coordinates (`factory-modification-registration.json`).
 
 Three overlapping component photographs identify the actual D56 as the
-notch-down `К155АГ3 8901` package at the right board edge. Two overlapping
-solder photographs resolve its complete reflected 2x8 pin field and fix the
-drawing's three-leader level at the D56.12/D56.5 row. Assembly note 11 says to
+notch-down `К155АГ3 8901` package at the right board edge. Held-out-validated
+component and reflected package fits replace the displaced global endpoint
+seeds; two solder photographs fix the drawing's three locations as the separate
+left annulus plus D56.5/D56.12. Assembly note 11 says to
 fit tubing positions 157 and 150 at solder locations, disproving the former
-position-150-equals-cut reading. The separate left landing, nearby wide-rail
-stub/gap, and callout conductors remain electrically held; no D56 net partition
-is promoted without continuity or the missing position-159 specification row.
+position-150-equals-cut reading. Bare-board gaps separate both package pads
+from the adjacent rail, but the installed item-159 conductor/material remains
+electrically held; no D56 net partition is promoted without continuity or the
+missing position-159 specification row.
 
 For D14, notch-oriented component registration maps the first four holes in
 the five-hole left field to D14.1-.4 and the four-hole right row to D14.8-.5.

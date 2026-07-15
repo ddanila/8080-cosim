@@ -113,7 +113,7 @@ def main() -> int:
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",
             "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and local D56/D15/D14/D11 assembly work; note 11 proves position 150 is tubing rather than a cut, owner-board registration closes D15 as an A2/A1 bridge cut and the D14 local D32.4/GND-to-D14.1 link, and the D56 callout row is fixed at D56.12/D56.5",
-            "D56's separate left landing/callout conductors and D14's registered fifth-landing conductor/remaining drawn traces still require exact mapping; position 159 marks solder locations and does not prove replacement conductors; D11's four solder locations are component-photo registered and two-sided package-local projection exhausts four solder views without a unique through-hole match, so their electrical endpoints require direct continuity; assembly detail does not prove every copper endpoint or programmable-part truth",
+            "D56's three physical callout locations are fixed as the separate left annulus plus D56.5/D56.12, but the installed item-159 conductor/material still requires continuity or its missing specification row; D14's registered fifth-landing conductor/remaining drawn traces still require exact mapping; position 159 marks solder locations and does not prove replacement conductors; D11's four solder locations are component-photo registered and two-sided package-local projection exhausts four solder views without a unique through-hole match, so their electrical endpoints require direct continuity; assembly detail does not prove every copper endpoint or programmable-part truth",
         ]),
         "",
         "## Current source requests",

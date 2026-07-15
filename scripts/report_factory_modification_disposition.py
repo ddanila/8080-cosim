@@ -17,7 +17,7 @@ PANORAMA_REGISTRATION = ROOT / "docs/photo-registration/panorama-registration.js
 BOARD_REGISTRATION = ROOT / "docs/photo-registration/board-registration.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
 AFFECTED = {
-    "D56": "АГ3 timing area: position-150 tubing and three position-159 solder locations register at the D56.12/D56.5 level; their electrical topology remains held",
+    "D56": "АГ3 timing area: position-150 tubing and three position-159 solder locations register as the separate left annulus plus D56.5/D56.12; the installed conductor and electrical topology remain held",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
     "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held",
     "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field",
@@ -110,26 +110,59 @@ def main() -> int:
         PHOTO_DIR / "PXL_20260711_114649169.jpg",
     ]
     d56 = modification["d56"]
-    d56_expected = {"d56_12_px": (291.615, 181.270), "d56_5_px": (283.995, 181.270)}
-    d56_rows = []
+    d56_fits = {
+        item["side"]: item
+        for item in local_packages["fits"]
+        if item["refdes"] == "D56"
+    }
     d56_ok = True
-    for observation in d56["callout_field"]["solder_observations"]:
-        errors = {}
-        for pixel_name, expected in d56_expected.items():
-            observed = image_to_board(
-                observation["image"],
-                observation[pixel_name],
-                "solder_grid",
-                panorama,
-                board_registration,
-            )
-            errors[pixel_name] = math.dist(observed, expected)
-            d56_ok &= errors[pixel_name] <= 0.20
-        d56_rows.append((observation, errors))
+    d56_ok &= set(d56_fits) == {"component", "solder"}
+    d56_ok &= d56_fits.get("component", {}).get("model") == "similarity"
+    d56_ok &= d56_fits.get("solder", {}).get("model") == "similarity_reflected"
+    d56_ok &= all(
+        check["error_px"] <= 8.0
+        for fit in d56_fits.values()
+        for check in fit["checks"]
+        if check["use"] == "check"
+    )
+    d56_observations = d56["callout_field"]["solder_observations"]
+    d56_ok &= len(d56_observations) == 2
+    d56_rows = []
+    if set(d56_fits) == {"component", "solder"} and len(d56_observations) == 2:
+        primary, overlap = d56_observations
+        primary_errors = {
+            "left_landing_px": 0.0,
+            "d56_5_px": math.dist(
+                primary["d56_5_px"], d56_fits["solder"]["projected_pins"]["5"]
+            ),
+            "d56_12_px": math.dist(
+                primary["d56_12_px"], d56_fits["solder"]["projected_pins"]["12"]
+            ),
+        }
+        d56_ok &= max(primary_errors.values()) <= 0.15
+        primary_to_panorama = matrix(
+            panorama["groups"]["solder_grid"]["images"][primary["image"]][
+                "original_to_panorama_homography"
+            ]
+        )
+        overlap_to_panorama = matrix(
+            panorama["groups"]["solder_grid"]["images"][overlap["image"]][
+                "original_to_panorama_homography"
+            ]
+        )
+        primary_to_overlap = multiply(
+            inverse3(overlap_to_panorama), primary_to_panorama
+        )
+        overlap_errors = {
+            name: math.dist(project(primary_to_overlap, primary[name]), overlap[name])
+            for name in ("left_landing_px", "d56_5_px", "d56_12_px")
+        }
+        d56_ok &= max(overlap_errors.values()) <= 20.0
+        d56_rows = [(primary, primary_errors), (overlap, overlap_errors)]
     d56_ok &= (
         len(d56["package_identity"]["component_observations"]) >= 3
         and "tubing" in d56["drawing"]["observation"]
-        and "not promoted" in d56["remaining_boundary"]
+        and "no visible gap is promoted" in d56["remaining_boundary"]
     )
     d15_rows = []
     d15_ok = chips["D15"]["pins"].get("8") == "A2" and chips["D15"]["pins"].get("9") == "A1"
@@ -299,8 +332,8 @@ def main() -> int:
         "| --- | --- | --- | --- |",
     ]
     for ref, detail in AFFECTED.items():
-        disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — the callout row is fixed at D56.12/D56.5; no cut or merge is inferred"
-        closure = "three component views identify the package; two overlapping solder views fix the reflected pin field; note 11 identifies position 150 as tubing"
+        disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — all three callout locations are fixed; no cut or merge is inferred"
+        closure = "validated two-sided package fits plus two solder views identify the left annulus and D56.5/D56.12; continuity or item 159 is still required"
         if ref == "D15":
             disposition = "PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches"
             closure = "two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held"
@@ -321,30 +354,34 @@ def main() -> int:
         "## D56 callout-field registration",
         "",
         "Three overlapping component photographs identify the same notch-down",
-        "`К155АГ3 8901` package beside the right board edge. The coherent reflected",
-        "16-pin solder field fixes the drawing's three-leader level at the",
-        "D56.12/D56.5 row. Assembly note 11 says tubing positions 157 and 150",
-        "are fitted at solder locations. Position 150 is therefore not a cut",
+        "`К155АГ3 8901` package beside the right board edge. Held-out-validated",
+        "component and reflected local-package fits replace the displaced global",
+        "endpoint seeds. The drawing's three leaders register as the separate left",
+        "annulus, D56.5, and D56.12 at one physical level. Assembly note 11 says",
+        "tubing positions 157 and 150 are fitted at solder locations. Position 150",
+        "is therefore not a cut",
         "instruction, and the nearby visible wide-rail gap cannot be promoted as",
         "proof of the D56.12 net partition. Position 159 remains an unexpanded",
         "solder-location callout until its specification identity is recovered.",
         "",
-        "| Solder view | D56.12 fit error | D56.5 fit error | Result |",
-        "| --- | ---: | ---: | --- |",
+        "| Solder view | Left-landing error | D56.5 error | D56.12 error | Result |",
+        "| --- | ---: | ---: | ---: | --- |",
     ]
     for observation, errors in d56_rows:
         lines.append(row([
             Path(observation["image"]).name,
-            f"{errors['d56_12_px']:.3f} mm",
-            f"{errors['d56_5_px']:.3f} mm",
-            "registered three-callout package level",
+            f"{errors['left_landing_px']:.3f} px",
+            f"{errors['d56_5_px']:.3f} px",
+            f"{errors['d56_12_px']:.3f} px",
+            "package-local reference" if errors["left_landing_px"] == 0 else "independent overlap",
         ]))
     lines += [
         "",
-        "The separate left landing, the nearby rail stub, and every conductor at",
-        "this level remain electrically and fabrication-held. Direct continuity",
-        "or the complete position-159 specification is required before changing",
-        "the clean source net partition.",
+        "Both solder views show small bare-board gaps between the D56.5/D56.12",
+        "pads and the adjacent horizontal rail; the separate left annulus belongs",
+        "to that rail. This closes the three-location geometry, not the installed",
+        "assembly conductor. Direct continuity or the complete position-159",
+        "specification is required before changing the clean source net partition.",
         "",
         "## D15 cut registration",
         "",

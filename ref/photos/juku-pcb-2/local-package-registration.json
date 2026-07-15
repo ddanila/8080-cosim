@@ -357,6 +357,32 @@
       "note": "The D2 cross-side transform predicts this lower package group; direct anchors then hold both D51 solder columns independently."
     },
     {
+      "refdes": "D56",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [3050.0, 1380.0], "use": "fit", "observation": "bottom-right contact beside the downward-facing notch"},
+        {"pin": "8", "image_px": [3050.0, 940.0], "use": "check", "observation": "independent top-right contact on the complete pin-1-to-8 column"},
+        {"pin": "9", "image_px": [2865.0, 940.0], "use": "fit", "observation": "top-left contact on the opposite complete column"},
+        {"pin": "16", "image_px": [2865.0, 1380.0], "use": "check", "observation": "independent bottom-left contact on the pin-9-to-16 column"}
+      ],
+      "note": "The notch-down К155АГ3 8901 body and both complete eight-contact columns identify D56 independently of the displaced whole-board endpoint seeds."
+    },
+    {
+      "refdes": "D56",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [807.0, 536.0], "use": "fit", "observation": "bottom-left joint of the coherent reflected field"},
+        {"pin": "8", "image_px": [807.0, 89.0], "use": "check", "observation": "independent top-left joint at the wide upper rail"},
+        {"pin": "9", "image_px": [990.0, 89.0], "use": "fit", "observation": "top-right joint at the wide upper rail"},
+        {"pin": "16", "image_px": [990.0, 536.0], "use": "check", "observation": "independent bottom-right joint beside the lower rail stub"}
+      ],
+      "note": "The two complete eight-joint columns identify the reflected D56 field and show that the older whole-board projections were displaced from the physical joints. The fit establishes package-pad identity only; the adjacent position-150/159 callouts remain electrically guarded."
+    },
+    {
       "refdes": "D11",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",

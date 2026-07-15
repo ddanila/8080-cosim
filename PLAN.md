@@ -253,10 +253,12 @@ Every ask below is queued with exact deliverables in
    maps both package rows, and two component views prove the position-159
    D32.4/GND-to-D14.1 copper link now preserved by the source model. Exact
    D56 geometry is now registered: three component views identify the actual
-   notch-down К155АГ3 package, two solder views register its reflected pin
-   field, and the three-leader drawing level maps to the D56.12/D56.5 row.
-   The separate left landing, nearby rail gap, and callout conductors are not
-   electrically assigned; no D56 net change is inferred. D14's fifth landing
+   notch-down К155АГ3 package, held-out-validated component/reflected local fits
+   replace the displaced global seeds, and two solder views map all three
+   callout locations as the separate left annulus plus D56.5/D56.12. Visible
+   bare-board gaps separate both package pads from the adjacent rail, but the
+   installed item-159 conductor/material is not electrically assigned and no
+   D56 net change is inferred. D14's fifth landing
    is now registered in two component views at `(207.887, 49.900) mm` with
    `0.011 mm` cross-view disagreement; its conductor, three long traces, and
    right-row dogleg remain held. Both reflected solder overlaps place the D14

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D56 package and three-callout field registered but electrically held; D15 cut pair and the D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
+  "status": "D56 two-sided package and three-callout geometry registered but electrically held; D15 cut pair and the D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
   "d56": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114638730.MP.jpg",
@@ -28,27 +28,33 @@
     },
     "callout_field": {
       "registered_level": "D56.12/D56.5 row",
+      "package_fits": {
+        "component": "docs/photo-registration/local-packages/D56-component.jpg",
+        "solder": "docs/photo-registration/local-packages/D56-solder.jpg"
+      },
       "solder_observations": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
-          "d56_12_px": [772.077, 447.902],
-          "d56_5_px": [946.897, 448.411],
-          "observation": "the reflected package field fixes the two package joints at the three-leader drawing level; the separate left landing and nearby rail stub are visible but not electrically assigned"
+          "left_landing_px": [594.0, 279.0],
+          "d56_5_px": [802.862, 282.345],
+          "d56_12_px": [993.103, 279.241],
+          "observation": "the package-local reflected fit fixes D56.5 and D56.12 at the three-leader level; the separate left annulus is collinear, while visible gaps keep both package pads distinct from the nearby horizontal rail"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
-          "d56_12_px": [845.193, 2760.387],
-          "d56_5_px": [1006.132, 2762.066],
-          "observation": "overlap view independently repeats both package joints and the same three-location row"
+          "left_landing_px": [682.0, 2602.0],
+          "d56_5_px": [880.0, 2616.0],
+          "d56_12_px": [1045.0, 2613.0],
+          "observation": "overlap view independently repeats the left annulus, both package joints, their collinear order, and the gaps to the adjacent rail"
         }
       ],
-      "result": "The factory detail is registered to the D56.12/D56.5 physical level, but the position-150 tubing and position-159 solder callouts do not by themselves prove a connection between those pins, the separate left landing, or the adjacent rail."
+      "result": "The factory detail's three position-159 locations register as the separate left annulus plus D56.5 and D56.12 at one physical level. The photographed bare-board copper leaves visible gaps between both package pads and the nearby horizontal rail, but the position-150 tubing and unexpanded position-159 callout do not prove what conductor or material was installed at assembly."
     },
     "callout_identity_evidence": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114649169.jpg",
       "observation": "Assembly note 11 says to fit tubing positions 157 and 150 at solder locations; this disproves the former position-150-equals-cut interpretation. The specification identity of position 159 was not photographed, so it remains a guarded solder-location callout rather than an inferred material or conductor."
     },
-    "remaining_boundary": "Map the separate left landing and all conductors at the registered D56.12/D56.5 level with direct continuity or a complete item-159 specification. The visible nearby wide-rail gap is not promoted as the position-150 operation or as proof of the D56.12 net partition."
+    "remaining_boundary": "The three physical position-159 locations are fixed as the separate left annulus, D56.5, and D56.12. Determine the installed conductor/material and continuity among those locations and the adjacent rail directly or recover the complete item-159 specification. Position 150 remains tubing, and no visible gap is promoted as an assembly cut or source-net change."
   },
   "d15": {
     "drawing": {

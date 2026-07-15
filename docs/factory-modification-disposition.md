@@ -16,7 +16,7 @@ and the remaining D14 auxiliary paths stay held.
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
-| D56 | АГ3 timing area: position-150 tubing and three position-159 solder locations register at the D56.12/D56.5 level; their electrical topology remains held | GEOMETRY REGISTERED / ELECTRICAL HOLD — the callout row is fixed at D56.12/D56.5; no cut or merge is inferred | three component views identify the package; two overlapping solder views fix the reflected pin field; note 11 identifies position 150 as tubing |
+| D56 | АГ3 timing area: position-150 tubing and three position-159 solder locations register as the separate left annulus plus D56.5/D56.12; the installed conductor and electrical topology remain held | GEOMETRY REGISTERED / ELECTRICAL HOLD — all three callout locations are fixed; no cut or merge is inferred | validated two-sided package fits plus two solder views identify the left annulus and D56.5/D56.12; continuity or item 159 is still required |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
 | D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release |
 | D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; validated two-sided package fits exhaust four solder views, so direct continuity is required to assign any D11 pin/net |
@@ -24,23 +24,26 @@ and the remaining D14 auxiliary paths stay held.
 ## D56 callout-field registration
 
 Three overlapping component photographs identify the same notch-down
-`К155АГ3 8901` package beside the right board edge. The coherent reflected
-16-pin solder field fixes the drawing's three-leader level at the
-D56.12/D56.5 row. Assembly note 11 says tubing positions 157 and 150
-are fitted at solder locations. Position 150 is therefore not a cut
+`К155АГ3 8901` package beside the right board edge. Held-out-validated
+component and reflected local-package fits replace the displaced global
+endpoint seeds. The drawing's three leaders register as the separate left
+annulus, D56.5, and D56.12 at one physical level. Assembly note 11 says
+tubing positions 157 and 150 are fitted at solder locations. Position 150
+is therefore not a cut
 instruction, and the nearby visible wide-rail gap cannot be promoted as
 proof of the D56.12 net partition. Position 159 remains an unexpanded
 solder-location callout until its specification identity is recovered.
 
-| Solder view | D56.12 fit error | D56.5 fit error | Result |
-| --- | ---: | ---: | --- |
-| PXL_20260710_200530933.MP.jpg | 0.000 mm | 0.000 mm | registered three-callout package level |
-| PXL_20260710_200522685.jpg | 0.000 mm | 0.000 mm | registered three-callout package level |
+| Solder view | Left-landing error | D56.5 error | D56.12 error | Result |
+| --- | ---: | ---: | ---: | --- |
+| PXL_20260710_200530933.MP.jpg | 0.000 px | 0.000 px | 0.000 px | package-local reference |
+| PXL_20260710_200522685.jpg | 0.585 px | 11.514 px | 9.684 px | independent overlap |
 
-The separate left landing, the nearby rail stub, and every conductor at
-this level remain electrically and fabrication-held. Direct continuity
-or the complete position-159 specification is required before changing
-the clean source net partition.
+Both solder views show small bare-board gaps between the D56.5/D56.12
+pads and the adjacent horizontal rail; the separate left annulus belongs
+to that rail. This closes the three-location geometry, not the installed
+assembly conductor. Direct continuity or the complete position-159
+specification is required before changing the clean source net partition.
 
 ## D15 cut registration
 

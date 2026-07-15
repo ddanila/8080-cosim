@@ -34,12 +34,14 @@ PDF is the prototype and may differ.
 4. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
    D106.11-D93.27, D106.14-D93.33 layer-handoff tests, and the D95/D101 select
    pins (`docs/fdc-hardware-handoff.md`).
-5. **Factory Вид В details:** continuity-map the separate left landing, rail
-   stub/gap, and conductors at D56's registered D56.12/D56.5 callout level;
-   position 150 is tubing, not a cut. Also continuity-test D14's registered fifth-landing conductor, three long traces, and
-   right-row dogleg/D14.7; the available photos are exhausted there. At D11, continuity-test the registered four-landmark bridge
-   and its remote endpoints, or register the same holes locally on the solder
-   side; the old pins-4–6 scar is a different feature. D15's A2/A1 cut and D14's
+5. **Factory Вид В details:** D56's three physical callout locations are fixed
+   as the separate left annulus plus D56.5/D56.12; continuity-map the installed
+   item-159 conductor/material among those locations and the adjacent rail.
+   Position 150 is tubing, not a cut. Also continuity-test D14's registered fifth-landing conductor, three long traces, and
+   right-row dogleg/D14.7; the available photos are exhausted there. At D11,
+   continuity-test the registered four-landmark bridge and its remote endpoints;
+   two-sided package-local projection has exhausted the solder photos, and the
+   old pins-4–6 scar is a different feature. D15's A2/A1 cut and D14's
    local D32.4/GND-to-D14.1 link are photo-closed (`docs/factory-modification-disposition.md`).
 
 ## Programmable-parts corroboration (optional, Tier-3)
