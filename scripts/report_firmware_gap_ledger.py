@@ -117,7 +117,8 @@ def main() -> int:
     )
     rt4_validator_ok = marker(
         "docs/rt4-dump-acquisition.md",
-        "PHYSICAL D2/D6 TABLES VALIDATED",
+        "CAPTURE CONSISTENCY VALIDATED / D6 ELECTRICAL RE-READ QUEUED",
+        "Reader revision 2 moves D3 to A0",
         "*.raw.bin",
         "D94 `.092` requires a",
         "separate К155РЕ3 reader",
@@ -146,7 +147,7 @@ def main() -> int:
             "memory decode PROM",
             d6_cell,
             "`ref/physical-proms/README.md`",
-            "independent-reader or programming-disk comparison",
+            "revision-2 corrected-reader re-read with byte-identical D2 control; then programming-disk comparison if recovered",
         ],
         [
             "D8",
@@ -252,7 +253,8 @@ def main() -> int:
             "  still use the deterministic `ekta37` EPROM split.",
             "- D2 is preservation-strength within current evidence: three captures",
             "  validate identically and include a separate power cycle. D6 also has three",
-            "  matching preserved captures including a separate power cycle.",
+            "  matching preserved captures including a separate power cycle, but its D0/D3",
+            "  electrical provenance remains gated by the revision-2 re-read.",
             "- D15/D16 are deterministic Tier-1/2 functional images, not physical",
             "  device dumps. Program them as low/high 8 KiB respectively and",
             "  retain programmer verification records.",
@@ -272,6 +274,9 @@ def main() -> int:
             "  if recovered; use it as independent corroboration of D8/D94 as well.",
             "- Validate D2/D6 serial captures with `scripts/validate_rt4_dump.py`;",
             "  preserve raw pin-level and active-low asserted tables separately.",
+            "- Re-read known D2 and then D6 with RT4 reader revision 2; require the",
+            "  disabled-output pull-up check and classify D6 exactly as documented in",
+            "  `docs/rt4-dump-acquisition.md` before retiring the functional decoder.",
             "- Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
             "  the adopted D94 table still requires complete input/enable/output continuity.",
             "- Repeatedly read physical D15/D16 and compare their concatenation",
