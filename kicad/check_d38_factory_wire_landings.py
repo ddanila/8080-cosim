@@ -88,6 +88,14 @@ if a9_evidence.get("via_px") != [2288, 2298]:
     errors.append("A9B: component-side via coordinate is not guarded")
 if a9_evidence.get("solder_via_px") != [1374, 1984]:
     errors.append("A9B: cross-side solder-via coordinate is not guarded")
+a9a = next(
+    item for item in point_records[9]["endpoints"] if item["terminal"] == "A9A"
+)
+if a9a.get("board_mm") is not None or a9a.get("island_assignment") is not None:
+    errors.append("A9A: obscured D51-side landing was promoted without evidence")
+a9_observation = point_records[9].get("observation", "")
+if "six overlapping component photos" not in a9_observation or "mastic" not in a9_observation:
+    errors.append("A9A: overlapping-view mastic obstruction is not guarded")
 
 if errors:
     raise SystemExit("D38 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))

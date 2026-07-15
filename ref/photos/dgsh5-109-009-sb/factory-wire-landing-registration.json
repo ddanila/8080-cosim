@@ -108,7 +108,7 @@
     {
       "point": 9,
       "status": "image-registered/board-fit-pending",
-      "observation": "adjacent placement views show the shallow diagonal line leaving the left 9 mark below D31/C34 in 114604420 and arriving from the left at the right 9 mark below R53 in 114600417",
+      "observation": "adjacent placement views show the shallow diagonal line leaving the left 9 mark below D31/C34 in 114604420 and arriving from the left at the right 9 mark below R53 in 114600417; six overlapping component photos place the D51-side drawing region beneath the same factory-wire bundle and mastic patch, so the A9A joint remains physically obscured rather than safely inferable from the visible wire approach",
       "endpoints": [
         {
           "terminal": "A9A",

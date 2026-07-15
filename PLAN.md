@@ -59,7 +59,10 @@ These are ordered; each is completable with material already in the repo.
    faces, and legacy endpoint seeds that mislabeled the visibly marked
    КР531ИЕ17 as D35 have been withdrawn. The marked D1 CPU and its complete
    2x20 pad field are likewise fitted on both faces, isolating the separately
-   printed D1-side A7/A14 joints below the package
+   printed D1-side A7/A14 joints below the package. The remaining D51-side A9
+   joint has been chased across six overlapping
+   component tiles and is consistently hidden beneath the factory-wire bundle
+   and mastic, so its visible wire approach is not promoted as a landing.
    (`docs/factory-wire-route-fidelity.md`). Do not replace
    `kicad/juku_routed.kicad_pcb` yet: copper produced now survives later
    netlist changes through the per-net quarantine mechanism, but final
