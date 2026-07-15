@@ -73,13 +73,26 @@ def category_for_chip(chip: dict, text: str) -> str:
     return "logic/source"
 
 
-def category_for_net(name: str, text: str) -> str:
+PROM_DECODE_NETS = {"CS_FDC", "D7_IOM_STATUS_RECHECK"}
+VIDEO_ANALOG_NETS = {
+    "D34_SYNC",
+    "D34_SIG",
+    "VT2_BASE",
+    "VIDEO_OUT",
+    "R67_2_BOUNDARY",
+    "C94_1_BOUNDARY",
+    "C94_2_BOUNDARY",
+}
+
+
+def category_for_net(name: str, text: str, nodes: list[list[str]]) -> str:
     upper = f"{name} {text}".upper()
-    if name.startswith(("FDC_", "D93_")):
+    refs = {str(node[0]) for node in nodes}
+    if name.startswith(("FDC_", "D93_")) or refs & (FDC_SUPPORT_REFS | {"D93"}):
         return "FDC owner-continuity"
-    if "PROM" in upper or re.search(r"(?<![A-Z0-9])D(?:2|6|94)(?![0-9])", upper):
+    if "PROM" in name.upper() or name in PROM_DECODE_NETS or refs & PROGRAMMABLE_REFS:
         return "PROM/decode"
-    if "VIDEO" in upper or "SYNC" in upper or "RF" in upper or "ANALOG" in upper:
+    if name in VIDEO_ANALOG_NETS:
         return "video/analog"
     if "SOUND" in upper or "SND" in upper or "SPKR" in upper:
         return "sound/analog"
@@ -171,11 +184,26 @@ def main() -> int:
         net_gap_rows.append(
             {
                 "name": name,
-                "category": category_for_net(name, text),
+                "category": category_for_net(name, text, net.get("nodes", [])),
                 "nodes": net.get("nodes", []),
                 "note": text,
             }
         )
+
+    category_by_net = {str(row["name"]): str(row["category"]) for row in net_gap_rows}
+    expected_categories = {
+        "D106_D2_BOUNDARY": "FDC owner-continuity",
+        "C12_1_BOUNDARY": "logic/source",
+        "C12_2_BOUNDARY": "logic/source",
+        "READY_PRE_N": "logic/source",
+        "USART_RXRDY_IRQ": "logic/source",
+        "USART_TXRDY_IRQ": "logic/source",
+    }
+    for name, expected in expected_categories.items():
+        if name in category_by_net and category_by_net[name] != expected:
+            raise SystemExit(
+                f"net category regression: {name}={category_by_net[name]}, expected {expected}"
+            )
 
     chip_categories = Counter(str(row["category"]) for row in chip_gap_rows)
     net_categories = Counter(str(row["category"]) for row in net_gap_rows)
