@@ -193,17 +193,41 @@ module vjuga_juku_top #(
         end else cpu_di = 8'hFF;
     end
 
+    // ---- Phase 4 bench-observability emitters (opt-in via plusargs) ----
+    // +capture=<file> logs every framebuffer write as "addr data" (hex), the
+    //   exact stream tools/vjuga_fb_readback/reassemble.py replays -- so the
+    //   readback tool is validated against this twin before any hardware exists.
+    // +trace=<file> logs the first M1 opcode fetches in the same format the UNO
+    //   single-step sketch prints, so a bench session diffs against this twin.
+    integer capf = 0, trcf = 0, trc_count = 0;
+    reg [1023:0] capname, trcname;
+    reg m1_fetch_prev = 1'b0;
+    initial begin
+        if ($value$plusargs("capture=%s", capname)) capf = $fopen(capname, "w");
+        if ($value$plusargs("trace=%s", trcname))   trcf = $fopen(trcname, "w");
+    end
+
     // ---- framebuffer dump via the РУ5 video port, then finish ----
     reg [15:0] va_r = 16'hD800;
     assign vid_addr = va_r;
     reg [31:0] vw = 0;
     reg        prev_wr_ram = 0;
     wire       ram_write_now = (st == S_COL) && acc_write && (acc_addr >= 16'hD800);
+    wire       m1_fetch_now  = (m1_n == 1'b0) && (mreq_n == 1'b0) && (rd_n == 1'b0);
     always @(posedge clk) begin
-        if (!reset_n) begin vw <= 0; prev_wr_ram <= 0; end
+        if (!reset_n) begin vw <= 0; prev_wr_ram <= 0; m1_fetch_prev <= 1'b0; end
         else begin
-            if (ram_write_now && !prev_wr_ram) vw <= vw + 1;
+            if (ram_write_now && !prev_wr_ram) begin
+                vw <= vw + 1;
+                if (capf != 0) $fwrite(capf, "%04h %02h\n", acc_addr, ram_wdata);
+            end
             prev_wr_ram <= ram_write_now;
+            if (trcf != 0 && m1_fetch_now && !m1_fetch_prev && trc_count < 256) begin
+                $fwrite(trcf, "F%0d: addr=%04h data=%02h m1=%b mreq=%b rd=%b\n",
+                        trc_count, A, cpu_di, m1_n, mreq_n, rd_n);
+                trc_count <= trc_count + 1;
+            end
+            m1_fetch_prev <= m1_fetch_now;
         end
     end
 
@@ -225,6 +249,8 @@ module vjuga_juku_top #(
             $fwrite(fo, "%c", fb_byte);
         end
         $fclose(fo);
+        if (capf != 0) $fclose(capf);
+        if (trcf != 0) $fclose(trcf);
         $display("VJUGA-V: framebuffer dumped after %0d video writes (mode=%0d)", vw_limit, mode);
         $finish;
     end

@@ -18,6 +18,9 @@ spinoffs/minimal-vga/sim/boot_check.sh
 echo "== VJUGA spin-off: Verilog twin boots ekta37 on tv80 + real К565РУ5 =="
 spinoffs/minimal-vga/sim/vjuga_boot_check.sh
 
+echo "== VJUGA spin-off: Phase 4 framebuffer-readback tool validated vs twin + cosim =="
+spinoffs/minimal-vga/sim/vjuga_readback_check.sh
+
 echo "== VJUGA spin-off: schematic/HDL LVS =="
 spinoffs/minimal-vga/sync/check.sh
 
