@@ -10,14 +10,15 @@ mixes mounting-side context with solder-side artwork, so it does not
 by itself prove package pin numbers or final net partitions.
 Two independent component views plus the reflected solder panorama now
 close the D15 cut topology and the D14 position-159 ground link. D56,
-D11, and the remaining D14 auxiliary/replacement paths stay unproved.
+D11 bridge endpoints, and the remaining D14 auxiliary/replacement paths
+stay unproved; D11's four physical landings are now registered.
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
 | D56 | АГ3 timing area: multiple drawn cuts/patches around the package fanout | DESIGN HOLD — affected footprint exists, exact modified pads/nets not mapped | registered two-sided copper overlay plus pad/via continuity (the acquired sheets 2-5 wire table covers wires/cables only, not cut pads) |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
 | D14 | АП2 serial-driver area: registered notch-up orientation maps the right row to D14.8-.5 and the first four left-row holes to D14.1-.4; position 159 closes the D32.4/GND-to-D14.1 link, while the fifth landing and remaining replacement traces stay held | PARTIAL PHOTO-CLOSE — position 159 preserves D32.4/GND-to-D14.1; remaining fifth landing and replacement traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing, three long traces, and right-row dogleg before full release |
-| D11 | 8251 USART area: detail shows one 14-pad package column plus a four-hole auxiliary field and a position-159 bridge; a held-out-validated solder fit localizes the visible reworked copper beside D11 pins 4-6, but the obscured bridge endpoints remain unproved | DESIGN HOLD — affected footprint exists, exact modified pads/nets not mapped | registered two-sided copper overlay plus pad/via continuity (the acquired sheets 2-5 wire table covers wires/cables only, not cut pads) |
+| D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 landings are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 landings identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net |
 
 ## D15 cut registration
 
@@ -61,18 +62,48 @@ traces, and the right-row dogleg are not electrically closed by these
 views. D14.2 and D14.7 remain measurement boundaries, and no remote net
 or fabrication geometry is inferred from the drawing alone.
 
+## D11 position-159 field registration
+
+The component photographs correct the earlier interpretation of the
+factory detail. Its long hole column and unique L-shaped trace are the
+auxiliary drilled/copper field beside D11, not a drawn 14-pad package
+column. The four-landmark subfield is reproducible in two independent
+component views: a long vertical trace joins the upper landing to the
+position-159 junction, a left landing approaches that junction through
+the obscured bridge, and a lower landing departs on a separate trace.
+
+| Landing | Provisional board centre (mm) | Component-view agreement | Disposition |
+| --- | --- | ---: | --- |
+| upper_rail | (190.816, 59.870) | 0.001 mm | registered topology; fabrication drill held |
+| bridge_left | (188.358, 74.323) | 0.001 mm | registered topology; fabrication drill held |
+| position159_junction | (190.863, 73.201) | 0.001 mm | registered topology; fabrication drill held |
+| lower_exit | (189.622, 76.661) | 0.000 mm | registered topology; fabrication drill held |
+
+These board centres use the panorama's coarse component-grid fit and are
+topology locators, not pin- or fabrication-grade coordinates. In
+particular, the validated D11 solder overlay localizes a conspicuous scar
+beside pins 4 through 6, but cross-registration shows that scar is a
+different feature and cannot identify the factory position-159 bridge.
+The nearest provisional field centre is 12.946 mm
+from the nominal D11.4-.6 column, more than twice the component-grid
+held-out error ceiling (5.464 mm); the exclusion
+therefore survives the coarse global-fit uncertainty.
+The corresponding solder-side holes, D11 pin/net, and both remote trace
+endpoints remain unproved. No source net or auxiliary drill is changed
+until a local through-hole fit or direct continuity closes them.
+
 ## Guarded evidence
 
 - `PXL_20260711_114626340.jpg`: full Вид В and all four local details.
 - `PXL_20260711_114633498.jpg`: enlarged D15 Разрезать operation.
 - `PXL_20260711_114638730.MP.jpg`: full-resolution positions 150/159 context.
-- `factory-modification-registration.json`: two-face D15 cut-pair and two-view D14 position-159 registration.
+- `factory-modification-registration.json`: D15/D14 closures plus two-view D11 four-landing registration.
 - `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`: factory-versus-owner disposition.
 
 ## Release rule
 
 Do not release or reroute the board on netlist equivalence alone. For each
-of D56/D11 and the remaining D14 detail, identify the modified pad/via pair(s), the cut original
+of D56, the obscured D11 bridge, and the remaining D14 detail, identify the modified pad/via pair(s), the cut original
 segment, and the replacement connection; then prove the final source-PCB
 net partition matches the factory result. D15 and the D14.1 ground link
 are electrically closed; their unmeasured auxiliary-hole geometry remains

@@ -81,7 +81,7 @@ Provenance for vendored inputs belongs beside the inputs:
 - `../ref/wd1772-vg93/README.md`
 - `assembly-drawing-extraction.md` — guarded extraction and checksums for the photographed `ДГШ5.109.009 СБ` sheet 1 and the ДУБЛИКАТ scan of its sheets 2-6 (wire table).
 - `official-009-ic-census.md` — complete two-page `ДГШ5.109.009 ПЭЗ` IC transcription, owner-board substitutions, and board-model identity guard.
-- `factory-modification-disposition.md` — photo-closed D15 A2/A1 cut, partial D14 position-159 ground-link closure, and the remaining factory Вид В mapping hold.
+- `factory-modification-disposition.md` — photo-closed D15 cut, partial D14 ground-link closure, registered D11 four-landing field, and the remaining factory Вид В holds.
 
 ## Status vocabulary
 

@@ -19,7 +19,7 @@ AFFECTED = {
     "D56": "АГ3 timing area: multiple drawn cuts/patches around the package fanout",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
     "D14": "АП2 serial-driver area: registered notch-up orientation maps the right row to D14.8-.5 and the first four left-row holes to D14.1-.4; position 159 closes the D32.4/GND-to-D14.1 link, while the fifth landing and remaining replacement traces stay held",
-    "D11": "8251 USART area: detail shows one 14-pad package column plus a four-hole auxiliary field and a position-159 bridge; a held-out-validated solder fit localizes the visible reworked copper beside D11 pins 4-6, but the obscured bridge endpoints remain unproved",
+    "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 landings are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature",
 }
 
 
@@ -146,6 +146,38 @@ def main() -> int:
     gnd_nodes = {tuple(node) for node in nets["GND"]["nodes"]}
     d14_ok &= {("D32", "4"), ("D14", "1")} <= gnd_nodes
 
+    d11 = modification["d11"]
+    d11_rows = []
+    d11_ok = True
+    for name, landing in d11["landings"].items():
+        points = [
+            image_to_board(
+                observation["image"],
+                observation["image_px"],
+                "component_grid",
+                panorama,
+                board_registration,
+            )
+            for observation in landing["component_observations"]
+        ]
+        centre = tuple(
+            sum(point[axis] for point in points) / len(points) for axis in range(2)
+        )
+        spread = max(math.dist(centre, point) for point in points)
+        d11_ok &= spread <= 0.15
+        d11_rows.append((name, centre, spread))
+    d11_pin4_6 = [(177.88, 56.81), (177.88, 59.35), (177.88, 61.89)]
+    d11_scar_separation = min(
+        math.dist(centre, pin_point)
+        for _, centre, _ in d11_rows
+        for pin_point in d11_pin4_6
+    )
+    component_fit_ceiling = (
+        board_registration["groups"]["component_grid"]["max_held_out_error_px"]
+        / board_registration["pixels_per_mm"]
+    )
+    d11_ok &= d11_scar_separation > 2 * component_fit_ceiling
+
     guard_ok = (
         all(ref in chips for ref in AFFECTED)
         and all(path.exists() and path.stat().st_size > 1_000_000 for path in detail_photos)
@@ -154,6 +186,7 @@ def main() -> int:
         and "Factory solder-side cuts and patches" in bodge
         and d15_ok
         and d14_ok
+        and d11_ok
     )
     status = "FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED" if guard_ok else "FACTORY MODIFICATION GUARD FAILED"
 
@@ -170,7 +203,8 @@ def main() -> int:
         "by itself prove package pin numbers or final net partitions.",
         "Two independent component views plus the reflected solder panorama now",
         "close the D15 cut topology and the D14 position-159 ground link. D56,",
-        "D11, and the remaining D14 auxiliary/replacement paths stay unproved.",
+        "D11 bridge endpoints, and the remaining D14 auxiliary/replacement paths",
+        "stay unproved; D11's four physical landings are now registered.",
         "",
         "| Ref | Factory operation locality | Current disposition | Closure evidence |",
         "| --- | --- | --- | --- |",
@@ -184,6 +218,9 @@ def main() -> int:
         elif ref == "D14":
             disposition = "PARTIAL PHOTO-CLOSE — position 159 preserves D32.4/GND-to-D14.1; remaining fifth landing and replacement traces are held"
             closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing, three long traces, and right-row dogleg before full release"
+        elif ref == "D11":
+            disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 landings identified; bridge and remote trace endpoints remain obscured"
+            closure = "two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net"
         lines.append(row([
             ref,
             detail,
@@ -249,6 +286,41 @@ def main() -> int:
         "traces, and the right-row dogleg are not electrically closed by these",
         "views. D14.2 and D14.7 remain measurement boundaries, and no remote net",
         "or fabrication geometry is inferred from the drawing alone.",
+        "",
+        "## D11 position-159 field registration",
+        "",
+        "The component photographs correct the earlier interpretation of the",
+        "factory detail. Its long hole column and unique L-shaped trace are the",
+        "auxiliary drilled/copper field beside D11, not a drawn 14-pad package",
+        "column. The four-landmark subfield is reproducible in two independent",
+        "component views: a long vertical trace joins the upper landing to the",
+        "position-159 junction, a left landing approaches that junction through",
+        "the obscured bridge, and a lower landing departs on a separate trace.",
+        "",
+        "| Landing | Provisional board centre (mm) | Component-view agreement | Disposition |",
+        "| --- | --- | ---: | --- |",
+    ]
+    for name, centre, spread in d11_rows:
+        lines.append(row([
+            name,
+            f"({centre[0]:.3f}, {centre[1]:.3f})",
+            f"{spread:.3f} mm",
+            "registered topology; fabrication drill held",
+        ]))
+    lines += [
+        "",
+        "These board centres use the panorama's coarse component-grid fit and are",
+        "topology locators, not pin- or fabrication-grade coordinates. In",
+        "particular, the validated D11 solder overlay localizes a conspicuous scar",
+        "beside pins 4 through 6, but cross-registration shows that scar is a",
+        "different feature and cannot identify the factory position-159 bridge.",
+        f"The nearest provisional field centre is {d11_scar_separation:.3f} mm",
+        f"from the nominal D11.4-.6 column, more than twice the component-grid",
+        f"held-out error ceiling ({component_fit_ceiling:.3f} mm); the exclusion",
+        "therefore survives the coarse global-fit uncertainty.",
+        "The corresponding solder-side holes, D11 pin/net, and both remote trace",
+        "endpoints remain unproved. No source net or auxiliary drill is changed",
+        "until a local through-hole fit or direct continuity closes them.",
     ]
     lines += [
         "",
@@ -257,13 +329,13 @@ def main() -> int:
         "- `PXL_20260711_114626340.jpg`: full Вид В and all four local details.",
         "- `PXL_20260711_114633498.jpg`: enlarged D15 Разрезать operation.",
         "- `PXL_20260711_114638730.MP.jpg`: full-resolution positions 150/159 context.",
-        "- `factory-modification-registration.json`: two-face D15 cut-pair and two-view D14 position-159 registration.",
+        "- `factory-modification-registration.json`: D15/D14 closures plus two-view D11 four-landing registration.",
         "- `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`: factory-versus-owner disposition.",
         "",
         "## Release rule",
         "",
         "Do not release or reroute the board on netlist equivalence alone. For each",
-        "of D56/D11 and the remaining D14 detail, identify the modified pad/via pair(s), the cut original",
+        "of D56, the obscured D11 bridge, and the remaining D14 detail, identify the modified pad/via pair(s), the cut original",
         "segment, and the replacement connection; then prove the final source-PCB",
         "net partition matches the factory result. D15 and the D14.1 ground link",
         "are electrically closed; their unmeasured auxiliary-hole geometry remains",

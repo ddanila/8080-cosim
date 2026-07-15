@@ -250,8 +250,11 @@ Every ask below is queued with exact deliverables in
    not invented. D14 is now partially photo-closed: notch-oriented registration
    maps both package rows, and two component views prove the position-159
    D32.4/GND-to-D14.1 copper link now preserved by the source model. Exact
-   modified pads, removed segments, and replacement nets at D56 and D11, plus
-   D14's fifth landing, three long traces, and right-row dogleg, remain the P0 hold
+   modified pads, removed segments, and replacement nets at D56, plus D14's
+   fifth landing, three long traces, and right-row dogleg, remain held. At D11,
+   two component views now register the L trace and four position-159 landings
+   and exclude the previously cited pins-4–6 solder scar as a different feature;
+   the solder-side through-hole fit and electrical endpoints remain the P0 hold
    (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
    217 source-risk nets and 9 official FDC devices with untraced functional

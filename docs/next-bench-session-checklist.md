@@ -35,9 +35,11 @@ PDF is the prototype and may differ.
    D106.11-D93.27, D106.14-D93.33 layer-handoff tests, and the D95/D101 select
    pins (`docs/fdc-hardware-handoff.md`).
 5. **Factory Вид В modifications:** the poz.150/159 cut pads / removed segments /
-   replacement nets at D56/D11, plus D14's fifth landing, three long traces,
-   and right-row dogleg. D15's A2/A1 cut and D14's D32.4/GND-to-D14.1 link are
-   photo-closed and need no continuity probe (`docs/factory-modification-disposition.md`).
+   replacement nets at D56, plus D14's fifth landing, three long traces, and
+   right-row dogleg. At D11, continuity-test the registered four-landmark bridge
+   and its remote endpoints, or register the same holes locally on the solder
+   side; the old pins-4–6 scar is a different feature. D15's A2/A1 cut and D14's
+   D32.4/GND-to-D14.1 link are photo-closed (`docs/factory-modification-disposition.md`).
 
 ## Programmable-parts corroboration (optional, Tier-3)
 

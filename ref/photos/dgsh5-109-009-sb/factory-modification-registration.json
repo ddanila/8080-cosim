@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D15 cut pair photo-closed; D14 position-159 D32.4/GND-to-D14.1 link photo-closed; D56/D11 and the remaining D14 replacement traces remain pending",
+  "status": "D15 cut pair and D14 position-159 ground link photo-closed; D11 four-landing field registered but electrically held; D56 and the remaining D14/D11 endpoints remain pending",
   "d15": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114633498.jpg",
@@ -85,5 +85,43 @@
       "result": "The executed position-159 topology ties D14.1 to the same GND net as D32.4. The clean source PCB must assign D14.1 to GND."
     },
     "remaining_boundary": "The row identity does not yet prove the remote endpoints of the fifth auxiliary landing, the three long replacement traces, or the right-row dogleg. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
+  },
+  "d11": {
+    "drawing": {
+      "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg",
+      "observation": "The unique L-shaped trace and the adjacent drilled column register directly to the component-side owner photographs. The long column is an auxiliary drilled/copper field beside D11, not a drawn 14-pad package column. Position 159 points to the right-hand junction of a four-landing subfield: an upper landing reaches it by a long vertical trace, a left landing approaches through the obscured horizontal bridge, and a lower landing leaves on a separate trace."
+    },
+    "landings": {
+      "upper_rail": {
+        "component_observations": [
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "image_px": [2234.6, 1879.4]},
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "image_px": [838.0, 2016.0]}
+        ]
+      },
+      "bridge_left": {
+        "component_observations": [
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "image_px": [2185.4, 2173.0]},
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "image_px": [786.0, 2319.0]}
+        ]
+      },
+      "position159_junction": {
+        "component_observations": [
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "image_px": [2235.8, 2150.0]},
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "image_px": [838.0, 2295.0]}
+        ]
+      },
+      "lower_exit": {
+        "component_observations": [
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "image_px": [2210.9, 2220.6]},
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "image_px": [812.0, 2368.0]}
+        ]
+      }
+    },
+    "solder_exclusion": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "local_package_overlay": "docs/photo-registration/local-packages/D11-solder.jpg",
+      "observation": "The held-out-validated reflected package fit localizes a conspicuous solder scar beside D11 pins 4 through 6, but cross-registration places the factory drawing's component-side four-landing field elsewhere. The scar is therefore not evidence for the position-159 bridge and must not be used to assign its pins or nets."
+    },
+    "remaining_boundary": "The four physical landing identities and the position-159 junction are now registered in two component views. The component-grid board fit is not pin- or fabrication-grade here, the corresponding solder-side holes are not locally registered, and the obscured bridge does not prove a D11 pin/net or either remote trace endpoint. Preserve the source nets and require a local through-hole fit or direct continuity before promoting replacement copper."
   }
 }
