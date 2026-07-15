@@ -50,7 +50,7 @@ module juku_top (
 `else
     tri1 [7:0]  DB;
 `endif
-    wire        memr_n, memr_n_d7, memw_n, iord_n, iowr_n, inta_n;
+    wire        memr_n, memr_n_d7, memw_n, memw_n_d7p2, iord_n, iowr_n, inta_n;
     wire        intr;
     wire        busen_n = 1'b0;       // bus always enabled
     wire        buf_oe_n = 1'b0, buf_t = 1'b1;   // 8286: enabled, CPU->bus
@@ -224,6 +224,7 @@ module juku_top (
                        .memr_n(memr_n), .memw_n(memw_n),
                        .iord_n(iord_n), .iowr_n(iowr_n), .inta_n(inta_n));
     net_boundary U_W11 (.a(memr_n_d7), .b(memr_n));
+    net_boundary U_W19 (.a(memw_n_d7p2), .b(memw_n));
 
     buf_8286  U_BUFL (.Ain(A[7:0]),  .Aout(BA[7:0]),  .oe_n(buf_oe_n), .t(buf_t));
     buf_8286  U_BUFH (.Ain(A[15:8]), .Aout(BA[15:8]), .oe_n(buf_oe_n), .t(buf_t));
@@ -287,7 +288,7 @@ module juku_top (
 `endif
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_inhib_status));  // shared source is unread; low preserves the existing boot-safe D25 turnaround scaffold
     la3_gate    U_D7     (.a(d7_a1_w), .b(d7_b1_w), .y(io_strobe_h),
-                          .a2(memr_n_d7), .b2(memw_n), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW [WIRE 19]; pin1 <- D92.13 through W11 / -MRD; pin3 -> physical D29.5 (-AMWC path)
+                          .a2(memr_n_d7), .b2(memw_n_d7p2), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW through W19; pin1 <- D92.13 through W11 / -MRD; pin3 -> physical D29.5 (-AMWC path)
                           .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
                           .a4(iord_n), .b4(iowr_n), .y4(d7_y4_iom_status));  // sect4 pins9/10 = IORD/IOWR; output8 destination recheck boundary
     // A7/D6.15<->D105.1 forced low (see the runnable select block); its physical

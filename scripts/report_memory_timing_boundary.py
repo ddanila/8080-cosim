@@ -186,6 +186,14 @@ def main() -> int:
             "native -MRD reaches D92.13/A11B; W11 crosses to the D7.1/A11A surface island without PCB copper",
         ),
         (
+            "Factory wire 19 is preserved as an assembly closure to D7.2",
+            board["nets"]["MEMW"].get("wire_link")
+            == {"ref": "W19", "other_net": "MEMW_D7P2"}
+            and has_nodes(board, "MEMW", {("D5", "26"), ("W19", "1")})
+            and set(nodes(board, "MEMW_D7P2")) == {("D7", "2"), ("W19", "2")},
+            "global MEMW/D5.26 reaches A19A; W19 crosses to the separate D7.2/A19B surface island",
+        ),
+        (
             "D39 latch/output context is guarded",
             has_nodes(board, "D39_O8", {("D39", "8"), ("D59", "11")})
             and has_nodes(board, "D39Y", {("D39", "11"), ("D38", "10"), ("D38", "13")}),

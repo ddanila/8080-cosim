@@ -27,6 +27,7 @@ fits = {
 }
 board = pcbnew.LoadBoard(str(BOARD))
 errors: list[str] = []
+w19 = board.FindFootprintByReference("W19")
 
 
 def project_joint(
@@ -77,10 +78,10 @@ a19b = project_joint("A19B", "D7", ("1", "7", "8"), [3255, 1585], [3391, 1320])
 
 d5 = board.FindFootprintByReference("D5")
 d7 = board.FindFootprintByReference("D7")
-for refdes, footprint, pin in (("D5", d5, "26"), ("D7", d7, "2")):
+for refdes, footprint, pin, expected_net in (("D5", d5, "26", "MEMW"), ("D7", d7, "2", "MEMW_D7P2")):
     pad = footprint.FindPadByNumber(pin) if footprint else None
-    if pad is None or pad.GetNetname() != "MEMW":
-        errors.append(f"{refdes}.{pin} is missing or is not on MEMW")
+    if pad is None or pad.GetNetname() != expected_net:
+        errors.append(f"{refdes}.{pin} is missing or is not on {expected_net}")
 
 d5_pin = d5.FindPadByNumber("26").GetPosition()
 d5_pin_position = np.array([pcbnew.ToMM(d5_pin.x), pcbnew.ToMM(d5_pin.y)])
@@ -97,10 +98,33 @@ if "uninterrupted white lead" not in a19b_proof or "9.5 cm" not in a19b_proof:
 if point.get("status") != "board-fitted":
     errors.append("A19 point status is not board-fitted")
 
+if w19 is None:
+    errors.append("A19: W19 assembly-wire footprint is missing")
+else:
+    for number, expected_position, expected_net in (
+        ("1", a19a, "MEMW"),
+        ("2", a19b, "MEMW_D7P2"),
+    ):
+        wire_pad = w19.FindPadByNumber(number)
+        if wire_pad is None:
+            errors.append(f"A19: W19.{number} landing is missing")
+            continue
+        position = np.array([pcbnew.ToMM(wire_pad.GetPosition().x), pcbnew.ToMM(wire_pad.GetPosition().y)])
+        if float(np.linalg.norm(position - expected_position)) > MAX_COORDINATE_ERROR_MM:
+            errors.append(f"A19: W19.{number} coordinate drifted")
+        if wire_pad.GetNetname() != expected_net:
+            errors.append(f"A19: W19.{number} is on {wire_pad.GetNetname()}, expected {expected_net}")
+        size = wire_pad.GetSize()
+        if abs(pcbnew.ToMM(size.x) - 1.5) > 0.001 or size.x != size.y:
+            errors.append(f"A19: W19.{number} clearance-safe pad geometry drifted")
+        layers = wire_pad.GetLayerSet()
+        if wire_pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD or not layers.Contains(pcbnew.F_Cu) or layers.Contains(pcbnew.B_Cu):
+            errors.append(f"A19: W19.{number} must remain a top-side surface landing")
+
 if errors:
     raise SystemExit("A19 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A19 FACTORY LANDINGS: PASS — "
+    "A19 FACTORY LANDINGS: PASS — two surface islands modeled through W19; "
     f"A19A {a19a[0]:.3f},{a19a[1]:.3f} mm; "
     f"A19B {a19b[0]:.3f},{a19b[1]:.3f} mm; "
     f"D5 local copper {d5_trace_length:.3f} mm; terminal span {wire_span:.3f} mm"

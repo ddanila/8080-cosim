@@ -33,6 +33,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D92 triple-NOR RAM read/write combiner is source-closed | PASS | sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8 |
 | D37 RAM-read output-enable NAND is source-closed on both inputs and output | PASS | sheet-2: MEMR -> D33.3/.4 -> D37.5; D13.2 -> D37.4; D37.6 -> D58.OE9 |
 | Factory wire 11 is preserved as an assembly closure between MEMR islands | PASS | native -MRD reaches D92.13/A11B; W11 crosses to the D7.1/A11A surface island without PCB copper |
+| Factory wire 19 is preserved as an assembly closure to D7.2 | PASS | global MEMW/D5.26 reaches A19A; W19 crosses to the separate D7.2/A19B surface island |
 | D39 latch/output context is guarded | PASS | `D39_O8` and `D39Y` |
 | D39 remaining NAND inputs are source-closed onto control rails 3 and 1 | PASS | sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1 |
 | D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2 |

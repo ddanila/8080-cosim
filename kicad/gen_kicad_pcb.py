@@ -91,6 +91,13 @@ FACTORY_WIRE_PLACE = {
         'value': 'A:11 ~11.5cm insulated wire (cut length held)',
         'pad_diameter': 2.0,
     },
+    'W19': {
+        'pads': {'1': (35.308, 122.281), '2': (130.027, 121.736)},
+        'value': 'A:19 ~9.5cm insulated wire',
+        # A19B lies beside C54.1; 1.5 mm preserves 0.279 mm clearance while
+        # retaining a generous component-side solder landing.
+        'pad_diameter': 1.5,
+    },
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {

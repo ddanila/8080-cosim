@@ -15,9 +15,9 @@ zero-open routing checkpoint.
 - Board-fit photo/copper evidence checks: `PASS (9/9)`
 - Drawing-image landing endpoints registered: `20/20`
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
-- Paired A-point landing terminals modeled: `6/20`
+- Paired A-point landing terminals modeled: `8/20`
 - Candidate/source pad identities equal: `FAIL`
-- Candidate/source pad-net mismatches: `44`
+- Candidate/source pad-net mismatches: `45`
 - Candidate/source moved pads (>50 nm): `138`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -42,7 +42,7 @@ be incorporated only after the landing islands and functional netlist freeze.
 | 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 2 | 0 | 176 |
 | 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 2 | 0 | 116 |
 | 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 2 | 0 | 230 |
-| 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 0 | 141 |
+| 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 2 | 141 |
 | 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 0 | 11 |
 
 ## Remaining release closure
@@ -51,7 +51,7 @@ Four PCB landing coordinates/island assignments remain evidence-gated:
 `A9A`, `A12A`, `A13A`, and `A13B`. Existing registered component and
 solder views occlude their joints; the visible approaches do not uniquely
 identify copper. No automatic geometric promotion remains defensible.
-A:8, A:10, and A:11 are already split into modeled surface-landing pairs and
+A:8, A:10, A:11, and A:19 are already split into modeled surface-landing pairs and
 explicit assembly-wire components. After owner continuity or a newly exposing
 photograph closes the four hidden joints:
 

@@ -51,6 +51,8 @@ They are not generic cycle-accurate replacements for every original IC mode.
   D50.1/D51.1/A10B select island while remaining zero-delay in simulation.
 - Factory wire A:11 separates the global D92.13/A11B MEMR island from
   D7.1/A11A; W11 preserves the physical closure as another mapped boundary.
+- Factory wire A:19 similarly separates global MEMW/D5.26/A19A from the
+  D7.2/A19B landing, with W19 as the only modeled closure.
 - 217 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.

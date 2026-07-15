@@ -5197,6 +5197,15 @@
     "refdes": "ДГШ5.109.009 СБ conductor position 7 / board point А:11",
     "pins": "registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insulated wire joins the global D92.13 MEMR island to D7.1; 119.177 mm chord exceeds the approximate table length, so cut length remains held"
    }
+  },
+  {
+   "ref": "W19", "type": "WIRE_LINK", "pins": {"1": "A19A", "2": "A19B"},
+   "value": "~9.5 cm",
+   "prov": {
+    "type": "factory wire table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ conductor position 13 / board point А:19",
+    "pins": "registered component-side surface joints at (35.308,122.281) and (130.027,121.736) mm; uninterrupted fitted insulated wire joins D5.26 to D7.2; 94.721 mm span matches the approximate table length"
+   }
   }
  ],
  "nets": {
@@ -7290,8 +7299,8 @@
      "1"
     ],
     [
-     "D7",
-     "2"
+     "W19",
+     "1"
     ],
     [
      "D7",
@@ -7308,8 +7317,8 @@
     ["D105", "12"],
     ["D105", "13"]
    ],
-   "note": "WIRE 19 (beeper): D5.26 -> D7.2 physical wire",
-   "wire_link": true
+   "note": "WIRE 19: explicit assembly wire W19 joins the global D5.26 MEMW island to D7.2/A19B",
+   "wire_link": {"ref": "W19", "other_net": "MEMW_D7P2"}
   },
   "IORD": {
    "src": "scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3",
@@ -15797,6 +15806,11 @@
    "src": "factory wire А:11 D7-side copper island",
    "nodes": [["D7", "1"], ["W11", "2"]],
    "note": "D7.1 reaches the registered A11A surface landing; insulated assembly wire W11 continues to the global MEMR/D92.13 island"
+  },
+  "MEMW_D7P2": {
+   "src": "factory wire А:19 D7.2-side copper island",
+   "nodes": [["D7", "2"], ["W19", "2"]],
+   "note": "D7.2 reaches the registered A19B surface landing; insulated assembly wire W19 continues to the global MEMW/D5.26 island"
   }
  },
  "no_connects": [
