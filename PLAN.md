@@ -41,9 +41,12 @@ Do not send this saved package to a fabricator. After the blockers below are
 closed and the corrected board is rerouted and reviewed, regenerate every
 fabrication file and gate again.
 
-## Actionable now — no new physical evidence required
+## Highest-priority work and evidence boundary
 
-These are ordered; each is completable with material already in the repo.
+These are ordered. The automatic D6 analysis and corrected-reader firmware are
+complete; item 1 now waits on the exact re-read or operating-level observation
+named below. Items 2-3 remain preservation requirements while connectivity is
+measurement-gated.
 
 1. **Adopt the physical D6 `.038` firmware into the runnable twin — blocked on
    the output-polarity chain, not the table contents.** Bench experiment
@@ -72,37 +75,41 @@ These are ordered; each is completable with material already in the repo.
    high in those regions, while `D6.10`->D9 (`rev`)=0 works direct. The mismatch
    is localized to the D6 pin-9 and pin-12 output paths only.
    D13 = К555ТЛ2 (inverter) is owner-confirmed (2026-07-15), so that hypothesis
-   is closed and the model is right there. The РТ4 reader was also audited: its
-   address/data pin order matches the HDL model exactly (no permutation), and
+   is closed and the model is right there. The РТ4 reader's logical contract
+   was also audited: its address/data pin order matches the HDL model exactly
+   (no permutation), and
    К556РТ4 = 82S126/3601/74S387 is a NON-INVERTING open-collector PROM (virgin=0,
    fuse=1; a pull-up reads the stored data directly), so the pull-up does not
-   invert and the raw `.038`/`.037` tables are faithful to the programmed data
-   (datasheet vendored at `ref/datasheets/82s126-556rt4-256x4-oc-prom.pdf`; and
-   D8 РЕ3 boots from its raw `.039`, corroborating raw-faithful readers). So the
-   reader is NOT the cause. Consumer-side chip-polarity audit (2026-07-15,
+   invert (datasheet vendored at
+   `ref/datasheets/82s126-556rt4-256x4-oc-prom.pdf`; D8 РЕ3 also boots from its
+   raw `.039`, excluding a universal raw/asserted convention error). The
+   original RT4 capture's electrical loading is not yet independently closed.
+   Consumer-side chip-polarity audit (2026-07-15,
    against the vendored datasheets) also closes the enable-polarity hypothesis:
    D8/РЕ3 = SN74188 has an active-low enable (as modeled), and D13 (К555ТЛ2
    inverter), D37 (К155ЛА3 NAND) and D58 (ИР82 active-low OE) are all
-   datasheet-standard as modeled -- no chip is mis-modeled. With the reader, the
-   dump, the chip senses, and a uniform complement all excluded, the only
-   surviving explanation is a **series inverter on the `D6.12->D8` and
-   `D6.9->D13` conductors, OR the D6 dump's D0/D3 bits themselves.
+   datasheet-standard as modeled -- no chip is mis-modeled. With pin order, chip
+   senses, and a uniform complement excluded, the remaining alternatives are a
+   **series inverter on the `D6.12->D8` and `D6.9->D13` conductors, OR an
+   electrical/provenance error in the D6 dump's D0/D3 bits**.
    **Sim narrowing (2026-07-15):** driving the runnable selects from the physical
    table under three transforms — only inverting **D0 (pin 12 -> D8) and D3
    (pin 9 -> D13)** while leaving D1/D2 direct boots byte-identical across the
    full guard suite; a uniform 4-bit complement fails (11.2 us) and inverting
    only D3 fails immediately (2.3 us). So the anomaly is genuinely per-pin on
    exactly the two РТ4 outputs feeding D8 and D13.
-   **Most likely cause + decisive test:** since `D6.12->D8.15` is owner-recorded
+   **Decisive test:** since `D6.12->D8.15` is owner-recorded
    as DIRECT (`docs/owner-measured-facts.md`; a photo re-read also looks direct),
-   the effective inversion is not in copper -- it points to the **D6 РТ4 dump
-   being wrong on pins 12 and 9**. Note the reader wiring
+   the effective inversion is not visible in the known copper. The original reader wiring
    (`tools/rt4_dumper/rt4_dumper.ino`): PROM pin 9 (D3) is read on Arduino **D13,
    the on-board LED pin** (LED + series resistor to GND) -- a classic gotcha that
-   can drag an open-collector HIGH down, mis-reading that bit. So the decisive
-   step is a **D6 re-read with a corrected reader** (do not use Arduino D13 for
-   data; verify clean pull-ups on the pin-12 and pin-9 lines), compared against
-   the current `d6_038.raw`. A cheaper cross-check is measuring the D8.15/D6.12
+   can drag an open-collector HIGH down. That risk alone cannot explain a full
+   per-pin complement: the D2 capture read all four channels identically in both
+   states, and D6 D3 already reads high in 238/256 rows. Reader revision 2 now
+   moves D3 to A0, controls /CE from A1, and refuses to dump unless all four
+   disabled outputs release to a stable `F`. The decisive step is a **D6 re-read
+   with that corrected reader**, after a byte-identical known-D2 check, compared
+   against the current `d6_038.raw.bin`. A cheaper cross-check is measuring the D8.15/D6.12
    operating LEVELS during a ROM fetch (continuity is already done). If the
    re-read flips D0/D3 in the affected rows, the physical table then boots
    directly with no transform.
@@ -207,12 +214,12 @@ Every ask below is queued with exact deliverables in
    copper-truth asks are: identify the driver or pull of the D6.15/D105.1
    conductor (the only D6-area net still missing an endpoint), recheck the
    surprising D13.12->D16.13 report with D16 removed, and identify the D37.5
-   second NAND input feeding the D58 chain. The former all-mode `B37A` pin-9
-   contradiction is no longer treated as measurement-gated: the raw-vs-asserted
-   polarity decision is resolvable in simulation (Actionable item 1), and the
-   five live RAM-read levels named by `docs/d6-runtime-path-diagnostic.md`
-   plus a known-content КР556РТ4 reader re-validation become Tier-3
-   confirmation asks once the guarded adoption run is green.
+   second NAND input feeding the D58 chain. Simulation has narrowed the former
+   all-mode `B37A` contradiction to the exact D0/D3 transform, but source truth
+   still waits on the corrected-reader D6 re-read or the operating-level
+   alternative in highest-priority item 1. The five live RAM-read levels named
+   by `docs/d6-runtime-path-diagnostic.md` become Tier-3 confirmation asks once
+   that gate closes and the guarded adoption run is green.
 5. **Map the factory Вид В modifications.** The solder-side trace cuts
    (poz. 150/159) at D56, D15, D14, and D11 are drawn design changes; exact
    modified pads, removed segments, and replacement nets remain a P0 mapping
@@ -275,7 +282,7 @@ adoption road, in dependency order:
    drives the measured D30/R29 READY path. D30 pins 8/11 are owner-closed; the
    `H` edge contact is P0 connectivity item 3, not a PROM gap. Because wait
    states are invisible to the value-level guards, the boot pass does not
-   decide raw-vs-asserted polarity for the РТ4 reader; Actionable item 1
+   decide raw-vs-asserted polarity for the РТ4 reader; highest-priority item 1
    decides it together with D6.
 2. **D8 `.039` — content executes, enable is still derived.** The physical
    table drives all eight ROM-socket selects; its `E_N` input is the separate
@@ -283,11 +290,12 @@ adoption road, in dependency order:
 3. **D6 `.038` — the one remaining memory-map stand-in.** The runnable
    selects still come from the non-LVS `decode_prom_functional` oracle; a
    direct raw-table substitution fails the checkpoint-resume boundary at RAM
-   `B37A`. This is no longer measurement-gated: Actionable item 1 records the
-   firmware-anchored analysis showing the raw capture contradicts two
-   independent, already-working functional anchors while the preserved
-   asserted (complemented) table satisfies every checkable one, and it names
-   the exact guarded adoption run. `docs/d6-firmware-mode-coverage.md` bounds
+   `B37A`. Highest-priority item 1 records the firmware-anchored analysis: the
+   raw capture contradicts two independent working functional anchors, an exact
+   D0/D3-only transform passes the full suite, and a uniform asserted complement
+   fails. Reader revision 2 and its known-D2 control make the next D6 re-read a
+   decisive electrical/provenance gate; a reset-fetch level comparison is the
+   alternative consumer-side gate. `docs/d6-firmware-mode-coverage.md` bounds
    what the trace proves: boot firmware observes A6/A5 suffixes `11` and `10`;
    A7 is functionally forced to `0`
    for all firmware-reachable maps (A7=1 rows emit only words `D`/`F` and can
@@ -332,9 +340,9 @@ After connectivity and programmable-part decisions stop changing:
   independent PROM corroboration, JUKU-1 media provenance, and cartridge
   BASIC artifacts. The Baltijets programming-disk payloads are presumed lost;
   keep the ask open opportunistically, but nothing on the critical path may
-  wait on them — the validated physical dumps plus the in-simulation
-  functional verification of Actionable item 1 are the working PROM truth,
-  and independent reads remain Tier-3 corroboration only.
+  wait on them. The targeted corrected-reader D6 experiment in highest-priority
+  item 1 is on the critical path because it resolves a known contradiction;
+  unrelated independent reads remain Tier-3 corroboration only.
 - **Document gap:** the remaining item for this drawing family is the
   `.009 Э3` electrical-schematic revision, if it survives. A 2026-07-14 web
   sweep confirms it is not public anywhere; the Arvutimuuseum team physically

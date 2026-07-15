@@ -85,6 +85,13 @@ by the validated 32-byte tables; do not replace them silently with asserted bits
   traces first, then identify /CS by trying both candidates.
 Sweep: 256 nibbles → store as 256 bytes (low nibble). Twice + compare, sanity-check.
 
+Use revision 2 of `tools/rt4_dumper/rt4_dumper.ino`: D0-D3 connect to Nano
+D10,D11,D12,A0 (not D13), PROM /CE pin 13 is grounded, and /CE pin 14 connects
+to Nano A1. The reader disables the PROM before every capture and aborts unless
+all four external pull-ups produce stable raw `F`. For the D6 polarity re-read,
+first require a byte-identical D2 control capture; see
+`docs/rt4-dump-acquisition.md` for the exact discriminator.
+
 ## Deliverables → repo
 `proms/re3_1.bin` (32B), `proms/re3_2.bin` (32B), `proms/rt4_d6.bin` (256B, nibbles),
 `proms/rt4_d2.bin` (256B), `proms/m2764_d15.bin` + `_d16.bin` (8KB each) + a provenance README

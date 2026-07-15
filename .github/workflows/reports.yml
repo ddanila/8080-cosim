@@ -11,6 +11,7 @@ on:
   push:
     paths:
       - 'scripts/**'
+      - 'tools/**'
       - 'ref/**'
       - 'roms/**'
       - 'media/**'
@@ -25,6 +26,7 @@ on:
   pull_request:
     paths:
       - 'scripts/**'
+      - 'tools/**'
       - 'ref/**'
       - 'roms/**'
       - 'media/**'

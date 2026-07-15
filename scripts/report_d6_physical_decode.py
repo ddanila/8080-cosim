@@ -79,6 +79,12 @@ def main() -> int:
         ("RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3",
          "PROM D0..D3 (pins 12,11,10,9)" in reader
          and "value |= (1U << bit)" in reader),
+        ("RT4 reader revision 2 avoids Nano D13 and verifies released pull-ups",
+         "DATA_PINS[4] = {10, 11, 12, A0}" in reader
+         and "ENABLE_PIN = A1" in reader
+         and "disabled_raw=" in reader
+         and "released.raw != 0x0f" in reader
+         and "Nano_D13:NC" in reader),
         ("Device commentary preserves measured mode pins and separate output conductors",
          "pin 2/A5 <- D3.6 <- /PC0" in devices
          and "pin 1/A6 <- D3.4 <- /PC1" in devices

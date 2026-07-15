@@ -17,29 +17,31 @@ the 1 state". So:
   stored/programmed bit = 1  ->  output transistor OFF  ->  with a pull-up, reads HIGH (1)
   virgin bit            = 0  ->  output transistor ON   ->  reads LOW (0)
 
-Therefore a reader that supplies a pull-up and records the pin VOLTAGE LEVEL
+Therefore an electrically sound reader that supplies a pull-up and records the pin VOLTAGE LEVEL
 (HIGH=1) captures the STORED DATA DIRECTLY — the pull-up does NOT invert. The
-validated raw `.038`/`.037` tables (tools/rt4_dumper/rt4_dumper.ino: external
-1k..4.7k pull-up per output, `raw` = pin level) are therefore faithful to the
-programmed data. This is corroborated in-repo: D8 (К155РЕ3) boots from its raw
-`.039` table, i.e. reading the level with pull-ups is not a systematic inversion.
+raw table directly. The original `.038`/`.037` captures used external 1k..4.7k
+pull-ups and `raw` = pin level. Their repeats prove capture consistency, while
+reader revision 2 separately checks electrical release before the decisive D6
+re-read. D8 (К155РЕ3) booting from raw `.039` independently excludes a universal
+raw/asserted convention error.
 
-Consequence: any D6-output polarity mismatch vs the schematic is NOT a reader
-artifact. It must be on the consumer side (an inverting gate on the
-D6.12->D8 / D6.9->D13 conductors, or a mis-modeled downstream enable polarity),
-which is a produced-board question (root PLAN.md Actionable item 1).
+Consequence: a uniform logical complement is not justified. The D6 mismatch is
+limited to D0/D3, so the corrected reader must distinguish a capture/channel
+problem from an untraced consumer-side inversion (root PLAN.md highest-priority
+item 1); neither outcome may be assumed in advance.
 
-Two chip-enable inputs are active-LOW (verify applies logic 0 to CE and the
-programmed output stays at 1). The reader ties them low (enabled) during read.
+Two chip-enable inputs are active-LOW. Reader revision 2 ties pin 13 low and
+drives pin 14 from Nano A1 so the disabled output-release state can be checked.
 
 Pinout as wired by tools/rt4_dumper/rt4_dumper.ino (DIP-16)
 ----------------------------------------------------------
   A0=5  A1=6  A2=7  A3=4  A4=3  A5=2  A6=1  A7=15   (address, 256 words)
   D0=12 D1=11 D2=10 D3=9                            (data out, open-collector)
-  CE (2x, active-low) = pins 13,14 -> tied GND to enable during read
+  CE (2x, active-low) = pin 13 -> GND; pin 14 -> Nano A1
   pin 8  = GND (VSS)
   pin 16 = +5 V (VCC)
-Each data output needs a 1k..4.7k pull-up to +5 V.
+Each data output needs a 1k..4.7k pull-up to +5 V. D0-D3 connect to Nano
+D10,D11,D12,A0; Nano D13 is deliberately unused because of its on-board LED.
 
 The HDL model (hdl/devices.v decode_prom / wait_prom_037) uses this exact pin
 order: address a[0..7] = pins 5,6,7,4,3,2,1,15; raw output bits 0..3 =
