@@ -66,12 +66,22 @@ These are ordered; each is completable with material already in the repo.
    needs. So the earlier "the asserted complement resolves it in simulation"
    claim was wrong. Per the fixed decision that measured evidence outranks
    inference, do **not** silently commit the functional-fit polarity.
-   The real remaining work is to resolve the `D6.9->D13->D37->D58` and
-   `D6.12->D8` gate polarities/senses (gate-type audit of D13/D37/D58 plus a
-   re-check of whether an inverter sits on those conductors; possibly one live
-   measurement), then adopt the physical table under a physically-justified
-   transform and rerun the full guard suite byte-identically before retiring
-   `decode_prom_functional`. Keep the oracle until then. None of this changes
+   Gate-chain audit (2026-07-15): D13 (К555ТЛ2) inverts and D37 (К555ЛА3) is a
+   NAND, both datasheet-correct, so the modeled chain requires `D6.9`=0 for the
+   `B37A` RAM read and `D6.12`=0 to select ROM — but the raw `.038` dump has both
+   high in those regions, while `D6.10`->D9 (`rev`)=0 works direct. The mismatch
+   is localized to the D6 pin-9 and pin-12 output paths only.
+   **Owner re-verification asks (produced-board photos = truth; the schematic
+   PDF is the prototype and may differ):**
+   (a) decisive single test — at the reset fetch (address `0000`, mode 0, which
+   must read ROM) is `D6.12` physically **low** (ROM enabled)? The dump implies
+   high; if it measures low, the reader sense/an inverter is confirmed;
+   (b) on the produced board, does `D6.12->D8.15` or `D6.9->D13` pass through an
+   inverting gate rather than the modeled direct trace?
+   (c) confirm D13 is a К555ТЛ2 (inverter), not a non-inverting variant.
+   Once resolved, adopt the physical table under the justified transform, rerun
+   the full guard suite byte-identically, then retire `decode_prom_functional`.
+   Keep the oracle until then. None of this changes
    copper; the only D6-area netlist ask remains the D105.1/A7 driver (P0
    connectivity item 4). The same polarity resolution unblocks VJUGA workbench
    Phase 2, which routes its decode through the same physical D6 РТ4 chip
