@@ -11,7 +11,7 @@ entity juku_boot_tb is
 		rom_file  : string  := "ekta37.hex";
 		vw_limit  : natural := 6000;
 		dump_file : string  := "vjuga_vram.bin";
-		cpu_mode  : integer := 2   -- 8080 mode (see juku_boot_top)
+		cpu_mode  : integer := 0   -- Z80 mode (see juku_boot_top); use patched ekta37_z80 ROM
 	);
 end entity;
 

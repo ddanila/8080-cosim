@@ -11,12 +11,13 @@ product.
 
 ## What works
 
-- **The VJUGA top boots the real Juku `ekta37` ROM.** `sim/boot_check.sh` runs
-  the T80 core (in 8080 mode) against the real ROM with the Juku memory map and
-  draws a framebuffer that is byte-for-byte identical to the recreation's
-  `cosim` oracle after 6000 video writes (the same ROM, map, and oracle the
-  main `sync/boot_check.sh` uses). No FDC and no interrupts are needed — the
-  banner draws exactly as cosim runs it. See `hdl/juku_boot_top.vhd`.
+- **The VJUGA top boots the real Juku firmware on a Z80.** `sim/boot_check.sh`
+  runs the T80 core in **Z80 mode** against a 3-byte-patched ROM
+  (`roms/ekta37_z80.bin`) with the Juku memory map, and draws a framebuffer
+  byte-for-byte identical to the recreation's `cosim` oracle after 6000 video
+  writes (the same map and oracle the main `sync/boot_check.sh` uses). No FDC
+  and no interrupts are needed — the banner draws exactly as cosim runs it. See
+  `hdl/juku_boot_top.vhd`.
 - The pinned T80 core also executes a built-in synthetic ROM (smoke test).
 - The synthetic test exercises CPU ROM/RAM/I/O cycles, a bit-sliced DRAM
   model, independent refresh, video arbitration, keyboard-style input, and one
@@ -28,15 +29,24 @@ product.
 - The ignored `fab/minimal-vga/` package can be regenerated and its current
   Gerber/drill ZIP is internally checksummed.
 
-### CPU choice: 8080 mode is required
+### CPU choice: real Z80 + a 3-byte-patched ROM
 
-The Juku firmware is 8080 code for the КР580ВМ80 and relies on 8080 semantics.
-Opcodes `0x08/0x10/0x20/0x28/0x38` are NOPs on the 8080 but real instructions
-(`EX AF,AF'`/`DJNZ`/`JR`) on a Z80, and the ROM hits `0x10` at address `0x0024`
-within the first 40 fetches. A stock Z80 therefore diverges immediately. VJUGA
-runs the T80 core in **8080 mode** (`Mode => 2`) so it executes the ROM
-faithfully; the "Z80" board is really a T80 configured as the 8080 the Juku
-firmware expects.
+VJUGA uses a **Z80** so the board runs from a single +5 V rail — the original
+Juku CPU (КР580ВМ80 = 8080) needs +5 / +12 / −5 V, and dropping it removes two
+supplies, which is the whole point of this minimal board.
+
+The Juku firmware is 8080 code, and three of its bytes are 8080 undocumented
+NOPs (`0x08/0x10/0x20` at `0x0021/0x0024/0x0026`) that a Z80 decodes as real
+instructions (`EX AF,AF'`/`DJNZ`/`JR NZ`), so a stock Z80 diverges within the
+first 40 fetches. The fix is a tiny ROM patch: those three opcodes are rewritten
+to `NOP` (`0x00`) and the block-1 self-test checksum at `0x000A` is recomputed —
+four bytes total, length-preserving, and provably 8080-behavior-identical (cosim
+draws the same framebuffer to 200M cycles). See `roms/README.md` and
+`tools/make_z80_rom.c`. The T80 core therefore runs in native **Z80 mode**
+(`Mode => 0`).
+
+(The core can also run the *unpatched* ROM in 8080 mode, `Mode => 2` — a useful
+cross-check, but not the board's configuration.)
 
 ## What does not work yet
 

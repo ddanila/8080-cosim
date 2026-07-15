@@ -30,11 +30,12 @@ entity juku_boot_top is
 		rom_file  : string  := "ekta37.hex";  -- one 2-hex-digit byte per line
 		vw_limit  : natural := 6000;           -- stop+dump after N video writes (match boot_check)
 		dump_file : string  := "vjuga_vram.bin";
-		-- T80 Mode: 0=Z80, 2=8080. The Juku firmware is 8080 code for the КР580ВМ80
-		-- and relies on 8080 semantics: bytes 0x08/0x10/0x20/0x28/0x38 are NOPs on the
-		-- 8080 but real instructions (EX AF/DJNZ/JR) on a Z80, so a Z80 diverges within
-		-- the first 40 fetches (0x0024 = 0x10). VJUGA runs the T80 core in 8080 mode.
-		cpu_mode  : integer := 2
+		-- T80 Mode: 0=Z80, 2=8080. VJUGA is a single-+5 V Z80 board (mode 0). The stock
+		-- Juku firmware is 8080 code for the КР580ВМ80 and its bytes 0x08/0x10/0x20 are
+		-- NOPs on the 8080 but real instructions (EX AF/DJNZ/JR) on a Z80, so it must be
+		-- run either in 8080 mode (2) or, on a real Z80, with the 3-byte-patched
+		-- ekta37_z80.bin ROM (see ../roms/README.md). Default: Z80.
+		cpu_mode  : integer := 0
 	);
 	port(
 		clk      : in  std_logic;
