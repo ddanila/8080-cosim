@@ -57,7 +57,9 @@ These are ordered; each is completable with material already in the repo.
    seven PCB coordinates/island assignments pending. The
    D40-side photo frame beside the printed A7/A14 joints is now fitted on both
    faces, and legacy endpoint seeds that mislabeled the visibly marked
-   КР531ИЕ17 as D35 have been withdrawn
+   КР531ИЕ17 as D35 have been withdrawn. The marked D1 CPU and its complete
+   2x20 pad field are likewise fitted on both faces, isolating the separately
+   printed D1-side A7/A14 joints below the package
    (`docs/factory-wire-route-fidelity.md`). Do not replace
    `kicad/juku_routed.kicad_pcb` yet: copper produced now survives later
    netlist changes through the per-net quarantine mechanism, but final

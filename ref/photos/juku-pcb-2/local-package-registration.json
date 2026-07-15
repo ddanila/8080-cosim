@@ -4,6 +4,33 @@
   "promotion_rule": "local fits establish package pad identity only; they are not electrical connectivity evidence",
   "packages": [
     {
+      "refdes": "D1",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [826.0, 1758.0], "use": "fit", "observation": "top contact of the left column beside the top-facing notch on the marked КР580ВМ80А"},
+        {"pin": "20", "image_px": [826.0, 2824.0], "use": "fit", "observation": "bottom contact of the complete pin-1-to-20 column"},
+        {"pin": "21", "image_px": [1157.0, 2824.0], "use": "fit", "observation": "bottom contact of the opposite column"},
+        {"pin": "40", "image_px": [1157.0, 1758.0], "use": "check", "observation": "independent top contact of the pin-21-to-40 column"}
+      ],
+      "note": "The marking, top-facing notch, and both complete twenty-contact columns identify the CPU and its pin sequence. The white factory-wire bundle crosses below the package and is excluded from this pad-identity fit."
+    },
+    {
+      "refdes": "D1",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2578.0, 1485.0], "use": "fit", "observation": "top joint of the reflected pin-1-to-20 outer column"},
+        {"pin": "20", "image_px": [2581.0, 2549.0], "use": "fit", "observation": "bottom joint of the complete reflected pin-1-to-20 column"},
+        {"pin": "21", "image_px": [2245.0, 2549.0], "use": "fit", "observation": "bottom joint of the opposite outer column"},
+        {"pin": "22", "image_px": [2245.0, 2493.0], "use": "check", "observation": "independent PHI1 joint immediately above pin 21"},
+        {"pin": "40", "image_px": [2242.0, 1485.0], "use": "check", "observation": "independent top joint of the pin-21-to-40 column"}
+      ],
+      "note": "The CPU backside is the pair of outer twenty-joint columns; the aligned inner features are trace/via fanout, not a narrow DIP row. The fit supplies a local frame for the separately printed 14 and 7 remote joints below D1."
+    },
+    {
       "refdes": "D10",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
