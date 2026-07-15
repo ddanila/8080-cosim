@@ -14,7 +14,7 @@ zero-open routing checkpoint.
 - Landing-registration check: `PASS`
 - Board-fit photo/copper evidence checks: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `11/20`
+- Landing endpoints fitted to PCB coordinates/islands: `13/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
 - Candidate/source pad-net mismatches: `35`
@@ -112,6 +112,14 @@ and `(1159,3623)` on its shallow diagonal run.
 `114604420` and `(1700,4044)` in `114600417`; the lower line is `А:7`.
 That lower `А:7` line is separately guarded at `(1161,1845)` and
 `(1761,4062)` in the same respective views.
+The owner backside resolves the right-hand printed joints directly:
+A14B `(1837,510)` in `200530933` maps to `(243.264,136.648)` mm on
+the D35.12-side `PHI2` island, while A7B `(1774,552)` maps to
+`(245.083,133.927)` mm on the D35.10-side `PHI1` island. Their
+3.273 mm separation and distinct printed numbers are guarded by the
+adjacent two-face D40 fit; the visible КР531ИЕ17 marking also
+withdraws the former false D35 package seeds. Both D1-side terminals
+remain pending.
 `А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`
 in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
 A new reflected D37 solder fit holds pins 4/8/14 to 0.5 px and places

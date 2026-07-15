@@ -33,7 +33,7 @@
     {
       "point": 7,
       "status": "image-registered/board-fit-pending",
-      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14",
+      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14; the printed backside 7 joint beside D40 fixes the right terminal while the D1-side terminal remains pending",
       "endpoints": [
         {
           "terminal": "A7A",
@@ -43,14 +43,21 @@
           "board_mm": null,
           "island_assignment": null
         },
-        {
-          "terminal": "A7B",
+      {
+        "terminal": "A7B",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1761, 4062],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+        "board_mm": [245.083, 133.927],
+        "island_assignment": "D35.10-side PHI1 island; backside through joint printed 7",
+        "board_fit_evidence": {
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+          "joint_px": [1774, 552],
+          "local_fit": "D40/solder-alt",
+          "uncertainty_mm": 0.6,
+          "proof": "the assembly drawing terminates A:7 at the right-hand 7 mark, and the owner backside has one distinct through joint immediately beside the printed 7; the adjacent marked КР531ИЕ17 is independently registered as D40 on both faces, withdrawing the former D35 package misidentification while preserving this remote-point geometry"
         }
+      }
       ]
     },
     {
@@ -254,7 +261,7 @@
     {
       "point": 14,
       "status": "image-registered/board-fit-pending",
-      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7",
+      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; the printed backside 14 joint beside D40 fixes the right terminal while the D1-side terminal remains pending",
       "endpoints": [
         {
           "terminal": "A14A",
@@ -264,14 +271,21 @@
           "board_mm": null,
           "island_assignment": null
         },
-        {
-          "terminal": "A14B",
+      {
+        "terminal": "A14B",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1700, 4044],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+        "board_mm": [243.264, 136.648],
+        "island_assignment": "D35.12-side PHI2 island; backside through joint printed 14",
+        "board_fit_evidence": {
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+          "joint_px": [1837, 510],
+          "local_fit": "D40/solder-alt",
+          "uncertainty_mm": 0.6,
+          "proof": "the assembly drawing terminates A:14 at the right-hand 14 mark, and the owner backside has one distinct through joint immediately beside the printed 14; the adjacent marked КР531ИЕ17 is independently registered as D40 on both faces, withdrawing the former D35 package misidentification while preserving this remote-point geometry"
         }
+      }
       ]
     },
     {
