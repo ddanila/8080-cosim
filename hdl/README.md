@@ -53,6 +53,8 @@ They are not generic cycle-accurate replacements for every original IC mode.
   D7.1/A11A; W11 preserves the physical closure as another mapped boundary.
 - Factory wire A:19 similarly separates global MEMW/D5.26/A19A from the
   D7.2/A19B landing, with W19 as the only modeled closure.
+- Factory wire A:20 separates D3.10/A20B from the co-located A20A/A23.1/X3.3
+  cable island; W20 remains transparent in HDL while preserving that assembly.
 - 217 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.

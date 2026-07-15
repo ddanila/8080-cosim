@@ -58,6 +58,7 @@ python3 scripts/report_serial_handoff.py
 | S_SIN reaches X3.4 | PASS | `S_SIN` |
 | S_CTS reaches X3.5 | PASS | `S_CTS` |
 | S_DSR reaches X3.6 | PASS | `S_DSR` |
+| Factory wire W20 closes D3.10 to the S_TTL connector island | PASS | assembly wire W20; `S_TTL_D3` -> `S_TTL` |
 | HDL USART model has guarded Tx/Rx loopback | PASS | `hdl/devices.v`; `hdl/sim/usart_8251_tb.v`; `sync/serial_check.sh` |
 | HDL serial connector and drivers are instantiated | PASS | `hdl/juku_top.v` |
 
@@ -83,7 +84,8 @@ python3 scripts/report_serial_handoff.py
 | `S_SOUT` | `D14.6`, `A29.1`, `X3.9` |
 | `S_RTS` | `D32.6`, `A30.1`, `X3.10` |
 | `S_DTP` | `D32.7`, `A31.1`, `X3.11` |
-| `S_TTL` | `D3.10`, `A23.1`, `X3.3` |
+| `S_TTL` | `A23.1`, `X3.3`, `W20.1` |
+| `S_TTL_D3` | `D3.10`, `W20.2` |
 | `S_OC` | `D12.3`, `R18.1`, `R30.1`, `A22.1`, `X3.2`, `A32.1`, `X3.12` |
 | `S_SIN` | `A24.1`, `X3.4`, `D104.4` |
 | `S_CTS` | `A25.1`, `X3.5`, `D104.5` |
@@ -95,7 +97,8 @@ python3 scripts/report_serial_handoff.py
   BA0, DB0-DB7, `IORD`, `IOWR`, and `CS_D11` wired.
 - D57 `OUT0` reaches both D11 clock inputs through `PIT_BAUD`.
 - D11 serial-side pins are carried through the modeled D14/D32/D3/D12
-  output drivers and D104 receiver to X3 signal pins.
+  output drivers and D104 receiver to X3 signal pins. D3.10 reaches
+  X3.3 through the explicit W20 assembly-wire closure.
 - `sync/serial_check.sh` now proves a scoped USART behavior slice:
   mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven
   RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.

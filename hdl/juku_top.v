@@ -595,15 +595,16 @@ module juku_top (
     // ---- serial-port drivers -> X3 connector (К170АП2/УП2 + ЛА18; owner scan img). Buffer the USART
     // serial side out to the RS-232 connector; all off the CPU bus -> boot-safe. D14=SOUT, D32=RTS/DTP,
     // D3=TTL SOUT, D12=OC SOUT, D104=SIN receiver. TxD fans to the SOUT/TTL/OC drivers (same data, diff levels).
-    wire s_sout, s_rts, s_dtp, s_ttl, s_oc, s_sin, s_cts, s_dsr, ser_txd_inv;
+    wire s_sout, s_rts, s_dtp, s_ttl, s_ttl_d3, s_oc, s_sin, s_cts, s_dsr, ser_txd_inv;
     ap2_drv U_D14 (.i3(ser_txd), .i2(1'b1),    .o6(s_sout), .o7());
     ap2_drv U_D32 (.i3(ser_rts), .i2(ser_dtr), .o6(s_rts),  .o7(s_dtp));
     wire ir7_sig, ir6_buf, ir6_sig;
-    ln2_inv U_D3  (.a(ser_txd), .y(s_ttl),
+    ln2_inv U_D3  (.a(ser_txd), .y(s_ttl_d3),
                    .i13(int7_raw), .o12(ir7_sig), .i1(int6_raw), .o2(ir6_buf),
                    .i3(ppi0_pc[1]), .o4(d3_o4_d6_a6),
                    .i5(ppi0_pc[0]), .o6(d3_o6_d6_a5),
                    .i9(ser_txd), .o8(ser_txd_inv));
+    net_boundary U_W20 (.a(s_ttl_d3), .b(s_ttl));
     // S4 selects PIC IR6 between buffered -INT6 and USART SYNDET. The photographed
     // build defaults to the external-interrupt throw for simulation.
     spdt_switch U_S4 (.syndet_throw(ser_syndet), .int6_throw(ir6_buf), .ir6_common(ir6_sig));

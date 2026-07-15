@@ -98,6 +98,13 @@ FACTORY_WIRE_PLACE = {
         # retaining a generous component-side solder landing.
         'pad_diameter': 1.5,
     },
+    'W20': {
+        'pads': {'1': (178.780, 15.200), '2': (213.571, 78.499)},
+        'value': 'A:20 ~6cm insulated wire',
+        # Pad 1 sits wholly inside the existing 2 mm A23.1 plated landing;
+        # pad 2 is the separately photographed D3-side surface joint.
+        'pad_diameters': {'1': 1.0, '2': 1.5},
+    },
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
@@ -493,8 +500,10 @@ def main():
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x0), pcbnew.FromMM(y0)))
         fp.Reference().SetVisible(False)
         fp.Value().SetVisible(False)
-        diameter = specification['pad_diameter']
         for number, (x, y) in pads.items():
+            diameter = specification.get('pad_diameters', {}).get(
+                number, specification.get('pad_diameter', 2.0)
+            )
             pad = pcbnew.PAD(fp)
             pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
             pad.SetShape(pcbnew.PAD_SHAPE_CIRCLE)

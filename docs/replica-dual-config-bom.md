@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 306
-- Populate for current functional .009 build: 276
+- Board component positions: 307
+- Populate for current functional .009 build: 277
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 91
+- Unique BOM lines: 92
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 190 |
+| source-now | 191 |
 
 ## BOM Lines
 
@@ -122,6 +122,7 @@ readiness report.
 | source-now | WIRE_LINK 13.5 cm | factory insulated assembly wire 13.5 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W10 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~11.5 cm (held) | factory insulated assembly wire ~11.5 cm (held) | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W11 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~19 cm | factory insulated assembly wire ~19 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W8 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
+| source-now | WIRE_LINK ~6 cm | factory insulated assembly wire ~6 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W20 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~9.5 cm | factory insulated assembly wire ~9.5 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W19 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_PAD | WIRE_PAD | select exact substitute after circuit review | 54 | 54 | 0 | A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+36) | - |
 | source-now | XTAL 16 МГц | РК-171 16 MHz crystal 16 МГц | 16 MHz HC-49/metal-can crystal matching footprint/load | 1 | 1 | 0 | Z1 | - |

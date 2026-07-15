@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `217`
 - Verification-point endpoints checked in PCB: `326`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2256`
-- All board endpoints checked in routed PCB: `2256`
+- All board endpoints checked in source PCB: `2258`
+- All board endpoints checked in routed PCB: `2258`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2256/2256 | 2256/2256 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1883/2256 | 1802/2256 | FAIL |
+| `kicad/juku.kicad_pcb` | 2258/2258 | 2258/2258 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1883/2258 | 1801/2258 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -380,6 +380,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `S_SIN: D104.4`
 - `S_SOUT: A29.1`
 - `S_TTL: A23.1`
+- `S_TTL: W20.1`
+- `S_TTL_D3: W20.2`
 - `TAPE_RUN_INT: D10.22`
 - `TIMING_TAG17: D36.2`
 - `TIMING_TAG17: D41.6`
@@ -507,6 +509,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D12.1: `SER_TXD` != `SER_TXD_INV`
 - D38.8: `STSTB` != `STSTB_D38`
 - D7.12: `IOWR` != `SYNC`
+- D3.10: `S_TTL` != `S_TTL_D3`
 - D55.13: `FRAME_INT` != `VERT_RTR`
 - D50.1: `W10_QA_SEL` != `W10_QA_SEL_D50`
 - D6.11: `RAM_SEL` != `WREQ_N`

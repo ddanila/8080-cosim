@@ -238,6 +238,18 @@ def check_rows(board: dict) -> list[list[object]]:
         )
     checks.append(
         (
+            "Factory wire W20 closes D3.10 to the S_TTL connector island",
+            has_node(board, "S_TTL_D3", "D3", "10")
+            and has_node(board, "S_TTL_D3", "W20", "2")
+            and has_node(board, "S_TTL", "W20", "1")
+            and has_node(board, "S_TTL", "A23", "1")
+            and board["nets"]["S_TTL"].get("wire_link")
+            == {"ref": "W20", "other_net": "S_TTL_D3"},
+            "assembly wire W20; `S_TTL_D3` -> `S_TTL`",
+        )
+    )
+    checks.append(
+        (
             "HDL USART model has guarded Tx/Rx loopback",
             marker(
                 "hdl/devices.v",
@@ -331,6 +343,7 @@ def main() -> int:
         "S_RTS",
         "S_DTP",
         "S_TTL",
+        "S_TTL_D3",
         "S_OC",
         "S_SIN",
         "S_CTS",
@@ -346,7 +359,8 @@ def main() -> int:
             "  BA0, DB0-DB7, `IORD`, `IOWR`, and `CS_D11` wired.",
             "- D57 `OUT0` reaches both D11 clock inputs through `PIT_BAUD`.",
             "- D11 serial-side pins are carried through the modeled D14/D32/D3/D12",
-            "  output drivers and D104 receiver to X3 signal pins.",
+            "  output drivers and D104 receiver to X3 signal pins. D3.10 reaches",
+            "  X3.3 through the explicit W20 assembly-wire closure.",
             "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
             "  mode/command writes, TxRDY/RxRDY/TxEMPTY status, command-driven",
             "  RTS/DTR, and one 8N1 byte through a digital TxD->RxD loopback.",

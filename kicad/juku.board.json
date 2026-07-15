@@ -5206,6 +5206,15 @@
     "refdes": "ДГШ5.109.009 СБ conductor position 13 / board point А:19",
     "pins": "registered component-side surface joints at (35.308,122.281) and (130.027,121.736) mm; uninterrupted fitted insulated wire joins D5.26 to D7.2; 94.721 mm span matches the approximate table length"
    }
+  },
+  {
+   "ref": "W20", "type": "WIRE_LINK", "pins": {"1": "A20A", "2": "A20B"},
+   "value": "~6 cm",
+   "prov": {
+    "type": "factory wire table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ conductor position 14 / board point А:20",
+    "pins": "A20A is the existing A23.1/X3.3 through-hole cable joint at (178.780,15.200) mm; A20B is the registered D3.10-side surface joint at (213.571,78.499) mm; fitted insulated wire is the only inter-island closure"
+   }
   }
  ],
  "nets": {
@@ -9817,18 +9826,19 @@
    "src": "scan sheet-1 board point A23 plus .009 factory X3 cable table; owner continuity D3.10-X3.3 closes the intervening on-board A:20 insulated link; enlarged placement review distinguishes adjacent D104 from D14",
    "nodes": [
     [
-     "D3",
-     "10"
-    ],
-    [
      "A23",
      "1"
     ],
     [
      "X3",
      "3"
+    ],
+    [
+     "W20",
+     "1"
     ]
-   ]
+   ],
+   "wire_link": {"ref": "W20", "other_net": "S_TTL_D3"}
   },
   "S_OC": {
    "src": "scan sheet-1 junctioned board points A22/A32 plus .009 factory X3 cable table",
@@ -15811,6 +15821,11 @@
    "src": "factory wire А:19 D7.2-side copper island",
    "nodes": [["D7", "2"], ["W19", "2"]],
    "note": "D7.2 reaches the registered A19B surface landing; insulated assembly wire W19 continues to the global MEMW/D5.26 island"
+  },
+  "S_TTL_D3": {
+   "src": "factory wire А:20 D3.10-side copper island",
+   "nodes": [["D3", "10"], ["W20", "2"]],
+   "note": "D3.10 reaches the registered A20B surface landing; insulated assembly wire W20 continues to the co-located A20A/A23.1/X3.3 through-hole island"
   }
  },
  "no_connects": [

@@ -18,8 +18,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `306`
-- Nets modeled: `574`
+- Chips modeled: `307`
+- Nets modeled: `575`
 - Chip-level fidelity gaps: `76`
 - Net-level source-risk gaps: `217`
 - Explicitly dispositioned closed net risks: `12`
@@ -38,7 +38,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory power-cable table | 4 |
 | factory wire table | 14 |
 | factory wire table + owner photos | 1 |
-| factory wire table + registered owner photos | 2 |
+| factory wire table + registered owner photos | 3 |
 | factory wire table + registered two-sided owner photos | 1 |
 | factory wire table + two-sided owner photos | 1 |
 | mame+datasheet | 1 |

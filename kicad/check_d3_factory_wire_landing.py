@@ -78,6 +78,7 @@ factor = cmath.rect(
     math.radians(float(d3_fit["rotation_deg"])),
 )
 board = pcbnew.LoadBoard(str(BOARD))
+w20 = board.FindFootprintByReference("W20")
 projected = pad_centre(board, "D3") + (complex(*joint) - image_centre) / factor
 a20b_recorded = complex(*map(float, a20b["board_mm"]))
 coordinate_error = abs(projected - a20b_recorded)
@@ -92,6 +93,8 @@ if not isinstance(uncertainty, (int, float)) or not 0.4 <= uncertainty <= 0.8:
     errors.append("invalid local-fit uncertainty")
 
 pin10 = board.FindFootprintByReference("D3").FindPadByNumber("10")
+if pin10.GetNetname() != "S_TTL_D3":
+    errors.append(f"D3.10 net {pin10.GetNetname()!r} is not S_TTL_D3")
 pin10_position = complex(
     pcbnew.ToMM(pin10.GetPosition().x), pcbnew.ToMM(pin10.GetPosition().y)
 )
@@ -184,11 +187,34 @@ if (
 ):
     errors.append("A20A has invalid panorama-fit uncertainty")
 
+if w20 is None:
+    errors.append("A20: W20 assembly-wire footprint is missing")
+else:
+    for number, expected, expected_net, diameter in (
+        ("1", a20a_recorded, "S_TTL", 1.0),
+        ("2", a20b_recorded, "S_TTL_D3", 1.5),
+    ):
+        pad = w20.FindPadByNumber(number)
+        if pad is None:
+            errors.append(f"A20: W20.{number} landing is missing")
+            continue
+        position = complex(pcbnew.ToMM(pad.GetPosition().x), pcbnew.ToMM(pad.GetPosition().y))
+        if abs(position - expected) > MAX_COORDINATE_ERROR_MM:
+            errors.append(f"A20: W20.{number} coordinate drifted")
+        if pad.GetNetname() != expected_net:
+            errors.append(f"A20: W20.{number} is on {pad.GetNetname()}, expected {expected_net}")
+        size = pad.GetSize()
+        if abs(pcbnew.ToMM(size.x) - diameter) > 0.001 or size.x != size.y:
+            errors.append(f"A20: W20.{number} pad geometry drifted")
+        layers = pad.GetLayerSet()
+        if pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD or not layers.Contains(pcbnew.F_Cu) or layers.Contains(pcbnew.B_Cu):
+            errors.append(f"A20: W20.{number} must remain a top-side landing")
+
 if errors:
     raise SystemExit("A20 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A20 FACTORY LANDINGS: PASS — "
+    "A20 FACTORY LANDINGS: PASS — two islands modeled through W20; "
     f"A20A/A23.1 {a20a_recorded.real:.3f},{a20a_recorded.imag:.3f} mm; "
     f"A20B/D3.10 {a20b_recorded.real:.3f},{a20b_recorded.imag:.3f} mm; "
-    f"D3 local copper span {trace_length:.3f} mm; 4/20 terminals board-fitted"
+    f"D3 local copper span {trace_length:.3f} mm"
 )
