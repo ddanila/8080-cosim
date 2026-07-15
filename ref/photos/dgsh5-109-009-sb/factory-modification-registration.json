@@ -130,9 +130,24 @@
           "observation": "independent close view shows the same uninterrupted inter-package copper strip"
         }
       ],
-      "result": "The executed position-159 topology ties D14.1 to the same GND net as D32.4. The clean source PCB must assign D14.1 to GND."
+      "result": "The observed local copper ties D14.1 to the same GND net as D32.4. The position-159 leader marks its solder location; the clean source PCB must assign D14.1 to GND."
     },
-    "remaining_boundary": "The row identity does not yet prove the remote endpoints of the fifth auxiliary landing, the three long drawn traces, or the right-row dogleg. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
+    "auxiliary_fifth_landing": {
+      "component_observations": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+          "image_px": [2576.0, 1677.0],
+          "observation": "open annulus below D14.4, separated from the four package leads"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+          "image_px": [1190.0, 1806.0],
+          "observation": "independent view repeats the same open annulus and adjacent trace geometry"
+        }
+      ],
+      "result": "The fifth left-field landing is physically registered in two component views but has no accepted pin/net or fabrication drill geometry."
+    },
+    "remaining_boundary": "The fifth auxiliary landing is registered, but its conductor and the remote endpoints of the three long drawn traces and right-row dogleg remain unproved. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
   },
   "d11": {
     "drawing": {

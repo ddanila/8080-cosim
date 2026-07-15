@@ -18,7 +18,7 @@ and the remaining D14 auxiliary paths stay held.
 | --- | --- | --- | --- |
 | D56 | АГ3 timing area: position-150 tubing and three position-159 solder locations register at the D56.12/D56.5 level; their electrical topology remains held | GEOMETRY REGISTERED / ELECTRICAL HOLD — the callout row is fixed at D56.12/D56.5; no cut or merge is inferred | three component views identify the package; two overlapping solder views fix the reflected pin field; note 11 identifies position 150 as tubing |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
-| D14 | АП2 serial-driver area: registered notch-up orientation maps the right row to D14.8-.5 and the first four left-row holes to D14.1-.4; local copper closes the D32.4/GND-to-D14.1 link, while the fifth landing and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1; remaining fifth landing and drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing, three long traces, and right-row dogleg before full release |
+| D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release |
 | D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 solder locations are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net |
 
 ## D56 callout-field registration
@@ -79,10 +79,17 @@ unmeasured auxiliary drill.
 | PXL_20260710_200358952.jpg | 0.002 mm | 0.002 mm | 0.003 mm | continuous D32.4/GND-to-D14.1 copper |
 | PXL_20260710_200402344.jpg | 0.010 mm | 0.001 mm | 0.010 mm | continuous D32.4/GND-to-D14.1 copper |
 
-The fifth left-row landing below D14.4, the three long drawn
-traces, and the right-row dogleg are not electrically closed by these
-views. D14.2 and D14.7 remain measurement boundaries, and no remote net
-or fabrication geometry is inferred from the drawing alone.
+The open fifth left-field annulus below D14.4 is also reproducible in
+both component views.
+
+| Landing | Provisional board centre (mm) | Component-view agreement | Disposition |
+| --- | --- | ---: | --- |
+| fifth auxiliary landing | (207.887, 49.900) | 0.011 mm | geometry registered; conductor and fabrication drill held |
+
+The landing's conductor, the three long drawn traces, and the right-row
+dogleg are not electrically closed by these views. D14.2 and D14.7
+remain measurement boundaries, and no remote net or fabrication geometry
+is inferred from the drawing alone.
 
 ## D11 position-159 field registration
 

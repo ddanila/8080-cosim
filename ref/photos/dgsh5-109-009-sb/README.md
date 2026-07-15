@@ -27,7 +27,8 @@ What the drawing is authoritative for:
   against same-hand glyph references (Д15/Д16 socket labels, callouts
   150/159, Д56) at full photo resolution.
   Owner-board registration now closes D15's A2/A1 cut and D14's local
-  D32.4/GND-to-D14.1 link; the other D14 traces and the D56/D11 details remain
+  D32.4/GND-to-D14.1 link and registers D14's fifth auxiliary landing; its
+  conductor, the other D14 traces, and the D56/D11 details remain
   measurement-held. At D56 the three-leader level registers to D56.12/D56.5,
   but no net change is inferred. At D11, the unique L trace and four
   position-159 solder locations

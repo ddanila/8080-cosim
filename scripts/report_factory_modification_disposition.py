@@ -18,7 +18,7 @@ BOARD_REGISTRATION = ROOT / "docs/photo-registration/board-registration.json"
 AFFECTED = {
     "D56": "АГ3 timing area: position-150 tubing and three position-159 solder locations register at the D56.12/D56.5 level; their electrical topology remains held",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
-    "D14": "АП2 serial-driver area: registered notch-up orientation maps the right row to D14.8-.5 and the first four left-row holes to D14.1-.4; local copper closes the D32.4/GND-to-D14.1 link, while the fifth landing and remaining traces stay held",
+    "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held",
     "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 solder locations are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature",
 }
 
@@ -168,6 +168,22 @@ def main() -> int:
         d14_rows.append((observation, endpoint_rows, length_error))
     gnd_nodes = {tuple(node) for node in nets["GND"]["nodes"]}
     d14_ok &= {("D32", "4"), ("D14", "1")} <= gnd_nodes
+    d14_aux_points = [
+        image_to_board(
+            observation["image"],
+            observation["image_px"],
+            "component_grid",
+            panorama,
+            board_registration,
+        )
+        for observation in d14["auxiliary_fifth_landing"]["component_observations"]
+    ]
+    d14_aux_centre = tuple(
+        sum(point[axis] for point in d14_aux_points) / len(d14_aux_points)
+        for axis in range(2)
+    )
+    d14_aux_spread = max(math.dist(d14_aux_centre, point) for point in d14_aux_points)
+    d14_ok &= d14_aux_spread <= 0.15
 
     d11 = modification["d11"]
     d11_rows = []
@@ -241,8 +257,8 @@ def main() -> int:
             disposition = "PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches"
             closure = "two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held"
         elif ref == "D14":
-            disposition = "PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1; remaining fifth landing and drawn traces are held"
-            closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing, three long traces, and right-row dogleg before full release"
+            disposition = "PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held"
+            closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release"
         elif ref == "D11":
             disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured"
             closure = "two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net"
@@ -335,10 +351,22 @@ def main() -> int:
         ]))
     lines += [
         "",
-        "The fifth left-row landing below D14.4, the three long drawn",
-        "traces, and the right-row dogleg are not electrically closed by these",
-        "views. D14.2 and D14.7 remain measurement boundaries, and no remote net",
-        "or fabrication geometry is inferred from the drawing alone.",
+        "The open fifth left-field annulus below D14.4 is also reproducible in",
+        "both component views.",
+        "",
+        "| Landing | Provisional board centre (mm) | Component-view agreement | Disposition |",
+        "| --- | --- | ---: | --- |",
+        row([
+            "fifth auxiliary landing",
+            f"({d14_aux_centre[0]:.3f}, {d14_aux_centre[1]:.3f})",
+            f"{d14_aux_spread:.3f} mm",
+            "geometry registered; conductor and fabrication drill held",
+        ]),
+        "",
+        "The landing's conductor, the three long drawn traces, and the right-row",
+        "dogleg are not electrically closed by these views. D14.2 and D14.7",
+        "remain measurement boundaries, and no remote net or fabrication geometry",
+        "is inferred from the drawing alone.",
         "",
         "## D11 position-159 field registration",
         "",

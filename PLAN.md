@@ -256,8 +256,10 @@ Every ask below is queued with exact deliverables in
    notch-down К155АГ3 package, two solder views register its reflected pin
    field, and the three-leader drawing level maps to the D56.12/D56.5 row.
    The separate left landing, nearby rail gap, and callout conductors are not
-   electrically assigned; no D56 net change is inferred. D14's fifth landing,
-   three long traces, and right-row dogleg remain held. At D11,
+   electrically assigned; no D56 net change is inferred. D14's fifth landing
+   is now registered in two component views at `(207.887, 49.900) mm` with
+   `0.011 mm` cross-view disagreement; its conductor, three long traces, and
+   right-row dogleg remain held. At D11,
    two component views now register the L trace and four position-159 solder locations
    and exclude the previously cited pins-4–6 solder scar as a different feature;
    the solder-side through-hole fit and electrical endpoints remain the P0 hold
