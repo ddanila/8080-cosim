@@ -1,6 +1,6 @@
 # Factory modification disposition
 
-Status date: **2026-07-15**.
+Status date: **2026-07-16**.
 
 Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**
 
@@ -19,7 +19,7 @@ and the remaining D14 auxiliary paths stay held.
 | D56 | АГ3 timing area: position-150 tubing and three position-159 solder locations register at the D56.12/D56.5 level; their electrical topology remains held | GEOMETRY REGISTERED / ELECTRICAL HOLD — the callout row is fixed at D56.12/D56.5; no cut or merge is inferred | three component views identify the package; two overlapping solder views fix the reflected pin field; note 11 identifies position 150 as tubing |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
 | D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release |
-| D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 solder locations are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net |
+| D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; validated two-sided package fits exhaust four solder views, so direct continuity is required to assign any D11 pin/net |
 
 ## D56 callout-field registration
 
@@ -121,9 +121,15 @@ The nearest provisional field centre is 12.946 mm
 from the nominal D11.4-.6 column, more than twice the component-grid
 held-out error ceiling (5.464 mm); the exclusion
 therefore survives the coarse global-fit uncertainty.
-The corresponding solder-side holes, D11 pin/net, and both remote trace
-endpoints remain unproved. No source net or auxiliary drill is changed
-until a local through-hole fit or direct continuity closes them.
+A newly validated D11 component package fit now pairs with that reflected
+solder fit. Their package-local transform projects the upper landing under
+the wide tinned rail and the lower three landmarks among repeated joints
+and parallel traces without a unique four-hole match. All four overlapping
+solder photos repeat the lower-field ambiguity; the second complete view
+also repeats the upper rail obstruction. The available photographs are
+therefore exhausted for through-hole identity rather than evidence for a
+guessed snap. D11 pin/net and both remote endpoints require direct
+continuity, and no source net or auxiliary drill is changed.
 
 ## Guarded evidence
 

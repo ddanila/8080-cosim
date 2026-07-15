@@ -263,9 +263,14 @@ Every ask below is queued with exact deliverables in
    locality inside the same scraped/reworked two-row field, while the component
    views hide the immediate dogleg under the body; D14.2/.7 are therefore
    photo-exhausted direct-continuity asks. At D11,
-   two component views now register the L trace and four position-159 solder locations
-   and exclude the previously cited pins-4–6 solder scar as a different feature;
-   the solder-side through-hole fit and electrical endpoints remain the P0 hold
+   two component views now register the L trace and four position-159 solder
+   locations and exclude the previously cited pins-4–6 solder scar as a
+   different feature;
+   held-out-validated component and reflected package fits now project the field
+   into four overlapping solder photos. The upper point is rail-obscured and the
+   lower three do not form a unique four-hole match, so imagery is exhausted and
+   direct continuity of the bridge, D11 pin/net, and remote endpoints remains
+   the P0 hold
    (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
    217 source-risk nets and 9 official FDC devices with untraced functional

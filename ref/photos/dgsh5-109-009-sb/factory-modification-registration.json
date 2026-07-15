@@ -192,6 +192,26 @@
       "local_package_overlay": "docs/photo-registration/local-packages/D11-solder.jpg",
       "observation": "The held-out-validated reflected package fit localizes a conspicuous solder scar beside D11 pins 4 through 6, but cross-registration places the factory drawing's component-side four-landing field elsewhere. The scar is therefore not evidence for the position-159 bridge and must not be used to assign its pins or nets."
     },
-    "remaining_boundary": "The four physical landing identities and the position-159 junction are now registered in two component views. The component-grid board fit is not pin- or fabrication-grade here, the corresponding solder-side holes are not locally registered, and the obscured bridge does not prove a D11 pin/net or either remote trace endpoint. Preserve the source nets and require a local through-hole fit or direct continuity before promoting replacement copper."
+    "solder_photo_exhaustion": {
+      "package_fits": {
+        "component": "docs/photo-registration/local-packages/D11-component.jpg",
+        "solder": "docs/photo-registration/local-packages/D11-solder.jpg"
+      },
+      "reference_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "projected_points_px": {
+        "upper_rail": [2745.9, 1515.6],
+        "bridge_left": [2791.3, 1775.9],
+        "position159_junction": [2746.4, 1755.8],
+        "lower_exit": [2769.0, 1818.3]
+      },
+      "overlap_images": [
+        "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+        "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+        "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+        "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg"
+      ],
+      "observation": "A held-out-validated D11 component fit and the existing reflected solder fit replace the coarse whole-board projection. In 200506061 the package-local transform places the upper landing under the wide tinned rail and the three lower landmarks among repeated joints and parallel traces without a unique four-hole match. The same lower-field ambiguity repeats in all three overlapping solder views; 200509593 also repeats the rail obstruction, while the upper point lies outside 200522685 and 200525009. The available solder photographs are exhausted for a through-hole identity."
+    },
+    "remaining_boundary": "The four component-side landing identities and the position-159 junction are registered in two views. A validated two-sided D11 package-local transform exhausts four solder views without identifying a unique corresponding four-hole field, so no through-hole or fabrication drill is accepted. The obscured bridge still does not prove a D11 pin/net or either remote trace endpoint. Preserve the source nets and require direct continuity before promoting replacement copper."
   }
 }

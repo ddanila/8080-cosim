@@ -15,11 +15,12 @@ REPORT = ROOT / "docs/factory-modification-disposition.md"
 MOD_REGISTRATION = PHOTO_DIR / "factory-modification-registration.json"
 PANORAMA_REGISTRATION = ROOT / "docs/photo-registration/panorama-registration.json"
 BOARD_REGISTRATION = ROOT / "docs/photo-registration/board-registration.json"
+LOCAL_PACKAGE_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
 AFFECTED = {
     "D56": "АГ3 timing area: position-150 tubing and three position-159 solder locations register at the D56.12/D56.5 level; their electrical topology remains held",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
     "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held",
-    "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 solder locations are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature",
+    "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field",
 }
 
 
@@ -59,6 +60,22 @@ def project(h: list[list[float]], point: list[float]) -> tuple[float, float]:
     return result[0] / result[2], result[1] / result[2]
 
 
+def reflected_cross_side(
+    component_fit: dict, solder_fit: dict, point: list[float]
+) -> tuple[float, float]:
+    """Map one component-image point through matching package-local fits."""
+    component_1 = complex(*component_fit["projected_pins"]["1"])
+    component_15 = complex(*component_fit["projected_pins"]["15"])
+    solder_1 = complex(*solder_fit["projected_pins"]["1"])
+    solder_15 = complex(*solder_fit["projected_pins"]["15"])
+    factor = (solder_15 - solder_1) / (
+        component_15.conjugate() - component_1.conjugate()
+    )
+    offset = solder_1 - factor * component_1.conjugate()
+    result = offset + factor * complex(*point).conjugate()
+    return result.real, result.imag
+
+
 def image_to_board(
     image: str,
     point: list[float],
@@ -84,6 +101,7 @@ def main() -> int:
     modification = json.loads(MOD_REGISTRATION.read_text(encoding="utf-8"))
     panorama = json.loads(PANORAMA_REGISTRATION.read_text(encoding="utf-8"))
     board_registration = json.loads(BOARD_REGISTRATION.read_text(encoding="utf-8"))
+    local_packages = json.loads(LOCAL_PACKAGE_REPORT.read_text(encoding="utf-8"))
     nets = board["nets"]
     detail_photos = [
         PHOTO_DIR / "PXL_20260711_114626340.jpg",
@@ -218,6 +236,34 @@ def main() -> int:
         / board_registration["pixels_per_mm"]
     )
     d11_ok &= d11_scar_separation > 2 * component_fit_ceiling
+    d11_fits = {
+        item["side"]: item
+        for item in local_packages["fits"]
+        if item["refdes"] == "D11"
+    }
+    d11_ok &= set(d11_fits) == {"component", "solder"}
+    d11_ok &= d11_fits.get("component", {}).get("model") == "similarity"
+    d11_ok &= d11_fits.get("solder", {}).get("model") == "similarity_reflected"
+    d11_ok &= all(
+        check["error_px"] <= 8.0
+        for fit in d11_fits.values()
+        for check in fit["checks"]
+        if check["use"] == "check"
+    )
+    d11_projected = d11["solder_photo_exhaustion"]["projected_points_px"]
+    if set(d11_fits) == {"component", "solder"}:
+        for name, landing in d11["landings"].items():
+            calculated = reflected_cross_side(
+                d11_fits["component"],
+                d11_fits["solder"],
+                landing["component_observations"][0]["image_px"],
+            )
+            d11_ok &= math.dist(calculated, d11_projected[name]) <= 0.15
+    d11_solder_images = [
+        ROOT / image for image in d11["solder_photo_exhaustion"]["overlap_images"]
+    ]
+    d11_ok &= len(d11_solder_images) == 4
+    d11_ok &= all(path.exists() and path.stat().st_size > 1_000_000 for path in d11_solder_images)
 
     guard_ok = (
         all(ref in chips for ref in AFFECTED)
@@ -235,7 +281,7 @@ def main() -> int:
     lines = [
         "# Factory modification disposition",
         "",
-        "Status date: **2026-07-15**.",
+        "Status date: **2026-07-16**.",
         "",
         f"Status: **{status}**",
         "",
@@ -263,7 +309,7 @@ def main() -> int:
             closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release"
         elif ref == "D11":
             disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured"
-            closure = "two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net"
+            closure = "two component views register the L trace and four-landmark topology; validated two-sided package fits exhaust four solder views, so direct continuity is required to assign any D11 pin/net"
         lines.append(row([
             ref,
             detail,
@@ -405,9 +451,15 @@ def main() -> int:
         f"from the nominal D11.4-.6 column, more than twice the component-grid",
         f"held-out error ceiling ({component_fit_ceiling:.3f} mm); the exclusion",
         "therefore survives the coarse global-fit uncertainty.",
-        "The corresponding solder-side holes, D11 pin/net, and both remote trace",
-        "endpoints remain unproved. No source net or auxiliary drill is changed",
-        "until a local through-hole fit or direct continuity closes them.",
+        "A newly validated D11 component package fit now pairs with that reflected",
+        "solder fit. Their package-local transform projects the upper landing under",
+        "the wide tinned rail and the lower three landmarks among repeated joints",
+        "and parallel traces without a unique four-hole match. All four overlapping",
+        "solder photos repeat the lower-field ambiguity; the second complete view",
+        "also repeats the upper rail obstruction. The available photographs are",
+        "therefore exhausted for through-hole identity rather than evidence for a",
+        "guessed snap. D11 pin/net and both remote endpoints require direct",
+        "continuity, and no source net or auxiliary drill is changed.",
     ]
     lines += [
         "",

@@ -228,8 +228,12 @@ and unique L trace form an auxiliary drilled/copper field beside the package,
 not a 14-pad package row. Four position-159 landmarks are registered. The
 previously cited solder scar beside D11 pins 4-6 is more than twice the coarse
 component-fit error ceiling away and is a different feature; it cannot assign
-the bridge. The corresponding solder-side holes, D11 pin/net, and remote
-endpoints remain held pending a local through-hole fit or continuity.
+the bridge. A held-out-validated component package fit now pairs with the
+reflected D11 solder fit: their package-local projection puts the upper landing
+under the wide tinned rail and the three lower landmarks among repeated joints
+and parallel traces without a unique four-hole match. Four overlapping solder
+views repeat that ambiguity, so the photos are exhausted and the D11 pin/net,
+bridge, and remote endpoints remain held pending direct continuity.
 
 ## Placement conclusions retained
 

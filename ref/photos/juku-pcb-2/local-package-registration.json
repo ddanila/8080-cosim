@@ -358,6 +358,19 @@
     },
     {
       "refdes": "D11",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2280.0, 1777.0], "use": "fit", "observation": "top contact beside the notch on the complete pin-1-to-14 column"},
+        {"pin": "14", "image_px": [2283.0, 2452.0], "use": "check", "observation": "independent bottom contact on the complete pin-1-to-14 column"},
+        {"pin": "15", "image_px": [2600.0, 2452.0], "use": "fit", "observation": "bottom contact on the opposite package column"},
+        {"pin": "28", "image_px": [2600.0, 1777.0], "use": "check", "observation": "independent top contact beside the notch on the opposite package column"}
+      ],
+      "note": "The notch-up body and two complete 14-contact columns identify the D11 КР580ВВ51А footprint. The opposite unused corners independently validate the component-side fit needed to compare the nearby factory landing field with the reflected solder view."
+    },
+    {
+      "refdes": "D11",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "model": "similarity_reflected",

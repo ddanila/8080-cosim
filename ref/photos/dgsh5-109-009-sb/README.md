@@ -35,8 +35,10 @@ What the drawing is authoritative for:
   but no net change is inferred. At D11, the unique L trace and four
   position-159 solder locations
   are registered in two component views; the earlier pins-4–6 solder scar is a
-  different feature, so a local solder through-hole fit or continuity is still
-  required.
+  different feature. Validated component and reflected package fits project the
+  four landmarks into four overlapping solder views, but the upper location is
+  rail-obscured and the lower three have no unique four-hole match; the photos
+  are exhausted and direct continuity is required.
 - Technical requirements 1–14 (ОСТ4.010.030-81 placement variants, ПОС61
   solder, marking, cable dressing, Z1 mounting on лакоткань/ВК-9).
 - Revision history: change-table rows `ен147279`, `ен147160`, `ен147074`,
