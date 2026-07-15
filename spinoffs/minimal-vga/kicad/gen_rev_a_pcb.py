@@ -6,7 +6,10 @@ import sys
 import pcbnew
 
 
-ROOT = "/usr/share/kicad/footprints"
+# Footprint library root. Defaults to the Linux/CI location; override with
+# KICAD_FOOTPRINTS for other installs (e.g. the macOS app bundle at
+# .../KiCad.app/Contents/SharedSupport/footprints).
+ROOT = os.environ.get("KICAD_FOOTPRINTS", "/usr/share/kicad/footprints")
 BOARD_WIDTH_MM = 285
 BOARD_HEIGHT_MM = 285
 ZONE_INSET_MM = 3
@@ -101,6 +104,14 @@ SILK_VALUE_BY_TYPE = {
     "RESET_SUPERVISOR_TO92": "RESET",
     "PS_ON_HEADER": "PS_ON",
     "POWER_DEBUG_HEADER": "PWR DBG",
+    "PROM_556RT4_DIP16": "RT4 DECODE",
+    "PROM_155RE3_DIP16": "RE3 PAGER",
+    "HEX_INV_74HC04_DIP14": "74HC04",
+    "JUMPER_1x2": "CLK SEL",
+    "JUMPER_1x3": "MODE A/B",
+    "DEBUG_HEADER_1x8": "CTL BUS",
+    "DEBUG_HEADER_1x10": "HI ADDR",
+    "DEBUG_HEADER_1x14": "DECODE DBG",
 }
 
 DOWNSTAIRS_VALUE_REFS = {
@@ -153,6 +164,16 @@ FP_BY_TYPE = {
     "LED_THT": ("LED_THT.pretty", "LED_D3.0mm"),
     "PS_ON_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Vertical"),
     "POWER_DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x04_P2.54mm_Vertical"),
+    # Phase 3/4 additions: real decode PROM sockets, mode inverter, jumpers,
+    # and the observability/high-address/control-bus headers.
+    "PROM_556RT4_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "PROM_155RE3_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "HEX_INV_74HC04_DIP14": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "JUMPER_1x2": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Vertical"),
+    "JUMPER_1x3": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x03_P2.54mm_Vertical"),
+    "DEBUG_HEADER_1x8": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x08_P2.54mm_Vertical"),
+    "DEBUG_HEADER_1x10": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x10_P2.54mm_Vertical"),
+    "DEBUG_HEADER_1x14": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x14_P2.54mm_Vertical"),
 }
 
 FP_BY_REF = {
@@ -232,6 +253,23 @@ PLACE = {
     "F1": (24, 38, 0),
     "D1": (38, 56, 90),
     "J93": (60, 260, 90),
+    # Phase 3/4 decode + observability parts (first-pass placement for review).
+    # Decode PROMs sit between ROM (U2) and the decode GAL (U5) in the top band.
+    "U3": (130, 62, 0),      # К556РТ4 memory-map decode
+    "U4": (158, 62, 0),      # К155РЕ3 ROM pager
+    "U6": (186, 62, 0),      # 74HC04 PC0/PC1 inverter
+    "C26": (130, 72, 0), "C27": (158, 72, 0), "C28": (186, 72, 0),
+    "J94": (206, 64, 90),    # decode-mode jumper, near the decode group
+    "R44": (216, 64, 0),     # MODE_B default pull-down
+    "J96": (268, 62, 90),    # clock-select jumper, near the oscillator U50
+    # PROM output pull-ups, clustered in the free strip between CLOCK/RESET and VGA.
+    "R32": (250, 100, 0), "R33": (250, 107, 0), "R34": (250, 114, 0), "R35": (250, 121, 0),
+    "R36": (262, 100, 0), "R37": (262, 107, 0), "R38": (262, 114, 0), "R39": (262, 121, 0),
+    "R40": (274, 100, 0), "R41": (274, 107, 0), "R42": (274, 114, 0), "R43": (274, 121, 0),
+    # Observability headers, extending the debug-header row to the right.
+    "J95": (152, 262, 0),    # decode-debug (РТ4 outs, РЕ3 byte, REV_OUT) 1x14
+    "J97": (186, 262, 0),    # high address + MEM_WR_N 1x10
+    "J98": (214, 262, 0),    # Z80 control bus 1x8
 }
 
 DECOUPLE_NEAR = {

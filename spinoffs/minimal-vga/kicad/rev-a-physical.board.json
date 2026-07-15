@@ -538,7 +538,7 @@
         "B9": "VCC_RAW",
         "A12": "GND",
         "B12": "GND",
-        "S1": "GND"
+        "SH": "GND"
       },
       "value": "USB-C 5V"
     },
@@ -1336,7 +1336,7 @@
     },
     {
       "ref": "R32",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "DEC_ROM_N"
@@ -1344,7 +1344,7 @@
     },
     {
       "ref": "R33",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "DEC_RAM_N"
@@ -1352,7 +1352,7 @@
     },
     {
       "ref": "R34",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "DEC_REV"
@@ -1360,7 +1360,7 @@
     },
     {
       "ref": "R35",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "DEC_ROE_N"
@@ -1368,7 +1368,7 @@
     },
     {
       "ref": "R36",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D0"
@@ -1376,7 +1376,7 @@
     },
     {
       "ref": "R37",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D1"
@@ -1384,7 +1384,7 @@
     },
     {
       "ref": "R38",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D2"
@@ -1392,7 +1392,7 @@
     },
     {
       "ref": "R39",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D3"
@@ -1400,7 +1400,7 @@
     },
     {
       "ref": "R40",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D4"
@@ -1408,7 +1408,7 @@
     },
     {
       "ref": "R41",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D5"
@@ -1416,7 +1416,7 @@
     },
     {
       "ref": "R42",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D6"
@@ -1424,7 +1424,7 @@
     },
     {
       "ref": "R43",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "VCC",
         "2": "RE3_D7"
@@ -1432,7 +1432,7 @@
     },
     {
       "ref": "R44",
-      "type": "RES_TH",
+      "type": "R_THT",
       "pins": {
         "1": "MODE_B",
         "2": "GND"
@@ -2128,7 +2128,7 @@
         ],
         [
           "J3",
-          "S1"
+          "SH"
         ],
         [
           "R30",
