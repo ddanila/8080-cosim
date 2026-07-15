@@ -57,7 +57,6 @@ def main() -> int:
     source = pcbnew.LoadBoard(str(SOURCE))
     candidate = pcbnew.LoadBoard(str(CANDIDATE))
     drc = run_drc(CANDIDATE)
-    source_refs = {footprint.GetReference() for footprint in source.GetFootprints()}
     candidate_tracks = list(candidate.GetTracks())
 
     def pad_map(board: pcbnew.BOARD) -> dict[tuple[str, str], tuple[str, float, float]]:
@@ -139,9 +138,13 @@ def main() -> int:
     modeled_terminals = 0
     copper_substitutions = 0
     for position, point, length, net_name, endpoints in LINKS:
-        expected_refs = {f"A{point}A", f"A{point}B"}
-        present_refs = sorted(expected_refs & source_refs)
-        modeled_terminals += len(present_refs)
+        wire_ref = f"W{point}"
+        present_terminals = [
+            f"{wire_ref}.{pin}"
+            for pin in ("1", "2")
+            if (wire_ref, pin) in source_pads
+        ]
+        modeled_terminals += len(present_terminals)
         net_code = candidate.GetNetcodeFromNetname(net_name)
         copper_count = sum(
             1 for item in candidate_tracks if item.GetNetCode() == net_code
@@ -159,7 +162,7 @@ def main() -> int:
                 f"`{net_name}`",
                 endpoint_text,
                 registered_by_point.get(point, 0),
-                len(present_refs),
+                len(present_terminals),
                 copper_count,
             ])
         )
@@ -236,9 +239,11 @@ def main() -> int:
         "`A9A`, `A12A`, `A13A`, and `A13B`. Existing registered component and",
         "solder views occlude their joints; the visible approaches do not uniquely",
         "identify copper. No automatic geometric promotion remains defensible.",
-        "After owner continuity or a newly exposing photograph closes those four:",
+        "A:8 is already split into two modeled surface landings and an explicit",
+        "assembly-wire component. After owner continuity or a newly exposing",
+        "photograph closes the four hidden joints:",
         "",
-        "1. Add the twenty one-pad landings to the source PCB and split each logical",
+        "1. Finish the twenty landing terminals and split each remaining logical",
         "   net into its two original copper islands joined by an explicit wire-link",
         "   assembly object.",
         "2. Reroute only the affected islands, require exactly ten intentional",

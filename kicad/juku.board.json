@@ -5165,6 +5165,19 @@
   {
    "ref": "R29", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "1к",
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY output series resistor; assembly drawing beside D30", "pins": "D30.5 to D1.23 READY"}
+  },
+  {
+   "ref": "W8",
+   "type": "WIRE_LINK",
+   "pins": {
+    "1": "A8A",
+    "2": "A8B"
+   },
+   "prov": {
+    "type": "factory wire table + owner photos",
+    "refdes": "ДГШ5.109.009 СБ conductor position 4 / board point А:8",
+    "pins": "two independently registered component-side surface joints at (40.811,99.989) and (223.601,170.724) mm; fitted insulated wire joins D5.1 to D38.8; nominal table length approximately 19 cm"
+   }
   }
  ],
  "nets": {
@@ -7584,19 +7597,22 @@
    ]
   },
   "STSTB": {
-   "src": "wire",
+   "src": "factory wire А:8 D5-side copper island",
    "nodes": [
-    [
-     "D38",
-     "8"
-    ],
     [
      "D5",
      "1"
+    ],
+    [
+     "W8",
+     "1"
     ]
    ],
-   "note": "WIRE 8 (beeper): D38.8 -> D5.1; the D13-secB stand-in retired",
-   "wire_link": true
+   "note": "WIRE 8 (beeper): explicit assembly wire W8 joins this D5.1/A8A island to the D38.8/A8B island; the D13-secB stand-in retired",
+   "wire_link": {
+    "ref": "W8",
+    "other_net": "STSTB_D38"
+   }
   },
   "CS_D10": {
    "src": "prom",
@@ -15746,6 +15762,14 @@
   "D104_X4_OUT_BOUNDARY": {
    "src": "July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.Cu departure behind the same vertical white wire. This singleton preserves the functional receiver output as a targeted continuity boundary, not an inferred no-connect",
    "nodes": [["D104", "10"]]
+  },
+  "STSTB_D38": {
+   "src": "factory wire А:8 D38-side copper island",
+   "nodes": [
+    ["D38", "8"],
+    ["W8", "2"]
+   ],
+   "note": "D38.8 reaches the registered A8B surface landing; insulated assembly wire W8 continues to STSTB/D5.1"
   }
  },
  "no_connects": [

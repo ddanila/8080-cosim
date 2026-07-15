@@ -200,7 +200,10 @@ module juku_top (
     tl2_hex   U_D13 (.i1(roe_n), .o2(ram_out_en), .i3(1'b1), .o4(d13_o4),
                      .i5(1'b1), .o6(reset_sys), .i9(1'b1), .o8(),
                      .i11(1'b1), .o10(), .i13(d105_h), .o12(d6_v_enable));
-    assign ststb_n = stb_d38;
+    // Factory wire A:8 is an assembly conductor, not PCB copper. Keeping it as
+    // a mapped boundary cell makes its two registered landing islands visible
+    // to LVS while preserving the zero-delay runnable behavior.
+    net_boundary U_W8 (.a(stb_d38), .b(ststb_n));
 
     sysctl_8238 U_SYS (.D(D), .DB(DB), .dbin(d105_dbin_gated), .wr_n(wr_n), .hlda(hlda),
                        .vss_gnd(1'b0), .vcc_5v(1'b1),

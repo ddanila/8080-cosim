@@ -44,6 +44,9 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - D7's physical pin12=`SYNC`, pin13=pin11 feedback strobe is retained in the
   structural/LVS path; runnable zero-delay simulation uses the explicit
   IOWR/IORD activity oracle instead of evaluating the propagation-delay loop.
+- Factory wire A:8 is a mapped `net_boundary` instance between the separate
+  D38.8/A8B and D5.1/A8A PCB islands. It is electrically transparent in the
+  runnable model but cannot collapse back into routed PCB copper unnoticed.
 - 217 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.

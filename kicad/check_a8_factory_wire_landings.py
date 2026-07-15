@@ -26,6 +26,8 @@ fit = next(
     if item["refdes"] == "D5" and item["side"] == "component"
 )
 d5 = board.FindFootprintByReference("D5")
+d38 = board.FindFootprintByReference("D38")
+w8 = board.FindFootprintByReference("W8")
 errors: list[str] = []
 
 image_points: list[list[float]] = []
@@ -81,9 +83,47 @@ if "cut length" not in point.get("observation", ""):
 if point.get("status") != "board-fitted":
     errors.append("A8: point status is not board-fitted")
 
+if w8 is None:
+    errors.append("A8: W8 assembly-wire footprint is missing")
+else:
+    expected_pads = {
+        "1": (recorded, "STSTB"),
+        "2": (a8b, "STSTB_D38"),
+    }
+    for number, (expected_position, expected_net) in expected_pads.items():
+        wire_pad = w8.FindPadByNumber(number)
+        if wire_pad is None:
+            errors.append(f"A8: W8.{number} landing is missing")
+            continue
+        position = wire_pad.GetPosition()
+        actual_position = np.array(
+            [pcbnew.ToMM(position.x), pcbnew.ToMM(position.y)]
+        )
+        error = float(np.linalg.norm(actual_position - expected_position))
+        if error > MAX_COORDINATE_ERROR_MM:
+            errors.append(f"A8: W8.{number} coordinate error {error:.4f} mm")
+        if wire_pad.GetNetname() != expected_net:
+            errors.append(
+                f"A8: W8.{number} is on {wire_pad.GetNetname()}, expected {expected_net}"
+            )
+        if wire_pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD:
+            errors.append(f"A8: W8.{number} must remain a surface landing")
+        layers = wire_pad.GetLayerSet()
+        if not layers.Contains(pcbnew.F_Cu) or not layers.Contains(pcbnew.F_Mask):
+            errors.append(f"A8: W8.{number} lacks F.Cu/F.Mask")
+        if layers.Contains(pcbnew.B_Cu):
+            errors.append(f"A8: W8.{number} incorrectly creates backside copper")
+        size = wire_pad.GetSize()
+        if abs(pcbnew.ToMM(size.x) - 2.0) > 0.001 or size.x != size.y:
+            errors.append(f"A8: W8.{number} provisional pad geometry drifted")
+
+d38_pad = d38.FindPadByNumber("8") if d38 is not None else None
+if d38_pad is None or d38_pad.GetNetname() != "STSTB_D38":
+    errors.append("D38.8 is missing from its A8B/STSTB_D38 copper island")
+
 if errors:
     raise SystemExit("A8 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A8 FACTORY LANDINGS: PASS — A8A/D5.1 board-fitted; "
+    "A8 FACTORY LANDINGS: PASS — two surface landing islands modeled through W8; "
     f"terminal chord {wire_chord:.3f} mm; 19 cm cut length remains held"
 )

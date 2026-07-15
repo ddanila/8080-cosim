@@ -18,9 +18,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `302`
-- Nets modeled: `570`
-- Chip-level fidelity gaps: `73`
+- Chips modeled: `303`
+- Nets modeled: `571`
+- Chip-level fidelity gaps: `74`
 - Net-level source-risk gaps: `217`
 - Explicitly dispositioned closed net risks: `12`
 - Documented intentional no-connect pins: `60`
@@ -37,6 +37,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory assembly drawing + owner photo | 1 |
 | factory power-cable table | 4 |
 | factory wire table | 14 |
+| factory wire table + owner photos | 1 |
 | factory wire table + registered two-sided owner photos | 1 |
 | mame+datasheet | 1 |
 | photo | 4 |
@@ -59,7 +60,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 1 |
 | connector boundary | 1 | 0 |
-| logic/source | 13 | 67 |
+| logic/source | 14 | 67 |
 | memory/timing | 0 | 3 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -122,6 +123,7 @@ parts placement and Tier-3 reproduction.
 | `R92` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated upper/right red horizontal resistor below D95; reg... |
 | `R99` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated lower/left red horizontal resistor below-left of D... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
+| `W8` | `WIRE_LINK` | factory wire table + owner photos | ДГШ5.109.009 СБ conductor position 4 / board point А:8 two independently registered component-side surface joints at (40.811,99.989) and (223.601,170.724) mm... |
 
 ### placement/refdes
 

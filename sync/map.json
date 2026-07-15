@@ -26,6 +26,7 @@
   "D59": "U_D59",
   "D35": "U_D35",
   "D38": "U_D38",
+  "W8": "U_W8",
   "D44": "U_D44",
   "D45": "U_D45",
   "D46": "U_D46",
@@ -908,6 +909,10 @@
     "1": "SYNDET_THROW",
     "2": "IR6_COMMON",
     "3": "INT6_THROW"
+   },
+   "WIRE_LINK": {
+    "1": "B",
+    "2": "A"
    }
   },
   "kicad_instance": {

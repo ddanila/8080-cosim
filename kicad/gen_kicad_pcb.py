@@ -71,6 +71,17 @@ PASSIVE_FP_REF = {
     'R30': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'S4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),
 }
+FACTORY_WIRE_PLACE = {
+    # Board point A:8 / conductor position 4. Both ends are photographed
+    # component-side surface joints, not drilled test points. The pad diameter
+    # is conservative provisional fabrication geometry; coordinates and island
+    # identities are evidence-backed independently of that diameter.
+    'W8': {
+        'pads': {'1': (40.811, 99.989), '2': (223.601, 170.724)},
+        'value': 'A:8 ~19cm insulated wire',
+        'pad_diameter': 2.0,
+    },
+}
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
     'R34':(247.0,125.6,90),  # 13k D40 CLR/LOAD pull-up, left of D40 [sheet-2]
@@ -453,6 +464,35 @@ def main():
         except Exception: v.SetTextAngle(mang * 10)
         v.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
 
+    def add_factory_wire(ref, specification):
+        """Add two top-side landing pads without an etched bridge."""
+        nonlocal n_pads
+        pads = specification['pads']
+        x0, y0 = pads['1']
+        fp = pcbnew.FOOTPRINT(board)
+        fp.SetFPID(pcbnew.LIB_ID('juku', f'FACTORY_WIRE_{ref}'))
+        fp.SetReference(ref)
+        fp.SetValue(specification['value'])
+        fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x0), pcbnew.FromMM(y0)))
+        fp.Reference().SetVisible(False)
+        fp.Value().SetVisible(False)
+        diameter = specification['pad_diameter']
+        for number, (x, y) in pads.items():
+            pad = pcbnew.PAD(fp)
+            pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
+            pad.SetShape(pcbnew.PAD_SHAPE_CIRCLE)
+            pad.SetSize(pcbnew.VECTOR2I_MM(diameter, diameter))
+            layers = pcbnew.LSET()
+            layers.AddLayer(pcbnew.F_Cu)
+            layers.AddLayer(pcbnew.F_Mask)
+            pad.SetLayerSet(layers)
+            pad.SetNumber(number)
+            pad.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+            fp.Add(pad)
+        board.Add(fp)
+        placed[ref] = fp
+        n_pads += len(pads)
+
     # connectors are silk outlines, not DIP footprints -> never placed as chips
     CONN = {'EXPANSION_CONN', 'SERIAL_CONN', 'POWER_CONN', 'PAR_CONN', 'KBD_CONN', 'FDC_CONN'}  # bracket connectors stay schematic-only; X1/X2 are made below
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
@@ -464,6 +504,10 @@ def main():
     for ref in chips:
         t = chips[ref]['type']
         if t in CONN or ref in OFF_BOARD: continue
+        if t == 'WIRE_LINK':
+            if ref in FACTORY_WIRE_PLACE:
+                add_factory_wire(ref, FACTORY_WIRE_PLACE[ref])
+            continue
         if t in PASSIVE_FP:
             if ref in PASSIVE_PLACE:
                 x, y, rot = PASSIVE_PLACE[ref]; add_passive(ref, x, y, rot)
@@ -472,7 +516,7 @@ def main():
             x, y, rot = PLACE[ref]; add_chip(ref, x, y, rot)
     col = 0
     for ref in sorted(chips):
-        if ref in OFF_BOARD or chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP or ref in PLACE: continue
+        if ref in OFF_BOARD or chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP or chips[ref]['type'] == 'WIRE_LINK' or ref in PLACE: continue
         add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
         if col == 8: col = 0; row += 1
 

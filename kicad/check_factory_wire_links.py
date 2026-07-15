@@ -40,6 +40,22 @@ def main() -> int:
             errors.append(f"position {position} / A:{point}: missing net {net_name}")
             continue
         actual = {tuple(node) for node in net.get("nodes", [])}
+        wire_link = net.get("wire_link")
+        if isinstance(wire_link, dict):
+            wire_ref = str(wire_link.get("ref", ""))
+            other_name = str(wire_link.get("other_net", ""))
+            other = board["nets"].get(other_name)
+            if not wire_ref or other is None:
+                errors.append(
+                    f"position {position} / A:{point}: incomplete wire-link split"
+                )
+                continue
+            other_nodes = {tuple(node) for node in other.get("nodes", [])}
+            if (wire_ref, "1") not in actual or (wire_ref, "2") not in other_nodes:
+                errors.append(
+                    f"position {position} / A:{point}: {wire_ref} does not terminate both islands"
+                )
+            actual |= other_nodes
         missing = expected - actual
         if missing:
             formatted = ", ".join(f"{ref}.{pin}" for ref, pin in sorted(missing))
