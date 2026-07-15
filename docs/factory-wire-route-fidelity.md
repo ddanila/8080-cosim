@@ -45,17 +45,21 @@ be incorporated only after the landing islands and functional netlist freeze.
 | 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 0 | 141 |
 | 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 0 | 11 |
 
-## Next automatic closure
+## Remaining release closure
 
-1. Register both physical landing positions for each repeated `А:N` label
-   from the full-resolution placement drawing and two-sided owner photos.
-2. Add the twenty one-pad landings to the source PCB and split each logical
+Four PCB landing coordinates/island assignments remain evidence-gated:
+`A9A`, `A12A`, `A13A`, and `A13B`. Existing registered component and
+solder views occlude their joints; the visible approaches do not uniquely
+identify copper. No automatic geometric promotion remains defensible.
+After owner continuity or a newly exposing photograph closes those four:
+
+1. Add the twenty one-pad landings to the source PCB and split each logical
    net into its two original copper islands joined by an explicit wire-link
    assembly object.
-3. Reroute only the affected islands, require exactly ten intentional
+2. Reroute only the affected islands, require exactly ten intentional
    unconnected DRC pairs, and emit a wire cut/installation table with the
    factory lengths.
-4. Only then may the refreshed candidate replace production copper.
+3. Only then may the refreshed candidate replace production copper.
 
 `А:20` remains on `S_TTL`: enlarged sheet-1 review reads the adjacent
 vertical package as `Д104`, not `Д14`, consistent with owner continuity
@@ -146,8 +150,8 @@ the endpoint immediately after C96 in the assembly drawing. The global
 solder registration promotes it as A12B at `(235.083,187.641)` mm on
 the D37.4-side `RAM_OUT_EN` island; the other C96 lead is 4.100 mm away
 and both component faces are hidden by the wire bundle/mastic. Direct
-component/reflected-solder D13
-fits place D13.2 at `(1369,906)` in `200450127` and `(2989.5,1193.5)`
+component/reflected-solder D13 fits place D13.2 at `(1369,906)` in
+`200450127` and `(2989.5,1193.5)`
 in `200537608`; neither face has an insulated-wire termination at the
 pad. A tempting tinned white-wire end at `(1405,1479)` in `200439607`
 is also rejected: cross-view projections land on bare component and
