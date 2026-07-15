@@ -20,6 +20,12 @@ python3 scripts/report_jmon22_reconstruction.py
 | `roms/jmon22.bin` | `16384` | `1b68f89ae4355391f434b3fae34e95cb4b150bf4bbcb967b5b177d48cd390589` |
 | `roms/jmon33.bin` | `16384` | `ce9e9c63abbb1780566423a871081bd0bf048a2f3c79e370b465ea9869ff51b8` |
 | `roms/jbasic11.bin` | `8192` | `ff86e17c7ce6de177e18bc0468d23cee7ed2ecd6e8adc56950138cdf6ee5ba60` |
+| `roms/ekta24.bin` | `16384` | `e1bd9894134ee4085c14bde854780539d3b1e03cfc032c81ec352729e9d69287` |
+| `roms/ekta31.bin` | `16384` | `26f1f4161a547ea60312a250bde9df41c0b07a939c0b880628050eaec18ec4e4` |
+| `roms/ekta32.bin` | `16384` | `1826563e23b5d8bc23c61694ceccb923d6a31778077934ad0338772070671122` |
+| `roms/ekta35.bin` | `16384` | `e8fe5e657037b8f3203f57512cd01cc35f7eaa2a3f0dae8d0ae19378908bd518` |
+| `roms/ekta37.bin` | `16384` | `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27` |
+| `roms/ekta43.bin` | `16384` | `39e3ca8978b369632d03c658300654445b898139009f188cb154e2f901238ba7` |
 
 ## Proven correction
 
@@ -57,6 +63,35 @@ locates damaged bytes nor determines their values, particularly when the
 preservation source explicitly reports multiple unstable reads. Blocks 6
 and 7 therefore remain untouched until original per-read captures, a stable
 independent dump, or another byte-identical firmware source is recovered.
+
+## Related-ROM donor search
+
+The audit tests every one-byte checksum repair with three source bytes
+available on each side against all seven other tracked 16 KiB monitor/BIOS
+images. This covers all 2,048 block-6 positions and 2,045 block-7
+positions; only the ROM's final three bytes lack right-hand context. A donor
+must contain the proposed replacement byte with the same three bytes on each
+side, so a moved routine can match without assuming a fixed ROM address.
+
+| Block | Required delta | One-byte checksum solutions | Context-tested | One-bit subset | 2-byte-flank matches | 3-byte-flank donors |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `6` | `+0x40` | `2048` | `2048` | `898` | `0` | `0` |
+| `7` | `+0xA3` | `2048` | `2045` | `0` | `6` | `0` |
+
+Block 7's six short-context matches are one false donor repeated across all
+six EktaSoft images: changing `0x3BAA` from `0x21` to `0xC4` would close
+the checksum, but it would turn Monitor 2.2's first vector initializer from
+`LXI H,$FF21; SHLD $0031` into `$FFC4`. The EktaSoft match is its distinct
+second initializer, `LXI H,$FFC4; SHLD $0001`; extending the context from
+two to three bytes on each side correctly rejects the semantic misalignment.
+
+The zero three-byte-context result matters in both directions: no tracked
+related ROM supplies a checksum-closing byte in matching local code, while the
+checksum alone leaves 2,048 possible one-byte edits per block. Block 6 still
+has 898 checksum-closing edits that are literal one-bit changes. Choosing
+among them from opcode plausibility or later-version address relocation would
+be guesswork, and block 7 cannot be repaired by any single-bit edit at all.
+The original multi-read captures or a second Monitor 2.2 dump remain required.
 
 ## Preservation rule
 

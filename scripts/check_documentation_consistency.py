@@ -492,6 +492,10 @@ def main() -> int:
         "block 3 `0xF3` -> stored `0x33`",
         "UNRESOLVED (checksum delta `+0x40`)",
         "UNRESOLVED (checksum delta `+0xA3`)",
+        "| `6` | `+0x40` | `2048` | `2048` | `898` | `0` | `0` |",
+        "| `7` | `+0xA3` | `2048` | `2045` | `0` | `6` | `0` |",
+        "changing `0x3BAA` from `0x21` to `0xC4`",
+        "`LXI H,$FF21; SHLD $0031`",
         "jmon22-consensus-patch.json",
     ):
         if marker not in jmon22_reconstruction:

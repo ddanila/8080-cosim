@@ -417,7 +417,10 @@ serve physical bring-up or historical fidelity:
    BASIC implementation itself is recovered; the exact correspondence ends
    before the missing page. The Monitor 2.2 audit source-proves its sole BASIC
    byte correction and closes block 3, but the preservation catalog confirms
-   unstable reads for the still-bad final two ROM blocks; they remain unpatched.
+   unstable reads for the still-bad final two ROM blocks. An exhaustive bounded
+   donor search across all seven related 16 KiB ROMs finds no checksum-closing
+   three-byte-context donor and rejects the tempting `0x3BAA` EktaSoft match as
+   a different restart-vector initializer; blocks 6 and 7 remain unpatched.
 4. Extend sound/serial behavior only to answer concrete bench questions.
 
 ## Physical bring-up sequence

@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "partial-consensus-repair; no binary exported",
   "source": {
     "path": "roms/jmon22.bin",
@@ -38,6 +38,102 @@
     6,
     7
   ],
+  "unresolved_block_audit": {
+    "related_roms": [
+      {
+        "path": "roms/jmon33.bin",
+        "sha256": "ce9e9c63abbb1780566423a871081bd0bf048a2f3c79e370b465ea9869ff51b8"
+      },
+      {
+        "path": "roms/ekta24.bin",
+        "sha256": "e1bd9894134ee4085c14bde854780539d3b1e03cfc032c81ec352729e9d69287"
+      },
+      {
+        "path": "roms/ekta31.bin",
+        "sha256": "26f1f4161a547ea60312a250bde9df41c0b07a939c0b880628050eaec18ec4e4"
+      },
+      {
+        "path": "roms/ekta32.bin",
+        "sha256": "1826563e23b5d8bc23c61694ceccb923d6a31778077934ad0338772070671122"
+      },
+      {
+        "path": "roms/ekta35.bin",
+        "sha256": "e8fe5e657037b8f3203f57512cd01cc35f7eaa2a3f0dae8d0ae19378908bd518"
+      },
+      {
+        "path": "roms/ekta37.bin",
+        "sha256": "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27"
+      },
+      {
+        "path": "roms/ekta43.bin",
+        "sha256": "39e3ca8978b369632d03c658300654445b898139009f188cb154e2f901238ba7"
+      }
+    ],
+    "context_rule": "replacement byte plus three exact source bytes on each side, searched at every offset in every related ROM; two-byte-flank collisions are retained for false-donor review",
+    "blocks": [
+      {
+        "block": 6,
+        "checksum_delta": "0x40",
+        "single_byte_checksum_solutions": 2048,
+        "context_eligible_solutions": 2048,
+        "single_bit_subset": 898,
+        "exact_two_byte_flank_donor_matches": [],
+        "exact_three_byte_flank_donor_matches": []
+      },
+      {
+        "block": 7,
+        "checksum_delta": "0xA3",
+        "single_byte_checksum_solutions": 2048,
+        "context_eligible_solutions": 2045,
+        "single_bit_subset": 0,
+        "exact_two_byte_flank_donor_matches": [
+          {
+            "source_offset": "0x3BAA",
+            "from": "0x21",
+            "to": "0xC4",
+            "donor": "roms/ekta24.bin",
+            "donor_offset": "0x18F3"
+          },
+          {
+            "source_offset": "0x3BAA",
+            "from": "0x21",
+            "to": "0xC4",
+            "donor": "roms/ekta31.bin",
+            "donor_offset": "0x18F3"
+          },
+          {
+            "source_offset": "0x3BAA",
+            "from": "0x21",
+            "to": "0xC4",
+            "donor": "roms/ekta32.bin",
+            "donor_offset": "0x18FA"
+          },
+          {
+            "source_offset": "0x3BAA",
+            "from": "0x21",
+            "to": "0xC4",
+            "donor": "roms/ekta35.bin",
+            "donor_offset": "0x18F3"
+          },
+          {
+            "source_offset": "0x3BAA",
+            "from": "0x21",
+            "to": "0xC4",
+            "donor": "roms/ekta37.bin",
+            "donor_offset": "0x18F4"
+          },
+          {
+            "source_offset": "0x3BAA",
+            "from": "0x21",
+            "to": "0xC4",
+            "donor": "roms/ekta43.bin",
+            "donor_offset": "0x18FB"
+          }
+        ],
+        "exact_three_byte_flank_donor_matches": []
+      }
+    ]
+  },
   "provenance_note": {
     "url": "https://j3k.infoaed.ee/tarkvara-kataloog/",
     "retrieved": "2026-07-15",
