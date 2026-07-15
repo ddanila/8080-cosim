@@ -348,6 +348,13 @@ D14. Their fitted body centres are `(195.7,38.9)`, `(211.8,29.5)`, and
 `(211.8,41.0)` board mm. This removes the impossible former overlaps of R30
 with D104.12 and D32.8. `kicad/check_serial_photo_placement.py` composes the raw
 photo and board registrations and guards all three centres and orientations.
+The new reflected D104 backside fit uses the complete 2x8 joint field in
+`200506061`, with independent pin-9 and pin-10 residuals of `1.000` and
+`0.728` px. It places D104.10 at `(2350.714,1249.143)` px, where the joint has
+no B.Cu departure; `200509593` independently shows the same isolated backside
+joint. Both component overlaps cover the possible F.Cu departure with the
+same vertical white wire, so D104.10 remains a targeted continuity request,
+not an inferred no-connect. The serial placement guard preserves that boundary.
 The same check identifies the marked notch-down К561ЛН2 in
 `PXL_20260710_200418174.jpg` as D3 at `(220.434,80.356)` mm. Its former
 `(205.8,96.4)` placeholder landed on a cable and physically overlapped D10.

@@ -115,7 +115,11 @@ Every ask below is queued with exact deliverables in
    and later recheck the D29.4/IORD conflict noted in the source model. The
    former BA11..BA15 assignment was an unproved scaffold analogy and is retired;
    all five actual D94 inputs are now owner-mapped
-   (`docs/d94-reconstruction-constraints.md`).
+   (`docs/d94-reconstruction-constraints.md`). A reflected D104 photo fit now
+   proves that pin 10 has no B.Cu departure in two backside views; its possible
+   F.Cu departure is hidden by the same vertical white wire in both component
+   overlaps, reducing the remaining D104.10 ask to targeted continuity rather
+   than permitting an inferred no-connect.
 3. **Finish the measured WAIT/READY edge boundaries.** The D2/D30/D105 path
    is adopted; D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are now
    owner-confirmed. Resolve only the exact edge contact/pull-up for `H`

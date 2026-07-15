@@ -47,9 +47,37 @@ def main() -> None:
         if angle_error > 0.01:
             errors.append(f"{refdes} angle {footprint.GetOrientationDegrees():.1f}, expected {expected_angle:.1f}")
         print(f"{refdes}: centre residual {residual:.3f} mm; angle {footprint.GetOrientationDegrees():.1f}")
+
+    local_report = json.loads(
+        (ROOT / "docs/photo-registration/local-packages/report.json").read_text()
+    )
+    d104_solder = next(
+        (
+            fit
+            for fit in local_report["fits"]
+            if fit["refdes"] == "D104" and fit["side"] == "solder"
+        ),
+        None,
+    )
+    if d104_solder is None or d104_solder.get("model") != "affine":
+        errors.append("D104 reflected solder fit is missing or not affine")
+    else:
+        checks = {item["pin"]: item["error_px"] for item in d104_solder["checks"]}
+        if checks.get("9", float("inf")) > 1.1:
+            errors.append("D104 solder pin 9 held-out residual exceeds 1.1 px")
+        if checks.get("10", float("inf")) > 0.8:
+            errors.append("D104 solder pin 10 held-out residual exceeds 0.8 px")
+        if d104_solder["projected_pins"].get("10") != [2350.714, 1249.143]:
+            errors.append("D104.10 solder coordinate drifted")
+        d104_pad10 = board.FindFootprintByReference("D104").FindPadByNumber("10")
+        if d104_pad10.GetNetname():
+            errors.append("D104.10 was assigned without closing its hidden F.Cu corridor")
     if errors:
         raise SystemExit("serial photo placement FAIL\n- " + "\n- ".join(errors))
-    print("serial photo placement PASS")
+    print(
+        "serial photo placement PASS — D104.10 solder 2350.7,1249.1 px; "
+        "B.Cu departure absent, possible F.Cu departure remains wire-obscured"
+    )
 
 
 if __name__ == "__main__":

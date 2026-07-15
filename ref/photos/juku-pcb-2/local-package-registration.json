@@ -146,6 +146,20 @@
       "note": "The direct fit establishes D3.10 beside the distinct component-side white-wire surface joint. Package geometry alone does not promote the wire connection; that requires the separately visible tinned departure."
     },
     {
+      "refdes": "D104",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "8", "image_px": [2213.0, 1203.0], "use": "fit", "observation": "top-left joint of the reflected 2x8 D104 field"},
+        {"pin": "1", "image_px": [2211.0, 1526.0], "use": "fit", "observation": "bottom-left joint of the complete reflected row"},
+        {"pin": "16", "image_px": [2349.0, 1526.0], "use": "fit", "observation": "bottom-right joint of the opposite complete row"},
+        {"pin": "9", "image_px": [2350.0, 1203.0], "use": "check", "observation": "independent top-right joint"},
+        {"pin": "10", "image_px": [2350.0, 1249.0], "use": "check", "observation": "fourth-receiver output joint; visibly lacks a B.Cu departure"}
+      ],
+      "note": "The reflected fit cross-registers the photo-placed D104 onto the backside in two overlapping solder views. D104.10 has no B.Cu departure, but its possible F.Cu corridor is hidden by a vertical white wire in both component views, so the fit narrows the continuity request without declaring the pin NC."
+    },
+    {
       "refdes": "D13",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
