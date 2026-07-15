@@ -19,7 +19,7 @@ python3 scripts/report_d41_timing_boundary.py
 | Check | Result | Evidence |
 | --- | --- | --- |
 | D41 exists as an ИР16 timing-chain chip | PASS | `kicad/juku.board.json` D41 |
-| D41 QA output is wired to both video address mux selects | PASS | `W10_QA_SEL`: D41.13 -> D50.1 + D51.1 |
+| D41 QA output is wired to both video address mux selects | PASS | D41.13 -> `W10_QA_SEL` -> W10 -> `W10_QA_SEL_D50` -> D50.1 + D51.1 |
 | D41 QB output is wired into the latch/preload chain | PASS | `LATCH_A`: D41.12 -> D37.1 |
 | D41 LD is source-traced onto timing-bundle rail 17 | PASS | `TIMING_TAG17`: D41.6 + D36.2 |
 | D41 CK is source-traced onto timing-bundle rail 8 | PASS | `SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8 |
@@ -33,7 +33,7 @@ python3 scripts/report_d41_timing_boundary.py
 | Pin | Signal | Net | Evidence |
 | --- | --- | --- | --- |
 | 12 | QB | LATCH_A | D41.QB feeds D37.1 in the modeled latch/preload chain |
-| 13 | QA | W10_QA_SEL | D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10 |
+| 13 | QA | W10_QA_SEL -> W10 -> W10_QA_SEL_D50 | D41.QA selects both D50/D51 video/uP mux inputs via documented assembly wire 10 |
 | 6 | LD | TIMING_TAG17 | Direct sheet-2 junction to numbered rail 17 shared with D36.2 |
 | 9 | CK | SHIFT_G | Direct sheet-2 junction to numbered rail 8 shared with D42.8/D43.8 |
 

@@ -71,9 +71,13 @@ def main() -> int:
         (
             "D41 QA output is wired to both video address mux selects",
             node_in(board, "W10_QA_SEL", "D41", "13")
-            and node_in(board, "W10_QA_SEL", "D50", "1")
-            and node_in(board, "W10_QA_SEL", "D51", "1"),
-            "`W10_QA_SEL`: D41.13 -> D50.1 + D51.1",
+            and node_in(board, "W10_QA_SEL", "W10", "1")
+            and node_in(board, "W10_QA_SEL_D50", "W10", "2")
+            and node_in(board, "W10_QA_SEL_D50", "D50", "1")
+            and node_in(board, "W10_QA_SEL_D50", "D51", "1")
+            and board["nets"]["W10_QA_SEL"].get("wire_link")
+            == {"ref": "W10", "other_net": "W10_QA_SEL_D50"},
+            "D41.13 -> `W10_QA_SEL` -> W10 -> `W10_QA_SEL_D50` -> D50.1 + D51.1",
         ),
         (
             "D41 QB output is wired into the latch/preload chain",
@@ -159,7 +163,7 @@ def main() -> int:
             "| Pin | Signal | Net | Evidence |",
             "| --- | --- | --- | --- |",
             table_row(["12", chip["pins"]["12"], "LATCH_A", "D41.QB feeds D37.1 in the modeled latch/preload chain"]),
-            table_row(["13", chip["pins"]["13"], "W10_QA_SEL", "D41.QA selects both D50/D51 video/uP mux inputs via documented wire 10"]),
+            table_row(["13", chip["pins"]["13"], "W10_QA_SEL -> W10 -> W10_QA_SEL_D50", "D41.QA selects both D50/D51 video/uP mux inputs via documented assembly wire 10"]),
             table_row(["6", chip["pins"]["6"], "TIMING_TAG17", "Direct sheet-2 junction to numbered rail 17 shared with D36.2"]),
             table_row(["9", chip["pins"]["9"], "SHIFT_G", "Direct sheet-2 junction to numbered rail 8 shared with D42.8/D43.8"]),
             "",
