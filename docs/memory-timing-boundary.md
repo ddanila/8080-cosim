@@ -31,6 +31,7 @@ python3 scripts/report_memory_timing_boundary.py
 | Shared CAS rail is guarded to all modeled DRAM C pins | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
 | PHI2TTL timing gate fanout is guarded | PASS | `PHI2TTL` source-risk net |
 | D92 triple-NOR RAM read/write combiner is source-closed | PASS | sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8 |
+| D37 RAM-read output-enable NAND is source-closed on both inputs and output | PASS | sheet-2: MEMR -> D33.3/.4 -> D37.5; D13.2 -> D37.4; D37.6 -> D58.OE9 |
 | Factory wire 11 is promoted onto MEMR with a clearance-safe routed bridge | PASS | native -MRD labels merge D92.13/D7.1; two-via B.Cu bridge avoids the front select bus |
 | D39 latch/output context is guarded | PASS | `D39_O8` and `D39Y` |
 | D39 remaining NAND inputs are source-closed onto control rails 3 and 1 | PASS | sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1 |
@@ -65,6 +66,9 @@ python3 scripts/report_memory_timing_boundary.py
 | `D34_A1_TAG2` | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in that boundary domain; it does not continue to D38.4's separate left-side timing-bundle rail2 |
 | `D39_MEMCYC` | `D39.3, D39.4, D38.5` | scan sheet-2 full-resolution (bite-2 plus D38 load-gate bundle): D39 output3 feeds its section-4 input pin4 and numbered timing rail4, which lands directly on D38 load-gate input pin5 |
 | `MEMR` | `D5.24, D15.22, D16.22, D29.6, D17.22, D18.22, D19.22, D20.22, D21.22, D22.22, ... (+3)` | native .006 sheets 1-2 full-resolution continuous label chase 2026-07-13: sheet-1 D29 exports -MRD to sheet 2; both sheet-2 arrivals marked (1) -MRD land on D33.3 and D92.13, while factory wire 11 continues D92.13 to D7.1. This closes the former W11_D7_D92 split onto the global MEMR conductor |
+| `D33_O4` | `D33.4, D37.5` | fully traced native sheet-2 300dpi route (crops s2_d37_d58 + s2_d58_oe): global -MRD/MEMR enters D33 inverter pin3, D33.4 runs directly to D37 NAND input pin5; this is the second qualifier paired with D13.2/RAM_OUT_EN on D37.4 |
+| `RAM_OUT_EN` | `D13.2, D37.4` | direct owner continuity 2026-07-14 confirms D13.2 -> D37.4. This agrees with traced sheet-1: D13.2 = ТЛ2 inverter OUTPUT (= ~D6.9) driving RAMOUTEN, exported "(2)" code 12 -> sheet-2 D37.4; factory wire 12 corroborates; cross-sheet arrival "(1) RAM OUT EN. -> D37.4" traced (crop s2_d37_d58) |
+| `RAM_RD_OE` | `D37.6, D58.9` | direct owner continuity 2026-07-14 confirms D37.6 -> D58.OE pin9. This agrees with the fully traced sheet-2 300dpi route (crops s2_d37_d58 + s2_d58_oe): "(1) RAM OUT EN." -> D37.4; "-MRD" -> D33 sect 3->4 -> D37.5; D37.6 riser corners east into D58.9 |
 | `D92_RD_NOR` | `D92.12, D92.11` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D92_WR_NOR` | `D92.6, D92.10, D92.9` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D92_NOACC` | `D92.8, D39.5` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
@@ -102,6 +106,9 @@ python3 scripts/report_memory_timing_boundary.py
   combine both results onto D92.8/D39.5. The repeated native-sheet -MRD
   label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the
   former artificial W11 boundary has been removed.
+- D37's RAM-read gate is source-complete rather than a remaining probe ask:
+  global MEMR enters D33.3, the inverter output D33.4 reaches D37.5,
+  D13.2/RAM_OUT_EN reaches D37.4, and D37.6 reaches D58.OE pin 9.
 - The routed snapshot retains the former wire-11 copper as MEMR. Two
   0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a
   back-layer bridge join the two MEMR islands without crossing the four

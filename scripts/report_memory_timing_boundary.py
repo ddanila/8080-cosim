@@ -45,6 +45,7 @@ def main() -> int:
     chips = {chip.get("ref"): chip for chip in board["chips"]}
     d35 = chips["D35"]
     d36 = chips["D36"]
+    d37 = chips["D37"]
     d59 = chips["D59"]
     d92 = chips["D92"]
     hex_contract = {
@@ -156,6 +157,18 @@ def main() -> int:
             and has_nodes(board, "D92_WR_NOR", {("D92", "6"), ("D92", "9"), ("D92", "10")})
             and has_nodes(board, "D92_NOACC", {("D92", "8"), ("D39", "5")}),
             "sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8",
+        ),
+        (
+            "D37 RAM-read output-enable NAND is source-closed on both inputs and output",
+            d37.get("pins", {}).get("5") == "A3"
+            and d37.get("pins", {}).get("4") == "B3"
+            and d37.get("pins", {}).get("6") == "Y3"
+            and has_nodes(board, "MEMR", {("D33", "3")})
+            and set(nodes(board, "D33_O4")) == {("D33", "4"), ("D37", "5")}
+            and set(nodes(board, "RAM_OUT_EN")) == {("D13", "2"), ("D37", "4")}
+            and set(nodes(board, "RAM_RD_OE")) == {("D37", "6"), ("D58", "9")}
+            and "fully traced native sheet-2" in board["nets"]["D33_O4"]["src"],
+            "sheet-2: MEMR -> D33.3/.4 -> D37.5; D13.2 -> D37.4; D37.6 -> D58.OE9",
         ),
         (
             "Factory wire 11 is promoted onto MEMR with a clearance-safe routed bridge",
@@ -320,6 +333,9 @@ def main() -> int:
         "D34_A1_TAG2",
         "D39_MEMCYC",
         "MEMR",
+        "D33_O4",
+        "RAM_OUT_EN",
+        "RAM_RD_OE",
         "D92_RD_NOR",
         "D92_WR_NOR",
         "D92_NOACC",
@@ -363,6 +379,9 @@ def main() -> int:
             "  combine both results onto D92.8/D39.5. The repeated native-sheet -MRD",
             "  label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the",
             "  former artificial W11 boundary has been removed.",
+            "- D37's RAM-read gate is source-complete rather than a remaining probe ask:",
+            "  global MEMR enters D33.3, the inverter output D33.4 reaches D37.5,",
+            "  D13.2/RAM_OUT_EN reaches D37.4, and D37.6 reaches D58.OE pin 9.",
             "- The routed snapshot retains the former wire-11 copper as MEMR. Two",
             "  0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a",
             "  back-layer bridge join the two MEMR islands without crossing the four",

@@ -213,8 +213,10 @@ Every ask below is queued with exact deliverables in
    D13.2->D37.4, D37.6->D58.9 endpoint chain is owner-confirmed. The remaining
    copper-truth asks are: identify the driver or pull of the D6.15/D105.1
    conductor (the only D6-area net still missing an endpoint), recheck the
-   surprising D13.12->D16.13 report with D16 removed, and identify the D37.5
-   second NAND input feeding the D58 chain. Simulation has narrowed the former
+   surprising D13.12->D16.13 report with D16 removed. The D37.5 second NAND
+   input is already source-closed by the native sheet-2 route
+   MEMR->D33.3/.4->D37.5 and is now regression-guarded together with
+   D13.2->D37.4 and D37.6->D58.9. Simulation has narrowed the former
    all-mode `B37A` contradiction to the exact D0/D3 transform, but source truth
    still waits on the corrected-reader D6 re-read or the operating-level
    alternative in highest-priority item 1. The five live RAM-read levels named

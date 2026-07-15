@@ -136,8 +136,10 @@ def main() -> int:
         "  actual suffix is `11`; both possible A7 rows still leave D6.9 high at",
         "  `B37A`, so the RAM-gate failure remains valid while A7 is unresolved.",
         "- Powered-off owner continuity now confirms the entire endpoint chain:",
-        "  D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9. Record live D6.9,",
-        "  D13.2, D37.6, D58.9, and D58.11 during",
+        "  D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9.",
+        "  The second D37 NAND input is independently source-closed by the native",
+        "  sheet-2 MEMR-D33.3/D33.4-D37.5 route; it is not a remaining probe ask.",
+        "  Record live D6.9, D13.2, D37.6, D58.9, and D58.11 during",
         "  the known `B37A` RAM read. Do not infer a new net merely to make boot pass.",
     ]
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")

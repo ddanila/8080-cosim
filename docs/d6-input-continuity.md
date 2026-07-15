@@ -78,6 +78,10 @@ The same powered-off owner session directly confirms the complete decode-path
 endpoint chain: `D6.9 -> D13.1`, `D13.2 -> D37.4`, and
 `D37.6 -> D58.9`.
 
+The other D37 NAND input is not an open continuity ask: the native sheet-2
+route closes global `MEMR -> D33.3`, inverter output `D33.4 -> D37.5`, while
+the guarded D37 package contract fixes pins 5/4->6 as that NAND section.
+
 The model therefore restores the independent `ROM_SEL` output and moves
 D6.11 onto the measured `WREQ_N` conductor. Follow-up owner continuity proves
 that conductor also reaches D92.5/R12.2, with R12's other side at +5 V,

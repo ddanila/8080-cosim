@@ -11489,7 +11489,7 @@
    ]
   },
   "D33_O4": {
-   "src": "scan",
+   "src": "fully traced native sheet-2 300dpi route (crops s2_d37_d58 + s2_d58_oe): global -MRD/MEMR enters D33 inverter pin3, D33.4 runs directly to D37 NAND input pin5; this is the second qualifier paired with D13.2/RAM_OUT_EN on D37.4",
    "nodes": [
     [
      "D33",
