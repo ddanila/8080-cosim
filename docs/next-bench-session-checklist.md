@@ -1,7 +1,9 @@
 # Next bench / photo session — consolidated checklist
 
 Status: **OWNER ACTION LIST** (hand-maintained; the auto-generated superset is
-`docs/owner-measurement-shortlist.md`). Ordered by unlock value. Produced-board
+`docs/owner-measurement-shortlist.md`). Ordered by unlock value. **Before adding
+or re-asking any measurement here, check `docs/owner-measured-facts.md` — it
+indexes what has already been probed, so nothing gets re-requested.** Produced-board
 photos are the ultimate truth; manual probes are truth at ~95%; the schematic
 PDF is the prototype and may differ.
 
