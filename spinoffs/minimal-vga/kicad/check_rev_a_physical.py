@@ -14,6 +14,12 @@ REQUIRED_REFS = {
     "R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23",
     "D2", "D3", "D4", "D5", "D6", "D7",
     "R24", "R25", "R26", "R27", "R28", "R29",
+    # Phase 3: real decode PROM sockets (Juku D6 РТ4 -> U3, D8 РЕ3 -> U4),
+    # PC0/PC1 mode inverter (U6), mode jumper (J94), decode-observability
+    # header (J95), PROM output pull-ups, and decoupling.
+    "U3", "U4", "U6", "J94", "J95",
+    "R32", "R33", "R34", "R35", "R36", "R37", "R38", "R39", "R40", "R41",
+    "R42", "R43", "R44", "C26", "C27", "C28",
 }
 
 REQUIRED_NETS = {
@@ -28,6 +34,11 @@ REQUIRED_NETS = {
     "KBD_COL0_DRV", "KBD_COL7_DRV",
     "LED_PWR_A", "LED_PWR_OK_A", "LED_CLK_A",
     "LED_RESET_A", "LED_M1_A", "LED_RFSH_A",
+    # Phase 3 decode nets: РТ4 decode outputs into the GAL, mode select,
+    # inverted Port C mode bits, and the РЕ3 readback byte.
+    "MODE_B", "PC0", "PC1", "PC0_N", "PC1_N",
+    "DEC_ROM_N", "DEC_RAM_N", "DEC_REV", "DEC_ROE_N", "REV_OUT",
+    "RE3_D0", "RE3_D1", "RE3_D2", "RE3_D3", "RE3_D4", "RE3_D5", "RE3_D6", "RE3_D7",
 }
 
 REQUIRED_PIN_BINDINGS = {
@@ -50,7 +61,45 @@ REQUIRED_PIN_BINDINGS = {
     },
     "U50": {"1": "OE_N", "7": "GND", "8": "CLK", "14": "VCC"},
     "U51": {"1": "GND", "2": "RESET_N", "3": "VCC"},
+    # Real decode PROM sockets (function-label pinout from the vendored
+    # datasheets: К556РТ4 82S126-class, К155РЕ3 SN74188-class).
+    "U3": {
+        "5": "A0", "6": "A1", "7": "A2", "4": "A3", "3": "A4", "2": "A5",
+        "1": "A6", "15": "A7", "12": "O1", "11": "O2", "10": "O3", "9": "O4",
+        "13": "CE1_N", "14": "CE2_N", "8": "GND", "16": "VCC",
+    },
+    "U4": {
+        "10": "A0", "11": "A1", "12": "A2", "13": "A3", "14": "A4",
+        "15": "CE_N", "1": "O1", "9": "O8", "8": "GND", "16": "VCC",
+    },
+    "U6": {"1": "1A", "2": "1Y", "3": "2A", "4": "2Y", "7": "GND", "14": "VCC"},
 }
+
+# Twin contract: the RT4/RE3 socket connectivity must match the addressing the
+# verified Verilog twin (hdl/vjuga_juku_top.v) drives -- see decode_prom /
+# re3_prom in ../../hdl/devices.v. If this drifts, the board no longer models
+# the chip the simulation validates.
+DECODE_SOCKET_CONTRACT = [
+    # РТ4 (U3) address: a[0..4]=A15,A14,A13,A12,A11 ; a[5]=/PC0 a[6]=/PC1 a[7]=0
+    ("A15", ["U3", "5"]), ("A14", ["U3", "6"]), ("A13", ["U3", "7"]),
+    ("A12", ["U3", "4"]), ("A11", ["U3", "3"]),
+    ("PC0_N", ["U3", "2"]), ("PC1_N", ["U3", "1"]), ("GND", ["U3", "15"]),
+    # РТ4 both chip-enables tied active (enabled whenever socketed)
+    ("GND", ["U3", "13"]), ("GND", ["U3", "14"]),
+    # РТ4 outputs O1..O4 = rom_n/ram_n/rev/roe_n feed the GAL decode inputs
+    ("DEC_ROM_N", ["U3", "12"]), ("DEC_RAM_N", ["U3", "11"]),
+    ("DEC_REV", ["U3", "10"]), ("DEC_ROE_N", ["U3", "9"]),
+    ("DEC_ROM_N", ["U5", "9"]), ("DEC_RAM_N", ["U5", "10"]),
+    ("DEC_REV", ["U5", "11"]), ("DEC_ROE_N", ["U5", "13"]),
+    ("MODE_B", ["U5", "8"]),
+    # РЕ3 (U4) address A[15:11], /CE from ROM select
+    ("A11", ["U4", "10"]), ("A12", ["U4", "11"]), ("A13", ["U4", "12"]),
+    ("A14", ["U4", "13"]), ("A15", ["U4", "14"]), ("ROM_CE_N", ["U4", "15"]),
+    # 8255 Port C bits 0-1 (mode output) -> inverter -> РТ4 /PC0,/PC1
+    ("PC0", ["U30", "14"]), ("PC1", ["U30", "15"]),
+    ("PC0", ["U6", "1"]), ("PC1", ["U6", "3"]),
+    ("PC0_N", ["U6", "2"]), ("PC1_N", ["U6", "4"]),
+]
 
 
 def nodes(entry):
@@ -205,6 +254,10 @@ def main():
             errors.append(f"{led}.2: not connected to {led_anode}")
         if [led, "1"] not in nodes(nets[led_cathode]):
             errors.append(f"{led}.1: not connected to {led_cathode}")
+
+    for net, endpoint in DECODE_SOCKET_CONTRACT:
+        if net not in nets or endpoint not in nodes(nets[net]):
+            errors.append(f"decode-socket contract: {endpoint[0]}.{endpoint[1]} not on {net}")
 
     if errors:
         print("Rev A physical spec check: FAIL")

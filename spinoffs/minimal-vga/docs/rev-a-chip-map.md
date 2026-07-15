@@ -10,7 +10,38 @@ it is not a released manufacturing BOM.
 |---|---|---|---|---|
 | U1 | CPU | Z0840004PSC | DIP-40 | Owner-ordered 4 MHz Z80; factory mounts socket only. |
 | U2 | ROM | 27C256-class EPROM, 28C256-compatible where possible | DIP-28 | 32 KiB ROM target for recovered firmware. |
-| U5 | Decode glue | GAL22V10-class programmable logic | DIP-24 | Use GAL/PAL-style logic for Rev A iteration. |
+| U5 | Decode glue | GAL22V10-class programmable logic | DIP-24 | Dual-mode decode; see the Decode PROMs section and `rev-a-gal-equations.md`. |
+
+## Decode PROMs (Phase 3 — the workbench purpose)
+
+These sockets exist to **test the scarce original Juku bipolar PROMs** in their
+real functional roles; booting the firmware is the self-test.
+
+| Ref | Juku role | Part | Package | Notes |
+|---|---|---|---|---|
+| U3 | D6 memory-map decode (`.038`) | К556РТ4 / 82S126-class 256×4 OC PROM | DIP-16 | Address `{A7=0,/PC1,/PC0,A11..A15}`; outputs O1..O4 = rom_n/ram_n/rev/roe_n. |
+| U4 | D8 ROM-select pager (`.039`) | К155РЕ3 / SN74188-class 32×8 OC PROM | DIP-16 | Address `A[15:11]`; `/CE`=ROM_CE_N; outputs to J95 readback. |
+| U6 | Port C mode-bit inverter | 74HC04 hex inverter | DIP-14 | 8255 PC0/PC1 → `/PC0,/PC1` for the РТ4 (two gates; rest tied off). |
+| J94 | Decode-mode jumper | 1×3 header + shunt | TH | Mode A (GAL-internal decode, PROM sockets empty) vs Mode B (real РТ4 drives decode). |
+| J95 | Decode-observability header | 1×14 header | TH | РТ4 outputs, РЕ3 byte, REV_OUT for the analyzer (Phase 4 readback). |
+| R32-R35 | РТ4 output pull-ups | 4.7k | TH | Open-collector outputs need pull-ups (datasheet: fuse=1 reads high). |
+| R36-R43 | РЕ3 output pull-ups | 4.7k | TH | Open-collector 8-bit output. |
+| R44 | MODE_B default pull-down | 10k | TH | Floating/no-shunt defaults to Mode A (safe bring-up). |
+
+**Buffered through the GAL, not into the enables directly.** The РТ4 (U3)
+outputs route into U5, which applies the provisional `~D0`/`~D3` polarity
+correction (root `PLAN.md` item 1) as a **reprogrammable GAL term** — when the
+main-twin level probe resolves the polarity, the fix is a GAL reprogram, not a
+board respin. The РЕ3 (U4) is enabled by ROM select and its output byte is only
+**observed** (via J95): VJUGA's single 27C256 does not need the pager to gate
+data, and the verified twin (`hdl/vjuga_juku_top.v`) likewise only *asserts* on
+D8 rather than routing it into the data path.
+
+**8255 Port C reconciliation.** The firmware writes the memory-map mode to Port C
+bits 0-1 (I/O port `0x06`), so those bits (U30 pins 14/15 = PC0/PC1) are the mode
+**output** feeding U6→U3. The keyboard-encoder readback therefore moves from Port C
+lower (PC0-3) to Port C upper (PC4-7) — an 8255 mode-0 split (lower nibble output,
+upper nibble input). PC2/PC3 are freed.
 
 ## DRAM And Arbitration
 
@@ -71,8 +102,15 @@ it is not a released manufacturing BOM.
   gates are not populated in the Rev A baseline. The current board routes the
   direct Z80 data bus and GAL-based decode/timing contract; add those sockets
   back only if simulator or hardware bring-up proves they are needed.
-- Rev A should use western parts only; Soviet-part footprints are not preserved
-  as a constraint for this spin-off.
+- Rev A uses western parts for the baseline (Mode A), and adds DIP sockets for
+  the scarce original Juku bipolar PROMs (U3 РТ4, U4 РЕ3) that Mode B exercises;
+  the DRAM sockets (U10-U17) take either KM4164B or К565РУ5. Soviet-part
+  footprints are otherwise not preserved as a constraint for this spin-off.
+- **The routed PCB (`rev-a-physical.kicad_pcb`) is STALE vs the schematic** after
+  the Phase 3 decode-socket addition: the schematic/connectivity (source of truth,
+  `check_rev_a_physical`) includes U3/U4/U6/J94/J95 and their passives, but the
+  copper does not yet place or route them. Re-layout + DRC + fab regen is Phase 3
+  step (f), performed with the independent review gate before any order.
 - A future assembly path may mount sockets/passives at the factory and insert
   vintage or programmed ICs later, but that path is blocked on functional
   proof and design review.
