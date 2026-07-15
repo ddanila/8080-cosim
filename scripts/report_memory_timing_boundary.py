@@ -154,7 +154,8 @@ def main() -> int:
             }
             and has_nodes(board, "ROE", {("D92", "1")})
             and has_nodes(board, "PHI2TTL", {("D92", "2"), ("D92", "3")})
-            and has_nodes(board, "MEMR", {("D5", "24"), ("D33", "3"), ("D92", "13"), ("D7", "1")})
+            and has_nodes(board, "MEMR", {("D5", "24"), ("D33", "3"), ("D92", "13"), ("W11", "1")})
+            and set(nodes(board, "MEMR_D7")) == {("D7", "1"), ("W11", "2")}
             and has_nodes(board, "D92_RD_NOR", {("D92", "12"), ("D92", "11")})
             and has_nodes(board, "MEMW", {("D92", "4")})
             and has_nodes(board, "WREQ_N", {("D6", "11"), ("D92", "5"), ("R12", "2")})
@@ -175,15 +176,14 @@ def main() -> int:
             "sheet-2: MEMR -> D33.3/.4 -> D37.5; D13.2 -> D37.4; D37.6 -> D58.OE9",
         ),
         (
-            "Factory wire 11 is promoted onto MEMR with a clearance-safe routed bridge",
+            "Factory wire 11 is preserved as an assembly closure between MEMR islands",
             "W11_D7_D92" not in board["nets"]
             and "W11_D7_D92" not in source_pcb
-            and "W11_D7_D92" not in routed_pcb
-            and "514fcf0c-a7a1-4503-a999-36168c28f107" not in routed_pcb
-            and "e5877b84-97b1-496c-a3ba-ca77b2e25bfd" in routed_pcb
-            and "e0f846b7-603d-48ed-b94f-15ed841c3b5b" in routed_pcb
-            and "08d5d9e2-6b12-4940-98b1-b618e016219c" in routed_pcb,
-            "native -MRD labels merge D92.13/D7.1; two-via B.Cu bridge avoids the front select bus",
+            and board["nets"]["MEMR"].get("wire_link")
+            == {"ref": "W11", "other_net": "MEMR_D7"}
+            and has_nodes(board, "MEMR", {("D92", "13"), ("W11", "1")})
+            and set(nodes(board, "MEMR_D7")) == {("D7", "1"), ("W11", "2")},
+            "native -MRD reaches D92.13/A11B; W11 crosses to the D7.1/A11A surface island without PCB copper",
         ),
         (
             "D39 latch/output context is guarded",
@@ -381,8 +381,8 @@ def main() -> int:
             "  read/write combiner is instantiated in the structural HDL and covered by",
             "  LVS: pins 1/2/13 qualify reads, 3/4/5 qualify writes, and 9/10/11",
             "  combine both results onto D92.8/D39.5. The repeated native-sheet -MRD",
-            "  label plus factory wire 11 close D92.13 and D7.1 onto global MEMR; the",
-            "  former artificial W11 boundary has been removed.",
+            "  label reaches D92.13, while factory wire W11 closes its registered A11B",
+            "  surface island to the separate D7.1/A11A island without etched copper.",
             "- D37's RAM-read gate is source-complete rather than a remaining probe ask:",
             "  global MEMR enters D33.3, the inverter output D33.4 reaches D37.5,",
             "  D13.2/RAM_OUT_EN reaches D37.4, and D37.6 reaches D58.OE pin 9.",

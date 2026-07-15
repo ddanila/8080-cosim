@@ -239,7 +239,7 @@ def main() -> int:
         "`A9A`, `A12A`, `A13A`, and `A13B`. Existing registered component and",
         "solder views occlude their joints; the visible approaches do not uniquely",
         "identify copper. No automatic geometric promotion remains defensible.",
-        "A:8 and A:10 are already split into modeled surface-landing pairs and",
+        "A:8, A:10, and A:11 are already split into modeled surface-landing pairs and",
         "explicit assembly-wire components. After owner continuity or a newly exposing",
         "photograph closes the four hidden joints:",
         "",

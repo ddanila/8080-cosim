@@ -310,9 +310,9 @@ Subsequent wire-table review adds a stricter construction-fidelity hold:
 `docs/factory-wire-route-fidelity.md` shows that all ten factory insulated-link
 nets are present in this zero-open checkpoint as ordinary routed copper because
 their paired `А:N` landing terminals and two-island partitions were not yet
-modeled. The source PCB now splits A:8 into two surface landings joined by an
-explicit assembly wire, so this checkpoint also lacks those two pads and keeps
-the old STSTB copper substitution. The artifact remains useful convergence
+modeled. The source PCB now splits A:8, A:10, and A:11 into surface-landing
+pairs joined by explicit assembly wires, so this checkpoint lacks those six
+pads and keeps the old STSTB, W10_QA_SEL, and MEMR copper substitutions. The artifact remains useful convergence
 evidence, but it must not
 be adopted as production copper until those ten intentional assembly closures
 replace the copper substitutions.
@@ -327,8 +327,8 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 
 The zero-open artifact remains an internally clean routing checkpoint, not a
 claim of parity with every later source edit. The candidate preserves all
-2,383 of its pad identities, but current source has 2,387 pads after adding
-W8.1/W8.2 and W10.1/W10.2. Among the common identities it finds 43 changed pad-net assignments and 138 pads
+2,383 of its pad identities, but current source has 2,389 pads after adding
+W8.1/W8.2, W10.1/W10.2, and W11.1/W11.2. Among the common identities it finds 44 changed pad-net assignments and 138 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
 D5, D7, D8, D9, D37, D38, D50, D51, R13, and R14. `check_routed_candidate.py`
 therefore correctly rejects the checkpoint against current source instead of

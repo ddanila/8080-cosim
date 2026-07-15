@@ -5188,6 +5188,15 @@
     "refdes": "ДГШ5.109.009 СБ conductor position 6 / board point А:10",
     "pins": "independently registered component/solder surface joints at (240.091,146.982) and (108.865,152.813) mm; fitted insulated wire joins D41.13 to the D50.1/D51.1 select island; duplicate table length 13.5 cm"
    }
+  },
+  {
+   "ref": "W11", "type": "WIRE_LINK", "pins": {"1": "A11B", "2": "A11A"},
+   "value": "~11.5 cm (held)",
+   "prov": {
+    "type": "factory wire table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ conductor position 7 / board point А:11",
+    "pins": "registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insulated wire joins the global D92.13 MEMR island to D7.1; 119.177 mm chord exceeds the approximate table length, so cut length remains held"
+   }
   }
  ],
  "nets": {
@@ -7263,10 +7272,11 @@
      "13"
     ],
     [
-     "D7",
+     "W11",
      "1"
     ]
-   ]
+   ],
+   "wire_link": {"ref": "W11", "other_net": "MEMR_D7"}
   },
   "MEMW": {
    "src": "scan plus owner continuity 2026-07-13/14: tied D105.12/.13 join D5.26; D105.1 is explicitly not on this conductor. Array read moves DRAM W pins to rail 16 (W_RAIL16); MEMW keeps the CPU-side strobe + D7.2/D92.4 taps; native sheet-1 direct T-junction adds D7.4 on the same conductor feeding D29 physical pin1; D36.9 is the write qualifier into the W-strobe NAND",
@@ -15782,6 +15792,11 @@
    "src": "factory wire А:10 D50/D51-side copper island",
    "nodes": [["D50", "1"], ["D51", "1"], ["W10", "2"]],
    "note": "D50.1/D51.1 share the registered A10B surface-landing island; insulated assembly wire W10 continues to D41.13"
+  },
+  "MEMR_D7": {
+   "src": "factory wire А:11 D7-side copper island",
+   "nodes": [["D7", "1"], ["W11", "2"]],
+   "note": "D7.1 reaches the registered A11A surface landing; insulated assembly wire W11 continues to the global MEMR/D92.13 island"
   }
  },
  "no_connects": [

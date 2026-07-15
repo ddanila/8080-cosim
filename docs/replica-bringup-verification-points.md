@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `217`
 - Verification-point endpoints checked in PCB: `326`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2252`
-- All board endpoints checked in routed PCB: `2252`
+- All board endpoints checked in source PCB: `2254`
+- All board endpoints checked in routed PCB: `2254`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2252/2252 | 2252/2252 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1883/2252 | 1804/2252 | FAIL |
+| `kicad/juku.kicad_pcb` | 2254/2254 | 2254/2254 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1883/2254 | 1803/2254 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -304,6 +304,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `M12V: A59.1`
 - `MA6: E1.3`
 - `MEMR: D29.6`
+- `MEMR: W11.1`
+- `MEMR_D7: W11.2`
 - `MEMW: D29.1`
 - `MEMW: D7.4`
 - `MEM_MODE0: D28.11`
@@ -486,6 +488,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D29.4: `MEMW` != `IORD`
 - D94.12: `BA13` != `IORD`
 - D29.13: `IORC_N` != `IOWC_N`
+- D7.1: `MEMR` != `MEMR_D7`
 - D105.12: `MEMR` != `MEMW`
 - D105.13: `MEMR` != `MEMW`
 - D29.14: `AMWC_N` != `MRC_N`

@@ -13,7 +13,7 @@ with the machine-readable board model.
   guard `sync/cosim_check.sh` compares `juku_top`'s memory reads byte-for-byte
   against the C emulator (`cosim`); the default 130,000-read trace now reaches
   `CTRACE-END` with no address or data divergence, including the BIOS RAM test.
-- `sync/check.sh` currently compares 104 mapped instances and 275 nets with no
+- `sync/check.sh` currently compares 105 mapped instances and 276 nets with no
   KiCad/HDL mismatch.
 - The routed main-board artifact has 240 footprints and zero KiCad copper
   clearance, crossing, short, or unconnected findings. The real
@@ -26,13 +26,13 @@ with the machine-readable board model.
   A 296-footprint replacement routing checkpoint is preserved separately with
   all 2,383 pad identities, zero internal unconnected items, and zero electrical
   DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 43 pad-net mismatches and 138 moved
-  pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14; it also lacks the four
-  A:8/A:10 assembly-wire pads. It is therefore convergence evidence rather than
+  Later source corrections leave it with 44 pad-net mismatches and 138 moved
+  pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14; it also lacks the six
+  A:8/A:10/A:11 assembly-wire pads. It is therefore convergence evidence rather than
   current-source copper. Its zero-open state also copper-substitutes ten
-  documented factory insulated links. The source PCB now preserves A:8 and
-  A:10 as separate surface-landing island pairs joined only by explicit
-  assembly wires; the other sixteen A-point terminals remain absent. All ten pairs
+  documented factory insulated links. The source PCB now preserves A:8, A:10,
+  and A:11 as separate surface-landing island pairs joined only by explicit
+  assembly wires; the other fourteen A-point terminals remain absent. All ten pairs
   (`А:7`–`А:14`, `А:19`, and `А:20`) are
   registered in drawing-image space. Both A7/A8/A10/A11/A14/A19/A20
   terminals plus the D38-side A9 and C96-side A12 joints are also board-fitted

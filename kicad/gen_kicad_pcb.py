@@ -86,6 +86,11 @@ FACTORY_WIRE_PLACE = {
         'value': 'A:10 13.5cm insulated wire',
         'pad_diameter': 2.0,
     },
+    'W11': {
+        'pads': {'1': (261.325, 128.548), '2': (142.256, 123.468)},
+        'value': 'A:11 ~11.5cm insulated wire (cut length held)',
+        'pad_diameter': 2.0,
+    },
 }
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {

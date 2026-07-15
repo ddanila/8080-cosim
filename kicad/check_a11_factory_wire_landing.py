@@ -29,6 +29,7 @@ fits = {
     in {("D7", "component-alt"), ("D40", "component"), ("D41", "component")}
 }
 errors: list[str] = []
+w11 = board.FindFootprintByReference("W11")
 
 
 def image_to_board(refdes: str, side: str = "component") -> np.ndarray:
@@ -95,8 +96,8 @@ if "D7.1" not in endpoint_a.get("island_assignment", "") or "MEMR" not in endpoi
     errors.append("A11A island assignment lacks D7.1/MEMR")
 d7 = board.FindFootprintByReference("D7")
 d7_pad = d7.FindPadByNumber("1") if d7 is not None else None
-if d7_pad is None or d7_pad.GetNetname() != "MEMR":
-    errors.append("D7.1 is not on MEMR")
+if d7_pad is None or d7_pad.GetNetname() != "MEMR_D7":
+    errors.append("D7.1 is not on its MEMR_D7 wire island")
 
 wire_chord = float(np.linalg.norm(recorded - recorded_a))
 if not 118.5 <= wire_chord <= 120.0:
@@ -106,10 +107,34 @@ if "11.5 cm" not in point.get("observation", "") or "cut length" not in point.ge
 if point.get("status") != "board-fitted":
     errors.append("A11 point status is not board-fitted")
 
+if w11 is None:
+    errors.append("A11: W11 assembly-wire footprint is missing")
+else:
+    expected_pads = {
+        "1": (recorded, "MEMR"),
+        "2": (recorded_a, "MEMR_D7"),
+    }
+    for number, (expected_position, expected_net) in expected_pads.items():
+        wire_pad = w11.FindPadByNumber(number)
+        if wire_pad is None:
+            errors.append(f"A11: W11.{number} landing is missing")
+            continue
+        position = np.array([
+            pcbnew.ToMM(wire_pad.GetPosition().x),
+            pcbnew.ToMM(wire_pad.GetPosition().y),
+        ])
+        if float(np.linalg.norm(position - expected_position)) > 0.002:
+            errors.append(f"A11: W11.{number} coordinate drifted")
+        if wire_pad.GetNetname() != expected_net:
+            errors.append(f"A11: W11.{number} is on {wire_pad.GetNetname()}, expected {expected_net}")
+        layers = wire_pad.GetLayerSet()
+        if wire_pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD or not layers.Contains(pcbnew.F_Cu) or layers.Contains(pcbnew.B_Cu):
+            errors.append(f"A11: W11.{number} must remain a top-side surface landing")
+
 if errors:
     raise SystemExit("A11 FACTORY LANDING: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A11 FACTORY LANDING: PASS — "
+    "A11 FACTORY LANDING: PASS — two surface islands modeled through W11; "
     f"A11A {recorded_a[0]:.3f},{recorded_a[1]:.3f} mm; "
     f"A11B {recorded[0]:.3f},{recorded[1]:.3f} mm; "
     f"D40/D41 spread {spread:.4f} mm; chord {wire_chord:.3f} mm"

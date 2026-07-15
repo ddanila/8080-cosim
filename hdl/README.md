@@ -49,6 +49,8 @@ They are not generic cycle-accurate replacements for every original IC mode.
   runnable model but cannot collapse back into routed PCB copper unnoticed.
 - Factory wire A:10 similarly separates D41.13/A10A from the shared
   D50.1/D51.1/A10B select island while remaining zero-delay in simulation.
+- Factory wire A:11 separates the global D92.13/A11B MEMR island from
+  D7.1/A11A; W11 preserves the physical closure as another mapped boundary.
 - 217 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
