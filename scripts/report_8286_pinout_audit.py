@@ -32,13 +32,6 @@ EXPECTED_NET_PINS = {
         "BA8": "12", "BA9": "13", "BA10": "19", "BA11": "18",
         "BA12": "15", "BA13": "16", "BA14": "17", "BA15": "14",
     },
-    "D29": {
-        "INHIB_STATUS_BOUNDARY": "3", "D29_AIN1_BOUNDARY": "2",
-        "IOM_STATUS": "4", "MEMW": "1", "MEMR": "6",
-        "AMW_N": "5", "IORD": "8", "IOWR": "7",
-        "INHIB_N": "17", "CCLCK": "18", "IOM_N": "16", "MWC_N": "19",
-        "MRC_N": "14", "AMWC_N": "15", "IORC_N": "12", "IOWC_N": "13",
-    },
     "D23": {**{f"BA{i}": str(i + 1) for i in range(8)},
             **{f"ADR{i}_N": str(19 - i) for i in range(8)}},
     "D24": {**{f"BA{i + 8}": str(i + 1) for i in range(8)},
@@ -61,12 +54,29 @@ def main() -> None:
             endpoint_net[(ref, str(pin))] = name
 
     checks = []
-    for ref in ("D4", "D107", "D29", "D23", "D24", "D25"):
+    for ref in ("D4", "D107", "D23", "D24", "D25"):
         actual = {pin: name for pin, name in chips[ref]["pins"].items() if pin in PHYSICAL}
         checks.append((f"{ref} uses the Intel DIP-20 logical pin names", actual == PHYSICAL))
         expected = EXPECTED_NET_PINS[ref]
         observed = {net: endpoint_net.get((ref, pin)) for net, pin in expected.items()}
         checks.append((f"{ref} address-channel pad assignments match sheet 1", observed == {n: n for n in expected}))
+
+    d29_actual = {pin: name for pin, name in chips["D29"]["pins"].items() if pin in PHYSICAL}
+    checks.append(("D29 uses the Intel DIP-20 logical pin names", d29_actual == PHYSICAL))
+    d29_expected_by_pin = {
+        "1": "MEMW", "2": "D29_AIN1_BOUNDARY", "3": "INHIB_STATUS_BOUNDARY",
+        "4": "IORD", "5": "AMW_N", "6": "MEMR", "7": "D30_Q2N_D29_AIN7",
+        "8": "IORD", "12": "IORC_N", "13": "IOWC_N", "14": "MRC_N",
+        "15": "AMWC_N", "16": "IOM_N", "17": "INHIB_N", "18": "CCLCK",
+        "19": "MWC_N",
+    }
+    d29_observed_by_pin = {
+        pin: endpoint_net.get(("D29", pin)) for pin in d29_expected_by_pin
+    }
+    checks.append((
+        "D29 command-channel pads preserve owner-corrected IORD and D30.8 routes",
+        d29_observed_by_pin == d29_expected_by_pin,
+    ))
 
     d100 = chips["D100"]
     checks.append(("D100 uses the Intel 8287 DIP-20 pin names", d100["pins"] == PHYSICAL_D100))

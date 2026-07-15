@@ -823,7 +823,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К155ЛН5 standard hex-inverter package contract; exhaustive sheet-2 census proves phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), plus labeled POF input pin3 -> output4 -> R39.1/VID_MIX2; sections 1->2, 5->6, and 9->8 never occur and their six pins are explicit NCs"
+    "pins": "К155ЛН5 standard hex-inverter package contract; full-resolution sheet-2 proves phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), labeled POF input pin3 -> output4 -> R39.1/VID_MIX2, and D55.OUT1/VER RTR -> pin9 -> pin8/FRAME INT; only sections 1->2 and 5->6 remain explicit NCs"
    }
   },
   {
@@ -11708,11 +11708,13 @@
    ]
   },
   "FRAME_INT": {
-   "src": "mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name \"VER RTR\" (D55.OUT1 export, crop s2_d55)",
+   "src": "native sheet-2 draws D35 К155ЛН5 output pin8 as FRAME INT with R60 5.1k pull-up; native sheet-1 draws FRAME INT(2) directly into D10 IR5/pin23",
+   "source_risk": false,
+   "risk_disposition": "closed across native sheets 2 and 1; D35.8 and D10.23 share the named FRAME INT off-sheet conductor and R60 pull-up",
    "nodes": [
     [
-     "D55",
-     "13"
+     "D35",
+     "8"
     ],
     [
      "D10",
@@ -11723,6 +11725,12 @@
      "1"
     ]
    ]
+  },
+  "VERT_RTR": {
+   "src": "native sheet-2 draws D55 OUT1/pin13 as VER RTR with boundary tag2, which continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT",
+   "source_risk": false,
+   "risk_disposition": "closed on native sheet 2 by the matching VER RTR/tag2 conductor between D55.13 and D35.9",
+   "nodes": [["D55", "13"], ["D35", "9"]]
   },
   "PIT_BAUD": {
    "src": "traced sheet-2 (bite-3): D57.OUT0 -> line labeled \"BAUD R.\" -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail \"A\" = +5V (power corner)",
@@ -15782,8 +15790,6 @@
   ["D35", "2"],
   ["D35", "5"],
   ["D35", "6"],
-  ["D35", "8"],
-  ["D35", "9"],
   ["D56", "1"],
   ["D56", "9"],
   ["D56", "13"],

@@ -13,11 +13,11 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `222`
-- Verification-point endpoints checked in PCB: `370`
+- Verification-point nets: `221`
+- Verification-point endpoints checked in PCB: `367`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2246`
-- All board endpoints checked in routed PCB: `2246`
+- All board endpoints checked in source PCB: `2248`
+- All board endpoints checked in routed PCB: `2248`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -27,7 +27,7 @@ visible and actionable before manufacturing and first power-on.
 | logic | 166 |
 | memory/decode | 7 |
 | sound/analog | 1 |
-| timing/I/O | 4 |
+| timing/I/O | 3 |
 | video/analog | 22 |
 
 ## KiCad PCB Endpoint Coverage
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 370/370 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 370/370 net names matched |
+| Risk endpoints present on PCB pads | PASS | 367/367 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 367/367 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2246/2246 | 2246/2246 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1883/2246 | 1807/2246 | FAIL |
+| `kicad/juku.kicad_pcb` | 2248/2248 | 2248/2248 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1883/2248 | 1806/2248 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -266,6 +266,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `FDC_RCLK: D93.26`
 - `FDC_RE_N: D94.3`
 - `FDC_WE_N: D94.4`
+- `FRAME_INT: D35.8`
 - `GND: R30.2`
 - `GND: D43.1`
 - `GND: D39.2`
@@ -381,6 +382,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `USART_RXRDY_IRQ: D11.14`
 - `USART_TXRDY_IRQ: D10.21`
 - `USART_TXRDY_IRQ: D11.15`
+- `VERT_RTR: D35.9`
 - `VERT_SYNC: D55.17`
 - `VID_MUX_G: E14.1`
 - `W10_QA_SEL: D51.1`
@@ -494,6 +496,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D46.9: `S3_2` != `S3_6`
 - D12.1: `SER_TXD` != `SER_TXD_INV`
 - D7.12: `IOWR` != `SYNC`
+- D55.13: `FRAME_INT` != `VERT_RTR`
 - D6.11: `RAM_SEL` != `WREQ_N`
 - D92.5: `RAM_SEL` != `WREQ_N`
 - R12.2: `RAM_SEL` != `WREQ_N`
@@ -674,7 +677,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_DDEN` | FDC | `D26.13, D93.37, D28.9` | cross-source: older sheet routes D26 PC4/pin13 directly into D28 input pin9, while .009/MAME associates PC4 with FDC density; July-2026 two-sided local D93 fit identifies pin37... | Confirm density-control level against drive/emulator behavior. |
 | `FDC_DRQ` | FDC | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
-| `FRAME_INT` | timing/I/O | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (D55.OUT1 export, cro... | Cross-check against hardware when the peripheral path is exercised. |
 | `INHIB_STATUS_BOUNDARY` | logic | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PHI2TTL` | logic | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + "(1)" exit to s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PIT_BAUD` | timing/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V (power corner) | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

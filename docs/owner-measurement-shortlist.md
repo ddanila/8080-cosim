@@ -83,13 +83,13 @@ yet modeled as nets.
 
 ## Bring-up verification scope
 
-- Generated bring-up verification nets: `227`
+- Generated bring-up verification nets: `221`
 - `FDC`: `22` net(s)
-- `logic`: `169` net(s)
+- `logic`: `166` net(s)
 - `memory/decode`: `7` net(s)
 - `sound/analog`: `1` net(s)
-- `timing/I/O`: `4` net(s)
-- `video/analog`: `24` net(s)
+- `timing/I/O`: `3` net(s)
+- `video/analog`: `22` net(s)
 
 ## Practical sequencing
 

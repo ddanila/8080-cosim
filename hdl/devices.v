@@ -267,7 +267,9 @@ module ln1_osc   (input wire sclk, xin, input wire i13, i11, i3, i5, i9,
     assign o6  = ~i5;   // physical section 5->6; board destination unresolved
     assign o8  = ~i9;   // section 9->8 returns through R31 to physical pin 1
 endmodule
-// D35 ЛН5 phase generator. Merge step 3: the discrete clock mesh feeding `osc` is an un-traced
+// D35 ЛН5 phase/frame generator. Sections 9->8 invert D55.OUT1/VER RTR into
+// FRAME INT for D10.IR5; 3->4 inverts POF into VID_MIX2. The discrete clock
+// mesh feeding `osc` is an un-traced
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
 // INTENT here -- a non-overlapping Φ1/Φ2. This is a sim clock: it only sets the simulated VALUE;
 // the D35->CPU net wiring (what LVS compares) is unchanged, so LVS stays IN SYNC.

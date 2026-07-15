@@ -143,8 +143,10 @@ module juku_top (
                      .a2(cas_n), .b2(d36_b2_tag17), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 boundary
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
+    wire vert_rtr, frame_int;
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1), .phi2(phi2), .phi2ttl(phi2ttl),
-                     .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(), .i5(1'bz), .o6(), .i9(1'bz), .o8());
+                     .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(), .i5(1'bz), .o6(),
+                     .i9(vert_rtr), .o8(frame_int));
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4, iorc_n;
     wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
     wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs
@@ -543,13 +545,14 @@ module juku_top (
                       .pa(), .pb(8'hFF),
                       .reset(reset_sys), .pc(),
                       .kbd_en(1'b0), .kbd_pressed(1'b0), .kbd_shift(1'b0), .kcol(4'b0), .kbit(3'b0));
-    // PIT cascade per the pinned MAME driver: D54 horiz -> D55 vert -> FRAME INT.
+    // PIT cascade per the native sheets: D54 horizontal -> D55 vertical;
+    // D55.OUT1/VER RTR then passes through D35.9->.8 to FRAME INT/D10.IR5.
     // 1 MHz = D40 QD (the same /16 tap that feeds the D37 latch chain, net LATCH_B); 2 MHz =
     // D40 QC; 1.23 MHz (D57 baud clk0) = D103 /13 [boundary, undriven].
     wire clk1m = d40_q[3];
     wire clk2m = d40_q[2];
     wire clk123m;
-    wire pit_hchain, pit_hsync_dsl, pit_vchain, frame_int, pit_baud, pit_sound;
+    wire pit_hchain, pit_hsync_dsl, pit_vchain, pit_baud, pit_sound;
     pit_8253  U_PIT0 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit0_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(clk1m), .gate0(1'b1), .clk1(clk1m), .gate1(pit_hchain),
                       .clk2(clk1m), .gate2(pit_hchain),
@@ -557,7 +560,7 @@ module juku_top (
     pit_8253  U_PIT1 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit1_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(pit_hchain), .gate0(1'b1), .clk1(pit_hsync_dsl), .gate1(pit_vchain),
                       .clk2(pit_hsync_dsl), .gate2(pit_vchain),
-                      .out0(pit_vchain), .out1(frame_int), .out2());
+                      .out0(pit_vchain), .out1(vert_rtr), .out2());
     pit_8253  U_PIT2 (.A(BA[1:0]), .D(DB), .cs_n(cs_pit2_n), .rd_n(iord_n), .wr_n(iowr_n), .clk(),
                       .clk0(d103_q[3]), .gate0(1'b1), .clk1(clk2m), .gate1(1'b1),
                       .clk2(d103_q[3]), .gate2(1'b1),   // traced: CLK0+CLK2 share 1.23M = D103.QD

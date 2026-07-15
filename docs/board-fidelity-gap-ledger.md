@@ -19,11 +19,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `302`
-- Nets modeled: `569`
+- Nets modeled: `570`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `222`
-- Explicitly dispositioned closed net risks: `6`
-- Documented intentional no-connect pins: `62`
+- Net-level source-risk gaps: `221`
+- Explicitly dispositioned closed net risks: `8`
+- Documented intentional no-connect pins: `60`
 
 ## Chip Provenance Types
 
@@ -60,7 +60,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | clock/I/O | 0 | 1 |
 | connector boundary | 1 | 0 |
 | logic/source | 13 | 68 |
-| memory/timing | 0 | 6 |
+| memory/timing | 0 | 5 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
 | sound/analog | 0 | 1 |
@@ -198,7 +198,7 @@ explicit KiCad schematic no-connect markers.
 | `D26` | `39` |
 | `D28` | `5, 6` |
 | `D30` | `6, 9` |
-| `D35` | `1, 2, 5, 6, 8, 9` |
+| `D35` | `1, 2, 5, 6` |
 | `D37` | `8, 9, 10` |
 | `D40` | `3, 4, 5, 6, 15` |
 | `D41` | `10, 11` |
@@ -392,7 +392,6 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_DDEN` | FDC owner-continuity | `D26.13, D93.37, D28.9` | cross-source: older sheet routes D26 PC4/pin13 directly into D28 input pin9, while .009/MAME associates PC4 with FDC density; July-2026 two-sided local D93 f... |
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
-| `FRAME_INT` | memory/timing | `D55.13, D10.23, R60.1` | mame; D57.18 detached (drawn: CLK2 <- 1.23M rail tag 13, crop s2_d57_outs); +R60 5.1k pullup (sheet-2 overview + SB spot 253.9,202.7); drawn name "VER RTR" (... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
@@ -456,9 +455,11 @@ the active release-risk count.
 | `D26_PC5_RN_IN` | the D26.12-to-D28.3 input conductor is closed on the older sheet; uncertainty on paired output D28.4 is tracked separately as X4_RN_N |
 | `D26_PC6_STOP_IN` | the D26.11-to-D28.1 input conductor is closed on the older sheet; uncertainty on paired output D28.2 is tracked separately as X4_STOP_N |
 | `D30_Q2N_D29_AIN7` | closed by direct owner continuity; the word boundary refers only to the superseded scan interpretation |
+| `FRAME_INT` | closed across native sheets 2 and 1; D35.8 and D10.23 share the named FRAME INT off-sheet conductor and R60 pull-up |
 | `POF` | closed by the sheet-1 tag6 to sheet-2 named-POF conductor; MAME is independent corroboration, not the source |
 | `USART_RXRDY_IRQ` | closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
+| `VERT_RTR` | closed on native sheet 2 by the matching VER RTR/tag2 conductor between D55.13 and D35.9 |
 
 ## Automatic Closure Rule
 

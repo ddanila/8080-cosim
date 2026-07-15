@@ -21,14 +21,14 @@ Primary pinout source:
 | D4 address-channel pad assignments match sheet 1 | PASS |
 | D107 uses the Intel DIP-20 logical pin names | PASS |
 | D107 address-channel pad assignments match sheet 1 | PASS |
-| D29 uses the Intel DIP-20 logical pin names | PASS |
-| D29 address-channel pad assignments match sheet 1 | PASS |
 | D23 uses the Intel DIP-20 logical pin names | PASS |
 | D23 address-channel pad assignments match sheet 1 | PASS |
 | D24 uses the Intel DIP-20 logical pin names | PASS |
 | D24 address-channel pad assignments match sheet 1 | PASS |
 | D25 uses the Intel DIP-20 logical pin names | PASS |
 | D25 address-channel pad assignments match sheet 1 | PASS |
+| D29 uses the Intel DIP-20 logical pin names | PASS |
+| D29 command-channel pads preserve owner-corrected IORD and D30.8 routes | PASS |
 | D100 uses the Intel 8287 DIP-20 pin names | PASS |
 | D100 DB/DAL channel pad assignments follow the physical pairs | PASS |
 | LVS type pinmap follows A0-A7 pins 1-8 and B0-B7 pins 19-12 | PASS |

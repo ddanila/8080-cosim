@@ -216,19 +216,26 @@ def main() -> int:
             and all(["D56", pin] in board.get("no_connects", []) for pin in ("1", "9", "13")),
             "native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 departs on unresolved tag16; undrawn D56.1/.9/.13 are NC",
         ),
+        (
+            "D35 frame-interrupt inverter path is source-closed",
+            all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
+            and has_nodes(board, "POF", {("D26", "10"), ("D35", "3")})
+            and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
+            and set(nodes(board, "VERT_RTR")) == {("D55", "13"), ("D35", "9")}
+            and set(nodes(board, "FRAME_INT")) == {("D35", "8"), ("D10", "23"), ("R60", "1")}
+            and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6"))
+            and all(["D35", pin] not in board.get("no_connects", []) for pin in ("8", "9")),
+            "native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2",
+        ),
     ]
     boundary_checks = [
         (
-            "D35/D59 complete inverter package roles remain visible",
-            all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
-            and all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
-            and has_nodes(board, "POF", {("D26", "10"), ("D35", "3")})
-            and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
+            "D59 remaining inverter package boundary remains visible",
+            all(d59.get("pins", {}).get(pin) == role for pin, role in d59_contract.items())
             and set(nodes(board, "D59_O10_TAG10")) == {("D59", "10")}
             and ("D59", "10") not in set(nodes(board, "SOUND"))
-            and "Automatic tag-number chase exhausted" in board["nets"]["D59_O10_TAG10"]["src"]
-            and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6", "8", "9")),
-            "D26.PC7 -> POF -> D35.3/.4 -> R39.1 guarded; D59.5/.6 NC; D59.10 tag10 distinct from SOUND",
+            and "Automatic tag-number chase exhausted" in board["nets"]["D59_O10_TAG10"]["src"],
+            "D59.5/.6 NC; D59.10 tag10 remains distinct from SOUND",
         ),
         (
             "D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge",
@@ -322,6 +329,8 @@ def main() -> int:
         "D39Y",
         "D59_O10_TAG10",
         "POF",
+        "VERT_RTR",
+        "FRAME_INT",
         "D56_CLR",
         "D56_RC1",
         "D56_C1",
