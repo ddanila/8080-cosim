@@ -35,28 +35,39 @@ $CC -O2 -I "$ROOT/cosim" -o "$TMP/trace" \
 ( cd "$ROOT/cosim" && "$TMP/trace" "$MV/roms/ekta37_z80.bin" 50000000 "$WRITES" >/dev/null 2>&1 )
 cp "$ROOT/cosim/vram.bin" "$TMP/ref.bin"
 
-echo "== build VJUGA Verilog twin (tv80 + real К565РУ5) =="
-# vm80a.v satisfies devices.v's cpu_8080 wrapper reference (unused here; tv80 is the CPU).
-iverilog -g2012 \
-  -Pvjuga_juku_tb.rom_file="\"$TMP/ekta37_z80.hex\"" \
-  -Pvjuga_juku_tb.vw_limit="$WRITES" \
-  -Pvjuga_juku_tb.dump_file="\"$TMP/vjuga.bin\"" \
-  -o "$TMP/twin" \
-  "$ROOT/hdl/vendor/vm80a.v" \
-  "$TV/tv80_alu.v" "$TV/tv80_reg.v" "$TV/tv80_mcode.v" "$TV/tv80_core.v" "$TV/tv80s.v" \
-  "$ROOT/hdl/devices.v" "$MV/hdl/vjuga_juku_top.v" "$MV/hdl/vjuga_juku_tb.v"
+# Both decode modes = the physical MODE_B jumper (J94):
+#   0 = Mode B: the real D6 РТ4 (decode_prom) drives the ROM/RAM decision.
+#   1 = Mode A: the U5 GAL's internal coarse decode, РТ4 socket empty (the
+#       western-parts bring-up baseline). Each must boot byte-identical to cosim
+#       so every physical jumper setting has a proven simulated counterpart.
+fail=0
+for M in 0 1; do
+  if [ "$M" = 0 ]; then MODE_NAME="B (real D6 РТ4 decode)"; else MODE_NAME="A (GAL-internal decode, РТ4 socket empty)"; fi
+  echo "== build + boot VJUGA twin, decode Mode $MODE_NAME =="
+  # vm80a.v satisfies devices.v's cpu_8080 wrapper reference (unused here; tv80 is the CPU).
+  iverilog -g2012 \
+    -Pvjuga_juku_tb.rom_file="\"$TMP/ekta37_z80.hex\"" \
+    -Pvjuga_juku_tb.vw_limit="$WRITES" \
+    -Pvjuga_juku_tb.decode_mode="$M" \
+    -Pvjuga_juku_tb.dump_file="\"$TMP/vjuga_$M.bin\"" \
+    -o "$TMP/twin_$M" \
+    "$ROOT/hdl/vendor/vm80a.v" \
+    "$TV/tv80_alu.v" "$TV/tv80_reg.v" "$TV/tv80_mcode.v" "$TV/tv80_core.v" "$TV/tv80s.v" \
+    "$ROOT/hdl/devices.v" "$MV/hdl/vjuga_juku_top.v" "$MV/hdl/vjuga_juku_tb.v"
+  vvp "$TMP/twin_$M" >/dev/null 2>&1 || true
+  if [ ! -f "$TMP/vjuga_$M.bin" ]; then
+    echo "  FAIL  Mode $M never reached $WRITES video writes (no framebuffer dumped)"; fail=1
+  elif cmp -s "$TMP/vjuga_$M.bin" "$TMP/ref.bin"; then
+    echo "  PASS  Mode $M framebuffer == cosim after $WRITES video writes"
+  else
+    echo "  FAIL  Mode $M framebuffer differs from cosim @ $WRITES writes"; fail=1
+  fi
+done
 
-echo "== boot the real ROM on the VJUGA twin and dump its framebuffer =="
-vvp "$TMP/twin" >/dev/null 2>&1
-
-if [ ! -f "$TMP/vjuga.bin" ]; then
-  echo "  FAIL  VJUGA twin never reached $WRITES video writes (no framebuffer dumped)"; exit 1
-fi
-if cmp -s "$TMP/vjuga.bin" "$TMP/ref.bin"; then
-  echo "  PASS  VJUGA Verilog twin framebuffer == cosim after $WRITES video writes"
-  echo "        (tv80 Z80 boots ekta37_z80 with the real К565РУ5 dram_64kx1 model)"
+if [ "$fail" = 0 ]; then
+  echo "        (tv80 Z80 boots ekta37_z80 with the real К565РУ5 dram_64kx1 model,"
+  echo "         through both the real D6 РТ4 decode and the GAL-internal baseline)"
   echo "VJUGA-VERILOG-BOOT-CHECK: PASS"
 else
-  echo "  FAIL  VJUGA twin framebuffer differs from cosim @ $WRITES writes"
   echo "VJUGA-VERILOG-BOOT-CHECK: FAIL"; exit 1
 fi

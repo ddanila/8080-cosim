@@ -21,7 +21,12 @@
 module vjuga_juku_top #(
     parameter rom_file  = "ekta37_z80.hex",
     parameter vw_limit  = 6000,
-    parameter dump_file = "vjuga_v_vram.bin"
+    parameter dump_file = "vjuga_v_vram.bin",
+    // Decode mode = the physical MODE_B jumper (J94) in simulation.
+    //   0 = Mode B: the real D6 РТ4 (decode_prom) drives ROM/RAM (chip test).
+    //   1 = Mode A: the U5 GAL's internal decode, РТ4 socket empty (western
+    //       baseline). Both are proven byte-identical to cosim.
+    parameter DECODE_MODE = 0
 ) (
     input  wire clk,
     input  wire reset_n
@@ -76,8 +81,14 @@ module vjuga_juku_top #(
     decode_prom U_D6 (.a({1'b0, ~portc[1], ~portc[0], A[11], A[12], A[13], A[14], A[15]}),
                       .v_en_n(1'b0),
                       .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
-    wire rom_sel_n = ~d6_rom_n;              // provisional D0 correction (see main-twin PLAN item 1)
-    wire is_rom    = (rom_sel_n == 1'b0);    // D6 РТ4 decides ROM vs RAM
+    // Mode B (J94 = B): the D6 РТ4 decides ROM vs RAM under the provisional ~D0
+    // correction (main-twin PLAN item 1). Mode A (J94 = A): the coarse decode
+    // the U5 GAL derives from A15/A14 alone (ROM = low 32K), needing neither the
+    // РТ4 nor the Port C mode bits -- the western-parts bring-up baseline.
+    wire is_rom_promB = d6_rom_n;            // is_rom <=> d6_rom_n high (== ~rom_sel_n, ~D0 correction)
+    wire is_rom_intA  = (A[15:14] == 2'b00);
+    wire is_rom    = (DECODE_MODE == 1) ? is_rom_intA : is_rom_promB;
+    wire rom_sel_n = ~is_rom;                // ROM select drives D8 /CE in both modes
     wire [7:0] d8_d;
     re3_prom U_D8 (.a(A[15:11]), .e_n(rom_sel_n), .d(d8_d));   // D8 РЕ3 ROM-select pager
     // Cross-check: D6's decision must match the reference mode map (flags a bad chip loudly).
