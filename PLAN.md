@@ -250,8 +250,12 @@ Every ask below is queued with exact deliverables in
    not invented. D14 is now partially photo-closed: notch-oriented registration
    maps both package rows, and two component views prove the position-159
    D32.4/GND-to-D14.1 copper link now preserved by the source model. Exact
-   modified pads, removed segments, and replacement nets at D56, plus D14's
-   fifth landing, three long traces, and right-row dogleg, remain held. At D11,
+   D56 is now partially photo-closed: three component views identify the actual
+   notch-down К155АГ3 package, two solder views register its reflected pin
+   field, and the position-150 cut is the visible gap that isolates D56.12 /
+   `D56_Q2N_TAG16` from the adjacent wide rail, matching the clean source net
+   partition. D56's three position-159 replacement landings, plus D14's fifth
+   landing, three long traces, and right-row dogleg, remain held. At D11,
    two component views now register the L trace and four position-159 landings
    and exclude the previously cited pins-4–6 solder scar as a different feature;
    the solder-side through-hole fit and electrical endpoints remain the P0 hold

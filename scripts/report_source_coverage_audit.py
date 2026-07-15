@@ -112,8 +112,8 @@ def main() -> int:
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",
-            "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D14/D11 solder-side cut/patch instructions; owner-board registration closes D15 as an A2/A1 bridge cut and D14 position 159 as the D32.4/GND-to-D14.1 link",
-            "D56 and D14's remaining fifth landing/replacement traces still require exact pad/segment mapping; D11's four position-159 landings are component-photo registered, but their solder-side through-hole fit and electrical endpoints remain held; assembly detail does not prove every copper endpoint or programmable-part truth",
+            "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D14/D11 solder-side cut/patch instructions; owner-board registration closes D56 position 150 as the D56.12-side wide-rail cut, D15 as an A2/A1 bridge cut, and D14 position 159 as the D32.4/GND-to-D14.1 link",
+            "D56's three position-159 replacement landings and D14's remaining fifth landing/replacement traces still require exact mapping; D11's four position-159 landings are component-photo registered, but their solder-side through-hole fit and electrical endpoints remain held; assembly detail does not prove every copper endpoint or programmable-part truth",
         ]),
         "",
         "## Current source requests",

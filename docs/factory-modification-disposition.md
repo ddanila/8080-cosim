@@ -8,17 +8,37 @@ The `ДГШ5.109.009 СБ` Вид В detail proves that positions 150/159
 modify copper around D56, D15, D14, and D11. The unnumbered detail
 mixes mounting-side context with solder-side artwork, so it does not
 by itself prove package pin numbers or final net partitions.
-Two independent component views plus the reflected solder panorama now
-close the D15 cut topology and the D14 position-159 ground link. D56,
-D11 bridge endpoints, and the remaining D14 auxiliary/replacement paths
-stay unproved; D11's four physical landings are now registered.
+Three component views plus two overlapping solder views now close D56
+position 150; independent two-sided evidence also closes the D15 cut
+topology and D14 position-159 ground link. D56 position 159, D11 bridge
+endpoints, and the remaining D14 auxiliary/replacement paths stay held.
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
-| D56 | АГ3 timing area: multiple drawn cuts/patches around the package fanout | DESIGN HOLD — affected footprint exists, exact modified pads/nets not mapped | registered two-sided copper overlay plus pad/via continuity (the acquired sheets 2-5 wire table covers wires/cables only, not cut pads) |
+| D56 | АГ3 timing area: position-150 cuts the D56.12-side wide-rail connection; three position-159 replacement landings remain held | PARTIAL PHOTO-CLOSE — position 150 isolates D56.12/D56_Q2N_TAG16 from the adjacent wide rail; position 159 remains held | three component views identify the package; two overlapping solder views fix the reflected pin field and cut |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
 | D14 | АП2 serial-driver area: registered notch-up orientation maps the right row to D14.8-.5 and the first four left-row holes to D14.1-.4; position 159 closes the D32.4/GND-to-D14.1 link, while the fifth landing and remaining replacement traces stay held | PARTIAL PHOTO-CLOSE — position 159 preserves D32.4/GND-to-D14.1; remaining fifth landing and replacement traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing, three long traces, and right-row dogleg before full release |
 | D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four position-159 landings are photo-registered, while the previously cited D11.4-.6 solder scar is excluded as a different feature | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 landings identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; a local through-hole fit or direct continuity is still required to assign any D11 pin/net |
+
+## D56 position-150 cut registration
+
+Three overlapping component photographs identify the same notch-down
+`К155АГ3 8901` package beside the right board edge. The coherent reflected
+16-pin solder field then fixes D56.12 as the fourth joint down its left
+row. In both solder photographs a terminated wide-rail stub stops short
+of that joint at the position-150 mark; no copper crosses the gap.
+The executed cut therefore leaves D56.12 on its separate
+`D56_Q2N_TAG16` boundary, matching the clean source net partition.
+
+| Solder view | D56.12 fit error | Cut-end agreement | Result |
+| --- | ---: | ---: | --- |
+| PXL_20260710_200530933.MP.jpg | 0.000 mm | 0.000 mm | visible D56.12-to-wide-rail gap |
+| PXL_20260710_200522685.jpg | 0.117 mm | 0.000 mm | visible D56.12-to-wide-rail gap |
+
+The provisional cut-end centre is (292.804,
+180.456) mm. It records topology only; the three
+position-159 landing leaders and their remote replacement connections
+remain electrically and fabrication-held.
 
 ## D15 cut registration
 
@@ -97,14 +117,15 @@ until a local through-hole fit or direct continuity closes them.
 - `PXL_20260711_114626340.jpg`: full Вид В and all four local details.
 - `PXL_20260711_114633498.jpg`: enlarged D15 Разрезать operation.
 - `PXL_20260711_114638730.MP.jpg`: full-resolution positions 150/159 context.
-- `factory-modification-registration.json`: D15/D14 closures plus two-view D11 four-landing registration.
+- `factory-modification-registration.json`: D56/D15/D14 closures plus two-view D11 four-landing registration.
 - `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`: factory-versus-owner disposition.
 
 ## Release rule
 
 Do not release or reroute the board on netlist equivalence alone. For each
-of D56, the obscured D11 bridge, and the remaining D14 detail, identify the modified pad/via pair(s), the cut original
-segment, and the replacement connection; then prove the final source-PCB
-net partition matches the factory result. D15 and the D14.1 ground link
-are electrically closed; their unmeasured auxiliary-hole geometry remains
+of D56 position 159, the obscured D11 bridge, and the remaining D14 detail,
+identify the modified pad/via pair(s) and replacement connection; then
+prove the final source-PCB net partition matches the factory result.
+D56 position 150, D15, and the D14.1 ground link are electrically closed;
+their unmeasured auxiliary-hole geometry remains
 held only for an original-artwork replica.

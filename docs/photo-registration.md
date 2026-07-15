@@ -25,7 +25,7 @@ endpoint table contains 614 reviewed rows:
 | `accepted` | 33 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
 | `measurement` | 581 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 363 `local-package-fit`, 227
+Confidence metadata consists of 368 `local-package-fit`, 222
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Two accepted
 route endpoints use the compound `local-package-fit+continuous-copper` class. A hole snap
 or accurate pad projection is not electrical evidence by itself.

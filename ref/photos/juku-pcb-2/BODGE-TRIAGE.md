@@ -203,23 +203,29 @@ separate A2/A1 nets match the resulting factory topology. The locally fitted
 landing centres remain navigation evidence rather than fabrication-ready drill
 coordinates (`factory-modification-registration.json`).
 
-The D14 detail likewise cannot yet be reduced to a package pin number. It
-draws five holes in the auxiliary/left field beside a four-pad right package
-row; the position-159 leader enters that auxiliary field. Three long
-replacement traces terminate toward the lower field and a separate dogleg
-reaches a right-row pad. Until the solder-side view is locally registered or
-the connection table is obtained, assigning those features to D14 pins 1/2/7
-would be an unsupported mirror/orientation guess.
+Three overlapping component photographs identify the actual D56 as the
+notch-down `К155АГ3 8901` package at the right board edge. Two overlapping
+solder photographs resolve its complete reflected 2x8 pin field. The
+position-150 mark is the visible cut immediately beside D56.12: a terminated
+wide-rail stub stops short of the pin joint in both views. This preserves
+D56.12 on the separate `D56_Q2N_TAG16` boundary already present in the clean
+source. The three position-159 leaders and their remote replacement
+connections remain held.
 
-For D11, Вид В draws a single 14-pad package column beside a separate
-four-hole auxiliary field; position 159 marks the bridge into that field. A
-reflected package-local fit in `PXL_20260710_200506061.jpg` now uses D11 corner
-pads 1/15 and holds pads 14/28 out at 2.375 px error. It places the visibly
-scraped/reworked copper beside package pins 4-6, correcting the board-level
-projection that was displaced about 100 px onto adjacent copper. The rework
-obscures the individual bridge landings, so neither an exact D11 pin nor any of
-the four auxiliary-hole destinations is promoted without continuity or the
-missing connection table.
+For D14, notch-oriented component registration maps the first four holes in
+the five-hole left field to D14.1-.4 and the four-hole right row to D14.8-.5.
+Two views show uninterrupted copper from D32.4/GND to D14.1 at the
+position-159 leader, closing that link. The fifth auxiliary landing, three
+long replacement traces, right-row dogleg, and their remote endpoints remain
+held.
+
+For D11, two component views instead show that the drawing's long hole column
+and unique L trace form an auxiliary drilled/copper field beside the package,
+not a 14-pad package row. Four position-159 landmarks are registered. The
+previously cited solder scar beside D11 pins 4-6 is more than twice the coarse
+component-fit error ceiling away and is a different feature; it cannot assign
+the bridge. The corresponding solder-side holes, D11 pin/net, and remote
+endpoints remain held pending a local through-hole fit or continuity.
 
 ## Placement conclusions retained
 

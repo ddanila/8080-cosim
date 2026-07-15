@@ -1,7 +1,52 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D15 cut pair and D14 position-159 ground link photo-closed; D11 four-landing field registered but electrically held; D56 and the remaining D14/D11 endpoints remain pending",
+  "status": "D56 position-150 cut, D15 cut pair, and D14 position-159 ground link photo-closed; D56 position-159, D11 endpoints, and the remaining D14 paths remain pending",
+  "d56": {
+    "drawing": {
+      "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114638730.MP.jpg",
+      "observation": "The position-150 leader terminates at the short removed segment immediately beside the D56 pin field. Three position-159 leaders reach separate upper landings; their replacement topology is not promoted by the drawing alone."
+    },
+    "package_identity": {
+      "ref": "D56",
+      "marking": "К155АГ3 8901",
+      "orientation": "component-view notch down; solder view reflected",
+      "component_observations": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "observation": "independent upper-overlap view shows the same marked body, notch, adjacent resistor, board edge, and pin fanout"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+          "observation": "primary close view resolves the К155АГ3 8901 marking and notch-down package"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+          "observation": "independent lower-overlap view repeats the marking, notch, adjacent resistor, board edge, and pin fanout"
+        }
+      ]
+    },
+    "position150_cut": {
+      "d56_pin": "12",
+      "source_net": "D56_Q2N_TAG16",
+      "solder_observations": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+          "pin_px": [772.077, 447.902],
+          "rail_cut_endpoint_px": [745.0, 429.0],
+          "observation": "D56.12 is the fourth joint down the reflected left package row; a visible gap separates it from the terminated wide-rail stub"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "pin_px": [846.0, 2758.0],
+          "rail_cut_endpoint_px": [820.345, 2742.558],
+          "observation": "overlap view independently shows the same pin-side joint and terminated wide-rail stub with no intervening copper"
+        }
+      ],
+      "result": "Position 150 removes the original D56.12-side connection to the adjacent wide rail. The clean source PCB keeps D56.12 on the separate D56_Q2N_TAG16 boundary and does not merge it with that rail."
+    },
+    "remaining_boundary": "The three position-159 landing leaders and their remote replacement connections remain electrically unassigned. The package/pin registration and position-150 net partition are topology evidence, not fabrication-grade auxiliary geometry."
+  },
   "d15": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114633498.jpg",

@@ -48,7 +48,9 @@ measurement lands, add a row here.
   fetch (continuity is already done).
 - D6.15/A7 driver/pull source.
 - D30 `H` exact edge contact + pull-up value.
-- Factory Вид В cut pads at D56, D14's fifth landing / remaining replacement
-  traces, and D11's registered four-landmark bridge endpoints. The older D11
+- Factory Вид В position-159 replacement landings at D56, D14's fifth landing /
+  remaining replacement traces, and D11's registered four-landmark bridge
+  endpoints. D56 position 150 is photo-closed as the D56.12-side wide-rail cut.
+  The older D11
   pins-4–6 solder scar is now excluded as a different feature. D15's executed
   A2/A1 cut and D14's D32.4/GND-to-D14.1 position-159 link are photo-closed.
