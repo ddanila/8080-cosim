@@ -14,7 +14,7 @@ zero-open routing checkpoint.
 - Landing-registration check: `PASS`
 - Board-fit photo/copper evidence checks: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `15/20`
+- Landing endpoints fitted to PCB coordinates/islands: `16/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
 - Candidate/source pad-net mismatches: `35`
@@ -134,15 +134,20 @@ fabrication cut lengths remain held for direct measurement.
 in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
 A new reflected D37 solder fit holds pins 4/8/14 to 0.5 px and places
 D37.4 at `(850.5,2121.0)` in `200522685`; that pad has no visible
-solder-side etched departure. A handwritten `12` near the lower rail
-does not authorize promotion: its adjacent joint maps onto the wide
-rail rather than `RAM_OUT_EN`. Direct component/reflected-solder D13
+solder-side etched departure. The photographed `12` is instead beside
+the two isolated C96 lead joints below that rail. Because the solder
+view is mirrored, raw-left `(2075,600)` is C96's drawing-right lead,
+the endpoint immediately after C96 in the assembly drawing. The global
+solder registration promotes it as A12B at `(235.083,187.641)` mm on
+the D37.4-side `RAM_OUT_EN` island; the other C96 lead is 4.100 mm away
+and both component faces are hidden by the wire bundle/mastic. Direct
+component/reflected-solder D13
 fits place D13.2 at `(1369,906)` in `200450127` and `(2989.5,1193.5)`
 in `200537608`; neither face has an insulated-wire termination at the
 pad. A tempting tinned white-wire end at `(1405,1479)` in `200439607`
 is also rejected: cross-view projections land on bare component and
 solder substrate, not copper. The remote D13-side departure remains
-unidentified, so both A12 PCB coordinates stay pending.
+unidentified, so only A12A stays pending.
 `А:8` completes the drawing-image inventory at `(1624,276)` in
 `114604420` and `(1105,443)` in `114611058`; both are plain endpoint
 marks, not the separate circled drawing callout after R13. The D5-side

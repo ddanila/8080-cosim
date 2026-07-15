@@ -222,7 +222,7 @@
     {
       "point": 12,
       "status": "image-registered/board-fit-pending",
-      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark after C96 near D35; direct component/reflected-solder fits place D13.2 precisely but show no insulated-wire termination on either pad face, and a nearby tinned white-wire end is rejected because both cross-view projections land on bare substrate, so the D13-side remote landing remains unidentified",
+      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark immediately after C96 near D35; the mirrored owner backside shows the two isolated C96 lead joints beside printed 12, and the drawing-right/board-right lead fixes A12B while its component face is hidden by the wire bundle and mastic; direct D13 fits still reject both owner pads and the nearby loose tinned wire end, so A12A remains unidentified",
       "endpoints": [
         {
           "terminal": "A12A",
@@ -232,14 +232,22 @@
           "board_mm": null,
           "island_assignment": null
         },
-        {
-          "terminal": "A12B",
+      {
+        "terminal": "A12B",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
           "drawing_px": [1349, 2148],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+        "board_mm": [235.083, 187.641],
+        "island_assignment": "D37.4-side RAM_OUT_EN island; C96 drawing-right through joint printed 12",
+        "board_fit_evidence": {
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+          "joint_px": [2075, 600],
+          "local_fit": "solder-grid global registration; D40/solder-alt region anchor",
+          "uncertainty_mm": 1.8,
+          "other_c96_lead_px": [2170, 605],
+          "proof": "the placement drawing ends A:12 immediately after C96; the solder photo is mirrored, so the left raw-image joint is the board-right C96 lead, and it is the joint immediately following the printed 12 while both component-side leads are hidden beneath the registered wire-bundle/mastic region"
         }
+      }
       ]
     },
     {
