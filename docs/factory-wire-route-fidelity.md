@@ -14,7 +14,7 @@ zero-open routing checkpoint.
 - Landing-registration check: `PASS`
 - Board-fit photo/copper evidence checks: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `13/20`
+- Landing endpoints fitted to PCB coordinates/islands: `15/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
 - Candidate/source pad-net mismatches: `35`
@@ -118,8 +118,14 @@ the D35.12-side `PHI2` island, while A7B `(1774,552)` maps to
 `(245.083,133.927)` mm on the D35.10-side `PHI1` island. Their
 3.273 mm separation and distinct printed numbers are guarded by the
 adjacent two-face D40 fit; the visible КР531ИЕ17 marking also
-withdraws the former false D35 package seeds. Both D1-side terminals
-remain pending.
+withdraws the former false D35 package seeds. At the D1 end, the
+independently fitted CPU field separates the numbered remote joints
+below it: A14A `(2961,2672)` maps through the held-out-validated
+solder-grid transform to `(10.449,179.305)` mm, and A7A
+`(3151,2671)` maps to `(1.697,179.350)` mm. Their full chords are
+236.690 mm and 247.588 mm respectively; both exceed the approximate
+23/24 cm table entries, so endpoint geometry is adopted while both
+fabrication cut lengths remain held for direct measurement.
 `А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`
 in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
 A new reflected D37 solder fit holds pins 4/8/14 to 0.5 px and places

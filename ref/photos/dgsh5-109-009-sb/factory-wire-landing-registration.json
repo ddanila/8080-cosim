@@ -32,16 +32,23 @@
   "points": [
     {
       "point": 7,
-      "status": "image-registered/board-fit-pending",
-      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14; the printed backside 7 joint beside D40 fixes the right terminal while the D1-side terminal remains pending",
+      "status": "board-fitted",
+      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14; both printed backside 7 joints are fitted and their 247.588 mm chord exceeds the approximate 24 cm table entry, so endpoint geometry is adopted while fabrication cut length remains held for direct measurement",
       "endpoints": [
         {
           "terminal": "A7A",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
           "drawing_px": [1161, 1845],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+        "board_mm": [1.697, 179.35],
+        "island_assignment": "D1.22-side PHI1 island; backside through joint printed 7",
+        "board_fit_evidence": {
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+          "joint_px": [3151, 2671],
+          "local_fit": "D1/solder + solder-grid global registration",
+          "uncertainty_mm": 1.8,
+          "proof": "the assembly drawing terminates A:7 at the left-hand 7 mark; the owner backside shows one distinct through joint immediately beside the printed 7 below the independently fitted D1 2x20 field, and the held-out-validated solder-grid transform supplies its board coordinate"
+        }
         },
       {
         "terminal": "A7B",
@@ -260,16 +267,23 @@
     },
     {
       "point": 14,
-      "status": "image-registered/board-fit-pending",
-      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; the printed backside 14 joint beside D40 fixes the right terminal while the D1-side terminal remains pending",
+      "status": "board-fitted",
+      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; both printed backside 14 joints are fitted and their 236.690 mm chord exceeds the approximate 23 cm table entry, so endpoint geometry is adopted while fabrication cut length remains held for direct measurement",
       "endpoints": [
         {
           "terminal": "A14A",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
           "drawing_px": [1277, 1832],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+        "board_mm": [10.449, 179.305],
+        "island_assignment": "D1.15-side PHI2 island; backside through joint printed 14",
+        "board_fit_evidence": {
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+          "joint_px": [2961, 2672],
+          "local_fit": "D1/solder + solder-grid global registration",
+          "uncertainty_mm": 1.8,
+          "proof": "the assembly drawing terminates A:14 at the left-hand 14 mark; the owner backside shows one distinct through joint immediately beside the printed 14 below the independently fitted D1 2x20 field, and the held-out-validated solder-grid transform supplies its board coordinate"
+        }
         },
       {
         "terminal": "A14B",
