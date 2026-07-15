@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D15 cut pair photo-closed; D56/D14/D11 remain pending",
+  "status": "D15 cut pair photo-closed; D14 position-159 D32.4/GND-to-D14.1 link photo-closed; D56/D11 and the remaining D14 replacement traces remain pending",
   "d15": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114633498.jpg",
@@ -49,5 +49,41 @@
     },
     "cut_observation": "Two independent component photographs show the copper removed between the upper and lower auxiliary annuli. The cut separates the original A2/A1 bridge; the clean source PCB already assigns D15.8=A2 and D15.9=A1 as distinct nets.",
     "fabrication_boundary": "The locally registered landing centres are evidence for topology, not drill placement. Reproducing the original auxiliary holes requires a direct board measurement or a fabrication-grade local scale."
+  },
+  "d14": {
+    "drawing": {
+      "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg",
+      "observation": "With the notch-up package orientation fixed by both component photographs, the drawing's four-hole right row is D14.8 through D14.5 and the first four holes of its five-hole left row are D14.1 through D14.4. The fifth left-row hole is an auxiliary landing below D14.4. The position-159 leader reaches the short D14.1-side stub joining the inter-package trace."
+    },
+    "ground_link": {
+      "upper_endpoint": {
+        "ref": "D32",
+        "pin": "4",
+        "source_net": "GND",
+        "board_mm": [207.995, 33.31]
+      },
+      "lower_endpoint": {
+        "ref": "D14",
+        "pin": "1",
+        "source_net": "GND",
+        "board_mm": [207.995, 37.19]
+      },
+      "component_observations": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+          "upper_endpoint_px": [2576.3, 1344.1],
+          "lower_endpoint_px": [2576.8, 1421.7],
+          "observation": "one uninterrupted vertical component-side copper strip joins the adjacent D32.4 and D14.1 annuli"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+          "upper_endpoint_px": [1191.6, 1464.0],
+          "lower_endpoint_px": [1191.8, 1543.9],
+          "observation": "independent close view shows the same uninterrupted inter-package copper strip"
+        }
+      ],
+      "result": "The executed position-159 topology ties D14.1 to the same GND net as D32.4. The clean source PCB must assign D14.1 to GND."
+    },
+    "remaining_boundary": "The row identity does not yet prove the remote endpoints of the fifth auxiliary landing, the three long replacement traces, or the right-row dogleg. D14.2 and D14.7 therefore remain explicit measurement boundaries, and no auxiliary drill geometry is promoted."
   }
 }

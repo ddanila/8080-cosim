@@ -48,5 +48,6 @@ measurement lands, add a row here.
   fetch (continuity is already done).
 - D6.15/A7 driver/pull source.
 - D30 `H` exact edge contact + pull-up value.
-- Factory Вид В cut pads at D56/D14/D11. D15's executed auxiliary A2/A1 cut
-  is photo-closed and no longer a measurement ask.
+- Factory Вид В cut pads at D56/D11 and D14's fifth landing / remaining
+  replacement traces. D15's executed auxiliary A2/A1 cut and D14's
+  D32.4/GND-to-D14.1 position-159 link are photo-closed.

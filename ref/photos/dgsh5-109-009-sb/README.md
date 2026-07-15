@@ -25,6 +25,9 @@ What the drawing is authoritative for:
   board-specific bodges. The D15, D14, and D11 patch labels were verified
   against same-hand glyph references (Д15/Д16 socket labels, callouts
   150/159, Д56) at full photo resolution.
+  Owner-board registration now closes D15's A2/A1 cut and D14's position-159
+  D32.4/GND-to-D14.1 link; the other D14 traces and the D56/D11 details remain
+  measurement-held.
 - Technical requirements 1–14 (ОСТ4.010.030-81 placement variants, ПОС61
   solder, marking, cable dressing, Z1 mounting on лакоткань/ВК-9).
 - Revision history: change-table rows `ен147279`, `ен147160`, `ен147074`,
