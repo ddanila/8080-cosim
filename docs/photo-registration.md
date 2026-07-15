@@ -18,14 +18,14 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 626 reviewed rows:
+endpoint table contains 612 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
 | `accepted` | 30 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 596 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `measurement` | 582 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 363 `local-package-fit`, 241
+Confidence metadata consists of 363 `local-package-fit`, 227
 `registration-only`, and 22 `registration+unique-hole-snap` rows. A hole snap
 or accurate pad projection is not electrical evidence by itself.
 

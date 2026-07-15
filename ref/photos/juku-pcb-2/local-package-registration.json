@@ -572,6 +572,35 @@
       "note": "D40 is the marked КР531ИЕ17 immediately right of D41. The common raw-image scale and row baseline put its centre at (258.56,140.99) mm relative to the independently fitted D41 package; the notch-right body requires 270-degree board rotation."
     },
     {
+      "refdes": "D40",
+      "side": "component-alt",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1895.518, 1800.339], "use": "fit", "observation": "bottom contact of the right column beside the dimple and bottom-facing notch on the marked КР531ИЕ17"},
+        {"pin": "2", "image_px": [1896.007, 1744.282], "use": "check", "observation": "independent second contact above pin 1 on the same column"},
+        {"pin": "8", "image_px": [1898.450, 1407.940], "use": "fit", "observation": "top contact of the complete pin-1-to-8 column"},
+        {"pin": "9", "image_px": [1731.230, 1408.500], "use": "fit", "observation": "top contact of the opposite column"},
+        {"pin": "15", "image_px": [1728.115, 1744.569], "use": "check", "observation": "independent penultimate contact on the pin-9-to-16 column"}
+      ],
+      "note": "The visible КР531ИЕ17 marking corrects legacy endpoint seeds that mislabeled this package as D35. This overlapping component view registers the actual 16-pin D40 field beside the printed remote-wire numbers."
+    },
+    {
+      "refdes": "D40",
+      "side": "solder-alt",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1850.290, 1078.514], "use": "fit", "observation": "bottom joint of the reflected pin-1-to-8 column"},
+        {"pin": "2", "image_px": [1850.201, 1018.824], "use": "check", "observation": "independent second joint above pin 1"},
+        {"pin": "8", "image_px": [1849.668, 660.684], "use": "fit", "observation": "top joint of the complete reflected pin-1-to-8 column"},
+        {"pin": "9", "image_px": [2026.250, 662.754], "use": "fit", "observation": "top joint of the opposite column"},
+        {"pin": "10", "image_px": [2026.446, 722.106], "use": "check", "observation": "independent second joint on the pin-9-to-16 column"},
+        {"pin": "15", "image_px": [2027.402, 1019.711], "use": "check", "observation": "independent penultimate joint on the same column"}
+      ],
+      "note": "The two eight-joint columns are the reflected backside of the marked D40 package. They replace the same legacy D35 misidentification and provide a local frame for the adjacent printed 14 and 7 remote-wire joints without claiming their electrical continuity."
+    },
+    {
       "refdes": "D41",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

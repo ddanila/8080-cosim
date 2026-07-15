@@ -51,10 +51,12 @@ These are ordered; each is completable with material already in the repo.
    findings (`docs/routed-refresh-audit.md`). Its ten factory wire nets are
    held from adoption until the twenty paired A-point landing coordinates and
    copper-island splits are modeled. All twenty endpoints are now registered
-   in original drawing pixels. Both A20 terminals and the D38-side A8/A9 are
-   now fitted to their physical joints and copper islands, as are both A19
-   terminals; fourteen PCB
-   coordinates/island assignments remain pending
+   in original drawing pixels. Both A8/A10/A11/A19/A20 terminals and the
+   D38-side A9 terminal are now fitted to their physical joints and copper
+   islands; nine PCB coordinates/island assignments remain pending. The
+   D40-side photo frame beside the printed A7/A14 joints is now fitted on both
+   faces, and legacy endpoint seeds that mislabeled the visibly marked
+   КР531ИЕ17 as D35 have been withdrawn
    (`docs/factory-wire-route-fidelity.md`). Do not replace
    `kicad/juku_routed.kicad_pcb` yet: copper produced now survives later
    netlist changes through the per-net quarantine mechanism, but final
@@ -138,8 +140,8 @@ cable landings, and off-board S4 is likewise outside PCB-pad scope while its
 three switch contacts remain modeled nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-626 observations have dispositions, 30 rows are accepted evidence, and the
-other 596 remain measurement requests (`docs/photo-registration.md`).
+612 observations have dispositions, 30 rows are accepted evidence, and the
+other 582 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated
