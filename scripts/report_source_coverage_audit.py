@@ -112,8 +112,8 @@ def main() -> int:
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",
-            "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D14/D11 solder-side cut/patch instructions",
-            "assembly detail proves intended modifications and locality, not every copper endpoint or programmable-part truth",
+            "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and the D56/D15/D14/D11 solder-side cut/patch instructions; two owner-board views plus reflected solder copper close D15 as an A2/A1 bridge cut",
+            "D56/D14/D11 still require exact pad/segment mapping; assembly detail does not prove every copper endpoint or programmable-part truth",
         ]),
         "",
         "## Current source requests",

@@ -76,3 +76,8 @@ than replaces the `ref/schematics/` sheets and the `juku-pcb-2` board photos.
 wire endpoints in original-image pixels. Image-space registration is kept
 separate from board millimetres and copper-island assignment; unset fields are
 an explicit hold, not permission to infer geometry from the folded sheet.
+
+`factory-modification-registration.json` cross-registers the D15 cut detail
+with two independent component photographs and one reflected solder view. It
+closes the A2/A1 net partition while explicitly withholding the auxiliary-hole
+centres from fabrication use.

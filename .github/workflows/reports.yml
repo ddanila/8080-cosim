@@ -55,6 +55,11 @@ jobs:
           python3 scripts/photo_registration.py validate
           ./sync/reference_artifact_check.sh
 
+      - name: Check factory modification registration freshness
+        run: |
+          python3 scripts/report_factory_modification_disposition.py
+          git diff --exit-code -- docs/factory-modification-disposition.md
+
       - name: Check factory insulated-link endpoint map
         run: |
           python3 kicad/check_factory_wire_links.py

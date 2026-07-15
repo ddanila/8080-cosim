@@ -242,9 +242,14 @@ Every ask below is queued with exact deliverables in
    by `docs/d6-runtime-path-diagnostic.md` become Tier-3 confirmation asks once
    that gate closes and the guarded adoption run is green.
 5. **Map the factory Вид В modifications.** The solder-side trace cuts
-   (poz. 150/159) at D56, D15, D14, and D11 are drawn design changes; exact
-   modified pads, removed segments, and replacement nets remain a P0 mapping
-   hold (`docs/factory-modification-disposition.md`).
+   (poz. 150/159) at D56, D15, D14, and D11 are drawn design changes. D15 is
+   now photo-closed: two independent component views register the executed cut
+   between the auxiliary D15.8/A2 and D15.9/A1 landings, and reflected solder
+   copper confirms both pin destinations. The clean source already preserves
+   the resulting separate A2/A1 nets; the unmeasured auxiliary-hole geometry is
+   not invented. Exact modified pads, removed segments, and replacement nets at
+   D56, D14, and D11 remain the P0 mapping hold
+   (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
    217 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,

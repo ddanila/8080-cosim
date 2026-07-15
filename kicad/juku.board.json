@@ -240,7 +240,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "datasheet",
+    "pins": "datasheet; factory Вид В and two independent component photos identify the executed auxiliary-trace cut beside pins 8/9, while reflected solder copper proves the upper landing reaches D15.8/A2 and the lower reaches D15.9/A1; the cut removes the original A2/A1 bridge, matching the clean source net partition without inventing unmeasured auxiliary-hole drill geometry",
     "board": "POPULATED (M2764 EPROM); 8 ROM sockets on board, 2 populated [physical]"
    }
   },

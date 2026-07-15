@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
+  "status": "D15 cut pair photo-closed; D56/D14/D11 remain pending",
+  "d15": {
+    "drawing": {
+      "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114633498.jpg",
+      "observation": "The four-hole auxiliary trace beside D15 is cut between its final two holes, aligned between visible package-pad levels 8 and 9. No replacement wire is drawn in this D15 detail."
+    },
+    "landings": {
+      "upper": {
+        "source_net": "A2",
+        "d15_pin": "8",
+        "component_observations": [
+          {
+            "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+            "image_px": [535.5, 613.5]
+          },
+          {
+            "image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+            "image_px": [429.0, 1927.0]
+          }
+        ],
+        "solder_confirmation": {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200514102.jpg",
+          "image_px": [2965.0, 2085.0],
+          "observation": "short diagonal solder-side copper reaches D15.8"
+        }
+      },
+      "lower": {
+        "source_net": "A1",
+        "d15_pin": "9",
+        "component_observations": [
+          {
+            "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+            "image_px": [540.0, 660.0]
+          },
+          {
+            "image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+            "image_px": [431.0, 1972.0]
+          }
+        ],
+        "solder_confirmation": {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200514102.jpg",
+          "image_px": [2962.0, 2129.0],
+          "observation": "short diagonal solder-side copper reaches D15.9"
+        }
+      }
+    },
+    "cut_observation": "Two independent component photographs show the copper removed between the upper and lower auxiliary annuli. The cut separates the original A2/A1 bridge; the clean source PCB already assigns D15.8=A2 and D15.9=A1 as distinct nets.",
+    "fabrication_boundary": "The locally registered landing centres are evidence for topology, not drill placement. Reproducing the original auxiliary holes requires a direct board measurement or a fabrication-grade local scale."
+  }
+}

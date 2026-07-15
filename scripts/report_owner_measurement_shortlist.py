@@ -241,7 +241,7 @@ def main() -> int:
         (
             "P0",
             "factory Вид В pad mapping",
-            "for D56, D15, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; at D15 identify the auxiliary vertical segment cut between its second/third shown vias (roughly pad levels 8/9); at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 use the validated solder fit that localizes rework beside pins 4-6 to map the four-hole auxiliary field and obscured bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
+            "for D56, D14, and D11 identify every position-150/159 cut pad/via, removed copper segment, and replacement connection; D15 is photo-closed as the cut A2/A1 bridge between auxiliary D15.8 and D15.9 landings and needs no continuity probe; at D14 identify the position-159 auxiliary hole, three long replacement traces, and right-row dogleg; at D11 use the validated solder fit that localizes rework beside pins 4-6 to map the four-hole auxiliary field and obscured bridge; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
             "`docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg`",
             "proves that the clean source-PCB topology is electrically equivalent to the factory-modified artwork before reroute/release",
         ),

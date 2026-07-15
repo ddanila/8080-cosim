@@ -190,10 +190,18 @@ artwork reconstruction must reconcile the unmodified copper with the factory
 cuts/patches before replacing them with an equivalent clean trace.
 
 The enlarged D15 detail (`114633498`) further shows that its explicit
-`Разрезать` mark is on an auxiliary vertical trace between the second and third
-drawn vias beside the package, approximately between the eighth and ninth
-visible D15 pad levels. It is not a cut made directly at a D15 lead. The net of
-that via-to-via segment remains to be identified from continuity or sheets 2-6.
+`Разрезать` mark is on an auxiliary vertical trace between the final two of
+four drawn holes beside the package, approximately between the eighth and ninth
+visible D15 pad levels. It is not a cut made directly at a D15 lead. Two
+independent component photographs (`200354648`/`200411500`) resolve the same
+executed cut between its final two auxiliary annuli with 0.059 mm worst-case
+cross-view separation. Reflected solder view `200514102` shows short copper
+departures from the upper landing to D15.8/A2 and from the lower landing to
+D15.9/A1. The operation therefore removes an original A2/A1 bridge; no
+replacement conductor is drawn in the D15 detail, and the clean source PCB's
+separate A2/A1 nets match the resulting factory topology. The locally fitted
+landing centres remain navigation evidence rather than fabrication-ready drill
+coordinates (`factory-modification-registration.json`).
 
 The D14 detail likewise cannot yet be reduced to a package pin number. It
 draws five holes in the auxiliary/left field beside a four-pad right package
