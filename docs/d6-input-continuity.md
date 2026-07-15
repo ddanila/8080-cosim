@@ -54,9 +54,11 @@ density merely to supply a functional value.
 
 The structural model now routes D26 PC1 and PC0 through the measured D3
 inverters before D6 A6 and A5. D6 A7 and D105.1 share an explicit boundary.
-The separately named runnable memory-decode oracle remains in place until the
-A7 source and the downstream D6/D13/D37/D58 path are physically closed and
-boot/checkpoint guards pass from the physical topology.
+Runnable selection now comes from the physical D6 table through `U_DECODE` under
+the documented provisional sim-only `~D0`/`~D3` correction; the separately named
+functional decoder is retained only by the B37A diagnostic comparison. The A7
+source and physical justification (or removal) of the per-output correction
+remain open until the corrected-reader re-read or operating-level probe closes them.
 
 ## Chip-removed output correction
 

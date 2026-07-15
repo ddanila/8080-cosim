@@ -43,7 +43,7 @@ module d6_runtime_path_tb;
       .a3(1'b1), .b3(ram_out_en), .y3(physical_d58_oe_n),
       .a4(1'b1), .b4(1'b1), .y4());
 
-  // The explicit runnable oracle is sampled only as a behavioral comparison.
+  // The retired runnable oracle is sampled only as a historical comparison.
   decode_prom_functional U_D6_ORACLE (
       .ba(ba[15:11]), .pc2(pc[0]),
       .rom_n(functional_rom_n), .ram_n(functional_ram_n),

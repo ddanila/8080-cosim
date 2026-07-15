@@ -40,6 +40,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D15+D16 round-trip exactly to roms/ekta37.bin | PASS |
 | D15/D16 split and non-dump provenance are documented | PASS |
 | D2 physical table and continuity are guarded | PASS |
+| D6 physical table drives runnable selection under the provisional D0/D3 fit | PASS |
 | D94 physical table is adopted while continuity stays guarded | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
 | Historical fallback report adopts all physical PROM tables | PASS |
@@ -75,7 +76,7 @@ python3 scripts/report_firmware_gap_ledger.py
   preserve raw pin-level and active-low asserted tables separately.
 - Re-read known D2 and then D6 with RT4 reader revision 2; require the
   disabled-output pull-up check and classify D6 exactly as documented in
-  `docs/rt4-dump-acquisition.md` before retiring the functional decoder.
+  `docs/rt4-dump-acquisition.md` before confirming or removing the provisional D0/D3 correction.
 - Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;
   the adopted D94 table still requires complete input/enable/output continuity.
 - Repeatedly read physical D15/D16 and compare their concatenation

@@ -98,6 +98,44 @@ def main() -> int:
                 f"({artifact.stat().st_size}, expected {expected_size})"
             )
 
+    # The physical D6 table replaced the functional decoder in runnable
+    # juku_top on 2026-07-15. Its D0/D3 polarity fit remains explicitly
+    # provisional, but public status must not resurrect the retired oracle.
+    d6_top = read("hdl/juku_top.v")
+    d6_devices = read("hdl/devices.v")
+    if (
+        "decode_prom U_DECODE" not in d6_top
+        or "wire        rom_sel_n = ~d6_rom_select_n;" not in d6_top
+        or "wire        roe_n     = ~d6_roe_physical;" not in d6_top
+        or re.search(r"decode_prom_functional\s+U_", d6_top)
+    ):
+        failures.append("runnable D6 physical-table/provisional-polarity contract drifted")
+    if "module decode_prom_functional" not in d6_devices:
+        failures.append("D6 B37A diagnostic comparison model is missing")
+    stale_d6_adoption_claims = {
+        "PLAN.md": (
+            "selects still come from the non-LVS `decode_prom_functional` oracle",
+            "the one remaining memory-map stand-in",
+        ),
+        "hdl/README.md": (
+            "Runnable simulation uses the explicitly non-LVS",
+        ),
+        "docs/d6-input-continuity.md": (
+            "runnable memory-decode oracle remains in place",
+        ),
+        "docs/firmware-gap-ledger.md": (
+            "before retiring the functional decoder",
+        ),
+        "docs/owner-measurement-shortlist.md": (
+            "before retiring the D6 runnable oracle",
+        ),
+    }
+    for path, phrases in stale_d6_adoption_claims.items():
+        text = read(path)
+        for phrase in phrases:
+            if phrase in text:
+                failures.append(f"{path} retains stale D6 runnable-path claim: {phrase!r}")
+
     stale_prom_claims = {
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md": (
             "signal wiring and contents still open",

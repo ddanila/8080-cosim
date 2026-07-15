@@ -30,7 +30,7 @@ is not a prerequisite for this replica.
 
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
-| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; physical D6 remains structurally instantiated while an explicit non-LVS decoder preserves runnable memory-map equivalence | Retire the D6 functional decoder via the separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
+| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes from the validated physical D6 table under the explicitly provisional `~D0`/`~D3` fit, while the old functional decoder is retained only as a diagnostic comparison | Confirm or remove the D6 per-output fit with the corrected-reader re-read or operating-level probe across the separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths, and close its physical A7 driver; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 108 mapped instances and 279 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The tracked routed artifact (240 footprints) is DRC-clean within its modeled scope; its KiCad-nightly 10.99 manufacturing packet is checksum/geometry/render verified under a design hold. The preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` has 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. The refresh checkpoint is intentionally not current-source copper: later corrections leave 47 pad-net mismatches and 138 moved pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14; it also lacks the twelve A:7/A:8/A:10/A:11/A:19/A:20 pads. It copper-routes all ten factory insulated-link nets. The source PCB now preserves A:7, A:8, A:10, A:11, A:19, and A:20 as landing-island pairs joined only by assembly wires W7/W8/W10/W11/W19/W20; the other eight `А:N` terminals and four island splits remain unmodeled. All twenty drawing-pixel endpoints are guarded, both A7/A8/A10/A11/A14/A19/A20 terminals plus the D38-side A9 and C96-side A12 joints are board-fitted/island-assigned, and the A7/A8/A11/A14 cut-length discrepancies are explicit. The other four PCB terminals remain unpromoted; A14B additionally remains fabrication-held because its current projection is only 0.784 mm from D41.1. The checkpoint is convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split those islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
@@ -308,15 +308,19 @@ adoption road, in dependency order:
 2. **D8 `.039` — content executes, enable is still derived.** The physical
    table drives all eight ROM-socket selects; its `E_N` input is the separate
    D6.12 ROM-select conductor, so full adoption completes with step 3.
-3. **D6 `.038` — the one remaining memory-map stand-in.** The runnable
-   selects still come from the non-LVS `decode_prom_functional` oracle; a
-   direct raw-table substitution fails the checkpoint-resume boundary at RAM
-   `B37A`. Highest-priority item 1 records the firmware-anchored analysis: the
+3. **D6 `.038` — physical table provisionally executes; output polarity remains
+   unconfirmed.** Runnable selects come from `decode_prom U_DECODE` and the
+   validated physical table, with the sim-only `~D0`/`~D3` correction documented
+   in highest-priority item 1; `decode_prom_functional` is no longer instantiated
+   by `juku_top` and remains only a diagnostic comparison. A direct uncorrected
+   raw-table substitution fails the checkpoint-resume boundary at RAM `B37A`.
+   The firmware-anchored analysis shows that the
    raw capture contradicts two independent working functional anchors, an exact
    D0/D3-only transform passes the full suite, and a uniform asserted complement
    fails. Reader revision 2 and its known-D2 control make the next D6 re-read a
    decisive electrical/provenance gate; a reset-fetch level comparison is the
-   alternative consumer-side gate. `docs/d6-firmware-mode-coverage.md` bounds
+   alternative consumer-side gate that promotes the current provisional fit to
+   confirmed physical adoption or removes it. `docs/d6-firmware-mode-coverage.md` bounds
    what the trace proves: boot firmware observes A6/A5 suffixes `11` and `10`;
    A7 is functionally forced to `0`
    for all firmware-reachable maps (A7=1 rows emit only words `D`/`F` and can

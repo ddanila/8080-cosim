@@ -31,9 +31,10 @@ They are not generic cycle-accurate replacements for every original IC mode.
 
 - D2's physical inputs, validated `.037` table, and D0/WAIT handoff are modeled.
 - D6's validated `.038` table and chip-removed separate pins 11/12 remain the
-  structural/LVS truth. Runnable simulation uses the explicitly non-LVS
-  `decode_prom_functional` memory-map oracle until the downstream
-  D6/D13/D92/D37/D58 timing topology is complete enough to execute directly.
+  structural/LVS truth. Runnable simulation now selects from that physical table
+  through `U_DECODE`, with the explicitly provisional sim-only `~D0`/`~D3`
+  correction pending a corrected-reader re-read or operating-level probe.
+  `decode_prom_functional` is retained only by the B37A diagnostic comparison.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
   and its first three outputs are wired to the accepted local FDC controls. Its
   enable source, remaining far destinations, and complete D93 strobe branches

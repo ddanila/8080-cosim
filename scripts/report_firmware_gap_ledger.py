@@ -129,6 +129,16 @@ def main() -> int:
         "Raw levels are the authoritative dump",
         "repeat-mismatched RE3 rows",
     ) and exists("scripts/validate_re3_dump.py") and exists("tools/re3_dumper/re3_dumper.ino")
+    d6_top = read("hdl/juku_top.v")
+    d6_runnable_physical_ok = all(
+        needle in d6_top
+        for needle in (
+            "decode_prom U_DECODE",
+            "wire        rom_sel_n = ~d6_rom_select_n;",
+            "wire        roe_n     = ~d6_roe_physical;",
+            "Functional decode oracle retired from the boot path",
+        )
+    ) and "decode_prom_functional U_" not in d6_top
 
     rows = [
         [
@@ -197,6 +207,7 @@ def main() -> int:
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
+        ("D6 physical table drives runnable selection under the provisional D0/D3 fit", d6_runnable_physical_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
         ("Historical fallback report adopts all physical PROM tables", fallback_report_ok),
@@ -276,7 +287,7 @@ def main() -> int:
             "  preserve raw pin-level and active-low asserted tables separately.",
             "- Re-read known D2 and then D6 with RT4 reader revision 2; require the",
             "  disabled-output pull-up check and classify D6 exactly as documented in",
-            "  `docs/rt4-dump-acquisition.md` before retiring the functional decoder.",
+            "  `docs/rt4-dump-acquisition.md` before confirming or removing the provisional D0/D3 correction.",
             "- Preserve future D8/D94 serial captures with `scripts/validate_re3_dump.py`;",
             "  the adopted D94 table still requires complete input/enable/output continuity.",
             "- Repeatedly read physical D15/D16 and compare their concatenation",

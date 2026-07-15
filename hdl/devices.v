@@ -166,11 +166,10 @@ module decode_prom (input wire [7:0] a, input wire v_en_n,
     assign {roe_n, rev, ram_n, rom_n} = v_en_n ? 4'hF : raw;
 endmodule
 
-// Functional memory-map oracle used only by runnable simulation. The physical
-// The downstream D6/D13/D37/D58 timing topology is not yet complete enough to
-// reproduce the established EKTA/EKDOS execution path from the physical table.
-// Keep this behavior separate from `decode_prom`: it is neither PROM content
-// nor an LVS-visible claim about the original board.
+// Historical functional memory-map oracle retained only as the contrast model
+// in d6_runtime_path_tb. Runnable juku_top selection now comes from decode_prom
+// and the validated physical table under its documented provisional polarity fit.
+// This module is neither PROM content nor an LVS-visible claim about the board.
 module decode_prom_functional (input wire [15:11] ba, input wire pc2,
                                output wire rom_n, ram_n, rev, roe_n);
     wire rom_region = ~pc2 ? (ba[15:14] == 2'b00) : (ba >= 5'b11011);
