@@ -79,6 +79,8 @@ historical placement, and the original composite/RF chain.
 
 ## Evidence map
 
+- `docs/workbench-plan.md`: the bench-fixture direction (test the real Juku
+  РУ5/РТ4/РЕ3 parts) and the phased build plan.
 - `hdl/README.md`: exactly what the synthetic simulation proves.
 - `docs/rev-a-chip-map.md`: current physical decomposition.
 - `docs/rev-a-gal-equations.md`: unvalidated programmable-logic draft.
