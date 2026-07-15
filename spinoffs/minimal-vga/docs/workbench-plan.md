@@ -66,11 +66,13 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
 2. **Fold in the real РЕ3 (D8) and РТ4 (D6) in the functional path (goal 3).**
    Route VJUGA's ROM-select / memory-map decode through `re3_prom` (D8 `.039`)
    and `decode_prom` (D6 `.038`) so booting exercises them.
-   - **Dependency (now committed):** root `PLAN.md` Actionable item 1 commits to
-     adopting the physical D6 `.038` firmware (asserted table) into the main twin
-     and retiring the decode oracle. VJUGA Phase 2 rides on that same adoption —
-     it routes its decode through the same physical D6 РТ4 chip — so the two land
-     together and VJUGA booting from the real РТ4 is extra evidence for the call.
+   - **Dependency:** the physical D6 `.038` table's *contents* are confirmed to
+     encode the correct map (it boots byte-identical in the main twin), but
+     adoption is blocked on the D6 output-polarity/`D13->D37->D58` chain — a
+     uniform complement does not work and the byte-correct per-output polarity
+     contradicts measured `D6.12->D8` continuity (root `PLAN.md` Actionable
+     item 1). VJUGA Phase 2 routes its decode through the same physical D6 РТ4,
+     so it rides on that same polarity resolution; D8 РЕ3 has no such blocker.
    - D8 РЕ3 has no such dependency; it is already validated in the main boot and
      can be reused immediately.
 3. **KiCad board half + LVS.** Extend the Rev-A physical model to socket the

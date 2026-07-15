@@ -45,48 +45,37 @@ fabrication file and gate again.
 
 These are ordered; each is completable with material already in the repo.
 
-1. **Adopt the physical D6 `.038` firmware (and D2 `.037`) into the runnable
-   twin and retire the memory-map oracle.** Decision taken: the twin will run
-   its memory map from the read firmware, not the hand-written oracle. This is
-   now an adoption task, not an open question. The validated raw captures are
-   correct pin levels modulo the КР556РТ4 reader's sense, and the repo's own
-   boot evidence over-constrains that polarity without new bench work.
-   Firmware-anchored region semantics follow from guarded traces alone
-   (`docs/d6-firmware-mode-coverage.md`, `docs/ekdos-checkpoint-reference.md`,
-   `docs/d6-physical-decode.md`): with A7=0, raw word `1` regions are exactly
-   the ROM overlays (boot `0000-3FFF` in row `011`; high ROM `D800-FFFF` in
-   row `010`, matching the D8 `.039` row-24..31 D15/D16 split and the `D7EF`
-   bank-copy loop in the always-RAM region), word `8` regions are RAM, and
-   word `F` is the expansion window. That mapping contradicts the raw levels
-   at two independent, gate-model-free points: the checkpoint `0484` ROM fetch
-   (portc `80`, row `011`) needs D6.12 low into the active-low D8/РЕ3 `E_N` —
-   the same level the working oracle already drives — where raw records high;
-   and the `B37A` RAM read needs D6.9 low where raw records high. The bitwise
-   complement (the preserved `d6_038.asserted` table) resolves both and every
-   other checkable anchor. The РЕ3 reader is independently validated (raw
-   `.039` single-low-bit selects execute in boot), but the РТ4 reader is not:
-   D2's boot pass only exercises wait-state timing, which the value-level
-   guards cannot see, so it does not pin РТ4 polarity. Actions: (a) extend
-   `hdl/sim/d6_runtime_path_tb.v` to drive the physical `decode_prom` from the
-   asserted table with A7=0 and confirm the D13/D37/D58 chain enables D58 at
-   `B37A`; (b) switch the runnable selects to the physical outputs (asserted
-   table, A7 tied 0 as an explicit boundary, D8 `E_N` from D6.12) and apply
-   the same reader-polarity decision to D2 `.037`; (c) rerun ekta37 boot,
-   EKDOS `A>`, disk-BASIC `READY`, Monitor 3.3, checkpoint-resume, and the
-   130,000-read cosim guard byte-identically; (d) on green, adopt per the
-   Fixed-decisions Tier-1/2 electrically-verified-substitution rule, delete
-   `decode_prom_functional` and its LVS exclusion, and demote the five live
-   levels plus a known-content РТ4 reader re-read to Tier-3 confirmation. If
-   the asserted run is not byte-identical, the surviving hypotheses (D37.5
-   gating, D58 role) stay measurement-gated as before — record the failing
-   divergence in the diagnostic either way. None of this changes copper: all
-   D6-area conductors are already owner-measured, and the only remaining
-   D6-area netlist ask is the D105.1/A7 driver (P0 connectivity item 4).
-   Adopting D6 unlocks two efforts at once: it retires the digital twin's last
-   memory-map stand-in (the milestone below runs the boot from all physical
-   tables), and it unblocks VJUGA workbench Phase 2, which routes its own
-   decode through the same physical D6 РТ4 chip and therefore rides on this
-   same firmware adoption (`spinoffs/minimal-vga/docs/workbench-plan.md`).
+1. **Adopt the physical D6 `.038` firmware into the runnable twin — blocked on
+   the output-polarity chain, not the table contents.** Bench experiment
+   (2026-07-15, reverted, not committed): driving the runnable selects from the
+   physical `decode_prom` with A7=0 boots **byte-identical** to the cosim value
+   oracle across the full suite — `boot_check`, the 130,000-read `cosim_check`
+   (`CTRACE-END`), EKDOS `A>`, disk-BASIC `READY`, jmon33 Monitor, BASIC-cart,
+   `prom_fallback`, and LVS. So the chip's **contents encode the correct memory
+   map**: with A7=0 the boot modes land in rows `011`/`010`, where word `1` is
+   the ROM overlay and word `8` is RAM — matching cosim's PC1/PC0 banking. That
+   de-risks the map and is the real progress here.
+   **But** the byte-identical run required a *per-output polarity* with no clean
+   physical basis: `rom_sel_n = ~D0`, `roe_n = ~D3` (inverted) while `rev = D2`,
+   `ram_sel_n = D1` (direct). That mix contradicts measured evidence — continuity
+   makes `D6.12->D8.15` a **direct** conductor into an active-low `E_N`, and the
+   model already has `D13` inverting in the `roe_n->D58` chain, so a byte-correct
+   boot needs an inversion between `D6.9`/`D13` (and `D6.12`/`D8`) that is neither
+   measured nor modeled. A uniform complement (the `d6_038.asserted` table) does
+   **not** work either: it flips `rev`, which disables the D9 io-decode the boot
+   needs. So the earlier "the asserted complement resolves it in simulation"
+   claim was wrong. Per the fixed decision that measured evidence outranks
+   inference, do **not** silently commit the functional-fit polarity.
+   The real remaining work is to resolve the `D6.9->D13->D37->D58` and
+   `D6.12->D8` gate polarities/senses (gate-type audit of D13/D37/D58 plus a
+   re-check of whether an inverter sits on those conductors; possibly one live
+   measurement), then adopt the physical table under a physically-justified
+   transform and rerun the full guard suite byte-identically before retiring
+   `decode_prom_functional`. Keep the oracle until then. None of this changes
+   copper; the only D6-area netlist ask remains the D105.1/A7 driver (P0
+   connectivity item 4). The same polarity resolution unblocks VJUGA workbench
+   Phase 2, which routes its decode through the same physical D6 РТ4 chip
+   (`spinoffs/minimal-vga/docs/workbench-plan.md`).
 2. **Preserve routing convergence until netlist freeze.** The deterministic
    router and conflict-derived INTR rip-up workflow produced the preserved
    routing checkpoint with zero opens and zero electrical-category DRC
