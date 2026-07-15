@@ -18,6 +18,7 @@ RISK_RE = re.compile(
     re.I,
 )
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
+PROGRAMMABLE_REFS = {"D2", "D6", "D8", "D94"}
 
 
 def table_row(values: list[object]) -> str:
@@ -55,7 +56,9 @@ def category_for_chip(chip: dict, text: str) -> str:
         return "FDC owner-continuity"
     if "UNPOPULATED" in upper:
         return "unpopulated sockets"
-    if "D2" == ref or "D94" == ref or re.search(r"\bPROM\b|РТ4|РЕ3", upper):
+    # Classify the device, not incidental prose in its evidence note. D13's
+    # continuity history mentions an installed PROM, but D13 itself is a TL2.
+    if ref in PROGRAMMABLE_REFS or "PROM" in ctype.upper():
         return "PROM truth"
     if "ANALOG" in upper or ref.startswith(("VT", "VD", "L")):
         return "analog/source"
@@ -150,6 +153,15 @@ def main() -> int:
                 "unnetted": unnetted_functional_pins(chip, netted, no_connects),
             }
         )
+    false_prom_rows = [
+        row
+        for row in chip_gap_rows
+        if row["category"] == "PROM truth"
+        and row["ref"] not in PROGRAMMABLE_REFS
+        and "PROM" not in str(row["type"]).upper()
+    ]
+    if false_prom_rows:
+        raise SystemExit(f"non-programmable chips classified as PROM truth: {false_prom_rows}")
 
     net_gap_rows: list[dict[str, object]] = []
     for name, net in board["nets"].items():
