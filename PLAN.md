@@ -403,6 +403,54 @@ After connectivity and programmable-part decisions stop changing:
 
 ## Parallel work
 
+### VJUGA spin-off — status and Linux-box handoff
+
+VJUGA (the +5 V Z80 bench fixture for the scarce Juku РУ5/РТ4/РЕ3 parts) is a
+separate experiment; details in `spinoffs/minimal-vga/docs/workbench-plan.md`
+and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
+
+- **Simulation + board model DONE.** The Verilog twin boots the real firmware on
+  tv80 through the real К565РУ5 + D6 К556РТ4 + D8 К155РЕ3 models; **both decode
+  modes** (real РТ4 vs GAL-internal baseline) are byte-identical to cosim
+  (`sim/vjuga_boot_check.sh`). Rev-A schematic is 119 refs / 134 nets with the
+  decode sockets, mode inverter, jumpers, and observability headers; the
+  socket↔twin and observability contracts are enforced
+  (`kicad/check_rev_a_physical.py`).
+- **Placement DONE and collision-clean.** All 119 parts are placed in
+  `kicad/gen_rev_a_pcb.py`; `kicad/check_rev_a_placement.sh` (silk/overlap) and
+  `kicad/check_rev_a_footprints.sh` (every modelled pin lands on a real pad)
+  both pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
+- **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
+  (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
+  single-step sketch + twin reference trace (`tools/vjuga_single_step/`).
+
+**Remaining before the first bare PCB — the Linux box picks this up** (the local
+Mac lacks the Java 25 + freerouting fork toolchain; routing/DRC is Linux-only):
+
+1. **Route the board** (placement is done; only routing remains). Turn-key:
+   ```sh
+   KP="$(scripts/find-kicad-python.sh)"
+   "$KP" spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py \
+       spinoffs/minimal-vga/kicad/rev-a-physical.board.json \
+       spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb   # regenerate placed board + planes
+   spinoffs/minimal-vga/kicad/route_rev_a_pcb.sh             # freerouting fork (Java 25)
+   spinoffs/minimal-vga/kicad/check_rev_a_pcb.sh             # zero DRC / zero unconnected
+   spinoffs/minimal-vga/kicad/check_rev_a_placement.sh
+   spinoffs/minimal-vga/kicad/check_rev_a_footprints.sh
+   # then commit the routed rev-a-physical.kicad_pcb
+   ```
+2. **Footprint review items** automation cannot close: physical pin-1 orientation
+   of the socketed parts, and confirming the real part variants (USB-C
+   receptacle, PTC, TVS) against datasheets.
+3. **Freeze the fab package** (`kicad/export_fab.sh`), put the new Gerber ZIP
+   SHA256 into `docs/rev-a-manufacturing-readiness.md`, and run vendor DFM.
+
+Not blocking the bare board, but settle before populating (pinouts freeze in
+copper): simulate the U24 DRAM-timing GAL; decide whether to formally waive the
+VGA release-gate item for the bench fixture; and clear the doc/guard cleanup
+(the pinned "No real Juku ROM has booted" phrasing predates the sim boot proof).
+Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
+
 ### Parts and assembly preparation
 
 - Use `docs/replica-dual-config-bom.csv` as a planning BOM, not a shopping
