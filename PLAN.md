@@ -72,10 +72,18 @@ These are ordered; each is completable with material already in the repo.
    high in those regions, while `D6.10`->D9 (`rev`)=0 works direct. The mismatch
    is localized to the D6 pin-9 and pin-12 output paths only.
    D13 = К555ТЛ2 (inverter) is owner-confirmed (2026-07-15), so that hypothesis
-   is closed and the model is right there; the conflict therefore points to a
-   missing inverting stage on the two specific output conductors (the prototype
-   PDF shows them direct; a 95% manual continuity can miss a series gate; a uniform
-   dump inversion is excluded because it would flip `rev` and kill D9/IO).
+   is closed and the model is right there. The РТ4 reader was also audited: its
+   address/data pin order matches the HDL model exactly (no permutation), and
+   К556РТ4 = 82S126/3601/74S387 is a NON-INVERTING open-collector PROM (virgin=0,
+   fuse=1; a pull-up reads the stored data directly), so the pull-up does not
+   invert and the raw `.038`/`.037` tables are faithful to the programmed data
+   (datasheet vendored at `ref/datasheets/82s126-556rt4-256x4-oc-prom.pdf`; and
+   D8 РЕ3 boots from its raw `.039`, corroborating raw-faithful readers). So the
+   reader is NOT the cause. The conflict therefore points to the CONSUMER side
+   (prototype-PDF-modeled): either a missing inverting gate on the `D6.12->D8` /
+   `D6.9->D13` conductors, or a mis-modeled downstream enable polarity (e.g. the
+   D8/РЕ3 `E_N` active-high on the produced board). A uniform dump inversion is
+   independently excluded because it would flip `rev` and kill D9/IO.
    **Owner re-verification asks (produced-board photos = truth; the schematic
    PDF is the prototype and may differ):**
    (a) decisive single test — at the reset fetch (address `0000`, mode 0, which

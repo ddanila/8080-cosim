@@ -22,6 +22,7 @@ Current artifacts:
 | D29 | КР580ВА86 / Intel 8286 | `kr580va86.pdf` | `kr580va86-pinout.txt` |
 | D101 | К555КП12 / SN74LS253 | `sn74ls253-ti.pdf` | `k555kp12-pinout.txt` |
 | D84-D91 | К565РУ5Г / 4164-class 64Kx1 DRAM | `mk4564-64kx1-dram.pdf` | `k565ru5-pinout.txt` |
+| D2, D6 | К556РТ4 / 82S126 256x4 OC PROM | `82s126-556rt4-256x4-oc-prom.pdf` | `k556rt4-pinout.txt` |
 
 Checksums:
 
@@ -33,6 +34,7 @@ f4efbeaaed2e19158e67640683407ac0dfd557ff29ef20a702532fddab2ceeef  intel-p8255a.p
 44f3c77489e36b015038b8fdde724aa844e2252e554be8158531f6f1e01a614c  kr580va86.pdf
 6dac6d83b154c40e39bf772ae3b144c8d5d7a42f7b31ddc49942223d6df6c47a  sn74ls253-ti.pdf
 8a6169963c020c1ff8b3c413356ed8f354b9963b77dab8f9bd2af22560c44093  mk4564-64kx1-dram.pdf
+63938c06d5c4645aaa462bb8c87dd8555f324056a64fca3585f5f725320b5223  82s126-556rt4-256x4-oc-prom.pdf
 ```
 
 Sources:
@@ -45,3 +47,5 @@ Sources:
 - SN74LS253 Texas Instruments PDF: `https://www.ti.com/lit/ds/symlink/sn54ls253.pdf`
 - MK4564 (4164-class 64Kx1 DRAM, closest AC-timing reference for the К565РУ5Г
   bank D84-D91): `https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf`
+- Signetics 82S126 (К556РТ4 = 82S126/3601/74S387 equivalent, the D2/D6 OC PROM):
+  `https://www.retrotechnology.com/restore/82S126_signetics.pdf`
