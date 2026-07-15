@@ -134,25 +134,27 @@ DOWNSTAIRS_VALUE_REFS = {
 }
 DOWNSTAIRS_VALUE_TYPES = {
     "TTL640X480_HEADER",
+    # Jumpers: print the mode/value label horizontally just below the box
+    # instead of vertically alongside it.
+    "JUMPER_1x2",
+    "JUMPER_1x3",
 }
 
-# DIP parts use the plain (non-socket) footprints: identical pad pattern, single
-# clean silk outline (the _Socket variants draw a second, nested outline for the
-# socket body -- visually a double box). A socket is soldered into the DIP pads
-# at assembly. Keep neighbour spacing generous since the socket courtyard is not
-# reserved by the footprint.
+# DIP parts use the _Socket footprints: the nested "double" silk outline is the
+# socket body plus the IC, which is intended -- every scarce/swappable chip is
+# socketed on this bench fixture, and the socket courtyard must be reserved.
 FP_BY_TYPE = {
-    "Z80_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm"),
-    "PPI_82C55_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm"),
-    "ROM_28C256_DIP28": ("Package_DIP.pretty", "DIP-28_W15.24mm"),
-    "GAL22V10_DIP24_DECODE": ("Package_DIP.pretty", "DIP-24_W15.24mm"),
-    "GAL22V10_DIP24_DRAMSEQ": ("Package_DIP.pretty", "DIP-24_W15.24mm"),
-    "DRAM4164_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
-    "74HCT157_DIP16_ADDRMUX": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
-    "74HCT148_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
-    "74HCT166_DIP16_PIXSHIFT": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
-    "74HCT393_DIP14_REFRESH_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm"),
-    "74HCT393_DIP14_VIDEO_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm"),
+    "Z80_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm_Socket"),
+    "PPI_82C55_DIP40": ("Package_DIP.pretty", "DIP-40_W15.24mm_Socket"),
+    "ROM_28C256_DIP28": ("Package_DIP.pretty", "DIP-28_W15.24mm_Socket"),
+    "GAL22V10_DIP24_DECODE": ("Package_DIP.pretty", "DIP-24_W15.24mm_Socket"),
+    "GAL22V10_DIP24_DRAMSEQ": ("Package_DIP.pretty", "DIP-24_W15.24mm_Socket"),
+    "DRAM4164_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT157_DIP16_ADDRMUX": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT148_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT166_DIP16_PIXSHIFT": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "74HCT393_DIP14_REFRESH_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
+    "74HCT393_DIP14_VIDEO_LOW": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
     "TTL640X480_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x06_P2.54mm_Vertical"),
     "DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_2x05_P2.54mm_Vertical"),
     "POWER_INPUT_TERMINAL": ("TerminalBlock.pretty", "TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"),
@@ -171,9 +173,9 @@ FP_BY_TYPE = {
     "POWER_DEBUG_HEADER": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x04_P2.54mm_Vertical"),
     # Phase 3/4 additions: real decode PROM sockets, mode inverter, jumpers,
     # and the observability/high-address/control-bus headers.
-    "PROM_556RT4_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
-    "PROM_155RE3_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm"),
-    "HEX_INV_74HC04_DIP14": ("Package_DIP.pretty", "DIP-14_W7.62mm"),
+    "PROM_556RT4_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "PROM_155RE3_DIP16": ("Package_DIP.pretty", "DIP-16_W7.62mm_Socket"),
+    "HEX_INV_74HC04_DIP14": ("Package_DIP.pretty", "DIP-14_W7.62mm_Socket"),
     "JUMPER_1x2": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x02_P2.54mm_Vertical"),
     "JUMPER_1x3": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x03_P2.54mm_Vertical"),
     "DEBUG_HEADER_1x8": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x08_P2.54mm_Vertical"),
@@ -190,7 +192,7 @@ FP_BY_REF = {
 PLACE = {
     "J1": (22, 25.6, 90),
     "J3": (24, 100, 0),
-    "U1": (55, 45, 0),
+    "U1": (68, 45, 0),       # clear of the POWER block (right edge x56)
     "U2": (100, 45, 0),
     "U5": (210, 45, 0),
     "U20": (75, 95, 90),
@@ -263,9 +265,9 @@ PLACE = {
     "U3": (130, 62, 0),      # К556РТ4 memory-map decode
     "U4": (158, 62, 0),      # К155РЕ3 ROM pager
     "U6": (186, 62, 0),      # 74HC04 PC0/PC1 inverter
-    # Decoupling caps sit in the clear gaps between the decode chips (same row,
-    # close to the parts, no silk overlap).
-    "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (198, 62, 0),
+    # Decoupling caps: C26/C27 in the clear gaps between the decode chips;
+    # C28 above U6 (the U6-U5 gap collides with the ADDRESS DECODE label).
+    "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (186, 48, 0),
     "J94": (117, 58, 90),    # decode-mode jumper, in the gap left of U3 (clear of U5)
     "R44": (117, 68, 0),     # MODE_B default pull-down
     "J96": (268, 62, 90),    # clock-select jumper, near the oscillator U50
@@ -273,14 +275,16 @@ PLACE = {
     "R32": (250, 100, 0), "R33": (250, 107, 0), "R34": (250, 114, 0), "R35": (250, 121, 0),
     "R36": (262, 100, 0), "R37": (262, 107, 0), "R38": (262, 114, 0), "R39": (262, 121, 0),
     "R40": (274, 100, 0), "R41": (274, 107, 0), "R42": (274, 114, 0), "R43": (274, 121, 0),
-    # Observability headers, extending the debug-header row to the right.
-    "J95": (152, 262, 0),    # decode-debug (РТ4 outs, РЕ3 byte, REV_OUT) 1x14
-    "J97": (186, 262, 0),    # high address + MEM_WR_N 1x10
-    "J98": (214, 262, 0),    # Z80 control bus 1x8
+    # Observability headers: stacked in the clear vertical corridor between the
+    # keyboard matrix (right edge x190) and the VGA/LED blocks (left edge x204),
+    # away from the board title and block outlines.
+    "J95": (198, 158, 0),    # decode-debug (РТ4 outs, РЕ3 byte, REV_OUT) 1x14
+    "J97": (198, 198, 0),    # high address + MEM_WR_N 1x10
+    "J98": (198, 233, 0),    # Z80 control bus 1x8
 }
 
 DECOUPLE_NEAR = {
-    "U1": (69, 48, 90), "U2": (115, 29, 90), "SPARE_GLUE1": (140, 36, 0),
+    "U1": (84, 45, 90), "U2": (115, 29, 90), "SPARE_GLUE1": (140, 36, 0),
     "SPARE_GLUE2": (170, 36, 0), "U5": (225, 31, 90), "U10": (45, 161, 0),
     "U11": (65, 161, 0), "U12": (85, 161, 0), "U13": (105, 161, 0),
     "U14": (125, 161, 0), "U15": (145, 161, 0), "U16": (165, 161, 0),

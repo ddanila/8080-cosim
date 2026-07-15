@@ -30,6 +30,9 @@ spinoffs/minimal-vga/kicad/check_rev_a_physical.sh
 echo "== VJUGA spin-off: Rev A PCB scaffold =="
 spinoffs/minimal-vga/kicad/check_rev_a_pcb.sh
 
+echo "== VJUGA spin-off: Rev A silk/placement collision check =="
+spinoffs/minimal-vga/kicad/check_rev_a_placement.sh
+
 echo "== VJUGA spin-off: Rev A fabrication readiness report =="
 spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.sh
 
