@@ -36,10 +36,17 @@ product.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- The Rev A physical source has 116 refs and 134 modeled nets, and now sockets
+- The Rev A physical source has 119 refs and 134 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
-  jumper; `check_rev_a_physical` enforces a decode-socket contract that matches
-  the verified twin's addressing.
+  jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
+  address + write strobe, J98 control bus); `check_rev_a_physical` enforces
+  decode-socket and observability contracts that match the verified twin.
+- **The framebuffer-readback boot oracle is built and validated.**
+  `sim/vjuga_readback_check.sh` boots the twin with `+capture`, reassembles the
+  write stream (`tools/vjuga_fb_readback/reassemble.py`), and confirms it equals
+  both the twin's own dump and cosim's `vram.bin` — so the banner is verifiable
+  on the bench from analyzer captures with zero display electronics. A twin
+  reference trace (`tools/vjuga_single_step/`) backs the UNO single-step rig.
 - The committed four-layer routed PCB passes the repository's KiCad DRC and
   unconnected-item checks, **but is now stale versus the schematic**: the Phase 3
   decode sockets exist in the schematic/connectivity (source of truth) and not

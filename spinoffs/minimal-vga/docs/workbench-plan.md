@@ -137,7 +137,10 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
       HOLD until that review passes; only then is it an order candidate.
 
 4. **Phase 4 — observability, assembly, and bench bring-up.** Detailed plan:
-   **`phase4-bench-bringup.md`**. In brief:
+   **`phase4-bench-bringup.md`**. **Software + board-model half DONE** (design-ins
+   J96/J97/J98, framebuffer-readback oracle validated vs twin + cosim,
+   single-step sketch + twin reference trace); the physical ladder is pending the
+   fabricated board (Phase 3 step f). In brief:
    - **Design-ins before the step (f) copper freeze** (found by auditing the
      board model): J96 clock-control jumper (`OSC_OE_N`→GND tri-states U50 so
      the UNO can drive `CLK`), J97 high-address header (A8-A15 + `MEM_WR_N` are

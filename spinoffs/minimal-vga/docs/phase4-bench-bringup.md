@@ -1,15 +1,18 @@
 # VJUGA Phase 4 — observability, assembly, and bench bring-up plan
 
-Status: **PLAN**. Execution is gated on Phase 3 step (f): the routed-PCB
-re-layout must pick up both the Phase 3 decode sockets *and* the Phase 4
-design-ins below — one copper pass, not two.
+Status: **SOFTWARE + BOARD-MODEL DONE / HARDWARE PENDING**. Everything that can
+be built and verified against the simulation twin is implemented (§4.0 board
+design-ins, §4.2 readback oracle, §4.3 single-step tracer + reference trace).
+The remaining work is the physical ladder (§4.4 b-h), gated on Phase 3 step (f):
+the routed-PCB re-layout must pick up both the Phase 3 decode sockets *and* the
+§4.0 design-ins below — one copper pass, not two.
 
 Phase 4 turns the fabricated Rev-A board into the working bench fixture: the
 board boots the banner with western parts, then tests the scarce Juku
 РУ5/РТ4/РЕ3 chips one at a time, with every observation comparable to the
 verified simulation twin.
 
-## 4.0 Design-ins that MUST land before the step (f) copper freeze
+## 4.0 Design-ins that MUST land before the step (f) copper freeze — DONE
 
 These are board-model (`rev-a-physical.board.json`) changes. Each is cheap in
 copper and impossible to retrofit cleanly after fab.
@@ -21,8 +24,10 @@ copper and impossible to retrofit cleanly after fab.
 | J98 control-bus header | 1×8: `MREQ_N`, `IORQ_N`, `RD_N`, `WR_N`, `M1_N`, `RFSH_N`, `WAIT_N`, `GND` | The Z80 control bus is currently on **no** header; the single-step rig and the control-view captures both need it. |
 | NOP-plug provision | none (documentation only) | Free-run test uses an empty U2 socket plus a resistor plug on J91 (8× ~1 kΩ, D0-D7→GND) so every fetch reads `0x00` = NOP. No board change needed — J91 already carries D0-D7 + GND. |
 
-`check_rev_a_physical.py` gains required refs/nets for J96/J97/J98 when these
-land, exactly as Phase 3 did for the decode sockets.
+**Done:** J96/J97/J98 are in `rev-a-physical.board.json`, the schematic is
+regenerated, and `check_rev_a_physical.py` now requires these refs and enforces
+an observability contract (A8-A15 + `MEM_WR_N` on J97, the control bus on J98,
+`OSC_OE_N`/GND on J96). The NOP plug is documentation-only (no copper).
 
 ## 4.1 Fixed analyzer channel maps (RP2350, 24 channels, 5 V-tolerant inputs)
 
@@ -55,7 +60,7 @@ guessing, no idle samples.
 | CH23 | `DEC_ROM_N` (D6 РТ4 O1) | J95.1 |
 | trigger | `RESET_N` rising | J91.10 |
 
-## 4.2 Framebuffer readback without video hardware (the bench boot oracle)
+## 4.2 Framebuffer readback without video hardware (the bench boot oracle) — DONE
 
 The bench twin of `sim/vjuga_boot_check.sh`: capture every memory write during
 boot (Profile FB), filter to `0xD800-0xFFFF`, replay the stream into a
@@ -63,22 +68,20 @@ boot (Profile FB), filter to `0xD800-0xFFFF`, replay the stream into a
 **Byte-identical banner = boot PASS**, with zero display electronics (VGA stays
 deferred).
 
-Deliverables — all buildable and testable **now, against the twin**, before any
-hardware exists:
+Deliverables — **implemented and green** against the twin, before any hardware:
 
-1. `tools/vjuga_fb_readback/reassemble.py` — reads a capture stream
-   (`addr,data` per line, the analyzer export), replays writes in order into a
-   64 KiB image, extracts `0xD800 + 40×241`, writes the framebuffer binary.
-2. Twin-side capture emitter — the testbench (behind a plusarg) logs every DRAM
-   write as the same `addr,data` format. Piping the twin's log through
-   `reassemble.py` must reproduce the twin's own dumped framebuffer
-   byte-for-byte. That closes the loop: the *tool* is validated by the same
-   oracle as the *board*, so a bench mismatch later indicts the chip under
-   test, not the script.
-3. `sim/vjuga_readback_check.sh` — wires (1)+(2) into `sim/check.sh` as a
-   permanent regression.
+1. `tools/vjuga_fb_readback/reassemble.py` — reads a capture stream (`ADDR DATA`
+   hex per line), replays writes in order into a 64 KiB image, extracts
+   `0xD800 + 40×241`, writes the framebuffer binary.
+2. Twin-side capture emitter — `hdl/vjuga_juku_top.v` `+capture=<file>` logs
+   every framebuffer write in that exact format.
+3. `sim/vjuga_readback_check.sh` — boots the twin with `+capture`, reassembles,
+   and requires `reassemble(capture) == twin dump == cosim vram.bin`
+   (both PASS at 6000 writes). Wired into `sim/check.sh`. The *tool* is thus
+   validated by the same oracle as the *board*, so a later bench mismatch
+   indicts the chip under test, not the script.
 
-## 4.3 Arduino UNO single-step rig
+## 4.3 Arduino UNO single-step rig — DONE (sketch + reference trace)
 
 For static, human-speed inspection (5 V-native, no level shifting):
 
@@ -89,11 +92,14 @@ For static, human-speed inspection (5 V-native, no level shifting):
   RFSH_N/WAIT_N` + `DEC_ROM_N` (J98+J95) = 32 bits per snapshot.
 - **Sketch**: `tools/vjuga_single_step/vjuga_single_step.ino` (beside
   `rt4_dumper` — same Arduino conventions). Serial protocol: `s` = one clock,
-  `r` = run N clocks, each `M1_N` falling edge prints one line:
-  `Fnnnn: addr=XXXX data=XX ctl=...`.
-- **Twin reference trace**: the testbench (same plusarg family as 4.2) emits
-  the first ~200 M1 fetches in the identical line format. Bench session =
-  `diff` against the twin trace. Divergence points at the exact fetch.
+  `r` = run N clocks, `z` = zero counter; each `M1_N` falling edge prints one
+  line: `F<n>: addr=<hhhh> data=<hh> m1=<b> mreq=<b> rd=<b>`.
+- **Twin reference trace**: `hdl/vjuga_juku_top.v` `+trace=<file>` emits the
+  first 256 M1 fetches in the identical line format;
+  `tools/vjuga_single_step/gen_reference_trace.sh` produces it on demand
+  (verified: `F0: addr=0000 data=c3` = the reset JP, `F6: addr=0021 data=00` =
+  the patched NOP). Bench session = `diff` against this. Divergence points at
+  the exact fetch.
 
 ## 4.4 Assembly & bring-up ladder
 
@@ -161,10 +167,13 @@ already attached:
   or corrected in both twins and the GAL source.
 - `bench-log.md` holds a per-serial record for every scarce part tested.
 
-## Build order (what can start today)
+## Build order
 
-1. **Now, no hardware**: 4.0 board-model design-ins (J96/J97/J98 + checker
-   contract); 4.2 readback tool + twin capture emitter + regression; 4.3 sketch
-   + twin reference-trace generator. All verified against the simulation twin.
-2. **After step (f) re-layout + review** (Linux box): fab, then the 4.4 ladder.
-3. **Bench sessions** (owner): ladder steps b-h, logged.
+1. **No hardware — DONE**: §4.0 board-model design-ins (J96/J97/J98 + checker
+   contract); §4.2 readback tool + twin capture emitter + regression (wired into
+   `sim/check.sh`); §4.3 sketch + twin reference-trace generator. All verified
+   against the simulation twin.
+2. **After Phase 3 step (f) re-layout + review** (Linux box): fab, then the §4.4
+   ladder. — PENDING.
+3. **Bench sessions** (owner): ladder steps b-h, logged in `docs/bench-log.md`.
+   — PENDING (needs the fabricated board).
