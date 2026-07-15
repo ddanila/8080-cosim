@@ -103,9 +103,14 @@ A10A `(240.091,146.982)` mm and A10B `(108.865,152.813)` mm on
 final corrected 13.5 cm conductor length; the earlier tentative
 `~11.5` reading is retired.
 `А:13` is guarded across `114556899`/`114600417` at `(467,3851)`
-and `(1625,3443)`, with C95/D38 between the marks. The same D92 fits
-place owner pin D92.1 at `(2484,2290)` component and `(1382,1949)`
-solder pixels; no direct insulated-wire termination is visible.
+immediately before C95 and `(1625,3443)` immediately after D38/before
+R35. Two-face fits place D13.1 at `(1426,906)` component /
+`(3051,1193.5)` solder pixels and D92.1 at `(2484,2290)` /
+`(1382,1949)`; none of those owner-pad faces carries the wire. Registered
+component panoramas put the remote corridors beneath the horizontal wire
+bundle and tied mastic junctions. Matching solder panoramas expose no
+printed `13` or isolated third joint; the nearby exposed joints already
+belong to A8/A9, so neither A13 endpoint is promoted by proximity.
 `А:9` is guarded across `114604420`/`114600417` at `(2967,1768)`
 and `(1159,3623)` on its shallow diagonal run. Projecting the fitted
 D51 field across six overlapping component tiles places the A9A

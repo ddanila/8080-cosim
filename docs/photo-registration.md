@@ -261,6 +261,18 @@ within `1.501` mm; that is inside the local photographic uncertainty, so the
 existing `(260.005,159.200)` mm centre and 0-degree posture are retained.
 `kicad/check_d92_photo_placement.py` guards both-side identity and placement.
 
+The A13 remote search is now bounded on both ends rather than only at D92.
+The drawing puts A13A immediately before C95 below D30 and A13B immediately
+after D38, before R35. The D13 fit fixes A13A's owner D13.1 at `(1426,906)`
+component and `(3051,1193.5)` solder pixels; like D92.1, it has no insulated-wire
+termination on either face. Registered component panoramas place the two remote
+corridors under the horizontal factory-wire bundle and tied mastic junctions.
+The corresponding solder panoramas expose labels 10, 9, 14, 7, and 12, but no
+13 or isolated third joint; nearby exposed joints are already assigned to
+A8/A9. Both A13 terminals therefore remain null instead of inheriting a joint
+by proximity. `kicad/check_a13_factory_wire_boundaries.py` guards the reviewed
+regions, owner coordinates, ROE membership, and non-promotion.
+
 The same raw component tile exposes a distinct white-wire surface joint at
 `(2620,1764)` px beside the printed board-point number `11`. D40- and
 D41-derived image-to-board transforms place it at `(261.328,128.543)` and

@@ -54,7 +54,12 @@ These are ordered; each is completable with material already in the repo.
    in original drawing pixels. Both A8/A10/A11/A19/A20 terminals and the
    D38-side A9 terminal are now fitted to their physical joints and copper
    islands; both A7/A14 remote-joint pairs and the C96-side A12 joint are now
-   fitted too, leaving four PCB coordinates/island assignments pending. The
+   fitted too, leaving four PCB coordinates/island assignments pending. Both
+   A13 ends have now been exhausted across registered component/solder
+   panoramas: D13.1/D92.1 are bare at both faces, the C95-side and post-D38
+   remote corridors lie under the factory-wire bundle/mastic junctions, and no
+   printed 13 or unassigned third backside joint is exposed. They remain null
+   deliberately rather than borrowing nearby A8/A9 joints. The
    D40-side photo frame beside the printed A7/A14 joints is now fitted on both
    faces, and legacy endpoint seeds that mislabeled the visibly marked
    КР531ИЕ17 as D35 have been withdrawn. The marked D1 CPU and its complete

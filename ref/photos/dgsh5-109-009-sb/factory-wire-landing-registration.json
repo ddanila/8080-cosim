@@ -253,7 +253,7 @@
     {
       "point": 13,
       "status": "image-registered/board-fit-pending",
-      "observation": "overlapping views show the line leaving the left 13 mark in 114556899, crossing C95/D38, and arriving at the right 13 mark before R35 in 114600417; direct component/solder fits identify the decapped D92 and place owner pin D92.1 precisely, but neither pad face carries the wire, so the remote landing remains pending",
+      "observation": "overlapping views show the line leaving the left 13 mark immediately before C95 in 114556899, crossing the D38 region, and arriving at the right 13 mark immediately after D38 and before R35 in 114600417; direct two-face fits place owner pins D13.1 and D92.1 precisely and neither pad face carries the wire; registered component panoramas put the C95-side corridor beneath the horizontal factory-wire bundle and put the post-D38 corridor among the tied bundle/mastic junctions, while the matching solder panoramas expose no printed 13 or isolated third joint, so both remote landings remain pending rather than being guessed from nearby A8/A9 joints",
       "endpoints": [
         {
           "terminal": "A13A",
@@ -261,7 +261,20 @@
           "drawing_px": [467, 3851],
           "uncertainty_px": 6,
           "board_mm": null,
-          "island_assignment": null
+          "island_assignment": null,
+          "occlusion_evidence": {
+            "component_images": [
+              "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+              "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg"
+            ],
+            "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+            "owner_pin": "D13.1",
+            "owner_pin_px": {
+              "component": [1426, 906],
+              "solder": [3051, 1193.5]
+            },
+            "proof": "the drawing endpoint is immediately before C95 below D30; cross-registered component views cover that corridor with the horizontal factory-wire bundle and its tied mastic region, while the solder view has no printed 13 or uniquely corresponding remote joint; D13.1 itself has only its ordinary etched departure"
+          }
         },
         {
           "terminal": "A13B",
@@ -269,7 +282,17 @@
           "drawing_px": [1625, 3443],
           "uncertainty_px": 6,
           "board_mm": null,
-          "island_assignment": null
+          "island_assignment": null,
+          "occlusion_evidence": {
+            "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+            "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+            "owner_pin": "D92.1",
+            "owner_pin_px": {
+              "component": [2484, 2290],
+              "solder": [1382, 1949]
+            },
+            "proof": "the drawing endpoint is immediately after D38 and before R35; the registered component corridor is crossed by the tied factory-wire bundle and mastic junctions, and the solder panorama shows printed 10, 9, 14, 7, and 12 but no 13; the exposed nearby joints already belong to A8/A9 and D92.1 itself has no insulated-wire termination"
+          }
         }
       ]
     },
