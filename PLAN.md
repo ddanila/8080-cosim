@@ -45,10 +45,12 @@ fabrication file and gate again.
 
 These are ordered; each is completable with material already in the repo.
 
-1. **Decide the D6 `.038` (and D2 `.037`) electrical polarity in simulation
-   and retire the memory-map oracle.** The validated raw captures record pin
-   levels only if the КР556РТ4 reader sensed them correctly; the repo's own
-   boot evidence now over-constrains the answer without new bench work.
+1. **Adopt the physical D6 `.038` firmware (and D2 `.037`) into the runnable
+   twin and retire the memory-map oracle.** Decision taken: the twin will run
+   its memory map from the read firmware, not the hand-written oracle. This is
+   now an adoption task, not an open question. The validated raw captures are
+   correct pin levels modulo the КР556РТ4 reader's sense, and the repo's own
+   boot evidence over-constrains that polarity without new bench work.
    Firmware-anchored region semantics follow from guarded traces alone
    (`docs/d6-firmware-mode-coverage.md`, `docs/ekdos-checkpoint-reference.md`,
    `docs/d6-physical-decode.md`): with A7=0, raw word `1` regions are exactly
@@ -80,6 +82,11 @@ These are ordered; each is completable with material already in the repo.
    divergence in the diagnostic either way. None of this changes copper: all
    D6-area conductors are already owner-measured, and the only remaining
    D6-area netlist ask is the D105.1/A7 driver (P0 connectivity item 4).
+   Adopting D6 unlocks two efforts at once: it retires the digital twin's last
+   memory-map stand-in (the milestone below runs the boot from all physical
+   tables), and it unblocks VJUGA workbench Phase 2, which routes its own
+   decode through the same physical D6 РТ4 chip and therefore rides on this
+   same firmware adoption (`spinoffs/minimal-vga/docs/workbench-plan.md`).
 2. **Preserve routing convergence until netlist freeze.** The deterministic
    router and conflict-derived INTR rip-up workflow produced the preserved
    routing checkpoint with zero opens and zero electrical-category DRC
