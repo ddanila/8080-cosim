@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `218`
-- Verification-point endpoints checked in PCB: `359`
+- Verification-point nets: `217`
+- Verification-point endpoints checked in PCB: `326`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2248`
 - All board endpoints checked in routed PCB: `2248`
@@ -25,7 +25,7 @@ visible and actionable before manufacturing and first power-on.
 | --- | ---: |
 | FDC | 22 |
 | logic | 165 |
-| memory/decode | 6 |
+| memory/decode | 5 |
 | sound/analog | 1 |
 | timing/I/O | 3 |
 | video/analog | 21 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 359/359 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 359/359 net names matched |
+| Risk endpoints present on PCB pads | PASS | 326/326 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 326/326 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -699,7 +699,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `TIMING_TAG2` | logic | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board... | Scope/capture video or timing node during video bring-up. |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |
-| `W_RAIL16` | memory/decode | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reprodu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `X4_06_BOUNDARY` | logic | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `X4_07_BOUNDARY` | logic | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `X4_08_BOUNDARY` | logic | `AX408.1, X4.8` | .009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

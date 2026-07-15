@@ -120,10 +120,14 @@ def main() -> int:
             "sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs",
         ),
         (
-            "D36 write rail is guarded to all modeled DRAM W pins",
+            "D36 write-gate inputs and rail are guarded to all modeled DRAM W pins",
             has_nodes(board, "W_RAIL16", {("D36", "8")})
+            and board["nets"]["W_RAIL16"].get("source_risk") is False
+            and has_nodes(board, "MEMW", {("D36", "9")})
+            and has_nodes(board, "D33_D36", {("D33", "10"), ("D36", "10")})
+            and has_nodes(board, "D36_D33", {("D36", "3"), ("D33", "11")})
             and sum(1 for ref, pin in nodes(board, "W_RAIL16") if pin == "3" and ref.startswith("D")) >= 32,
-            "`W_RAIL16` includes D36.8 plus DRAM pin-3 fanout",
+            "MEMW->D36.9; D36.3->D33.11/.10->D36.10; D36.8->32 DRAM pin-3 inputs",
         ),
         (
             "D36 CAS pre-driver reaches R57",
@@ -382,6 +386,10 @@ def main() -> int:
             "- D37's RAM-read gate is source-complete rather than a remaining probe ask:",
             "  global MEMR enters D33.3, the inverter output D33.4 reaches D37.5,",
             "  D13.2/RAM_OUT_EN reaches D37.4, and D37.6 reaches D58.OE pin 9.",
+            "- D36's DRAM-write gate is likewise source-complete: MEMW enters pin 9,",
+            "  the D36.3 -> D33.11/.10 delay leg reaches pin 10, and output pin 8",
+            "  drives rail 16 to every DRAM W pin. The direct `we_n = MEMW` simulation",
+            "  path remains an explicit timing abstraction, not a copper uncertainty.",
             "- The routed snapshot retains the former wire-11 copper as MEMR. Two",
             "  0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a",
             "  back-layer bridge join the two MEMR islands without crossing the four",

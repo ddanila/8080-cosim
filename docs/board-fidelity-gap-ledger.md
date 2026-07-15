@@ -21,8 +21,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `302`
 - Nets modeled: `570`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `218`
-- Explicitly dispositioned closed net risks: `11`
+- Net-level source-risk gaps: `217`
+- Explicitly dispositioned closed net risks: `12`
 - Documented intentional no-connect pins: `60`
 
 ## Chip Provenance Types
@@ -60,7 +60,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | clock/I/O | 0 | 1 |
 | connector boundary | 1 | 0 |
 | logic/source | 13 | 67 |
-| memory/timing | 0 | 4 |
+| memory/timing | 0 | 3 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
 | sound/analog | 0 | 1 |
@@ -414,7 +414,6 @@ same fidelity ledger as the chip provenance gaps.
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
 | `X4_06_BOUNDARY` | logic/source | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced |
 | `X4_07_BOUNDARY` | logic/source | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced |
 | `X4_08_BOUNDARY` | logic/source | `AX408.1, X4.8` | .009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced |
@@ -460,6 +459,7 @@ the active release-risk count.
 | `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `V3_RC` | the native sheet closes R17.1/C99.1/D9.6 as one RC node; uncertainty on the opposite C99 plate is isolated on C99_FAR |
 | `VERT_RTR` | closed on native sheet 2 by the matching VER RTR/tag2 conductor between D55.13 and D35.9 |
+| `W_RAIL16` | the native sheet closes both D36 write-NAND inputs and its complete output fanout: MEMW->D36.9, D36.3->D33.11/.10->D36.10, and D36.8->all DRAM W pins; only the simulation timing abstraction remains |
 
 ## Automatic Closure Rule
 

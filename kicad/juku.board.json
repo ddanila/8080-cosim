@@ -14468,7 +14468,9 @@
    ]
   },
   "W_RAIL16": {
-   "src": "traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reproduce the RC/delay chain, so we_n = MEMW through a net_boundary (boot-identical); copper follows this net",
+   "src": "fully traced native sheet-2 write-strobe chain: MEMW enters D36 NAND input pin9, the D36.3 -> D33.11/.10 inverter-delay leg reaches D36 input pin10, and D36.8 drives rail 16 to all 32 DRAM W pins. D36 pin 8 is omitted from the LVS pinmap because the sim cannot reproduce the physical gate-delay chain; we_n = MEMW through a net_boundary remains the boot-identical behavioral abstraction while copper follows this source-proved net",
+   "source_risk": false,
+   "risk_disposition": "the native sheet closes both D36 write-NAND inputs and its complete output fanout: MEMW->D36.9, D36.3->D33.11/.10->D36.10, and D36.8->all DRAM W pins; only the simulation timing abstraction remains",
    "nodes": [
     [
      "D60",

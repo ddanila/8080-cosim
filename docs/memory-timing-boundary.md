@@ -26,7 +26,7 @@ python3 scripts/report_memory_timing_boundary.py
 | E14 video-mux enable retains the drawn 1-3 strap | PASS | sheet-2: E14.1-E14.3 fitted strap; E14.2=+5 V; E14.4=GND |
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
 | D53 unused Y4-Y7 outputs remain source-proved no-connects | PASS | sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs |
-| D36 write rail is guarded to all modeled DRAM W pins | PASS | `W_RAIL16` includes D36.8 plus DRAM pin-3 fanout |
+| D36 write-gate inputs and rail are guarded to all modeled DRAM W pins | PASS | MEMW->D36.9; D36.3->D33.11/.10->D36.10; D36.8->32 DRAM pin-3 inputs |
 | D36 CAS pre-driver reaches R57 | PASS | `CAS_PRE`: D36.11 -> R57.1 |
 | Shared CAS rail is guarded to all modeled DRAM C pins | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
 | PHI2TTL timing gate fanout is guarded | PASS | `PHI2TTL` source-risk net |
@@ -58,7 +58,7 @@ python3 scripts/report_memory_timing_boundary.py
 | `D53_Y1_R50` | `D53.14, R50.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D53_Y2_R51` | `D53.13, R51.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `D53_Y3_R52` | `D53.12, R52.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `W_RAIL16` | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, D66.3, D67.3, D68.3, D69.3, ... (+23)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: the sim cannot reproduce the RC/delay chain, so we_n = MEMW through a net_boundary (boot-identical); copper follows this net |
+| `W_RAIL16` | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, D66.3, D67.3, D68.3, D69.3, ... (+23)` | fully traced native sheet-2 write-strobe chain: MEMW enters D36 NAND input pin9, the D36.3 -> D33.11/.10 inverter-delay leg reaches D36 input pin10, and D36.8 drives rail 16 to all 32 DRAM W pins. D36 pin 8 is omitted from the LVS pinmap because the sim cannot reproduce the physical gate-delay chain; we_n = MEMW through a net_boundary remains the boot-identical behavioral abstraction while copper follows this source-proved net |
 | `CAS_PRE` | `D36.11, R57.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
 | `CAS` | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, D66.15, D67.15, D68.15, D69.15, ... (+27)` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
 | `D36_CAS_IN` | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57, but the common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so this remains a deliberate continuity boundary |
@@ -109,6 +109,10 @@ python3 scripts/report_memory_timing_boundary.py
 - D37's RAM-read gate is source-complete rather than a remaining probe ask:
   global MEMR enters D33.3, the inverter output D33.4 reaches D37.5,
   D13.2/RAM_OUT_EN reaches D37.4, and D37.6 reaches D58.OE pin 9.
+- D36's DRAM-write gate is likewise source-complete: MEMW enters pin 9,
+  the D36.3 -> D33.11/.10 delay leg reaches pin 10, and output pin 8
+  drives rail 16 to every DRAM W pin. The direct `we_n = MEMW` simulation
+  path remains an explicit timing abstraction, not a copper uncertainty.
 - The routed snapshot retains the former wire-11 copper as MEMR. Two
   0.6/0.3 mm vias at `(227.0497,127.5849)` and `(230,123)` plus a
   back-layer bridge join the two MEMR islands without crossing the four
