@@ -21,8 +21,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `302`
 - Nets modeled: `570`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `221`
-- Explicitly dispositioned closed net risks: `8`
+- Net-level source-risk gaps: `218`
+- Explicitly dispositioned closed net risks: `11`
 - Documented intentional no-connect pins: `60`
 
 ## Chip Provenance Types
@@ -55,12 +55,12 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 129 |
 | PROM truth | 1 | 0 |
-| PROM/decode | 0 | 10 |
+| PROM/decode | 0 | 9 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 1 |
 | connector boundary | 1 | 0 |
-| logic/source | 13 | 68 |
-| memory/timing | 0 | 5 |
+| logic/source | 13 | 67 |
+| memory/timing | 0 | 4 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
 | sound/analog | 0 | 1 |
@@ -290,7 +290,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D13_I3_BOUNDARY` | logic/source | `D13.3` | sheet-1 full-resolution: D13 ТЛ2 input pin3 drives the proved pin4 conductor to D105.2 and D11.20, but the pin3 origin is unread and remains a measurement bo... |
 | `D14_I2_BOUNDARY` | logic/source | `D14.2` | sheet-1 full-resolution К170АП2 package census identifies D14 input pin2; its remote serial-interface source is unread and remains a measurement boundary |
 | `D14_O7_BOUNDARY` | logic/source | `D14.7` | sheet-1 full-resolution К170АП2 package census identifies D14 output pin7; its remote serial-interface destination is unread and remains a measurement boundary |
-| `D25_T` | memory/timing | `D7.6, D25.11` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past... |
 | `D26_PA6_PREN_BOUNDARY` | logic/source | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measu... |
 | `D26_PB4_BOUNDARY` | logic/source | `D26.22` | sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remain... |
 | `D29_AIN1_BOUNDARY` | logic/source | `D29.2` | sheet-1 native 5150x3603 command-buffer chase identifies semantic command A1/CCLCK on D29 physical A1 pin2; its westbound conductor enters the dense D5/D105... |
@@ -395,7 +394,6 @@ same fidelity ledger as the chip provenance gaps.
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
-| `PROM_EN` | PROM/decode | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and tha... |
 | `R100_1_BOUNDARY` | logic/source | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R100_2_BOUNDARY` | logic/source | `R100.2` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
 | `R102_1_BOUNDARY` | logic/source | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
@@ -414,7 +412,6 @@ same fidelity ledger as the chip provenance gaps.
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
-| `V3_RC` | logic/source | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `W_RAIL16` | memory/timing | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, ... (+27)` | traced sheet-2 (array read): all DRAM W pins <- rail 16 <- D36.8 (strobe-chain write leg; D36.9 qualifier pending). D36 pin 8 omitted from the LVS pinmap: th... |
@@ -452,13 +449,16 @@ the active release-risk count.
 
 | Net | Disposition |
 | --- | --- |
+| `D25_T` | the native sheet closes the D7.6-to-D25.11 turnaround conductor; unread upstream inputs belong to MEMW and INHIB_STATUS_BOUNDARY, not this output net |
 | `D26_PC5_RN_IN` | the D26.12-to-D28.3 input conductor is closed on the older sheet; uncertainty on paired output D28.4 is tracked separately as X4_RN_N |
 | `D26_PC6_STOP_IN` | the D26.11-to-D28.1 input conductor is closed on the older sheet; uncertainty on paired output D28.2 is tracked separately as X4_STOP_N |
 | `D30_Q2N_D29_AIN7` | closed by direct owner continuity; the word boundary refers only to the superseded scan interpretation |
 | `FRAME_INT` | closed across native sheets 2 and 1; D35.8 and D10.23 share the named FRAME INT off-sheet conductor and R60 pull-up |
 | `POF` | closed by the sheet-1 tag6 to sheet-2 named-POF conductor; MAME is independent corroboration, not the source |
+| `PROM_EN` | the native sheet closes D7.11/D7.13/R17.2 as one feedback-strobe conductor; the refuted D6.14 branch is tracked separately on D6_V_ENABLE |
 | `USART_RXRDY_IRQ` | closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
+| `V3_RC` | the native sheet closes R17.1/C99.1/D9.6 as one RC node; uncertainty on the opposite C99 plate is isolated on C99_FAR |
 | `VERT_RTR` | closed on native sheet 2 by the matching VER RTR/tag2 conductor between D55.13 and D35.9 |
 
 ## Automatic Closure Rule

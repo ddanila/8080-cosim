@@ -65,7 +65,9 @@ def main() -> int:
         (
             "D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node",
             has_nodes(board, "PROM_EN", {("D7", "11"), ("D7", "13"), ("R17", "2")})
-            and has_nodes(board, "V3_RC", {("R17", "1"), ("C99", "1"), ("D9", "6")}),
+            and has_nodes(board, "V3_RC", {("R17", "1"), ("C99", "1"), ("D9", "6")})
+            and board["nets"]["PROM_EN"].get("source_risk") is False
+            and board["nets"]["V3_RC"].get("source_risk") is False,
             "`PROM_EN` -> `V3_RC`",
         ),
         (
@@ -111,7 +113,8 @@ def main() -> int:
         ),
         (
             "D25 bus turnaround handoff is guarded",
-            has_nodes(board, "D25_T", {("D7", "6"), ("D25", "11")}),
+            has_nodes(board, "D25_T", {("D7", "6"), ("D25", "11")})
+            and board["nets"]["D25_T"].get("source_risk") is False,
             "`D25_T`: D7.6 -> D25.11",
         ),
     ]

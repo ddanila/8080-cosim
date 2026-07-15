@@ -145,7 +145,7 @@ Every ask below is queued with exact deliverables in
    modified pads, removed segments, and replacement nets remain a P0 mapping
    hold (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
-   221 source-risk nets and 9 official FDC devices with untraced functional
+   218 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

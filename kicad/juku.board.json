@@ -7184,7 +7184,9 @@
      "R17",
      "2"
     ]
-   ]
+   ],
+   "source_risk": false,
+   "risk_disposition": "the native sheet closes D7.11/D7.13/R17.2 as one feedback-strobe conductor; the refuted D6.14 branch is tracked separately on D6_V_ENABLE"
   },
   "MEMR": {
    "src": "native .006 sheets 1-2 full-resolution continuous label chase 2026-07-13: sheet-1 D29 exports -MRD to sheet 2; both sheet-2 arrivals marked (1) -MRD land on D33.3 and D92.13, while factory wire 11 continues D92.13 to D7.1. This closes the former W11_D7_D92 split onto the global MEMR conductor",
@@ -15282,7 +15284,9 @@
      "D9",
      "6"
     ]
-   ]
+   ],
+   "source_risk": false,
+   "risk_disposition": "the native sheet closes R17.1/C99.1/D9.6 as one RC node; uncertainty on the opposite C99 plate is isolated on C99_FAR"
   },
   "C99_FAR": {
    "src": "sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit",
@@ -15657,7 +15661,9 @@
      "D25",
      "11"
     ]
-   ]
+   ],
+   "source_risk": false,
+   "risk_disposition": "the native sheet closes the D7.6-to-D25.11 turnaround conductor; unread upstream inputs belong to MEMW and INHIB_STATUS_BOUNDARY, not this output net"
   },
   "C94_1_BOUNDARY": {
    "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
