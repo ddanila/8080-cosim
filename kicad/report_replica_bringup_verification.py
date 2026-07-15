@@ -21,6 +21,17 @@ RISK_RE = re.compile(
 )
 
 
+def net_has_source_risk(name: str, net: dict, text: str) -> bool:
+    override = net.get("source_risk")
+    if override is None:
+        return bool(RISK_RE.search(text))
+    if not isinstance(override, bool):
+        raise SystemExit(f"{name}: source_risk override must be boolean")
+    if override is False and not str(net.get("risk_disposition", "")).strip():
+        raise SystemExit(f"{name}: source_risk=false requires risk_disposition")
+    return override
+
+
 def table_row(values: list[object]) -> str:
     escaped = [str(value).replace("|", "/") if value not in (None, "") else "-" for value in values]
     return "| " + " | ".join(escaped) + " |"
@@ -169,7 +180,7 @@ def main() -> int:
         source = net.get("src", "")
         note = net.get("note", "")
         risk_text = f"{source} {note}"
-        if not RISK_RE.search(risk_text):
+        if not net_has_source_risk(name, net, risk_text):
             continue
         for ref, pin in net.get("nodes", []):
             if ref in OFF_BOARD_REFS:

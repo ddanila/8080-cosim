@@ -322,6 +322,23 @@ def main() -> int:
     risk_match = re.search(r"Verification-point nets: `(\d+)`", evidence["source-risk nets"])
     if risk_match:
         risk_count = int(risk_match.group(1))
+        fidelity_ledger = read("docs/board-fidelity-gap-ledger.md")
+        ledger_risk_match = re.search(r"Net-level source-risk gaps: `(\d+)`", fidelity_ledger)
+        if not ledger_risk_match or int(ledger_risk_match.group(1)) != risk_count:
+            failures.append("fidelity ledger and bring-up checklist disagree on source-risk net count")
+        closed_overrides = [
+            (name, net)
+            for name, net in board_model.get("nets", {}).items()
+            if net.get("source_risk") is False
+        ]
+        closed_match = re.search(
+            r"Explicitly dispositioned closed net risks: `(\d+)`", fidelity_ledger
+        )
+        if not closed_match or int(closed_match.group(1)) != len(closed_overrides):
+            failures.append("fidelity ledger explicit source-risk closure count is stale")
+        for name, net in closed_overrides:
+            if not str(net.get("risk_disposition", "")).strip():
+                failures.append(f"{name} has source_risk=false without a disposition")
         if risk_count and not re.search(
             rf"{risk_count}\s+modeled\s+nets retain source-risk annotations",
             core["README.md"],

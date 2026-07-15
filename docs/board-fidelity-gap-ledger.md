@@ -21,7 +21,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `302`
 - Nets modeled: `569`
 - Chip-level fidelity gaps: `73`
-- Net-level source-risk gaps: `228`
+- Net-level source-risk gaps: `222`
+- Explicitly dispositioned closed net risks: `6`
 - Documented intentional no-connect pins: `62`
 
 ## Chip Provenance Types
@@ -52,13 +53,13 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 9 | 131 |
+| FDC owner-continuity | 9 | 129 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 10 |
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 1 |
 | connector boundary | 1 | 0 |
-| logic/source | 13 | 72 |
+| logic/source | 13 | 68 |
 | memory/timing | 0 | 6 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -292,10 +293,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D25_T` | memory/timing | `D7.6, D25.11` | traced sheet-1 native 5150x3603 review: D7 ЛА3 section (pins 5,4 -> 6 with inversion circle) drives D25.T (pin 11) = the data-bus turnaround; pin4 drops past... |
 | `D26_PA6_PREN_BOUNDARY` | logic/source | `D26.38` | sheet-1 full-resolution: D26 PA6 pin38 leaves on the conductor labeled PREN with off-sheet marker (3); the far destination is unread, so this remains a measu... |
 | `D26_PB4_BOUNDARY` | logic/source | `D26.22` | sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remain... |
-| `D26_PC5_RN_IN` | FDC owner-continuity | `D26.12, D28.3` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC5/pin12 mode conductor into D28 К155ЛН3 input pin3, whose paired open-collector output pin4... |
-| `D26_PC6_STOP_IN` | FDC owner-continuity | `D26.11, D28.1` | cross-source closure: .006 sheet-1 draws the uninterrupted D26 PC6/pin11 mode conductor into D28 К155ЛН3 input pin1, whose paired open-collector output pin2... |
 | `D29_AIN1_BOUNDARY` | logic/source | `D29.2` | sheet-1 native 5150x3603 command-buffer chase identifies semantic command A1/CCLCK on D29 physical A1 pin2; its westbound conductor enters the dense D5/D105... |
-| `D30_Q2N_D29_AIN7` | logic/source | `D30.8, D29.7` | direct .009 owner continuity 2026-07-14 proves D30 second flip-flop inverted output pin8 drives D29 VA86 input pin7. This supersedes the prior scan boundary... |
 | `D34_A1_TAG2` | logic/source | `D34.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: D34 gate-1 input pin4 runs continuously to the top-edge conductor marked 2 and terminates in... |
 | `D34_SIG` | video/analog | `D34.11, R63.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
@@ -398,7 +396,6 @@ same fidelity ledger as the chip provenance gaps.
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
-| `POF` | logic/source | `D26.10, D35.3` | cross-sheet source closure: sheet-1 D26 PPI0 PC7/pin10 leaves through mode-bundle tag6; sheet-2 labels the receiving conductor POF directly into D35 inverter... |
 | `PROM_EN` | PROM/decode | `D7.11, D7.13, R17.2` | traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and tha... |
 | `R100_1_BOUNDARY` | logic/source | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R100_2_BOUNDARY` | logic/source | `R100.2` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary |
@@ -418,8 +415,6 @@ same fidelity ledger as the chip provenance gaps.
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
-| `USART_RXRDY_IRQ` | logic/source | `D10.20, D11.14` | traced sheet-1 native full-resolution: D11 RXRDY output pin14 runs east, turns north, and lands directly on D10 PIC IR2 pin20; pinned MAME primary-USART wiri... |
-| `USART_TXRDY_IRQ` | logic/source | `D10.21, D11.15` | traced sheet-1 native full-resolution: D11 TXRDY output pin15 runs east, turns north, and lands directly on D10 PIC IR3 pin21; pinned MAME primary-USART wiri... |
 | `V3_RC` | logic/source | `R17.1, C99.1, D9.6` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
@@ -448,6 +443,22 @@ same fidelity ledger as the chip provenance gaps.
 | `X4_RN_N` | FDC owner-continuity | `D28.4, AX404.1, X4.4` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin4 -RN and sends it to X4.4; .009 sheets4-5 preserve a direct 23-condu... |
 | `X4_STOP_N` | FDC owner-continuity | `D28.2, AX405.1, X4.5` | cross-revision harness reconstruction: .006 sheet-1 labels D28 open-collector output pin2 -STOP and sends it to X4.5; .009 sheets4-5 preserve a direct 23-con... |
 | `XTAL16M` | logic/source | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin1... |
+
+## Explicitly Closed Regex Matches
+
+These nets contain historical uncertainty words in their provenance,
+but stronger evidence closes the modeled conductor. Their explicit
+`source_risk=false` dispositions prevent prose history from inflating
+the active release-risk count.
+
+| Net | Disposition |
+| --- | --- |
+| `D26_PC5_RN_IN` | the D26.12-to-D28.3 input conductor is closed on the older sheet; uncertainty on paired output D28.4 is tracked separately as X4_RN_N |
+| `D26_PC6_STOP_IN` | the D26.11-to-D28.1 input conductor is closed on the older sheet; uncertainty on paired output D28.2 is tracked separately as X4_STOP_N |
+| `D30_Q2N_D29_AIN7` | closed by direct owner continuity; the word boundary refers only to the superseded scan interpretation |
+| `POF` | closed by the sheet-1 tag6 to sheet-2 named-POF conductor; MAME is independent corroboration, not the source |
+| `USART_RXRDY_IRQ` | closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded |
+| `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
 
 ## Automatic Closure Rule
 

@@ -103,6 +103,17 @@ def category_for_net(name: str, text: str, nodes: list[list[str]]) -> str:
     return "logic/source"
 
 
+def net_has_source_risk(name: str, net: dict, text: str) -> bool:
+    override = net.get("source_risk")
+    if override is None:
+        return bool(RISK_RE.search(text))
+    if not isinstance(override, bool):
+        raise SystemExit(f"{name}: source_risk override must be boolean")
+    if override is False and not str(net.get("risk_disposition", "")).strip():
+        raise SystemExit(f"{name}: source_risk=false requires risk_disposition")
+    return override
+
+
 def nodes_summary(nodes: list[list[str]]) -> str:
     rendered = [f"{ref}.{pin}" for ref, pin in nodes]
     if len(rendered) <= 6:
@@ -177,9 +188,17 @@ def main() -> int:
         raise SystemExit(f"non-programmable chips classified as PROM truth: {false_prom_rows}")
 
     net_gap_rows: list[dict[str, object]] = []
+    closed_risk_overrides: list[dict[str, str]] = []
     for name, net in board["nets"].items():
         text = f"{net.get('src', '')} {net.get('note', '')}"
-        if not RISK_RE.search(text):
+        if net.get("source_risk") is False:
+            # Validate the override even though the net does not enter the gap table.
+            net_has_source_risk(name, net, text)
+            closed_risk_overrides.append(
+                {"name": name, "disposition": str(net["risk_disposition"])}
+            )
+            continue
+        if not net_has_source_risk(name, net, text):
             continue
         net_gap_rows.append(
             {
@@ -238,6 +257,7 @@ def main() -> int:
         f"- Nets modeled: `{len(board['nets'])}`",
         f"- Chip-level fidelity gaps: `{len(chip_gap_rows)}`",
         f"- Net-level source-risk gaps: `{len(net_gap_rows)}`",
+        f"- Explicitly dispositioned closed net risks: `{len(closed_risk_overrides)}`",
         f"- Documented intentional no-connect pins: `{sum(map(len, no_connects.values()))}`",
         "",
         "## Chip Provenance Types",
@@ -344,6 +364,24 @@ def main() -> int:
                 ]
             )
         )
+
+    if closed_risk_overrides:
+        lines.extend(
+            [
+                "",
+                "## Explicitly Closed Regex Matches",
+                "",
+                "These nets contain historical uncertainty words in their provenance,",
+                "but stronger evidence closes the modeled conductor. Their explicit",
+                "`source_risk=false` dispositions prevent prose history from inflating",
+                "the active release-risk count.",
+                "",
+                "| Net | Disposition |",
+                "| --- | --- |",
+            ]
+        )
+        for row in sorted(closed_risk_overrides, key=lambda item: item["name"]):
+            lines.append(table_row([f"`{row['name']}`", row["disposition"]]))
 
     lines.extend(
         [
