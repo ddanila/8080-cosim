@@ -24,6 +24,7 @@ ROUTER = ROOT / "kicad" / "repair_fdc_route_gaps.py"
 BLOCKERS = {"shorting_items", "clearance", "tracks_crossing"}
 NET_RE = re.compile(r"\[([^]]+)\]")
 LAYER_RE = re.compile(r" on ([FB])\.Cu(?:,|$)")
+KICAD_UNCONNECTED_REPORT_CAP = 499
 
 
 def run_drc(cli: Path, board: Path, report: Path) -> dict:
@@ -88,10 +89,47 @@ def gaps(
     return sorted(result)
 
 
-def acceptable(before: dict, after: dict) -> bool:
-    if len(after.get("unconnected_items", [])) >= len(
-        before.get("unconnected_items", [])
-    ):
+def same_endpoint_pair(
+    left: tuple[float, float, float, float],
+    right: tuple[float, float, float, float],
+    tolerance: float = 0.000_001,
+) -> bool:
+    def point_equal(a: tuple[float, float], b: tuple[float, float]) -> bool:
+        return abs(a[0] - b[0]) <= tolerance and abs(a[1] - b[1]) <= tolerance
+
+    left_a, left_b = left[:2], left[2:]
+    right_a, right_b = right[:2], right[2:]
+    return (point_equal(left_a, right_a) and point_equal(left_b, right_b)) or (
+        point_equal(left_a, right_b) and point_equal(left_b, right_a)
+    )
+
+
+def exact_gap_present(report: dict, proposal: tuple) -> bool:
+    _, net, x1, y1, x2, y2, _, _ = proposal
+    endpoints = (x1, y1, x2, y2)
+    return any(
+        candidate[1] == net and same_endpoint_pair(endpoints, candidate[2:6])
+        for candidate in gaps(report, 0.0, math.inf, net)
+    )
+
+
+def acceptable(
+    before: dict,
+    after: dict,
+    proposal: tuple,
+    accept_capped_progress: bool,
+) -> bool:
+    before_open = len(before.get("unconnected_items", []))
+    after_open = len(after.get("unconnected_items", []))
+    count_improved = after_open < before_open
+    capped_gap_improved = (
+        accept_capped_progress
+        and before_open == KICAD_UNCONNECTED_REPORT_CAP
+        and after_open == KICAD_UNCONNECTED_REPORT_CAP
+        and exact_gap_present(before, proposal)
+        and not exact_gap_present(after, proposal)
+    )
+    if not count_improved and not capped_gap_improved:
         return False
     before_counts, after_counts = violation_counts(before), violation_counts(after)
     if any(after_counts.get(kind, 0) for kind in BLOCKERS):
@@ -160,6 +198,14 @@ def main() -> None:
     )
     parser.add_argument("--kicad-cli", type=Path)
     parser.add_argument("--net", help="attempt only DRC gaps on this exact net")
+    parser.add_argument(
+        "--accept-capped-progress",
+        action="store_true",
+        help=(
+            "while KiCad reports exactly 499 unconnected markers, accept a route "
+            "whose exact proposed gap disappears without increasing any DRC count"
+        ),
+    )
     args = parser.parse_args()
 
     cli = args.kicad_cli
@@ -245,7 +291,12 @@ def main() -> None:
                 )
                 continue
             candidate_report = run_drc(cli, candidate_board, candidate_report_path)
-            if not acceptable(current_report, candidate_report):
+            if not acceptable(
+                current_report,
+                candidate_report,
+                proposal,
+                args.accept_capped_progress,
+            ):
                 print(
                     f"reject {net} {distance:.3f} mm: "
                     f"{rejection_reason(current_report, candidate_report)}",
@@ -257,8 +308,14 @@ def main() -> None:
             os.replace(candidate_board, args.output)
             current_report = candidate_report
             accepted += 1
+            capped_note = (
+                " (capped marker set advanced)"
+                if before == after == KICAD_UNCONNECTED_REPORT_CAP
+                else ""
+            )
             print(
-                f"accept {net} {distance:.3f} mm: unconnected {before} -> {after}",
+                f"accept {net} {distance:.3f} mm: "
+                f"unconnected {before} -> {after}{capped_note}",
                 flush=True,
             )
 

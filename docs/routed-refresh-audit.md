@@ -139,6 +139,18 @@ clearance violations, or crossings, and no increase in any other DRC violation
 type. The single-layer distance bands and bounded multilayer pass are
 reproducible with:
 
+KiCad 10.99 truncates the CLI DRC report at 499 unconnected markers. For a
+newly refreshed board above that ceiling, `--accept-capped-progress` provides
+an explicit opt-in transaction rule: the exact proposed endpoint pair must be
+present before the route and absent afterward, both reports must remain at the
+499-marker ceiling, and no violation category may increase. The ordinary
+strict count-decrease rule remains the default and resumes automatically below
+the ceiling. A current-source refresh trial used this mode to accept 125 local
+routes, reducing the uncapped Python connectivity count from 1,190 to 1,065
+while retaining zero electrical-category DRC findings. This also establishes
+that local closure is useful for guarded repairs but is not an efficient
+replacement for the bulk-routing stage at this scale.
+
 ```sh
 python3 kicad/close_unconnected_gaps.py INPUT.kicad_pcb OUTPUT.kicad_pcb \
   --max-distance 30 --timeout 20
