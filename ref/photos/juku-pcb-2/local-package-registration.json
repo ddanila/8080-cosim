@@ -188,6 +188,20 @@
       "note": "The black package is unambiguously marked КР1533ЛА3 and the assembly drawing places D7 immediately right of D9. Its complete 2x7 contact field and right-facing notch correct the former seed to 270 degrees. The uninterrupted white A19 lead passes below it and terminates at a distinct surface joint."
     },
     {
+      "refdes": "D7",
+      "side": "component-alt",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1753.0, 1409.0], "use": "fit", "observation": "upper-right contact immediately above the right-facing notch"},
+        {"pin": "4", "image_px": [1580.0, 1409.0], "use": "check", "observation": "independent middle contact on the complete upper row"},
+        {"pin": "7", "image_px": [1407.0, 1409.0], "use": "fit", "observation": "upper-left contact at the far end of the row"},
+        {"pin": "8", "image_px": [1407.0, 1571.0], "use": "fit", "observation": "lower-left contact of the opposite complete row"},
+        {"pin": "14", "image_px": [1753.0, 1571.0], "use": "check", "observation": "independent lower-right contact below the notch"}
+      ],
+      "note": "This overlapping tile separates the known A19 joint below-left of D7 from a second white insulated lead soldered at (1825,1706) px below-right. The factory table assigns the two D7-side wires to pins 2/A19 and 1/A11 respectively; the fit preserves their distinct physical landings."
+    },
+    {
       "refdes": "D8",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",

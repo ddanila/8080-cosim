@@ -254,7 +254,8 @@ and D92.13 at `(2484,2290)` and `(2654.333,2345.833)` px in component image
 `200418174`, and at `(1382,1949)` and `(1214.333,2004.833)` px in solder image
 `200522685`. Component held-outs are at most `2.0` px and solder held-outs at
 most `0.5` px. Neither factory-link owner pin has an insulated-wire stub at the
-package joint, so A11B and A13B remain remote-landing searches. Independent
+package joint, so both require remote-landing searches; A11B is identified
+below, while A13B remains pending. Independent
 D38/D37 centre estimates spread `1.864` mm and bracket the source D92 centre
 within `1.501` mm; that is inside the local photographic uncertainty, so the
 existing `(260.005,159.200)` mm centre and 0-degree posture are retained.
@@ -266,8 +267,18 @@ D41-derived image-to-board transforms place it at `(261.328,128.543)` and
 `(261.322,128.553)` mm, only `0.0127` mm apart. Their midpoint promotes A11B
 at `(261.325,128.548)` mm on the factory-table D92.13/MEMR island; it is a
 remote component-side landing, not the D92.13 package pad. The D7-side A11A
-coordinate remains pending, and `kicad/check_a11_factory_wire_landing.py`
-guards that partial state.
+coordinate is closed below, and `kicad/check_a11_factory_wire_landing.py`
+guards both terminals.
+
+An overlapping D7 component fit in raw image `200415237` holds the alternate
+package row exactly and separates two nearby insulated-wire joints. The
+below-left joint cross-registers to the already proved D7.2/A19 endpoint; the
+distinct below-right joint at `(1825,1706)` px is therefore the factory-table
+D7.1/A11 end. Its fitted coordinate is `(142.256,123.468)` mm, completing A11
+to the printed D92-side joint above. The 119.177 mm endpoint chord is about
+4.2 mm longer than the table's approximate 11.5 cm entry. As with A8, physical
+endpoint geometry is adopted while fabrication cut length stays held for a
+re-read or direct conductor measurement.
 
 D98 and D94 also bound the horizontal 2x10 D100 КР580ВА87 solder footprint.
 An affine fit lands both complete rows in the intervening package and holds

@@ -14,7 +14,7 @@ zero-open routing checkpoint.
 - Landing-registration check: `PASS`
 - Board-fit photo/copper evidence checks: `PASS`
 - Drawing-image landing endpoints registered: `20/20`
-- Landing endpoints fitted to PCB coordinates/islands: `10/20`
+- Landing endpoints fitted to PCB coordinates/islands: `11/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
 - Candidate/source pad-net mismatches: `35`
@@ -87,7 +87,11 @@ solder pixels; neither pad face carries the wire. The distinct white
 surface joint printed `11` at `(2620,1764)` in `200418174` is the
 factory-table D92.13 end. Independent D40/D41 transforms agree within
 0.013 mm and promote A11B at `(261.325,128.548)` mm on `MEMR`; the
-D7-side A11A landing remains pending.
+overlapping D7 tile separates the known A19 joint from the second
+white joint at `(1825,1706)`, promoting A11A at
+`(142.256,123.468)` mm. Their 119.177 mm chord exceeds the approximate
+11.5 cm table entry; endpoint geometry is adopted while cut length is
+held for direct measurement.
 `А:10` is complete in one drawing view at `(821,3778)` and
 `(3016,3702)` in `114556899`. At the D41 end, component joint
 `(2148,2174)` and reflected solder joint `(1506,1834)` agree within

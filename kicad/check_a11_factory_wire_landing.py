@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
 LANDINGS = ROOT / "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json"
 REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
-JOINT = [2620, 1764]
+JOINT_A = [1825, 1706]
+JOINT_B = [2620, 1764]
 
 board = pcbnew.LoadBoard(str(BOARD))
 landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
@@ -22,16 +23,17 @@ endpoints = {item["terminal"]: item for item in point["endpoints"]}
 endpoint = endpoints["A11B"]
 report = json.loads(REPORT.read_text(encoding="utf-8"))
 fits = {
-    fit["refdes"]: fit
+    (fit["refdes"], fit["side"]): fit
     for fit in report["fits"]
-    if fit["side"] == "component" and fit["refdes"] in {"D40", "D41"}
+    if (fit["refdes"], fit["side"])
+    in {("D7", "component-alt"), ("D40", "component"), ("D41", "component")}
 }
 errors: list[str] = []
 
 
-def image_to_board(refdes: str) -> np.ndarray:
+def image_to_board(refdes: str, side: str = "component") -> np.ndarray:
     footprint = board.FindFootprintByReference(refdes)
-    fit = fits[refdes]
+    fit = fits[(refdes, side)]
     image_points: list[list[float]] = []
     board_points: list[list[float]] = []
     for pin, image_point in fit["projected_pins"].items():
@@ -44,12 +46,12 @@ def image_to_board(refdes: str) -> np.ndarray:
     )[0]
 
 
-def project(refdes: str) -> np.ndarray:
-    return np.array([float(JOINT[0]), float(JOINT[1]), 1.0]) @ image_to_board(refdes)
+def project(refdes: str, joint: list[int], side: str = "component") -> np.ndarray:
+    return np.array([float(joint[0]), float(joint[1]), 1.0]) @ image_to_board(refdes, side)
 
 
-d40 = project("D40")
-d41 = project("D41")
+d40 = project("D40", JOINT_B)
+d41 = project("D41", JOINT_B)
 spread = float(np.linalg.norm(d40 - d41))
 if spread > 0.02:
     errors.append(f"D40/D41 projections spread {spread:.4f} mm")
@@ -60,9 +62,9 @@ if recorded_error > 0.002:
     errors.append(f"recorded-coordinate error {recorded_error:.4f} mm")
 
 evidence = endpoint.get("board_fit_evidence", {})
-if evidence.get("source_image") != fits["D40"]["image"]:
+if evidence.get("source_image") != fits[("D40", "component")]["image"]:
     errors.append("A11B source image is not guarded")
-if evidence.get("joint_px") != JOINT:
+if evidence.get("joint_px") != JOINT_B:
     errors.append("A11B joint pixel is not guarded")
 uncertainty = evidence.get("uncertainty_mm")
 if not isinstance(uncertainty, (int, float)) or not 0.2 <= uncertainty <= 0.5:
@@ -76,15 +78,39 @@ d92 = board.FindFootprintByReference("D92")
 pad = d92.FindPadByNumber("13") if d92 is not None else None
 if pad is None or pad.GetNetname() != "MEMR":
     errors.append("D92.13 is not on MEMR")
-if endpoints["A11A"].get("board_mm") is not None:
-    errors.append("A11A must remain board-fit pending")
-if point.get("status") != "image-registered/board-fit-pending":
-    errors.append("A11 must remain partially unresolved")
+endpoint_a = endpoints["A11A"]
+projected_a = project("D7", JOINT_A, "component-alt")
+recorded_a = np.array(endpoint_a.get("board_mm"), dtype=float)
+if float(np.linalg.norm(projected_a - recorded_a)) > 0.002:
+    errors.append("A11A recorded coordinate drifted")
+evidence_a = endpoint_a.get("board_fit_evidence", {})
+if evidence_a.get("source_image") != fits[("D7", "component-alt")]["image"]:
+    errors.append("A11A source image is not guarded")
+if evidence_a.get("joint_px") != JOINT_A:
+    errors.append("A11A joint pixel is not guarded")
+uncertainty_a = evidence_a.get("uncertainty_mm")
+if not isinstance(uncertainty_a, (int, float)) or not 0.4 <= uncertainty_a <= 0.8:
+    errors.append("A11A fitted uncertainty is invalid")
+if "D7.1" not in endpoint_a.get("island_assignment", "") or "MEMR" not in endpoint_a.get("island_assignment", ""):
+    errors.append("A11A island assignment lacks D7.1/MEMR")
+d7 = board.FindFootprintByReference("D7")
+d7_pad = d7.FindPadByNumber("1") if d7 is not None else None
+if d7_pad is None or d7_pad.GetNetname() != "MEMR":
+    errors.append("D7.1 is not on MEMR")
+
+wire_chord = float(np.linalg.norm(recorded - recorded_a))
+if not 118.5 <= wire_chord <= 120.0:
+    errors.append(f"A11 terminal chord {wire_chord:.3f} mm is implausible")
+if "11.5 cm" not in point.get("observation", "") or "cut length" not in point.get("observation", ""):
+    errors.append("A11 approximate-length discrepancy is not explicit")
+if point.get("status") != "board-fitted":
+    errors.append("A11 point status is not board-fitted")
 
 if errors:
     raise SystemExit("A11 FACTORY LANDING: FAIL\n- " + "\n- ".join(errors))
 print(
     "A11 FACTORY LANDING: PASS — "
+    f"A11A {recorded_a[0]:.3f},{recorded_a[1]:.3f} mm; "
     f"A11B {recorded[0]:.3f},{recorded[1]:.3f} mm; "
-    f"D40/D41 spread {spread:.4f} mm; A11A remains pending"
+    f"D40/D41 spread {spread:.4f} mm; chord {wire_chord:.3f} mm"
 )

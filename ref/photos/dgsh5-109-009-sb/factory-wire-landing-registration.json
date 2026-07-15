@@ -170,16 +170,23 @@
     },
     {
       "point": 11,
-      "status": "image-registered/board-fit-pending",
-      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark; direct component/solder fits identify the decapped D92 and show that neither D92.13 pad face carries the wire, while the distinct owner-board surface joint printed 11 is independently board-fitted as the D92.13/MEMR end; the D7-side landing remains pending",
+      "status": "board-fitted",
+      "observation": "overlapping views show opposite ends of one horizontal line: 114556899 leaves the left 11 mark toward the right, while 114600417 arrives from the left at the right 11 mark; the D92-side surface joint is printed 11 and the D7-side overlapping tile separates this lead from the independently proved A19 joint, closing both MEMR landings; their 119.177 mm chord exceeds the approximate 11.5 cm table entry, so endpoint geometry is adopted while fabrication cut length remains held for direct measurement",
       "endpoints": [
         {
           "terminal": "A11A",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [1563, 3155],
           "uncertainty_px": 6,
-          "board_mm": null,
-          "island_assignment": null
+          "board_mm": [142.256, 123.468],
+          "island_assignment": "D7.1-side MEMR island; component-side surface wire joint distinct from adjacent A19",
+          "board_fit_evidence": {
+            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+            "joint_px": [1825, 1706],
+            "local_fit": "D7/component-alt",
+            "uncertainty_mm": 0.65,
+            "proof": "the overlapping D7 tile separates two insulated-wire joints; the left joint cross-registers to the already proved D7.2/A19 endpoint, leaving this right joint as the factory-table D7.1/A11 endpoint"
+          }
         },
         {
           "terminal": "A11B",
