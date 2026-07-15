@@ -18,6 +18,11 @@ product.
   writes (the same map and oracle the main `sync/boot_check.sh` uses). No FDC
   and no interrupts are needed — the banner draws exactly as cosim runs it. See
   `hdl/juku_boot_top.vhd`.
+- **A Verilog twin boots the same ROM on `tv80` with the real К565РУ5 model.**
+  `sim/vjuga_boot_check.sh` runs `hdl/vjuga_juku_top.v` (tv80 Z80 core + the real
+  `dram_64kx1` РУ5 bit-slice reused verbatim from the recreation's
+  `hdl/devices.v`) and matches the cosim framebuffer byte-for-byte at 6000 video
+  writes — exercising the actual DRAM part model (workbench goal 2).
 - The pinned T80 core also executes a built-in synthetic ROM (smoke test).
 - The synthetic test exercises CPU ROM/RAM/I/O cycles, a bit-sliced DRAM
   model, independent refresh, video arbitration, keyboard-style input, and one

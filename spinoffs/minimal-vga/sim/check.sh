@@ -12,8 +12,11 @@ sync/boot_check.sh
 echo "== VJUGA spin-off: T80 smoke test =="
 spinoffs/minimal-vga/sim/check_t80_smoke.sh
 
-echo "== VJUGA spin-off: real Juku ekta37 ROM boots on the VJUGA top =="
+echo "== VJUGA spin-off: real Juku ekta37 ROM boots on the VJUGA top (Z80, VHDL) =="
 spinoffs/minimal-vga/sim/boot_check.sh
+
+echo "== VJUGA spin-off: Verilog twin boots ekta37 on tv80 + real К565РУ5 =="
+spinoffs/minimal-vga/sim/vjuga_boot_check.sh
 
 echo "== VJUGA spin-off: schematic/HDL LVS =="
 spinoffs/minimal-vga/sync/check.sh

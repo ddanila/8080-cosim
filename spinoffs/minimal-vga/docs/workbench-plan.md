@@ -58,38 +58,21 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
 
 ## Phased build
 
-1. **Verilog twin core (POC + DRAM). IN PROGRESS — root-caused.** `tv80`
-   (Verilog Z80) is vendored at `external/tv80`; `hdl/vjuga_juku_top.v` +
-   `hdl/vjuga_juku_tb.v` build and **boot** `roms/ekta37_z80.bin` on it with RAM
-   served by the real `dram_64kx1` (К565РУ5) reused from `hdl/devices.v`. The CPU
-   executes correctly (writes `0x55` to VRAM in mode 0). `raw_row` permutation
-   math is verified correct.
+1. **Verilog twin core (POC + DRAM). DONE.** `tv80` (Verilog Z80) is vendored at
+   `external/tv80`; `hdl/vjuga_juku_top.v` boots `roms/ekta37_z80.bin` on it with
+   RAM served by the real `dram_64kx1` (К565РУ5) reused verbatim from
+   `hdl/devices.v`, and the framebuffer is **byte-for-byte identical to the cosim
+   oracle** at 64 and the full 6000-write banner. `sim/vjuga_boot_check.sh`
+   gates this and is wired into `sim/check.sh` (PASS, ~9 s). This exercises the
+   real DRAM part model (goal 2) and boots the real ROM on a real Z80 (goal 1);
+   the byte-identical banner also validates the RAM read path (the BIOS RAM test
+   reads back its writes).
 
-   **Root cause of the remaining framebuffer mismatch (probed 2026-07-15):** the
-   RAS-time row latch inside `dram_64kx1` captures the *column* value, not the
-   row — for a write to `0xD800`, `raw_row(0xD8)=0x74` is expected but the latched
-   `row` reads `0x00/01/02` (= `acc_addr[7:0]`). So in the clocked sequencer the
-   `negedge ras_n` effectively samples `dram_ma` after it has switched to the
-   column, corrupting the RAM address (writes land at `d070/d1f0/...`).
-
-   **Completion plan (the steps to fully done):**
-   a. Dump a VCD of `ras_n`, `dram_ma`, and the instance's internal `row`; find
-      the exact edge where the row latch samples the column (the `dram_64kx1`
-      `#TSU` settle vs the clocked-NBA `dram_ma` update is the prime suspect).
-   b. Restructure the sequencer so `dram_ma = row` is unambiguously stable across
-      the RAS fall and only switches to the column a full settled step later —
-      mirror the PROVEN `hdl/sim/dram_unit_tb.v` ordering (`ma=raw_row; ras↓;
-      ma=col; we↓; cas↓`), which passes against `dram_64kx1`. Latching row/col
-      into explicit sequencer registers and driving the РУ5 from those (rather
-      than reusing one `dram_ma` for both phases) is the likely clean fix.
-   c. Validate byte-identical vs `cosim` on `ekta37_z80` at 64 → 6000 video
-      writes (the VHDL `juku_boot_top` standard), and confirm the BIOS RAM-test
-      reads return correct data (value path, not just writes).
-   d. Add `sim/vjuga_boot_check.sh` (build cosim ref, boot the Verilog twin,
-      `cmp` framebuffers) and wire it into `sim/check.sh` as a PASS gate.
-
-   Until (a)-(d) are green the VHDL `juku_boot_top` stays the byte-identical POC
-   reference and this twin is not in any passing check.
+   The bug found on the way (recorded for reference): a blanket
+   `dram_ras_n <= 1'b1` default plus a per-state override made iverilog emit a
+   spurious RAS transition that re-latched `dram_64kx1`'s row from the column.
+   Fixed by driving RAS/CAS/WE explicitly per sequencer state (one clean edge
+   each), mirroring the proven `hdl/sim/dram_unit_tb.v` drive ordering.
 2. **Fold in the real РЕ3 (D8) and РТ4 (D6) in the functional path (goal 3).**
    Route VJUGA's ROM-select / memory-map decode through `re3_prom` (D8 `.039`)
    and `decode_prom` (D6 `.038`) so booting exercises them.

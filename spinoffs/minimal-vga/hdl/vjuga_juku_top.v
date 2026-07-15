@@ -100,21 +100,32 @@ module vjuga_juku_top #(
             st <= S_IDLE; dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
             mode <= 2'b00; portc <= 8'h00;
         end else begin
-            dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
+            // Drive RAS/CAS/WE EXPLICITLY per state -- no blanket default. A default
+            // "<= 1" followed by a per-state "<= 0" made iverilog emit a spurious RAS
+            // transition that re-triggered dram_64kx1's row latch after dram_ma had
+            // switched to the column (row captured the column). Explicit per-state
+            // values give RAS/CAS one clean edge each. One signal changes per state,
+            // mirroring the proven hdl/sim/dram_unit_tb.v drive ordering.
             case (st)
-                S_IDLE: if (ram_access) begin
-                            acc_addr  <= A; acc_write <= ~wr_n; ram_wdata <= cpu_do;
-                            dram_ma   <= raw_row(A[15:8]);      // row (pre-scrambled)
-                            st <= S_ROW;
+                S_IDLE: begin
+                            dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
+                            if (ram_access) begin
+                                acc_addr  <= A; acc_write <= ~wr_n; ram_wdata <= cpu_do;
+                                dram_ma   <= raw_row(A[15:8]);   // present row (pre-scrambled)
+                                st <= S_ROW;
+                            end
                         end
-                S_ROW:  begin dram_ras_n <= 1'b0; st <= S_RAS; end
-                S_RAS:  begin dram_ras_n <= 1'b0; dram_ma <= acc_addr[7:0];  // column
-                              dram_we_n <= ~acc_write; st <= S_COL; end
+                S_ROW:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
+                              st <= S_RAS; end                    // RAS falls (row on bus, stable)
+                S_RAS:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b1; dram_we_n <= ~acc_write;
+                              dram_ma <= acc_addr[7:0];           // switch to column (row already latched)
+                              st <= S_COL; end
                 S_COL:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b0; dram_we_n <= ~acc_write;
-                              st <= S_CAS; end
+                              st <= S_CAS; end                    // CAS falls -> read/write strobe
                 S_CAS:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b0; dram_we_n <= ~acc_write;
                               ram_rdata <= rdo; st <= S_DONE; end
-                S_DONE: st <= S_IDLE;
+                S_DONE: begin dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
+                              st <= S_IDLE; end
             endcase
 
             // IO writes: latch + Port C bank control (once, on the WR strobe)
