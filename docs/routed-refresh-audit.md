@@ -8,6 +8,8 @@ name alone: added and moved footprints now intersect old copper corridors.
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py
+/usr/bin/python3 kicad/refresh_routed_from_source.py \
+  --check-report docs/routed-refresh-audit.md
 ```
 
 The script compares complete endpoint sets and exact pad coordinates per net.
@@ -20,9 +22,12 @@ It classifies copper as reusable only when both are identical between
 ```
 
 The temporary candidate is an audit artifact, not a fabrication deliverable.
+Pass `--report docs/routed-refresh-audit.md` after an intentional source or
+routed-snapshot change to regenerate the guarded current-result table.
 
 ## Current result
 
+<!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
 | Source footprints | 296 |
@@ -30,12 +35,12 @@ The temporary candidate is an audit artifact, not a fabrication deliverable.
 | Source-only footprints | 76 |
 | Routed-only footprints | 20 |
 | Routed copper nets classified by the refresh | 325 |
-| Nets with initially reusable routed copper | 167 |
-| Routed nets quarantined before DRC | 158 |
-| Initially reusable track/via items | 3,574 |
-| Initially quarantined/duplicate items | 5,091 |
-| Additional nets quarantined from candidate copper DRC | 13 |
-| Reusable items after DRC quarantine | 3,269 |
+| Nets with currently reusable routed copper | 115 |
+| Routed nets currently quarantined | 210 |
+| Reusable non-duplicate track/via items | 1,870 |
+| Quarantined/duplicate track/via items | 6,795 |
+| Common-pad net mismatches requiring reroute | 346 |
+<!-- routed-refresh-current:end -->
 
 The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly
 modeled FDC support/passive parts, and the photo-fitted serial and oscillator
@@ -319,7 +324,7 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 
 The zero-open artifact remains an internally clean routing checkpoint, not a
 claim of parity with every later source edit. A current comparison preserves
-all 2,383 pad identities but finds 35 changed pad-net assignments and 138 pads
+all 2,383 pad identities but finds 40 changed pad-net assignments and 138 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
 D5, D7, D8, D9, D37, D38, D50, D51, R13, and R14. `check_routed_candidate.py`
 therefore correctly rejects the checkpoint against current source instead of

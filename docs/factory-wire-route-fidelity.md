@@ -17,7 +17,7 @@ zero-open routing checkpoint.
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
 - Paired A-point landing terminals modeled: `0/20`
 - Candidate/source pad identities equal: `PASS`
-- Candidate/source pad-net mismatches: `35`
+- Candidate/source pad-net mismatches: `40`
 - Candidate/source moved pads (>50 nm): `138`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`

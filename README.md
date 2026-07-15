@@ -26,15 +26,15 @@ with the machine-readable board model.
   A 296-footprint replacement routing checkpoint is preserved separately with
   all 2,383 pad identities, zero internal unconnected items, and zero electrical
   DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 17 pad-net mismatches and 138 moved
+  Later source corrections leave it with 40 pad-net mismatches and 138 moved
   pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14, so it is convergence evidence rather than
   current-source copper. Its zero-open state also copper-substitutes ten
   documented factory insulated links;
   all twenty paired A-point landings remain absent from the PCB. All ten pairs
   (`А:7`–`А:14`, `А:19`, and `А:20`) are
-  registered in drawing-image space. Both `А:20`, both `А:19`, and the
-  D38-side `А:8`/`А:9` joints are also board-fitted and island-assigned;
-  the other fourteen terminals remain unset. The landing
+  registered in drawing-image space. Both A7/A8/A10/A11/A14/A19/A20
+  terminals plus the D38-side A9 and C96-side A12 joints are also board-fitted
+  and island-assigned; the other four PCB terminals remain unset. The landing
   geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
 - The main board is **not released for fabrication**. Validated physical D2

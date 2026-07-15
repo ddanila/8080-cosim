@@ -19,6 +19,8 @@ import pcbnew
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "kicad/juku.kicad_pcb"
 ROUTED = ROOT / "kicad/juku_routed.kicad_pcb"
+REPORT_START = "<!-- routed-refresh-current:start -->"
+REPORT_END = "<!-- routed-refresh-current:end -->"
 
 
 def pads(board: pcbnew.BOARD) -> dict[tuple[str, str], tuple[str, tuple[int, int]]]:
@@ -39,6 +41,42 @@ def copper_key(item: pcbnew.BOARD_ITEM) -> tuple[object, ...]:
     raise ValueError(f"unsupported copper item {item.GetClass()}")
 
 
+def current_result_table(stats: dict[str, int]) -> str:
+    rows = (
+        ("Source footprints", "source_footprints"),
+        ("Routed-snapshot footprints", "routed_footprints"),
+        ("Source-only footprints", "source_only_footprints"),
+        ("Routed-only footprints", "routed_only_footprints"),
+        ("Routed copper nets classified by the refresh", "routed_copper_nets"),
+        ("Nets with currently reusable routed copper", "compatible_routed_nets"),
+        ("Routed nets currently quarantined", "quarantined_routed_nets"),
+        ("Reusable non-duplicate track/via items", "copied_items"),
+        ("Quarantined/duplicate track/via items", "skipped_items"),
+        ("Common-pad net mismatches requiring reroute", "common_pad_mismatches"),
+    )
+    lines = [REPORT_START, "| Item | Count |", "| --- | ---: |"]
+    lines.extend(f"| {label} | {stats[key]:,} |" for label, key in rows)
+    lines.append(REPORT_END)
+    return "\n".join(lines)
+
+
+def update_report(path: Path, rendered: str, check: bool) -> None:
+    original = path.read_text()
+    pattern = re.compile(
+        rf"{re.escape(REPORT_START)}.*?{re.escape(REPORT_END)}", re.DOTALL
+    )
+    if not pattern.search(original):
+        raise SystemExit(f"{path}: missing routed-refresh report markers")
+    updated = pattern.sub(rendered, original, count=1)
+    if check:
+        if updated != original:
+            raise SystemExit(f"{path}: routed-refresh current-result table is stale")
+        print(f"{path}: routed-refresh current-result table is current")
+    elif updated != original:
+        path.write_text(updated)
+        print(f"updated {path}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=SOURCE)
@@ -49,6 +87,11 @@ def main() -> None:
                         help="list every quarantined net and mismatched endpoint")
     parser.add_argument("--exclude-drc", type=Path, action="append", default=[],
                         help="quarantine routed track/via nets implicated by copper errors in a KiCad DRC JSON")
+    report_group = parser.add_mutually_exclusive_group()
+    report_group.add_argument("--report", type=Path,
+                              help="update the marked current-result table in a Markdown report")
+    report_group.add_argument("--check-report", type=Path,
+                              help="fail if the marked current-result table is stale")
     args = parser.parse_args()
 
     source = pcbnew.LoadBoard(str(args.source))
@@ -84,6 +127,9 @@ def main() -> None:
     routed_copper_nets = {item.GetNetname() for item in routed.GetTracks()}
     quarantined_nets = routed_copper_nets - compatible_nets
 
+    source_refs = {footprint.GetReference() for footprint in source.GetFootprints()}
+    routed_refs = {footprint.GetReference() for footprint in routed.GetFootprints()}
+
     source_nets = {str(name) for name in source.GetNetsByName().keys()}
     existing = {copper_key(item) for item in source.GetTracks()}
     copied = Counter()
@@ -111,6 +157,18 @@ def main() -> None:
     if args.output:
         source.GetDesignSettings().m_CopperEdgeClearance = routed.GetDesignSettings().m_CopperEdgeClearance
         pcbnew.SaveBoard(str(args.output), source)
+    stats = {
+        "source_footprints": len(source_refs),
+        "routed_footprints": len(routed_refs),
+        "source_only_footprints": len(source_refs - routed_refs),
+        "routed_only_footprints": len(routed_refs - source_refs),
+        "routed_copper_nets": len(routed_copper_nets),
+        "compatible_routed_nets": len(compatible_nets & routed_copper_nets),
+        "quarantined_routed_nets": len(quarantined_nets),
+        "copied_items": sum(copied.values()),
+        "skipped_items": sum(skipped.values()),
+        "common_pad_mismatches": len(mismatches),
+    }
     print(f"routed refresh: copied {sum(copied.values())} copper items on {len(copied)} nets")
     print(f"  compatible routed nets: {len(compatible_nets & routed_copper_nets)}")
     print(f"  quarantined routed nets: {len(quarantined_nets)}")
@@ -125,6 +183,10 @@ def main() -> None:
         print(f"wrote audit candidate {args.output}; run DRC before adoption")
     else:
         print("read-only audit; no PCB written")
+    if args.report or args.check_report:
+        report_path = args.report or args.check_report
+        assert report_path is not None
+        update_report(report_path, current_result_table(stats), args.check_report is not None)
 
 
 if __name__ == "__main__":
