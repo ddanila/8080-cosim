@@ -58,6 +58,14 @@ attempts ([source](https://j3k.infoaed.ee/tarkvara-kataloog/), checked 2026-07-1
 zero-based blocks 6 and 7 in this concatenated image—the same two blocks
 that remain bad after the proven correction.
 
+The detailed warning first appears in upstream commit
+[`31c74684`](https://github.com/infoaed/juku3000/commit/31c74684a3e3f3b4c094a6881891e7f462a47406). An
+audit of that repository's complete path history and the current public
+JUKUROMS ZIP found only the final 16 KiB consensus image, not the original
+per-chip or per-read files. The highest-value recovery request is therefore
+the chip-7 reads and all seven chip-8 reads, including any reader logs or
+notes that identify which byte values diverged in each attempt.
+
 A checksum delta constrains only the sum of a 2 KiB block. It neither
 locates damaged bytes nor determines their values, particularly when the
 preservation source explicitly reports multiple unstable reads. Blocks 6

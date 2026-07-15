@@ -136,7 +136,10 @@
   },
   "provenance_note": {
     "url": "https://j3k.infoaed.ee/tarkvara-kataloog/",
+    "first_detailed_commit": "31c74684a3e3f3b4c094a6881891e7f462a47406",
+    "first_detailed_commit_url": "https://github.com/infoaed/juku3000/commit/31c74684a3e3f3b4c094a6881891e7f462a47406",
     "retrieved": "2026-07-15",
-    "summary": "The JUKUROMS catalog says chip 7 was read with a couple of errors and chip 8 had 50 divergences across seven reads."
+    "summary": "The JUKUROMS catalog says chip 7 was read with a couple of errors and chip 8 had 50 divergences across seven reads.",
+    "public_artifact_boundary": "The public ZIP and upstream Git history contain only the final 16 KiB image, not the per-chip or per-read captures."
   }
 }

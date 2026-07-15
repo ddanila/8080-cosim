@@ -39,6 +39,10 @@ CARTRIDGE_OFFSET = 0x1C34
 ORIGINAL = 0x9A
 REPLACEMENT = 0xDA
 CATALOG_URL = "https://j3k.infoaed.ee/tarkvara-kataloog/"
+CATALOG_PROVENANCE_COMMIT = "31c74684a3e3f3b4c094a6881891e7f462a47406"
+CATALOG_PROVENANCE_URL = (
+    "https://github.com/infoaed/juku3000/commit/" + CATALOG_PROVENANCE_COMMIT
+)
 
 
 def sha256(data: bytes) -> str:
@@ -252,8 +256,11 @@ def main() -> int:
         },
         "provenance_note": {
             "url": CATALOG_URL,
+            "first_detailed_commit": CATALOG_PROVENANCE_COMMIT,
+            "first_detailed_commit_url": CATALOG_PROVENANCE_URL,
             "retrieved": "2026-07-15",
             "summary": "The JUKUROMS catalog says chip 7 was read with a couple of errors and chip 8 had 50 divergences across seven reads.",
+            "public_artifact_boundary": "The public ZIP and upstream Git history contain only the final 16 KiB image, not the per-chip or per-read captures.",
         },
     }
     MANIFEST.parent.mkdir(parents=True, exist_ok=True)
@@ -326,6 +333,14 @@ def main() -> int:
             f"attempts ([source]({CATALOG_URL}), checked 2026-07-15). Those are",
             "zero-based blocks 6 and 7 in this concatenated image—the same two blocks",
             "that remain bad after the proven correction.",
+            "",
+            "The detailed warning first appears in upstream commit",
+            f"[`{CATALOG_PROVENANCE_COMMIT[:8]}`]({CATALOG_PROVENANCE_URL}). An",
+            "audit of that repository's complete path history and the current public",
+            "JUKUROMS ZIP found only the final 16 KiB consensus image, not the original",
+            "per-chip or per-read files. The highest-value recovery request is therefore",
+            "the chip-7 reads and all seven chip-8 reads, including any reader logs or",
+            "notes that identify which byte values diverged in each attempt.",
             "",
             "A checksum delta constrains only the sum of a 2 KiB block. It neither",
             "locates damaged bytes nor determines their values, particularly when the",

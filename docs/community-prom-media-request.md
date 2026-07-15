@@ -27,6 +27,11 @@ truth:
   remains a Monitor 3.3 compatibility boundary. Current probes show the body is
   copied, then the runtime bootstrap needs bytes beyond the public payload and
   simple tail/entry patches do not reach BASIC.
+- The public Monitor 2.2 image has damaged physical chips 7 and 8. The upstream
+  catalog records a couple of errors in chip 7 and 50 divergences across seven
+  chip-8 reads, but the public ZIP and Git history retain only the final
+  concatenated image. The original per-read captures could resolve the two
+  remaining bad ROM blocks without speculative byte repair.
 
 Relevant local docs:
 
@@ -34,6 +39,7 @@ Relevant local docs:
 - `docs/reconstructed-prom-fallbacks.md`
 - `docs/ekdos-media-acquisition.md`
 - `docs/cartridge-basic-boundary.md`
+- `docs/jmon22-reconstruction.md`
 - `ref/baltijets-tech-docs/README.md`
 - `docs/replica-dual-config-bom.md`
 
@@ -58,7 +64,13 @@ Relevant local docs:
    - `КР556РТ4А` D2, 256 nibbles stored as 256 bytes
    - `КР556РТ4А` D6, 256 nibbles stored as 256 bytes
    - D15/D16 2764/M2764 EPROM pair, 8192 bytes each
-5. Can an owner provide continuity readings, or clear trace-side photographs
+5. Can the custodians of the Monitor 2.2 recovery provide the original physical
+   chip-7 reads and all seven chip-8 reads, before consensus/concatenation? The
+   useful package includes the raw 2 KiB files, read order, programmer/reader
+   settings, and any log or note identifying the 50 divergent chip-8 bytes.
+   Upstream commit `31c74684` is the first detailed catalog record of those
+   unstable reads.
+6. Can an owner provide continuity readings, or clear trace-side photographs
    of an actual `.009` FDC-populated board, for the official footprints whose
    device pinouts are modeled but whose Juku signal nets remain untraced:
    D28, D95-D99, D101, D102, and D106? The FDC support cluster is the first
@@ -88,6 +100,8 @@ proms/m2764_d15_<board>.bin
 proms/m2764_d16_<board>.bin
 media/juku-1_dgsh5.106.105_<source>.juk
 roms/jbasic_cartridge_<source>.bin
+roms/jmon22_chip7_<source>_read<N>.bin
+roms/jmon22_chip8_<source>_read<N>.bin
 ```
 
 ## Ready-To-Send Message
@@ -152,6 +166,13 @@ final-page mirror, relocation-count, and direct body-entry patch hypotheses do
 not reach BASIC. I am also looking for any larger/different BASIC cartridge
 image, programming artifact, or hardware-confirmed launch procedure that reaches
 the documented BASIC banner / READY prompt.
+
+The public Monitor 2.2 image also retains checksum failures in its last two
+2 KiB chips. The catalog says chip 7 had a couple of read errors and chip 8 had
+50 divergences across seven reads, but only the final concatenated image is
+public. If the original per-read files or reader logs survive, please preserve
+and share those raw captures before any majority vote or byte repair; they are
+the strongest route to a non-speculative reconstruction.
 
 The dump procedure and exact requested outputs are documented here:
 
