@@ -261,6 +261,8 @@ def main() -> int:
             f"MDISKPAR expected {expected_mdiskpar}, got {mdiskpar}"
         )
     bios_vectors = [
+        ("BOOT", 0, "JMP BOOT"),
+        ("WBOOT / WARMSTART", 1, "WBOOTE: JMP WARMSTART"),
         ("CONST / CONSTAT", 2, "JMP CONSTAT"),
         ("CONIN", 3, "JMP CONIN"),
         ("CONOUT", 4, "JMP CONOUT"),

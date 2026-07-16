@@ -28,6 +28,9 @@ enum {
   RAM_DISK_WINDOW = 0x8000,
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
+  CCP_ENTRY = 0xB400,
+  BIOS_BOOT = 0xCA00,
+  BIOS_WBOOT = 0xCA03,
   BIOS_CONST = 0xCA06,
   BIOS_CONIN = 0xCA09,
   BIOS_CONOUT = 0xCA0C,
@@ -238,7 +241,7 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t exercised_vectors[] = {
-    BIOS_CONST, BIOS_CONIN, BIOS_CONOUT, BIOS_LIST,
+    BIOS_BOOT, BIOS_WBOOT, BIOS_CONST, BIOS_CONIN, BIOS_CONOUT, BIOS_LIST,
     BIOS_PUNCH, BIOS_READER, BIOS_HOME,
     BIOS_SELDSK, BIOS_SETTRK,
     BIOS_SETSEC, BIOS_SETDMA,
@@ -409,6 +412,73 @@ static int run_bios_conin(
 }
 
 
+static int run_bios_handoff(
+    const fixture* source, uint16_t entry, int resident_bdos,
+    unsigned long* total_cycles) {
+  fixture* f = malloc(sizeof(*f));
+  if (!f) {
+    fprintf(stderr, "EKDOS handoff: fixture allocation failed\n");
+    return 1;
+  }
+  memcpy(f, source, sizeof(*f));
+  f->vram_writes = 0;
+  f->fdc_commands = 0;
+  if (resident_bdos) f->ram[0xD7F8] = 0xB5;
+
+  i8080 cpu;
+  i8080_init(&cpu);
+  cpu.userdata = f;
+  cpu.read_byte = read_byte;
+  cpu.write_byte = write_byte;
+  cpu.port_in = port_in;
+  cpu.port_out = port_out;
+  cpu.pc = entry;
+  cpu.sp = 0xD6F8;
+  cpu.a = 0xA5;
+  cpu.c = 0xA5;
+  while (cpu.pc != CCP_ENTRY && cpu.cyc < 4000000UL && !cpu.halted) {
+    i8080_step(&cpu);
+  }
+  *total_cycles += cpu.cyc;
+
+  uint8_t expected_bdos_high = resident_bdos ? 0xB5 : 0xBC;
+  int failed = cpu.pc != CCP_ENTRY || cpu.c != 0 ||
+               f->ram[0] != 0xC3 || f->ram[1] != 0x03 ||
+               f->ram[2] != 0xCA || f->ram[5] != 0xC3 ||
+               f->ram[6] != 0x06 || f->ram[7] != expected_bdos_high ||
+               f->ram[0xD62E] != 0x80 || f->ram[0xD62F] != 0 ||
+               f->ram[0xD4BB] != 0 || f->ram[0xD61A] != 0 ||
+               f->ram[0xD623] != 0 || f->ram[0xD624] != 0 ||
+               f->ram[0xD625] != 0 || f->fdc_commands != 0;
+  if (entry == BIOS_BOOT) {
+    if (f->ram[0xD7F7] != 0x06 || f->ram[0xD7F8] != 0xBC ||
+        f->vram_writes != 10240 || f->monitor_trampoline_entries != 144 ||
+        memcmp(&f->ramdisk[0][0], RAMDISK_SIGNATURE,
+               sizeof(RAMDISK_SIGNATURE)) != 0) {
+      failed = 1;
+    }
+    for (unsigned directory = 1; directory < 64; directory++) {
+      if (f->ramdisk[0][directory * 32] != 0xE5) failed = 1;
+    }
+  } else if (f->vram_writes != 0 || f->monitor_trampoline_entries != 0) {
+    failed = 1;
+  }
+  if (failed) {
+    fprintf(stderr,
+            "EKDOS %s: pc=%04X c=%02X low=%02X:%02X%02X/%02X:%02X%02X "
+            "dma=%02X%02X cache=%02X/%02X/%02X drive=%02X "
+            "vram=%u fdc=%u cyc=%lu\n",
+            entry == BIOS_BOOT ? "BOOT" : "WBOOT", cpu.pc, cpu.c,
+            f->ram[0], f->ram[2], f->ram[1], f->ram[5], f->ram[7], f->ram[6],
+            f->ram[0xD62F], f->ram[0xD62E], f->ram[0xD623], f->ram[0xD624],
+            f->ram[0xD625], f->ram[0xD61A], f->vram_writes,
+            f->fdc_commands, cpu.cyc);
+  }
+  free(f);
+  return failed;
+}
+
+
 static int run_bios_seldsk(
     fixture* f, uint8_t drive, uint16_t* dph, unsigned long* total_cycles) {
   return run_bios_entry(f, BIOS_SELDSK, 0, drive, 0, NULL, dph,
@@ -507,6 +577,9 @@ int main(int argc, char** argv) {
   juku_fdc_init(&f.fdc, &disk);
   update_portc(&f, 0x05);  // motor on, drive A, side 0, high ROM overlay
   f.fdc.track = 8;
+  unsigned long bios_handoff_cycles = 0;
+  fail |= run_bios_handoff(&f, BIOS_BOOT, 0, &bios_handoff_cycles);
+  fail |= run_bios_handoff(&f, BIOS_WBOOT, 1, &bios_handoff_cycles);
 
   for (int i = 0; i < 128; i++) {
     f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
@@ -1047,6 +1120,7 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
+         "boot=ccp wboot=resident-ccp "
          "const=no-key conin=shift-T conout=glyph-C list=usart-L "
          "aux=punch+reader-unimplemented "
          "home=clean+dirty "
@@ -1058,7 +1132,8 @@ int main(int argc, char** argv) {
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + auxiliary_cycles + console_status_cycles +
+         bios_handoff_cycles + successful_cycles + auxiliary_cycles +
+         console_status_cycles +
          console_input_cycles + console_output_cycles +
          list_output_cycles + unallocated_cycles +
          home_cycles + list_status_cycles +

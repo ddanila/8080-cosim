@@ -37,6 +37,8 @@ labels and `TRANS` tables.
 | `CCP` | `0xB400` |
 | `BDOS` | `0xBC06` |
 | `BIOS` | `0xCA00` |
+| BIOS `BOOT` (index 0) | `0xCA00` |
+| BIOS `WBOOT / WARMSTART` (index 1) | `0xCA03` |
 | BIOS `CONST / CONSTAT` (index 2) | `0xCA06` |
 | BIOS `CONIN` (index 3) | `0xCA09` |
 | BIOS `CONOUT` (index 4) | `0xCA0C` |

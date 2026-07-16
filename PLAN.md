@@ -594,7 +594,15 @@ serve physical bring-up or historical fidelity:
    now exercised through its exact `FF5C->E9B3` ROM path: failed bank switching
    returns `0xFF` after restoring ordinary RAM, first use writes the guarded
    `RamDisk` signature and all 63 `0xE5` directory markers, and a signed drive
-   reopens without formatting. The RAM-drive data path is also exercised with
+   reopens without formatting. Public cold `BOOT=0xCA00` is now bounded at its
+   non-returning `CCP=0xB400` handoff: it installs exact low-memory WBOOT/BDOS
+   vectors, DMA `0x0080`, zero cache state and drive 0, formats a blank cloned
+   RAM disk, performs exactly 10,240 framebuffer writes through 144 monitor
+   trampolines, and issues no FDC command. Public `WBOOT=0xCA03` also reaches
+   CCP through its source-defined resident-BDOS branch, preserving a deliberate
+   nonstandard `0xB506` resident target without framebuffer or FDC activity;
+   its default `WRetry` disk-reload branch remains explicit and unclaimed.
+   The RAM-drive data path is also exercised with
    the disk-booted EKDOS BIOS rather than a synthetic selector assignment:
    public `HOME` at `0xCA18` always selects track zero, invalidates a clean
    host-sector cache, and preserves an explicitly dirty cache for its later

@@ -78,7 +78,19 @@ physical D93/D94 wiring.
   preserves BC, restores bank 6, and reopens a signed drive without formatting.
 - The fixture checkpoint now comes from the real disk-backed `TDD` boot at the
   EKDOS `A>` prompt boundary (`14,200,002` cycles), so the installed BIOS jump
-  table is present in RAM. Public `HOME` at `0xCA18` is executed with both
+  table is present in RAM. Public cold `BOOT=0xCA00` runs to its non-returning
+  `CCP=0xB400` handoff: it installs `JMP 0xCA03` and the exact `0xBC06` BDOS
+  vector at low memory, sets DMA `0x0080`, clears the three cache fields,
+  selects drive 0, formats a blank cloned RAM drive with its signature and 63
+  directory markers, performs exactly 10,240 framebuffer writes through 144
+  installed monitor-trampoline entries, and issues no FDC command.
+  Public `WBOOT=0xCA03` is separately executed through the source-defined
+  resident-BDOS branch by changing only the pointed high byte from `0xBC` to
+  nonzero `0xB5`; it reaches the same CCP handoff, preserves `0xB506` in the
+  low-memory BDOS vector, and performs no framebuffer or FDC work. The default
+  `WRetry` disk-reload branch remains a separate boundary rather than being
+  conflated with this resident warm start. Public `HOME` at `0xCA18` is
+  executed with both
   cache states: it always sets `SEKTRK=0`, clears `HSTACT` when `HSTWRT=0`,
   and preserves the active cache when `HSTWRT=1`, so dirty data is not lost.
   Public `LISTST` at `0xCA2D` starts with `A=0xA5` and executes source target
@@ -192,7 +204,7 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires archival evidence for all fifteen exercised
+- The source inspector requires archival evidence for all seventeen exercised
   BIOS vectors and derives their standard three-byte table addresses. It
   deliberately guards the damaged PUNCH spelling `DP RTNEMPTY` as preserved
   evidence; the adjacent READER line retains `JMP RTNEMPTY`.
