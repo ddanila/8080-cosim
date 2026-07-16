@@ -12,7 +12,7 @@
 
 enum {
   ROM_SIZE = 0x4000,
-  STOP_PC = 0xE6C2,
+  RETURN_PC = 0xB123,
   DMA_ADDR = 0x4000,
 };
 
@@ -22,6 +22,7 @@ typedef struct {
   uint8_t rom[ROM_SIZE];
   uint8_t out[256];
   uint8_t portc;
+  unsigned monitor_trampoline_entries;
   unsigned fdc_commands;
   uint8_t command_log[16];
   unsigned command_writes;
@@ -59,6 +60,7 @@ static int overlay(const fixture* f, uint16_t address, unsigned* index) {
 
 static uint8_t read_byte(void* opaque, uint16_t address) {
   fixture* f = opaque;
+  if (address == 0xD7E7) f->monitor_trampoline_entries++;
   unsigned index = 0;
   int source = overlay(f, address, &index);
   if (source == 1) return f->rom[index];
@@ -138,7 +140,24 @@ static int load_rom(uint8_t rom[ROM_SIZE]) {
 }
 
 
-int main(void) {
+static int load_boot_ram(uint8_t ram[65536], const char* path) {
+  static const uint8_t expected_trampoline[] = {
+    0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
+  };
+  FILE* fp = fopen(path, "rb");
+  if (!fp) return 1;
+  size_t got = fread(ram, 1, 65536, fp);
+  int failed = got != 65536 || fclose(fp) != 0 ||
+               memcmp(&ram[0xD7E7], expected_trampoline, sizeof(expected_trampoline)) != 0;
+  return failed;
+}
+
+
+int main(int argc, char** argv) {
+  if (argc != 2) {
+    fprintf(stderr, "usage: %s boot-initialized.ram\n", argv[0]);
+    return 2;
+  }
   char dir[] = "/tmp/rombios-fdc-write.XXXXXX";
   if (!mkdtemp(dir)) {
     perror("mkdtemp");
@@ -149,7 +168,7 @@ int main(void) {
 
   fixture f;
   memset(&f, 0, sizeof(f));
-  int fail = write_image(path) || load_rom(f.rom);
+  int fail = write_image(path) || load_rom(f.rom) || load_boot_ram(f.ram, argv[1]);
   juk_disk disk;
   if (!fail && juk_disk_open_writable(&disk, path) != 0) fail = 1;
   if (fail) {
@@ -164,10 +183,17 @@ int main(void) {
   f.fdc.track = 8;
 
   for (int i = 0; i < 768; i++) f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
-  f.fdc.sector = 3;
+  f.ram[0xD600] = 0;                 // drive-A disk type: select command 0xA2
+  f.ram[0xD601] = 0;                 // drive A
+  f.ram[0xD602] = 8;                 // requested logical track
+  f.ram[0xD604] = 3;                 // requested sector
   f.ram[0xD607] = DMA_ADDR & 0xFF;
   f.ram[0xD608] = DMA_ADDR >> 8;
   f.ram[0xD609] = 0xFF;              // must be cleared by successful handler
+  f.ram[0xD610] = 80;                // tracks per side for selected drive
+  f.ram[0xD611] = 0;                 // seek-rate bits
+  f.ram[0xD614] = 0;                 // currently selected drive
+  f.ram[0xD615] = 8;                 // remembered physical track for drive A
 
   i8080 cpu;
   i8080_init(&cpu);
@@ -176,18 +202,16 @@ int main(void) {
   cpu.write_byte = write_byte;
   cpu.port_in = port_in;
   cpu.port_out = port_out;
-  cpu.pc = 0xE69F;                    // authentic ROMBIOS write command/data loop
+  cpu.pc = 0xFF53;                    // public ROMBIOS FLOPPY entry -> E565
   cpu.sp = 0xBFFE;
-  cpu.b = 0x02;
-  cpu.c = 0xFE;                       // type-0 loop's authentic initial BC=0x02FE
-  cpu.d = 0x00;                       // command modifier
-  cpu.zf = 0;                         // type 0 selects command 0xA2
-  // Stop after ERRC is stored and before the monitor-service epilogue at E6C2.
-  while (cpu.pc != STOP_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  cpu.a = 0x12;                       // DKWR: write from DMA buffer
+  f.ram[cpu.sp] = RETURN_PC & 0xFF;
+  f.ram[cpu.sp + 1] = RETURN_PC >> 8;
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
 
   uint8_t sector[512];
-  if (cpu.pc != STOP_PC) {
-    fprintf(stderr, "ROMBIOS FDC write: loop did not finish (pc=%04X cyc=%lu)\n",
+  if (cpu.pc != RETURN_PC) {
+    fprintf(stderr, "ROMBIOS FDC write: handler did not return (pc=%04X cyc=%lu)\n",
             cpu.pc, cpu.cyc);
     fail = 1;
   }
@@ -208,6 +232,11 @@ int main(void) {
     fprintf(stderr, "ROMBIOS FDC write: accepted data writes=%u\n", f.data_writes);
     fail = 1;
   }
+  if (f.monitor_trampoline_entries < 2) {
+    fprintf(stderr, "ROMBIOS FDC write: monitor trampoline entries=%u\n",
+            f.monitor_trampoline_entries);
+    fail = 1;
+  }
   if (juk_disk_read_sector(&disk, 8, 0, 3, sector) != 0 ||
       memcmp(sector, &f.ram[DMA_ADDR], sizeof(sector)) != 0) {
     fprintf(stderr, "ROMBIOS FDC write: persisted sector mismatch\n");
@@ -221,7 +250,7 @@ int main(void) {
     fprintf(stderr, "ROMBIOS FDC write test: FAIL\n");
     return 1;
   }
-  printf("ROMBIOS FDC write test: PASS command=0x%02X data=512 cyc=%lu\n",
-         f.write_command, cpu.cyc);
+  printf("ROMBIOS FDC write test: PASS command=0x%02X data=512 trampoline=%u cyc=%lu\n",
+         f.write_command, f.monitor_trampoline_entries, cpu.cyc);
   return 0;
 }

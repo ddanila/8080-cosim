@@ -17,10 +17,11 @@ physical D93/D94 wiring.
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
   and cosim needs `JUKU_DISK_WRITABLE=1`, on a caller-provided copy.
-- The C guard executes the exact `ekta37` ROM bytes at `0xE69F..0xE6C1` on
-  the 8080 core, observes command `0xA2` plus 512 accepted data writes, checks
-  the ROM-written zero `ERRC`, and verifies persisted sector readback. It stops
-  before the separate monitor-service epilogue at `0xE6C2`.
+- The C guard first boots exact `ekta37` far enough to install its monitor RAM
+  services, then enters the public ROMBIOS `FLOPPY` vector at `0xFF53`. The
+  complete handler observes command `0xA2` plus 512 accepted data writes,
+  traverses the boot-installed `0xD7E7` monitor trampoline and epilogue, returns
+  to its caller with zero `ERRC`, and verifies persisted sector readback.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
@@ -40,8 +41,9 @@ physical D93/D94 wiring.
   selects WD1793 command `0xA0` or `0xA2` at `0xE69F/0xE6A4`, writes the
   command to port `0x1C` at `0xE6AB`, and loops 512 bytes from memory to the
   data register at port `0x1F` from `0xE6AF`.
-- `tests/rombios_fdc_write_test.c` executes that command/data loop directly
-  from the vendored ROM instead of duplicating it as test-side port writes.
+- `tests/rombios_fdc_write_test.c` executes the complete public handler from
+  the vendored ROM in an authentic boot-initialized RAM environment instead of
+  duplicating it as test-side port writes or patching the ROM epilogue.
 - The implementation intentionally stops at that firmware-proved single-sector
   contract; it does not claim general WD1793 write-track or timing conformance.
 
