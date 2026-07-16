@@ -27,6 +27,11 @@ physical D93/D94 wiring.
   the boot-installed `0xD7E7` monitor services and return with zero `ERRC`;
   persisted readback proves all three modified 128-byte records and the one
   untouched original record byte-for-byte.
+- A second writable phase passes CP/M write type `C=2` for logical record 17,
+  then writes records 18 through 20 sequentially. Exact ROM code seeds
+  `UNACNT=32`, advances it to 28, and builds the complete 512-byte cache without
+  any FDC preread. Crossing to record 21 produces only `0xA2,0x80`; physical
+  sector 5 matches all four independent DMA patterns byte-for-byte.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
@@ -77,6 +82,11 @@ physical D93/D94 wiring.
   records plus the untouched original third record. This exercises the full
   four-way deblocking layout, cold read-before-write, and coalescing while
   distinguishing them from direct 512-byte model-side sector injection.
+- The unallocated-write branch at ROM `0xE83E` copies CP/M write type `C`, and
+  `C=2` seeds the 32-record sequence at `0xE84F`. Matching drive/track/sector
+  progression clears the preread flag at `0xE89E`; after four writes the guard
+  requires `UNACNT=28`, `HSTWRT=1`, and zero FDC commands. The host-sector
+  transition then flushes once and reads the next sector, giving `0xA2,0x80`.
 - In the read-only phase, the exact command sequence is initial preread `0x80`,
   ten rejected `0xA2` retries from EKDOS `VIARV=10`, then the requested next-
   sector read `0x80`. The controller returns WRITE PROTECT throughout the retry

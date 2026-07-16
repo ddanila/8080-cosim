@@ -15,7 +15,8 @@ enum {
   RETURN_PC = 0xB123,
   DMA_ADDR = 0x4000,
   SECOND_DMA_ADDR = 0x4100,
-  FOURTH_RECORD_DMA_ADDR = 0x4200,
+  THIRD_DMA_ADDR = 0x4200,
+  FOURTH_DMA_ADDR = 0x4300,
   SCRATCH_ADDR = 0x5000,
   CACHE_READ_ADDR = 0x5100,
   SECOND_CACHE_READ_ADDR = 0x5200,
@@ -165,9 +166,9 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
 }
 
 
-static int run_rwfloppy(
-    fixture* f, uint8_t request, uint8_t logical_sector, uint16_t dma,
-    unsigned long* total_cycles) {
+static int run_rwfloppy_type(
+    fixture* f, uint8_t request, uint8_t write_type, uint8_t logical_sector,
+    uint16_t dma, unsigned long* total_cycles) {
   f->ram[0xD61D] = logical_sector;
   f->ram[0xD62E] = dma & 0xFF;
   f->ram[0xD62F] = dma >> 8;
@@ -182,6 +183,7 @@ static int run_rwfloppy(
   cpu.pc = 0xFF59;                    // public ROMBIOS RWFLOPPY entry -> E80B
   cpu.sp = 0xBFFE;
   cpu.a = request;
+  cpu.c = write_type;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
   while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
@@ -192,6 +194,13 @@ static int run_rwfloppy(
           "(pc=%04X cyc=%lu TYP=%02X current=%02X)\n",
           request, logical_sector, cpu.pc, cpu.cyc, f->ram[0xD600], f->ram[0xD614]);
   return 1;
+}
+
+
+static int run_rwfloppy(
+    fixture* f, uint8_t request, uint8_t logical_sector, uint16_t dma,
+    unsigned long* total_cycles) {
+  return run_rwfloppy_type(f, request, 0, logical_sector, dma, total_cycles);
 }
 
 
@@ -237,7 +246,7 @@ int main(int argc, char** argv) {
   for (int i = 0; i < 128; i++) {
     f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
     f.ram[SECOND_DMA_ADDR + i] = (uint8_t)(0x3C + i);
-    f.ram[FOURTH_RECORD_DMA_ADDR + i] = (uint8_t)(0xD5 ^ (i * 3));
+    f.ram[THIRD_DMA_ADDR + i] = (uint8_t)(0xD5 ^ (i * 3));
   }
   f.ram[0xD600] = 0;                 // drive-A disk type: select command 0xA2
   f.ram[0xD601] = 0;                 // drive A
@@ -261,7 +270,7 @@ int main(int argc, char** argv) {
                        &total_cycles); // cold partial write prereads host sector 3
   fail |= run_rwfloppy(&f, 0x12, 10, SECOND_DMA_ADDR,
                        &total_cycles); // coalesce second record
-  fail |= run_rwfloppy(&f, 0x12, 12, FOURTH_RECORD_DMA_ADDR,
+  fail |= run_rwfloppy(&f, 0x12, 12, THIRD_DMA_ADDR,
                        &total_cycles); // coalesce fourth record
   memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
   memset(&f.ram[SECOND_CACHE_READ_ADDR], 0x5A, 128);
@@ -294,7 +303,7 @@ int main(int argc, char** argv) {
     fail = 1;
   }
   if (memcmp(&f.ram[FOURTH_CACHE_READ_ADDR],
-             &f.ram[FOURTH_RECORD_DMA_ADDR], 128) != 0) {
+             &f.ram[THIRD_DMA_ADDR], 128) != 0) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: fourth cache-hit record mismatch\n");
     fail = 1;
   }
@@ -340,7 +349,7 @@ int main(int argc, char** argv) {
   memcpy(expected, baseline, sizeof(expected));
   memcpy(expected, &f.ram[DMA_ADDR], 128);
   memcpy(expected + 128, &f.ram[SECOND_DMA_ADDR], 128);
-  memcpy(expected + 384, &f.ram[FOURTH_RECORD_DMA_ADDR], 128);
+  memcpy(expected + 384, &f.ram[THIRD_DMA_ADDR], 128);
   if (juk_disk_read_sector(&disk, 8, 0, 3, sector) != 0 ||
       memcmp(sector, expected, sizeof(sector)) != 0) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: persisted sector mismatch\n");
@@ -350,7 +359,53 @@ int main(int argc, char** argv) {
   uint8_t successful_write_command = f.write_command;
   unsigned successful_trampolines = f.monitor_trampoline_entries;
   unsigned long successful_cycles = total_cycles;
+  unsigned long unallocated_cycles = 0;
   unsigned long protect_cycles = 0;
+
+  f.fdc_commands = 0;
+  memset(f.command_log, 0, sizeof(f.command_log));
+  f.command_writes = 0;
+  f.data_writes = 0;
+  f.write_command = 0;
+  memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E);
+  f.ram[0xD62A] = 10;
+  f.ram[0xD609] = 0xFF;
+  for (int i = 0; i < 128; i++) {
+    f.ram[DMA_ADDR + i] = (uint8_t)(0x11 + i);
+    f.ram[SECOND_DMA_ADDR + i] = (uint8_t)(0x72 ^ i);
+    f.ram[THIRD_DMA_ADDR + i] = (uint8_t)(0xC4 + i * 3);
+    f.ram[FOURTH_DMA_ADDR + i] = (uint8_t)(0xE9 ^ (i * 5));
+  }
+  fail |= run_rwfloppy_type(&f, 0x12, 2, 17, DMA_ADDR, &unallocated_cycles);
+  fail |= run_rwfloppy(&f, 0x12, 18, SECOND_DMA_ADDR, &unallocated_cycles);
+  fail |= run_rwfloppy(&f, 0x12, 19, THIRD_DMA_ADDR, &unallocated_cycles);
+  fail |= run_rwfloppy(&f, 0x12, 20, FOURTH_DMA_ADDR, &unallocated_cycles);
+  if (f.fdc_commands != 0 || f.ram[0xD625] != 28 || f.ram[0xD624] != 1) {
+    fprintf(stderr,
+            "ROMBIOS RWFLOPPY: unallocated cache commands=%u UNACNT=%u HSTWRT=%u\n",
+            f.fdc_commands, f.ram[0xD625], f.ram[0xD624]);
+    fail = 1;
+  }
+  fail |= run_rwfloppy(&f, 0x11, 21, SCRATCH_ADDR, &unallocated_cycles);
+  if (f.fdc_commands != 2 || f.command_log[0] != 0xA2 ||
+      f.command_log[1] != 0x80 || f.command_writes != 1 ||
+      f.data_writes != 512 || f.ram[0xD609] != 0) {
+    fprintf(stderr,
+            "ROMBIOS RWFLOPPY: unallocated flush commands=%u writes=%u data=%u ERRC=%02X\n",
+            f.fdc_commands, f.command_writes, f.data_writes, f.ram[0xD609]);
+    fail = 1;
+  }
+  uint8_t unallocated_expected[512];
+  memcpy(unallocated_expected, &f.ram[DMA_ADDR], 128);
+  memcpy(unallocated_expected + 128, &f.ram[SECOND_DMA_ADDR], 128);
+  memcpy(unallocated_expected + 256, &f.ram[THIRD_DMA_ADDR], 128);
+  memcpy(unallocated_expected + 384, &f.ram[FOURTH_DMA_ADDR], 128);
+  if (juk_disk_read_sector(&disk, 8, 0, 5, sector) != 0 ||
+      memcmp(sector, unallocated_expected, sizeof(sector)) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: unallocated sector mismatch\n");
+    fail = 1;
+  }
+
   juk_disk_close(&disk);
   if (juk_disk_open(&disk, path) != 0) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: read-only reopen failed\n");
@@ -419,10 +474,11 @@ int main(int argc, char** argv) {
   }
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
+         "unallocated=4 no-preread=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + protect_cycles);
+         successful_cycles + unallocated_cycles + protect_cycles);
   return 0;
 }

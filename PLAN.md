@@ -588,7 +588,10 @@ serve physical bring-up or historical fidelity:
    epilogues return with zero `ERRC`, and a disposable writable image preserves
    all three modified records plus the untouched original record; repository
    media remains read-only unless the caller explicitly opts into a writable
-   copy. A complementary read-only reopen proves the ROM consumes the EKDOS
+   copy. A second phase passes CP/M unallocated-write type `C=2`, fills all four
+   records while `UNACNT` counts from 32 to 28 without a preread, and proves the
+   optimized physical sequence `0xA2,0x80`. A complementary read-only reopen
+   proves the ROM consumes the EKDOS
    `VIARV=10` retry count, observes WRITE PROTECT without accepting data or
    changing media, then masks the failed dirty flush when its subsequent read
    clears `ERRC`; this exact historical error-propagation boundary is guarded.
