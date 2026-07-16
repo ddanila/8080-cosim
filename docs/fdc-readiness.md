@@ -29,6 +29,12 @@ physical D93/D94 wiring.
   untouched original record byte-for-byte.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
+- The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
+  a cold cache, and crosses host sectors. Exact ROM code consumes `RCOUNT=10`,
+  observes WRITE PROTECT on ten rejected `0xA2` attempts, accepts zero data
+  bytes, and leaves the image unchanged. It then issues the new-sector `0x80`
+  read and returns `ERRC=0`; the successful read masks the failed dirty flush.
+  This is a guarded historical firmware boundary, not claimed error safety.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
 - The committed uninterrupted Verilator report
@@ -71,6 +77,12 @@ physical D93/D94 wiring.
   records plus the untouched original third record. This exercises the full
   four-way deblocking layout, cold read-before-write, and coalescing while
   distinguishing them from direct 512-byte model-side sector injection.
+- In the read-only phase, the exact command sequence is initial preread `0x80`,
+  ten rejected `0xA2` retries from EKDOS `VIARV=10`, then the requested next-
+  sector read `0x80`. The controller returns WRITE PROTECT throughout the retry
+  loop and accepts no payload bytes. The wrapper nevertheless returns zero
+  `ERRC` because the final successful read replaces the flush error; byte-for-
+  byte media comparison proves that this masking does not imply a write.
 
 ## Commands
 

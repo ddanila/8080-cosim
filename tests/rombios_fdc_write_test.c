@@ -34,6 +34,7 @@ typedef struct {
   uint8_t command_log[16];
   unsigned command_writes;
   unsigned data_writes;
+  unsigned write_protect_status_reads;
   uint8_t write_command;
   juku_fdc fdc;
 } fixture;
@@ -85,7 +86,11 @@ static void write_byte(void* opaque, uint16_t address, uint8_t value) {
 
 static uint8_t port_in(void* opaque, uint8_t port) {
   fixture* f = opaque;
-  if (port >= 0x1C && port <= 0x1F) return juku_fdc_read(&f->fdc, port & 3);
+  if (port >= 0x1C && port <= 0x1F) {
+    uint8_t value = juku_fdc_read(&f->fdc, port & 3);
+    if (port == 0x1C && (value & 0x40)) f->write_protect_status_reads++;
+    return value;
+  }
   return f->out[port];
 }
 
@@ -250,6 +255,7 @@ int main(int argc, char** argv) {
   f.ram[0xD61B] = 8;                 // EKDOS logical track low
   f.ram[0xD61C] = 0;                 // EKDOS logical track high
   memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E); // cold EKDOS cache state
+  f.ram[0xD62A] = 10;                // EKDOS VIARV retry count
   unsigned long total_cycles = 0;
   fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR,
                        &total_cycles); // cold partial write prereads host sector 3
@@ -341,7 +347,70 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
+  uint8_t successful_write_command = f.write_command;
+  unsigned successful_trampolines = f.monitor_trampoline_entries;
+  unsigned long successful_cycles = total_cycles;
+  unsigned long protect_cycles = 0;
   juk_disk_close(&disk);
+  if (juk_disk_open(&disk, path) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: read-only reopen failed\n");
+    fail = 1;
+  } else {
+    f.monitor_trampoline_entries = 0;
+    f.fdc_commands = 0;
+    memset(f.command_log, 0, sizeof(f.command_log));
+    f.command_writes = 0;
+    f.data_writes = 0;
+    f.write_protect_status_reads = 0;
+    f.write_command = 0;
+    memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E);
+    f.ram[0xD62A] = 10;
+    f.ram[0xD609] = 0xFF;
+    for (int i = 0; i < 128; i++) {
+      f.ram[DMA_ADDR + i] = (uint8_t)(0x5E ^ (i * 7));
+    }
+    juku_fdc_init(&f.fdc, &disk);
+    update_portc(&f, 0x05);
+    f.fdc.track = 8;
+
+    fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &protect_cycles);
+    fail |= run_rwfloppy(&f, 0x11, 13, SCRATCH_ADDR, &protect_cycles);
+    if (f.ram[0xD609] != 0) {
+      fprintf(stderr, "ROMBIOS RWFLOPPY: final read did not mask ERRC=0x%02X\n",
+              f.ram[0xD609]);
+      fail = 1;
+    }
+    int commands_ok = f.fdc_commands == 12 && f.command_log[0] == 0x80 &&
+                      f.command_log[11] == 0x80;
+    for (unsigned i = 1; commands_ok && i < 11; i++) {
+      if (f.command_log[i] != 0xA2) commands_ok = 0;
+    }
+    if (!commands_ok) {
+      fprintf(stderr, "ROMBIOS RWFLOPPY: write-protect command sequence");
+      for (unsigned i = 0; i < f.fdc_commands; i++) {
+        fprintf(stderr, " %02X", f.command_log[i]);
+      }
+      fputc('\n', stderr);
+      fail = 1;
+    }
+    if (f.command_writes != 10 || f.data_writes != 0) {
+      fprintf(stderr,
+              "ROMBIOS RWFLOPPY: protected write commands=%u accepted-bytes=%u\n",
+              f.command_writes, f.data_writes);
+      fail = 1;
+    }
+    if (f.write_protect_status_reads < 10) {
+      fprintf(stderr, "ROMBIOS RWFLOPPY: too few WRITE PROTECT status reads=%u\n",
+              f.write_protect_status_reads);
+      fail = 1;
+    }
+    if (juk_disk_read_sector(&disk, 8, 0, 3, sector) != 0 ||
+        memcmp(sector, expected, sizeof(sector)) != 0) {
+      fprintf(stderr, "ROMBIOS RWFLOPPY: read-only media changed\n");
+      fail = 1;
+    }
+    juk_disk_close(&disk);
+  }
   unlink(path);
   rmdir(dir);
   if (fail) {
@@ -350,7 +419,10 @@ int main(int argc, char** argv) {
   }
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
+         "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
-         f.write_command, f.monitor_trampoline_entries, total_cycles);
+         successful_write_command, f.write_protect_status_reads,
+         successful_trampolines,
+         successful_cycles + protect_cycles);
   return 0;
 }

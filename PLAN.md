@@ -588,7 +588,10 @@ serve physical bring-up or historical fidelity:
    epilogues return with zero `ERRC`, and a disposable writable image preserves
    all three modified records plus the untouched original record; repository
    media remains read-only unless the caller explicitly opts into a writable
-   copy.
+   copy. A complementary read-only reopen proves the ROM consumes the EKDOS
+   `VIARV=10` retry count, observes WRITE PROTECT without accepting data or
+   changing media, then masks the failed dirty flush when its subsequent read
+   clears `ERRC`; this exact historical error-propagation boundary is guarded.
 3. Revisit cartridge BASIC only when a complete artifact or documented loading
    procedure appears; do not invent missing pages. The 2026-07-15 generated
    firmware-lineage audit proves that 7,224 bytes of the cartridge body are

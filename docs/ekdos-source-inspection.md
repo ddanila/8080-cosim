@@ -27,6 +27,7 @@ labels and `TRANS` tables.
 | `RAMDISKSEL` | `0xFF5C` | RAM-drive select entry |
 | `DKRD` | `0x11` | EKDOS read-sector request code |
 | `DKWR` | `0x12` | EKDOS write-sector request code |
+| `VIARV` | `10` | retries loaded into `RCOUNT` for disk I/O |
 
 ## Floppy Parameter Block
 
