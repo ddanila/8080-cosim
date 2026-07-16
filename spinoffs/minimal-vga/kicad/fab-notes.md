@@ -74,6 +74,17 @@ git submodule update --init external/freerouting
 cd external/freerouting && ./gradlew --no-daemon executableJar
 ```
 
+With the USB-C connector (J3) rotated to the board edge, freerouting cannot tie
+its shield tabs to the ground contacts through the inset GND plane, so route
+with the GND shield seed:
+
+```sh
+SEED_ROUTES=1 SEED_NETS=GND spinoffs/minimal-vga/kicad/route_rev_a_pcb.sh
+```
+
+The seed (`seed_rev_a_routes.py`, `GND`) adds two short F.Cu jumpers from J3's
+SMD ground contacts to its adjacent shell tabs; everything else routes normally.
+
 Gradle's toolchain support auto-provisions a Temurin JDK 25 into
 `~/.gradle/jdks/` on the first build (no system Java install needed), and the
 route script probes that home-folder JDK automatically — both the Linux layout

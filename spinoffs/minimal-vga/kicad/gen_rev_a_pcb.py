@@ -198,7 +198,8 @@ FP_BY_REF = {
 
 PLACE = {
     "J1": (22, 25.6, 90),
-    "J3": (9, 100, 0),       # USB-C power at the left board edge
+    "J3": (5, 100, 270),     # USB-C rotated 90deg CW, mouth at the left board
+                             # edge (fully on-board) so a cable plugs from outside
     "U1": (68, 45, 0),       # clear of the POWER block (right edge x56)
     "U2": (100, 45, 0),
     "U5": (210, 45, 0),
@@ -376,6 +377,13 @@ def place_silk_fields(fp, chip, x, y, rot):
         if ref == "J1":
             fp.Value().SetVisible(False)
             style_field(fp.Reference(), ref, cx, top - 0.9, 0, size=1.15)
+            return
+
+        if ref == "J3":
+            # Edge connector: keep both labels inboard (to the right of the body),
+            # clear of the board edge on its left.
+            style_field(fp.Reference(), ref, right + 5.5, cy - 2.2, 0, size=0.85)
+            style_field(fp.Value(), value, right + 5.5, cy + 2.2, 0, size=0.85)
             return
 
         # Tall 1xN observability headers (J95/J97/J98): the descriptive value runs

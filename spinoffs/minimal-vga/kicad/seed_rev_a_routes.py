@@ -17,13 +17,15 @@ LAYER_BY_NAME = {
 }
 
 SEED_ROUTES = {
-    # Tie the two USB-C SMD ground contacts to the adjacent plated shell tabs;
-    # the four modeled S1 tabs then connect directly to the In1.Cu GND plane.
+    # Tie the two USB-C SMD ground contacts (A12/B12) to the adjacent plated
+    # shell tabs; the shell tabs then connect to the In1.Cu GND plane. J3 is
+    # rotated 90 deg CW at the left board edge, so these follow its pads:
+    # A12=(7.89,102.75) B12=(7.89,97.25) shell tabs at x=7.71 (y 95.68/104.32).
     "GND": {
         "vias": [],
         "tracks": [
-            ("F.Cu", 21.25, 97.11, 19.68, 97.29),
-            ("F.Cu", 26.75, 97.11, 28.32, 97.29),
+            ("F.Cu", 7.89, 102.75, 7.71, 104.32),
+            ("F.Cu", 7.89, 97.25, 7.71, 95.68),
         ],
     },
     # The dense keyboard block's first column repeatedly became the final

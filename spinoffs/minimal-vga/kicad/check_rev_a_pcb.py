@@ -50,6 +50,8 @@ EXPECTED_SILK_VALUES = {
     "U24": "GAL22V10",
     "U30": "82C55",
 }
+# J3 is the board-edge USB-C connector; its labels are placed inboard (to the
+# right of the body) so they clear the board edge, not below the footprint.
 EXPECTED_DOWNSTAIRS_VALUE_REFS = {
     "C50",
     "D1",
@@ -59,7 +61,6 @@ EXPECTED_DOWNSTAIRS_VALUE_REFS = {
     "D5",
     "D6",
     "D7",
-    "J3",
     "J30",
     "J40",
     "J90",
