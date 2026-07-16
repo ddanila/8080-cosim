@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from pathlib import Path
 
@@ -21,6 +22,7 @@ if document.get("schema_version") != 1:
     raise SystemExit("FDC UPPER ASSEMBLY PLACEMENT: unsupported registration schema")
 anchors = {item["refdes"]: item for item in document["anchors"]}
 pullups = document.get("d94_pullups", [])
+value_evidence = document.get("d94_pullup_value_evidence", {})
 
 expected_pullups = {
     "R87": ("D94_A3_D104_X4_PULLUP", [["D94", "13"], ["D104", "7"]]),
@@ -33,6 +35,12 @@ for item in pullups:
     signal, nodes = expected_pullups[item["refdes"]]
     if item.get("signal") != signal or item.get("signal_nodes") != nodes:
         raise SystemExit(f"FDC UPPER ASSEMBLY PLACEMENT: bad {item['refdes']} electrical mapping")
+if value_evidence.get("value") != "6,2к" or value_evidence.get("resistance_ohms") != 6200:
+    raise SystemExit("FDC UPPER ASSEMBLY PLACEMENT: bad D94 pull-up value evidence")
+for source in [value_evidence.get("factory_bom", {}), *value_evidence.get("owner_photos", [])]:
+    path = ROOT / source.get("source", "")
+    if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != source.get("sha256"):
+        raise SystemExit(f"FDC UPPER ASSEMBLY PLACEMENT: source hash mismatch for {path}")
 
 
 def interpolate(left: dict, right: dict, drawing_x: float) -> tuple[float, float, float]:
@@ -74,6 +82,7 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "source": RECORD.relative_to(ROOT).as_posix(),
                                   "held_out": {"refdes": "D100", "error_mm": round(check_error, 3)},
                                   "targets": targets,
+                                  "d94_pullup_value_evidence": value_evidence,
                                   "d94_pullups": pullups}, indent=2) + "\n")
 lines = ["# FDC upper assembly placement", "",
          "Status: **FACTORY PLACEMENT EVIDENCE / D94 PULL-UPS IDENTIFIED**", "",
@@ -99,14 +108,19 @@ lines += ["", "Neither owner-photo site exposes a complete electrical path: C12 
           "as R87, R88, and R89 from left to right. The owner component photograph preserves",
           "that order. Its reflected solder mate exposes three non-crossing signal traces and",
           "the common tinned +5 V rail, closing the resistor identities without inferring a",
-          "hidden D94.1 consumer.", "",
-          "| Ref | Signal side | Proved nodes | Component signal px | Solder signal px |",
-          "| --- | --- | --- | ---: | ---: |"]
+          "hidden D94.1 consumer. A second, alternate-angle owner photo reads `6К2` on",
+          "R87 and R88. R89 is partly socket-obscured but visually identical; the factory",
+          "equipment list also assigns exactly three МЛТ-0,125 6.2 kΩ ±5% resistors",
+          "to `ДГШ5.087.009`. Because that designation differs from the target",
+          "`ДГШ5.109.009`, it is corroboration only; the photo-readable pair and identical",
+          "third body are the target-board value evidence.", "",
+          "| Ref | Value | Signal side | Proved nodes | Component signal px | Solder signal px |",
+          "| --- | ---: | --- | --- | ---: | ---: |"]
 for item in pullups:
     nodes = ", ".join(f"{ref}.{pin}" for ref, pin in item["signal_nodes"])
     component = ", ".join(f"{value:.1f}" for value in item["component_signal_px"])
     solder = ", ".join(f"{value:.1f}" for value in item["solder_signal_px"])
-    lines.append(f"| {item['refdes']} | `{item['signal']}` | {nodes} | {component} | {solder} |")
+    lines.append(f"| {item['refdes']} | 6.2 kΩ | `{item['signal']}` | {nodes} | {component} | {solder} |")
 lines += ["", "All three opposite resistor pads enter the same visibly tinned +5 V rail.",
           "R89 identifies the pull-up on D94.1, but the absence of an additional hidden",
           "branch remains a continuity/operating-capture boundary."]

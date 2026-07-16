@@ -137,9 +137,9 @@ def main() -> int:
             "D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py`",
         ),
         (
-            "D94 pull-up identities and endpoints are source-modeled",
+            "D94 pull-up identities, values, and endpoints are source-modeled",
             d94_pullups.returncode == 0,
-            "factory R87/R88/R89 labels plus registered component/solder copper; `kicad/check_d94_pullups.py`",
+            "factory R87/R88/R89 labels/BOM plus registered component/solder/value photos; `kicad/check_d94_pullups.py`",
         ),
         (
             "X1.107B/-BLOCK/H and R1 are source-modeled",

@@ -5182,27 +5182,27 @@
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY output series resistor; assembly drawing beside D30", "pins": "D30.5 to D1.23 READY"}
   },
   {
-   "ref": "R87", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "ref": "R87", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "6,2к",
    "prov": {
-    "type": ".009 assembly drawing + registered component/solder photos",
+    "type": ".009 assembly drawing + registered component/solder/value photos + factory BOM",
     "refdes": "leftmost of the R87/R88/R89 vertical row immediately left of D94",
-    "pins": "reflected solder copper joins pin 1 to D94.13/D104.7 and pin 2 to the common +5 V rail; marking/value remains unread"
+    "pins": "reflected solder copper joins pin 1 to D94.13/D104.7 and pin 2 to the common +5 V rail; alternate owner photo reads 6K2; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
    }
   },
   {
-   "ref": "R88", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "ref": "R88", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "6,2к",
    "prov": {
-    "type": ".009 assembly drawing + registered component/solder photos",
+    "type": ".009 assembly drawing + registered component/solder/value photos + factory BOM",
     "refdes": "middle of the R87/R88/R89 vertical row immediately left of D94",
-    "pins": "reflected solder copper joins pin 1 to D94.14/D101.7 and pin 2 to the common +5 V rail; marking/value remains unread"
+    "pins": "reflected solder copper joins pin 1 to D94.14/D101.7 and pin 2 to the common +5 V rail; alternate owner photo reads 6K2; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only"
    }
   },
   {
-   "ref": "R89", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "ref": "R89", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "6,2к",
    "prov": {
-    "type": ".009 assembly drawing + registered component/solder photos",
+    "type": ".009 assembly drawing + registered component/solder/value photos + factory BOM",
     "refdes": "rightmost of the R87/R88/R89 vertical row immediately adjacent to D94",
-    "pins": "reflected solder copper joins pin 1 to D94.1 and pin 2 to the common +5 V rail; no additional D94.1 branch is promoted and marking/value remains unread"
+    "pins": "reflected solder copper joins pin 1 to D94.1 and pin 2 to the common +5 V rail; body matches the photo-readable R87/R88 parts; the equipment list's separately designated DGSh5.087.009 group of exactly three MLT-0.125 6.2 kohm +/-5% parts is corroborative only; no additional D94.1 branch is promoted"
    }
   },
   {

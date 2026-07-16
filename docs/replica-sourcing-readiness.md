@@ -12,7 +12,7 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 94
+- BOM lines: 95
 - Populate-now component positions: 283
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
@@ -23,11 +23,11 @@ review before being treated as build-ready.
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 7 | 66 |
+| circuit-review | 7 | 63 |
 | leave-empty | 2 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 68 | 194 |
+| source-now | 69 | 197 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -74,7 +74,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_KM | КМ ceramic capacitor | 13 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C20, C22, C34, C99 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | D_DIODE | Soviet diode/zener per value | 2 | VD3, VD4 | modern diode/zener matching value and power |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | 2 | VT1, VT2 | modern transistor selected per exact circuit role |
-| circuit-review | R_AXIAL | axial resistor | 43 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+25) | modern axial resistor, matching value and power rating |
+| circuit-review | R_AXIAL | axial resistor | 40 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+22) | modern axial resistor, matching value and power rating |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |
 | mechanical-review | JUMPER2 | wire/link | 1 | E5 | select exact substitute after circuit review |

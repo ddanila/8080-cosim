@@ -4,7 +4,7 @@ circuit-review,C_ELEC,,radial electrolytic,modern radial electrolytic with match
 circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matching value/voltage/lead spacing,13,13,0,"C7, C8, C9, C10, C11, C12, C15, C16, C19, C20, C22, C34, C99","C7, C8, C9, C10, C11, C12, C15, C16, C19, C20, C22, C34, C99",
 circuit-review,D_DIODE,,Soviet diode/zener per value,modern diode/zener matching value and power,2,2,0,"VD3, VD4","VD3, VD4",
 circuit-review,Q_TO92,,КТ315/КТ972-class transistor per position,modern transistor selected per exact circuit role,2,2,0,"VT1, VT2","VT1, VT2",
-circuit-review,R_AXIAL,,axial resistor,"modern axial resistor, matching value and power rating",43,43,0,"R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+25)","R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+25)",
+circuit-review,R_AXIAL,,axial resistor,"modern axial resistor, matching value and power rating",40,40,0,"R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+22)","R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+22)",
 circuit-review,UP2,,К170УП2,RS-232/line-receiver substitute required; verify +/-12 V interface,1,1,0,D104,D104,
 leave-empty,EPROM8K,,К573РФ6,"2764 / 27C64 / M2764 EPROM, programmed per ROM split",1,0,1,D19,,Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.
 leave-empty,RU5,,К565РУ5Г / 565РУ5Г,"4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails",24,0,24,"D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6)",,D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check.
@@ -77,6 +77,7 @@ source-now,R_AXIAL,220,axial resistor 220,"modern axial resistor, matching value
 source-now,R_AXIAL,2к,axial resistor 2к,"modern axial resistor, matching value and power rating",3,3,0,"R1, R5, R6","R1, R5, R6",
 source-now,R_AXIAL,33k,axial resistor 33k,"modern axial resistor, matching value and power rating",2,2,0,"R18, R30","R18, R30",
 source-now,R_AXIAL,470,axial resistor 470,"modern axial resistor, matching value and power rating",1,1,0,R19,R19,
+source-now,R_AXIAL,"6,2к","axial resistor 6,2к","modern axial resistor, matching value and power rating",3,3,0,"R87, R88, R89","R87, R88, R89",
 source-now,R_AXIAL,620,axial resistor 620,"modern axial resistor, matching value and power rating",1,1,0,R33,R33,
 source-now,SYS8238,,КР580ВК38,8228/8238-class system controller; verify pinout,1,1,0,D5,D5,
 source-now,TL2,,К555ТЛ2,74LS14-class hex Schmitt inverter,1,1,0,D13,D13,

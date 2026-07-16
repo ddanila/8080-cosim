@@ -211,7 +211,9 @@ Every ask below is queued with exact deliverables in
    the D5-D7 destinations and D104.10. Factory drawing plus registered two-sided
    owner photos now identify the three adjacent pull-ups as R87 on
    D94.13/D104.7, R88 on D94.14/D101.7, and R89 on the apparently pull-up-only
-   D94.1; retain D94.1's hidden-branch boundary,
+   D94.1. Alternate-angle `6К2` markings on R87/R88 plus R89's identical body
+   close all three as 6.2 kΩ; the equipment list's separately designated
+   `ДГШ5.087.009` exactly-three count is corroborative only. Retain D94.1's hidden-branch boundary,
    and later recheck the D29.4/IORD conflict noted in the source model. The
    minimized `/RE`/`/WE` equations plus measured A2=`IORD` require A3 to be
    polarity-equivalent to active-low `IOWR` during selected FDC cycles. First

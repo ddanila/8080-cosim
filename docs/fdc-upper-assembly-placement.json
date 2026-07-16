@@ -51,6 +51,39 @@
       "electrical_evidence": false
     }
   ],
+  "d94_pullup_value_evidence": {
+    "value": "6,2\u043a",
+    "resistance_ohms": 6200,
+    "tolerance_percent": 5,
+    "power_watts": 0.125,
+    "factory_bom": {
+      "source": "ref/schematics/es101_nimekiri_komponendid.pdf",
+      "sha256": "b2c72d227ff8c9caa404a8c21d38f0a930e5ac56bd73b03c6d9986af69ec3f75",
+      "page": 6,
+      "observation": "the equipment-list MLT-0.125 6.2 kohm +/-5% row assigns exactly three pieces to DGSh5.087.009; this differs from the target DGSh5.109.009 designation and is corroboration, not target-board identity proof"
+    },
+    "owner_photos": [
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+        "sha256": "f369d158cf93842af1f97ecc78263bc33738cbbaf25a04c1678297ef7636e9dc",
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "observation": "all three adjacent bodies have matching construction; glare crosses the printed value lines"
+      },
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+        "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "observation": "alternate angle resolves 6K2 on R87 and R88; R89 is partly socket-obscured but is visually identical"
+      }
+    ],
+    "promotion_basis": "registered row of three visually identical bodies and two directly readable 6K2 markings; the separately designated equipment-list group of exactly three is corroborative only"
+  },
   "d94_pullups": [
     {
       "refdes": "R87",

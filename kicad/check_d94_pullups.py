@@ -18,6 +18,7 @@ EXPECTED = {
     "R88": ((224.943, 37.784), "D94_A4_D101_Q0_PULLUP"),
     "R89": ((227.629, 37.784), "D94_D0_BOUNDARY"),
 }
+EXPECTED_VALUE = "6,2к"
 
 
 def mm(value: int) -> float:
@@ -32,12 +33,19 @@ def main() -> int:
 
     if [item["refdes"] for item in registration.get("d94_pullups", [])] != list(EXPECTED):
         failures.append("factory/photo registration order is not R87/R88/R89")
+    value_evidence = registration.get("d94_pullup_value_evidence", {})
+    if value_evidence.get("value") != EXPECTED_VALUE or value_evidence.get("resistance_ohms") != 6200:
+        failures.append("factory/photo value evidence does not guard 6.2 kohm")
+    if value_evidence.get("factory_bom", {}).get("page") != 6:
+        failures.append("factory BOM page for D94 pull-up values is not guarded")
 
     chips = {chip["ref"]: chip for chip in spec["chips"]}
     for ref, (signal_position, signal_net) in EXPECTED.items():
         chip = chips.get(ref)
         if chip is None or chip.get("type") != "R_AXIAL":
             failures.append(f"{ref} is missing from board JSON")
+        elif chip.get("value") != EXPECTED_VALUE:
+            failures.append(f"{ref} value {chip.get('value')!r} != {EXPECTED_VALUE!r}")
         signal_nodes = spec["nets"][signal_net]["nodes"]
         if [ref, "1"] not in signal_nodes:
             failures.append(f"{ref}.1 is missing from {signal_net}")
@@ -48,6 +56,8 @@ def main() -> int:
         if footprint is None:
             failures.append(f"{ref} footprint is missing")
             continue
+        if footprint.GetValue() != EXPECTED_VALUE:
+            failures.append(f"{ref} footprint value {footprint.GetValue()!r} != {EXPECTED_VALUE!r}")
         pad1 = footprint.FindPadByNumber("1")
         pad2 = footprint.FindPadByNumber("2")
         if pad1 is None or pad1.GetNetname() != signal_net:
@@ -63,7 +73,7 @@ def main() -> int:
         for failure in failures:
             print("FAIL:", failure)
         return 1
-    print("D94 PULL-UPS: PASS — R87/R88/R89 signal pads and common +5 V rail are guarded")
+    print("D94 PULL-UPS: PASS — R87/R88/R89 are guarded as 6.2 kohm pull-ups to +5 V")
     return 0
 
 

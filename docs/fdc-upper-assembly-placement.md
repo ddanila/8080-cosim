@@ -22,13 +22,18 @@ The same factory view labels the three vertical bodies immediately left of D94
 as R87, R88, and R89 from left to right. The owner component photograph preserves
 that order. Its reflected solder mate exposes three non-crossing signal traces and
 the common tinned +5 V rail, closing the resistor identities without inferring a
-hidden D94.1 consumer.
+hidden D94.1 consumer. A second, alternate-angle owner photo reads `6К2` on
+R87 and R88. R89 is partly socket-obscured but visually identical; the factory
+equipment list also assigns exactly three МЛТ-0,125 6.2 kΩ ±5% resistors
+to `ДГШ5.087.009`. Because that designation differs from the target
+`ДГШ5.109.009`, it is corroboration only; the photo-readable pair and identical
+third body are the target-board value evidence.
 
-| Ref | Signal side | Proved nodes | Component signal px | Solder signal px |
-| --- | --- | --- | ---: | ---: |
-| R87 | `D94_A3_D104_X4_PULLUP` | D94.13, D104.7 | 1485.0, 1553.0 | 2190.0, 1323.0 |
-| R88 | `D94_A4_D101_Q0_PULLUP` | D94.14, D101.7 | 1539.0, 1553.0 | 2140.0, 1323.0 |
-| R89 | `D94_D0_BOUNDARY` | D94.1 | 1594.0, 1553.0 | 2088.0, 1323.0 |
+| Ref | Value | Signal side | Proved nodes | Component signal px | Solder signal px |
+| --- | ---: | --- | --- | ---: | ---: |
+| R87 | 6.2 kΩ | `D94_A3_D104_X4_PULLUP` | D94.13, D104.7 | 1485.0, 1553.0 | 2190.0, 1323.0 |
+| R88 | 6.2 kΩ | `D94_A4_D101_Q0_PULLUP` | D94.14, D101.7 | 1539.0, 1553.0 | 2140.0, 1323.0 |
+| R89 | 6.2 kΩ | `D94_D0_BOUNDARY` | D94.1 | 1594.0, 1553.0 | 2088.0, 1323.0 |
 
 All three opposite resistor pads enter the same visibly tinned +5 V rail.
 R89 identifies the pull-up on D94.1, but the absence of an additional hidden

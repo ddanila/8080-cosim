@@ -289,8 +289,12 @@ and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unkn
   socket contact. D0/pin1 remains destination-unresolved.
 - Known content: three matching reads including a power-cycled read yield
   raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
-- Unknown: the shared CS/enable upstream source, D0 hidden-branch status,
-  resistance values for R87/R88/R89, and D5-D7
+- Known pull-up values: alternate-angle owner photography reads `6К2` on
+  R87 and R88; R89 is partly socket-obscured but visually identical. The
+  equipment list's separately designated `ДГШ5.087.009` group contains
+  exactly three МЛТ-0,125 6.2 kΩ ±5% parts as corroboration. The readable
+  target-board pair and identical third body close R87/R88/R89 as 6.2 kΩ.
+- Unknown: the shared CS/enable upstream source, D0 hidden-branch status, and D5-D7
   far destinations remain unresolved behind explicit boundary nets.
 - Firmware-derived prediction: D94 A3 must equal active-low `IOWR` on
   selected FDC cycles. Confirm by continuity to D5.27 or simultaneous
