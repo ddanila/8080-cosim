@@ -172,10 +172,11 @@ PASSIVE_PLACE = {
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
     # .009 labels the three vertical bodies left of D94 as R87/R88/R89.
     # D94-local component/solder fits place pad 1 on the three signal traces;
-    # pad 2 is the shared upper +5 V rail. Values remain unread.
+    # pad 2 is the shared upper +5 V rail. All three values are photo-closed at 6K2.
     'R87':(222.305,32.704,90),'R88':(224.943,32.704,90),'R89':(227.629,32.704,90),
     # .009 factory-drawing affine registration, corroborated by the populated
-    # owner-photo column at the right edge beside C19 (top to bottom).
+    # owner-photo column at the right edge beside C19 (top to bottom). Two
+    # independent component angles read R100/R102 as 12K; R108/R86 remain open.
     'R100':(299.776,94.000,0),'R102':(299.253,97.229,0),
     'R108':(298.731,100.458,0),'R86':(298.208,103.688,0),
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing

@@ -64,6 +64,37 @@
     ],
     "promotion_basis": "two target-board component photographs with different angles show matching printed values"
   },
+  "right_edge_resistor_value_evidence": {
+    "values": {
+      "R100": "12\u043a",
+      "R102": "12\u043a"
+    },
+    "owner_photos": [
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+        "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "observation": "registered target-board view directly resolves 12K on the top R100 body and second R102 body"
+      },
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+        "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "observation": "independent target-board angle shows matching 12K markings on the same top two factory-ordered bodies"
+      }
+    ],
+    "unresolved": [
+      "R108",
+      "R86"
+    ],
+    "promotion_basis": "two target-board component photographs with different angles read the same top-two values; the lower two markings remain unpromoted"
+  },
   "checks": [
     {
       "refdes": "D95",

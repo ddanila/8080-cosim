@@ -193,6 +193,9 @@ Every ask below is queued with exact deliverables in
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
    D101.8/GND. Only the surrounding mux select/output paths remain open.
+   In the adjacent right-edge passive column, two independent target-board
+   angles close R100 and R102 as `12К`; R108/R86 values and all four remote
+   endpoint pairs remain explicit measurement boundaries.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against

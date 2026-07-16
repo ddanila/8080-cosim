@@ -121,8 +121,8 @@ parts placement and Tier-3 reproduction.
 | `D13` | `TL2` | scan | ТЛ2: sheet-1 accounts for sections 1->2 RAMOUTEN, 3->4 system/USART clock, and 5->6 RESIN->RESET. Chip-removed owner continuity on 2026-07-14 supersedes the... |
 | `D30` | `TM2_DFF` | scan | .009 official; assembly drawing position and sheet-1 READY circuit section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CL... |
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and... |
-| `R100` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg upper resistor in the populated four-part vertical column at the right edge beside C19; value and both electr... |
-| `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg second resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
+| `R100` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles upper resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
+| `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles second resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
 | `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg third resistor in the populated four-part vertical column at the right edge beside C19; value and both electr... |
 | `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg lowest resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |

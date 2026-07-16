@@ -34,7 +34,7 @@ overlapping body labels, whereas registered owner component and solder photos pr
 at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The C63 target site remains an explicit
 population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.
 Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;
-that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view
+that corroborates population and orientation. Two independent component angles read R100=`12К` and R102=`12К`; R108/R86 values and all four parts' lead destinations remain continuity tasks. The registered solder view
 `PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views
 also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and
 backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;

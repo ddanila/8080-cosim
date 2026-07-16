@@ -17,7 +17,7 @@ OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {"C16", "C19", "R92", "R99", "R100", "R102", "R108", "R86"}
-EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к"}
+EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -59,9 +59,14 @@ document = json.loads(RECORD.read_text(encoding="utf-8"))
 if document.get("schema_version") != 1 or document.get("model") != "affine":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: unsupported registration schema")
 value_evidence = document.get("r92_r99_value_evidence", {})
-if value_evidence.get("values") != EXPECTED_RESISTOR_VALUES:
+right_edge_value_evidence = document.get("right_edge_resistor_value_evidence", {})
+if value_evidence.get("values") != {"R92": "1,3к", "R99": "4,7к"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad R92/R99 value evidence")
-for evidence in value_evidence.get("owner_photos", []):
+if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к"}:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad right-edge resistor value evidence")
+if right_edge_value_evidence.get("unresolved") != ["R108", "R86"]:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: lower right-edge value boundaries are not guarded")
+for evidence in [*value_evidence.get("owner_photos", []), *right_edge_value_evidence.get("owner_photos", [])]:
     image_path = ROOT / evidence.get("source", "")
     if not image_path.is_file() or hashlib.sha256(image_path.read_bytes()).hexdigest() != evidence.get("sha256"):
         raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: value-source hash mismatch for {image_path}")
@@ -132,6 +137,7 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "source": RECORD.relative_to(ROOT).as_posix(),
                                   "transform": [round(value, 12) for value in transform],
                                   "r92_r99_value_evidence": value_evidence,
+                                  "right_edge_resistor_value_evidence": right_edge_value_evidence,
                                   "checks": checks, "targets": targets}, indent=2) + "\n")
 lines = ["# FDC lower assembly placement", "",
          "Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**", "",
@@ -157,7 +163,7 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The C63 target site remains an explicit",
           "population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
-          "that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view",
+          "that corroborates population and orientation. Two independent component angles read R100=`12К` and R102=`12К`; R108/R86 values and all four parts' lead destinations remain continuity tasks. The registered solder view",
           "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",

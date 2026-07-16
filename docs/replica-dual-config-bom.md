@@ -24,11 +24,11 @@ readiness report.
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 61 |
+| circuit-review | 59 |
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 199 |
+| source-now | 201 |
 
 ## BOM Lines
 
@@ -39,7 +39,7 @@ readiness report.
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 13 | 13 | 0 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C20, C22, C34, C99 | - |
 | circuit-review | D_DIODE | Soviet diode/zener per value | modern diode/zener matching value and power | 2 | 2 | 0 | VD3, VD4 | - |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 2 | 2 | 0 | VT1, VT2 | - |
-| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 38 | 38 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+20) | - |
+| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 36 | 36 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+18) | - |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
 | leave-empty | EPROM8K | К573РФ6 | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 1 | 0 | 1 | D19 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
 | leave-empty | RU5 | К565РУ5Г / 565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 24 | 0 | 24 | D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6) | D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check. |
@@ -105,7 +105,7 @@ readiness report.
 | source-now | R_AXIAL 1,5к | axial resistor 1,5к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R20 | - |
 | source-now | R_AXIAL 100 | axial resistor 100 | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R3, R4 | - |
 | source-now | R_AXIAL 120 | axial resistor 120 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R104 | - |
-| source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R39 | - |
+| source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R39, R100, R102 | - |
 | source-now | R_AXIAL 13к | axial resistor 13к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R34 | - |
 | source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R29, R31, R38 | - |
 | source-now | R_AXIAL 200 | axial resistor 200 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R46 | - |
