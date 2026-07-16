@@ -263,7 +263,7 @@ IC_CAP = {
 # below instead; a few tight spots push their cap sideways.
 CAP_DIR = {
     "U1": "up", "U2": "up",              # caps above CPU/ROM, clearing the chip labels below
-    "U40": "left", "U41": "left",        # VGA column: caps inboard, off the LED strip
+    "U40": "down", "U41": "down",        # VGA column: caps below each part, off the R1-3 column
     "U50": "left", "U51": "down",        # clock/reset: caps clear of the edge
 }
 SPARE_CAPS = ["C3", "C4", "C19"]   # extra decouplers, tucked in open spots
@@ -343,8 +343,10 @@ def build_placement(spec):
     put("U50", 35, 4); put("U51", 37, 8); put("J96", 35, 11, 90)
     put("R4", 33, 8, 90); put("R5", 35, 8, 90)
 
-    # -- VGA out (far-right column; caps to the left, off the DRAM bank edge) --
-    put("U40", 37, 15); put("U41", 37, 20); put("J40", 37, 25)
+    # -- VGA out (far-right column); series resistors R1-3 kept next to the
+    #    serializer/connector so PIXEL/video nets stay short and routable --
+    put("U40", 37, 14); put("U41", 37, 20); put("J40", 37, 26)
+    grid(["R1", "R2", "R3"], 34, 15, 1, 2, 2, rot=90)
 
     # -- left resistor field: keyboard pull-ups/series, decode pull-ups and the
     #    VGA series resistors, packed as one grid of vertical resistors (cols
@@ -352,12 +354,11 @@ def build_placement(spec):
     left_resistors = (
         [f"R{i}" for i in range(7, 15)] + [f"R{i}" for i in range(16, 24)] + ["R15"]
         + [f"R{i}" for i in range(32, 44)] + ["R44"]
-        + ["R1", "R2", "R3"]
     )
     grid(left_resistors, 2, 14, 3, 2, 2, rot=90)
 
     # -- diagnostic LEDs (far-right strip below VGA) --
-    grid([f"D{i}" for i in range(2, 8)], 34, 28, 2, 2, 2, rot=0)
+    grid([f"D{i}" for i in range(2, 8)], 34, 30, 2, 2, 2, rot=0)
     # -- LED limit resistors in the narrow void between clock and the DRAM bank --
     grid([f"R{i}" for i in range(24, 30)], 31, 15, 2, 1, 2, rot=90)
 
