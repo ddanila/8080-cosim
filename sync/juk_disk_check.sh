@@ -15,3 +15,8 @@ trap 'rm -rf "$tmp"' EXIT
   -o "$tmp/juku_fdc_test" \
   tests/juku_fdc_test.c cosim/juku_fdc.c cosim/juk_disk.c
 "$tmp/juku_fdc_test"
+
+"$CC" -std=c11 -Wall -Wextra -Werror -I cosim \
+  -o "$tmp/rombios_fdc_write_test" \
+  tests/rombios_fdc_write_test.c cosim/i8080.c cosim/juku_fdc.c cosim/juk_disk.c
+"$tmp/rombios_fdc_write_test"

@@ -578,8 +578,10 @@ serve physical bring-up or historical fidelity:
    corrected. The vendored EKDOS source requests write via `DKWR=0x12`, and
    disassembly of the exact `ekta37` ROMBIOS proves commands `0xA0/0xA2`
    followed by 512 port-`0x1F` writes. Both C and HDL models now implement and
-   readback-test that bounded path; repository media remains read-only unless
-   the caller explicitly opts into a writable copy.
+   readback-test that bounded path, and the C guard executes the authentic ROM
+   command/data loop at `0xE69F..0xE6C1` against a disposable writable image;
+   repository media remains read-only unless the caller explicitly opts into
+   a writable copy.
 3. Revisit cartridge BASIC only when a complete artifact or documented loading
    procedure appears; do not invent missing pages. The 2026-07-15 generated
    firmware-lineage audit proves that 7,224 bytes of the cartridge body are
