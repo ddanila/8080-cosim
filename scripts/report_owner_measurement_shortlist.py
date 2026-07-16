@@ -276,7 +276,7 @@ def main() -> int:
         (
             "P1",
             "right-edge resistor column",
-            "determine the unit/type behind C19's photo-registered bare `22` marking, identify the remote destinations of the joined C19.1/R100.1 and C19.2/R86.1 nets, identify the shared right-edge perimeter rail's remote destination, and trace R102.1/R108.1; R100=R102=R108=12 kΩ and R86=4.7 kΩ are photo-closed, all four right-hand pin-2 leads share one rail, and two independent angles close both C19/resistor landings",
+            "determine the unit/type behind C19's photo-registered bare `22` marking, identify the remote destinations of the joined C19.1/R100.1 and C19.2/R86.1 nets, identify the shared right-edge perimeter rail's remote destination, and continuity-trace R102.1/R108.1; R100=R102=R108=12 kΩ and R86=4.7 kΩ are photo-closed, all four right-hand pin-2 leads share one rail, both C19/resistor landings are closed, and two component angles plus the registered solder field are exhausted for the remaining pin-1 paths",
             "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C19/R100/R102/R108/R86 boundary nets",
             "turns five restored physical parts into functional FDC-area circuitry while retaining only genuinely remote continuity asks",
         ),

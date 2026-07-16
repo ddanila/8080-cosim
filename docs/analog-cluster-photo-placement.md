@@ -88,7 +88,10 @@ immediately right of D99 as C19 and projects its body centre to
 `PXL_20260710_200418174.jpg` independently shows the populated grey axial body,
 both bent leads, and two separate board landings at that site. The registered
 solder image `PXL_20260710_200522685.jpg` exposes the corresponding distinct
-joints. A vertical 10.00 mm axial footprint therefore preserves the physical
+joint pair. Cross-side review corrects their recorded order: upper component
+pad 1 is solder coordinate `(875,712)`, while lower pad 2 is `(823,893)`; the
+former record contained the same coordinates in reverse order. A vertical
+10.00 mm axial footprint therefore preserves the physical
 part at pads `(292.893,88.574)` and `(292.893,98.574)` mm.
 
 The body deliberately leans over the adjacent resistor column, so body overlap
@@ -108,6 +111,13 @@ and R86.2 are therefore closed to one shared
 R102.1 and R108.1 remain explicit continuity boundaries; the solder-side
 D102.8 ground trace is not promoted as a cross-layer join without visible or
 measured inter-layer continuity.
+
+The July component view now also registers the four left joints at R100.1
+`(3294,1064)`, R102.1 `(3317,1142)`, R108.1 `(3325,1217)`, and R86.1
+`(3320,1276)` pixels. The independent May angle separates the same joints.
+Neither angle nor the registered solder field exposes a complete, uniquely
+attributable remote continuation for R102.1 or R108.1, so those two paths are
+photo-exhausted continuity measurements rather than guessed copper.
 
 ## C20/C22 drill registration
 

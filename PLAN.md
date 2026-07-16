@@ -200,7 +200,10 @@ Every ask below is queued with exact deliverables in
    R108 as `12К`, and R86 as `4К7`. Uninterrupted component copper joins
    all four right-hand pin-2 leads to one common perimeter rail, collapsing
    four singleton endpoints into one boundary. The rail's remote destination
-   plus R102.1 and R108.1 remain explicit measurement boundaries. Two
+   plus R102.1 and R108.1 remain explicit measurement boundaries. The latter
+   two joints are now pixel-registered in the July component view; the
+   independent May angle and registered solder field expose no unique remote
+   continuation, making them photo-exhausted continuity asks. Two
    independent component angles also show C19.1/R100.1 and C19.2/R86.1
    terminating on their respective common landings; the two joined nets'
    remote destinations remain open. The
@@ -331,8 +334,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-614 observations have dispositions, 33 rows are accepted evidence, and the
-other 581 remain measurement requests (`docs/photo-registration.md`).
+620 observations have dispositions, 37 rows are accepted evidence, and the
+other 583 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated

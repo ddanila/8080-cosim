@@ -66,6 +66,7 @@ c22_value_evidence = document.get("c22_value_evidence", {})
 c16_c19_marking_evidence = document.get("c16_c19_marking_evidence", {})
 right_edge_common_rail_evidence = document.get("right_edge_resistor_common_rail_evidence", {})
 c19_resistor_junction_evidence = document.get("c19_resistor_junction_evidence", {})
+right_edge_pin1_photo_exhaustion = document.get("right_edge_pin1_photo_exhaustion", {})
 if value_evidence.get("values") != {"R92": "1,3к", "R99": "4,7к"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad R92/R99 value evidence")
 if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"}:
@@ -195,6 +196,38 @@ for index, evidence in enumerate(c19_resistor_junction_evidence.get("owner_photo
             raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C19 junction lies outside evidence box")
 if len(c19_resistor_junction_evidence.get("owner_photos", [])) != 2:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C19 joins need two independent component angles")
+expected_pin1_joints = {
+    "R100.1": [3294, 1064], "R102.1": [3317, 1142],
+    "R108.1": [3325, 1217], "R86.1": [3320, 1276],
+}
+for key in ("component_photo", "corroborating_photo", "solder_photo"):
+    evidence = right_edge_pin1_photo_exhaustion.get(key, {})
+    image_path = ROOT / evidence.get("source", "")
+    if (not image_path.is_file() or
+            hashlib.sha256(image_path.read_bytes()).hexdigest() != evidence.get("sha256")):
+        raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: pin1 exhaustion-source hash mismatch for {image_path}")
+    with Image.open(image_path) as evidence_image:
+        if list(evidence_image.size) != evidence.get("dimensions_px"):
+            raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: pin1 exhaustion-source dimensions mismatch")
+        width, height = evidence_image.size
+    bbox = evidence.get("bbox_px")
+    if bbox is not None and (len(bbox) != 4 or not
+            (0 <= bbox[0] < bbox[2] <= width and 0 <= bbox[1] < bbox[3] <= height)):
+        raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: invalid pin1 exhaustion-source box")
+component_pin1 = right_edge_pin1_photo_exhaustion["component_photo"]
+if component_pin1.get("joint_px") != expected_pin1_joints:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: right-edge pin1 joint set mismatch")
+pin1_bbox = component_pin1["bbox_px"]
+if any(not (pin1_bbox[0] <= point[0] <= pin1_bbox[2] and pin1_bbox[1] <= point[1] <= pin1_bbox[3])
+       for point in expected_pin1_joints.values()):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: right-edge pin1 joint lies outside evidence box")
+if right_edge_pin1_photo_exhaustion["solder_photo"].get("c19_joint_px_by_pad") != {
+        "1": [875, 712], "2": [823, 893]}:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: corrected C19 solder-pad ordering mismatch")
+if right_edge_pin1_photo_exhaustion.get("unresolved") != [
+        "R102.1 remote destination", "R108.1 remote destination",
+        "C19/R100 common-net remote destination", "C19/R86 common-net remote destination"]:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: photo-exhausted pin1 boundaries are not guarded")
 for item in document["targets"]:
     for evidence in item.get("owner_evidence", []):
         image_path = ROOT / evidence["image"]
@@ -203,6 +236,9 @@ for item in document["targets"]:
             raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: invalid owner evidence for {item['refdes']}")
         if len(joints) != 2 or any(len(point) != 2 for point in joints):
             raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {item['refdes']} needs two owner joint coordinates")
+        if (item["refdes"] == "C19" and evidence.get("side") == "solder" and
+                evidence.get("joint_order") != ["pad1", "pad2"]):
+            raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C19 solder joints need explicit pad order")
     for evidence in item.get("owner_absence_evidence", []):
         image_path = ROOT / evidence["image"]
         bbox = evidence.get("bbox_px", [])
@@ -276,6 +312,7 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "right_edge_resistor_value_evidence": right_edge_value_evidence,
                                   "right_edge_resistor_common_rail_evidence": right_edge_common_rail_evidence,
                                   "c19_resistor_junction_evidence": c19_resistor_junction_evidence,
+                                  "right_edge_pin1_photo_exhaustion": right_edge_pin1_photo_exhaustion,
                                   "c16_c19_marking_evidence": c16_c19_marking_evidence,
                                   "c20_value_evidence": c20_value_evidence,
                                   "c22_value_evidence": c22_value_evidence,
@@ -305,7 +342,7 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
           "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Uninterrupted component copper joins all four right-hand pin-2 leads to one perimeter rail; its remote destination and R102/R108 pin-1 destinations remain continuity tasks. The same two angles directly show C19's upper lead and R100.1 sharing one landing, and C19's lower lead and R86.1 sharing another; only the two joined nets' remote destinations remain open. The registered solder view",
-          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. An oblique May view literally reads `22` on its exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views",
+          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints, while the independent May angle and solder field expose no unique remote continuation for R102.1/R108.1. An oblique May view literally reads `22` on C19's exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",

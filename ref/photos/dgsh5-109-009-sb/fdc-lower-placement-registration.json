@@ -83,7 +83,7 @@
       "table": 1,
       "observation": "the coded forms in Table 1 require a unit/decimal letter, so bare 27 and 22 do not uniquely establish capacitance"
     },
-    "unresolved": ["C16 value/unit", "C16 tolerance", "C16 voltage", "C16.1 endpoint", "C16.2 endpoint", "C19 value/unit", "C19 tolerance", "C19 voltage", "C19.1 endpoint", "C19.2 endpoint"],
+    "unresolved": ["C16 value/unit", "C16 tolerance", "C16 voltage", "C16.1 remote destination", "C16.2 remote destination", "C19 value/unit", "C19 tolerance", "C19 voltage", "C19/R100 common-net remote destination", "C19/R86 common-net remote destination"],
     "non_promotion_basis": "the target photo closes the literal visible glyphs but not whether they are complete nominal values, partial codes wrapped around the bodies, or other type/date markings"
   },
   "right_edge_resistor_common_rail_evidence": {
@@ -133,6 +133,37 @@
     ],
     "unresolved": ["C19/R100 common-net remote destination", "C19/R86 common-net remote destination"],
     "promotion_basis": "two target-board component angles independently show each capacitor lead and its adjacent resistor lead terminating on one physical landing"
+  },
+  "right_edge_pin1_photo_exhaustion": {
+    "component_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "joint_px": {
+        "R100.1": [3294, 1064],
+        "R102.1": [3317, 1142],
+        "R108.1": [3325, 1217],
+        "R86.1": [3320, 1276]
+      },
+      "bbox_px": [3230, 990, 3400, 1350],
+      "observation": "the July component angle exposes all four left-hand lap-soldered resistor joints; only R100.1/C19.1 and R86.1/C19.2 reach another identified lead in-frame"
+    },
+    "corroborating_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+      "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+      "dimensions_px": [4080, 3072],
+      "bbox_px": [2920, 2350, 3250, 2780],
+      "observation": "the independent oblique component angle separates the same four left joints but exposes no additional uniquely attributable remote branch for R102.1 or R108.1"
+    },
+    "solder_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "dimensions_px": [4080, 3072],
+      "c19_joint_px_by_pad": {"1": [875, 712], "2": [823, 893]},
+      "observation": "the corrected physical pad order follows the component-side upper-pad1/lower-pad2 orientation; the earlier coordinate array contained these same two joints in reverse order"
+    },
+    "unresolved": ["R102.1 remote destination", "R108.1 remote destination", "C19/R100 common-net remote destination", "C19/R86 common-net remote destination"],
+    "non_promotion_basis": "two component angles and the registered solder field do not expose a complete, uniquely attributable remote path beyond these local joints"
   },
   "c20_value_evidence": {
     "value": "1,5 нФ",
@@ -215,9 +246,10 @@
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "side": "solder",
-          "joint_px": [[823.0, 893.0], [875.0, 712.0]],
+          "joint_px": [[875.0, 712.0], [823.0, 893.0]],
+          "joint_order": ["pad1", "pad2"],
           "precision": "reviewed approximate joint centres; cross-side corroboration only",
-          "observation": "two distinct backside solder joints at the factory-identified C19 site"
+          "observation": "two distinct backside solder joints at the factory-identified C19 site; corrected order maps upper component pad1 to (875,712) and lower pad2 to (823,893)"
         }
       ]
     },
