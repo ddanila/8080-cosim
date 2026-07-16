@@ -266,6 +266,7 @@ def main() -> int:
         "SETDMA": 12,
         "READ": 13,
         "WRITE": 14,
+        "POLLPT": 15,
         "SECTRAN": 16,
     }
     for target in disk_vectors:

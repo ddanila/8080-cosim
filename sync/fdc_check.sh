@@ -81,6 +81,8 @@ physical D93/D94 wiring.
   table is present in RAM. Public `HOME` at `0xCA18` is executed with both
   cache states: it always sets `SEKTRK=0`, clears `HSTACT` when `HSTWRT=0`,
   and preserves the active cache when `HSTWRT=1`, so dirty data is not lost.
+  Public `LISTST` at `0xCA2D` starts with `A=0xA5` and executes source target
+  `POLLPT`, returning `A=0` because the printer-status device is unimplemented.
   Public `SELDSK` at `0xCA1B` runs through its
   `DoFunction`/ROMBIOS trampoline: drives A/B/C return contiguous 16-byte DPHs,
   unavailable C and invalid drive 3 return zero, invalid selection preserves
@@ -167,7 +169,7 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires all eight exercised disk-vector jump mnemonics
+- The source inspector requires all nine exercised disk-vector jump mnemonics
   in the archived assembly and derives their standard three-byte table
   addresses.
   The prompt checkpoint independently requires a live `JMP` opcode at each

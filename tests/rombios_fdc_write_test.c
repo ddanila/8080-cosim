@@ -33,6 +33,7 @@ enum {
   BIOS_SETDMA = 0xCA24,
   BIOS_READ = 0xCA27,
   BIOS_WRITE = 0xCA2A,
+  BIOS_LISTST = 0xCA2D,
   BIOS_SECTRAN = 0xCA30,
 };
 
@@ -196,7 +197,7 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
   };
   static const uint16_t disk_vectors[] = {
     BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA,
-    BIOS_READ, BIOS_WRITE, BIOS_SECTRAN,
+    BIOS_READ, BIOS_WRITE, BIOS_LISTST, BIOS_SECTRAN,
   };
   FILE* fp = fopen(path, "rb");
   if (!fp) return 1;
@@ -291,6 +292,7 @@ static int run_bios_entry(
   cpu.port_out = port_out;
   cpu.pc = entry;
   cpu.sp = 0xD6F8;                    // caller stack; DoFunction owns STAK
+  cpu.a = 0xA5;                       // expose routines that must clear A
   cpu.b = b;
   cpu.c = c;
   cpu.d = de >> 8;
@@ -526,6 +528,7 @@ int main(int argc, char** argv) {
   unsigned long successful_cycles = total_cycles;
   unsigned long unallocated_cycles = 0;
   unsigned long home_cycles = 0;
+  unsigned long list_status_cycles = 0;
   unsigned long seldsk_cycles = 0;
   unsigned long sectran_cycles = 0;
   unsigned long ramdisk_cycles = 0;
@@ -676,6 +679,14 @@ int main(int argc, char** argv) {
   f.ram[0xD623] = saved_host_active;
   f.ram[0xD624] = saved_host_dirty;
 
+  uint8_t list_status = 0xFF;
+  fail |= run_bios_entry(&f, BIOS_LISTST, 0, 0, 0, &list_status, NULL,
+                         &list_status_cycles, "LISTST");
+  if (list_status != 0) {
+    fprintf(stderr, "EKDOS LISTST: result=%02X expected=00\n", list_status);
+    fail = 1;
+  }
+
   static const uint8_t expected_translation[40] = {
     1, 2, 3, 4, 9, 10, 11, 12,
     17, 18, 19, 20, 25, 26, 27, 28,
@@ -823,13 +834,15 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "home=clean+dirty seldsk=0/1/2/invalid bios-rw=public/types0+2 "
+         "home=clean+dirty listst=not-ready seldsk=0/1/2/invalid "
+         "bios-rw=public/types0+2 "
          "sectran=40+2 ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + unallocated_cycles + home_cycles + seldsk_cycles + sectran_cycles +
+         successful_cycles + unallocated_cycles + home_cycles + list_status_cycles +
+         seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);
   return 0;
 }
