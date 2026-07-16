@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
+import os
 import sys
 
 import pcbnew
+
+# Block outlines/labels are computed by the generator from the placed parts, so
+# the checker verifies against the same source of truth instead of hardcoded
+# coordinates (which went stale when the board was re-laid-out to 200x200).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import gen_rev_a_pcb as gen
 
 
 MM_TOLERANCE = 0.05
@@ -22,16 +29,6 @@ EXPECTED_ZONES = {
     "Rev A GND plane placeholder": ("In1.Cu", "GND"),
     "Rev A VCC plane placeholder": ("In2.Cu", "VCC"),
 }
-EXPECTED_SILK_BLOCK_OUTLINES = {
-    "POWER": (8, 16, 56, 112),
-    "CLOCK_RESET": (232, 34, 276, 92),
-    "DRAM_REFRESH_TIMING": (62, 76, 226, 124),
-    "DRAM_BANK": (36, 130, 194, 168),
-    "KEYBOARD_MATRIX": (42, 176, 190, 248),
-    "VGA_OUT": (204, 144, 276, 220),
-    "DIAGNOSTIC_LEDS": (204, 226, 276, 270),
-    "DEBUG_HEADERS": (20, 252, 132, 281),
-}
 EXPECTED_SILK_BLOCK_LABELS = {
     "POWER": "POWER",
     "CLOCK_RESET": "CLOCK + RESET",
@@ -39,7 +36,6 @@ EXPECTED_SILK_BLOCK_LABELS = {
     "DRAM_BANK": "DRAM BANK",
     "KEYBOARD_MATRIX": "KEYBOARD MATRIX",
     "VGA_OUT": "VGA OUT",
-    "DIAGNOSTIC_LEDS": "DIAGNOSTIC LEDS",
     "DEBUG_HEADERS": "DEBUG HEADERS",
 }
 EXPECTED_CHIP_BLOCK_LABELS = {
@@ -147,6 +143,11 @@ def missing_silk_outline_edges(board, name, bounds):
 def main():
     path = sys.argv[1] if len(sys.argv) > 1 else "spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb"
     board = pcbnew.LoadBoard(path)
+    # Expected functional-block frames, computed from the placed parts exactly as
+    # the generator draws them.
+    block_outlines = gen.compute_block_outlines(
+        {fp.GetReference(): fp for fp in board.Footprints()}
+    )
     copper_count = board.GetCopperLayerCount()
     if copper_count != len(EXPECTED_COPPER_LAYERS):
         fail(f"expected {len(EXPECTED_COPPER_LAYERS)} copper layers, found {copper_count}")
@@ -268,23 +269,20 @@ def main():
                     f"expected default footprint text style: {label}"
                 )
 
-    # DRAM_BANK's bottom-left corner is occupied by a decoupling cap + refdes, so
-    # its title is printed just below the frame (matches gen_rev_a_pcb.py).
-    block_label_below = {"DRAM_BANK"}
+    # Titles are printed just above each frame's top-left corner; a few in tight
+    # corners are dropped (gen.SILK_BLOCK_LABEL_DROP) and must NOT be present.
     block_label_violations = []
     for name, label in EXPECTED_SILK_BLOCK_LABELS.items():
-        left, _, _, bottom = EXPECTED_SILK_BLOCK_OUTLINES[name]
-        if name in block_label_below:
-            expected_pos = (left + SILK_BLOCK_LABEL_PADDING_MM,
-                            bottom + SILK_BLOCK_LABEL_PADDING_MM)
-        else:
-            expected_pos = (left + SILK_BLOCK_LABEL_PADDING_MM,
-                            bottom - SILK_BLOCK_LABEL_PADDING_MM)
         matches = [
             text
             for _, _, text in silk_text_items(board)
             if text.GetText() == label and text.GetLayer() == pcbnew.F_SilkS
         ]
+        if name in gen.SILK_BLOCK_LABEL_DROP:
+            if matches:
+                block_label_violations.append(f"{label}:should-be-dropped")
+            continue
+        expected_pos = gen.silk_block_label_anchor(block_outlines[name])
         if not matches:
             block_label_violations.append(f"{label}:missing")
             continue
@@ -296,7 +294,7 @@ def main():
                     f"{label}=({x:.2f},{y:.2f}) expected=({expected_pos[0]:.2f},{expected_pos[1]:.2f})"
                 )
     if block_label_violations:
-        fail("silkscreen block labels are not at lower-left padded anchors: " + "; ".join(block_label_violations))
+        fail("silkscreen block labels are not at the above-frame anchors: " + "; ".join(block_label_violations))
 
     chip_label_violations = []
     for label, ref in EXPECTED_CHIP_BLOCK_LABELS.items():
@@ -360,7 +358,12 @@ def main():
         top = pcbnew.ToMM(box.GetTop())
         right = pcbnew.ToMM(box.GetRight())
         bottom = pcbnew.ToMM(box.GetBottom())
-        margin = min(left, top, 285 - right, 285 - bottom)
+        margin = min(
+            left - board_left,
+            top - board_top,
+            board_right - right,
+            board_bottom - bottom,
+        )
         if margin < MIN_SILK_EDGE_CLEARANCE_MM:
             silk_edge_violations.append(
                 f"{owner}:{text_value}={margin:.2f}mm "
@@ -374,7 +377,7 @@ def main():
         )
 
     missing_outlines = []
-    for name, bounds in EXPECTED_SILK_BLOCK_OUTLINES.items():
+    for name, bounds in block_outlines.items():
         missing_edges = missing_silk_outline_edges(board, name, bounds)
         if missing_edges:
             missing_outlines.append(f"{name}:{','.join(missing_edges)}")
