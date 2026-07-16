@@ -58,8 +58,15 @@ module juku_top (
     // ---- chip selects + memory enables ----
     wire        cs_pic_n, cs_ppi0_n, cs_sio0_n, cs_ppi1_n;
     wire        cs_pit0_n, cs_pit1_n, cs_pit2_n, cs_fdc_n;
-    wire        d6_rom_select_n, d6_ram_output_n, d6_v_enable;
+    wire        d6_v_enable;
+`ifdef YOSYS
+    wire        d6_rom_select_n, d6_ram_output_n;
     wire        d6_rev_physical, d6_roe_physical;
+`else
+    // Physical R11..R14 recover the four open-collector D6 outputs high.
+    tri1        d6_rom_select_n, d6_ram_output_n;
+    tri1        d6_rev_physical, d6_roe_physical;
+`endif
 `ifdef YOSYS
     // Structural/LVS path: chip-removed continuity preserves separate D6.12
     // ROM-select and D6.11 RAM-select conductors.

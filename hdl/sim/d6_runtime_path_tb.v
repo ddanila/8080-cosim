@@ -10,7 +10,7 @@ module d6_runtime_path_tb;
   reg [2:0] pc = 3'b000; // raw {D6 A7,A6,A5}
   reg d6_v_en_n = 1'b0;
 
-  wire d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
+  tri1 d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
   wire d6_select_and_n = d6_rom_n & d6_ram_n; // diagnostic expression, not a copper join
   tri1 [7:0] d8_d;
   wire ram_out_en;

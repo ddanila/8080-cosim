@@ -368,7 +368,10 @@ adoption road, in dependency order:
    The firmware-anchored analysis shows that the
    raw capture contradicts two independent working functional anchors, an exact
    D0/D3-only transform passes the full suite, and a uniform asserted complement
-   fails. Reader revision 2 and its known-D2 control make the next D6 re-read a
+   fails. The underlying electrical model is now faithful open collector:
+   raw zero sinks and raw one/disabled releases through explicit R11-R14-backed
+   simulation pull-ups; this does not resolve or alter the provisional logical
+   correction. Reader revision 2 and its known-D2 control make the next D6 re-read a
    decisive electrical/provenance gate; a reset-fetch level comparison is the
    alternative consumer-side gate that promotes the current provisional fit to
    confirmed physical adoption or removes it. `docs/d6-firmware-mode-coverage.md` bounds

@@ -163,7 +163,14 @@ module decode_prom (input wire [7:0] a, input wire v_en_n,
     initial $readmemh("ref/physical-proms/validated/d6_038.raw.hex", prom);
     wire [3:0] raw = prom[a][3:0];
 `endif
-    assign {roe_n, rev, ram_n, rom_n} = v_en_n ? 4'hF : raw;
+    // К556РТ4 outputs are open collector. The board supplies independent
+    // pull-ups R11..R14; raw zero sinks and raw one/disabled releases.
+    wire [3:0] d;
+    genvar bit_index;
+    generate for (bit_index = 0; bit_index < 4; bit_index = bit_index + 1) begin : g_oc
+        assign d[bit_index] = (!v_en_n && !raw[bit_index]) ? 1'b0 : 1'bz;
+    end endgenerate
+    assign {roe_n, rev, ram_n, rom_n} = d;
 endmodule
 
 // Historical functional memory-map oracle retained only as the contrast model

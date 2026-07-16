@@ -77,7 +77,7 @@ module vjuga_juku_top #(
     // (A6=/PC1, A5=/PC0, A7=0); the ~D0 output correction matches the main twin's
     // provisional adoption (PLAN item 1). If either chip misbehaves on the bench,
     // the boot diverges from cosim -- that is the chip test.
-    wire d6_rom_n, d6_ram_n, d6_rev, d6_roe;
+    tri1 d6_rom_n, d6_ram_n, d6_rev, d6_roe;
     decode_prom U_D6 (.a({1'b0, ~portc[1], ~portc[0], A[11], A[12], A[13], A[14], A[15]}),
                       .v_en_n(1'b0),
                       .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
@@ -89,7 +89,7 @@ module vjuga_juku_top #(
     wire is_rom_intA  = (A[15:14] == 2'b00);
     wire is_rom    = (DECODE_MODE == 1) ? is_rom_intA : is_rom_promB;
     wire rom_sel_n = ~is_rom;                // ROM select drives D8 /CE in both modes
-    wire [7:0] d8_d;
+    tri1 [7:0] d8_d;
     re3_prom U_D8 (.a(A[15:11]), .e_n(rom_sel_n), .d(d8_d));   // D8 РЕ3 ROM-select pager
     // Cross-check: D6's decision must match the reference mode map (flags a bad chip loudly).
     always @(posedge clk) if (reset_n && mreq_n == 1'b0 && (rd_n == 1'b0 || wr_n == 1'b0) && mode != 2'b10)

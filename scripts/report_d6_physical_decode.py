@@ -76,6 +76,10 @@ def main() -> int:
         ("D6.11 conductor also reaches D92.5/R12.2", {("D6", "11"), ("D2", "15"), ("D92", "5"), ("R12", "2")} <= wreq_nodes),
         ("D13.12 drives the D6 enable conductor, not either output", ("D13", "12") in enable_nodes and ("D13", "12") not in rom_nodes | wreq_nodes),
         ("HDL keeps the D6 outputs separate", ".rom_n(d6_rom_select_n), .ram_n(d6_ram_output_n)" in hdl),
+        ("HDL models D6 raw outputs as open collector with physical pull-up recovery",
+         "К556РТ4 outputs are open collector" in devices
+         and "assign d[bit_index] = (!v_en_n && !raw[bit_index]) ? 1'b0 : 1'bz;" in devices
+         and "Physical R11..R14 recover the four open-collector D6 outputs high" in hdl),
         ("HDL uses measured physical D6 address order", ".a({d6_a7_d105_i1, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]})" in hdl),
         ("RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3",
          "PROM D0..D3 (pins 12,11,10,9)" in reader

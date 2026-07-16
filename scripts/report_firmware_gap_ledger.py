@@ -150,6 +150,15 @@ def main() -> int:
             "Functional decode oracle retired from the boot path",
         )
     ) and "decode_prom_functional U_" not in d6_top
+    d6_open_collector_ok = marker(
+        "hdl/devices.v",
+        "К556РТ4 outputs are open collector",
+        "assign d[bit_index] = (!v_en_n && !raw[bit_index]) ? 1'b0 : 1'bz;",
+    ) and marker(
+        "hdl/sim/prom_fallback_tb.v",
+        "D6 disabled outputs did not release",
+        "D6 row 00 is not raw open-collector word 8",
+    )
     d94_runnable_physical_ok = all(
         needle in d6_top
         for needle in (
@@ -229,6 +238,7 @@ def main() -> int:
         ("D2 physical table and continuity are guarded", d2_ok),
         ("D2 open-collector raw polarity executes through the D30 READY latch", d2_ok),
         ("D6 physical table drives runnable selection under the provisional D0/D3 fit", d6_runnable_physical_ok),
+        ("D6 physical table preserves open-collector release under the provisional fit", d6_open_collector_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),
         ("D94 physical table drives runnable FDC read/write strobes under guarded upstream fits", d94_runnable_physical_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),

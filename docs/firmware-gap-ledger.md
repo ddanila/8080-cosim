@@ -43,6 +43,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D2 physical table and continuity are guarded | PASS |
 | D2 open-collector raw polarity executes through the D30 READY latch | PASS |
 | D6 physical table drives runnable selection under the provisional D0/D3 fit | PASS |
+| D6 physical table preserves open-collector release under the provisional fit | PASS |
 | D94 physical table is adopted while continuity stays guarded | PASS |
 | D94 physical table drives runnable FDC read/write strobes under guarded upstream fits | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |

@@ -90,6 +90,7 @@ nibble per 2 KiB block from `0000` through `F800`.
 | D6.11 conductor also reaches D92.5/R12.2 | PASS |
 | D13.12 drives the D6 enable conductor, not either output | PASS |
 | HDL keeps the D6 outputs separate | PASS |
+| HDL models D6 raw outputs as open collector with physical pull-up recovery | PASS |
 | HDL uses measured physical D6 address order | PASS |
 | RT4 reader packs D0/pin12 through D3/pin9 into raw bits 0 through 3 | PASS |
 | RT4 reader revision 2 avoids Nano D13 and verifies released pull-ups | PASS |
