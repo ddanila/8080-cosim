@@ -10,35 +10,23 @@ import pcbnew
 # KICAD_FOOTPRINTS for other installs (e.g. the macOS app bundle at
 # .../KiCad.app/Contents/SharedSupport/footprints).
 ROOT = os.environ.get("KICAD_FOOTPRINTS", "/usr/share/kicad/footprints")
-BOARD_WIDTH_MM = 285
-BOARD_HEIGHT_MM = 285
+BOARD_WIDTH_MM = 200
+BOARD_HEIGHT_MM = 200
 ZONE_INSET_MM = 3
-EDGE_CLEARANCE_MM = 14
+EDGE_CLEARANCE_MM = 5
 CHIP_BLOCK_LABEL_GAP_MM = 2.0
 SILK_LABELS = {
-    "VJUGA REV A": (158, 268, 0, pcbnew.F_SilkS),
-    "Z80 + 4164 DRAM REFRESH TESTBED": (158, 274, 0, pcbnew.F_SilkS, 1.6),
-    "FUSE": (24, 42.0, 0, pcbnew.F_SilkS),
-    "DEFAULT STROKE SILK": (22, 260, 0, pcbnew.B_SilkS),
+    "VJUGA REV A": (100, 194, 0, pcbnew.F_SilkS),
+    "Z80 + 4164 DRAM REFRESH TESTBED": (100, 198, 0, pcbnew.F_SilkS, 1.6),
+    "FUSE": (18, 30.0, 0, pcbnew.F_SilkS),
+    "DEFAULT STROKE SILK": (20, 185, 0, pcbnew.B_SilkS),
 }
-CHIP_BLOCK_LABELS = {
-    "CPU": "U1",
-    "ROM": "U2",
-    "ADDRESS DECODE": "U5",
-    "DRAM CONTROL": "U24",
-    "PARALLEL INTERFACE": "U30",
-}
+# Single-chip block labels are re-added with the compact-layout block outlines.
+CHIP_BLOCK_LABELS = {}
 
-SILK_BLOCK_OUTLINES = {
-    "POWER": (8, 16, 56, 112),
-    "CLOCK_RESET": (232, 34, 276, 92),
-    "DRAM_REFRESH_TIMING": (62, 76, 226, 124),
-    "DRAM_BANK": (36, 130, 194, 168),
-    "KEYBOARD_MATRIX": (42, 176, 190, 248),
-    "VGA_OUT": (204, 144, 276, 220),
-    "DIAGNOSTIC_LEDS": (204, 226, 276, 270),
-    "DEBUG_HEADERS": (20, 252, 132, 281),
-}
+# Functional-block outlines are recomputed for the compact 200x200 layout once
+# part placement is settled (grid-aligned rectangles around each cluster).
+SILK_BLOCK_OUTLINES = {}
 SILK_BLOCK_LABELS = {
     "POWER": "POWER",
     "CLOCK_RESET": "CLOCK + RESET",
@@ -196,115 +184,124 @@ FP_BY_REF = {
     "R31": ("Resistor_THT.pretty", "R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal"),
 }
 
-PLACE = {
-    "J1": (22, 25.6, 90),
-    "J3": (5, 100, 270),     # USB-C rotated 90deg CW, mouth at the left board
-                             # edge (fully on-board) so a cable plugs from outside
-    "U1": (68, 45, 0),       # clear of the POWER block (right edge x56)
-    "U2": (100, 45, 0),
-    "U5": (210, 45, 0),
-    "U20": (80, 95, 90),     # right of the block's left edge so the refdes clears it
-    "U21": (105, 95, 90),
-    "U22": (135, 95, 90),
-    "U23": (160, 95, 90),
-    "U24": (195, 95, 0),
-    "U10": (45, 145, 0),
-    "U11": (65, 145, 0),
-    "U12": (85, 145, 0),
-    "U13": (105, 145, 0),
-    "U14": (125, 145, 0),
-    "U15": (145, 145, 0),
-    "U16": (165, 145, 0),
-    "U17": (185, 145, 0),
-    "U30": (55, 205, 0),
-    "U31": (100, 205, 90),
-    "J30": (170, 210, 90),
-    "U40": (215, 160, 90),
-    "U41": (220, 195, 90),
-    "J40": (260, 185, 90),
-    "J90": (40, 260, 90),
-    "J91": (80, 260, 90),
-    "J92": (120, 260, 90),
-    "U50": (250, 45, 0),
-    "U51": (245, 70, 0),
-    "R1": (238, 168, 0),
-    "R2": (238, 176, 0),
-    "R3": (238, 184, 0),
-    "R4": (250, 58, 0),
-    "R5": (245, 82, 0),
-    "R6": (36, 70, 0),
-    "R30": (42, 92, 0),
-    "R31": (42, 100, 0),
-    "R7": (128, 190, 0),
-    "R8": (128, 196, 0),
-    "R9": (128, 202, 0),
-    "R10": (128, 208, 0),
-    "R11": (128, 214, 0),
-    "R12": (128, 220, 0),
-    "R13": (128, 226, 0),
-    "R14": (128, 232, 0),
-    "R15": (104, 242, 0),
-    "R16": (118, 190, 0),
-    "R17": (118, 196, 0),
-    "R18": (118, 202, 0),
-    "R19": (118, 208, 0),
-    "R20": (118, 214, 0),
-    "R21": (118, 220, 0),
-    "R22": (118, 226, 0),
-    "R23": (118, 232, 0),
-    "D2": (212, 236, 0),
-    "D3": (222, 236, 0),
-    "D4": (232, 236, 0),
-    "D5": (242, 236, 0),
-    "D6": (252, 236, 0),
-    "D7": (262, 236, 0),
-    "R24": (212, 246, 0),
-    "R25": (222, 246, 0),
-    "R26": (232, 246, 0),
-    "R27": (242, 246, 0),
-    "R28": (252, 246, 0),
-    "R29": (262, 246, 0),
-    "C50": (28, 48, 0),
-    "F1": (24, 38, 0),
-    "D1": (38, 56, 90),
-    "J93": (60, 260, 90),
-    # Phase 3/4 decode + observability parts (first-pass placement for review).
-    # Decode PROMs sit between ROM (U2) and the decode GAL (U5) in the top band.
-    "U3": (130, 62, 0),      # К556РТ4 memory-map decode
-    "U4": (158, 62, 0),      # К155РЕ3 ROM pager
-    "U6": (186, 62, 0),      # 74HC04 PC0/PC1 inverter
-    # Decoupling caps: C26/C27 in the clear gaps between the decode chips;
-    # C28 above U6 (the U6-U5 gap collides with the ADDRESS DECODE label).
-    "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (182, 44, 0),
-    "J94": (117, 58, 90),    # decode-mode jumper, in the gap left of U3 (clear of U5)
-    "R44": (117, 68, 0),     # MODE_B default pull-down
-    "J96": (266, 62, 90),    # clock-select jumper, near the oscillator U50
-    # PROM output pull-ups, clustered in the free strip between CLOCK/RESET and VGA.
-    "R32": (250, 100, 0), "R33": (250, 107, 0), "R34": (250, 114, 0), "R35": (250, 121, 0),
-    "R36": (262, 100, 0), "R37": (262, 107, 0), "R38": (262, 114, 0), "R39": (262, 121, 0),
-    "R40": (238, 100, 0), "R41": (238, 107, 0), "R42": (238, 114, 0), "R43": (238, 121, 0),
-    # Observability headers: stacked in the clear vertical corridor between the
-    # keyboard matrix (right edge x190) and the VGA/LED blocks (left edge x204),
-    # away from the board title and block outlines.
-    "J95": (198, 158, 0),    # decode-debug (РТ4 outs, РЕ3 byte, REV_OUT) 1x14
-    "J97": (198, 198, 0),    # high address + MEM_WR_N 1x10
-    "J98": (198, 233, 0),    # Z80 control bus 1x8
+# ============================ Compact 200x200 floorplan ============================
+# Everything snaps to a 0.2" (5.08 mm) grid -- 2x the DIP pin pitch, so chips are
+# grid-aligned AND their pins stay on the native 0.1" grid. Positions below are in
+# GRID CELLS (col, row); PLACE is built from them in millimetres. Decoupling caps
+# are auto-placed at the short (top) side of their IC, near the power pins
+# (adequate at 4 MHz; the high-freq via/proximity rules do not apply here).
+GRID = 5.08
+
+
+def g(col, row, rot=0):
+    return (round(col * GRID, 3), round(row * GRID, 3), rot)
+
+
+# IC placements in grid cells (col, row, rot). Board is ~39 cells (200 mm) square.
+IC_GRID = {
+    # -- top band: CPU / ROM / decode PROMs / decode GAL / clock --
+    # DIP-16 sockets are ~10.7 mm wide, so DIP rows use a 3-cell (15.24 mm) pitch;
+    # wide DIP-24/28/40 get 4 cells from their neighbour.
+    "U1": (9, 9, 0),     # Z80 DIP-40 (tall)
+    "U2": (13, 9, 0),    # 27C256 DIP-28
+    "U3": (17, 9, 0),    # РТ4 decode DIP-16
+    "U4": (20, 9, 0),    # РЕ3 pager DIP-16
+    "U6": (23, 9, 0),    # 74HC04 DIP-14
+    "U5": (27, 9, 0),    # decode GAL DIP-24
+    "U50": (32, 8, 0),   # oscillator
+    "U51": (32, 11, 0),  # reset supervisor
+    # -- middle band: DRAM refresh/timing + DRAM control --
+    "U20": (9, 18, 0), "U21": (12, 18, 0), "U22": (15, 18, 0), "U23": (18, 18, 0),
+    "U24": (22, 18, 0),  # DRAM sequencer GAL DIP-24
+    # -- DRAM bank: eight 4164 DIP-16 in a row (3-cell pitch) --
+    "U10": (9, 25, 0), "U11": (12, 25, 0), "U12": (15, 25, 0), "U13": (18, 25, 0),
+    "U14": (21, 25, 0), "U15": (24, 25, 0), "U16": (27, 25, 0), "U17": (30, 25, 0),
+    # -- VGA (right side) --
+    "U40": (32, 18, 0),  # VGA timing header
+    "U41": (32, 22, 0),  # pixel serializer DIP-16
+    # -- keyboard / parallel interface (bottom band); 8255 laid horizontal --
+    "U30": (13, 33, 90), # 8255 DIP-40 rotated flat to save height
+    "U31": (22, 33, 0),  # 74HCT148 DIP-16
 }
 
-DECOUPLE_NEAR = {
-    "U1": (84, 45, 90), "U2": (115, 29, 90), "SPARE_GLUE1": (140, 36, 0),
-    "SPARE_GLUE2": (170, 36, 0), "U5": (225, 31, 90), "U10": (45, 161, 0),
-    "U11": (65, 161, 0), "U12": (85, 161, 0), "U13": (105, 161, 0),
-    "U14": (125, 161, 0), "U15": (145, 161, 0), "U16": (165, 161, 0),
-    "U17": (185, 161, 0), "U20": (68.5, 86, 0), "U21": (98.5, 86, 0),
-    "U22": (130, 86, 0), "U23": (155, 86, 0), "U24": (210, 88, 90),
-    "SPARE_GLUE3": (220, 86, 0), "U30": (69, 214, 90), "U31": (93.5, 194, 90),
-    "U40": (244, 156, 90), "U41": (213.5, 184, 90), "U50": (266, 45, 90),
-    "U51": (252, 70, 90),
+# Connectors / jumpers / headers in grid cells.
+CONN_GRID = {
+    "J1": (3, 3, 90),    # 5 V terminal, top-left
+    "J3": (0.6, 8, 270), # USB-C at the left board edge (mouth out), rotated 90 CW
+    "J94": (30, 9, 90),  # decode mode jumper (right of U5)
+    "J96": (35, 8, 90),  # clock-select jumper
+    "J30": (26, 33, 90), # keyboard header
+    "J40": (36, 24, 90), # VGA RGB out
+    # debug headers along the bottom, observability headers stacked mid-right
+    "J90": (3, 37, 0), "J93": (7, 37, 0), "J91": (11, 37, 0), "J92": (15, 37, 0),
+    "J95": (34, 27, 90), "J97": (34, 29, 90), "J98": (34, 31, 90),
 }
 
-for idx, owner in enumerate(DECOUPLE_NEAR, start=1):
-    PLACE[f"C{idx}"] = DECOUPLE_NEAR[owner]
+# Discrete parts with a fixed spot (power section + clock passives).
+MISC_GRID = {
+    "F1": (3, 5, 0), "D1": (6, 5, 90), "C50": (2, 6, 0), "R6": (4, 6, 0),
+    "R30": (2, 8, 0), "R31": (5, 8, 0),
+    "R4": (35, 11, 0), "R5": (32, 14, 0),
+}
+
+# Each IC's decoupling cap (auto-placed at the IC short side, direction below).
+IC_CAP = {
+    "U1": "C1", "U2": "C2", "U3": "C26", "U4": "C27", "U5": "C5", "U6": "C28",
+    "U10": "C6", "U11": "C7", "U12": "C8", "U13": "C9", "U14": "C10", "U15": "C11",
+    "U16": "C12", "U17": "C13", "U20": "C14", "U21": "C15", "U22": "C16",
+    "U23": "C17", "U24": "C18", "U31": "C21", "U40": "C22",
+    "U41": "C23", "U50": "C24", "U51": "C25",
+}
+CAP_DIR = {}
+# U30 is laid horizontal, so its cap C20 goes beside it (left short side); the
+# spare decouplers C3/C4/C19 sit in the open left-middle strip.
+SPARE_CAPS = {"C20": (7, 33), "C3": (2, 13), "C4": (2, 30), "C19": (7, 30)}
+
+# Horizontal axial resistors: 3-cell (15 mm) column pitch clears the ~10 mm
+# bodies + value labels, 2-cell (10 mm) row pitch clears the label stacks.
+# Keyboard field R7-R23 in the gap between the DRAM bank and the keyboard row.
+KBD_R_GRID = {}
+for i in range(8):          # R7-R14 keyboard row pull-ups
+    KBD_R_GRID[f"R{7 + i}"] = (9 + i * 3, 28)
+for i in range(8):          # R16-R23 keyboard column series resistors
+    KBD_R_GRID[f"R{16 + i}"] = (9 + i * 3, 30)
+KBD_R_GRID["R15"] = (6, 37)
+# Decode pull-ups R32-R43 + mode pulldown R44 in the open left-middle strip.
+PULLUP_GRID = {}
+for i in range(12):         # 2 cols x 6 rows
+    PULLUP_GRID[f"R{32 + i}"] = (2 + (i // 6) * 3, 16 + (i % 6) * 2)
+PULLUP_GRID["R44"] = (30, 11)
+# VGA series resistors R1-R3.
+VGA_R_GRID = {"R1": (35, 19), "R2": (35, 21), "R3": (35, 23)}
+# Diagnostic LEDs D2-D7 + limit resistors R24-R29 (LED row above resistor row).
+LED_GRID = {}
+for i in range(6):
+    LED_GRID[f"D{2 + i}"] = (25 + i * 2, 35)
+    LED_GRID[f"R{24 + i}"] = (25 + i * 2, 37)
+
+PLACE = {}
+for _tbl in (IC_GRID, CONN_GRID, MISC_GRID):
+    for _ref, _cell in _tbl.items():
+        PLACE[_ref] = g(*_cell)
+for _ref, _cell in {**KBD_R_GRID, **PULLUP_GRID, **VGA_R_GRID, **LED_GRID}.items():
+    PLACE[_ref] = g(_cell[0], _cell[1])
+for _ref, _cell in SPARE_CAPS.items():
+    PLACE[_ref] = g(_cell[0], _cell[1])
+
+# Place each IC's decoupling cap just past its short (top) side, near the power
+# pins. Offset in grid cells clears the DIP body length (adequate at 4 MHz).
+IC_CAP_OFF = {
+    "U1": 6, "U30": 6, "U2": 5, "U5": 4, "U24": 4,
+    "U3": 3, "U4": 3, "U6": 3, "U31": 3, "U41": 3,
+    "U10": 3, "U11": 3, "U12": 3, "U13": 3, "U14": 3, "U15": 3, "U16": 3, "U17": 3,
+    "U20": 3, "U21": 3, "U22": 3, "U23": 3,
+    "U40": 2, "U50": 2, "U51": 2,
+}
+for _ic, _cap in IC_CAP.items():
+    _col, _row, _ = IC_GRID[_ic]
+    _off = IC_CAP_OFF.get(_ic, 3)
+    _row2 = _row + _off if CAP_DIR.get(_ic) == "down" else _row - _off
+    PLACE[_cap] = g(_col, _row2)
 
 
 def mm(value):
@@ -425,7 +422,7 @@ def place_silk_fields(fp, chip, x, y, rot):
         if ref[0] == "F":
             ref_y = top - 0.9
         if ref[0] == "C":
-            ref_y = bottom + 1.3
+            ref_y = top - 1.3   # decoupling caps sit above their IC; label upward
         if ref[0] == "D" and chip["type"] == "LED_THT":
             ref_x = cx
             ref_y = bottom + 1.3
@@ -649,7 +646,7 @@ def main():
         add_power_zone(board, nets["VCC"], pcbnew.In2_Cu, "Rev A VCC plane placeholder")
 
     add_outline(board, BOARD_WIDTH_MM, BOARD_HEIGHT_MM)
-    for x, y in ((8, 8), (277, 8), (8, 277), (277, 277)):
+    for x, y in ((8, 8), (192, 8), (8, 192), (192, 192)):
         add_mounting_hole(board, x, y)
     for label, settings in SILK_LABELS.items():
         x, y, angle, layer, *rest = settings
