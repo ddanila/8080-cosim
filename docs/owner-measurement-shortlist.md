@@ -1,6 +1,6 @@
 # Owner measurement shortlist
 
-Status: **SOURCE REPORTS MISSING**
+Status: **READY**
 
 This generated report compresses the remaining physical-owner asks into
 the shortest useful list. It is not a bench log and does not claim any
@@ -36,9 +36,9 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Bring-up verification points generated | PASS |
 | Source coverage audit current | PASS |
 | Cartridge BASIC boundary documented | PASS |
-| .009 assembly drawing extraction guarded | MISSING |
+| .009 assembly drawing extraction guarded | PASS |
 | Factory Вид В modifications guarded | PASS |
-| Source-PCB placement collision gate passes | MISSING |
+| Source-PCB placement collision gate passes | PASS |
 
 ## Highest-value physical asks
 
