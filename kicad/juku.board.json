@@ -4643,7 +4643,7 @@
    "prov": {
     "type": "scan",
     "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "upper resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; both electrical destinations remain explicit continuity boundaries"
+    "pins": "upper resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; uninterrupted component copper joins right-hand pin2 to the other three resistor pin2 leads on a shared perimeter rail whose remote destination remains a continuity boundary; pin1 also remains a boundary"
    }
   },
   {
@@ -4654,7 +4654,7 @@
    "prov": {
     "type": "scan",
     "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "second resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; both electrical destinations remain explicit continuity boundaries"
+    "pins": "second resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; uninterrupted component copper joins right-hand pin2 to the other three resistor pin2 leads on a shared perimeter rail whose remote destination remains a continuity boundary; pin1 also remains a boundary"
    }
   },
   {
@@ -4665,7 +4665,7 @@
    "prov": {
     "type": "scan",
     "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; both electrical destinations remain explicit continuity boundaries"
+    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; uninterrupted component copper joins right-hand pin2 to the other three resistor pin2 leads on a shared perimeter rail whose remote destination remains a continuity boundary; pin1 also remains a boundary"
    }
   },
   {
@@ -4676,7 +4676,7 @@
    "prov": {
     "type": "scan",
     "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
-    "pins": "lowest resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 4K7; both electrical destinations remain explicit continuity boundaries"
+    "pins": "lowest resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 4K7; uninterrupted component copper joins right-hand pin2 to the other three resistor pin2 leads on a shared perimeter rail whose remote destination remains a continuity boundary; pin1 also remains a boundary"
    }
   },
   {
@@ -15839,33 +15839,21 @@
    "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
    "nodes": [["R100", "1"]]
   },
-  "R100_2_BOUNDARY": {
-   "src": ".009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
-   "nodes": [["R100", "2"]]
-  },
   "R102_1_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
    "nodes": [["R102", "1"]]
-  },
-  "R102_2_BOUNDARY": {
-   "src": ".009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
-   "nodes": [["R102", "2"]]
   },
   "R108_1_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
    "nodes": [["R108", "1"]]
   },
-  "R108_2_BOUNDARY": {
-   "src": ".009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
-   "nodes": [["R108", "2"]]
-  },
   "R86_1_BOUNDARY": {
    "src": ".009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary",
    "nodes": [["R86", "1"]]
   },
-  "R86_2_BOUNDARY": {
-   "src": ".009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary",
-   "nodes": [["R86", "2"]]
+  "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY": {
+   "src": ".009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perimeter rail, while its remote destination and any cross-layer handoff remain unread",
+   "nodes": [["R100", "2"], ["R102", "2"], ["R108", "2"], ["R86", "2"]]
   },
   "C20_1_BOUNDARY": {
    "src": ".009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destination is not readable",

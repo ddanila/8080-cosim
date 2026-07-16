@@ -197,8 +197,12 @@ Every ask below is queued with exact deliverables in
    as `1Н5` and source-closed by GOST 11076-69 Table 1 as 1.5 nF; their
    tolerances, voltages, and endpoints remain explicit boundaries. In the adjacent right-edge
    passive column, two independent target-board angles close R100, R102, and
-   R108 as `12К`, and R86 as `4К7`; all four remote endpoint pairs remain
-   explicit measurement boundaries. The same target-board angle literally
+   R108 as `12К`, and R86 as `4К7`. Uninterrupted component copper joins
+   all four right-hand pin-2 leads to one common perimeter rail, collapsing
+   four singleton endpoints into one boundary. The rail's remote destination
+   and the four pin-1 destinations remain explicit measurement boundaries; the
+   solder-side D102.8 trace is not treated as a cross-layer join without direct
+   continuity evidence. The same target-board angle literally
    resolves bare `27` on C16 and bare `22` on C19, but GOST 11076-69 requires
    a unit/decimal letter for a complete coded capacitance; both value/unit and
    endpoint pairs remain explicit measurement boundaries rather than guesses.
@@ -306,7 +310,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   210 source-risk nets and 9 official FDC devices with untraced functional
+   207 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

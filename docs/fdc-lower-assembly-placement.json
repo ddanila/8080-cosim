@@ -131,6 +131,57 @@
     "unresolved": [],
     "promotion_basis": "registered July and oblique May target-board component photographs independently read all four factory-ordered bodies: R100/R102/R108 are 12K and R86 is 4K7"
   },
+  "right_edge_resistor_common_rail_evidence": {
+    "joined_endpoints": [
+      "R100.2",
+      "R102.2",
+      "R108.2",
+      "R86.2"
+    ],
+    "net": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY",
+    "component_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "rail_bbox_px": [
+        3540,
+        980,
+        3740,
+        1450
+      ],
+      "endpoint_joint_px": {
+        "R100.2": [
+          3628,
+          1072
+        ],
+        "R102.2": [
+          3628,
+          1144
+        ],
+        "R108.2": [
+          3628,
+          1222
+        ],
+        "R86.2": [
+          3628,
+          1306
+        ]
+      },
+      "observation": "all four right-hand resistor leads terminate directly on one uninterrupted broad perimeter conductor"
+    },
+    "unresolved": [
+      "shared rail remote destination",
+      "R100.1 endpoint",
+      "R102.1 endpoint",
+      "R108.1 endpoint",
+      "R86.1 endpoint"
+    ],
+    "promotion_basis": "the target-board component view directly exposes all four right-hand leads terminating on one uninterrupted conductor",
+    "non_promotion_basis": "the solder-side D102.8 ground trace does not by itself prove a cross-layer join to this component-side perimeter rail"
+  },
   "c16_c19_marking_evidence": {
     "visible_markings": {
       "C16": "27",
@@ -608,10 +659,10 @@
         -0.0,
         -0.0
       ],
-      "observation": "upper resistor in the four-part row right of C19",
+      "observation": "upper resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail",
       "owner_evidence": [],
       "owner_absence_evidence": [],
-      "electrical_evidence": false
+      "electrical_evidence": true
     },
     {
       "refdes": "R102",
@@ -631,10 +682,10 @@
         0.0,
         0.0
       ],
-      "observation": "second resistor in the four-part row right of C19",
+      "observation": "second resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail",
       "owner_evidence": [],
       "owner_absence_evidence": [],
-      "electrical_evidence": false
+      "electrical_evidence": true
     },
     {
       "refdes": "R108",
@@ -654,10 +705,10 @@
         -0.0,
         0.0
       ],
-      "observation": "third resistor in the four-part row right of C19",
+      "observation": "third resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail",
       "owner_evidence": [],
       "owner_absence_evidence": [],
-      "electrical_evidence": false
+      "electrical_evidence": true
     },
     {
       "refdes": "R86",
@@ -677,10 +728,10 @@
         0.0,
         -0.0
       ],
-      "observation": "lowest resistor in the four-part row right of C19",
+      "observation": "lowest resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail",
       "owner_evidence": [],
       "owner_absence_evidence": [],
-      "electrical_evidence": false
+      "electrical_evidence": true
     },
     {
       "refdes": "C20",

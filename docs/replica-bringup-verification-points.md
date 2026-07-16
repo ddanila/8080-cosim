@@ -13,7 +13,7 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `210`
+- Verification-point nets: `207`
 - Verification-point endpoints checked in PCB: `232`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2272`
@@ -24,7 +24,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 22 |
-| logic | 161 |
+| logic | 158 |
 | memory/decode | 3 |
 | sound/analog | 1 |
 | timing/I/O | 2 |
@@ -350,17 +350,17 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `POF: D35.3`
 - `PST_CLK: R32.2`
 - `R100_1_BOUNDARY: R100.1`
-- `R100_2_BOUNDARY: R100.2`
 - `R102_1_BOUNDARY: R102.1`
-- `R102_2_BOUNDARY: R102.2`
 - `R108_1_BOUNDARY: R108.1`
-- `R108_2_BOUNDARY: R108.2`
 - `R86_1_BOUNDARY: R86.1`
-- `R86_2_BOUNDARY: R86.2`
 - `R94_P2_BOUNDARY: R94.2`
 - `RESET: D13.6`
 - `RESET: D11.21`
 - `RES_RC: A17.1`
+- `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R100.2`
+- `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R102.2`
+- `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R108.2`
+- `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY: R86.2`
 - `S3_3: D46.15`
 - `S3_4: D46.1`
 - `SER_CTS_N: D104.12`
@@ -706,16 +706,13 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `INHIB_STATUS_BOUNDARY` | logic | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R100_1_BOUNDARY` | logic | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R100_2_BOUNDARY` | logic | `R100.2` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R102_1_BOUNDARY` | logic | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R102_2_BOUNDARY` | logic | `R102.2` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R108_1_BOUNDARY` | logic | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R108_2_BOUNDARY` | logic | `R108.2` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity | Scope/capture video or timing node during video bring-up. |
 | `R86_1_BOUNDARY` | logic | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R86_2_BOUNDARY` | logic | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
+| `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` | logic | `R100.2, R102.2, R108.2, R86.2` | .009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perimeter rail, while its... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TAPE_RUN_INT` | logic | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TIMING_TAG2` | logic | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

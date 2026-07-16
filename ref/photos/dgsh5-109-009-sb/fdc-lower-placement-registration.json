@@ -86,6 +86,26 @@
     "unresolved": ["C16 value/unit", "C16 tolerance", "C16 voltage", "C16.1 endpoint", "C16.2 endpoint", "C19 value/unit", "C19 tolerance", "C19 voltage", "C19.1 endpoint", "C19.2 endpoint"],
     "non_promotion_basis": "the target photo closes the literal visible glyphs but not whether they are complete nominal values, partial codes wrapped around the bodies, or other type/date markings"
   },
+  "right_edge_resistor_common_rail_evidence": {
+    "joined_endpoints": ["R100.2", "R102.2", "R108.2", "R86.2"],
+    "net": "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY",
+    "component_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "rail_bbox_px": [3540, 980, 3740, 1450],
+      "endpoint_joint_px": {
+        "R100.2": [3628, 1072],
+        "R102.2": [3628, 1144],
+        "R108.2": [3628, 1222],
+        "R86.2": [3628, 1306]
+      },
+      "observation": "all four right-hand resistor leads terminate directly on one uninterrupted broad perimeter conductor"
+    },
+    "unresolved": ["shared rail remote destination", "R100.1 endpoint", "R102.1 endpoint", "R108.1 endpoint", "R86.1 endpoint"],
+    "promotion_basis": "the target-board component view directly exposes all four right-hand leads terminating on one uninterrupted conductor",
+    "non_promotion_basis": "the solder-side D102.8 ground trace does not by itself prove a cross-layer join to this component-side perimeter rail"
+  },
   "c20_value_evidence": {
     "value": "1,5 нФ",
     "marking": "1Н5",
@@ -217,10 +237,10 @@
         }
       ]
     },
-    {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19"},
-    {"refdes": "R102", "drawing_px": [2595.0, 2325.0], "observation": "second resistor in the four-part row right of C19"},
-    {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19"},
-    {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19"},
+    {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
+    {"refdes": "R102", "drawing_px": [2595.0, 2325.0], "observation": "second resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
+    {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
+    {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
     {"refdes": "C20", "drawing_px": [2648.0, 2545.0], "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre"},
     {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre"},
     {

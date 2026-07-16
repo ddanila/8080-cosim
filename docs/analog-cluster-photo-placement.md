@@ -98,6 +98,14 @@ registered literally without assigning a capacitance. The visible copper does
 not reach unique remote package pads, so both leads remain singleton boundary
 nets.
 
+The four adjacent horizontal resistors are electrically separate from that
+leaning body. Their right-hand pin-2 leads all terminate on one uninterrupted
+component-side perimeter rail. R100.2, R102.2, R108.2, and R86.2 are therefore
+closed to one shared `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` net. The rail's remote
+destination and the four left-hand pin-1 destinations remain explicit
+continuity boundaries; the solder-side D102.8 ground trace is not promoted as
+a cross-layer join without visible or measured inter-layer continuity.
+
 ## C20/C22 drill registration
 
 The factory `.009` drawing identifies the overlapping vertical bodies at the
