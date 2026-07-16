@@ -38,7 +38,7 @@ python3 scripts/report_serial_handoff.py
 | USART reset follows the system reset inverter | PASS | sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET` |
 | USART main clock reaches D13 inverter output | PASS | sheet-1 uninterrupted D13.4 -> D105.2/D11.20 conductor |
 | Undrawn D13 inverter sections are explicitly unused | PASS | sheet-1 uses sections 1->2, 3->4, 5->6, and 13->12; only 9->8 and 11->10 are unused |
-| D57 baud output reaches D11 TxC/RxC | PASS | `PIT_BAUD` |
+| D57 baud output reaches D11 TxC/RxC | PASS | native sheet-2 `BAUD R.` handoff and sheet-1 TxC/RxC fork |
 | USART TxD fans to line drivers | PASS | `SER_TXD` |
 | D3.9->8 pre-inverter drives tied D12 inputs | PASS | `SER_TXD_INV` |
 | D3 sections absent from the older sheet are owner-measured into D6 | PASS | chip-removed `.009` continuity: /PC1->D3.3/.4->D6.1 and /PC0->D3.5/.6->D6.2 |
@@ -95,7 +95,9 @@ python3 scripts/report_serial_handoff.py
 
 - D11 is bus-visible at the decoded `0x08..0x0B` USART window, with
   BA0, DB0-DB7, `IORD`, `IOWR`, and `CS_D11` wired.
-- D57 `OUT0` reaches both D11 clock inputs through `PIT_BAUD`.
+- Native sheet 2 sends D57 `OUT0` through `BAUD R.`; native sheet 1
+  visibly forks that conductor to D11 TxC and RxC. `PIT_BAUD` is
+  source-closed rather than retained as an assumed USART-end fork.
 - D11 serial-side pins are carried through the modeled D14/D32/D3/D12
   output drivers and D104 receiver to X3 signal pins. D3.10 reaches
   X3.3 through the explicit W20 assembly-wire closure.

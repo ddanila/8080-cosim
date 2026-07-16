@@ -63,10 +63,11 @@ with the machine-readable board model.
   The report
   names the isolated endpoint/polarity/live-level measurements needed;
   the routed snapshot still carries the superseded topology.
-  D30 READY section A and the section-B R5/D105 connections are modeled; pins
-  8 and 11 remain explicit boundaries. D7's physical SYNC/feedback strobe is
+  D30 READY sections A/B are modeled; owner continuity closes pin 8 to D29.7
+  and pin 11 to the D105.2/D13.4/D11.20 clock conductor, leaving only the `H`
+  edge contact/pull-up open. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 217 modeled nets retain source-risk annotations requiring
+  In total, 216 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

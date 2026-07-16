@@ -136,8 +136,9 @@ def check_rows(board: dict) -> list[list[object]]:
         (
             "D57 baud output reaches D11 TxC/RxC",
             has_node(board, "PIT_BAUD", "D11", "9")
-            and has_node(board, "PIT_BAUD", "D11", "25"),
-            "`PIT_BAUD`",
+            and has_node(board, "PIT_BAUD", "D11", "25")
+            and board["nets"]["PIT_BAUD"].get("source_risk") is False,
+            "native sheet-2 `BAUD R.` handoff and sheet-1 TxC/RxC fork",
         )
     )
     checks.append(
@@ -357,7 +358,9 @@ def main() -> int:
             "",
             "- D11 is bus-visible at the decoded `0x08..0x0B` USART window, with",
             "  BA0, DB0-DB7, `IORD`, `IOWR`, and `CS_D11` wired.",
-            "- D57 `OUT0` reaches both D11 clock inputs through `PIT_BAUD`.",
+            "- Native sheet 2 sends D57 `OUT0` through `BAUD R.`; native sheet 1",
+            "  visibly forks that conductor to D11 TxC and RxC. `PIT_BAUD` is",
+            "  source-closed rather than retained as an assumed USART-end fork.",
             "- D11 serial-side pins are carried through the modeled D14/D32/D3/D12",
             "  output drivers and D104 receiver to X3 signal pins. D3.10 reaches",
             "  X3.3 through the explicit W20 assembly-wire closure.",

@@ -11809,7 +11809,9 @@
    "nodes": [["D55", "13"], ["D35", "9"]]
   },
   "PIT_BAUD": {
-   "src": "traced sheet-2 (bite-3): D57.OUT0 -> line labeled \"BAUD R.\" -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail \"A\" = +5V (power corner)",
+   "src": "native sheet-2 D57.OUT0/pin10 -> BAUD R. handoff to sheet 1; native full-resolution sheet 1 visibly forks the BAUD RATE conductor to D11 TxC/pin9 and RxC/pin25. Rail \"A\" = +5V (power corner)",
+   "source_risk": false,
+   "risk_disposition": "closed across the native sheets: sheet 2 proves D57.10 to the BAUD R. handoff, and sheet 1 draws one junctioned BAUD RATE conductor to both D11.9 TxC and D11.25 RxC",
    "nodes": [
     [
      "D57",
