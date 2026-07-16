@@ -465,9 +465,9 @@ Mac lacks the Java 25 + freerouting fork toolchain; routing/DRC is Linux-only):
    SHA256 into `docs/rev-a-manufacturing-readiness.md`, and run vendor DFM.
 
 Not blocking the bare board, but settle before populating (pinouts freeze in
-copper): simulate the U24 DRAM-timing GAL; decide whether to formally waive the
-VGA release-gate item for the bench fixture; and clear the doc/guard cleanup
-(the pinned "No real Juku ROM has booted" phrasing predates the sim boot proof).
+copper): simulate the U24 DRAM-timing GAL and decide whether to formally waive
+the VGA release-gate item for the bench fixture. The formerly stale real-ROM
+boot wording and guard are now synchronized with the passing boot proof.
 Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
 
 ### Parts and assembly preparation

@@ -1,7 +1,12 @@
 # HDL integration
 
-Status: **SYNTHETIC SMOKE TEST ONLY**. No real Juku ROM has booted on this
-spin-off top.
+Status: **REAL-ROM BOOT AND SYNTHETIC SMOKE PASS / HARDWARE DESIGN HOLD**.
+
+Two independent spin-off tops boot the patched real Juku `ekta37` firmware:
+`juku_boot_top.vhd` runs it on T80, while `vjuga_juku_top.v` runs it on tv80
+through the shared К565РУ5, D6 К556РТ4, and D8 К155РЕ3 models. Both framebuffer
+results match the main cosim oracle after 6000 video writes. This is simulation
+evidence, not a release of the stale Rev-A copper.
 
 The first CPU target is the VHDL T80 core from the `external/T80` submodule.
 

@@ -33,8 +33,9 @@ order the board.
 
 ## Release blockers
 
-- No real Juku ROM has booted on the VJUGA T80 top.
-- The passing main-project ROM check does not execute this spin-off.
+- T80 and tv80 VJUGA tops boot the patched real Juku firmware and match cosim's
+  framebuffer at 6000 writes (`sim/boot_check.sh` and
+  `sim/vjuga_boot_check.sh`); physical-board boot remains untested.
 - The routed copper does not yet include the Phase 3 decode sockets; the PCB
   must be re-laid-out from the current schematic (Phase 3 step f) before fab.
 - U24 DRAM timing is an unvalidated bring-up draft; the U5 decode is now
@@ -82,11 +83,6 @@ fab but their pinouts freeze in copper, so decide them first.
    power-return — after the re-layout.
 6. **Regenerate + freeze the fab package (README gate 7):** new Gerber ZIP + its
    SHA256 into this doc; recheck stock/vendor capability at order time.
-7. **Doc + guard cleanup:** the "real Juku ROM boot unproven" language in
-   `../kicad/fab-notes.md` and the checker-pinned "No real Juku ROM has booted"
-   phrase here both predate the boot proof; releasing requires updating the docs
-   and the consistency guard together, not editing the text alone.
-
 Optional-but-recommended before order: finish the staged full-board LVS
 (twin ↔ board, beyond the decode/observability contracts) — it is exactly the
 check that catches a mis-bound pin before it is etched.

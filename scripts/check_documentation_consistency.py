@@ -444,13 +444,29 @@ def main() -> int:
         ),
         "spinoffs/minimal-vga/kicad/fab-notes.md": read("spinoffs/minimal-vga/kicad/fab-notes.md"),
     }
+    vjuga_boot_docs = {
+        **vjuga,
+        "spinoffs/minimal-vga/hdl/README.md": read("spinoffs/minimal-vga/hdl/README.md"),
+        "spinoffs/minimal-vga/sim/README.md": read("spinoffs/minimal-vga/sim/README.md"),
+    }
     for path, text in vjuga.items():
         if "hold" not in text.lower():
             failures.append(f"{path} does not expose the VJUGA design hold")
         if "READY TO UPLOAD" in text or "READY FOR VENDOR PREVIEW" in text:
             failures.append(f"{path} contains obsolete VJUGA release language")
-    if "No real Juku ROM has booted" not in vjuga["spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md"]:
-        failures.append("VJUGA readiness does not state that real-ROM boot is unproven")
+    stale_vjuga_boot_claims = (
+        "No real Juku ROM has booted",
+        "real Juku ROM boot on the T80/VJUGA top is unproven",
+        "next meaningful simulation milestone is a real Juku ROM boot",
+    )
+    for path, text in vjuga_boot_docs.items():
+        for claim in stale_vjuga_boot_claims:
+            if claim.lower() in text.lower():
+                failures.append(f"{path} retains stale VJUGA boot claim: {claim!r}")
+    vjuga_readiness = vjuga["spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md"]
+    for marker in ("sim/boot_check.sh", "sim/vjuga_boot_check.sh", "6000 writes"):
+        if marker not in vjuga_readiness:
+            failures.append(f"VJUGA readiness omits real-ROM boot evidence {marker!r}")
     vjuga_zip = ROOT / "fab" / "minimal-vga" / "upload" / "vjuga-rev-a-gerbers-drill.zip"
     if vjuga_zip.exists():
         vjuga_digest = sha256(vjuga_zip)

@@ -39,14 +39,12 @@ design-release or purchase authorization. The top-level status is tracked in
 
 ## Design blockers
 
-- The spin-off HDL executes only a synthetic program; real Juku ROM boot on
-  the T80/VJUGA top is unproven.
-- U5/U24 GAL equations are draft bring-up equations and have not been validated
-  against a timing simulation or programmed-device test.
+- T80 and tv80 spin-off tops boot the patched real Juku ROM framebuffer-identical
+  to cosim; this simulation result does not validate the stale routed copper.
+- U5 decode behavior is simulated in both jumper modes. U24 GAL timing remains
+  draft and has not been validated against selected DRAM timing or a programmed device.
 - VGA timing activity is proven, but no real-ROM prompt/banner is rendered from
   the shared DRAM path.
-- The coarse Rev A memory/I/O mapping is not yet shown compatible with the
-  desired Juku firmware path.
 - Actual oscillator, reset supervisor, DRAM, ROM, GAL, socket, fuse, TVS,
   connector, and assembly-process choices require datasheet/footprint review.
 - The autorouted copper and power/return strategy need independent review.

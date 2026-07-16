@@ -75,7 +75,6 @@ OPTIONAL_REVIEW_ARTIFACTS = [
 ]
 
 HUMAN_GATES = [
-    "Boot the intended real Juku ROM on the VJUGA T80 top and compare it to an explicit oracle.",
     "Render a deterministic real-ROM banner or prompt through the shared-DRAM/VGA path.",
     "Simulate, finalize, program, and review the U5/U24 GAL equations and DRAM timing.",
     "Independent Gerber/drill inspection in an external viewer.",
