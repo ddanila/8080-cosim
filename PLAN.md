@@ -358,7 +358,10 @@ adoption road, in dependency order:
    the К155РЕ3 electrical contract. The focused PROM guard also proves disabled
    outputs are high impedance and row 00 sinks only D4/D15 select. Its `E_N`
    input is the separate D6.12 ROM-select conductor, so full adoption completes
-   with step 3.
+   with step 3. Exhaustive minimization closes its firmware semantics:
+   `Q=(BA15==BA14)`, D4/D15 asserts at `Q & !BA13`, D5/D16 at `Q & BA13`,
+   BA12/BA11 are don't-cares, and D0-D3/D6-D7 always release
+   (`docs/d8-physical-decode.md`).
 3. **D6 `.038` — physical table provisionally executes; output polarity remains
    unconfirmed.** Runnable selects come from `decode_prom U_DECODE` and the
    validated physical table, with the sim-only `~D0`/`~D3` correction documented

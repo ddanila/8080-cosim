@@ -115,6 +115,12 @@ def main() -> int:
         "D8 disabled outputs did not release",
         "D8 row 00 is not one open-collector D4 sink",
     )
+    d8_decode_ok = marker(
+        "docs/d8-physical-decode.md",
+        "Status: **PHYSICAL D8 TABLE MINIMIZED AND EXECUTED**",
+        "All 256 captured bits match the equations | PASS",
+        "No replacement D8 firmware remains to reconstruct",
+    )
     re3_lineage_ok = marker(
         "docs/re3-firmware-inspection.md",
         "D94 `.092`",
@@ -230,6 +236,7 @@ def main() -> int:
         ("D6 validated physical raw image has exact size and SHA256", d6_ok),
         ("D8 validated physical raw image has exact size and SHA256", d8_ok),
         ("D8 physical table executes as open-collector socket selects", d8_open_collector_ok),
+        ("D8 physical table has exhaustive minimized socket-select equations", d8_decode_ok),
         ("D94 validated physical raw image has exact size and SHA256", d94_image_ok),
         ("D15 functional image has exact size and SHA256", d15_ok),
         ("D16 functional image has exact size and SHA256", d16_ok),

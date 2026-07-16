@@ -52,6 +52,8 @@ This differs at 19 of 32 addresses from the former reconstructed fallback.
 The validated physical image therefore supersedes that fallback as content
 truth. HDL now preserves the reader-proved open-collector behavior: raw zero
 sinks a socket-select rail, while raw one or disabled output releases it.
+`docs/d8-physical-decode.md` exhaustively reduces the table to the exact D15/D16
+select equations and proves the other six outputs are invariant released.
 
 ## D94 `.092`
 

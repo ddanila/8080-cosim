@@ -82,6 +82,7 @@ jobs:
             scripts/report_8282_pinout_audit.py \
             scripts/report_package_endpoint_coverage.py \
             scripts/report_d6_physical_decode.py \
+            scripts/report_d8_physical_decode.py \
             scripts/report_d6_runtime_path.py \
             scripts/report_d6_firmware_modes.py \
             scripts/report_d94_reconstruction_constraints.py \

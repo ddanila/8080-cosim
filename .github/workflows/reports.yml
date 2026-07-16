@@ -164,6 +164,11 @@ jobs:
           python3 scripts/report_d6_physical_decode.py
           git diff --exit-code -- docs/d6-physical-decode.md
 
+      - name: Check physical D8 decode report freshness
+        run: |
+          python3 scripts/report_d8_physical_decode.py
+          git diff --exit-code -- docs/d8-physical-decode.md
+
       - name: Check D6 firmware mode coverage freshness
         run: |
           python3 scripts/report_d6_firmware_modes.py
