@@ -211,7 +211,13 @@ Every ask below is queued with exact deliverables in
    the D5-D7 destinations, D104.10, both pull-up resistor references (D94.13 and
    the apparently pull-up-only D94.1),
    and later recheck the D29.4/IORD conflict noted in the source model. The
-   minimized physical table now gives an exact D0 probe stimulus: BA1:BA0=`11`
+   minimized `/RE`/`/WE` equations plus measured A2=`IORD` require A3 to be
+   polarity-equivalent to active-low `IOWR` during selected FDC cycles. First
+   continuity-test D94.13/D104.7 against D5.27; if open, scope both nodes during
+   known FDC reads and writes. This is a firmware-derived functional prediction,
+   not copper evidence, so the source nets remain separate pending measurement.
+   The minimized physical table also gives an exact D0 probe stimulus:
+   BA1:BA0=`11`
    with A4/D101.7 low asserts D94.1 regardless of A3/A2 while both D93 `/RE`
    and `/WE` release. D2/D3 minimize to mutually exclusive read/write equations,
    and D4-D7 are proved released at every address; these constraints sharpen

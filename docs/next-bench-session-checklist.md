@@ -30,7 +30,11 @@ PDF is the prototype and may differ.
 2. **D30 / `H` WAIT-READY edge:** exact edge contact + pull-up reference feeding
    `H`/D105.10/D13.13 (`docs/d30-section-b-scan-chase.md`).
 3. **D94 `.092` continuity:** the pull-up references on D94.13/D94.14/D94.1,
-   D104.10, and the D5-D7 far destinations (`docs/d94-reconstruction-constraints.md`).
+   D104.10, and the D5-D7 far destinations. First test D94.13/D104.7 against
+   D5.27 `IOWR`; if open, capture both during known FDC port reads/writes. The
+   physical table requires polarity-equivalent levels on selected cycles, but
+   this firmware constraint is not copper proof
+   (`docs/d94-reconstruction-constraints.md`).
 4. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
    D106.11-D93.27, D106.14-D93.33 layer-handoff tests, and the D95/D101 select
    pins (`docs/fdc-hardware-handoff.md`).
