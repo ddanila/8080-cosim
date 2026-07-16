@@ -36,7 +36,7 @@ module vjuga_juku_top #(
     wire [15:0] A;
     wire [7:0]  cpu_do;
     reg  [7:0]  cpu_di;
-    reg         wait_n;
+    wire        wait_n;
 
     tv80s #(.Mode(0), .T2Write(0), .IOWait(1)) U_CPU (
         .reset_n(reset_n), .clk(clk), .wait_n(wait_n),
@@ -98,7 +98,7 @@ module vjuga_juku_top #(
 
     // ---- real К565РУ5 RAM bank (8 bit-slices), driven by a compact sequencer ----
     reg  [7:0] dram_ma;
-    reg        dram_ras_n = 1'b1, dram_cas_n = 1'b1, dram_we_n = 1'b1;
+    wire       dram_ras_n, dram_cas_n, dram_we_n;
     wire [7:0] rdo;                 // РУ5 data-out bus (open-collector-ish; model drives 0/1/z)
     reg  [7:0] ram_wdata;
     wire [15:0] vid_addr;           // video read address (sim-only 2nd port)
@@ -120,46 +120,62 @@ module vjuga_juku_top #(
         raw_row = {lin[0], lin[7], lin[6], lin[4], lin[2], lin[3], lin[5], lin[1]};
     endfunction
 
-    localparam S_IDLE=0, S_ROW=1, S_RAS=2, S_COL=3, S_CAS=4, S_DONE=5;
-    reg [2:0]  st = S_IDLE;
+    localparam [2:0] S_IDLE=3'b000, S_ROW=3'b001, S_RAS=3'b011,
+        S_COL=3'b010, S_CAS=3'b110, S_HOLD=3'b111,
+        S_PRECHARGE=3'b101, S_DONE=3'b100;
     reg [7:0]  ram_rdata;
     reg        acc_write;
     reg [15:0] acc_addr;
 
     wire ram_access = (mreq_n == 1'b0) && (rd_n == 1'b0 || wr_n == 1'b0) && !(is_rom || is_cart);
+    wire ram_ce_n_cpu = ~((mreq_n == 1'b0) && !(is_rom || is_cart));
+    wire mem_rd_n_cpu = ~((mreq_n == 1'b0) && (rd_n == 1'b0));
+    wire mem_wr_n_cpu = ~((mreq_n == 1'b0) && (wr_n == 1'b0));
+    wire addrmux_sel_u24, video_ack_u24, refresh_tick_u24;
+    wire u24_s0, u24_s1, u24_s2;
+    wire [2:0] u24_state = {u24_s2, u24_s1, u24_s0};
+    // tv80 presents its memory strobes for only one internal phase even when
+    // WAIT is asserted. Hold the transaction captured above across U24's
+    // remaining phases, matching the stable external bus contract of the
+    // physical Z80 without bypassing any U24-generated DRAM control.
+    wire u24_cpu_hold = u24_state != S_IDLE && u24_state != S_DONE &&
+        !video_ack_u24 && !refresh_tick_u24;
+    wire ram_ce_n_u24 = u24_cpu_hold ? 1'b0 : ram_ce_n_cpu;
+    wire mem_rd_n_u24 = u24_cpu_hold ? acc_write : mem_rd_n_cpu;
+    wire mem_wr_n_u24 = u24_cpu_hold ? ~acc_write : mem_wr_n_cpu;
+
+    // The physical U24 GAL contract now drives the functional boot path. Its
+    // corrected pinout uses pin 13 as an input and pins 14-23 as exactly ten
+    // macrocells (seven functional outputs plus three Gray-state feedback bits).
+    u24_dram_timing U_U24 (
+        .clk(clk), .reset_n(reset_n), .ram_ce_n(ram_ce_n_u24),
+        .mem_rd_n(mem_rd_n_u24), .mem_wr_n(mem_wr_n_u24),
+        .rfsh_obs_n(rfsh_n), .video_req(1'b0), .decode_wait_n(1'b1),
+        .refresh_q0(A[0]), .refresh_q1(A[1]),
+        .refresh_q2(A[2]), .refresh_q3(A[3]),
+        .ras_n(dram_ras_n), .cas_n(dram_cas_n), .dram_we_n(dram_we_n),
+        .addrmux_sel(addrmux_sel_u24), .cpu_wait_n(wait_n),
+        .video_ack(video_ack_u24), .refresh_tick(refresh_tick_u24),
+        .state0(u24_s0), .state1(u24_s1), .state2(u24_s2)
+    );
 
     always @(posedge clk) begin
         if (!reset_n) begin
-            st <= S_IDLE; dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
             mode <= 2'b00; portc <= 8'h00;
         end else begin
-            // Drive RAS/CAS/WE EXPLICITLY per state -- no blanket default. A default
-            // "<= 1" followed by a per-state "<= 0" made iverilog emit a spurious RAS
-            // transition that re-triggered dram_64kx1's row latch after dram_ma had
-            // switched to the column (row captured the column). Explicit per-state
-            // values give RAS/CAS one clean edge each. One signal changes per state,
-            // mirroring the proven hdl/sim/dram_unit_tb.v drive ordering.
-            case (st)
-                S_IDLE: begin
-                            dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
-                            if (ram_access) begin
-                                acc_addr  <= A; acc_write <= ~wr_n; ram_wdata <= cpu_do;
-                                dram_ma   <= raw_row(A[15:8]);   // present row (pre-scrambled)
-                                st <= S_ROW;
-                            end
-                        end
-                S_ROW:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
-                              st <= S_RAS; end                    // RAS falls (row on bus, stable)
-                S_RAS:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b1; dram_we_n <= ~acc_write;
-                              dram_ma <= acc_addr[7:0];           // switch to column (row already latched)
-                              st <= S_COL; end
-                S_COL:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b0; dram_we_n <= ~acc_write;
-                              st <= S_CAS; end                    // CAS falls -> read/write strobe
-                S_CAS:  begin dram_ras_n <= 1'b0; dram_cas_n <= 1'b0; dram_we_n <= ~acc_write;
-                              ram_rdata <= rdo; st <= S_DONE; end
-                S_DONE: begin dram_ras_n <= 1'b1; dram_cas_n <= 1'b1; dram_we_n <= 1'b1;
-                              st <= S_IDLE; end
-            endcase
+            if (u24_state == S_IDLE && ram_access) begin
+                acc_addr <= A;
+                acc_write <= ~wr_n;
+                ram_wdata <= cpu_do;
+                dram_ma <= raw_row(A[15:8]);
+            end
+            // U24 enters COL after this edge; switch the external mux only
+            // after RAS has latched the row.
+            if (u24_state == S_RAS && !refresh_tick_u24)
+                dram_ma <= acc_addr[7:0];
+            // Sample while CAS is still low, immediately before PRECHARGE.
+            if (u24_state == S_HOLD && !acc_write)
+                ram_rdata <= rdo;
 
             // IO writes: latch + Port C bank control (once, on the WR strobe)
             if (iorq_n == 1'b0 && wr_n == 1'b0) begin
@@ -175,12 +191,6 @@ module vjuga_juku_top #(
                 end
             end
         end
-    end
-
-    // Wait-state the CPU on a RAM access until the sequencer has the data.
-    always @* begin
-        if (ram_access && st != S_DONE) wait_n = 1'b0;
-        else                            wait_n = 1'b1;
     end
 
     // CPU read bus: ROM overlay / empty cart / sequenced RAM / IO latch.
@@ -212,7 +222,7 @@ module vjuga_juku_top #(
     assign vid_addr = va_r;
     reg [31:0] vw = 0;
     reg        prev_wr_ram = 0;
-    wire       ram_write_now = (st == S_COL) && acc_write && (acc_addr >= 16'hD800);
+    wire       ram_write_now = (u24_state == S_CAS) && acc_write && (acc_addr >= 16'hD800);
     wire       m1_fetch_now  = (m1_n == 1'b0) && (mreq_n == 1'b0) && (rd_n == 1'b0);
     always @(posedge clk) begin
         if (!reset_n) begin vw <= 0; prev_wr_ram <= 0; m1_fetch_prev <= 1'b0; end

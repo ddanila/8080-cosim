@@ -21,6 +21,9 @@ spinoffs/minimal-vga/sim/vjuga_boot_check.sh
 echo "== VJUGA spin-off: Phase 4 framebuffer-readback tool validated vs twin + cosim =="
 spinoffs/minimal-vga/sim/vjuga_readback_check.sh
 
+echo "== VJUGA spin-off: U24 GAL22V10 DRAM timing contract =="
+spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
+
 echo "== VJUGA spin-off: schematic/HDL LVS =="
 spinoffs/minimal-vga/sync/check.sh
 

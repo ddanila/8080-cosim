@@ -1,13 +1,13 @@
 # Rev A GAL/PAL Equations
 
-Status: **DECODE SIMULATED / TIMING + PROGRAMMING UNVALIDATED**.
+Status: **DECODE + DRAM TIMING SIMULATED / PROGRAMMING UNVALIDATED**.
 
 The U5 decode is now backed by test vectors from the verified simulation twin
 (both jumper modes boot byte-identical to cosim — see the U5 section). These
 equations are still not a released programming file: they must be converted to a
-device-specific source format, programmed, independently reviewed, and — for the
-U24 timing sequencer below — validated against the selected DRAM timing before
-fabrication.
+device-specific source format, programmed, and independently reviewed. The U24
+reference below is now simulation-validated against the slower vendored
+MK4564-12 timing limits at the selected 4 MHz clock.
 
 ## U5 Address/control Decode GAL22V10 (dual-mode: Phase 3)
 
@@ -45,7 +45,7 @@ Pinout (a real 22V10: 12 inputs on pins 1-11+13, 10 macrocells on 14-23):
 | 19 | IO_RD_N | output |
 | 20 | IO_WR_N | output |
 | 21 | REV_OUT | output |
-| 22 | WAIT_N | output |
+| 22 | DECODE_WAIT_N | output to U24.13 only |
 | 23 | SPARE_N | output |
 | 24 | VCC | power |
 
@@ -78,7 +78,7 @@ ROM_SEL     = MEM_CYCLE & ( (/MODE_B & ROM_A) # (MODE_B & ROM_B) )
 /IO_WR_N    = IO_CYCLE & WRITE_CYCLE
 
 REV_OUT     = MODE_B & DEC_REV                  ; РТ4 rev observ. / future video path
-WAIT_N      = 1                                 ; no wait states in first bring-up
+DECODE_WAIT_N = 1                               ; U24 is the sole CPU WAIT driver
 SPARE_N     = 1
 ```
 
@@ -109,8 +109,8 @@ Notes:
 
 - `PPI_SEL` is a bring-up placeholder and should be tightened when the final
   I/O map is frozen.
-- `WAIT_N` is held inactive for first bring-up. If DRAM timing needs wait-state
-  insertion, move it into U24 or revise this decode GAL.
+- U5 does not share a push-pull `WAIT_N` net with U24. Its pin 22 feeds only
+  U24.13 as `DECODE_WAIT_N`; U24.18 is the sole CPU/header WAIT driver.
 - `DEC_RAM_N` (O2) and `DEC_ROE_N` (O4) are brought into the GAL for cross-check
   and future use; `RAM_CE_N` is derived as the complement of `ROM_SEL` so a
   single stuck РТ4 output does not silently corrupt RAM select.
@@ -136,51 +136,58 @@ Pinout:
 | 10 | REFRESH_Q2 | input |
 | 11 | REFRESH_Q3 | input |
 | 12 | GND | power |
-| 13 | RAS_N | output |
-| 14 | CAS_N | output |
-| 15 | DRAM_WE_N | output |
-| 16 | ADDRMUX_SEL | output |
-| 17 | CPU_WAIT_N | output |
-| 18 | VIDEO_ACK | output |
-| 19 | REFRESH_TICK | output |
-| 20 | DRAM_OE_N | output |
-| 21 | SPARE0 | output |
-| 22 | SPARE1 | output |
-| 23 | SPARE2 | output |
+| 13 | DECODE_WAIT_N | input from U5.22 |
+| 14 | RAS_N | output |
+| 15 | CAS_N | output |
+| 16 | DRAM_WE_N | output |
+| 17 | ADDRMUX_SEL | output |
+| 18 | CPU_WAIT_N | sole output to CPU/headers |
+| 19 | VIDEO_ACK | output / registered video-client flag |
+| 20 | REFRESH_TICK | output / registered refresh-client flag |
+| 21 | STATE0 | registered feedback output, no external load |
+| 22 | STATE1 | registered feedback output, no external load |
+| 23 | STATE2 | registered feedback output, no external load |
 | 24 | VCC | power |
 
-Bring-up behavior:
+Pin 13 is the GAL22V10's twelfth input/OE pin; assigning `RAS_N` there was an
+invalid eleven-output contract. Pins 14-23 are the ten real macrocells. The
+corrected contract uses seven functional outputs and three registered state
+bits. `DRAM_OE_N` was removed because 4164 DOUT enable is controlled by CAS.
+
+The programming reference is `hdl/u24_dram_timing.v`, guarded by
+`sim/u24_dram_timing_check.sh`. It uses this cyclic Gray sequence, so every
+transition—including `DONE -> IDLE`—changes exactly one feedback macrocell:
 
 ```text
-CPU_RAM     = /RAM_CE_N
-CPU_READ    = /MEM_RD_N
-CPU_WRITE   = /MEM_WR_N
-CPU_ACCESS  = CPU_RAM & (CPU_READ # CPU_WRITE)
-REFRESH     = /RFSH_OBS_N
-VIDEO       = VIDEO_REQ
-
-DRAM_CYCLE  = CPU_ACCESS # REFRESH # VIDEO
-
-/RAS_N      = DRAM_CYCLE
-/CAS_N      = DRAM_CYCLE & CLK
-/DRAM_WE_N  = CPU_RAM & CPU_WRITE & CLK
-
-ADDRMUX_SEL = CLK
-CPU_WAIT_N  = 1
-VIDEO_ACK   = VIDEO
-REFRESH_TICK = REFRESH
-/DRAM_OE_N  = CPU_RAM & CPU_READ
-
-SPARE0 = 1
-SPARE1 = 1
-SPARE2 = 1
+IDLE(000) -> ROW(001) -> RAS(011) -> COL(010)
+          -> CAS(110) -> HOLD(111) -> PRECHARGE(101) -> DONE(100)
+          -> IDLE(000)
 ```
 
-Notes:
+At the owner-selected 4 MHz CPU clock:
 
-- This is a programmable bring-up timing contract, not a final proven DRAM
-  timing model.
-- `RAS_N`, `CAS_N`, and `DRAM_WE_N` must be checked against the selected
-  `KM4164B-10` datasheet after the first board is powered.
-- The board exposes DRAM/debug headers specifically so these equations can be
-  adjusted without changing PCB copper.
+- CPU has priority over refresh, then video. CPU inputs remain stable because
+  U24 asserts WAIT from request acceptance through `PRECHARGE` and releases it
+  only in `DONE`.
+- `ROW` presents the row address; `RAS` asserts RAS; `COL` switches the mux and
+  establishes early-write WE; `CAS` and `HOLD` keep CAS active for two clocks;
+  `PRECHARGE` raises CAS one clock before RAS; `DONE` releases WAIT.
+- Refresh takes the RAS-only path `ROW -> RAS -> PRECHARGE -> DONE`. The
+  registered `REFRESH_TICK`/`VIDEO_ACK` outputs retain the selected non-CPU
+  client even after its request input changes. A CPU request colliding with
+  either client remains waited through that client's `DONE`, then receives its
+  own complete row/column cycle before WAIT releases.
+- The slower vendored MK4564-12 limits are met conservatively: 500 ns
+  RAS-to-CAS delay, 500 ns CAS pulse (minimum 75 ns), 1250 ns RAS pulse
+  (minimum 120 ns), 250 ns RAS hold after CAS (minimum 75 ns), and at least
+  250 ns early-write setup (minimum 0 ns). The selected 4 MHz `Z0840004PSC`
+  therefore has timing margin even against the -12 reference, while a future
+  clock change must rerun the guard.
+
+Remaining notes:
+
+- This is a simulated programming contract, not a JEDEC fuse map or a
+  programmed-device test. Convert it to device-specific equations, compile it
+  against the chosen GAL22V10, and preserve the compiler/fuse checksum.
+- The board exposes DRAM/debug headers so programmed-device timing can be
+  compared with these waveforms without changing the functional pinout.

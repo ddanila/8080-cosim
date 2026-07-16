@@ -39,7 +39,8 @@ iverilog -g2012 \
   -o "$TMP/twin" \
   "$ROOT/hdl/vendor/vm80a.v" \
   "$TV/tv80_alu.v" "$TV/tv80_reg.v" "$TV/tv80_mcode.v" "$TV/tv80_core.v" "$TV/tv80s.v" \
-  "$ROOT/hdl/devices.v" "$MV/hdl/vjuga_juku_top.v" "$MV/hdl/vjuga_juku_tb.v"
+  "$ROOT/hdl/devices.v" "$MV/hdl/u24_dram_timing.v" \
+  "$MV/hdl/vjuga_juku_top.v" "$MV/hdl/vjuga_juku_tb.v"
 vvp "$TMP/twin" +capture="$TMP/cap.txt" >/dev/null 2>&1
 
 echo "== reassemble the framebuffer from the captured write stream =="

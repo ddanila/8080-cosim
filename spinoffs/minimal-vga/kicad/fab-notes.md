@@ -41,8 +41,9 @@ design-release or purchase authorization. The top-level status is tracked in
 
 - T80 and tv80 spin-off tops boot the patched real Juku ROM framebuffer-identical
   to cosim; this simulation result does not validate the stale routed copper.
-- U5 decode behavior is simulated in both jumper modes. U24 GAL timing remains
-  draft and has not been validated against selected DRAM timing or a programmed device.
+- U5 decode behavior is simulated in both jumper modes. U24's corrected
+  Gray-coded pin/timing contract meets vendored MK4564-12 limits at 4 MHz;
+  neither GAL has been compiled, programmed, or bench-tested on the chosen device.
 - VGA timing activity is proven, but no real-ROM prompt/banner is rendered from
   the shared DRAM path.
 - Actual oscillator, reset supervisor, DRAM, ROM, GAL, socket, fuse, TVS,

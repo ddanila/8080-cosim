@@ -53,14 +53,20 @@ for M in 0 1; do
     -o "$TMP/twin_$M" \
     "$ROOT/hdl/vendor/vm80a.v" \
     "$TV/tv80_alu.v" "$TV/tv80_reg.v" "$TV/tv80_mcode.v" "$TV/tv80_core.v" "$TV/tv80s.v" \
-    "$ROOT/hdl/devices.v" "$MV/hdl/vjuga_juku_top.v" "$MV/hdl/vjuga_juku_tb.v"
-  vvp "$TMP/twin_$M" >/dev/null 2>&1 || true
+    "$ROOT/hdl/devices.v" "$MV/hdl/u24_dram_timing.v" \
+    "$MV/hdl/vjuga_juku_top.v" "$MV/hdl/vjuga_juku_tb.v"
+  vvp "$TMP/twin_$M" +capture="$TMP/capture_$M.txt" >/dev/null 2>&1 || true
   if [ ! -f "$TMP/vjuga_$M.bin" ]; then
     echo "  FAIL  Mode $M never reached $WRITES video writes (no framebuffer dumped)"; fail=1
   elif cmp -s "$TMP/vjuga_$M.bin" "$TMP/ref.bin"; then
     echo "  PASS  Mode $M framebuffer == cosim after $WRITES video writes"
   else
-    echo "  FAIL  Mode $M framebuffer differs from cosim @ $WRITES writes"; fail=1
+    echo "  FAIL  Mode $M framebuffer differs from cosim @ $WRITES writes"
+    echo "        first differing bytes (1-based offset, twin, cosim; octal):"
+    cmp -l "$TMP/vjuga_$M.bin" "$TMP/ref.bin" | head -8 || true
+    echo "        first modeled framebuffer writes:"
+    head -8 "$TMP/capture_$M.txt" || true
+    fail=1
   fi
 done
 

@@ -16,6 +16,14 @@ on:
       - 'media/disks/**'
       - 'media/system/**'
       - 'kicad/juku.board.json'
+      - 'spinoffs/minimal-vga/hdl/u24_dram_timing*.v'
+      - 'spinoffs/minimal-vga/hdl/vjuga_juku*.v'
+      - 'spinoffs/minimal-vga/sim/u24_dram_timing_check.sh'
+      - 'spinoffs/minimal-vga/sim/vjuga_boot_check.sh'
+      - 'spinoffs/minimal-vga/roms/ekta37_z80.bin'
+      - 'spinoffs/minimal-vga/external/tv80'
+      - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
+      - 'spinoffs/minimal-vga/kicad/check_rev_a_physical.py'
       - '.github/workflows/hdl.yml'
   pull_request:
     paths:
@@ -26,6 +34,14 @@ on:
       - 'media/disks/**'
       - 'media/system/**'
       - 'kicad/juku.board.json'
+      - 'spinoffs/minimal-vga/hdl/u24_dram_timing*.v'
+      - 'spinoffs/minimal-vga/hdl/vjuga_juku*.v'
+      - 'spinoffs/minimal-vga/sim/u24_dram_timing_check.sh'
+      - 'spinoffs/minimal-vga/sim/vjuga_boot_check.sh'
+      - 'spinoffs/minimal-vga/roms/ekta37_z80.bin'
+      - 'spinoffs/minimal-vga/external/tv80'
+      - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
+      - 'spinoffs/minimal-vga/kicad/check_rev_a_physical.py'
       - '.github/workflows/hdl.yml'
 
 jobs:
@@ -58,6 +74,9 @@ jobs:
       - name: Install Icarus Verilog
         run: sudo apt-get update && sudo apt-get install -y gcc iverilog
 
+      - name: Initialize pinned tv80 core
+        run: git submodule update --init spinoffs/minimal-vga/external/tv80
+
       - name: Run FDC regression checks
         run: |
           (cd media/disks && sha256sum -c SHA256SUMS)
@@ -87,6 +106,9 @@ jobs:
           ./sync/serial_check.sh
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
+          ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
+          ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
+          python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
 
       - name: Run Monitor and BASIC reference guards
         run: |

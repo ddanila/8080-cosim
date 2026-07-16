@@ -29,6 +29,7 @@ REQUIRED_NETS = {
     "A0", "A15", "D0", "D7",
     "MREQ_N", "IORQ_N", "RD_N", "WR_N", "RFSH_N", "WAIT_N", "RESET_N", "CLK",
     "ROM_CE_N", "MEM_RD_N", "MEM_WR_N", "IO_RD_N", "IO_WR_N", "PPI_CS_N",
+    "DECODE_WAIT_N",
     "DRAM_A0", "DRAM_A7", "RAS_N", "CAS_N", "DRAM_WE_N", "REFRESH_TICK",
     "KBD_COL0", "KBD_ROW0_N", "KBD_GS_N",
     "VIDEO_REQ", "VIDEO_ACK", "HSYNC_N", "VSYNC_N", "BLANK_N", "PIX_LOAD_N", "PIXEL",
@@ -53,6 +54,26 @@ REQUIRED_PIN_BINDINGS = {
     "U2": {
         "10": "A0", "14": "GND", "20": "CE_N", "22": "OE_N",
         "27": "WE_N", "28": "VCC",
+    },
+    "U5": {
+        "12": "GND", "13": "DEC_ROE_N", "14": "ROM_CE_N",
+        "15": "RAM_CE_N", "16": "PPI_CS_N", "17": "MEM_RD_N",
+        "18": "MEM_WR_N", "19": "IO_RD_N", "20": "IO_WR_N",
+        "21": "REV_OUT", "22": "DECODE_WAIT_N", "23": "SPARE_N",
+        "24": "VCC",
+    },
+    # GAL22V10 pin 13 is the twelfth input/OE; only pins 14-23 are output
+    # macrocells. U24 uses seven functional outputs plus three registered state
+    # bits. U24.18 is the sole WAIT_N driver; U5.22 only feeds U24.13.
+    "U24": {
+        "1": "CLK", "2": "RESET_N", "3": "RAM_CE_N",
+        "4": "MEM_RD_N", "5": "MEM_WR_N", "6": "RFSH_OBS_N",
+        "7": "VIDEO_REQ", "8": "REFRESH_Q0", "9": "REFRESH_Q1",
+        "10": "REFRESH_Q2", "11": "REFRESH_Q3", "12": "GND",
+        "13": "DECODE_WAIT_N", "14": "RAS_N", "15": "CAS_N",
+        "16": "DRAM_WE_N", "17": "ADDRMUX_SEL", "18": "CPU_WAIT_N",
+        "19": "VIDEO_ACK", "20": "REFRESH_TICK", "21": "STATE0",
+        "22": "STATE1", "23": "STATE2", "24": "VCC",
     },
     "U10": {
         "2": "DIN", "3": "WE_N", "4": "RAS_N", "8": "VCC",
@@ -261,6 +282,23 @@ def main():
     for net, endpoint in DECODE_SOCKET_CONTRACT:
         if net not in nets or endpoint not in nodes(nets[net]):
             errors.append(f"decode-socket contract: {endpoint[0]}.{endpoint[1]} not on {net}")
+
+    timing_contract = (
+        ("DECODE_WAIT_N", ["U5", "22"]),
+        ("DECODE_WAIT_N", ["U24", "13"]),
+        ("RAS_N", ["U24", "14"]),
+        ("CAS_N", ["U24", "15"]),
+        ("DRAM_WE_N", ["U24", "16"]),
+        ("ADDRMUX_SEL", ["U24", "17"]),
+        ("WAIT_N", ["U24", "18"]),
+        ("VIDEO_ACK", ["U24", "19"]),
+        ("REFRESH_TICK", ["U24", "20"]),
+    )
+    for net, endpoint in timing_contract:
+        if net not in nets or endpoint not in nodes(nets[net]):
+            errors.append(f"U24 timing contract: {endpoint[0]}.{endpoint[1]} not on {net}")
+    if ["U5", "22"] in nodes(nets["WAIT_N"]):
+        errors.append("U5.22 and U24.18 must not contend as WAIT_N outputs")
 
     # Phase 4 observability contract: the analyzer/single-step captures depend on
     # A8-A15 + MEM_WR_N being on J97 (Profile FB high half + write clock), the

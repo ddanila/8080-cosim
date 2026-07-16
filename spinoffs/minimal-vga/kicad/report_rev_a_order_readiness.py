@@ -76,7 +76,7 @@ OPTIONAL_REVIEW_ARTIFACTS = [
 
 HUMAN_GATES = [
     "Render a deterministic real-ROM banner or prompt through the shared-DRAM/VGA path.",
-    "Simulate, finalize, program, and review the U5/U24 GAL equations and DRAM timing.",
+    "Finalize, compile, program, and review the simulated U5/U24 GAL equations.",
     "Independent Gerber/drill inspection in an external viewer.",
     "Full schematic review against the intended Z80, ROM, DRAM, refresh, keyboard, and VGA behavior.",
     "Order-time visual routing review against the generated routing geometry and disposition reports.",

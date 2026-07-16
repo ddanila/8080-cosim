@@ -17,7 +17,8 @@ The two boot checks prove the patched Juku ROM mapping and framebuffer write
 stream in simulation; they do not prove the physical board or a banner rendered
 through the shared-DRAM VGA output path.
 
-The next meaningful simulation milestone is validating the U24 DRAM-timing GAL
-against the selected 4164 timing and rendering the real-ROM framebuffer through
-the VGA path. Aggregate success still means "simulation and package invariants
-pass," not "physical board works."
+The U24 DRAM-timing GAL reference is now guarded against the slower vendored
+MK4564-12 limits at 4 MHz. The next milestones are device-specific GAL
+compilation/programming and rendering the real-ROM framebuffer through the VGA
+path. Aggregate success still means "simulation and package invariants pass,"
+not "physical board works."

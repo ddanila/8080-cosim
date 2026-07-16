@@ -77,9 +77,9 @@ cross-check, but not the board's configuration.)
 
 - The Rev A copper (`rev-a-physical.kicad_pcb`) does not yet place or route the
   Phase 3 decode sockets; the schematic leads the PCB until step (f) re-layout.
-- The U5 decode is now simulated (both jumper modes boot byte-identical), but the
-  U24 DRAM timing/wait-state sequencer is still draft bring-up logic and has not
-  been validated against selected DRAM parts or hardware.
+- The U5 decode is simulated in both jumper modes, and U24's Gray-coded DRAM
+  timing/wait-state reference passes the slower vendored MK4564-12 limits at
+  4 MHz. Neither GAL has been compiled/programmed or validated in hardware.
 - The VGA test proves timing activity, not a Juku banner or prompt sourced from
   shared DRAM.
 - No independent end-to-end schematic/design review has released the copper.
@@ -155,8 +155,9 @@ Before this experiment can become an order candidate it must, at minimum:
    decode sockets the real РТ4/РЕ3 and both jumper modes boot byte-identical to
    cosim (`sim/vjuga_boot_check.sh`);
 3. render a deterministic real-ROM display result through the VGA path;
-4. **decode equations** are now simulated (item 2); still replace the draft U24
-   DRAM *timing* logic with simulated, programmed, reviewed equations;
+4. **decode and U24 DRAM-timing equations are simulated** (item 2 and
+   `sim/u24_dram_timing_check.sh`); still compile, program, and review them on
+   the exact chosen GAL22V10 devices;
 5. validate DRAM, reset, clock, power, connector, and socket pinouts against
    selected parts;
 6. receive an independent schematic, copper, Gerber, drill, and power-return

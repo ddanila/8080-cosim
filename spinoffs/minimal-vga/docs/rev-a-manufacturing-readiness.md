@@ -38,8 +38,11 @@ order the board.
   `sim/vjuga_boot_check.sh`); physical-board boot remains untested.
 - The routed copper does not yet include the Phase 3 decode sockets; the PCB
   must be re-laid-out from the current schematic (Phase 3 step f) before fab.
-- U24 DRAM timing is an unvalidated bring-up draft; the U5 decode is now
-  simulated in both jumper modes but not yet programmed or reviewed on a device.
+- U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
+  CPU/refresh collision handling, video arbitration, and vendored MK4564-12
+  timing guards at 4 MHz. The tv80 real-ROM path uses those controls and remains
+  framebuffer-identical to cosim. U5/U24 still need device-specific compilation,
+  programmed-device tests, and review.
 - The VGA proof is synthetic timing/activity, not a real firmware display.
 - The schematic, selected-part pinouts, copper, power/return strategy, and
   Gerbers have not received the independent design review needed for release.
@@ -69,9 +72,10 @@ fab but their pinouts freeze in copper, so decide them first.
 
 **De-risking (freeze before copper, even though reprogrammable)**
 
-3. **U24 DRAM-timing GAL (README gate 4).** Simulate against the `dram_64kx1` /
-   KM4164B-10 timing so no needed signal is missing from its frozen pinout. The
-   U5 decode half is already simulated in both jumper modes.
+3. **U24 DRAM-timing GAL (README gate 4).** **Simulation DONE:**
+   `sim/u24_dram_timing_check.sh` guards the corrected GAL22V10 pin contract and
+   slower MK4564-12 minima at 4 MHz. REMAINING: compile U5/U24 into the exact
+   chosen GAL device format, preserve fuse checksums, program, and bench-test.
 4. **VGA path (README gate 3) needs an explicit owner decision.** It is deferred
    for the workbench purpose and the framebuffer-readback oracle replaces it, but
    the gate still lists it. Recommendation: formally waive/re-scope it for the

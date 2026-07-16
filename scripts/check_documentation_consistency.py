@@ -467,6 +467,17 @@ def main() -> int:
     for marker in ("sim/boot_check.sh", "sim/vjuga_boot_check.sh", "6000 writes"):
         if marker not in vjuga_readiness:
             failures.append(f"VJUGA readiness omits real-ROM boot evidence {marker!r}")
+    vjuga_gal = read("spinoffs/minimal-vga/docs/rev-a-gal-equations.md")
+    for marker in (
+        "Status: **DECODE + DRAM TIMING SIMULATED / PROGRAMMING UNVALIDATED**",
+        "sim/u24_dram_timing_check.sh",
+        "Pin 13 is the GAL22V10's twelfth input/OE pin",
+        "CPU request colliding",
+    ):
+        if marker not in vjuga_gal:
+            failures.append(f"VJUGA GAL contract omits U24 evidence {marker!r}")
+    if "U24's Gray-coded DRAM timing contract passes" not in vjuga_readiness:
+        failures.append("VJUGA readiness does not expose passing U24 timing evidence")
     vjuga_zip = ROOT / "fab" / "minimal-vga" / "upload" / "vjuga-rev-a-gerbers-drill.zip"
     if vjuga_zip.exists():
         vjuga_digest = sha256(vjuga_zip)

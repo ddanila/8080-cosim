@@ -464,10 +464,11 @@ Mac lacks the Java 25 + freerouting fork toolchain; routing/DRC is Linux-only):
 3. **Freeze the fab package** (`kicad/export_fab.sh`), put the new Gerber ZIP
    SHA256 into `docs/rev-a-manufacturing-readiness.md`, and run vendor DFM.
 
-Not blocking the bare board, but settle before populating (pinouts freeze in
-copper): simulate the U24 DRAM-timing GAL and decide whether to formally waive
-the VGA release-gate item for the bench fixture. The formerly stale real-ROM
-boot wording and guard are now synchronized with the passing boot proof.
+Not blocking the bare board, but settle before populating: U24's corrected
+GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits
+at 4 MHz; device-specific compilation/programming remains. Also decide whether
+to formally waive the VGA release-gate item for the bench fixture. The formerly
+stale real-ROM boot wording and guard are synchronized with the passing proof.
 Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
 
 ### Parts and assembly preparation
