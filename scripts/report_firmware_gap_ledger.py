@@ -102,6 +102,7 @@ def main() -> int:
         "docs/d94-reconstruction-constraints.md",
         "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
         "all five address inputs are explicit continuity boundaries",
+        "Minimized active-low equations reproduce all 256 captured bits | PASS",
         "validated/d94_092.raw.bin",
     ) and d94_image_ok
     re3_lineage_ok = marker(
@@ -175,7 +176,7 @@ def main() -> int:
             "FDC control/decode PROM",
             d94_cell,
             "`docs/d94-reconstruction-constraints.md`",
-            "programming-disk comparison plus D5-D7 destinations (D4 is photo-closed to D93.1), D104.10 receiver-output continuity, pull-up resistor identities, and the guarded D29.4/IORD recheck",
+            "programming-disk comparison plus the equation-targeted D0 hidden-branch probe, D5-D7 destinations (D4 is photo-closed to D93.1), D104.10 receiver-output continuity, pull-up resistor identities, and the guarded D29.4/IORD recheck",
         ],
         [
             "D15",

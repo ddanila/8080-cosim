@@ -206,9 +206,9 @@ def main() -> int:
         (
             "P0",
             "D94 .092 continuity",
-            "identify the pull-up resistors on D94.13-D104.7, D94.14-D101.7, and D94.1; trace D104.10 and D5-D7 far destinations (D4/pin5 is photo-closed to the internally NC/back-bias D93.1 socket contact); later recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 because direct continuity places D94.12/D27.5/D29.4 on IORD contrary to the older IOM_STATUS scan interpretation",
+            "identify the pull-up resistors on D94.13-D104.7, D94.14-D101.7, and D94.1; trace D104.10 and D5-D7 far destinations (D4/pin5 is photo-closed to the internally NC/back-bias D93.1 socket contact). The minimized physical table gives an exact live D0 probe stimulus: BA1:BA0=11 with A4/D101.7 low asserts D94.1 independently of A3/A2, while D93 /RE and /WE both release. Later recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 because direct continuity places D94.12/D27.5/D29.4 on IORD contrary to the older IOM_STATUS scan interpretation",
             "`docs/d94-reconstruction-constraints.md`; `docs/photo-registration.md`; exact two-sided local-fit rows in `ref/photos/juku-pcb-2/endpoints.csv`",
-            "replaces the retired same-as-D8 BA mapping with measured row semantics and resolves the PROM read/write control path before an FDC hardware release",
+            "uses the recovered PROM equations to target D0's hidden branch, replaces the retired same-as-D8 BA mapping with measured row semantics, and resolves the read/write control path before an FDC hardware release",
         ),
         (
             "P1",

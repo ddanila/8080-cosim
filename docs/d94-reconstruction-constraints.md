@@ -109,6 +109,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Every D94 output pad has an explicit net/boundary | PASS | 8/8 output pins netted |
 | Every unresolved D94 output has a photographed copper departure | PASS | component-side local-fit observations for pins 4, 5, 6, 7, 9 |
 | Captured table asserts only D0-D3; D4-D7 stay released | PASS | exhaustive 32-row physical table classification |
+| Minimized active-low equations reproduce all 256 captured bits | PASS | exhaustive address/output comparison against the physical image |
 | Validated `.092` physical image exists and matches SHA256 | PASS | `ref/physical-proms/validated/d94_092.raw.bin` / `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0` |
 | Official .009 BOM/photo notes identify D94 as `.092` | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Reused D94 refdes/tape-cluster history is guarded | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
@@ -187,6 +188,34 @@ scaffold mapping as a closed physical claim:
 This does not refute the accepted local D94-to-D93 copper. It removes a
 false source claim. Remaining decode work is the upstream enable source,
 pull-up identities, and guarded D29.4/IORD recheck.
+
+## Minimized asserted-output logic
+
+Define `S(Dn)=1` when the open-collector output is programmed active
+(captured raw bit `0`), and define the shared qualifier
+`Q = A4 | !A1 | !A0`. Exhaustive comparison against all 32 addresses
+gives:
+
+| Output | Exact asserted equation | Physical destination |
+| --- | --- | --- |
+| `S(D0)` | `!A4 & A1 & A0` | unresolved pull-up/hidden-branch boundary |
+| `S(D1)` | `A3 xor A2` | grounded through D99.8 |
+| `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |
+| `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |
+| `S(D4..D7)` | `0` | physically routed but always released |
+
+These equations sharpen, but do not replace, continuity evidence:
+
+- D2 `/RE` and D3 `/WE` are mutually exclusive and select opposite
+  one-hot states of A3/A2. This proves the PROM is a cycle-control
+  decoder rather than an address-only register decoder.
+- At BA1:BA0=`11` with A4 low, `Q` becomes false, both D93 strobes
+  release, and D0 asserts independently of A3/A2. A live D0 branch
+  probe should therefore target exactly that row condition.
+- D4-D7 cannot change digital behavior for any captured address, even
+  though their physical copper must remain preserved for 1:1 fidelity.
+- The equations do not identify A3/A4 semantics or D0's far endpoint;
+  those remain electrical/source boundaries rather than inferred nets.
 
 ## Address Space
 

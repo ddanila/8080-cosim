@@ -202,6 +202,33 @@ def address_space_rows(table: bytes) -> list[str]:
     return rows
 
 
+def verify_minimized_logic(table: bytes) -> bool:
+    """Exhaustively guard the minimized active-low output equations."""
+    if len(table) != 32:
+        return False
+    for address, value in enumerate(table):
+        a0 = bool(address & 0x01)
+        a1 = bool(address & 0x02)
+        a2 = bool(address & 0x04)
+        a3 = bool(address & 0x08)
+        a4 = bool(address & 0x10)
+        qualify = a4 or not a1 or not a0
+        expected_asserted = (
+            (not a4) and a1 and a0,
+            a3 != a2,
+            a3 and (not a2) and qualify,
+            (not a3) and a2 and qualify,
+            False,
+            False,
+            False,
+            False,
+        )
+        captured_asserted = tuple(not bool(value & (1 << bit)) for bit in range(8))
+        if captured_asserted != expected_asserted:
+            return False
+    return True
+
+
 def main() -> int:
     board = load_board()
     chip = d94_chip(board)
@@ -398,6 +425,7 @@ def main() -> int:
     )
     active_outputs = {role for role, rows in output_asserted_rows.items() if rows}
     output_activity_ok = active_outputs == {"D0", "D1", "D2", "D3"}
+    minimized_logic_ok = verify_minimized_logic(physical_table)
 
     status = "D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED" if physical_table_ok else "D94 PHYSICAL TABLE FAILED"
 
@@ -487,6 +515,7 @@ def main() -> int:
             f"| Every D94 output pad has an explicit net/boundary | {'PASS' if len(output_nets) == len(output_pins) else 'FAIL'} | {len(output_nets)}/{len(output_pins)} output pins netted |",
             f"| Every unresolved D94 output has a photographed copper departure | {'PASS' if all_remaining_outputs_depart else 'FAIL'} | component-side local-fit observations for pins {', '.join(sorted(output_departures, key=int)) or '-'} |",
             f"| Captured table asserts only D0-D3; D4-D7 stay released | {'PASS' if output_activity_ok else 'FAIL'} | exhaustive 32-row physical table classification |",
+            f"| Minimized active-low equations reproduce all 256 captured bits | {'PASS' if minimized_logic_ok else 'FAIL'} | exhaustive address/output comparison against the physical image |",
             f"| Validated `.092` physical image exists and matches SHA256 | {'PASS' if physical_table_ok else 'FAIL'} | `{PHYSICAL_D94.relative_to(ROOT)}` / `{PHYSICAL_D94_SHA256}` |",
             f"| Official .009 BOM/photo notes identify D94 as `.092` | {'PASS' if official_bom_lead else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
             f"| Reused D94 refdes/tape-cluster history is guarded | {'PASS' if reused_refdes_guard else 'FAIL'} | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |",
@@ -566,6 +595,34 @@ def main() -> int:
             "false source claim. Remaining decode work is the upstream enable source,",
             "pull-up identities, and guarded D29.4/IORD recheck.",
             "",
+            "## Minimized asserted-output logic",
+            "",
+            "Define `S(Dn)=1` when the open-collector output is programmed active",
+            "(captured raw bit `0`), and define the shared qualifier",
+            "`Q = A4 | !A1 | !A0`. Exhaustive comparison against all 32 addresses",
+            "gives:",
+            "",
+            "| Output | Exact asserted equation | Physical destination |",
+            "| --- | --- | --- |",
+            "| `S(D0)` | `!A4 & A1 & A0` | unresolved pull-up/hidden-branch boundary |",
+            "| `S(D1)` | `A3 xor A2` | grounded through D99.8 |",
+            "| `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |",
+            "| `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |",
+            "| `S(D4..D7)` | `0` | physically routed but always released |",
+            "",
+            "These equations sharpen, but do not replace, continuity evidence:",
+            "",
+            "- D2 `/RE` and D3 `/WE` are mutually exclusive and select opposite",
+            "  one-hot states of A3/A2. This proves the PROM is a cycle-control",
+            "  decoder rather than an address-only register decoder.",
+            "- At BA1:BA0=`11` with A4 low, `Q` becomes false, both D93 strobes",
+            "  release, and D0 asserts independently of A3/A2. A live D0 branch",
+            "  probe should therefore target exactly that row condition.",
+            "- D4-D7 cannot change digital behavior for any captured address, even",
+            "  though their physical copper must remain preserved for 1:1 fidelity.",
+            "- The equations do not identify A3/A4 semantics or D0's far endpoint;",
+            "  those remain electrical/source boundaries rather than inferred nets.",
+            "",
             "## Address Space",
             "",
             "D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;",
@@ -641,6 +698,7 @@ def main() -> int:
         "enable_output_isolated": enable_output_isolated,
         "remaining_output_departures": all_remaining_outputs_depart,
         "output_activity": output_activity_ok,
+        "minimized_logic": minimized_logic_ok,
     }
     failed = [name for name, ok in gates.items() if not ok]
     if failed:
