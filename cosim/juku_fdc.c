@@ -68,7 +68,19 @@ static void finish_type_i(juku_fdc* fdc, uint8_t command) {
   if ((command & 0xF0) == 0x00) {        // restore
     fdc->track = 0;
   } else if ((command & 0xF0) == 0x10) { // seek
+    fdc->step_dir_in = fdc->data >= fdc->track;
     fdc->track = fdc->data;
+  } else if ((command & 0xE0) == 0x20) { // step in the previous direction
+    if (command & 0x10) {
+      if (fdc->step_dir_in && fdc->track != 0xFF) fdc->track++;
+      else if (!fdc->step_dir_in && fdc->track != 0) fdc->track--;
+    }
+  } else if ((command & 0xE0) == 0x40) { // step in
+    fdc->step_dir_in = 1;
+    if ((command & 0x10) && fdc->track != 0xFF) fdc->track++;
+  } else if ((command & 0xE0) == 0x60) { // step out
+    fdc->step_dir_in = 0;
+    if ((command & 0x10) && fdc->track != 0) fdc->track--;
   }
 }
 
@@ -121,6 +133,7 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk) {
   memset(fdc, 0, sizeof(*fdc));
   fdc->disk = disk;
   fdc->enabled = disk && disk->fp;
+  fdc->step_dir_in = 1;
   fdc->sector = 1;
   fdc->status = fdc->enabled ? 0 : ST_NOT_READY;
 }

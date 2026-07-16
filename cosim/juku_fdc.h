@@ -16,6 +16,7 @@ typedef struct {
   uint8_t sector;
   uint8_t data;
   uint8_t command;
+  int step_dir_in;
   uint8_t buffer[JUK_SECTOR_SIZE];
   unsigned buffer_pos;
   unsigned buffer_len;

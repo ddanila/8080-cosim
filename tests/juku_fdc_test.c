@@ -100,6 +100,27 @@ int main(void) {
     fail = 1;
   }
 
+  juku_fdc_write(&fdc, 0, 0x50);  // step in and update the track register
+  if (juku_fdc_read(&fdc, 1) != 13) {
+    fprintf(stderr, "step-in/update did not increment track\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0x40);  // step in without track-register update
+  if (juku_fdc_read(&fdc, 1) != 13) {
+    fprintf(stderr, "step-in/no-update changed track\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0x70);  // step out and update the track register
+  if (juku_fdc_read(&fdc, 1) != 12) {
+    fprintf(stderr, "step-out/update did not decrement track\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0x30);  // generic step reuses the prior direction
+  if (juku_fdc_read(&fdc, 1) != 11) {
+    fprintf(stderr, "step/update did not preserve the step-out direction\n");
+    fail = 1;
+  }
+
   juku_fdc_write(&fdc, 1, 12);
   juku_fdc_write(&fdc, 2, 4);
   juku_fdc_write(&fdc, 0, 0x80);

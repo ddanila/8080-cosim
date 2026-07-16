@@ -8,7 +8,8 @@ physical D93/D94 wiring.
 
 ## Passing scope
 
-- Restore, seek, step, step-in, step-out, read-sector, write-sector,
+- C/HDL-identical restore, seek, step, step-in, and step-out direction/update
+  semantics, plus read-sector and write-sector,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
 - A 512-byte synthetic sector transfer and bytes from vendored
