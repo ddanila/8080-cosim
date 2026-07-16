@@ -595,6 +595,12 @@ serve physical bring-up or historical fidelity:
    returns `0xFF` after restoring ordinary RAM, first use writes the guarded
    `RamDisk` signature and all 63 `0xE5` directory markers, and a signed drive
    reopens without formatting. The RAM-drive data path is also exercised with
+   the disk-booted EKDOS BIOS rather than a synthetic selector assignment:
+   public `SELDSK` at `0xCA1B` returns three contiguous 16-byte DPHs, rejects
+   drive 3 without changing the selected drive, returns zero for unavailable
+   drive C, and returns the source-exact RAM DPB when C is present. Its
+   `DoFunction` trampoline switches from a guarded caller stack to
+   `STAK=0xD2FC` while entering ROMBIOS. The data path then runs with
    the source-authentic `STAK=0xD2FC`. The source-guarded `MDISKPAR` describes
    192 x 1 KiB blocks: exact ROM writes and reads independent sector-0 and
    sector-127 patterns across all twelve track halves and all six port-`0x04`

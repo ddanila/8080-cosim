@@ -26,8 +26,12 @@ trap 'rm -rf "$tmp"' EXIT
 root=$PWD
 (
   cd "$tmp"
+  JUKU_DISK="$root/media/disks/JUKU1.CPM" \
+  JUKU_KEYS='TDD|' \
+  JUKU_KEY_HOLD_FRAMES=6 \
+  JUKU_KEY_GAP_FRAMES=8 \
   JUKU_CHECKPOINT_PREFIX="$tmp/rombios-init" \
-  JUKU_CHECKPOINT_CYC=3200000 \
-    "$tmp/trace" "$root/roms/ekta37.bin" 3300000 0 200000 >/dev/null 2>/dev/null
+  JUKU_CHECKPOINT_CYC=14200002 \
+    "$tmp/trace" "$root/roms/ekta37.bin" 14300000 0 200000 >/dev/null 2>/dev/null
 )
 "$tmp/rombios_fdc_write_test" "$tmp/rombios-init.ram"

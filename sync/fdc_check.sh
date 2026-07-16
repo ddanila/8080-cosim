@@ -76,6 +76,12 @@ physical D93/D94 wiring.
   restores ordinary RAM before returning `0xFF`; with RAM present it writes
   the 12-byte `RamDisk` signature plus 63 `0xE5` directory-entry markers,
   preserves BC, restores bank 6, and reopens a signed drive without formatting.
+- The fixture checkpoint now comes from the real disk-backed `TDD` boot at the
+  EKDOS `A>` prompt boundary (`14,200,002` cycles), so the installed BIOS jump
+  table is present in RAM. Public `SELDSK` at `0xCA1B` runs through its
+  `DoFunction`/ROMBIOS trampoline: drives A/B/C return contiguous 16-byte DPHs,
+  unavailable C and invalid drive 3 return zero, invalid selection preserves
+  the prior drive, and present C selects `SEKDSK=2` without a synthetic write.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
@@ -143,6 +149,12 @@ physical D93/D94 wiring.
   or twelve track halves. The executable guard writes every low/high endpoint
   before reading any back, so aliasing between banks, halves, or endpoint
   records cannot pass by immediate overwrite/readback coincidence.
+- Source arithmetic fixes `BIOS=0xCA00`, hence standard jump-table entry 10
+  (zero-based index 9) is `SELDSK=0xCA1B`; the prompt checkpoint guards the
+  actual jump opcode and adjacent `NoofRamDisk=2`. `SELDSK` returns DPH offsets
+  `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
+  15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
+  saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
 - `RAMDISKSEL` does not merely select a register. Its probe relies on a failed
   bank command leaving ordinary RAM visible: it saves byte `0x4000`, attempts
   a complemented write after selecting bank 0, restores bank 6, and returns

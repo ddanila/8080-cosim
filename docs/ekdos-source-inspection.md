@@ -30,6 +30,17 @@ labels and `TRANS` tables.
 | `DKWR` | `0x12` | EKDOS write-sector request code |
 | `VIARV` | `10` | retries loaded into `RCOUNT` for disk I/O |
 
+## EKDOS BIOS Interface
+
+| Field | Value |
+| --- | ---: |
+| `CCP` | `0xB400` |
+| `BDOS` | `0xBC06` |
+| `BIOS` | `0xCA00` |
+| BIOS jump 10 (`SELDSK`, zero-based index 9) | `0xCA1B` |
+| DPH size used by `SELDSK` | `16` bytes |
+| RAM-drive DPH displacement | `RDNO * 16 = 32` bytes |
+
 ## Floppy Parameter Block
 
 | Field | Value |

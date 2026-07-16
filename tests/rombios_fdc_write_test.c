@@ -190,7 +190,10 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
   if (!fp) return 1;
   size_t got = fread(ram, 1, 65536, fp);
   int failed = got != 65536 || fclose(fp) != 0 ||
-               memcmp(&ram[0xD7E7], expected_trampoline, sizeof(expected_trampoline)) != 0;
+               memcmp(&ram[0xD7E7], expected_trampoline,
+                      sizeof(expected_trampoline)) != 0 ||
+               ram[0xCA1B] != 0xC3 ||  // BIOS jump 10: SELDSK
+               ram[0xCA36] != 2;       // NoofRamDisk / RDNO
   return failed;
 }
 
@@ -257,6 +260,31 @@ static int run_ramdisk_select(
           "ROMBIOS RAMDISKSEL: did not preserve ABI "
           "(pc=%04X bc=%02X%02X cyc=%lu)\n",
           cpu.pc, cpu.b, cpu.c, cpu.cyc);
+  return 1;
+}
+
+
+static int run_bios_seldsk(
+    fixture* f, uint8_t drive, uint16_t* dph, unsigned long* total_cycles) {
+  i8080 cpu;
+  i8080_init(&cpu);
+  cpu.userdata = f;
+  cpu.read_byte = read_byte;
+  cpu.write_byte = write_byte;
+  cpu.port_in = port_in;
+  cpu.port_out = port_out;
+  cpu.pc = 0xCA1B;                    // EKDOS BIOS jump 10: JMP SELDSK
+  cpu.sp = 0xD6F8;                    // caller stack; DoFunction owns STAK
+  cpu.c = drive;
+  f->ram[cpu.sp] = RETURN_PC & 0xFF;
+  f->ram[cpu.sp + 1] = RETURN_PC >> 8;
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  *total_cycles += cpu.cyc;
+  *dph = (uint16_t)((cpu.h << 8) | cpu.l);
+  if (cpu.pc == RETURN_PC) return 0;
+  fprintf(stderr,
+          "EKDOS SELDSK: drive=%u did not return (pc=%04X hl=%04X cyc=%lu)\n",
+          drive, cpu.pc, *dph, cpu.cyc);
   return 1;
 }
 
@@ -419,6 +447,7 @@ int main(int argc, char** argv) {
   unsigned successful_trampolines = f.monitor_trampoline_entries;
   unsigned long successful_cycles = total_cycles;
   unsigned long unallocated_cycles = 0;
+  unsigned long seldsk_cycles = 0;
   unsigned long ramdisk_cycles = 0;
   unsigned long protect_cycles = 0;
 
@@ -474,6 +503,17 @@ int main(int argc, char** argv) {
   uint8_t ramdisk_result = 0;
   uint8_t normal_ram_byte = f.ram[DMA_ADDR];
   f.ramdisk_present = 0;
+  uint16_t absent_dph = 0xFFFF;
+  fail |= run_bios_seldsk(&f, 2, &absent_dph, &seldsk_cycles);
+  if (absent_dph != 0 || f.ram[0xD61A] != 2 || f.ram_bank != 6 ||
+      f.ram[DMA_ADDR] != normal_ram_byte) {
+    fprintf(stderr,
+            "EKDOS SELDSK: absent drive-C dph=%04X selected=%u "
+            "final-bank=%u normal=%02X/%02X\n",
+            absent_dph, f.ram[0xD61A], f.ram_bank,
+            f.ram[DMA_ADDR], normal_ram_byte);
+    fail = 1;
+  }
   fail |= run_ramdisk_select(&f, &ramdisk_result, &ramdisk_cycles);
   if (ramdisk_result != 0xFF || f.ram_bank != 6 ||
       f.ram[DMA_ADDR] != normal_ram_byte) {
@@ -512,8 +552,41 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
-  f.ram[0xCA36] = 2;
-  f.ram[0xD61A] = 2;
+  uint16_t dph0 = 0;
+  uint16_t dph1 = 0;
+  uint16_t dph2 = 0;
+  uint16_t invalid_dph = 0xFFFF;
+  fail |= run_bios_seldsk(&f, 0, &dph0, &seldsk_cycles);
+  fail |= run_bios_seldsk(&f, 1, &dph1, &seldsk_cycles);
+  fail |= run_bios_seldsk(&f, 3, &invalid_dph, &seldsk_cycles);
+  if (invalid_dph != 0 || f.ram[0xD61A] != 1) {
+    fprintf(stderr, "EKDOS SELDSK: invalid drive dph=%04X selected=%u\n",
+            invalid_dph, f.ram[0xD61A]);
+    fail = 1;
+  }
+  fail |= run_bios_seldsk(&f, 2, &dph2, &seldsk_cycles);
+  uint16_t ram_dpb = 0;
+  int dph_layout_ok = dph2 <= UINT16_MAX - 11u;
+  if (dph_layout_ok) {
+    ram_dpb = (uint16_t)(f.ram[dph2 + 10] | (f.ram[dph2 + 11] << 8));
+  }
+  static const uint8_t expected_ram_dpb[] = {
+    0x80, 0x00, 0x03, 0x07, 0x00, 0xBF, 0x00, 0x3F,
+    0x00, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00,
+  };
+  int dpb_layout_ok = ram_dpb != 0 &&
+                      ram_dpb <= UINT16_MAX - sizeof(expected_ram_dpb) + 1u;
+  if (dph0 == 0 || dph1 != dph0 + 16 || dph2 != dph0 + 32 ||
+      !dph_layout_ok || !dpb_layout_ok ||
+      f.ram[0xD61A] != 2 || f.ram[dph2] != 0 || f.ram[dph2 + 1] != 0 ||
+      memcmp(&f.ram[ram_dpb], expected_ram_dpb, sizeof(expected_ram_dpb)) != 0) {
+    fprintf(stderr,
+            "EKDOS SELDSK: DPH/DPB mismatch dph=%04X/%04X/%04X "
+            "ram-dpb=%04X selected=%u\n",
+            dph0, dph1, dph2, ram_dpb, f.ram[0xD61A]);
+    fail = 1;
+  }
+
   f.ram[0xD61C] = 0;
   static const uint8_t endpoint_sector[RAM_DISK_ENDPOINTS] = {0, 127};
   uint8_t ramdisk_expected[RAM_DISK_TRACKS][RAM_DISK_ENDPOINTS][128];
@@ -628,11 +701,12 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "ramdisk-tracks=12 endpoints=24 no-fdc=1 "
+         "seldsk=0/1/2/invalid ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + unallocated_cycles + ramdisk_cycles + protect_cycles);
+         successful_cycles + unallocated_cycles + seldsk_cycles +
+         ramdisk_cycles + protect_cycles);
   return 0;
 }

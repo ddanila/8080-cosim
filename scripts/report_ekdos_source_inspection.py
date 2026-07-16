@@ -21,6 +21,9 @@ COMMENT_RE = re.compile(r";.*$")
 
 EXPECTED = {
     "MSIZE": 52,
+    "CCP": 0xB400,
+    "BDOS": 0xBC06,
+    "BIOS": 0xCA00,
     "ROM": 0xFF50,
     "FLOPPY": 0xFF53,
     "START": 0xFF56,
@@ -65,6 +68,7 @@ EXPECTED = {
 
 CHECK_LABELS = [
     "ROM",
+    "BIOS",
     "FLOPPY",
     "START",
     "RWFLOPPY",
@@ -266,6 +270,7 @@ def main() -> int:
     ram_tracks = (ram_capacity // (ram_records_per_track * 128)
                   if ram_records_per_track else 0)
     ram_banks = ram_capacity // 0x8000
+    seldsk_vector = symbols["BIOS"] + 9 * 3
     lines_out = [
         "# EKDOS source inspection",
         "",
@@ -298,6 +303,17 @@ def main() -> int:
         f"| `DKRD` | `{fmt_hex(symbols['DKRD'])}` | EKDOS read-sector request code |",
         f"| `DKWR` | `{fmt_hex(symbols['DKWR'])}` | EKDOS write-sector request code |",
         f"| `VIARV` | `{symbols['VIARV']}` | retries loaded into `RCOUNT` for disk I/O |",
+        "",
+        "## EKDOS BIOS Interface",
+        "",
+        "| Field | Value |",
+        "| --- | ---: |",
+        f"| `CCP` | `{fmt_hex(symbols['CCP'])}` |",
+        f"| `BDOS` | `{fmt_hex(symbols['BDOS'])}` |",
+        f"| `BIOS` | `{fmt_hex(symbols['BIOS'])}` |",
+        f"| BIOS jump 10 (`SELDSK`, zero-based index 9) | `{fmt_hex(seldsk_vector)}` |",
+        f"| DPH size used by `SELDSK` | `16` bytes |",
+        f"| RAM-drive DPH displacement | `RDNO * 16 = {symbols['RDNO'] * 16}` bytes |",
         "",
         "## Floppy Parameter Block",
         "",
