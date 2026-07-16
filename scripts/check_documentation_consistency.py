@@ -197,6 +197,22 @@ def main() -> int:
         )
 
     manufacturing = read("docs/replica-manufacturing-readiness.md")
+    plan = core["PLAN.md"]
+    architecture = read("docs/architecture.md")
+    if "Status: **PACKAGE INVALID**" in manufacturing:
+        if "Release status: **DESIGN HOLD / PACKAGE INVALID**" not in plan:
+            failures.append("PLAN does not expose generated package invalidity")
+        if "**DESIGN HOLD / PACKAGE INVALID**" not in architecture:
+            failures.append("architecture summary does not expose generated package invalidity")
+        if re.search(
+            r"(?m)^- \[x\] Current engineering PCB package .*DRC-clean",
+            plan,
+        ):
+            failures.append("PLAN marks the invalid current PCB package DRC-clean")
+    elif "Status: **DESIGN HOLD / PACKAGE VERIFIED**" in manufacturing:
+        if "Release status: **DESIGN HOLD / PACKAGE VERIFIED**" not in plan:
+            failures.append("PLAN does not expose generated package verification state")
+
     recorded_package_digests: dict[str, set[str]] = {}
     for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
         recorded_package_digests[path] = {digest.lower() for digest in SHA256_RE.findall(read(path))}
