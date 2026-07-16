@@ -26,6 +26,34 @@ before the boot-sector reads. Monitor 3.3 deliberately emits the opposite
 byte at its `T` command boundary. The two observations exchange meanings
 under a single inversion, so this is not a one-command decoder ambiguity.
 
+## Upstream D5 cancellation excluded
+
+D5 cannot supply a second, hidden complement that makes D100 electrically
+transparent:
+
+- The official population identifies D5 as `КР580ВК38`. The 1988 Soviet
+  КР580 reference, section 3.12, draws every D0..D7 channel directly to its
+  same-numbered DB0..DB7 channel with bidirectional arrows and no inversion
+  bubbles (figures 3.73 and 3.74, printed page 161). It says the ВК28 and
+  ВК38 differ only in the duration/source timing of the two write strobes.
+- The same reference explicitly calls `КР580ВА87` the inverting variant
+  beside non-inverting `КР580ВА86`, and draws bubbles on all ВА87 B-side
+  channels (section 3.14, figure 3.79, printed page 166). The notation is
+  therefore polarity-significant rather than an omitted drawing detail.
+- Board topology is bit-for-bit from D1 CPU `DC0..DC7` through D5 to system
+  `DB0..DB7`. Those same DB rails directly join D15/D16 data pins and D100
+  A0..A7; there is no intervening data permutation or inverter.
+- The guarded functional D15+D16 images concatenate exactly to the known
+  `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`
+  ekta37 image. Its reset bytes are `C3 17 00` (8080
+  `JMP 0017`); one complement would be `3C E8 FF`, which is not that boot
+  vector. This is a logical replica constraint, not a substitute for the
+  still-requested Tier-3 physical D15/D16 repeat dumps.
+
+The runnable `sysctl_8238` bridge therefore remains non-inverting. Making
+D5 invert merely to cancel D100 would contradict the device symbol, the
+straight board topology, and every direct system-bus ROM/peripheral path.
+
 ## Physical evidence
 
 - Factory `.009` census position D100 is `КР580ВА87`, the inverting
@@ -45,7 +73,10 @@ Primary references: Intel M8286/M8287 data sheet
 КР580ВА87 device sheet
 (<https://static.chipdip.ru/lib/052/DOC016052028.pdf>); local Western
 Digital `FD179X-01` data sheet at
-`ref/wd1772-vg93/fd179x-01-datasheet.pdf`.
+`ref/wd1772-vg93/fd179x-01-datasheet.pdf`; V. A. Shakhnov (ed.),
+*Микропроцессоры и микропроцессорные комплекты интегральных микросхем*,
+vol. 1 (1988), sections 3.12 and 3.14
+(<https://djvu.online/file/iEIJ8fbnBceel>), printed pp. 161 and 166.
 
 ## Runnable-model boundary
 
