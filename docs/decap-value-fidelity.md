@@ -20,7 +20,7 @@ C63 has no target footprint. Six non-field placement/population dispositions,
 | Rail-group connectivity matches model expectation | PASS | GND<->RAIL_H: 19, RAIL_G<->GND: 19 |
 | Current model value is uniform 0,047 | PASS | 0,047: 38 |
 | Target DRAM-bank C38/C42/C46/C50 placements are registered | PASS | factory drawing + owner landing/remnant sites + generator/source PCB |
-| Other 27 inherited DRAM-grid sites are assembly DNP | PASS | bare tinned target footprints retained in PCB; omitted from populate-now BOM |
+| Other 27 inherited DRAM-grid sites are assembly DNP | PASS | bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded |
 | C63 target-board population is DNP | PASS | registered bare site between D41/D40; no source-PCB footprint |
 | Historical value census is reconciled per position | FAIL | raw notes report mixed values but no per-position mapping |
 

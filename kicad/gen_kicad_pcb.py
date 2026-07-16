@@ -416,6 +416,12 @@ def main():
     board = pcbnew.BOARD()
     placed, n_pads = {}, 0
 
+    def apply_population_flags(fp, chip):
+        """Carry assembly intent into native KiCad manufacturing metadata."""
+        if chip.get('assembly_dnp'):
+            fp.SetDNP(True)
+            fp.SetExcludedFromPosFiles(True)
+
     def add_passive(ref, x, y, rot=0):
         nonlocal n_pads
         c = chips[ref]; typ = c['type']
@@ -425,6 +431,7 @@ def main():
         # Keep a photographed case marking visible when no interpreted BOM
         # value exists. C20/C22 `1Н5` are source-closed as 1.5 nF by GOST 11076-69.
         fp.SetReference(ref); fp.SetValue(c.get('value', c.get('prov', {}).get('marking', '')))
+        apply_population_flags(fp, c)
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp; n_pads += fp.GetPadCount()
@@ -472,6 +479,7 @@ def main():
         fp = pcbnew.FootprintLoad(DIP_LIB, fpname)
         if fp is None: raise RuntimeError(f"no footprint {fpname} for {ref}")
         fp.SetReference(ref); fp.SetValue(MARK.get(typ, typ))
+        apply_population_flags(fp, c)
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp

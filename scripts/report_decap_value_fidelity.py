@@ -86,7 +86,7 @@ def generator_decap_positions() -> dict[str, tuple[float, float, float]]:
     raise SystemExit("decap audit: generator _DEC table is missing")
 
 
-def pcb_footprint_pad_midpoint(ref: str) -> tuple[float, float]:
+def pcb_footprint_block(ref: str) -> str:
     text = SOURCE_PCB.read_text(encoding="utf-8")
     marker = f'(property "Reference" "{ref}"'
     ref_at = text.find(marker)
@@ -97,6 +97,11 @@ def pcb_footprint_pad_midpoint(ref: str) -> tuple[float, float]:
     block = text[start : len(text) if end < 0 else end]
     if not block.lstrip().startswith('(footprint "C_Disc_D4.7mm_W2.5mm_P5.00mm"'):
         raise SystemExit(f"decap audit: {ref} no longer uses the guarded 5.00 mm footprint")
+    return block
+
+
+def pcb_footprint_pad_midpoint(ref: str) -> tuple[float, float]:
+    block = pcb_footprint_block(ref)
     match = re.search(
         r"\n\t\t\(at\s+(-?[0-9.]+)\s+(-?[0-9.]+)(?:\s+(-?[0-9.]+))?\)",
         block,
@@ -108,6 +113,13 @@ def pcb_footprint_pad_midpoint(ref: str) -> tuple[float, float]:
     # The guarded radial footprint has a 5.00 mm pitch and its anchor is pad 1.
     # Therefore its physical pad midpoint is 2.50 mm along the footprint axis.
     return x + 2.5 * math.cos(angle), y + 2.5 * math.sin(angle)
+
+
+def pcb_footprint_population_flags(ref: str) -> tuple[bool, bool]:
+    block = pcb_footprint_block(ref)
+    attr = re.search(r"\n\t\t\(attr\s+([^\n)]+)\)", block)
+    tokens = set(attr.group(1).split()) if attr is not None else set()
+    return "dnp" in tokens, "exclude_from_pos_files" in tokens
 
 
 def schematic_population_flags(ref: str) -> tuple[str, str]:
@@ -196,6 +208,8 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
             diagnostics.append(f"{ref}: unresolved factory value is not sourcing-gated")
         if schematic_population_flags(ref) != ("yes", "no"):
             diagnostics.append(f"{ref}: factory-populated schematic flags changed")
+        if pcb_footprint_population_flags(ref) != (False, False):
+            diagnostics.append(f"{ref}: factory-populated source-PCB footprint is marked DNP")
 
     optional = evidence.get("target_optional_grid_dnp", {})
     optional_refs = {str(ref) for ref in optional.get("refs", [])}
@@ -211,6 +225,10 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
             diagnostics.append(f"{ref}: must be assembly-DNP with its PCB footprint retained")
         if schematic_population_flags(ref) != ("yes", "yes"):
             diagnostics.append(f"{ref}: schematic must retain the footprint and mark DNP")
+        if pcb_footprint_population_flags(ref) != (True, True):
+            diagnostics.append(
+                f"{ref}: source-PCB footprint must be DNP and excluded from position files"
+            )
         generated_position = generated.get(ref)
         if generated_position is None:
             diagnostics.append(f"{ref}: legacy generator footprint is missing")
@@ -225,6 +243,8 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
             diagnostics.append(f"{ref}: unresolved non-field population was prematurely closed")
         if chip.get("procurement", {}).get("action") != "circuit-review":
             diagnostics.append(f"{ref}: unresolved placement/value is not sourcing-gated")
+        if pcb_footprint_population_flags(ref) != (False, False):
+            diagnostics.append(f"{ref}: unresolved source-PCB footprint is marked DNP")
     if schematic_population_flags("C63") != ("no", "yes"):
         diagnostics.append("C63 schematic no-footprint DNP flags changed")
 
@@ -295,7 +315,7 @@ def main() -> int:
         table_row(["Rail-group connectivity matches model expectation", "PASS" if group_ok else "FAIL", ", ".join(f"{k}: {v}" for k, v in sorted(group_counts.items()))]),
         table_row(["Current model value is uniform 0,047", "PASS" if value_ok else "FAIL", ", ".join(f"{k or '-'}: {v}" for k, v in sorted(model_values.items()))]),
         table_row(["Target DRAM-bank C38/C42/C46/C50 placements are registered", "PASS" if dram_placement_ok else "FAIL", "factory drawing + owner landing/remnant sites + generator/source PCB" if dram_placement_ok else "; ".join(dram_placement_diagnostics)]),
-        table_row(["Other 27 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok else "FAIL", "bare tinned target footprints retained in PCB; omitted from populate-now BOM"]),
+        table_row(["Other 27 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok else "FAIL", "bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded"]),
         table_row(["C63 target-board population is DNP", "PASS" if c63_dnp else "FAIL", "registered bare site between D41/D40; no source-PCB footprint"]),
         table_row(["Historical value census is reconciled per position", "FAIL", "raw notes report mixed values but no per-position mapping"]),
         "",

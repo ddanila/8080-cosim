@@ -556,6 +556,9 @@ Full order-readiness checklist: `docs/rev-a-manufacturing-readiness.md`.
 
 - Use `docs/replica-dual-config-bom.csv` as a planning BOM, not a shopping
   cart. Programming, circuit-review, and mechanical-review rows remain gated.
+- The 27 photo-proven bare DRAM-grid footprints remain fabricated but carry
+  native KiCad DNP and position-file exclusion metadata; the schematic and
+  generated populate-now BOM guard the same assembly disposition.
 - Verify candidate WD1793/4164-family parts for exact pinout, timing, voltage,
   footprint, and seller stock before buying.
 - Buy/test long-lead parts early only when the choice cannot force a board
