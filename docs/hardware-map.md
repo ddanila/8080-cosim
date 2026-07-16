@@ -1,6 +1,6 @@
 # Juku E5104 behavioral hardware map
 
-Status date: 2026-07-13.
+Status date: 2026-07-17.
 
 This is the concise software-visible map used by the emulator and digital-twin
 tests. The pinned source is `ref/mame_juku.cpp`; the physical endpoint model is
@@ -21,6 +21,14 @@ connection.
 | 1 | BIOS ROM at `D800-FFFF` | RAM at `0000-D7FF` |
 | 2 | cartridge at `4000-BFFF`, BIOS at `D800-FFFF` | other addresses are RAM |
 | 3 | none | all RAM |
+
+These overlays select the CPU's **read** source. Memory writes continue to the
+underlying populated DRAM bank through the independent `/MEMW`/W-rail path,
+including addresses currently read from BIOS or cartridge ROM. Monitor 3.7
+depends on this behavior: its low-stack dispatcher maps the low ROM while
+writing a return frame at `0x00E4..0x00E5`, then restores the caller's mapping.
+`hdl/sim/mem_decode_tb.v` and the default EKDOS WBOOT reload guard preserve this
+read-overlay/write-behind distinction.
 
 The repository BIOS is 16 KiB across D15/D16. The physical ROM-pager PROM D8
 uses the validated `.039` table recovered from three matching reads, including

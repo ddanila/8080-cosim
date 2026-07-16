@@ -49,6 +49,13 @@ iverilog -g2012 -s dram_unit_tb -o "$TMP/dram_unit_tb" hdl/vendor/vm80a.v hdl/de
 if vvp "$TMP/dram_unit_tb" 2>/dev/null | grep -q "\[DRAM-UNIT\] PASS"; then echo "  PASS  dram_unit_tb (RAS/CAS sequencing + physical CAS/WE write strobes)"
 else echo "  FAIL  dram_unit_tb"; fail=1; fi
 
+echo "== memory-overlay read/write split =="
+iverilog -g2012 -s mem_decode_tb -o "$TMP/mem_decode_tb" \
+  hdl/devices.v hdl/sim/mem_decode_tb.v 2>/dev/null
+if vvp "$TMP/mem_decode_tb" 2>/dev/null | grep -q "\[MEM-DECODE\] PASS"; then
+  echo "  PASS  mem_decode_tb (ROM reads + underlying DRAM writes)"
+else echo "  FAIL  mem_decode_tb"; fail=1; fi
+
 echo "== self-clocking boot: CPU runs on the mesh divider alone (-DSELF_CLOCK) =="
 # No forced Φ1/Φ2, no external osc -- juku_top self-generates the clock from the running D40 divider.
 # Must still boot ekta37 byte-identical to the cosim reference.

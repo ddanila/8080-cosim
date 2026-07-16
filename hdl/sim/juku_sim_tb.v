@@ -54,17 +54,6 @@ module juku_sim_tb();
     end
   endfunction
 
-  function overlay_hit(input [15:0] addr);   // is a write swallowed by a ROM overlay?
-    begin
-      case (mode)
-        2'd0: overlay_hit = (addr <= 16'h3FFF);
-        2'd1: overlay_hit = (addr >= 16'hD800);
-        2'd2: overlay_hit = (addr >= 16'hD800);   // expcart 0x4000-0xBFFF not loaded -> RAM
-        default: overlay_hit = 1'b0;
-      endcase
-    end
-  endfunction
-
   // read data onto the bus during DBIN (memory or I/O per latched status)
   wire [7:0] rdata = status[6] ? out_last[a[7:0]] : mem_read(a);
   assign d = dbin ? rdata : 8'hzz;
@@ -108,19 +97,17 @@ module juku_sim_tb();
           set_mode(portc[1:0]);
         end
       end
-    end else begin                        // memory write (dropped under overlay)
-      if (!overlay_hit(a)) begin
-        ram[a] = d;
-        if (a >= 16'hD800) begin
-          vram_writes = vram_writes + 1;
-          if (!vram_seen) begin
-            vram_seen = 1;
-            $display("[VRAM] first write to video RAM @0x%04h = 0x%02h  (mode=%0d, mcyc=%0d)", a, d, mode, mcyc);
-          end
-          if (vram_writes == max_vram) begin   // captured enough -> dump & stop
-            $display("[VRAM] %0d video writes done (mcyc=%0d, banks=%0d) -- dumping", vram_writes, mcyc, banks);
-            dump_vram; $finish;
-          end
+    end else begin                        // /MEMW writes DRAM behind read overlays
+      ram[a] = d;
+      if (a >= 16'hD800) begin
+        vram_writes = vram_writes + 1;
+        if (!vram_seen) begin
+          vram_seen = 1;
+          $display("[VRAM] first write to video RAM @0x%04h = 0x%02h  (mode=%0d, mcyc=%0d)", a, d, mode, mcyc);
+        end
+        if (vram_writes == max_vram) begin   // captured enough -> dump & stop
+          $display("[VRAM] %0d video writes done (mcyc=%0d, banks=%0d) -- dumping", vram_writes, mcyc, banks);
+          dump_vram; $finish;
         end
       end
     end

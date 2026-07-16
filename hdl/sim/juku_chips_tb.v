@@ -141,12 +141,13 @@ module juku_chips_tb();
   latched_periph D57(.rs(a[1:0]), .cs(iocs[6]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x18 PIT2 8253
   latched_periph FDC(.rs(a[1:0]), .cs(iocs[7]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x1C WD1793
 
-  // write pulses (data valid at /WR); decode memory-vs-I/O and overlay-drop in the TB
+  // Write pulses (data valid at /WR). Paging is a read-source selection;
+  // /MEMW writes the underlying DRAM even while ROM is visible.
   always @(negedge wr_n) begin
     if (is_io_wr) begin
       io_wr_pulse = 1; #1 io_wr_pulse = 0;            // pulse the I/O latch/banking
-    end else if (ram_sel) begin                       // memory write only if RAM serves it
-      ram_we = 1; #1 ram_we = 0;                      // (ROM-overlaid writes are dropped)
+    end else begin
+      ram_we = 1; #1 ram_we = 0;
       if (a >= 16'hD800) begin
         vram_writes = vram_writes + 1;
         if (!vram_seen) begin vram_seen=1;

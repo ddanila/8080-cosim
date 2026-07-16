@@ -55,9 +55,14 @@ physical D93/D94 wiring.
   resident-BDOS branch by changing only the pointed high byte from `0xBC` to
   nonzero `0xB5`; it reaches the same CCP handoff, preserves `0xB506` in the
   low-memory BDOS vector, and performs no framebuffer or FDC work. The default
-  `WRetry` disk-reload branch remains a separate boundary rather than being
-  conflated with this resident warm start. Public `HOME` at `0xCA18` is
-  executed with both
+  `WRetry` branch is independently guarded after poisoning `0xB400..0xBDFF`:
+  the Monitor's low-stack dispatcher writes its `0xFEE8` return frame into RAM
+  beneath the low ROM read overlay, restores `SP=0x0100`, and START issues five
+  exact `0x80` commands for physical sectors `3,2,4,6,5`. It consumes 2,560
+  data bytes through 40 monitor trampolines, reloads system sectors 2..6 at
+  their address-numbered 512-byte slots, and reaches CCP with the exact final
+  bytes after the source-defined three-byte `CCPExit` patch. Public `HOME` at
+  `0xCA18` is executed with both
   cache states: it always sets `SEKTRK=0`, clears `HSTACT` when `HSTWRT=0`,
   and preserves the active cache when `HSTWRT=1`, so dirty data is not lost.
   Public `LISTST` at `0xCA2D` starts with `A=0xA5` and executes source target

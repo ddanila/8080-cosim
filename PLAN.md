@@ -1,6 +1,6 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-07-16**.
+Status date: **2026-07-17**.
 
 Release status: **DESIGN HOLD / PACKAGE INVALID**. The recorded main-board ZIP
 is a checksum-reproducible historical engineering snapshot, not fabrication
@@ -606,8 +606,14 @@ serve physical bring-up or historical fidelity:
    RAM disk, performs exactly 10,240 framebuffer writes through 144 monitor
    trampolines, and issues no FDC command. Public `WBOOT=0xCA03` also reaches
    CCP through its source-defined resident-BDOS branch, preserving a deliberate
-   nonstandard `0xB506` resident target without framebuffer or FDC activity;
-   its default `WRetry` disk-reload branch remains explicit and unclaimed.
+   nonstandard `0xB506` resident target without framebuffer or FDC activity.
+   Its default `WRetry` branch is now separately guarded after poisoning the
+   five-sector CCP window. This closes a memory-model error: ROM paging selects
+   reads but `/MEMW` still writes the underlying DRAM, allowing the Monitor's
+   low-stack dispatcher to preserve its `0xFEE8` return frame. Exact ROM code
+   then reads physical sectors `3,2,4,6,5` with five `0x80` commands / 2,560
+   data bytes, restores `SP=0x0100`, applies the source-defined three-byte
+   `CCPExit` patch, and reaches the byte-exact reloaded CCP at `0xB400`.
    The RAM-drive data path is also exercised with
    the disk-booted EKDOS BIOS rather than a synthetic selector assignment:
    public `HOME` at `0xCA18` always selects track zero, invalidates a clean

@@ -71,7 +71,9 @@ typedef struct {
   unsigned keyboard_active_reads;
   unsigned fdc_commands;
   uint8_t command_log[16];
+  uint8_t sector_log[16];
   unsigned command_writes;
+  unsigned data_reads;
   unsigned data_writes;
   unsigned write_protect_status_reads;
   uint8_t write_command;
@@ -124,8 +126,8 @@ static uint8_t read_byte(void* opaque, uint16_t address) {
 
 static void write_byte(void* opaque, uint16_t address, uint8_t value) {
   fixture* f = opaque;
-  unsigned index = 0;
-  if (overlay(f, address, &index)) return;
+  // ROM/cartridge paging affects reads only.  The physical DRAM write rail is
+  // still driven, which the monitor's low-stack trampoline depends on.
   if (address >= VRAM_BASE && address < VRAM_BASE + VRAM_BYTES) {
     f->vram_writes++;
   }
@@ -157,6 +159,7 @@ static uint8_t port_in(void* opaque, uint8_t port) {
   if (port >= 0x1C && port <= 0x1F) {
     uint8_t value = juku_fdc_read(&f->fdc, port & 3);
     if (port == 0x1C && (value & 0x40)) f->write_protect_status_reads++;
+    if (port == 0x1F) f->data_reads++;
     return value;
   }
   return f->out[port];
@@ -175,6 +178,7 @@ static void port_out(void* opaque, uint8_t port, uint8_t value) {
   f->out[port] = value;
   if (port >= 0x1C && port <= 0x1F) {
     if (port == 0x1C && f->fdc_commands < sizeof(f->command_log)) {
+      f->sector_log[f->fdc_commands] = f->fdc.sector;
       f->command_log[f->fdc_commands++] = value;
     }
     if (port == 0x1C && (value & 0xE0) == 0xA0) {
@@ -414,7 +418,7 @@ static int run_bios_conin(
 
 static int run_bios_handoff(
     const fixture* source, uint16_t entry, int resident_bdos,
-    unsigned long* total_cycles) {
+    juk_disk* reload_disk, unsigned long* total_cycles) {
   fixture* f = malloc(sizeof(*f));
   if (!f) {
     fprintf(stderr, "EKDOS handoff: fixture allocation failed\n");
@@ -422,7 +426,14 @@ static int run_bios_handoff(
   }
   memcpy(f, source, sizeof(*f));
   f->vram_writes = 0;
+  f->monitor_trampoline_entries = 0;
   f->fdc_commands = 0;
+  f->data_reads = 0;
+  if (reload_disk) {
+    memset(&f->ram[CCP_ENTRY], 0xA5, 5 * JUK_SECTOR_SIZE);
+    juku_fdc_init(&f->fdc, reload_disk);
+    juku_fdc_portc(&f->fdc, f->portc);
+  }
   if (resident_bdos) f->ram[0xD7F8] = 0xB5;
 
   i8080 cpu;
@@ -449,10 +460,11 @@ static int run_bios_handoff(
                f->ram[0xD62E] != 0x80 || f->ram[0xD62F] != 0 ||
                f->ram[0xD4BB] != 0 || f->ram[0xD61A] != 0 ||
                f->ram[0xD623] != 0 || f->ram[0xD624] != 0 ||
-               f->ram[0xD625] != 0 || f->fdc_commands != 0;
+               f->ram[0xD625] != 0 || (!reload_disk && f->fdc_commands != 0);
   if (entry == BIOS_BOOT) {
     if (f->ram[0xD7F7] != 0x06 || f->ram[0xD7F8] != 0xBC ||
         f->vram_writes != 10240 || f->monitor_trampoline_entries != 144 ||
+        f->data_reads != 0 ||
         memcmp(&f->ramdisk[0][0], RAMDISK_SIGNATURE,
                sizeof(RAMDISK_SIGNATURE)) != 0) {
       failed = 1;
@@ -460,7 +472,36 @@ static int run_bios_handoff(
     for (unsigned directory = 1; directory < 64; directory++) {
       if (f->ramdisk[0][directory * 32] != 0xE5) failed = 1;
     }
-  } else if (f->vram_writes != 0 || f->monitor_trampoline_entries != 0) {
+  } else if (reload_disk) {
+    static const uint8_t system_sectors[] = {3, 2, 4, 6, 5};
+    uint8_t expected_loaded[5 * JUK_SECTOR_SIZE] = {0};
+    for (unsigned i = 0; i < sizeof(system_sectors); i++) {
+      unsigned sector = system_sectors[i];
+      if (juk_disk_read_sector(reload_disk, 0, 0, sector,
+                               &expected_loaded[(sector - 2) * JUK_SECTOR_SIZE]) != 0) {
+        failed = 1;
+      }
+    }
+    // BIOSUSER patches CCPExit from CALL D0B5 to JMP Prompt after START loads
+    // system sectors 2..6 (EKDOS30.ASM lines 490-496).
+    expected_loaded[0x388] = 0xC3;
+    expected_loaded[0x389] = 0xBD;
+    expected_loaded[0x38A] = 0xCB;
+    if (cpu.sp != 0x0100 || f->vram_writes != 0 ||
+        f->monitor_trampoline_entries != 40 || f->fdc_commands != 5 ||
+        f->data_reads != 5 * JUK_SECTOR_SIZE || f->fdc.track != 0 ||
+        f->fdc.head != 0 || f->fdc.sector != 5 || f->ram[0xD617] != 0 ||
+        f->ram[0x00E4] != 0xE8 || f->ram[0x00E5] != 0xFE ||
+        memcmp(&f->ram[CCP_ENTRY], expected_loaded,
+               sizeof(expected_loaded)) != 0) {
+      failed = 1;
+    }
+    for (unsigned i = 0; i < 5; i++) {
+      if (f->command_log[i] != 0x80 ||
+          f->sector_log[i] != system_sectors[i]) failed = 1;
+    }
+  } else if (f->vram_writes != 0 || f->monitor_trampoline_entries != 0 ||
+             f->data_reads != 0) {
     failed = 1;
   }
   if (failed) {
@@ -578,8 +619,17 @@ int main(int argc, char** argv) {
   update_portc(&f, 0x05);  // motor on, drive A, side 0, high ROM overlay
   f.fdc.track = 8;
   unsigned long bios_handoff_cycles = 0;
-  fail |= run_bios_handoff(&f, BIOS_BOOT, 0, &bios_handoff_cycles);
-  fail |= run_bios_handoff(&f, BIOS_WBOOT, 1, &bios_handoff_cycles);
+  fail |= run_bios_handoff(&f, BIOS_BOOT, 0, NULL, &bios_handoff_cycles);
+  fail |= run_bios_handoff(&f, BIOS_WBOOT, 1, NULL, &bios_handoff_cycles);
+  juk_disk reload_disk;
+  if (juk_disk_open(&reload_disk, "media/disks/JUKU1.CPM") != 0) {
+    fprintf(stderr, "EKDOS WBOOT: could not open vendored reload media\n");
+    fail = 1;
+  } else {
+    fail |= run_bios_handoff(&f, BIOS_WBOOT, 0, &reload_disk,
+                             &bios_handoff_cycles);
+    juk_disk_close(&reload_disk);
+  }
 
   for (int i = 0; i < 128; i++) {
     f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
@@ -1120,7 +1170,7 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "boot=ccp wboot=resident-ccp "
+         "boot=ccp wboot=resident+reload-ccp "
          "const=no-key conin=shift-T conout=glyph-C list=usart-L "
          "aux=punch+reader-unimplemented "
          "home=clean+dirty "
