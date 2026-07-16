@@ -88,10 +88,17 @@ def main() -> int:
                 and chips[f"D{ref}"].get("pins", {}).get("16") == "VSS_GND"
                 and (f"D{ref}", "1") in set(nodes(board, "RAIL_H"))
                 and (f"D{ref}", "8") in set(nodes(board, "RAIL_G"))
-                and (f"D{ref}", "16") in set(nodes(board, "RAIL_E"))
+                and (f"D{ref}", "16") in set(nodes(board, "GND"))
                 for ref in range(60, 92)
             ),
-            "D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/RAIL_E; pin 1 is internal NC for populated РУ5",
+            "D60-D91 pins 1/8/16 -> RAIL_H/RAIL_G/GND; native rail E is ground; pin 1 is internal NC for populated РУ5",
+        ),
+        (
+            "C34 bypass follows the native rail-E to rail-F drawing",
+            has_nodes(board, "GND", {("C34", "2")})
+            and has_nodes(board, "P5V", {("C34", "1")})
+            and "RAIL_E" not in board["nets"],
+            "native sheet-2 power corner: C34 spans E/GND to F/+5 V",
         ),
         (
             "E1 MA7/DRAM-size selector retains all three source endpoints",

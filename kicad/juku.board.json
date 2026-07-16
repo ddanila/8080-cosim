@@ -3168,7 +3168,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D60 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D60 remains assumed"
    },
    "value": "0,047"
   },
@@ -3182,7 +3182,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D61 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D61 remains assumed"
    },
    "value": "0,047"
   },
@@ -3196,7 +3196,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D62 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D62 remains assumed"
    },
    "value": "0,047"
   },
@@ -3210,7 +3210,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D63 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D63 remains assumed"
    },
    "value": "0,047"
   },
@@ -3224,7 +3224,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D64 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D64 remains assumed"
    },
    "value": "0,047"
   },
@@ -3238,7 +3238,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D65 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D65 remains assumed"
    },
    "value": "0,047"
   },
@@ -3252,7 +3252,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D66 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D66 remains assumed"
    },
    "value": "0,047"
   },
@@ -3266,7 +3266,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D67 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D67 remains assumed"
    },
    "value": "0,047"
   },
@@ -3280,7 +3280,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D15 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D15 remains assumed"
    },
    "value": "0,047"
   },
@@ -3294,7 +3294,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D17 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D17 remains assumed"
    },
    "value": "0,047"
   },
@@ -3308,7 +3308,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D19 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D19 remains assumed"
    },
    "value": "0,047"
   },
@@ -3322,7 +3322,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D21 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D21 remains assumed"
    },
    "value": "0,047"
   },
@@ -3336,7 +3336,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D5 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D5 remains assumed"
    },
    "value": "0,047"
   },
@@ -3350,7 +3350,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D1 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D1 remains assumed"
    },
    "value": "0,047"
   },
@@ -3364,7 +3364,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D10 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D10 remains assumed"
    },
    "value": "0,047"
   },
@@ -3378,7 +3378,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D11 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D11 remains assumed"
    },
    "value": "0,047"
   },
@@ -3392,7 +3392,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D26 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D26 remains assumed"
    },
    "value": "0,047"
   },
@@ -3406,7 +3406,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D27 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D27 remains assumed"
    },
    "value": "0,047"
   },
@@ -3420,7 +3420,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->RAIL_E; per-position/refdes association near D54 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D54 remains assumed"
    },
    "value": "0,047"
   },
@@ -3434,7 +3434,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D55 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D55 remains assumed"
    },
    "value": "0,047"
   },
@@ -3448,7 +3448,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D57 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D57 remains assumed"
    },
    "value": "0,047"
   },
@@ -3462,7 +3462,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D23 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D23 remains assumed"
    },
    "value": "0,047"
   },
@@ -3476,7 +3476,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D29 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D29 remains assumed"
    },
    "value": "0,047"
   },
@@ -3490,7 +3490,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D6 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D6 remains assumed"
    },
    "value": "0,047"
   },
@@ -3504,7 +3504,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D7 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D7 remains assumed"
    },
    "value": "0,047"
   },
@@ -3518,7 +3518,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D44 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D44 remains assumed"
    },
    "value": "0,047"
   },
@@ -3532,7 +3532,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D46 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D46 remains assumed"
    },
    "value": "0,047"
   },
@@ -3546,7 +3546,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D48 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D48 remains assumed"
    },
    "value": "0,047"
   },
@@ -3560,7 +3560,7 @@
    "prov": {
     "type": "scan",
     "refdes": "BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo",
-    "pins": "BOM/DSN value 0,047 and traced array-power bypass role RAIL_E<->RAIL_H are retained, but the current generic array-grid placement remains assumed. The .009 factory outline is between D41/D40 while the bracketed owner photo shows that site bare, with no fitted body or coherent drilled lead pair; DNP versus later removal remains unresolved"
+    "pins": "BOM/DSN value 0,047 and traced array-power bypass role GND<->RAIL_H are retained, but the current generic array-grid placement remains assumed. The .009 factory outline is between D41/D40 while the bracketed owner photo shows that site bare, with no fitted body or coherent drilled lead pair; DNP versus later removal remains unresolved"
    },
    "value": "0,047"
   },
@@ -3574,7 +3574,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D38 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D38 remains assumed"
    },
    "value": "0,047"
   },
@@ -3588,7 +3588,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D35 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D35 remains assumed"
    },
    "value": "0,047"
   },
@@ -3602,7 +3602,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D42 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D42 remains assumed"
    },
    "value": "0,047"
   },
@@ -3616,7 +3616,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D58 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D58 remains assumed"
    },
    "value": "0,047"
   },
@@ -3630,7 +3630,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D14 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D14 remains assumed"
    },
    "value": "0,047"
   },
@@ -3644,7 +3644,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D3 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D3 remains assumed"
    },
    "value": "0,047"
   },
@@ -3658,7 +3658,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D71 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D71 remains assumed"
    },
    "value": "0,047"
   },
@@ -3672,7 +3672,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D79 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D79 remains assumed"
    },
    "value": "0,047"
   },
@@ -3686,7 +3686,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_E<->RAIL_H; per-position/refdes association near D87 remains assumed"
+    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D87 remains assumed"
    },
    "value": "0,047"
   },
@@ -4412,7 +4412,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R53: RAIL14 bank-3 RAS termination to RAIL_E; connected nets RAIL14/RAIL_E carry crop evidence"
+    "pins": "R53: RAIL14 bank-3 RAS termination to GND; connected nets RAIL14/GND carry crop evidence"
    }
   },
   {
@@ -4425,7 +4425,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R54: RAIL13 bank-2 RAS termination to RAIL_E; connected nets RAIL13/RAIL_E carry crop evidence"
+    "pins": "R54: RAIL13 bank-2 RAS termination to GND; connected nets RAIL13/GND carry crop evidence"
    }
   },
   {
@@ -4438,7 +4438,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R55: RAIL12 bank-1 RAS termination to RAIL_E; connected nets RAIL12/RAIL_E carry crop evidence"
+    "pins": "R55: RAIL12 bank-1 RAS termination to GND; connected nets RAIL12/GND carry crop evidence"
    }
   },
   {
@@ -4451,7 +4451,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R56: RAS bank-0 rail termination to RAIL_E; connected nets RAS/RAIL_E carry crop evidence"
+    "pins": "R56: RAS bank-0 rail termination to GND; connected nets RAS/GND carry crop evidence"
    }
   },
   {
@@ -4477,7 +4477,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 strobe chain / power corner",
-    "pins": "CAS pull/common rail network; connected nets CAS and RAIL_E carry crop evidence"
+    "pins": "CAS pull/common rail network; connected nets CAS and GND carry crop evidence"
    }
   },
   {
@@ -4517,7 +4517,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 power corner",
-    "pins": "RAIL_H to ground bypass; connected nets RAIL_H/GND carry crop evidence"
+    "pins": "native sheet-2 C34 bypass from grounded rail E to +5 V rail F; connected nets GND/P5V carry direct crop evidence"
    }
   },
   {
@@ -9989,7 +9989,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints",
    "power": true,
    "nodes": [
     [
@@ -10515,11 +10515,311 @@
     [
      "R99",
      "1"
+    ],
+    [
+     "R53",
+     "2"
+    ],
+    [
+     "R54",
+     "2"
+    ],
+    [
+     "R55",
+     "2"
+    ],
+    [
+     "R56",
+     "2"
+    ],
+    [
+     "R58",
+     "2"
+    ],
+    [
+     "D60",
+     "16"
+    ],
+    [
+     "D61",
+     "16"
+    ],
+    [
+     "D62",
+     "16"
+    ],
+    [
+     "D63",
+     "16"
+    ],
+    [
+     "D64",
+     "16"
+    ],
+    [
+     "D65",
+     "16"
+    ],
+    [
+     "D66",
+     "16"
+    ],
+    [
+     "D67",
+     "16"
+    ],
+    [
+     "D68",
+     "16"
+    ],
+    [
+     "D69",
+     "16"
+    ],
+    [
+     "D70",
+     "16"
+    ],
+    [
+     "D71",
+     "16"
+    ],
+    [
+     "D72",
+     "16"
+    ],
+    [
+     "D73",
+     "16"
+    ],
+    [
+     "D74",
+     "16"
+    ],
+    [
+     "D75",
+     "16"
+    ],
+    [
+     "D76",
+     "16"
+    ],
+    [
+     "D77",
+     "16"
+    ],
+    [
+     "D78",
+     "16"
+    ],
+    [
+     "D79",
+     "16"
+    ],
+    [
+     "D80",
+     "16"
+    ],
+    [
+     "D81",
+     "16"
+    ],
+    [
+     "D82",
+     "16"
+    ],
+    [
+     "D83",
+     "16"
+    ],
+    [
+     "D84",
+     "16"
+    ],
+    [
+     "D85",
+     "16"
+    ],
+    [
+     "D86",
+     "16"
+    ],
+    [
+     "D87",
+     "16"
+    ],
+    [
+     "D88",
+     "16"
+    ],
+    [
+     "D89",
+     "16"
+    ],
+    [
+     "D90",
+     "16"
+    ],
+    [
+     "D91",
+     "16"
+    ],
+    [
+     "C35",
+     "2"
+    ],
+    [
+     "C36",
+     "2"
+    ],
+    [
+     "C37",
+     "2"
+    ],
+    [
+     "C38",
+     "2"
+    ],
+    [
+     "C39",
+     "2"
+    ],
+    [
+     "C40",
+     "2"
+    ],
+    [
+     "C41",
+     "2"
+    ],
+    [
+     "C42",
+     "2"
+    ],
+    [
+     "C43",
+     "2"
+    ],
+    [
+     "C44",
+     "2"
+    ],
+    [
+     "C45",
+     "2"
+    ],
+    [
+     "C46",
+     "2"
+    ],
+    [
+     "C47",
+     "2"
+    ],
+    [
+     "C48",
+     "2"
+    ],
+    [
+     "C49",
+     "2"
+    ],
+    [
+     "C50",
+     "2"
+    ],
+    [
+     "C51",
+     "2"
+    ],
+    [
+     "C52",
+     "2"
+    ],
+    [
+     "C53",
+     "2"
+    ],
+    [
+     "C54",
+     "1"
+    ],
+    [
+     "C55",
+     "1"
+    ],
+    [
+     "C56",
+     "1"
+    ],
+    [
+     "C57",
+     "1"
+    ],
+    [
+     "C58",
+     "1"
+    ],
+    [
+     "C59",
+     "1"
+    ],
+    [
+     "C60",
+     "1"
+    ],
+    [
+     "C61",
+     "1"
+    ],
+    [
+     "C62",
+     "1"
+    ],
+    [
+     "C63",
+     "1"
+    ],
+    [
+     "C64",
+     "1"
+    ],
+    [
+     "C65",
+     "1"
+    ],
+    [
+     "C66",
+     "1"
+    ],
+    [
+     "C67",
+     "1"
+    ],
+    [
+     "C68",
+     "1"
+    ],
+    [
+     "C69",
+     "1"
+    ],
+    [
+     "C70",
+     "1"
+    ],
+    [
+     "C71",
+     "1"
+    ],
+    [
+     "C72",
+     "1"
     ]
    ]
   },
   "P5V": {
-   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high",
+   "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1",
    "power": true,
    "nodes": [
     [
@@ -11161,6 +11461,10 @@
     [
      "D101",
      "16"
+    ],
+    [
+     "C34",
+     "1"
     ]
    ]
   },
@@ -14228,312 +14532,6 @@
     ]
    ]
   },
-  "RAIL_E": {
-   "src": "traced sheet-2 power corner (crop b3_pwr_corner) + array read: \"E\" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, bypass-cap commons, R53-56/R58 strobe 5.1k pulldown common",
-   "nodes": [
-    [
-     "R53",
-     "2"
-    ],
-    [
-     "R54",
-     "2"
-    ],
-    [
-     "R55",
-     "2"
-    ],
-    [
-     "R56",
-     "2"
-    ],
-    [
-     "R58",
-     "2"
-    ],
-    [
-     "D60",
-     "16"
-    ],
-    [
-     "D61",
-     "16"
-    ],
-    [
-     "D62",
-     "16"
-    ],
-    [
-     "D63",
-     "16"
-    ],
-    [
-     "D64",
-     "16"
-    ],
-    [
-     "D65",
-     "16"
-    ],
-    [
-     "D66",
-     "16"
-    ],
-    [
-     "D67",
-     "16"
-    ],
-    [
-     "D68",
-     "16"
-    ],
-    [
-     "D69",
-     "16"
-    ],
-    [
-     "D70",
-     "16"
-    ],
-    [
-     "D71",
-     "16"
-    ],
-    [
-     "D72",
-     "16"
-    ],
-    [
-     "D73",
-     "16"
-    ],
-    [
-     "D74",
-     "16"
-    ],
-    [
-     "D75",
-     "16"
-    ],
-    [
-     "D76",
-     "16"
-    ],
-    [
-     "D77",
-     "16"
-    ],
-    [
-     "D78",
-     "16"
-    ],
-    [
-     "D79",
-     "16"
-    ],
-    [
-     "D80",
-     "16"
-    ],
-    [
-     "D81",
-     "16"
-    ],
-    [
-     "D82",
-     "16"
-    ],
-    [
-     "D83",
-     "16"
-    ],
-    [
-     "D84",
-     "16"
-    ],
-    [
-     "D85",
-     "16"
-    ],
-    [
-     "D86",
-     "16"
-    ],
-    [
-     "D87",
-     "16"
-    ],
-    [
-     "D88",
-     "16"
-    ],
-    [
-     "D89",
-     "16"
-    ],
-    [
-     "D90",
-     "16"
-    ],
-    [
-     "D91",
-     "16"
-    ],
-    [
-     "C35",
-     "2"
-    ],
-    [
-     "C36",
-     "2"
-    ],
-    [
-     "C37",
-     "2"
-    ],
-    [
-     "C38",
-     "2"
-    ],
-    [
-     "C39",
-     "2"
-    ],
-    [
-     "C40",
-     "2"
-    ],
-    [
-     "C41",
-     "2"
-    ],
-    [
-     "C42",
-     "2"
-    ],
-    [
-     "C43",
-     "2"
-    ],
-    [
-     "C44",
-     "2"
-    ],
-    [
-     "C45",
-     "2"
-    ],
-    [
-     "C46",
-     "2"
-    ],
-    [
-     "C47",
-     "2"
-    ],
-    [
-     "C48",
-     "2"
-    ],
-    [
-     "C49",
-     "2"
-    ],
-    [
-     "C50",
-     "2"
-    ],
-    [
-     "C51",
-     "2"
-    ],
-    [
-     "C52",
-     "2"
-    ],
-    [
-     "C53",
-     "2"
-    ],
-    [
-     "C54",
-     "1"
-    ],
-    [
-     "C55",
-     "1"
-    ],
-    [
-     "C56",
-     "1"
-    ],
-    [
-     "C57",
-     "1"
-    ],
-    [
-     "C58",
-     "1"
-    ],
-    [
-     "C59",
-     "1"
-    ],
-    [
-     "C60",
-     "1"
-    ],
-    [
-     "C61",
-     "1"
-    ],
-    [
-     "C62",
-     "1"
-    ],
-    [
-     "C63",
-     "1"
-    ],
-    [
-     "C64",
-     "1"
-    ],
-    [
-     "C65",
-     "1"
-    ],
-    [
-     "C66",
-     "1"
-    ],
-    [
-     "C67",
-     "1"
-    ],
-    [
-     "C68",
-     "1"
-    ],
-    [
-     "C69",
-     "1"
-    ],
-    [
-     "C70",
-     "1"
-    ],
-    [
-     "C71",
-     "1"
-    ],
-    [
-     "C72",
-     "1"
-    ]
-   ],
-   "power": true
-  },
   "VID_HI_LD": {
    "src": "scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*); common LD vertical; driver = D59.12 \"LOAD\" inverter [likely, path not continuously traced]",
    "nodes": [
@@ -14902,7 +14900,7 @@
   },
   "RAIL_H": {
    "power": true,
-   "src": "traced sheet-2 power corner (crop b3_pwr_corner) + array read: E5 -> \"-5V\" array pin-1 rail (РУ3 VBB; РУ5 = NC); C54-72 bypass to rail E, C34 to F(~GND)",
+   "src": "native sheet-2 power corner: E5 -> \"-5V\" array pin-1 rail H (РУ3 VBB; РУ5 = NC); C54-C72 bypass H to grounded rail E",
    "nodes": [
     [
      "E5",
@@ -15111,10 +15109,6 @@
     [
      "C72",
      "2"
-    ],
-    [
-     "C34",
-     "1"
     ]
    ]
   },

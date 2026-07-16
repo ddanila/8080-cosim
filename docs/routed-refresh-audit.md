@@ -30,16 +30,16 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source footprints | 302 |
-| Routed-snapshot footprints | 240 |
+| Source footprints | 303 |
+| Routed-snapshot footprints | 241 |
 | Source-only footprints | 82 |
 | Routed-only footprints | 20 |
-| Routed copper nets classified by the refresh | 325 |
-| Nets with currently reusable routed copper | 115 |
-| Routed nets currently quarantined | 210 |
-| Reusable non-duplicate track/via items | 1,870 |
-| Quarantined/duplicate track/via items | 6,795 |
-| Common-pad net mismatches requiring reroute | 353 |
+| Routed copper nets classified by the refresh | 324 |
+| Nets with currently reusable routed copper | 113 |
+| Routed nets currently quarantined | 211 |
+| Reusable non-duplicate track/via items | 1,545 |
+| Quarantined/duplicate track/via items | 7,120 |
+| Common-pad net mismatches requiring reroute | 354 |
 <!-- routed-refresh-current:end -->
 
 The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly
@@ -305,11 +305,12 @@ restores 19 displaced gaps, a 0.21 mm pass restores the marginal P5V and IORD
 gaps, and `prune_dangling_tracks.py` transactionally removes 17 dead track/via
 tails while preserving zero opens after every removal.
 
-The independently repeated result is preserved as
-`kicad/juku_routed_candidate.kicad_pcb`: 296 footprints, all 2,383 source pad
-identities and nets (maximum coordinate quantization 38 nm), 18,245 copper
-items, zero unconnected items, and zero shorts, clearance, crossing, hole,
-dangling, or edge findings. Its byte size is 8,370,737 and SHA256 is
+Before the native rail-E correction, the independently repeated result was
+preserved as `kicad/juku_routed_candidate.kicad_pcb`: 296 footprints, all
+2,383 source pad identities and nets (maximum coordinate quantization 38 nm),
+18,245 copper items, zero unconnected items, and zero shorts, clearance,
+crossing, hole, dangling, or edge findings. That pre-correction checkpoint's
+byte size was 8,370,737 and its SHA256 was
 `d51b2b4a226712c1325ff2b770413911800ad458447343095bab73fe9d7a2f29`.
 The remaining 663 findings are non-electrical
 silkscreen/courtyard/library/text categories with unchanged counts. This is a
@@ -337,12 +338,17 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 
 ## Post-checkpoint source drift
 
-The zero-open artifact remains an internally clean routing checkpoint, not a
-claim of parity with every later source edit. The candidate preserves all
+The formerly zero-open artifact remains routing-convergence evidence, not a
+claim of parity with every later source edit. Merging the native drawing's
+formerly separate rail-E model into ground exposes one real missing join between
+that old copper island and the main ground domain; it must be rerouted rather
+than hidden by another label. The candidate preserves all
 2,383 of its pad identities, but current source has 2,397 pads after adding
-W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2, W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 49 changed pad-net assignments and 138 pads
+W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2, W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 50 changed pad-net assignments and 138 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
-D5, D7, D8, D9, D35, D37, D38, D50, D51, R13, and R14. `check_routed_candidate.py`
+D5, D7, D8, D9, D35, D37, D38, D50, D51, R13, and R14; the fiftieth net-only
+change is source C34.1, corrected from `RAIL_H` to `P5V` by the native E-F
+drawing. `check_routed_candidate.py`
 therefore correctly rejects the checkpoint against current source instead of
 silently blessing stale copper. Refresh/reroute is deliberately deferred until
 the remaining factory-wire islands and functional P0 netlist freeze; doing it

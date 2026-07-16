@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `214`
-- Verification-point endpoints checked in PCB: `315`
+- Verification-point nets: `213`
+- Verification-point endpoints checked in PCB: `240`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2263`
 - All board endpoints checked in routed PCB: `2263`
@@ -25,7 +25,7 @@ visible and actionable before manufacturing and first power-on.
 | --- | ---: |
 | FDC | 22 |
 | logic | 164 |
-| memory/decode | 4 |
+| memory/decode | 3 |
 | sound/analog | 1 |
 | timing/I/O | 2 |
 | video/analog | 21 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 315/315 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 315/315 net names matched |
+| Risk endpoints present on PCB pads | PASS | 240/240 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 240/240 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -54,7 +54,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2263/2263 | 2263/2263 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1885/2263 | 1802/2263 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1885/2263 | 1801/2263 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -501,6 +501,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D7.2: `MEMW` != `MEMW_D7P2`
 - D29.14: `AMWC_N` != `MRC_N`
 - D29.19: `INHIB_N` != `MWC_N`
+- C34.1: `RAIL_H` != `P5V`
 - D35.10: `PHI1` != `PHI1_D35`
 - D26.10: `D26_PC7_TAG6` != `POF`
 - D7.13: `IORD` != `PROM_EN`
@@ -707,7 +708,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `R86_1_BOUNDARY` | logic | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R86_2_BOUNDARY` | logic | `R86.2` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 2 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `SSTB_N` | logic | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

@@ -24,12 +24,14 @@ with the machine-readable board model.
   released for manufacture. Current ZIP SHA256:
   `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
   A 296-footprint replacement routing checkpoint is preserved separately with
-  all 2,383 pad identities, zero internal unconnected items, and zero electrical
-  DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 49 pad-net mismatches and 138 moved
+  all 2,383 pad identities and zero electrical DRC findings before the native
+  rail-E correction. Merging that source-proved ground domain exposes one real
+  ground-join open in the preserved copper
+  ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
+  Later source corrections leave it with 50 pad-net mismatches and 138 moved
   pads across D5/D7/D8/D9/D35/D37/D38/D50/D51/R13/R14; it also lacks the fourteen
   A:7/A:8/A:10/A:11/A:14/A:19/A:20 assembly-wire pads. It is therefore convergence evidence rather than
-  current-source copper. Its zero-open state also copper-substitutes ten
+  current-source copper. Its former zero-open state also copper-substitutes ten
   documented factory insulated links. The source PCB now preserves A:7, A:8,
   A:10, A:11, A:14, A:19, and A:20 as separate landing-island pairs joined only by explicit
   assembly wires; the other six A-point terminals remain absent. All ten pairs
@@ -67,7 +69,7 @@ with the machine-readable board model.
   and pin 11 to the D105.2/D13.4/D11.20 clock conductor, leaving only the `H`
   edge contact/pull-up open. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 214 modeled nets retain source-risk annotations requiring
+  In total, 213 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

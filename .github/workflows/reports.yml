@@ -195,6 +195,9 @@ jobs:
           python3 scripts/report_board_fidelity_gap_ledger.py
           git diff --exit-code -- docs/board-fidelity-gap-ledger.md
 
+      - name: Check DRAM ground rail closure
+        run: python3 scripts/close_array_ground_rail.py
+
       - name: Check decap value fidelity freshness
         run: |
           python3 scripts/report_decap_value_fidelity.py

@@ -96,6 +96,7 @@ jobs:
             scripts/export_eprom_pair.py \
             scripts/report_firmware_gap_ledger.py \
             scripts/report_board_fidelity_gap_ledger.py \
+            scripts/close_array_ground_rail.py \
             scripts/report_decap_value_fidelity.py \
             scripts/report_d41_timing_boundary.py \
             scripts/report_memory_timing_boundary.py \

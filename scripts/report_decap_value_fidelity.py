@@ -56,8 +56,8 @@ def main() -> int:
         rows.append((ref, value, p1, p2, note))
 
     expected_groups = {
-        "RAIL_G<->RAIL_E": 19,
-        "RAIL_E<->RAIL_H": 19,
+        "RAIL_G<->GND": 19,
+        "GND<->RAIL_H": 19,
     }
     group_ok = group_counts == expected_groups
     value_ok = model_values == {"0,047": 38}
@@ -95,9 +95,11 @@ def main() -> int:
             "",
             "## Evidence Reconciliation",
             "",
-            "- `kicad/juku.board.json`, `kicad/juku.dsn`, and the generated PCB",
-            "  agree that C35-C53 are the `RAIL_G` to `RAIL_E` bypass group and",
-            "  C54-C72 are the `RAIL_E` to `RAIL_H` bypass group.",
+            "- The native sheet-2 ground symbol directly identifies rail E as GND.",
+            "  Board JSON and both PCBs therefore place C35-C53 between `RAIL_G`",
+            "  and `GND`, and C54-C72 between `GND` and `RAIL_H`.",
+            "- C34 is separately source-closed across rail E/GND and rail F/+5 V;",
+            "  the former `RAIL_H`-to-GND assignment was a scan-reading error.",
             "- The current BOM/model value for these 38 positions is uniform",
             "  `0,047`, which is suitable for the functional replica's modeled",
             "  bypass role.",

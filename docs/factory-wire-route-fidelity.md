@@ -5,8 +5,8 @@ Status: **LOGICAL LINKS ADOPTED / LANDING REGISTRATION PARTIAL / ROUTED CANDIDAT
 The `.009` assembly table proves ten on-board insulated links. Their
 logical endpoints are source-closed, but logical net equality is not
 permission to replace the original flying wire with PCB etch. This report
-separates those two claims and blocks production adoption of the current
-zero-open routing checkpoint.
+separates those two claims and blocks production adoption of the preserved
+routing checkpoint.
 
 ## Guarded state
 
@@ -17,18 +17,21 @@ zero-open routing checkpoint.
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
 - Paired A-point landing terminals modeled: `14/20`
 - Candidate/source pad identities equal: `FAIL`
-- Candidate/source pad-net mismatches: `49`
+- Candidate/source pad-net mismatches: `50`
 - Candidate/source moved pads (>50 nm): `138`
 - Link nets carrying candidate copper: `10/10`
-- Candidate DRC unconnected items: `0`
+- Candidate DRC unconnected items: `1`
 - Required release state: twenty registered landing terminals, no copper
   bridge between each island pair, and exactly ten assembly-wire closures.
 
-The current candidate's zero unconnected items are useful routing-convergence
-evidence, but for these ten links they prove copper substitution rather than
-historical construction fidelity. It is also a preserved checkpoint rather
-than a current-source route: later net and photo-placement corrections must
-be incorporated only after the landing islands and functional netlist freeze.
+The candidate's one unconnected item is the ground join exposed when native
+sheet-2 evidence merged the formerly separate `RAIL_E` model into `GND`; it
+is a real post-correction reroute item, not a cosmetic net-label discrepancy.
+The same evidence corrected source C34.1 from `RAIL_H` to `P5V`, accounting
+for the fiftieth current source/candidate pad-net mismatch. For the ten links,
+the remaining copper still proves routing convergence rather than historical
+construction fidelity. Later net and photo-placement corrections must be
+incorporated only after the landing islands and functional netlist freeze.
 
 ## Link audit
 
