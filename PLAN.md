@@ -605,7 +605,11 @@ serve physical bring-up or historical fidelity:
    the archive-damaged `DP RTNEMPTY` PUNCH source line without rewriting it.
    Public `CONST=0xCA06` traverses `DoFunction` and exact monitor `CONSTA=0xFF98`;
    at the prompt's empty keyboard boundary (`0xCF` released matrix inputs) it
-   returns `A=0`, while blocking `CONIN` is intentionally not invoked without a key.
+   returns `A=0`. Public `CONIN=0xCA09` traverses exact monitor `RDCHR=0xFFD3`
+   and its interrupt-fed keyboard buffer: a held shifted-`T` at source-faithful
+   matrix column 4 / encoder bit 3, sampled by two 200,000-cycle frame IRQs at
+   exact vector `0xFED4`, produces 34 matrix reads, two active `0x88` samples,
+   and returns ASCII `T=0x54` through the installed `D7E7` trampoline.
    Public `CONOUT=0xCA0C` traverses `DoFunction` and exact monitor
    `WRCHR=0xFFD9`; at the prompt checkpoint, `C='C'` renders its exact
    ten-scanline cell at byte column 2 / rows 70..79, including the seven

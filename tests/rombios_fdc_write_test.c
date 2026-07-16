@@ -29,6 +29,7 @@ enum {
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
   BIOS_CONST = 0xCA06,
+  BIOS_CONIN = 0xCA09,
   BIOS_CONOUT = 0xCA0C,
   BIOS_LIST = 0xCA0F,
   BIOS_PUNCH = 0xCA12,
@@ -58,6 +59,13 @@ typedef struct {
   uint8_t portc;
   unsigned monitor_trampoline_entries;
   unsigned vram_writes;
+  int keyboard_held;
+  int keyboard_shift;
+  uint8_t keyboard_col;
+  uint8_t keyboard_bit;
+  uint8_t keyboard_active_value;
+  unsigned keyboard_reads;
+  unsigned keyboard_active_reads;
   unsigned fdc_commands;
   uint8_t command_log[16];
   unsigned command_writes;
@@ -130,6 +138,19 @@ static void write_byte(void* opaque, uint16_t address, uint8_t value) {
 
 static uint8_t port_in(void* opaque, uint8_t port) {
   fixture* f = opaque;
+  if (port == 0x05 && f->keyboard_held) {
+    uint8_t value = 0xC0;             // both active-low SHIFT inputs released
+    if (f->keyboard_shift) value &= (uint8_t)~0x40;
+    if ((f->out[0x04] & 0x0F) == f->keyboard_col) {
+      value |= (uint8_t)(((~f->keyboard_bit) & 7) << 1);
+      f->keyboard_active_value = value;
+      f->keyboard_active_reads++;
+    } else {
+      value |= 0x0F;                  // 74148 GS released outside key column
+    }
+    f->keyboard_reads++;
+    return value;
+  }
   if (port >= 0x1C && port <= 0x1F) {
     uint8_t value = juku_fdc_read(&f->fdc, port & 3);
     if (port == 0x1C && (value & 0x40)) f->write_protect_status_reads++;
@@ -190,16 +211,20 @@ static int write_image(const char* path) {
 
 
 static int load_rom(uint8_t rom[ROM_SIZE]) {
+  static const uint8_t frame_vector[] = {0xCD, 0x9F, 0xD7};
   static const uint8_t ramdisk_vector[] = {0xC3, 0xB3, 0xE9};
   static const uint8_t consta_entry[] = {0xCD, 0x5B, 0xD8};
+  static const uint8_t rdchr_entry[] = {0xC3, 0xD9, 0xD9};
   static const uint8_t wrchr_entry[] = {0xC3, 0xE3, 0xD9};
   static const uint8_t printch_entry[] = {0xC3, 0xF1, 0xD7};
   FILE* fp = fopen("roms/ekta37.bin", "rb");
   if (!fp) return 1;
   size_t got = fread(rom, 1, ROM_SIZE, fp);
   int failed = got != ROM_SIZE || fclose(fp) != 0 ||
+               memcmp(&rom[0x3ED4], frame_vector, sizeof(frame_vector)) != 0 ||
                memcmp(&rom[0x3F5C], ramdisk_vector, sizeof(ramdisk_vector)) != 0 ||
                memcmp(&rom[0x3F98], consta_entry, sizeof(consta_entry)) != 0 ||
+               memcmp(&rom[0x3FD3], rdchr_entry, sizeof(rdchr_entry)) != 0 ||
                memcmp(&rom[0x3FD9], wrchr_entry, sizeof(wrchr_entry)) != 0 ||
                memcmp(&rom[0x3FEE], printch_entry, sizeof(printch_entry)) != 0 ||
                memcmp(&rom[0x29A7], RAMDISK_SIGNATURE,
@@ -213,7 +238,8 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t exercised_vectors[] = {
-    BIOS_CONST, BIOS_CONOUT, BIOS_LIST, BIOS_PUNCH, BIOS_READER, BIOS_HOME,
+    BIOS_CONST, BIOS_CONIN, BIOS_CONOUT, BIOS_LIST,
+    BIOS_PUNCH, BIOS_READER, BIOS_HOME,
     BIOS_SELDSK, BIOS_SETTRK,
     BIOS_SETSEC, BIOS_SETDMA,
     BIOS_READ, BIOS_WRITE, BIOS_LISTST, BIOS_SECTRAN,
@@ -337,6 +363,48 @@ static int run_bios_entry(
   fprintf(stderr,
           "EKDOS %s: entry=%04X did not return (pc=%04X hl=%02X%02X cyc=%lu)\n",
           name, entry, cpu.pc, cpu.h, cpu.l, cpu.cyc);
+  return 1;
+}
+
+
+static int run_bios_conin(
+    fixture* f, uint8_t* result, unsigned* frame_interrupts,
+    unsigned long* total_cycles) {
+  enum { FRAME_CYCLES = 200000 };
+  i8080 cpu;
+  i8080_init(&cpu);
+  cpu.userdata = f;
+  cpu.read_byte = read_byte;
+  cpu.write_byte = write_byte;
+  cpu.port_in = port_in;
+  cpu.port_out = port_out;
+  cpu.pc = BIOS_CONIN;
+  cpu.sp = 0xD6F8;
+  cpu.a = 0xA5;
+  cpu.iff = 1;                         // prompt checkpoint runs with EI
+  f->ram[cpu.sp] = RETURN_PC & 0xFF;
+  f->ram[cpu.sp + 1] = RETURN_PC >> 8;
+  unsigned long next_frame = FRAME_CYCLES;
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) {
+    i8080_step(&cpu);
+    if (cpu.cyc >= next_frame) {
+      next_frame += FRAME_CYCLES;
+      if (cpu.iff) {
+        write_byte(f, (uint16_t)(cpu.sp - 1), cpu.pc >> 8);
+        write_byte(f, (uint16_t)(cpu.sp - 2), cpu.pc & 0xFF);
+        cpu.sp -= 2;
+        cpu.iff = 0;
+        cpu.pc = 0xFED4;               // PIC IR5 frame service vector
+        (*frame_interrupts)++;
+      }
+    }
+  }
+  *total_cycles += cpu.cyc;
+  *result = cpu.a;
+  if (cpu.pc == RETURN_PC) return 0;
+  fprintf(stderr,
+          "EKDOS CONIN: did not return (pc=%04X cyc=%lu frames=%u reads=%u)\n",
+          cpu.pc, cpu.cyc, *frame_interrupts, f->keyboard_reads);
   return 1;
 }
 
@@ -558,6 +626,7 @@ int main(int argc, char** argv) {
   unsigned long successful_cycles = total_cycles;
   unsigned long auxiliary_cycles = 0;
   unsigned long console_status_cycles = 0;
+  unsigned long console_input_cycles = 0;
   unsigned long console_output_cycles = 0;
   unsigned long unallocated_cycles = 0;
   unsigned long home_cycles = 0;
@@ -759,6 +828,33 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
+  f.keyboard_held = 1;
+  f.keyboard_shift = 1;
+  f.keyboard_col = 4;                 // T key in the target keyboard matrix
+  f.keyboard_bit = 3;
+  f.keyboard_reads = 0;
+  f.keyboard_active_reads = 0;
+  f.keyboard_active_value = 0;
+  uint8_t console_input = 0;
+  unsigned conin_frame_interrupts = 0;
+  unsigned conin_trampolines_before = f.monitor_trampoline_entries;
+  fail |= run_bios_conin(&f, &console_input, &conin_frame_interrupts,
+                         &console_input_cycles);
+  f.keyboard_held = 0;
+  if (console_input != 'T' || f.keyboard_reads != 34 ||
+      f.keyboard_active_reads != 2 || f.keyboard_active_value != 0x88 ||
+      conin_frame_interrupts != 2 ||
+      f.monitor_trampoline_entries <= conin_trampolines_before) {
+    fprintf(stderr,
+            "EKDOS CONIN: result=%02X expected=%02X frames=%u reads=%u "
+            "active=%u/%02X "
+            "trampolines=%u/%u\n",
+            console_input, 'T', conin_frame_interrupts,
+            f.keyboard_reads, f.keyboard_active_reads, f.keyboard_active_value,
+            f.monitor_trampoline_entries, conin_trampolines_before);
+    fail = 1;
+  }
+
   static const uint8_t glyph_cell_c[10] = {
     0x00, 0x1C, 0x22, 0x20, 0x20, 0x20, 0x22, 0x1C, 0x00, 0x00,
   };
@@ -951,7 +1047,7 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "const=no-key conout=glyph-C list=usart-L "
+         "const=no-key conin=shift-T conout=glyph-C list=usart-L "
          "aux=punch+reader-unimplemented "
          "home=clean+dirty "
          "listst=not-ready "
@@ -963,7 +1059,8 @@ int main(int argc, char** argv) {
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
          successful_cycles + auxiliary_cycles + console_status_cycles +
-         console_output_cycles + list_output_cycles + unallocated_cycles +
+         console_input_cycles + console_output_cycles +
+         list_output_cycles + unallocated_cycles +
          home_cycles + list_status_cycles +
          seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);
