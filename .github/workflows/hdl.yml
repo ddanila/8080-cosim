@@ -98,6 +98,7 @@ jobs:
         run: |
           ./sync/basic_cart_check.sh
           ./sync/prom_fallback_check.sh
+          ./sync/d2_ready_path_check.sh
           python3 scripts/report_d6_runtime_path.py
           git diff --exit-code -- docs/d6-runtime-path-diagnostic.md
           python3 scripts/validate_rt4_dump.py --self-test

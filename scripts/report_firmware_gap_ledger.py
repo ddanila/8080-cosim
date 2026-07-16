@@ -96,6 +96,7 @@ def main() -> int:
     d2_text = read("docs/d2-reconstruction-constraints.md")
     d2_ok = (
         "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**" in d2_text
+        and "D2 raw electrical polarity executes through D30 READY | PASS" in d2_text
         and d2_image_ok
     )
     d94_ok = marker(
@@ -216,6 +217,7 @@ def main() -> int:
         ("D15+D16 round-trip exactly to roms/ekta37.bin", eprom_roundtrip_ok),
         ("D15/D16 split and non-dump provenance are documented", eprom_report_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
+        ("D2 open-collector raw polarity executes through the D30 READY latch", d2_ok),
         ("D6 physical table drives runnable selection under the provisional D0/D3 fit", d6_runnable_physical_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),
         ("D94 physical table drives runnable FDC read/write strobes under guarded upstream fits", d94_runnable_physical_ok),

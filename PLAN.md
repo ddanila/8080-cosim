@@ -344,12 +344,14 @@ D15/D16 `ekta37` split and 2764-class device decision are recorded in
 The runnable boot does not yet execute from all four physical tables. The
 adoption road, in dependency order:
 
-1. **D2 `.037` — executes in boot, polarity not yet pinned.** `wait_prom_037`
-   drives the measured D30/R29 READY path. D30 pins 8/11 are owner-closed; the
-   `H` edge contact is P0 connectivity item 3, not a PROM gap. Because wait
-   states are invisible to the value-level guards, the boot pass does not
-   decide raw-vs-asserted polarity for the РТ4 reader; highest-priority item 1
-   decides it together with D6.
+1. **D2 `.037` — physical table and raw polarity execute.** `wait_prom_037`
+   now models the РТ4's open-collector outputs and drives the measured D30/R29
+   READY path. The focused guard proves raw `0` sinks READY low and raw `F` or
+   disabled output releases the R6 pull-up high before D30 samples it. The used
+   D0 reader channel was Nano D10, independent of the Nano D13 LED issue on the
+   board-unused D3 channel, so the pending D6 re-read does not gate D2 polarity.
+   D30 pins 8/11 are owner-closed; only complete cycle timing through the `H`
+   edge contact remains P0 connectivity item 3, not a PROM-content gap.
 2. **D8 `.039` — content executes, enable is still derived.** The physical
    table drives all eight ROM-socket selects; its `E_N` input is the separate
    D6.12 ROM-select conductor, so full adoption completes with step 3.

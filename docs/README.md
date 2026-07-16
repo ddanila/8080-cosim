@@ -42,8 +42,9 @@ findings. Every status applies only to the boundary named by the report.
   `d6-firmware-mode-coverage.md`,
   `eprom-programming-images.md`, and
   `d2-physical-dump-and-continuity.md` (validated owner dump and synchronized
-  connectivity adoption), and `d2-physical-truth.md` (exact READY truth
-  classification), and `re3-physical-dumps.md` (independent D8/D94 captures
+  connectivity adoption), `d2-physical-truth.md` (exact READY truth
+  classification), `d2-ready-path-check.md` (executed open-collector D2-to-D30
+  polarity guard), and `re3-physical-dumps.md` (independent D8/D94 captures
   from two physical boards, reader wiring, and validated content truth).
 - Fabrication package: `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,

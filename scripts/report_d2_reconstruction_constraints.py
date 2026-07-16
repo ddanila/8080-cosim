@@ -240,6 +240,16 @@ def main() -> int:
         "preserve the physical `.037` table",
         "pins 9-11 have no destination and are explicit no-connects",
     )
+    ready_polarity_guard = marker(
+        "docs/d2-ready-path-check.md",
+        "Status: **PHYSICAL D2 RAW POLARITY EXECUTES THROUGH D30**",
+        "Nano D10",
+        "D2.12 on D30.2 and the R6 pull-up",
+    ) and marker(
+        "hdl/devices.v",
+        "К556РТ4 outputs are open collector",
+        "assign d[bit_index] = (~v1_n && ~v2_n && !raw[bit_index]) ? 1'b0 : 1'bz;",
+    )
     all_signal_pins_netted = (
         len(signal_nets) == len(pin_roles)
         and len(dsn_nets) >= len(pin_roles)
@@ -393,6 +403,11 @@ def main() -> int:
                 "`docs/reconstructed-prom-fallbacks.md`",
             ]),
             table_row([
+                "D2 raw electrical polarity executes through D30 READY",
+                "PASS" if ready_polarity_guard else "FAIL",
+                "`sync/d2_ready_path_check.sh`; D0 reader channel Nano D10",
+            ]),
+            table_row([
                 "Owner dump and corrected continuity are recorded",
                 "PASS" if owner_evidence else "FAIL",
                 "`docs/d2-physical-dump-and-continuity.md`",
@@ -420,6 +435,9 @@ def main() -> int:
             "- Two complete same-session reads matched at every address with zero",
             "  unstable rows; all four outputs agreed. A third separately power-cycled",
             "  capture validates to the same authoritative raw SHA256.",
+            "- The used D0 channel was read on unloaded Nano D10, not the D13 LED",
+            "  channel. The open-collector HDL and focused D30 guard execute raw 0",
+            "  as READY low and raw F/disabled as pulled-up READY high.",
             "",
             "## Reconstruction Boundary",
             "",
@@ -433,14 +451,15 @@ def main() -> int:
             "  it gates CPU DBIN through D105 into D5 and is not the −5 V supply.",
             "- Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte",
             "  authoritative raw low-nibble image, reproduced from all three captures.",
-            "- Remaining closure is historical comparison against a programming-disk",
-            "  file or independent future read, not recovery of the current chip table.",
+            "- Remaining closure is complete cycle timing through the measured `H`",
+            "  edge boundary plus historical corroboration, not D2 content or raw",
+            "  electrical polarity.",
             "",
         ]
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok, physical_image_ok, owner_evidence, nc_outputs_ok))
+    evidence_ok = all((identity_ok, io_decoder_superseded, fallback_boundary, official_bom_lead, raw_pin_table_lead, symbolic_ok, physical_image_ok, owner_evidence, nc_outputs_ok, ready_polarity_guard))
     return 0 if evidence_ok and status != "D2 RECONSTRUCTION INPUTS CHANGED" else 1
 
 

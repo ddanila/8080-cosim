@@ -23,6 +23,13 @@ four externally pulled-up data inputs to read stable `F`; a failed self-test
 aborts the capture. This removes the loading ambiguity without presuming that
 it caused the existing D6 table.
 
+This D13 caveat does not leave D2's board-used output ambiguous. D2 D0/pin12
+was sampled on Nano D10 with its own external pull-up; only D3 used Nano D13,
+and D2 D3 is an intentional board no-connect. Direct continuity also places
+D0 on D30.2 and R6. The executable guard `sync/d2_ready_path_check.sh` therefore
+pins D2 raw `0` as READY low and raw `F`/disabled as pulled-up READY high while
+the corrected-reader re-read remains specific to D6's D0/D3 anomaly.
+
 ## Revision-2 wiring and D6 discriminator
 
 - PROM A0-A7/pins 5,6,7,4,3,2,1,15 -> Nano D2-D9.

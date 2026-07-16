@@ -191,7 +191,12 @@ module wait_prom_037 (input wire [7:0] a, input wire v1_n, v2_n,
     initial $readmemh("ref/physical-proms/validated/d2_037.raw.hex", prom);
     wire [3:0] raw = prom[a][3:0];
 `endif
-    assign d = (~v1_n && ~v2_n) ? raw : 4'hF;
+    // К556РТ4 outputs are open collector: a stored/raw zero sinks the pin,
+    // while a raw one or disabled chip releases it to the board pull-up.
+    genvar bit_index;
+    generate for (bit_index = 0; bit_index < 4; bit_index = bit_index + 1) begin : g_oc
+        assign d[bit_index] = (~v1_n && ~v2_n && !raw[bit_index]) ? 1'b0 : 1'bz;
+    end endgenerate
 endmodule
 
 // ---- ЛА3 NAND gate section (D7) gating the PROM enable ----

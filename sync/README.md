@@ -45,12 +45,15 @@ sync/video_readout_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
 sync/basic_cart_check.sh
+sync/d2_ready_path_check.sh
 ```
 
 These cover the real-ROM boot/framebuffer path, per-read agreement between
 `juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
 raw disk geometry, the bounded WD1793 boot subset, raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.
+`d2_ready_path_check.sh` separately guards the physical `.037` open-collector
+raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
 
 `sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
 of simulated boot); see `docs/cosim-runtime-reference.md`. It is kept out of CI

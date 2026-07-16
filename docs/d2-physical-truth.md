@@ -34,12 +34,28 @@ The classifier above is evaluated against all 256 preserved rows on every
 report refresh. `CAS` is a don't-care in the `A10=1` half; `XACK_N` and
 `A14` are don't-cares in the `A10=0` half.
 
-## READY interpretation boundary
+## Executed READY polarity
+
+The used physical D0/pin12 channel was sampled on Nano D10. The known
+Nano D13 LED load affected only D3/pin9, which is an intentional no-connect
+on the board. D0 also had its own external pull-up during capture, and direct
+continuity puts it on board pull-up R6 and D30.2. The physical D0 raw sense is
+therefore independent of the pending D6 D3 re-read.
+
+`sync/d2_ready_path_check.sh` executes the preserved table through an
+open-collector `wait_prom_037` and functional D30 section A. It guards:
+
+- raw row `00` sinks `READY_D` and latches D30/READY low;
+- raw row `80` (`F`) releases the pull-up and latches READY high; and
+- disabling either PROM enable releases all outputs high.
+
+## READY timing boundary
 
 - Raw `0` means the open-collector D2 output actively pulls `READY_D` low.
 - Raw `F` releases D0/pin12, allowing R6 to pull `READY_D` high.
-- D30 samples that level with PHI2TTL and its asynchronous controls; this
-  table alone does not prove the full cycle-by-cycle WAIT timing.
+- D30's raw level and sampling polarity are now executable and guarded.
+  Complete cycle-by-cycle WAIT duration still depends on the measured
+  `H` edge contact and surrounding clock/control timing.
 - Pins 9-11 remain physically programmed and were captured by the reader, but
   the factory symbol draws no external stubs; they are intentional no-connects
   and must not acquire PCB nets merely because their truth matches D0.

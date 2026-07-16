@@ -115,6 +115,7 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
 | D2 physical-table provenance is preserved | PASS | `docs/reconstructed-prom-fallbacks.md` |
+| D2 raw electrical polarity executes through D30 READY | PASS | `sync/d2_ready_path_check.sh`; D0 reader channel Nano D10 |
 | Owner dump and corrected continuity are recorded | PASS | `docs/d2-physical-dump-and-continuity.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Evidence summary preserves the traced D2 pin table | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
@@ -131,6 +132,9 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 - Two complete same-session reads matched at every address with zero
   unstable rows; all four outputs agreed. A third separately power-cycled
   capture validates to the same authoritative raw SHA256.
+- The used D0 channel was read on unloaded Nano D10, not the D13 LED
+  channel. The open-collector HDL and focused D30 guard execute raw 0
+  as READY low and raw F/disabled as pulled-up READY high.
 
 ## Reconstruction Boundary
 
@@ -144,5 +148,6 @@ one idempotent solder-side segment for each D2-to-D4 address route.
   it gates CPU DBIN through D105 into D5 and is not the −5 V supply.
 - Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte
   authoritative raw low-nibble image, reproduced from all three captures.
-- Remaining closure is historical comparison against a programming-disk
-  file or independent future read, not recovery of the current chip table.
+- Remaining closure is complete cycle timing through the measured `H`
+  edge boundary plus historical corroboration, not D2 content or raw
+  electrical polarity.

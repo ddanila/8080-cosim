@@ -30,6 +30,7 @@ jobs:
           sh -n sync/serial_check.sh
           sh -n sync/cosim_check.sh
           sh -n sync/boot_check.sh
+          sh -n sync/d2_ready_path_check.sh
           sh -n spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
           python3 -m py_compile \
             kicad/apply_a7_factory_wire_split.py \

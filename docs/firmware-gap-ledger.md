@@ -40,6 +40,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D15+D16 round-trip exactly to roms/ekta37.bin | PASS |
 | D15/D16 split and non-dump provenance are documented | PASS |
 | D2 physical table and continuity are guarded | PASS |
+| D2 open-collector raw polarity executes through the D30 READY latch | PASS |
 | D6 physical table drives runnable selection under the provisional D0/D3 fit | PASS |
 | D94 physical table is adopted while continuity stays guarded | PASS |
 | D94 physical table drives runnable FDC read/write strobes under guarded upstream fits | PASS |

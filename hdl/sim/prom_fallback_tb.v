@@ -10,7 +10,7 @@ module prom_fallback_tb;
   wire rom_n, ram_n, rev, roe_n;
   wire [7:0] d8_data;
   tri1 [7:0] d94_data;
-  wire [3:0] d2_data;
+  tri1 [3:0] d2_data;
   integer i;
   integer errors = 0;
 
