@@ -4,9 +4,9 @@ Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**
 
 This generated report narrows the physical floppy-controller handoff to
 the exact board points that still need owner or bench evidence. It does
-not claim D93 interrupt mapping or D100 enable/direction gating are
-hardware-verified; it separates the wired bus-side facts from the
-remaining continuity asks.
+not claim D93 interrupt mapping, D100 enable/direction gating, or the
+electrical DB-to-DAL polarity are hardware-verified; it separates the
+wired bus-side facts from the remaining continuity asks.
 
 ## Command
 
@@ -202,8 +202,8 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
-| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating | singleton D100_OE_BOUNDARY in board JSON; owner continuity item |
-| D100.11 `T` | BOUNDARY | 8287 direction gating | singleton D100_T_BOUNDARY in board JSON; owner continuity item |
+| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; exact firmware emits CPU byte 0x02 for Restore while an enabled КР580ВА87 would place 0xFD on D93 DAL |
+| D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; capture one command write and one status read as specified by docs/fdc-bus-polarity.md |
 
 ## Netted FDC Endpoints
 
@@ -238,7 +238,12 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
-  D100.11. Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
+  D100.11. During the pinned PC E5DE command, capture CPU DB, D93 DAL,
+  D100 /OE/T, D93 /WE, and STEP/WG: exact firmware emits 0x02 (Restore),
+  while one enabled КР580ВА87 inversion would deliver 0xFD (Write Track).
+  Repeat one status read to close both directions; see
+  `docs/fdc-bus-polarity.md`.
+  Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.
 - Trace every restored D93 drive-interface pin through D28/D95-D99/
   D101/D102/D106. D93.40 to `P12V` is already owner-confirmed.

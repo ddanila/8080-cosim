@@ -92,6 +92,7 @@ jobs:
             scripts/report_d94_reconstruction_constraints.py \
             scripts/report_owner_measurement_shortlist.py \
             scripts/report_fdc_hardware_handoff.py \
+            scripts/report_fdc_bus_polarity.py \
             scripts/report_serial_handoff.py \
             scripts/export_wd1772_pla.py \
             scripts/report_wd1772_pla_inspection.py \

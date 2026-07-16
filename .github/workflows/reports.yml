@@ -302,6 +302,11 @@ jobs:
             docs/d41-timing-boundary.md \
             docs/video-slot-timing-audit.md
 
+      - name: Check FDC firmware/part bus-polarity audit freshness
+        run: |
+          python3 scripts/report_fdc_bus_polarity.py
+          git diff --exit-code -- docs/fdc-bus-polarity.md
+
       - name: Check owner measurement shortlist freshness
         run: |
           python3 scripts/report_fdc_hardware_handoff.py

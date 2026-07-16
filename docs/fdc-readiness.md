@@ -114,6 +114,11 @@ physical D93/D94 wiring.
   This is a guarded historical firmware boundary, not claimed error safety.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
+- The behavioral controller intentionally consumes logical system `DB` rather
+  than the non-driving physical D100/DAL path. `docs/fdc-bus-polarity.md`
+  guards the unresolved hardware contradiction: exact firmware emits `0x02`
+  for its first Restore, while the populated inverting КР580ВА87 would
+  nominally present `0xFD` (Write Track) to D93.
 - The committed uninterrupted Verilator report
   `docs/juku-top-fdc-verilator-probe.md` drains all 10,752 FDC data-register
   reads and reaches the EKDOS `A>` bitmap; `sync/juku_top_fdc_prompt_check.sh`
