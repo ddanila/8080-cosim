@@ -40,8 +40,9 @@ design release until measured or explicitly dispositioned.
 - The same continuity pass proves MEMW on tied D105.12/.13 and
   D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9
   merge and the older `.006` D95 WAIT handoff.
-- The derived routed snapshot predates those corrections and the source
-  placement has ten collision pairs, so a full reroute remains blocked.
+- The current source placement has zero electrical collisions. The derived
+  routed snapshot predates these corrections and still requires a full
+  refresh after the P0 functional netlist freezes.
 
 ## D30 READY Flip-Flop Boundary
 
@@ -51,7 +52,9 @@ design release until measured or explicitly dispositioned.
   through R29 1 kΩ.
 - Direct owner continuity corrects that topology: D2.12 and R6 feed D30.2;
   D30.5 reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;
-  and D105.11 drives D30.13. Pins 8 and 11 remain explicit boundaries.
+  and D105.11 drives D30.13. Section B is also closed: D30.11 joins the
+  D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Only the
+  exact `H` edge contact and pull-up remain open in this READY/WAIT cluster.
 
 ## AG3 Package Correction
 

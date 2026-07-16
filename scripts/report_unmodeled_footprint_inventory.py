@@ -18,6 +18,7 @@ GEN = ROOT / "kicad" / "gen_kicad_pcb.py"
 REPORT = ROOT / "docs" / "unmodeled-footprint-inventory.md"
 PHYSICAL_EVIDENCE = ROOT / "ref" / "photos" / "juku-pcb-2" / "BODGE-TRIAGE.md"
 SHEET1 = ROOT / "ref" / "schematics" / "p3_sheet1.png"
+SOURCE_DRC_REPORT = ROOT / "docs" / "source-pcb-drc.md"
 FDC_BOUNDARY_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
 
 
@@ -82,6 +83,8 @@ def markers_ok() -> tuple[bool, list[str]]:
         (PHYSICAL_EVIDENCE, "The D2 pin table from sheet 1 is"),
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
         (PHYSICAL_EVIDENCE, "D105 = К155ЛА3"),
+        (SOURCE_DRC_REPORT, "Status: **PASS**"),
+        (SOURCE_DRC_REPORT, "Unique colliding pad/item pairs: `0`"),
         (GEN, "'D95':(256.000,93.000,270)"),
         (GEN, "'D97':(268.604,110.273,90)"),
         (GEN, "'D99':(279.895,93.451,270)"),
@@ -161,8 +164,9 @@ def main() -> int:
             "- The same continuity pass proves MEMW on tied D105.12/.13 and",
             "  D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9",
             "  merge and the older `.006` D95 WAIT handoff.",
-            "- The derived routed snapshot predates those corrections and the source",
-            "  placement has ten collision pairs, so a full reroute remains blocked.",
+            "- The current source placement has zero electrical collisions. The derived",
+            "  routed snapshot predates these corrections and still requires a full",
+            "  refresh after the P0 functional netlist freezes.",
         ]
     else:
         d105_lines = [
@@ -217,7 +221,9 @@ def main() -> int:
         "  through R29 1 kΩ.",
         "- Direct owner continuity corrects that topology: D2.12 and R6 feed D30.2;",
         "  D30.5 reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;",
-        "  and D105.11 drives D30.13. Pins 8 and 11 remain explicit boundaries.",
+        "  and D105.11 drives D30.13. Section B is also closed: D30.11 joins the",
+        "  D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Only the",
+        "  exact `H` edge contact and pull-up remain open in this READY/WAIT cluster.",
         "",
         "## AG3 Package Correction",
         "",
