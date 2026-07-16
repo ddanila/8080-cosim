@@ -126,8 +126,11 @@ static uint8_t read_byte(void* opaque, uint16_t address) {
 
 static void write_byte(void* opaque, uint16_t address, uint8_t value) {
   fixture* f = opaque;
-  // ROM/cartridge paging affects reads only.  The physical DRAM write rail is
-  // still driven, which the monitor's low-stack trampoline depends on.
+  unsigned index = 0;
+  int source = overlay(f, address, &index);
+  // The monitor's low-ROM dispatcher writes behind page-zero ROM. Other
+  // overlays remain read-only, matching the full Monitor 3.3 framebuffer.
+  if (source && !((f->portc & 3) == 0 && address <= 0x3FFF)) return;
   if (address >= VRAM_BASE && address < VRAM_BASE + VRAM_BYTES) {
     f->vram_writes++;
   }

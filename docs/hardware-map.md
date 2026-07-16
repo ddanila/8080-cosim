@@ -22,13 +22,13 @@ connection.
 | 2 | cartridge at `4000-BFFF`, BIOS at `D800-FFFF` | other addresses are RAM |
 | 3 | none | all RAM |
 
-These overlays select the CPU's **read** source. Memory writes continue to the
-underlying populated DRAM bank through the independent `/MEMW`/W-rail path,
-including addresses currently read from BIOS or cartridge ROM. Monitor 3.7
-depends on this behavior: its low-stack dispatcher maps the low ROM while
-writing a return frame at `0x00E4..0x00E5`, then restores the caller's mapping.
-`hdl/sim/mem_decode_tb.v` and the default EKDOS WBOOT reload guard preserve this
-read-overlay/write-behind distinction.
+The low BIOS window has one guarded write-behind behavior: Monitor 3.7's
+low-stack dispatcher maps ROM for instruction reads while writing its return
+frame into underlying RAM at `0x00E4..0x00E5`, then restores the caller's
+mapping. The high BIOS and cartridge windows remain write-protected overlays;
+allowing high-ROM writes corrupts the independently guarded Monitor 3.3 idle
+framebuffer. `hdl/sim/mem_decode_tb.v`, the Monitor 3.3 oracle, and the default
+EKDOS WBOOT reload guard preserve this asymmetric contract.
 
 The repository BIOS is 16 KiB across D15/D16. The physical ROM-pager PROM D8
 uses the validated `.039` table recovered from three matching reads, including

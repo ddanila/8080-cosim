@@ -182,10 +182,12 @@ static uint8_t kbd_portb(void) {
   return pb;
 }
 static void wb(void* u, uint16_t a, uint8_t v) {
-  // The paging PROM controls read sources; /MEMW still reaches the populated
-  // DRAM bank.  Monitor 3.7 relies on this write-behind behavior while its low
-  // ROM overlay is active to build a return frame in the underlying page-zero
-  // RAM before restoring the caller's mapping.
+  unsigned idx = 0;
+  int ov = overlay(a, &idx);
+  // Monitor 3.7's low-ROM dispatcher writes its return frame behind page-zero
+  // ROM. High-ROM and cartridge windows remain read-only overlays; allowing
+  // those writes corrupts the independently guarded Monitor 3.3 framebuffer.
+  if (ov && !(mode == 0 && a <= 0x3FFF)) return;
   ram[a] = v;
   wpage[a >> 8]++;
   if (a >= VRAM_BASE) {            // for CI: stop+dump after N video writes (match HDL)

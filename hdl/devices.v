@@ -138,9 +138,10 @@ module mem_decode (
     wire rom_sel = rom_lo || rom_hi;
     assign rom_oe_n = ~(rom_sel & ~memr_n);
     assign ram_oe_n = ~(~rom_sel & ~memr_n);
-    // Paging selects the read source.  The physical DRAM /W rail follows
-    // /MEMW independently, so writes land in RAM behind a ROM overlay.
-    assign ram_we_n = memw_n;
+    // The low-ROM monitor dispatcher writes a return frame into underlying
+    // page-zero RAM. The high ROM window remains write-protected.
+    wire write_ram = ~rom_hi;
+    assign ram_we_n = ~(write_ram & ~memw_n);
 endmodule
 
 // ---- memory map decoder: К556РТ4 256x4 bipolar PROM (D6) ----

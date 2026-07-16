@@ -38,11 +38,11 @@ module mem_decode_tb;
     memr_n = 1; memw_n = 0;
     check_outputs(1, 1, 0);
 
-    // The high ROM window has the same write-behind contract.
+    // The high ROM window remains write-protected.
     mode = 1; address = 16'hD800; memr_n = 0; memw_n = 1;
     check_outputs(0, 1, 1);
     memr_n = 1; memw_n = 0;
-    check_outputs(1, 1, 0);
+    check_outputs(1, 1, 1);
 
     // Ordinary RAM remains the read source and receives writes normally.
     address = 16'h4000; memr_n = 0; memw_n = 1;
@@ -52,7 +52,7 @@ module mem_decode_tb;
     memw_n = 1;
     check_outputs(1, 1, 1);
 
-    $display("[MEM-DECODE] PASS read overlays + underlying DRAM writes");
+    $display("[MEM-DECODE] PASS low-ROM write-behind + protected high ROM");
     $finish;
   end
 endmodule

@@ -53,7 +53,7 @@ echo "== memory-overlay read/write split =="
 iverilog -g2012 -s mem_decode_tb -o "$TMP/mem_decode_tb" \
   hdl/devices.v hdl/sim/mem_decode_tb.v 2>/dev/null
 if vvp "$TMP/mem_decode_tb" 2>/dev/null | grep -q "\[MEM-DECODE\] PASS"; then
-  echo "  PASS  mem_decode_tb (ROM reads + underlying DRAM writes)"
+  echo "  PASS  mem_decode_tb (low-ROM write-behind + protected high ROM)"
 else echo "  FAIL  mem_decode_tb"; fail=1; fi
 
 echo "== self-clocking boot: CPU runs on the mesh divider alone (-DSELF_CLOCK) =="

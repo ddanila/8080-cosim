@@ -141,12 +141,12 @@ module juku_chips_tb();
   latched_periph D57(.rs(a[1:0]), .cs(iocs[6]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x18 PIT2 8253
   latched_periph FDC(.rs(a[1:0]), .cs(iocs[7]), .din(d), .iord(io_rd), .iowr(io_wr_pulse), .d(d)); // 0x1C WD1793
 
-  // Write pulses (data valid at /WR). Paging is a read-source selection;
-  // /MEMW writes the underlying DRAM even while ROM is visible.
+  // Write pulses (data valid at /WR). The low ROM permits page-zero
+  // write-behind for the monitor dispatcher; the high ROM stays protected.
   always @(negedge wr_n) begin
     if (is_io_wr) begin
       io_wr_pulse = 1; #1 io_wr_pulse = 0;            // pulse the I/O latch/banking
-    end else begin
+    end else if (ram_sel || (mode == 2'd0 && a <= 16'h3FFF)) begin
       ram_we = 1; #1 ram_we = 0;
       if (a >= 16'hD800) begin
         vram_writes = vram_writes + 1;

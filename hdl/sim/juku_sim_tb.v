@@ -54,6 +54,12 @@ module juku_sim_tb();
     end
   endfunction
 
+  function write_blocked(input [15:0] addr);
+    begin
+      write_blocked = (mode == 2'd1 || mode == 2'd2) && addr >= 16'hD800;
+    end
+  endfunction
+
   // read data onto the bus during DBIN (memory or I/O per latched status)
   wire [7:0] rdata = status[6] ? out_last[a[7:0]] : mem_read(a);
   assign d = dbin ? rdata : 8'hzz;
@@ -97,7 +103,7 @@ module juku_sim_tb();
           set_mode(portc[1:0]);
         end
       end
-    end else begin                        // /MEMW writes DRAM behind read overlays
+    end else if (!write_blocked(a)) begin    // low ROM permits page-zero write-behind
       ram[a] = d;
       if (a >= 16'hD800) begin
         vram_writes = vram_writes + 1;

@@ -608,9 +608,10 @@ serve physical bring-up or historical fidelity:
    CCP through its source-defined resident-BDOS branch, preserving a deliberate
    nonstandard `0xB506` resident target without framebuffer or FDC activity.
    Its default `WRetry` branch is now separately guarded after poisoning the
-   five-sector CCP window. This closes a memory-model error: ROM paging selects
-   reads but `/MEMW` still writes the underlying DRAM, allowing the Monitor's
-   low-stack dispatcher to preserve its `0xFEE8` return frame. Exact ROM code
+   five-sector CCP window. This closes a memory-model error: the low-ROM mode
+   permits page-zero write-behind, allowing the Monitor's low-stack dispatcher
+   to preserve its `0xFEE8` return frame; the high ROM remains write-protected
+   as required by the independent Monitor 3.3 framebuffer oracle. Exact ROM code
    then reads physical sectors `3,2,4,6,5` with five `0x80` commands / 2,560
    data bytes, restores `SP=0x0100`, applies the source-defined three-byte
    `CCPExit` patch, and reaches the byte-exact reloaded CCP at `0xB400`.
