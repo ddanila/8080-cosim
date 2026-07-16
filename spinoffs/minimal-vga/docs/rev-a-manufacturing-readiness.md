@@ -1,8 +1,8 @@
 # VJUGA Rev A manufacturing readiness
 
-Status date: 2026-07-16.
+Status date: 2026-07-17.
 
-Status: **DESIGN HOLD / PACKAGE VERIFIED**.
+Status: **DESIGN HOLD / SOURCE VERIFIED, PACKAGE STALE**.
 
 The ignored fabrication directory currently contains an internally coherent
 bare-PCB package. Its upload archive is:
@@ -16,26 +16,28 @@ SHA256:
 This checksum proves artifact identity only. It is not permission to upload or
 order the board.
 
-**SUPERSEDED (2026-07-16):** the board was rerouted for the design-review
-placement fixes (USB-C J3 to the board edge, U20 clear of the block border,
-observability-header labels, decode-cap spacing). The routed copper is
-DRC-clean at 2,275 tracks, but the Gerber package above predates it. Because
-Gerber SHAs are KiCad-version specific, the package must be regenerated and its
-SHA re-frozen on the canonical (Linux) toolchain before any DFM/upload.
+**SUPERSEDED (2026-07-17):** the board was re-laid-out from the sparse 285x285
+experiment to a compact **200x200 mm** floorplan, with parts and functional-block
+borders aligned to a 0.2" (5.08 mm) grid and decoupling caps at each chip's short
+side. It was re-placed (collision-clean, 5 mm edge keepout) and fully rerouted:
+DRC-clean at **2,525 tracks**, 0 violations, 0 unconnected. The Gerber package
+above predates the 285x285 board entirely and is now doubly stale. Because Gerber
+SHAs are KiCad-version specific, the package must be regenerated and its SHA
+re-frozen on the canonical (Linux) toolchain before any DFM/upload.
 
 ## Verified package facts
 
-- The source PCB is four-layer and routed.
+- The source PCB is four-layer, 200x200 mm, and routed.
 - Current KiCad checks report zero DRC violations and zero unconnected items.
 - Gerber/drill membership, deterministic ZIP metadata, checksums, drill count,
-  and external rendering have machine-generated checks.
+  and external rendering have machine-generated checks (against the stale package).
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
 - The routed board is 119 refs / 135 nets, filled In1.Cu GND and In2.Cu VCC
   planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
-  post-assembly socket insertions. The committed copper now has 2,275 tracks
-  after the review-fix reroute; the frozen Gerber ZIP above (2,394 tracks)
-  predates it and must be re-exported (see the superseded note).
+  post-assembly socket insertions. The committed copper has 2,525 tracks after
+  the 200x200 re-layout and reroute; the frozen Gerber ZIP above predates even
+  the 285x285 board and must be re-exported (see the superseded note).
 - The full behavioral aggregate passes both real-ROM CPU implementations,
   dual decode modes, framebuffer readback, U24 timing, LVS, physical-model,
   footprint, PCB, DRC, and DRAM guards. The order-readiness aggregate reports
@@ -69,12 +71,14 @@ fab but their pinouts freeze in copper, so decide them first.
 
 **Copper-blocking**
 
-1. **Route the PCB (Phase 3 step f) — DONE (rerouted 2026-07-16).** All 119 refs
-   are placed and collision-clean; every modeled pin lands on a real pad. After
-   the design-review placement fixes the board was regenerated and rerouted
-   (freerouting fork, 0 unrouted / 0 violations), giving 2,275 F.Cu/B.Cu tracks
-   with filled In1.Cu GND and In2.Cu VCC planes and zero KiCad DRC/unconnected
-   items. The route runs on both the Linux box and macOS (fork jar + JDK 25).
+1. **Route the PCB (Phase 3 step f) — DONE (re-laid-out + rerouted 2026-07-17).**
+   All 119 refs are placed and collision-clean on the compact 200x200 board (grid-
+   aligned parts and block frames, caps at chip short sides, 5 mm edge keepout);
+   every modeled pin lands on a real pad. The board was regenerated and fully
+   rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), giving
+   2,525 F.Cu/B.Cu tracks with filled In1.Cu GND and In2.Cu VCC planes and zero
+   KiCad DRC/unconnected items. The route runs on both the Linux box and macOS
+   (fork jar + JDK 25).
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:
    `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
    and DIP pad counts match, across all 119 parts (it caught the USB-C shield

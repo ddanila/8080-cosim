@@ -10,17 +10,21 @@ safe to order.
 
 ## Current physical baseline
 
-- Four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
-- 95 footprints, 117 PCB nets, and 2,082 tracks in the current checked board.
-- No copper zones; power is explicitly routed, including 0.20 mm power tracks.
+- 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
+- 119 footprints, 135 PCB nets, and 2,525 tracks in the current checked board.
+- Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
+  decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
+  In2.Cu a filled VCC plane; the two board layers carry the signal routing.
 - Four corner mounting holes and two-sided assembly/silkscreen review output.
 - Factory-assembly exports are drafts. Socketed ICs are intended for owner
   insertion; factory files primarily describe sockets, passives, connectors,
   protection, and diagnostics.
 
-The no-zone/0.20 mm power strategy is an experiment, not a production
-recommendation. Return paths, voltage drop, transient current, and actual
-vendor stackup require human review before any release.
+The stackup (In1.Cu GND / In2.Cu VCC inner planes, F.Cu/B.Cu signals) is an
+experiment, not a production recommendation. Return paths, voltage drop,
+transient current, and actual vendor stackup require human review before any
+release. (FreeRouting receives a deliberately zone-free board; the source-model
+GND/VCC plane zones are restored and filled after SES import.)
 
 ## Generated package
 

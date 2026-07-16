@@ -510,7 +510,7 @@ After connectivity and programmable-part decisions stop changing:
 
 VJUGA (the +5 V Z80 bench fixture for the scarce Juku РУ5/РТ4/РЕ3 parts) is a
 separate experiment; details in `spinoffs/minimal-vga/docs/workbench-plan.md`
-and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
+and `docs/phase4-bench-bringup.md`. Status as of 2026-07-17:
 
 - **Simulation + board model DONE.** The Verilog twin boots the real firmware on
   tv80 through the real К565РУ5 + D6 К556РТ4 + D8 К155РЕ3 models; **both decode
@@ -519,16 +519,22 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
   decode sockets, mode inverter, jumpers, and observability headers; the
   socket↔twin and observability contracts are enforced
   (`kicad/check_rev_a_physical.py`).
-- **Placement DONE and collision-clean.** All 119 parts are placed in
-  `kicad/gen_rev_a_pcb.py`; `kicad/check_rev_a_placement.sh` (silk/overlap) and
-  `kicad/check_rev_a_footprints.sh` (every modelled pin lands on a real pad)
-  both pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
-- **Routing DONE and DRC-clean.** The current 119-ref/135-net board contains
-  2,275 tracks on F.Cu/B.Cu, with In1.Cu reserved/fill-checked as GND and In2.Cu
-  as VCC. KiCad reports zero violations and zero unconnected items; the Phase 3
-  sockets and all observability headers are in the routed artifact. Rerouted
-  2026-07-16 after the design-review placement fixes (J3 to the board edge, U20
-  clear of the block border, header labels, decode-cap spacing).
+- **Compact 200x200 placement DONE and collision-clean.** Re-laid-out from the
+  sparse 285x285 experiment to a 200x200 mm board: all 119 parts placed by a
+  footprint-size-driven floorplan in `kicad/gen_rev_a_pcb.py` (wide DIPs
+  horizontal to keep bands short, DIP-16/14 vertical, decoupling caps at each
+  chip's short side, a grid-aligned left resistor field). Parts and functional-
+  block borders align to a 0.2" (5.08 mm) grid; block frames are computed from
+  member footprints and shared by the checker. `kicad/check_rev_a_placement.sh`
+  (silk/overlap), `kicad/check_rev_a_footprints.sh` (every modelled pin lands on
+  a real pad), and `kicad/check_rev_a_pcb.sh` (5 mm edge keepout, block frames)
+  all pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
+- **Routing DONE and DRC-clean.** The 200x200 119-ref/135-net board contains
+  2,525 tracks on F.Cu/B.Cu, with In1.Cu reserved/fill-checked as GND and In2.Cu
+  as VCC. The freerouting fork (v1.9) routes all 357 nets with 0 unrouted / 0
+  violations, and KiCad DRC reports zero violations and zero unconnected items.
+  The stale per-net seed routes (tuned for the old 285x285 placement) were
+  removed; only the recomputed J3 USB-C GND shield seed remains.
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
   (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
   single-step sketch + twin reference trace (`tools/vjuga_single_step/`).
