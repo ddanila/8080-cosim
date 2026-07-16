@@ -149,9 +149,11 @@ physical D93/D94 wiring.
   `sync/juku_top_periph_bus_check.sh`.
 - The behavioral controller intentionally consumes logical system `DB` rather
   than the non-driving physical D100/DAL path. `docs/fdc-bus-polarity.md`
-  guards the unresolved hardware contradiction: exact firmware emits `0x02`
-  for its first Restore, while the populated inverting КР580ВА87 would
-  nominally present `0xFD` (Write Track) to D93.
+  proves the two firmware/hardware profiles: EktaSoft 2.4 and Monitor 3.3 wrap
+  every VG93 transfer in `CMA` for the populated inverting КР580ВА87, while
+  EktaSoft 3.1/3.5/3.7 use NOPs for a non-inverting path. `cosim/trace` models
+  the former with `JUKU_FDC_BUS_INVERT=1`; fitted D15/D16 dumps and D100
+  `/OE`/`T` continuity still decide the exact physical-board configuration.
 - The committed uninterrupted Verilator report
   `docs/juku-top-fdc-verilator-probe.md` drains all 10,752 FDC data-register
   reads and reaches the EKDOS `A>` bitmap; `sync/juku_top_fdc_prompt_check.sh`

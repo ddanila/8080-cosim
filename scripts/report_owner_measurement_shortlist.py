@@ -154,7 +154,7 @@ def main() -> int:
         ("D30 section-B continuity closure guarded", has_phrase("docs/d30-section-b-scan-chase.md", "Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**")),
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
-        ("FDC firmware/part bus-polarity contradiction isolated", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE/PART POLARITY CONTRADICTION ISOLATED**")),
+        ("FDC firmware/hardware polarity profiles proved", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE/HARDWARE POLARITY PROFILES PROVED / TARGET EPROM DUMPS PENDING**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM-FIELD POPULATION CLOSED / C63 TARGET DNP CLOSED / VALUES AND FOOTPRINT PLACEMENTS PENDING**")),
@@ -214,10 +214,10 @@ def main() -> int:
         ),
         (
             "P0",
-            "FDC interrupt/buffer continuity and polarity",
-            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. At the pinned first EKDOS command (CPU PC E5DE), capture system DB, D100 B-side/D93 DAL, D100.9 /OE, D100.11 T, D93.2 /WE, and D93 STEP/WG: CPU byte 0x02 must produce a Restore, although the populated inverting КР580ВА87 would nominally deliver 0xFD. Repeat one status read to prove the reverse direction. Record the observed DB byte, DAL byte, direction/enable levels, and controller action rather than assuming a hidden cancellation",
+            "FDC interrupt/buffer continuity and fitted ROM profile",
+            "WD1793 DRQ/INTRQ to 8259 inputs and D93 MR/CLK. First dump D15/D16 twice and identify the guarded CMA or NOP VG93 profile. For the stock inverting КР580ВА87 with a CMA-profile ROM, capture system DB, D100 B-side/D93 DAL, D100.9 /OE, D100.11 T, D93.2 /WE, and STEP/WG: CPU 0xFD must become logical Restore 0x02 on DAL. Repeat one status read: logical status 0x00 must reach the CPU as 0xFF before firmware CMA. If a NOP profile is installed, document the physical D100 replacement/bypass instead of mixing configurations",
             "`docs/fdc-bus-polarity.md`; `docs/fdc-hardware-handoff.md`; `docs/replica-bringup-verification-points.md`; `PLAN.md` P0 gate",
-            "resolves a firmware-vs-populated-part contradiction that can otherwise turn the first boot Restore into Write Track and makes the physical FDC data path safe to adopt",
+            "identifies the exact board/EPROM configuration, closes D100 enable/direction, and makes the physical FDC data path safe to adopt",
         ),
         (
             "P0",

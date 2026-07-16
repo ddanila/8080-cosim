@@ -202,7 +202,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
-| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; exact firmware emits CPU byte 0x02 for Restore while an enabled КР580ВА87 would place 0xFD on D93 DAL |
+| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; CMA-profile firmware emits CPU byte 0xFD so the enabled КР580ВА87 places logical Restore 0x02 on D93 DAL |
 | D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; capture one command write and one status read as specified by docs/fdc-bus-polarity.md |
 
 ## Netted FDC Endpoints
@@ -238,10 +238,11 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
-  D100.11. During the pinned PC E5DE command, capture CPU DB, D93 DAL,
-  D100 /OE/T, D93 /WE, and STEP/WG: exact firmware emits 0x02 (Restore),
-  while one enabled КР580ВА87 inversion would deliver 0xFD (Write Track).
-  Repeat one status read to close both directions; see
+  D100.11. First dump D15/D16 and identify its guarded CMA/NOP profile.
+  With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and
+  STEP/WG: CPU 0xFD must cross the enabled КР580ВА87 as logical Restore
+  0x02. Repeat a status read (logical 0x00 -> CPU 0xFF before firmware
+  CMA) to close both directions; see
   `docs/fdc-bus-polarity.md`.
   Disposition D10 CAS0-2 and IR2-IR4 as connected or intentional
   NCs; SP/EN pin16 is already source-proved and modeled at +5 V.

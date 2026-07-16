@@ -27,6 +27,10 @@ IO_RE = re.compile(
     r"cyc=([0-9]+) pc=([0-9A-Fa-f]{4}) g_vw=([0-9]+) count=1$",
     re.MULTILINE,
 )
+STATUS_RE = re.compile(
+    r"^\[IOSEQ\] IN  port=0x1C value=0x([0-9A-Fa-f]{2}) ",
+    re.MULTILINE,
+)
 
 
 @dataclass(frozen=True)
@@ -37,33 +41,59 @@ class Scenario:
     env: dict[str, str]
     expected_value: int
     expected_pc: int
+    expected_fdc_command: int
+    bus_invert: bool
+    expected_cpu_status: int | None
+
+
+@dataclass(frozen=True)
+class FirmwareProfile:
+    name: str
+    rom: str
+    bridge_opcode: int
+
+
+FIRMWARE_PROFILES = (
+    FirmwareProfile("EktaSoft 2.4", "ekta24.bin", 0x2F),
+    FirmwareProfile("EktaSoft 3.1", "ekta31.bin", 0x00),
+    FirmwareProfile("EktaSoft 3.5", "ekta35.bin", 0x00),
+    FirmwareProfile("EktaSoft 3.7", "ekta37.bin", 0x00),
+    FirmwareProfile("Monitor 3.3", "jmon33.bin", 0x2F),
+)
 
 
 SCENARIOS = (
     Scenario(
         "EKDOS TDD first command",
         "ekta37.bin",
-        "6700000",
+        "6666450",
         {
             "JUKU_KEYS": "TDD",
             "JUKU_DISK": str(ROOT / "media" / "disks" / "JUKU1.CPM"),
         },
         0x02,
         0xE5DE,
+        0x02,
+        False,
+        None,
     ),
     Scenario(
         "Monitor 3.3 T command",
         "jmon33.bin",
-        "9300000",
+        "9237350",
         {
             "JUKU_KEYBOARD_ENABLE": "1",
             "JUKU_KEYS": "T\n",
             "JUKU_KEY_START_VRAM": "210",
             "JUKU_KEY_HOLD_FRAMES": "20",
             "JUKU_KEY_GAP_FRAMES": "6",
+            "JUKU_DISK": str(ROOT / "media" / "disks" / "JUKU1.CPM"),
         },
         0xFD,
         0xE2B7,
+        0x02,
+        True,
+        0xFF,
     ),
 )
 
@@ -97,10 +127,13 @@ def compile_trace(tmp: Path) -> Path:
     return trace
 
 
-def run_scenario(trace: Path, scenario: Scenario) -> dict[str, int]:
+def run_scenario(trace: Path, scenario: Scenario, tmp: Path) -> dict[str, int]:
     env = os.environ.copy()
     env.update(scenario.env)
     env["JUKU_TRACE_IO"] = "1"
+    env["JUKU_FDC_BUS_INVERT"] = "1" if scenario.bus_invert else "0"
+    checkpoint = tmp / re.sub(r"[^a-z0-9]+", "-", scenario.name.lower()).strip("-")
+    env["JUKU_CHECKPOINT_PREFIX"] = str(checkpoint)
     proc = subprocess.run(
         [
             str(trace),
@@ -122,11 +155,43 @@ def run_scenario(trace: Path, scenario: Scenario) -> dict[str, int]:
     if not match:
         raise RuntimeError(f"{scenario.name}: first FDC command was not reached")
     value, cycles, pc, vram_writes = match.groups()
+    status_match = STATUS_RE.search(proc.stderr)
+    state = {}
+    for line in checkpoint.with_suffix(".state").read_text(encoding="utf-8").splitlines():
+        key, separator, state_value = line.partition("=")
+        if separator:
+            state[key] = state_value
     return {
         "value": int(value, 16),
         "cycles": int(cycles),
         "pc": int(pc, 16),
         "vram_writes": int(vram_writes),
+        "fdc_command": int(state["fdc_command"], 16),
+        "fdc_bus_invert": int(state["fdc_bus_invert"]),
+        "cpu_status": int(status_match.group(1), 16) if status_match else -1,
+    }
+
+
+def profile_firmware(profile: FirmwareProfile) -> dict[str, object]:
+    data = (ROOT / "roms" / profile.rom).read_bytes()
+    writes = []
+    reads = []
+    all_writes = []
+    all_reads = []
+    for offset in range(1, len(data) - 2):
+        if data[offset] == 0xD3 and 0x1C <= data[offset + 1] <= 0x1F:
+            all_writes.append(offset)
+            if data[offset - 1] == profile.bridge_opcode:
+                writes.append(offset)
+        if data[offset] == 0xDB and 0x1C <= data[offset + 1] <= 0x1F:
+            all_reads.append(offset)
+            if data[offset + 2] == profile.bridge_opcode:
+                reads.append(offset)
+    return {
+        "writes": writes,
+        "reads": reads,
+        "all_writes": all_writes,
+        "all_reads": all_reads,
     }
 
 
@@ -137,8 +202,11 @@ def chip(board: dict[str, object], ref: str) -> dict[str, object]:
 def main() -> int:
     failures: list[str] = []
     with tempfile.TemporaryDirectory(prefix="fdc-bus-polarity.") as tmp_name:
-        trace = compile_trace(Path(tmp_name))
-        results = [(scenario, run_scenario(trace, scenario)) for scenario in SCENARIOS]
+        tmp = Path(tmp_name)
+        trace = compile_trace(tmp)
+        results = [(scenario, run_scenario(trace, scenario, tmp)) for scenario in SCENARIOS]
+
+    firmware_results = [(profile, profile_firmware(profile)) for profile in FIRMWARE_PROFILES]
 
     for scenario, result in results:
         require(
@@ -149,6 +217,36 @@ def main() -> int:
         require(
             result["pc"] == scenario.expected_pc,
             f"{scenario.name}: PC 0x{result['pc']:04X}, expected 0x{scenario.expected_pc:04X}",
+            failures,
+        )
+        require(
+            result["fdc_command"] == scenario.expected_fdc_command,
+            f"{scenario.name}: VG93 command 0x{result['fdc_command']:02X}, expected "
+            f"0x{scenario.expected_fdc_command:02X}",
+            failures,
+        )
+        require(
+            result["fdc_bus_invert"] == scenario.bus_invert,
+            f"{scenario.name}: checkpoint bus-invert state changed",
+            failures,
+        )
+        if scenario.expected_cpu_status is not None:
+            require(
+                result["cpu_status"] == scenario.expected_cpu_status,
+                f"{scenario.name}: CPU status 0x{result['cpu_status']:02X}, expected "
+                f"0x{scenario.expected_cpu_status:02X}",
+                failures,
+            )
+
+    for profile, result in firmware_results:
+        require(
+            len(result["all_writes"]) == 12 and result["writes"] == result["all_writes"],
+            f"{profile.name}: not all 12 VG93 writes use the expected bridge opcode",
+            failures,
+        )
+        require(
+            len(result["all_reads"]) == 6 and result["reads"] == result["all_reads"],
+            f"{profile.name}: not all 6 VG93 reads use the expected bridge opcode",
             failures,
         )
 
@@ -237,16 +335,21 @@ def main() -> int:
         failures,
     )
 
-    status = "FIRMWARE/PART POLARITY CONTRADICTION ISOLATED" if not failures else "FDC BUS POLARITY AUDIT FAILED"
+    status = (
+        "FIRMWARE/HARDWARE POLARITY PROFILES PROVED / TARGET EPROM DUMPS PENDING"
+        if not failures
+        else "FDC BUS POLARITY AUDIT FAILED"
+    )
     lines = [
         "# FDC data-bus polarity audit",
         "",
         f"Status: **{status}**",
         "",
-        "The `.009` population, straight D100-to-D93 channel wiring, and exact",
-        "firmware command bytes do not yet form one electrically coherent claim.",
-        "This report keeps the runnable logical FDC model separate from that physical",
-        "contradiction and turns it into a decisive operating-level measurement.",
+        "The apparent D100/firmware contradiction is a configuration split, not an",
+        "unknown controller polarity. Preserved firmware contains two complete VG93",
+        "I/O profiles: one complements every transfer for an inverting КР580ВА87,",
+        "while the other replaces every complement with a NOP for a non-inverting",
+        "path. The target `.009` board visibly carries the former part.",
         "",
         "## Command",
         "",
@@ -256,28 +359,60 @@ def main() -> int:
         "",
         "## Exact firmware observations",
         "",
-        "| Path | CPU-visible OUT 0x1C | Direct VG93 meaning | Through one 8287 inversion | Cycle | PC | VRAM writes |",
-        "| --- | ---: | --- | --- | ---: | ---: | ---: |",
+        "| Path | CPU-visible OUT 0x1C | Modeled bus | VG93 receives | Meaning | Cycle | PC |",
+        "| --- | ---: | --- | ---: | --- | ---: | ---: |",
     ]
-    meanings = {
-        0x02: ("restore, step-rate 2", "write track (0xF? family)"),
-        0xFD: ("write track (0xF? family)", "restore, step-rate 2"),
-    }
     for scenario, result in results:
-        direct, inverted = meanings[result["value"]]
         lines.append(
-            f"| {scenario.name} | `0x{result['value']:02X}` | {direct} | {inverted} | "
-            f"`{result['cycles']}` | `0x{result['pc']:04X}` | `{result['vram_writes']}` |"
+            f"| {scenario.name} | `0x{result['value']:02X}` | "
+            f"{'inverting' if scenario.bus_invert else 'non-inverting'} | "
+            f"`0x{result['fdc_command']:02X}` | Restore, step-rate 2 | "
+            f"`{result['cycles']}` | `0x{result['pc']:04X}` |"
         )
 
     lines.extend(
         [
             "",
-            "The EKDOS path only succeeds when its first `0x02` is interpreted as",
-            "Restore; interpreting it as `0xFD` would request an entire-track write",
-            "before the boot-sector reads. Monitor 3.3 deliberately emits the opposite",
-            "byte at its `T` command boundary. The two observations exchange meanings",
-            "under a single inversion, so this is not a one-command decoder ambiguity.",
+            "The trace checkpoint proves the controller-side byte, not merely the CPU",
+            "log: Monitor 3.3's `0xFD` crosses the modeled ВА87 complement and latches",
+            "as `0x02` in the VG93 model. Status `0x00` returns to the CPU as `0xFF`,",
+            "then the firmware's following `CMA` restores the logical status.",
+            "",
+            "## Preserved firmware profiles",
+            "",
+            "| Firmware | Opcode at every VG93 write/read boundary | Writes | Reads | Required data path |",
+            "| --- | --- | ---: | ---: | --- |",
+        ]
+    )
+    for profile, result in firmware_results:
+        opcode = "`CMA` (`0x2F`)" if profile.bridge_opcode == 0x2F else "`NOP` (`0x00`)"
+        path = "one inversion (КР580ВА87)" if profile.bridge_opcode == 0x2F else "non-inverting (КР580ВА86/bypass)"
+        lines.append(
+            f"| {profile.name} | {opcode} | `{len(result['writes'])}` | "
+            f"`{len(result['reads'])}` | {path} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "This is a whole-interface convention, not a patched command constant.",
+            "Each listed ROM has exactly 12 writes to ports `0x1C..0x1F` and six",
+            "reads. In the ВА87 profiles every OUT is immediately preceded by `CMA`",
+            "and every IN immediately followed by `CMA`; in the non-inverting profiles",
+            "all 18 positions are deliberately occupied by one-byte `NOP`s. EktaSoft",
+            "3.2/4.3 and Monitor 2.2 use a different port-1C/1D bit-stream routine and",
+            "are not falsely classified as this register-mapped VG93 template.",
+            "",
+            "Configuration consequence:",
+            "",
+            "- Stock `.009` D100=`КР580ВА87` is compatible with EktaSoft 2.4 and",
+            "  Monitor 3.3's guarded VG93 routines.",
+            "- EktaSoft 3.1, 3.5, and 3.7 require a non-inverting D100 replacement or",
+            "  an explicit bypass. Programming `ekta37` into an otherwise stock `.009`",
+            "  board would turn its first Restore `0x02` into Write Track `0xFD`.",
+            "- The public ROM names do not prove which pair was installed in this exact",
+            "  board. Repeatable physical D15/D16 dumps remain the Tier-3 configuration",
+            "  authority and must be preserved as a variant if they differ.",
             "",
             "## Upstream D5 cancellation excluded",
             "",
@@ -317,7 +452,9 @@ def main() -> int:
             "  complement.",
             "- D93 is the populated `КР1818ВГ93`. Its documented command families use",
             "  the normal logical codes (`0x0?` Restore, `0xF?` Write Track), matching",
-            "  the FD1793 command set.",
+            "  the FD1793 command set. The original Soviet paper defines pins 7..14 as",
+            "  the bidirectional DB0..DB7 bus, `/W` as loading that bus into the selected",
+            "  register, and Table 3 as the command-register bit codes.",
             "- D100 `/OE` pin 9 and direction `T` pin 11 remain physical singleton",
             "  boundaries. Their control sources have not been measured.",
             "",
@@ -333,29 +470,23 @@ def main() -> int:
             "",
             "## Runnable-model boundary",
             "",
-            "`juku_top` instantiates the physical D100 package and its separate DAL nets",
-            "for LVS, but that package is deliberately non-driving while `/OE` and `T`",
-            "are unknown. The behavioral `fdc_1793` remains connected directly to logical",
-            "system `DB`, which is why EKDOS currently boots. This is an explicit",
-            "functional bypass, not proof that the populated D100 path is correct.",
+            "`juku_top` still instantiates physical D100 and separate DAL nets for LVS,",
+            "but keeps that package non-driving while `/OE` and `T` sources are unknown.",
+            "Its behavioral `fdc_1793` consumes logical DB, matching the default ekta37",
+            "regression profile. The C trace now exposes `JUKU_FDC_BUS_INVERT=1`; the",
+            "guarded Monitor 3.3 run uses it to model the populated `.009` ВА87 path",
+            "without changing the controller's logical command semantics.",
             "",
-            "## Decisive bench capture",
+            "## Remaining physical closure",
             "",
-            "1. During the already pinned first EKDOS command at CPU PC `0xE5DE`, capture",
-            "   system DB, D100 B-side/D93 DAL, D100.9 `/OE`, D100.11 `T`, D93.2 `/WE`,",
-            "   and D93 STEP/WG if channels permit. The CPU-side byte must be `0x02`.",
-            "2. Record whether D93 DAL receives `0x02` or `0xFD`, and whether the",
-            "   controller performs Restore (STEP toward track zero) or Write Track (WG).",
-            "3. Repeat one status read to prove B-to-A direction and inversion rather than",
-            "   inferring it from command-side behavior.",
-            "",
-            "Disposition:",
-            "",
-            "- `DAL=0x02` makes the populated path functionally non-inverting; identify",
-            "  the physical cancellation or correct D100 to the proved part/topology.",
-            "- `DAL=0xFD` plus Restore would prove a nonstandard/inverted D93 bus sense.",
-            "- `DAL=0xFD` plus WG proves the `.009` hardware and preserved firmware are",
-            "  not the same working configuration; do not hide that with a simulator fit.",
+            "1. Dump D15 and D16 twice each and identify the installed polarity profile.",
+            "2. Continuity-map D100.9 `/OE` and D100.11 `T`; their remote sources remain",
+            "   singleton boundaries even though the required data polarity is resolved.",
+            "3. With a matching CMA-profile ROM, capture the first command write and one",
+            "   status read: CPU `0xFD` must become DAL `0x02` on write, and logical VG93",
+            "   status `0x00` must become CPU-side `0xFF` before firmware `CMA`.",
+            "4. If the installed ROM is a NOP profile, record the board modification that",
+            "   replaces or bypasses D100; do not silently mix the two configurations.",
         ]
     )
     if failures:

@@ -1,11 +1,12 @@
 # FDC data-bus polarity audit
 
-Status: **FIRMWARE/PART POLARITY CONTRADICTION ISOLATED**
+Status: **FIRMWARE/HARDWARE POLARITY PROFILES PROVED / TARGET EPROM DUMPS PENDING**
 
-The `.009` population, straight D100-to-D93 channel wiring, and exact
-firmware command bytes do not yet form one electrically coherent claim.
-This report keeps the runnable logical FDC model separate from that physical
-contradiction and turns it into a decisive operating-level measurement.
+The apparent D100/firmware contradiction is a configuration split, not an
+unknown controller polarity. Preserved firmware contains two complete VG93
+I/O profiles: one complements every transfer for an inverting КР580ВА87,
+while the other replaces every complement with a NOP for a non-inverting
+path. The target `.009` board visibly carries the former part.
 
 ## Command
 
@@ -15,16 +16,44 @@ python3 scripts/report_fdc_bus_polarity.py
 
 ## Exact firmware observations
 
-| Path | CPU-visible OUT 0x1C | Direct VG93 meaning | Through one 8287 inversion | Cycle | PC | VRAM writes |
-| --- | ---: | --- | --- | ---: | ---: | ---: |
-| EKDOS TDD first command | `0x02` | restore, step-rate 2 | write track (0xF? family) | `6666400` | `0xE5DE` | `63085` |
-| Monitor 3.3 T command | `0xFD` | write track (0xF? family) | restore, step-rate 2 | `9237266` | `0xE2B7` | `230` |
+| Path | CPU-visible OUT 0x1C | Modeled bus | VG93 receives | Meaning | Cycle | PC |
+| --- | ---: | --- | ---: | --- | ---: | ---: |
+| EKDOS TDD first command | `0x02` | non-inverting | `0x02` | Restore, step-rate 2 | `6666400` | `0xE5DE` |
+| Monitor 3.3 T command | `0xFD` | inverting | `0x02` | Restore, step-rate 2 | `9237266` | `0xE2B7` |
 
-The EKDOS path only succeeds when its first `0x02` is interpreted as
-Restore; interpreting it as `0xFD` would request an entire-track write
-before the boot-sector reads. Monitor 3.3 deliberately emits the opposite
-byte at its `T` command boundary. The two observations exchange meanings
-under a single inversion, so this is not a one-command decoder ambiguity.
+The trace checkpoint proves the controller-side byte, not merely the CPU
+log: Monitor 3.3's `0xFD` crosses the modeled ВА87 complement and latches
+as `0x02` in the VG93 model. Status `0x00` returns to the CPU as `0xFF`,
+then the firmware's following `CMA` restores the logical status.
+
+## Preserved firmware profiles
+
+| Firmware | Opcode at every VG93 write/read boundary | Writes | Reads | Required data path |
+| --- | --- | ---: | ---: | --- |
+| EktaSoft 2.4 | `CMA` (`0x2F`) | `12` | `6` | one inversion (КР580ВА87) |
+| EktaSoft 3.1 | `NOP` (`0x00`) | `12` | `6` | non-inverting (КР580ВА86/bypass) |
+| EktaSoft 3.5 | `NOP` (`0x00`) | `12` | `6` | non-inverting (КР580ВА86/bypass) |
+| EktaSoft 3.7 | `NOP` (`0x00`) | `12` | `6` | non-inverting (КР580ВА86/bypass) |
+| Monitor 3.3 | `CMA` (`0x2F`) | `12` | `6` | one inversion (КР580ВА87) |
+
+This is a whole-interface convention, not a patched command constant.
+Each listed ROM has exactly 12 writes to ports `0x1C..0x1F` and six
+reads. In the ВА87 profiles every OUT is immediately preceded by `CMA`
+and every IN immediately followed by `CMA`; in the non-inverting profiles
+all 18 positions are deliberately occupied by one-byte `NOP`s. EktaSoft
+3.2/4.3 and Monitor 2.2 use a different port-1C/1D bit-stream routine and
+are not falsely classified as this register-mapped VG93 template.
+
+Configuration consequence:
+
+- Stock `.009` D100=`КР580ВА87` is compatible with EktaSoft 2.4 and
+  Monitor 3.3's guarded VG93 routines.
+- EktaSoft 3.1, 3.5, and 3.7 require a non-inverting D100 replacement or
+  an explicit bypass. Programming `ekta37` into an otherwise stock `.009`
+  board would turn its first Restore `0x02` into Write Track `0xFD`.
+- The public ROM names do not prove which pair was installed in this exact
+  board. Repeatable physical D15/D16 dumps remain the Tier-3 configuration
+  authority and must be preserved as a variant if they differ.
 
 ## Upstream D5 cancellation excluded
 
@@ -64,7 +93,9 @@ straight board topology, and every direct system-bus ROM/peripheral path.
   complement.
 - D93 is the populated `КР1818ВГ93`. Its documented command families use
   the normal logical codes (`0x0?` Restore, `0xF?` Write Track), matching
-  the FD1793 command set.
+  the FD1793 command set. The original Soviet paper defines pins 7..14 as
+  the bidirectional DB0..DB7 bus, `/W` as loading that bus into the selected
+  register, and Table 3 as the command-register bit codes.
 - D100 `/OE` pin 9 and direction `T` pin 11 remain physical singleton
   boundaries. Their control sources have not been measured.
 
@@ -80,26 +111,20 @@ vol. 1 (1988), sections 3.12 and 3.14
 
 ## Runnable-model boundary
 
-`juku_top` instantiates the physical D100 package and its separate DAL nets
-for LVS, but that package is deliberately non-driving while `/OE` and `T`
-are unknown. The behavioral `fdc_1793` remains connected directly to logical
-system `DB`, which is why EKDOS currently boots. This is an explicit
-functional bypass, not proof that the populated D100 path is correct.
+`juku_top` still instantiates physical D100 and separate DAL nets for LVS,
+but keeps that package non-driving while `/OE` and `T` sources are unknown.
+Its behavioral `fdc_1793` consumes logical DB, matching the default ekta37
+regression profile. The C trace now exposes `JUKU_FDC_BUS_INVERT=1`; the
+guarded Monitor 3.3 run uses it to model the populated `.009` ВА87 path
+without changing the controller's logical command semantics.
 
-## Decisive bench capture
+## Remaining physical closure
 
-1. During the already pinned first EKDOS command at CPU PC `0xE5DE`, capture
-   system DB, D100 B-side/D93 DAL, D100.9 `/OE`, D100.11 `T`, D93.2 `/WE`,
-   and D93 STEP/WG if channels permit. The CPU-side byte must be `0x02`.
-2. Record whether D93 DAL receives `0x02` or `0xFD`, and whether the
-   controller performs Restore (STEP toward track zero) or Write Track (WG).
-3. Repeat one status read to prove B-to-A direction and inversion rather than
-   inferring it from command-side behavior.
-
-Disposition:
-
-- `DAL=0x02` makes the populated path functionally non-inverting; identify
-  the physical cancellation or correct D100 to the proved part/topology.
-- `DAL=0xFD` plus Restore would prove a nonstandard/inverted D93 bus sense.
-- `DAL=0xFD` plus WG proves the `.009` hardware and preserved firmware are
-  not the same working configuration; do not hide that with a simulator fit.
+1. Dump D15 and D16 twice each and identify the installed polarity profile.
+2. Continuity-map D100.9 `/OE` and D100.11 `T`; their remote sources remain
+   singleton boundaries even though the required data polarity is resolved.
+3. With a matching CMA-profile ROM, capture the first command write and one
+   status read: CPU `0xFD` must become DAL `0x02` on write, and logical VG93
+   status `0x00` must become CPU-side `0xFF` before firmware `CMA`.
+4. If the installed ROM is a NOP profile, record the board modification that
+   replaces or bypasses D100; do not silently mix the two configurations.

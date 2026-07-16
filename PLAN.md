@@ -30,7 +30,7 @@ is not a prerequisite for this replica.
 
 | Area | What is proved | Open boundary |
 | --- | --- | --- |
-| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded restore/seek/step direction and track-register-update semantics; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes from the validated physical D6 table under the explicitly provisional `~D0`/`~D3` fit, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology, exact EPROM image, and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion as the cancellation for D100 | Confirm or remove the D6 per-output fit with the corrected-reader re-read or operating-level probe across the separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths, and close its physical A7 driver; resolve the remaining D100 КР580ВА87 inversion versus exact firmware/D93 command polarity at D100 itself or D93; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded read/write-sector subset, cartridge BASIC loading, and analog behavior |
+| Digital twin | `cosim` and `juku_top` boot ekta37; framebuffer and keyboard guards pass; uninterrupted HDL reaches EKDOS `A>` and disk BASIC `READY`; the recovered ROMBIOS `0xA0/0xA2` 512-byte write-sector path is implemented in both models and byte-for-byte readback-tested on an explicitly writable disk copy; the C and HDL FDC models share guarded restore/seek/step direction and track-register-update semantics; Monitor 3.3 reaches its cursor and selected commands; the cosim-referenced deep guard reaches `CTRACE-END` across 130,000 reads; runnable selection comes from the validated physical D6 table under the explicitly provisional `~D0`/`~D3` fit, while the old functional decoder is retained only as a diagnostic comparison; the official D1-D5-DB-ROM topology and period КР580ВК38/ВА87 diagrams exclude a hidden D5 inversion, while exact static/runtime guards prove the preserved firmware split: EktaSoft 2.4 and Monitor 3.3 complement all 18 VG93 transfers for the `.009` КР580ВА87, whereas EktaSoft 3.1/3.5/3.7 use NOPs for a non-inverting build | Confirm or remove the D6 per-output fit with the corrected-reader re-read or operating-level probe across the separate D6.12/D8 ROM-select and D6.9/D13/D37/D58 timing paths, and close its physical A7 driver; identify the exact fitted D15/D16 polarity profile and close D100 `/OE`/`T` sources; exact physical shared-DRAM video-slot/DOUT timing, complete controller behavior beyond the guarded read/write-sector subset, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports 108 mapped instances and 279 matched nets; the physical D2/D6 PROM tables, measured D2/D30/D105/D13 READY/DBIN handoff, D35 frame-interrupt inversion, D41 timing rails, reset/USART paths, D7 strobe topology, and the adopted photo/wire-table endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavioral correctness, analog waveforms, and historical correctness of assumed nets |
 | PCB package | The tracked routed artifact was DRC-clean within its former modeled scope; the accepted W14 topology now deliberately invalidates that stale route and its saved manufacturing packet until the P0 netlist freezes. Before the native rail-E correction, the preserved refresh checkpoint `kicad/juku_routed_candidate.kicad_pcb` had 296 footprints, all 2,383 pad identities, zero internal unconnected items, and zero shorts, clearance, crossing, hole, dangling, or edge findings. Merging that source-proved ground domain now exposes one real missing ground join in its stale copper | The routed artifact still predates accepted D2/D94, reset/USART, and harness endpoints. Its stale copper produces two W14-related shorts and two opens: old PHI2 copper still touches D35.12, and a D53_Y0_R49 track crosses W14.2. The refresh checkpoint is intentionally not current-source copper: later corrections leave 50 pad-net mismatches and 138 moved pads across D5/D7/D8/D9/D35/D37/D38/D50/D51/R13/R14, with the net-only C34.1 correction accounting for the fiftieth mismatch; it also lacks the fourteen A:7/A:8/A:10/A:11/A:14/A:19/A:20 pads. It copper-routes all ten factory insulated-link nets. The source PCB now preserves A:7, A:8, A:10, A:11, A:14, A:19, and A:20 as landing-island pairs joined only by assembly wires W7/W8/W10/W11/W14/W19/W20; the other six `А:N` terminals and three island splits remain unmodeled. All twenty drawing-pixel endpoints are guarded, both A7/A8/A10/A11/A14/A19/A20 terminals plus the D38-side A9 and C96-side A12 joints are board-fitted/island-assigned, and the A7/A8/A11/A14 cut-length discrepancies are explicit. The other four PCB terminals remain unpromoted; a common raw solder image places A14B 58.911 mm from D41.1, and W14 now preserves the distinct PHI2 landing islands. Both routed artifacts are convergence evidence, not adoptable production copper (`docs/factory-wire-route-fidelity.md`). Register/split the remaining islands, then refresh/reroute and adopt the manufacturing packet only after the functional P0 netlist freezes |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Baltijets programming-disk payloads, remaining continuity reads, and the cartridge BASIC loading procedure |
@@ -236,19 +236,20 @@ Every ask below is queued with exact deliverables in
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against
    D93.18/.17 for the period КП12 write-precompensation pattern.
-   A separate automatic firmware/part audit now isolates a bus-side P0
-   contradiction (`docs/fdc-bus-polarity.md`): exact EKDOS emits CPU-visible
-   `0x02` at PC `0xE5DE` and only boots when D93 interprets it as Restore,
-   while the factory/target-marked D100 is an inverting КР580ВА87 and its
-   straight DB-to-DAL channels would nominally present `0xFD` (Write Track).
-   Monitor 3.3 independently emits the opposite `0xFD` at PC `0xE2B7`, so a
-   single inversion exchanges two observed command meanings rather than
-   explaining one ambiguous opcode. The runnable controller intentionally
-   remains on logical DB while physical D100 is non-driving. During the pinned
-   EKDOS command, capture DB, D93 DAL, D100 `/OE`/`T`, D93 `/WE`, and STEP/WG,
-   then repeat one status read; do not adopt the physical FDC bus path until
-   the observed byte and controller action explain the cancellation or expose
-   a hardware/firmware configuration mismatch.
+   A separate automatic firmware/part audit resolves the former bus-side P0
+   contradiction as two deliberate hardware profiles (`docs/fdc-bus-polarity.md`).
+   EktaSoft 2.4 and Monitor 3.3 place `CMA` around all 12 VG93 writes and six
+   reads, matching the factory/target D100=`КР580ВА87`; Monitor 3.3's CPU-visible
+   `0xFD` at PC `0xE2B7` therefore reaches D93 as logical Restore `0x02`.
+   EktaSoft 3.1/3.5/3.7 replace all 18 transforms with one-byte NOPs and require
+   a non-inverting D100/bypass; ekta37's CPU-visible `0x02` at PC `0xE5DE` is
+   correct only for that profile. `cosim/trace` now models the populated path
+   with `JUKU_FDC_BUS_INVERT=1` and checkpoints the controller-side command.
+   The exact fitted D15/D16 pair still requires repeat dumps, and D100 `/OE`/`T`
+   sources remain continuity boundaries. With a CMA-profile ROM, capture CPU
+   `0xFD` -> DAL `0x02` and one reverse status transfer; if a NOP profile is
+   installed, document its physical D100 replacement/bypass rather than mixing
+   configurations.
    Probe predictions from period references (guides, not Juku proof): the
    Чеботарев Вектор-06Ц FDC schematic (Радиолюбитель 11/92) uses exactly this
    part family — ВГ93 + К555ИЕ7 separator + two К555КП12 + К555ТМ2 + К155ИР1 —

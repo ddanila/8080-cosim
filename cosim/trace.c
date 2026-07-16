@@ -46,6 +46,7 @@ static uint8_t portc = 0;           // 8255#0 Port C output latch
 static juk_disk disk;
 static juku_fdc fdc;
 static int      fdc_enabled = 0;
+static int      fdc_bus_invert = 0;
 static int      cart_enabled = 0;
 
 // --- instrumentation -------------------------------------------------------
@@ -211,6 +212,7 @@ static uint8_t pin(void* u, uint8_t p) {
   if (p == 0x05 && kbd_enabled) value = kbd_portb();             // 8255 Port B = keyboard 74148
   else if (fdc_enabled && p >= 0x1C && p <= 0x1F) {
     value = juku_fdc_read(&fdc, p & 3);
+    if (fdc_bus_invert) value = (uint8_t)~value;
     if (p == 0x1F) fdc_data_reads++;
   }
   else value = out_last[p];              // mimic 8255 output-latch readback; 0 if never written
@@ -236,7 +238,8 @@ static void pout(void* u, uint8_t p, uint8_t v) {
     fprintf(stderr, "[IOSEQ] OUT port=0x%02X value=0x%02X cyc=%lu pc=%04X g_vw=%lu count=%lu\n",
             p, v, cpu ? cpu->cyc : 0, cpu ? cpu->pc : 0, g_vw, out_count[p]);
   }
-  if (fdc_enabled && p >= 0x1C && p <= 0x1F) juku_fdc_write(&fdc, p & 3, v);
+  if (fdc_enabled && p >= 0x1C && p <= 0x1F)
+    juku_fdc_write(&fdc, p & 3, fdc_bus_invert ? (uint8_t)~v : v);
 
   if (p == 0x04) kbd_col = v & 0x0F;   // 8255 Port A low nibble = keyboard column select
 
@@ -347,6 +350,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "pic_mask=%02X\n", pic_mask);
   fprintf(state_out, "pic_expect_icw2=%d\n", pic_expect_icw2);
   fprintf(state_out, "fdc_enabled=%d\n", fdc_enabled);
+  fprintf(state_out, "fdc_bus_invert=%d\n", fdc_bus_invert);
   fprintf(state_out, "fdc_head=%d\n", fdc.head);
   fprintf(state_out, "fdc_drive=%d\n", fdc.drive);
   fprintf(state_out, "fdc_motor_on=%d\n", fdc.motor_on);
@@ -402,6 +406,9 @@ int main(int argc, char** argv) {
                strcmp(getenv("JUKU_TRACE_TIMING"), "0") != 0;
   io_trace = getenv("JUKU_TRACE_IO") && getenv("JUKU_TRACE_IO")[0] &&
              strcmp(getenv("JUKU_TRACE_IO"), "0") != 0;
+  const char* fdc_bus_invert_env = getenv("JUKU_FDC_BUS_INVERT");
+  fdc_bus_invert = fdc_bus_invert_env && fdc_bus_invert_env[0] &&
+                   strcmp(fdc_bus_invert_env, "0") != 0;
   if (cart_path && cart_path[0]) {
     size_t cn = load_image(cart_path, cart, CART_SIZE, 0xFF);
     cart_enabled = 1;
@@ -421,9 +428,10 @@ int main(int argc, char** argv) {
     }
     juku_fdc_init(&fdc, &disk);
     fdc_enabled = 1;
-    fprintf(stderr, "loaded JUKU disk image %s (%ld bytes, %d side%s, %s)\n",
+    fprintf(stderr, "loaded JUKU disk image %s (%ld bytes, %d side%s, %s, FDC bus %s)\n",
             disk_path, disk.size, disk.heads, disk.heads == 1 ? "" : "s",
-            disk_writable ? "writable" : "read-only");
+            disk_writable ? "writable" : "read-only",
+            fdc_bus_invert ? "inverting" : "non-inverting");
   }
 
   size_t n = load_image(rom_path, rom, ROM_SIZE, 0x00);
