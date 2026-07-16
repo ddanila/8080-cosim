@@ -38,6 +38,7 @@ labels and `TRANS` tables.
 | `BDOS` | `0xBC06` |
 | `BIOS` | `0xCA00` |
 | BIOS `CONST / CONSTAT` (index 2) | `0xCA06` |
+| BIOS `CONOUT` (index 4) | `0xCA0C` |
 | BIOS `LIST` (index 5) | `0xCA0F` |
 | BIOS `PUNCH` (index 6) | `0xCA12` |
 | BIOS `READER` (index 7) | `0xCA15` |

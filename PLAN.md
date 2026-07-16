@@ -606,6 +606,12 @@ serve physical bring-up or historical fidelity:
    Public `CONST=0xCA06` traverses `DoFunction` and exact monitor `CONSTA=0xFF98`;
    at the prompt's empty keyboard boundary (`0xCF` released matrix inputs) it
    returns `A=0`, while blocking `CONIN` is intentionally not invoked without a key.
+   Public `CONOUT=0xCA0C` traverses `DoFunction` and exact monitor
+   `WRCHR=0xFFD9`; at the prompt checkpoint, `C='C'` renders its exact
+   ten-scanline cell at byte column 2 / rows 70..79, including the seven
+   source-ROM glyph bytes, performs exactly ten framebuffer writes, advances
+   the monitor cursor to byte column 3, and enters the installed `D7E7`
+   trampoline.
    Public `LIST=0xCA0F` traverses `PrintCh=0xFFEE` and the boot-installed
    `D7F1->E2A2` service; with USART transmitter-ready asserted at port `0x0E`,
    it emits the exact input character to data port `0x0C`.

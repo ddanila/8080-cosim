@@ -12,6 +12,8 @@
 
 enum {
   ROM_SIZE = 0x4000,
+  VRAM_BASE = 0xD800,
+  VRAM_BYTES = 40 * 241,
   RETURN_PC = 0xB123,
   DMA_ADDR = 0x4000,
   SECOND_DMA_ADDR = 0x4100,
@@ -27,6 +29,7 @@ enum {
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
   BIOS_CONST = 0xCA06,
+  BIOS_CONOUT = 0xCA0C,
   BIOS_LIST = 0xCA0F,
   BIOS_PUNCH = 0xCA12,
   BIOS_READER = 0xCA15,
@@ -54,6 +57,7 @@ typedef struct {
   uint8_t out[256];
   uint8_t portc;
   unsigned monitor_trampoline_entries;
+  unsigned vram_writes;
   unsigned fdc_commands;
   uint8_t command_log[16];
   unsigned command_writes;
@@ -111,6 +115,9 @@ static void write_byte(void* opaque, uint16_t address, uint8_t value) {
   fixture* f = opaque;
   unsigned index = 0;
   if (overlay(f, address, &index)) return;
+  if (address >= VRAM_BASE && address < VRAM_BASE + VRAM_BYTES) {
+    f->vram_writes++;
+  }
   if (address >= 0x4000 && address <= 0xBFFF && f->ram_bank < RAM_DISK_BANKS) {
     if (f->ramdisk_present) {
       f->ramdisk[f->ram_bank][address - 0x4000] = value;
@@ -185,6 +192,7 @@ static int write_image(const char* path) {
 static int load_rom(uint8_t rom[ROM_SIZE]) {
   static const uint8_t ramdisk_vector[] = {0xC3, 0xB3, 0xE9};
   static const uint8_t consta_entry[] = {0xCD, 0x5B, 0xD8};
+  static const uint8_t wrchr_entry[] = {0xC3, 0xE3, 0xD9};
   static const uint8_t printch_entry[] = {0xC3, 0xF1, 0xD7};
   FILE* fp = fopen("roms/ekta37.bin", "rb");
   if (!fp) return 1;
@@ -192,6 +200,7 @@ static int load_rom(uint8_t rom[ROM_SIZE]) {
   int failed = got != ROM_SIZE || fclose(fp) != 0 ||
                memcmp(&rom[0x3F5C], ramdisk_vector, sizeof(ramdisk_vector)) != 0 ||
                memcmp(&rom[0x3F98], consta_entry, sizeof(consta_entry)) != 0 ||
+               memcmp(&rom[0x3FD9], wrchr_entry, sizeof(wrchr_entry)) != 0 ||
                memcmp(&rom[0x3FEE], printch_entry, sizeof(printch_entry)) != 0 ||
                memcmp(&rom[0x29A7], RAMDISK_SIGNATURE,
                       sizeof(RAMDISK_SIGNATURE)) != 0;
@@ -204,7 +213,7 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t exercised_vectors[] = {
-    BIOS_CONST, BIOS_LIST, BIOS_PUNCH, BIOS_READER, BIOS_HOME,
+    BIOS_CONST, BIOS_CONOUT, BIOS_LIST, BIOS_PUNCH, BIOS_READER, BIOS_HOME,
     BIOS_SELDSK, BIOS_SETTRK,
     BIOS_SETSEC, BIOS_SETDMA,
     BIOS_READ, BIOS_WRITE, BIOS_LISTST, BIOS_SECTRAN,
@@ -549,6 +558,7 @@ int main(int argc, char** argv) {
   unsigned long successful_cycles = total_cycles;
   unsigned long auxiliary_cycles = 0;
   unsigned long console_status_cycles = 0;
+  unsigned long console_output_cycles = 0;
   unsigned long unallocated_cycles = 0;
   unsigned long home_cycles = 0;
   unsigned long list_status_cycles = 0;
@@ -749,6 +759,36 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
+  static const uint8_t glyph_cell_c[10] = {
+    0x00, 0x1C, 0x22, 0x20, 0x20, 0x20, 0x22, 0x1C, 0x00, 0x00,
+  };
+  enum { CONOUT_GLYPH_BASE = 0xE2F2 };
+  int conout_fixture_ok = f.ram[0xD49F] == 2 && f.ram[0xD4A0] == 0xF2;
+  for (unsigned row = 0; row < sizeof(glyph_cell_c); row++) {
+    if (f.ram[CONOUT_GLYPH_BASE + row * 40] != 0) conout_fixture_ok = 0;
+  }
+  unsigned conout_vram_before = f.vram_writes;
+  unsigned conout_trampolines_before = f.monitor_trampoline_entries;
+  fail |= run_bios_entry(&f, BIOS_CONOUT, 0, 'C', 0, NULL, NULL,
+                         &console_output_cycles, "CONOUT");
+  int conout_glyph_ok = 1;
+  for (unsigned row = 0; row < sizeof(glyph_cell_c); row++) {
+    if (f.ram[CONOUT_GLYPH_BASE + row * 40] != glyph_cell_c[row]) {
+      conout_glyph_ok = 0;
+    }
+  }
+  if (!conout_fixture_ok || !conout_glyph_ok || f.ram[0xD49F] != 3 ||
+      f.ram[0xD4A0] != 0xF3 || f.vram_writes - conout_vram_before != 10 ||
+      f.monitor_trampoline_entries <= conout_trampolines_before) {
+    fprintf(stderr,
+            "EKDOS CONOUT: fixture=%u glyph=%u cursor=%02X/%02X "
+            "writes=%u trampolines=%u/%u\n",
+            conout_fixture_ok, conout_glyph_ok, f.ram[0xD49F], f.ram[0xD4A0],
+            f.vram_writes - conout_vram_before, f.monitor_trampoline_entries,
+            conout_trampolines_before);
+    fail = 1;
+  }
+
   uint8_t saved_usart_data = f.out[0x0C];
   uint8_t saved_usart_status = f.out[0x0E];
   f.out[0x0C] = 0;
@@ -911,7 +951,8 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "const=no-key list=usart-L aux=punch+reader-unimplemented "
+         "const=no-key conout=glyph-C list=usart-L "
+         "aux=punch+reader-unimplemented "
          "home=clean+dirty "
          "listst=not-ready "
          "seldsk=0/1/2/invalid "
@@ -922,7 +963,7 @@ int main(int argc, char** argv) {
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
          successful_cycles + auxiliary_cycles + console_status_cycles +
-         list_output_cycles + unallocated_cycles +
+         console_output_cycles + list_output_cycles + unallocated_cycles +
          home_cycles + list_status_cycles +
          seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);

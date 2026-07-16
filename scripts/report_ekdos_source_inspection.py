@@ -73,6 +73,7 @@ CHECK_LABELS = [
     "START",
     "RWFLOPPY",
     "RAMDISKSEL",
+    "WRCHR",
     "RDNO",
     "VIARV",
     "TRACKS",
@@ -260,6 +261,7 @@ def main() -> int:
         )
     bios_vectors = [
         ("CONST / CONSTAT", 2, "JMP CONSTAT"),
+        ("CONOUT", 4, "JMP CONOUT"),
         ("LIST", 5, "JMP LIST"),
         ("PUNCH", 6, "DP RTNEMPTY"),
         ("READER", 7, "JMP RTNEMPTY"),

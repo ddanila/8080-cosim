@@ -90,6 +90,12 @@ physical D93/D94 wiring.
   `CONSTA=0xFF98`; with the established released-matrix input `0xCF` and the
   prompt key buffer empty, it returns `A=0` (no character ready). Blocking
   `CONIN` is not called without an injected key.
+  Public `CONOUT=0xCA0C` traverses `DoFunction` to exact monitor entry
+  `WRCHR=0xFFD9`. At the prompt checkpoint, input `C='C'` renders the exact
+  ten-scanline character cell at byte column 2 / rows 70..79: blank top row,
+  glyph bytes `1C 22 20 20 20 22 1C`, and two blank bottom rows. The guard
+  requires exactly ten framebuffer writes, advances the monitor cursor from
+  byte column 2 to 3, and observes the installed `D7E7` trampoline.
   Public `LIST=0xCA0F` traverses exact `PrintCh=0xFFEE`, whose ROM jump reaches
   the boot-installed `D7F1->E2A2` USART service. With transmitter-ready bit 3
   asserted at status port `0x0E`, input `C='L'` is emitted exactly at data port
@@ -180,7 +186,7 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires archival evidence for all thirteen exercised
+- The source inspector requires archival evidence for all fourteen exercised
   BIOS vectors and derives their standard three-byte table addresses. It
   deliberately guards the damaged PUNCH spelling `DP RTNEMPTY` as preserved
   evidence; the adjacent READER line retains `JMP RTNEMPTY`.
