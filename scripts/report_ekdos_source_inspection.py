@@ -258,7 +258,7 @@ def main() -> int:
         f"| `FLOPPY` | `{fmt_hex(symbols['FLOPPY'])}` | ROMBIOS floppy handler entry |",
         f"| `START` | `{fmt_hex(symbols['START'])}` | loader for `<A>` sectors to CCP |",
         f"| `RWFLOPPY` | `{fmt_hex(symbols['RWFLOPPY'])}` | ROMBIOS read/write floppy entry |",
-        f"| `RAMDISKSEL` | `{fmt_hex(symbols['RAMDISKSEL'])}` | RAM-drive select entry |",
+        f"| `RAMDISKSEL` | `{fmt_hex(symbols['RAMDISKSEL'])}` | RAM-drive probe/format entry |",
         f"| `RDNO` | `{symbols['RDNO']}` | EKDOS RAM-drive number |",
         f"| `DKRD` | `{fmt_hex(symbols['DKRD'])}` | EKDOS read-sector request code |",
         f"| `DKWR` | `{fmt_hex(symbols['DKWR'])}` | EKDOS write-sector request code |",

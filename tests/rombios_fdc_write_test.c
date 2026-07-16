@@ -27,6 +27,11 @@ enum {
 };
 
 
+static const uint8_t RAMDISK_SIGNATURE[] = {
+  0x0F, 'R', 'a', 'm', 'D', 'i', 's', 'k', 0x00, 0xD3, 0xF9, 0x73,
+};
+
+
 typedef struct {
   uint8_t ram[65536];
   uint8_t ramdisk[RAM_DISK_BANKS][RAM_DISK_WINDOW];
@@ -41,6 +46,7 @@ typedef struct {
   unsigned write_protect_status_reads;
   uint8_t write_command;
   unsigned ram_bank;
+  int ramdisk_present;
   juku_fdc fdc;
 } fixture;
 
@@ -79,6 +85,7 @@ static uint8_t read_byte(void* opaque, uint16_t address) {
   if (source == 1) return f->rom[index];
   if (source == 2) return 0xFF;  // no expansion cartridge installed
   if (address >= 0x4000 && address <= 0xBFFF && f->ram_bank < RAM_DISK_BANKS) {
+    if (!f->ramdisk_present) return 0xFF;
     return f->ramdisk[f->ram_bank][address - 0x4000];
   }
   return f->ram[address];
@@ -90,7 +97,9 @@ static void write_byte(void* opaque, uint16_t address, uint8_t value) {
   unsigned index = 0;
   if (overlay(f, address, &index)) return;
   if (address >= 0x4000 && address <= 0xBFFF && f->ram_bank < RAM_DISK_BANKS) {
-    f->ramdisk[f->ram_bank][address - 0x4000] = value;
+    if (f->ramdisk_present) {
+      f->ramdisk[f->ram_bank][address - 0x4000] = value;
+    }
   } else {
     f->ram[address] = value;
   }
@@ -129,7 +138,7 @@ static void port_out(void* opaque, uint8_t port, uint8_t value) {
     if (port == 0x1F && f->fdc.write_transfer) f->data_writes++;
     juku_fdc_write(&f->fdc, port & 3, value);
   } else if (port == 0x04 && (value & 0x20)) {
-    f->ram_bank = ((value & 7) - 1u) & 7u;
+    f->ram_bank = f->ramdisk_present ? (((value & 7) - 1u) & 7u) : 6u;
   } else if (port == 0x06) {
     update_portc(f, value);
   } else if (port == 0x07) {
@@ -159,10 +168,14 @@ static int write_image(const char* path) {
 
 
 static int load_rom(uint8_t rom[ROM_SIZE]) {
+  static const uint8_t ramdisk_vector[] = {0xC3, 0xB3, 0xE9};
   FILE* fp = fopen("roms/ekta37.bin", "rb");
   if (!fp) return 1;
   size_t got = fread(rom, 1, ROM_SIZE, fp);
-  int failed = got != ROM_SIZE || fclose(fp) != 0;
+  int failed = got != ROM_SIZE || fclose(fp) != 0 ||
+               memcmp(&rom[0x3F5C], ramdisk_vector, sizeof(ramdisk_vector)) != 0 ||
+               memcmp(&rom[0x29A7], RAMDISK_SIGNATURE,
+                      sizeof(RAMDISK_SIGNATURE)) != 0;
   return failed;
 }
 
@@ -218,6 +231,34 @@ static int run_rwfloppy(
 }
 
 
+static int run_ramdisk_select(
+    fixture* f, uint8_t* result, unsigned long* total_cycles) {
+  i8080 cpu;
+  i8080_init(&cpu);
+  cpu.userdata = f;
+  cpu.read_byte = read_byte;
+  cpu.write_byte = write_byte;
+  cpu.port_in = port_in;
+  cpu.port_out = port_out;
+  cpu.pc = 0xFF5C;                    // public ROMBIOS RAMDISKSEL -> E9B3
+  cpu.sp = 0xD2FC;                    // EKDOS STAK, outside RAM-disk window
+  cpu.a = 0;
+  cpu.b = 0x5A;
+  cpu.c = 0xA6;
+  f->ram[cpu.sp] = RETURN_PC & 0xFF;
+  f->ram[cpu.sp + 1] = RETURN_PC >> 8;
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  *total_cycles += cpu.cyc;
+  *result = cpu.a;
+  if (cpu.pc == RETURN_PC && cpu.b == 0x5A && cpu.c == 0xA6) return 0;
+  fprintf(stderr,
+          "ROMBIOS RAMDISKSEL: did not preserve ABI "
+          "(pc=%04X bc=%02X%02X cyc=%lu)\n",
+          cpu.pc, cpu.b, cpu.c, cpu.cyc);
+  return 1;
+}
+
+
 int main(int argc, char** argv) {
   if (argc != 2) {
     fprintf(stderr, "usage: %s boot-initialized.ram\n", argv[0]);
@@ -234,6 +275,7 @@ int main(int argc, char** argv) {
   fixture f;
   memset(&f, 0, sizeof(f));
   f.ram_bank = 6;                    // monitor normal-RAM bank
+  f.ramdisk_present = 1;
   int fail = write_image(path) || load_rom(f.rom) || load_boot_ram(f.ram, argv[1]);
   juk_disk disk;
   if (!fail && juk_disk_open_writable(&disk, path) != 0) fail = 1;
@@ -427,6 +469,47 @@ int main(int argc, char** argv) {
   f.command_writes = 0;
   f.data_writes = 0;
   f.write_command = 0;
+  uint8_t ramdisk_result = 0;
+  uint8_t normal_ram_byte = f.ram[DMA_ADDR];
+  f.ramdisk_present = 0;
+  fail |= run_ramdisk_select(&f, &ramdisk_result, &ramdisk_cycles);
+  if (ramdisk_result != 0xFF || f.ram_bank != 6 ||
+      f.ram[DMA_ADDR] != normal_ram_byte) {
+    fprintf(stderr,
+            "ROMBIOS RAMDISKSEL: absent result=%02X final-bank=%u normal=%02X/%02X\n",
+            ramdisk_result, f.ram_bank, f.ram[DMA_ADDR], normal_ram_byte);
+    fail = 1;
+  }
+
+  f.ramdisk_present = 1;
+  memset(f.ramdisk[0], 0xA5, RAM_DISK_WINDOW);
+  fail |= run_ramdisk_select(&f, &ramdisk_result, &ramdisk_cycles);
+  int format_ok = ramdisk_result == 0 &&
+                  memcmp(f.ramdisk[0], RAMDISK_SIGNATURE,
+                         sizeof(RAMDISK_SIGNATURE)) == 0;
+  for (unsigned i = sizeof(RAMDISK_SIGNATURE); format_ok && i < 0x20; i++) {
+    if (f.ramdisk[0][i] != 0) format_ok = 0;
+  }
+  for (unsigned i = 0; format_ok && i < 63; i++) {
+    if (f.ramdisk[0][0x20 + i * 0x20] != 0xE5) format_ok = 0;
+  }
+  if (!format_ok) {
+    fprintf(stderr, "ROMBIOS RAMDISKSEL: initial format mismatch result=%02X\n",
+            ramdisk_result);
+    fail = 1;
+  }
+
+  f.ramdisk[0][0x21] = 0x6C;
+  fail |= run_ramdisk_select(&f, &ramdisk_result, &ramdisk_cycles);
+  if (ramdisk_result != 0 || f.ramdisk[0][0x21] != 0x6C ||
+      f.ram_bank != 6 || f.fdc_commands != 0) {
+    fprintf(stderr,
+            "ROMBIOS RAMDISKSEL: reopen result=%02X retained=%02X "
+            "final-bank=%u fdc=%u\n",
+            ramdisk_result, f.ramdisk[0][0x21], f.ram_bank, f.fdc_commands);
+    fail = 1;
+  }
+
   f.ram[0xCA36] = 2;
   f.ram[0xD61A] = 2;
   f.ram[0xD61C] = 0;
@@ -530,7 +613,7 @@ int main(int argc, char** argv) {
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
-         "ramdisk-tracks=2 no-fdc=1 "
+         "ramdisk-select=absent/format/reopen ramdisk-tracks=2 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,

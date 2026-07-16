@@ -70,6 +70,11 @@ physical D93/D94 wiring.
   writes and reads logical record 37 on tracks 2 and 3 through distinct lower
   and upper 16 KiB halves of port-`0x04` bank 1, restores normal bank 6 after
   every 32-byte slice, and issues zero FDC commands.
+- The public `RAMDISKSEL` vector is executed through exact ROM bytes
+  `0xFF5C -> 0xE9B3`. With bank switching unavailable it complements and
+  restores ordinary RAM before returning `0xFF`; with RAM present it writes
+  the 12-byte `RamDisk` signature plus 63 `0xE5` directory-entry markers,
+  preserves BC, restores bank 6, and reopens a signed drive without formatting.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
@@ -132,6 +137,13 @@ physical D93/D94 wiring.
   each record as four 32-byte slices, selects/restores banks through port `0x04`,
   and stages data at `0xD200`; direct backing-store checks guard both track
   halves as well as public readback.
+- `RAMDISKSEL` does not merely select a register. Its probe relies on a failed
+  bank command leaving ordinary RAM visible: it saves byte `0x4000`, attempts
+  a complemented write after selecting bank 0, restores bank 6, and returns
+  `0xFF` if ordinary RAM changed. A working bank instead receives the ROM's
+  12-byte signature at `0x4000`, zeroed signature-entry tail, and `0xE5` in the
+  first byte of directory entries 1..63. A matching signature bypasses this
+  initialization; a retained byte guards that idempotent path.
 - In the read-only phase, the exact command sequence is initial preread `0x80`,
   ten rejected `0xA2` retries from EKDOS `VIARV=10`, then the requested next-
   sector read `0x80`. The controller returns WRITE PROTECT throughout the retry

@@ -590,10 +590,14 @@ serve physical bring-up or historical fidelity:
    media remains read-only unless the caller explicitly opts into a writable
    copy. A second phase passes CP/M unallocated-write type `C=2`, fills all four
    records while `UNACNT` counts from 32 to 28 without a preread, and proves the
-   optimized physical sequence `0xA2,0x80`. The RAM-drive branch is also
-   exercised with the source-authentic `STAK=0xD2FC`: port-`0x04` bank 1 stores
-   the same logical record independently in the even-track lower and odd-track
-   upper 16 KiB halves, restores bank 6, and emits no FDC command. A
+   optimized physical sequence `0xA2,0x80`. The public `RAMDISKSEL` vector is
+   now exercised through its exact `FF5C->E9B3` ROM path: failed bank switching
+   returns `0xFF` after restoring ordinary RAM, first use writes the guarded
+   `RamDisk` signature and all 63 `0xE5` directory markers, and a signed drive
+   reopens without formatting. The RAM-drive data path is also exercised with
+   the source-authentic `STAK=0xD2FC`: port-`0x04` bank 1 stores the same logical
+   record independently in the even-track lower and odd-track upper 16 KiB
+   halves, restores bank 6, and emits no FDC command. A
    complementary read-only reopen proves the ROM consumes the EKDOS
    `VIARV=10` retry count, observes WRITE PROTECT without accepting data or
    changing media, then masks the failed dirty flush when its subsequent read

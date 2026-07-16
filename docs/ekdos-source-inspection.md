@@ -24,7 +24,7 @@ labels and `TRANS` tables.
 | `FLOPPY` | `0xFF53` | ROMBIOS floppy handler entry |
 | `START` | `0xFF56` | loader for `<A>` sectors to CCP |
 | `RWFLOPPY` | `0xFF59` | ROMBIOS read/write floppy entry |
-| `RAMDISKSEL` | `0xFF5C` | RAM-drive select entry |
+| `RAMDISKSEL` | `0xFF5C` | RAM-drive probe/format entry |
 | `RDNO` | `2` | EKDOS RAM-drive number |
 | `DKRD` | `0x11` | EKDOS read-sector request code |
 | `DKWR` | `0x12` | EKDOS write-sector request code |
