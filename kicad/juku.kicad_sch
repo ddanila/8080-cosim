@@ -6426,7 +6426,7 @@
 	(wire (pts (xy 108.42 40) (xy 108.42 37.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002165"))
 	(label "CPU_WAIT_STATUS" (at 108.42 37.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 50.0 11560) (xy 50.0 11557.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002166"))
-	(label "SSTB_N" (at 50.0 11557.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
+	(label "STSTB_D38" (at 50.0 11557.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 52.54 12040) (xy 52.54 12037.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002167"))
 	(label "READY_D" (at 52.54 12037.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 52.54 11560) (xy 52.54 11557.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002168"))

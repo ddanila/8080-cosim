@@ -37,10 +37,11 @@ module juku_top (
     // ---- clock / reset domain (boundary to a DISCRETE subsystem) ----
     // The real board has NO 8224: clock = crystal Z1 + D59 (ЛН1) oscillator +
     // phase gates D33/D38/D36/D35 (Φ1/Φ2 via D35, STB via D38); RESET from D13,
-    // READY section A is represented by D30 below; its off-sheet -SSTB source
-    // remains a boundary, while section B is owner-closed through D13.4 and D29.7.
+    // READY section A is represented by D30 below; native sheet-2 D38.8 exports
+    // active-low STB to sheet-1 -SSTB/D30.1 on the D38 side of factory wire W8.
     // STSTB(8238) comes from D38.8 over factory wire 8.
     wire        phi1, phi2, phi1_d35, phi2_d35, phi2ttl, ready, reset_sys, ststb_n;
+    wire        stb_d38;
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
     // ---- buffered board buses + control strobes (out of the CPU core) ----
@@ -173,10 +174,10 @@ module juku_top (
     wire d105_memw_inv, d105_dbin_n, d105_dbin_gated, d105_gate1_y;
     wire [3:1] d2_nc; // factory symbol draws only D0/pin12; D1-D3 are intentional NCs
 `ifdef YOSYS
-    wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
+    wire d105_h, ready_d, d30b_d_pre_n, d30_pre1_n;
     wire wreq_n;
 `else
-    tri1 d105_h, ready_d, d30b_d_pre_n, d30_pre1_n, d30_sstb_n;
+    tri1 d105_h, ready_d, d30b_d_pre_n, d30_pre1_n;
     tri1 wreq_n;
 `endif
 `ifdef YOSYS
@@ -191,7 +192,7 @@ module juku_top (
                      .a4(dbin), .b4(d105_h), .y4(d105_dbin_n));
     // Owner continuity: D2.12 + R6 -> D30.D1; Q1 -> R29 -> CPU READY.
     // D30.10/.12 share the R5 pull-up; D105.11 clears section B from ~MEMW.
-    tm2_dff #(.FUNCTIONAL(1)) U_D30 (.clr1_n(d30_sstb_n), .d1(ready_d), .clk1(phi2ttl), .pre1_n(d30_pre1_n),
+    tm2_dff #(.FUNCTIONAL(1)) U_D30 (.clr1_n(stb_d38), .d1(ready_d), .clk1(phi2ttl), .pre1_n(d30_pre1_n),
                    .q1(d30_q), .q1_n(d30_qn), .clr2_n(d105_memw_inv), .d2(d30b_d_pre_n),
                    .clk2(d13_o4), .pre2_n(d30b_d_pre_n), .q2(d30_q2), .q2_n(d30_q2n));
     net_boundary U_R29LNK (.a(d30_q), .b(ready));
@@ -203,9 +204,8 @@ module juku_top (
 `else
     assign sclk_i = osc;
 `endif
-    // D38 (ЛА1) is a clock-mesh gate producing a strobe (STB, pin 8) -- NOT the 8238 STSTB (that's D13,
-    // per cpu-core.md). Re-homed: no SYNC input; output -> boundary stb_d38.
-    wire stb_d38;
+    // D38 (ЛА1) is the clock-mesh gate producing active-low status STB on pin 8.
+    // It reaches D30.1 directly and D5.1 only across factory wire W8.
     wire timing_tag2;
     net_boundary U_D38I4LNK (.a(1'b1), .b(timing_tag2));
     la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9]; pins 13+10 tied <- D39.11 (bite-3, ex-assumed D39Y)

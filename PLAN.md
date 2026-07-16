@@ -236,7 +236,9 @@ Every ask below is queued with exact deliverables in
    than permitting an inferred no-connect.
 3. **Finish the measured WAIT/READY edge boundaries.** The D2/D30/D105 path
    is adopted; D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are now
-   owner-confirmed. Resolve only the exact edge contact/pull-up for `H`
+   owner-confirmed, while the native sheet-2 D38.8 status-strobe export is now
+   cross-sheet closed onto sheet-1 `-SSTB`/D30.1 on the D38 side of W8. Resolve
+   only the exact edge contact/pull-up for `H`
    (`docs/d30-section-b-scan-chase.md`, `docs/d105-h-boundary.md`).
 4. **Close the remaining D6-area netlist asks.** Chip-removed continuity now
    proves D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the
@@ -291,7 +293,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 6. **Disposition all remaining source-risk nets and omitted endpoints.**
-   213 source-risk nets and 9 official FDC devices with untraced functional
+   212 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

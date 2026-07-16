@@ -50,8 +50,10 @@ design release until measured or explicitly dispositioned.
   and pin 2 `D` are pulled high, pin 3 `CLK` is `PHI2TTL`, pin 1
   `/CLR` is driven by `-SSTB`, and pin 5 `Q` reaches D1 READY/pin 23
   through R29 1 kΩ.
-- Direct owner continuity corrects that topology: D2.12 and R6 feed D30.2;
-  D30.5 reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;
+- Owner continuity plus the native cross-sheet chase establish that D2.12
+  and R6 feed D30.2;
+  D30.1 is source-closed to the D38.8/W8.2 status-strobe island; D30.5
+  reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;
   and D105.11 drives D30.13. Section B is also closed: D30.11 joins the
   D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Only the
   exact `H` edge contact and pull-up remain open in this READY/WAIT cluster.

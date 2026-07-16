@@ -198,6 +198,9 @@ jobs:
       - name: Check DRAM ground rail closure
         run: python3 scripts/close_array_ground_rail.py
 
+      - name: Check D30 status-strobe closure
+        run: python3 scripts/close_d30_status_strobe.py
+
       - name: Check decap value fidelity freshness
         run: |
           python3 scripts/report_decap_value_fidelity.py

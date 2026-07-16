@@ -260,6 +260,12 @@ def main() -> int:
             and all(["D35", pin] not in board.get("no_connects", []) for pin in ("8", "9")),
             "native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2",
         ),
+        (
+            "D30 READY clear uses the native D38-side status strobe",
+            set(nodes(board, "STSTB_D38")) == {("D38", "8"), ("W8", "2"), ("D30", "1")}
+            and "SSTB_N" not in board["nets"],
+            "sheet-2 D38.8 active-low STB export -> sheet-1 -SSTB/D30.1; W8 still separates the D5-side island",
+        ),
     ]
     boundary_checks = [
         (

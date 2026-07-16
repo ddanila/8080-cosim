@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `309`
-- Nets modeled: `576`
+- Nets modeled: `575`
 - Chip-level fidelity gaps: `78`
-- Net-level source-risk gaps: `213`
+- Net-level source-risk gaps: `212`
 - Explicitly dispositioned closed net risks: `15`
 - Documented intentional no-connect pins: `60`
 
@@ -63,7 +63,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 7 |
 | analog/source | 1 | 0 |
 | connector boundary | 1 | 0 |
-| logic/source | 18 | 67 |
+| logic/source | 18 | 66 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -414,7 +414,6 @@ same fidelity ledger as the chip provenance gaps.
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `READY_PRE_N` | logic/source | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
-| `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
 | `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_... |

@@ -5090,7 +5090,7 @@
    "prov": {
     "type": "scan",
     "refdes": ".009 official; assembly drawing position and sheet-1 READY circuit",
-    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CLR1=-SSTB boundary, /PRE4 remains a continuity boundary, and Q5->R29->D1.READY; section B: /PRE2 pin10 and D pin12 share the R5 pull-up, /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs; direct .009 owner continuity on 2026-07-14 proves CLK2 pin11 joins D105.2/D13.4/D11.20 and Q_N2 pin8 drives D29.7"
+    "pins": "section A: D input2 receives physical D2.12 through the R6 pull-up node, CLK3=PHI2TTL, /CLR1=-SSTB is source-closed to D38.8 on the D38-side A:8 island, /PRE4 remains a continuity boundary, and Q5->R29->D1.READY; section B: /PRE2 pin10 and D pin12 share the R5 pull-up, /CLR2 pin13 is driven by D105.11, pins6 /Q1 and9 Q2 are intentional NCs; direct .009 owner continuity on 2026-07-14 proves CLK2 pin11 joins D105.2/D13.4/D11.20 and Q_N2 pin8 drives D29.7"
    }
   },
   {
@@ -15678,10 +15678,6 @@
    "src": "traced sheet-1 full-resolution: CPU D1 WAIT output pin24 enters the lower control-wire bundle; far destination remains unread",
    "nodes": [["D1", "24"]]
   },
-  "SSTB_N": {
-   "src": "sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary",
-   "nodes": [["D30", "1"]]
-  },
   "READY_D": {
    "src": "owner continuity 2026-07-13: D2 D0/pin12 and R6 2k pullup feed D30 section-A D input pin2; D2 open-collector output overrides the pullup",
    "nodes": [["R6", "2"], ["D30", "2"], ["D2", "12"]]
@@ -15822,10 +15818,11 @@
    "nodes": [["D104", "10"]]
   },
   "STSTB_D38": {
-   "src": "factory wire А:8 D38-side copper island",
+   "src": "native cross-sheet closure: sheet-2 D38.8 exports active-low STB to sheet-1 -SSTB/D30.1 on the D38-side factory-wire А:8 copper island",
    "nodes": [
     ["D38", "8"],
-    ["W8", "2"]
+    ["W8", "2"],
+    ["D30", "1"]
    ],
    "note": "D38.8 reaches the registered A8B surface landing; insulated assembly wire W8 continues to STSTB/D5.1"
   },
