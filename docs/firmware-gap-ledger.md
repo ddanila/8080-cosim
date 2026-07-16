@@ -34,6 +34,7 @@ python3 scripts/report_firmware_gap_ledger.py
 | D2 validated physical raw image has exact size and SHA256 | PASS |
 | D6 validated physical raw image has exact size and SHA256 | PASS |
 | D8 validated physical raw image has exact size and SHA256 | PASS |
+| D8 physical table executes as open-collector socket selects | PASS |
 | D94 validated physical raw image has exact size and SHA256 | PASS |
 | D15 functional image has exact size and SHA256 | PASS |
 | D16 functional image has exact size and SHA256 | PASS |

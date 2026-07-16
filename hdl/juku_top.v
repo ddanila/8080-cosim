@@ -271,7 +271,13 @@ module juku_top (
     // ============ I/O chip-select decode: К555ИД7 (74138) ============
     // A2:A0 select group, I/ORD & I/OWR enable; Y0..Y7 -> the chip-selects.
     // (refdes placeholder DID7; decode wiring is the standard 74138 pattern [assumed])
+`ifdef YOSYS
     wire [7:0] d8_d;
+`else
+    // D8 is open collector; released socket-select rails recover high through
+    // the physical TTL/pull-up environment without changing LVS connectivity.
+    tri1 [7:0] d8_d;
+`endif
     re3_prom  U_D8   (.a(BA[15:11]), .e_n(rom_sel_n), .d(d8_d));
     net_boundary U_R17LNK (.a(io_strobe_h), .b(d9_g1_w));   // R17 200R (+C99 160pF deglitch) in series [traced]
     io_dec138 U_DID7 (.a(BA[10]), .b(BA[11]), .c(BA[12]),   // A10-A12 rails [sheet-1; = port bits 2-4 via IO mirror]

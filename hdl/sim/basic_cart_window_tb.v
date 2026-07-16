@@ -2,7 +2,7 @@
 `default_nettype none
 
 module basic_cart_window_tb;
-  wire [7:0] d8_d;
+  tri1 [7:0] d8_d;
   tri [7:0] db;
   reg oe_n = 1'b1;
 

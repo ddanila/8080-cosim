@@ -12,7 +12,7 @@ module d6_runtime_path_tb;
 
   wire d6_rom_n, d6_ram_n, d6_rev, d6_roe_n;
   wire d6_select_and_n = d6_rom_n & d6_ram_n; // diagnostic expression, not a copper join
-  wire [7:0] d8_d;
+  tri1 [7:0] d8_d;
   wire ram_out_en;
   wire physical_d58_oe_n;
 

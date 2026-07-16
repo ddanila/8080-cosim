@@ -50,7 +50,8 @@ Asserted contents:
 
 This differs at 19 of 32 addresses from the former reconstructed fallback.
 The validated physical image therefore supersedes that fallback as content
-truth.
+truth. HDL now preserves the reader-proved open-collector behavior: raw zero
+sinks a socket-select rail, while raw one or disabled output releases it.
 
 ## D94 `.092`
 

@@ -106,6 +106,15 @@ def main() -> int:
         "Minimized active-low equations reproduce all 256 captured bits | PASS",
         "validated/d94_092.raw.bin",
     ) and d94_image_ok
+    d8_open_collector_ok = marker(
+        "hdl/devices.v",
+        "К155РЕ3 outputs are open collector",
+        "assign d[bit_index] = (!e_n && !raw[bit_index]) ? 1'b0 : 1'bz;",
+    ) and marker(
+        "hdl/sim/prom_fallback_tb.v",
+        "D8 disabled outputs did not release",
+        "D8 row 00 is not one open-collector D4 sink",
+    )
     re3_lineage_ok = marker(
         "docs/re3-firmware-inspection.md",
         "D94 `.092`",
@@ -211,6 +220,7 @@ def main() -> int:
         ("D2 validated physical raw image has exact size and SHA256", d2_image_ok),
         ("D6 validated physical raw image has exact size and SHA256", d6_ok),
         ("D8 validated physical raw image has exact size and SHA256", d8_ok),
+        ("D8 physical table executes as open-collector socket selects", d8_open_collector_ok),
         ("D94 validated physical raw image has exact size and SHA256", d94_image_ok),
         ("D15 functional image has exact size and SHA256", d15_ok),
         ("D16 functional image has exact size and SHA256", d16_ok),

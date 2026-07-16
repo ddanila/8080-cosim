@@ -363,20 +363,26 @@ endmodule
 // D8 К155РЕ3 (32x8 fusible PROM, programming drawing ДГШ5.106.039): the ROM-socket pager.
 // Traced sheet-1: ALL EIGHT socket CEs hang on D8 via the R21-R28 group line (tags D4..D7 ->
 // D15..D18, D0..D3 -> D19..D22), and E_N <- D6.ROM_N (mode-aware "some ROM responds" region).
-module re3_prom (input wire [4:0] a, input wire e_n, output reg [7:0] d);
+module re3_prom (input wire [4:0] a, input wire e_n, output wire [7:0] d);
     // PHYSICAL CONTENT: three matching reads of the board's .039 part, including a
     // power-cycled read. The former MAME-derived reconstruction is retained only as
     // historical evidence; it differs at rows 08-1A and no longer drives this model.
+    reg [7:0] raw;
     always @* begin
-        if (e_n)              d = 8'hFF;
-        else casez (a)
-            5'b000??:         d = 8'hEF;   // 00-03: D4 -> D15 (BIOS low 8K, 0000-1FFF)
-            5'b001??:         d = 8'hDF;   // 04-07: D5 -> D16 (BIOS high 8K, 2000-3FFF)
-            5'b110??:         d = 8'hEF;   // 18-1B: D4 -> D15
-            5'b111??:         d = 8'hDF;   // 1C-1F: E000-FFFF -> D16
-            default:          d = 8'hFF;   // 08-17: all socket selects released
+        casez (a)
+            5'b000??:         raw = 8'hEF;   // 00-03: D4 -> D15 (BIOS low 8K, 0000-1FFF)
+            5'b001??:         raw = 8'hDF;   // 04-07: D5 -> D16 (BIOS high 8K, 2000-3FFF)
+            5'b110??:         raw = 8'hEF;   // 18-1B: D4 -> D15
+            5'b111??:         raw = 8'hDF;   // 1C-1F: E000-FFFF -> D16
+            default:          raw = 8'hFF;   // 08-17: all socket selects released
         endcase
     end
+    // К155РЕ3 outputs are open collector. Programmed raw zero sinks the
+    // corresponding active-low socket select; raw one/disabled releases it.
+    genvar bit_index;
+    generate for (bit_index = 0; bit_index < 8; bit_index = bit_index + 1) begin : g_oc
+        assign d[bit_index] = (!e_n && !raw[bit_index]) ? 1'b0 : 1'bz;
+    end endgenerate
 endmodule
 
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====

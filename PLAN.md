@@ -352,9 +352,13 @@ adoption road, in dependency order:
    board-unused D3 channel, so the pending D6 re-read does not gate D2 polarity.
    D30 pins 8/11 are owner-closed; only complete cycle timing through the `H`
    edge contact remains P0 connectivity item 3, not a PROM-content gap.
-2. **D8 `.039` — content executes, enable is still derived.** The physical
-   table drives all eight ROM-socket selects; its `E_N` input is the separate
-   D6.12 ROM-select conductor, so full adoption completes with step 3.
+2. **D8 `.039` — physical open-collector table executes; enable is still
+   derived.** Programmed zeros now sink the eight ROM-socket select rails and
+   released bits recover high through explicit simulation pull-ups, matching
+   the К155РЕ3 electrical contract. The focused PROM guard also proves disabled
+   outputs are high impedance and row 00 sinks only D4/D15 select. Its `E_N`
+   input is the separate D6.12 ROM-select conductor, so full adoption completes
+   with step 3.
 3. **D6 `.038` — physical table provisionally executes; output polarity remains
    unconfirmed.** Runnable selects come from `decode_prom U_DECODE` and the
    validated physical table, with the sim-only `~D0`/`~D3` correction documented

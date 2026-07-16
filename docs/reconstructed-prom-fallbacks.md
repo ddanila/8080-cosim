@@ -31,7 +31,9 @@ sync/prom_fallback_check.sh
 - D8 `.039` physical raw SHA256 is
   `345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc`.
   It differs from `d8_re3_rom_pager_reconstructed.*` at 19 rows and
-  supersedes that artifact.
+  supersedes that artifact. HDL models its physical open-collector
+  outputs: programmed zero sinks one socket-select rail and released
+  bits recover high in the consumer pull-up/TTL environment.
 - D94 `.092` physical raw SHA256 is
   `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
   HDL adopts its open-collector table; D94 input/enable/output continuity
