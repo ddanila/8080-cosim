@@ -21,6 +21,7 @@ is promoted as a copper netlist.
 | D101 follows its registered package-centre offset from D95 | PASS | shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py` |
 | Lower FDC passive identities follow the registered factory drawing | PASS | five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py` |
 | Upper-row C12/C9 placements follow adjacent fitted IC centres | PASS | D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py` |
+| D94 pull-up identities and endpoints are source-modeled | PASS | factory R87/R88/R89 labels plus registered component/solder copper; `kicad/check_d94_pullups.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
 | Board points А:17 and А:18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
 | All ten on-board insulated links map conductor positions and А:N points to guarded endpoints | PASS | sheets 2-5 table; owner continuity; `kicad/check_factory_wire_links.py` |

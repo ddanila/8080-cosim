@@ -25,16 +25,16 @@ same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 | 10 | A0 | `BA0` | scan; direct owner continuity 2026-07-15 proves D94.10/A0 shares D93.5/A0 |
 | 11 | A1 | `BA1` | scan; direct owner continuity 2026-07-15 proves D94.11/A1 shares D93.6/A1 and D27.8/A1 |
 | 12 | A2 | `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 |
-| 13 | A3 | `D94_A3_D104_X4_PULLUP` | direct owner continuity 2026-07-15 proves D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and a pull-up resistor to +5V. The resistor reference is not yet identified; К170УП2 primary pinout confirms channel X4 is input7 -> output10 |
-| 14 | A4 | `D94_A4_D101_Q0_PULLUP` | direct owner continuity 2026-07-15 proves D94.14/A4 reaches D101 К555КП12 Q0/pin7 and an unidentified pull-up resistor to +5V; resistor reference pending identification |
+| 13 | A3 | `D94_A3_D104_X4_PULLUP` | direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and R87.1; R87.2 enters the common +5 V rail. К170УП2 primary pinout confirms channel X4 is input7 -> output10 |
+| 14 | A4 | `D94_A4_D101_Q0_PULLUP` | direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94.14/A4 reaches D101 К555КП12 Q0/pin7 and R88.1; R88.2 enters the common +5 V rail |
 | 15 | E_N | `FDC_CS_N` | direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity |
 
 ## Output Pins
 
 | Pin | Role | Net | Captured activity | Source |
 | ---: | --- | --- | --- | --- |
-| 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 | direct owner inspection 2026-07-15 finds D94 output pin1 connected through an unidentified pull-up resistor to +5V, with no other trace or branch observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded |
-| 2 | D1 | `GND` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1 |
+| 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 | .009 factory drawing identifies R89 as the rightmost resistor adjacent to D94; registered component/reflected-solder photos join D94.1 to R89.1 and R89.2 to +5 V. No other trace or branch is observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded |
+| 2 | D1 | `GND` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
 | 3 | D2 | `FDC_RE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 | direct owner continuity 2026-07-15 proves D94 output pin3 reaches D93 read-enable pin4, superseding the mirrored-pin photo interpretation |
 | 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | direct owner continuity 2026-07-15 proves D94 output pin4 reaches D93 write-enable pin2, superseding the mirrored-pin photo interpretation; D93 pin1 is internally NC/back-bias but its separate socket pad is routed from D94.5 |
 | 5 | D4 | `D94_D4` | invariant released | July-2026 exposed-socket photo PXL_20260710_202708344: independent affine D94/D93 fits identify D94.5 at (2477,1768.714) px and D93.1 at (2215,1810) px; uninterrupted front copper and the repaired socket entry join them. D93.1 is internally NC/back-bias on the controller but is not an unconnected PCB pad |
@@ -146,8 +146,9 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
   enable pin15 reaches D93.3 CS, D1/pin2 reaches D99.8/GND,
   D2/pin3 reaches D93.4 /RE, and D3/pin4 reaches D93.2 /WE.
   Address inputs A0/A1/A2/A3/A4 reach BA0, BA1, IORD,
-  D104.7+pull-up, and D101.7+pull-up respectively. Remaining textual
-  gaps are pull-up resistor identities and D0/D5-D7 destinations; physical
+  D104.7+R87 pull-up, and D101.7+R88 pull-up respectively. The registered
+  R89 pull-up closes D94.1 locally; D0's hidden load and D5-D7 destinations
+  remain open while physical
   captures now provide the PROM contents.
 - Git history proves the former A0-A4=`BA11..BA15` assignment entered in
   commit `ed69b9d` as an FDC scaffold explicitly described as the same
@@ -190,7 +191,7 @@ scaffold mapping as a closed physical claim:
 
 This does not refute the accepted local D94-to-D93 copper. It removes a
 false source claim. Remaining decode work is the upstream enable source,
-pull-up identities, and guarded D29.4/IORD recheck.
+D0 hidden-load status, and guarded D29.4/IORD recheck.
 
 ## Minimized asserted-output logic
 
@@ -201,7 +202,7 @@ gives:
 
 | Output | Exact asserted equation | Physical destination |
 | --- | --- | --- |
-| `S(D0)` | `!A4 & A1 & A0` | unresolved pull-up/hidden-branch boundary |
+| `S(D0)` | `!A4 & A1 & A0` | R89 pull-up / hidden-branch boundary |
 | `S(D1)` | `A3 xor A2` | grounded through D99.8 |
 | `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |
 | `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |
@@ -289,7 +290,7 @@ and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unkn
 - Known content: three matching reads including a power-cycled read yield
   raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
 - Unknown: the shared CS/enable upstream source, D0 hidden-branch status,
-  pull-up resistor identities on A3/D104.7 and A4/D101.7, and D5-D7
+  resistance values for R87/R88/R89, and D5-D7
   far destinations remain unresolved behind explicit boundary nets.
 - Firmware-derived prediction: D94 A3 must equal active-low `IOWR` on
   selected FDC cycles. Confirm by continuity to D5.27 or simultaneous

@@ -64,6 +64,9 @@ PASSIVE_FP_REF = {
     'C20': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C22': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'R94': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R87': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R88': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R89': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R92': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
@@ -162,6 +165,10 @@ PASSIVE_PLACE = {
     'AX417':(262.14,15.2,0),'AX418':(264.68,15.2,0),'AX419':(267.22,15.2,0),'AX420':(269.76,15.2,0),
     'AX421':(272.30,15.2,0),'AX422':(274.84,15.2,0),'AX423':(277.38,15.2,0),
     'R94':(297.6,56.4,270), # .009 assembly + owner photo; pin 1 is upper D98.3 end
+    # .009 labels the three vertical bodies left of D94 as R87/R88/R89.
+    # D94-local component/solder fits place pad 1 on the three signal traces;
+    # pad 2 is the shared upper +5 V rail. Values remain unread.
+    'R87':(222.305,32.704,90),'R88':(224.943,32.704,90),'R89':(227.629,32.704,90),
     # .009 factory-drawing affine registration, corroborated by the populated
     # owner-photo column at the right edge beside C19 (top to bottom).
     'R100':(299.776,94.000,0),'R102':(299.253,97.229,0),

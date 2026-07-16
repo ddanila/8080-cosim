@@ -2486,7 +2486,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 triple К170УП2 receiver and power-pin table",
-    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; datasheet fourth receiver is 7->10. Direct owner continuity 2026-07-15 proves input pin7 shares D94.13 and an unidentified pull-up resistor to +5V; +5 V pin15, ground pin8"
+    "pins": "A24/SIN 4->13, A25/CTS 5->12, A26/DSR 6->11; datasheet fourth receiver is 7->10. Direct owner continuity plus factory/photo registration proves input pin7 shares D94.13 and R87.1, with R87.2 at +5 V; +5 V pin15, ground pin8"
    }
   },
   {
@@ -4316,7 +4316,7 @@
    "prov": {
     "type": "prom",
     "refdes": ".009 official; programming ДГШ5.106.092; validated repeated physical table adopted",
-    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Direct owner continuity on 2026-07-15 supersedes the mirrored-pin/photo and BA11-BA15 scaffold interpretations: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, D104.7+pull-up, and D101.7+pull-up respectively; enable pin15 reaches D93.3; outputs pin2/3/4 reach GND, D93.4, and D93.2; exposed-socket front copper closes pin5 to D93.1; output pin1 has a pull-up with no other observed branch"
+    "pins": "РЕ3 pinout; validated physical .092 table raw SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0. Direct owner continuity on 2026-07-15 supersedes the mirrored-pin/photo and BA11-BA15 scaffold interpretations: inputs pin10/11/12/13/14 reach BA0, BA1, IORD, D104.7+R87 pull-up, and D101.7+R88 pull-up respectively; enable pin15 reaches D93.3; outputs pin2/3/4 reach GND, D93.4, and D93.2; exposed-socket front copper closes pin5 to D93.1; output pin1 has the identified R89 pull-up with no other observed branch"
    }
   },
   {
@@ -5165,6 +5165,30 @@
   {
    "ref": "R29", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"}, "value": "1к",
    "prov": {"type": "scan", "refdes": "sheet-1 D30 READY output series resistor; assembly drawing beside D30", "pins": "D30.5 to D1.23 READY"}
+  },
+  {
+   "ref": "R87", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": ".009 assembly drawing + registered component/solder photos",
+    "refdes": "leftmost of the R87/R88/R89 vertical row immediately left of D94",
+    "pins": "reflected solder copper joins pin 1 to D94.13/D104.7 and pin 2 to the common +5 V rail; marking/value remains unread"
+   }
+  },
+  {
+   "ref": "R88", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": ".009 assembly drawing + registered component/solder photos",
+    "refdes": "middle of the R87/R88/R89 vertical row immediately left of D94",
+    "pins": "reflected solder copper joins pin 1 to D94.14/D101.7 and pin 2 to the common +5 V rail; marking/value remains unread"
+   }
+  },
+  {
+   "ref": "R89", "type": "R_AXIAL", "pins": {"1": "P1", "2": "P2"},
+   "prov": {
+    "type": ".009 assembly drawing + registered component/solder photos",
+    "refdes": "rightmost of the R87/R88/R89 vertical row immediately adjacent to D94",
+    "pins": "reflected solder copper joins pin 1 to D94.1 and pin 2 to the common +5 V rail; no additional D94.1 branch is promoted and marking/value remains unread"
+   }
   },
   {
    "ref": "W7", "type": "WIRE_LINK", "pins": {"1": "A7A", "2": "A7B"},
@@ -11467,6 +11491,18 @@
     [
      "C34",
      "1"
+    ],
+    [
+     "R87",
+     "2"
+    ],
+    [
+     "R88",
+     "2"
+    ],
+    [
+     "R89",
+     "2"
     ]
    ]
   },
@@ -13454,8 +13490,8 @@
    "nodes": [["D99", "2"]]
   },
   "D94_D0_BOUNDARY": {
-   "src": "direct owner inspection 2026-07-15 finds D94 output pin1 connected through an unidentified pull-up resistor to +5V, with no other trace or branch observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded",
-   "nodes": [["D94", "1"]]
+   "src": ".009 factory drawing identifies R89 as the rightmost resistor adjacent to D94; registered component/reflected-solder photos join D94.1 to R89.1 and R89.2 to +5 V. No other trace or branch is observed; retain a guarded destination boundary because a hidden or missed branch cannot yet be excluded",
+   "nodes": [["D94", "1"], ["R89", "1"]]
   },
   "D94_D4": {
    "src": "July-2026 exposed-socket photo PXL_20260710_202708344: independent affine D94/D93 fits identify D94.5 at (2477,1768.714) px and D93.1 at (2215,1810) px; uninterrupted front copper and the repaired socket entry join them. D93.1 is internally NC/back-bias on the controller but is not an unconnected PCB pad",
@@ -13610,8 +13646,8 @@
    "nodes": [["D101", "6"]]
   },
   "D94_A4_D101_Q0_PULLUP": {
-   "src": "direct owner continuity 2026-07-15 proves D94.14/A4 reaches D101 К555КП12 Q0/pin7 and an unidentified pull-up resistor to +5V; resistor reference pending identification",
-   "nodes": [["D94", "14"], ["D101", "7"]]
+   "src": "direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94.14/A4 reaches D101 К555КП12 Q0/pin7 and R88.1; R88.2 enters the common +5 V rail",
+   "nodes": [["D94", "14"], ["D101", "7"], ["R88", "1"]]
   },
   "D101_Q1_BOUNDARY": {
    "src": "July-2026 validated component and solder package fits identify D101 К555КП12 pin9 Q1; no remote destination is proved, so this remains a measurement boundary",
@@ -15812,8 +15848,8 @@
    "nodes": [["C22", "2"]]
   },
   "D94_A3_D104_X4_PULLUP": {
-   "src": "direct owner continuity 2026-07-15 proves D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and a pull-up resistor to +5V. The resistor reference is not yet identified; К170УП2 primary pinout confirms channel X4 is input7 -> output10",
-   "nodes": [["D94", "13"], ["D104", "7"]]
+   "src": "direct owner continuity plus .009 factory identity and registered component/reflected-solder photos prove D94 address input pin13 reaches D104 К170УП2 fourth receiver input pin7 and R87.1; R87.2 enters the common +5 V rail. К170УП2 primary pinout confirms channel X4 is input7 -> output10",
+   "nodes": [["D94", "13"], ["D104", "7"], ["R87", "1"]]
   },
   "D104_X4_OUT_BOUNDARY": {
    "src": "July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps hide its possible F.Cu departure behind the same vertical white wire. This singleton preserves the functional receiver output as a targeted continuity boundary, not an inferred no-connect",

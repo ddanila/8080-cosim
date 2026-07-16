@@ -132,7 +132,9 @@ jobs:
             kicad/report_replica_sourcing_readiness.py \
             kicad/report_replica_manufacturing_readiness.py
           python3 -m py_compile \
+            kicad/apply_d94_pullup_footprints.py \
             kicad/apply_kp12_resistor_links.py \
+            kicad/check_d94_pullups.py \
             kicad/check_kp12_resistor_links.py \
             kicad/report_fdc_lower_assembly_placement.py
           python3 -m py_compile kicad/report_d93_pin40_photo_chase.py

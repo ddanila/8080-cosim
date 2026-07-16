@@ -322,8 +322,8 @@ def main() -> int:
         "BA0": None,
         "BA1": None,
         "IORD": None,
-        "D94_A3_D104_X4_PULLUP": [["D94", "13"], ["D104", "7"]],
-        "D94_A4_D101_Q0_PULLUP": [["D94", "14"], ["D101", "7"]],
+        "D94_A3_D104_X4_PULLUP": [["D94", "13"], ["D104", "7"], ["R87", "1"]],
+        "D94_A4_D101_Q0_PULLUP": [["D94", "14"], ["D101", "7"], ["R88", "1"]],
     }
     for net_name, expected_nodes in expected_d94_boundaries.items():
         actual_nodes = board_nets.get(net_name, {}).get("nodes")
