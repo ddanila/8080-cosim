@@ -5,7 +5,7 @@ command -v iverilog >/dev/null || { echo "iverilog not found"; exit 2; }
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
-echo "== C disk/FDC and complete ekta37 ROMBIOS write-handler check =="
+echo "== C disk/FDC and complete ekta37 RWFLOPPY deblocking/write check =="
 sync/juk_disk_check.sh
 
 echo "== HDL WD1793 synthetic-sector check =="
@@ -51,10 +51,13 @@ physical D93/D94 wiring.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
   and cosim needs `JUKU_DISK_WRITABLE=1`, on a caller-provided copy.
 - The C guard first boots exact `ekta37` far enough to install its monitor RAM
-  services, then enters the public ROMBIOS `FLOPPY` vector at `0xFF53`. The
-  complete handler observes command `0xA2` plus 512 accepted data writes,
-  traverses the boot-installed `0xD7E7` monitor trampoline and epilogue, returns
-  to its caller with zero `ERRC`, and verifies persisted sector readback.
+  services, then drives the public ROMBIOS `RWFLOPPY` vector at `0xFF59`. It
+  loads 512-byte physical sector 3 with command `0x80`, caches an EKDOS
+  128-byte logical-record write, and switches host sectors so the wrapper
+  flushes with `0xA2` before loading sector 4 with `0x80`. All calls traverse
+  the boot-installed `0xD7E7` monitor services and return with zero `ERRC`;
+  persisted readback proves the modified 128-byte record and three untouched
+  zero records byte-for-byte.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
@@ -74,11 +77,26 @@ physical D93/D94 wiring.
   selects WD1793 command `0xA0` or `0xA2` at `0xE69F/0xE6A4`, writes the
   command to port `0x1C` at `0xE6AB`, and loops 512 bytes from memory to the
   data register at port `0x1F` from `0xE6AF`.
-- `tests/rombios_fdc_write_test.c` executes the complete public handler from
-  the vendored ROM in an authentic boot-initialized RAM environment instead of
-  duplicating it as test-side port writes or patching the ROM epilogue.
+- `tests/rombios_fdc_write_test.c` executes the complete public `RWFLOPPY`
+  deblocking/cache wrapper and its nested `FLOPPY` handler from the vendored ROM
+  in an authentic boot-initialized RAM environment instead of duplicating them
+  as test-side port writes or patching the ROM epilogue.
 - The implementation intentionally stops at that firmware-proved single-sector
   contract; it does not claim general WD1793 write-track or timing conformance.
+
+## RWFLOPPY deblocking provenance
+
+- The EKDOS request block at `0xD61A..0xD62F` supplies drive, 16-bit track,
+  logical sector, cache state, and DMA address to the `0xFF59 -> 0xE80B`
+  wrapper. Its physical-sector calculation at `0xE8B2` maps four consecutive
+  128-byte logical records onto one 512-byte FDC sector.
+- The guard starts with a cold/clean cache, reads logical record 9 to populate
+  physical sector 3, writes record 9 from DMA, then reads record 13. Crossing
+  into physical sector 4 takes the dirty-cache flush path before the new read,
+  yielding the exact observed command sequence `0x80, 0xA2, 0x80`.
+- Readback requires the changed first 128 bytes and the untouched zero-filled
+  remaining 384 bytes. This distinguishes a real deblocking write from a
+  direct 512-byte model-side sector injection.
 
 ## Commands
 

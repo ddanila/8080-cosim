@@ -14,6 +14,7 @@ enum {
   ROM_SIZE = 0x4000,
   RETURN_PC = 0xB123,
   DMA_ADDR = 0x4000,
+  SCRATCH_ADDR = 0x5000,
 };
 
 
@@ -153,6 +154,36 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
 }
 
 
+static int run_rwfloppy(
+    fixture* f, uint8_t request, uint8_t logical_sector, uint16_t dma,
+    unsigned long* total_cycles) {
+  f->ram[0xD61D] = logical_sector;
+  f->ram[0xD62E] = dma & 0xFF;
+  f->ram[0xD62F] = dma >> 8;
+
+  i8080 cpu;
+  i8080_init(&cpu);
+  cpu.userdata = f;
+  cpu.read_byte = read_byte;
+  cpu.write_byte = write_byte;
+  cpu.port_in = port_in;
+  cpu.port_out = port_out;
+  cpu.pc = 0xFF59;                    // public ROMBIOS RWFLOPPY entry -> E80B
+  cpu.sp = 0xBFFE;
+  cpu.a = request;
+  f->ram[cpu.sp] = RETURN_PC & 0xFF;
+  f->ram[cpu.sp + 1] = RETURN_PC >> 8;
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  *total_cycles += cpu.cyc;
+  if (cpu.pc == RETURN_PC) return 0;
+  fprintf(stderr,
+          "ROMBIOS RWFLOPPY: request=0x%02X sector=%u did not return "
+          "(pc=%04X cyc=%lu TYP=%02X current=%02X)\n",
+          request, logical_sector, cpu.pc, cpu.cyc, f->ram[0xD600], f->ram[0xD614]);
+  return 1;
+}
+
+
 int main(int argc, char** argv) {
   if (argc != 2) {
     fprintf(stderr, "usage: %s boot-initialized.ram\n", argv[0]);
@@ -172,7 +203,7 @@ int main(int argc, char** argv) {
   juk_disk disk;
   if (!fail && juk_disk_open_writable(&disk, path) != 0) fail = 1;
   if (fail) {
-    fprintf(stderr, "ROMBIOS FDC write: fixture setup failed\n");
+    fprintf(stderr, "ROMBIOS RWFLOPPY: fixture setup failed\n");
     unlink(path);
     rmdir(dir);
     return 1;
@@ -182,7 +213,7 @@ int main(int argc, char** argv) {
   update_portc(&f, 0x05);  // motor on, drive A, side 0, high ROM overlay
   f.fdc.track = 8;
 
-  for (int i = 0; i < 768; i++) f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
+  for (int i = 0; i < 128; i++) f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
   f.ram[0xD600] = 0;                 // drive-A disk type: select command 0xA2
   f.ram[0xD601] = 0;                 // drive A
   f.ram[0xD602] = 8;                 // requested logical track
@@ -194,52 +225,51 @@ int main(int argc, char** argv) {
   f.ram[0xD611] = 0;                 // seek-rate bits
   f.ram[0xD614] = 0;                 // currently selected drive
   f.ram[0xD615] = 8;                 // remembered physical track for drive A
-
-  i8080 cpu;
-  i8080_init(&cpu);
-  cpu.userdata = &f;
-  cpu.read_byte = read_byte;
-  cpu.write_byte = write_byte;
-  cpu.port_in = port_in;
-  cpu.port_out = port_out;
-  cpu.pc = 0xFF53;                    // public ROMBIOS FLOPPY entry -> E565
-  cpu.sp = 0xBFFE;
-  cpu.a = 0x12;                       // DKWR: write from DMA buffer
-  f.ram[cpu.sp] = RETURN_PC & 0xFF;
-  f.ram[cpu.sp + 1] = RETURN_PC >> 8;
-  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  f.ram[0xCA36] = 2;                 // EKDOS RAM-disk number; drive A is physical
+  f.ram[0xD61A] = 0;                 // EKDOS selected drive
+  f.ram[0xD61B] = 8;                 // EKDOS logical track low
+  f.ram[0xD61C] = 0;                 // EKDOS logical track high
+  memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E); // cold EKDOS deblocking/cache state
+  unsigned long total_cycles = 0;
+  fail |= run_rwfloppy(&f, 0x11, 9, SCRATCH_ADDR, &total_cycles);  // load host sector 3
+  fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &total_cycles);      // dirty first record
+  fail |= run_rwfloppy(&f, 0x11, 13, SCRATCH_ADDR, &total_cycles); // flush, then load sector 4
 
   uint8_t sector[512];
-  if (cpu.pc != RETURN_PC) {
-    fprintf(stderr, "ROMBIOS FDC write: handler did not return (pc=%04X cyc=%lu)\n",
-            cpu.pc, cpu.cyc);
-    fail = 1;
-  }
   if (f.ram[0xD609] != 0) {
-    fprintf(stderr, "ROMBIOS FDC write: ERRC=0x%02X cyc=%lu\n",
-            f.ram[0xD609], cpu.cyc);
+    fprintf(stderr, "ROMBIOS RWFLOPPY: ERRC=0x%02X cyc=%lu\n",
+            f.ram[0xD609], total_cycles);
     fail = 1;
   }
   if (f.command_writes != 1 || f.write_command != 0xA2) {
-    fprintf(stderr, "ROMBIOS FDC write: command count=%u command=0x%02X\n",
+    fprintf(stderr, "ROMBIOS RWFLOPPY: command count=%u command=0x%02X\n",
             f.command_writes, f.write_command);
-    fprintf(stderr, "ROMBIOS FDC write: FDC command sequence");
+    fprintf(stderr, "ROMBIOS RWFLOPPY: FDC command sequence");
+    for (unsigned i = 0; i < f.fdc_commands; i++) fprintf(stderr, " %02X", f.command_log[i]);
+    fputc('\n', stderr);
+    fail = 1;
+  }
+  if (f.fdc_commands != 3 || f.command_log[0] != 0x80 ||
+      f.command_log[1] != 0xA2 || f.command_log[2] != 0x80) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: unexpected FDC command sequence");
     for (unsigned i = 0; i < f.fdc_commands; i++) fprintf(stderr, " %02X", f.command_log[i]);
     fputc('\n', stderr);
     fail = 1;
   }
   if (f.data_writes != 512) {
-    fprintf(stderr, "ROMBIOS FDC write: accepted data writes=%u\n", f.data_writes);
+    fprintf(stderr, "ROMBIOS RWFLOPPY: accepted data writes=%u\n", f.data_writes);
     fail = 1;
   }
   if (f.monitor_trampoline_entries < 2) {
-    fprintf(stderr, "ROMBIOS FDC write: monitor trampoline entries=%u\n",
+    fprintf(stderr, "ROMBIOS RWFLOPPY: monitor trampoline entries=%u\n",
             f.monitor_trampoline_entries);
     fail = 1;
   }
+  uint8_t expected[512] = {0};
+  memcpy(expected, &f.ram[DMA_ADDR], 128);
   if (juk_disk_read_sector(&disk, 8, 0, 3, sector) != 0 ||
-      memcmp(sector, &f.ram[DMA_ADDR], sizeof(sector)) != 0) {
-    fprintf(stderr, "ROMBIOS FDC write: persisted sector mismatch\n");
+      memcmp(sector, expected, sizeof(sector)) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: persisted sector mismatch\n");
     fail = 1;
   }
 
@@ -247,10 +277,10 @@ int main(int argc, char** argv) {
   unlink(path);
   rmdir(dir);
   if (fail) {
-    fprintf(stderr, "ROMBIOS FDC write test: FAIL\n");
+    fprintf(stderr, "ROMBIOS RWFLOPPY write test: FAIL\n");
     return 1;
   }
-  printf("ROMBIOS FDC write test: PASS command=0x%02X data=512 trampoline=%u cyc=%lu\n",
-         f.write_command, f.monitor_trampoline_entries, cpu.cyc);
+  printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X logical=128 data=512 trampoline=%u cyc=%lu\n",
+         f.write_command, f.monitor_trampoline_entries, total_cycles);
   return 0;
 }

@@ -46,6 +46,10 @@ labels and `TRANS` tables.
 | `TYP` | `0xD600` | monitor floppy work-area base |
 | `SEKDSK` | `0xD61A` | selected drive |
 | `SEKSEC` | `0xD61D` | selected sector |
+| `HSTACT` | `0xD623` | host-sector cache active flag |
+| `HSTWRT` | `0xD624` | host-sector cache dirty flag |
+| `UNACNT` | `0xD625` | unallocated-write counter |
+| `RCOUNT` | `0xD62A` | retry counter |
 | `MEMADR` | `0xD62E` | DMA address field |
 
 ## Sector Translation
