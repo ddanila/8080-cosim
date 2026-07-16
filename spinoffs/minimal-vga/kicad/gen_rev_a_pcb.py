@@ -270,11 +270,11 @@ PLACE = {
     "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (186, 48, 0),
     "J94": (117, 58, 90),    # decode-mode jumper, in the gap left of U3 (clear of U5)
     "R44": (117, 68, 0),     # MODE_B default pull-down
-    "J96": (268, 62, 90),    # clock-select jumper, near the oscillator U50
+    "J96": (266, 62, 90),    # clock-select jumper, near the oscillator U50
     # PROM output pull-ups, clustered in the free strip between CLOCK/RESET and VGA.
     "R32": (250, 100, 0), "R33": (250, 107, 0), "R34": (250, 114, 0), "R35": (250, 121, 0),
     "R36": (262, 100, 0), "R37": (262, 107, 0), "R38": (262, 114, 0), "R39": (262, 121, 0),
-    "R40": (274, 100, 0), "R41": (274, 107, 0), "R42": (274, 114, 0), "R43": (274, 121, 0),
+    "R40": (238, 100, 0), "R41": (238, 107, 0), "R42": (238, 114, 0), "R43": (238, 121, 0),
     # Observability headers: stacked in the clear vertical corridor between the
     # keyboard matrix (right edge x190) and the VGA/LED blocks (left edge x204),
     # away from the board title and block outlines.
@@ -593,11 +593,19 @@ def main():
             fp = placed.get(ref)
             if fp is None:
                 continue
-            pad = fp.FindPadByNumber(str(pin))
-            if pad is None:
-                raise RuntimeError(f"{ref}.{pin} has no pad on {fp.GetFPID().Format()}")
-            pad.SetNet(net)
-            assigned += 1
+            matching_pads = [
+                pad for pad in fp.Pads() if str(pad.GetNumber()) == str(pin)
+            ]
+            if not matching_pads:
+                footprint_name = str(fp.GetFPID().GetLibItemName())
+                raise RuntimeError(f"{ref}.{pin} has no pad on {footprint_name}")
+            # Some footprints use one logical pin number on several physical
+            # pads (the HRO USB-C shell has four S1 tabs). All of those pads
+            # belong to the modeled net; assigning only FindPadByNumber's first
+            # result silently left the remaining shell tabs floating.
+            for pad in matching_pads:
+                pad.SetNet(net)
+                assigned += 1
 
     if os.environ.get("MINIMAL_VGA_NO_ZONES", "0") != "1":
         add_power_zone(board, nets["GND"], pcbnew.In1_Cu, "Rev A GND plane placeholder")

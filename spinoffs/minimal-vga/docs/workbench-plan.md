@@ -90,8 +90,8 @@ direct cosim-vs-C reuse. Less reuse, weaker single-source-of-truth.
    equations + test vectors, (d) both decode modes boot byte-identical, and
    (e) power budget are **DONE**. Step (c) — the physical-board socket↔twin
    contract is enforced by `check_rev_a_physical`; full chip-accurate yosys LVS
-   of the whole board is still staged (see below). Step (f) — routed-PCB
-   re-layout/DRC/fab regen is **pending** (the schematic leads the copper).
+   of the whole board is still staged (see below). Step (f) routing/DRC is
+   **DONE** on the current 119-ref board; fab regeneration and review remain.
 
    **Design decisions (fixed for Phase 3):**
    - **D6/D8 get real sockets, buffered by the GAL.** Add two DIP-16 sockets

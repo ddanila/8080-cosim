@@ -3,9 +3,9 @@
 Status: **SOFTWARE + BOARD-MODEL DONE / HARDWARE PENDING**. Everything that can
 be built and verified against the simulation twin is implemented (§4.0 board
 design-ins, §4.2 readback oracle, §4.3 single-step tracer + reference trace).
-The remaining work is the physical ladder (§4.4 b-h), gated on Phase 3 step (f):
-the routed-PCB re-layout must pick up both the Phase 3 decode sockets *and* the
-§4.0 design-ins below — one copper pass, not two.
+The remaining work is the physical ladder (§4.4 b-h). Phase 3 routing now
+includes both the decode sockets and §4.0 design-ins and passes KiCad DRC; fab
+package regeneration and independent review still gate hardware.
 
 Phase 4 turns the fabricated Rev-A board into the working bench fixture: the
 board boots the banner with western parts, then tests the scarce Juku
@@ -173,7 +173,7 @@ already attached:
    contract); §4.2 readback tool + twin capture emitter + regression (wired into
    `sim/check.sh`); §4.3 sketch + twin reference-trace generator. All verified
    against the simulation twin.
-2. **After Phase 3 step (f) re-layout + review** (Linux box): fab, then the §4.4
-   ladder. — PENDING.
+2. **After fab-package regeneration + review:** fab, then the §4.4 ladder.
+   — PENDING.
 3. **Bench sessions** (owner): ladder steps b-h, logged in `docs/bench-log.md`.
    — PENDING (needs the fabricated board).

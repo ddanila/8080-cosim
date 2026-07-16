@@ -155,6 +155,16 @@ def main():
     if footprint_count < 80:
         fail(f"expected physical Rev A footprints, found only {footprint_count}")
     track_count = sum(1 for _ in board.GetTracks())
+    inner_signal_tracks = [
+        track
+        for track in board.GetTracks()
+        if type(track).__name__ == "PCB_TRACK"
+        and board.GetLayerName(track.GetLayer()) in {"In1.Cu", "In2.Cu"}
+    ]
+    if inner_signal_tracks:
+        fail(
+            f"reserved GND/VCC plane layers carry {len(inner_signal_tracks)} signal tracks"
+        )
 
     edge_violations = []
     for fp in board.Footprints():
@@ -201,24 +211,19 @@ def main():
             zone.IsFilled(),
             zone.HasFilledPolysForLayer(layer),
         )
-    if track_count == 0:
-        for zone_name, (layer, net) in EXPECTED_ZONES.items():
-            if zone_name not in zones:
-                fail(f"missing zone: {zone_name}")
-            actual_layer, actual_net, corner_count, is_filled, has_fill = zones[zone_name]
-            if (actual_layer, actual_net) != (layer, net):
-                fail(
-                    f"{zone_name} expected on {layer}/{net}, "
-                    f"found {actual_layer}/{actual_net}"
-                )
-            if corner_count < 4:
-                fail(f"{zone_name} has incomplete outline ({corner_count} corners)")
-            if not is_filled or not has_fill:
-                fail(f"{zone_name} is not filled")
-    elif zones:
-        missing = sorted(set(EXPECTED_ZONES) - set(zones))
-        if missing:
-            fail(f"routed board has partial placeholder zones; missing: {', '.join(missing)}")
+    for zone_name, (layer, net) in EXPECTED_ZONES.items():
+        if zone_name not in zones:
+            fail(f"missing zone: {zone_name}")
+        actual_layer, actual_net, corner_count, is_filled, has_fill = zones[zone_name]
+        if (actual_layer, actual_net) != (layer, net):
+            fail(
+                f"{zone_name} expected on {layer}/{net}, "
+                f"found {actual_layer}/{actual_net}"
+            )
+        if corner_count < 4:
+            fail(f"{zone_name} has incomplete outline ({corner_count} corners)")
+        if not is_filled or not has_fill:
+            fail(f"{zone_name} is not filled")
 
     for label in EXPECTED_SILK_LABELS:
         matches = [

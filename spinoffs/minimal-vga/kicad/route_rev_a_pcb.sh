@@ -119,6 +119,24 @@ if not pcbnew.ExportSpecctraDSN(board, sys.argv[2]):
 print(f"wrote DSN: {sys.argv[2]}")
 PY
 
+# KiCad exports all copper layers as signal layers after the zones are removed.
+# The Rev-A stackup reserves In1.Cu for GND and In2.Cu for VCC; mark them as
+# power planes in Specctra so FreeRouting uses only F.Cu/B.Cu for signal tracks.
+python3 - "$DSN" <<'PY'
+import sys
+
+path = sys.argv[1]
+text = open(path, encoding="utf-8").read()
+for layer, net in (("In1.Cu", "GND"), ("In2.Cu", "VCC")):
+    old = f"    (layer {layer}\n      (type signal)"
+    new = f"    (layer {layer}\n      (type power)\n      (use_net {net})"
+    if text.count(old) != 1:
+        raise SystemExit(f"cannot uniquely mark {layer} as the {net} power plane")
+    text = text.replace(old, new)
+open(path, "w", encoding="utf-8").write(text)
+print("reserved In1.Cu=GND and In2.Cu=VCC in DSN")
+PY
+
 JAVA_ARGS=()
 if [ "$JAVA_HEAP" = "auto" ]; then
   JAVA_HEAP="$(auto_java_heap)"
@@ -154,14 +172,28 @@ if [ ! -s "$SES" ]; then
 fi
 
 "$KICAD_PYTHON" - "$PCB" "$SES" <<'PY'
+import os
 import sys
 import pcbnew
 
 board = pcbnew.LoadBoard(sys.argv[1])
 if not pcbnew.ImportSpecctraSES(board, sys.argv[2]):
     raise SystemExit(f"failed to import SES: {sys.argv[2]}")
+# FreeRouting receives a deliberately zone-free board. Restore the source-model
+# GND/VCC inner-layer zones after SES import, then fill them before final DRC.
+sys.path.insert(0, os.path.abspath("spinoffs/minimal-vga/kicad"))
+from gen_rev_a_pcb import add_power_zone
+if board.Zones():
+    raise SystemExit("routed SES import unexpectedly retained power zones")
+gnd = board.FindNet("GND")
+vcc = board.FindNet("VCC")
+if gnd is None or vcc is None:
+    raise SystemExit("routed board is missing GND or VCC net")
+add_power_zone(board, gnd, pcbnew.In1_Cu, "Rev A GND plane placeholder")
+add_power_zone(board, vcc, pcbnew.In2_Cu, "Rev A VCC plane placeholder")
+pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(sys.argv[1], board)
-print(f"imported SES into {sys.argv[1]}")
+print(f"imported SES and restored {len(board.Zones())} power zones into {sys.argv[1]}")
 PY
 
 kicad-cli pcb drc --severity-error --format json --output "$DRC_JSON" "$PCB" >/dev/null

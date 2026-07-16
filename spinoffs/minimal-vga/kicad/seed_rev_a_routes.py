@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 
 import pcbnew
 
@@ -16,6 +17,27 @@ LAYER_BY_NAME = {
 }
 
 SEED_ROUTES = {
+    # Tie the two USB-C SMD ground contacts to the adjacent plated shell tabs;
+    # the four modeled S1 tabs then connect directly to the In1.Cu GND plane.
+    "GND": {
+        "vias": [],
+        "tracks": [
+            ("F.Cu", 21.25, 97.11, 19.68, 97.29),
+            ("F.Cu", 26.75, 97.11, 28.32, 97.29),
+        ],
+    },
+    # The dense keyboard block's first column repeatedly became the final
+    # unrouted item after global optimization. Preserve its short direct path;
+    # the remaining board is still routed and checked normally.
+    "KBD_COL0_DRV": {
+        "vias": [],
+        "tracks": [
+            ("B.Cu", 47.38, 188.495, 43.0, 188.495),
+            ("B.Cu", 43.0, 188.495, 43.0, 174.0),
+            ("B.Cu", 43.0, 174.0, 114.19, 174.0),
+            ("B.Cu", 114.19, 174.0, 114.19, 190.0),
+        ],
+    },
     "CLK": {
         "vias": [
             (201.539, 89.915),
@@ -347,9 +369,18 @@ def main():
     args = parser.parse_args()
 
     board = pcbnew.LoadBoard(args.board)
+    selected = {
+        name for name in os.environ.get("SEED_NETS", "").split(",") if name
+    }
+    if selected:
+        unknown = selected - SEED_ROUTES.keys()
+        if unknown:
+            raise SystemExit(f"unknown seed route(s): {', '.join(sorted(unknown))}")
     added_tracks = 0
     added_vias = 0
     for net_name, route in SEED_ROUTES.items():
+        if selected and net_name not in selected:
+            continue
         net = board.FindNet(net_name)
         if net is None:
             raise SystemExit(f"missing net for seed route: {net_name}")

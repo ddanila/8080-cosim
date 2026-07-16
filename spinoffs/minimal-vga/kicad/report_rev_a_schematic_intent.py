@@ -11,7 +11,10 @@ EXPECTED_REFS = {
     "Core CPU/ROM/decode": {
         "U1": "Z80_DIP40",
         "U2": "ROM_28C256_DIP28",
+        "U3": "PROM_556RT4_DIP16",
+        "U4": "PROM_155RE3_DIP16",
         "U5": "GAL22V10_DIP24_DECODE",
+        "U6": "HEX_INV_74HC04_DIP14",
     },
     "DRAM and arbitration": {
         **{f"U{index}": "DRAM4164_DIP16" for index in range(10, 18)},
@@ -42,14 +45,19 @@ EXPECTED_REFS = {
         "J91": "DEBUG_HEADER",
         "J92": "DEBUG_HEADER",
         "J93": "POWER_DEBUG_HEADER",
+        "J94": "JUMPER_1x3",
+        "J95": "DEBUG_HEADER_1x14",
+        "J96": "JUMPER_1x2",
+        "J97": "DEBUG_HEADER_1x10",
+        "J98": "DEBUG_HEADER_1x8",
     },
 }
 
 CORE_NETS = {
     "Address bus A0..A15": [f"A{index}" for index in range(16)],
     "Data bus D0..D7": [f"D{index}" for index in range(8)],
-    "CPU control": ["CLK", "RESET_N", "MREQ_N", "IORQ_N", "RD_N", "WR_N", "M1_N", "RFSH_N", "WAIT_N"],
-    "Decode outputs": ["ROM_CE_N", "RAM_CE_N", "PPI_CS_N", "MEM_RD_N", "MEM_WR_N", "IO_RD_N", "IO_WR_N"],
+    "CPU control": ["CLK", "RESET_N", "MREQ_N", "IORQ_N", "RD_N", "WR_N", "M1_N", "RFSH_N", "WAIT_N", "DECODE_WAIT_N"],
+    "Decode outputs": ["ROM_CE_N", "RAM_CE_N", "PPI_CS_N", "MEM_RD_N", "MEM_WR_N", "IO_RD_N", "IO_WR_N", "DEC_ROM_N", "DEC_RAM_N", "DEC_REV", "DEC_ROE_N", "MODE_B"],
     "DRAM timing": ["RAS_N", "CAS_N", "DRAM_WE_N", "ADDRMUX_SEL", "ADDRMUX_OE_N", "REFRESH_TICK"],
     "Keyboard": [f"KBD_COL{index}" for index in range(8)]
     + [f"KBD_COL{index}_DRV" for index in range(8)]
@@ -144,7 +152,7 @@ def validate_bus_contract(board, rows, failures):
         if index <= 14:
             expected.append(("U2", {0: 10, 1: 9, 2: 8, 3: 7, 4: 6, 5: 5, 6: 4, 7: 3, 8: 25, 9: 24, 10: 21, 11: 23, 12: 2, 13: 26, 14: 1}[index]))
         if index >= 13:
-            expected.append(("U5", {13: 9, 14: 10, 15: 11}[index]))
+            expected.append(("U5", {13: 5, 14: 6, 15: 7}[index]))
         missing = [f"{ref}.{pin}" for ref, pin in expected if not has_node(board, net, ref, pin)]
         add_check(rows, failures, "Core CPU/ROM/decode", f"{net} endpoints", not missing, "ok" if not missing else ", ".join(missing))
 
@@ -164,14 +172,15 @@ def validate_bus_contract(board, rows, failures):
 
 def validate_decode_contract(board, rows, failures):
     expected = {
-        "ROM_CE_N": [("U5", 13), ("U2", 20)],
-        "RAM_CE_N": [("U5", 14), ("U24", 3)],
-        "PPI_CS_N": [("U5", 15), ("U30", 6)],
-        "MEM_RD_N": [("U5", 16), ("U2", 22), ("U24", 4)],
-        "MEM_WR_N": [("U5", 17), ("U2", 27), ("U24", 5)],
-        "IO_RD_N": [("U5", 18), ("U30", 5)],
-        "IO_WR_N": [("U5", 19), ("U30", 36)],
-        "WAIT_N": [("U1", 24), ("U5", 22), ("U24", 17)],
+        "ROM_CE_N": [("U5", 14), ("U2", 20)],
+        "RAM_CE_N": [("U5", 15), ("U24", 3)],
+        "PPI_CS_N": [("U5", 16), ("U30", 6)],
+        "MEM_RD_N": [("U5", 17), ("U2", 22), ("U24", 4)],
+        "MEM_WR_N": [("U5", 18), ("U2", 27), ("U24", 5)],
+        "IO_RD_N": [("U5", 19), ("U30", 5)],
+        "IO_WR_N": [("U5", 20), ("U30", 36)],
+        "WAIT_N": [("U1", 24), ("U24", 18)],
+        "DECODE_WAIT_N": [("U5", 22), ("U24", 13)],
     }
     for net, nodes in expected.items():
         missing = [f"{ref}.{pin}" for ref, pin in nodes if not has_node(board, net, ref, pin)]
@@ -180,7 +189,7 @@ def validate_decode_contract(board, rows, failures):
 
 def validate_dram_contract(board, rows, failures):
     for net, pin in [("RAS_N", 4), ("CAS_N", 15), ("DRAM_WE_N", 3)]:
-        expected = [("U24", {"RAS_N": 13, "CAS_N": 14, "DRAM_WE_N": 15}[net])]
+        expected = [("U24", {"RAS_N": 14, "CAS_N": 15, "DRAM_WE_N": 16}[net])]
         expected.extend((f"U{index}", pin) for index in range(10, 18))
         missing = [f"{ref}.{node_pin}" for ref, node_pin in expected if not has_node(board, net, ref, node_pin)]
         add_check(rows, failures, "DRAM and arbitration", f"{net} to all DRAMs", not missing, "ok" if not missing else ", ".join(missing))
@@ -192,11 +201,11 @@ def validate_dram_contract(board, rows, failures):
         add_check(rows, failures, "DRAM and arbitration", f"{net} fanout", not missing, "ok" if not missing else ", ".join(missing))
 
     mux_expect = {
-        "ADDRMUX_SEL": [("U20", 1), ("U21", 1), ("U24", 16)],
+        "ADDRMUX_SEL": [("U20", 1), ("U21", 1), ("U24", 17)],
         "ADDRMUX_OE_N": [("U20", 15), ("U21", 15)],
         "VIDEO_REQ": [("U40", 7), ("U24", 7)],
-        "VIDEO_ACK": [("U40", 8), ("U24", 18)],
-        "REFRESH_TICK": [("U24", 19), ("J92", 5)],
+        "VIDEO_ACK": [("U40", 8), ("U24", 19)],
+        "REFRESH_TICK": [("U24", 20), ("J92", 5)],
     }
     for net, nodes in mux_expect.items():
         missing = [f"{ref}.{pin}" for ref, pin in nodes if not has_node(board, net, ref, pin)]
@@ -222,10 +231,10 @@ def validate_keyboard_contract(board, rows, failures):
         add_check(rows, failures, "Keyboard", f"row {index} pullup/header", not missing, "ok" if not missing else ", ".join(missing))
 
     expected = {
-        "KBD_ROW_A0_N": [("U31", 9), ("U30", 14)],
-        "KBD_ROW_A1_N": [("U31", 7), ("U30", 15)],
-        "KBD_ROW_A2_N": [("U31", 6), ("U30", 16)],
-        "KBD_GS_N": [("U31", 14), ("U30", 17)],
+        "KBD_ROW_A0_N": [("U31", 9), ("U30", 13)],
+        "KBD_ROW_A1_N": [("U31", 7), ("U30", 12)],
+        "KBD_ROW_A2_N": [("U31", 6), ("U30", 11)],
+        "KBD_GS_N": [("U31", 14), ("U30", 10)],
         "KBD_EN_N": [("U31", 5), ("R15", 1)],
     }
     for net, nodes in expected.items():
@@ -255,8 +264,8 @@ def validate_power_clock_reset(board, rows, failures):
         "VCC_RAW": [("J1", 1), ("J3", "A9"), ("J3", "B9"), ("F1", 1)],
         "VCC": [("F1", 2), ("U1", 11), ("U2", 28), ("U30", 26), ("U50", 14), ("U51", 3)],
         "GND": [("J1", 2), ("J3", "A12"), ("J3", "B12"), ("U1", 29), ("U2", 14), ("U30", 7), ("U50", 7), ("U51", 1)],
-        "CLK": [("U50", 8), ("U1", 6), ("U5", 1), ("U24", 1), ("R26", 1)],
-        "RESET_N": [("U51", 2), ("U1", 26), ("U5", 2), ("U24", 2), ("U30", 35), ("U40", 2), ("U41", 9)],
+        "CLK": [("U50", 8), ("U1", 6), ("U24", 1), ("R26", 1)],
+        "RESET_N": [("U51", 2), ("U1", 26), ("U24", 2), ("U30", 35), ("U40", 2), ("U41", 9)],
         "OSC_OE_N": [("U50", 1), ("R4", 2)],
         "PWR_OK": [("R6", 2), ("R25", 1), ("J93", 3)],
     }

@@ -439,29 +439,20 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
   `kicad/gen_rev_a_pcb.py`; `kicad/check_rev_a_placement.sh` (silk/overlap) and
   `kicad/check_rev_a_footprints.sh` (every modelled pin lands on a real pad)
   both pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
+- **Routing DONE and DRC-clean.** The current 119-ref/135-net board contains
+  2,394 tracks on F.Cu/B.Cu, with In1.Cu reserved/fill-checked as GND and In2.Cu
+  as VCC. KiCad reports zero violations and zero unconnected items; the Phase 3
+  sockets and all observability headers are in the routed artifact.
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
   (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
   single-step sketch + twin reference trace (`tools/vjuga_single_step/`).
 
-**Remaining before the first bare PCB — the Linux box picks this up** (the local
-Mac lacks the Java 25 + freerouting fork toolchain; routing/DRC is Linux-only):
+**Remaining before the first bare PCB:**
 
-1. **Route the board** (placement is done; only routing remains). Turn-key:
-   ```sh
-   KP="$(scripts/find-kicad-python.sh)"
-   "$KP" spinoffs/minimal-vga/kicad/gen_rev_a_pcb.py \
-       spinoffs/minimal-vga/kicad/rev-a-physical.board.json \
-       spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb   # regenerate placed board + planes
-   spinoffs/minimal-vga/kicad/route_rev_a_pcb.sh             # freerouting fork (Java 25)
-   spinoffs/minimal-vga/kicad/check_rev_a_pcb.sh             # zero DRC / zero unconnected
-   spinoffs/minimal-vga/kicad/check_rev_a_placement.sh
-   spinoffs/minimal-vga/kicad/check_rev_a_footprints.sh
-   # then commit the routed rev-a-physical.kicad_pcb
-   ```
-2. **Footprint review items** automation cannot close: physical pin-1 orientation
+1. **Footprint review items** automation cannot close: physical pin-1 orientation
    of the socketed parts, and confirming the real part variants (USB-C
    receptacle, PTC, TVS) against datasheets.
-3. **Freeze the fab package** (`kicad/export_fab.sh`), put the new Gerber ZIP
+2. **Freeze the fab package** (`kicad/export_fab.sh`), put the new Gerber ZIP
    SHA256 into `docs/rev-a-manufacturing-readiness.md`, and run vendor DFM.
 
 Not blocking the bare board, but settle before populating: U24's corrected

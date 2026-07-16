@@ -36,8 +36,9 @@ order the board.
 - T80 and tv80 VJUGA tops boot the patched real Juku firmware and match cosim's
   framebuffer at 6000 writes (`sim/boot_check.sh` and
   `sim/vjuga_boot_check.sh`); physical-board boot remains untested.
-- The routed copper does not yet include the Phase 3 decode sockets; the PCB
-  must be re-laid-out from the current schematic (Phase 3 step f) before fab.
+- The current routed copper includes every Phase 3 socket/header and passes
+  zero-violation/zero-unconnected KiCad DRC with filled GND/VCC inner planes.
+  The saved Gerber package still predates this route and is not orderable.
 - U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
   CPU/refresh collision handling, video arbitration, and vendored MK4564-12
   timing guards at 4 MHz. The tv80 real-ROM path uses those controls and remains
@@ -55,14 +56,12 @@ fab but their pinouts freeze in copper, so decide them first.
 
 **Copper-blocking**
 
-1. **Route the PCB (Phase 3 step f).** Placement is DONE: all 119 refs are
-   placed in `gen_rev_a_pcb.py`, the silk is collision-clean
-   (`check_rev_a_placement.sh` passes), and footprints are validated
-   (`check_rev_a_footprints.sh` passes). `rev-a-physical.kicad_pcb` still holds
-   the old routed 95-ref board. REMAINING: regenerate from the model
-   (`gen_rev_a_pcb.py`) → autoroute (`route_rev_a_pcb.sh`, needs the Java 25 +
-   freerouting fork toolchain on the Linux box) → `check_rev_a_pcb.sh` zero DRC /
-   zero unconnected → commit.
+1. **Route the PCB (Phase 3 step f) — DONE.** All 119 refs are placed and
+   collision-clean; every modeled pin lands on a real pad. The current board has
+   2,394 F.Cu/B.Cu tracks, filled In1.Cu GND and In2.Cu VCC planes, and zero
+   KiCad DRC violations/unconnected items. The deterministic route preserves
+   only six independently DRC-checked seed segments (USB-C grounds and one
+   keyboard-column escape).
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:
    `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
    and DIP pad counts match, across all 119 parts (it caught the USB-C shield
@@ -83,8 +82,8 @@ fab but their pinouts freeze in copper, so decide them first.
 
 **Human gate + paperwork**
 
-5. **Independent review (README gate 6):** schematic, copper, Gerber/drill,
-   power-return — after the re-layout.
+5. **Independent review (README gate 6):** current schematic/copper and the
+   regenerated Gerber/drill and power-return strategy.
 6. **Regenerate + freeze the fab package (README gate 7):** new Gerber ZIP + its
    SHA256 into this doc; recheck stock/vendor capability at order time.
 Optional-but-recommended before order: finish the staged full-board LVS

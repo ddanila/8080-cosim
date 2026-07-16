@@ -1,7 +1,9 @@
 Designator,Qty,Value,Candidate MPN,Package,Assembly,Sourcing,JLCPCB/LCSC CPN,Notes
 U1,1,Z80 CPU,DIP-40 socket,DIP-40,Socketed,JLCPCB/LCSC socket,C2332,Factory mounts DIP-40 W15.24mm socket only; owner inserts ordered 4 MHz DIP Z80 after assembly
 U2,1,32K EPROM,DIP-28 wide socket,DIP-28,Socketed,JLCPCB/LCSC socket,C72121,Factory mounts DIP-28 W15.24mm socket only; owner inserts 27C256/28C256-class ROM after assembly
+U3-U4,2,Original decode PROM,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; owner inserts the validated Juku RT4/RE3 PROMs for Mode B after assembly
 U5,1,Address/control decode,DIP-24 wide socket,DIP-24,Socketed,JLCPCB/LCSC socket,C72120,Factory mounts DIP-24 W15.24mm socket only; owner inserts GAL22V10-class decode part after assembly
+U6,1,Port C mode inverter,DIP-14 socket,DIP-14,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm socket only; owner inserts a reviewed 74HC04-compatible inverter after assembly
 U10-U17,8,64Kx1 DRAM,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; owner inserts ordered Samsung KM4164B-10 DRAM after assembly
 U20-U21,2,Quad 2:1 mux,DIP-16 socket,DIP-16,Socketed,JLCPCB/LCSC socket,C2326,Factory mounts DIP-16 W7.62mm sockets only; install 74HCT157/257-class parts after assembly
 U22-U23,2,Counter,DIP-14 socket,DIP,Socketed,JLCPCB/LCSC socket,C2325,Factory mounts DIP-14 W7.62mm sockets only; install refresh/video counters after assembly
@@ -19,6 +21,11 @@ J30,1,Keyboard connector,1x15 2.54mm pin header,TH,Manual,Owner-supplied/manual,
 J40,1,VGA bring-up output,PinHeader_1x07_P2.54mm_Vertical,TH,Factory preferred,JLCPCB Assembly,C9900031531,Rev A uses RGB/HSYNC/VSYNC/GND plus BLANK_N bring-up/debug header; JLCPCB assembly-library wave-solder header candidate; verify fixture handling at order time
 J90-J92,3,Logic analyzer header,PinHeader_2x05_P2.54mm_Vertical,TH,Factory preferred,JLCPCB Assembly,C9900010269,Address/data/DRAM/video/debug; JLCPCB assembly-library wave-solder header candidate; verify fixture handling at order time
 J93,1,Power debug header,HDR-1X4,TH,Factory preferred,JLCPCB Assembly,C9900257430,VCC/GND/PWR_OK/VCC_RAW bring-up pins; JLCPCB assembly-library wave-solder header candidate; verify 2.54mm footprint fit and fixture handling at order time
+J94,1,Decode-mode selector,PinHeader_1x03_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,Install a 1x3 header and shunt manually after confirming Mode A/B silk orientation
+J95,1,Decode observability header,PinHeader_1x14_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,Analyzer header for RT4/RE3 decode outputs; install manually after pin-1 review
+J96,1,Clock selector,PinHeader_1x02_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,Clock-control jumper; install manually after pin-1 and default-state review
+J97,1,Framebuffer address header,PinHeader_1x10_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,High-address and MEM_WR_N analyzer header; install manually after pin-1 review
+J98,1,Z80 control header,PinHeader_1x08_P2.54mm_Vertical,TH,Manual,Owner-supplied/manual,,Z80 control-bus analyzer header; install manually after pin-1 review
 F1,1,+5V resettable fuse,Bourns MF-RG300-0-14 radial PTC 3A hold,THT,Factory preferred,JLCPCB/LCSC,C3761779,J1/J3 feed VCC_RAW and then fused VCC through F1; footprint is Bourns MF-RG300 with 5.1mm lead spacing; verify final +5V load and order-time stock before order
 D1,1,+5V TVS clamp,5V TVS diode,DO-35/SOD-27 THT,Manual,Owner-supplied/manual,,Clamp fused VCC to GND near power entry; install manually or change footprint to DO-15/SMA before requiring factory TVS assembly
 R1-R3,3,VGA series resistor,CR1/4W-470R-5%-class,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C2896817,PIXEL to VGA RGB placeholder network; D2.7xL6.2mm candidate should be checked against DIN0207 footprint
@@ -29,6 +36,8 @@ R15,1,Keyboard encoder enable link,0 ohm axial jumper,DIN0207 axial,Manual,Owner
 R16-R23,8,Keyboard column series resistor,RN 1/4W 220R F T/B A1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410657,Between 8255 column outputs and keyboard connector
 R24-R29,6,Diagnostic LED resistor,MFR-25FBF52-2K2,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C3454390,Current limit for Rev A diagnostic LEDs; D2.4xL6.3mm candidate should be checked against DIN0207 footprint
 R30-R31,2,USB-C CC pulldown,RN 1/8W 5K1 F T/B A1,DIN0204 axial,Factory preferred,JLCPCB/LCSC,C433473,USB-C Rd pulldowns from CC1/CC2 to GND for 5V sink mode; PCB uses DIN0204 L3.6mm/D1.6mm footprint for the 1/8W D1.7xL3.5mm candidate
+R32-R43,12,Decode PROM pullup,4.7k 1/4W axial,DIN0207 axial,Manual,Owner-supplied/manual,,Open-collector RT4/RE3 output pullups; exact factory CPN remains unselected
+R44,1,Mode default pulldown,RN1/4W10KFT/BA1,DIN0207 axial,Factory preferred,JLCPCB/LCSC,C410695,Holds MODE_B low for safe Mode A default when J94 has no shunt
 D2-D7,6,Diagnostic LED,204-10SURD/S530-A3,THT LED,Factory preferred,JLCPCB/LCSC,C99772,+5V PWR_OK CLK RESET_N M1_N and RFSH_N indicators; red 3mm LED baseline; colors can be varied later if desired
-C1-C25,25,Decoupling capacitor,DCS104Z26Y5VF6BL5A0,THT disc,Factory preferred,JLCPCB/LCSC,C2896070,100nF 50V Y5V P=5mm ceramic decoupler; one per socketed active IC/module plus spare local bypass pads after optional glue deferral
+C1-C28,28,Decoupling capacitor,DCS104Z26Y5VF6BL5A0,THT disc,Factory preferred,JLCPCB/LCSC,C2896070,100nF 50V Y5V P=5mm ceramic decoupler; one per socketed active IC/module plus spare local bypass pads after optional glue deferral
 C50,1,Bulk capacitor,AISHI ERG1EM470D11OT,THT radial D5 P2mm,Factory preferred,JLCPCB/LCSC,C724688,+5V local bulk reservoir; 47uF 25V radial electrolytic D5xL11mm P2mm candidate matches CP_Radial_D5.0mm_P2.00mm footprint; verify polarity/orientation at order time

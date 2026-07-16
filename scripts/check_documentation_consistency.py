@@ -497,6 +497,20 @@ def main() -> int:
                     f"{path} does not expose current VJUGA scope "
                     f"{vjuga_refs} refs/{vjuga_nets} nets"
                 )
+    vjuga_pcb_path = ROOT / "spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb"
+    if vjuga_pcb_path.exists():
+        vjuga_pcb = vjuga_pcb_path.read_text(encoding="utf-8", errors="replace")
+        vjuga_tracks = len(re.findall(r"(?m)^\s*\((?:segment|arc|via)\b", vjuga_pcb))
+        vjuga_zones = len(re.findall(r"(?m)^\s*\(zone\b", vjuga_pcb))
+        if f"{vjuga_tracks:,} tracks" not in read("PLAN.md"):
+            failures.append(f"PLAN does not expose current VJUGA track total {vjuga_tracks:,}")
+        readiness = read("spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md")
+        if f"{vjuga_tracks:,} F.Cu/B.Cu tracks" not in readiness:
+            failures.append(
+                f"VJUGA readiness does not expose current track total {vjuga_tracks:,}"
+            )
+        if vjuga_zones != 2 or "filled In1.Cu GND and In2.Cu VCC planes" not in readiness:
+            failures.append("VJUGA readiness does not expose the two filled power planes")
     vjuga_zip = ROOT / "fab" / "minimal-vga" / "upload" / "vjuga-rev-a-gerbers-drill.zip"
     if vjuga_zip.exists():
         vjuga_digest = sha256(vjuga_zip)

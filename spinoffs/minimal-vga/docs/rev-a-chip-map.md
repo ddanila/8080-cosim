@@ -106,11 +106,10 @@ upper nibble input). PC2/PC3 are freed.
   the scarce original Juku bipolar PROMs (U3 РТ4, U4 РЕ3) that Mode B exercises;
   the DRAM sockets (U10-U17) take either KM4164B or К565РУ5. Soviet-part
   footprints are otherwise not preserved as a constraint for this spin-off.
-- **The routed PCB (`rev-a-physical.kicad_pcb`) is STALE vs the schematic** after
-  the Phase 3 decode-socket addition: the schematic/connectivity (source of truth,
-  `check_rev_a_physical`) includes U3/U4/U6/J94/J95 and their passives, but the
-  copper does not yet place or route them. Re-layout + DRC + fab regen is Phase 3
-  step (f), performed with the independent review gate before any order.
+- **The routed PCB (`rev-a-physical.kicad_pcb`) now matches the Phase 3 source.**
+  It places/routes U3/U4/U6/J94-J98 and their passives and passes zero-violation,
+  zero-unconnected KiCad DRC. The generated fab package still must be refreshed
+  and independently reviewed before any order.
 - A future assembly path may mount sockets/passives at the factory and insert
   vintage or programmed ICs later, but that path is blocked on functional
   proof and design review.

@@ -75,8 +75,9 @@ cross-check, but not the board's configuration.)
 
 ## What does not work yet
 
-- The Rev A copper (`rev-a-physical.kicad_pcb`) does not yet place or route the
-  Phase 3 decode sockets; the schematic leads the PCB until step (f) re-layout.
+- The current Rev A copper includes the Phase 3 decode sockets and observability
+  headers and passes zero-violation/zero-unconnected KiCad DRC. Its two inner
+  layers are reserved for filled GND/VCC planes; independent review remains.
 - The U5 decode is simulated in both jumper modes, and U24's Gray-coded DRAM
   timing/wait-state reference passes the slower vendored MK4564-12 limits at
   4 MHz. Neither GAL has been compiled/programmed or validated in hardware.
