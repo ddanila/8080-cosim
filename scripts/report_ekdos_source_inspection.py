@@ -259,6 +259,7 @@ def main() -> int:
             f"MDISKPAR expected {expected_mdiskpar}, got {mdiskpar}"
         )
     bios_vectors = [
+        ("CONST / CONSTAT", 2, "JMP CONSTAT"),
         ("PUNCH", 6, "DP RTNEMPTY"),
         ("READER", 7, "JMP RTNEMPTY"),
         ("HOME", 8, "JMP HOME"),

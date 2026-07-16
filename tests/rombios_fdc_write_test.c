@@ -26,6 +26,7 @@ enum {
   RAM_DISK_WINDOW = 0x8000,
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
+  BIOS_CONST = 0xCA06,
   BIOS_PUNCH = 0xCA12,
   BIOS_READER = 0xCA15,
   BIOS_HOME = 0xCA18,
@@ -182,11 +183,13 @@ static int write_image(const char* path) {
 
 static int load_rom(uint8_t rom[ROM_SIZE]) {
   static const uint8_t ramdisk_vector[] = {0xC3, 0xB3, 0xE9};
+  static const uint8_t consta_entry[] = {0xCD, 0x5B, 0xD8};
   FILE* fp = fopen("roms/ekta37.bin", "rb");
   if (!fp) return 1;
   size_t got = fread(rom, 1, ROM_SIZE, fp);
   int failed = got != ROM_SIZE || fclose(fp) != 0 ||
                memcmp(&rom[0x3F5C], ramdisk_vector, sizeof(ramdisk_vector)) != 0 ||
+               memcmp(&rom[0x3F98], consta_entry, sizeof(consta_entry)) != 0 ||
                memcmp(&rom[0x29A7], RAMDISK_SIGNATURE,
                       sizeof(RAMDISK_SIGNATURE)) != 0;
   return failed;
@@ -198,7 +201,7 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t exercised_vectors[] = {
-    BIOS_PUNCH, BIOS_READER, BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK,
+    BIOS_CONST, BIOS_PUNCH, BIOS_READER, BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK,
     BIOS_SETSEC, BIOS_SETDMA,
     BIOS_READ, BIOS_WRITE, BIOS_LISTST, BIOS_SECTRAN,
   };
@@ -539,6 +542,7 @@ int main(int argc, char** argv) {
   unsigned successful_trampolines = f.monitor_trampoline_entries;
   unsigned long successful_cycles = total_cycles;
   unsigned long auxiliary_cycles = 0;
+  unsigned long console_status_cycles = 0;
   unsigned long unallocated_cycles = 0;
   unsigned long home_cycles = 0;
   unsigned long list_status_cycles = 0;
@@ -720,6 +724,24 @@ int main(int argc, char** argv) {
     }
   }
 
+  uint8_t saved_keyboard_column = f.out[0x04];
+  uint8_t saved_keyboard_input = f.out[0x05];
+  f.out[0x05] = 0xCF;                 // no key: released 74148/shift inputs
+  uint8_t console_status = 0xFF;
+  unsigned console_trampolines_before = f.monitor_trampoline_entries;
+  fail |= run_bios_entry(&f, BIOS_CONST, 0, 0, 0, &console_status, NULL,
+                         &console_status_cycles, "CONST");
+  f.out[0x04] = saved_keyboard_column;
+  f.out[0x05] = saved_keyboard_input;
+  if (console_status != 0 ||
+      f.monitor_trampoline_entries <= console_trampolines_before) {
+    fprintf(stderr,
+            "EKDOS CONST: result=%02X expected=00 trampolines=%u/%u\n",
+            console_status, f.monitor_trampoline_entries,
+            console_trampolines_before);
+    fail = 1;
+  }
+
   static const uint8_t expected_translation[40] = {
     1, 2, 3, 4, 9, 10, 11, 12,
     17, 18, 19, 20, 25, 26, 27, 28,
@@ -867,7 +889,8 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "aux=punch+reader-unimplemented home=clean+dirty listst=not-ready "
+         "const=no-key aux=punch+reader-unimplemented home=clean+dirty "
+         "listst=not-ready "
          "seldsk=0/1/2/invalid "
          "bios-rw=public/types0+2 "
          "sectran=40+2 ramdisk-tracks=12 endpoints=24 no-fdc=1 "
@@ -875,7 +898,8 @@ int main(int argc, char** argv) {
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + auxiliary_cycles + unallocated_cycles +
+         successful_cycles + auxiliary_cycles + console_status_cycles +
+         unallocated_cycles +
          home_cycles + list_status_cycles +
          seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);
