@@ -32,6 +32,11 @@ physical D93/D94 wiring.
   `UNACNT=32`, advances it to 28, and builds the complete 512-byte cache without
   any FDC preread. Crossing to record 21 produces only `0xA2,0x80`; physical
   sector 5 matches all four independent DMA patterns byte-for-byte.
+- The RAM-drive phase selects EKDOS drive 2 and uses the source-defined stack
+  at `0xD2FC`, outside the banked `0x4000..0xBFFF` aperture. Exact ROM code
+  writes and reads logical record 37 on tracks 2 and 3 through distinct lower
+  and upper 16 KiB halves of port-`0x04` bank 1, restores normal bank 6 after
+  every 32-byte slice, and issues zero FDC commands.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
@@ -87,6 +92,13 @@ physical D93/D94 wiring.
   progression clears the preread flag at `0xE89E`; after four writes the guard
   requires `UNACNT=28`, `HSTWRT=1`, and zero FDC commands. The host-sector
   transition then flushes once and reads the next sector, giving `0xA2,0x80`.
+- When `SEKDSK` equals the RAM-drive number at `0xCA36`, `RWFLOPPY` branches to
+  `0xEA3B`. Track bit 0 selects the lower (`0x4000`) or upper (`0x8000`) 16 KiB
+  half, track bits above it choose one of six 32 KiB banks, and the 128-sector
+  track maps sector bit 0 to the 128-byte half of a 256-byte page. The ROM moves
+  each record as four 32-byte slices, selects/restores banks through port `0x04`,
+  and stages data at `0xD200`; direct backing-store checks guard both track
+  halves as well as public readback.
 - In the read-only phase, the exact command sequence is initial preread `0x80`,
   ten rejected `0xA2` retries from EKDOS `VIARV=10`, then the requested next-
   sector read `0x80`. The controller returns WRITE PROTECT throughout the retry

@@ -25,6 +25,7 @@ labels and `TRANS` tables.
 | `START` | `0xFF56` | loader for `<A>` sectors to CCP |
 | `RWFLOPPY` | `0xFF59` | ROMBIOS read/write floppy entry |
 | `RAMDISKSEL` | `0xFF5C` | RAM-drive select entry |
+| `RDNO` | `2` | EKDOS RAM-drive number |
 | `DKRD` | `0x11` | EKDOS read-sector request code |
 | `DKWR` | `0x12` | EKDOS write-sector request code |
 | `VIARV` | `10` | retries loaded into `RCOUNT` for disk I/O |
@@ -52,6 +53,7 @@ labels and `TRANS` tables.
 | `UNACNT` | `0xD625` | unallocated-write counter |
 | `RCOUNT` | `0xD62A` | retry counter |
 | `MEMADR` | `0xD62E` | DMA address field |
+| `STAK` | `0xD2FC` | EKDOS temporary stack outside RAM-drive aperture |
 
 ## Sector Translation
 

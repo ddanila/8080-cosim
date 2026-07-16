@@ -22,11 +22,14 @@ enum {
   SECOND_CACHE_READ_ADDR = 0x5200,
   UNTOUCHED_CACHE_READ_ADDR = 0x5300,
   FOURTH_CACHE_READ_ADDR = 0x5400,
+  RAM_DISK_BANKS = 6,
+  RAM_DISK_WINDOW = 0x8000,
 };
 
 
 typedef struct {
   uint8_t ram[65536];
+  uint8_t ramdisk[RAM_DISK_BANKS][RAM_DISK_WINDOW];
   uint8_t rom[ROM_SIZE];
   uint8_t out[256];
   uint8_t portc;
@@ -37,6 +40,7 @@ typedef struct {
   unsigned data_writes;
   unsigned write_protect_status_reads;
   uint8_t write_command;
+  unsigned ram_bank;
   juku_fdc fdc;
 } fixture;
 
@@ -74,6 +78,9 @@ static uint8_t read_byte(void* opaque, uint16_t address) {
   int source = overlay(f, address, &index);
   if (source == 1) return f->rom[index];
   if (source == 2) return 0xFF;  // no expansion cartridge installed
+  if (address >= 0x4000 && address <= 0xBFFF && f->ram_bank < RAM_DISK_BANKS) {
+    return f->ramdisk[f->ram_bank][address - 0x4000];
+  }
   return f->ram[address];
 }
 
@@ -81,7 +88,12 @@ static uint8_t read_byte(void* opaque, uint16_t address) {
 static void write_byte(void* opaque, uint16_t address, uint8_t value) {
   fixture* f = opaque;
   unsigned index = 0;
-  if (!overlay(f, address, &index)) f->ram[address] = value;
+  if (overlay(f, address, &index)) return;
+  if (address >= 0x4000 && address <= 0xBFFF && f->ram_bank < RAM_DISK_BANKS) {
+    f->ramdisk[f->ram_bank][address - 0x4000] = value;
+  } else {
+    f->ram[address] = value;
+  }
 }
 
 
@@ -116,6 +128,8 @@ static void port_out(void* opaque, uint8_t port, uint8_t value) {
     }
     if (port == 0x1F && f->fdc.write_transfer) f->data_writes++;
     juku_fdc_write(&f->fdc, port & 3, value);
+  } else if (port == 0x04 && (value & 0x20)) {
+    f->ram_bank = ((value & 7) - 1u) & 7u;
   } else if (port == 0x06) {
     update_portc(f, value);
   } else if (port == 0x07) {
@@ -181,7 +195,7 @@ static int run_rwfloppy_type(
   cpu.port_in = port_in;
   cpu.port_out = port_out;
   cpu.pc = 0xFF59;                    // public ROMBIOS RWFLOPPY entry -> E80B
-  cpu.sp = 0xBFFE;
+  cpu.sp = 0xD2FC;                    // EKDOS STAK, outside RAM-disk window
   cpu.a = request;
   cpu.c = write_type;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
@@ -219,6 +233,7 @@ int main(int argc, char** argv) {
 
   fixture f;
   memset(&f, 0, sizeof(f));
+  f.ram_bank = 6;                    // monitor normal-RAM bank
   int fail = write_image(path) || load_rom(f.rom) || load_boot_ram(f.ram, argv[1]);
   juk_disk disk;
   if (!fail && juk_disk_open_writable(&disk, path) != 0) fail = 1;
@@ -360,6 +375,7 @@ int main(int argc, char** argv) {
   unsigned successful_trampolines = f.monitor_trampoline_entries;
   unsigned long successful_cycles = total_cycles;
   unsigned long unallocated_cycles = 0;
+  unsigned long ramdisk_cycles = 0;
   unsigned long protect_cycles = 0;
 
   f.fdc_commands = 0;
@@ -405,6 +421,45 @@ int main(int argc, char** argv) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: unallocated sector mismatch\n");
     fail = 1;
   }
+
+  f.fdc_commands = 0;
+  memset(f.command_log, 0, sizeof(f.command_log));
+  f.command_writes = 0;
+  f.data_writes = 0;
+  f.write_command = 0;
+  f.ram[0xCA36] = 2;
+  f.ram[0xD61A] = 2;
+  f.ram[0xD61C] = 0;
+  for (int i = 0; i < 128; i++) {
+    f.ram[DMA_ADDR + i] = (uint8_t)(0x31 ^ (i * 3));
+    f.ram[SECOND_DMA_ADDR + i] = (uint8_t)(0xB4 + i * 5);
+  }
+  f.ram[0xD61B] = 2;
+  fail |= run_rwfloppy(&f, 0x12, 37, DMA_ADDR, &ramdisk_cycles);
+  f.ram[0xD61B] = 3;
+  fail |= run_rwfloppy(&f, 0x12, 37, SECOND_DMA_ADDR, &ramdisk_cycles);
+  memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
+  memset(&f.ram[SECOND_CACHE_READ_ADDR], 0x5A, 128);
+  f.ram[0xD61B] = 2;
+  fail |= run_rwfloppy(&f, 0x11, 37, CACHE_READ_ADDR, &ramdisk_cycles);
+  f.ram[0xD61B] = 3;
+  fail |= run_rwfloppy(&f, 0x11, 37, SECOND_CACHE_READ_ADDR, &ramdisk_cycles);
+  const unsigned ramdisk_record_offset = (37u >> 1) * 256u + 128u;
+  if (memcmp(&f.ram[CACHE_READ_ADDR], &f.ram[DMA_ADDR], 128) != 0 ||
+      memcmp(&f.ram[SECOND_CACHE_READ_ADDR], &f.ram[SECOND_DMA_ADDR], 128) != 0 ||
+      memcmp(&f.ramdisk[1][ramdisk_record_offset], &f.ram[DMA_ADDR], 128) != 0 ||
+      memcmp(&f.ramdisk[1][0x4000 + ramdisk_record_offset],
+             &f.ram[SECOND_DMA_ADDR], 128) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: RAM-disk mapping mismatch\n");
+    fail = 1;
+  }
+  if (f.fdc_commands != 0 || f.ram_bank != 6) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: RAM-disk FDC commands=%u final-bank=%u\n",
+            f.fdc_commands, f.ram_bank);
+    fail = 1;
+  }
+  f.ram[0xD61A] = 0;
+  f.ram[0xD61B] = 8;
 
   juk_disk_close(&disk);
   if (juk_disk_open(&disk, path) != 0) {
@@ -475,10 +530,11 @@ int main(int argc, char** argv) {
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
+         "ramdisk-tracks=2 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + unallocated_cycles + protect_cycles);
+         successful_cycles + unallocated_cycles + ramdisk_cycles + protect_cycles);
   return 0;
 }
