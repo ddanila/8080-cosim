@@ -219,6 +219,11 @@ Every ask below is queued with exact deliverables in
    a unit/decimal letter for a complete coded capacitance; both capacitors'
    values/units and C19's joined-net remote destinations remain explicit
    measurement boundaries rather than guesses.
+   Two overlapping July component views plus an independent May angle now close
+   C94's upper physical lead, pad 2, directly to R65.1/`VIDEO_OUT`. The separate
+   C94.1 lap joint is registered in each view, but none exposes a complete onward route and the
+   solder-side region is non-unique, so only C94.1 remains a photo-exhausted
+   continuity ask.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against
@@ -323,7 +328,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   205 source-risk nets and 9 official FDC devices with untraced functional
+   202 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
@@ -340,8 +345,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-624 observations have dispositions, 37 rows are accepted evidence, and the
-other 587 remain measurement requests (`docs/photo-registration.md`).
+629 observations have dispositions, 39 rows are accepted evidence, and the
+other 590 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated

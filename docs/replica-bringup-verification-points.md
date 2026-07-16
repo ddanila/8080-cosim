@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `205`
-- Verification-point endpoints checked in PCB: `232`
+- Verification-point nets: `202`
+- Verification-point endpoints checked in PCB: `227`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2272`
 - All board endpoints checked in routed PCB: `2272`
@@ -28,7 +28,7 @@ visible and actionable before manufacturing and first power-on.
 | memory/decode | 3 |
 | sound/analog | 1 |
 | timing/I/O | 2 |
-| video/analog | 21 |
+| video/analog | 18 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 232/232 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 232/232 net names matched |
+| Risk endpoints present on PCB pads | PASS | 227/227 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 227/227 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -75,7 +75,6 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `C22_1_BOUNDARY: C22.1`
 - `C22_2_BOUNDARY: C22.2`
 - `C94_1_BOUNDARY: C94.1`
-- `C94_2_BOUNDARY: C94.2`
 - `CAS: D38.1`
 - `CLK_123M: D57.9`
 - `CLK_123M: D34.12`
@@ -404,6 +403,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `USART_TXRDY_IRQ: D11.15`
 - `VERT_RTR: D35.9`
 - `VERT_SYNC: D55.17`
+- `VIDEO_OUT: C94.2`
 - `VID_MUX_G: E14.1`
 - `W10_QA_SEL: W10.1`
 - `W10_QA_SEL_D50: D51.1`
@@ -551,8 +551,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `C20_2_BOUNDARY` | logic | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C22_1_BOUNDARY` | logic | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C22_2_BOUNDARY` | logic | `C22.2` | .009 factory identity plus registered owner component/solder views prove C22 pad 2 on the second 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary... | Scope/capture video or timing node during video bring-up. |
-| `C94_2_BOUNDARY` | video/analog | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary... | Scope/capture video or timing node during video bring-up. |
 | `C99_FAR` | logic | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C9_1_BOUNDARY` | video/analog | `C9.1` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF ground assignment is revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C9_2_BOUNDARY` | video/analog | `C9.2` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded | Scope/capture video or timing node during video bring-up. |
@@ -714,7 +712,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TAPE_RUN_INT` | logic | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TIMING_TAG2` | logic | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `VIDEO_OUT` | video/analog | `VT2.1, R65.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board... | Scope/capture video or timing node during video bring-up. |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |
 | `X4_06_BOUNDARY` | logic | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `X4_07_BOUNDARY` | logic | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

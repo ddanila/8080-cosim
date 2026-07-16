@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "refdes": "C94",
+  "factory_identity": {
+    "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+    "sha256": "43343d7de0fe671fbe73db933755de1acf6c23c297a741085e05cf94b9c8a53d",
+    "dimensions_px": [4080, 3072],
+    "observation": "the .009 assembly drawing labels C94 below X7 and depicts a two-terminal rectangular capacitor"
+  },
+  "joined_endpoints": ["C94.2", "R65.1"],
+  "net": "VIDEO_OUT",
+  "component_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "common_joint_px": [3035, 1964],
+      "lower_joint_px": [3029, 2083],
+      "bbox_px": [2920, 1840, 3160, 2180],
+      "observation": "the upper physical C94 lead and lower R65 lead terminate in one common component-side solder pool; the separate lower C94 lead reaches its own lap-soldered joint"
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
+      "dimensions_px": [4080, 3072],
+      "common_joint_px": [3091, 91],
+      "lower_joint_px": [3091, 206],
+      "bbox_px": [2980, 0, 3220, 330],
+      "observation": "the overlapping July tile independently separates the two C94 leads and confirms the upper C94/R65 common landing"
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+      "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+      "dimensions_px": [4080, 3072],
+      "common_joint_px": [3042, 1004],
+      "lower_joint_px": [3039, 1131],
+      "bbox_px": [2920, 880, 3180, 1240],
+      "observation": "an independent oblique May view corroborates the same two separate C94 lead joints and the upper join to R65"
+    }
+  ],
+  "solder_observation": {
+    "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+    "dimensions_px": [4080, 3072],
+    "review_point_px": [954, 1764],
+    "bbox_px": [700, 1450, 1250, 2050],
+    "observation": "the globally registered C94.1 region contains several unrelated joints and rails but no uniquely matching through-hole landing; the component is lap-soldered on the component side"
+  },
+  "promotion_basis": "two overlapping July target-board component views plus an independent May angle directly show C94.2 and R65.1 entering one physical landing; R65 pad orientation fixes that landing as VIDEO_OUT",
+  "unresolved": ["C94.1 remote destination"],
+  "non_promotion_basis": "all three component views stop at the isolated lower lap joint and the registered solder region is non-unique; direct continuity is required"
+}

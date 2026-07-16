@@ -15,11 +15,10 @@ RETAINED_NETS = {
     "D34_SYNC": {("D34", "8"), ("R62", "1")},
     "D34_SIG": {("D34", "11"), ("R63", "1")},
     "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "2")},
-    "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1")},
+    "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1"), ("C94", "2")},
     "SOUND_CLAMP": {("R66", "2"), ("VD3", "2"), ("R67", "1")},
     "R67_2_BOUNDARY": {("R67", "2")},
     "C94_1_BOUNDARY": {("C94", "1")},
-    "C94_2_BOUNDARY": {("C94", "2")},
 }
 
 REUSED_BOUNDARY_NETS = {
@@ -189,8 +188,10 @@ def main() -> int:
         "",
         "- The `.009` PCB no longer carries fifteen physically contradicted `.006` RF-only parts",
         "  or the ten false pad-collision pairs they caused.",
-        "- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Their precise",
-        "  amplitudes, values, and unresolved endpoints still require continuity or bench capture.",
+        "- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Two overlapping",
+        "  July views plus an independent May angle close C94.2 to R65.1/VIDEO_OUT; C94.1",
+        "  and the other unresolved",
+        "  endpoints still require continuity or bench capture.",
         "- No RF behavior is claimed for X6 until target-revision circuitry is proved; preserving",
         "  a physical connector is not evidence for the removed VT3/VT4 network.",
         "- Machine-readable source and population evidence is in",

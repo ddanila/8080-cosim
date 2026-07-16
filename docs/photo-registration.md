@@ -20,20 +20,20 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 624 reviewed rows:
+endpoint table contains 629 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 37 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 587 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 39 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 373 `local-package-fit`, 217
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Two use
-`local-package-fit+continuous-copper`, two use
-`registration+visible-common-landing`, two use `registration+unique-joint`,
+`local-package-fit+continuous-copper`, four use
+`registration+visible-common-landing`, four use `registration+unique-joint`,
 and two use `cross-side-registration`.
-Four `panorama-projected-region` observations record the photo-exhausted R94.2
-component/solder review without pretending that a projection is pad identity.
+Five `panorama-projected-region` observations record the photo-exhausted R94.2
+and C94.1 solder reviews without pretending that a projection is pad identity.
 A hole snap or accurate pad projection is not electrical evidence by itself.
 
 Accepted paths:
@@ -54,6 +54,9 @@ Accepted paths:
 - D95.14 -> R92.2 / `D95_A0_R92`.
 - D101.4 -> R92.1 + R99.2 / `D101_D02_R92_R99`.
 - R99.1 -> D101.8 / `GND`.
+- C94.2 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
+  the shared landing, while an independent May angle is retained in the
+  dedicated evidence record. C94.1 remains photo-exhausted.
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint

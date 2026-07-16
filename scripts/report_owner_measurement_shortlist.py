@@ -255,8 +255,8 @@ def main() -> int:
         (
             "P1",
             "C94 endpoint continuity",
-            "identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved",
-            "`docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94 boundary nets",
+            "identify the remote destination of C94.1 below D102; two overlapping July component views plus an independent May angle already close the upper physical lead C94.2 directly to R65.1/VIDEO_OUT, while the lower lap-soldered joint and registered solder region are photo-exhausted",
+            "`ref/photos/juku-pcb-2/c94-endpoint-registration.json`; `docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94.1 boundary net",
             "completes the electrical disposition of a target-revision component that was previously absent from the physical model",
         ),
         (

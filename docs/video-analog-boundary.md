@@ -32,11 +32,10 @@ python3 scripts/report_video_analog_boundary.py
 | `D34_SYNC` has exactly the target endpoints | PASS | D34.8, R62.1 |
 | `D34_SIG` has exactly the target endpoints | PASS | D34.11, R63.1 |
 | `VT2_BASE` has exactly the target endpoints | PASS | R62.2, R63.2, R64.1, VT2.2 |
-| `VIDEO_OUT` has exactly the target endpoints | PASS | R65.1, VT2.1, X7.1 |
+| `VIDEO_OUT` has exactly the target endpoints | PASS | C94.2, R65.1, VT2.1, X7.1 |
 | `SOUND_CLAMP` has exactly the target endpoints | PASS | R66.2, R67.1, VD3.2 |
 | `R67_2_BOUNDARY` has exactly the target endpoints | PASS | R67.2 |
 | `C94_1_BOUNDARY` has exactly the target endpoints | PASS | C94.1 |
-| `C94_2_BOUNDARY` has exactly the target endpoints | PASS | C94.2 |
 | `C9_1_BOUNDARY` has exactly the target endpoints | PASS | C9.1 |
 | `C9_2_BOUNDARY` has exactly the target endpoints | PASS | C9.2 |
 | `C10_1_BOUNDARY` has exactly the target endpoints | PASS | C10.1 |
@@ -61,11 +60,10 @@ python3 scripts/report_video_analog_boundary.py
 | `D34_SYNC` | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D34_SIG` | `D34.11, R63.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
-| `VIDEO_OUT` | `R65.1, VT2.1, X7.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible) |
+| `VIDEO_OUT` | `C94.2, R65.1, VT2.1, X7.1` | scan sheet-2 analog corner (crops an_*) plus two overlapping July target-board component views and an independent May angle: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible). The registered C94 upper physical lead/pad2 and R65.1 terminate on one directly visible common landing |
 | `SOUND_CLAMP` | `R66.2, R67.1, VD3.2` | scan sheet-2 analog corner: R66.2 joins VD3.2/R67.1; R66.1 is separately source-proved on power rail B(+12); VD3 is КС147Г clamp |
 | `R67_2_BOUNDARY` | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity |
-| `C94_1_BOUNDARY` | `C94.1` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster |
-| `C94_2_BOUNDARY` | `C94.2` | .009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster |
+| `C94_1_BOUNDARY` | `C94.1` | .009 factory assembly drawing plus two overlapping July target-board component views and an independent May angle prove populated two-terminal C94 (680п) below D102 and expose its lower physical lead/pad1 landing; no view or registered solder region yields a continuous uniquely attributable remote path, so direct continuity is required |
 | `C9_1_BOUNDARY` | `C9.1` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF ground assignment is revision-superseded |
 | `C9_2_BOUNDARY` | `C9.2` | .009 factory placement between D100 and D98; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
 | `C10_1_BOUNDARY` | `C10.1` | .009 factory placement immediately right of D93; target electrical destination unread and the .006 RF_RAIL assignment is revision-superseded |
@@ -82,8 +80,10 @@ python3 scripts/report_video_analog_boundary.py
 
 - The `.009` PCB no longer carries fifteen physically contradicted `.006` RF-only parts
   or the ten false pad-collision pairs they caused.
-- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Their precise
-  amplitudes, values, and unresolved endpoints still require continuity or bench capture.
+- VT2/R62-R67/VD3/C94/X7 remain the populated target analog handoff. Two overlapping
+  July views plus an independent May angle close C94.2 to R65.1/VIDEO_OUT; C94.1
+  and the other unresolved
+  endpoints still require continuity or bench capture.
 - No RF behavior is claimed for X6 until target-revision circuitry is proved; preserving
   a physical connector is not evidence for the removed VT3/VT4 network.
 - Machine-readable source and population evidence is in

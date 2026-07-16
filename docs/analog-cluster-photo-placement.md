@@ -30,8 +30,15 @@ does not yield the three coherent coil terminals required by the schematic.
 The previously recorded `(287.07,132.26)` centre therefore belongs to a
 capacitive part, not L1. The `.009` factory drawing identifies that populated
 part as C94, and its visible marking reads `680п`; C94 is now restored to the
-physical board model with two explicit continuity-boundary leads rather than
-being silently omitted or misidentified as the tapped coil. The remaining
+physical board model rather than being silently omitted or misidentified as the
+tapped coil. A later endpoint review of the raw July tile, its overlapping lower
+tile, and an independent May angle separates the two physical leads. In all
+three views the upper C94 lead and lower R65 lead enter one common component-side
+solder pool. The modeled physical orientation maps those leads to C94.2 and
+R65.1, so C94.2 is now closed to `VIDEO_OUT`. The separate lower C94.1 lap joint
+is visible but none of the three angles exposes a continuous remote route; its
+registered solder-side region is likewise non-unique. C94.1 therefore remains a
+photo-exhausted continuity boundary. The remaining
 parts stay unchanged until their bodies can be paired unambiguously. The
 generated vertical axial/diode coordinates
 compensate for the KiCad footprint-anchor offset; the guarded body centres are
@@ -56,7 +63,9 @@ yellow `680п` part remains the separately proved C94.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
-guards C16/C19, R92/R99, plus the two registered capacitor drill spans beside D102.
+guards C94's pad orientation/net assignment, C16/C19, R92/R99, plus the two
+registered capacitor drill spans beside D102. Machine-readable C94 endpoint
+evidence is in `ref/photos/juku-pcb-2/c94-endpoint-registration.json`.
 
 ## C16/R92/R99 drill registration
 

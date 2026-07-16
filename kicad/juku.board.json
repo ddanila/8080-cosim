@@ -4780,8 +4780,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus owner component photo",
-    "pins": "factory drawing identifies C94 in the analog/FDC area below D102; owner photo shows the populated yellow 680п body at the registered centre. Both electrical endpoints remain explicit continuity boundaries"
+    "refdes": "ДГШ5.109.009 СБ plus three owner component-photo views",
+    "pins": "factory drawing identifies the two-terminal C94 in the analog/FDC area below D102; two overlapping July component views plus an independent May angle show the populated yellow 680п body and expose its upper physical lead/pad2 sharing R65.1's VIDEO_OUT landing. The lower physical lead/pad1 is registered but its remote continuation remains photo-exhausted"
    }
   },
   {
@@ -15234,7 +15234,7 @@
    ]
   },
   "VIDEO_OUT": {
-   "src": "scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible)",
+   "src": "scan sheet-2 analog corner (crops an_*) plus two overlapping July target-board component views and an independent May angle: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible). The registered C94 upper physical lead/pad2 and R65.1 terminate on one directly visible common landing",
    "nodes": [
     [
      "VT2",
@@ -15247,6 +15247,10 @@
     [
      "X7",
      "1"
+    ],
+    [
+     "C94",
+     "2"
     ]
    ]
   },
@@ -15812,12 +15816,8 @@
    "risk_disposition": "the native sheet closes the D7.6-to-D25.11 turnaround conductor; unread upstream inputs belong to MEMW and INHIB_STATUS_BOUNDARY, not this output net"
   },
   "C94_1_BOUNDARY": {
-   "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 1 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
+   "src": ".009 factory assembly drawing plus two overlapping July target-board component views and an independent May angle prove populated two-terminal C94 (680п) below D102 and expose its lower physical lead/pad1 landing; no view or registered solder region yields a continuous uniquely attributable remote path, so direct continuity is required",
    "nodes": [["C94", "1"]]
-  },
-  "C94_2_BOUNDARY": {
-   "src": ".009 factory assembly drawing plus registered owner component photo prove populated C94 (680п) in the analog/FDC area below D102; lead 2 remains an explicit continuity boundary because its destination is not readable through the component/fanout cluster",
-   "nodes": [["C94", "2"]]
   },
   "C19_1_R100_1_BOUNDARY": {
    "src": ".009 factory identity plus registered July and oblique May target-board component views; C19 upper lead/pad1 and R100 left lead/pad1 terminate on the same visible landing, while the remote destination remains unread",

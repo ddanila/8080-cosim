@@ -70,7 +70,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 205 modeled nets retain source-risk annotations requiring
+  In total, 202 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
