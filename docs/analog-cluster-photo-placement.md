@@ -92,19 +92,22 @@ joints. A vertical 10.00 mm axial footprint therefore preserves the physical
 part at pads `(292.893,88.574)` and `(292.893,98.574)` mm.
 
 The body deliberately leans over the adjacent resistor column, so body overlap
-does not imply an electrical join. The same oblique May view directly resolves
-bare `22` on its exposed face, but no unambiguous unit/decimal glyph; the marking is
-registered literally without assigning a capacitance. The visible copper does
-not reach unique remote package pads, so both leads remain singleton boundary
-nets.
+alone does not imply an electrical join. Here, however, two independent
+component angles expose the leads themselves: C19's upper pad 1 and R100.1
+terminate on one physical landing, while C19's lower pad 2 and R86.1 terminate
+on another. Those pairs are therefore modeled as
+`C19_1_R100_1_BOUNDARY` and `C19_2_R86_1_BOUNDARY`; each joined net's remote
+destination remains unresolved. The same oblique May view directly resolves
+bare `22` on C19's exposed face, but no unambiguous unit/decimal glyph, so the
+marking is registered literally without assigning a capacitance.
 
-The four adjacent horizontal resistors are electrically separate from that
-leaning body. Their right-hand pin-2 leads all terminate on one uninterrupted
-component-side perimeter rail. R100.2, R102.2, R108.2, and R86.2 are therefore
-closed to one shared `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` net. The rail's remote
-destination and the four left-hand pin-1 destinations remain explicit
-continuity boundaries; the solder-side D102.8 ground trace is not promoted as
-a cross-layer join without visible or measured inter-layer continuity.
+The four adjacent horizontal resistors' right-hand pin-2 leads all terminate
+on one uninterrupted component-side perimeter rail. R100.2, R102.2, R108.2,
+and R86.2 are therefore closed to one shared
+`RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` net. The rail's remote destination plus
+R102.1 and R108.1 remain explicit continuity boundaries; the solder-side
+D102.8 ground trace is not promoted as a cross-layer join without visible or
+measured inter-layer continuity.
 
 ## C20/C22 drill registration
 

@@ -102,9 +102,37 @@
       },
       "observation": "all four right-hand resistor leads terminate directly on one uninterrupted broad perimeter conductor"
     },
-    "unresolved": ["shared rail remote destination", "R100.1 endpoint", "R102.1 endpoint", "R108.1 endpoint", "R86.1 endpoint"],
+    "unresolved": ["shared rail remote destination", "R102.1 endpoint", "R108.1 endpoint"],
     "promotion_basis": "the target-board component view directly exposes all four right-hand leads terminating on one uninterrupted conductor",
     "non_promotion_basis": "the solder-side D102.8 ground trace does not by itself prove a cross-layer join to this component-side perimeter rail"
+  },
+  "c19_resistor_junction_evidence": {
+    "joined_endpoints": {
+      "C19_1_R100_1_BOUNDARY": ["C19.1", "R100.1"],
+      "C19_2_R86_1_BOUNDARY": ["C19.2", "R86.1"]
+    },
+    "owner_photos": [
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+        "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+        "dimensions_px": [4080, 3072],
+        "junction_px": {
+          "C19_1_R100_1_BOUNDARY": [3294, 1064],
+          "C19_2_R86_1_BOUNDARY": [3320, 1276]
+        },
+        "bbox_px": [3230, 990, 3450, 1370],
+        "observation": "registered July view exposes the upper C19/R100 shared landing and lower C19/R86 shared landing around the leaning capacitor body"
+      },
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+        "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+        "dimensions_px": [4080, 3072],
+        "bbox_px": [2920, 2350, 3200, 2760],
+        "observation": "independent oblique view separates the bent leads and corroborates C19 upper-to-R100-left and C19 lower-to-R86-left at the two common solder landings"
+      }
+    ],
+    "unresolved": ["C19/R100 common-net remote destination", "C19/R86 common-net remote destination"],
+    "promotion_basis": "two target-board component angles independently show each capacitor lead and its adjacent resistor lead terminating on one physical landing"
   },
   "c20_value_evidence": {
     "value": "1,5 нФ",
@@ -175,7 +203,7 @@
     {
       "refdes": "C19",
       "drawing_px": [2461.0, 2261.5],
-      "observation": "vertical capacitor immediately right of D99",
+      "observation": "vertical capacitor immediately right of D99; upper pad1 shares R100.1 and lower pad2 shares R86.1",
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
@@ -237,10 +265,10 @@
         }
       ]
     },
-    {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
+    {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19; left-hand pin1 shares C19.1 and right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
     {"refdes": "R102", "drawing_px": [2595.0, 2325.0], "observation": "second resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
     {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
-    {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
+    {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19; left-hand pin1 shares C19.2 and right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
     {"refdes": "C20", "drawing_px": [2648.0, 2545.0], "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre"},
     {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre"},
     {

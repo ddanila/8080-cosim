@@ -13,7 +13,7 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `207`
+- Verification-point nets: `205`
 - Verification-point endpoints checked in PCB: `232`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2272`
@@ -24,7 +24,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 22 |
-| logic | 158 |
+| logic | 156 |
 | memory/decode | 3 |
 | sound/analog | 1 |
 | timing/I/O | 2 |
@@ -66,8 +66,10 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `C12_2_BOUNDARY: C12.2`
 - `C16_1_BOUNDARY: C16.1`
 - `C16_2_BOUNDARY: C16.2`
-- `C19_1_BOUNDARY: C19.1`
-- `C19_2_BOUNDARY: C19.2`
+- `C19_1_R100_1_BOUNDARY: C19.1`
+- `C19_1_R100_1_BOUNDARY: R100.1`
+- `C19_2_R86_1_BOUNDARY: C19.2`
+- `C19_2_R86_1_BOUNDARY: R86.1`
 - `C20_1_BOUNDARY: C20.1`
 - `C20_2_BOUNDARY: C20.2`
 - `C22_1_BOUNDARY: C22.1`
@@ -349,10 +351,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `PHI1_D35: W7.2`
 - `POF: D35.3`
 - `PST_CLK: R32.2`
-- `R100_1_BOUNDARY: R100.1`
 - `R102_1_BOUNDARY: R102.1`
 - `R108_1_BOUNDARY: R108.1`
-- `R86_1_BOUNDARY: R86.1`
 - `R94_P2_BOUNDARY: R94.2`
 - `RESET: D13.6`
 - `RESET: D11.21`
@@ -545,8 +545,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `C15_2_BOUNDARY` | video/analog | `C15.2` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C16_1_BOUNDARY` | logic | `C16.1` | .009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C16_2_BOUNDARY` | logic | `C16.2` | .009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `C19_1_BOUNDARY` | logic | `C19.1` | .009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `C19_2_BOUNDARY` | logic | `C19.2` | .009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `C19_1_R100_1_BOUNDARY` | logic | `C19.1, R100.1` | .009 factory identity plus registered July and oblique May target-board component views; C19 upper lead/pad1 and R100 left lead/pad1 terminate on the same visible landing, while... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `C19_2_R86_1_BOUNDARY` | logic | `C19.2, R86.1` | .009 factory identity plus registered July and oblique May target-board component views; C19 lower lead/pad2 and R86 left lead/pad1 terminate on the same visible landing, while... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C20_1_BOUNDARY` | logic | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C20_2_BOUNDARY` | logic | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `C22_1_BOUNDARY` | logic | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destination is not readable | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -705,11 +705,9 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_DRQ` | FDC | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.19, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `FDC_INTRQ` | FDC | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.18, so owner continui... | Continuity-check WD1793 pin to 8259 input before EKDOS bring-up. |
 | `INHIB_STATUS_BOUNDARY` | logic | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an explicit junction d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `R100_1_BOUNDARY` | logic | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R102_1_BOUNDARY` | logic | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R108_1_BOUNDARY` | logic | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity | Scope/capture video or timing node during video bring-up. |
-| `R86_1_BOUNDARY` | logic | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
 | `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` | logic | `R100.2, R102.2, R108.2, R86.2` | .009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perimeter rail, while its... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

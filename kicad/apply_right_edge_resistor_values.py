@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transplant generated right-edge resistor values and photo-closed common rail."""
+"""Transplant generated C19/right-edge values and photo-closed local joins."""
 from __future__ import annotations
 
 import re
@@ -9,8 +9,17 @@ from pathlib import Path
 from apply_s1_offboard_correction import footprint_span
 
 
-REFS = ("R100", "R102", "R108", "R86")
-RETIRED = tuple(f"{ref}_2_BOUNDARY" for ref in REFS)
+REFS = ("C19", "R100", "R102", "R108", "R86")
+RESISTOR_REFS = REFS[1:]
+JOINED_NETS = {
+    "C19_1_R100_1_BOUNDARY": "C19_1_BOUNDARY",
+    "C19_2_R86_1_BOUNDARY": "C19_2_BOUNDARY",
+}
+RETIRED = (
+    *(f"{ref}_2_BOUNDARY" for ref in RESISTOR_REFS),
+    "R100_1_BOUNDARY",
+    "R86_1_BOUNDARY",
+)
 COMMON_RAIL = "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY"
 
 
@@ -32,6 +41,12 @@ def translate_nets(block: str, target: str) -> str:
 
 def patch(target: str, donor: str) -> str:
     ids = net_ids(target)
+    for joined, seed in JOINED_NETS.items():
+        if joined not in ids:
+            if seed not in ids:
+                raise ValueError(f"target PCB is missing both {joined} and migration seed {seed}")
+            target = target.replace(f'"{seed}"', f'"{joined}"')
+            ids = net_ids(target)
     if COMMON_RAIL not in ids:
         seed = "R100_2_BOUNDARY"
         if seed in ids:
@@ -64,7 +79,7 @@ def main() -> int:
         patch(target_path.read_text(encoding="utf-8"), donor_path.read_text(encoding="utf-8")),
         encoding="utf-8",
     )
-    print(f"patched {target_path}: updated {'/'.join(REFS)} values and shared pin-2 rail")
+    print(f"patched {target_path}: updated {'/'.join(REFS)} values, C19 joins, and shared pin-2 rail")
     return 0
 
 

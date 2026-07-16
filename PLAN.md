@@ -200,12 +200,16 @@ Every ask below is queued with exact deliverables in
    R108 as `12К`, and R86 as `4К7`. Uninterrupted component copper joins
    all four right-hand pin-2 leads to one common perimeter rail, collapsing
    four singleton endpoints into one boundary. The rail's remote destination
-   and the four pin-1 destinations remain explicit measurement boundaries; the
+   plus R102.1 and R108.1 remain explicit measurement boundaries. Two
+   independent component angles also show C19.1/R100.1 and C19.2/R86.1
+   terminating on their respective common landings; the two joined nets'
+   remote destinations remain open. The
    solder-side D102.8 trace is not treated as a cross-layer join without direct
    continuity evidence. The same target-board angle literally
    resolves bare `27` on C16 and bare `22` on C19, but GOST 11076-69 requires
-   a unit/decimal letter for a complete coded capacitance; both value/unit and
-   endpoint pairs remain explicit measurement boundaries rather than guesses.
+   a unit/decimal letter for a complete coded capacitance; both capacitors'
+   values/units and C19's joined-net remote destinations remain explicit
+   measurement boundaries rather than guesses.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against
@@ -310,7 +314,7 @@ Every ask below is queued with exact deliverables in
    the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   207 source-risk nets and 9 official FDC devices with untraced functional
+   205 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or

@@ -19,9 +19,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `313`
-- Nets modeled: `572`
+- Nets modeled: `570`
 - Chip-level fidelity gaps: `76`
-- Net-level source-risk gaps: `207`
+- Net-level source-risk gaps: `205`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `60`
 
@@ -65,7 +65,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 7 |
 | analog/source | 1 | 0 |
 | connector boundary | 1 | 0 |
-| logic/source | 16 | 62 |
+| logic/source | 16 | 60 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -183,7 +183,7 @@ parts placement and Tier-3 reproduction.
 | `C12` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places the target C12 vertically between D94 and D100; the .006 trimmer identity is revision-superseded and both... |
 | `C15` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C15 vertically between D97 and D102; both target-revision electrical destinations remain explicit continu... |
 | `C16` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated grey horizontal axial capacitor between the upper... |
-| `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; the owner component view proves th... |
+| `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; registered July and oblique May co... |
 | `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69 factory drawing identifies C20 at the right end of D102; both owner-board sid... |
 | `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69 factory drawing identifies C22 at the right end of D102; bot... |
 | `C63` | `C_KM` | scan | BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo BOM/DSN value 0,047 and traced array-power bypass role GND<->RAIL_H are retained, but the c... |
@@ -240,8 +240,8 @@ same fidelity ledger as the chip provenance gaps.
 | `C15_2_BOUNDARY` | logic/source | `C15.2` | .009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded |
 | `C16_1_BOUNDARY` | logic/source | `C16.1` | .009 factory identity plus registered owner component/solder views prove C16 lead 1 on the horizontal 12.5 mm span between the FDC IC rows; its remote destin... |
 | `C16_2_BOUNDARY` | logic/source | `C16.2` | .009 factory identity plus registered owner component/solder views prove C16 lead 2 on the horizontal 12.5 mm span between the FDC IC rows; its remote destin... |
-| `C19_1_BOUNDARY` | logic/source | `C19.1` | .009 factory identity plus registered owner component/solder views prove C19 lead 1 on the vertical 10 mm span immediately right of D99; its remote destinati... |
-| `C19_2_BOUNDARY` | logic/source | `C19.2` | .009 factory identity plus registered owner component/solder views prove C19 lead 2 on the vertical 10 mm span immediately right of D99; its remote destinati... |
+| `C19_1_R100_1_BOUNDARY` | logic/source | `C19.1, R100.1` | .009 factory identity plus registered July and oblique May target-board component views; C19 upper lead/pad1 and R100 left lead/pad1 terminate on the same vi... |
+| `C19_2_R86_1_BOUNDARY` | logic/source | `C19.2, R86.1` | .009 factory identity plus registered July and oblique May target-board component views; C19 lower lead/pad2 and R86 left lead/pad1 terminate on the same vis... |
 | `C20_1_BOUNDARY` | logic/source | `C20.1` | .009 factory identity plus registered owner component/solder views prove C20 pad 1 on the first 10 mm vertical drill span right of D102; the remote destinati... |
 | `C20_2_BOUNDARY` | logic/source | `C20.2` | .009 factory identity plus registered owner component/solder views prove C20 pad 2 on the first 10 mm vertical drill span right of D102; the remote destinati... |
 | `C22_1_BOUNDARY` | logic/source | `C22.1` | .009 factory identity plus registered owner component/solder views prove C22 pad 1 on the second 10 mm vertical drill span right of D102; the remote destinat... |
@@ -400,11 +400,9 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
-| `R100_1_BOUNDARY` | logic/source | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R102_1_BOUNDARY` | logic/source | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R108_1_BOUNDARY` | logic/source | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requi... |
-| `R86_1_BOUNDARY` | logic/source | `R86.1` | .009 factory drawing plus owner photo prove the lowest R86 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `READY_PRE_N` | logic/source | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` | logic/source | `R100.2, R102.2, R108.2, R86.2` | .009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perim... |
