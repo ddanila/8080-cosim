@@ -21,6 +21,13 @@ SHEET1 = ROOT / "ref" / "schematics" / "p3_sheet1.png"
 SOURCE_DRC_REPORT = ROOT / "docs" / "source-pcb-drc.md"
 FDC_BOUNDARY_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
 
+RISK_RE = re.compile(
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|"
+    r"cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|"
+    r"source confirmation|requires? (?:source|continuity)",
+    re.I,
+)
+
 
 UNTRACED_RE = re.compile(r"^\s*'([^']+)':\s*\(([^#]+)\),\s*(?:#\s*(.*))?$")
 PCB_REF_RE = re.compile(r'\(property\s+"Reference"\s+"([^"]+)"')
@@ -101,6 +108,17 @@ def markers_ok() -> tuple[bool, list[str]]:
     return not missing, missing
 
 
+def net_has_source_risk(name: str, net: dict) -> bool:
+    override = net.get("source_risk")
+    if override is None:
+        return bool(RISK_RE.search(f"{name} {net.get('src', '')} {net.get('note', '')}"))
+    if not isinstance(override, bool):
+        raise SystemExit(f"{name}: source_risk override must be boolean")
+    if override is False and not str(net.get("risk_disposition", "")).strip():
+        raise SystemExit(f"{name}: source_risk=false requires risk_disposition")
+    return override
+
+
 def main() -> int:
     board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
     model = modeled_refs()
@@ -114,6 +132,9 @@ def main() -> int:
         for name, net in board["nets"].items()
         for ref, pin in net.get("nodes", [])
     }
+    intentional_no_connects = {
+        (str(ref), str(pin)) for ref, pin in board.get("no_connects", [])
+    }
     boundary_untraced = {}
     for chip in board["chips"]:
         ref = str(chip.get("ref"))
@@ -122,16 +143,24 @@ def main() -> int:
                 (
                     (str(pin), str(role))
                     for pin, role in chip.get("pins", {}).items()
-                    if (ref, str(pin)) not in node_nets
-                    or any(
-                        word in node_nets[(ref, str(pin))][1].get("src", "").lower()
-                        for word in ("boundary", "unresolved", "unread", "pending remote")
+                    if (ref, str(pin)) not in intentional_no_connects
+                    and (
+                        (ref, str(pin)) not in node_nets
+                        or net_has_source_risk(*node_nets[(ref, str(pin))])
                     )
                 ),
                 key=lambda item: int(item[0]),
             )
             if missing:
                 boundary_untraced[ref] = missing
+
+    expected_d28 = {"2", "4", "8", "9", "10", "12"}
+    actual_d28 = {pin for pin, _role in boundary_untraced.get("D28", [])}
+    if actual_d28 != expected_d28:
+        raise SystemExit(
+            "D28 boundary classifier mismatch: "
+            f"expected {sorted(expected_d28, key=int)}, got {sorted(actual_d28, key=int)}"
+        )
 
     footprint_only = sorted((source | routed | set(placements)) - model, key=lambda ref: int(ref[1:]))
     common_footprint_only = sorted((source & routed & set(placements)) - model, key=lambda ref: int(ref[1:]))
@@ -277,7 +306,9 @@ def main() -> int:
             "## Promoted FDC Pin Boundaries",
             "",
             "These devices now have physical pin models and routed power pins. Their",
-            "remaining signal pins stay explicitly unnetted until continuity is proved.",
+            "listed signal pins are either unnetted or carried by a source-risk boundary",
+            "until continuity or an explicit disposition is proved. Source-closed nets and",
+            "documented intentional no-connects are excluded.",
             "",
             "| Ref | Untraced functional pins |",
             "| --- | --- |",
