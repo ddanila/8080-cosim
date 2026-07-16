@@ -16,6 +16,13 @@ SHA256:
 This checksum proves artifact identity only. It is not permission to upload or
 order the board.
 
+**SUPERSEDED (2026-07-16):** the board was rerouted for the design-review
+placement fixes (USB-C J3 to the board edge, U20 clear of the block border,
+observability-header labels, decode-cap spacing). The routed copper is
+DRC-clean at 2,435 tracks, but the Gerber package above predates it. Because
+Gerber SHAs are KiCad-version specific, the package must be regenerated and its
+SHA re-frozen on the canonical (Linux) toolchain before any DFM/upload.
+
 ## Verified package facts
 
 - The source PCB is four-layer and routed.
@@ -24,10 +31,11 @@ order the board.
   and external rendering have machine-generated checks.
 - Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
   artifacts exist.
-- The current package was regenerated from the routed Phase 3 board: 119 refs /
-  135 nets, 2,394 tracks/vias, filled In1.Cu GND and In2.Cu VCC planes,
-  29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
-  post-assembly socket insertions.
+- The routed board is 119 refs / 135 nets, filled In1.Cu GND and In2.Cu VCC
+  planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
+  post-assembly socket insertions. The committed copper now has 2,435 tracks
+  after the review-fix reroute; the frozen Gerber ZIP above (2,394 tracks)
+  predates it and must be re-exported (see the superseded note).
 - The full behavioral aggregate passes both real-ROM CPU implementations,
   dual decode modes, framebuffer readback, U24 timing, LVS, physical-model,
   footprint, PCB, DRC, and DRAM guards. The order-readiness aggregate reports
@@ -61,12 +69,12 @@ fab but their pinouts freeze in copper, so decide them first.
 
 **Copper-blocking**
 
-1. **Route the PCB (Phase 3 step f) — DONE.** All 119 refs are placed and
-   collision-clean; every modeled pin lands on a real pad. The current board has
-   2,394 F.Cu/B.Cu tracks, filled In1.Cu GND and In2.Cu VCC planes, and zero
-   KiCad DRC violations/unconnected items. The deterministic route preserves
-   only six independently DRC-checked seed segments (USB-C grounds and one
-   keyboard-column escape).
+1. **Route the PCB (Phase 3 step f) — DONE (rerouted 2026-07-16).** All 119 refs
+   are placed and collision-clean; every modeled pin lands on a real pad. After
+   the design-review placement fixes the board was regenerated and rerouted
+   (freerouting fork, 0 unrouted / 0 violations), giving 2,435 F.Cu/B.Cu tracks
+   with filled In1.Cu GND and In2.Cu VCC planes and zero KiCad DRC/unconnected
+   items. The route runs on both the Linux box and macOS (fork jar + JDK 25).
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:
    `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
    and DIP pad counts match, across all 119 parts (it caught the USB-C shield
@@ -89,10 +97,11 @@ fab but their pinouts freeze in copper, so decide them first.
 
 5. **Independent review (README gate 6):** current schematic/copper and the
    regenerated Gerber/drill and power-return strategy.
-6. **Regenerate + freeze the fab package (README gate 7) — DONE:** the current
-   Gerber/drill ZIP is deterministic, integrity-checked, externally rendered,
-   and its SHA256 is recorded above. REMAINING: vendor DFM/preview plus live
-   stock and assembly-capability review at order time.
+6. **Regenerate + freeze the fab package (README gate 7) — RE-FREEZE PENDING:**
+   the 2026-07-16 review-fix reroute superseded the previously frozen ZIP (see
+   the superseded note at the top). Re-export the Gerber/drill package on the
+   canonical (Linux) toolchain and record its new SHA256 here. THEN: vendor
+   DFM/preview plus live stock and assembly-capability review at order time.
 Optional-but-recommended before order: finish the staged full-board LVS
 (twin ↔ board, beyond the decode/observability contracts) — it is exactly the
 check that catches a mis-bound pin before it is etched.

@@ -7,7 +7,9 @@ flags, in millimetres:
   1. component bodies (silk + pads) that overlap each other;
   2. a silk text label (a part's reference/value, or a standalone label such as
      the board title/block names) sitting on top of a *different* component;
-  3. a component that straddles a functional-block outline boundary (half in a
+  3. two silk text labels overlapping each other (e.g. a block title landing on
+     a nearby part's designator);
+  4. a component that straddles a functional-block outline boundary (half in a
      labelled block it does not belong to -- e.g. the CPU poking into POWER).
 
 This is the automatic version of eyeballing the silk preview. Exit non-zero if
@@ -61,6 +63,10 @@ def contains(outer, inner, margin=0.3):
 # pin labels), so overlap with that component is expected, not a collision.
 INTENDED_PIN_LABELS = {t for t, *_ in gen.POWER_INPUT_PIN_LABELS} | {"FUSE"}
 
+# Board-edge connectors are meant to sit at the board/block boundary (e.g. the
+# USB-C power receptacle overhangs the edge), so their block-straddle is expected.
+EDGE_CONNECTORS = {"J3"}
+
 
 def main():
     pcb = sys.argv[1] if len(sys.argv) > 1 else "/tmp/rev-a.kicad_pcb"
@@ -101,14 +107,32 @@ def main():
             if collide(tbox, bbox) and not contains(bbox, tbox):
                 errors.append(f"label {label} overlaps component {ref}")
 
+    # Silk text vs silk text (sign collisions), skipping a part's own ref+value.
+    for i in range(len(texts)):
+        la, ba, oa = texts[i]
+        for j in range(i + 1, len(texts)):
+            lb, bb, ob = texts[j]
+            if oa is not None and oa == ob:
+                continue
+            if collide(ba, bb):
+                errors.append(f"silk-text overlap: {la} & {lb}")
+
+    # Straddle: a component body OR a silk label that crosses a block outline
+    # (partly in, partly out) sits on the border line. Fully-inside / fully-out
+    # is fine. This catches a refdes printed on top of a block frame (e.g. a
+    # DIP's side-printed designator landing on the block's left edge).
+    straddle_items = [(ref, bbox) for ref, bbox in bodies.items()
+                      if ref not in EDGE_CONNECTORS]
+    straddle_items += [(label, tbox) for label, tbox, owner in texts
+                       if owner not in EDGE_CONNECTORS]
     for name, (l, t, r, b) in gen.SILK_BLOCK_OUTLINES.items():
         rect = (l, t, r, b)
-        for ref, bbox in bodies.items():
+        for who, bbox in straddle_items:
             w, h = overlap(bbox, rect)
             if w > OVERLAP_MM and h > OVERLAP_MM:
                 inside = bbox[0] >= l - 0.2 and bbox[1] >= t - 0.2 and bbox[2] <= r + 0.2 and bbox[3] <= b + 0.2
                 if not inside:
-                    errors.append(f"{ref} straddles block '{gen.SILK_BLOCK_LABELS[name]}' boundary")
+                    errors.append(f"{who} straddles block '{gen.SILK_BLOCK_LABELS[name]}' boundary")
 
     if errors:
         print(f"Rev A placement check: FAIL ({len(errors)} collisions)")

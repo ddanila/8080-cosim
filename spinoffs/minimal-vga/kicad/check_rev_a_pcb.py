@@ -166,8 +166,13 @@ def main():
             f"reserved GND/VCC plane layers carry {len(inner_signal_tracks)} signal tracks"
         )
 
+    # Board-edge connectors (e.g. the USB-C power receptacle) are meant to sit at
+    # the board edge, so they are exempt from the general edge-keepout rule.
+    EDGE_CONNECTORS = {"J3"}
     edge_violations = []
     for fp in board.Footprints():
+        if fp.GetReference() in EDGE_CONNECTORS:
+            continue
         box = fp.GetBoundingBox(False, False)
         left = pcbnew.ToMM(box.GetLeft())
         top = pcbnew.ToMM(box.GetTop())
@@ -245,13 +250,18 @@ def main():
                     f"expected default footprint text style: {label}"
                 )
 
+    # DRAM_BANK's bottom-left corner is occupied by a decoupling cap + refdes, so
+    # its title is printed just below the frame (matches gen_rev_a_pcb.py).
+    block_label_below = {"DRAM_BANK"}
     block_label_violations = []
     for name, label in EXPECTED_SILK_BLOCK_LABELS.items():
         left, _, _, bottom = EXPECTED_SILK_BLOCK_OUTLINES[name]
-        expected_pos = (
-            left + SILK_BLOCK_LABEL_PADDING_MM,
-            bottom - SILK_BLOCK_LABEL_PADDING_MM,
-        )
+        if name in block_label_below:
+            expected_pos = (left + SILK_BLOCK_LABEL_PADDING_MM,
+                            bottom + SILK_BLOCK_LABEL_PADDING_MM)
+        else:
+            expected_pos = (left + SILK_BLOCK_LABEL_PADDING_MM,
+                            bottom - SILK_BLOCK_LABEL_PADDING_MM)
         matches = [
             text
             for _, _, text in silk_text_items(board)

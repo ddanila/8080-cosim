@@ -183,6 +183,13 @@ FP_BY_TYPE = {
     "DEBUG_HEADER_1x14": ("Connector_PinHeader_2.54mm.pretty", "PinHeader_1x14_P2.54mm_Vertical"),
 }
 
+# Pad-number aliases for footprints whose pad naming varies by KiCad library
+# version. The HRO USB-C shell shield is "S1" in some versions, "SH" in others.
+PAD_ALIASES = {
+    "S1": ("SH", "SHIELD"),
+    "SH": ("S1", "SHIELD"),
+}
+
 FP_BY_REF = {
     "J1": ("TerminalBlock_Phoenix.pretty", "TerminalBlock_Phoenix_MKDS-1,5-2-5.08_1x02_P5.08mm_Horizontal"),
     "R30": ("Resistor_THT.pretty", "R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal"),
@@ -191,11 +198,11 @@ FP_BY_REF = {
 
 PLACE = {
     "J1": (22, 25.6, 90),
-    "J3": (24, 100, 0),
+    "J3": (9, 100, 0),       # USB-C power at the left board edge
     "U1": (68, 45, 0),       # clear of the POWER block (right edge x56)
     "U2": (100, 45, 0),
     "U5": (210, 45, 0),
-    "U20": (75, 95, 90),
+    "U20": (80, 95, 90),     # right of the block's left edge so the refdes clears it
     "U21": (105, 95, 90),
     "U22": (135, 95, 90),
     "U23": (160, 95, 90),
@@ -267,7 +274,7 @@ PLACE = {
     "U6": (186, 62, 0),      # 74HC04 PC0/PC1 inverter
     # Decoupling caps: C26/C27 in the clear gaps between the decode chips;
     # C28 above U6 (the U6-U5 gap collides with the ADDRESS DECODE label).
-    "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (186, 48, 0),
+    "C26": (144, 62, 0), "C27": (172, 62, 0), "C28": (182, 44, 0),
     "J94": (117, 58, 90),    # decode-mode jumper, in the gap left of U3 (clear of U5)
     "R44": (117, 68, 0),     # MODE_B default pull-down
     "J96": (266, 62, 90),    # clock-select jumper, near the oscillator U50
@@ -369,6 +376,14 @@ def place_silk_fields(fp, chip, x, y, rot):
         if ref == "J1":
             fp.Value().SetVisible(False)
             style_field(fp.Reference(), ref, cx, top - 0.9, 0, size=1.15)
+            return
+
+        # Tall 1xN observability headers (J95/J97/J98): the descriptive value runs
+        # vertically ALONG the long side, not horizontally across the pins.
+        if chip["type"] in {"DEBUG_HEADER_1x8", "DEBUG_HEADER_1x10", "DEBUG_HEADER_1x14"}:
+            value_size = 0.85 if len(value) > 6 else 0.95
+            style_field(fp.Value(), value, right + 1.4, cy, 90, size=value_size)
+            style_field(fp.Reference(), ref, cx, top - 1.4, 0, size=0.8)
             return
 
         if ref in DOWNSTAIRS_VALUE_REFS or chip["type"] in DOWNSTAIRS_VALUE_TYPES:
@@ -503,23 +518,29 @@ def add_chip_block_label(board, text, fp):
     board.Add(label)
 
 
-def add_silk_block_label(board, text, bounds):
+# Blocks whose bottom-left corner is occupied (a decoupling cap + its refdes),
+# so the block title is printed just BELOW the frame instead of inside it.
+SILK_BLOCK_LABEL_BELOW = {"DRAM_BANK"}
+
+
+def add_silk_block_label(board, text, bounds, name=None):
     left, _, _, bottom = bounds
     label = pcbnew.PCB_TEXT(board)
     label.SetLayer(pcbnew.F_SilkS)
     label.SetText(text)
-    label.SetTextPos(
-        pcbnew.VECTOR2I(
-            mm(left + SILK_BLOCK_LABEL_PADDING_MM),
-            mm(bottom - SILK_BLOCK_LABEL_PADDING_MM),
-        )
-    )
+    if name in SILK_BLOCK_LABEL_BELOW:
+        y = bottom + SILK_BLOCK_LABEL_PADDING_MM
+        vjust = pcbnew.GR_TEXT_V_ALIGN_TOP
+    else:
+        y = bottom - SILK_BLOCK_LABEL_PADDING_MM
+        vjust = pcbnew.GR_TEXT_V_ALIGN_BOTTOM
+    label.SetTextPos(pcbnew.VECTOR2I(mm(left + SILK_BLOCK_LABEL_PADDING_MM), mm(y)))
     label.SetTextAngleDegrees(0)
     label.SetTextSize(pcbnew.VECTOR2I(mm(2.0), mm(2.0)))
     label.SetTextThickness(mm(0.2))
     label.SetItalic(False)
     label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
-    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_BOTTOM)
+    label.SetVertJustify(vjust)
     board.Add(label)
 
 
@@ -597,6 +618,14 @@ def main():
                 pad for pad in fp.Pads() if str(pad.GetNumber()) == str(pin)
             ]
             if not matching_pads:
+                # The USB-C shell shield pad is numbered differently across KiCad
+                # footprint-library versions ("S1" vs "SH"); accept either so the
+                # same board model generates on both the Linux box and macOS.
+                aliases = PAD_ALIASES.get(str(pin), ())
+                matching_pads = [
+                    pad for pad in fp.Pads() if str(pad.GetNumber()) in aliases
+                ]
+            if not matching_pads:
                 footprint_name = str(fp.GetFPID().GetLibItemName())
                 raise RuntimeError(f"{ref}.{pin} has no pad on {footprint_name}")
             # Some footprints use one logical pin number on several physical
@@ -623,7 +652,7 @@ def main():
     for name, bounds in SILK_BLOCK_OUTLINES.items():
         left, top, right, bottom = bounds
         add_silk_rect(board, left, top, right, bottom)
-        add_silk_block_label(board, SILK_BLOCK_LABELS[name], bounds)
+        add_silk_block_label(board, SILK_BLOCK_LABELS[name], bounds, name)
     for label, x, y, angle in POWER_INPUT_PIN_LABELS:
         add_small_silk_label(board, label, x, y, angle)
 

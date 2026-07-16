@@ -487,9 +487,11 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
   `kicad/check_rev_a_footprints.sh` (every modelled pin lands on a real pad)
   both pass. GOST-font silk preview via `kicad/render_silk_preview.sh`.
 - **Routing DONE and DRC-clean.** The current 119-ref/135-net board contains
-  2,394 tracks on F.Cu/B.Cu, with In1.Cu reserved/fill-checked as GND and In2.Cu
+  2,435 tracks on F.Cu/B.Cu, with In1.Cu reserved/fill-checked as GND and In2.Cu
   as VCC. KiCad reports zero violations and zero unconnected items; the Phase 3
-  sockets and all observability headers are in the routed artifact.
+  sockets and all observability headers are in the routed artifact. Rerouted
+  2026-07-16 after the design-review placement fixes (J3 to the board edge, U20
+  clear of the block border, header labels, decode-cap spacing).
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
   (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
   single-step sketch + twin reference trace (`tools/vjuga_single_step/`).

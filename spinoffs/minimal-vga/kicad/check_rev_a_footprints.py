@@ -57,7 +57,11 @@ def main():
         pads = {p.GetNumber() for p in fp.Pads()}
         model_pins = set(chip["pins"].keys())
 
-        missing = sorted(model_pins - pads)
+        # Accept a modelled pin that matches a pad via a known cross-version
+        # alias (USB-C shield S1/SH), same as the generator's pad resolution.
+        aliased = {pin for pin in model_pins - pads
+                   if pads & set(gen.PAD_ALIASES.get(pin, ()))}
+        missing = sorted(model_pins - pads - aliased)
         if missing:
             errors.append(f"{ref} ({name}): modelled pins with no pad: {', '.join(missing)}")
 

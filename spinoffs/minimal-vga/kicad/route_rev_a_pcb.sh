@@ -62,6 +62,7 @@ THREADS="${THREADS:-$DEFAULT_THREADS}"
 SEED_ROUTES="${SEED_ROUTES:-0}"
 JAVA_HEAP="${JAVA_HEAP:-auto}"
 KICAD_PYTHON="${KICAD_PYTHON:-$("scripts/find-kicad-python.sh")}"
+KCLI="${KICAD_CLI:-$("scripts/find-kicad-cli.sh")}"
 
 auto_java_heap() {
   if [ -r /proc/meminfo ]; then
@@ -213,7 +214,7 @@ pcbnew.SaveBoard(sys.argv[1], board)
 print(f"imported SES and restored {len(board.Zones())} power zones into {sys.argv[1]}")
 PY
 
-kicad-cli pcb drc --severity-error --format json --output "$DRC_JSON" "$PCB" >/dev/null
+"$KCLI" pcb drc --severity-error --format json --output "$DRC_JSON" "$PCB" >/dev/null
 python3 - "$DRC_JSON" <<'PY'
 import json
 import sys
