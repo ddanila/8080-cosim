@@ -240,6 +240,7 @@ def main() -> int:
     trans = parse_translation(lines, "TRANS")
     trans1 = parse_translation(lines, "TRANS1")
     mdiskpar = parse_numeric_table(lines, "MDISKPAR")
+    normalized_lines = {" ".join(strip_comment(line).upper().split()) for line in lines}
 
     failures: list[str] = []
     for label, expected in EXPECTED.items():
@@ -257,6 +258,17 @@ def main() -> int:
         failures.append(
             f"MDISKPAR expected {expected_mdiskpar}, got {mdiskpar}"
         )
+    disk_vectors = {
+        "SELDSK": 9,
+        "SETTRK": 10,
+        "SETSEC": 11,
+        "SETDMA": 12,
+        "READ": 13,
+        "WRITE": 14,
+    }
+    for target in disk_vectors:
+        if f"JMP {target}" not in normalized_lines:
+            failures.append(f"BIOS jump table is missing JMP {target}")
     if DISK.exists() and DISK.stat().st_size != 160 * 10 * 512:
         failures.append("JUKU1.CPM size does not match 160 tracks * 10 sectors * 512 bytes")
 
@@ -270,7 +282,6 @@ def main() -> int:
     ram_tracks = (ram_capacity // (ram_records_per_track * 128)
                   if ram_records_per_track else 0)
     ram_banks = ram_capacity // 0x8000
-    seldsk_vector = symbols["BIOS"] + 9 * 3
     lines_out = [
         "# EKDOS source inspection",
         "",
@@ -311,7 +322,8 @@ def main() -> int:
         f"| `CCP` | `{fmt_hex(symbols['CCP'])}` |",
         f"| `BDOS` | `{fmt_hex(symbols['BDOS'])}` |",
         f"| `BIOS` | `{fmt_hex(symbols['BIOS'])}` |",
-        f"| BIOS jump 10 (`SELDSK`, zero-based index 9) | `{fmt_hex(seldsk_vector)}` |",
+        *(f"| BIOS `{target}` (index {index}) | `{fmt_hex(symbols['BIOS'] + index * 3)}` |"
+          for target, index in disk_vectors.items()),
         f"| DPH size used by `SELDSK` | `16` bytes |",
         f"| RAM-drive DPH displacement | `RDNO * 16 = {symbols['RDNO'] * 16}` bytes |",
         "",

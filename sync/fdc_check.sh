@@ -82,6 +82,11 @@ physical D93/D94 wiring.
   `DoFunction`/ROMBIOS trampoline: drives A/B/C return contiguous 16-byte DPHs,
   unavailable C and invalid drive 3 return zero, invalid selection preserves
   the prior drive, and present C selects `SEKDSK=2` without a synthetic write.
+- All 24 RAM-drive endpoint writes and 24 reads now enter through installed
+  EKDOS BIOS vectors `SETTRK=0xCA1E`, `SETSEC=0xCA21`, `SETDMA=0xCA24`,
+  `READ=0xCA27`, and `WRITE=0xCA2A`. Setter effects are checked in the shared
+  work area, WRITE types 0 and 2 are both exercised, and every public I/O call
+  returns zero after traversing `DoFunction` and the ROMBIOS mover.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
@@ -155,6 +160,11 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
+- The source inspector requires all six disk-vector jump mnemonics in the
+  archived assembly and derives their standard three-byte table addresses.
+  The prompt checkpoint independently requires a live `JMP` opcode at each
+  derived address; actual calls then prove their destinations and ABI rather
+  than treating opcode presence as behavioral evidence.
 - `RAMDISKSEL` does not merely select a register. Its probe relies on a failed
   bank command leaving ordinary RAM visible: it saves byte `0x4000`, attempts
   a complemented write after selecting bank 0, restores bank 6, and returns

@@ -37,7 +37,12 @@ labels and `TRANS` tables.
 | `CCP` | `0xB400` |
 | `BDOS` | `0xBC06` |
 | `BIOS` | `0xCA00` |
-| BIOS jump 10 (`SELDSK`, zero-based index 9) | `0xCA1B` |
+| BIOS `SELDSK` (index 9) | `0xCA1B` |
+| BIOS `SETTRK` (index 10) | `0xCA1E` |
+| BIOS `SETSEC` (index 11) | `0xCA21` |
+| BIOS `SETDMA` (index 12) | `0xCA24` |
+| BIOS `READ` (index 13) | `0xCA27` |
+| BIOS `WRITE` (index 14) | `0xCA2A` |
 | DPH size used by `SELDSK` | `16` bytes |
 | RAM-drive DPH displacement | `RDNO * 16 = 32` bytes |
 

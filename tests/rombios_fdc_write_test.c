@@ -26,6 +26,12 @@ enum {
   RAM_DISK_WINDOW = 0x8000,
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
+  BIOS_SELDSK = 0xCA1B,
+  BIOS_SETTRK = 0xCA1E,
+  BIOS_SETSEC = 0xCA21,
+  BIOS_SETDMA = 0xCA24,
+  BIOS_READ = 0xCA27,
+  BIOS_WRITE = 0xCA2A,
 };
 
 
@@ -186,14 +192,19 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
   static const uint8_t expected_trampoline[] = {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
+  static const uint16_t disk_vectors[] = {
+    BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA, BIOS_READ, BIOS_WRITE,
+  };
   FILE* fp = fopen(path, "rb");
   if (!fp) return 1;
   size_t got = fread(ram, 1, 65536, fp);
   int failed = got != 65536 || fclose(fp) != 0 ||
                memcmp(&ram[0xD7E7], expected_trampoline,
                       sizeof(expected_trampoline)) != 0 ||
-               ram[0xCA1B] != 0xC3 ||  // BIOS jump 10: SELDSK
                ram[0xCA36] != 2;       // NoofRamDisk / RDNO
+  for (unsigned i = 0; i < sizeof(disk_vectors) / sizeof(disk_vectors[0]); i++) {
+    if (ram[disk_vectors[i]] != 0xC3) failed = 1;
+  }
   return failed;
 }
 
@@ -264,8 +275,10 @@ static int run_ramdisk_select(
 }
 
 
-static int run_bios_seldsk(
-    fixture* f, uint8_t drive, uint16_t* dph, unsigned long* total_cycles) {
+static int run_bios_entry(
+    fixture* f, uint16_t entry, uint8_t b, uint8_t c,
+    uint8_t* result_a, uint16_t* result_hl, unsigned long* total_cycles,
+    const char* name) {
   i8080 cpu;
   i8080_init(&cpu);
   cpu.userdata = f;
@@ -273,19 +286,59 @@ static int run_bios_seldsk(
   cpu.write_byte = write_byte;
   cpu.port_in = port_in;
   cpu.port_out = port_out;
-  cpu.pc = 0xCA1B;                    // EKDOS BIOS jump 10: JMP SELDSK
+  cpu.pc = entry;
   cpu.sp = 0xD6F8;                    // caller stack; DoFunction owns STAK
-  cpu.c = drive;
+  cpu.b = b;
+  cpu.c = c;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
   while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
   *total_cycles += cpu.cyc;
-  *dph = (uint16_t)((cpu.h << 8) | cpu.l);
+  if (result_a) *result_a = cpu.a;
+  if (result_hl) *result_hl = (uint16_t)((cpu.h << 8) | cpu.l);
   if (cpu.pc == RETURN_PC) return 0;
   fprintf(stderr,
-          "EKDOS SELDSK: drive=%u did not return (pc=%04X hl=%04X cyc=%lu)\n",
-          drive, cpu.pc, *dph, cpu.cyc);
+          "EKDOS %s: entry=%04X did not return (pc=%04X hl=%02X%02X cyc=%lu)\n",
+          name, entry, cpu.pc, cpu.h, cpu.l, cpu.cyc);
   return 1;
+}
+
+
+static int run_bios_seldsk(
+    fixture* f, uint8_t drive, uint16_t* dph, unsigned long* total_cycles) {
+  return run_bios_entry(f, BIOS_SELDSK, 0, drive, NULL, dph,
+                        total_cycles, "SELDSK");
+}
+
+
+static int run_bios_ram_io(
+    fixture* f, int write, uint8_t write_type, uint8_t track,
+    uint8_t sector, uint16_t dma, unsigned long* total_cycles) {
+  uint8_t result = 0xFF;
+  int fail = 0;
+  fail |= run_bios_entry(f, BIOS_SETTRK, 0, track, NULL, NULL,
+                         total_cycles, "SETTRK");
+  fail |= run_bios_entry(f, BIOS_SETSEC, 0, sector, NULL, NULL,
+                         total_cycles, "SETSEC");
+  fail |= run_bios_entry(f, BIOS_SETDMA, dma >> 8, dma & 0xFF, NULL, NULL,
+                         total_cycles, "SETDMA");
+  if (f->ram[0xD61B] != track || f->ram[0xD61D] != sector ||
+      f->ram[0xD62E] != (dma & 0xFF) || f->ram[0xD62F] != (dma >> 8)) {
+    fprintf(stderr,
+            "EKDOS BIOS setters: track=%u/%u sector=%u/%u dma=%02X%02X/%04X\n",
+            f->ram[0xD61B], track, f->ram[0xD61D], sector,
+            f->ram[0xD62F], f->ram[0xD62E], dma);
+    fail = 1;
+  }
+  fail |= run_bios_entry(f, write ? BIOS_WRITE : BIOS_READ,
+                         0, write ? write_type : 0, &result, NULL,
+                         total_cycles, write ? "WRITE" : "READ");
+  if (result != 0) {
+    fprintf(stderr, "EKDOS BIOS %s: track=%u sector=%u result=%02X\n",
+            write ? "WRITE" : "READ", track, sector, result);
+    fail = 1;
+  }
+  return fail;
 }
 
 
@@ -587,7 +640,6 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
-  f.ram[0xD61C] = 0;
   static const uint8_t endpoint_sector[RAM_DISK_ENDPOINTS] = {0, 127};
   uint8_t ramdisk_expected[RAM_DISK_TRACKS][RAM_DISK_ENDPOINTS][128];
   for (unsigned track = 0; track < RAM_DISK_TRACKS; track++) {
@@ -597,9 +649,9 @@ int main(int argc, char** argv) {
             (uint8_t)(0x3D ^ track * 19u ^ endpoint * 0xA7u ^ i * 5u);
       }
       memcpy(&f.ram[DMA_ADDR], ramdisk_expected[track][endpoint], 128);
-      f.ram[0xD61B] = (uint8_t)track;
-      fail |= run_rwfloppy(&f, 0x12, endpoint_sector[endpoint], DMA_ADDR,
-                           &ramdisk_cycles);
+      fail |= run_bios_ram_io(&f, 1, endpoint ? 2 : 0, (uint8_t)track,
+                              endpoint_sector[endpoint], DMA_ADDR,
+                              &ramdisk_cycles);
     }
   }
   for (unsigned track = 0; track < RAM_DISK_TRACKS; track++) {
@@ -609,9 +661,8 @@ int main(int argc, char** argv) {
                                (sector_number & 1u) * 128u;
       unsigned bank_offset = (track & 1u) * 0x4000u + record_offset;
       memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
-      f.ram[0xD61B] = (uint8_t)track;
-      fail |= run_rwfloppy(&f, 0x11, sector_number, CACHE_READ_ADDR,
-                           &ramdisk_cycles);
+      fail |= run_bios_ram_io(&f, 0, 0, (uint8_t)track, sector_number,
+                              CACHE_READ_ADDR, &ramdisk_cycles);
       if (memcmp(&f.ram[CACHE_READ_ADDR], ramdisk_expected[track][endpoint], 128) != 0 ||
           memcmp(&f.ramdisk[track >> 1][bank_offset],
                  ramdisk_expected[track][endpoint], 128) != 0) {
@@ -701,7 +752,8 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "seldsk=0/1/2/invalid ramdisk-tracks=12 endpoints=24 no-fdc=1 "
+         "seldsk=0/1/2/invalid bios-rw=public/types0+2 "
+         "ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,

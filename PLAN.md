@@ -600,8 +600,11 @@ serve physical bring-up or historical fidelity:
    drive 3 without changing the selected drive, returns zero for unavailable
    drive C, and returns the source-exact RAM DPB when C is present. Its
    `DoFunction` trampoline switches from a guarded caller stack to
-   `STAK=0xD2FC` while entering ROMBIOS. The data path then runs with
-   the source-authentic `STAK=0xD2FC`. The source-guarded `MDISKPAR` describes
+   `STAK=0xD2FC` while entering ROMBIOS. Every RAM-drive endpoint transfer now
+   enters through public BIOS `SETTRK`, `SETSEC`, `SETDMA`, and `READ`/`WRITE`
+   vectors (including CP/M write types 0 and 2), verifies the installed work
+   fields and zero return status, and contains no synthetic track/sector/DMA
+   assignment. The source-guarded `MDISKPAR` describes
    192 x 1 KiB blocks: exact ROM writes and reads independent sector-0 and
    sector-127 patterns across all twelve track halves and all six port-`0x04`
    banks, including the final 128 bytes at bank-5 offset `0x7F80`; every slice
