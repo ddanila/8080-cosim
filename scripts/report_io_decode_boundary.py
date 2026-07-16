@@ -79,8 +79,9 @@ def main() -> int:
         ),
         (
             "D9 region-enable inputs are tied to REV",
-            has_nodes(board, "REV", {("D6", "10"), ("D9", "4"), ("D9", "5"), ("R13", "2")}),
-            "`REV`: D6.10 -> D9.4/D9.5",
+            has_nodes(board, "REV", {("D6", "10"), ("D9", "4"), ("D9", "5"), ("R13", "2")})
+            and board["nets"]["REV"].get("source_risk") is False,
+            "native sheet-1 code-2 branch: D6.10/R13.2 -> D9.4/D9.5",
         ),
         (
             "D9 select inputs are BA10..BA12",

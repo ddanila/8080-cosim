@@ -21,8 +21,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Chips modeled: `309`
 - Nets modeled: `577`
 - Chip-level fidelity gaps: `78`
-- Net-level source-risk gaps: `216`
-- Explicitly dispositioned closed net risks: `13`
+- Net-level source-risk gaps: `214`
+- Explicitly dispositioned closed net risks: `15`
 - Documented intentional no-connect pins: `60`
 
 ## Chip Provenance Types
@@ -60,7 +60,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 9 | 129 |
 | PROM truth | 1 | 0 |
-| PROM/decode | 0 | 9 |
+| PROM/decode | 0 | 7 |
 | analog/source | 1 | 0 |
 | connector boundary | 1 | 0 |
 | logic/source | 18 | 67 |
@@ -414,8 +414,6 @@ same fidelity ledger as the chip provenance gaps.
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `RAIL_E` | memory/timing | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members... |
 | `READY_PRE_N` | logic/source | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
-| `REV` | PROM/decode | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder re... |
-| `ROE` | PROM/decode | `D6.9, D13.1, D92.1, R14.2` | direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. This agrees with traced sheet-1 crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-R... |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `SSTB_N` | logic/source | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
@@ -464,6 +462,8 @@ the active release-risk count.
 | `PIT_BAUD` | closed across the native sheets: sheet 2 proves D57.10 to the BAUD R. handoff, and sheet 1 draws one junctioned BAUD RATE conductor to both D11.9 TxC and D11.25 RxC |
 | `POF` | closed by the sheet-1 tag6 to sheet-2 named-POF conductor; MAME is independent corroboration, not the source |
 | `PROM_EN` | the native sheet closes D7.11/D7.13/R17.2 as one feedback-strobe conductor; the refuted D6.14 branch is tracked separately on D6_V_ENABLE |
+| `REV` | closed by the native sheet-1 code-2 conductor: the upper labeled R13 1k pull-up branch is REV and reaches tied D9.4/D9.5, distinct from the lower R14/code-3 ROE branch |
+| `ROE` | closed by direct D6.9-D13.1 continuity plus the native sheet-1 code-3 conductor: the lower labeled R14 1k pull-up branch is ROE, distinct from the upper R13/code-2 REV branch |
 | `USART_RXRDY_IRQ` | closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
 | `V3_RC` | the native sheet closes R17.1/C99.1/D9.6 as one RC node; uncertainty on the opposite C99 plate is isolated on C99_FAR |

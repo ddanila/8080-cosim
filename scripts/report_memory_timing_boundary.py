@@ -153,6 +153,7 @@ def main() -> int:
                 "9": "A3", "10": "B3", "11": "C3", "8": "Y3",
             }
             and has_nodes(board, "ROE", {("D92", "1")})
+            and board["nets"]["ROE"].get("source_risk") is False
             and has_nodes(board, "PHI2TTL", {("D92", "2"), ("D92", "3")})
             and has_nodes(board, "MEMR", {("D5", "24"), ("D33", "3"), ("D92", "13"), ("W11", "1")})
             and set(nodes(board, "MEMR_D7")) == {("D7", "1"), ("W11", "2")}

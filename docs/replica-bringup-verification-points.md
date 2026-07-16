@@ -13,8 +13,8 @@ visible and actionable before manufacturing and first power-on.
 - Source board JSON: `kicad/juku.board.json`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Verification-point nets: `216`
-- Verification-point endpoints checked in PCB: `323`
+- Verification-point nets: `214`
+- Verification-point endpoints checked in PCB: `315`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2263`
 - All board endpoints checked in routed PCB: `2263`
@@ -24,8 +24,8 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 22 |
-| logic | 165 |
-| memory/decode | 5 |
+| logic | 164 |
+| memory/decode | 4 |
 | sound/analog | 1 |
 | timing/I/O | 2 |
 | video/analog | 21 |
@@ -40,8 +40,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 323/323 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 323/323 net names matched |
+| Risk endpoints present on PCB pads | PASS | 315/315 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 315/315 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -709,8 +709,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `R94_P2_BOUNDARY` | logic | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `RAIL_E` | memory/decode | `R53.2, R54.2, R55.2, R56.2, R58.2, D60.16, ... (+69)` | traced sheet-2 power corner (crop b3_pwr_corner) + array read: "E" = the array ground rail (one-point strap to main GND; net-tie deferred to layout). Members: DRAM pin 16 x32, b... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `READY_PRE_N` | video/analog | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 | Scope/capture video or timing node during video bring-up. |
-| `REV` | logic | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `ROE` | memory/decode | `D6.9, D13.1, D92.1, R14.2` | direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. This agrees with traced sheet-1 crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name "-RAM OUT EN", 1k pullu... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `SSTB_N` | logic | `D30.1` | sheet-1 label -SSTB enters D30.1; off-sheet source on sheet 2 remains boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TAPE_RUN_INT` | logic | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

@@ -23,7 +23,7 @@ python3 scripts/report_io_decode_boundary.py
 | D9 is the physical К555ИД7 I/O decoder | PASS | `kicad/juku.board.json` D9 provenance |
 | D7 strobe-NAND output reaches the R17/C99 D9.G1 RC node | PASS | `PROM_EN` -> `V3_RC` |
 | D7 first-gate SYNC/feedback topology is source-proven | PASS | D1.19 SYNC -> D7.12; D7.11 -> D7.13 feedback before R17 |
-| D9 region-enable inputs are tied to REV | PASS | `REV`: D6.10 -> D9.4/D9.5 |
+| D9 region-enable inputs are tied to REV | PASS | native sheet-1 code-2 branch: D6.10/R13.2 -> D9.4/D9.5 |
 | D9 select inputs are BA10..BA12 | PASS | `BA10`, `BA11`, `BA12` into D9.A/B/C |
 | D7 fourth-gate inputs are wired to IOWR/IORD | PASS | `IOWR`/`IORD` fanout |
 | D9 chip-select outputs are routed to the modeled peripherals | PASS | `CS_D10`..`CS_FDC`; measured D94.15/.3/.4 controls and grounded D94.2 |
@@ -45,7 +45,7 @@ python3 scripts/report_io_decode_boundary.py
 | `SYNC` | `D1.19, D38.12, D7.12` | wire plus sheet-1 native 5150x3603 direct T-junction: CPU D1.19 SYNC reaches D7 first-gate input pin12; WIRE 9 separately continues to D38.12 |
 | `V3_RC` | `C99.1, D9.6, R17.1` | traced sheet-1 native 5150x3603 review: R17 top + C99 pin1/left plate + D9.6 share one junction; rail3 crosses above without a dot. RC-deglitched I/O strobe -> D9.G1. The visible C99 pin2/right plate has no outgoing conductor and is kept separately as C99_FAR rather than assumed grounded |
 | `C99_FAR` | `C99.2` | sheet-1 native 5150x3603 review: C99 pin2/right plate is visibly present but ends without a drawn conductor; preserve the physical pad as a continuity boundary because an RC deglitch capacitor would not intentionally operate open-circuit |
-| `REV` | `D6.10, D9.4, D9.5, R13.2` | traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked; +R13 1k pullup (v3_junction; R13/R14 pairing order assumed) |
+| `REV` | `D6.10, D9.4, D9.5, R13.2` | native full-resolution sheet 1: D6.10 REV rail code 2 runs into the D9 pins-4+5 bridge and the upper labeled R13 1k pull-up branch. This is the I/O-decoder region enable (G2A_N+G2B_N tied): low for BA13-15=000 -> ports 00-1F pass, >=20 blocked |
 | `BA10` | `D15.21, D16.21, D17.21, D18.21, D19.21, D20.21, D21.21, D22.21, D24.3, D4.19, ... (+2)` | scan; D6 endpoint removed (drawn: D6 pins 2/1/15 = mode-bundle tags 1/2/3, crop bios_hunt1) |
 | `BA11` | `D15.23, D16.23, D17.23, D18.23, D19.23, D20.23, D21.23, D22.23, D24.4, D4.18, ... (+4)` | scan |
 | `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.15, ... (+4)` | scan |

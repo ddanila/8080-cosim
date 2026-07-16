@@ -7217,7 +7217,9 @@
    "nodes": [["D6", "15"], ["D105", "1"]]
   },
   "ROE": {
-   "src": "direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. This agrees with traced sheet-1 crops d9_v3_follow/v3_junction: rail code 3 = D6.9, drawn name \"-RAM OUT EN\", 1k pullup R13/R14 pair-zone; merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail; +R14 1k pullup (v3_junction; pairing order assumed)",
+   "src": "direct owner continuity 2026-07-14 confirms D6.9 -> D13.1. Native full-resolution sheet 1 shows rail code 3 = D6.9, drawn name \"-RAM OUT EN\", and the lower labeled R14 1k pull-up branch; merged factory wire W13 endpoint D92.1. Semantic: -RAMOUTEN region rail",
+   "source_risk": false,
+   "risk_disposition": "closed by direct D6.9-D13.1 continuity plus the native sheet-1 code-3 conductor: the lower labeled R14 1k pull-up branch is ROE, distinct from the upper R13/code-2 REV branch",
    "nodes": [
     [
      "D6",
@@ -9230,7 +9232,9 @@
    "wire_link": true
   },
   "REV": {
-   "src": "traced sheet-1 (crops d9_inputs/v3_junction: D6.10 REV rail code 2, 1k pullup, drops at x~1845 and runs east into the D9 pins-4+5 bridge) = the io-decoder region enable (G2A_N+G2B_N tied). Low for BA13-15=000 -> io ports 00-1F pass, >=20 blocked; +R13 1k pullup (v3_junction; R13/R14 pairing order assumed)",
+   "src": "native full-resolution sheet 1: D6.10 REV rail code 2 runs into the D9 pins-4+5 bridge and the upper labeled R13 1k pull-up branch. This is the I/O-decoder region enable (G2A_N+G2B_N tied): low for BA13-15=000 -> ports 00-1F pass, >=20 blocked",
+   "source_risk": false,
+   "risk_disposition": "closed by the native sheet-1 code-2 conductor: the upper labeled R13 1k pull-up branch is REV and reaches tied D9.4/D9.5, distinct from the lower R14/code-3 ROE branch",
    "nodes": [
     [
      "D6",
