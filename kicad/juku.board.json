@@ -4661,20 +4661,22 @@
    "ref": "R108",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
+   "value": "12к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg",
-    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; value and both electrical destinations remain explicit continuity boundaries"
+    "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
+    "pins": "third resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 12K; both electrical destinations remain explicit continuity boundaries"
    }
   },
   {
    "ref": "R86",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
+   "value": "4,7к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg",
-    "pins": "lowest resistor in the populated four-part vertical column at the right edge beside C19; value and both electrical destinations remain explicit continuity boundaries"
+    "refdes": "ДГШ5.109.009 СБ plus two target-board component-photo angles",
+    "pins": "lowest resistor in the populated four-part vertical column at the right edge beside C19; both target-board angles directly read 4K7; both electrical destinations remain explicit continuity boundaries"
    }
   },
   {

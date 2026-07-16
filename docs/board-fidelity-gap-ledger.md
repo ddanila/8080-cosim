@@ -123,8 +123,8 @@ parts placement and Tier-3 reproduction.
 | `D93` | `VG93_FDC` | mame+datasheet | .009 official (FDC) physical КР1818ВГ93 socket with Western Digital FD179X-01 primary-datasheet package contract: host, drive, separator, status, power, and... |
 | `R100` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles upper resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
 | `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles second resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
-| `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg third resistor in the populated four-part vertical column at the right edge beside C19; value and both electr... |
-| `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg lowest resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
+| `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles third resistor in the populated four-part vertical column at the right edge beside C19; both tar... |
+| `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus two target-board component-photo angles lowest resistor in the populated four-part vertical column at the right edge beside C19; both ta... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
 | `W14` | `WIRE_LINK` | factory wire table + registered owner backside photo | ДГШ5.109.009 СБ conductor position 10 / board point А:14 registered plated through-joints beside the printed 14 marks at (10.449,179.305) and (224.478,193.14... |

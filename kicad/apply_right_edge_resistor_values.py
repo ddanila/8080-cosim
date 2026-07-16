@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transplant generated R100/R102 value-bearing footprints into the source PCB."""
+"""Transplant generated right-edge resistor value-bearing footprints into the source PCB."""
 from __future__ import annotations
 
 import re
@@ -9,7 +9,7 @@ from pathlib import Path
 from apply_s1_offboard_correction import footprint_span
 
 
-REFS = ("R100", "R102")
+REFS = ("R100", "R102", "R108", "R86")
 
 
 def net_ids(text: str) -> dict[str, str]:

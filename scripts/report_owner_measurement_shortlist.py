@@ -276,7 +276,7 @@ def main() -> int:
         (
             "P1",
             "right-edge resistor column",
-            "read C19's value and both lead destinations, read R108/R86 values, and identify all four resistor lead destinations in the restored .009 right-edge column; R100=R102=12 kΩ are photo-closed and all factory identities, population, orientation, and placements are registered",
+            "read C19's value and both lead destinations, and identify all four resistor lead destinations in the restored .009 right-edge column; R100=R102=R108=12 kΩ and R86=4.7 kΩ are photo-closed, and all factory identities, population, orientation, and placements are registered",
             "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C19/R100/R102/R108/R86 boundary nets",
             "turns five restored physical parts into functional FDC-area circuitry without guessing connectivity from C19's bent body overlap or the obsolete .006 sheet",
         ),

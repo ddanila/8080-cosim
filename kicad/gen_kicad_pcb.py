@@ -176,7 +176,7 @@ PASSIVE_PLACE = {
     'R87':(222.305,32.704,90),'R88':(224.943,32.704,90),'R89':(227.629,32.704,90),
     # .009 factory-drawing affine registration, corroborated by the populated
     # owner-photo column at the right edge beside C19 (top to bottom). Two
-    # independent component angles read R100/R102 as 12K; R108/R86 remain open.
+    # independent component angles read R100/R102/R108 as 12K and R86 as 4K7.
     'R100':(299.776,94.000,0),'R102':(299.253,97.229,0),
     'R108':(298.731,100.458,0),'R86':(298.208,103.688,0),
     'R5':(44.0,187.0,90),'R6':(47.0,187.0,90),'R29':(50.0,187.0,90),  # D30 READY row, assembly drawing

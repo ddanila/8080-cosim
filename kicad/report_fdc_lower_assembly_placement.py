@@ -17,7 +17,7 @@ OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {"C16", "C19", "R92", "R99", "R100", "R102", "R108", "R86"}
-EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к"}
+EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"}
 EXPECTED_CAPACITOR_VALUES = {"C20": "1,5 нФ", "C22": "1,5 нФ"}
 
 
@@ -65,10 +65,10 @@ c20_value_evidence = document.get("c20_value_evidence", {})
 c22_value_evidence = document.get("c22_value_evidence", {})
 if value_evidence.get("values") != {"R92": "1,3к", "R99": "4,7к"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad R92/R99 value evidence")
-if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к"}:
+if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad right-edge resistor value evidence")
-if right_edge_value_evidence.get("unresolved") != ["R108", "R86"]:
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: lower right-edge value boundaries are not guarded")
+if right_edge_value_evidence.get("unresolved") != []:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: closed right-edge values unexpectedly unresolved")
 if c20_value_evidence.get("value") != "1,5 нФ" or c20_value_evidence.get("marking") != "1Н5":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C20 value evidence")
 if "C20.1 endpoint" not in c20_value_evidence.get("unresolved", []) or "C20.2 endpoint" not in c20_value_evidence.get("unresolved", []):
@@ -81,6 +81,14 @@ for evidence in [*value_evidence.get("owner_photos", []), *right_edge_value_evid
     image_path = ROOT / evidence.get("source", "")
     if not image_path.is_file() or hashlib.sha256(image_path.read_bytes()).hexdigest() != evidence.get("sha256"):
         raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: value-source hash mismatch for {image_path}")
+    with Image.open(image_path) as evidence_image:
+        if list(evidence_image.size) != evidence.get("dimensions_px"):
+            raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: value-source dimensions mismatch for {image_path}")
+        width, height = evidence_image.size
+    for refdes, bbox in evidence.get("body_bboxes_px", {}).items():
+        if (refdes not in EXPECTED_RESISTOR_VALUES or len(bbox) != 4 or
+                not (0 <= bbox[0] < bbox[2] <= width and 0 <= bbox[1] < bbox[3] <= height)):
+            raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: invalid {refdes} value-source body box")
 c20_photo = c20_value_evidence.get("owner_photo", {})
 c20_image_path = ROOT / c20_photo.get("source", "")
 if not c20_image_path.is_file() or hashlib.sha256(c20_image_path.read_bytes()).hexdigest() != c20_photo.get("sha256"):
@@ -184,7 +192,7 @@ lines = ["# FDC lower assembly placement", "",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
          "placement only, except where the owner-evidence records below explicitly close",
-         "R92/R99/R100/R102/C20/C22 values or visible copper connectivity.", "",
+         "R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.", "",
          f"Held-out errors: D99 `{next(x['error_mm'] for x in checks if x['refdes']=='D99'):.3f}` mm; "
          f"D97 `{next(x['error_mm'] for x in checks if x['refdes']=='D97'):.3f}` mm.", "",
          "| Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |", 
@@ -202,7 +210,7 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The C63 target site remains an explicit",
           "population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
-          "that corroborates population and orientation. Two independent component angles read R100=`12К` and R102=`12К`; R108/R86 values and all four parts' lead destinations remain continuity tasks. The registered solder view",
+          "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`; only the four parts' lead destinations remain continuity tasks. The registered solder view",
           "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",

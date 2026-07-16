@@ -196,9 +196,9 @@ Every ask below is queued with exact deliverables in
    The adjacent C20 and outer C22 body markings are now independently photo-read
    as `1Н5` and source-closed by GOST 11076-69 Table 1 as 1.5 nF; their
    tolerances, voltages, and endpoints remain explicit boundaries. In the adjacent right-edge
-   passive column, two independent target-board
-   angles close R100 and R102 as `12К`; R108/R86 values and all four remote
-   endpoint pairs remain explicit measurement boundaries.
+   passive column, two independent target-board angles close R100, R102, and
+   R108 as `12К`, and R86 as `4К7`; all four remote endpoint pairs remain
+   explicit measurement boundaries.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against

@@ -32,23 +32,37 @@
     "promotion_basis": "two target-board component photographs with different angles show matching printed values"
   },
   "right_edge_resistor_value_evidence": {
-    "values": {"R100": "12к", "R102": "12к"},
+    "values": {"R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"},
     "owner_photos": [
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
         "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
         "dimensions_px": [4080, 3072],
-        "observation": "registered target-board view directly resolves 12K on the top R100 body and second R102 body"
+        "body_bboxes_px": {
+          "R108": [3240, 1060, 3670, 1210],
+          "R86": [3230, 1190, 3730, 1380]
+        },
+        "observation": "registered target-board view directly resolves R100/R102/R108 as 12K and the lowest R86 as 4K7"
       },
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
         "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
         "dimensions_px": [4080, 3072],
         "observation": "independent target-board angle shows matching 12K markings on the same top two factory-ordered bodies"
+      },
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+        "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+        "dimensions_px": [4080, 3072],
+        "body_bboxes_px": {
+          "R108": [3450, 220, 3640, 370],
+          "R86": [3450, 340, 3640, 490]
+        },
+        "observation": "independent oblique target-board angle corroborates the third R108 marking as 12K and the lowest R86 marking as 4K7"
       }
     ],
-    "unresolved": ["R108", "R86"],
-    "promotion_basis": "two target-board component photographs with different angles read the same top-two values; the lower two markings remain unpromoted"
+    "unresolved": [],
+    "promotion_basis": "registered July and oblique May target-board component photographs independently read all four factory-ordered bodies: R100/R102/R108 are 12K and R86 is 4K7"
   },
   "c20_value_evidence": {
     "value": "1,5 нФ",
