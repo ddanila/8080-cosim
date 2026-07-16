@@ -17,7 +17,7 @@ silently.
 | `lib_footprint_issues` | 1 | Fix before order |
 | `shorting_items` | 2 | Fix before order |
 | `tracks_crossing` | 0 | Pass |
-| `unconnected_items` | 2 | Fix before order |
+| `unconnected_items` | 3 | Fix before order |
 
 ## Review-Only Classes
 
@@ -55,5 +55,5 @@ Visual disposition failures: 4
 
 - Blocking DRC class `lib_footprint_issues` is nonzero: 1
 - Blocking DRC class `shorting_items` is nonzero: 2
-- Blocking DRC class `unconnected_items` is nonzero: 2
+- Blocking DRC class `unconnected_items` is nonzero: 3
 - Unexpected DRC class without disposition: `solder_mask_bridge`=2

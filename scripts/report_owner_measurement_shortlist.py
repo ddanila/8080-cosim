@@ -155,7 +155,7 @@ def main() -> int:
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
-        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**")),
+        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DECAP CONNECTIVITY GUARDED / C63 TARGET DNP CLOSED / PER-POSITION VALUE PENDING**")),
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
@@ -258,13 +258,6 @@ def main() -> int:
             "identify the remote destination of C94.1 below D102; two overlapping July component views plus an independent May angle already close the upper physical lead C94.2 directly to R65.1/VIDEO_OUT, while the lower lap-soldered joint and registered solder region are photo-exhausted",
             "`ref/photos/juku-pcb-2/c94-endpoint-registration.json`; `docs/analog-cluster-photo-placement.md`; `docs/video-analog-boundary.md`; `kicad/juku.board.json` C94.1 boundary net",
             "completes the electrical disposition of a target-revision component that was previously absent from the physical model",
-        ),
-        (
-            "P1",
-            "C63 population disposition",
-            "determine whether the factory-drawn C63 between D41 and D40 was intentionally DNP on the .009 build or physically removed later; inspect the two package-bracketed landing area for lead remnants and test whether any candidate pads join the expected array bypass rails",
-            "`docs/fdc-lower-assembly-placement.md`; `docs/photo-registration.md`; raw component photo `PXL_20260710_200418174.jpg`",
-            "resolves the conflict between the factory assembly outline and the bare owner-board gap without inventing a through-hole footprint",
         ),
         (
             "P1",

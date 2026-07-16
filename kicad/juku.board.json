@@ -3568,6 +3568,7 @@
   {
    "ref": "C63",
    "type": "C_KM",
+   "pcb_dnp": true,
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3575,7 +3576,7 @@
    "prov": {
     "type": "scan",
     "refdes": "BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo",
-    "pins": "BOM/DSN value 0,047 and traced array-power bypass role GND<->RAIL_H are retained, but the current generic array-grid placement remains assumed. The .009 factory outline is between D41/D40 while the bracketed owner photo shows that site bare, with no fitted body or coherent drilled lead pair; DNP versus later removal remains unresolved"
+    "pins": "BOM/DSN value 0,047 and intended array-power bypass role GND<->RAIL_H are retained schematically. The .009 factory outline is between D41/D40, while the registered target owner photo shows that exact site bare with no fitted body or coherent drilled lead pair; C63 is therefore an explicit target-board DNP and has no PCB footprint"
    },
    "value": "0,047"
   },

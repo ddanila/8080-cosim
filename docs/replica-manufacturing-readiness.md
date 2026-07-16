@@ -19,9 +19,9 @@ DESIGN HOLD.
 | Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 76862 | HOLD |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | HOLD |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2554 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 73204 | HOLD |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8764 | HOLD |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1797 | FAIL |

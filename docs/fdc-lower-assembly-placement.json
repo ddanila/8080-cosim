@@ -926,14 +926,8 @@
         239.15,
         140.065
       ],
-      "current_footprint_mm": [
-        176.1,
-        145.6
-      ],
-      "projected_delta_mm": [
-        63.05,
-        -5.535
-      ],
+      "current_footprint_mm": null,
+      "projected_delta_mm": null,
       "observation": "factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site",
       "owner_evidence": [],
       "owner_absence_evidence": [

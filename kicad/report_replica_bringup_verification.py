@@ -99,14 +99,14 @@ def pcb_pin_nets(path: Path) -> dict[tuple[str, str], str]:
     return found
 
 
-def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str]) -> dict[str, object]:
+def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str], excluded_refs: set[str]) -> dict[str, object]:
     checked = 0
     excluded = 0
     missing = []
     mismatched = []
     for name, net in sorted(board["nets"].items()):
         for ref, pin in net.get("nodes", []):
-            if ref in OFF_BOARD_REFS:
+            if ref in excluded_refs:
                 excluded += 1
                 continue
             checked += 1
@@ -168,10 +168,13 @@ def action_for(category: str, name: str, source: str) -> str:
 
 def main() -> int:
     board = json.loads(BOARD_JSON.read_text())
+    excluded_refs = OFF_BOARD_REFS | {
+        chip["ref"] for chip in board["chips"] if chip.get("pcb_dnp")
+    }
     pcb_nets = pcb_pin_nets(PCB)
     routed_pcb_nets = pcb_pin_nets(ROUTED_PCB)
-    source_coverage = endpoint_coverage(board, pcb_nets)
-    routed_coverage = endpoint_coverage(board, routed_pcb_nets)
+    source_coverage = endpoint_coverage(board, pcb_nets, excluded_refs)
+    routed_coverage = endpoint_coverage(board, routed_pcb_nets, excluded_refs)
     rows = []
     pcb_checked = 0
     pcb_missing = []
@@ -183,7 +186,7 @@ def main() -> int:
         if not net_has_source_risk(name, net, risk_text):
             continue
         for ref, pin in net.get("nodes", []):
-            if ref in OFF_BOARD_REFS:
+            if ref in excluded_refs:
                 continue
             pcb_checked += 1
             pcb_net = pcb_nets.get((ref, pin))
@@ -232,7 +235,7 @@ def main() -> int:
         f"- PCB endpoint coverage: `{'PASS' if pcb_ok else 'FAIL'}`",
         f"- All board endpoints checked in source PCB: `{source_coverage['checked']}`",
         f"- All board endpoints checked in routed PCB: `{routed_coverage['checked']}`",
-        f"- Intentional off-board endpoints excluded: `{source_coverage['excluded']}`",
+        f"- Intentional non-PCB endpoints excluded: `{source_coverage['excluded']}`",
         f"- Full PCB endpoint coverage: `{'PASS' if full_pcb_ok else 'FAIL'}`",
         "",
         "| Category | Nets |",
@@ -273,7 +276,8 @@ def main() -> int:
             "Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against",
             "the generated source PCB and the routed fabrication PCB. Bracket-mounted",
             "`S1`, `X3`, `X4`, `X6`, `X8`, and `X9` are intentionally excluded because their cable",
-            "landings are separate `A*` PCB footprints. This is a",
+            "landings are separate `A*` PCB footprints; target-DNP parts such as C63 are",
+            "excluded because the exact target has no footprint. This is a",
             "fabrication-source coverage gate, not a historical-source proof.",
             "",
             "| PCB | Present | Matching net names | Result |",

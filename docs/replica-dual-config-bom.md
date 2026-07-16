@@ -16,19 +16,19 @@ readiness report.
 ## Summary
 
 - Board component positions: 315
-- Populate for current functional .009 build: 285
-- Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 98
+- Populate for current functional .009 build: 284
+- Leave empty for expansion/authentic completeness: 31
+- Unique BOM lines: 99
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
 | circuit-review | 57 |
-| leave-empty | 30 |
+| leave-empty | 31 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 205 |
+| source-now | 204 |
 
 ## BOM Lines
 
@@ -42,6 +42,7 @@ readiness report.
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 2 | 2 | 0 | VT1, VT2 | - |
 | circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 34 | 34 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+16) | - |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
+| leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 0 | 1 | C63 | Target-board DNP; retain schematic intent but do not fit or fabricate a footprint. |
 | leave-empty | EPROM8K | К573РФ6 | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 1 | 0 | 1 | D19 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
 | leave-empty | RU5 | К565РУ5Г / 565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 24 | 0 | 24 | D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6) | D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check. |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | select exact substitute after circuit review | 1 | 1 | 0 | X1 | - |
@@ -68,7 +69,7 @@ readiness report.
 | source-now | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | 1 | 0 | D1 | - |
 | source-now | CT16_CTR | КР531ИЕ17 | 74F/74S163-class fast counter; verify timing | 1 | 1 | 0 | D40 | - |
 | source-now | C_ELEC 47,0 | radial electrolytic 47,0 | modern radial electrolytic with matching value/voltage/polarity | 1 | 1 | 0 | C1 | - |
-| source-now | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 38 | 38 | 0 | C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46, C47, C48, C49, C50, C51, C52, ... (+20) | - |
+| source-now | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 37 | 37 | 0 | C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46, C47, C48, C49, C50, C51, C52, ... (+19) | - |
 | source-now | C_KM 24 | КМ ceramic capacitor 24 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C21 | - |
 | source-now | C_KM 56 | КМ ceramic capacitor 56 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C6 | - |
 | source-now | C_KM 560 | КМ ceramic capacitor 560 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C5 | - |

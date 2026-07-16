@@ -26,13 +26,13 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R86 | 298.208, 103.688 | 298.208, 103.688 | +0.000, -0.000 | lowest resistor in the four-part row right of C19; left-hand pin1 shares C19.2 and right-hand pin2 joins the common perimeter rail |
 | C20 | 299.917, 110.117 | 303.997, 110.024 | -4.080, +0.093 | factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre |
 | C22 | 302.204, 110.093 | 306.537, 110.024 | -4.333, +0.069 | factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre |
-| C63 | 239.150, 140.065 | 176.100, 145.600 | +63.050, -5.535 | factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site |
+| C63 | 239.150, 140.065 | absent | - | factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site |
 
 D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
 factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the
 overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns
-at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. The C63 target site remains an explicit
-population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.
+at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C63 is now an explicit target-board DNP:
+the factory drawing shows its intended outline, while the raw owner photo shows the exact D41/D40 gap bare without a body or coherent drilled lead pair, and the source PCB therefore has no fabricated footprint.
 Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;
 that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Uninterrupted component copper joins all four right-hand pin-2 leads to one perimeter rail; its remote destination and R102/R108 pin-1 destinations remain continuity tasks. The same two angles directly show C19's upper lead and R100.1 sharing one landing, and C19's lower lead and R86.1 sharing another; only the two joined nets' remote destinations remain open. The registered solder view
 `PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints, while the independent May angle and solder field expose no unique remote continuation for R102.1/R108.1. An oblique May view literally reads `22` on C19's exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views
@@ -44,7 +44,7 @@ Those owner views additionally show the two grey C20/C22 axial bodies and all fo
 read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Their tolerances, voltages, and endpoints remain unpromoted.
 The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.
 The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.
-That makes DNP/removal the leading `.009` owner-board disposition, but the old generic array placement is not silently moved or deleted until factory-population intent is reconciled. The unrelated `.006` RF-option C13 is now correctly DNP on the `.009` target and must not be conflated with this C63 site.
+Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. The schematic retains the intended GND-to-RAIL_H bypass connection while C63 is excluded from the target PCB and populate-now BOM. The unrelated `.006` RF-option C13 is also DNP on the `.009` target and must not be conflated with this C63 site.
 The owner component view does not expose a complete electrical path at either corrected
 site: C11's landings are visible without an unambiguous body, while C15 is hidden by the
 factory cable. Neither placement is connectivity evidence.

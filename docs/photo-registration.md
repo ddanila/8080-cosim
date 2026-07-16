@@ -172,8 +172,10 @@ from the old `(258.0,125.6)` mm drawing seed to `(258.56,140.99)` mm and rotates
 its notch to the photographed right-facing orientation. The same bracketed
 D41/D40 view resolves the factory C63 label location: the inter-package strip
 contains no populated capacitor body or coherent drilled axial lead pair.
-Factory intent versus owner-board DNP/removal remains explicit rather than
-moving the unrelated generic C63 seed into the IC body/gap.
+The image cannot distinguish omission during assembly from later removal, but
+both histories establish the exact target population as absent. C63 is therefore
+retained as intended schematic connectivity and marked target-board DNP, with no
+fabricated PCB footprint or populate-now BOM entry.
 
 The marked `КР580ВК38` D5 now has a direct affine component fit in raw
 image `200411500`. Its complete 2x14 contact field and right-facing notch move

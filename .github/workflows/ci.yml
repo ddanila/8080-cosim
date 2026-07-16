@@ -48,7 +48,9 @@ jobs:
             kicad/apply_a20_factory_wire_split.py \
             kicad/apply_a20_factory_wire_schematic_split.py \
             kicad/apply_x6_offboard_correction.py \
+            kicad/apply_c63_target_dnp.py \
             kicad/check_x6_offboard_landings.py \
+            kicad/check_c63_target_dnp.py \
             kicad/check_factory_wire_links.py \
             kicad/check_factory_wire_landing_registration.py \
             kicad/check_d3_factory_wire_landing.py \
@@ -148,6 +150,9 @@ jobs:
             kicad/report_fdc_lower_assembly_placement.py
           python3 -m py_compile kicad/report_d93_pin40_photo_chase.py
           python3 -m py_compile kicad/patch_d94_input_boundaries.py
+
+      - name: Check C63 target-board DNP
+        run: python3 kicad/check_c63_target_dnp.py
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py

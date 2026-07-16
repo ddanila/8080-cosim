@@ -31,9 +31,11 @@ def lib_symbol(typ, pin_order):
     L += ['\t\t\t)', '\t\t)']
     return "\n".join(L)
 
-def instance(ref, typ, px, py, n):
+def instance(ref, typ, px, py, n, pcb_dnp=False):
+    on_board = "no" if pcb_dnp else "yes"
+    dnp = "yes" if pcb_dnp else "no"
     return (f'\t(symbol (lib_id "juku:{typ}") (at {px} {py} 0) (unit 1)\n'
-            f'\t\t(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "{uid(n)}")\n'
+            f'\t\t(exclude_from_sim no) (in_bom yes) (on_board {on_board}) (dnp {dnp}) (uuid "{uid(n)}")\n'
             f'\t\t(property "Reference" "{ref}" (at {px} {py-7} 0) (effects (font (size 1.27 1.27))))\n'
             f'\t\t(property "Value" "{typ}" (at {px} {py+7} 0) (effects (font (size 1.27 1.27))))\n'
             f'\t\t(instances (project "juku" (path "/" (reference "{ref}") (unit 1)))))')
@@ -94,7 +96,7 @@ def main():
     n = 100
     for c in chips:
         px, py = pos[c["ref"]]
-        out.append(instance(c["ref"], c["type"], px, py, n)); n += 1
+        out.append(instance(c["ref"], c["type"], px, py, n, bool(c.get("pcb_dnp")))); n += 1
 
     for net, entry in spec["nets"].items():
         if isinstance(entry, dict) and entry.get("power") and not args.include_power:

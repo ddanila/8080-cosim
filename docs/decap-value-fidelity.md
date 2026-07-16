@@ -2,11 +2,12 @@
 
 Status date: 2026-07-10.
 
-Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**
+Status: **DECAP CONNECTIVITY GUARDED / C63 TARGET DNP CLOSED / PER-POSITION VALUE PENDING**
 
 This generated report isolates the C35-C72 decoupling-capacitor
 authenticity issue. The board model and routed PCB preserve the two
-array-power bypass rail groups, but the exact factory per-position
+array-power bypass rail groups as schematic intent. The target PCB has
+37 populated positions plus the photo-proven bare C63 DNP site, but the exact factory per-position
 capacitance values are not proven by current automatic evidence.
 
 ## Checks
@@ -16,6 +17,7 @@ capacitance values are not proven by current automatic evidence.
 | All C35-C72 refs exist in board JSON | PASS | 38/38 rows |
 | Rail-group connectivity matches model expectation | PASS | GND<->RAIL_H: 19, RAIL_G<->GND: 19 |
 | Current model value is uniform 0,047 | PASS | 0,047: 38 |
+| C63 target-board population is DNP | PASS | registered bare site between D41/D40; no source-PCB footprint |
 | Historical value census is reconciled per position | FAIL | raw notes report mixed values but no per-position mapping |
 
 ## Current Board Model
@@ -50,7 +52,7 @@ capacitance values are not proven by current automatic evidence.
 | C60 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D44 remains assumed |
 | C61 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D46 remains assumed |
 | C62 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D48 remains assumed |
-| C63 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047 and traced array-power bypass role GND<->RAIL_H are retained, but the current generic array-grid placement remains assumed. The .009 factory outline is between D41/D40 while the bracketed owner photo shows that site bare, with no fitted body or coherent drilled lead pair; DNP versus later removal remains unresolved |
+| C63 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047 and intended array-power bypass role GND<->RAIL_H are retained schematically. The .009 factory outline is between D41/D40, while the registered target owner photo shows that exact site bare with no fitted body or coherent drilled lead pair; C63 is therefore an explicit target-board DNP and has no PCB footprint |
 | C64 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D38 remains assumed |
 | C65 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D35 remains assumed |
 | C66 | 0,047 | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D42 remains assumed |
@@ -70,7 +72,8 @@ capacitance values are not proven by current automatic evidence.
   the former `RAIL_H`-to-GND assignment was a scan-reading error.
 - The current BOM/model value for these 38 positions is uniform
   `0,047`, which is suitable for the functional replica's modeled
-  bypass role.
+  bypass role. C63 remains one of those intended schematic positions
+  but is not populated or fabricated on the exact target board.
 - The retained factory and owner-photo evidence includes aggregate
   mixed-value capacitor counts, but no defensible mapping from those
   counts to individual C35-C72 positions.

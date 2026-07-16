@@ -68,11 +68,11 @@ kicad/check_replica_manufacturing_ready.sh
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 76862 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | PASS |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | 2554 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 73204 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8764 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
 
 ## Order-Time Checks
 

@@ -61,17 +61,19 @@ def main() -> int:
     }
     group_ok = group_counts == expected_groups
     value_ok = model_values == {"0,047": 38}
+    c63_dnp = cap_chip(board, "C63").get("pcb_dnp") is True
 
     lines = [
         "# Decoupling capacitor value fidelity",
         "",
         "Status date: 2026-07-10.",
         "",
-        "Status: **DECAP CONNECTIVITY GUARDED / PER-POSITION VALUE PENDING**",
+        "Status: **DECAP CONNECTIVITY GUARDED / C63 TARGET DNP CLOSED / PER-POSITION VALUE PENDING**",
         "",
         "This generated report isolates the C35-C72 decoupling-capacitor",
         "authenticity issue. The board model and routed PCB preserve the two",
-        "array-power bypass rail groups, but the exact factory per-position",
+        "array-power bypass rail groups as schematic intent. The target PCB has",
+        "37 populated positions plus the photo-proven bare C63 DNP site, but the exact factory per-position",
         "capacitance values are not proven by current automatic evidence.",
         "",
         "## Checks",
@@ -81,6 +83,7 @@ def main() -> int:
         table_row(["All C35-C72 refs exist in board JSON", "PASS", f"{len(rows)}/38 rows"]),
         table_row(["Rail-group connectivity matches model expectation", "PASS" if group_ok else "FAIL", ", ".join(f"{k}: {v}" for k, v in sorted(group_counts.items()))]),
         table_row(["Current model value is uniform 0,047", "PASS" if value_ok else "FAIL", ", ".join(f"{k or '-'}: {v}" for k, v in sorted(model_values.items()))]),
+        table_row(["C63 target-board population is DNP", "PASS" if c63_dnp else "FAIL", "registered bare site between D41/D40; no source-PCB footprint"]),
         table_row(["Historical value census is reconciled per position", "FAIL", "raw notes report mixed values but no per-position mapping"]),
         "",
         "## Current Board Model",
@@ -102,7 +105,8 @@ def main() -> int:
             "  the former `RAIL_H`-to-GND assignment was a scan-reading error.",
             "- The current BOM/model value for these 38 positions is uniform",
             "  `0,047`, which is suitable for the functional replica's modeled",
-            "  bypass role.",
+            "  bypass role. C63 remains one of those intended schematic positions",
+            "  but is not populated or fabricated on the exact target board.",
             "- The retained factory and owner-photo evidence includes aggregate",
             "  mixed-value capacitor counts, but no defensible mapping from those",
             "  counts to individual C35-C72 positions.",
@@ -123,7 +127,7 @@ def main() -> int:
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    return 0 if group_ok and value_ok else 1
+    return 0 if group_ok and value_ok and c63_dnp else 1
 
 
 if __name__ == "__main__":

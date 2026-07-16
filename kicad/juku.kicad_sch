@@ -2266,7 +2266,7 @@
 		(property "Value" "C_KM" (at 50 7527 0) (effects (font (size 1.27 1.27))))
 		(instances (project "juku" (path "/" (reference "C62") (unit 1)))))
 	(symbol (lib_id "juku:C_KM") (at 50 7560 0) (unit 1)
-		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "00000000-0000-0000-0000-000000000288")
+		(exclude_from_sim no) (in_bom yes) (on_board no) (dnp yes) (uuid "00000000-0000-0000-0000-000000000288")
 		(property "Reference" "C63" (at 50 7553 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "C_KM" (at 50 7567 0) (effects (font (size 1.27 1.27))))
 		(instances (project "juku" (path "/" (reference "C63") (unit 1)))))

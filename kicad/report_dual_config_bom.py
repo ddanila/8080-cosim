@@ -197,6 +197,8 @@ def procurement_of(chip):
 
 
 def populated(chip):
+    if chip.get("pcb_dnp"):
+        return False
     typ = chip["type"]
     if typ in EMPTY_SOCKET_TYPES:
         text = " ".join(str(v) for v in chip.get("prov", {}).values()).lower()
@@ -209,6 +211,9 @@ def group_key(chip):
     value = value_of(chip)
     marking = marking_of(chip)
     action, note = procurement_of(chip)
+    if chip.get("pcb_dnp"):
+        action = "leave-empty"
+        note = note or "Target-board DNP; retain schematic intent but do not fit or fabricate a footprint."
     if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM", "WIRE_LINK"}:
         return typ, value, marking, action, note
     return typ, "", marking, action, note
