@@ -101,8 +101,10 @@ with two independent component photographs and one reflected solder view. It
 closes the A2/A1 net partition while explicitly withholding the auxiliary-hole
 centres from fabrication use.
 
-`dram-decap-placement-registration.json` registers the four target-revision
-DRAM-bank decouplers C38/C42/C46/C50. The drawing fixes their intended factory
-placement; the owner-board photograph shows matching landing pairs and clipped
-lead remnants after the capacitor bodies were removed. This evidence closes
-placement and population intent, but deliberately does not promote a value.
+`dram-decap-placement-registration.json` registers the target-revision 31-site
+DRAM decoupler field. The drawing fixes C38/C42/C46/C50 as the four intended
+factory parts; the owner-board photograph shows their clipped remnants and the
+other 27 inherited `.006` grid sites as clean bare tinned footprints. The latter
+are assembly DNP but remain fabricated. This evidence closes field population
+without promoting a capacitance value or claiming `.006` coordinates as exact
+target-artwork placement.

@@ -62,7 +62,7 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2870 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2871 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1852 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1797 | FAIL |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
@@ -70,7 +70,7 @@ kicad/check_replica_manufacturing_ready.sh
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2554 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 73204 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8764 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9285 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
 

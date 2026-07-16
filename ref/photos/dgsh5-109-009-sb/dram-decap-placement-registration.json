@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scope": "target-revision DRAM-bank decouplers C38/C42/C46/C50",
-  "promotion_rule": "the factory assembly drawing establishes refdes and intended placement; matching owner-board landing pairs and clipped lead remnants establish later removal, but neither source establishes capacitance value or electrical connectivity",
+  "scope": "target-revision 31-site DRAM-field decoupler population",
+  "promotion_rule": "the factory assembly drawing establishes C38/C42/C46/C50 refdes, placement, and original population; the complete target view plus the owner-board site morphology establishes assembly DNP for the other 27 inherited grid footprints; no source establishes capacitance value or electrical connectivity",
   "factory_drawing": {
     "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
     "sha256": "a7a7c64fc71d9c0dbc42546bea6998f7fc86cf9e14a19a30c03c54803e455217",
@@ -39,6 +39,11 @@
       }
     ]
   },
+  "legacy_grid_mapping": {
+    "source": "ref/schematics/es101_emaplaat.pdf",
+    "sha256": "ef686cd1653965661bea184650f66f8891c3d538c8994852a440169b10ca464d",
+    "observation": "the older .006 assembly drawing maps a complete 4x8 DRAM-field zigzag; this source is used only to identify the optional bare footprint refdes inherited by the common 7.102.158 artwork, never to promote target-revision population"
+  },
   "owner_board": {
     "source": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
     "sha256": "2645a1266ef788331123d190391dea3924982bcf3d928a1dbfad982a1246991c",
@@ -46,6 +51,8 @@
     "side": "component",
     "coordinate_precision": "reviewed approximate enclosing boxes; removal/population evidence, not electrical endpoint coordinates",
     "observation": "the populated D91-D84 bank fixes the same four sites; each site has a coherent horizontal landing pair with solder and clipped lead remnants but no capacitor body, consistent with post-factory precious-metal removal rather than a factory DNP",
+    "optional_grid_bbox_px": [900, 0, 3100, 1550],
+    "optional_grid_observation": "D60-D83 are bare expansion footprints and the other DRAM-field capacitor sites have clean tinned landings without fitted bodies or clipped component leads; the four populated-row remnant sites remain visually distinct",
     "sites": [
       {
         "refdes": "C38",
@@ -72,6 +79,16 @@
         "population_state": "body removed; landing pair and clipped lead remnants retained"
       }
     ]
+  },
+  "target_optional_grid_dnp": {
+    "refs": [
+      "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
+      "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
+      "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69"
+    ],
+    "population_state": "assembly DNP; retain the fabricated two-pad footprint",
+    "basis": "the complete .009 target assembly view labels only C38/C42/C46/C50 in the DRAM field, while the owner board shows the remaining inherited .006 grid sites as clean bare tinned landings",
+    "boundary": "the old .006 mapping preserves refdes-to-footprint working coordinates, but those coordinates remain old-revision placement evidence rather than a target photogrammetric fit"
   },
   "population_disposition": "populate all four in the exact factory-assembly replica; the surviving owner board records later removal, not the original build state",
   "unresolved": [

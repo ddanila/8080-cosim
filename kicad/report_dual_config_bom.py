@@ -10,6 +10,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 DEFAULT_MD = ROOT / "docs" / "replica-dual-config-bom.md"
 DEFAULT_CSV = ROOT / "docs" / "replica-dual-config-bom.csv"
+DRAM_DECAP_ASSEMBLY_DNP = {
+    "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
+    "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
+    "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69",
+}
 
 
 AUTHENTIC_MARK = {
@@ -197,7 +202,7 @@ def procurement_of(chip):
 
 
 def populated(chip):
-    if chip.get("pcb_dnp"):
+    if chip.get("pcb_dnp") or chip.get("assembly_dnp"):
         return False
     typ = chip["type"]
     if typ in EMPTY_SOCKET_TYPES:
@@ -214,6 +219,9 @@ def group_key(chip):
     if chip.get("pcb_dnp"):
         action = "leave-empty"
         note = note or "Target-board DNP; retain schematic intent but do not fit or fabricate a footprint."
+    elif chip.get("assembly_dnp"):
+        action = "leave-empty"
+        note = note or "Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part."
     if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM", "WIRE_LINK"}:
         return typ, value, marking, action, note
     return typ, "", marking, action, note
@@ -255,6 +263,15 @@ def table_row(values):
 
 def build_rows(board_json):
     spec = json.loads(board_json.read_text())
+    actual_assembly_dnp = {
+        chip["ref"] for chip in spec["chips"] if chip.get("assembly_dnp")
+    }
+    if actual_assembly_dnp != DRAM_DECAP_ASSEMBLY_DNP:
+        raise ValueError(
+            "assembly-DNP set changed: "
+            f"actual={sorted(actual_assembly_dnp)}, "
+            f"expected={sorted(DRAM_DECAP_ASSEMBLY_DNP)}"
+        )
     groups = defaultdict(list)
     for chip in spec["chips"]:
         groups[group_key(chip)].append(chip)
@@ -371,7 +388,7 @@ def write_markdown(path, rows, board_json, csv_path):
         "",
         "- `source-now` and `source-populated-now` rows are planning candidates, not an approved shopping cart.",
         "- `program/dump` rows need firmware/PROM contents before they are build-ready.",
-        "- `leave-empty` rows are sockets present on the board but not populated for the current .009 functional build.",
+        "- `leave-empty` rows are fabricated component positions (including sockets and passive footprints) not populated for the current .009 functional build; a no-footprint DNP is called out explicitly in its row note.",
         "- `mechanical-review` and `circuit-review` rows need exact part drawing, footprint, or circuit-role confirmation before order.",
         "",
     ])

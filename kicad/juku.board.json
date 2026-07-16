@@ -3175,6 +3175,7 @@
   },
   {
    "ref": "C35",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3183,12 +3184,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D60 remains assumed"
+    "pins": ".009 factory drawing omits C35 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D60"
    },
    "value": "0,047"
   },
   {
    "ref": "C36",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3197,12 +3199,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D61 remains assumed"
+    "pins": ".009 factory drawing omits C36 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D61"
    },
    "value": "0,047"
   },
   {
    "ref": "C37",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3211,13 +3214,14 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D62 remains assumed"
+    "pins": ".009 factory drawing omits C37 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D62"
    },
    "value": "0,047"
   },
   {
    "ref": "C38",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3231,6 +3235,7 @@
   },
   {
    "ref": "C39",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3239,12 +3244,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D64 remains assumed"
+    "pins": ".009 factory drawing omits C39 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D64"
    },
    "value": "0,047"
   },
   {
    "ref": "C40",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3253,12 +3259,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D65 remains assumed"
+    "pins": ".009 factory drawing omits C40 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D65"
    },
    "value": "0,047"
   },
   {
    "ref": "C41",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3267,13 +3274,14 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D66 remains assumed"
+    "pins": ".009 factory drawing omits C41 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D66"
    },
    "value": "0,047"
   },
   {
    "ref": "C42",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3287,6 +3295,7 @@
   },
   {
    "ref": "C43",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3295,12 +3304,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D15 remains assumed"
+    "pins": ".009 factory drawing omits C43 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D15"
    },
    "value": "0,047"
   },
   {
    "ref": "C44",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3309,12 +3319,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D17 remains assumed"
+    "pins": ".009 factory drawing omits C44 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D17"
    },
    "value": "0,047"
   },
   {
    "ref": "C45",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3323,13 +3334,14 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D19 remains assumed"
+    "pins": ".009 factory drawing omits C45 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D19"
    },
    "value": "0,047"
   },
   {
    "ref": "C46",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3343,6 +3355,7 @@
   },
   {
    "ref": "C47",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3351,12 +3364,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D5 remains assumed"
+    "pins": ".009 factory drawing omits C47 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D5"
    },
    "value": "0,047"
   },
   {
    "ref": "C48",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3365,12 +3379,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D1 remains assumed"
+    "pins": ".009 factory drawing omits C48 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D1"
    },
    "value": "0,047"
   },
   {
    "ref": "C49",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3379,13 +3394,14 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D10 remains assumed"
+    "pins": ".009 factory drawing omits C49 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D10"
    },
    "value": "0,047"
   },
   {
    "ref": "C50",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3400,6 +3416,7 @@
   {
    "ref": "C51",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3414,6 +3431,7 @@
   {
    "ref": "C52",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3428,6 +3446,7 @@
   {
    "ref": "C53",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3441,6 +3460,7 @@
   },
   {
    "ref": "C54",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3449,12 +3469,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D55 remains assumed"
+    "pins": ".009 factory drawing omits C54 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D55"
    },
    "value": "0,047"
   },
   {
    "ref": "C55",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3463,12 +3484,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D57 remains assumed"
+    "pins": ".009 factory drawing omits C55 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D57"
    },
    "value": "0,047"
   },
   {
    "ref": "C56",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3477,12 +3499,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D23 remains assumed"
+    "pins": ".009 factory drawing omits C56 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D23"
    },
    "value": "0,047"
   },
   {
    "ref": "C57",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3491,12 +3514,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D29 remains assumed"
+    "pins": ".009 factory drawing omits C57 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D29"
    },
    "value": "0,047"
   },
   {
    "ref": "C58",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3505,12 +3529,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D6 remains assumed"
+    "pins": ".009 factory drawing omits C58 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D6"
    },
    "value": "0,047"
   },
   {
    "ref": "C59",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3519,12 +3544,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D7 remains assumed"
+    "pins": ".009 factory drawing omits C59 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D7"
    },
    "value": "0,047"
   },
   {
    "ref": "C60",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3533,12 +3559,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D44 remains assumed"
+    "pins": ".009 factory drawing omits C60 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D44"
    },
    "value": "0,047"
   },
   {
    "ref": "C61",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3547,12 +3574,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D46 remains assumed"
+    "pins": ".009 factory drawing omits C61 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D46"
    },
    "value": "0,047"
   },
   {
    "ref": "C62",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3561,7 +3589,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D48 remains assumed"
+    "pins": ".009 factory drawing omits C62 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D48"
    },
    "value": "0,047"
   },
@@ -3582,6 +3610,7 @@
   },
   {
    "ref": "C64",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3590,12 +3619,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D38 remains assumed"
+    "pins": ".009 factory drawing omits C64 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D38"
    },
    "value": "0,047"
   },
   {
    "ref": "C65",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3604,12 +3634,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D35 remains assumed"
+    "pins": ".009 factory drawing omits C65 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D35"
    },
    "value": "0,047"
   },
   {
    "ref": "C66",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3618,12 +3649,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D42 remains assumed"
+    "pins": ".009 factory drawing omits C66 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D42"
    },
    "value": "0,047"
   },
   {
    "ref": "C67",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3632,12 +3664,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D58 remains assumed"
+    "pins": ".009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D58"
    },
    "value": "0,047"
   },
   {
    "ref": "C68",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3646,12 +3679,13 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D14 remains assumed"
+    "pins": ".009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D14"
    },
    "value": "0,047"
   },
   {
    "ref": "C69",
+   "assembly_dnp": true,
    "type": "C_KM",
    "pins": {
     "1": "P1",
@@ -3660,13 +3694,14 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D3 remains assumed"
+    "pins": ".009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D3"
    },
    "value": "0,047"
   },
   {
    "ref": "C70",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3681,6 +3716,7 @@
   {
    "ref": "C71",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3695,6 +3731,7 @@
   {
    "ref": "C72",
    "type": "C_KM",
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"

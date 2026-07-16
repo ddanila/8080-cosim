@@ -16,19 +16,19 @@ readiness report.
 ## Summary
 
 - Board component positions: 315
-- Populate for current functional .009 build: 284
-- Leave empty for expansion/authentic completeness: 31
-- Unique BOM lines: 99
+- Populate for current functional .009 build: 257
+- Leave empty for expansion/authentic completeness: 58
+- Unique BOM lines: 101
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 57 |
-| leave-empty | 31 |
+| circuit-review | 67 |
+| leave-empty | 58 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 204 |
+| source-now | 167 |
 
 ## BOM Lines
 
@@ -37,11 +37,14 @@ readiness report.
 | circuit-review | AP2 | К170АП2 | RS-232/line-driver substitute required; verify +/-12 V interface | 2 | 2 | 0 | D14, D32 | - |
 | circuit-review | C_ELEC | radial electrolytic | modern radial electrolytic with matching value/voltage/polarity | 3 | 3 | 0 | C31, C32, C33 | - |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 11 | 11 | 0 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99 | - |
+| circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 4 | 4 | 0 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
+| circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 6 | 6 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | D_DIODE | Soviet diode/zener per value | modern diode/zener matching value and power | 2 | 2 | 0 | VD3, VD4 | - |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 2 | 2 | 0 | VT1, VT2 | - |
 | circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 34 | 34 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+16) | - |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
+| leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 27 | 0 | 27 | C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+9) | Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part. |
 | leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 0 | 1 | C63 | Target-board DNP; retain schematic intent but do not fit or fabricate a footprint. |
 | leave-empty | EPROM8K | К573РФ6 | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 1 | 0 | 1 | D19 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
 | leave-empty | RU5 | К565РУ5Г / 565РУ5Г | 4164-family 64Kx1 DRAM candidate; verify pinout, refresh, speed, and rails | 24 | 0 | 24 | D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6) | D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. Compatibility remains a procurement-time electrical check. |
@@ -69,7 +72,6 @@ readiness report.
 | source-now | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | 1 | 0 | D1 | - |
 | source-now | CT16_CTR | КР531ИЕ17 | 74F/74S163-class fast counter; verify timing | 1 | 1 | 0 | D40 | - |
 | source-now | C_ELEC 47,0 | radial electrolytic 47,0 | modern radial electrolytic with matching value/voltage/polarity | 1 | 1 | 0 | C1 | - |
-| source-now | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 37 | 37 | 0 | C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46, C47, C48, C49, C50, C51, C52, ... (+19) | - |
 | source-now | C_KM 24 | КМ ceramic capacitor 24 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C21 | - |
 | source-now | C_KM 56 | КМ ceramic capacitor 56 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C6 | - |
 | source-now | C_KM 560 | КМ ceramic capacitor 560 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C5 | - |
@@ -138,5 +140,5 @@ readiness report.
 
 - `source-now` and `source-populated-now` rows are planning candidates, not an approved shopping cart.
 - `program/dump` rows need firmware/PROM contents before they are build-ready.
-- `leave-empty` rows are sockets present on the board but not populated for the current .009 functional build.
+- `leave-empty` rows are fabricated component positions (including sockets and passive footprints) not populated for the current .009 functional build; a no-footprint DNP is called out explicitly in its row note.
 - `mechanical-review` and `circuit-review` rows need exact part drawing, footprint, or circuit-role confirmation before order.

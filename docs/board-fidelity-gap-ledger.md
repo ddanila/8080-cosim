@@ -130,36 +130,36 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
-| `C35` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D60 remains assumed |
-| `C36` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D61 remains assumed |
-| `C37` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D62 remains assumed |
-| `C39` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D64 remains assumed |
-| `C40` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D65 remains assumed |
-| `C41` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D66 remains assumed |
-| `C43` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D15 remains assumed |
-| `C44` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D17 remains assumed |
-| `C45` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D19 remains assumed |
-| `C47` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D5 remains assumed |
-| `C48` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D1 remains assumed |
-| `C49` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D10 remains assumed |
+| `C35` | `C_KM` | scan | .009 factory drawing omits C35 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C36` | `C_KM` | scan | .009 factory drawing omits C36 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C37` | `C_KM` | scan | .009 factory drawing omits C37 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C39` | `C_KM` | scan | .009 factory drawing omits C39 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C40` | `C_KM` | scan | .009 factory drawing omits C40 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C41` | `C_KM` | scan | .009 factory drawing omits C41 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C43` | `C_KM` | scan | .009 factory drawing omits C43 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C44` | `C_KM` | scan | .009 factory drawing omits C44 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C45` | `C_KM` | scan | .009 factory drawing omits C45 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C47` | `C_KM` | scan | .009 factory drawing omits C47 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C48` | `C_KM` | scan | .009 factory drawing omits C48 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C49` | `C_KM` | scan | .009 factory drawing omits C49 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C51` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D26 remains assumed |
 | `C52` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D27 remains assumed |
 | `C53` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D54 remains assumed |
-| `C54` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D55 remains assumed |
-| `C55` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D57 remains assumed |
-| `C56` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D23 remains assumed |
-| `C57` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D29 remains assumed |
-| `C58` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D6 remains assumed |
-| `C59` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D7 remains assumed |
-| `C60` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D44 remains assumed |
-| `C61` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D46 remains assumed |
-| `C62` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D48 remains assumed |
-| `C64` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D38 remains assumed |
-| `C65` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D35 remains assumed |
-| `C66` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D42 remains assumed |
-| `C67` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D58 remains assumed |
-| `C68` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D14 remains assumed |
-| `C69` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D3 remains assumed |
+| `C54` | `C_KM` | scan | .009 factory drawing omits C54 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C55` | `C_KM` | scan | .009 factory drawing omits C55 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C56` | `C_KM` | scan | .009 factory drawing omits C56 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C57` | `C_KM` | scan | .009 factory drawing omits C57 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C58` | `C_KM` | scan | .009 factory drawing omits C58 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C59` | `C_KM` | scan | .009 factory drawing omits C59 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C60` | `C_KM` | scan | .009 factory drawing omits C60 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C61` | `C_KM` | scan | .009 factory drawing omits C61 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C62` | `C_KM` | scan | .009 factory drawing omits C62 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C64` | `C_KM` | scan | .009 factory drawing omits C64 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C65` | `C_KM` | scan | .009 factory drawing omits C65 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C66` | `C_KM` | scan | .009 factory drawing omits C66 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C67` | `C_KM` | scan | .009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C68` | `C_KM` | scan | .009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
+| `C69` | `C_KM` | scan | .009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C70` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D71 remains assumed |
 | `C71` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D79 remains assumed |
 | `C72` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D87 remains assumed |

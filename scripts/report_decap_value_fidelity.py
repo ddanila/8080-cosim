@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 SOURCE_PCB = ROOT / "kicad" / "juku.kicad_pcb"
+SCHEMATIC = ROOT / "kicad" / "juku.kicad_sch"
 PCB_GENERATOR = ROOT / "kicad" / "gen_kicad_pcb.py"
 PLACEMENT_EVIDENCE = (
     ROOT
@@ -30,6 +31,12 @@ REGISTERED_DRAM_REFS = {
     "C46": "D87",
     "C50": "D85",
 }
+OPTIONAL_GRID_DNP_REFS = {
+    "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
+    "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
+    "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69",
+}
+UNRESOLVED_PLACEMENT_REFS = {"C51", "C52", "C53", "C70", "C71", "C72"}
 MAX_POSITION_ERROR_MM = 0.01
 
 
@@ -103,6 +110,21 @@ def pcb_footprint_pad_midpoint(ref: str) -> tuple[float, float]:
     return x + 2.5 * math.cos(angle), y + 2.5 * math.sin(angle)
 
 
+def schematic_population_flags(ref: str) -> tuple[str, str]:
+    text = SCHEMATIC.read_text(encoding="utf-8")
+    marker = f'(property "Reference" "{ref}"'
+    ref_at = text.find(marker)
+    if ref_at < 0:
+        raise SystemExit(f"decap audit: schematic is missing {ref}")
+    line_start = text.rfind("\n", 0, ref_at) + 1
+    flags_start = text.rfind("\n", 0, line_start - 1) + 1
+    flags = text[flags_start:line_start]
+    match = re.search(r"\(on_board (yes|no)\) \(dnp (yes|no)\)", flags)
+    if match is None:
+        raise SystemExit(f"decap audit: cannot parse {ref} schematic population flags")
+    return match.group(1), match.group(2)
+
+
 def valid_bbox(bbox: object, dimensions: object) -> bool:
     if not isinstance(bbox, list) or len(bbox) != 4:
         return False
@@ -117,9 +139,18 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
     evidence = json.loads(PLACEMENT_EVIDENCE.read_text(encoding="utf-8"))
     drawing = evidence.get("factory_drawing", {})
     owner = evidence.get("owner_board", {})
+    legacy = evidence.get("legacy_grid_mapping", {})
     diagnostics: list[str] = []
+    partition = (
+        set(REGISTERED_DRAM_REFS)
+        | OPTIONAL_GRID_DNP_REFS
+        | UNRESOLVED_PLACEMENT_REFS
+        | {"C63"}
+    )
+    if partition != set(CAP_REFS):
+        diagnostics.append("C35-C72 population-disposition partition is incomplete")
 
-    for source in (drawing, owner):
+    for source in (drawing, owner, legacy):
         path = ROOT / str(source.get("source", ""))
         if not path.is_file() or sha256(path) != source.get("sha256"):
             diagnostics.append(f"source/hash mismatch: {source.get('source', '-')}")
@@ -159,6 +190,43 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
             diagnostics.append(f"{ref}: board provenance lost factory placement")
         if "exact factory capacitance is pending" not in note:
             diagnostics.append(f"{ref}: board provenance overstates value closure")
+        if cap_chip(board, ref).get("assembly_dnp"):
+            diagnostics.append(f"{ref}: factory-populated target is marked assembly DNP")
+        if cap_chip(board, ref).get("procurement", {}).get("action") != "circuit-review":
+            diagnostics.append(f"{ref}: unresolved factory value is not sourcing-gated")
+        if schematic_population_flags(ref) != ("yes", "no"):
+            diagnostics.append(f"{ref}: factory-populated schematic flags changed")
+
+    optional = evidence.get("target_optional_grid_dnp", {})
+    optional_refs = {str(ref) for ref in optional.get("refs", [])}
+    if optional_refs != OPTIONAL_GRID_DNP_REFS:
+        diagnostics.append("optional-grid DNP set is not the guarded 27 refs")
+    if not valid_bbox(owner.get("optional_grid_bbox_px"), owner.get("dimensions_px")):
+        diagnostics.append("owner optional-grid box is invalid")
+    if "fabricated two-pad footprint" not in str(optional.get("population_state", "")):
+        diagnostics.append("optional-grid footprint-retention disposition is missing")
+    for ref in sorted(OPTIONAL_GRID_DNP_REFS):
+        chip = cap_chip(board, ref)
+        if chip.get("assembly_dnp") is not True or chip.get("pcb_dnp"):
+            diagnostics.append(f"{ref}: must be assembly-DNP with its PCB footprint retained")
+        if schematic_population_flags(ref) != ("yes", "yes"):
+            diagnostics.append(f"{ref}: schematic must retain the footprint and mark DNP")
+        generated_position = generated.get(ref)
+        if generated_position is None:
+            diagnostics.append(f"{ref}: legacy generator footprint is missing")
+        elif math.dist(generated_position[:2], pcb_footprint_pad_midpoint(ref)) > MAX_POSITION_ERROR_MM:
+            diagnostics.append(f"{ref}: retained source-PCB footprint differs from generator")
+        note = str(chip.get("prov", {}).get("pins", ""))
+        if "assembly DNP with the fabricated footprint retained" not in note:
+            diagnostics.append(f"{ref}: board provenance lost assembly-DNP disposition")
+    for ref in sorted(UNRESOLVED_PLACEMENT_REFS):
+        chip = cap_chip(board, ref)
+        if chip.get("assembly_dnp") or chip.get("pcb_dnp"):
+            diagnostics.append(f"{ref}: unresolved non-field population was prematurely closed")
+        if chip.get("procurement", {}).get("action") != "circuit-review":
+            diagnostics.append(f"{ref}: unresolved placement/value is not sourcing-gated")
+    if schematic_population_flags("C63") != ("no", "yes"):
+        diagnostics.append("C63 schematic no-footprint DNP flags changed")
 
     if set(drawing_targets) != set(REGISTERED_DRAM_REFS):
         diagnostics.append("factory target set is not exactly C38/C42/C46/C50")
@@ -185,7 +253,15 @@ def main() -> int:
         group_counts[group] = group_counts.get(group, 0) + 1
         model_values[value] = model_values.get(value, 0) + 1
         note = str(chip.get("prov", {}).get("pins", ""))
-        rows.append((ref, value, p1, p2, note))
+        if chip.get("pcb_dnp"):
+            population = "DNP / no PCB footprint"
+        elif chip.get("assembly_dnp"):
+            population = "assembly DNP / footprint retained"
+        elif ref in REGISTERED_DRAM_REFS:
+            population = "populate (factory drawing)"
+        else:
+            population = "pending / currently modeled populated"
+        rows.append((ref, value, population, p1, p2, note))
 
     expected_groups = {
         "RAIL_G<->GND": 19,
@@ -201,14 +277,15 @@ def main() -> int:
         "",
         "Status date: 2026-07-16.",
         "",
-        "Status: **FOUR TARGET DRAM PLACEMENTS CLOSED / C63 TARGET DNP CLOSED / VALUES AND 33 PLACEMENTS PENDING**",
+        "Status: **DRAM-FIELD POPULATION CLOSED / C63 TARGET DNP CLOSED / VALUES AND FOOTPRINT PLACEMENTS PENDING**",
         "",
         "This generated report isolates the C35-C72 decoupling-capacitor",
         "authenticity issue. The board model and routed PCB preserve the two",
         "array-power bypass rail groups as schematic intent. The `.009` factory",
-        "drawing and owner-board remnants now close placement and original population",
-        "intent for C38/C42/C46/C50; C63 is a target DNP. The other 33 placements",
-        "and all exact factory per-position capacitance values remain unproven.",
+        "drawing and owner-board morphology close the 31-site DRAM-field population:",
+        "fit C38/C42/C46/C50 and leave the other 27 inherited footprints empty.",
+        "C63 has no target footprint. Six non-field placement/population dispositions,",
+        "33 exact target footprint placements, and all factory capacitance values remain open.",
         "",
         "## Checks",
         "",
@@ -218,13 +295,14 @@ def main() -> int:
         table_row(["Rail-group connectivity matches model expectation", "PASS" if group_ok else "FAIL", ", ".join(f"{k}: {v}" for k, v in sorted(group_counts.items()))]),
         table_row(["Current model value is uniform 0,047", "PASS" if value_ok else "FAIL", ", ".join(f"{k or '-'}: {v}" for k, v in sorted(model_values.items()))]),
         table_row(["Target DRAM-bank C38/C42/C46/C50 placements are registered", "PASS" if dram_placement_ok else "FAIL", "factory drawing + owner landing/remnant sites + generator/source PCB" if dram_placement_ok else "; ".join(dram_placement_diagnostics)]),
+        table_row(["Other 27 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok else "FAIL", "bare tinned target footprints retained in PCB; omitted from populate-now BOM"]),
         table_row(["C63 target-board population is DNP", "PASS" if c63_dnp else "FAIL", "registered bare site between D41/D40; no source-PCB footprint"]),
         table_row(["Historical value census is reconciled per position", "FAIL", "raw notes report mixed values but no per-position mapping"]),
         "",
         "## Current Board Model",
         "",
-        "| Ref | Model value | Pin 1 net | Pin 2 net | Provenance note |",
-        "| --- | --- | --- | --- | --- |",
+        "| Ref | Model value | Target population | Pin 1 net | Pin 2 net | Provenance note |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
     lines.extend(table_row(list(row)) for row in rows)
 
@@ -247,12 +325,18 @@ def main() -> int:
             "  shows a matching landing pair with solder and clipped lead remnants",
             "  at each site but no body. Those four parts are therefore populated",
             "  in the factory replica; the photographed board records later removal.",
+            "- The same complete target view omits the other 27 positions in the",
+            "  older `.006` 4x8 zigzag. The owner view shows those inherited sites",
+            "  as clean bare tinned landings, including the four alternate bottom-row",
+            "  sites. They remain fabricated verification footprints but are marked",
+            "  assembly DNP and excluded from the populate-now BOM.",
             "- The retained factory and owner-photo evidence includes aggregate",
             "  mixed-value capacitor counts, but no defensible mapping from those",
             "  counts to individual C35-C72 positions.",
-            "- The remaining 33 C35-C72 placement/population associations still",
-            "  require target-revision drawing registration. The older `.006`",
-            "  zigzag is not sufficient proof for the `.009` target revision.",
+            "- C51-C53 and C70-C72 still require target-revision placement/population",
+            "  disposition. Exact target-artwork placement of those six plus the 27",
+            "  retained bare grid footprints also remains to be photogrammetrically",
+            "  registered; `.006` coordinates are not `.009` placement proof.",
             "",
             "## Boundary",
             "",

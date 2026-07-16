@@ -155,7 +155,7 @@ def main() -> int:
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
-        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **FOUR TARGET DRAM PLACEMENTS CLOSED / C63 TARGET DNP CLOSED / VALUES AND 33 PLACEMENTS PENDING**")),
+        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM-FIELD POPULATION CLOSED / C63 TARGET DNP CLOSED / VALUES AND FOOTPRINT PLACEMENTS PENDING**")),
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
@@ -290,7 +290,7 @@ def main() -> int:
         (
             "P2",
             "photos and passive values",
-            "target-revision drawing registration for the 33 unresolved C35-C72 placements, readable bypass-cap values by refdes/position (C38/C42/C46/C50 placement and factory population are already closed despite removed owner-board bodies), plus macro photos for FDC/top-center and sound/video analog passives",
+            "target-revision placement/population disposition for C51-C53 and C70-C72, artwork registration for the 27 retained bare DRAM-grid footprints, readable bypass-cap values by refdes/position (the 31-site DRAM-field population is closed), plus macro photos for FDC/top-center and sound/video analog passives",
             "`docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs",
             "improves authenticity and reduces assembly substitutions",
         ),
