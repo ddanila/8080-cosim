@@ -95,8 +95,8 @@ reset-to-prompt reports are the stronger evidence where both exist.
 
 The FDC, USART, PIT/PPI/PIC, memory timing, and video helpers are scoped to
 guarded Juku behavior. They are not complete drop-in models of every original
-chip. Most importantly, behavioral success cannot supply D94 wiring/contents,
-D30 section B and the exact `H` edge handoff, or the functional connectivity of
-the 9 FDC-support ICs; those are fabrication-release blockers tracked in
-`PLAN.md`. D2 itself is no longer missing: its validated physical table and
-measured D0/READY path are adopted.
+chip. Most importantly, behavioral success cannot supply the remaining D94
+wiring or the functional connectivity of the 9 FDC-support ICs; those are
+fabrication-release blockers tracked in `PLAN.md`. D2 itself is no longer
+missing: its validated physical table and measured D0/READY path are adopted,
+and native/.009 evidence now closes D30 section B's X1.107B/R1 `H` handoff.

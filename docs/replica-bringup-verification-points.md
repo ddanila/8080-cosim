@@ -16,8 +16,8 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `210`
 - Verification-point endpoints checked in PCB: `232`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2269`
-- All board endpoints checked in routed PCB: `2269`
+- All board endpoints checked in source PCB: `2272`
+- All board endpoints checked in routed PCB: `2272`
 - Intentional off-board endpoints excluded: `61`
 - Full PCB endpoint coverage: `FAIL`
 
@@ -53,8 +53,8 @@ fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2269/2269 | 2269/2269 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1885/2269 | 1801/2269 | FAIL |
+| `kicad/juku.kicad_pcb` | 2272/2272 | 2272/2272 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1885/2272 | 1801/2272 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -110,6 +110,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `D102_RC2_BOUNDARY: D102.7`
 - `D104_X4_OUT_BOUNDARY: D104.10`
 - `D105_10_H: D13.13`
+- `D105_10_H: X1.107B`
+- `D105_10_H: R1.2`
 - `D106_BO_BOUNDARY: D106.13`
 - `D106_CLR_BOUNDARY: D106.14`
 - `D106_CO_BOUNDARY: D106.12`
@@ -329,6 +331,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `P12V: R66.1`
 - `P5V: D10.16`
 - `P5V: A61.1`
+- `P5V: R1.1`
 - `P5V: D40.7`
 - `P5V: D40.10`
 - `P5V: D41.1`

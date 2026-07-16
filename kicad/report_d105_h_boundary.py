@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
 import pcbnew
@@ -13,6 +14,7 @@ SOURCE = ROOT / "kicad/juku.kicad_pcb"
 ROUTED = ROOT / "kicad/juku_routed.kicad_pcb"
 HDL = ROOT / "hdl/juku_top.v"
 REPORT = ROOT / "docs/d105-h-boundary.md"
+REGISTRATION = ROOT / "ref/photos/juku-pcb-2/d105-h-registration.json"
 
 spec = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 
@@ -28,7 +30,7 @@ def pad_net(board: pcbnew.BOARD, ref: str, pin: str) -> str:
 
 checks: list[tuple[str, bool, str]] = []
 expected = {
-    "D105_10_H": {("D105", "10"), ("D13", "13")},
+    "D105_10_H": {("D105", "10"), ("D13", "13"), ("X1", "107B"), ("R1", "2")},
     "DBIN": {("D1", "17"), ("D105", "9")},
     "DBIN_GATED": {("D105", "6"), ("D5", "4")},
     "D105_WAIT_STAGE": {("D105", "8"), ("D105", "4"), ("D105", "5")},
@@ -43,16 +45,84 @@ checks.append(("MEMW reaches tied D105 inputs",
 checks.append(("H remains separate from derived -5 V",
                not (nodes("D105_10_H") & nodes("M5V_DERIVED")),
                str(sorted(nodes("M5V_DERIVED")))))
+chips = {chip["ref"]: chip for chip in spec["chips"]}
+checks.append(("Native R1 pull-up value is preserved",
+               chips.get("R1", {}).get("value") == "2к" and ("R1", "1") in nodes("P5V"),
+               f"R1={chips.get('R1', {}).get('value')}; R1.1 on P5V={('R1', '1') in nodes('P5V')}"))
+
+registration = json.loads(REGISTRATION.read_text(encoding="utf-8"))
+source_errors = []
+for record in registration.get("sources", []):
+    path = ROOT / record["path"]
+    digest = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else "missing"
+    if digest != record.get("sha256"):
+        source_errors.append(f"{record['path']}: {digest}")
+pullup = registration.get("pullup", {})
+registration_ok = (
+    registration.get("edge_contact", {}).get("pin") == "107B"
+    and pullup.get("refdes") == "R1"
+    and pullup.get("value") == "2к"
+    and not source_errors
+)
+checks.append(("Native/.009/owner evidence registration is intact",
+               registration_ok,
+               "three source hashes + X1.107B/R1 2к" if registration_ok else "; ".join(source_errors)))
 
 source = pcbnew.LoadBoard(str(SOURCE))
 for ref, pin, wanted in (
     ("D105", "10", "D105_10_H"), ("D13", "13", "D105_10_H"),
+    ("X1", "107B", "D105_10_H"), ("R1", "2", "D105_10_H"),
+    ("R1", "1", "P5V"),
     ("D1", "17", "DBIN"), ("D105", "9", "DBIN"),
     ("D105", "6", "DBIN_GATED"), ("D5", "4", "DBIN_GATED"),
     ("D105", "12", "MEMW"), ("D105", "13", "MEMW"),
 ):
     actual = pad_net(source, ref, pin)
     checks.append((f"Source PCB assigns {ref}.{pin} to {wanted}", actual == wanted, actual))
+
+r1 = source.FindFootprintByReference("R1")
+expected_positions = {"1": (40.88, 210.0), "2": (30.72, 210.0)}
+position_evidence = []
+position_ok = r1 is not None
+if r1 is not None:
+    for pin, wanted in expected_positions.items():
+        pad = r1.FindPadByNumber(pin)
+        actual = (
+            round(pcbnew.ToMM(pad.GetPosition().x), 3),
+            round(pcbnew.ToMM(pad.GetPosition().y), 3),
+        ) if pad is not None else None
+        position_evidence.append(f"R1.{pin}={actual}")
+        position_ok &= actual is not None and all(abs(got - want) <= 0.002 for got, want in zip(actual, wanted))
+checks.append(("Source PCB preserves the registered R1 landings",
+               position_ok, "; ".join(position_evidence)))
+surface_ok = r1 is not None and all(
+    pad.GetAttribute() == pcbnew.PAD_ATTRIB_SMD
+    and pad.GetLayerSet().Contains(pcbnew.F_Cu)
+    and not pad.GetLayerSet().Contains(pcbnew.B_Cu)
+    for pad in r1.Pads()
+)
+checks.append(("R1 uses the photographed component-side surface landings",
+               surface_ok, "F.Cu SMD; no drilled/B.Cu pads"))
+orientation_evidence = []
+orientation_ok = True
+for ref in ("D13", "D105"):
+    footprint = source.FindFootprintByReference(ref)
+    angle = footprint.GetOrientationDegrees() % 360 if footprint is not None else None
+    orientation_evidence.append(f"{ref}={angle}")
+    orientation_ok &= angle is not None and abs(angle - 270.0) <= 0.01
+checks.append(("D13/D105 preserve their photographed right-facing notches",
+               orientation_ok, "; ".join(orientation_evidence)))
+d105 = source.FindFootprintByReference("D105")
+d105_outer = [d105.FindPadByNumber(pin) for pin in ("1", "7", "8", "14")] if d105 is not None else []
+d105_center = (
+    round(sum(pcbnew.ToMM(pad.GetPosition().x) for pad in d105_outer) / 4, 3),
+    round(sum(pcbnew.ToMM(pad.GetPosition().y) for pad in d105_outer) / 4, 3),
+) if d105_outer and all(pad is not None for pad in d105_outer) else None
+checks.append(("D105 preserves its factory centre with owner-photo orientation",
+               d105_center is not None
+               and abs(d105_center[0] - 31.9) <= 0.01
+               and abs(d105_center[1] - 215.5) <= 0.01,
+               str(d105_center)))
 
 hdl = HDL.read_text(encoding="utf-8")
 checks.append(("HDL models pulled-up H and gated DBIN",
@@ -74,12 +144,15 @@ checks.append(("Invalid routed snapshot is explicitly stale",
                bool(routed_mismatches), "; ".join(routed_mismatches)))
 
 ok = all(result for _, result, _ in checks)
-status = "D105 H/DBIN HANDOFF ADOPTED / ROUTED REFRESH REQUIRED" if ok else "D105 HANDOFF FAILED"
+status = "D105 H/DBIN + X1.107B/R1 CLOSURE ADOPTED / ROUTED REFRESH REQUIRED" if ok else "D105 HANDOFF FAILED"
 lines = [
     "# D105 H/DBIN boundary", "", f"Status: **{status}**", "",
-    "Direct owner continuity on the physical `.009` board supersedes the older",
-    "interpretation of this package. D105.10 is the pulled-up edge-bus `H` net",
-    "shared with D13.13, not the −5 V supply. CPU D1.17 `DBIN` reaches D105.9;",
+    "The native full-resolution sheet closes edge contact `X1.107B` (`-BLOCK`)",
+    "directly onto D13.13/`H` and labels its pull-up `R1 2 kΩ` to rail A (+5 V).",
+    "The `.009` assembly drawing identifies R1 between D13 and D105, the owner",
+    "photo registers the populated landings, and direct continuity independently",
+    "closes D13.13 to D105.10. Thus D105.10 is not the −5 V supply. CPU D1.17",
+    "`DBIN` reaches D105.9;",
     "D105.9/.10 feed one NAND and tied D105.4/.5 invert it again, so D105.6",
     "drives D5.4 as `DBIN AND H`. Tied D105.12/.13 receive `MEMW`, while",
     "D105.11 drives D30.13.", "",

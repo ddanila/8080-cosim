@@ -28,6 +28,7 @@ measurement lands, add a row here.
 | Fact | Provenance | Source |
 | --- | --- | --- |
 | `D30.11 -> D105.2 / D13.4 / D11.20`; `D30.8 -> D29.7` | owner-continuity | `docs/d30-section-b-scan-chase.md` |
+| `X1.107B -BLOCK / H -> D13.13 -> D105.10`, pulled up by R1 2 kΩ to +5 V | native sheet + `.009` drawing/photo + owner-continuity | `docs/d105-h-boundary.md` |
 
 ## D93 / D94 (FDC-era; FDC currently out of scope)
 
@@ -47,7 +48,6 @@ measurement lands, add a row here.
   either result. Cheaper cross-check: D6.12/D8.15 operating LEVELS during a ROM
   fetch (continuity is already done).
 - D6.15/A7 driver/pull source.
-- D30 `H` exact edge contact + pull-up value.
 - Factory Вид В callout conductors at the registered D56.12/D56.5 level,
   D14's photo-exhausted D14.2/.7 and registered fifth-landing conductor /
   remaining drawn traces, and D11's registered

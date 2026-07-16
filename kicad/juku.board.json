@@ -1310,6 +1310,7 @@
     "104C": "MRC_N",
     "104B": "MWC_N",
     "106C": "IORC_N",
+    "107B": "BLOCK_H",
     "107C": "WREQ_N",
     "105B": "IOWC_N",
     "132C": "DAT0",
@@ -1357,7 +1358,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 edge connector map + bus-interface transcription",
-    "pins": "X1 edge-pin codes traced for command, data, high/low address, interrupt, clock, and power rails; 113B/113C are the traced external -INT7/-INT6 inputs feeding D3; off-board expansion behavior is outside the replica boot-path model"
+    "pins": "X1 edge-pin codes traced for command, data, high/low address, interrupt, clock, and power rails; native sheet 1 identifies 107B as -BLOCK/H with R1 2k pull-up; 113B/113C are the traced external -INT7/-INT6 inputs feeding D3; off-board expansion behavior is outside the replica boot-path model"
    }
   },
   {
@@ -2623,6 +2624,20 @@
     "pins": "scan: reset RC"
    },
    "value": "100"
+  },
+  {
+   "ref": "R1",
+   "type": "R_AXIAL",
+   "pins": {
+    "1": "P1",
+    "2": "P2"
+   },
+   "prov": {
+    "type": "native schematic + factory assembly drawing + owner photo",
+    "refdes": "sheet-1 H/-BLOCK pull-up; ДГШ5.109.009 СБ placement beside D13/D105",
+    "pins": "native full-resolution sheet 1 labels R1 2k from X1.107B/-BLOCK/H to +5 V rail A; the .009 assembly drawing and registered owner component photo identify the populated horizontal R1 body and its two landings"
+   },
+   "value": "2к"
   },
   {
    "ref": "R20",
@@ -11129,6 +11144,10 @@
      "1"
     ],
     [
+     "R1",
+     "1"
+    ],
+    [
      "D7",
      "14"
     ],
@@ -15737,8 +15756,8 @@
    "nodes": [["D30", "10"], ["D30", "12"], ["R5", "2"]]
   },
   "D105_10_H": {
-   "src": "owner continuity 2026-07-13: pulled-up edge-bus H joins D105.10 and D13.13; exact edge contact and pullup reference/value remain unresolved. This disproves the old H(-5) supply merge",
-   "nodes": [["D105", "10"], ["D13", "13"]]
+   "src": "native full-resolution sheet 1 directly labels edge contact 107B -BLOCK on the D13.13/H conductor and R1 2k from that junction to rail A (+5 V). The .009 assembly drawing labels R1 between D13 and D105, the registered owner photo proves the populated body/landings, and direct owner continuity 2026-07-13 independently closes D13.13 to D105.10. This disproves the old H(-5) supply merge",
+   "nodes": [["D105", "10"], ["D13", "13"], ["X1", "107B"], ["R1", "2"]]
   },
   "WREQ_N": {
    "src": "traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Chip-removed direct owner continuity on 2026-07-14 proves D6 RAM_N output pin11 joins D2.15; follow-up direct owner continuity on 2026-07-15 proves the same D6.11 conductor reaches D92.5 and R12.2, with R12.1 at +5V. This restores and physically confirms the older-sheet/held-DSN pull-up branch without restoring the invalid D6.11-D6.12 join",

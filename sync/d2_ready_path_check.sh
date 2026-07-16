@@ -28,9 +28,9 @@ sync/d2_ready_path_check.sh
 
 The used D0/pin12 reader channel was Nano D10, not the Nano D13 LED-loaded
 channel implicated in the D6 D3 re-read. Direct continuity independently puts
-D2.12 on D30.2 and the R6 pull-up. These facts pin D2's raw electrical polarity;
-they do not prove the complete cycle-by-cycle WAIT duration or the unresolved
-`H` edge contact.
+D2.12 on D30.2 and the R6 pull-up. These facts pin D2's raw electrical polarity.
+X1.107B/-BLOCK and R1 now close the `H` edge contact; this guard still does not
+prove the complete cycle-by-cycle WAIT duration around that edge.
 EOF
 
 cat "$tmp/output"

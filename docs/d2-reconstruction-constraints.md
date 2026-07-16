@@ -144,10 +144,11 @@ one idempotent solder-side segment for each D2-to-D4 address route.
   programming truth; D9 is the current chip-select decoder.
 - Known: all eight inputs are traced and D0/pin12 feeds D30 READY data.
   The factory symbol draws only D0; pins9-11 are explicit no-connects.
-- Known: D105.10 is the pulled-up edge-bus `H` net shared with D13.13;
-  it gates CPU DBIN through D105 into D5 and is not the −5 V supply.
+- Known: X1.107B/-BLOCK, R1.2, D13.13, and D105.10 form the pulled-up
+  edge-bus `H`; R1 is 2 kΩ to +5 V. H gates CPU DBIN through D105
+  into D5 and is not the −5 V supply.
 - Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte
   authoritative raw low-nibble image, reproduced from all three captures.
-- Remaining closure is complete cycle timing through the measured `H`
-  edge boundary plus historical corroboration, not D2 content or raw
+- Remaining closure is complete cycle timing around the now-closed `H`
+  edge plus historical corroboration, not D2 content or raw
   electrical polarity.

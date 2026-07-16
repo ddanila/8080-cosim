@@ -15,8 +15,8 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 312
-- Populate for current functional .009 build: 282
+- Board component positions: 313
+- Populate for current functional .009 build: 283
 - Leave empty for expansion/authentic completeness: 30
 - Unique BOM lines: 94
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 193 |
+| source-now | 194 |
 
 ## BOM Lines
 
@@ -109,7 +109,7 @@ readiness report.
 | source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R29, R31, R38 | - |
 | source-now | R_AXIAL 200 | axial resistor 200 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R46 | - |
 | source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R94 | - |
-| source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R5, R6 | - |
+| source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R1, R5, R6 | - |
 | source-now | R_AXIAL 33k | axial resistor 33k | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R18, R30 | - |
 | source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R19 | - |
 | source-now | R_AXIAL 620 | axial resistor 620 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R33 | - |

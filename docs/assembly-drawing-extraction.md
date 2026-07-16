@@ -22,6 +22,7 @@ is promoted as a copper netlist.
 | Lower FDC passive identities follow the registered factory drawing | PASS | five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py` |
 | Upper-row C12/C9 placements follow adjacent fitted IC centres | PASS | D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py` |
 | D94 pull-up identities and endpoints are source-modeled | PASS | factory R87/R88/R89 labels plus registered component/solder copper; `kicad/check_d94_pullups.py` |
+| X1.107B/-BLOCK/H and R1 are source-modeled | PASS | native sheet 1 plus `.009` R1 placement and owner component photo; `kicad/report_d105_h_boundary.py` |
 | Cable geometry is recorded from the drawing | PASS | assembly-photo README |
 | Board points А:17 and А:18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
 | All ten on-board insulated links map conductor positions and А:N points to guarded endpoints | PASS | sheets 2-5 table; owner continuity; `kicad/check_factory_wire_links.py` |
@@ -80,6 +81,7 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 
 - Preserve the proved D15 cut and D14 local link; hold the registered D56/D11 callout fields until continuity closes them.
 - Keep D94/D100/D98 horizontal during the source-PCB reroute.
+- Keep D13/D105 right-facing and preserve R1 as the component-side 2 kΩ X1.107B/H pull-up.
 - Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.
 - S1 remains an off-board bracket component and is excluded from generated PCB footprints.
 - Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.

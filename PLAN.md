@@ -236,13 +236,7 @@ Every ask below is queued with exact deliverables in
    overlaps. The functional output is retained on an explicit singleton
    boundary, reducing the remaining D104.10 ask to targeted continuity rather
    than permitting an inferred no-connect.
-3. **Finish the measured WAIT/READY edge boundaries.** The D2/D30/D105 path
-   is adopted; D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are now
-   owner-confirmed, while the native sheet-2 D38.8 status-strobe export is now
-   cross-sheet closed onto sheet-1 `-SSTB`/D30.1 on the D38 side of W8. Resolve
-   only the exact edge contact/pull-up for `H`
-   (`docs/d30-section-b-scan-chase.md`, `docs/d105-h-boundary.md`).
-4. **Close the remaining D6-area netlist asks.** Chip-removed continuity now
+3. **Close the remaining D6-area netlist asks.** Chip-removed continuity now
    proves D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the
    earlier installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ.
    The D6.11->D92.5/R12.2 branch is now owner-confirmed, joining the already
@@ -264,7 +258,7 @@ Every ask below is queued with exact deliverables in
    alternative in highest-priority item 1. The five live RAM-read levels named
    by `docs/d6-runtime-path-diagnostic.md` become Tier-3 confirmation asks once
    that gate closes and the guarded adoption run is green.
-5. **Map the factory Вид В modifications.** The local Вид В details at D56,
+4. **Map the factory Вид В modifications.** The local Вид В details at D56,
    D15, D14, and D11 mix solder/copper context with assembly callouts. Note 11
    proves position 150 is tubing fitted at solder locations, not a cut; only
    the D15 detail explicitly says `Разрезать`. D15 is
@@ -297,14 +291,14 @@ Every ask below is queued with exact deliverables in
    direct continuity of the bridge, D11 pin/net, and remote endpoints remains
    the P0 hold
    (`docs/factory-modification-disposition.md`).
-6. **Disposition all remaining source-risk nets and omitted endpoints.**
+5. **Disposition all remaining source-risk nets and omitted endpoints.**
    210 source-risk nets and 9 official FDC devices with untraced functional
    pins remain (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2263/2263
+Source-model state feeding this work: the source PCB passes all 2272/2272
 net-assigned PCB-scoped board-JSON endpoints, with 61 endpoints on
 bracket-mounted S1/X3/X4/X8/X9 intentionally excluded in favor of their
 physical A-point cable landings

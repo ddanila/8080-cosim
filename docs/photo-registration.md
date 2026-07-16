@@ -8,6 +8,8 @@ The durable source records are:
   landmarks;
 - `ref/photos/juku-pcb-2/local-package-registration.json` — direct package
   anchors and independent checks;
+- `ref/photos/juku-pcb-2/d105-h-registration.json` — native-sheet, `.009`
+  placement, and owner-photo closure of X1.107B/-BLOCK/H and R1;
 - `ref/photos/juku-pcb-2/endpoints.csv` — original-image endpoint coordinates,
   confidence, reviewer, and disposition.
 
@@ -239,6 +241,14 @@ stub is visible at either face. This rules out a direct D13.2 pad landing but
 does not identify the remote `RAM_OUT_EN` surface joint, so A12A remains
 board-fit pending. `kicad/check_d13_photo_placement.py` guards the two-sided
 identity and coordinates.
+
+The same component view closes the adjacent WAIT cluster mechanically. D13
+and D105 both have right-facing notches, so their source footprints are now
+270-degree placements rather than the former left-facing 90-degree posture.
+The populated red-black-red R1 body sits between them on two component-side
+surface landings; native sheet 1 identifies it as the 2 kΩ pull-up from
+X1.107B/-BLOCK/H to +5 V. `docs/d105-h-boundary.md` guards the source hashes,
+R1 pad positions/construction, connector contact, and both package orientations.
 
 The overlapping raw component tile `200439607` independently holds D13 pins 4
 and 14 at zero-pixel residual and exposes a tempting white-wire end at

@@ -27,9 +27,7 @@ PDF is the prototype and may differ.
 
 ## Remaining P0 connectivity (batch in the same session)
 
-2. **D30 / `H` WAIT-READY edge:** exact edge contact + pull-up reference feeding
-   `H`/D105.10/D13.13 (`docs/d30-section-b-scan-chase.md`).
-3. **D94 `.092` continuity:** the pull-up references on D94.13/D94.14/D94.1,
+2. **D94 `.092` continuity:** the pull-up references on D94.13/D94.14/D94.1,
    D104.10, and the D5-D7 far destinations. First test D94.13/D104.7 against
    D5.27 `IOWR`; if open, capture both during known FDC port reads/writes. The
    physical table requires polarity-equivalent levels on selected cycles, but
@@ -38,10 +36,10 @@ PDF is the prototype and may differ.
    A4 low must steer to D0 with both D93 strobes released, while A4 high restores
    the direction-appropriate D93 strobe
    (`docs/d94-reconstruction-constraints.md`).
-4. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
+3. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
    D106.11-D93.27, D106.14-D93.33 layer-handoff tests, and the D95/D101 select
    pins (`docs/fdc-hardware-handoff.md`).
-5. **Factory Вид В details:** D56's three physical callout locations are fixed
+4. **Factory Вид В details:** D56's three physical callout locations are fixed
    as the separate left annulus plus D56.5/D56.12; continuity-map the installed
    item-159 conductor/material among those locations and the adjacent rail.
    Position 150 is tubing, not a cut. Also continuity-test D14's registered fifth-landing conductor, three long traces, and
@@ -53,7 +51,7 @@ PDF is the prototype and may differ.
 
 ## Programmable-parts corroboration (optional, Tier-3)
 
-6. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
+5. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
    EPROMs, only as corroboration of the validated captures
    (`docs/community-prom-media-request.md`).
 

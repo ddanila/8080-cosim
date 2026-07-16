@@ -95,9 +95,9 @@ footprint = board.FindFootprintByReference("D13")
 if footprint is None:
     raise SystemExit("D13 PHOTO PLACEMENT: missing source footprint")
 orientation = footprint.GetOrientationDegrees() % 360
-if abs(orientation - 90.0) > 0.01:
+if abs(orientation - 270.0) > 0.01:
     raise SystemExit(
-        f"D13 PHOTO PLACEMENT: expected 90-degree package, got {orientation:.3f}"
+        f"D13 PHOTO PLACEMENT: expected 270-degree right-facing package, got {orientation:.3f}"
     )
 
 print(

@@ -78,7 +78,7 @@ def untraced_entries() -> dict[str, dict[str, object]]:
 
 def markers_ok() -> tuple[bool, list[str]]:
     checks = [
-        (GEN, "'D105':(31.9,215.5,90)"),
+        (GEN, "'D105':(31.9,215.5,270)"),
         (PHYSICAL_EVIDENCE, "D105 two visible ЛА3 sections"),
         (PHYSICAL_EVIDENCE, "The D2 pin table from sheet 1 is"),
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
@@ -224,8 +224,9 @@ def main() -> int:
         "  D30.1 is source-closed to the D38.8/W8.2 status-strobe island; D30.5",
         "  reaches CPU READY through R29; D30.10/.12 share the R5 pull-up;",
         "  and D105.11 drives D30.13. Section B is also closed: D30.11 joins the",
-        "  D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Only the",
-        "  exact `H` edge contact and pull-up remain open in this READY/WAIT cluster.",
+        "  D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Native",
+        "  sheet 1 plus `.009` placement/photo evidence close `H` at X1.107B",
+        "  with R1 2 kΩ to +5 V; no READY/WAIT edge conductor remains open.",
         "",
         "## AG3 Package Correction",
         "",
@@ -308,8 +309,8 @@ def main() -> int:
             "2. After any board-JSON net promotion, regenerate PCB/DSN/BOM reports",
             "   and route the affected pads before claiming endpoint coverage.",
             "3. D105 is modeled in board JSON, the source PCB, and HDL; the routed",
-            "   snapshot predates the corrected topology. Remaining priority belongs",
-            "   to the exact `H` pull-up/contact, D94, and the FDC (D30.8/.11 are owner-closed)",
+            "   snapshot predates the corrected topology. X1.107B/R1 now close `H`;",
+            "   remaining priority belongs to D94 and the FDC (D30.8/.11 are owner-closed)",
             "   support cluster. Physical D2 truth and its measured D0 path are adopted.",
             "4. `READY FOR DESIGN RELEASE` is emitted only when no footprint or",
             "   promoted FDC functional pin remains outside the net model.",

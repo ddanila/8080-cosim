@@ -253,13 +253,6 @@ def main() -> int:
             "turns twelve explicit target-revision boundary pins into real .009 connectivity while preserving the now-zero-short source placement",
         ),
         (
-            "P0",
-            "D30/H continuity closure",
-            "D30.11->D105.2/D13.4/D11.20 and D30.8->D29.7 are owner-confirmed; identify the exact edge contact plus pull-up reference/value feeding H/D105.10/D13.13, and independently spot-check the adopted D2.12->D30.2 and D105 paths if another board is available",
-            "`docs/d30-section-b-scan-chase.md`; `docs/d2-physical-dump-and-continuity.md`; `docs/rt4-dump-acquisition.md`",
-            "closes the remaining WAIT/READY edge conductors without reopening the adopted physical D2 table and measured D0 path",
-        ),
-        (
             "P1",
             "C94 endpoint continuity",
             "identify the two lead destinations of the now-restored 680п C94 below D102; its factory identity, populated body, and `(287.07,132.26)` mm centre are already proved",

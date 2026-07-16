@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "coordinate_system": "original source-image pixels; PCB coordinates in millimetres",
+  "promotion_rule": "the native conductor establishes topology and value; the .009 drawing establishes target refdes/placement identity; the owner photo establishes the populated terminals and board fit; direct owner continuity independently closes D13.13 to D105.10",
+  "sources": [
+    {
+      "path": "ref/schematics/p3_sheet1.png",
+      "sha256": "dd9eb45a8b9a6af5bbaf4677939f4b2db49661c1a536a07009e0fce9afa1bf53",
+      "size_px": [5150, 3603],
+      "observation": "upper-left native conductor labels 107B -BLOCK, junctions directly to D13.13/H, and carries R1 2k to rail A (+5 V)",
+      "evidence_bbox_px": [185, 300, 535, 650]
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+      "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
+      "size_px": [3072, 4080],
+      "observation": "factory .009 assembly drawing labels horizontal R1 directly between D13 and D105",
+      "evidence_bbox_px": [1080, 1760, 1510, 2320]
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+      "sha256": "23d4ca9b4c8f59caf1dd2d09ce80f45676220dc7145cc36c616aa09e3826c651",
+      "size_px": [4080, 3072],
+      "observation": "owner component view shows the populated red-black-red 2 kOhm axial body between the independently registered D13 and D105 packages",
+      "evidence_bbox_px": [1050, 950, 1540, 1500]
+    }
+  ],
+  "edge_contact": {
+    "connector": "X1",
+    "pin": "107B",
+    "native_label": "-BLOCK",
+    "net": "D105_10_H"
+  },
+  "package_orientation": [
+    {
+      "refdes": "D13",
+      "marking": "К555ТЛ2",
+      "notch": "right-facing",
+      "pcb_rotation_deg": 270,
+      "component_row_endpoints_px": [[1084.0, 906.0], [1426.0, 906.0], [1084.0, 1093.0], [1426.0, 1093.0]]
+    },
+    {
+      "refdes": "D105",
+      "marking": "К155ЛА3",
+      "notch": "right-facing",
+      "pcb_rotation_deg": 270,
+      "board_center_mm": [31.9, 215.5],
+      "component_row_endpoints_px": [[1084.0, 1283.0], [1426.0, 1283.0], [1084.0, 1497.0], [1426.0, 1497.0]],
+      "observation": "the owner component view shows the complete package directly below R1 with the same right-facing notch posture; the factory .009 centre is retained while the photographed notch corrects the old 90-degree orientation"
+    }
+  ],
+  "pullup": {
+    "refdes": "R1",
+    "value": "2к",
+    "footprint_pitch_mm": 10.16,
+    "terminals": [
+      {
+        "pin": "1",
+        "image_px": [1451.0, 1154.0],
+        "board_mm": [40.88, 210.0],
+        "net": "P5V",
+        "observation": "right-hand terminal beside the D13.14 +5 V departure"
+      },
+      {
+        "pin": "2",
+        "image_px": [1212.0, 1154.0],
+        "board_mm": [30.72, 210.0],
+        "net": "D105_10_H",
+        "observation": "left-hand terminal on the H/-BLOCK branch"
+      }
+    ],
+    "board_fit_uncertainty_mm": 0.7
+  }
+}

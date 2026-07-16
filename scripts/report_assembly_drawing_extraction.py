@@ -65,6 +65,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_d94_pullups.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    d105_h = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/report_d105_h_boundary.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
     switch_landings = subprocess.run(
         [kicad_python, str(ROOT / "kicad/check_factory_switch_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
@@ -136,6 +140,11 @@ def main() -> int:
             "D94 pull-up identities and endpoints are source-modeled",
             d94_pullups.returncode == 0,
             "factory R87/R88/R89 labels plus registered component/solder copper; `kicad/check_d94_pullups.py`",
+        ),
+        (
+            "X1.107B/-BLOCK/H and R1 are source-modeled",
+            d105_h.returncode == 0,
+            "native sheet 1 plus `.009` R1 placement and owner component photo; `kicad/report_d105_h_boundary.py`",
         ),
         (
             "Cable geometry is recorded from the drawing",
@@ -296,6 +305,7 @@ def main() -> int:
         "",
         "- Preserve the proved D15 cut and D14 local link; hold the registered D56/D11 callout fields until continuity closes them.",
         "- Keep D94/D100/D98 horizontal during the source-PCB reroute.",
+        "- Keep D13/D105 right-facing and preserve R1 as the component-side 2 kΩ X1.107B/H pull-up.",
         "- Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.",
         "- S1 remains an off-board bracket component and is excluded from generated PCB footprints.",
         "- Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.",

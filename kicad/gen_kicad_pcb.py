@@ -71,6 +71,7 @@ PASSIVE_FP_REF = {
     'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R1': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R30': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'S4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'),
 }
@@ -136,6 +137,10 @@ PASSIVE_PLACE = {
     'C5':(304.0,127.5,0),    # 560p D34 RC capacitor above R33 [owner photo]
     'R19':(44.4,220.7,90),'VD5':(49.4,231.5,90),'C31':(23,228.0,90),'C32':(23,235.0,90),'C33':(24.5,244.0,90),   # corner re-layout: the assumed grid squatted the crystal's real estate (photo-true corner)
     'R3':(12,200.8,0),'R4':(16.9,209.2,90),'R20':(51.9,194.2,0),'C21':(48.5,205.9,0),'C1':(18.4,194.8,0),
+    # Native sheet 1 names the H/-BLOCK pull-up R1 2k; the .009 drawing and
+    # owner photo place it horizontally between D13 and D105. Pin 1 is the
+    # right-hand +5 V landing and pin 2 is the left-hand H landing.
+    'R1':(35.800,210.000,180),
     'A17':(115.8,27.1,0),  # two-sided owner photos, transferred from top mounting hole (114.4,13.3)
     # Registered component/solder views show one 2.5 mm-pitch X3 cable row;
     # sheet 1 labels the left/right ends A21/A32.
@@ -339,7 +344,7 @@ PLACE = {
     'D10':(192.44,110.08,90),  # КР580ВН59 local affine photo fit; old centre projected onto adjacent resistors/body
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary
-    'D105':(31.9,215.5,90),  # wait/MRD NAND below D13; official .009 assembly position
+    'D105':(31.9,215.5,270),  # .009 centre + owner-photo right-facing notch
     # clock subsystem -- RELOCATED to its real right-centre region, read off the assembly drawing
     # via the validated frame (the divider/gate mesh sits right of the DRAM array near D40/D41/D34,
     # not a fictional bottom-left row). D40 (СТ16) is photo-fitted horizontal, notch-right -> rot 270; the ЛА/ЛН gates
@@ -371,7 +376,7 @@ PLACE = {
     'D25':(29.8,37.1,90),'D23':(54.6,37.1,90),'D24':(81.6,37.1,90),'D29':(108.5,37.1,90),
     'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183.0,243.1,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
     'D37':(241.7,181,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
-    'D13':(31.9,205.3,90),
+    'D13':(31.9,205.3,270),  # owner photo: horizontal К555ТЛ2, right-facing notch
 }
 # remaining DRAM rows D68-D91 -- now net-modeled sockets -> real footprints at their
 # array positions. D84-D91 are populated on the .158/.009 target; D68-D83 are empty.
@@ -419,6 +424,19 @@ def main():
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
         if rot: fp.SetOrientationDegrees(rot)
         board.Add(fp); placed[ref] = fp; n_pads += fp.GetPadCount()
+        # R1 is not drilled on the owner board: both bent leads terminate on
+        # photographed component-side copper landings between D13 and D105.
+        # Preserve that construction instead of punching a generic axial THT
+        # footprint through the neighboring D13 fanout.
+        if ref == "R1":
+            for pad in fp.Pads():
+                pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
+                pad.SetDrillSize(pcbnew.VECTOR2I_MM(0, 0))
+                pad.SetSize(pcbnew.VECTOR2I_MM(0.9, 0.9))
+                layers = pcbnew.LSET()
+                layers.AddLayer(pcbnew.F_Cu)
+                layers.AddLayer(pcbnew.F_Mask)
+                pad.SetLayerSet(layers)
         # R33 and R66 are photo-locked in the dense right-edge analog cluster.
         # Their nearest pads are 1.721 mm centre-to-centre, so the library's
         # 1.60 mm copper leaves only 0.121 mm.  The original-style 0.8 mm drills
