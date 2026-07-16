@@ -425,6 +425,10 @@ After connectivity and programmable-part decisions stop changing:
 - **Community requests:** use `docs/community-prom-media-request.md` for
   independent PROM corroboration, JUKU-1 media provenance, and cartridge
   BASIC artifacts. The Baltijets programming-disk payloads are presumed lost;
+  the guarded `JUKPROG1/2/X` scan finds none of the four validated tables in
+  raw images or reconstructed active files under common byte, address-reversed,
+  ASCII/Intel-hex, or packed-nibble encodings (proprietary transforms remain
+  possible);
   keep the ask open opportunistically, but nothing on the critical path may
   wait on them. The targeted corrected-reader D6 experiment in highest-priority
   item 1 is on the critical path because it resolves a known contradiction;

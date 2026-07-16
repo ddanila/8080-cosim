@@ -73,7 +73,7 @@ def main() -> int:
         row([
             "[Arti Juku archive](https://arti.ee/juku/)",
             "schematics/assembly material, ROM lineage, EKDOS source, and raw disks under `ref/`, `roms/`, and `media/`",
-            "no labeled PROM-programming payload; guarded `JUKPROG1/2/X` active/deleted-name and raw-marker audit finds no labeled candidate (an unidentified binary remains possible); no complete Monitor 3.3 cartridge BASIC image/procedure",
+            "no labeled PROM-programming payload; guarded `JUKPROG1/2/X` active/deleted-name, raw-marker, and exact byte/ASCII/Intel-hex/packed-nibble audit finds no validated table (a proprietary/permuted/compressed encoding remains possible); no complete Monitor 3.3 cartridge BASIC image/procedure",
         ]),
         row([
             "[Elektroonikamuuseum Juku files](https://elektroonikamuuseum.ee/failid/juku/)",

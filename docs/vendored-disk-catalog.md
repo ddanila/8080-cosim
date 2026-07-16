@@ -24,14 +24,42 @@ The three `JUKPROG` images were checked separately because factory doc 007
 says the `.037`/`.038`/`.039`/`.092` programming tables were held on disk.
 The audit checks active directory filenames, recoverable deleted-entry
 filenames, and every raw image byte for strong ASCII drawing/part markers.
-This rules out a plainly named/text-tagged payload in the current images; it
-cannot rule out an unidentified binary table with no embedded identifier.
+It also searches the complete raw images and every reconstructed active CP/M
+file for exact encodings of all four validated physical PROM tables.
+The exact search covers raw and asserted polarity, forward and reversed address
+order, compact/space/line-oriented ASCII hex, checksum-valid Intel HEX,
+and, where the table is nibble-wide, nibble ASCII plus both packed-nibble
+orders.
+No match under these common exact encodings rules out a plainly stored validated
+table; a proprietary, permuted, compressed, or otherwise transformed encoding
+still cannot be ruled out.
 
-| Disk | Active candidate names | Deleted names | Raw marker hits |
-| --- | --- | --- | --- |
-| media/disks/JUKPROG1.CPM | none | none | none |
-| media/disks/JUKPROG2.CPM | none | none | none |
-| media/disks/JUKPROGX.CPM | none | none | none |
+| Disk | Active candidate names | Deleted names | Raw marker hits | Exact table hits |
+| --- | --- | --- | --- | --- |
+| media/disks/JUKPROG1.CPM | none | none | none | none |
+| media/disks/JUKPROG2.CPM | none | none | none | none |
+| media/disks/JUKPROGX.CPM | none | none | none | none |
+
+### Exact binary-table forensics
+
+Each encoding is searched once in the physical byte stream and once in every
+active file reconstructed in CP/M logical extent order. Offsets would be shown
+for every match; `none` means the full encoding was absent from both views.
+
+| Disk | Validated table | Corpora searched | Encoding forms tested | Matches |
+| --- | --- | ---: | ---: | --- |
+| media/disks/JUKPROG1.CPM | D2 .037 | 79 | 84 | none |
+| media/disks/JUKPROG1.CPM | D6 .038 | 79 | 84 | none |
+| media/disks/JUKPROG1.CPM | D8 .039 | 79 | 68 | none |
+| media/disks/JUKPROG1.CPM | D94 .092 | 79 | 76 | none |
+| media/disks/JUKPROG2.CPM | D2 .037 | 49 | 84 | none |
+| media/disks/JUKPROG2.CPM | D6 .038 | 49 | 84 | none |
+| media/disks/JUKPROG2.CPM | D8 .039 | 49 | 68 | none |
+| media/disks/JUKPROG2.CPM | D94 .092 | 49 | 76 | none |
+| media/disks/JUKPROGX.CPM | D2 .037 | 25 | 84 | none |
+| media/disks/JUKPROGX.CPM | D6 .038 | 25 | 84 | none |
+| media/disks/JUKPROGX.CPM | D8 .039 | 25 | 68 | none |
+| media/disks/JUKPROGX.CPM | D94 .092 | 25 | 76 | none |
 
 ## Directory entries
 
