@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "refdes": "R94",
+  "endpoint": "2",
+  "board_mm": [297.6, 61.48],
+  "status": "photo-exhausted / continuity required",
+  "component_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "sha256": "f369d158cf93842af1f97ecc78263bc33738cbbaf25a04c1678297ef7636e9dc",
+      "dimensions_px": [4080, 3072],
+      "review_point_px": [2990, 2000],
+      "bbox_px": [2820, 1750, 3150, 2200],
+      "observation": "the 220-ohm body and lower lead are visible, but the black cable covers the far landing and any immediate copper departure"
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "review_point_px": [2937, 460],
+      "bbox_px": [2780, 250, 3100, 700],
+      "observation": "the overlapping lower component tile independently shows the same lead disappearing beneath the cable without exposing a unique destination"
+    }
+  ],
+  "solder_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "sha256": "6f11cc69615f159fcaea852ce41e9af944da4886d31d0fc7d70394a56772070c",
+      "dimensions_px": [4080, 3072],
+      "review_point_px": [455, 1769],
+      "bbox_px": [250, 1500, 750, 2000],
+      "observation": "board-registered R94.2 review region contains several unrelated joints and rails but no uniquely attributable matching landing"
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "dimensions_px": [4080, 3072],
+      "review_point_px": [756, 222],
+      "bbox_px": [450, 0, 1050, 500],
+      "observation": "independent overlapping solder tile likewise exposes no unique R94.2 annulus or continuation"
+    }
+  ],
+  "unresolved": ["R94.2 remote destination"],
+  "non_promotion_basis": "both covering component angles are cable-obscured at the far landing and both registered solder regions are non-unique; direct continuity is required"
+}

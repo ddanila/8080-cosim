@@ -1,14 +1,18 @@
 #!/usr/bin/python3
-"""Guard the photo-proved R94 load at D98.3."""
+"""Guard the photo-proved R94 load and photo-exhausted far endpoint."""
 from __future__ import annotations
 
+import hashlib
+import json
 from pathlib import Path
 
 import pcbnew
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
+EVIDENCE = ROOT / "ref/photos/juku-pcb-2/r94-photo-exhaustion.json"
 
 
 def mm(value: int) -> float:
@@ -51,11 +55,39 @@ def main() -> int:
     if d98_pad3 is None or d98_pad3.GetNetname() != "D98_Y1_R94":
         failures.append("D98.3 is not assigned to D98_Y1_R94")
 
+    evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
+    if (evidence.get("schema_version") != 1 or evidence.get("refdes") != "R94" or
+            evidence.get("endpoint") != "2" or evidence.get("board_mm") != [297.6, 61.48] or
+            evidence.get("status") != "photo-exhausted / continuity required"):
+        failures.append("R94.2 photo-exhaustion evidence header mismatch")
+    observations = [*evidence.get("component_observations", []),
+                    *evidence.get("solder_observations", [])]
+    if len(evidence.get("component_observations", [])) != 2 or len(evidence.get("solder_observations", [])) != 2:
+        failures.append("R94.2 needs two component and two solder observations")
+    for observation in observations:
+        image_path = ROOT / observation.get("source", "")
+        if (not image_path.is_file() or
+                hashlib.sha256(image_path.read_bytes()).hexdigest() != observation.get("sha256")):
+            failures.append(f"R94.2 evidence hash mismatch: {image_path}")
+            continue
+        with Image.open(image_path) as image:
+            width, height = image.size
+        if observation.get("dimensions_px") != [width, height]:
+            failures.append(f"R94.2 evidence dimensions mismatch: {image_path}")
+        bbox = observation.get("bbox_px", [])
+        point = observation.get("review_point_px", [])
+        if (len(bbox) != 4 or len(point) != 2 or
+                not (0 <= bbox[0] <= point[0] <= bbox[2] <= width and
+                     0 <= bbox[1] <= point[1] <= bbox[3] <= height)):
+            failures.append(f"R94.2 invalid evidence region: {image_path}")
+    if evidence.get("unresolved") != ["R94.2 remote destination"]:
+        failures.append("R94.2 remote boundary is not guarded")
+
     if failures:
         for failure in failures:
             print("FAIL:", failure)
         return 1
-    print("R94 LANDING: PASS — 220 ohm from D98.3; far terminal is an explicit measurement boundary")
+    print("R94 LANDING: PASS — 220 ohm from D98.3; far terminal is photo-exhausted and continuity-gated")
     return 0
 
 

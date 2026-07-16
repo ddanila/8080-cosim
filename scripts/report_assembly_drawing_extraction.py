@@ -190,7 +190,7 @@ def main() -> int:
             "R94 is modeled as 220 ohms from D98.3 with its far endpoint unresolved",
             marker(read(BOARD_SPEC), '"ref": "R94"', '"value": "220"', '"D98_Y1_R94"')
             and r94_landing.returncode == 0,
-            "`.009` assembly drawing; owner component photo; `kicad/check_r94_landing.py`",
+            "`.009` assembly drawing; four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py`",
         ),
         (
             "X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58",

@@ -227,8 +227,8 @@ def main() -> int:
         (
             "P1",
             "R94 220-ohm far endpoint",
-            "R94.1 is now photo-proved and modeled at D98.3; identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net",
-            "`ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
+            "R94.1 is photo-proved and modeled at D98.3; continuity-identify only the lower/far R94.2 endpoint without reopening the separate D98.7/S1.2 harness net. Two overlapping component views are cable-obscured at the landing and two registered solder regions are non-unique, so imagery is exhausted",
+            "`ref/photos/juku-pcb-2/r94-photo-exhaustion.json`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` rows 11/12; `docs/assembly-drawing-extraction.md`; `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`",
             "closes the remaining endpoint of the now-modeled .009 R94 part without reopening the closed S1 harness",
         ),
         (

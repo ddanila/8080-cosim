@@ -176,6 +176,12 @@ measurement-gated.
    and guarded. Final copper adoption must retain `А:7-А:14` and
    `А:19-А:20` as assembly wire rather than silently replacing them with etch.
 
+The adjacent R94 far-end image chase is also complete: two overlapping
+component tiles show R94.2 disappearing under the same cable before its
+landing, while two registered solder regions are non-unique. R94.2 remains an
+explicit, photo-exhausted continuity ask rather than being conflated with the
+separate D98.7/S1.2 factory harness.
+
 ## Release blockers
 
 ### P0: physical connectivity (measurement-gated)
@@ -334,8 +340,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-620 observations have dispositions, 37 rows are accepted evidence, and the
-other 583 remain measurement requests (`docs/photo-registration.md`).
+624 observations have dispositions, 37 rows are accepted evidence, and the
+other 587 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated
