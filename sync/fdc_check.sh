@@ -53,13 +53,13 @@ physical D93/D94 wiring.
 - The C guard first boots exact `ekta37` far enough to install its monitor RAM
   services, then drives the public ROMBIOS `RWFLOPPY` vector at `0xFF59`. It
   loads 512-byte physical sector 3 with command `0x80`, caches an EKDOS
-  pair of adjacent 128-byte logical-record writes, reads both dirty records back
-  from their distinct cache offsets without another FDC command, and switches
-  host sectors so the wrapper flushes once with `0xA2` before loading sector 4
-  with `0x80`. All calls traverse
+  trio of distinct 128-byte logical-record writes, reads all four cache offsets
+  including the untouched record without another FDC command, and switches host
+  sectors so the wrapper flushes once with `0xA2` before loading sector 4 with
+  `0x80`. All calls traverse
   the boot-installed `0xD7E7` monitor services and return with zero `ERRC`;
-  persisted readback proves both modified 128-byte records and two untouched
-  zero records byte-for-byte.
+  persisted readback proves all three modified 128-byte records and the one
+  untouched zero record byte-for-byte.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
@@ -93,15 +93,16 @@ physical D93/D94 wiring.
   wrapper. Its physical-sector calculation at `0xE8B2` maps four consecutive
   128-byte logical records onto one 512-byte FDC sector.
 - The guard starts with a cold/clean cache, reads logical record 9 to populate
-  physical sector 3, then writes records 9 and 10 from independent DMA patterns.
-  Reading both records into different DMA buffers reproduces all 256 bytes from
-  the correct cache offsets, issues no FDC command, and preserves `HSTWRT=1`.
-  Reading record 13 then crosses into physical sector 4, takes one dirty-cache
-  flush before the new read, and yields the exact observed command sequence
-  `0x80, 0xA2, 0x80`.
-- Readback requires the changed first and second 128-byte records and the
-  untouched zero-filled remaining 256 bytes. This distinguishes real
-  deblocking/coalescing from direct 512-byte model-side sector injection.
+  physical sector 3, then writes records 9, 10, and 12 from independent DMA
+  patterns. Reading records 9 through 12 into four different DMA buffers
+  reproduces all three patterns at the correct offsets and the untouched zero
+  record 11, issues no FDC command, and preserves `HSTWRT=1`. Reading record 13
+  then crosses into physical sector 4, takes one dirty-cache flush before the
+  new read, and yields the exact command sequence `0x80, 0xA2, 0x80`.
+- Physical readback requires the changed first, second, and fourth 128-byte
+  records plus the untouched zero-filled third record. This exercises the full
+  four-way deblocking layout and distinguishes coalescing from direct 512-byte
+  model-side sector injection.
 
 ## Commands
 

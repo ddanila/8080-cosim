@@ -580,13 +580,13 @@ serve physical bring-up or historical fidelity:
    followed by 512 port-`0x1F` writes. Both C and HDL models now implement and
    readback-test that bounded path. The C guard boots `ekta37` to install its
    RAM monitor services, invokes the EKDOS-facing `RWFLOPPY` vector at `0xFF59`,
-   coalesces two adjacent 128-byte writes, proves both dirty cache-hit offsets
-   without extra FDC I/O, and then proves their single physical flush through
-   the exact command sequence
+   writes three distinct 128-byte offsets, reads all four cache records
+   including the untouched third record without extra FDC I/O, and then proves
+   their single physical flush through the exact command sequence
    `0x80,0xA2,0x80`. The nested `FLOPPY` handler and monitor
    epilogues return with zero `ERRC`, and a disposable writable image preserves
-   both modified records plus untouched bytes; repository media remains
-   read-only unless the caller explicitly opts into a writable copy.
+   all three modified records plus the untouched record; repository media
+   remains read-only unless the caller explicitly opts into a writable copy.
 3. Revisit cartridge BASIC only when a complete artifact or documented loading
    procedure appears; do not invent missing pages. The 2026-07-15 generated
    firmware-lineage audit proves that 7,224 bytes of the cartridge body are

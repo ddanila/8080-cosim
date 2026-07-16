@@ -15,9 +15,12 @@ enum {
   RETURN_PC = 0xB123,
   DMA_ADDR = 0x4000,
   SECOND_DMA_ADDR = 0x4100,
+  FOURTH_RECORD_DMA_ADDR = 0x4200,
   SCRATCH_ADDR = 0x5000,
   CACHE_READ_ADDR = 0x5100,
   SECOND_CACHE_READ_ADDR = 0x5200,
+  UNTOUCHED_CACHE_READ_ADDR = 0x5300,
+  FOURTH_CACHE_READ_ADDR = 0x5400,
 };
 
 
@@ -219,6 +222,7 @@ int main(int argc, char** argv) {
   for (int i = 0; i < 128; i++) {
     f.ram[DMA_ADDR + i] = (uint8_t)(0xA7 ^ i);
     f.ram[SECOND_DMA_ADDR + i] = (uint8_t)(0x3C + i);
+    f.ram[FOURTH_RECORD_DMA_ADDR + i] = (uint8_t)(0xD5 ^ (i * 3));
   }
   f.ram[0xD600] = 0;                 // drive-A disk type: select command 0xA2
   f.ram[0xD601] = 0;                 // drive A
@@ -241,12 +245,20 @@ int main(int argc, char** argv) {
   fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &total_cycles);     // dirty first record
   fail |= run_rwfloppy(&f, 0x12, 10, SECOND_DMA_ADDR,
                        &total_cycles); // coalesce second record
+  fail |= run_rwfloppy(&f, 0x12, 12, FOURTH_RECORD_DMA_ADDR,
+                       &total_cycles); // coalesce fourth record
   memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
   memset(&f.ram[SECOND_CACHE_READ_ADDR], 0x5A, 128);
+  memset(&f.ram[UNTOUCHED_CACHE_READ_ADDR], 0x5A, 128);
+  memset(&f.ram[FOURTH_CACHE_READ_ADDR], 0x5A, 128);
   fail |= run_rwfloppy(&f, 0x11, 9, CACHE_READ_ADDR,
                        &total_cycles); // first cache-hit offset
   fail |= run_rwfloppy(&f, 0x11, 10, SECOND_CACHE_READ_ADDR,
                        &total_cycles); // second cache-hit offset
+  fail |= run_rwfloppy(&f, 0x11, 11, UNTOUCHED_CACHE_READ_ADDR,
+                       &total_cycles); // untouched third offset
+  fail |= run_rwfloppy(&f, 0x11, 12, FOURTH_CACHE_READ_ADDR,
+                       &total_cycles); // fourth cache-hit offset
   if (f.fdc_commands != 1 || f.command_log[0] != 0x80) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: cache hit issued FDC command(s)");
     for (unsigned i = 0; i < f.fdc_commands; i++) fprintf(stderr, " %02X", f.command_log[i]);
@@ -259,6 +271,16 @@ int main(int argc, char** argv) {
   }
   if (memcmp(&f.ram[SECOND_CACHE_READ_ADDR], &f.ram[SECOND_DMA_ADDR], 128) != 0) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: second cache-hit record mismatch\n");
+    fail = 1;
+  }
+  uint8_t zero_record[128] = {0};
+  if (memcmp(&f.ram[UNTOUCHED_CACHE_READ_ADDR], zero_record, 128) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: untouched cache record changed\n");
+    fail = 1;
+  }
+  if (memcmp(&f.ram[FOURTH_CACHE_READ_ADDR],
+             &f.ram[FOURTH_RECORD_DMA_ADDR], 128) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: fourth cache-hit record mismatch\n");
     fail = 1;
   }
   if (f.ram[0xD624] != 1) {
@@ -302,6 +324,7 @@ int main(int argc, char** argv) {
   uint8_t expected[512] = {0};
   memcpy(expected, &f.ram[DMA_ADDR], 128);
   memcpy(expected + 128, &f.ram[SECOND_DMA_ADDR], 128);
+  memcpy(expected + 384, &f.ram[FOURTH_RECORD_DMA_ADDR], 128);
   if (juk_disk_read_sector(&disk, 8, 0, 3, sector) != 0 ||
       memcmp(sector, expected, sizeof(sector)) != 0) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: persisted sector mismatch\n");
@@ -316,7 +339,7 @@ int main(int argc, char** argv) {
     return 1;
   }
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
-         "records=2 cache-hit=256 data=512 trampoline=%u cyc=%lu\n",
+         "records-written=3 cache-hit=512 data=512 trampoline=%u cyc=%lu\n",
          f.write_command, f.monitor_trampoline_entries, total_cycles);
   return 0;
 }
