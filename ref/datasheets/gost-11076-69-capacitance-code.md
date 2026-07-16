@@ -18,3 +18,10 @@ Therefore the photographed C20 and C22 markings `1Н5` are unambiguously
 `1.5 nF` (`1500 pF`). The marking does not establish tolerance, voltage rating,
 or either electrical endpoint, so those properties remain separate evidence
 boundaries for each part.
+
+The same table does **not** justify treating a bare numeric face marking as a
+complete coded capacitance. Every printed coded example includes the letter
+that identifies the unit and decimal position (`П`, `Н`, or `М`). Consequently,
+the photographed bare `27` on C16 and bare `22` on C19 are registered as literal
+visible glyphs only; their values remain unresolved until another face, a type
+marking, or a capacitance measurement supplies the missing unit context.

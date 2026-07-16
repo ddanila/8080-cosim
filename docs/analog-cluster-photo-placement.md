@@ -71,9 +71,14 @@ image `PXL_20260710_200522685.jpg` corroborates the paired backside locations.
 C16 is therefore restored at `(267.094,101.055)` mm on a 12.50 mm horizontal
 span, with pads at `(260.844,101.055)` and `(273.344,101.055)` mm. R92 is at
 `(253.869,101.194)` mm and R99 at `(241.207,103.467)` mm, each on a 10.16 mm
-horizontal span. The body markings are not readable confidently and the broad
-nearby solder rails do not establish unique remote destinations, so the model
-keeps all three values blank and all six leads as singleton boundary nets.
+horizontal span. An oblique May component view directly resolves bare `27` on
+C16's exposed face. GOST 11076-69 Table 1 nevertheless requires a unit/decimal
+letter for a complete coded capacitance, and no such glyph is unambiguously
+readable; `27` is
+therefore registered literally without promoting a value. The broad nearby
+solder rails do not establish unique remote destinations, so the model keeps
+C16's value blank and both leads as singleton boundary nets. R92/R99 are
+separately photo-closed as 1.3 kΩ and 4.7 kΩ with all endpoints traced.
 
 ## C19 drill registration
 
@@ -87,9 +92,11 @@ joints. A vertical 10.00 mm axial footprint therefore preserves the physical
 part at pads `(292.893,88.574)` and `(292.893,98.574)` mm.
 
 The body deliberately leans over the adjacent resistor column, so body overlap
-does not imply an electrical join. Its marking is not read confidently and the
-visible copper does not reach unique remote package pads; both leads remain
-singleton boundary nets.
+does not imply an electrical join. The same oblique May view directly resolves
+bare `22` on its exposed face, but no unambiguous unit/decimal glyph; the marking is
+registered literally without assigning a capacitance. The visible copper does
+not reach unique remote package pads, so both leads remain singleton boundary
+nets.
 
 ## C20/C22 drill registration
 

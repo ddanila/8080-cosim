@@ -269,14 +269,14 @@ def main() -> int:
         (
             "P1",
             "lower-FDC C16 continuity",
-            "read C16's value and identify both lead destinations; R92=1.3 kΩ and R99=4.7 kΩ are photo-closed and calibrated component copper already closes every resistor endpoint to D95.14, D101.4, or D101.8/GND",
+            "determine the unit/type behind C16's photo-registered bare `27` marking and identify both lead destinations; GOST 11076-69 does not map a bare numeric string to a unique coded capacitance, while R92=1.3 kΩ and R99=4.7 kΩ are photo-closed with every endpoint traced",
             "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C16 boundary nets",
             "turns the remaining restored lower-FDC passive boundary into functional circuitry without guessing from nearby solder rails",
         ),
         (
             "P1",
             "right-edge resistor column",
-            "read C19's value and both lead destinations, and identify all four resistor lead destinations in the restored .009 right-edge column; R100=R102=R108=12 kΩ and R86=4.7 kΩ are photo-closed, and all factory identities, population, orientation, and placements are registered",
+            "determine the unit/type behind C19's photo-registered bare `22` marking and both lead destinations, and identify all four resistor lead destinations in the restored .009 right-edge column; GOST 11076-69 does not make the bare capacitor marking a unique value, while R100=R102=R108=12 kΩ and R86=4.7 kΩ are photo-closed",
             "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C19/R100/R102/R108/R86 boundary nets",
             "turns five restored physical parts into functional FDC-area circuitry without guessing connectivity from C19's bent body overlap or the obsolete .006 sheet",
         ),

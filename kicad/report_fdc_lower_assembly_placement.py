@@ -63,6 +63,7 @@ value_evidence = document.get("r92_r99_value_evidence", {})
 right_edge_value_evidence = document.get("right_edge_resistor_value_evidence", {})
 c20_value_evidence = document.get("c20_value_evidence", {})
 c22_value_evidence = document.get("c22_value_evidence", {})
+c16_c19_marking_evidence = document.get("c16_c19_marking_evidence", {})
 if value_evidence.get("values") != {"R92": "1,3к", "R99": "4,7к"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad R92/R99 value evidence")
 if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"}:
@@ -77,6 +78,11 @@ if c22_value_evidence.get("value") != "1,5 нФ" or c22_value_evidence.get("mark
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C22 value evidence")
 if "C22.1 endpoint" not in c22_value_evidence.get("unresolved", []) or "C22.2 endpoint" not in c22_value_evidence.get("unresolved", []):
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 endpoint boundaries are not guarded")
+if c16_c19_marking_evidence.get("visible_markings") != {"C16": "27", "C19": "22"}:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C16/C19 literal marking evidence")
+for refdes in ("C16", "C19"):
+    if f"{refdes} value/unit" not in c16_c19_marking_evidence.get("unresolved", []):
+        raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {refdes} ambiguous value boundary is not guarded")
 for evidence in [*value_evidence.get("owner_photos", []), *right_edge_value_evidence.get("owner_photos", [])]:
     image_path = ROOT / evidence.get("source", "")
     if not image_path.is_file() or hashlib.sha256(image_path.read_bytes()).hexdigest() != evidence.get("sha256"):
@@ -115,6 +121,22 @@ if len(c22_bbox) != 4 or c22_bbox[0] >= c22_bbox[2] or c22_bbox[1] >= c22_bbox[3
 c22_standard = ROOT / c22_value_evidence.get("marking_standard", {}).get("source", "")
 if not c22_standard.is_file() or "1Н5" not in c22_standard.read_text(encoding="utf-8"):
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 marking-standard evidence missing")
+c16_c19_photo = c16_c19_marking_evidence.get("owner_photo", {})
+c16_c19_image_path = ROOT / c16_c19_photo.get("source", "")
+if (not c16_c19_image_path.is_file() or
+        hashlib.sha256(c16_c19_image_path.read_bytes()).hexdigest() != c16_c19_photo.get("sha256")):
+    raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: C16/C19 marking-source hash mismatch for {c16_c19_image_path}")
+with Image.open(c16_c19_image_path) as c16_c19_image:
+    if list(c16_c19_image.size) != c16_c19_photo.get("dimensions_px"):
+        raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C16/C19 marking-source dimensions mismatch")
+    width, height = c16_c19_image.size
+for refdes, bbox in c16_c19_photo.get("body_bboxes_px", {}).items():
+    if (refdes not in {"C16", "C19"} or len(bbox) != 4 or
+            not (0 <= bbox[0] < bbox[2] <= width and 0 <= bbox[1] < bbox[3] <= height)):
+        raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: invalid {refdes} literal-marking body box")
+c16_c19_standard = ROOT / c16_c19_marking_evidence.get("marking_standard", {}).get("source", "")
+if not c16_c19_standard.is_file() or "bare numeric" not in c16_c19_standard.read_text(encoding="utf-8"):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C16/C19 marking-standard guard missing")
 for item in document["targets"]:
     for evidence in item.get("owner_evidence", []):
         image_path = ROOT / evidence["image"]
@@ -183,6 +205,7 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "transform": [round(value, 12) for value in transform],
                                   "r92_r99_value_evidence": value_evidence,
                                   "right_edge_resistor_value_evidence": right_edge_value_evidence,
+                                  "c16_c19_marking_evidence": c16_c19_marking_evidence,
                                   "c20_value_evidence": c20_value_evidence,
                                   "c22_value_evidence": c22_value_evidence,
                                   "checks": checks, "targets": targets}, indent=2) + "\n")
@@ -211,11 +234,11 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
           "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`; only the four parts' lead destinations remain continuity tasks. The registered solder view",
-          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
+          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. An oblique May view literally reads `22` on its exposed face, but no unambiguous unit/decimal glyph; its value/unit and both remote destinations remain boundaries. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
-          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. Only C16's value and destinations remain boundaries in this row.",
+          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16, but GOST 11076-69 Table 1 requires a unit/decimal letter for a coded capacitance; C16's value/unit and destinations therefore remain boundaries.",
           "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels",
           "read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Their tolerances, voltages, and endpoints remain unpromoted.",
           "The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.",

@@ -198,7 +198,10 @@ Every ask below is queued with exact deliverables in
    tolerances, voltages, and endpoints remain explicit boundaries. In the adjacent right-edge
    passive column, two independent target-board angles close R100, R102, and
    R108 as `12К`, and R86 as `4К7`; all four remote endpoint pairs remain
-   explicit measurement boundaries.
+   explicit measurement boundaries. The same target-board angle literally
+   resolves bare `27` on C16 and bare `22` on C19, but GOST 11076-69 requires
+   a unit/decimal letter for a complete coded capacitance; both value/unit and
+   endpoint pairs remain explicit measurement boundaries rather than guesses.
    The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against

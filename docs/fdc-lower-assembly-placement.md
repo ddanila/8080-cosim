@@ -35,11 +35,11 @@ at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans.
 population/BOM discrepancy: the factory drawing shows its outline, while the raw owner photo shows the exact D41/D40 gap bare, without a body or coherent drilled lead pair.
 Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;
 that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`; only the four parts' lead destinations remain continuity tasks. The registered solder view
-`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views
+`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. An oblique May view literally reads `22` on its exposed face, but no unambiguous unit/decimal glyph; its value/unit and both remote destinations remain boundaries. The same owner views
 also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and
 backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;
 the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,
-R92.1-R99.2-D101.4, and R99.1-D101.8/GND. Only C16's value and destinations remain boundaries in this row.
+R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16, but GOST 11076-69 Table 1 requires a unit/decimal letter for a coded capacitance; C16's value/unit and destinations therefore remain boundaries.
 Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels
 read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Their tolerances, voltages, and endpoints remain unpromoted.
 The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.

@@ -131,6 +131,55 @@
     "unresolved": [],
     "promotion_basis": "registered July and oblique May target-board component photographs independently read all four factory-ordered bodies: R100/R102/R108 are 12K and R86 is 4K7"
   },
+  "c16_c19_marking_evidence": {
+    "visible_markings": {
+      "C16": "27",
+      "C19": "22"
+    },
+    "owner_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+      "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "body_bboxes_px": {
+        "C16": [
+          2350,
+          2660,
+          2700,
+          2860
+        ],
+        "C19": [
+          2930,
+          2380,
+          3150,
+          2720
+        ]
+      },
+      "observation": "oblique target-board view directly resolves 27 on C16 and 22 on C19; no unit, decimal, tolerance, or voltage glyph is unambiguously readable on either exposed face"
+    },
+    "marking_standard": {
+      "source": "ref/datasheets/gost-11076-69-capacitance-code.md",
+      "standard": "\u0413\u041e\u0421\u0422 11076-69",
+      "printed_page": 2,
+      "table": 1,
+      "observation": "the coded forms in Table 1 require a unit/decimal letter, so bare 27 and 22 do not uniquely establish capacitance"
+    },
+    "unresolved": [
+      "C16 value/unit",
+      "C16 tolerance",
+      "C16 voltage",
+      "C16.1 endpoint",
+      "C16.2 endpoint",
+      "C19 value/unit",
+      "C19 tolerance",
+      "C19 voltage",
+      "C19.1 endpoint",
+      "C19.2 endpoint"
+    ],
+    "non_promotion_basis": "the target photo closes the literal visible glyphs but not whether they are complete nominal values, partial codes wrapped around the bodies, or other type/date markings"
+  },
   "c20_value_evidence": {
     "value": "1,5 \u043d\u0424",
     "marking": "1\u041d5",
