@@ -9,11 +9,15 @@ CHECK_COMMAND = ["spinoffs/minimal-vga/sim/check.sh"]
 EXPECTED_MARKERS = [
     ("Main-project ROM regression (not VJUGA boot)", "BOOT-CHECK: PASS"),
     ("T80 minimal top", "[Z80-MIN] PASS"),
+    ("T80 real-ROM VJUGA boot", "VJUGA-BOOT-CHECK: PASS"),
+    ("tv80 real-ROM dual-decode boot", "VJUGA-VERILOG-BOOT-CHECK: PASS"),
+    ("Framebuffer readback oracle", "VJUGA-FB-READBACK-CHECK: PASS"),
+    ("U24 DRAM timing contract", "U24-DRAM-TIMING: PASS"),
     ("Schematic/HDL LVS", "==> IN SYNC"),
     ("Rev A physical schematic target", "Rev A physical spec check: PASS"),
     ("Rev A PCB scaffold", "Rev A PCB scaffold check: PASS"),
     ("Fabrication DRC readiness", "Status: **READY**"),
-    ("DRAM row/column model", "[DRAM-UNIT] PASS"),
+    ("DRAM row/column model", "PASS  dram_unit_tb"),
 ]
 
 
@@ -27,7 +31,7 @@ def fenced_log(text):
 def build_report(returncode, output):
     missing = [name for name, marker in EXPECTED_MARKERS if marker not in output]
     status = (
-        "SMOKE TESTS PASS / REAL VJUGA BOOT UNPROVEN"
+        "BEHAVIORAL REGRESSIONS PASS"
         if returncode == 0 and not missing
         else "SMOKE TESTS FAILED"
     )
@@ -37,8 +41,9 @@ def build_report(returncode, output):
         f"Status: **{status}**",
         "",
         "This report captures current smoke, structural, and package checks. The",
-        "main-project ROM/cosim regression protects shared code but does not run",
-        "the VJUGA top. VJUGA itself still executes only its synthetic T80 ROM.",
+        "aggregate includes both real-ROM VJUGA implementations, the dual-mode",
+        "tv80/DRAM path, framebuffer readback, U24 timing, structural checks, and",
+        "the shared main-project ROM/cosim regression.",
         "",
         "## Summary",
         "",
@@ -81,7 +86,7 @@ def main():
     path.write_text(report)
     print(report)
     print(f"Wrote {path}")
-    return 0 if status == "SMOKE TESTS PASS / REAL VJUGA BOOT UNPROVEN" else 3
+    return 0 if status == "BEHAVIORAL REGRESSIONS PASS" else 3
 
 
 if __name__ == "__main__":

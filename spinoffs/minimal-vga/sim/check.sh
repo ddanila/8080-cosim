@@ -41,9 +41,3 @@ spinoffs/minimal-vga/kicad/check_rev_a_footprints.sh
 
 echo "== VJUGA spin-off: Rev A fabrication readiness report =="
 spinoffs/minimal-vga/kicad/report_rev_a_fab_readiness.sh
-
-echo "== VJUGA spin-off: DRAM row/column unit =="
-tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
-iverilog -g2012 -o "$tmp/dram_unit_tb" hdl/sim/dram_unit_tb.v
-vvp "$tmp/dram_unit_tb"

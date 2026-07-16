@@ -22,7 +22,11 @@ installation or later CPN/footprint resolution for:
 
 - `D1` +5V TVS clamp.
 - `J30` keyboard bring-up header.
+- `J94`, `J95`, `J96`, `J97`, and `J98` decode/clock/control bring-up
+  headers and selector jumpers.
 - `R6` PWR_OK link and `R15` keyboard encoder enable link.
+- `R32`, `R33`, `R34`, `R35`, `R36`, `R37`, `R38`, `R39`, `R40`, `R41`,
+  `R42`, and `R43` open-collector decode-PROM pull-ups.
 - `U50` clock oscillator.
 - `U51` reset supervisor.
 
@@ -42,6 +46,9 @@ to factory assembly and assign/verify an orderable CPN before export.
 - Insert the programmed `27C256`-class ROM at `U2`.
 - Insert owner-supplied `KM4164B-10` DRAMs at `U10`-`U17`.
 - Insert the programmed GAL/PAL devices at `U5` and `U24`.
+- In Mode B chip tests only, insert the programmed К556РТ4 at `U3`, the
+  programmed К155РЕ3 at `U4`, and the mode inverter at `U6`; leave the PROM
+  sockets empty for the Mode A baseline.
 - Insert `82C55`/compatible PPI at `U30`.
 - Insert the remaining socketed 74HCT logic according to the silkscreen chip
   names and engineering BOM.

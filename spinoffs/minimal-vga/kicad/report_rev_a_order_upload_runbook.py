@@ -39,7 +39,7 @@ ORDER_CHECKS = [
     "Upload only `vjuga-rev-a-gerbers-drill.zip` for the bare-PCB order.",
     "Do not upload `vjuga-rev-a-jlcpcb-bom.csv` or `vjuga-rev-a-jlcpcb-cpl.csv` unless deliberately switching to the optional assembled-board path.",
     "Do not upload `rev-a.engineering-bom.csv`; it contains owner/manual insertion rows.",
-    "Confirm the no-plane and 0.20 mm VCC/GND/VCC_RAW routing disposition remains intentional for this low-current prototype.",
+    "Confirm the filled In1.Cu GND and In2.Cu VCC planes, their island/return paths, and the 0.20 mm VCC_RAW routing remain intentional.",
     "Save the final vendor Gerber preview screenshots, stackup/settings, price, and order number with the order record.",
 ]
 
@@ -113,14 +113,14 @@ def build_report(out_dir):
 
     for label, rel in UPLOAD_FILES:
         require(out_dir / rel, failures, label)
-    if len(bom) != 26:
-        failures.append(f"expected 26 factory BOM rows, got {len(bom)}")
-    if len(cpl) != 89:
-        failures.append(f"expected 89 factory CPL placements, got {len(cpl)}")
-    if len(manual) != 6:
-        failures.append(f"expected 6 manual-install rows, got {len(manual)}")
-    if len(post) != 19:
-        failures.append(f"expected 19 post-assembly insertions, got {len(post)}")
+    if len(bom) != 29:
+        failures.append(f"expected 29 factory BOM rows, got {len(bom)}")
+    if len(cpl) != 96:
+        failures.append(f"expected 96 factory CPL placements, got {len(cpl)}")
+    if len(manual) != 23:
+        failures.append(f"expected 23 manual-install rows, got {len(manual)}")
+    if len(post) != 22:
+        failures.append(f"expected 22 post-assembly insertions, got {len(post)}")
 
     factory_cpns = sorted({bom_cpn(row) for row in bom if bom_cpn(row)})
     if len(factory_cpns) != 20:
@@ -183,7 +183,7 @@ def build_report(out_dir):
         "",
         "This report verifies the files that would form a future bare-PCB upload.",
         "It is not upload or purchase authorization: the VJUGA design remains on",
-        "hold until real-ROM boot, GAL/timing validation, and design review close.",
+        "hold until the remaining electrical, mechanical, vendor, and design reviews close.",
         "",
         "## Pre-Upload Integrity",
         "",

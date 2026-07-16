@@ -38,11 +38,13 @@ markings, pinout, electrical limits, and bench behavior are checked.
 
 ## Current manual rows
 
-The present draft classifies six placements as manual:
+The present draft classifies 23 placements as manual:
 
 - `D1` TVS;
 - `J30` keyboard header;
+- `J94-J98` decode, clock, framebuffer, and control bring-up headers;
 - `R6` and `R15` zero-ohm links;
+- `R32-R43` decode-PROM pull-ups;
 - `U50` oscillator; and
 - `U51` reset supervisor.
 

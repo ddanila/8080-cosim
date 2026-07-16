@@ -10,6 +10,10 @@ SIGNAL_MIN_WIDTH_MM = 0.15
 VIA_MIN_DRILL_MM = 0.25
 POWER_REVIEW_WIDTH_MM = 0.50
 POWER_NETS = ("VCC", "GND", "VCC_RAW")
+POWER_PLANES = {
+    "GND": "In1.Cu",
+    "VCC": "In2.Cu",
+}
 
 
 def mm(value):
@@ -105,13 +109,28 @@ def build_report(board_path):
         net = via.GetNetname() or "<no net>"
         net_stats[net]["vias"] += 1
 
+    filled_planes = {}
+    for zone in zones:
+        layer = zone.GetLayer()
+        if zone.IsFilled() and zone.HasFilledPolysForLayer(layer):
+            filled_planes[zone.GetNetname()] = layer_name(board, layer)
+
     for net in POWER_NETS:
         stats = net_stats.get(net)
-        if not stats or stats["segments"] == 0:
-            failures.append(f"Power net {net} has no routed track segments.")
+        plane_layer = filled_planes.get(net)
+        expected_plane = POWER_PLANES.get(net)
+        if expected_plane and plane_layer != expected_plane:
+            failures.append(
+                f"Power net {net} lacks its filled {expected_plane} plane."
+            )
+        if (not stats or stats["segments"] == 0) and not plane_layer:
+            failures.append(f"Power net {net} has neither routed tracks nor a filled plane.")
             continue
-        power_min = min(stats["widths"])
-        if power_min < POWER_REVIEW_WIDTH_MM:
+        if stats and stats["segments"] and not plane_layer:
+            power_min = min(stats["widths"])
+        else:
+            power_min = None
+        if power_min is not None and power_min < POWER_REVIEW_WIDTH_MM:
             reviews.append(
                 f"{net}: minimum routed width is {fmt_mm(power_min)}, below the review target {fmt_mm(POWER_REVIEW_WIDTH_MM)}."
             )
@@ -120,7 +139,7 @@ def build_report(board_path):
         reviews.append("No copper zones are present; the current Rev A baseline routes power explicitly.")
     else:
         zone_nets = sorted({zone.GetNetname() for zone in zones})
-        reviews.append("Copper zones are present; confirm fill/island behavior for: " + ", ".join(zone_nets))
+        reviews.append("Confirm filled-plane island and return-path behavior for: " + ", ".join(zone_nets))
 
     status = "NOT READY" if failures else "REVIEW REQUIRED" if reviews else "READY"
     lines = [
@@ -157,15 +176,16 @@ def build_report(board_path):
             "",
             "## Power Nets",
             "",
-            "| Net | Segments | Vias | Length | Widths |",
-            "| --- | ---: | ---: | ---: | --- |",
+            "| Net | Segments | Vias | Length | Widths | Filled plane |",
+            "| --- | ---: | ---: | ---: | --- | --- |",
         ]
     )
     for net in POWER_NETS:
         stats = net_stats.get(net, {"segments": 0, "length": 0.0, "vias": 0, "widths": set()})
         widths_text = ", ".join(fmt_mm(value) for value in sorted(stats["widths"])) or "-"
+        plane_text = filled_planes.get(net, "-")
         lines.append(
-            f"| {net} | {stats['segments']} | {stats['vias']} | {stats['length']:.1f} mm | {widths_text} |"
+            f"| {net} | {stats['segments']} | {stats['vias']} | {stats['length']:.1f} mm | {widths_text} | {plane_text} |"
         )
 
     top_nets = sorted(net_stats.items(), key=lambda item: item[1]["length"], reverse=True)[:12]

@@ -37,6 +37,26 @@ EXPECTED_ROWS = {
     },
 }
 
+for ref, purpose in {
+    "J94": "decode-mode selector",
+    "J95": "decode observability header",
+    "J96": "clock selector",
+    "J97": "framebuffer address header",
+    "J98": "Z80 control header",
+}.items():
+    EXPECTED_ROWS[ref] = {
+        "disposition": "REVIEW REQUIRED - manual bring-up header",
+        "evidence": f"The engineering BOM deliberately assigns the {purpose} to owner-supplied manual assembly.",
+        "next_action": "Install manually only after pin-1, silkscreen, and default-state review.",
+    }
+
+for number in range(32, 44):
+    EXPECTED_ROWS[f"R{number}"] = {
+        "disposition": "REVIEW REQUIRED - exact 4.7k axial CPN",
+        "evidence": "This is an open-collector decode-PROM pull-up in a DIN0207 axial footprint.",
+        "next_action": "Install a verified 4.7k axial part manually or assign a footprint-matched factory CPN.",
+    }
+
 
 def read_rows(path):
     if not path.exists():

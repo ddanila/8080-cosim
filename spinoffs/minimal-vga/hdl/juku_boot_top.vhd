@@ -62,33 +62,54 @@ architecture rtl of juku_boot_top is
 		);
 	end component;
 
-	type byte_arr is array (natural range <>) of std_logic_vector(7 downto 0);
+	subtype byte_value is natural range 0 to 255;
+	type byte_arr is array (natural range <>) of byte_value;
+	type byte_arr_ptr is access byte_arr;
 
-	impure function load_hex(fn : string; n : natural) return byte_arr is
-		file     f      : text;
-		variable status : file_open_status;
-		variable l      : line;
-		variable b      : std_logic_vector(7 downto 0);
-		variable arr    : byte_arr(0 to n-1) := (others => (others => '0'));
-		variable i      : natural := 0;
-	begin
-		file_open(status, f, fn, read_mode);
-		assert status = open_ok report "juku_boot_top: cannot open ROM " & fn severity failure;
-		while (not endfile(f)) and i < n loop
-			readline(f, l);
-			if l'length > 0 then
-				hread(l, b);
-				arr(i) := b;
-				i := i + 1;
-			end if;
-		end loop;
-		file_close(f);
-		assert i = n report "juku_boot_top: short ROM read" severity failure;
-		return arr;
-	end function;
+	-- A protected variable keeps the behavioral 64 KiB RAM as storage rather
+	-- than 524,288 individually scheduled std_logic signals. This is both closer
+	-- to the intended memory abstraction and avoids multi-gigabyte elaboration
+	-- overhead in GHDL's mcode backend.
+	type ram_store_t is protected
+		procedure put(addr : natural; data : std_logic_vector(7 downto 0));
+		procedure load_hex(fn : string; n : natural);
+		impure function get(addr : natural) return std_logic_vector;
+	end protected;
 
-	constant rom : byte_arr(0 to 16383) := load_hex(rom_file, 16384);
-	signal   ram : byte_arr(0 to 65535) := (others => (others => '0'));
+	type ram_store_t is protected body
+		variable mem : byte_arr_ptr := new byte_arr(0 to 65535);
+		procedure put(addr : natural; data : std_logic_vector(7 downto 0)) is
+		begin
+			mem(addr) := to_integer(unsigned(data));
+		end procedure;
+		procedure load_hex(fn : string; n : natural) is
+			file f : text;
+			variable status : file_open_status;
+			variable l : line;
+			variable b : std_logic_vector(7 downto 0);
+			variable i : natural := 0;
+		begin
+			file_open(status, f, fn, read_mode);
+			assert status = open_ok report "juku_boot_top: cannot open ROM " & fn severity failure;
+			while (not endfile(f)) and i < n loop
+				readline(f, l);
+				if l'length > 0 then
+					hread(l, b);
+					mem(i) := to_integer(unsigned(b));
+					i := i + 1;
+				end if;
+			end loop;
+			file_close(f);
+			assert i = n report "juku_boot_top: short ROM read" severity failure;
+		end procedure;
+		impure function get(addr : natural) return std_logic_vector is
+		begin
+			return std_logic_vector(to_unsigned(mem(addr), 8));
+		end function;
+	end protected body;
+
+	shared variable rom : ram_store_t;
+	shared variable ram : ram_store_t;
 
 	signal a      : std_logic_vector(15 downto 0);
 	signal di     : std_logic_vector(7 downto 0);
@@ -109,21 +130,21 @@ architecture rtl of juku_boot_top is
 	begin
 		case to_integer(mode) is
 			when 0 =>
-				if ua <= 16#3FFF# then return rom(to_integer(ua)); end if;
+				if ua <= 16#3FFF# then return rom.get(to_integer(ua)); end if;
 			when 1 =>
 				if ua >= 16#D800# then
 					idx := 16#1800# + (to_integer(ua) - 16#D800#);
-					return rom(idx);
+					return rom.get(idx);
 				end if;
 			when 2 =>
 				if ua >= 16#4000# and ua <= 16#BFFF# then return x"FF"; end if;  -- empty expcart
 				if ua >= 16#D800# then
 					idx := 16#1800# + (to_integer(ua) - 16#D800#);
-					return rom(idx);
+					return rom.get(idx);
 				end if;
 			when others => null;  -- mode 3: all RAM
 		end case;
-		return ram(to_integer(ua));
+		return ram.get(to_integer(ua));
 	end function;
 
 	-- Is address served by a ROM/cart overlay in the current mode? (writes under it are dropped)
@@ -138,6 +159,12 @@ architecture rtl of juku_boot_top is
 		end case;
 	end function;
 begin
+	rom_init : process
+	begin
+		rom.load_hex(rom_file, 16384);
+		wait;
+	end process;
+
 	u_cpu : T80se
 		generic map(Mode => cpu_mode, T2Write => 0, IOWait => 1)
 		port map(
@@ -149,9 +176,12 @@ begin
 			A => a, DI => di, DO => do_cpu
 		);
 
-	-- Async read bus: memory via the Juku overlay map, IO via the 8255 output latch.
-	-- process(all) so the value tracks ram/mode changes read inside read_byte().
-	read_bus : process(all)
+	-- Async CPU read bus. Deliberately react to bus/control changes rather than
+	-- every element of the 64 KiB signal RAM: CPU writes and reads are separate
+	-- cycles, so a later address/read transition always observes the new value.
+	-- Including the whole RAM through process(all) makes GHDL elaborate an
+	-- enormous simulation-only sensitivity list without improving this model.
+	read_bus : process(a, mreq_n, iorq_n, rd_n, mode)
 	begin
 		if mreq_n = '0' and rd_n = '0' then
 			di <= read_byte(a);
@@ -177,7 +207,7 @@ begin
 				-- Memory write (once per cycle, on the WR falling edge), dropped under an overlay.
 				if mreq_n = '0' and wr_n = '0' and prev_wr_n = '1' then
 					if not is_overlay(a) then
-						ram(to_integer(unsigned(a))) <= do_cpu;
+						ram.put(to_integer(unsigned(a)), do_cpu);
 						if unsigned(a) >= 16#D800# then
 							vw <= vw + 1;
 						end if;
@@ -227,7 +257,7 @@ begin
 				file_open(st, fo, dump_file, write_mode);
 				assert st = open_ok report "juku_boot_top: cannot open dump file" severity failure;
 				for i in 0 to (40*241 - 1) loop
-					b := ram(16#D800# + i);
+					b := ram.get(16#D800# + i);
 					write(fo, character'val(to_integer(unsigned(b))));
 				end loop;
 				file_close(fo);

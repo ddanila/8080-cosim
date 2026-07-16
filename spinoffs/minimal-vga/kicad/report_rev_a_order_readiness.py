@@ -75,12 +75,11 @@ OPTIONAL_REVIEW_ARTIFACTS = [
 ]
 
 HUMAN_GATES = [
-    "Render a deterministic real-ROM banner or prompt through the shared-DRAM/VGA path.",
-    "Finalize, compile, program, and review the simulated U5/U24 GAL equations.",
+    "Program and bench-validate the U5/U24 GAL equations on the selected physical devices.",
     "Independent Gerber/drill inspection in an external viewer.",
     "Full schematic review against the intended Z80, ROM, DRAM, refresh, keyboard, and VGA behavior.",
     "Order-time visual routing review against the generated routing geometry and disposition reports.",
-    "Confirm the Rev A no-pour and 0.20 mm power-routing disposition remains intentional for this prototype order.",
+    "Confirm the filled In1.Cu GND and In2.Cu VCC planes, island/return paths, and 0.20 mm VCC_RAW routing remain intentional.",
     "Select PCB fabrication only / no assembly in the vendor UI for this first concept sample.",
     "Upload only `upload/vjuga-rev-a-gerbers-drill.zip`; keep BOM/CPL files as later assembly references.",
     "Save vendor Gerber preview, stackup/settings, price, and order-number evidence.",
@@ -166,7 +165,7 @@ def machine_gate_summary(out_dir):
         (
             "Schematic intent contract",
             has_ready_line(schematic_intent, "READY")
-            and "- Checks: 125" in schematic_intent
+            and "- Checks: 134" in schematic_intent
             and "- Failures: 0" in schematic_intent
             and "Core CPU/ROM/decode" in schematic_intent
             and "DRAM and arbitration" in schematic_intent
@@ -185,10 +184,10 @@ def machine_gate_summary(out_dir):
         ),
         (
             "Behavioral simulation/LVS",
-            has_ready_line(behavioral, "SMOKE TESTS PASS / REAL VJUGA BOOT UNPROVEN")
+            has_ready_line(behavioral, "BEHAVIORAL REGRESSIONS PASS")
             and "- Exit code: 0" in behavioral
             and "- Expected markers missing: 0" in behavioral,
-            "`behavioral-readiness.md` records the main-project regression plus VJUGA synthetic smoke, LVS, physical, PCB, DRC, and DRAM checks without claiming a real VJUGA boot.",
+            "`behavioral-readiness.md` records both real-ROM VJUGA implementations plus synthetic smoke, U24 timing, readback, LVS, physical, PCB, DRC, and DRAM checks.",
         ),
         (
             "KiCad ERC",
@@ -215,9 +214,9 @@ def machine_gate_summary(out_dir):
             "Routing/plane disposition",
             has_ready_line(routing_disposition, "READY")
             and "- Disposition failures: 0" in routing_disposition
-            and "Accepted Rev A prototype power routing width is 0.20 mm" in routing_disposition
-            and "No copper pours are used on Rev A" in routing_disposition,
-            "`routing-disposition-readiness.md` accepts the Rev A no-plane and 0.20 mm power-routing tradeoff with explicit measured limits.",
+            and "VCC_RAW uses the accepted Rev A prototype routing width of 0.20 mm" in routing_disposition
+            and "VCC and GND use filled inner-layer planes" in routing_disposition,
+            "`routing-disposition-readiness.md` records the filled VCC/GND planes and explicit VCC_RAW routing with measured limits.",
         ),
         (
             "Mounting-hole geometry",
@@ -238,7 +237,7 @@ def machine_gate_summary(out_dir):
         (
             "Power/fuse budget",
             has_ready_line(power_budget, "READY")
-            and "- Planning budget: 1.54 A" in power_budget
+            and "- Planning budget: 1.81 A" in power_budget
             and "- Fuse hold current: 3.00 A" in power_budget
             and "- Power-budget failures: 0" in power_budget,
             "`power-budget-readiness.md` verifies the +5V planning budget, F1 candidate, and raw-to-fused power-entry topology.",
@@ -246,8 +245,8 @@ def machine_gate_summary(out_dir):
         (
             "Excellon drill export",
             has_ready_line(drill, "READY")
-            and "- Excellon drill hits: 677" in drill
-            and "- PCB pad/via drill features: 677" in drill
+            and "- Excellon drill hits: 869" in drill
+            and "- PCB pad/via drill features: 869" in drill
             and "- Drill readiness failures: 0" in drill,
             "`drill-readiness.md` compares the exported Excellon drill file against PCB pad/via drill features and documents Edge.Cuts mounting cutouts.",
         ),
@@ -289,7 +288,7 @@ def machine_gate_summary(out_dir):
         (
             "Socket insertion policy",
             has_ready_line(socket_insertion, "READY")
-            and "- Socketed IC footprints: 19" in socket_insertion
+            and "- Socketed IC footprints: 22" in socket_insertion
             and "- Policy failures: 0" in socket_insertion,
             "`assembly/socket-insertion-policy.md` confirms factory socket mounting and owner-supplied IC post-assembly insertion policy.",
         ),
@@ -315,8 +314,8 @@ def machine_gate_summary(out_dir):
         (
             "Manual install disposition",
             has_ready_line(manual_install_disposition, "READY")
-            and "- Manual install rows: 6" in manual_install_disposition
-            and "- Post-assembly socket insertions: 19" in manual_install_disposition
+            and "- Manual install rows: 23" in manual_install_disposition
+            and "- Post-assembly socket insertions: 22" in manual_install_disposition
             and "- Upload manual CSV matches source: yes" in manual_install_disposition
             and "- Upload post-insertion CSV matches source: yes" in manual_install_disposition
             and "- Disposition failures: 0" in manual_install_disposition,
@@ -337,18 +336,18 @@ def machine_gate_summary(out_dir):
                 has_ready_line(vendor_order_checklist, "READY")
                 or has_ready_line(vendor_order_checklist, "REVIEW REQUIRED")
             )
-            and "- Factory-mounted designators checked: 89" in vendor_order_checklist
+            and "- Factory-mounted designators checked: 96" in vendor_order_checklist
             and "- Unique factory CPNs: 20" in vendor_order_checklist
-            and "- Manual-install rows excluded from factory BOM: 6" in vendor_order_checklist
-            and "- Post-assembly owner insertions: 19" in vendor_order_checklist
+            and "- Manual-install rows excluded from factory BOM: 23" in vendor_order_checklist
+            and "- Post-assembly owner insertions: 22" in vendor_order_checklist
             and "- Vendor checklist failures: 0" in vendor_order_checklist,
             "`assembly/vendor-order-checklist.md` records the upload BOM CPN set, manual exclusions, post-assembly insertions, and order-time vendor/stock review rows.",
         ),
         (
             "Assembly orientation notes",
             has_ready_line(orientation_notes, "READY")
-            and "- Manual rows referenced: 6 / 6" in orientation_notes
-            and "- Post-assembly insertion CSV rows: 19" in orientation_notes
+            and "- Manual rows referenced: 23 / 23" in orientation_notes
+            and "- Post-assembly insertion CSV rows: 22" in orientation_notes
             and "- Orientation-note failures: 0" in orientation_notes,
             "`assembly/orientation-notes-readiness.md` verifies upload notes cover manual rows, socket orientation, post-assembly insertion, polarized parts, and connector notes.",
         ),
@@ -366,11 +365,11 @@ def machine_gate_summary(out_dir):
             and "# VJUGA Rev A bare-PCB order-upload runbook" in order_upload_runbook
             and "Select PCB fabrication only / no assembly" in order_upload_runbook
             and "Upload only `vjuga-rev-a-gerbers-drill.zip`" in order_upload_runbook
-            and "- Reference factory BOM rows retained: 26" in order_upload_runbook
-            and "- Reference factory CPL placements retained: 89" in order_upload_runbook
+            and "- Reference factory BOM rows retained: 29" in order_upload_runbook
+            and "- Reference factory CPL placements retained: 96" in order_upload_runbook
             and "- Reference unique factory CPNs retained: 20" in order_upload_runbook
-            and "- Manual-install rows retained for later assembly: 6" in order_upload_runbook
-            and "- Owner post-assembly socket insertions retained for later assembly: 19" in order_upload_runbook
+            and "- Manual-install rows retained for later assembly: 23" in order_upload_runbook
+            and "- Owner post-assembly socket insertions retained for later assembly: 22" in order_upload_runbook
             and "- Expected ZIP members: 11" in order_upload_runbook
             and "- ZIP members found: 11" in order_upload_runbook
             and "file mode `0644`" in order_upload_runbook,

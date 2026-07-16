@@ -6,7 +6,7 @@ from pathlib import Path
 import pcbnew
 
 
-PLANNING_BUDGET_A = 1.54
+PLANNING_BUDGET_A = 1.81
 FUSE_HOLD_A = 3.0
 MIN_HOLD_MARGIN = 1.5
 MAX_GROSS_FAULT_HOLD_A = 4.0
@@ -100,7 +100,8 @@ def build_report(board_path, bom_path, budget_doc_path):
     f1_text = row_text(f1_row)
     hold_margin = FUSE_HOLD_A / PLANNING_BUDGET_A
 
-    check("**1.54 A**" in doc, failures, "power budget doc does not record the 1.54 A planning budget")
+    budget_marker = f"**{PLANNING_BUDGET_A:.2f} A**"
+    check(budget_marker in doc, failures, f"power budget doc does not record the {PLANNING_BUDGET_A:.2f} A planning budget")
     check(EXPECTED_FUSE_MPN in doc, failures, f"power budget doc does not mention {EXPECTED_FUSE_MPN}")
     check(EXPECTED_FUSE_CPN in doc, failures, f"power budget doc does not mention {EXPECTED_FUSE_CPN}")
     check("Hold current: 3 A" in doc, failures, "power budget doc does not record the 3 A hold current")
@@ -132,7 +133,7 @@ def build_report(board_path, bom_path, budget_doc_path):
 
     status = "READY" if not failures else "NOT READY"
     rows_out = [
-        ("Planning +5V budget", f"{PLANNING_BUDGET_A:.2f} A", "PASS" if "**1.54 A**" in doc else "FAIL"),
+        ("Planning +5V budget", f"{PLANNING_BUDGET_A:.2f} A", "PASS" if budget_marker in doc else "FAIL"),
         ("F1 hold current", f"{FUSE_HOLD_A:.2f} A", "PASS" if hold_margin >= MIN_HOLD_MARGIN else "FAIL"),
         ("F1 hold/budget margin", f"{hold_margin:.2f}x", "PASS" if hold_margin >= MIN_HOLD_MARGIN else "FAIL"),
         ("F1 candidate", f"{EXPECTED_FUSE_MPN} / {EXPECTED_FUSE_CPN}", "PASS" if f1_row and cpn(f1_row) == EXPECTED_FUSE_CPN else "FAIL"),

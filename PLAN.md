@@ -452,8 +452,10 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
 1. **Footprint review items** automation cannot close: physical pin-1 orientation
    of the socketed parts, and confirming the real part variants (USB-C
    receptacle, PTC, TVS) against datasheets.
-2. **Freeze the fab package** (`kicad/export_fab.sh`), put the new Gerber ZIP
-   SHA256 into `docs/rev-a-manufacturing-readiness.md`, and run vendor DFM.
+2. **Run vendor DFM/preview.** The current fab package is regenerated and
+   machine-verified; its Gerber/drill ZIP SHA256 is frozen in
+   `docs/rev-a-manufacturing-readiness.md`. Vendor preview, live stock, and
+   assembly-capability review remain order-time human gates.
 
 Not blocking the bare board, but settle before populating: U24's corrected
 GAL22V10 pinout and Gray-coded DRAM timing now pass the slower MK4564-12 limits

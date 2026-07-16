@@ -30,6 +30,9 @@ POST_INSERTION_COVERAGE = (
     "KM4164B-10",
     "`U10`-`U17`",
     "GAL/PAL",
+    "К556РТ4",
+    "К155РЕ3",
+    "`U6`",
     "82C55",
     "socketed 74HCT logic",
 )

@@ -24,7 +24,42 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_schematic_intent.py \
   "$OUT" >/dev/null
 python3 spinoffs/minimal-vga/kicad/report_rev_a_router_readiness.py \
   "$OUT" >/dev/null
-"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_behavioral_readiness.py "$OUT" >/dev/null
+BEHAVIORAL_REPORT="$OUT/behavioral-readiness.md"
+BEHAVIORAL_OK=0
+if [ "${MINIMAL_VGA_REUSE_BEHAVIORAL_REPORT:-0}" = "1" ]; then
+  if [ ! -s "$BEHAVIORAL_REPORT" ] \
+      || ! grep -q 'Status: \*\*BEHAVIORAL REGRESSIONS PASS\*\*' "$BEHAVIORAL_REPORT" \
+      || ! grep -q -- '- Exit code: 0' "$BEHAVIORAL_REPORT" \
+      || ! grep -q -- '- Expected markers missing: 0' "$BEHAVIORAL_REPORT"; then
+    echo "Requested behavioral-report reuse, but the existing report is not a complete pass." >&2
+    exit 6
+  fi
+  NEWER_BEHAVIORAL_INPUT=$(find \
+    spinoffs/minimal-vga/sim spinoffs/minimal-vga/hdl spinoffs/minimal-vga/sync \
+    hdl sync cosim roms \
+    spinoffs/minimal-vga/kicad/rev-a-physical.board.json \
+    spinoffs/minimal-vga/kicad/rev-a-physical.kicad_sch \
+    spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb \
+    spinoffs/minimal-vga/kicad/check_rev_a_*.sh \
+    -type f -newer "$BEHAVIORAL_REPORT" -print -quit)
+  if [ -n "$NEWER_BEHAVIORAL_INPUT" ]; then
+    echo "Requested behavioral-report reuse, but an input is newer: $NEWER_BEHAVIORAL_INPUT" >&2
+    exit 6
+  fi
+  echo "Reusing current passing behavioral report: $BEHAVIORAL_REPORT"
+  BEHAVIORAL_OK=1
+elif "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_behavioral_readiness.py "$OUT" >/dev/null; then
+  BEHAVIORAL_OK=1
+fi
+if [ "$BEHAVIORAL_OK" != "1" ]; then
+  if [ "${MINIMAL_VGA_ALLOW_BEHAVIORAL_EXPORT:-0}" != "1" ]; then
+    echo "VJUGA behavioral aggregate failed; fab export blocked." >&2
+    echo "Report: $OUT/behavioral-readiness.md" >&2
+    echo "Set MINIMAL_VGA_ALLOW_BEHAVIORAL_EXPORT=1 only for a design-held debug export." >&2
+    exit 5
+  fi
+  echo "WARNING: continuing a design-held debug export after behavioral failure." >&2
+fi
 
 if [ "${MINIMAL_VGA_ALLOW_ERC_EXPORT:-0}" != "1" ]; then
   if ! KICAD_CLI="$KCLI" python3 spinoffs/minimal-vga/kicad/report_rev_a_erc_readiness.py \

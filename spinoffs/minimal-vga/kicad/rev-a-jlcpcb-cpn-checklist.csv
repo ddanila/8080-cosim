@@ -1,20 +1,22 @@
 Group,Designators,Factory action,Preferred CPN,Status,Notes
-DIP-14 sockets,U22 U23,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs
-DIP-16 sockets,U10-U17 U20 U21 U31 U41,Mount sockets only,C2326,Verify at order,BOOMELE square-hole DIP-16 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-14 sockets,U6 U22 U23,Mount sockets only,C2325,Verify at order,BOOMELE square-hole DIP-14 2.54mm 7.62mm socket; do not factory-populate ICs
+DIP-16 sockets,U3 U4 U10-U17 U20 U21 U31 U41,Mount sockets only,C2326,Verify at order,BOOMELE square-hole DIP-16 2.54mm 7.62mm socket; do not factory-populate ICs
 DIP-24 wide sockets,U5 U24,Mount sockets only,C72120,Verify at order,CONNFLY square-hole DIP-24 2.54mm 15.24mm socket; do not factory-populate ICs
 DIP-28 wide socket,U2,Mount sockets only,C72121,Verify at order,CONNFLY square-hole DIP-28 2.54mm 15.24mm socket; do not factory-populate IC
 DIP-40 sockets,U1 U30,Mount sockets only,C2332,Verify at order,BOOMELE square-hole DIP-40 2.54mm 15.24mm socket; do not factory-populate ICs
-Decoupling capacitors,C1-C25,Populate 100nF capacitors,C2896070,Candidate assigned,SHM DCS104Z26Y5VF6BL5A0 100nF 50V Y5V P=5mm THT ceramic; includes spare local bypass pads after optional glue deferral; verify stock before order
+Decoupling capacitors,C1-C28,Populate 100nF capacitors,C2896070,Candidate assigned,SHM DCS104Z26Y5VF6BL5A0 100nF 50V Y5V P=5mm THT ceramic; includes spare local bypass pads after optional glue deferral; verify stock before order
 Bulk capacitor,C50,Populate 47uF capacitor,C724688,Candidate assigned,AISHI ERG1EM470D11OT 47uF 25V radial electrolytic D5xL11mm P2mm; verify polarity/orientation against footprint before order
 Diagnostic LEDs,D2-D7,Populate 3mm LEDs,C99772,Candidate assigned,EVERLIGHT 204-10SURD/S530-A3 red 3mm THT baseline; colors can change later
 Diagnostic LED resistors,R24-R29,Populate 2.2k resistors,C3454390,Candidate assigned,YAGEO MFR-25FBF52-2K2 D2.4xL6.3mm; verify against DIN0207 footprint
 VGA resistors,R1-R3,Populate 470R resistors,C2896817,Candidate assigned,VO CR1/4W-470R class D2.7xL6.2mm; verify against DIN0207 footprint
-Pullups,R4-R5 R7-R14,Populate 10k resistors,C410695,Candidate assigned,TyoHM RN1/4W10KFT/BA1 D2.4xL6.4mm
+Pullups,R4-R5 R7-R14 R44,Populate 10k resistors,C410695,Candidate assigned,TyoHM RN1/4W10KFT/BA1 D2.4xL6.4mm
 PWR_OK link,R6,Manual install 0R resistor/link,,Manual for Rev A draft,Need exact axial 0R jumper matching DIN0207 footprint before factory assembly
 Keyboard series resistors,R16-R23,Populate 220R resistors,C410657,Candidate assigned,TyoHM RN 1/4W 220R F T/B A1 D2.4xL6.4mm
 Configuration link,R15,Manual install 0R link,,Manual for Rev A draft,Need exact axial 0R jumper matching DIN0207 footprint before factory assembly
+Decode PROM pullups,R32-R43,Manual install 4.7k resistors,,Manual for Rev A draft,Open-collector RT4/RE3 output pullups; verify exact DIN0207 axial parts before installation
 USB-C CC pulldowns,R30-R31,Populate 5.1k resistors,C433473,Candidate assigned,TyoHM RN 1/8W 5K1 F T/B A1 is D1.7xL3.5mm; PCB uses DIN0204 L3.6mm/D1.6mm footprint for closer fit
 Keyboard header,J30,Manual install 1x15 2.54mm pin header,,Manual for Rev A draft,Inline bring-up header; exact vertical header CPN still needed before factory assembly
+Phase 3 bring-up headers,J94-J98,Manual install selector and analyzer headers,,Manual for Rev A draft,Install after pin-1 silk and default-state review; keep out of the factory BOM until exact header CPNs are verified
 Debug headers,J90-J93,Populate 2.54mm debug headers,C9900010269 C9900257430,Candidate assigned,J90-J92 use PinHeader_2x05_P2.54mm_Vertical; J93 uses HDR-1X4; JLCPCB assembly-library wave-solder candidates need fixture/fit confirmation at order time
 VGA timing header,U40,Populate 2x6 2.54mm header,C5383107,Candidate assigned,HanElectricity 2541WV-2x06P straight 2x6 2.54mm wave-solder header candidate; verify fixture handling at order time
 Power input,J1 J3,Populate 5V terminal and USB-C power connector,C8383 C283540,Candidate assigned,J1 candidate WJ2EDGR-5.08-02P-14-00A uses 5.08mm pitch and PCB now uses a 5.08mm terminal footprint; J3 HRO TYPE-C-31-M-17
