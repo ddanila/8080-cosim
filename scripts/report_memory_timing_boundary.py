@@ -148,9 +148,12 @@ def main() -> int:
             "`CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout",
         ),
         (
-            "PHI2TTL timing gate fanout is guarded",
-            has_nodes(board, "PHI2TTL", {("D35", "13"), ("D39", "1"), ("D92", "2"), ("D92", "3"), ("D53", "4")}),
-            "`PHI2TTL` source-risk net",
+            "PHI2TTL timing gate fanout is cross-sheet source-closed",
+            set(nodes(board, "PHI2TTL"))
+            == {("D35", "13"), ("D39", "1"), ("D92", "2"), ("D92", "3"), ("D53", "4"), ("D30", "3")}
+            and board["nets"]["PHI2TTL"].get("source_risk") is False
+            and "unique labeled cross-sheet pair" in board["nets"]["PHI2TTL"].get("risk_disposition", ""),
+            "sheet-2 Ф2TTL (1) export -> sheet-1 (2) Ф2 TTL/D30.3",
         ),
         (
             "D92 triple-NOR RAM read/write combiner is source-closed",

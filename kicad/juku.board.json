@@ -7626,7 +7626,9 @@
    "wire_link": {"ref": "W14", "other_net": "PHI2_D35"}
   },
   "PHI2TTL": {
-   "src": "scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the \"Ф2TTL\" rail -> D39.1 + D92.2/3 (ex net D92_GATE_T) + \"(1)\" exit to sheet 1 [sheet-1 pin pending]; + D53.4 G2A_N (strobe window = Phi2) [scan sheet-2 (chase crops c4_g3_src: 4x y-match both feeds)]",
+   "src": "native .006 sheets 1-2 cross-reference closure: sheet-2 D35.13/R35/C29/R106 RC shaper is the Ф2TTL rail feeding D39.1, D92.2/.3, and D53.4 before export marked (1); sheet-1 matching arrival (2) Ф2 TTL lands directly on D30 CLK1/pin3",
+   "source_risk": false,
+   "risk_disposition": "owner measurement retired: the full-resolution sheet-2 Ф2TTL (1) export and sheet-1 (2) Ф2 TTL arrival are a unique labeled cross-sheet pair, and every drawn endpoint is modeled",
    "nodes": [
     [
      "D35",

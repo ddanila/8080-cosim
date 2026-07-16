@@ -69,7 +69,7 @@ with the machine-readable board model.
   and pin 11 to the D105.2/D13.4/D11.20 clock conductor, leaving only the `H`
   edge contact/pull-up open. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 212 modeled nets retain source-risk annotations requiring
+  In total, 211 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 
