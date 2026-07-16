@@ -282,7 +282,7 @@ Every ask below is queued with exact deliverables in
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2260/2260
+Source-model state feeding this work: the source PCB passes all 2263/2263
 net-assigned PCB-scoped board-JSON endpoints, with 61 endpoints on
 bracket-mounted S1/X3/X4/X8/X9 intentionally excluded in favor of their
 physical A-point cable landings
