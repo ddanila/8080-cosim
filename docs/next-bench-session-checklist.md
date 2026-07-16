@@ -33,7 +33,10 @@ PDF is the prototype and may differ.
    D104.10, and the D5-D7 far destinations. First test D94.13/D104.7 against
    D5.27 `IOWR`; if open, capture both during known FDC port reads/writes. The
    physical table requires polarity-equivalent levels on selected cycles, but
-   this firmware constraint is not copper proof
+   this firmware constraint is not copper proof. During port `1F` data-register
+   transfers, also capture D101.7/A4, D94.1/D0, D93.4 `/RE`, and D93.2 `/WE`:
+   A4 low must steer to D0 with both D93 strobes released, while A4 high restores
+   the direction-appropriate D93 strobe
    (`docs/d94-reconstruction-constraints.md`).
 4. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
    D106.11-D93.27, D106.14-D93.33 layer-handoff tests, and the D95/D101 select

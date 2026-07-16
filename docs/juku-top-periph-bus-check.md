@@ -25,6 +25,7 @@ sync/juku_top_periph_bus_check.sh
 | PPI0 keyboard scan reads shifted `T` as `0x88` through decoded ports `0x04/0x05` | PASS |
 | PPI0 Port C motor-on latch through decoded port `0x06` | PASS |
 | Physical D94 table produces mutually exclusive FDC `/RE` and `/WE` strobes | PASS |
+| Low D101.Q0/A4 steers register 3 from D93 strobes to the pulled-up D94 D0 branch | PASS |
 | FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | PASS |
 | FDC seek/status/data through decoded ports `0x1C..0x1F` | PASS |
 | First byte of `JUKU1.CPM` track 0 sector 2 read through top-level bus is `0xC3` | PASS |
@@ -40,6 +41,8 @@ sync/juku_top_periph_bus_check.sh
 - The behavioral FDC consumes D94's physical-table strobes. D94 enable,
   A3=active-low `IOWR`, and pulled-high A4 are explicit simulation-only
   functional sources; they preserve, rather than close, the physical probes.
+- A separate forced-low A4 check exercises the alternate register-3 D0 branch
+  without assigning that physically pulled-up output an unmeasured load.
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path

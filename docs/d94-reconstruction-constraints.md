@@ -225,6 +225,10 @@ These equations sharpen, but do not replace, continuity evidence:
 - At BA1:BA0=`11` with A4 low, `Q` becomes false, both D93 strobes
   release, and D0 asserts independently of A3/A2. A live D0 branch
   probe should therefore target exactly that row condition.
+  Conversely, A4 high restores the normal D93 read/write strobes at
+  register 3. Because A4 cancels out of `Q` at every other BA1:BA0
+  value, D101.Q0 is exactly a register-3 transfer-steering qualifier;
+  this does not identify the alternate D0 load or D101's broader role.
 - D4-D7 cannot change digital behavior for any captured address, even
   though their physical copper must remain preserved for 1:1 fidelity.
 - The equations constrain A3's selected-cycle function but do not prove
@@ -292,6 +296,8 @@ and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unkn
   physical table's `/RE` and `/WE`. Its decoded enable, A3=`IOWR`, and
   pulled-high A4 sources are simulation-only fits; Yosys/LVS keeps the
   measured physical nets separate and unresolved.
+  The fast bus guard also forces A4 low on register 3 and proves D0
+  asserts while both D93 strobes release, without assigning D0 a load.
 - D5-D7 are destination-unknown, not unused: registered component-side
   photographs prove copper leaves all three output pads.
 - D4-D7 are physically wired but program-inert: raw bits 4-7 remain one

@@ -112,6 +112,23 @@ module juku_top_periph_bus_tb();
     #1;
   end endtask
 
+  task check_d94_data_branch; begin
+    @(negedge osc);
+    force dut.BA = 16'h1f1f;
+    force dut.iowr_n = 1'b1;
+    force dut.iord_n = 1'b0;
+    force dut.d94_a4_d101_q0 = 1'b0;
+    #1;
+    if (dut.fdc_prom_cs_n !== 1'b0) fail("D94 enable did not assert for register-3 branch check");
+    if (dut.d94_d0_boundary !== 1'b0) fail("D94 D0 did not assert for low-A4 register-3 cycle");
+    if (dut.fdc_prom_re_n !== 1'b1) fail("D94 /RE did not release for low-A4 register-3 cycle");
+    if (dut.fdc_prom_we_n !== 1'b1) fail("D94 /WE did not release for low-A4 register-3 cycle");
+    force dut.iord_n = 1'b1;
+    release dut.d94_a4_d101_q0;
+    release dut.BA;
+    #40;
+  end endtask
+
   initial begin
     force dut.ready = 1'b1;
     force dut.reset_sys = 1'b1;
@@ -121,6 +138,8 @@ module juku_top_periph_bus_tb();
     #200;
     force dut.reset_sys = 1'b0;
     #200;
+
+    check_d94_data_branch();
 
     io_write(8'h00, 8'hD6);     // PIC ICW1; ROMBIOS uses high vector bits -> 0xFED4
     io_write(8'h01, 8'hFE);     // PIC ICW2

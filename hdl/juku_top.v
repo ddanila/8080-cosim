@@ -530,7 +530,14 @@ module juku_top (
 `endif
     // D94 РЕ3 .092 outputs: declared before U_D93 because its back-bias input
     // is fed from D94.D4/pin5 (`default_nettype none` forbids use-before-decl).
-    wire d94_d0_boundary, d94_d4, d94_d5, d94_d6, d94_d7;
+`ifdef YOSYS
+    wire d94_d0_boundary;
+`else
+    // Owner inspection finds a pull-up on D0; retain its hidden-branch output
+    // as a readable open-collector node in simulation without inventing a load.
+    tri1 d94_d0_boundary;
+`endif
+    wire d94_d4, d94_d5, d94_d6, d94_d7;
     supply0 d94_d1_grounded;
     vg93_fdc   U_D93  (.nc_back_bias(d94_d4), .cs_n(fdc_prom_cs_n), .re_n(fdc_prom_re_n), .we_n(fdc_prom_we_n), .a0(BA[0]), .a1(BA[1]),
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
@@ -566,7 +573,9 @@ module juku_top (
     // the shared D94.E_N/D93.CS_N level until its physical source is measured.
     net_boundary U_D94CSLNK (.a(cs_fdc_n), .b(fdc_prom_cs_n));
 `endif
+`ifdef YOSYS
     net_boundary U_D94D0LNK (.a(1'b1), .b(d94_d0_boundary));
+`endif
     re3_prom_092 U_D94 (.a({d94_a4_d101_q0, d94_a3_boundary, iord_n, BA[1], BA[0]}), .e_n(fdc_prom_cs_n),
                         .d({d94_d7, d94_d6, d94_d5, d94_d4,
                             fdc_prom_we_n, fdc_prom_re_n,

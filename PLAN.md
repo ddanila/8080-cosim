@@ -219,7 +219,11 @@ Every ask below is queued with exact deliverables in
    The minimized physical table also gives an exact D0 probe stimulus:
    BA1:BA0=`11`
    with A4/D101.7 low asserts D94.1 regardless of A3/A2 while both D93 `/RE`
-   and `/WE` release. D2/D3 minimize to mutually exclusive read/write equations,
+   and `/WE` release; A4 high restores the normal register-3 strobe. A4 cancels
+   from every other register row, proving D101.Q0 is exactly a register-3
+   transfer-steering qualifier without identifying D0's alternate load. Scope
+   D101.7, D94.1, `/RE`, and `/WE` together during port `1F` transfers. D2/D3
+   minimize to mutually exclusive read/write equations,
    and D4-D7 are proved released at every address; these constraints sharpen
    continuity work without treating behavior as copper evidence. The
    former BA11..BA15 assignment was an unproved scaffold analogy and is retired;
