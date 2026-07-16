@@ -16,8 +16,8 @@ readiness report.
 ## Summary
 
 - Board component positions: 315
-- Populate for current functional .009 build: 257
-- Leave empty for expansion/authentic completeness: 58
+- Populate for current functional .009 build: 251
+- Do not populate now (empty/DNP/pending): 64
 - Unique BOM lines: 101
 
 ## Action Totals
@@ -25,7 +25,7 @@ readiness report.
 | Action | Count basis |
 | --- | ---: |
 | circuit-review | 67 |
-| leave-empty | 58 |
+| leave-empty | 64 |
 | mechanical-review | 17 |
 | program/dump | 6 |
 | source-now | 167 |
@@ -38,7 +38,7 @@ readiness report.
 | circuit-review | C_ELEC | radial electrolytic | modern radial electrolytic with matching value/voltage/polarity | 3 | 3 | 0 | C31, C32, C33 | - |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 11 | 11 | 0 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99 | - |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 4 | 4 | 0 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
-| circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 6 | 6 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value. |
+| circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 6 | 0 | 6 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | D_DIODE | Soviet diode/zener per value | modern diode/zener matching value and power | 2 | 2 | 0 | VD3, VD4 | - |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 2 | 2 | 0 | VT1, VT2 | - |
@@ -140,5 +140,5 @@ readiness report.
 
 - `source-now` and `source-populated-now` rows are planning candidates, not an approved shopping cart.
 - `program/dump` rows need firmware/PROM contents before they are build-ready.
-- `leave-empty` rows are fabricated component positions (including sockets and passive footprints) not populated for the current .009 functional build; a no-footprint DNP is called out explicitly in its row note.
+- The `Empty` count includes fabricated leave-empty positions and evidence-held positions with no current footprint; the row action/note distinguishes DNP, empty-socket, and placement-pending cases.
 - `mechanical-review` and `circuit-review` rows need exact part drawing, footprint, or circuit-role confirmation before order.

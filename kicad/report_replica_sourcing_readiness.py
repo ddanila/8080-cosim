@@ -98,7 +98,7 @@ def build_report(rows):
     )
     review_blocked = filtered(
         rows,
-        lambda row: row["action"] in {"mechanical-review", "circuit-review"} and int_field(row, "populate_now") > 0,
+        lambda row: row["action"] in {"mechanical-review", "circuit-review"},
     )
 
     programming_blocked = bool(programming)

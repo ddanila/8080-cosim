@@ -3415,8 +3415,9 @@
   },
   {
    "ref": "C51",
+   "pcb_placement_pending": true,
    "type": "C_KM",
-   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3424,14 +3425,15 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D26 remains assumed"
+    "pins": "BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D26 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered"
    },
    "value": "0,047"
   },
   {
    "ref": "C52",
+   "pcb_placement_pending": true,
    "type": "C_KM",
-   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3439,14 +3441,15 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D27 remains assumed"
+    "pins": "BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D27 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered"
    },
    "value": "0,047"
   },
   {
    "ref": "C53",
+   "pcb_placement_pending": true,
    "type": "C_KM",
-   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3454,7 +3457,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D54 remains assumed"
+    "pins": "BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D54 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered"
    },
    "value": "0,047"
   },
@@ -3700,8 +3703,9 @@
   },
   {
    "ref": "C70",
+   "pcb_placement_pending": true,
    "type": "C_KM",
-   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3709,14 +3713,15 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D71 remains assumed"
+    "pins": "BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D71 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered"
    },
    "value": "0,047"
   },
   {
    "ref": "C71",
+   "pcb_placement_pending": true,
    "type": "C_KM",
-   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3724,14 +3729,15 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D79 remains assumed"
+    "pins": "BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D79 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered"
    },
    "value": "0,047"
   },
   {
    "ref": "C72",
+   "pcb_placement_pending": true,
    "type": "C_KM",
-   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not source the final part from the functional 0,047 model value."},
+   "procurement": {"action": "circuit-review", "note": "Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."},
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3739,7 +3745,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D87 remains assumed"
+    "pins": "BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D87 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered"
    },
    "value": "0,047"
   },

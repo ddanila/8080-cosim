@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `315`
 - Nets modeled: `568`
-- Chip-level fidelity gaps: `74`
+- Chip-level fidelity gaps: `68`
 - Net-level source-risk gaps: `202`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `60`
@@ -67,7 +67,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | logic/source | 16 | 60 |
 | memory/timing | 0 | 2 |
-| placement/refdes | 33 | 0 |
+| placement/refdes | 27 | 0 |
 | placement/value | 14 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 4 |
@@ -142,9 +142,6 @@ parts placement and Tier-3 reproduction.
 | `C47` | `C_KM` | scan | .009 factory drawing omits C47 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C48` | `C_KM` | scan | .009 factory drawing omits C48 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C49` | `C_KM` | scan | .009 factory drawing omits C49 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
-| `C51` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D26 remains assumed |
-| `C52` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D27 remains assumed |
-| `C53` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D54 remains assumed |
 | `C54` | `C_KM` | scan | .009 factory drawing omits C54 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C55` | `C_KM` | scan | .009 factory drawing omits C55 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C56` | `C_KM` | scan | .009 factory drawing omits C56 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
@@ -160,9 +157,6 @@ parts placement and Tier-3 reproduction.
 | `C67` | `C_KM` | scan | .009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C68` | `C_KM` | scan | .009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C69` | `C_KM` | scan | .009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
-| `C70` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D71 remains assumed |
-| `C71` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D79 remains assumed |
-| `C72` | `C_KM` | scan | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D87 remains assumed |
 
 ### placement/value
 

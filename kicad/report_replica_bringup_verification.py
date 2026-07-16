@@ -14,6 +14,7 @@ PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
+PLACEMENT_PENDING_REFS = {"C51", "C52", "C53", "C70", "C71", "C72"}
 
 RISK_RE = re.compile(
     r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
@@ -169,8 +170,18 @@ def action_for(category: str, name: str, source: str) -> str:
 def main() -> int:
     board = json.loads(BOARD_JSON.read_text())
     excluded_refs = OFF_BOARD_REFS | {
-        chip["ref"] for chip in board["chips"] if chip.get("pcb_dnp")
+        chip["ref"]
+        for chip in board["chips"]
+        if chip.get("pcb_dnp") or chip.get("pcb_placement_pending")
     }
+    actual_pending = {
+        chip["ref"] for chip in board["chips"] if chip.get("pcb_placement_pending")
+    }
+    if actual_pending != PLACEMENT_PENDING_REFS:
+        raise SystemExit(
+            "placement-pending PCB set changed: "
+            f"actual={sorted(actual_pending)} expected={sorted(PLACEMENT_PENDING_REFS)}"
+        )
     pcb_nets = pcb_pin_nets(PCB)
     routed_pcb_nets = pcb_pin_nets(ROUTED_PCB)
     source_coverage = endpoint_coverage(board, pcb_nets, excluded_refs)
@@ -235,7 +246,7 @@ def main() -> int:
         f"- PCB endpoint coverage: `{'PASS' if pcb_ok else 'FAIL'}`",
         f"- All board endpoints checked in source PCB: `{source_coverage['checked']}`",
         f"- All board endpoints checked in routed PCB: `{routed_coverage['checked']}`",
-        f"- Intentional non-PCB endpoints excluded: `{source_coverage['excluded']}`",
+        f"- Intentional non-PCB or placement-pending endpoints excluded: `{source_coverage['excluded']}`",
         f"- Full PCB endpoint coverage: `{'PASS' if full_pcb_ok else 'FAIL'}`",
         "",
         "| Category | Nets |",
@@ -277,7 +288,9 @@ def main() -> int:
             "the generated source PCB and the routed fabrication PCB. Bracket-mounted",
             "`S1`, `X3`, `X4`, `X6`, `X8`, and `X9` are intentionally excluded because their cable",
             "landings are separate `A*` PCB footprints; target-DNP parts such as C63 are",
-            "excluded because the exact target has no footprint. This is a",
+            "excluded because the exact target has no footprint. C51-C53 and C70-C72 are",
+            "also excluded until evidence fixes their target placement and population;",
+            "their former fit-to-space coordinates are not fabrication evidence. This is a",
             "fabrication-source coverage gate, not a historical-source proof.",
             "",
             "| PCB | Present | Matching net names | Result |",

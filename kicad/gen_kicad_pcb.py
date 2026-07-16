@@ -242,9 +242,6 @@ _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C62':(176.1,120.9,0),'C64':(176.1,170.7,0),'C65':(176.1,195.8,0),
     'C47':(187.1,120.9,0),'C48':(187.1,145.6,0),'C49':(187.1,170.7,0),'C50':(187.1,195.8,0),
     'C66':(198.4,120.9,0),'C67':(198.4,145.6,0),'C68':(198.4,170.7,0),'C69':(194.5,195.8,0),
-    # non-field decaps (bus band / I/O / clock zones)
-    'C51':(240,255,0),'C52':(162,40,0),'C53':(214,252,0),
-    'C70':(216,150,0),'C71':(216,175,0),'C72':(216,200,0),
 }
 PASSIVE_PLACE.update(_DEC)
 
@@ -592,7 +589,9 @@ def main():
     row = 0
     for ref in chips:
         t = chips[ref]['type']
-        if t in CONN or ref in OFF_BOARD or chips[ref].get('pcb_dnp'): continue
+        if (t in CONN or ref in OFF_BOARD or chips[ref].get('pcb_dnp')
+                or chips[ref].get('pcb_placement_pending')):
+            continue
         if t == 'WIRE_LINK':
             if ref in FACTORY_WIRE_PLACE:
                 add_factory_wire(ref, FACTORY_WIRE_PLACE[ref])
@@ -605,7 +604,11 @@ def main():
             x, y, rot = PLACE[ref]; add_chip(ref, x, y, rot)
     col = 0
     for ref in sorted(chips):
-        if ref in OFF_BOARD or chips[ref].get('pcb_dnp') or chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP or chips[ref]['type'] == 'WIRE_LINK' or ref in PLACE: continue
+        if (ref in OFF_BOARD or chips[ref].get('pcb_dnp')
+                or chips[ref].get('pcb_placement_pending')
+                or chips[ref]['type'] in CONN or chips[ref]['type'] in PASSIVE_FP
+                or chips[ref]['type'] == 'WIRE_LINK' or ref in PLACE):
+            continue
         add_chip(ref, X0 + col*DX, 215 + row*DY); col += 1
         if col == 8: col = 0; row += 1
 

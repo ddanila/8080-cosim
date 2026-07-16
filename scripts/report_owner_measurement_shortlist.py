@@ -290,7 +290,7 @@ def main() -> int:
         (
             "P2",
             "photos and passive values",
-            "target-revision placement/population disposition for C51-C53 and C70-C72, artwork registration for the 27 retained bare DRAM-grid footprints, readable bypass-cap values by refdes/position (the 31-site DRAM-field population is closed), plus macro photos for FDC/top-center and sound/video analog passives",
+            "target-revision placement/population disposition for C51-C53 and C70-C72 (their retired fit-to-space coordinates are no longer fabricated), artwork registration for the 27 retained bare DRAM-grid footprints, readable bypass-cap values by refdes/position (the 31-site DRAM-field population is closed), plus macro photos for FDC/top-center and sound/video analog passives",
             "`docs/decap-value-fidelity.md`; `PLAN.md`; generated BOM/sourcing docs",
             "improves authenticity and reduces assembly substitutions",
         ),

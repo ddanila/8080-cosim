@@ -15,6 +15,7 @@ DRAM_DECAP_ASSEMBLY_DNP = {
     "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
     "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69",
 }
+DRAM_DECAP_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72"}
 
 
 AUTHENTIC_MARK = {
@@ -202,7 +203,7 @@ def procurement_of(chip):
 
 
 def populated(chip):
-    if chip.get("pcb_dnp") or chip.get("assembly_dnp"):
+    if chip.get("pcb_dnp") or chip.get("assembly_dnp") or chip.get("pcb_placement_pending"):
         return False
     typ = chip["type"]
     if typ in EMPTY_SOCKET_TYPES:
@@ -271,6 +272,15 @@ def build_rows(board_json):
             "assembly-DNP set changed: "
             f"actual={sorted(actual_assembly_dnp)}, "
             f"expected={sorted(DRAM_DECAP_ASSEMBLY_DNP)}"
+        )
+    actual_placement_pending = {
+        chip["ref"] for chip in spec["chips"] if chip.get("pcb_placement_pending")
+    }
+    if actual_placement_pending != DRAM_DECAP_PLACEMENT_PENDING:
+        raise ValueError(
+            "PCB-placement-pending set changed: "
+            f"actual={sorted(actual_placement_pending)}, "
+            f"expected={sorted(DRAM_DECAP_PLACEMENT_PENDING)}"
         )
     groups = defaultdict(list)
     for chip in spec["chips"]:
@@ -351,7 +361,7 @@ def write_markdown(path, rows, board_json, csv_path):
         "",
         f"- Board component positions: {socket_positions}",
         f"- Populate for current functional .009 build: {populate_now}",
-        f"- Leave empty for expansion/authentic completeness: {leave_empty}",
+        f"- Do not populate now (empty/DNP/pending): {leave_empty}",
         f"- Unique BOM lines: {len(rows)}",
         "",
         "## Action Totals",
@@ -388,7 +398,7 @@ def write_markdown(path, rows, board_json, csv_path):
         "",
         "- `source-now` and `source-populated-now` rows are planning candidates, not an approved shopping cart.",
         "- `program/dump` rows need firmware/PROM contents before they are build-ready.",
-        "- `leave-empty` rows are fabricated component positions (including sockets and passive footprints) not populated for the current .009 functional build; a no-footprint DNP is called out explicitly in its row note.",
+        "- The `Empty` count includes fabricated leave-empty positions and evidence-held positions with no current footprint; the row action/note distinguishes DNP, empty-socket, and placement-pending cases.",
         "- `mechanical-review` and `circuit-review` rows need exact part drawing, footprint, or circuit-role confirmation before order.",
         "",
     ])

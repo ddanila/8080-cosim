@@ -107,4 +107,8 @@ factory parts; the owner-board photograph shows their clipped remnants and the
 other 27 inherited `.006` grid sites as clean bare tinned footprints. The latter
 are assembly DNP but remain fabricated. This evidence closes field population
 without promoting a capacitance value or claiming `.006` coordinates as exact
-target-artwork placement.
+target-artwork placement. The same record separately holds C51-C53/C70-C72 out
+of PCB fabrication: their former coordinates came from an early fit-to-space
+pass rather than registered source evidence. Their schematic rail-bypass intent
+is retained, but placement and target-revision population remain unresolved;
+the hold is not an assembly-DNP classification.

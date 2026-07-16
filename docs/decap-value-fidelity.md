@@ -21,6 +21,7 @@ C63 has no target footprint. Six non-field placement/population dispositions,
 | Current model value is uniform 0,047 | PASS | 0,047: 38 |
 | Target DRAM-bank C38/C42/C46/C50 placements are registered | PASS | factory drawing + owner landing/remnant sites + generator/source PCB |
 | Other 27 inherited DRAM-grid sites are assembly DNP | PASS | bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded |
+| Six non-field positions are held from fabrication | PASS | retired fit-to-space coordinates are absent from generator/source PCB; schematic intent and circuit-review gate remain |
 | C63 target-board population is DNP | PASS | registered bare site between D41/D40; no source-PCB footprint |
 | Historical value census is reconciled per position | FAIL | raw notes report mixed values but no per-position mapping |
 
@@ -44,9 +45,9 @@ C63 has no target footprint. Six non-field placement/population dispositions,
 | C48 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C48 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D1 |
 | C49 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C49 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic RAIL_G<->GND bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D10 |
 | C50 | 0,047 | populate (factory drawing) | RAIL_G | GND | .009 factory drawing directly places C50 above D85 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
-| C51 | 0,047 | pending / currently modeled populated | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D26 remains assumed |
-| C52 | 0,047 | pending / currently modeled populated | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D27 remains assumed |
-| C53 | 0,047 | pending / currently modeled populated | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D54 remains assumed |
+| C51 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND | BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D26 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
+| C52 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND | BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D27 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
+| C53 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND | BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D54 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
 | C54 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C54 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D55 |
 | C55 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C55 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D57 |
 | C56 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C56 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D23 |
@@ -63,15 +64,16 @@ C63 has no target footprint. Six non-field placement/population dispositions,
 | C67 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D58 |
 | C68 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D14 |
 | C69 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D3 |
-| C70 | 0,047 | pending / currently modeled populated | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D71 remains assumed |
-| C71 | 0,047 | pending / currently modeled populated | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D79 remains assumed |
-| C72 | 0,047 | pending / currently modeled populated | GND | RAIL_H | BOM/DSN value 0,047; traced array-power bypass group GND<->RAIL_H; per-position/refdes association near D87 remains assumed |
+| C70 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H | BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D71 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
+| C71 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H | BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D79 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
+| C72 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H | BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D87 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
 
 ## Evidence Reconciliation
 
 - The native sheet-2 ground symbol directly identifies rail E as GND.
-  Board JSON and both PCBs therefore place C35-C53 between `RAIL_G`
-  and `GND`, and C54-C72 between `GND` and `RAIL_H`.
+  Board JSON retains C35-C53 between `RAIL_G` and `GND`, and C54-C72
+  between `GND` and `RAIL_H` as schematic intent. The source PCB does
+  not fabricate C51-C53/C70-C72 until their target positions are proved.
 - C34 is separately source-closed across rail E/GND and rail F/+5 V;
   the former `RAIL_H`-to-GND assignment was a scan-reading error.
 - The current BOM/model value for these 38 positions is uniform
@@ -92,7 +94,9 @@ C63 has no target footprint. Six non-field placement/population dispositions,
   mixed-value capacitor counts, but no defensible mapping from those
   counts to individual C35-C72 positions.
 - C51-C53 and C70-C72 still require target-revision placement/population
-  disposition. Exact target-artwork placement of those six plus the 27
+  disposition. Their former near-chip coordinates were early fit-to-space
+  assumptions and are now retired from the generator and source PCB. Exact
+  target-artwork placement of those six plus the 27
   retained bare grid footprints also remains to be photogrammetrically
   registered; `.006` coordinates are not `.009` placement proof.
 

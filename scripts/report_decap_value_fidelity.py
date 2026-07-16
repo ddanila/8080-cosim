@@ -100,6 +100,11 @@ def pcb_footprint_block(ref: str) -> str:
     return block
 
 
+def pcb_has_footprint(ref: str) -> bool:
+    marker = f'(property "Reference" "{ref}"'
+    return marker in SOURCE_PCB.read_text(encoding="utf-8")
+
+
 def pcb_footprint_pad_midpoint(ref: str) -> tuple[float, float]:
     block = pcb_footprint_block(ref)
     match = re.search(
@@ -237,16 +242,36 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
         note = str(chip.get("prov", {}).get("pins", ""))
         if "assembly DNP with the fabricated footprint retained" not in note:
             diagnostics.append(f"{ref}: board provenance lost assembly-DNP disposition")
+    placement_hold = evidence.get("non_field_placement_hold", {})
+    if {str(ref) for ref in placement_hold.get("refs", [])} != UNRESOLVED_PLACEMENT_REFS:
+        diagnostics.append("non-field placement hold is not the guarded six refs")
+    if "do not fabricate" not in str(placement_hold.get("disposition", "")):
+        diagnostics.append("non-field placement hold lacks a fabrication boundary")
+    if "fit-to-space" not in str(placement_hold.get("retired_coordinate_origin", "")):
+        diagnostics.append("non-field placement hold does not retire the old coordinate origin")
+    if "must not be promoted to assembly DNP" not in str(placement_hold.get("boundary", "")):
+        diagnostics.append("non-field placement hold does not preserve unresolved population")
     for ref in sorted(UNRESOLVED_PLACEMENT_REFS):
         chip = cap_chip(board, ref)
         if chip.get("assembly_dnp") or chip.get("pcb_dnp"):
             diagnostics.append(f"{ref}: unresolved non-field population was prematurely closed")
+        if chip.get("pcb_placement_pending") is not True:
+            diagnostics.append(f"{ref}: unresolved placement is not explicitly held from PCB")
         if chip.get("procurement", {}).get("action") != "circuit-review":
             diagnostics.append(f"{ref}: unresolved placement/value is not sourcing-gated")
-        if pcb_footprint_population_flags(ref) != (False, False):
-            diagnostics.append(f"{ref}: unresolved source-PCB footprint is marked DNP")
+        if ref in generated:
+            diagnostics.append(f"{ref}: retired fit-to-space coordinate remains in generator")
+        if pcb_has_footprint(ref):
+            diagnostics.append(f"{ref}: unresolved source-PCB footprint was fabricated")
+        if schematic_population_flags(ref) != ("no", "no"):
+            diagnostics.append(f"{ref}: schematic must retain intent without a current footprint")
+        note = str(chip.get("prov", {}).get("pins", ""))
+        if "early fit-to-space assumption" not in note:
+            diagnostics.append(f"{ref}: provenance does not retire the invented coordinate")
     if schematic_population_flags("C63") != ("no", "yes"):
         diagnostics.append("C63 schematic no-footprint DNP flags changed")
+    if pcb_has_footprint("C63"):
+        diagnostics.append("C63 target no-footprint DNP was fabricated")
 
     if set(drawing_targets) != set(REGISTERED_DRAM_REFS):
         diagnostics.append("factory target set is not exactly C38/C42/C46/C50")
@@ -277,6 +302,8 @@ def main() -> int:
             population = "DNP / no PCB footprint"
         elif chip.get("assembly_dnp"):
             population = "assembly DNP / footprint retained"
+        elif chip.get("pcb_placement_pending"):
+            population = "placement/population pending / no current PCB footprint"
         elif ref in REGISTERED_DRAM_REFS:
             population = "populate (factory drawing)"
         else:
@@ -316,6 +343,7 @@ def main() -> int:
         table_row(["Current model value is uniform 0,047", "PASS" if value_ok else "FAIL", ", ".join(f"{k or '-'}: {v}" for k, v in sorted(model_values.items()))]),
         table_row(["Target DRAM-bank C38/C42/C46/C50 placements are registered", "PASS" if dram_placement_ok else "FAIL", "factory drawing + owner landing/remnant sites + generator/source PCB" if dram_placement_ok else "; ".join(dram_placement_diagnostics)]),
         table_row(["Other 27 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok else "FAIL", "bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded"]),
+        table_row(["Six non-field positions are held from fabrication", "PASS" if dram_placement_ok else "FAIL", "retired fit-to-space coordinates are absent from generator/source PCB; schematic intent and circuit-review gate remain"]),
         table_row(["C63 target-board population is DNP", "PASS" if c63_dnp else "FAIL", "registered bare site between D41/D40; no source-PCB footprint"]),
         table_row(["Historical value census is reconciled per position", "FAIL", "raw notes report mixed values but no per-position mapping"]),
         "",
@@ -332,8 +360,9 @@ def main() -> int:
             "## Evidence Reconciliation",
             "",
             "- The native sheet-2 ground symbol directly identifies rail E as GND.",
-            "  Board JSON and both PCBs therefore place C35-C53 between `RAIL_G`",
-            "  and `GND`, and C54-C72 between `GND` and `RAIL_H`.",
+            "  Board JSON retains C35-C53 between `RAIL_G` and `GND`, and C54-C72",
+            "  between `GND` and `RAIL_H` as schematic intent. The source PCB does",
+            "  not fabricate C51-C53/C70-C72 until their target positions are proved.",
             "- C34 is separately source-closed across rail E/GND and rail F/+5 V;",
             "  the former `RAIL_H`-to-GND assignment was a scan-reading error.",
             "- The current BOM/model value for these 38 positions is uniform",
@@ -354,7 +383,9 @@ def main() -> int:
             "  mixed-value capacitor counts, but no defensible mapping from those",
             "  counts to individual C35-C72 positions.",
             "- C51-C53 and C70-C72 still require target-revision placement/population",
-            "  disposition. Exact target-artwork placement of those six plus the 27",
+            "  disposition. Their former near-chip coordinates were early fit-to-space",
+            "  assumptions and are now retired from the generator and source PCB. Exact",
+            "  target-artwork placement of those six plus the 27",
             "  retained bare grid footprints also remains to be photogrammetrically",
             "  registered; `.006` coordinates are not `.009` placement proof.",
             "",

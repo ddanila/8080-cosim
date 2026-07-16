@@ -90,6 +90,12 @@
     "basis": "the complete .009 target assembly view labels only C38/C42/C46/C50 in the DRAM field, while the owner board shows the remaining inherited .006 grid sites as clean bare tinned landings",
     "boundary": "the old .006 mapping preserves refdes-to-footprint working coordinates, but those coordinates remain old-revision placement evidence rather than a target photogrammetric fit"
   },
+  "non_field_placement_hold": {
+    "refs": ["C51", "C52", "C53", "C70", "C71", "C72"],
+    "disposition": "retain schematic rail-bypass intent but do not fabricate a PCB footprint until target placement and population evidence is registered",
+    "retired_coordinate_origin": "the former source-PCB coordinates came from an early fit-to-space pass, not from the .009 factory drawing, the .006 assembly drawing, or a registered owner-board observation",
+    "boundary": "placement, target-revision population, package style, and capacitance remain unresolved; absence from the current PCB is an evidence hold and must not be promoted to assembly DNP"
+  },
   "population_disposition": "populate all four in the exact factory-assembly replica; the surviving owner board records later removal, not the original build state",
   "unresolved": [
     "C38 capacitance/tolerance/voltage",

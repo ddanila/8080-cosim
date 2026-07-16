@@ -31,8 +31,11 @@ def lib_symbol(typ, pin_order):
     L += ['\t\t\t)', '\t\t)']
     return "\n".join(L)
 
-def instance(ref, typ, px, py, n, pcb_dnp=False, assembly_dnp=False):
-    on_board = "no" if pcb_dnp else "yes"
+def instance(
+    ref, typ, px, py, n,
+    pcb_dnp=False, assembly_dnp=False, pcb_placement_pending=False,
+):
+    on_board = "no" if pcb_dnp or pcb_placement_pending else "yes"
     dnp = "yes" if pcb_dnp or assembly_dnp else "no"
     return (f'\t(symbol (lib_id "juku:{typ}") (at {px} {py} 0) (unit 1)\n'
             f'\t\t(exclude_from_sim no) (in_bom yes) (on_board {on_board}) (dnp {dnp}) (uuid "{uid(n)}")\n'
@@ -99,6 +102,7 @@ def main():
         out.append(instance(
             c["ref"], c["type"], px, py, n,
             bool(c.get("pcb_dnp")), bool(c.get("assembly_dnp")),
+            bool(c.get("pcb_placement_pending")),
         )); n += 1
 
     for net, entry in spec["nets"].items():

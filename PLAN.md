@@ -342,11 +342,14 @@ Every ask below is queued with exact deliverables in
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2270/2270
-net-assigned PCB-scoped board-JSON endpoints, with 65 non-PCB endpoints
+Source-model state feeding this work: the source PCB passes all 2258/2258
+net-assigned PCB-scoped board-JSON endpoints, with 77 non-PCB or placement-held endpoints
 intentionally excluded: bracket-mounted S1/X3/X4/X6/X8/X9 use their physical
 A-point cable landings, while photo-proven target-DNP C63 retains schematic
-intent but has no fabricated footprint
+intent but has no fabricated footprint. C51-C53/C70-C72 likewise retain their
+schematic rail-bypass intent but have no current source-PCB footprint: their
+former near-chip coordinates were fit-to-space assumptions and remain held
+until target placement/population evidence is registered
 (`docs/replica-bringup-verification-points.md`); it has zero electrical
 placement collisions (`docs/source-pcb-drc.md`) and no undeclared non-power
 package endpoints (`docs/package-endpoint-coverage.md`). Off-board S4 is
