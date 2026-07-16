@@ -595,9 +595,11 @@ serve physical bring-up or historical fidelity:
    returns `0xFF` after restoring ordinary RAM, first use writes the guarded
    `RamDisk` signature and all 63 `0xE5` directory markers, and a signed drive
    reopens without formatting. The RAM-drive data path is also exercised with
-   the source-authentic `STAK=0xD2FC`: port-`0x04` bank 1 stores the same logical
-   record independently in the even-track lower and odd-track upper 16 KiB
-   halves, restores bank 6, and emits no FDC command. A
+   the source-authentic `STAK=0xD2FC`. The source-guarded `MDISKPAR` describes
+   192 x 1 KiB blocks: exact ROM writes and reads independent sector-0 and
+   sector-127 patterns across all twelve track halves and all six port-`0x04`
+   banks, including the final 128 bytes at bank-5 offset `0x7F80`; every slice
+   restores bank 6 and emits no FDC command. A
    complementary read-only reopen proves the ROM consumes the EKDOS
    `VIARV=10` retry count, observes WRITE PROTECT without accepting data or
    changing media, then masks the failed dirty flush when its subsequent read

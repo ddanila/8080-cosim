@@ -41,6 +41,18 @@ labels and `TRANS` tables.
 | logical bytes/side-track | `5120` |
 | raw `JUKU1.CPM` size | `819200` bytes |
 
+## RAM Drive Parameter Block
+
+| Field | Value |
+| --- | ---: |
+| logical 128-byte records/track | `128` |
+| block shift / block mask / extent mask | `3` / `7` / `0` |
+| allocation blocks (`DSM+1`) | `192` x `1024` bytes |
+| directory entries (`DRM+1`) | `64` |
+| allocation bitmap | `0xC0 0x00` |
+| check-vector size / reserved tracks | `0` / `0` |
+| total capacity | `196608` bytes = `6` x 32 KiB banks = `12` track halves |
+
 ## Floppy Handler Work Area
 
 | Label | Value | Meaning |

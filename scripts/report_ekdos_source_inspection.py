@@ -16,6 +16,7 @@ DISK = ROOT / "media" / "disks" / "JUKU1.CPM"
 
 EQU_RE = re.compile(r"^([A-Za-z][A-Za-z0-9]*)\s+EQU\s+(.+)$", re.IGNORECASE)
 DB_RE = re.compile(r"^\s*DB\s+(.+)$", re.IGNORECASE)
+DATA_RE = re.compile(r"^\s*(?:DB|DW)\s+(.+)$", re.IGNORECASE)
 COMMENT_RE = re.compile(r";.*$")
 
 EXPECTED = {
@@ -203,6 +204,27 @@ def parse_translation(lines: list[str], label: str) -> list[int]:
     return values
 
 
+def parse_numeric_table(lines: list[str], label: str) -> list[int]:
+    values: list[int] = []
+    in_table = False
+    for raw in lines:
+        clean = strip_comment(raw)
+        if clean.upper().startswith(f"{label}:"):
+            in_table = True
+            clean = clean.split(":", 1)[1].strip()
+            if not clean:
+                continue
+        elif not in_table:
+            continue
+        if not clean or re.match(r"^[A-Za-z][A-Za-z0-9]*:", clean):
+            break
+        match = DATA_RE.match(clean)
+        if not match:
+            break
+        values.extend(parse_db_values(match.group(1)))
+    return values
+
+
 def fmt_hex(value: int) -> str:
     return f"0x{value:04X}" if value > 0xFF else f"0x{value:02X}"
 
@@ -213,6 +235,7 @@ def main() -> int:
     symbols, skipped = parse_symbols(lines)
     trans = parse_translation(lines, "TRANS")
     trans1 = parse_translation(lines, "TRANS1")
+    mdiskpar = parse_numeric_table(lines, "MDISKPAR")
 
     failures: list[str] = []
     for label, expected in EXPECTED.items():
@@ -225,12 +248,24 @@ def main() -> int:
         failures.append("TRANS is not a 40-entry 1..40 sector map")
     if trans1 != trans:
         failures.append("TRANS1 does not match TRANS")
+    expected_mdiskpar = [128, 3, 7, 0, 191, 63, 0xC0, 0, 0, 0]
+    if mdiskpar != expected_mdiskpar:
+        failures.append(
+            f"MDISKPAR expected {expected_mdiskpar}, got {mdiskpar}"
+        )
     if DISK.exists() and DISK.stat().st_size != 160 * 10 * 512:
         failures.append("JUKU1.CPM size does not match 160 tracks * 10 sectors * 512 bytes")
 
     status = "PASS" if not failures else "FAIL"
     physical_tracks = symbols.get("TRACKS", 0) // 2
     disk_size = DISK.stat().st_size if DISK.exists() else 0
+    ram_records_per_track = mdiskpar[0] if len(mdiskpar) > 0 else 0
+    ram_block_size = 128 << mdiskpar[1] if len(mdiskpar) > 1 else 0
+    ram_blocks = mdiskpar[4] + 1 if len(mdiskpar) > 4 else 0
+    ram_capacity = ram_block_size * ram_blocks
+    ram_tracks = (ram_capacity // (ram_records_per_track * 128)
+                  if ram_records_per_track else 0)
+    ram_banks = ram_capacity // 0x8000
     lines_out = [
         "# EKDOS source inspection",
         "",
@@ -274,6 +309,18 @@ def main() -> int:
         f"| CP/M logical sectors/track from `TRANS` | `{len(trans)}` x 128-byte sectors |",
         f"| logical bytes/side-track | `{len(trans) * 128}` |",
         f"| raw `JUKU1.CPM` size | `{disk_size}` bytes |",
+        "",
+        "## RAM Drive Parameter Block",
+        "",
+        "| Field | Value |",
+        "| --- | ---: |",
+        f"| logical 128-byte records/track | `{ram_records_per_track}` |",
+        f"| block shift / block mask / extent mask | `{mdiskpar[1]}` / `{mdiskpar[2]}` / `{mdiskpar[3]}` |",
+        f"| allocation blocks (`DSM+1`) | `{ram_blocks}` x `{ram_block_size}` bytes |",
+        f"| directory entries (`DRM+1`) | `{mdiskpar[5] + 1}` |",
+        f"| allocation bitmap | `0x{mdiskpar[6]:02X} 0x{mdiskpar[7]:02X}` |",
+        f"| check-vector size / reserved tracks | `{mdiskpar[8]}` / `{mdiskpar[9]}` |",
+        f"| total capacity | `{ram_capacity}` bytes = `{ram_banks}` x 32 KiB banks = `{ram_tracks}` track halves |",
         "",
         "## Floppy Handler Work Area",
         "",

@@ -34,9 +34,10 @@ physical D93/D94 wiring.
   sector 5 matches all four independent DMA patterns byte-for-byte.
 - The RAM-drive phase selects EKDOS drive 2 and uses the source-defined stack
   at `0xD2FC`, outside the banked `0x4000..0xBFFF` aperture. Exact ROM code
-  writes and reads logical record 37 on tracks 2 and 3 through distinct lower
-  and upper 16 KiB halves of port-`0x04` bank 1, restores normal bank 6 after
-  every 32-byte slice, and issues zero FDC commands.
+  writes and reads independent sector-0 and sector-127 patterns across tracks
+  0..11, both 16 KiB halves of all six port-`0x04` banks, and the complete
+  192 KiB source-declared capacity. It reaches bank-5 offset `0x7F80`, restores
+  normal bank 6 after every 32-byte slice, and issues zero FDC commands.
 - The public `RAMDISKSEL` vector is executed through exact ROM bytes
   `0xFF5C -> 0xE9B3`. With bank switching unavailable it complements and
   restores ordinary RAM before returning `0xFF`; with RAM present it writes
@@ -104,6 +105,11 @@ physical D93/D94 wiring.
   each record as four 32-byte slices, selects/restores banks through port `0x04`,
   and stages data at `0xD200`; direct backing-store checks guard both track
   halves as well as public readback.
+- EKDOS `MDISKPAR` independently fixes the geometry at 128 records per track,
+  block shift 3 (1 KiB), and `DSM=191`: 192 KiB total, exactly six 32 KiB banks
+  or twelve track halves. The executable guard writes every low/high endpoint
+  before reading any back, so aliasing between banks, halves, or endpoint
+  records cannot pass by immediate overwrite/readback coincidence.
 - `RAMDISKSEL` does not merely select a register. Its probe relies on a failed
   bank command leaving ordinary RAM visible: it saves byte `0x4000`, attempts
   a complemented write after selecting bank 0, restores bank 6, and returns

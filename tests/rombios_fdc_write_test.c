@@ -24,6 +24,8 @@ enum {
   FOURTH_CACHE_READ_ADDR = 0x5400,
   RAM_DISK_BANKS = 6,
   RAM_DISK_WINDOW = 0x8000,
+  RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
+  RAM_DISK_ENDPOINTS = 2,
 };
 
 
@@ -513,28 +515,40 @@ int main(int argc, char** argv) {
   f.ram[0xCA36] = 2;
   f.ram[0xD61A] = 2;
   f.ram[0xD61C] = 0;
-  for (int i = 0; i < 128; i++) {
-    f.ram[DMA_ADDR + i] = (uint8_t)(0x31 ^ (i * 3));
-    f.ram[SECOND_DMA_ADDR + i] = (uint8_t)(0xB4 + i * 5);
+  static const uint8_t endpoint_sector[RAM_DISK_ENDPOINTS] = {0, 127};
+  uint8_t ramdisk_expected[RAM_DISK_TRACKS][RAM_DISK_ENDPOINTS][128];
+  for (unsigned track = 0; track < RAM_DISK_TRACKS; track++) {
+    for (unsigned endpoint = 0; endpoint < RAM_DISK_ENDPOINTS; endpoint++) {
+      for (unsigned i = 0; i < 128; i++) {
+        ramdisk_expected[track][endpoint][i] =
+            (uint8_t)(0x3D ^ track * 19u ^ endpoint * 0xA7u ^ i * 5u);
+      }
+      memcpy(&f.ram[DMA_ADDR], ramdisk_expected[track][endpoint], 128);
+      f.ram[0xD61B] = (uint8_t)track;
+      fail |= run_rwfloppy(&f, 0x12, endpoint_sector[endpoint], DMA_ADDR,
+                           &ramdisk_cycles);
+    }
   }
-  f.ram[0xD61B] = 2;
-  fail |= run_rwfloppy(&f, 0x12, 37, DMA_ADDR, &ramdisk_cycles);
-  f.ram[0xD61B] = 3;
-  fail |= run_rwfloppy(&f, 0x12, 37, SECOND_DMA_ADDR, &ramdisk_cycles);
-  memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
-  memset(&f.ram[SECOND_CACHE_READ_ADDR], 0x5A, 128);
-  f.ram[0xD61B] = 2;
-  fail |= run_rwfloppy(&f, 0x11, 37, CACHE_READ_ADDR, &ramdisk_cycles);
-  f.ram[0xD61B] = 3;
-  fail |= run_rwfloppy(&f, 0x11, 37, SECOND_CACHE_READ_ADDR, &ramdisk_cycles);
-  const unsigned ramdisk_record_offset = (37u >> 1) * 256u + 128u;
-  if (memcmp(&f.ram[CACHE_READ_ADDR], &f.ram[DMA_ADDR], 128) != 0 ||
-      memcmp(&f.ram[SECOND_CACHE_READ_ADDR], &f.ram[SECOND_DMA_ADDR], 128) != 0 ||
-      memcmp(&f.ramdisk[1][ramdisk_record_offset], &f.ram[DMA_ADDR], 128) != 0 ||
-      memcmp(&f.ramdisk[1][0x4000 + ramdisk_record_offset],
-             &f.ram[SECOND_DMA_ADDR], 128) != 0) {
-    fprintf(stderr, "ROMBIOS RWFLOPPY: RAM-disk mapping mismatch\n");
-    fail = 1;
+  for (unsigned track = 0; track < RAM_DISK_TRACKS; track++) {
+    for (unsigned endpoint = 0; endpoint < RAM_DISK_ENDPOINTS; endpoint++) {
+      uint8_t sector_number = endpoint_sector[endpoint];
+      unsigned record_offset = (sector_number >> 1) * 256u +
+                               (sector_number & 1u) * 128u;
+      unsigned bank_offset = (track & 1u) * 0x4000u + record_offset;
+      memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
+      f.ram[0xD61B] = (uint8_t)track;
+      fail |= run_rwfloppy(&f, 0x11, sector_number, CACHE_READ_ADDR,
+                           &ramdisk_cycles);
+      if (memcmp(&f.ram[CACHE_READ_ADDR], ramdisk_expected[track][endpoint], 128) != 0 ||
+          memcmp(&f.ramdisk[track >> 1][bank_offset],
+                 ramdisk_expected[track][endpoint], 128) != 0) {
+        fprintf(stderr,
+                "ROMBIOS RWFLOPPY: RAM-disk mapping mismatch "
+                "track=%u sector=%u bank=%u offset=%04X\n",
+                track, sector_number, track >> 1, bank_offset);
+        fail = 1;
+      }
+    }
   }
   if (f.fdc_commands != 0 || f.ram_bank != 6) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: RAM-disk FDC commands=%u final-bank=%u\n",
@@ -613,7 +627,8 @@ int main(int argc, char** argv) {
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
-         "ramdisk-select=absent/format/reopen ramdisk-tracks=2 no-fdc=1 "
+         "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
+         "ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
