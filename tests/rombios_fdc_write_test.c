@@ -15,6 +15,7 @@ enum {
   RETURN_PC = 0xB123,
   DMA_ADDR = 0x4000,
   SCRATCH_ADDR = 0x5000,
+  CACHE_READ_ADDR = 0x5100,
 };
 
 
@@ -229,11 +230,29 @@ int main(int argc, char** argv) {
   f.ram[0xD61A] = 0;                 // EKDOS selected drive
   f.ram[0xD61B] = 8;                 // EKDOS logical track low
   f.ram[0xD61C] = 0;                 // EKDOS logical track high
-  memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E); // cold EKDOS deblocking/cache state
+  memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E); // cold EKDOS cache state
   unsigned long total_cycles = 0;
-  fail |= run_rwfloppy(&f, 0x11, 9, SCRATCH_ADDR, &total_cycles);  // load host sector 3
-  fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &total_cycles);      // dirty first record
-  fail |= run_rwfloppy(&f, 0x11, 13, SCRATCH_ADDR, &total_cycles); // flush, then load sector 4
+  fail |= run_rwfloppy(&f, 0x11, 9, SCRATCH_ADDR, &total_cycles); // load host sector 3
+  fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &total_cycles);     // dirty first record
+  memset(&f.ram[CACHE_READ_ADDR], 0x5A, 128);
+  fail |= run_rwfloppy(&f, 0x11, 9, CACHE_READ_ADDR, &total_cycles); // cache hit
+  if (f.fdc_commands != 1 || f.command_log[0] != 0x80) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: cache hit issued FDC command(s)");
+    for (unsigned i = 0; i < f.fdc_commands; i++) fprintf(stderr, " %02X", f.command_log[i]);
+    fputc('\n', stderr);
+    fail = 1;
+  }
+  if (memcmp(&f.ram[CACHE_READ_ADDR], &f.ram[DMA_ADDR], 128) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: cache-hit logical record mismatch\n");
+    fail = 1;
+  }
+  if (f.ram[0xD624] != 1) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: cache hit lost dirty state HSTWRT=%02X\n",
+            f.ram[0xD624]);
+    fail = 1;
+  }
+  fail |= run_rwfloppy(&f, 0x11, 13, SCRATCH_ADDR,
+                       &total_cycles); // flush, then load host sector 4
 
   uint8_t sector[512];
   if (f.ram[0xD609] != 0) {
@@ -280,7 +299,8 @@ int main(int argc, char** argv) {
     fprintf(stderr, "ROMBIOS RWFLOPPY write test: FAIL\n");
     return 1;
   }
-  printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X logical=128 data=512 trampoline=%u cyc=%lu\n",
+  printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X logical=128 "
+         "cache-hit=128 data=512 trampoline=%u cyc=%lu\n",
          f.write_command, f.monitor_trampoline_entries, total_cycles);
   return 0;
 }

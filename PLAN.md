@@ -580,8 +580,9 @@ serve physical bring-up or historical fidelity:
    followed by 512 port-`0x1F` writes. Both C and HDL models now implement and
    readback-test that bounded path. The C guard boots `ekta37` to install its
    RAM monitor services, invokes the EKDOS-facing `RWFLOPPY` vector at `0xFF59`,
-   and proves its 128-byte logical-record cache through the exact physical
-   command sequence `0x80,0xA2,0x80`. The nested `FLOPPY` handler and monitor
+   proves a dirty same-record cache-hit read without extra FDC I/O, and then
+   proves the physical flush through the exact command sequence
+   `0x80,0xA2,0x80`. The nested `FLOPPY` handler and monitor
    epilogues return with zero `ERRC`, and a disposable writable image preserves
    the modified record plus untouched bytes; repository media remains read-only
    unless the caller explicitly opts into a writable copy.
