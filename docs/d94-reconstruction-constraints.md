@@ -118,6 +118,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | HDL adopts physical open-collector table | PASS | `hdl/devices.v::re3_prom_092` |
 | HDL adopts measured D94 A0-A4 mapping | PASS | `hdl/juku_top.v`; BA0, BA1, IORD, D104.7/pull-up, D101.7/pull-up |
 | `juku_top` connects the three accepted local FDC controls | PASS | `hdl/juku_top.v` |
+| Runnable FDC consumes and cycle-checks physical D94 strobes | PASS | simulation-only upstream fits remain explicit in `hdl/juku_top.v`; `hdl/sim/juku_top_periph_bus_tb.v` |
 | Video slot audit does not rely on D94 | PASS | `docs/video-slot-timing-audit.md` |
 
 ## Textual / Photo Survey Leads
@@ -287,6 +288,10 @@ and A4=D101.7/pull-up. Unknown D5-D7 destinations do not make captured bits unkn
 - Firmware-derived prediction: D94 A3 must equal active-low `IOWR` on
   selected FDC cycles. Confirm by continuity to D5.27 or simultaneous
   operating-level capture; do not merge the nets from this constraint.
+- Runnable-model disposition: the behavioral FDC now consumes the
+  physical table's `/RE` and `/WE`. Its decoded enable, A3=`IOWR`, and
+  pulled-high A4 sources are simulation-only fits; Yosys/LVS keeps the
+  measured physical nets separate and unresolved.
 - D5-D7 are destination-unknown, not unused: registered component-side
   photographs prove copper leaves all three output pads.
 - D4-D7 are physically wired but program-inert: raw bits 4-7 remain one

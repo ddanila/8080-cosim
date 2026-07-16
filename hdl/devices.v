@@ -1056,9 +1056,10 @@ endmodule
 // D94 К155РЕ3 #2, programmed part ДГШ5.106.092. The exact physical table is
 // adopted from three matching reads, including a power-cycled read.
 module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
-    // Photo tracing connects D0/D1/D2 directly to D93 RE/CS/WE. The table closes
-    // their programmed states, but the PROM enable and the remaining D93-side
-    // continuity boundaries are still unresolved; see d94-reconstruction-constraints.md.
+    // Owner continuity connects enable to D93.CS, D1 to ground, D2 to D93.RE,
+    // and D3 to D93.WE. The table closes their programmed states, but the
+    // upstream enable and remaining branches are still unresolved; see
+    // d94-reconstruction-constraints.md.
     // РЕ3 outputs are open collector: a programmed one releases the line and a
     // programmed zero sinks it. Board pull-ups therefore recover the raw byte.
     reg [7:0] raw;

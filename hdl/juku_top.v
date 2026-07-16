@@ -521,7 +521,13 @@ module juku_top (
     // (КП12 muxes, АГ3 one-shots, drive cable) = owner-session territory. The physical
     // packages remain instantiated; incomplete behavioral models release unproved outputs.
     wire [7:0] fdc_dal; wire fdc_drq, fdc_intrq;
+`ifdef YOSYS
     wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
+`else
+    // The physical RE3 outputs are open collector. The board pull-ups are not
+    // yet identified, but their logic function is required by the runnable path.
+    tri1 fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
+`endif
     // D94 РЕ3 .092 outputs: declared before U_D93 because its back-bias input
     // is fed from D94.D4/pin5 (`default_nettype none` forbids use-before-decl).
     wire d94_d0_boundary, d94_d4, d94_d5, d94_d6, d94_d7;
@@ -536,9 +542,11 @@ module juku_top (
 `ifdef YOSYS
     wire d94_a3_boundary, d94_a4_d101_q0;
 `else
-    // A3/A4 have measured local endpoints but their complete upstream behavior
-    // remains outside the runnable model, so deterministic low defaults are used.
-    tri0 d94_a3_boundary, d94_a4_d101_q0;
+    // Simulation-only functional fallbacks do not assert copper identity. The
+    // physical equations require A3 to equal active-low IOWR during selected
+    // FDC cycles; A4 is pulled high while D101.Q0 behavior remains unresolved.
+    wire d94_a3_boundary = iowr_n;
+    supply1 d94_a4_d101_q0;
 `endif
     // Direct owner continuity supersedes the mirrored-pin photo interpretation:
     // D94.15(E_N)->D93.3(CS), D94.2(D1)->D99.8/GND,
@@ -550,7 +558,14 @@ module juku_top (
     // Measured D94 inputs: A0=D93.A0/BA0, A1=D93.A1/BA1,
     // A2=IORD (D27.5 and D29.4), A3=D104.7 plus pull-up,
     // A4=D101.Q0 plus pull-up. The former BA11-BA15 scaffold is retired.
+`ifdef YOSYS
+    // Preserve the unresolved physical enable source in the LVS netlist.
     net_boundary U_D94CSLNK (.a(1'b1), .b(fdc_prom_cs_n));
+`else
+    // Simulation-only upstream fallback: the functional port decoder supplies
+    // the shared D94.E_N/D93.CS_N level until its physical source is measured.
+    net_boundary U_D94CSLNK (.a(cs_fdc_n), .b(fdc_prom_cs_n));
+`endif
     net_boundary U_D94D0LNK (.a(1'b1), .b(d94_d0_boundary));
     re3_prom_092 U_D94 (.a({d94_a4_d101_q0, d94_a3_boundary, iord_n, BA[1], BA[0]}), .e_n(fdc_prom_cs_n),
                         .d({d94_d7, d94_d6, d94_d5, d94_d4,
@@ -619,7 +634,18 @@ module juku_top (
     serial_conn U_X3 (.pullup_io(), .aux2(s_oc), .ttl_sout(s_ttl), .sin(s_sin),
                       .cts(s_cts), .dsr(s_dsr), .aux7(), .aux8(),
                       .sout(s_sout), .rts(s_rts), .dtp(s_dtp), .oc_sout(s_oc));
-    fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(cs_fdc_n),  .rd_n(iord_n), .wr_n(iowr_n),
+`ifdef YOSYS
+    wire fdc_model_cs_n = cs_fdc_n;
+    wire fdc_model_re_n = iord_n;
+    wire fdc_model_we_n = iowr_n;
+`else
+    // Runnable behavioral core consumes the physical .092 PROM strobes. Only
+    // the explicitly guarded upstream D94 sources above remain functional fits.
+    wire fdc_model_cs_n = fdc_prom_cs_n;
+    wire fdc_model_re_n = fdc_prom_re_n;
+    wire fdc_model_we_n = fdc_prom_we_n;
+`endif
+    fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(fdc_model_cs_n),  .rd_n(fdc_model_re_n), .wr_n(fdc_model_we_n),
                       .nc_back_bias(1'bz), .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                       .mr_n(1'b1), .clk(sclk_i), .dden(ppi0_pc[4]), .motor_on(ppi0_pc[2]), .side(ppi0_pc[6]),
                       .step(), .dirc(), .early(), .late(), .test(1'b1), .hlt(1'b1),

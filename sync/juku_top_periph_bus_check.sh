@@ -50,6 +50,7 @@ sync/juku_top_periph_bus_check.sh
 | PPI0 no-key scan reads \`0xCF\` like the first ROMBIOS keyboard poll | $status |
 | PPI0 keyboard scan reads shifted \`T\` as \`0x88\` through decoded ports \`0x04/0x05\` | $status |
 | PPI0 Port C motor-on latch through decoded port \`0x06\` | $status |
+| Physical D94 table produces mutually exclusive FDC \`/RE\` and \`/WE\` strobes | $status |
 | FDC accepts exact ROMBIOS first command \`0x02\` as restore and returns track 0 | $status |
 | FDC seek/status/data through decoded ports \`0x1C..0x1F\` | $status |
 | First byte of \`JUKU1.CPM\` track 0 sector 2 read through top-level bus is \`0xC3\` | $status |
@@ -62,6 +63,9 @@ sync/juku_top_periph_bus_check.sh
 ## Boundary
 
 - This is a direct-bus harness, not the full ROMBIOS \`TDD\` CPU path.
+- The behavioral FDC consumes D94's physical-table strobes. D94 enable,
+  A3=active-low \`IOWR\`, and pulled-high A4 are explicit simulation-only
+  functional sources; they preserve, rather than close, the physical probes.
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-\`T\` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path

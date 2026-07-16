@@ -367,11 +367,15 @@ adoption road, in dependency order:
    for all firmware-reachable maps (A7=1 rows emit only words `D`/`F` and can
    express neither observed banking map), while its physical driver on the
    D105.1 conductor remains the P0 connectivity item 4 netlist ask.
-4. **D94 `.092` — content adopted, boot still bypasses the quadrant.** The
-   structural ВГ93 is inert and EKDOS boots on the behavioral `fdc_1793`.
-   Adoption requires P0 connectivity item 2 plus D93 functional closure,
-   after which the boot's FDC accesses move to the D94-decoded strobes and
-   `fdc_1793` is retired.
+4. **D94 `.092` — physical table executes with guarded upstream fits.** The
+   runnable behavioral `fdc_1793` now consumes the physical PROM's open-
+   collector `/RE` and `/WE` outputs. Simulation alone derives the still-
+   unresolved shared enable from `cs_fdc_n`, applies the equation-required
+   A3=`iowr_n` functional constraint, and holds the locally pulled-up A4 high;
+   Yosys/LVS retains the separate physical boundary nets. The fast top-level
+   bus guard checks both PROM strobes on every FDC register read/write. Full
+   adoption still requires P0 connectivity item 2 plus D93 functional closure,
+   after which these three upstream fits are replaced and `fdc_1793` is retired.
 
 Adoption exit criterion: `prom_fallback_tb` equality stays green and every
 boot guard passes with zero functional PROM stand-ins.

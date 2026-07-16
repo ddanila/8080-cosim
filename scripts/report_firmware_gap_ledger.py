@@ -140,6 +140,14 @@ def main() -> int:
             "Functional decode oracle retired from the boot path",
         )
     ) and "decode_prom_functional U_" not in d6_top
+    d94_runnable_physical_ok = all(
+        needle in d6_top
+        for needle in (
+            "Runnable behavioral core consumes the physical .092 PROM strobes",
+            "wire fdc_model_re_n = fdc_prom_re_n;",
+            "wire fdc_model_we_n = fdc_prom_we_n;",
+        )
+    )
 
     rows = [
         [
@@ -210,6 +218,7 @@ def main() -> int:
         ("D2 physical table and continuity are guarded", d2_ok),
         ("D6 physical table drives runnable selection under the provisional D0/D3 fit", d6_runnable_physical_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),
+        ("D94 physical table drives runnable FDC read/write strobes under guarded upstream fits", d94_runnable_physical_ok),
         (".113/.117 RE3 scans are guarded as not D8/D94", re3_lineage_ok),
         ("Historical fallback report adopts all physical PROM tables", fallback_report_ok),
         ("Repeated RT4 dump validation procedure is available", rt4_validator_ok),
@@ -276,7 +285,12 @@ def main() -> int:
             "  or D94 `.092`; they are lineage evidence, not matching processor",
             "  module programming tables.",
             "- D94 content and all A0-A4 input destinations are owner-closed. Its",
-            "  enable source, D5-D7 far destinations, D104.10, pull-up identities, guarded D29.4/IORD recheck, and apparently pull-up-only D0 resistor identity remain unresolved",
+            "  physical table now drives the runnable FDC `/RE` and `/WE` inputs;",
+            "  decoded enable, A3=`IOWR`, and pulled-high A4 remain explicit sim-only",
+            "  upstream fits rather than claimed copper closure. The enable source,",
+            "  D5-D7 far destinations, D104.10, pull-up identities, guarded",
+            "  D29.4/IORD recheck, and apparently pull-up-only D0 resistor identity",
+            "  remain unresolved",
             "  connectivity boundaries and still block an FDC hardware release.",
             "",
             "## Required External Closure",

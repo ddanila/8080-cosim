@@ -62,9 +62,11 @@ evidence exists.
 - The model is a Juku boot/media shim, not a general WD1793 conformance model.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
   continuity checks in `docs/fdc-hardware-handoff.md`.
-- D94 `.092` uses the validated physical table and pins 1-3 are wired to the
-  three accepted local FDC controls. Pin 15, output D3-D7 far destinations,
-  and complete D93.2/.4 branches remain unknown and block main-board release.
+- D94 `.092` uses the validated physical table; direct continuity closes its
+  enable to D93.CS, D1 to ground, D2 to D93.RE, D3 to D93.WE, and D4 to the
+  D93 back-bias/NC socket contact. The runnable model consumes the physical
+  D2/D3 strobes under explicit simulation-only enable, A3, and A4 fits. Their
+  upstream physical sources plus D0/D5-D7 branches still block board release.
 - Adopt a larger upstream controller core only if a concrete required command
   or timing behavior exceeds this guarded scope; re-evaluate license and
   adapter cost at that time.

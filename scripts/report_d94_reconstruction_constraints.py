@@ -371,6 +371,17 @@ def main() -> int:
         "assign d[0] = (!e_n && !raw[0])",
     )
     hdl_connected = marker("hdl/juku_top.v", "re3_prom_092 U_D94", "fdc_prom_re_n", "fdc_prom_cs_n", "fdc_prom_we_n")
+    hdl_runnable_physical = marker(
+        "hdl/juku_top.v",
+        "Runnable behavioral core consumes the physical .092 PROM strobes",
+        "wire fdc_model_cs_n = fdc_prom_cs_n;",
+        "wire fdc_model_re_n = fdc_prom_re_n;",
+        "wire fdc_model_we_n = fdc_prom_we_n;",
+    ) and marker(
+        "hdl/sim/juku_top_periph_bus_tb.v",
+        "D94 /RE did not assert during FDC read",
+        "D94 /WE did not assert during FDC write",
+    )
     hdl_inputs_measured = marker(
         "hdl/juku_top.v",
         "Measured D94 inputs",
@@ -524,6 +535,7 @@ def main() -> int:
             f"| HDL adopts physical open-collector table | {'PASS' if hdl_physical_table else 'FAIL'} | `hdl/devices.v::re3_prom_092` |",
             f"| HDL adopts measured D94 A0-A4 mapping | {'PASS' if hdl_inputs_measured else 'FAIL'} | `hdl/juku_top.v`; BA0, BA1, IORD, D104.7/pull-up, D101.7/pull-up |",
             f"| `juku_top` connects the three accepted local FDC controls | {'PASS' if hdl_connected else 'FAIL'} | `hdl/juku_top.v` |",
+            f"| Runnable FDC consumes and cycle-checks physical D94 strobes | {'PASS' if hdl_runnable_physical else 'FAIL'} | simulation-only upstream fits remain explicit in `hdl/juku_top.v`; `hdl/sim/juku_top_periph_bus_tb.v` |",
             f"| Video slot audit does not rely on D94 | {'PASS' if video_audit_independent else 'FAIL'} | `docs/video-slot-timing-audit.md` |",
             "",
             "## Textual / Photo Survey Leads",
@@ -666,6 +678,10 @@ def main() -> int:
             "- Firmware-derived prediction: D94 A3 must equal active-low `IOWR` on",
             "  selected FDC cycles. Confirm by continuity to D5.27 or simultaneous",
             "  operating-level capture; do not merge the nets from this constraint.",
+            "- Runnable-model disposition: the behavioral FDC now consumes the",
+            "  physical table's `/RE` and `/WE`. Its decoded enable, A3=`IOWR`, and",
+            "  pulled-high A4 sources are simulation-only fits; Yosys/LVS keeps the",
+            "  measured physical nets separate and unresolved.",
             "- D5-D7 are destination-unknown, not unused: registered component-side",
             "  photographs prove copper leaves all three output pads.",
             "- D4-D7 are physically wired but program-inert: raw bits 4-7 remain one",
@@ -704,6 +720,7 @@ def main() -> int:
         "physical_table": physical_table_ok,
         "hdl_table": hdl_physical_table,
         "hdl_controls": hdl_connected,
+        "hdl_runnable_physical": hdl_runnable_physical,
         "hdl_inputs": hdl_inputs_measured,
         "pcb_outputs": pcb_outputs_match,
         "re3_lineage": scanned_not_d94,
