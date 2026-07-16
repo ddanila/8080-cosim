@@ -478,6 +478,25 @@ def main() -> int:
             failures.append(f"VJUGA GAL contract omits U24 evidence {marker!r}")
     if "U24's Gray-coded DRAM timing contract passes" not in vjuga_readiness:
         failures.append("VJUGA readiness does not expose passing U24 timing evidence")
+    vjuga_board_path = ROOT / "spinoffs/minimal-vga/kicad/rev-a-physical.board.json"
+    if vjuga_board_path.exists():
+        vjuga_board = json.loads(vjuga_board_path.read_text(encoding="utf-8"))
+        vjuga_refs = len(vjuga_board.get("chips", {}))
+        vjuga_nets = len(vjuga_board.get("nets", {}))
+        for path in (
+            "PLAN.md",
+            "spinoffs/minimal-vga/README.md",
+            "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
+        ):
+            text = read(path)
+            if not re.search(
+                rf"{vjuga_refs} refs?\s*(?:/|and)\s*{vjuga_nets}\s+(?:modeled\s+)?nets",
+                text,
+            ):
+                failures.append(
+                    f"{path} does not expose current VJUGA scope "
+                    f"{vjuga_refs} refs/{vjuga_nets} nets"
+                )
     vjuga_zip = ROOT / "fab" / "minimal-vga" / "upload" / "vjuga-rev-a-gerbers-drill.zip"
     if vjuga_zip.exists():
         vjuga_digest = sha256(vjuga_zip)

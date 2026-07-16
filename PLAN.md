@@ -431,7 +431,7 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
 - **Simulation + board model DONE.** The Verilog twin boots the real firmware on
   tv80 through the real К565РУ5 + D6 К556РТ4 + D8 К155РЕ3 models; **both decode
   modes** (real РТ4 vs GAL-internal baseline) are byte-identical to cosim
-  (`sim/vjuga_boot_check.sh`). Rev-A schematic is 119 refs / 134 nets with the
+  (`sim/vjuga_boot_check.sh`). Rev-A schematic is 119 refs / 135 nets with the
   decode sockets, mode inverter, jumpers, and observability headers; the
   socket↔twin and observability contracts are enforced
   (`kicad/check_rev_a_physical.py`).

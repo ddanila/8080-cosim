@@ -27,7 +27,7 @@ order the board.
 - **This package predates the Phase 3 decode-socket addition.** The committed
   Gerbers/ZIP reflect the earlier 95-ref board; the schematic and connectivity
   (source of truth, `check_rev_a_physical`) now carry the real РТ4/РЕ3 sockets,
-  the mode inverter, the jumpers, and the observability headers (119 refs / 134
+  the mode inverter, the jumpers, and the observability headers (119 refs / 135
   nets). The package must be regenerated from the re-laid-out PCB before it
   describes the current design.
 

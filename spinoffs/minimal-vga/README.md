@@ -36,7 +36,7 @@ product.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- The Rev A physical source has 119 refs and 134 modeled nets, and now sockets
+- The Rev A physical source has 119 refs and 135 modeled nets, and now sockets
   the real Juku decode PROMs (U3 К556РТ4, U4 К155РЕ3) with a Mode-A/Mode-B
   jumper plus the Phase 4 observability headers (J96 clock-control, J97 high
   address + write strobe, J98 control bus); `check_rev_a_physical` enforces
