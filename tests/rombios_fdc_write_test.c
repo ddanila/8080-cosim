@@ -27,6 +27,7 @@ enum {
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
   BIOS_CONST = 0xCA06,
+  BIOS_LIST = 0xCA0F,
   BIOS_PUNCH = 0xCA12,
   BIOS_READER = 0xCA15,
   BIOS_HOME = 0xCA18,
@@ -184,12 +185,14 @@ static int write_image(const char* path) {
 static int load_rom(uint8_t rom[ROM_SIZE]) {
   static const uint8_t ramdisk_vector[] = {0xC3, 0xB3, 0xE9};
   static const uint8_t consta_entry[] = {0xCD, 0x5B, 0xD8};
+  static const uint8_t printch_entry[] = {0xC3, 0xF1, 0xD7};
   FILE* fp = fopen("roms/ekta37.bin", "rb");
   if (!fp) return 1;
   size_t got = fread(rom, 1, ROM_SIZE, fp);
   int failed = got != ROM_SIZE || fclose(fp) != 0 ||
                memcmp(&rom[0x3F5C], ramdisk_vector, sizeof(ramdisk_vector)) != 0 ||
                memcmp(&rom[0x3F98], consta_entry, sizeof(consta_entry)) != 0 ||
+               memcmp(&rom[0x3FEE], printch_entry, sizeof(printch_entry)) != 0 ||
                memcmp(&rom[0x29A7], RAMDISK_SIGNATURE,
                       sizeof(RAMDISK_SIGNATURE)) != 0;
   return failed;
@@ -201,7 +204,8 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t exercised_vectors[] = {
-    BIOS_CONST, BIOS_PUNCH, BIOS_READER, BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK,
+    BIOS_CONST, BIOS_LIST, BIOS_PUNCH, BIOS_READER, BIOS_HOME,
+    BIOS_SELDSK, BIOS_SETTRK,
     BIOS_SETSEC, BIOS_SETDMA,
     BIOS_READ, BIOS_WRITE, BIOS_LISTST, BIOS_SECTRAN,
   };
@@ -211,6 +215,8 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
   int failed = got != 65536 || fclose(fp) != 0 ||
                memcmp(&ram[0xD7E7], expected_trampoline,
                       sizeof(expected_trampoline)) != 0 ||
+               ram[0xD7F1] != 0xC3 || ram[0xD7F2] != 0xA2 ||
+               ram[0xD7F3] != 0xE2 ||
                ram[0xCA36] != 2;       // NoofRamDisk / RDNO
   for (unsigned i = 0;
        i < sizeof(exercised_vectors) / sizeof(exercised_vectors[0]); i++) {
@@ -546,6 +552,7 @@ int main(int argc, char** argv) {
   unsigned long unallocated_cycles = 0;
   unsigned long home_cycles = 0;
   unsigned long list_status_cycles = 0;
+  unsigned long list_output_cycles = 0;
   unsigned long seldsk_cycles = 0;
   unsigned long sectran_cycles = 0;
   unsigned long ramdisk_cycles = 0;
@@ -742,6 +749,21 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
+  uint8_t saved_usart_data = f.out[0x0C];
+  uint8_t saved_usart_status = f.out[0x0E];
+  f.out[0x0C] = 0;
+  f.out[0x0E] = 0x08;                 // USART transmitter ready
+  fail |= run_bios_entry(&f, BIOS_LIST, 0, 'L', 0, NULL, NULL,
+                         &list_output_cycles, "LIST");
+  uint8_t listed_character = f.out[0x0C];
+  f.out[0x0C] = saved_usart_data;
+  f.out[0x0E] = saved_usart_status;
+  if (listed_character != 'L') {
+    fprintf(stderr, "EKDOS LIST: output=%02X expected=%02X\n",
+            listed_character, 'L');
+    fail = 1;
+  }
+
   static const uint8_t expected_translation[40] = {
     1, 2, 3, 4, 9, 10, 11, 12,
     17, 18, 19, 20, 25, 26, 27, 28,
@@ -889,7 +911,8 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "const=no-key aux=punch+reader-unimplemented home=clean+dirty "
+         "const=no-key list=usart-L aux=punch+reader-unimplemented "
+         "home=clean+dirty "
          "listst=not-ready "
          "seldsk=0/1/2/invalid "
          "bios-rw=public/types0+2 "
@@ -899,7 +922,7 @@ int main(int argc, char** argv) {
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
          successful_cycles + auxiliary_cycles + console_status_cycles +
-         unallocated_cycles +
+         list_output_cycles + unallocated_cycles +
          home_cycles + list_status_cycles +
          seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);

@@ -606,6 +606,9 @@ serve physical bring-up or historical fidelity:
    Public `CONST=0xCA06` traverses `DoFunction` and exact monitor `CONSTA=0xFF98`;
    at the prompt's empty keyboard boundary (`0xCF` released matrix inputs) it
    returns `A=0`, while blocking `CONIN` is intentionally not invoked without a key.
+   Public `LIST=0xCA0F` traverses `PrintCh=0xFFEE` and the boot-installed
+   `D7F1->E2A2` service; with USART transmitter-ready asserted at port `0x0E`,
+   it emits the exact input character to data port `0x0C`.
    Public `SELDSK` at `0xCA1B` returns three contiguous 16-byte DPHs, rejects
    drive 3 without changing the selected drive, returns zero for unavailable
    drive C, and returns the source-exact RAM DPB when C is present. Its

@@ -260,6 +260,7 @@ def main() -> int:
         )
     bios_vectors = [
         ("CONST / CONSTAT", 2, "JMP CONSTAT"),
+        ("LIST", 5, "JMP LIST"),
         ("PUNCH", 6, "DP RTNEMPTY"),
         ("READER", 7, "JMP RTNEMPTY"),
         ("HOME", 8, "JMP HOME"),
