@@ -77,7 +77,7 @@ python3 scripts/report_serial_handoff.py
 | `SER_RXD` | `D11.3`, `D104.13` |
 | `SER_CTS_N` | `D104.12`, `D11.17` |
 | `SER_DSR_N` | `D104.11`, `D11.22` |
-| `D94_A3_D104_X4_PULLUP` | `D94.13`, `D104.7` |
+| `D94_A3_D104_X4_PULLUP` | `D94.13`, `D104.7`, `R87.1` |
 | `D104_X4_OUT_BOUNDARY` | `D104.10` |
 | `USART_RXRDY_IRQ` | `D10.20`, `D11.14` |
 | `USART_TXRDY_IRQ` | `D10.21`, `D11.15` |
