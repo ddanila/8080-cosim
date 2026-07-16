@@ -14150,7 +14150,7 @@
    "nodes": [["D29", "2"]]
   },
   "D7_IOM_STATUS_RECHECK": {
-   "src": "the older sheet interpretation joined D7.8 to D29.4 as IOM_STATUS, but direct owner continuity 2026-07-15 instead places D29.4 on the D27.5/IORD/D94.12 conductor. D7.8 remains guarded pending later D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 rechecks",
+   "src": "native sheet-1 full-resolution shows D7 output pin8 departing on dense-bundle code 8, visibly separate from adjacent D105.3 code 7. The older interpretation joined D7.8 to D29.4 as IOM_STATUS, but direct owner continuity 2026-07-15 instead places D29.4 on the D27.5/IORD/D94.12 conductor. D7.8 remains guarded pending later D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 rechecks",
    "nodes": [["D7", "8"]]
   },
   "AMW_N": {
@@ -15717,7 +15717,7 @@
    "nodes": [["D13", "4"], ["D105", "2"], ["D11", "20"], ["D30", "11"]]
   },
   "D105_GATE1_Y": {
-   "src": "traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread",
+   "src": "native sheet-1 full-resolution: D105 gate pins 1,2 -> output pin3, which departs on dense-bundle code 7 beside but not joined to D7.8 code 8. The nearby D29.2 conductor has no explicit junction to this riser, so the unique destination remains unread",
    "nodes": [["D105", "3"]]
   },
   "D105_MEMW_INV": {

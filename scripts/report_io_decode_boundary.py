@@ -143,6 +143,15 @@ def main() -> int:
             and "without a junction" in board["nets"]["D25_T"]["src"],
             "Native sheet proves D7.4 -> MEMW/D29.1; D7.5 remains on the distinct -INHIB junction",
         ),
+        (
+            "D105.3 code 7 and D7.8 code 8 remain distinct driven outputs",
+            set(nodes(board, "D105_GATE1_Y")) == {("D105", "3")}
+            and set(nodes(board, "D7_IOM_STATUS_RECHECK")) == {("D7", "8")}
+            and "code 7" in board["nets"]["D105_GATE1_Y"]["src"]
+            and "code 8" in board["nets"]["D7_IOM_STATUS_RECHECK"]["src"]
+            and "absence of an explicit junction" in board["nets"]["D29_AIN1_BOUNDARY"]["src"],
+            "Full-resolution sheet-1 keeps the adjacent code-7/code-8 risers separate; D29.2 is not promoted onto either",
+        ),
     ]
     ok = all(result for _, result, _ in checks + boundaries)
     status = "IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING" if ok else "IO DECODE BOUNDARY FAILED"

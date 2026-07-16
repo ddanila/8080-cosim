@@ -36,6 +36,7 @@ python3 scripts/report_io_decode_boundary.py
 | D7 fourth-gate strobe inputs are source-proven | PASS | IORD/IOWR are on D7.9/D7.10 from the full-resolution sheet |
 | C99 far physical pad is preserved without assuming ground | PASS | C99.1 is on V3_RC; native scan shows C99.2 as a conductor-less plate on singleton C99_FAR |
 | D25_T MEMW input is source-proven without crossing-rail overmerge | PASS | Native sheet proves D7.4 -> MEMW/D29.1; D7.5 remains on the distinct -INHIB junction |
+| D105.3 code 7 and D7.8 code 8 remain distinct driven outputs | PASS | Full-resolution sheet-1 keeps the adjacent code-7/code-8 risers separate; D29.2 is not promoted onto either |
 
 ## Current Decode Nets
 

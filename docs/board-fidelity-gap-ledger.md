@@ -282,7 +282,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D102_RC1_BOUNDARY` | FDC owner-continuity | `D102.15` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin15 RC1; no remote destination is proved, so this remains a measurement boundary |
 | `D102_RC2_BOUNDARY` | FDC owner-continuity | `D102.7` | July-2026 validated component and solder package fits identify D102 К155АГ3 pin7 RC2; no remote destination is proved, so this remains a measurement boundary |
 | `D104_X4_OUT_BOUNDARY` | logic/source | `D104.10` | July-2026 reflected D104 solder fit identifies output pin10 at (2350.714,1249.143) px with no B.Cu departure in two backside views; both component overlaps h... |
-| `D105_GATE1_Y` | logic/source | `D105.3` | traced sheet-1: D105 gate pins 1,2 -> 3; output destination remains unread |
+| `D105_GATE1_Y` | logic/source | `D105.3` | native sheet-1 full-resolution: D105 gate pins 1,2 -> output pin3, which departs on dense-bundle code 7 beside but not joined to D7.8 code 8. The nearby D29.... |
 | `D106_BO_BOUNDARY` | FDC owner-continuity | `D106.13` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin13 BO; no remote destination is proved, so this remains a measurement boundary |
 | `D106_CLR_BOUNDARY` | FDC owner-continuity | `D106.14` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin14 CLR; no remote destination is proved, so this remains a measurement boundary |
 | `D106_CO_BOUNDARY` | FDC owner-continuity | `D106.12` | July-2026 corrected component and solder package fits identify D106 К555ИЕ7 pin12 CO; no remote destination is proved, so this remains a measurement boundary |
@@ -310,7 +310,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D58_STB_TAG5` | logic/source | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established |
 | `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10... |
 | `D6_A7_D105_I1_BOUNDARY` | PROM/decode | `D6.15, D105.1` | direct zero-ohm .009 owner continuity and visually followed copper 2026-07-14: D6 address input A7/pin15 joins D105 К155ЛА3 input pin1. No other destination... |
-| `D7_IOM_STATUS_RECHECK` | PROM/decode | `D7.8` | the older sheet interpretation joined D7.8 to D29.4 as IOM_STATUS, but direct owner continuity 2026-07-15 instead places D29.4 on the D27.5/IORD/D94.12 condu... |
+| `D7_IOM_STATUS_RECHECK` | PROM/decode | `D7.8` | native sheet-1 full-resolution shows D7 output pin8 departing on dense-bundle code 8, visibly separate from adjacent D105.3 code 7. The older interpretation... |
 | `D93_CLK_BOUNDARY` | FDC owner-continuity | `D93.24` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin24 CLK; the candidate D106 divider relation is not proved, so this remains a me... |
 | `D93_DIRC_BOUNDARY` | FDC owner-continuity | `D93.16` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin16 DIRC; remote drive-interface continuity is not proved, so this remains a mea... |
 | `D93_EARLY_BOUNDARY` | FDC owner-continuity | `D93.17` | July-2026 two-sided physical КР1818ВГ93 socket registration identifies D93 pin17 EARLY; remote drive-interface continuity is not proved, so this remains a me... |
