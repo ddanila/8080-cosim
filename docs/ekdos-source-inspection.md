@@ -37,6 +37,7 @@ labels and `TRANS` tables.
 | `CCP` | `0xB400` |
 | `BDOS` | `0xBC06` |
 | `BIOS` | `0xCA00` |
+| BIOS `HOME` (index 8) | `0xCA18` |
 | BIOS `SELDSK` (index 9) | `0xCA1B` |
 | BIOS `SETTRK` (index 10) | `0xCA1E` |
 | BIOS `SETSEC` (index 11) | `0xCA21` |

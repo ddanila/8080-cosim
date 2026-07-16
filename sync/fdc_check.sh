@@ -78,7 +78,10 @@ physical D93/D94 wiring.
   preserves BC, restores bank 6, and reopens a signed drive without formatting.
 - The fixture checkpoint now comes from the real disk-backed `TDD` boot at the
   EKDOS `A>` prompt boundary (`14,200,002` cycles), so the installed BIOS jump
-  table is present in RAM. Public `SELDSK` at `0xCA1B` runs through its
+  table is present in RAM. Public `HOME` at `0xCA18` is executed with both
+  cache states: it always sets `SEKTRK=0`, clears `HSTACT` when `HSTWRT=0`,
+  and preserves the active cache when `HSTWRT=1`, so dirty data is not lost.
+  Public `SELDSK` at `0xCA1B` runs through its
   `DoFunction`/ROMBIOS trampoline: drives A/B/C return contiguous 16-byte DPHs,
   unavailable C and invalid drive 3 return zero, invalid selection preserves
   the prior drive, and present C selects `SEKDSK=2` without a synthetic write.
@@ -164,7 +167,7 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires all seven exercised disk-vector jump mnemonics
+- The source inspector requires all eight exercised disk-vector jump mnemonics
   in the archived assembly and derives their standard three-byte table
   addresses.
   The prompt checkpoint independently requires a live `JMP` opcode at each

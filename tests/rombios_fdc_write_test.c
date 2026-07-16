@@ -26,6 +26,7 @@ enum {
   RAM_DISK_WINDOW = 0x8000,
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
+  BIOS_HOME = 0xCA18,
   BIOS_SELDSK = 0xCA1B,
   BIOS_SETTRK = 0xCA1E,
   BIOS_SETSEC = 0xCA21,
@@ -194,7 +195,7 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t disk_vectors[] = {
-    BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA,
+    BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA,
     BIOS_READ, BIOS_WRITE, BIOS_SECTRAN,
   };
   FILE* fp = fopen(path, "rb");
@@ -312,6 +313,26 @@ static int run_bios_seldsk(
     fixture* f, uint8_t drive, uint16_t* dph, unsigned long* total_cycles) {
   return run_bios_entry(f, BIOS_SELDSK, 0, drive, 0, NULL, dph,
                         total_cycles, "SELDSK");
+}
+
+
+static int run_bios_home_case(
+    fixture* f, uint8_t dirty, uint8_t expected_active,
+    unsigned long* total_cycles) {
+  f->ram[0xD61B] = 0x5A;              // SEKTRK
+  f->ram[0xD623] = 0xA5;              // HSTACT
+  f->ram[0xD624] = dirty;             // HSTWRT
+  int fail = run_bios_entry(f, BIOS_HOME, 0, 0, 0, NULL, NULL,
+                            total_cycles, "HOME");
+  if (f->ram[0xD61B] != 0 || f->ram[0xD623] != expected_active ||
+      f->ram[0xD624] != dirty) {
+    fprintf(stderr,
+            "EKDOS HOME: dirty=%u track=%02X active=%02X/%02X dirty-after=%02X\n",
+            dirty, f->ram[0xD61B], f->ram[0xD623], expected_active,
+            f->ram[0xD624]);
+    fail = 1;
+  }
+  return fail;
 }
 
 
@@ -504,6 +525,7 @@ int main(int argc, char** argv) {
   unsigned successful_trampolines = f.monitor_trampoline_entries;
   unsigned long successful_cycles = total_cycles;
   unsigned long unallocated_cycles = 0;
+  unsigned long home_cycles = 0;
   unsigned long seldsk_cycles = 0;
   unsigned long sectran_cycles = 0;
   unsigned long ramdisk_cycles = 0;
@@ -644,6 +666,15 @@ int main(int argc, char** argv) {
             dph0, dph1, dph2, ram_dpb, f.ram[0xD61A]);
     fail = 1;
   }
+
+  uint8_t saved_track = f.ram[0xD61B];
+  uint8_t saved_host_active = f.ram[0xD623];
+  uint8_t saved_host_dirty = f.ram[0xD624];
+  fail |= run_bios_home_case(&f, 0, 0, &home_cycles);
+  fail |= run_bios_home_case(&f, 1, 0xA5, &home_cycles);
+  f.ram[0xD61B] = saved_track;
+  f.ram[0xD623] = saved_host_active;
+  f.ram[0xD624] = saved_host_dirty;
 
   static const uint8_t expected_translation[40] = {
     1, 2, 3, 4, 9, 10, 11, 12,
@@ -792,13 +823,13 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "seldsk=0/1/2/invalid bios-rw=public/types0+2 "
+         "home=clean+dirty seldsk=0/1/2/invalid bios-rw=public/types0+2 "
          "sectran=40+2 ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + unallocated_cycles + seldsk_cycles + sectran_cycles +
+         successful_cycles + unallocated_cycles + home_cycles + seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);
   return 0;
 }

@@ -259,6 +259,7 @@ def main() -> int:
             f"MDISKPAR expected {expected_mdiskpar}, got {mdiskpar}"
         )
     disk_vectors = {
+        "HOME": 8,
         "SELDSK": 9,
         "SETTRK": 10,
         "SETSEC": 11,

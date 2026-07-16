@@ -596,7 +596,9 @@ serve physical bring-up or historical fidelity:
    `RamDisk` signature and all 63 `0xE5` directory markers, and a signed drive
    reopens without formatting. The RAM-drive data path is also exercised with
    the disk-booted EKDOS BIOS rather than a synthetic selector assignment:
-   public `SELDSK` at `0xCA1B` returns three contiguous 16-byte DPHs, rejects
+   public `HOME` at `0xCA18` always selects track zero, invalidates a clean
+   host-sector cache, and preserves an explicitly dirty cache for its later
+   flush. Public `SELDSK` at `0xCA1B` returns three contiguous 16-byte DPHs, rejects
    drive 3 without changing the selected drive, returns zero for unavailable
    drive C, and returns the source-exact RAM DPB when C is present. Its
    `DoFunction` trampoline switches from a guarded caller stack to
