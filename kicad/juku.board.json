@@ -4609,8 +4609,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 analog corner",
-    "pins": "SOUND_CLAMP/SND_MIX path; connected nets carry an_* crop evidence"
+    "refdes": "sheet-2 analog corner plus .009 factory identity and registered owner photos",
+    "pins": "pin1 remains on the source-proved SOUND_CLAMP node. The revision-superseded .006 SND_MIX continuation is not reused for pin2: July and May component views expose its separate joint but no onward copper, while D102-local cross-side registration lands on a bare backside trace corner without a via in two solder views; R67.2 requires continuity"
    }
   },
   {
@@ -15272,7 +15272,7 @@
    ]
   },
   "R67_2_BOUNDARY": {
-   "src": ".009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requires continuity",
+   "src": ".009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and May component views expose the R67.2 joint without onward copper; a D102-local cross-side fit projects it onto a bare backside trace corner with no via in two solder views, so the target endpoint is photo-exhausted and requires continuity",
    "nodes": [["R67", "2"]]
   },
   "C9_1_BOUNDARY": {

@@ -20,18 +20,18 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 629 reviewed rows:
+endpoint table contains 632 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
 | `accepted` | 39 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 590 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 373 `local-package-fit`, 217
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Two use
 `local-package-fit+continuous-copper`, four use
-`registration+visible-common-landing`, four use `registration+unique-joint`,
-and two use `cross-side-registration`.
+`registration+visible-common-landing`, five use `registration+unique-joint`,
+and four use `cross-side-registration`.
 Five `panorama-projected-region` observations record the photo-exhausted R94.2
 and C94.1 solder reviews without pretending that a projection is pad identity.
 A hole snap or accurate pad projection is not electrical evidence by itself.
@@ -57,6 +57,12 @@ Accepted paths:
 - C94.2 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
   the shared landing, while an independent May angle is retained in the
   dedicated evidence record. C94.1 remains photo-exhausted.
+
+R67.2 remains unaccepted but is now precisely photo-exhausted. Its component
+joint is registered at `(3321,1698)` in `200418174`; fourteen paired D102 pins
+map it to `(916,988)` in `200522685` with sub-pixel residual. Both that image
+and the overlapping `200506061` tile show a bare backside trace corner without
+a via, so visual coincidence is explicitly not treated as electrical evidence.
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint

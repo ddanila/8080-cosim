@@ -248,8 +248,8 @@ def main() -> int:
         (
             "P1",
             ".009 FDC/analog passive continuity",
-            "trace both leads of factory-positioned C9/C10/C11/C12/C15, the far end of R67.2, and X6.1 on the .009 owner board; do not restore the revision-superseded .006 VT3/VT4 RF nets",
-            "`docs/video-analog-boundary.md`; `docs/source-pcb-drc.md`; `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`",
+            "trace both leads of factory-positioned C9/C10/C11/C12/C15 and X6.1 on the .009 owner board; continuity-test the now-photo-exhausted R67.2 joint, whose two component views stop at its solder pool and whose D102-local cross-side projection proves the coincident backside trace has no via; do not restore the revision-superseded .006 VT3/VT4 RF nets",
+            "`docs/video-analog-boundary.md`; `docs/source-pcb-drc.md`; `ref/photos/juku-pcb-2/r67-photo-exhaustion.json`; `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`",
             "turns twelve explicit target-revision boundary pins into real .009 connectivity while preserving the now-zero-short source placement",
         ),
         (

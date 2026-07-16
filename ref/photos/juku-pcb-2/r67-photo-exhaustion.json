@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "refdes": "R67",
+  "endpoint": "2",
+  "status": "photo-exhausted / continuity required",
+  "component_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "joint_px": [3321, 1698],
+      "bbox_px": [3220, 1580, 3430, 1850],
+      "observation": "the upper physical lead of the factory-identified red 4K7 R67 terminates at a distinct component-side solder pool; no copper continuation leaves the visible pool"
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+      "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+      "dimensions_px": [4080, 3072],
+      "joint_px": [3384, 777],
+      "bbox_px": [3280, 650, 3490, 1050],
+      "observation": "an independent oblique May view separates the same R67.2 lead and joint but likewise exposes no onward route"
+    }
+  ],
+  "cross_side_registration": {
+    "basis": "14 paired D102 component/solder pin centres from ref/photos/juku-pcb-2/endpoints.csv",
+    "model": "affine component 200418174 pixels to solder 200522685 pixels",
+    "transform": [-0.984243042, -0.025227553, 0.025228936, -0.984242960, 4141.78717, 2743.27454],
+    "max_anchor_residual_px": 0.001,
+    "component_joint_px": [3321, 1698],
+    "projected_solder_joint_px": [916, 988],
+    "interpretation": "the physical R67.2 location is a bare backside trace corner without an annulus, drill, solder joint, or other inter-layer handoff"
+  },
+  "solder_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "dimensions_px": [4080, 3072],
+      "review_point_px": [916, 988],
+      "bbox_px": [700, 800, 1150, 1200],
+      "observation": "the D102-local cross-side projection falls on an unperforated copper corner; no backside joint proves connection to that coincident trace"
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "sha256": "6f11cc69615f159fcaea852ce41e9af944da4886d31d0fc7d70394a56772070c",
+      "dimensions_px": [4080, 3072],
+      "review_point_px": [597, 2430],
+      "bbox_px": [400, 2250, 850, 2650],
+      "observation": "the overlapping solder tile independently shows the same bare trace corner without a via or solder joint"
+    }
+  ],
+  "unresolved": ["R67.2 remote destination"],
+  "non_promotion_basis": "two component angles stop at the R67.2 solder pool and two cross-side-registered solder views prove that the coincident backside trace has no inter-layer handoff; direct continuity is required"
+}

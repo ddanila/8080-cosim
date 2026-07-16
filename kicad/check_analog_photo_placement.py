@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Guard assembly-identified analog/FDC and timing parts in owner photos."""
+import csv
 import hashlib
 import json
 from pathlib import Path
@@ -9,6 +10,7 @@ import pcbnew
 
 ROOT = Path(__file__).resolve().parents[1]
 C94_EVIDENCE = ROOT / "ref/photos/juku-pcb-2/c94-endpoint-registration.json"
+R67_EVIDENCE = ROOT / "ref/photos/juku-pcb-2/r67-photo-exhaustion.json"
 EXPECTED = {
     # D40 is the marked notch-right КР531ИЕ17 immediately right of D41.
     # Its centre is transferred through D41's exact raw component-side fit.
@@ -94,6 +96,52 @@ def main() -> None:
         bbox = item.get("bbox_px")
         if bbox is not None and (len(bbox) != 4 or bbox[0] >= bbox[2] or bbox[1] >= bbox[3]):
             errors.append(f"C94 evidence has invalid review box: {source}")
+
+    r67 = json.loads(R67_EVIDENCE.read_text(encoding="utf-8"))
+    if (r67.get("refdes") != "R67" or r67.get("endpoint") != "2" or
+            r67.get("unresolved") != ["R67.2 remote destination"]):
+        errors.append("R67 photo-exhaustion record does not preserve the R67.2 boundary")
+    cross_side = r67.get("cross_side_registration", {})
+    if (cross_side.get("projected_solder_joint_px") != [916, 988] or
+            cross_side.get("max_anchor_residual_px", 1) > 0.001):
+        errors.append("R67 D102-local cross-side registration is stale")
+    endpoint_rows = {}
+    with (ROOT / "ref/photos/juku-pcb-2/endpoints.csv").open(newline="") as stream:
+        for row in csv.DictReader(stream):
+            endpoint_rows[row["endpoint_id"]] = row
+    pairs = []
+    for pin in range(1, 17):
+        component = endpoint_rows.get(f"seed-component-D102-{pin}")
+        solder = endpoint_rows.get(f"seed-solder-D102-{pin}")
+        if component and solder:
+            pairs.append((component, solder))
+    if len(pairs) != 14:
+        errors.append(f"R67 cross-side fit has {len(pairs)} paired D102 anchors, expected 14")
+    else:
+        component_points = np.array([
+            [float(a["x_px"]), float(a["y_px"]), 1.0] for a, _ in pairs
+        ])
+        solder_points = np.array([
+            [float(b["x_px"]), float(b["y_px"])] for _, b in pairs
+        ])
+        transform, *_ = np.linalg.lstsq(component_points, solder_points, rcond=None)
+        residual = float(np.linalg.norm(component_points @ transform - solder_points, axis=1).max())
+        recorded = np.array(cross_side.get("transform", []))
+        projected = np.array([3321.0, 1698.0, 1.0]) @ transform
+        if (recorded.shape != (6,) or not np.allclose(recorded, transform.flatten(), atol=1e-6) or
+                residual > 0.001 or not np.allclose(projected, [916, 988], atol=0.5)):
+            errors.append("R67 cross-side transform no longer reproduces its D102 anchors/projection")
+    r67_items = [*r67.get("component_observations", []), *r67.get("solder_observations", [])]
+    if len(r67.get("component_observations", [])) != 2 or len(r67.get("solder_observations", [])) != 2:
+        errors.append("R67 photo exhaustion needs two component and two solder observations")
+    for item in r67_items:
+        source = ROOT / item.get("source", "")
+        if (not source.is_file() or
+                hashlib.sha256(source.read_bytes()).hexdigest() != item.get("sha256")):
+            errors.append(f"R67 evidence source/hash mismatch: {source}")
+        bbox = item.get("bbox_px", [])
+        if len(bbox) != 4 or bbox[0] >= bbox[2] or bbox[1] >= bbox[3]:
+            errors.append(f"R67 evidence has invalid review box: {source}")
     if errors:
         raise SystemExit("analog photo placement FAIL\n- " + "\n- ".join(errors))
     print("analog photo placement PASS")

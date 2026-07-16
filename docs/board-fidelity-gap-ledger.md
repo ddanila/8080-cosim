@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `313`
 - Nets modeled: `569`
-- Chip-level fidelity gaps: `75`
+- Chip-level fidelity gaps: `76`
 - Net-level source-risk gaps: `202`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `60`
@@ -63,6 +63,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 9 | 128 |
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 7 |
+| analog/source | 1 | 0 |
 | connector boundary | 1 | 0 |
 | logic/source | 16 | 60 |
 | memory/timing | 0 | 2 |
@@ -97,6 +98,12 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `D6` | `DEC_PROM` | scan | validated physical dump uses RT4 address order A0-A7=5/6/7/4/3/2/1/15. Direct .009 owner continuity on 2026-07-14 proves board signals BA15,BA14,BA13,BA12,BA... |
+
+### analog/source
+
+| Ref | Type | Provenance | Note |
+| --- | --- | --- | --- |
+| `R67` | `R_AXIAL` | scan | sheet-2 analog corner plus .009 factory identity and registered owner photos pin1 remains on the source-proved SOUND_CLAMP node. The revision-superseded .006... |
 
 ### connector boundary
 
@@ -393,7 +400,7 @@ same fidelity ledger as the chip provenance gaps.
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
 | `R102_1_BOUNDARY` | logic/source | `R102.1` | .009 factory drawing plus owner photo prove the second R102 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
 | `R108_1_BOUNDARY` | logic/source | `R108.1` | .009 factory drawing plus owner photo prove the third R108 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |
-| `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded; target endpoint requi... |
+| `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and M... |
 | `R94_P2_BOUNDARY` | logic/source | `R94.2` | July-2026 registered component photo identifies the lower terminal of R94 220 ohm; only the upper terminal to D98.3 is proved and pin2 remains a measurement... |
 | `READY_PRE_N` | logic/source | `D30.4` | D30 section-A asynchronous preset pin4 remains a target-board continuity boundary after owner measurements moved R5 to D30.10/.12 |
 | `RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY` | logic/source | `R100.2, R102.2, R108.2, R86.2` | .009 factory identity plus registered target-board component photos; uninterrupted copper joins the right-hand pin-2 leads of R100/R102/R108/R86 on one perim... |

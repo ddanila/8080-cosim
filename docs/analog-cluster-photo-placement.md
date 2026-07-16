@@ -61,6 +61,17 @@ target-continuity boundaries. R67.2 and physical connector contact X6.1 are
 likewise boundaries rather than being forced onto the superseded RF nets. The
 yellow `680п` part remains the separately proved C94.
 
+R67.2 has now been chased to the limit of the owner imagery. The registered
+July component view and an independent May angle both expose its upper physical
+lead ending in a distinct solder pool without visible onward copper. A local
+cross-side affine built from all fourteen paired D102 pin centres projects that
+joint to `(916,988)` in solder image `PXL_20260710_200522685.jpg` with less than
+0.001 px anchor residual. That location is a bare copper corner with no annulus,
+drill, or solder joint; the overlapping `200506061` tile independently shows the
+same absence. The coincident backside trace is therefore not promoted as an
+inter-layer join. R67.2 remains a photo-exhausted continuity measurement, with
+the evidence preserved in `ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
+
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `R65`/`R67`/`VD3`/`R66`/`C94`, and
 guards C94's pad orientation/net assignment, C16/C19, R92/R99, plus the two

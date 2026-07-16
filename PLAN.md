@@ -182,6 +182,14 @@ landing, while two registered solder regions are non-unique. R94.2 remains an
 explicit, photo-exhausted continuity ask rather than being conflated with the
 separate D98.7/S1.2 factory harness.
 
+The target-revision R67.2 far end is likewise photo-exhausted. Registered July
+and independent May component views stop at its isolated solder pool. A
+D102-local cross-side fit using fourteen paired package pins maps that joint
+onto a bare backside copper corner with no via in both overlapping solder
+tiles, so the coincident trace is not treated as an inter-layer connection.
+R67.2 remains a direct-continuity ask rather than inheriting the superseded
+`.006` RF-option net.
+
 ## Release blockers
 
 ### P0: physical connectivity (measurement-gated)
@@ -345,8 +353,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-629 observations have dispositions, 39 rows are accepted evidence, and the
-other 590 remain measurement requests (`docs/photo-registration.md`).
+632 observations have dispositions, 39 rows are accepted evidence, and the
+other 593 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated
