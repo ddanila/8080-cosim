@@ -11,5 +11,46 @@
   "targets": [
     {"refdes": "C12", "drawing_px": [1444.0, 1252.5], "between": ["D94", "D100"], "observation": "vertical C12 between D94 and D100; owner component view shows the landing area without an unambiguous fitted body"},
     {"refdes": "C9", "drawing_px": [2011.5, 1271.0], "between": ["D100", "D98"], "observation": "vertical C9 between D100 and D98; owner component view is hidden by the black factory cable"}
+  ],
+  "d94_pullups": [
+    {
+      "refdes": "R87",
+      "drawing_order": 1,
+      "signal": "D94_A3_D104_X4_PULLUP",
+      "signal_nodes": [["D94", "13"], ["D104", "7"]],
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "component_signal_px": [1485.0, 1553.0],
+      "component_p5v_px": [1485.0, 1328.0],
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "solder_signal_px": [2190.0, 1323.0],
+      "solder_p5v_px": [2190.0, 1110.0],
+      "observation": "leftmost factory-drawn and component-photo body; reflected solder trace runs from its signal pad to D94.13, while its opposite pad enters the common tinned +5 V rail"
+    },
+    {
+      "refdes": "R88",
+      "drawing_order": 2,
+      "signal": "D94_A4_D101_Q0_PULLUP",
+      "signal_nodes": [["D94", "14"], ["D101", "7"]],
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "component_signal_px": [1539.0, 1553.0],
+      "component_p5v_px": [1539.0, 1328.0],
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "solder_signal_px": [2140.0, 1323.0],
+      "solder_p5v_px": [2140.0, 1110.0],
+      "observation": "middle factory-drawn and component-photo body; reflected solder trace runs from its signal pad to D94.14, while its opposite pad enters the common tinned +5 V rail"
+    },
+    {
+      "refdes": "R89",
+      "drawing_order": 3,
+      "signal": "D94_D0_BOUNDARY",
+      "signal_nodes": [["D94", "1"]],
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "component_signal_px": [1594.0, 1553.0],
+      "component_p5v_px": [1594.0, 1328.0],
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "solder_signal_px": [2088.0, 1323.0],
+      "solder_p5v_px": [2088.0, 1110.0],
+      "observation": "rightmost body adjacent to D94; reflected solder copper directly joins its signal pad to D94.1, while its opposite pad enters the common tinned +5 V rail; no further D0 branch is promoted"
+    }
   ]
 }

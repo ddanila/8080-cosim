@@ -17,6 +17,10 @@ What the drawing is authoritative for:
 - Factory component placement and refdes positions (D/R/C/VT/VD/E designators,
   DRAM row D84–D91, PROM/logic rows), with note 6 stating positional
   designators follow `ДГШ5.109.009 Э3`.
+- The upper-FDC view identifies the three populated vertical pull-ups immediately
+  left of D94 as R87/R88/R89. Registered component and reflected solder views
+  map them respectively to D94.13/D104.7, D94.14/D101.7, and D94.1; their
+  opposite pads enter the common +5 V rail.
 - Edge-connector and cable positions `X1`–`X9`, `S1`, and the off-board cable
   assemblies (X8 lead 300 mm, X9 ribbon 400 mm, poz. 151 shielded cable).
 - Per-component mounting details («Установка VT1/VT2/Z1/C73/C98,C100»).
