@@ -9,9 +9,21 @@ OUT="${OUT:-fab/minimal-vga/routing}"
 DSN="$OUT/minimal-vga-rev-a-noplanes.dsn"
 SES="$OUT/minimal-vga-rev-a-noplanes.ses"
 DRC_JSON="$OUT/minimal-vga-rev-a-routed-drc.json"
+# Java 25 runtime. Probe order: repo-local jre, then the Gradle-provisioned
+# Temurin 25 in the home folder -- Linux layout (bin/java) and macOS bundle
+# layout (jdk-*/Contents/Home/bin/java) both supported. Override with JAVA_BIN.
 DEFAULT_JAVA_BIN=".tools/jre25/bin/java"
-if [ ! -x "$DEFAULT_JAVA_BIN" ] && [ -x "$HOME/.gradle/jdks/eclipse_adoptium-25-amd64-linux.2/bin/java" ]; then
-  DEFAULT_JAVA_BIN="$HOME/.gradle/jdks/eclipse_adoptium-25-amd64-linux.2/bin/java"
+if [ ! -x "$DEFAULT_JAVA_BIN" ]; then
+  for cand in \
+    "$HOME"/.gradle/jdks/eclipse_adoptium-25-*/bin/java \
+    "$HOME"/.gradle/jdks/eclipse_adoptium-25-*/jdk-25*/Contents/Home/bin/java \
+    "$HOME"/.jdks/*25*/bin/java \
+    "$HOME"/.jdks/*25*/Contents/Home/bin/java; do
+    if [ -x "$cand" ]; then
+      DEFAULT_JAVA_BIN="$cand"
+      break
+    fi
+  done
 fi
 JAVA_BIN="${JAVA_BIN:-$DEFAULT_JAVA_BIN}"
 # Prefer the repo submodule fork jar when built (ddanila/freerouting `custom`:
@@ -79,8 +91,13 @@ fi
 if [ ! -f "$FREEROUTING_JAR" ]; then
   echo "FreeRouting jar not found: $FREEROUTING_JAR" >&2
   if [ -d external/freerouting ]; then
-    echo "Build the custom fork jar with:" >&2
-    echo "  cd external/freerouting && JAVA_HOME=\$HOME/.gradle/jdks/eclipse_adoptium-25-amd64-linux.2 ./gradlew --no-daemon executableJar" >&2
+    echo "Build the custom fork jar (needs JDK 25; Gradle auto-provisions one" >&2
+    echo "into ~/.gradle/jdks on first run -- works on Linux and macOS):" >&2
+    echo "  git submodule update --init external/freerouting" >&2
+    echo "  cd external/freerouting && ./gradlew --no-daemon executableJar" >&2
+    echo "If JAVA_HOME must be set explicitly, point it at the provisioned JDK:" >&2
+    echo "  Linux: ~/.gradle/jdks/eclipse_adoptium-25-*/" >&2
+    echo "  macOS: ~/.gradle/jdks/eclipse_adoptium-25-*/jdk-25*/Contents/Home" >&2
   fi
   echo "Download FreeRouting 2.2.4+ or set FREEROUTING_JAR." >&2
   exit 2

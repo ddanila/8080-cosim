@@ -63,6 +63,28 @@ spinoffs/minimal-vga/kicad/export_fab.sh
 Routing changes must be regenerated from the source model and then rechecked;
 do not hand-edit a generated artifact and treat it as source truth.
 
+## Router toolchain (Linux and macOS)
+
+`route_rev_a_pcb.sh` needs the **ddanila/freerouting fork** (branch `custom`,
+vendored as the `external/freerouting` submodule) and **Java 25**. One-time
+setup, identical on both platforms:
+
+```sh
+git submodule update --init external/freerouting
+cd external/freerouting && ./gradlew --no-daemon executableJar
+```
+
+Gradle's toolchain support auto-provisions a Temurin JDK 25 into
+`~/.gradle/jdks/` on the first build (no system Java install needed), and the
+route script probes that home-folder JDK automatically — both the Linux layout
+(`eclipse_adoptium-25-*/bin/java`) and the macOS bundle layout
+(`eclipse_adoptium-25-*/jdk-25*/Contents/Home/bin/java`). Overrides: `JAVA_BIN`
+for the runtime, `FREEROUTING_JAR` for the jar. The stock freerouting jar is a
+fallback only — the default `freerouting-router-v19` algorithm requires the
+fork (PolylineTrace.combine fix, headless settings application, dense-board
+stagnation tuning, headless v1.9 router selection). Verified on macOS arm64:
+Temurin 25.0.3 auto-provisioned, fork jar built and smoke-tested (2026-07-16).
+
 ## Future assembly policy
 
 If the design hold is eventually cleared:

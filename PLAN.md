@@ -493,6 +493,11 @@ and `docs/phase4-bench-bringup.md`. Status as of 2026-07-16:
 - **Phase 4 bench tooling DONE in software:** framebuffer-readback oracle
   (`sim/vjuga_readback_check.sh`, validated vs twin + cosim) and the UNO
   single-step sketch + twin reference trace (`tools/vjuga_single_step/`).
+- **Router toolchain is now cross-platform.** The `external/freerouting` fork
+  submodule + Gradle-provisioned Temurin JDK 25 in `~/.gradle/jdks` build and
+  run on macOS arm64 as well as Linux; `route_rev_a_pcb.sh` probes both home-
+  folder JDK layouts. Setup instructions:
+  `spinoffs/minimal-vga/kicad/fab-notes.md` (Router toolchain section).
 
 **Remaining before the first bare PCB:**
 
