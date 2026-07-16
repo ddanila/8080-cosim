@@ -4617,20 +4617,22 @@
    "ref": "R92",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
+   "value": "1,3к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
-    "pins": "factory drawing identifies the populated upper/right red horizontal resistor below D95; registered component and solder views corroborate its 10.16 mm lead span. Marking, value, and both electrical destinations remain unread"
+    "refdes": "ДГШ5.109.009 СБ plus two registered owner component angles and solder photo",
+    "pins": "factory drawing identifies the populated upper/right red horizontal resistor below D95; alternate-angle target-board photo directly reads 1K3, the July component view corroborates it, and visible copper closes pin1 to D101.4/R99.2 plus pin2 to D95.14"
    }
   },
   {
    "ref": "R99",
    "type": "R_AXIAL",
    "pins": {"1": "P1", "2": "P2"},
+   "value": "4,7к",
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
-    "pins": "factory drawing identifies the populated lower/left red horizontal resistor below-left of D95; registered component and solder views corroborate its 10.16 mm lead span. Marking, value, and both electrical destinations remain unread"
+    "refdes": "ДГШ5.109.009 СБ plus two registered owner component angles and solder photo",
+    "pins": "factory drawing identifies the populated lower/left red horizontal resistor below-left of D95; alternate-angle target-board photo directly reads 4K7, the July component view corroborates it, and visible copper closes pin1 to D101.8/GND plus pin2 to D101.4/R92.1"
    }
   },
   {

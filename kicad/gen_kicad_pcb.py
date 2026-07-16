@@ -198,8 +198,9 @@ PASSIVE_PLACE = {
     # D101/D97/D102 centres: C11/C15 are vertical between their IC pairs.
     'C9':(285.807,33.590,90),'C10':(252.361,73.163,90),'C12':(253.218,33.954,90),'C15':(280.230,110.120,90),
     # Factory affine centres plus registered component/solder views restore the
-    # populated horizontal C16/R92/R99 row. Their values and destinations are
-    # unread, so all six leads remain explicit boundaries.
+    # populated horizontal C16/R92/R99 row. Two component angles read R92=1K3
+    # and R99=4K7; their copper endpoints are closed separately. C16 remains a
+    # value/connectivity boundary.
     'C16':(267.094,101.055,0),'R92':(253.869,101.194,0),'R99':(241.207,103.467,0),
     # The factory drawing identifies C19 immediately right of D99; the owner
     # component and solder views independently prove the populated vertical

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from pathlib import Path
 
@@ -16,6 +17,7 @@ OUTPUT_JSON = ROOT / "docs/fdc-lower-assembly-placement.json"
 OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {"C16", "C19", "R92", "R99", "R100", "R102", "R108", "R86"}
+EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -56,6 +58,13 @@ def project(transform: tuple[float, ...], point: list[float]) -> tuple[float, fl
 document = json.loads(RECORD.read_text(encoding="utf-8"))
 if document.get("schema_version") != 1 or document.get("model") != "affine":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: unsupported registration schema")
+value_evidence = document.get("r92_r99_value_evidence", {})
+if value_evidence.get("values") != EXPECTED_RESISTOR_VALUES:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad R92/R99 value evidence")
+for evidence in value_evidence.get("owner_photos", []):
+    image_path = ROOT / evidence.get("source", "")
+    if not image_path.is_file() or hashlib.sha256(image_path.read_bytes()).hexdigest() != evidence.get("sha256"):
+        raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: value-source hash mismatch for {image_path}")
 for item in document["targets"]:
     for evidence in item.get("owner_evidence", []):
         image_path = ROOT / evidence["image"]
@@ -95,6 +104,9 @@ for item in document["targets"]:
         current = [round(sum(pcbnew.ToMM(point.x) for point in pads) / len(pads), 3),
                    round(sum(pcbnew.ToMM(point.y) for point in pads) / len(pads), 3)]
         delta = [round(x - current[0], 3), round(y - current[1], 3)]
+        expected_value = EXPECTED_RESISTOR_VALUES.get(item["refdes"])
+        if expected_value is not None and footprint.GetValue() != expected_value:
+            raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: {item['refdes']} value {footprint.GetValue()!r} != {expected_value!r}")
     targets.append({"refdes": item["refdes"], "drawing_px": item["drawing_px"],
                     "projected_board_mm": [round(x, 3), round(y, 3)],
                     "current_footprint_mm": current, "projected_delta_mm": delta,
@@ -119,13 +131,15 @@ if restored_errors:
 OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "source": RECORD.relative_to(ROOT).as_posix(),
                                   "transform": [round(value, 12) for value in transform],
+                                  "r92_r99_value_evidence": value_evidence,
                                   "checks": checks, "targets": targets}, indent=2) + "\n")
 lines = ["# FDC lower assembly placement", "",
          "Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**", "",
          "The photographed factory assembly drawing is registered to the five package centres",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
-         "placement only, not component value or connectivity.", "",
+         "placement only, except where the owner-evidence records below explicitly close",
+         "R92/R99 values or visible copper connectivity.", "",
          f"Held-out errors: D99 `{next(x['error_mm'] for x in checks if x['refdes']=='D99'):.3f}` mm; "
          f"D97 `{next(x['error_mm'] for x in checks if x['refdes']=='D97'):.3f}` mm.", "",
          "| Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |", 
@@ -146,8 +160,9 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view",
           "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
-          "backside joints corroborate the factory identities and 12.5/10.16 mm spans. Uninterrupted component copper closes R92.2-D95.14,",
-          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND; R92/R99 values and both C16 destinations remain boundaries.",
+          "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
+          "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
+          "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. Only C16's value and destinations remain boundaries in this row.",
           "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20",
           "pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.",
           "The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.",

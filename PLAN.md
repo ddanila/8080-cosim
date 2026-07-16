@@ -190,7 +190,10 @@ Every ask below is queued with exact deliverables in
    record a deliberate redesign/DNP decision. D93.40 `VDD_12V` is now
    owner-confirmed on the +12 V rail (`docs/d93-pin40-photo-chase.md`).
    D106.7 Q3 -> D93.26 RCLK is photo-closed;
-   the remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
+   the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
+   D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
+   D101.8/GND. Only the surrounding mux select/output paths remain open.
+   The remaining first probes are D106.11-D93.27, D106.14-D93.33 (test for
    hidden layer handoffs; direct same-layer paths are rejected), D106's six
    bounded strap/clock endpoints, and the D95/D101 select pins against
    D93.18/.17 for the period КП12 write-precompensation pattern.

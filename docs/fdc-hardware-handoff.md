@@ -149,8 +149,9 @@ anchor. These are therefore bounded meter probes, not inferred straps.
 ### KP12 passive-network component-copper disposition
 
 The calibrated component tile fixes all four factory-identified R92/R99
-landings. These visible links are modeled; resistor values and the mux
-select/output paths remain open.
+landings. A second target-board angle directly reads R92=`1К3` and
+R99=`4К7`, corroborated by the registered July view. These values and
+visible links are modeled; the mux select/output paths remain open.
 
 | Endpoint | Component coordinate | Modeled net | Disposition |
 | --- | --- | --- | --- |

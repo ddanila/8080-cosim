@@ -134,6 +134,7 @@ jobs:
           python3 -m py_compile \
             kicad/apply_d105_h_closure.py \
             kicad/apply_d94_pullup_footprints.py \
+            kicad/apply_kp12_resistor_values.py \
             kicad/apply_kp12_resistor_links.py \
             kicad/check_d94_pullups.py \
             kicad/check_kp12_resistor_links.py \

@@ -5,7 +5,8 @@ Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**
 The photographed factory assembly drawing is registered to the five package centres
 already fitted in the owner board photograph. D95, D101, and D102 define the affine
 fit; D99 and D97 are independent checks. This establishes reference identity and
-placement only, not component value or connectivity.
+placement only, except where the owner-evidence records below explicitly close
+R92/R99 values or visible copper connectivity.
 
 Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 
@@ -36,8 +37,9 @@ Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's gre
 that corroborates population and orientation, while values and lead destinations remain continuity tasks. The registered solder view
 `PXL_20260710_200522685.jpg` exposes C19's two distinct joints. Its value and both remote destinations remain boundaries. The same owner views
 also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and
-backside joints corroborate the factory identities and 12.5/10.16 mm spans. Uninterrupted component copper closes R92.2-D95.14,
-R92.1-R99.2-D101.4, and R99.1-D101.8/GND; R92/R99 values and both C16 destinations remain boundaries.
+backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;
+the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,
+R92.1-R99.2-D101.4, and R99.1-D101.8/GND. Only C16's value and destinations remain boundaries in this row.
 Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing; enhanced C20
 pixels read `1Н5` verbatim, while its unit interpretation and C22's marking remain deliberately unpromoted.
 The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.

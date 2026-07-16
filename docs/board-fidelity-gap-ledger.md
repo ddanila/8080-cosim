@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `313`
 - Nets modeled: `575`
-- Chip-level fidelity gaps: `78`
+- Chip-level fidelity gaps: `76`
 - Net-level source-risk gaps: `210`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `60`
@@ -65,7 +65,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 7 |
 | analog/source | 1 | 0 |
 | connector boundary | 1 | 0 |
-| logic/source | 18 | 65 |
+| logic/source | 16 | 65 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -125,8 +125,6 @@ parts placement and Tier-3 reproduction.
 | `R102` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg second resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
 | `R108` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg third resistor in the populated four-part vertical column at the right edge beside C19; value and both electr... |
 | `R86` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus PXL_20260710_200418174.jpg lowest resistor in the populated four-part vertical column at the right edge beside C19; value and both elect... |
-| `R92` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated upper/right red horizontal resistor below D95; reg... |
-| `R99` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated lower/left red horizontal resistor below-left of D... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
 | `W14` | `WIRE_LINK` | factory wire table + registered owner backside photo | ДГШ5.109.009 СБ conductor position 10 / board point А:14 registered plated through-joints beside the printed 14 marks at (10.449,179.305) and (224.478,193.14... |

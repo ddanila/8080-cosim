@@ -11,6 +11,26 @@
     {"refdes": "D99", "drawing_px": [2218.0, 2244.5], "board_mm": [279.895, 93.446], "use": "check"},
     {"refdes": "D97", "drawing_px": [2060.5, 2539.5], "board_mm": [268.604, 110.268], "use": "check"}
   ],
+  "r92_r99_value_evidence": {
+    "values": {"R92": "1,3к", "R99": "4,7к"},
+    "owner_photos": [
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+        "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+        "dimensions_px": [4080, 3072],
+        "body_bbox_px": {"R92": [2315, 1255, 2590, 1375], "R99": [2035, 1310, 2315, 1430]},
+        "observation": "registered target-board component view shows the same 1K3 and 4K7 markings beneath stronger glare"
+      },
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+        "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+        "dimensions_px": [4080, 3072],
+        "body_bbox_px": {"R92": [2010, 2570, 2225, 2685], "R99": [1815, 2670, 2025, 2785]},
+        "observation": "alternate-angle target-board view directly resolves R92 as 1K3 and R99 as 4K7"
+      }
+    ],
+    "promotion_basis": "two target-board component photographs with different angles show matching printed values"
+  },
   "targets": [
     {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},
     {"refdes": "C10", "drawing_px": [1616.0, 1906.0], "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"},

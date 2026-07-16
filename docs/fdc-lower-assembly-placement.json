@@ -9,6 +9,61 @@
     0.058715418525,
     -37.865296884363
   ],
+  "r92_r99_value_evidence": {
+    "values": {
+      "R92": "1,3\u043a",
+      "R99": "4,7\u043a"
+    },
+    "owner_photos": [
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+        "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "body_bbox_px": {
+          "R92": [
+            2315,
+            1255,
+            2590,
+            1375
+          ],
+          "R99": [
+            2035,
+            1310,
+            2315,
+            1430
+          ]
+        },
+        "observation": "registered target-board component view shows the same 1K3 and 4K7 markings beneath stronger glare"
+      },
+      {
+        "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+        "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "body_bbox_px": {
+          "R92": [
+            2010,
+            2570,
+            2225,
+            2685
+          ],
+          "R99": [
+            1815,
+            2670,
+            2025,
+            2785
+          ]
+        },
+        "observation": "alternate-angle target-board view directly resolves R92 as 1K3 and R99 as 4K7"
+      }
+    ],
+    "promotion_basis": "two target-board component photographs with different angles show matching printed values"
+  },
   "checks": [
     {
       "refdes": "D95",

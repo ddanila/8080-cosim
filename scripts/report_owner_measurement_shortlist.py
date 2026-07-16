@@ -268,10 +268,10 @@ def main() -> int:
         ),
         (
             "P1",
-            "lower-FDC C16/R92/R99 continuity",
-            "read C16, R92, and R99 values and identify both C16 lead destinations; calibrated component copper already closes every R92/R99 endpoint to D95.14, D101.4, or D101.8/GND",
-            "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C16/R92/R99 boundary nets",
-            "turns three restored target-board passives into functional FDC-area circuitry without guessing from unread body markings or nearby solder rails",
+            "lower-FDC C16 continuity",
+            "read C16's value and identify both lead destinations; R92=1.3 kΩ and R99=4.7 kΩ are photo-closed and calibrated component copper already closes every resistor endpoint to D95.14, D101.4, or D101.8/GND",
+            "`docs/fdc-lower-assembly-placement.md`; `docs/analog-cluster-photo-placement.md`; `kicad/juku.board.json` C16 boundary nets",
+            "turns the remaining restored lower-FDC passive boundary into functional circuitry without guessing from nearby solder rails",
         ),
         (
             "P1",
