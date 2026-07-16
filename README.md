@@ -26,7 +26,7 @@ with the machine-readable board model.
   A 296-footprint replacement routing checkpoint is preserved separately with
   all 2,383 pad identities, zero internal unconnected items, and zero electrical
   DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 47 pad-net mismatches and 138 moved
+  Later source corrections leave it with 48 pad-net mismatches and 138 moved
   pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14; it also lacks the twelve
   A:7/A:8/A:10/A:11/A:19/A:20 assembly-wire pads. It is therefore convergence evidence rather than
   current-source copper. Its zero-open state also copper-substitutes ten

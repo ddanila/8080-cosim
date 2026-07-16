@@ -33,7 +33,7 @@
     {
       "point": 7,
       "status": "board-fitted",
-      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14; both printed backside 7 joints are fitted and their 247.588 mm chord exceeds the approximate 24 cm table entry, so endpoint geometry is adopted while fabrication cut length remains held for direct measurement",
+      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14; both printed backside 7 joints are fitted and their corrected 226.473 mm chord fits within the approximate 24 cm table entry, while exact fabrication cut length remains held for direct measurement",
       "endpoints": [
         {
           "terminal": "A7A",
@@ -55,14 +55,14 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1761, 4062],
           "uncertainty_px": 6,
-        "board_mm": [245.083, 133.927],
+        "board_mm": [227.668, 194.422],
         "island_assignment": "D35.10-side PHI1 island; backside through joint printed 7",
         "board_fit_evidence": {
-          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
-          "joint_px": [1774, 552],
-          "local_fit": "D40/solder-alt",
-          "uncertainty_mm": 0.6,
-          "proof": "the assembly drawing terminates A:7 at the right-hand 7 mark, and the owner backside has one distinct through joint immediately beside the printed 7; the adjacent marked КР531ИЕ17 is independently registered as D40 on both faces, withdrawing the former D35 package misidentification while preserving this remote-point geometry"
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "joint_px": [1757, 2854],
+          "local_fit": "D41.1-rebased solder-grid common image",
+          "uncertainty_mm": 1.5,
+          "proof": "the assembly drawing terminates A:7 at the right-hand 7 mark; one raw solder image directly resolves the black through joint below the printed 7 beside the silver A14B joint and the independently fitted D41.1 pad, removing the displaced D40-local board projection"
         }
       }
       ]
@@ -299,8 +299,8 @@
     {
       "point": 14,
       "status": "board-fitted",
-      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; both printed backside 14 joints are locally fitted and their 236.690 mm chord exceeds the approximate 23 cm table entry, so fabrication cut length remains held; the A14B projection is only 0.784 mm from independently placed D41.1 and cannot define a distinct fabrication landing until those local frames are cross-registered or directly measured",
-      "fabrication_hold": "A14B/D41.1 projected centre separation 0.784 mm; a distinct W14 pad would overlap D41.1 P5V copper and drill geometry",
+      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; a single raw solder image directly resolves A14B, A7B, and fitted D41.1, correcting the A14 chord to 214.476 mm within the approximate 23 cm table entry and proving A14B is 58.911 mm from D41.1; exact fabrication cut length remains held for direct measurement",
+      "fabrication_resolution": "A14B and D41.1 are directly cross-registered in PXL_20260710_200522685.jpg at 1263.6 px / 58.911 mm centre separation; the former 0.784 mm collision was a displaced D40-local projection",
       "endpoints": [
         {
           "terminal": "A14A",
@@ -322,14 +322,14 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1700, 4044],
           "uncertainty_px": 6,
-        "board_mm": [243.264, 136.648],
+        "board_mm": [224.478, 193.144],
         "island_assignment": "D35.12-side PHI2 island; backside through joint printed 14",
         "board_fit_evidence": {
-          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
-          "joint_px": [1837, 510],
-          "local_fit": "D40/solder-alt",
-          "uncertainty_mm": 0.6,
-          "proof": "the assembly drawing terminates A:14 at the right-hand 14 mark, and the owner backside has one distinct through joint immediately beside the printed 14; the adjacent marked КР531ИЕ17 is independently registered as D40 on both faces, withdrawing the former D35 package misidentification while preserving this remote-point geometry"
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "joint_px": [1825, 2827],
+          "local_fit": "D41.1-rebased solder-grid common image",
+          "uncertainty_mm": 1.5,
+          "proof": "the assembly drawing terminates A:14 at the right-hand 14 mark; one raw solder image directly resolves the silver through joint below the printed 14, the adjacent black A7B joint, and independently fitted D41.1, proving the former collision was a frame error"
         }
       }
       ]

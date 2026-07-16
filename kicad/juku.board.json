@@ -5172,7 +5172,7 @@
    "prov": {
     "type": "factory wire table + registered owner backside photos",
     "refdes": "ДГШ5.109.009 СБ conductor position 3 / board point А:7",
-    "pins": "registered plated through-joints beside the printed 7 marks at (1.697,179.350) and (245.083,133.927) mm; fitted insulated wire joins the D1.22-side PHI1 consumer island to the D35.10 clock-source island; 247.588 mm chord exceeds the approximate table length, so cut length remains held"
+    "pins": "registered plated through-joints beside the printed 7 marks at (1.697,179.350) and (227.668,194.422) mm; fitted insulated wire joins the D1.22-side PHI1 consumer island to the D35.10 clock-source island; corrected 226.473 mm chord fits within the approximate table length, while exact cut length remains held"
    }
   },
   {
@@ -7611,7 +7611,7 @@
      "3"
     ]
    ],
-   "note": "WIRE 14 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch; explicit landing promotion is held because the current A14B local projection collides with independently placed D41.1",
+   "note": "WIRE 14 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch; common-image registration places A14B 58.911 mm from D41.1 and clears the former collision, so the explicit landing split is pending implementation",
    "wire_link": true
   },
   "PHI2TTL": {

@@ -73,7 +73,7 @@ PASSIVE_FP_REF = {
 }
 FACTORY_WIRE_PLACE = {
     'W7': {
-        'pads': {'1': (1.697, 179.350), '2': (245.083, 133.927)},
+        'pads': {'1': (1.697, 179.350), '2': (227.668, 194.422)},
         'value': 'A:7 ~24cm insulated wire (cut length held)',
         # Both ends are photographed backside through-joints beside the
         # printed 7 marks, so preserve drilled rather than surface landings.

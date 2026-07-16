@@ -233,13 +233,6 @@ def main() -> int:
         ),
         (
             "P0",
-            "A:14/D41 landing cross-registration",
-            "cross-register the printed A14B solder joint and D41.1 in one calibrated board frame, or directly measure both centre coordinates and the A14B pad/drill diameter; the current D40-local A14B projection is only 0.784 mm from independently placed D41.1 and cannot be fabricated as a distinct pad",
-            "`docs/factory-wire-route-fidelity.md`; `ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json`; solder image `PXL_20260710_200530933.MP.jpg`",
-            "resolves a hard copper/drill collision before W14 is promoted instead of hiding it with undersized or shifted geometry",
-        ),
-        (
-            "P0",
             "factory Вид В pad mapping",
             "at D56 the three physical callout locations are fixed as the separate left annulus plus D56.5/D56.12 and bare-board gaps to the adjacent rail are visible; continuity-map the installed item-159 conductor/material among those three locations and the rail. Note 11 proves position 150 is tubing, not a cut, and position 159 remains an unexpanded solder-location callout. D15 is photo-closed as the cut A2/A1 bridge and needs no continuity probe; D14 row numbering, the local D32.4/GND-to-D14.1 link, and fifth-landing geometry are photo-registered, so continuity-test the fifth landing's conductor, three long drawn traces, and right-row dogleg/D14.7—both component and solder faces are photo-exhausted there, and position 159 does not prove replacements; at D11 the L trace and four solder locations are registered in two component views, the older pins-4-6 solder scar is excluded, and validated two-sided package fits exhaust four solder views without a unique through-hole match—continuity-test the bridge, D11 pin/net, and upper/lower remote endpoints; the acquired sheets 2-5 wire table covers wires/cables only, so use registered solder-side imagery plus continuity",
             "`docs/factory-modification-disposition.md`; `ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg`",

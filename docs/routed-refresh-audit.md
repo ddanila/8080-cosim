@@ -30,16 +30,16 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source footprints | 296 |
+| Source footprints | 302 |
 | Routed-snapshot footprints | 240 |
-| Source-only footprints | 76 |
+| Source-only footprints | 82 |
 | Routed-only footprints | 20 |
 | Routed copper nets classified by the refresh | 325 |
 | Nets with currently reusable routed copper | 115 |
 | Routed nets currently quarantined | 210 |
 | Reusable non-duplicate track/via items | 1,870 |
 | Quarantined/duplicate track/via items | 6,795 |
-| Common-pad net mismatches requiring reroute | 346 |
+| Common-pad net mismatches requiring reroute | 353 |
 <!-- routed-refresh-current:end -->
 
 The source-only set includes `A17`, `A21-A32`, `AX401-AX423`, `A45-A62`, newly
@@ -340,7 +340,7 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 The zero-open artifact remains an internally clean routing checkpoint, not a
 claim of parity with every later source edit. The candidate preserves all
 2,383 of its pad identities, but current source has 2,395 pads after adding
-W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 47 changed pad-net assignments and 138 pads
+W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 48 changed pad-net assignments and 138 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
 D5, D7, D8, D9, D37, D38, D50, D51, R13, and R14. `check_routed_candidate.py`
 therefore correctly rejects the checkpoint against current source instead of
