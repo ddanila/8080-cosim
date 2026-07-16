@@ -8,6 +8,12 @@ trap 'rm -rf "$TMP"' EXIT
 echo "== C disk/FDC and complete ekta37 RWFLOPPY deblocking/write check =="
 sync/juk_disk_check.sh
 
+echo "== HDL КР580ВА87 bidirectional inversion check =="
+iverilog -g2012 -o "$TMP/buf_8287_tb" hdl/vendor/vm80a.v hdl/devices.v hdl/sim/buf_8287_tb.v
+buf_out=$(vvp "$TMP/buf_8287_tb")
+echo "$buf_out"
+grep -q "BUF-8287: PASS" <<<"$buf_out" || { echo "FDC-CHECK: FAIL"; exit 1; }
+
 echo "== HDL WD1793 synthetic-sector check =="
 iverilog -g2012 -o "$TMP/fdc_1793_tb" hdl/vendor/vm80a.v hdl/devices.v hdl/sim/fdc_1793_tb.v
 out=$(vvp "$TMP/fdc_1793_tb")
@@ -47,6 +53,12 @@ physical D93/D94 wiring.
   motor-not-ready behavior.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
+- The physical КР580ВА87/8287 device model complements all 256 byte values in
+  both directions and releases both buses while disabled. The test uses the
+  minimal functionally sufficient candidate `/OE=FDC_CS_N`, `T=IORD`: selected
+  writes drive CPU `DB` to inverted `DAL`, selected reads drive `DAL` to
+  inverted `DB`, and deselection is high impedance. This constrains behavior;
+  it does not promote either still-unmeasured target-board conductor.
 - The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
@@ -148,7 +160,7 @@ physical D93/D94 wiring.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
 - The behavioral controller intentionally consumes logical system `DB` rather
-  than the non-driving physical D100/DAL path. `docs/fdc-bus-polarity.md`
+  than the control-disconnected physical D100/DAL path. `docs/fdc-bus-polarity.md`
   proves the two firmware/hardware profiles: EktaSoft 2.4 and Monitor 3.3 wrap
   every VG93 transfer in `CMA` for the populated inverting КР580ВА87, while
   EktaSoft 3.1/3.5/3.7 use NOPs for a non-inverting path. `cosim/trace` models
@@ -255,7 +267,9 @@ evidence exists.
 
 - The model is a Juku boot/media shim, not a general WD1793 conformance model.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
-  continuity checks in `docs/fdc-hardware-handoff.md`.
+  continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
+  and required cycle truth table are now guarded; only its board control sources
+  remain open.
 - D94 `.092` uses the validated physical table; direct continuity closes its
   enable to D93.CS, D1 to ground, D2 to D93.RE, D3 to D93.WE, and D4 to the
   D93 back-bias/NC socket contact. The runnable model consumes the physical

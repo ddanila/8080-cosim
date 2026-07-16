@@ -667,10 +667,11 @@ module juku_top (
     wire fdc_model_re_n = fdc_prom_re_n;
     wire fdc_model_we_n = fdc_prom_we_n;
 `endif
-    // Functional core remains on logical DB, bypassing the non-driving physical
-    // D100/DAL path. Exact ROM bytes require a logically non-inverting command
-    // path although populated D100 is an inverting КР580ВА87; keep that physical
-    // contradiction measurement-gated (docs/fdc-bus-polarity.md).
+    // Functional core remains on logical DB, bypassing the control-disconnected
+    // physical D100/DAL path. The exact D100 model is now bidirectional/inverting;
+    // the fitted ROM selects whether firmware supplies CMA around each transfer.
+    // Keep its still-unmeasured /OE and T copper sources measurement-gated
+    // (docs/fdc-bus-polarity.md).
     fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(fdc_model_cs_n),  .rd_n(fdc_model_re_n), .wr_n(fdc_model_we_n),
                       .nc_back_bias(1'bz), .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                       .mr_n(1'b1), .clk(sclk_i), .dden(ppi0_pc[4]), .motor_on(ppi0_pc[2]), .side(ppi0_pc[6]),

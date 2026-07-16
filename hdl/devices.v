@@ -1126,10 +1126,13 @@ module vg93_fdc (input wire nc_back_bias, cs_n, re_n, we_n, a0, a1, mr_n, clk, d
     assign dal = 8'hzz; assign drq = 1'bz; assign intrq = 1'bz;
 endmodule
 
-// КР580ВА87 (8287, inverting 8286) D100: FDC bus buffer. Non-driving stub (see vg93_fdc).
-module buf_8287 (input wire [7:0] a, inout wire [7:0] b, input wire oe_n, t,
+// КР580ВА87 (8287, inverting 8286) D100: FDC bus buffer. The physical control
+// nets remain boundaries in juku_top; this device model preserves the actual
+// bidirectional truth table independently of those still-unproved sources.
+module buf_8287 (inout wire [7:0] a, b, input wire oe_n, t,
                  input wire vss_gnd, vcc_5v);
-    assign b = 8'hzz;
+    assign b = (!oe_n &&  t) ? ~a : 8'hzz;
+    assign a = (!oe_n && !t) ? ~b : 8'hzz;
 endmodule
 
 // D94 К155РЕ3 #2, programmed part ДГШ5.106.092. The exact physical table is

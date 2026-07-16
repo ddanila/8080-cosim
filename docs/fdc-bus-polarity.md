@@ -97,7 +97,9 @@ straight board topology, and every direct system-bus ROM/peripheral path.
   the bidirectional DB0..DB7 bus, `/W` as loading that bus into the selected
   register, and Table 3 as the command-register bit codes.
 - D100 `/OE` pin 9 and direction `T` pin 11 remain physical singleton
-  boundaries. Their control sources have not been measured.
+  boundaries. Their control sources have not been measured. The component
+  model itself is no longer a stub: an exhaustive 256-byte HDL guard proves
+  both inverting directions and the disabled high-impedance state.
 
 Primary references: Intel M8286/M8287 data sheet
 (<https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf>);
@@ -112,7 +114,21 @@ vol. 1 (1988), sections 3.12 and 3.14
 ## Runnable-model boundary
 
 `juku_top` still instantiates physical D100 and separate DAL nets for LVS,
-but keeps that package non-driving while `/OE` and `T` sources are unknown.
+but keeps it disabled while `/OE` and `T` sources are unknown. The exact
+device truth table admits this minimal functionally sufficient candidate:
+
+| Cycle | `FDC_CS_N` -> `/OE` | `IORD` -> `T` | ВА87 action |
+| --- | ---: | ---: | --- |
+| Unselected | `1` | don't care | both buses released |
+| FDC write | `0` | `1` | CPU A/DB -> complemented B/DAL |
+| FDC read | `0` | `0` | B/DAL -> complemented A/DB |
+
+This table is a functional constraint, not a copper promotion. Pin 9's
+visible trace ends at an isolated component-side circular landing whose
+backside projection is bare substrate; pin 11 disappears beneath the
+factory wire/tape bundle. Direct continuity must decide whether the board
+uses these obvious source rails or equivalent decoded controls.
+
 Its behavioral `fdc_1793` consumes logical DB, matching the default ekta37
 regression profile. The C trace now exposes `JUKU_FDC_BUS_INVERT=1`; the
 guarded Monitor 3.3 run uses it to model the populated `.009` ВА87 path
