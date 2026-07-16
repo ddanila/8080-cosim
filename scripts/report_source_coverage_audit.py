@@ -17,6 +17,7 @@ REQUIRED = [
     "ref/photos/dgsh5-109-009-sb/README.md",
     "ref/photos/dgsh5-109-009-sb/rf-option-disposition.json",
     "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json",
+    "ref/photos/dgsh5-109-009-sb/dram-decap-placement-registration.json",
     "docs/assembly-drawing-extraction.md",
     "docs/factory-modification-disposition.md",
     "docs/factory-wire-route-fidelity.md",
@@ -57,7 +58,7 @@ def main() -> int:
     lines = [
         "# Source coverage audit",
         "",
-        "Status date: **2026-07-14**.",
+        "Status date: **2026-07-16**.",
         "",
         f"Status: **{status}**",
         "",
@@ -112,8 +113,8 @@ def main() -> int:
         ]),
         row([
             "Owner photographs of `ДГШ5.109.009 СБ`",
-            "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and local D56/D15/D14/D11 assembly work; note 11 proves position 150 is tubing rather than a cut, owner-board registration closes D15 as an A2/A1 bridge cut and the D14 local D32.4/GND-to-D14.1 link, and the D56 callout row is fixed at D56.12/D56.5",
-            "D56's three physical callout locations are fixed as the separate left annulus plus D56.5/D56.12, but the installed item-159 conductor/material still requires continuity or its missing specification row; D14's registered fifth-landing conductor/remaining drawn traces still require exact mapping; position 159 marks solder locations and does not prove replacement conductors; D11's four solder locations are component-photo registered and two-sided package-local projection exhausts four solder views without a unique through-hole match, so their electrical endpoints require direct continuity; assembly detail does not prove every copper endpoint or programmable-part truth",
+            "26 checksum/LFS-guarded views under `ref/photos/dgsh5-109-009-sb/` establish factory placement, mounting details, and local D56/D15/D14/D11 assembly work; note 11 proves position 150 is tubing rather than a cut, owner-board registration closes D15 as an A2/A1 bridge cut and the D14 local D32.4/GND-to-D14.1 link, the D56 callout row is fixed at D56.12/D56.5, and registered C38/C42/C46/C50 drawing/owner sites close the populated DRAM-bank decap placements despite later body removal",
+            "33 C35-C72 placements and every exact factory capacitance remain unresolved; D56's three physical callout locations are fixed as the separate left annulus plus D56.5/D56.12, but the installed item-159 conductor/material still requires continuity or its missing specification row; D14's registered fifth-landing conductor/remaining drawn traces still require exact mapping; position 159 marks solder locations and does not prove replacement conductors; D11's four solder locations are component-photo registered and two-sided package-local projection exhausts four solder views without a unique through-hole match, so their electrical endpoints require direct continuity; assembly detail does not prove every copper endpoint or programmable-part truth",
         ]),
         "",
         "## Current source requests",

@@ -1,14 +1,15 @@
 # Decoupling capacitor value fidelity
 
-Status date: 2026-07-10.
+Status date: 2026-07-16.
 
-Status: **DECAP CONNECTIVITY GUARDED / C63 TARGET DNP CLOSED / PER-POSITION VALUE PENDING**
+Status: **FOUR TARGET DRAM PLACEMENTS CLOSED / C63 TARGET DNP CLOSED / VALUES AND 33 PLACEMENTS PENDING**
 
 This generated report isolates the C35-C72 decoupling-capacitor
 authenticity issue. The board model and routed PCB preserve the two
-array-power bypass rail groups as schematic intent. The target PCB has
-37 populated positions plus the photo-proven bare C63 DNP site, but the exact factory per-position
-capacitance values are not proven by current automatic evidence.
+array-power bypass rail groups as schematic intent. The `.009` factory
+drawing and owner-board remnants now close placement and original population
+intent for C38/C42/C46/C50; C63 is a target DNP. The other 33 placements
+and all exact factory per-position capacitance values remain unproven.
 
 ## Checks
 
@@ -17,6 +18,7 @@ capacitance values are not proven by current automatic evidence.
 | All C35-C72 refs exist in board JSON | PASS | 38/38 rows |
 | Rail-group connectivity matches model expectation | PASS | GND<->RAIL_H: 19, RAIL_G<->GND: 19 |
 | Current model value is uniform 0,047 | PASS | 0,047: 38 |
+| Target DRAM-bank C38/C42/C46/C50 placements are registered | PASS | factory drawing + owner landing/remnant sites + generator/source PCB |
 | C63 target-board population is DNP | PASS | registered bare site between D41/D40; no source-PCB footprint |
 | Historical value census is reconciled per position | FAIL | raw notes report mixed values but no per-position mapping |
 
@@ -27,19 +29,19 @@ capacitance values are not proven by current automatic evidence.
 | C35 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D60 remains assumed |
 | C36 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D61 remains assumed |
 | C37 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D62 remains assumed |
-| C38 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D63 remains assumed |
+| C38 | 0,047 | RAIL_G | GND | .009 factory drawing directly places C38 above D91 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
 | C39 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D64 remains assumed |
 | C40 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D65 remains assumed |
 | C41 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D66 remains assumed |
-| C42 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D67 remains assumed |
+| C42 | 0,047 | RAIL_G | GND | .009 factory drawing directly places C42 above D89 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
 | C43 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D15 remains assumed |
 | C44 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D17 remains assumed |
 | C45 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D19 remains assumed |
-| C46 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D21 remains assumed |
+| C46 | 0,047 | RAIL_G | GND | .009 factory drawing directly places C46 above D87 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
 | C47 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D5 remains assumed |
 | C48 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D1 remains assumed |
 | C49 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D10 remains assumed |
-| C50 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D11 remains assumed |
+| C50 | 0,047 | RAIL_G | GND | .009 factory drawing directly places C50 above D85 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
 | C51 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D26 remains assumed |
 | C52 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D27 remains assumed |
 | C53 | 0,047 | RAIL_G | GND | BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D54 remains assumed |
@@ -74,11 +76,17 @@ capacitance values are not proven by current automatic evidence.
   `0,047`, which is suitable for the functional replica's modeled
   bypass role. C63 remains one of those intended schematic positions
   but is not populated or fabricated on the exact target board.
+- The `.009` drawing directly labels C38, C42, C46, and C50 above
+  D91, D89, D87, and D85 respectively. The owner component photo
+  shows a matching landing pair with solder and clipped lead remnants
+  at each site but no body. Those four parts are therefore populated
+  in the factory replica; the photographed board records later removal.
 - The retained factory and owner-photo evidence includes aggregate
   mixed-value capacitor counts, but no defensible mapping from those
   counts to individual C35-C72 positions.
-- DSN/PCB placement preserves the two physical rows, but the available
-  photographs do not expose readable markings for every position.
+- The remaining 33 C35-C72 placement/population associations still
+  require target-revision drawing registration. The older `.006`
+  zigzag is not sufficient proof for the `.009` target revision.
 
 ## Boundary
 

@@ -3225,7 +3225,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D63 remains assumed"
+    "pins": ".009 factory drawing directly places C38 above D91 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending"
    },
    "value": "0,047"
   },
@@ -3281,7 +3281,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D67 remains assumed"
+    "pins": ".009 factory drawing directly places C42 above D89 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending"
    },
    "value": "0,047"
   },
@@ -3337,7 +3337,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D21 remains assumed"
+    "pins": ".009 factory drawing directly places C46 above D87 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending"
    },
    "value": "0,047"
   },
@@ -3393,7 +3393,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "BOM/DSN value 0,047; traced array-power bypass group RAIL_G<->GND; per-position/refdes association near D11 remains assumed"
+    "pins": ".009 factory drawing directly places C50 above D85 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and clipped lead remnants after body removal. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending"
    },
    "value": "0,047"
   },

@@ -64,9 +64,9 @@ Photo index (`PXL_20260711_*`):
 | `114556899` | Top-centre placement: `X2`, `X3`, `D27`, `D11`, `D94`, `D10`, 310 mm reference dimension |
 | `114600417` | Top-right placement: `X4`, `X6`, `S1`, `D93`–`D102` region, `C17`/`C18`, `VT2`, `VD3` |
 | `114604420` | Left placement: `D1`, `D4`, `D107`, `D30`, `D13`, `D105`, `C31`–`C33`, power terminal block |
-| `114607591` | Centre placement: `D33`–`D57` region, `C100`, `D26`/`D54`, `X9` exit |
-| `114611058` | Lower-left: `C31`–`C33`/`C93`, `X8` cable exit (300 mm), «Установка VT1», «Установка Z1» |
-| `114615300` | Centre: `7.102.158` outline marking, DRAM row `D84`–`D91`, `D50`/`D51`, `C38`–`C50` row |
+| `114607591` | Centre/lower placement: DRAM row `D84`–`D91`, the `C38`/`C42`/`C46`/`C50` row, and right-edge resistors |
+| `114611058` | Top-right/FDC and centre-right logic placement, with the `D84`–`D86`/`C50` overlap at lower left |
+| `114615300` | Lower-left power/analog placement: `C31`–`C33`/`C93`, `X8` cable exit, «Установка VT1», and «Установка Z1» |
 | `114617677` | Lower-centre: `Z1`, `D59`, `D42`/`D43`/`D58`, `C98`, «Установка VT2» |
 | `114620466` | Lower-right: `D26`/`D54`/`D55`, `E8` wire fan, `X9` ribbon detail, «Установка C73/C98,C100» |
 | `114626340` | «Вид В» solder-side detail: trace cuts at `D56`, patches at `D15`/`D14`/`D11` |
@@ -100,3 +100,9 @@ an explicit hold, not permission to infer geometry from the folded sheet.
 with two independent component photographs and one reflected solder view. It
 closes the A2/A1 net partition while explicitly withholding the auxiliary-hole
 centres from fabrication use.
+
+`dram-decap-placement-registration.json` registers the four target-revision
+DRAM-bank decouplers C38/C42/C46/C50. The drawing fixes their intended factory
+placement; the owner-board photograph shows matching landing pairs and clipped
+lead remnants after the capacitor bodies were removed. This evidence closes
+placement and population intent, but deliberately does not promote a value.
