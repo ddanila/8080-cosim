@@ -6,7 +6,7 @@ The photographed factory assembly drawing is registered to the five package cent
 already fitted in the owner board photograph. D95, D101, and D102 define the affine
 fit; D99 and D97 are independent checks. This establishes reference identity and
 placement only, except where the owner-evidence records below explicitly close
-R92/R99/R100/R102/C20 values or visible copper connectivity.
+R92/R99/R100/R102/C20/C22 values or visible copper connectivity.
 
 Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 
@@ -40,8 +40,8 @@ also show populated grey horizontal C16 between the IC rows and the red horizont
 backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;
 the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,
 R92.1-R99.2-D101.4, and R99.1-D101.8/GND. Only C16's value and destinations remain boundaries in this row.
-Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced C20
-pixels read `1Н5` verbatim; GOST 11076-69 Table 1 maps that code exactly to 1500 pF / 1.5 nF, now adopted as C20's value. C20's tolerance, voltage, and endpoints plus C22's marking/value/endpoints remain unpromoted.
+Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels
+read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Their tolerances, voltages, and endpoints remain unpromoted.
 The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.
 The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.
 That makes DNP/removal the leading `.009` owner-board disposition, but the old generic array placement is not silently moved or deleted until factory-population intent is reconciled. The unrelated `.006` RF-option C13 is now correctly DNP on the `.009` target and must not be conflated with this C63 site.

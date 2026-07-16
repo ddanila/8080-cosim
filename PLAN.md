@@ -193,9 +193,9 @@ Every ask below is queued with exact deliverables in
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
    D101.8/GND. Only the surrounding mux select/output paths remain open.
-   The adjacent C20 body marking `1Н5` is now photo-read and source-closed by
-   GOST 11076-69 Table 1 as 1.5 nF; its tolerance, voltage, and endpoints plus
-   C22's value/endpoints remain explicit boundaries. In the adjacent right-edge
+   The adjacent C20 and outer C22 body markings are now independently photo-read
+   as `1Н5` and source-closed by GOST 11076-69 Table 1 as 1.5 nF; their
+   tolerances, voltages, and endpoints remain explicit boundaries. In the adjacent right-edge
    passive column, two independent target-board
    angles close R100 and R102 as `12К`; R108/R86 values and all four remote
    endpoint pairs remain explicit measurement boundaries.

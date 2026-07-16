@@ -14,8 +14,8 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Summary
 
-- Board SHA256: `c4395ef34dbd00475d756b961fec1c291d9896ae0a9969f1341a10bb83d2e1bf`
-- Total violations: `626`
+- Board SHA256: `4bc070dda09d1e5446a3c42650f50566d2f52398f444330cb42cb02802d24931`
+- Total violations: `627`
 - Unconnected items: `499`
 - Short violations: `0`
 - Copper-clearance violations: `0`
@@ -31,7 +31,7 @@ python3 kicad/report_source_pcb_drc.py
 | `lib_footprint_mismatch` | 1 |
 | `silk_over_copper` | 199 |
 | `silk_overlap` | 199 |
-| `text_thickness` | 129 |
+| `text_thickness` | 130 |
 
 ## Unique short collisions
 

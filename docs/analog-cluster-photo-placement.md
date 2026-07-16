@@ -109,11 +109,13 @@ on the visible component-side lead arcs and the corresponding four backside
 joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
 uncertainty. Rotation and contrast enhancement makes C20's marking legible as
 `1Н5`. GOST 11076-69 Table 1 maps that code exactly to 1500 pF / 1.5 nF, so
-the source model now adopts C20=`1,5 нФ`; the narrow standard provenance is
-recorded in `ref/datasheets/gost-11076-69-capacitance-code.md`. C20's tolerance,
-voltage, and remote destinations remain unread. C22's marking and both remote
-copper destinations also remain unread, so the four singleton boundary nets
-retain those connectivity unknowns without omitting the populated hardware.
+the source model now adopts C20=`1,5 нФ`. An independent May component
+angle directly exposes `1Н5` on the outer C22 body too, fixed by D102 and the
+inner C20 body against the already registered column order; C22 therefore also
+adopts `1,5 нФ`. The narrow standard provenance is recorded in
+`ref/datasheets/gost-11076-69-capacitance-code.md`. Both parts' tolerances,
+voltages, and remote destinations remain unread, so the four singleton boundary
+nets retain those connectivity unknowns without omitting the populated hardware.
 
 The R65/R67 increment removed their false D102-pad collisions. A later
 full-source DRC audit correctly exposed ten unique pairs caused by the remaining

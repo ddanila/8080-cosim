@@ -1,7 +1,7 @@
 # GOST 11076-69 capacitance-code evidence
 
 This is a narrow provenance note for interpreting the photographed `1Н5`
-marking on Juku capacitor C20. It does not reproduce the standard.
+markings on Juku capacitors C20 and C22. It does not reproduce the standard.
 
 - Primary source: `ГОСТ 11076-69`, *Конденсаторы и резисторы. Обозначения
   величин емкости и сопротивления* (official 1977 reprint of the
@@ -14,6 +14,7 @@ marking on Juku capacitor C20. It does not reproduce the standard.
   marking `1Н5`. The same table identifies `Н` as the nanofarad decimal/unit
   code.
 
-Therefore the photographed C20 marking `1Н5` is unambiguously `1.5 nF`
-(`1500 pF`). The marking does not establish tolerance, voltage rating, or either
-electrical endpoint, so those properties remain separate evidence boundaries.
+Therefore the photographed C20 and C22 markings `1Н5` are unambiguously
+`1.5 nF` (`1500 pF`). The marking does not establish tolerance, voltage rating,
+or either electrical endpoint, so those properties remain separate evidence
+boundaries for each part.

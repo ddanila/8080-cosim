@@ -18,7 +18,7 @@ OUTPUT_MD = ROOT / "docs/fdc-lower-assembly-placement.md"
 OVERLAY = ROOT / "docs/photo-registration/fdc-lower-assembly-placement.jpg"
 RESTORED_FACTORY_PARTS = {"C16", "C19", "R92", "R99", "R100", "R102", "R108", "R86"}
 EXPECTED_RESISTOR_VALUES = {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к"}
-EXPECTED_CAPACITOR_VALUES = {"C20": "1,5 нФ"}
+EXPECTED_CAPACITOR_VALUES = {"C20": "1,5 нФ", "C22": "1,5 нФ"}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -62,6 +62,7 @@ if document.get("schema_version") != 1 or document.get("model") != "affine":
 value_evidence = document.get("r92_r99_value_evidence", {})
 right_edge_value_evidence = document.get("right_edge_resistor_value_evidence", {})
 c20_value_evidence = document.get("c20_value_evidence", {})
+c22_value_evidence = document.get("c22_value_evidence", {})
 if value_evidence.get("values") != {"R92": "1,3к", "R99": "4,7к"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad R92/R99 value evidence")
 if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к"}:
@@ -70,8 +71,12 @@ if right_edge_value_evidence.get("unresolved") != ["R108", "R86"]:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: lower right-edge value boundaries are not guarded")
 if c20_value_evidence.get("value") != "1,5 нФ" or c20_value_evidence.get("marking") != "1Н5":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C20 value evidence")
-if "C20.1 endpoint" not in c20_value_evidence.get("unresolved", []) or "C22 value and endpoints" not in c20_value_evidence.get("unresolved", []):
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20/C22 boundaries are not guarded")
+if "C20.1 endpoint" not in c20_value_evidence.get("unresolved", []) or "C20.2 endpoint" not in c20_value_evidence.get("unresolved", []):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 endpoint boundaries are not guarded")
+if c22_value_evidence.get("value") != "1,5 нФ" or c22_value_evidence.get("marking") != "1Н5":
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C22 value evidence")
+if "C22.1 endpoint" not in c22_value_evidence.get("unresolved", []) or "C22.2 endpoint" not in c22_value_evidence.get("unresolved", []):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 endpoint boundaries are not guarded")
 for evidence in [*value_evidence.get("owner_photos", []), *right_edge_value_evidence.get("owner_photos", [])]:
     image_path = ROOT / evidence.get("source", "")
     if not image_path.is_file() or hashlib.sha256(image_path.read_bytes()).hexdigest() != evidence.get("sha256"):
@@ -89,6 +94,19 @@ if len(c20_bbox) != 4 or c20_bbox[0] >= c20_bbox[2] or c20_bbox[1] >= c20_bbox[3
 c20_standard = ROOT / c20_value_evidence.get("marking_standard", {}).get("source", "")
 if not c20_standard.is_file() or "1Н5" not in c20_standard.read_text(encoding="utf-8"):
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 marking-standard evidence missing")
+c22_photo = c22_value_evidence.get("owner_photo", {})
+c22_image_path = ROOT / c22_photo.get("source", "")
+if not c22_image_path.is_file() or hashlib.sha256(c22_image_path.read_bytes()).hexdigest() != c22_photo.get("sha256"):
+    raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: C22 value-source hash mismatch for {c22_image_path}")
+with Image.open(c22_image_path) as c22_image:
+    if list(c22_image.size) != c22_photo.get("dimensions_px"):
+        raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 value-source dimensions mismatch")
+c22_bbox = c22_photo.get("body_bbox_px", [])
+if len(c22_bbox) != 4 or c22_bbox[0] >= c22_bbox[2] or c22_bbox[1] >= c22_bbox[3]:
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: invalid C22 value-source body box")
+c22_standard = ROOT / c22_value_evidence.get("marking_standard", {}).get("source", "")
+if not c22_standard.is_file() or "1Н5" not in c22_standard.read_text(encoding="utf-8"):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 marking-standard evidence missing")
 for item in document["targets"]:
     for evidence in item.get("owner_evidence", []):
         image_path = ROOT / evidence["image"]
@@ -158,6 +176,7 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "r92_r99_value_evidence": value_evidence,
                                   "right_edge_resistor_value_evidence": right_edge_value_evidence,
                                   "c20_value_evidence": c20_value_evidence,
+                                  "c22_value_evidence": c22_value_evidence,
                                   "checks": checks, "targets": targets}, indent=2) + "\n")
 lines = ["# FDC lower assembly placement", "",
          "Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**", "",
@@ -165,7 +184,7 @@ lines = ["# FDC lower assembly placement", "",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
          "placement only, except where the owner-evidence records below explicitly close",
-         "R92/R99/R100/R102/C20 values or visible copper connectivity.", "",
+         "R92/R99/R100/R102/C20/C22 values or visible copper connectivity.", "",
          f"Held-out errors: D99 `{next(x['error_mm'] for x in checks if x['refdes']=='D99'):.3f}` mm; "
          f"D97 `{next(x['error_mm'] for x in checks if x['refdes']=='D97'):.3f}` mm.", "",
          "| Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |", 
@@ -189,8 +208,8 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R92, R99, and the populated R100/R1
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
           "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. Only C16's value and destinations remain boundaries in this row.",
-          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced C20",
-          "pixels read `1Н5` verbatim; GOST 11076-69 Table 1 maps that code exactly to 1500 pF / 1.5 nF, now adopted as C20's value. C20's tolerance, voltage, and endpoints plus C22's marking/value/endpoints remain unpromoted.",
+          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels",
+          "read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Their tolerances, voltages, and endpoints remain unpromoted.",
           "The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.",
           "The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.",
           "That makes DNP/removal the leading `.009` owner-board disposition, but the old generic array placement is not silently moved or deleted until factory-population intent is reconciled. The unrelated `.006` RF-option C13 is now correctly DNP on the `.009` target and must not be conflated with this C63 site.",

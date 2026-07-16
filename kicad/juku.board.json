@@ -4804,14 +4804,20 @@
   {
    "ref": "C22",
    "type": "C_KM",
+   "value": "1,5 нФ",
+   "procurement": {
+    "action": "circuit-review",
+    "note": "Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
+   },
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
-    "pins": "factory drawing identifies C22 at the right end of D102; both owner-board sides prove a populated grey axial body on the adjacent 10 mm vertical drill span. The body marking and both electrical destinations remain unread"
+    "refdes": "ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69",
+    "marking": "1Н5",
+    "pins": "factory drawing identifies C22 at the right end of D102; both owner-board sides prove a populated grey axial body on the outer adjacent 10 mm vertical drill span. An independent May component angle directly reads 1Н5 on that outer body, and GOST 11076-69 Table 1 maps the code exactly to 1500 pF / 1.5 nF; tolerance, voltage, and both electrical destinations remain unread"
    }
   },
   {

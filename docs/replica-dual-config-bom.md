@@ -36,8 +36,8 @@ readiness report.
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | RS-232/line-driver substitute required; verify +/-12 V interface | 2 | 2 | 0 | D14, D32 | - |
 | circuit-review | C_ELEC | radial electrolytic | modern radial electrolytic with matching value/voltage/polarity | 3 | 3 | 0 | C31, C32, C33 | - |
-| circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 12 | 12 | 0 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C22, C34, C99 | - |
-| circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C20 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
+| circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 11 | 11 | 0 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99 | - |
+| circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | D_DIODE | Soviet diode/zener per value | modern diode/zener matching value and power | 2 | 2 | 0 | VD3, VD4 | - |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 2 | 2 | 0 | VT1, VT2 | - |
 | circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 36 | 36 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R49, R50, R51, R52, R53, ... (+18) | - |

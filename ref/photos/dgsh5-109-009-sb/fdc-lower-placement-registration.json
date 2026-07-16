@@ -67,8 +67,28 @@
       "table": 1,
       "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
     },
-    "unresolved": ["tolerance", "voltage", "C20.1 endpoint", "C20.2 endpoint", "C22 value and endpoints"],
+    "unresolved": ["tolerance", "voltage", "C20.1 endpoint", "C20.2 endpoint"],
     "promotion_basis": "the owner-board marking is literal and the contemporary primary marking standard maps it exactly to 1500 pF"
+  },
+  "c22_value_evidence": {
+    "value": "1,5 нФ",
+    "marking": "1Н5",
+    "owner_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+      "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+      "dimensions_px": [4080, 3072],
+      "body_bbox_px": [3540, 380, 3700, 700],
+      "observation": "independent target-board angle directly reads 1Н5 on the outer C22 body; D102 and the inner C20 body fix the already registered column order"
+    },
+    "marking_standard": {
+      "source": "ref/datasheets/gost-11076-69-capacitance-code.md",
+      "standard": "ГОСТ 11076-69",
+      "printed_page": 2,
+      "table": 1,
+      "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
+    },
+    "unresolved": ["tolerance", "voltage", "C22.1 endpoint", "C22.2 endpoint"],
+    "promotion_basis": "the independent owner-board angle exposes the literal outer-body marking and the contemporary primary marking standard maps it exactly to 1500 pF"
   },
   "targets": [
     {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},

@@ -185,7 +185,7 @@ parts placement and Tier-3 reproduction.
 | `C16` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated grey horizontal axial capacitor between the upper... |
 | `C19` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C19 immediately right of D99; the owner component view proves th... |
 | `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69 factory drawing identifies C20 at the right end of D102; both owner-board sid... |
-| `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies C22 at the right end of D102; both owner-board sides prove a pop... |
+| `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69 factory drawing identifies C22 at the right end of D102; bot... |
 | `C63` | `C_KM` | scan | BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo BOM/DSN value 0,047 and traced array-power bypass role GND<->RAIL_H are retained, but the c... |
 | `C9` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C9 vertically between D100 and D98; both target-revision electrical destinations remain explicit continui... |
 | `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
