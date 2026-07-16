@@ -8,8 +8,9 @@ Primary public target: `infoaed/juku3000`
 
 ## Why We Are Asking
 
-The replica can boot `ROMBIOS 3.43` in the digital twin and the saved PCB
-package is reproducible, but the physical design remains on hold. Several
+The replica can boot `ROMBIOS 3.43` in the digital twin and the archived PCB
+ZIP is checksum-reproducible but topology-invalid, so the physical design
+remains on hold. Several
 connectivity and programmable-part items still need real media or silicon
 truth:
 

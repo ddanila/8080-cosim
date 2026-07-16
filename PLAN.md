@@ -1,11 +1,11 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-07-15**.
+Status date: **2026-07-16**.
 
-Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The recorded main-board ZIP
-is a checksum-reproducible engineering snapshot, not fabrication authorization.
-It passes package-integrity, DRC-disposition, geometry, checksum, and independent
-render gates, but its routed board predates accepted functional connectivity.
+Release status: **DESIGN HOLD / PACKAGE INVALID**. The recorded main-board ZIP
+is a checksum-reproducible historical engineering snapshot, not fabrication
+authorization. The accepted W14 topology invalidates its routed copper and DRC
+disposition; a new package must wait for P0 netlist freeze and rerouting.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module (documented by its ПЭЗ parts list and СБ assembly drawing; the earlier
@@ -521,8 +521,9 @@ Once a released board and programmed parts exist:
 
 - [x] Structural model boots and matches the software oracle.
 - [x] EKDOS and disk BASIC reach visible prompts in uninterrupted HDL.
-- [x] Current engineering PCB package is reproducible and DRC-clean within its
-  modeled scope.
+- [ ] Current engineering PCB package is regenerated and DRC-clean for the
+  accepted topology. The archived ZIP remains reproducible but is invalidated
+  by the W14 split and intentionally awaits the P0 netlist freeze.
 - [x] Deep value-level cosim guard reaches `CTRACE-END` across the default
   130,000-read window and fails on any address/data divergence.
 - [ ] P0 physical connectivity is complete and rerouted.

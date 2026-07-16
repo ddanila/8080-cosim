@@ -62,10 +62,10 @@ been assigned a net. Consequently physical release needs all of the following:
 - programmable-part contents and provenance;
 - explicit disposition of analog/timing assumptions.
 
-The saved Gerber ZIP is a checksum/geometry/render-verified engineering
-snapshot (tracked status **DESIGN HOLD / PACKAGE VERIFIED**), but its routed
-board is superseded by accepted functional connectivity and therefore fails
-the broader design-release criterion. `PLAN.md` lists the blockers.
+The saved Gerber ZIP is a checksum-reproducible historical engineering
+snapshot (tracked status **DESIGN HOLD / PACKAGE INVALID**). Accepted W14
+connectivity supersedes its routed copper and DRC disposition, so it must not
+be uploaded. `PLAN.md` lists the blockers and post-freeze regeneration gate.
 
 ## Design rules
 
