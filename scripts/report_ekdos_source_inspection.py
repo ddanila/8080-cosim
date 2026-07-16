@@ -265,6 +265,7 @@ def main() -> int:
         "SETDMA": 12,
         "READ": 13,
         "WRITE": 14,
+        "SECTRAN": 16,
     }
     for target in disk_vectors:
         if f"JMP {target}" not in normalized_lines:

@@ -87,6 +87,10 @@ physical D93/D94 wiring.
   `READ=0xCA27`, and `WRITE=0xCA2A`. Setter effects are checked in the shared
   work area, WRITE types 0 and 2 are both exercised, and every public I/O call
   returns zero after traversing `DoFunction` and the ROMBIOS mover.
+- Public `SECTRAN=0xCA30` is executed for every floppy logical-sector index
+  0..39 using the translation pointer returned in drive A's DPH; all results
+  match the source `TRANS` permutation. Calls with the RAM-drive null table
+  preserve endpoint sectors 0 and 127, covering both branches of the BIOS ABI.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
@@ -160,8 +164,9 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires all six disk-vector jump mnemonics in the
-  archived assembly and derives their standard three-byte table addresses.
+- The source inspector requires all seven exercised disk-vector jump mnemonics
+  in the archived assembly and derives their standard three-byte table
+  addresses.
   The prompt checkpoint independently requires a live `JMP` opcode at each
   derived address; actual calls then prove their destinations and ABI rather
   than treating opcode presence as behavioral evidence.

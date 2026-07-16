@@ -604,7 +604,10 @@ serve physical bring-up or historical fidelity:
    enters through public BIOS `SETTRK`, `SETSEC`, `SETDMA`, and `READ`/`WRITE`
    vectors (including CP/M write types 0 and 2), verifies the installed work
    fields and zero return status, and contains no synthetic track/sector/DMA
-   assignment. The source-guarded `MDISKPAR` describes
+   assignment. Public `SECTRAN=0xCA30` is likewise exhaustive: its DPH-provided
+   table returns the source-exact permutation for all 40 floppy records, while
+   the RAM-drive null table preserves sector 0 and 127 unchanged. The
+   source-guarded `MDISKPAR` describes
    192 x 1 KiB blocks: exact ROM writes and reads independent sector-0 and
    sector-127 patterns across all twelve track halves and all six port-`0x04`
    banks, including the final 128 bytes at bank-5 offset `0x7F80`; every slice

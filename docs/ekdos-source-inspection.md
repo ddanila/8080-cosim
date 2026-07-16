@@ -43,6 +43,7 @@ labels and `TRANS` tables.
 | BIOS `SETDMA` (index 12) | `0xCA24` |
 | BIOS `READ` (index 13) | `0xCA27` |
 | BIOS `WRITE` (index 14) | `0xCA2A` |
+| BIOS `SECTRAN` (index 16) | `0xCA30` |
 | DPH size used by `SELDSK` | `16` bytes |
 | RAM-drive DPH displacement | `RDNO * 16 = 32` bytes |
 

@@ -32,6 +32,7 @@ enum {
   BIOS_SETDMA = 0xCA24,
   BIOS_READ = 0xCA27,
   BIOS_WRITE = 0xCA2A,
+  BIOS_SECTRAN = 0xCA30,
 };
 
 
@@ -193,7 +194,8 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
   static const uint16_t disk_vectors[] = {
-    BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA, BIOS_READ, BIOS_WRITE,
+    BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA,
+    BIOS_READ, BIOS_WRITE, BIOS_SECTRAN,
   };
   FILE* fp = fopen(path, "rb");
   if (!fp) return 1;
@@ -276,7 +278,7 @@ static int run_ramdisk_select(
 
 
 static int run_bios_entry(
-    fixture* f, uint16_t entry, uint8_t b, uint8_t c,
+    fixture* f, uint16_t entry, uint8_t b, uint8_t c, uint16_t de,
     uint8_t* result_a, uint16_t* result_hl, unsigned long* total_cycles,
     const char* name) {
   i8080 cpu;
@@ -290,6 +292,8 @@ static int run_bios_entry(
   cpu.sp = 0xD6F8;                    // caller stack; DoFunction owns STAK
   cpu.b = b;
   cpu.c = c;
+  cpu.d = de >> 8;
+  cpu.e = de & 0xFF;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
   while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
@@ -306,7 +310,7 @@ static int run_bios_entry(
 
 static int run_bios_seldsk(
     fixture* f, uint8_t drive, uint16_t* dph, unsigned long* total_cycles) {
-  return run_bios_entry(f, BIOS_SELDSK, 0, drive, NULL, dph,
+  return run_bios_entry(f, BIOS_SELDSK, 0, drive, 0, NULL, dph,
                         total_cycles, "SELDSK");
 }
 
@@ -316,11 +320,11 @@ static int run_bios_ram_io(
     uint8_t sector, uint16_t dma, unsigned long* total_cycles) {
   uint8_t result = 0xFF;
   int fail = 0;
-  fail |= run_bios_entry(f, BIOS_SETTRK, 0, track, NULL, NULL,
+  fail |= run_bios_entry(f, BIOS_SETTRK, 0, track, 0, NULL, NULL,
                          total_cycles, "SETTRK");
-  fail |= run_bios_entry(f, BIOS_SETSEC, 0, sector, NULL, NULL,
+  fail |= run_bios_entry(f, BIOS_SETSEC, 0, sector, 0, NULL, NULL,
                          total_cycles, "SETSEC");
-  fail |= run_bios_entry(f, BIOS_SETDMA, dma >> 8, dma & 0xFF, NULL, NULL,
+  fail |= run_bios_entry(f, BIOS_SETDMA, dma >> 8, dma & 0xFF, 0, NULL, NULL,
                          total_cycles, "SETDMA");
   if (f->ram[0xD61B] != track || f->ram[0xD61D] != sector ||
       f->ram[0xD62E] != (dma & 0xFF) || f->ram[0xD62F] != (dma >> 8)) {
@@ -331,7 +335,7 @@ static int run_bios_ram_io(
     fail = 1;
   }
   fail |= run_bios_entry(f, write ? BIOS_WRITE : BIOS_READ,
-                         0, write ? write_type : 0, &result, NULL,
+                         0, write ? write_type : 0, 0, &result, NULL,
                          total_cycles, write ? "WRITE" : "READ");
   if (result != 0) {
     fprintf(stderr, "EKDOS BIOS %s: track=%u sector=%u result=%02X\n",
@@ -501,6 +505,7 @@ int main(int argc, char** argv) {
   unsigned long successful_cycles = total_cycles;
   unsigned long unallocated_cycles = 0;
   unsigned long seldsk_cycles = 0;
+  unsigned long sectran_cycles = 0;
   unsigned long ramdisk_cycles = 0;
   unsigned long protect_cycles = 0;
 
@@ -640,6 +645,41 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
+  static const uint8_t expected_translation[40] = {
+    1, 2, 3, 4, 9, 10, 11, 12,
+    17, 18, 19, 20, 25, 26, 27, 28,
+    33, 34, 35, 36, 5, 6, 7, 8,
+    13, 14, 15, 16, 21, 22, 23, 24,
+    29, 30, 31, 32, 37, 38, 39, 40,
+  };
+  uint16_t floppy_xlt = (uint16_t)(f.ram[dph0] | (f.ram[dph0 + 1] << 8));
+  for (unsigned sector_index = 0; sector_index < 40; sector_index++) {
+    uint16_t translated = 0xFFFF;
+    fail |= run_bios_entry(&f, BIOS_SECTRAN, 0, (uint8_t)sector_index,
+                           floppy_xlt, NULL, &translated,
+                           &sectran_cycles, "SECTRAN");
+    if (translated != expected_translation[sector_index]) {
+      fprintf(stderr,
+              "EKDOS SECTRAN: index=%u translated=%04X expected=%02X xlt=%04X\n",
+              sector_index, translated, expected_translation[sector_index],
+              floppy_xlt);
+      fail = 1;
+    }
+  }
+  static const uint8_t ram_identity_sectors[] = {0, 127};
+  for (unsigned i = 0; i < sizeof(ram_identity_sectors); i++) {
+    uint16_t translated = 0xFFFF;
+    uint8_t sector_index = ram_identity_sectors[i];
+    fail |= run_bios_entry(&f, BIOS_SECTRAN, 0, sector_index, 0,
+                           NULL, &translated, &sectran_cycles, "SECTRAN");
+    if (translated != sector_index) {
+      fprintf(stderr,
+              "EKDOS SECTRAN: null-table index=%u translated=%04X\n",
+              sector_index, translated);
+      fail = 1;
+    }
+  }
+
   static const uint8_t endpoint_sector[RAM_DISK_ENDPOINTS] = {0, 127};
   uint8_t ramdisk_expected[RAM_DISK_TRACKS][RAM_DISK_ENDPOINTS][128];
   for (unsigned track = 0; track < RAM_DISK_TRACKS; track++) {
@@ -753,12 +793,12 @@ int main(int argc, char** argv) {
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
          "seldsk=0/1/2/invalid bios-rw=public/types0+2 "
-         "ramdisk-tracks=12 endpoints=24 no-fdc=1 "
+         "sectran=40+2 ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + unallocated_cycles + seldsk_cycles +
+         successful_cycles + unallocated_cycles + seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);
   return 0;
 }
