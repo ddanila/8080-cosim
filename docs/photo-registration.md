@@ -12,6 +12,8 @@ The durable source records are:
   placement, and owner-photo closure of X1.107B/-BLOCK/H and R1;
 - `ref/photos/juku-pcb-2/endpoints.csv` — original-image endpoint coordinates,
   confidence, reviewer, and disposition.
+- `ref/photos/juku-pcb-2/x6-cable-registration.json` — factory wire-table and
+  two-angle owner-photo closure of bracket X6 through PCB points A:3/A:4.
 
 Panoramas, overlays, and crop atlases are navigation aids. Electrical evidence
 always cites an original JPEG coordinate and a reviewed path.
@@ -20,18 +22,18 @@ always cites an original JPEG coordinate and a reviewed path.
 
 All 28 July grid images are registered into a common 310 x 266 mm
 component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 632 reviewed rows:
+endpoint table contains 636 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 39 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 41 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 595 | pad/path review is inconclusive; continuity or better local evidence is required |
 
 Confidence metadata consists of 373 `local-package-fit`, 217
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Two use
-`local-package-fit+continuous-copper`, four use
-`registration+visible-common-landing`, five use `registration+unique-joint`,
-and four use `cross-side-registration`.
+`local-package-fit+continuous-copper`, five use
+`registration+visible-common-landing`, six use
+`registration+unique-joint`, and six use `cross-side-registration`.
 Five `panorama-projected-region` observations record the photo-exhausted R94.2
 and C94.1 solder reviews without pretending that a projection is pad identity.
 A hole snap or accurate pad projection is not electrical evidence by itself.
@@ -57,6 +59,9 @@ Accepted paths:
 - C94.2 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
   the shared landing, while an independent May angle is retained in the
   dedicated evidence record. C94.1 remains photo-exhausted.
+- Factory cable point A:3 -> X6.1 / `SOUND_CLAMP`, visibly coincident with VD3.2,
+  while the separately insulated A:4 -> X6.2 / `GND`. Both are
+  component-side lap joints; X6 itself is bracket-mounted and has no PCB footprint.
 
 R67.2 remains unaccepted but is now precisely photo-exhausted. Its component
 joint is registered at `(3321,1698)` in `200418174`; fourteen paired D102 pins

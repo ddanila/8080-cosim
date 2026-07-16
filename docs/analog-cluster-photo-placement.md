@@ -39,7 +39,12 @@ R65.1, so C94.2 is now closed to `VIDEO_OUT`. The separate lower C94.1 lap joint
 is visible but none of the three angles exposes a continuous remote route; its
 registered solder-side region is likewise non-unique. C94.1 therefore remains a
 photo-exhausted continuity boundary. The remaining
-parts stay unchanged until their bodies can be paired unambiguously. The
+parts stay unchanged until their bodies can be paired unambiguously. X6 is no
+longer among those asks: the factory 12 cm cable table and two component-photo
+angles prove that the connector is bracket-mounted. Printed point A:3 is
+coincident with VD3.2/`SOUND_CLAMP`, while the separately insulated A:4/X6.2
+return reaches the wide ground strip. The generated PCB therefore carries
+surface lap-joint footprints `AX603`/`AX604`, not an invented X6 body. The
 generated vertical axial/diode coordinates
 compensate for the KiCad footprint-anchor offset; the guarded body centres are
 `VD3=(299.38,128.40)` and `R66=(302.69,128.46)` mm.
@@ -57,8 +62,8 @@ show only VT1/VT2 and no RF-option cluster.
 Those fifteen legacy-only references are therefore DNP on the `.009` target.
 The `.009` drawing reuses C9/C10/C11/C12/C15 around D93-D102, so those physical
 capacitors remain at their factory positions with both leads left as explicit
-target-continuity boundaries. R67.2 and physical connector contact X6.1 are
-likewise boundaries rather than being forced onto the superseded RF nets. The
+target-continuity boundaries. R67.2 remains such a boundary; X6 is instead
+closed through the target cable independently of the superseded RF nets. The
 yellow `680п` part remains the separately proved C94.
 
 R67.2 has now been chased to the limit of the owner imagery. The registered

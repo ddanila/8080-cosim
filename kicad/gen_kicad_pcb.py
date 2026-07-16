@@ -55,7 +55,6 @@ PASSIVE_FP = {
     'Q_TO92':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315/КТ325 (flat KT-13 pkg; TO-92 stand-in)
     'L_TAPPED':('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'), # legacy .006-only footprint support
     'VIDEO_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X7 video socket stand-in (601/602)
-    'RF_CONN':    ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X6 RF socket stand-in (701/702)
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings
 }
 PASSIVE_FP_REF = {
@@ -159,6 +158,10 @@ PASSIVE_PLACE = {
     # X8 is bracket-mounted; these four points terminate its six-conductor
     # power cable (A61 +5 V and A62 GND each take two conductors).
     'A59':(34.0,252.6,0),'A60':(29.0,252.6,0),'A61':(24.0,252.6,0),'A62':(19.0,252.6,0),
+    # X6 is bracket-mounted. Registered point A:3 is conductor 1's lap joint
+    # on VD3.2/SOUND_CLAMP; A:4 is the separately insulated marked-return
+    # conductor on the wide ground strip. Neither is drilled.
+    'AX603':(299.551,124.391,0),'AX604':(305.182,123.141,0),
     # X4 is bracket-mounted. The 23-conductor bundle is visible above the
     # D93/D28 quadrant; sheets 4-5 map board points A X4:1..23 in order to
     # the remote connector. Row pitch and span are registered from the owner
@@ -215,7 +218,6 @@ PASSIVE_PLACE = {
     'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
-    'X6':(288,6,0),     # RF socket (СБ top edge, поз.18 ring; contact 701/702)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     'R49':(204.1,181.7,0),'R50':(204.1,186,0),'R51':(204.1,190.3,0),'R52':(204.1,194.6,0),   # 100R strobe series [sheet-2; emaplaat x204 column]
     'R53':(204.1,199,0),'R54':(204.1,203.3,0),'R55':(204.1,207.6,0),'R56':(204.1,211.9,0),   # 5.1k strobe pullups -> rail E
@@ -430,7 +432,7 @@ def main():
         # photographed component-side copper landings between D13 and D105.
         # Preserve that construction instead of punching a generic axial THT
         # footprint through the neighboring D13 fanout.
-        if ref == "R1":
+        if ref == "R1" or ref in {"AX603", "AX604"}:
             for pad in fp.Pads():
                 pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
                 pad.SetDrillSize(pcbnew.VECTOR2I_MM(0, 0))
@@ -577,7 +579,7 @@ def main():
     # S1 is the reset pushbutton on the top connector bracket. Factory wire-table
     # rows 11/12 connect its terminals to remote board landings А:17/А:18; it is
     # retained in the schematic but must never become a PCB header footprint.
-    OFF_BOARD = {'S1', 'S4', 'X3', 'X4', 'X8', 'X9'}
+    OFF_BOARD = {'S1', 'S4', 'X3', 'X4', 'X6', 'X8', 'X9'}
     # place per the assembly-drawing map; any chip not in PLACE -> fallback grid below
     row = 0
     for ref in chips:
@@ -649,6 +651,8 @@ def main():
     # cable landings; do not recreate the remote connector on the board.
     # X9 itself is on the bracket. A45..A58 above are the physical PCB
     # landings at this cable exit; do not recreate an on-board X9 footprint.
+    # X6 itself is on the bracket. AX603/AX604 above preserve its photographed
+    # A:3/A:4 component-side cable joints without inventing a PCB connector.
 
     # ---- UNTRACED footprints: photo/BOM-identified chips whose NETS aren't traced yet ----
     # Real packages + real marks (renders as chips, not boxes); pads carry no nets (honest).

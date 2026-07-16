@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "connector": "X6",
+  "disposition": "bracket-mounted connector with a 12 cm two-conductor shielded cable; no X6 body or pin footprint exists on the PCB",
+  "factory_wire_table": {
+    "source": "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf",
+    "sha256": "779bca02a2b7d0aba9b170b39ab55ff5f980d06f3f324fd91958ece646ddfc2b",
+    "pdf_page": 2,
+    "drawing_sheet": 3,
+    "position": 151,
+    "length_cm": 12,
+    "rows": [
+      {"conductor": 1, "board_point": "A:3", "remote": "X6"},
+      {"conductor": 2, "board_point": "A:4", "remote": "X6 marked return terminal"}
+    ],
+    "interpretation": "The suffix mark on row 2 distinguishes X6's return terminal. Owner photos and registered placement independently resolve A:3 at VD3.2/SOUND_CLAMP and the separately insulated A:4 conductor on the wide ground strip."
+  },
+  "component_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "a3_joint_px": [3036, 1816],
+      "a4_joint_px": [3154, 1788],
+      "a3_board_mm": [299.551, 124.391],
+      "a4_board_mm": [305.182, 123.141],
+      "bbox_px": [2850, 1650, 3350, 2250],
+      "observation": "The printed 3 sits beside conductor 1's lap joint, coincident with the registered VD3.2/SOUND_CLAMP landing. What resembles a continuation is VD3's component lead, not a bypass wire. The separately insulated conductor 2 terminates on the wide ground strip."
+    },
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+      "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+      "dimensions_px": [4080, 3072],
+      "bbox_px": [2850, 650, 3350, 1300],
+      "observation": "An independent oblique view confirms both separated cable conductors, the printed point 3 joint at VD3.2, and the A:4 ground-strip landing."
+    }
+  ],
+  "solder_observations": [
+    {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "dimensions_px": [4080, 3072],
+      "a3_projection_px": [1199.441, 879.298],
+      "a4_projection_px": [1082.594, 903.880],
+      "cross_side_model": "D102-local 14-anchor affine recorded in r67-photo-exhaustion.json",
+      "observation": "The projected regions are crowded solder-side package/copper fields and do not identify dedicated cable holes. This agrees with the direct component-side lap-solder construction; the solder projection is retained as a non-promotion check."
+    }
+  ],
+  "logical_mapping": {
+    "A:3": {"footprint": "AX603.1", "remote": "X6.1", "net": "SOUND_CLAMP"},
+    "A:4": {"footprint": "AX604.1", "remote": "X6.2", "net": "GND"}
+  },
+  "promotion_basis": "The factory table proves the two cable endpoints and two independent component views identify their physical joints. Registered placement makes A:3 coincident with VD3.2/SOUND_CLAMP, while A:4 reaches the separately photographed wide ground strip."
+}

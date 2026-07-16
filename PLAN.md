@@ -171,7 +171,7 @@ measurement-gated.
 3. **Preserve the adopted factory wire-table construction through release.**
    The sheets 2-6 таблица соединений is transcribed and its two number spaces
    are now explicit: conductor positions are not `А:N` board-point labels
-   (`ref/schematics/dgsh5-109-009-sb-wire-table.md`). X3/X4/X8/X9 landings,
+   (`ref/schematics/dgsh5-109-009-sb-wire-table.md`). X3/X4/X6/X8/X9 landings,
    S1 links, R94.1, and all ten on-board insulated links are endpoint-mapped
    and guarded. Final copper adoption must retain `А:7-А:14` and
    `А:19-А:20` as assembly wire rather than silently replacing them with etch.
@@ -343,8 +343,8 @@ Every ask below is queued with exact deliverables in
    explicitly redesigned before release.
 
 Source-model state feeding this work: the source PCB passes all 2272/2272
-net-assigned PCB-scoped board-JSON endpoints, with 61 endpoints on
-bracket-mounted S1/X3/X4/X8/X9 intentionally excluded in favor of their
+net-assigned PCB-scoped board-JSON endpoints, with 63 endpoints on
+bracket-mounted S1/X3/X4/X6/X8/X9 intentionally excluded in favor of their
 physical A-point cable landings
 (`docs/replica-bringup-verification-points.md`); it has zero electrical
 placement collisions (`docs/source-pcb-drc.md`) and no undeclared non-power
@@ -353,8 +353,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-632 observations have dispositions, 39 rows are accepted evidence, and the
-other 593 remain measurement requests (`docs/photo-registration.md`).
+636 observations have dispositions, 41 rows are accepted evidence, and the
+other 595 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated

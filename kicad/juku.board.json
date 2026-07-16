@@ -4870,9 +4870,9 @@
     "2": "GND"
    },
    "prov": {
-    "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ assembly drawing plus owner component photo",
-    "pins": "physical X6/contact 701 is retained with grounded return pin 2; signal pin 1 remains an explicit target-revision boundary after the .006 VT3/VT4 RF option is dispositioned DNP"
+    "type": "factory shielded-cable table + registered owner photos",
+    "refdes": "bracket X6 through А:3/А:4 cable landings",
+    "pins": "X6 is bracket-mounted, not a PCB footprint; conductor 1 at А:3 reaches X6.1/SOUND_CLAMP, while the marked return conductor at А:4 reaches X6.2/GND"
    }
   },
   {
@@ -5288,6 +5288,22 @@
     "type": "factory wire table + registered owner photos",
     "refdes": "ДГШ5.109.009 СБ conductor position 14 / board point А:20",
     "pins": "A20A is the existing A23.1/X3.3 through-hole cable joint at (178.780,15.200) mm; A20B is the registered D3.10-side surface joint at (213.571,78.499) mm; fitted insulated wire is the only inter-island closure"
+   }
+  },
+  {
+   "ref": "AX603", "type": "WIRE_PAD", "pins": {"1": "P1"},
+   "prov": {
+    "type": "factory shielded-cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:3",
+    "pins": "wire-table conductor 1 joins bracket X6 to printed point 3; two owner-photo angles and registered placement show its lap joint coincident with VD3.2/SOUND_CLAMP"
+   }
+  },
+  {
+   "ref": "AX604", "type": "WIRE_PAD", "pins": {"1": "P1"},
+   "prov": {
+    "type": "factory shielded-cable table + registered owner photos",
+    "refdes": "ДГШ5.109.009 СБ point А:4",
+    "pins": "wire-table conductor 2 joins bracket X6's marked return terminal to the separately insulated owner-photo lead on the wide ground strip"
    }
   }
  ],
@@ -10503,6 +10519,10 @@
      "2"
     ],
     [
+     "AX604",
+     "1"
+    ],
+    [
      "D23",
      "9"
     ],
@@ -15234,7 +15254,7 @@
    ]
   },
   "VIDEO_OUT": {
-   "src": "scan sheet-2 analog corner (crops an_*) plus two overlapping July target-board component views and an independent May angle: emitter-follower composite -> contact 601; conn = X7 per СБ assembly drawing (es101_emaplaat.pdf, board 7.102.100; .158 delta possible). The registered C94 upper physical lead/pad2 and R65.1 terminate on one directly visible common landing",
+   "src": "scan sheet-2 analog corner plus registered target-board photos: C94.2/R65.1 share the visible composite pool",
    "nodes": [
     [
      "VT2",
@@ -15255,7 +15275,7 @@
    ]
   },
   "SOUND_CLAMP": {
-   "src": "scan sheet-2 analog corner: R66.2 joins VD3.2/R67.1; R66.1 is separately source-proved on power rail B(+12); VD3 is КС147Г clamp",
+   "src": "scan sheet-2 analog corner plus registered X6 cable joint: R66.2 joins VD3.2/R67.1; printed A:3 and its bracket X6 conductor lap-solder directly at the same VD3.2 landing",
    "nodes": [
     [
      "R66",
@@ -15267,6 +15287,14 @@
     ],
     [
      "R67",
+     "1"
+    ],
+    [
+     "AX603",
+     "1"
+    ],
+    [
+     "X6",
      "1"
     ]
    ]
@@ -15314,10 +15342,6 @@
   "C15_2_BOUNDARY": {
    "src": ".009 factory placement between D97 and D102; target electrical destination unread and the .006 VT4-emitter assignment is revision-superseded",
    "nodes": [["C15", "2"]]
-  },
-  "X6_1_BOUNDARY": {
-   "src": ".009 factory assembly and owner photo retain physical X6/contact 701, but the .006 VT3/VT4 RF source is DNP on the target; signal destination requires target continuity",
-   "nodes": [["X6", "1"]]
   },
   "ROM_CS_A000": {
    "src": "traced sheet-1 (crops romcs_band/band2: code label ON the CS riser) + factory .117 table semantics; code 5 = D8.D0 -> D19.CS",

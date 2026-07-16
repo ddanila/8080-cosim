@@ -18,7 +18,7 @@ visible and actionable before manufacturing and first power-on.
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2272`
 - All board endpoints checked in routed PCB: `2272`
-- Intentional off-board endpoints excluded: `61`
+- Intentional off-board endpoints excluded: `63`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
@@ -47,14 +47,14 @@ behind a risk note.
 
 Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against
 the generated source PCB and the routed fabrication PCB. Bracket-mounted
-`S1`, `X3`, `X4`, `X8`, and `X9` are intentionally excluded because their cable
+`S1`, `X3`, `X4`, `X6`, `X8`, and `X9` are intentionally excluded because their cable
 landings are separate `A*` PCB footprints. This is a
 fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2272/2272 | 2272/2272 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1885/2272 | 1801/2272 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1883/2272 | 1800/2272 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -287,6 +287,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `GND: D41.4`
 - `GND: D41.5`
 - `GND: D94.2`
+- `GND: AX604.1`
 - `GND: D99.3`
 - `GND: R99.1`
 - `HOR_RTR: D54.13`
@@ -374,6 +375,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `SHIFT_G: D41.9`
 - `SHIFT_G: D42.8`
 - `SHIFT_G: D43.8`
+- `SOUND_CLAMP: AX603.1`
 - `STSTB: W8.1`
 - `STSTB_D38: W8.2`
 - `SYNDET_S4: D11.16`
@@ -529,7 +531,6 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D6.11: `RAM_SEL` != `WREQ_N`
 - D92.5: `RAM_SEL` != `WREQ_N`
 - R12.2: `RAM_SEL` != `WREQ_N`
-- X6.1: `HF_OUT` != `X6_1_BOUNDARY`
 
 ## Checklist
 

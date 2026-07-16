@@ -85,6 +85,10 @@ def main() -> int:
         [kicad_python, str(ROOT / "kicad/check_x8_offboard_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
     )
+    x6_landings = subprocess.run(
+        [kicad_python, str(ROOT / "kicad/check_x6_offboard_landings.py")],
+        cwd=ROOT, text=True, capture_output=True,
+    )
     x3_landings = subprocess.run(
         [kicad_python, str(ROOT / "kicad/check_x3_offboard_landings.py")],
         cwd=ROOT, text=True, capture_output=True,
@@ -177,7 +181,7 @@ def main() -> int:
             "Bracket-mounted S1 is excluded from generated PCB footprints",
             marker(read(PCB_GENERATOR), "OFF_BOARD = {", "'S1'", "must never become a PCB header footprint")
             and '(property "Reference" "S1"' not in read(SOURCE_PCB)
-            and marker(plan_text, "S1/X3/X4/X8/X9", "intentionally excluded", "physical A-point", "cable landings"),
+            and marker(plan_text, "S1/X3/X4/X6/X8/X9", "intentionally excluded", "physical A-point", "cable landings"),
             "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction",
         ),
         (
@@ -203,6 +207,12 @@ def main() -> int:
             x8_landings.returncode == 0
             and marker(read(WIRE_TABLE_MD), "X8 cable is now promoted", "A59", "A62", "schematic-only"),
             "sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py`",
+        ),
+        (
+            "X6 is bracket-mounted and its 12 cm cable uses surface landings A:3/A:4",
+            x6_landings.returncode == 0
+            and marker(read(WIRE_TABLE_MD), "А:3", "А:4", "marked return terminal", "x6-cable-registration.json"),
+            "sheet 3 cable table; two owner-photo angles; `kicad/check_x6_offboard_landings.py`",
         ),
         (
             "X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32",

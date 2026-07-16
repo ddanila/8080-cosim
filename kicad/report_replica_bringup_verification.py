@@ -13,7 +13,7 @@ BOARD_JSON = ROOT / "kicad" / "juku.board.json"
 PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
-OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X8", "X9"}
+OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
 
 RISK_RE = re.compile(
     r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
@@ -272,7 +272,7 @@ def main() -> int:
             "",
             "Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against",
             "the generated source PCB and the routed fabrication PCB. Bracket-mounted",
-            "`S1`, `X3`, `X4`, `X8`, and `X9` are intentionally excluded because their cable",
+            "`S1`, `X3`, `X4`, `X6`, `X8`, and `X9` are intentionally excluded because their cable",
             "landings are separate `A*` PCB footprints. This is a",
             "fabrication-source coverage gate, not a historical-source proof.",
             "",

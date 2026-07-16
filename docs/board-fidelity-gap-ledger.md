@@ -18,9 +18,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `313`
-- Nets modeled: `569`
-- Chip-level fidelity gaps: `76`
+- Chips modeled: `315`
+- Nets modeled: `568`
+- Chip-level fidelity gaps: `75`
 - Net-level source-risk gaps: `202`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `60`
@@ -37,6 +37,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory X4 cable table + owner photo | 23 |
 | factory assembly drawing + owner photo | 1 |
 | factory power-cable table | 4 |
+| factory shielded-cable table + registered owner photos | 3 |
 | factory wire table | 14 |
 | factory wire table + owner photos | 1 |
 | factory wire table + registered owner backside photo | 1 |
@@ -48,7 +49,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | native schematic + factory assembly drawing + owner photo | 1 |
 | photo | 4 |
 | prom | 1 |
-| scan | 229 |
+| scan | 228 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly wire table | 3 |
 | scan + owner photo | 1 |
@@ -64,7 +65,6 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM truth | 1 | 0 |
 | PROM/decode | 0 | 7 |
 | analog/source | 1 | 0 |
-| connector boundary | 1 | 0 |
 | logic/source | 16 | 60 |
 | memory/timing | 0 | 2 |
 | placement/refdes | 37 | 0 |
@@ -104,12 +104,6 @@ parts placement and Tier-3 reproduction.
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
 | `R67` | `R_AXIAL` | scan | sheet-2 analog corner plus .009 factory identity and registered owner photos pin1 remains on the source-proved SOUND_CLAMP node. The revision-superseded .006... |
-
-### connector boundary
-
-| Ref | Type | Provenance | Note |
-| --- | --- | --- | --- |
-| `X6` | `RF_CONN` | scan | ДГШ5.109.009 СБ assembly drawing plus owner component photo physical X6/contact 701 is retained with grounded return pin 2; signal pin 1 remains an explicit... |
 
 ### logic/source
 

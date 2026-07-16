@@ -16,7 +16,10 @@ RETAINED_NETS = {
     "D34_SIG": {("D34", "11"), ("R63", "1")},
     "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "2")},
     "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1"), ("C94", "2")},
-    "SOUND_CLAMP": {("R66", "2"), ("VD3", "2"), ("R67", "1")},
+    "SOUND_CLAMP": {
+        ("R66", "2"), ("VD3", "2"), ("R67", "1"),
+        ("AX603", "1"), ("X6", "1"),
+    },
     "R67_2_BOUNDARY": {("R67", "2")},
     "C94_1_BOUNDARY": {("C94", "1")},
 }
@@ -26,7 +29,6 @@ REUSED_BOUNDARY_NETS = {
     for ref in ("C9", "C10", "C11", "C12", "C15")
     for pin in ("1", "2")
 }
-REUSED_BOUNDARY_NETS["X6_1_BOUNDARY"] = {("X6", "1")}
 
 RETIRED_NETS = {
     "SND_MIX", "VT3_BASE", "RF_RAIL", "VT3_E", "VT4_B",
@@ -120,10 +122,11 @@ def main() -> int:
             "X7.1 VIDEO_OUT / X7.2 GND",
         ),
         (
-            "X6 physical connector is retained without invented RF drive",
-            node_set(board, "X6_1_BOUNDARY") == {("X6", "1")}
-            and ("X6", "2") in node_set(board, "GND"),
-            "X6.1 continuity boundary / X6.2 GND",
+            "Bracket X6 uses photographed A:3/A:4 cable landings",
+            "X6_1_BOUNDARY" not in board["nets"]
+            and {("AX603", "1"), ("X6", "1")} <= node_set(board, "SOUND_CLAMP")
+            and {("AX604", "1"), ("X6", "2")} <= node_set(board, "GND"),
+            "A:3/X6.1 SOUND_CLAMP / A:4/X6.2 GND; no PCB X6 body",
         ),
         (
             "Target C94 680 pF body remains modeled",
@@ -154,8 +157,8 @@ def main() -> int:
         "",
         "C9/C10/C11/C12/C15 are not removed: `.009` reuses those reference numbers around",
         "D93-D102. Their factory positions remain on the PCB, but every pin is an explicit",
-        "continuity boundary instead of inheriting the superseded `.006` RF nets. X6 likewise",
-        "remains physically present with grounded return and an unresolved signal contact.",
+        "continuity boundary instead of inheriting the superseded `.006` RF nets. X6 is instead",
+        "bracket-mounted: A:3/X6.1 is photo-closed to SOUND_CLAMP and A:4/X6.2 to GND.",
         "",
         "## Command",
         "",
@@ -192,8 +195,8 @@ def main() -> int:
         "  July views plus an independent May angle close C94.2 to R65.1/VIDEO_OUT; C94.1",
         "  and the other unresolved",
         "  endpoints still require continuity or bench capture.",
-        "- No RF behavior is claimed for X6 until target-revision circuitry is proved; preserving",
-        "  a physical connector is not evidence for the removed VT3/VT4 network.",
+        "- X6 is not evidence for the removed VT3/VT4 RF network. Its target bracket cable",
+        "  instead closes directly to the retained SOUND_CLAMP/GND handoff.",
         "- Machine-readable source and population evidence is in",
         "  `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`.",
         "",

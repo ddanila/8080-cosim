@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "target": "7.102.158 / ДГШ5.109.009 FDC-era processor module",
-  "conclusion": "The .006 dashed RF-modulator option is not populated on the .009 target. Keep the .009 physical capacitor positions, but do not carry their .006 RF connectivity across the revision boundary.",
+  "conclusion": "The .006 dashed RF-modulator option is not populated on the .009 target. Keep the .009 physical capacitor positions without importing .006 RF connectivity; the separate bracket X6 cable is target-photo-closed at A:3/SOUND_CLAMP and A:4/GND.",
   "legacy_source": {
     "schematic": "ref/schematics/p2_sheet2.png",
     "drawing": "ДГШ5.109.006 Э3 sheet 2",
@@ -48,7 +48,12 @@
   "retained_target_analog_refs": ["R62", "R63", "R64", "R65", "R66", "R67", "VT2", "VD3", "C94", "X7"],
   "boundary_endpoints": [
     "C9.1", "C9.2", "C10.1", "C10.2", "C11.1", "C11.2",
-    "C12.1", "C12.2", "C15.1", "C15.2", "R67.2", "X6.1"
+    "C12.1", "C12.2", "C15.1", "C15.2", "R67.2"
   ],
-  "grounded_connector_endpoint": "X6.2"
+  "x6_target_mapping": {
+    "physical": "bracket-mounted; no PCB connector footprint",
+    "A:3": "AX603.1 / X6.1 / SOUND_CLAMP",
+    "A:4": "AX604.1 / X6.2 / GND",
+    "evidence": "ref/photos/juku-pcb-2/x6-cable-registration.json"
+  }
 }

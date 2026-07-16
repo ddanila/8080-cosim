@@ -32,6 +32,7 @@ is promoted as a copper netlist.
 | R94 is modeled as 220 ohms from D98.3 with its far endpoint unresolved | PASS | `.009` assembly drawing; four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py` |
 | X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58 | PASS | sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` |
 | X8 is schematic-only and its six-conductor cable uses PCB landings A59-A62 | PASS | sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py` |
+| X6 is bracket-mounted and its 12 cm cable uses surface landings A:3/A:4 | PASS | sheet 3 cable table; two owner-photo angles; `kicad/check_x6_offboard_landings.py` |
 | X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32 | PASS | sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py` |
 | X4 first five legacy circuit exits are explicitly dispositioned | PASS | `.006` sheet-1 exit codes 401-405; `.009` target continuity still required |
 | X4 bracket harness has all 23 physical board landings | PASS | `.009` sheets4-5 wires27-49; `kicad/check_x4_offboard_landings.py` |

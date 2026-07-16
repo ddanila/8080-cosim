@@ -66,7 +66,13 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | Провод | Начало | Конец | Длина, см |
 | ---: | --- | --- | ---: |
 | 1 | А:3 | X6 | 12 |
-| 2 | А:4 | X6⊥ (shield/body) | 12 |
+| 2 | А:4 | X6⊥ (marked return terminal) | 12 |
+
+The suffix mark is transcribed literally rather than treated as polarity evidence
+by itself. Registered owner photos and placement resolve the construction: the
+printed `А:3` joint lands on VD3.2/`SOUND_CLAMP`, while the separately insulated
+`А:4` return terminates on the wide ground strip. The durable
+cross-source registration is `ref/photos/juku-pcb-2/x6-cable-registration.json`.
 
 Поз. 155 — on-board insulated links (sheet-1 note 10, mastic-fixed):
 
