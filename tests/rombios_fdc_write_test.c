@@ -215,6 +215,16 @@ int main(int argc, char** argv) {
     return 1;
   }
 
+  uint8_t baseline[512];
+  for (int i = 0; i < 512; i++) baseline[i] = (uint8_t)(0x6B + i * 5);
+  if (juk_disk_write_sector(&disk, 8, 0, 3, baseline) != 0) {
+    fprintf(stderr, "ROMBIOS RWFLOPPY: baseline-sector setup failed\n");
+    juk_disk_close(&disk);
+    unlink(path);
+    rmdir(dir);
+    return 1;
+  }
+
   juku_fdc_init(&f.fdc, &disk);
   update_portc(&f, 0x05);  // motor on, drive A, side 0, high ROM overlay
   f.fdc.track = 8;
@@ -241,8 +251,8 @@ int main(int argc, char** argv) {
   f.ram[0xD61C] = 0;                 // EKDOS logical track high
   memset(&f.ram[0xD61E], 0, 0xD62E - 0xD61E); // cold EKDOS cache state
   unsigned long total_cycles = 0;
-  fail |= run_rwfloppy(&f, 0x11, 9, SCRATCH_ADDR, &total_cycles); // load host sector 3
-  fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &total_cycles);     // dirty first record
+  fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR,
+                       &total_cycles); // cold partial write prereads host sector 3
   fail |= run_rwfloppy(&f, 0x12, 10, SECOND_DMA_ADDR,
                        &total_cycles); // coalesce second record
   fail |= run_rwfloppy(&f, 0x12, 12, FOURTH_RECORD_DMA_ADDR,
@@ -273,8 +283,7 @@ int main(int argc, char** argv) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: second cache-hit record mismatch\n");
     fail = 1;
   }
-  uint8_t zero_record[128] = {0};
-  if (memcmp(&f.ram[UNTOUCHED_CACHE_READ_ADDR], zero_record, 128) != 0) {
+  if (memcmp(&f.ram[UNTOUCHED_CACHE_READ_ADDR], baseline + 256, 128) != 0) {
     fprintf(stderr, "ROMBIOS RWFLOPPY: untouched cache record changed\n");
     fail = 1;
   }
@@ -321,7 +330,8 @@ int main(int argc, char** argv) {
             f.monitor_trampoline_entries);
     fail = 1;
   }
-  uint8_t expected[512] = {0};
+  uint8_t expected[512];
+  memcpy(expected, baseline, sizeof(expected));
   memcpy(expected, &f.ram[DMA_ADDR], 128);
   memcpy(expected + 128, &f.ram[SECOND_DMA_ADDR], 128);
   memcpy(expected + 384, &f.ram[FOURTH_RECORD_DMA_ADDR], 128);
@@ -339,7 +349,8 @@ int main(int argc, char** argv) {
     return 1;
   }
   printf("ROMBIOS RWFLOPPY write test: PASS command=0x%02X record-size=128 "
-         "records-written=3 cache-hit=512 data=512 trampoline=%u cyc=%lu\n",
+         "cold-write=1 records-written=3 cache-hit=512 data=512 "
+         "trampoline=%u cyc=%lu\n",
          f.write_command, f.monitor_trampoline_entries, total_cycles);
   return 0;
 }

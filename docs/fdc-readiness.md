@@ -19,14 +19,14 @@ physical D93/D94 wiring.
   and cosim needs `JUKU_DISK_WRITABLE=1`, on a caller-provided copy.
 - The C guard first boots exact `ekta37` far enough to install its monitor RAM
   services, then drives the public ROMBIOS `RWFLOPPY` vector at `0xFF59`. It
-  loads 512-byte physical sector 3 with command `0x80`, caches an EKDOS
-  trio of distinct 128-byte logical-record writes, reads all four cache offsets
-  including the untouched record without another FDC command, and switches host
-  sectors so the wrapper flushes once with `0xA2` before loading sector 4 with
-  `0x80`. All calls traverse
+  starts with a cold partial write, automatically prereads nonzero physical
+  sector 3 with command `0x80`, caches three distinct 128-byte logical-record
+  writes, reads all four cache offsets without another FDC command, and switches
+  host sectors so the wrapper flushes once with `0xA2` before loading sector 4
+  with `0x80`. All calls traverse
   the boot-installed `0xD7E7` monitor services and return with zero `ERRC`;
   persisted readback proves all three modified 128-byte records and the one
-  untouched zero record byte-for-byte.
+  untouched original record byte-for-byte.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
@@ -59,17 +59,18 @@ physical D93/D94 wiring.
   logical sector, cache state, and DMA address to the `0xFF59 -> 0xE80B`
   wrapper. Its physical-sector calculation at `0xE8B2` maps four consecutive
   128-byte logical records onto one 512-byte FDC sector.
-- The guard starts with a cold/clean cache, reads logical record 9 to populate
-  physical sector 3, then writes records 9, 10, and 12 from independent DMA
-  patterns. Reading records 9 through 12 into four different DMA buffers
-  reproduces all three patterns at the correct offsets and the untouched zero
-  record 11, issues no FDC command, and preserves `HSTWRT=1`. Reading record 13
-  then crosses into physical sector 4, takes one dirty-cache flush before the
-  new read, and yields the exact command sequence `0x80, 0xA2, 0x80`.
+- The guard seeds physical sector 3 with a nonzero byte pattern, starts with a
+  cold-cache write to logical record 9, then writes records 10 and 12 from two
+  other DMA patterns. The first `DKWR` itself issues `0x80` to preserve the host
+  sector before changing one record. Reading records 9 through 12 into four
+  different DMA buffers reproduces all three new patterns and the untouched
+  original record 11, issues no further FDC command, and preserves `HSTWRT=1`.
+  Reading record 13 then crosses into physical sector 4, takes one dirty-cache
+  flush before the new read, and yields `0x80, 0xA2, 0x80`.
 - Physical readback requires the changed first, second, and fourth 128-byte
-  records plus the untouched zero-filled third record. This exercises the full
-  four-way deblocking layout and distinguishes coalescing from direct 512-byte
-  model-side sector injection.
+  records plus the untouched original third record. This exercises the full
+  four-way deblocking layout, cold read-before-write, and coalescing while
+  distinguishing them from direct 512-byte model-side sector injection.
 
 ## Commands
 
