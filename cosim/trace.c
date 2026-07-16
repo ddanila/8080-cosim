@@ -407,15 +407,19 @@ int main(int argc, char** argv) {
   }
   const char* disk_path = getenv("JUKU_DISK");
   if (disk_path && disk_path[0]) {
-    int rc = juk_disk_open(&disk, disk_path);
+    const char* writable_env = getenv("JUKU_DISK_WRITABLE");
+    int disk_writable = writable_env && writable_env[0] && strcmp(writable_env, "0") != 0;
+    int rc = disk_writable ? juk_disk_open_writable(&disk, disk_path)
+                           : juk_disk_open(&disk, disk_path);
     if (rc != 0) {
       fprintf(stderr, "JUKU_DISK=%s could not be opened as a raw Juku disk image (rc=%d)\n", disk_path, rc);
       return 2;
     }
     juku_fdc_init(&fdc, &disk);
     fdc_enabled = 1;
-    fprintf(stderr, "loaded JUKU disk image %s (%ld bytes, %d side%s)\n",
-            disk_path, disk.size, disk.heads, disk.heads == 1 ? "" : "s");
+    fprintf(stderr, "loaded JUKU disk image %s (%ld bytes, %d side%s, %s)\n",
+            disk_path, disk.size, disk.heads, disk.heads == 1 ? "" : "s",
+            disk_writable ? "writable" : "read-only");
   }
 
   size_t n = load_image(rom_path, rom, ROM_SIZE, 0x00);

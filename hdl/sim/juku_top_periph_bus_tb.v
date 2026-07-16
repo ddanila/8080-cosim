@@ -9,7 +9,9 @@
 module juku_top_periph_bus_tb();
   reg osc = 0;
   integer fails = 0;
+  integer i;
   reg [7:0] rd;
+  reg writable_mode = 1'b0;
   reg [15:0] drive_ba = 16'h0000;
   reg [7:0] drive_db = 8'hff;
   reg kbd_en = 1'b0, kbd_pressed = 1'b0, kbd_shift = 1'b0, frame_tick = 1'b0;
@@ -130,6 +132,7 @@ module juku_top_periph_bus_tb();
   end endtask
 
   initial begin
+    writable_mode = $test$plusargs("expect_writable");
     force dut.ready = 1'b1;
     force dut.reset_sys = 1'b1;
     force dut.phi1 = 1'b0;
@@ -201,6 +204,26 @@ module juku_top_periph_bus_tb();
     if ((rd & 8'h03) !== 8'h03) fail("FDC read-sector did not assert BUSY+DRQ");
     io_read(8'h1F, rd);
     if (rd !== 8'hc3) fail("FDC first vendored sector byte mismatch");
+
+    if (writable_mode) begin
+      io_write(8'h1C, 8'hD0);   // abort the partial read before the write test
+      io_write(8'h1D, 8'h08);
+      io_write(8'h1E, 8'h03);
+      io_write(8'h1C, 8'hA2);   // exact ROMBIOS side-aware write-sector command
+      io_read(8'h1C, rd);
+      if ((rd & 8'h03) !== 8'h03) fail("FDC write-sector did not assert BUSY+DRQ");
+      for (i = 0; i < 512; i = i + 1) io_write(8'h1F, 8'h5A ^ i[7:0]);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h43) !== 8'h00) fail("FDC write-sector did not complete cleanly");
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        io_read(8'h1F, rd);
+        if (rd !== (8'h5A ^ i[7:0])) begin
+          fail("FDC write-sector top-level readback mismatch");
+          i = 512;
+        end
+      end
+    end
 
     if (fails == 0) begin
       $display("JUKU-TOP-PERIPH-BUS: PASS");

@@ -15,9 +15,9 @@ static long file_size(FILE* fp) {
 }
 
 
-int juk_disk_open(juk_disk* disk, const char* path) {
+static int open_mode(juk_disk* disk, const char* path, int writable) {
   memset(disk, 0, sizeof(*disk));
-  FILE* fp = fopen(path, "rb");
+  FILE* fp = fopen(path, writable ? "r+b" : "rb");
   if (!fp) return -errno;
 
   long size = file_size(fp);
@@ -30,7 +30,18 @@ int juk_disk_open(juk_disk* disk, const char* path) {
 
   disk->fp = fp;
   disk->size = size;
+  disk->writable = writable;
   return 0;
+}
+
+
+int juk_disk_open(juk_disk* disk, const char* path) {
+  return open_mode(disk, path, 0);
+}
+
+
+int juk_disk_open_writable(juk_disk* disk, const char* path) {
+  return open_mode(disk, path, 1);
 }
 
 
@@ -57,5 +68,18 @@ int juk_disk_read_sector(juk_disk* disk, int track, int head, int sector, uint8_
   if (fseek(disk->fp, offset, SEEK_SET) != 0) return -errno;
   size_t got = fread(out, 1, JUK_SECTOR_SIZE, disk->fp);
   if (got != JUK_SECTOR_SIZE) return ferror(disk->fp) ? -EIO : -EINVAL;
+  return 0;
+}
+
+
+int juk_disk_write_sector(juk_disk* disk, int track, int head, int sector,
+                          const uint8_t in[JUK_SECTOR_SIZE]) {
+  if (!disk || !disk->fp || !disk->writable) return -EROFS;
+  long offset = juk_disk_offset(disk, track, head, sector);
+  if (offset < 0) return -EINVAL;
+  if (fseek(disk->fp, offset, SEEK_SET) != 0) return -errno;
+  size_t put = fwrite(in, 1, JUK_SECTOR_SIZE, disk->fp);
+  if (put != JUK_SECTOR_SIZE) return -EIO;
+  if (fflush(disk->fp) != 0) return -errno;
   return 0;
 }

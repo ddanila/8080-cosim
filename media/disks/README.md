@@ -40,3 +40,9 @@ sync/ekdos_fdc_probe.py
 
 `sync/ekdos_fdc_probe.py` defaults to `media/disks/JUKU1.CPM` and should report
 `EKDOS A> PROMPT REACHED`.
+
+The C and HDL FDC models keep these preservation inputs read-only by default.
+Their ROMBIOS-derived 512-byte write-sector path is tested against a temporary
+copy. To opt into persistence on a caller-created copy, use
+`JUKU_DISK_WRITABLE=1` with cosim or `+disk_writable` with the HDL model; never
+point a writable run at the tracked originals.

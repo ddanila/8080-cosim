@@ -22,6 +22,11 @@ static int is_type_i(uint8_t command) {
 }
 
 
+static int is_write_sector(uint8_t command) {
+  return (command & 0xE0) == 0xA0;
+}
+
+
 static int is_write_track(uint8_t command) {
   return (command & 0xF0) == 0xF0;
 }
@@ -30,6 +35,7 @@ static int is_write_track(uint8_t command) {
 static void clear_transfer(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = 0;
+  fdc->write_transfer = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
@@ -64,6 +70,39 @@ static void finish_type_i(juku_fdc* fdc, uint8_t command) {
   } else if ((command & 0xF0) == 0x10) { // seek
     fdc->track = fdc->data;
   }
+}
+
+
+static void begin_write_sector(juku_fdc* fdc) {
+  clear_transfer(fdc);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+    fdc->status |= ST_NOT_READY;
+    return;
+  }
+  if (!fdc->disk->writable) {
+    fdc->status |= ST_WRITE_PROTECT;
+    return;
+  }
+  if (juk_disk_offset(fdc->disk, fdc->track, fdc->head, fdc->sector) < 0) {
+    fdc->status |= ST_RNF;
+    return;
+  }
+  fdc->buffer_pos = 0;
+  fdc->buffer_len = JUK_SECTOR_SIZE;
+  fdc->write_transfer = 1;
+  fdc->status |= ST_BUSY | ST_DRQ;
+}
+
+
+static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
+  if (!fdc->write_transfer || fdc->buffer_pos >= fdc->buffer_len) return;
+  fdc->buffer[fdc->buffer_pos++] = data;
+  if (fdc->buffer_pos < fdc->buffer_len) return;
+  int rc = juk_disk_write_sector(
+      fdc->disk, fdc->track, fdc->head, fdc->sector, fdc->buffer);
+  clear_transfer(fdc);
+  if (rc != 0) fdc->status |= ST_WRITE_PROTECT;
 }
 
 
@@ -123,6 +162,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       if (is_read_sector(data)) begin_read_sector(fdc);
       else if (is_type_i(data)) finish_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) clear_transfer(fdc);  // force interrupt
+      else if (is_write_sector(data)) begin_write_sector(fdc);
       else if (is_write_track(data)) reject_write_track(fdc);
       else {
         fdc->status &= (uint8_t)~(ST_RNF | ST_DRQ);
@@ -137,6 +177,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       break;
     default:
       fdc->data = data;
+      accept_write_byte(fdc, data);
       break;
   }
 }

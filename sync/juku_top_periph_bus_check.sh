@@ -12,16 +12,28 @@ trap 'rm -rf "$TMP"' EXIT
 
 SIM="$TMP/juku_top_periph_bus_tb"
 OUT="$TMP/out.txt"
+WRITABLE_OUT="$TMP/writable-out.txt"
 
 iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
 vvp "$SIM" +disk=media/disks/JUKU1.CPM +disk_heads=2 >"$OUT"
+cp media/disks/JUKU1.CPM "$TMP/JUKU1-writable.CPM"
+vvp "$SIM" +disk="$TMP/JUKU1-writable.CPM" +disk_heads=2 +disk_writable \
+  +expect_writable >"$WRITABLE_OUT"
 
 status="PASS"
 if ! grep -q '^JUKU-TOP-PERIPH-BUS: PASS' "$OUT"; then
   status="FAIL"
 fi
+if ! grep -q '^JUKU-TOP-PERIPH-BUS: PASS' "$WRITABLE_OUT"; then
+  status="FAIL"
+fi
 disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
 pass_line=$(grep -m1 '^JUKU-TOP-PERIPH-BUS: PASS' "$OUT" || true)
+writable_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$WRITABLE_OUT" || true)
+writable_pass_line=$(grep -m1 '^JUKU-TOP-PERIPH-BUS: PASS' "$WRITABLE_OUT" || true)
+if [ -n "$writable_line" ]; then
+  writable_line="FDC-1793: loaded raw disk <temporary-copy> (2 sides, writable)"
+fi
 
 cat > "$REPORT" <<EOF
 # juku_top peripheral bus check
@@ -55,11 +67,14 @@ sync/juku_top_periph_bus_check.sh
 | FDC accepts exact ROMBIOS first command \`0x02\` as restore and returns track 0 | $status |
 | FDC seek/status/data through decoded ports \`0x1C..0x1F\` | $status |
 | First byte of \`JUKU1.CPM\` track 0 sector 2 read through top-level bus is \`0xC3\` | $status |
+| ROMBIOS \`0xA2\` write-sector streams 512 bytes through D94-decoded port \`0x1F\` and reads them back from a writable copy | $status |
 
 ## Stop State
 
 - Disk line: \`${disk_line:-none}\`
 - Pass line: \`${pass_line:-none}\`
+- Writable-copy disk line: \`${writable_line:-none}\`
+- Writable-copy pass line: \`${writable_pass_line:-none}\`
 
 ## Boundary
 
@@ -72,12 +87,13 @@ sync/juku_top_periph_bus_check.sh
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-\`T\` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path
-  to a media-backed sector read.
+  to a media-backed sector read and an opt-in temporary-copy write/readback.
 EOF
 
 cat "$REPORT"
 
 if [ "$status" != PASS ]; then
   cat "$OUT"
+  cat "$WRITABLE_OUT"
   exit 1
 fi

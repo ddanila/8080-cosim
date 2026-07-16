@@ -93,6 +93,29 @@ static int check_image(const char* path, int heads) {
 }
 
 
+static int check_writable_image(const char* path) {
+  juk_disk disk;
+  int rc = juk_disk_open_writable(&disk, path);
+  if (rc != 0) {
+    fprintf(stderr, "juk_disk_open_writable(%s) failed: %d\n", path, rc);
+    return 1;
+  }
+  uint8_t put[JUK_SECTOR_SIZE];
+  uint8_t got[JUK_SECTOR_SIZE];
+  for (int i = 0; i < JUK_SECTOR_SIZE; i++) put[i] = (uint8_t)(0xA5 ^ i);
+  int fail = 0;
+  if (juk_disk_write_sector(&disk, 7, 1, 3, put) != 0) fail = 1;
+  if (juk_disk_read_sector(&disk, 7, 1, 3, got) != 0) fail = 1;
+  if (memcmp(got, put, sizeof(got)) != 0) fail = 1;
+  juk_disk_close(&disk);
+
+  if (juk_disk_open(&disk, path) != 0) return 1;
+  if (juk_disk_write_sector(&disk, 7, 1, 3, put) != -EROFS) fail = 1;
+  juk_disk_close(&disk);
+  return fail;
+}
+
+
 int main(void) {
   char dir[] = "/tmp/juk-disk-test.XXXXXX";
   if (!mkdtemp(dir)) {
@@ -109,6 +132,7 @@ int main(void) {
   fail |= write_image(ds, 2);
   fail |= check_image(ss, 1);
   fail |= check_image(ds, 2);
+  fail |= check_writable_image(ds);
 
   unlink(ss);
   unlink(ds);

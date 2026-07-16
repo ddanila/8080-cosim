@@ -8,10 +8,15 @@ physical D93/D94 wiring.
 
 ## Passing scope
 
-- Restore, seek, step, step-in, step-out, read-sector, track/sector/data
-  registers, BUSY/DRQ/INTRQ, side select, and motor-not-ready behavior.
+- Restore, seek, step, step-in, step-out, read-sector, write-sector,
+  track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
+  motor-not-ready behavior.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
+- The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
+  explicitly writable temporary image and reads them back byte-for-byte.
+  Repository media stays read-only by default; HDL needs `+disk_writable`,
+  and cosim needs `JUKU_DISK_WRITABLE=1`, on a caller-provided copy.
 - Read-only-backend write-track rejection with WRITE PROTECT instead of an
   endless BUSY state.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
@@ -22,6 +27,17 @@ physical D93/D94 wiring.
   checks that evidence and can opt into the expensive rerun.
 - `docs/juku-top-fdc-alignment.md` summarizes the current reset-to-prompt
   boundary against the C oracle.
+
+## Write-path provenance
+
+- Vendored `EKDOS30.ASM` defines `DKWR=0x12` and passes it to the ROMBIOS
+  `RWFLOPPY` entry at `0xFF59`.
+- Exact `roms/ekta37.bin` disassembly branches on request `0x12` at `0xE67C`,
+  selects WD1793 command `0xA0` or `0xA2` at `0xE69F/0xE6A4`, writes the
+  command to port `0x1C` at `0xE6AB`, and loops 512 bytes from memory to the
+  data register at port `0x1F` from `0xE6AF`.
+- The implementation intentionally stops at that firmware-proved single-sector
+  contract; it does not claim general WD1793 write-track or timing conformance.
 
 ## Commands
 

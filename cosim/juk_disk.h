@@ -14,11 +14,15 @@ typedef struct {
   FILE* fp;
   int heads;
   long size;
+  int writable;
 } juk_disk;
 
 int juk_disk_open(juk_disk* disk, const char* path);
+int juk_disk_open_writable(juk_disk* disk, const char* path);
 void juk_disk_close(juk_disk* disk);
 long juk_disk_offset(const juk_disk* disk, int track, int head, int sector);
 int juk_disk_read_sector(juk_disk* disk, int track, int head, int sector, uint8_t out[JUK_SECTOR_SIZE]);
+int juk_disk_write_sector(juk_disk* disk, int track, int head, int sector,
+                          const uint8_t in[JUK_SECTOR_SIZE]);
 
 #endif

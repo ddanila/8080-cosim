@@ -19,6 +19,7 @@ typedef struct {
   uint8_t buffer[JUK_SECTOR_SIZE];
   unsigned buffer_pos;
   unsigned buffer_len;
+  int write_transfer;
 } juku_fdc;
 
 void juku_fdc_init(juku_fdc* fdc, juk_disk* disk);

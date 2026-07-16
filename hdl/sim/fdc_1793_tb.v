@@ -12,6 +12,7 @@ module fdc_1793_tb;
   integer i;
   reg [7:0] got;
   reg disk_mode = 0;
+  reg writable_mode = 0;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side), .drq(drq), .intrq(intrq));
@@ -70,6 +71,7 @@ module fdc_1793_tb;
 
   initial begin
     disk_mode = $test$plusargs("expect_disk");
+    writable_mode = $test$plusargs("expect_writable");
     repeat (4) @(posedge clk);
     expect_status(8'h80, 8'h80, "initial motor-off status");
     motor_on = 1;
@@ -145,6 +147,34 @@ module fdc_1793_tb;
     if (drq !== 1'b0 || intrq !== 1'b1) begin
       $display("FDC-1793: FAIL read completion drq=%b intrq=%b", drq, intrq);
       errors = errors + 1;
+    end
+
+    if (disk_mode && !writable_mode) begin
+      write_reg(2'd0, 8'hA0);
+      expect_status(8'h43, 8'h40, "read-only write-sector reject");
+    end
+
+    if (disk_mode && writable_mode) begin
+      write_reg(2'd1, 8'd8);
+      write_reg(2'd2, 8'd3);
+      write_reg(2'd0, 8'hA2);  // exact ROMBIOS side-aware write-sector variant
+      expect_status(8'h03, 8'h03, "writable write-sector command");
+      for (i = 0; i < 512; i = i + 1) write_reg(2'd3, 8'h5A ^ i[7:0]);
+      expect_status(8'h43, 8'h00, "after writable sector fill");
+      if (drq !== 1'b0 || intrq !== 1'b1) begin
+        $display("FDC-1793: FAIL write completion drq=%b intrq=%b", drq, intrq);
+        errors = errors + 1;
+      end
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== (8'h5A ^ i[7:0])) begin
+          $display("FDC-1793: FAIL write-sector readback byte %0d got=%02x want=%02x",
+                   i, got, (8'h5A ^ i[7:0]));
+          errors = errors + 1;
+          i = 512;
+        end
+      end
     end
 
     write_reg(2'd0, 8'hFD);

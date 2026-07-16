@@ -20,8 +20,10 @@ for simulation.
 The structural top boots the real ekta37 ROM, matches the C oracle’s
 framebuffer, handles keyboard and frame-interrupt paths, reads vendored Juku
 disk media through the bounded FDC model, reaches EKDOS `A>`, and reaches disk
-BASIC `READY`. Monitor 3.3 reset/cursor and selected command paths also have
-HDL oracles.
+BASIC `READY`. The exact ROMBIOS `0xA0/0xA2` write-sector path can also stream
+512 bytes to an explicitly writable disk copy and read them back; tracked media
+remains read-only by default. Monitor 3.3 reset/cursor and selected command
+paths also have HDL oracles.
 
 The CPU, memory/ROM paging, populated bit-sliced DRAM bank, PPI/PIT/PIC/USART
 behavior, FDC boot subset, serializer, and raster helper are functional models.

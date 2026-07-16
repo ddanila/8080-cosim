@@ -120,6 +120,9 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0xFD);  // write track against read-only raw-image shim
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "after write-track command");
 
+  juku_fdc_write(&fdc, 0, 0xA0);  // ROMBIOS write-sector command is also protected by default
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "read-only write-sector command");
+
   juku_fdc_portc(&fdc, 0x44);  // motor on, drive 0, side 1
   juku_fdc_write(&fdc, 1, 43);
   juku_fdc_write(&fdc, 2, 7);
@@ -129,6 +132,32 @@ int main(void) {
     uint8_t got = juku_fdc_read(&fdc, 3);
     if (got != want[i]) {
       fprintf(stderr, "side 1 byte %d: got 0x%02X want 0x%02X\n", i, got, want[i]);
+      fail = 1;
+      break;
+    }
+  }
+
+  juk_disk_close(&disk);
+  if (juk_disk_open_writable(&disk, path) != 0) {
+    fprintf(stderr, "failed to reopen synthetic disk writable\n");
+    fail = 1;
+  }
+  juku_fdc_init(&fdc, &disk);
+  juku_fdc_portc(&fdc, 0x44);  // motor on, side 1
+  juku_fdc_write(&fdc, 1, 8);
+  juku_fdc_write(&fdc, 2, 3);
+  juku_fdc_write(&fdc, 0, 0xA2);  // exact side-aware ROMBIOS variant
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "writable write-sector command");
+  for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+    juku_fdc_write(&fdc, 3, (uint8_t)(0x5A ^ i));
+  }
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, 0, "after writable sector fill");
+  juku_fdc_write(&fdc, 0, 0x82);
+  for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+    uint8_t got = juku_fdc_read(&fdc, 3);
+    uint8_t expected = (uint8_t)(0x5A ^ i);
+    if (got != expected) {
+      fprintf(stderr, "write-sector readback byte %d: got 0x%02X want 0x%02X\n", i, got, expected);
       fail = 1;
       break;
     }

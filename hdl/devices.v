@@ -823,10 +823,12 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_heads = 0;
     integer disk_requested = 0;
     integer disk_loaded = 0;
+    integer disk_writable = 0;
     integer disk_offset = 0;
     integer disk_read_count = 0;
     integer disk_seek_status = 0;
     integer disk_sector_ok = 0;
+    integer write_transfer = 0;
     reg intrq_r = 1'b0;
 
     wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
@@ -844,12 +846,18 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     initial begin
         if ($value$plusargs("disk=%s", disk_path)) begin
             disk_requested = 1;
+            disk_writable = $test$plusargs("disk_writable");
             if (!$value$plusargs("disk_heads=%d", disk_heads)) disk_heads = 2;
-            disk_file = $fopen(disk_path, "rb");
+            if (disk_writable) disk_file = $fopen(disk_path, "r+b");
+            else disk_file = $fopen(disk_path, "rb");
             if (disk_file) begin
                 disk_loaded = 1;
-                $display("FDC-1793: loaded raw disk %0s (%0d side%s)",
-                         disk_path, disk_heads, disk_heads == 1 ? "" : "s");
+                if (disk_writable)
+                    $display("FDC-1793: loaded raw disk %0s (%0d side%s, writable)",
+                             disk_path, disk_heads, disk_heads == 1 ? "" : "s");
+                else
+                    $display("FDC-1793: loaded raw disk %0s (%0d side%s, read-only)",
+                             disk_path, disk_heads, disk_heads == 1 ? "" : "s");
             end else begin
                 $display("FDC-1793: could not open raw disk %0s", disk_path);
             end
@@ -863,6 +871,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     function is_type_i(input [7:0] cmd); begin
         is_type_i = (cmd[7] == 1'b0);
+    end endfunction
+
+    function is_write_sector(input [7:0] cmd); begin
+        is_write_sector = ((cmd & 8'hE0) == 8'hA0);
     end endfunction
 
     function is_write_track(input [7:0] cmd); begin
@@ -900,9 +912,54 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     task clear_transfer; begin
         buffer_pos = 0;
         buffer_len = 0;
+        write_transfer = 0;
         status = status & ~(ST_BUSY | ST_DRQ);
         intrq_r = 1'b1;
     end endtask
+
+`ifndef YOSYS
+    task begin_write_sector; begin
+        clear_transfer();
+        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        if (!motor_on || (disk_requested && !disk_loaded)) begin
+            status = status | ST_NOT_READY;
+        end else if (!disk_requested || !disk_writable) begin
+            status = status | ST_WRITE_PROTECT;
+        end else if (track > 8'd79 || sector == 0 || sector > 10 ||
+                     ({31'b0, side} >= disk_heads)) begin
+            status = status | ST_RNF;
+        end else begin
+            disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
+            disk_seek_status = $fseek(disk_file, disk_offset, 0);
+            if (disk_seek_status != 0) begin
+                status = status | ST_RNF;
+            end else begin
+                buffer_pos = 0;
+                buffer_len = 512;
+                write_transfer = 1;
+                status = status | ST_BUSY | ST_DRQ;
+                intrq_r = 1'b0;
+            end
+        end
+    end endtask
+
+    task accept_write_byte(input [7:0] value); begin
+        if (write_transfer && buffer_pos < buffer_len) begin
+            $fwrite(disk_file, "%c", value);
+            buffer_pos = buffer_pos + 1;
+            if (buffer_pos >= buffer_len) begin
+                $fflush(disk_file);
+                clear_transfer();
+            end
+        end
+    end endtask
+`else
+    task begin_write_sector; begin
+        clear_transfer();
+        status = (status & ~(ST_RNF | ST_NOT_READY)) | ST_WRITE_PROTECT;
+    end endtask
+    task accept_write_byte(input [7:0] value); begin end endtask
+`endif
 
     task begin_read_sector; begin
         clear_transfer();
@@ -972,6 +1029,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 if (is_read_sector(D)) begin_read_sector();
                 else if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) clear_transfer();
+                else if (is_write_sector(D)) begin_write_sector();
                 else if (is_write_track(D)) reject_write_track();
                 else begin
                     status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
@@ -979,7 +1037,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             end
             2'd1: track = D;
             2'd2: sector = D;
-            2'd3: data = D;
+            2'd3: begin data = D; accept_write_byte(D); end
         endcase
     end
 
