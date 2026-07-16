@@ -50,6 +50,9 @@ physical D93/D94 wiring.
   and preserves the active cache when `HSTWRT=1`, so dirty data is not lost.
   Public `LISTST` at `0xCA2D` starts with `A=0xA5` and executes source target
   `POLLPT`, returning `A=0` because the printer-status device is unimplemented.
+  Public `PUNCH=0xCA12` and `READER=0xCA15` are both executed from nonzero A;
+  the prompt checkpoint proves they share the same `XRA A; RET` target, and
+  each returns unavailable as `A=0` without inventing auxiliary hardware.
   Public `SELDSK` at `0xCA1B` runs through its
   `DoFunction`/ROMBIOS trampoline: drives A/B/C return contiguous 16-byte DPHs,
   unavailable C and invalid drive 3 return zero, invalid selection preserves
@@ -136,9 +139,10 @@ physical D93/D94 wiring.
   `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
   15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
   saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires all nine exercised disk-vector jump mnemonics
-  in the archived assembly and derives their standard three-byte table
-  addresses.
+- The source inspector requires archival evidence for all eleven exercised
+  BIOS vectors and derives their standard three-byte table addresses. It
+  deliberately guards the damaged PUNCH spelling `DP RTNEMPTY` as preserved
+  evidence; the adjacent READER line retains `JMP RTNEMPTY`.
   The prompt checkpoint independently requires a live `JMP` opcode at each
   derived address; actual calls then prove their destinations and ABI rather
   than treating opcode presence as behavioral evidence.

@@ -258,20 +258,24 @@ def main() -> int:
         failures.append(
             f"MDISKPAR expected {expected_mdiskpar}, got {mdiskpar}"
         )
-    disk_vectors = {
-        "HOME": 8,
-        "SELDSK": 9,
-        "SETTRK": 10,
-        "SETSEC": 11,
-        "SETDMA": 12,
-        "READ": 13,
-        "WRITE": 14,
-        "POLLPT": 15,
-        "SECTRAN": 16,
-    }
-    for target in disk_vectors:
-        if f"JMP {target}" not in normalized_lines:
-            failures.append(f"BIOS jump table is missing JMP {target}")
+    bios_vectors = [
+        ("PUNCH", 6, "DP RTNEMPTY"),
+        ("READER", 7, "JMP RTNEMPTY"),
+        ("HOME", 8, "JMP HOME"),
+        ("SELDSK", 9, "JMP SELDSK"),
+        ("SETTRK", 10, "JMP SETTRK"),
+        ("SETSEC", 11, "JMP SETSEC"),
+        ("SETDMA", 12, "JMP SETDMA"),
+        ("READ", 13, "JMP READ"),
+        ("WRITE", 14, "JMP WRITE"),
+        ("LISTST / POLLPT", 15, "JMP POLLPT"),
+        ("SECTRAN", 16, "JMP SECTRAN"),
+    ]
+    for name, _index, source_line in bios_vectors:
+        if source_line not in normalized_lines:
+            failures.append(
+                f"BIOS jump table is missing archival evidence {source_line} for {name}"
+            )
     if DISK.exists() and DISK.stat().st_size != 160 * 10 * 512:
         failures.append("JUKU1.CPM size does not match 160 tracks * 10 sectors * 512 bytes")
 
@@ -325,8 +329,8 @@ def main() -> int:
         f"| `CCP` | `{fmt_hex(symbols['CCP'])}` |",
         f"| `BDOS` | `{fmt_hex(symbols['BDOS'])}` |",
         f"| `BIOS` | `{fmt_hex(symbols['BIOS'])}` |",
-        *(f"| BIOS `{target}` (index {index}) | `{fmt_hex(symbols['BIOS'] + index * 3)}` |"
-          for target, index in disk_vectors.items()),
+        *(f"| BIOS `{name}` (index {index}) | `{fmt_hex(symbols['BIOS'] + index * 3)}` |"
+          for name, index, _source_line in bios_vectors),
         f"| DPH size used by `SELDSK` | `16` bytes |",
         f"| RAM-drive DPH displacement | `RDNO * 16 = {symbols['RDNO'] * 16}` bytes |",
         "",

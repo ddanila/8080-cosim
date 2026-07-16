@@ -26,6 +26,8 @@ enum {
   RAM_DISK_WINDOW = 0x8000,
   RAM_DISK_TRACKS = RAM_DISK_BANKS * 2,
   RAM_DISK_ENDPOINTS = 2,
+  BIOS_PUNCH = 0xCA12,
+  BIOS_READER = 0xCA15,
   BIOS_HOME = 0xCA18,
   BIOS_SELDSK = 0xCA1B,
   BIOS_SETTRK = 0xCA1E,
@@ -195,8 +197,9 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
   static const uint8_t expected_trampoline[] = {
     0xF5, 0xDB, 0x06, 0xE6, 0xFC, 0xB4, 0xD3, 0x06, 0xF1, 0xC9,
   };
-  static const uint16_t disk_vectors[] = {
-    BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK, BIOS_SETSEC, BIOS_SETDMA,
+  static const uint16_t exercised_vectors[] = {
+    BIOS_PUNCH, BIOS_READER, BIOS_HOME, BIOS_SELDSK, BIOS_SETTRK,
+    BIOS_SETSEC, BIOS_SETDMA,
     BIOS_READ, BIOS_WRITE, BIOS_LISTST, BIOS_SECTRAN,
   };
   FILE* fp = fopen(path, "rb");
@@ -206,8 +209,17 @@ static int load_boot_ram(uint8_t ram[65536], const char* path) {
                memcmp(&ram[0xD7E7], expected_trampoline,
                       sizeof(expected_trampoline)) != 0 ||
                ram[0xCA36] != 2;       // NoofRamDisk / RDNO
-  for (unsigned i = 0; i < sizeof(disk_vectors) / sizeof(disk_vectors[0]); i++) {
-    if (ram[disk_vectors[i]] != 0xC3) failed = 1;
+  for (unsigned i = 0;
+       i < sizeof(exercised_vectors) / sizeof(exercised_vectors[0]); i++) {
+    if (ram[exercised_vectors[i]] != 0xC3) failed = 1;
+  }
+  uint16_t punch_target = (uint16_t)(ram[BIOS_PUNCH + 1] |
+                                     (ram[BIOS_PUNCH + 2] << 8));
+  uint16_t reader_target = (uint16_t)(ram[BIOS_READER + 1] |
+                                      (ram[BIOS_READER + 2] << 8));
+  if (punch_target != reader_target || punch_target == UINT16_MAX ||
+      ram[punch_target] != 0xAF || ram[punch_target + 1] != 0xC9) {
+    failed = 1;
   }
   return failed;
 }
@@ -526,6 +538,7 @@ int main(int argc, char** argv) {
   uint8_t successful_write_command = f.write_command;
   unsigned successful_trampolines = f.monitor_trampoline_entries;
   unsigned long successful_cycles = total_cycles;
+  unsigned long auxiliary_cycles = 0;
   unsigned long unallocated_cycles = 0;
   unsigned long home_cycles = 0;
   unsigned long list_status_cycles = 0;
@@ -687,6 +700,26 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
+  static const struct {
+    uint16_t entry;
+    const char* name;
+  } unavailable_auxiliary[] = {
+    {BIOS_PUNCH, "PUNCH"},
+    {BIOS_READER, "READER"},
+  };
+  for (unsigned i = 0;
+       i < sizeof(unavailable_auxiliary) / sizeof(unavailable_auxiliary[0]); i++) {
+    uint8_t result = 0xFF;
+    fail |= run_bios_entry(&f, unavailable_auxiliary[i].entry,
+                           0, 0x5A, 0, &result, NULL,
+                           &auxiliary_cycles, unavailable_auxiliary[i].name);
+    if (result != 0) {
+      fprintf(stderr, "EKDOS %s: result=%02X expected=00\n",
+              unavailable_auxiliary[i].name, result);
+      fail = 1;
+    }
+  }
+
   static const uint8_t expected_translation[40] = {
     1, 2, 3, 4, 9, 10, 11, 12,
     17, 18, 19, 20, 25, 26, 27, 28,
@@ -834,14 +867,16 @@ int main(int argc, char** argv) {
          "cold-write=1 records-written=3 cache-hit=512 data=512 "
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
-         "home=clean+dirty listst=not-ready seldsk=0/1/2/invalid "
+         "aux=punch+reader-unimplemented home=clean+dirty listst=not-ready "
+         "seldsk=0/1/2/invalid "
          "bios-rw=public/types0+2 "
          "sectran=40+2 ramdisk-tracks=12 endpoints=24 no-fdc=1 "
          "wp-retries=10 wp-status-reads=%u wp-error-masked=1 "
          "trampoline=%u cyc=%lu\n",
          successful_write_command, f.write_protect_status_reads,
          successful_trampolines,
-         successful_cycles + unallocated_cycles + home_cycles + list_status_cycles +
+         successful_cycles + auxiliary_cycles + unallocated_cycles +
+         home_cycles + list_status_cycles +
          seldsk_cycles + sectran_cycles +
          ramdisk_cycles + protect_cycles);
   return 0;

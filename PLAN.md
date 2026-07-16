@@ -600,6 +600,9 @@ serve physical bring-up or historical fidelity:
    host-sector cache, and preserves an explicitly dirty cache for its later
    flush. Public `LISTST` at `0xCA2D` executes the source `POLLPT` target and
    returns `A=0` (printer not ready) even from a nonzero input accumulator.
+   Public `PUNCH=0xCA12` and `READER=0xCA15` both execute their installed shared
+   `XRA A; RET` target and return unavailable; this also recovers the intent of
+   the archive-damaged `DP RTNEMPTY` PUNCH source line without rewriting it.
    Public `SELDSK` at `0xCA1B` returns three contiguous 16-byte DPHs, rejects
    drive 3 without changing the selected drive, returns zero for unavailable
    drive C, and returns the source-exact RAM DPB when C is present. Its
