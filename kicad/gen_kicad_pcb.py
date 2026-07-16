@@ -81,6 +81,15 @@ FACTORY_WIRE_PLACE = {
         'pad_diameter': 2.0,
         'drill_diameter': 1.0,
     },
+    'W14': {
+        'pads': {'1': (10.449, 179.305), '2': (224.478, 193.144)},
+        'value': 'A:14 ~23cm insulated wire (cut length held)',
+        # The common solder-side image shows both ends as plated through-joints
+        # beside the printed 14 marks.
+        'through_hole': True,
+        'pad_diameter': 2.0,
+        'drill_diameter': 1.0,
+    },
     # Board point A:8 / conductor position 4. Both ends are photographed
     # component-side surface joints, not drilled test points. The pad diameter
     # is conservative provisional fabrication geometry; coordinates and island

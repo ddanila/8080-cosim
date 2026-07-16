@@ -1,6 +1,6 @@
 # Replica order evidence template
 
-Status: **TEMPLATE READY / DESIGN HOLD**
+Status: **TEMPLATE INVALID**
 
 This is a future private order-record template. Do not upload the current
 package or start an order while the design-release report says DESIGN HOLD.
@@ -27,10 +27,10 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2907 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 79575 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 76862 | PASS |
 
 ## Vendor Options To Record
 
@@ -74,3 +74,8 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 - [ ] Vendor did not enable impedance control or change the 2-layer stackup.
 - [ ] Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.
 - [ ] Upload ZIP SHA256 above is saved with the order.
+
+## Failures
+
+- evidence marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
+- evidence marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**

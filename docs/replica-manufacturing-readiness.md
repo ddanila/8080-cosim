@@ -1,6 +1,6 @@
 # Replica manufacturing readiness
 
-Status: **DESIGN HOLD / PACKAGE VERIFIED**
+Status: **PACKAGE INVALID**
 Fabrication package: `fab/gerbers`
 Final upload ZIP: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
 Final upload ZIP SHA256: `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`
@@ -14,18 +14,18 @@ DESIGN HOLD.
 
 | Gate | Evidence | Bytes | Status |
 | --- | --- | ---: | --- |
-| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1440 | HOLD |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2931 | HOLD |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5269 | PASS |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 1251 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2870 | HOLD |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5423 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2907 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 79575 | HOLD |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 76862 | HOLD |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | HOLD |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1628 | PASS |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1899 | PASS |
+| Review waiver | `fab/gerbers/review-waivers.md` | 1797 | FAIL |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1852 | PASS |
 
 ## Toolchain Provenance
 
@@ -73,3 +73,9 @@ Use `docs/replica-order-evidence-template.md` for the private order record.
 - Confirmation that the package was regenerated after the final D2/D94
   changes, FDC-support functional pin dispositions, and source-risk
   net corrections.
+
+## Failures
+
+- required report marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
+- required report marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
+- required report marker missing in fab/gerbers/review-waivers.md: Status: **ACCEPTED**

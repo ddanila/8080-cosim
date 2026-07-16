@@ -33,6 +33,8 @@ jobs:
           python3 -m py_compile \
             kicad/apply_a7_factory_wire_split.py \
             kicad/apply_a7_factory_wire_schematic_split.py \
+            kicad/apply_a14_factory_wire_split.py \
+            kicad/apply_a14_factory_wire_schematic_split.py \
             kicad/apply_a8_factory_wire_split.py \
             kicad/apply_a8_factory_wire_schematic_split.py \
             kicad/apply_a10_factory_wire_split.py \

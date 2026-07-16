@@ -31,7 +31,9 @@ EXPECTED = {
     },
     14: {
         "net": "PHI2",
-        "owner_pins": (("D1", "15", "PHI2"), ("D35", "12", "PHI2")),
+        "remote_net": "PHI2_D35",
+        "wire": "W14",
+        "owner_pins": (("D1", "15", "PHI2"), ("D35", "12", "PHI2_D35")),
         "chord_range": (213.0, 216.0),
         "endpoints": {
             "A14A": {"joint": [2961, 2672], "fit": "D1/global", "uncertainty": (1.5, 2.2)},
@@ -181,7 +183,7 @@ if not 58.0 <= a14_d41_separation <= 60.0:
 if errors:
     raise SystemExit("A7/A14 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
 print(
-    "A7/A14 FACTORY LANDINGS: PASS — A7 modeled through W7; A14 collision resolved; "
+    "A7/A14 FACTORY LANDINGS: PASS — A7/W7 and A14/W14 modeled as split copper islands; "
     f"A7 {np.linalg.norm(projected['A7A']-projected['A7B']):.3f} mm; "
     f"A14 {np.linalg.norm(projected['A14A']-projected['A14B']):.3f} mm; "
     f"left/right separation {left_separation:.3f}/{right_separation:.3f} mm; "

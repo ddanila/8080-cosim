@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 308
-- Populate for current functional .009 build: 278
+- Board component positions: 309
+- Populate for current functional .009 build: 279
 - Leave empty for expansion/authentic completeness: 30
-- Unique BOM lines: 93
+- Unique BOM lines: 94
 
 ## Action Totals
 
@@ -28,7 +28,7 @@ readiness report.
 | leave-empty | 30 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 192 |
+| source-now | 193 |
 
 ## BOM Lines
 
@@ -122,6 +122,7 @@ readiness report.
 | source-now | WIRE_LINK 13.5 cm | factory insulated assembly wire 13.5 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W10 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~11.5 cm (held) | factory insulated assembly wire ~11.5 cm (held) | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W11 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~19 cm | factory insulated assembly wire ~19 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W8 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
+| source-now | WIRE_LINK ~23 cm (held) | factory insulated assembly wire ~23 cm (held) | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W14 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~24 cm (held) | factory insulated assembly wire ~24 cm (held) | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W7 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~6 cm | factory insulated assembly wire ~6 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W20 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |
 | source-now | WIRE_LINK ~9.5 cm | factory insulated assembly wire ~9.5 cm | insulated hookup wire cut and installed to the documented route length | 1 | 1 | 0 | W19 | Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper. |

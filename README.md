@@ -26,19 +26,21 @@ with the machine-readable board model.
   A 296-footprint replacement routing checkpoint is preserved separately with
   all 2,383 pad identities, zero internal unconnected items, and zero electrical
   DRC findings ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 48 pad-net mismatches and 138 moved
-  pads across D5/D7/D8/D9/D37/D38/D50/D51/R13/R14; it also lacks the twelve
-  A:7/A:8/A:10/A:11/A:19/A:20 assembly-wire pads. It is therefore convergence evidence rather than
+  Later source corrections leave it with 49 pad-net mismatches and 138 moved
+  pads across D5/D7/D8/D9/D35/D37/D38/D50/D51/R13/R14; it also lacks the fourteen
+  A:7/A:8/A:10/A:11/A:14/A:19/A:20 assembly-wire pads. It is therefore convergence evidence rather than
   current-source copper. Its zero-open state also copper-substitutes ten
   documented factory insulated links. The source PCB now preserves A:7, A:8,
-  A:10, A:11, A:19, and A:20 as separate landing-island pairs joined only by explicit
-  assembly wires; the other eight A-point terminals remain absent. All ten pairs
+  A:10, A:11, A:14, A:19, and A:20 as separate landing-island pairs joined only by explicit
+  assembly wires; the other six A-point terminals remain absent. All ten pairs
   (`А:7`–`А:14`, `А:19`, and `А:20`) are
   registered in drawing-image space. Both A7/A8/A10/A11/A14/A19/A20
   terminals plus the D38-side A9 and C96-side A12 joints are also board-fitted
-  and island-assigned; the other four PCB terminals remain unset. A14B's current
-  local projection is held because it lies only 0.784 mm from D41.1 and cannot
-  define a distinct fabrication pad without cross-registration. The landing
+  and island-assigned; the other four PCB terminals remain unset. Common-image
+  registration places A14B 58.911 mm from D41.1, and W14 now preserves the
+  distinct PHI2 landing islands. The stale routed board consequently has two
+  W14-related shorts and two opens and must not be rerouted until the P0
+  netlist freeze. The remaining landing
   geometry is an adoption hold
   ([docs/factory-wire-route-fidelity.md](docs/factory-wire-route-fidelity.md)).
 - The main board is **not released for fabrication**. Validated physical D2
@@ -64,7 +66,7 @@ with the machine-readable board model.
   D30 READY section A and the section-B R5/D105 connections are modeled; pins
   8 and 11 remain explicit boundaries. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 218 modeled nets retain source-risk annotations requiring
+  In total, 217 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

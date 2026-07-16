@@ -15,9 +15,9 @@ zero-open routing checkpoint.
 - Board-fit photo/copper evidence checks: `PASS (9/9)`
 - Drawing-image landing endpoints registered: `20/20`
 - Landing endpoints fitted to PCB coordinates/islands: `16/20`
-- Paired A-point landing terminals modeled: `12/20`
+- Paired A-point landing terminals modeled: `14/20`
 - Candidate/source pad identities equal: `FAIL`
-- Candidate/source pad-net mismatches: `48`
+- Candidate/source pad-net mismatches: `49`
 - Candidate/source moved pads (>50 nm): `138`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `0`
@@ -41,7 +41,7 @@ be incorporated only after the landing islands and functional netlist freeze.
 | 7 | А:11 | ~11.5 | `MEMR` | D7.1, D92.13 | 2 | 2 | 189 |
 | 8 | А:12 | ~20 | `RAM_OUT_EN` | D13.2, D37.4 | 2 | 0 | 176 |
 | 9 | А:13 | ~15 | `ROE` | D13.1, D92.1 | 2 | 0 | 116 |
-| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 2 | 0 | 230 |
+| 10 | А:14 | ~23 | `PHI2` | D1.15, D35.12 | 2 | 2 | 230 |
 | 13 | А:19 | ~9.5 | `MEMW` | D5.26, D7.2 | 2 | 2 | 141 |
 | 14 | А:20 | ~6 | `S_TTL` | A23.1, D3.10, X3.3 | 2 | 2 | 11 |
 
@@ -53,9 +53,12 @@ solder views occlude their joints; the visible approaches do not uniquely
 identify copper. No automatic geometric promotion remains defensible.
 A14B's former fabrication contradiction is resolved in one common raw solder
 image: the printed A14B joint is 58.911 mm from independently fitted D41.1,
-not 0.784 mm. W14 is now an implementation-ready island split rather than a
-pad/drill collision; exact wire cut length remains a direct-measurement item.
-A:7, A:8, A:10, A:11, A:19, and A:20 are already split into modeled landing pairs and
+not 0.784 mm. W14 now preserves that landing pair as two through-joints on
+separate PHI2 islands; exact wire cut length remains a direct-measurement item.
+The tracked routed board is intentionally stale: old PHI2 copper touches
+D35.12 and a D53_Y0_R49 track crosses W14.2, producing two shorts and two
+opens until the post-P0-freeze reroute. The saved fab package is invalid.
+A:7, A:8, A:10, A:11, A:14, A:19, and A:20 are already split into modeled landing pairs and
 explicit assembly-wire components. After owner continuity or a newly exposing
 photograph closes the four hidden joints:
 

@@ -18,10 +18,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `308`
-- Nets modeled: `576`
-- Chip-level fidelity gaps: `77`
-- Net-level source-risk gaps: `218`
+- Chips modeled: `309`
+- Nets modeled: `577`
+- Chip-level fidelity gaps: `78`
+- Net-level source-risk gaps: `217`
 - Explicitly dispositioned closed net risks: `12`
 - Documented intentional no-connect pins: `60`
 
@@ -38,6 +38,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | factory power-cable table | 4 |
 | factory wire table | 14 |
 | factory wire table + owner photos | 1 |
+| factory wire table + registered owner backside photo | 1 |
 | factory wire table + registered owner backside photos | 1 |
 | factory wire table + registered owner photos | 3 |
 | factory wire table + registered two-sided owner photos | 1 |
@@ -63,7 +64,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | clock/I/O | 0 | 1 |
 | connector boundary | 1 | 0 |
-| logic/source | 17 | 68 |
+| logic/source | 18 | 67 |
 | memory/timing | 0 | 3 |
 | placement/refdes | 37 | 0 |
 | placement/value | 11 | 0 |
@@ -127,6 +128,7 @@ parts placement and Tier-3 reproduction.
 | `R99` | `R_AXIAL` | scan | ДГШ5.109.009 СБ plus registered owner component and solder photos factory drawing identifies the populated lower/left red horizontal resistor below-left of D... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |
 | `W11` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 7 / board point А:11 registered component-side surface joints at (261.325,128.548) and (142.256,123.468) mm; fitted insula... |
+| `W14` | `WIRE_LINK` | factory wire table + registered owner backside photo | ДГШ5.109.009 СБ conductor position 10 / board point А:14 registered plated through-joints beside the printed 14 marks at (10.449,179.305) and (224.478,193.14... |
 | `W19` | `WIRE_LINK` | factory wire table + registered owner photos | ДГШ5.109.009 СБ conductor position 13 / board point А:19 registered component-side surface joints at (35.308,122.281) and (130.027,121.736) mm; uninterrupted... |
 | `W7` | `WIRE_LINK` | factory wire table + registered owner backside photos | ДГШ5.109.009 СБ conductor position 3 / board point А:7 registered plated through-joints beside the printed 7 marks at (1.697,179.350) and (227.668,194.422) m... |
 | `W8` | `WIRE_LINK` | factory wire table + owner photos | ДГШ5.109.009 СБ conductor position 4 / board point А:8 two independently registered component-side surface joints at (40.811,99.989) and (223.601,170.724) mm... |
@@ -400,7 +402,6 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_DRQ` | FDC owner-continuity | `D93.38, D10.19` | MAME-era IR1 mapping; July-2026 two-sided local D93 fit identifies pin38 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `FDC_INTRQ` | FDC owner-continuity | `D93.39, D10.18` | MAME-era IR0 mapping; July-2026 two-sided local D93 fit identifies pin39 and its local copper, but the available photos do not show an unbroken path to D10.1... |
 | `INHIB_STATUS_BOUNDARY` | logic/source | `D7.5, D29.3` | sheet-1 native 5150x3603 direct-junction chase: D7 data-turnaround NAND input pin5 and semantic D29 command A0 on physical package channel A2/pin3 meet at an... |
-| `PHI2` | logic/source | `D35.12, D1.15, E3.3` | scan WIRE 14 (beeper): the D1<->D35 phase link is a PHYSICAL WIRE on the original board, not etch; common-image registration places A14B 58.911 mm from D41.1... |
 | `PHI2TTL` | logic/source | `D35.13, D39.1, D92.2, D92.3, D53.4, D30.3` | scan sheet-2 (bite-3 mesh crops b3_*): pin-13 node = R35/C29/R106 RC shaper (passives not yet placed) = the "Ф2TTL" rail -> D39.1 + D92.2/3 (ex net D92_GATE_... |
 | `PIT_BAUD` | clock/I/O | `D57.10, D11.25, D11.9` | traced sheet-2 (bite-3): D57.OUT0 -> line labeled "BAUD R." -> pin 9 (D11 TxC) drawn at the label; D11.25 RxC fork [assumed at the UART end]. Rail "A" = +5V... |
 | `R100_1_BOUNDARY` | logic/source | `R100.1` | .009 factory drawing plus owner photo prove the upper R100 body in the right-edge FDC column; pin 1 destination remains a continuity boundary |

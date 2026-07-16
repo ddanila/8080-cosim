@@ -2,7 +2,7 @@
 
 Fabrication package: `fab/gerbers`
 Upload archive: `fab/gerbers/upload/juku-replica-gerbers-drill.zip`
-Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
+Status: **PACKAGE INVALID**
 
 This report verifies the mechanics of the saved upload package. It is not
 an order authorization. The current design-release state is owned by
@@ -34,7 +34,7 @@ kicad/check_replica_manufacturing_ready.sh
 
 | File | Bytes | SHA256 | Contents |
 | --- | ---: | --- | --- |
-| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790221 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` | PASS |
+| `fab/gerbers/upload/juku-replica-gerbers-drill.zip` | 790221 | `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46` | FAIL |
 
 ## Upload ZIP Members
 
@@ -62,14 +62,14 @@ kicad/check_replica_manufacturing_ready.sh
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 2931 | PASS |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1899 | PASS |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1628 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 2870 | PASS |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1852 | PASS |
+| Review waiver | `fab/gerbers/review-waivers.md` | 1797 | FAIL |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2907 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1415 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2552 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 79575 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 76862 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 8563 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 805 | PASS |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 2957 | PASS |
@@ -92,3 +92,8 @@ kicad/check_replica_manufacturing_ready.sh
 - `docs/replica-dual-config-bom.csv` is a sourcing/provenance BOM, not an assembly file.
 - `docs/replica-sourcing-readiness.md` is for procurement and acceptance planning, not vendor upload.
 - Review PNG/SVG outputs are retained as evidence only.
+
+## Failures
+
+- review-waivers.md does not contain expected marker `Status: **ACCEPTED**`
+- docs/replica-fab-drc-disposition.md does not contain expected marker `Status: **READY**`
