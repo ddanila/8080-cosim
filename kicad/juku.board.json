@@ -4785,15 +4785,20 @@
   {
    "ref": "C20",
    "type": "C_KM",
+   "value": "1,5 нФ",
+   "procurement": {
+    "action": "circuit-review",
+    "note": "Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
+   },
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "ДГШ5.109.009 СБ plus registered owner component and solder photos",
+    "refdes": "ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69",
     "marking": "1Н5",
-    "pins": "factory drawing identifies C20 at the right end of D102; both owner-board sides prove a populated grey axial body on a 10 mm vertical drill span. Full-resolution enhancement reads the body marking verbatim as 1Н5; both electrical destinations remain unread"
+    "pins": "factory drawing identifies C20 at the right end of D102; both owner-board sides prove a populated grey axial body on a 10 mm vertical drill span. Full-resolution enhancement reads the body marking verbatim as 1Н5, and GOST 11076-69 Table 1 maps that code exactly to 1500 pF / 1.5 nF; tolerance, voltage, and both electrical destinations remain unread"
    }
   },
   {

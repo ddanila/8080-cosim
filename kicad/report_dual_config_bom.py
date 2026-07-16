@@ -182,6 +182,20 @@ def marking_of(chip):
     return str(chip.get("marking") or "").strip()
 
 
+def procurement_of(chip):
+    procurement = chip.get("procurement") or {}
+    if not isinstance(procurement, dict):
+        raise ValueError(f"{chip.get('ref', '?')}: procurement must be an object")
+    action = str(procurement.get("action") or "").strip()
+    note = str(procurement.get("note") or "").strip()
+    if action and action not in {
+        "source-now", "source-populated-now", "circuit-review",
+        "mechanical-review", "program/dump", "leave-empty",
+    }:
+        raise ValueError(f"{chip.get('ref', '?')}: unsupported procurement action {action!r}")
+    return action, note
+
+
 def populated(chip):
     typ = chip["type"]
     if typ in EMPTY_SOCKET_TYPES:
@@ -194,9 +208,10 @@ def group_key(chip):
     typ = chip["type"]
     value = value_of(chip)
     marking = marking_of(chip)
+    action, note = procurement_of(chip)
     if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM", "WIRE_LINK"}:
-        return typ, value, marking
-    return typ, "", marking
+        return typ, value, marking, action, note
+    return typ, "", marking, action, note
 
 
 def action_for(typ, pop_count, socket_count):
@@ -240,7 +255,7 @@ def build_rows(board_json):
         groups[group_key(chip)].append(chip)
 
     rows = []
-    for (typ, value, marking), chips in groups.items():
+    for (typ, value, marking, action_override, procurement_note), chips in groups.items():
         refs = [chip["ref"] for chip in chips]
         pop_refs = [chip["ref"] for chip in chips if populated(chip)]
         authentic = marking or AUTHENTIC_MARK.get(typ, typ)
@@ -254,10 +269,10 @@ def build_rows(board_json):
             "board_positions": len(refs),
             "populate_now": len(pop_refs),
             "leave_empty": len(refs) - len(pop_refs),
-            "action": row_action(typ, value, len(pop_refs), len(refs)),
+            "action": action_override or row_action(typ, value, len(pop_refs), len(refs)),
             "refs": format_refs(refs),
             "populated_refs": format_refs(pop_refs) if pop_refs else "",
-            "notes": TYPE_NOTES.get(typ, ""),
+            "notes": " ".join(part for part in (TYPE_NOTES.get(typ, ""), procurement_note) if part),
         })
 
     return sorted(rows, key=lambda row: (row["action"], row["type"], row["value"]))

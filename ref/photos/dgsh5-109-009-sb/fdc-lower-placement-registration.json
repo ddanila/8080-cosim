@@ -50,6 +50,26 @@
     "unresolved": ["R108", "R86"],
     "promotion_basis": "two target-board component photographs with different angles read the same top-two values; the lower two markings remain unpromoted"
   },
+  "c20_value_evidence": {
+    "value": "1,5 нФ",
+    "marking": "1Н5",
+    "owner_photo": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "body_bbox_px": [3450, 1400, 3680, 1730],
+      "observation": "registered target-board component view reads the C20 body marking 1Н5 after rotation and contrast enhancement"
+    },
+    "marking_standard": {
+      "source": "ref/datasheets/gost-11076-69-capacitance-code.md",
+      "standard": "ГОСТ 11076-69",
+      "printed_page": 2,
+      "table": 1,
+      "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
+    },
+    "unresolved": ["tolerance", "voltage", "C20.1 endpoint", "C20.2 endpoint", "C22 value and endpoints"],
+    "promotion_basis": "the owner-board marking is literal and the contemporary primary marking standard maps it exactly to 1500 pF"
+  },
   "targets": [
     {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},
     {"refdes": "C10", "drawing_px": [1616.0, 1906.0], "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"},

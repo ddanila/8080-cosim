@@ -283,7 +283,7 @@ def main() -> int:
         (
             "P1",
             "C20/C22 endpoint and value continuity",
-            "confirm C20's enhanced-photo `1Н5` body reading, read C22's obscured value, and identify both remote lead destinations of the restored grey axial pair immediately right of D102; their identities, adjacent 2.54 mm columns, and 10.00 mm vertical drill spans are already component/solder-photo proved",
+            "read C22's obscured value and identify both remote lead destinations of the restored grey axial pair immediately right of D102; C20's photographed `1Н5` marking is source-closed by GOST 11076-69 as 1.5 nF, while its tolerance and voltage remain unread; both identities, adjacent 2.54 mm columns, and 10.00 mm vertical drill spans are already component/solder-photo proved",
             "`docs/analog-cluster-photo-placement.md`; `docs/fdc-lower-assembly-placement.md`; `kicad/juku.board.json` C20/C22 boundary nets",
             "turns two newly restored target-board capacitors into functional circuitry without mistaking their leaning bodies for D102 pin connections",
         ),

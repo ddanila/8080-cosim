@@ -235,7 +235,7 @@ def build_report(rows):
                     row["authentic_part"],
                     row["populate_now"],
                     row["populated_refs"] or row["refs"],
-                    row["functional_substitute"],
+                    row.get("notes") or row["functional_substitute"],
                 ]
             )
         )
