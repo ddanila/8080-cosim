@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import math
 import os
 import sys
 
@@ -16,10 +17,9 @@ ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 5
 CHIP_BLOCK_LABEL_GAP_MM = 2.0
 SILK_LABELS = {
-    "VJUGA REV A": (100, 194, 0, pcbnew.F_SilkS),
-    "Z80 + 4164 DRAM REFRESH TESTBED": (100, 198, 0, pcbnew.F_SilkS, 1.6),
-    "FUSE": (18, 30.0, 0, pcbnew.F_SilkS),
-    "DEFAULT STROKE SILK": (20, 185, 0, pcbnew.B_SilkS),
+    "VJUGA REV A": (150, 3, 0, pcbnew.F_SilkS),
+    "Z80 + 4164 DRAM REFRESH TESTBED": (150, 7, 0, pcbnew.F_SilkS, 1.6),
+    "DEFAULT STROKE SILK": (150, 11, 0, pcbnew.B_SilkS),
 }
 # Single-chip block labels are re-added with the compact-layout block outlines.
 CHIP_BLOCK_LABELS = {}
@@ -61,12 +61,9 @@ SILK_VALUE_BY_REF = {
     "F1": "3A",
 }
 
-POWER_INPUT_PIN_LABELS = (
-    ("5V IN", 16.1, 25.35, 90),
-    ("+5V", 27.85, 27.85, 90),
-    ("GND", 27.85, 22.85, 90),
-    ("PTC", 18.9, 38.0, 90),
-)
+# Re-added (grid-aligned to the new J1 terminal) once the 200x200 placement is
+# frozen; empty meanwhile so stale coordinates can't collide with parts.
+POWER_INPUT_PIN_LABELS = ()
 POWER_INPUT_PIN_LABEL_SIZE_MM = 1.1
 POWER_INPUT_PIN_LABEL_THICKNESS_MM = 0.16
 
@@ -197,111 +194,138 @@ def g(col, row, rot=0):
     return (round(col * GRID, 3), round(row * GRID, 3), rot)
 
 
-# IC placements in grid cells (col, row, rot). Board is ~39 cells (200 mm) square.
-IC_GRID = {
-    # -- top band: CPU / ROM / decode PROMs / decode GAL / clock --
-    # DIP-16 sockets are ~10.7 mm wide, so DIP rows use a 3-cell (15.24 mm) pitch;
-    # wide DIP-24/28/40 get 4 cells from their neighbour.
-    "U1": (9, 9, 0),     # Z80 DIP-40 (tall)
-    "U2": (13, 9, 0),    # 27C256 DIP-28
-    "U3": (17, 9, 0),    # РТ4 decode DIP-16
-    "U4": (20, 9, 0),    # РЕ3 pager DIP-16
-    "U6": (23, 9, 0),    # 74HC04 DIP-14
-    "U5": (27, 9, 0),    # decode GAL DIP-24
-    "U50": (32, 8, 0),   # oscillator
-    "U51": (32, 11, 0),  # reset supervisor
-    # -- middle band: DRAM refresh/timing + DRAM control --
-    "U20": (9, 18, 0), "U21": (12, 18, 0), "U22": (15, 18, 0), "U23": (18, 18, 0),
-    "U24": (22, 18, 0),  # DRAM sequencer GAL DIP-24
-    # -- DRAM bank: eight 4164 DIP-16 in a row (3-cell pitch) --
-    "U10": (9, 25, 0), "U11": (12, 25, 0), "U12": (15, 25, 0), "U13": (18, 25, 0),
-    "U14": (21, 25, 0), "U15": (24, 25, 0), "U16": (27, 25, 0), "U17": (30, 25, 0),
-    # -- VGA (right side) --
-    "U40": (32, 18, 0),  # VGA timing header
-    "U41": (32, 22, 0),  # pixel serializer DIP-16
-    # -- keyboard / parallel interface (bottom band); 8255 laid horizontal --
-    "U30": (13, 33, 90), # 8255 DIP-40 rotated flat to save height
-    "U31": (22, 33, 0),  # 74HCT148 DIP-16
-}
-
-# Connectors / jumpers / headers in grid cells.
-CONN_GRID = {
-    "J1": (3, 3, 90),    # 5 V terminal, top-left
-    "J3": (0.6, 8, 270), # USB-C at the left board edge (mouth out), rotated 90 CW
-    "J94": (30, 9, 90),  # decode mode jumper (right of U5)
-    "J96": (35, 8, 90),  # clock-select jumper
-    "J30": (26, 33, 90), # keyboard header
-    "J40": (36, 24, 90), # VGA RGB out
-    # debug headers along the bottom, observability headers stacked mid-right
-    "J90": (3, 37, 0), "J93": (7, 37, 0), "J91": (11, 37, 0), "J92": (15, 37, 0),
-    "J95": (34, 27, 90), "J97": (34, 29, 90), "J98": (34, 31, 90),
-}
-
-# Discrete parts with a fixed spot (power section + clock passives).
-MISC_GRID = {
-    "F1": (3, 5, 0), "D1": (6, 5, 90), "C50": (2, 6, 0), "R6": (4, 6, 0),
-    "R30": (2, 8, 0), "R31": (5, 8, 0),
-    "R4": (35, 11, 0), "R5": (32, 14, 0),
-}
-
-# Each IC's decoupling cap (auto-placed at the IC short side, direction below).
+# Each IC's decoupling cap; auto-placed at the IC short side (direction below).
 IC_CAP = {
     "U1": "C1", "U2": "C2", "U3": "C26", "U4": "C27", "U5": "C5", "U6": "C28",
     "U10": "C6", "U11": "C7", "U12": "C8", "U13": "C9", "U14": "C10", "U15": "C11",
     "U16": "C12", "U17": "C13", "U20": "C14", "U21": "C15", "U22": "C16",
-    "U23": "C17", "U24": "C18", "U31": "C21", "U40": "C22",
+    "U23": "C17", "U24": "C18", "U30": "C20", "U31": "C21", "U40": "C22",
     "U41": "C23", "U50": "C24", "U51": "C25",
 }
-CAP_DIR = {}
-# U30 is laid horizontal, so its cap C20 goes beside it (left short side); the
-# spare decouplers C3/C4/C19 sit in the open left-middle strip.
-SPARE_CAPS = {"C20": (7, 33), "C3": (2, 13), "C4": (2, 30), "C19": (7, 30)}
-
-# Horizontal axial resistors: 3-cell (15 mm) column pitch clears the ~10 mm
-# bodies + value labels, 2-cell (10 mm) row pitch clears the label stacks.
-# Keyboard field R7-R23 in the gap between the DRAM bank and the keyboard row.
-KBD_R_GRID = {}
-for i in range(8):          # R7-R14 keyboard row pull-ups
-    KBD_R_GRID[f"R{7 + i}"] = (9 + i * 3, 28)
-for i in range(8):          # R16-R23 keyboard column series resistors
-    KBD_R_GRID[f"R{16 + i}"] = (9 + i * 3, 30)
-KBD_R_GRID["R15"] = (6, 37)
-# Decode pull-ups R32-R43 + mode pulldown R44 in the open left-middle strip.
-PULLUP_GRID = {}
-for i in range(12):         # 2 cols x 6 rows
-    PULLUP_GRID[f"R{32 + i}"] = (2 + (i // 6) * 3, 16 + (i % 6) * 2)
-PULLUP_GRID["R44"] = (30, 11)
-# VGA series resistors R1-R3.
-VGA_R_GRID = {"R1": (35, 19), "R2": (35, 21), "R3": (35, 23)}
-# Diagnostic LEDs D2-D7 + limit resistors R24-R29 (LED row above resistor row).
-LED_GRID = {}
-for i in range(6):
-    LED_GRID[f"D{2 + i}"] = (25 + i * 2, 35)
-    LED_GRID[f"R{24 + i}"] = (25 + i * 2, 37)
-
-PLACE = {}
-for _tbl in (IC_GRID, CONN_GRID, MISC_GRID):
-    for _ref, _cell in _tbl.items():
-        PLACE[_ref] = g(*_cell)
-for _ref, _cell in {**KBD_R_GRID, **PULLUP_GRID, **VGA_R_GRID, **LED_GRID}.items():
-    PLACE[_ref] = g(_cell[0], _cell[1])
-for _ref, _cell in SPARE_CAPS.items():
-    PLACE[_ref] = g(_cell[0], _cell[1])
-
-# Place each IC's decoupling cap just past its short (top) side, near the power
-# pins. Offset in grid cells clears the DIP body length (adequate at 4 MHz).
-IC_CAP_OFF = {
-    "U1": 6, "U30": 6, "U2": 5, "U5": 4, "U24": 4,
-    "U3": 3, "U4": 3, "U6": 3, "U31": 3, "U41": 3,
-    "U10": 3, "U11": 3, "U12": 3, "U13": 3, "U14": 3, "U15": 3, "U16": 3, "U17": 3,
-    "U20": 3, "U21": 3, "U22": 3, "U23": 3,
-    "U40": 2, "U50": 2, "U51": 2,
+# Cap direction relative to its IC: default "up" (place above the body). The top
+# logic band hugs the board's top edge, so its caps drop "down" into the gap
+# below instead; a few tight spots push their cap sideways.
+CAP_DIR = {
+    "U1": "down", "U2": "down",          # top band hugs the top edge
+    "U40": "left", "U41": "left",        # VGA column: caps inboard, off the edge
+    "U50": "left", "U51": "down",        # clock/reset: caps clear of the edge
 }
-for _ic, _cap in IC_CAP.items():
-    _col, _row, _ = IC_GRID[_ic]
-    _off = IC_CAP_OFF.get(_ic, 3)
-    _row2 = _row + _off if CAP_DIR.get(_ic) == "down" else _row - _off
-    PLACE[_cap] = g(_col, _row2)
+SPARE_CAPS = ["C3", "C4", "C19"]   # extra decouplers, tucked in open spots
+
+# ---------------------------------------------------------------------------
+# Auto-packer: computes grid-aligned positions from real footprint sizes so no
+# two bodies overlap by construction. Bands pack left-to-right; fields pack as
+# grids; caps land at each IC's short side. Everything snaps to the 5.08 mm grid.
+# ---------------------------------------------------------------------------
+LABEL_MM = 5.0   # extra room reserved around a part for its silk labels
+
+
+def build_placement(spec):
+    type_of = {c["ref"]: c["type"] for c in spec["chips"]}
+    _sz = {}
+
+    def size(ref, rot=0):
+        key = FP_BY_REF.get(ref, FP_BY_TYPE[type_of[ref]])
+        if key not in _sz:
+            fp = load_footprint(type_of[ref], ref)
+            bb = fp.GetBoundingBox(False, False)
+            _sz[key] = (pcbnew.ToMM(bb.GetWidth()), pcbnew.ToMM(bb.GetHeight()))
+        w, h = _sz[key]
+        return (h, w) if rot % 180 else (w, h)
+
+    cell = {}
+
+    def put(ref, col, row, rot=0):
+        cell[ref] = (round(col), round(row), rot)
+
+    def cells(mm):
+        return math.ceil(mm / GRID)
+
+    def row(items, col0, rowc, gap_mm=3.5):
+        # Pack items left-to-right on integer grid cells; advancing by whole
+        # cells guarantees the requested body gap survives the grid snap.
+        cur = pw = None
+        for ref, rot in items:
+            w, _ = size(ref, rot)
+            c = col0 + cells(w / 2) if cur is None else cur + cells(pw / 2 + w / 2 + gap_mm)
+            put(ref, c, rowc, rot)
+            cur, pw = c, w
+        return cur
+
+    def grid(refs, col0, row0, ncols, colp, rowp, rot=0):
+        for i, ref in enumerate(refs):
+            put(ref, col0 + (i % ncols) * colp, row0 + (i // ncols) * rowp, rot)
+
+    # Board is 39 cells (200 mm) square. The two DIP-40s, the DIP-28 ROM and the
+    # two DIP-24 GALs are laid HORIZONTAL (rot 90) so every logic band is only
+    # ~18 mm tall; DIP-16/14 stay vertical. Resistor banks pack as vertical
+    # resistors down the left field; the header banks run along the bottom edge.
+
+    # -- power entry (top-left); keep cols 3-5 / rows 6-8 clear for J3's label --
+    put("J3", 0.6, 7, 270)          # USB-C, mouth out the left edge
+    put("J1", 5, 3, 90)             # 5 V screw terminal
+    put("F1", 8, 3); put("D1", 8, 6, 90); put("C50", 8, 9)
+    put("R6", 2, 11, 90); put("R30", 4, 11, 90); put("R31", 6, 11, 90)
+
+    # -- CPU band: Z80 + ROM (horizontal) --
+    row([("U1", 90), ("U2", 90)], 10, 5)
+
+    # -- decode band: РТ4 / РЕ3 PROMs, 74HC04 (vertical), decode GAL (horizontal) --
+    row([("U3", 0), ("U4", 0), ("U6", 0), ("U5", 90)], 10, 12)
+    put("J94", 28, 12, 90)          # decode mode jumper
+
+    # -- refresh/timing band: address muxes + counters (vertical), seq GAL (horiz) --
+    row([("U20", 0), ("U21", 0), ("U22", 0), ("U23", 0), ("U24", 90)], 10, 19)
+
+    # -- DRAM bank: eight 4164 (vertical) --
+    row([(f"U1{i}", 0) for i in range(8)], 8, 26)
+
+    # -- keyboard / parallel interface: 8255 (horizontal), 74148, keyboard header --
+    row([("U30", 90), ("U31", 0), ("J30", 90)], 10, 33)
+
+    # -- clock + reset (top-right) --
+    put("U50", 35, 4); put("U51", 37, 8); put("J96", 35, 11, 90)
+    put("R4", 33, 8, 90); put("R5", 35, 8, 90)
+
+    # -- VGA out (right, mid) --
+    put("U40", 36, 15); put("U41", 36, 20); put("J40", 36, 24)
+    grid(["R1", "R2", "R3"], 31, 15, 1, 2, 2, rot=90)
+
+    # -- left resistor field: keyboard pull-ups/series, decode pull-ups, LED
+    #    limit resistors -- all as vertical resistors on the grid --
+    kbd = [f"R{i}" for i in range(7, 15)] + [f"R{i}" for i in range(16, 24)] + ["R15"]
+    grid(kbd, 2, 14, 4, 2, 2, rot=90)
+    pull = [f"R{i}" for i in range(32, 44)] + ["R44"]
+    grid(pull, 2, 24, 4, 2, 2, rot=90)
+    grid([f"R{i}" for i in range(24, 30)], 2, 32, 4, 2, 2, rot=90)
+
+    # -- diagnostic LEDs (single row in the DRAM/keyboard gap, right half) --
+    grid([f"D{i}" for i in range(2, 8)], 26, 29, 6, 2, 1, rot=0)
+
+    # -- debug + observability headers along the bottom edge (horizontal) --
+    row([("J95", 90), ("J97", 90), ("J98", 90),
+         ("J90", 90), ("J91", 90), ("J92", 90), ("J93", 90)], 2, 37)
+
+    # -- spare decouplers, in the open bottom-right corner (right of keyboard) --
+    put("C3", 34, 34); put("C4", 36, 34); put("C19", 34, 36)
+
+    # -- decoupling caps next to each IC (short side; low-freq, so exact side
+    #    doesn't matter electrically -- we just keep them off the neighbours) --
+    for ic, cap in IC_CAP.items():
+        col, r, rot = cell[ic]
+        iw, ih = size(ic, rot)
+        cw, ch = size(cap, 0)
+        d = CAP_DIR.get(ic, "up")
+        if d == "right":
+            put(cap, col + cells(iw / 2 + cw / 2 + 2.0), r)
+        elif d == "left":
+            put(cap, col - cells(iw / 2 + cw / 2 + 2.0), r)
+        elif d == "down":
+            put(cap, col, r + cells(ih / 2 + ch / 2 + 2.0))
+        else:
+            put(cap, col, r - cells(ih / 2 + ch / 2 + 2.0))
+
+    return {r: g(c, rw, rt) for r, (c, rw, rt) in cell.items()}
 
 
 def mm(value):
@@ -594,6 +618,8 @@ def main():
     nets = {}
     assigned = 0
 
+    place_map = build_placement(spec)
+
     for chip in spec["chips"]:
         ref = chip["ref"]
         typ = chip["type"]
@@ -602,7 +628,7 @@ def main():
         fp = load_footprint(typ, ref)
         fp.SetReference(ref)
         fp.SetValue(chip.get("value", typ))
-        x, y, rot = PLACE.get(ref, (30 + len(placed) % 8 * 28, 30 + len(placed) // 8 * 35, 0))
+        x, y, rot = place_map.get(ref, (30 + len(placed) % 8 * 28, 30 + len(placed) // 8 * 35, 0))
         if rot:
             fp.SetOrientationDegrees(rot)
         board.Add(fp)

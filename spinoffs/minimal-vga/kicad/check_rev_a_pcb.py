@@ -6,7 +6,11 @@ import pcbnew
 
 MM_TOLERANCE = 0.05
 EXPECTED_COPPER_LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
-MIN_EDGE_CLEARANCE_MM = 14
+# Component-to-edge keepout. Matches the generator's EDGE_CLEARANCE_MM. (The old
+# 14 mm value was comfortable on the sparse 285 mm board; the 200 mm compact
+# board uses the standard 5 mm THT edge clearance, with the corners kept clear of
+# the mounting-hole standoffs by placement.)
+MIN_EDGE_CLEARANCE_MM = 5
 MIN_SILK_EDGE_CLEARANCE_MM = 1.0
 EXPECTED_SILK_LABELS = (
     "VJUGA REV A",
@@ -170,6 +174,14 @@ def main():
     # Board-edge connectors (e.g. the USB-C power receptacle) are meant to sit at
     # the board edge, so they are exempt from the general edge-keepout rule.
     EDGE_CONNECTORS = {"J3"}
+    # Measure clearance against the actual board outline (Edge.Cuts) rather than a
+    # hardcoded width -- the board shrank from 285 mm to 200 mm, and a fixed
+    # constant silently stops checking the right/bottom edges.
+    edge_box = board.GetBoardEdgesBoundingBox()
+    board_left = pcbnew.ToMM(edge_box.GetLeft())
+    board_top = pcbnew.ToMM(edge_box.GetTop())
+    board_right = pcbnew.ToMM(edge_box.GetRight())
+    board_bottom = pcbnew.ToMM(edge_box.GetBottom())
     edge_violations = []
     for fp in board.Footprints():
         if fp.GetReference() in EDGE_CONNECTORS:
@@ -179,7 +191,12 @@ def main():
         top = pcbnew.ToMM(box.GetTop())
         right = pcbnew.ToMM(box.GetRight())
         bottom = pcbnew.ToMM(box.GetBottom())
-        margin = min(left, top, 285 - right, 285 - bottom)
+        margin = min(
+            left - board_left,
+            top - board_top,
+            board_right - right,
+            board_bottom - bottom,
+        )
         if margin < MIN_EDGE_CLEARANCE_MM:
             edge_violations.append(f"{fp.GetReference()}={margin:.1f}mm")
     if edge_violations:
