@@ -70,11 +70,11 @@ endmodule
 module va86_out (input wire [7:0] Ain, input wire oe_n, t, output wire [7:0] Aout);
     assign Aout = (~oe_n & t) ? Ain : 8'bz;
 endmodule
-// ВА87 (8287) = the INVERTING octal transceiver; same pinout as ВА86, output = ~input. One-way
-// (internal -> connector) for the backplane, like va86_out. Inversion is a boundary detail (the
-// connector far side is off-board) -- it doesn't affect the boot or LVS net membership.
-module va87_out (input wire [7:0] Ain, input wire oe_n, t, output wire [7:0] Aout);
+// ВА87 (8287) = the INVERTING octal transceiver; same pinout as ВА86, output = ~input.
+// D23/D24 are strapped A->B, while D25's traced T control permits real backplane reads.
+module va87_out (inout wire [7:0] Ain, Aout, input wire oe_n, t);
     assign Aout = (~oe_n & t) ? ~Ain : 8'bz;
+    assign Ain  = (~oe_n & ~t) ? ~Aout : 8'bz;
 endmodule
 
 // Expansion backplane connector (Multibus-style card slots). A BOUNDARY component: its far side is

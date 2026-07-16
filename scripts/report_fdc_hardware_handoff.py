@@ -459,13 +459,13 @@ def main() -> int:
             "D100.9 `OE_N`",
             endpoint_state(board, "D100", "9"),
             "8287 output-enable gating and command-side polarity",
-            "singleton D100_OE_BOUNDARY; CMA-profile firmware emits CPU byte 0xFD so the enabled КР580ВА87 places logical Restore 0x02 on D93 DAL",
+            "singleton D100_OE_BOUNDARY; first compare against GND (same-board D23-D25 precedent) and FDC_CS_N (qualified-enable family)",
         ),
         (
             "D100.11 `T`",
             endpoint_state(board, "D100", "11"),
             "8287 direction gating and read-side polarity",
-            "singleton D100_T_BOUNDARY; capture one command write and one status read as specified by docs/fdc-bus-polarity.md",
+            "singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3 (always-enabled family) and IORD (qualified-enable family)",
         ),
     ]
 
@@ -713,7 +713,10 @@ def main() -> int:
             "  recorded D29.4/IORD recheck. The `.092` table is physically captured.",
             "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
             "  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and",
-            "  D100.11. First dump D15/D16 and identify its guarded CMA/NOP profile.",
+            "  D100.11. Test D100.9 first against GND and FDC_CS_N; test D100.11",
+            "  against D93 RE_N/D94.3 and IORD. These distinguish the two exhaustive",
+            "  functional families before any broad continuity chase. First dump D15/D16",
+            "  and identify its guarded CMA/NOP profile.",
             "  With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and",
             "  STEP/WG: CPU 0xFD must cross the enabled КР580ВА87 as logical Restore",
             "  0x02. Repeat a status read (logical 0x00 -> CPU 0xFF before firmware",

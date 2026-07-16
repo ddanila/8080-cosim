@@ -53,12 +53,15 @@ physical D93/D94 wiring.
   motor-not-ready behavior.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
-- The physical КР580ВА87/8287 device model complements all 256 byte values in
-  both directions and releases both buses while disabled. The test uses the
-  minimal functionally sufficient candidate `/OE=FDC_CS_N`, `T=IORD`: selected
-  writes drive CPU `DB` to inverted `DAL`, selected reads drive `DAL` to
-  inverted `DB`, and deselection is high impedance. This constrains behavior;
-  it does not promote either still-unmeasured target-board conductor.
+- The physical КР580ВА87/8287 device models complement all 256 byte values in
+  both directions. D100 is tested under both sufficient control families:
+  qualified `/OE=FDC_CS_N`, `T=IORD`, and the same-board precedent
+  `/OE=GND`, `T=D93_RE_N`. Selected writes drive CPU `DB` to inverted `DAL`;
+  selected reads drive `DAL` to inverted `DB`; an unselected cycle either
+  disables both sides or holds direction A->B so D100 cannot contend on CPU
+  `DB`. The same exhaustive guard now proves D23-D25's full bidirectional model,
+  including D25's traced turnaround input. These are functional constraints;
+  they do not promote either still-unmeasured D100 conductor.
 - The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,

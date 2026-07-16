@@ -254,11 +254,12 @@ module juku_top (
     va86_out U_D29 (.Ain ({d30_q2n, iord_n, d7_y2_amw_n, memr_n, memw_n, iord_n, 1'b1, d7_b3_inhib_status}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
-    // Address/data backplane transceivers (ВА87, one-way A->B; refdes confirmed by owner from scan):
+    // Address/data backplane transceivers (ВА87; refdes confirmed by owner from scan):
     //   D23 = addr LOW  (BA[7:0]  -> -ADR0..-ADR7)
     //   D24 = addr HIGH (BA[15:8] -> -ADR8..-ADRF)
     //   D25 = data      (DB       -> -DAT0..-DAT7)
-    // A-side reads the buffered bus (never drives it -> boot-safe); B-side drives the connector.
+    // D23/D24 are strapped A->B. D25 is bidirectional under its traced T control;
+    // an absent expansion card leaves the connector side released and boot-safe.
     wire [7:0] adr_lo, adr_hi, dat;
 `ifdef YOSYS
     wire int7_raw, int6_raw;

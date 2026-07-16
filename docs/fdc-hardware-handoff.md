@@ -202,8 +202,8 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.15-.18/.22/.23/.25-.36 | BOUNDARY | step/precompensation, separator, head-load, drive status, and write interface | primary FD179X-01 contract and two-sided socket fits are proved; target-board support circuit remains untraced |
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
-| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; CMA-profile firmware emits CPU byte 0xFD so the enabled КР580ВА87 places logical Restore 0x02 on D93 DAL |
-| D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; capture one command write and one status read as specified by docs/fdc-bus-polarity.md |
+| D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; first compare against GND (same-board D23-D25 precedent) and FDC_CS_N (qualified-enable family) |
+| D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3 (always-enabled family) and IORD (qualified-enable family) |
 
 ## Netted FDC Endpoints
 
@@ -238,7 +238,10 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   recorded D29.4/IORD recheck. The `.092` table is physically captured.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
-  D100.11. First dump D15/D16 and identify its guarded CMA/NOP profile.
+  D100.11. Test D100.9 first against GND and FDC_CS_N; test D100.11
+  against D93 RE_N/D94.3 and IORD. These distinguish the two exhaustive
+  functional families before any broad continuity chase. First dump D15/D16
+  and identify its guarded CMA/NOP profile.
   With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and
   STEP/WG: CPU 0xFD must cross the enabled КР580ВА87 as logical Restore
   0x02. Repeat a status read (logical 0x00 -> CPU 0xFF before firmware

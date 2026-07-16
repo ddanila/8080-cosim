@@ -114,20 +114,29 @@ vol. 1 (1988), sections 3.12 and 3.14
 ## Runnable-model boundary
 
 `juku_top` still instantiates physical D100 and separate DAL nets for LVS,
-but keeps it disabled while `/OE` and `T` sources are unknown. The exact
-device truth table admits this minimal functionally sufficient candidate:
+but keeps its control sources disconnected while `/OE` and `T` are unknown.
+The exact device truth table constrains cycle states without uniquely
+identifying the copper:
 
-| Cycle | `FDC_CS_N` -> `/OE` | `IORD` -> `T` | ВА87 action |
-| --- | ---: | ---: | --- |
-| Unselected | `1` | don't care | both buses released |
-| FDC write | `0` | `1` | CPU A/DB -> complemented B/DAL |
-| FDC read | `0` | `0` | B/DAL -> complemented A/DB |
+| Cycle | Required `/OE`,`T` state | ВА87 action |
+| --- | --- | --- |
+| Unselected | `/OE=1`, or `/OE=0,T=1` | released, or A/DB -> B/DAL only; never drive DB |
+| FDC write | `/OE=0,T=1` | CPU A/DB -> complemented B/DAL |
+| FDC read | `/OE=0,T=0` | B/DAL -> complemented A/DB |
 
-This table is a functional constraint, not a copper promotion. Pin 9's
+Two minimal sufficient families are now executable guards:
+
+- Qualified enable: `/OE=FDC_CS_N`, `T=IORD`.
+- Same-board ВА87 precedent: `/OE=GND`, `T=D93_RE_N` (D94 D2), so
+  the device remains A->B except during an actual selected read. D23-D25
+  likewise ground pin 9; D25 alone uses its traced D7.6 turnaround input.
+
+Both pass all 256 values in both directions. This is a functional
+constraint, not a copper promotion. Pin 9's
 visible trace ends at an isolated component-side circular landing whose
 backside projection is bare substrate; pin 11 disappears beneath the
-factory wire/tape bundle. Direct continuity must decide whether the board
-uses these obvious source rails or equivalent decoded controls.
+factory wire/tape bundle. Direct continuity must select a family or expose
+an equivalent decoded implementation.
 
 Its behavioral `fdc_1793` consumes logical DB, matching the default ekta37
 regression profile. The C trace now exposes `JUKU_FDC_BUS_INVERT=1`; the
