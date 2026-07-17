@@ -12,7 +12,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B0** | facts file, commons guard, bus contract, modular HDL twin | ✅ done | `revb_boot_check.sh` byte-identical to cosim, both decode modes |
 | **B1 — sim/firmware** | bring-up ROM, minimum-tier twin | ✅ done | `revb_bringup_check.sh`: TX stream == cosim via real 8251 |
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
-| **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8) | ⬜ next | (needs kicad-cli/yosys — installed) |
+| **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8) | 🟡 partial | LVS IN SYNC (CI); PCB gen + content-check + STEP ✅; routing ⛔ Java 25; DRC-clean/placement ⬜ visual layout |
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | ⬜ | |
 | **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
@@ -43,7 +43,8 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-**Stage B, TD.6.1** — now planned to task depth (TD.6.1–TD.8.3 in the execution
-guide; decisions D1.22–D1.25 in the build plan). First tasks that invoke
-yosys/kicad-cli; TD.7.4 routing additionally needs a Java 25 JRE (freerouting).
-Start in a fresh session where the KiCad output can be watched.
+**Finish Stage B**: (1) iterate `gen_revb_pcb.py` placement to DRC-clean (spread/
+rotate DIPs, silk off copper) with the mem board open in KiCad; (2) install a
+**Java 25** JRE + freerouting.jar and run `route_revb_pcb.sh mem`; (3) DRC to zero +
+STEP bbox sanity (should read ~100×60). Then Stage C replicates the proven pipeline
+to io → cpu → backplane. See execution-guide "Stage B status".

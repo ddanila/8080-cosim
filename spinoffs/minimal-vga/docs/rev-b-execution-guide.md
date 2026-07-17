@@ -422,6 +422,32 @@ One wrapper `kicad/revb/check_revb_mem.sh` chaining TD.6.3 → TD.7.2/7.3 → TD
 replication should be brief since the pipeline is now machinery, not exploration.
 *Acceptance:* one command green end-to-end. **Pipeline proven.**
 
+### Stage B status — PARTIAL (2026-07-17)
+
+The mem-card pipeline **machinery is proven** — every stage runs and produces
+validated output — with two stages tool/interaction-blocked:
+
+- **TD.6.1–6.3 LVS ✅** — structural netlist IN SYNC with the generated board.json
+  (28 nets, mis-wire caught); in the tier suite + CI lvs job.
+- **TD.7.1 footprints ✅** — all 7 mem types resolve (THT 1×39 present; no fallback).
+- **TD.7.2/7.3 PCB gen + content check ✅** — `gen_revb_pcb.py` emits
+  `fab/minimal-vga/revb/mem.kicad_pcb` (100×60, 10 footprints, 62 nets, bus on the
+  bottom edge, silk present); `check_revb_mem_pcb.py` green. (fab/ is untracked;
+  PCB sha256 `01d797d3…`.)
+- **TD.8.2 STEP ✅ (pipeline)** — exports and loads in FreeCAD, X measured 100.00.
+- **TD.7.4 routing ⛔ tool-blocked** — freerouting needs a **Java 25** runtime +
+  freerouting.jar (only Java 17 here). `route_revb_pcb.sh` is ready and skips
+  cleanly; note KiCad 10's kicad-cli has no specctra export, so DSN uses pcbnew.
+- **TD.8.1 DRC / placement ⬜ needs visual layout iteration** — first DRC pass shows
+  courtyard/clearance overlaps (rough hardcoded placement) + 90 unrouted items;
+  STEP bbox Y=155 vs 60 confirms a component 3D extent overshoots. Getting a
+  DRC-clean routed board is the watch-KiCad work: iterate `PLACE` in
+  `gen_revb_pcb.py` (spread/rotate DIPs, move silk off copper) with the board open,
+  then route (needs Java 25), then DRC to zero.
+
+`check_revb_mem.sh` runs the proven (tool-independent-where-possible) stages end to
+end. **Resume:** placement iteration + Java 25 routing, in a KiCad-visible session.
+
 ### Stage C — replicate (order: io → cpu → backplane)
 
 **TD.9 io / TD.10 cpu / TD.11 backplane** — run the proven pipeline per board
