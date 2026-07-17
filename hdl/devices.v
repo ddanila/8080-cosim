@@ -855,6 +855,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer write_track_pending_sector = 0;
     reg [9:0] write_track_seen = 0;
     integer write_track_format_error = 0;
+    reg [3:0] force_interrupt_mask = 4'b0000;
     reg intrq_r = 1'b0;
 
     wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
@@ -1414,11 +1415,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             2'd0: begin
                 command = D;
                 intrq_r = 1'b0;
+                force_interrupt_mask = 4'b0000;
                 if (is_read_sector(D)) begin_read_sector(D[4]);
                 else if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) begin
                     clear_transfer();
-                    intrq_r = D[3]; // D0 terminates silently; D8 is immediate
+                    force_interrupt_mask = D[3:0];
+                    intrq_r = D[3];
                 end
                 else if (is_write_sector(D)) begin_write_sector(D[4]);
                 else if (is_read_address(D)) begin_read_address();
@@ -1485,7 +1488,17 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end
 
     wire fdc_status_read_active = ~cs_n & ~rd_n & (A == 2'd0);
-    always @(posedge fdc_status_read_active) intrq_r = 1'b0;
+    always @(posedge fdc_status_read_active)
+        if (!force_interrupt_mask[3]) intrq_r = 1'b0;
+
+    always @(posedge ready)
+        if (force_interrupt_mask[0]) intrq_r = 1'b1;
+
+    always @(negedge ready)
+        if (force_interrupt_mask[1]) intrq_r = 1'b1;
+
+    always @(posedge index)
+        if (force_interrupt_mask[2]) intrq_r = 1'b1;
 
     wire [7:0] read_data =
         (A == 2'd0) ? effective_status :

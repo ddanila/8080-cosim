@@ -267,7 +267,52 @@ module juku_top_periph_bus_tb();
     io_write(8'h1C, 8'hD8);     // immediate Force Interrupt
     if (dut.fdc_intrq !== 1'b1) fail("FDC D8 immediate Force Interrupt did not raise INTRQ");
     io_read(8'h1C, rd);
-    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge immediate INTRQ");
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D8 immediate INTRQ did not remain asserted after status read");
+    io_write(8'h1C, 8'hD0);
+    if (dut.fdc_intrq !== 1'b0) fail("FDC D0 did not disarm immediate INTRQ");
+
+    force dut.U_FDC.ready = 1'b0;
+    io_write(8'h1C, 8'hD1);
+    force dut.U_FDC.ready = 1'b1;
+    #1;
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D1 not-ready to ready transition did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge D1 INTRQ");
+    force dut.U_FDC.ready = 1'b0;
+    #1;
+    force dut.U_FDC.ready = 1'b1;
+    #1;
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D1 did not remain armed for another ready transition");
+    io_read(8'h1C, rd);
+
+    io_write(8'h1C, 8'hD2);
+    force dut.U_FDC.ready = 1'b0;
+    #1;
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D2 ready to not-ready transition did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge D2 INTRQ");
+
+    force dut.U_FDC.index = 1'b0;
+    io_write(8'h1C, 8'hD4);
+    force dut.U_FDC.index = 1'b1;
+    #1;
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D4 index pulse did not raise INTRQ");
+    io_read(8'h1C, rd);
+    force dut.U_FDC.index = 1'b0;
+    #1;
+    force dut.U_FDC.index = 1'b1;
+    #1;
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D4 did not remain armed for another index pulse");
+    io_read(8'h1C, rd);
+    io_write(8'h1C, 8'hC1);
+    force dut.U_FDC.index = 1'b0;
+    #1;
+    force dut.U_FDC.index = 1'b1;
+    #1;
+    if (dut.fdc_intrq !== 1'b0) fail("FDC non-force command did not disarm D4 index interrupt");
+    io_write(8'h1C, 8'hD0);
+    release dut.U_FDC.ready;
+    release dut.U_FDC.index;
 
     io_write(8'h1D, 8'h00);
     io_write(8'h1E, 8'h07);

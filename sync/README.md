@@ -51,7 +51,7 @@ sync/d2_ready_path_check.sh
 These cover the real-ROM boot/framebuffer path, per-read agreement between
 `juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
 raw disk geometry, the bounded WD1793 boot subset plus Type-II multi-record,
-completion/status/D0/D8 INTRQ semantics, Read Address, and reconstructed
+completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
 one-revolution MFM Read Track plus representable writable-track formatting,
 raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.

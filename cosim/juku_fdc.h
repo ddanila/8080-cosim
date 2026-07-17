@@ -32,11 +32,16 @@ typedef struct {
   int write_track_pending_sector;
   uint16_t write_track_seen;
   int write_track_format_error;
+  uint8_t force_interrupt_mask;
+  int ready_line;
+  int index_line;
   int intrq;
 } juku_fdc;
 
 void juku_fdc_init(juku_fdc* fdc, juk_disk* disk);
 void juku_fdc_portc(juku_fdc* fdc, uint8_t portc);
+void juku_fdc_ready(juku_fdc* fdc, int ready);
+void juku_fdc_index(juku_fdc* fdc, int index);
 uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg);
 void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data);
 

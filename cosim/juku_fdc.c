@@ -473,11 +473,32 @@ void juku_fdc_portc(juku_fdc* fdc, uint8_t portc) {
 }
 
 
+void juku_fdc_ready(juku_fdc* fdc, int ready) {
+  ready = ready != 0;
+  if (!fdc->ready_line && ready && (fdc->force_interrupt_mask & 0x01)) {
+    fdc->intrq = 1;
+  }
+  if (fdc->ready_line && !ready && (fdc->force_interrupt_mask & 0x02)) {
+    fdc->intrq = 1;
+  }
+  fdc->ready_line = ready;
+}
+
+
+void juku_fdc_index(juku_fdc* fdc, int index) {
+  index = index != 0;
+  if (!fdc->index_line && index && (fdc->force_interrupt_mask & 0x04)) {
+    fdc->intrq = 1;
+  }
+  fdc->index_line = index;
+}
+
+
 uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg) {
   switch (reg & 3) {
     case 0: {
       uint8_t status = fdc->status;
-      fdc->intrq = 0;
+      if (!(fdc->force_interrupt_mask & 0x08)) fdc->intrq = 0;
       return status;
     }
     case 1:
@@ -514,11 +535,13 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
     case 0:
       fdc->command = data;
       fdc->intrq = 0;
+      fdc->force_interrupt_mask = 0;
       if (is_read_sector(data)) begin_read_sector(fdc, (data & 0x10) != 0);
       else if (is_type_i(data)) finish_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) {
         clear_transfer(fdc);
-        fdc->intrq = (data & 0x08) != 0;  // D0 terminates silently; D8 is immediate
+        fdc->force_interrupt_mask = data & 0x0F;
+        fdc->intrq = (data & 0x08) != 0;
       }
       else if (is_write_sector(data)) begin_write_sector(fdc, (data & 0x10) != 0);
       else if (is_read_address(data)) begin_read_address(fdc);

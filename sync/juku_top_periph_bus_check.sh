@@ -92,7 +92,7 @@ sync/juku_top_periph_bus_check.sh
 | Chip-select-qualified D100 path uses actual D93 \`/RE\` and stays A->B on the suppressed-\`/RE\` branch | $(if [ -n "$qualified_pass_line" ]; then echo PASS; else echo FAIL; fi) |
 | Always-enabled D100 path uses actual D93 \`/RE\` and stays A->B on the suppressed-\`/RE\` branch | $(if [ -n "$always_pass_line" ]; then echo PASS; else echo FAIL; fi) |
 | FDC accepts exact ROMBIOS first command \`0x02\` as restore and returns track 0 | $status |
-| FDC completion raises INTRQ, status read acknowledges it, D0 is silent, and D8 is immediate | $status |
+| FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | $status |
 | FDC seek/status/data through decoded ports \`0x1C..0x1F\` | $status |
 | First byte of \`JUKU1.CPM\` track 0 sector 2 read through top-level bus is \`0xC3\` | $status |
 | Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |

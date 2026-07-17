@@ -291,7 +291,47 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0xD8);
   fail |= expect_intrq(&fdc, 1, "D8 immediate force interrupt");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after immediate force interrupt");
-  fail |= expect_intrq(&fdc, 0, "D8 status acknowledgement");
+  fail |= expect_intrq(&fdc, 1, "D8 remains asserted after status read");
+  juku_fdc_write(&fdc, 0, 0xD0);
+  fail |= expect_intrq(&fdc, 0, "D0 disarms D8 immediate interrupt");
+
+  juku_fdc_ready(&fdc, 0);
+  juku_fdc_write(&fdc, 0, 0xD1);
+  fail |= expect_intrq(&fdc, 0, "D1 arms without immediate interrupt");
+  juku_fdc_ready(&fdc, 1);
+  fail |= expect_intrq(&fdc, 1, "D1 not-ready to ready interrupt");
+  fail |= expect_status(&fdc, 0, 0, "D1 status acknowledgement");
+  fail |= expect_intrq(&fdc, 0, "D1 status read clears interrupt");
+  juku_fdc_ready(&fdc, 0);
+  juku_fdc_ready(&fdc, 1);
+  fail |= expect_intrq(&fdc, 1, "D1 remains armed for another ready transition");
+  (void)juku_fdc_read(&fdc, 0);
+
+  juku_fdc_write(&fdc, 0, 0xD2);
+  juku_fdc_ready(&fdc, 0);
+  fail |= expect_intrq(&fdc, 1, "D2 ready to not-ready interrupt");
+  (void)juku_fdc_read(&fdc, 0);
+  fail |= expect_intrq(&fdc, 0, "D2 status read clears interrupt");
+  juku_fdc_ready(&fdc, 1);
+  juku_fdc_ready(&fdc, 0);
+  fail |= expect_intrq(&fdc, 1, "D2 remains armed for another not-ready transition");
+  (void)juku_fdc_read(&fdc, 0);
+
+  juku_fdc_index(&fdc, 0);
+  juku_fdc_write(&fdc, 0, 0xD4);
+  fail |= expect_intrq(&fdc, 0, "D4 arms without immediate interrupt");
+  juku_fdc_index(&fdc, 1);
+  fail |= expect_intrq(&fdc, 1, "D4 index interrupt");
+  (void)juku_fdc_read(&fdc, 0);
+  juku_fdc_index(&fdc, 0);
+  juku_fdc_index(&fdc, 1);
+  fail |= expect_intrq(&fdc, 1, "D4 remains armed for another index pulse");
+  (void)juku_fdc_read(&fdc, 0);
+  juku_fdc_write(&fdc, 0, 0xC1);
+  juku_fdc_index(&fdc, 0);
+  juku_fdc_index(&fdc, 1);
+  fail |= expect_intrq(&fdc, 0, "non-force command disarms D4 index interrupt");
+  juku_fdc_write(&fdc, 0, 0xD0);
 
   juku_fdc_write(&fdc, 1, 12);
   juku_fdc_write(&fdc, 2, 4);

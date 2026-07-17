@@ -54,11 +54,13 @@ physical D93/D94 wiring.
   motor-not-ready behavior.
 - C and HDL now share the WD1793 interrupt contract for the modeled commands:
   loading a command clears pending INTRQ, normal/error completion raises it,
-  and reading status acknowledges it. Force Interrupt `0xD0` terminates an
-  active transfer without raising INTRQ, while `0xD8` raises the immediate
-  interrupt and a subsequent status read clears it. The ready-transition and
-  index-triggered Force conditions depend on physical timing inputs and remain
-  explicit boundaries.
+  and reading status acknowledges it. Type-IV Force Interrupt `0xD0` terminates
+  an active transfer silently; `0xD1` arms not-ready-to-ready, `0xD2` arms
+  ready-to-not-ready, and `0xD4` arms every index pulse. Those event modes can
+  reassert after a status acknowledgement until another command disarms them.
+  `0xD8` asserts immediately and remains asserted across status reads until a
+  `0xD0` or non-Force command disarms it. C, HDL, and decoded-bus guards cover
+  the event edges, acknowledgement, reassertion, and disarm lifecycle.
 - Type-II bit 4 continues across records and increments the sector register.
   Read and writable-image guards traverse sectors 9 and 10 byte-for-byte,
   advance to sector 11, and terminate with Record Not Found exactly as the
@@ -343,9 +345,9 @@ evidence exists.
   multiple-record continuation, not a general WD1793 conformance model. Byte
   deadlines/lost-data behavior, arbitrary flux/sector layouts, deleted-data
   metadata, inter-record delays, and physical rotational timing remain outside
-  its proved scope. Force Interrupt conditions 0-2
-  (ready transitions and index pulse) likewise await those physical timing
-  inputs; only terminate-silent `0xD0` and immediate `0xD8` are claimed.
+  its proved scope. Type-IV READY-transition and index-event semantics are
+  guarded, but the board's physical event sources, pulse widths, and rotational
+  timing remain outside this byte-level shim.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
   continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
   and required cycle truth table are now guarded; only its board control sources

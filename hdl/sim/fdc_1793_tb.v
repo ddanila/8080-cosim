@@ -3,6 +3,7 @@
 
 module fdc_1793_tb;
   reg clk = 0, cs_n = 1, rd_n = 1, wr_n = 1, motor_on = 0, side = 0;
+  reg ready = 0, index = 0;
   reg [1:0] A = 0;
   reg [7:0] drive = 8'h00;
   reg drive_en = 0;
@@ -20,7 +21,8 @@ module fdc_1793_tb;
   integer first_format_sector_end = 0;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
-               .clk(clk), .motor_on(motor_on), .side(side), .drq(drq), .intrq(intrq));
+               .clk(clk), .motor_on(motor_on), .side(side), .ready(ready), .index(index),
+               .drq(drq), .intrq(intrq));
 
   always #5 clk = ~clk;
 
@@ -309,7 +311,43 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'hd8);
     expect_intrq(1'b1, "D8 immediate force interrupt");
     expect_status(8'h03, 8'h00, "after immediate force interrupt");
-    expect_intrq(1'b0, "D8 status acknowledgement");
+    expect_intrq(1'b1, "D8 remains asserted after status read");
+    write_reg(2'd0, 8'hd0);
+    expect_intrq(1'b0, "D0 disarms D8 immediate interrupt");
+
+    ready = 0;
+    write_reg(2'd0, 8'hd1);
+    expect_intrq(1'b0, "D1 arms without immediate interrupt");
+    ready = 1; #1;
+    expect_intrq(1'b1, "D1 not-ready to ready interrupt");
+    expect_status(8'h00, 8'h00, "D1 status acknowledgement");
+    expect_intrq(1'b0, "D1 status read clears interrupt");
+    ready = 0; #1; ready = 1; #1;
+    expect_intrq(1'b1, "D1 remains armed for another ready transition");
+    read_reg(2'd0, got);
+
+    write_reg(2'd0, 8'hd2);
+    ready = 0; #1;
+    expect_intrq(1'b1, "D2 ready to not-ready interrupt");
+    read_reg(2'd0, got);
+    expect_intrq(1'b0, "D2 status read clears interrupt");
+    ready = 1; #1; ready = 0; #1;
+    expect_intrq(1'b1, "D2 remains armed for another not-ready transition");
+    read_reg(2'd0, got);
+
+    index = 0;
+    write_reg(2'd0, 8'hd4);
+    expect_intrq(1'b0, "D4 arms without immediate interrupt");
+    index = 1; #1;
+    expect_intrq(1'b1, "D4 index interrupt");
+    read_reg(2'd0, got);
+    index = 0; #1; index = 1; #1;
+    expect_intrq(1'b1, "D4 remains armed for another index pulse");
+    read_reg(2'd0, got);
+    write_reg(2'd0, 8'hc1);
+    index = 0; #1; index = 1; #1;
+    expect_intrq(1'b0, "non-force command disarms D4 index interrupt");
+    write_reg(2'd0, 8'hd0);
 
     write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
