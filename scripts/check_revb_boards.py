@@ -160,6 +160,19 @@ def main() -> int:
                 if net in all_sigs and net not in declared and net not in GLOBALS:
                     fail.append(f"{name}.board.json {comp['ref']} touches bus signal {net} "
                                 f"not in the card's declared role")
+        # net-level LVS-lite: the derived nets must invert the chips' pins exactly,
+        # and every inter-chip functional net must have >=2 endpoints (no danglers).
+        derived = {}
+        for comp in board["chips"]:
+            for pn, net in comp["pins"].items():
+                derived.setdefault(net, []).append([comp["ref"], pn])
+        board_nets = {n: (e["nodes"] if isinstance(e, dict) else e) for n, e in board.get("nets", {}).items()}
+        if board_nets != derived:
+            fail.append(f"{name}.board.json 'nets' section is out of sync with chip pins")
+        # NB: a per-card 'nets' section legitimately has single-endpoint nets -- a bus
+        # signal a card doesn't use still appears on its connector and reaches other
+        # cards through the backplane. Cross-card danglers are only meaningful on the
+        # assembled netlist, which is the TC.4/TC.5 (full LVS + schematic) scope.
 
     if fail:
         print("rev B board connectivity check FAILED:")

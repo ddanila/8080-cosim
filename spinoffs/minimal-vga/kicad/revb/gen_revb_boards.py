@@ -105,6 +105,26 @@ def bus_connector(ref):
     return {"ref": ref, "type": "REVB_BUS_39_10", "pins": pins}
 
 
+POWER_NETS = {"VCC5", "GND"}
+
+
+def nets_from_chips(chips):
+    """Invert chips[].pins into a nets dict (net -> nodes[[ref,pin]]), the shape
+    netlist_from_board.py / sync/lvs.py consume. Power nets are flagged power:true
+    so LVS drops them (HDL models have no power pins)."""
+    nets = {}
+    for comp in chips:
+        for pinnum, net in comp["pins"].items():
+            nets.setdefault(net, []).append([comp["ref"], pinnum])
+    out = {}
+    for net, nodes in nets.items():
+        if net in POWER_NETS:
+            out[net] = {"nodes": nodes, "power": True}
+        else:
+            out[net] = {"nodes": nodes}
+    return out
+
+
 def build(card):
     chips = []
     if card == "backplane":
@@ -115,7 +135,8 @@ def build(card):
         chips.append(bus_connector("J_BUS"))
         for ref, typ in CARD_CHIPS[card]:
             chips.append({"ref": ref, "type": typ, "pins": dict(CHIP_TYPES[typ])})
-    return {"card": card, "generated_by": "gen_revb_boards.py", "chips": chips}
+    return {"card": card, "generated_by": "gen_revb_boards.py",
+            "chips": chips, "nets": nets_from_chips(chips)}
 
 
 def main():
