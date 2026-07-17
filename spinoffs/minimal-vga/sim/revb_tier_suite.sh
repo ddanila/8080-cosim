@@ -14,6 +14,9 @@ python3 scripts/check_spinoff_commons.py
 echo "== rev B: card connectivity specs + netlist completeness (T1.3-T1.6, D1.18) =="
 python3 scripts/check_revb_boards.py --completeness
 
+echo "== rev B: mem-card LVS (structural netlist vs board.json; skips w/o yosys) =="
+spinoffs/minimal-vga/sync/revb_lvs.sh mem
+
 echo "== rev B: per-card unit TBs (BFM) =="
 spinoffs/minimal-vga/sim/revb_card_tb_check.sh
 

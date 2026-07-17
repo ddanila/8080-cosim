@@ -32,6 +32,8 @@ on:
       - 'scripts/check_spinoff_commons.py'
       - 'scripts/check_revb_boards.py'
       - 'spinoffs/minimal-vga/kicad/revb/**'
+      - 'spinoffs/minimal-vga/sync/revb_lvs.sh'
+      - 'spinoffs/minimal-vga/sync/revb_mem_map.json'
       - 'spinoffs/minimal-vga/roms/ekta37_z80.bin'
       - 'spinoffs/minimal-vga/external/tv80'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
@@ -61,6 +63,8 @@ on:
       - 'scripts/check_spinoff_commons.py'
       - 'scripts/check_revb_boards.py'
       - 'spinoffs/minimal-vga/kicad/revb/**'
+      - 'spinoffs/minimal-vga/sync/revb_lvs.sh'
+      - 'spinoffs/minimal-vga/sync/revb_mem_map.json'
       - 'spinoffs/minimal-vga/roms/ekta37_z80.bin'
       - 'spinoffs/minimal-vga/external/tv80'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
@@ -83,6 +87,9 @@ jobs:
 
       - name: Run LVS check
         run: sh sync/check.sh
+
+      - name: Run rev B mem-card LVS
+        run: sh spinoffs/minimal-vga/sync/revb_lvs.sh mem
 
   behavioral:
     runs-on: ubuntu-latest
