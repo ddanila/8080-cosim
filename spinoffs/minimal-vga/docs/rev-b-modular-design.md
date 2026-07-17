@@ -67,7 +67,6 @@ Three tiers:
   = low risk) or bench-validate the physical backplane.
 
 ## Open questions
-- Merge CPU+Memory onto one card to save a connector? (cheaper stack, but re-spin more often.)
-- Keep РТ4/РЕ3-style decode, or move to a GAL on the Memory card?
-- Slot count / card pitch on the backplane (0.6" vs 0.8").
-- Interrupt sources and priority.
+All resolved in `rev-b-build-plan.md` (separate CPU/Memory cards; GAL22V10 decode
+reusing rev A equations; 6 slots @ ~19 mm; tiered interrupts — none until the
+full-Juku tier, then 8259-class PIC with FRAME_TICK on USER1).
