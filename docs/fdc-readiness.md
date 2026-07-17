@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **BOOT + TYPE-II/TYPE-III/INTRQ HDL FDC READY**
+Status: **BOOT + TYPE-II/TYPE-III/LOST-DATA/INTRQ HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -30,14 +30,31 @@ physical D93/D94 wiring.
   `0xD8` asserts immediately and remains asserted across status reads until a
   `0xD0` or non-Force command disarms it. C, HDL, and decoded-bus guards cover
   the event edges, acknowledgement, reassertion, and disarm lifecycle.
+- C and HDL share the datasheet-defined one-byte DRQ service deadline for an
+  active Type-II/III byte stream. The
+  modeled window is 64 2 MHz-equivalent ticks, i.e. one 32 us MFM byte at the
+  Juku image's 250 kbit/s data rate. An unserviced read byte is overwritten by
+  the next assembled byte, sets LOST DATA, and the command continues. An
+  unserviced first Write Sector or Write Track request terminates before media
+  changes; the byte-level shim conservatively applies the same bounded window
+  while exact ID-to-data and command-to-index lead-in remain rotational
+  boundaries. After the first byte is accepted, a missed write request substitutes
+  `0x00`, sets LOST DATA, and continues. C/HDL unit guards prove all four cases,
+  including unchanged media and persisted zero substitution; the decoded
+  top-level guard proves read overwrite and S2 through D94 plus logical DB and
+  both safe D100 families. Exact wall-clock calibration remains conditional on
+  the measurement-gated physical D93.24 clock source. Accordingly, the C oracle
+  advances the deadline from executed 8080 cycles, while the autonomous HDL
+  timer is enabled only in focused unit/decoded guards with `FDC_BYTE_TIMING`;
+  the uninterrupted physical top remains untimed until D93.24 is measured.
 - Type-II bit 4 continues across records and increments the sector register.
   Read and writable-image guards traverse sectors 9 and 10 byte-for-byte,
   advance to sector 11, and terminate with Record Not Found exactly as the
   datasheet specifies when the register exceeds the ten-sector track. A
   mid-command silent `0xD0` Force Interrupt stops the transfer while preserving
   the current incremented sector; the writable guard proves both completed sectors persist.
-  Inter-record index/gap delays and per-byte DRQ deadlines remain timing
-  boundaries, not requirements silently approximated by this byte-level shim.
+  Inter-record index/gap delays remain timing boundaries rather than invented
+  rotational behavior in this byte-level shim.
 - Read Address emits the complete six-byte ID field
   `{track, side, sector, length, CRC1, CRC2}`. Both models use the WD1793
   datasheet's `x^16+x^12+x^5+1` polynomial, all-ones preset, and ID address
@@ -75,8 +92,8 @@ physical D93/D94 wiring.
   unrepresentable gap-only revolution completes with the modeled WRITE FAULT
   bit and leaves the flat image unchanged instead of silently claiming that
   unrepresentable flux/ID metadata was saved. Read-only and motor-off commands
-  still complete with WRITE PROTECT and NOT READY respectively. Byte deadlines,
-  actual index timing, deleted-data metadata, arbitrary sector geometry, and
+  still complete with WRITE PROTECT and NOT READY respectively. Actual index
+  timing, deleted-data metadata, arbitrary sector geometry, and
   partial gap/header damage remain explicit backend/timing boundaries.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
@@ -229,8 +246,8 @@ physical D93/D94 wiring.
 - The firmware path intentionally stops at its proved single-sector contract.
   The independent command guard additionally covers multiple-record Type-II
   continuation, Read Address, reconstructed Read Track, and representable Juku
-  MFM Write Track formatting, but neither model claims general WD1793 lost-data,
-  arbitrary-flux, rotational, or timing conformance.
+  MFM Write Track formatting and the datasheet one-byte LOST DATA contract, but
+  neither model claims arbitrary-flux, rotational, or general timing conformance.
 
 ## RWFLOPPY deblocking provenance
 
@@ -311,10 +328,11 @@ evidence exists.
 
 - The model is a Juku boot/media shim with datasheet-guarded Read Address,
   reconstructed Read Track, representable MFM Write Track, and Type-II
-  multiple-record continuation, not a general WD1793 conformance model. Byte
-  deadlines/lost-data behavior, exact Type-I step/settle/head-unload timing,
-  arbitrary flux/sector layouts, deleted-data metadata, inter-record delays,
-  and physical rotational timing remain outside
+  multiple-record continuation and the datasheet one-byte LOST DATA contract,
+  not a general WD1793 conformance model. Exact physical calibration of the
+  byte deadline and initial-write rotational lead-in, Type-I
+  step/settle/head-unload timing, arbitrary flux/sector
+  layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are
   guarded, but the board's physical event sources, pulse widths, and rotational
   timing remain outside this byte-level shim.

@@ -20,10 +20,10 @@ QUAL_WRITABLE_OUT="$TMP/qualified-writable-out.txt"
 ALWAYS_OUT="$TMP/always-out.txt"
 ALWAYS_WRITABLE_OUT="$TMP/always-writable-out.txt"
 
-iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
-iverilog -g2012 -DFDC_VA87_CS_QUALIFIED -o "$QUAL_SIM" \
+iverilog -g2012 -DFDC_BYTE_TIMING -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_VA87_CS_QUALIFIED -o "$QUAL_SIM" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
-iverilog -g2012 -DFDC_VA87_ALWAYS_ENABLED -o "$ALWAYS_SIM" \
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_VA87_ALWAYS_ENABLED -o "$ALWAYS_SIM" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
 vvp "$SIM" +disk=media/disks/JUKU1.CPM +disk_heads=2 >"$OUT"
 cp media/disks/JUKU1.CPM "$TMP/JUKU1-writable.CPM"
@@ -94,7 +94,7 @@ sync/juku_top_periph_bus_check.sh
 | FDC accepts exact ROMBIOS first command \`0x02\` as restore and returns track 0 | $status |
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | $status |
 | Type-I physical-head/update/verify/SEEK-ERROR status plus seek/data through decoded ports \`0x1C..0x1F\` | $status |
-| First byte of \`JUKU1.CPM\` track 0 sector 2 read through top-level bus is \`0xC3\` | $status |
+| One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (\`0x5C\`) through the top-level bus | $status |
 | Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | $status |
 | ROMBIOS \`0xA2\` write-sector streams 512 bytes through D94-decoded port \`0x1F\` and reads them back from a writable copy | $status |

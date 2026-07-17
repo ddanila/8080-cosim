@@ -274,13 +274,24 @@ module juku_top_periph_bus_tb();
 
     io_write(8'h1C, 8'h00);      // RESTORE physically recalibrates track zero
     io_write(8'h1C, 8'h80);     // FDC read-sector command
+    while (dut.U_FDC.drq_ticks < 63) @(posedge osc);
+    #1;
+    if (dut.U_FDC.buffer_pos !== 0 || (dut.U_FDC.status & 8'h04) !== 0) begin
+      $display("JUKU-TOP-PERIPH-BUS: deadline early pos=%0d ticks=%0d status=%02x",
+               dut.U_FDC.buffer_pos, dut.U_FDC.drq_ticks, dut.U_FDC.status);
+      fail("FDC read lost-data deadline fired before one byte time");
+    end
+    @(negedge osc); #1;
+    if (dut.U_FDC.buffer_pos !== 1) fail("FDC read deadline did not discard one byte");
     io_read(8'h1C, rd);
-    if ((rd & 8'h03) !== 8'h03) fail("FDC read-sector did not assert BUSY+DRQ");
+    if ((rd & 8'h07) !== 8'h07) fail("FDC read-sector did not report BUSY+DRQ+LOST DATA");
     io_read(8'h1F, rd);
-    if (rd !== 8'hc3) fail("FDC first vendored sector byte mismatch");
+    if (rd !== 8'h5c) fail("FDC lost-data overwrite did not expose second vendored byte");
 
     io_write(8'h1C, 8'hD0);     // abort the partial single-sector read
     if (dut.fdc_intrq !== 1'b0) fail("FDC D0 abort incorrectly raised INTRQ");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h07) !== 8'h04) fail("FDC D0 abort did not preserve LOST DATA status");
     io_write(8'h1C, 8'hD8);     // immediate Force Interrupt
     if (dut.fdc_intrq !== 1'b1) fail("FDC D8 immediate Force Interrupt did not raise INTRQ");
     io_read(8'h1C, rd);

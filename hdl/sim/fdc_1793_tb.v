@@ -12,6 +12,7 @@ module fdc_1793_tb;
   integer errors = 0;
   integer i;
   reg [7:0] got;
+  reg [7:0] missed_read_next;
   reg disk_mode = 0;
   reg writable_mode = 0;
   reg [7:0] format_stream [0:6249];
@@ -190,6 +191,32 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'h80);
     expect_status(8'h13, 8'h10, "read-sector rejects register/head mismatch");
     write_reg(2'd0, 8'h00);
+    seek_track(8'd12);
+    write_reg(2'd2, 8'd4);
+    write_reg(2'd0, 8'h80);
+    missed_read_next = disk_mode ? dut.sector_buf[1] : want_byte(1, 8'd12, 1'b0, 8'd4);
+    while (dut.drq_ticks < 63) @(posedge clk);
+    #1;
+    if (dut.buffer_pos !== 0 || (dut.status & 8'h04) !== 0) begin
+      $display("FDC-1793: FAIL read deadline fired early pos=%0d status=%02x",
+               dut.buffer_pos, dut.status);
+      errors = errors + 1;
+    end
+    @(posedge clk); #1;
+    if (dut.buffer_pos !== 1) begin
+      $display("FDC-1793: FAIL read deadline did not discard one byte pos=%0d", dut.buffer_pos);
+      errors = errors + 1;
+    end
+    expect_status(8'h07, 8'h07, "read lost-data deadline");
+    read_reg(2'd3, got);
+    if (got !== missed_read_next) begin
+      $display("FDC-1793: FAIL read lost-data overwrite got=%02x want=%02x",
+               got, missed_read_next);
+      errors = errors + 1;
+    end
+    write_reg(2'd0, 8'hd0);
+    expect_status(8'h07, 8'h04, "read lost-data abort preserves status");
+
     seek_track(8'd12);
 
     write_reg(2'd0, 8'h50);
@@ -417,6 +444,42 @@ module fdc_1793_tb;
     if (disk_mode && writable_mode) begin
       seek_track(8'd8);
       write_reg(2'd2, 8'd3);
+
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
+      write_reg(2'd0, 8'hA2);
+      while (dut.status[0]) @(posedge clk);
+      #1;
+      expect_intrq(1'b1, "first write-byte timeout completion");
+      expect_status(8'h07, 8'h04, "first write-byte timeout status");
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== baseline_sector[i]) begin
+          $display("FDC-1793: FAIL first write timeout changed byte %0d", i);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
+
+      write_reg(2'd0, 8'hA2);
+      write_reg(2'd3, 8'hA5);
+      while (dut.buffer_pos < 2) @(posedge clk);
+      #1;
+      for (i = 2; i < 512; i = i + 1) write_reg(2'd3, 8'hC0 ^ i[7:0]);
+      expect_status(8'h07, 8'h04, "subsequent write-byte zero substitution");
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if ((i == 0 && got !== 8'hA5) || (i == 1 && got !== 8'h00) ||
+            (i >= 2 && got !== (8'hC0 ^ i[7:0]))) begin
+          $display("FDC-1793: FAIL write lost-data byte %0d got=%02x", i, got);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
+
+      write_reg(2'd2, 8'd3);
       write_reg(2'd0, 8'hA2);  // exact ROMBIOS side-aware write-sector variant
       expect_status(8'h03, 8'h03, "writable write-sector command");
       for (i = 0; i < 512; i = i + 1) write_reg(2'd3, 8'h5A ^ i[7:0]);
@@ -479,6 +542,12 @@ module fdc_1793_tb;
       end
       seek_track(8'd8);
       write_reg(2'd2, 8'd10);
+      write_reg(2'd0, 8'hf4);
+      while (dut.status[0]) @(posedge clk);
+      #1;
+      expect_intrq(1'b1, "first write-track byte timeout completion");
+      expect_status(8'h07, 8'h04, "first write-track byte timeout status");
+
       write_reg(2'd0, 8'hf4);
       expect_status(8'h03, 8'h03, "writable write-track command");
       for (i = 0; i < format_len; i = i + 1) write_reg(2'd3, format_stream[i]);

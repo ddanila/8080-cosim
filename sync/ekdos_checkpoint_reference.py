@@ -33,6 +33,8 @@ EXPECTED = {
     "fdc_enabled": "1",
     "fdc_motor_on": "0",
     "fdc_sector": "01",
+    "fdc_drq_ticks": "0",
+    "fdc_write_first_byte_pending": "0",
 }
 EXPECTED_WRITES = "30000"
 EXPECTED_RAM_SHA = "eaa42964cdbc37bce58081edc085c5bcf94e95deed6454230e1aab8f1c3a38d4"
@@ -183,6 +185,8 @@ def main() -> int:
         "fdc_track",
         "fdc_physical_track",
         "fdc_sector",
+        "fdc_drq_ticks",
+        "fdc_write_first_byte_pending",
     ):
         lines.append(f"| `{key}` | `{state.get(key, 'missing')}` |")
     lines.extend(

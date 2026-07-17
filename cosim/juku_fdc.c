@@ -14,6 +14,8 @@ enum {
   ST_NOT_READY = 0x80,
 };
 
+enum { DRQ_BYTE_TICKS = 64 };
+
 enum {
   WT_SCAN = 0,
   WT_ID = 1,
@@ -86,6 +88,8 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_pending_sector = 0;
   fdc->write_track_seen = 0;
   fdc->write_track_format_error = 0;
+  fdc->drq_ticks = 0;
+  fdc->write_first_byte_pending = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
@@ -104,6 +108,7 @@ static int load_read_sector(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = JUK_SECTOR_SIZE;
   fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->drq_ticks = 0;
   return 0;
 }
 
@@ -198,8 +203,10 @@ static void begin_write_sector(juku_fdc* fdc, int multi_record) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = JUK_SECTOR_SIZE;
   fdc->write_transfer = 1;
+  fdc->write_first_byte_pending = 1;
   fdc->multi_record = multi_record;
   fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->drq_ticks = 0;
 }
 
 
@@ -234,6 +241,7 @@ static void begin_read_address(juku_fdc* fdc) {
   fdc->buffer_len = 6;
   fdc->read_address_transfer = 1;
   fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->drq_ticks = 0;
 }
 
 
@@ -315,11 +323,14 @@ static void begin_read_track(juku_fdc* fdc) {
   fdc->buffer_len = pos;
   fdc->read_track_transfer = 1;
   fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->drq_ticks = 0;
 }
 
 
 static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
   if (!fdc->write_transfer || fdc->buffer_pos >= fdc->buffer_len) return;
+  fdc->write_first_byte_pending = 0;
+  fdc->drq_ticks = 0;
   fdc->buffer[fdc->buffer_pos++] = data;
   if (fdc->buffer_pos < fdc->buffer_len) return;
   int rc = juk_disk_write_sector(
@@ -343,6 +354,7 @@ static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = JUK_SECTOR_SIZE;
   fdc->write_transfer = 1;
+  fdc->write_first_byte_pending = 0;
   fdc->status |= ST_BUSY | ST_DRQ;
 }
 
@@ -376,6 +388,9 @@ static void finish_write_track_sector(juku_fdc* fdc) {
 
 static void accept_write_track_byte(juku_fdc* fdc, uint8_t data) {
   if (!fdc->write_track_transfer) return;
+
+  fdc->write_first_byte_pending = 0;
+  fdc->drq_ticks = 0;
 
   fdc->write_track_output_pos += data == 0xF7 ? 2u : 1u;
   const uint8_t decoded = write_track_decoded_byte(data);
@@ -484,9 +499,69 @@ static void begin_write_track(juku_fdc* fdc) {
     return;
   }
   fdc->write_track_transfer = 1;
+  fdc->write_first_byte_pending = 1;
   fdc->write_track_state = WT_SCAN;
   fdc->write_track_pending_sector = 0;
   fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->drq_ticks = 0;
+}
+
+
+static void advance_read_byte(juku_fdc* fdc) {
+  fdc->buffer_pos++;
+  fdc->drq_ticks = 0;
+  if (fdc->buffer_pos < fdc->buffer_len) return;
+
+  if (fdc->read_address_transfer) {
+    fdc->sector = fdc->buffer[0];
+    complete_transfer(fdc);
+  } else if (fdc->multi_record) {
+    fdc->sector++;
+    if (load_read_sector(fdc) != 0) {
+      complete_transfer(fdc);
+      fdc->status |= ST_RNF;
+    }
+  } else {
+    complete_transfer(fdc);
+  }
+}
+
+
+static void miss_drq_byte(juku_fdc* fdc) {
+  if (!(fdc->status & ST_BUSY) || !(fdc->status & ST_DRQ)) return;
+  fdc->status |= ST_TRACK0_LOST;  // Type-II/III meaning: LOST DATA
+  fdc->drq_ticks = 0;
+
+  if (fdc->write_transfer) {
+    if (fdc->write_first_byte_pending) {
+      complete_transfer(fdc);
+    } else {
+      accept_write_byte(fdc, 0x00);
+    }
+  } else if (fdc->write_track_transfer) {
+    if (fdc->write_first_byte_pending) {
+      complete_transfer(fdc);
+    } else {
+      accept_write_track_byte(fdc, 0x00);
+    }
+  } else if (fdc->buffer_pos < fdc->buffer_len) {
+    // The next assembled byte overwrites the unserviced Data Register.  The
+    // byte-level backend represents that by discarding the current byte.
+    advance_read_byte(fdc);
+  }
+}
+
+
+void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
+  while (ticks && (fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
+    const unsigned remaining = DRQ_BYTE_TICKS - fdc->drq_ticks;
+    if (ticks < remaining) {
+      fdc->drq_ticks += ticks;
+      return;
+    }
+    ticks -= remaining;
+    miss_drq_byte(fdc);
+  }
 }
 
 
@@ -551,21 +626,8 @@ uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg) {
       return fdc->sector;
     default:
       if (fdc->buffer_pos < fdc->buffer_len) {
-        fdc->data = fdc->buffer[fdc->buffer_pos++];
-        if (fdc->buffer_pos >= fdc->buffer_len) {
-          if (fdc->read_address_transfer) {
-            fdc->sector = fdc->buffer[0];
-            complete_transfer(fdc);
-          } else if (fdc->multi_record) {
-            fdc->sector++;
-            if (load_read_sector(fdc) != 0) {
-              complete_transfer(fdc);
-              fdc->status |= ST_RNF;
-            }
-          } else {
-            complete_transfer(fdc);
-          }
-        }
+        fdc->data = fdc->buffer[fdc->buffer_pos];
+        advance_read_byte(fdc);
         return fdc->data;
       }
       fdc->status &= (uint8_t)~ST_DRQ;

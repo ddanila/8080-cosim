@@ -13,6 +13,7 @@ enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
   ST_TRACK0 = 0x04,
+  ST_LOST_DATA = 0x04,
   ST_RNF = 0x10,
   ST_HEAD_LOADED = 0x20,
   ST_WRITE_FAULT = 0x20,
@@ -376,6 +377,21 @@ int main(void) {
 
   uint8_t want[JUK_SECTOR_SIZE];
   fill_sector(want, 12, 0, 4);
+  juku_fdc_tick(&fdc, 63);
+  fail |= expect_status(&fdc, ST_LOST_DATA, 0, "read before one-byte deadline");
+  juku_fdc_tick(&fdc, 1);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_BUSY | ST_DRQ | ST_LOST_DATA, "read lost-data deadline");
+  if (juku_fdc_read(&fdc, 3) != want[1]) {
+    fprintf(stderr, "read lost-data overwrite did not expose byte 1\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0xD0);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_LOST_DATA, "read lost-data abort preserves status");
+
+  juku_fdc_write(&fdc, 2, 4);
+  juku_fdc_write(&fdc, 0, 0x80);
   for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
     uint8_t got = juku_fdc_read(&fdc, 3);
     if (got != want[i]) {
@@ -454,6 +470,37 @@ int main(void) {
   juku_fdc_portc(&fdc, 0x44);  // motor on, side 1
   seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 3);
+
+  uint8_t baseline[JUK_SECTOR_SIZE];
+  if (juk_disk_read_sector(&disk, 8, 1, 3, baseline) != 0) {
+    fprintf(stderr, "failed to capture write-timeout baseline\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0xA2);
+  juku_fdc_tick(&fdc, 64);
+  fail |= expect_intrq(&fdc, 1, "first write-byte timeout completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_LOST_DATA, "first write-byte timeout status");
+  uint8_t after_timeout[JUK_SECTOR_SIZE];
+  if (juk_disk_read_sector(&disk, 8, 1, 3, after_timeout) != 0 ||
+      memcmp(baseline, after_timeout, sizeof(baseline)) != 0) {
+    fprintf(stderr, "first write-byte timeout modified media\n");
+    fail = 1;
+  }
+
+  juku_fdc_write(&fdc, 0, 0xA2);
+  juku_fdc_write(&fdc, 3, 0xA5);
+  juku_fdc_tick(&fdc, 64);  // missed second byte is written as zero
+  for (int i = 2; i < JUK_SECTOR_SIZE; i++) juku_fdc_write(&fdc, 3, (uint8_t)i);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_LOST_DATA, "subsequent write-byte zero substitution");
+  if (juk_disk_read_sector(&disk, 8, 1, 3, after_timeout) != 0 ||
+      after_timeout[0] != 0xA5 || after_timeout[1] != 0x00) {
+    fprintf(stderr, "write lost-data substitution did not persist A5,00\n");
+    fail = 1;
+  }
+
+  juku_fdc_write(&fdc, 2, 3);
   juku_fdc_write(&fdc, 0, 0xA2);  // exact side-aware ROMBIOS variant
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "writable write-sector command");
   for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
@@ -511,6 +558,12 @@ int main(void) {
   }
   seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 10);
+  juku_fdc_write(&fdc, 0, 0xF4);
+  juku_fdc_tick(&fdc, 64);
+  fail |= expect_intrq(&fdc, 1, "first write-track byte timeout completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_LOST_DATA, "first write-track byte timeout status");
+
   juku_fdc_write(&fdc, 0, 0xF4);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
                         "writable write-track command");

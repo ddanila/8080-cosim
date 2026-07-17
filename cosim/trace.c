@@ -56,6 +56,7 @@ static int           out_seen[256], in_seen[256];
 static unsigned long wpage[256];
 static unsigned long mode_switches;
 static unsigned long fdc_data_reads, stop_fdc_data_reads;
+static unsigned long fdc_last_cyc;
 static int           timing_log = 0;
 static int           io_trace = 0;
 
@@ -200,7 +201,14 @@ static void wb(void* u, uint16_t a, uint8_t v) {
   }
 }
 
+static void sync_fdc_time(i8080* cpu) {
+  if (!fdc_enabled || !cpu || cpu->cyc <= fdc_last_cyc) return;
+  juku_fdc_tick(&fdc, (unsigned)(cpu->cyc - fdc_last_cyc));
+  fdc_last_cyc = cpu->cyc;
+}
+
 static uint8_t pin(void* u, uint8_t p) {
+  sync_fdc_time((i8080*)u);
   if (!in_seen[p]) { in_seen[p] = 1; fprintf(stderr, "[IN ] first read  port 0x%02X\n", p); }
   if (timing_log && in_count[p] == 0) {
     i8080* cpu = (i8080*)u;
@@ -225,6 +233,7 @@ static uint8_t pin(void* u, uint8_t p) {
 }
 
 static void pout(void* u, uint8_t p, uint8_t v) {
+  sync_fdc_time((i8080*)u);
   if (!out_seen[p]) { out_seen[p] = 1; fprintf(stderr, "[OUT] first write port 0x%02X = 0x%02X\n", p, v); }
   if (timing_log && out_count[p] == 0) {
     i8080* cpu = (i8080*)u;
@@ -362,6 +371,8 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "fdc_command=%02X\n", fdc.command);
   fprintf(state_out, "fdc_buffer_pos=%u\n", fdc.buffer_pos);
   fprintf(state_out, "fdc_buffer_len=%u\n", fdc.buffer_len);
+  fprintf(state_out, "fdc_drq_ticks=%u\n", fdc.drq_ticks);
+  fprintf(state_out, "fdc_write_first_byte_pending=%d\n", fdc.write_first_byte_pending);
   fprintf(state_out, "fdc_data_reads=%lu\n", fdc_data_reads);
   for (int p = 0; p < 256; p++) {
     if (out_count[p] || in_count[p] || out_last[p])
@@ -469,6 +480,7 @@ int main(int argc, char** argv) {
       fprintf(stderr, "[CHK] cmp computed=%02X stored=%02X %s\n",
               cpu.b, cpu.a, cpu.b==cpu.a ? "OK" : "**MISMATCH**");
     i8080_step(&cpu);
+    sync_fdc_time(&cpu);
     // --- frame interrupt: 8253 VER-RTR -> 8259 IR5 -> CPU (MCS-80 CALL to the ICW vector) ---
     if (frame_cyc && cpu.cyc >= next_frame) {
       next_frame += frame_cyc;

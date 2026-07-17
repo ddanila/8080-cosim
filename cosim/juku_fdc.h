@@ -33,6 +33,8 @@ typedef struct {
   int write_track_pending_sector;
   uint16_t write_track_seen;
   int write_track_format_error;
+  unsigned drq_ticks;
+  int write_first_byte_pending;
   uint8_t force_interrupt_mask;
   int status_type_i;
   int head_loaded;
@@ -45,6 +47,9 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk);
 void juku_fdc_portc(juku_fdc* fdc, uint8_t portc);
 void juku_fdc_ready(juku_fdc* fdc, int ready);
 void juku_fdc_index(juku_fdc* fdc, int index);
+// Advance the byte-service timer in 2 MHz-equivalent controller clocks.
+// One MFM byte time is 64 ticks (32 us).  DRQ service resets the timer.
+void juku_fdc_tick(juku_fdc* fdc, unsigned ticks);
 uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg);
 void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data);
 

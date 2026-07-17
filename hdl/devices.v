@@ -808,6 +808,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                  input wire motor_on, side, output wire drq, intrq);
     localparam ST_BUSY = 8'h01;
     localparam ST_DRQ = 8'h02;
+    localparam ST_LOST_DATA = 8'h04;
     localparam ST_RNF = 8'h10;
     localparam ST_WRITE_FAULT = 8'h20;
     localparam ST_WRITE_PROTECT = 8'h40;
@@ -817,6 +818,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     localparam WT_ID_CRC = 2;
     localparam WT_DATA = 3;
     localparam WT_DATA_CRC = 4;
+    localparam DRQ_BYTE_TICKS = 64; // one 32 us MFM byte at a 2 MHz-equivalent clock
 
     reg [7:0] status = ST_NOT_READY;
     reg [7:0] track = 8'h00;
@@ -856,6 +858,19 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer write_track_pending_sector = 0;
     reg [9:0] write_track_seen = 0;
     integer write_track_format_error = 0;
+`ifdef FDC_BYTE_TIMING
+    integer drq_ticks = 0;
+    integer write_first_byte_pending = 0;
+`define FDC_TIMER_CLEAR drq_ticks = 0; write_first_byte_pending = 0;
+`define FDC_TIMER_RESET drq_ticks = 0;
+`define FDC_TIMER_FIRST drq_ticks = 0; write_first_byte_pending = 1;
+`define FDC_TIMER_SERVICE drq_ticks = 0; write_first_byte_pending = 0;
+`else
+`define FDC_TIMER_CLEAR
+`define FDC_TIMER_RESET
+`define FDC_TIMER_FIRST
+`define FDC_TIMER_SERVICE
+`endif
     integer status_type_i = 1;
     integer head_loaded = 0;
     integer command_was_busy = 0;
@@ -995,6 +1010,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_pending_sector = 0;
         write_track_seen = 0;
         write_track_format_error = 0;
+        `FDC_TIMER_CLEAR
         status = status & ~(ST_BUSY | ST_DRQ);
     end endtask
 
@@ -1029,6 +1045,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 buffer_pos = 0;
                 buffer_len = 512;
                 write_transfer = 1;
+                `FDC_TIMER_FIRST
                 multi_record = multi;
                 status = status | ST_BUSY | ST_DRQ;
                 intrq_r = 1'b0;
@@ -1038,6 +1055,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task accept_write_byte(input [7:0] value); begin
         if (write_transfer && buffer_pos < buffer_len) begin
+            `FDC_TIMER_SERVICE
             $fwrite(disk_file, "%c", value);
             buffer_pos = buffer_pos + 1;
             if (buffer_pos >= buffer_len) begin
@@ -1059,6 +1077,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                             buffer_pos = 0;
                             buffer_len = 512;
                             write_transfer = 1;
+                            `FDC_TIMER_SERVICE
                             status = status | ST_BUSY | ST_DRQ;
                             intrq_r = 1'b0;
                         end
@@ -1096,6 +1115,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 buffer_len = 512;
                 multi_record = multi;
                 status = status | ST_BUSY | ST_DRQ;
+                `FDC_TIMER_RESET
                 intrq_r = 1'b0;
             end else begin
                 complete_transfer();
@@ -1105,6 +1125,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             buffer_len = 512;
             multi_record = multi;
             status = status | ST_BUSY | ST_DRQ;
+            `FDC_TIMER_RESET
             intrq_r = 1'b0;
         end
     end endtask
@@ -1136,6 +1157,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             buffer_len = 6;
             read_address_transfer = 1;
             status = status | ST_BUSY | ST_DRQ;
+            `FDC_TIMER_RESET
             intrq_r = 1'b0;
         end
     end endtask
@@ -1253,6 +1275,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 buffer_len = 6250;
                 read_track_transfer = 1;
                 status = status | ST_BUSY | ST_DRQ;
+                `FDC_TIMER_RESET
                 intrq_r = 1'b0;
             end
 `else
@@ -1333,6 +1356,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         integer sync_count;
     begin
         if (write_track_transfer) begin
+            `FDC_TIMER_SERVICE
             write_track_output_pos = write_track_output_pos + ((value == 8'hf7) ? 2 : 1);
             if (value == 8'hf5) decoded = 8'ha1;
             else if (value == 8'hf6) decoded = 8'hc2;
@@ -1434,6 +1458,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             complete_transfer();
         end else begin
             write_track_transfer = 1;
+            `FDC_TIMER_FIRST
             write_track_state = WT_SCAN;
             write_track_pending_sector = 0;
             status = status | ST_BUSY | ST_DRQ;
@@ -1448,6 +1473,64 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         head_loaded = 1;
         status = (status & ~(ST_RNF | ST_WRITE_FAULT | ST_NOT_READY)) | ST_WRITE_PROTECT;
         complete_transfer();
+    end endtask
+`endif
+
+`ifdef FDC_BYTE_TIMING
+    task advance_read_byte; begin
+        buffer_pos = buffer_pos + 1;
+        drq_ticks = 0;
+        if (buffer_pos >= buffer_len) begin
+            if (read_address_transfer) begin
+                sector = sector_buf[0];
+                complete_transfer();
+            end else if (multi_record) begin
+                sector = sector + 8'd1;
+                if (sector > 10) begin
+                    complete_transfer();
+                    status = status | ST_RNF;
+                end else if (disk_requested) begin
+                    load_disk_sector();
+                    if (disk_sector_ok) begin
+                        buffer_pos = 0;
+                        buffer_len = 512;
+                        multi_record = 1;
+                        status = status | ST_BUSY | ST_DRQ;
+                        drq_ticks = 0;
+                        intrq_r = 1'b0;
+                    end else begin
+                        complete_transfer();
+                        status = status | ST_RNF;
+                    end
+                end else begin
+                    buffer_pos = 0;
+                    buffer_len = 512;
+                    multi_record = 1;
+                    status = status | ST_BUSY | ST_DRQ;
+                    drq_ticks = 0;
+                    intrq_r = 1'b0;
+                end
+            end else begin
+                complete_transfer();
+            end
+        end
+    end endtask
+
+    task miss_drq_byte; begin
+        if (status[0] && status[1]) begin
+            status = status | ST_LOST_DATA;
+            drq_ticks = 0;
+            if (write_transfer) begin
+                if (write_first_byte_pending) complete_transfer();
+                else accept_write_byte(8'h00);
+            end else if (write_track_transfer) begin
+                if (write_first_byte_pending) complete_transfer();
+                else accept_write_track_byte(8'h00);
+            end else if (buffer_pos < buffer_len) begin
+                // A new assembled byte overwrites an unserviced read byte.
+                advance_read_byte();
+            end
+        end
     end endtask
 `endif
 
@@ -1498,6 +1581,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             data = (disk_requested || read_address_transfer) ?
                    sector_buf[buffer_pos] : synthetic_sector_byte(buffer_pos);
             buffer_pos = buffer_pos + 1;
+            `FDC_TIMER_RESET
             if (buffer_pos >= buffer_len) begin
                 if (read_address_transfer) begin
                     sector = sector_buf[0];
@@ -1514,6 +1598,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                             buffer_len = 512;
                             multi_record = 1;
                             status = status | ST_BUSY | ST_DRQ;
+                            `FDC_TIMER_RESET
                             intrq_r = 1'b0;
                         end else begin
                             complete_transfer();
@@ -1524,6 +1609,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         buffer_len = 512;
                         multi_record = 1;
                         status = status | ST_BUSY | ST_DRQ;
+                        `FDC_TIMER_RESET
                         intrq_r = 1'b0;
                     end
                 end else begin
@@ -1534,6 +1620,21 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             status = status & ~ST_DRQ;
         end
     end
+
+    // The byte-level twin uses 2 MHz-equivalent controller ticks.  At the
+    // Juku MFM rate, 64 ticks are one 32 us byte-service window.  Keep the
+    // autonomous timer opt-in until the physical D93.24 clock is measured;
+    // focused unit/decoded-bus guards compile with FDC_BYTE_TIMING.
+`ifdef FDC_BYTE_TIMING
+    always @(negedge clk) begin
+        if (status[0] && status[1]) begin
+            if (drq_ticks + 1 >= DRQ_BYTE_TICKS) miss_drq_byte();
+            else drq_ticks = drq_ticks + 1;
+        end else begin
+            drq_ticks = 0;
+        end
+    end
+`endif
 
     wire fdc_status_read_active = ~cs_n & ~rd_n & (A == 2'd0);
     always @(posedge fdc_status_read_active)
@@ -1554,6 +1655,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         (A == 2'd2) ? sector :
         data;
     assign D = (~cs_n & ~rd_n) ? read_data : 8'bz;
+`undef FDC_TIMER_CLEAR
+`undef FDC_TIMER_RESET
+`undef FDC_TIMER_FIRST
+`undef FDC_TIMER_SERVICE
 endmodule
 
 module pic_8259 (input wire A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n,

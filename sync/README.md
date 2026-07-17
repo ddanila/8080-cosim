@@ -52,7 +52,7 @@ These cover the real-ROM boot/framebuffer path, per-read agreement between
 `juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
 raw disk geometry, the bounded WD1793 subset including Type-I physical-head,
 update/verify/status semantics plus Type-II multi-record,
-completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
+streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
 one-revolution MFM Read Track plus representable writable-track formatting,
 raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.

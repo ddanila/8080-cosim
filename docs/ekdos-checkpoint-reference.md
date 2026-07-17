@@ -53,6 +53,8 @@ sync/ekdos_checkpoint_reference.py
 | `fdc_track` | `00` |
 | `fdc_physical_track` | `00` |
 | `fdc_sector` | `01` |
+| `fdc_drq_ticks` | `0` |
+| `fdc_write_first_byte_pending` | `0` |
 
 ## Boundary
 
