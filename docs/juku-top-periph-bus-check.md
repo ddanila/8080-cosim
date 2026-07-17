@@ -32,11 +32,11 @@ sync/juku_top_periph_bus_check.sh
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | PASS |
 | Timed Type-I physical-head/update/verify/SEEK-ERROR completion plus exact 15-idle-index HLD release through decoded ports `0x1C..0x1F` | PASS |
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (`0x5C`) through the top-level bus | PASS |
-| Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | PASS |
+| Index-gated Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | PASS |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |
 | ROMBIOS `0xA2` write-sector streams 512 bytes through D94-decoded port `0x1F` and reads them back from a writable copy | PASS |
 | Type-II multi-write persists sectors 9/10 and ends at sector 11 with RNF | PASS |
-| Type-III Write Track streams 6,230 formatter bytes and persists sectors 1-10 on a writable copy through logical DB and both physical D100 families | PASS |
+| Index-gated Type-III Write Track preloads its first byte, streams 6,230 formatter bytes, and persists sectors 1-10 on a writable copy through logical DB and both physical D100 families | PASS |
 | CMA-profile CPU bytes cross physical D100/DAL for restore, seek, media read, and 512-byte write/readback under both control families | PASS |
 
 ## Stop State

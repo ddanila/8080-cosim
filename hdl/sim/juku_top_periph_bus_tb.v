@@ -108,6 +108,16 @@ module juku_top_periph_bus_tb();
     #1;
   end endtask
 
+  task fdc_index_pulse; begin
+    force dut.U_FDC.index = 1'b0;
+    #1;
+    force dut.U_FDC.index = 1'b1;
+    #1;
+    force dut.U_FDC.index = 1'b0;
+    #1;
+    release dut.U_FDC.index;
+  end endtask
+
   task inta_read(output [7:0] data); begin
     release dut.DB;
     force dut.iord_n = 1'b1;
@@ -378,7 +388,13 @@ module juku_top_periph_bus_tb();
     io_write(8'h1E, 8'h07);
     io_write(8'h1C, 8'hE4);     // Type-III Read Track with the valid E flag
     io_read(8'h1C, rd);
-    if ((rd & 8'h03) !== 8'h03) fail("FDC read-track did not assert BUSY+DRQ");
+    if ((rd & 8'h03) !== 8'h01) fail("FDC read-track did not wait for index");
+    i = dut.U_FDC.buffer_pos;
+    io_read(8'h1F, rd);
+    if (dut.U_FDC.buffer_pos !== i) fail("FDC read-track exposed data before index");
+    fdc_index_pulse();
+    io_read(8'h1C, rd);
+    if ((rd & 8'h03) !== 8'h03) fail("FDC read-track did not start at index");
     for (i = 0; i < 6250; i = i + 1) begin
       io_read(8'h1F, rd);
       case (i)
@@ -477,7 +493,13 @@ module juku_top_periph_bus_tb();
       io_write(8'h1C, 8'hF4);
       io_read(8'h1C, rd);
       if ((rd & 8'h03) !== 8'h03) fail("FDC write-track did not assert BUSY+DRQ");
-      for (i = 0; i < format_len; i = i + 1) io_write(8'h1F, format_stream[i]);
+      io_write(8'h1F, format_stream[0]);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h03) !== 8'h01) fail("FDC write-track did not hold preloaded byte for index");
+      fdc_index_pulse();
+      io_read(8'h1C, rd);
+      if ((rd & 8'h03) !== 8'h03) fail("FDC write-track did not start at index");
+      for (i = 1; i < format_len; i = i + 1) io_write(8'h1F, format_stream[i]);
       if (dut.fdc_intrq !== 1'b1) fail("FDC write-track completion did not raise INTRQ");
       io_read(8'h1C, rd);
       if ((rd & 8'h73) !== 8'h00) fail("FDC write-track did not complete cleanly");

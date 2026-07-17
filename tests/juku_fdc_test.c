@@ -176,6 +176,13 @@ static void seek_track(juku_fdc* fdc, uint8_t track) {
 }
 
 
+static void pulse_index(juku_fdc* fdc) {
+  juku_fdc_index(fdc, 0);
+  juku_fdc_index(fdc, 1);
+  juku_fdc_index(fdc, 0);
+}
+
+
 int main(void) {
   char dir[] = "/tmp/juku-fdc-test.XXXXXX";
   if (!mkdtemp(dir)) {
@@ -378,7 +385,17 @@ int main(void) {
 
   juku_fdc_write(&fdc, 2, 7);
   juku_fdc_write(&fdc, 0, 0xE4);  // Read Track, including the valid E flag
-  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read-track command");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "read-track waiting for first index");
+  const unsigned read_track_pos_before_index = fdc.buffer_pos;
+  (void)juku_fdc_read(&fdc, 3);
+  if (fdc.buffer_pos != read_track_pos_before_index) {
+    fprintf(stderr, "read-track exposed data before the first index edge\n");
+    fail = 1;
+  }
+  pulse_index(&fdc);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
+                        "read-track started at first index");
   uint8_t expected_track[JUK_MFM_TRACK_SIZE];
   build_expected_track(expected_track, 12, 0);
   for (int i = 0; i < JUK_MFM_TRACK_SIZE; i++) {
@@ -398,6 +415,7 @@ int main(void) {
   }
 
   juku_fdc_write(&fdc, 0, 0xE0);
+  pulse_index(&fdc);
   for (int i = 0; i < 100; i++) (void)juku_fdc_read(&fdc, 3);
   juku_fdc_write(&fdc, 0, 0xD0);
   fail |= expect_intrq(&fdc, 0, "forced read-track D0 silence");
@@ -650,15 +668,24 @@ int main(void) {
   seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 10);
   juku_fdc_write(&fdc, 0, 0xF4);
-  juku_fdc_tick(&fdc, 64);
-  fail |= expect_intrq(&fdc, 1, "first write-track byte timeout completion");
+  juku_fdc_tick(&fdc, 100000);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
-                        ST_LOST_DATA, "first write-track byte timeout status");
+                        ST_BUSY | ST_DRQ, "write-track preload window before index");
+  pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 1, "missing write-track preload at index completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_LOST_DATA, "missing write-track preload at index status");
 
   juku_fdc_write(&fdc, 0, 0xF4);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
                         "writable write-track command");
-  for (size_t i = 0; i < format_len; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
+  juku_fdc_write(&fdc, 3, format_stream[0]);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "write-track first-byte preload");
+  pulse_index(&fdc);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
+                        "write-track starts at index");
+  for (size_t i = 1; i < format_len; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
   fail |= expect_intrq(&fdc, 1, "write-track completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_FAULT | ST_WRITE_PROTECT,
                         0, "after writable track format");
@@ -686,7 +713,9 @@ int main(void) {
   format_len = build_format_stream(format_stream, 9, 1, &first_sector_end);
   seek_track(&fdc, 9);
   juku_fdc_write(&fdc, 0, 0xF0);
-  for (size_t i = 0; i < first_sector_end; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
+  juku_fdc_write(&fdc, 3, format_stream[0]);
+  pulse_index(&fdc);
+  for (size_t i = 1; i < first_sector_end; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
   juku_fdc_write(&fdc, 0, 0xD0);
   fail |= expect_intrq(&fdc, 0, "forced write-track D0 silence");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after forced write-track abort");
@@ -713,7 +742,9 @@ int main(void) {
   fill_sector(want, 10, 1, 1);
   seek_track(&fdc, 10);
   juku_fdc_write(&fdc, 0, 0xF0);
-  for (int i = 0; i < JUK_MFM_TRACK_SIZE; i++) juku_fdc_write(&fdc, 3, 0x4E);
+  juku_fdc_write(&fdc, 3, 0x4E);
+  pulse_index(&fdc);
+  for (int i = 1; i < JUK_MFM_TRACK_SIZE; i++) juku_fdc_write(&fdc, 3, 0x4E);
   fail |= expect_intrq(&fdc, 1, "unrepresentable write-track completion");
   fail |= expect_status(&fdc, ST_WRITE_FAULT, ST_WRITE_FAULT,
                         "unrepresentable write-track status");

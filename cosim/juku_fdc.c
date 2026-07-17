@@ -88,6 +88,8 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_pending_sector = 0;
   fdc->write_track_seen = 0;
   fdc->write_track_format_error = 0;
+  fdc->track_waiting_index = 0;
+  fdc->write_track_preloaded = 0;
   fdc->drq_ticks = 0;
   fdc->write_first_byte_pending = 0;
   fdc->type_i_pending = 0;
@@ -374,7 +376,8 @@ static void begin_read_track(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = pos;
   fdc->read_track_transfer = 1;
-  fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->track_waiting_index = 1;
+  fdc->status |= ST_BUSY;
   fdc->drq_ticks = 0;
 }
 
@@ -440,6 +443,17 @@ static void finish_write_track_sector(juku_fdc* fdc) {
 
 static void accept_write_track_byte(juku_fdc* fdc, uint8_t data) {
   if (!fdc->write_track_transfer) return;
+
+  // Write Track raises DRQ with the command so software can preload the Data
+  // Register, but consumes that byte only at the next rising index edge.
+  if (fdc->track_waiting_index) {
+    fdc->write_track_preload = data;
+    fdc->write_track_preloaded = 1;
+    fdc->write_first_byte_pending = 0;
+    fdc->status &= (uint8_t)~ST_DRQ;
+    fdc->drq_ticks = 0;
+    return;
+  }
 
   fdc->write_first_byte_pending = 0;
   fdc->drq_ticks = 0;
@@ -551,6 +565,7 @@ static void begin_write_track(juku_fdc* fdc) {
     return;
   }
   fdc->write_track_transfer = 1;
+  fdc->track_waiting_index = 1;
   fdc->write_first_byte_pending = 1;
   fdc->write_track_state = WT_SCAN;
   fdc->write_track_pending_sector = 0;
@@ -622,7 +637,8 @@ void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
       } else {
         finish_type_i_motion(fdc);
       }
-    } else if ((fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
+    } else if (!fdc->track_waiting_index &&
+               (fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
       const unsigned remaining = DRQ_BYTE_TICKS - fdc->drq_ticks;
       if (ticks < remaining) {
         fdc->drq_ticks += ticks;
@@ -672,8 +688,25 @@ void juku_fdc_ready(juku_fdc* fdc, int ready) {
 void juku_fdc_index(juku_fdc* fdc, int index) {
   index = index != 0;
   if (!fdc->index_line && index) {
+    const int started_track = fdc->track_waiting_index;
     if (fdc->force_interrupt_mask & 0x04) fdc->intrq = 1;
-    if (!(fdc->status & ST_BUSY) && fdc->head_loaded) {
+    if (fdc->track_waiting_index) {
+      fdc->track_waiting_index = 0;
+      if (fdc->write_track_transfer) {
+        if (!fdc->write_track_preloaded) {
+          fdc->status |= ST_TRACK0_LOST;
+          complete_transfer(fdc);
+        } else {
+          const uint8_t first_byte = fdc->write_track_preload;
+          fdc->status |= ST_DRQ;
+          accept_write_track_byte(fdc, first_byte);
+        }
+      } else if (fdc->read_track_transfer) {
+        fdc->status |= ST_DRQ;
+        fdc->drq_ticks = 0;
+      }
+    }
+    if (!started_track && !(fdc->status & ST_BUSY) && fdc->head_loaded) {
       if (++fdc->idle_index_pulses >= 15) {
         fdc->head_loaded = 0;
         fdc->idle_index_pulses = 0;
@@ -703,7 +736,7 @@ uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg) {
     case 2:
       return fdc->sector;
     default:
-      if (fdc->buffer_pos < fdc->buffer_len) {
+      if ((fdc->status & ST_DRQ) && fdc->buffer_pos < fdc->buffer_len) {
         fdc->data = fdc->buffer[fdc->buffer_pos];
         advance_read_byte(fdc);
         return fdc->data;

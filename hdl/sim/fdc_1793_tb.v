@@ -55,6 +55,13 @@ module fdc_1793_tb;
     #1;
   end endtask
 
+  task pulse_index; begin
+    index = 0;
+    #1 index = 1;
+    #1 index = 0;
+    #1;
+  end endtask
+
   task expect_status(input [7:0] mask, input [7:0] value, input [160*8:1] label);
     reg [7:0] status;
   begin
@@ -393,7 +400,15 @@ module fdc_1793_tb;
     seek_track(disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, 8'd7);
     write_reg(2'd0, 8'he4);  // Read Track with the valid E flag
-    expect_status(8'h03, 8'h03, "after read-track command");
+    expect_status(8'h03, 8'h01, "read-track waiting for first index");
+    expected_rate = dut.buffer_pos;
+    read_reg(2'd3, got);
+    if (dut.buffer_pos !== expected_rate) begin
+      $display("FDC-1793: FAIL read-track exposed data before first index");
+      errors = errors + 1;
+    end
+    pulse_index();
+    expect_status(8'h03, 8'h03, "read-track started at first index");
     for (i = 0; i < 6250; i = i + 1) begin
       read_reg(2'd3, got);
       case (i)
@@ -466,6 +481,7 @@ module fdc_1793_tb;
     end
 
     write_reg(2'd0, 8'he0);
+    pulse_index();
     for (i = 0; i < 100; i = i + 1) read_reg(2'd3, got);
     write_reg(2'd0, 8'hd0);
     expect_intrq(1'b0, "forced read-track D0 silence");
@@ -660,14 +676,19 @@ module fdc_1793_tb;
       seek_track(8'd8);
       write_reg(2'd2, 8'd10);
       write_reg(2'd0, 8'hf4);
-      while (dut.status[0]) @(posedge clk);
-      #1;
-      expect_intrq(1'b1, "first write-track byte timeout completion");
-      expect_status(8'h07, 8'h04, "first write-track byte timeout status");
+      repeat (100) @(negedge clk);
+      expect_status(8'h07, 8'h03, "write-track preload window before index");
+      pulse_index();
+      expect_intrq(1'b1, "missing write-track preload at index completion");
+      expect_status(8'h07, 8'h04, "missing write-track preload at index status");
 
       write_reg(2'd0, 8'hf4);
       expect_status(8'h03, 8'h03, "writable write-track command");
-      for (i = 0; i < format_len; i = i + 1) write_reg(2'd3, format_stream[i]);
+      write_reg(2'd3, format_stream[0]);
+      expect_status(8'h03, 8'h01, "write-track first-byte preload");
+      pulse_index();
+      expect_status(8'h03, 8'h03, "write-track starts at index");
+      for (i = 1; i < format_len; i = i + 1) write_reg(2'd3, format_stream[i]);
       expect_intrq(1'b1, "write-track completion");
       expect_status(8'h73, 8'h00, "after writable track format");
       expect_intrq(1'b0, "write-track status acknowledgement");
@@ -694,7 +715,9 @@ module fdc_1793_tb;
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
       write_reg(2'd0, 8'hf0);
-      for (i = 0; i < first_format_sector_end; i = i + 1)
+      write_reg(2'd3, format_stream[0]);
+      pulse_index();
+      for (i = 1; i < first_format_sector_end; i = i + 1)
         write_reg(2'd3, format_stream[i]);
       write_reg(2'd0, 8'hd0);
       expect_intrq(1'b0, "forced write-track D0 silence");
@@ -724,7 +747,9 @@ module fdc_1793_tb;
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
       write_reg(2'd0, 8'hf0);
-      repeat (6250) write_reg(2'd3, 8'h4e);
+      write_reg(2'd3, 8'h4e);
+      pulse_index();
+      repeat (6249) write_reg(2'd3, 8'h4e);
       expect_intrq(1'b1, "unrepresentable write-track completion");
       expect_status(8'h20, 8'h20, "unrepresentable write-track status");
       write_reg(2'd2, 8'd1);

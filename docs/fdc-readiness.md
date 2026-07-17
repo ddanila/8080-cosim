@@ -44,10 +44,12 @@ physical D93/D94 wiring.
   modeled window is 64 2 MHz-equivalent ticks, i.e. one 32 us MFM byte at the
   Juku image's 250 kbit/s data rate. An unserviced read byte is overwritten by
   the next assembled byte, sets LOST DATA, and the command continues. An
-  unserviced first Write Sector or Write Track request terminates before media
-  changes; the byte-level shim conservatively applies the same bounded window
-  while exact ID-to-data and command-to-index lead-in remain rotational
-  boundaries. After the first byte is accepted, a missed write request substitutes
+  unserviced first Write Sector request terminates before media changes. Write
+  Track instead raises its initial DRQ as a preload request: the deadline does
+  not age while the controller waits for index, the preloaded byte is held
+  without touching media, and the first rising index either starts formatting
+  or terminates with LOST DATA if no byte was supplied. After writing starts, a
+  missed request substitutes
   `0x00`, sets LOST DATA, and continues. C/HDL unit guards prove all four cases,
   including unchanged media and persisted zero substitution; the decoded
   top-level guard proves read overwrite and S2 through D94 plus logical DB and
@@ -73,9 +75,10 @@ physical D93/D94 wiring.
   sector register unchanged. A flat sector image has no rotational position,
   so the deterministic shim returns sector 1, the first ID after index; this is
   an explicit image-format boundary rather than an invented rotation model.
-- Read Track accepts the datasheet-defined `0xE0`/`0xE4` opcodes, asserts
-  BUSY+DRQ, returns exactly one 6,250-byte revolution, raises INTRQ on the last
-  byte, and leaves the sector register unchanged. The byte stream reconstructs
+- Read Track accepts the datasheet-defined `0xE0`/`0xE4` opcodes, asserts BUSY
+  immediately, exposes neither DRQ nor data before the first rising index, then
+  returns exactly one 6,250-byte revolution, raises INTRQ on the last byte, and
+  leaves the sector register unchanged. The byte stream reconstructs
   all ten MFM ID/data fields from the raw image: 32-byte index gap; per-sector
   12-byte sync, three decoded `0xA1` missing-clock sync bytes, `0xFE` ID mark,
   CHRN and CRC; 22-byte gap; another sync/A1 run, `0xFB` data mark, 512 payload
@@ -90,8 +93,11 @@ physical D93/D94 wiring.
   deterministic media reconstruction rather than a claimed flux capture.
 - On an explicitly writable image, Write Track accepts the corresponding
   index-to-index MFM formatter stream from the vendored FD179X datasheet's
-  Type-III/IBM System 34 tables. `F5` emits a missing-clock `0xA1`, `F6`
-  emits missing-clock `0xC2`, and each `F7` emits both generated CRC bytes, so
+  Type-III/IBM System 34 tables. Its command-time DRQ preloads one byte without
+  starting the byte deadline or modifying media; the first rising index starts
+  with that byte, while a missing preload terminates with LOST DATA. `F5` emits
+  a missing-clock `0xA1`, `F6` emits missing-clock `0xC2`, and each `F7` emits
+  both generated CRC bytes, so
   the canonical ten-sector Juku layout consumes 6,230 CPU data writes while
   producing 6,250 on-disk bytes. Both models parse all ten CHRN fields, require
   track/side/sector/512-byte geometry representable by the flat image, and
@@ -342,7 +348,7 @@ evidence exists.
   reconstructed Read Track, representable MFM Write Track, and Type-II
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
   not a general WD1793 conformance model. Exact physical D93.24 calibration of
-  the byte and Type-I clock intervals, initial-write rotational lead-in,
+  the byte and Type-I clock intervals, Write Sector ID-to-data lead-in,
   external HLT/step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are

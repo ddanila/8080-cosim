@@ -858,6 +858,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer write_track_pending_sector = 0;
     reg [9:0] write_track_seen = 0;
     integer write_track_format_error = 0;
+    integer track_waiting_index = 0;
+    integer write_track_preloaded = 0;
+    reg [7:0] write_track_preload = 0;
 `ifdef FDC_BYTE_TIMING
     integer drq_ticks = 0;
     integer write_first_byte_pending = 0;
@@ -1025,6 +1028,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_pending_sector = 0;
         write_track_seen = 0;
         write_track_format_error = 0;
+        track_waiting_index = 0;
+        write_track_preloaded = 0;
         `FDC_TIMER_CLEAR
 `ifdef FDC_TYPE_I_TIMING
         type_i_pending = 0;
@@ -1296,7 +1301,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 buffer_pos = 0;
                 buffer_len = 6250;
                 read_track_transfer = 1;
-                status = status | ST_BUSY | ST_DRQ;
+                track_waiting_index = 1;
+                status = status | ST_BUSY;
                 `FDC_TIMER_RESET
                 intrq_r = 1'b0;
             end
@@ -1474,13 +1480,19 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         integer sync_count;
     begin
         if (write_track_transfer) begin
-            `FDC_TIMER_SERVICE
-            write_track_output_pos = write_track_output_pos + ((value == 8'hf7) ? 2 : 1);
-            if (value == 8'hf5) decoded = 8'ha1;
-            else if (value == 8'hf6) decoded = 8'hc2;
-            else decoded = value;
+            if (track_waiting_index) begin
+                write_track_preload = value;
+                write_track_preloaded = 1;
+                status = status & ~ST_DRQ;
+                `FDC_TIMER_SERVICE
+            end else begin
+                `FDC_TIMER_SERVICE
+                write_track_output_pos = write_track_output_pos + ((value == 8'hf7) ? 2 : 1);
+                if (value == 8'hf5) decoded = 8'ha1;
+                else if (value == 8'hf6) decoded = 8'hc2;
+                else decoded = value;
 
-            case (write_track_state)
+                case (write_track_state)
                 WT_ID: begin
                     if (value == 8'hf7) begin
                         write_track_format_error = 1;
@@ -1549,13 +1561,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         end
                     end
                 end
-            endcase
+                endcase
 
-            if (write_track_output_pos >= 6250) begin
-                if (write_track_output_pos != 6250 || write_track_state != WT_SCAN ||
-                    write_track_seen != 10'h3ff || write_track_format_error)
-                    status = status | ST_WRITE_FAULT;
-                complete_transfer();
+                if (write_track_output_pos >= 6250) begin
+                    if (write_track_output_pos != 6250 || write_track_state != WT_SCAN ||
+                        write_track_seen != 10'h3ff || write_track_format_error)
+                        status = status | ST_WRITE_FAULT;
+                    complete_transfer();
+                end
             end
         end
     end endtask
@@ -1576,6 +1589,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             complete_transfer();
         end else begin
             write_track_transfer = 1;
+            track_waiting_index = 1;
             `FDC_TIMER_FIRST
             write_track_state = WT_SCAN;
             write_track_pending_sector = 0;
@@ -1693,7 +1707,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end
 
     always @(posedge fdc_data_read_active) begin
-        if (buffer_pos < buffer_len) begin
+        if (status[1] && buffer_pos < buffer_len) begin
 `ifndef YOSYS
             if (read_track_transfer) data = track_buf[buffer_pos];
             else
@@ -1747,7 +1761,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     // focused unit/decoded-bus guards compile with FDC_BYTE_TIMING.
 `ifdef FDC_BYTE_TIMING
     always @(negedge clk) begin
-        if (status[0] && status[1]) begin
+        if (!track_waiting_index && status[0] && status[1]) begin
             if (drq_ticks + 1 >= DRQ_BYTE_TICKS) miss_drq_byte();
             else drq_ticks = drq_ticks + 1;
         end else begin
@@ -1793,7 +1807,21 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     always @(posedge index) begin
         if (force_interrupt_mask[2]) intrq_r = 1'b1;
-        if (!status[0] && head_loaded) begin
+        if (track_waiting_index) begin
+            track_waiting_index = 0;
+            if (write_track_transfer) begin
+                if (!write_track_preloaded) begin
+                    status = status | ST_LOST_DATA;
+                    complete_transfer();
+                end else begin
+                    status = status | ST_DRQ;
+                    accept_write_track_byte(write_track_preload);
+                end
+            end else if (read_track_transfer) begin
+                status = status | ST_DRQ;
+                `FDC_TIMER_RESET
+            end
+        end else if (!status[0] && head_loaded) begin
             if (idle_index_pulses + 1 >= 15) begin
                 head_loaded = 0;
                 idle_index_pulses = 0;

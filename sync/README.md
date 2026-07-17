@@ -54,7 +54,7 @@ raw disk geometry, the bounded WD1793 subset including Type-I physical-head,
 update/verify/status, nominal 3/6/10/15 ms step plus 15 ms settle timing, and
 15-idle-index head-unload semantics plus Type-II multi-record,
 streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
-one-revolution MFM Read Track plus representable writable-track formatting,
+one-revolution MFM Read Track plus index-gated, preloaded writable-track formatting,
 raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.
 `d2_ready_path_check.sh` separately guards the physical `.037` open-collector
