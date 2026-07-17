@@ -90,7 +90,10 @@ class Asm:
 SP_TOP   = 0xD780
 CURADDR  = 0xD7F0
 RAM_LO   = 0x4000
-RAM_HIPG = 0xD7      # test stops when H reaches 0xD7 (i.e. 0x4000..0xD6FF)
+# Test stops when H reaches this page. Default 0xD7 = full 0x4000..0xD6FF (bench).
+# A small page (e.g. 0x41) makes the HDL twin's RAM test finish fast for the T1.2
+# sim gate; the emitted TX byte stream is identical either way. Optional argv[1].
+RAM_HIPG = int(sys.argv[1], 0) if len(sys.argv) > 1 else 0xD7
 
 a = Asm()
 # ---- reset / init ----
@@ -244,6 +247,7 @@ a.label('msg_rombad');  a.string("ROM BAD\r\n")
 a.label('msg_ready');   a.string("READY\r\n")
 
 img = a.assemble(16384)
-out = pathlib.Path(__file__).with_name('revb_bringup.bin')
+# Optional argv[2] = output path (fast sim variant); default = the committed bench bin.
+out = pathlib.Path(sys.argv[2]) if len(sys.argv) > 2 else pathlib.Path(__file__).with_name('revb_bringup.bin')
 out.write_bytes(img)
 print(f"wrote {out} ({len(img)} bytes), entry=0x0000, checksum byte=0x{img[-1]:02X}, total%256={sum(img)&0xFF}")

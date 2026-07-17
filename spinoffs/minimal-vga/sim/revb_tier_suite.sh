@@ -20,4 +20,7 @@ spinoffs/minimal-vga/sim/revb_bus_assert_check.sh
 echo "== rev B: modular backplane boots ekta37 byte-identical to cosim (banner) =="
 spinoffs/minimal-vga/sim/revb_boot_check.sh
 
-echo "REVB-TIER-SUITE(B0): PASS"
+echo "== rev B: minimum-tier bring-up ROM TX stream == cosim (real 8251, no Video) =="
+spinoffs/minimal-vga/sim/revb_bringup_check.sh
+
+echo "REVB-TIER-SUITE(B0+B1sim): PASS"

@@ -8,10 +8,12 @@
 // for sim/revb_boot_check.sh to compare byte-for-byte against cosim.
 `default_nettype none
 module revb_backplane_top #(
-    parameter rom_file    = "ekta37_z80.hex",
-    parameter vw_limit    = 6000,
-    parameter dump_file   = "revb_vram.bin",
-    parameter DECODE_MODE = 0
+    parameter rom_file      = "ekta37_z80.hex",
+    parameter vw_limit      = 6000,
+    parameter dump_file     = "revb_vram.bin",
+    parameter DECODE_MODE   = 0,
+    parameter VIDEO_PRESENT = 1,   // 0 = minimum tier (no Video card)
+    parameter USART_REAL    = 0    // 1 = real 8251 on the I/O card (bring-up twin)
 ) (
     input  wire clk,
     input  wire reset_n
@@ -50,12 +52,19 @@ module revb_backplane_top #(
         .mreq_n(mreq_n), .rd_n(rd_n), .wr_n(wr_n),
         .MODE0(MODE0), .MODE1(MODE1), .D_out(mem_do), .D_oe(mem_oe));
 
-    revb_video_card #(.vw_limit(vw_limit), .dump_file(dump_file)) U_VIDEO (
-        .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
-        .mreq_n(mreq_n), .rd_n(rd_n), .wr_n(wr_n),
-        .MODE0(MODE0), .MODE1(MODE1), .D_out(video_do), .D_oe(video_oe));
+    generate
+      if (VIDEO_PRESENT) begin : g_video
+        revb_video_card #(.vw_limit(vw_limit), .dump_file(dump_file)) U_VIDEO (
+            .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
+            .mreq_n(mreq_n), .rd_n(rd_n), .wr_n(wr_n),
+            .MODE0(MODE0), .MODE1(MODE1), .D_out(video_do), .D_oe(video_oe));
+      end else begin : g_novideo
+        assign video_do = 8'h00;
+        assign video_oe = 1'b0;
+      end
+    endgenerate
 
-    revb_io_card U_IO (
+    revb_io_card #(.USART_REAL(USART_REAL)) U_IO (
         .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
         .iorq_n(iorq_n), .rd_n(rd_n), .wr_n(wr_n),
         .D_out(io_do), .D_oe(io_oe), .MODE0(MODE0), .MODE1(MODE1));
