@@ -12,7 +12,7 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 107
+- BOM lines: 109
 - Populate-now component positions: 251
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
@@ -23,11 +23,11 @@ review before being treated as build-ready.
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 10 | 28 |
+| circuit-review | 10 | 25 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 77 | 200 |
+| source-now | 79 | 203 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -71,7 +71,7 @@ against drawings/board photos before ordering final quantities.
 | --- | --- | --- | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | 2 | D14, D32 | RS-232/line-driver substitute required; verify +/-12 V interface |
 | circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern radial electrolytic with matching value/voltage/polarity |
-| circuit-review | C_KM | КМ ceramic capacitor | 11 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99 | modern ceramic capacitor with matching value/voltage/lead spacing |
+| circuit-review | C_KM | КМ ceramic capacitor | 8 | C9, C10, C11, C12, C15, C16, C19, C34 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 4 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | 2 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |

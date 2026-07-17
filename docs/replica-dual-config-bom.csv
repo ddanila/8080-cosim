@@ -1,7 +1,7 @@
 action,type,value,authentic_part,functional_substitute,board_positions,populate_now,leave_empty,refs,populated_refs,notes
 circuit-review,AP2,,К170АП2,RS-232/line-driver substitute required; verify +/-12 V interface,2,2,0,"D14, D32","D14, D32",
 circuit-review,C_ELEC,,radial electrolytic,modern radial electrolytic with matching value/voltage/polarity,3,3,0,"C31, C32, C33","C31, C32, C33",
-circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matching value/voltage/lead spacing,11,11,0,"C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99","C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99",
+circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matching value/voltage/lead spacing,8,8,0,"C9, C10, C11, C12, C15, C16, C19, C34","C9, C10, C11, C12, C15, C16, C19, C34",
 circuit-review,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,4,4,0,"C38, C42, C46, C50","C38, C42, C46, C50","Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."
 circuit-review,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,6,0,6,"C51, C52, C53, C70, C71, C72",,"Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."
 circuit-review,C_KM,"1,5 нФ","КМ ceramic capacitor 1,5 нФ",modern ceramic capacitor with matching value/voltage/lead spacing,2,2,0,"C20, C22","C20, C22","Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
@@ -36,9 +36,11 @@ source-now,CLK_PHASE,,К155ЛН5,74LS04/74LS14-class inverter; verify phase/timi
 source-now,CPU8080,,КР580ИК80А,Intel 8080A / compatible 8080 CPU,1,1,0,D1,D1,
 source-now,CT16_CTR,,КР531ИЕ17,74F/74S163-class fast counter; verify timing,1,1,0,D40,D40,
 source-now,C_ELEC,"47,0","radial electrolytic 47,0",modern radial electrolytic with matching value/voltage/polarity,1,1,0,C1,C1,
+source-now,C_KM,15 нФ,КМ ceramic capacitor 15 нФ,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C8,C8,
+source-now,C_KM,160,КМ ceramic capacitor 160,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C99,C99,
 source-now,C_KM,24,КМ ceramic capacitor 24,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C21,C21,
 source-now,C_KM,56,КМ ceramic capacitor 56,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C6,C6,
-source-now,C_KM,560,КМ ceramic capacitor 560,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C5,C5,
+source-now,C_KM,560,КМ ceramic capacitor 560,modern ceramic capacitor with matching value/voltage/lead spacing,2,2,0,"C5, C7","C5, C7",
 source-now,C_KM,680,КМ ceramic capacitor 680,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C94,C94,
 source-now,C_TRIM,4/20,trimmer capacitor 4/20,modern trimmer capacitor matching footprint/value,1,1,0,C73,C73,
 source-now,D_DIODE,КС147,Soviet diode/zener per value КС147,modern diode/zener matching value and power,1,1,0,VD5,VD5,

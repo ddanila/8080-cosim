@@ -74,6 +74,15 @@ board JSON and generated PCB are checked against the same literal table.
 Connectivity is unchanged. R67 deliberately remains the sole unvalued axial
 resistor because its `.009` continuation is revision-sensitive.
 
+The matching native-capacitor audit now source-closes C7=`560 pF`, C8=`15 nF`,
+and C99=`160 pF` from their retained electrical-sheet circuits
+(`docs/native-capacitor-values.md`). C7/C8 are the two already traced D56
+one-shot timing capacitors; C99's value closes independently of its still-open
+far plate. The guard deliberately leaves C9-C12/C15 at their target-revision
+holds, C16/C19 at their incomplete bare-body markings, and unlabelled C34
+unvalued rather than importing superseded `.006` RF assignments or guessing
+units. Connectivity is unchanged.
+
 The recorded upload ZIP SHA256 is
 `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
 Do not send this saved package to a fabricator. After the blockers below are

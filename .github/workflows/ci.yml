@@ -112,6 +112,7 @@ jobs:
             scripts/report_decap_value_fidelity.py \
             scripts/report_ras_resistor_bank.py \
             scripts/report_native_resistor_values.py \
+            scripts/report_native_capacitor_values.py \
             scripts/report_d41_timing_boundary.py \
             scripts/report_memory_timing_boundary.py \
             scripts/report_io_decode_boundary.py \

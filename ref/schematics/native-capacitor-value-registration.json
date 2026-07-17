@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "scope": "legible capacitor values on the native .006 electrical sheets reused by the .009 target model",
+  "promotion_rule": "promote only a value printed unambiguously beside the same refdes and retained circuit; do not inherit values from target-reused refdes or infer missing units from incomplete target body markings",
+  "sources": [
+    {
+      "path": "ref/schematics/p3_sheet1.png",
+      "sha256": "dd9eb45a8b9a6af5bbaf4677939f4b2db49661c1a536a07009e0fce9afa1bf53",
+      "sheet": 1,
+      "regions_px": {
+        "decode_rc": [1500, 650, 900, 800]
+      }
+    },
+    {
+      "path": "ref/schematics/p2_sheet2.png",
+      "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
+      "sheet": 2,
+      "regions_px": {
+        "d56_timing": [2450, 1450, 1000, 900]
+      }
+    }
+  ],
+  "closed": [
+    {
+      "ref": "C7",
+      "value": "560",
+      "normalized": "560 pF",
+      "source_sheet": 2,
+      "circuit": "D56 section-2 one-shot timing",
+      "observation": "the literal 560 label is printed directly below C7; the sheet convention uses bare values below 1000 as picofarads"
+    },
+    {
+      "ref": "C8",
+      "value": "15 нФ",
+      "normalized": "15 nF",
+      "source_sheet": 2,
+      "circuit": "D56 section-1 one-shot timing",
+      "observation": "the literal 15Н label is printed directly below C8; Cyrillic Н is the nanofarad unit marker"
+    },
+    {
+      "ref": "C99",
+      "value": "160",
+      "normalized": "160 pF",
+      "source_sheet": 1,
+      "circuit": "D7/D9 decode RC path",
+      "observation": "the literal 160 label is printed beside C99; its far endpoint remains a separate continuity boundary"
+    }
+  ],
+  "held": [
+    {"ref": "C9", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
+    {"ref": "C10", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
+    {"ref": "C11", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
+    {"ref": "C12", "reason": "the .009 target refdes replaces the .006 trimmer identity; target value and endpoints are unread"},
+    {"ref": "C15", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
+    {"ref": "C16", "reason": "target body reads bare 27 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
+    {"ref": "C19", "reason": "target body reads bare 22 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
+    {"ref": "C34", "reason": "the native sheet proves the rail endpoints but prints no value"}
+  ]
+}

@@ -4985,6 +4985,7 @@
   {
    "ref": "C99",
    "type": "C_KM",
+   "value": "160",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -4992,7 +4993,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-1 D7/D9 RC decode path",
-    "pins": "native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its physical pad is preserved as the C99_FAR continuity boundary rather than assumed grounded or marked NC"
+    "pins": "native 5150x3603 sheet-1 review prints C99=160 and proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its physical pad is preserved as the C99_FAR continuity boundary rather than assumed grounded or marked NC"
    }
   },
   {
@@ -5095,6 +5096,7 @@
   {
    "ref": "C7",
    "type": "C_KM",
+   "value": "560",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5102,12 +5104,13 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 D56 AG3 timing",
-    "pins": "D56 section-2 timing capacitor; connected nets D56_RC2/D56_C2 carry crop evidence"
+    "pins": "native sheet 2 prints C7=560 pF in the D56 section-2 timing network; connected nets D56_RC2/D56_C2 carry crop evidence"
    }
   },
   {
    "ref": "C8",
    "type": "C_KM",
+   "value": "15 нФ",
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -5115,7 +5118,7 @@
    "prov": {
     "type": "scan",
     "refdes": "sheet-2 D56 AG3 timing",
-    "pins": "D56 section-1 timing capacitor; connected nets D56_RC1/D56_C1 carry crop evidence"
+    "pins": "native sheet 2 prints C8=15Н (15 nF) in the D56 section-1 timing network; connected nets D56_RC1/D56_C1 carry crop evidence"
    }
   },
   {

@@ -18,17 +18,17 @@ readiness report.
 - Board component positions: 315
 - Populate for current functional .009 build: 251
 - Do not populate now (empty/DNP/pending): 64
-- Unique BOM lines: 107
+- Unique BOM lines: 109
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 34 |
+| circuit-review | 31 |
 | leave-empty | 64 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 200 |
+| source-now | 203 |
 
 ## BOM Lines
 
@@ -36,7 +36,7 @@ readiness report.
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | RS-232/line-driver substitute required; verify +/-12 V interface | 2 | 2 | 0 | D14, D32 | - |
 | circuit-review | C_ELEC | radial electrolytic | modern radial electrolytic with matching value/voltage/polarity | 3 | 3 | 0 | C31, C32, C33 | - |
-| circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 11 | 11 | 0 | C7, C8, C9, C10, C11, C12, C15, C16, C19, C34, C99 | - |
+| circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 8 | 8 | 0 | C9, C10, C11, C12, C15, C16, C19, C34 | - |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 4 | 4 | 0 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 6 | 0 | 6 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
@@ -71,9 +71,11 @@ readiness report.
 | source-now | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | 1 | 0 | D1 | - |
 | source-now | CT16_CTR | КР531ИЕ17 | 74F/74S163-class fast counter; verify timing | 1 | 1 | 0 | D40 | - |
 | source-now | C_ELEC 47,0 | radial electrolytic 47,0 | modern radial electrolytic with matching value/voltage/polarity | 1 | 1 | 0 | C1 | - |
+| source-now | C_KM 15 нФ | КМ ceramic capacitor 15 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C8 | - |
+| source-now | C_KM 160 | КМ ceramic capacitor 160 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C99 | - |
 | source-now | C_KM 24 | КМ ceramic capacitor 24 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C21 | - |
 | source-now | C_KM 56 | КМ ceramic capacitor 56 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C6 | - |
-| source-now | C_KM 560 | КМ ceramic capacitor 560 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C5 | - |
+| source-now | C_KM 560 | КМ ceramic capacitor 560 | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C5, C7 | - |
 | source-now | C_KM 680 | КМ ceramic capacitor 680 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C94 | - |
 | source-now | C_TRIM 4/20 | trimmer capacitor 4/20 | modern trimmer capacitor matching footprint/value | 1 | 1 | 0 | C73 | - |
 | source-now | D_DIODE КС147 | Soviet diode/zener per value КС147 | modern diode/zener matching value and power | 1 | 1 | 0 | VD5 | - |
