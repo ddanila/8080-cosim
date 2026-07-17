@@ -557,8 +557,24 @@ module juku_top (
                        .mr_n(1'b1), .clk(1'b0), .dden(ppi0_pc[4]), .dal(fdc_dal),
                        .drq(fdc_drq), .intrq(fdc_intrq));
     wire d100_oe_boundary, d100_t_boundary;
+`ifdef YOSYS
     net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
     net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
+`elsif FDC_VA87_CS_QUALIFIED
+    // Opt-in functional candidate: selected transfers enable D100; actual D93
+    // /RE, rather than raw IORD, controls direction so D94's low-A4 suppressed
+    // register-3 branch cannot drive CPU DB from a released DAL bus.
+    assign d100_oe_boundary = fdc_prom_cs_n;
+    assign d100_t_boundary = fdc_prom_re_n;
+`elsif FDC_VA87_ALWAYS_ENABLED
+    // Same-board D23-D25 precedent: /OE grounded, with actual D93 /RE keeping
+    // the buffer A->B except during a controller read.
+    assign d100_oe_boundary = 1'b0;
+    assign d100_t_boundary = fdc_prom_re_n;
+`else
+    net_boundary U_D100OELNK (.a(1'b1), .b(d100_oe_boundary));
+    net_boundary U_D100TLNK  (.a(1'b1), .b(d100_t_boundary));
+`endif
     buf_8287   U_D100 (.a(DB), .b(fdc_dal), .oe_n(d100_oe_boundary), .t(d100_t_boundary), .vss_gnd(1'b0), .vcc_5v(1'b1));
 `ifdef YOSYS
     wire d94_a3_boundary, d94_a4_d101_q0;
@@ -668,18 +684,24 @@ module juku_top (
     wire fdc_model_re_n = fdc_prom_re_n;
     wire fdc_model_we_n = fdc_prom_we_n;
 `endif
-    // Functional core remains on logical DB, bypassing the control-disconnected
-    // physical D100/DAL path. The exact D100 model is now bidirectional/inverting;
-    // the fitted ROM selects whether firmware supplies CMA around each transfer.
-    // Keep its still-unmeasured /OE and T copper sources measurement-gated
-    // (docs/fdc-bus-polarity.md).
-    fdc_1793  U_FDC  (.A(BA[1:0]), .D(DB), .cs_n(fdc_model_cs_n),  .rd_n(fdc_model_re_n), .wr_n(fdc_model_we_n),
+    // Default functional core remains on logical DB. Two opt-in regressions put
+    // it behind the real inverting D100/DAL path with the safe control families
+    // above; neither compile-time fit changes LVS or promotes unmeasured copper.
+`ifdef FDC_VA87_CS_QUALIFIED
+`define JUKU_FDC_DATA_BUS fdc_dal
+`elsif FDC_VA87_ALWAYS_ENABLED
+`define JUKU_FDC_DATA_BUS fdc_dal
+`else
+`define JUKU_FDC_DATA_BUS DB
+`endif
+    fdc_1793  U_FDC  (.A(BA[1:0]), .D(`JUKU_FDC_DATA_BUS), .cs_n(fdc_model_cs_n),  .rd_n(fdc_model_re_n), .wr_n(fdc_model_we_n),
                       .nc_back_bias(1'bz), .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                       .mr_n(1'b1), .clk(sclk_i), .dden(ppi0_pc[4]), .motor_on(ppi0_pc[2]), .side(ppi0_pc[6]),
                       .step(), .dirc(), .early(), .late(), .test(1'b1), .hlt(1'b1),
                       .rg(), .rclk(1'b0), .raw_read(1'b1), .hld(), .tg43(), .wg(), .wdata(),
                       .ready(1'b1), .wf_vfoe(), .tr00(1'b0), .index(1'b0), .wprt(1'b0),
                       .drq(fdc_drq), .intrq(fdc_intrq));
+`undef JUKU_FDC_DATA_BUS
     wire pic_sp_en = 1'b1; // sheet-1 A-rail strap: standalone/master 8259
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),
                       .vss_gnd(1'b0), .vcc_5v(1'b1),

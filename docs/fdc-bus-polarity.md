@@ -120,26 +120,32 @@ identifying the copper:
 
 | Cycle | Required `/OE`,`T` state | ВА87 action |
 | --- | --- | --- |
-| Unselected | `/OE=1`, or `/OE=0,T=1` | released, or A/DB -> B/DAL only; never drive DB |
+| Unselected or D94-suppressed read | `/OE=1`, or `/OE=0,T=1` | released, or A/DB -> B/DAL only; never drive DB |
 | FDC write | `/OE=0,T=1` | CPU A/DB -> complemented B/DAL |
 | FDC read | `/OE=0,T=0` | B/DAL -> complemented A/DB |
 
 Two minimal sufficient families are now executable guards:
 
-- Qualified enable: `/OE=FDC_CS_N`, `T=IORD`.
+- Qualified enable: `/OE=FDC_CS_N`, `T=D93_RE_N` (D94 D2).
 - Same-board ВА87 precedent: `/OE=GND`, `T=D93_RE_N` (D94 D2), so
   the device remains A->B except during an actual selected read. D23-D25
   likewise ground pin 9; D25 alone uses its traced D7.6 turnaround input.
 
-Both pass all 256 values in both directions. This is a functional
+Raw `IORD` is deliberately excluded as `T`: D94's low-A4 register-3
+branch can release D93 `/RE` during an I/O read, so `T=IORD` could point
+D100 B->A while DAL is released. Both safe families pass all 256 values
+in both directions and the suppressed-`/RE` case. This is a functional
 constraint, not a copper promotion. Pin 9's
 visible trace ends at an isolated component-side circular landing whose
 backside projection is bare substrate; pin 11 disappears beneath the
 factory wire/tape bundle. Direct continuity must select a family or expose
 an equivalent decoded implementation.
 
-Its behavioral `fdc_1793` consumes logical DB, matching the default ekta37
-regression profile. The C trace now exposes `JUKU_FDC_BUS_INVERT=1`; the
+Its behavioral `fdc_1793` consumes logical DB by default, matching the
+ekta37 regression profile. Two opt-in HDL builds instead place it behind
+physical D100/DAL and pass restore, seek, vendored-media read, and a
+512-byte write/readback using CMA-profile CPU bytes under both safe control
+families. The C trace also exposes `JUKU_FDC_BUS_INVERT=1`; the
 guarded Monitor 3.3 run uses it to model the populated `.009` ВА87 path
 without changing the controller's logical command semantics.
 

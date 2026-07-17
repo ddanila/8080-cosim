@@ -203,7 +203,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | D93.19 `MR_N` | BOUNDARY | master reset source | photo with the physical КР1818ВГ93 temporarily removed from its socket plus solder fit localizes the pad/departure; source remains unproved |
 | D93.24 `CLK` | BOUNDARY | 1 MHz FDC clock rail | corrected D93 fit identifies pin24 and local westbound copper; both WD and Soviet VG93 references keep this main controller clock separate from the D106 recovered-clock path, but its upstream source remains unproved |
 | D100.9 `OE_N` | BOUNDARY | 8287 output-enable gating and command-side polarity | singleton D100_OE_BOUNDARY; first compare against GND (same-board D23-D25 precedent) and FDC_CS_N (qualified-enable family) |
-| D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3 (always-enabled family) and IORD (qualified-enable family) |
+| D100.11 `T` | BOUNDARY | 8287 direction gating and read-side polarity | singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3, required by both safe families; raw IORD is excluded by D94's suppressed-/RE branch |
 
 ## Netted FDC Endpoints
 
@@ -239,7 +239,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 - Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to
   confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and
   D100.11. Test D100.9 first against GND and FDC_CS_N; test D100.11
-  against D93 RE_N/D94.3 and IORD. These distinguish the two exhaustive
+  against D93 RE_N/D94.3. These distinguish the two exhaustive safe
   functional families before any broad continuity chase. First dump D15/D16
   and identify its guarded CMA/NOP profile.
   With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and

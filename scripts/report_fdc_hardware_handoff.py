@@ -465,7 +465,7 @@ def main() -> int:
             "D100.11 `T`",
             endpoint_state(board, "D100", "11"),
             "8287 direction gating and read-side polarity",
-            "singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3 (always-enabled family) and IORD (qualified-enable family)",
+            "singleton D100_T_BOUNDARY; first compare against D93 RE_N/D94.3, required by both safe families; raw IORD is excluded by D94's suppressed-/RE branch",
         ),
     ]
 
@@ -714,7 +714,7 @@ def main() -> int:
             "- Before real FDC bring-up, continuity-check D93.39/38 to D10.18/19 to",
             "  confirm INTRQ/DRQ ordering, then identify D93.19, D93.24, D100.9, and",
             "  D100.11. Test D100.9 first against GND and FDC_CS_N; test D100.11",
-            "  against D93 RE_N/D94.3 and IORD. These distinguish the two exhaustive",
+            "  against D93 RE_N/D94.3. These distinguish the two exhaustive safe",
             "  functional families before any broad continuity chase. First dump D15/D16",
             "  and identify its guarded CMA/NOP profile.",
             "  With a CMA profile, capture CPU DB, D93 DAL, D100 /OE/T, D93 /WE, and",

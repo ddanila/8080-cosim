@@ -26,10 +26,13 @@ sync/juku_top_periph_bus_check.sh
 | PPI0 Port C motor-on latch through decoded port `0x06` | PASS |
 | Physical D94 table produces mutually exclusive FDC `/RE` and `/WE` strobes | PASS |
 | Low D101.Q0/A4 steers register 3 from D93 strobes to the pulled-up D94 D0 branch | PASS |
+| Chip-select-qualified D100 path uses actual D93 `/RE` and stays A->B on the suppressed-`/RE` branch | PASS |
+| Always-enabled D100 path uses actual D93 `/RE` and stays A->B on the suppressed-`/RE` branch | PASS |
 | FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | PASS |
 | FDC seek/status/data through decoded ports `0x1C..0x1F` | PASS |
 | First byte of `JUKU1.CPM` track 0 sector 2 read through top-level bus is `0xC3` | PASS |
 | ROMBIOS `0xA2` write-sector streams 512 bytes through D94-decoded port `0x1F` and reads them back from a writable copy | PASS |
+| CMA-profile CPU bytes cross physical D100/DAL for restore, seek, media read, and 512-byte write/readback under both control families | PASS |
 
 ## Stop State
 
@@ -37,6 +40,8 @@ sync/juku_top_periph_bus_check.sh
 - Pass line: `JUKU-TOP-PERIPH-BUS: PASS`
 - Writable-copy disk line: `FDC-1793: loaded raw disk <temporary-copy> (2 sides, writable)`
 - Writable-copy pass line: `JUKU-TOP-PERIPH-BUS: PASS`
+- Qualified-D100 writable pass line: `JUKU-TOP-PERIPH-BUS: PASS`
+- Always-enabled-D100 writable pass line: `JUKU-TOP-PERIPH-BUS: PASS`
 
 ## Boundary
 
@@ -46,6 +51,12 @@ sync/juku_top_periph_bus_check.sh
   functional sources; they preserve, rather than close, the physical probes.
 - A separate forced-low A4 check exercises the alternate register-3 D0 branch
   without assigning that physically pulled-up output an unmeasured load.
+- Two opt-in builds route the behavioral controller through physical D100/DAL.
+  Their CPU-side FDC bytes are complemented like CMA-profile firmware. Both use
+  actual D93 `/RE` for direction, not raw `IORD`; this keeps D100 A->B when
+  D94's low-A4 branch suppresses the controller read strobe. One build qualifies
+  `/OE` with FDC chip-select and the other grounds it like D23-D25. These are
+  executable functional candidates, not measured copper assignments.
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path

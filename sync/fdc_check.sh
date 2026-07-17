@@ -54,13 +54,16 @@ physical D93/D94 wiring.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
 - The physical КР580ВА87/8287 device models complement all 256 byte values in
-  both directions. D100 is tested under both sufficient control families:
-  qualified `/OE=FDC_CS_N`, `T=IORD`, and the same-board precedent
+  both directions. D100 is tested under both safe control families:
+  qualified `/OE=FDC_CS_N`, `T=D93_RE_N`, and the same-board precedent
   `/OE=GND`, `T=D93_RE_N`. Selected writes drive CPU `DB` to inverted `DAL`;
-  selected reads drive `DAL` to inverted `DB`; an unselected cycle either
+  selected reads drive `DAL` to inverted `DB`; an unselected or D94-suppressed
+  read cycle either
   disables both sides or holds direction A->B so D100 cannot contend on CPU
   `DB`. The same exhaustive guard now proves D23-D25's full bidirectional model,
-  including D25's traced turnaround input. These are functional constraints;
+  including D25's traced turnaround input. Raw `IORD` is excluded as D100 `T`
+  because D94 can suppress `/RE` on its low-A4 register-3 branch. These are
+  functional constraints;
   they do not promote either still-unmeasured D100 conductor.
 - The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
   explicitly writable temporary image and reads them back byte-for-byte.

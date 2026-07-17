@@ -12,7 +12,7 @@ module buf_8287_tb;
   reg cpu_drive = 1'b0;
   reg fdc_drive = 1'b0;
   reg fdc_cs_n = 1'b1;
-  reg iord_n = 1'b1;
+  reg fdc_re_n = 1'b1;
   reg bp_a_drive = 1'b0;
   reg bp_b_drive = 1'b0;
   reg [7:0] bp_a_data = 8'h00;
@@ -27,18 +27,17 @@ module buf_8287_tb;
   assign bp_a = bp_a_drive ? bp_a_data : 8'hzz;
   assign bp_b = bp_b_drive ? bp_b_data : 8'hzz;
 
-  // Minimal functional control candidate consistent with the device contract:
-  // selected writes have IORD high (T=1, DB -> DAL), selected reads have
-  // IORD low (T=0, DAL -> DB), and deselection releases both buses.
+  // Chip-select-qualified family. Actual D93 /RE controls direction; raw IORD
+  // is insufficient because D94 can suppress /RE on its low-A4 data branch.
   buf_8287 dut(
-    .a(db), .b(dal), .oe_n(fdc_cs_n), .t(iord_n),
+    .a(db), .b(dal), .oe_n(fdc_cs_n), .t(fdc_re_n),
     .vss_gnd(1'b0), .vcc_5v(1'b1)
   );
   // Same required cycle states, using the always-enabled family seen on the
   // board's D23-D25 ВА87s. D93_RE_N is high except on a selected FDC read.
   buf_8287 dut_always_enabled(
     .a(db_always), .b(dal_always), .oe_n(1'b0),
-    .t(fdc_cs_n | iord_n), .vss_gnd(1'b0), .vcc_5v(1'b1)
+    .t(fdc_re_n), .vss_gnd(1'b0), .vcc_5v(1'b1)
   );
   va87_out dut_backplane(.Ain(bp_a), .Aout(bp_b), .oe_n(1'b0), .t(bp_t));
 
@@ -56,7 +55,7 @@ module buf_8287_tb;
     end
 
     fdc_cs_n = 1'b0;
-    iord_n = 1'b1;
+    fdc_re_n = 1'b1;
     for (value = 0; value < 256; value = value + 1) begin
       cpu_data = value[7:0];
       #1;
@@ -69,7 +68,7 @@ module buf_8287_tb;
 
     cpu_drive = 1'b0;
     fdc_drive = 1'b1;
-    iord_n = 1'b0;
+    fdc_re_n = 1'b0;
     for (value = 0; value < 256; value = value + 1) begin
       fdc_data = value[7:0];
       #1;
@@ -81,6 +80,15 @@ module buf_8287_tb;
     end
 
     fdc_drive = 1'b0;
+    // D94 low-A4 branch: controller remains selected but /RE is released.
+    // Both safe families must point A->B and therefore leave CPU DB undriven.
+    fdc_re_n = 1'b1;
+    #1;
+    if (db !== 8'hzz || db_always !== 8'hzz) begin
+      $display("BUF-8287: FAIL suppressed-/RE branch drove DB qualified=%h always=%h",
+               db, db_always);
+      $finish_and_return(1);
+    end
     fdc_cs_n = 1'b1;
     #1;
     if (db !== 8'hzz || dal !== 8'hzz) begin

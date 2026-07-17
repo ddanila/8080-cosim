@@ -12,6 +12,7 @@ module juku_top_periph_bus_tb();
   integer i;
   reg [7:0] rd;
   reg writable_mode = 1'b0;
+  reg fdc_bus_invert = 1'b0;
   reg [15:0] drive_ba = 16'h0000;
   reg [7:0] drive_db = 8'hff;
   reg kbd_en = 1'b0, kbd_pressed = 1'b0, kbd_shift = 1'b0, frame_tick = 1'b0;
@@ -33,6 +34,10 @@ module juku_top_periph_bus_tb();
     io_addr = {port, port};
   end endfunction
 
+  function is_fdc_port(input [7:0] port); begin
+    is_fdc_port = (port[4:2] == 3'd7);
+  end endfunction
+
   task bus_idle; begin
     force dut.wr_n = 1'b1;
     force dut.dbin = 1'b0;
@@ -45,7 +50,7 @@ module juku_top_periph_bus_tb();
   task io_write(input [7:0] port, input [7:0] data); begin
     @(negedge osc);
     drive_ba = io_addr(port);
-    drive_db = data;
+    drive_db = (fdc_bus_invert && is_fdc_port(port)) ? ~data : data;
     force dut.BA = drive_ba;
     force dut.DB = drive_db;
     force dut.iord_n = 1'b1;
@@ -88,6 +93,7 @@ module juku_top_periph_bus_tb();
     @(posedge osc);
     #1;
     data = dut.DB;
+    if (fdc_bus_invert && is_fdc_port(port)) data = ~data;
     @(negedge osc);
     bus_idle();
   end endtask
@@ -125,6 +131,11 @@ module juku_top_periph_bus_tb();
     if (dut.d94_d0_boundary !== 1'b0) fail("D94 D0 did not assert for low-A4 register-3 cycle");
     if (dut.fdc_prom_re_n !== 1'b1) fail("D94 /RE did not release for low-A4 register-3 cycle");
     if (dut.fdc_prom_we_n !== 1'b1) fail("D94 /WE did not release for low-A4 register-3 cycle");
+`ifdef FDC_VA87_CS_QUALIFIED
+    if (dut.d100_t_boundary !== 1'b1) fail("qualified D100 pointed B->A while D94 /RE was suppressed");
+`elsif FDC_VA87_ALWAYS_ENABLED
+    if (dut.d100_t_boundary !== 1'b1) fail("always-enabled D100 pointed B->A while D94 /RE was suppressed");
+`endif
     force dut.iord_n = 1'b1;
     release dut.d94_a4_d101_q0;
     release dut.BA;
@@ -133,6 +144,14 @@ module juku_top_periph_bus_tb();
 
   initial begin
     writable_mode = $test$plusargs("expect_writable");
+    fdc_bus_invert = $test$plusargs("fdc_bus_invert");
+`ifdef FDC_VA87_CS_QUALIFIED
+    if (!fdc_bus_invert) fail("qualified physical D100 build requires +fdc_bus_invert");
+`elsif FDC_VA87_ALWAYS_ENABLED
+    if (!fdc_bus_invert) fail("always-enabled physical D100 build requires +fdc_bus_invert");
+`else
+    if (fdc_bus_invert) fail("logical DB build must not use +fdc_bus_invert");
+`endif
     force dut.ready = 1'b1;
     force dut.reset_sys = 1'b1;
     force dut.phi1 = 1'b0;
