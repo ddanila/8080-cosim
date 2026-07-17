@@ -55,6 +55,13 @@ static int is_read_track(uint8_t command) {
 }
 
 
+static int is_type_ii_iii(uint8_t command) {
+  return is_read_sector(command) || is_write_sector(command) ||
+         is_read_address(command) || is_read_track(command) ||
+         is_write_track(command);
+}
+
+
 static uint16_t crc_byte(uint16_t crc, uint8_t data) {
   crc ^= (uint16_t)data << 8;
   for (int bit = 0; bit < 8; bit++) {
@@ -90,6 +97,8 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_format_error = 0;
   fdc->track_waiting_index = 0;
   fdc->write_track_preloaded = 0;
+  fdc->command_delay_pending = 0;
+  fdc->command_delay_ticks = 0;
   fdc->drq_ticks = 0;
   fdc->write_first_byte_pending = 0;
   fdc->type_i_pending = 0;
@@ -574,6 +583,34 @@ static void begin_write_track(juku_fdc* fdc) {
 }
 
 
+static void start_type_ii_iii(juku_fdc* fdc, uint8_t command) {
+  if (is_read_sector(command)) begin_read_sector(fdc, (command & 0x10) != 0);
+  else if (is_write_sector(command)) begin_write_sector(fdc, (command & 0x10) != 0);
+  else if (is_read_address(command)) begin_read_address(fdc);
+  else if (is_read_track(command)) begin_read_track(fdc);
+  else if (is_write_track(command)) begin_write_track(fdc);
+}
+
+
+static void begin_type_ii_iii(juku_fdc* fdc, uint8_t command) {
+  const int write_command = is_write_sector(command) || is_write_track(command);
+  if (!(command & 0x04) || !fdc->disk || !fdc->disk->fp || !fdc->motor_on ||
+      (write_command && !fdc->disk->writable)) {
+    start_type_ii_iii(fdc, command);
+    return;
+  }
+  clear_transfer(fdc);
+  fdc->status_type_i = 0;
+  fdc->head_loaded = 1;
+  fdc->status &= (uint8_t)~(
+      ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->command_delay_pending = 1;
+  fdc->command_delay_ticks = 30000;  // E=1: 15 ms at the nominal 2 MHz clock
+  fdc->command_delay_command = command;
+  fdc->status |= ST_BUSY;
+}
+
+
 static void advance_read_byte(juku_fdc* fdc) {
   fdc->buffer_pos++;
   fdc->drq_ticks = 0;
@@ -637,6 +674,15 @@ void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
       } else {
         finish_type_i_motion(fdc);
       }
+    } else if (fdc->command_delay_pending) {
+      if (ticks < fdc->command_delay_ticks) {
+        fdc->command_delay_ticks -= ticks;
+        return;
+      }
+      ticks -= fdc->command_delay_ticks;
+      fdc->command_delay_ticks = 0;
+      fdc->command_delay_pending = 0;
+      start_type_ii_iii(fdc, fdc->command_delay_command);
     } else if (!fdc->track_waiting_index &&
                (fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
       const unsigned remaining = DRQ_BYTE_TICKS - fdc->drq_ticks;
@@ -755,18 +801,14 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       if ((data & 0xF0) != 0xD0 || was_busy) fdc->idle_index_pulses = 0;
       fdc->intrq = 0;
       fdc->force_interrupt_mask = 0;
-      if (is_read_sector(data)) begin_read_sector(fdc, (data & 0x10) != 0);
-      else if (is_type_i(data)) begin_type_i(fdc, data);
+      if (is_type_i(data)) begin_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) {
         clear_transfer(fdc);
         if (!was_busy) fdc->status_type_i = 1;
         fdc->force_interrupt_mask = data & 0x0F;
         fdc->intrq = (data & 0x08) != 0;
       }
-      else if (is_write_sector(data)) begin_write_sector(fdc, (data & 0x10) != 0);
-      else if (is_read_address(data)) begin_read_address(fdc);
-      else if (is_read_track(data)) begin_read_track(fdc);
-      else if (is_write_track(data)) begin_write_track(fdc);
+      else if (is_type_ii_iii(data)) begin_type_ii_iii(fdc, data);
       else {
         fdc->status_type_i = 0;
         fdc->head_loaded = 1;

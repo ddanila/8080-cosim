@@ -375,7 +375,18 @@ module fdc_1793_tb;
     seek_track(8'd12);
     write_reg(2'd2, 8'd9);
     write_reg(2'd0, 8'hc4);  // read address with the valid E flag set
-    expect_status(8'h03, 8'h03, "after read-address command");
+    if ((dut.status & 8'h03) !== 8'h01 || !dut.command_delay_pending) begin
+      $display("FDC-1793: FAIL read-address E-delay did not begin BUSY-only");
+      errors = errors + 1;
+    end
+    while (dut.command_delay_ticks > 1) @(posedge clk);
+    #1;
+    if ((dut.status & 8'h03) !== 8'h01 || !dut.command_delay_pending) begin
+      $display("FDC-1793: FAIL read-address completed before 15ms E-delay boundary");
+      errors = errors + 1;
+    end
+    @(negedge clk); #1;
+    expect_status(8'h03, 8'h03, "after read-address E-delay");
     for (i = 0; i < 6; i = i + 1) begin
       read_reg(2'd3, got);
       if (got !== want_address_byte(i)) begin
@@ -400,6 +411,8 @@ module fdc_1793_tb;
     seek_track(disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, 8'd7);
     write_reg(2'd0, 8'he4);  // Read Track with the valid E flag
+    while (dut.command_delay_pending) @(negedge clk);
+    #1;
     expect_status(8'h03, 8'h01, "read-track waiting for first index");
     expected_rate = dut.buffer_pos;
     read_reg(2'd3, got);
@@ -486,6 +499,13 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'hd0);
     expect_intrq(1'b0, "forced read-track D0 silence");
     expect_status(8'h03, 8'h00, "after forced read-track abort");
+
+    write_reg(2'd0, 8'hc4);
+    repeat (100) @(negedge clk);
+    write_reg(2'd0, 8'hd0);
+    repeat (30000) @(negedge clk);
+    expect_intrq(1'b0, "D0 during E-delay remains silent");
+    expect_status(8'h03, 8'h00, "D0 cancels E-delay");
 
     write_reg(2'd2, 8'd7);
     write_reg(2'd0, 8'hc0);
@@ -676,6 +696,8 @@ module fdc_1793_tb;
       seek_track(8'd8);
       write_reg(2'd2, 8'd10);
       write_reg(2'd0, 8'hf4);
+      while (dut.command_delay_pending) @(negedge clk);
+      #1;
       repeat (100) @(negedge clk);
       expect_status(8'h07, 8'h03, "write-track preload window before index");
       pulse_index();
@@ -683,7 +705,13 @@ module fdc_1793_tb;
       expect_status(8'h07, 8'h04, "missing write-track preload at index status");
 
       write_reg(2'd0, 8'hf4);
-      expect_status(8'h03, 8'h03, "writable write-track command");
+      if ((dut.status & 8'h03) !== 8'h01 || !dut.command_delay_pending) begin
+        $display("FDC-1793: FAIL write-track E-delay did not begin BUSY-only");
+        errors = errors + 1;
+      end
+      while (dut.command_delay_pending) @(negedge clk);
+      #1;
+      expect_status(8'h03, 8'h03, "writable write-track preload request");
       write_reg(2'd3, format_stream[0]);
       expect_status(8'h03, 8'h01, "write-track first-byte preload");
       pulse_index();

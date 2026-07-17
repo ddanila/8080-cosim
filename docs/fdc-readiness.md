@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **BOOT + TYPE-I-TIMING/TYPE-II/TYPE-III/LOST-DATA/INTRQ HDL FDC READY**
+Status: **BOOT + TYPE-I/II/III-TIMING/LOST-DATA/INTRQ HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -30,6 +30,14 @@ physical D93/D94 wiring.
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
+- For every accepted Type-II/III opcode, `E=1` now holds BUSY with DRQ low for
+  the datasheet's nominal 30,000 controller ticks / 15 ms before ID search or
+  the Type-III index wait begins; `E=0` starts without that interval. C advances
+  the interval from executed 8080 cycles, and focused HDL unit/decoded guards
+  enable the matching timer with `FDC_TYPE_II_III_TIMING`. Exact boundary tests
+  cover tick 29,999 versus 30,000, and a silent D0 cancels the pending interval.
+  The physical HLT source and D93.24 wall-clock calibration remain measurement
+  boundaries rather than assumed logic.
 - C and HDL now share the WD1793 interrupt contract for the modeled commands:
   loading a command clears pending INTRQ, normal/error completion raises it,
   and reading status acknowledges it. Type-IV Force Interrupt `0xD0` terminates
@@ -348,7 +356,7 @@ evidence exists.
   reconstructed Read Track, representable MFM Write Track, and Type-II
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
   not a general WD1793 conformance model. Exact physical D93.24 calibration of
-  the byte and Type-I clock intervals, Write Sector ID-to-data lead-in,
+  the byte, Type-I, and Type-II/III E-delay intervals, Write Sector ID-to-data lead-in,
   external HLT/step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are

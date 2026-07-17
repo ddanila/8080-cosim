@@ -362,7 +362,14 @@ int main(void) {
   seek_track(&fdc, 12);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xC4);  // read address, including the valid E flag
-  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read-address command");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "read-address E-delay begins busy");
+  juku_fdc_tick(&fdc, 29999);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "read-address before 15 ms E-delay boundary");
+  juku_fdc_tick(&fdc, 1);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
+                        "read-address after 15 ms E-delay boundary");
   static const uint8_t address_id[] = {12, 0, 1, 2, 0xBD, 0xB3};
   for (size_t i = 0; i < sizeof(address_id); i++) {
     uint8_t got = juku_fdc_read(&fdc, 3);
@@ -385,6 +392,7 @@ int main(void) {
 
   juku_fdc_write(&fdc, 2, 7);
   juku_fdc_write(&fdc, 0, 0xE4);  // Read Track, including the valid E flag
+  juku_fdc_tick(&fdc, 30000);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
                         "read-track waiting for first index");
   const unsigned read_track_pos_before_index = fdc.buffer_pos;
@@ -420,6 +428,13 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0xD0);
   fail |= expect_intrq(&fdc, 0, "forced read-track D0 silence");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after forced read-track abort");
+
+  juku_fdc_write(&fdc, 0, 0xC4);
+  juku_fdc_tick(&fdc, 100);
+  juku_fdc_write(&fdc, 0, 0xD0);
+  juku_fdc_tick(&fdc, 30000);
+  fail |= expect_intrq(&fdc, 0, "D0 during E-delay remains silent");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "D0 cancels E-delay");
 
   juku_fdc_write(&fdc, 2, 7);
   juku_fdc_write(&fdc, 0, 0xC0);
@@ -677,8 +692,11 @@ int main(void) {
                         ST_LOST_DATA, "missing write-track preload at index status");
 
   juku_fdc_write(&fdc, 0, 0xF4);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "write-track E-delay begins busy");
+  juku_fdc_tick(&fdc, 30000);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
-                        "writable write-track command");
+                        "writable write-track preload request");
   juku_fdc_write(&fdc, 3, format_stream[0]);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
                         "write-track first-byte preload");

@@ -20,10 +20,10 @@ QUAL_WRITABLE_OUT="$TMP/qualified-writable-out.txt"
 ALWAYS_OUT="$TMP/always-out.txt"
 ALWAYS_WRITABLE_OUT="$TMP/always-writable-out.txt"
 
-iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
-iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_VA87_CS_QUALIFIED -o "$QUAL_SIM" \
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_TYPE_II_III_TIMING -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_TYPE_II_III_TIMING -DFDC_VA87_CS_QUALIFIED -o "$QUAL_SIM" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
-iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_VA87_ALWAYS_ENABLED -o "$ALWAYS_SIM" \
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_TYPE_II_III_TIMING -DFDC_VA87_ALWAYS_ENABLED -o "$ALWAYS_SIM" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
 vvp "$SIM" +disk=media/disks/JUKU1.CPM +disk_heads=2 >"$OUT"
 cp media/disks/JUKU1.CPM "$TMP/JUKU1-writable.CPM"
@@ -95,11 +95,11 @@ sync/juku_top_periph_bus_check.sh
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | $status |
 | Timed Type-I physical-head/update/verify/SEEK-ERROR completion plus exact 15-idle-index HLD release through decoded ports \`0x1C..0x1F\` | $status |
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (\`0x5C\`) through the top-level bus | $status |
-| Index-gated Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |
+| E-delayed, index-gated Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | $status |
 | ROMBIOS \`0xA2\` write-sector streams 512 bytes through D94-decoded port \`0x1F\` and reads them back from a writable copy | $status |
 | Type-II multi-write persists sectors 9/10 and ends at sector 11 with RNF | $status |
-| Index-gated Type-III Write Track preloads its first byte, streams 6,230 formatter bytes, and persists sectors 1-10 on a writable copy through logical DB and both physical D100 families | $status |
+| E-delayed, index-gated Type-III Write Track preloads its first byte, streams 6,230 formatter bytes, and persists sectors 1-10 on a writable copy through logical DB and both physical D100 families | $status |
 | CMA-profile CPU bytes cross physical D100/DAL for restore, seek, media read, and 512-byte write/readback under both control families | $status |
 
 ## Stop State

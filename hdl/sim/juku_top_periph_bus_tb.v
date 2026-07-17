@@ -388,7 +388,12 @@ module juku_top_periph_bus_tb();
     io_write(8'h1E, 8'h07);
     io_write(8'h1C, 8'hE4);     // Type-III Read Track with the valid E flag
     io_read(8'h1C, rd);
-    if ((rd & 8'h03) !== 8'h01) fail("FDC read-track did not wait for index");
+    if ((rd & 8'h03) !== 8'h01 || !dut.U_FDC.command_delay_pending)
+      fail("FDC read-track did not enter E-delay");
+    while (dut.U_FDC.command_delay_pending) @(posedge osc);
+    #1;
+    io_read(8'h1C, rd);
+    if ((rd & 8'h03) !== 8'h01) fail("FDC read-track did not wait for index after E-delay");
     i = dut.U_FDC.buffer_pos;
     io_read(8'h1F, rd);
     if (dut.U_FDC.buffer_pos !== i) fail("FDC read-track exposed data before index");
@@ -492,7 +497,12 @@ module juku_top_periph_bus_tb();
       io_write(8'h1E, 8'h0a);
       io_write(8'h1C, 8'hF4);
       io_read(8'h1C, rd);
-      if ((rd & 8'h03) !== 8'h03) fail("FDC write-track did not assert BUSY+DRQ");
+      if ((rd & 8'h03) !== 8'h01 || !dut.U_FDC.command_delay_pending)
+        fail("FDC write-track did not enter E-delay");
+      while (dut.U_FDC.command_delay_pending) @(posedge osc);
+      #1;
+      io_read(8'h1C, rd);
+      if ((rd & 8'h03) !== 8'h03) fail("FDC write-track did not request preload after E-delay");
       io_write(8'h1F, format_stream[0]);
       io_read(8'h1C, rd);
       if ((rd & 8'h03) !== 8'h01) fail("FDC write-track did not hold preloaded byte for index");

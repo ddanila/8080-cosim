@@ -861,6 +861,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer track_waiting_index = 0;
     integer write_track_preloaded = 0;
     reg [7:0] write_track_preload = 0;
+`ifdef FDC_TYPE_II_III_TIMING
+    integer command_delay_pending = 0;
+    integer command_delay_ticks = 0;
+    reg [7:0] command_delay_command = 0;
+`endif
 `ifdef FDC_BYTE_TIMING
     integer drq_ticks = 0;
     integer write_first_byte_pending = 0;
@@ -963,6 +968,12 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         is_read_track = ((cmd & 8'hFB) == 8'hE0); // bit 2 is the optional delay flag
     end endfunction
 
+    function is_type_ii_iii(input [7:0] cmd); begin
+        is_type_ii_iii = is_read_sector(cmd) || is_write_sector(cmd) ||
+                         is_read_address(cmd) || is_read_track(cmd) ||
+                         is_write_track(cmd);
+    end endfunction
+
     function [15:0] crc_byte(input [15:0] crc_in, input [7:0] value);
         reg [15:0] crc;
         integer bit_index;
@@ -1030,6 +1041,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_format_error = 0;
         track_waiting_index = 0;
         write_track_preloaded = 0;
+`ifdef FDC_TYPE_II_III_TIMING
+        command_delay_pending = 0;
+        command_delay_ticks = 0;
+`endif
         `FDC_TIMER_CLEAR
 `ifdef FDC_TYPE_I_TIMING
         type_i_pending = 0;
@@ -1608,6 +1623,41 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end endtask
 `endif
 
+    task start_type_ii_iii(input [7:0] cmd); begin
+        if (is_read_sector(cmd)) begin_read_sector(cmd[4]);
+        else if (is_write_sector(cmd)) begin_write_sector(cmd[4]);
+        else if (is_read_address(cmd)) begin_read_address();
+        else if (is_read_track(cmd)) begin_read_track();
+        else if (is_write_track(cmd)) begin_write_track();
+    end endtask
+
+    task begin_type_ii_iii(input [7:0] cmd);
+`ifdef FDC_TYPE_II_III_TIMING
+        integer delay_ready;
+`endif
+    begin
+`ifdef FDC_TYPE_II_III_TIMING
+        delay_ready = motor_on && (!disk_requested || disk_loaded);
+        if (is_write_sector(cmd) || is_write_track(cmd))
+            delay_ready = delay_ready && disk_requested && disk_writable;
+        if (cmd[2] && delay_ready) begin
+            clear_transfer();
+            status_type_i = 0;
+            head_loaded = 1;
+            status = status & ~(ST_LOST_DATA | 8'h08 | ST_RNF |
+                                ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+            command_delay_pending = 1;
+            command_delay_ticks = 30000;
+            command_delay_command = cmd;
+            status = status | ST_BUSY;
+        end else begin
+            start_type_ii_iii(cmd);
+        end
+`else
+        start_type_ii_iii(cmd);
+`endif
+    end endtask
+
 `ifdef FDC_BYTE_TIMING
     task advance_read_byte; begin
         buffer_pos = buffer_pos + 1;
@@ -1678,18 +1728,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                     idle_index_pulses = 0;
                 intrq_r = 1'b0;
                 force_interrupt_mask = 4'b0000;
-                if (is_read_sector(D)) begin_read_sector(D[4]);
-                else if (is_type_i(D)) finish_type_i(D);
+                if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) begin
                     clear_transfer();
                     if (!command_was_busy) status_type_i = 1;
                     force_interrupt_mask = D[3:0];
                     intrq_r = D[3];
                 end
-                else if (is_write_sector(D)) begin_write_sector(D[4]);
-                else if (is_read_address(D)) begin_read_address();
-                else if (is_read_track(D)) begin_read_track();
-                else if (is_write_track(D)) begin_write_track();
+                else if (is_type_ii_iii(D)) begin_type_ii_iii(D);
                 else begin
                     status_type_i = 0;
                     head_loaded = 1;
@@ -1790,6 +1836,23 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 end
             end else begin
                 type_i_ticks = type_i_ticks - 1;
+            end
+        end
+    end
+`endif
+
+    // Type-II/III E=1 holds BUSY for the datasheet's nominal 15 ms head
+    // settle before ID search or the Type-III index wait begins.  Keep the
+    // autonomous timer opt-in until D93.24 and the external HLT path are known.
+`ifdef FDC_TYPE_II_III_TIMING
+    always @(negedge clk) begin
+        if (command_delay_pending) begin
+            if (command_delay_ticks <= 1) begin
+                command_delay_ticks = 0;
+                command_delay_pending = 0;
+                start_type_ii_iii(command_delay_command);
+            end else begin
+                command_delay_ticks = command_delay_ticks - 1;
             end
         end
     end
