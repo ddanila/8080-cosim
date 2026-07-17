@@ -174,13 +174,34 @@ def main() -> int:
         # cards through the backplane. Cross-card danglers are only meaningful on the
         # assembled netlist, which is the TC.4/TC.5 (full LVS + schematic) scope.
 
+    # 8) D1.18 completeness (opt-in via --completeness; kept out of the default run
+    # -- and thus the tier suite/CI -- until TD.5, so it can be red while TD.2-TD.5
+    # complete the netlists). Rule: on any card with a board.json, every INTERNAL
+    # (non-bus) net must have >=2 endpoints or be tagged _TIE / _NC.
+    if "--completeness" in sys.argv:
+        for name in cards:
+            bj = REVB / f"{name}.board.json"
+            if not bj.exists():
+                continue
+            board = json.loads(bj.read_text())
+            bn = {n: (e["nodes"] if isinstance(e, dict) else e) for n, e in board.get("nets", {}).items()}
+            for net, nodes in sorted(bn.items()):
+                if net in all_sigs or net in ("VCC5", "GND"):
+                    continue  # bus nets continue via the backplane; power is separate
+                if net.endswith("_TIE") or net.endswith("_NC"):
+                    continue  # explicit tie / no-connect
+                if len(nodes) < 2:
+                    fail.append(f"[completeness] {name}.board.json internal net {net} "
+                                f"has 1 endpoint {nodes} (wire it, or tag _TIE/_NC)")
+
     if fail:
         print("rev B board connectivity check FAILED:")
         for f in fail:
             print(f"- {f}")
         return 1
     print(f"rev B board connectivity OK: {len(cards)} cards, "
-          f"mem 0x0000..0x{covered_hi:04X} covered, {len(io_owned)} IO ports owned.")
+          f"mem 0x0000..0x{covered_hi:04X} covered, {len(io_owned)} IO ports owned"
+          + ("; completeness OK" if "--completeness" in sys.argv else "") + ".")
     return 0
 
 
