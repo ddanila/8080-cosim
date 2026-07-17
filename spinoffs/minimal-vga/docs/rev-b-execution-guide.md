@@ -279,6 +279,32 @@ with SHA256 recorded. This closes T1.7–T1.9 and arms **T1.10 (order)**.
 *Acceptance:* everything green in one session; package hash recorded; T1.10 is
 purely a purchasing decision.
 
+### B1-CAD execution status (2026-07-17)
+
+- **Tools installed + resolved:** KiCad 10.0.4 (was only off-PATH) + FreeCAD 1.1.1 (`~/Applications`), both via `env.sh`.
+- **TC.1 DONE** — `kicad/revb/env.sh` resolves kicad-cli/python/footprints/freecadcmd; skip-not-fail; zsh-safe.
+- **TC.2 DONE** — `gen_revb_boards.py` deterministically emits four `<card>.board.json` (bus connectors from `bus-pinout.json` + IC DIP pinouts); `check_revb_boards.py` cross-checks connector==pinout and chip-bus-pins==roles. **Caught a real bug**: the mem GAL had inherited rev A's mem+I/O decode; rev B is memory-only.
+- **TC.3 PARTIAL** — board.json now carries the `nets` section (LVS-ready shape for `netlist_from_board.py`) + a nets-in-sync check. **Correction to D1.11:** its "structural model must boot" was the `juku_top` precedent; the applicable **rev A spinoff** precedent keeps the booting model (`revb_backplane_top`, already byte-identical) SEPARATE from an empty-bodied LVS netlist. So TC.3-full = author an *independent* structural netlist (rev A `minimal_vga_lvs.v` style), not make the behavioral model structural.
+
+**Remaining (TC.3-full, TC.4–TC.7): the focused PCB/LVS body of work.** Executing
+TC.2/TC.3 surfaced that this is genuinely large and iterative, and needs
+schematic-level detail not yet captured:
+- **Buffer datapath** — the CPU card's '245/'244 must sit *in* the data/address
+  path (Z80 pins → local nets → buffer → bus nets), with DIR/OE control. My TC.2
+  board.json wires the Z80 straight to the bus with the buffers beside it; correct
+  in-path modeling is schematic capture (TC.5).
+- **TC.3-full/TC.4** — independent structural LVS netlist per card + `map.json`
+  pinmaps + `sync/lvs.py` round-trip. Bounded value (boot-check + TC.2 checks
+  already cover much), real effort.
+- **TC.5** — `gen_revb_pcb.py` (pcbnew): outlines, 39+10 connector footprints,
+  19 mm pitch, generator-emitted silk. Needs the datapath-complete board.json.
+- **TC.6** — `kicad-cli pcb drc` (iterative: fix violations).
+- **TC.7** — STEP export + `freecadcmd` interference/keying (tools now present).
+
+These are best done as a focused CAD pass, not the tail of a large session —
+rushing them risks committing un-runnable PCBs. The connectivity contract they
+build on (bus-pinout + cards.json + board.json + all checks) is done and guarded.
+
 At B1 exit (after the hardware tiers), expand Phase B2 to task level (rule 6).
 
 ## Phase B2 / B3 / B4 — gates only (do not expand yet)
