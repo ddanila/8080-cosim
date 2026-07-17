@@ -108,6 +108,7 @@ jobs:
           ./sync/serial_check.sh
           ./sync/ie7_check.sh
           ./sync/ie10_check.sh
+          ./sync/ag3_check.sh
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
           ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh

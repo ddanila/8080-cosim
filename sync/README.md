@@ -46,6 +46,7 @@ sync/beeper_check.sh
 sync/serial_check.sh
 sync/ie7_check.sh
 sync/ie10_check.sh
+sync/ag3_check.sh
 sync/basic_cart_check.sh
 sync/d2_ready_path_check.sh
 ```
@@ -62,6 +63,9 @@ beeper and USART slices, the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
 К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced
 `0011`-preset modulo-13 feedback loop, and the BASIC cartridge window.
+The focused АГ3 guard covers the dual К155АГ3/74123 trigger/clear/complement,
+retrigger-inhibit and pulse-extension contract plus D56's photo-proved grounded
+A inputs and traced board RC timing parameters.
 `d2_ready_path_check.sh` separately guards the physical `.037` open-collector
 raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
 

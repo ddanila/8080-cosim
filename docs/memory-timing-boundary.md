@@ -1,6 +1,6 @@
 # Memory timing boundary
 
-Status date: 2026-07-14.
+Status date: 2026-07-17.
 
 Status: **MEMORY TIMING GUARDED / CAS-D56 SOURCE BOUNDARY PENDING**
 
@@ -40,7 +40,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D38 load gate is source-closed except for the remote origin of rail 2 | PASS | D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2 |
 | D42/D43 serializer packages retain their source-proved unused parallel outputs | PASS | sheet-2 draws only QD pin10; QA/QB/QC pins13/12/11 are explicit NCs on both packages |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
-| D56 active outputs reach both gate-3 XOR inputs | PASS | native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 departs on unresolved tag16; undrawn D56.1/.9/.13 are NC |
+| D56 grounded A inputs enable both source-traced B triggers and active outputs reach gate-3 | PASS | two solder views: D56.1/.9 share GND with D56.8; native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 remains unresolved tag16; unused D56.13 is NC |
 | D35 frame-interrupt inverter path is source-closed | PASS | native sheets: D55.13/VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23; D35.3/.4 remains POF/VID_MIX2 |
 | D30 READY clear uses the native D38-side status strobe | PASS | sheet-2 D38.8 active-low STB export -> sheet-1 -SSTB/D30.1; W8 still separates the D5-side island |
 

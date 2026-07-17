@@ -491,7 +491,7 @@ module juku_top (
     wire sync_b_w;   // D57.OUT2 "SYNC B." -> both D56 triggers (traced s2_a_rows/s2_pin2_corner)
     wire d56_clr_w;   // shared CLR rail = R61 12k pullup (traced); boundary-driven so yosys keeps the net
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
-    ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
+    ag3_oneshot U_D56  (.a_n(1'b0), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b0), .b2(sync_b_w), .clr2_n(d56_clr_w),
                         .q(), .q_n(d56_qn), .q2(d56_q2), .q2_n(d56_q2_n));
     ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0011), .q(d103_q), .co(d103_co));   // D0/D1 high, D2/D3 low: traced /13 preset; QD (pin 11) = 1.23MHz -> D57.CLK2
 

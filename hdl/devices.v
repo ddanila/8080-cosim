@@ -472,9 +472,126 @@ endmodule
 // the 2-3 position (the traced/boot configuration): common follows p3.
 module jumper3 (input wire p1, p3, output wire p2); assign p2 = p3; endmodule
 // ---- video dot-clock chain (board JSON provenance, sheet-2 BR) ----
-module ag3_oneshot (input wire a_n, b, clr_n, a2_n, b2, clr2_n,   // D56 АГ3 (74123) dual one-shot
-                    output wire q, q_n, q2, q2_n);                 // both sections SYNC-B-triggered (traced)
-    assign q = 1'bz; assign q_n = 1'bz; assign q2 = 1'bz; assign q2_n = 1'bz; endmodule
+// D56 К155АГ3 / 74123 dual retriggerable monostable. The default durations are
+// the board's two traced RC networks using the datasheet typical tW ~= 0.45RC:
+// section 1 R59=33k/C8=15nF (~223 us), section 2 R47=20k/C7=560pF (~5.04 us).
+// The retrigger inhibit interval follows the published 0.22*Cext(pF) ns rule.
+module ag3_oneshot #(
+    parameter integer PULSE1_NS = 223000,
+    parameter integer PULSE2_NS = 5040,
+    parameter integer RETRIGGER1_NS = 3300,
+    parameter integer RETRIGGER2_NS = 124
+) (input wire a_n, b, clr_n, a2_n, b2, clr2_n,
+   output wire q, q_n, q2, q2_n);
+`ifndef YOSYS
+    reg q1_r = 1'b0;
+    reg q2_r = 1'b0;
+    reg seen1 = 1'b0;
+    reg seen2 = 1'b0;
+    time last_trigger1 = 0;
+    time last_trigger2 = 0;
+    time expiry1 = 0;
+    time expiry2 = 0;
+    event pulse_changed1;
+    event pulse_changed2;
+
+    task start_pulse1;
+        begin
+            seen1 = 1'b1;
+            last_trigger1 = $time;
+            expiry1 = $time + PULSE1_NS;
+            q1_r = 1'b1;
+            -> pulse_changed1;
+        end
+    endtask
+
+    task start_pulse2;
+        begin
+            seen2 = 1'b1;
+            last_trigger2 = $time;
+            expiry2 = $time + PULSE2_NS;
+            q2_r = 1'b1;
+            -> pulse_changed2;
+        end
+    endtask
+
+    // One scheduler per section waits either for the current expiry or for an
+    // updated expiry/clear event. This avoids detached re-entrant task contexts
+    // while preserving true retrigger extension.
+    initial forever begin
+        @pulse_changed1;
+        while (q1_r) begin
+            if ($time >= expiry1) begin
+                q1_r = 1'b0;
+            end else begin
+                fork : wait_for_expiry1
+                    begin #(expiry1 - $time); end
+                    begin @pulse_changed1; end
+                join_any
+                disable wait_for_expiry1;
+                if (q1_r && $time >= expiry1)
+                    q1_r = 1'b0;
+            end
+        end
+    end
+
+    initial forever begin
+        @pulse_changed2;
+        while (q2_r) begin
+            if ($time >= expiry2) begin
+                q2_r = 1'b0;
+            end else begin
+                fork : wait_for_expiry2
+                    begin #(expiry2 - $time); end
+                    begin @pulse_changed2; end
+                join_any
+                disable wait_for_expiry2;
+                if (q2_r && $time >= expiry2)
+                    q2_r = 1'b0;
+            end
+        end
+    end
+
+    // A falling with B high, B rising with A low, or /CLR rising while both
+    // trigger conditions are already true starts (or validly retriggers) Q.
+    always @(negedge a_n or posedge b or posedge clr_n)
+        if (clr_n && !a_n && b &&
+            (!seen1 || (($time - last_trigger1) >= RETRIGGER1_NS)))
+            start_pulse1();
+
+    always @(negedge a2_n or posedge b2 or posedge clr2_n)
+        if (clr2_n && !a2_n && b2 &&
+            (!seen2 || (($time - last_trigger2) >= RETRIGGER2_NS)))
+            start_pulse2();
+
+    // Overriding clear terminates the active pulse and wakes its scheduler.
+    // Clearing also rearms the section for a subsequent release.
+    always @(negedge clr_n) begin
+        q1_r = 1'b0;
+        seen1 = 1'b0;
+        expiry1 = $time;
+        -> pulse_changed1;
+    end
+    always @(negedge clr2_n) begin
+        q2_r = 1'b0;
+        seen2 = 1'b0;
+        expiry2 = $time;
+        -> pulse_changed2;
+    end
+
+    assign q = q1_r;
+    assign q_n = ~q1_r;
+    assign q2 = q2_r;
+    assign q2_n = ~q2_r;
+`else
+    // LVS reads devices.v as a black-box library; keep its Verilog-2005 parser
+    // away from simulation-only time/event scheduling constructs.
+    assign q = 1'bz;
+    assign q_n = 1'bz;
+    assign q2 = 1'bz;
+    assign q2_n = 1'bz;
+`endif
+endmodule
 // D103 К555ИЕ10 = SN74LS161A-class synchronous 4-bit binary counter.
 // /CLR is the 161's direct (asynchronous) clear; /LOAD is synchronous and
 // takes priority over the two count enables on CLK's rising edge. RCO is the

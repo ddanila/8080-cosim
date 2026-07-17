@@ -245,12 +245,14 @@ def main() -> int:
             "`D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2`",
         ),
         (
-            "D56 active outputs reach both gate-3 XOR inputs",
+            "D56 grounded A inputs enable both source-traced B triggers and active outputs reach gate-3",
             has_nodes(board, "D56_Q2_D34", {("D56", "5"), ("D34", "9")})
             and has_nodes(board, "D56_QN_D34", {("D56", "4"), ("D34", "10")})
             and set(nodes(board, "D56_Q2N_TAG16")) == {("D56", "12")}
-            and all(["D56", pin] in board.get("no_connects", []) for pin in ("1", "9", "13")),
-            "native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 departs on unresolved tag16; undrawn D56.1/.9/.13 are NC",
+            and {("D56", "1"), ("D56", "8"), ("D56", "9")} <= set(nodes(board, "GND"))
+            and all(["D56", pin] not in board.get("no_connects", []) for pin in ("1", "9"))
+            and ["D56", "13"] in board.get("no_connects", []),
+            "two solder views: D56.1/.9 share GND with D56.8; native sheet-2: D56.5/.4 -> D34.9/.10; D56.12 remains unresolved tag16; unused D56.13 is NC",
         ),
         (
             "D35 frame-interrupt inverter path is source-closed",
@@ -308,7 +310,7 @@ def main() -> int:
     lines = [
         "# Memory timing boundary",
         "",
-        "Status date: 2026-07-14.",
+        "Status date: 2026-07-17.",
         "",
         f"Status: **{status}**",
         "",

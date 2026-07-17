@@ -26,11 +26,11 @@ endpoint table contains 636 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
-| `accepted` | 41 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
-| `measurement` | 595 | pad/path review is inconclusive; continuity or better local evidence is required |
+| `accepted` | 43 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
+| `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 373 `local-package-fit`, 217
-`registration-only`, and 22 `registration+unique-hole-snap` rows. Two use
+Confidence metadata consists of 371 `local-package-fit`, 217
+`registration-only`, and 22 `registration+unique-hole-snap` rows. Four use
 `local-package-fit+continuous-copper`, five use
 `registration+visible-common-landing`, six use
 `registration+unique-joint`, and six use `cross-side-registration`.

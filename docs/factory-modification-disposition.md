@@ -1,6 +1,6 @@
 # Factory modification disposition
 
-Status date: **2026-07-16**.
+Status date: **2026-07-17**.
 
 Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**
 
@@ -10,13 +10,15 @@ D56, D15, D14, and D11. Assembly note 11 explicitly identifies position
 as an unexpanded solder-location callout because its specification row
 was not photographed. Only the D15 detail explicitly says `Разрезать`.
 Three component views plus two overlapping solder views register D56's
-callout row; independent evidence closes the D15 cut topology and the
-local D14 ground link. D56 electrical endpoints, D11 bridge endpoints,
-and the remaining D14 auxiliary paths stay held.
+callout row. The same two solder views independently close D56.1 and
+D56.9 onto its pin-8 ground perimeter; this trigger closure is separate
+from the still-held position-159 field. Independent evidence also closes
+the D15 cut topology and local D14 ground link. D11 bridge endpoints and
+the remaining D14 auxiliary paths stay held.
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
-| D56 | АГ3 timing area: position-150 tubing and three position-159 solder locations register as the separate left annulus plus D56.5/D56.12; the installed conductor and electrical topology remain held | GEOMETRY REGISTERED / ELECTRICAL HOLD — all three callout locations are fixed; no cut or merge is inferred | validated two-sided package fits plus two solder views identify the left annulus and D56.5/D56.12; continuity or item 159 is still required |
+| D56 | АГ3 timing area: trigger pins D56.1/D56.9 are photo-closed to the D56.8 ground perimeter; the separate position-150 tubing and three position-159 solder locations remain held | PARTIAL PHOTO-CLOSE — D56.1/D56.9 are grounded with D56.8; all three separate callout locations are fixed but their installed conductor is held | two solder views show uninterrupted perimeter copper through pins 1/8/9; validated fits also identify the distinct left annulus and D56.5/D56.12 callout row, where continuity or item 159 is still required |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
 | D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release |
 | D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; validated two-sided package fits exhaust four solder views, so direct continuity is required to assign any D11 pin/net |
@@ -33,6 +35,10 @@ is therefore not a cut
 instruction, and the nearby visible wide-rail gap cannot be promoted as
 proof of the D56.12 net partition. Position 159 remains an unexpanded
 solder-location callout until its specification identity is recovered.
+This callout hold is independent of the package trigger inputs: both
+overlapping solder views show D56.1 and D56.9 on the same uninterrupted
+wide perimeter conductor as ground pin D56.8, so the source model now
+grounds both active-low A inputs.
 
 | Solder view | Left-landing error | D56.5 error | D56.12 error | Result |
 | --- | ---: | ---: | ---: | --- |
@@ -44,6 +50,16 @@ pads and the adjacent horizontal rail; the separate left annulus belongs
 to that rail. This closes the three-location geometry, not the installed
 assembly conductor. Direct continuity or the complete position-159
 specification is required before changing the clean source net partition.
+
+| Ground-rail view | D56.1 registration error | D56.8 registration error | D56.9 registration error | Result |
+| --- | ---: | ---: | ---: | --- |
+| PXL_20260710_200530933.MP.jpg | 0.000 px | 7.878 px | 0.000 px | accepted uninterrupted GND perimeter |
+| PXL_20260710_200522685.jpg | 0.001 px | 0.000 px | 0.000 px | accepted uninterrupted GND perimeter |
+
+The primary view exposes the complete upper rail and left-edge return;
+the overlap independently repeats both pin levels. D56.1 and D56.9 are
+therefore closed to `GND` with D56.8 without inferring any position-159
+conductor or changing the D56.5/D56.12 callout-row partition.
 
 ## D15 cut registration
 

@@ -1076,7 +1076,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": "К155АГ3 datasheet pin contract plus complete sheet-2 symbol census: used timing/RC pins are modeled; A_N pin1, A2_N pin9, and first-section Q pin13 have no drawn stubs and are explicit NCs"
+    "pins": "К155АГ3 datasheet pin contract plus complete sheet-2 symbol census: used timing/RC pins are modeled; the native symbol leaves A_N pin1, A2_N pin9, and first-section Q pin13 unstubbed, but two overlapping July-2026 solder photographs prove pins 1 and 9 share uninterrupted perimeter copper with package-ground pin 8 on the installed .009 board; only unused Q pin13 remains an explicit NC"
    }
   },
   {
@@ -10107,7 +10107,7 @@
    "intentional_harness_only": true
   },
   "GND": {
-   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints",
+   "src": "scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; two overlapping reflected D56 solder views prove trigger pins D56.1 and D56.9 share the uninterrupted perimeter rail with package-ground pin D56.8; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints",
    "power": true,
    "nodes": [
     [
@@ -10369,6 +10369,14 @@
     [
      "D56",
      "8"
+    ],
+    [
+     "D56",
+     "1"
+    ],
+    [
+     "D56",
+     "9"
     ],
     [
      "D103",
@@ -16029,8 +16037,6 @@
   ["D35", "2"],
   ["D35", "5"],
   ["D35", "6"],
-  ["D56", "1"],
-  ["D56", "9"],
   ["D56", "13"],
   ["D42", "11"],
   ["D42", "12"],

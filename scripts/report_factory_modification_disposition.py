@@ -17,7 +17,7 @@ PANORAMA_REGISTRATION = ROOT / "docs/photo-registration/panorama-registration.js
 BOARD_REGISTRATION = ROOT / "docs/photo-registration/board-registration.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
 AFFECTED = {
-    "D56": "АГ3 timing area: position-150 tubing and three position-159 solder locations register as the separate left annulus plus D56.5/D56.12; the installed conductor and electrical topology remain held",
+    "D56": "АГ3 timing area: trigger pins D56.1/D56.9 are photo-closed to the D56.8 ground perimeter; the separate position-150 tubing and three position-159 solder locations remain held",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
     "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held",
     "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field",
@@ -159,10 +159,56 @@ def main() -> int:
         }
         d56_ok &= max(overlap_errors.values()) <= 20.0
         d56_rows = [(primary, primary_errors), (overlap, overlap_errors)]
+    d56_ground = d56["trigger_ground_rail"]
+    d56_ground_observations = d56_ground["solder_observations"]
+    d56_ground_rows = []
+    d56_ok &= (
+        d56_ground["source_net"] == "GND"
+        and d56_ground["package_ground_pin"] == "8"
+        and set(d56_ground["trigger_pins"]) == {"1", "9"}
+        and len(d56_ground_observations) == 2
+    )
+    if set(d56_fits) == {"component", "solder"} and len(d56_ground_observations) == 2:
+        primary_ground, overlap_ground = d56_ground_observations
+        primary_ground_errors = {
+            pin: math.dist(
+                primary_ground[f"d56_{pin}_px"],
+                d56_fits["solder"]["projected_pins"][pin],
+            )
+            for pin in ("1", "8", "9")
+        }
+        d56_ok &= max(primary_ground_errors.values()) <= 8.0
+        primary_to_panorama = matrix(
+            panorama["groups"]["solder_grid"]["images"][primary_ground["image"]][
+                "original_to_panorama_homography"
+            ]
+        )
+        overlap_to_panorama = matrix(
+            panorama["groups"]["solder_grid"]["images"][overlap_ground["image"]][
+                "original_to_panorama_homography"
+            ]
+        )
+        primary_to_overlap = multiply(inverse3(overlap_to_panorama), primary_to_panorama)
+        overlap_ground_errors = {
+            pin: math.dist(
+                project(primary_to_overlap, primary_ground[f"d56_{pin}_px"]),
+                overlap_ground[f"d56_{pin}_px"],
+            )
+            for pin in ("1", "8", "9")
+        }
+        d56_ok &= max(overlap_ground_errors.values()) <= 0.01
+        d56_ground_rows = [
+            (primary_ground, primary_ground_errors),
+            (overlap_ground, overlap_ground_errors),
+        ]
+    gnd_nodes = {tuple(node) for node in nets["GND"]["nodes"]}
+    d56_ok &= {("D56", "1"), ("D56", "8"), ("D56", "9")} <= gnd_nodes
+    d56_ok &= all(["D56", pin] not in board.get("no_connects", []) for pin in ("1", "9"))
+    d56_ok &= ["D56", "13"] in board.get("no_connects", [])
     d56_ok &= (
         len(d56["package_identity"]["component_observations"]) >= 3
         and "tubing" in d56["drawing"]["observation"]
-        and "no visible gap is promoted" in d56["remaining_boundary"]
+        and "no callout-row gap is promoted" in d56["remaining_boundary"]
     )
     d15_rows = []
     d15_ok = chips["D15"]["pins"].get("8") == "A2" and chips["D15"]["pins"].get("9") == "A1"
@@ -217,7 +263,6 @@ def main() -> int:
         length_error = abs(observed_length - expected_length)
         d14_ok &= length_error <= 0.15
         d14_rows.append((observation, endpoint_rows, length_error))
-    gnd_nodes = {tuple(node) for node in nets["GND"]["nodes"]}
     d14_ok &= {("D32", "4"), ("D14", "1")} <= gnd_nodes
     d14_aux_points = [
         image_to_board(
@@ -314,7 +359,7 @@ def main() -> int:
     lines = [
         "# Factory modification disposition",
         "",
-        "Status date: **2026-07-16**.",
+        "Status date: **2026-07-17**.",
         "",
         f"Status: **{status}**",
         "",
@@ -324,16 +369,18 @@ def main() -> int:
         "as an unexpanded solder-location callout because its specification row",
         "was not photographed. Only the D15 detail explicitly says `Разрезать`.",
         "Three component views plus two overlapping solder views register D56's",
-        "callout row; independent evidence closes the D15 cut topology and the",
-        "local D14 ground link. D56 electrical endpoints, D11 bridge endpoints,",
-        "and the remaining D14 auxiliary paths stay held.",
+        "callout row. The same two solder views independently close D56.1 and",
+        "D56.9 onto its pin-8 ground perimeter; this trigger closure is separate",
+        "from the still-held position-159 field. Independent evidence also closes",
+        "the D15 cut topology and local D14 ground link. D11 bridge endpoints and",
+        "the remaining D14 auxiliary paths stay held.",
         "",
         "| Ref | Factory operation locality | Current disposition | Closure evidence |",
         "| --- | --- | --- | --- |",
     ]
     for ref, detail in AFFECTED.items():
-        disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — all three callout locations are fixed; no cut or merge is inferred"
-        closure = "validated two-sided package fits plus two solder views identify the left annulus and D56.5/D56.12; continuity or item 159 is still required"
+        disposition = "PARTIAL PHOTO-CLOSE — D56.1/D56.9 are grounded with D56.8; all three separate callout locations are fixed but their installed conductor is held"
+        closure = "two solder views show uninterrupted perimeter copper through pins 1/8/9; validated fits also identify the distinct left annulus and D56.5/D56.12 callout row, where continuity or item 159 is still required"
         if ref == "D15":
             disposition = "PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches"
             closure = "two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held"
@@ -363,6 +410,10 @@ def main() -> int:
         "instruction, and the nearby visible wide-rail gap cannot be promoted as",
         "proof of the D56.12 net partition. Position 159 remains an unexpanded",
         "solder-location callout until its specification identity is recovered.",
+        "This callout hold is independent of the package trigger inputs: both",
+        "overlapping solder views show D56.1 and D56.9 on the same uninterrupted",
+        "wide perimeter conductor as ground pin D56.8, so the source model now",
+        "grounds both active-low A inputs.",
         "",
         "| Solder view | Left-landing error | D56.5 error | D56.12 error | Result |",
         "| --- | ---: | ---: | ---: | --- |",
@@ -382,6 +433,24 @@ def main() -> int:
         "to that rail. This closes the three-location geometry, not the installed",
         "assembly conductor. Direct continuity or the complete position-159",
         "specification is required before changing the clean source net partition.",
+        "",
+        "| Ground-rail view | D56.1 registration error | D56.8 registration error | D56.9 registration error | Result |",
+        "| --- | ---: | ---: | ---: | --- |",
+    ]
+    for observation, errors in d56_ground_rows:
+        lines.append(row([
+            Path(observation["image"]).name,
+            f"{errors['1']:.3f} px",
+            f"{errors['8']:.3f} px",
+            f"{errors['9']:.3f} px",
+            "accepted uninterrupted GND perimeter",
+        ]))
+    lines += [
+        "",
+        "The primary view exposes the complete upper rail and left-edge return;",
+        "the overlap independently repeats both pin levels. D56.1 and D56.9 are",
+        "therefore closed to `GND` with D56.8 without inferring any position-159",
+        "conductor or changing the D56.5/D56.12 callout-row partition.",
         "",
         "## D15 cut registration",
         "",

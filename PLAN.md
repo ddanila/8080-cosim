@@ -359,7 +359,12 @@ Every ask below is queued with exact deliverables in
    callout locations as the separate left annulus plus D56.5/D56.12. Visible
    bare-board gaps separate both package pads from the adjacent rail, but the
    installed item-159 conductor/material is not electrically assigned and no
-   D56 net change is inferred. D14's fifth landing
+   callout-row net change is inferred. The same two solder views independently
+   expose the wide perimeter conductor: D56.9 joins package-ground D56.8 on the
+   upper rail and D56.1 returns to it along the uninterrupted left board edge.
+   Both formerly unstubbed active-low A inputs are therefore source-promoted to
+   GND, resolving the physical prerequisite for the two SYNC-B-triggered
+   one-shots while leaving the separate item-159 field held. D14's fifth landing
    is now registered in two component views at `(207.887, 49.900) mm` with
    `0.011 mm` cross-view disagreement; its conductor, three long traces, and
    right-row dogleg remain held. Both reflected solder overlaps place the D14
@@ -397,8 +402,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 The routed PCB remains the sole endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-636 observations have dispositions, 41 rows are accepted evidence, and the
-other 595 remain measurement requests (`docs/photo-registration.md`).
+636 observations have dispositions, 43 rows are accepted evidence, and the
+other 593 remain measurement requests (`docs/photo-registration.md`).
 
 Exit criterion: every required functional endpoint is modeled in both source
 and routed PCBs; LVS, DRC, boot, and cosim checks remain green; the generated

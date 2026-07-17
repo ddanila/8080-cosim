@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D56 two-sided package and three-callout geometry registered but electrically held; D15 cut pair and the D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
+  "status": "D56 trigger pins 1/9 photo-closed to the pin-8 ground perimeter while its separate three-callout field remains electrically held; D15 cut pair and the D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
   "d56": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114638730.MP.jpg",
@@ -25,6 +25,28 @@
           "observation": "independent lower-overlap view repeats the marking, notch, adjacent resistor, board edge, and pin fanout"
         }
       ]
+    },
+    "trigger_ground_rail": {
+      "source_net": "GND",
+      "package_ground_pin": "8",
+      "trigger_pins": ["1", "9"],
+      "solder_observations": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+          "d56_1_px": [807.0, 536.0],
+          "d56_8_px": [807.0, 89.0],
+          "d56_9_px": [990.0, 89.0],
+          "observation": "the validated reflected package fit lands all three joints directly on one uninterrupted wide perimeter conductor: pin 9 joins pin 8 along the upper rail and pin 1 returns to that rail through the visible left-edge vertical"
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "d56_1_px": [876.949, 2842.830],
+          "d56_8_px": [878.965, 2425.305],
+          "d56_9_px": [1047.610, 2426.597],
+          "observation": "independent overlap repeats both rail contacts and the uninterrupted left-edge return between the pin-1 and pin-8 levels"
+        }
+      ],
+      "result": "D56.1 A_N and D56.9 A2_N are physically grounded with D56.8 on the installed .009 board. This resolves both B-input trigger prerequisites independently of the separate position-159 D56.5/D56.12 callout field."
     },
     "callout_field": {
       "registered_level": "D56.12/D56.5 row",
@@ -54,7 +76,7 @@
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114649169.jpg",
       "observation": "Assembly note 11 says to fit tubing positions 157 and 150 at solder locations; this disproves the former position-150-equals-cut interpretation. The specification identity of position 159 was not photographed, so it remains a guarded solder-location callout rather than an inferred material or conductor."
     },
-    "remaining_boundary": "The three physical position-159 locations are fixed as the separate left annulus, D56.5, and D56.12. Determine the installed conductor/material and continuity among those locations and the adjacent rail directly or recover the complete item-159 specification. Position 150 remains tubing, and no visible gap is promoted as an assembly cut or source-net change."
+    "remaining_boundary": "D56.1 and D56.9 are photo-closed to the D56.8 ground perimeter. The separate three physical position-159 locations are fixed as the left annulus, D56.5, and D56.12; determine the installed conductor/material and continuity among those locations and the adjacent rail directly or recover the complete item-159 specification. Position 150 remains tubing, and no callout-row gap is promoted as an assembly cut or source-net change."
   },
   "d15": {
     "drawing": {
