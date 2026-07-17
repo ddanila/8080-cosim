@@ -196,7 +196,26 @@ analyzer on A0–A15 (+ bus-timing spot-check vs the S1 clock) → bring-up ROM.
 *Acceptance:* monitor prompt + `RAM PASS` over the backplane FTDI header; log
 committed.
 
-At B1 exit, expand Phase B2 to task level (rule 6).
+### B1 execution status (2026-07-17)
+
+- **T1.0 DONE** — UART ports 0x08-0x0B in facts/contract/guard; extension placement recorded. Guard catches a wrong port value.
+- **T1.1 DONE** — `roms/revb-bringup/` bring-up ROM (self-contained assembler). cosim OUT-0x08 stream = `VJUGA rev B bring-up / RAM PASS / ROM OK / READY`; corrupted build → `ROM BAD` (negative control verified).
+- **T1.2 DONE** — minimum-tier twin (`VIDEO_PRESENT=0`, real `usart_8251` at 0x08) TX stream byte-identical to cosim (47 bytes), exercising the real TxRDY handshake; `sim/revb_bringup_check.sh`, in the tier suite + CI. ekta37 boot check unaffected (params default off).
+- **T1.3-T1.6 DONE at the connectivity stage** — `kicad/revb/bus-pinout.json` + `cards.json` + `scripts/check_revb_boards.py` (driver-class rules, memory/IO ownership, card-HDL port consistency; negative control catches a decode overlap). In the tier suite + CI.
+
+**Blocked here (tools/hardware not available at a desk) — do NOT fake these:**
+- **T1.7 full per-card LVS** — needs a flattened *structural* HDL model per card (like `hdl/minimal_vga_lvs.v`); the current `revb_*_card.v` are behavioral. The board checker does an LVS-*intent* subset (card bus ports vs declared role). Full LVS is part of the KiCad-installed continuation.
+- **T1.8 DRC + full silk** — DRC needs `kicad-cli` (absent here, as in CI which uses the board-direct fallback). Requires the full KiCad PCB projects (footprints/layout), which are the continuation of T1.3-T1.6.
+- **T1.9 STEP/FreeCAD mating** — needs KiCad STEP export + FreeCAD; neither available at a desk.
+- **T1.10 order / T1.11 bench** — hardware-blocked by definition.
+
+**KiCad-installed continuation (next session with KiCad/FreeCAD):** turn the four
+`cards.json` roles into full `<card>.board.json` (chips+nets) via the rev A flow
+(`kicad/gen_kicad_sch.py`, `sync/lvs.py`), author the per-card structural LVS
+models, run DRC + STEP. The connectivity contract those build on is done and
+guard-checked.
+
+At B1 exit (after the hardware tiers), expand Phase B2 to task level (rule 6).
 
 ## Phase B2 / B3 / B4 — gates only (do not expand yet)
 

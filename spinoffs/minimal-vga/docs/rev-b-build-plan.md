@@ -73,7 +73,11 @@ one-command `sim/revb_tier_suite.sh`; CI wiring (`hdl.yml` + `ci.yml`).
 (SRAM main + framebuffer on the Video card, no DRAM/U24) rather than mechanically
 moving the DRAM twin — see execution-guide Deviations; oracle-gated, so faithful.
 
-**Phase B1 — minimum tier boards (backplane, CPU, Memory, I/O-with-UART-only).**
+**Phase B1 — minimum tier boards (backplane, CPU, Memory, I/O-with-UART-only). SIM/SPEC PORTION DONE (2026-07-17).**
+Bring-up ROM + minimum-tier twin boot byte-identical to cosim with the real 8251;
+card connectivity specs + checker pass. KiCad layout/DRC/STEP (needs KiCad/FreeCAD)
+and the bench bring-up (needs boards) are the remaining, tool/hardware-blocked
+continuation — see `rev-b-execution-guide.md` B1 execution status.
 `ekta37_z80.bin` cannot run this tier (no video to draw on, no keyboard — it would
 hang), so B1 gets a **bring-up ROM**: a small serial monitor + RAM/bus self-test,
 **written in the 8080-compatible subset so cosim remains its oracle** — the same
