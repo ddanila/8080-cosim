@@ -50,7 +50,9 @@ ports (mode bits PC0/PC1), PIC, UART, FDC — same ports the firmware pokes.
 ## Phases
 
 **Phase B0 — bus contract + sim repartition (no money spent).**
-Write the pin/memory/IO map doc (above, expanded). Split `vjuga_juku_top.v` into
+Write the pin/memory/IO map doc (above, expanded) — its map/port/timing sections
+are **derived from `ref/juku-machine-facts.json`** per the shared-commons contract
+(root `docs/spinoff-commons.md`), which B0 also creates. Split `vjuga_juku_top.v` into
 per-card HDL modules whose ports are exactly the bus contract; backplane = top-level
 wiring. Add a bus-functional model; unit-sim each card; assembled sim must boot the
 banner **byte-identical to cosim** (existing framebuffer oracle). Exit: same oracle
