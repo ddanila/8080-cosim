@@ -18,17 +18,17 @@ readiness report.
 - Board component positions: 315
 - Populate for current functional .009 build: 251
 - Do not populate now (empty/DNP/pending): 64
-- Unique BOM lines: 102
+- Unique BOM lines: 103
 
 ## Action Totals
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 59 |
+| circuit-review | 57 |
 | leave-empty | 64 |
 | mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 175 |
+| source-now | 177 |
 
 ## BOM Lines
 
@@ -42,7 +42,7 @@ readiness report.
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 2 | 2 | 0 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | D_DIODE | Soviet diode/zener per value | modern diode/zener matching value and power | 2 | 2 | 0 | VD3, VD4 | - |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | modern transistor selected per exact circuit role | 2 | 2 | 0 | VT1, VT2 | - |
-| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 26 | 26 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R57, R58, R59, R60, R61, ... (+8) | - |
+| circuit-review | R_AXIAL | axial resistor | modern axial resistor, matching value and power rating | 24 | 24 | 0 | R11, R12, R13, R14, R17, R40, R41, R42, R43, R44, R45, R47, R48, R59, R60, R61, R62, R63, ... (+6) | - |
 | circuit-review | UP2 | К170УП2 | RS-232/line-receiver substitute required; verify +/-12 V interface | 1 | 1 | 0 | D104 | - |
 | leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 28 | 0 | 28 | C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10) | Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part. |
 | leave-empty | EPROM8K | К573РФ6 | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 1 | 0 | 1 | D19 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
@@ -111,13 +111,14 @@ readiness report.
 | source-now | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R39, R100, R102, R108 | - |
 | source-now | R_AXIAL 13к | axial resistor 13к | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R34 | - |
 | source-now | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R29, R31, R38 | - |
+| source-now | R_AXIAL 20 | axial resistor 20 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R57 | - |
 | source-now | R_AXIAL 200 | axial resistor 200 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R46 | - |
 | source-now | R_AXIAL 220 | axial resistor 220 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R94 | - |
 | source-now | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R1, R5, R6 | - |
 | source-now | R_AXIAL 33k | axial resistor 33k | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R18, R30 | - |
 | source-now | R_AXIAL 4,7к | axial resistor 4,7к | modern axial resistor, matching value and power rating | 2 | 2 | 0 | R86, R99 | - |
 | source-now | R_AXIAL 470 | axial resistor 470 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R19 | - |
-| source-now | R_AXIAL 5,1к | axial resistor 5,1к | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R53, R54, R55, R56 | - |
+| source-now | R_AXIAL 5,1к | axial resistor 5,1к | modern axial resistor, matching value and power rating | 5 | 5 | 0 | R53, R54, R55, R56, R58 | - |
 | source-now | R_AXIAL 6,2к | axial resistor 6,2к | modern axial resistor, matching value and power rating | 3 | 3 | 0 | R87, R88, R89 | - |
 | source-now | R_AXIAL 620 | axial resistor 620 | modern axial resistor, matching value and power rating | 1 | 1 | 0 | R33 | - |
 | source-now | R_AXIAL 75 | axial resistor 75 | modern axial resistor, matching value and power rating | 4 | 4 | 0 | R49, R50, R51, R52 | - |

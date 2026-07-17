@@ -35,10 +35,10 @@ routed-snapshot change to regenerate the guarded current-result table.
 | Source-only footprints | 88 |
 | Routed-only footprints | 27 |
 | Routed copper nets classified by the refresh | 324 |
-| Nets with currently reusable routed copper | 102 |
-| Routed nets currently quarantined | 222 |
-| Reusable non-duplicate track/via items | 1,178 |
-| Quarantined/duplicate track/via items | 7,487 |
+| Nets with currently reusable routed copper | 97 |
+| Routed nets currently quarantined | 227 |
+| Reusable non-duplicate track/via items | 1,032 |
+| Quarantined/duplicate track/via items | 7,633 |
 | Common-pad net mismatches requiring reroute | 356 |
 <!-- routed-refresh-current:end -->
 
@@ -345,9 +345,9 @@ that old copper island and the main ground domain; it must be rerouted rather
 than hidden by another label. The candidate contains 2,383 pad identities,
 while the current source contains 2,393; 2,369 identities are common and 24 are
 source-only, including W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2,
-W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 62 changed pad-net assignments and 184 pads
+W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 62 changed pad-net assignments and 202 pads
 whose coordinates moved by more than 50 nm. The moved set is confined to
-C69, D5, D7, D8, D9, D13, D37, D38, D50, D51, D105, R13, R14, and R49-R56; one net-only
+C69, D5, D7, D8, D9, D13, D37-D39, D50, D51, D105, R13, R14, R46, and R49-R57; one net-only
 change is source C34.1, corrected from `RAIL_H` to `P5V` by the native E-F
 drawing. `check_routed_candidate.py`
 therefore correctly rejects the checkpoint against current source instead of

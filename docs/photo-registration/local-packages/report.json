@@ -1519,7 +1519,7 @@
       "overlay": "docs/photo-registration/local-packages/D13-component.jpg",
       "model": "affine",
       "scale_px_per_mm": 22.440945,
-      "rotation_deg": 180.0,
+      "rotation_deg": 0.0,
       "checks": [
         {
           "pin": "1",
@@ -1614,7 +1614,7 @@
       "overlay": "docs/photo-registration/local-packages/D13-solder.jpg",
       "model": "similarity_reflected",
       "scale_px_per_mm": 24.212598,
-      "rotation_deg": 180.0,
+      "rotation_deg": 0.0,
       "checks": [
         {
           "pin": "8",
@@ -1704,7 +1704,7 @@
       "overlay": "docs/photo-registration/local-packages/D13-component-alt.jpg",
       "model": "affine",
       "scale_px_per_mm": 22.244094,
-      "rotation_deg": 180.0,
+      "rotation_deg": 0.0,
       "checks": [
         {
           "pin": "1",
@@ -4730,10 +4730,10 @@
       "electrical_evidence": false
     },
     {
-      "refdes": "D37",
+      "refdes": "D39",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
-      "overlay": "docs/photo-registration/local-packages/D37-component.jpg",
+      "overlay": "docs/photo-registration/local-packages/D39-component.jpg",
       "model": "similarity",
       "scale_px_per_mm": 22.188182,
       "rotation_deg": -1.694647,
@@ -4820,10 +4820,10 @@
       "electrical_evidence": false
     },
     {
-      "refdes": "D37",
+      "refdes": "D39",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
-      "overlay": "docs/photo-registration/local-packages/D37-solder.jpg",
+      "overlay": "docs/photo-registration/local-packages/D39-solder.jpg",
       "model": "similarity_reflected",
       "scale_px_per_mm": 22.047342,
       "rotation_deg": 179.829477,
@@ -4910,6 +4910,101 @@
         "14": [
           682.0,
           1953.5
+        ]
+      },
+      "electrical_evidence": false
+    },
+    {
+      "refdes": "D37",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "overlay": "docs/photo-registration/local-packages/D37-component.jpg",
+      "model": "similarity",
+      "scale_px_per_mm": 22.506562,
+      "rotation_deg": 0.0,
+      "checks": [
+        {
+          "pin": "1",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "4",
+          "use": "check",
+          "error_px": 0.5
+        },
+        {
+          "pin": "7",
+          "use": "fit",
+          "error_px": 0.0
+        },
+        {
+          "pin": "8",
+          "use": "check",
+          "error_px": 0.5
+        },
+        {
+          "pin": "14",
+          "use": "check",
+          "error_px": 0.5
+        }
+      ],
+      "projected_pins": {
+        "1": [
+          2358.0,
+          1310.0
+        ],
+        "2": [
+          2358.0,
+          1252.833
+        ],
+        "3": [
+          2358.0,
+          1195.667
+        ],
+        "4": [
+          2358.0,
+          1138.5
+        ],
+        "5": [
+          2358.0,
+          1081.333
+        ],
+        "6": [
+          2358.0,
+          1024.167
+        ],
+        "7": [
+          2358.0,
+          967.0
+        ],
+        "8": [
+          2186.5,
+          967.0
+        ],
+        "9": [
+          2186.5,
+          1024.167
+        ],
+        "10": [
+          2186.5,
+          1081.333
+        ],
+        "11": [
+          2186.5,
+          1138.5
+        ],
+        "12": [
+          2186.5,
+          1195.667
+        ],
+        "13": [
+          2186.5,
+          1252.833
+        ],
+        "14": [
+          2186.5,
+          1310.0
         ]
       },
       "electrical_evidence": false

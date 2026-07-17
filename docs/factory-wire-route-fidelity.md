@@ -18,7 +18,7 @@ routing checkpoint.
 - Paired A-point landing terminals modeled: `14/20`
 - Candidate/source pad identities equal: `FAIL`
 - Candidate/source pad-net mismatches: `62`
-- Candidate/source moved pads (>50 nm): `184`
+- Candidate/source moved pads (>50 nm): `202`
 - Link nets carrying candidate copper: `10/10`
 - Candidate DRC unconnected items: `1`
 - Required release state: twenty registered landing terminals, no copper
@@ -154,9 +154,9 @@ solder-grid transform to `(10.449,179.305)` mm, and A7A
 fabrication cut lengths remain held for direct measurement.
 `А:12` is guarded at `(1714,2216)` in `114604420` and `(1349,2148)`
 in `114611058`, spanning the D13/R20-to-C96/D35 drawing regions.
-A new reflected D37 solder fit holds pins 4/8/14 to 0.5 px and places
-D37.4 at `(850.5,2121.0)` in `200522685`; that pad has no visible
-solder-side etched departure. The photographed `12` is instead beside
+The former reflected `D37` solder fit is now correctly identified as
+upper-row D39 from the `.006` assembly order and adjacent decapped D92;
+it does not constrain lower-row D37. The photographed `12` is beside
 the two isolated C96 lead joints below that rail. Because the solder
 view is mirrored, raw-left `(2075,600)` is C96's drawing-right lead,
 the endpoint immediately after C96 in the assembly drawing. The global

@@ -601,7 +601,7 @@
       "note": "The board edge and reversed D99/D95 backside order identify the left package as D99. These joints were formerly mislabeled as D95."
     },
     {
-      "refdes": "D37",
+      "refdes": "D39",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "model": "similarity",
@@ -611,10 +611,10 @@
         {"pin": "7", "image_px": [2821.0, 2625.0], "use": "fit", "observation": "bottom-left ground contact on the same coherent column"},
         {"pin": "8", "image_px": [2988.0, 2625.0], "use": "check", "observation": "independent bottom-right contact on the opposite column"}
       ],
-      "note": "The marking directly identifies the official-census D37 owner substitution as КР1533ЛА3. Its top-facing notch contradicts the inherited 180-degree footprint orientation."
+      "note": "The .006 assembly order and the decapped D92 immediately to its left identify this upper-row КР1533ЛА3 as D39, not D37. Its top-facing notch fixes the D39 orientation; the separately photographed lower-row D37 has a bottom-facing notch."
     },
     {
-      "refdes": "D37",
+      "refdes": "D39",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
       "model": "similarity_reflected",
@@ -625,7 +625,21 @@
         {"pin": "8", "image_px": [683.0, 2289.0], "use": "check", "observation": "independent bottom joint of the opposite column"},
         {"pin": "14", "image_px": [682.0, 1953.0], "use": "check", "observation": "independent top joint of the opposite column"}
       ],
-      "note": "Transferred from the adjacent two-sided D38 registration and then anchored to all four D37 row corners. The fit audits the package-obscured A12/D37.4 boundary: pin 4 has no visible solder-side copper departure, so it does not invent a remote landing."
+      "note": "Transferred from the adjacent two-sided D38 registration and then anchored to all four D39 row corners. This is the reflected upper-row package immediately right of D92; it does not constrain the separate lower-row D37/A12 boundary."
+    },
+    {
+      "refdes": "D37",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [2358.0, 1310.0], "use": "fit", "observation": "bottom-right contact beside the bottom-facing notch on the lower-row marked КР1533ЛА3"},
+        {"pin": "4", "image_px": [2358.0, 1139.0], "use": "check", "observation": "independent fourth contact on the pin-1-to-7 column"},
+        {"pin": "7", "image_px": [2358.0, 967.0], "use": "fit", "observation": "top-right contact on the same coherent column"},
+        {"pin": "8", "image_px": [2187.0, 967.0], "use": "check", "observation": "independent top-left contact on the opposite column"},
+        {"pin": "14", "image_px": [2187.0, 1310.0], "use": "check", "observation": "independent bottom-left contact beside the bottom-facing notch"}
+      ],
+      "note": "The .006 drawing and complete target row identify this lower-row КР1533ЛА3 between R57 and D33 as D37. The bottom-facing notch restores the 180-degree package orientation; placement is owned by cas-timing-row-registration.json."
     },
     {
       "refdes": "D38",

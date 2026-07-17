@@ -28,8 +28,8 @@ with the machine-readable board model.
   rail-E correction. Merging that source-proved ground domain exposes one real
   ground-join open in the preserved copper
   ([docs/routed-refresh-audit.md](docs/routed-refresh-audit.md)).
-  Later source corrections leave it with 62 pad-net mismatches and 184 moved
-  pads across C69/D5/D7/D8/D9/D13/D37/D38/D50/D51/D105/R13/R14/R49-R56; it also lacks the fourteen
+  Later source corrections leave it with 62 pad-net mismatches and 202 moved
+  pads across C69/D5/D7/D8/D9/D13/D37-D39/D50/D51/D105/R13/R14/R46/R49-R57; it also lacks the fourteen
   A:7/A:8/A:10/A:11/A:14/A:19/A:20 assembly-wire pads. It is therefore convergence evidence rather than
   current-source copper. Its former zero-open state also copper-substitutes ten
   documented factory insulated links. The source PCB now preserves A:7, A:8,

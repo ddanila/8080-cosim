@@ -1150,8 +1150,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "scan",
-    "pins": "scan~"
+    "refdes": "scan plus .006 assembly order and registered target-board photos",
+    "pins": "scan~; the upper top-notched КР1533ЛА3 immediately right of decapped D92 is D39, correcting the former D37 photo-fit identity"
    }
   },
   {
@@ -1270,8 +1270,8 @@
    },
    "prov": {
     "type": "scan",
-    "refdes": "scan",
-    "pins": "complete К555ЛА3 package census: drawn sections 12,13->11; 1,2->3; and 5,4->6; fourth section 9,10->8 is absent from every sheet-2 D37 occurrence and explicitly NC"
+    "refdes": "scan plus .006 assembly order and registered target-board photos",
+    "pins": "complete К555ЛА3 package census: drawn sections 12,13->11; 1,2->3; and 5,4->6; fourth section 9,10->8 is absent from every sheet-2 D37 occurrence and explicitly NC; the separate lower-row bottom-notched КР1533ЛА3 between R57 and D33 is D37"
    }
   },
   {
@@ -4524,19 +4524,21 @@
   {
    "ref": "R57",
    "type": "R_AXIAL",
+   "value": "20",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain / array read",
-    "pins": "CAS series/pull network; connected nets CAS and CAS_PRE carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly order and registered target-board photo",
+    "pins": "20-ohm CAS series resistor between D36 and D37; connected nets CAS and CAS_PRE carry crop evidence"
    }
   },
   {
    "ref": "R58",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"

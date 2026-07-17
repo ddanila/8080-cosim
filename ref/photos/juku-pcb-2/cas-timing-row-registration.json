@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "scope": "D36-R57-D37-D33 CAS/timing-row identity and placement",
+  "coordinate_system": "component-side board millimetres; raw-image centres are observations in PXL_20260710_200445914.jpg",
+  "promotion_rule": "the .006 assembly drawing fixes the lower-row order; literal target markings distinguish the two adjacent KR1533LA3 packages, and the D36/D33 bracketing placements plus the raw-photo pitch interpolate D37 and R57 without borrowing the upper D92/D39 row",
+  "sources": [
+    {
+      "path": "ref/schematics/es101_emaplaat.pdf",
+      "sha256": "ef686cd1653965661bea184650f66f8891c3d538c8994852a440169b10ca464d",
+      "role": "assembly order D36, R57, D37, D33 and bottom-facing D37 notch"
+    },
+    {
+      "path": "ref/schematics/p2_sheet2.png",
+      "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
+      "role": "electrical value R57=20 ohm and D36.11-R57-CAS topology"
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
+      "role": "complete lower timing row with literal D36/D37/D33 markings, R57 bands, and package/pad centres"
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "role": "independent upper-row overlap proving the former D37 fit is the distinct KR1533LA3 D39 immediately right of decapped D92"
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "role": "reflected upper-row D39 pad group formerly mislabeled D37"
+    }
+  ],
+  "assembly_order": ["D36", "R57", "D37", "D33"],
+  "lower_row": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "observations": {
+      "D36": {"centre_px": [1908.0, 1132.0], "board_centre_mm": [228.1, 180.4], "role": "left placement anchor", "marking": "KR531LA12"},
+      "R57": {"centre_px": [2085.0, 1080.0], "pad_centres_px": [[2085.0, 965.0], [2085.0, 1195.0]], "board_centre_mm": [236.7, 177.6], "orientation_deg": 90, "lead_span_mm": 10.16, "value": "20"},
+      "D37": {"centre_px": [2269.0, 1139.0], "board_centre_mm": [245.5, 180.1], "orientation_deg": 180, "marking": "KR1533LA3", "role": "lower-row NAND between R57 and D33"},
+      "D33": {"centre_px": [2550.0, 1132.0], "board_centre_mm": [258.0, 180.0], "role": "right placement anchor", "marking": "KR531LN1"},
+      "R46": {"centre_px": [2790.0, 1218.0], "pad_centres_px": [[2790.0, 1054.0], [2790.0, 1382.0]], "board_centre_mm": [266.6, 184.0], "orientation_deg": 90, "lead_span_mm": 10.16, "value": "200", "role": "photo-visible vertical RC resistor between D33 and D103"},
+      "D103": {"centre_px": [2896.0, 1132.0], "board_centre_mm": [273.0, 181.8], "role": "held-out row-order corroboration", "marking": "K555IE10"}
+    },
+    "fit": {
+      "method": "D36/D33 linear interpolation in the same raw frame, with R46 checked between D33/D103 and D103 retained as a held-out row-order checkpoint",
+      "max_d37_centre_error_mm": 0.8,
+      "max_r57_centre_error_mm": 0.8,
+      "max_held_out_d103_x_error_mm": 1.5
+    }
+  },
+  "upper_row_reclassification": {
+    "former_refdes": "D37",
+    "correct_refdes": "D39",
+    "board_centre_mm": [273.972, 159.582],
+    "orientation_deg": 0,
+    "basis": "the .006 drawing places D39 immediately right of D92; the registered component frame literally shows decapped D92 immediately left of this top-notched KR1533LA3, while the separate lower-row target photo literally shows the bottom-notched D37 between R57 and D33"
+  },
+  "disposition": "D37/D39 physical identities and placements corrected; R57 and R46 vertical placements, lead spans, and schematic values closed; electrical nets unchanged"
+}

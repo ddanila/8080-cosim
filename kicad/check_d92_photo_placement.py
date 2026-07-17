@@ -36,7 +36,7 @@ def pad_centre(board: pcbnew.BOARD, refdes: str) -> complex:
 
 document = json.loads(REPORT.read_text(encoding="utf-8"))
 fits = {(fit["refdes"], fit["side"]): fit for fit in document["fits"]}
-required = {(refdes, "component") for refdes in ("D37", "D38", "D92")}
+required = {(refdes, "component") for refdes in ("D39", "D38", "D92")}
 required |= {("D92", "solder")}
 missing = required - fits.keys()
 if missing:
@@ -80,11 +80,11 @@ def estimate_from(anchor: str) -> complex:
 
 
 d38_estimate = estimate_from("D38")
-d37_estimate = estimate_from("D37")
-spread = abs(d38_estimate - d37_estimate)
+d39_estimate = estimate_from("D39")
+spread = abs(d38_estimate - d39_estimate)
 if spread > 2.0:
-    raise SystemExit(f"D92 PHOTO PLACEMENT: D38/D37 estimates spread {spread:.3f} mm")
-expected = (d38_estimate + d37_estimate) / 2
+    raise SystemExit(f"D92 PHOTO PLACEMENT: D38/D39 estimates spread {spread:.3f} mm")
+expected = (d38_estimate + d39_estimate) / 2
 actual = pad_centre(board, "D92")
 placement_error = abs(actual - expected)
 if placement_error > 2.0:
@@ -97,6 +97,6 @@ if min(orientation, 360.0 - orientation) > 0.01:
 print(
     "D92 PHOTO PLACEMENT: PASS — "
     f"centre {actual.real:.3f},{actual.imag:.3f} mm; "
-    f"D38/D37 spread {spread:.3f} mm; source residual {placement_error:.3f} mm; "
+    f"D38/D39 spread {spread:.3f} mm; source residual {placement_error:.3f} mm; "
     "two-sided held-outs <=2.0 px"
 )

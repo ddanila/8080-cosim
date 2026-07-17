@@ -29,7 +29,7 @@ endpoint table contains 636 reviewed rows:
 | `accepted` | 43 | reviewed pad/path evidence adopted into the board model or preserved as an explicit test landing |
 | `measurement` | 593 | pad/path review is inconclusive; continuity or better local evidence is required |
 
-Confidence metadata consists of 371 `local-package-fit`, 217
+Confidence metadata consists of 374 `local-package-fit`, 214
 `registration-only`, and 22 `registration+unique-hole-snap` rows. Four use
 `local-package-fit+continuous-copper`, five use
 `registration+visible-common-landing`, six use
@@ -244,24 +244,38 @@ from D41 agree within `1.117` mm; the midpoint moves D38's pad-row centre from
 the inherited `(233.405,156.600)` mm seed to `(234.563,159.619)` mm. The source
 PCB now uses that midpoint and `kicad/check_d38_photo_placement.py` guards it.
 
-The marked `КР1533ЛА3` below D40 is D37, matching the official-census owner
-substitution. Its component fit uses pins 1/7 and holds pins 4/8 out at `2.000`
-and `5.385` px. The photographed top-facing notch also corrects the inherited
-180-degree orientation. Independent projections from the already fitted D40
-and D41 packages agree within `0.024` mm and place D37's pad-row centre at
-`(273.972,159.582)` mm. D38 is deliberately only a held-out, longer-baseline
-check; it predicts the centre within `1.940` mm. A visually regular backside
-2x7 joint group near `(885,1945)` px was tested and rejected: composing it
-through D41's two-sided registration misses the component-side D37 position by
-`9.37` mm, proving that it belongs to a neighboring DIP. That former candidate
-is not used. The correct D37 backside group is now locally fitted
-at pins 1/7, with pins 4/8/14 held out at `0.500` px each, immediately left of
-the established D38 footprint. D37.4 is `(850.5,2121.0)` in the raw solder
-image and has no visible backside etched departure. This constrains the A12
-chase but does not promote a hidden component-side wire or copper continuity.
-The source PCB uses the component-derived centre and
-`kicad/check_d37_photo_placement.py` guards both-side identity, placement, and
-orientation.
+The marked `КР1533ЛА3` below D40 is D39, matching the official-census owner
+substitution and the `.006` assembly order. Its component fit uses pins 1/7
+and holds pins 4/8 out at `2.000` and `5.385` px. The photographed top-facing
+notch also corrects the inherited 180-degree orientation. Independent
+projections from the already fitted D40 and D41 packages agree within `0.024`
+mm and place D39's pad-row centre at `(273.972,159.582)` mm. D38 is deliberately
+only a held-out, longer-baseline check; it predicts the centre within `1.940`
+mm. A visually regular backside 2x7 joint group near `(885,1945)` px was tested
+and rejected: composing it through D41's two-sided registration misses the
+component-side D39 position by `9.37` mm, proving that it belongs to a
+neighboring DIP. That former candidate is not used. The correct D39 backside
+group is locally fitted at pins 1/7, with pins 4/8/14 held out at `0.500` px
+each, immediately left of the established D38 footprint. The earlier D37 label
+was therefore an identity error, not a second placement candidate; this upper,
+top-notched device is D39. Its solder fit is retained as package evidence but
+does not constrain the lower D37 or the A12 chase. The source PCB uses the
+component-derived centre and `kicad/check_d39_photo_placement.py` guards
+both-side identity, placement, and orientation.
+
+The actual D37 is the separate bottom-notched `КР1533ЛА3` in the lower
+`D36–R57–D37–D33` row. The target component view fits pins 1/7 and holds pins
+4/8/14 to `0.500` px; bracketing D36/D33 centres and the held-out D103 row
+confirm the assembly-order registration. The same view fixes the intervening
+R57 vertically at `(236.7,177.6)` mm with its standard 10.16 mm lead span,
+while electrical sheet 2 identifies it as 20 ohms. D37 is now centred at
+`(245.5,180.1)` mm with the photographed bottom notch represented by a
+180-degree footprint. The same raw frame moves the separately visible vertical
+200-ohm R46 out of that package and into its real D33/D103 gap at
+`(266.6,184.0)` mm, eliminating four source-PCB pad collisions. No lower-row
+solder fit or new electrical continuity is claimed.
+`kicad/check_d37_photo_placement.py` guards the source hashes, bracketing
+registration, package fit, R57/R46 values, and all three placements.
 
 The marked `К555ТЛ2` D13 now has direct component and reflected-solder fits.
 The right-facing notch and complete component contact field put D13.2 at
@@ -293,7 +307,7 @@ projections. This rejects the conspicuous loose end as A12A without using its
 proximity to D13/R20 as connectivity evidence.
 
 The owner survey's nominally missing LE4 is the decapped D92 between the
-already fitted D38 and D37 packages: its die and bond wires are exposed, but
+already fitted D38 and D39 packages: its die and bond wires are exposed, but
 both complete 2x7 contact fields remain intact. Direct affine fits place D92.1
 and D92.13 at `(2484,2290)` and `(2654.333,2345.833)` px in component image
 `200418174`, and at `(1382,1949)` and `(1214.333,2004.833)` px in solder image
@@ -301,7 +315,7 @@ and D92.13 at `(2484,2290)` and `(2654.333,2345.833)` px in component image
 most `0.5` px. Neither factory-link owner pin has an insulated-wire stub at the
 package joint, so both require remote-landing searches; A11B is identified
 below, while A13B remains pending. Independent
-D38/D37 centre estimates spread `1.864` mm and bracket the source D92 centre
+D38/D39 centre estimates spread `1.864` mm and bracket the source D92 centre
 within `1.501` mm; that is inside the local photographic uncertainty, so the
 existing `(260.005,159.200)` mm centre and 0-degree posture are retained.
 `kicad/check_d92_photo_placement.py` guards both-side identity and placement.

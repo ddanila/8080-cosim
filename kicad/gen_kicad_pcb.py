@@ -70,6 +70,7 @@ PASSIVE_FP_REF = {
     'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     **{ref: ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal')
        for ref in ('R49', 'R50', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56')},
+    'R57': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R1': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -132,7 +133,7 @@ FACTORY_WIRE_PLACE = {
 # traced-network passives [scan] + decoupling C35-C72 (BOM count; chip-adjacent positions assumed)
 PASSIVE_PLACE = {
     'R34':(247.0,125.6,90),  # 13k D40 CLR/LOAD pull-up, left of D40 [sheet-2]
-    'R46':(249.0,180.0,90),  # 200R vertical immediately left of D33 [owner photo]
+    'R46':(266.6,184.0,90),  # 200R vertical between D33 and D103 [registered target photo]
     'C6':(251.0,165.0,90),   # 56p D33 input shunt [sheet-2; local placement approximate]
     'R33':(297.5,133.3,0),   # 620R D34 RC resistor, horizontal above D34 [owner photo]
     'C5':(304.0,127.5,0),    # 560p D34 RC capacitor above R33 [owner photo]
@@ -229,7 +230,10 @@ PASSIVE_PLACE = {
     'R55':(221.0,162.2,90),'R51':(221.0,175.2,90),
     'R54':(221.0,189.0,90),'R50':(221.0,201.5,90),
     'R53':(221.0,215.2,90),'R49':(221.0,229.7,90),
-    'R57':(204.1,216.2,0),'R58':(204.1,220.5,0),   # R57 = CAS rail-15 series (<- D36.11), R58 = rail-15 5.1k pullup -> E [bite-2; same column, position approx]
+    # The .006 drawing and target row place the photographed 20-ohm R57
+    # vertically between D36 and the bottom-notched D37. R58's 5K1 value is
+    # schematic-exact, but its separate physical position remains approximate.
+    'R57':(236.7,177.6,90),'R58':(204.1,220.5,0),
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
     'E2':(65.5,215.5,0),'E3':(49.5,215.5,0),   # beside D52's body (x52-62), not inside it   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
@@ -359,7 +363,7 @@ PLACE = {
     # not a fictional bottom-left row). D40 (СТ16) is photo-fitted horizontal, notch-right -> rot 270; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(258.56,140.99,270),'D41':(235,140.9,270),'D38':(234.558,159.619,0),'D39':(284.3,156.1,0),   # D38 is cross-side photo-fitted; D40/D41 are the registered same-row notch-right pair; D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
+    'D40':(258.56,140.99,270),'D41':(235,140.9,270),'D38':(234.558,159.619,0),'D39':(273.972,159.582,0),   # D38 is cross-side photo-fitted; D40/D41 are the registered same-row notch-right pair; the upper top-notched КР1533ЛА3 immediately right of decapped D92 is D39
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     # Inputs below compensate the stock footprint anchor/bounding-box offset so
     # the saved KiCad footprint positions remain the photo-guarded coordinates
@@ -384,7 +388,7 @@ PLACE = {
     # buffer row at СБ y37.1 (sb_left_0: D25/D23 boxes y34.7-39.5; the old 53.4 sat on the ROM sockets)
     'D25':(29.8,37.1,90),'D23':(54.6,37.1,90),'D24':(81.6,37.1,90),'D29':(108.5,37.1,90),
     'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183.0,243.1,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
-    'D37':(273.967,159.582,0),   # local component/solder fit; notch up
+    'D37':(245.5,180.1,180),   # .006 lower row: bottom-notched КР1533ЛА3 between R57 and D33
     'D13':(31.9,205.3,270),  # owner photo: horizontal К555ТЛ2, right-facing notch
 }
 # remaining DRAM rows D68-D91 -- now net-modeled sockets -> real footprints at their

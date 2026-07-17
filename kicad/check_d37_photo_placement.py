@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Guard D37 placement from its raw component fit and nearby fitted anchors."""
+"""Guard the corrected lower-row D37 and intervening R57 placement."""
 from __future__ import annotations
 
-import cmath
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -12,114 +12,114 @@ import pcbnew
 
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad/juku.kicad_pcb"
-REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
-MAX_PRIMARY_SPREAD_MM = 0.05
-MAX_HELDOUT_RESIDUAL_MM = 2.00
-MAX_PLACEMENT_ERROR_MM = 0.02
+EVIDENCE = ROOT / "ref/photos/juku-pcb-2/cas-timing-row-registration.json"
+LOCAL_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
 
 
-def image_centre(fit: dict) -> complex:
-    points = list(fit["projected_pins"].values())
-    return complex(
-        sum(point[0] for point in points) / len(points),
-        sum(point[1] for point in points) / len(points),
-    )
+def fail(message: str) -> None:
+    raise SystemExit(f"D37/R57 PHOTO PLACEMENT: FAIL: {message}")
 
 
-def pad_centre(board: pcbnew.BOARD, refdes: str) -> complex:
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def centre(board: pcbnew.BOARD, refdes: str) -> tuple[float, float]:
     footprint = board.FindFootprintByReference(refdes)
     if footprint is None:
-        raise SystemExit(f"D37 PHOTO PLACEMENT: missing {refdes}")
+        fail(f"missing {refdes}")
     pads = list(footprint.Pads())
-    return complex(
+    return (
         sum(pcbnew.ToMM(pad.GetPosition().x) for pad in pads) / len(pads),
         sum(pcbnew.ToMM(pad.GetPosition().y) for pad in pads) / len(pads),
     )
 
 
-document = json.loads(REPORT.read_text(encoding="utf-8"))
-fits = {(fit["refdes"], fit["side"]): fit for fit in document["fits"]}
-required = {(refdes, "component") for refdes in ("D37", "D38", "D40", "D41")}
-required |= {("D37", "solder"), ("D38", "solder")}
-missing = required - fits.keys()
-if missing:
-    raise SystemExit(f"D37 PHOTO PLACEMENT: missing fits {sorted(missing)}")
+evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
+for source in evidence["sources"]:
+    path = ROOT / source["path"]
+    if not path.is_file() or sha256(path) != source["sha256"]:
+        fail(f"source hash drifted: {source['path']}")
 
-component_fits = {refdes: fits[(refdes, "component")] for refdes in
-                  ("D37", "D38", "D40", "D41")}
-images = {fit["image"] for fit in component_fits.values()}
-if len(images) != 1:
-    raise SystemExit("D37 PHOTO PLACEMENT: component fits do not share a raw photo")
+if evidence["assembly_order"] != ["D36", "R57", "D37", "D33"]:
+    fail("assembly order drifted")
+
+observations = evidence["lower_row"]["observations"]
+anchor_left = observations["D36"]
+anchor_right = observations["D33"]
+pixel_span = anchor_right["centre_px"][0] - anchor_left["centre_px"][0]
+board_span = anchor_right["board_centre_mm"][0] - anchor_left["board_centre_mm"][0]
+if pixel_span <= 0 or board_span <= 0:
+    fail("invalid bracketing anchors")
+
+
+def interpolate_x(refdes: str) -> float:
+    fraction = (
+        observations[refdes]["centre_px"][0] - anchor_left["centre_px"][0]
+    ) / pixel_span
+    return anchor_left["board_centre_mm"][0] + fraction * board_span
+
+
+if abs(interpolate_x("D37") - observations["D37"]["board_centre_mm"][0]) > 0.8:
+    fail("D37 centre is inconsistent with the D36/D33 raw-photo interpolation")
+if abs(interpolate_x("R57") - observations["R57"]["board_centre_mm"][0]) > 0.8:
+    fail("R57 centre is inconsistent with the D36/D33 raw-photo interpolation")
+if abs(interpolate_x("D103") - observations["D103"]["board_centre_mm"][0]) > 1.5:
+    fail("held-out D103 row-order check exceeds 1.5 mm")
+local = json.loads(LOCAL_REPORT.read_text(encoding="utf-8"))
+fits = {(item["refdes"], item["side"]): item for item in local["fits"]}
+fit = fits.get(("D37", "component"))
+if fit is None or fit["image"] != evidence["lower_row"]["image"]:
+    fail("lower-row D37 component fit is missing")
+if fit["model"] != "similarity":
+    fail("D37 component fit is not a similarity transform")
+checks = {item["pin"]: item["error_px"] for item in fit["checks"]}
+for pin in ("4", "8", "14"):
+    if checks.get(pin, float("inf")) > 3.0:
+        fail(f"D37 held-out pin {pin} exceeds 3 px")
 
 board = pcbnew.LoadBoard(str(BOARD))
-d37_fit = component_fits["D37"]
-d37_solder = fits[("D37", "solder")]
-d38_solder = fits[("D38", "solder")]
-if d37_solder["image"] != d38_solder["image"]:
-    raise SystemExit("D37 PHOTO PLACEMENT: D37/D38 solder fits do not share a raw photo")
-if d37_solder["model"] != "similarity_reflected":
-    raise SystemExit("D37 PHOTO PLACEMENT: solder fit is not reflected")
-solder_checks = {item["pin"]: item["error_px"] for item in d37_solder["checks"]}
-for pin in ("4", "8", "14"):
-    if solder_checks.get(pin, float("inf")) > 0.6:
-        raise SystemExit(
-            f"D37 PHOTO PLACEMENT: solder pin {pin} residual "
-            f"{solder_checks.get(pin)} px exceeds 0.6 px"
-        )
-if d37_solder["projected_pins"].get("4") != [850.5, 2121.0]:
-    raise SystemExit("D37 PHOTO PLACEMENT: solder-side D37.4 coordinate drifted")
+for refdes in ("D36", "D33", "D103"):
+    actual = centre(board, refdes)
+    expected = observations[refdes]["board_centre_mm"]
+    if math.hypot(actual[0] - expected[0], actual[1] - expected[1]) > 0.02:
+        fail(f"anchor {refdes} placement drifted")
 
+for refdes in ("D37", "R57", "R46"):
+    actual = centre(board, refdes)
+    expected = observations[refdes]["board_centre_mm"]
+    error = math.hypot(actual[0] - expected[0], actual[1] - expected[1])
+    if error > 0.02:
+        fail(f"{refdes} centre error {error:.3f} mm")
 
-def estimate_from(anchor: str) -> complex:
-    anchor_fit = component_fits[anchor]
-    scale = (
-        float(anchor_fit["scale_px_per_mm"])
-        + float(d37_fit["scale_px_per_mm"])
-    ) / 2
-    # A component-side package fit maps board axes directly into the image.
-    # Use the already placed anchor's phase: D37's own 178-degree phase records
-    # its opposite package orientation and is not the photograph's board axis.
-    axis = cmath.rect(1.0, math.radians(float(anchor_fit["rotation_deg"])))
-    delta = (image_centre(d37_fit) - image_centre(anchor_fit)) / (scale * axis)
-    return pad_centre(board, anchor) + delta
+d37 = board.FindFootprintByReference("D37")
+if abs(d37.GetOrientationDegrees() % 360 - 180.0) > 0.01:
+    fail("D37 is not bottom-notched/180 degrees")
 
+r57 = board.FindFootprintByReference("R57")
+if abs(r57.GetOrientationDegrees() % 360 - 90.0) > 0.01:
+    fail("R57 is not vertical")
+if r57.GetValue() != "20":
+    fail(f"R57 value is {r57.GetValue()!r}, expected '20'")
+pads = list(r57.Pads())
+span = math.hypot(
+    pcbnew.ToMM(pads[0].GetPosition().x - pads[1].GetPosition().x),
+    pcbnew.ToMM(pads[0].GetPosition().y - pads[1].GetPosition().y),
+)
+if abs(span - 10.16) > 0.01:
+    fail(f"R57 lead span is {span:.3f} mm")
 
-d40_estimate = estimate_from("D40")
-d41_estimate = estimate_from("D41")
-primary_spread = abs(d40_estimate - d41_estimate)
-if primary_spread > MAX_PRIMARY_SPREAD_MM:
-    raise SystemExit(
-        f"D37 PHOTO PLACEMENT: D40/D41 estimates spread {primary_spread:.3f} mm"
-    )
-
-expected = (d40_estimate + d41_estimate) / 2
-d38_estimate = estimate_from("D38")
-heldout_residual = abs(d38_estimate - expected)
-if heldout_residual > MAX_HELDOUT_RESIDUAL_MM:
-    raise SystemExit(
-        f"D37 PHOTO PLACEMENT: held-out D38 residual {heldout_residual:.3f} mm"
-    )
-
-actual = pad_centre(board, "D37")
-placement_error = abs(actual - expected)
-if placement_error > MAX_PLACEMENT_ERROR_MM:
-    raise SystemExit(
-        f"D37 PHOTO PLACEMENT: centre {actual.real:.3f},{actual.imag:.3f} mm; "
-        f"expected {expected.real:.3f},{expected.imag:.3f} mm; "
-        f"error {placement_error:.3f} mm"
-    )
-
-orientation = board.FindFootprintByReference("D37").GetOrientationDegrees() % 360
-if min(orientation, 360.0 - orientation) > 0.01:
-    raise SystemExit(
-        f"D37 PHOTO PLACEMENT: expected top-facing 0-degree package, "
-        f"got {orientation:.3f}"
-    )
+r46 = board.FindFootprintByReference("R46")
+if abs(r46.GetOrientationDegrees() % 360 - 90.0) > 0.01:
+    fail("R46 is not vertical")
+if r46.GetValue() != "200":
+    fail(f"R46 value is {r46.GetValue()!r}, expected '200'")
 
 print(
-    "D37 PHOTO PLACEMENT: PASS — "
-    f"centre {actual.real:.3f},{actual.imag:.3f} mm; "
-    f"D40/D41 spread {primary_spread:.3f} mm; "
-    f"D38 held-out residual {heldout_residual:.3f} mm; "
-    "solder held-outs ≤0.5 px"
+    "D37/R57 PHOTO PLACEMENT: PASS — lower-row D37 identity, bottom notch, "
+    "R57/R46 values and vertical placements, and bracketing anchors guarded"
 )
