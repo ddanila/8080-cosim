@@ -174,7 +174,7 @@ parts placement and Tier-3 reproduction.
 | `C46` | `C_KM` | scan | .009 factory drawing directly places C46 above D87 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
 | `C50` | `C_KM` | scan | .009 factory drawing directly places C50 above D85 in the populated D91-D84 DRAM bank; the registered owner-board site retains the matching landing pair and... |
 | `C9` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C9 vertically between D100 and D98; both target-revision electrical destinations remain explicit continui... |
-| `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing conductor, so its phys... |
+| `C99` | `C_KM` | scan | sheet-1 D7/D9 RC decode path native 5150x3603 sheet-1 review prints C99=160 and proves pin1 on V3_RC; the pin2 plate is visibly drawn without an outgoing con... |
 
 ## Documented Intentional No-Connects
 
