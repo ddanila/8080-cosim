@@ -51,7 +51,8 @@ sync/d2_ready_path_check.sh
 These cover the real-ROM boot/framebuffer path, per-read agreement between
 `juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
 raw disk geometry, the bounded WD1793 boot subset plus Type-II multi-record,
-completion/status/D0/D8 INTRQ semantics, and Read Address, raster/serializer behavior,
+completion/status/D0/D8 INTRQ semantics, Read Address, and reconstructed
+one-revolution MFM Read Track, raster/serializer behavior,
 beeper and USART slices, and the BASIC cartridge window.
 `d2_ready_path_check.sh` separately guards the physical `.037` open-collector
 raw polarity through the D30 READY latch; it does not claim complete WAIT timing.

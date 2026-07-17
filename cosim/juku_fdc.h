@@ -17,11 +17,12 @@ typedef struct {
   uint8_t data;
   uint8_t command;
   int step_dir_in;
-  uint8_t buffer[JUK_SECTOR_SIZE];
+  uint8_t buffer[JUK_MFM_TRACK_SIZE];
   unsigned buffer_pos;
   unsigned buffer_len;
   int write_transfer;
   int read_address_transfer;
+  int read_track_transfer;
   int multi_record;
   int intrq;
 } juku_fdc;

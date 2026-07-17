@@ -231,6 +231,38 @@ module juku_top_periph_bus_tb();
     if (dut.fdc_intrq !== 1'b1) fail("FDC D8 immediate Force Interrupt did not raise INTRQ");
     io_read(8'h1C, rd);
     if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge immediate INTRQ");
+
+    io_write(8'h1D, 8'h00);
+    io_write(8'h1E, 8'h07);
+    io_write(8'h1C, 8'hE4);     // Type-III Read Track with the valid E flag
+    io_read(8'h1C, rd);
+    if ((rd & 8'h03) !== 8'h03) fail("FDC read-track did not assert BUSY+DRQ");
+    for (i = 0; i < 6250; i = i + 1) begin
+      io_read(8'h1F, rd);
+      case (i)
+        0, 31, 54, 75, 606, 640, 6249:
+          if (rd !== 8'h4e) fail("FDC read-track gap reconstruction mismatch");
+        32, 43, 76, 87:
+          if (rd !== 8'h00) fail("FDC read-track sync reconstruction mismatch");
+        44, 45, 46, 88, 89, 90:
+          if (rd !== 8'ha1) fail("FDC read-track A1 sync mismatch");
+        47: if (rd !== 8'hfe) fail("FDC read-track ID address mark mismatch");
+        50: if (rd !== 8'h01) fail("FDC read-track first sector ID mismatch");
+        52: if (rd !== 8'hca) fail("FDC read-track first ID CRC1 mismatch");
+        53: if (rd !== 8'h6f) fail("FDC read-track first ID CRC2 mismatch");
+        91: if (rd !== 8'hfb) fail("FDC read-track data address mark mismatch");
+        701: if (rd !== 8'hc3) fail("FDC read-track vendored sector-2 byte 0 mismatch");
+        702: if (rd !== 8'h5c) fail("FDC read-track vendored sector-2 byte 1 mismatch");
+        5531: if (rd !== 8'h0a) fail("FDC read-track final sector ID mismatch");
+      endcase
+    end
+    if (dut.fdc_intrq !== 1'b1) fail("FDC read-track completion did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h13) !== 8'h00) fail("FDC read-track did not complete cleanly");
+    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge read-track INTRQ");
+    io_read(8'h1E, rd);
+    if (rd !== 8'h07) fail("FDC read-track changed sector register");
+
     io_write(8'h1D, 8'h00);
     io_write(8'h1E, 8'h09);
     io_write(8'h1C, 8'h92);     // Type-II multiple-record read

@@ -821,6 +821,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer buffer_pos = 0;
     integer buffer_len = 0;
     reg [7:0] sector_buf [0:511];
+`ifndef YOSYS
+    reg [7:0] track_buf [0:6249];
+`endif
     reg [1023:0] disk_path;
     integer disk_file = 0;
     integer disk_heads = 0;
@@ -833,6 +836,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_sector_ok = 0;
     integer write_transfer = 0;
     integer read_address_transfer = 0;
+    integer read_track_transfer = 0;
     integer multi_record = 0;
     reg intrq_r = 1'b0;
 
@@ -890,25 +894,29 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         is_read_address = ((cmd & 8'hFB) == 8'hC0); // bit 2 is the optional delay flag
     end endfunction
 
-    function [15:0] id_crc(input [7:0] track_id, input side_id, input [7:0] sector_id);
+    function is_read_track(input [7:0] cmd); begin
+        is_read_track = ((cmd & 8'hFB) == 8'hE0); // bit 2 is the optional delay flag
+    end endfunction
+
+    function [15:0] crc_byte(input [15:0] crc_in, input [7:0] value);
         reg [15:0] crc;
-        reg [7:0] value;
-        integer byte_index;
         integer bit_index;
     begin
+        crc = crc_in ^ {value, 8'h00};
+        for (bit_index = 0; bit_index < 8; bit_index = bit_index + 1)
+            crc = crc[15] ? ((crc << 1) ^ 16'h1021) : (crc << 1);
+        crc_byte = crc;
+    end endfunction
+
+    function [15:0] id_crc(input [7:0] track_id, input side_id, input [7:0] sector_id);
+        reg [15:0] crc;
+    begin
         crc = 16'hffff;
-        for (byte_index = 0; byte_index < 5; byte_index = byte_index + 1) begin
-            case (byte_index)
-                0: value = 8'hfe;              // ID address mark
-                1: value = track_id;
-                2: value = {7'b0, side_id};
-                3: value = sector_id;
-                default: value = 8'h02;         // 512-byte sector length code
-            endcase
-            crc = crc ^ {value, 8'h00};
-            for (bit_index = 0; bit_index < 8; bit_index = bit_index + 1)
-                crc = crc[15] ? ((crc << 1) ^ 16'h1021) : (crc << 1);
-        end
+        crc = crc_byte(crc, 8'hfe);             // ID address mark
+        crc = crc_byte(crc, track_id);
+        crc = crc_byte(crc, {7'b0, side_id});
+        crc = crc_byte(crc, sector_id);
+        crc = crc_byte(crc, 8'h02);             // 512-byte sector length code
         id_crc = crc;
     end endfunction
 
@@ -945,6 +953,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         buffer_len = 0;
         write_transfer = 0;
         read_address_transfer = 0;
+        read_track_transfer = 0;
         multi_record = 0;
         status = status & ~(ST_BUSY | ST_DRQ);
     end endtask
@@ -1083,6 +1092,126 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end endtask
 
+    task begin_read_track;
+        integer pos;
+        integer sector_id;
+        integer byte_index;
+        integer build_ok;
+        reg [15:0] crc;
+        reg [7:0] value;
+    begin
+        clear_transfer();
+        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        if (!motor_on || (disk_requested && !disk_loaded)) begin
+            status = status | ST_NOT_READY;
+            complete_transfer();
+        end else if (track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
+            status = status | ST_RNF;
+            complete_transfer();
+        end else begin
+`ifndef YOSYS
+            // Reconstruct one 200 ms MFM revolution from the sector-only raw
+            // image using MAME's Juku 2000 ns-cell, 32/22/35-gap descriptor.
+            pos = 0;
+            build_ok = 1;
+            for (byte_index = 0; byte_index < 32; byte_index = byte_index + 1) begin
+                track_buf[pos] = 8'h4e;
+                pos = pos + 1;
+            end
+            for (sector_id = 1; sector_id <= 10; sector_id = sector_id + 1) begin
+                if (disk_requested) begin
+                    disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 +
+                                   (sector_id - 1)) * 512;
+                    disk_seek_status = $fseek(disk_file, disk_offset, 0);
+                    disk_read_count = $fread(sector_buf, disk_file);
+                    if (disk_seek_status != 0 || disk_read_count != 512) build_ok = 0;
+                end else begin
+                    for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1) begin
+                        if (byte_index == 0) sector_buf[byte_index] = track;
+                        else if (byte_index == 1) sector_buf[byte_index] = {7'b0, side};
+                        else if (byte_index == 2) sector_buf[byte_index] = sector_id[7:0];
+                        else sector_buf[byte_index] = track + ({7'b0, side} << 5) +
+                                                      sector_id[7:0] + byte_index[7:0];
+                    end
+                end
+
+                for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) begin
+                    track_buf[pos] = 8'h00;
+                    pos = pos + 1;
+                end
+                crc = 16'hffff;
+                for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) begin
+                    track_buf[pos] = 8'ha1;
+                    pos = pos + 1;
+                    crc = crc_byte(crc, 8'ha1);
+                end
+                for (byte_index = 0; byte_index < 5; byte_index = byte_index + 1) begin
+                    case (byte_index)
+                        0: value = 8'hfe;
+                        1: value = track;
+                        2: value = {7'b0, side};
+                        3: value = sector_id[7:0];
+                        default: value = 8'h02;
+                    endcase
+                    track_buf[pos] = value;
+                    pos = pos + 1;
+                    crc = crc_byte(crc, value);
+                end
+                track_buf[pos] = crc[15:8];
+                track_buf[pos + 1] = crc[7:0];
+                pos = pos + 2;
+                for (byte_index = 0; byte_index < 22; byte_index = byte_index + 1) begin
+                    track_buf[pos] = 8'h4e;
+                    pos = pos + 1;
+                end
+
+                for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) begin
+                    track_buf[pos] = 8'h00;
+                    pos = pos + 1;
+                end
+                crc = 16'hffff;
+                for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) begin
+                    track_buf[pos] = 8'ha1;
+                    pos = pos + 1;
+                    crc = crc_byte(crc, 8'ha1);
+                end
+                track_buf[pos] = 8'hfb;
+                pos = pos + 1;
+                crc = crc_byte(crc, 8'hfb);
+                for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1) begin
+                    track_buf[pos] = sector_buf[byte_index];
+                    pos = pos + 1;
+                    crc = crc_byte(crc, sector_buf[byte_index]);
+                end
+                track_buf[pos] = crc[15:8];
+                track_buf[pos + 1] = crc[7:0];
+                pos = pos + 2;
+                for (byte_index = 0; byte_index < 35; byte_index = byte_index + 1) begin
+                    track_buf[pos] = 8'h4e;
+                    pos = pos + 1;
+                end
+            end
+            while (pos < 6250) begin
+                track_buf[pos] = 8'h4e;
+                pos = pos + 1;
+            end
+            if (!build_ok || pos != 6250) begin
+                status = status | ST_RNF;
+                complete_transfer();
+            end else begin
+                buffer_pos = 0;
+                buffer_len = 6250;
+                read_track_transfer = 1;
+                status = status | ST_BUSY | ST_DRQ;
+                intrq_r = 1'b0;
+            end
+`else
+            status = status | ST_RNF;
+            complete_transfer();
+`endif
+        end
+    end endtask
+
     task finish_type_i(input [7:0] cmd); begin
         clear_transfer();
         status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
@@ -1135,6 +1264,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 end
                 else if (is_write_sector(D)) begin_write_sector(D[4]);
                 else if (is_read_address(D)) begin_read_address();
+                else if (is_read_track(D)) begin_read_track();
                 else if (is_write_track(D)) reject_write_track();
                 else begin
                     status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
@@ -1148,6 +1278,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     always @(posedge fdc_data_read_active) begin
         if (buffer_pos < buffer_len) begin
+`ifndef YOSYS
+            if (read_track_transfer) data = track_buf[buffer_pos];
+            else
+`endif
             data = (disk_requested || read_address_transfer) ?
                    sector_buf[buffer_pos] : synthetic_sector_byte(buffer_pos);
             buffer_pos = buffer_pos + 1;

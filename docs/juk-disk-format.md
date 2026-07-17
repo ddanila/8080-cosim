@@ -4,9 +4,10 @@ This repository uses the raw MAME Juku disk image layout as the cosim disk
 backend target. MAME software-list images often use `.juk`; the vendored Arti
 images use `.CPM`, but the byte layout is the same and is validated by size.
 
-Source: MAME `src/lib/formats/juku_dsk.cpp` (`FLOPPY_JUKU_FORMAT`),
-`https://github.com/mamedev/mame/blob/master/src/lib/formats/juku_dsk.cpp`,
-cross-checked 2026-07-06.
+Source: MAME `src/lib/formats/juku_dsk.cpp` (`FLOPPY_JUKU_FORMAT`) at commit
+`40d8c5c343efc497524832d59a6d0e2b8e59376b`,
+`https://github.com/mamedev/mame/blob/40d8c5c343efc497524832d59a6d0e2b8e59376b/src/lib/formats/juku_dsk.cpp`,
+cross-checked 2026-07-17.
 
 ## Geometry
 
@@ -28,6 +29,22 @@ offset = (((track * heads) + head) * 10 + (sector - 1)) * 512
 
 `heads` is inferred from file size: 1 for 409600-byte images, 2 for
 819200-byte images. Other sizes are rejected.
+
+## Reconstructed MFM revolution
+
+The sector-only file does not contain gaps, address marks, CRC bytes, missing
+clock transitions, or rotational phase. For the WD1793 Read Track command, the
+C and HDL shims deterministically rebuild the decoded bytes described by MAME:
+2,000 ns cells give 100,000 cells or 6,250 decoded bytes per 200 ms revolution;
+the descriptor uses gaps 1/2/3 of 32/22/35 bytes. Each of the ten sectors has
+12 zero sync bytes, three decoded `0xA1` missing-clock sync bytes, an `0xFE`
+ID field and CRC, gap 2, another sync run, an `0xFB` data field and CRC, and
+gap 3. The remaining 128 bytes are the end gap.
+
+MAME marks the Juku gap values as unverified. Consequently the rebuilt stream
+is a reproducible logical representation of the raw image and its recorded
+geometry, not evidence for the original factory-written gap contents or flux
+timing.
 
 ## Guard
 

@@ -32,6 +32,7 @@ sync/juku_top_periph_bus_check.sh
 | FDC completion raises INTRQ, status read acknowledges it, D0 is silent, and D8 is immediate | PASS |
 | FDC seek/status/data through decoded ports `0x1C..0x1F` | PASS |
 | First byte of `JUKU1.CPM` track 0 sector 2 read through top-level bus is `0xC3` | PASS |
+| Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | PASS |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |
 | ROMBIOS `0xA2` write-sector streams 512 bytes through D94-decoded port `0x1F` and reads them back from a writable copy | PASS |
 | Type-II multi-write persists sectors 9/10 and ends at sector 11 with RNF | PASS |
@@ -63,5 +64,5 @@ sync/juku_top_periph_bus_check.sh
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path
-  to media-backed single/multiple-record reads and opt-in temporary-copy
-  single/multiple-record write/readback.
+  to media-backed single/multiple-record and reconstructed whole-track reads,
+  plus opt-in temporary-copy single/multiple-record write/readback.

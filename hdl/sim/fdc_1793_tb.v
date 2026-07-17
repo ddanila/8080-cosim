@@ -170,6 +170,87 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
+    write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
+    write_reg(2'd2, 8'd7);
+    write_reg(2'd0, 8'he4);  // Read Track with the valid E flag
+    expect_status(8'h03, 8'h03, "after read-track command");
+    for (i = 0; i < 6250; i = i + 1) begin
+      read_reg(2'd3, got);
+      case (i)
+        0, 31, 54, 75, 606, 640, 6249:
+          if (got !== 8'h4e) begin
+            $display("FDC-1793: FAIL read-track gap byte %0d got=%02x", i, got);
+            errors = errors + 1;
+          end
+        32, 43, 76, 87:
+          if (got !== 8'h00) begin
+            $display("FDC-1793: FAIL read-track sync byte %0d got=%02x", i, got);
+            errors = errors + 1;
+          end
+        44, 45, 46, 88, 89, 90:
+          if (got !== 8'ha1) begin
+            $display("FDC-1793: FAIL read-track A1 byte %0d got=%02x", i, got);
+            errors = errors + 1;
+          end
+        47: if (got !== 8'hfe) begin
+          $display("FDC-1793: FAIL read-track IDAM got=%02x", got); errors = errors + 1;
+        end
+        48: if (got !== (disk_mode ? 8'd0 : 8'd12)) begin
+          $display("FDC-1793: FAIL read-track track ID got=%02x", got); errors = errors + 1;
+        end
+        49: if (got !== 8'h00) begin
+          $display("FDC-1793: FAIL read-track side ID got=%02x", got); errors = errors + 1;
+        end
+        50: if (got !== 8'h01) begin
+          $display("FDC-1793: FAIL read-track sector ID got=%02x", got); errors = errors + 1;
+        end
+        51: if (got !== 8'h02) begin
+          $display("FDC-1793: FAIL read-track length ID got=%02x", got); errors = errors + 1;
+        end
+        52: if (got !== (disk_mode ? 8'hca : 8'h85)) begin
+          $display("FDC-1793: FAIL read-track ID CRC1 got=%02x", got); errors = errors + 1;
+        end
+        53: if (got !== (disk_mode ? 8'h6f : 8'h5d)) begin
+          $display("FDC-1793: FAIL read-track ID CRC2 got=%02x", got); errors = errors + 1;
+        end
+        91: if (got !== 8'hfb) begin
+          $display("FDC-1793: FAIL read-track DAM got=%02x", got); errors = errors + 1;
+        end
+        92: if (!disk_mode && got !== 8'h0c) begin
+          $display("FDC-1793: FAIL synthetic read-track data0 got=%02x", got); errors = errors + 1;
+        end
+        604: if (!disk_mode && got !== 8'hae) begin
+          $display("FDC-1793: FAIL synthetic read-track data CRC1 got=%02x", got); errors = errors + 1;
+        end
+        605: if (!disk_mode && got !== 8'hcc) begin
+          $display("FDC-1793: FAIL synthetic read-track data CRC2 got=%02x", got); errors = errors + 1;
+        end
+        701: if (disk_mode && got !== 8'hc3) begin
+          $display("FDC-1793: FAIL vendored read-track sector2 data0 got=%02x", got); errors = errors + 1;
+        end
+        702: if (disk_mode && got !== 8'h5c) begin
+          $display("FDC-1793: FAIL vendored read-track sector2 data1 got=%02x", got); errors = errors + 1;
+        end
+        5531: if (got !== 8'h0a) begin
+          $display("FDC-1793: FAIL read-track final sector ID got=%02x", got); errors = errors + 1;
+        end
+      endcase
+    end
+    expect_intrq(1'b1, "read-track completion");
+    expect_status(8'h13, 8'h00, "after read-track drain");
+    expect_intrq(1'b0, "read-track status acknowledgement");
+    read_reg(2'd2, got);
+    if (got !== 8'd7) begin
+      $display("FDC-1793: FAIL read-track changed sector=%02x", got);
+      errors = errors + 1;
+    end
+
+    write_reg(2'd0, 8'he0);
+    for (i = 0; i < 100; i = i + 1) read_reg(2'd3, got);
+    write_reg(2'd0, 8'hd0);
+    expect_intrq(1'b0, "forced read-track D0 silence");
+    expect_status(8'h03, 8'h00, "after forced read-track abort");
+
     write_reg(2'd2, 8'd7);
     write_reg(2'd0, 8'hc0);
     read_reg(2'd3, got);
@@ -337,6 +418,8 @@ module fdc_1793_tb;
     motor_on = 0;
     write_reg(2'd0, 8'hc0);
     expect_status(8'h80, 8'h80, "motor off read address");
+    write_reg(2'd0, 8'he0);
+    expect_status(8'h80, 8'h80, "motor off read track");
     write_reg(2'd0, 8'h80);
     expect_status(8'h80, 8'h80, "motor off read");
 

@@ -29,6 +29,55 @@ static void fill_sector(uint8_t buf[JUK_SECTOR_SIZE], int track, int head, int s
 }
 
 
+static uint16_t test_crc_byte(uint16_t crc, uint8_t data) {
+  crc ^= (uint16_t)data << 8;
+  for (int bit = 0; bit < 8; bit++) {
+    crc = (uint16_t)((crc << 1) ^ ((crc & 0x8000) ? 0x1021 : 0));
+  }
+  return crc;
+}
+
+
+static void build_expected_track(uint8_t out[JUK_MFM_TRACK_SIZE], int track, int head) {
+  unsigned pos = 0;
+  for (int i = 0; i < 32; i++) out[pos++] = 0x4E;
+  for (int sector = 1; sector <= JUK_SECTORS_PER_TRACK; sector++) {
+    uint8_t data[JUK_SECTOR_SIZE];
+    fill_sector(data, track, head, sector);
+    for (int i = 0; i < 12; i++) out[pos++] = 0x00;
+    uint16_t crc = 0xFFFF;
+    for (int i = 0; i < 3; i++) {
+      out[pos++] = 0xA1;
+      crc = test_crc_byte(crc, 0xA1);
+    }
+    const uint8_t id[] = {0xFE, (uint8_t)track, (uint8_t)head, (uint8_t)sector, 2};
+    for (size_t i = 0; i < sizeof(id); i++) {
+      out[pos++] = id[i];
+      crc = test_crc_byte(crc, id[i]);
+    }
+    out[pos++] = (uint8_t)(crc >> 8);
+    out[pos++] = (uint8_t)crc;
+    for (int i = 0; i < 22; i++) out[pos++] = 0x4E;
+    for (int i = 0; i < 12; i++) out[pos++] = 0x00;
+    crc = 0xFFFF;
+    for (int i = 0; i < 3; i++) {
+      out[pos++] = 0xA1;
+      crc = test_crc_byte(crc, 0xA1);
+    }
+    out[pos++] = 0xFB;
+    crc = test_crc_byte(crc, 0xFB);
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      out[pos++] = data[i];
+      crc = test_crc_byte(crc, data[i]);
+    }
+    out[pos++] = (uint8_t)(crc >> 8);
+    out[pos++] = (uint8_t)crc;
+    for (int i = 0; i < 35; i++) out[pos++] = 0x4E;
+  }
+  while (pos < JUK_MFM_TRACK_SIZE) out[pos++] = 0x4E;
+}
+
+
 static int write_image(const char* path) {
   FILE* fp = fopen(path, "wb");
   if (!fp) {
@@ -156,6 +205,33 @@ int main(void) {
     fprintf(stderr, "read-address did not load track address into sector register\n");
     fail = 1;
   }
+
+  juku_fdc_write(&fdc, 2, 7);
+  juku_fdc_write(&fdc, 0, 0xE4);  // Read Track, including the valid E flag
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read-track command");
+  uint8_t expected_track[JUK_MFM_TRACK_SIZE];
+  build_expected_track(expected_track, 12, 0);
+  for (int i = 0; i < JUK_MFM_TRACK_SIZE; i++) {
+    uint8_t got = juku_fdc_read(&fdc, 3);
+    if (got != expected_track[i]) {
+      fprintf(stderr, "read-track byte %d: got 0x%02X want 0x%02X\n",
+              i, got, expected_track[i]);
+      fail = 1;
+    }
+  }
+  fail |= expect_intrq(&fdc, 1, "read-track completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF, 0, "after read-track drain");
+  fail |= expect_intrq(&fdc, 0, "read-track status acknowledgement");
+  if (juku_fdc_read(&fdc, 2) != 7) {
+    fprintf(stderr, "read-track changed sector register\n");
+    fail = 1;
+  }
+
+  juku_fdc_write(&fdc, 0, 0xE0);
+  for (int i = 0; i < 100; i++) (void)juku_fdc_read(&fdc, 3);
+  juku_fdc_write(&fdc, 0, 0xD0);
+  fail |= expect_intrq(&fdc, 0, "forced read-track D0 silence");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after forced read-track abort");
 
   juku_fdc_write(&fdc, 2, 7);
   juku_fdc_write(&fdc, 0, 0xC0);
@@ -310,6 +386,8 @@ int main(void) {
   juku_fdc_portc(&fdc, 0x00);  // motor off
   juku_fdc_write(&fdc, 0, 0xC0);
   fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read address");
+  juku_fdc_write(&fdc, 0, 0xE0);
+  fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read track");
   juku_fdc_write(&fdc, 0, 0x80);
   fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read");
 

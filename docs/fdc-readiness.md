@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **BOOT + TYPE-II/INTRQ + READ-ADDRESS HDL FDC READY**
+Status: **BOOT + TYPE-II/TYPE-III/INTRQ HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -9,8 +9,8 @@ physical D93/D94 wiring.
 ## Passing scope
 
 - C/HDL-identical restore, seek, step, step-in, and step-out direction/update
-  semantics, plus single/multiple-record read-sector and write-sector, and
-  Read Address,
+  semantics, plus single/multiple-record read-sector and write-sector, Read
+  Address, and Read Track,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
 - C and HDL now share the WD1793 interrupt contract for the modeled commands:
@@ -37,6 +37,21 @@ physical D93/D94 wiring.
   sector register unchanged. A flat sector image has no rotational position,
   so the deterministic shim returns sector 1, the first ID after index; this is
   an explicit image-format boundary rather than an invented rotation model.
+- Read Track accepts the datasheet-defined `0xE0`/`0xE4` opcodes, asserts
+  BUSY+DRQ, returns exactly one 6,250-byte revolution, raises INTRQ on the last
+  byte, and leaves the sector register unchanged. The byte stream reconstructs
+  all ten MFM ID/data fields from the raw image: 32-byte index gap; per-sector
+  12-byte sync, three decoded `0xA1` missing-clock sync bytes, `0xFE` ID mark,
+  CHRN and CRC; 22-byte gap; another sync/A1 run, `0xFB` data mark, 512 payload
+  bytes and CRC; 35-byte gap; then 128 bytes of end gap. This is the exact
+  2,000 ns-cell/32-22-35 descriptor recorded by MAME's Juku format at commit
+  `40d8c5c343efc497524832d59a6d0e2b8e59376b`; the C guard compares every byte,
+  and the HDL plus decoded top-level guards check structure, CRCs, all ten IDs,
+  vendored sector data, completion, status acknowledgement, and silent D0 abort
+  through logical DB and both physical D100 families. MAME explicitly labels
+  those gap counts unverified, and a sector-only image cannot preserve original
+  gap contents, missing-clock waveforms, or rotational phase, so this is a
+  deterministic media reconstruction rather than a claimed flux capture.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
 - The physical КР580ВА87/8287 device models complement all 256 byte values in
@@ -184,8 +199,9 @@ physical D93/D94 wiring.
   as test-side port writes or patching the ROM epilogue.
 - The firmware path intentionally stops at its proved single-sector contract.
   The independent command guard additionally covers multiple-record Type-II
-  continuation and Read Address, but neither model claims general WD1793
-  read-track, write-track, lost-data, rotational, or timing conformance.
+  continuation, Read Address, and a complete reconstructed Read Track, but
+  neither model claims general WD1793 write-track, lost-data, rotational, or
+  timing conformance.
 
 ## RWFLOPPY deblocking provenance
 
@@ -264,9 +280,9 @@ evidence exists.
 
 ## Remaining boundaries
 
-- The model is a Juku boot/media shim with a datasheet-guarded Read Address
-  command and Type-II multiple-record continuation, not a general WD1793
-  conformance model. Read Track, writable track formatting, byte
+- The model is a Juku boot/media shim with datasheet-guarded Read Address and
+  reconstructed Read Track commands plus Type-II multiple-record continuation,
+  not a general WD1793 conformance model. Writable track formatting, byte
   deadlines/lost-data behavior, inter-record delays, and physical rotational
   timing remain outside its proved scope. Force Interrupt conditions 0-2
   (ready transitions and index pulse) likewise await those physical timing
