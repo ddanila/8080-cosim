@@ -62,13 +62,25 @@ GAL22V10 = {
     "14":"ROM_CE_N","15":"RAM_CE_N","16":"MEM_RD_N","17":"MEM_WR_N","18":"DEC_SPARE4_NC",
     "19":"DEC_SPARE5_NC","20":"DEC_SPARE6_NC","21":"DEC_SPARE7_NC","22":"DEC_SPARE8_NC","23":"DEC_SPARE9_NC","24":"VCC5",
 }
-# 8251 DIP-28 (USART), standard pinout. D0..D7, C/D=A0, and control lines to the bus.
+# 8251 DIP-28 (USART), standard pinout. C/D = A0; chip-select + active-HIGH reset
+# come from the I/O-select GAL (D1.16); TxC/RxC from the local baud oscillator;
+# CTS/DSR tied active; RxRDY/TxRDY reach the (DNP until B3) PIC; other status = NC.
 USART_8251 = {
-    "1":"D2","2":"D3","3":"RX","4":"GND","5":"D4","6":"D5","7":"D6","8":"D7","9":"TXC",
-    "10":"WR_N","11":"UART_CS_N","12":"C_D","13":"RD_N","14":"RXRDY","15":"TXRDY",
-    "16":"RXC","17":"DSR_N","18":"DTR_N","19":"SYNDET","20":"CTS_N","21":"TX","22":"TXEMPTY",
-    "23":"RTS_N","24":"CLK","25":"RESET_N","26":"VCC5","27":"D0","28":"D1",
+    "1":"D2","2":"D3","3":"RX","4":"GND","5":"D4","6":"D5","7":"D6","8":"D7","9":"BAUDCLK",
+    "10":"WR_N","11":"UART_CS_N","12":"A0","13":"RD_N","14":"RXRDY_TO_PIC_NC","15":"TXRDY_TO_PIC_NC",
+    "16":"BAUDCLK","17":"GND","18":"DTR_N_NC","19":"SYNDET_NC","20":"GND","21":"TX","22":"TXEMPTY_NC",
+    "23":"RTS_N_NC","24":"CLK","25":"UART_RESET","26":"VCC5","27":"D0","28":"D1",
 }
+# ATF16V8/GAL16V8 DIP-20 I/O-select decode (D1.16): IORQ_N + A2..A7 -> chip selects;
+# also inverts the bus RESET_N to the 8251's active-HIGH reset (UART_RESET).
+GAL16V8_IOSEL = {
+    "1":"IORQ_N","2":"A2","3":"A3","4":"A4","5":"A5","6":"A6","7":"A7","8":"RESET_N",
+    "9":"RD_N","10":"GND","11":"WR_N","12":"PIC_CS_N","13":"PPI_CS_N","14":"UART_CS_N",
+    "15":"UART_RESET","16":"IOSEL_SPARE0_NC","17":"IOSEL_SPARE1_NC","18":"IOSEL_SPARE2_NC",
+    "19":"IOSEL_SPARE3_NC","20":"VCC5",
+}
+# DIP-14 half-can baud oscillator: drives BAUDCLK (8251 TxC/RxC), local per D1.8.
+OSC_BAUD = {"1":"OSC_EN_NC","7":"GND","8":"BAUDCLK","14":"VCC5"}
 # 74HCT245 DIP-20 octal transceiver (data bus buffer). A-side = CPU-local, B-side = bus.
 BUF245 = {
     "1":"BUF_DIR","2":"D0L","3":"D1L","4":"D2L","5":"D3L","6":"D4L","7":"D5L","8":"D6L",
@@ -85,14 +97,14 @@ BUF244 = {
 CHIP_TYPES = {
     "Z80_DIP40": Z80, "EPROM_27C256": ROM_27C256, "SRAM_AS6C1008": SRAM_128K,
     "GAL22V10": GAL22V10, "USART_8251": USART_8251, "BUF_74HCT245": BUF245,
-    "BUF_74HCT244": BUF244,
+    "BUF_74HCT244": BUF244, "GAL16V8_IOSEL": GAL16V8_IOSEL, "OSC_BAUD": OSC_BAUD,
 }
 
 # per-card populated ICs: (ref, type)
 CARD_CHIPS = {
     "cpu":  [("U1", "Z80_DIP40"), ("U2", "BUF_74HCT245"), ("U3", "BUF_74HCT244")],
     "mem":  [("U1", "EPROM_27C256"), ("U2", "SRAM_AS6C1008"), ("U3", "GAL22V10")],
-    "io":   [("U1", "USART_8251")],
+    "io":   [("U1", "USART_8251"), ("U2", "GAL16V8_IOSEL"), ("U3", "OSC_BAUD")],
     "backplane": [],
 }
 
@@ -112,6 +124,13 @@ CARD_EXTRAS = {
         # NOP free-run plug provision (J91-style, S9): D0-D7 + GND for the resistor plug.
         header("J_NOP", {"1": "D0", "2": "D1", "3": "D2", "4": "D3", "5": "D4",
                          "6": "D5", "7": "D6", "8": "D7", "9": "GND"}),
+    ],
+    "io": [
+        cap("C1"), cap("C2"),
+        # I/O-select observability (S9): also gives the B3-deferred PPI/PIC selects a
+        # scope point so they are provisioned, not dangling, in B1.
+        header("J_IOSEL", {"1": "UART_CS_N", "2": "PPI_CS_N", "3": "PIC_CS_N",
+                           "4": "UART_RESET", "5": "GND"}),
     ],
 }
 
