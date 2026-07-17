@@ -39,6 +39,10 @@ typedef struct {
   int command_delay_pending;
   unsigned command_delay_ticks;
   uint8_t command_delay_command;
+  int write_sector_lead_pending;
+  unsigned write_sector_lead_ticks;
+  int write_sector_preloaded;
+  uint8_t write_sector_preload;
   unsigned drq_ticks;
   int write_first_byte_pending;
   int type_i_pending;

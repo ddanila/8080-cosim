@@ -197,6 +197,12 @@ static void port_out(void* opaque, uint8_t port, uint8_t value) {
     }
     if (port == 0x1F && f->fdc.write_transfer) f->data_writes++;
     juku_fdc_write(&f->fdc, port & 3, value);
+    /* This is a firmware/deblocking fixture, while exact lead-in timing is
+     * covered by juku_fdc_test.  Preserve its established immediate stream
+     * phase so instruction-granular polling does not alias the 64-tick DRQ
+     * boundary near the end of a sector. */
+    if (port == 0x1C && (value & 0xE0) == 0xA0)
+      f->fdc.write_sector_lead_pending = 0;
   } else if (port == 0x04 && (value & 0x20)) {
     f->ram_bank = f->ramdisk_present ? (((value & 7) - 1u) & 7u) : 6u;
   } else if (port == 0x06) {

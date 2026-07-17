@@ -819,6 +819,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     localparam WT_DATA = 3;
     localparam WT_DATA_CRC = 4;
     localparam DRQ_BYTE_TICKS = 64; // one 32 us MFM byte at a 2 MHz-equivalent clock
+    localparam WRITE_SECTOR_LEAD_TICKS = 22 * DRQ_BYTE_TICKS;
 
     reg [7:0] status = ST_NOT_READY;
     reg [7:0] track = 8'h00;
@@ -869,7 +870,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `ifdef FDC_BYTE_TIMING
     integer drq_ticks = 0;
     integer write_first_byte_pending = 0;
-`define FDC_TIMER_CLEAR drq_ticks = 0; write_first_byte_pending = 0;
+    integer write_sector_lead_pending = 0;
+    integer write_sector_lead_ticks = 0;
+    integer write_sector_preloaded = 0;
+    reg [7:0] write_sector_preload = 0;
+`define FDC_TIMER_CLEAR drq_ticks = 0; write_first_byte_pending = 0; write_sector_lead_pending = 0; write_sector_lead_ticks = 0; write_sector_preloaded = 0;
 `define FDC_TIMER_RESET drq_ticks = 0;
 `define FDC_TIMER_FIRST drq_ticks = 0; write_first_byte_pending = 1;
 `define FDC_TIMER_SERVICE drq_ticks = 0; write_first_byte_pending = 0;
@@ -1062,6 +1067,23 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end endtask
 
 `ifndef YOSYS
+    task arm_write_sector_record; begin
+        buffer_pos = 0;
+        buffer_len = 512;
+        write_transfer = 1;
+`ifdef FDC_BYTE_TIMING
+        write_first_byte_pending = 1;
+        write_sector_lead_pending = 1;
+        write_sector_lead_ticks = WRITE_SECTOR_LEAD_TICKS;
+        write_sector_preloaded = 0;
+        drq_ticks = 0;
+`else
+        `FDC_TIMER_FIRST
+`endif
+        status = status | ST_BUSY | ST_DRQ;
+        intrq_r = 1'b0;
+    end endtask
+
     task begin_write_sector(input multi); begin
         clear_transfer();
         status_type_i = 0;
@@ -1084,19 +1106,23 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 status = status | ST_RNF;
                 complete_transfer();
             end else begin
-                buffer_pos = 0;
-                buffer_len = 512;
-                write_transfer = 1;
-                `FDC_TIMER_FIRST
                 multi_record = multi;
-                status = status | ST_BUSY | ST_DRQ;
-                intrq_r = 1'b0;
+                arm_write_sector_record();
             end
         end
     end endtask
 
     task accept_write_byte(input [7:0] value); begin
         if (write_transfer && buffer_pos < buffer_len) begin
+`ifdef FDC_BYTE_TIMING
+            if (write_sector_lead_pending) begin
+                write_sector_preload = value;
+                write_sector_preloaded = 1;
+                write_first_byte_pending = 0;
+                status = status & ~ST_DRQ;
+                drq_ticks = 0;
+            end else begin
+`endif
             `FDC_TIMER_SERVICE
             $fwrite(disk_file, "%c", value);
             buffer_pos = buffer_pos + 1;
@@ -1116,16 +1142,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                             complete_transfer();
                             status = status | ST_RNF;
                         end else begin
-                            buffer_pos = 0;
-                            buffer_len = 512;
-                            write_transfer = 1;
-                            `FDC_TIMER_SERVICE
-                            status = status | ST_BUSY | ST_DRQ;
-                            intrq_r = 1'b0;
+                            arm_write_sector_record();
                         end
                     end
                 end
             end
+`ifdef FDC_BYTE_TIMING
+            end
+`endif
         end
     end endtask
 `else
@@ -1807,7 +1831,21 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     // focused unit/decoded-bus guards compile with FDC_BYTE_TIMING.
 `ifdef FDC_BYTE_TIMING
     always @(negedge clk) begin
-        if (!track_waiting_index && status[0] && status[1]) begin
+        if (write_sector_lead_pending) begin
+            if (write_sector_lead_ticks <= 1) begin
+                write_sector_lead_ticks = 0;
+                write_sector_lead_pending = 0;
+                if (!write_sector_preloaded) begin
+                    status = status | ST_LOST_DATA;
+                    complete_transfer();
+                end else begin
+                    status = status | ST_DRQ;
+                    accept_write_byte(write_sector_preload);
+                end
+            end else begin
+                write_sector_lead_ticks = write_sector_lead_ticks - 1;
+            end
+        end else if (!track_waiting_index && status[0] && status[1]) begin
             if (drq_ticks + 1 >= DRQ_BYTE_TICKS) miss_drq_byte();
             else drq_ticks = drq_ticks + 1;
         end else begin

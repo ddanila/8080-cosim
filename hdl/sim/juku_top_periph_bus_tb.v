@@ -447,7 +447,9 @@ module juku_top_periph_bus_tb();
       io_write(8'h1C, 8'hA2);   // exact ROMBIOS side-aware write-sector command
       io_read(8'h1C, rd);
       if ((rd & 8'h03) !== 8'h03) fail("FDC write-sector did not assert BUSY+DRQ");
-      for (i = 0; i < 512; i = i + 1) io_write(8'h1F, 8'h5A ^ i[7:0]);
+      io_write(8'h1F, 8'h5A);
+      while (dut.U_FDC.write_sector_lead_pending) @(posedge osc);
+      for (i = 1; i < 512; i = i + 1) io_write(8'h1F, 8'h5A ^ i[7:0]);
       if (dut.fdc_intrq !== 1'b1) fail("FDC write-sector completion did not raise INTRQ");
       io_read(8'h1C, rd);
       if ((rd & 8'h43) !== 8'h00) fail("FDC write-sector did not complete cleanly");
@@ -463,8 +465,12 @@ module juku_top_periph_bus_tb();
 
       io_write(8'h1E, 8'h09);
       io_write(8'h1C, 8'hB2);   // side-aware multiple-record write
-      for (i = 0; i < 1024; i = i + 1)
-        io_write(8'h1F, ((i < 512) ? 8'hA0 : 8'h50) ^ i[7:0]);
+      io_write(8'h1F, 8'hA0);
+      while (dut.U_FDC.write_sector_lead_pending) @(posedge osc);
+      for (i = 1; i < 512; i = i + 1) io_write(8'h1F, 8'hA0 ^ i[7:0]);
+      io_write(8'h1F, 8'h50);
+      while (dut.U_FDC.write_sector_lead_pending) @(posedge osc);
+      for (i = 1; i < 512; i = i + 1) io_write(8'h1F, 8'h50 ^ i[7:0]);
       if (dut.fdc_intrq !== 1'b1) fail("FDC multi-write completion did not raise INTRQ");
       io_read(8'h1C, rd);
       if ((rd & 8'h13) !== 8'h10) fail("FDC multi-write did not end with RNF after sector 10");

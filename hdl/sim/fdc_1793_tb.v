@@ -601,8 +601,18 @@ module fdc_1793_tb;
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
       write_reg(2'd0, 8'hA2);
-      while (dut.status[0]) @(posedge clk);
+      while (dut.write_sector_lead_ticks > 1) @(negedge clk);
       #1;
+      expect_intrq(1'b0, "write-sector lead-in before boundary");
+      if ((dut.status & 8'h07) !== 8'h03) begin
+        $display("FDC-1793: FAIL write-sector lead-in before boundary status=%02x", dut.status);
+        errors = errors + 1;
+      end
+      if (dut.buffer_pos != 0) begin
+        $display("FDC-1793: FAIL write-sector lead-in changed buffer before boundary");
+        errors = errors + 1;
+      end
+      @(negedge clk); #1;
       expect_intrq(1'b1, "first write-byte timeout completion");
       expect_status(8'h07, 8'h04, "first write-byte timeout status");
       write_reg(2'd0, 8'h82);
@@ -617,6 +627,7 @@ module fdc_1793_tb;
 
       write_reg(2'd0, 8'hA2);
       write_reg(2'd3, 8'hA5);
+      while (dut.write_sector_lead_pending) @(negedge clk);
       while (dut.buffer_pos < 2) @(posedge clk);
       #1;
       for (i = 2; i < 512; i = i + 1) write_reg(2'd3, 8'hC0 ^ i[7:0]);
@@ -635,7 +646,9 @@ module fdc_1793_tb;
       write_reg(2'd2, 8'd3);
       write_reg(2'd0, 8'hA2);  // exact ROMBIOS side-aware write-sector variant
       expect_status(8'h03, 8'h03, "writable write-sector command");
-      for (i = 0; i < 512; i = i + 1) write_reg(2'd3, 8'h5A ^ i[7:0]);
+      write_reg(2'd3, 8'h5A);
+      while (dut.write_sector_lead_pending) @(negedge clk);
+      for (i = 1; i < 512; i = i + 1) write_reg(2'd3, 8'h5A ^ i[7:0]);
       if (drq !== 1'b0 || intrq !== 1'b1) begin
         $display("FDC-1793: FAIL write completion drq=%b intrq=%b", drq, intrq);
         errors = errors + 1;
@@ -656,8 +669,12 @@ module fdc_1793_tb;
       seek_track(8'd8);
       write_reg(2'd2, 8'd9);
       write_reg(2'd0, 8'hb2);  // side-aware multiple-record write
-      for (i = 0; i < 1024; i = i + 1)
-        write_reg(2'd3, ((i < 512) ? 8'ha0 : 8'h50) ^ i[7:0]);
+      write_reg(2'd3, 8'ha0);
+      while (dut.write_sector_lead_pending) @(negedge clk);
+      for (i = 1; i < 512; i = i + 1) write_reg(2'd3, 8'ha0 ^ i[7:0]);
+      write_reg(2'd3, 8'h50);
+      while (dut.write_sector_lead_pending) @(negedge clk);
+      for (i = 1; i < 512; i = i + 1) write_reg(2'd3, 8'h50 ^ i[7:0]);
       expect_intrq(1'b1, "multi-write end-of-track completion");
       expect_status(8'h13, 8'h10, "multi-write end of track");
       read_reg(2'd2, got);

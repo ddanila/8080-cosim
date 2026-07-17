@@ -14,7 +14,10 @@ enum {
   ST_NOT_READY = 0x80,
 };
 
-enum { DRQ_BYTE_TICKS = 64 };
+enum {
+  DRQ_BYTE_TICKS = 64,
+  WRITE_SECTOR_LEAD_TICKS = 22 * DRQ_BYTE_TICKS,
+};
 
 enum {
   WT_SCAN = 0,
@@ -99,6 +102,9 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_preloaded = 0;
   fdc->command_delay_pending = 0;
   fdc->command_delay_ticks = 0;
+  fdc->write_sector_lead_pending = 0;
+  fdc->write_sector_lead_ticks = 0;
+  fdc->write_sector_preloaded = 0;
   fdc->drq_ticks = 0;
   fdc->write_first_byte_pending = 0;
   fdc->type_i_pending = 0;
@@ -241,6 +247,19 @@ static void begin_type_i(juku_fdc* fdc, uint8_t command) {
 }
 
 
+static void arm_write_sector_record(juku_fdc* fdc) {
+  fdc->buffer_pos = 0;
+  fdc->buffer_len = JUK_SECTOR_SIZE;
+  fdc->write_transfer = 1;
+  fdc->write_first_byte_pending = 1;
+  fdc->write_sector_lead_pending = 1;
+  fdc->write_sector_lead_ticks = WRITE_SECTOR_LEAD_TICKS;
+  fdc->write_sector_preloaded = 0;
+  fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->drq_ticks = 0;
+}
+
+
 static void begin_write_sector(juku_fdc* fdc, int multi_record) {
   clear_transfer(fdc);
   fdc->status_type_i = 0;
@@ -263,13 +282,8 @@ static void begin_write_sector(juku_fdc* fdc, int multi_record) {
     complete_transfer(fdc);
     return;
   }
-  fdc->buffer_pos = 0;
-  fdc->buffer_len = JUK_SECTOR_SIZE;
-  fdc->write_transfer = 1;
-  fdc->write_first_byte_pending = 1;
   fdc->multi_record = multi_record;
-  fdc->status |= ST_BUSY | ST_DRQ;
-  fdc->drq_ticks = 0;
+  arm_write_sector_record(fdc);
 }
 
 
@@ -393,6 +407,14 @@ static void begin_read_track(juku_fdc* fdc) {
 
 static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
   if (!fdc->write_transfer || fdc->buffer_pos >= fdc->buffer_len) return;
+  if (fdc->write_sector_lead_pending) {
+    fdc->write_sector_preload = data;
+    fdc->write_sector_preloaded = 1;
+    fdc->write_first_byte_pending = 0;
+    fdc->status &= (uint8_t)~ST_DRQ;
+    fdc->drq_ticks = 0;
+    return;
+  }
   fdc->write_first_byte_pending = 0;
   fdc->drq_ticks = 0;
   fdc->buffer[fdc->buffer_pos++] = data;
@@ -415,11 +437,7 @@ static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
     fdc->status |= ST_RNF;
     return;
   }
-  fdc->buffer_pos = 0;
-  fdc->buffer_len = JUK_SECTOR_SIZE;
-  fdc->write_transfer = 1;
-  fdc->write_first_byte_pending = 0;
-  fdc->status |= ST_BUSY | ST_DRQ;
+  arm_write_sector_record(fdc);
 }
 
 
@@ -683,6 +701,23 @@ void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
       fdc->command_delay_ticks = 0;
       fdc->command_delay_pending = 0;
       start_type_ii_iii(fdc, fdc->command_delay_command);
+    } else if (fdc->write_sector_lead_pending) {
+      if (ticks < fdc->write_sector_lead_ticks) {
+        fdc->write_sector_lead_ticks -= ticks;
+        return;
+      }
+      ticks -= fdc->write_sector_lead_ticks;
+      fdc->write_sector_lead_ticks = 0;
+      if (!fdc->write_sector_preloaded) {
+        fdc->write_sector_lead_pending = 0;
+        fdc->status |= ST_TRACK0_LOST;
+        complete_transfer(fdc);
+      } else {
+        const uint8_t first_byte = fdc->write_sector_preload;
+        fdc->write_sector_lead_pending = 0;
+        fdc->status |= ST_DRQ;
+        accept_write_byte(fdc, first_byte);
+      }
     } else if (!fdc->track_waiting_index &&
                (fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
       const unsigned remaining = DRQ_BYTE_TICKS - fdc->drq_ticks;

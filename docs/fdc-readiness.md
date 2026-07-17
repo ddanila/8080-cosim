@@ -52,14 +52,19 @@ physical D93/D94 wiring.
   modeled window is 64 2 MHz-equivalent ticks, i.e. one 32 us MFM byte at the
   Juku image's 250 kbit/s data rate. An unserviced read byte is overwritten by
   the next assembled byte, sets LOST DATA, and the command continues. An
-  unserviced first Write Sector request terminates before media changes. Write
-  Track instead raises its initial DRQ as a preload request: the deadline does
+  Write Sector raises its matching-ID DRQ across the datasheet's 22-byte MFM
+  ID-to-write-gate interval (1,408 nominal ticks): a supplied first byte is
+  held without changing media, while an unserviced preload terminates with
+  LOST DATA exactly at the boundary. Every multiple-record continuation
+  re-arms that preload interval. Once streaming begins, the ordinary one-byte
+  deadline applies. Write Track instead raises its initial DRQ as a preload request: the deadline does
   not age while the controller waits for index, the preloaded byte is held
   without touching media, and the first rising index either starts formatting
   or terminates with LOST DATA if no byte was supplied. After writing starts, a
   missed request substitutes
   `0x00`, sets LOST DATA, and continues. C/HDL unit guards prove all four cases,
-  including unchanged media and persisted zero substitution; the decoded
+  including the exact 1,407/1,408 boundary, unchanged media, persisted zero
+  substitution, and per-record re-arming; the decoded
   top-level guard proves read overwrite and S2 through D94 plus logical DB and
   both safe D100 families. Exact wall-clock calibration remains conditional on
   the measurement-gated physical D93.24 clock source. Accordingly, the C oracle
@@ -356,7 +361,7 @@ evidence exists.
   reconstructed Read Track, representable MFM Write Track, and Type-II
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
   not a general WD1793 conformance model. Exact physical D93.24 calibration of
-  the byte, Type-I, and Type-II/III E-delay intervals, Write Sector ID-to-data lead-in,
+  the byte, Type-I, and Type-II/III E-delay intervals,
   external HLT/step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are

@@ -601,7 +601,15 @@ int main(void) {
     fail = 1;
   }
   juku_fdc_write(&fdc, 0, 0xA2);
-  juku_fdc_tick(&fdc, 64);
+  juku_fdc_tick(&fdc, 1407);
+  fail |= expect_intrq(&fdc, 0, "write-sector lead-in before boundary");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
+                        ST_BUSY | ST_DRQ, "write-sector lead-in before boundary status");
+  if (fdc.buffer_pos != 0) {
+    fprintf(stderr, "write-sector lead-in modified buffer before boundary\n");
+    fail = 1;
+  }
+  juku_fdc_tick(&fdc, 1);
   fail |= expect_intrq(&fdc, 1, "first write-byte timeout completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
                         ST_LOST_DATA, "first write-byte timeout status");
@@ -614,6 +622,9 @@ int main(void) {
 
   juku_fdc_write(&fdc, 0, 0xA2);
   juku_fdc_write(&fdc, 3, 0xA5);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "write-sector first-byte preload hold");
+  juku_fdc_tick(&fdc, 1408);
   juku_fdc_tick(&fdc, 64);  // missed second byte is written as zero
   for (int i = 2; i < JUK_SECTOR_SIZE; i++) juku_fdc_write(&fdc, 3, (uint8_t)i);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
@@ -627,7 +638,9 @@ int main(void) {
   juku_fdc_write(&fdc, 2, 3);
   juku_fdc_write(&fdc, 0, 0xA2);  // exact side-aware ROMBIOS variant
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "writable write-sector command");
-  for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+  juku_fdc_write(&fdc, 3, 0x5A);
+  juku_fdc_tick(&fdc, 1408);
+  for (int i = 1; i < JUK_SECTOR_SIZE; i++) {
     juku_fdc_write(&fdc, 3, (uint8_t)(0x5A ^ i));
   }
   fail |= expect_intrq(&fdc, 1, "write-sector completion");
@@ -647,7 +660,9 @@ int main(void) {
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xB2);  // side-aware multiple-record write
   for (int record = 9; record <= 10; record++) {
-    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+    juku_fdc_write(&fdc, 3, (uint8_t)(record == 9 ? 0xA0 : 0x50));
+    juku_fdc_tick(&fdc, 1408);
+    for (int i = 1; i < JUK_SECTOR_SIZE; i++) {
       juku_fdc_write(&fdc, 3, (uint8_t)((record == 9 ? 0xA0 : 0x50) ^ i));
     }
   }
