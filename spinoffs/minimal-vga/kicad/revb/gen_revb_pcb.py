@@ -32,9 +32,12 @@ def load_fp(fpname):
 
 
 def place(fp, x, y, rot=0):
-    fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
+    # rotate first (changes the bounding box), then centre the bbox on (x, y).
     if rot:
         fp.SetOrientationDegrees(rot)
+    fp.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
+    c = fp.GetBoundingBox(False, False).GetCenter()
+    fp.SetPosition(pcbnew.VECTOR2I(2 * mm(x) - c.x, 2 * mm(y) - c.y))
 
 
 def outline(board):
@@ -53,13 +56,14 @@ def silk(board, text, x, y, size=1.5, angle=0):
     board.Add(t)
 
 
-# Deterministic placement table (mm, footprint centre). The bus connector splits
-# into a 1x39 base (bottom edge) + a 1x10 extension row 2.54 mm above it (D1.23/D1.4).
+# Deterministic placement table (mm, footprint CENTRE, rotation deg). Connectors
+# rotated 90 so their pin rows run along X: the 1x39 base along the bottom edge, the
+# 1x10 extension row just above it, pin-1-end aligned (D1.23/D1.4). DIPs vertical.
 PLACE = {
-    "J_BUS":  (50.0, 57.0), "J_EXT": (14.7, 54.46),
-    "U1": (22.0, 24.0), "U2": (52.0, 24.0), "U3": (80.0, 24.0),
-    "C1": (22.0, 10.0), "C2": (52.0, 10.0), "C3": (80.0, 10.0),
-    "J_OBS": (88.0, 40.0), "J_NOP": (45.0, 44.0),
+    "J_BUS":  (50.0, 55.0, 90), "J_EXT": (14.0, 50.0, 90),
+    "U1": (20.0, 24.0, 0), "U2": (50.0, 23.0, 0), "U3": (82.0, 24.0, 0),
+    "C1": (32.0, 10.0, 0), "C2": (64.0, 10.0, 0), "C3": (92.0, 10.0, 0),
+    "J_OBS": (75.0, 47.0, 90), "J_NOP": (40.0, 47.0, 90),
 }
 
 
@@ -82,6 +86,11 @@ def main():
             net = pin_to_net.get(str(pad.GetNumber()))
             if net and net in nets:
                 pad.SetNet(nets[net])
+        # Hide per-footprint ref/value silk (they stray onto pads/outlines on this
+        # dense card); board-level silk carries the essentials. Adding tidy per-ref
+        # designators is cosmetic polish for the visual layout pass.
+        fp.Value().SetVisible(False)
+        fp.Reference().SetVisible(False)
         return fp
 
     for comp in board_spec["chips"]:
@@ -97,10 +106,10 @@ def main():
             xy = PLACE.get(ref, (50.0, 40.0))
             add_fp(ref, fpname, xy, pins)
 
-    # silk: card banner + safety (pin-1 marks come from the footprints)
-    silk(board, f"VJUGA REV B  {CARD.upper()} CARD", 50.0, 3.0, size=2.0)
-    silk(board, "NO HOT-PLUG", 50.0, 51.0, size=1.4)
-    silk(board, "BUS 1<-39   EXT E1<-E10", 50.0, 59.2, size=1.0)
+    # silk in the clear strip between the DIP row (y<=44) and the bus (y~54); pin-1
+    # marks come from the footprints.
+    silk(board, f"REVB {CARD.upper()}", 60.0, 49.0, size=1.3)   # short: fits the J_NOP<->J_OBS gap
+    silk(board, "NO HOT-PLUG", 89.0, 49.0, size=1.2)
 
     outdir = os.path.join(REPO, "fab", "minimal-vga", "revb")
     os.makedirs(outdir, exist_ok=True)

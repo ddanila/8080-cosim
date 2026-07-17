@@ -22,8 +22,9 @@ python3 "$R/kicad/revb/check_revb_footprints.py" mem || { echo "  (skipped: no K
 if revb_have KICAD_PYTHON; then
   echo "== [4/6] PCB generate =="
   "$KICAD_PYTHON" "$R/kicad/revb/gen_revb_pcb.py" mem 2>/dev/null | tail -1
-  echo "== [5/6] PCB content check =="
+  echo "== [5/6] PCB content check + placement DRC =="
   "$KICAD_PYTHON" "$R/kicad/revb/check_revb_mem_pcb.py" 2>/dev/null
+  python3 "$R/kicad/revb/check_revb_drc.py" mem --placement
 else
   echo "== [4-5/6] PCB gen/check: SKIP (no KICAD_PYTHON) =="
 fi

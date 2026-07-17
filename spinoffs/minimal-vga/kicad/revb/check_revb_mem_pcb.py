@@ -45,7 +45,7 @@ if "J_BUS" in fps:
 
 # 4) required silk present
 txt = "".join(d.GetText() for d in b.GetDrawings() if d.GetClass() == "PCB_TEXT")
-for need in ("VJUGA REV B", "NO HOT-PLUG"):
+for need in ("REVB", "NO HOT-PLUG"):
     if need not in txt:
         fail.append(f"silk missing {need!r}")
 
