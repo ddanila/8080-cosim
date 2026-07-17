@@ -203,17 +203,81 @@ committed.
 - **T1.2 DONE** — minimum-tier twin (`VIDEO_PRESENT=0`, real `usart_8251` at 0x08) TX stream byte-identical to cosim (47 bytes), exercising the real TxRDY handshake; `sim/revb_bringup_check.sh`, in the tier suite + CI. ekta37 boot check unaffected (params default off).
 - **T1.3-T1.6 DONE at the connectivity stage** — `kicad/revb/bus-pinout.json` + `cards.json` + `scripts/check_revb_boards.py` (driver-class rules, memory/IO ownership, card-HDL port consistency; negative control catches a decode overlap). In the tier suite + CI.
 
-**Blocked here (tools/hardware not available at a desk) — do NOT fake these:**
-- **T1.7 full per-card LVS** — needs a flattened *structural* HDL model per card (like `hdl/minimal_vga_lvs.v`); the current `revb_*_card.v` are behavioral. The board checker does an LVS-*intent* subset (card bus ports vs declared role). Full LVS is part of the KiCad-installed continuation.
-- **T1.8 DRC + full silk** — DRC needs `kicad-cli` (absent here, as in CI which uses the board-direct fallback). Requires the full KiCad PCB projects (footprints/layout), which are the continuation of T1.3-T1.6.
-- **T1.9 STEP/FreeCAD mating** — needs KiCad STEP export + FreeCAD; neither available at a desk.
-- **T1.10 order / T1.11 bench** — hardware-blocked by definition.
+**Remaining (T1.7–T1.9): the B1-CAD continuation — planned below as tasks TC.1–TC.8.**
+CORRECTION (2026-07-17, later session): the earlier note claiming `kicad-cli` is
+absent on this Mac was wrong — KiCad 10.0.4 is installed as a Homebrew-cask app
+bundle, merely off PATH; the repo's `scripts/find-kicad-cli.sh` / `find-kicad-python.sh`
+locate it. Only FreeCAD is genuinely missing locally (brew cask, or the Linux box).
+T1.10 order / T1.11 bench stay hardware-blocked by definition.
 
-**KiCad-installed continuation (next session with KiCad/FreeCAD):** turn the four
-`cards.json` roles into full `<card>.board.json` (chips+nets) via the rev A flow
-(`kicad/gen_kicad_sch.py`, `sync/lvs.py`), author the per-card structural LVS
-models, run DRC + STEP. The connectivity contract those build on is done and
-guard-checked.
+## B1-CAD continuation — task breakdown (TC.1–TC.8, planned 2026-07-17)
+
+Design decisions D1.10–D1.15 in `rev-b-build-plan.md` are settled — don't reopen.
+Same executor rules: one task per commit, red gate = stop, patterns over invention.
+Everything except TC.7's FreeCAD step is runnable on this Mac via the locator
+scripts; committed generated artifacts record their generating environment (D1.10).
+
+**TC.1 — KiCad environment wrapper.**
+`spinoffs/minimal-vga/kicad/revb/env.sh`: resolve `KICAD_CLI`/`KICAD_PYTHON` via
+the locator scripts, set `KICAD_FOOTPRINTS` for the Mac app bundle (the
+`gen_rev_a_pcb.py` documented path), print resolved versions. Every TC script
+sources it and **skips-not-fails** when a tool is missing (CI pattern).
+*Acceptance:* `env.sh` prints kicad-cli 10.x + pcbnew python on this Mac; a PATH
+without KiCad yields the skip path, not an error.
+
+**TC.2 — per-card board.json (4 specs, one commit each is fine).**
+`kicad/revb/{backplane,cpu-card,mem-card,io-card}.board.json` — chips+nets in the
+rev A shape (`kicad/minimal-vga.board.json`), bus connector as a component whose
+pin numbers map 1:1 to `bus-pinout.json`. Extend `scripts/check_revb_boards.py`
+with the D1.12 cross-check (connector nets ↔ cards.json roles ↔ pinout).
+*Acceptance:* checker green; moving one connector net in a temp copy fails
+(prove-then-restore).
+
+**TC.3 — structural LVS models + structural boot oracle (D1.11).**
+`hdl/revb/revb_{cpu,mem,io}_card_lvs.v` (+ backplane netlist top): chip-level
+instances reusing `hdl/devices.v` models (`usart_8251`, `decode_prom`, `re3_prom`)
+plus thin new ones ('245/'244, SRAM, ROM, GAL-equation module). Assemble a
+structural twin; run the **banner boot oracle** and the **bring-up TX-stream
+check** against it.
+*Acceptance:* structural twin byte-identical to cosim on both checks — the LVS
+models are thereby behaviorally validated, root-`juku_top` style.
+
+**TC.4 — per-card LVS wiring.**
+`spinoffs/minimal-vga/sync/revb_lvs.sh` per card: yosys-netlist the LVS model,
+compare vs its board.json via `sync/lvs.py --board` (works everywhere) and via the
+kicad-cli schematic round-trip when available (pattern: `spinoffs/minimal-vga/sync/check.sh`
++ `sync/map.json`). Wire into tier suite + CI (board-direct path).
+*Acceptance:* LVS clean ×4; a mis-wired pin in a temp board.json copy fails.
+
+**TC.5 — PCB generators (D1.13).**
+`kicad/revb/gen_revb_pcb.py` (parameterized clone of `gen_rev_a_pcb.py`): outlines
+(backplane ≤100×100, cards ~100×~60), 39+10 connectors per D1.4 geometry, 19 mm
+slot pitch on the backplane, generator-emitted silk (full checklist). Regeneration
+must be deterministic (same JSON in → byte-stable PCB out, rev A convention).
+*Acceptance:* four `.kicad_pcb` generated on this Mac; regen diff-clean; silk
+items present in the PCB text (grep-checkable).
+
+**TC.6 — DRC + fab readiness (D1.14).**
+`kicad/revb/check_revb_ready.sh`: `kicad-cli pcb drc` per board (zero errors),
+2-layer cheap-tier constraint checks, silk machine-checks, plus the rev A
+placement/footprint check patterns (`check_rev_a_placement.py`, `check_rev_a_footprints.py`).
+*Acceptance:* all four boards DRC-clean + checks green; an injected
+overlapping-footprint temp copy fails.
+
+**TC.7 — STEP export + FreeCAD mating/keying (D1.15).**
+`kicad-cli pcb export step` ×4; `kicad/revb/mate_check.py` under `freecadcmd`:
+assemble at 19 mm pitch, boolean interference = zero; **reversed-card placement
+must collide** (keying proof). If headless FreeCAD proves unworkable, fall back to
+GUI assembly + committed screenshots/clearances and say so in the doc.
+*Acceptance:* interference report committed (`docs/rev-b-mating-report.md`):
+normal = no collision, reversed = collision.
+
+**TC.8 — CAD exit review → order gate.**
+Re-run tier suite + TC.4/TC.6/TC.7; re-check the power budget table against final
+BOMs; produce the fab package (pattern: `export_fab.sh` + `package_rev_a_upload.py`)
+with SHA256 recorded. This closes T1.7–T1.9 and arms **T1.10 (order)**.
+*Acceptance:* everything green in one session; package hash recorded; T1.10 is
+purely a purchasing decision.
 
 At B1 exit (after the hardware tiers), expand Phase B2 to task level (rule 6).
 
