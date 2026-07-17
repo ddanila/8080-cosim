@@ -37,7 +37,21 @@ OUT="fab/minimal-vga/revb/routing"; mkdir -p "$OUT"
 DSN="$OUT/${CARD}.dsn"; SES="$OUT/${CARD}.ses"
 echo "== rev B route ($CARD) via freerouting =="
 # KiCad 10 kicad-cli has no specctra export; use pcbnew (rev A route_rev_a_pcb.sh method).
-"$KICAD_PYTHON" -c "import pcbnew,sys; b=pcbnew.LoadBoard('$PCB'); pcbnew.ExportSpecctraDSN(b,'$DSN')"
-"$JAVA_BIN" -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100
+# ExportSpecctraDSN returns False (silently) on duplicate refs -- check it.
+"$KICAD_PYTHON" -c "import pcbnew,sys; b=pcbnew.LoadBoard('$PCB');
+sys.exit(0 if pcbnew.ExportSpecctraDSN(b,'$DSN') else 'DSN export failed')"
+# freerouting 2.x is GUI-first (-Djava.awt.headless=true runs it batch on macOS) and
+# stochastic -- this board is near the 2-layer routability edge, so retry until a run
+# routes every net (no "could not be routed" in the log).
+ROUTED=""
+for attempt in 1 2 3 4 5 6; do
+  "$JAVA_BIN" -Djava.awt.headless=true -jar "$FREEROUTING_JAR" -de "$DSN" -do "$SES" -mp 100 \
+    >"$OUT/${CARD}-fr.log" 2>&1 || true
+  if [ -f "$SES" ] && ! grep -qi "could not be routed" "$OUT/${CARD}-fr.log"; then
+    ROUTED=1; echo "  fully routed on attempt $attempt: $(grep -oE 'final score: [0-9.]+' "$OUT/${CARD}-fr.log" | tail -1)"; break
+  fi
+  echo "  attempt $attempt: not fully routed, retrying"
+done
+[ -n "$ROUTED" ] || { echo "  route ($CARD): could not fully route in 6 attempts (needs placement margin)"; exit 1; }
 "$KICAD_PYTHON" -c "import pcbnew; b=pcbnew.LoadBoard('$PCB'); pcbnew.ImportSpecctraSES(b,'$SES'); b.Save('$PCB')"
 echo "  routed: $SES imported into $PCB"

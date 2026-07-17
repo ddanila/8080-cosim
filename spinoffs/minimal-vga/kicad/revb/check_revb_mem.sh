@@ -29,10 +29,18 @@ else
   echo "== [4-5/6] PCB gen/check: SKIP (no KICAD_PYTHON) =="
 fi
 
-echo "== [6/6] STEP export + bbox sanity (best-effort) =="
+echo "== [6/7] route + total DRC (needs Java 25 + freerouting) =="
+if sh "$R/kicad/revb/route_revb_pcb.sh" mem; then
+  python3 "$R/kicad/revb/check_revb_drc.py" mem --total
+else
+  echo "  routing skipped/failed -- placement-clean board stands; total DRC pending routing"
+fi
+
+echo "== [7/7] STEP export + preview =="
 if revb_have KICAD_CLI; then
   "$KICAD_CLI" pcb export step --output fab/minimal-vga/revb/mem.step \
     fab/minimal-vga/revb/mem.kicad_pcb >/dev/null 2>&1 && echo "  STEP exported" || echo "  STEP export skipped"
+  sh "$R/kicad/revb/render_revb_preview.sh" mem
 fi
 
-echo "REVB-MEM-PIPELINE: netlist/LVS/gen/content OK; routing+DRC-clean pending Java25 + layout (see rev-b-status)"
+echo "REVB-MEM-PIPELINE: netlist/LVS/gen/content/placement OK (routing+total-DRC when Java25 present)"
