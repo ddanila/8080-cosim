@@ -20,7 +20,7 @@ order the board.
 experiment to a compact **200x200 mm** floorplan, with parts and functional-block
 borders aligned to a 0.2" (5.08 mm) grid and decoupling caps at each chip's short
 side. It was re-placed (collision-clean, 5 mm edge keepout) and fully rerouted:
-DRC-clean at **2,660 tracks**, 0 violations, 0 unconnected. The Gerber package
+DRC-clean at **2,873 tracks**, 0 violations, 0 unconnected. The Gerber package
 above predates the 285x285 board entirely and is now doubly stale. Because Gerber
 SHAs are KiCad-version specific, the package must be regenerated and its SHA
 re-frozen on the canonical (Linux) toolchain before any DFM/upload.
@@ -35,7 +35,7 @@ re-frozen on the canonical (Linux) toolchain before any DFM/upload.
   artifacts exist.
 - The routed board is 119 refs / 135 nets, filled In1.Cu GND and In2.Cu VCC
   planes, 29 factory BOM rows, 96 CPL placements, 23 manual placements, and 22
-  post-assembly socket insertions. The committed copper has 2,660 tracks after
+  post-assembly socket insertions. The committed copper has 2,873 tracks after
   the 200x200 re-layout and reroute; the frozen Gerber ZIP above predates even
   the 285x285 board and must be re-exported (see the superseded note).
 - The full behavioral aggregate passes both real-ROM CPU implementations,
@@ -76,7 +76,7 @@ fab but their pinouts freeze in copper, so decide them first.
    aligned parts and block frames, caps at chip short sides, 5 mm edge keepout);
    every modeled pin lands on a real pad. The board was regenerated and fully
    rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), giving
-   2,660 F.Cu/B.Cu tracks with filled In1.Cu GND and In2.Cu VCC planes and zero
+   2,873 F.Cu/B.Cu tracks with filled In1.Cu GND and In2.Cu VCC planes and zero
    KiCad DRC/unconnected items. The route runs on both the Linux box and macOS
    (fork jar + JDK 25).
 2. **Footprint / pinout validation.** DONE for land-pattern correctness:

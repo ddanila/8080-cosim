@@ -11,7 +11,7 @@ safe to order.
 ## Current physical baseline
 
 - 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
-- 119 footprints, 135 PCB nets, and 2,660 tracks in the current checked board.
+- 119 footprints, 135 PCB nets, and 2,873 tracks in the current checked board.
 - Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
   decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
   In2.Cu a filled VCC plane; the two board layers carry the signal routing.
@@ -102,6 +102,11 @@ fallback only — the default `freerouting-router-v19` algorithm requires the
 fork (PolylineTrace.combine fix, headless settings application, dense-board
 stagnation tuning, headless v1.9 router selection). Verified on macOS arm64:
 Temurin 25.0.3 auto-provisioned, fork jar built and smoke-tested (2026-07-16).
+
+`JAVA_HEAP` defaults to ~70% of RAM. Peak heap for this board is under ~1.5 GB,
+so on a memory-constrained machine cap it (`JAVA_HEAP=4096m`) to stop the JVM
+grabbing most of RAM and swapping — unbounded, a route that normally takes ~3
+minutes can balloon to tens of minutes per pass.
 
 ## Future assembly policy
 
