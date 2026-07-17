@@ -31,7 +31,9 @@ sync/juku_top_periph_bus_check.sh
 | FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | PASS |
 | FDC seek/status/data through decoded ports `0x1C..0x1F` | PASS |
 | First byte of `JUKU1.CPM` track 0 sector 2 read through top-level bus is `0xC3` | PASS |
+| Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |
 | ROMBIOS `0xA2` write-sector streams 512 bytes through D94-decoded port `0x1F` and reads them back from a writable copy | PASS |
+| Type-II multi-write persists sectors 9/10 and ends at sector 11 with RNF | PASS |
 | CMA-profile CPU bytes cross physical D100/DAL for restore, seek, media read, and 512-byte write/readback under both control families | PASS |
 
 ## Stop State
@@ -60,4 +62,5 @@ sync/juku_top_periph_bus_check.sh
 - It remains a fast lower-level guard: the top-level peripheral decode mirrors
   the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path
-  to a media-backed sector read and an opt-in temporary-copy write/readback.
+  to media-backed single/multiple-record reads and opt-in temporary-copy
+  single/multiple-record write/readback.

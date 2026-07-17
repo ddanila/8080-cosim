@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **BOOT + READ-ADDRESS HDL FDC READY**
+Status: **BOOT + TYPE-II MULTI-RECORD + READ-ADDRESS HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -9,9 +9,18 @@ physical D93/D94 wiring.
 ## Passing scope
 
 - C/HDL-identical restore, seek, step, step-in, and step-out direction/update
-  semantics, plus read-sector, write-sector, and Read Address,
+  semantics, plus single/multiple-record read-sector and write-sector, and
+  Read Address,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
+- Type-II bit 4 continues across records and increments the sector register.
+  Read and writable-image guards traverse sectors 9 and 10 byte-for-byte,
+  advance to sector 11, and terminate with Record Not Found exactly as the
+  datasheet specifies when the register exceeds the ten-sector track. A
+  mid-command Force Interrupt stops the transfer while preserving the current
+  incremented sector; the writable guard proves both completed sectors persist.
+  Inter-record index/gap delays and per-byte DRQ deadlines remain timing
+  boundaries, not requirements silently approximated by this byte-level shim.
 - Read Address emits the complete six-byte ID field
   `{track, side, sector, length, CRC1, CRC2}`. Both models use the WD1793
   datasheet's `x^16+x^12+x^5+1` polynomial, all-ones preset, and ID address
@@ -35,6 +44,11 @@ physical D93/D94 wiring.
   because D94 can suppress `/RE` on its low-A4 register-3 branch. These are
   functional constraints;
   they do not promote either still-unmeasured D100 conductor.
+- The decoded top-level harness runs multi-read over vendored sectors 9/10 and
+  multi-write/readback over an isolated writable copy in the logical DB build
+  and both physical D100/DAL candidates. All three paths reach sector 11 with
+  RNF, so the new continuation semantics are exercised through D94 strobes and
+  both safe D100 control families rather than only inside the controller unit.
 - The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
@@ -162,9 +176,9 @@ physical D93/D94 wiring.
   in an authentic boot-initialized RAM environment instead of duplicating them
   as test-side port writes or patching the ROM epilogue.
 - The firmware path intentionally stops at its proved single-sector contract.
-  The independent command guard additionally covers Read Address, but neither
-  model claims general WD1793 read-track, write-track, multi-record, lost-data,
-  rotational, or timing conformance.
+  The independent command guard additionally covers multiple-record Type-II
+  continuation and Read Address, but neither model claims general WD1793
+  read-track, write-track, lost-data, rotational, or timing conformance.
 
 ## RWFLOPPY deblocking provenance
 
@@ -244,9 +258,10 @@ evidence exists.
 ## Remaining boundaries
 
 - The model is a Juku boot/media shim with a datasheet-guarded Read Address
-  command, not a general WD1793 conformance model. Read Track, writable track
-  formatting, multi-record continuation, byte deadlines/lost-data behavior,
-  and physical rotational timing remain outside its proved scope.
+  command and Type-II multiple-record continuation, not a general WD1793
+  conformance model. Read Track, writable track formatting, byte
+  deadlines/lost-data behavior, inter-record delays, and physical rotational
+  timing remain outside its proved scope.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
   continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
   and required cycle truth table are now guarded; only its board control sources

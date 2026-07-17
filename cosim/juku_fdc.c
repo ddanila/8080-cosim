@@ -61,25 +61,33 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->buffer_len = 0;
   fdc->write_transfer = 0;
   fdc->read_address_transfer = 0;
+  fdc->multi_record = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
 
-static void begin_read_sector(juku_fdc* fdc) {
+static int load_read_sector(juku_fdc* fdc) {
+  int rc = juk_disk_read_sector(fdc->disk, fdc->track, fdc->head, fdc->sector, fdc->buffer);
+  if (rc != 0) return rc;
+  fdc->buffer_pos = 0;
+  fdc->buffer_len = JUK_SECTOR_SIZE;
+  fdc->status |= ST_BUSY | ST_DRQ;
+  return 0;
+}
+
+
+static void begin_read_sector(juku_fdc* fdc, int multi_record) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     return;
   }
-  int rc = juk_disk_read_sector(fdc->disk, fdc->track, fdc->head, fdc->sector, fdc->buffer);
-  if (rc != 0) {
+  if (load_read_sector(fdc) != 0) {
     fdc->status |= ST_RNF;
     return;
   }
-  fdc->buffer_pos = 0;
-  fdc->buffer_len = JUK_SECTOR_SIZE;
-  fdc->status |= ST_BUSY | ST_DRQ;
+  fdc->multi_record = multi_record;
 }
 
 
@@ -110,7 +118,7 @@ static void finish_type_i(juku_fdc* fdc, uint8_t command) {
 }
 
 
-static void begin_write_sector(juku_fdc* fdc) {
+static void begin_write_sector(juku_fdc* fdc, int multi_record) {
   clear_transfer(fdc);
   fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
@@ -128,6 +136,7 @@ static void begin_write_sector(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = JUK_SECTOR_SIZE;
   fdc->write_transfer = 1;
+  fdc->multi_record = multi_record;
   fdc->status |= ST_BUSY | ST_DRQ;
 }
 
@@ -167,8 +176,26 @@ static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
   if (fdc->buffer_pos < fdc->buffer_len) return;
   int rc = juk_disk_write_sector(
       fdc->disk, fdc->track, fdc->head, fdc->sector, fdc->buffer);
-  clear_transfer(fdc);
-  if (rc != 0) fdc->status |= ST_WRITE_PROTECT;
+  if (rc != 0) {
+    clear_transfer(fdc);
+    fdc->status |= ST_WRITE_PROTECT;
+    return;
+  }
+  if (!fdc->multi_record) {
+    clear_transfer(fdc);
+    return;
+  }
+
+  fdc->sector++;
+  if (juk_disk_offset(fdc->disk, fdc->track, fdc->head, fdc->sector) < 0) {
+    clear_transfer(fdc);
+    fdc->status |= ST_RNF;
+    return;
+  }
+  fdc->buffer_pos = 0;
+  fdc->buffer_len = JUK_SECTOR_SIZE;
+  fdc->write_transfer = 1;
+  fdc->status |= ST_BUSY | ST_DRQ;
 }
 
 
@@ -214,8 +241,18 @@ uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg) {
       if (fdc->buffer_pos < fdc->buffer_len) {
         fdc->data = fdc->buffer[fdc->buffer_pos++];
         if (fdc->buffer_pos >= fdc->buffer_len) {
-          if (fdc->read_address_transfer) fdc->sector = fdc->buffer[0];
-          clear_transfer(fdc);
+          if (fdc->read_address_transfer) {
+            fdc->sector = fdc->buffer[0];
+            clear_transfer(fdc);
+          } else if (fdc->multi_record) {
+            fdc->sector++;
+            if (load_read_sector(fdc) != 0) {
+              clear_transfer(fdc);
+              fdc->status |= ST_RNF;
+            }
+          } else {
+            clear_transfer(fdc);
+          }
         }
         return fdc->data;
       }
@@ -229,10 +266,10 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
   switch (reg & 3) {
     case 0:
       fdc->command = data;
-      if (is_read_sector(data)) begin_read_sector(fdc);
+      if (is_read_sector(data)) begin_read_sector(fdc, (data & 0x10) != 0);
       else if (is_type_i(data)) finish_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) clear_transfer(fdc);  // force interrupt
-      else if (is_write_sector(data)) begin_write_sector(fdc);
+      else if (is_write_sector(data)) begin_write_sector(fdc, (data & 0x10) != 0);
       else if (is_read_address(data)) begin_read_address(fdc);
       else if (is_write_track(data)) reject_write_track(fdc);
       else {

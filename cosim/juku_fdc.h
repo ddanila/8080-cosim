@@ -22,6 +22,7 @@ typedef struct {
   unsigned buffer_len;
   int write_transfer;
   int read_address_transfer;
+  int multi_record;
 } juku_fdc;
 
 void juku_fdc_init(juku_fdc* fdc, juk_disk* disk);

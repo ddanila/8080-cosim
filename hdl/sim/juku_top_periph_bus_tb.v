@@ -224,8 +224,21 @@ module juku_top_periph_bus_tb();
     io_read(8'h1F, rd);
     if (rd !== 8'hc3) fail("FDC first vendored sector byte mismatch");
 
+    io_write(8'h1C, 8'hD0);     // abort the partial single-sector read
+    io_write(8'h1D, 8'h00);
+    io_write(8'h1E, 8'h09);
+    io_write(8'h1C, 8'h92);     // Type-II multiple-record read
+    for (i = 0; i < 1024; i = i + 1) begin
+      io_read(8'h1F, rd);
+      if (i == 0 && rd !== 8'hff) fail("FDC multi-read sector 9 first byte mismatch");
+      if (i == 512 && rd !== 8'h20) fail("FDC multi-read sector 10 first byte mismatch");
+    end
+    io_read(8'h1C, rd);
+    if ((rd & 8'h13) !== 8'h10) fail("FDC multi-read did not end with RNF after sector 10");
+    io_read(8'h1E, rd);
+    if (rd !== 8'h0b) fail("FDC multi-read did not advance sector register to 11");
+
     if (writable_mode) begin
-      io_write(8'h1C, 8'hD0);   // abort the partial read before the write test
       io_write(8'h1D, 8'h08);
       io_write(8'h1E, 8'h03);
       io_write(8'h1C, 8'hA2);   // exact ROMBIOS side-aware write-sector command
@@ -239,6 +252,33 @@ module juku_top_periph_bus_tb();
         io_read(8'h1F, rd);
         if (rd !== (8'h5A ^ i[7:0])) begin
           fail("FDC write-sector top-level readback mismatch");
+          i = 512;
+        end
+      end
+
+      io_write(8'h1E, 8'h09);
+      io_write(8'h1C, 8'hB2);   // side-aware multiple-record write
+      for (i = 0; i < 1024; i = i + 1)
+        io_write(8'h1F, ((i < 512) ? 8'hA0 : 8'h50) ^ i[7:0]);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h13) !== 8'h10) fail("FDC multi-write did not end with RNF after sector 10");
+      io_read(8'h1E, rd);
+      if (rd !== 8'h0b) fail("FDC multi-write did not advance sector register to 11");
+      io_write(8'h1E, 8'h09);
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        io_read(8'h1F, rd);
+        if (rd !== (8'hA0 ^ i[7:0])) begin
+          fail("FDC multi-write sector 9 top-level readback mismatch");
+          i = 512;
+        end
+      end
+      io_write(8'h1E, 8'h0a);
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        io_read(8'h1F, rd);
+        if (rd !== (8'h50 ^ i[7:0])) begin
+          fail("FDC multi-write sector 10 top-level readback mismatch");
           i = 512;
         end
       end

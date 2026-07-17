@@ -12,6 +12,7 @@
 enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
+  ST_RNF = 0x10,
   ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
 };
@@ -194,6 +195,39 @@ int main(void) {
     }
   }
 
+  juku_fdc_portc(&fdc, 0x04);  // motor on, side 0
+  juku_fdc_write(&fdc, 1, 12);
+  juku_fdc_write(&fdc, 2, 9);
+  juku_fdc_write(&fdc, 0, 0x92);  // multiple-record read
+  for (int record = 9; record <= 10; record++) {
+    fill_sector(want, 12, 0, record);
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      uint8_t got = juku_fdc_read(&fdc, 3);
+      if (got != want[i]) {
+        fprintf(stderr, "multi-read sector %d byte %d: got 0x%02X want 0x%02X\n",
+                record, i, got, want[i]);
+        fail = 1;
+        break;
+      }
+    }
+  }
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF | ST_WRITE_PROTECT,
+                        ST_RNF, "multi-read end of track");
+  if (juku_fdc_read(&fdc, 2) != 11) {
+    fprintf(stderr, "multi-read did not advance sector register past track end\n");
+    fail = 1;
+  }
+
+  juku_fdc_write(&fdc, 2, 8);
+  juku_fdc_write(&fdc, 0, 0x90);
+  for (int i = 0; i < JUK_SECTOR_SIZE + 17; i++) (void)juku_fdc_read(&fdc, 3);
+  juku_fdc_write(&fdc, 0, 0xD0);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "forced multi-read abort");
+  if (juku_fdc_read(&fdc, 2) != 9) {
+    fprintf(stderr, "forced multi-read did not preserve the current sector\n");
+    fail = 1;
+  }
+
   juk_disk_close(&disk);
   if (juk_disk_open_writable(&disk, path) != 0) {
     fprintf(stderr, "failed to reopen synthetic disk writable\n");
@@ -217,6 +251,34 @@ int main(void) {
       fprintf(stderr, "write-sector readback byte %d: got 0x%02X want 0x%02X\n", i, got, expected);
       fail = 1;
       break;
+    }
+  }
+
+  juku_fdc_write(&fdc, 1, 8);
+  juku_fdc_write(&fdc, 2, 9);
+  juku_fdc_write(&fdc, 0, 0xB2);  // side-aware multiple-record write
+  for (int record = 9; record <= 10; record++) {
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      juku_fdc_write(&fdc, 3, (uint8_t)((record == 9 ? 0xA0 : 0x50) ^ i));
+    }
+  }
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF, ST_RNF, "multi-write end of track");
+  if (juku_fdc_read(&fdc, 2) != 11) {
+    fprintf(stderr, "multi-write did not advance sector register past track end\n");
+    fail = 1;
+  }
+  for (int record = 9; record <= 10; record++) {
+    juku_fdc_write(&fdc, 2, (uint8_t)record);
+    juku_fdc_write(&fdc, 0, 0x82);
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      uint8_t got = juku_fdc_read(&fdc, 3);
+      uint8_t expected = (uint8_t)((record == 9 ? 0xA0 : 0x50) ^ i);
+      if (got != expected) {
+        fprintf(stderr, "multi-write readback sector %d byte %d: got 0x%02X want 0x%02X\n",
+                record, i, got, expected);
+        fail = 1;
+        break;
+      }
     }
   }
 

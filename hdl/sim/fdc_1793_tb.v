@@ -226,6 +226,38 @@ module fdc_1793_tb;
           i = 512;
         end
       end
+
+      write_reg(2'd1, 8'd8);
+      write_reg(2'd2, 8'd9);
+      write_reg(2'd0, 8'hb2);  // side-aware multiple-record write
+      for (i = 0; i < 1024; i = i + 1)
+        write_reg(2'd3, ((i < 512) ? 8'ha0 : 8'h50) ^ i[7:0]);
+      expect_status(8'h13, 8'h10, "multi-write end of track");
+      read_reg(2'd2, got);
+      if (got !== 8'd11) begin
+        $display("FDC-1793: FAIL multi-write final sector=%02x", got);
+        errors = errors + 1;
+      end
+      write_reg(2'd2, 8'd9);
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== (8'ha0 ^ i[7:0])) begin
+          $display("FDC-1793: FAIL multi-write sector9 byte %0d got=%02x", i, got);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
+      write_reg(2'd2, 8'd10);
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== (8'h50 ^ i[7:0])) begin
+          $display("FDC-1793: FAIL multi-write sector10 byte %0d got=%02x", i, got);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
     end
 
     write_reg(2'd0, 8'hFD);
@@ -248,6 +280,37 @@ module fdc_1793_tb;
           i = 512;
         end
       end
+    end
+
+    side = 0;
+    write_reg(2'd1, 8'd12);
+    write_reg(2'd2, 8'd9);
+    write_reg(2'd0, 8'h92);  // multiple-record read
+    for (i = 0; i < 1024; i = i + 1) begin
+      read_reg(2'd3, got);
+      if (!disk_mode && got !== want_byte(i & 511, 8'd12, 1'b0,
+                                          (i < 512) ? 8'd9 : 8'd10)) begin
+        $display("FDC-1793: FAIL multi-read byte %0d got=%02x", i, got);
+        errors = errors + 1;
+        i = 1024;
+      end
+    end
+    expect_status(8'h53, 8'h10, "multi-read end of track");
+    read_reg(2'd2, got);
+    if (got !== 8'd11) begin
+      $display("FDC-1793: FAIL multi-read final sector=%02x", got);
+      errors = errors + 1;
+    end
+
+    write_reg(2'd2, 8'd8);
+    write_reg(2'd0, 8'h90);
+    for (i = 0; i < 529; i = i + 1) read_reg(2'd3, got);
+    write_reg(2'd0, 8'hd0);
+    expect_status(8'h03, 8'h00, "forced multi-read abort");
+    read_reg(2'd2, got);
+    if (got !== 8'd9) begin
+      $display("FDC-1793: FAIL forced multi-read current sector=%02x", got);
+      errors = errors + 1;
     end
 
     motor_on = 0;
