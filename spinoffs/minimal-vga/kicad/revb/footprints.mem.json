@@ -1,0 +1,12 @@
+{
+  "REVB_BUS_39_10": [
+    "Connector_PinHeader_2.54mm:PinHeader_1x39_P2.54mm_Vertical",
+    "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical"
+  ],
+  "EPROM_27C256": "Package_DIP:DIP-28_W7.62mm",
+  "SRAM_AS6C1008": "Package_DIP:DIP-32_W15.24mm",
+  "GAL22V10": "Package_DIP:DIP-24_W7.62mm",
+  "C_100N": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm",
+  "HDR_1x5": "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical",
+  "HDR_1x9": "Connector_PinHeader_2.54mm:PinHeader_1x09_P2.54mm_Vertical"
+}
