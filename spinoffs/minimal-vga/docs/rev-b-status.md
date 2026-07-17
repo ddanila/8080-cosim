@@ -43,8 +43,9 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-**Finish Stage B**: (1) iterate `gen_revb_pcb.py` placement to DRC-clean (spread/
-rotate DIPs, silk off copper) with the mem board open in KiCad; (2) install a
-**Java 25** JRE + freerouting.jar and run `route_revb_pcb.sh mem`; (3) DRC to zero +
-STEP bbox sanity (should read ~100×60). Then Stage C replicates the proven pipeline
-to io → cpu → backplane. See execution-guide "Stage B status".
+All remaining work is now planned to task depth (execution guide): **TE.1–TE.4**
+finish Stage B (Java 25 + freerouting install → placement-clean per D1.27 →
+route → total-zero DRC), **TD.9–TD.11** replicate to io/cpu/backplane — io first
+and biggest because of **D1.26** (full B3 wiring now, 8255/PIC DNP, so B3 is
+populate-only) — and **TD.12–TD.13** mate/keying-check + fab package, arming the
+T1.10 order. Start with **TE.1**.

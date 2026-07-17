@@ -448,19 +448,74 @@ validated output — with two stages tool/interaction-blocked:
 `check_revb_mem.sh` runs the proven (tool-independent-where-possible) stages end to
 end. **Resume:** placement iteration + Java 25 routing, in a KiCad-visible session.
 
-### Stage C — replicate (order: io → cpu → backplane)
+### Stage B completion — TE tasks (planned 2026-07-17; D1.27 applies)
 
-**TD.9 io / TD.10 cpu / TD.11 backplane** — run the proven pipeline per board
-(backplane skips LVS: passive). cpu is deliberately after io: hardest datapath
-on a warmed-up pipeline. *Acceptance per board:* LVS (where applicable) + DRC
-clean + STEP exported.
+**TE.1 — Java 25 + freerouting install (home folder, user's convention).**
+Temurin 25 JRE → `~/.jdks/` (or repo `.tools/jre25`, the `route_rev_a_pcb.sh`
+probe path); freerouting.jar → `.tools/freerouting/freerouting.jar` (both
+untracked). Record versions in the bench-log-style note.
+*Acceptance:* `route_revb_pcb.sh mem` passes its gates and *reaches* freerouting
+(no SKIP lines).
+
+**TE.2 — placement iteration to placement-clean (no Java needed).**
+Iterate `PLACE` in `gen_revb_pcb.py` against `kicad-cli pcb drc` JSON until
+**placement-class violations = 0** (D1.27): spread/rotate DIPs, move silk off
+copper, respect courtyards; find the STEP Y=155 overshoot (a 3D model extent) and
+fix the offending placement/rotation. Add `render_revb_preview.sh` (rev A
+`render_*_preview.sh` pattern) and commit a PNG to `docs/` for eyeball review.
+*Acceptance:* placement-class = 0 in DRC JSON; STEP bbox ≈ 100×60 (X and Y);
+preview committed. (Unconnected count is ignored here.)
+
+**TE.3 — route + total-zero DRC.**
+`route_revb_pcb.sh mem` (freerouting, TE.1) → `kicad-cli pcb drc`:
+**violations 0, unconnected 0**. Record PCB/STEP/DRC-report SHA256s in the status
+doc (D1.25).
+*Acceptance:* total-zero DRC JSON; hashes recorded.
+
+**TE.4 — Stage B exit.**
+`check_revb_mem.sh` gains the D1.27 post-route gate; status/ledger flipped to ✅;
+Stage C begins. *Acceptance:* one command green end-to-end, including DRC.
+
+### Stage C — replicate (order: io → cpu → backplane; D1.20)
+
+**TD.9 — io card (the big one: D1.26 full-B3 wiring first).**
+- TD.9.1 Extend `gen_revb_boards.py`: 8255 (DIP-40) + 8259-class PIC (DIP-28) +
+  keyboard header, **fully wired, listed DNP** — pin tables from `hdl/juku_top.v`
+  wiring + the facts file (PIC at 0x00/0x01, selects from the ATF16V8's
+  PIC_CS_N/PPI_CS_N, INT_N open-drain out, IRQ_A/B + FRAME_TICK in). Completeness
+  (D1.18) must hold including the new nets. Update `cards.json` populated/dnp.
+- TD.9.2 Extend `revb_io_lvs.v`-style structural netlist + map (emitter grows an
+  io instance table); `revb_lvs.sh io` IN SYNC; tier suite + CI.
+- TD.9.3 Footprint probe (adds DIP-40, DIP-20 GAL16V8, DIP-14 osc) → PCB gen
+  (`PLACE` table for io) → content check (generalize `check_revb_mem_pcb.py` →
+  `check_revb_pcb.py --card`) → placement-clean → route → total-zero DRC → STEP.
+*Acceptance:* same gates as mem, plus D1.26 wiring present-and-complete.
+
+**TD.10 — cpu card.** Same pipeline; smallest board (Z80 + osc + diag header).
+*Acceptance:* mem-equivalent gates.
+
+**TD.11 — backplane.** No LVS (passive; the connector==pinout check already
+covers all six slots). 100×100 outline, 6 slots at 19 mm pitch, USB-C/supervisor/
+pulls/FTDI/jumper/LED placement; probe adds USB-C, SOT/TO-92 supervisor, switch,
+2×2 jumper footprints. Route (power + slot parallels) → total-zero DRC → STEP.
+*Acceptance:* mem-equivalent gates minus LVS.
 
 ### Stage D — assembly + exit
 
-**TD.12 — FreeCAD mating/keying.** `freecadcmd` assembly at 19 mm pitch; boolean
-interference = zero; reversed card must collide (D1.15). Committed report.
-**TD.13 — CAD exit review.** Tier suite + all TD gates green; power budget
-re-check vs final BOMs; fab package + SHA256 (rev A pattern). Arms **T1.10**.
+**TD.12 — FreeCAD mating/keying (D1.15).**
+`kicad/revb/mate_check.py` under `freecadcmd`: load the four STEPs, seat the three
+cards in slots at 19 mm pitch, boolean interference == 0; then a **deliberately
+reversed card must collide** (keying proof). Committed `docs/rev-b-mating-report.md`
+with measured clearances (card-to-card, tallest-part).
+*Acceptance:* normal = no collision, reversed = collision, numbers in the report.
+
+**TD.13 — CAD exit review → order gate.**
+Tier suite + all TD/TE gates green; **power budget re-check** against the final
+BOMs (bus-contract table); fab package per board (`kicad-cli pcb export gerbers` +
+drill, zipped; pattern `export_fab.sh` + `package_rev_a_upload.py`) with SHA256s;
+order-readiness note (rev A `order-readiness` pattern). **Arms T1.10** — ordering
+becomes a purchasing decision, nothing else.
+*Acceptance:* package hashes recorded; T1.10 unblocked.
 
 At B1 exit (after the hardware tiers), expand Phase B2 to task level (rule 6).
 

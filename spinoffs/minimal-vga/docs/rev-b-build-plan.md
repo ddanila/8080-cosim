@@ -193,6 +193,13 @@ by the B0 contract and the sim oracles.
 | D1.24 | Routing method? | **freerouting via the rev A DSN/SES round-trip** (`route_rev_a_pcb.sh` pattern; Java 25 probe order: repo-local `.tools/jre25`, Gradle Temurin, `JAVA_BIN`). Zones/planes after routing, then DRC. | Proven flow in this repo; hand-routing a generated board defeats regeneration. |
 | D1.25 | What does "deterministic PCB" mean here? | **Content-checked, not byte-diffed**: pcbnew emits UUIDs, so byte-stable regen is not guaranteed (rev A never promised it either — its guarantee is `check_rev_a_pcb.py`). Rev B gets `check_revb_mem_pcb.py`: outline dims, connector pin coordinates, every board.json ref placed, silk items present. Big binary artifacts (STEP, DSN/SES) live under untracked `fab/` with SHA256s recorded in docs, per the root-repo convention. | Corrects TD.7's earlier "byte-stable regen" acceptance, which pcbnew cannot honor. |
 
+## Stage B-finish / C / D design decisions (planned 2026-07-17)
+
+| # | Question | Decision | Rationale / gate |
+|---|---|---|---|
+| D1.26 | Does the B1 io card carry the B3 parts' wiring? | **Yes — full B3 wiring now, parts DNP.** The 8255 (DIP-40), 8259-class PIC (DIP-28), and keyboard header are **footprinted AND fully wired** on the io card (8255→bus/kbd header/MODE lines; PIC→D-bus, INT_N, IRQ_A/B, FRAME_TICK, selects from the ATF16V8) so **B3 = populate-only, no respin**. Wiring source: `hdl/juku_top.v` PIC/PPI wiring + the facts file; D1.18 completeness applies to the DNP nets too (they must terminate at real pads). | The whole point of "one io card populated in stages" (S12); discovering this at B3 would mean a respin — the exact cost rev B exists to avoid. |
+| D1.27 | What does "DRC-clean" gate, and when? | **Two-stage gate.** Pre-routing: **zero placement-class violations** (courtyards, hole-to-hole, edge clearances, silk-over-copper/edge, mask bridges, shorting items) — unconnected items excluded (that's routing's job). Post-routing: **zero everything, unconnected = 0**. Human eyeball via committed **preview renders** (`kicad-cli pcb render` / SVG, rev A `render_*_preview.sh` pattern) — headless DRC coordinates plus a picture beat blind numbers. | The first DRC dump mixed both classes; gating them separately makes placement iteration convergent without Java 25 present. |
+
 ## Feedback loops & coverage matrix
 
 Audit of every verification loop, what it catches, and whether it exists or is
