@@ -55,7 +55,6 @@ EXPECTED_DOWNSTAIRS_VALUE_REFS = {
     "D6",
     "D7",
     "J30",
-    "J40",
     "J90",
     "J91",
     "J92",

@@ -46,7 +46,9 @@ BLOCK_MEMBERS = {
                    "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13"],
     "KEYBOARD_MATRIX": ["U30", "U31", "J30", "C20", "C21"],
     "VGA_OUT": ["U40", "J40", "R1", "R2", "R3"],
-    "DIAGNOSTIC_LEDS": ["D2", "D3", "D4", "D5", "D6", "D7"],
+    # LEDs each paired with their current-limit resistor, framed together.
+    "DIAGNOSTIC_LEDS": ["D2", "D3", "D4", "D5", "D6", "D7",
+                         "R24", "R25", "R26", "R27", "R28", "R29"],
     # Left resistor field: keyboard pull-ups/series + decode pull-ups, framed
     # together as "PULL-UPS" (the dominant function).
     "PULL_UPS": (
@@ -176,7 +178,6 @@ DOWNSTAIRS_VALUE_REFS = {
     "D7",
     "J3",
     "J30",
-    "J40",
     "J90",
     "J91",
     "J92",
@@ -279,6 +280,9 @@ CAP_DIR = {
     "U50": "left", "U51": "down",        # clock/reset: caps clear of the edge
 }
 SPARE_CAPS = ["C3", "C4", "C19", "C22"]   # extra decouplers, tucked in open spots
+# LED limit resistors sit immediately right of their paired LED, so their refdes
+# prints to the RIGHT of the body (a left-printed one would land on the LED).
+REFDES_RIGHT_RES = {"R24", "R25", "R26", "R27", "R28", "R29"}
 
 # ---------------------------------------------------------------------------
 # Auto-packer: computes grid-aligned positions from real footprint sizes so no
@@ -356,15 +360,11 @@ def build_placement(spec):
     put("U50", 35, 4); put("U51", 37, 8); put("J96", 35, 11, 90)
     put("R4", 33, 8, 90); put("R5", 35, 8, 90)
 
-    # -- VGA out (far-right column): two connectors with the video series
-    #    resistors R1-3 stacked below them. Compact now that the serializer U41
-    #    moved to the refresh band. --
+    # -- VGA out (far-right): two connectors in col 37; the video series resistors
+    #    R1-3 sit in their own column (col 35) so they don't congest the connector
+    #    column's pin-to-pin sync nets. --
     put("U40", 37, 15); put("J40", 37, 20)
-    grid(["R1", "R2", "R3"], 37, 24, 1, 2, 2, rot=90)
-
-    # -- LED limit resistors: single column in the strip between the DRAM bank
-    #    (col 33) and the VGA column (col 37) --
-    grid([f"R{i}" for i in range(24, 30)], 35, 15, 1, 2, 2, rot=90)
+    grid(["R1", "R2", "R3"], 35, 15, 1, 2, 2, rot=90)
 
     # -- left resistor field: keyboard pull-ups/series + decode pull-ups, packed
     #    as one grid of vertical resistors (cols 2/4/6, clear of every band box,
@@ -372,8 +372,12 @@ def build_placement(spec):
     left_resistors = BLOCK_MEMBERS["PULL_UPS"]
     grid(left_resistors, 2, 15, 3, 2, 2, rot=90)
 
-    # -- diagnostic LEDs (framed block, below VGA, right of the keyboard header) --
-    grid([f"D{i}" for i in range(2, 8)], 35, 31, 2, 2, 2, rot=0)
+    # -- diagnostic LEDs, each paired with its limit resistor (D | R), in two
+    #    pair-columns below VGA so every LED_x_A net stays a short local hop --
+    grid(["D2", "D4", "D6"], 34, 30, 1, 0, 2, rot=0)
+    grid(["R24", "R26", "R28"], 35, 30, 1, 0, 2, rot=90)
+    grid(["D3", "D5", "D7"], 37, 30, 1, 0, 2, rot=0)
+    grid(["R25", "R27", "R29"], 38, 30, 1, 0, 2, rot=90)
 
     # -- debug + observability headers along the bottom edge (horizontal) --
     row([("J95", 90), ("J97", 90), ("J98", 90),
@@ -474,6 +478,13 @@ def place_silk_fields(fp, chip, x, y, rot):
             style_field(fp.Reference(), ref, cx, top - 0.9, 0, size=1.15)
             return
 
+        if ref == "J40":
+            # VGA connector: the VGA OUT frame + refdes identify it, so hide the
+            # value to keep the tight VGA/LED column short.
+            fp.Value().SetVisible(False)
+            style_field(fp.Reference(), ref, cx, top - 1.4, 0, size=0.8)
+            return
+
         if ref == "J3":
             # Edge connector: keep both labels inboard (to the right of the body),
             # clear of the board edge on its left.
@@ -512,10 +523,12 @@ def place_silk_fields(fp, chip, x, y, rot):
         ref_angle = 0
         if ref[0] == "R" and rot % 180:
             # Vertical resistors are packed in tight columns (rowp ~10 mm), so a
-            # refdes printed ABOVE lands on the resistor above it. Print it to the
-            # LEFT of the body, level with its centre, instead.
-            ref_x = left - 1.4
+            # refdes printed ABOVE lands on the resistor above it. Print it beside
+            # the body, level with its centre, instead -- to the RIGHT for the
+            # LED-limit resistors (whose left neighbour is the paired LED), to the
+            # LEFT for the rest.
             ref_y = cy
+            ref_x = (right + 1.4) if ref in REFDES_RIGHT_RES else (left - 1.4)
         if ref[0] == "R" and rot % 180 == 0:
             ref_y = top - 1.4
         if ref[0] == "F":

@@ -29,6 +29,20 @@ SEED_ROUTES = {
             ("F.Cu", 7.97, 32.81, 7.79, 31.24),
         ],
     },
+    # RE3_D0 taps the РЕ3 pager D0 out to the DECODE-DBG header J95.5. The router
+    # routes U4->R36 (its pull-up) but repeatedly leaves the R36->J95 hop through
+    # the congested bottom unfinished; seed it down the clear left margin and in
+    # to J95.5 from below (clear of the other J95 pins). Follows R36.2=(10.16,
+    # 143.51) and J95.5=(24.13,187.96).
+    "RE3_D0": {
+        "vias": [],
+        "tracks": [
+            ("B.Cu", 10.16, 143.51, 6.0, 143.51),
+            ("B.Cu", 6.0, 143.51, 6.0, 183.0),
+            ("B.Cu", 6.0, 183.0, 24.13, 183.0),
+            ("B.Cu", 24.13, 183.0, 24.13, 187.96),
+        ],
+    },
     # NOTE: the previous per-net signal seeds (CLK, MEM_*, KBD_*, VIDEO_*,
     # RESET_N, ...) were hand-tuned for the old 285mm placement and are invalid
     # for the compact 200x200 re-layout. They were removed; the router routes
