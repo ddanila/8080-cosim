@@ -11,4 +11,12 @@ OUT="spinoffs/minimal-vga/docs/revb-previews/${CARD}-top.svg"
 mkdir -p "$(dirname "$OUT")"
 "$KICAD_CLI" pcb export svg --layers F.Cu,F.Silkscreen,Edge.Cuts --page-size-mode 2 \
   --output "$OUT" "$PCB" >/dev/null
-echo "  rendered $OUT"
+"$KICAD_CLI" pcb export svg --layers F.Cu,B.Cu,Edge.Cuts --page-size-mode 2 \
+  --output "${OUT%-top.svg}-copper.svg" "$PCB" >/dev/null
+# 3D renders (PNG, gitignored per *.png; regenerate here). Top + isometric.
+DIR="$(dirname "$OUT")"
+"$KICAD_CLI" pcb render --side top --quality high --width 1400 --height 900 \
+  --output "$DIR/${CARD}-3d-top.png" "$PCB" >/dev/null 2>&1 || true
+"$KICAD_CLI" pcb render --side top --perspective --rotate "-25,0,20" --width 1400 --height 900 \
+  --output "$DIR/${CARD}-3d-iso.png" "$PCB" >/dev/null 2>&1 || true
+echo "  rendered $OUT (+ copper SVG, 3D top/iso PNG)"
