@@ -87,19 +87,21 @@ def main() -> int:
             if value and value not in text:
                 failures.append(f"{path} ({label}) omits canonical {name}: {value!r}")
 
-    # ---- (b) consumers: rev B HDL must not hardcode a contradictory framebuffer base ----
+    # ---- (b) consumers: rev B HDL must define the framebuffer base as the canonical
+    # value. Check the FB_BASE localparam specifically (not every 0xD8xx address, which
+    # legitimately appears as framebuffer-window addresses in card logic and TBs).
     revb_dir = ROOT / "spinoffs/minimal-vga/hdl/revb"
     if revb_dir.is_dir():
         base_hex = fb.get("base_addr_hex", "0xD800")[2:].upper()  # "D800"
+        fb_base_re = re.compile(r"FB_BASE\s*=\s*16'h([0-9A-Fa-f]{4})")
         for vfile in sorted(revb_dir.glob("*.v")):
             vtext = vfile.read_text(encoding="utf-8", errors="replace")
             rel = str(vfile.relative_to(ROOT))
             checked.append(rel)
-            # Any 16-bit framebuffer-page literal must be the canonical base.
-            for lit in re.findall(r"16'h([0-9A-Fa-f]{4})", vtext):
-                if lit.upper().startswith("D8") and lit.upper() != base_hex:
+            for lit in fb_base_re.findall(vtext):
+                if lit.upper() != base_hex:
                     failures.append(
-                        f"{rel} uses framebuffer-page literal 16'h{lit} != canonical 16'h{base_hex}"
+                        f"{rel} defines FB_BASE=16'h{lit} != canonical 16'h{base_hex}"
                     )
     else:
         skipped.append(str(revb_dir.relative_to(ROOT)) + "/ (not created yet)")
