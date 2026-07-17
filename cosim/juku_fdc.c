@@ -105,6 +105,8 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_sector_lead_pending = 0;
   fdc->write_sector_lead_ticks = 0;
   fdc->write_sector_preloaded = 0;
+  fdc->side_compare_pending = 0;
+  fdc->side_compare_index_pulses = 0;
   fdc->drq_ticks = 0;
   fdc->write_first_byte_pending = 0;
   fdc->type_i_pending = 0;
@@ -134,7 +136,12 @@ static int load_read_sector(juku_fdc* fdc) {
 }
 
 
-static void begin_read_sector(juku_fdc* fdc, int multi_record) {
+static int side_compare_mismatch(const juku_fdc* fdc, uint8_t command) {
+  return (command & 0x02) && (((command >> 3) & 1) != (fdc->head & 1));
+}
+
+
+static void begin_read_sector(juku_fdc* fdc, uint8_t command) {
   clear_transfer(fdc);
   fdc->status_type_i = 0;
   fdc->head_loaded = 1;
@@ -145,12 +152,22 @@ static void begin_read_sector(juku_fdc* fdc, int multi_record) {
     complete_transfer(fdc);
     return;
   }
-  if (load_read_sector(fdc) != 0) {
+  if (fdc->track != fdc->physical_track ||
+      juk_disk_offset(fdc->disk, fdc->physical_track, fdc->head, fdc->sector) < 0) {
     fdc->status |= ST_RNF;
     complete_transfer(fdc);
     return;
   }
-  fdc->multi_record = multi_record;
+  fdc->multi_record = (command & 0x10) != 0;
+  if (side_compare_mismatch(fdc, command)) {
+    fdc->side_compare_pending = 1;
+    fdc->status |= ST_BUSY;
+    return;
+  }
+  if (load_read_sector(fdc) != 0) {
+    fdc->status |= ST_RNF;
+    complete_transfer(fdc);
+  }
 }
 
 
@@ -260,7 +277,7 @@ static void arm_write_sector_record(juku_fdc* fdc) {
 }
 
 
-static void begin_write_sector(juku_fdc* fdc, int multi_record) {
+static void begin_write_sector(juku_fdc* fdc, uint8_t command) {
   clear_transfer(fdc);
   fdc->status_type_i = 0;
   fdc->head_loaded = 1;
@@ -282,7 +299,12 @@ static void begin_write_sector(juku_fdc* fdc, int multi_record) {
     complete_transfer(fdc);
     return;
   }
-  fdc->multi_record = multi_record;
+  fdc->multi_record = (command & 0x10) != 0;
+  if (side_compare_mismatch(fdc, command)) {
+    fdc->side_compare_pending = 1;
+    fdc->status |= ST_BUSY;
+    return;
+  }
   arm_write_sector_record(fdc);
 }
 
@@ -602,8 +624,8 @@ static void begin_write_track(juku_fdc* fdc) {
 
 
 static void start_type_ii_iii(juku_fdc* fdc, uint8_t command) {
-  if (is_read_sector(command)) begin_read_sector(fdc, (command & 0x10) != 0);
-  else if (is_write_sector(command)) begin_write_sector(fdc, (command & 0x10) != 0);
+  if (is_read_sector(command)) begin_read_sector(fdc, command);
+  else if (is_write_sector(command)) begin_write_sector(fdc, command);
   else if (is_read_address(command)) begin_read_address(fdc);
   else if (is_read_track(command)) begin_read_track(fdc);
   else if (is_write_track(command)) begin_write_track(fdc);
@@ -770,6 +792,7 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
   index = index != 0;
   if (!fdc->index_line && index) {
     const int started_track = fdc->track_waiting_index;
+    const int searched_side = fdc->side_compare_pending;
     if (fdc->force_interrupt_mask & 0x04) fdc->intrq = 1;
     if (fdc->track_waiting_index) {
       fdc->track_waiting_index = 0;
@@ -786,8 +809,13 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
         fdc->status |= ST_DRQ;
         fdc->drq_ticks = 0;
       }
+    } else if (fdc->side_compare_pending) {
+      if (++fdc->side_compare_index_pulses >= 5) {
+        fdc->status |= ST_RNF;
+        complete_transfer(fdc);
+      }
     }
-    if (!started_track && !(fdc->status & ST_BUSY) && fdc->head_loaded) {
+    if (!started_track && !searched_side && !(fdc->status & ST_BUSY) && fdc->head_loaded) {
       if (++fdc->idle_index_pulses >= 15) {
         fdc->head_loaded = 0;
         fdc->idle_index_pulses = 0;

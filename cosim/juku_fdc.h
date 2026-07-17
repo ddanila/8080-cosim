@@ -43,6 +43,8 @@ typedef struct {
   unsigned write_sector_lead_ticks;
   int write_sector_preloaded;
   uint8_t write_sector_preload;
+  int side_compare_pending;
+  unsigned side_compare_index_pulses;
   unsigned drq_ticks;
   int write_first_byte_pending;
   int type_i_pending;

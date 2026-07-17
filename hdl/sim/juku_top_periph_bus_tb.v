@@ -312,6 +312,24 @@ module juku_top_periph_bus_tb();
     if (dut.fdc_intrq !== 1'b0) fail("FDC D0 abort incorrectly raised INTRQ");
     io_read(8'h1C, rd);
     if ((rd & 8'h07) !== 8'h04) fail("FDC D0 abort did not preserve LOST DATA status");
+
+    io_write(8'h1C, 8'h8A);     // C=1/S=1 mismatches selected side 0
+    if ((dut.U_FDC.status & 8'h13) !== 8'h01 || dut.fdc_drq || dut.fdc_intrq)
+      fail("FDC side-compare mismatch did not begin BUSY-only");
+    force dut.U_FDC.index = 1'b0;
+    for (i = 0; i < 4; i = i + 1) begin
+      force dut.U_FDC.index = 1'b1; #1;
+      force dut.U_FDC.index = 1'b0; #1;
+    end
+    if ((dut.U_FDC.status & 8'h13) !== 8'h01 || dut.fdc_intrq)
+      fail("FDC side-compare mismatch ended before fifth index");
+    force dut.U_FDC.index = 1'b1; #1;
+    if ((dut.U_FDC.status & 8'h13) !== 8'h10 || !dut.fdc_intrq)
+      fail("FDC side-compare mismatch did not complete RNF on fifth index");
+    force dut.U_FDC.index = 1'b0;
+    io_read(8'h1C, rd);
+    if (dut.fdc_intrq !== 1'b0) fail("FDC side-compare status did not acknowledge INTRQ");
+
     io_write(8'h1C, 8'hD8);     // immediate Force Interrupt
     if (dut.fdc_intrq !== 1'b1) fail("FDC D8 immediate Force Interrupt did not raise INTRQ");
     io_read(8'h1C, rd);

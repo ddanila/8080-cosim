@@ -119,6 +119,13 @@ physical D93/D94 wiring.
   the current incremented sector; the writable guard proves both completed sectors persist.
   Inter-record index/gap delays remain timing boundaries rather than invented
   rotational behavior in this byte-level shim.
+- Type-II side flags follow the FD179X ID-search contract. With `C=0`, the
+  recorded ID side is ignored; with `C=1`, the ID side bit must match `S`.
+  The sector-only backend uses the selected image head as the reconstructed ID
+  side. A mismatch holds BUSY with DRQ low through four index pulses, then
+  completes with INTRQ and Record Not Found on the fifth. C, standalone HDL,
+  and the decoded top-level bus guard cover the exact four/five-pulse boundary;
+  matching `C=1` reads and writes cover both side values.
 - Read Address emits the complete six-byte ID field
   `{track, side, sector, length, CRC1, CRC2}`. Both models use the WD1793
   datasheet's `x^16+x^12+x^5+1` polynomial, all-ones preset, and ID address

@@ -862,6 +862,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer track_waiting_index = 0;
     integer write_track_preloaded = 0;
     reg [7:0] write_track_preload = 0;
+    integer side_compare_pending = 0;
+    integer side_compare_index_pulses = 0;
 `ifdef FDC_TYPE_II_III_TIMING
     integer command_delay_pending = 0;
     integer command_delay_ticks = 0;
@@ -1046,6 +1048,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_format_error = 0;
         track_waiting_index = 0;
         write_track_preloaded = 0;
+        side_compare_pending = 0;
+        side_compare_index_pulses = 0;
 `ifdef FDC_TYPE_II_III_TIMING
         command_delay_pending = 0;
         command_delay_ticks = 0;
@@ -1084,7 +1088,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         intrq_r = 1'b0;
     end endtask
 
-    task begin_write_sector(input multi); begin
+    task begin_write_sector(input [7:0] cmd); begin
         clear_transfer();
         status_type_i = 0;
         head_loaded = 1;
@@ -1106,8 +1110,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 status = status | ST_RNF;
                 complete_transfer();
             end else begin
-                multi_record = multi;
-                arm_write_sector_record();
+                multi_record = cmd[4];
+                if (cmd[1] && cmd[3] != side) begin
+                    side_compare_pending = 1;
+                    status = status | ST_BUSY;
+                    intrq_r = 1'b0;
+                end else begin
+                    arm_write_sector_record();
+                end
             end
         end
     end endtask
@@ -1153,7 +1163,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end endtask
 `else
-    task begin_write_sector(input multi); begin
+    task begin_write_sector(input [7:0] cmd); begin
         clear_transfer();
         status_type_i = 0;
         head_loaded = 1;
@@ -1163,23 +1173,29 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     task accept_write_byte(input [7:0] value); begin end endtask
 `endif
 
-    task begin_read_sector(input multi); begin
+    task begin_read_sector(input [7:0] cmd); begin
         clear_transfer();
         status_type_i = 0;
         head_loaded = 1;
         status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-        if (!motor_on) begin
+        if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
-        end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10) begin
+        end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10 ||
+                     (disk_requested && ({31'b0, side} >= disk_heads))) begin
             status = status | ST_RNF;
             complete_transfer();
+        end else if (cmd[1] && cmd[3] != side) begin
+            multi_record = cmd[4];
+            side_compare_pending = 1;
+            status = status | ST_BUSY;
+            intrq_r = 1'b0;
         end else if (disk_requested) begin
             load_disk_sector();
             if (disk_sector_ok) begin
                 buffer_pos = 0;
                 buffer_len = 512;
-                multi_record = multi;
+                multi_record = cmd[4];
                 status = status | ST_BUSY | ST_DRQ;
                 `FDC_TIMER_RESET
                 intrq_r = 1'b0;
@@ -1189,7 +1205,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end else begin
             buffer_pos = 0;
             buffer_len = 512;
-            multi_record = multi;
+            multi_record = cmd[4];
             status = status | ST_BUSY | ST_DRQ;
             `FDC_TIMER_RESET
             intrq_r = 1'b0;
@@ -1648,8 +1664,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `endif
 
     task start_type_ii_iii(input [7:0] cmd); begin
-        if (is_read_sector(cmd)) begin_read_sector(cmd[4]);
-        else if (is_write_sector(cmd)) begin_write_sector(cmd[4]);
+        if (is_read_sector(cmd)) begin_read_sector(cmd);
+        else if (is_write_sector(cmd)) begin_write_sector(cmd);
         else if (is_read_address(cmd)) begin_read_address();
         else if (is_read_track(cmd)) begin_read_track();
         else if (is_write_track(cmd)) begin_write_track();
@@ -1921,6 +1937,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             end else if (read_track_transfer) begin
                 status = status | ST_DRQ;
                 `FDC_TIMER_RESET
+            end
+        end else if (side_compare_pending) begin
+            if (side_compare_index_pulses + 1 >= 5) begin
+                status = status | ST_RNF;
+                complete_transfer();
+            end else begin
+                side_compare_index_pulses = side_compare_index_pulses + 1;
             end
         end else if (!status[0] && head_loaded) begin
             if (idle_index_pulses + 1 >= 15) begin

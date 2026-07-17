@@ -549,6 +549,18 @@ int main(void) {
       break;
     }
   }
+  juku_fdc_write(&fdc, 0, 0x82);  // C=1/S=0 mismatches the side-1 ID field
+  fail |= expect_intrq(&fdc, 0, "side-compare mismatch search begins silently");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_BUSY, "side-compare mismatch search");
+  for (int i = 0; i < 4; i++) pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 0, "side-compare mismatch before fifth index");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_BUSY, "side-compare mismatch before fifth index status");
+  pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 1, "side-compare mismatch fifth-index completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_RNF, "side-compare mismatch fifth-index status");
 
   juku_fdc_portc(&fdc, 0x04);  // motor on, side 0
   seek_track(&fdc, 12);
@@ -600,7 +612,7 @@ int main(void) {
     fprintf(stderr, "failed to capture write-timeout baseline\n");
     fail = 1;
   }
-  juku_fdc_write(&fdc, 0, 0xA2);
+  juku_fdc_write(&fdc, 0, 0xAA);
   juku_fdc_tick(&fdc, 1407);
   fail |= expect_intrq(&fdc, 0, "write-sector lead-in before boundary");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_LOST_DATA,
@@ -620,7 +632,7 @@ int main(void) {
     fail = 1;
   }
 
-  juku_fdc_write(&fdc, 0, 0xA2);
+  juku_fdc_write(&fdc, 0, 0xAA);
   juku_fdc_write(&fdc, 3, 0xA5);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
                         "write-sector first-byte preload hold");
@@ -636,7 +648,7 @@ int main(void) {
   }
 
   juku_fdc_write(&fdc, 2, 3);
-  juku_fdc_write(&fdc, 0, 0xA2);  // exact side-aware ROMBIOS variant
+  juku_fdc_write(&fdc, 0, 0xAA);  // C=1/S=1 matches the side-1 ID field
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "writable write-sector command");
   juku_fdc_write(&fdc, 3, 0x5A);
   juku_fdc_tick(&fdc, 1408);
@@ -645,7 +657,7 @@ int main(void) {
   }
   fail |= expect_intrq(&fdc, 1, "write-sector completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, 0, "after writable sector fill");
-  juku_fdc_write(&fdc, 0, 0x82);
+  juku_fdc_write(&fdc, 0, 0x8A);
   for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
     uint8_t got = juku_fdc_read(&fdc, 3);
     uint8_t expected = (uint8_t)(0x5A ^ i);
@@ -658,7 +670,7 @@ int main(void) {
 
   seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 9);
-  juku_fdc_write(&fdc, 0, 0xB2);  // side-aware multiple-record write
+  juku_fdc_write(&fdc, 0, 0xBA);  // C=1/S=1 multiple-record write
   for (int record = 9; record <= 10; record++) {
     juku_fdc_write(&fdc, 3, (uint8_t)(record == 9 ? 0xA0 : 0x50));
     juku_fdc_tick(&fdc, 1408);
@@ -674,7 +686,7 @@ int main(void) {
   }
   for (int record = 9; record <= 10; record++) {
     juku_fdc_write(&fdc, 2, (uint8_t)record);
-    juku_fdc_write(&fdc, 0, 0x82);
+    juku_fdc_write(&fdc, 0, 0x8A);
     for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
       uint8_t got = juku_fdc_read(&fdc, 3);
       uint8_t expected = (uint8_t)((record == 9 ? 0xA0 : 0x50) ^ i);

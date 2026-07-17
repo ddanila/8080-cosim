@@ -589,6 +589,20 @@ module fdc_1793_tb;
     expect_status(8'h03, 8'h00, "after side-0 drain");
     expect_intrq(1'b0, "read-sector status acknowledgement");
 
+    write_reg(2'd0, 8'h8a);  // C=1/S=1 mismatches the selected side-0 ID
+    if ((dut.status & 8'h13) !== 8'h01 || drq || intrq) begin
+      $display("FDC-1793: FAIL side-compare mismatch did not begin BUSY-only status=%02x", dut.status);
+      errors = errors + 1;
+    end
+    repeat (4) pulse_index();
+    if ((dut.status & 8'h13) !== 8'h01 || intrq) begin
+      $display("FDC-1793: FAIL side-compare mismatch ended before fifth index status=%02x", dut.status);
+      errors = errors + 1;
+    end
+    pulse_index();
+    expect_intrq(1'b1, "side-compare mismatch fifth-index completion");
+    expect_status(8'h13, 8'h10, "side-compare mismatch fifth-index RNF");
+
     if (disk_mode && !writable_mode) begin
       write_reg(2'd0, 8'hA0);
       expect_status(8'h43, 8'h40, "read-only write-sector reject");
@@ -600,7 +614,7 @@ module fdc_1793_tb;
 
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
-      write_reg(2'd0, 8'hA2);
+      write_reg(2'd0, 8'ha2);
       while (dut.write_sector_lead_ticks > 1) @(negedge clk);
       #1;
       expect_intrq(1'b0, "write-sector lead-in before boundary");
@@ -625,7 +639,7 @@ module fdc_1793_tb;
         end
       end
 
-      write_reg(2'd0, 8'hA2);
+      write_reg(2'd0, 8'ha2);
       write_reg(2'd3, 8'hA5);
       while (dut.write_sector_lead_pending) @(negedge clk);
       while (dut.buffer_pos < 2) @(posedge clk);
@@ -644,7 +658,7 @@ module fdc_1793_tb;
       end
 
       write_reg(2'd2, 8'd3);
-      write_reg(2'd0, 8'hA2);  // exact ROMBIOS side-aware write-sector variant
+      write_reg(2'd0, 8'ha2);  // C=1/S=0 matches the selected side-0 ID
       expect_status(8'h03, 8'h03, "writable write-sector command");
       write_reg(2'd3, 8'h5A);
       while (dut.write_sector_lead_pending) @(negedge clk);
@@ -668,7 +682,7 @@ module fdc_1793_tb;
 
       seek_track(8'd8);
       write_reg(2'd2, 8'd9);
-      write_reg(2'd0, 8'hb2);  // side-aware multiple-record write
+      write_reg(2'd0, 8'hb2);  // C=1/S=0 multiple-record write
       write_reg(2'd3, 8'ha0);
       while (dut.write_sector_lead_pending) @(negedge clk);
       for (i = 1; i < 512; i = i + 1) write_reg(2'd3, 8'ha0 ^ i[7:0]);
@@ -744,7 +758,7 @@ module fdc_1793_tb;
       end
       for (i = 1; i <= 10; i = i + 1) begin
         write_reg(2'd2, i[7:0]);
-        write_reg(2'd0, 8'h82);
+        write_reg(2'd0, 8'h8a);
         repeat (512) begin
           read_reg(2'd3, got);
           if (got !== (8'h30 + i[7:0])) begin
@@ -757,7 +771,7 @@ module fdc_1793_tb;
       build_format_stream(8'd9, 1'b1);
       seek_track(8'd9);
       write_reg(2'd2, 8'd2);
-      write_reg(2'd0, 8'h82);
+      write_reg(2'd0, 8'h8a);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
       write_reg(2'd0, 8'hf0);
       write_reg(2'd3, format_stream[0]);
@@ -768,7 +782,7 @@ module fdc_1793_tb;
       expect_intrq(1'b0, "forced write-track D0 silence");
       expect_status(8'h03, 8'h00, "after forced write-track abort");
       write_reg(2'd2, 8'd1);
-      write_reg(2'd0, 8'h82);
+      write_reg(2'd0, 8'h8a);
       repeat (512) begin
         read_reg(2'd3, got);
         if (got !== 8'h31) begin
@@ -777,7 +791,7 @@ module fdc_1793_tb;
         end
       end
       write_reg(2'd2, 8'd2);
-      write_reg(2'd0, 8'h82);
+      write_reg(2'd0, 8'h8a);
       for (i = 0; i < 512; i = i + 1) begin
         read_reg(2'd3, got);
         if (got !== baseline_sector[i]) begin
@@ -789,7 +803,7 @@ module fdc_1793_tb;
 
       seek_track(8'd10);
       write_reg(2'd2, 8'd1);
-      write_reg(2'd0, 8'h82);
+      write_reg(2'd0, 8'h8a);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
       write_reg(2'd0, 8'hf0);
       write_reg(2'd3, 8'h4e);
@@ -798,7 +812,7 @@ module fdc_1793_tb;
       expect_intrq(1'b1, "unrepresentable write-track completion");
       expect_status(8'h20, 8'h20, "unrepresentable write-track status");
       write_reg(2'd2, 8'd1);
-      write_reg(2'd0, 8'h82);
+      write_reg(2'd0, 8'h8a);
       for (i = 0; i < 512; i = i + 1) begin
         read_reg(2'd3, got);
         if (got !== baseline_sector[i]) begin
