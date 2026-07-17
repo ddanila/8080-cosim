@@ -95,6 +95,7 @@ sync/juku_top_periph_bus_check.sh
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | $status |
 | Timed Type-I physical-head/update/verify/SEEK-ERROR completion plus exact 15-idle-index HLD release through decoded ports \`0x1C..0x1F\` | $status |
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (\`0x5C\`) through the top-level bus | $status |
+| A missing Type-II track/sector ID holds BUSY without DRQ for three revolutions and completes RNF on the fourth | $status |
 | Type-II \`C/S\` mismatch holds BUSY without DRQ for four index pulses and completes RNF on the fifth | $status |
 | E-delayed, index-gated Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | $status |

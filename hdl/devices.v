@@ -864,6 +864,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [7:0] write_track_preload = 0;
     integer side_compare_pending = 0;
     integer side_compare_index_pulses = 0;
+    integer id_search_pending = 0;
+    integer id_search_index_pulses = 0;
 `ifdef FDC_TYPE_II_III_TIMING
     integer command_delay_pending = 0;
     integer command_delay_ticks = 0;
@@ -1050,6 +1052,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_preloaded = 0;
         side_compare_pending = 0;
         side_compare_index_pulses = 0;
+        id_search_pending = 0;
+        id_search_index_pulses = 0;
 `ifdef FDC_TYPE_II_III_TIMING
         command_delay_pending = 0;
         command_delay_ticks = 0;
@@ -1101,8 +1105,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             complete_transfer();
         end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10 ||
                      ({31'b0, side} >= disk_heads)) begin
-            status = status | ST_RNF;
-            complete_transfer();
+            id_search_pending = 1;
+            status = status | ST_BUSY;
+            intrq_r = 1'b0;
         end else begin
             disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
             disk_seek_status = $fseek(disk_file, disk_offset, 0);
@@ -1183,8 +1188,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             complete_transfer();
         end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10 ||
                      (disk_requested && ({31'b0, side} >= disk_heads))) begin
-            status = status | ST_RNF;
-            complete_transfer();
+            id_search_pending = 1;
+            status = status | ST_BUSY;
+            intrq_r = 1'b0;
         end else if (cmd[1] && cmd[3] != side) begin
             multi_record = cmd[4];
             side_compare_pending = 1;
@@ -1944,6 +1950,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 complete_transfer();
             end else begin
                 side_compare_index_pulses = side_compare_index_pulses + 1;
+            end
+        end else if (id_search_pending) begin
+            if (id_search_index_pulses + 1 >= 4) begin
+                status = status | ST_RNF;
+                complete_transfer();
+            end else begin
+                id_search_index_pulses = id_search_index_pulses + 1;
             end
         end else if (!status[0] && head_loaded) begin
             if (idle_index_pulses + 1 >= 15) begin

@@ -86,6 +86,14 @@ physical D93/D94 wiring.
   completes with INTRQ and Record Not Found on the fifth. C, standalone HDL,
   and the decoded top-level bus guard cover the exact four/five-pulse boundary;
   matching `C=1` reads and writes cover both side values.
+- A command-start Type-II search with no matching track or sector ID now keeps
+  BUSY asserted and DRQ low for the datasheet's full four revolutions, then
+  raises INTRQ with Record Not Found on the fourth index pulse. Exact read and
+  write guards cover three-versus-four pulses, and the decoded top-level test
+  exercises a missing sector-zero ID through the D94-selected register path.
+  Flat-image multiple-record end-of-track still terminates deterministically
+  when the incremented register exceeds sector 10; arbitrary rotational ID
+  order remains a backend boundary.
 - Read Address emits the complete six-byte ID field
   `{track, side, sector, length, CRC1, CRC2}`. Both models use the WD1793
   datasheet's `x^16+x^12+x^5+1` polynomial, all-ones preset, and ID address

@@ -107,6 +107,8 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_sector_preloaded = 0;
   fdc->side_compare_pending = 0;
   fdc->side_compare_index_pulses = 0;
+  fdc->id_search_pending = 0;
+  fdc->id_search_index_pulses = 0;
   fdc->drq_ticks = 0;
   fdc->write_first_byte_pending = 0;
   fdc->type_i_pending = 0;
@@ -154,8 +156,8 @@ static void begin_read_sector(juku_fdc* fdc, uint8_t command) {
   }
   if (fdc->track != fdc->physical_track ||
       juk_disk_offset(fdc->disk, fdc->physical_track, fdc->head, fdc->sector) < 0) {
-    fdc->status |= ST_RNF;
-    complete_transfer(fdc);
+    fdc->id_search_pending = 1;
+    fdc->status |= ST_BUSY;
     return;
   }
   fdc->multi_record = (command & 0x10) != 0;
@@ -295,8 +297,8 @@ static void begin_write_sector(juku_fdc* fdc, uint8_t command) {
   }
   if (fdc->track != fdc->physical_track ||
       juk_disk_offset(fdc->disk, fdc->physical_track, fdc->head, fdc->sector) < 0) {
-    fdc->status |= ST_RNF;
-    complete_transfer(fdc);
+    fdc->id_search_pending = 1;
+    fdc->status |= ST_BUSY;
     return;
   }
   fdc->multi_record = (command & 0x10) != 0;
@@ -793,6 +795,7 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
   if (!fdc->index_line && index) {
     const int started_track = fdc->track_waiting_index;
     const int searched_side = fdc->side_compare_pending;
+    const int searched_id = fdc->id_search_pending;
     if (fdc->force_interrupt_mask & 0x04) fdc->intrq = 1;
     if (fdc->track_waiting_index) {
       fdc->track_waiting_index = 0;
@@ -814,8 +817,14 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
         fdc->status |= ST_RNF;
         complete_transfer(fdc);
       }
+    } else if (fdc->id_search_pending) {
+      if (++fdc->id_search_index_pulses >= 4) {
+        fdc->status |= ST_RNF;
+        complete_transfer(fdc);
+      }
     }
-    if (!started_track && !searched_side && !(fdc->status & ST_BUSY) && fdc->head_loaded) {
+    if (!started_track && !searched_side && !searched_id &&
+        !(fdc->status & ST_BUSY) && fdc->head_loaded) {
       if (++fdc->idle_index_pulses >= 15) {
         fdc->head_loaded = 0;
         fdc->idle_index_pulses = 0;

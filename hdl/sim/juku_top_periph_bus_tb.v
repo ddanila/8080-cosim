@@ -313,6 +313,24 @@ module juku_top_periph_bus_tb();
     io_read(8'h1C, rd);
     if ((rd & 8'h07) !== 8'h04) fail("FDC D0 abort did not preserve LOST DATA status");
 
+    io_write(8'h1E, 8'h00);     // no sector zero ID exists on the Juku track
+    io_write(8'h1C, 8'h80);
+    if ((dut.U_FDC.status & 8'h13) !== 8'h01 || dut.fdc_drq || dut.fdc_intrq)
+      fail("FDC missing-ID search did not begin BUSY-only");
+    force dut.U_FDC.index = 1'b0;
+    for (i = 0; i < 3; i = i + 1) begin
+      force dut.U_FDC.index = 1'b1; #1;
+      force dut.U_FDC.index = 1'b0; #1;
+    end
+    if ((dut.U_FDC.status & 8'h13) !== 8'h01 || dut.fdc_intrq)
+      fail("FDC missing-ID search ended before fourth revolution");
+    force dut.U_FDC.index = 1'b1; #1;
+    if ((dut.U_FDC.status & 8'h13) !== 8'h10 || !dut.fdc_intrq)
+      fail("FDC missing-ID search did not complete RNF on fourth revolution");
+    force dut.U_FDC.index = 1'b0;
+    io_read(8'h1C, rd);
+    io_write(8'h1E, 8'h02);
+
     io_write(8'h1C, 8'h8A);     // C=1/S=1 mismatches selected side 0
     if ((dut.U_FDC.status & 8'h13) !== 8'h01 || dut.fdc_drq || dut.fdc_intrq)
       fail("FDC side-compare mismatch did not begin BUSY-only");

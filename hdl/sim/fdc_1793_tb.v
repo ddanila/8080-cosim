@@ -287,7 +287,18 @@ module fdc_1793_tb;
     end
     write_reg(2'd2, 8'd1);
     write_reg(2'd0, 8'h80);
-    expect_status(8'h13, 8'h10, "read-sector rejects register/head mismatch");
+    if ((dut.status & 8'h13) !== 8'h01 || drq || intrq) begin
+      $display("FDC-1793: FAIL missing-ID search did not begin BUSY-only status=%02x", dut.status);
+      errors = errors + 1;
+    end
+    repeat (3) pulse_index();
+    if ((dut.status & 8'h13) !== 8'h01 || intrq) begin
+      $display("FDC-1793: FAIL missing-ID search ended before fourth revolution status=%02x", dut.status);
+      errors = errors + 1;
+    end
+    pulse_index();
+    expect_intrq(1'b1, "missing-ID fourth-revolution completion");
+    expect_status(8'h13, 8'h10, "missing-ID fourth-revolution RNF");
     write_reg(2'd0, 8'h00);
     while (dut.status[0]) @(negedge clk);
     #1;
@@ -610,6 +621,22 @@ module fdc_1793_tb;
 
     if (disk_mode && writable_mode) begin
       seek_track(8'd8);
+      write_reg(2'd2, 8'd3);
+
+      write_reg(2'd2, 8'd11);
+      write_reg(2'd0, 8'ha2);
+      if ((dut.status & 8'h13) !== 8'h01 || drq || intrq) begin
+        $display("FDC-1793: FAIL write missing-ID search did not begin BUSY-only status=%02x", dut.status);
+        errors = errors + 1;
+      end
+      repeat (3) pulse_index();
+      if ((dut.status & 8'h13) !== 8'h01 || intrq) begin
+        $display("FDC-1793: FAIL write missing-ID search ended before fourth revolution status=%02x", dut.status);
+        errors = errors + 1;
+      end
+      pulse_index();
+      expect_intrq(1'b1, "write missing-ID fourth-revolution completion");
+      expect_status(8'h13, 8'h10, "write missing-ID fourth-revolution RNF");
       write_reg(2'd2, 8'd3);
 
       write_reg(2'd0, 8'h82);

@@ -314,7 +314,15 @@ int main(void) {
   juku_fdc_write(&fdc, 2, 1);
   juku_fdc_write(&fdc, 0, 0x80);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
-                        ST_RNF, "read-sector rejects register/head mismatch");
+                        ST_BUSY, "read-sector missing-ID search");
+  for (int i = 0; i < 3; i++) pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 0, "missing-ID search before fourth revolution");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_BUSY, "missing-ID search before fourth-revolution status");
+  pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 1, "missing-ID fourth-revolution completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_RNF, "read-sector missing-ID fourth-revolution RNF");
   juku_fdc_write(&fdc, 0, 0x00);  // RESTORE is what physically recalibrates track zero
   juku_fdc_tick(&fdc, 10000000);
   seek_track(&fdc, 12);
@@ -605,6 +613,18 @@ int main(void) {
   juku_fdc_init(&fdc, &disk);
   juku_fdc_portc(&fdc, 0x44);  // motor on, side 1
   seek_track(&fdc, 8);
+  juku_fdc_write(&fdc, 2, 3);
+
+  juku_fdc_write(&fdc, 2, 11);
+  juku_fdc_write(&fdc, 0, 0xAA);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_BUSY, "write-sector missing-ID search");
+  for (int i = 0; i < 3; i++) pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 0, "write missing-ID before fourth revolution");
+  pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 1, "write missing-ID fourth-revolution completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_RNF, "write missing-ID fourth-revolution RNF");
   juku_fdc_write(&fdc, 2, 3);
 
   uint8_t baseline[JUK_SECTOR_SIZE];
