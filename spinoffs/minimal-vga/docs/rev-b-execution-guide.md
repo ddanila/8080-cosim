@@ -126,5 +126,18 @@ root FDC guard parity, EKDOS `A>` + write-sector readback on a writable copy.
 
 ## Deviations
 
-(Executing sessions append dated entries here when reality contradicts the plan.
-Empty so far.)
+- **2026-07-17 — T0.4 "move logic, do not rewrite" is infeasible; rewrote instead
+  (oracle-gated).** `vjuga_juku_top.v` is a DRAM machine (РУ5 + U24 sequencer) with
+  the framebuffer *inside* main memory. Rev B decision C1 is SRAM (no U10–U24) and
+  the framebuffer lives on a separate Video card (bus contract: Memory card must not
+  respond at 0xD800). A mechanical "move" can't satisfy both — it would keep DRAM
+  (violating C1) or leave the framebuffer in the Memory card (defeating the very
+  boundary the repartition exists to prove). Resolution: the rev B card modules
+  **model the rev B architecture** (SRAM main memory on the Memory card; SRAM
+  framebuffer at 0xD800 on the Video card; no DRAM/U24/wait sequencer), reusing
+  `vjuga_juku_top.v`'s *functional* decode/overlay/IO logic verbatim where it is
+  memory-technology-independent (decode_prom/re3_prom Mode A/B, overlay(), rom_idx,
+  Port-C mode handling). This is a design-faithful realization of an already-made
+  decision (C1), not a new design choice; the keystone byte-identity check vs cosim
+  still gates it. **Future simpler-model sessions: treat T0.4 as "realize the rev B
+  card architecture, oracle-gated," not "mechanically split the DRAM twin."**
