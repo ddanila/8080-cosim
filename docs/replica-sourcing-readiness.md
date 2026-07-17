@@ -12,7 +12,7 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 106
+- BOM lines: 107
 - Populate-now component positions: 251
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
@@ -23,11 +23,11 @@ review before being treated as build-ready.
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 10 | 29 |
+| circuit-review | 10 | 28 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 76 | 199 |
+| source-now | 77 | 200 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -77,7 +77,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | 2 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | D_DIODE | Soviet diode/zener per value | 2 | VD3, VD4 | modern diode/zener matching value and power |
 | circuit-review | Q_TO92 | КТ315/КТ972-class transistor per position | 2 | VT1, VT2 | modern transistor selected per exact circuit role |
-| circuit-review | R_AXIAL | axial resistor | 2 | R48, R67 | modern axial resistor, matching value and power rating |
+| circuit-review | R_AXIAL | axial resistor | 1 | R67 | modern axial resistor, matching value and power rating |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |
 | mechanical-review | JUMPER2 | wire/link | 1 | E5 | select exact substitute after circuit review |

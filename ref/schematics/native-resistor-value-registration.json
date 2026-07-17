@@ -65,15 +65,11 @@
     {
       "name": "sheet-2 beeper clamp",
       "source_sheet": 2,
-      "refs": {"R90": "2к", "R91": "1к"},
-      "observation": "R90=2k and R91=1k are printed on the D58/VD4/VT1 AVDC branch"
+      "refs": {"R48": "8,2", "R90": "2к", "R91": "1к"},
+      "observation": "R90=2k and R91=1k are printed on the D58/VD4/VT1 AVDC branch; R48 is printed 8,2 Ом on the VT1 emitter-to-speaker output and the independently traced beeper boundary records the same 8.2R value"
     }
   ],
   "held": [
-    {
-      "ref": "R48",
-      "reason": "the scan label beside the speaker/emitter path is not unambiguous enough to normalize automatically"
-    },
     {
       "ref": "R67",
       "reason": "sheet 2 prints 2k, but target .009 photos prove its far-side continuation differs from the .006 drawing; retain the target-value hold until the body or target documentation is readable"

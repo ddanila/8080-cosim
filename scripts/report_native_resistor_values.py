@@ -88,8 +88,8 @@ for group in evidence["groups"]:
         expected[refdes] = value
         source_sheet[refdes] = group["source_sheet"]
         group_name[refdes] = group["name"]
-if len(expected) != 22:
-    fail(f"expected 22 promoted values, found {len(expected)}")
+if len(expected) != 23:
+    fail(f"expected 23 promoted values, found {len(expected)}")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -123,9 +123,9 @@ for refdes, value in expected.items():
 lines = [
     "# Native schematic resistor values",
     "",
-    "Status: **22 VALUES SOURCE-CLOSED / 2 TARGET HOLDS**",
+    "Status: **23 VALUES SOURCE-CLOSED / 1 TARGET HOLD**",
     "",
-    "The native electrical sheets print 22 values that were formerly blank in",
+    "The native electrical sheets print 23 values that were formerly blank in",
     "the machine-readable board model. This report checksum-guards those scans,",
     "checks the board JSON and generated source PCB agree, and keeps ambiguous or",
     "revision-sensitive values out of the promoted set.",
@@ -170,14 +170,14 @@ lines.extend(
         "  prose, plus the D56, FRAME_INT, video-summing, and beeper networks.",
         "- Connectivity is unchanged. This milestone only replaces absent value",
         "  metadata with literal scan evidence.",
-        "- R48 and R67 remain review rows and therefore stay out of sourcing-ready",
-        "  valued BOM groups.",
+        "- R48's `8,2 Ом` label is independently corroborated by the traced beeper",
+        "  boundary. R67 alone remains outside sourcing-ready valued BOM groups.",
         "",
     ]
 )
 
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
-    "NATIVE RESISTOR VALUES: PASS — 22 literal scan values agree across "
-    "evidence, board JSON, and source PCB; R48/R67 remain held"
+    "NATIVE RESISTOR VALUES: PASS — 23 literal scan values agree across "
+    "evidence, board JSON, and source PCB; only R67 remains held"
 )

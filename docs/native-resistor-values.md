@@ -1,8 +1,8 @@
 # Native schematic resistor values
 
-Status: **22 VALUES SOURCE-CLOSED / 2 TARGET HOLDS**
+Status: **23 VALUES SOURCE-CLOSED / 1 TARGET HOLD**
 
-The native electrical sheets print 22 values that were formerly blank in
+The native electrical sheets print 23 values that were formerly blank in
 the machine-readable board model. This report checksum-guards those scans,
 checks the board JSON and generated source PCB agree, and keeps ambiguous or
 revision-sensitive values out of the promoted set.
@@ -29,6 +29,7 @@ python3 scripts/report_native_resistor_values.py
 | `R44` | `15к` | 2 | sheet-2 S3 switch pullup bank |
 | `R45` | `15к` | 2 | sheet-2 S3 switch pullup bank |
 | `R47` | `20к` | 2 | sheet-2 D56 timing network |
+| `R48` | `8,2` | 2 | sheet-2 beeper clamp |
 | `R59` | `33к` | 2 | sheet-2 D56 timing network |
 | `R60` | `5,1к` | 2 | sheet-2 frame interrupt pullup |
 | `R61` | `12к` | 2 | sheet-2 D56 timing network |
@@ -44,7 +45,6 @@ python3 scripts/report_native_resistor_values.py
 
 | Ref | Why it remains unvalued |
 | --- | --- |
-| `R48` | the scan label beside the speaker/emitter path is not unambiguous enough to normalize automatically |
 | `R67` | sheet 2 prints 2k, but target .009 photos prove its far-side continuation differs from the .006 drawing; retain the target-value hold until the body or target documentation is readable |
 
 ## Evidence boundary
@@ -55,5 +55,5 @@ python3 scripts/report_native_resistor_values.py
   prose, plus the D56, FRAME_INT, video-summing, and beeper networks.
 - Connectivity is unchanged. This milestone only replaces absent value
   metadata with literal scan evidence.
-- R48 and R67 remain review rows and therefore stay out of sourcing-ready
-  valued BOM groups.
+- R48's `8,2 Ом` label is independently corroborated by the traced beeper
+  boundary. R67 alone remains outside sourcing-ready valued BOM groups.

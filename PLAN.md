@@ -64,15 +64,15 @@ physical placement remains approximate. The raw frame also relocates vertical
 `(266.6,184.0)` mm. Separate D37 and D39 guards preserve the corrected
 identities, notches, evidence hashes, and placement limits.
 
-Native-sheet value extraction now also retires 22 formerly blank resistor
+Native-sheet value extraction now also retires 23 formerly blank resistor
 values (`docs/native-resistor-values.md`). Checksum-guarded sheet 1 closes the
 four 1 kΩ decode pull-ups R11-R14 and 200 Ω R17; sheet 2 closes the common
 15 kΩ R40-R45 S3 bank (correcting stale 13 kΩ prose), R47/R59/R61 timing,
-R60 FRAME_INT, R62-R66 video summing, and R90/R91 beeper-clamp values. The
+R60 FRAME_INT, R62-R66 video summing, R90/R91 beeper-clamp, and 8.2 Ω R48
+speaker-output values. The
 board JSON and generated PCB are checked against the same literal table.
-Connectivity is unchanged, and R48/R67 deliberately remain unvalued because
-the former scan label is ambiguous and the latter's `.009` continuation is
-revision-sensitive.
+Connectivity is unchanged. R67 deliberately remains the sole unvalued axial
+resistor because its `.009` continuation is revision-sensitive.
 
 The recorded upload ZIP SHA256 is
 `7df2a6e2927c62313275f3f5713e2b4cf3622c3c782b795cf41b27c8f3bfff46`.
