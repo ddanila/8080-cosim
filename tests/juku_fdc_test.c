@@ -16,6 +16,7 @@ enum {
   ST_LOST_DATA = 0x04,
   ST_RNF = 0x10,
   ST_HEAD_LOADED = 0x20,
+  ST_RECORD_TYPE = 0x20,
   ST_WRITE_FAULT = 0x20,
   ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
@@ -92,7 +93,7 @@ static void append_format_byte(
 
 static size_t build_format_stream(
     uint8_t out[JUK_MFM_TRACK_SIZE], int track, int head,
-    size_t* first_sector_end) {
+    int deleted_sector, size_t* first_sector_end) {
   size_t input_pos = 0;
   size_t output_pos = 0;
   for (int i = 0; i < 32; i++) {
@@ -108,7 +109,8 @@ static size_t build_format_stream(
     for (int i = 0; i < 22; i++) append_format_byte(out, &input_pos, &output_pos, 0x4E);
     for (int i = 0; i < 12; i++) append_format_byte(out, &input_pos, &output_pos, 0x00);
     for (int i = 0; i < 3; i++) append_format_byte(out, &input_pos, &output_pos, 0xF5);
-    append_format_byte(out, &input_pos, &output_pos, 0xFB);
+    append_format_byte(
+        out, &input_pos, &output_pos, sector == deleted_sector ? 0xF8 : 0xFB);
     for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
       append_format_byte(out, &input_pos, &output_pos, (uint8_t)(0x30 + sector));
     }
@@ -788,9 +790,31 @@ int main(void) {
     }
   }
 
+  // Write Sector a0 selects F8, and a later Read Sector reports that address
+  // mark as RECORD TYPE without changing the payload contract.
+  juku_fdc_write(&fdc, 0, 0xAB);  // C=1/S=1, deleted-data address mark
+  juku_fdc_write(&fdc, 3, 0xD5);
+  juku_fdc_tick(&fdc, 1408);
+  for (int i = 1; i < JUK_SECTOR_SIZE; i++) {
+    juku_fdc_write(&fdc, 3, (uint8_t)(0xD5 ^ i));
+  }
+  fail |= expect_status(&fdc, ST_RECORD_TYPE, 0,
+                        "deleted write-sector has no write fault");
+  juku_fdc_write(&fdc, 0, 0x8A);
+  for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+    uint8_t got = juku_fdc_read(&fdc, 3);
+    if (got != (uint8_t)(0xD5 ^ i)) {
+      fprintf(stderr, "deleted-sector readback byte %d got 0x%02X\n", i, got);
+      fail = 1;
+      break;
+    }
+  }
+  fail |= expect_status(&fdc, ST_RECORD_TYPE, ST_RECORD_TYPE,
+                        "deleted read-sector record type");
+
   seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 9);
-  juku_fdc_write(&fdc, 0, 0xBA);  // C=1/S=1 multiple-record write
+  juku_fdc_write(&fdc, 0, 0xBB);  // C=1/S=1 deleted multiple-record write
   for (int record = 9; record <= 10; record++) {
     juku_fdc_write(&fdc, 3, (uint8_t)(record == 9 ? 0xA0 : 0x50));
     juku_fdc_tick(&fdc, 1408);
@@ -817,11 +841,13 @@ int main(void) {
         break;
       }
     }
+    fail |= expect_status(&fdc, ST_RECORD_TYPE, ST_RECORD_TYPE,
+                          "deleted multi-write readback record type");
   }
 
   uint8_t format_stream[JUK_MFM_TRACK_SIZE];
   size_t first_sector_end = 0;
-  size_t format_len = build_format_stream(format_stream, 8, 1, &first_sector_end);
+  size_t format_len = build_format_stream(format_stream, 8, 1, 4, &first_sector_end);
   if (format_len != 6230 || first_sector_end == 0) {
     fprintf(stderr, "write-track fixture length %zu first-sector-end %zu\n",
             format_len, first_sector_end);
@@ -875,7 +901,29 @@ int main(void) {
     }
   }
 
-  format_len = build_format_stream(format_stream, 9, 1, &first_sector_end);
+  juku_fdc_write(&fdc, 2, 4);
+  juku_fdc_write(&fdc, 0, 0x8A);
+  for (int i = 0; i < JUK_SECTOR_SIZE; i++) (void)juku_fdc_read(&fdc, 3);
+  fail |= expect_status(&fdc, ST_RECORD_TYPE, ST_RECORD_TYPE,
+                        "write-track F8 record type");
+  juku_fdc_write(&fdc, 0, 0xE0);
+  pulse_index(&fdc);
+  for (int i = 0; i <= 2432; i++) {
+    uint8_t got = juku_fdc_read(&fdc, 3);
+    if (i == 1918 && got != 0xF8) {
+      fprintf(stderr, "read-track sector-4 deleted mark got 0x%02X\n", got);
+      fail = 1;
+    } else if (i == 2431 && got != 0xB8) {
+      fprintf(stderr, "read-track sector-4 deleted CRC1 got 0x%02X\n", got);
+      fail = 1;
+    } else if (i == 2432 && got != 0x81) {
+      fprintf(stderr, "read-track sector-4 deleted CRC2 got 0x%02X\n", got);
+      fail = 1;
+    }
+  }
+  juku_fdc_write(&fdc, 0, 0xD0);
+
+  format_len = build_format_stream(format_stream, 9, 1, 0, &first_sector_end);
   seek_track(&fdc, 9);
   juku_fdc_write(&fdc, 0, 0xF0);
   juku_fdc_write(&fdc, 3, format_stream[0]);

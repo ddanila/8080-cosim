@@ -40,8 +40,9 @@ sync/juku_top_periph_bus_check.sh
 | E-delayed, index-gated Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | PASS |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |
 | ROMBIOS `0xA2` write-sector preloads across the 22-byte ID-to-write-gate interval, streams 512 bytes through D94-decoded port `0x1F`, and reads them back from a writable copy | PASS |
-| Type-II multi-write re-arms the 22-byte preload interval, persists sectors 9/10, and ends at sector 11 with RNF | PASS |
-| E-delayed, index-gated Type-III Write Track preloads its first byte, streams 6,230 formatter bytes, and persists sectors 1-10 on a writable copy through logical DB and both physical D100 families | PASS |
+| Write Sector `a0=1` records an `F8` deleted-data mark and Read Sector reports RECORD TYPE bit 5 through the decoded bus | PASS |
+| Type-II deleted multi-write re-arms the 22-byte preload interval, preserves `F8` marks on sectors 9/10, and ends at sector 11 with RNF | PASS |
+| E-delayed, index-gated Type-III Write Track preloads its first byte, streams 6,230 formatter bytes, persists sectors 1-10, and preserves an `F8` mark as session metadata through logical DB and both physical D100 families | PASS |
 | CMA-profile CPU bytes cross physical D100/DAL for restore, seek, media read, and 512-byte write/readback under both control families | PASS |
 
 ## Stop State

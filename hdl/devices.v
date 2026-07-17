@@ -810,6 +810,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     localparam ST_DRQ = 8'h02;
     localparam ST_LOST_DATA = 8'h04;
     localparam ST_RNF = 8'h10;
+    localparam ST_RECORD_TYPE = 8'h20;
     localparam ST_WRITE_FAULT = 8'h20;
     localparam ST_WRITE_PROTECT = 8'h40;
     localparam ST_NOT_READY = 8'h80;
@@ -833,6 +834,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [7:0] sector_buf [0:511];
 `ifndef YOSYS
     reg [7:0] track_buf [0:6249];
+    // Raw Juku images have no address-mark channel. Keep deleted-record
+    // metadata for the lifetime of this loaded image only.
+    reg [1599:0] deleted_data = 0;
 `endif
     reg [1023:0] disk_path;
     integer disk_file = 0;
@@ -857,6 +861,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg [7:0] write_track_id2 = 0;
     reg [7:0] write_track_id3 = 0;
     integer write_track_pending_sector = 0;
+    integer write_track_pending_deleted = 0;
     reg [9:0] write_track_seen = 0;
     integer write_track_format_error = 0;
     integer track_waiting_index = 0;
@@ -1011,6 +1016,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         id_crc = crc;
     end endfunction
 
+    function integer sector_metadata_index(
+        input [7:0] track_id, input side_id, input [7:0] sector_id);
+    begin
+        // Reserve two sides per track even for a single-sided raw image so
+        // metadata indices do not depend on the mounted image geometry.
+        sector_metadata_index = ((track_id * 2 + side_id) * 10) + (sector_id - 1);
+    end endfunction
+
     function [7:0] synthetic_sector_byte(input integer pos); begin
         if (pos == 0) synthetic_sector_byte = physical_track;
         else if (pos == 1) synthetic_sector_byte = {7'b0, side};
@@ -1030,8 +1043,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
             disk_seek_status = $fseek(disk_file, disk_offset, 0);
             disk_read_count = $fread(sector_buf, disk_file);
-            if (disk_seek_status == 0 && disk_read_count == 512) disk_sector_ok = 1;
-            else status = status | ST_RNF;
+            if (disk_seek_status == 0 && disk_read_count == 512) begin
+                disk_sector_ok = 1;
+                if (deleted_data[sector_metadata_index(physical_track, side, sector)])
+                    status = status | ST_RECORD_TYPE;
+                else
+                    status = status & ~ST_RECORD_TYPE;
+            end else status = status | ST_RNF;
         end
     end endtask
 `else
@@ -1052,6 +1070,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_state = WT_SCAN;
         write_track_field_pos = 0;
         write_track_pending_sector = 0;
+        write_track_pending_deleted = 0;
         write_track_seen = 0;
         write_track_format_error = 0;
         track_waiting_index = 0;
@@ -1153,6 +1172,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             buffer_pos = buffer_pos + 1;
             if (buffer_pos >= buffer_len) begin
                 $fflush(disk_file);
+                deleted_data[sector_metadata_index(physical_track, side, sector)] = command[0];
                 if (!multi_record) begin
                     complete_transfer();
                 end else begin
@@ -1347,9 +1367,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                     pos = pos + 1;
                     crc = crc_byte(crc, 8'ha1);
                 end
-                track_buf[pos] = 8'hfb;
+                value = deleted_data[
+                    sector_metadata_index(physical_track, side, sector_id[7:0])] ? 8'hf8 : 8'hfb;
+                track_buf[pos] = value;
                 pos = pos + 1;
-                crc = crc_byte(crc, 8'hfb);
+                crc = crc_byte(crc, value);
                 for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1) begin
                     track_buf[pos] = sector_buf[byte_index];
                     pos = pos + 1;
@@ -1558,10 +1580,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
                     $fwrite(disk_file, "%c", sector_buf[byte_index]);
                 $fflush(disk_file);
+                deleted_data[sector_metadata_index(
+                    physical_track, side, write_track_pending_sector)] =
+                    write_track_pending_deleted;
                 sector_bit = 10'b1 << (write_track_pending_sector - 1);
                 if (write_track_seen & sector_bit) write_track_format_error = 1;
                 write_track_seen = write_track_seen | sector_bit;
                 write_track_pending_sector = 0;
+                write_track_pending_deleted = 0;
             end
         end
     end endtask
@@ -1607,9 +1633,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         write_track_id2 >= 1 && write_track_id2 <= 10 &&
                         write_track_id3 == 8'h02) begin
                         write_track_pending_sector = write_track_id2;
+                        write_track_pending_deleted = 0;
                     end else begin
                         write_track_format_error = 1;
                         write_track_pending_sector = 0;
+                        write_track_pending_deleted = 0;
                     end
                     write_track_state = WT_SCAN;
                     write_track_field_pos = 0;
@@ -1642,13 +1670,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         write_track_field_pos = 0;
                         if (sync_count >= 3 && value == 8'hfe) begin
                             write_track_state = WT_ID;
-                        end else if (sync_count >= 3 && value == 8'hfb &&
+                        end else if (sync_count >= 3 &&
+                                     (value == 8'hfb || value == 8'hf8) &&
                                      write_track_pending_sector != 0) begin
+                            write_track_pending_deleted = (value == 8'hf8);
                             write_track_state = WT_DATA;
-                        end else if (sync_count >= 3 && value == 8'hf8) begin
-                            // The flat backend cannot preserve deleted-data metadata.
-                            write_track_format_error = 1;
-                            write_track_pending_sector = 0;
                         end
                     end
                 end
@@ -1684,6 +1710,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             `FDC_TIMER_FIRST
             write_track_state = WT_SCAN;
             write_track_pending_sector = 0;
+            write_track_pending_deleted = 0;
             status = status | ST_BUSY | ST_DRQ;
             intrq_r = 1'b0;
         end

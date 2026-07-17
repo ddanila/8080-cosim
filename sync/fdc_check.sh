@@ -40,7 +40,7 @@ sync/juku_top_periph_bus_check.sh
 cat > docs/fdc-readiness.md <<'EOF'
 # FDC readiness
 
-Status: **BOOT + TYPE-I/II/III-TIMING/LOST-DATA/INTRQ HDL FDC READY**
+Status: **BOOT + TYPE-I/II/III-TIMING/LOST-DATA/DELETED-RECORD/INTRQ HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -138,6 +138,16 @@ physical D93/D94 wiring.
   the current incremented sector; the writable guard proves both completed sectors persist.
   Inter-record index/gap delays remain timing boundaries rather than invented
   rotational behavior in this byte-level shim.
+- Type-II Data Address Mark behavior follows the FD179X command/status tables.
+  Write Sector `a0=0` records a normal `0xFB` mark and `a0=1` records deleted
+  `0xF8`; a completed Read Sector exposes the selected mark as bit-5 RECORD
+  TYPE without confusing a deleted record with WRITE FAULT. The payload-only
+  Juku raw format cannot serialize marks, so both backends keep one explicit
+  bit per sector for the lifetime of the mounted image. Normal/deleted writes,
+  multi-record transitions, Read Sector status, Write Track `FB`/`F8` parsing,
+  and Read Track mark/CRC reconstruction are guarded in C and HDL; decoded
+  top-level tests cover both Write Sector `a0` and Write Track `F8`. Closing and
+  reopening the raw file deliberately resets this session metadata to normal.
 - Type-II side flags follow the FD179X ID-search contract. With `C=0`, the
   recorded ID side is ignored; with `C=1`, the ID side bit must match `S`.
   The sector-only backend uses the selected image head as the reconstructed ID
@@ -168,8 +178,9 @@ physical D93/D94 wiring.
   leaves the sector register unchanged. The byte stream reconstructs
   all ten MFM ID/data fields from the raw image: 32-byte index gap; per-sector
   12-byte sync, three decoded `0xA1` missing-clock sync bytes, `0xFE` ID mark,
-  CHRN and CRC; 22-byte gap; another sync/A1 run, `0xFB` data mark, 512 payload
-  bytes and CRC; 35-byte gap; then 128 bytes of end gap. This is the exact
+  CHRN and CRC; 22-byte gap; another sync/A1 run, the session's `0xFB`/`0xF8`
+  data mark, 512 payload bytes and CRC; 35-byte gap; then 128 bytes of end gap.
+  This is the exact
   2,000 ns-cell/32-22-35 descriptor recorded by MAME's Juku format at commit
   `40d8c5c343efc497524832d59a6d0e2b8e59376b`; the C guard compares every byte,
   and the HDL plus decoded top-level guards check structure, CRCs, all ten IDs,
@@ -188,15 +199,16 @@ physical D93/D94 wiring.
   the canonical ten-sector Juku layout consumes 6,230 CPU data writes while
   producing 6,250 on-disk bytes. Both models parse all ten CHRN fields, require
   track/side/sector/512-byte geometry representable by the flat image, and
-  persist every completed data field. The writable guards read all ten sectors
-  back; a mid-track D0 test proves sector 1 persists while untouched sector 2
+  persist every completed data field and its normal/deleted mark in session
+  metadata. The writable guards read all ten sectors back; a mid-track D0 test
+  proves sector 1 persists while untouched sector 2
   remains byte-identical, matching a non-atomic physical abort. A full
   unrepresentable gap-only revolution completes with the modeled WRITE FAULT
   bit and leaves the flat image unchanged instead of silently claiming that
   unrepresentable flux/ID metadata was saved. Read-only and motor-off commands
   still complete with WRITE PROTECT and NOT READY respectively. Actual index
-  timing, deleted-data metadata, arbitrary sector geometry, and
-  partial gap/header damage remain explicit backend/timing boundaries.
+  timing, cross-reopen deleted-mark persistence, arbitrary sector geometry,
+  and partial gap/header damage remain explicit backend/timing boundaries.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
 - The physical КР580ВА87/8287 device models complement all 256 byte values in
@@ -437,8 +449,8 @@ evidence exists.
   not a general WD1793 conformance model. Exact physical D93.24 calibration of
   the byte, Type-I, and Type-II/III E-delay intervals,
   physical D93.23 HLT generation, D93.34 TR00 drive-status continuity, and
-  step-interface timing, arbitrary flux/sector
-  layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
+  step-interface timing, arbitrary flux/sector layouts, cross-reopen
+  deleted-mark persistence, inter-record delays, and physical rotational timing remain outside
   its proved scope. Command-load READY sampling and Type-IV READY-transition and
   index-event semantics are guarded, but the board's physical D93.32 READY
   source, event pulse widths, and rotational timing remain outside this

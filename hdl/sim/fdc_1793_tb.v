@@ -20,6 +20,7 @@ module fdc_1793_tb;
   integer format_len = 0;
   integer format_output_len = 0;
   integer first_format_sector_end = 0;
+  integer deleted_format_sector = 0;
   integer expected_rate = 0;
   integer step_pulses = 0;
   integer step_pulses_before = 0;
@@ -142,7 +143,7 @@ module fdc_1793_tb;
       for (byte_index = 0; byte_index < 22; byte_index = byte_index + 1) put_format_byte(8'h4e);
       for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) put_format_byte(8'h00);
       for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) put_format_byte(8'hf5);
-      put_format_byte(8'hfb);
+      put_format_byte(sector_id == deleted_format_sector ? 8'hf8 : 8'hfb);
       for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
         put_format_byte(8'h30 + sector_id[7:0]);
       put_format_byte(8'hf7);
@@ -742,6 +743,7 @@ module fdc_1793_tb;
         $display("FDC-1793: FAIL write-sector lead-in before boundary status=%02x", dut.status);
         errors = errors + 1;
       end
+
       if (dut.buffer_pos != 0) begin
         $display("FDC-1793: FAIL write-sector lead-in changed buffer before boundary");
         errors = errors + 1;
@@ -800,9 +802,25 @@ module fdc_1793_tb;
         end
       end
 
+      write_reg(2'd0, 8'ha3);  // C=1/S=0 and a0=1 selects an F8 deleted mark
+      write_reg(2'd3, 8'hd5);
+      while (dut.write_sector_lead_pending) @(negedge clk);
+      for (i = 1; i < 512; i = i + 1) write_reg(2'd3, 8'hd5 ^ i[7:0]);
+      expect_status(8'h20, 8'h00, "deleted write-sector has no write fault");
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== (8'hd5 ^ i[7:0])) begin
+          $display("FDC-1793: FAIL deleted-sector byte %0d got=%02x", i, got);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
+      expect_status(8'h20, 8'h20, "deleted read-sector record type");
+
       seek_track(8'd8);
       write_reg(2'd2, 8'd9);
-      write_reg(2'd0, 8'hb2);  // C=1/S=0 multiple-record write
+      write_reg(2'd0, 8'hb3);  // C=1/S=0 deleted multiple-record write
       write_reg(2'd3, 8'ha0);
       while (dut.write_sector_lead_pending) @(negedge clk);
       for (i = 1; i < 512; i = i + 1) write_reg(2'd3, 8'ha0 ^ i[7:0]);
@@ -826,6 +844,7 @@ module fdc_1793_tb;
           i = 512;
         end
       end
+      expect_status(8'h20, 8'h20, "multi-write sector9 deleted record type");
       write_reg(2'd2, 8'd10);
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) begin
@@ -836,8 +855,10 @@ module fdc_1793_tb;
           i = 512;
         end
       end
+      expect_status(8'h20, 8'h20, "multi-write sector10 deleted record type");
 
       side = 1;
+      deleted_format_sector = 4;
       build_format_stream(8'd8, 1'b1);
       if (format_len != 6230 || format_output_len != 6250 || first_format_sector_end == 0) begin
         $display("FDC-1793: FAIL write-track fixture input=%0d output=%0d first=%0d",
@@ -886,8 +907,28 @@ module fdc_1793_tb;
             errors = errors + 1;
           end
         end
+        expect_status(8'h20, i == 4 ? 8'h20 : 8'h00,
+                      "formatted sector record type");
       end
 
+      write_reg(2'd0, 8'he0);
+      pulse_index();
+      for (i = 0; i <= 2432; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (i == 1918 && got !== 8'hf8) begin
+          $display("FDC-1793: FAIL read-track sector-4 deleted mark=%02x", got);
+          errors = errors + 1;
+        end else if (i == 2431 && got !== 8'hb8) begin
+          $display("FDC-1793: FAIL read-track sector-4 deleted CRC1=%02x", got);
+          errors = errors + 1;
+        end else if (i == 2432 && got !== 8'h81) begin
+          $display("FDC-1793: FAIL read-track sector-4 deleted CRC2=%02x", got);
+          errors = errors + 1;
+        end
+      end
+      write_reg(2'd0, 8'hd0);
+
+      deleted_format_sector = 0;
       build_format_stream(8'd9, 1'b1);
       seek_track(8'd9);
       write_reg(2'd2, 8'd2);

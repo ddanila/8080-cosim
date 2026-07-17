@@ -16,6 +16,10 @@ typedef struct {
   int heads;
   long size;
   int writable;
+  // The historical raw image stores payload bytes only. Preserve data-address
+  // mark type for the lifetime of an open image so the controller can model
+  // deleted records without pretending the metadata is on disk.
+  uint8_t deleted_data[JUK_TRACKS * 2 * JUK_SECTORS_PER_TRACK];
 } juk_disk;
 
 int juk_disk_open(juk_disk* disk, const char* path);
@@ -25,5 +29,7 @@ long juk_disk_offset(const juk_disk* disk, int track, int head, int sector);
 int juk_disk_read_sector(juk_disk* disk, int track, int head, int sector, uint8_t out[JUK_SECTOR_SIZE]);
 int juk_disk_write_sector(juk_disk* disk, int track, int head, int sector,
                           const uint8_t in[JUK_SECTOR_SIZE]);
+int juk_disk_sector_deleted(const juk_disk* disk, int track, int head, int sector);
+int juk_disk_set_sector_deleted(juk_disk* disk, int track, int head, int sector, int deleted);
 
 #endif

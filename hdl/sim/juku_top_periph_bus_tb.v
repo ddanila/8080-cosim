@@ -165,7 +165,7 @@ module juku_top_periph_bus_tb();
       for (byte_index = 0; byte_index < 22; byte_index = byte_index + 1) put_format_byte(8'h4e);
       for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) put_format_byte(8'h00);
       for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) put_format_byte(8'hf5);
-      put_format_byte(8'hfb);
+      put_format_byte(sector_id == 4 ? 8'hf8 : 8'hfb);
       for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
         put_format_byte(8'h30 + sector_id[7:0]);
       put_format_byte(8'hf7);
@@ -568,8 +568,19 @@ module juku_top_periph_bus_tb();
         end
       end
 
+      io_write(8'h1C, 8'hA3);   // a0=1 writes an F8 deleted-data mark
+      io_write(8'h1F, 8'hD5);
+      while (dut.U_FDC.write_sector_lead_pending) @(posedge osc);
+      for (i = 1; i < 512; i = i + 1) io_write(8'h1F, 8'hD5 ^ i[7:0]);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h20) !== 8'h00) fail("FDC deleted write-sector reported write fault");
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) io_read(8'h1F, rd);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h20) !== 8'h20) fail("FDC deleted read-sector omitted RECORD TYPE");
+
       io_write(8'h1E, 8'h09);
-      io_write(8'h1C, 8'hB2);   // side-aware multiple-record write
+      io_write(8'h1C, 8'hB3);   // side-aware deleted multiple-record write
       io_write(8'h1F, 8'hA0);
       while (dut.U_FDC.write_sector_lead_pending) @(posedge osc);
       for (i = 1; i < 512; i = i + 1) io_write(8'h1F, 8'hA0 ^ i[7:0]);
@@ -591,6 +602,8 @@ module juku_top_periph_bus_tb();
           i = 512;
         end
       end
+      io_read(8'h1C, rd);
+      if ((rd & 8'h20) !== 8'h20) fail("FDC multi-write sector 9 lost deleted mark");
       io_write(8'h1E, 8'h0a);
       io_write(8'h1C, 8'h82);
       for (i = 0; i < 512; i = i + 1) begin
@@ -600,6 +613,8 @@ module juku_top_periph_bus_tb();
           i = 512;
         end
       end
+      io_read(8'h1C, rd);
+      if ((rd & 8'h20) !== 8'h20) fail("FDC multi-write sector 10 lost deleted mark");
 
       build_format_stream(8'h08, 1'b0);
       if (format_len != 6230 || format_output_len != 6250)
@@ -627,6 +642,11 @@ module juku_top_periph_bus_tb();
       if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge write-track INTRQ");
       io_read(8'h1E, rd);
       if (rd !== 8'h0a) fail("FDC write-track changed sector register");
+      io_write(8'h1E, 8'h04);
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) io_read(8'h1F, rd);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h20) !== 8'h20) fail("FDC Write Track F8 omitted RECORD TYPE");
       io_write(8'h1E, 8'h01);
       io_write(8'h1C, 8'h82);
       for (i = 0; i < 512; i = i + 1) begin

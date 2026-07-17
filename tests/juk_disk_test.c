@@ -107,9 +107,19 @@ static int check_writable_image(const char* path) {
   if (juk_disk_write_sector(&disk, 7, 1, 3, put) != 0) fail = 1;
   if (juk_disk_read_sector(&disk, 7, 1, 3, got) != 0) fail = 1;
   if (memcmp(got, put, sizeof(got)) != 0) fail = 1;
+  if (juk_disk_sector_deleted(&disk, 7, 1, 3) != 0) fail = 1;
+  if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 1) != 0) fail = 1;
+  if (juk_disk_sector_deleted(&disk, 7, 1, 3) != 1) fail = 1;
+  if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 0) != 0) fail = 1;
+  if (juk_disk_sector_deleted(&disk, 7, 1, 3) != 0) fail = 1;
+  if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 1) != 0) fail = 1;
   juk_disk_close(&disk);
 
   if (juk_disk_open(&disk, path) != 0) return 1;
+  // The payload-only raw format cannot serialize address marks: reopening
+  // deliberately starts a fresh all-normal metadata session.
+  if (juk_disk_sector_deleted(&disk, 7, 1, 3) != 0) fail = 1;
+  if (juk_disk_set_sector_deleted(&disk, 7, 1, 3, 1) != -EROFS) fail = 1;
   if (juk_disk_write_sector(&disk, 7, 1, 3, put) != -EROFS) fail = 1;
   juk_disk_close(&disk);
   return fail;

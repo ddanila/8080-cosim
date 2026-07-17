@@ -62,6 +62,15 @@ long juk_disk_offset(const juk_disk* disk, int track, int head, int sector) {
 }
 
 
+static long metadata_index(const juk_disk* disk, int track, int head, int sector) {
+  if (!disk || !disk->fp) return -1;
+  if (track < 0 || track >= JUK_TRACKS) return -1;
+  if (head < 0 || head >= disk->heads) return -1;
+  if (sector < 1 || sector > JUK_SECTORS_PER_TRACK) return -1;
+  return ((long)track * 2 + head) * JUK_SECTORS_PER_TRACK + (sector - 1);
+}
+
+
 int juk_disk_read_sector(juk_disk* disk, int track, int head, int sector, uint8_t out[JUK_SECTOR_SIZE]) {
   long offset = juk_disk_offset(disk, track, head, sector);
   if (offset < 0) return -EINVAL;
@@ -81,5 +90,21 @@ int juk_disk_write_sector(juk_disk* disk, int track, int head, int sector,
   size_t put = fwrite(in, 1, JUK_SECTOR_SIZE, disk->fp);
   if (put != JUK_SECTOR_SIZE) return -EIO;
   if (fflush(disk->fp) != 0) return -errno;
+  return 0;
+}
+
+
+int juk_disk_sector_deleted(const juk_disk* disk, int track, int head, int sector) {
+  long index = metadata_index(disk, track, head, sector);
+  if (index < 0) return -EINVAL;
+  return disk->deleted_data[index] != 0;
+}
+
+
+int juk_disk_set_sector_deleted(juk_disk* disk, int track, int head, int sector, int deleted) {
+  if (!disk || !disk->writable) return -EROFS;
+  long index = metadata_index(disk, track, head, sector);
+  if (index < 0) return -EINVAL;
+  disk->deleted_data[index] = deleted != 0;
   return 0;
 }

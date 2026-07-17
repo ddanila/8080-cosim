@@ -56,10 +56,14 @@ input 6,230 CPU writes long while still occupying all 6,250 decoded byte times.
 The flat backend commits each completed normal-data sector as it is parsed, so
 a Force Interrupt leaves earlier sectors changed and later ones untouched.
 
-The backend cannot encode arbitrary ID order/geometry, deleted-data marks,
-damaged headers, or noncanonical gap/flux content. Such a complete revolution
-sets the behavioral WRITE FAULT status and is not falsely serialized as an
-unchanged valid raw image.
+The raw file cannot encode arbitrary ID order/geometry, data-address-mark type,
+damaged headers, or noncanonical gap/flux content. The loader therefore keeps
+an explicit session-only normal/deleted bit for each sector. WD1793 Write
+Sector `a0` and representable Write Track `FB`/`F8` fields update it; Read
+Sector and reconstructed Read Track consume it. Closing and reopening the raw
+image deliberately resets every mark to normal because no such bits exist on
+disk. Other unrepresentable complete revolutions set behavioral WRITE FAULT
+instead of being falsely serialized as an unchanged valid raw image.
 
 ## Guard
 
@@ -70,8 +74,9 @@ sync/juk_disk_check.sh
 ```
 
 The guard creates synthetic single- and double-sided images, validates CHS
-sector reads, and checks out-of-range addressing failures. It does not ship or
-validate any copyrighted EKDOS image.
+sector reads, checks session mark set/clear plus reopen reset, and checks
+out-of-range addressing failures. It does not ship or validate any copyrighted
+EKDOS image.
 
 ## Next Use
 

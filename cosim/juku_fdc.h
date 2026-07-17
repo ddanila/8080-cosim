@@ -31,6 +31,7 @@ typedef struct {
   unsigned write_track_field_pos;
   uint8_t write_track_id[4];
   int write_track_pending_sector;
+  int write_track_pending_deleted;
   uint16_t write_track_seen;
   int write_track_format_error;
   int track_waiting_index;

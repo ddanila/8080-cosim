@@ -9,6 +9,7 @@ enum {
   ST_TRACK0_LOST = 0x04,
   ST_CRC = 0x08,
   ST_RNF = 0x10,
+  ST_RECORD_TYPE = 0x20,
   ST_WRITE_FAULT = 0x20,
   ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
@@ -108,6 +109,7 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_state = WT_SCAN;
   fdc->write_track_field_pos = 0;
   fdc->write_track_pending_sector = 0;
+  fdc->write_track_pending_deleted = 0;
   fdc->write_track_seen = 0;
   fdc->write_track_format_error = 0;
   fdc->track_waiting_index = 0;
@@ -146,6 +148,12 @@ static int load_read_sector(juku_fdc* fdc) {
   int rc = juk_disk_read_sector(
       fdc->disk, fdc->physical_track, fdc->head, fdc->sector, fdc->buffer);
   if (rc != 0) return rc;
+  if (juk_disk_sector_deleted(
+          fdc->disk, fdc->physical_track, fdc->head, fdc->sector) > 0) {
+    fdc->status |= ST_RECORD_TYPE;
+  } else {
+    fdc->status &= (uint8_t)~ST_RECORD_TYPE;
+  }
   fdc->buffer_pos = 0;
   fdc->buffer_len = JUK_SECTOR_SIZE;
   fdc->status |= ST_BUSY | ST_DRQ;
@@ -444,7 +452,9 @@ static void begin_read_track(juku_fdc* fdc) {
     for (int i = 0; i < 12; i++) track_byte(fdc, &pos, 0x00);
     crc = 0xFFFF;
     for (int i = 0; i < 3; i++) track_crc_byte(fdc, &pos, &crc, 0xA1);
-    track_crc_byte(fdc, &pos, &crc, 0xFB);
+    const uint8_t data_mark = juk_disk_sector_deleted(
+        fdc->disk, fdc->physical_track, fdc->head, sector_id) > 0 ? 0xF8 : 0xFB;
+    track_crc_byte(fdc, &pos, &crc, data_mark);
     for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
       track_crc_byte(fdc, &pos, &crc, sector_data[i]);
     }
@@ -489,6 +499,13 @@ static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
     fdc->status |= ST_WRITE_PROTECT;
     return;
   }
+  if (juk_disk_set_sector_deleted(
+          fdc->disk, fdc->physical_track, fdc->head, fdc->sector,
+          fdc->command & 0x01) != 0) {
+    complete_transfer(fdc);
+    fdc->status |= ST_WRITE_FAULT;
+    return;
+  }
   if (!fdc->multi_record) {
     complete_transfer(fdc);
     return;
@@ -524,10 +541,18 @@ static void finish_write_track_sector(juku_fdc* fdc) {
     fdc->write_track_format_error = 1;
     return;
   }
+  if (juk_disk_set_sector_deleted(
+          fdc->disk, fdc->physical_track, fdc->head,
+          fdc->write_track_pending_sector, fdc->write_track_pending_deleted) != 0) {
+    fdc->status |= ST_WRITE_FAULT;
+    fdc->write_track_format_error = 1;
+    return;
+  }
   const uint16_t sector_bit = (uint16_t)1u << (fdc->write_track_pending_sector - 1);
   if (fdc->write_track_seen & sector_bit) fdc->write_track_format_error = 1;
   fdc->write_track_seen |= sector_bit;
   fdc->write_track_pending_sector = 0;
+  fdc->write_track_pending_deleted = 0;
 }
 
 
@@ -573,9 +598,11 @@ static void accept_write_track_byte(juku_fdc* fdc, uint8_t data) {
           fdc->write_track_id[2] <= JUK_SECTORS_PER_TRACK &&
           fdc->write_track_id[3] == 2) {
         fdc->write_track_pending_sector = fdc->write_track_id[2];
+        fdc->write_track_pending_deleted = 0;
       } else {
         fdc->write_track_format_error = 1;
         fdc->write_track_pending_sector = 0;
+        fdc->write_track_pending_deleted = 0;
       }
       fdc->write_track_state = WT_SCAN;
       fdc->write_track_field_pos = 0;
@@ -609,13 +636,10 @@ static void accept_write_track_byte(juku_fdc* fdc, uint8_t data) {
         fdc->write_track_field_pos = 0;
         if (sync_count >= 3 && data == 0xFE) {
           fdc->write_track_state = WT_ID;
-        } else if (sync_count >= 3 && data == 0xFB &&
+        } else if (sync_count >= 3 && (data == 0xFB || data == 0xF8) &&
                    fdc->write_track_pending_sector != 0) {
+          fdc->write_track_pending_deleted = data == 0xF8;
           fdc->write_track_state = WT_DATA;
-        } else if (sync_count >= 3 && data == 0xF8) {
-          // The sector-only backend cannot preserve a deleted-data mark.
-          fdc->write_track_format_error = 1;
-          fdc->write_track_pending_sector = 0;
         }
       }
       break;
@@ -659,6 +683,7 @@ static void begin_write_track(juku_fdc* fdc) {
   fdc->write_first_byte_pending = 1;
   fdc->write_track_state = WT_SCAN;
   fdc->write_track_pending_sector = 0;
+  fdc->write_track_pending_deleted = 0;
   fdc->status |= ST_BUSY | ST_DRQ;
   fdc->drq_ticks = 0;
 }
