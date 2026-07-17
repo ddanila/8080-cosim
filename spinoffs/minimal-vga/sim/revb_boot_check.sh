@@ -45,8 +45,12 @@ for M in 0 1; do
     "$TV/tv80_alu.v" "$TV/tv80_reg.v" "$TV/tv80_mcode.v" "$TV/tv80_core.v" "$TV/tv80s.v" \
     "$ROOT/hdl/devices.v" \
     "$REVB/revb_cpu_card.v" "$REVB/revb_mem_card.v" "$REVB/revb_video_card.v" \
-    "$REVB/revb_io_card.v" "$REVB/revb_backplane_top.v" "$REVB/revb_backplane_tb.v"
-  vvp "$TMP/twin_$M" >/dev/null 2>&1 || true
+    "$REVB/revb_io_card.v" "$REVB/revb_bus_monitor.v" \
+    "$REVB/revb_backplane_top.v" "$REVB/revb_backplane_tb.v"
+  vvp "$TMP/twin_$M" >"$TMP/run_$M.log" 2>&1 || true
+  if grep -q "REVB-BUS-CONFLICT" "$TMP/run_$M.log"; then
+    echo "  FAIL  Mode $M raised a bus-driver conflict:"; grep "REVB-BUS-CONFLICT" "$TMP/run_$M.log" | head -3 | sed 's/^/        /'; fail=1
+  fi
   if [ ! -f "$TMP/revb_$M.bin" ]; then
     echo "  FAIL  Mode $M never reached $WRITES video writes (no framebuffer dumped)"; fail=1
   elif cmp -s "$TMP/revb_$M.bin" "$TMP/ref.bin"; then

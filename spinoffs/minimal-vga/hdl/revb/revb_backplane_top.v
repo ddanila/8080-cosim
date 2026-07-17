@@ -59,5 +59,11 @@ module revb_backplane_top #(
         .clk(clk), .reset_n(reset_n), .A(A), .D_in(D),
         .iorq_n(iorq_n), .rd_n(rd_n), .wr_n(wr_n),
         .D_out(io_do), .D_oe(io_oe), .MODE0(MODE0), .MODE1(MODE1));
+
+    // Passive bus-conflict assertion (never two drivers on D0-D7).
+    wire bus_conflict;
+    revb_bus_monitor U_MON (
+        .cpu_oe(cpu_oe), .mem_oe(mem_oe), .video_oe(video_oe), .io_oe(io_oe),
+        .A(A), .conflict(bus_conflict));
 endmodule
 `default_nettype wire
