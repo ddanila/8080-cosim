@@ -12,7 +12,7 @@ Single-page state of the rev B (modular RC2014-bus) effort. Detail lives in
 | **B0** | facts file, commons guard, bus contract, modular HDL twin | ✅ done | `revb_boot_check.sh` byte-identical to cosim, both decode modes |
 | **B1 — sim/firmware** | bring-up ROM, minimum-tier twin | ✅ done | `revb_bringup_check.sh`: TX stream == cosim via real 8251 |
 | **B1-CAD Stage A** | four card netlists to schematic depth (TD.0–TD.5) | ✅ done | `check_revb_boards.py --completeness` green, in tier suite + CI |
-| **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8) | 🟡 partial | LVS IN SYNC (CI); PCB gen + content-check + STEP ✅; routing ⛔ Java 25; DRC-clean/placement ⬜ visual layout |
+| **B1-CAD Stage B** | mem-card pipeline: LVS → PCB → DRC → STEP (TD.6–TD.8, TE.1–TE.4) | ✅ done | LVS IN SYNC; placement-clean; **fully routed, DRC 0/0** (freerouting headless); STEP bbox 100×60; `check_revb_mem.sh` one-command green |
 | **B1-CAD Stage C** | replicate pipeline: io → cpu → backplane (TD.9–TD.11) | ⬜ | |
 | **B1-CAD Stage D** | FreeCAD mating/keying + fab package (TD.12–TD.13) | ⬜ → arms T1.10 | |
 | **B1 order / bench** | T1.10 order, T1.11 bench bring-up | ⬜ hardware-blocked | |
@@ -43,9 +43,9 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-All remaining work is now planned to task depth (execution guide): **TE.1–TE.4**
-finish Stage B (Java 25 + freerouting install → placement-clean per D1.27 →
-route → total-zero DRC), **TD.9–TD.11** replicate to io/cpu/backplane — io first
-and biggest because of **D1.26** (full B3 wiring now, 8255/PIC DNP, so B3 is
-populate-only) — and **TD.12–TD.13** mate/keying-check + fab package, arming the
-T1.10 order. Start with **TE.1**.
+Stage B ✅ (mem card fully routed, DRC 0/0). Next: **Stage C — TD.9** (io card,
+biggest per D1.26: full B3 wiring now, 8255/PIC DNP) then TD.10 cpu, TD.11
+backplane, running the now-proven pipeline (`gen_revb_boards`→LVS→`gen_revb_pcb`→
+`route_revb_pcb`→DRC). Then **TD.12–TD.13** FreeCAD mating/keying + gerber fab
+package → arms T1.10. Tools (KiCad 10, FreeCAD 1.1.1, Java 25, freerouting 2.2.4)
+all installed and proven headless.
