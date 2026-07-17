@@ -12,7 +12,9 @@
 enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
+  ST_TRACK0 = 0x04,
   ST_RNF = 0x10,
+  ST_HEAD_LOADED = 0x20,
   ST_WRITE_FAULT = 0x20,
   ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
@@ -166,6 +168,12 @@ static int expect_intrq(const juku_fdc* fdc, int value, const char* label) {
 }
 
 
+static void seek_track(juku_fdc* fdc, uint8_t track) {
+  juku_fdc_write(fdc, 3, track);
+  juku_fdc_write(fdc, 0, 0x10);
+}
+
+
 int main(void) {
   char dir[] = "/tmp/juku-fdc-test.XXXXXX";
   if (!mkdtemp(dir)) {
@@ -188,12 +196,20 @@ int main(void) {
   juku_fdc_write(&fdc, 1, 22);
   juku_fdc_write(&fdc, 0, 0x02);  // restore, as ROMBIOS issues before reading
   fail |= expect_intrq(&fdc, 1, "restore completion");
-  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, 0, "after restore command");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_TRACK0 | ST_WRITE_PROTECT | ST_NOT_READY,
+                        ST_TRACK0 | ST_WRITE_PROTECT, "after restore command");
   fail |= expect_intrq(&fdc, 0, "restore status acknowledgement");
   if (juku_fdc_read(&fdc, 1) != 0) {
     fprintf(stderr, "restore did not return to track 0\n");
     fail = 1;
   }
+
+  juku_fdc_write(&fdc, 0, 0x08);  // restore with head-load flag
+  fail |= expect_status(&fdc, ST_TRACK0 | ST_HEAD_LOADED,
+                        ST_TRACK0 | ST_HEAD_LOADED, "restore head-load status");
+  juku_fdc_write(&fdc, 0, 0x00);  // restore explicitly unloads the head
+  fail |= expect_status(&fdc, ST_TRACK0 | ST_HEAD_LOADED,
+                        ST_TRACK0, "restore head-unload status");
 
   juku_fdc_write(&fdc, 3, 12);
   juku_fdc_write(&fdc, 0, 0x12);  // seek to data register
@@ -202,6 +218,25 @@ int main(void) {
     fprintf(stderr, "seek did not copy data register to track\n");
     fail = 1;
   }
+
+  juku_fdc_write(&fdc, 0, 0x44);  // step in, no register update, verify
+  if (fdc.physical_track != 13 || juku_fdc_read(&fdc, 1) != 12) {
+    fprintf(stderr, "verified no-update step did not separate physical/register tracks\n");
+    fail = 1;
+  }
+  fail |= expect_status(&fdc, ST_RNF | ST_HEAD_LOADED,
+                        ST_RNF | ST_HEAD_LOADED, "Type-I verify seek error");
+  seek_track(&fdc, 14);
+  if (fdc.physical_track != 15 || juku_fdc_read(&fdc, 1) != 14) {
+    fprintf(stderr, "seek did not preserve the physical/register track offset\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 2, 1);
+  juku_fdc_write(&fdc, 0, 0x80);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
+                        ST_RNF, "read-sector rejects register/head mismatch");
+  juku_fdc_write(&fdc, 0, 0x00);  // RESTORE is what physically recalibrates track zero
+  seek_track(&fdc, 12);
 
   juku_fdc_write(&fdc, 0, 0x50);  // step in and update the track register
   if (juku_fdc_read(&fdc, 1) != 13) {
@@ -224,7 +259,8 @@ int main(void) {
     fail = 1;
   }
 
-  juku_fdc_write(&fdc, 1, 12);
+  juku_fdc_write(&fdc, 0, 0x00);
+  seek_track(&fdc, 12);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xC4);  // read address, including the valid E flag
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read-address command");
@@ -322,7 +358,7 @@ int main(void) {
   fail |= expect_intrq(&fdc, 0, "D4 arms without immediate interrupt");
   juku_fdc_index(&fdc, 1);
   fail |= expect_intrq(&fdc, 1, "D4 index interrupt");
-  (void)juku_fdc_read(&fdc, 0);
+  fail |= expect_status(&fdc, ST_DRQ, ST_DRQ, "D4 Type-I index status");
   juku_fdc_index(&fdc, 0);
   juku_fdc_index(&fdc, 1);
   fail |= expect_intrq(&fdc, 1, "D4 remains armed for another index pulse");
@@ -333,7 +369,7 @@ int main(void) {
   fail |= expect_intrq(&fdc, 0, "non-force command disarms D4 index interrupt");
   juku_fdc_write(&fdc, 0, 0xD0);
 
-  juku_fdc_write(&fdc, 1, 12);
+  seek_track(&fdc, 12);
   juku_fdc_write(&fdc, 2, 4);
   juku_fdc_write(&fdc, 0, 0x80);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read command");
@@ -361,7 +397,7 @@ int main(void) {
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "read-only write-sector command");
 
   juku_fdc_portc(&fdc, 0x44);  // motor on, drive 0, side 1
-  juku_fdc_write(&fdc, 1, 43);
+  seek_track(&fdc, 43);
   juku_fdc_write(&fdc, 2, 7);
   juku_fdc_write(&fdc, 0, 0x80);
   fill_sector(want, 43, 1, 7);
@@ -375,7 +411,7 @@ int main(void) {
   }
 
   juku_fdc_portc(&fdc, 0x04);  // motor on, side 0
-  juku_fdc_write(&fdc, 1, 12);
+  seek_track(&fdc, 12);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0x92);  // multiple-record read
   for (int record = 9; record <= 10; record++) {
@@ -416,7 +452,7 @@ int main(void) {
   }
   juku_fdc_init(&fdc, &disk);
   juku_fdc_portc(&fdc, 0x44);  // motor on, side 1
-  juku_fdc_write(&fdc, 1, 8);
+  seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 3);
   juku_fdc_write(&fdc, 0, 0xA2);  // exact side-aware ROMBIOS variant
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "writable write-sector command");
@@ -436,7 +472,7 @@ int main(void) {
     }
   }
 
-  juku_fdc_write(&fdc, 1, 8);
+  seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xB2);  // side-aware multiple-record write
   for (int record = 9; record <= 10; record++) {
@@ -473,7 +509,7 @@ int main(void) {
             format_len, first_sector_end);
     fail = 1;
   }
-  juku_fdc_write(&fdc, 1, 8);
+  seek_track(&fdc, 8);
   juku_fdc_write(&fdc, 2, 10);
   juku_fdc_write(&fdc, 0, 0xF4);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
@@ -504,7 +540,7 @@ int main(void) {
   }
 
   format_len = build_format_stream(format_stream, 9, 1, &first_sector_end);
-  juku_fdc_write(&fdc, 1, 9);
+  seek_track(&fdc, 9);
   juku_fdc_write(&fdc, 0, 0xF0);
   for (size_t i = 0; i < first_sector_end; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
   juku_fdc_write(&fdc, 0, 0xD0);
@@ -531,7 +567,7 @@ int main(void) {
   }
 
   fill_sector(want, 10, 1, 1);
-  juku_fdc_write(&fdc, 1, 10);
+  seek_track(&fdc, 10);
   juku_fdc_write(&fdc, 0, 0xF0);
   for (int i = 0; i < JUK_MFM_TRACK_SIZE; i++) juku_fdc_write(&fdc, 3, 0x4E);
   fail |= expect_intrq(&fdc, 1, "unrepresentable write-track completion");

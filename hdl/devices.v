@@ -820,6 +820,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     reg [7:0] status = ST_NOT_READY;
     reg [7:0] track = 8'h00;
+    reg [7:0] physical_track = 8'h00;
     reg [7:0] sector = 8'h01;
     reg [7:0] data = 8'h00;
     reg [7:0] command = 8'h00;
@@ -855,18 +856,31 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer write_track_pending_sector = 0;
     reg [9:0] write_track_seen = 0;
     integer write_track_format_error = 0;
+    integer status_type_i = 1;
+    integer head_loaded = 0;
+    integer command_was_busy = 0;
+    integer seek_delta = 0;
+    integer seek_destination = 0;
     reg [3:0] force_interrupt_mask = 4'b0000;
     reg intrq_r = 1'b0;
 
     wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
+    wire type_i_write_protect = wprt || (disk_requested && !disk_writable);
+    wire [7:0] type_i_status =
+        (status & 8'h99) |
+        (type_i_write_protect ? ST_WRITE_PROTECT : 8'h00) |
+        ((head_loaded && hlt) ? ST_WRITE_FAULT : 8'h00) |
+        ((physical_track == 8'h00) ? 8'h04 : 8'h00) |
+        (index ? ST_DRQ : 8'h00);
+    wire [7:0] status_view = status_type_i ? type_i_status : status;
     wire [7:0] effective_status =
-        (motor_on && disk_side_valid) ? (status & ~ST_NOT_READY) : (status | ST_NOT_READY);
+        (motor_on && disk_side_valid) ? (status_view & ~ST_NOT_READY) : (status_view | ST_NOT_READY);
 
     assign drq = status[1];
     assign intrq = intrq_r;
     assign step = 1'bz; assign dirc = 1'bz;
     assign early = 1'bz; assign late = 1'bz; assign rg = 1'bz;
-    assign hld = 1'bz; assign tg43 = 1'bz;
+    assign hld = head_loaded; assign tg43 = 1'bz;
     assign wg = 1'bz; assign wdata = 1'bz; assign wf_vfoe = 1'bz;
 
 `ifndef YOSYS
@@ -939,10 +953,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end endfunction
 
     function [7:0] synthetic_sector_byte(input integer pos); begin
-        if (pos == 0) synthetic_sector_byte = track;
+        if (pos == 0) synthetic_sector_byte = physical_track;
         else if (pos == 1) synthetic_sector_byte = {7'b0, side};
         else if (pos == 2) synthetic_sector_byte = sector;
-        else synthetic_sector_byte = track + ({7'b0, side} << 5) + sector + pos[7:0];
+        else synthetic_sector_byte = physical_track + ({7'b0, side} << 5) + sector + pos[7:0];
     end endfunction
 
 `ifndef YOSYS
@@ -950,10 +964,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         disk_sector_ok = 0;
         if (!disk_loaded) begin
             status = status | ST_NOT_READY;
-        end else if (track > 8'd79 || sector == 0 || sector > 10 || ({31'b0, side} >= disk_heads)) begin
+        end else if (track != physical_track || physical_track > 8'd79 ||
+                     sector == 0 || sector > 10 || ({31'b0, side} >= disk_heads)) begin
             status = status | ST_RNF;
         end else begin
-            disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
+            disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
             disk_seek_status = $fseek(disk_file, disk_offset, 0);
             disk_read_count = $fread(sector_buf, disk_file);
             if (disk_seek_status == 0 && disk_read_count == 512) disk_sector_ok = 1;
@@ -991,19 +1006,21 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `ifndef YOSYS
     task begin_write_sector(input multi); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+        status_type_i = 0;
+        head_loaded = 1;
+        status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (!disk_requested || !disk_writable) begin
             status = status | ST_WRITE_PROTECT;
             complete_transfer();
-        end else if (track > 8'd79 || sector == 0 || sector > 10 ||
+        end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10 ||
                      ({31'b0, side} >= disk_heads)) begin
             status = status | ST_RNF;
             complete_transfer();
         end else begin
-            disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
+            disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
             disk_seek_status = $fseek(disk_file, disk_offset, 0);
             if (disk_seek_status != 0) begin
                 status = status | ST_RNF;
@@ -1033,7 +1050,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         complete_transfer();
                         status = status | ST_RNF;
                     end else begin
-                        disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
+                        disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
                         disk_seek_status = $fseek(disk_file, disk_offset, 0);
                         if (disk_seek_status != 0) begin
                             complete_transfer();
@@ -1053,6 +1070,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `else
     task begin_write_sector(input multi); begin
         clear_transfer();
+        status_type_i = 0;
+        head_loaded = 1;
         status = (status & ~(ST_RNF | ST_NOT_READY)) | ST_WRITE_PROTECT;
         complete_transfer();
     end endtask
@@ -1061,11 +1080,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task begin_read_sector(input multi); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+        status_type_i = 0;
+        head_loaded = 1;
+        status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
             complete_transfer();
-        end else if (sector == 0 || sector > 10) begin
+        end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10) begin
             status = status | ST_RNF;
             complete_transfer();
         end else if (disk_requested) begin
@@ -1092,18 +1113,20 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         reg [15:0] crc;
     begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+        status_type_i = 0;
+        head_loaded = 1;
+        status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
-        end else if (track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
+        end else if (physical_track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
             status = status | ST_RNF;
             complete_transfer();
         end else begin
             // A flat sector image has no rotational position. Sector 1 is the
             // deterministic first ID field after index.
-            crc = id_crc(track, side, 8'd1);
-            sector_buf[0] = track;
+            crc = id_crc(physical_track, side, 8'd1);
+            sector_buf[0] = physical_track;
             sector_buf[1] = {7'b0, side};
             sector_buf[2] = 8'd1;
             sector_buf[3] = 8'd2;
@@ -1126,11 +1149,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         reg [7:0] value;
     begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+        status_type_i = 0;
+        head_loaded = 1;
+        status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
-        end else if (track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
+        end else if (physical_track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
             status = status | ST_RNF;
             complete_transfer();
         end else begin
@@ -1145,17 +1170,17 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             end
             for (sector_id = 1; sector_id <= 10; sector_id = sector_id + 1) begin
                 if (disk_requested) begin
-                    disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 +
+                    disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 +
                                    (sector_id - 1)) * 512;
                     disk_seek_status = $fseek(disk_file, disk_offset, 0);
                     disk_read_count = $fread(sector_buf, disk_file);
                     if (disk_seek_status != 0 || disk_read_count != 512) build_ok = 0;
                 end else begin
                     for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1) begin
-                        if (byte_index == 0) sector_buf[byte_index] = track;
+                        if (byte_index == 0) sector_buf[byte_index] = physical_track;
                         else if (byte_index == 1) sector_buf[byte_index] = {7'b0, side};
                         else if (byte_index == 2) sector_buf[byte_index] = sector_id[7:0];
-                        else sector_buf[byte_index] = track + ({7'b0, side} << 5) +
+                        else sector_buf[byte_index] = physical_track + ({7'b0, side} << 5) +
                                                       sector_id[7:0] + byte_index[7:0];
                     end
                 end
@@ -1173,7 +1198,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 for (byte_index = 0; byte_index < 5; byte_index = byte_index + 1) begin
                     case (byte_index)
                         0: value = 8'hfe;
-                        1: value = track;
+                        1: value = physical_track;
                         2: value = {7'b0, side};
                         3: value = sector_id[7:0];
                         default: value = 8'h02;
@@ -1239,26 +1264,41 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task finish_type_i(input [7:0] cmd); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+        status_type_i = 1;
+        head_loaded = |cmd[3:2];
+        status = status & ~(8'h08 | ST_RNF | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
         end else if ((cmd & 8'hF0) == 8'h00) begin
             track = 8'h00;
+            physical_track = 8'h00;
         end else if ((cmd & 8'hF0) == 8'h10) begin
-            step_dir_in = (data >= track);
+            seek_delta = data;
+            seek_delta = seek_delta - track;
+            seek_destination = physical_track + seek_delta;
+            if (seek_destination < 0) seek_destination = 0;
+            else if (seek_destination > 255) seek_destination = 255;
+            step_dir_in = (seek_delta >= 0);
             track = data;
+            physical_track = seek_destination[7:0];
         end else if ((cmd & 8'hE0) == 8'h20) begin
+            if (step_dir_in && physical_track != 8'hff) physical_track = physical_track + 8'd1;
+            else if (!step_dir_in && physical_track != 8'h00) physical_track = physical_track - 8'd1;
             if (cmd[4]) begin
                 if (step_dir_in && track != 8'hff) track = track + 8'd1;
                 else if (!step_dir_in && track != 8'h00) track = track - 8'd1;
             end
         end else if ((cmd & 8'hE0) == 8'h40) begin
             step_dir_in = 1'b1;
+            if (physical_track != 8'hff) physical_track = physical_track + 8'd1;
             if (cmd[4] && track != 8'hff) track = track + 8'd1;
         end else if ((cmd & 8'hE0) == 8'h60) begin
             step_dir_in = 1'b0;
+            if (physical_track != 8'h00) physical_track = physical_track - 8'd1;
             if (cmd[4] && track != 8'h00) track = track - 8'd1;
         end
+        if (cmd[2] && (track != physical_track || physical_track > 8'd79))
+            status = status | ST_RNF;
         complete_transfer();
     end endtask
 
@@ -1270,7 +1310,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         if (write_track_pending_sector < 1 || write_track_pending_sector > 10) begin
             write_track_format_error = 1;
         end else begin
-            disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 +
+            disk_offset = (((physical_track * disk_heads) + {31'b0, side}) * 10 +
                            (write_track_pending_sector - 1)) * 512;
             disk_seek_status = $fseek(disk_file, disk_offset, 0);
             if (disk_seek_status != 0) begin
@@ -1317,7 +1357,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 end
 
                 WT_ID_CRC: begin
-                    if (value == 8'hf7 && write_track_id0 == track &&
+                    if (value == 8'hf7 && write_track_id0 == physical_track &&
                         write_track_id1 == {7'b0, side} &&
                         write_track_id2 >= 1 && write_track_id2 <= 10 &&
                         write_track_id3 == 8'h02) begin
@@ -1380,14 +1420,16 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task begin_write_track; begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+        status_type_i = 0;
+        head_loaded = 1;
+        status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (!disk_requested || !disk_writable) begin
             status = status | ST_WRITE_PROTECT;
             complete_transfer();
-        end else if (track > 8'd79 || ({31'b0, side} >= disk_heads)) begin
+        end else if (physical_track > 8'd79 || ({31'b0, side} >= disk_heads)) begin
             status = status | ST_RNF;
             complete_transfer();
         end else begin
@@ -1402,6 +1444,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     task accept_write_track_byte(input [7:0] value); begin end endtask
     task begin_write_track; begin
         clear_transfer();
+        status_type_i = 0;
+        head_loaded = 1;
         status = (status & ~(ST_RNF | ST_WRITE_FAULT | ST_NOT_READY)) | ST_WRITE_PROTECT;
         complete_transfer();
     end endtask
@@ -1413,6 +1457,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     always @(posedge fdc_write_active) begin
         case (A)
             2'd0: begin
+                command_was_busy = status[0];
                 command = D;
                 intrq_r = 1'b0;
                 force_interrupt_mask = 4'b0000;
@@ -1420,6 +1465,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 else if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) begin
                     clear_transfer();
+                    if (!command_was_busy) status_type_i = 1;
                     force_interrupt_mask = D[3:0];
                     intrq_r = D[3];
                 end
@@ -1428,6 +1474,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 else if (is_read_track(D)) begin_read_track();
                 else if (is_write_track(D)) begin_write_track();
                 else begin
+                    status_type_i = 0;
+                    head_loaded = 1;
                     status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
                 end
             end

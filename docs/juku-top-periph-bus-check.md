@@ -30,7 +30,7 @@ sync/juku_top_periph_bus_check.sh
 | Always-enabled D100 path uses actual D93 `/RE` and stays A->B on the suppressed-`/RE` branch | PASS |
 | FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | PASS |
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | PASS |
-| FDC seek/status/data through decoded ports `0x1C..0x1F` | PASS |
+| Type-I physical-head/update/verify/SEEK-ERROR status plus seek/data through decoded ports `0x1C..0x1F` | PASS |
 | First byte of `JUKU1.CPM` track 0 sector 2 read through top-level bus is `0xC3` | PASS |
 | Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | PASS |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |

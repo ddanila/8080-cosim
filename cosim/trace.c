@@ -356,6 +356,7 @@ static void dump_checkpoint(const char* prefix, const i8080* cpu) {
   fprintf(state_out, "fdc_motor_on=%d\n", fdc.motor_on);
   fprintf(state_out, "fdc_status=%02X\n", fdc.status);
   fprintf(state_out, "fdc_track=%02X\n", fdc.track);
+  fprintf(state_out, "fdc_physical_track=%02X\n", fdc.physical_track);
   fprintf(state_out, "fdc_sector=%02X\n", fdc.sector);
   fprintf(state_out, "fdc_data=%02X\n", fdc.data);
   fprintf(state_out, "fdc_command=%02X\n", fdc.command);

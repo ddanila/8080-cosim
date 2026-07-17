@@ -490,7 +490,7 @@ module juku_top_tb();
              dut.iowr_n, dut.inta_n, dut.sync, dut.intr, dut.U_CPU.u.core.xchg_dh);
     // vm80a's XCHG implementation swaps the D/E and H/L register selectors, so
     // the fixed r16_de/r16_hl latch names are not always architectural names.
-    $display("[STATE] pc=%04h sp=%04h a=%02h b=%02h c=%02h d=%02h e=%02h h=%02h l=%02h sf=%0d zf=%0d hf=%0d pf=%0d cf=%0d iff=%0d mode=%0d portc=%02h kbd_col=%02h pic_icw1=%02h pic_icw2=%02h pic_mask=%02h pic_expect_icw2=%0d fdc_motor_on=%0d fdc_status=%02h fdc_track=%02h fdc_sector=%02h fdc_data=%02h fdc_command=%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
+    $display("[STATE] pc=%04h sp=%04h a=%02h b=%02h c=%02h d=%02h e=%02h h=%02h l=%02h sf=%0d zf=%0d hf=%0d pf=%0d cf=%0d iff=%0d mode=%0d portc=%02h kbd_col=%02h pic_icw1=%02h pic_icw2=%02h pic_mask=%02h pic_expect_icw2=%0d fdc_motor_on=%0d fdc_status=%02h fdc_track=%02h fdc_physical_track=%02h fdc_sector=%02h fdc_data=%02h fdc_command=%02h fdc_buffer_pos=%0d fdc_buffer_len=%0d",
              dut.U_CPU.u.core.r16_pc, dut.U_CPU.u.core.r16_sp, dut.U_CPU.u.core.acc,
              dut.U_CPU.u.core.r16_bc[15:8], dut.U_CPU.u.core.r16_bc[7:0],
              dut.U_CPU.u.core.xchg_dh ? dut.U_CPU.u.core.r16_de[15:8] : dut.U_CPU.u.core.r16_hl[15:8],
@@ -501,7 +501,7 @@ module juku_top_tb();
              dut.U_CPU.u.core.psw_p, dut.U_CPU.u.core.psw_c, dut.U_CPU.u.core.inte,
              dut.ppi0_pc[4:2], dut.U_PPI0.portc, {4'b0000, dut.U_PPI0.kbd_col_sel},
              dut.U_INTR.icw1, dut.U_INTR.icw2, dut.U_INTR.mask, dut.U_INTR.expect_icw2,
-             dut.ppi0_pc[2], dut.U_FDC.status, dut.U_FDC.track, dut.U_FDC.sector,
+             dut.ppi0_pc[2], dut.U_FDC.status, dut.U_FDC.track, dut.U_FDC.physical_track, dut.U_FDC.sector,
              dut.U_FDC.data, dut.U_FDC.command, dut.U_FDC.buffer_pos, dut.U_FDC.buffer_len);
     if (traceio || tracekbd || tracepic || traceppi || tracefdc || traceirq)
       $display("[IO] raw_ios=%0d raw_reads=%0d raw_writes=%0d pic_ios=%0d pic_reads=%0d pic_writes=%0d ppi_ios=%0d ppi_reads=%0d ppi_writes=%0d ppi_key_reads=%0d fdc_ios=%0d fdc_reads=%0d fdc_writes=%0d frame_ticks=%0d intr_edges=%0d inta_edges=%0d",

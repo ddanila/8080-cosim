@@ -101,6 +101,11 @@ module juku_top_periph_bus_tb();
     bus_idle();
   end endtask
 
+  task fdc_seek(input [7:0] track_id); begin
+    io_write(8'h1F, track_id);
+    io_write(8'h1C, 8'h10);
+  end endtask
+
   task inta_read(output [7:0] data); begin
     release dut.DB;
     force dut.iord_n = 1'b1;
@@ -244,6 +249,8 @@ module juku_top_periph_bus_tb();
     if (dut.fdc_intrq !== 1'b1) fail("FDC restore did not raise INTRQ");
     io_read(8'h1C, rd);
     if ((rd & 8'h83) !== 8'h00) fail("FDC restore status should clear NOT_READY/BUSY/DRQ with motor on");
+    if ((rd & 8'h64) !== (writable_mode ? 8'h04 : 8'h44))
+      fail("FDC restore Type-I status did not report TRACK0/media-protect/head-unloaded");
     if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge restore INTRQ");
     io_read(8'h1D, rd);
     if (rd !== 8'h00) fail("FDC restore did not return track register to zero");
@@ -255,7 +262,17 @@ module juku_top_periph_bus_tb();
     io_read(8'h1D, rd);
     if (rd !== 8'h02) fail("FDC seek did not update track register through top-level bus");
 
-    io_write(8'h1D, 8'h00);     // read vendored JUKU1 sector 2 on track 0
+    io_write(8'h1C, 8'h44);     // step in without update, then verify
+    io_read(8'h1D, rd);
+    if (rd !== 8'h02 || dut.U_FDC.physical_track !== 8'h03)
+      fail("FDC no-update step did not separate physical head and Track register");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h30) !== 8'h30) fail("FDC Type-I verify did not report SEEK ERROR/head loaded");
+    fdc_seek(8'h0e);
+    if (dut.U_FDC.track !== 8'h0e || dut.U_FDC.physical_track !== 8'h0f)
+      fail("FDC seek did not preserve the physical/register track offset");
+
+    io_write(8'h1C, 8'h00);      // RESTORE physically recalibrates track zero
     io_write(8'h1C, 8'h80);     // FDC read-sector command
     io_read(8'h1C, rd);
     if ((rd & 8'h03) !== 8'h03) fail("FDC read-sector did not assert BUSY+DRQ");
@@ -298,6 +315,7 @@ module juku_top_periph_bus_tb();
     #1;
     if (dut.fdc_intrq !== 1'b1) fail("FDC D4 index pulse did not raise INTRQ");
     io_read(8'h1C, rd);
+    if ((rd & 8'h02) !== 8'h02) fail("FDC Type-I status did not reflect active index input");
     force dut.U_FDC.index = 1'b0;
     #1;
     force dut.U_FDC.index = 1'b1;
@@ -314,7 +332,7 @@ module juku_top_periph_bus_tb();
     release dut.U_FDC.ready;
     release dut.U_FDC.index;
 
-    io_write(8'h1D, 8'h00);
+    fdc_seek(8'h00);
     io_write(8'h1E, 8'h07);
     io_write(8'h1C, 8'hE4);     // Type-III Read Track with the valid E flag
     io_read(8'h1C, rd);
@@ -345,7 +363,7 @@ module juku_top_periph_bus_tb();
     io_read(8'h1E, rd);
     if (rd !== 8'h07) fail("FDC read-track changed sector register");
 
-    io_write(8'h1D, 8'h00);
+    fdc_seek(8'h00);
     io_write(8'h1E, 8'h09);
     io_write(8'h1C, 8'h92);     // Type-II multiple-record read
     for (i = 0; i < 1024; i = i + 1) begin
@@ -361,7 +379,7 @@ module juku_top_periph_bus_tb();
     if (rd !== 8'h0b) fail("FDC multi-read did not advance sector register to 11");
 
     if (writable_mode) begin
-      io_write(8'h1D, 8'h08);
+      fdc_seek(8'h08);
       io_write(8'h1E, 8'h03);
       io_write(8'h1C, 8'hA2);   // exact ROMBIOS side-aware write-sector command
       io_read(8'h1C, rd);
@@ -412,7 +430,7 @@ module juku_top_periph_bus_tb();
       build_format_stream(8'h08, 1'b0);
       if (format_len != 6230 || format_output_len != 6250)
         fail("FDC write-track fixture length mismatch");
-      io_write(8'h1D, 8'h08);
+      fdc_seek(8'h08);
       io_write(8'h1E, 8'h0a);
       io_write(8'h1C, 8'hF4);
       io_read(8'h1C, rd);

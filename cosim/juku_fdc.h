@@ -13,6 +13,7 @@ typedef struct {
   int motor_on;
   uint8_t status;
   uint8_t track;
+  uint8_t physical_track;
   uint8_t sector;
   uint8_t data;
   uint8_t command;
@@ -33,6 +34,8 @@ typedef struct {
   uint16_t write_track_seen;
   int write_track_format_error;
   uint8_t force_interrupt_mask;
+  int status_type_i;
+  int head_loaded;
   int ready_line;
   int index_line;
   int intrq;

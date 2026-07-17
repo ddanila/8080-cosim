@@ -181,6 +181,7 @@ def state_plusargs(state: dict[str, str], phase_mcyc: int | None = None) -> list
         *([] if phase_mcyc is None else [f"+state_kbd_phase_mcyc={phase_mcyc}"]),
         f"+state_fdc_status={state.get('fdc_status', '80')}",
         f"+state_fdc_track={state.get('fdc_track', '00')}",
+        f"+state_fdc_physical_track={state.get('fdc_physical_track', state.get('fdc_track', '00'))}",
         f"+state_fdc_sector={state.get('fdc_sector', '01')}",
         f"+state_fdc_data={state.get('fdc_data', '00')}",
         f"+state_fdc_command={state.get('fdc_command', '00')}",

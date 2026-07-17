@@ -51,6 +51,7 @@ sync/ekdos_checkpoint_reference.py
 | `fdc_enabled` | `1` |
 | `fdc_motor_on` | `0` |
 | `fdc_track` | `00` |
+| `fdc_physical_track` | `00` |
 | `fdc_sector` | `01` |
 
 ## Boundary

@@ -71,6 +71,7 @@ module juku_top_checkpoint_load_tb();
 
     dut.U_FDC.status = 8'h00;
     dut.U_FDC.track = 8'h00;
+    dut.U_FDC.physical_track = 8'h00;
     dut.U_FDC.sector = 8'h01;
     dut.U_FDC.data = 8'h00;
     dut.U_FDC.command = 8'h00;
@@ -94,6 +95,7 @@ module juku_top_checkpoint_load_tb();
     if (dut.U_INTR.icw1 !== 8'h00 || dut.U_INTR.icw2 !== 8'h00) fail_state("PIC/intr ICW mismatch");
     if (dut.U_FDC.status !== 8'h00) fail_state("FDC status mismatch");
     if (dut.U_FDC.track !== 8'h00) fail_state("FDC track mismatch");
+    if (dut.U_FDC.physical_track !== 8'h00) fail_state("FDC physical track mismatch");
     if (dut.U_FDC.sector !== 8'h01) fail_state("FDC sector mismatch");
     if (state_fails == 0) $display("JUKU-TOP-CHECKPOINT-STATE: PASS");
   end endtask

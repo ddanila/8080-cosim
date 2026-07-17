@@ -20,7 +20,8 @@ module juku_top_checkpoint_resume_tb();
   integer state_a = 8'hA1, state_sf = 1, state_zf = 0, state_hf = 0, state_pf = 0, state_cf = 0;
   integer state_iff = 0, state_portc = 8'h80, state_kbd_col = 8'h0F;
   integer state_pic_icw1 = 8'h00, state_pic_icw2 = 8'h00, state_pic_mask = 8'hFF, state_pic_expect_icw2 = 0;
-  integer state_fdc_status = 8'h80, state_fdc_track = 8'h00, state_fdc_sector = 8'h01;
+  integer state_fdc_status = 8'h80, state_fdc_track = 8'h00;
+  integer state_fdc_physical_track = -1, state_fdc_sector = 8'h01;
   integer state_fdc_data = 8'h00, state_fdc_command = 8'h00;
   integer state_fdc_buffer_pos = 0, state_fdc_buffer_len = 0;
   integer trace_resume = 0;
@@ -390,6 +391,7 @@ module juku_top_checkpoint_resume_tb();
 
     dut.U_FDC.status = state_fdc_status[7:0];
     dut.U_FDC.track = state_fdc_track[7:0];
+    dut.U_FDC.physical_track = state_fdc_physical_track[7:0];
     dut.U_FDC.sector = state_fdc_sector[7:0];
     dut.U_FDC.data = state_fdc_data[7:0];
     dut.U_FDC.command = state_fdc_command[7:0];
@@ -839,6 +841,8 @@ module juku_top_checkpoint_resume_tb();
     if ($value$plusargs("state_pic_expect_icw2=%d", state_pic_expect_icw2)) ;
     if ($value$plusargs("state_fdc_status=%h", state_fdc_status)) ;
     if ($value$plusargs("state_fdc_track=%h", state_fdc_track)) ;
+    if (!$value$plusargs("state_fdc_physical_track=%h", state_fdc_physical_track))
+      state_fdc_physical_track = state_fdc_track;
     if ($value$plusargs("state_fdc_sector=%h", state_fdc_sector)) ;
     if ($value$plusargs("state_fdc_data=%h", state_fdc_data)) ;
     if ($value$plusargs("state_fdc_command=%h", state_fdc_command)) ;

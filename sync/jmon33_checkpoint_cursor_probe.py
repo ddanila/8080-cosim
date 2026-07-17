@@ -129,6 +129,7 @@ def state_plusargs(state: dict[str, str]) -> list[str]:
         f"+state_pic_expect_icw2={state.get('pic_expect_icw2', '0')}",
         f"+state_fdc_status={state.get('fdc_status', '80')}",
         f"+state_fdc_track={state.get('fdc_track', '00')}",
+        f"+state_fdc_physical_track={state.get('fdc_physical_track', state.get('fdc_track', '00'))}",
         f"+state_fdc_sector={state.get('fdc_sector', '01')}",
         f"+state_fdc_data={state.get('fdc_data', '00')}",
         f"+state_fdc_command={state.get('fdc_command', '00')}",

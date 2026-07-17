@@ -181,6 +181,7 @@ def main() -> int:
         "fdc_enabled",
         "fdc_motor_on",
         "fdc_track",
+        "fdc_physical_track",
         "fdc_sector",
     ):
         lines.append(f"| `{key}` | `{state.get(key, 'missing')}` |")

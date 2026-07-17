@@ -47,8 +47,16 @@ physical D93/D94 wiring.
 
 ## Passing scope
 
-- C/HDL-identical restore, seek, step, step-in, and step-out direction/update
-  semantics, plus single/multiple-record read-sector and write-sector, Read
+- C/HDL-identical Type-I restore, seek, step, step-in, and step-out semantics.
+  The physical head position is independent of the Track register: update-off
+  steps move only the head, verify compares the next flat-image ID track to the
+  register and reports SEEK ERROR on a mismatch, SEEK preserves any existing
+  physical/register offset, and only RESTORE recalibrates both to track zero.
+  Later sector commands reject a mismatched head/register pair. The Type-I status view dynamically
+  reports TRACK 0, HEAD LOADED, INDEX, media write protection, and SEEK ERROR;
+  the `h` and `V` flags control the modeled head-load latch. Exact step-rate,
+  15 ms settle, 15-revolution unload, and external TR00/HLT timing remain
+  physical timing boundaries. The same models cover single/multiple-record read-sector and write-sector, Read
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
@@ -343,8 +351,9 @@ evidence exists.
 - The model is a Juku boot/media shim with datasheet-guarded Read Address,
   reconstructed Read Track, representable MFM Write Track, and Type-II
   multiple-record continuation, not a general WD1793 conformance model. Byte
-  deadlines/lost-data behavior, arbitrary flux/sector layouts, deleted-data
-  metadata, inter-record delays, and physical rotational timing remain outside
+  deadlines/lost-data behavior, exact Type-I step/settle/head-unload timing,
+  arbitrary flux/sector layouts, deleted-data metadata, inter-record delays,
+  and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are
   guarded, but the board's physical event sources, pulse widths, and rotational
   timing remain outside this byte-level shim.

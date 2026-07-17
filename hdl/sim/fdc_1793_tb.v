@@ -22,6 +22,7 @@ module fdc_1793_tb;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side), .ready(ready), .index(index),
+               .hlt(1'b1), .wprt(1'b0),
                .drq(drq), .intrq(intrq));
 
   always #5 clk = ~clk;
@@ -40,6 +41,11 @@ module fdc_1793_tb;
     #1 value = D;
     @(negedge clk);
     rd_n = 1; cs_n = 1;
+  end endtask
+
+  task seek_track(input [7:0] track_id); begin
+    write_reg(2'd3, track_id);
+    write_reg(2'd0, 8'h10);
   end endtask
 
   task expect_status(input [7:0] mask, input [7:0] value, input [160*8:1] label);
@@ -143,13 +149,18 @@ module fdc_1793_tb;
     write_reg(2'd1, 8'd22);
     write_reg(2'd0, 8'h02);
     expect_intrq(1'b1, "restore completion");
-    expect_status(8'h83, 8'h00, "after restore");
+    expect_status(8'he7, (disk_mode && !writable_mode) ? 8'h44 : 8'h04, "after restore");
     expect_intrq(1'b0, "restore status acknowledgement");
     read_reg(2'd1, got);
     if (got !== 8'd0) begin
       $display("FDC-1793: FAIL restore track=%02x", got);
       errors = errors + 1;
     end
+
+    write_reg(2'd0, 8'h08);
+    expect_status(8'h24, 8'h24, "restore head-load status");
+    write_reg(2'd0, 8'h00);
+    expect_status(8'h24, 8'h04, "restore head-unload status");
 
     write_reg(2'd3, 8'd12);
     write_reg(2'd0, 8'h12);
@@ -159,6 +170,27 @@ module fdc_1793_tb;
       $display("FDC-1793: FAIL seek track=%02x", got);
       errors = errors + 1;
     end
+
+    write_reg(2'd0, 8'h44);
+    read_reg(2'd1, got);
+    if (dut.physical_track !== 8'd13 || got !== 8'd12) begin
+      $display("FDC-1793: FAIL verified no-update step physical=%02x track=%02x",
+               dut.physical_track, got);
+      errors = errors + 1;
+    end
+    expect_status(8'h30, 8'h30, "Type-I verify seek error");
+    seek_track(8'd14);
+    read_reg(2'd1, got);
+    if (dut.physical_track !== 8'd15 || got !== 8'd14) begin
+      $display("FDC-1793: FAIL seek lost physical/register offset physical=%02x track=%02x",
+               dut.physical_track, got);
+      errors = errors + 1;
+    end
+    write_reg(2'd2, 8'd1);
+    write_reg(2'd0, 8'h80);
+    expect_status(8'h13, 8'h10, "read-sector rejects register/head mismatch");
+    write_reg(2'd0, 8'h00);
+    seek_track(8'd12);
 
     write_reg(2'd0, 8'h50);
     read_reg(2'd1, got);
@@ -188,7 +220,8 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
-    write_reg(2'd1, 8'd12);
+    write_reg(2'd0, 8'h00);
+    seek_track(8'd12);
     write_reg(2'd2, 8'd9);
     write_reg(2'd0, 8'hc4);  // read address with the valid E flag set
     expect_status(8'h03, 8'h03, "after read-address command");
@@ -213,7 +246,7 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
-    write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
+    seek_track(disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, 8'd7);
     write_reg(2'd0, 8'he4);  // Read Track with the valid E flag
     expect_status(8'h03, 8'h03, "after read-track command");
@@ -340,7 +373,7 @@ module fdc_1793_tb;
     expect_intrq(1'b0, "D4 arms without immediate interrupt");
     index = 1; #1;
     expect_intrq(1'b1, "D4 index interrupt");
-    read_reg(2'd0, got);
+    expect_status(8'h02, 8'h02, "D4 Type-I index status");
     index = 0; #1; index = 1; #1;
     expect_intrq(1'b1, "D4 remains armed for another index pulse");
     read_reg(2'd0, got);
@@ -349,7 +382,7 @@ module fdc_1793_tb;
     expect_intrq(1'b0, "non-force command disarms D4 index interrupt");
     write_reg(2'd0, 8'hd0);
 
-    write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
+    seek_track(disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
     write_reg(2'd0, 8'h80);
     expect_status(8'h03, 8'h03, disk_mode ? "after raw-disk read command" : "after side-0 read command");
@@ -382,7 +415,7 @@ module fdc_1793_tb;
     end
 
     if (disk_mode && writable_mode) begin
-      write_reg(2'd1, 8'd8);
+      seek_track(8'd8);
       write_reg(2'd2, 8'd3);
       write_reg(2'd0, 8'hA2);  // exact ROMBIOS side-aware write-sector variant
       expect_status(8'h03, 8'h03, "writable write-sector command");
@@ -404,7 +437,7 @@ module fdc_1793_tb;
         end
       end
 
-      write_reg(2'd1, 8'd8);
+      seek_track(8'd8);
       write_reg(2'd2, 8'd9);
       write_reg(2'd0, 8'hb2);  // side-aware multiple-record write
       for (i = 0; i < 1024; i = i + 1)
@@ -444,7 +477,7 @@ module fdc_1793_tb;
                  format_len, format_output_len, first_format_sector_end);
         errors = errors + 1;
       end
-      write_reg(2'd1, 8'd8);
+      seek_track(8'd8);
       write_reg(2'd2, 8'd10);
       write_reg(2'd0, 8'hf4);
       expect_status(8'h03, 8'h03, "writable write-track command");
@@ -470,7 +503,7 @@ module fdc_1793_tb;
       end
 
       build_format_stream(8'd9, 1'b1);
-      write_reg(2'd1, 8'd9);
+      seek_track(8'd9);
       write_reg(2'd2, 8'd2);
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
@@ -500,7 +533,7 @@ module fdc_1793_tb;
         end
       end
 
-      write_reg(2'd1, 8'd10);
+      seek_track(8'd10);
       write_reg(2'd2, 8'd1);
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
@@ -533,7 +566,7 @@ module fdc_1793_tb;
 
     if (!disk_mode) begin
       side = 1;
-      write_reg(2'd1, 8'd43);
+      seek_track(8'd43);
       write_reg(2'd2, 8'd7);
       write_reg(2'd0, 8'h80);
       for (i = 0; i < 512; i = i + 1) begin
@@ -547,7 +580,7 @@ module fdc_1793_tb;
     end
 
     side = 0;
-    write_reg(2'd1, 8'd12);
+    seek_track(8'd12);
     write_reg(2'd2, 8'd9);
     write_reg(2'd0, 8'h92);  // multiple-record read
     for (i = 0; i < 1024; i = i + 1) begin

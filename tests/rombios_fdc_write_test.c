@@ -621,6 +621,7 @@ int main(int argc, char** argv) {
   juku_fdc_init(&f.fdc, &disk);
   update_portc(&f, 0x05);  // motor on, drive A, side 0, high ROM overlay
   f.fdc.track = 8;
+  f.fdc.physical_track = 8;  // boot checkpoint says the remembered drive head is also at track 8
   unsigned long bios_handoff_cycles = 0;
   fail |= run_bios_handoff(&f, BIOS_BOOT, 0, NULL, &bios_handoff_cycles);
   fail |= run_bios_handoff(&f, BIOS_WBOOT, 1, NULL, &bios_handoff_cycles);
@@ -1124,6 +1125,7 @@ int main(int argc, char** argv) {
     juku_fdc_init(&f.fdc, &disk);
     update_portc(&f, 0x05);
     f.fdc.track = 8;
+    f.fdc.physical_track = 8;
 
     fail |= run_rwfloppy(&f, 0x12, 9, DMA_ADDR, &protect_cycles);
     fail |= run_rwfloppy(&f, 0x11, 13, SCRATCH_ADDR, &protect_cycles);
