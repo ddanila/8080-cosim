@@ -809,8 +809,14 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     localparam ST_BUSY = 8'h01;
     localparam ST_DRQ = 8'h02;
     localparam ST_RNF = 8'h10;
+    localparam ST_WRITE_FAULT = 8'h20;
     localparam ST_WRITE_PROTECT = 8'h40;
     localparam ST_NOT_READY = 8'h80;
+    localparam WT_SCAN = 0;
+    localparam WT_ID = 1;
+    localparam WT_ID_CRC = 2;
+    localparam WT_DATA = 3;
+    localparam WT_DATA_CRC = 4;
 
     reg [7:0] status = ST_NOT_READY;
     reg [7:0] track = 8'h00;
@@ -835,9 +841,20 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_seek_status = 0;
     integer disk_sector_ok = 0;
     integer write_transfer = 0;
+    integer write_track_transfer = 0;
     integer read_address_transfer = 0;
     integer read_track_transfer = 0;
     integer multi_record = 0;
+    integer write_track_output_pos = 0;
+    integer write_track_state = WT_SCAN;
+    integer write_track_field_pos = 0;
+    reg [7:0] write_track_id0 = 0;
+    reg [7:0] write_track_id1 = 0;
+    reg [7:0] write_track_id2 = 0;
+    reg [7:0] write_track_id3 = 0;
+    integer write_track_pending_sector = 0;
+    reg [9:0] write_track_seen = 0;
+    integer write_track_format_error = 0;
     reg intrq_r = 1'b0;
 
     wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
@@ -952,9 +969,16 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         buffer_pos = 0;
         buffer_len = 0;
         write_transfer = 0;
+        write_track_transfer = 0;
         read_address_transfer = 0;
         read_track_transfer = 0;
         multi_record = 0;
+        write_track_output_pos = 0;
+        write_track_state = WT_SCAN;
+        write_track_field_pos = 0;
+        write_track_pending_sector = 0;
+        write_track_seen = 0;
+        write_track_format_error = 0;
         status = status & ~(ST_BUSY | ST_DRQ);
     end endtask
 
@@ -966,7 +990,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `ifndef YOSYS
     task begin_write_sector(input multi); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
@@ -1036,7 +1060,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task begin_read_sector(input multi); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
             complete_transfer();
@@ -1067,7 +1091,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         reg [15:0] crc;
     begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
@@ -1101,7 +1125,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         reg [7:0] value;
     begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
@@ -1214,7 +1238,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     task finish_type_i(input [7:0] cmd); begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
         end else if ((cmd & 8'hF0) == 8'h00) begin
@@ -1237,16 +1261,150 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         complete_transfer();
     end endtask
 
-    task reject_write_track; begin
+`ifndef YOSYS
+    task finish_write_track_sector;
+        integer byte_index;
+        reg [9:0] sector_bit;
+    begin
+        if (write_track_pending_sector < 1 || write_track_pending_sector > 10) begin
+            write_track_format_error = 1;
+        end else begin
+            disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 +
+                           (write_track_pending_sector - 1)) * 512;
+            disk_seek_status = $fseek(disk_file, disk_offset, 0);
+            if (disk_seek_status != 0) begin
+                status = status | ST_WRITE_PROTECT;
+                write_track_format_error = 1;
+            end else begin
+                for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
+                    $fwrite(disk_file, "%c", sector_buf[byte_index]);
+                $fflush(disk_file);
+                sector_bit = 10'b1 << (write_track_pending_sector - 1);
+                if (write_track_seen & sector_bit) write_track_format_error = 1;
+                write_track_seen = write_track_seen | sector_bit;
+                write_track_pending_sector = 0;
+            end
+        end
+    end endtask
+
+    task accept_write_track_byte(input [7:0] value);
+        reg [7:0] decoded;
+        integer sync_count;
+    begin
+        if (write_track_transfer) begin
+            write_track_output_pos = write_track_output_pos + ((value == 8'hf7) ? 2 : 1);
+            if (value == 8'hf5) decoded = 8'ha1;
+            else if (value == 8'hf6) decoded = 8'hc2;
+            else decoded = value;
+
+            case (write_track_state)
+                WT_ID: begin
+                    if (value == 8'hf7) begin
+                        write_track_format_error = 1;
+                        write_track_state = WT_SCAN;
+                        write_track_field_pos = 0;
+                    end else begin
+                        case (write_track_field_pos)
+                            0: write_track_id0 = decoded;
+                            1: write_track_id1 = decoded;
+                            2: write_track_id2 = decoded;
+                            default: write_track_id3 = decoded;
+                        endcase
+                        write_track_field_pos = write_track_field_pos + 1;
+                        if (write_track_field_pos == 4) write_track_state = WT_ID_CRC;
+                    end
+                end
+
+                WT_ID_CRC: begin
+                    if (value == 8'hf7 && write_track_id0 == track &&
+                        write_track_id1 == {7'b0, side} &&
+                        write_track_id2 >= 1 && write_track_id2 <= 10 &&
+                        write_track_id3 == 8'h02) begin
+                        write_track_pending_sector = write_track_id2;
+                    end else begin
+                        write_track_format_error = 1;
+                        write_track_pending_sector = 0;
+                    end
+                    write_track_state = WT_SCAN;
+                    write_track_field_pos = 0;
+                end
+
+                WT_DATA: begin
+                    if (value == 8'hf7) begin
+                        write_track_format_error = 1;
+                        write_track_state = WT_SCAN;
+                        write_track_field_pos = 0;
+                    end else begin
+                        sector_buf[write_track_field_pos] = decoded;
+                        write_track_field_pos = write_track_field_pos + 1;
+                        if (write_track_field_pos == 512) write_track_state = WT_DATA_CRC;
+                    end
+                end
+
+                WT_DATA_CRC: begin
+                    if (value == 8'hf7) finish_write_track_sector();
+                    else write_track_format_error = 1;
+                    write_track_state = WT_SCAN;
+                    write_track_field_pos = 0;
+                end
+
+                default: begin
+                    if (value == 8'hf5) begin
+                        write_track_field_pos = write_track_field_pos + 1;
+                    end else begin
+                        sync_count = write_track_field_pos;
+                        write_track_field_pos = 0;
+                        if (sync_count >= 3 && value == 8'hfe) begin
+                            write_track_state = WT_ID;
+                        end else if (sync_count >= 3 && value == 8'hfb &&
+                                     write_track_pending_sector != 0) begin
+                            write_track_state = WT_DATA;
+                        end else if (sync_count >= 3 && value == 8'hf8) begin
+                            // The flat backend cannot preserve deleted-data metadata.
+                            write_track_format_error = 1;
+                            write_track_pending_sector = 0;
+                        end
+                    end
+                end
+            endcase
+
+            if (write_track_output_pos >= 6250) begin
+                if (write_track_output_pos != 6250 || write_track_state != WT_SCAN ||
+                    write_track_seen != 10'h3ff || write_track_format_error)
+                    status = status | ST_WRITE_FAULT;
+                complete_transfer();
+            end
+        end
+    end endtask
+
+    task begin_write_track; begin
         clear_transfer();
-        status = status & ~(ST_RNF | ST_NOT_READY);
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
-        end else begin
+            complete_transfer();
+        end else if (!disk_requested || !disk_writable) begin
             status = status | ST_WRITE_PROTECT;
+            complete_transfer();
+        end else if (track > 8'd79 || ({31'b0, side} >= disk_heads)) begin
+            status = status | ST_RNF;
+            complete_transfer();
+        end else begin
+            write_track_transfer = 1;
+            write_track_state = WT_SCAN;
+            write_track_pending_sector = 0;
+            status = status | ST_BUSY | ST_DRQ;
+            intrq_r = 1'b0;
         end
+    end endtask
+`else
+    task accept_write_track_byte(input [7:0] value); begin end endtask
+    task begin_write_track; begin
+        clear_transfer();
+        status = (status & ~(ST_RNF | ST_WRITE_FAULT | ST_NOT_READY)) | ST_WRITE_PROTECT;
         complete_transfer();
     end endtask
+`endif
 
     wire fdc_write_active = ~cs_n & ~wr_n;
     wire fdc_data_read_active = ~cs_n & ~rd_n & (A == 2'd3);
@@ -1265,14 +1423,18 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 else if (is_write_sector(D)) begin_write_sector(D[4]);
                 else if (is_read_address(D)) begin_read_address();
                 else if (is_read_track(D)) begin_read_track();
-                else if (is_write_track(D)) reject_write_track();
+                else if (is_write_track(D)) begin_write_track();
                 else begin
                     status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
                 end
             end
             2'd1: track = D;
             2'd2: sector = D;
-            2'd3: begin data = D; accept_write_byte(D); end
+            2'd3: begin
+                data = D;
+                if (write_track_transfer) accept_write_track_byte(D);
+                else accept_write_byte(D);
+            end
         endcase
     end
 

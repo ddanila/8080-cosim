@@ -13,6 +13,7 @@ enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
   ST_RNF = 0x10,
+  ST_WRITE_FAULT = 0x20,
   ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
 };
@@ -75,6 +76,47 @@ static void build_expected_track(uint8_t out[JUK_MFM_TRACK_SIZE], int track, int
     for (int i = 0; i < 35; i++) out[pos++] = 0x4E;
   }
   while (pos < JUK_MFM_TRACK_SIZE) out[pos++] = 0x4E;
+}
+
+
+static void append_format_byte(
+    uint8_t out[JUK_MFM_TRACK_SIZE], size_t* input_pos,
+    size_t* output_pos, uint8_t value) {
+  out[(*input_pos)++] = value;
+  *output_pos += value == 0xF7 ? 2u : 1u;
+}
+
+
+static size_t build_format_stream(
+    uint8_t out[JUK_MFM_TRACK_SIZE], int track, int head,
+    size_t* first_sector_end) {
+  size_t input_pos = 0;
+  size_t output_pos = 0;
+  for (int i = 0; i < 32; i++) {
+    append_format_byte(out, &input_pos, &output_pos, 0x4E);
+  }
+  for (int sector = 1; sector <= JUK_SECTORS_PER_TRACK; sector++) {
+    for (int i = 0; i < 12; i++) append_format_byte(out, &input_pos, &output_pos, 0x00);
+    for (int i = 0; i < 3; i++) append_format_byte(out, &input_pos, &output_pos, 0xF5);
+    const uint8_t id[] = {0xFE, (uint8_t)track, (uint8_t)head, (uint8_t)sector, 2, 0xF7};
+    for (size_t i = 0; i < sizeof(id); i++) {
+      append_format_byte(out, &input_pos, &output_pos, id[i]);
+    }
+    for (int i = 0; i < 22; i++) append_format_byte(out, &input_pos, &output_pos, 0x4E);
+    for (int i = 0; i < 12; i++) append_format_byte(out, &input_pos, &output_pos, 0x00);
+    for (int i = 0; i < 3; i++) append_format_byte(out, &input_pos, &output_pos, 0xF5);
+    append_format_byte(out, &input_pos, &output_pos, 0xFB);
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      append_format_byte(out, &input_pos, &output_pos, (uint8_t)(0x30 + sector));
+    }
+    append_format_byte(out, &input_pos, &output_pos, 0xF7);
+    if (sector == 1 && first_sector_end) *first_sector_end = input_pos;
+    for (int i = 0; i < 35; i++) append_format_byte(out, &input_pos, &output_pos, 0x4E);
+  }
+  while (output_pos < JUK_MFM_TRACK_SIZE) {
+    append_format_byte(out, &input_pos, &output_pos, 0x4E);
+  }
+  return output_pos == JUK_MFM_TRACK_SIZE ? input_pos : 0;
 }
 
 
@@ -383,11 +425,91 @@ int main(void) {
     }
   }
 
+  uint8_t format_stream[JUK_MFM_TRACK_SIZE];
+  size_t first_sector_end = 0;
+  size_t format_len = build_format_stream(format_stream, 8, 1, &first_sector_end);
+  if (format_len != 6230 || first_sector_end == 0) {
+    fprintf(stderr, "write-track fixture length %zu first-sector-end %zu\n",
+            format_len, first_sector_end);
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 1, 8);
+  juku_fdc_write(&fdc, 2, 10);
+  juku_fdc_write(&fdc, 0, 0xF4);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
+                        "writable write-track command");
+  for (size_t i = 0; i < format_len; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
+  fail |= expect_intrq(&fdc, 1, "write-track completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_FAULT | ST_WRITE_PROTECT,
+                        0, "after writable track format");
+  fail |= expect_intrq(&fdc, 0, "write-track status acknowledgement");
+  if (juku_fdc_read(&fdc, 2) != 10) {
+    fprintf(stderr, "write-track changed sector register\n");
+    fail = 1;
+  }
+  for (int sector = 1; sector <= JUK_SECTORS_PER_TRACK; sector++) {
+    uint8_t got[JUK_SECTOR_SIZE];
+    if (juk_disk_read_sector(&disk, 8, 1, sector, got) != 0) {
+      fprintf(stderr, "write-track direct readback failed for sector %d\n", sector);
+      fail = 1;
+      continue;
+    }
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      if (got[i] != (uint8_t)(0x30 + sector)) {
+        fprintf(stderr, "write-track sector %d byte %d got 0x%02X\n", sector, i, got[i]);
+        fail = 1;
+        break;
+      }
+    }
+  }
+
+  format_len = build_format_stream(format_stream, 9, 1, &first_sector_end);
+  juku_fdc_write(&fdc, 1, 9);
+  juku_fdc_write(&fdc, 0, 0xF0);
+  for (size_t i = 0; i < first_sector_end; i++) juku_fdc_write(&fdc, 3, format_stream[i]);
+  juku_fdc_write(&fdc, 0, 0xD0);
+  fail |= expect_intrq(&fdc, 0, "forced write-track D0 silence");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after forced write-track abort");
+  uint8_t partial[JUK_SECTOR_SIZE];
+  if (juk_disk_read_sector(&disk, 9, 1, 1, partial) != 0) {
+    fprintf(stderr, "partial write-track sector 1 readback failed\n");
+    fail = 1;
+  } else {
+    for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
+      if (partial[i] != 0x31) {
+        fprintf(stderr, "partial write-track sector 1 byte %d got 0x%02X\n", i, partial[i]);
+        fail = 1;
+        break;
+      }
+    }
+  }
+  fill_sector(want, 9, 1, 2);
+  if (juk_disk_read_sector(&disk, 9, 1, 2, partial) != 0 ||
+      memcmp(partial, want, JUK_SECTOR_SIZE) != 0) {
+    fprintf(stderr, "partial write-track modified unfinished sector 2\n");
+    fail = 1;
+  }
+
+  fill_sector(want, 10, 1, 1);
+  juku_fdc_write(&fdc, 1, 10);
+  juku_fdc_write(&fdc, 0, 0xF0);
+  for (int i = 0; i < JUK_MFM_TRACK_SIZE; i++) juku_fdc_write(&fdc, 3, 0x4E);
+  fail |= expect_intrq(&fdc, 1, "unrepresentable write-track completion");
+  fail |= expect_status(&fdc, ST_WRITE_FAULT, ST_WRITE_FAULT,
+                        "unrepresentable write-track status");
+  if (juk_disk_read_sector(&disk, 10, 1, 1, partial) != 0 ||
+      memcmp(partial, want, JUK_SECTOR_SIZE) != 0) {
+    fprintf(stderr, "unrepresentable write-track changed flat-image sector\n");
+    fail = 1;
+  }
+
   juku_fdc_portc(&fdc, 0x00);  // motor off
   juku_fdc_write(&fdc, 0, 0xC0);
   fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read address");
   juku_fdc_write(&fdc, 0, 0xE0);
   fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read track");
+  juku_fdc_write(&fdc, 0, 0xF0);
+  fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off write track");
   juku_fdc_write(&fdc, 0, 0x80);
   fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read");
 

@@ -21,9 +21,17 @@ typedef struct {
   unsigned buffer_pos;
   unsigned buffer_len;
   int write_transfer;
+  int write_track_transfer;
   int read_address_transfer;
   int read_track_transfer;
   int multi_record;
+  unsigned write_track_output_pos;
+  int write_track_state;
+  unsigned write_track_field_pos;
+  uint8_t write_track_id[4];
+  int write_track_pending_sector;
+  uint16_t write_track_seen;
+  int write_track_format_error;
   int intrq;
 } juku_fdc;
 

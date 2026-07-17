@@ -49,7 +49,7 @@ physical D93/D94 wiring.
 
 - C/HDL-identical restore, seek, step, step-in, and step-out direction/update
   semantics, plus single/multiple-record read-sector and write-sector, Read
-  Address, and Read Track,
+  Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
 - C and HDL now share the WD1793 interrupt contract for the modeled commands:
@@ -91,6 +91,22 @@ physical D93/D94 wiring.
   those gap counts unverified, and a sector-only image cannot preserve original
   gap contents, missing-clock waveforms, or rotational phase, so this is a
   deterministic media reconstruction rather than a claimed flux capture.
+- On an explicitly writable image, Write Track accepts the corresponding
+  index-to-index MFM formatter stream from the vendored FD179X datasheet's
+  Type-III/IBM System 34 tables. `F5` emits a missing-clock `0xA1`, `F6`
+  emits missing-clock `0xC2`, and each `F7` emits both generated CRC bytes, so
+  the canonical ten-sector Juku layout consumes 6,230 CPU data writes while
+  producing 6,250 on-disk bytes. Both models parse all ten CHRN fields, require
+  track/side/sector/512-byte geometry representable by the flat image, and
+  persist every completed data field. The writable guards read all ten sectors
+  back; a mid-track D0 test proves sector 1 persists while untouched sector 2
+  remains byte-identical, matching a non-atomic physical abort. A full
+  unrepresentable gap-only revolution completes with the modeled WRITE FAULT
+  bit and leaves the flat image unchanged instead of silently claiming that
+  unrepresentable flux/ID metadata was saved. Read-only and motor-off commands
+  still complete with WRITE PROTECT and NOT READY respectively. Byte deadlines,
+  actual index timing, deleted-data metadata, arbitrary sector geometry, and
+  partial gap/header damage remain explicit backend/timing boundaries.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
 - The physical КР580ВА87/8287 device models complement all 256 byte values in
@@ -105,11 +121,13 @@ physical D93/D94 wiring.
   because D94 can suppress `/RE` on its low-A4 register-3 branch. These are
   functional constraints;
   they do not promote either still-unmeasured D100 conductor.
-- The decoded top-level harness runs multi-read over vendored sectors 9/10 and
-  multi-write/readback over an isolated writable copy in the logical DB build
-  and both physical D100/DAL candidates. All three paths reach sector 11 with
-  RNF, so the new continuation semantics are exercised through D94 strobes and
-  both safe D100 control families rather than only inside the controller unit.
+- The decoded top-level harness runs multi-read over vendored sectors 9/10,
+  multi-write/readback, and a full 6,230-write MFM track format over an isolated
+  writable copy in the logical DB build and both physical D100/DAL candidates.
+  The format path reads sectors 1 and 10 back byte-for-byte; all three
+  multiple-record paths reach sector 11 with RNF. These semantics are exercised
+  through D94 strobes and both safe D100 control families rather than only
+  inside the controller unit.
 - The exact ROMBIOS `0xA0/0xA2` write-sector path writes 512 bytes to an
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
@@ -200,8 +218,9 @@ physical D93/D94 wiring.
   0..39 using the translation pointer returned in drive A's DPH; all results
   match the source `TRANS` permutation. Calls with the RAM-drive null table
   preserve endpoint sectors 0 and 127, covering both branches of the BIOS ABI.
-- Read-only-backend write-track rejection with WRITE PROTECT instead of an
-  endless BUSY state.
+- Read-only-backend Write Track rejection with WRITE PROTECT instead of an
+  endless BUSY state, plus writable whole-track persistence and partial-abort
+  behavior as described above.
 - The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
   a cold cache, and crosses host sectors. Exact ROM code consumes `RCOUNT=10`,
   observes WRITE PROTECT on ten rejected `0xA2` attempts, accepts zero data
@@ -238,9 +257,9 @@ physical D93/D94 wiring.
   as test-side port writes or patching the ROM epilogue.
 - The firmware path intentionally stops at its proved single-sector contract.
   The independent command guard additionally covers multiple-record Type-II
-  continuation, Read Address, and a complete reconstructed Read Track, but
-  neither model claims general WD1793 write-track, lost-data, rotational, or
-  timing conformance.
+  continuation, Read Address, reconstructed Read Track, and representable Juku
+  MFM Write Track formatting, but neither model claims general WD1793 lost-data,
+  arbitrary-flux, rotational, or timing conformance.
 
 ## RWFLOPPY deblocking provenance
 
@@ -319,11 +338,12 @@ evidence exists.
 
 ## Remaining boundaries
 
-- The model is a Juku boot/media shim with datasheet-guarded Read Address and
-  reconstructed Read Track commands plus Type-II multiple-record continuation,
-  not a general WD1793 conformance model. Writable track formatting, byte
-  deadlines/lost-data behavior, inter-record delays, and physical rotational
-  timing remain outside its proved scope. Force Interrupt conditions 0-2
+- The model is a Juku boot/media shim with datasheet-guarded Read Address,
+  reconstructed Read Track, representable MFM Write Track, and Type-II
+  multiple-record continuation, not a general WD1793 conformance model. Byte
+  deadlines/lost-data behavior, arbitrary flux/sector layouts, deleted-data
+  metadata, inter-record delays, and physical rotational timing remain outside
+  its proved scope. Force Interrupt conditions 0-2
   (ready transitions and index pulse) likewise await those physical timing
   inputs; only terminate-silent `0xD0` and immediate `0xD8` are claimed.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted

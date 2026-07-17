@@ -10,7 +10,10 @@ module juku_top_periph_bus_tb();
   reg osc = 0;
   integer fails = 0;
   integer i;
+  integer format_len = 0;
+  integer format_output_len = 0;
   reg [7:0] rd;
+  reg [7:0] format_stream [0:6249];
   reg writable_mode = 1'b0;
   reg fdc_bus_invert = 1'b0;
   reg [15:0] drive_ba = 16'h0000;
@@ -118,6 +121,40 @@ module juku_top_periph_bus_tb();
     frame_tick = 1'b0;
     @(posedge osc);
     #1;
+  end endtask
+
+  task put_format_byte(input [7:0] value); begin
+    format_stream[format_len] = value;
+    format_len = format_len + 1;
+    format_output_len = format_output_len + ((value == 8'hf7) ? 2 : 1);
+  end endtask
+
+  task build_format_stream(input [7:0] track_id, input side_id);
+    integer sector_id;
+    integer byte_index;
+  begin
+    format_len = 0;
+    format_output_len = 0;
+    for (byte_index = 0; byte_index < 32; byte_index = byte_index + 1) put_format_byte(8'h4e);
+    for (sector_id = 1; sector_id <= 10; sector_id = sector_id + 1) begin
+      for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) put_format_byte(8'h00);
+      for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) put_format_byte(8'hf5);
+      put_format_byte(8'hfe);
+      put_format_byte(track_id);
+      put_format_byte({7'b0, side_id});
+      put_format_byte(sector_id[7:0]);
+      put_format_byte(8'h02);
+      put_format_byte(8'hf7);
+      for (byte_index = 0; byte_index < 22; byte_index = byte_index + 1) put_format_byte(8'h4e);
+      for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) put_format_byte(8'h00);
+      for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) put_format_byte(8'hf5);
+      put_format_byte(8'hfb);
+      for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
+        put_format_byte(8'h30 + sector_id[7:0]);
+      put_format_byte(8'hf7);
+      for (byte_index = 0; byte_index < 35; byte_index = byte_index + 1) put_format_byte(8'h4e);
+    end
+    while (format_output_len < 6250) put_format_byte(8'h4e);
   end endtask
 
   task check_d94_data_branch; begin
@@ -325,6 +362,34 @@ module juku_top_periph_bus_tb();
           fail("FDC multi-write sector 10 top-level readback mismatch");
           i = 512;
         end
+      end
+
+      build_format_stream(8'h08, 1'b0);
+      if (format_len != 6230 || format_output_len != 6250)
+        fail("FDC write-track fixture length mismatch");
+      io_write(8'h1D, 8'h08);
+      io_write(8'h1E, 8'h0a);
+      io_write(8'h1C, 8'hF4);
+      io_read(8'h1C, rd);
+      if ((rd & 8'h03) !== 8'h03) fail("FDC write-track did not assert BUSY+DRQ");
+      for (i = 0; i < format_len; i = i + 1) io_write(8'h1F, format_stream[i]);
+      if (dut.fdc_intrq !== 1'b1) fail("FDC write-track completion did not raise INTRQ");
+      io_read(8'h1C, rd);
+      if ((rd & 8'h73) !== 8'h00) fail("FDC write-track did not complete cleanly");
+      if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge write-track INTRQ");
+      io_read(8'h1E, rd);
+      if (rd !== 8'h0a) fail("FDC write-track changed sector register");
+      io_write(8'h1E, 8'h01);
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        io_read(8'h1F, rd);
+        if (rd !== 8'h31) fail("FDC formatted sector 1 readback mismatch");
+      end
+      io_write(8'h1E, 8'h0a);
+      io_write(8'h1C, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        io_read(8'h1F, rd);
+        if (rd !== 8'h3a) fail("FDC formatted sector 10 readback mismatch");
       end
     end
 

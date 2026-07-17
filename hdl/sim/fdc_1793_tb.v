@@ -13,6 +13,11 @@ module fdc_1793_tb;
   reg [7:0] got;
   reg disk_mode = 0;
   reg writable_mode = 0;
+  reg [7:0] format_stream [0:6249];
+  reg [7:0] baseline_sector [0:511];
+  integer format_len = 0;
+  integer format_output_len = 0;
+  integer first_format_sector_end = 0;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side), .drq(drq), .intrq(intrq));
@@ -88,6 +93,42 @@ module fdc_1793_tb;
       default: want_address_byte = 8'hxx;
     endcase
   end endfunction
+
+  task put_format_byte(input [7:0] value); begin
+    format_stream[format_len] = value;
+    format_len = format_len + 1;
+    format_output_len = format_output_len + ((value == 8'hf7) ? 2 : 1);
+  end endtask
+
+  task build_format_stream(input [7:0] track_id, input side_id);
+    integer sector_id;
+    integer byte_index;
+  begin
+    format_len = 0;
+    format_output_len = 0;
+    first_format_sector_end = 0;
+    for (byte_index = 0; byte_index < 32; byte_index = byte_index + 1) put_format_byte(8'h4e);
+    for (sector_id = 1; sector_id <= 10; sector_id = sector_id + 1) begin
+      for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) put_format_byte(8'h00);
+      for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) put_format_byte(8'hf5);
+      put_format_byte(8'hfe);
+      put_format_byte(track_id);
+      put_format_byte({7'b0, side_id});
+      put_format_byte(sector_id[7:0]);
+      put_format_byte(8'h02);
+      put_format_byte(8'hf7);
+      for (byte_index = 0; byte_index < 22; byte_index = byte_index + 1) put_format_byte(8'h4e);
+      for (byte_index = 0; byte_index < 12; byte_index = byte_index + 1) put_format_byte(8'h00);
+      for (byte_index = 0; byte_index < 3; byte_index = byte_index + 1) put_format_byte(8'hf5);
+      put_format_byte(8'hfb);
+      for (byte_index = 0; byte_index < 512; byte_index = byte_index + 1)
+        put_format_byte(8'h30 + sector_id[7:0]);
+      put_format_byte(8'hf7);
+      if (sector_id == 1) first_format_sector_end = format_len;
+      for (byte_index = 0; byte_index < 35; byte_index = byte_index + 1) put_format_byte(8'h4e);
+    end
+    while (format_output_len < 6250) put_format_byte(8'h4e);
+  end endtask
 
   initial begin
     disk_mode = $test$plusargs("expect_disk");
@@ -357,15 +398,100 @@ module fdc_1793_tb;
           i = 512;
         end
       end
+
+      side = 1;
+      build_format_stream(8'd8, 1'b1);
+      if (format_len != 6230 || format_output_len != 6250 || first_format_sector_end == 0) begin
+        $display("FDC-1793: FAIL write-track fixture input=%0d output=%0d first=%0d",
+                 format_len, format_output_len, first_format_sector_end);
+        errors = errors + 1;
+      end
+      write_reg(2'd1, 8'd8);
+      write_reg(2'd2, 8'd10);
+      write_reg(2'd0, 8'hf4);
+      expect_status(8'h03, 8'h03, "writable write-track command");
+      for (i = 0; i < format_len; i = i + 1) write_reg(2'd3, format_stream[i]);
+      expect_intrq(1'b1, "write-track completion");
+      expect_status(8'h73, 8'h00, "after writable track format");
+      expect_intrq(1'b0, "write-track status acknowledgement");
+      read_reg(2'd2, got);
+      if (got !== 8'd10) begin
+        $display("FDC-1793: FAIL write-track changed sector=%02x", got);
+        errors = errors + 1;
+      end
+      for (i = 1; i <= 10; i = i + 1) begin
+        write_reg(2'd2, i[7:0]);
+        write_reg(2'd0, 8'h82);
+        repeat (512) begin
+          read_reg(2'd3, got);
+          if (got !== (8'h30 + i[7:0])) begin
+            $display("FDC-1793: FAIL formatted sector %0d got=%02x", i, got);
+            errors = errors + 1;
+          end
+        end
+      end
+
+      build_format_stream(8'd9, 1'b1);
+      write_reg(2'd1, 8'd9);
+      write_reg(2'd2, 8'd2);
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
+      write_reg(2'd0, 8'hf0);
+      for (i = 0; i < first_format_sector_end; i = i + 1)
+        write_reg(2'd3, format_stream[i]);
+      write_reg(2'd0, 8'hd0);
+      expect_intrq(1'b0, "forced write-track D0 silence");
+      expect_status(8'h03, 8'h00, "after forced write-track abort");
+      write_reg(2'd2, 8'd1);
+      write_reg(2'd0, 8'h82);
+      repeat (512) begin
+        read_reg(2'd3, got);
+        if (got !== 8'h31) begin
+          $display("FDC-1793: FAIL partial format sector1 got=%02x", got);
+          errors = errors + 1;
+        end
+      end
+      write_reg(2'd2, 8'd2);
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== baseline_sector[i]) begin
+          $display("FDC-1793: FAIL partial format changed sector2 byte %0d got=%02x", i, got);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
+
+      write_reg(2'd1, 8'd10);
+      write_reg(2'd2, 8'd1);
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) read_reg(2'd3, baseline_sector[i]);
+      write_reg(2'd0, 8'hf0);
+      repeat (6250) write_reg(2'd3, 8'h4e);
+      expect_intrq(1'b1, "unrepresentable write-track completion");
+      expect_status(8'h20, 8'h20, "unrepresentable write-track status");
+      write_reg(2'd2, 8'd1);
+      write_reg(2'd0, 8'h82);
+      for (i = 0; i < 512; i = i + 1) begin
+        read_reg(2'd3, got);
+        if (got !== baseline_sector[i]) begin
+          $display("FDC-1793: FAIL malformed format changed sector1 byte %0d got=%02x", i, got);
+          errors = errors + 1;
+          i = 512;
+        end
+      end
+      side = 0;
     end
 
-    write_reg(2'd0, 8'hFD);
-    if (drq !== 1'b0 || intrq !== 1'b1) begin
-      $display("FDC-1793: FAIL write-track reject drq=%b intrq=%b", drq, intrq);
-      errors = errors + 1;
+    if (!writable_mode) begin
+      write_reg(2'd0, 8'hFD);
+      if (drq !== 1'b0 || intrq !== 1'b1) begin
+        $display("FDC-1793: FAIL write-track reject drq=%b intrq=%b", drq, intrq);
+        errors = errors + 1;
+      end
+      expect_status(8'h43, 8'h40, "after write-track reject");
+      expect_intrq(1'b0, "write-track status acknowledgement");
     end
-    expect_status(8'h43, 8'h40, "after write-track reject");
-    expect_intrq(1'b0, "write-track status acknowledgement");
 
     if (!disk_mode) begin
       side = 1;
@@ -420,6 +546,8 @@ module fdc_1793_tb;
     expect_status(8'h80, 8'h80, "motor off read address");
     write_reg(2'd0, 8'he0);
     expect_status(8'h80, 8'h80, "motor off read track");
+    write_reg(2'd0, 8'hf0);
+    expect_status(8'h80, 8'h80, "motor off write track");
     write_reg(2'd0, 8'h80);
     expect_status(8'h80, 8'h80, "motor off read");
 

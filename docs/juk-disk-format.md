@@ -46,6 +46,21 @@ is a reproducible logical representation of the raw image and its recorded
 geometry, not evidence for the original factory-written gap contents or flux
 timing.
 
+For Write Track, the WD1793 consumes formatter control bytes rather than the
+decoded stream returned by Read Track. The vendored
+`ref/wd1772-vg93/fd179x-01-datasheet.pdf` Type-III and IBM System 34 tables
+define the transformation: `F5` writes missing-clock `A1`, `F6`
+writes missing-clock `C2`, and `F7` writes two generated CRC bytes. Replacing
+each pair of recorded CRC bytes with one `F7` makes the canonical ten-sector
+input 6,230 CPU writes long while still occupying all 6,250 decoded byte times.
+The flat backend commits each completed normal-data sector as it is parsed, so
+a Force Interrupt leaves earlier sectors changed and later ones untouched.
+
+The backend cannot encode arbitrary ID order/geometry, deleted-data marks,
+damaged headers, or noncanonical gap/flux content. Such a complete revolution
+sets the behavioral WRITE FAULT status and is not falsely serialized as an
+unchanged valid raw image.
+
 ## Guard
 
 Run:

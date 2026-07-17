@@ -7,8 +7,17 @@ enum {
   ST_BUSY = 0x01,
   ST_DRQ = 0x02,
   ST_RNF = 0x10,
+  ST_WRITE_FAULT = 0x20,
   ST_WRITE_PROTECT = 0x40,
   ST_NOT_READY = 0x80,
+};
+
+enum {
+  WT_SCAN = 0,
+  WT_ID = 1,
+  WT_ID_CRC = 2,
+  WT_DATA = 3,
+  WT_DATA_CRC = 4,
 };
 
 
@@ -65,9 +74,16 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = 0;
   fdc->write_transfer = 0;
+  fdc->write_track_transfer = 0;
   fdc->read_address_transfer = 0;
   fdc->read_track_transfer = 0;
   fdc->multi_record = 0;
+  fdc->write_track_output_pos = 0;
+  fdc->write_track_state = WT_SCAN;
+  fdc->write_track_field_pos = 0;
+  fdc->write_track_pending_sector = 0;
+  fdc->write_track_seen = 0;
+  fdc->write_track_format_error = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
@@ -90,7 +106,7 @@ static int load_read_sector(juku_fdc* fdc) {
 
 static void begin_read_sector(juku_fdc* fdc, int multi_record) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
@@ -107,7 +123,7 @@ static void begin_read_sector(juku_fdc* fdc, int multi_record) {
 
 static void finish_type_i(juku_fdc* fdc, uint8_t command) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
@@ -136,7 +152,7 @@ static void finish_type_i(juku_fdc* fdc, uint8_t command) {
 
 static void begin_write_sector(juku_fdc* fdc, int multi_record) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
@@ -162,7 +178,7 @@ static void begin_write_sector(juku_fdc* fdc, int multi_record) {
 
 static void begin_read_address(juku_fdc* fdc) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
@@ -205,7 +221,7 @@ static void track_crc_byte(juku_fdc* fdc, unsigned* pos, uint16_t* crc, uint8_t 
 
 static void begin_read_track(juku_fdc* fdc) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
@@ -298,16 +314,143 @@ static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
 }
 
 
-static void reject_write_track(juku_fdc* fdc) {
+static uint8_t write_track_decoded_byte(uint8_t data) {
+  if (data == 0xF5) return 0xA1;
+  if (data == 0xF6) return 0xC2;
+  return data;
+}
+
+
+static void finish_write_track_sector(juku_fdc* fdc) {
+  if (fdc->write_track_pending_sector < 1 ||
+      fdc->write_track_pending_sector > JUK_SECTORS_PER_TRACK) {
+    fdc->write_track_format_error = 1;
+    return;
+  }
+  if (juk_disk_write_sector(
+          fdc->disk, fdc->track, fdc->head,
+          fdc->write_track_pending_sector, fdc->buffer) != 0) {
+    fdc->status |= ST_WRITE_PROTECT;
+    fdc->write_track_format_error = 1;
+    return;
+  }
+  const uint16_t sector_bit = (uint16_t)1u << (fdc->write_track_pending_sector - 1);
+  if (fdc->write_track_seen & sector_bit) fdc->write_track_format_error = 1;
+  fdc->write_track_seen |= sector_bit;
+  fdc->write_track_pending_sector = 0;
+}
+
+
+static void accept_write_track_byte(juku_fdc* fdc, uint8_t data) {
+  if (!fdc->write_track_transfer) return;
+
+  fdc->write_track_output_pos += data == 0xF7 ? 2u : 1u;
+  const uint8_t decoded = write_track_decoded_byte(data);
+
+  switch (fdc->write_track_state) {
+    case WT_ID:
+      if (data == 0xF7) {
+        fdc->write_track_format_error = 1;
+        fdc->write_track_state = WT_SCAN;
+        fdc->write_track_field_pos = 0;
+      } else {
+        fdc->write_track_id[fdc->write_track_field_pos++] = decoded;
+        if (fdc->write_track_field_pos == 4) {
+          fdc->write_track_state = WT_ID_CRC;
+        }
+      }
+      break;
+
+    case WT_ID_CRC:
+      if (data == 0xF7 &&
+          fdc->write_track_id[0] == fdc->track &&
+          fdc->write_track_id[1] == (uint8_t)fdc->head &&
+          fdc->write_track_id[2] >= 1 &&
+          fdc->write_track_id[2] <= JUK_SECTORS_PER_TRACK &&
+          fdc->write_track_id[3] == 2) {
+        fdc->write_track_pending_sector = fdc->write_track_id[2];
+      } else {
+        fdc->write_track_format_error = 1;
+        fdc->write_track_pending_sector = 0;
+      }
+      fdc->write_track_state = WT_SCAN;
+      fdc->write_track_field_pos = 0;
+      break;
+
+    case WT_DATA:
+      if (data == 0xF7) {
+        fdc->write_track_format_error = 1;
+        fdc->write_track_state = WT_SCAN;
+        fdc->write_track_field_pos = 0;
+      } else {
+        fdc->buffer[fdc->write_track_field_pos++] = decoded;
+        if (fdc->write_track_field_pos == JUK_SECTOR_SIZE) {
+          fdc->write_track_state = WT_DATA_CRC;
+        }
+      }
+      break;
+
+    case WT_DATA_CRC:
+      if (data == 0xF7) finish_write_track_sector(fdc);
+      else fdc->write_track_format_error = 1;
+      fdc->write_track_state = WT_SCAN;
+      fdc->write_track_field_pos = 0;
+      break;
+
+    default:
+      if (data == 0xF5) {
+        fdc->write_track_field_pos++;
+      } else {
+        const unsigned sync_count = fdc->write_track_field_pos;
+        fdc->write_track_field_pos = 0;
+        if (sync_count >= 3 && data == 0xFE) {
+          fdc->write_track_state = WT_ID;
+        } else if (sync_count >= 3 && data == 0xFB &&
+                   fdc->write_track_pending_sector != 0) {
+          fdc->write_track_state = WT_DATA;
+        } else if (sync_count >= 3 && data == 0xF8) {
+          // The sector-only backend cannot preserve a deleted-data mark.
+          fdc->write_track_format_error = 1;
+          fdc->write_track_pending_sector = 0;
+        }
+      }
+      break;
+  }
+
+  if (fdc->write_track_output_pos >= JUK_MFM_TRACK_SIZE) {
+    if (fdc->write_track_output_pos != JUK_MFM_TRACK_SIZE ||
+        fdc->write_track_state != WT_SCAN ||
+        fdc->write_track_seen != 0x03FF ||
+        fdc->write_track_format_error) {
+      fdc->status |= ST_WRITE_FAULT;
+    }
+    complete_transfer(fdc);
+  }
+}
+
+
+static void begin_write_track(juku_fdc* fdc) {
   clear_transfer(fdc);
-  fdc->status &= (uint8_t)~(ST_RNF | ST_NOT_READY);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
   if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
     return;
   }
-  fdc->status |= ST_WRITE_PROTECT;
-  complete_transfer(fdc);
+  if (!fdc->disk->writable) {
+    fdc->status |= ST_WRITE_PROTECT;
+    complete_transfer(fdc);
+    return;
+  }
+  if (fdc->track >= JUK_TRACKS || fdc->head < 0 || fdc->head >= fdc->disk->heads) {
+    fdc->status |= ST_RNF;
+    complete_transfer(fdc);
+    return;
+  }
+  fdc->write_track_transfer = 1;
+  fdc->write_track_state = WT_SCAN;
+  fdc->write_track_pending_sector = 0;
+  fdc->status |= ST_BUSY | ST_DRQ;
 }
 
 
@@ -380,7 +523,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       else if (is_write_sector(data)) begin_write_sector(fdc, (data & 0x10) != 0);
       else if (is_read_address(data)) begin_read_address(fdc);
       else if (is_read_track(data)) begin_read_track(fdc);
-      else if (is_write_track(data)) reject_write_track(fdc);
+      else if (is_write_track(data)) begin_write_track(fdc);
       else {
         fdc->status &= (uint8_t)~(ST_RNF | ST_DRQ);
         fdc->status |= ST_BUSY;
@@ -394,7 +537,8 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       break;
     default:
       fdc->data = data;
-      accept_write_byte(fdc, data);
+      if (fdc->write_track_transfer) accept_write_track_byte(fdc, data);
+      else accept_write_byte(fdc, data);
       break;
   }
 }
