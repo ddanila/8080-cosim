@@ -23,7 +23,17 @@ module revb_cpu_card (
         .rfsh_n(rfsh_n), .halt_n(halt_n), .busak_n(busak_n),
         .A(A), .di(D_in), .dout(D_out));
 
-    // CPU sources the data bus only on a memory or I/O write cycle.
-    assign D_oe = (~wr_n) & ((~mreq_n) | (~iorq_n));
+    // '245 data-bus buffer control (D1.17, corrected twice under the oracle).
+    // /OE must enable ONLY during a real mem/IO data transfer: an active bus cycle
+    // (MREQ or IORQ) AND an active strobe (RD or WR). Gating on MREQ&IORQ alone
+    // drives stale data during Z80 refresh; gating on RD&WR alone drives during
+    // inter-cycle strobe glitches when no card is addressed. DIR = RD_N (read:
+    // bus->CPU, write: CPU->bus). '244 address/control buffers are always enabled
+    // (the CPU card is the sole bus master).
+    wire bus_cycle   = (~mreq_n) | (~iorq_n);
+    wire buf245_oe_n = ~(bus_cycle & ((~rd_n) | (~wr_n)));  // active-low; disabled on refresh/idle
+    wire buf245_dir  = rd_n;                                // 1 = CPU->bus (write), 0 = bus->CPU (read)
+    // Sources the bus only when the buffer is enabled AND pointed CPU->bus (a write).
+    assign D_oe = bus_cycle & (~wr_n);
 endmodule
 `default_nettype wire

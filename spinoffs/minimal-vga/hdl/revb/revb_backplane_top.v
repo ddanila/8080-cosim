@@ -73,6 +73,6 @@ module revb_backplane_top #(
     wire bus_conflict;
     revb_bus_monitor U_MON (
         .cpu_oe(cpu_oe), .mem_oe(mem_oe), .video_oe(video_oe), .io_oe(io_oe),
-        .A(A), .conflict(bus_conflict));
+        .rfsh_n(rfsh_n), .A(A), .conflict(bus_conflict));
 endmodule
 `default_nettype wire

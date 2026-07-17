@@ -8,6 +8,7 @@
 `default_nettype none
 module revb_bus_monitor (
     input  wire        cpu_oe, mem_oe, video_oe, io_oe,
+    input  wire        rfsh_n,        // Z80 refresh-cycle indicator (active-low)
     input  wire [15:0] A,
     output reg         conflict
 );
@@ -18,6 +19,14 @@ module revb_bus_monitor (
             conflict = 1'b1;
             $display("REVB-BUS-CONFLICT: %0d drivers (cpu=%b mem=%b video=%b io=%b) @A=%04h t=%0t",
                      drivers, cpu_oe, mem_oe, video_oe, io_oe, A, $time);
+        end
+        // Refresh-safety: no card may source the data bus during a refresh cycle
+        // (MREQ is active but no data transfer). Catches a '245 /OE = MREQ&IORQ
+        // mistake that byte-identity alone cannot see (no data consumer/competitor).
+        if ((rfsh_n == 1'b0) && (drivers != 3'd0)) begin
+            conflict = 1'b1;
+            $display("REVB-REFRESH-DRIVE: %0d driver(s) during refresh (cpu=%b mem=%b video=%b io=%b) t=%0t",
+                     drivers, cpu_oe, mem_oe, video_oe, io_oe, $time);
         end
     end
 endmodule

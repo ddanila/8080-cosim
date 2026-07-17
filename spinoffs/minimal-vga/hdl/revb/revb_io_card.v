@@ -31,19 +31,25 @@ module revb_io_card #(parameter USART_REAL = 0) (
     wire [7:0]  uart_do;
     generate
       if (USART_REAL) begin : g_uart
-        wire uart_sel  = (A[7:2] == 6'b000010);            // 0x08-0x0B
-        wire uart_cs_n = ~((iorq_n == 1'b0) && uart_sel);
-        wire uart_wr   = (iorq_n == 1'b0) && (wr_n == 1'b0) && uart_sel;
+        // I/O-select decode (D1.16): the ATF16V8 GAL makes these three from
+        // IORQ_N + A2..A7. Windows: PIC 0x00-0x01, PPI 0x04-0x07, UART 0x08-0x0B.
+        wire pic_cs_n  = ~((iorq_n == 1'b0) && (A[7:2] == 6'b000000));  // 0x00-0x03 (PIC uses 0,1)
+        wire ppi_cs_n  = ~((iorq_n == 1'b0) && (A[7:2] == 6'b000001));  // 0x04-0x07
+        wire uart_cs_n = ~((iorq_n == 1'b0) && (A[7:2] == 6'b000010));  // 0x08-0x0B
+        wire uart_sel  = ~uart_cs_n;
+        wire uart_wr   = uart_sel && (wr_n == 1'b0);
         wire [7:0] sio_d;
         assign sio_d = uart_wr ? D_in : 8'bz;              // CPU drives on write; 8251 on read
         reg [2:0] bdiv = 3'b000;
         always @(posedge clk) bdiv <= bdiv + 3'd1;         // local baud clock (D1.8)
+        // 8251 RESET is active-HIGH; the bus RESET_N is active-low, so the GAL
+        // inverts it (D1.16). Held reset while reset_n low, released when high.
         usart_8251 U_SIO (.A(A[0]), .D(sio_d), .cs_n(uart_cs_n),
                           .rd_n(rd_n), .wr_n(wr_n), .clk(clk),
                           .rxc(bdiv[2]), .txc(bdiv[2]), .vss_gnd(1'b0), .vcc_5v(1'b1),
                           .txd(), .rts(), .dtr(), .rxrdy(), .txrdy(), .syndet(), .txempty(),
-                          .rxd(1'b1), .cts_n(1'b0), .reset(1'b0), .dsr_n(1'b0));
-        assign uart_oe = (iorq_n == 1'b0) && (rd_n == 1'b0) && uart_sel;
+                          .rxd(1'b1), .cts_n(1'b0), .reset(~reset_n), .dsr_n(1'b0));
+        assign uart_oe = uart_sel && (rd_n == 1'b0);
         assign uart_do = sio_d;
       end else begin : g_nouart
         assign uart_oe = 1'b0;
