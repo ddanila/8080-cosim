@@ -302,7 +302,11 @@ def main() -> int:
     all_report_pins = sorted(dsn_pin_roles, key=lambda pin: int(pin))
     dsn_rows = []
     retired_dsn_inputs = {"10": "BA11", "11": "BA12", "12": "BA13", "13": "BA14", "14": "BA15"}
-    dsn_expected = {"8": "GND", "16": "P5V"}
+    dsn_expected = {
+        pin: net_for_pin(board, "D94", pin)[0]
+        for pin in all_report_pins
+        if net_for_pin(board, "D94", pin) is not None
+    }
     dsn_ok = True
     for pin in all_report_pins:
         role = dsn_pin_roles[pin]
@@ -311,16 +315,14 @@ def main() -> int:
         if name is None:
             dsn_rows.append(f"| {pin} | {role} | - | missing in DSN |")
         else:
-            if pin in retired_dsn_inputs and name == retired_dsn_inputs[pin]:
-                result = "STALE scaffold mapping"
-            else:
-                result = "PASS" if expected is None or name == expected else f"expected `{expected}`"
+            result = "PASS" if expected is None or name == expected else f"expected `{expected}`"
             dsn_rows.append(f"| {pin} | {role} | `{name}` | {result} |")
             if expected is not None and name != expected:
                 dsn_ok = False
     dsn_retains_retired_inputs = all(
         dsn_nets.get(pin) == name for pin, name in retired_dsn_inputs.items()
     )
+    dsn_matches_source_model = dsn_ok and not dsn_retains_retired_inputs
 
     dsn_output_nets = [
         dsn_nets[pin]
@@ -484,9 +486,9 @@ def main() -> int:
             "",
             "## KiCad DSN Cross-check",
             "",
-            "The held routed DSN predates this provenance correction and still carries",
-            "the retired BA11..BA15 scaffold mapping. It is retained as stale-package",
-            "evidence, not independent proof of the D94 input sources.",
+            "The regenerated source DSN follows the authoritative board model and no",
+            "longer carries the retired BA11..BA15 scaffold mapping. This checks export",
+            "parity; it is not independent proof of the D94 input sources.",
             "",
             "| Pin | Role | DSN Net | Result |",
             "| ---: | --- | --- | --- |",
@@ -498,8 +500,9 @@ def main() -> int:
             "",
             "## KiCad PCB Cross-check",
             "",
-            "The authoritative source PCB includes accepted photo-traced outputs; the",
-            "older routed DSN remains a held engineering snapshot until cluster reroute.",
+            "The authoritative source PCB and regenerated DSN include the accepted",
+            "photo-traced outputs. The separately tracked routed PCB remains the held",
+            "engineering snapshot until cluster reroute.",
             "",
             "| Pin | Role | PCB Net | Result |",
             "| ---: | --- | --- | --- |",
@@ -518,7 +521,7 @@ def main() -> int:
             f"| Every D94 address input has reviewed two-sided photo coordinates | {'PASS' if all_address_inputs_registered else 'FAIL'} | local-package-fit measurement rows for pins {', '.join(sorted(address_observations, key=int)) or '-'} |",
             f"| D94 address input sources are traced | {'PASS' if address_traced else 'FAIL'} | direct owner continuity/source nets for pins 10-14 |",
             f"| Retired D94 BA11..BA15 mapping is absent from the source model | {'PASS' if retired_ba_mapping_absent else 'FAIL'} | board JSON BA nets |",
-            f"| Held routed DSN is identified with the retired input mapping | {'PASS' if dsn_ok and dsn_retains_retired_inputs and not dsn_output_nets else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
+            f"| Regenerated source DSN matches the current D94 mapping | {'PASS' if dsn_matches_source_model else 'FAIL'} | `kicad/juku.dsn` D94 pins |",
             f"| PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb` D94 footprint pads |",
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
@@ -726,7 +729,7 @@ def main() -> int:
         "address_inputs_registered": all_address_inputs_registered,
         "address_sources_traced": address_traced,
         "retired_ba_mapping_absent": retired_ba_mapping_absent,
-        "held_dsn_classified": dsn_ok and dsn_retains_retired_inputs,
+        "source_dsn_matches": dsn_matches_source_model,
         "source_pcb": pcb_ok,
         "official_bom": official_bom_lead,
         "reused_refdes_guard": reused_refdes_guard,

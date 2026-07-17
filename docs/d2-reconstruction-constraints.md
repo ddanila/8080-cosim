@@ -65,20 +65,20 @@ Its missing rows are a reroute boundary, not missing source evidence.
 
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |
-| 1 | A6 | - | missing in DSN |
-| 2 | A5 | `XACK_N` | present |
-| 3 | A4 | - | missing in DSN |
+| 1 | A6 | `A10` | present |
+| 2 | A5 | `IORC_N` | present |
+| 3 | A4 | `A14` | present |
 | 4 | A3 | `CAS` | present |
-| 5 | A0 | - | missing in DSN |
-| 6 | A1 | - | missing in DSN |
-| 7 | A2 | - | missing in DSN |
+| 5 | A0 | `A12` | present |
+| 6 | A1 | `A15` | present |
+| 7 | A2 | `A9` | present |
 | 15 | A7 | `WREQ_N` | present |
 | 13 | V1 | `GND` | present |
 | 14 | V2 | `GND` | present |
 | 9 | D3 | - | intentional NC in source |
 | 10 | D2 | - | intentional NC in source |
 | 11 | D1 | - | intentional NC in source |
-| 12 | D0 | `D2_WAIT_RAW` | present |
+| 12 | D0 | `READY_D` | present |
 
 ## KiCad PCB Cross-check
 
@@ -109,7 +109,7 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 | D2 unused outputs are explicit no-connects | PASS | pins 9, 10, 11; factory symbol draws only D0/pin12 |
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
 | Any D2 signal net is traced | PASS | `A10`, `IORC_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `READY_D` |
-| Any D2 signal appears in DSN | PASS | `12`=`D2_WAIT_RAW`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`XACK_N`, `4`=`CAS` |
+| Any D2 signal appears in DSN | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
 | Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
 | 256-row symbolic address table is non-burnable | PASS | all D0 values are `?` |
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |

@@ -44,33 +44,34 @@ same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 
 ## KiCad DSN Cross-check
 
-The held routed DSN predates this provenance correction and still carries
-the retired BA11..BA15 scaffold mapping. It is retained as stale-package
-evidence, not independent proof of the D94 input sources.
+The regenerated source DSN follows the authoritative board model and no
+longer carries the retired BA11..BA15 scaffold mapping. This checks export
+parity; it is not independent proof of the D94 input sources.
 
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |
-| 1 | D0 | - | missing in DSN |
-| 2 | D1 | - | missing in DSN |
-| 3 | D2 | - | missing in DSN |
-| 4 | D3 | - | missing in DSN |
-| 5 | D4 | - | missing in DSN |
-| 6 | D5 | - | missing in DSN |
-| 7 | D6 | - | missing in DSN |
+| 1 | D0 | `D94_D0_BOUNDARY` | PASS |
+| 2 | D1 | `GND` | PASS |
+| 3 | D2 | `FDC_RE_N` | PASS |
+| 4 | D3 | `FDC_WE_N` | PASS |
+| 5 | D4 | `D94_D4` | PASS |
+| 6 | D5 | `D94_D5` | PASS |
+| 7 | D6 | `D94_D6` | PASS |
 | 8 | GND | `GND` | PASS |
-| 9 | D7 | - | missing in DSN |
-| 10 | A0 | `BA11` | STALE scaffold mapping |
-| 11 | A1 | `BA12` | STALE scaffold mapping |
-| 12 | A2 | `BA13` | STALE scaffold mapping |
-| 13 | A3 | `BA14` | STALE scaffold mapping |
-| 14 | A4 | `BA15` | STALE scaffold mapping |
-| 15 | E_N | - | missing in DSN |
+| 9 | D7 | `D94_D7` | PASS |
+| 10 | A0 | `BA0` | PASS |
+| 11 | A1 | `BA1` | PASS |
+| 12 | A2 | `IORD` | PASS |
+| 13 | A3 | `D94_A3_D104_X4_PULLUP` | PASS |
+| 14 | A4 | `D94_A4_D101_Q0_PULLUP` | PASS |
+| 15 | E_N | `FDC_CS_N` | PASS |
 | 16 | VCC | `P5V` | PASS |
 
 ## KiCad PCB Cross-check
 
-The authoritative source PCB includes accepted photo-traced outputs; the
-older routed DSN remains a held engineering snapshot until cluster reroute.
+The authoritative source PCB and regenerated DSN include the accepted
+photo-traced outputs. The separately tracked routed PCB remains the held
+engineering snapshot until cluster reroute.
 
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
@@ -100,7 +101,7 @@ older routed DSN remains a held engineering snapshot until cluster reroute.
 | Every D94 address input has reviewed two-sided photo coordinates | PASS | local-package-fit measurement rows for pins 10, 11, 12, 13, 14 |
 | D94 address input sources are traced | PASS | direct owner continuity/source nets for pins 10-14 |
 | Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
-| Held routed DSN is identified with the retired input mapping | PASS | `kicad/juku.dsn` D94 pins |
+| Regenerated source DSN matches the current D94 mapping | PASS | `kicad/juku.dsn` D94 pins |
 | PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb` D94 footprint pads |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | PASS | board JSON nets |
