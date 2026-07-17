@@ -12,22 +12,26 @@ PCB="fab/minimal-vga/revb/${CARD}.kicad_pcb"
 
 revb_have KICAD_PYTHON || { echo "  SKIP  route ($CARD): KICAD_PYTHON not found"; exit 0; }
 [ -f "$PCB" ] || { echo "  SKIP  route ($CARD): $PCB not generated yet (run gen_revb_pcb.py)"; exit 0; }
-# freerouting.jar is the clear "routing configured?" gate. Absent here (as is a
-# Java 25 runtime), so this skips -- routing stays a documented tool-blocked step.
-[ -n "${FREEROUTING_JAR:-}" ] && [ -f "${FREEROUTING_JAR}" ] || {
-  echo "  SKIP  route ($CARD): FREEROUTING_JAR not set. Routing needs freerouting.jar + a Java 25 runtime."
+# freerouting.jar gate (default to the home-folder install, .tools/freerouting).
+: "${FREEROUTING_JAR:=.tools/freerouting/freerouting.jar}"
+[ -f "${FREEROUTING_JAR}" ] || {
+  echo "  SKIP  route ($CARD): freerouting.jar not found (set FREEROUTING_JAR)."
   echo "        LVS + PCB gen + content-check are complete; routing is the tool-blocked step (D1.24)."
   exit 0; }
 
-# Java 25 (freerouting requires it; system Java 17 is not enough).
+# Java 25 (freerouting requires it; system Java 17 is not enough). Handles both the
+# Linux (bin/java) and macOS bundle (Contents/Home/bin/java) layouts.
 JAVA_BIN="${JAVA_BIN:-}"
 if [ -z "$JAVA_BIN" ]; then
-  for p in .tools/jre25/bin/java "$HOME"/.gradle/jdks/eclipse_adoptium-25-*/bin/java "$HOME"/.jdks/*25*/bin/java; do
+  for p in .tools/jre25/bin/java .tools/jre25/Contents/Home/bin/java \
+           "$HOME"/.jdks/*25*/bin/java "$HOME"/.jdks/*25*/Contents/Home/bin/java \
+           "$HOME"/.gradle/jdks/eclipse_adoptium-25-*/bin/java; do
     [ -x "$p" ] || continue
     case "$("$p" -version 2>&1 | head -1)" in *\"25*|*\ 25.*) JAVA_BIN="$p"; break;; esac
   done
 fi
 [ -n "$JAVA_BIN" ] || { echo "  SKIP  route ($CARD): no Java 25 runtime (set JAVA_BIN)."; exit 0; }
+echo "  using java: $JAVA_BIN"
 
 OUT="fab/minimal-vga/revb/routing"; mkdir -p "$OUT"
 DSN="$OUT/${CARD}.dsn"; SES="$OUT/${CARD}.ses"
