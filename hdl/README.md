@@ -44,6 +44,11 @@ They are not generic cycle-accurate replacements for every original IC mode.
 - Nine official FDC-support devices have package pins and power endpoints in
   the board model but no functional signal closure or HDL instances;
   `docs/unmodeled-footprint-inventory.md` owns that boundary.
+- The shared К555ИЕ7/74LS193 primitive used by video counters D44-D47 and
+  representing FDC-area D106 now has its complete standard digital contract
+  guarded: asynchronous clear/load, both count directions, active-low terminal
+  pulses, and two-package cascade. This does not close D106's unmeasured PCB
+  nets.
 - D7's physical pin12=`SYNC`, pin13=pin11 feedback strobe is retained in the
   structural/LVS path; runnable zero-delay simulation uses the explicit
   IOWR/IORD activity oracle instead of evaluating the propagation-delay loop.
@@ -84,6 +89,7 @@ They are not generic cycle-accurate replacements for every original IC mode.
 sync/check.sh       # modeled KiCad/HDL connectivity
 sync/boot_check.sh  # C and HDL boot/framebuffer regression
 sync/cosim_check.sh # value-level read comparison vs the C emulator (cosim)
+sync/ie7_check.sh   # К555ИЕ7/74LS193 device behavior and cascade
 ```
 
 See `../sync/README.md` for subsystem and deep checks. A green LVS result proves

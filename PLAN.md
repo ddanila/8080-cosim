@@ -204,6 +204,12 @@ Every ask below is queued with exact deliverables in
    record a deliberate redesign/DNP decision. D93.40 `VDD_12V` is now
    owner-confirmed on the +12 V rail (`docs/d93-pin40-photo-chase.md`).
    D106.7 Q3 -> D93.26 RCLK is photo-closed;
+   the standard К555ИЕ7/74LS193 digital device behavior is now independently
+   closed and CI-guarded by `sync/ie7_check.sh`: asynchronous active-high
+   clear, asynchronous active-low parallel load, rising-edge up/down count
+   with the opposite clock high, active-low clock-width carry/borrow, and
+   two-package cascade all match TI SDLS074. This is package behavior only;
+   it does not promote any of D106's remaining measurement-gated board nets.
    the KP12 passive ladder is also target-photo closed: R92=`1К3` runs from
    D95.14 to D101.4/R99.2, and R99=`4К7` returns that junction to
    D101.8/GND. Only the surrounding mux select/output paths remain open.

@@ -44,6 +44,7 @@ sync/video_timing_check.sh
 sync/video_readout_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
+sync/ie7_check.sh
 sync/basic_cart_check.sh
 sync/d2_ready_path_check.sh
 ```
@@ -56,7 +57,9 @@ update/verify/status, nominal 3/6/10/15 ms step plus 15 ms settle timing, and
 streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
 one-revolution MFM Read Track plus index-gated, preloaded writable-track formatting,
 raster/serializer behavior,
-beeper and USART slices, and the BASIC cartridge window.
+beeper and USART slices, the full standard К555ИЕ7/74LS193 asynchronous
+load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
+BASIC cartridge window.
 `d2_ready_path_check.sh` separately guards the physical `.037` open-collector
 raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
 

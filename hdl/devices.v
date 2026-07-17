@@ -396,16 +396,37 @@ module re3_prom (input wire [4:0] a, input wire e_n, output wire [7:0] d);
 endmodule
 
 // ===== video address generation + address mux (closes РУ5 MA/RAS/CAS) =====
-// D44-47 ИЕ7 (К155ИЕ7 = 74193-class): 4-bit binary up-counter. Cascades via CO (carry-out
-// pulses at terminal count 0xF) to form the video raster address. Functional for the video
-// readout (was a connectivity stub); LVS reads this -lib so the body doesn't matter to it.
+// D44-47 and D106 ИЕ7 (К555ИЕ7 = 74LS193-class): synchronous 4-bit binary
+// up/down counter.  CLR and /LOAD are asynchronous; while /LOAD is low the
+// outputs follow D.  A clock counts on its rising edge only while the opposite
+// clock is high.  /CO and /BO are active-low, clock-width cascade pulses at F
+// and 0 respectively.  This is the literal SN74LS193 contract (TI SDLS074),
+// including the polarity needed for a succeeding counter to advance on the
+// terminal clock's trailing/rising edge.  LVS reads this file with -lib, so the
+// behavioral body's multiple event processes do not enter the netlist.
 module ie7_ctr   (input wire up, down, load_n, clr, input wire [3:0] d,
                   output wire [3:0] q, output wire co, bo);   // real 74193/ИЕ7 pin set (sheet-2)
     reg [3:0] cnt = 0;
-    always @(posedge up) if (~load_n) cnt <= d; else cnt <= cnt + 4'd1;   // down-count unused (DOWN idles high)
+
+    // The physical device has independent clock steering.  Separate event
+    // processes express that directly and also preserve asynchronous load data
+    // tracking.  Simultaneous clock/control transitions are outside the data-
+    // sheet setup/hold contract; the board keeps the unused clock high.
+    always @(posedge up)
+        if (clr)          cnt <= 4'b0;
+        else if (~load_n) cnt <= d;
+        else if (down)    cnt <= cnt + 4'd1;
+    always @(posedge down)
+        if (clr)          cnt <= 4'b0;
+        else if (~load_n) cnt <= d;
+        else if (up)      cnt <= cnt - 4'd1;
+    always @(clr or load_n or d)
+        if (clr)          cnt <= 4'b0;
+        else if (~load_n) cnt <= d;
+
     assign q  = cnt;
-    assign co = (cnt == 4'hF);           // terminal-count carry (feeds the next stage's UP)
-    assign bo = 1'b1;                    // borrow idle (no down-counting modeled)
+    assign co = ~((cnt == 4'hF) && ~up);     // /CO: low during UP low at terminal F
+    assign bo = ~((cnt == 4'h0) && ~down);   // /BO: low during DOWN low at terminal 0
 endmodule
 // D48/D49 КП14 quad 2:1 mux: y = sel ? b : a (en_n low = enabled). For DRAM addressing, sel picks
 // the ROW half (b) vs COL half (a) of the CPU address onto the 8-bit muxed bus MA.
