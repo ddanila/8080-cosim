@@ -873,6 +873,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `endif
     integer status_type_i = 1;
     integer head_loaded = 0;
+    integer idle_index_pulses = 0;
     integer command_was_busy = 0;
     integer seek_delta = 0;
     integer seek_destination = 0;
@@ -1542,6 +1543,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             2'd0: begin
                 command_was_busy = status[0];
                 command = D;
+                if ((D & 8'hF0) != 8'hD0 || command_was_busy)
+                    idle_index_pulses = 0;
                 intrq_r = 1'b0;
                 force_interrupt_mask = 4'b0000;
                 if (is_read_sector(D)) begin_read_sector(D[4]);
@@ -1646,8 +1649,17 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     always @(negedge ready)
         if (force_interrupt_mask[1]) intrq_r = 1'b1;
 
-    always @(posedge index)
+    always @(posedge index) begin
         if (force_interrupt_mask[2]) intrq_r = 1'b1;
+        if (!status[0] && head_loaded) begin
+            if (idle_index_pulses + 1 >= 15) begin
+                head_loaded = 0;
+                idle_index_pulses = 0;
+            end else begin
+                idle_index_pulses = idle_index_pulses + 1;
+            end
+        end
+    end
 
     wire [7:0] read_data =
         (A == 2'd0) ? effective_status :

@@ -208,6 +208,46 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0x08);  // restore with head-load flag
   fail |= expect_status(&fdc, ST_TRACK0 | ST_HEAD_LOADED,
                         ST_TRACK0 | ST_HEAD_LOADED, "restore head-load status");
+  for (int pulse = 0; pulse < 7; pulse++) {
+    juku_fdc_index(&fdc, 0);
+    juku_fdc_index(&fdc, 1);
+  }
+  juku_fdc_write(&fdc, 0, 0xD4);  // arming an idle event does not leave idle
+  for (int pulse = 0; pulse < 7; pulse++) {
+    juku_fdc_index(&fdc, 0);
+    juku_fdc_index(&fdc, 1);
+  }
+  if (!fdc.head_loaded || fdc.idle_index_pulses != 14) {
+    fprintf(stderr, "head unloaded before 15 idle index pulses\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 2, 1);
+  juku_fdc_write(&fdc, 0, 0x80);  // a new busy command resets the idle count
+  for (int pulse = 0; pulse < 15; pulse++) {
+    juku_fdc_index(&fdc, 0);
+    juku_fdc_index(&fdc, 1);
+  }
+  if (!fdc.head_loaded || fdc.idle_index_pulses != 0) {
+    fprintf(stderr, "busy index pulses affected head unload state\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0xD0);
+  for (int pulse = 0; pulse < 14; pulse++) {
+    juku_fdc_index(&fdc, 0);
+    juku_fdc_index(&fdc, 1);
+  }
+  if (!fdc.head_loaded) {
+    fprintf(stderr, "head unloaded before 15 post-command idle index pulses\n");
+    fail = 1;
+  }
+  juku_fdc_index(&fdc, 0);
+  juku_fdc_index(&fdc, 1);
+  if (fdc.head_loaded || fdc.idle_index_pulses != 0) {
+    fprintf(stderr, "head did not unload on the 15th idle index pulse\n");
+    fail = 1;
+  }
+  juku_fdc_index(&fdc, 0);
+  juku_fdc_write(&fdc, 0, 0x08);
   juku_fdc_write(&fdc, 0, 0x00);  // restore explicitly unloads the head
   fail |= expect_status(&fdc, ST_TRACK0 | ST_HEAD_LOADED,
                         ST_TRACK0, "restore head-unload status");

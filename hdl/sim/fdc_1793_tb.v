@@ -160,6 +160,41 @@ module fdc_1793_tb;
 
     write_reg(2'd0, 8'h08);
     expect_status(8'h24, 8'h24, "restore head-load status");
+    for (i = 0; i < 7; i = i + 1) begin
+      index = 0; #1; index = 1; #1;
+    end
+    write_reg(2'd0, 8'hd4);  // arming an idle event does not leave idle
+    for (i = 0; i < 7; i = i + 1) begin
+      index = 0; #1; index = 1; #1;
+    end
+    if (!dut.head_loaded || dut.idle_index_pulses !== 14) begin
+      $display("FDC-1793: FAIL head unloaded before 15 idle index pulses");
+      errors = errors + 1;
+    end
+    write_reg(2'd2, 8'd1);
+    write_reg(2'd0, 8'h80);  // a new busy command resets the idle count
+    for (i = 0; i < 15; i = i + 1) begin
+      index = 0; #1; index = 1; #1;
+    end
+    if (!dut.head_loaded || dut.idle_index_pulses !== 0) begin
+      $display("FDC-1793: FAIL busy index pulses affected head unload state");
+      errors = errors + 1;
+    end
+    write_reg(2'd0, 8'hd0);
+    for (i = 0; i < 14; i = i + 1) begin
+      index = 0; #1; index = 1; #1;
+    end
+    if (!dut.head_loaded) begin
+      $display("FDC-1793: FAIL head unloaded before 15 post-command idle index pulses");
+      errors = errors + 1;
+    end
+    index = 0; #1; index = 1; #1;
+    if (dut.head_loaded || dut.idle_index_pulses !== 0) begin
+      $display("FDC-1793: FAIL head did not unload on 15th idle index pulse");
+      errors = errors + 1;
+    end
+    index = 0; #1;
+    write_reg(2'd0, 8'h08);
     write_reg(2'd0, 8'h00);
     expect_status(8'h24, 8'h04, "restore head-unload status");
 

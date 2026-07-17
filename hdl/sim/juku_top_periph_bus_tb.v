@@ -299,6 +299,27 @@ module juku_top_periph_bus_tb();
     io_write(8'h1C, 8'hD0);
     if (dut.fdc_intrq !== 1'b0) fail("FDC D0 did not disarm immediate INTRQ");
 
+    io_write(8'h1C, 8'h08);     // RESTORE with h=1 loads the head
+    force dut.U_FDC.index = 1'b0;
+    for (i = 0; i < 14; i = i + 1) begin
+      force dut.U_FDC.index = 1'b1; #1;
+      force dut.U_FDC.index = 1'b0; #1;
+    end
+    if (!dut.U_FDC.head_loaded || dut.U_FDC.idle_index_pulses !== 14)
+      fail("FDC head unloaded before 15 idle index pulses");
+    io_write(8'h1C, 8'h08);     // a Type-I command restarts the idle count
+    for (i = 0; i < 14; i = i + 1) begin
+      force dut.U_FDC.index = 1'b1; #1;
+      force dut.U_FDC.index = 1'b0; #1;
+    end
+    if (!dut.U_FDC.head_loaded) fail("FDC head unloaded before restarted count reached 15");
+    force dut.U_FDC.index = 1'b1; #1;
+    if (dut.U_FDC.head_loaded || dut.U_FDC.idle_index_pulses !== 0)
+      fail("FDC head did not unload on 15th restarted idle index pulse");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h20) !== 0) fail("FDC Type-I status retained HEAD LOADED after idle unload");
+    force dut.U_FDC.index = 1'b0;
+
     force dut.U_FDC.ready = 1'b0;
     io_write(8'h1C, 8'hD1);
     force dut.U_FDC.ready = 1'b1;

@@ -599,8 +599,14 @@ void juku_fdc_ready(juku_fdc* fdc, int ready) {
 
 void juku_fdc_index(juku_fdc* fdc, int index) {
   index = index != 0;
-  if (!fdc->index_line && index && (fdc->force_interrupt_mask & 0x04)) {
-    fdc->intrq = 1;
+  if (!fdc->index_line && index) {
+    if (fdc->force_interrupt_mask & 0x04) fdc->intrq = 1;
+    if (!(fdc->status & ST_BUSY) && fdc->head_loaded) {
+      if (++fdc->idle_index_pulses >= 15) {
+        fdc->head_loaded = 0;
+        fdc->idle_index_pulses = 0;
+      }
+    }
   }
   fdc->index_line = index;
 }
@@ -641,6 +647,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
     case 0: {
       const int was_busy = (fdc->status & ST_BUSY) != 0;
       fdc->command = data;
+      if ((data & 0xF0) != 0xD0 || was_busy) fdc->idle_index_pulses = 0;
       fdc->intrq = 0;
       fdc->force_interrupt_mask = 0;
       if (is_read_sector(data)) begin_read_sector(fdc, (data & 0x10) != 0);

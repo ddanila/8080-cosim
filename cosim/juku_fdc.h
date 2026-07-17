@@ -38,6 +38,7 @@ typedef struct {
   uint8_t force_interrupt_mask;
   int status_type_i;
   int head_loaded;
+  unsigned idle_index_pulses;
   int ready_line;
   int index_line;
   int intrq;

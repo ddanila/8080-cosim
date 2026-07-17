@@ -54,8 +54,11 @@ physical D93/D94 wiring.
   physical/register offset, and only RESTORE recalibrates both to track zero.
   Later sector commands reject a mismatched head/register pair. The Type-I status view dynamically
   reports TRACK 0, HEAD LOADED, INDEX, media write protection, and SEEK ERROR;
-  the `h` and `V` flags control the modeled head-load latch. Exact step-rate,
-  15 ms settle, 15-revolution unload, and external TR00/HLT timing remain
+  the `h` and `V` flags control the modeled head-load latch. Fifteen rising
+  index edges while idle automatically release HLD exactly as specified;
+  index edges while BUSY do not count, and Type I-III command activity restarts
+  the idle interval while an idle Type-IV event arm leaves it running. Exact
+  step-rate, 15 ms settle, and external TR00/HLT timing remain
   physical timing boundaries. The same models cover single/multiple-record read-sector and write-sector, Read
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
@@ -370,7 +373,7 @@ evidence exists.
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
   not a general WD1793 conformance model. Exact physical calibration of the
   byte deadline and initial-write rotational lead-in, Type-I
-  step/settle/head-unload timing, arbitrary flux/sector
+  step/settle timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are
   guarded, but the board's physical event sources, pulse widths, and rotational
