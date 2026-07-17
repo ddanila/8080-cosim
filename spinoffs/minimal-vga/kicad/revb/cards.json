@@ -1,0 +1,289 @@
+{
+  "_about": "Per-card connectivity roles for rev B (T1.3-T1.6). 'drives'/'reads' are bus signals; 'owns_mem'/'owns_io' are the address/port ranges the card decodes; 'populated'/'dnp' are the parts fitted vs footprint-only in the B1 minimum tier. Validated by scripts/check_revb_boards.py against bus-pinout.json, the memory/IO map, and the card HDL modules.",
+  "backplane": {
+    "role": "passive interconnect + power/reset",
+    "drives": [
+      "RESET_N"
+    ],
+    "default_pull": [
+      "MODE0",
+      "MODE1",
+      "INT_N",
+      "WAIT_N",
+      "NMI_N",
+      "BUSRQ_N"
+    ],
+    "owns_mem": [],
+    "owns_io": [],
+    "populated": [
+      "6x 39+10 slot connectors",
+      "USB-C 5V in",
+      "reset supervisor",
+      "FTDI 6-pin header",
+      "power LED",
+      "pull-up/down resistors"
+    ],
+    "dnp": []
+  },
+  "cpu": {
+    "role": "Z80 + clock + bus buffers (sole bus master)",
+    "drives": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "A14",
+      "A15",
+      "M1_N",
+      "MREQ_N",
+      "WR_N",
+      "RD_N",
+      "IORQ_N",
+      "CLK",
+      "RFSH_N",
+      "HALT_N",
+      "BUSAK_N"
+    ],
+    "drives_tristate": [
+      "D0",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "reads": [
+      "RESET_N",
+      "INT_N",
+      "WAIT_N",
+      "NMI_N",
+      "BUSRQ_N",
+      "D0",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "owns_mem": [],
+    "owns_io": [],
+    "populated": [
+      "Z0840004 Z80",
+      "socketed can oscillator",
+      "74HCT245",
+      "74HCT244"
+    ],
+    "dnp": [],
+    "hdl": "revb_cpu_card.v"
+  },
+  "mem": {
+    "role": "ROM + main SRAM + GAL decode",
+    "drives_tristate": [
+      "D0",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "reads": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "A14",
+      "A15",
+      "MREQ_N",
+      "RD_N",
+      "WR_N",
+      "MODE0",
+      "MODE1"
+    ],
+    "owns_mem": [
+      "0x0000-0xD7FF"
+    ],
+    "owns_io": [],
+    "populated": [
+      "27C256 ROM",
+      "AS6C1008 128Kx8 SRAM",
+      "GAL22V10 decode"
+    ],
+    "dnp": [],
+    "hdl": "revb_mem_card.v"
+  },
+  "video": {
+    "role": "framebuffer SRAM + VGA timing (B2)",
+    "drives": [
+      "FRAME_TICK"
+    ],
+    "drives_tristate": [
+      "D0",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "drives_od": [
+      "WAIT_N"
+    ],
+    "reads": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "A14",
+      "A15",
+      "MREQ_N",
+      "RD_N",
+      "WR_N",
+      "MODE0",
+      "MODE1"
+    ],
+    "owns_mem": [
+      "0xD800-0xFFFF"
+    ],
+    "owns_io": [],
+    "populated": [
+      "framebuffer SRAM",
+      "25.175 MHz dot-clock osc",
+      "sync gen",
+      "RGB resistor DAC"
+    ],
+    "dnp": [],
+    "hdl": "revb_video_card.v",
+    "_tier": "standalone (B2); absent in B1 minimum tier"
+  },
+  "io": {
+    "role": "8251 UART (B1) + 8255 + PIC (B3)",
+    "drives": [
+      "MODE0",
+      "MODE1"
+    ],
+    "drives_tristate": [
+      "D0",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "drives_od": [
+      "INT_N"
+    ],
+    "reads": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "IORQ_N",
+      "RD_N",
+      "WR_N",
+      "IRQ_A",
+      "IRQ_B",
+      "RX"
+    ],
+    "drives_serial": [
+      "TX"
+    ],
+    "owns_mem": [],
+    "owns_io": [
+      "0x00-0x01",
+      "0x04-0x07",
+      "0x08-0x0B"
+    ],
+    "populated": [
+      "8251-class USART",
+      "local baud oscillator"
+    ],
+    "dnp": [
+      "82C55 PPI",
+      "8259-class PIC",
+      "keyboard connector"
+    ],
+    "hdl": "revb_io_card.v"
+  },
+  "fdc": {
+    "role": "\u0412\u041393/WD1793 floppy controller (B4, optional)",
+    "drives_tristate": [
+      "D0",
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "drives_od": [
+      "IRQ_A",
+      "IRQ_B"
+    ],
+    "reads": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "IORQ_N",
+      "RD_N",
+      "WR_N"
+    ],
+    "owns_mem": [],
+    "owns_io": [
+      "0x1C-0x1F"
+    ],
+    "populated": [],
+    "dnp": [
+      "all (B4 tier)"
+    ],
+    "_tier": "B4; not built in B1"
+  }
+}
