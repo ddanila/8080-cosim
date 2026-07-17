@@ -89,7 +89,9 @@ jobs:
         run: sh sync/check.sh
 
       - name: Run rev B mem-card LVS
-        run: sh spinoffs/minimal-vga/sync/revb_lvs.sh mem
+        # The script intentionally uses Bash (`set -o pipefail`); execute it
+        # directly so Actions honors its shebang instead of forcing dash.
+        run: spinoffs/minimal-vga/sync/revb_lvs.sh mem
 
   behavioral:
     runs-on: ubuntu-latest

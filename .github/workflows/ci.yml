@@ -35,6 +35,7 @@ jobs:
           sh -n sync/boot_check.sh
           sh -n sync/d2_ready_path_check.sh
           sh -n spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
+          bash -n spinoffs/minimal-vga/sync/revb_lvs.sh
           python3 -m py_compile \
             kicad/apply_a7_factory_wire_split.py \
             kicad/apply_a7_factory_wire_schematic_split.py \
