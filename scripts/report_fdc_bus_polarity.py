@@ -93,7 +93,7 @@ SCENARIOS = (
         0xE2B7,
         0x02,
         True,
-        0xFF,
+        0xBB,  # logical Type-I 0x44 (WRITE PROTECT | TRACK 0), inverted by D100
     ),
 )
 
@@ -384,8 +384,10 @@ def main() -> int:
             "",
             "The trace checkpoint proves the controller-side byte, not merely the CPU",
             "log: Monitor 3.3's `0xFD` crosses the modeled ВА87 complement and latches",
-            "as `0x02` in the VG93 model. Status `0x00` returns to the CPU as `0xFF`,",
-            "then the firmware's following `CMA` restores the logical status.",
+            "as `0x02` in the VG93 model. On the read-only Track-0 fixture, the",
+            "dynamic Type-I status is `0x44` (WRITE PROTECT | TRACK 0); it returns",
+            "through the ВА87 as CPU `0xBB`, then the firmware's following `CMA`",
+            "restores logical `0x44`.",
             "",
             "## Preserved firmware profiles",
             "",
@@ -523,8 +525,9 @@ def main() -> int:
             "2. Continuity-map D100.9 `/OE` and D100.11 `T`; their remote sources remain",
             "   singleton boundaries even though the required data polarity is resolved.",
             "3. With a matching CMA-profile ROM, capture the first command write and one",
-            "   status read: CPU `0xFD` must become DAL `0x02` on write, and logical VG93",
-            "   status `0x00` must become CPU-side `0xFF` before firmware `CMA`.",
+            "   status read: CPU `0xFD` must become DAL `0x02` on write. With the",
+            "   current read-only Track-0 fixture, logical VG93 status `0x44` must",
+            "   become CPU-side `0xBB` before firmware `CMA` restores `0x44`.",
             "4. If the installed ROM is a NOP profile, record the board modification that",
             "   replaces or bypasses D100; do not silently mix the two configurations.",
         ]
