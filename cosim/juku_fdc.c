@@ -90,6 +90,10 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_format_error = 0;
   fdc->drq_ticks = 0;
   fdc->write_first_byte_pending = 0;
+  fdc->type_i_pending = 0;
+  fdc->type_i_ticks = 0;
+  fdc->type_i_steps_remaining = 0;
+  fdc->type_i_settling = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
@@ -133,48 +137,96 @@ static void begin_read_sector(juku_fdc* fdc, int multi_record) {
 }
 
 
-static void finish_type_i(juku_fdc* fdc, uint8_t command) {
-  clear_transfer(fdc);
-  fdc->status_type_i = 1;
-  fdc->head_loaded = (command & 0x0C) != 0;
-  fdc->status &= (uint8_t)~(ST_CRC | ST_RNF | ST_NOT_READY);
-  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
-    fdc->status |= ST_NOT_READY;
-    complete_transfer(fdc);
-    return;
-  }
+static unsigned type_i_rate_ticks(uint8_t command) {
+  static const unsigned rates[4] = {6000, 12000, 20000, 30000};
+  return rates[command & 3];
+}
+
+
+static void type_i_step_once(juku_fdc* fdc) {
+  const uint8_t command = fdc->type_i_command;
   if ((command & 0xF0) == 0x00) {        // restore
-    fdc->track = 0;
-    fdc->physical_track = 0;
+    fdc->step_dir_in = 0;
+    if (fdc->physical_track != 0) fdc->physical_track--;
+    if (fdc->track != 0) fdc->track--;
   } else if ((command & 0xF0) == 0x10) { // seek
-    const int delta = (int)fdc->data - (int)fdc->track;
-    int destination = (int)fdc->physical_track + delta;
-    if (destination < 0) destination = 0;
-    if (destination > 0xFF) destination = 0xFF;
-    fdc->step_dir_in = delta >= 0;
-    fdc->track = fdc->data;
-    fdc->physical_track = (uint8_t)destination;
-  } else if ((command & 0xE0) == 0x20) { // step in the previous direction
+    if (fdc->step_dir_in) {
+      if (fdc->physical_track != 0xFF) fdc->physical_track++;
+      if (fdc->track != 0xFF) fdc->track++;
+    } else {
+      if (fdc->physical_track != 0) fdc->physical_track--;
+      if (fdc->track != 0) fdc->track--;
+    }
+  } else {
     if (fdc->step_dir_in && fdc->physical_track != 0xFF) fdc->physical_track++;
     else if (!fdc->step_dir_in && fdc->physical_track != 0) fdc->physical_track--;
     if (command & 0x10) {
       if (fdc->step_dir_in && fdc->track != 0xFF) fdc->track++;
       else if (!fdc->step_dir_in && fdc->track != 0) fdc->track--;
     }
-  } else if ((command & 0xE0) == 0x40) { // step in
-    fdc->step_dir_in = 1;
-    if (fdc->physical_track != 0xFF) fdc->physical_track++;
-    if ((command & 0x10) && fdc->track != 0xFF) fdc->track++;
-  } else if ((command & 0xE0) == 0x60) { // step out
-    fdc->step_dir_in = 0;
-    if (fdc->physical_track != 0) fdc->physical_track--;
-    if ((command & 0x10) && fdc->track != 0) fdc->track--;
+  }
+}
+
+
+static void complete_type_i(juku_fdc* fdc) {
+  const uint8_t command = fdc->type_i_command;
+  if ((command & 0xF0) == 0x00) {
+    fdc->track = 0;
+    fdc->physical_track = 0;
+  } else if ((command & 0xF0) == 0x10) {
+    fdc->track = fdc->data;
   }
   if ((command & 0x04) &&
       (fdc->track != fdc->physical_track || fdc->physical_track >= JUK_TRACKS)) {
     fdc->status |= ST_RNF;  // Type-I meaning: SEEK ERROR
   }
   complete_transfer(fdc);
+}
+
+
+static void finish_type_i_motion(juku_fdc* fdc) {
+  if (fdc->type_i_command & 0x04) {
+    fdc->head_loaded = 1;
+    fdc->type_i_settling = 1;
+    fdc->type_i_ticks = 30000;  // 15 ms at the FD1793's nominal 2 MHz clock
+  } else {
+    complete_type_i(fdc);
+  }
+}
+
+
+static void begin_type_i(juku_fdc* fdc, uint8_t command) {
+  clear_transfer(fdc);
+  fdc->status_type_i = 1;
+  fdc->head_loaded = (command & 0x08) != 0;
+  fdc->status &= (uint8_t)~(ST_CRC | ST_RNF | ST_NOT_READY);
+  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+    fdc->status |= ST_NOT_READY;
+    complete_transfer(fdc);
+    return;
+  }
+  fdc->type_i_command = command;
+  fdc->type_i_rate_ticks = type_i_rate_ticks(command);
+  if ((command & 0xF0) == 0x00) {
+    fdc->type_i_steps_remaining = fdc->physical_track;
+  } else if ((command & 0xF0) == 0x10) {
+    const int delta = (int)fdc->data - (int)fdc->track;
+    fdc->step_dir_in = delta >= 0;
+    fdc->type_i_steps_remaining = (unsigned)(delta >= 0 ? delta : -delta);
+  } else {
+    if ((command & 0xE0) == 0x40) fdc->step_dir_in = 1;
+    else if ((command & 0xE0) == 0x60) fdc->step_dir_in = 0;
+    fdc->type_i_steps_remaining = 1;
+  }
+  fdc->type_i_pending = 1;
+  fdc->status |= ST_BUSY;
+  if (fdc->type_i_steps_remaining) {
+    type_i_step_once(fdc);
+    fdc->type_i_steps_remaining--;
+    fdc->type_i_ticks = fdc->type_i_rate_ticks;
+  } else {
+    finish_type_i_motion(fdc);
+  }
 }
 
 
@@ -553,14 +605,34 @@ static void miss_drq_byte(juku_fdc* fdc) {
 
 
 void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
-  while (ticks && (fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
-    const unsigned remaining = DRQ_BYTE_TICKS - fdc->drq_ticks;
-    if (ticks < remaining) {
-      fdc->drq_ticks += ticks;
+  while (ticks) {
+    if (fdc->type_i_pending) {
+      if (ticks < fdc->type_i_ticks) {
+        fdc->type_i_ticks -= ticks;
+        return;
+      }
+      ticks -= fdc->type_i_ticks;
+      fdc->type_i_ticks = 0;
+      if (fdc->type_i_settling) {
+        complete_type_i(fdc);
+      } else if (fdc->type_i_steps_remaining) {
+        type_i_step_once(fdc);
+        fdc->type_i_steps_remaining--;
+        fdc->type_i_ticks = fdc->type_i_rate_ticks;
+      } else {
+        finish_type_i_motion(fdc);
+      }
+    } else if ((fdc->status & (ST_BUSY | ST_DRQ)) == (ST_BUSY | ST_DRQ)) {
+      const unsigned remaining = DRQ_BYTE_TICKS - fdc->drq_ticks;
+      if (ticks < remaining) {
+        fdc->drq_ticks += ticks;
+        return;
+      }
+      ticks -= remaining;
+      miss_drq_byte(fdc);
+    } else {
       return;
     }
-    ticks -= remaining;
-    miss_drq_byte(fdc);
   }
 }
 
@@ -651,7 +723,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       fdc->intrq = 0;
       fdc->force_interrupt_mask = 0;
       if (is_read_sector(data)) begin_read_sector(fdc, (data & 0x10) != 0);
-      else if (is_type_i(data)) finish_type_i(fdc, data);
+      else if (is_type_i(data)) begin_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) {
         clear_transfer(fdc);
         if (!was_busy) fdc->status_type_i = 1;

@@ -172,6 +172,7 @@ static int expect_intrq(const juku_fdc* fdc, int value, const char* label) {
 static void seek_track(juku_fdc* fdc, uint8_t track) {
   juku_fdc_write(fdc, 3, track);
   juku_fdc_write(fdc, 0, 0x10);
+  juku_fdc_tick(fdc, 10000000);
 }
 
 
@@ -252,8 +253,20 @@ int main(void) {
   fail |= expect_status(&fdc, ST_TRACK0 | ST_HEAD_LOADED,
                         ST_TRACK0, "restore head-unload status");
 
+  const unsigned type_i_rates[4] = {6000, 12000, 20000, 30000};
+  for (unsigned rate = 0; rate < 4; rate++) {
+    juku_fdc_write(&fdc, 0, (uint8_t)rate);  // zero-step restore exposes r1:r0
+    if (fdc.type_i_rate_ticks != type_i_rates[rate]) {
+      fprintf(stderr, "Type-I rate %u mapped to %u ticks, expected %u\n",
+              rate, fdc.type_i_rate_ticks, type_i_rates[rate]);
+      fail = 1;
+    }
+  }
+
   juku_fdc_write(&fdc, 3, 12);
   juku_fdc_write(&fdc, 0, 0x12);  // seek to data register
+  fail |= expect_status(&fdc, ST_BUSY, ST_BUSY, "seek timing begins busy");
+  juku_fdc_tick(&fdc, 10000000);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, 0, "after seek command");
   if (juku_fdc_read(&fdc, 1) != 12) {
     fprintf(stderr, "seek did not copy data register to track\n");
@@ -261,6 +274,25 @@ int main(void) {
   }
 
   juku_fdc_write(&fdc, 0, 0x44);  // step in, no register update, verify
+  fail |= expect_status(&fdc, ST_BUSY, ST_BUSY, "step/verify timing begins busy");
+  if (fdc.physical_track != 13 || fdc.type_i_settling) {
+    fprintf(stderr, "step pulse/motion was not issued before its rate delay\n");
+    fail = 1;
+  }
+  juku_fdc_tick(&fdc, 5999);
+  if (fdc.physical_track != 13 || fdc.type_i_settling || !(fdc.status & ST_BUSY)) {
+    fprintf(stderr, "3 ms step delay completed before 6000 controller ticks\n");
+    fail = 1;
+  }
+  juku_fdc_tick(&fdc, 1);
+  if (fdc.physical_track != 13 || !fdc.type_i_settling || !(fdc.status & ST_BUSY)) {
+    fprintf(stderr, "step did not enter 15 ms verify settle at tick 6000\n");
+    fail = 1;
+  }
+  juku_fdc_tick(&fdc, 29999);
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
+                        "verify before 15 ms settle boundary");
+  juku_fdc_tick(&fdc, 1);
   if (fdc.physical_track != 13 || juku_fdc_read(&fdc, 1) != 12) {
     fprintf(stderr, "verified no-update step did not separate physical/register tracks\n");
     fail = 1;
@@ -277,30 +309,49 @@ int main(void) {
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF,
                         ST_RNF, "read-sector rejects register/head mismatch");
   juku_fdc_write(&fdc, 0, 0x00);  // RESTORE is what physically recalibrates track zero
+  juku_fdc_tick(&fdc, 10000000);
   seek_track(&fdc, 12);
 
   juku_fdc_write(&fdc, 0, 0x50);  // step in and update the track register
+  juku_fdc_tick(&fdc, 10000000);
   if (juku_fdc_read(&fdc, 1) != 13) {
     fprintf(stderr, "step-in/update did not increment track\n");
     fail = 1;
   }
   juku_fdc_write(&fdc, 0, 0x40);  // step in without track-register update
+  juku_fdc_tick(&fdc, 10000000);
   if (juku_fdc_read(&fdc, 1) != 13) {
     fprintf(stderr, "step-in/no-update changed track\n");
     fail = 1;
   }
   juku_fdc_write(&fdc, 0, 0x70);  // step out and update the track register
+  juku_fdc_tick(&fdc, 10000000);
   if (juku_fdc_read(&fdc, 1) != 12) {
     fprintf(stderr, "step-out/update did not decrement track\n");
     fail = 1;
   }
   juku_fdc_write(&fdc, 0, 0x30);  // generic step reuses the prior direction
+  juku_fdc_tick(&fdc, 10000000);
   if (juku_fdc_read(&fdc, 1) != 11) {
     fprintf(stderr, "step/update did not preserve the step-out direction\n");
     fail = 1;
   }
 
   juku_fdc_write(&fdc, 0, 0x00);
+  juku_fdc_tick(&fdc, 10000000);
+  juku_fdc_write(&fdc, 3, 4);
+  juku_fdc_write(&fdc, 0, 0x10);
+  if (fdc.track != 1 || fdc.physical_track != 1 || !(fdc.status & ST_BUSY)) {
+    fprintf(stderr, "timed seek did not issue its first step immediately\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0xD0);
+  if (fdc.track != 1 || fdc.physical_track != 1 || (fdc.status & ST_BUSY) || fdc.intrq) {
+    fprintf(stderr, "D0 did not silently retain partial Type-I motion\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0x00);
+  juku_fdc_tick(&fdc, 10000000);
   seek_track(&fdc, 12);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xC4);  // read address, including the valid E flag

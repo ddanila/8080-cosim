@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **BOOT + TYPE-II/TYPE-III/LOST-DATA/INTRQ HDL FDC READY**
+Status: **BOOT + TYPE-I-TIMING/TYPE-II/TYPE-III/LOST-DATA/INTRQ HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -18,9 +18,15 @@ physical D93/D94 wiring.
   the `h` and `V` flags control the modeled head-load latch. Fifteen rising
   index edges while idle automatically release HLD exactly as specified;
   index edges while BUSY do not count, and Type I-III command activity restarts
-  the idle interval while an idle Type-IV event arm leaves it running. Exact
-  step-rate, 15 ms settle, and external TR00/HLT timing remain
-  physical timing boundaries. The same models cover single/multiple-record read-sector and write-sector, Read
+  the idle interval while an idle Type-IV event arm leaves it running. The four
+  rate codes map to 6,000/12,000/20,000/30,000 nominal 2 MHz ticks (3/6/10/15
+  ms): STEP/DIRC and head motion occur at the step phase, BUSY spans the
+  selected post-step interval, and `V=1` adds the datasheet 30,000-tick/15 ms
+  settle before verification. A silent D0 retains every already-issued partial
+  seek step. C advances this contract from executed 8080 cycles; focused HDL
+  unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Exact wall-clock
+  calibration and the external HLT wait remain physical D93.24 boundaries.
+  The same models cover single/multiple-record read-sector and write-sector, Read
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
@@ -191,7 +197,10 @@ physical D93/D94 wiring.
   ten-scanline character cell at byte column 2 / rows 70..79: blank top row,
   glyph bytes `1C 22 20 20 20 22 1C`, and two blank bottom rows. The guard
   requires exactly ten framebuffer writes, advances the monitor cursor from
-  byte column 2 to 3, and observes the installed `D7E7` trampoline.
+  byte column 2 to 3, and observes the installed `D7E7` trampoline. Its
+  precondition accepts either uniform `00` or `FF` for the Monitor's ten-byte
+  blinking cursor phase, then normalizes the cell before the glyph check;
+  realistic FDC polling changes elapsed blink phase, not character output.
   Public `LIST=0xCA0F` traverses exact `PrintCh=0xFFEE`, whose ROM jump reaches
   the boot-installed `D7F1->E2A2` USART service. With transmitter-ready bit 3
   asserted at status port `0x0E`, input `C='L'` is emitted exactly at data port
@@ -332,9 +341,9 @@ evidence exists.
 - The model is a Juku boot/media shim with datasheet-guarded Read Address,
   reconstructed Read Track, representable MFM Write Track, and Type-II
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
-  not a general WD1793 conformance model. Exact physical calibration of the
-  byte deadline and initial-write rotational lead-in, Type-I
-  step/settle timing, arbitrary flux/sector
+  not a general WD1793 conformance model. Exact physical D93.24 calibration of
+  the byte and Type-I clock intervals, initial-write rotational lead-in,
+  external HLT/step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Type-IV READY-transition and index-event semantics are
   guarded, but the board's physical event sources, pulse widths, and rotational

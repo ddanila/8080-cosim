@@ -8,7 +8,7 @@ module fdc_1793_tb;
   reg [7:0] drive = 8'h00;
   reg drive_en = 0;
   wire [7:0] D = drive_en ? drive : 8'hzz;
-  wire drq, intrq;
+  wire drq, intrq, step, dirc;
   integer errors = 0;
   integer i;
   reg [7:0] got;
@@ -20,13 +20,17 @@ module fdc_1793_tb;
   integer format_len = 0;
   integer format_output_len = 0;
   integer first_format_sector_end = 0;
+  integer expected_rate = 0;
+  integer step_pulses = 0;
+  integer step_pulses_before = 0;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side), .ready(ready), .index(index),
                .hlt(1'b1), .wprt(1'b0),
-               .drq(drq), .intrq(intrq));
+               .drq(drq), .intrq(intrq), .step(step), .dirc(dirc));
 
   always #5 clk = ~clk;
+  always @(posedge step) step_pulses = step_pulses + 1;
 
   task write_reg(input [1:0] regno, input [7:0] value); begin
     @(negedge clk);
@@ -47,6 +51,8 @@ module fdc_1793_tb;
   task seek_track(input [7:0] track_id); begin
     write_reg(2'd3, track_id);
     write_reg(2'd0, 8'h10);
+    while (dut.status[0]) @(negedge clk);
+    #1;
   end endtask
 
   task expect_status(input [7:0] mask, input [7:0] value, input [160*8:1] label);
@@ -198,8 +204,29 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'h00);
     expect_status(8'h24, 8'h04, "restore head-unload status");
 
+    for (i = 0; i < 4; i = i + 1) begin
+      write_reg(2'd0, i[7:0]);  // zero-step restore exposes r1:r0
+      case (i)
+        0: expected_rate = 6000;
+        1: expected_rate = 12000;
+        2: expected_rate = 20000;
+        default: expected_rate = 30000;
+      endcase
+      if (dut.type_i_rate_ticks !== expected_rate) begin
+        $display("FDC-1793: FAIL rate %0d mapped to %0d ticks expected %0d",
+                 i, dut.type_i_rate_ticks, expected_rate);
+        errors = errors + 1;
+      end
+    end
+
     write_reg(2'd3, 8'd12);
     write_reg(2'd0, 8'h12);
+    if (!dut.status[0]) begin
+      $display("FDC-1793: FAIL seek timing did not assert BUSY");
+      errors = errors + 1;
+    end
+    while (dut.status[0]) @(negedge clk);
+    #1;
     expect_status(8'h83, 8'h00, "after seek");
     read_reg(2'd1, got);
     if (got !== 8'd12) begin
@@ -207,7 +234,36 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
+    step_pulses_before = step_pulses;
     write_reg(2'd0, 8'h44);
+    if (!dut.status[0]) begin
+      $display("FDC-1793: FAIL step/verify timing did not assert BUSY");
+      errors = errors + 1;
+    end
+    if (dut.physical_track !== 8'd13 || dut.type_i_settling ||
+        step_pulses !== step_pulses_before + 1 || dut.dirc_r !== 1'b1) begin
+      $display("FDC-1793: FAIL step pulse/motion was not issued before rate delay");
+      errors = errors + 1;
+    end
+    while (dut.type_i_ticks > 1) @(posedge clk);
+    #1;
+    if (dut.physical_track !== 8'd13 || dut.type_i_settling || !dut.status[0]) begin
+      $display("FDC-1793: FAIL 3ms step delay completed before rate boundary");
+      errors = errors + 1;
+    end
+    @(negedge clk); #1;
+    if (dut.physical_track !== 8'd13 || !dut.type_i_settling || !dut.status[0]) begin
+      $display("FDC-1793: FAIL step did not enter 15ms verify settle");
+      errors = errors + 1;
+    end
+    while (dut.type_i_ticks > 1) @(posedge clk);
+    #1;
+    if (!dut.status[0] || dut.status[4]) begin
+      $display("FDC-1793: FAIL verify completed before settle boundary ticks=%0d status=%02x",
+               dut.type_i_ticks, dut.status);
+      errors = errors + 1;
+    end
+    @(negedge clk); #1;
     read_reg(2'd1, got);
     if (dut.physical_track !== 8'd13 || got !== 8'd12) begin
       $display("FDC-1793: FAIL verified no-update step physical=%02x track=%02x",
@@ -226,6 +282,22 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'h80);
     expect_status(8'h13, 8'h10, "read-sector rejects register/head mismatch");
     write_reg(2'd0, 8'h00);
+    while (dut.status[0]) @(negedge clk);
+    #1;
+    write_reg(2'd3, 8'd4);
+    write_reg(2'd0, 8'h10);
+    if (dut.track !== 8'd1 || dut.physical_track !== 8'd1 || !dut.status[0]) begin
+      $display("FDC-1793: FAIL timed seek did not issue first step immediately");
+      errors = errors + 1;
+    end
+    write_reg(2'd0, 8'hd0);
+    if (dut.track !== 8'd1 || dut.physical_track !== 8'd1 || dut.status[0] || intrq) begin
+      $display("FDC-1793: FAIL D0 did not silently retain partial Type-I motion");
+      errors = errors + 1;
+    end
+    write_reg(2'd0, 8'h00);
+    while (dut.status[0]) @(negedge clk);
+    #1;
     seek_track(8'd12);
     write_reg(2'd2, 8'd4);
     write_reg(2'd0, 8'h80);
@@ -255,6 +327,8 @@ module fdc_1793_tb;
     seek_track(8'd12);
 
     write_reg(2'd0, 8'h50);
+    while (dut.status[0]) @(negedge clk);
+    #1;
     read_reg(2'd1, got);
     if (got !== 8'd13) begin
       $display("FDC-1793: FAIL step-in/update track=%02x", got);
@@ -262,6 +336,8 @@ module fdc_1793_tb;
     end
 
     write_reg(2'd0, 8'h40);
+    while (dut.status[0]) @(negedge clk);
+    #1;
     read_reg(2'd1, got);
     if (got !== 8'd13) begin
       $display("FDC-1793: FAIL step-in/no-update track=%02x", got);
@@ -269,6 +345,8 @@ module fdc_1793_tb;
     end
 
     write_reg(2'd0, 8'h70);
+    while (dut.status[0]) @(negedge clk);
+    #1;
     read_reg(2'd1, got);
     if (got !== 8'd12) begin
       $display("FDC-1793: FAIL step-out/update track=%02x", got);
@@ -276,6 +354,8 @@ module fdc_1793_tb;
     end
 
     write_reg(2'd0, 8'h30);
+    while (dut.status[0]) @(negedge clk);
+    #1;
     read_reg(2'd1, got);
     if (got !== 8'd11) begin
       $display("FDC-1793: FAIL step/update previous direction track=%02x", got);
@@ -283,6 +363,8 @@ module fdc_1793_tb;
     end
 
     write_reg(2'd0, 8'h00);
+    while (dut.status[0]) @(negedge clk);
+    #1;
     seek_track(8'd12);
     write_reg(2'd2, 8'd9);
     write_reg(2'd0, 8'hc4);  // read address with the valid E flag set

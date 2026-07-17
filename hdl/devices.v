@@ -871,6 +871,16 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `define FDC_TIMER_FIRST
 `define FDC_TIMER_SERVICE
 `endif
+`ifdef FDC_TYPE_I_TIMING
+    integer type_i_pending = 0;
+    integer type_i_ticks = 0;
+    integer type_i_rate_ticks = 0;
+    integer type_i_steps_remaining = 0;
+    integer type_i_settling = 0;
+    reg [7:0] type_i_command = 0;
+    reg step_r = 0;
+    reg dirc_r = 0;
+`endif
     integer status_type_i = 1;
     integer head_loaded = 0;
     integer idle_index_pulses = 0;
@@ -894,7 +904,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     assign drq = status[1];
     assign intrq = intrq_r;
+`ifdef FDC_TYPE_I_TIMING
+    assign step = step_r; assign dirc = dirc_r;
+`else
     assign step = 1'bz; assign dirc = 1'bz;
+`endif
     assign early = 1'bz; assign late = 1'bz; assign rg = 1'bz;
     assign hld = head_loaded; assign tg43 = 1'bz;
     assign wg = 1'bz; assign wdata = 1'bz; assign wf_vfoe = 1'bz;
@@ -1012,6 +1026,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         write_track_seen = 0;
         write_track_format_error = 0;
         `FDC_TIMER_CLEAR
+`ifdef FDC_TYPE_I_TIMING
+        type_i_pending = 0;
+        type_i_ticks = 0;
+        type_i_steps_remaining = 0;
+        type_i_settling = 0;
+        step_r = 0;
+`endif
         status = status & ~(ST_BUSY | ST_DRQ);
     end endtask
 
@@ -1286,13 +1307,108 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end endtask
 
-    task finish_type_i(input [7:0] cmd); begin
+`ifdef FDC_TYPE_I_TIMING
+    task type_i_step_once; begin
+        if ((type_i_command & 8'hf0) == 8'h00) begin
+            step_dir_in = 0;
+            dirc_r = 0;
+            if (physical_track != 8'h00) physical_track = physical_track - 8'd1;
+            if (track != 8'h00) track = track - 8'd1;
+        end else if ((type_i_command & 8'hf0) == 8'h10) begin
+            dirc_r = step_dir_in;
+            if (step_dir_in) begin
+                if (physical_track != 8'hff) physical_track = physical_track + 8'd1;
+                if (track != 8'hff) track = track + 8'd1;
+            end else begin
+                if (physical_track != 8'h00) physical_track = physical_track - 8'd1;
+                if (track != 8'h00) track = track - 8'd1;
+            end
+        end else begin
+            dirc_r = step_dir_in;
+            if (step_dir_in && physical_track != 8'hff) physical_track = physical_track + 8'd1;
+            else if (!step_dir_in && physical_track != 8'h00) physical_track = physical_track - 8'd1;
+            if (type_i_command[4]) begin
+                if (step_dir_in && track != 8'hff) track = track + 8'd1;
+                else if (!step_dir_in && track != 8'h00) track = track - 8'd1;
+            end
+        end
+        step_r = 1;
+    end endtask
+
+    task complete_type_i_timed; begin
+        if ((type_i_command & 8'hf0) == 8'h00) begin
+            track = 8'h00;
+            physical_track = 8'h00;
+        end else if ((type_i_command & 8'hf0) == 8'h10) begin
+            track = data;
+        end
+        if (type_i_command[2] && (track != physical_track || physical_track > 8'd79))
+            status = status | ST_RNF;
+        complete_transfer();
+    end endtask
+
+    task finish_type_i_motion; begin
+        if (type_i_command[2]) begin
+            head_loaded = 1;
+            type_i_settling = 1;
+            type_i_ticks = 30000;
+        end else begin
+            complete_type_i_timed();
+        end
+    end endtask
+`endif
+
+    task finish_type_i(input [7:0] cmd);
+`ifdef FDC_TYPE_I_TIMING
+        integer steps;
+`endif
+    begin
         clear_transfer();
         status_type_i = 1;
+`ifdef FDC_TYPE_I_TIMING
+        head_loaded = cmd[3];
+`else
         head_loaded = |cmd[3:2];
+`endif
         status = status & ~(8'h08 | ST_RNF | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
+            complete_transfer();
+`ifdef FDC_TYPE_I_TIMING
+        end else begin
+            type_i_command = cmd;
+            case (cmd[1:0])
+                2'b00: type_i_rate_ticks = 6000;
+                2'b01: type_i_rate_ticks = 12000;
+                2'b10: type_i_rate_ticks = 20000;
+                default: type_i_rate_ticks = 30000;
+            endcase
+            if ((cmd & 8'hf0) == 8'h00) begin
+                steps = physical_track;
+                step_dir_in = 0;
+                dirc_r = 0;
+            end else if ((cmd & 8'hf0) == 8'h10) begin
+                seek_delta = data - track;
+                step_dir_in = (seek_delta >= 0);
+                dirc_r = (seek_delta >= 0);
+                steps = (seek_delta >= 0) ? seek_delta : -seek_delta;
+            end else begin
+                if ((cmd & 8'he0) == 8'h40) step_dir_in = 1;
+                else if ((cmd & 8'he0) == 8'h60) step_dir_in = 0;
+                dirc_r = step_dir_in;
+                steps = 1;
+            end
+            type_i_steps_remaining = steps;
+            type_i_pending = 1;
+            status = status | ST_BUSY;
+            if (steps != 0) begin
+                type_i_step_once();
+                type_i_steps_remaining = type_i_steps_remaining - 1;
+                type_i_ticks = type_i_rate_ticks;
+            end
+            else finish_type_i_motion();
+        end
+`else
         end else if ((cmd & 8'hF0) == 8'h00) begin
             track = 8'h00;
             physical_track = 8'h00;
@@ -1324,6 +1440,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         if (cmd[2] && (track != physical_track || physical_track > 8'd79))
             status = status | ST_RNF;
         complete_transfer();
+`endif
     end endtask
 
 `ifndef YOSYS
@@ -1635,6 +1752,31 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             else drq_ticks = drq_ticks + 1;
         end else begin
             drq_ticks = 0;
+        end
+    end
+`endif
+
+    // Type-I rates are controller-clock contracts from the FD179X table:
+    // 3/6/10/15 ms per step and 15 ms verify settle at a nominal 2 MHz.
+    // Keep this opt-in until the board's physical D93.24 source is measured.
+`ifdef FDC_TYPE_I_TIMING
+    always @(negedge clk) begin
+        step_r = 0;
+        if (type_i_pending) begin
+            if (type_i_ticks <= 1) begin
+                type_i_ticks = 0;
+                if (type_i_settling) begin
+                    complete_type_i_timed();
+                end else if (type_i_steps_remaining != 0) begin
+                    type_i_step_once();
+                    type_i_steps_remaining = type_i_steps_remaining - 1;
+                    type_i_ticks = type_i_rate_ticks;
+                end else begin
+                    finish_type_i_motion();
+                end
+            end else begin
+                type_i_ticks = type_i_ticks - 1;
+            end
         end
     end
 `endif

@@ -35,6 +35,12 @@ typedef struct {
   int write_track_format_error;
   unsigned drq_ticks;
   int write_first_byte_pending;
+  int type_i_pending;
+  unsigned type_i_ticks;
+  unsigned type_i_rate_ticks;
+  unsigned type_i_steps_remaining;
+  int type_i_settling;
+  uint8_t type_i_command;
   uint8_t force_interrupt_mask;
   int status_type_i;
   int head_loaded;

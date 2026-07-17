@@ -51,7 +51,8 @@ sync/d2_ready_path_check.sh
 These cover the real-ROM boot/framebuffer path, per-read agreement between
 `juku_top` and the C emulator (`cosim_check.sh`, cosim-referenced),
 raw disk geometry, the bounded WD1793 subset including Type-I physical-head,
-update/verify/status and 15-idle-index head-unload semantics plus Type-II multi-record,
+update/verify/status, nominal 3/6/10/15 ms step plus 15 ms settle timing, and
+15-idle-index head-unload semantics plus Type-II multi-record,
 streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
 one-revolution MFM Read Track plus representable writable-track formatting,
 raster/serializer behavior,

@@ -83,6 +83,13 @@ typedef struct {
 } fixture;
 
 
+static void step_cpu(fixture* f, i8080* cpu) {
+  unsigned long before = cpu->cyc;
+  i8080_step(cpu);
+  juku_fdc_tick(&f->fdc, (unsigned)(cpu->cyc - before));
+}
+
+
 static int overlay(const fixture* f, uint16_t address, unsigned* index) {
   switch (f->portc & 3) {
     case 0:
@@ -299,7 +306,7 @@ static int run_rwfloppy_type(
   cpu.c = write_type;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
-  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) step_cpu(f, &cpu);
   *total_cycles += cpu.cyc;
   if (cpu.pc == RETURN_PC) return 0;
   fprintf(stderr,
@@ -333,7 +340,7 @@ static int run_ramdisk_select(
   cpu.c = 0xA6;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
-  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) step_cpu(f, &cpu);
   *total_cycles += cpu.cyc;
   *result = cpu.a;
   if (cpu.pc == RETURN_PC && cpu.b == 0x5A && cpu.c == 0xA6) return 0;
@@ -365,7 +372,7 @@ static int run_bios_entry(
   cpu.e = de & 0xFF;
   f->ram[cpu.sp] = RETURN_PC & 0xFF;
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
-  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) i8080_step(&cpu);
+  while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) step_cpu(f, &cpu);
   *total_cycles += cpu.cyc;
   if (result_a) *result_a = cpu.a;
   if (result_hl) *result_hl = (uint16_t)((cpu.h << 8) | cpu.l);
@@ -396,7 +403,7 @@ static int run_bios_conin(
   f->ram[cpu.sp + 1] = RETURN_PC >> 8;
   unsigned long next_frame = FRAME_CYCLES;
   while (cpu.pc != RETURN_PC && cpu.cyc < 2000000UL && !cpu.halted) {
-    i8080_step(&cpu);
+    step_cpu(f, &cpu);
     if (cpu.cyc >= next_frame) {
       next_frame += FRAME_CYCLES;
       if (cpu.iff) {
@@ -451,7 +458,7 @@ static int run_bios_handoff(
   cpu.a = 0xA5;
   cpu.c = 0xA5;
   while (cpu.pc != CCP_ENTRY && cpu.cyc < 4000000UL && !cpu.halted) {
-    i8080_step(&cpu);
+    step_cpu(f, &cpu);
   }
   *total_cycles += cpu.cyc;
 
@@ -986,9 +993,15 @@ int main(int argc, char** argv) {
     0x00, 0x1C, 0x22, 0x20, 0x20, 0x20, 0x22, 0x1C, 0x00, 0x00,
   };
   enum { CONOUT_GLYPH_BASE = 0xE2F2 };
-  int conout_fixture_ok = f.ram[0xD49F] == 2 && f.ram[0xD4A0] == 0xF2;
+  // The frame ISR at 0x1000 complements the ten-byte cursor cell. Realistic
+  // FDC polling changes elapsed CPU time, so either uniform blink phase is a
+  // valid CONOUT precondition; normalize it before checking the glyph itself.
+  uint8_t cursor_fill = f.ram[CONOUT_GLYPH_BASE];
+  int conout_fixture_ok = f.ram[0xD49F] == 2 && f.ram[0xD4A0] == 0xF2 &&
+                          (cursor_fill == 0x00 || cursor_fill == 0xFF);
   for (unsigned row = 0; row < sizeof(glyph_cell_c); row++) {
-    if (f.ram[CONOUT_GLYPH_BASE + row * 40] != 0) conout_fixture_ok = 0;
+    if (f.ram[CONOUT_GLYPH_BASE + row * 40] != cursor_fill) conout_fixture_ok = 0;
+    f.ram[CONOUT_GLYPH_BASE + row * 40] = 0;
   }
   unsigned conout_vram_before = f.vram_writes;
   unsigned conout_trampolines_before = f.monitor_trampoline_entries;
@@ -1004,9 +1017,10 @@ int main(int argc, char** argv) {
       f.ram[0xD4A0] != 0xF3 || f.vram_writes - conout_vram_before != 10 ||
       f.monitor_trampoline_entries <= conout_trampolines_before) {
     fprintf(stderr,
-            "EKDOS CONOUT: fixture=%u glyph=%u cursor=%02X/%02X "
+            "EKDOS CONOUT: fixture=%u phase=%02X glyph=%u cursor=%02X/%02X "
             "writes=%u trampolines=%u/%u\n",
-            conout_fixture_ok, conout_glyph_ok, f.ram[0xD49F], f.ram[0xD4A0],
+            conout_fixture_ok, cursor_fill, conout_glyph_ok,
+            f.ram[0xD49F], f.ram[0xD4A0],
             f.vram_writes - conout_vram_before, f.monitor_trampoline_entries,
             conout_trampolines_before);
     fail = 1;

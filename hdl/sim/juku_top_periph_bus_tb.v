@@ -104,6 +104,8 @@ module juku_top_periph_bus_tb();
   task fdc_seek(input [7:0] track_id); begin
     io_write(8'h1F, track_id);
     io_write(8'h1C, 8'h10);
+    while (dut.U_FDC.status[0]) @(posedge osc);
+    #1;
   end endtask
 
   task inta_read(output [7:0] data); begin
@@ -245,6 +247,8 @@ module juku_top_periph_bus_tb();
 
     io_write(8'h1D, 8'h22);     // nonzero track before ROMBIOS first restore command
     io_write(8'h1C, 8'h02);     // exact ROMBIOS first FDC command from PC E5DE
+    while (dut.U_FDC.status[0]) @(posedge osc);
+    #1;
     if (dut.U_FDC.command !== 8'h02) fail("FDC command latch did not capture ROMBIOS restore");
     if (dut.fdc_intrq !== 1'b1) fail("FDC restore did not raise INTRQ");
     io_read(8'h1C, rd);
@@ -259,10 +263,14 @@ module juku_top_periph_bus_tb();
     io_write(8'h1D, 8'h00);     // FDC track register
     io_write(8'h1E, 8'h02);     // FDC sector register
     io_write(8'h1C, 8'h10);     // FDC seek: track <= data
+    while (dut.U_FDC.status[0]) @(posedge osc);
+    #1;
     io_read(8'h1D, rd);
     if (rd !== 8'h02) fail("FDC seek did not update track register through top-level bus");
 
     io_write(8'h1C, 8'h44);     // step in without update, then verify
+    while (dut.U_FDC.status[0]) @(posedge osc);
+    #1;
     io_read(8'h1D, rd);
     if (rd !== 8'h02 || dut.U_FDC.physical_track !== 8'h03)
       fail("FDC no-update step did not separate physical head and Track register");
@@ -273,6 +281,8 @@ module juku_top_periph_bus_tb();
       fail("FDC seek did not preserve the physical/register track offset");
 
     io_write(8'h1C, 8'h00);      // RESTORE physically recalibrates track zero
+    while (dut.U_FDC.status[0]) @(posedge osc);
+    #1;
     io_write(8'h1C, 8'h80);     // FDC read-sector command
     while (dut.U_FDC.drq_ticks < 63) @(posedge osc);
     #1;

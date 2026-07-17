@@ -20,10 +20,10 @@ QUAL_WRITABLE_OUT="$TMP/qualified-writable-out.txt"
 ALWAYS_OUT="$TMP/always-out.txt"
 ALWAYS_WRITABLE_OUT="$TMP/always-writable-out.txt"
 
-iverilog -g2012 -DFDC_BYTE_TIMING -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
-iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_VA87_CS_QUALIFIED -o "$QUAL_SIM" \
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_VA87_CS_QUALIFIED -o "$QUAL_SIM" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
-iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_VA87_ALWAYS_ENABLED -o "$ALWAYS_SIM" \
+iverilog -g2012 -DFDC_BYTE_TIMING -DFDC_TYPE_I_TIMING -DFDC_VA87_ALWAYS_ENABLED -o "$ALWAYS_SIM" \
   hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_periph_bus_tb.v
 vvp "$SIM" +disk=media/disks/JUKU1.CPM +disk_heads=2 >"$OUT"
 cp media/disks/JUKU1.CPM "$TMP/JUKU1-writable.CPM"
@@ -93,7 +93,7 @@ sync/juku_top_periph_bus_check.sh
 | Always-enabled D100 path uses actual D93 \`/RE\` and stays A->B on the suppressed-\`/RE\` branch | $(if [ -n "$always_pass_line" ]; then echo PASS; else echo FAIL; fi) |
 | FDC accepts exact ROMBIOS first command \`0x02\` as restore and returns track 0 | $status |
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | $status |
-| Type-I physical-head/update/verify/SEEK-ERROR status plus exact 15-idle-index HLD release through decoded ports \`0x1C..0x1F\` | $status |
+| Timed Type-I physical-head/update/verify/SEEK-ERROR completion plus exact 15-idle-index HLD release through decoded ports \`0x1C..0x1F\` | $status |
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (\`0x5C\`) through the top-level bus | $status |
 | Type-III Read Track reconstructs and drains one 6,250-byte MFM revolution with all ten sector IDs through logical DB and both physical D100 families | $status |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | $status |
