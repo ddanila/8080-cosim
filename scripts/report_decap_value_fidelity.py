@@ -34,7 +34,7 @@ REGISTERED_DRAM_REFS = {
 OPTIONAL_GRID_DNP_REFS = {
     "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
     "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
-    "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69",
+    "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69",
 }
 UNRESOLVED_PLACEMENT_REFS = {"C51", "C52", "C53", "C70", "C71", "C72"}
 MAX_POSITION_ERROR_MM = 0.01
@@ -152,6 +152,87 @@ def valid_bbox(bbox: object, dimensions: object) -> bool:
     return 0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height
 
 
+def linear_fit_residual_mm(
+    board_values: list[float], image_values: list[float]
+) -> tuple[float, float, float]:
+    if len(board_values) != len(image_values) or len(board_values) < 2:
+        raise ValueError("photo-fit axes need matching observations")
+    board_mean = sum(board_values) / len(board_values)
+    image_mean = sum(image_values) / len(image_values)
+    denominator = sum((value - board_mean) ** 2 for value in board_values)
+    slope = sum(
+        (board - board_mean) * (image - image_mean)
+        for board, image in zip(board_values, image_values)
+    ) / denominator
+    intercept = image_mean - slope * board_mean
+    residual = max(
+        abs(slope * board + intercept - image) / abs(slope)
+        for board, image in zip(board_values, image_values)
+    )
+    return slope, intercept, residual
+
+
+def validate_artwork_grid_photo_fit(
+    evidence: dict, generated: dict[str, tuple[float, float, float]]
+) -> tuple[bool, list[str]]:
+    fit = evidence.get("artwork_grid_photo_fit", {})
+    diagnostics: list[str] = []
+    image_path = ROOT / str(fit.get("rectified_solder_image", ""))
+    if not image_path.is_file() or sha256(image_path) != fit.get("sha256"):
+        diagnostics.append("rectified solder-grid image/hash mismatch")
+
+    columns = [float(value) for value in fit.get("board_columns_mm", [])]
+    rows = [float(value) for value in fit.get("board_rows_mm", [])]
+    observed_columns = [
+        float(value) for value in fit.get("observed_column_centres_px", [])
+    ]
+    observed_rows = [
+        float(value) for value in fit.get("observed_row_centres_px", [])
+    ]
+    if len(columns) != 8 or len(rows) != 4:
+        diagnostics.append("photo-fit grid is not 8 columns by 4 rows")
+        return False, diagnostics
+    try:
+        x_slope, _, x_error = linear_fit_residual_mm(columns, observed_columns)
+        y_slope, _, y_error = linear_fit_residual_mm(rows, observed_rows)
+    except (ValueError, ZeroDivisionError):
+        diagnostics.append("photo-fit axes are malformed")
+        return False, diagnostics
+    limit = float(fit.get("max_local_fit_error_mm", 0.0))
+    if not 4.5 < x_slope < 6.0 or not 4.5 < y_slope < 6.0:
+        diagnostics.append("photo-fit scale is implausible")
+    if limit <= 0.0 or max(x_error, y_error) > limit:
+        diagnostics.append(
+            f"photo-fit residual {max(x_error, y_error):.3f} mm exceeds {limit:.3f} mm"
+        )
+
+    expected_grid = {
+        (round(x, 3), round(y, 3)) for y in rows for x in columns
+    }
+    actual_grid = {
+        (round(position[0], 3), round(position[1], 3))
+        for ref, position in generated.items()
+        if ref in set(REGISTERED_DRAM_REFS) | OPTIONAL_GRID_DNP_REFS
+    }
+    if actual_grid != expected_grid:
+        diagnostics.append("generator does not retain the full registered 4x8 grid")
+
+    special = fit.get("special_sites", {})
+    for ref, expected in {
+        "C63": ([176.1, 145.6], [5, 1]),
+        "C69": ([198.4, 195.8], [7, 3]),
+    }.items():
+        item = special.get(ref, {})
+        if item.get("board_pad_midpoint_mm") != expected[0]:
+            diagnostics.append(f"{ref}: registered midpoint changed")
+        if item.get("grid_index") != expected[1]:
+            diagnostics.append(f"{ref}: registered grid index changed")
+        position = generated.get(ref)
+        if position is None or math.dist(position[:2], expected[0]) > MAX_POSITION_ERROR_MM:
+            diagnostics.append(f"{ref}: generator placement differs from target photo fit")
+    return not diagnostics, diagnostics
+
+
 def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
     evidence = json.loads(PLACEMENT_EVIDENCE.read_text(encoding="utf-8"))
     drawing = evidence.get("factory_drawing", {})
@@ -162,7 +243,6 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
         set(REGISTERED_DRAM_REFS)
         | OPTIONAL_GRID_DNP_REFS
         | UNRESOLVED_PLACEMENT_REFS
-        | {"C63"}
     )
     if partition != set(CAP_REFS):
         diagnostics.append("C35-C72 population-disposition partition is incomplete")
@@ -268,11 +348,6 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
         note = str(chip.get("prov", {}).get("pins", ""))
         if "early fit-to-space assumption" not in note:
             diagnostics.append(f"{ref}: provenance does not retire the invented coordinate")
-    if schematic_population_flags("C63") != ("no", "yes"):
-        diagnostics.append("C63 schematic no-footprint DNP flags changed")
-    if pcb_has_footprint("C63"):
-        diagnostics.append("C63 target no-footprint DNP was fabricated")
-
     if set(drawing_targets) != set(REGISTERED_DRAM_REFS):
         diagnostics.append("factory target set is not exactly C38/C42/C46/C50")
     if set(owner_sites) != set(REGISTERED_DRAM_REFS):
@@ -316,23 +391,29 @@ def main() -> int:
     }
     group_ok = group_counts == expected_groups
     value_ok = model_values == {"0,047": 38}
-    c63_dnp = cap_chip(board, "C63").get("pcb_dnp") is True
+    c63_dnp = cap_chip(board, "C63").get("assembly_dnp") is True
     dram_placement_ok, dram_placement_diagnostics = validate_registered_dram_placements(board)
+    generated = generator_decap_positions()
+    evidence = json.loads(PLACEMENT_EVIDENCE.read_text(encoding="utf-8"))
+    grid_fit_ok, grid_fit_diagnostics = validate_artwork_grid_photo_fit(
+        evidence, generated
+    )
 
     lines = [
         "# Decoupling capacitor value fidelity",
         "",
         "Status date: 2026-07-16.",
         "",
-        "Status: **DRAM-FIELD POPULATION CLOSED / C63 TARGET DNP CLOSED / VALUES AND FOOTPRINT PLACEMENTS PENDING**",
+        "Status: **DRAM-FIELD ARTWORK/POPULATION CLOSED / VALUES AND NON-FIELD PLACEMENTS PENDING**",
         "",
         "This generated report isolates the C35-C72 decoupling-capacitor",
         "authenticity issue. The board model and routed PCB preserve the two",
         "array-power bypass rail groups as schematic intent. The `.009` factory",
-        "drawing and owner-board morphology close the 31-site DRAM-field population:",
-        "fit C38/C42/C46/C50 and leave the other 27 inherited footprints empty.",
-        "C63 has no target footprint. Six non-field placement/population dispositions,",
-        "33 exact target footprint placements, and all factory capacitance values remain open.",
+        "drawing and owner-board morphology close the 4x8 DRAM-field artwork and population:",
+        "fit C38/C42/C46/C50 and leave the other 28 inherited footprints empty.",
+        "The older C63 grid landing remains bare common artwork, distinct from the absent",
+        "`.009` C63 callout between D41/D40. Six non-field placement/population",
+        "dispositions and all factory capacitance values remain open.",
         "",
         "## Checks",
         "",
@@ -342,9 +423,10 @@ def main() -> int:
         table_row(["Rail-group connectivity matches model expectation", "PASS" if group_ok else "FAIL", ", ".join(f"{k}: {v}" for k, v in sorted(group_counts.items()))]),
         table_row(["Current model value is uniform 0,047", "PASS" if value_ok else "FAIL", ", ".join(f"{k or '-'}: {v}" for k, v in sorted(model_values.items()))]),
         table_row(["Target DRAM-bank C38/C42/C46/C50 placements are registered", "PASS" if dram_placement_ok else "FAIL", "factory drawing + owner landing/remnant sites + generator/source PCB" if dram_placement_ok else "; ".join(dram_placement_diagnostics)]),
-        table_row(["Other 27 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok else "FAIL", "bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded"]),
+        table_row(["Full inherited 4x8 DRAM-grid artwork is photo-registered", "PASS" if grid_fit_ok else "FAIL", "32 target landing pairs; C63 restored; C69 eighth-column placement" if grid_fit_ok else "; ".join(grid_fit_diagnostics)]),
+        table_row(["Other 28 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok and grid_fit_ok else "FAIL", "bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded"]),
         table_row(["Six non-field positions are held from fabrication", "PASS" if dram_placement_ok else "FAIL", "retired fit-to-space coordinates are absent from generator/source PCB; schematic intent and circuit-review gate remain"]),
-        table_row(["C63 target-board population is DNP", "PASS" if c63_dnp else "FAIL", "registered bare site between D41/D40; no source-PCB footprint"]),
+        table_row(["C63 target-board population is DNP", "PASS" if c63_dnp and grid_fit_ok else "FAIL", "bare .009 callout; inherited grid verification footprint retained"]),
         table_row(["Historical value census is reconciled per position", "FAIL", "raw notes report mixed values but no per-position mapping"]),
         "",
         "## Current Board Model",
@@ -367,14 +449,14 @@ def main() -> int:
             "  the former `RAIL_H`-to-GND assignment was a scan-reading error.",
             "- The current BOM/model value for these 38 positions is uniform",
             "  `0,047`, which is suitable for the functional replica's modeled",
-            "  bypass role. C63 remains one of those intended schematic positions",
-            "  but is not populated or fabricated on the exact target board.",
+            "  bypass role. C63 is not populated at its `.009` callout; its inherited",
+            "  DRAM-grid landing pair remains fabricated as common artwork.",
             "- The `.009` drawing directly labels C38, C42, C46, and C50 above",
             "  D91, D89, D87, and D85 respectively. The owner component photo",
             "  shows a matching landing pair with solder and clipped lead remnants",
             "  at each site but no body. Those four parts are therefore populated",
             "  in the factory replica; the photographed board records later removal.",
-            "- The same complete target view omits the other 27 positions in the",
+            "- The same complete target view omits the other 28 positions in the",
             "  older `.006` 4x8 zigzag. The owner view shows those inherited sites",
             "  as clean bare tinned landings, including the four alternate bottom-row",
             "  sites. They remain fabricated verification footprints but are marked",
@@ -385,9 +467,9 @@ def main() -> int:
             "- C51-C53 and C70-C72 still require target-revision placement/population",
             "  disposition. Their former near-chip coordinates were early fit-to-space",
             "  assumptions and are now retired from the generator and source PCB. Exact",
-            "  target-artwork placement of those six plus the 27",
-            "  retained bare grid footprints also remains to be photogrammetrically",
-            "  registered; `.006` coordinates are not `.009` placement proof.",
+            "  target-artwork placement of those six remains unresolved. The full",
+            "  inherited 4x8 grid is now photogrammetrically registered from the",
+            "  target board, including C63 and the corrected C69 column.",
             "",
             "## Boundary",
             "",
@@ -403,7 +485,7 @@ def main() -> int:
     )
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
-    return 0 if group_ok and value_ok and c63_dnp and dram_placement_ok else 1
+    return 0 if group_ok and value_ok and c63_dnp and dram_placement_ok and grid_fit_ok else 1
 
 
 if __name__ == "__main__":

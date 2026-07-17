@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scope": "target-revision 31-site DRAM-field decoupler population",
-  "promotion_rule": "the factory assembly drawing establishes C38/C42/C46/C50 refdes, placement, and original population; the complete target view plus the owner-board site morphology establishes assembly DNP for the other 27 inherited grid footprints; no source establishes capacitance value or electrical connectivity",
+  "scope": "target-revision 4x8 inherited DRAM-field decoupler artwork and population",
+  "promotion_rule": "the factory assembly drawing establishes C38/C42/C46/C50 refdes, placement, and original population; registered component and solder panoramas prove that all 32 common-artwork landing pairs remain fabricated, including the older C63 grid landing even though the separate .009 C63 callout between D41/D40 is bare; the complete target view establishes assembly DNP for the other 28 grid footprints; no source establishes capacitance value beyond the schematic model",
   "factory_drawing": {
     "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
     "sha256": "a7a7c64fc71d9c0dbc42546bea6998f7fc86cf9e14a19a30c03c54803e455217",
@@ -80,15 +80,42 @@
       }
     ]
   },
+  "artwork_grid_photo_fit": {
+    "rectified_solder_image": "docs/photo-registration/solder_grid-rectified.jpg",
+    "sha256": "dc2c7bdc163935a594514a0efde6273cc2257c5fc6e66eab67ee25acbef4a2d5",
+    "dimensions_px": [1550, 1330],
+    "coordinate_system": "component-side board orientation after the guarded solder-panorama rectification; pixels remain observations and are locally fit to board millimetres",
+    "source_registration": "docs/photo-registration/board-registration.json",
+    "observation": "four rows of eight distinct horizontal two-hole landing pairs are exposed above the four DRAM rows. The older C63 position is the sixth pair of row two; the C69 position is the eighth pair of row four, not the 3.9 mm left-shifted routing workaround. The solder view shows C69.2 and the nearby R52.1 as distinct non-touching drilled annuli, so their local 0.8 mm drills use guarded 1.1 mm copper rather than moving C69",
+    "board_columns_mm": [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4],
+    "board_rows_mm": [120.9, 145.6, 170.7, 195.8],
+    "observed_column_centres_px": [579.9, 637.7, 695.6, 753.7, 811.9, 870.2, 929.0, 987.6],
+    "observed_row_centres_px": [631.5, 760.3, 890.4, 1021.0],
+    "max_local_fit_error_mm": 0.35,
+    "special_sites": {
+      "C63": {
+        "grid_index": [5, 1],
+        "board_pad_midpoint_mm": [176.1, 145.6],
+        "observed_midpoint_px": [870.2, 760.3],
+        "disposition": "inherited common-artwork landing retained and assembly DNP; distinct from the bare .009 callout between D41/D40"
+      },
+      "C69": {
+        "grid_index": [7, 3],
+        "board_pad_midpoint_mm": [198.4, 195.8],
+        "observed_midpoint_px": [987.6, 1021.0],
+        "disposition": "eighth-column physical landing; retire the 194.5 mm DRC workaround"
+      }
+    }
+  },
   "target_optional_grid_dnp": {
     "refs": [
       "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
-      "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
+      "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59", "C63",
       "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69"
     ],
     "population_state": "assembly DNP; retain the fabricated two-pad footprint",
-    "basis": "the complete .009 target assembly view labels only C38/C42/C46/C50 in the DRAM field, while the owner board shows the remaining inherited .006 grid sites as clean bare tinned landings",
-    "boundary": "the old .006 mapping preserves refdes-to-footprint working coordinates, but those coordinates remain old-revision placement evidence rather than a target photogrammetric fit"
+    "basis": "the complete .009 target assembly view labels only C38/C42/C46/C50 in the DRAM field, while registered target component and solder panoramas show the other 28 inherited grid sites as clean bare tinned landing pairs",
+    "boundary": "population is closed; capacitance, tolerance, and voltage remain unresolved for the four factory-fitted positions"
   },
   "non_field_placement_hold": {
     "refs": ["C51", "C52", "C53", "C70", "C71", "C72"],

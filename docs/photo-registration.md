@@ -173,9 +173,12 @@ its notch to the photographed right-facing orientation. The same bracketed
 D41/D40 view resolves the factory C63 label location: the inter-package strip
 contains no populated capacitor body or coherent drilled axial lead pair.
 The image cannot distinguish omission during assembly from later removal, but
-both histories establish the exact target population as absent. C63 is therefore
-retained as intended schematic connectivity and marked target-board DNP, with no
-fabricated PCB footprint or populate-now BOM entry.
+both histories establish the exact target population at that callout as absent.
+Separately, the component and reflected solder panoramas fit the complete
+inherited 4×8 DRAM-decoupler landing grid, including the older C63 landing at
+`(176.1,145.6)` mm. C63 is therefore retained as intended schematic
+connectivity and marked assembly DNP, with the bare common-artwork footprint
+fabricated but no populate-now BOM entry.
 
 The marked `КР580ВК38` D5 now has a direct affine component fit in raw
 image `200411500`. Its complete 2x14 contact field and right-facing notch move

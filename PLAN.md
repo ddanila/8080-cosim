@@ -387,11 +387,12 @@ Every ask below is queued with exact deliverables in
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
 
-Source-model state feeding this work: the source PCB passes all 2258/2258
-net-assigned PCB-scoped board-JSON endpoints, with 77 non-PCB or placement-held endpoints
-intentionally excluded: bracket-mounted S1/X3/X4/X6/X8/X9 use their physical
-A-point cable landings, while photo-proven target-DNP C63 retains schematic
-intent but has no fabricated footprint. C51-C53/C70-C72 likewise retain their
+Source-model state feeding this work: the source PCB passes all 2262/2262
+net-assigned PCB-scoped board-JSON endpoints, with 75 non-PCB or placement-held
+endpoints intentionally excluded. Bracket-mounted S1/X3/X4/X6/X8/X9 use their
+physical A-point cable landings. The photo-proven bare `.009` C63 callout is
+kept distinct from the inherited C63 DRAM-grid verification landing: the full
+4x8 common-artwork grid is fabricated and C63 remains assembly DNP. C51-C53/C70-C72 retain their
 schematic rail-bypass intent but have no current source-PCB footprint: their
 former near-chip coordinates were fit-to-space assumptions and remain held
 until target placement/population evidence is registered

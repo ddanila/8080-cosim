@@ -12,6 +12,7 @@ BOARD_JSON = ROOT / "kicad/juku.board.json"
 PCB = ROOT / "kicad/juku.kicad_pcb"
 SCHEMATIC = ROOT / "kicad/juku.kicad_sch"
 EVIDENCE = ROOT / "ref/photos/dgsh5-109-009-sb/fdc-lower-placement-registration.json"
+GRID_EVIDENCE = ROOT / "ref/photos/dgsh5-109-009-sb/dram-decap-placement-registration.json"
 
 
 def fail(message: str) -> None:
@@ -46,8 +47,8 @@ def block_end(text: str, start: int) -> int:
 def main() -> int:
     board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
     chip = next((item for item in board["chips"] if item.get("ref") == "C63"), None)
-    if chip is None or chip.get("pcb_dnp") is not True:
-        fail("board JSON must mark C63 pcb_dnp=true")
+    if chip is None or chip.get("assembly_dnp") is not True or chip.get("pcb_dnp"):
+        fail("board JSON must retain C63 artwork as assembly DNP")
 
     endpoints = {
         name: [str(pin) for ref, pin in net.get("nodes", []) if ref == "C63"]
@@ -58,8 +59,27 @@ def main() -> int:
         fail(f"intended schematic endpoints changed: {endpoints}")
 
     pcb_text = PCB.read_text(encoding="utf-8")
-    if '(property "Reference" "C63"' in pcb_text:
-        fail("source PCB still contains a C63 footprint")
+    marker = '(property "Reference" "C63"'
+    ref_at = pcb_text.find(marker)
+    if ref_at < 0:
+        fail("source PCB lost the inherited C63 grid footprint")
+    footprint_start = pcb_text.rfind("\n\t(footprint ", 0, ref_at)
+    footprint_end = pcb_text.find("\n\t(footprint ", ref_at)
+    footprint = pcb_text[footprint_start : len(pcb_text) if footprint_end < 0 else footprint_end]
+    position = re.search(
+        r"\n\t\t\(at\s+(-?[0-9.]+)\s+(-?[0-9.]+)(?:\s+(-?[0-9.]+))?\)",
+        footprint,
+    )
+    if position is None:
+        fail("cannot parse inherited C63 grid footprint position")
+    x, y, angle = float(position.group(1)), float(position.group(2)), float(position.group(3) or 0.0)
+    if abs(x - 173.6) > 0.01 or abs(y - 145.6) > 0.01 or abs(angle) > 0.01:
+        fail(f"inherited C63 footprint moved: {(x, y, angle)}")
+    attr = re.search(r"\n\t\t\(attr\s+([^\n)]+)\)", footprint)
+    if attr is None or not {"through_hole", "dnp", "exclude_from_pos_files"}.issubset(
+        set(attr.group(1).split())
+    ):
+        fail("inherited C63 footprint is not guarded DNP artwork")
 
     sch_text = SCHEMATIC.read_text(encoding="utf-8")
     c63_symbol = None
@@ -68,8 +88,8 @@ def main() -> int:
         if '(property "Reference" "C63"' in block:
             c63_symbol = block
             break
-    if c63_symbol is None or "(on_board no) (dnp yes)" not in c63_symbol:
-        fail("schematic C63 is not marked on_board=no and dnp=yes")
+    if c63_symbol is None or "(on_board yes) (dnp yes)" not in c63_symbol:
+        fail("schematic C63 is not retained on-board as DNP artwork")
 
     evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
     target = next((item for item in evidence["targets"] if item.get("refdes") == "C63"), None)
@@ -81,7 +101,14 @@ def main() -> int:
     if not (ROOT / absence[0].get("image", "")).is_file():
         fail("registered target-board owner image is missing")
 
-    print("C63 TARGET DNP: PASS; schematic intent retained, target PCB footprint absent")
+    grid = json.loads(GRID_EVIDENCE.read_text(encoding="utf-8"))
+    special = grid.get("artwork_grid_photo_fit", {}).get("special_sites", {}).get("C63", {})
+    if special.get("board_pad_midpoint_mm") != [176.1, 145.6]:
+        fail("inherited C63 grid landing is not photo-registered")
+    if "distinct from" not in str(special.get("disposition", "")):
+        fail("C63 callout/grid distinction is not explicit")
+
+    print("C63 TARGET DNP: PASS; .009 callout absent, inherited bare grid landing retained")
     return 0
 
 

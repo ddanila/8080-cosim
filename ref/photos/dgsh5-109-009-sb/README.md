@@ -101,13 +101,14 @@ with two independent component photographs and one reflected solder view. It
 closes the A2/A1 net partition while explicitly withholding the auxiliary-hole
 centres from fabrication use.
 
-`dram-decap-placement-registration.json` registers the target-revision 31-site
-DRAM decoupler field. The drawing fixes C38/C42/C46/C50 as the four intended
-factory parts; the owner-board photograph shows their clipped remnants and the
-other 27 inherited `.006` grid sites as clean bare tinned footprints. The latter
-are assembly DNP but remain fabricated. This evidence closes field population
-without promoting a capacitance value or claiming `.006` coordinates as exact
-target-artwork placement. The same record separately holds C51-C53/C70-C72 out
+`dram-decap-placement-registration.json` registers the complete target-revision
+4×8 DRAM-decoupler artwork. The drawing fixes C38/C42/C46/C50 as the four
+intended factory parts; registered component and reflected solder panoramas fit
+all 32 landing pairs, including the older C63 grid landing. The other 28 grid
+sites are assembly DNP but remain fabricated. The separate `.009` C63 callout
+between D41/D40 is bare and must not be conflated with that inherited landing.
+This evidence closes field artwork and population without promoting a
+capacitance value. The same record separately holds C51-C53/C70-C72 out
 of PCB fabrication: their former coordinates came from an early fit-to-space
 pass rather than registered source evidence. Their schematic rail-bypass intent
 is retained, but placement and target-revision population remain unresolved;

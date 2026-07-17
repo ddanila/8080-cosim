@@ -3599,7 +3599,7 @@
   {
    "ref": "C63",
    "type": "C_KM",
-   "pcb_dnp": true,
+   "assembly_dnp": true,
    "pins": {
     "1": "P1",
     "2": "P2"
@@ -3607,7 +3607,7 @@
    "prov": {
     "type": "scan",
     "refdes": "BOM/DSN plus ДГШ5.109.009 СБ and registered owner component photo",
-    "pins": "BOM/DSN value 0,047 and intended array-power bypass role GND<->RAIL_H are retained schematically. The .009 factory outline is between D41/D40, while the registered target owner photo shows that exact site bare with no fitted body or coherent drilled lead pair; C63 is therefore an explicit target-board DNP and has no PCB footprint"
+    "pins": "BOM/DSN value 0,047 and intended array-power bypass role GND<->RAIL_H are retained. The .009 factory C63 callout between D41/D40 is bare with no coherent drilled lead pair, proving assembly DNP there. Independently, registered component and solder panoramas expose the complete inherited 4x8 DRAM-decoupler artwork, including the older C63 grid landing at (176.1,145.6) mm. C63 remains assembly DNP with the fabricated footprint retained as bare common artwork; do not fit a capacitor or treat it as the absent .009 callout site"
    },
    "value": "0,047"
   },
@@ -3697,7 +3697,7 @@
    "prov": {
     "type": "scan",
     "refdes": "scan",
-    "pins": ".009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Schematic GND<->RAIL_H bypass intent remains modeled; the target per-position/refdes coordinate remains assumed from the old-revision .006 mapping near D3"
+    "pins": ".009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with the fabricated footprint retained. Registered component and solder panoramas place it at the eighth column of the fourth DRAM-decoupler row, centered at (198.4,195.8) mm; the former 3.9 mm left shift was only a routing workaround. Schematic GND<->RAIL_H bypass intent remains modeled"
    },
    "value": "0,047"
   },

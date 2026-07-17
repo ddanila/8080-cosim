@@ -52,7 +52,6 @@ jobs:
             kicad/apply_a20_factory_wire_split.py \
             kicad/apply_a20_factory_wire_schematic_split.py \
             kicad/apply_x6_offboard_correction.py \
-            kicad/apply_c63_target_dnp.py \
             kicad/check_x6_offboard_landings.py \
             kicad/check_c63_target_dnp.py \
             kicad/check_factory_wire_links.py \

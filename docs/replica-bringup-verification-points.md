@@ -16,9 +16,9 @@ visible and actionable before manufacturing and first power-on.
 - Verification-point nets: `202`
 - Verification-point endpoints checked in PCB: `227`
 - PCB endpoint coverage: `PASS`
-- All board endpoints checked in source PCB: `2260`
-- All board endpoints checked in routed PCB: `2260`
-- Intentional non-PCB or placement-pending endpoints excluded: `77`
+- All board endpoints checked in source PCB: `2262`
+- All board endpoints checked in routed PCB: `2262`
+- Intentional non-PCB or placement-pending endpoints excluded: `75`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
@@ -48,16 +48,17 @@ behind a risk note.
 Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against
 the generated source PCB and the routed fabrication PCB. Bracket-mounted
 `S1`, `X3`, `X4`, `X6`, `X8`, and `X9` are intentionally excluded because their cable
-landings are separate `A*` PCB footprints; target-DNP parts such as C63 are
-excluded because the exact target has no footprint. C51-C53 and C70-C72 are
+landings are separate `A*` PCB footprints. Assembly-DNP C63 remains in scope
+because the complete inherited 4×8 grid artwork is photo-registered; its bare
+landing is distinct from the absent `.009` callout between D41/D40. C51-C53 and C70-C72 are
 also excluded until evidence fixes their target placement and population;
 their former fit-to-space coordinates are not fabrication evidence. This is a
 fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
-| `kicad/juku.kicad_pcb` | 2260/2260 | 2260/2260 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1869/2260 | 1786/2260 | FAIL |
+| `kicad/juku.kicad_pcb` | 2262/2262 | 2262/2262 | PASS |
+| `kicad/juku_routed.kicad_pcb` | 1871/2262 | 1788/2262 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`

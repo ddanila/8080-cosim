@@ -239,9 +239,9 @@ _DEC = {  # DRAM-field decaps: emaplaat zigzag (per column, top->bottom)
     'C39':(142.3,120.9,0),'C40':(142.3,145.6,0),'C41':(142.3,170.7,0),'C42':(142.3,195.8,0),
     'C58':(153.7,120.9,0),'C59':(153.7,145.6,0),'C60':(153.7,170.7,0),'C61':(153.7,195.8,0),
     'C43':(164.7,120.9,0),'C44':(164.7,145.6,0),'C45':(164.7,170.7,0),'C46':(164.7,195.8,0),
-    'C62':(176.1,120.9,0),'C64':(176.1,170.7,0),'C65':(176.1,195.8,0),
+    'C62':(176.1,120.9,0),'C63':(176.1,145.6,0),'C64':(176.1,170.7,0),'C65':(176.1,195.8,0),
     'C47':(187.1,120.9,0),'C48':(187.1,145.6,0),'C49':(187.1,170.7,0),'C50':(187.1,195.8,0),
-    'C66':(198.4,120.9,0),'C67':(198.4,145.6,0),'C68':(198.4,170.7,0),'C69':(194.5,195.8,0),
+    'C66':(198.4,120.9,0),'C67':(198.4,145.6,0),'C68':(198.4,170.7,0),'C69':(198.4,195.8,0),
 }
 PASSIVE_PLACE.update(_DEC)
 
@@ -332,7 +332,7 @@ PLACE = {
     # video-output chain -- relocated to the right-centre with the clock cluster (read off the
     # drawing): RAS/CAS decode D53 sits below D36; IE10 ctr D103 below D39; AG3 one-shot D56 far
     # right (raw read hit the 310 edge -> pulled in 5 mm so the DIP stays on-board). All vertical.
-    'D53':(227.8,204.9,0),'D52':(57.2,211.6,0),'D50':(106.2,133.1,0),'D51':(106.2,158.2,0),'D92':(260,159.2,0),'D103':(273.0,181.8,0),   # D51 = row-2 mux, left DRAM column (emaplaat); D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
+    'D53':(227.8,204.9,0),'D52':(57.2,211.6,0),'D50':(100.690,143.923,180),'D51':(100.690,169.057,180),'D92':(260,159.2,0),'D103':(273.0,181.8,0),   # D50/D51 are two-side photo-fitted with notches down; D52 = 5th КП14; D50/D92 net-carrying (beeper wires 10/11/13)
     'D56':(287.8,180,0),    # АГ3 at its DRAWN spot after all: the "К555ЛУ?/1068" photo read there was
                           # К155АГ3 8901 UPSIDE DOWN (1068 = 8901 rotated). Quadrant round-trip reverted.
     # bus interface band (read off the drawing): a horizontal row in the gap BETWEEN the ROM row
@@ -351,7 +351,7 @@ PLACE = {
     # not a fictional bottom-left row). D40 (СТ16) is photo-fitted horizontal, notch-right -> rot 270; the ЛА/ЛН gates
     # D38/D39/D33/D36/D35 are drawn vertical -> rot 0. D59 (osc) is still approximate (the drawing
     # puts it bottom-centre by the transformer -- read it next pass).
-    'D40':(258.56,140.99,270),'D41':(235,140.9,270),'D38':(233.4,156.6,0),'D39':(284.3,156.1,0),   # D40/D41 are the registered same-row notch-right pair; D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
+    'D40':(258.56,140.99,270),'D41':(235,140.9,270),'D38':(234.558,159.619,0),'D39':(284.3,156.1,0),   # D38 is cross-side photo-fitted; D40/D41 are the registered same-row notch-right pair; D39 294->280: photo shows ЛА3+ЛП5 side by side, ЛП5 (D34) owns the ~294 slot
     'D34':(297.5,143.2,0),   # ЛП5 XOR pulse gen [sheet-2]
     # Inputs below compensate the stock footprint anchor/bounding-box offset so
     # the saved KiCad footprint positions remain the photo-guarded coordinates
@@ -376,7 +376,7 @@ PLACE = {
     # buffer row at СБ y37.1 (sb_left_0: D25/D23 boxes y34.7-39.5; the old 53.4 sat on the ROM sockets)
     'D25':(29.8,37.1,90),'D23':(54.6,37.1,90),'D24':(81.6,37.1,90),'D29':(108.5,37.1,90),
     'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183.0,243.1,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
-    'D37':(241.7,181,180),   # ЛА3 D42-serial inverter; notch-DOWN (emaplaat+photo)
+    'D37':(273.967,159.582,0),   # local component/solder fit; notch up
     'D13':(31.9,205.3,270),  # owner photo: horizontal К555ТЛ2, right-facing notch
 }
 # remaining DRAM rows D68-D91 -- now net-modeled sockets -> real footprints at their
@@ -453,6 +453,14 @@ def main():
         if ref in {"R33", "R66"}:
             for pad in fp.Pads():
                 pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
+        # The solder panorama shows distinct, non-touching annuli where the
+        # photo-registered bare C69 landing passes the approximate R52 seed.
+        # Preserve the original-style 0.15 mm annulus around the 0.8 mm drill
+        # at that one close pair instead of moving the proven C69 grid site.
+        if ref == "C69":
+            fp.FindPadByNumber("2").SetSize(pcbnew.VECTOR2I_MM(1.1, 1.1))
+        if ref == "R52":
+            fp.FindPadByNumber("1").SetSize(pcbnew.VECTOR2I_MM(1.1, 1.1))
         ctr = fp.GetBoundingBox(False, False).GetCenter()          # re-center on (x,y)
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER

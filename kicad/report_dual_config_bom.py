@@ -13,7 +13,7 @@ DEFAULT_CSV = ROOT / "docs" / "replica-dual-config-bom.csv"
 DRAM_DECAP_ASSEMBLY_DNP = {
     "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
     "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
-    "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69",
+    "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69",
 }
 DRAM_DECAP_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72"}
 

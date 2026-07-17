@@ -20,7 +20,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `315`
 - Nets modeled: `568`
-- Chip-level fidelity gaps: `68`
+- Chip-level fidelity gaps: `67`
 - Net-level source-risk gaps: `202`
 - Explicitly dispositioned closed net risks: `16`
 - Documented intentional no-connect pins: `58`
@@ -67,7 +67,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | analog/source | 1 | 0 |
 | logic/source | 16 | 60 |
 | memory/timing | 0 | 2 |
-| placement/refdes | 27 | 0 |
+| placement/refdes | 26 | 0 |
 | placement/value | 14 | 0 |
 | sound/analog | 0 | 1 |
 | video/analog | 0 | 4 |
@@ -156,7 +156,6 @@ parts placement and Tier-3 reproduction.
 | `C66` | `C_KM` | scan | .009 factory drawing omits C66 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C67` | `C_KM` | scan | .009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 | `C68` | `C_KM` | scan | .009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
-| `C69` | `C_KM` | scan | .009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows the inherited site bare with clean tinned landings; assembly DNP with... |
 
 ### placement/value
 
