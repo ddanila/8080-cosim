@@ -25,7 +25,11 @@ in later sessions. The **design is decided** — this guide is about executing i
    checklist to the same task level, using what was just learned. Do not expand
    ahead of time.
 
-## Phase B0 — task breakdown (software only, no purchases)
+## Phase B0 — task breakdown (software only, no purchases) — ✅ ALL DONE 2026-07-17
+
+Every T0 task below is complete and committed; one command re-verifies the phase:
+`spinoffs/minimal-vga/sim/revb_tier_suite.sh` (green = B0 holds). See the Deviations
+section for the T0.4 rewrite-vs-move resolution.
 
 **T0.1 — `ref/juku-machine-facts.json`.**
 Create the machine-facts file. Sections: `memory_map` (ROM/RAM/overlay modes from
@@ -100,22 +104,61 @@ Update `rev-b-build-plan.md` marking B0 done; expand Phase B1 checklist to task
 level (rule 6).
 *Acceptance:* all green in one session; B1 tasks written.
 
-## Phase B1 — checklist (expand to tasks at B0 exit)
+## Phase B1 — task breakdown (expanded 2026-07-17 at B0 exit)
 
-- Bring-up ROM: source under `spinoffs/minimal-vga/roms/` (8080-subset, S13);
-  cosim runs it as oracle (pattern: how `ekta37_z80.bin` is built/checked in
-  `spinoffs/minimal-vga/tools/make_z80_rom.c` and `roms/README.md`). Monitor
-  commands: dump/deposit/jump + RAM test + ROM checksum print.
-- KiCad projects: `spinoffs/minimal-vga/kicad/revb/{backplane,cpu-card,mem-card,io-card}/`.
-- Per-card LVS vs the revb HDL modules (pattern: `hdl/minimal_vga_lvs.*`).
-- Manufacturing-readiness script variant (pattern:
-  `kicad/check_replica_manufacturing_ready.sh`) + silk checklist from the build
-  plan's coverage matrix.
-- 3D/STEP card↔backplane mating check before order.
-- Order at the ≤100×100 2-layer tier.
-- Bench: backplane smoke → power-only → NOP plug + analyzer → bring-up ROM.
-  Record expected-vs-observed per step in a bench log doc.
-- Exit: monitor prompt + RAM test PASS via backplane FTDI header.
+Minimum tier: backplane + CPU + Memory + I/O(UART-only). Tasks T1.1–T1.6 are
+software/sim/CAD and can proceed now; T1.7–T1.9 are the pre-order gates; T1.10–T1.11
+are **hardware-blocked** (need the ordered boards) — do not mark them done from a
+desk. One commit per task; same executor rules as B0.
+
+**T1.1 — bring-up ROM source + cosim oracle.**
+A small serial monitor + RAM/bus self-test in the **8080-compatible subset** (S13),
+source under `spinoffs/minimal-vga/roms/revb-bringup/`. Commands: dump / deposit /
+jump + a walking-1s RAM test + ROM-checksum print. Build/patch pattern:
+`spinoffs/minimal-vga/tools/make_z80_rom.c` + `roms/README.md`.
+*Acceptance:* cosim runs the image; RAM test reports PASS in the cosim trace.
+
+**T1.2 — minimum-tier twin + sim gate.**
+A `revb_backplane_top` variant (or param) with **no Video card populated** (MODE0/1
+from backplane defaults), booting the T1.1 ROM; a `sim/revb_bringup_check.sh`
+patterned on `revb_boot_check.sh`.
+*Acceptance:* minimum-tier twin runs the bring-up ROM; serial-out / RAM-test result
+matches cosim. Bus monitor stays conflict-clean.
+
+**T1.3–T1.6 — KiCad projects** (one task each): `kicad/revb/backplane/`,
+`kicad/revb/cpu-card/`, `kicad/revb/mem-card/`, `kicad/revb/io-card/`. Connectors,
+power/reset/UART on the backplane, MODE default pulls (S11), footprints for the
+unpopulated B3/B4 parts left as DNP.
+*Acceptance (each):* schematic ERC clean; matches the bus contract pinout.
+
+**T1.7 — per-card LVS.**
+Netlist each card vs its `hdl/revb/revb_*_card.v` module (pattern:
+`hdl/minimal_vga_lvs.*`), so a card re-spin re-proves only itself.
+*Acceptance:* LVS clean per card; wired into the tier suite / CI.
+
+**T1.8 — manufacturing-readiness + silk checklist.**
+Rev B variant of `kicad/check_replica_manufacturing_ready.sh` (ERC/DRC + fab rules)
+plus the silk checklist from the build-plan coverage matrix (pin-1, card name+rev,
+orientation banding, bus labels, extension-key arrow, NO HOT-PLUG, NOP/J95 headers).
+*Acceptance:* script passes for all four B1 boards.
+
+**T1.9 — 3D/STEP mating check.**
+Export STEP per board; assemble in FreeCAD; verify card↔backplane connector mating
+and card pitch, no mechanical clash.
+*Acceptance:* assembled render clean; spacing within the chosen slot pitch.
+
+**T1.10 — order gate + order (hardware-blocked start).**
+Only when T1.1–T1.9 are green AND the B1 power budget still holds: order the four
+boards at the ≤100×100 2-layer tier. *Acceptance:* boards ordered; record the fab
+package hash.
+
+**T1.11 — bench bring-up (hardware-blocked).**
+Bench log doc, expected-vs-observed per step: backplane-alone (5 V, reset pulse,
+clock at every slot) → power-only cards → NOP free-run plug + analyzer (+ bus-timing
+spot-check vs the B0 budget) → bring-up ROM in.
+*Acceptance:* monitor prompt + RAM-test PASS over the backplane FTDI header.
+
+At B1 exit, expand Phase B2 to task level (rule 6).
 
 ## Phase B2 / B3 / B4 — gates only (do not expand yet)
 

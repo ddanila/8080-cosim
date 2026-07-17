@@ -60,14 +60,18 @@ ports (mode bits PC0/PC1), PIC, UART, FDC — same ports the firmware pokes.
 
 ## Phases
 
-**Phase B0 — bus contract + sim repartition (no money spent).**
-Write the pin/memory/IO map doc (above, expanded) — its map/port/timing sections
-are **derived from `ref/juku-machine-facts.json`** per the shared-commons contract
-(root `docs/spinoff-commons.md`), which B0 also creates. Split `vjuga_juku_top.v` into
-per-card HDL modules whose ports are exactly the bus contract; backplane = top-level
-wiring. Add a bus-functional model; unit-sim each card; assembled sim must boot the
-banner **byte-identical to cosim** (existing framebuffer oracle). Exit: same oracle
-result as rev A's twin, now across module boundaries.
+**Phase B0 — bus contract + sim repartition (no money spent). ✅ DONE (2026-07-17).**
+Delivered: `ref/juku-machine-facts.json` (facts source of truth) + `docs/spinoff-commons.md`
+contract; `scripts/check_spinoff_commons.py` guard; `docs/rev-b-bus-contract.md`
+(pins/map/ports/PIC/power, derived from facts); rev B card HDL in `hdl/revb/`
+(CPU/Memory/Video/I-O + passive backplane) that boots ekta37 **byte-identical to
+cosim in both decode modes** (`sim/revb_boot_check.sh`); bus-functional model +
+per-card unit TBs (`sim/revb_card_tb_check.sh`, with a negative control); a
+bus-conflict monitor + assertion test (`sim/revb_bus_assert_check.sh`); the
+one-command `sim/revb_tier_suite.sh`; CI wiring (`hdl.yml` + `ci.yml`).
+**Deviation:** the split rewrote the memory subsystem to the rev B architecture
+(SRAM main + framebuffer on the Video card, no DRAM/U24) rather than mechanically
+moving the DRAM twin — see execution-guide Deviations; oracle-gated, so faithful.
 
 **Phase B1 — minimum tier boards (backplane, CPU, Memory, I/O-with-UART-only).**
 `ekta37_z80.bin` cannot run this tier (no video to draw on, no keyboard — it would
