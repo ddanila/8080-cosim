@@ -21,10 +21,19 @@ already proved** (chip map, GAL equations, power budget, bring-up method, oracle
 **Pins 1–39 are signal-identical to the RC2014 Standard bus** (1–16 A15–A0, 17 GND,
 18 +5V, 19 /M1, 20 /RESET, 21 CLK, 22 /INT, 23 /MREQ, 24 /WR, 25 /RD, 26 /IORQ,
 27–34 D0–D7, 35 TX, 36 RX, 37–39 USER1–3; USER4/pin-40 dropped to fit <100 mm).
-USER1 = FRAME_TICK (video → PIC), USER2/3 reserved.
+- USER1 = **FRAME_TICK** (video card → I/O card PIC).
+- USER2/3 = **MODE0/MODE1** — the 8255 PC0/PC1 memory-overlay mode bits, driven by
+  the I/O card, consumed by the Memory card's GAL. **Backplane pull-up/downs default
+  them to the boot mode** so tiers without the I/O card (B1/B2) decode correctly
+  instead of floating the GAL inputs.
 
 **10-pin extension** (salfter idea, own implementation; bussed across ALL slots):
-/WAIT, /NMI, /BUSRQ, /BUSAK, /RFSH, /HALT, CLK2, reserved, +5V, GND.
+/WAIT, /NMI, /BUSRQ, /BUSAK, /RFSH, /HALT, **IRQ_A, IRQ_B** (FDC INTRQ/DRQ → PIC
+ir0/ir1), +5V, GND. CLK2 dropped — any card needing a special clock generates it
+locally (video dot-clock, FDC crystal), same pattern everywhere.
+
+Serial TxRDY/RxRDY → PIC ir3/ir2 never cross the bus: the 8251 and the PIC share
+the I/O card (see card list) exactly as the real Juku clusters them.
 
 Memory map = the Juku map rev A validated (`rev-a-gal-equations.md`): ROM low /
 RAM overlay per mode bits, framebuffer `0xD800`+9640 **owned by the video card**
@@ -39,13 +48,15 @@ ports (mode bits PC0/PC1), PIC, UART, FDC — same ports the firmware pokes.
 2. **CPU** — Z80 (Z0840004PSC, 4 MHz), oscillator, buffers. Sole bus driver.
 3. **Memory** — 27C256 ROM (`ekta37_z80.bin`) + 32K/128K SRAM + GAL22V10 decode
    (rev A Mode-A equations, minus DRAM terms — SRAM kills U20–U24 entirely).
-4. **Serial I/O** — UART for the console. Minimum tier ends here.
+4. **I/O** — one card, **populated in stages**: 8251-class UART (B1, minimum tier
+   console) + 82C55 keyboard/mode bits + 8259-class PIC (added in B3). Mirrors the
+   real Juku's serial/PPI/PIC cluster, and keeps the ir3/ir2 (serial→PIC) lines
+   on-card instead of inventing bus pins for them. No throwaway serial-only card.
 5. **Video** — rev A's TTL640x480 circuit re-hosted: on-card SRAM framebuffer at
    `0xD800`, local dot-clock, sync gen, /WAIT generation during active display,
    FRAME_TICK out on USER1.
-6. **Keyboard/PIC I/O** — 82C55 (matrix + PC0/PC1 mode bits via the rev A Port-C
-   split) + 8259-class PIC (full tier).
-7. **FDC** (last, optional) — ВГ93/WD1793 per the main repo's guarded FDC model.
+6. **FDC** (last, optional) — ВГ93/WD1793 per the main repo's guarded FDC model;
+   own crystal; INTRQ/DRQ to the PIC via extension IRQ_A/IRQ_B.
 
 ## Phases
 
@@ -58,25 +69,38 @@ wiring. Add a bus-functional model; unit-sim each card; assembled sim must boot 
 banner **byte-identical to cosim** (existing framebuffer oracle). Exit: same oracle
 result as rev A's twin, now across module boundaries.
 
-**Phase B1 — minimum tier boards (backplane, CPU, Memory, Serial).**
-Schematics + 2-layer ≤100×100 layouts in KiCad (3D/STEP check of card-connector
-mating before ordering). Order at the $2 tier. Bring-up in rev A's proven order:
-power-only → NOP free-run plug (resistor plug, fetches read 0x00) with analyzer on
-the address bus → ROM in, monitor over the backplane FTDI header. Exit: serial
-monitor prompt on a modern PC.
+**Phase B1 — minimum tier boards (backplane, CPU, Memory, I/O-with-UART-only).**
+`ekta37_z80.bin` cannot run this tier (no video to draw on, no keyboard — it would
+hang), so B1 gets a **bring-up ROM**: a small serial monitor + RAM/bus self-test,
+**written in the 8080-compatible subset so cosim remains its oracle** — the same
+byte-identity discipline, different ROM. Sim gate: minimum-tier twin runs the
+bring-up ROM against cosim before ordering. Schematics + 2-layer ≤100×100 layouts
+(3D/STEP mating check; per-card LVS; ERC/DRC + silk checklist). Bench in rev A's
+proven order, extended one step earlier: **backplane alone** (5 V, reset pulse,
+clock present at every slot) → power-only cards → NOP free-run plug with analyzer
+on the address bus (+ spot-check worst-case bus timing vs the B0 budget) → bring-up
+ROM in. Exit: monitor prompt + RAM test PASS over the backplane FTDI header.
 
-**Phase B2 — video card (standalone tier).**
-Re-host the TTL VGA design; verify /WAIT timing in sim first (BFM drives CPU writes
-during active display), then bench: boot banner on a VGA monitor, compare
-framebuffer readback vs cosim. Exit: banner pixels on glass, oracle-identical.
+**Phase B2 — video card (standalone tier, first ekta37 boot).**
+Re-host the TTL VGA design. Sim gates: /WAIT phase sweep; crop-vs-letterbox decided
+against the oracle; **mode-bit defaults verified** (no I/O-card 8255 yet — MODE0/1
+come from the backplane defaults, and the GAL must decode the boot overlay
+correctly). Swap ROM to `ekta37_z80.bin`. Exit: real firmware banner on glass,
+framebuffer readback byte-identical to cosim's `vram.bin`.
 
-**Phase B3 — keyboard + PIC (interactive full firmware).**
-8255 + PIC card; FRAME_TICK from video via USER1; firmware keyboard scan runs in
-the frame IRQ exactly as the twin calibrates it (200,000-cycle period). Exit:
-typing at the Juku monitor/BASIC on real hardware.
+**Phase B3 — I/O card fully populated (interactive full firmware).**
+Add 82C55 + PIC to the I/O card; FRAME_TICK via USER1; MODE0/1 now driven by PC0/PC1
+(backplane defaults overridden). Sim gates: keyboard scan against the video-derived
+tick (S2); **mode-switch overlay test** — firmware writes ports 0x06/0x07, Memory-card
+GAL must follow; tier suite = keyboard-react + jmon33 guards on the assembled twin.
+Exit: typing at the Juku monitor/BASIC on real hardware, jmon33 checkpoint parity.
 
 **Phase B4 — FDC card (EKDOS, optional).**
-Port the guarded ВГ93 quadrant; exit = EKDOS `A>` from a real or Gotek drive.
+Port the guarded ВГ93 quadrant; INTRQ/DRQ on extension IRQ_A/B; own crystal; 12 V
+jack only if real drives (Gotek is 5 V). Tier suite = the root FDC/EKDOS/jbasic
+prompt guards on the assembled twin. Exit: EKDOS `A>` on hardware **plus** the
+write-sector readback test on an explicitly writable disk copy (the root repo's
+write-path discipline, applied on the bench).
 
 Each phase = 1–2 cards = 1–2 cheap PCB orders; any failure re-spins one small
 2-layer board. Sim gate before every order: the card's HDL module passes its BFM
@@ -97,6 +121,9 @@ unit sim AND the assembled sim still boots the banner.
 | S8 | Mechanical keying — how do we prevent offset/reversed insertion? | The **10-pin extension connector doubles as the polarizing key**: its offset placement makes misaligned or flipped cards physically unpluggable. Silkscreen banding for pin 1. **No hot-plug**, stated on every card. | The classic RC2014 failure mode is off-by-one insertion; the extension gives us keying for free. |
 | S9 | Observability? | Every card carries a **J95-style analyzer header** (rev A pattern) exposing its key internals; Memory card keeps the **NOP-plug provision** (J91 equivalent) for free-run bring-up. | Rev A's bring-up method depends on these; cheaper than debugging blind. |
 | S10 | Expansion beyond 6 slots? | **Daisy-chain connector** at the backplane end (salfter idea). | Second backplane instead of a bigger board keeps the ≤100×100 tier. |
+| S11 | How do the 8255 mode bits reach the Memory-card GAL? | **USER2/3 = MODE0/MODE1** bus lines, I/O card drives, **backplane defaults them to boot mode** via pull-up/downs. | Found by whole-plan audit: without this the GAL inputs float in B1/B2 (no I/O card populated) — a guaranteed bench failure. |
+| S12 | How do peripheral interrupt requests reach the PIC? | Serial ir3/ir2: **on-card** (8251 shares the I/O card with the PIC, like the real Juku cluster). FDC ir0/ir1: **extension IRQ_A/IRQ_B**. CLK2 dropped from the extension to make room — special clocks are generated locally per card. | Found by whole-plan audit: a separate serial card would have needed two more bus pins that didn't exist. |
+| S13 | What firmware runs the B1 tier? | A **bring-up ROM** (serial monitor + RAM/bus self-test) in the **8080-compatible subset, so cosim stays its oracle**. `ekta37_z80.bin` enters at B2 with the video card. | ekta37 needs video + keyboard; running it on the minimum tier would hang with nothing observable. |
 
 ### Per-card
 | # | Question | Decision | Rationale / gate |
