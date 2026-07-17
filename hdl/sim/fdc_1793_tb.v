@@ -69,6 +69,19 @@ module fdc_1793_tb;
     endcase
   end endfunction
 
+  function [7:0] want_address_byte(input integer pos);
+  begin
+    case (pos)
+      0: want_address_byte = 8'd12;
+      1: want_address_byte = 8'd0;
+      2: want_address_byte = 8'd1;
+      3: want_address_byte = 8'd2;
+      4: want_address_byte = 8'hbd;
+      5: want_address_byte = 8'hb3;
+      default: want_address_byte = 8'hxx;
+    endcase
+  end endfunction
+
   initial begin
     disk_mode = $test$plusargs("expect_disk");
     writable_mode = $test$plusargs("expect_writable");
@@ -122,6 +135,44 @@ module fdc_1793_tb;
       $display("FDC-1793: FAIL step/update previous direction track=%02x", got);
       errors = errors + 1;
     end
+
+    write_reg(2'd1, 8'd12);
+    write_reg(2'd2, 8'd9);
+    write_reg(2'd0, 8'hc4);  // read address with the valid E flag set
+    expect_status(8'h03, 8'h03, "after read-address command");
+    for (i = 0; i < 6; i = i + 1) begin
+      read_reg(2'd3, got);
+      if (got !== want_address_byte(i)) begin
+        $display("FDC-1793: FAIL read-address byte %0d got=%02x want=%02x",
+                 i, got, want_address_byte(i));
+        errors = errors + 1;
+      end
+      if (i < 5 && dut.sector !== 8'd9) begin
+        $display("FDC-1793: FAIL read-address changed sector early at byte %0d to %02x", i, dut.sector);
+        errors = errors + 1;
+      end
+    end
+    expect_status(8'h03, 8'h00, "after read-address drain");
+    read_reg(2'd2, got);
+    if (got !== 8'd12) begin
+      $display("FDC-1793: FAIL read-address sector-register result=%02x", got);
+      errors = errors + 1;
+    end
+
+    write_reg(2'd2, 8'd7);
+    write_reg(2'd0, 8'hc0);
+    read_reg(2'd3, got);
+    read_reg(2'd3, got);
+    write_reg(2'd0, 8'hd0);
+    expect_status(8'h03, 8'h00, "after forced read-address abort");
+    read_reg(2'd2, got);
+    if (got !== 8'd7) begin
+      $display("FDC-1793: FAIL aborted read-address changed sector=%02x", got);
+      errors = errors + 1;
+    end
+    write_reg(2'd0, 8'hc1);  // reserved low bit is not Read Address
+    expect_status(8'h03, 8'h01, "reserved type-III opcode");
+    write_reg(2'd0, 8'hd0);
 
     write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
@@ -200,6 +251,8 @@ module fdc_1793_tb;
     end
 
     motor_on = 0;
+    write_reg(2'd0, 8'hc0);
+    expect_status(8'h80, 8'h80, "motor off read address");
     write_reg(2'd0, 8'h80);
     expect_status(8'h80, 8'h80, "motor off read");
 

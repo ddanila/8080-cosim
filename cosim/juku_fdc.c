@@ -32,10 +32,35 @@ static int is_write_track(uint8_t command) {
 }
 
 
+static int is_read_address(uint8_t command) {
+  return (command & 0xFB) == 0xC0;  // bit 2 is the optional 15 ms delay flag
+}
+
+
+static uint16_t id_crc_byte(uint16_t crc, uint8_t data) {
+  crc ^= (uint16_t)data << 8;
+  for (int bit = 0; bit < 8; bit++) {
+    crc = (uint16_t)((crc << 1) ^ ((crc & 0x8000) ? 0x1021 : 0));
+  }
+  return crc;
+}
+
+
+static uint16_t id_crc(uint8_t track, uint8_t side, uint8_t sector) {
+  uint16_t crc = 0xFFFF;
+  crc = id_crc_byte(crc, 0xFE);  // ID address mark
+  crc = id_crc_byte(crc, track);
+  crc = id_crc_byte(crc, side);
+  crc = id_crc_byte(crc, sector);
+  return id_crc_byte(crc, 2);    // 512-byte sector length code
+}
+
+
 static void clear_transfer(juku_fdc* fdc) {
   fdc->buffer_pos = 0;
   fdc->buffer_len = 0;
   fdc->write_transfer = 0;
+  fdc->read_address_transfer = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
@@ -107,6 +132,35 @@ static void begin_write_sector(juku_fdc* fdc) {
 }
 
 
+static void begin_read_address(juku_fdc* fdc) {
+  clear_transfer(fdc);
+  fdc->status &= (uint8_t)~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+    fdc->status |= ST_NOT_READY;
+    return;
+  }
+  if (fdc->track >= JUK_TRACKS || fdc->head < 0 || fdc->head >= fdc->disk->heads) {
+    fdc->status |= ST_RNF;
+    return;
+  }
+
+  // A flat sector image has no rotational position. Use the first sector ID
+  // after index as the deterministic representation of the next ID field.
+  const uint8_t address_sector = 1;
+  const uint16_t crc = id_crc(fdc->track, (uint8_t)fdc->head, address_sector);
+  fdc->buffer[0] = fdc->track;
+  fdc->buffer[1] = (uint8_t)fdc->head;
+  fdc->buffer[2] = address_sector;
+  fdc->buffer[3] = 2;
+  fdc->buffer[4] = (uint8_t)(crc >> 8);
+  fdc->buffer[5] = (uint8_t)crc;
+  fdc->buffer_pos = 0;
+  fdc->buffer_len = 6;
+  fdc->read_address_transfer = 1;
+  fdc->status |= ST_BUSY | ST_DRQ;
+}
+
+
 static void accept_write_byte(juku_fdc* fdc, uint8_t data) {
   if (!fdc->write_transfer || fdc->buffer_pos >= fdc->buffer_len) return;
   fdc->buffer[fdc->buffer_pos++] = data;
@@ -159,7 +213,10 @@ uint8_t juku_fdc_read(juku_fdc* fdc, uint8_t reg) {
     default:
       if (fdc->buffer_pos < fdc->buffer_len) {
         fdc->data = fdc->buffer[fdc->buffer_pos++];
-        if (fdc->buffer_pos >= fdc->buffer_len) clear_transfer(fdc);
+        if (fdc->buffer_pos >= fdc->buffer_len) {
+          if (fdc->read_address_transfer) fdc->sector = fdc->buffer[0];
+          clear_transfer(fdc);
+        }
         return fdc->data;
       }
       fdc->status &= (uint8_t)~ST_DRQ;
@@ -176,6 +233,7 @@ void juku_fdc_write(juku_fdc* fdc, uint8_t reg, uint8_t data) {
       else if (is_type_i(data)) finish_type_i(fdc, data);
       else if ((data & 0xF0) == 0xD0) clear_transfer(fdc);  // force interrupt
       else if (is_write_sector(data)) begin_write_sector(fdc);
+      else if (is_read_address(data)) begin_read_address(fdc);
       else if (is_write_track(data)) reject_write_track(fdc);
       else {
         fdc->status &= (uint8_t)~(ST_RNF | ST_DRQ);

@@ -39,7 +39,7 @@ sync/juku_top_periph_bus_check.sh
 cat > docs/fdc-readiness.md <<'EOF'
 # FDC readiness
 
-Status: **BOOT-SCOPED HDL FDC READY**
+Status: **BOOT + READ-ADDRESS HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -48,9 +48,18 @@ physical D93/D94 wiring.
 ## Passing scope
 
 - C/HDL-identical restore, seek, step, step-in, and step-out direction/update
-  semantics, plus read-sector and write-sector,
+  semantics, plus read-sector, write-sector, and Read Address,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
+- Read Address emits the complete six-byte ID field
+  `{track, side, sector, length, CRC1, CRC2}`. Both models use the WD1793
+  datasheet's `x^16+x^12+x^5+1` polynomial, all-ones preset, and ID address
+  mark-through-length coverage; the 512-byte image geometry fixes length code
+  2. Completion copies the returned track address into the sector register as
+  specified, while a Force Interrupt during the ID transfer leaves the prior
+  sector register unchanged. A flat sector image has no rotational position,
+  so the deterministic shim returns sector 1, the first ID after index; this is
+  an explicit image-format boundary rather than an invented rotation model.
 - A 512-byte synthetic sector transfer and bytes from vendored
   `media/disks/JUKU1.CPM`.
 - The physical КР580ВА87/8287 device models complement all 256 byte values in
@@ -191,8 +200,10 @@ physical D93/D94 wiring.
   deblocking/cache wrapper and its nested `FLOPPY` handler from the vendored ROM
   in an authentic boot-initialized RAM environment instead of duplicating them
   as test-side port writes or patching the ROM epilogue.
-- The implementation intentionally stops at that firmware-proved single-sector
-  contract; it does not claim general WD1793 write-track or timing conformance.
+- The firmware path intentionally stops at its proved single-sector contract.
+  The independent command guard additionally covers Read Address, but neither
+  model claims general WD1793 read-track, write-track, multi-record, lost-data,
+  rotational, or timing conformance.
 
 ## RWFLOPPY deblocking provenance
 
@@ -271,7 +282,10 @@ evidence exists.
 
 ## Remaining boundaries
 
-- The model is a Juku boot/media shim, not a general WD1793 conformance model.
+- The model is a Juku boot/media shim with a datasheet-guarded Read Address
+  command, not a general WD1793 conformance model. Read Track, writable track
+  formatting, multi-record continuation, byte deadlines/lost-data behavior,
+  and physical rotational timing remain outside its proved scope.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
   continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
   and required cycle truth table are now guarded; only its board control sources

@@ -832,6 +832,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer disk_seek_status = 0;
     integer disk_sector_ok = 0;
     integer write_transfer = 0;
+    integer read_address_transfer = 0;
     reg intrq_r = 1'b0;
 
     wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
@@ -884,6 +885,32 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         is_write_track = ((cmd & 8'hF0) == 8'hF0);
     end endfunction
 
+    function is_read_address(input [7:0] cmd); begin
+        is_read_address = ((cmd & 8'hFB) == 8'hC0); // bit 2 is the optional delay flag
+    end endfunction
+
+    function [15:0] id_crc(input [7:0] track_id, input side_id, input [7:0] sector_id);
+        reg [15:0] crc;
+        reg [7:0] value;
+        integer byte_index;
+        integer bit_index;
+    begin
+        crc = 16'hffff;
+        for (byte_index = 0; byte_index < 5; byte_index = byte_index + 1) begin
+            case (byte_index)
+                0: value = 8'hfe;              // ID address mark
+                1: value = track_id;
+                2: value = {7'b0, side_id};
+                3: value = sector_id;
+                default: value = 8'h02;         // 512-byte sector length code
+            endcase
+            crc = crc ^ {value, 8'h00};
+            for (bit_index = 0; bit_index < 8; bit_index = bit_index + 1)
+                crc = crc[15] ? ((crc << 1) ^ 16'h1021) : (crc << 1);
+        end
+        id_crc = crc;
+    end endfunction
+
     function [7:0] synthetic_sector_byte(input integer pos); begin
         if (pos == 0) synthetic_sector_byte = track;
         else if (pos == 1) synthetic_sector_byte = {7'b0, side};
@@ -916,6 +943,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         buffer_pos = 0;
         buffer_len = 0;
         write_transfer = 0;
+        read_address_transfer = 0;
         status = status & ~(ST_BUSY | ST_DRQ);
         intrq_r = 1'b1;
     end endtask
@@ -987,6 +1015,33 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end
     end endtask
 
+    task begin_read_address;
+        reg [15:0] crc;
+    begin
+        clear_transfer();
+        status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
+        if (!motor_on || (disk_requested && !disk_loaded)) begin
+            status = status | ST_NOT_READY;
+        end else if (track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
+            status = status | ST_RNF;
+        end else begin
+            // A flat sector image has no rotational position. Sector 1 is the
+            // deterministic first ID field after index.
+            crc = id_crc(track, side, 8'd1);
+            sector_buf[0] = track;
+            sector_buf[1] = {7'b0, side};
+            sector_buf[2] = 8'd1;
+            sector_buf[3] = 8'd2;
+            sector_buf[4] = crc[15:8];
+            sector_buf[5] = crc[7:0];
+            buffer_pos = 0;
+            buffer_len = 6;
+            read_address_transfer = 1;
+            status = status | ST_BUSY | ST_DRQ;
+            intrq_r = 1'b0;
+        end
+    end endtask
+
     task finish_type_i(input [7:0] cmd); begin
         clear_transfer();
         status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
@@ -1033,6 +1088,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 else if (is_type_i(D)) finish_type_i(D);
                 else if ((D & 8'hF0) == 8'hD0) clear_transfer();
                 else if (is_write_sector(D)) begin_write_sector();
+                else if (is_read_address(D)) begin_read_address();
                 else if (is_write_track(D)) reject_write_track();
                 else begin
                     status = (status & ~(ST_RNF | ST_DRQ)) | ST_BUSY;
@@ -1046,9 +1102,13 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 
     always @(posedge fdc_data_read_active) begin
         if (buffer_pos < buffer_len) begin
-            data = disk_requested ? sector_buf[buffer_pos] : synthetic_sector_byte(buffer_pos);
+            data = (disk_requested || read_address_transfer) ?
+                   sector_buf[buffer_pos] : synthetic_sector_byte(buffer_pos);
             buffer_pos = buffer_pos + 1;
-            if (buffer_pos >= buffer_len) clear_transfer();
+            if (buffer_pos >= buffer_len) begin
+                if (read_address_transfer) sector = sector_buf[0];
+                clear_transfer();
+            end
         end else begin
             status = status & ~ST_DRQ;
         end

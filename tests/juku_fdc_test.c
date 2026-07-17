@@ -122,6 +122,42 @@ int main(void) {
   }
 
   juku_fdc_write(&fdc, 1, 12);
+  juku_fdc_write(&fdc, 2, 9);
+  juku_fdc_write(&fdc, 0, 0xC4);  // read address, including the valid E flag
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read-address command");
+  static const uint8_t address_id[] = {12, 0, 1, 2, 0xBD, 0xB3};
+  for (size_t i = 0; i < sizeof(address_id); i++) {
+    uint8_t got = juku_fdc_read(&fdc, 3);
+    if (got != address_id[i]) {
+      fprintf(stderr, "read-address byte %zu: got 0x%02X want 0x%02X\n", i, got, address_id[i]);
+      fail = 1;
+    }
+    if (i < sizeof(address_id) - 1 && juku_fdc_read(&fdc, 2) != 9) {
+      fprintf(stderr, "read-address changed sector register before completion\n");
+      fail = 1;
+    }
+  }
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after read-address drain");
+  if (juku_fdc_read(&fdc, 2) != 12) {
+    fprintf(stderr, "read-address did not load track address into sector register\n");
+    fail = 1;
+  }
+
+  juku_fdc_write(&fdc, 2, 7);
+  juku_fdc_write(&fdc, 0, 0xC0);
+  (void)juku_fdc_read(&fdc, 3);
+  (void)juku_fdc_read(&fdc, 3);
+  juku_fdc_write(&fdc, 0, 0xD0);  // force interrupt aborts the partial ID field
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after forced read-address abort");
+  if (juku_fdc_read(&fdc, 2) != 7) {
+    fprintf(stderr, "aborted read-address changed sector register\n");
+    fail = 1;
+  }
+  juku_fdc_write(&fdc, 0, 0xC1);  // reserved low bit is not Read Address
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY, "reserved type-III opcode");
+  juku_fdc_write(&fdc, 0, 0xD0);
+
+  juku_fdc_write(&fdc, 1, 12);
   juku_fdc_write(&fdc, 2, 4);
   juku_fdc_write(&fdc, 0, 0x80);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ, "after read command");
@@ -185,6 +221,8 @@ int main(void) {
   }
 
   juku_fdc_portc(&fdc, 0x00);  // motor off
+  juku_fdc_write(&fdc, 0, 0xC0);
+  fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read address");
   juku_fdc_write(&fdc, 0, 0x80);
   fail |= expect_status(&fdc, ST_NOT_READY, ST_NOT_READY, "motor off read");
 
