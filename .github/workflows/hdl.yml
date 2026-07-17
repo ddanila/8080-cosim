@@ -21,6 +21,13 @@ on:
       - 'spinoffs/minimal-vga/hdl/vjuga_juku*.v'
       - 'spinoffs/minimal-vga/sim/u24_dram_timing_check.sh'
       - 'spinoffs/minimal-vga/sim/vjuga_boot_check.sh'
+      - 'spinoffs/minimal-vga/hdl/revb/**'
+      - 'spinoffs/minimal-vga/sim/revb_boot_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_card_tb_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_bus_assert_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_tier_suite.sh'
+      - 'ref/juku-machine-facts.json'
+      - 'scripts/check_spinoff_commons.py'
       - 'spinoffs/minimal-vga/roms/ekta37_z80.bin'
       - 'spinoffs/minimal-vga/external/tv80'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
@@ -39,6 +46,13 @@ on:
       - 'spinoffs/minimal-vga/hdl/vjuga_juku*.v'
       - 'spinoffs/minimal-vga/sim/u24_dram_timing_check.sh'
       - 'spinoffs/minimal-vga/sim/vjuga_boot_check.sh'
+      - 'spinoffs/minimal-vga/hdl/revb/**'
+      - 'spinoffs/minimal-vga/sim/revb_boot_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_card_tb_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_bus_assert_check.sh'
+      - 'spinoffs/minimal-vga/sim/revb_tier_suite.sh'
+      - 'ref/juku-machine-facts.json'
+      - 'scripts/check_spinoff_commons.py'
       - 'spinoffs/minimal-vga/roms/ekta37_z80.bin'
       - 'spinoffs/minimal-vga/external/tv80'
       - 'spinoffs/minimal-vga/kicad/rev-a-physical.board.json'
@@ -113,6 +127,7 @@ jobs:
           ./sync/jmon33_hdl_probe.sh
           ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
           ./spinoffs/minimal-vga/sim/vjuga_boot_check.sh
+          ./spinoffs/minimal-vga/sim/revb_tier_suite.sh
           python3 spinoffs/minimal-vga/kicad/check_rev_a_physical.py
 
       - name: Run Monitor and BASIC reference guards

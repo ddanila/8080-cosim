@@ -113,6 +113,7 @@ jobs:
             scripts/report_video_analog_boundary.py \
             scripts/report_s4_interrupt_boundary.py \
             scripts/report_unmodeled_footprint_inventory.py \
+            scripts/check_spinoff_commons.py \
             sync/ekdos_fdc_probe.py \
             sync/ekdos_jbasic_command_probe.py \
             sync/ekdos_timing_reference.py \
@@ -160,3 +161,6 @@ jobs:
 
       - name: Check documentation consistency
         run: python3 scripts/check_documentation_consistency.py
+
+      - name: Check spin-off shared commons
+        run: python3 scripts/check_spinoff_commons.py
