@@ -144,6 +144,20 @@ Anything not listed here (component values, footprints, trace widths) is deliber
 out of scope — implementation detail belongs to the per-phase schematic work, gated
 by the B0 contract and the sim oracles.
 
+## B1 design decisions (resolved at B1 planning, 2026-07-17)
+
+| # | Question | Decision | Rationale / gate |
+|---|---|---|---|
+| D1.1 | UART port addresses? | **0x08 data (A0=0), 0x09 control/status (A0=1); decoded window 0x08–0x0B** — the real D11 USART window (`docs/serial-handoff.md`, `hdl/juku_top.v` '138 row). Add to the facts file + bus contract (T1.0). | Was missing from the I/O map; the bring-up ROM and I/O-card decode both need it. Twin reuses the root `usart_8251` model verbatim (`sync/serial_check.sh` already proves its TxRDY/RxRDY + 8N1 slice). |
+| D1.2 | How does cosim oracle the serial output (it has no UART model)? | Bring-up ROM emits via `OUT 0x08`; cosim's `[IOSEQ]` trace captures the exact TX byte stream; the checker compares the twin's UART TX log against it. TxRDY poll: the 8251 **command word with TxEN sets bit0**, and cosim's output-latch readback returns it as status bit0 — so the poll naturally sees "ready" in cosim. Keep a generous bounded poll as bench belt-and-braces, and document the coincidence in the ROM source. | Zero root-cosim changes (executor Rule 4); the byte stream, not timing, is the oracle. |
+| D1.3 | RAM-test range? | **0x4000–0xD7FF** (mode-0 RAM below the framebuffer window). Walking-1s per cell + an address-in-cell pass (catches aliasing). 0xD800+ is excluded: the Video card owns it and is absent in B1. | Testing unowned space would hang on floating bus. |
+| D1.4 | Where does the 10-pin extension physically go? | **Second 0.1" row, 2.54 mm behind the base row, aligned to the pin-1 end.** Inline on the same edge is impossible (39+10 pins ≈ 124 mm > 100 mm); the end-aligned second row is the polarizing asymmetry S8 promised. Update the bus contract (T1.0). | Must be pinned before any board.json is written. |
+| D1.5 | KiCad flow for four boards? | **Clone the rev A deterministic flow per card**: `<card>.board.json` spec → generator → check scripts → export/package (pattern: `kicad/minimal-vga.board.json`, `gen_rev_a_pcb.py`, `check_rev_a_*.py`, `export_fab.sh`, `package_rev_a_upload.py`). | CI-checkable without KiCad installed; same LVS fallback style as `sync/check.sh`. |
+| D1.6 | B1 console path? | I/O-card 8251 ↔ bus TX/RX (pins 35/36) ↔ backplane FTDI header (passive) ↔ PC. The S5 jumper stays on the header but is a no-op until a *powered* serial source exists on the backplane. | Header is passive; no contention in B1. |
+| D1.7 | I/O card B1 population? | **8251 + its decode + local UART clock only.** 8255, PIC, keyboard connector: footprints present, DNP. | One I/O card design across tiers (S12); B1 populates the minimum. |
+| D1.8 | 8251 TxC/RxC source (real Juku uses the PIT, absent in B1)? | **Local baud oscillator on the I/O card** (S12 local-clock pattern); exact frequency/divider chosen at schematic time; PIT-as-baud-source arrives with B3+. | Design-level only; don't pick crystals in a plan. |
+| D1.9 | Bench record? | `docs/rev-b-b1-bench-log.md` — expected-vs-observed table per bring-up step, created with the boards (T1.11), patterned on `docs/phase4-bench-bringup.md`. | The bench oracle needs a ledger like the sim ones. |
+
 ## Feedback loops & coverage matrix
 
 Audit of every verification loop, what it catches, and whether it exists or is

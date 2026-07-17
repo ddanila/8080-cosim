@@ -104,59 +104,97 @@ Update `rev-b-build-plan.md` marking B0 done; expand Phase B1 checklist to task
 level (rule 6).
 *Acceptance:* all green in one session; B1 tasks written.
 
-## Phase B1 — task breakdown (expanded 2026-07-17 at B0 exit)
+## Phase B1 — task breakdown (planned to B0 depth, 2026-07-17)
 
-Minimum tier: backplane + CPU + Memory + I/O(UART-only). Tasks T1.1–T1.6 are
-software/sim/CAD and can proceed now; T1.7–T1.9 are the pre-order gates; T1.10–T1.11
-are **hardware-blocked** (need the ordered boards) — do not mark them done from a
-desk. One commit per task; same executor rules as B0.
+Minimum tier: backplane + CPU + Memory + I/O(UART-only). Design decisions D1.1–D1.9
+in `rev-b-build-plan.md` are settled — do not reopen them. T1.0–T1.9 are
+software/sim/CAD and can proceed now; T1.10–T1.11 are **hardware-blocked** (need
+the ordered boards) — never mark them done from a desk. One commit per task.
 
-**T1.1 — bring-up ROM source + cosim oracle.**
-A small serial monitor + RAM/bus self-test in the **8080-compatible subset** (S13),
-source under `spinoffs/minimal-vga/roms/revb-bringup/`. Commands: dump / deposit /
-jump + a walking-1s RAM test + ROM-checksum print. Build/patch pattern:
-`spinoffs/minimal-vga/tools/make_z80_rom.c` + `roms/README.md`.
-*Acceptance:* cosim runs the image; RAM test reports PASS in the cosim trace.
+**T1.0 — serial facts + contract update (D1.1, D1.4).**
+Add `serial_ports` to `ref/juku-machine-facts.json`: data 0x08 (A0=0),
+control/status 0x09 (A0=1), decoded window 0x08–0x0B; provenance
+`docs/serial-handoff.md` ("bus-visible at the decoded 0x08..0x0B USART window") +
+`hdl/juku_top.v` '138 row (`cs_sio0_n`). Add the row to the bus-contract I/O map
+and the 0x08/0x09 values to the guard's canonical list. Record D1.4's extension
+placement (second 0.1" row, 2.54 mm behind base, pin-1-end aligned) in the bus
+contract's extension section.
+*Acceptance:* `scripts/check_spinoff_commons.py` green AND fails if the contract's
+0x08 row is deleted (prove, restore).
 
-**T1.2 — minimum-tier twin + sim gate.**
-A `revb_backplane_top` variant (or param) with **no Video card populated** (MODE0/1
-from backplane defaults), booting the T1.1 ROM; a `sim/revb_bringup_check.sh`
-patterned on `revb_boot_check.sh`.
-*Acceptance:* minimum-tier twin runs the bring-up ROM; serial-out / RAM-test result
-matches cosim. Bus monitor stays conflict-clean.
+**T1.1 — bring-up ROM source + cosim oracle (S13, D1.2, D1.3).**
+`spinoffs/minimal-vga/roms/revb-bringup/`: a commented listing + a Python
+byte-emitter build script (no new assembler dependency; builder pattern:
+`scripts/export_reconstructed_proms.py`-style self-contained generator) producing
+`revb_bringup.bin` (org 0x0000, 8080-subset opcodes only). Behavior: init 8251
+(mode, then command with **TxEN so bit0 doubles as cosim's "ready"** — D1.2,
+document in source); print banner; walking-1s + address-in-cell RAM test over
+**0x4000–0xD7FF** (D1.3); print `RAM PASS nnnn` / `RAM FAIL @addr`; ROM checksum
+print; then a dump/deposit/jump monitor loop on the UART. Every TX via a bounded
+TxRDY poll.
+*Acceptance:* cosim boots the image; the `[IOSEQ] OUT port=0x08` stream contains
+the banner and `RAM PASS`; a deliberately corrupted build (flip one ROM byte)
+prints the checksum mismatch (prove, restore).
 
-**T1.3–T1.6 — KiCad projects** (one task each): `kicad/revb/backplane/`,
-`kicad/revb/cpu-card/`, `kicad/revb/mem-card/`, `kicad/revb/io-card/`. Connectors,
-power/reset/UART on the backplane, MODE default pulls (S11), footprints for the
-unpopulated B3/B4 parts left as DNP.
-*Acceptance (each):* schematic ERC clean; matches the bus contract pinout.
+**T1.2 — minimum-tier twin + serial-stream gate (D1.2).**
+Parameterize `revb_backplane_top` with `VIDEO_PRESENT` (0 = Video card absent;
+MODE0/1 fall to backplane defaults, framebuffer window unowned) and add the UART
+to `revb_io_card` for simulation by instantiating the **root `usart_8251` model
+verbatim** at 0x08/0x09 with a TX-byte `$display` logger. New
+`sim/revb_bringup_check.sh` (pattern: `revb_boot_check.sh`): build cosim, extract
+its OUT-0x08 stream; run the minimum-tier twin on the T1.1 ROM to CPU HALT or
+watchdog; diff the two TX byte streams. Wire into `revb_tier_suite.sh`.
+*Acceptance:* TX streams byte-identical; `RAM PASS` present; bus monitor
+conflict-clean with the framebuffer window unowned.
+
+**T1.3–T1.6 — board specs, one card per task (D1.5, D1.7, S11).**
+`spinoffs/minimal-vga/kicad/revb/{backplane,cpu-card,mem-card,io-card}.board.json`
++ a shared generator/check pair cloned from the rev A flow
+(`kicad/minimal-vga.board.json`, `gen_rev_a_pcb.py`, `check_rev_a_physical.py`).
+Contents per the bus contract + chip map: backplane = 6 slots @ 19 mm, 39+10
+connectors per D1.4, USB-C power, reset supervisor (sole RESET_N driver, S7),
+FTDI header + S5 jumper, MODE0/1 default pulls (S11), wired-OR pull-ups (S4);
+cpu-card = Z80 + socketed osc + '245/'244 buffers; mem-card = 27C256 + AS6C1008 +
+GAL22V10 + NOP-plug/J95-style headers (S9); io-card = 8251 + local baud osc +
+decode, with 8255/PIC/keyboard footprints marked DNP (D1.7).
+*Acceptance (each):* board.json validates; generated connectivity matches the bus
+contract pin table (checked, not eyeballed); ≤100×100 outline.
 
 **T1.7 — per-card LVS.**
-Netlist each card vs its `hdl/revb/revb_*_card.v` module (pattern:
-`hdl/minimal_vga_lvs.*`), so a card re-spin re-proves only itself.
-*Acceptance:* LVS clean per card; wired into the tier suite / CI.
+Yosys-netlist each `hdl/revb/revb_*_card.v` vs its board.json connectivity
+(pattern: `hdl/minimal_vga_lvs.*` + `sync/check.sh` board-direct fallback). Sim-only
+constructs (`$fopen`/vw counter/monitor) excluded via the same conventions rev A
+uses for LVS-invisible adjuncts.
+*Acceptance:* LVS clean per card; a deliberately mis-wired pin in a board.json
+copy fails (prove, restore); wired into CI paths.
 
-**T1.8 — manufacturing-readiness + silk checklist.**
-Rev B variant of `kicad/check_replica_manufacturing_ready.sh` (ERC/DRC + fab rules)
-plus the silk checklist from the build-plan coverage matrix (pin-1, card name+rev,
-orientation banding, bus labels, extension-key arrow, NO HOT-PLUG, NOP/J95 headers).
-*Acceptance:* script passes for all four B1 boards.
+**T1.8 — manufacturing-readiness + silk checks.**
+`kicad/revb/check_revb_ready.sh`: DRC/fab rules (2-layer, ≤100×100, cheap-tier
+constraints) + machine-checkable silk items (pin-1 marks, card name+rev, bus pin
+labels, extension-key arrow, "NO HOT-PLUG", NOP/J95 header labels) per the
+coverage-matrix checklist.
+*Acceptance:* passes all four boards; removing a silk item from a board.json copy
+fails (prove, restore).
 
 **T1.9 — 3D/STEP mating check.**
-Export STEP per board; assemble in FreeCAD; verify card↔backplane connector mating
-and card pitch, no mechanical clash.
-*Acceptance:* assembled render clean; spacing within the chosen slot pitch.
+Export STEP per board, assemble in FreeCAD, verify connector mating, 19 mm pitch
+clearance (tallest part vs neighbor card), extension-row keying blocks reversed
+insertion geometrically.
+*Acceptance:* assembled screenshots committed to `docs/`; no clash; keying
+confirmed by attempting the reversed placement in CAD.
 
-**T1.10 — order gate + order (hardware-blocked start).**
-Only when T1.1–T1.9 are green AND the B1 power budget still holds: order the four
-boards at the ≤100×100 2-layer tier. *Acceptance:* boards ordered; record the fab
-package hash.
+**T1.10 — order gate + order (hardware-blocked).**
+All of T1.0–T1.9 green + power budget re-check (bus-contract table) → order at the
+≤100×100 2-layer tier. *Acceptance:* order placed; fab package SHA256 recorded in
+the bench log doc skeleton.
 
-**T1.11 — bench bring-up (hardware-blocked).**
-Bench log doc, expected-vs-observed per step: backplane-alone (5 V, reset pulse,
-clock at every slot) → power-only cards → NOP free-run plug + analyzer (+ bus-timing
-spot-check vs the B0 budget) → bring-up ROM in.
-*Acceptance:* monitor prompt + RAM-test PASS over the backplane FTDI header.
+**T1.11 — bench bring-up (hardware-blocked, D1.9).**
+Create `docs/rev-b-b1-bench-log.md` (expected-vs-observed per step, pattern:
+`docs/phase4-bench-bringup.md`): backplane-alone (5 V at every slot, RESET_N pulse,
+CLK present) → power-only cards (current draw vs budget) → NOP free-run plug +
+analyzer on A0–A15 (+ bus-timing spot-check vs the S1 clock) → bring-up ROM.
+*Acceptance:* monitor prompt + `RAM PASS` over the backplane FTDI header; log
+committed.
 
 At B1 exit, expand Phase B2 to task level (rule 6).
 
