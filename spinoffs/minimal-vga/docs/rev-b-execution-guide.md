@@ -348,19 +348,79 @@ margin). Next session: **Stage B (TD.6, mem card pipeline)** — the first task 
 uses kicad-cli/yosys.
 
 ### Stage B — pipeline-prove on the mem card only (D1.20)
+*(Detailed 2026-07-17; decisions D1.22–D1.25 in the build plan. One task = one
+commit. Everything runs through `kicad/revb/env.sh`; steps needing a missing tool
+SKIP, never fail, except where marked mandatory.)*
 
-**TD.6 — mem LVS.** Empty-bodied structural netlist (`hdl/revb/revb_mem_lvs.v`,
-rev A `minimal_vga_lvs.v` style) + `map.json` pinmap + `sync/revb_lvs.sh`
-(board-direct always; kicad-cli round-trip when `env.sh` finds it).
-*Acceptance:* LVS clean; a mis-wired pin in a temp copy fails.
+**TD.6.1 — pinmap emitter (D1.22).**
+`kicad/revb/gen_revb_lvs_map.py`: emit `spinoffs/minimal-vga/sync/revb_mem_map.json`
+from `gen_revb_boards.py`'s CHIP_TYPES + the instance map (U1→U_ROM, U2→U_SRAM,
+U3→U_DEC). Shape: rev A `sync/map.json` (`instances` + `pinmaps.kicad` keyed by
+chip type, pin number → logical name).
+*Acceptance:* regen is diff-clean; the emitter imports the pin tables from
+`gen_revb_boards.py` (no literal pin copies in the emitter source).
 
-**TD.7 — mem PCB.** `gen_revb_pcb.py` (pcbnew, via `env.sh`) for the mem card:
-outline, 39+10 connector per D1.4, silk set. Footprint-availability check first.
-*Acceptance:* deterministic regen; silk items grep-able in the PCB.
+**TD.6.2 — structural LVS netlist.**
+`hdl/revb/revb_mem_lvs.v`: **empty-bodied** modules (`rom_27c256_lvs`,
+`sram_as6c1008_lvs`, `gal22v10_memdec_lvs`) + a top that wires them per the bus
+contract and the card's internal nets (ROM_CE_N, RAM_CE_N, MEM_RD/WR_N) — rev A
+`minimal_vga_lvs.v` style, LVS-only (the *booting* model stays `revb_mem_card.v`).
+*Acceptance:* `yosys write_json` succeeds on it (pattern: spinoff `sync/check.sh`).
 
-**TD.8 — mem DRC + STEP.** Iterate `kicad-cli pcb drc` to zero errors; export
-STEP; single-card sanity in FreeCAD (outline, connector on edge).
-*Acceptance:* DRC report + STEP committed. **Pipeline is now proven.**
+**TD.6.3 — LVS runner + wiring (mandatory board-direct).**
+`spinoffs/minimal-vga/sync/revb_lvs.sh`: yosys → `sync/lvs.py --hdl <json>
+--board kicad/revb/mem.board.json --map sync/revb_mem_map.json`. Bonus path when
+kicad-cli present: `kicad/gen_kicad_sch.py` → `kicad-cli sch export netlist` →
+`--kicad` round-trip. Wire into `revb_tier_suite.sh` gated on `command -v yosys`
+(skip-not-fail — the CI behavioral job has no yosys; the CI lvs job does).
+*Acceptance:* LVS PASS; a mis-wired pin in a temp board.json copy FAILS
+(prove-then-restore); tier suite green both with and without yosys on PATH.
+
+**TD.7.1 — footprint availability probe (D1.23 risk).**
+`kicad/revb/check_revb_footprints.py`: resolve every needed footprint
+(**THT 1×39** + 1×10 pin headers, DIP-24/28/32 sockets, C_100N, R axial, LED,
+USB-C, switch) against `KICAD_FOOTPRINTS`; write the chosen names into
+`kicad/revb/footprints.json`. If THT 1×39 is absent, record the decision to
+generate the pad row programmatically instead (documented fallback, not a stall).
+*Acceptance:* every mem-card footprint resolves (or has its fallback recorded).
+
+**TD.7.2 — PCB generator.**
+`kicad/revb/gen_revb_pcb.py` (parameterized clone of `gen_rev_a_pcb.py`, run via
+`KICAD_PYTHON`): mem-card outline + connector geometry per **D1.23**, DIP
+placement per `rev-a-placement-rules.md`, 2-layer stackup + JLC cheap-tier rules,
+**generator-emitted silk** (name+rev, pin-1 marks, bus pin labels, extension key
+arrow, NO HOT-PLUG, J_OBS/J_NOP labels).
+*Acceptance:* emits `fab/minimal-vga/revb/mem.kicad_pcb`; TD.7.3 check green.
+
+**TD.7.3 — PCB content check (D1.25).**
+`kicad/revb/check_revb_mem_pcb.py` (pattern: `check_rev_a_pcb.py`): outline is
+100×60, base-row pin 1 at the left/bottom-edge position, extension row 2.54 mm
+above and end-aligned, every board.json ref placed, silk list present.
+*Acceptance:* green; a silk item deleted from a temp copy fails (prove-restore).
+
+**TD.7.4 — routing (D1.24).**
+Clone `route_rev_a_pcb.sh` → `kicad/revb/route_revb_pcb.sh`: DSN export →
+freerouting → SES import → zones. Probe Java per the rev A order; if no JRE,
+this task (only) is tool-blocked — record it, don't hand-route.
+*Acceptance:* zero unrouted nets reported on import.
+
+**TD.8.1 — DRC to zero.**
+`kicad-cli pcb drc --exit-code-violations` in `kicad/revb/check_revb_ready.sh`
+(mem only for now); iterate the generator (not the .kicad_pcb) until clean.
+*Acceptance:* zero violations; report under `fab/minimal-vga/revb/` with its
+SHA256 recorded in `docs/rev-b-status.md`.
+
+**TD.8.2 — STEP + measured sanity.**
+`kicad-cli pcb export step`; `kicad/revb/mem_step_sanity.py` under `freecadcmd`:
+bounding box == 100×60 (±0.1), connector row on the bottom edge at the D1.23
+coordinates. STEP stays in untracked `fab/`, SHA256 recorded.
+*Acceptance:* sanity script prints PASS with measured numbers.
+
+**TD.8.3 — Stage B exit.**
+One wrapper `kicad/revb/check_revb_mem.sh` chaining TD.6.3 → TD.7.2/7.3 → TD.8.1
+(STEP step gated on tools); update status doc; expand Stage C per rule 6 —
+replication should be brief since the pipeline is now machinery, not exploration.
+*Acceptance:* one command green end-to-end. **Pipeline proven.**
 
 ### Stage C — replicate (order: io → cpu → backplane)
 

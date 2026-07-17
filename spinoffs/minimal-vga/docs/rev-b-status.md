@@ -43,6 +43,7 @@ kicad-cli 10.0.4 + FreeCAD 1.1.1 installed; resolved by
 
 ## Next action
 
-**Stage B, TD.6** — mem-card LVS (independent structural netlist + `map.json` +
-`sync/lvs.py`). First task that invokes kicad-cli/yosys; start it in a fresh
-session (stages are session boundaries) where the KiCad output can be watched.
+**Stage B, TD.6.1** — now planned to task depth (TD.6.1–TD.8.3 in the execution
+guide; decisions D1.22–D1.25 in the build plan). First tasks that invoke
+yosys/kicad-cli; TD.7.4 routing additionally needs a Java 25 JRE (freerouting).
+Start in a fresh session where the KiCad output can be watched.
