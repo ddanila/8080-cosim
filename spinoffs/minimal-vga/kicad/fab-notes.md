@@ -11,7 +11,7 @@ safe to order.
 ## Current physical baseline
 
 - 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
-- 119 footprints, 135 PCB nets, and 2,480 tracks in the current checked board.
+- 119 footprints, 135 PCB nets, and 2,660 tracks in the current checked board.
 - Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
   decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
   In2.Cu a filled VCC plane; the two board layers carry the signal routing.
@@ -78,16 +78,19 @@ git submodule update --init external/freerouting
 cd external/freerouting && ./gradlew --no-daemon executableJar
 ```
 
-With the USB-C connector (J3) rotated to the board edge, freerouting cannot tie
-its shield tabs to the ground contacts through the inset GND plane, so route
-with the GND shield seed:
+On the compact 200x200 board the router needs three seed nets: the J3 USB-C GND
+shield jumpers (it can't tie the edge connector's shield tabs to the inset GND
+plane on its own), and the two decode debug taps to J95 (RE3_D0, DEC_RAM_N) that
+it otherwise leaves unfinished through the congested bottom. Route with:
 
 ```sh
-SEED_ROUTES=1 SEED_NETS=GND spinoffs/minimal-vga/kicad/route_rev_a_pcb.sh
+SEED_ROUTES=1 SEED_NETS=GND,RE3_D0,DEC_RAM_N \
+  spinoffs/minimal-vga/kicad/route_rev_a_pcb.sh
 ```
 
-The seed (`seed_rev_a_routes.py`, `GND`) adds two short F.Cu jumpers from J3's
-SMD ground contacts to its adjacent shell tabs; everything else routes normally.
+The seeds (`seed_rev_a_routes.py`) add: two short F.Cu jumpers from J3's SMD
+ground contacts to its adjacent shell tabs, and left-margin B.Cu paths from the
+RE3/decode pull-ups (R36/R33) into J95.5/J95.2. Everything else routes normally.
 
 Gradle's toolchain support auto-provisions a Temurin JDK 25 into
 `~/.gradle/jdks/` on the first build (no system Java install needed), and the

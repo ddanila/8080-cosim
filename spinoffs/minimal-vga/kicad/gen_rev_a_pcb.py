@@ -363,8 +363,8 @@ def build_placement(spec):
     # -- VGA out (far-right): two connectors in col 37; the video series resistors
     #    R1-3 sit in their own column (col 35) so they don't congest the connector
     #    column's pin-to-pin sync nets. --
-    put("U40", 37, 15); put("J40", 37, 20)
-    grid(["R1", "R2", "R3"], 35, 15, 1, 2, 2, rot=90)
+    put("U40", 37, 18); put("J40", 37, 23)
+    grid(["R1", "R2", "R3"], 35, 18, 1, 2, 2, rot=90)
 
     # -- left resistor field: keyboard pull-ups/series + decode pull-ups, packed
     #    as one grid of vertical resistors (cols 2/4/6, clear of every band box,
@@ -523,12 +523,13 @@ def place_silk_fields(fp, chip, x, y, rot):
         ref_angle = 0
         if ref[0] == "R" and rot % 180:
             # Vertical resistors are packed in tight columns (rowp ~10 mm), so a
-            # refdes printed ABOVE lands on the resistor above it. Print it beside
-            # the body, level with its centre, instead -- to the RIGHT for the
-            # LED-limit resistors (whose left neighbour is the paired LED), to the
-            # LEFT for the rest.
+            # refdes printed ABOVE lands on the resistor above it. Print it rotated
+            # 90 deg alongside the body, level with its centre -- to the RIGHT for
+            # the LED-limit resistors (whose left neighbour is the paired LED), to
+            # the LEFT for the rest.
             ref_y = cy
-            ref_x = (right + 1.4) if ref in REFDES_RIGHT_RES else (left - 1.4)
+            ref_angle = 90
+            ref_x = (right + 0.9) if ref in REFDES_RIGHT_RES else (left - 0.9)
         if ref[0] == "R" and rot % 180 == 0:
             ref_y = top - 1.4
         if ref[0] == "F":
@@ -649,7 +650,8 @@ SILK_BLOCK_LABEL_DROP = set()
 SILK_BLOCK_TITLE_SIZE_MM = 2.0
 SILK_BLOCK_TITLE_INSET_MM = 2.5   # title left edge in from the frame's left corner
 SILK_BLOCK_TITLE_GAP_MM = 1.2     # gap between the title text and the top-border stubs
-SILK_BLOCK_TITLE_CHAR_W = 0.72    # approx GOST stroke-font char width / height
+SILK_BLOCK_TITLE_CHAR_W = 1.05    # GOST stroke-font advance / height (measured),
+#                                   so the right-hand top stub clears the title
 
 
 def block_title_size(bounds, title):

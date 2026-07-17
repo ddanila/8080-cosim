@@ -43,6 +43,18 @@ SEED_ROUTES = {
             ("B.Cu", 24.13, 183.0, 24.13, 187.96),
         ],
     },
+    # DEC_RAM_N is the sibling decode tap to J95.2, with the same problem; seed it
+    # in a parallel left-margin lane (x=4) that doesn't cross the RE3_D0 seed.
+    # Follows R33.2=(10.16,133.35) and J95.2=(16.51,187.96).
+    "DEC_RAM_N": {
+        "vias": [],
+        "tracks": [
+            ("B.Cu", 10.16, 133.35, 4.0, 133.35),
+            ("B.Cu", 4.0, 133.35, 4.0, 185.0),
+            ("B.Cu", 4.0, 185.0, 16.51, 185.0),
+            ("B.Cu", 16.51, 185.0, 16.51, 187.96),
+        ],
+    },
     # NOTE: the previous per-net signal seeds (CLK, MEM_*, KBD_*, VIDEO_*,
     # RESET_N, ...) were hand-tuned for the old 285mm placement and are invalid
     # for the compact 200x200 re-layout. They were removed; the router routes
