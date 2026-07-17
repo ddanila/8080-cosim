@@ -66,6 +66,15 @@ static int expect_status(juku_fdc* fdc, uint8_t mask, uint8_t value, const char*
 }
 
 
+static int expect_intrq(const juku_fdc* fdc, int value, const char* label) {
+  if (fdc->intrq != value) {
+    fprintf(stderr, "%s: INTRQ %d expected %d\n", label, fdc->intrq, value);
+    return 1;
+  }
+  return 0;
+}
+
+
 int main(void) {
   char dir[] = "/tmp/juku-fdc-test.XXXXXX";
   if (!mkdtemp(dir)) {
@@ -87,7 +96,9 @@ int main(void) {
   juku_fdc_portc(&fdc, 0x04);  // motor on, drive 0, side 0
   juku_fdc_write(&fdc, 1, 22);
   juku_fdc_write(&fdc, 0, 0x02);  // restore, as ROMBIOS issues before reading
+  fail |= expect_intrq(&fdc, 1, "restore completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, 0, "after restore command");
+  fail |= expect_intrq(&fdc, 0, "restore status acknowledgement");
   if (juku_fdc_read(&fdc, 1) != 0) {
     fprintf(stderr, "restore did not return to track 0\n");
     fail = 1;
@@ -138,7 +149,9 @@ int main(void) {
       fail = 1;
     }
   }
+  fail |= expect_intrq(&fdc, 1, "read-address completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after read-address drain");
+  fail |= expect_intrq(&fdc, 0, "read-address status acknowledgement");
   if (juku_fdc_read(&fdc, 2) != 12) {
     fprintf(stderr, "read-address did not load track address into sector register\n");
     fail = 1;
@@ -149,6 +162,7 @@ int main(void) {
   (void)juku_fdc_read(&fdc, 3);
   (void)juku_fdc_read(&fdc, 3);
   juku_fdc_write(&fdc, 0, 0xD0);  // force interrupt aborts the partial ID field
+  fail |= expect_intrq(&fdc, 0, "D0 silent force interrupt");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after forced read-address abort");
   if (juku_fdc_read(&fdc, 2) != 7) {
     fprintf(stderr, "aborted read-address changed sector register\n");
@@ -156,7 +170,10 @@ int main(void) {
   }
   juku_fdc_write(&fdc, 0, 0xC1);  // reserved low bit is not Read Address
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY, "reserved type-III opcode");
-  juku_fdc_write(&fdc, 0, 0xD0);
+  juku_fdc_write(&fdc, 0, 0xD8);
+  fail |= expect_intrq(&fdc, 1, "D8 immediate force interrupt");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after immediate force interrupt");
+  fail |= expect_intrq(&fdc, 0, "D8 status acknowledgement");
 
   juku_fdc_write(&fdc, 1, 12);
   juku_fdc_write(&fdc, 2, 4);
@@ -173,10 +190,14 @@ int main(void) {
       break;
     }
   }
+  fail |= expect_intrq(&fdc, 1, "read-sector completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "after sector drain");
+  fail |= expect_intrq(&fdc, 0, "read-sector status acknowledgement");
 
   juku_fdc_write(&fdc, 0, 0xFD);  // write track against read-only raw-image shim
+  fail |= expect_intrq(&fdc, 1, "write-track rejection completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "after write-track command");
+  fail |= expect_intrq(&fdc, 0, "write-track status acknowledgement");
 
   juku_fdc_write(&fdc, 0, 0xA0);  // ROMBIOS write-sector command is also protected by default
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, ST_WRITE_PROTECT, "read-only write-sector command");
@@ -211,6 +232,7 @@ int main(void) {
       }
     }
   }
+  fail |= expect_intrq(&fdc, 1, "multi-read end-of-track completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF | ST_WRITE_PROTECT,
                         ST_RNF, "multi-read end of track");
   if (juku_fdc_read(&fdc, 2) != 11) {
@@ -222,6 +244,7 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0x90);
   for (int i = 0; i < JUK_SECTOR_SIZE + 17; i++) (void)juku_fdc_read(&fdc, 3);
   juku_fdc_write(&fdc, 0, 0xD0);
+  fail |= expect_intrq(&fdc, 0, "forced multi-read D0 silence");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, 0, "forced multi-read abort");
   if (juku_fdc_read(&fdc, 2) != 9) {
     fprintf(stderr, "forced multi-read did not preserve the current sector\n");
@@ -242,6 +265,7 @@ int main(void) {
   for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
     juku_fdc_write(&fdc, 3, (uint8_t)(0x5A ^ i));
   }
+  fail |= expect_intrq(&fdc, 1, "write-sector completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_WRITE_PROTECT, 0, "after writable sector fill");
   juku_fdc_write(&fdc, 0, 0x82);
   for (int i = 0; i < JUK_SECTOR_SIZE; i++) {
@@ -262,6 +286,7 @@ int main(void) {
       juku_fdc_write(&fdc, 3, (uint8_t)((record == 9 ? 0xA0 : 0x50) ^ i));
     }
   }
+  fail |= expect_intrq(&fdc, 1, "multi-write end-of-track completion");
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_RNF, ST_RNF, "multi-write end of track");
   if (juku_fdc_read(&fdc, 2) != 11) {
     fprintf(stderr, "multi-write did not advance sector register past track end\n");

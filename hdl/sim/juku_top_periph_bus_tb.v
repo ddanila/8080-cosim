@@ -207,6 +207,7 @@ module juku_top_periph_bus_tb();
     if (dut.fdc_intrq !== 1'b1) fail("FDC restore did not raise INTRQ");
     io_read(8'h1C, rd);
     if ((rd & 8'h83) !== 8'h00) fail("FDC restore status should clear NOT_READY/BUSY/DRQ with motor on");
+    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge restore INTRQ");
     io_read(8'h1D, rd);
     if (rd !== 8'h00) fail("FDC restore did not return track register to zero");
 
@@ -225,6 +226,11 @@ module juku_top_periph_bus_tb();
     if (rd !== 8'hc3) fail("FDC first vendored sector byte mismatch");
 
     io_write(8'h1C, 8'hD0);     // abort the partial single-sector read
+    if (dut.fdc_intrq !== 1'b0) fail("FDC D0 abort incorrectly raised INTRQ");
+    io_write(8'h1C, 8'hD8);     // immediate Force Interrupt
+    if (dut.fdc_intrq !== 1'b1) fail("FDC D8 immediate Force Interrupt did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge immediate INTRQ");
     io_write(8'h1D, 8'h00);
     io_write(8'h1E, 8'h09);
     io_write(8'h1C, 8'h92);     // Type-II multiple-record read
@@ -233,8 +239,10 @@ module juku_top_periph_bus_tb();
       if (i == 0 && rd !== 8'hff) fail("FDC multi-read sector 9 first byte mismatch");
       if (i == 512 && rd !== 8'h20) fail("FDC multi-read sector 10 first byte mismatch");
     end
+    if (dut.fdc_intrq !== 1'b1) fail("FDC multi-read completion did not raise INTRQ");
     io_read(8'h1C, rd);
     if ((rd & 8'h13) !== 8'h10) fail("FDC multi-read did not end with RNF after sector 10");
+    if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge multi-read INTRQ");
     io_read(8'h1E, rd);
     if (rd !== 8'h0b) fail("FDC multi-read did not advance sector register to 11");
 
@@ -245,8 +253,10 @@ module juku_top_periph_bus_tb();
       io_read(8'h1C, rd);
       if ((rd & 8'h03) !== 8'h03) fail("FDC write-sector did not assert BUSY+DRQ");
       for (i = 0; i < 512; i = i + 1) io_write(8'h1F, 8'h5A ^ i[7:0]);
+      if (dut.fdc_intrq !== 1'b1) fail("FDC write-sector completion did not raise INTRQ");
       io_read(8'h1C, rd);
       if ((rd & 8'h43) !== 8'h00) fail("FDC write-sector did not complete cleanly");
+      if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge write-sector INTRQ");
       io_write(8'h1C, 8'h82);
       for (i = 0; i < 512; i = i + 1) begin
         io_read(8'h1F, rd);
@@ -260,8 +270,10 @@ module juku_top_periph_bus_tb();
       io_write(8'h1C, 8'hB2);   // side-aware multiple-record write
       for (i = 0; i < 1024; i = i + 1)
         io_write(8'h1F, ((i < 512) ? 8'hA0 : 8'h50) ^ i[7:0]);
+      if (dut.fdc_intrq !== 1'b1) fail("FDC multi-write completion did not raise INTRQ");
       io_read(8'h1C, rd);
       if ((rd & 8'h13) !== 8'h10) fail("FDC multi-write did not end with RNF after sector 10");
+      if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge multi-write INTRQ");
       io_read(8'h1E, rd);
       if (rd !== 8'h0b) fail("FDC multi-write did not advance sector register to 11");
       io_write(8'h1E, 8'h09);

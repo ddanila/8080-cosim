@@ -947,6 +947,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         read_address_transfer = 0;
         multi_record = 0;
         status = status & ~(ST_BUSY | ST_DRQ);
+    end endtask
+
+    task complete_transfer; begin
+        clear_transfer();
         intrq_r = 1'b1;
     end endtask
 
@@ -956,16 +960,20 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
+            complete_transfer();
         end else if (!disk_requested || !disk_writable) begin
             status = status | ST_WRITE_PROTECT;
+            complete_transfer();
         end else if (track > 8'd79 || sector == 0 || sector > 10 ||
                      ({31'b0, side} >= disk_heads)) begin
             status = status | ST_RNF;
+            complete_transfer();
         end else begin
             disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
             disk_seek_status = $fseek(disk_file, disk_offset, 0);
             if (disk_seek_status != 0) begin
                 status = status | ST_RNF;
+                complete_transfer();
             end else begin
                 buffer_pos = 0;
                 buffer_len = 512;
@@ -984,17 +992,17 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             if (buffer_pos >= buffer_len) begin
                 $fflush(disk_file);
                 if (!multi_record) begin
-                    clear_transfer();
+                    complete_transfer();
                 end else begin
                     sector = sector + 8'd1;
                     if (sector > 10) begin
-                        clear_transfer();
+                        complete_transfer();
                         status = status | ST_RNF;
                     end else begin
                         disk_offset = (((track * disk_heads) + {31'b0, side}) * 10 + (sector - 1)) * 512;
                         disk_seek_status = $fseek(disk_file, disk_offset, 0);
                         if (disk_seek_status != 0) begin
-                            clear_transfer();
+                            complete_transfer();
                             status = status | ST_RNF;
                         end else begin
                             buffer_pos = 0;
@@ -1012,6 +1020,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     task begin_write_sector(input multi); begin
         clear_transfer();
         status = (status & ~(ST_RNF | ST_NOT_READY)) | ST_WRITE_PROTECT;
+        complete_transfer();
     end endtask
     task accept_write_byte(input [7:0] value); begin end endtask
 `endif
@@ -1021,8 +1030,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on) begin
             status = status | ST_NOT_READY;
+            complete_transfer();
         end else if (sector == 0 || sector > 10) begin
             status = status | ST_RNF;
+            complete_transfer();
         end else if (disk_requested) begin
             load_disk_sector();
             if (disk_sector_ok) begin
@@ -1031,6 +1042,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 multi_record = multi;
                 status = status | ST_BUSY | ST_DRQ;
                 intrq_r = 1'b0;
+            end else begin
+                complete_transfer();
             end
         end else begin
             buffer_pos = 0;
@@ -1048,8 +1061,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status = status & ~(ST_RNF | ST_WRITE_PROTECT | ST_NOT_READY);
         if (!motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
+            complete_transfer();
         end else if (track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
             status = status | ST_RNF;
+            complete_transfer();
         end else begin
             // A flat sector image has no rotational position. Sector 1 is the
             // deterministic first ID field after index.
@@ -1090,6 +1105,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             step_dir_in = 1'b0;
             if (cmd[4] && track != 8'h00) track = track - 8'd1;
         end
+        complete_transfer();
     end endtask
 
     task reject_write_track; begin
@@ -1100,6 +1116,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         end else begin
             status = status | ST_WRITE_PROTECT;
         end
+        complete_transfer();
     end endtask
 
     wire fdc_write_active = ~cs_n & ~wr_n;
@@ -1112,7 +1129,10 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 intrq_r = 1'b0;
                 if (is_read_sector(D)) begin_read_sector(D[4]);
                 else if (is_type_i(D)) finish_type_i(D);
-                else if ((D & 8'hF0) == 8'hD0) clear_transfer();
+                else if ((D & 8'hF0) == 8'hD0) begin
+                    clear_transfer();
+                    intrq_r = D[3]; // D0 terminates silently; D8 is immediate
+                end
                 else if (is_write_sector(D)) begin_write_sector(D[4]);
                 else if (is_read_address(D)) begin_read_address();
                 else if (is_write_track(D)) reject_write_track();
@@ -1134,11 +1154,11 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             if (buffer_pos >= buffer_len) begin
                 if (read_address_transfer) begin
                     sector = sector_buf[0];
-                    clear_transfer();
+                    complete_transfer();
                 end else if (multi_record) begin
                     sector = sector + 8'd1;
                     if (sector > 10) begin
-                        clear_transfer();
+                        complete_transfer();
                         status = status | ST_RNF;
                     end else if (disk_requested) begin
                         load_disk_sector();
@@ -1149,7 +1169,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                             status = status | ST_BUSY | ST_DRQ;
                             intrq_r = 1'b0;
                         end else begin
-                            clear_transfer();
+                            complete_transfer();
                             status = status | ST_RNF;
                         end
                     end else begin
@@ -1160,13 +1180,16 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                         intrq_r = 1'b0;
                     end
                 end else begin
-                    clear_transfer();
+                    complete_transfer();
                 end
             end
         end else begin
             status = status & ~ST_DRQ;
         end
     end
+
+    wire fdc_status_read_active = ~cs_n & ~rd_n & (A == 2'd0);
+    always @(posedge fdc_status_read_active) intrq_r = 1'b0;
 
     wire [7:0] read_data =
         (A == 2'd0) ? effective_status :

@@ -1,6 +1,6 @@
 # FDC readiness
 
-Status: **BOOT + TYPE-II MULTI-RECORD + READ-ADDRESS HDL FDC READY**
+Status: **BOOT + TYPE-II/INTRQ + READ-ADDRESS HDL FDC READY**
 
 `sync/fdc_check.sh` guards the FDC behavior needed by the proven Juku boot
 path. It does not claim a complete WD1793/VG93 implementation or complete
@@ -13,12 +13,19 @@ physical D93/D94 wiring.
   Read Address,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
+- C and HDL now share the WD1793 interrupt contract for the modeled commands:
+  loading a command clears pending INTRQ, normal/error completion raises it,
+  and reading status acknowledges it. Force Interrupt `0xD0` terminates an
+  active transfer without raising INTRQ, while `0xD8` raises the immediate
+  interrupt and a subsequent status read clears it. The ready-transition and
+  index-triggered Force conditions depend on physical timing inputs and remain
+  explicit boundaries.
 - Type-II bit 4 continues across records and increments the sector register.
   Read and writable-image guards traverse sectors 9 and 10 byte-for-byte,
   advance to sector 11, and terminate with Record Not Found exactly as the
   datasheet specifies when the register exceeds the ten-sector track. A
-  mid-command Force Interrupt stops the transfer while preserving the current
-  incremented sector; the writable guard proves both completed sectors persist.
+  mid-command silent `0xD0` Force Interrupt stops the transfer while preserving
+  the current incremented sector; the writable guard proves both completed sectors persist.
   Inter-record index/gap delays and per-byte DRQ deadlines remain timing
   boundaries, not requirements silently approximated by this byte-level shim.
 - Read Address emits the complete six-byte ID field
@@ -261,7 +268,9 @@ evidence exists.
   command and Type-II multiple-record continuation, not a general WD1793
   conformance model. Read Track, writable track formatting, byte
   deadlines/lost-data behavior, inter-record delays, and physical rotational
-  timing remain outside its proved scope.
+  timing remain outside its proved scope. Force Interrupt conditions 0-2
+  (ready transitions and index pulse) likewise await those physical timing
+  inputs; only terminate-silent `0xD0` and immediate `0xD8` are claimed.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
   continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
   and required cycle truth table are now guarded; only its board control sources

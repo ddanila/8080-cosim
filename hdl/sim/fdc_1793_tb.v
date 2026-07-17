@@ -45,6 +45,13 @@ module fdc_1793_tb;
     end
   end endtask
 
+  task expect_intrq(input value, input [160*8:1] label); begin
+    if (intrq !== value) begin
+      $display("FDC-1793: FAIL %0s intrq=%b expected=%b", label, intrq, value);
+      errors = errors + 1;
+    end
+  end endtask
+
   function [7:0] want_byte(input integer pos, input [7:0] track, input side_bit, input [7:0] sector);
   begin
     if (pos == 0) want_byte = track;
@@ -92,7 +99,9 @@ module fdc_1793_tb;
 
     write_reg(2'd1, 8'd22);
     write_reg(2'd0, 8'h02);
+    expect_intrq(1'b1, "restore completion");
     expect_status(8'h83, 8'h00, "after restore");
+    expect_intrq(1'b0, "restore status acknowledgement");
     read_reg(2'd1, got);
     if (got !== 8'd0) begin
       $display("FDC-1793: FAIL restore track=%02x", got);
@@ -152,7 +161,9 @@ module fdc_1793_tb;
         errors = errors + 1;
       end
     end
+    expect_intrq(1'b1, "read-address completion");
     expect_status(8'h03, 8'h00, "after read-address drain");
+    expect_intrq(1'b0, "read-address status acknowledgement");
     read_reg(2'd2, got);
     if (got !== 8'd12) begin
       $display("FDC-1793: FAIL read-address sector-register result=%02x", got);
@@ -164,6 +175,7 @@ module fdc_1793_tb;
     read_reg(2'd3, got);
     read_reg(2'd3, got);
     write_reg(2'd0, 8'hd0);
+    expect_intrq(1'b0, "D0 silent force interrupt");
     expect_status(8'h03, 8'h00, "after forced read-address abort");
     read_reg(2'd2, got);
     if (got !== 8'd7) begin
@@ -172,7 +184,10 @@ module fdc_1793_tb;
     end
     write_reg(2'd0, 8'hc1);  // reserved low bit is not Read Address
     expect_status(8'h03, 8'h01, "reserved type-III opcode");
-    write_reg(2'd0, 8'hd0);
+    write_reg(2'd0, 8'hd8);
+    expect_intrq(1'b1, "D8 immediate force interrupt");
+    expect_status(8'h03, 8'h00, "after immediate force interrupt");
+    expect_intrq(1'b0, "D8 status acknowledgement");
 
     write_reg(2'd1, disk_mode ? 8'd0 : 8'd12);
     write_reg(2'd2, disk_mode ? 8'd2 : 8'd4);
@@ -194,11 +209,12 @@ module fdc_1793_tb;
         i = 512;
       end
     end
-    expect_status(8'h03, 8'h00, "after side-0 drain");
     if (drq !== 1'b0 || intrq !== 1'b1) begin
       $display("FDC-1793: FAIL read completion drq=%b intrq=%b", drq, intrq);
       errors = errors + 1;
     end
+    expect_status(8'h03, 8'h00, "after side-0 drain");
+    expect_intrq(1'b0, "read-sector status acknowledgement");
 
     if (disk_mode && !writable_mode) begin
       write_reg(2'd0, 8'hA0);
@@ -211,11 +227,12 @@ module fdc_1793_tb;
       write_reg(2'd0, 8'hA2);  // exact ROMBIOS side-aware write-sector variant
       expect_status(8'h03, 8'h03, "writable write-sector command");
       for (i = 0; i < 512; i = i + 1) write_reg(2'd3, 8'h5A ^ i[7:0]);
-      expect_status(8'h43, 8'h00, "after writable sector fill");
       if (drq !== 1'b0 || intrq !== 1'b1) begin
         $display("FDC-1793: FAIL write completion drq=%b intrq=%b", drq, intrq);
         errors = errors + 1;
       end
+      expect_status(8'h43, 8'h00, "after writable sector fill");
+      expect_intrq(1'b0, "write-sector status acknowledgement");
       write_reg(2'd0, 8'h82);
       for (i = 0; i < 512; i = i + 1) begin
         read_reg(2'd3, got);
@@ -232,6 +249,7 @@ module fdc_1793_tb;
       write_reg(2'd0, 8'hb2);  // side-aware multiple-record write
       for (i = 0; i < 1024; i = i + 1)
         write_reg(2'd3, ((i < 512) ? 8'ha0 : 8'h50) ^ i[7:0]);
+      expect_intrq(1'b1, "multi-write end-of-track completion");
       expect_status(8'h13, 8'h10, "multi-write end of track");
       read_reg(2'd2, got);
       if (got !== 8'd11) begin
@@ -261,11 +279,12 @@ module fdc_1793_tb;
     end
 
     write_reg(2'd0, 8'hFD);
-    expect_status(8'h43, 8'h40, "after write-track reject");
     if (drq !== 1'b0 || intrq !== 1'b1) begin
       $display("FDC-1793: FAIL write-track reject drq=%b intrq=%b", drq, intrq);
       errors = errors + 1;
     end
+    expect_status(8'h43, 8'h40, "after write-track reject");
+    expect_intrq(1'b0, "write-track status acknowledgement");
 
     if (!disk_mode) begin
       side = 1;
@@ -295,6 +314,7 @@ module fdc_1793_tb;
         i = 1024;
       end
     end
+    expect_intrq(1'b1, "multi-read end-of-track completion");
     expect_status(8'h53, 8'h10, "multi-read end of track");
     read_reg(2'd2, got);
     if (got !== 8'd11) begin
@@ -306,6 +326,7 @@ module fdc_1793_tb;
     write_reg(2'd0, 8'h90);
     for (i = 0; i < 529; i = i + 1) read_reg(2'd3, got);
     write_reg(2'd0, 8'hd0);
+    expect_intrq(1'b0, "forced multi-read D0 silence");
     expect_status(8'h03, 8'h00, "forced multi-read abort");
     read_reg(2'd2, got);
     if (got !== 8'd9) begin
