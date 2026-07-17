@@ -11,7 +11,7 @@ safe to order.
 ## Current physical baseline
 
 - 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
-- 119 footprints, 135 PCB nets, and 2,525 tracks in the current checked board.
+- 119 footprints, 135 PCB nets, and 2,480 tracks in the current checked board.
 - Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
   decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
   In2.Cu a filled VCC plane; the two board layers carry the signal routing.
