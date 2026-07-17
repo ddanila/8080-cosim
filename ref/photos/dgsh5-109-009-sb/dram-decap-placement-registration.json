@@ -86,7 +86,7 @@
     "dimensions_px": [1550, 1330],
     "coordinate_system": "component-side board orientation after the guarded solder-panorama rectification; pixels remain observations and are locally fit to board millimetres",
     "source_registration": "docs/photo-registration/board-registration.json",
-    "observation": "four rows of eight distinct horizontal two-hole landing pairs are exposed above the four DRAM rows. The older C63 position is the sixth pair of row two; the C69 position is the eighth pair of row four, not the 3.9 mm left-shifted routing workaround. The solder view shows C69.2 and the nearby R52.1 as distinct non-touching drilled annuli, so their local 0.8 mm drills use guarded 1.1 mm copper rather than moving C69",
+    "observation": "four rows of eight distinct horizontal two-hole landing pairs are exposed above the four DRAM rows. The older C63 position is the sixth pair of row two; the C69 position is the eighth pair of row four, not the 3.9 mm left-shifted routing workaround. A separate two-sided R49-R56 registration retires the stale R52 placement that formerly collided with C69, so both parts retain their normal photographed annuli",
     "board_columns_mm": [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4],
     "board_rows_mm": [120.9, 145.6, 170.7, 195.8],
     "observed_column_centres_px": [579.9, 637.7, 695.6, 753.7, 811.9, 870.2, 929.0, 987.6],

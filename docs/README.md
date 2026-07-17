@@ -31,6 +31,7 @@ Most reports are outputs of scripts or checks; a few are consolidated durable
 findings. Every status applies only to the boundary named by the report.
 
 - Physical model: `board-fidelity-gap-ledger.md`,
+  `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
   `master-oscillator-boundary.md`,
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.

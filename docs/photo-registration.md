@@ -180,6 +180,16 @@ inherited 4×8 DRAM-decoupler landing grid, including the older C63 landing at
 connectivity and marked assembly DNP, with the bare common-artwork footprint
 fabricated but no populate-now BOM entry.
 
+The same array panorama closes the adjacent R49-R56 RAS resistor bank. The
+common `.006` assembly drawing supplies the refdes order and the target-board
+component overlaps expose every populated body: R56/R52, R55/R51, R54/R50,
+and R53/R49 from top to bottom in one vertical column. Four red bodies read
+`75Ω`; four tan bodies read `5K1`. Clear R50/R53 lead joints select the
+10.16 mm vertical footprint, and the reflected panorama corroborates the
+drilled column. The durable fit and rounded board coordinates live in
+`ref/photos/juku-pcb-2/ras-resistor-bank-registration.json`; electrical nets
+remain the separately traced sheet-2 D53/RAS/GND result.
+
 The marked `КР580ВК38` D5 now has a direct affine component fit in raw
 image `200411500`. Its complete 2x14 contact field and right-facing notch move
 the pad-row centre from the old drawing seed `(31.20,99.20)` mm to

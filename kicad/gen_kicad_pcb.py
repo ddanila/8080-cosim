@@ -68,6 +68,8 @@ PASSIVE_FP_REF = {
     'R89': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R92': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R99': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    **{ref: ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal')
+       for ref in ('R49', 'R50', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56')},
     'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R1': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -219,8 +221,14 @@ PASSIVE_PLACE = {
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
-    'R49':(204.1,181.7,0),'R50':(204.1,186,0),'R51':(204.1,190.3,0),'R52':(204.1,194.6,0),   # 100R strobe series [sheet-2; emaplaat x204 column]
-    'R53':(204.1,199,0),'R54':(204.1,203.3,0),'R55':(204.1,207.6,0),'R56':(204.1,211.9,0),   # 5.1k strobe pullups -> rail E
+    # Target-board component photos and the .006 assembly drawing close the
+    # RAS ladder as one vertical column: R56/R52, R55/R51, R54/R50,
+    # R53/R49 from top to bottom. All eight use the photographed 10.16 mm
+    # lead span; R49-R52 read 75 ohm and R53-R56 read 5K1.
+    'R56':(221.0,135.2,90),'R52':(221.0,150.0,90),
+    'R55':(221.0,162.2,90),'R51':(221.0,175.2,90),
+    'R54':(221.0,189.0,90),'R50':(221.0,201.5,90),
+    'R53':(221.0,215.2,90),'R49':(221.0,229.7,90),
     'R57':(204.1,216.2,0),'R58':(204.1,220.5,0),   # R57 = CAS rail-15 series (<- D36.11), R58 = rail-15 5.1k pullup -> E [bite-2; same column, position approx]
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
@@ -453,14 +461,6 @@ def main():
         if ref in {"R33", "R66"}:
             for pad in fp.Pads():
                 pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
-        # The solder panorama shows distinct, non-touching annuli where the
-        # photo-registered bare C69 landing passes the approximate R52 seed.
-        # Preserve the original-style 0.15 mm annulus around the 0.8 mm drill
-        # at that one close pair instead of moving the proven C69 grid site.
-        if ref == "C69":
-            fp.FindPadByNumber("2").SetSize(pcbnew.VECTOR2I_MM(1.1, 1.1))
-        if ref == "R52":
-            fp.FindPadByNumber("1").SetSize(pcbnew.VECTOR2I_MM(1.1, 1.1))
         ctr = fp.GetBoundingBox(False, False).GetCenter()          # re-center on (x,y)
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER

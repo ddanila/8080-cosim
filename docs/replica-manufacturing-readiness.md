@@ -21,7 +21,7 @@ DESIGN HOLD.
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3199 | FAIL |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2554 | PASS |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 73517 | HOLD |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9332 | HOLD |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 9331 | HOLD |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 3165 | PASS |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2125 | PASS |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1797 | FAIL |

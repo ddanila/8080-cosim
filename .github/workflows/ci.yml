@@ -54,6 +54,7 @@ jobs:
             kicad/apply_x6_offboard_correction.py \
             kicad/check_x6_offboard_landings.py \
             kicad/check_c63_target_dnp.py \
+            kicad/check_ras_resistor_bank.py \
             kicad/check_factory_wire_links.py \
             kicad/check_factory_wire_landing_registration.py \
             kicad/check_d3_factory_wire_landing.py \
@@ -107,6 +108,7 @@ jobs:
             scripts/close_array_ground_rail.py \
             scripts/close_d30_status_strobe.py \
             scripts/report_decap_value_fidelity.py \
+            scripts/report_ras_resistor_bank.py \
             scripts/report_d41_timing_boundary.py \
             scripts/report_memory_timing_boundary.py \
             scripts/report_io_decode_boundary.py \

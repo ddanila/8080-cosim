@@ -113,3 +113,10 @@ of PCB fabrication: their former coordinates came from an early fit-to-space
 pass rather than registered source evidence. Their schematic rail-bypass intent
 is retained, but placement and target-revision population remain unresolved;
 the hold is not an assembly-DNP classification.
+
+The common `.006` assembly artwork and registered target-board panoramas also
+close the adjacent R49-R56 RAS resistor bank. The target retains the vertical
+top-to-bottom order R56/R52, R55/R51, R54/R50, R53/R49. Red R49-R52 bodies
+read `75Ω`; tan R53-R56 bodies read `5K1`. The durable target-photo fit is
+stored in `../juku-pcb-2/ras-resistor-bank-registration.json` and supersedes
+the earlier two-horizontal-row placement seed and unverified 100-ohm note.

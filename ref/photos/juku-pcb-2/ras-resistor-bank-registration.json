@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "scope": "R49-R56 DRAM RAS series/termination resistor bank",
+  "coordinate_system": "component-side board millimetres; centres are local photo fits rounded to 0.1 mm",
+  "promotion_rule": "the .006 assembly drawing fixes refdes order and the target .009 owner photographs independently prove the unchanged eight-body vertical construction, lead span, population, and readable case values; connectivity remains owned by the traced sheet-2 nets",
+  "sources": [
+    {
+      "path": "ref/schematics/es101_emaplaat.pdf",
+      "sha256": "ef686cd1653965661bea184650f66f8891c3d538c8994852a440169b10ca464d",
+      "role": "refdes order: R56/R52, R55/R51, R54/R50, R53/R49 from top to bottom"
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
+      "role": "target-board component view of the complete alternating 5K1/75-ohm column"
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+      "sha256": "ccd7413567ae5b52b36705661f30bfe641894880b541aaa1fbc59efb226027da",
+      "role": "independent overlap exposing the upper R56/R52 pair"
+    },
+    {
+      "path": "docs/photo-registration/component_grid-rectified.jpg",
+      "sha256": "61b84e1f9c0ee4902b8988509b7ac40bf7170bf1bf9ee5e38c1d308dd503b712",
+      "role": "board-coordinate placement fit"
+    },
+    {
+      "path": "docs/photo-registration/solder_grid-rectified.jpg",
+      "sha256": "dc2c7bdc163935a594514a0efde6273cc2257c5fc6e66eab67ee25acbef4a2d5",
+      "role": "reflected-side corroboration of the drilled vertical bank"
+    }
+  ],
+  "footprint": {
+    "orientation_deg": 90,
+    "lead_span_mm": 10.16,
+    "max_centre_error_mm": 0.35,
+    "basis": "clear R50 and R53 lead-joint pairs measure approximately 11.1 mm and 10.7 mm through the local panorama fit; the 10.16 mm period footprint is the matching standard span within registration uncertainty"
+  },
+  "top_to_bottom": ["R56", "R52", "R55", "R51", "R54", "R50", "R53", "R49"],
+  "placements": {
+    "R56": {"centre_mm": [221.0, 135.2], "value": "5,1к", "marking": "5K1", "body": "tan"},
+    "R52": {"centre_mm": [221.0, 150.0], "value": "75", "marking": "75Ω", "body": "red"},
+    "R55": {"centre_mm": [221.0, 162.2], "value": "5,1к", "marking": "5K1", "body": "tan"},
+    "R51": {"centre_mm": [221.0, 175.2], "value": "75", "marking": "75Ω", "body": "red"},
+    "R54": {"centre_mm": [221.0, 189.0], "value": "5,1к", "marking": "5K1", "body": "tan"},
+    "R50": {"centre_mm": [221.0, 201.5], "value": "75", "marking": "75Ω", "body": "red"},
+    "R53": {"centre_mm": [221.0, 215.2], "value": "5,1к", "marking": "5K1", "body": "tan"},
+    "R49": {"centre_mm": [221.0, 229.7], "value": "75", "marking": "75Ω", "body": "red"}
+  },
+  "disposition": "placement, population, orientation, lead span, and values closed; electrical endpoints remain the already traced D53/RAS/GND nets"
+}

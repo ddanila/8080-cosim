@@ -4412,105 +4412,113 @@
   {
    "ref": "R49",
    "type": "R_AXIAL",
+   "value": "75",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R49: D53.Y0 -> RAIL14 bank-3 RAS; connected nets D53_Y0_R49/RAIL14 carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R49: D53.Y0 -> RAIL14 bank-3 RAS; the lowest red body in the alternating vertical column reads 75 ohm; connected nets D53_Y0_R49/RAIL14 carry crop evidence"
    }
   },
   {
    "ref": "R50",
    "type": "R_AXIAL",
+   "value": "75",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R50: D53.Y1 -> RAIL13 bank-2 RAS; connected nets D53_Y1_R50/RAIL13 carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R50: D53.Y1 -> RAIL13 bank-2 RAS; the third red body in the alternating vertical column reads 75 ohm; connected nets D53_Y1_R50/RAIL13 carry crop evidence"
    }
   },
   {
    "ref": "R51",
    "type": "R_AXIAL",
+   "value": "75",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R51: D53.Y2 -> RAIL12 bank-1 RAS; connected nets D53_Y2_R51/RAIL12 carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R51: D53.Y2 -> RAIL12 bank-1 RAS; the second red body in the alternating vertical column reads 75 ohm; connected nets D53_Y2_R51/RAIL12 carry crop evidence"
    }
   },
   {
    "ref": "R52",
    "type": "R_AXIAL",
+   "value": "75",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R52: D53.Y3 -> RAS bank-0 rail; connected nets D53_Y3_R52/RAS carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R52: D53.Y3 -> RAS bank-0 rail; the highest red body in the alternating vertical column reads 75 ohm; connected nets D53_Y3_R52/RAS carry crop evidence"
    }
   },
   {
    "ref": "R53",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R53: RAIL14 bank-3 RAS termination to GND; connected nets RAIL14/GND carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R53: RAIL14 bank-3 RAS termination to GND; the lowest tan body in the alternating vertical column directly reads 5K1; connected nets RAIL14/GND carry crop evidence"
    }
   },
   {
    "ref": "R54",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R54: RAIL13 bank-2 RAS termination to GND; connected nets RAIL13/GND carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R54: RAIL13 bank-2 RAS termination to GND; the third tan body in the alternating vertical column directly reads 5K1; connected nets RAIL13/GND carry crop evidence"
    }
   },
   {
    "ref": "R55",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R55: RAIL12 bank-1 RAS termination to GND; connected nets RAIL12/GND carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R55: RAIL12 bank-1 RAS termination to GND; the second tan body in the alternating vertical column directly reads 5K1; connected nets RAIL12/GND carry crop evidence"
    }
   },
   {
    "ref": "R56",
    "type": "R_AXIAL",
+   "value": "5,1к",
    "pins": {
     "1": "P1",
     "2": "P2"
    },
    "prov": {
     "type": "scan",
-    "refdes": "sheet-2 strobe chain (R49-R52 100R series, R53-R56 5.1k pulldowns)",
-    "pins": "R56: RAS bank-0 rail termination to GND; connected nets RAS/GND carry crop evidence"
+    "refdes": "sheet-2 strobe chain plus .006 assembly drawing and registered target-board photos",
+    "pins": "R56: RAS bank-0 rail termination to GND; the highest tan body in the alternating vertical column directly reads 5K1; connected nets RAS/GND carry crop evidence"
    }
   },
   {

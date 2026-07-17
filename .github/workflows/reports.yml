@@ -212,6 +212,11 @@ jobs:
           python3 scripts/report_decap_value_fidelity.py
           git diff --exit-code -- docs/decap-value-fidelity.md
 
+      - name: Check RAS resistor-bank fidelity freshness
+        run: |
+          python3 scripts/report_ras_resistor_bank.py
+          git diff --exit-code -- docs/ras-resistor-bank.md
+
       - name: Check D41 timing boundary freshness
         run: |
           python3 scripts/report_d41_timing_boundary.py
