@@ -15,7 +15,9 @@ BOARD_WIDTH_MM = 200
 BOARD_HEIGHT_MM = 200
 ZONE_INSET_MM = 3
 EDGE_CLEARANCE_MM = 5
-CHIP_BLOCK_LABEL_GAP_MM = 2.0
+# Function name is printed as a second line INSIDE the named chip, below its
+# value (e.g. "Z80" over "CPU"), offset this far above/below the chip centre.
+CHIP_LABEL_INSIDE_OFFSET_MM = 1.5
 SILK_LABELS = {
     # Board banner along the top edge, above the CPU/ROM decoupling caps.
     "VJUGA REV A": (100, 2.4, 0, pcbnew.F_SilkS, 1.8),
@@ -23,7 +25,8 @@ SILK_LABELS = {
     # Back-silk stroke-style marker (does not collide with front-side parts).
     "DEFAULT STROKE SILK": (100, 196, 0, pcbnew.B_SilkS),
 }
-# Single-chip block titles printed under the named chip (no enclosing rectangle).
+# Single-chip function names, printed as a second line inside the named chip
+# (below its value). No enclosing rectangle.
 CHIP_BLOCK_LABELS = {
     "CPU": "U1",
     "ROM": "U2",
@@ -31,6 +34,7 @@ CHIP_BLOCK_LABELS = {
     "DRAM CONTROL": "U24",
     "PARALLEL INTERFACE": "U30",
 }
+CHIP_FUNCTION_BY_REF = {ref: name for name, ref in CHIP_BLOCK_LABELS.items()}
 
 # Functional-block members. The block's silk rectangle is the grid-snapped
 # bounding box of these parts (see compute_block_outlines); far-flung support
@@ -135,6 +139,15 @@ POWER_INPUT_PIN_LABELS = ()
 POWER_INPUT_PIN_LABEL_SIZE_MM = 1.1
 POWER_INPUT_PIN_LABEL_THICKNESS_MM = 0.16
 
+# Per-pin silk labels for named connectors, printed inboard next to each pad
+# (computed from real pad positions at build time). Short so they fit the pitch.
+CONNECTOR_PIN_LABELS = {
+    "J40": {"1": "R", "2": "G", "3": "B", "4": "HS", "5": "VS", "6": "GND", "7": "BL"},
+}
+CONNECTOR_PIN_LABEL_TEXTS = {
+    t for labels in CONNECTOR_PIN_LABELS.values() for t in labels.values()
+}
+
 SILK_VALUE_BY_TYPE = {
     "Z80_DIP40": "Z80",
     "PPI_82C55_DIP40": "82C55",
@@ -190,6 +203,11 @@ DOWNSTAIRS_VALUE_TYPES = {
     # instead of vertically alongside it.
     "JUMPER_1x2",
     "JUMPER_1x3",
+    # Observability headers: name printed below (like the debug headers), not
+    # along the long side.
+    "DEBUG_HEADER_1x8",
+    "DEBUG_HEADER_1x10",
+    "DEBUG_HEADER_1x14",
 }
 
 # DIP parts use the _Socket footprints: the nested "double" silk outline is the
@@ -492,14 +510,6 @@ def place_silk_fields(fp, chip, x, y, rot):
             style_field(fp.Value(), value, right + 5.5, cy + 2.2, 0, size=0.85)
             return
 
-        # Tall 1xN observability headers (J95/J97/J98): the descriptive value runs
-        # vertically ALONG the long side, not horizontally across the pins.
-        if chip["type"] in {"DEBUG_HEADER_1x8", "DEBUG_HEADER_1x10", "DEBUG_HEADER_1x14"}:
-            value_size = 0.85 if len(value) > 6 else 0.95
-            style_field(fp.Value(), value, right + 1.4, cy, 90, size=value_size)
-            style_field(fp.Reference(), ref, cx, top - 1.4, 0, size=0.8)
-            return
-
         if ref in DOWNSTAIRS_VALUE_REFS or chip["type"] in DOWNSTAIRS_VALUE_TYPES:
             value_size = 0.85 if len(value) > 6 else 0.95
             if len(value) > 9:
@@ -560,7 +570,10 @@ def place_silk_fields(fp, chip, x, y, rot):
         and chip["type"] not in {"OSC_DIP14"}
     )
     if show_chip_value:
-        style_field(fp.Value(), value, cx, cy, value_angle, size=1.35)
+        # Chips with a function line (CPU/ROM/...) show the value shifted up so
+        # the function name sits below it (added by add_chip_block_label).
+        value_y = cy - CHIP_LABEL_INSIDE_OFFSET_MM if ref in CHIP_FUNCTION_BY_REF else cy
+        style_field(fp.Value(), value, cx, value_y, value_angle, size=1.35)
     else:
         fp.Value().SetVisible(False)
 
@@ -618,21 +631,27 @@ def add_silk_label(board, text, x, y, angle, layer, size=2.0):
     board.Add(label)
 
 
-def add_chip_block_label(board, text, fp):
+def chip_function_anchor(fp):
+    """Centre point of the function line, one offset below the chip centre."""
     box = fp.GetBoundingBox(False, False)
     x = (pcbnew.ToMM(box.GetLeft()) + pcbnew.ToMM(box.GetRight())) / 2
-    y = pcbnew.ToMM(box.GetBottom()) + CHIP_BLOCK_LABEL_GAP_MM
-    size = 1.45 if len(text) > 12 else 2.0
+    y = (pcbnew.ToMM(box.GetTop()) + pcbnew.ToMM(box.GetBottom())) / 2 + CHIP_LABEL_INSIDE_OFFSET_MM
+    return (round(x, 3), round(y, 3))
+
+
+def add_chip_block_label(board, text, fp):
+    x, y = chip_function_anchor(fp)
+    size = 1.2 if len(text) > 12 else 1.4
     label = pcbnew.PCB_TEXT(board)
     label.SetLayer(pcbnew.F_SilkS)
     label.SetText(text)
     label.SetTextPos(pcbnew.VECTOR2I(mm(x), mm(y)))
     label.SetTextAngleDegrees(0)
     label.SetTextSize(pcbnew.VECTOR2I(mm(size), mm(size)))
-    label.SetTextThickness(mm(0.2))
+    label.SetTextThickness(mm(0.15))
     label.SetItalic(False)
     label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
-    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_TOP)
+    label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
     board.Add(label)
 
 
@@ -723,6 +742,29 @@ def add_framed_block(board, bounds, title=None):
     label.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
     label.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
     board.Add(label)
+
+
+def add_connector_pin_labels(board, placed):
+    """Print a short silk label inboard of each named connector pin."""
+    for ref, labels in CONNECTOR_PIN_LABELS.items():
+        fp = placed.get(ref)
+        if fp is None:
+            continue
+        for pad in fp.Pads():
+            num = str(pad.GetNumber())
+            if num not in labels:
+                continue
+            pos = pad.GetPosition()
+            lbl = pcbnew.PCB_TEXT(board)
+            lbl.SetLayer(pcbnew.F_SilkS)
+            lbl.SetText(labels[num])
+            lbl.SetTextPos(pcbnew.VECTOR2I(pos.x - mm(2.6), pos.y))
+            lbl.SetTextSize(pcbnew.VECTOR2I(mm(0.8), mm(0.8)))
+            lbl.SetTextThickness(mm(0.15))
+            lbl.SetItalic(False)
+            lbl.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_RIGHT)
+            lbl.SetVertJustify(pcbnew.GR_TEXT_V_ALIGN_CENTER)
+            board.Add(lbl)
 
 
 def add_small_silk_label(board, text, x, y, angle=0, layer=pcbnew.F_SilkS):
@@ -821,6 +863,7 @@ def main():
         add_framed_block(board, bounds, title)
     for label, x, y, angle in POWER_INPUT_PIN_LABELS:
         add_small_silk_label(board, label, x, y, angle)
+    add_connector_pin_labels(board, placed)
 
     pcbnew.SaveBoard(out, board)
     board = pcbnew.LoadBoard(out)

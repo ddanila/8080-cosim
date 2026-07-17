@@ -299,9 +299,8 @@ def main():
         if fp is None:
             chip_label_violations.append(f"{label}:{ref}:missing-footprint")
             continue
-        box = fp.GetBoundingBox(False, False)
-        expected_x = (pcbnew.ToMM(box.GetLeft()) + pcbnew.ToMM(box.GetRight())) / 2
-        expected_y = pcbnew.ToMM(box.GetBottom()) + CHIP_BLOCK_LABEL_GAP_MM
+        # Function name is a second line INSIDE the chip, below its value.
+        expected_x, expected_y = gen.chip_function_anchor(fp)
         matches = [
             text
             for _, _, text in silk_text_items(board)
@@ -318,7 +317,7 @@ def main():
                     f"{label}=({x:.2f},{y:.2f}) expected=({expected_x:.2f},{expected_y:.2f})"
                 )
     if chip_label_violations:
-        fail("CPU/ROM silkscreen labels do not use the standard chip gap: " + "; ".join(chip_label_violations))
+        fail("chip function labels are not centred inside the chip: " + "; ".join(chip_label_violations))
 
     silk_value_violations = []
     for ref, expected_value in EXPECTED_SILK_VALUES.items():

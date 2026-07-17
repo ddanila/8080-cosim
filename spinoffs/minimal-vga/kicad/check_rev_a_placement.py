@@ -61,7 +61,11 @@ def contains(outer, inner, margin=0.3):
 
 # Standalone silk texts that are intentionally placed on a component (connector
 # pin labels), so overlap with that component is expected, not a collision.
-INTENDED_PIN_LABELS = {t for t, *_ in gen.POWER_INPUT_PIN_LABELS} | {"FUSE"}
+INTENDED_PIN_LABELS = (
+    {t for t, *_ in gen.POWER_INPUT_PIN_LABELS}
+    | gen.CONNECTOR_PIN_LABEL_TEXTS
+    | {"FUSE"}
+)
 
 # Board-edge connectors are meant to sit at the board/block boundary (e.g. the
 # USB-C power receptacle overhangs the edge), so their block-straddle is expected.
