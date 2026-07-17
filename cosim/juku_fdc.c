@@ -28,6 +28,18 @@ enum {
 };
 
 
+static int controller_ready(const juku_fdc* fdc) {
+  return fdc->ready_line && fdc->motor_on && fdc->disk && fdc->disk->fp &&
+         fdc->head >= 0 && fdc->head < fdc->disk->heads;
+}
+
+
+static void update_not_ready(juku_fdc* fdc) {
+  if (controller_ready(fdc)) fdc->status &= (uint8_t)~ST_NOT_READY;
+  else fdc->status |= ST_NOT_READY;
+}
+
+
 static int is_read_sector(uint8_t command) {
   return (command & 0xE0) == 0x80;
 }
@@ -149,7 +161,7 @@ static void begin_read_sector(juku_fdc* fdc, uint8_t command) {
   fdc->head_loaded = 1;
   fdc->status &= (uint8_t)~(
       ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+  if (!fdc->ready_line || !fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
     return;
@@ -241,6 +253,7 @@ static void begin_type_i(juku_fdc* fdc, uint8_t command) {
     complete_transfer(fdc);
     return;
   }
+  update_not_ready(fdc);
   fdc->type_i_command = command;
   fdc->type_i_rate_ticks = type_i_rate_ticks(command);
   if ((command & 0xF0) == 0x00) {
@@ -285,7 +298,7 @@ static void begin_write_sector(juku_fdc* fdc, uint8_t command) {
   fdc->head_loaded = 1;
   fdc->status &= (uint8_t)~(
       ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+  if (!fdc->ready_line || !fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
     return;
@@ -317,7 +330,7 @@ static void begin_read_address(juku_fdc* fdc) {
   fdc->head_loaded = 1;
   fdc->status &= (uint8_t)~(
       ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+  if (!fdc->ready_line || !fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
     return;
@@ -364,7 +377,7 @@ static void begin_read_track(juku_fdc* fdc) {
   fdc->head_loaded = 1;
   fdc->status &= (uint8_t)~(
       ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+  if (!fdc->ready_line || !fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
     return;
@@ -600,7 +613,7 @@ static void begin_write_track(juku_fdc* fdc) {
   fdc->head_loaded = 1;
   fdc->status &= (uint8_t)~(
       ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-  if (!fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
+  if (!fdc->ready_line || !fdc->disk || !fdc->disk->fp || !fdc->motor_on) {
     fdc->status |= ST_NOT_READY;
     complete_transfer(fdc);
     return;
@@ -636,7 +649,8 @@ static void start_type_ii_iii(juku_fdc* fdc, uint8_t command) {
 
 static void begin_type_ii_iii(juku_fdc* fdc, uint8_t command) {
   const int write_command = is_write_sector(command) || is_write_track(command);
-  if (!(command & 0x04) || !fdc->disk || !fdc->disk->fp || !fdc->motor_on ||
+  if (!(command & 0x04) || !fdc->ready_line || !fdc->disk || !fdc->disk->fp ||
+      !fdc->motor_on ||
       (write_command && !fdc->disk->writable)) {
     start_type_ii_iii(fdc, command);
     return;
@@ -765,7 +779,8 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk) {
   fdc->step_dir_in = 1;
   fdc->sector = 1;
   fdc->status_type_i = 1;
-  fdc->status = fdc->enabled ? 0 : ST_NOT_READY;
+  fdc->ready_line = 1;
+  fdc->status = ST_NOT_READY;
 }
 
 
@@ -773,8 +788,7 @@ void juku_fdc_portc(juku_fdc* fdc, uint8_t portc) {
   fdc->motor_on = (portc >> 2) & 1;
   fdc->head = (portc >> 6) & 1;
   fdc->drive = (portc >> 5) & 1;
-  if (fdc->disk && fdc->head >= fdc->disk->heads) fdc->status |= ST_NOT_READY;
-  else fdc->status &= (uint8_t)~ST_NOT_READY;
+  update_not_ready(fdc);
 }
 
 
@@ -787,6 +801,7 @@ void juku_fdc_ready(juku_fdc* fdc, int ready) {
     fdc->intrq = 1;
   }
   fdc->ready_line = ready;
+  update_not_ready(fdc);
 }
 
 

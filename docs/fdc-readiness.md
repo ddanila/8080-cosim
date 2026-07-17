@@ -38,6 +38,13 @@ physical D93/D94 wiring.
   cover tick 29,999 versus 30,000, and a silent D0 cancels the pending interval.
   The physical HLT source and D93.24 wall-clock calibration remain measurement
   boundaries rather than assumed logic.
+- C and HDL sample the external READY input when every Type-II/III command is
+  loaded. READY low completes immediately with BUSY/DRQ clear, NOT READY set,
+  and INTRQ asserted, including commands carrying the optional E delay; Type-I
+  motion still executes while its status reports NOT READY. Raising READY clears
+  that live status indication. The C functional harness defaults the external
+  input high, matching `juku_top`'s explicit behavioral-FDC tie; neither choice
+  claims the still-untraced physical source at D93.32.
 - C and HDL now share the WD1793 interrupt contract for the modeled commands:
   loading a command clears pending INTRQ, normal/error completion raises it,
   and reading status acknowledges it. Type-IV Force Interrupt `0xD0` terminates
@@ -379,9 +386,10 @@ evidence exists.
   the byte, Type-I, and Type-II/III E-delay intervals,
   external HLT/step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
-  its proved scope. Type-IV READY-transition and index-event semantics are
-  guarded, but the board's physical event sources, pulse widths, and rotational
-  timing remain outside this byte-level shim.
+  its proved scope. Command-load READY sampling and Type-IV READY-transition and
+  index-event semantics are guarded, but the board's physical D93.32 READY
+  source, event pulse widths, and rotational timing remain outside this
+  byte-level shim.
 - Physical D93 INTRQ/DRQ, reset, clock, and D100 OE/T still require the targeted
   continuity checks in `docs/fdc-hardware-handoff.md`. The D100 component model
   and required cycle truth table are now guarded; only its board control sources

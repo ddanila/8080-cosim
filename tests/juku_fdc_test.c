@@ -486,6 +486,32 @@ int main(void) {
   fail |= expect_intrq(&fdc, 1, "D2 remains armed for another not-ready transition");
   (void)juku_fdc_read(&fdc, 0);
 
+  juku_fdc_write(&fdc, 2, 1);
+  juku_fdc_write(&fdc, 0, 0x80);
+  fail |= expect_intrq(&fdc, 1, "READY-low read-sector completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, ST_NOT_READY,
+                        "READY-low read-sector status");
+  fail |= expect_intrq(&fdc, 0, "READY-low read-sector acknowledgement");
+  juku_fdc_write(&fdc, 0, 0xC0);
+  fail |= expect_intrq(&fdc, 1, "READY-low read-address completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ | ST_NOT_READY, ST_NOT_READY,
+                        "READY-low read-address status");
+
+  juku_fdc_write(&fdc, 3, 1);
+  juku_fdc_write(&fdc, 0, 0x10);
+  fail |= expect_status(&fdc, ST_BUSY | ST_NOT_READY, ST_BUSY | ST_NOT_READY,
+                        "READY-low Type-I execution");
+  juku_fdc_tick(&fdc, 10000000);
+  fail |= expect_intrq(&fdc, 1, "READY-low Type-I completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_NOT_READY, ST_NOT_READY,
+                        "READY-low Type-I completion status");
+  if (juku_fdc_read(&fdc, 1) != 1) {
+    fprintf(stderr, "READY-low Type-I seek did not update track register\n");
+    fail = 1;
+  }
+  juku_fdc_ready(&fdc, 1);
+  fail |= expect_status(&fdc, ST_NOT_READY, 0, "READY-high status recovery");
+
   juku_fdc_index(&fdc, 0);
   juku_fdc_write(&fdc, 0, 0xD4);
   fail |= expect_intrq(&fdc, 0, "D4 arms without immediate interrupt");

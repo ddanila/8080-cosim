@@ -397,6 +397,32 @@ module juku_top_periph_bus_tb();
     io_read(8'h1C, rd);
     if (dut.fdc_intrq !== 1'b0) fail("FDC status read did not acknowledge D2 INTRQ");
 
+    io_write(8'h1E, 8'h01);
+    io_write(8'h1C, 8'h80);
+    if (dut.fdc_intrq !== 1'b1) fail("FDC READY-low Type-II command did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h83) !== 8'h80) fail("FDC READY-low Type-II status was not idle NOT READY");
+    if (dut.fdc_intrq !== 1'b0) fail("FDC READY-low Type-II status read did not acknowledge INTRQ");
+    io_write(8'h1C, 8'hC0);
+    if (dut.fdc_intrq !== 1'b1) fail("FDC READY-low Type-III command did not raise INTRQ");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h83) !== 8'h80) fail("FDC READY-low Type-III status was not idle NOT READY");
+
+    io_write(8'h1F, 8'h01);
+    io_write(8'h1C, 8'h10);
+    io_read(8'h1C, rd);
+    if ((rd & 8'h81) !== 8'h81) fail("FDC READY-low Type-I command did not execute");
+    while (dut.U_FDC.status[0]) @(posedge osc);
+    #1;
+    io_read(8'h1C, rd);
+    if ((rd & 8'h81) !== 8'h80) fail("FDC READY-low Type-I completion status mismatch");
+    io_read(8'h1D, rd);
+    if (rd !== 8'h01) fail("FDC READY-low Type-I seek did not update track register");
+    force dut.U_FDC.ready = 1'b1;
+    #1;
+    io_read(8'h1C, rd);
+    if ((rd & 8'h80) !== 0) fail("FDC READY-high status did not recover");
+
     force dut.U_FDC.index = 1'b0;
     io_write(8'h1C, 8'hD4);
     force dut.U_FDC.index = 1'b1;

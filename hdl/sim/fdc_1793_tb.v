@@ -158,6 +158,7 @@ module fdc_1793_tb;
     repeat (4) @(posedge clk);
     expect_status(8'h80, 8'h80, "initial motor-off status");
     motor_on = 1;
+    ready = 1;
     expect_status(8'h80, 8'h00, "initial motor-on status");
 
     write_reg(2'd1, 8'd22);
@@ -558,6 +559,26 @@ module fdc_1793_tb;
     ready = 1; #1; ready = 0; #1;
     expect_intrq(1'b1, "D2 remains armed for another not-ready transition");
     read_reg(2'd0, got);
+
+    write_reg(2'd2, 8'd1);
+    write_reg(2'd0, 8'h80);
+    expect_intrq(1'b1, "READY-low read-sector completion");
+    expect_status(8'h83, 8'h80, "READY-low read-sector status");
+    expect_intrq(1'b0, "READY-low read-sector acknowledgement");
+    write_reg(2'd0, 8'hc0);
+    expect_intrq(1'b1, "READY-low read-address completion");
+    expect_status(8'h83, 8'h80, "READY-low read-address status");
+
+    seek_track(8'd1);
+    expect_intrq(1'b1, "READY-low Type-I completion");
+    expect_status(8'h81, 8'h80, "READY-low Type-I completion status");
+    read_reg(2'd1, got);
+    if (got !== 8'd1) begin
+      $display("FDC-1793: FAIL READY-low Type-I seek track=%02x", got);
+      errors = errors + 1;
+    end
+    ready = 1; #1;
+    expect_status(8'h80, 8'h00, "READY-high status recovery");
 
     index = 0;
     write_reg(2'd0, 8'hd4);

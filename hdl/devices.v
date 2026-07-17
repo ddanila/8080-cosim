@@ -908,6 +908,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     reg intrq_r = 1'b0;
 
     wire disk_side_valid = !disk_requested || (disk_loaded && ({31'b0, side} < disk_heads));
+    wire controller_ready = ready && motor_on && disk_side_valid;
     wire type_i_write_protect = wprt || (disk_requested && !disk_writable);
     wire [7:0] type_i_status =
         (status & 8'h99) |
@@ -917,7 +918,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         (index ? ST_DRQ : 8'h00);
     wire [7:0] status_view = status_type_i ? type_i_status : status;
     wire [7:0] effective_status =
-        (motor_on && disk_side_valid) ? (status_view & ~ST_NOT_READY) : (status_view | ST_NOT_READY);
+        controller_ready ? (status_view & ~ST_NOT_READY) : (status_view | ST_NOT_READY);
 
     assign drq = status[1];
     assign intrq = intrq_r;
@@ -1097,7 +1098,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status_type_i = 0;
         head_loaded = 1;
         status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-        if (!motor_on || (disk_requested && !disk_loaded)) begin
+        if (!ready || !motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (!disk_requested || !disk_writable) begin
@@ -1172,7 +1173,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         clear_transfer();
         status_type_i = 0;
         head_loaded = 1;
-        status = (status & ~(ST_RNF | ST_NOT_READY)) | ST_WRITE_PROTECT;
+        status = status & ~(ST_RNF | ST_NOT_READY | ST_WRITE_PROTECT);
+        if (!ready) status = status | ST_NOT_READY;
+        else status = status | ST_WRITE_PROTECT;
         complete_transfer();
     end endtask
     task accept_write_byte(input [7:0] value); begin end endtask
@@ -1183,7 +1186,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status_type_i = 0;
         head_loaded = 1;
         status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-        if (!motor_on || (disk_requested && !disk_loaded)) begin
+        if (!ready || !motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (track != physical_track || physical_track > 8'd79 || sector == 0 || sector > 10 ||
@@ -1225,7 +1228,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status_type_i = 0;
         head_loaded = 1;
         status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-        if (!motor_on || (disk_requested && !disk_loaded)) begin
+        if (!ready || !motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (physical_track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
@@ -1262,7 +1265,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status_type_i = 0;
         head_loaded = 1;
         status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-        if (!motor_on || (disk_requested && !disk_loaded)) begin
+        if (!ready || !motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (physical_track > 8'd79 || (disk_requested && ({31'b0, side} >= disk_heads))) begin
@@ -1639,7 +1642,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         status_type_i = 0;
         head_loaded = 1;
         status = status & ~(8'h04 | 8'h08 | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
-        if (!motor_on || (disk_requested && !disk_loaded)) begin
+        if (!ready || !motor_on || (disk_requested && !disk_loaded)) begin
             status = status | ST_NOT_READY;
             complete_transfer();
         end else if (!disk_requested || !disk_writable) begin
@@ -1664,7 +1667,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         clear_transfer();
         status_type_i = 0;
         head_loaded = 1;
-        status = (status & ~(ST_RNF | ST_WRITE_FAULT | ST_NOT_READY)) | ST_WRITE_PROTECT;
+        status = status & ~(ST_RNF | ST_WRITE_FAULT | ST_NOT_READY | ST_WRITE_PROTECT);
+        if (!ready) status = status | ST_NOT_READY;
+        else status = status | ST_WRITE_PROTECT;
         complete_transfer();
     end endtask
 `endif
@@ -1683,7 +1688,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `endif
     begin
 `ifdef FDC_TYPE_II_III_TIMING
-        delay_ready = motor_on && (!disk_requested || disk_loaded);
+        delay_ready = ready && motor_on && (!disk_requested || disk_loaded);
         if (is_write_sector(cmd) || is_write_track(cmd))
             delay_ready = delay_ready && disk_requested && disk_writable;
         if (cmd[2] && delay_ready) begin
