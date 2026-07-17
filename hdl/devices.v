@@ -475,9 +475,21 @@ module jumper3 (input wire p1, p3, output wire p2); assign p2 = p3; endmodule
 module ag3_oneshot (input wire a_n, b, clr_n, a2_n, b2, clr2_n,   // D56 АГ3 (74123) dual one-shot
                     output wire q, q_n, q2, q2_n);                 // both sections SYNC-B-triggered (traced)
     assign q = 1'bz; assign q_n = 1'bz; assign q2 = 1'bz; assign q2_n = 1'bz; endmodule
-module ie10_ctr (input wire clk, clr_n, load_n, enp, ent, input wire [3:0] d,  // D103 ИЕ10 (СТ16): /N -> 1.23 MHz
+// D103 К555ИЕ10 = SN74LS161A-class synchronous 4-bit binary counter.
+// /CLR is the 161's direct (asynchronous) clear; /LOAD is synchronous and
+// takes priority over the two count enables on CLK's rising edge. RCO is the
+// combinational ENT-qualified terminal-count output. The traced D103/D33 loop
+// in juku_top inverts RCO onto /LOAD and presets 0011, producing modulo 13.
+module ie10_ctr (input wire clk, clr_n, load_n, enp, ent, input wire [3:0] d,
                  output wire [3:0] q, output wire co);
-    assign q = 4'bz; assign co = 1'bz; endmodule
+    reg [3:0] cnt = 4'b0;
+    always @(posedge clk or negedge clr_n)
+        if (~clr_n)       cnt <= 4'b0;
+        else if (~load_n) cnt <= d;
+        else if (enp & ent) cnt <= cnt + 4'd1;
+    assign q = cnt;
+    assign co = ent & (&cnt);
+endmodule
 
 // ---- ИР16 (factory К555ИР16): 8-bit parallel-in / serial-out shift register (PISO) ----
 // The video pixel serializer. shl_n low = parallel-LOAD the framebuffer byte; high = SHIFT one bit

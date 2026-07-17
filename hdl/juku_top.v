@@ -493,7 +493,7 @@ module juku_top (
     net_boundary U_D56CLRLNK (.a(1'b1), .b(d56_clr_w));
     ag3_oneshot U_D56  (.a_n(1'b1), .b(sync_b_w), .clr_n(d56_clr_w), .a2_n(1'b1), .b2(sync_b_w), .clr2_n(d56_clr_w),
                         .q(), .q_n(d56_qn), .q2(d56_q2), .q2_n(d56_q2_n));
-    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0), .q(d103_q), .co(d103_co));   // QD (pin 11) = the 1.23MHz rail -> D57.CLK2 (traced s2_d103)
+    ie10_ctr    U_D103 (.clk(xtal16m_w), .clr_n(1'b1), .load_n(d103_ld), .enp(1'b1), .ent(1'b1), .d(4'b0011), .q(d103_q), .co(d103_co));   // D0/D1 high, D2/D3 low: traced /13 preset; QD (pin 11) = 1.23MHz -> D57.CLK2
 
     // ---- runnable video-output stage: raster-scan the framebuffer -> ИР16 serialize -> ЛП5 combine
     // Reads the РУ5 framebuffer via its sim-only 2nd port (vid_addr -> vbyte) at the raster address,
@@ -625,7 +625,8 @@ module juku_top (
     // PIT cascade per the native sheets: D54 horizontal -> D55 vertical;
     // D55.OUT1/VER RTR then passes through D35.9->.8 to FRAME INT/D10.IR5.
     // 1 MHz = D40 QD (the same /16 tap that feeds the D37 latch chain, net LATCH_B); 2 MHz =
-    // D40 QC; 1.23 MHz (D57 baud clk0) = D103 /13 [boundary, undriven].
+    // D40 QC; 1.23 MHz (D57 baud clk0) = the now-guarded D103/D33 /13 loop.
+    // Its upstream physical XTAL16M source merge remains a continuity boundary.
     wire clk1m = d40_q[3];
     wire clk2m = d40_q[2];
     wire clk123m;

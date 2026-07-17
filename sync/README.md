@@ -45,6 +45,7 @@ sync/video_readout_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
 sync/ie7_check.sh
+sync/ie10_check.sh
 sync/basic_cart_check.sh
 sync/d2_ready_path_check.sh
 ```
@@ -59,7 +60,8 @@ one-revolution MFM Read Track plus index-gated, preloaded writable-track formatt
 raster/serializer behavior,
 beeper and USART slices, the full standard К555ИЕ7/74LS193 asynchronous
 load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
-BASIC cartridge window.
+К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced
+`0011`-preset modulo-13 feedback loop, and the BASIC cartridge window.
 `d2_ready_path_check.sh` separately guards the physical `.037` open-collector
 raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
 

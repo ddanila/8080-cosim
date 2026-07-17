@@ -79,8 +79,8 @@ readiness report.
 | source-now | C_TRIM 4/20 | trimmer capacitor 4/20 | modern trimmer capacitor matching footprint/value | 1 | 1 | 0 | C73 | - |
 | source-now | D_DIODE КС147 | Soviet diode/zener per value КС147 | modern diode/zener matching value and power | 1 | 1 | 0 | VD5 | - |
 | source-now | FDC_CONN | FDC_CONN | select exact substitute after circuit review | 1 | 1 | 0 | X4 | - |
-| source-now | IE10_CTR | К555ИЕ10 | 74LS193/191-class counter; verify exact pinout | 1 | 1 | 0 | D103 | - |
-| source-now | IE7_CTR | К555ИЕ7 | 74LS193 up/down counter; verify timing and load/clear polarity | 5 | 5 | 0 | D44, D45, D46, D47, D106 | - |
+| source-now | IE10_CTR | К555ИЕ10 | SN74LS161A-compatible synchronous binary counter; D103 /13 behavior guarded | 1 | 1 | 0 | D103 | - |
+| source-now | IE7_CTR | К555ИЕ7 | SN74LS193-compatible up/down counter; standard behavior guarded, verify board wiring | 5 | 5 | 0 | D44, D45, D46, D47, D106 | - |
 | source-now | IO_DEC138 | К555ИД7 | 74LS138 / 74HCT138 decoder | 1 | 1 | 0 | D9 | - |
 | source-now | IR16 | К555ИР16 | 74295/74LS295-class shift register; verify pinout | 3 | 3 | 0 | D41, D42, D43 | - |
 | source-now | IR82 | КР580ИР82 | 8282/8283-class latch; verify polarity/package | 1 | 1 | 0 | D58 | - |

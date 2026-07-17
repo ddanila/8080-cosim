@@ -49,6 +49,10 @@ They are not generic cycle-accurate replacements for every original IC mode.
   guarded: asynchronous clear/load, both count directions, active-low terminal
   pulses, and two-package cascade. This does not close D106's unmeasured PCB
   nets.
+- D103's К555ИЕ10/74LS161 behavior and its source-traced D33 feedback are
+  guarded through the actual `0011` preset, proving the modulo-13 path from
+  16 MHz to the labeled 1.23 MHz Q3 rail. The upstream OSC-to-XTAL16M physical
+  merge remains a continuity boundary.
 - D7's physical pin12=`SYNC`, pin13=pin11 feedback strobe is retained in the
   structural/LVS path; runnable zero-delay simulation uses the explicit
   IOWR/IORD activity oracle instead of evaluating the propagation-delay loop.
@@ -90,6 +94,7 @@ sync/check.sh       # modeled KiCad/HDL connectivity
 sync/boot_check.sh  # C and HDL boot/framebuffer regression
 sync/cosim_check.sh # value-level read comparison vs the C emulator (cosim)
 sync/ie7_check.sh   # К555ИЕ7/74LS193 device behavior and cascade
+sync/ie10_check.sh  # К555ИЕ10/74LS161 behavior and traced D103 /13 loop
 ```
 
 See `../sync/README.md` for subsystem and deep checks. A green LVS result proves

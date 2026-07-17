@@ -29,6 +29,7 @@ jobs:
           sh -n sync/video_readout_check.sh
           sh -n sync/serial_check.sh
           sh -n sync/ie7_check.sh
+          sh -n sync/ie10_check.sh
           sh -n sync/cosim_check.sh
           sh -n sync/boot_check.sh
           sh -n sync/d2_ready_path_check.sh

@@ -107,6 +107,7 @@ jobs:
           ./sync/beeper_check.sh
           ./sync/serial_check.sh
           ./sync/ie7_check.sh
+          ./sync/ie10_check.sh
           ./sync/juku_top_periph_bus_check.sh
           ./sync/jmon33_hdl_probe.sh
           ./spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
@@ -143,6 +144,7 @@ jobs:
             docs/beeper-readiness.md \
             docs/serial-handoff.md \
             docs/ie7-counter-readiness.md \
+            docs/ie10-counter-readiness.md \
             docs/jmon33-hdl-probe.md \
             docs/jmon33-interrupt-probe.md \
             docs/jmon33-ready-probe.md \
