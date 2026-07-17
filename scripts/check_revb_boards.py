@@ -138,6 +138,29 @@ def main() -> int:
             if port not in txt:
                 fail.append(f"{hdl} lacks expected port {port} for its declared role")
 
+    # 7) board.json cross-check (TC.2): if <card>.board.json exists, its bus
+    # connector must match bus-pinout.json exactly, and every bus signal a chip
+    # pin touches must be a signal that card declares (or a global everyone taps).
+    GLOBALS = {"RESET_N", "CLK", "VCC5", "GND"}
+    bus_map = dict(pin["base"]); bus_map.update(pin["extension"])
+    for name, c in cards.items():
+        bj = REVB / f"{name}.board.json"
+        if not bj.exists():
+            continue
+        board = json.loads(bj.read_text())
+        declared = set()
+        for k in ("drives", "drives_tristate", "drives_od", "drives_serial", "reads", "default_pull"):
+            declared |= set(c.get(k, []))
+        for comp in board["chips"]:
+            if comp["type"] == "REVB_BUS_39_10":
+                if comp["pins"] != bus_map:
+                    fail.append(f"{name}.board.json connector {comp['ref']} != canonical bus pinout")
+                continue
+            for net in comp["pins"].values():
+                if net in all_sigs and net not in declared and net not in GLOBALS:
+                    fail.append(f"{name}.board.json {comp['ref']} touches bus signal {net} "
+                                f"not in the card's declared role")
+
     if fail:
         print("rev B board connectivity check FAILED:")
         for f in fail:
