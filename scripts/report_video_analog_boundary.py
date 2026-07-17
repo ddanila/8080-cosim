@@ -14,7 +14,7 @@ REPORT = ROOT / "docs/video-analog-boundary.md"
 RETAINED_NETS = {
     "D34_SYNC": {("D34", "8"), ("R62", "1")},
     "D34_SIG": {("D34", "11"), ("R63", "1")},
-    "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "2")},
+    "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "3")},
     "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1"), ("C94", "2")},
     "SOUND_CLAMP": {
         ("R66", "2"), ("VD3", "2"), ("R67", "1"),
@@ -106,7 +106,9 @@ def main() -> int:
     checks += [
         (
             "VT2 composite-video emitter follower is retained",
-            chips.get("VT2", {}).get("type") == "Q_TO92"
+            chips.get("VT2", {}).get("type") == "Q_KT13"
+            and chips.get("VT2", {}).get("value") == "КТ315"
+            and chips.get("VT2", {}).get("pins") == {"1": "E", "2": "C", "3": "B"}
             and "video emitter follower" in chips.get("VT2", {}).get("prov", {}).get("pins", ""),
             "the non-RF .006 path remains the closest electrical evidence for the populated .009 VT2 stage",
         ),

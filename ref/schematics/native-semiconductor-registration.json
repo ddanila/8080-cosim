@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "scope": "retained sheet-2 video and beeper semiconductors whose native designations and physical pin contracts are legible",
+  "promotion_rule": "copy only a designation printed beside the retained refdes; map nets to the physical package pin numbers rather than to the schematic symbol drawing order",
+  "source": {
+    "path": "ref/schematics/p2_sheet2.png",
+    "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
+    "regions_px": {
+      "video_stage": [2850, 1450, 1000, 800],
+      "beeper_stage": [3300, 2150, 900, 800]
+    }
+  },
+  "package_references": [
+    {
+      "device": "КТ972",
+      "document": "Integral КТ972А/Б datasheet",
+      "url": "https://static.chipdip.ru/lib/556/DOC005556057.pdf",
+      "observation": "КТ-27 / TO-126 outline; leads 1 emitter, 2 collector, 3 base"
+    },
+    {
+      "device": "КТ315",
+      "document": "КТ315 KТ-13 package convention",
+      "observation": "flat three-lead KТ-13 package; leads 1 emitter, 2 collector, 3 base"
+    }
+  ],
+  "closed": [
+    {"ref": "VT1", "type": "Q_KT27", "value": "КТ972", "pins": {"1": "E", "2": "C", "3": "B"}, "footprint": "TO-126-3_Horizontal_TabDown"},
+    {"ref": "VT2", "type": "Q_KT13", "value": "КТ315", "pins": {"1": "E", "2": "C", "3": "B"}, "footprint": "TO-92_Inline"},
+    {"ref": "VD3", "type": "D_DIODE", "value": "КС147Г", "pins": {"1": "K", "2": "A"}, "footprint": "D_DO-35_SOD27_P7.62mm_Horizontal"}
+  ],
+  "held": [
+    {"ref": "VD4", "reason": "the retained beeper clamp symbol is legible but no exact diode designation is printed beside it"}
+  ]
+}

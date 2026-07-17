@@ -227,6 +227,11 @@ jobs:
           python3 scripts/report_native_capacitor_values.py
           git diff --exit-code -- docs/native-capacitor-values.md
 
+      - name: Check native semiconductor fidelity freshness
+        run: |
+          python3 scripts/report_native_semiconductors.py
+          git diff --exit-code -- docs/native-semiconductors.md
+
       - name: Check D41 timing boundary freshness
         run: |
           python3 scripts/report_d41_timing_boundary.py

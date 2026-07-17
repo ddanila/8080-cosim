@@ -393,7 +393,7 @@ same fidelity ledger as the chip provenance gaps.
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `TAPE_RUN_INT` | logic/source | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary |
 | `TIMING_TAG2` | logic/source | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's... |
-| `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
+| `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `X4_06_BOUNDARY` | logic/source | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced |
 | `X4_07_BOUNDARY` | logic/source | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced |
 | `X4_08_BOUNDARY` | logic/source | `AX408.1, X4.8` | .009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced |

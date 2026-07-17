@@ -58,7 +58,7 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2262/2262 | 2262/2262 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 1871/2262 | 1788/2262 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 1871/2262 | 1784/2262 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `A10: D2.1`
@@ -518,6 +518,8 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D7.2: `MEMW` != `MEMW_D7P2`
 - D29.14: `AMWC_N` != `MRC_N`
 - D29.19: `INHIB_N` != `MWC_N`
+- VT2.2: `VT2_BASE` != `P5V`
+- VT1.2: `SND_BASE` != `P5V`
 - C34.1: `RAIL_H` != `P5V`
 - D35.10: `PHI1` != `PHI1_D35`
 - D26.10: `D26_PC7_TAG6` != `POF`
@@ -529,10 +531,12 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 - D46.10: `S3_1` != `S3_5`
 - D46.9: `S3_2` != `S3_6`
 - D12.1: `SER_TXD` != `SER_TXD_INV`
+- VT1.3: `P5V` != `SND_BASE`
 - D38.8: `STSTB` != `STSTB_D38`
 - D7.12: `IOWR` != `SYNC`
 - D3.10: `S_TTL` != `S_TTL_D3`
 - D55.13: `FRAME_INT` != `VERT_RTR`
+- VT2.3: `P5V` != `VT2_BASE`
 - D50.1: `W10_QA_SEL` != `W10_QA_SEL_D50`
 - D6.11: `RAM_SEL` != `WREQ_N`
 - D92.5: `RAM_SEL` != `WREQ_N`
@@ -719,7 +723,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TAPE_RUN_INT` | logic | `D10.22` | scan sheet-1: D10 IR4 pin 22 is explicitly labeled (3) TAPE RUN INT; sheet-3 source remains outside the modeled board boundary | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TIMING_TAG2` | logic | `D38.4` | scan sheet-2 native 5140x3563 vertical-strip recheck 2026-07-13: numbered left-side timing rail2 lands directly on D38 second ЛА1 section input pin4. D34.4's same-number top-edg... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |
+| `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible | Scope/capture video or timing node during video bring-up. |
 | `X4_06_BOUNDARY` | logic | `AX406.1, X4.6` | .009 sheets4-5 wire32: physical board landing А X4:6 maps directly to bracket X4.6; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `X4_07_BOUNDARY` | logic | `AX407.1, X4.7` | .009 sheets4-5 wire33: physical board landing А X4:7 maps directly to bracket X4.7; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `X4_08_BOUNDARY` | logic | `AX408.1, X4.8` | .009 sheets4-5 wire34: physical board landing А X4:8 maps directly to bracket X4.8; circuit-side destination remains untraced | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

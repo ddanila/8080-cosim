@@ -5,8 +5,9 @@ circuit-review,C_KM,,КМ ceramic capacitor,modern ceramic capacitor with matchi
 circuit-review,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,4,4,0,"C38, C42, C46, C50","C38, C42, C46, C50","Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value."
 circuit-review,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,6,0,6,"C51, C52, C53, C70, C71, C72",,"Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value."
 circuit-review,C_KM,"1,5 нФ","КМ ceramic capacitor 1,5 нФ",modern ceramic capacitor with matching value/voltage/lead spacing,2,2,0,"C20, C22","C20, C22","Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
-circuit-review,D_DIODE,,Soviet diode/zener per value,modern diode/zener matching value and power,2,2,0,"VD3, VD4","VD3, VD4",
-circuit-review,Q_TO92,,КТ315/КТ972-class transistor per position,modern transistor selected per exact circuit role,2,2,0,"VT1, VT2","VT1, VT2",
+circuit-review,D_DIODE,,Soviet diode/zener per value,modern diode/zener matching value and power,1,1,0,VD4,VD4,
+circuit-review,Q_KT13,,КТ315,modern E-C-B transistor selected for the video role and KT-13 pad row,1,1,0,VT2,VT2,
+circuit-review,Q_KT27,,КТ972,modern E-C-B TO-126 transistor selected for the beeper role,1,1,0,VT1,VT1,
 circuit-review,R_AXIAL,,axial resistor,"modern axial resistor, matching value and power rating",1,1,0,R67,R67,
 circuit-review,UP2,,К170УП2,RS-232/line-receiver substitute required; verify +/-12 V interface,1,1,0,D104,D104,
 leave-empty,C_KM,"0,047","КМ ceramic capacitor 0,047",modern ceramic capacitor with matching value/voltage/lead spacing,28,0,28,"C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10)",,"Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part."
@@ -44,6 +45,7 @@ source-now,C_KM,560,КМ ceramic capacitor 560,modern ceramic capacitor with mat
 source-now,C_KM,680,КМ ceramic capacitor 680,modern ceramic capacitor with matching value/voltage/lead spacing,1,1,0,C94,C94,
 source-now,C_TRIM,4/20,trimmer capacitor 4/20,modern trimmer capacitor matching footprint/value,1,1,0,C73,C73,
 source-now,D_DIODE,КС147,Soviet diode/zener per value КС147,modern diode/zener matching value and power,1,1,0,VD5,VD5,
+source-now,D_DIODE,КС147Г,Soviet diode/zener per value КС147Г,modern diode/zener matching value and power,1,1,0,VD3,VD3,
 source-now,FDC_CONN,,FDC_CONN,select exact substitute after circuit review,1,1,0,X4,X4,
 source-now,IE10_CTR,,К555ИЕ10,SN74LS161A-compatible synchronous binary counter; D103 /13 behavior guarded,1,1,0,D103,D103,
 source-now,IE7_CTR,,К555ИЕ7,"SN74LS193-compatible up/down counter; standard behavior guarded, verify board wiring",5,5,0,"D44, D45, D46, D47, D106","D44, D45, D46, D47, D106",

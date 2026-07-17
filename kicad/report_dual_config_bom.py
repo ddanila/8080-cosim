@@ -68,7 +68,8 @@ AUTHENTIC_MARK = {
     "R_TRIM": "СП3-22б trimmer",
     "C_TRIM": "trimmer capacitor",
     "D_DIODE": "Soviet diode/zener per value",
-    "Q_TO92": "КТ315/КТ972-class transistor per position",
+    "Q_KT13": "КТ315",
+    "Q_KT27": "КТ972",
     "L_TAPPED": "three-terminal adjustable tapped RF coil",
     "XTAL": "РК-171 16 MHz crystal",
     "SW": "switch",
@@ -137,7 +138,8 @@ FUNCTIONAL_SUBSTITUTE = {
     "R_TRIM": "modern vertical trimmer matching footprint/value",
     "C_TRIM": "modern trimmer capacitor matching footprint/value",
     "D_DIODE": "modern diode/zener matching value and power",
-    "Q_TO92": "modern transistor selected per exact circuit role",
+    "Q_KT13": "modern E-C-B transistor selected for the video role and KT-13 pad row",
+    "Q_KT27": "modern E-C-B TO-126 transistor selected for the beeper role",
     "L_TAPPED": "custom/recovered tapped coil or documented three-terminal RF replacement",
     "XTAL": "16 MHz HC-49/metal-can crystal matching footprint/load",
     "WIRE_LINK": "insulated hookup wire cut and installed to the documented route length",
@@ -235,7 +237,7 @@ def action_for(typ, pop_count, socket_count):
         return "program/dump"
     if typ in MECHANICAL_TYPES:
         return "mechanical-review"
-    if typ in {"AP2", "UP2", "Q_TO92", "L_TAPPED"}:
+    if typ in {"AP2", "UP2", "Q_KT13", "Q_KT27", "L_TAPPED"}:
         return "circuit-review"
     if typ in EMPTY_SOCKET_TYPES and pop_count == 0:
         return "leave-empty"

@@ -31,7 +31,7 @@ python3 scripts/report_video_analog_boundary.py
 | Factory-reused C9/C10/C11/C12/C15 remain generic capacitors | PASS | physical .009 identities retained; .006 RF assignments not carried across |
 | `D34_SYNC` has exactly the target endpoints | PASS | D34.8, R62.1 |
 | `D34_SIG` has exactly the target endpoints | PASS | D34.11, R63.1 |
-| `VT2_BASE` has exactly the target endpoints | PASS | R62.2, R63.2, R64.1, VT2.2 |
+| `VT2_BASE` has exactly the target endpoints | PASS | R62.2, R63.2, R64.1, VT2.3 |
 | `VIDEO_OUT` has exactly the target endpoints | PASS | C94.2, R65.1, VT2.1, X7.1 |
 | `SOUND_CLAMP` has exactly the target endpoints | PASS | AX603.1, R66.2, R67.1, VD3.2, X6.1 |
 | `R67_2_BOUNDARY` has exactly the target endpoints | PASS | R67.2 |
@@ -58,7 +58,7 @@ python3 scripts/report_video_analog_boundary.py
 | --- | --- | --- |
 | `D34_SYNC` | `D34.8, R62.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D34_SIG` | `D34.11, R63.1` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
-| `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.2` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
+| `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.3` | scan sheet-2 analog corner (crops an_*); analog boundary, sim-invisible |
 | `VIDEO_OUT` | `C94.2, R65.1, VT2.1, X7.1` | scan sheet-2 analog corner plus registered target-board photos: C94.2/R65.1 share the visible composite pool |
 | `SOUND_CLAMP` | `AX603.1, R66.2, R67.1, VD3.2, X6.1` | scan sheet-2 analog corner plus registered X6 cable joint: R66.2 joins VD3.2/R67.1; printed A:3 and its bracket X6 conductor lap-solder directly at the same VD3.2 landing |
 | `R67_2_BOUNDARY` | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Registered July and May component views expose the R67.2 joint without onward copper; a D102-local cross-side fit projects it onto a bare backside trace corner with no via in two solder views, so the target endpoint is photo-exhausted and requires continuity |

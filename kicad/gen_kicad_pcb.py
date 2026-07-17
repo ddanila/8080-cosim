@@ -52,7 +52,8 @@ PASSIVE_FP = {
     'SW_DIP6': ('Button_Switch_THT.pretty', 'SW_DIP_SPSTx06_Slide_9.78x17.42mm_W7.62mm_P2.54mm'),  # S3 video-config bank
     'JUMPER4': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x04_P2.54mm_Vertical'),  # Е13 strap
     'JUMPER2': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # Е5 -5V array link
-    'Q_TO92':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315/КТ325 (flat KT-13 pkg; TO-92 stand-in)
+    'Q_KT13':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315 flat KT-13; stock inline pad-row stand-in
+    'Q_KT27':  ('Package_TO_SOT_THT.pretty', 'TO-126-3_Horizontal_TabDown'),    # КТ972 KT-27 / TO-126, mounted flat per factory detail
     'L_TAPPED':('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'), # legacy .006-only footprint support
     'VIDEO_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X7 video socket stand-in (601/602)
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings
@@ -218,7 +219,7 @@ PASSIVE_PLACE = {
     # 10 mm lead spans share D102's y centre; the bodies lean right in the
     # component photo, so body pixels are not drill-centre coordinates.
     'C20':(303.997,110.024,90),'C22':(306.537,110.024,90),
-    'VT1':(247.8,213.8,0),  # КТ972А beeper driver (ВП л.8; СБ position; wiring = sheet-1 beeper zone [pending])
+    'VT1':(247.8,213.8,0),  # КТ972 KT-27 beeper driver; factory mounting detail shows the body laid flat
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
     'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
@@ -465,6 +466,18 @@ def main():
         if ref in {"R33", "R66"}:
             for pad in fp.Pads():
                 pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
+        # The stock horizontal TO-126 footprint assumes the tab is bolted to
+        # the PCB. The factory VT1 detail and populated owner board instead
+        # show the KT-27 body raised/laid flat with its tab hole left open: only
+        # the three leads enter the PCB. Remove that optional board hole and
+        # use 1.50 mm copper around the stock 0.80 mm lead drills; this retains
+        # a 0.35 mm annulus and clears the photo-placed R90 landing.
+        if ref == "VT1":
+            for pad in list(fp.Pads()):
+                if pad.GetAttribute() == pcbnew.PAD_ATTRIB_NPTH:
+                    fp.Remove(pad)
+                else:
+                    pad.SetSize(pcbnew.VECTOR2I_MM(1.5, 1.5))
         ctr = fp.GetBoundingBox(False, False).GetCenter()          # re-center on (x,y)
         fp.SetPosition(pcbnew.VECTOR2I(2*pcbnew.FromMM(x) - ctr.x, 2*pcbnew.FromMM(y) - ctr.y))
         CTR_H, CTR_V = pcbnew.GR_TEXT_H_ALIGN_CENTER, pcbnew.GR_TEXT_V_ALIGN_CENTER

@@ -76,8 +76,8 @@ def main() -> int:
             pad = footprint.FindPadByNumber(pin) if footprint else None
             if pad is None or pad.GetNetname() != net:
                 failures.append(f"{refdes}.{pin} is not assigned to {net}")
-        if footprint is not None and footprint.GetValue() != "33k":
-            failures.append(f"{refdes} value is not 33k")
+        if footprint is not None and footprint.GetValue() != "33к":
+            failures.append(f"{refdes} value is not the native 33к literal")
     for refdes, expected in {
         "D3": {"9": "SER_TXD", "8": "SER_TXD_INV"},
         "D12": {"1": "SER_TXD_INV", "2": "SER_TXD_INV", "3": "S_OC"},

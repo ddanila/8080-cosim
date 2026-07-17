@@ -34,7 +34,8 @@ findings. Every status applies only to the boundary named by the report.
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
   `native-resistor-values.md` (23 literal sheet values with only R67 held),
   `native-capacitor-values.md` (C7/C8/C99 literal sheet values with eight
-  target-revision holds),
+  target holds), `native-semiconductors.md` (VT1/VT2/VD3 native markings,
+  transistor E-C-B package pinouts, and generated PCB pad/net guards),
   `master-oscillator-boundary.md`,
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.

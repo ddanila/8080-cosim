@@ -181,7 +181,7 @@ def main() -> int:
             "Bracket-mounted S1 is excluded from generated PCB footprints",
             marker(read(PCB_GENERATOR), "OFF_BOARD = {", "'S1'", "must never become a PCB header footprint")
             and '(property "Reference" "S1"' not in read(SOURCE_PCB)
-            and marker(plan_text, "bracket-mounted S1/X3/X4/X6/X8/X9", "A-point cable landings"),
+            and marker(plan_text, "Bracket-mounted S1/X3/X4/X6/X8/X9", "A-point cable landings"),
             "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction",
         ),
         (
