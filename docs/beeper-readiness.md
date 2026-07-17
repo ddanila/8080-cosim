@@ -30,7 +30,7 @@ sync/beeper_check.sh
 | Net | Result | Required nodes | Source |
 | --- | --- | --- | --- |
 | `SOUND` | PASS | `D57.13`, `R90.1` | traced sheet-2 (crops s2_d57_outs/s2_beeper): D57.OUT1 (pin 13) -> bundle tag 10 -> R90 2k (beeper drive) |
-| `SND_BASE` | PASS | `R90.2`, `VD4.2`, `VT1.3` | traced sheet-2 (crops s2_d57_outs/s2_beeper): R90 -> VT1 КТ972 physical base pin 3; VD4 anode clamp |
+| `SND_BASE` | PASS | `R90.2`, `VD4.2`, `VT1.3` | traced sheet-2 (crops s2_d57_outs/s2_beeper): R90 -> VT1 KT972 base node; VD4 anode clamp |
 | `SND_CLAMP` | PASS | `VD4.1`, `R91.1` | traced sheet-2 (crops s2_d57_outs/s2_beeper): VD4 cathode -> R91 1k -> AVDC rail |
 | `AVDC` | PASS | `R91.2`, `D26.40` | traced both ends: sheet-2 R91 -> rail -> "(1)" export (crop s2_spkr_edge); sheet-1 arrival found (crop s1_avdc_band6): label reads AUDC = D26 ВВ55 pin 40 (PA4), port-A row between SC0-SC3 (PA0-3) and PREN/STB (PA6/7); no edge arrow on that row -> cross-sheet only. The 'AVDC' on sheet 2 is the same handwritten label (U/V ambiguity) |
 | `SND_OUT` | PASS | `VT1.1`, `R48.1` | traced sheet-2 (crops s2_d57_outs/s2_beeper): VT1 emitter-follower out -> R48 8.2R -> speaker line |

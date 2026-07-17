@@ -23,7 +23,7 @@ root = Path.cwd()
 board = json.loads((root / "kicad" / "juku.board.json").read_text())
 expected = {
     "SOUND": [("D57", "13"), ("R90", "1")],
-    "SND_BASE": [("R90", "2"), ("VD4", "2"), ("VT1", "2")],
+    "SND_BASE": [("R90", "2"), ("VD4", "2"), ("VT1", "3")],
     "SND_CLAMP": [("VD4", "1"), ("R91", "1")],
     "AVDC": [("R91", "2"), ("D26", "40")],
     "SND_OUT": [("VT1", "1"), ("R48", "1")],
