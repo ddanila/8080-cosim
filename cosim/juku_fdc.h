@@ -39,6 +39,8 @@ typedef struct {
   int command_delay_pending;
   unsigned command_delay_ticks;
   uint8_t command_delay_command;
+  int command_hlt_pending;
+  uint8_t command_hlt_command;
   int write_sector_lead_pending;
   unsigned write_sector_lead_ticks;
   int write_sector_preloaded;
@@ -54,11 +56,15 @@ typedef struct {
   unsigned type_i_rate_ticks;
   unsigned type_i_steps_remaining;
   int type_i_settling;
+  int type_i_hlt_pending;
+  int type_i_verify_pending;
+  unsigned type_i_verify_index_pulses;
   uint8_t type_i_command;
   uint8_t force_interrupt_mask;
   int status_type_i;
   int head_loaded;
   unsigned idle_index_pulses;
+  int hlt_line;
   int ready_line;
   int index_line;
   int intrq;
@@ -66,10 +72,12 @@ typedef struct {
 
 void juku_fdc_init(juku_fdc* fdc, juk_disk* disk);
 void juku_fdc_portc(juku_fdc* fdc, uint8_t portc);
+void juku_fdc_hlt(juku_fdc* fdc, int hlt);
 void juku_fdc_ready(juku_fdc* fdc, int ready);
 void juku_fdc_index(juku_fdc* fdc, int index);
 // Advance nominal 2 MHz-equivalent controller timers. One MFM byte time is
-// 64 ticks (32 us), and Type-II/III E=1 head settle is 30,000 ticks (15 ms).
+// 64 ticks (32 us), and Type-I verify / Type-II/III E=1 head settle is
+// 30,000 ticks (15 ms). Media access then waits for juku_fdc_hlt(..., 1).
 // DRQ service resets the byte timer.
 // A Write Track preload waits for a rising index event and does not age here.
 void juku_fdc_tick(juku_fdc* fdc, unsigned ticks);

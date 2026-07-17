@@ -280,6 +280,20 @@ int main(void) {
     fail = 1;
   }
 
+  juku_fdc_hlt(&fdc, 0);
+  juku_fdc_write(&fdc, 0, 0x14);  // zero-step seek, verify after settle and HLT
+  juku_fdc_tick(&fdc, 30000);
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
+                        "Type-I verify waits for HLT");
+  if (!fdc.type_i_hlt_pending || fdc.intrq) {
+    fprintf(stderr, "Type-I verify did not enter the HLT wait\n");
+    fail = 1;
+  }
+  juku_fdc_hlt(&fdc, 1);
+  fail |= expect_intrq(&fdc, 1, "Type-I verify HLT completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, 0,
+                        "matching Type-I verify after HLT");
+
   juku_fdc_write(&fdc, 0, 0x44);  // step in, no register update, verify
   fail |= expect_status(&fdc, ST_BUSY, ST_BUSY, "step/verify timing begins busy");
   if (fdc.physical_track != 13 || fdc.type_i_settling) {
@@ -304,7 +318,15 @@ int main(void) {
     fprintf(stderr, "verified no-update step did not separate physical/register tracks\n");
     fail = 1;
   }
-  fail |= expect_status(&fdc, ST_RNF | ST_HEAD_LOADED,
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
+                        "Type-I verify begins five-revolution ID search");
+  for (int i = 0; i < 4; i++) pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 0, "Type-I verify before fifth revolution");
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF, ST_BUSY,
+                        "Type-I verify before fifth-revolution status");
+  pulse_index(&fdc);
+  fail |= expect_intrq(&fdc, 1, "Type-I verify fifth-revolution completion");
+  fail |= expect_status(&fdc, ST_BUSY | ST_RNF | ST_HEAD_LOADED,
                         ST_RNF | ST_HEAD_LOADED, "Type-I verify seek error");
   seek_track(&fdc, 14);
   if (fdc.physical_track != 15 || juku_fdc_read(&fdc, 1) != 14) {
@@ -368,6 +390,20 @@ int main(void) {
   juku_fdc_write(&fdc, 0, 0x00);
   juku_fdc_tick(&fdc, 10000000);
   seek_track(&fdc, 12);
+  juku_fdc_hlt(&fdc, 0);
+  juku_fdc_write(&fdc, 0, 0xC0);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "read-address waits for HLT");
+  if (!fdc.command_hlt_pending || fdc.intrq) {
+    fprintf(stderr, "Type-III command did not enter the HLT wait\n");
+    fail = 1;
+  }
+  juku_fdc_hlt(&fdc, 1);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
+                        "read-address starts after HLT");
+  juku_fdc_write(&fdc, 0, 0xD0);
+
+  juku_fdc_hlt(&fdc, 0);
   juku_fdc_write(&fdc, 2, 9);
   juku_fdc_write(&fdc, 0, 0xC4);  // read address, including the valid E flag
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
@@ -376,8 +412,15 @@ int main(void) {
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
                         "read-address before 15 ms E-delay boundary");
   juku_fdc_tick(&fdc, 1);
+  fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY,
+                        "read-address waits for HLT after E-delay");
+  if (!fdc.command_hlt_pending) {
+    fprintf(stderr, "E-delayed Type-III command skipped the HLT wait\n");
+    fail = 1;
+  }
+  juku_fdc_hlt(&fdc, 1);
   fail |= expect_status(&fdc, ST_BUSY | ST_DRQ, ST_BUSY | ST_DRQ,
-                        "read-address after 15 ms E-delay boundary");
+                        "read-address after E-delay and HLT");
   static const uint8_t address_id[] = {12, 0, 1, 2, 0xBD, 0xB3};
   for (size_t i = 0; i < sizeof(address_id); i++) {
     uint8_t got = juku_fdc_read(&fdc, 3);

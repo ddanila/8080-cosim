@@ -31,7 +31,8 @@ sync/juku_top_periph_bus_check.sh
 | FDC accepts exact ROMBIOS first command `0x02` as restore and returns track 0 | PASS |
 | FDC completion/status acknowledgement plus D0, persistent D8, READY-transition, and repeated-index Force Interrupt lifecycle | PASS |
 | Forced-low READY rejects Type-II/III immediately with NOT READY/INTRQ while Type-I seek still executes and READY-high status recovers | PASS |
-| Timed Type-I physical-head/update/verify/SEEK-ERROR completion plus exact 15-idle-index HLD release through decoded ports `0x1C..0x1F` | PASS |
+| Timed Type-I physical-head/update, HLT-gated verify, fifth-revolution SEEK ERROR, and exact 15-idle-index HLD release through decoded ports `0x1C..0x1F` | PASS |
+| Forced-low HLT holds Type-III BUSY/DRQ-low and its rising edge starts media access | PASS |
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (`0x5C`) through the top-level bus | PASS |
 | A missing Type-II track/sector ID holds BUSY without DRQ for three revolutions and completes RNF on the fourth | PASS |
 | Type-II `C/S` mismatch holds BUSY without DRQ for four index pulses and completes RNF on the fifth | PASS |

@@ -22,10 +22,13 @@ physical D93/D94 wiring.
   rate codes map to 6,000/12,000/20,000/30,000 nominal 2 MHz ticks (3/6/10/15
   ms): STEP/DIRC and head motion occur at the step phase, BUSY spans the
   selected post-step interval, and `V=1` adds the datasheet 30,000-tick/15 ms
-  settle before verification. A silent D0 retains every already-issued partial
-  seek step. C advances this contract from executed 8080 cycles; focused HDL
+  settle before waiting for HLT. Once HLT is high, a matching flat-image ID
+  completes verification; a mismatch remains BUSY for four index pulses and
+  reports SEEK ERROR on the fifth revolution. A silent D0 retains every
+  already-issued partial seek step. C advances this contract from executed 8080 cycles; focused HDL
   unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Exact wall-clock
-  calibration and the external HLT wait remain physical D93.24 boundaries.
+  calibration remains a physical D93.24 boundary, while the source and waveform
+  of the now-modeled HLT input remain a physical D93.23 boundary.
   The same models cover single/multiple-record read-sector and write-sector, Read
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
@@ -36,8 +39,10 @@ physical D93/D94 wiring.
   the interval from executed 8080 cycles, and focused HDL unit/decoded guards
   enable the matching timer with `FDC_TYPE_II_III_TIMING`. Exact boundary tests
   cover tick 29,999 versus 30,000, and a silent D0 cancels the pending interval.
-  The physical HLT source and D93.24 wall-clock calibration remain measurement
-  boundaries rather than assumed logic.
+  With `E=0` the controller waits for HLT immediately; with `E=1` it waits after
+  the settle interval. Both hold BUSY with DRQ low and begin media access on the
+  HLT rising edge. The physical D93.23 HLT source/waveform and D93.24 wall-clock
+  calibration remain measurement boundaries rather than assumed copper.
 - C and HDL sample the external READY input when every Type-II/III command is
   loaded. READY low completes immediately with BUSY/DRQ clear, NOT READY set,
   and INTRQ asserted, including commands carrying the optional E delay; Type-I
@@ -384,7 +389,7 @@ evidence exists.
   multiple-record continuation and the datasheet one-byte LOST DATA contract,
   not a general WD1793 conformance model. Exact physical D93.24 calibration of
   the byte, Type-I, and Type-II/III E-delay intervals,
-  external HLT/step-interface timing, arbitrary flux/sector
+  physical D93.23 HLT generation and step-interface timing, arbitrary flux/sector
   layouts, deleted-data metadata, inter-record delays, and physical rotational timing remain outside
   its proved scope. Command-load READY sampling and Type-IV READY-transition and
   index-event semantics are guarded, but the board's physical D93.32 READY

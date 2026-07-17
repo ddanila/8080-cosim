@@ -3,7 +3,7 @@
 
 module fdc_1793_tb;
   reg clk = 0, cs_n = 1, rd_n = 1, wr_n = 1, motor_on = 0, side = 0;
-  reg ready = 0, index = 0;
+  reg ready = 0, index = 0, hlt = 1;
   reg [1:0] A = 0;
   reg [7:0] drive = 8'h00;
   reg drive_en = 0;
@@ -26,7 +26,7 @@ module fdc_1793_tb;
 
   fdc_1793 dut(.A(A), .D(D), .cs_n(cs_n), .rd_n(rd_n), .wr_n(wr_n),
                .clk(clk), .motor_on(motor_on), .side(side), .ready(ready), .index(index),
-               .hlt(1'b1), .wprt(1'b0),
+               .hlt(hlt), .wprt(1'b0),
                .drq(drq), .intrq(intrq), .step(step), .dirc(dirc));
 
   always #5 clk = ~clk;
@@ -242,6 +242,18 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
 
+    hlt = 0;
+    write_reg(2'd0, 8'h14);  // zero-step seek, verify after settle and HLT
+    while (dut.type_i_ticks > 1) @(posedge clk);
+    @(negedge clk); #1;
+    if ((dut.status & 8'h11) !== 8'h01 || !dut.type_i_hlt_pending || intrq) begin
+      $display("FDC-1793: FAIL Type-I verify did not wait for HLT status=%02x", dut.status);
+      errors = errors + 1;
+    end
+    hlt = 1; #1;
+    expect_intrq(1'b1, "Type-I verify HLT completion");
+    expect_status(8'h11, 8'h00, "matching Type-I verify after HLT");
+
     step_pulses_before = step_pulses;
     write_reg(2'd0, 8'h44);
     if (!dut.status[0]) begin
@@ -278,7 +290,13 @@ module fdc_1793_tb;
                dut.physical_track, got);
       errors = errors + 1;
     end
-    expect_status(8'h30, 8'h30, "Type-I verify seek error");
+    expect_status(8'h11, 8'h01, "Type-I verify begins five-revolution ID search");
+    repeat (4) pulse_index();
+    expect_intrq(1'b0, "Type-I verify before fifth revolution");
+    expect_status(8'h11, 8'h01, "Type-I verify before fifth-revolution status");
+    pulse_index();
+    expect_intrq(1'b1, "Type-I verify fifth-revolution completion");
+    expect_status(8'h31, 8'h30, "Type-I verify seek error");
     seek_track(8'd14);
     read_reg(2'd1, got);
     if (dut.physical_track !== 8'd15 || got !== 8'd14) begin
@@ -385,6 +403,17 @@ module fdc_1793_tb;
     while (dut.status[0]) @(negedge clk);
     #1;
     seek_track(8'd12);
+    hlt = 0;
+    write_reg(2'd0, 8'hc0);
+    if ((dut.status & 8'h03) !== 8'h01 || !dut.command_hlt_pending || intrq) begin
+      $display("FDC-1793: FAIL Type-III command did not wait for HLT status=%02x", dut.status);
+      errors = errors + 1;
+    end
+    hlt = 1; #1;
+    expect_status(8'h03, 8'h03, "read-address starts after HLT");
+    write_reg(2'd0, 8'hd0);
+
+    hlt = 0;
     write_reg(2'd2, 8'd9);
     write_reg(2'd0, 8'hc4);  // read address with the valid E flag set
     if ((dut.status & 8'h03) !== 8'h01 || !dut.command_delay_pending) begin
@@ -398,7 +427,12 @@ module fdc_1793_tb;
       errors = errors + 1;
     end
     @(negedge clk); #1;
-    expect_status(8'h03, 8'h03, "after read-address E-delay");
+    if ((dut.status & 8'h03) !== 8'h01 || !dut.command_hlt_pending) begin
+      $display("FDC-1793: FAIL E-delayed Type-III command skipped HLT wait");
+      errors = errors + 1;
+    end
+    hlt = 1; #1;
+    expect_status(8'h03, 8'h03, "after read-address E-delay and HLT");
     for (i = 0; i < 6; i = i + 1) begin
       read_reg(2'd3, got);
       if (got !== want_address_byte(i)) begin

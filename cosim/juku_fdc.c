@@ -114,6 +114,7 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->write_track_preloaded = 0;
   fdc->command_delay_pending = 0;
   fdc->command_delay_ticks = 0;
+  fdc->command_hlt_pending = 0;
   fdc->write_sector_lead_pending = 0;
   fdc->write_sector_lead_ticks = 0;
   fdc->write_sector_preloaded = 0;
@@ -127,6 +128,9 @@ static void clear_transfer(juku_fdc* fdc) {
   fdc->type_i_ticks = 0;
   fdc->type_i_steps_remaining = 0;
   fdc->type_i_settling = 0;
+  fdc->type_i_hlt_pending = 0;
+  fdc->type_i_verify_pending = 0;
+  fdc->type_i_verify_index_pulses = 0;
   fdc->status &= (uint8_t)~(ST_BUSY | ST_DRQ);
 }
 
@@ -216,7 +220,7 @@ static void type_i_step_once(juku_fdc* fdc) {
 }
 
 
-static void complete_type_i(juku_fdc* fdc) {
+static void finalize_type_i_registers(juku_fdc* fdc) {
   const uint8_t command = fdc->type_i_command;
   if ((command & 0xF0) == 0x00) {
     fdc->track = 0;
@@ -224,11 +228,28 @@ static void complete_type_i(juku_fdc* fdc) {
   } else if ((command & 0xF0) == 0x10) {
     fdc->track = fdc->data;
   }
-  if ((command & 0x04) &&
-      (fdc->track != fdc->physical_track || fdc->physical_track >= JUK_TRACKS)) {
-    fdc->status |= ST_RNF;  // Type-I meaning: SEEK ERROR
-  }
+}
+
+
+static void complete_type_i(juku_fdc* fdc) {
+  finalize_type_i_registers(fdc);
   complete_transfer(fdc);
+}
+
+
+static void begin_type_i_verification(juku_fdc* fdc) {
+  finalize_type_i_registers(fdc);
+  fdc->type_i_settling = 0;
+  if (!fdc->hlt_line) {
+    fdc->type_i_hlt_pending = 1;
+    return;
+  }
+  if (fdc->track == fdc->physical_track && fdc->physical_track < JUK_TRACKS) {
+    complete_transfer(fdc);
+    return;
+  }
+  fdc->type_i_verify_pending = 1;
+  fdc->type_i_verify_index_pulses = 0;
 }
 
 
@@ -638,12 +659,32 @@ static void begin_write_track(juku_fdc* fdc) {
 }
 
 
-static void start_type_ii_iii(juku_fdc* fdc, uint8_t command) {
+static void execute_type_ii_iii(juku_fdc* fdc, uint8_t command) {
   if (is_read_sector(command)) begin_read_sector(fdc, command);
   else if (is_write_sector(command)) begin_write_sector(fdc, command);
   else if (is_read_address(command)) begin_read_address(fdc);
   else if (is_read_track(command)) begin_read_track(fdc);
   else if (is_write_track(command)) begin_write_track(fdc);
+}
+
+
+static void start_type_ii_iii(juku_fdc* fdc, uint8_t command) {
+  const int write_command = is_write_sector(command) || is_write_track(command);
+  const int immediate_rejection =
+      !fdc->ready_line || !fdc->disk || !fdc->disk->fp || !fdc->motor_on ||
+      (write_command && !fdc->disk->writable);
+  if (immediate_rejection || fdc->hlt_line) {
+    execute_type_ii_iii(fdc, command);
+    return;
+  }
+  clear_transfer(fdc);
+  fdc->status_type_i = 0;
+  fdc->head_loaded = 1;
+  fdc->status &= (uint8_t)~(
+      ST_TRACK0_LOST | ST_CRC | ST_RNF | ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+  fdc->command_hlt_pending = 1;
+  fdc->command_hlt_command = command;
+  fdc->status |= ST_BUSY;
 }
 
 
@@ -722,7 +763,8 @@ void juku_fdc_tick(juku_fdc* fdc, unsigned ticks) {
       ticks -= fdc->type_i_ticks;
       fdc->type_i_ticks = 0;
       if (fdc->type_i_settling) {
-        complete_type_i(fdc);
+        fdc->type_i_pending = 0;
+        begin_type_i_verification(fdc);
       } else if (fdc->type_i_steps_remaining) {
         type_i_step_once(fdc);
         fdc->type_i_steps_remaining--;
@@ -779,6 +821,7 @@ void juku_fdc_init(juku_fdc* fdc, juk_disk* disk) {
   fdc->step_dir_in = 1;
   fdc->sector = 1;
   fdc->status_type_i = 1;
+  fdc->hlt_line = 1;
   fdc->ready_line = 1;
   fdc->status = ST_NOT_READY;
 }
@@ -789,6 +832,21 @@ void juku_fdc_portc(juku_fdc* fdc, uint8_t portc) {
   fdc->head = (portc >> 6) & 1;
   fdc->drive = (portc >> 5) & 1;
   update_not_ready(fdc);
+}
+
+
+void juku_fdc_hlt(juku_fdc* fdc, int hlt) {
+  hlt = hlt != 0;
+  fdc->hlt_line = hlt;
+  if (!hlt) return;
+  if (fdc->type_i_hlt_pending) {
+    fdc->type_i_hlt_pending = 0;
+    begin_type_i_verification(fdc);
+  } else if (fdc->command_hlt_pending) {
+    const uint8_t command = fdc->command_hlt_command;
+    fdc->command_hlt_pending = 0;
+    execute_type_ii_iii(fdc, command);
+  }
 }
 
 
@@ -811,6 +869,7 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
     const int started_track = fdc->track_waiting_index;
     const int searched_side = fdc->side_compare_pending;
     const int searched_id = fdc->id_search_pending;
+    const int verified_type_i = fdc->type_i_verify_pending;
     if (fdc->force_interrupt_mask & 0x04) fdc->intrq = 1;
     if (fdc->track_waiting_index) {
       fdc->track_waiting_index = 0;
@@ -827,6 +886,11 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
         fdc->status |= ST_DRQ;
         fdc->drq_ticks = 0;
       }
+    } else if (fdc->type_i_verify_pending) {
+      if (++fdc->type_i_verify_index_pulses >= 5) {
+        fdc->status |= ST_RNF;  // Type-I meaning: SEEK ERROR
+        complete_transfer(fdc);
+      }
     } else if (fdc->side_compare_pending) {
       if (++fdc->side_compare_index_pulses >= 5) {
         fdc->status |= ST_RNF;
@@ -838,7 +902,7 @@ void juku_fdc_index(juku_fdc* fdc, int index) {
         complete_transfer(fdc);
       }
     }
-    if (!started_track && !searched_side && !searched_id &&
+    if (!started_track && !searched_side && !searched_id && !verified_type_i &&
         !(fdc->status & ST_BUSY) && fdc->head_loaded) {
       if (++fdc->idle_index_pulses >= 15) {
         fdc->head_loaded = 0;

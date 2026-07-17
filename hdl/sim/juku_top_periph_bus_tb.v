@@ -278,14 +278,45 @@ module juku_top_periph_bus_tb();
     io_read(8'h1D, rd);
     if (rd !== 8'h02) fail("FDC seek did not update track register through top-level bus");
 
+    force dut.U_FDC.hlt = 1'b0;
+    io_write(8'h1C, 8'h14);     // matching zero-step seek with verify
+    while (!dut.U_FDC.type_i_hlt_pending) @(posedge osc);
+    #1;
+    io_read(8'h1C, rd);
+    if ((rd & 8'h11) !== 8'h01 || dut.fdc_intrq)
+      fail("FDC Type-I verify did not remain BUSY while HLT was low");
+    force dut.U_FDC.hlt = 1'b1;
+    #1;
+    if (dut.fdc_intrq !== 1'b1) fail("FDC Type-I verify did not complete after HLT");
+    io_read(8'h1C, rd);
+    if ((rd & 8'h11) !== 0) fail("FDC matching Type-I verify reported an error");
+
     io_write(8'h1C, 8'h44);     // step in without update, then verify
-    while (dut.U_FDC.status[0]) @(posedge osc);
+    while (!dut.U_FDC.type_i_verify_pending) @(posedge osc);
     #1;
     io_read(8'h1D, rd);
     if (rd !== 8'h02 || dut.U_FDC.physical_track !== 8'h03)
       fail("FDC no-update step did not separate physical head and Track register");
+    for (i = 0; i < 4; i = i + 1) fdc_index_pulse();
+    if (dut.fdc_intrq !== 1'b0 || (dut.U_FDC.status & 8'h11) !== 8'h01)
+      fail("FDC Type-I verify ended before the fifth index pulse");
+    fdc_index_pulse();
+    if (dut.fdc_intrq !== 1'b1) fail("FDC Type-I verify did not finish on fifth index pulse");
     io_read(8'h1C, rd);
     if ((rd & 8'h30) !== 8'h30) fail("FDC Type-I verify did not report SEEK ERROR/head loaded");
+
+    force dut.U_FDC.hlt = 1'b0;
+    io_write(8'h1C, 8'hC0);
+    io_read(8'h1C, rd);
+    if ((rd & 8'h03) !== 8'h01 || !dut.U_FDC.command_hlt_pending || dut.fdc_intrq)
+      fail("FDC Type-III command did not wait BUSY-only for HLT");
+    force dut.U_FDC.hlt = 1'b1;
+    #1;
+    io_read(8'h1C, rd);
+    if ((rd & 8'h03) !== 8'h03) fail("FDC Type-III command did not start after HLT");
+    io_write(8'h1C, 8'hD0);
+    release dut.U_FDC.hlt;
+
     fdc_seek(8'h0e);
     if (dut.U_FDC.track !== 8'h0e || dut.U_FDC.physical_track !== 8'h0f)
       fail("FDC seek did not preserve the physical/register track offset");

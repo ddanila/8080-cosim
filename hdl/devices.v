@@ -866,6 +866,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer side_compare_index_pulses = 0;
     integer id_search_pending = 0;
     integer id_search_index_pulses = 0;
+    integer command_hlt_pending = 0;
+    reg [7:0] command_hlt_command = 0;
 `ifdef FDC_TYPE_II_III_TIMING
     integer command_delay_pending = 0;
     integer command_delay_ticks = 0;
@@ -894,6 +896,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     integer type_i_rate_ticks = 0;
     integer type_i_steps_remaining = 0;
     integer type_i_settling = 0;
+    integer type_i_hlt_pending = 0;
+    integer type_i_verify_pending = 0;
+    integer type_i_verify_index_pulses = 0;
     reg [7:0] type_i_command = 0;
     reg step_r = 0;
     reg dirc_r = 0;
@@ -1055,6 +1060,7 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         side_compare_index_pulses = 0;
         id_search_pending = 0;
         id_search_index_pulses = 0;
+        command_hlt_pending = 0;
 `ifdef FDC_TYPE_II_III_TIMING
         command_delay_pending = 0;
         command_delay_ticks = 0;
@@ -1065,6 +1071,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         type_i_ticks = 0;
         type_i_steps_remaining = 0;
         type_i_settling = 0;
+        type_i_hlt_pending = 0;
+        type_i_verify_pending = 0;
+        type_i_verify_index_pulses = 0;
         step_r = 0;
 `endif
         status = status & ~(ST_BUSY | ST_DRQ);
@@ -1405,16 +1414,31 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
         step_r = 1;
     end endtask
 
-    task complete_type_i_timed; begin
+    task finalize_type_i_registers; begin
         if ((type_i_command & 8'hf0) == 8'h00) begin
             track = 8'h00;
             physical_track = 8'h00;
         end else if ((type_i_command & 8'hf0) == 8'h10) begin
             track = data;
         end
-        if (type_i_command[2] && (track != physical_track || physical_track > 8'd79))
-            status = status | ST_RNF;
+    end endtask
+
+    task complete_type_i_timed; begin
+        finalize_type_i_registers();
         complete_transfer();
+    end endtask
+
+    task begin_type_i_verification; begin
+        finalize_type_i_registers();
+        type_i_settling = 0;
+        if (!hlt) begin
+            type_i_hlt_pending = 1;
+        end else if (track == physical_track && physical_track <= 8'd79) begin
+            complete_transfer();
+        end else begin
+            type_i_verify_pending = 1;
+            type_i_verify_index_pulses = 0;
+        end
     end endtask
 
     task finish_type_i_motion; begin
@@ -1674,12 +1698,34 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     end endtask
 `endif
 
-    task start_type_ii_iii(input [7:0] cmd); begin
+    task execute_type_ii_iii(input [7:0] cmd); begin
         if (is_read_sector(cmd)) begin_read_sector(cmd);
         else if (is_write_sector(cmd)) begin_write_sector(cmd);
         else if (is_read_address(cmd)) begin_read_address();
         else if (is_read_track(cmd)) begin_read_track();
         else if (is_write_track(cmd)) begin_write_track();
+    end endtask
+
+    task start_type_ii_iii(input [7:0] cmd);
+        integer write_command;
+        integer immediate_rejection;
+    begin
+        write_command = is_write_sector(cmd) || is_write_track(cmd);
+        immediate_rejection = !ready || !motor_on || (disk_requested && !disk_loaded) ||
+                              (write_command && (!disk_requested || !disk_writable));
+        if (immediate_rejection || hlt) begin
+            execute_type_ii_iii(cmd);
+        end else begin
+            clear_transfer();
+            status_type_i = 0;
+            head_loaded = 1;
+            status = status & ~(ST_LOST_DATA | 8'h08 | ST_RNF |
+                                ST_WRITE_FAULT | ST_WRITE_PROTECT | ST_NOT_READY);
+            command_hlt_pending = 1;
+            command_hlt_command = cmd;
+            status = status | ST_BUSY;
+            intrq_r = 1'b0;
+        end
     end endtask
 
     task begin_type_ii_iii(input [7:0] cmd);
@@ -1882,8 +1928,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `endif
 
     // Type-I rates are controller-clock contracts from the FD179X table:
-    // 3/6/10/15 ms per step and 15 ms verify settle at a nominal 2 MHz.
-    // Keep this opt-in until the board's physical D93.24 source is measured.
+    // 3/6/10/15 ms per step and 15 ms verify settle at a nominal 2 MHz,
+    // followed by HLT and at most five ID-search revolutions. Keep the timer
+    // opt-in until the board's physical D93.24 clock is measured.
 `ifdef FDC_TYPE_I_TIMING
     always @(negedge clk) begin
         step_r = 0;
@@ -1891,7 +1938,8 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
             if (type_i_ticks <= 1) begin
                 type_i_ticks = 0;
                 if (type_i_settling) begin
-                    complete_type_i_timed();
+                    type_i_pending = 0;
+                    begin_type_i_verification();
                 end else if (type_i_steps_remaining != 0) begin
                     type_i_step_once();
                     type_i_steps_remaining = type_i_steps_remaining - 1;
@@ -1907,8 +1955,9 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
 `endif
 
     // Type-II/III E=1 holds BUSY for the datasheet's nominal 15 ms head
-    // settle before ID search or the Type-III index wait begins.  Keep the
-    // autonomous timer opt-in until D93.24 and the external HLT path are known.
+    // settle, then waits for HLT before ID search or the Type-III index wait.
+    // Keep the autonomous timer opt-in until D93.24 is calibrated; D93.23's
+    // physical HLT source remains a separate continuity/waveform boundary.
 `ifdef FDC_TYPE_II_III_TIMING
     always @(negedge clk) begin
         if (command_delay_pending) begin
@@ -1933,6 +1982,19 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
     always @(negedge ready)
         if (force_interrupt_mask[1]) intrq_r = 1'b1;
 
+    always @(posedge hlt) begin
+`ifdef FDC_TYPE_I_TIMING
+        if (type_i_hlt_pending) begin
+            type_i_hlt_pending = 0;
+            begin_type_i_verification();
+        end else
+`endif
+        if (command_hlt_pending) begin
+            command_hlt_pending = 0;
+            execute_type_ii_iii(command_hlt_command);
+        end
+    end
+
     always @(posedge index) begin
         if (force_interrupt_mask[2]) intrq_r = 1'b1;
         if (track_waiting_index) begin
@@ -1949,6 +2011,15 @@ module fdc_1793 (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, 
                 status = status | ST_DRQ;
                 `FDC_TIMER_RESET
             end
+`ifdef FDC_TYPE_I_TIMING
+        end else if (type_i_verify_pending) begin
+            if (type_i_verify_index_pulses + 1 >= 5) begin
+                status = status | ST_RNF;
+                complete_transfer();
+            end else begin
+                type_i_verify_index_pulses = type_i_verify_index_pulses + 1;
+            end
+`endif
         end else if (side_compare_pending) begin
             if (side_compare_index_pulses + 1 >= 5) begin
                 status = status | ST_RNF;
