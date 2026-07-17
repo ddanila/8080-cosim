@@ -5,6 +5,10 @@
     "drives": [
       "RESET_N"
     ],
+    "reads": [
+      "TX",
+      "RX"
+    ],
     "default_pull": [
       "MODE0",
       "MODE1",

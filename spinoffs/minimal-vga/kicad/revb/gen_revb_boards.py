@@ -108,6 +108,9 @@ def cap(ref):
 def header(ref, mapping):
     return {"ref": ref, "type": "HDR_1xN", "pins": dict(mapping)}
 
+def comp(ref, typ, mapping):
+    return {"ref": ref, "type": typ, "pins": dict(mapping)}
+
 # Per-card discrete extras (decoupling + S9 observability/NOP headers, TD.2-TD.5).
 CARD_EXTRAS = {
     "mem": [
@@ -129,6 +132,31 @@ CARD_EXTRAS = {
         cap("C1"), cap("C2"),
         # Control-activity observability (S9): the rev A diagnostic signals.
         header("J_DIAG", {"1": "CLK", "2": "M1_N", "3": "RFSH_N", "4": "RESET_N", "5": "GND"}),
+    ],
+    "backplane": [
+        # +5V input: USB-C (CC pulldowns for a plain 5V supply) + a screw/header alt.
+        comp("J_USBC", "USB_C_PWR", {"VBUS": "VCC5", "GND": "GND", "CC1": "USB_CC1", "CC2": "USB_CC2"}),
+        comp("R_CC1", "R_5K1", {"1": "USB_CC1", "2": "GND"}),
+        comp("R_CC2", "R_5K1", {"1": "USB_CC2", "2": "GND"}),
+        comp("J_PWR", "HDR_1x2", {"1": "VCC5", "2": "GND"}),
+        # Reset: supervisor is the SOLE RESET_N driver (S7) + a manual button.
+        comp("U_RST", "SUPERVISOR_3", {"1": "GND", "2": "RESET_N", "3": "VCC5"}),
+        comp("SW_RST", "SW_PUSH", {"1": "RESET_N", "2": "GND"}),
+        # MODE default pulls (S11): default mode 0 (both low) when no I/O card drives.
+        comp("R_M0", "R_10K", {"1": "MODE0", "2": "GND"}),
+        comp("R_M1", "R_10K", {"1": "MODE1", "2": "GND"}),
+        # Wired-OR pull-ups (S4).
+        comp("R_INT", "R_4K7", {"1": "INT_N", "2": "VCC5"}),
+        comp("R_WAIT", "R_4K7", {"1": "WAIT_N", "2": "VCC5"}),
+        comp("R_NMI", "R_4K7", {"1": "NMI_N", "2": "VCC5"}),
+        comp("R_BRQ", "R_4K7", {"1": "BUSRQ_N", "2": "VCC5"}),
+        # Bring-up FTDI console header + S5 crossover jumper (disconnect when the I/O
+        # card's UART is present): FTDI TX -> bus RX, bus TX -> FTDI RX.
+        comp("J_FTDI", "HDR_1x4", {"1": "VCC5", "2": "FTDI_TX", "3": "FTDI_RX", "4": "GND"}),
+        comp("JP_S5", "JMP_2x2", {"1": "FTDI_TX", "2": "RX", "3": "TX", "4": "FTDI_RX"}),
+        # Power LED.
+        comp("D_PWR", "LED", {"1": "LED_A", "2": "GND"}),
+        comp("R_LED", "R_2K2", {"1": "VCC5", "2": "LED_A"}),
     ],
 }
 
@@ -169,6 +197,7 @@ def build(card):
         # 6 slots wired in parallel: same signal on pin N of every slot.
         for s in range(1, 7):
             chips.append(bus_connector(f"J_S{s}"))
+        chips.extend(CARD_EXTRAS.get("backplane", []))
     else:
         chips.append(bus_connector("J_BUS"))
         for ref, typ in CARD_CHIPS[card]:

@@ -166,5 +166,5 @@ jobs:
       - name: Check spin-off shared commons
         run: python3 scripts/check_spinoff_commons.py
 
-      - name: Check rev B board connectivity
-        run: python3 scripts/check_revb_boards.py
+      - name: Check rev B board connectivity + netlist completeness
+        run: python3 scripts/check_revb_boards.py --completeness
