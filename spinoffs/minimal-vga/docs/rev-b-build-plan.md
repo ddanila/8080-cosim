@@ -113,6 +113,34 @@ Anything not listed here (component values, footprints, trace widths) is deliber
 out of scope — implementation detail belongs to the per-phase schematic work, gated
 by the B0 contract and the sim oracles.
 
+## Feedback loops & coverage matrix
+
+Audit of every verification loop, what it catches, and whether it exists or is
+new work. "Reuse" = the mechanism exists in the repo and rev B plugs into it.
+
+| Loop | Catches | Gate | Status |
+|---|---|---|---|
+| cosim ↔ assembled twin (banner byte-identity) | logic errors in the machine model | B0, then every card change | **reuse** (`sim/boot_check.sh` pattern) |
+| BFM unit sim per card | wrong card behavior at the bus boundary | before every PCB order | new (B0) |
+| **Bus-conflict assertions in the BFM** | two cards driving D0–D7 at once; decode overlaps (e.g. Memory answering at `0xD800`) | every assembled sim run | **new — was missing.** Tri-state overlap is exactly the class of bug byte-identity can't see (X-propagation may still produce the right bytes in sim and smoke on the bench) |
+| /WAIT phase sweep | CPU write landing at every phase offset of active display | B2, before video card order | new (was implied, now explicit) |
+| **Tier-inherited probe suites** | deeper firmware regressions per tier | B1: monitor checkpoint; B3: keyboard-react + jmon33 guards; B4: EKDOS/jbasic prompt guards | **reuse** — the root `sync/*.sh` guards already exist; rev B's assembled twin must be able to run the tier's suite, not just the banner |
+| **Per-card LVS** (KiCad netlist ↔ card HDL module) | schematic diverging from the sim that passed the oracle | before every PCB order | **reuse pattern, new scope** — rev A's LVS (`hdl/minimal_vga_lvs.*`) is monolithic; rev B needs it per card, so a card re-spin re-proves only itself |
+| ERC/DRC + manufacturing-readiness script | electrical rule / footprint / fab errors | before order | **reuse** (`kicad/check_replica_manufacturing_ready.sh` precedent, rev B variant) |
+| **Silk checklist** | assembly-time human errors | before order | new, cheap: pin-1 marks, card name+rev, orientation banding, bus pin labels at the connector, extension-key orientation arrow, "NO HOT-PLUG", NOP-plug and J95 headers labeled |
+| Power budget check | card set exceeding the USB-C 5 V budget | B0 + whenever a card is added | **reuse** (`rev-a-power-budget.md` method, summed per backplane population) |
+| GAL fuse-map verify + bench vectors | programmed GAL ≠ equations | after programming, via J95-style header | reuse (rev A dual-mode decode pattern) |
+| ROM self-checksum | corrupted EPROM burn | free — firmware checks at `0x03E0` on every boot | reuse (already in cosim trace) |
+| Framebuffer-readback bench oracle | real board ≠ twin | every bring-up phase | **reuse** (rev A phase 4 method) |
+| Bench trace replay (analyzer capture → BFM replay → diff) | timing/behavior divergence the FB oracle averages away | B1+, on anomaly | new, optional — promote only if a bench mystery appears |
+| Commons guard | spin-off constants diverging from root facts | CI, every push | new (per `docs/spinoff-commons.md`) |
+| **CI wiring** | all of the above rotting | rev B sims path-gated into `hdl.yml`; commons guard into `ci.yml`; deep guards stay pre-push | new (B0 deliverable) |
+
+The three that were genuinely missing before this audit: **bus-conflict
+assertions**, **per-card LVS scope**, and the **silk checklist** — all are now
+B0/pre-order gates. Everything else was already in the repo's DNA and rev B
+inherits it.
+
 ## Best-practice notes (researched 2026-07-17)
 - RC2014 bus spec: Standard 40-pin row + Enhanced partial second row
   (smallcomputercentral.com "RC2014 Bus Specification"); mainline runs
