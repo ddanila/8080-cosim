@@ -173,6 +173,16 @@ by the B0 contract and the sim oracles.
 | D1.14 | DRC/fab gate? | `kicad-cli pcb drc` + rev A fab/assembly checks; 2-layer, cheap-tier constraints (min track/clearance per JLC 2-layer). One `check_revb_ready.sh` covering all four boards. | Same bar rev A had to pass. |
 | D1.15 | STEP/mating check — automated or eyeballed? | **Automated first**: `kicad-cli pcb export step` per board; a `freecadcmd` headless script assembles cards into backplane sockets at 19 mm pitch and runs a boolean **interference check**, plus a deliberately **reversed card placement that must collide** (keying proof). Fallback if headless FreeCAD fights back: manual GUI assembly with committed screenshots + measured clearances. | "Assembled render looks fine" is not a gate; a collision boolean is. |
 
+## B1-CAD revamp decisions (after the TC.3 findings, 2026-07-17)
+
+| # | Question | Decision | Rationale / gate |
+|---|---|---|---|
+| D1.16 | I/O-card chip-select decode (UART_CS_N was dangling in TC.2)? | **One ATF16V8-class GAL on the I/O card** generates UART_CS_N (window 0x08–0x0B), PPI_CS_N (0x04–0x07), PIC_CS_N (0x00–0x01) from IORQ_N + A2–A7, plus the **8251 RESET inversion** (the 8251 reset pin is active-HIGH; the bus RESET_N is active-low — a caught-on-paper polarity bug). 8255/PIC selects are wired but DNP-consumers until B3. | One programmable chip covers all I/O selects + the inverter; consistent with the GAL-decode pattern (C2). |
+| D1.17 | CPU-card buffer control ('245/'244 in-path)? | Z80 pins → **local nets (D0L…, A0L…)** → buffers → bus nets. Control terms: **'244 always enabled** (address/control are CPU-sourced, S-rules), **'245 DIR = RD_N** (read: bus→CPU; write: CPU→bus), **'245 /OE = MREQ_N & IORQ_N** (enabled only during a bus cycle). | The exact terms that must not be guessed on copper — see D1.19. |
+| D1.18 | Netlist completeness rule (what "schematic depth" means, checkable)? | On a populated card, **every internal (non-bus) net must have ≥2 endpoints** or be explicitly tagged `_TIE` / `_NC` / listed DNP. Bus nets may have 1 endpoint per card (they continue through the backplane). The board checker enforces this per card. | Turns "did we finish the schematic?" into a machine check; would have caught UART_CS_N and the beside-the-path buffers. |
+| D1.19 | How do control equations get validated before silicon? | **Behavioral-twin-first rule:** any equation destined for a GAL or buffer control (D1.16 selects, D1.17 DIR/OE, mem-card decode) is first encoded in the behavioral card models and must pass the **boot + bring-up oracles**; the netlist/GAL-doc versions are then derived from those oracle-tested terms (single source). | Extends the byte-identity discipline to the last mile of logic; costs minutes, catches inverted-enable class bugs. |
+| D1.20 | All four boards in parallel, or one first? | **Pipeline-prove on the mem card first** (simplest full-pipeline card: 3 ICs, no in-path buffers), through netlist→LVS→PCB→DRC→STEP. Only then replicate to io, cpu (hardest, buffers), backplane (no LVS — passive). | The first card absorbs all pipeline iteration (footprints, DRC rules, generator bugs); the rest become replication instead of four parallel debug sessions. |
+
 ## Feedback loops & coverage matrix
 
 Audit of every verification loop, what it catches, and whether it exists or is

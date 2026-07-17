@@ -286,24 +286,83 @@ purely a purchasing decision.
 - **TC.2 DONE** — `gen_revb_boards.py` deterministically emits four `<card>.board.json` (bus connectors from `bus-pinout.json` + IC DIP pinouts); `check_revb_boards.py` cross-checks connector==pinout and chip-bus-pins==roles. **Caught a real bug**: the mem GAL had inherited rev A's mem+I/O decode; rev B is memory-only.
 - **TC.3 PARTIAL** — board.json now carries the `nets` section (LVS-ready shape for `netlist_from_board.py`) + a nets-in-sync check. **Correction to D1.11:** its "structural model must boot" was the `juku_top` precedent; the applicable **rev A spinoff** precedent keeps the booting model (`revb_backplane_top`, already byte-identical) SEPARATE from an empty-bodied LVS netlist. So TC.3-full = author an *independent* structural netlist (rev A `minimal_vga_lvs.v` style), not make the behavioral model structural.
 
-**Remaining (TC.3-full, TC.4–TC.7): the focused PCB/LVS body of work.** Executing
-TC.2/TC.3 surfaced that this is genuinely large and iterative, and needs
-schematic-level detail not yet captured:
-- **Buffer datapath** — the CPU card's '245/'244 must sit *in* the data/address
-  path (Z80 pins → local nets → buffer → bus nets), with DIR/OE control. My TC.2
-  board.json wires the Z80 straight to the bus with the buffers beside it; correct
-  in-path modeling is schematic capture (TC.5).
-- **TC.3-full/TC.4** — independent structural LVS netlist per card + `map.json`
-  pinmaps + `sync/lvs.py` round-trip. Bounded value (boot-check + TC.2 checks
-  already cover much), real effort.
-- **TC.5** — `gen_revb_pcb.py` (pcbnew): outlines, 39+10 connector footprints,
-  19 mm pitch, generator-emitted silk. Needs the datapath-complete board.json.
-- **TC.6** — `kicad-cli pcb drc` (iterative: fix violations).
-- **TC.7** — STEP export + `freecadcmd` interference/keying (tools now present).
+## B1-CAD REVAMPED breakdown (TD stages, planned 2026-07-17 — supersedes TC.3-full–TC.8)
 
-These are best done as a focused CAD pass, not the tail of a large session —
-rushing them risks committing un-runnable PCBs. The connectivity contract they
-build on (bus-pinout + cards.json + board.json + all checks) is done and guarded.
+Why revamped: TC execution showed the remaining work is (a) missing **schematic
+depth** (in-path buffers, I/O selects, reset polarity, backplane passives), (b)
+LVS needs independently-authored netlists, and (c) the pipeline is **iterative**.
+New decisions D1.16–D1.20 in the build plan address these — don't reopen them.
+Process rules: one task = one commit; **stages are session boundaries** (never
+start a new stage in a session's tail); equations-to-silicon follow the
+**behavioral-twin-first rule (D1.19)**.
+
+### Stage A — netlist completion to schematic depth (no CAD tools needed)
+
+**TD.0 — oracle-test the control equations (D1.19).**
+Encode in the behavioral models: '245 DIR/OE + '244 terms in `revb_cpu_card.v`
+(D1.17), the I/O-select GAL terms + 8251 reset inversion in `revb_io_card.v`
+(D1.16). Re-run boot + bring-up oracles (`revb_tier_suite.sh`).
+*Acceptance:* byte-identity holds with the explicit control terms; deliberately
+inverting the '245 DIR term breaks the boot (prove-then-restore).
+
+**TD.1 — checker: D1.18 completeness rule.**
+Extend `scripts/check_revb_boards.py`: on a populated card, internal nets need
+≥2 endpoints or `_TIE`/`_NC`/DNP tags; bus nets exempt.
+*Acceptance:* the current (incomplete) board.jsons FAIL this check — that failure
+list *is* the Stage A worklist. (Guard goes in first, red; TD.2–TD.5 turn it green
+card by card. Keep it out of the tier suite until TD.5.)
+
+**TD.2 — mem card netlist complete.**
+ROM A14/VPP ties, SRAM ties, GAL decode wiring (memory-only, D1.19-derived terms),
+decoupling, NOP-plug + J95-style headers (S9). Plus
+`docs/rev-b-gal-equations.md` — the mem-decode + I/O-select GAL programming doc,
+derived from the oracle-tested behavioral terms (pattern: `rev-a-gal-equations.md`).
+*Acceptance:* mem card passes the D1.18 check; GAL doc terms textually match the
+behavioral source (cite lines).
+
+**TD.3 — io card netlist complete.**
+ATF16V8 selects (D1.16), 8251 support wiring (C_D=A0, TXC/RXC from the local baud
+osc, RESET inversion, modem-control ties), DNP 8255/PIC footprint stubs.
+*Acceptance:* io card passes D1.18.
+
+**TD.4 — cpu card netlist complete.**
+Buffers in-path per D1.17 (local nets), oscillator, observability header.
+*Acceptance:* cpu card passes D1.18.
+
+**TD.5 — backplane netlist complete.**
+6 parallel slots, MODE/wired-OR pulls (S4/S11), reset supervisor (sole RESET_N
+driver), USB-C 5V (CC resistors, rev A pattern), FTDI header + S5 jumper, power
+LED. *Acceptance:* backplane passes D1.18; D1.18 check joins the tier suite (all
+four green).
+
+### Stage B — pipeline-prove on the mem card only (D1.20)
+
+**TD.6 — mem LVS.** Empty-bodied structural netlist (`hdl/revb/revb_mem_lvs.v`,
+rev A `minimal_vga_lvs.v` style) + `map.json` pinmap + `sync/revb_lvs.sh`
+(board-direct always; kicad-cli round-trip when `env.sh` finds it).
+*Acceptance:* LVS clean; a mis-wired pin in a temp copy fails.
+
+**TD.7 — mem PCB.** `gen_revb_pcb.py` (pcbnew, via `env.sh`) for the mem card:
+outline, 39+10 connector per D1.4, silk set. Footprint-availability check first.
+*Acceptance:* deterministic regen; silk items grep-able in the PCB.
+
+**TD.8 — mem DRC + STEP.** Iterate `kicad-cli pcb drc` to zero errors; export
+STEP; single-card sanity in FreeCAD (outline, connector on edge).
+*Acceptance:* DRC report + STEP committed. **Pipeline is now proven.**
+
+### Stage C — replicate (order: io → cpu → backplane)
+
+**TD.9 io / TD.10 cpu / TD.11 backplane** — run the proven pipeline per board
+(backplane skips LVS: passive). cpu is deliberately after io: hardest datapath
+on a warmed-up pipeline. *Acceptance per board:* LVS (where applicable) + DRC
+clean + STEP exported.
+
+### Stage D — assembly + exit
+
+**TD.12 — FreeCAD mating/keying.** `freecadcmd` assembly at 19 mm pitch; boolean
+interference = zero; reversed card must collide (D1.15). Committed report.
+**TD.13 — CAD exit review.** Tier suite + all TD gates green; power budget
+re-check vs final BOMs; fab package + SHA256 (rev A pattern). Arms **T1.10**.
 
 At B1 exit (after the hardware tiers), expand Phase B2 to task level (rule 6).
 
