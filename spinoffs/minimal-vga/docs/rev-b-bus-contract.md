@@ -56,6 +56,11 @@ polarizing key (S8). All `_N` active-low.
 CLK2 is intentionally **not** on the extension — any card needing a special clock
 generates it locally (video dot-clock, FDC crystal).
 
+**Physical placement (D1.4):** the 10-pin extension is a **second 0.1" row, 2.54 mm
+behind the base row, aligned to the pin-1 end** of the 39-pin connector. Inline on
+one edge is impossible (39+10 pins ≈ 124 mm > 100 mm). The end-aligned second row is
+the polarizing asymmetry that makes reversed/offset insertion physically fail (S8).
+
 ## Shared / open-drain lines and defaults
 
 - **INT_N, WAIT_N, NMI_N, BUSRQ_N** are wired-OR: cards drive open-drain only,
@@ -96,7 +101,12 @@ Low 8 address bits. Each card decodes only its own ports.
 | 0x05 | 8255 Port B | I/O | keyboard read (74148) |
 | 0x06 | 8255 Port C | I/O | memory-overlay mode bits[1:0] → MODE0/1 |
 | 0x07 | 8255 control | I/O | mode-set / Port C bit set-reset |
+| 0x08 | 8251-class USART (D11) | I/O | A0=0: TX/RX data |
+| 0x09 | 8251-class USART (D11) | I/O | A0=1: mode/command, status (TxRDY/RxRDY/TxEMPTY) |
 | 0x1C-0x1F | ВГ93/WD1793 FDC | FDC | port&3 = cmd/status, track, sector, data |
+
+USART decoded window: **0x08-0x0B** (data 0x08, control/status 0x09). This is the
+minimum-tier console; the bring-up ROM (B1) talks only through it.
 
 ## PIC interrupt assignments
 

@@ -70,6 +70,8 @@ def main() -> int:
         ("8255 Port B", ports.get("ppi_port_b", {}).get("port_hex", "")),
         ("8255 Port C", ports.get("ppi_port_c", {}).get("port_hex", "")),
         ("8255 control", ports.get("ppi_control", {}).get("port_hex", "")),
+        ("UART data port", ports.get("uart_data", {}).get("port_hex", "")),
+        ("UART ctl port", ports.get("uart_ctl", {}).get("port_hex", "")),
         ("FDC ports", ports.get("fdc", {}).get("ports_hex", "")),
     ]
 
